@@ -1,9 +1,9 @@
-      SUBROUTINE NMERGE(QUESTI,TYPERR,VALUEL,SDERRO)
+      SUBROUTINE NMERGE(QUESTI,TYPERR,SDERRO,VALUEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -37,12 +37,19 @@ C
 C
 C IN  SDERRO : SD ERREUR
 C IN  QUESTI : ACTION A REALISER
-C               'SET' ACTIVE UN CODE ERREUR
-C               'GET' DIT SI LE CODE ERREUR EST ACTIF
-C               'PRT' IMPRIME MESSAGE ERREUR
+C               'SET' - ACTIVE UN CODE ERREUR
+C               'GET' - DIT SI LE CODE ERREUR EST ACTIF
+C               'PRT' - IMPRIME MESSAGE ERREUR
 C IN  TYPERR : TYPE ERREUR
-C               LDC,PIL,FAC,CC1,CC2 
-C               ALL AU MOINS UNE ERREUR
+C               'LDC' - ERR. INTEG. COMPORTEMENT
+C               'PIL' - ERR. PILOTAGE
+C               'FAC' - ERR. FACTORISATION
+C               'CC1' - ERR. CONTACT DISCRET 1
+C               'CC2' - ERR. CONTACT DISCRET 2
+C               'ALL' - AU MOINS UNE DE CES ERREUR
+C               'TIN' - TEMPS CPU BCLE. NEWTON INSUFFISANT
+C               'TIP' - TEMPS CPU BCLE. TEMPS INSUFFISANT
+C               'ITX' - MAXIMUM ITERATION DE NEWTON
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -69,11 +76,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ() 
-C
-C --- INITIALISATIONS
-C
-      
+      CALL JEMARQ()
 C
 C --- ACCES SDS
 C
@@ -95,7 +98,13 @@ C
           VALUEL = .FALSE.
           DO 10 I=1,5
             VALUEL = VALUEL.OR.ZL(JECOD+I-1)
- 10       CONTINUE         
+ 10       CONTINUE
+        ELSEIF (TYPERR.EQ.'TIN') THEN
+          VALUEL = ZL(JECOD+6-1)
+        ELSEIF (TYPERR.EQ.'TIP') THEN
+          VALUEL = ZL(JECOD+7-1)
+        ELSEIF (TYPERR.EQ.'ITX') THEN
+          VALUEL = ZL(JECOD+8-1)  
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF                            
@@ -110,6 +119,12 @@ C
           ZL(JECOD+4-1) = VALUEL
         ELSEIF (TYPERR.EQ.'CC2') THEN
           ZL(JECOD+5-1) = VALUEL
+        ELSEIF (TYPERR.EQ.'TIN') THEN
+          ZL(JECOD+6-1) = VALUEL
+        ELSEIF (TYPERR.EQ.'TIP') THEN
+          ZL(JECOD+7-1) = VALUEL
+        ELSEIF (TYPERR.EQ.'ITX') THEN
+          ZL(JECOD+8-1) = VALUEL
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -121,12 +136,16 @@ C
         ELSEIF (ZL(JECOD+3-1)) THEN
           CALL NMIMPR('IMPR','ERREUR','MATR_SING',0.D0,0)
         ELSEIF (ZL(JECOD+4-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','CONT_ERR' ,0.D0,1)
+          CALL NMIMPR('IMPR','ERREUR','CONT_ERR ',0.D0,1)
         ELSEIF (ZL(JECOD+5-1)) THEN
           CALL NMIMPR('IMPR','ERREUR','CONT_SING',0.D0,0)  
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF          
+        ENDIF
+      ELSEIF (QUESTI.EQ.'INI') THEN
+          DO 15 I=1,9
+            ZL(JECOD+I-1) = .FALSE.
+ 15       CONTINUE               
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

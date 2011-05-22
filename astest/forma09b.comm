@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/01/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
 # forma09b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -270,10 +270,10 @@ DEPLDIL=MECA_STATIQUE(MODELE=MO,
                        LIST_INST=INSTMECA,
                        );
 
-CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
+CALC_CHAMP( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
 
                        LIST_INST=INSTMECA,
-                       OPTION='EPSI_ELGA',);
+                        DEFORMATION=('EPSI_ELGA'),);
 
 IMPR_RESU(RESU=_F(RESULTAT=DEPLDIL,
                   VALE_MAX='OUI',

@@ -1,0 +1,248 @@
+#& MODIF COMMANDE  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE SELLENET N.SELLENET
+def calc_champ_prod(RESULTAT,**args):
+   if AsType(RESULTAT) != None : return AsType(RESULTAT)
+   raise AsException("type de concept resultat non prevu")
+
+CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
+                UIinfo={"groupes":("Post traitements",)},
+                fr="Completer ou creer un resultat en calculant des champs par elements ou aux noeuds",
+     MODELE           = SIMP(statut='f',typ=modele_sdaster),
+     CHAM_MATER       = SIMP(statut='f',typ=cham_mater),
+     CARA_ELEM        = SIMP(statut='f',typ=cara_elem),
+
+     RESULTAT         = SIMP(statut='o',typ=resultat_sdaster,position='global',
+                             fr="Resultat d'une commande globale"),
+
+     regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
+                    'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),),
+     TOUT_ORDRE       = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+     NUME_ORDRE       = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+     NUME_MODE        = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+     NOEUD_CMP        = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+     NOM_CAS          = SIMP(statut='f',typ='TXM' ),
+     INST             = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+     FREQ             = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+     LIST_INST        = SIMP(statut='f',typ=listr8_sdaster),
+     LIST_FREQ        = SIMP(statut='f',typ=listr8_sdaster),
+     CRITERE          = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
+     b_prec_rela = BLOC(condition="(CRITERE=='RELATIF')",
+          PRECISION   = SIMP(statut='f',typ='R',defaut= 1.E-6),),
+     b_prec_abso = BLOC(condition="(CRITERE=='ABSOLU')",
+          PRECISION   = SIMP(statut='o',typ='R'),),
+     LIST_ORDRE       = SIMP(statut='f',typ=listis_sdaster),
+
+     TOUT             = SIMP(statut='f',typ='TXM',into=("OUI",),
+                             fr="le calcul sera effectue sur toutes les mailles"),
+     GROUP_MA         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                             fr="le calcul ne sera effectue que sur ces groupes de mailles"),
+     MAILLE           = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
+                             fr="le calcul ne sera effectue que sur ces mailles"),
+     GROUP_NO         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                             fr="le calcul ne sera effectue que sur ces groupes de noeuds"),
+     NOEUD            = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
+                             fr="le calcul ne sera effectue que sur ces noeuds"),
+
+     EXCIT       = FACT(statut='f',max='**',
+                        fr="Charges contenant les temperatures, les efforts repartis pour les poutres...",
+                        regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
+         CHARGE       = SIMP(statut='o',typ=(char_meca,char_cine_meca) ),
+         FONC_MULT    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+         FONC_MULT_C  = SIMP(statut='f',typ=fonction_c),
+         COEF_MULT    = SIMP(statut='f',typ='R'),
+         COEF_MULT_C  = SIMP(statut='f',typ='C'),
+         PHAS_DEG     = SIMP(statut='f',typ='R'),
+         PUIS_PULS    = SIMP(statut='f',typ='I'),
+         TYPE_CHARGE  = SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
+
+     # Bloc lineaire
+     b_lineaire  = BLOC(condition = "AsType(RESULTAT) in (evol_elas,dyna_trans,dyna_harmo,mode_meca,\
+                                                          comb_fourier,mult_elas,fourier_elas,mode_flamb)",
+         CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de contraintes et efforts generalises",
+                             into=(
+                                    "SIEF_ELNO","SIEF_NOEU",
+                                    #"SIGM_ELNO","SIGM_NOEU",
+                                    "SIEF_ELGA",
+                                    "SIPO_ELNO","SIPO_NOEU",
+                                    #"EFGE_ELNO","EFGE_NOEU",
+                                    #"EFCA_ELNO",
+                                    #"EFCA_NOEU"
+                                    "SICA_ELNO","SICA_NOEU",
+                                    "SITU_ELNO",
+                                    #"SIRO_ELEM",
+                                    "SIPM_ELNO",
+                                  ),
+                            ),
+         DEFORMATION  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de deformations",
+                             into=(
+                                    "EPSI_ELNO","EPSI_ELGA","EPSG_ELGA","EPSG_ELNO",
+                                    "EPME_ELNO","EPME_ELGA","DEGE_ELNO","EPTU_ELNO",
+                                    "EPVC_ELNO","EPVC_ELGA","EPSI_NOEU",
+                                    "EPSG_NOEU","EPVC_NOEU",
+                                  ),
+                            ),
+         ENERGIE      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul d'energies",
+                             into=(
+                                    "EPOT_ELEM","ECIN_ELEM","ENEL_ELGA","ENEL_ELNO",
+                                    "ENEL_NOEU",
+                                    #"ETOT_ELGA",
+                                    #"ETOT_ELNO",
+                                    #"ETOT_ELEM",
+                                    "DISS_ELGA","DISS_ELNO","DISS_NOEU",
+                                  ),
+                             ),
+         CRITERES     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de criteres",
+                             into=(
+                                    #"SIEQ_ELNO","SIEQ_NOEU",
+                                    "SIEQ_ELGA","CRIT_ELNO",
+                                    "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
+                                    "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU","EPEQ_NOEU",
+                                    "SITQ_ELNO","EPTQ_ELNO",
+                                  ),
+                            ),
+         VARI_INTERNE = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de variables internes",
+                             into=( "VARC_ELGA", ),),
+                     ),
+
+     # Bloc non-lineaire
+     b_non_lin  = BLOC(condition = "AsType(RESULTAT) in (evol_noli,)",
+         CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de contraintes et efforts generalises",
+                             into=(
+                                    "SIEF_ELNO","SIEF_NOEU",
+                                    #"EFCA_ELNO","EFCA_NOEU"
+                                    "SITU_ELNO","SICO_ELNO","SICO_NOEU","SIPO_ELNO","SIPO_NOEU",
+                                  ),
+                            ),
+         
+         DEFORMATION  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de deformations",
+                             into=(
+                                    "EPSI_ELNO","EPSI_ELGA","EPSG_ELNO","EPSG_ELGA","EPSG_NOEU",
+                                    "EPME_ELNO","EPME_ELGA","EPMG_ELNO","EPMG_ELGA","EPMG_NOEU",
+                                    "EPSP_ELNO","EPSP_ELGA","DEGE_ELNO","EPVC_ELNO","EPVC_ELGA",
+                                    "EPFD_ELNO","EPFD_ELGA","EPFP_ELNO","EPFP_ELGA","EPTU_ELNO",
+                                    "EPSI_NOEU","EPSP_NOEU","EPVC_NOEU","EPFD_NOEU","EPFP_NOEU",
+                                  ),
+                            ),
+         
+         ENERGIE      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul d'energies",
+                             into=(
+                                    #"ETOT_ELGA",
+                                    #"ETOT_ELNO",
+                                    #"ETOT_ELEM",
+                                    "ENEL_ELGA","ENEL_ELNO","ENEL_NOEU",
+                                    "DISS_ELGA","DISS_ELNO",
+                                  ),
+                             ),
+         
+         CRITERES     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de criteres",
+                             into=(
+                                    #"SIEQ_ELNO","SIEQ_NOEU",
+                                    "SIEQ_ELGA",
+                                    "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
+                                    "CRIT_ELNO","EPMQ_NOEU","EPEQ_NOEU",
+                                    "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU",
+                                    "PMPB_ELNO","PMPB_ELGA","SITQ_ELNO","EPTQ_ELNO",
+                                    "PMPB_NOEU",
+                                  ),
+                            ),
+         
+         VARI_INTERNE = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de variables internes",
+                             into=(
+                                    "VARI_ELNO","VARI_NOEU","VATU_ELNO","VACO_ELNO",
+                                    "VAEX_ELGA","VAEX_NOEU","VAEX_ELNO",
+                                  ),
+                            ),
+         
+         b_nom_vari   = BLOC(condition = "VARI_INTERNE in ('VAEX_ELNO','VAEX_ELGA')",
+             NOM_VARI = SIMP(statut='o',typ='TXM',min= 1,max='**',
+                             fr="nom de la variable a extraire",
+               into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
+                     "SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV","X11","X22","X33","X12","X13","X23",
+                     "DIST_DEV","DEV_SUR_CRIT","DIST_ISO","NB_ITER","ARRET","NB_REDE","SIGNE",
+                     "RDEV_1","RDEV_2","RDEV_3","RISO","EPSIVPLA","IND_1","IND_2","IND_3","IND_4",
+                    ),
+                            ),
+                            ),
+         
+         HYDRAULIQUE  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour le calcul de flux hydraulique",
+                             into=(
+                                    "FLHN_ELGA",
+                                  ),
+                            ),
+                      ),
+
+     # Bloc Thermique
+     b_ther = BLOC(condition = "AsType(RESULTAT) in (evol_ther,fourier_ther,)" ,
+         THERMIQUE    = SIMP(statut='f',typ='TXM',validators=NoRepeat(), max='**',
+                             fr="Options pour le calcul de champs en thermique",
+                             into=(
+                                    "FLUX_ELGA","FLUX_ELNO","FLUX_NOEU",
+                                    "DURT_ELNO","SOUR_ELGA","ERTH_ELEM","ERTH_ELNO",
+                                    "DURT_NOEU",
+                                  ),
+                            ),
+                  ),
+
+     # Bloc acoustique
+     b_acou = BLOC(condition = "AsType(RESULTAT) in (acou_harmo,mode_acou,dyna_harmo)",
+         ACOUSTIQUE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(), max='**',
+                             fr="Options pour le calcul de champs en acoustique",
+                             into=(
+                                    "PRAC_ELNO","PRAC_NOEU",
+                                    "INTE_ELNO","INTE_NOEU",
+                                  ),
+                            ),
+                  ),
+
+
+    #INVARIANT    =FACT(statut='f', max='**',
+                       #fr="Options pour le calcul d'invariants",
+                           ##produira SIEQ_XXXX et EPEQ_XXXX a la place de 
+                           ##"EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
+                           ##"EQUI_ELNO_EPSI","EQUI_ELGA_EPSI",
+                           ##"EQUI_ELNO_EPME","EQUI_ELGA_EPME",
+                           ##"SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
+          #NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
+                                      ##contraintes
+                                #into=("SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
+                                      #"SIPO_ELNO_DEPL","EFGE_ELNO_DEPL","EFGE_ELNO_CART","SIGM_ELNO_CART",
+                                      #"SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","SIGM_ELNO_TUYO",
+                                      ##deformations
+                                      #"EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELGA_DEPL","EPSG_ELNO_DEPL",
+                                      #"EPME_ELNO_DEPL","EPME_ELGA_DEPL","DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",
+                                      #"EPVC_ELNO","EPVC_ELGA",),),
+                       #),
+
+
+     INFO             = SIMP(statut='f',typ='I',defaut= 1,into=(1,2)),
+
+     TITRE            = SIMP(statut='f',typ='TXM',max='**'),
+);

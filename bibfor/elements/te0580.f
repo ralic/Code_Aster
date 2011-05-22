@@ -1,7 +1,7 @@
       SUBROUTINE TE0580 ( OPTION, NOMTE )
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER    NBCOU,NBSP,JCONT,NUSP,IPG,ICMP,JGEOM
       INTEGER    NORDO,JTAB(7)
       INTEGER    JVARN,JVARI,NCMP,INO
-      REAL*8     VPG(24),VNO(24),PGL(3,3),T2EV(4), T2VE(4), T1VE(9)
+      REAL*8     VPG(24),VNO(24),PGL(3,3),T2EV(4), T2VE(4)
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
@@ -70,7 +70,7 @@ C                          --------------
         ELSE IF ( NNO .EQ. 4 ) THEN
           CALL DXQPGL ( ZR(JGEOM), PGL )
         END IF
-        CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
+        CALL DXREPE ( PGL, T2EV, T2VE)
         DO 10, IPG=1,NPG
           DO 12,ICMP=1,6
             VPG(6*(IPG-1)+ICMP)= ZR( JCONT-1+(IPG-1)*6*NBSP +
@@ -80,7 +80,7 @@ C                          --------------
 C       -- PASSAGE GAUSS -> NOEUDS :
         CALL PPGAN2 ( JGANO, 6, VPG ,  VNO )
 C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
-        CALL DXSIRO ( NNO, T2EV, VNO, ZR(JSIGM) )
+        CALL DXSIRO ( NNO, T2VE, VNO, ZR(JSIGM) )
 C
        ELSE IF (OPTION.EQ.'VACO_ELNO') THEN
 C                               --------------

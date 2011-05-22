@@ -1,8 +1,8 @@
-      SUBROUTINE DXSIRO ( NE , T2EV , CDLE , CDLC )
+      SUBROUTINE DXSIRO ( NE , T2VE , CDLE , CDLC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER  NE
-      REAL*8   T2EV(2,2)
+      REAL*8   T2VE(2,2)
       REAL*8   CDLE(*)
       REAL*8   CDLC(*)
 C     ------------------------------------------------------------------
@@ -27,14 +27,20 @@ C     PASSAGE DES CONTRAINTES OU DEFORMATIONS DU REPERE INTRINSEQUE DE
 C     L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C     ------------------------------------------------------------------
 C     IN  NE    I      NOMBRE DE POINTS A TRAITER
-C     IN  T2EV  R  2,2  MATRICE DE PASSAGE ELEMENT - VARIETE
+C     IN  T2VE  R  2,2  MATRICE DE PASSAGE VARIETE - ELEMENT
 C     IN  CDLE R    *   SIXX SIYY SIXY SIXZ SIYZ
 C     OUT CDLC R    *   SIXX SIYY SIXY SIXZ SIYZ
 C  OU IN  CDLE R    *   EPXX EPYY EPXY EPXZ EPYZ
 C     OUT CDLE R    *   EPXX EPYY EPXY EPXZ EPYZ
 C     ------------------------------------------------------------------
       REAL*8        SIMELE(4) , SIMELC(4)
-      REAL*8        XAB(2,2)
+      REAL*8        XAB(2,2) , T2EV(2,2)
+C
+C     TRANSPOSEE DE T2VE
+      T2EV(1,1) = T2VE(1,1)
+      T2EV(1,2) = T2VE(2,1)
+      T2EV(2,1) = T2VE(1,2)
+      T2EV(2,2) = T2VE(2,2)
 C
       DO 120 I = 1 , NE
          SIMELE(1) = CDLE(1+6*(I-1))

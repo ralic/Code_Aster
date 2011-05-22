@@ -2,7 +2,7 @@
      &                  RESU  ,CTCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +28,7 @@ C
       CHARACTER*19 CNCINE,RESU
       INTEGER      LMAT
       INTEGER      LDSCON
-      INTEGER      CTCCVG(2)
+      INTEGER      CTCCVG
 C      
 C ----------------------------------------------------------------------
 C
@@ -46,9 +46,10 @@ C IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
 C VAR RESU    : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
-C OUT CTCCVG : CODES RETOURS D'ERREUR DU COTNACT
-C                (1) NOMBRE MAXI D'ITERATIONS
-C                (2) MATRICE SINGULIERE
+C OUT CTCCVG : CODE RETOUR CONTACT DISCRET
+C                0 - OK
+C                1 - NOMBRE MAXI D'ITERATIONS
+C                2 - MATRICE SINGULIERE
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
 C
@@ -278,7 +279,7 @@ C
 C --- LA MATRICE DE CONTACT EST-ELLE SINGULIERE ?
 C
           IF (IER.GT.0) THEN
-            CTCCVG(2) = 1          
+            CTCCVG = 2          
             GO TO 999
           END IF
         END IF
@@ -452,7 +453,7 @@ C
 C --- A-T-ON DEPASSE LE NOMBRE D'ITERATIONS 
 C 
       IF (ITER.GT.ITEMAX+1) THEN
-        CTCCVG(1) = 1      
+        CTCCVG = 1      
         GO TO 999
       END IF
 
@@ -467,13 +468,11 @@ C ======================================================================
 C 
 C --- CALCUL DES FORCES (AT.MU) 
 C 
-
       CALL R8INIR(NEQ,0.D0,ZR(JATMU),1)
 C
-C --- VALEUR DES VARIABLES DE CONVERGENCE
+C --- CODE RETOUR
 C
-      CTCCVG(1) = 0
-      CTCCVG(2) = 0
+      CTCCVG = 0
 C
       COMPTS = 0
       DO 161 ILIAC = 1, NBLIAC

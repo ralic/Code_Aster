@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -233,8 +233,8 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
           END IF
         END IF
 
-        CHFREQ = '&&PEECIN.FREQ'
-        CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'FREQ_R',1,'FREQ',IBID,
+        CHFREQ = '&&PEECIN.OMEGA2'
+        CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'OME2_R',1,'OMEG2',IBID,
      &              XFREQ,C16B,K8B)
 
         CALL DISMOI('F','NOM_GD',DEPLA,'CHAMP',IBID,NOMGD,IE)

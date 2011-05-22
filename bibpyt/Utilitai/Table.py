@@ -1,21 +1,21 @@
-#@ MODIF Table Utilitai  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE COURTOIS M.COURTOIS
@@ -68,7 +68,7 @@ class TableBase(object):
       self.para=None
       self.type=None
       self.titr=None
-   
+
    def __repr__(self):
       return self.ReprTable()
    def Croise(self, **kargs):
@@ -104,7 +104,7 @@ class TableBase(object):
          kargs['dform'].update(dform)
       # ajout des options
       kargs.update(opts)
-      
+
       if not kargs.get('PAGINATION'):
          # call the associated driver
          para[FORMAT]['driver'](**kargs)
@@ -258,7 +258,7 @@ class TableBase(object):
       if args['LEGENDE']==None: del args['LEGENDE']
       Graph.AjoutParaCourbe(dicC, args)
       graph.AjoutCourbe(**dicC)
-      
+
       # Surcharge des propriétés du graphique et des axes
       # (bloc quasiment identique dans impr_fonction_ops)
       if args.get('TITRE'):            graph.Titre=args['TITRE']
@@ -274,7 +274,7 @@ class TableBase(object):
       if args.get('ECHELLE_Y'):        graph.Echelle_Y=args['ECHELLE_Y']
       if args.get('GRILLE_X'):         graph.Grille_X=args['GRILLE_X']
       if args.get('GRILLE_Y'):         graph.Grille_Y=args['GRILLE_Y']
-      
+
       try:
          graph.Trace(**args)
       except TypeError:
@@ -321,7 +321,7 @@ class Table(TableBase):
       else:
          self.type = [None]*len(self.para)
       self.titr = titr
-   
+
 # ------------------------------------------------------------------------------
    def copy(self):
       """Retourne une copie de la table.
@@ -352,10 +352,10 @@ class Table(TableBase):
       para=obj.keys()
       for p in para:
          if not p in self.para:
-            self.add_para(p, _typaster(obj[p]))
+            self.add_para(p, typaster(obj[p]))
          else:
             ip=self.para.index(p)
-            self.type[ip]=_typaster(obj[p], self.type[ip])
+            self.type[ip]=typaster(obj[p], self.type[ip])
       self.rows.append(obj)
 
 
@@ -388,16 +388,16 @@ class Table(TableBase):
          return
       if k_para in self.para :
          UTMESS('F','TABLE0_24', valk=k_para)
-      self.add_para(k_para, typ=_typaster(k_value[0]))
+      self.add_para(k_para, typ=typaster(k_value[0]))
       i = 0
       for row in self:
          if i < len(k_value):
             row[k_para]   = k_value[i]
-            self.type[-1] = _typaster(k_value[i], self.type[-1])
+            self.type[-1] = typaster(k_value[i], self.type[-1])
          else:
             row[k_para] = None
          i+=1
-      for j in range(i, len(k_value)): 
+      for j in range(i, len(k_value)):
          self.append({k_para : k_value[j]})
 
 # ------------------------------------------------------------------------------
@@ -713,7 +713,7 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def _extract(self, fun):
-      """Construit une table avec les lignes de self.Table 
+      """Construit une table avec les lignes de self.Table
          dont l'élément de nom self.para satisfait le critère fun,
          fun est une fonction qui retourne vrai ou faux
       """
@@ -758,14 +758,14 @@ class Colonne(TableBase):
       if is_str(VALE[0]):
          stripVALE = [value.strip() for value in VALE]
          return self._extract(lambda v: str(v).strip() in stripVALE)
-      else:           
+      else:
          if PRECISION==0. :
             return self._extract(lambda v : v in VALE)
          elif CRITERE=='ABSOLU':
             return self._extract(lambda v : _func_test_abs(v, VALE, PRECISION))
          else:
             return self._extract(lambda v : _func_test_rela(v, VALE, PRECISION))
-      
+
 # ------------------------------------------------------------------------------
    def REGEXP(self, regexp):
       """Retient les lignes dont le paramètre satisfait l'expression
@@ -782,7 +782,7 @@ class Colonne(TableBase):
       if is_str(VALE[0]):
          stripVALE = [value.strip() for value in VALE]
          return self._extract(lambda v: str(v).strip() not in stripVALE)
-      else:           
+      else:
          if PRECISION==0. :
             return self._extract(lambda v : v not in VALE)
          elif CRITERE=='ABSOLU':
@@ -975,7 +975,7 @@ def merge(tab1, tab2, labels=[], restrict=False):
          dlab2[tu2] = i2
       else:
          dlab2[tu2] = None
-   # creation de dic1 : dictionnaire de correspondance entre les 
+   # creation de dic1 : dictionnaire de correspondance entre les
    # lignes a merger dans les deux tableaux
    dic1 = {}
    for cle in dlab1.keys():
@@ -1008,7 +1008,7 @@ def merge(tab1, tab2, labels=[], restrict=False):
    return Table(rows1, n_para, n_type, tit)
 
 # ------------------------------------------------------------------------------
-def _typaster(obj, prev=None, strict=False):
+def typaster(obj, prev=None, strict=False):
    """Retourne le type Aster ('R', 'I', Kdef) correspondant à l'objet obj.
    Si prev est fourni, on vérifie que obj est du type prev.
    Si strict=False, on autorise que obj ne soit pas du type prev s'ils sont
@@ -1042,7 +1042,7 @@ def _typaster(obj, prev=None, strict=False):
    else:
       raise TypeError, 'Une table ne peut contenir que des entiers, réels ' \
                        'ou chaines de caractères.'
-                  
+
 # ------------------------------------------------------------------------------
 # fonctions utilitaires
 def _func_test_abs(v, VALE, PRECISION):
@@ -1056,7 +1056,7 @@ def _func_test_abs(v, VALE, PRECISION):
 def _func_test_rela(v, VALE, PRECISION):
    """Retourne True si v est parmi VALE à PRECISION près en relatif
    """
-   for x in VALE: 
+   for x in VALE:
       sign = float(x > 0.) or -1.
       if v != None and (sign*x*(1.-PRECISION) <= sign*v <= sign*x*(1.+PRECISION)):
          return True

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,8 +117,5 @@ cata_msg = {
                                   lors de l'itération : %(i2)d
 """),
 
-86 : _("""
-    Erreur dans la gestion des erreurs. Contactez les développeurs.
-"""),
 
 }

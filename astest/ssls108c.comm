@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE VRILLEE SHB8 MAILLAGE 24
 # ssls108c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -67,8 +67,8 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
                     EXCIT=_F(CHARGE=CHARGT,),
                     );
 
-RESU1=CALC_ELEM(reuse =RESU1,
-                OPTION='SIEF_ELNO',
+RESU1=CALC_CHAMP(reuse =RESU1,
+                 CONTRAINTE=('SIEF_ELNO'),
                 RESULTAT=RESU1,);
 
 CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA,
@@ -88,8 +88,8 @@ RESU2=MECA_STATIQUE(MODELE=MODMECA,
                     EXCIT=_F(CHARGE=CHARGT2,),
                     );
 
-RESU2=CALC_ELEM(reuse =RESU2,
-                OPTION='SIEF_ELNO',
+RESU2=CALC_CHAMP(reuse =RESU2,
+                 CONTRAINTE=('SIEF_ELNO'),
                 RESULTAT=RESU2,);
 
 

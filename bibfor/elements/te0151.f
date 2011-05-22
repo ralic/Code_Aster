@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -229,7 +229,7 @@ C
       ELSEIF( OPTION .EQ. 'ECIN_ELEM' ) THEN
          CALL JEVECH ('PENERCR', 'E', JENDE)
          CALL JEVECH ('PMASDIA', 'L', JMASD)
-         CALL JEVECH ('PFREQR' , 'L', JFREQ)
+         CALL JEVECH ('POMEGA2' , 'L', JFREQ)
          KANL = ZI(JMASD)
 C
 C        --- CALCUL DE LA MATRICE DE MASSE LOCALE

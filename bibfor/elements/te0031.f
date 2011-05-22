@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
 C
       REAL*8        PGL(3,3), XYZL(3,4), BSIGMA(24), EFFGT(32)
       REAL*8        VECLOC(24), ENER(3), MATP(24,24), MATV(300)
-      REAL*8        T2EV(4), T2VE(4), T1VE(9)
+      REAL*8        T2EV(4), T2VE(4)
       REAL*8        EPI,EPTOT,R8BID, VALR(2)
 C
 C     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
@@ -244,7 +244,7 @@ C     ------------------------------------------
           CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
         ELSE IF (OPTION.EQ.'ECIN_ELEM') THEN
           CALL JEVECH('PENERCR','E',JENER)
-          CALL JEVECH('PFREQR','L',JFREQ)
+          CALL JEVECH('POMEGA2','L',JFREQ)
           DO 20 I = 1,3
             ZR(JENER-1+I) = ZR(JFREQ)*ENER(I)
    20     CONTINUE
@@ -357,8 +357,8 @@ C     ------------------------------------------
           CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
           IND=6
           CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP), IND, EFFINT )
-          CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
-          CALL DXEFR2 ( NPG, T2EV, EFFINT, EFFGT )
+          CALL DXREPE ( PGL, T2EV, T2VE)
+          CALL DXEFR2 ( NPG, T2VE, EFFINT, EFFGT )
           CALL JEVECH ( 'PSIEFNOR', 'E', ICHN   )
           CALL PPGAN2 ( JGANO, 6, EFFGT, ZR(ICHN) )
 C

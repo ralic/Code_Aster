@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -170,7 +170,7 @@ C
      &                 0,' ',R8BID,1,'RHO',RHO,
      &                 CODRES , 1)
          CALL JEVECH ('PENERCR', 'E', JENDE)
-         CALL JEVECH ('PFREQR' , 'L', JFREQ)
+         CALL JEVECH ('POMEGA2' , 'L', JFREQ)
          XMAS = RHO * A * XL / 6.D0
          KLC(1,1) =  XMAS * 2.D0
          KLC(1,4) =  XMAS

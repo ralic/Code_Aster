@@ -2,13 +2,13 @@
      1                      NMAT,MATERF,TIMED,TIMEF,
      2                      NR, NVI, YD,     EPSD,   DEPS, DY,
      3                      COMP,NBCOMM, CPMONO, PGL,TOUTMS,
-     4                      VIND,SIGD)
+     4                      VIND,SIGD, EPSTR)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -52,7 +52,7 @@ C TOLE CRP_21
         REAL*8          MATERF(NMAT,2)
         REAL*8          TIMED, TIMEF
         REAL*8          PGL(3,3)
-        REAL*8          VIND(*),SIGD(6)
+        REAL*8          VIND(*),SIGD(6),EPSTR(6)
         REAL*8          TOUTMS(5,24,6)
         CHARACTER*(*)   FAMI
         CHARACTER*8     MOD
@@ -68,7 +68,7 @@ C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMIN(TYPESS,ESSAI,MOD,NMAT,MATERF,NR, NVI,YD,DEPS,DY,
      1                      COMP,NBCOMM, CPMONO, PGL,TOUTMS,
-     2                     TIMED,TIMEF,VIND,SIGD)
+     2                     TIMED,TIMEF,VIND,SIGD,EPSTR)
       ELSEIF     ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
          CALL IRRINI(FAMI,KPG,KSP,TYPESS,ESSAI,MOD,NMAT,MATERF,YD,
      &               DEPS,DY)

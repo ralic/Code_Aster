@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE LOI DE COMPORTEMENT BETON_REGLE_PR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,14 +91,14 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=INST,),
                    NEWTON=_F(REAC_ITER=1,),)
 
-RESU=CALC_ELEM(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
 
 
 
                RESULTAT=RESU,
                TOUT_ORDRE='OUI',
                TOUT='OUI',
-               OPTION='SIEF_ELNO',)
+                CONTRAINTE=('SIEF_ELNO'),)
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,

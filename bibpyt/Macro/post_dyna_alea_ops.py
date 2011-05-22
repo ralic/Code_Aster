@@ -1,8 +1,8 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_dyna_alea_ops Macro  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -221,8 +221,10 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       NUME_ORDRE_I=args['NUME_ORDRE_I']
       NOEUD_I=args['NOEUD_I']
       OPTION=args['OPTION']
-
       MOMENT=args['MOMENT']
+#      DUREE=args['DUREE']    
+
+      
 
       intespec=INTE_SPEC.EXTR_TABLE()
       # pour la clarté !
@@ -386,9 +388,13 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                trapz     = NP.zeros(n)
                trapz[0]  = 0.
                valy      = fvaly*(2*pi*fvalx)**i_mom
-               trapz[1:n] = (valy[1:n]+valy[:-1])/2*(fvalx[1:n]-fvalx[:-1])
+               trapz[1:n] = (valy[1:n]+valy[:-1])/2.*(fvalx[1:n]-fvalx[:-1])
                prim_y    = NP.cumsum(trapz)
                val_mom[i_mom] = prim_y[-1]
+                  # -- cas NUME_VITE_FLUI, seule la partie positive du spectre est utilisée
+                  # -- Il faut donc doubler lambda  pour calculer le bon écart type               
+               if NUME_VITE_FLUI or frez >= 0. :
+                 val_mom[i_mom]=val_mom[i_mom]*2.              
            for i_mom in l_moments :
              chmo='LAMBDA_'+str(i_mom).zfill(2)
              dlign[chmo] = val_mom[i_mom]
@@ -400,12 +406,20 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                  aster.affiche('MESSAGE', str(ind)+'\n')
                  UTMESS('F','MODELISA9_95')
               # -- fonctions statistiques              
-              if NUME_VITE_FLUI or frez >= 0. :
-                  # -- cas NUME_VITE_FLUI, seule la partie positive du spectre est utilisée
-                  # -- Il faut donc doubler lambda  pour calculer le bon écart type
-                  dlign['ECART'] = sqrt(val_mom[0]*2.)
-              else :
-                  dlign['ECART'] = sqrt(val_mom[0])
+
+              dlign['ECART'] = sqrt(val_mom[0])
+
+     
+#               if DUREE != None :
+#                  Ts=DUREE
+#                  vop=sqrt(val_mom[2] /val_mom[0])/(2.*pi)
+#                  Nu=Ts*vop/(-log(0.5))
+#                  deltau=sqrt(1.- val_mom[1] **2/(val_mom[2]*val_mom[0]) )
+#                  valNd=2.*Nu*(1-exp(-(deltau)**1.2*sqrt(pi*log(2.*Nu))));
+#                  val_peak=sqrt(2.*log(valNd))
+#                  dlign['F_PEAK'] = val_peak   # -- facteur de peak (oour max moyen)         
+#                  dlign['MAX_MOY'] = val_peak*sqrt(val_mom[0])    # -- max moyen  
+                             
               if abs(val_mom[2])>=1e-20 :
                     dlign['NB_EXTREMA_P_S'] = 1./pi*sqrt(val_mom[4]/val_mom[2])
               if abs(val_mom[0])>=1e-20 :

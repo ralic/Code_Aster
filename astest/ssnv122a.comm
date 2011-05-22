@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ROTATION ET PRESSION 3D GRANDES DEFORMATIONS (LOI LINEAIRE)
 # ssnv122a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,10 +215,10 @@ V=CALC_NO(
                   OPTION='REAC_NODA',
              )
 
-V=CALC_ELEM(
+V=CALC_CHAMP(
              reuse=V,
                 RESULTAT=V,
-                 OPTION='EPSG_ELNO'
+                  DEFORMATION=('EPSG_ELNO')
              )
 
 

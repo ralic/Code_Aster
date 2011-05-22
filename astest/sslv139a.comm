@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # sslv139a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,25 +128,6 @@ MODE=CALC_ELEM(reuse =MODE,
 
                OPTION=('SIEF_ELGA','ETOT_ELGA','ETOT_ELNO','ETOT_ELEM',),);
 
-DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                OPERATION='EXTR',
-                RESULTAT=MODE,
-                NOM_CHAM='DEPL',
-                NUME_ORDRE=1,);
-
-EVOLELAS=CREA_RESU(OPERATION='AFFE',
-                  TYPE_RESU='EVOL_ELAS',
-                  NOM_CHAM='DEPL',
-                  AFFE=_F(
-                  CHAM_GD=DEPL,
-                  MODELE=MODMECA,
-                  CHAM_MATER=CHMAT,
-                  INST=0.0,),);
-
-EVOLELAS=CALC_ELEM(reuse =EVOLELAS,
-                  RESULTAT=EVOLELAS,
-                  OPTION=('SIEF_ELGA','ETOT_ELGA','ETOT_ELNO','ETOT_ELEM',),);
-
 RES_NORM=NORM_MODE(MODE=RESULT,
                    NORME='TRAN',);
 
@@ -172,35 +153,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=MODE_1,
                      PARA='CHAR_CRIT',
                      VALE=849350.9396,
                      PRECISION=2.E-3,
-                     REFERENCE='ANALYTIQUE',))
-
-TEST_RESU(RESU=(_F(RESULTAT=EVOLELAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='ETOT_ELEM',
-                   NOM_CMP='TOTALE',
-                   POINT=1,
-                   MAILLE='M10',
-                   VALE= 1.1414821265010E-01,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.17',),
-                _F(RESULTAT=EVOLELAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='ETOT_ELGA',
-                   NOM_CMP='TOTALE',
-                   MAILLE='M10',
-                   POINT=1,
-                   VALE= 1.1612386752963E+09,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.17',),
-                _F(RESULTAT=EVOLELAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='ETOT_ELNO',
-                   NOM_CMP='TOTALE',
-                   MAILLE='M6',
-                   NOEUD='N15',
-                   VALE= 1.8163004696786E+09,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.17',),),);
+                     REFERENCE='ANALYTIQUE',));
 
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE,

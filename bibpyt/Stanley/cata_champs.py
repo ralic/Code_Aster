@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF cata_champs Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

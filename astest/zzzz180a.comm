@@ -1,8 +1,8 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -59,7 +59,11 @@ for f in NP.arange(0.,300.2,.2):
   t22[len(t22):]=[f,1.,0.]
   c12=NP.sqrt(RHO*c11)*NP.exp(1j*2*pi*f*T)
   t12[len(t12):]=[f,c12.real,c12.imag]
- 
+
+
+ecart1=sqrt(603.)
+ecart2=sqrt(600.)
+
 SPECT11=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=tuple(t11))
 
 SPECT22=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=tuple(t22))
@@ -77,7 +81,29 @@ INT1=DEFI_INTE_SPEC(    DIMENSION=2,PAR_FONCTION=(
                                     NUME_ORDRE_J = 2,
                                     FONCTION = SPECT22))
                           )
-
+                          
+POST1=POST_DYNA_ALEA(       INTE_SPEC=INT1,
+                                    OPTION='DIAG')
+# IMPR_TABLE(TABLE=POST1,
+#            UNITE=8,
+#            TITRE='DSP_RESU ',
+#            FORMAT='TABLEAU',);         
+           
+TEST_TABLE(TABLE=POST1,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
+                   NOM_PARA='ECART',
+                   VALE=ecart1 ,  
+                   CRITERE = 'RELATIF', PRECISION=1.E-05,); 
+                                  
+TEST_TABLE(TABLE=POST1,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 2),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 2)),                          
+                   NOM_PARA='ECART',
+                   VALE=ecart2 ,  
+                   CRITERE = 'RELATIF', PRECISION=1.E-05,);                                          
 ##############################
 # GENERATION DES FCT ALEATOIRES, CAS AVEC INTERPOLATION
 ##############################
@@ -115,19 +141,19 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##############################
 
-RMS1=INFO_FONCTION( RMS=_F(  FONCTION = FONCT1))
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+                 VALE=ecart1  , PRECISION=1.E-3)
 
-RMS2=INFO_FONCTION( RMS=_F(  FONCTION = FONCT2))
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+                 VALE=ecart2  , PRECISION=1.E-3)
 
 ##############################
 # CALCUL DE L INTERSPECTRE DES FCTS GENEREES
@@ -147,6 +173,30 @@ INTERS=CALC_INTE_SPEC(          INST_INIT=0.,
                
 POST=POST_DYNA_ALEA(       INTE_SPEC=INTERS,
                                     OPTION='DIAG')
+                                                                       
+# IMPR_TABLE(TABLE=POST,
+#            UNITE=8,
+#            TITRE='DSP_EST ',
+#            FORMAT='TABLEAU',);                                               
+
+TEST_TABLE(      TABLE=POST,
+       FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=1),),
+               NOM_PARA='ECART', 
+                 REFERENCE='ANALYTIQUE',
+                 VALE=ecart1,
+                  PRECISION=1.E-3)
+
+TEST_TABLE(      TABLE=POST,
+       FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=2),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
+               NOM_PARA='ECART', 
+                 REFERENCE='ANALYTIQUE',
+                 VALE=ecart2,
+                  PRECISION=1.E-3)
+
 
 TEST_TABLE(      TABLE=POST,
        FILTRE=(
@@ -154,7 +204,7 @@ TEST_TABLE(      TABLE=POST,
         _F(NOM_PARA='NUME_ORDRE_J',VALE_I=1),),
                NOM_PARA='LAMBDA_00', 
                  REFERENCE='ANALYTIQUE',
-                 VALE=301.5 ,
+                 VALE=ecart1**2,
                   PRECISION=1.E-2)
 
 TEST_TABLE(      TABLE=POST,
@@ -163,17 +213,17 @@ TEST_TABLE(      TABLE=POST,
         _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
                NOM_PARA='LAMBDA_00', 
                  REFERENCE='ANALYTIQUE',
-                 VALE=300. ,
-                  PRECISION=1.E-2)
+                 VALE=ecart2**2 ,
+                  PRECISION=1.E-3)
 
 TEST_TABLE(      TABLE=POST,
        FILTRE=(
         _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
         _F(NOM_PARA='NUME_ORDRE_J',VALE_I=1),),
                NOM_PARA='LAMBDA_01', 
-                 REFERENCE='ANALYTIQUE',
-                 VALE=148701.9689130,
-                  PRECISION=1.E-2)
+                 REFERENCE='NON_REGRESSION',
+                 VALE=2.982305601621E+05,
+                  PRECISION=1.E-3)
 
 TEST_TABLE(      TABLE=POST,
        FILTRE=(
@@ -181,7 +231,7 @@ TEST_TABLE(      TABLE=POST,
         _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
                NOM_PARA='LAMBDA_01', 
                  REFERENCE='ANALYTIQUE',
-                 VALE=300*300*pi,
+                 VALE=300.*300.*2.*pi,
                   PRECISION=1.E-2)
 
 ##############################
@@ -452,19 +502,19 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##############################
 
-RMS1=INFO_FONCTION( RMS=_F(  FONCTION = FONCT1))
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+                 VALE=ecart1  , PRECISION=1.E-2)
 
-RMS2=INFO_FONCTION( RMS=_F(  FONCTION = FONCT2))
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+                 VALE=ecart2  , PRECISION=1.E-2)
 
 #
 #################################################################
@@ -499,21 +549,20 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 ##############################
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##############################
-
-RMS1=INFO_FONCTION( RMS=_F(  FONCTION = FONCT1))
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(180*2)  , PRECISION=1.E-2)
+                 VALE=sqrt(180.*2.)  , PRECISION=1.E-2)
 
-RMS2=INFO_FONCTION( RMS=_F(  FONCTION = FONCT2))
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(90*2)  , PRECISION=1.E-2)
-
+                 VALE=sqrt(90.*2.)  , PRECISION=1.E-2)
+                 
 #
 #################################################################
 # 4.  CAS GENERATION AVEC INTERPOLATION
@@ -547,20 +596,19 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##############################
 
-RMS1=INFO_FONCTION( RMS=_F(  FONCTION = FONCT1))
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+                 VALE=ecart1  , PRECISION=1.E-3)
 
-RMS2=INFO_FONCTION( RMS=_F(  FONCTION = FONCT2))
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
-
+                 VALE=ecart2  , PRECISION=1.E-3)
 #
 #################################################################
 # 5.  CAS GENERATION AVEC INTERPOLATION SANS RIEN D'IMPOSE
@@ -589,20 +637,19 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##############################
 
-RMS1=INFO_FONCTION( RMS=_F(  FONCTION = FONCT1))
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+                 VALE=ecart1  , PRECISION=1.E-2)
 
-RMS2=INFO_FONCTION( RMS=_F(  FONCTION = FONCT2))
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
-
+                 VALE=ecart2  , PRECISION=1.E-2)
 #
 ##################################################################
 # 6.  CAS GENERATION SANS INTERPOLATION
@@ -632,19 +679,19 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##############################
 
-RMS1=INFO_FONCTION( RMS=_F(  FONCTION = FONCT1))
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+                 VALE=ecart1  , PRECISION=1.E-2)
 
-RMS2=INFO_FONCTION( RMS=_F(  FONCTION = FONCT2))
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+                 VALE=ecart2  , PRECISION=1.E-2)
 
 #
 ##################################################################
@@ -677,19 +724,20 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##############################
 
-RMS1=INFO_FONCTION( RMS=_F(  FONCTION = FONCT1))
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+                 VALE=ecart1  , PRECISION=1.E-3)
 
-RMS2=INFO_FONCTION( RMS=_F(  FONCTION = FONCT2))
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
+                 NOM_PARA='ECART_TYPE',
                  REFERENCE='ANALYTIQUE',
-                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+                 VALE=ecart2  , PRECISION=1.E-3)
+
 
 #
 #################################################################

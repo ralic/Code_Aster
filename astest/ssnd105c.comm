@@ -1,0 +1,540 @@
+# MODIF  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
+# TITRE TRACTION AVEC MEMOIRE MAXI D'ECROUISSAGE AXIS
+# ssnd105c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSND105C',
+              NIV_PUB_WEB='INTERNET',),
+              # IGNORE_ALARM=('ELEMENTS4_74',),
+              );
+
+CUBE=LIRE_MAILLAGE();
+
+MOD2D=AFFE_MODELE(MAILLAGE=CUBE,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS',),);
+R_0 = 35.0;
+
+Q_0 = 140.0;
+
+Q_M = 460.0;
+
+MU = 19.0;
+
+b = 12.0;
+
+ETA = 0.5;
+
+E = 145000.0;
+
+COMPOR1 = 'VISC_CIN2_MEMO';
+
+COMPOR2 = 'VISC_CIN2_CHAB';
+
+COMPOR3 = 'VISCOCHAB';
+
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=200000.,
+                             NU=0.3,
+                             ALPHA=0.,),
+                     CIN2_CHAB=_F(R_0=R_0,
+                                  R_I=(R_0 + Q_0),
+                                  B=b,
+                                  C1_I=1950.,
+                                  C2_I=65000.,
+                                  G1_0=50.,
+                                  G2_0=1300.,),
+                     MEMO_ECRO=_F( 
+                                  MU =MU,
+                                  Q_M=Q_M,
+                                  Q_0=Q_0,
+                                  ETA=ETA,
+                                 ),
+                     VISCOCHAB=_F(K_0=70.,
+                                  K=R_0,
+                                  N=24.,
+                                  B=b,
+                                  MU=MU,
+                                  Q_M=Q_M,
+                                  Q_0=Q_0,
+                                  ETA=ETA,
+                                  C1=1950.,
+                                  G1_0=50.,
+                                  C2=65000.,
+                                  G2_0=1300.,
+                                  ),
+                     LEMAITRE=_F(N=24.,
+                                 UN_SUR_K=0.0142857142857,),);
+
+MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
+                   AFFE=_F(MAILLE='MA1',
+                           MATER=ACIER2,),);
+
+COND_LIM=AFFE_CHAR_CINE(MODELE=MOD2D,
+                        MECA_IMPO=(_F(GROUP_NO='Y0',
+                                     DY=0.,),
+                                  _F(GROUP_NO='X0',
+                                     DX=0.,),),);
+T1 = 10.0;
+
+T2 = 11.0;
+
+SIGMAX = 220.0;
+
+
+TRAC=AFFE_CHAR_MECA(MODELE=MOD2D,
+                    PRES_REP=_F(GROUP_MA='Y1',
+                                PRES=SIGMAX,),);
+
+
+COEF_TR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                            T1,1.0,
+                            T2,0.,
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(_F(JUSQU_A=T1,
+                                    NOMBRE=60,),
+                                 _F(JUSQU_A=T2,
+                                    NOMBRE=10,),),);
+
+# cycles en deformation imposee                                 
+TINI = T2;
+
+DT = 5.0;
+
+EPSMAX = 0.005;
+
+EPSMIN = -0.005;
+
+NBCYCLE = 10;
+
+NPAS=250
+
+TFIN = ((TINI + (DT / 2.0)) + ((2.0 * DT) * NBCYCLE));
+
+epsmoy = 0.0;
+
+def epsimp(INST):
+    vit=(EPSMAX-EPSMIN)/DT
+    t1=INST-TINI
+    if t1 <= DT/2. :
+        epsi=vit*t1+epsmoy
+    else :
+        t2=t1-DT/2.        
+        t3=t2 - 2*DT*int(t2/2/DT) 
+        if t3 <= DT :
+            epsi = EPSMAX - vit*t3
+        else :
+            epsi = EPSMIN + vit*(t3-DT)    
+    return epsi
+
+epsi = FORMULE(NOM_PARA='INST',VALE='epsimp(INST)');
+
+lisn=DEFI_LIST_REEL(DEBUT=TINI,
+                    INTERVALLE=_F(JUSQU_A=TFIN,
+                                  PAS=0.01,),);
+
+EPSIMP=CALC_FONC_INTERP(FONCTION=epsi,
+                        LIST_PARA=lisn,
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',);
+
+CHARG2=AFFE_CHAR_MECA_F(MODELE=MOD2D,
+                        DDL_IMPO=_F(GROUP_MA='Y1',
+                                    DY=EPSIMP,),);
+
+LINST2=DEFI_LIST_REEL(DEBUT=TINI,
+                      INTERVALLE=_F(JUSQU_A=TFIN,
+                                    NOMBRE=NPAS,
+                                    ),);
+################
+# avec memoire
+################
+
+
+VISCMEMO=STAT_NON_LINE(MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=TRAC,
+                                 FONC_MULT=COEF_TR,),),
+                       COMP_INCR=_F(RELATION=COMPOR1,
+                                    ITER_INTE_MAXI=50,),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       NEWTON=_F(PREDICTION='ELASTIQUE',
+                                 REAC_ITER=1,),
+                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V16',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),   
+                              _F(NOM_CMP    ='SIXX',
+                                 NOM_CHAM   ='SIEF_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),   
+                                 ), 
+                       );
+
+VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
+                       MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHARG2,
+                                 TYPE_CHARGE='DIDI',),),
+                       COMP_INCR=_F(RELATION=COMPOR1,
+                                    ITER_INTE_MAXI=150,),
+                       ETAT_INIT=_F(EVOL_NOLI=VISCMEMO,),
+                       INCREMENT=_F(LIST_INST=LINST2,
+                                    INST_FIN=TFIN,),
+                       NEWTON=_F(REAC_ITER=1,),
+                       
+                       
+                       SUIVI_DDL=(_F(  NOM_CMP='V1',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    _F(NOM_CMP='V2',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    _F(NOM_CMP='V16',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    _F(NOM_CMP='V17',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    ),
+                                       
+                                       
+                      );
+
+#   V1 = p
+#   V23 = epspxx
+#   V16 = q
+#   V17 = ksixx
+
+################
+# VISCOCHAB
+################
+
+
+VISCOCH=STAT_NON_LINE(MODELE=MOD2D,
+                      CHAM_MATER=MAT2,
+                      EXCIT=(_F(CHARGE=COND_LIM,),
+                             _F(CHARGE=TRAC,
+                                FONC_MULT=COEF_TR,),),
+                      COMP_INCR=_F(RELATION=COMPOR3,
+                                   ITER_INTE_MAXI=250,),
+                      INCREMENT=_F(LIST_INST=LINST,),
+                      NEWTON=_F(PREDICTION='ELASTIQUE',
+                                REAC_ITER=1,),
+                      RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                      
+                      SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT='OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT='OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),
+                      
+                      );
+
+VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
+                      MODELE=MOD2D,
+                      CHAM_MATER=MAT2,
+                      EXCIT=(_F(CHARGE=COND_LIM,),
+                             _F(CHARGE=CHARG2,
+                                TYPE_CHARGE='DIDI',),),
+                      COMP_INCR=_F(RELATION=COMPOR3,
+                                   ITER_INTE_MAXI=250,),
+                      ETAT_INIT=_F(EVOL_NOLI=VISCOCH,),
+                      INCREMENT=_F(LIST_INST=LINST2,
+                                   INST_FIN=TFIN,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      
+                      SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),
+                      
+                      );
+
+#################################
+# TEST_RESU
+#################################
+
+VISCMEMO=CALC_ELEM(reuse =VISCMEMO,
+                   RESULTAT=VISCMEMO,
+                   OPTION='EPSI_ELGA',);
+
+VISCOCH=CALC_ELEM(reuse =VISCOCH,
+                  RESULTAT=VISCOCH,
+                  OPTION='EPSI_ELGA',);
+
+FEPXX=RECU_FONCTION(RESULTAT=VISCMEMO,
+                    NOM_CHAM='EPSI_ELGA',
+                    NOM_CMP='EPYY',
+                    MAILLE='MA1',INTERPOL='LIN',
+                    POINT=1,);
+
+FSIXX=RECU_FONCTION(RESULTAT=VISCMEMO,
+                    NOM_CHAM='SIEF_ELGA',
+                    NOM_CMP='SIYY',
+                    MAILLE='MA1',INTERPOL='LIN',
+                    POINT=1,);
+
+FEPXX2=RECU_FONCTION(RESULTAT=VISCOCH,
+                     NOM_CHAM='EPSI_ELGA',
+                     NOM_CMP='EPYY',
+                     MAILLE='MA1',INTERPOL='LIN',
+                     POINT=1,);
+
+FSIXX2=RECU_FONCTION(RESULTAT=VISCOCH,
+                     NOM_CHAM='SIEF_ELGA',
+                     NOM_CMP='SIYY',
+                     MAILLE='MA1',INTERPOL='LIN',
+                     POINT=1,);
+
+TEST_RESU(RESU=( 
+           _F(RESULTAT = VISCMEMO,
+              INST = T1,
+             NOM_CHAM = 'SIEF_ELGA',  
+             REFERENCE = 'ANALYTIQUE',
+             MAILLE = 'MA1',  
+             POINT = 1,  
+             NOM_CMP = 'SIYY',  
+             VALE = -220.,  ),
+
+           _F(  RESULTAT = VISCMEMO, 
+             INST = T2,
+             NOM_CHAM = 'SIEF_ELGA',  
+             REFERENCE = 'ANALYTIQUE',  
+             CRITERE='ABSOLU', 
+             MAILLE = 'MA1',  
+             POINT = 1,  
+             NOM_CMP = 'SIYY',  
+             VALE = 0.,  ),
+
+                ) )
+
+DIFEPS=CALC_FONCTION(COMB=(_F(FONCTION=FEPXX,
+                             COEF=1,),
+                          _F(FONCTION=FEPXX2,
+                             COEF=-1.),
+                             ),);
+
+TEST_FONCTION(TEST_NOOK='NON',
+              VALEUR=(_F(FONCTION=DIFEPS,
+                         NOM_PARA='INST',
+                         VALE_PARA=T1,
+                         VALE_REFE=0.,
+                         CRITERE='ABSOLU',
+                         REFERENCE='AUTRE_ASTER',),
+                      _F(FONCTION=DIFEPS,
+                         NOM_PARA='INST',
+                         VALE_PARA=T2,
+                         VALE_REFE=0.,
+                         CRITERE='ABSOLU',
+                         REFERENCE='AUTRE_ASTER',),
+                      _F(FONCTION=DIFEPS,
+                         NOM_PARA='INST',
+                         VALE_PARA=TFIN,
+                         VALE_REFE=0.,
+                         CRITERE='ABSOLU',
+                         REFERENCE='AUTRE_ASTER',),
+                         ),);
+
+DIFSIG=CALC_FONCTION(COMB=(_F(FONCTION=FSIXX,
+                             COEF=1,),
+                          _F(FONCTION=FSIXX2,
+                             COEF=-1.),
+                             ),);
+
+# pour le dernier TEST, SIXX vaut :
+# 3.75459E+02 pour VISCOCHAB et 3.72353E+02 pour VISC_CIN2_MEMO
+# c'est pourquoi la difference vat 3.1,
+# ce qui represente en relatif 0.8% de difference
+
+TEST_FONCTION(TEST_NOOK='NON',
+              VALEUR=(_F(FONCTION=DIFSIG,
+                         NOM_PARA='INST',
+                         VALE_PARA=T1,
+                         VALE_REFE=0.,
+                         PRECISION=1.E-3,
+                         CRITERE='ABSOLU',
+                         REFERENCE='AUTRE_ASTER',),
+                      _F(FONCTION=DIFSIG,
+                         NOM_PARA='INST',
+                         VALE_PARA=T2,
+                         VALE_REFE=0.,
+                         PRECISION=1.E-3,
+                         CRITERE='ABSOLU',
+                         REFERENCE='AUTRE_ASTER',),
+                      _F(FONCTION=DIFSIG,
+                         NOM_PARA='INST',
+                         VALE_PARA=TFIN,
+                         VALE_REFE=0.,
+                         PRECISION=4.,
+                         CRITERE='ABSOLU',
+                         REFERENCE='AUTRE_ASTER',),
+                         ),);
+
+
+
+################
+# sans memoire
+################
+
+
+VMISCIN2=STAT_NON_LINE(MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=TRAC,
+                                 FONC_MULT=COEF_TR,),),
+                       COMP_INCR=_F(RELATION=COMPOR2,
+                                    ITER_INTE_MAXI=50,
+                                    ),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       NEWTON=_F(PREDICTION='ELASTIQUE',
+                                 REAC_ITER=1,),
+                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),);
+
+VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
+                       MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHARG2,
+                                 TYPE_CHARGE='DIDI',),),
+                       COMP_INCR=_F(RELATION=COMPOR2,
+                                    ITER_INTE_MAXI=50,),
+                       ETAT_INIT=_F(EVOL_NOLI=VMISCIN2,),
+                      INCREMENT=_F(LIST_INST=LINST2,
+                                   INST_FIN=TFIN,),
+                       NEWTON=_F(REAC_ITER=1,),
+                       SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),
+                                       
+                                       
+                                       );
+
+
+#################################
+# courbes
+#################################
+
+VMISCIN2=CALC_ELEM(reuse =VMISCIN2,
+                   RESULTAT=VMISCIN2,
+                   OPTION='EPSI_ELGA',);
+
+
+FEPXX3=RECU_FONCTION(RESULTAT=VMISCIN2,
+                     NOM_CHAM='EPSI_ELGA',
+                     NOM_CMP='EPYY',INTERPOL='LIN',
+                     MAILLE='MA1',
+                     POINT=1,);
+
+FSIXX3=RECU_FONCTION(RESULTAT=VMISCIN2,
+                     NOM_CHAM='SIEF_ELGA',
+                     NOM_CMP='SIYY',INTERPOL='LIN',
+                     MAILLE='MA1',
+                     POINT=1,);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(_F(FONC_X=FEPXX,
+                         FONC_Y=FSIXX,
+                         LEGENDE='VMIS_CIN2_MEMO',),
+                      _F(FONC_X=FEPXX2,
+                         FONC_Y=FSIXX2,
+                         LEGENDE='VISCOCHAB',),
+                      _F(FONC_X=FEPXX3,
+                         FONC_Y=FSIXX3,
+                         LEGENDE='VMIS_CIN2_CHAB',),),
+              TITRE='Essai cyclique DEPS=+/-0.5%',
+              LEGENDE_X='D\xe9formation',
+              LEGENDE_Y='Contrainte (MPa)',);
+
+IMPR_RESU(RESU=_F(RESULTAT=VISCMEMO,INST=TFIN))
+IMPR_RESU(RESU=_F(RESULTAT=VISCOCH, INST=TFIN))
+IMPR_RESU(RESU=_F(RESULTAT=VMISCIN2,INST=TFIN))
+
+IMPR_RESU(RESU=_F(RESULTAT=VISCMEMO,INST=TFIN,GROUP_NO='Y1',IMPR_COOR='OUI'))
+
+
+
+FIN();

@@ -4,7 +4,7 @@
      &                  VALINC,SOLALG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,7 +89,8 @@ C
       REAL*8       DIINST,INSTAP
       INTEGER      JDEPP ,JDEPDE
       INTEGER      INDRO ,ISNNEM 
-      CHARACTER*2  CODRET          
+      CHARACTER*2  CODRET
+      LOGICAL      SCOTCH     
 C      
 C ----------------------------------------------------------------------
 C
@@ -98,7 +99,8 @@ C
 C --- INITIALISATIONS
 C   
       INSTAP = DIINST(SDDISC,NUMINS) 
-      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)   
+      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
+      SCOTCH = .FALSE.  
 C
 C --- FONCTIONNALITES ACTIVEES
 C
@@ -137,7 +139,7 @@ C
         LALLV  = CFDISL(DEFICO,'ALL_VERIF')
         IF (.NOT.LALLV) THEN
           CALL CFINIT(MAILLA,FONACT,DEFICO,RESOCO,NUMINS,
-     &                SDDYNA,SDDISC,VALINC)
+     &                SDDYNA,SDDISC,VALINC,SCOTCH)
         ENDIF
       ENDIF
 C
@@ -175,7 +177,7 @@ C --- INITIALISATIONS EN DYNAMIQUE
 C
       IF (LDYNA) THEN
         CALL NDNPAS(FONACT,NUMEDD,NUMINS,SDDISC,SDSENS,
-     &              SDDYNA,RESOCO,VALINC,SOLALG) 
+     &              SDDYNA,SCOTCH,VALINC,SOLALG) 
       ENDIF
 C
       CALL JEDEMA()      

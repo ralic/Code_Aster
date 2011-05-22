@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,7 +214,6 @@ class ISOVALEURS( VISU ):
 
         if nom_champ == 'DEPL' and selection.nom_cmp[0] == 'TOUT_CMP': 
             result = DeformedShape
-#            result = DeformedShapeOnField
         elif nom_type == 'ELGA':
             result = GaussPoints
 #             # Champ sur la deformee  # pas encore gere

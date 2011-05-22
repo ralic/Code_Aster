@@ -1,8 +1,8 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -212,10 +212,10 @@ IMPR_RESU(FORMAT='MED',
                   PARTIE='IMAG',NOM_CMP='PRES',NOM_CHAM_MED='PRESHARM_DEPL_PRES_IMAG'),),);
 
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,
+PRESHARM=CALC_CHAMP( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
-                               OPTION='INTE_ELNO'
+                                ACOUSTIQUE=('INTE_ELNO')
            )
 
 TEST_RESU(RESU=(
@@ -240,10 +240,10 @@ TEST_RESU(RESU=(
             NOEUD = 'NO763', NOM_CMP = 'INTX_I',  VALE = 0.0, PRECISION = 3.5E-4, CRITERE = 'ABSOLU'))
            )
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,
+PRESHARM=CALC_CHAMP( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
-                               OPTION='PRAC_ELNO'
+                                ACOUSTIQUE=('PRAC_ELNO')
            )
 
 TEST_RESU(RESU=(

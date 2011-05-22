@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DSQ - B/A = 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,6 +68,13 @@ DEFI_GROUP(reuse =MA,
                                 NOM='PLAQ1',),
                              _F(GROUP_MA='PLAQ2',
                                 NOM='PLAQ2',),),);
+
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 ORIE_NORM_COQUE=_F(GROUP_MA=('PLAQ1','PLAQ2',),
+                                    GROUP_NO='A1',
+                                    VECT_NORM=(0,0,+1),),);
+
 # 2 PLAQUES EXCENTREES
 #
 #
@@ -166,9 +173,9 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='A3',
                                     FZ=-1000.0,),
                     FORCE_COQUE=_F(MAILLE=('M1','M2','M3'),
-                                   FX=200.0,
-                                   FY=-500.0,
-                                   FZ=-500.0,
+                                   F1=200.0,
+                                   F2=-500.0,
+                                   F3=-500.0,
                                    PLAN='SUP',),);
 
 CHME1=AFFE_CHAR_MECA(MODELE=MO1,
@@ -185,11 +192,11 @@ CHME1=AFFE_CHAR_MECA(MODELE=MO1,
                      FORCE_NODALE=_F(GROUP_NO='A3',
                                      FZ=-1000.0,),
                      FORCE_COQUE=_F(MAILLE=('M1','M2','M3'),
-                                    FX=200.0,
-                                    FY=-500.0,
-                                    FZ=-500.0,
-                                    MX=100.0,
-                                    MY=40.0,
+                                    F1=200.0,
+                                    F2=-500.0,
+                                    F3=-500.0,
+                                    MF1=100.0,
+                                    MF2=40.0,
                                     PLAN='MAIL',),);
 # ______________________________________________________________________
 #

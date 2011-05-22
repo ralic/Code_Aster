@@ -1,23 +1,23 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE  :  MODELISATION D UNE COQUE DOUBLEMENT SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# CALCUL QUASI-STATIQUE D'UNE COQUE SOUMIS A DIFFERENTS TYPES DE CHARGES 
+# CALCUL QUASI-STATIQUE D'UNE COQUE SOUMIS A DIFFERENTS TYPES DE CHARGES
 # FORCE LINEIQUE SELON X
 # FORCE LINEIQUE SELON Y
 # FORCE LINEIQUE SELON Z
@@ -91,9 +91,9 @@ SNL1=STAT_NON_LINE(MODELE=MODELE,
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
 
-SNL1=CALC_ELEM(reuse =SNL1,
+SNL1=CALC_CHAMP(reuse =SNL1,
              RESULTAT=SNL1,
-             OPTION='SIEF_ELNO',
+              CONTRAINTE=('SIEF_ELNO'),
              );
 
 SNL1=CALC_NO(reuse =SNL1,
@@ -108,9 +108,9 @@ SNL2=STAT_NON_LINE(MODELE=MODELE,
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
 
-SNL2=CALC_ELEM(reuse =SNL2,
+SNL2=CALC_CHAMP(reuse =SNL2,
              RESULTAT=SNL2,
-             OPTION='SIEF_ELNO',
+              CONTRAINTE=('SIEF_ELNO'),
              );
 
 SNL2=CALC_NO(reuse =SNL2,
@@ -127,15 +127,15 @@ SNL3=STAT_NON_LINE(MODELE=MODELE,
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
 
-SNL3=CALC_ELEM(reuse =SNL3,
+SNL3=CALC_CHAMP(reuse =SNL3,
              RESULTAT=SNL3,
-             OPTION='SIEF_ELNO',
+              CONTRAINTE=('SIEF_ELNO'),
              );
 
 SNL3=CALC_NO(reuse =SNL3,
              RESULTAT=SNL3,
              OPTION=('FORC_NODA','SIEF_NOEU'),
-             );   
+             );
 
 PSNL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSNL1_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -216,7 +216,7 @@ PSNL3=CALC_TABLE(reuse =PSNL3,
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-                                                  
+
 # TEST SUR LE RESULTAT STAT_NON_LINE 1
 
 # DEPLACEMENT
@@ -247,16 +247,16 @@ TEST_RESU(RESU=_F(RESULTAT=SNL1,
 
 TEST_TABLE(       TABLE=PSNL1,
                 NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL1_GAUCHE',      ),
                     VALE=-2.00000E+03,
                     PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSNL1,
                 NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL1_DROITE',      ),
                     VALE=2.00000E+03,
                     PRECISION=1.E-08,
@@ -264,16 +264,16 @@ TEST_TABLE(       TABLE=PSNL1,
            )
 TEST_TABLE(       TABLE=PSNL1,
                 NOM_PARA='MOMENT_Y',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL1_GAUCHE',      ),
                     VALE=-2.00000E+04,
                     PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSNL1,
                 NOM_PARA='MOMENT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL1_GAUCHE',      ),
                     VALE=2.00000E+05,
                     PRECISION=1.E-08,
@@ -352,34 +352,34 @@ TEST_RESU(RESU=_F(RESULTAT=SNL2,
 
 TEST_TABLE(       TABLE=PSNL2,
                 NOM_PARA='RESULT_Y',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL2_GAUCHE',      ),
                     VALE=-2.00000E+03,
                REFERENCE='ANALYTIQUE',
                PRECISION=1.E-08,
            )
-           
+
 TEST_TABLE(       TABLE=PSNL2,
                 NOM_PARA='RESULT_Y',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL2_DROITE',      ),
                     VALE=2.00000E+03,
                REFERENCE='ANALYTIQUE',
                PRECISION=1.E-08,
            )
-           
+
 TEST_TABLE(       TABLE=PSNL2,
                 NOM_PARA='MOMENT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL2_GAUCHE',      ),
                     VALE=2.00000E+04,
                REFERENCE='ANALYTIQUE',
                PRECISION=1.E-08,
            )
-           
+
 TEST_TABLE(       TABLE=PSNL2,
                 NOM_PARA='MOMENT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL2_GAUCHE',      ),
                     VALE=-1.50000E+06,
                REFERENCE='ANALYTIQUE',
@@ -459,34 +459,34 @@ TEST_RESU(RESU=_F(RESULTAT=SNL3,
 
 TEST_TABLE(       TABLE=PSNL3,
                 NOM_PARA='RESULT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL3_GAUCHE',      ),
                     VALE=2.00000E+03,
                   PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSNL3,
                 NOM_PARA='RESULT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL3_DROITE',      ),
                     VALE=-2.00000E+03,
                   PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSNL3,
                 NOM_PARA='MOMENT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL3_GAUCHE',      ),
                     VALE=2.00000E+05,
                   PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSNL3,
                 NOM_PARA='MOMENT_Y',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL3_GAUCHE',      ),
                     VALE=-1.50000E+06,
                   PRECISION=1.E-08,
@@ -544,9 +544,9 @@ RESU1=MECA_STATIQUE(MODELE=MODELE,
                            _F(CHARGE=FORCEX,),),);
 
 
-RESU1=CALC_ELEM(reuse =RESU1,
+RESU1=CALC_CHAMP(reuse =RESU1,
               RESULTAT=RESU1,
-              OPTION='SIEF_ELNO',);
+               CONTRAINTE=('SIEF_ELNO'),);
 
 
 RESU1=CALC_NO(reuse =RESU1,
@@ -560,9 +560,9 @@ RESU2=MECA_STATIQUE(MODELE=MODELE,
                            _F(CHARGE=FORCEY,),),);
 
 
-RESU2=CALC_ELEM(reuse =RESU2,
+RESU2=CALC_CHAMP(reuse =RESU2,
               RESULTAT=RESU2,
-              OPTION='SIEF_ELNO',);
+               CONTRAINTE=('SIEF_ELNO'),);
 
 RESU2=CALC_NO(reuse =RESU2,
               RESULTAT=RESU2,
@@ -576,9 +576,9 @@ RESU3=MECA_STATIQUE(MODELE=MODELE,
                            _F(CHARGE=FORCEZ,),),);
 
 
-RESU3=CALC_ELEM(reuse =RESU3,
+RESU3=CALC_CHAMP(reuse =RESU3,
               RESULTAT=RESU3,
-              OPTION='SIEF_ELNO',);
+               CONTRAINTE=('SIEF_ELNO'),);
 
 RESU3=CALC_NO(reuse =RESU3,
               RESULTAT=RESU3,
@@ -669,16 +669,16 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
 
 TEST_TABLE(       TABLE=PSL1,
                 NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL1_GAUCHE',      ),
                     VALE=-2.00000E+03,
                     PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSL1,
                 NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL1_DROITE',      ),
                     VALE=2.00000E+03,
                     PRECISION=1.E-08,
@@ -686,16 +686,16 @@ TEST_TABLE(       TABLE=PSL1,
            )
 TEST_TABLE(       TABLE=PSL1,
                 NOM_PARA='MOMENT_Y',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL1_GAUCHE',      ),
                     VALE=-2.00000E+04,
                     PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSL1,
                 NOM_PARA='MOMENT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL1_GAUCHE',      ),
                     VALE=2.00000E+05,
                     PRECISION=1.E-08,
@@ -753,34 +753,34 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
 
 TEST_TABLE(       TABLE=PSL2,
                 NOM_PARA='RESULT_Y',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL2_GAUCHE',      ),
                     VALE=-2.00000E+03,
                REFERENCE='ANALYTIQUE',
                PRECISION=1.E-08,
            )
-           
+
 TEST_TABLE(       TABLE=PSL2,
                 NOM_PARA='RESULT_Y',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL2_DROITE',      ),
                     VALE=2.00000E+03,
                REFERENCE='ANALYTIQUE',
                PRECISION=1.E-08,
            )
-           
+
 TEST_TABLE(       TABLE=PSL2,
                 NOM_PARA='MOMENT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL2_GAUCHE',      ),
                     VALE=2.00000E+04,
                REFERENCE='ANALYTIQUE',
                PRECISION=1.E-08,
            )
-           
+
 TEST_TABLE(       TABLE=PSL2,
                 NOM_PARA='MOMENT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL2_GAUCHE',      ),
                     VALE=-1.50000E+06,
                REFERENCE='ANALYTIQUE',
@@ -839,37 +839,37 @@ TEST_RESU(RESU=_F(RESULTAT=RESU3,
 
 TEST_TABLE(       TABLE=PSL3,
                 NOM_PARA='RESULT_Z',
-                  FILTRE=(_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=(_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL3_GAUCHE',      ),
                           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
                     VALE=2.00000E+03,
                   PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSL3,
                 NOM_PARA='RESULT_Z',
-                  FILTRE=(_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=(_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL3_DROITE',      ),
                           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
                     VALE=-2.00000E+03,
                   PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSL3,
                 NOM_PARA='MOMENT_X',
-                  FILTRE=(_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=(_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL3_GAUCHE',      ),
                           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
                     VALE=2.00000E+05,
                   PRECISION=1.E-08,
                REFERENCE='ANALYTIQUE',
            )
-           
+
 TEST_TABLE(       TABLE=PSL3,
                 NOM_PARA='MOMENT_Y',
-                  FILTRE=(_F(  NOM_PARA = 'INTITULE',  
+                  FILTRE=(_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL3_GAUCHE',      ),
                           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
                     VALE=-1.50000E+06,

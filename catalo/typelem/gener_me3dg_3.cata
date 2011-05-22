@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,7 +84,7 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
-    CFREQR   = FREQ_R   ELEM__         (FREQ     )
+    COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
@@ -170,7 +170,7 @@ OPTION__
                               OUT__  EDERAPG  PDERAPG
     DERA_ELNO           4     IN__   EDERAPG  PDERAPG
                               OUT__  EDERANO  PDERANO
-    ECIN_ELEM           12    IN__   NDEPLAR  PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER  CMATERC  PMATERC
+    ECIN_ELEM           12    IN__   NDEPLAR  PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
     ENEL_ELGA           576   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC

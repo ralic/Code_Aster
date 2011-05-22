@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE TREMPE D'UN BARREAU CYLINDRIQUE EN 16MND5
 # mtlp103a.para = tps_job 400 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -546,12 +546,12 @@ TEMPE=CALC_NO(reuse =TEMPE,
 #  CALCUL DE LA DURETE
 ####################################################################
 
-TEMPE=CALC_ELEM(reuse =TEMPE,
+TEMPE=CALC_CHAMP(reuse =TEMPE,
 
 
       NUME_ORDRE=(1,10,14,20,25,30,40,50,100,105,),
       RESULTAT=TEMPE,
-      OPTION='DURT_ELNO',);
+       THERMIQUE=('DURT_ELNO'),);
 
 #################################################################
 # TESTS DES RESULTATS

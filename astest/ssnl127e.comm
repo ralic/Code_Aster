@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE PLAQUE EN TRACTION - TEST CORR_ACIER EN COQUE_3D
 # ssnl127e.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,9 +118,9 @@ REST=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=10),);
 
-REST=CALC_ELEM(reuse =REST,
+REST=CALC_CHAMP(reuse =REST,
                RESULTAT=REST,
-               OPTION='SIEF_ELNO',);
+                CONTRAINTE=('SIEF_ELNO'),);
 
 NdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CHAM='SIEF_ELNO',
@@ -197,9 +197,9 @@ REST2=STAT_NON_LINE(MODELE=MO,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10),);
 
-REST2=CALC_ELEM(reuse =REST2,
+REST2=CALC_CHAMP(reuse =REST2,
                 RESULTAT=REST2,
-                OPTION='SIEF_ELNO',);
+                 CONTRAINTE=('SIEF_ELNO'),);
 
 NdeU2=RECU_FONCTION(RESULTAT=REST2,
                     NOM_CHAM='SIEF_ELNO',
@@ -276,9 +276,9 @@ REST3=STAT_NON_LINE(MODELE=MO,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10),);
 
-REST3=CALC_ELEM(reuse =REST3,
+REST3=CALC_CHAMP(reuse =REST3,
                 RESULTAT=REST3,
-                OPTION='SIEF_ELNO',);
+                 CONTRAINTE=('SIEF_ELNO'),);
 
 NdeU3=RECU_FONCTION(RESULTAT=REST3,
                     NOM_CHAM='SIEF_ELNO',

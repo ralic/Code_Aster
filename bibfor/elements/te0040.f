@@ -1,9 +1,8 @@
       SUBROUTINE TE0040 ( OPTION, NOMTE )
       IMPLICIT NONE
        CHARACTER*16       OPTION, NOMTE
-C Routine modified by Laurent VELUT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +65,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
        REAL*8             CRIL(NNOMAX),CRIT(NNOMAX),CRILT(NNOMAX)
        REAL*8             CRITH(NNOMAX)
        REAL*8             XT,XC,YT,YC,SLT,X,Y, ORIEN , ORIENR
-       REAL*8             LIM(5),PGL(2,2),SIGM(24),VAR(2),PI,R8PI
+       REAL*8             LIM(5),T2VE(2,2),SIGM(24),VAR(2),PI,R8PI
       INTEGER ICODRE(27)
       CHARACTER*2 VAL
        CHARACTER*3        NUM
@@ -140,12 +139,12 @@ C --- PASSAGE DES CONTRAINTES DU REPERE DE LA COQUE
 C     AU REPERE LOCAL DE LA COUCHE DEFINI PAR ORIEN
 C     -------------------------------------------------------
 
-       PGL(1,1) = COS(ORIENR)
-       PGL(2,1) = SIN(ORIENR)
-       PGL(1,2) =-SIN(ORIENR)
-       PGL(2,2) = COS(ORIENR)
+       T2VE(1,1) = COS(ORIENR)
+       T2VE(2,1) =-SIN(ORIENR)
+       T2VE(1,2) =+SIN(ORIENR)
+       T2VE(2,2) = COS(ORIENR)
 
-       CALL DXSIRO(NNO,PGL,ZR(ICONT),SIGM)
+       CALL DXSIRO(NNO,T2VE,ZR(ICONT),SIGM)
 
 C --- CALCUL DES CRITERES AUX NOEUDS :
 C     -----------------------------------

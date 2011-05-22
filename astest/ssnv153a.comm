@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CONTACT/FROTTEMENT POULIE
 # ssnv153a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,8 +91,8 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              GROUP_MA_ESCL = 'SURFESCL',
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 10.,
-                             
-                             ),                            
+
+                             ),
                           ),
                    );
 
@@ -115,7 +115,7 @@ RESU=STAT_NON_LINE (
                                _F(CHARGE=CHA1,
                                 FONC_MULT=FONC,),
                                ),
-                   CONTACT    = CHA2,            
+                   CONTACT    = CHA2,
                    COMP_ELAS  =_F(
                                 RELATION='ELAS'),
                    NEWTON     =_F(MATRICE='ELASTIQUE',
@@ -128,9 +128,9 @@ RESU=STAT_NON_LINE (
                    )
 
 
-RESU=CALC_ELEM( reuse=RESU,
+RESU=CALC_CHAMP( reuse=RESU,
                   RESULTAT=RESU,
-                  OPTION='SIEF_ELNO',
+                   CONTRAINTE=('SIEF_ELNO'),
                 )
 RESU=CALC_NO( reuse=RESU,
                 RESULTAT=RESU,

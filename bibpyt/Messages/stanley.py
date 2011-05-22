@@ -1,4 +1,4 @@
-#@ MODIF stanley Messages  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Messages  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,10 +127,7 @@ Si Stanley est bien lancé, vous pouvez essayer d'activer le module VISU.
 Execution terminée.
 """),
 
-21 : _("""
-Le module python "pylotage" semble etre absent, ou mal configuré, 
-on désactive le mode Salome de Stanley.
-"""),
+#21 : _(""" """),
 
 22 : _("""
 Impossible d'affecter la variable [%(k1)s / %(k2)s].

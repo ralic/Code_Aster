@@ -1,7 +1,7 @@
-      SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,LMELAS,TROIDL,NBPRUP,
+      SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,LMELAS,CAS,LLEVST,NBPRUP,
      &                  NOPRUP,TYPRUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 24/05/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,22 +29,24 @@ C     IN  OPTIO1    :  OPTION DE CALCUL
 C     IN  DIME      :  DIMENSION GEOMETRIQUE
 C     IN  LMELAS    :  = .TRUE.  SI TYPE SD RESULTAT = MULT_ELAS
 C                        .FALSE. SINON
-C     IN  TROIDL    :  = .TRUE.  SI 3D LOCAL
-C                        .FALSE. SI 2D OU 3D GLOBAL
+C     IN  CAS    :  = 3D LOCAL 2D OU 3D GLOBAL
 C     IN/OUT NBPRUP :  NOMBRE DE PARAMETRES
 C     OUT NOPRUP    :  NOMS DES PARAMETRES
 C     OUT TYPRUP    :  TYPES DES PARAMETRES
 C
       IMPLICIT NONE
       INTEGER       NBPRUP,DIME
-      CHARACTER*8   LATABL,TYPRUP(NBPRUP)
+      CHARACTER*8   LATABL,TYPRUP(NBPRUP),CAS
       CHARACTER*16  OPTIO1,NOPRUP(NBPRUP)
-      LOGICAL       TROIDL,LMELAS
+      LOGICAL       TROIDL,LMELAS,LLEVST
 C
       CALL JEMARQ()
+
+      TROIDL=.FALSE.
+      IF (CAS.EQ.'3D_LOCAL') TROIDL=.TRUE.
 C
       IF((  (OPTIO1.EQ.'CALC_G'.OR.
-     &       OPTIO1.EQ.'CALC_DG') .AND. DIME.EQ.2)
+     &       OPTIO1.EQ.'CALC_DG') .AND. DIME.EQ.2.AND..NOT.LLEVST)
      &  .OR. (OPTIO1.EQ.'CALC_G_GLOB')) THEN
           NBPRUP = 3
           IF(LMELAS)THEN
@@ -60,7 +62,7 @@ C
           ENDIF
           NOPRUP(3) = 'G'
           TYPRUP(3) = 'R'
-      ELSEIF((OPTIO1.EQ.'CALC_G_X').AND. TROIDL)THEN
+      ELSEIF(OPTIO1.EQ.'CALC_G'.AND.TROIDL.AND.LLEVST)THEN
           NBPRUP = 6
           NOPRUP(1) = 'NUME_FOND'
           TYPRUP(1) = 'I'
@@ -74,7 +76,7 @@ C
           TYPRUP(5) = 'R'
           NOPRUP(6) = 'G'
           TYPRUP(6) = 'R'   
-      ELSEIF((OPTIO1.EQ.'CALC_G_X').AND. DIME.EQ.2)THEN
+      ELSEIF(OPTIO1.EQ.'CALC_G'.AND.DIME.EQ.2.AND.LLEVST)THEN
           NBPRUP = 4
           NOPRUP(1) = 'NUME_FOND'
           TYPRUP(1) = 'I'
@@ -84,7 +86,7 @@ C
           TYPRUP(3) = 'R'
           NOPRUP(4) = 'G'
           TYPRUP(4) = 'R'   
-      ELSEIF((OPTIO1.EQ.'CALC_G').AND. TROIDL)THEN
+      ELSEIF(OPTIO1.EQ.'CALC_G'.AND.TROIDL.AND..NOT.LLEVST) THEN
           NBPRUP = 5
           IF(LMELAS)THEN
             NOPRUP(1) = 'NUME_CAS'
@@ -171,7 +173,7 @@ C
           TYPRUP(3) = 'R'
           NOPRUP(4) = 'DK2/DF'
           TYPRUP(4) = 'R'
-      ELSE IF( OPTIO1.EQ.'CALC_K_G' .AND. DIME.EQ.2)THEN
+      ELSE IF(OPTIO1.EQ.'CALC_K_G'.AND.DIME.EQ.2.AND..NOT.LLEVST) THEN
           NBPRUP = 6
           IF(LMELAS)THEN
             NOPRUP(1) = 'NUME_CAS'
@@ -192,7 +194,7 @@ C
           TYPRUP(5) = 'R'
           NOPRUP(6) = 'G_IRWIN'
           TYPRUP(6) = 'R'
-      ELSE IF( OPTIO1.EQ.'CALC_K_X' .AND. DIME.EQ.2)THEN
+      ELSE IF(OPTIO1.EQ.'CALC_K_G'.AND.DIME.EQ.2.AND.LLEVST) THEN
           NBPRUP = 7
           NOPRUP(1) = 'NUME_FOND'
           TYPRUP(1) = 'I'
@@ -215,7 +217,8 @@ C
           TYPRUP(6) = 'R'
           NOPRUP(7) = 'G_IRWIN'
           TYPRUP(7) = 'R'
-      ELSEIF(OPTIO1(1:6).EQ.'CALC_K' .AND. TROIDL)THEN
+      ELSEIF((OPTIO1.EQ.'CALC_K_G'.OR.OPTIO1.EQ.'CALC_K_MAX')
+     &        .AND.TROIDL) THEN
           NBPRUP = 11
           NOPRUP(1) = 'NUME_FOND'
           TYPRUP(1) = 'I'

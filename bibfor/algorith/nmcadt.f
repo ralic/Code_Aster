@@ -1,7 +1,7 @@
-      SUBROUTINE NMCADT(SDDISC,IOCC,NUMINS,VALINC,DTP)
+      SUBROUTINE NMCADT(SDDISC,IADAPT,NUMINS,VALINC,DTP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
-      INTEGER      IOCC,NUMINS
+      INTEGER      IADAPT,NUMINS
       CHARACTER*19 VALINC(*)
       CHARACTER*19 SDDISC   
       REAL*8       DTP  
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  SDDISC : SD DISCRETISATION TEMPORELLE
-C IN  IOCC   : NUMERO DE LA METHODE D ADAPTATION TRAITEE
+C IN  IADAPT : NUMERO DE LA METHODE D ADAPTATION TRAITEE
 C IN  NUMINS : NUMERO D'INSTANT
 C IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 C OUT DTP    : NOUVEAU PAS DE TEMPS (DT+)
@@ -60,15 +60,10 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C 
-      INTEGER     IB,NIT,JITER,ITERAT
+      INTEGER     IB,NIT,JITER,NBITER
       REAL*8      R8B,DTM,PCENT,VALREF,DVAL,R8MAEM
       CHARACTER*8 K8B,TYPEXT
       CHARACTER*16 MODETP,NOCHAM,NOCMP
-C      PARAMETER   (TYPEXT = 'MAX_ABS')
-
-
-C   DECLARATION IMPL-EX
-      
       REAL*8 ETA,ETAD
 C 
 C ----------------------------------------------------------------------
@@ -78,7 +73,7 @@ C
       CALL JEMARQ()
 
 C     METHODE DE CALCUL DE DT+
-      CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'METHODE',R8B,IB,MODETP)
+      CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'METHODE',R8B,IB,MODETP)
 
 C     PAS DE TEMPS PAR DEFAUT (LE DERNIER, SAUF SI JALON)
       CALL UTDIDT('L',SDDISC,'LIST',IB,'DT-',DTM,IB,K8B)
@@ -87,16 +82,16 @@ C     ------------------------------------------------------------------
       IF (MODETP.EQ.'FIXE') THEN
 C     ------------------------------------------------------------------
 
-        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'PCENT_AUGM',PCENT,IB,K8B)
+        CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'PCENT_AUGM',PCENT,IB,K8B)
         DTP = DTM * (1.D0 + PCENT / 100.D0)
 
 C     ------------------------------------------------------------------
       ELSEIF (MODETP.EQ.'DELTA_GRANDEUR') THEN
 C     ------------------------------------------------------------------
 
-        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NOM_CHAM',R8B,IB,NOCHAM)
-        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NOM_CMP',R8B,IB,NOCMP)
-        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'VALE_REF',VALREF,IB,K8B)
+        CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'NOM_CHAM',R8B,IB,NOCHAM)
+        CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'NOM_CMP',R8B,IB,NOCMP)
+        CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'VALE_REF',VALREF,IB,K8B)
         TYPEXT = 'MAX_ABS'
 C       CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
 C                   = VREF / MAX ( |DELTA(CHAMP+CMP)| )
@@ -113,11 +108,11 @@ C     ------------------------------------------------------------------
       ELSEIF (MODETP.EQ.'ITER_NEWTON') THEN
 C     ------------------------------------------------------------------
 
-        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NB_ITER_NEWTON_REF',
+        CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'NB_ITER_NEWTON_REF',
      &                                                   R8B,NIT,K8B)
         CALL JEVEUO(SDDISC//'.ITER','L',JITER)
-        ITERAT = ZI(JITER-1+NUMINS)
-        DTP = DTM * SQRT( DBLE(NIT) / DBLE(ITERAT+1) )
+        NBITER = ZI(JITER-1+NUMINS)
+        DTP = DTM * SQRT( DBLE(NIT) / DBLE(NBITER+1) )
 
 C     ------------------------------------------------------------------
       ELSEIF (MODETP.EQ.'FORMULE') THEN
@@ -135,7 +130,7 @@ C       FACTEUR D'ACCELERATION ETA
 C       FACTEUR DE DECELERATION ETAD
         ETAD = 0.5D0
                         
-C        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NU_CMP',R8B,NUCMP,K8B)
+C        CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'NU_CMP',R8B,NUCMP,K8B)
         TYPEXT='MIN_VAR'
 
 C       CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
@@ -164,7 +159,7 @@ C     ------------------------------------------------------------------
 C      ELSEIF (MODETP.EQ.'IMPLEX2') THEN
 C     ------------------------------------------------------------------
         
-C        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NU_CMP',R8B,NUCMP,K8B)
+C        CALL UTDIDT('L',SDDISC,'ADAP',IADAPT,'NU_CMP',R8B,NUCMP,K8B)
         
 C     ------------------------------------------------------------------
       ELSE

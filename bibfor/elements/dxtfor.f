@@ -1,9 +1,8 @@
-      SUBROUTINE DXTFOR ( TYPELE, GLOBAL, XYZL, PGL, FOR, VECL )
+      SUBROUTINE DXTFOR (GLOBAL, XYZL, PGL, FOR, VECL )
       IMPLICIT  NONE
-      REAL*8          XYZL(3,*),PGL(3,*), FOR(6,3), VECL(*)
+      REAL*8          XYZL(3,*),PGL(3,*), FOR(6,*), VECL(*)
       LOGICAL         GLOBAL
-      CHARACTER*8     TYPELE
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +23,6 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     CHARGEMENT FORCE_FACE DES ELEMENTS DE PLAQUE DKT ET DST
 C     ------------------------------------------------------------------
-C     IN  TYPELE : TYPE DE L'ELEMENT
 C     IN  GLOBAL : VARIABLE LOGIQUE DE REPERE GLOBAL OU LOCAL
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
@@ -33,31 +31,33 @@ C     OUT VECL   : CHARGEMENT NODAL RESULTANT
 C     ------------------------------------------------------------------
       INTEGER  I, NNO
       REAL*8   AIRE
-      REAL*8   FX, FY, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
+      REAL*8   FX, FY, CARAT3(21), T2EV(4), T2VE(4)
 C     ------------------------------------------------------------------
       NNO = 3
 C
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
       CALL GTRIA3 ( XYZL, CARAT3 )
-      CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
+      CALL DXREPE ( PGL, T2EV, T2VE)
 C
       IF (.NOT.GLOBAL) THEN
         DO 10 I = 1,NNO
           FX = FOR(1,I)
           FY = FOR(2,I)
-          FOR(1,I) = FX*T2VE(1) + FY*T2VE(3)
-          FOR(2,I) = FX*T2VE(2) + FY*T2VE(4)
+          FOR(1,I) = T2EV(1)*FX + T2EV(3)*FY
+          FOR(2,I) = T2EV(2)*FX + T2EV(4)*FY
           FX = FOR(4,I)
           FY = FOR(5,I)
-          FOR(4,I) = FX*T2VE(1) + FY*T2VE(3)
-          FOR(5,I) = FX*T2VE(2) + FY*T2VE(4)
+          FOR(4,I) = T2EV(1)*FX + T2EV(3)*FY
+          FOR(5,I) = T2EV(2)*FX + T2EV(4)*FY
    10   CONTINUE
       END IF
+C
       AIRE = CARAT3(8)
 C
       DO 20 I = 1,6*NNO
         VECL(I) = 0.D0
    20 CONTINUE
+C
       DO 30 I = 1,6
         VECL(I   ) = FOR(I,1)*AIRE/3.D0
         VECL(I+6 ) = FOR(I,2)*AIRE/3.D0

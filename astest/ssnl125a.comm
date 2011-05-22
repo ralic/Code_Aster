@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 # ssnl125a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,9 +150,9 @@ EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
 #    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS
 # -----------------------------------------------------
 
-EVOL = CALC_ELEM(reuse    = EVOL,
+EVOL = CALC_CHAMP(reuse    = EVOL,
                  RESULTAT = EVOL,
-                 OPTION   = 'VARI_ELNO',)
+                  VARI_INTERNE=('VARI_ELNO'),)
 
 
 EVOL = CALC_NO(reuse    = EVOL,

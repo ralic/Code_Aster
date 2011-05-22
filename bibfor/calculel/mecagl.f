@@ -18,7 +18,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,MILIEU,PAIR,THLAG2,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/05/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,8 +113,6 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL INFNIV(IFM,NIV)
-
-      IF (OPTION.EQ.'CALC_G_X') OPTION='CALC_G'
 
       CHVARC = '&&MECAGL.VARC'
       CHVREF = '&&MECAGL.VARC.REF'
@@ -222,7 +220,6 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
 
 C --- RECUPERATION DES DONNEES X-FEM
       IF  (LXFEM) THEN
-        CALL GETVID ( 'THETA','FISSURE', 1,1,1, FISS, IBID )
         PINTTO = MODELE//'.TOPOSE.PIN'
         CNSETO = MODELE//'.TOPOSE.CNS'
         HEAVTO = MODELE//'.TOPOSE.HEA'

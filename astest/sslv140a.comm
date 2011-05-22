@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CALCUL DE MODULES EFFECTIFS EN PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ MESTY=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHARGY,),);
 
-MESTY=CALC_ELEM(reuse =MESTY,
+MESTY=CALC_CHAMP(reuse =MESTY,
                RESULTAT=MESTY,);
 
 CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -116,8 +116,8 @@ MESTX=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHARGX,),);
 
-MESTX=CALC_ELEM(reuse =MESTX,
-               RESULTAT=MESTX,OPTION='SIEQ_ELGA');
+MESTX=CALC_CHAMP(reuse =MESTX,
+               RESULTAT=MESTX,  CRITERES=('SIEQ_ELGA'));
 
 
 
@@ -140,7 +140,7 @@ CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=MESTX,
                   NOM_CHAM='SIEF_ELGA',);
-                  
+
 INT_SIX1=POST_ELEM(MODELE=MO,CHAM_MATER=CHMAT,
                    CHAM_GD=CONTR1,
                    INTEGRALE=(_F (TOUT='OUI',NOM_CMP=('SIXX'),),
@@ -153,7 +153,7 @@ CONTR2=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   RESULTAT=MESTX,
                   INFO = 2,
                   NOM_CHAM='SIEQ_ELGA',);
-                 
+
 
 INT_SIX2=POST_ELEM(MODELE=MO,
                    CHAM_GD=CONTR2,

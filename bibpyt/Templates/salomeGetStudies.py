@@ -1,4 +1,4 @@
-#@ MODIF salomeGetStudies Templates  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeGetStudies Templates  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

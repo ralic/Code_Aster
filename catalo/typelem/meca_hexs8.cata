@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/02/2011   AUTEUR TRAN V-X.TRAN 
+%& MODIF TYPELEM  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
-    CFREQR   = FREQ_R   ELEM__         (FREQ     )
+    COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
@@ -264,7 +264,7 @@ OPTION__
                               OUT__  EDERAPG  PDERAPG
     DERA_ELNO           4     IN__   EDERAPG  PDERAPG
                               OUT__  EDERANO  PDERANO
-    ECIN_ELEM           12    IN__   DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER  CMATERC  PMATERC
+    ECIN_ELEM           12    IN__   DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
     ENDO_ELGA           512   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC

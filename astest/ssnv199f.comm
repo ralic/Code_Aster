@@ -1,4 +1,4 @@
-# MODIF  DATE 14/03/2011   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 23/05/2011   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION INTERFACE 3D (PENTA15) SUR DCB, LOI CZM_OUV_MIX
 # ssnv199f.para = tps_job 860 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,7 +34,7 @@ sigc  = 3
 
 dc=2*tenac/sigc
 
-ri_gli=10
+ri_gli=1000
 pen_lag=100
 
 deply = 1.0

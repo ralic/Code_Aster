@@ -6,7 +6,7 @@ C     --- ARGUMENTS ---
       CHARACTER*16 OPTION
       CHARACTER*24 NOLIOP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,17 +93,19 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       NOLDEP = NOBASE//'.LISDEP'
       NOLIIN = NOBASE//'.LNOINS'
       NOLISD = NOBASE//'.ISODEP'
-
-      CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTION),OPT)
-      CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',OPT),'L',IAOPDS)
-      CALL JEVEUO(JEXNUM('&CATA.OP.LOCALIS',OPT),'L',IAOPLO)
-
-      IF ( ZK24(IAOPLO).EQ.'VIDE' ) GOTO 9999
+C
+      IF ( OPTION(6:9).NE.'NOEU' ) THEN
+        CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTION),OPT)
+        CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',OPT),'L',IAOPDS)
+        CALL JEVEUO(JEXNUM('&CATA.OP.LOCALIS',OPT),'L',IAOPLO)
+C
+        IF ( ZK24(IAOPLO).EQ.'VIDE' ) GOTO 9999
+      ENDIF
 
 C     INITIALISATION DES ENTIERS
       IOPDEB = 1
       NOPOUT = 1
-      NOPOUS = NOPOUT+1
+      NOPOUS = NOPOUT
 
 C     REMPLISSAGE DU TABLEAU DES OPTIONS A CALCULER AVEC LA PREMIERE
 C     OPTION DEMANDEE
@@ -114,72 +116,90 @@ C     OPTION DEMANDEE
 
 C     BOUCLE SUR LE TABLEAU DES OPTIONS QUI SERA ENRICHI A CHAQUE
 C     PASSE
-      DO 10 IOP = IOPDEB,NOPOUT
+      DO 10 IOP = IOPDEB,NOPOUS
         CUROPT = LOPTIO(IOP)
-        IF ( (CUROPT.EQ.'DEPL').OR.
-     &       (CUROPT.EQ.'SIEF_ELGA').OR.
-     &       (CUROPT.EQ.'VARI_ELGA') ) THEN
-          NPARIN = 0
-        ELSE
-          CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',CUROPT),OPT)
-          CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',OPT),'L',IAOPDS)
-          CALL JEVEUO(JEXNUM('&CATA.OP.LOCALIS',OPT),'L',IAOPLO)
-          NPARIN = ZI(IAOPDS-1+2)
-        ENDIF
-
-C       BOUCLE SUR LES PARAMETRES DE CETTE OPTION
         OPAJOU = .FALSE.
-        ISODEP(IOP) = ' '
-        DO 20 IPARA = 1,NPARIN
-C         ON VERIFIE QUE L'OPTION EXISTE
-          OPTIO2 = ZK24(IAOPLO+3*IPARA-2)
-          CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTIO2),OPT2)
-
-C         ON EVITE QU'UNE OPTION DEPENDE D'ELLE MEME
-          IF ( LOPTIO(IOP).EQ.OPTIO2 ) THEN
-            IF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NP1' ) THEN
-              ISODEP(IOP) = '+'
-            ELSEIF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NM1' ) THEN
-              ISODEP(IOP) = '-'
-            ELSE
-              CALL ASSERT(.FALSE.)
-            ENDIF
-            GOTO 20
+C
+C       CAS D'UNE OPTION AUX NOEUDS
+        IF ( CUROPT(6:9).EQ.'NOEU' ) THEN
+          OPTIO2 = OPTION(1:5)//'ELNO'
+          NOPOUT = NOPOUT+1
+          LOPTIO(NOPOUT) = OPTIO2
+          IF ( .NOT.OPAJOU ) THEN
+            LOPOR1(IOP) = NOPOUT
+            LOPOR2(IOP) = 0
           ENDIF
-
-          IF ( (OPT2.NE.0) ) THEN
-            NOPOUT = NOPOUT+1
-            LOPTIO(NOPOUT) = OPTIO2
-C           REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
-            IF ( .NOT.OPAJOU ) THEN
-              LOPOR1(IOP) = NOPOUT
-              LOPOR2(IOP) = 0
-            ENDIF
-            LOPOR1(NOPOUT) = 0
-            LOPOR2(NOPOUT) = 0
-            LOPDEP(NOPOUT) = ZK24(IAOPLO+3*IPARA-1)
-            OPAJOU = .TRUE.
-            ISODEP(NOPOUT) = ' '
-          ELSEIF ( ((OPTIO2.EQ.'DEPL').OR.
-     &              (OPTIO2.EQ.'SIEF_ELGA').OR.
-     &              (OPTIO2.EQ.'VARI_ELGA')).AND.
-     &             ((ZK24(IAOPLO+3*IPARA-1).EQ.'NP1').OR.
-     &              (ZK24(IAOPLO+3*IPARA-1).EQ.'NM1')) ) THEN
-            NOPOUT = NOPOUT+1
-            LOPTIO(NOPOUT) = OPTIO2
-C           REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
-            IF ( .NOT.OPAJOU ) THEN
-              LOPOR1(IOP) = NOPOUT
-              LOPOR2(IOP) = 0
-            ENDIF
-            LOPOR1(NOPOUT) = 0
-            LOPOR2(NOPOUT) = 0
-            LOPDEP(NOPOUT) = ZK24(IAOPLO+3*IPARA-1)
-            OPAJOU = .TRUE.
-            ISODEP(NOPOUT) = ' '
+          LOPOR1(NOPOUT) = 0
+          LOPOR2(NOPOUT) = 0
+          LOPDEP(NOPOUT) = 'N'
+          OPAJOU = .TRUE.
+C
+C       CAS D'UNE OPTION AUX ELEMENTS
+        ELSE
+          IF ( (CUROPT.EQ.'DEPL').OR.
+     &         (CUROPT.EQ.'SIEF_ELGA').OR.
+     &         (CUROPT.EQ.'VARI_ELGA') ) THEN
+            NPARIN = 0
+          ELSE
+            CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',CUROPT),OPT)
+            CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',OPT),'L',IAOPDS)
+            CALL JEVEUO(JEXNUM('&CATA.OP.LOCALIS',OPT),'L',IAOPLO)
+            NPARIN = ZI(IAOPDS-1+2)
           ENDIF
-20      CONTINUE
+C
+C         BOUCLE SUR LES PARAMETRES DE CETTE OPTION
+          ISODEP(IOP) = ' '
+          DO 20 IPARA = 1,NPARIN
+C           ON VERIFIE QUE L'OPTION EXISTE
+            OPTIO2 = ZK24(IAOPLO+3*IPARA-2)
+            CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTIO2),OPT2)
+C
+C           ON EVITE QU'UNE OPTION DEPENDE D'ELLE MEME
+            IF ( LOPTIO(IOP).EQ.OPTIO2 ) THEN
+              IF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NP1' ) THEN
+                ISODEP(IOP) = '+'
+              ELSEIF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NM1' ) THEN
+                ISODEP(IOP) = '-'
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF
+              GOTO 20
+            ENDIF
 
+            IF ( (OPT2.NE.0) ) THEN
+              NOPOUT = NOPOUT+1
+              LOPTIO(NOPOUT) = OPTIO2
+C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
+              IF ( .NOT.OPAJOU ) THEN
+                LOPOR1(IOP) = NOPOUT
+                LOPOR2(IOP) = 0
+              ENDIF
+              LOPOR1(NOPOUT) = 0
+              LOPOR2(NOPOUT) = 0
+              LOPDEP(NOPOUT) = ZK24(IAOPLO+3*IPARA-1)
+              OPAJOU = .TRUE.
+              ISODEP(NOPOUT) = ' '
+            ELSEIF ( ((OPTIO2.EQ.'DEPL').OR.
+     &                (OPTIO2.EQ.'SIEF_ELGA').OR.
+     &                (OPTIO2.EQ.'VARI_ELGA')).AND.
+     &               ((ZK24(IAOPLO+3*IPARA-1).EQ.'NP1').OR.
+     &                (ZK24(IAOPLO+3*IPARA-1).EQ.'NM1')) ) THEN
+              NOPOUT = NOPOUT+1
+              LOPTIO(NOPOUT) = OPTIO2
+C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
+              IF ( .NOT.OPAJOU ) THEN
+                LOPOR1(IOP) = NOPOUT
+                LOPOR2(IOP) = 0
+              ENDIF
+              LOPOR1(NOPOUT) = 0
+              LOPOR2(NOPOUT) = 0
+              LOPDEP(NOPOUT) = ZK24(IAOPLO+3*IPARA-1)
+              OPAJOU = .TRUE.
+              ISODEP(NOPOUT) = ' '
+            ENDIF
+20        CONTINUE
+        ENDIF
+C
         IF ( .NOT.OPAJOU ) THEN
           LOPOR1(IOP) = 0
           LOPOR2(IOP) = 0
@@ -191,7 +211,8 @@ C           REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
 C     SI ON A AJOUTE UNE OPTION LORS DE LA DERNIERE PASSE, ON
 C     DOIT CHERCHER SES DEPENDANCES
       IF ( OPAJOU ) THEN
-        IOPDEB = NOPOUS
+        IOPDEB = NOPOUS+1
+        NOPOUS = NOPOUT
         GOTO 40
       ENDIF
 

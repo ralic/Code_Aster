@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,18 +87,6 @@ from types import *
 from Macro.test_fichier_ops import test_file
 import types
 
-# Salome (ancien Pylotage)
-try:
-   import salomeVisuPylo0
-   __salome__ = True
-   __rcstanley__ = '.stanley_salome'
-except:
-   UTMESS('I','STANLEY_21')
-   __salome__ = False
-   __rcstanley__ = '.stanley'
-
-
-# Salome (nouvelle Version)
 import salomeVisu
 __salome__ = True
 __rcstanley__ = '.stanley_salome'
@@ -2523,9 +2511,9 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
     if options.has_key( 'case_sur_deformee' ):
       if options['case_sur_deformee'] == 1:
         if selection.nom_cham != 'DEPL':
-          if type_champ in ['ELGA', 'ELEM']:
-             UTMESS('A','STANLEY_33')
-          else:
+          #if type_champ in ['ELGA', 'ELEM']:
+          #   UTMESS('A','STANLEY_33')
+          #else:
              UTMESS('I','STANLEY_34')
              if selection.nom_cham != 'DEPL':
                 para1 = _F(RESULTAT   = contexte.resultat,
@@ -2640,19 +2628,24 @@ class DRIVER_COURBES(DRIVER) :
                 return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
 
             for comp in l_nom_cmp :
-                vale_x = selection.vale_va
-                courbe = as_courbes.Courbe(vale_x,vale_x)
-
-                # Sensibilite
-                if contexte.para_sensi:
-                    table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-                    courbe.Lire_y(table_sensible_jeveux, comp)
-                    nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
+                try:
+                    vale_x = selection.vale_va
+                    courbe = as_courbes.Courbe(vale_x,vale_x)
+    
+                    # Sensibilite
+                    if contexte.para_sensi:
+                        table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
+                        courbe.Lire_y(table_sensible_jeveux, comp)
+                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                        nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
+                    else:
+                        courbe.Lire_y(STNTBLGR,comp)
+                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                        nom = comp + ' --- ' + string.ljust(point,8)
+                except Exception, e:
+                    print e
                 else:
-                    courbe.Lire_y(STNTBLGR,comp)
-                    nom = comp + ' --- ' + string.ljust(point,8)
-
-                l_courbes.append( (courbe, nom) )
+                    l_courbes.append( (courbe, nom) )
     
             DETR( 'STNTBLGR' )
             if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
@@ -2686,20 +2679,27 @@ class DRIVER_COURBES(DRIVER) :
             for comp in l_nom_cmp :
                 courbe = as_courbes.Courbe()
       
-                # Sensibilite
-                if contexte.para_sensi:
-                    table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-                    courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
-                    courbe.Lire_y(table_sensible_jeveux, comp)
-                    nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
-      #              nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+                try:
+                    # Sensibilite
+                    if contexte.para_sensi:
+                        table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
+                        courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
+                        courbe.Lire_y(table_sensible_jeveux, comp)
+                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                        nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
+      #                  nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+                    else:
+                        courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
+                        courbe.Lire_y(STNTBLGR, comp)
+                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                        nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+                    #l_courbes.append( (courbe, nom) )
+                except Exception, e:
+                    print e
                 else:
-                    courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
-                    courbe.Lire_y(STNTBLGR, comp)
-                    nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
-      
-                l_courbes.append( (courbe, nom) )
-    
+                    l_courbes.append( (courbe, nom) )
+                #l_courbes.append( (courbe, nom) )
+
             DETR( 'STNTBLGR' )
             if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
 
@@ -2740,6 +2740,7 @@ class DRIVER_COURBES(DRIVER) :
 
     t=[]
     ncourbe=0
+    lnomTitle=[]
     for courbe in l_courbes:
         acourbe = []
         for l in string.split(repr(courbe[0])):
@@ -2766,11 +2767,21 @@ class DRIVER_COURBES(DRIVER) :
         for i in range(len(t)):
             t[i][nomColonnne] = ly[i]
 
+        # titre
+        nt = nomColonnne.split('---')[0]
+        if not nt in lnomTitle:
+            lnomTitle.append( nt )
+
         ncourbe+=1
 
+
     # Formatage du titre de la table Aster pour Salome
-    title  = '%s - %s' % ( selection.nom_cham, ' '.join(selection.nom_cmp) )
-    ctitle = ' | '.join(lnomColonnne)
+    #title = '%s - %s' % ( selection.nom_cham, ' '.join(selection.nom_cmp) )
+    title = '%s - %s' % ( selection.nom_cham, ' '.join(lnomTitle) )
+    if selection.geom[0] == 'CHEMIN':
+        ctitle = ' ABSC_CURV | ' + ' | '.join(lnomColonnne[1:])
+    else:
+        ctitle = ' | '.join(lnomColonnne)
     cunit  = ''
     titr="""TITLE: %s
 COLUMN_TITLES: %s

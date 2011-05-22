@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX THERMOVISCOPLASTICITE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNA106A',NIV_PUB_WEB='INTERNET'))
@@ -76,12 +76,12 @@ CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
                                   EVOL=TEMPE,
                                   NOM_VARC='TEMP',
                                   NOM_CHAM='TEMP',VALE_REF=0.),)
-                             
+
 BLOC = AFFE_CHAR_MECA (MODELE = MO,
                        DDL_IMPO=_F(GROUP_NO =('DAB','DCD'),
                                    DY=0.)
                       )
-                                  
+
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
@@ -90,23 +90,23 @@ RESU = STAT_NON_LINE (MODELE = MO,
                                     ITER_INTE_MAXI = 1000),
                       INCREMENT =_F(LIST_INST =L_INST),
                       NEWTON    =_F(
-                                MATRICE ='TANGENTE', 
+                                MATRICE ='TANGENTE',
                                 REAC_ITER= 1),
                       CONVERGENCE=_F(
                                 RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 25)
                         )
 
-RESU = CALC_ELEM( reuse= RESU,
+RESU = CALC_CHAMP( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_ELNO',
+                   CONTRAINTE=('SIEF_ELNO'),
                   )
 RESU = CALC_NO ( reuse= RESU,
                   RESULTAT = RESU,
                   OPTION = 'SIEF_NOEU',
                   )
 
-TEST_RESU( 
+TEST_RESU(
           RESU= _F(RESULTAT = RESU,
                    NUME_ORDRE =38,
                    NOM_CHAM ='DEPL',
@@ -117,6 +117,6 @@ TEST_RESU(
          )
 
 
-     
-           
+
+
 FIN()

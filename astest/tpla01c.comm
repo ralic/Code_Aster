@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CYLINDRE CREUX EN THERMIQUE STATIONNAIRE (TRIA6/QUAD9 AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,9 +52,9 @@ TEMPE=THER_LINEAIRE(       MODELE=MOTH,
                                 EXCIT=_F(  CHARGE = CHTH)
                         )
 
-TEMPE=CALC_ELEM( reuse=TEMPE, RESULTAT=TEMPE,
+TEMPE=CALC_CHAMP( reuse=TEMPE, RESULTAT=TEMPE,
                  NUME_ORDRE=2,
-                 OPTION='FLUX_ELNO',);
+                  THERMIQUE=('FLUX_ELNO'),);
 
 
 TEST_RESU(RESU=(

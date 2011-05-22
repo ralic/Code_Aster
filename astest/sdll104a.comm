@@ -1,8 +1,8 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
 # TITRE SYSTEME DE DEUX POUTRES SOUMIS A UNE EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@
 #***CAS TEST: CALCUL MULTI SPECTRAL AVEC DEUX METHODES****************#
 #*********************************************************************#
 DEBUT(CODE=_F(NOM='SDLL104A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+from math import pi
 
 #*********************************************************************#
 # *****LECTURE DU MAILLAGE********************************************#
@@ -157,6 +158,7 @@ MODESTA1=MODE_STATIQUE(  MATR_RIGI=MATASSR1,
 #*********************************************************************#
 # *****DEFINITION   INTERSPECTRE EXCITATION***************************#
 #*********************************************************************#
+So=1/(2.*pi)
 INTKTJ1=DEFI_INTE_SPEC(    DIMENSION=1,
                          KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
                                         NUME_ORDRE_J = 1,
@@ -165,11 +167,85 @@ INTKTJ1=DEFI_INTE_SPEC(    DIMENSION=1,
                                         PAS = 1.,
                                         AMOR_REDUIT = 0.6,
                                         FREQ_MOY = 5.,
-                                        VALE_R = 1.,
+                                        VALE_R = So,
                                         INTERPOL = 'LIN',
                                         PROL_GAUCHE = 'CONSTANT',
                                         PROL_DROITE = 'CONSTANT')
                        )
+
+
+ #*********************************************************************#
+# *****TEST DES VARIANCES PAR GENE_FONC_ALEA**********#
+#*********************************************************************#                                                
+                         
+STADE=POST_DYNA_ALEA(  INTE_SPEC=INTKTJ1,
+                          NUME_ORDRE_J = 1,
+                          NUME_ORDRE_I = 1,
+                          INFO=2,
+#                           DUREE =10.,
+                      )   
+                      
+TEST_TABLE(TABLE=STADE,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
+                   NOM_PARA='ECART',
+                   VALE=5.5220842862402  ,  
+                   CRITERE = 'RELATIF', PRECISION=1.E-05, REFERENCE = 'NON_REGRESSION',); 
+
+# TEST_TABLE(TABLE=STADE,
+#                        FILTRE=(
+#                  _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+#                  _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
+#                    NOM_PARA='F_PEAK',
+#                    VALE=3.3761135643155  ,  
+#                    CRITERE = 'RELATIF', PRECISION=1.E-05,REFERENCE = 'NON_REGRESSION',);     
+#                    
+# TEST_TABLE(TABLE=STADE,
+#                        FILTRE=(
+#                  _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+#                  _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
+#                    NOM_PARA='MAX_MOY',
+#                    VALE=1.8643183662069E+01    ,  
+#                    CRITERE = 'RELATIF', PRECISION=1.E-05,REFERENCE = 'NON_REGRESSION',);                       
+#                                        
+                                                                               
+IMPR_TABLE(TABLE=STADE,
+           UNITE=8,
+           TITRE='DSP_RESU ',
+           FORMAT='TABLEAU',);    
+                                                             
+GENE_KT=GENE_FONC_ALEA(
+                         INTE_SPEC=INTKTJ1,
+                         FREQ_INIT=0.,
+                         FREQ_FIN=50.,
+                         NB_TIRAGE=20,
+                          NB_POIN=2048,
+                        INFO=2,
+                          );
+                         
+FONCT1=RECU_FONCTION(    TABLE=GENE_KT,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',
+                                   INTERPOL='LIN',
+                                 PROL_DROITE='CONSTANT',
+                                PROL_GAUCHE='EXCLU'
+                           );
+                           
+test_KT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1 ),);    
+    
+TEST_TABLE( TABLE= test_KT,
+                       NOM_PARA= 'ECART_TYPE ',   
+                       VALE =5.52208 ,
+                       CRITERE = 'RELATIF', PRECISION=1.E-02, REFERENCE = 'ANALYTIQUE',);                                                                    
+                                          
+# IMPR_TABLE(TABLE=test_KT,
+#            UNITE=8,
+#            TITRE='ECART_TYPE ',
+#            FORMAT='TABLEAU',
+# );                             
+
 
 #*********************************************************************#
 # *****CALCUL D INTERSPECTRE REPONSE: ACCE --> ACCE *****************#
@@ -398,6 +474,8 @@ INTERRE3=REST_SPEC_PHYS(         MODE_MECA=FREQ3,
                                    NOEUD=( 'PB15', 'PB25', 'PB31', ),
                                  NOM_CMP=('DY', 'DY', 'DY',  ),
                                       OPTION='TOUT_TOUT'   )
+
+
 
 TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
                             NOEUD_I = 'PB25',    NOEUD_J = 'PB25',

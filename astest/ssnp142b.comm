@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 3D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142b.para = tps_job 500 mem_job 350Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -216,16 +216,16 @@ U_F=STAT_NON_LINE(MODELE=MO,
 
 ################### POST TRAITEMENT U_M  #######################
 
-U_M=CALC_ELEM(reuse =U_M,
+U_M=CALC_CHAMP(reuse =U_M,
 
               RESULTAT=U_M,
-              OPTION='VARI_ELNO',
+               VARI_INTERNE=('VARI_ELNO'),
               GROUP_MA='JOINT');
 
-U_M=CALC_ELEM(reuse =U_M,
+U_M=CALC_CHAMP(reuse =U_M,
 
               RESULTAT=U_M,
-              OPTION='SIEF_ELNO',
+               CONTRAINTE=('SIEF_ELNO'),
               GROUP_MA='JOINT');
 
 U_M=CALC_NO(reuse =U_M,
@@ -253,16 +253,16 @@ SIGN_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 ################### POST TRAITEMENT U_F  #######################
 
-U_F=CALC_ELEM(reuse =U_F,
+U_F=CALC_CHAMP(reuse =U_F,
 
               RESULTAT=U_F,
-              OPTION='VARI_ELNO',
+               VARI_INTERNE=('VARI_ELNO'),
               GROUP_MA='JOINT');
 
-U_F=CALC_ELEM(reuse =U_F,
+U_F=CALC_CHAMP(reuse =U_F,
 
               RESULTAT=U_F,
-              OPTION='SIEF_ELNO',
+               CONTRAINTE=('SIEF_ELNO'),
               GROUP_MA='JOINT');
 
 U_F=CALC_NO(reuse =U_F,

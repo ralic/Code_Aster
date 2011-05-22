@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 23/05/2011   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -723,7 +723,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
               UTMESS('F','POST0_12')
            arcs.append((m['COOR_ORIG'],m['CENTRE'],m['NB_POINTS'],m['ANGLE'],m['DNOR']))
       elif m['TYPE']=='GROUP_NO':
-        ngrno=m['GROUP_NO'].ljust(8).upper()
+        ngrno=m['GROUP_NO'].ljust(8)
         collgrno=aster.getcolljev(n_mailla.ljust(8)+'.GROUPENO')
         if ngrno not in collgrno.keys() :
           UTMESS('F','POST0_13',valk=[ngrno,n_mailla])
@@ -733,7 +733,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
           l_coor_group.append(aster.getvectjev(n_mailla.ljust(8)+'.COORDO    .VALE',3*(node-1),3))
         groups.append(l_coor_group)
       elif m['TYPE']=='GROUP_MA':
-        ngrma=m['GROUP_MA'].ljust(8).upper()
+        ngrma=m['GROUP_MA'].ljust(8)
         if ngrma not in collgrma.keys() :
           UTMESS('F','POST0_14',valk=[ngrma,n_mailla])
         grpm=collgrma[ngrma]
@@ -779,7 +779,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   motscles['CREA_GROUP_NO']=[]
   for m in LIGN_COUPE :
       if m['TYPE'] in ('GROUP_NO','GROUP_MA') :
-        motscles['CREA_GROUP_NO'].append(_F(GROUP_MA=m[m['TYPE']].ljust(8).upper(),) )
+        motscles['CREA_GROUP_NO'].append(_F(GROUP_MA=m[m['TYPE']].ljust(8),) )
       else :
         motscles['CREA_GROUP_NO'].append(_F(GROUP_MA='LICOU'+str(iocc),) )
         iocc=iocc+1
@@ -856,7 +856,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
      # on définit le groupe de noeud pour post_releve_t
      if m['TYPE'] in ('GROUP_NO','GROUP_MA'):
-         groupe=m[m['TYPE']].ljust(8).upper()
+         groupe=m[m['TYPE']].ljust(8)
          nomgrma=groupe
      else:
          ioc2=ioc2+1
@@ -938,7 +938,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
           if m['INTITULE'] !=None : intitl=m['INTITULE']
           else                    : intitl='l.coupe'+str(ioc2)
         else:
-          groupe=m[m['TYPE']].ljust(8).upper()
+          groupe=m[m['TYPE']].ljust(8)
           if m['INTITULE'] !=None : intitl=m['INTITULE']
           else                    : intitl=groupe
         mcACTION.append( _F(INTITULE  = intitl,

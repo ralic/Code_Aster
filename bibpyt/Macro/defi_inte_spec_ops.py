@@ -1,8 +1,8 @@
-#@ MODIF defi_inte_spec_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF defi_inte_spec_ops Macro  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -122,7 +122,8 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
               denom=numpy.array([ (frqmoy**2-FREQ**2)**2 \
                                    for FREQ in x1 ])
               denom=denom+x11
-              g0=numpy.array([valr]*len(denom))
+              g0=2.*math.pi*numpy.array([valr]*len(denom))
+ #              g0=numpy.array([valr]*len(denom))             
               g0=g0*xnum/denom
               valc=[]
               for i in range(len(x1)): valc=valc+[x1[i],g0[i],0.]

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CONTACT
 
@@ -68,14 +68,14 @@ CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
                               _F(GROUP_MA = 'MAILG',
                                 MATER = MATG,
                                 ), )
-                       ) 
+                       )
 
 # PRESSION P1
-# L INSTANT DE REFERENCE EST T= -1 
+# L INSTANT DE REFERENCE EST T= -1
 
 
 R1 = 0.82
-R2 = 0.98 
+R2 = 0.98
 R3 = 1.
 R4 = 2.
 P0 = 1.E-3
@@ -122,7 +122,7 @@ F9 = A*(B*(R3-R2+(C*(D +(G*exp(-E*K*6.E-1))+(H*6.E-1))))+K1)
 F10 = A*(B*(R3-R2+(C*(D +(G*exp(-E*K*7.E-1))+(H*7.E-1))))+K1)
 F11 = A*(B*(R3-R2+(C*(D +(G*exp(-E*K*8.E-1))+(H*8.E-1))))+K1)
 F12 = A*(B*(R3-R2+(C*(D +(G*exp(-E*K*9.E-1))+(H*9.E-1))))+K1)
-                             
+
 PRES_F = DEFI_FONCTION( NOM_PARA = 'INST',
                         PROL_DROITE = 'CONSTANT',
                         PROL_GAUCHE = 'EXCLU',
@@ -155,19 +155,19 @@ CONT = DEFI_CONTACT   (MODELE      = MO,
                        FORMULATION = 'DISCRETE',
                        REAC_GEOM   = 'CONTROLE',
                        NB_ITER_GEOM = 2,
-                       ZONE =_F( 
+                       ZONE =_F(
                                  GROUP_MA_MAIT = 'DDAG',
-                                 GROUP_MA_ESCL = 'DBCP',    
+                                 GROUP_MA_ESCL = 'DBCP',
                                ),
                       );
- 
-                                  
+
+
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
                          _F( CHARGE = BLOC),
                          _F( CHARGE = PRES),),
-                      CONTACT   = CONT,   
+                      CONTACT   = CONT,
                       COMP_INCR =_F(RELATION ='LEMAITRE',PARM_THETA = 0.5,
                                     GROUP_MA = 'MAILG',
                                     ITER_INTE_MAXI = 1000),
@@ -177,21 +177,21 @@ RESU = STAT_NON_LINE (MODELE = MO,
                       SOLVEUR =_F(SYME='OUI',
                                    METHODE='LDLT'),
                       NEWTON    =_F(
-                                MATRICE ='TANGENTE', 
+                                MATRICE ='TANGENTE',
                                 REAC_ITER= 1),
                       CONVERGENCE=_F(
                                 RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 25),
                         )
 
-RESU = CALC_ELEM( reuse= RESU,
+RESU = CALC_CHAMP( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_ELNO',)
+                   CONTRAINTE=('SIEF_ELNO'),)
 RESU = CALC_NO ( reuse= RESU,
                   RESULTAT = RESU,
                   OPTION = 'SIEF_NOEU',)
 
-TEST_RESU( 
+TEST_RESU(
           RESU=( _F(RESULTAT = RESU,
                    NUME_ORDRE =125,
                    NOM_CHAM ='DEPL',
@@ -227,6 +227,6 @@ TEST_RESU(
          )
 
 
-     
-           
+
+
 FIN()

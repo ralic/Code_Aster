@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ESSAI DE PLASTICITE (MISES ECR. ISOT. ASYM BARRE)
 # ssnl112l.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,8 +93,8 @@ U5=STAT_NON_LINE(
                 ITER_LINE_MAXI = 3)
               )
 
-U5=CALC_ELEM( reuse=U5,
-                            OPTION='SIEF_ELNO',
+U5=CALC_CHAMP( reuse=U5,
+                             CONTRAINTE=('SIEF_ELNO'),
                           RESULTAT=U5,
               )
 

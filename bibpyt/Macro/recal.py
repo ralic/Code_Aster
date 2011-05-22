@@ -1,28 +1,28 @@
-#@ MODIF recal Macro  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal Macro  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
 #___________________________________________________________________________
 #
 #           MODULE DE CALCUL DISTRIBUE POUR MACR_RECAL
-# 
+#
 #  Utilisable en mode EXTERNE, voir les flags avec "python recal.py -h"
 #___________________________________________________________________________
 
@@ -95,7 +95,7 @@ def affiche(unity, filename, label='', filetype='stderr'):
 ======================================================================
 ======================================================================
 
-""" % (label, filetype, txt)   
+""" % (label, filetype, txt)
 
        f.close()
 
@@ -105,7 +105,7 @@ def affiche(unity, filename, label='', filetype='stderr'):
            fw.close()
        else:
            print txt
-   except Exception, e: 
+   except Exception, e:
        print e
    return
 
@@ -272,7 +272,7 @@ def get_tables(tables_calc, tmp_repe_table, prof):
       for mdl in glob.glob(os.path.join(bibpyt, '*')):
          sys.path.append(os.path.join(os.environ['ASTER_ROOT'], version, 'bibpyt', mdl))
    try:
-      from lire_table_ops import lecture_table
+      from Utilitai.TableReader import TableReaderFactory
    except:
       UTMESS('F','RECAL0_23')
 
@@ -290,7 +290,8 @@ def get_tables(tables_calc, tmp_repe_table, prof):
          UTMESS('F','RECAL0_24',valk=str(err))
 
       try:
-         table_lue = lecture_table(texte, 1, ' ')
+         reader = TableReaderFactory(texte, 'ASTER', ' ')
+         table_lue = reader.read(1)
          list_para = table_lue.para
          tab_lue   = table_lue.values()
       except Exception, err:
@@ -559,7 +560,7 @@ class CALCULS_ASTER:
          from Cata import cata
          from Cata.cata import OPER, MACRO
          from Accas import _F
-    
+
          # Declaration de toutes les commandes Aster
          import cata
          from Cata.cata import *
@@ -755,7 +756,7 @@ class CALCULS_ASTER:
         if resudir:
             if not os.path.isdir(resudir):
                 try:    os.mkdir(resudir)
-                except: 
+                except:
                     if info>=1: UTMESS('A','RECAL0_82',valk=resudir)
                     resudir = None
         if not resudir:
@@ -772,7 +773,7 @@ class CALCULS_ASTER:
                   pref = shared_tmp + os.sep + 'tmp_macr_recal_'
                   break
             # Si batch alors on place les fichiers dans un repertoire partage
-            if prof['mode'][0]=='batch': 
+            if prof['mode'][0]=='batch':
                   shared_tmp = run.get('shared_tmp')
                   if not shared_tmp: shared_tmp = os.path.join( os.environ['HOME'], 'tmp_macr_recal')
                   pref = shared_tmp + os.sep + 'tmp_macr_recal1_'
@@ -781,7 +782,7 @@ class CALCULS_ASTER:
             if shared_tmp:
                if not os.path.isdir(shared_tmp):
                    try:    os.mkdir(shared_tmp)
-                   except: 
+                   except:
                       if info>=1: UTMESS('F','RECAL0_82',valk=shared_tmp)
 
             resudir = tempfile.mkdtemp(prefix=pref)
@@ -867,7 +868,7 @@ class CALCULS_ASTER:
                   affiche(unity=None, filename=output_filename, label=label, filetype='stdout')
                   error_filename = '.'.join(output_filename.split('.')[0:-1]) + '.e' + output_filename.split('.')[-1][1:]
                   affiche(unity=None, filename=error_filename, label=label, filetype='stderr')
-              except Exception, e: 
+              except Exception, e:
                   print e
 
               if diag in ['<F>_NOT_RUN', '<A>_NOT_SUBMITTED']:
@@ -876,7 +877,7 @@ class CALCULS_ASTER:
                   UTMESS('A', 'RECAL0_83', valk=(label, output_filename))
 
 
-        if not d_diag: 
+        if not d_diag:
             UTMESS('F', 'RECAL0_84', valk=resudir)
         self.list_diag = [ d_diag[label] for label in labels ]
 
@@ -1124,7 +1125,7 @@ class CALC_ERROR:
            print "AA1/norme de l'erreur=", self.norme
            print "AA1/norme de J (fonctionnelle)=", str(self.J)
 
-       if self.INFO>=1: 
+       if self.INFO>=1:
            UTMESS('I', 'RECAL0_30')
 
        if self.objective_type=='vector':
@@ -1161,7 +1162,7 @@ class CALC_ERROR:
 
       # Creation de la liste des matrices de sensibilités
       L_A=[]
-      for i in range(len(reponses)):     
+      for i in range(len(reponses)):
           L_A.append(NP.zeros((len(resu_exp[i]),len(val))) )
 
       for k in range(len(val)):   # pour une colone de A (dim = nb parametres)
@@ -1182,7 +1183,7 @@ class CALC_ERROR:
                        fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
                        fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
                        fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
-                       fic.close() 
+                       fic.close()
                    UTMESS('F','RECAL0_45',valk=para[k])
                    return
 
@@ -1230,7 +1231,7 @@ class CALC_ERROR:
               for l in range(len(self.A[:,0])):
                    norme_A_nodim += self.A_nodim[l,c] * self.A_nodim[l,c]
                    norme_A       += self.A[l,c] * self.A[l,c]
-              self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim ) 
+              self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim )
               self.norme_A[0,c] = math.sqrt( norme_A )
           if self.debug:
               print "AA1/norme_A_nodim=", self.norme_A_nodim
@@ -1282,7 +1283,7 @@ if __name__ == '__main__':
 
 
         from optparse import OptionParser, OptionGroup
-    
+
         p = OptionParser(usage='usage: %s fichier_export [options]' % sys.argv[0])
 
         # Current estimation
@@ -1331,7 +1332,7 @@ if __name__ == '__main__':
         ASTER_ROOT = None
         if options.aster_root:                  ASTER_ROOT = options.aster_root
         elif os.environ.has_key('ASTER_ROOT'):  ASTER_ROOT = os.environ['ASTER_ROOT']
-        if not ASTER_ROOT: raise "ASTER_ROOT is missing! Set it by --aster_root flag or environment variable ASTER_ROOT" 
+        if not ASTER_ROOT: raise "ASTER_ROOT is missing! Set it by --aster_root flag or environment variable ASTER_ROOT"
         if not os.path.isdir(ASTER_ROOT): raise "Wrong directory for ASTER_ROOT : %s" % ASTER_ROOT
         os.environ['ASTER_ROOT'] = ASTER_ROOT
 #         sys.path.append(get_absolute_path(os.path.join(ASTER_ROOT, 'STA10.1', 'bibpyt' )))
@@ -1351,16 +1352,16 @@ if __name__ == '__main__':
         info = options.info
 
         # Import des modules supplementaires
-        if options.SOURCES_ROOT: 
+        if options.SOURCES_ROOT:
              if not os.path.isdir(options.SOURCES_ROOT): raise "Wrong directory for sources_root : %s" % options.SOURCES_ROOT
-             else: 
+             else:
                  sys.path.insert(0, options.SOURCES_ROOT)
                  sys.path.insert(0, os.path.join(options.SOURCES_ROOT, 'sources'))
 
 
         # MACR_RECAL inputs
         if options.mr_parameters:
-            try:    
+            try:
                 if info>=1: print "Read MR parameters file : %s" % options.mr_parameters
                 execfile(options.mr_parameters)
             except: raise "Wrong file for MR Parameters: %s" % options.mr_parameters
@@ -1419,7 +1420,7 @@ if __name__ == '__main__':
             if not (options.input_step or  options.input_step_file): raise "Missing input step parameters"
             if     (options.input_step and options.input_step_file): raise "Error : please use only one choice for input step parameters definition"
 
-            if options.input_step_file: 
+            if options.input_step_file:
                 try:
                     f = open(options.input_step_file, 'r')
                     options.input_step = f.read()
@@ -1491,7 +1492,7 @@ if __name__ == '__main__':
     if not isFromYacs:        # Execution en mode EXTERNE uniquement
 
         # Calcul de l'erreur par rapport aux donnees experimentale
-        if objective == 'error': 
+        if objective == 'error':
             E = CALC_ERROR(
                 experience          = experience,
                 X0                  = X0,

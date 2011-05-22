@@ -1,4 +1,4 @@
-#@ MODIF salomeScript Templates  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeScript Templates  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,6 +63,7 @@ if STUDY:
     salome.salome_init(study._get_StudyId())
     import visu_gui
     import VISU
+    import visu
     myVisu = visu_gui.myVisu
     myVisu.SetCurrentStudy(study)
 
@@ -71,6 +72,7 @@ else:
     salome.salome_init()
     import visu_gui
     import VISU
+    import visu
     myVisu = visu_gui.myVisu
     myVisu.SetCurrentStudy(salome.myStudy)
     # ou la premiere detectee ?
@@ -109,14 +111,20 @@ else :
      LISTE_CHAMP_NODE = myResult.GetFields(MAILLAGE,VISU.NODE)
 
      resu=[]
-
+     resuanim=[]
+     
+     # Si on n'est pas en DEPL, on a une visualisation par composante
+     # Si on est en DEPL, on a une visualisation de la deformee 
+     # Si on a plusieurs instants, on a visualisation de type Presentation animee
 
      if CHOIX =='ON_DEFORMED' :
          if LISTE_CHAMP_NODE ==[] : raise "Erreur de champ"
          TYPE_ENTITE=VISU.NODE
          NOM_CHAMP = LISTE_CHAMP_NODE[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
-
+         L_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         nINST = len(L_INST)
+         
          if LISTE_CHAMP_CELL ==[] :
             TYPE_SCAL=VISU.NODE
             NOM_CHAMP_SCAL = LISTE_CHAMP_NODE[1]
@@ -125,11 +133,26 @@ else :
             NOM_CHAMP_SCAL = LISTE_CHAMP_CELL[0]
 
          nCMP=myResult.GetNumberOfComponents(MAILLAGE,TYPE_SCAL,NOM_CHAMP_SCAL)
+         name0=NOM_CHAMP_SCAL.rstrip('_')+'_'
+         name=MAILLAGE+'_'+NOM_CHAMP.rstrip('_')+'_'
+         
          for i in range(1,nCMP+1) :
-            res = myVisu.DeformedShapeAndScalarMapOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
-            res.SetScalarField(TYPE_SCAL,NOM_CHAMP_SCAL,NUM_INST)
-            res.SetScalarMode(i)
-            resu.append(res)
+            if nINST == 1:
+               res = myVisu.DeformedShapeAndScalarMapOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+               res.SetScalarField(TYPE_SCAL,NOM_CHAMP_SCAL,NUM_INST)
+               res.SetTitle(name0+str(i))
+               res.SetScalarMode(i)
+               resu.append(res)
+            else :
+               res=VISU.ColoredPrs3dHolder.BasicInput(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+               MyPres=myVisu.GetColoredPrs3dCache(myVisu.GetCurrentStudy())
+               resanim = MyPres.CreateHolder(VISU.TDEFORMEDSHAPEANDSCALARMAP,res)
+               visu.SetName(resanim,name+str(i))
+               resanim.GetDevice().SetScalarField(TYPE_SCAL,NOM_CHAMP_SCAL,NUM_INST)
+               resanim.GetDevice().SetTitle(name0+str(i))
+               resanim.GetDevice().SetScalarMode(i)
+               resu.append(res)
+               resuanim.append(resanim)
 
 
      if CHOIX == 'DEPL' :
@@ -137,23 +160,55 @@ else :
          if LISTE_CHAMP_NODE ==[] : raise "Erreur de champ"
          NOM_CHAMP = LISTE_CHAMP_NODE[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
-         res = myVisu.DeformedShapeOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
-         res.ShowColored(True)
+         L_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         nINST = len(L_INST)
          nCMP=1
-         resu.append(res)
-
+         name0=NOM_CHAMP.rstrip('_')
+         name=MAILLAGE+'_'+name0
+         
+         if nINST ==1:
+             res = myVisu.DeformedShapeOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+             res.ShowColored(True)
+             res.SetTitle(name0)
+             resu.append(res)
+         else :
+             res=VISU.ColoredPrs3dHolder.BasicInput(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+             MyPres=myVisu.GetColoredPrs3dCache(myVisu.GetCurrentStudy())
+             resanim = MyPres.CreateHolder(VISU.TDEFORMEDSHAPE,res)
+             visu.SetName(resanim,name)
+             resanim.GetDevice().ShowColored(True)
+             resanim.GetDevice().SetTitle(name0)
+             resu.append(res)
+             resuanim.append(resanim)
 
      if CHOIX == 'GAUSS' :
          TYPE_ENTITE=VISU.CELL
          if LISTE_CHAMP_CELL ==[] : raise "Erreur de champ"
          NOM_CHAMP = LISTE_CHAMP_CELL[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
+         L_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         nINST = len(L_INST)
          nCMP=myResult.GetNumberOfComponents(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         name0=NOM_CHAMP.rstrip('_')+'_'
+         name=MAILLAGE+'_'+name0
+         
          for i in range(1,nCMP+1) :
-             res = myVisu.GaussPointsOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
-             res.SetIsDispGlobalScalarBar(False)
-             res.SetScalarMode(i)
-             resu.append(res)
+             if nINST == 1:
+                 res = myVisu.GaussPointsOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+                 res.SetIsDispGlobalScalarBar(False)
+                 res.SetScalarMode(i)
+                 res.SetTitle(name0+str(i))
+                 resu.append(res)
+             else :
+                 res=VISU.ColoredPrs3dHolder.BasicInput(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+                 MyPres=myVisu.GetColoredPrs3dCache(myVisu.GetCurrentStudy())
+                 resanim = MyPres.CreateHolder(VISU.TGAUSSPOINTS,res)
+                 visu.SetName(resanim,name+str(i))
+                 resanim.GetDevice().SetIsDispGlobalScalarBar(False)
+                 resanim.GetDevice().SetScalarMode(i)
+                 resanim.GetDevice().SetTitle(name0+str(i))
+                 resu.append(res)
+                 resuanim.append(resanim)
 
 
      if CHOIX == 'ISO' :
@@ -166,11 +221,27 @@ else :
              NOM_CHAMP = LISTE_CHAMP_CELL[0]
 
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
+         L_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         nINST = len(L_INST)
          nCMP=myResult.GetNumberOfComponents(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         name0=NOM_CHAMP.rstrip('_')+'_'
+         name=MAILLAGE+'_'+name0
+         
          for i in range(1,nCMP+1) :
-           res= myVisu.ScalarMapOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
-           res.SetScalarMode(i)
-           resu.append(res)
+             if nINST == 1:
+                 res= myVisu.ScalarMapOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+                 res.SetScalarMode(i)
+                 res.SetTitle(name0+str(i))
+                 resu.append(res)
+             else :
+                 res=VISU.ColoredPrs3dHolder.BasicInput(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+                 MyPres=myVisu.GetColoredPrs3dCache(myVisu.GetCurrentStudy())
+                 resanim = MyPres.CreateHolder(VISU.TSCALARMAP,res)
+                 visu.SetName(resanim,name+str(i))
+                 resanim.GetDevice().SetScalarMode(i)
+                 resanim.GetDevice().SetTitle(name0+str(i))
+                 resu.append(res)
+                 resuanim.append(resanim)  
 
 
 
@@ -190,7 +261,17 @@ else :
              myView1 = myViewManager.Create3DView()
              if myView1 is None : raise "Erreur de vue VTK"
 
-    myView1.DisplayOnly(resu[nCMP-1])
-    myView1.FitAll()
+    if nINST == 1 :
+        myView1.DisplayOnly(resu[nCMP-1])
+        myView1.FitAll()
+    else :
+        myView1.EraseAll()
+        #for anInfo in range(1,nINST+1) :
+        #   resu[nCMP-1].myTimeStampNumber = anInfo
+        #   resuanim[nCMP-1].Apply(resuanim[nCMP-1].GetDevice(),resu[nCMP-1], myView1)
+        resu[nCMP-1].myTimeStampNumber = nINST
+        resuanim[nCMP-1].Apply(resuanim[nCMP-1].GetDevice(),resu[nCMP-1], myView1)
+        myView1.FitAll()
 
 #%==================FIN ================================%
+

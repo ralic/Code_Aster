@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE ANGLES J.ANGLES
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
@@ -6,19 +6,19 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 #----------------------------------------------------------------------
@@ -37,64 +37,64 @@
 #               P1              P2
 #               o--------------o
 #              /I             /I
-#        P5   / I        P6  / I             
-#            o--+-----------o  I 
-#            I  I   Face5   I  I  Face4      
-#  Face3     I  I (derri.)  I  I (cote d.)   
-# (cote g.)  I  I           I  I             
-#            I  I  P3       I  I P4          
-#            I  o-----------I--o      - x    
-#            I /            I /              
-#         P7 I/          P8 I/               
-#            o--------------o                
-#                                            
+#        P5   / I        P6  / I
+#            o--+-----------o  I
+#            I  I   Face5   I  I  Face4
+#  Face3     I  I (derri.)  I  I (cote d.)
+# (cote g.)  I  I           I  I
+#            I  I  P3       I  I P4
+#            I  o-----------I--o      - x
+#            I /            I /
+#         P7 I/          P8 I/
+#            o--------------o
+#
 #          /       Face2
 #         z      (dessous)
 #
 #
 #    CHARGEMENT   (Traction-compression)  FX(T) <=> +
 #
-#            I 
-#            I 
+#            I
+#            I
 #   1.0E+2 N I   +   +                   +
 #            I
 #            I
-#           -I---I---I---I---+---+---I---I---+---> T 
+#           -I---I---I---I---+---+---I---I---+---> T
 #            I  1s  2s  3s  4s  5s  6s  7s  8s
 #            I
 #  -1.0E+2 N I           +           +
 #            I
-#            I 
+#            I
 #
 #
 #    CHARGEMENT   (Cisaillement)  FY(T) <=> x
 #
-#            I 
-#            I 
+#            I
+#            I
 #   1.0E+2 N I       x
 #            I
 #            I
-#           -I---x---I---x---x---I---x---I---x---> T 
+#           -I---x---I---x---x---I---x---I---x---> T
 #            I  1s  2s  3s  4s  5s  6s  7s  8s
 #            I
 #  -1.0E+2 N I                   x       x
 #            I
-#            I 
+#            I
 #
 #
 #    CHARGEMENT   (Cisaillement)  FZ(T) <=> *
 #
-#            I 
-#            I 
+#            I
+#            I
 #   1.0E+2 N I                   *       *
 #            I
 #            I
-#           -I---*---I---*---*---I---*---I---*---> T 
+#           -I---*---I---*---*---I---*---I---*---> T
 #            I  1s  2s  3s  4s  5s  6s  7s  8s
 #            I
 #  -1.0E+2 N I       *
 #            I
-#            I 
+#            I
 #
 #--------------------------------------------------------------
 #
@@ -124,27 +124,27 @@ CUBE=DEFI_GROUP(reuse = CUBE,
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
-                CREA_GROUP_MA=(_F(OPTION='APPUI', 
+                CREA_GROUP_MA=(_F(OPTION='APPUI',
                                   TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE1',
                                   NOM='FACE1_3D'),
-                               _F(OPTION='APPUI', 
+                               _F(OPTION='APPUI',
                                   TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE2',
                                   NOM='FACE2_3D'),
-                               _F(OPTION='APPUI', 
+                               _F(OPTION='APPUI',
                                   TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE3',
                                   NOM='FACE3_3D'),
-                               _F(OPTION='APPUI', 
+                               _F(OPTION='APPUI',
                                   TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE4',
                                   NOM='FACE4_3D'),
-                               _F(OPTION='APPUI', 
+                               _F(OPTION='APPUI',
                                   TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE5',
                                   NOM='FACE5_3D'),
-                               _F(OPTION='APPUI', 
+                               _F(OPTION='APPUI',
                                   TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE6',
                                   NOM='FACE6_3D')),
@@ -154,7 +154,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
 WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                             INTERPOL='LOG',
                           PROL_DROITE='LINEAIRE',
-                         PROL_GAUCHE='LINEAIRE', 
+                         PROL_GAUCHE='LINEAIRE',
                          VALE=(  138.,    1000000.,
                                  152.,     500000.,
                                  165.,     200000.,
@@ -300,9 +300,9 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                                          REAC_INCR    = 0 ))
 
 
-SOL_NL = CALC_ELEM( reuse    = SOL_NL,
+SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
-                    OPTION   = 'SIEF_ELNO',
+                     CONTRAINTE=('SIEF_ELNO'),
                   )
 
 SOL_NL = CALC_NO( reuse    = SOL_NL,
@@ -369,32 +369,32 @@ F_NLNO2A=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                      )
 
 """
-IMPR_RESU ( FORMAT='MED', 
+IMPR_RESU ( FORMAT='MED',
             RESU=_F( RESULTAT = SOL_NL,
                    ),
           )
-IMPR_RESU ( FORMAT='RESULTAT', 
+IMPR_RESU ( FORMAT='RESULTAT',
             RESU=_F( RESULTAT  = SOL_NL,
                      NOEUD     = ('N213','N214', 'N215'),
                      IMPR_COOR = 'OUI',
                    ),
           )
 
-IMPR_RESU ( FORMAT='MED', 
+IMPR_RESU ( FORMAT='MED',
             RESU=_F(
                      MAILLAGE = CUBE,
                      CHAM_GD  = FAT_NLNO,
                    ),
           )
 
-IMPR_RESU ( FORMAT='MED', 
+IMPR_RESU ( FORMAT='MED',
             RESU=_F(
                      MAILLAGE = CUBE,
                      CHAM_GD  = F_NLNO1A,
                    ),
           )
 
-IMPR_RESU ( FORMAT='MED', 
+IMPR_RESU ( FORMAT='MED',
             RESU=_F(
                      MAILLAGE = CUBE,
                      CHAM_GD  = F_NLNO2A,

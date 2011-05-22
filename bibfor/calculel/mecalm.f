@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,7 +83,7 @@ C     --- VARIABLES LOCALES ---
       INTEGER IAUX,II,III,IB,J,K,IBID,IE
       INTEGER IOCC,IOPT,IAINST
       INTEGER L1,L2,L3,L4,L5,L6
-      INTEGER N1
+      INTEGER N1,N2
       INTEGER JPA,JOPT,JCHA,JNMO
       INTEGER NBAC,NBPA,NBPARA
       INTEGER JDIM,JCOOR,JTYPE,LTYMO,NPASS
@@ -176,6 +176,10 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       CARELE=' '
       CALL GETVID(' ','CARA_ELEM',1,1,1,CARELE,N1)
 
+      CALL GETVTX ( ' ', 'OPTION', 1,1,0, K8B, N2 )
+      NBOPT = -N2
+      CALL WKVECT ( LESOPT, 'V V K16', NBOPT, JOPT )
+      CALL GETVTX (' ', 'OPTION'  , 1, 1, NBOPT, ZK16(JOPT), N2)
       CALL MODOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
 
@@ -358,7 +362,7 @@ C               "VARC_ELGA","VARI_ELNO","VATU_ELNO"
 C             + "SIEF_ELNO" SAUF CAS XFEM
 C    ------------------------------------------------------------------
 
-        CALL CALCOP(OPTION,RESUCO,RESUC1,NBORDR,ZI(JORDR),KCHA,NCHAR,
+        CALL CALCOP(OPTION,RESUCO,RESUC1,KNUM,NBORDR,KCHA,NCHAR,
      &              CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
         IF (IRET.EQ.0)GOTO 660
 
@@ -590,7 +594,7 @@ C    ------------------------------------------------------------------
             CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
             IF (IRET.GT.0)GOTO 110
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-C       OPTION 'SIEF_SENO_SEGA' EST NÉCESSAIRE SI X-FEM
+C       OPTION 'SIEF_SENO_SEGA' EST NECESSAIRE SI X-FEM
             CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
             IF (IFISS.NE.0) THEN
               OPTIOX=BLAN24(1:16)

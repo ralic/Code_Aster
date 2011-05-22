@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CALCUL ELECTRIQUE ET THERMIQUE D'UN CYLINDRE
 # tpll101a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,10 +57,10 @@ POT_ELRE=THER_LINEAIRE(MODELE=MO,
                        CHAM_MATER=CHMAT_EL,
                        EXCIT=_F(CHARGE=CHAR_EL,),);
 
-POT_ELRE=CALC_ELEM(reuse =POT_ELRE,
+POT_ELRE=CALC_CHAMP(reuse =POT_ELRE,
                    RESULTAT=POT_ELRE,
                    INST=0.0,
-                   OPTION='SOUR_ELGA',);
+                    THERMIQUE=('SOUR_ELGA'),);
 
 TEST_RESU(RESU=(
       _F( RESULTAT = POT_ELRE,

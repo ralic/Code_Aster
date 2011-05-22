@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE MODELISATION DE LA RUPTURE D'UN BARRAGE 2D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_FROT
 # ssnp142c.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,16 +183,16 @@ U_F=STAT_NON_LINE(MODELE=MO,
 
 ################### POST TRAITEMENT U_F  #######################
 
-U_F=CALC_ELEM(reuse =U_F,
+U_F=CALC_CHAMP(reuse =U_F,
 
               RESULTAT=U_F,
-              OPTION='VARI_ELNO',
+               VARI_INTERNE=('VARI_ELNO'),
               GROUP_MA='JOINT');
 
-U_F=CALC_ELEM(reuse =U_F,
+U_F=CALC_CHAMP(reuse =U_F,
 
               RESULTAT=U_F,
-              OPTION='SIEF_ELNO',
+               CONTRAINTE=('SIEF_ELNO'),
               GROUP_MA='JOINT');
 
 U_F=CALC_NO(reuse =U_F,

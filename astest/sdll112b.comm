@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #    PROBLEME REDUIT AU CAS PLAN (VOIR SDLL112A EN 3D)
 #******************************************************************
@@ -28,7 +28,7 @@ DEBUT( CODE=_F(  NOM = 'SDLL112B',NIV_PUB_WEB='INTERNET') )
 # MODELE POUTRE  CAS 2D  PLAN XZ
 
 
-MAILLAGE=LIRE_MAILLAGE( 
+MAILLAGE=LIRE_MAILLAGE(
                            )
 
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
@@ -49,7 +49,7 @@ CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
                            )
 
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
-                             POUTRE=_F( 
+                             POUTRE=_F(
        GROUP_MA = 'TOUT',
   SECTION = 'GENERALE',
                                       CARA = ( 'A',         'IZ',
@@ -93,15 +93,15 @@ MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,    MATR_B=MASSE,
 MODE=NORM_MODE(reuse=MODE,   MODE=MODE,   NORME='TRAN_ROTA',
                   )
 
-MODE=CALC_ELEM(reuse=MODE, 
-                     RESULTAT=MODE,         OPTION='SIEF_ELGA',
+MODE=CALC_CHAMP(reuse=MODE,
+                     RESULTAT=MODE,          CONTRAINTE=('SIEF_ELGA'),
                   )
 
-MODE=CALC_NO(  reuse=MODE,  RESULTAT=MODE, 
-                       OPTION='FORC_NODA', 
+MODE=CALC_NO(  reuse=MODE,  RESULTAT=MODE,
+                       OPTION='FORC_NODA',
                   )
 
-MODE=CALC_NO(  reuse=MODE,  RESULTAT=MODE, 
+MODE=CALC_NO(  reuse=MODE,  RESULTAT=MODE,
                        OPTION='REAC_NODA',
                   )
 
@@ -258,8 +258,8 @@ MODE_ST1=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                                            AVEC_CMP = 'DX') )
                           )
 
-MODE_ST1=CALC_ELEM(reuse=MODE_ST1,  
-                     RESULTAT=MODE_ST1,     OPTION='SIEF_ELGA',
+MODE_ST1=CALC_CHAMP(reuse=MODE_ST1,
+                     RESULTAT=MODE_ST1,      CONTRAINTE=('SIEF_ELGA'),
                   )
 
 MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,
@@ -321,8 +321,8 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
                      REFERENCE = 'SOURCE_EXTERNE'
-   
-                                                                    ))                                                                                                                       
+
+                                                                    ))
            )
 
 #-----------------------------------------
@@ -429,7 +429,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO3, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '9.02.18'
                      REFERENCE = 'SOURCE_EXTERNE'
- 
+
                                                                           ),
                   _F(  RESULTAT = SISM_MO3, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
                     NOEUD_CMP = ('DIR', 'X',),
@@ -511,12 +511,12 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,    MATR_MASS=MASSE,
                          MODE_STAT=_F(  TOUT = 'OUI',
                                         TOUT_CMP = 'OUI')  )
 
-MODE_STA=CALC_ELEM(reuse=MODE_STA, 
-                     RESULTAT=MODE_STA,     OPTION='SIEF_ELGA',
+MODE_STA=CALC_CHAMP(reuse=MODE_STA,
+                     RESULTAT=MODE_STA,      CONTRAINTE=('SIEF_ELGA'),
                   )
 
 MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,
-                       OPTION='FORC_NODA', 
+                       OPTION='FORC_NODA',
                   )
 
 MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,
@@ -568,7 +568,7 @@ SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
 
 #-----------------------------------------
 # TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL         
+# VALEUR DE REFERENCE DEPL
 
 N3_DX_4=1.784933E-04
 
@@ -587,7 +587,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '9.02.18'
-                     REFERENCE = 'SOURCE_EXTERNE' 
+                     REFERENCE = 'SOURCE_EXTERNE'
                                                                            ),
                   _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
                     NOEUD_CMP = ('DIR', 'X',),
@@ -595,7 +595,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '9.02.18'
-                     REFERENCE = 'SOURCE_EXTERNE' 
+                     REFERENCE = 'SOURCE_EXTERNE'
 
                                                                    ),
                   _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
@@ -604,7 +604,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '9.02.18'
-                     REFERENCE = 'SOURCE_EXTERNE' 
+                     REFERENCE = 'SOURCE_EXTERNE'
 
                                                                    ))
            )
@@ -721,7 +721,7 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
 
 #-----------------------------------------
 # TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL         
+# VALEUR DE REFERENCE DEPL
 #   COMPOSANTES DX
 
 
@@ -756,7 +756,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 #
 #-----------------------------------------
 # TEST DES VALEURS DE REACTIONS
-# VALEUR DE REFERENCE REAC         
+# VALEUR DE REFERENCE REAC
 
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'REAC_NODA',

@@ -1,10 +1,9 @@
-      SUBROUTINE ALGOCG(DEFICO,RESOCO,MATASS,NOMA  ,RESU  ,
-     &                  CTCCVG)
+      SUBROUTINE ALGOCG(DEFICO,RESOCO,MATASS,NOMA  ,RESU  )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +25,6 @@ C
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 RESU,MATASS
-      INTEGER      CTCCVG(2)
 C      
 C ----------------------------------------------------------------------
 C
@@ -65,9 +63,6 @@ C               (DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
 C               DE NEWTON PRECEDENTE)
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
-C OUT CTCCVG : CODES RETOURS D'ERREUR DU COTNACT
-C                (1) NOMBRE MAXI D'ITERATIONS
-C                (2) MATRICE SINGULIERE
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
 C
@@ -562,11 +557,7 @@ C ======================================================================
 C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================
-C
-C --- VALEUR DES VARIABLES DE CONVERGENCE
-C
-      CTCCVG(1) = 0
-      CTCCVG(2) = 0
+
 C      
 C --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 C

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        PGL(3,3), XYZL(3,4), R8BID,VALR(2)
       REAL*8        DEPL(24)
       REAL*8        EFFGT(32), SIGTOT(24)
-      REAL*8        T2EV(4), T2VE(4), T1VE(9)
+      REAL*8        T2EV(4), T2VE(4)
       LOGICAL       DKG
       INTEGER       ICODRE
       CHARACTER*2   VAL
@@ -154,7 +154,7 @@ C     ----------------------------------
       END IF
 
       CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
-      CALL DXREPE( PGL,T2EV, T2VE, T1VE )
+      CALL DXREPE( PGL,T2EV, T2VE)
 
       CALL JEVECH('PDEPLAR','L',JDEPG)
       CALL UTPVGL(NNO,6,PGL,ZR(JDEPG),DEPL)
@@ -178,7 +178,7 @@ C       --------------------
 C ---   PASSAGE DES CONTRAINTES DU REPERE INTRINSEQUE
 C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C       ---------------------------------------
-        CALL DXSIRO(NP,T2EV,SIGTOT,ZR(JSIGM))
+        CALL DXSIRO(NP,T2VE,SIGTOT,ZR(JSIGM))
 
 C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'EPSI_ELNO' ) THEN
@@ -207,7 +207,7 @@ C               ----------------------------
 C ---     PASSAGE DES DEFORMATIONS  DU REPERE INTRINSEQUE
 C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C         ---------------------------------------
-        CALL DXSIRO(NP,T2EV,SIGTOT,ZR(JSIGM))
+        CALL DXSIRO(NP,T2VE,SIGTOT,ZR(JSIGM))
 C
 C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'SIEF_ELGA' ) THEN
@@ -292,7 +292,7 @@ C ---   PASSAGE DES EFFORTS GENERALISES DU REPERE INTRINSEQUE
 C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C       ---------------------------------------
         CALL JEVECH('PEFFORR','E',JEFFG)
-        CALL DXEFRO(NP,T2EV,EFFGT,ZR(JEFFG))
+        CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
 
 C
 C               ----------------------------
@@ -325,7 +325,7 @@ C
 C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C         ---------------------------------------
-        CALL DXEFRO(NP,T2EV,EFFGT,ZR(JEFFG))
+        CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
 
       END IF
       END

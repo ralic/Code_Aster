@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CYLINDRE EN THERMIQUE STATIONNAIRE ANISOTROPE (HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,8 +84,8 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
                           )
 
 
-TEMPE=CALC_ELEM( reuse=TEMPE, RESULTAT=TEMPE,
-                 OPTION='FLUX_ELNO',
+TEMPE=CALC_CHAMP( reuse=TEMPE, RESULTAT=TEMPE,
+                  THERMIQUE=('FLUX_ELNO'),
                  );
 
 TEST_RESU(RESU=(

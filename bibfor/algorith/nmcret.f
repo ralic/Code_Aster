@@ -1,0 +1,173 @@
+      SUBROUTINE NMCRET(PHASE ,TYPCOD,SDERRO,SDDISC,VALI  ,
+     &                  CODERE)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*4  PHASE
+      CHARACTER*24 SDERRO,CODERE
+      CHARACTER*19 SDDISC
+      CHARACTER*3  TYPCOD
+      INTEGER      VALI
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME - UTILITAIRE)
+C
+C GESTION DES CODES RETOURS
+C      
+C ----------------------------------------------------------------------
+C 
+C
+C IN  PHASE  : 'INIT' INITIALISE LA SD
+C              'SAUV' SAUVE LES CODES RETOURS
+C              'RECU' RECUPERE LES CODES RETOURS
+C IN  SDDISC : SD DISCRETISATION TEMPORELLE
+C IN  SDERRO : SD GESTION DES ERREURS
+C IN  CODERE : CHAM_ELEM CODE RETOUR INTEGRATION LDC
+C IN  TYPCOD : TYPE DU CODE RETOUR
+C               'LDC' - ERR. INTEG. COMPORTEMENT
+C               'PIL' - ERR. PILOTAGE
+C               'FAC' - ERR. FACTORISATION
+C               'CTC' - ERR. CONTACT DISCRET
+C              (PIL) CODE RETOUR PILOTAGE
+C               - 1 - BORNE ATTEINTE -> FIN DU CALCUL
+C                 0 - OK
+C                 1 - PAS DE SOLUTION
+C              (LDC) CODE RETOUR INTEGRATION DU COMPORTEMENT
+C                 0 - OK
+C                 1 - ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
+C                 2 - ERREUR DANS LES LDC SUR LA NON VERIFICATION DE
+C                     CRITERES PHYSIQUES 
+C                 3 - SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
+C              (CTC) CODE RETOUR CONTACT DISCRET
+C                 0 - OK
+C                 1 - NOMBRE MAXI D'ITERATIONS
+C                 2 - MATRICE SINGULIERE
+C              (FAC) CODE RETOUR FACTORISATION MATRICE GLOBALE
+C                 0 - OK
+C                 1 - MATRICE SINGULIERE
+C                 2 - ERREUR LORS DE LA FACTORISATION
+C                 3 - ON NE SAIT PAS SI SINGULIERE
+C I/O VALI   : VALEUR DU CODE RETOUR
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      ZLICC
+      PARAMETER   (ZLICC = 4)
+C
+      LOGICAL      ECHLDC,ECHPIL,ECHEQU,ECHCON(2)
+      INTEGER      IBID,I
+      REAL*8       R8BID
+      CHARACTER*8  KSTO
+      CHARACTER*24 K24BLA
+      CHARACTER*24 ERRCAR,ERRCVG
+      INTEGER      JECAR,JECVG
+C
+C ----------------------------------------------------------------------
+C
+C
+C --- ACCES SD
+C
+      ERRCAR = SDERRO(1:19)//'.CART'
+      ERRCVG = SDERRO(1:19)//'.CCVG'      
+      CALL JEVEUO(ERRCAR,'E',JECAR)
+      CALL JEVEUO(ERRCVG,'E',JECVG)
+      K24BLA = ' '
+C
+C --- PHASE RECUPERATION
+C
+      IF (PHASE.EQ.'RECU') THEN
+        IF (TYPCOD.EQ.'LDC') THEN
+          VALI = ZI(JECVG+1-1)
+        ELSEIF (TYPCOD.EQ.'PIL') THEN
+          VALI = ZI(JECVG+2-1)
+        ELSEIF (TYPCOD.EQ.'FAC') THEN
+          VALI = ZI(JECVG+3-1)
+          CALL NMERGE('SET','FAC',SDERRO,ECHEQU)
+        ELSEIF (TYPCOD.EQ.'CTC') THEN
+          VALI = ZI(JECVG+4-1)
+        ELSE
+          WRITE(6,*) 'TYPCOD: ',TYPCOD
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        CODERE = ZK24(JECAR)
+      ENDIF
+C
+C --- PHASE INITIALISATION
+C
+      IF (PHASE.EQ.'INIT') THEN
+        DO 10 I = 1,ZLICC
+          ZI(JECVG+I-1) = 0
+  10    CONTINUE
+        ZK24(JECAR) = K24BLA
+      ENDIF
+C
+C --- PHASE SAUVE LES CODES RETOURS
+C
+      IF (PHASE.EQ.'SAUV') THEN
+        ZK24(JECAR)   = CODERE
+        IF (TYPCOD.EQ.'LDC') THEN
+          ZI(JECVG+1-1) = VALI
+          ECHLDC = VALI.EQ.1
+          CALL NMERGE('SET','LDC',SDERRO,ECHLDC)
+        ELSEIF (TYPCOD.EQ.'PIL') THEN
+          ZI(JECVG+2-1) = VALI
+          ECHPIL = VALI.EQ.1
+          CALL NMERGE('SET','PIL',SDERRO,ECHPIL)
+        ELSEIF (TYPCOD.EQ.'FAC') THEN
+          CALL ASSERT( VALI.EQ.0 .OR.
+     &                 VALI.EQ.1 .OR.
+     &                 VALI.EQ.3 )
+          CALL UTDIDT('L'   ,SDDISC,'LIST',IBID  ,'ALGO_DECOUPE',
+     &                R8BID ,IBID  ,KSTO  )
+          ZI(JECVG+3-1) = VALI
+          ECHEQU = VALI.EQ.1 .AND. KSTO.EQ.'DECOUPE'
+          CALL NMERGE('SET','FAC',SDERRO,ECHEQU)
+        ELSEIF (TYPCOD.EQ.'CTC') THEN
+          ZI(JECVG+4-1) = VALI
+          ECHCON(1) = VALI .EQ. 1
+          CALL NMERGE('SET','CC1',SDERRO,ECHCON(1))
+          ECHCON(2) = VALI .EQ. 2
+          CALL NMERGE('SET','CC2',SDERRO,ECHCON(1))
+        ELSE
+          WRITE(6,*) 'TYPCOD: ',TYPCOD
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ENDIF
+      END

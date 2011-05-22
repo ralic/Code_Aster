@@ -1,10 +1,10 @@
-        SUBROUTINE LCCONV ( LOI,  DY,     DDY,  NR, ITMAX, TOLER, ITER,
-     &          INTG, NMAT, MATER, NBCOMM, R, RINI, TYPESS, ESSAI,
+        SUBROUTINE LCCONV ( LOI,  YD,DY, DDY,  NR, ITMAX, TOLER, ITER,
+     &          INTG, NMAT, MATER, R, RINI,EPSTR,TYPESS, ESSAI,
      &          ICOMP, IRTETI)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,10 +52,9 @@ C           IRTETI = 3:  REDECOUPAGE DU PAS DE TEMPS
 C       ----------------------------------------------------------------
         INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,  ICOMP
         INTEGER         IRTET, IRTETI, NMAT
-        REAL*8          TOLER,  ESSAI,  DDY(*), DY(*),R(*),RINI(*)
-        REAL*8          MATER(NMAT,2)
+        REAL*8          TOLER,ESSAI, DDY(*), DY(*),R(*),RINI(*),YD(*)
+        REAL*8          MATER(NMAT,2), EPSTR(6)
         CHARACTER*16    LOI
-        INTEGER         NBCOMM(NMAT,3)
 C       ----------------------------------------------------------------
 C
          IRTETI = 0
@@ -66,8 +65,8 @@ C
          IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
 C
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMCV (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
-     &          NMAT,NBCOMM,R,RINI,IRTET)
+         CALL LCMMCV ( YD, DY, DDY, NR, ITMAX,  TOLER, ITER,
+     &          R,RINI,EPSTR,IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
       ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
          CALL IRRCVG ( DY, DDY, NR, NMAT, MATER, ITMAX, TOLER, ITER,

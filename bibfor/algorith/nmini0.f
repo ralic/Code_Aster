@@ -1,13 +1,13 @@
       SUBROUTINE NMINI0(ZPMET ,ZPCRI ,ZCONV ,ZPCON ,ZNMETH,
-     &                  ZLICC ,FONACT,PARMET,PARCRI,CONV  ,
-     &                  PARCON,METHOD,LICCVG,ETA   ,NUMINS,
-     &                  MTCPUI,MTCPUP,FINPAS,MATASS,ZMEELM,
-     &                  ZMEASS,ZVEELM,ZVEASS,ZSOLAL,ZVALIN)
+     &                  FONACT,PARMET,PARCRI,CONV  ,PARCON,
+     &                  METHOD,ETA   ,NUMINS,MTCPUP,FINPAS,
+     &                  MATASS,ZMEELM,ZMEASS,ZVEELM,ZVEASS,
+     &                  ZSOLAL,ZVALIN)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,19 +22,18 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE MABBAS M.ABBAS
+C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_21
 C 
       IMPLICIT NONE
       INTEGER      ZPMET ,ZPCRI ,ZCONV
-      INTEGER      ZPCON ,ZNMETH,ZLICC
+      INTEGER      ZPCON ,ZNMETH
       INTEGER      FONACT(*)
       REAL*8       PARMET(ZPMET),PARCRI(ZPCRI),CONV(ZCONV)
       REAL*8       PARCON(ZPCON)  
       CHARACTER*16 METHOD(ZNMETH) 
-      CHARACTER*19 MATASS
-      INTEGER      LICCVG(ZLICC)         
-      LOGICAL      MTCPUI, MTCPUP, FINPAS
+      CHARACTER*19 MATASS        
+      LOGICAL      MTCPUP,FINPAS
       INTEGER      NUMINS
       REAL*8       ETA
       INTEGER      ZMEELM,ZMEASS,ZVEELM,ZVEASS,ZSOLAL,ZVALIN
@@ -75,29 +74,6 @@ C
 C
 C ----------------------------------------------------------------------
 C 
-C
-C --- INITIALISATION DES INDICATEURS DE CONVERGENCE
-C 
-C              LICCVG(1) : PILOTAGE
-C                        =  0 CONVERGENCE
-C                        =  1 PAS DE CONVERGENCE
-C                        = -1 BORNE ATTEINTE
-C              LICCVG(2) : INTEGRATION DE LA LOI DE COMPORTEMENT
-C                        = 0 OK
-C                        = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
-C                        = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
-C              LICCVG(3) : TRAITEMENT DU CONTACT 
-C                        = 0 OK
-C                        = 1 ECHEC (ITER > 2*NBLIAI+1)
-C              LICCVG(4) : MATRICE DE CONTACT
-C                        = 0 OK
-C                        = 1 MATRICE DE CONTACT SINGULIERE
-C              LICCVG(5) : MATRICE DU SYSTEME (MATASS)
-C                        = 0 OK
-C                        = 1 MATRICE SINGULIERE
-      DO 1 I=1,ZLICC
-        LICCVG(I) = 0
-  1   CONTINUE
 C
 C --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 C
@@ -140,7 +116,6 @@ C
 C --- INITIALISATION BOUCLE EN TEMPS
 C
       NUMINS = 0
-      MTCPUI = .FALSE.
       MTCPUP = .FALSE.
       ETA    = 0.D0
       FINPAS = .FALSE.

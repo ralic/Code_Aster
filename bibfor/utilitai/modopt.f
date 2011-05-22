@@ -5,7 +5,7 @@
       CHARACTER*24        LESOPT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,11 +65,7 @@ C
       CALL JEMARQ()
 C
       CALL GETTCO ( RESUCO, TYSD )
-C
-      CALL GETVTX ( ' ', 'OPTION', 1,1,0, K8B, N1 )
-      NBOPT = -N1
-      CALL WKVECT ( LESOPT, 'V V K16', NBOPT, JOPT )
-      CALL GETVTX (' ', 'OPTION'  , 1, 1, NBOPT, ZK16(JOPT), N1)
+      CALL JEVEUO(LESOPT,'L',JOPT)
 C
       IEPSI = INDK16( ZK16(JOPT), 'EPTU_ELNO', 1, NBOPT )
 C

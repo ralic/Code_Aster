@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR KAZYMYRE K.KAZYMYRENKO 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DU CLAVAGE EN 2D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143a.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,16 +146,16 @@ U_1=STAT_NON_LINE(MODELE=MO,
 
 ############# POST TRAITEMENT #################
 
-U_1=CALC_ELEM(reuse =U_1,
+U_1=CALC_CHAMP(reuse =U_1,
 
               RESULTAT=U_1,
-              OPTION='VARI_ELNO',
+               VARI_INTERNE=('VARI_ELNO'),
               GROUP_MA='JOINT');
 
-U_1=CALC_ELEM(reuse =U_1,
+U_1=CALC_CHAMP(reuse =U_1,
 
               RESULTAT=U_1,
-              OPTION='SIEF_ELNO',
+               CONTRAINTE=('SIEF_ELNO'),
               GROUP_MA='JOINT');
 
 

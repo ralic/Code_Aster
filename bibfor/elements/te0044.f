@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,7 +192,7 @@ C        ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
          ENDIF
 
 C        --- FREQUENCE ---
-         CALL JEVECH('PFREQR','L',JFREQ)
+         CALL JEVECH('POMEGA2','L',JFREQ)
 
 C        --- ENERGIE CINETIQUE  ---
         IIFF = 1

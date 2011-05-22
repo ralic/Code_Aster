@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE   : CARRE ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,10 +139,10 @@ TEMPE=THER_LINEAIRE(   MODELE=MOTH,
 # ANALYSE DES RESULTATS ------------------------------------------------
 #
 
-TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
+TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,
 
 
-                 OPTION='FLUX_ELNO',
+                  THERMIQUE=('FLUX_ELNO'),
                  );
 
 TEST_RESU(RESU=(

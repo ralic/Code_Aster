@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,8 +81,8 @@ NOM_CHAM='SIGM_ELNO', RESULTAT=RESU,
                        NUME_MODE=1
                             )
 
-RESU=CALC_ELEM(  reuse=RESU,
-                  OPTION='EPOT_ELEM',
+RESU=CALC_CHAMP(  reuse=RESU,
+                   ENERGIE=('EPOT_ELEM'),
                   NUME_MODE=1,
                   RESULTAT=RESU,
                  )

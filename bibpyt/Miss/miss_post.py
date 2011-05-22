@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_post Miss  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ from Cata.cata import (
 
 from Utilitai.Table import Table
 from Utilitai.Utmess import UTMESS
-from Miss.miss_utils import set_debug, _print, _printDBG
+from Utilitai.utils import set_debug, _print, _printDBG
 
 # correspondance
 FKEY = {

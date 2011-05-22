@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,15 +89,15 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHA1,
                              FONC_MULT=FONC,),),
-                   CONTACT  = CHA2,       
+                   CONTACT  = CHA2,
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST),
                    NEWTON=_F(REAC_ITER=1),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20));
 
 
-RESU=CALC_ELEM(reuse =RESU,
-               OPTION='SIEF_ELNO',
+RESU=CALC_CHAMP(reuse =RESU,
+                CONTRAINTE=('SIEF_ELNO'),
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,

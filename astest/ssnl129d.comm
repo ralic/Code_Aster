@@ -1,22 +1,22 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE : VALIDATION DE VISC_ISOT_LINE SUR ESSAI DE TRACTION
 # ssnl129d.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #        MODELISATION 3D
 DEBUT(CODE=_F( NOM = 'SSNL129D',NIV_PUB_WEB='INTERNET'));
@@ -27,7 +27,7 @@ MAIL=LIRE_MAILLAGE();
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                 CREA_GROUP_NO=(_F( GROUP_MA = 'S1',),              
+                 CREA_GROUP_NO=(_F( GROUP_MA = 'S1',),
                                 _F( GROUP_MA = 'S2',),
                                 _F( GROUP_MA = 'S5'),
                                 _F( GROUP_MA = 'S6'),),);
@@ -38,7 +38,7 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
                AFFE=_F(GROUP_MA='MAILLAGE',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
-                       
+
 # DEFINITION & AFFECTATION DES PROPRIETES MECANIQUES
 # ----------------------------------------------------------------
 #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#
@@ -72,7 +72,7 @@ CH=AFFE_CHAR_MECA(MODELE= MO,
                                _F(GROUP_NO='S6',
                                  DY=0.0,),
                                _F(GROUP_NO='S1',
-                                 DZ=0.0,),),); 
+                                 DZ=0.0,),),);
 
 CHT=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=_F(GROUP_NO='S5',
@@ -115,9 +115,9 @@ UL=STAT_NON_LINE(MODELE=MO,
                                 ARRET='OUI'),
                  ARCHIVAGE=_F(LIST_INST=L_ARCH_L,),);
 
-UL=CALC_ELEM(reuse =UL,
+UL=CALC_CHAMP(reuse =UL,
              RESULTAT=UL,
-             OPTION='SIEF_ELNO',);
+              CONTRAINTE=('SIEF_ELNO'),);
 
 UL=CALC_NO(reuse =UL,
            RESULTAT=UL,
@@ -160,14 +160,14 @@ UM=STAT_NON_LINE(MODELE=MO,
                                 ARRET='OUI'),
                  ARCHIVAGE=_F(LIST_INST=L_ARCH_M,),);
 
-UM=CALC_ELEM(reuse =UM,
+UM=CALC_CHAMP(reuse =UM,
              RESULTAT=UM,
-             OPTION='SIEF_ELNO',);
+              CONTRAINTE=('SIEF_ELNO'),);
 
 UM=CALC_NO(reuse =UM,
            RESULTAT=UM,
            OPTION='REAC_NODA');
-         
+
 # ------------------------------------------------------------
 
 #  TROISIEME CALCUL : VITESSE RAPIDE  10E3 s-1
@@ -206,16 +206,16 @@ UR=STAT_NON_LINE(MODELE=MO,
                                 ARRET='OUI',),
                  ARCHIVAGE=_F(LIST_INST=L_ARCH_R,),);
 
-UR=CALC_ELEM(reuse =UR,
+UR=CALC_CHAMP(reuse =UR,
              RESULTAT=UR,
-             OPTION='SIEF_ELNO',);
+              CONTRAINTE=('SIEF_ELNO'),);
 
 UR=CALC_NO(reuse =UR,
            RESULTAT=UR,
            OPTION='REAC_NODA');
 
 #-----------------------------------------------------------
-# IMPRESSION DES RESULTATS AU FORMAT 'POST_RELEVE' 
+# IMPRESSION DES RESULTATS AU FORMAT 'POST_RELEVE'
 # ----------------------------------------------------------
 DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='deplacement',
                                GROUP_NO='P3',
@@ -258,7 +258,7 @@ PLAS_R=POST_RELEVE_T(ACTION=_F(INTITULE='plasticite',
                                RESULTAT=UR,
                                NOM_CHAM='SIEF_ELNO',
                                NOM_CMP='SIYY',
-                               OPERATION='EXTRACTION',),);                               
+                               OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=DEPL,NOM_PARA='DY')
 IMPR_TABLE(TABLE=FORCE_L, NOM_PARA='DY')
 IMPR_TABLE(TABLE=FORCE_M, NOM_PARA='DY')
@@ -287,7 +287,7 @@ TEST_TABLE( TABLE=FORCE_R,
             VALE = 632.832,
             PRECISION=1.0E-3,
                REFERENCE='AUTRE_ASTER'
-           )           
+           )
 #
 TEST_TABLE( TABLE=FORCE_L,
             NOM_PARA='DY',
@@ -309,7 +309,7 @@ TEST_TABLE( TABLE=FORCE_R,
             VALE = 500.853,
             PRECISION=1.0E-3,
                REFERENCE='AUTRE_ASTER'
-           )           
+           )
 #
 TEST_TABLE( TABLE=FORCE_L,
             NOM_PARA='DY',
@@ -331,5 +331,5 @@ TEST_TABLE( TABLE=FORCE_R,
             VALE = 403.131,
             PRECISION=1.0E-3,
                REFERENCE='AUTRE_ASTER'
-           )             
+           )
 FIN();

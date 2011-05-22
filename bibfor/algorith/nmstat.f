@@ -2,9 +2,9 @@
      &                  DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -169,23 +169,22 @@ C
 C
 C --- AFFICHAGE DES TEMPS
 C
-        VALR(1)  = TPSPAS
-        VALR(2)  = TPSARC
-        VALR(3)  = TPSFCS
-        VALR(4)  = TPSFCN
-        VALR(5)  = TPSINT
-        VALR(6)  = TPSRES
-        VALR(7)  = TPSCTC
-        VALR(8)  = TPSPAS/ITERAT
-        VALR(15) = TPSRST
-C
-        VALI(3) = NBRFCS
-        VALI(4) = NBRFCN
-        VALI(5) = NBRINT
-        VALI(6) = NBRRES
-        VALI(7) = CTCCIT
-        VALI(8) = ITERAT
         IF (.NOT.LEXPL) THEN
+          VALR(1)  = TPSPAS
+          VALR(2)  = TPSARC
+          VALR(3)  = TPSFCS
+          VALR(4)  = TPSFCN
+          VALR(5)  = TPSINT
+          VALR(6)  = TPSRES
+          VALR(7)  = TPSCTC
+          VALR(8)  = TPSPAS/ITERAT
+          VALR(15) = TPSRST
+          VALI(3) = NBRFCS
+          VALI(4) = NBRFCN
+          VALI(5) = NBRINT
+          VALI(6) = NBRRES
+          VALI(7) = CTCCIT
+          VALI(8) = ITERAT
           CALL NMIMPR('IMPR','TPS_PAS',' ',VALR,VALI)
         ENDIF
 C

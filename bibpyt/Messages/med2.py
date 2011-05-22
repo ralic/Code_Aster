@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 21/02/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med2 Messages  DATE 23/05/2011   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,6 +60,10 @@ format MED.
   -> Conseil :
      Restreignez l'impression demandée aux éléments ne contenant pas
      la famille de point de Gauss incriminée.
+"""),
+
+6 : _("""
+    Les mots-clés %(k1)s et %(k2)s sont incompatibles.
 """),
 
 }

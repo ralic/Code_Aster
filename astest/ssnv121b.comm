@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ROTATION ET TRACTION 2D GRANDES DEFORMATIONS (LOI LINEAIRE)
 # ssnv121b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,9 +118,9 @@ V=CALC_NO( reuse=V,
                   OPTION='FORC_NODA',
              )
 
-V=CALC_ELEM( reuse=V,
+V=CALC_CHAMP( reuse=V,
                 RESULTAT=V,
-                 OPTION='EPSG_ELNO'
+                  DEFORMATION=('EPSG_ELNO')
            )
 
 TEST_RESU(RESU=(

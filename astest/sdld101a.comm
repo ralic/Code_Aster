@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
 # TITRE OSCILLATEUR SIMPLE SOUMIS A UNE EXCITATION ALEATOIRE
 # sdld101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,20 +120,6 @@ INTEREXC=DEFI_INTE_SPEC(    DIMENSION=1,
                          )
 
 #
-INTKTJ1=DEFI_INTE_SPEC(    DIMENSION=1,
-                           KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
-                                       NUME_ORDRE_J = 1,
-                                       FREQ_MIN = 0.,
-                                       FREQ_MAX = 30.,
-                                       PAS = 5.,
-                                       FREQ_MOY = 15.9155,
-                                       AMOR_REDUIT = 0.05,
-                                       VALE_R = 1.,
-                                       PROL_GAUCHE = 'CONSTANT',
-                                       PROL_DROITE = 'CONSTANT',
-                                       INTERPOL = 'LIN')
-                         )
-
 #*********************************************************************#
 # *****CALCUL D INTERSPECTRE REPONSE: ACCE --> ACCE *****************#
 # *****                               MVT ABSOLU    *****************#
@@ -320,14 +306,15 @@ STADEF=POST_DYNA_ALEA(  INTE_SPEC=INTERRE1,
                         MOMENT=( 6,  7,  10, ),
                         INFO=2
                       )
-
+                      
+fact=2.0
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
                           VALE_K = 'P2'),
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_00',
-                   VALE=2.5285416E+02  )
+                   VALE=505.70832 , PRECISION=1.E-3 )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -335,7 +322,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_01',
-                   VALE=2.4523879E+04   )
+                   VALE= 49047.8, PRECISION=1.E-3  )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -343,7 +330,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_02',
-                   VALE=2.512533E+06    )
+                   VALE=5.025066E+06   , PRECISION=1.E-3  )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -351,7 +338,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_03',
-                   VALE=2.764715E+08    )
+                   VALE=5.52943E+08  , PRECISION=1.E-3  )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -359,7 +346,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_04',
-                   VALE=3.6029978E+10    )
+                   VALE=7.2046E+10, PRECISION=1.E-3   )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -367,7 +354,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='ECART',
-                   VALE=2.24879595E+01    )
+                   VALE=22.4879595 , PRECISION=1.E-3   )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -375,7 +362,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='NB_EXTREMA_P_S',
-                   VALE=3.811766E+01      )
+                   VALE=3.811766E+01   , PRECISION=1.E-3   )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -383,7 +370,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='NB_PASS_ZERO_P_S',
-                   VALE=3.173006E+01      )
+                   VALE=3.173006E+01   , PRECISION=1.E-3   )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -391,7 +378,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='FREQ_APPAR',
-                   VALE=1.5865031E+01      )
+                   VALE=1.5865031E+01  , PRECISION=1.E-3    )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -399,7 +386,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='FACT_IRRE',
-                   VALE=8.3242414E-01      )
+                   VALE=8.3242414E-01   , PRECISION=1.E-3   )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -407,7 +394,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_06',
-                   VALE=2.093496E+15       )
+                   VALE=fact*2.093496E+15    , PRECISION=1.E-3   )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -415,7 +402,7 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_07',
-                   VALE=8.9132775E+17      )
+                   VALE=1.7826555E+18   , PRECISION=1.E-3   )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -423,74 +410,75 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P2')),
                NOM_PARA='LAMBDA_10',
-                   VALE=1.234367E+26       )
+                   VALE=2.468734E+26     , PRECISION=1.E-3   )
 
 #
-STAIMP=POST_DYNA_ALEA(   INTE_SPEC=INTERRE1,
-                         NOEUD_I='P2',
-                         NOM_CMP_I='DX',
-                         NOEUD_J='P2',
-                         NOM_CMP_J='DX',
-                         MOMENT=( 6,  7,  10, ),
-                         INFO=2
-              )
+# STAIMP=POST_DYNA_ALEA(   INTE_SPEC=INTERRE1,
+#                          NOEUD_I='P2',
+#                          NOM_CMP_I='DX',
+#                          NOEUD_J='P2',
+#                          NOM_CMP_J='DX',
+#                          MOMENT=( 6,  7,  10, ),
+#                          INFO=2
+#              )
 
 # PAS DE TEST SUR LES FONCTIONS QUI SONT EXPLICITEMENT CALCULEES A
 # PARTIR DES VALEURS (MOMENT SPECTRAUX) CALCULEES ET VERIFIEES
 
-INTBID1=DEFI_INTE_SPEC(    DIMENSION=1,
-               CONSTANT=_F(  NUME_ORDRE_I = 1,
-                          NUME_ORDRE_J = 1,
-                          FREQ_MIN = 1.E-6,
-                          FREQ_MAX = 10.,
-                          PAS = 1.,
-                          VALE_R = 1.,
-                          PROL_GAUCHE = 'EXCLU',
-                          PROL_DROITE = 'EXCLU',
-                          INTERPOL = ('LOG','LIN'))
-                         )
-#
-INTBID2=DEFI_INTE_SPEC(    DIMENSION=1,
-               CONSTANT=_F(  NUME_ORDRE_I = 1,
-                          NUME_ORDRE_J = 1,
-                          FREQ_MIN = 0.,
-                          FREQ_MAX = 10.,
-                          PAS = 1.,
-                          VALE_R = 1.,
-                          PROL_GAUCHE = 'LINEAIRE',
-                          PROL_DROITE = 'LINEAIRE',
-                          INTERPOL = 'NON')
-                         )
-
-#
-INTBID3=DEFI_INTE_SPEC(    DIMENSION=1,
-               KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
-                              NUME_ORDRE_J = 1,
-                              FREQ_MIN = 1.E-6,
-                              FREQ_MAX = 30.,
-                              PAS = 5.,
-                              VALE_R = 1.,
-                              FREQ_MOY = 15.9155,
-                              AMOR_REDUIT = 0.05,
-                              PROL_GAUCHE = 'LINEAIRE',
-                              PROL_DROITE = 'LINEAIRE',
-                              INTERPOL = ('LOG','LIN'))
-                         )
-
-#
-INTBID4=DEFI_INTE_SPEC(    DIMENSION=1,
-               KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
-                              NUME_ORDRE_J = 1,
-                              FREQ_MIN = 0.,
-                              FREQ_MAX = 30.,
-                              PAS = 5.,
-                              VALE_C = ('RI',1.,0.,),
-                              FREQ_MOY = 15.9155,
-                              AMOR_REDUIT = 0.05,
-                              PROL_GAUCHE = 'EXCLU',
-                              PROL_DROITE = 'EXCLU',
-                              INTERPOL = 'NON')
-                         )
-
+# INTBID1=DEFI_INTE_SPEC(    DIMENSION=1,
+#                CONSTANT=_F(  NUME_ORDRE_I = 1,
+#                           NUME_ORDRE_J = 1,
+#                           FREQ_MIN = 1.E-6,
+#                           FREQ_MAX = 10.,
+#                           PAS = 1.,
+#                           VALE_R = 1.,
+#                           PROL_GAUCHE = 'EXCLU',
+#                           PROL_DROITE = 'EXCLU',
+#                           INTERPOL = ('LOG','LIN'))
+#                          )
+# #
+# INTBID2=DEFI_INTE_SPEC(    DIMENSION=1,
+#                CONSTANT=_F(  NUME_ORDRE_I = 1,
+#                           NUME_ORDRE_J = 1,
+#                           FREQ_MIN = 0.,
+#                           FREQ_MAX = 10.,
+#                           PAS = 1.,
+#                           VALE_R = 1.,
+#                           PROL_GAUCHE = 'LINEAIRE',
+#                           PROL_DROITE = 'LINEAIRE',
+#                           INTERPOL = 'NON')
+#                          )
+# 
+# #
+# INTBID3=DEFI_INTE_SPEC(    DIMENSION=1,
+#                KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
+#                               NUME_ORDRE_J = 1,
+#                               FREQ_MIN = 1.E-6,
+#                               FREQ_MAX = 30.,
+#                               PAS = 5.,
+#                               VALE_R = 1.,
+#                               FREQ_MOY = 15.9155,
+#                               AMOR_REDUIT = 0.05,
+#                               PROL_GAUCHE = 'LINEAIRE',
+#                               PROL_DROITE = 'LINEAIRE',
+#                               INTERPOL = ('LOG','LIN'))
+#                          )
+# 
+# #
+# INTBID4=DEFI_INTE_SPEC(    DIMENSION=1,
+#                KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
+#                               NUME_ORDRE_J = 1,
+#                               FREQ_MIN = 0.,
+#                               FREQ_MAX = 30.,
+#                               PAS = 5.,
+#                               VALE_C = ('RI',1.,0.,),
+#                               FREQ_MOY = 15.9155,
+#                               AMOR_REDUIT = 0.05,
+#                               PROL_GAUCHE = 'EXCLU',
+#                               PROL_DROITE = 'EXCLU',
+#                               INTERPOL = 'NON')
+#                          )
+#  
 FIN( )
 #
+

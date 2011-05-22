@@ -1,23 +1,23 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE PEYRARD C.PEYRARD
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNL135C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
@@ -52,7 +52,7 @@ FIBRE = (
 #  Sections: /AE45X3, modele: POU_D_TGM, Epa: 2, lar: 10
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
       GROUP_FIBRE = 'AE45X3',
-      VALE = ( 
+      VALE = (
 # Fibres : 44
         -1.33459e-02,   3.07591e-03,   6.30000e-06,
         -1.03761e-02,   6.04576e-03,   6.30000e-06,
@@ -109,7 +109,7 @@ FIBRE = (
 #  Sections: /AE40X4, modele: POU_D_TGM, Epa: 2, lar: 10
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
       GROUP_FIBRE = 'AE40X4',
-      VALE = ( 
+      VALE = (
 # Fibres : 44
         -1.14184e-02,   3.39411e-03,   7.20000e-06,
         -8.87278e-03,   5.93970e-03,   7.20000e-06,
@@ -166,7 +166,7 @@ FIBRE = (
 #  Sections: /AE35X3.5, modele: POU_D_TGM, Epa: 2, lar: 10
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
       GROUP_FIBRE = 'AE35X3.5',
-      VALE = ( 
+      VALE = (
 # Fibres : 44
         -9.99142e-03,   2.96985e-03,   5.51250e-06,
         -7.76403e-03,   5.19723e-03,   5.51250e-06,
@@ -223,7 +223,7 @@ FIBRE = (
 #  Sections: /PL150X10, modele: POU_D_TGM, Epa: 2, lar: 10
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
       GROUP_FIBRE= 'PL150X10',
-      VALE = ( 
+      VALE = (
 # Fibres : 40
         -6.75000e-02,  -3.75000e-03,   3.75000e-05,
         -6.75000e-02,  -1.25000e-03,   3.75000e-05,
@@ -310,7 +310,7 @@ COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT0001,
 # -------------------------------------------------------
 
 # Affectation des materiaux
-CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO, 
+CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO,
    AFFE=(
 # Pour les poutres ou les barres ou les cables
 # Elements avec le materiau : E240_ECRO_LINE.
@@ -333,7 +333,7 @@ AFFE_COMPOR=_F(GROUP_MA= ('S00B','S00A','S009','S008','S007','S006','S005','S004
 
 LIAISON = AFFE_CHAR_MECA( MODELE= MO,
 
-LIAISON_SOLIDE=( 
+LIAISON_SOLIDE=(
 # Ecriture de toutes les relations cinematiques comme cela doit etre fait pour eviter les doublons
   _F( NOEUD = ('A008022','H00601',),),
   _F( NOEUD = ('A008021','G00802',),),
@@ -386,7 +386,7 @@ POUTRE=(
            2.207830e+00,1.459718e-02,0.000000e+00,8.404596e-10,
            1.243656e-13,6.307966e-10,0.000000e+00 ),
    PREC_AIRE=5.0E-2,
-#   PREC_INERTIE=1.0E-2, 
+#   PREC_INERTIE=1.0E-2,
    ),
 
 # Sections de spref /AE40X4 de modele POU_D_TGM
@@ -398,7 +398,7 @@ POUTRE=(
            2.118989e+00,1.233794e-02,0.000000e+00,1.784041e-09,
            1.871860e-13,4.829759e-10,0.000000e+00 ),
    PREC_AIRE=5.0E-2,
-#   PREC_INERTIE=1.0E-2, 
+#   PREC_INERTIE=1.0E-2,
 ),
 
 # Sections de spref /AE35X3.5 de modele POU_D_TGM
@@ -410,7 +410,7 @@ POUTRE=(
            2.163107e+00,1.108092e-02,0.000000e+00,9.865361e-10,
            8.685007e-14,2.482771e-10,0.000000e+00 ),
    PREC_AIRE=5.0E-2,
-#   PREC_INERTIE=1.0E-2, 
+#   PREC_INERTIE=1.0E-2,
    ),
 
 # Sections de spref /PL150X10 de modele POU_D_TGM
@@ -422,7 +422,7 @@ POUTRE=(
            1.140625e+00,0.000000e+00,0.000000e+00,4.485455e-08,
            2.589481e-11,0.000000e+00,0.000000e+00 ),
    PREC_AIRE=5.0E-2,
-#   PREC_INERTIE=1.0E-2, 
+#   PREC_INERTIE=1.0E-2,
 ),
 ),
 
@@ -633,7 +633,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-6),)
-                                 
+
 MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CAREL,
@@ -665,14 +665,14 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
 # ----------------------------------------------------
 # Pour : BARRE, POU_D_TGM, CABLE
 
-#MEKEFOR=CALC_ELEM(reuse =MEKEFOR,
+#MEKEFOR=CALC_CHAMP(reuse =MEKEFOR,
 #                  MODELE=MO,
 #                  CHAM_MATER=CHMAT,
 #                  CARA_ELEM=CAREL,
 #                  RESULTAT=MEKEFOR,
 #                  TOUT_ORDRE='OUI',
 #                  GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),
-#                  OPTION='SIEF_ELNO',);
+#                   CONTRAINTE=('SIEF_ELNO'),);
 # ----------------------------------------------------
 
 #MEKEFOR=CALC_NO(reuse =MEKEFOR,

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - C_PLAN
 # ssnv189c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,11 +71,11 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                                 INST_FIN=1.0,),
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
-RESU=CALC_ELEM(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
 
 
                RESULTAT=RESU,
-               OPTION='SIEF_ELNO');
+                CONTRAINTE=('SIEF_ELNO'));
 
 IMPR_RESU(FORMAT='GMSH',
           UNITE=37,

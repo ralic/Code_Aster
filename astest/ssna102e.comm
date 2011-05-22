@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,9 +154,9 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 # --------------------------------------------------------------------
 #
 
-RESU=CALC_ELEM(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
-               OPTION='SIEF_ELNO',);
+                CONTRAINTE=('SIEF_ELNO'),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,

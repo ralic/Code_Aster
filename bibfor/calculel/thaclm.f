@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     --- VARIABLES LOCALES ---
       INTEGER NUORD,NH,NBAC,NBPA,JPA,NBPARA
       INTEGER IADIN,IADOU,IBID,IOPT,NBOPT
       INTEGER JOPT,J,III,L1,L2,L3,L4,L5,IERD,LREFE
-      INTEGER LMAT,IE,LVALE,IOCC,NBCHRE,N1,L6,IPUIS
+      INTEGER LMAT,IE,LVALE,IOCC,NBCHRE,N1,L6,IPUIS,N2
       REAL*8 VALTHE,INSOLD,INST,COEF,PHASE
       CHARACTER*4 BUFCH,TYPE
       CHARACTER*6 NOMPRO
@@ -116,6 +116,10 @@ C          '123456789012345678901234'
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
 
+      CALL GETVTX ( ' ', 'OPTION', 1,1,0, K8B, N2 )
+      NBOPT = -N2
+      CALL WKVECT ( LESOPT, 'V V K16', NBOPT, JOPT )
+      CALL GETVTX (' ', 'OPTION'  , 1, 1, NBOPT, ZK16(JOPT), N2)
       CALL MODOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
 
@@ -223,8 +227,8 @@ C
 C    -------------------------------------------------------------------
 C    -- OPTIONS "FLUX_ELNO","FLUX_ELGA","SOUR_ELGA","DURT_ELNO"
 C    -------------------------------------------------------------------
-          CALL CALCOP(OPTION,RESUCO,RESUC1,NBORDR,ZI(JORDR),KCHA,NCHAR,
-     &                CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+        CALL CALCOP(OPTION,RESUCO,RESUC1,KNUM,NBORDR,KCHA,NCHAR,
+     &              CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
           IF (IRET.EQ.0)GOTO 120
 
           NUORD=ZI(JORDR)
@@ -473,8 +477,8 @@ C
 C    -------------------------------------------------------------------
 C    -- OPTIONS "PRAC_ELNO","INTE_ELNO"
 C    -------------------------------------------------------------------
-          CALL CALCOP(OPTION,RESUCO,RESUC1,NBORDR,ZI(JORDR),KCHA,NCHAR,
-     &                CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+        CALL CALCOP(OPTION,RESUCO,RESUC1,KNUM,NBORDR,KCHA,NCHAR,
+     &              CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
           IF (IRET.EQ.0)GOTO 180
 
   180   CONTINUE

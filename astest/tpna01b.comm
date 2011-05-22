@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE PB 3D STATIONNAIRE AVEC RAYONNEMENT - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,10 +191,10 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
                     ETAT_INIT=_F(STATIONNAIRE='OUI',),
                     NEWTON=_F(REAC_ITER=1,),);
 
-TEMPE=CALC_ELEM(reuse =TEMPE,
+TEMPE=CALC_CHAMP(reuse =TEMPE,
                 RESULTAT=TEMPE,
                 INST=0.,
-                OPTION='FLUX_ELNO',);
+                 THERMIQUE=('FLUX_ELNO'),);
 
 resu=MACR_LIGN_COUPE(RESULTAT=TEMPE,
                      NOM_CHAM='TEMP',

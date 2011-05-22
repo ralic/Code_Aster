@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE POUTRE EN FLEXION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,7 @@ RESU=STAT_NON_LINE(
                 ITER_GLOB_MAXI = NBIGLOB),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_POU_FLEJOU',
-                
+
                 ITER_INTE_MAXI = NBIINTE,
                 DEFORMATION = 'PETIT',
                 GROUP_MA = 'STICK', ),
@@ -116,9 +116,9 @@ RESU=STAT_NON_LINE(
                 ITER_LINE_MAXI = RELINE),
               )
 
-RESU=CALC_ELEM(reuse=RESU,    RESULTAT=RESU,
+RESU=CALC_CHAMP(reuse=RESU,    RESULTAT=RESU,
                     TOUT_ORDRE='OUI',
-                        OPTION='VARI_ELNO',
+                         VARI_INTERNE=('VARI_ELNO'),
                       GROUP_MA='STICK'   )
 
 RESU=CALC_NO(reuse=RESU,    RESULTAT=RESU,

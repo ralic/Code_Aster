@@ -5,7 +5,7 @@
       CHARACTER*(*)  MODELE, MATE, CHCARA(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       LOGICAL        AFAIRE, LTOUT
       CHARACTER*3    OUINON, GRILLE, PLAQUE, COQUE
       CHARACTER*8    K8B, NOMA, MOTCLS(2), TYPMCL(2)
-      CHARACTER*16   MOTCLE, PHENO, OPTION, NOMPAR
+      CHARACTER*16   MOTCLE, PHENO, OPTION, NOMPAR, CONCEP, NOMCMD
       CHARACTER*19   CARTE, CARTCO, CHELMS
       CHARACTER*24   MESMAI, LIGRMO
 C --- ------------------------------------------------------------------
@@ -70,6 +70,9 @@ C --- LA CARTE .CARCOQUE EXISTE-T-ELLE ?
       CALL EXISD ( 'CARTE', CARTE, IRET )
       IF ( IRET .EQ. 0 ) GOTO 9999
 C
+      CALL GETRES(K8B,CONCEP,NOMCMD)
+C     ON SAIT QUE DANS CALC_CHAMP LE MOT CLE REPE_COQUE N'EXISTE PAS
+      IF ( NOMCMD.EQ.'CALC_CHAMP' ) GOTO 9999
       CALL GETFAC ( MOTCLE, NREP )
       IF ( NREP .EQ. 0 ) GOTO 9999
 C --- ------------------------------------------------------------------

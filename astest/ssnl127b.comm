@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127b.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -47,7 +47,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
                                PREC_AIRE=1.1984e-6,
                                PREC_INERTIE=1.),
                      GEOM_FIBRE=GF,
-                     MULTIFIBRE=_F(GROUP_MA = 'TOUT',GROUP_FIBRE='SFIB'     ),       
+                     MULTIFIBRE=_F(GROUP_MA = 'TOUT',GROUP_FIBRE='SFIB'     ),
                      );
 
 
@@ -67,7 +67,7 @@ MATC2=DEFI_MATERIAU(
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATC2,
                   MULTIFIBRE=(_F(GROUP_FIBRE='SFIB',
-                                 MATER=MATC2, 
+                                 MATER=MATC2,
                                  RELATION='CORR_ACIER'),),);
 
 
@@ -143,7 +143,7 @@ REST=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT1, CARA_ELEM=CAREL,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=10),);
 
-CALC_ELEM(reuse=REST,RESULTAT=REST,OPTION='SIEF_ELNO')
+CALC_CHAMP(reuse=REST,RESULTAT=REST,  CONTRAINTE=('SIEF_ELNO'))
 
 NdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CHAM='SIEF_ELNO',
@@ -216,7 +216,7 @@ REST2=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL,
                                    ITER_GLOB_ELAS=10),
                     );
 
-CALC_ELEM(reuse=REST2,RESULTAT=REST2,OPTION='SIEF_ELNO',);
+CALC_CHAMP(reuse=REST2,RESULTAT=REST2,  CONTRAINTE=('SIEF_ELNO'),);
 
 NdeU2=RECU_FONCTION(RESULTAT=REST2,
                     NOM_CHAM='SIEF_ELNO',
@@ -289,7 +289,7 @@ REST3=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT3, CARA_ELEM=CAREL,
                                    ITER_GLOB_ELAS=10),
                     );
 
-CALC_ELEM(reuse=REST3,RESULTAT=REST3,OPTION='SIEF_ELNO')
+CALC_CHAMP(reuse=REST3,RESULTAT=REST3,  CONTRAINTE=('SIEF_ELNO'))
 
 NdeU3=RECU_FONCTION(RESULTAT=REST3,
                     NOM_CHAM='SIEF_ELNO',

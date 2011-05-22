@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX VISCOPLASTICITE NON-LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,9 +104,9 @@ RESU = STAT_NON_LINE (MODELE = MO,
                                 ITER_GLOB_MAXI = 25)
                         )
 
-RESU = CALC_ELEM( reuse= RESU,
+RESU = CALC_CHAMP( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_ELNO',)
+                   CONTRAINTE=('SIEF_ELNO'),)
 RESU = CALC_NO ( reuse= RESU,
                   RESULTAT = RESU,
                   OPTION = 'SIEF_NOEU',)

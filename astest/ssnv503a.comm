@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,8 +125,8 @@ CTAC =DEFI_CONTACT(MODELE       = MODE,
                           COEF_MATR_FROT=0.9,
                           GROUP_MA_MAIT='LMAI',
                           GROUP_MA_ESCL='LESC',
-                         ),                                                   
-                       ),  
+                         ),
+                       ),
                   )
 
 #---------------------------------------------------------------------
@@ -150,7 +150,7 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     EXCIT=(_F(CHARGE=PNOR,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  = CTAC,       
+                    CONTACT  = CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -164,8 +164,8 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
 U_NOR=CALC_NO(reuse =U_NOR, RESULTAT=U_NOR,
               OPTION='REAC_NODA',   );
 
-U_NOR=CALC_ELEM(reuse =U_NOR, RESULTAT=U_NOR,
-                OPTION='VARI_ELNO',   );
+U_NOR=CALC_CHAMP(reuse =U_NOR, RESULTAT=U_NOR,
+                 VARI_INTERNE=('VARI_ELNO'),   );
 
 # CHARGEMENT 2
 U_99=STAT_NON_LINE(MODELE=MODE,
@@ -176,7 +176,7 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=COND_LIM,),),
-                   CONTACT  = CTAC,       
+                   CONTACT  = CTAC,
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -201,7 +201,7 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  =CTAC,       
+                    CONTACT  =CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),

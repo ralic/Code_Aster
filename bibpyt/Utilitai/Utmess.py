@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,6 @@
 import os
 import sys
 import traceback
-import imp
 import re
 
 # protection pour eficas
@@ -31,6 +30,7 @@ try:
     from aster import error
     aster_exists = True
     from Messages.context_info import message_context_concept
+    from Utilitai.string_utils import cut_long_lines, copy_text_to, clean_string
 except:
     aster_exists = False
     class error(Exception):
@@ -91,7 +91,7 @@ class MESSAGE_LOGGER:
         # on prépare le dictionnaire des valeurs par défaut des arguments (dicarg) :
         self.default_args = {}
         # initialisation des 10 premiers
-        for i in range(1,11):
+        for i in range(1, 11):
             self.default_args['i%d' % i] = 99999999
             self.default_args['r%d' % i] = 9.9999E99
             self.default_args['k%d' % i] = 'xxxxxx'
@@ -147,11 +147,11 @@ class MESSAGE_LOGGER:
 
         # variables passées au message
         dicarg = self.default_args.copy()
-        for i in range(1,len(valk)+1):
+        for i in range(1, len(valk)+1):
             dicarg['k%d' % i] = valk[i-1]
-        for i in range(1,len(vali)+1):
+        for i in range(1, len(vali)+1):
             dicarg['i%d' % i] = vali[i-1]
-        for i in range(1,len(valr)+1):
+        for i in range(1, len(valr)+1):
             dicarg['r%d' % i] = valr[i-1]
         # valeur spéciale : ktout = concaténation de toutes les chaines
         dicarg['ktout'] = ' '.join(valk)
@@ -167,7 +167,7 @@ class MESSAGE_LOGGER:
         idmess  = idmess.strip()
         x = idmess.split("_")
         assert len(x) > 1, idmess
-        catamess='_'.join(x[0:-1]).lower()
+        catamess = '_'.join(x[0:-1]).lower()
         numess = int(x[-1])
         assert numess > 0 and numess < 100, idmess
 
@@ -564,68 +564,27 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             return 'EXCEPTION'
 
 
-def clean_string(chaine):
-    """Supprime tous les caractères non imprimables.
+def raise_UTMESS(exc):
+    """Raise UTMESS if exception occurred.
+
+    Typical usage:
+        try:
+            ... code with error ...
+            raise aster.error(id_message, valk, vali, valr)
+            ... or ...
+            lerr = [id_message1, valk1, vali1, valr1]
+            lerr.append([id_message2, valk2, vali2, valr2])
+            raise aster.error(lerr)
+        except aster.error, exc:
+            raise_UTMESS(exc)
+
     """
-    invalid = '?'
-    txt = []
-    for c in chaine:
-        if ord(c) != 0:
-            txt.append(c)
-        else:
-            txt.append(invalid)
-    return ''.join(txt)
-
-
-def maximize_lines(l_fields, maxlen, sep):
-    """Construit des lignes dont la longueur est au plus de `maxlen` caractères.
-    Les champs sont assemblés avec le séparateur `sep`.
-    """
-    newlines = []
-    while len(l_fields) > 0:
-        cur = []
-        while len(l_fields) > 0 and len(sep.join(cur + [l_fields[0],])) <= maxlen:
-            cur.append(l_fields.pop(0))
-        newlines.append(sep.join(cur))
-    newlines = [l for l in newlines if l != '']
-    return newlines
-
-def cut_long_lines(txt, maxlen, sep=os.linesep,
-                   l_separ=(' ', ',', ';', '.', ':')):
-    """Coupe les morceaux de `txt` (isolés avec `sep`) de plus de `maxlen`
-    caractères.
-    On utilise successivement les séparateurs de `l_separ`.
-    """
-    l_lines = txt.split(sep)
-    newlines = []
-    for line in l_lines:
-        if len(line) > maxlen:
-            l_sep = list(l_separ)
-            line = cut_long_lines(line, maxlen, l_sep[0], l_sep[1:])
-            line = maximize_lines(line, maxlen, l_sep[0])
-            newlines.extend(line)
-        else:
-            newlines.append(line)
-    # au plus haut niveau, on assemble le texte
-    if sep == os.linesep:
-        newlines = os.linesep.join(newlines)
-    return newlines
-
-
-def copy_text_to(text, files):
-    """Imprime le texte dans les fichiers.
-    """
-    files = force_list(files)
-    for f in files:
-        assert type(f) in (str, file)
-        if type(f) == file:
-            fobj = file
-        else:
-            fobj = open(f, 'a')
-            # should be closed automatically
-        fobj.write(text)
-        fobj.write(os.linesep)
-        fobj.flush()
+    if type(exc) in (list, tuple):
+        for idm, vk, vi, vr in exc[:-1]:
+            UTMESS('F+', idm, vk, vi, vr)
+        UTMESS('F', *exc[-1])
+    else:
+        UTMESS('F', exc.id_message, valk=exc.valk, vali=exc.vali, valr=exc.valr)
 
 
 # unique instance du MESSAGE_LOGGER
@@ -702,6 +661,7 @@ def __fake__():
     UTMESS('I', 'CATAMESS_91')
     UTMESS('I', 'CATAMESS_92')
     # appelé par levé d'exception
+    # dans Miss/*.py
     UTMESS('I', 'MISS0_3')
     UTMESS('I', 'MISS0_5')
     UTMESS('I', 'MISS0_6')
@@ -710,5 +670,11 @@ def __fake__():
     UTMESS('I', 'MISS0_9')
     UTMESS('I', 'MISS0_11')
     UTMESS('I', 'MISS0_17')
+    # dans TableReader.py
+    UTMESS('I', 'TABLE0_10')
+    UTMESS('I', 'TABLE0_11')
+    UTMESS('I', 'TABLE0_12')
+    UTMESS('I', 'TABLE0_13')
+    UTMESS('I', 'TABLE0_43')
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 # ssna104a.para = tps_job 130 mem_job 300Mo ncpus 1 liste_test S
@@ -7,17 +7,17 @@
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNA104A',NIV_PUB_WEB='INTERNET'))
@@ -51,9 +51,9 @@ CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
                        AFFE =_F(TOUT='OUI',
                                 MATER = MAT,
                                 )
-                       ) 
+                       )
 
-# FONCTION DE HEAVISIDE*P0 
+# FONCTION DE HEAVISIDE*P0
 # L INSTANT DE REFERENCE EST T=0
 
 F_PRES = DEFI_FONCTION (NOM_PARA = 'INST',
@@ -61,8 +61,8 @@ F_PRES = DEFI_FONCTION (NOM_PARA = 'INST',
                         PROL_GAUCHE = 'CONSTANT',
                         VALE =( 0.,  1.E-3,
                                 0.9, 1.E-3,)
-                        )  
-                             
+                        )
+
 BLOC = AFFE_CHAR_MECA (MODELE = MO,
                        DDL_IMPO=_F(GROUP_NO =('DAB','DCD'),
                                    DY=0.)
@@ -71,7 +71,7 @@ PRES = AFFE_CHAR_MECA (MODELE = MO,
                           PRES_REP=_F (GROUP_MA = 'DDA',
                                     PRES = 1.E-3)
                           )
-  
+
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
                         INTERVALLE=(
                         _F( PAS = 1.E-6,       JUSQU_A = 1.E-6),
@@ -82,7 +82,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
                         _F( PAS = 1.E-2,       JUSQU_A = 0.9),
 )
                       )
-                                  
+
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
@@ -92,22 +92,22 @@ RESU = STAT_NON_LINE (MODELE = MO,
                                     ITER_INTE_MAXI = 1000),
                       INCREMENT =_F(LIST_INST =L_INST),
                       NEWTON    =_F(
-                                MATRICE ='TANGENTE', 
+                                MATRICE ='TANGENTE',
                                 REAC_ITER= 1),
                       CONVERGENCE=_F(
                                 RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 25)
                         )
 
-RESU = CALC_ELEM( reuse= RESU,
+RESU = CALC_CHAMP( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_ELNO',)
+                   CONTRAINTE=('SIEF_ELNO'),)
 RESU = CALC_NO ( reuse= RESU,
                   RESULTAT = RESU,
                   OPTION = 'SIEF_NOEU',)
 
 
-TEST_RESU( 
+TEST_RESU(
           RESU=( _F(RESULTAT = RESU,
                    NUME_ORDRE =115,
                    NOM_CHAM ='DEPL',
@@ -139,10 +139,10 @@ TEST_RESU(
                    VALE= 6.666E-4,
                    PRECISION=5.E-3,
                    REFERENCE='ANALYTIQUE'))
-                   
+
          )
 
 
-     
-           
+
+
 FIN()

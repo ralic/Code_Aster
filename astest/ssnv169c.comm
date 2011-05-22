@@ -1,9 +1,9 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
 # ssnv169c.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -160,10 +160,10 @@ U=STAT_NON_LINE( MODELE=MO,
                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-6,
                                 ITER_GLOB_MAXI = 25)
               )
-U=CALC_ELEM(reuse = U,
+U=CALC_CHAMP(reuse = U,
             RESULTAT=U,
-            OPTION= 'EPFP_ELGA')
-            
+             DEFORMATION=('EPFP_ELGA'))
+
 CHAMELG=CALC_CHAM_ELEM(    MODELE=MO,
                              CHAM_MATER=CM,
                              OPTION='COOR_ELGA' )

@@ -2,9 +2,9 @@
      &                  RESU  ,CTCCVG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ C
       CHARACTER*19 RESU
       INTEGER      LMAT
       INTEGER      LDSCON
-      INTEGER      CTCCVG(2)
+      INTEGER      CTCCVG
 C      
 C ----------------------------------------------------------------------
 C
@@ -66,9 +66,10 @@ C VAR RESU    : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS L'ITERATION
 C              DE NEWTON PRECEDENTE
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
-C OUT CTCCVG : CODES RETOURS D'ERREUR DU COTNACT
-C                (1) NOMBRE MAXI D'ITERATIONS
-C                (2) MATRICE SINGULIERE
+C OUT CTCCVG : CODE RETOUR CONTACT DISCRET
+C                0 - OK
+C                1 - NOMBRE MAXI D'ITERATIONS
+C                2 - MATRICE SINGULIERE
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
 C
@@ -301,7 +302,7 @@ C
 C --- LA MATRICE DE CONTACT EST-ELLE SINGULIERE ?
 C
           IF (IER.GT.ISTO) THEN
-            CTCCVG(2) = 1
+            CTCCVG = 2
             GOTO 999
           END IF
         END IF
@@ -477,7 +478,7 @@ C ======================================================================
 C --- A-T-ON DEPASSE LE NOMBRE D'ITERATIONS DE CONTACT AUTORISE ?
 C ======================================================================
       IF (ITER.GT.ITEMAX+1) THEN
-        CTCCVG(1) = 1
+        CTCCVG = 1
         GO TO 999
       END IF
 
@@ -494,10 +495,9 @@ C
       CALL CFATMU(NEQ   ,NESMAX,NDIM  ,NBLIAC,0     ,
      &            LLF   ,LLF1  ,LLF2  ,RESOCO)
 C
-C --- VALEUR DES VARIABLES DE CONVERGENCE
+C --- CODE RETOUR
 C
-      CTCCVG(1) = 0
-      CTCCVG(2) = 0
+      CTCCVG = 0
 C      
 C --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 C

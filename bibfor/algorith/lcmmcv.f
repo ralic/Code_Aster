@@ -1,9 +1,9 @@
-        SUBROUTINE LCMMCV ( DY,   DDY,    NR,    ITMAX, TOLER, ITER,
-     &               NMAT,NBCOMM,   R,RINI,IRTETI)
+        SUBROUTINE LCMMCV (YD, DY,  DDY,    NR,    ITMAX, TOLER, ITER,
+     &               R,RINI,EPSTR, IRTETI)
 C RESPONSABLE JMBHH01 J.M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,8 +35,6 @@ C            NR     :  DIMENSION DY DDY
 C            ITMAX  :  NB MAXI D ITERATIONS LOCALES
 C            TOLER  :  TOLERANCE A CONVERGENCE
 C            ITER   :  NUMERO ITERATION COURANTE
-C            NMAT   :  DIMENSION MATER
-C            NBCOMM :  INCIDES DES COEF MATERIAU
 C            R      :  R(Y) RESIDU A L'ITERATION COURANTE
 C            RINI   :  R(Y0) RESIDU A L'ITERATION 1
 C       OUT  IRTETI  :  =0 CONVERGENCE
@@ -44,12 +42,11 @@ C                       =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
 C                       =3 ITMAX ATTEINT REDECOUPAGE LOCAL
 C                       =4 ITMAX ATTEINT  REDECOUPAGE GLOBAL
 C       ----------------------------------------------------------------
-        INTEGER         ITMAX,  ITER,  NR,IRTETI,NDT,NDI,I,NMAT
-        REAL*8          TOLER,  DDY(NR), DY(NR), R(NR),RINI(NR)
+        INTEGER         ITMAX,  ITER,  NR,IRTETI,NDT,NDI,I
+        REAL*8     TOLER,YD(NR),DDY(NR), DY(NR), R(NR),RINI(NR),EPSTR(6)
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
         REAL*8          ERRDY(NR), ERRR(NR),E1,E2,E1INI,E2INI,R8PREM
-        INTEGER         NBCOMM(NMAT,3)
 C       ----------------------------------------------------------------
 C
 C -   EVALUATION  DE L'ERREUR  EN RESIDU (DEFORMATIONS)
@@ -66,7 +63,8 @@ C      CALL LCVERR ( RINI, R, 6, 1, ERRR  )
       E2INI=0.D0
       DO 101 I = 1,6
          E1 = MAX(E1, ABS(R(I)))
-         E1INI = MAX(E1INI, ABS(RINI(I)))
+C         E1INI = MAX(E1INI, ABS(RINI(I)))
+         E1INI = MAX(E1INI, ABS(EPSTR(I)))
  101  CONTINUE
 
       ERRR(1)=E1
@@ -76,7 +74,8 @@ C      CALL LCVERR ( RINI, R, 6, 1, ERRR  )
 
       DO 102 I = 7,NR
          E2 = MAX(E2, ABS(R(I)))
-         E2INI = MAX(E2INI, ABS(RINI(I)))
+C         E2INI = MAX(E2INI, ABS(RINI(I)))
+         E2INI = MAX(E2INI, ABS(YD(I)+DY(I)))
  102  CONTINUE
 
       ERRR(2)=E2

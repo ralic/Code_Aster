@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ESSAI DE DEPLACEMENT IMPOSE SUR UNE BARRE (PINTO)
 # ssnl112e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -596,8 +596,8 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 COEF_MULT = 1000.)
               )
 
-LEDEP=CALC_ELEM( reuse=LEDEP,
-                            OPTION='SIEF_ELNO',
+LEDEP=CALC_CHAMP( reuse=LEDEP,
+                             CONTRAINTE=('SIEF_ELNO'),
                           RESULTAT=LEDEP,
               )
 

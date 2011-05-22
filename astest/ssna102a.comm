@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -213,8 +213,8 @@ SOLVEUR=_F(SYME='OUI',),
 # --------------------------------------------------------------------
 #
 
-RESU=CALC_ELEM( reuse=RESU,  RESULTAT=RESU,
-                       OPTION='SIEF_ELNO',
+RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
+                        CONTRAINTE=('SIEF_ELNO'),
                   )
 
 RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,

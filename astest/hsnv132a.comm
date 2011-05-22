@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 24/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 # hsnv132a.para = tps_job 60 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,7 +140,7 @@ TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DX',
            VALE= -8.740426289951E-04,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1.0E-10,
            REFERENCE='NON_REGRESSION',
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
            VERSION = '11.0.4');                        
@@ -149,7 +149,7 @@ TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DY',
            VALE=  3.8260958514619E-03,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1.0E-10,
            REFERENCE='NON_REGRESSION',
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
            VERSION = '11.0.4');

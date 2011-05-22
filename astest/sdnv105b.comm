@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105b.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -294,14 +294,13 @@ u_pesa=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
                      INFO=1,);
 #
 
-#u_pesa=CALC_ELEM(reuse =u_pesa,
+#u_pesa=CALC_CHAMP(reuse =u_pesa,
 #
 #
 #
 #                   RESULTAT=u_pesa,
 #                   TOUT_ORDRE='OUI',
-#                   TYPE_OPTION='TOUTES',
-#                   OPTION='SIEF_ELNO',);
+#                    CONTRAINTE=('SIEF_ELNO'),);
 
 #IMPR_RESU(FORMAT='RESULTAT', RESU=(_F(RESULTAT=u_pesa)));
 
@@ -401,14 +400,13 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
                                       RESI_GLOB_RELA=1e-05,
                                       ITER_GLOB_MAXI=30,),);
 
-#u_ini_la=CALC_ELEM(reuse =u_ini_la,
+#u_ini_la=CALC_CHAMP(reuse =u_ini_la,
 #
 #
 #
 #                   RESULTAT=u_ini_la,
 #                   TOUT_ORDRE='OUI',
-#                   TYPE_OPTION='TOUTES',
-#                   OPTION='SIEF_ELNO',);
+#                    CONTRAINTE=('SIEF_ELNO'),);
 
 #IMPR_RESU(FORMAT='RESULTAT', RESU=(_F(RESULTAT=u_ini_la)));
 
@@ -829,12 +827,11 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                                       ITER_GLOB_MAXI=n_iter_max,
                                       ARRET='NON',),);
 
-u_lacher=CALC_ELEM(reuse =u_lacher,
+u_lacher=CALC_CHAMP(reuse =u_lacher,
 
 
                    RESULTAT=u_lacher, TOUT_ORDRE='OUI',
-                   TYPE_OPTION='TOUTES',
-                   OPTION='SIEF_ELNO',);
+                    CONTRAINTE=('SIEF_ELNO'),);
 
 u_lacher=CALC_NO(reuse =u_lacher,
 

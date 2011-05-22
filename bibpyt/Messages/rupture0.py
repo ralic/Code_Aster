@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 16/05/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 24/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -292,7 +292,7 @@ le rayon du fond de fissure.
 """),
 
 57 : _("""
-Pour l'option CALC_G en 3D, le champ THETA doit être calculé directement
+Pour cette option en 3D, le champ THETA doit être calculé directement
 dans l'opérateur CALC_G.
 -> Risque et Conseil :
 Dans le mot-clé facteur THETA, supprimez le mot-clé THETA et renseignez les 
@@ -495,6 +495,7 @@ Veuillez redéfinir le mot-clé LISSAGE_G.
 Si la méthode LAGRANGE_REGU est utilisée pour le lissage, 
 alors le lissage de G et de theta doivent etre de type LAGRANGE_REGU.
 """),
+
 
 90: _("""
 L'usage des polynomes de Legendre dans le cas d'un fond de fissure clos

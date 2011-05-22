@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
 # zzzz234a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,7 +108,7 @@ TB_D_T = RECU_TABLE(CO=RE_D_T,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_D_T)
 TEST_TABLE(TABLE=TB_D_T, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',); 
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
 
 TEST_RESU(RESU=(_F(RESULTAT   = RE_D_T,
                    INST       = 1.0,
@@ -120,9 +120,9 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_D_T,
                    VERSION    = '10.2.20',
                    PRECISION  = 1E-8,
                    ),),
-       )      
+       )
 
-# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
+# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---
 FFDEUX = FORMULE(NOM_PARA=('X1','X2','X3'),VALE='3*X1 + 2*X2 - X3')
 
 FELG01=CREA_CHAMP(
@@ -144,7 +144,7 @@ NELG12=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELG01=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_D_T,  
+   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_D_T,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NELG11, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NELG12, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -161,10 +161,10 @@ SELG01=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG01,NOM_CMP='N',MAILLE='M1',POINT=1,VALE=2000.0,REFERENCE='ANALYTIQUE'),)
 
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---
 FELN01=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='ELNO_NEUT_F',
-   MODELE=MO_D_T,  PROL_ZERO='OUI',   
+   MODELE=MO_D_T,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NELN10=CREA_CHAMP(MODELE=MO_D_T,
@@ -181,7 +181,7 @@ NELN12=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELN01=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_D_T,  
+   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_D_T,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NELN11, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NELN12, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -197,10 +197,10 @@ SELN01=CREA_CHAMP(
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN01,NOM_CMP='N',MAILLE='M1',NOEUD='N2',VALE=3275.25,REFERENCE='ANALYTIQUE'),)
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
 FNOE01=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F',
-   MODELE=MO_D_T,  PROL_ZERO='OUI', 
+   MODELE=MO_D_T,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NNOE10=CREA_CHAMP(MODELE=MO_D_T,
@@ -217,7 +217,7 @@ NNOE12=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NNOE01=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_D_T,  
+   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_D_T,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NNOE11, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NNOE12, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -275,7 +275,7 @@ TB_D_E = RECU_TABLE(CO=RE_D_E,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_D_E)
 TEST_TABLE(TABLE=TB_D_E, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);  
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
 
 TEST_RESU(RESU=(_F(RESULTAT   = RE_D_E,
                    INST       = 1.0,
@@ -283,15 +283,15 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_D_E,
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
                    VALE       = 0.042315004710940,
-                   
+
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.2.20',
                    PRECISION  = 1E-8,
                    ),),
        )
 
- 
-# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
+
+# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---
 
 FELG02=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
@@ -312,7 +312,7 @@ NELG22=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELG02=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_D_E,  
+   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_D_E,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NELG21, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NELG22, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -328,10 +328,10 @@ SELG02=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG02,NOM_CMP='N',MAILLE='M1',POINT=1,VALE=2000.0,REFERENCE='ANALYTIQUE'),)
 
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---
 FELN02=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='ELNO_NEUT_F',
-   MODELE=MO_D_E,  PROL_ZERO='OUI',   
+   MODELE=MO_D_E,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NELN20=CREA_CHAMP(MODELE=MO_D_E,
@@ -348,7 +348,7 @@ NELN22=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELN02=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_D_E,  
+   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_D_E,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NELN21, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NELN22, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -364,10 +364,10 @@ SELN02=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN02,NOM_CMP='N',MAILLE='M1',NOEUD='N2',VALE=3275.25,REFERENCE='ANALYTIQUE'),)
 
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
 FNOE02=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F',
-   MODELE=MO_D_E,  PROL_ZERO='OUI', 
+   MODELE=MO_D_E,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NNOE20=CREA_CHAMP(MODELE=MO_D_E,
@@ -384,7 +384,7 @@ NNOE22=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NNOE02=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_D_E,  
+   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_D_E,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NNOE21, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NNOE22, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -442,7 +442,7 @@ TB_D_TG = RECU_TABLE(CO=RE_D_TG,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_D_TG)
 TEST_TABLE(TABLE=TB_D_TG, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',); 
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
 
 
 TEST_RESU(RESU=(_F(RESULTAT   = RE_D_TG,
@@ -451,14 +451,14 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_D_TG,
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
                    VALE       = 0.042327046592878,
-                   
+
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.2.20',
                    PRECISION  = 1E-8,
                    ),),
-       )   
+       )
 
-# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
+# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---
 
 FELG03=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
@@ -479,7 +479,7 @@ NELG32=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELG03=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_D_TG,  
+   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_D_TG,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NELG31, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NELG32, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -495,10 +495,10 @@ SELG03=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG03,NOM_CMP='N',MAILLE='M1',POINT=1,VALE=2000.0,REFERENCE='ANALYTIQUE'),)
 
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---
 FELN03=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='ELNO_NEUT_F',
-   MODELE=MO_D_TG,  PROL_ZERO='OUI',   
+   MODELE=MO_D_TG,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NELN30=CREA_CHAMP(MODELE=MO_D_TG,
@@ -515,7 +515,7 @@ NELN32=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELN03=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_D_TG,  
+   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_D_TG,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NELN31, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NELN32, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -531,10 +531,10 @@ SELN03=CREA_CHAMP(
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN03,NOM_CMP='N',MAILLE='M1',NOEUD='N2',VALE=3275.25,REFERENCE='ANALYTIQUE'),)
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
 FNOE03=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F',
-   MODELE=MO_D_TG,  PROL_ZERO='OUI', 
+   MODELE=MO_D_TG,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NNOE30=CREA_CHAMP(MODELE=MO_D_TG,
@@ -551,7 +551,7 @@ NNOE32=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUD', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NNOE03=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_D_TG,  
+   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_D_TG,
    ASSE=(_F( GROUP_MA='POUD', CHAM_GD = NNOE31, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUD', CHAM_GD = NNOE32, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -609,19 +609,20 @@ RE_D_EM=STAT_NON_LINE(MODELE     = MO_D_EM,
                      CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
    );
 
-CALC_ELEM(reuse      = RE_D_EM,
+CALC_CHAMP(reuse      = RE_D_EM,
           RESULTAT   = RE_D_EM,
-          OPTION = 'SIEF_ELNO')
-
-CALC_NO(reuse      = RE_D_EM,
-        RESULTAT   = RE_D_EM,
-        OPTION = 'SIEF_NOEU')
+           CONTRAINTE=(
+                       # On teste la fonctionnalite de CALC_CHAMP de
+                       # declenchement du calcul des options en cascade
+                       #'SIEF_ELNO',
+                       'SIEF_NOEU',
+                      ))
 
 TB_D_EM = RECU_TABLE(CO=RE_D_EM,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_D_EM)
 TEST_TABLE(TABLE=TB_D_EM, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0.,REFERENCE='NON_REGRESSION',); 
+           CRITERE = 'ABSOLU',        PRECISION = 0.,REFERENCE='NON_REGRESSION',);
 
 
 TEST_RESU(RESU=(_F(RESULTAT   = RE_D_EM,
@@ -630,14 +631,14 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_D_EM,
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
                    VALE       = 0.043854790675854,
-                   
+
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.2.20',
                    PRECISION  = 1E-8,
                    ),),
        )
 
-# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
+# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---
 
 NELG40=CREA_CHAMP(NUME_ORDRE = 1,
    OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',RESULTAT=RE_D_EM, NOM_CHAM='SIEF_ELGA')
@@ -649,7 +650,7 @@ NELG04=CREA_CHAMP(
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=NELG04,NOM_CMP='X1',MAILLE='M1',POINT=1, VALE=-222090484.5,REFERENCE='ANALYTIQUE'),)
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---
 
 NELN40=CREA_CHAMP(NUME_ORDRE = 1,
    OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',RESULTAT=RE_D_EM, NOM_CHAM='SIEF_ELNO')
@@ -662,7 +663,7 @@ NELN04=CREA_CHAMP(
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=NELN04,NOM_CMP='X1',MAILLE='M1',NOEUD='N2', VALE=1000.0,REFERENCE='ANALYTIQUE'),)
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
 
 NNOE40=CREA_CHAMP(NUME_ORDRE = 1,
    OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',RESULTAT=RE_D_EM, NOM_CHAM='SIEF_NOEU')
@@ -717,13 +718,9 @@ RE_D_TGM=STAT_NON_LINE(MODELE     = MO_D_TGM,
                      CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
 )
 
-CALC_ELEM(reuse      = RE_D_TGM,
+CALC_CHAMP(reuse      = RE_D_TGM,
           RESULTAT   = RE_D_TGM,
-          OPTION = 'SIEF_ELNO')
-
-CALC_NO(reuse      = RE_D_TGM,
-        RESULTAT   = RE_D_TGM,
-        OPTION = 'SIEF_NOEU')
+           CONTRAINTE=('SIEF_ELNO','SIEF_NOEU'))
 
 TB_D_TGM = RECU_TABLE(CO=RE_D_TGM,NOM_PARA=('ITER_GLOB'),)
 
@@ -737,7 +734,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_D_TGM,
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
                    VALE       = 0.043866816313684,
-                   
+
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.2.20',
                    PRECISION  = 1E-8,
@@ -755,7 +752,7 @@ NELG05=CREA_CHAMP(
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=NELG05,NOM_CMP='X1',MAILLE='M1',POINT=1, VALE=-229905660.66,REFERENCE='ANALYTIQUE'),)
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---
 
 NELN50=CREA_CHAMP(NUME_ORDRE = 1,
    OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',RESULTAT=RE_D_TGM, NOM_CHAM='SIEF_ELNO')
@@ -768,7 +765,7 @@ NELN05=CREA_CHAMP(
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=NELN05,NOM_CMP='X1',MAILLE='M1',NOEUD='N2', VALE=1000.0,REFERENCE='ANALYTIQUE'),)
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
 
 NNOE50=CREA_CHAMP(NUME_ORDRE = 1,
    OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',RESULTAT=RE_D_TGM, NOM_CHAM='SIEF_NOEU')
@@ -832,13 +829,13 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_D_TGD,
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
                    VALE       = 3.8851048793357E-04,
-                   
+
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.2.20',
                    PRECISION  = 1E-8,
                    ),),
        )
-       
+
 #-------------------------------------------------------------------------------------
 # 7 --> POU_C_T
 # ---------------
@@ -878,7 +875,7 @@ TB_C_T = RECU_TABLE(CO=RE_C_T,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_C_T)
 TEST_TABLE(TABLE=TB_C_T, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',); 
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
 
 
 TEST_RESU(RESU=(_F(RESULTAT   = RE_C_T,
@@ -887,14 +884,14 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_C_T,
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
                    VALE       = -0.013509220220791,
-                   
+
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.2.20',
                    PRECISION  = 1E-8,
                    ),),
        )
 
-# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
+# --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---
 
 FELG07=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
@@ -915,7 +912,7 @@ NELG72=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUC', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELG07=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_C_T,  
+   OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',   MODELE=MO_C_T,
    ASSE=(_F( GROUP_MA='POUC', CHAM_GD = NELG71, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUC', CHAM_GD = NELG72, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -931,10 +928,10 @@ SELG07=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG07,NOM_CMP='N',MAILLE='M2',POINT=1,VALE=-5000.0,REFERENCE='ANALYTIQUE'),)
 
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---
 FELN07=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='ELNO_NEUT_F',
-   MODELE=MO_C_T,  PROL_ZERO='OUI',   
+   MODELE=MO_C_T,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUC', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NELN70=CREA_CHAMP(MODELE=MO_C_T,
@@ -951,7 +948,7 @@ NELN72=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUC', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NELN07=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_C_T,  
+   OPERATION='ASSE', TYPE_CHAM='ELNO_NEUT_R',   MODELE=MO_C_T,
    ASSE=(_F( GROUP_MA='POUC', CHAM_GD = NELN71, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUC', CHAM_GD = NELN72, CUMUL='OUI',COEF_R= -1000.0),),)
 
@@ -966,10 +963,10 @@ SELN07=CREA_CHAMP(
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN07,NOM_CMP='N',MAILLE='M2',NOEUD='N2',VALE=-6830.127,REFERENCE='ANALYTIQUE'),)
 
-# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
+# --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
 FNOE07=CREA_CHAMP(
    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F',
-   MODELE=MO_C_T,  PROL_ZERO='OUI', 
+   MODELE=MO_C_T,  PROL_ZERO='OUI',
    AFFE=_F( GROUP_MA='POUC', NOM_CMP = ('X1'), VALE_F = FFDEUX,),)
 
 NNOE70=CREA_CHAMP(MODELE=MO_C_T,
@@ -986,7 +983,7 @@ NNOE72=CREA_CHAMP(
    AFFE=_F( GROUP_MA='POUC', NOM_CMP = ('X1','X2','X3'), VALE =(1.0,0.5,2.0),),)
 
 NNOE07=CREA_CHAMP(
-   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_C_T,  
+   OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_R',   MODELE=MO_C_T,
    ASSE=(_F( GROUP_MA='POUC', CHAM_GD = NNOE71, CUMUL='OUI',COEF_R= 1.0),
          _F( GROUP_MA='POUC', CHAM_GD = NNOE72, CUMUL='OUI',COEF_R= -1000.0),),)
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/04/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE VABHHTS J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -180,9 +180,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=43664.5175358,
-                   PRECISION=0.0007,
-                   REFERENCE='NON_REGRESSION',),
+                   VALE=43695.191085325,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='11.0.7',),
                 _F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='EFGE_ELNO',
@@ -208,10 +208,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=1031856.9210976,
-                   PRECISION=0.0002,
+                   VALE=1030972.8503538,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='10.3.18',),
+                   VERSION='11.0.7',),
                 _F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
@@ -230,9 +229,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEGE_ELNO',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=24389.7962315,
-                   PRECISION=0.0015,
-                   REFERENCE='NON_REGRESSION',),),);
+                   VALE=24435.24051536,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='11.0.7',),),);
 
 # ----------------------------------------------------------------------
 

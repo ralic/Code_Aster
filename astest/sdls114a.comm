@@ -1,22 +1,22 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
-# TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #        PAR RECOMBINAISON MODALE SUR UNE PLAQUE FISSUREE
 
@@ -48,7 +48,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),
               );
-                 
+
 M = MODI_MAILLAGE(reuse = M,
                   MAILLAGE = M,
                   MODI_MAILLE = _F(OPTION = 'NOEUD_QUART',
@@ -63,7 +63,7 @@ MA=DEFI_MATERIAU(ELAS=_F(E=200.0E+9,
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,
-                         ),);  
+                         ),);
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_MA='COT_SUP',
@@ -74,16 +74,16 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MO,
 
 CHAR=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='COT_INF',
-                                  FX=-1000,), 
-                    );   
-                  
+                                  FX=-1000,),
+                    );
+
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           tau,1.0,
                           0.2, 1.0,),
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='LINEAIRE',);
-                                    
+
 #################################
 #  CONSTRUCTION DES MATRICES
 #################################
@@ -119,7 +119,7 @@ MA_ASS=ASSE_MATRICE(MATR_ELEM=MMASSE,
 
 AMO_ASS=ASSE_MATRICE(MATR_ELEM=MAMOR,
                     NUME_DDL=NUM,);
-                    
+
 VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
                     NUME_DDL=NUM,);
 
@@ -145,7 +145,7 @@ THET1=CALC_THETA(
                              R_SUP=5.E-5,),
                  DIRECTION = (-1.0, 0.0, 0.0),
                  );
-                 
+
 FF1=DEFI_FOND_FISS(MAILLAGE=M,
                    FOND_FISS=_F(GROUP_NO = 'PF',),
                    NORMALE=(0.0, -1.0, 0.0),
@@ -161,17 +161,17 @@ GLMO1=CALC_G(OPTION='K_G_MODA',
                     );
 
 IMPR_TABLE(TABLE =GLMO1);
-                                    
-             
+
+
 D_SUP = [None]*n_mode
 D_INF = [None]*n_mode
 T1_K = [None]*n_mode
 Kmodu = [None]*n_mode
 
 for i in range(0,n_mode) :
-   
+
    imode = i + 1
-   
+
    D_SUP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='Lev sup',
                                     GROUP_NO='LEVSUP',
                                     RESULTAT=MODE,
@@ -179,8 +179,8 @@ for i in range(0,n_mode) :
                                     NOM_CHAM='DEPL',
                                     NOM_CMP=('DX','DY',),
                                     OPERATION='EXTRACTION',),);
-   
-   
+
+
    D_INF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='lev inf',
                                     GROUP_NO='LEVINF',
                                     RESULTAT=MODE,
@@ -188,8 +188,8 @@ for i in range(0,n_mode) :
                                     NOM_CHAM='DEPL',
                                     NOM_CMP=('DX','DY',),
                                     OPERATION='EXTRACTION',),);
-  
-   
+
+
    T1_K[i] = POST_K1_K2_K3(MODELISATION='C_PLAN',
                            MATER=MA,
                            INFO = 2,
@@ -199,7 +199,7 @@ for i in range(0,n_mode) :
                            ABSC_CURV_MAXI=7.E-5,
                            TOUT_ORDRE='OUI',);
 
-   
+
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
 Kg_ref =[-1.92107E+10, -1.16602E+11, 8.03919E+10, -1.18804E+11, 1.72295E+11]
 Ku_ref =[-1.90387E+10, -1.15558E+11, 7.96724E+10, -1.17741E+11, 1.70753E+11]
@@ -209,13 +209,13 @@ for i in range(0,5) :
    TEST_TABLE(TABLE=GLMO1,
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_MODE',
-                         VALE_I = imode),  
+                         VALE_I = imode),
               VALE=Kg_ref[i],
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
               VERSION='11.00.04'
              )
-             
+
    TEST_TABLE(TABLE=T1_K[i],
               NOM_PARA='K1',
               VALE=Ku_ref[i],
@@ -235,7 +235,7 @@ MACRO_PROJ_BASE(BASE=MODE,
                                 _F(MATRICE=CO('RIGI_GE'),
                                    MATR_ASSE=RIG_ASS,),
                                 _F(MATRICE=CO('AMOR_GE'),
-                                   MATR_ASSE=AMO_ASS,),), 
+                                   MATR_ASSE=AMO_ASS,),),
                 VECT_ASSE_GENE=_F(VECTEUR=CO('CHA_ASS'),
                                   VECT_ASSE=VE_ASS,),);
 
@@ -252,14 +252,14 @@ RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
                          ARCHIVAGE=_F(PAS_ARCH = 200,),
                          IMPRESSION = _F(TOUT='OUI',),);
 
-RESUDYNA = REST_GENE_PHYS(RESU_GENE = RES_DYNA, 
+RESUDYNA = REST_GENE_PHYS(RESU_GENE = RES_DYNA,
                           NOM_CHAM=('DEPL','ACCE',)
                           );
 
-RESUDYNA =CALC_ELEM(reuse =RESUDYNA ,
+RESUDYNA =CALC_CHAMP(reuse =RESUDYNA ,
                    MODELE=MO,
                    CHAM_MATER=CM,
-                   OPTION='SIEF_ELGA',
+                    CONTRAINTE=('SIEF_ELGA'),
                    RESULTAT=RESUDYNA ,);
 
 RESUDYNA =CALC_NO(reuse =RESUDYNA ,
@@ -277,12 +277,12 @@ IMPR_TABLE(TABLE=KT1)
 TEST_TABLE(TABLE=KT1,
            NOM_PARA='K1',
            FILTRE=_F(NOM_PARA = 'INST',
-                      VALE = 1.285E-2),  
+                      VALE = 1.285E-2),
            VALE=4.49990E+05,
            PRECISION=0.001,
            REFERENCE = 'NON_REGRESSION',
           );
-###TESTS INFORMATIQUES         
+###TESTS INFORMATIQUES
 GLMO2=CALC_G(NUME_MODE = 1,
              OPTION='K_G_MODA',
              RESULTAT=MODE,
@@ -295,7 +295,7 @@ GLMO2=CALC_G(NUME_MODE = 1,
 TEST_TABLE(TABLE=GLMO2,
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_MODE',
-                         VALE_I = 1),  
+                         VALE_I = 1),
               VALE=-1.92107E+10,
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
@@ -311,12 +311,12 @@ GLMO3=CALC_G(OPTION='K_G_MODA',
 TEST_TABLE(TABLE=GLMO3,
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_MODE',
-                         VALE_I = 1),  
+                         VALE_I = 1),
               VALE=-1.92107E+10,
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
              );
-             
+
 LI = DEFI_LIST_REEL(VALE = (9.0E-04,6.90E-03, 1.285E-2),);
 KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                   LIST_INST = LI,
@@ -327,11 +327,11 @@ KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                               R_INF=5.E-6,
                     DIRECTION = (-1.0, 0.0, 0.0),),);
 
-IMPR_TABLE(TABLE=KT2);                  
+IMPR_TABLE(TABLE=KT2);
 TEST_TABLE(TABLE=KT2,
            NOM_PARA='K1',
            FILTRE=_F(NOM_PARA = 'INST',
-                      VALE = 1.285E-2),  
+                      VALE = 1.285E-2),
            VALE=4.49990E+05,
            PRECISION=0.001,
            REFERENCE = 'NON_REGRESSION',

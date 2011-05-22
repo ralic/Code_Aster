@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,10 +138,10 @@ RESU=STAT_NON_LINE(MODELE=MO,
 
 #------- POST TRAITEMENT -----------------------
 
-RESU=CALC_ELEM(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
 
 
-               OPTION='SIEF_ELNO',
+                CONTRAINTE=('SIEF_ELNO'),
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,

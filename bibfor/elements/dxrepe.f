@@ -1,9 +1,9 @@
-      SUBROUTINE DXREPE ( PGL , T2EV, T2VE, T1VE )
+      SUBROUTINE DXREPE ( PGL , T2EV, T2VE)
       IMPLICIT   NONE
-      REAL*8              PGL(3,3) , T2EV(*), T2VE(*), T1VE(*)
+      REAL*8              PGL(3,3) , T2EV(*), T2VE(*)
 C     ---------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C         CALCUL DES MATRICE T1VE ET T2VE DE PASSAGE D'UNE MATRICE
-C         (3,3) ET (2,2) DU REPERE DE LA VARIETE AU REPERE ELEMENT
-C         ET T2VE INVERSE DE T2EV
+C         CALCUL DE LA MATRICE DE PASSAGE DU REPERE DE L'ELEMENT A
+C         LA VARIETE (LE REPERE DE LA VARIETE EST OBTENU PAR LA MATRICE
+C         DE PASSAGE GLOBAL -> LOCAL) AINSI QUE SON INVERSE
 C
 C         POUR TOUTES LES OPTIONS DE POST TRAITEMENT COQUE
 C     ------------------------------------------------------------------
@@ -83,15 +83,5 @@ C
       T2VE(2) = - S
       T2VE(3) =   S
       T2VE(4) =   C
-C
-      T1VE(1) =   C * C
-      T1VE(4) =   S * S
-      T1VE(7) =   C * S
-      T1VE(2) =   T1VE(4)
-      T1VE(5) =   T1VE(1)
-      T1VE(8) = - T1VE(7)
-      T1VE(3) = - T1VE(7) - T1VE(7)
-      T1VE(6) =   T1VE(7) + T1VE(7)
-      T1VE(9) =   T1VE(1) - T1VE(4)
 C
       END

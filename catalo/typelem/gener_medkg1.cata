@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,7 @@ MODE_LOCAL__
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
+    COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
@@ -145,7 +146,7 @@ OPTION__
     DISS_ELNO           413   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  CCACOQU  PCACOQU
                                      CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  EDISSNN  PDISSDR
-    ECIN_ELEM           409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER
+    ECIN_ELEM           409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
     EFGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER

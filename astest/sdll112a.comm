@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,8 +92,8 @@ MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,    MATR_B=MASSE,
 MODE=NORM_MODE(reuse=MODE,   MODE=MODE,    NORME='TRAN_ROTA',
                   )
 
-MODE=CALC_ELEM(reuse=MODE, 
-                     RESULTAT=MODE,         OPTION='SIEF_ELGA',
+MODE=CALC_CHAMP(reuse=MODE,
+                     RESULTAT=MODE,          CONTRAINTE=('SIEF_ELGA'),
                   )
 
 MODE=CALC_NO(reuse=MODE,RESULTAT=MODE,
@@ -255,8 +255,8 @@ MODE_ST1=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                                                   )
                           )
 
-MODE_ST1=CALC_ELEM(reuse=MODE_ST1,
-                     RESULTAT=MODE_ST1,     OPTION='SIEF_ELGA',
+MODE_ST1=CALC_CHAMP(reuse=MODE_ST1,
+                     RESULTAT=MODE_ST1,      CONTRAINTE=('SIEF_ELGA'),
                   )
 
 MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,
@@ -313,8 +313,8 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
                      REFERENCE = 'SOURCE_EXTERNE'
-   
-                                                                    ))                                                                                                                       
+
+                                                                    ))
            )
 
 #-----------------------------------------
@@ -391,8 +391,8 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,    MATR_MASS=MASSE,
                          MODE_STAT=_F( TOUT = 'OUI',
                                        TOUT_CMP = 'OUI')  )
 
-MODE_STA=CALC_ELEM(reuse=MODE_STA,
-                     RESULTAT=MODE_STA,     OPTION='SIEF_ELGA',
+MODE_STA=CALC_CHAMP(reuse=MODE_STA,
+                     RESULTAT=MODE_STA,      CONTRAINTE=('SIEF_ELGA'),
                   )
 
 MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,
@@ -461,7 +461,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'
-                     REFERENCE = 'SOURCE_EXTERNE' 
+                     REFERENCE = 'SOURCE_EXTERNE'
                                                                            ),
                   _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
                     NOEUD_CMP = ('DIR', 'X',),
@@ -469,7 +469,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'
-                     REFERENCE = 'SOURCE_EXTERNE' 
+                     REFERENCE = 'SOURCE_EXTERNE'
 
                                                                    ),
                   _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
@@ -478,7 +478,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 
                     # CALCUL AVEC LA METHODE DE LANCZOS
 #                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'
-                     REFERENCE = 'SOURCE_EXTERNE' 
+                     REFERENCE = 'SOURCE_EXTERNE'
 
                                                                    ))
            )

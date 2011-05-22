@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE   : SPHERE CREUSE: CONVECTION, RAYONNEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,9 +236,9 @@ NOM_CMP = 'TEMP', VALE = 71.22,  PRECISION = 1.E-4))
     )
 
 #
-TEMPE=CALC_ELEM(reuse=TEMPE,
+TEMPE=CALC_CHAMP(reuse=TEMPE,
                 RESULTAT=TEMPE,
-                OPTION='FLUX_ELNO',
+                 THERMIQUE=('FLUX_ELNO'),
 
                 );
 

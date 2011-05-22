@@ -1,22 +1,22 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE LA LOI ENDO_SCALAIRE MODELISATION GRAD_VARI
 # ssnp146a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ET DU PILOTAGE PRED_ELAS
 
@@ -51,17 +51,17 @@ eps  = ( weps * 2*(1-NU**2)/E )**0.5
 MA  =  LIRE_MAILLAGE()
 
 MO = AFFE_MODELE(
-  MAILLAGE = MA, 
+  MAILLAGE = MA,
   AFFE     = _F(
-    GROUP_MA     = 'MATIERE', 
-    PHENOMENE    = 'MECANIQUE', 
+    GROUP_MA     = 'MATIERE',
+    PHENOMENE    = 'MECANIQUE',
     MODELISATION = 'D_PLAN_GRAD_VARI'
     ),
   )
 
 
 # -----------------------------------------------------
-#                     MATERIAU 
+#                     MATERIAU
 # -----------------------------------------------------
 
 BETON = DEFI_MATERIAU(
@@ -70,9 +70,9 @@ BETON = DEFI_MATERIAU(
   NON_LOCAL     = _F(C_GRAD_VARI = C, PENA_LAGR = pena),)
 
 CHMAT = AFFE_MATERIAU(
-  MAILLAGE = MA, 
+  MAILLAGE = MA,
   AFFE = _F(
-    GROUP_MA = 'MATIERE', 
+    GROUP_MA = 'MATIERE',
     MATER    =  BETON
     ),
   )
@@ -89,7 +89,7 @@ LIAISON = AFFE_CHAR_MECA(
     _F(GROUP_MA = 'BAS',    DY=0),
     ),
   )
-  
+
 TRACTION = AFFE_CHAR_MECA(
   MODELE = MO,
   FACE_IMPO = _F(GROUP_MA = 'HAUT', DY=eps),
@@ -99,9 +99,9 @@ RAMPE = DEFI_FONCTION(
   NOM_PARA = 'INST',
   VALE     = (0,0,1,1),
   )
-  
+
 INSTANTS = DEFI_LIST_REEL(
-  DEBUT = 0, 
+  DEBUT = 0,
   INTERVALLE = (
     _F(JUSQU_A = 1, NOMBRE = 2)
     )
@@ -112,7 +112,7 @@ n_pilo    = 6
 tfin_pilo = n_pilo * incr_endo
 
 INSTPILO = DEFI_LIST_REEL(
-  DEBUT = 0, 
+  DEBUT = 0,
   INTERVALLE = (
     _F(JUSQU_A = tfin_pilo, NOMBRE = n_pilo)
     )
@@ -150,7 +150,7 @@ EVOL0 = STAT_NON_LINE(
     METHODE     = 'MUMPS',
     PCENT_PIVOT = 50,
     ),
-  ) 
+  )
 
 # calcul non lineaire avec pilotage PRED_ELAS
 
@@ -186,23 +186,23 @@ EVOL1 = STAT_NON_LINE(
     METHODE     = 'MUMPS',
     PCENT_PIVOT = 50,
     ),
-  ) 
+  )
 
 # -----------------------------------------------------
 #    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS
 # -----------------------------------------------------
 
-EVOL0 = CALC_ELEM(reuse    = EVOL0,
+EVOL0 = CALC_CHAMP(reuse    = EVOL0,
                  RESULTAT = EVOL0,
-                 OPTION   = 'VARI_ELNO',)
+                  VARI_INTERNE=('VARI_ELNO'),)
 
 EVOL0 = CALC_NO(reuse    = EVOL0,
                RESULTAT = EVOL0,
                OPTION   = 'VARI_NOEU',)
 
-EVOL1 = CALC_ELEM(reuse    = EVOL1,
+EVOL1 = CALC_CHAMP(reuse    = EVOL1,
                  RESULTAT = EVOL1,
-                 OPTION   = 'VARI_ELNO',)
+                  VARI_INTERNE=('VARI_ELNO'),)
 
 EVOL1 = CALC_NO(reuse    = EVOL1,
                RESULTAT = EVOL1,
@@ -216,7 +216,7 @@ RESU0 = MACR_LIGN_COUPE(RESULTAT   = EVOL0,
                        NOM_CHAM   = 'VARI_NOEU',
                        LIGN_COUPE = _F(TYPE = 'GROUP_NO',
                                        GROUP_NO = 'DRO',),)
-                                       
+
 RESU1 = MACR_LIGN_COUPE(RESULTAT   = EVOL1,
                        NOM_CHAM   = 'VARI_NOEU',
                        LIGN_COUPE = _F(TYPE = 'GROUP_NO',
@@ -225,7 +225,7 @@ RESU1 = MACR_LIGN_COUPE(RESULTAT   = EVOL1,
 IMPR_TABLE(TABLE=RESU0)
 
 IMPR_TABLE(TABLE=RESU1)
-                                       
+
 # -----------------------------------------------------
 #      COMPARAISON AVEC LES VALEURS DE REFERENCE
 # -----------------------------------------------------
@@ -239,9 +239,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU0,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = 1.),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = coory[0]),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -249,19 +249,19 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU0,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = 1.),
-                        _F(NOM_PARA = 'COOR_Y', 
-                           VALE = coory[1]),),)                                       
+                        _F(NOM_PARA = 'COOR_Y',
+                           VALE = coory[1]),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            VALE      = valref,
            PRECISION = prec,
            TABLE     = RESU0,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = 1.),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = coory[2]),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -269,9 +269,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU1,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = tfin_pilo),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = coory[0]),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -279,19 +279,19 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU1,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = tfin_pilo),
-                        _F(NOM_PARA = 'COOR_Y', 
-                           VALE = coory[1]),),)                                       
+                        _F(NOM_PARA = 'COOR_Y',
+                           VALE = coory[1]),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            VALE      = valref,
            PRECISION = prec,
            TABLE     = RESU1,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = tfin_pilo),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = coory[2]),),)
-                           
+
 FIN()

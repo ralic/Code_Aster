@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,8 +126,8 @@ EVOLNOLI=STAT_NON_LINE(
                 INFO=2
               )
 
-EVOLNOLI=CALC_ELEM( reuse=EVOLNOLI,
-                            OPTION='SIEF_ELNO',
+EVOLNOLI=CALC_CHAMP( reuse=EVOLNOLI,
+                             CONTRAINTE=('SIEF_ELNO'),
                           RESULTAT=EVOLNOLI,
               )
 

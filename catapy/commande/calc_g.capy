@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 24/05/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -116,8 +116,16 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          ),
 
          OPTION          =SIMP(statut='o',typ='TXM',max=1,defaut='CALC_G',
-              into=("CALC_G","CALC_G_GLOB","CALC_K_G","K_G_MODA","G_MAX","G_MAX_GLOB","G_BILI",
-                    "G_BILI_GLOB","CALC_K_MAX"),),
+                               into=("CALC_G",
+                                     "CALC_G_GLOB",
+                                     "CALC_K_G",
+                                     "K_G_MODA",
+                                     "G_MAX",
+                                     "G_MAX_GLOB",
+                                     "G_BILI",
+                                     "G_BILI_GLOB",
+                                     "CALC_K_MAX"),
+                             ),
 
          b_g_max    =BLOC(condition="(OPTION=='G_MAX') or (OPTION=='G_MAX_GLOB')",
            BORNES          =FACT(statut='o',max='**',

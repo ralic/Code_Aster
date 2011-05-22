@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -288,6 +288,8 @@ CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
                LPAOUT(1) = 'PENERDR'
             ELSE IF (OPTIO2.EQ.'ECIN_ELEM') THEN
                LPAOUT(1) = 'PENERCR'
+               CALL AJCHCA('POMEGA2',CHFREQ,LPAIN,
+     &                     LCHIN,NBIN,MAXIN,'N')
             ELSE IF (OPTIO2.EQ.'EPTU_ELNO') THEN
                LPAIN(1) = 'PDEFORR'
                LCHIN(1) =  CHEPS
