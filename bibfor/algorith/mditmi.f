@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C
 C
 C 1.  RECUPERATION DU CONCEPT MELASFLU
 C     --------------------------------
-      CALL GETVID ( ' ', 'BASE_ELAS_FLUI', 0,1,1, BASEFL, N1 )
+      CALL GETVID ( 'SCHEMA_TEMPS', 'BASE_ELAS_FLUI', 1,1,1, BASEFL, N1)
       CALL JEVEUO ( BASEFL//'.REMF', 'L', KREFE )
       TYPFLU = ZK8(KREFE)
       NOMBM  = ZK8(KREFE+1)
@@ -148,7 +148,7 @@ CCC      CALL RSORAC (NOMBM,'LONUTI',IB,R8B,K8B,C16B,0.0D0,K8B,
 CCC     &             NBM0,1,NBTROU)
       NBM0 = NBMCFC
 C
-      CALL GETVIS ( ' ', 'NB_MODE', 0,1,1, NBMODE, N1 )
+      CALL GETVIS ( 'SCHEMA_TEMPS', 'NB_MODE', 1,1,1, NBMODE, N1 )
       IF ( N1.EQ.0 ) THEN
          NBMODE = NBM0
       ELSE IF ( NBMODE.GT.NBM0 ) THEN
@@ -187,13 +187,13 @@ C
 C 6.3 AMORTISSEMENTS MODAUX
 C     STRUCTURE NON COUPLEE AVEC LE FLUIDE
 C
-      CALL GETVR8(' ','AMOR_REDUIT',0,1,0,R8B,N1)
-      CALL GETVID(' ','LIST_AMOR'  ,0,1,0,K8B,N2)
+      CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,0,R8B,N1)
+      CALL GETVID('AMOR_MODAL','LIST_AMOR'  ,1,1,0,K8B,N2)
       IF ( (N1.NE.0).OR.(N2.NE.0) ) THEN
          IF ( N1.NE.0 ) THEN
             NBAMOR = -N1
          ELSE
-            CALL GETVID(' ','LIST_AMOR'  ,0,1,0,LISTAM,IB)
+            CALL GETVID('AMOR_MODAL','LIST_AMOR'  ,1,1,0,LISTAM,IB)
             CALL JELIRA(LISTAM//'           .VALE','LONMAX',NBAMOR,K8B)
          ENDIF
          IF ( NBAMOR.GT.NBMODE ) THEN
@@ -205,7 +205,8 @@ C
          ENDIF
          IF ( NBAMOR.GE.NBMODE ) THEN
             IF ( N1.NE.0 ) THEN
-               CALL GETVR8(' ','AMOR_REDUIT',0,1,NBMODE,ZR(JAMOG),IB)
+               CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,NBMODE,
+     &                     ZR(JAMOG),IB)
             ELSE
                CALL JEVEUO(LISTAM//'           .VALE','L',LAMOG)
                DO 20 IAM = 1, NBMODE
@@ -219,7 +220,8 @@ C
             VALI (3) = IDIFF
             CALL U2MESI('I','ALGORITH16_13',3,VALI)
             IF ( N1.NE.0 ) THEN
-               CALL GETVR8(' ','AMOR_REDUIT',0,1,NBAMOR,ZR(JAMOG),IB)
+               CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,NBAMOR,
+     &                     ZR(JAMOG),IB)
             ELSE
                CALL JEVEUO(LISTAM//'           .VALE','L',LAMOG)
                DO 30 IAM = 1, NBAMOR
@@ -243,7 +245,7 @@ C
 C
 C 6.5 RECUPERATION DE LA VITESSE D'ECOULEMENT DU FLUIDE
 C
-      CALL GETVIS( ' ', 'NUME_VITE_FLUI', 0,1,1, NUMVIF, N1 )
+      CALL GETVIS( 'SCHEMA_TEMPS', 'NUME_VITE_FLUI', 1,1,1, NUMVIF, N1 )
       CALL JEVEUO(BASEFL//'.VITE','L',KVITE)
       VGAP = ZR(KVITE+NUMVIF-1)
 C
@@ -321,17 +323,17 @@ C     ----------------------------------
 C 8.1 CALCUL OU NON D'UN TRANSITOIRE
 C
       ITRANS = 0
-      CALL GETVTX ( ' ', 'ETAT_STAT'  , 0,1,1, OUINON, N1 )
-      CALL GETVR8 ( ' ', 'PREC_DUREE' , 0,1,1, EPS   , N1 )
-      CALL GETVR8 ( ' ', 'TS_REG_ETAB', 0,1,1, TS    , NTS )
+      CALL GETVTX ( 'SCHEMA_TEMPS', 'ETAT_STAT'  , 1,1,1, OUINON, N1 )
+      CALL GETVR8 ( 'SCHEMA_TEMPS', 'PREC_DUREE' , 1,1,1, EPS   , N1 )
+      CALL GETVR8 ( 'SCHEMA_TEMPS', 'TS_REG_ETAB', 1,1,1, TS    , NTS)
       IF ( OUINON.EQ.'OUI' ) ITRANS = 1
 C
 C 8.2 PRISE EN COMPTE OU NON DU SAUT DE FORCE FLUIDELASTIQUE
 C     D'AMORTISSEMENT AU COURS DES PHASES DE CHOC
 C
       ICOUPL = 0
-      CALL GETVTX ( ' ', 'CHOC_FLUI'    , 0,1,1, OUINON, N1  )
-      CALL GETVIS ( ' ', 'NB_MODE_FLUI' , 0,1,1, NBMP  , NMP )
+      CALL GETVTX ( 'SCHEMA_TEMPS', 'CHOC_FLUI'    , 1,1,1, OUINON, N1 )
+      CALL GETVIS ( 'SCHEMA_TEMPS', 'NB_MODE_FLUI' , 1,1,1, NBMP  , NMP)
       IF ( OUINON.EQ.'OUI' ) ICOUPL = 1
       IF ( NBMP.EQ.0 ) ICOUPL = 0
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21b.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,8 +93,9 @@ DYNAHARG=DYNA_LINE_HARM( MATR_MASS=MASSEGEN, MATR_RIGI=RIGIDGEN,
 #                            MATR_AMOR:AMORTGEN,
 #                            AMOR_REDUIT:(0.0087 0.0171 0.0250 0.0321
 #                                         0.0383 0.0433 0.0470 0.0492)
-                       AMOR_REDUIT=(8.6824E-3, 0.017101, 0.0250, 3.21393E-2,
-                            3.83022E-2, 4.33012E-2, 4.69846E-2, 4.92403E-2,),
+                       AMOR_MODAL=_F(AMOR_REDUIT=(8.6824E-3, 0.017101,
+                             0.0250, 3.21393E-2,3.83022E-2, 4.33012E-2,
+                              4.69846E-2, 4.92403E-2,),),
 #                            AMOR_REDUIT:(27.982 108.55 300.00 383.42
 #                                         544.56 900.00 819.43 900.00)
                              LIST_FREQ=LIFREQ,

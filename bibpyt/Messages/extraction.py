@@ -1,4 +1,4 @@
-#@ MODIF extraction Messages  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF extraction Messages  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ On a pris <VALE> par défaut.
 7 : _("""
 Le champ %(k1)s pour la maille %(k2)s est de type <ELGA> et vous voulez extraire sa valeur (EXTR_ELGA='VALE'). 
 Vous n'avez pas précisé l'endroit où il est doit être extrait.
-Il faut donner le point d'intégration et le sous-point si c'est un élément de structure (POINT/SOUS_POINT).
+Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément de structure (POINT/SOUS_POINT).
 """),
 
 12 : _("""
@@ -72,7 +72,7 @@ Il faut donner le point d'intégration et le sous-point si c'est un élément de st
 """),
 
 21 : _("""
- La composante %(k2)s sur la maille %(k1)s sur le point d'intégration %(i1)d et le sous-point %(k1)s n'existe pas.
+ La composante %(k2)s sur la maille %(k1)s sur le point d'intégration %(i1)d et le SOUS_POINT %(k1)s n'existe pas.
 """),
 
 99: _("""

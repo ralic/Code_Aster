@@ -6,9 +6,9 @@
       CHARACTER*8         CRIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,13 +31,14 @@ C IN  : NBPAS  : NOMBRE DE PAS DE CALCUL
 C IN  : INSTA  : INSTANTS D'ARCHIVAGE
 C IN  : NBINST : NOMBRE DE PAS D'ARCHIVAGE
 C IN  : LISARC : LISTE D'ARCHIVAGE DES PAS DE CALCUL
-C OUT : ARCH   : NUMERO D'ORDRE DES INATANTS A ARCHIVER
+C OUT : ARCH   : NUMERO D'ORDRE DES INSTANTS A ARCHIVER
 C IN  : EPSI   : PRECISION DE RECHERCHE
 C IN  : CRIT   : CRITERE DE RECHERCHE
 C ----------------------------------------------------------------------
       INTEGER      NBTROU, I, J
+      INTEGER      INDA, INDC
       REAL*8       RVAL
-      REAL*8 VALR
+      REAL*8       VALR
       LOGICAL      TROUVE
       CHARACTER*8  K8B
       CHARACTER*16 TYPCON, NOMCMD
@@ -45,10 +46,24 @@ C     ------------------------------------------------------------------
 C
       CALL GETRES ( K8B, TYPCON, NOMCMD )
 C
-      DO 10 I = 1 , NBINST
+C --->SECURITE SI L'INSTANT INITIAL EST DANS LA LISTE INSTA
+C     RAPPEL: ARCH A LA TAILLE DE LA LISTE-1 
+C     (L'INSTANT INITIAL EST ARCHIVÉ AUTOMATIQUEMENT DANS UNE
+C     AUTRE ROUTINE)
+C
+      INDA=1
+      IF (ABS(INSTC(1)-INSTA(1)).LE.ABS(EPSI))THEN
+            INDA=2
+      ENDIF
+C
+C --->TESTS DE PRÉSENCE DES INSTANTS DE LA LISTE D'ARCHIVAGE
+C     DANS LA LISTE DES INSTANTS DE CALCUL
+C      
+      INDC=2        
+      DO 10 I = INDA , NBINST
          NBTROU = 0
          RVAL = INSTA(I)
-         DO 20 J = 1 , NBPAS
+         DO 20 J = INDC , NBPAS+1
             IF ( CRIT(1:4) .EQ. 'RELA' ) THEN
                IF (ABS(INSTC(J)-RVAL).LE.ABS(EPSI*RVAL)) THEN
                   TROUVE = .TRUE.
@@ -66,12 +81,8 @@ C
             ENDIF
             IF ( TROUVE ) THEN
                NBTROU = NBTROU + 1
-C               IF ( J .EQ. 1 ) THEN
-C                  ARCH(1) = 1
-C               ELSE
-C                  ARCH(J-1) = 1
-C               ENDIF
-               ARCH(J) = 1
+               ARCH(J-1) = 1
+               INDC=J+1
             ENDIF
  20      CONTINUE
          IF ( NBTROU .EQ. 0 ) THEN

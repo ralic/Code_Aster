@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -294,14 +294,14 @@ VECPRO=PROJ_VECT_BASE(BASE=RESGEN,
 
 # ----- CALCULS TRANSITOIRES
 
-TRANGEN1=DYNA_TRAN_MODAL(METHODE='EULER',
-                         MASS_GENE=MASPRO,
-                         RIGI_GENE=RIGPRO,
+TRANGEN1=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         MATR_MASS=MASPRO,
+                         MATR_RIGI=RIGPRO,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_GENE=VECPRO,
+                         EXCIT=_F(VECT_ASSE=VECPRO,
                                   COEF_MULT=1.,),);
 
 

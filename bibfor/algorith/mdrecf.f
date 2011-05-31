@@ -13,9 +13,9 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,7 +104,7 @@ CC
       DO 10 I=1,NBEXCI
 
         CALL GETVIS('EXCIT','NUME_ORDRE',I,1,1,INUM,NF)
-        CALL GETVID('EXCIT','VECT_GENE' ,I,1,1,CHANNO,L1)
+        CALL GETVID('EXCIT','VECT_ASSE' ,I,1,1,CHANNO,L1)
         CALL GETVID('EXCIT','FONC_MULT' ,I,1,1,FONCT,N1)
         CALL GETVR8('EXCIT','COEF_MULT' ,I,1,1,ALPHA,M1)
         CALL GETVID('EXCIT','ACCE'      ,I,1,1,FACCE,NA)
@@ -117,7 +117,7 @@ C         CAS D'UNE FONC_MULT
           CALL JEVEUO(FONCT//'.PROL','L',LPROL)
           NOMFON(I+NBEXCI) = ZK24(LPROL)
           IF (L1.NE.0) THEN
-C           CAS D'UN VECT_GENE
+C           CAS D'UN VECT_ASSE
             CALL JEVEUT(CHANNO//'.VALE','L',JVALE)
             IADVEC(I)=JVALE
             IDESCF(I)=1
@@ -131,7 +131,7 @@ C           CAS D'UN NUME_ORDRE
 C         CAS D'UN COEF MULT
           COEFM(I)=ALPHA
           IF (L1.NE.0) THEN
-C           CAS D'UN VECT_GENE
+C           CAS D'UN VECT_ASSE
             CALL JEVEUT(CHANNO//'.VALE','L',JVALE)
             IADVEC(I)=JVALE
             IDESCF(I)=3
@@ -149,7 +149,7 @@ C         CAS D'UN ACCELEROGRAMME
           NOMFON(I+NBEXCI) = ZK24(LPROL)
           FONACC(I+NBEXCI) = ZK24(LPROL)
           IF (L1.NE.0) THEN
-C           CAS D'UN VECT_GENE
+C           CAS D'UN VECT_ASSE
             CALL JEVEUT(CHANNO//'.VALE','L',JVALE)
             IADVEC(I)=JVALE
             IDESCF(I)=1
@@ -163,7 +163,7 @@ C           CAS D'UN NUME_ORDRE
         IF (N2.NE.0) THEN
           IF (MONMOT(1).EQ.'OUI') THEN
             NOMMOT = 'OUI'
-            CALL GETVID(' ','MODE_STAT',1,1,1,MODSTA,NBV)
+            CALL GETVID('EXCIT','MODE_STAT',1,1,1,MODSTA,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
                CALL U2MESG('E', 'ALGORITH13_46',0,' ',0,0,0,0.D0)
@@ -185,7 +185,7 @@ C           CAS D'UN NUME_ORDRE
         IF (N3.NE.0) THEN
           IF (MONMOT(2).EQ.'OUI') THEN
             NOMMOT = 'OUI'
-            CALL GETVID(' ','MODE_CORR',1,1,1,MODCOR,NBV)
+            CALL GETVID('EXCIT','MODE_CORR',1,1,1,MODCOR,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
                CALL U2MESG('E', 'ALGORITH13_47',0,' ',0,0,0,0.D0)

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,6 @@ def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN#
                         "ALPHP_ELGA_ALPH0",
                         "COMPORTEMENT",
                         "COMPORTHER",
-                        "CRIT_ELNO",
                         "DEDE_ELNO",
                         "DEDE_NOEU",
                         "DEGE_ELNO",

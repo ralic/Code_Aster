@@ -1,9 +1,9 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 # sdnl111a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,11 +120,11 @@ CERCLE=DEFI_OBSTACLE(  TYPE='BI_CERCLE' )
 
 #
 DYNAMODA=DYNA_TRAN_MODAL(
-                       METHODE='EULER',
-                       MASS_GENE=MASSEPRO,
-                       RIGI_GENE=RIGIPROJ,
-                       AMOR_REDUIT=(    0.001,  ),
-                       ETAT_INIT=_F( VITE_INIT_GENE = VITINI),
+                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       MATR_MASS=MASSEPRO,
+                       MATR_RIGI=RIGIPROJ,
+                       AMOR_MODAL=_F(AMOR_REDUIT=(0.001,  ),),
+                       ETAT_INIT=_F( VITE = VITINI),
                        INCREMENT=_F(  INST_INIT = 0.,
                                    INST_FIN = 0.00102,
                                    PAS = 1.E-6,
@@ -147,11 +147,11 @@ DYNAMODA=DYNA_TRAN_MODAL(
 
 #
 DYNAMOD2=DYNA_TRAN_MODAL(
-                       METHODE='EULER',
-                       MASS_GENE=MASSEPRO,
-                       RIGI_GENE=RIGIPROJ,
-                       AMOR_REDUIT=(    0.001,  ),
-                       ETAT_INIT=_F( VITE_INIT_GENE = VITINI),
+                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       MATR_MASS=MASSEPRO,
+                       MATR_RIGI=RIGIPROJ,
+                       AMOR_MODAL=_F(AMOR_REDUIT=(0.001,  ),),
+                       ETAT_INIT=_F( VITE = VITINI),
                        INCREMENT=_F(  INST_INIT = 0.,
                                    INST_FIN = 0.00102,
                                    PAS = 1.E-6,
@@ -174,11 +174,11 @@ DYNAMOD2=DYNA_TRAN_MODAL(
 
 #
 DYNAMOD3=DYNA_TRAN_MODAL(
-                       METHODE='EULER',
-                       MASS_GENE=MASSEPRO,
-                       RIGI_GENE=RIGIPROJ,
-                       AMOR_REDUIT=(    0.001,  ),
-                       ETAT_INIT=_F( VITE_INIT_GENE = VITINI),
+                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       MATR_MASS=MASSEPRO,
+                       MATR_RIGI=RIGIPROJ,
+                       AMOR_MODAL=_F(AMOR_REDUIT=(0.001,  ),),
+                       ETAT_INIT=_F( VITE = VITINI),
                        INCREMENT=_F(  INST_INIT = 0.,
                                    INST_FIN = 0.00102,
                                    PAS = 1.E-6,

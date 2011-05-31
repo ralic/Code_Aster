@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/05/2011   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,6 +56,8 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            VERSION         =SIMP(statut='f',typ='R',defaut=1.2,into=(1.0,1.2)),
          ),
 
+         regles=(AU_MOINS_UN('CONCEPT','RESU',),),
+
          b_restreint  =BLOC(condition="FORMAT=='MED'",fr="Seulement pour les fichiers MED",
             RESTREINT   =FACT(statut='f', max=1,
             fr="Pour réduire une ou plusieurs sd_resultat sur un ensemble de mailles",
@@ -68,9 +70,18 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
             ),
          ),
 
-         RESU            =FACT(statut='o',max='**',
+         CONCEPT          =FACT(statut='f',max='**',
+           fr='Pour imprimer les champs de "données" à des fins de visualisation (controle des affectations).',
+           # (valide pour les format RESULTAT et MED)
+           regles=(UN_PARMI('CHAM_MATER','CARA_ELEM','CHARGE'),),
+           CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+           CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
+           CHARGE          =SIMP(statut='f',typ=char_meca),
+         ),
 
-           regles=(AU_MOINS_UN('CHAM_GD','RESULTAT','MAILLAGE'),
+         RESU            =FACT(statut='f',max='**',
+
+           regles=(AU_MOINS_UN('CHAM_GD','RESULTAT','MAILLAGE',),
                    EXCLUS('CHAM_GD','RESULTAT'),),
            MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,squelette)),
            CHAM_GD         =SIMP(statut='f',typ=cham_gd_sdaster),

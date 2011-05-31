@@ -1,9 +1,10 @@
-      SUBROUTINE DLTP0 (T0)
+      SUBROUTINE DLTP0 (T0,NUME)
       IMPLICIT  REAL*8  (A-H,O-Z)
       REAL*8    T0
+      INTEGER   NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,14 +22,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C OUT : T0   INSTANT INITIAL
+C OUT : T0   : INSTANT INITIAL
+C OUT : NUME : NUMERO D'ORDRE DE REPRISE
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI
-      INTEGER VALI
+      INTEGER           ZI      
       COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      REAL*8 VALR
+      REAL*8            ZR      
       COMMON / RVARJE / ZR(1)
       COMPLEX*16        ZC
       COMMON / CVARJE / ZC(1)
@@ -41,9 +41,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      CHARACTER*24 VALK
+      INTEGER       VALI
+      REAL*8        VALR
       CHARACTER*8   K8B, NOMRES, DYNA, LI, CRIT, CTYPE
       CHARACTER*16  TYPRES, NOMCMD
+      CHARACTER*24  VALK            
       COMPLEX*16    C16B
 C     -----------------------------------------------------------------
       CALL JEMARQ()
@@ -53,9 +55,9 @@ C     --- EST-ON EN REPRISE ? ---
 C
 C     INITIALISATION DE T0 PAR DEFAUT
 
-      CALL GETVID('ETAT_INIT','DYNA_TRANS',1,1,1,DYNA,NDY)
+      CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,DYNA,NDY)
       IF ( NDY .NE. 0 ) THEN
-         CALL GETVIS('ETAT_INIT','NUME_INIT' ,1,1,1,NUME,NNI)
+         CALL GETVIS('ETAT_INIT','NUME_ORDRE' ,1,1,1,NUME,NNI)
          IF ( NNI .EQ. 0 ) THEN
             CALL GETVR8('ETAT_INIT','INST_INIT',1,1,1,TEMPS,NT)
             IF ( NT .EQ. 0 ) THEN
@@ -107,24 +109,12 @@ C
             T0 = ZR (JBINT)
          ELSE
 C
-C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "FONC_INST" ---
-C
-            CALL GETVID('INCREMENT','FONC_INST' ,1,1,1,LI ,N2)
-            IF (N2.NE.0) THEN
-              CALL GETVIS('INCREMENT','PAS_CALCUL',1,1,1,IPC,N3)
-              CALL JEVEUO(LI//'           .PROL','L',LPROL)
-              IF (ZK24(LPROL).NE.'FONCTION') CALL U2MESS('F','ALGORITH3_
-     &32')
-              CALL JEVEUO(LI//'           .VALE','L',LVAR)
-              T0 = ZR(LVAR)
-            ELSE
 C
 C     --- DEFINITION DE L'INSTANT INITIAL AVEC "INST_INIT" ---
 C
-              T0 = 0.D0
-              CALL GETVR8('INCREMENT','INST_INIT',1,1,1,T0,NP)
-              IF (NP.EQ.0) CALL U2MESS('I','ALGORITH5_62')
-            ENDIF
+            T0 = 0.D0
+            CALL GETVR8('INCREMENT','INST_INIT',1,1,1,T0,NP)
+            IF (NP.EQ.0) CALL U2MESS('I','ALGORITH5_62')
          ENDIF
       ENDIF
 C

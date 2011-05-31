@@ -4,7 +4,7 @@
      +                  LBD2,RL,RL1,RL2,NRL,INVP,PERM,
      +                  LGIND,DDLMOY,NBSND)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 30/05/2011   AUTEUR ABBAS M.ABBAS 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

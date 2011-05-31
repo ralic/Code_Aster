@@ -1,28 +1,28 @@
-#@ MODIF N_ETAPE Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
-""" 
+"""
     Ce module contient la classe ETAPE qui sert à vérifier et à exécuter
     une commande
 """
@@ -80,7 +80,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
 
    def make_register(self):
       """
-         Initialise les attributs jdc, id, niveau et réalise les 
+         Initialise les attributs jdc, id, niveau et réalise les
          enregistrements nécessaires
       """
       if self.parent :
@@ -109,13 +109,13 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
 
    def Build_sd(self,nom):
       """
-         Construit le concept produit de l'opérateur. Deux cas 
+         Construit le concept produit de l'opérateur. Deux cas
          peuvent se présenter :
-        
-           - le parent n'est pas défini. Dans ce cas, l'étape prend en charge la création 
+
+           - le parent n'est pas défini. Dans ce cas, l'étape prend en charge la création
              et le nommage du concept.
 
-           - le parent est défini. Dans ce cas, l'étape demande au parent la création et 
+           - le parent est défini. Dans ce cas, l'étape demande au parent la création et
              le nommage du concept.
 
       """
@@ -123,14 +123,14 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
       try:
          if self.parent:
             sd= self.parent.create_sdprod(self,nom)
-            if type(self.definition.op_init) == types.FunctionType: 
+            if type(self.definition.op_init) == types.FunctionType:
                apply(self.definition.op_init,(self,self.parent.g_context))
          else:
             sd=self.get_sd_prod()
-            # On n'utilise pas self.definition.op_init car self.parent 
+            # On n'utilise pas self.definition.op_init car self.parent
             # n'existe pas
             if sd != None and self.reuse == None:
-               # On ne nomme le concept que dans le cas de non reutilisation 
+               # On ne nomme le concept que dans le cas de non reutilisation
                # d un concept
                sd.set_name(nom)
       except AsException,e:
@@ -190,7 +190,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
         self.sd=self.reuse
       else:
         self.sd= sd_prod(etape=self)
-        # Si l'operateur est obligatoirement reentrant et reuse n'a pas ete specifie, c'est une erreur. 
+        # Si l'operateur est obligatoirement reentrant et reuse n'a pas ete specifie, c'est une erreur.
         # On ne fait rien ici. L'erreur sera traiter par la suite.
       # précaution
       if self.sd is not None and not isinstance(self.sd, ASSD):
@@ -246,7 +246,7 @@ Causes possibles :
       if self.sd : self.sd.supprime()
 
    def isactif(self):
-      """ 
+      """
          Indique si l'étape est active (1) ou inactive (0)
       """
       return self.actif
@@ -264,9 +264,9 @@ Causes possibles :
          CONTEXT.set_current_step(self)
 
    def reset_current_step(self):
-      """ 
-            Methode utilisee par l'etape self qui remet son etape parent comme 
-            etape courante 
+      """
+            Methode utilisee par l'etape self qui remet son etape parent comme
+            etape courante
       """
       cs= CONTEXT.get_current_step()
       if self != cs :
@@ -276,7 +276,7 @@ Causes possibles :
          CONTEXT.set_current_step(self.parent)
 
    def issubstep(self,etape):
-      """ 
+      """
           Cette methode retourne un entier indiquant si etape est une
           sous etape de self ou non
           1 = oui
@@ -286,7 +286,7 @@ Causes possibles :
       return 0
 
    def get_file(self,unite=None,fic_origine=''):
-      """ 
+      """
          Retourne le nom du fichier associe a l unite logique unite (entier)
          ainsi que le source contenu dans le fichier
       """
@@ -296,9 +296,9 @@ Causes possibles :
          if unite != None:
             if os.path.exists("fort."+str(unite)):
                file= "fort."+str(unite)
-         if file == None : 
+         if file == None :
             raise AsException("Impossible de trouver le fichier correspondant a l unite %s" % unite)
-         if not os.path.exists(file): 
+         if not os.path.exists(file):
             raise AsException("%s n'est pas un fichier existant" % unite)
          fproc=open(file,'r')
          text=string.replace(fproc.read(),'\r\n','\n')
@@ -325,7 +325,7 @@ Causes possibles :
 
    def copy(self):
       """ Méthode qui retourne une copie de self non enregistrée auprès du JDC
-          et sans sd 
+          et sans sd
       """
       etape = copy(self)
       etape.sd = None
@@ -341,13 +341,13 @@ Causes possibles :
       return etape
 
    def copy_reuse(self,old_etape):
-      """ Méthode qui copie le reuse d'une autre étape. 
+      """ Méthode qui copie le reuse d'une autre étape.
       """
       if hasattr(old_etape,"reuse") :
         self.reuse = old_etape.reuse
 
    def copy_sdnom(self,old_etape):
-      """ Méthode qui copie le sdnom d'une autre étape. 
+      """ Méthode qui copie le sdnom d'une autre étape.
       """
       if hasattr(old_etape,"sdnom") :
         self.sdnom = old_etape.sdnom
@@ -410,7 +410,7 @@ Causes possibles :
 
 
    def is_include(self):
-      """Permet savoir si on a affaire à une commande de type INCLUDE/INCLUDE_MATERIAU
+      """Permet savoir si on a affaire à la commande INCLUDE
       car le comportement de ces macros est particulier.
       """
       return self.nom.startswith('INCLUDE')

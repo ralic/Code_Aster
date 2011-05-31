@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 # sdld22a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,10 +133,11 @@ MACRO_PROJ_BASE(  BASE=MODES,
                                    VECTEUR = CO("EFFOGENE"),
                                    VECT_ASSE = VECTASS) )
 
-DYNAMODA=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,
-                             RIGI_GENE=RIGIDGEN,
-                             AMOR_GENE=AMORTGEN,
-                            EXCIT=_F(  VECT_GENE = EFFOGENE,
+DYNAMODA=DYNA_TRAN_MODAL(  MATR_MASS=MASSEGEN,
+                             MATR_RIGI=RIGIDGEN,
+                             MATR_AMOR=AMORTGEN,
+                           SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                            EXCIT=_F( VECT_ASSE = EFFOGENE,
                                     FONC_MULT = FONCTIO1,   ),
                              INCREMENT=_F( INST_INIT = 0.,
                                         INST_FIN = 1.5,    PAS = 0.001,  )
@@ -181,12 +182,13 @@ FONCTIO2=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='ALPHA',
                           VALE=( 0.455, 1.,  1., 1.,  1.0000001, 0., ),
                           PROL_DROITE='CONSTANT'               )
 
-DYNAMOD2=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,
-                             RIGI_GENE=RIGIDGEN,
-                             AMOR_GENE=AMORTGEN,
-                            ETAT_INIT=_F( DEPL_INIT_GENE = RECUP1,
-                                       VITE_INIT_GENE = RECUP2,  ),
-                            EXCIT=_F(  VECT_GENE = EFFOGENE,
+DYNAMOD2=DYNA_TRAN_MODAL(  MATR_MASS=MASSEGEN,
+                             MATR_RIGI=RIGIDGEN,
+                             MATR_AMOR=AMORTGEN,
+                            SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                            ETAT_INIT=_F( DEPL = RECUP1,
+                                       VITE = RECUP2,  ),
+                            EXCIT=_F( VECT_ASSE = EFFOGENE,
                                     FONC_MULT = FONCTIO2,   ),
                             INCREMENT=_F( INST_INIT = 0.455,
                                        INST_FIN = 1.5,

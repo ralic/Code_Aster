@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+%& MODIF COMPELEM  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1725,4 +1725,31 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ ACPLQU9
               MAILLE__ SEG2      ELEMENT__ ACPLSE2
               MAILLE__ SEG3      ELEMENT__ ACPLSE3
+
+%===============================================================================
+% le phenomene / modelisation  suivant est "neutre"
+% Il sert actuellement dans IMPR_RESU
+
+   PHENOMENE__  PRESENTATION       CODE__  'PR'
+
+       MODELISATION__ 'TOUT'             DIM__ 3 3   CODE__ 'TOU'
+              MAILLE__ HEXA27    ELEMENT__ PR_HEXA27
+              MAILLE__ HEXA20    ELEMENT__ PR_HEXA20
+              MAILLE__ HEXA8     ELEMENT__ PR_HEXA8
+              MAILLE__ PENTA18   ELEMENT__ PR_PENTA18
+              MAILLE__ PENTA15   ELEMENT__ PR_PENTA15
+              MAILLE__ PENTA6    ELEMENT__ PR_PENTA6
+              MAILLE__ TETRA10   ELEMENT__ PR_TETRA10
+              MAILLE__ TETRA4    ELEMENT__ PR_TETRA4
+              MAILLE__ PYRAM13   ELEMENT__ PR_PYRAM13
+              MAILLE__ PYRAM5    ELEMENT__ PR_PYRAM5
+              MAILLE__ QUAD9     ELEMENT__ PR_QUAD9
+              MAILLE__ QUAD8     ELEMENT__ PR_QUAD8
+              MAILLE__ QUAD4     ELEMENT__ PR_QUAD4
+              MAILLE__ TRIA7     ELEMENT__ PR_TRIA7
+              MAILLE__ TRIA6     ELEMENT__ PR_TRIA6
+              MAILLE__ TRIA3     ELEMENT__ PR_TRIA3
+              MAILLE__ SEG3      ELEMENT__ PR_SEG3
+              MAILLE__ SEG2      ELEMENT__ PR_SEG2
+              MAILLE__ POI1      ELEMENT__ PR_POI1
 

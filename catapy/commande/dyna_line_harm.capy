@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,9 +29,7 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
                     fr="Calcul de la réponse dynamique complexe d'un système à une excitation harmonique",
                     reentrant='f',
             UIinfo={"groupes":("Résolution","Dynamique",)},
-         regles=(PRESENT_ABSENT('AMOR_REDUIT','MATR_AMOR'),
-                 PRESENT_ABSENT('AMOR_REDUIT','LIST_AMOR'),
-                 PRESENT_ABSENT('MATR_AMOR','LIST_AMOR'),
+         regles=(PRESENT_ABSENT('MATR_AMOR','AMOR_MODAL'),
                  UN_PARMI('FREQ','LIST_FREQ'),
                  CONCEPT_SENSIBLE('ENSEMBLE'),),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
@@ -40,8 +38,11 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
          MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_pres_c
                                               ,matr_asse_gene_r,matr_asse_gene_c ) ),
          MATR_AMOR       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_pres_c,matr_asse_gene_r ) ),
-         AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
-         LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
+         AMOR_MODAL      =FACT(statut='f', max=1,
+                    regles=(EXCLUS('AMOR_REDUIT','LIST_AMOR'),),        
+                AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
+                LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
+         ),
          MATR_IMPE_PHI   =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
          LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
@@ -56,7 +57,6 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
                   ),
            VECT_ASSE       =SIMP(statut='f',position='global',typ=(cham_no_sdaster,vect_asse_gene) ),
            CHARGE          =SIMP(statut='f',position='global', typ=char_meca ),
-           TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
            FONC_MULT_C     =SIMP(statut='f',typ=(fonction_c,formule_c) ),
            COEF_MULT_C     =SIMP(statut='f',typ='C' ),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
@@ -74,7 +74,6 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
            RESULTAT        =SIMP(statut='o',typ=(dyna_harmo,harm_gene)),
            COEF_MULT_C     =SIMP(statut='o',typ='C' ),
          ),
-
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR
          b_matr_gene =BLOC(condition = "AsType(MATR_MASS) in (matr_asse_gene_r,)",

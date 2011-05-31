@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,11 @@ cata_msg = {
 1 : _("""
  le champ de température : TEMP_INIT(NUM_INIT) n'existe pas.
 """),
+
+2 : _("""
+ la méthode de Newmark est programmée sous sa forme implicite: 
+ le paramètre BETA ne doit pas etre nul.
+ """),
 
 4 : _("""
  valeur de THETA illicite

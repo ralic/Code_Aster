@@ -1,9 +1,9 @@
-#@ MODIF E_ETAPE Execution  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF E_ETAPE Execution  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -218,15 +218,15 @@ class ETAPE:
             echo_mem += os.linesep +"""%s  #     - MEMOIRE DYNAMIQUE CONSOMMEE : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[2],rval[4])
             echo_mem += os.linesep +"""%s  #     - MEMOIRE UTILISEE            : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[0],rval[1])
             if rval[5] > 0. :
-              if rval[8] > 0. : 
+              if rval[8] > 0. :
                 echo_mem += os.linesep +"""%s  #  USAGE DE LA MEMOIRE POUR LE PROCESSUS""" % (decalage)
                 echo_mem += os.linesep +"""%s  #     - VmPeak : %12.2f Mo - VmData : %12.2f Mo - VmSize : %12.2f Mo """ % (decalage, rval[8]/1024, rval[5]/1024, rval[6]/1024)
-                echo_mem += os.linesep 
+                echo_mem += os.linesep
               else :
                 echo_mem += os.linesep +"""%s  #  USAGE DE LA MEMOIRE POUR LE PROCESSUS""" % (decalage)
                 echo_mem += os.linesep +"""%s  #     - VmData : %12.2f Mo - VmSize : %12.2f Mo """ % (decalage, rval[5]/1024, rval[6]/1024)
-                echo_mem += os.linesep 
-              
+                echo_mem += os.linesep
+
             echo_fin = "%s  #  FIN COMMANDE NO : %04d   USER+SYST:%12.2fs (SYST:%12.2fs, ELAPS:%12.2fs)" \
                % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst, elapsed)
             echo_mess.append(echo_mem)
@@ -241,7 +241,7 @@ class ETAPE:
             if int(rval[7]) > 0 :
               UTMESS('A','SUPERVIS_94',valr=(cpu_syst,cpu_user),vali=(50,int(rval[7])))
             else :
-              UTMESS('A','SUPERVIS_95',valr=(cpu_syst,cpu_user),vali=(50)) 
+              UTMESS('A','SUPERVIS_95',valr=(cpu_syst,cpu_user),vali=(50))
 
       return
 
@@ -256,8 +256,8 @@ class ETAPE:
       L'attribut d'instance executed indique que l'etape a deja ete executee
       Cette methode peut etre appelee plusieurs fois mais l'execution proprement
       dite ne doit etre realisee qu'une seule fois.
-      Les seuls cas ou on appelle plusieurs fois Execute sont pour les
-      commandes INCLUDE et INCLUDE_MATERIAU (appel dans op_init)
+      Le seul cas ou on appelle plusieurs fois Execute est pour la
+      commande INCLUDE (appel dans op_init)
       """
       if not self.jdc or self.jdc.par_lot != "NON" :
          return
@@ -298,8 +298,8 @@ class ETAPE:
       L'attribut d'instance executed indique que l'etape a deja ete executee
       Cette methode peut etre appelee plusieurs fois mais l'execution proprement
       dite ne doit etre realisee qu'une seule fois.
-      Les seuls cas ou on appelle plusieurs fois Execute sont pour les
-      commandes INCLUDE et INCLUDE_MATERIAU (appel dans op_init)
+      Le seuls cas ou on appelle plusieurs fois Execute est pour la
+      commande INCLUDE (appel dans op_init)
       """
 
       if hasattr(self,"executed") and self.executed == 1:return

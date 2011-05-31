@@ -1,8 +1,8 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
-# TITRE FONCTIONS ENVIMA
+# MODIF  DATE 30/05/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# TITRE IMPRESSION DES CONSTANTES NUMERIQUES DEPENDANT DE LA PLATE-FORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,10 +17,17 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE   D6BHHJP J.P.LEFEBVRE
+# RESPONSABLE   LEFEBVRE J.P.LEFEBVRE
 
 DEBUT(CODE=_F(NOM='ZZZZ103A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(ENVIMA='TEST', SDVERI='OUI'))
 
+'''
+Ce fichier de commande permet d'imprimer les valeurs associees aux constantes numeriques 
+dependant de la plate-forme (32 ou 64 bits). Notamment les longueurs et les valeurs extremales
+des nombres entiers et des nombres flottants, quelques constantes mathematiques particulieres, 
+et certains parametres lies a l'utilisation de la memoire et des fichiers.
+Les valeurs sont accessibles a l'aide des fonctions ENVIMA decrites dans le document d6.01.01.
+'''
 FIN()
 #
 #

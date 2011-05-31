@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -345,7 +345,7 @@ C
 
 C    -- PASSAGE CALC_CHAMP
 C    -------------------------------------------------------------------
-C    -- OPTIONS "CRIT_ELNO","DEGE_ELNO","DERA_ELGA","DERA_ELNO"
+C    -- OPTIONS "DEGE_ELNO","DERA_ELGA","DERA_ELNO"
 C               "DISS_ELGA","DISS_ELNO","ECIN_ELEM","ENDO_ELGA"
 C               "ENDO_ELNO","ENEL_ELGA","ENEL_ELNO","EPEQ_ELGA"
 C               "EPEQ_ELNO","EPFD_ELGA","EPFD_ELNO","EPFP_ELGA"

@@ -36,7 +36,7 @@ for i in range(n):
                       MATR_MASS=MATASSM,MATR_RIGI=MATASR[i],MATR_AMOR=MATASSC,
                       INCREMENT=_F(LIST_INST=L_INST,),
                       EXCIT=(_F(FONC_MULT=FC,CHARGE=CH),),
-                      NEWMARK=_F(),)
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
   T_DIF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                   GROUP_NO=('OPPOSE'),

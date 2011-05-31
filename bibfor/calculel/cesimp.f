@@ -1,6 +1,6 @@
       SUBROUTINE CESIMP(CESZ,UNITE,NBMAT,NUMMAI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,7 +143,7 @@ C     ---------------------------------------
       WRITE (UNITE,*) ' '
       WRITE (UNITE,*) ' GRANDEUR: ',NOMGD
       WRITE (UNITE,*) ' '
-      WRITE (UNITE,FMT1) 'MAILLE','POINT','SOUS-POINT',
+      WRITE (UNITE,FMT1) 'MAILLE','POINT','SOUS_POINT',
      &  (ZK8(JCESC-1+LICMPU(IK)),IK=1,NCMPU)
 
 
@@ -163,7 +163,7 @@ C     ---------------------------------------
         DO 100,IPT = 1,NBPT
           DO 90,ISP = 1,NBSP
 
-C       -- ON N'ECRIT UN SOUS-POINT QUE S'IL EXISTE AU MOINS 1 CMP :
+C       -- ON N'ECRIT UN SOUS_POINT QUE S'IL EXISTE AU MOINS 1 CMP :
             EXICMP = .FALSE.
             DO 60,IK = 1,NCMPU
               K = LICMPU(IK)

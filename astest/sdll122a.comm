@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
 # sdll122a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -202,7 +202,7 @@ for numordre,maille,point,spoint,npara,lavale in PourTest:
          _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  numordre),
          _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K=  maille),
          _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  point),
-         _F(NOM_PARA='SOUS-POINT', CRIT_COMP='EQ', VALE_I=  spoint),
+         _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I=  spoint),
       ),
       NOM_PARA=npara,VALE=lavale,REFERENCE='NON_REGRESSION',
    )

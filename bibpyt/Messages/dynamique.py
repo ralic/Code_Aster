@@ -1,8 +1,8 @@
-#@ MODIF dynamique Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF dynamique Messages  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -61,13 +61,6 @@ cata_msg={
   Pas de temps maximal (condition CFL) pour le schéma de Tchamwa-Wilgosz : %(r1)g s
 """),
 
-9: _("""
-   Arret par manque de temps CPU au numéro d'instant : %(i1)d
-      - Temps moyen par pas de temps : %(r1)f
-      - Temps cpu restant            : %(r2)f
-   
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
-"""),
 
 10: _("""
    Arret par manque de temps CPU au groupe de pas de temps : %(i1)d
@@ -89,6 +82,7 @@ cata_msg={
 """),
 
 12: _("""
+ Dans l\'intervalle : %(i2)d
  Le pas de temps est trop grand : %(r1)f
  le pas de temps maximal est    : %(r2)f
  

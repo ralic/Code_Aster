@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 # sdld102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -269,10 +269,10 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 #  CALCULS TRANSITOIRES
 #-----------------------------------------------------------------
 
-TRANGEN1=DYNA_TRAN_MODAL(   METHODE='EULER',
-                             MASS_GENE=MASPRO,
-                             RIGI_GENE=RIGPRO,
-                                EXCIT=_F( VECT_GENE = VECPRO,
+TRANGEN1=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                                EXCIT=_F(VECT_ASSE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 82.,
@@ -281,10 +281,10 @@ TRANGEN1=DYNA_TRAN_MODAL(   METHODE='EULER',
                             )
 
 #
-TRANGEN2=DYNA_TRAN_MODAL(   METHODE='NEWMARK',
-                             MASS_GENE=MASPRO,
-                             RIGI_GENE=RIGPRO,
-                                EXCIT=_F( VECT_GENE = VECPRO,
+TRANGEN2=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                                EXCIT=_F(VECT_ASSE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 82.,
@@ -293,10 +293,10 @@ TRANGEN2=DYNA_TRAN_MODAL(   METHODE='NEWMARK',
                             )
 
 #
-TRANGEN3=DYNA_TRAN_MODAL(   METHODE='DEVOGE',
-                             MASS_GENE=MASPRO,
-                             RIGI_GENE=RIGPRO,
-                                EXCIT=_F( VECT_GENE = VECPRO,
+TRANGEN3=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                                EXCIT=_F(VECT_ASSE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 82.,
@@ -305,10 +305,10 @@ TRANGEN3=DYNA_TRAN_MODAL(   METHODE='DEVOGE',
                             )
 
 #
-TRANGEN4=DYNA_TRAN_MODAL(   METHODE='ADAPT_ORDRE2',
-                             MASS_GENE=MASPRO,
-                             RIGI_GENE=RIGPRO,
-                                EXCIT=_F( VECT_GENE = VECPRO,
+TRANGEN4=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                                EXCIT=_F(VECT_ASSE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 82.,
@@ -352,7 +352,7 @@ TRAN4=REST_GENE_PHYS(   RESU_GENE=TRANGEN4,
                              MODE_MECA=MODGLO )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1,
+TEST_RESU(RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -362,7 +362,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   VALE = 4.17E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1,
+TEST_RESU(RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'VITE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -372,7 +372,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   VALE = -4.3011E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1,
+TEST_RESU(RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'ACCE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -382,7 +382,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   VALE = 3.3749E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2,
+TEST_RESU(RESU=_F( RESULTAT = TRAN2,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -392,7 +392,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN2,
                   VALE = 4.17E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2,
+TEST_RESU(RESU=_F( RESULTAT = TRAN2,
                   NOM_CHAM = 'VITE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -402,7 +402,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN2,
                   VALE = -4.3011E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2,
+TEST_RESU(RESU=_F( RESULTAT = TRAN2,
                   NOM_CHAM = 'ACCE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -412,7 +412,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN2,
                   VALE = 3.3749E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3,
+TEST_RESU(RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -422,7 +422,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   VALE = 4.17E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3,
+TEST_RESU(RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'VITE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -432,7 +432,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   VALE = -4.3011E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3,
+TEST_RESU(RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'ACCE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -442,7 +442,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   VALE = 3.3749E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN4,
+TEST_RESU(RESU=_F( RESULTAT = TRAN4,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -452,7 +452,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN4,
                   VALE = 4.17E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN4,
+TEST_RESU(RESU=_F( RESULTAT = TRAN4,
                   NOM_CHAM = 'VITE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -462,7 +462,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN4,
                   VALE = -4.3011E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN4,
+TEST_RESU(RESU=_F( RESULTAT = TRAN4,
                   NOM_CHAM = 'ACCE',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',

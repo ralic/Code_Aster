@@ -1,23 +1,23 @@
-#@ MODIF ops Cata  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
+# RESPONSABLE COURTOIS M.COURTOIS
 
 # Modules Python
 import types
@@ -38,7 +38,7 @@ try:
    # au JDC
    import Build.B_CODE
    Build.B_CODE.CODE.codex=aster
-   
+
    from Utilitai.Utmess   import UTMESS
    from Build.B_SENSIBILITE_MEMO_NOM_SENSI import MEMORISATION_SENSIBILITE
    from Execution.E_Global import MessageLog
@@ -73,7 +73,7 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
                IGNORE_ALARM = [IGNORE_ALARM]
             for idmess in IGNORE_ALARM:
                MessageLog.disable_alarm(idmess)
-               
+
       # en POURSUITE, conserver le catalogue de comportement picklé
       if not hasattr(jdc, 'catalc'):
          from Comportement import catalc
@@ -122,7 +122,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
    commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO)
-   
+
    if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
@@ -166,7 +166,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
      # presents sous le meme nom et du meme type dans pick.1
      # Le contexte est ensuite updaté (surcharge) et donc enrichi des
      # variables qui ne sont pas des concepts.
-     # On supprime du pickle_context les concepts valant None, ca peut 
+     # On supprime du pickle_context les concepts valant None, ca peut
      # etre le cas des concepts non executés, placés après FIN.
      pickle_context=get_pickled_context()
      if self.jdc.info_level > 1:
@@ -201,7 +201,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
                if poursu_class != pickle_class :
                   UTMESS('F','SUPERVIS_87',valk=[elem])
                   return
-            elif pickle_class not in (CO,entier) : 
+            elif pickle_class not in (CO,entier) :
             # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
             # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
             # meme situation pour le type 'entier' produit uniquement par DEFI_FICHIER
@@ -222,7 +222,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
      return
 
    else:
-     # Si le module d'execution n est pas accessible ou glob.1 absent on 
+     # Si le module d'execution n est pas accessible ou glob.1 absent on
      # demande un fichier (EFICAS)
      # Il faut éviter de réinterpréter le fichier à chaque appel de
      # POURSUITE
@@ -235,13 +235,13 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
 def get_pickled_context():
     """
        Cette fonction permet de réimporter dans le contexte courant du jdc (jdc.g_context)
-       les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une 
+       les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une
        précédente étude. Un fichier pick.1 doit etre présent dans le répertoire de travail
     """
     fpick = 'pick.1'
     if not os.path.isfile(fpick):
        return None
-   
+
     # Le fichier pick.1 est présent. On essaie de récupérer les objets python sauvegardés
     context={}
     try:
@@ -283,7 +283,7 @@ def build_poursuite(self,**args):
    return 0
 
 def INCLUDE(self,UNITE,**args):
-   """ 
+   """
        Fonction sd_prod pour la macro INCLUDE
    """
    if not UNITE : return
@@ -297,7 +297,7 @@ def INCLUDE(self,UNITE,**args):
    self.make_include(unite=UNITE)
 
 def INCLUDE_context(self,d):
-   """ 
+   """
        Fonction op_init pour macro INCLUDE
    """
    for k,v in self.g_context.items():
@@ -345,7 +345,7 @@ def detruire(self,d):
                elif d.get(nom) != None:
                   list_co.add(d[nom])
             #else uniquement destruction des objets jeveux
-   
+
    for co in list_co:
       assert isinstance(co, ASSD), 'On attend un concept : %s (type=%s)' % (co, type(co))
       nom = co.nom
@@ -367,134 +367,11 @@ def detruire(self,d):
          del d[nom]
       if self.jdc.sds_dict.has_key(nom):
          del self.jdc.sds_dict[nom]
-      # On signale au parent que le concept s n'existe plus apres l'étape self 
+      # On signale au parent que le concept s n'existe plus apres l'étape self
       self.parent.delete_concept_after_etape(self, co)
       # marque comme détruit == non executé
       co.executed = 0
 
-
-def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
-   """
-       Cette fonction retourne un texte obtenu à partir du texte passé en argument (text)
-       en substituant le nom du materiau par NOM_MATER 
-       et en réalisant les extractions spéciifées dans EXTRACTION
-   """
-   lines=string.split(text,'\n')
-
-##### traitement de UNIT : facteur multiplicatif puissance de 10
-   regmcsu=re.compile(r" *(.*) *= *([^ ,]*) *## +([^ ]*) *([^ ]*)")
-   ll_u=[]
-   for l in lines:
-       m=regmcsu.match(l)
-       if m:
-          if m.group(3) == "UNIT":
-             if   UNITE_LONGUEUR=='M'  : coef = '0'
-             elif UNITE_LONGUEUR=='MM' : coef = m.group(4)
-             ll_u.append(m.group(1)+" = "+m.group(2)+coef)
-          else : ll_u.append(l)
-       else : ll_u.append(l)
-
-##### traitement de EXTRACTION
-   if EXTRACTION:
-     regmcf=re.compile(r" *(.*) *= *_F\( *## +(.*) +(.*)")
-     regmcs=re.compile(r" *(.*) *= *([^ ,]*) *, *## +([^ ]*) *([^ ]*)")
-     regfin=re.compile(r" *\) *")
-     ll=[]
-     temps={};lmcf=[]
-     for e in EXTRACTION:
-       mcf=e['COMPOR']
-       lmcf.append(mcf)
-       temps[mcf]=e['TEMP_EVAL']
-     FLAG=0
-     for l in ll_u:
-       m=regmcf.match(l)
-       if m: # On a trouve un mot cle facteur "commentarise"
-         if m.group(2) == "SUBST": # il est de plus substituable
-           if temps.has_key(m.group(3)): # Il est a substituer
-             ll.append(" "+m.group(3)+"=_F(")
-             mcf=m.group(3)
-             TEMP=temps[mcf]
-             FLAG=1 # Indique que l'on est en cours de substitution
-           else: # Il n est pas a substituer car il n est pas dans la liste demandee
-             ll.append(l)
-         else: # Mot cle facteur commentarise non substituable
-           ll.append(l)
-       else:  # La ligne ne contient pas un mot cle facteur commentarise
-         if FLAG == 0: # On n est pas en cours de substitution
-           ll.append(l)
-         else: # On est en cours de substitution. On cherche les mots cles simples commentarises
-           m=regmcs.match(l)
-           if m: # On a trouve un mot cle simple commentarise
-             if m.group(3) == "EVAL":
-               ll.append("  "+m.group(1)+' = '+m.group(4)+"("+str(TEMP)+'),')
-             elif m.group(3) == "SUPPR":
-               pass
-             else:
-               ll.append(l)
-           else: # On cherche la fin du mot cle facteur en cours de substitution
-             m=regfin.match(l)
-             if m: # On l a trouve. On le supprime de la liste
-               FLAG=0
-               del temps[mcf]
-             ll.append(l)
-   else:
-     ll=ll_u
-
-   lines=ll
-   ll=[]
-   for l in lines:
-     l=re.sub(" *MAT *= *",NOM_MATER+" = ",l,1)
-     ll.append(l)
-   text=string.join(ll,'\n')
-   return text
-
-def post_INCLUDE(self):
-  """
-      Cette fonction est executée apres toutes les commandes d'un INCLUDE (RETOUR)
-      Elle sert principalement pour les INCLUDE_MATERIAU : remise a blanc du prefixe Fortran
-  """
-  self.codex.opsexe(self,0,-1,2)
-
-def INCLUDE_MATERIAU(self,NOM_AFNOR,TYPE_MODELE,VARIANTE,TYPE_VALE,NOM_MATER,
-                    EXTRACTION,UNITE_LONGUEUR,INFO,**args):
-  """ 
-      Fonction sd_prod pour la macro INCLUDE_MATERIAU
-  """
-  mat=string.join((NOM_AFNOR,'_',TYPE_MODELE,'_',VARIANTE,'.',TYPE_VALE),'')
-  if not hasattr(self,'mat') or self.mat != mat or self.nom_mater != NOM_MATER :
-    # On récupère le répertoire des matériaux dans les arguments 
-    # supplémentaires du JDC
-    rep_mat=self.jdc.args.get("rep_mat","NOrep_mat")
-    f=os.path.join(rep_mat,mat)
-    self.mat=mat
-    self.nom_mater=NOM_MATER
-    if not os.path.isfile(f):
-       del self.mat
-       self.make_contexte(f,"#Texte sans effet pour reinitialiser le contexte a vide\n")
-       raise "Erreur sur le fichier materiau: "+f
-    # Les materiaux sont uniquement disponibles en syntaxe Python
-    # On lit le fichier et on supprime les éventuels \r
-    text=string.replace(open(f).read(),'\r\n','\n')
-    # On effectue les substitutions necessaires
-    self.text= subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR)
-    if INFO == 2:
-      print "INCLUDE_MATERIAU: ", self.mat,' ',NOM_MATER,'\n'
-      print self.text
-    # on execute le texte fourni dans le contexte forme par
-    # le contexte de l etape pere (global au sens Python)
-    # et le contexte de l etape (local au sens Python)
-    # Il faut auparavant l'enregistrer aupres du module linecache (utile pour nommage.py)
-    linecache.cache[f]=0,0,string.split(self.text,'\n'),f
-
-    self.postexec=post_INCLUDE
-
-    if self.jdc.par_lot == 'NON':
-      # On est en mode commande par commande, on appelle la methode speciale
-      self.Execute_alone()
-
-    self.make_contexte(f,self.text)
-    for k,v in self.g_context.items() :
-        if isinstance(v,ASSD) and k!=v.nom : del self.g_context[k]
 
 def build_procedure(self,**args):
     """

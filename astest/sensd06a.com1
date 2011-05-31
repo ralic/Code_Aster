@@ -45,7 +45,7 @@ for i in range(n):
                       MATR_MASS=MATASSM,MATR_RIGI=MATASR[i],
                       INCREMENT=_F(LIST_INST=L_INST,),
                       EXCIT=(_F(FONC_MULT=FC,CHARGE=CHD[i]),),
-                      NEWMARK=_F(),)
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
   TDIFR[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                 GROUP_NO=('OPPOSE'),
@@ -177,7 +177,7 @@ DYTFX=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
                     MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_2),),
-                    NEWMARK=_F(),)
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
 DYTFX = CALC_ELEM(
                  reuse = DYTFX,
@@ -191,7 +191,7 @@ DYTFY=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
                     MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_3),),
-                    NEWMARK=_F(),)
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
 DYTFY = CALC_ELEM(
                  reuse = DYTFY,

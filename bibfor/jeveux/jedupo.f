@@ -1,6 +1,6 @@
       SUBROUTINE JEDUPO(SCHIN, CLAOUT, SCHOUT, DUPCOL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 30/05/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,10 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
+      INTEGER          NUMEC
+      COMMON /INUMJE/  NUMEC
+      CHARACTER*24     NOMEC
+      COMMON /KNOMJE/  NOMEC
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      +               IDMARQ     , IDNOM      ,              IDLONG     ,
@@ -280,16 +284,20 @@ C
      &                   ISZON(JISZON+IBMARO-1+2*K-1))
             ISZON(JISZON+IBIADO-1+2*K-1) = IADOUT
             ISZON(JISZON+IBIADO-1+2*K  ) = IADYN
+            NUMEC=K
+            NOMEC=' '
             IF ( IADMI .NE. 0 ) THEN
               IADMO1 = (IADMI-1)*LOIS+ISZON(JISZON+IADMI-3)+1
               IADMO2 = (IADOUT-1)*LOIS+ISZON(JISZON+IADOUT-3)+1
               CALL JXDEPS(IADMO1,IADMO2,NBL)
               IF (X2U) ISZON(JISZON+IADMI-1) = ISTAT(1)
+              CALL JJLIDE('JELIBE',NOMIN(1:24)//'$$XNUM  ',2)
             ELSE IF ( IADDI(1) .GT. 0 ) THEN
               CALL JXLIRO (ICIN,IADOUT,IADDI,NBL)
             ELSE
               CALL U2MESG('F','JEVEUX1_65',1,NOMIN,1,K,0,VAL)
             ENDIF
+            CALL JJLIDE('JELIBE',NOMOUT(1:24)//'$$XNUM  ',2)
  2        CONTINUE
         ENDIF
         IF (LIBCOL) CALL JJLIDE('JELIBE',NOMIN(1:24),IRET1)

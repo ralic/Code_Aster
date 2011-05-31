@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,7 +131,7 @@ if dynatrans:
 
   DYNATRAN=DYNA_LINE_TRAN( MATR_MASS=M_AS_MAS, MATR_RIGI=M_AS_RIG,
                            INCREMENT=_F(LIST_INST=LINST,),
-                           NEWMARK=_F(),
+                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                            MODELE = MODEL, CHAM_MATER = MAT, # modele obligatoire a cause de charge
                            EXCIT=(_F(FONC_MULT=RAMPE,CHARGE=CHF,),),
                        )

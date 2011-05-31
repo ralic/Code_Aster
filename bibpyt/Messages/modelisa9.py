@@ -1,8 +1,8 @@
-#@ MODIF modelisa9 Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa9 Messages  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -177,11 +177,11 @@ Conseil :
 
 33 : _("""
 Erreur utilisateur (création d'un cham_elem à partir d'une table):
-   Le numéro du point ou du sous-point est en dehors des limites autorisées
+   Le numéro du point ou du SOUS_POINT est en dehors des limites autorisées
    Table : %(k1)s
    Maille: %(k2)s
    Point : %(i1)d
-   Sous-point : %(i2)d
+   SOUS_POINT : %(i2)d
 """),
 
 35 : _("""

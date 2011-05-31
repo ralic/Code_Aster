@@ -1,6 +1,6 @@
       SUBROUTINE DYLEMA (BASENO, NBMAT, NOMAT, RAIDE, MASSE, AMOR, IMPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,8 +150,8 @@ C===============
 C  3. RECUPERATION DE L AMORTISSEMENT
 C===============
 C
-      CALL GETVR8(' ','AMOR_REDUIT',0,1,0,R8BID,N1)
-      CALL GETVID(' ','LIST_AMOR',0,1,0,K8BID,N2)
+      CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,0,R8BID,N1)
+      CALL GETVID('AMOR_MODAL','LIST_AMOR',1,1,0,K8BID,N2)
       IF (N1.NE.0.OR.N2.NE.0) THEN
          CALL GETTCO(RAIDE,TYPOBJ)
          IF (TYPOBJ(1:14).NE.'MATR_ASSE_GENE') THEN
@@ -173,7 +173,7 @@ C
          IF (N1.NE.0) THEN
             NBAMOR = -N1
          ELSE
-            CALL GETVID(' ','LIST_AMOR',0,1,1,LISTAM,N)
+            CALL GETVID('AMOR_MODAL','LIST_AMOR',1,1,1,LISTAM,N)
             CALL JELIRA(LISTAM//'           .VALE',
      &                                   'LONMAX',NBAMOR,K8BID)
 
@@ -187,7 +187,8 @@ C
             CALL U2MESG('A','ALGORITH15_96',0,' ',3,VALI,0,0.D0)
             CALL WKVECT(BASENO//'.AMORTI','V V R8',NBMODE,JAMOG)
             IF (N1.NE.0) THEN
-             CALL GETVR8(' ','AMOR_REDUIT',0,1,NBMODE,ZR(JAMOG),N)
+             CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,NBMODE,
+     &                   ZR(JAMOG),N)
             ELSE
              CALL JEVEUO(LISTAM//'           .VALE','L',IAMOG)
              DO 201 IAM = 1,NBMODE
@@ -198,7 +199,8 @@ C
 C
             CALL WKVECT(BASENO//'.AMORTI','V V R8',NBAMOR,JAMOG)
             IF (N1.NE.0) THEN
-               CALL GETVR8(' ','AMOR_REDUIT',0,1,NBAMOR,ZR(JAMOG),N)
+               CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,NBAMOR,
+     &                     ZR(JAMOG),N)
             ELSE
                CALL JEVEUO(LISTAM//'           .VALE','L',IAMOG)
                DO 210 IAM = 1,NBAMOR
@@ -221,7 +223,8 @@ C
          ELSEIF (NBAMOR.EQ.NBMODE) THEN
             CALL WKVECT(BASENO//'.AMORTI','V V R8',NBAMOR,JAMOG)
             IF (N1.NE.0) THEN
-               CALL GETVR8(' ','AMOR_REDUIT',0,1,NBAMOR,ZR(JAMOG),N)
+               CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,NBAMOR,
+     &                     ZR(JAMOG),N)
             ELSE
                CALL JEVEUO(LISTAM//'           .VALE','L',IAMOG)
                DO 220 IAM = 1,NBAMOR

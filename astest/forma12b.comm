@@ -1,9 +1,9 @@
-# MODIF  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE TP DYNAMIQUE TRANSITOIRE LINEAIRE
 # forma12b.para = tps_job 180 mem_job 180Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -91,7 +91,7 @@ LIR=DEFI_LIST_REEL(DEBUT=0.0,
 
 DYNATRA=DYNA_LINE_TRAN(MATR_MASS=MASSE,
                        MATR_RIGI=RIGIDITE,
-                       NEWMARK=_F(),
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        EXCIT=_F(VECT_ASSE=FOAS,
                                 FONC_MULT=sin25,),
                        INCREMENT=_F(LIST_INST=LIR,),);

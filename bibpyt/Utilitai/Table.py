@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -675,13 +675,14 @@ class Table(TableBase):
       """
       if not pold in self.para:
          raise KeyError, 'Paramètre %s inexistant dans cette table' % pold
-      elif self.para.count(pnew)>0:
+      elif self.para.count(pnew) > 0:
          raise KeyError, 'Le paramètre %s existe déjà dans la table' % pnew
       else:
          self.para[self.para.index(pold)] = pnew
          for lig in self:
-            lig[pnew] = lig[pold]
-            del lig[pold]
+            if lig.get(pold) is not None:
+                lig[pnew] = lig[pold]
+                del lig[pold]
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------

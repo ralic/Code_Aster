@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1036,7 +1036,7 @@ C ---- VERIF SENSIBILITE FIN
 C    ------------------------------------------------------------------
 C    -- OPTIONS "EPEQ_ELGA","EPMQ_ELGA","SIEQ_ELGA",
 C               "EPEQ_ELNO","EPMQ_ELNO","PMPB_ELGA",
-C               "PMPB_ELNO","SIEQ_ELNO","CRIT_ELNO"
+C               "PMPB_ELNO","SIEQ_ELNO"
 C    ------------------------------------------------------------------
           ELSEIF (OPTION.EQ.'EPEQ_ELGA' .OR.
      &            OPTION.EQ.'EPMQ_ELGA' .OR.
@@ -1045,8 +1045,7 @@ C    ------------------------------------------------------------------
      &            OPTION.EQ.'EPMQ_ELNO' .OR.
      &            OPTION.EQ.'PMPB_ELGA' .OR.
      &            OPTION.EQ.'PMPB_ELNO' .OR.
-     &            OPTION.EQ.'SIEQ_ELNO' .OR.
-     &            OPTION.EQ.'CRIT_ELNO') THEN
+     &            OPTION.EQ.'SIEQ_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -1158,10 +1157,6 @@ C          CHAMP D'ENTREE POUR COQUES
                     ENDIF
                   ENDIF
                 ENDIF
-              ELSEIF (OPTION.EQ.'CRIT_ELNO') THEN
-                CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO',IORDR,CHSIG,
-     &                      OPTION,IRET1)
-                IF (IRET1.GT.0)GOTO 200
               ENDIF
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
               CALL MECALC(OPTION,MODELE,K24B,CHGEOM,MATE,CHCARA,K24B,

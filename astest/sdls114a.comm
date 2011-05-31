@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -239,15 +239,16 @@ MACRO_PROJ_BASE(BASE=MODE,
                 VECT_ASSE_GENE=_F(VECTEUR=CO('CHA_ASS'),
                                   VECT_ASSE=VE_ASS,),);
 
-RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
-                         RIGI_GENE=RIGI_GE,
-                         AMOR_GENE=AMOR_GE,
+RES_DYNA=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         MATR_MASS=MASS_GE,
+                         MATR_RIGI=RIGI_GE,
+                         MATR_AMOR=AMOR_GE,
                          INFO = 2,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=t_fin,
                                       VERI_PAS = 'OUI',
                                       PAS=pas,),
-                         EXCIT=_F(VECT_GENE=CHA_ASS,
+                         EXCIT=_F(VECT_ASSE=CHA_ASS,
                                   FONC_MULT=RAMPE,),
                          ARCHIVAGE=_F(PAS_ARCH = 200,),
                          IMPRESSION = _F(TOUT='OUI',),);

@@ -2,7 +2,7 @@
      &                   LOOP, DSIG, BNEWS, MTRAC, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -875,7 +875,7 @@ C ====================================================================
           DY(I) = DSIG(I)
  260      CONTINUE
 
-        IF(DEPSVP.LT.10.D0)THEN
+        IF(ABS(DEPSVP).LT.1.D-1)THEN
            DY(NDT+1) = DEPSVP
         ELSE
            DY(NDT+1) = ZERO

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+%& MODIF TYPELEM  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,10 @@
 % ======================================================================
 GENER_MEDPL2
 TYPE_GENE__
+ENTETE__ ELEMENT__ MEDPQS8          MAILLE__ QUAD8
+   ELREFE__  QU8       GAUSS__  RIGI=FPG4  MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S   NOEU=NOEU   FPG_LISTE__  MATER=(RIGI GANO NOEU)
+   ELREFE__  SE3       GAUSS__  RIGI=FPG4
+   ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 
 ENTETE__ ELEMENT__ MEDPQU4          MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO NOEU)

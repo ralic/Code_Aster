@@ -6,7 +6,7 @@
      >                    PROFAS, PROMED, PROREC, NROIMP, CHANOM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,7 +143,7 @@ C 1. PREALABLES
 C====
 C
       CALL INFNIV ( IFM, NIVINF )
-      
+
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE IRCMPE'
       ENDIF
@@ -468,7 +468,7 @@ C
      >  4X,65('*'),
      >/,4X,'*  TYPE DE *',22X,'NOMBRE DE',21X,'*',
      >/,4X,'*  MAILLE  *  VALEURS   * POINT(S) DE GAUSS *',
-     >     '   SOUS-POINT(S)   *',
+     >     '   SOUS_POINT(S)   *',
      >/,4X,65('*'))
  8002 FORMAT(4X,'* ',A8,' *',I11,' *',I15,'    *',I15,'    *')
  8003 FORMAT(4X,65('*'))
@@ -476,7 +476,7 @@ C
      >  4X,65('*'),
      >/,4X,'*  TYPE DE *',22X,'NOMBRE DE',21X,'*',
      >/,4X,'*  MAILLE  *  VALEURS   *      POINTS       *',
-     >     '   SOUS-POINT(S)   *',
+     >     '   SOUS_POINT(S)   *',
      >/,4X,65('*'))
 
 C

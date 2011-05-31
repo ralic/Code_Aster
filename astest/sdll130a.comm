@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  REPONSE SISMIQUE D'UNE POUTRE EN BETON ARME RECTANGULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,7 +152,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 U1=DYNA_LINE_TRAN(MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=AMORT,
-                    NEWMARK=_F(),
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                     EXCIT=_F(VECT_ASSE=DIRSEISM,
                              FONC_MULT=ACCELERO,),
                     INCREMENT=_F(LIST_INST=LINST,),);

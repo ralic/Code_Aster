@@ -1,6 +1,6 @@
       SUBROUTINE PCMUMP(MATASZ, SOLVEZ, IRETZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/04/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,11 +48,11 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      INTEGER JSLVK,JSLVI,REACPR,ITERPR,JREFA,IRET
-      REAL*8 RBID
-      COMPLEX*16 CBID
-      CHARACTER*19 SOLVEU,MATASS,SOLVBD
-      CHARACTER*24 PRECON
+      INTEGER      JSLVK,JSLVI,ITERPR,REACPR,PCPIV ,JREFA,IRET
+      REAL*8       RBID
+      COMPLEX*16   CBID
+      CHARACTER*19 SOLVEU,MATASS
+      CHARACTER*24 PRECON,SOLVBD
 C----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -65,6 +65,7 @@ C --  PARAMETRES DU PRECONDITIONNEUR
       PRECON=ZK24(JSLVK-1+2)
       ITERPR=ZI(JSLVI-1+5)
       REACPR=ZI(JSLVI-1+6)
+      PCPIV =ZI(JSLVI-1+7)
       
       CALL ASSERT(PRECON.EQ.'LDLT_SP')
       
@@ -81,7 +82,7 @@ C --  CAR DEJA FAIT DANS APETSC
 C --  CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION 
 C --  (A DETRUIRE A LA SORTIE)
       SOLVBD=ZK24(JSLVK-1+3)
-      CALL CRSMSP(SOLVBD,MATASS)
+      CALL CRSMSP(SOLVBD,MATASS,PCPIV )
 
 C --  APPEL AU PRECONDITIONNEUR
       IRET = 0

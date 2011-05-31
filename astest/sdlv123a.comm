@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
@@ -101,18 +101,18 @@ evol=DYNA_LINE_TRAN(   MODELE=MODELE,
                        CHAM_MATER=CHAMPMAT,
                        MATR_MASS=MASSE,
                        MATR_RIGI=RIGI,
-                       NEWMARK=_F(),
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        EXCIT=_F(CHARGE=CH_P,
                                 FONC_MULT=FONC,),
                        INCREMENT=_F(LIST_INST=TEMPLI,),
-                       ARCHIVAGE=_F(LIST_ARCH=INTLI,),);
+                       ARCHIVAGE=_F(PAS_ARCH=100,),);
 #CALC_CHAMP( reuse=evol,RESULTAT=evol,
 #                      MODELE=MODELE,
 #                      CHAM_MATER=CHAMPMAT,
 #                       EXCIT=_F(CHARGE=CH_P,
 #                                FONC_MULT=FONC,),
 #                       TOUT_ORDRE='OUI',
-#                       OPTION=('SIGM_ELNO',)
+#                       CONTRAINTE=('SIGM_ELNO',)
 #          )
 
 THETA1=CALC_THETA( MODELE=MODELE,

@@ -1,8 +1,8 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -136,11 +136,11 @@ PLANZ=DEFI_OBSTACLE(   TYPE='BI_PLAN_Z' )
 PLANY=DEFI_OBSTACLE(   TYPE='BI_PLAN_Y' )
 
 #
-DYNAMODA=DYNA_TRAN_MODAL(      METHODE='DEVOGE',
-                               MASS_GENE=MASSEGEN,
-                               RIGI_GENE=RIGIDGEN,
-                              AMOR_REDUIT=0.,
-                             ETAT_INIT=_F( DEPL_INIT_GENE = DEPINI),
+DYNAMODA=DYNA_TRAN_MODAL(      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                              AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                             ETAT_INIT=_F( DEPL = DEPINI),
                              INCREMENT=_F( INST_INIT = 0.,
                                         INST_FIN = 0.3,
                                         PAS = 0.0005),

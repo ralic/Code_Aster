@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 09/05/2011   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF factor Messages  DATE 30/05/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,25 @@
 def _(x) : return x
 
 cata_msg={
+
+#-----------------------------------------------------------------------------------------------
+1: _("""
+Le système linéaire à résoudre contient %(i1)d noeuds dont:
+   - %(i2)d noeuds portant des degrés de liberté physiques
+   - %(i3)d noeuds portant des degrés de liberté de Lagrange
+Pour un total de %(i4)d équations.
+"""),
+
+#-----------------------------------------------------------------------------------------------
+2: _("""
+La matrice est de taille %(i1)d équations.
+Mais elle contient:
+   -  %(i2)d termes non nuls si elle est symétrique (soit un taux de remplissage de  %(r1)9.2e %%)
+   -  %(i3)d termes non nuls si elle n'est pas symétrique (soit un taux de remplissage de  %(r2)9.2e %%)
+Le nombre de termes non nuls est susceptible de varier si l'on utilise le contact en méthode continue
+ou la méthode XFEM avec contact.
+"""),
+
 
 
 #-----------------------------------------------------------------------------------------------
@@ -103,7 +122,7 @@ Solution :
 
      Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
      très près d'un noeud.
-     Si le nombre de décimal n'est pas trop grand (maxi 10 décimales)
+     Si le nombre de décimales n'est pas trop grand (maxi 10 décimales)
      vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
      mot-clé NPREC dans le bloc SOLVEUR. Sinon, contactez l'équipe de développement.
 
@@ -492,7 +511,7 @@ Attention:
 (solveur linéaire MUMPS) Matrice non factorisable !
 
   -> Conseil & Risque :
-     Verifiez votre mise en données (conditions limites, caractéristiques materiaux...).
+     Vérifiez votre mise en données (conditions limites, caractéristiques materiaux...).
 """),
 #-----------------------------------------------------------------------------------------------
 84: _("""

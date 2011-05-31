@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -358,45 +358,45 @@ VECPRO=PROJ_VECT_BASE(BASE=RESGEN,
 #
 # ----- CALCULS TRANSITOIRES
 
-TRANGEN1=DYNA_TRAN_MODAL(METHODE='EULER',
-                         MASS_GENE=MASPRO,
-                         RIGI_GENE=RIGPRO,
+TRANGEN1=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         MATR_MASS=MASPRO,
+                         MATR_RIGI=RIGPRO,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_GENE=VECPRO,
+                         EXCIT=_F(VECT_ASSE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
 
-TRANGEN2=DYNA_TRAN_MODAL(METHODE='DEVOGE',
-                         MASS_GENE=MASPRO,
-                         RIGI_GENE=RIGPRO,
+TRANGEN2=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                         MATR_MASS=MASPRO,
+                         MATR_RIGI=RIGPRO,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_GENE=VECPRO,
+                         EXCIT=_F(VECT_ASSE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
 
-TRANGEN3=DYNA_TRAN_MODAL(METHODE='NEWMARK',
-                         MASS_GENE=MASPRO,
-                         RIGI_GENE=RIGPRO,
+TRANGEN3=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                         MATR_MASS=MASPRO,
+                         MATR_RIGI=RIGPRO,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_GENE=VECPRO,
+                         EXCIT=_F(VECT_ASSE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
 
-TRANGEN4=DYNA_TRAN_MODAL(METHODE='ADAPT_ORDRE2',
-                         MASS_GENE=MASPRO,
-                         RIGI_GENE=RIGPRO,
+TRANGEN4=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                         MATR_MASS=MASPRO,
+                         MATR_RIGI=RIGPRO,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
 # POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
@@ -405,14 +405,14 @@ TRANGEN4=DYNA_TRAN_MODAL(METHODE='ADAPT_ORDRE2',
                                       VITE_MIN='MAXI',
                                       NB_POIN_PERIODE=300,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_GENE=VECPRO,
+                         EXCIT=_F(VECT_ASSE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
 
-TRANGEN5=DYNA_TRAN_MODAL(METHODE='ADAPT_ORDRE2',
-                         MASS_GENE=MASGEN,
-                         RIGI_GENE=RIGGEN,
+TRANGEN5=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                         MATR_MASS=MASGEN,
+                         MATR_RIGI=RIGGEN,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
 # POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
@@ -423,7 +423,7 @@ TRANGEN5=DYNA_TRAN_MODAL(METHODE='ADAPT_ORDRE2',
                                       NB_POIN_PERIODE=300,
                                       NMAX_ITER_PAS = 300,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_GENE=FGEN,
+                         EXCIT=_F(VECT_ASSE=FGEN,
                                   COEF_MULT=1.,),);
 
 #
@@ -764,45 +764,45 @@ MACRO_PROJ_BASE(BASE=MODYNA,
 
 #
 
-TRANG1=DYNA_TRAN_MODAL(METHODE='EULER',
-                       MASS_GENE=M_PROJ,
-                       RIGI_GENE=K_PROJ,
+TRANG1=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       MATR_MASS=M_PROJ,
+                       MATR_RIGI=K_PROJ,
                        INCREMENT=_F(INST_INIT=0.,
                                     INST_FIN=82.,
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10,),
-                       EXCIT=_F(VECT_GENE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #
 
-TRANG2=DYNA_TRAN_MODAL(METHODE='DEVOGE',
-                       MASS_GENE=M_PROJ,
-                       RIGI_GENE=K_PROJ,
+TRANG2=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                       MATR_MASS=M_PROJ,
+                       MATR_RIGI=K_PROJ,
                        INCREMENT=_F(INST_INIT=0.,
                                     INST_FIN=82.,
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10,),
-                       EXCIT=_F(VECT_GENE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #
 
-TRANG3=DYNA_TRAN_MODAL(METHODE='NEWMARK',
-                       MASS_GENE=M_PROJ,
-                       RIGI_GENE=K_PROJ,
+TRANG3=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                       MATR_MASS=M_PROJ,
+                       MATR_RIGI=K_PROJ,
                        INCREMENT=_F(INST_INIT=0.,
                                     INST_FIN=82.,
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10,),
-                       EXCIT=_F(VECT_GENE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #
 
-TRANG4=DYNA_TRAN_MODAL(METHODE='ADAPT_ORDRE2',
-                       MASS_GENE=M_PROJ,
-                       RIGI_GENE=K_PROJ,
+TRANG4=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                       MATR_MASS=M_PROJ,
+                       MATR_RIGI=K_PROJ,
                        INCREMENT=_F(INST_INIT=0.,
                                     INST_FIN=82.,
 # POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
@@ -811,7 +811,7 @@ TRANG4=DYNA_TRAN_MODAL(METHODE='ADAPT_ORDRE2',
                                     VITE_MIN='NORM',
                                     NB_POIN_PERIODE=300,),
                        ARCHIVAGE=_F(PAS_ARCH=1,),
-                       EXCIT=_F(VECT_GENE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #

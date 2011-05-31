@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_TRAN_MODAL
 # sdll126b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,16 +163,16 @@ MACRO_PROJ_BASE(BASE=MODES,
                                 _F(VECTEUR=CO('BYGE'),
                                    VECT_ASSE=bal_Yass,),),);
 
-TRANSMO=DYNA_TRAN_MODAL(METHODE='NEWMARK',
-                        MASS_GENE=MAGE,
-                        RIGI_GENE=RIGE,
-                        AMOR_GENE=AGGE,
+TRANSMO=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                        MATR_MASS=MAGE,
+                        MATR_RIGI=RIGE,
+                        MATR_AMOR=AGGE,
                         INCREMENT=_F(INST_FIN=tfin,
                                      PAS=pdtf,
                                      VERI_PAS='NON',),
-                        EXCIT=(_F(VECT_GENE=BZGE,
+                        EXCIT=(_F(VECT_ASSE=BZGE,
                                   FONC_MULT=forz,),
-                               _F(VECT_GENE=BYGE,
+                               _F(VECT_ASSE=BYGE,
                                   FONC_MULT=fory,),),);
 
 DZ_GED2=RECU_FONCTION(RESU_GENE=TRANSMO,

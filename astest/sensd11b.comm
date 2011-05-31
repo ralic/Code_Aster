@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SENSIBILITE ELEMENT DISCRET (K_TR_D_L, M_TR_D_N)
 # sensd11b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,12 +142,13 @@ L_FREQ=DEFI_LIST_REEL(DEBUT=F_DEBUT,
 
 DYTRN=DYNA_LINE_TRAN(MODELE=MODELE,CARA_ELEM = CHAMPCAR,
                     MATR_MASS=MATRMASS, MATR_RIGI=MATRRIGI,
-                    INCREMENT=_F(LIST_INST=L_TEMPS,),
+                    INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 1.5, PAS = 0.001),
                     EXCIT=(
                            _F(FONC_MULT=FC,CHARGE=CHF),
                            ),
                     SENSIBILITE=(PS[0],PS[2],),
-                    NEWMARK=_F(),)
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
 DYHAN=DYNA_LINE_HARM(MODELE=MODELE,CARA_ELEM=CHAMPCAR,
                            MATR_MASS=MATRMASS, MATR_RIGI=MATRRIGI,

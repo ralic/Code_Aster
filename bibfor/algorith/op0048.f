@@ -1,9 +1,9 @@
       SUBROUTINE OP0048()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -117,7 +117,7 @@ C
      &              IMAT, MASSE, RIGID, AMORT, LAMORT,
      &              NCHAR, NVECA, INFCHA, CHARGE, INFOCH, FOMULT,
      &              IAADVE, IALIFO, NONDP, IONDP,
-     &              SOLVEU, IINTEG, T0,
+     &              SOLVEU, IINTEG, T0, NUME,
      &              NBPASE, INPSCO, BASENO )
 C
       NEQ = ZI(IMAT(1)+2)
@@ -176,7 +176,7 @@ C
 C
         CALL DLNEWI(LCREA,LAMORT,IINTEG,NEQ,IMAT,
      &              MASSE,RIGID,AMORT,
-     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),
+     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),T0,
      &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,
@@ -186,7 +186,7 @@ C
 C
         CALL DLNEWI(LCREA,LAMORT,IINTEG,NEQ,IMAT,
      &              MASSE,RIGID,AMORT,
-     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),
+     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),T0,
      &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,

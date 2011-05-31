@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdlv124a.para = tps_job 660 mem_job 1000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,7 +152,7 @@ LISTARCH=DEFI_LIST_ENTI(DEBUT=archinit,
 # CALCUL DYNAMIQUE TEMPOREL SUR BASE PHYSIQUE
 #######################################################
 
-DYNATRAN=DYNA_LINE_TRAN(NEWMARK=_F(),
+DYNATRAN=DYNA_LINE_TRAN(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        MATR_MASS=MASS,
                        MATR_RIGI=KASS,
                        MATR_AMOR=CASS,
@@ -160,7 +160,7 @@ DYNATRAN=DYNA_LINE_TRAN(NEWMARK=_F(),
                                     FONC_MULT = SINOMEGT,
                         ),
                        INCREMENT=_F(LIST_INST = LISTTM),
-                       ARCHIVAGE=_F(LIST_ARCH=LISTARCH,
+                       ARCHIVAGE=_F(LIST_INST=LISTRD,
                                     ),
                                     );
 

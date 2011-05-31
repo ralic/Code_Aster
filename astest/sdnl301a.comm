@@ -1,8 +1,8 @@
-# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -171,15 +171,15 @@ VECTPROJ=PROJ_VECT_BASE(BASE         =MODE,
                         NUME_DDL_GENE=NDDLGEN,
                         TYPE_VECT    ='FORC');
 
-TRANGENE=DYNA_TRAN_MODAL(METHODE  ='EULER',
-                         MASS_GENE=MASSPROJ,
-                         RIGI_GENE=RIGIPROJ,
-                         AMOR_GENE=AMORPROJ,
+TRANGENE=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         MATR_MASS=MASSPROJ,
+                         MATR_RIGI=RIGIPROJ,
+                         MATR_AMOR=AMORPROJ,
                          INCREMENT=_F(INST_INIT= 0.,
                                       INST_FIN = TFIN,
                                       PAS      = DELT),
                          ARCHIVAGE=_F(PAS_ARCH  =10),
-                         EXCIT=_F(VECT_GENE= VECTPROJ,
+                         EXCIT=_F(VECT_ASSE= VECTPROJ,
                                   FONC_MULT= SINOT),
                          CHOC=(_F(NOEUD_1  = 'N14',
                                   JEU      = .406E-3,
@@ -293,16 +293,16 @@ VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
                         NUME_DDL_GENE=NDDLGEN2,
                         TYPE_VECT    ='FORC');
 
-TRANGEN2=DYNA_TRAN_MODAL(METHODE='EULER',
-                         MASS_GENE=MASSPRO2,
-                         RIGI_GENE=RIGIPRO2,
-                         AMOR_GENE=AMORPRO2,
+TRANGEN2=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         MATR_MASS=MASSPRO2,
+                         MATR_RIGI=RIGIPRO2,
+                         MATR_AMOR=AMORPRO2,
                          
                          INCREMENT=_F(INST_INIT= 0.,
                                       INST_FIN = TFIN,
                                       PAS      = DELT),
                          ARCHIVAGE=_F(PAS_ARCH=10),
-                         EXCIT=_F(VECT_GENE = VECTPRO2,
+                         EXCIT=_F(VECT_ASSE = VECTPRO2,
                                   FONC_MULT = SINOT),
                          CHOC=(_F(NOEUD_1  = 'N14',
                                   JEU      = .406E-3,

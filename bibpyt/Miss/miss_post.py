@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_post Miss  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -304,7 +304,8 @@ class POST_MISS_TRAN(POST_MISS):
                                    MATR_MASS=self.massgen,
                                    MATR_RIGI=rigtot,
                                    FREQ=freq,
-                                   AMOR_REDUIT=self.param['AMOR_REDUIT'],
+                                   AMOR_MODAL=_F(
+                                   AMOR_REDUIT=self.param['AMOR_REDUIT'],),
                                    EXCIT=excit,
                                    **opts)
         #DETRUIRE(CONCEPT=_F(NOM=(__fosx, __fosy, __fosz),),)
@@ -463,7 +464,8 @@ class POST_MISS_TAB(POST_MISS):
                                 MATR_MASS=self.massgen,
                                 MATR_RIGI=rigtot,
                                 FREQ=freq,
-                                AMOR_REDUIT=self.param['AMOR_REDUIT'],
+                                AMOR_MODAL=_F(
+                                AMOR_REDUIT=self.param['AMOR_REDUIT'],),
                                 EXCIT=_F(VECT_ASSE=__fosx,
                                          COEF_MULT=1.0),
                                 **opts)

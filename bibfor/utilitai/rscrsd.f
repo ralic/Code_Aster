@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=40)
       PARAMETER (NCMEC2=49)
-      PARAMETER (NCMEC3=42)
+      PARAMETER (NCMEC3=41)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -114,12 +114,13 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EPMQ_ELGA',       'EPMQ_ELNO',       'EPMQ_NOEU',
      & 'DEDE_ELNO',       'DEDE_NOEU',       'DESI_ELNO',
      & 'DESI_NOEU',       'PMPB_ELGA',       'PMPB_ELNO',
-     & 'PMPB_NOEU',       'EPFP_ELNO',
-     & 'EPFP_ELGA',       'EPFD_ELNO',       'EPFD_ELGA',
+     & 'PMPB_NOEU',       
+     & 'EPFP_ELNO',       'EPFP_ELGA',
+     & 'EPFD_ELNO',       'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',
-     & 'VACO_ELNO',       'CRIT_ELNO',       'ETOT_ELGA',
-     & 'ETOT_ELNO',       'ETOT_ELEM',       'SPMX_ELGA',
-     & 'MODE_FLAMB',
+     & 'VACO_ELNO',       
+     & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',
+     & 'SPMX_ELGA',       'MODE_FLAMB',
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',
      & 'INDL_ELGA',       'VAEX_ELGA',       'VAEX_ELNO',
      & 'VAEX_NOEU',       'MODE_MECA',       'SIEF_SENO_SEGA',

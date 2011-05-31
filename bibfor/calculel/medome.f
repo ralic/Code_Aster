@@ -7,7 +7,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 30/05/2011   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -203,12 +203,16 @@ C
         CTYP=PHENOM(1:4)
         IN=0
         DO 50 I=1,NCHA
+           CALL JEEXIN(ZK24(JLCHA+I-1)(1:8)//'.TYPE',IE)
+C          ON TESTE SI LA CHARGE EST NON VIDE
+           IF(IE.NE.0) THEN
+             CALL DISMOI('F','TYPE_CHARGE',ZK24(JLCHA+I-1)(1:8),
+     &            'CHARGE',IBID,K8B,IE)
 C          ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
-           CALL DISMOI('F','TYPE_CHARGE',ZK24(JLCHA+I-1)(1:8),
-     &          'CHARGE',IBID,K8B,IE)
-           IF(CTYP.EQ.K8B(1:4))THEN
-              ZK8(ICHA+IN)=ZK24(JLCHA+I-1)(1:8)
-              IN=IN+1
+             IF(CTYP.EQ.K8B(1:4))THEN
+                ZK8(ICHA+IN)=ZK24(JLCHA+I-1)(1:8)
+                IN=IN+1
+             ENDIF
            ENDIF
  50     CONTINUE
         NCHA=IN

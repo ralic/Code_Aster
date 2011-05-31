@@ -1,24 +1,24 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -43,7 +43,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       Affiche l'echo de la macro commande
       """
       if self.definition.proc is not None or self.definition.op < 0 :
-         # affichage du texte de la macro-commande. 
+         # affichage du texte de la macro-commande.
          self.AfficheTexteCommande()
 
    def affiche_cmd(self):
@@ -51,19 +51,19 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
           self.AfficheCommande()
 
    def Execute(self):
-      """ 
+      """
       Cette methode realise la phase d'execution en mode commande
-      par commande pour une etape : 
-             - construction, 
-             - verification, 
+      par commande pour une etape :
+             - construction,
+             - verification,
              - execution
       en une seule passe. Utilise en mode par_lot='NON'
 
       L'attribut d'instance executed indique que l'etape a deja ete executee
       Cette methode peut etre appelee plusieurs fois mais ne doit etre
       executee qu'une seule fois.
-      Les seuls cas ou on appelle plusieurs fois Execute sont pour les
-      commandes INCLUDE et INCLUDE_MATERIAU (appel dans op_init)
+      Le seul cas ou on appelle plusieurs fois Execute est pour INCLUDE
+      (appel dans op_init)
       """
       if not self.jdc or self.jdc.par_lot != "NON" :
          return
@@ -77,7 +77,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
            raise EOFError
 
          try:
-             # Apres l appel a Build  les executions de toutes les 
+             # Apres l appel a Build  les executions de toutes les
              # sous commandes ont ete realisees
              ier=self.Build()
          except self.codex.error:
@@ -125,7 +125,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
    def Execute_alone(self):
       """
       Cette methode est une methode speciale reservee au traitement de
-      certaines macro-commandes (INCLUDE et INCLUDE_MATERIAU) en mode par_lot='NON'
+      certaines macro-commandes (INCLUDE) en mode par_lot='NON'
 
       Elle realise l execution d une etape :
              - construction,
@@ -136,10 +136,10 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       au lieu de Build (permet d'executer la macro avant de construire les sous commandes)
 
       L'attribut d'instance executed indique que l'etape a deja ete executee.
-      Les methodes Execute et Execute_alone peuvent etre appelees plusieurs fois mais 
+      Les methodes Execute et Execute_alone peuvent etre appelees plusieurs fois mais
       l'execution effective ne doit avoir lieu qu'une seule fois.
-      Les seuls cas ou on appelle plusieurs fois Execute_alone et Execute sont pour les
-      commandes INCLUDE et INCLUDE_MATERIAU (appel dans op_init)
+      Le seul cas ou on appelle plusieurs fois Execute_alone et Execute est pour la
+      commande INCLUDE (appel dans op_init)
       """
       if hasattr(self,"executed") and self.executed == 1:return
       self.executed=1
@@ -163,7 +163,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
 
    def BuildExec(self):
-      """ 
+      """
       Cette methode enchaine en une seule passe les phases de construction et d'execution
       """
       self.set_current_step()
@@ -184,7 +184,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       else: has_etapes=0
 
       try:
-         # Apres l appel a _Build  les executions de toutes les 
+         # Apres l appel a _Build  les executions de toutes les
          # sous commandes ont ete realisees sauf dans le cas des INCLUDE
          ier = self._Build()
 
@@ -194,7 +194,6 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
            raise EOFError
 
          # La macro de type INCLUDE doit etre executee avant ses sous etapes
-         # principalement pour INCLUDE_MATERIAU qui doit definir un prefixe avant
          self.setmode(1)
          E_ETAPE.ETAPE.Exec(self)
          self.setmode(2)
@@ -233,7 +232,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       self.reset_current_step()
 
    def get_liste_etapes(self,liste):
-      if self.nom=='INCLUDE' : 
+      if self.nom=='INCLUDE' :
          for e in self.etapes:
              e.get_liste_etapes(liste)
       else :

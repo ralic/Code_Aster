@@ -1,8 +1,8 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE RESSORT AVEC UNE NON-LINEARITE SOUMIS A UNE ACCELERATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,7 +104,7 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                  CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 1)
                            )
 
-TEST_RESU( RESU=_F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+TEST_RESU(RESU=_F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
                   NUME_ORDRE = 1,  VALE = 2.37254)
                 )
 
@@ -126,20 +126,20 @@ MACRO_PROJ_BASE(BASE=MODE_MEC,MATR_ASSE_GENE=(
 #
 # CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
 # -------------------------------------------
-TRAN_GEE=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                 METHODE=METHOD1,
-                 ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
-                EXCIT=_F(  VECT_GENE = VECT_X,  FONC_MULT = ACCE_X),
+TRAN_GEE=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                 SCHEMA_TEMPS=_F(SCHEMA=METHOD1,),
+                 ETAT_INIT=_F( VITE = VECT_GEN),
+                EXCIT=_F( VECT_ASSE = VECT_X,  FONC_MULT = ACCE_X),
                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                  RELATION = f_NLIN),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
                 )
 
 #
-TRAN_GED=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                 METHODE=METHOD2,
-                 ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
-                EXCIT=_F(  VECT_GENE = VECT_X,  FONC_MULT = ACCE_X),
+TRAN_GED=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                 SCHEMA_TEMPS=_F(SCHEMA=METHOD2,),
+                 ETAT_INIT=_F( VITE= VECT_GEN),
+                EXCIT=_F( VECT_ASSE = VECT_X,  FONC_MULT = ACCE_X),
                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                  RELATION = f_NLIN),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
@@ -262,22 +262,24 @@ TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
 
 #=======================================================================
 
-TRAN_GE3=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                        METHODE=METHOD1,
-                        ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
-                       EXCIT=_F(  VECT_GENE = VECT_X, FONC_MULT = ACCE_X),
+TRAN_GE3=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                        SCHEMA_TEMPS=_F(SCHEMA=METHOD1,),
+                        ETAT_INIT=_F( VITE = VECT_GEN),
+                       EXCIT=_F( VECT_ASSE = VECT_X, FONC_MULT = ACCE_X),
                        RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                         RELATION = f_NLIN),
-                        INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER)
+                        INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,
+                        PAS=PAS)
                        )
 
-TRAN_GE4=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                        METHODE=METHOD2,
-                        ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
-                       EXCIT=_F(  VECT_GENE = VECT_X, FONC_MULT = ACCE_X),
+TRAN_GE4=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                        SCHEMA_TEMPS=_F(SCHEMA=METHOD2,),
+                        ETAT_INIT=_F( VITE = VECT_GEN),
+                       EXCIT=_F( VECT_ASSE = VECT_X, FONC_MULT = ACCE_X),
                        RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                         RELATION = f_NLIN),
-                        INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER)
+                        INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,
+                        PAS=PAS)
                        )
 
 #

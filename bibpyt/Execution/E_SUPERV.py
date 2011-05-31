@@ -1,9 +1,9 @@
-#@ MODIF E_SUPERV Execution  DATE 27/04/2010   AUTEUR SELLENET N.SELLENET 
+#@ MODIF E_SUPERV Execution  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,8 @@ class SUPERV:
  USAGE :
 
     pyaster JDC.py -eficas_path "rep" -commandes "fic_commandes" [-memjeveux taille_en_Mw]
-                      [-rep_mat repertoire_materiau] [-interact] [-verif]
+                      [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
+                      [-interact] [-verif]
 
     rep : est le repertoire contenant les paquetages de modules python d'Eficas ;
     fic_commandes : est le nom du fichier de commandes :
@@ -47,6 +48,7 @@ class SUPERV:
              par .py ;
            - dans tous les autres cas les commandes sont au format python.
     repertoire_materiau : est le repertoire contenant la description des materiaux pour INCLUDE_MATERIAU
+    repertoire_datg : est le repertoire contenant les donnees geometriques
     interact : si présent, indique que le superviseur passera en interactif apres avoir interprété le
                fichier de commandes fic_commandes
     verif : si présent indique que seule la phase de vérification sera exécutée
@@ -88,6 +90,7 @@ class SUPERV:
       k=0
       arg_debug=1
       self.rep_mat=None
+      self.rep_dex=None
       self.tempsMax=0.
       self.verif=0
       self.interact=0
@@ -109,6 +112,8 @@ class SUPERV:
          elif sys.argv[k] == '-rep_mat' :
             self.rep_mat=sys.argv[k+1]
             #self.rep_mat=os.path.abspath(sys.argv[k+1])
+         elif sys.argv[k] == '-rep_dex' :
+            self.rep_dex=sys.argv[k+1]
          elif sys.argv[k] == '-debug' :
             self.debug=arg_debug
          elif sys.argv[k] == '-verif' :
@@ -192,6 +197,7 @@ class SUPERV:
       args={}
       if self.tempsMax:args['tempsMax']=self.tempsMax
       if self.rep_mat :args['rep_mat'] =self.rep_mat
+      if self.rep_dex :args['rep_dex'] =self.rep_dex
 
       self.jdc=j=self.JdC(procedure=text,cata=self.cata,nom=self.nomFichierCommandes,
              context_ini=params, **args
@@ -362,13 +368,13 @@ class SUPERV:
          curPID = os.getpid()
          pathOrigine = os.getcwd()
          pathDestination = pathOrigine+"/tv_"+str(curPID)
-         
+
          # Creation des liens symboliques vers les fichiers du
          # repertoire courant dans un sous repertoire
          lierRepertoire(pathOrigine,pathDestination,["tv_"])
-         
+
          copierBase(pathOrigine,pathDestination)
-         
+
          os.chdir(pathDestination)
 
       self.set_path()
@@ -381,10 +387,10 @@ class SUPERV:
 
       #ier=self.testeCata();if ier:return ier
       ier = self.Execute(params)
-      
+
       if self.totalview == 1:
          supprimerRepertoire(os.getcwd())
-      
+
       return ier
 
 

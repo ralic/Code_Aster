@@ -13,9 +13,9 @@
       REAL*8       R8B
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,20 +64,43 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      REAL*8      TPS1(4),VALR(3)
-      INTEGER     VALI(2)
+      REAL*8      TPS1(4),VALR(3),BETA,GAMMA,RES,TOL,ACCE
+      INTEGER     VALI(2),N1, IFM, NIV
       INTEGER     ETAUSR
       CHARACTER*8 TRAN
 C     ------------------------------------------------------------------
 C
+C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
+
+      CALL INFNIV(IFM,NIV)
+C
       CALL JEMARQ()
+C      
       ZERO   = 0.D0
       DEUX   = 2.D0
-      QUATRE = 4.D0
       DT2    = DT * DT
-      DSDT   = DEUX / DT
-      QSDT   = QUATRE / DT
-      QSDT2  = QUATRE / DT2
+C
+      CALL GETVR8('SCHEMA_TEMPS','BETA',1,1,1,BETA,N1)
+      CALL GETVR8('SCHEMA_TEMPS','GAMMA',1,1,1,GAMMA,N1)
+      RES = 0.25D0* (0.5D0+GAMMA)* (0.5D0*GAMMA)
+      TOL = 1.D-8
+      IF ( GAMMA.LT.(0.5D0-TOL) .OR. BETA.LT.(RES-TOL) ) THEN
+          WRITE (IFM,*) ' >>> NEWMARK <<<'//
+     &      'CAS CONDITIONNELLEMENT STABLE.'
+      END IF
+      IF ( BETA.EQ.0) THEN
+        CALL U2MESS('F','ALGORITH9_2')
+      ENDIF  
+C
+      A0 = 1.D0/BETA/DT2
+      A1 = GAMMA/BETA/DT
+      A2 = 1.D0/BETA/DT
+      A3=1.D0/(2*BETA)-1
+      A4=GAMMA/BETA-1
+      A5=DT/2*(GAMMA/BETA-2)
+      A6=DT*(1-GAMMA)
+      A7=GAMMA*DT
+C      
       ISTO1  = 0
       LPSTO = .FALSE.
       R8B = ZERO
@@ -92,6 +115,7 @@ C     --- VECTEURS DE TRAVAIL ---
       CALL WKVECT('&&MDNEWM.KTILDA','V V R8',NBMODE*NBMODE,JTRA3)
       CALL WKVECT('&&MDNEWM.FTILD1','V V R8',NBMODE*NBMODE,JTRA4)
       CALL WKVECT('&&MDNEWM.FTILD2','V V R8',NBMODE*NBMODE,JTRA5)
+      CALL WKVECT('&&MDNEWM.FTILD3','V V R8',NBMODE*NBMODE,JTRA6)
 C
 C     --- A-T-ON ASSEZ DE PLACE POUR CREER LE VECTEUR "FEXT" ? ---
       CALL JEDISP(1,IPM)
@@ -124,10 +148,10 @@ C
             DO 110 IM = 1 , NBMODE
                DO 112 JM = 1 , NBMODE
                   IND = JM + NBMODE*(IM-1)
-                  ZR(JTRA3+IND-1) = DSDT * AMOGEN(IND)
+                  ZR(JTRA3+IND-1) = A1 * AMOGEN(IND)
  112           CONTINUE
                IND = IM + NBMODE*(IM-1)
-               ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) + QSDT2*MASGEN(IM)
+               ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) + A0*MASGEN(IM)
      &                                           + RIGGEN(IM)
  110        CONTINUE
 C           --- FACTORISATION DE LA MATRICE KTILDA ---
@@ -140,26 +164,30 @@ C           --- FACTORISATION DE LA MATRICE KTILDA ---
                AMOGEN(IM) = DEUX * AMOGEN(IM) * PULSAT(IM)
                DO 122 JM = 1 , NBMODE
                   IND = JM + NBMODE*(IM-1)
-                  ZR(JTRA3+IND-1) = QSDT2*MASGEN(IND) + RIGGEN(IND)
-                  ZR(JTRA4+IND-1) = QSDT*MASGEN(IND)
-                  ZR(JTRA5+IND-1) = QSDT2*MASGEN(IND)
+                  ZR(JTRA3+IND-1) = A0*MASGEN(IND) + RIGGEN(IND)
+                  ZR(JTRA4+IND-1) = A2*MASGEN(IND)
+                  ZR(JTRA5+IND-1) = A0*MASGEN(IND)
+                  ZR(JTRA6+IND-1) = A3*MASGEN(IND)
  122           CONTINUE
                IND = IM + NBMODE*(IM-1)
                ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) +
-     &                           DSDT*AMOGEN(IM)*MASGEN(IND)
+     &                           A1*AMOGEN(IM)*MASGEN(IND)
                ZR(JTRA4+IND-1) = ZR(JTRA4+IND-1) +
-     &                           AMOGEN(IM)*MASGEN(IND)
+     &                           A4*AMOGEN(IM)*MASGEN(IND)
                ZR(JTRA5+IND-1) = ZR(JTRA5+IND-1) +
-     &                           DSDT*AMOGEN(IM)*MASGEN(IND)
+     &                           A1*AMOGEN(IM)*MASGEN(IND)
+               ZR(JTRA6+IND-1) = ZR(JTRA6+IND-1) +
+     &                           A5*AMOGEN(IM)*MASGEN(IND)
  120        CONTINUE
          ELSE
             DO 130 IM = 1 , NBMODE
                DO 132 JM = 1 , NBMODE
                   IND = JM + NBMODE*(IM-1)
-                  ZR(JTRA3+IND-1) = QSDT2*MASGEN(IND) + RIGGEN(IND)
-     &                                         + DSDT*AMOGEN(IND)
-                  ZR(JTRA4+IND-1) = QSDT*MASGEN(IND) + AMOGEN(IND)
-                  ZR(JTRA5+IND-1) = QSDT2*MASGEN(IND) + DSDT*AMOGEN(IND)
+                  ZR(JTRA3+IND-1) = A0*MASGEN(IND) + RIGGEN(IND)
+     &                                         + A1*AMOGEN(IND)
+                  ZR(JTRA4+IND-1) = A2*MASGEN(IND) + A4*AMOGEN(IND)
+                  ZR(JTRA5+IND-1) = A0*MASGEN(IND) + A1*AMOGEN(IND)
+                  ZR(JTRA6+IND-1) = A3*MASGEN(IND) + A5*AMOGEN(IND)
  132           CONTINUE
  130        CONTINUE
          ENDIF
@@ -175,7 +203,8 @@ C        --- FACTORISATION DE LA MATRICE KTILDA ---
       ENDIF
 C
 C     --- CONDITIONS INITIALES ---
-      CALL MDINIT(BASEMO,NBMODE,0,ZR(JDEPL),ZR(JVITE),R8B, IRET )
+      CALL MDINIT(BASEMO,NBMODE,0,ZR(JDEPL),ZR(JVITE),R8B, 
+     &            IRET, TINIT)
       IF (IRET.NE.0) GOTO 9999
 C
 C     --- FORCES EXTERIEURES ---
@@ -236,23 +265,25 @@ C
                   DO 210 IM = 0,NBMOD1
                      IM1 = IM + 1
                      ZR(JTRA1+IM) = ZR(JDEPL+IM)
-                     X1 = ( QSDT + AMOGEN(IM1) ) * MASGEN(IM1)
-                     X2 = ( QSDT2 + DSDT*AMOGEN(IM1) ) * MASGEN(IM1)
+                     X1 = ( A2 + A4*AMOGEN(IM1) ) * MASGEN(IM1)
+                     X2 = ( A0 + A1*AMOGEN(IM1) ) * MASGEN(IM1)
                      X3 = X2 + RIGGEN(IM1)
                      ZR(JDEPL+IM) = ( ZR(JFEXT+IFE+IM) + X1*ZR(JVITE+IM)
-     &                                + MASGEN(IM1)*ZR(JACCE+IM)
+     &                                + A3*MASGEN(IM1)*ZR(JACCE+IM)
+     &                                + A5*AMOGEN(IM1)*ZR(JACCE+IM)
      &                                + X2*ZR(JDEPL+IM) ) / X3
  210              CONTINUE
                ELSE
                   DO 212 IM = 0,NBMOD1
                      ZR(JTRA1+IM) = ZR(JDEPL+IM)
-                     ZR(JTRA2+IM) = ZR(JVITE+IM) + DSDT*ZR(JDEPL+IM)
+                     ZR(JTRA2+IM) = A4*ZR(JVITE+IM) + A1*ZR(JDEPL+IM)
+     &                             +A5* ZR(JACCE+IM)               
  212              CONTINUE
                   CALL PMAVEC('ZERO',NBMODE,AMOGEN,ZR(JTRA2),ZR(JDEPL))
                   DO 214 IM = 0,NBMOD1
                      IM1 = IM + 1
-                     X1 = ZR(JACCE+IM) + QSDT*ZR(JVITE+IM)
-     &                                   + QSDT2*ZR(JTRA1+IM)
+                     X1 = A3*ZR(JACCE+IM) + A2*ZR(JVITE+IM)
+     &                                   + A0*ZR(JTRA1+IM)
                      ZR(JDEPL+IM) = ZR(JDEPL+IM) + ZR(JFEXT+IFE+IM)
      &                                               + X1*MASGEN(IM1)
  214              CONTINUE
@@ -263,17 +294,18 @@ C
                   ZR(JTRA1+IM) = ZR(JDEPL+IM)
                   ZR(JDEPL+IM) = ZR(JFEXT+IFE+IM)
  216           CONTINUE
-               CALL PMAVEC('CUMUL',NBMODE,MASGEN,ZR(JACCE),ZR(JDEPL))
+               CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA6),ZR(JACCE),ZR(JDEPL))
                CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA4),ZR(JVITE),ZR(JDEPL))
                CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA5),ZR(JTRA1),ZR(JDEPL))
                CALL RRLDS(ZR(JTRA3),NBMODE,NBMODE,ZR(JDEPL),1)
             ENDIF
             DO 218 IM = 0,NBMOD1
-               ZR(JACCE+IM) = -ZR(JACCE+IM) + QSDT2*( ZR(JDEPL+IM)
+               ACCE=ZR(JACCE+IM)
+               ZR(JACCE+IM) = -A3*ACCE + A0*( ZR(JDEPL+IM)
      &                               - ZR(JTRA1+IM) - DT*ZR(JVITE+IM) )
 C
-               ZR(JVITE+IM) = -ZR(JVITE+IM) + DSDT*( ZR(JDEPL+IM)
-     &                                      - ZR(JTRA1+IM) )
+               ZR(JVITE+IM) = ZR(JVITE+IM) + A6*ACCE + A7*ZR(JACCE+IM)
+
  218        CONTINUE
 C
 C           --- ARCHIVAGE ---
@@ -307,7 +339,7 @@ C
               CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,0,0)
               IF (NOMRES.EQ.'&&OP0074') THEN
 C             --- CAS D'UNE POURSUITE ---
-                 CALL GETVID('ETAT_INIT','RESU_GENE',1,1,1,TRAN,NDT)
+                 CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,TRAN,NDT)
                  IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
               ENDIF
                 VALI (1) = IA+I
@@ -337,6 +369,7 @@ C
       CALL JEDETR('&&MDNEWM.KTILDA')
       CALL JEDETR('&&MDNEWM.FTILD1')
       CALL JEDETR('&&MDNEWM.FTILD2')
+      CALL JEDETR('&&MDNEWM.FTILD3')
       CALL JEDETR('&&MDNEWM.FEXT')
       IF (IRET.NE.0)
      &   CALL U2MESS('F','ALGORITH5_24')

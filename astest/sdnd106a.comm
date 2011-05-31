@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE FRICTION SLIDER WITH STATIC AND DYNAMIC FRICTION COEFFICIENTS 
 # sdnd106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,9 +123,9 @@ duration = 0.35;
 time_step = 1.e-04;
 
 RESU_GEN=DYNA_TRAN_MODAL(
-                         METHODE='ADAPT_ORDRE2',
-                         MASS_GENE=M_GENERA,
-                         RIGI_GENE=K_GENERA,
+                         SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                         MATR_MASS=M_GENERA,
+                         MATR_RIGI=K_GENERA,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=duration,
                                       PAS=time_step,
@@ -134,7 +134,7 @@ RESU_GEN=DYNA_TRAN_MODAL(
                                       PAS_MAXI=time_step,
                                      ),
                          ARCHIVAGE=_F(PAS_ARCH=1),
-                         EXCIT=_F(VECT_GENE=F_GENERA,
+                         EXCIT=_F(VECT_ASSE=F_GENERA,
                                   FONC_MULT=F_FUNCT,),
                          CHOC=(_F(GROUP_NO_1='N_FRICT',
                                   OBSTACLE=OBSTA_F,

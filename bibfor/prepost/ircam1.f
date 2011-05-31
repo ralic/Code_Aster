@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 30/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C
       CHARACTER*64 NOMPRF,NOLOPG
 C
       INTEGER NBREPG,NBPT,IRET,NUMPT2,I,NBVAL
-      INTEGER IFM, NIVINF
+      INTEGER IFM, NIVINF, IRET2
       INTEGER NBENTY, NVALEC, NBPG, NBSP
       INTEGER TYMAST
       INTEGER ADVALE
@@ -203,6 +203,13 @@ C
      &              NCMPVE, NTNCMP, NTUCMP,
      &              CODRET )
 C
+C 3.1. ==> CREATION DU TABLEAUX DES COMPOSANTES
+C
+      CALL WKVECT('&&IRCAM1.CNAME','V V K16',NCMPRF,JCOMP)
+      CALL WKVECT('&&IRCAM1.CUNIT','V V K16',NCMPRF,JUNIT)
+      CALL MFNPDT ( IDFIMD, NOCHMD, NBPT, ZK16(JUNIT),
+     &              ZK16(JCOMP), IRET )
+C
 C====
 C 4. ECRITURE POUR CHAQUE IMPRESSION SELECTIONNEE
 C====
@@ -264,25 +271,15 @@ C
             IF ( NIVINF.GT.1 ) THEN
               WRITE (IFM,4002) NOMTYP(TYMAST), TYGEOM
             ENDIF
-            CALL WKVECT('&&IRCAM1.CNAME','V V K16',NCMPRF,JCOMP)
-            CALL WKVECT('&&IRCAM1.CUNIT','V V K16',NCMPRF,JUNIT)
-            CALL MFNPDT ( IDFIMD, NOCHMD, NBPT, ZK16(JUNIT),
-     &                    ZK16(JCOMP), IRET )
             IF(IRET.NE.-1)THEN
-              DO 411 I=1,NBPT
-                CALL MFPDTI( IDFIMD, NOCHMD, I, IBID, NUMPT2,
-     &                       RBID, IRET)
-                NBVAL = 0
-                CALL MDEXCV(NOFIMD,IDFIMD,NOCHMD,IBID,NUMPT2,
-     &                      TYPENT,TYGEOM,NBVAL, IRET )
-                IF( (NBVAL.GT.0).AND.(NUMPT.EQ.NUMPT2) ) THEN
-                   NTYMAS=NOMTYP(TYMAST)
-                   CALL U2MESK('F','MED_99',1,NTYMAS)
-                ENDIF
- 411          CONTINUE
+              NBVAL = 0
+              CALL MDEXCV(NOFIMD,IDFIMD,NOCHMD,NUMORD,NUMPT,
+     &                    TYPENT,TYGEOM,NBVAL, IRET2 )
+              IF( NBVAL.GT.0 ) THEN
+                NTYMAS=NOMTYP(TYMAST)
+                CALL U2MESK('F','MED_99',1,NTYMAS)
+              ENDIF
             ENDIF
-            CALL JEDETR('&&IRCAM1.CNAME')
-            CALL JEDETR('&&IRCAM1.CUNIT')
           ENDIF
 C
           NBENTY = CAIMPI(7,NRIMPR)

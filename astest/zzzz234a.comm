@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
 # zzzz234a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -610,11 +610,9 @@ RE_D_EM=STAT_NON_LINE(MODELE     = MO_D_EM,
    );
 
 CALC_CHAMP(reuse      = RE_D_EM,
-          RESULTAT   = RE_D_EM,
+           RESULTAT   = RE_D_EM,
            CONTRAINTE=(
-                       # On teste la fonctionnalite de CALC_CHAMP de
-                       # declenchement du calcul des options en cascade
-                       #'SIEF_ELNO',
+                       'SIEF_ELNO',
                        'SIEF_NOEU',
                       ))
 
@@ -719,7 +717,7 @@ RE_D_TGM=STAT_NON_LINE(MODELE     = MO_D_TGM,
 )
 
 CALC_CHAMP(reuse      = RE_D_TGM,
-          RESULTAT   = RE_D_TGM,
+           RESULTAT   = RE_D_TGM,
            CONTRAINTE=('SIEF_ELNO','SIEF_NOEU'))
 
 TB_D_TGM = RECU_TABLE(CO=RE_D_TGM,NOM_PARA=('ITER_GLOB'),)

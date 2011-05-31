@@ -1,9 +1,11 @@
-      SUBROUTINE DLTINS ( NBGRPA, LISPAS, LIBINT, LINBPA, NPATOT )
+      SUBROUTINE DLTINS ( NBGRPA, LISPAS, LIBINT, LINBPA, NPATOT, TINIT,
+     &                   LISINS )
       IMPLICIT  REAL*8  (A-H,O-Z)
-      CHARACTER*24  LISPAS, LIBINT, LINBPA
+      CHARACTER*24  LISPAS, LIBINT, LINBPA, LISINS
+      
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,17 +24,17 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C OUT : NBGRPA : NOMBRE DE GROUPE DE PAS
-C OUT : LISPAS  : OBJET DU ZR DES PAS DE CALCUL
-C OUT : LIBINT  : OBJET DU ZR DES BORNES DES INTERVALLES
-C OUT : LINBPA  : OBJET DU ZI DU NOMBRE DE PAS PAR INTERVALLE
+C OUT : LISPAS : OBJET DU ZR DES PAS DE CALCUL
+C OUT : LIBINT : OBJET DU ZR DES BORNES DES INTERVALLES
+C OUT : LINBPA : OBJET DU ZI DU NOMBRE DE PAS PAR INTERVALLE
 C OUT : NPATOT : NOMBRE TOTAL DE PAS DE CALCUL
+C IN  : TINIT  : TEMPS INITIAL
+C IN  : LISINS : NOM DE LA LISTE DES INSTANTS DE CALCUL
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
-      INTEGER VALI
       COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      REAL*8 VALR(4)
+      REAL*8            ZR    
       COMMON / RVARJE / ZR(1)
       COMPLEX*16        ZC
       COMMON / CVARJE / ZC(1)
@@ -45,63 +47,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      CHARACTER*8   K8B, NOMRES, DYNA, LI, CRIT
-      CHARACTER*24 VALK
-      CHARACTER*16  TYPRES, NOMCMD
-      CHARACTER*8   CTYPE
-      COMPLEX*16    C16B
-      CHARACTER*1 K1BID
+      REAL*8       VALR(4)
+      CHARACTER*1  K1BID
+      CHARACTER*8  NOMRES, DYNA, LI
+      CHARACTER*16 TYPRES, NOMCMD
+            
 C     -----------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
 C
 C     --- EST-ON EN REPRISE ? ---
-C
-      CALL GETVID('ETAT_INIT','DYNA_TRANS',1,1,1,DYNA,NDY)
-      IF ( NDY .NE. 0 ) THEN
-         CALL GETVIS('ETAT_INIT','NUME_INIT' ,1,1,1,NUME,NNI)
-         IF ( NNI .EQ. 0 ) THEN
-            CALL GETVR8('ETAT_INIT','INST_INIT',1,1,1,TEMPS,NT)
-            IF ( NT .EQ. 0 ) THEN
-               CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
-     &                                         PREC,CRIT,NUME,1,NBTROU)
-               IF (NBTROU.NE.1) THEN
-                CALL U2MESS('F','ALGORITH3_24')
-               ENDIF
-            ELSE
-               CALL GETVR8('ETAT_INIT','PRECISION',1,1,1,PREC ,NP)
-               CALL GETVTX('ETAT_INIT','CRITERE'  ,1,1,1,CRIT ,NC)
-               CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
-     &                                        PREC,CRIT,NUME,1,NBTROU)
-               IF (NBTROU.LT.0) THEN
-         VALK = DYNA
-         VALR (1) = TEMPS
-         VALI = -NBTROU
-      CALL U2MESG('F', 'ALGORITH12_83',1,VALK,1,VALI,1,VALR)
-               ELSEIF (NBTROU.EQ.0) THEN
-         VALK = DYNA
-         VALR (1) = TEMPS
-                  CALL U2MESG('F', 'ALGORITH12_84',1,VALK,0,0,1,VALR)
-               ENDIF
-            ENDIF
-         ELSE
-C           --- VERIFICATION QUE NUME EXISTE ---
-            CALL RSORAC(DYNA,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
-     &                                                 NBORDR,1,IBID)
-            CALL WKVECT('&&OP0048.NUME_ORDRE','V V I',NBORDR,JORDR)
-            CALL RSORAC(DYNA,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
-     &                                        ZI(JORDR),NBORDR,IBID)
-            DO 10 I = 1,NBORDR
-               IF (ZI(JORDR+I-1).EQ.NUME) GOTO 12
- 10         CONTINUE
-            CALL U2MESK('F','ALGORITH3_30',1,DYNA)
- 12         CONTINUE
-         ENDIF
-C
-C        --- RECUPERATION DE L'INSTANT ---
-         CALL RSADPA(DYNA,'L',1,'INST',NUME,1,JADR,CTYPE)
-         TEMPS = ZR(JADR)
-      ENDIF
+      CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,DYNA,NDY)
 C
 C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "LIST_INST" ---
 C
@@ -117,18 +73,22 @@ C
          LIBINT = LI//'           .BINT'
          LINBPA = LI//'           .NBPA'
 C
+         LISINS = LI//'           .VALE'
+         NPATOT = NBINST - 1
+C         
+C
 C        --- SI REPRISE, IL FAUT SE RECALER ---
          IF (NDY.NE.0) THEN
-C           --- DANS QUEL INTERVALLE SE SITUE LE TEMPS ---
+C           --- DANS QUEL INTERVALLE SE SITUE LE TEMPS INITIAL ---
             DO 100 IINT = 1,NBGRPA
-               IF (TEMPS.LT.ZR(JBINT+IINT)) GOTO 102
+               IF (TINIT.LT.ZR(JBINT+IINT)) GOTO 102
  100        CONTINUE
-         VALR (1) = TEMPS
+         VALR (1) = TINIT
          VALR (2) = ZR(JBINT+NBGRPA)
             CALL U2MESG('F', 'ALGORITH12_89',0,' ',0,0,2,VALR)
  102        CONTINUE
             EPS = ZR(JLPAS+IINT-1) / 10.D0
-            IF (ABS(ZR(JBINT+IINT)-TEMPS).LT.EPS) IINT = IINT + 1
+            IF (ABS(ZR(JBINT+IINT)-TINIT).LT.EPS) IINT = IINT + 1
             NBINTN = NBGRPA - IINT + 1
 C           --- ON CREE UNE NOUVELLE LISTE ---
             CALL WKVECT('&&OP0048.LI_BINT','V V R',NBINTN+1,JBIN2)
@@ -144,7 +104,7 @@ C           --- ON CREE UNE NOUVELLE LISTE ---
             J = J + 1
             ZR(JBIN2+J) = ZR(JBINT+NBGRPA)
 C           --- POUR LE PREMIER INTERVALLE ---
-            ZR(JBIN2) = TEMPS
+            ZR(JBIN2) = TINIT
             NBPD = 0
             IF (IINT.NE.1) THEN
                DO 150 I = 1,IINT-1
@@ -158,9 +118,9 @@ C           --- POUR LE PREMIER INTERVALLE ---
             ENDIF
             EPS = ZR(JLPAS+IINT-1) / 10.D0
             DO 120 IV = NBPD,NBPF
-               IF (ABS(ZR(JVALE+IV)-TEMPS).LT.EPS) GOTO 122
+               IF (ABS(ZR(JVALE+IV)-TINIT).LT.EPS) GOTO 122
  120        CONTINUE
-         VALR (1) = TEMPS
+         VALR (1) = TINIT
          VALR (2) = ZR(JLPAS+IINT-1)
          VALR (3) = ZR(JBINT+IINT-1)
          VALR (4) = ZR(JBINT+IINT)
@@ -182,18 +142,17 @@ C           --- POUR LE PREMIER INTERVALLE ---
             NBINST = NPATOT + 1
             CALL WKVECT('&&OP0048.FI_JVALE','V V R',NBINST,JVALE)
             J = 0
-            ZR(JVALE) = TEMPS
+            ZR(JVALE) = TINIT
             DO 140 I = 1,NBGRPA
                DT = ZR(JLPAS+I-1)
                NBP = ZI(JNBPA+I-1)
-               TINIT = ZR(JBINT+I-1)
+               T0 = ZR(JBINT+I-1)
                DO 142 K = 1,NBP
                  J = J + 1
-                 ZR(JVALE+J) = TINIT + K*DT
+                 ZR(JVALE+J) = T0 + K*DT
  142           CONTINUE
  140        CONTINUE
-         ELSE
-            NPATOT = NBINST - 1
+            LISINS= '&&OP0048.FI_JVALE'
          ENDIF
 C
          CALL GETVIS('INCREMENT','NUME_FIN',1,1,1,NUMEF,N1)
@@ -260,78 +219,48 @@ C        --- POUR LE DERNIER INTERVALLE ---
          DO 240 IP = 1,NBGRPA
             NPATOT = NPATOT + ZI(JNBPA+IP-1)
  240     CONTINUE
+         NBINST = NPATOT + 1
+         CALL WKVECT('&&OP0048.FI_JVALF','V V R',NBINST,JVALE)
+         ZR(JVALE) = ZR(JBINT)
+         J=0
+         DO 250 I = 1,NBGRPA
+               DT = ZR(JLPAS+I-1)
+               NBP = ZI(JNBPA+I-1)
+               T0 = ZR(JBINT+I-1)
+               DO 252 K = 1,NBP
+                 J = J + 1
+                 ZR(JVALE+J) = T0 + K*DT
+ 252           CONTINUE
+ 250        CONTINUE 
+        LISINS='&&OP0048.FI_JVALF'
 C
          GOTO 9999
       ENDIF
 C
-C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "FONC_INST" ---
+C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "PAS" ---
 C
-      CALL GETVID('INCREMENT','FONC_INST' ,1,1,1,LI ,N2)
-      IF (N2.EQ.0)
-     &   CALL U2MESS('F','ALGORITH3_31')
-       CALL GETVIS('INCREMENT','PAS_CALCUL',1,1,1,IPC,N3)
-      CALL JEVEUO(LI//'           .PROL','L',LPROL)
-      IF (ZK24(LPROL).NE.'FONCTION') CALL U2MESS('F','ALGORITH3_32')
-      CALL JEVEUO(LI//'           .VALE','L',LVAR)
-      CALL JELIRA(LI//'           .VALE','LONUTI',NBVAL,K8B)
-      NBINST  = NBVAL / 2
-      NBGRPA = 1
-      DT = ZR(LVAR+1) - ZR(LVAR)
-      EPSI = DT * 1.D-04
-      DO 20 I = 0,NBINST-2
-         DTI = ZR(LVAR+I+1) - ZR(LVAR+I)
-         IF (ABS(DTI-DT).GT.EPSI) THEN
-            CALL U2MESS('F','ALGORITH3_33')
-         ENDIF
- 20   CONTINUE
-C
-C     --- SI REPRISE, IL FAUT SE RECALER ---
-      IF (NDY.NE.0) THEN
-         DO 22 I = 1, NBINST
-            IF (ABS(ZR(LVAR+I-1)-TEMPS).LE.EPSI) GOTO 24
- 22      CONTINUE
-         CALL U2MESS('F','ALGORITH3_34')
- 24      CONTINUE
-         INUME = I
-         NBINST = NBINST - INUME + 1
-      ELSE
-         INUME = 1
+      CALL GETVR8('INCREMENT','INST_FIN',1,1,1,TFIN,IBID)
+      CALL GETVR8('INCREMENT','PAS',1,1,1,DT,IBID)
+      IF ( DT.EQ.0.D0 ) THEN
+        CALL U2MESS('F','ALGORITH3_12')
       ENDIF
-      TEMPS = ZR(LVAR+INUME-1)
-      LISPAS = '&&OP0048.FI_LPAS'
-      LIBINT = '&&OP0048.FI_BINT'
-      LINBPA = '&&OP0048.FI_NBPA'
-      CALL WKVECT('&&OP0048.FI_BINT','V V R',NBGRPA,JBINT)
-      ZR(JBINT) = TEMPS
-      CALL WKVECT('&&OP0048.FI_LPAS','V V R',NBGRPA,JLPAS)
-      IF (IPC.EQ.1) THEN
-         ZR(JLPAS) = DT
-         NPATOT = NBINST - 1
-      ELSE
-         DT = DT / IPC
-         ZR(JLPAS) = DT
-         NPATOT = ( NBINST - 1 ) * IPC
-      ENDIF
-      CALL WKVECT('&&OP0048.FI_JVALE','V V R',NPATOT+1,JVALE)
-      DO 26 I = 0,NPATOT
-         ZR(JVALE+I) = TEMPS + I*DT
- 26   CONTINUE
-      CALL WKVECT('&&OP0048.FI_NBPA','V V I',NBGRPA,JNBPA)
-C
-      CALL GETVR8('INCREMENT','INST_FIN',1,1,1,TFIN,N1)
-      IF ( N1 .EQ. 0 ) THEN
-         CALL GETVIS('INCREMENT','NUME_FIN',1,1,1,NUMEF,N1)
-         IF ( N1.NE.0 .AND. NUMEF.LE.NPATOT ) NPATOT = NUMEF
-      ELSE
-         DO 28 I = 1,NPATOT
-            IF (ZR(JVALE+I-1).GT.TFIN) THEN
-               NPATOT = I - 2
-               GOTO 30
-            ENDIF
- 28      CONTINUE
- 30      CONTINUE
-      ENDIF
-      ZI(JNBPA) = NPATOT
+      CALL WKVECT('&&OP0048.LI_BINT','V V R',2,JBIN2)
+      CALL WKVECT('&&OP0048.LI_LPAS','V V R',1,JLPA2)
+      CALL WKVECT('&&OP0048.LI_NBPA','V V I',1,JNBP2)
+      NPATOT = NINT((TFIN-TINIT)/DT)
+      ZI(JNBP2) = NPATOT
+      ZR(JBIN2) = TINIT
+      ZR(JBIN2+1) = TFIN
+      ZR(JLPA2) = DT
+      NBGRPA=1
+      LISPAS = '&&OP0048.LI_LPAS'
+      LIBINT = '&&OP0048.LI_BINT'
+      LINBPA = '&&OP0048.LI_NBPA'
+      CALL WKVECT('&&OP0048.LI_VALE','V V R',NPATOT+1,JVAL2)
+      DO 23 I = 0, NPATOT
+          ZR(JVAL2+I)=TINIT+I*DT
+ 23   CONTINUE
+      LISINS = '&&OP0048.LI_VALE'         
 C
  9999 CONTINUE
       CALL JEDEMA()

@@ -2,7 +2,7 @@
       IMPLICIT      NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,14 +38,15 @@ C   CONFORMITE AVEC LA ROUTINE OP0028 (DEFI_LIST_INST)
 C
 C ----------------------------------------------------------------------
 C
-C IN  GETSET : 'L' OU 'E'
-C IN  SD     : SDDISC LOCALE A OP00700
-C IN  TYPQUE : 
-C IN  IOCC   : 
-C IN  QUEST  : 
-C OUT VALI   : 
-C OUT VALR   : 
-C IN/OUT VALK   : 
+C IN     GETSET : 'L' -> LECTURE
+C                 'E' -> ECRITURE
+C IN     SD     : SDDISC LOCALE A OP00700
+C IN     TYPQUE : TYPE DE QUESTION : 'LIST, 'ECHE' OU 'ADAP'
+C IN     IOCC   : NUMERO D'OCCURENCE DE 'ECHE' OU 'ADAP'
+C IN     QUEST  : QUESTION
+C IN/OUT VALI   : VALEUR ENTIERE
+C IN/OUT VALR   : VALEUR REELE
+C IN/OUT VALK   : CHAINE DE CARACTERES
 C
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -69,7 +70,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      LEEVR,LEEVK,LESUR,LAEVR,LATPR,LATPK
       PARAMETER   (LEEVR=4,LEEVK=3,LESUR=8)
-      PARAMETER   (LAEVR=5,LATPR=6,LATPK=4)
+      PARAMETER   (LAEVR=6,LATPR=6,LATPK=4)
 
       INTEGER      IRET,N,JLIR,JPIL
       INTEGER      JEEVR,JEEVK,JESUR,JAEVR,JATPR,JATPK
@@ -307,6 +308,7 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'NOM_CMP'.OR.
      &              QUEST.EQ.'NU_CMP'.OR.
      &              QUEST.EQ.'NB_ITER_NEWTON_REF'.OR.
+     &              QUEST.EQ.'NB_EVEN_OK'.OR.
      &              QUEST.EQ.'NB_OCC')
 
         IF (QUEST.EQ.'NB_OCC') THEN
@@ -348,6 +350,15 @@ C     ------------------------------------------------------------------
             ZR(JAEVR-1+LAEVR*(IOCC-1)+5) = VALR
           ENDIF
 
+        ELSEIF (QUEST.EQ.'NB_EVEN_OK') THEN
+          CALL JEVEUO(SD//'.AEVR',GETSET,JAEVR)
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JAEVR-1+LAEVR*(IOCC-1)+6)
+            VALI = NINT(VALR)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JAEVR-1+LAEVR*(IOCC-1)+6) = VALI
+          ENDIF
+
         ELSEIF (QUEST.EQ.'METHODE') THEN
           CALL JEVEUO(SD//'.ATPR','L',JATPR)
           VALI = NINT(ZR(JATPR-1+LATPR*(IOCC-1)+1))
@@ -376,7 +387,7 @@ C!!!!!!!!!!!!!!!!!!!!!!!!!!
           CALL JEVEUO(SD//'.ATPR','L',JATPR)
           VALR = ZR(JATPR-1+LATPR*(IOCC-1)+5)
           VALI = NINT(VALR)
-        
+
         ELSEIF (QUEST.EQ.'NOM_CHAM') THEN
           CALL JEVEUO(SD//'.ATPK','L',JATPK)
           VALK = ZK16(JATPK-1+LATPK*(IOCC-1)+2)

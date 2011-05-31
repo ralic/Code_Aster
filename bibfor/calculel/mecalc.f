@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -181,9 +181,6 @@ C ----------------------------------------------------------------------
             CALL AJCHCA('PVARIPR',CHDEPL,LPAIN,LCHIN,NBIN,MAXIN,'N')
             CALL AJCHCA('PCONTPR',CHSIG, LPAIN,LCHIN,NBIN,MAXIN,'N')
             LPAOUT(1) = 'PINDLOC'
-         ELSE IF (OPTIO2.EQ.'CRIT_ELNO') THEN
-            LPAIN(1) = 'PCONCOR'
-            LPAOUT(1) = 'PCRITER'
          ELSE IF (OPTIO2.EQ.'VATU_ELNO') THEN
             LPAIN(1) = 'PVARIGR'
             LPAOUT(1) = 'PVARINR'

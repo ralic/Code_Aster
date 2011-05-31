@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -256,14 +256,15 @@ MACRO_PROJ_BASE(BASE=MODE,
 
 
 
-RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
-                         RIGI_GENE=RIGI_GE,
-                         AMOR_GENE=AMOR_GE,
+RES_DYNA=DYNA_TRAN_MODAL(MATR_MASS=MASS_GE,
+                         MATR_RIGI=RIGI_GE,
+                         MATR_AMOR=AMOR_GE,
+                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=tfin,
                                       VERI_PAS = 'OUI',
                                       PAS=pas,),
-                         EXCIT=_F(VECT_GENE=CHA_ASS,
+                         EXCIT=_F(VECT_ASSE=CHA_ASS,
                                   FONC_MULT=RAMPE,),
                          ARCHIVAGE=_F(PAS_ARCH = nbpas,),
                          IMPRESSION = _F(TOUT='OUI',),);

@@ -4,7 +4,7 @@
      &                    NRPASE, INPSCO )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,9 @@ C DECLARATION PARAMETRES D'APPELS
       CHARACTER*13 INPSCO
       CHARACTER*24 NUMEDD
       LOGICAL LCREA
+      INTEGER NUME
       INTEGER NEQ
+      INTEGER INCHAC
       INTEGER NRPASE
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
@@ -64,15 +66,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER IBID, IEQ, INCHAC, IRE, IRET, JVALE
-      INTEGER NAI, NBTROU, NC, NDI, NDY, NNI, NP, NT, NUME, NVI
-      REAL*8 PREC, TEMPS
+      INTEGER IBID, IEQ, IRE, IRET, JVALE
+      INTEGER NAI, NDI, NDY, NVI
       INTEGER JAUX,IERR
-      INTEGER VALI
-      CHARACTER*8   K8B, NOMRES, DYNA, CRIT, DYNA1
-      CHARACTER*24 VALK
+      CHARACTER*8  NOMRES, DYNA, DYNA1
       CHARACTER*19  CHAMP, CHAM2, RESULT
-      COMPLEX*16    C16B
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -93,40 +91,13 @@ C====
 C 2.  --- EST-ON EN REPRISE ? ---
 C====
 C
-      CALL GETVID('ETAT_INIT','DYNA_TRANS',1,1,1,DYNA,NDY)
+      CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,DYNA,NDY)
 C
 C====
 C 3. EN REPRISE
 C====
 C
       IF ( NDY .NE. 0 ) THEN
-C
-         CALL GETVIS('ETAT_INIT','NUME_INIT' ,1,1,1,NUME,NNI)
-         IF ( NNI .EQ. 0 ) THEN
-            CALL GETVR8('ETAT_INIT','INST_INIT',1,1,1,TEMPS,NT)
-            IF ( NT .EQ. 0 ) THEN
-               CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
-     &                                         PREC,CRIT,NUME,1,NBTROU)
-               IF (NBTROU.NE.1) THEN
-                  CALL U2MESS('F','ALGORITH3_24')
-               ENDIF
-            ELSE
-               CALL GETVR8('ETAT_INIT','PRECISION',1,1,1,PREC ,NP)
-               CALL GETVTX('ETAT_INIT','CRITERE'  ,1,1,1,CRIT ,NC)
-               CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
-     &                                        PREC,CRIT,NUME,1,NBTROU)
-               IF (NBTROU.LT.0) THEN
-                 VALK = DYNA
-                 VALR = TEMPS
-                 VALI = -NBTROU
-                 CALL U2MESG('F', 'ALGORITH12_83',1,VALK,1,VALI,1,VALR)
-               ELSEIF (NBTROU.EQ.0) THEN
-                 VALK = DYNA
-                 VALR = TEMPS
-                 CALL U2MESG('F', 'ALGORITH12_84',1,VALK,0,0,1,VALR)
-               ENDIF
-            ENDIF
-         ENDIF
 C
 C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          CALL RSEXCH(DYNA1,'DEPL',NUME,CHAMP,IRET)
@@ -168,7 +139,7 @@ C
          ENDIF
 
          NUME = 0
-         CALL GETVID('ETAT_INIT','DEPL_INIT',1,1,1,CHAMP,NDI)
+         CALL GETVID('ETAT_INIT','DEPL',1,1,1,CHAMP,NDI)
          IF (NDI.GT.0) THEN
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
@@ -189,7 +160,7 @@ C
             CALL U2MESS('I','ALGORITH3_28')
          ENDIF
 C
-         CALL GETVID('ETAT_INIT','VITE_INIT',1,1,1,CHAMP,NVI)
+         CALL GETVID('ETAT_INIT','VITE',1,1,1,CHAMP,NVI)
          IF (NVI.GT.0) THEN
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
@@ -210,7 +181,7 @@ C
             CALL U2MESS('I','ALGORITH3_29')
          ENDIF
 
-         CALL GETVID('ETAT_INIT','ACCE_INIT',1,1,1,CHAMP,NAI)
+         CALL GETVID('ETAT_INIT','ACCE',1,1,1,CHAMP,NAI)
          IF (NAI.GT.0 .AND. NRPASE.EQ.0) THEN
               CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
               INCHAC = 0

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 31/05/2011   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE CHARGE LIMITE INF - TUBE AVEC SOUS EPAISSEUR
 # ssep001a.para = tps_job 512 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,8 +119,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0,
 
 DEFLIST=DEFI_LIST_INST(INFO=1,
                           DEFI_LIST=_F(LIST_INST=L_INST,
-                                       METHODE='AUTO',
-                                       PAS_MINI=1.E-07),
+                                       METHODE='AUTO',),
                           );
 
 

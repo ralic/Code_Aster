@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME 2 MASSES 2 RESSORTS  A 6 DDL (+ 2 AMORTISSEURS DISCRETS)
 # sdld325b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,9 +183,9 @@ L_ARCH=DEFI_LIST_ENTI(  DEBUT=0,
 
 DYNLINEW=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,      MATR_RIGI=MATRRIGI,
                             MATR_AMOR=MATRAMOR,
-                             NEWMARK=_F(),       
+                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),       
                            INCREMENT=_F(  LIST_INST = L_INST),
-                           ARCHIVAGE=_F(  LIST_ARCH = L_ARCH),
+                           ARCHIVAGE=_F(  PAS_ARCH = 10),
                            EXCIT=_F(  VECT_ASSE = VECTASS,   
                                    FONC_MULT = FONCALPH)
                            )
@@ -199,10 +199,10 @@ N3_X_VIT=RECU_FONCTION(  NOEUD='N3',   NOM_CMP='DX',   NOM_CHAM='VITE',
 #
 # 2- SCHEMA EULER DYNA_TRAN_MODAL
 #
-DYNMODEU=DYNA_TRAN_MODAL(  METHODE='EULER',
-                              MASS_GENE=MASSEGEN,  RIGI_GENE=RIGIDGEN,
-                              AMOR_GENE=AMORTGEN,
-                             EXCIT=_F(  VECT_GENE = EFFOGENE,
+DYNMODEU=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                              MATR_MASS=MASSEGEN,  MATR_RIGI=RIGIDGEN,
+                              MATR_AMOR=AMORTGEN,
+                             EXCIT=_F(  VECT_ASSE = EFFOGENE,
                                      FONC_MULT = FONCALPH),
                              INCREMENT=_F( 
 
@@ -223,10 +223,10 @@ DYTRAEUV=REST_GENE_PHYS(  RESU_GENE=DYNMODEU,    NOM_CHAM='VITE',
 #
 # 3- SCHEMA PAS ADAPTATIF DYNA_TRAN_MODAL
 #
-DYNMODAD=DYNA_TRAN_MODAL(  METHODE='ADAPT_ORDRE2',
-                              MASS_GENE=MASSEGEN,  RIGI_GENE=RIGIDGEN,
-                              AMOR_GENE=AMORTGEN,
-                             EXCIT=_F(  VECT_GENE = EFFOGENE,
+DYNMODAD=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                              MATR_MASS=MASSEGEN,  MATR_RIGI=RIGIDGEN,
+                              MATR_AMOR=AMORTGEN,
+                             EXCIT=_F(  VECT_ASSE = EFFOGENE,
                                      FONC_MULT = FONCALPH),
                              INCREMENT=_F( 
 

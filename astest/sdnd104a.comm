@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL DE LA PUISSANCE D'USURE D'UN PATIN FROTTANT
 # sdnd104a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,11 +155,11 @@ RIGIDGEN=PROJ_MATR_BASE(  BASE=MODES,
 PLANZ=DEFI_OBSTACLE(   TYPE='PLAN_Z' )
 
 #
-DYNAMOA1=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER1),
+DYNAMOA1=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER1),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
 # POUR AMELIORER LE TEMPS CPU ON IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
@@ -178,11 +178,11 @@ DYNAMOA1=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                            )
 
 #
-DYNAMOD1=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER1),
+DYNAMOD1=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER1),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),
@@ -198,11 +198,11 @@ DYNAMOD1=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                            )
 
 #
-DYNAMOE1=DYNA_TRAN_MODAL(       METHODE='EULER',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER1),
+DYNAMOE1=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER1),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),
@@ -218,11 +218,11 @@ DYNAMOE1=DYNA_TRAN_MODAL(       METHODE='EULER',
                            )
 
 #
-DYNAMOA2=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER2),
+DYNAMOA2=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER2),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
 # POUR AMELIORER LE TEMPS CPU ON IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
@@ -241,11 +241,11 @@ DYNAMOA2=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                            )
 
 #
-DYNAMOD2=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER2),
+DYNAMOD2=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER2),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),
@@ -261,11 +261,11 @@ DYNAMOD2=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                            )
 
 #
-DYNAMOE2=DYNA_TRAN_MODAL(       METHODE='EULER',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER2),
+DYNAMOE2=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER2),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),
@@ -281,11 +281,11 @@ DYNAMOE2=DYNA_TRAN_MODAL(       METHODE='EULER',
                            )
 
 #
-DYNAMOA3=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER3),
+DYNAMOA3=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER3),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
 # POUR AMELIORER LE TEMPS CPU ON IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
@@ -304,11 +304,11 @@ DYNAMOA3=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                            )
 
 #
-DYNAMOD3=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER3),
+DYNAMOD3=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER3),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),
@@ -324,11 +324,11 @@ DYNAMOD3=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                            )
 
 #
-DYNAMOE3=DYNA_TRAN_MODAL(       METHODE='EULER',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER3),
+DYNAMOE3=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER3),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),
@@ -344,11 +344,11 @@ DYNAMOE3=DYNA_TRAN_MODAL(       METHODE='EULER',
                            )
 
 #
-DYNAMOA4=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER4),
+DYNAMOA4=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER4),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
 # ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
@@ -368,11 +368,11 @@ DYNAMOA4=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                            )
 
 #
-DYNAMOD4=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER4),
+DYNAMOD4=DYNA_TRAN_MODAL(      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER4),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),
@@ -388,11 +388,11 @@ DYNAMOD4=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                            )
 
 #
-DYNAMOE4=DYNA_TRAN_MODAL(       METHODE='EULER',
-                                MASS_GENE=MASSEGEN,
-                                RIGI_GENE=RIGIDGEN,
-                               AMOR_REDUIT=0.,
-                     EXCIT=_F(  VECT_GENE = FGENE, FONC_MULT = ACCELER4),
+DYNAMOE4=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE = FGENE, FONC_MULT = ACCELER4),
                               INCREMENT=_F( INST_INIT = 0.,
                                          INST_FIN = 12.,
                                          PAS = 0.0001),

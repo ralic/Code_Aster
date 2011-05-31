@@ -1,7 +1,7 @@
       SUBROUTINE OP0028()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
       INTEGER      LLINR,LEEVR,LEEVK,LESUR,LAEVR,LAEVK,LATPR,LATPK
       PARAMETER   (LLINR=7)
       PARAMETER   (LEEVR=4,LEEVK=3,LESUR=8)
-      PARAMETER   (LAEVR=5,LAEVK=1,LATPR=6,LATPK=4)
+      PARAMETER   (LAEVR=6,LAEVK=1,LATPR=6,LATPK=4)
 
       CHARACTER*16 SUBMET,OPTION
       INTEGER      ITEIGN,ITEFIN,NBPLUS,N2,NBRPAS,NIVEAU,NUCMP,NERR
@@ -422,7 +422,7 @@ C     --------------------------------------------
 C     MOT-CLE FACTEUR ADAPTATION
 C     --------------------------------------------
 
-C     ADAPTATION SEULEMENT SI METHODE AUTO OU IMPLEX
+C     ADAPTATION SEULEMENT SI METHODE AUTO
       IF (ZR(JLIR-1+1).NE.2.D0) GOTO 9999
 
       MCFACT = 'ADAPTATION'
@@ -447,6 +447,7 @@ C                                               = 2 SI 'GT'
 C                                               = 3 SI 'LE'
 C                                               = 4 SI 'GE'
 C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 5) <===> 'VALE'
+C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 6) <===> SERVIRA DANS SNL
 
 C     ZR(JAEVK-1 + LAEVK*(IOCC-1) + 1) <===> 'FORMULE_SEUIL'
 

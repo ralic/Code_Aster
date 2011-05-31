@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE D UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
 # sdlx100a.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,9 +141,9 @@ DYLINEWM=DYNA_LINE_TRAN(    MODELE=MODELE,
                                MATR_MASS=MATRMASS,
                                MATR_RIGI=MATRRIGI,
                                MATR_AMOR=MATRAMOR,
-                               NEWMARK=_F(),
+                               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                                INCREMENT=_F( LIST_INST = L_INST),
-                               ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
+#                               ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
                               EXCIT=_F(  CHARGE = CHARGT2)
                            )
 
@@ -210,9 +210,9 @@ DYLIN_R=DYNA_LINE_TRAN(      MODELE=MODELE,
                                 MATR_MASS=MATRMASS,
                                 MATR_RIGI=MATRRIGI,
                                 MATR_AMOR=MATRAMOR,
-                                  NEWMARK=_F(),
+                                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                                 INCREMENT=_F( LIST_INST = L_INST),
-                                ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
+#                                ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
                                     EXCIT=_F(  CHARGE = CHARGTX)
                            )
 

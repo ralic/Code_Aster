@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 # sdll302a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,8 @@
 #
 # A) METHODE DE DEVOGELARE (INTEGRATION SUR BASE MODALE)
 #
-DEBUT(CODE=_F(NOM='SDLL302A', NIV_PUB_WEB='INTERNET'), BASE=_F(FICHIER='GLOBALE', LONG_REPE=30000), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SDLL302A', NIV_PUB_WEB='INTERNET'), BASE=_F(FICHIER='GLOBALE', 
+        LONG_REPE=30000), DEBUG=_F(SDVERI='OUI'))
 
 #
 # LIRE ACCELEROGRAMME FFFF EN R11
@@ -254,16 +255,22 @@ VECTGEN1=PROJ_VECT_BASE(             BASE=MODE1,
                           )
 
 #
-REPBASE1=DYNA_TRAN_MODAL(      METHODE='DEVOGE',
-                               RIGI_GENE=RIGIGEN1,
-                               MASS_GENE=MASSGEN1,
-                               ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
+
+L_INSTA=DEFI_LIST_REEL(         DEBUT=DEBUTR,
+                              INTERVALLE=_F( JUSQU_A = TFIN,
+                                          PAS = 0.01)
+                          )
+
+REPBASE1=DYNA_TRAN_MODAL(      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE'),
+                               MATR_RIGI=RIGIGEN1,
+                               MATR_MASS=MASSGEN1,
+                               ARCHIVAGE=_F( LIST_INST = L_INSTA),
                               INCREMENT=_F(  INST_INIT = DEBUTR,
                                           PAS = PAS,
                                           INST_FIN = TFIN),
-                               MODE_STAT=MODESTA,
-                                   EXCIT=_F(  VECT_GENE = VECTGEN1,
+                                   EXCIT=_F(  VECT_ASSE = VECTGEN1,
                                            MULT_APPUI = 'OUI',
+                                           MODE_STAT=MODESTA,
                                            ACCE = CENTROA,
                                            VITE = VITESSA,
                                            DEPL = DEPLACA,
@@ -563,10 +570,10 @@ TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
 #
 REP_LIN=DYNA_LINE_TRAN(    MATR_RIGI=RIGIDITE,
                               MATR_MASS=MASSE,
-                                NEWMARK=_F( ALPHA = 0.25,
-                                         DELTA = 0.50),
+                                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA = 0.25,
+                                         GAMMA = 0.50), 
                             INCREMENT=_F( LIST_INST = L_INST1),
-                              ARCHIVAGE=_F( LIST_ARCH = L_ARCH,
+                              ARCHIVAGE=_F( LIST_INST = L_INSTA,
                                          CHAM_EXCLU = ('ACCE', 'VITE',)),
                                   EXCIT=_F(  VECT_ASSE = MONOX,
                                           FONC_MULT = CENTROA)

@@ -1,8 +1,8 @@
       SUBROUTINE IMPVEM ( IFI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 30/05/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -29,7 +29,6 @@ C
       CHARACTER*24   CFT1IS , CFT2IS , CFTIS
       CHARACTER*34   CFT1R8 , CFT2R8 , CFT3R8 , CFTR8
 C
-      LOGICAL        LCRAEM
       INTEGER        LBISEM
       INTEGER        LOLSEM , LOISEM , LOR8EM , LOC8EM
       INTEGER        NCISEM , NCR8EM
@@ -42,17 +41,17 @@ C
       CHARACTER*38   LABEL(NTEST)
 C
       DATA ( LABEL(I), I=1,7) /
-     1   'LCRAEM  MACHINE  CRAY   ',
+     1   'XXXXXX  XXXXXX   XXXXXXX    ',
      2   'LBISEM  ENTIER   INTEGER    ',
-     3   'xxxxxx  xxxxxx   xxxxxxx    ',
+     3   'XXXXXX  XXXXXX   XXXXXXX    ',
      4   'LOLSEM  LOGIQUE  LOGICAL    ',
      5   'LOISEM  ENTIER   INTEGER    ',
      6   'LOR8EM  REEL     REAL*8     ',
      7   'LOC8EM  COMPLEXE COMPLEX*16 ' /
 C
       DATA ( LABEL(I), I=8,12) /
-     1   'NCISEM  ENTIER   INTEGER    ',
-     2   'NCR8EM  REEL     REAL*8     ',
+     1   'XXXXXX  ',
+     2   'XXXXXX  ',
      3   'LOUAEM  EN OCTETS      ',
      4   'LOFIEM  EN OCTETS      ',
      5   'MOFIEM  EN OCTETS      '   /
@@ -121,8 +120,6 @@ C
 C
       WRITE ( IFI , '(/,A,/)' )
      &   ' ----- MACHINE UTILISEE'
-      WRITE ( IFI , '((1X,A,L4))' )
-     +   LABEL( 1) , LCRAEM() 
       WRITE ( IFI , '(/,A,/)' )
      &   ' ----- LONGUEUR EN BITS'
       WRITE ( IFI , '((1X,A,I3,2X))' ) LABEL( 2) , LBISEM()

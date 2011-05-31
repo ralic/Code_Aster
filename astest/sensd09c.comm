@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SENSIBILITE EFGE_ELNO / SIPO_ELNO
 # sensd09c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,7 +98,7 @@ DYT=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=CARELE,
                       INCREMENT=_F(LIST_INST=L_INST,),
                       SENSIBILITE=(PS[0],PS[1],),
                       EXCIT=(_F(CHARGE=CHARGE),),
-                      NEWMARK=_F(),)
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
 DYT = CALC_ELEM(
                  reuse = DYT,
@@ -187,7 +187,7 @@ for i in range(n):
                       MATR_MASS=MATASSM,MATR_RIGI=MATASR[i],
                       INCREMENT=_F(LIST_INST=L_INST,),
                       EXCIT=(_F(CHARGE=CHARGE),),
-                      NEWMARK=_F(),)
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
   DYTD[i] = CALC_ELEM(
                  reuse = DYTD[i],

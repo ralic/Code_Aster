@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 # sdld103a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,48 +166,54 @@ MACRO_PROJ_BASE(BASE=MODE_MEC,MATR_ASSE_GENE=(
 #
 # CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
 # -------------------------------------------
-TRAN_GEE=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                 METHODE='EULER',
-                MODE_STAT=MODE_STA,EXCIT=(
-                _F(  VECT_GENE = VECT_X1,  ACCE = ACCELER1,
+TRAN_GEE=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                 SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                EXCIT=(
+                _F( VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                        MODE_STAT=MODE_STA,
                         VITE = VITESSE1, DEPL = DEPLACE1),
-                _F(  VECT_GENE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
+                        MODE_STAT=MODE_STA,
                         VITE = VITESSE2, DEPL = DEPLACE2)),
                  ARCHIVAGE=_F(  PAS_ARCH = 1),
                  INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001)
                 )
 
 #
-TRAN_GED=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                 METHODE='DEVOGE',
-                MODE_STAT=MODE_STA,EXCIT=(
-                _F(  VECT_GENE = VECT_X1,  ACCE = ACCELER1,
+TRAN_GED=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                 SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                EXCIT=(
+                _F( VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                        MODE_STAT=MODE_STA,
                         VITE = VITESSE1, DEPL = DEPLACE1),
-                _F(  VECT_GENE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
+                        MODE_STAT=MODE_STA,
                         VITE = VITESSE2, DEPL = DEPLACE2)),
                  ARCHIVAGE=_F(  PAS_ARCH = 1),
                  INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001)
                 )
 
 #
-TRAN_GEA=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                 METHODE='ADAPT_ORDRE2',
-                MODE_STAT=MODE_STA,EXCIT=(
-                _F(  VECT_GENE = VECT_X1,  ACCE = ACCELER1,
+TRAN_GEA=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                 SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                EXCIT=(
+                _F( VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                        MODE_STAT=MODE_STA,
                         VITE = VITESSE1, DEPL = DEPLACE1),
-                _F(  VECT_GENE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
+                        MODE_STAT=MODE_STA,
                         VITE = VITESSE2, DEPL = DEPLACE2)),
                  ARCHIVAGE=_F(  PAS_ARCH = 1),
 # POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,7 @@ DYNATRAF=DYNA_LINE_TRAN(MODELE=MODELE,
                         CARA_ELEM=CARAC,
                         MATR_MASS=MASSE,
                         MATR_RIGI=RIGID,
-                        NEWMARK=_F(),
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         EXCIT=(_F(CHARGE=CHARFX,),
                                _F(CHARGE=CL,),),
                         INCREMENT=_F(LIST_INST=LISTE,),
@@ -325,7 +325,7 @@ DYNATRAM=DYNA_LINE_TRAN(MODELE=MODELE,
                         CARA_ELEM=CARAC,
                         MATR_MASS=MASSE,
                         MATR_RIGI=RIGID,
-                        NEWMARK=_F(),
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         EXCIT=(_F(CHARGE=CHARMX,),
                                _F(CHARGE=CL,),),
                         INCREMENT=_F(LIST_INST=LISTE2,),

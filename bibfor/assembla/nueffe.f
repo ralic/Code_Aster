@@ -6,7 +6,7 @@
       CHARACTER*2 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 30/05/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C----------------------------------------------------------------------
       INTEGER NBNOM,NBNONU,NBNORE,NCMP,NDDL1,NDDLB
       INTEGER NEL,NIV,NLAG,NMA,NN
       INTEGER NS,NUMA,NUNOEL
-      INTEGER ISLVK
+      INTEGER ISLVK,VALI(4)
       LOGICAL LFETI
 
 C     NBNOM  : NOMBRE DE NOEUDS DU MAILLAGE
@@ -111,7 +111,6 @@ C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 C-----------------------------------------------------------------------
       INTEGER ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,ZZNELS
       INTEGER ZZNEMA,ZZPRNO,IZZPRN,SUIV,SUIVDI,IDSUIV
-      INTEGER VALI(2)
 
 C---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 C     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL
@@ -942,10 +941,15 @@ C       ----------------------------------------------------------------
         DO 230,INO = 1,NBNOM
           IF (ZI(JPRNO-1+ (INO-1)* (2+NEC)+2).GT.0) NMA = NMA + 1
   230   CONTINUE
-
-        WRITE (IFM,*) '--- NOMBRE TOTAL DE NOEUDS : ',NMA + NLAG,
-     &    ' DONT : ',NLAG,' NOEUDS "LAGRANGE"'
-        WRITE (IFM,*) '--- NOMBRE TOTAL D''EQUATIONS : ',NEQUA
+        VALI(1) = NMA + NLAG
+        VALI(2) = NMA
+        VALI(3) = NLAG
+        VALI(4) = NEQUA
+                
+        CALL U2MESI('I','FACTOR_1',4,VALI)
+C        WRITE (IFM,*) '--- NOMBRE TOTAL DE NOEUDS : ',NMA + NLAG,
+C     &    ' DONT : ',NLAG,' NOEUDS "LAGRANGE"'
+C        WRITE (IFM,*) '--- NOMBRE TOTAL D''EQUATIONS : ',NEQUA
       END IF
 
 

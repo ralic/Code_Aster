@@ -1,8 +1,8 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE PAR INTEGRATION DIRECTE DEPLACEMENT IMPOSE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -108,6 +108,7 @@ MAILLAGE=POUTRE,
 TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = .03, PAS = 1.E-5))
 
 #
+
 L_ARCH=DEFI_LIST_ENTI(DEBUT=0, INTERVALLE=_F( JUSQU_A = 3000, PAS = 10) )
 
 #
@@ -137,11 +138,11 @@ LRECUA=DEFI_LIST_REEL(   VALE=L_RECUA )
 NEWAMO=DYNA_LINE_TRAN(   MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
                            MATR_AMOR=MATRAMOR,
                           ETAT_INIT=_F( 
-                          DEPL_INIT = DEPLIMPO),
-                           NEWMARK=_F(),
+                          DEPL = DEPLIMPO),
+                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
                           INCREMENT=_F( 
                           LIST_INST = TEMPLI),
-                           ARCHIVAGE=_F(  LIST_ARCH = L_ARCH),
+                           ARCHIVAGE=_F(  PAS_ARCH = 10),
                             EXCIT=_F( VECT_ASSE = VECAS, FONC_MULT = FONC))
 
 #

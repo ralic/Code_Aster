@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,22 +106,24 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       INTEGER IACCE1
       INTEGER IARCHI
       INTEGER IAUX, JAUX, IBID
-      INTEGER IPEPA, NPATOT
+      INTEGER IPEPA, IGRPA
       INTEGER IPAS, ISTOP, ISTOC, JSTOC
+      INTEGER JNBPA, JBINT, JLPAS
+      INTEGER NPATOT, NBGRPA, NBPTPA
       INTEGER NBEXCL, NBORDR
       CHARACTER*4 TYP1(3)
       CHARACTER*8 NOMRES
-      CHARACTER*16 TYPRES, NOMCMD,TYPEAR(NBTYAR)
+      CHARACTER*16 TYPRES, NOMCMD, TYPEAR(NBTYAR)
       CHARACTER*19 LISARC
-      CHARACTER*24 LISINS
+      CHARACTER*24 LISINS, LISPAS, LIBINT, LINBPA
       CHARACTER*24 SOP
-      REAL*8 TPS1(4)
-      REAL*8 T1, DT, DTM, DTMAX, TEMPS
+      REAL*8 TPS1(4),TPS2(4)
+      REAL*8 DT, DTM, DTMAX, TEMPS, DT1, TF
       REAL*8 OMEG, DEUXPI
       REAL*8 R8BID
       REAL*8 R8DEPI
       CHARACTER*8   VALK
-      INTEGER       VALI(1)
+      INTEGER       VALI(2)
       REAL*8        VALR(2)
 
 C
@@ -152,19 +154,13 @@ C
 C
       DEUXPI = R8DEPI()
       IARCHI = NUME
-      LISINS = ' '
 C
 C 1.4. ==> PARAMETRES D'INTEGRATION
 C
-      CALL GETVR8('INCREMENT','INST_FIN',1,1,1,T1,IBID)
-      CALL GETVR8('INCREMENT','PAS',1,1,1,DT,IBID)
-      IF ( IBID.EQ.0 ) THEN
-        CALL U2MESS('F','ALGORITH3_18')
-      ENDIF
-      IF ( DT.EQ.0.D0 ) THEN
-        CALL U2MESS('F','ALGORITH3_19')
-      ENDIF
-      NPATOT = NINT((T1-T0)/DT)
+      CALL DLTINS(NBGRPA,LISPAS,LIBINT,LINBPA,NPATOT,T0,LISINS)
+      CALL JEVEUO(LISPAS,'L',JLPAS)
+      CALL JEVEUO(LIBINT,'L',JBINT)
+      CALL JEVEUO(LINBPA,'L',JNBPA)     
 C
 C 1.5. ==> EXTRACTION DIAGONALE M ET CALCUL VITESSE INITIALE
 C
@@ -175,7 +171,8 @@ C
         CALL U2MESS('F','ALGORITH3_13')
       ENDIF
 C
-      R8BID = DT/2.D0
+      DT1 = ZR(JLPAS)
+      R8BID = DT1/2.D0
       DO 15,  IAUX = 1, NEQ
         IF (ZR(IWK1+IAUX-1).NE.0.D0) THEN
            ZR(IWK1+IAUX-1)=1.0D0/ZR(IWK1+IAUX-1)
@@ -186,30 +183,7 @@ C
   151   CONTINUE
    15 CONTINUE
 C
-C 1.6. ==> VERIFICATION DU PAS DE TEMPS
-C
-      CALL EXTDIA( RIGID, NUMEDD, 2, ZR(IWK2))
-      IBID=0
-      DTMAX=DT
-      DO 16 IAUX=1,NEQ
-       IF (ZR(IWK1+IAUX-1).NE.0.D0) THEN
-         OMEG = SQRT( ZR(IWK2+IAUX-1) * ZR(IWK1+IAUX-1) )
-         DTM = 5.D-02*DEUXPI/OMEG
-         IF (DTMAX.GT.DTM) THEN
-           DTMAX=DTM
-           IBID=1
-         ENDIF
-       ENDIF
-   16 CONTINUE
-C
-      IF (IBID.EQ.1) THEN
-        VALI(1) = NINT((T1-T0)/DTMAX)
-        VALR(1) = DT
-        VALR(2) = DTMAX
-        CALL U2MESG('F', 'DYNAMIQUE_12', 0, VALK, 1, VALI, 2, VALR)
-      ENDIF
-C
-C 1.7. ==> --- ARCHIVAGE ---
+C 1.6. ==> --- ARCHIVAGE ---
 C
       LISARC = '&&DLDIFF.ARCHIVAGE'
       CALL  DYARCH ( NPATOT, LISINS, LISARC, NBORDR, 1, NBEXCL, TYP1 )
@@ -221,7 +195,7 @@ C
       IF ( NBEXCL.EQ.NBTYAR ) THEN
         CALL U2MESS('F','ALGORITH3_14')
       ENDIF
-      DO 17 , IAUX = 1,NBEXCL
+      DO 16 , IAUX = 1,NBEXCL
         IF (TYP1(IAUX).EQ.'DEPL') THEN
           TYPEAR(1) = '    '
         ELSEIF (TYP1(IAUX).EQ.'VITE') THEN
@@ -229,9 +203,9 @@ C
         ELSEIF (TYP1(IAUX).EQ.'ACCE') THEN
           TYPEAR(3) = '    '
         ENDIF
-   17 CONTINUE
+   16 CONTINUE
 C
-C 1.8. ==> --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
+C 1.7. ==> --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
 C
       WRITE(IFM,*) '-------------------------------------------------'
       WRITE(IFM,*) '--- CALCUL PAR INTEGRATION TEMPORELLE DIRECTE ---'
@@ -242,22 +216,30 @@ C
       WRITE(IFM,*) '! LE NB D''EQUATIONS EST          : ',NEQ
       IF ( NUME.NE.0 ) WRITE(IFM,*)
      &'! REPRISE A PARTIR DU NUME_ORDRE  : ',NUME
-      WRITE(IFM,*)'! L''INSTANT INITIAL EST        : ',T0
-      WRITE(IFM,*)'! L''INSTANT FINAL EST          : ',T1
-      WRITE(IFM,*)'! LE PAS DE TEMPS DU CALCUL EST : ',DT
-      WRITE(IFM,*)'! LE NB DE PAS DE CALCUL EST    : ',NPATOT
+      DO 17 , IAUX = 1,NBGRPA
+        DT = ZR(JLPAS-1+IAUX)
+        NBPTPA = ZI(JNBPA-1+IAUX)
+        T0 = ZR(JBINT-1+IAUX)
+        TF = T0 + NBPTPA*DT
+        WRITE(IFM,*)'! L''INSTANT INITIAL EST        : ',T0
+        WRITE(IFM,*)'! L''INSTANT FINAL EST          : ',TF
+        WRITE(IFM,*)'! LE PAS DE TEMPS DU CALCUL EST : ',DT
+        WRITE(IFM,*)'! LE NB DE PAS DE CALCUL EST    : ',NBPTPA
+   17 CONTINUE  
       WRITE(IFM,*) '----------------------------------------------',' '
 C
 C====
 C 2. BOUCLE SUR CREATION DES CONCEPTS RESULTAT
 C====
 C
+      T0 = ZR(JBINT) 
+C         
       DO 21 , NRORES = 0 , NBPASE
 C
         NRPASE = NRORES
         IAUX = 1 + NEQ*NRPASE
         JAUX = NBTYAR
-
+C
         CALL DLTCRR ( NRPASE, INPSCO,
      &                NEQ, NBORDR, IARCHI, ' ', IFM,
      &                T0, LCREA, TYPRES,
@@ -266,33 +248,75 @@ C
      &                NUMEDD, NUME, JAUX, TYPEAR )
 
    21 CONTINUE
-
+C
       CALL TITRE
+C       
+C
 C
 C====
-C 3. CALCUL : BOUCLE SUR LES PAS DE TEMPS
+C 3. CALCUL
 C====
 C
+C 3.1. ==> BOUCLE SUR LES GROUPES DE PAS DE TEMPS
       ISTOP = 0
       IPAS = 0
-      TEMPS = T0
-      CALL UTTCPU('CPU.DLDIFF', 'INIT',' ')
 C
-      DO 30 , IPEPA = 1 , NPATOT
+      CALL UTTCPU('CPU.DLDIFF.1','INIT',' ')
+      CALL UTTCPU('CPU.DLDIFF.2','INIT',' ')
+C
+      DO 31 , IGRPA = 1,NBGRPA
+C
+C 3.1.1. ==> PREALABLES
+C        
+       CALL UTTCPU('CPU.DLDIFF.1','DEBUT',' ')       
+       DT = ZR(JLPAS-1+IGRPA)
+       NBPTPA = ZI(JNBPA-1+IGRPA)
+       T0 = ZR(JBINT-1+IGRPA)
+       TF = ZR(JBINT+IGRPA)
+C
+C 3.1.2. ==> VERIFICATION DU PAS DE TEMPS
+C
+       CALL EXTDIA( RIGID, NUMEDD, 2, ZR(IWK2))
+       IBID=0
+       DTMAX=DT
+       DO 312 IAUX=1,NEQ
+        IF (ZR(IWK1+IAUX-1).NE.0.D0) THEN
+          OMEG = SQRT( ZR(IWK2+IAUX-1) * ZR(IWK1+IAUX-1) )
+          DTM = 5.D-02*DEUXPI/OMEG
+          IF (DTMAX.GT.DTM) THEN
+            DTMAX=DTM
+            IBID=1
+          ENDIF
+        ENDIF
+  312  CONTINUE
+C
+       IF (IBID.EQ.1) THEN
+        VALI(1) = NINT((TF-T0)/DTMAX)
+        VALI(2) = IGRPA
+        VALR(1) = DT
+        VALR(2) = DTMAX
+        CALL U2MESG('F', 'DYNAMIQUE_12', 0, VALK, 2, VALI, 2, VALR)
+       ENDIF
+C ==> FIN DE VERIFICATION
+C
+C       
+C 3.1.3. ==> BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
+C
+       DO 313 , IPEPA = 1 , NBPTPA
         IPAS = IPAS+1
         IF (IPAS.GT.NPATOT) GOTO 3900
         ISTOC = 0
-        TEMPS = TEMPS + DT
-        CALL UTTCPU('CPU.DLDIFF', 'DEBUT',' ')
-
-C 3.1. ==> BOUCLE SUR LES CAS STANDARD ET SENSIBLES
-
-        DO 301 , NRORES = 0 , NBPASE
-
+        TEMPS = T0 + DT*IPEPA
+        CALL UTTCPU('CPU.DLDIFF.2','DEBUT',' ')
+C
+C 3.1.3.1 ==> BOUCLE SUR LES CAS STANDARD ET SENSIBLES
+C
+        DO 3131 , NRORES = 0 , NBPASE
+C
           NRPASE = NRORES
           IAUX = 1 + NEQ*NRPASE
           IBID = ZI(JSTOC+IPAS-1)
-
+C
           CALL DLDIF0 ( NRPASE, NBPASE, INPSCO,
      &                  NEQ, ISTOC, IARCHI, IFM,
      &                  LAMORT,
@@ -305,23 +329,37 @@ C 3.1. ==> BOUCLE SUR LES CAS STANDARD ET SENSIBLES
      &                  ZR(IWK0), ZR(IWK1),
      &                  IBID, NBTYAR, TYPEAR )
 
-  301   CONTINUE
+ 3131   CONTINUE
 C
-C 3.2. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
-
-        CALL UTTCPU('CPU.DLDIFF', 'FIN',' ')
-        CALL UTTCPR('CPU.DLDIFF', 4, TPS1)
-        IF ( TPS1(1) .LT. 5.D0  .OR. TPS1(4).GT.TPS1(1) ) THEN
+C 3.5. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
+C
+        CALL UTTCPU('CPU.DLDIFF.2','FIN',' ')
+        CALL UTTCPR('CPU.DLDIFF.2', 4, TPS2)
+        IF ( TPS2(1) .LT. 5.D0  .OR. TPS2(4).GT.TPS2(1) ) THEN
            IF ( IPEPA .NE. NPATOT ) THEN
             ISTOP = 1
-            VALI(1) = IPEPA
-            VALR(1) = TPS1(4)
-            VALR(2) = TPS1(1)
+            VALI(1) = IGRPA
+            VALI(2) = IPEPA            
+            VALR(1) = TPS2(4)
+            VALR(2) = TPS2(1)
             GOTO 3900
            ENDIF
         ENDIF
 C
-   30 CONTINUE
+C ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
+  313 CONTINUE
+      CALL UTTCPU('CPU.DLDIFF.1','FIN',' ')
+      CALL UTTCPR('CPU.DLDIFF.1',4,TPS1)
+      IF (TPS1(1).LT.5.D0 .AND. IGRPA.NE.NBGRPA) THEN
+          ISTOP = 1
+          VALI(1) = IGRPA
+          VALI(2) = IPEPA
+          VALR(1) = TPS1(4)
+          VALR(2) = TPS1(1)
+          GO TO 3900
+      END IF
+C ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS   
+   31 CONTINUE  
 C
  3900 CONTINUE
 C
@@ -364,7 +402,7 @@ C
       ENDIF
 C
       IF (ISTOP.EQ.1) THEN
-        CALL UTEXCM(28, 'DYNAMIQUE_9', 0, VALK, 1, VALI, 2, VALR)
+        CALL UTEXCM(28, 'DYNAMIQUE_10', 0, VALK, 2, VALI, 2, VALR)
       ENDIF
 C
 C     --- DESTRUCTION DES OBJETS DE TRAVAIL ---

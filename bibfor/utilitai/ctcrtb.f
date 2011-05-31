@@ -7,7 +7,7 @@
       CHARACTER*24 NKCHA,NKCMP
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,7 +158,7 @@ C     ------------------------------------------------------------------
          ZK16(JPARAK+KK)='POINT'
          ZK8(JTYPEK+KK)='I'
          KK=KK+1
-         ZK16(JPARAK+KK)='SOUS-POINT'
+         ZK16(JPARAK+KK)='SOUS_POINT'
          ZK8(JTYPEK+KK)='I'
          KK=KK+1
       ENDIF

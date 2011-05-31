@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE D UN SYSTEME MASSES-RESSORTS A UN SEISME AVEC CORRECTION STATIQUE
 # sdld105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,14 +138,14 @@ MACRO_PROJ_BASE(BASE=MODE_EXT,
                                   VECT_ASSE=MONO_X,),);
 
 
-TRAN_GEN=DYNA_TRAN_MODAL(METHODE='NEWMARK',
-                         MASS_GENE=MASS_GEN,
-                         RIGI_GENE=RIGI_GEN,
-                         AMOR_REDUIT=0.05,
+TRAN_GEN=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                         MATR_MASS=MASS_GEN,
+                         MATR_RIGI=RIGI_GEN,
+                         AMOR_MODAL=_F(AMOR_REDUIT=0.05,),
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=tfin,
                                       PAS=0.001,),
-                         EXCIT=_F(VECT_GENE=VECT_X,
+                         EXCIT=_F(VECT_ASSE=VECT_X,
                                   FONC_MULT=ACCELERO,),);
 
 N04_DX_1=RECU_FONCTION(RESU_GENE=TRAN_GEN,
@@ -182,17 +182,17 @@ DERI_PRE = FORMULE(VALE='2*pi*fex*cos(2*pi*fex*INST)',
 DERI_SEC = FORMULE(VALE='-(2*pi**fex)**2*sin(2*pi*fex*INST)',
                    NOM_PARA='INST',);
 
-TRA_GCS=DYNA_TRAN_MODAL(METHODE='NEWMARK',
-                        MASS_GENE=MASS_GEN,
-                        RIGI_GENE=RIGI_GEN,
-                        AMOR_REDUIT=0.05,
-                        MODE_CORR=MODCOR,
+TRA_GCS=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                        MATR_MASS=MASS_GEN,
+                        MATR_RIGI=RIGI_GEN,
+                        AMOR_MODAL=_F(AMOR_REDUIT=0.05,),                        
                         INCREMENT=_F(INST_INIT=0.,
                                      INST_FIN=tfin,
                                      PAS=0.001,),
-                        EXCIT=_F(VECT_GENE=VECT_X,
+                        EXCIT=_F(VECT_ASSE=VECT_X,
                                  FONC_MULT=ACCELERO,
                                  CORR_STAT='OUI',
+                                 MODE_CORR=MODCOR,
                                  D_FONC_DT=DERI_PRE,
                                  D_FONC_DT2=DERI_SEC,),);
 
@@ -222,14 +222,14 @@ MACRO_PROJ_BASE(BASE=MODE_MEC,
                                   VECT_ASSE=MONO_X,),);
 
 
-TRAN_COM=DYNA_TRAN_MODAL(METHODE='NEWMARK',
-                         MASS_GENE=MASS_COM,
-                         RIGI_GENE=RIGI_COM,
-                         AMOR_REDUIT=0.05,
+TRAN_COM=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                         MATR_MASS=MASS_COM,
+                         MATR_RIGI=RIGI_COM,
+                         AMOR_MODAL=_F(AMOR_REDUIT=0.05,),
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=tfin,
                                       PAS=0.001,),
-                         EXCIT=_F(VECT_GENE=VECT_COM,
+                         EXCIT=_F(VECT_ASSE=VECT_COM,
                                   FONC_MULT=ACCELERO,),);
 
 

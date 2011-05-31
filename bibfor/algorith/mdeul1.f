@@ -35,7 +35,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,7 +245,7 @@ C
 C     --- CONDITIONS INITIALES ---
 C
       CALL MDINIT(BASEMO,NEQGEN,NBCHOC,ZR(JDEPL),ZR(JVITE),ZR(JVINT),
-     &            IRET)
+     &            IRET, TINIT)
       IF (IRET.NE.0) GOTO 9999
       IF (NBCHOC.GT.0.AND.NBPAL.EQ.0) THEN
          CALL DCOPY(NBCHOC,ZR(JVINT),1,ZR(JCHOR+13*NBCHOC),1)
@@ -471,7 +471,7 @@ C
            CALL MDSIZE (NOMRES,ISTO1,NEQGEN,LPSTO,NBCHOC,NBREDE)
            IF (NOMRES.EQ.'&&OP0074') THEN
 C          --- CAS D'UNE POURSUITE ---
-              CALL GETVID('ETAT_INIT','RESU_GENE',1,1,1,TRAN,NDT)
+              CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,TRAN,NDT)
               IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
            ENDIF
               VALI (1) = I

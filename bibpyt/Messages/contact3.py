@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 03/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,6 +71,15 @@ Avec un FOND_FISSURE, il est impossible d'utiliser les options suivantes:
 - NORMALE = 'MAIT_ESCL'
 """),
 
+18 : _("""
+Contact méthode continue.
+La direction d'exclusion du frottement fournie pour la zone de contact numéro %(i1)s (%(r1)s,%(r2)s,%(r3)s) est perpendiculaire au plan de contact sur la maille %(k1)s.
+
+Conseil :
+   - Vérifiez le vecteur DIRE_EXCL_FROT. Sa projection sur le plan tangent de contact doit exister
+     pour indiquer une direction à exclure.
+
+"""),
 
 23 : _("""
 Le vecteur normal est nul au niveau du projeté du point de contact de coordonnées

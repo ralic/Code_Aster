@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_TRAN_MODAL
 # sdld31b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -234,12 +234,13 @@ MACRO_PROJ_BASE(BASE=MODES,
 
 # TRANSITOIRE - METHODE EULER
 
-TRANGE=DYNA_TRAN_MODAL(MASS_GENE=PMASS,
-                       RIGI_GENE=PRIGI,
-                       AMOR_REDUIT=HYHY,
+TRANGE=DYNA_TRAN_MODAL(MATR_MASS=PMASS,
+                       MATR_RIGI=PRIGI,
+                       AMOR_MODAL=_F(AMOR_REDUIT=HYHY,),
+                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        INCREMENT=_F(INST_FIN=tfin,
                                     PAS=pasdt,),
-                       EXCIT=_F(VECT_GENE=PRACTION,
+                       EXCIT=_F(VECT_ASSE=PRACTION,
                                 FONC_MULT=FSIN,),);
 
 BTRANGE=RECU_FONCTION(RESU_GENE=TRANGE,
@@ -298,13 +299,13 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=BTRANSI,
 
 # TRANSITOIRE - METHODE DE NEWMARK
 
-NEWTRANG=DYNA_TRAN_MODAL(METHODE='NEWMARK',
-                         MASS_GENE=PMASS,
-                         RIGI_GENE=PRIGI,
-                         AMOR_REDUIT=HYHY,
+NEWTRANG=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                         MATR_MASS=PMASS,
+                         MATR_RIGI=PRIGI,
+                         AMOR_MODAL=_F(AMOR_REDUIT=HYHY,),
                          INCREMENT=_F(INST_FIN=tfin,
                                       PAS=pasdt,),
-                         EXCIT=_F(VECT_GENE=PRACTION,
+                         EXCIT=_F(VECT_ASSE=PRACTION,
                                   FONC_MULT=FSIN,),);
 
 BNEWTRAN=RECU_FONCTION(RESU_GENE=NEWTRANG,
@@ -335,13 +336,13 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=BNEWTRAN,
 
 # TRANSITOIRE - METHODE DE DEVOLEGAERE
 
-DEVTRANG=DYNA_TRAN_MODAL(METHODE='DEVOGE',
-                         MASS_GENE=PMASS,
-                         RIGI_GENE=PRIGI,
-                         AMOR_REDUIT=HYHY,
+DEVTRANG=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                         MATR_MASS=PMASS,
+                         MATR_RIGI=PRIGI,
+                         AMOR_MODAL=_F(AMOR_REDUIT=HYHY,),
                          INCREMENT=_F(INST_FIN=tfin,
                                       PAS=pasdt,),
-                         EXCIT=_F(VECT_GENE=PRACTION,
+                         EXCIT=_F(VECT_ASSE=PRACTION,
                                   FONC_MULT=FSIN,),);
 
 BDEVTRAN=RECU_FONCTION(RESU_GENE=DEVTRANG,

@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,11 +27,12 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
     """
     import aster
 
-    from Accas                 import _F
-    from Cata.cata             import table_fonction, table_jeveux
-    from Utilitai.Utmess       import UTMESS
-    from Utilitai.Table        import merge
-    from Utilitai.utils        import get_titre_concept
+    from Accas           import _F
+    from Noyau.N_types   import force_list
+    from Cata.cata       import table_fonction, table_jeveux
+    from Utilitai.Utmess import UTMESS
+    from Utilitai.Table  import merge
+    from Utilitai.utils  import get_titre_concept
 
     ier = 0
     # La macro compte pour 1 dans la numerotation des commandes
@@ -89,19 +90,15 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
         # 2. Traitement de EXTR
         if occ['OPERATION'] == 'EXTR':
-            lpar = occ['NOM_PARA']
-            if type(lpar) not in (list, tuple):
-                lpar = [lpar]
+            lpar = force_list(occ['NOM_PARA'])
             for p in lpar:
                 if not p in tab.para:
                     UTMESS('F', 'TABLE0_2', valk=[p, TABLE.nom])
-            tab = tab[occ['NOM_PARA']]
+            tab = tab[lpar]
 
         # 3. Traitement de SUPPRIME
         if occ['OPERATION'] == 'SUPPRIME':
-            lpar = occ['NOM_PARA']
-            if type(lpar) not in (list, tuple):
-                lpar = [lpar]
+            lpar = force_list(occ['NOM_PARA'])
             keep = []
             for p in tab.para:
                 if not p in lpar:
@@ -124,9 +121,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             tab2 = occ['TABLE'].EXTR_TABLE()
             lpar = []
             if occ.get('NOM_PARA') != None:
-                lpar = occ['NOM_PARA']
-                if type(lpar) not in (list, tuple):
-                    lpar = [lpar]
+                lpar = force_list(occ['NOM_PARA'])
                 for p in lpar:
                     if not p in tab.para:
                         UTMESS('F', 'TABLE0_2', valk=[p, TABLE.nom])
@@ -146,17 +141,21 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
         # 8. Traitement de AJOUT_LIGNE
         if occ['OPERATION'] == 'AJOUT_LIGNE':
-            if len(occ['NOM_PARA']) != len(occ['VALE']):
+            lpar = force_list(occ['NOM_PARA'])
+            lval = force_list(occ['VALE'])
+            if len(lpar) != len(lval):
                 UTMESS('F', 'TABLE0_14', valk=('NOM_PARA', 'VALE'))
-            dnew = dict(zip(occ['NOM_PARA'], occ['VALE']))
+            dnew = dict(zip(lpar, lval))
             # ajout de la ligne avec vérification des types
             tab.append(dnew)
 
         # 9. Traitement de AJOUT_COLONNE
         if occ['OPERATION'] == 'AJOUT_COLONNE':
-            if len(occ['NOM_PARA']) != len(occ['VALE']):
+            lpar = force_list(occ['NOM_PARA'])
+            lval = force_list(occ['VALE'])
+            if len(lpar) != len(lval):
                 UTMESS('F', 'TABLE0_14', valk=('NOM_PARA', 'VALE'))
-            for para, value in zip(occ['NOM_PARA'], occ['VALE']):
+            for para, value in zip(lpar, lval):
                 nval = [value, ] * len(tab)
                 tab[para] = nval
 

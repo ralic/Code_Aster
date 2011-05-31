@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 31/05/2011   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE CHARGE LIMITE SUP - TUBE AVEC SOUS EPAISSEUR
 # ssep001b.para = tps_job 512 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,8 +127,7 @@ INSTF= 1.5;
 
 DEFLIST=DEFI_LIST_INST(INFO=1,
                           DEFI_LIST=_F(LIST_INST=L_INST,
-                                       METHODE='AUTO',
-                                       PAS_MINI=1.E-07),
+                                       METHODE='AUTO',),
                           );
 
 #DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
@@ -152,7 +151,7 @@ GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV'),),
                             NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                     PILOTAGE=_F(TYPE='ANA_LIM',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
-                                   ITER_GLOB_MAXI=10,),);
+                                   ITER_GLOB_MAXI=5,),);
 
 ECHL=POST_ELEM(CHAR_LIMITE=_F(CHAR_CSTE='NON',),
                               MODELE=MO,

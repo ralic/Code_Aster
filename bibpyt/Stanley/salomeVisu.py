@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 31/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -212,16 +212,19 @@ class ISOVALEURS( VISU ):
         nom_type  = cata[selection.nom_cham].type
         options   = self.options
 
-        if nom_champ == 'DEPL' and selection.nom_cmp[0] == 'TOUT_CMP': 
-            result = DeformedShape
+        if nom_champ == 'DEPL':
+            if selection.nom_cmp[0] == 'TOUT_CMP': 
+                result = DeformedShape
+            else: 
+                result = ScalarMap
         elif nom_type == 'ELGA':
             result = GaussPoints
 #             # Champ sur la deformee  # pas encore gere
 #             if options.has_key( 'case_sur_deformee' ):
 #                 if options['case_sur_deformee'] == 1:
 #                     result = GaussPointsOnField
-        else: 
-            result = ScalarMap        
+        else:
+            result = ScalarMap
             # Champ sur la deformee
             if options.has_key( 'case_sur_deformee' ):
                 if options['case_sur_deformee'] == 1:

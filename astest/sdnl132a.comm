@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 DEBUT(CODE=_F(NOM='SDNL132A',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='ALGELINE3_66')
 # TITRE PENDULE RIGIDE AVEC CONTACT ET FROTTEMENT
@@ -125,15 +125,16 @@ MACRO_PROJ_BASE(BASE=mode,
 f_sin = FORMULE(VALE='sin((INST-0.5)*2*pi)',
                 NOM_PARA='INST',);
 
-rep_gene=DYNA_TRAN_MODAL(MASS_GENE=M_ASS,
-                         RIGI_GENE=K_ASS,
-                         AMOR_REDUIT=0.0,
+rep_gene=DYNA_TRAN_MODAL(MATR_MASS=M_ASS,
+                         MATR_RIGI=K_ASS,
+                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         AMOR_MODAL=_F(AMOR_REDUIT=0.0,),
                          INCREMENT=_F(INST_INIT=0.0,
                                       INST_FIN=tfin,
                                       PAS=pas,),
-                         EXCIT=(_F(VECT_GENE=CL_ASS,
+                         EXCIT=(_F(VECT_ASSE=CL_ASS,
                                    COEF_MULT=1.0,),
-                                _F(VECT_GENE=F_ASS,
+                                _F(VECT_ASSE=F_ASS,
                                    FONC_MULT=f_sin,),),
                          CHOC=(_F(NOEUD_1='N2',
                                   OBSTACLE=obst,

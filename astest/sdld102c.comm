@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
 # sdld102c.para = tps_job 120 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -159,10 +159,10 @@ BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2,
 #------------------------------------------------------------------
 
 MACEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
-                           AMOR_REDUIT=(0.01,))
+                       AMOR_REDUIT=(0.01,))
 
 MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
-                           AMOR_REDUIT=(0.01,))
+                        AMOR_REDUIT=(0.01,))
 
 #  DEFINITION DU MODELE GENERALISE
 #------------------------------------------------------------------
@@ -267,33 +267,34 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 #-----------------------------------------------------------------
 
 # CAS 1
-TRANGEN1=DYNA_TRAN_MODAL(   METHODE='EULER',
-                             MASS_GENE=MASPRO, 
-                             RIGI_GENE=RIGPRO, 
-                             AMOR_GENE=AMOPRO, 
-                                EXCIT=_F( VECT_GENE = VECPRO,
+TRANGEN1=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                             MATR_MASS=MASPRO, 
+                             MATR_RIGI=RIGPRO, 
+                             MATR_AMOR=AMOPRO, 
+                                EXCIT=_F( VECT_ASSE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN2=DYNA_TRAN_MODAL(   METHODE='NEWMARK',
-                             MASS_GENE=MASPRO, 
-                             RIGI_GENE=RIGPRO, 
-                             AMOR_GENE=AMOPRO, 
-                                EXCIT=_F( VECT_GENE = VECPRO,
+TRANGEN2=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                            BETA=0.27,GAMMA=0.52),
+                             MATR_MASS=MASPRO, 
+                             MATR_RIGI=RIGPRO, 
+                             MATR_AMOR=AMOPRO, 
+                                EXCIT=_F( VECT_ASSE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN3=DYNA_TRAN_MODAL(   METHODE='ADAPT_ORDRE2',
-                             MASS_GENE=MASPRO, 
-                             RIGI_GENE=RIGPRO, 
-                             AMOR_GENE=AMOPRO, 
-                                EXCIT=_F( VECT_GENE = VECPRO,
+TRANGEN3=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                             MATR_MASS=MASPRO, 
+                             MATR_RIGI=RIGPRO, 
+                             MATR_AMOR=AMOPRO, 
+                                EXCIT=_F( VECT_ASSE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
@@ -305,33 +306,33 @@ TRANGEN3=DYNA_TRAN_MODAL(   METHODE='ADAPT_ORDRE2',
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
 # CAS 2
-TRANGEN4=DYNA_TRAN_MODAL(   METHODE='EULER',
-                             MASS_GENE=MASPRO2, 
-                             RIGI_GENE=RIGPRO2, 
-                             AMOR_GENE=AMOPRO2, 
-                                EXCIT=_F( VECT_GENE = VECPRO2,
+TRANGEN4=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                             MATR_MASS=MASPRO2, 
+                             MATR_RIGI=RIGPRO2, 
+                             MATR_AMOR=AMOPRO2, 
+                                EXCIT=_F( VECT_ASSE = VECPRO2,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN5=DYNA_TRAN_MODAL(   METHODE='NEWMARK',
-                             MASS_GENE=MASPRO2, 
-                             RIGI_GENE=RIGPRO2, 
-                             AMOR_GENE=AMOPRO2, 
-                                EXCIT=_F( VECT_GENE = VECPRO2,
+TRANGEN5=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                             MATR_MASS=MASPRO2, 
+                             MATR_RIGI=RIGPRO2, 
+                             MATR_AMOR=AMOPRO2, 
+                                EXCIT=_F( VECT_ASSE = VECPRO2,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN6=DYNA_TRAN_MODAL(   METHODE='ADAPT_ORDRE2',
-                             MASS_GENE=MASPRO2, 
-                             RIGI_GENE=RIGPRO2, 
-                             AMOR_GENE=AMOPRO2, 
-                                EXCIT=_F( VECT_GENE = VECPRO2,
+TRANGEN6=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                             MATR_MASS=MASPRO2, 
+                             MATR_RIGI=RIGPRO2, 
+                             MATR_AMOR=AMOPRO2, 
+                                EXCIT=_F( VECT_ASSE = VECPRO2,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
@@ -360,7 +361,7 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRANGEN3,
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
-TEST_RESU( RESU=_F( RESULTAT = TRAN1,
+TEST_RESU(RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -368,7 +369,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   NOEUD = 'NO3',
                   NOM_CMP = 'DX',
                   VALE = 0.49867E+00))
-TEST_RESU( RESU=_F( RESULTAT = TRAN2,
+TEST_RESU(RESU=_F( RESULTAT = TRAN2,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -376,7 +377,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN2,
                   NOEUD = 'NO3',
                   NOM_CMP = 'DX',
                   VALE = 0.49867E+00))
-TEST_RESU( RESU=_F( RESULTAT = TRAN3,
+TEST_RESU(RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -400,7 +401,7 @@ TRAN6=REST_GENE_PHYS(   RESU_GENE=TRANGEN6,
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO2 )
-TEST_RESU( RESU=_F( RESULTAT = TRAN4,
+TEST_RESU(RESU=_F( RESULTAT = TRAN4,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -408,7 +409,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN4,
                   NOEUD = 'NO3',
                   NOM_CMP = 'DX',
                   VALE = 0.49867E+00))
-TEST_RESU( RESU=_F( RESULTAT = TRAN5,
+TEST_RESU(RESU=_F( RESULTAT = TRAN5,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
@@ -416,7 +417,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN5,
                   NOEUD = 'NO3',
                   NOM_CMP = 'DX',
                   VALE = 0.49867E+00))
-TEST_RESU( RESU=_F( RESULTAT = TRAN6,
+TEST_RESU(RESU=_F( RESULTAT = TRAN6,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
                   CRITERE = 'RELATIF',

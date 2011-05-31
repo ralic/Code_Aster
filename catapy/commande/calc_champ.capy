@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 30/05/2011   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,7 +115,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              fr="Options pour le calcul de criteres",
                              into=(
                                     #"SIEQ_ELNO","SIEQ_NOEU",
-                                    "SIEQ_ELGA","CRIT_ELNO",
+                                    "SIEQ_ELGA",
                                     "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
                                     "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU","EPEQ_NOEU",
                                     "SITQ_ELNO","EPTQ_ELNO",
@@ -165,7 +165,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                     #"SIEQ_ELNO","SIEQ_NOEU",
                                     "SIEQ_ELGA",
                                     "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
-                                    "CRIT_ELNO","EPMQ_NOEU","EPEQ_NOEU",
+                                    "EPMQ_NOEU","EPEQ_NOEU",
                                     "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU",
                                     "PMPB_ELNO","PMPB_ELGA","SITQ_ELNO","EPTQ_ELNO",
                                     "PMPB_NOEU",
@@ -221,6 +221,12 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                   ),
                             ),
                   ),
+
+     # Bloc FORC_NODA et REAC_NODA
+     FORCE            = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr="Options pour des forces nodales et des reactions nodales",
+                             into=("FORC_NODA","REAC_NODA",),
+                            ),
 
 
     #INVARIANT    =FACT(statut='f', max='**',

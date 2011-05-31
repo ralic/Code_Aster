@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 30/05/2011   AUTEUR GRANET S.GRANET 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -249,7 +249,7 @@ C ======================================================================
 C --- SI MODELISATION = THHM OU THH
 C
            IF (NOMTE(1:4).EQ.'THHM'.OR.NOMTE(1:4).EQ.'THH_'
-     &      .OR.NOMTE(1:4).EQ.'THH2'.OR.NOMTE(1:4).EQ.'HH2M')THEN
+     &      .OR.NOMTE(1:4).EQ.'THH2')THEN
 C
 C --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
 C --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :

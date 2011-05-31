@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -199,14 +199,14 @@ MACRO_PROJ_BASE(BASE=MODE_MEC,MATR_ASSE_GENE=(
 MUR=DEFI_OBSTACLE(   TYPE='PLAN_Z' )
 
 #
-TRAN_GE1=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                METHODE='EULER',
-                AMOR_REDUIT=0.07, 
-                MODE_STAT=MODE_STA,
-               EXCIT=_F(  VECT_GENE = VECT_X,  ACCE = ACCELER1,
+TRAN_GE1=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                AMOR_MODAL=_F(AMOR_REDUIT=0.07,),                 
+               EXCIT=_F(  VECT_ASSE = VECT_X,  ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1,
                        MULT_APPUI = 'OUI',
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1'),
+                       DIRECTION = ( 1., 0., 0.,),
+                       MODE_STAT=MODE_STA, NOEUD = 'NO1'),
 # CONDITION DE CHOC D'UN NOEUD PAR RAPPORT A UN OBSTACLE
 # IMMOBILE DANS LE REFERENTIEL ABSOLU
                CHOC=_F(  GROUP_NO_1 = 'MASSES',
@@ -254,16 +254,18 @@ MACRO_PROJ_BASE(BASE=MODE_BIC,MATR_ASSE_GENE=(
 GRILLE=DEFI_OBSTACLE(   TYPE='BI_PLAN_Z' )
 
 #
-TRAN_GE2=DYNA_TRAN_MODAL(  MASS_GENE=MGEN_BIC,   RIGI_GENE=RGEN_BIC,
-                 METHODE='EULER',
-                 AMOR_REDUIT=( 0.07,  0.07, ),
-                MODE_STAT=MSTA_BIC,EXCIT=(
-                _F(  VECT_GENE = VECT_X1,  ACCE = ACCELER1,
+TRAN_GE2=DYNA_TRAN_MODAL(  MATR_MASS=MGEN_BIC,   MATR_RIGI=RGEN_BIC,
+                 SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                 AMOR_MODAL=_F(AMOR_REDUIT=( 0.07,  0.07, ),),
+                EXCIT=(
+                _F(  VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                       MODE_STAT=MSTA_BIC,
                        VITE = VITESSE1, DEPL = DEPLACE1), 
-                _F(  VECT_GENE = VECT_X2,  ACCE = ACCELER2,
+                _F(  VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
+                       MODE_STAT=MSTA_BIC,
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
                        VITE = VITESSE2, DEPL = DEPLACE2)), 
 # CONDITION DE CHOC ENTRE LE NOEUD 2 ET LE NOEUD 12

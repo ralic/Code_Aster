@@ -1,8 +1,8 @@
-#@ MODIF algorith3 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith3 Messages  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -44,7 +44,7 @@ cata_msg = {
 """),
 
 12 : _("""
- méthode à pas adaptatif : le pas ne peut pas etre nul  
+ le pas de temps ne peut pas etre nul  
 """),
 
 13 : _("""
@@ -68,11 +68,7 @@ On arrete de le réduire, car le nombre de réductions a atteint %(i1)d, qui est l
 """),
 
 18 : _("""
- methode des différences centrees:  la donnee du pas est obligatoire 
-"""),
-
-19 : _("""
- methode des différences centrees:  le pas ne peut pas etre nul  
+ La liste des instants de calcul ne doit contenir qu'un seul pas 
 """),
 
 20 : _("""
@@ -110,26 +106,6 @@ Nombre d'itérations     : %(i2)d
 
 29 : _("""
  vitesses initiales nulles.
-"""),
-
-30 : _("""
- NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s 
-"""),
-
-31 : _("""
- methode de NEWMARK ou WILSON: la donnée de LIST_INST ou FONC_INST est obligatoire 
-"""),
-
-32 : _("""
- FONC_INST: on attend une fonction.
-"""),
-
-33 : _("""
- fonc_inst: il faut une fonction à pas constant.
-"""),
-
-34 : _("""
- fonc_inst: temps de reprise supérieur à la fonction.
 """),
 
 36 : _("""

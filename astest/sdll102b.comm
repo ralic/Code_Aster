@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE PORTIQUE SOUMIS A DES EFFORTS ELECTRODYNAMIQUES
 # sdll102b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,6 +21,7 @@
 # sdll102b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
+import numpy as NP
 DEBUT(CODE=_F(NOM='SDLL102B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 ##
@@ -156,15 +157,16 @@ FONC=DEFI_FONC_ELEC(COUR=(
 TEMPLI=DEFI_LIST_REEL(DEBUT=1., INTERVALLE=_F( JUSQU_A = 2.0, NOMBRE = 2000))
 
 #
-INTLI=DEFI_LIST_ENTI( DEBUT=21, INTERVALLE=_F( JUSQU_A = 2001, PAS = 20))
 
+TEMLI=DEFI_LIST_REEL(DEBUT=1.0105,INTERVALLE=(_F( JUSQU_A = 1.9905, PAS=0.01),
+                                            _F( JUSQU_A = 2.0, PAS=0.0095)))
 #
 #-----------------------------------------------------------------------
 # EVOLUTIONS
 NEWNONA=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,  MATR_RIGI=MATRRIGI,
-                         NEWMARK=_F(),
+                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                          INCREMENT=_F(  LIST_INST = TEMPLI),
-                        ARCHIVAGE=_F(  LIST_ARCH = INTLI),
+                        ARCHIVAGE=_F(  LIST_INST = TEMLI),
                  EXCIT=_F(  VECT_ASSE = VECAS,
                          FONC_MULT = FONC)
                                                          )

@@ -1,8 +1,8 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1746,13 +1746,15 @@ OBST=DEFI_OBSTACLE(   TYPE='DISCRET',
 
 #
 DYNAMODE=DYNA_TRAN_MODAL(
-                       MASS_GENE=MASSEPRO,
-                       RIGI_GENE=RIGIPROJ,
-                       AMOR_REDUIT=( 0.01,  0.01,  0.01, 0.01,
+                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       MATR_MASS=MASSEPRO,
+                       MATR_RIGI=RIGIPROJ,
+                       AMOR_MODAL=_F(AMOR_REDUIT=( 0.01,  0.01,  0.01, 0.01,
                                       0.01, 0.01,  0.01, 0.01,
-                                      0.01, 0.01,),EXCIT=(
-                 _F(  VECT_GENE = EFPROJ1,  FONC_MULT = FONCT1),
-                 _F(  VECT_GENE = EFPROJ2,  FONC_MULT = FONCT2)),
+                                      0.01, 0.01,),),
+                      EXCIT=(
+                 _F(  VECT_ASSE = EFPROJ1,  FONC_MULT = FONCT1),
+                 _F(  VECT_ASSE = EFPROJ2,  FONC_MULT = FONCT2)),
                  INCREMENT=_F(  INST_INIT = 0.,
                              INST_FIN = 2.,  PAS = 3.5E-5),
                        ARCHIVAGE=_F(  PAS_ARCH = 4),CHOC=(

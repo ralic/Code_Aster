@@ -1,5 +1,5 @@
-# MODIF  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
-# TITRE  : VALIDATION DE  CRIT_ELNO DE CALC_ELEM
+# MODIF  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
+# TITRE  : CALCUL STATIQUE D'UNE PLAQUE COMPOSEE DE COUCHES
 # ssls128a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,9 +18,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#---------------------------------------------------------------------
-#    - CALCUL STATIQUE D'UNE PLAQUE COMPOSEE DE COUCHES
-#    - CALCUl DU CRITERE DE TSAI-HILL
 #---------------------------------------------------------------------
 #
 DEBUT(CODE=_F(NOM='SSLS128A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -147,28 +144,6 @@ RESU1=CALC_ELEM( RESULTAT=RESU,
                  REPE_COQUE =_F( NUME_COUCHE=1,
                                  NIVE_COUCHE='INF',),);
 
-RESU1=CALC_ELEM(reuse=RESU1, RESULTAT=RESU1,
-
-
-
-               OPTION='CRIT_ELNO',
-
-               REPE_COQUE =_F( NUME_COUCHE=1,
-                               NIVE_COUCHE='INF',),);
-
-
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU1,
-                  NOM_CHAM='CRIT_ELNO',
-                  NOM_CMP = 'CRITH' ,
-                  MAILLE='M49',
-                  NOEUD='N1',
-                  VALE = 0.344 ,
-                  PRECISION = 0.001 ,
-                  CRITERE = 'RELATIF',
-                   REFERENCE='AUTRE_ASTER')
-               )
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -195,55 +170,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER')
                )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU1,
-                  NOM_CHAM='CRIT_ELNO',
-                  NOM_CMP = 'SIGL' ,
-                  MAILLE='M49',
-                  NOEUD='N1',
-                  VALE = -242 ,
-                  PRECISION = 0.005 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-              )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU1,
-                  NOM_CHAM='CRIT_ELNO',
-                  NOM_CMP = 'SIGT' ,
-                  MAILLE='M49',
-                  NOEUD='N1',
-                  VALE = 67 ,
-                  PRECISION = 0.006 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-               )
 RESU2=CALC_ELEM( RESULTAT=RESU,
                  OPTION='SIGM_ELNO',
                  REPE_COQUE =_F( NUME_COUCHE=2,
                                  NIVE_COUCHE='INF',),);
 
-RESU2=CALC_ELEM( reuse=RESU2, RESULTAT=RESU2,
-
-
-
-                 OPTION='CRIT_ELNO',
-
-                 REPE_COQUE =_F( NUME_COUCHE=2,
-                                 NIVE_COUCHE='INF',),);
-
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU2,
-                  NOM_CHAM='CRIT_ELNO',
-                  NOM_CMP = 'CRITH' ,
-                  MAILLE='M49',
-                  NOEUD='N1',
-                  VALE = 0.223 ,
-                  PRECISION = 0.001 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-               )
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',
@@ -263,41 +194,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   MAILLE='M49',
                   NOEUD='N1',
                   VALE = -67 ,
-                  PRECISION = 0.006 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-                  )
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU2,
-                  NOM_CHAM='CRIT_ELNO',
-                  NOM_CMP = 'SIGL' ,
-                  MAILLE='M49',
-                  NOEUD='N1',
-                  VALE = -88 ,
-                  PRECISION = 0.006 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-                 )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU2,
-                  NOM_CHAM='CRIT_ELNO',
-                  NOM_CMP = 'SIGT' ,
-                  MAILLE='M49',
-                  NOEUD='N1',
-                  VALE = -88 ,
-                  PRECISION = 0.006 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-                  )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU2,
-                  NOM_CHAM='CRIT_ELNO',
-                  NOM_CMP = 'SIGLT' ,
-                  MAILLE='M49',
-                  NOEUD='N1',
-                  VALE = 21 ,
                   PRECISION = 0.006 ,
                   CRITERE = 'RELATIF',
                   REFERENCE='AUTRE_ASTER')

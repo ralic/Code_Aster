@@ -4,9 +4,9 @@
       CHARACTER*(*)       LISINS, LISARC, TYPE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -25,7 +25,7 @@ C ----------------------------------------------------------------------
 C     SAISIE DU MOT CLE FACTEUR "ARCHIVAGE"
 C
 C IN  : NBPAS  : NOMBRE DE PAS DE CALCUL
-C IN  : LISINS : INSTANTS DE CALCUL
+C IN  : LISINS : NOM DE LA LISTE DES INSTANTS DE CALCUL
 C IN  : LISARC : LISTE D'ARCHIVAGE DES PAS DE CALCUL
 C OUT : NBARCH : NOMBRE DE PAS A ARCHIVER + CI
 C IN  : ICH    : PRISE EN COMPTE DU MOT CLE "CHAM_EXCLU"
@@ -48,7 +48,7 @@ C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
-      INTEGER      JARCH, NBOCC, N1, JNUM, LNUM, K, IPACH, KARCH, JINSC
+      INTEGER      JARCH, NBOCC, N1, JNUM, LNUM, K, IPACH, JINSC
       REAL*8       EPSI
       CHARACTER*8  K8B, RELA
       CHARACTER*19 NUMARC
@@ -62,40 +62,23 @@ C
 C
       IF ( NBOCC .NE. 0 ) THEN
 C
-         CALL GETVID ( 'ARCHIVAGE', 'LIST_ARCH', 1,1,1, NUMARC, N1 )
-         IF ( N1 .NE. 0 ) THEN
-            CALL JEVEUO ( NUMARC//'.VALE', 'L', JNUM )
-            CALL JELIRA ( NUMARC//'.VALE', 'LONUTI', LNUM, K8B )
-            DO 20 K = 1 , LNUM
-               KARCH = ZI(JNUM+K-1)
-               IF ( KARCH .LE. 0 ) THEN
-                  GOTO 20
-               ELSEIF ( KARCH .GT. NBPAS ) THEN
-                  GOTO 22
-               ELSE
-                  ZI(JARCH+KARCH-1) = 1
-               ENDIF
- 20         CONTINUE
- 22         CONTINUE
-            ZI(JARCH+NBPAS-1) = 1
-            GOTO 100
-         ENDIF
-C
-         IF ( LISINS(1:1) .NE.  ' ' ) THEN
-         CALL JEVEUO ( LISINS(1:19)//'.VALE', 'L', JINSC )
+         
          CALL GETVID ( 'ARCHIVAGE', 'LIST_INST', 1,1,1, NUMARC, N1 )
          IF ( N1 .NE. 0 ) THEN
+            CALL JEVEUO ( LISINS, 'L', JINSC )
             CALL GETVR8 ( 'ARCHIVAGE', 'PRECISION', 1,1,1, EPSI, N1 )
             CALL GETVTX ( 'ARCHIVAGE', 'CRITERE'  , 1,1,1, RELA, N1 )
             CALL JEVEUO ( NUMARC//'.VALE', 'L', JNUM )
             CALL JELIRA ( NUMARC//'.VALE', 'LONUTI', LNUM, K8B )
             CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, ZI(JARCH),
      +                    EPSI, RELA  )
+            ZI(JARCH+NBPAS-1) = 1
             GOTO 100
          ENDIF
 C
          CALL GETVR8 ( 'ARCHIVAGE', 'INST', 1,1,0, EPSI, N1 )
          IF ( N1 .NE. 0 ) THEN
+            CALL JEVEUO ( LISINS, 'L', JINSC )
             LNUM = -N1
             CALL GETVR8 ( 'ARCHIVAGE', 'PRECISION', 1,1,1, EPSI, N1 )
             CALL GETVTX ( 'ARCHIVAGE', 'CRITERE'  , 1,1,1, RELA, N1 )
@@ -104,8 +87,8 @@ C
             CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, ZI(JARCH),
      +                    EPSI, RELA  )
             CALL JEDETR ( '&&DYARCH.VALE_INST' )
+            ZI(JARCH+NBPAS-1) = 1
             GOTO 100
-         ENDIF
          ENDIF
 C
          CALL GETVIS ( 'ARCHIVAGE', 'PAS_ARCH', 1,1,1, IPACH, N1 )

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 28/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline6 Messages  DATE 31/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,15 @@ cata_msg = {
 
 3 : _("""
  Post-traitement: calcul d'un mode vibratoire
+"""),
+
+4 : _("""
+ La gestion automatique du pas de temps (DEFI_LIST_INST/METHODE='AUTO') 
+ avec le schéma IMPLEX (DEFI_LIST_INST/MODE_CALCUL_TPLUS='IMPLEX') nécessite 
+ de traiter la résolution par la méthode IMPLEX (STAT/DYNA_NON_LINE/METHODE='IMPL_EX').
+ Conseil :
+ - Choisissez STAT/DYNA_NON_LINE/METHODE='IMPL_EX'
+ - ou bien choisissez un autre schéma d'adaptation du pas de temps (DEFI_LIST_INST/MODE_CALCUL_TPLUS).
 """),
 
 10 : _("""

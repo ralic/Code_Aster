@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
 # sdnd105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,9 +122,9 @@ PLANY=DEFI_OBSTACLE(TYPE='PLAN_Y')
 #
 
 
-TRAN_GEN=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                               METHODE='EULER',
-                      ETAT_INIT=_F(  VITE_INIT_GENE = VIT_GENE),
+TRAN_GEN=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                      ETAT_INIT=_F(  VITE = VIT_GENE),
 
                       FLAMBAGE=_F(  NOEUD_1 = 'N02',
                                  OBSTACLE = PLANY,
@@ -141,9 +141,9 @@ TRAN_GEN=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
                                   PAS = 0.0002)
                             )
 
-TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                               METHODE='ADAPT_ORDRE2',
-                      ETAT_INIT=_F(  RESU_GENE = TRAN_GEN,
+TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                               SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                      ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
                                   INST_INIT = 0.5),
 
                       FLAMBAGE=_F(  NOEUD_1 = 'N02',
@@ -161,9 +161,9 @@ TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_G
                                  PAS_MINI = 2.E-8,)
                             )
 
-TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
-                               METHODE='DEVOGE',
-                      ETAT_INIT=_F(  RESU_GENE = TRAN_GEN),
+TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                               SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                      ETAT_INIT=_F(  RESULTAT = TRAN_GEN),
 
 
                       FLAMBAGE=_F(  NOEUD_1 = 'N02',

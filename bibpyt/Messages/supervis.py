@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -187,10 +187,6 @@ cata_msg={
  Arret de la lecture des commandes.
 """),
 
-35: _("""
- La procédure "RETOUR" ne peut etre utilisée dans le fichier principal de commandes.
-"""),
-
 36: _("""
  Le concept de nom '%(k1)s' n'existe pas
 """),
@@ -354,9 +350,9 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 
  Le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent à un
  fichier dont la taille maximale en Moctets (%(i1)d) est supérieure à limite autorisée :  %(i2)d
- 
+
  Vous pouvez augmenter cette limite en utilisant l'argument "-max_base" sur la ligne
- de commande suivi d'une valeur en Moctets. 
+ de commande suivi d'une valeur en Moctets.
 
 """),
 
@@ -409,19 +405,19 @@ On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
 94 : _("""
 Le temps CPU system (%(r1).1f) atteint une valeur supérieure à %(i1)d%%
 du temps CPU (%(r2).1f).
-Ce comportement est peut-être anormal. 
+Ce comportement est peut-être anormal.
 Le nombre d'appel au mécanisme de déchargement de la mémoire depuis le début du
-calcul est de %(i2)d. 
- 
+calcul est de %(i2)d.
+
 -> Conseil :
    Augmenter la mémoire JEVEUX peut permettre de diminuer le temps système.
-   
+
 """),
 
 95 : _("""
 Le temps CPU system (%(r1)f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2)f).
-Ce comportement est peut-être anormal. 
- 
+Ce comportement est peut-être anormal.
+
 """),
 
 # on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !

@@ -1,8 +1,8 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL DE BARRAGE AVEC RETENUE SOUS SOLLICITATION SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -238,25 +238,27 @@ MODHUMI2=MODE_ITER_SIMULT(MATR_A=RIGGEN2,
                           CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                        NMAX_FREQ=20,),);
 
-DYNGEN=DYNA_TRAN_MODAL(MASS_GENE=MASTOT2,
-                       RIGI_GENE=RIGGEN2,
-                       AMOR_REDUIT=0.050000000000000003,
+DYNGEN=DYNA_TRAN_MODAL(MATR_MASS=MASTOT2,
+                       MATR_RIGI=RIGGEN2,
+                AMOR_MODAL=_F(AMOR_REDUIT=0.050000000000000003,),
+                SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        INCREMENT=_F(INST_INIT=0.0,
                                     INST_FIN=11.140000000000001,
                                     PAS=2.E-3,),
-                       ARCHIVAGE=_F(PAS_ARCH=5,),
+                       ARCHIVAGE=_F(PAS_ARCH=5,
+                       ),
                        EXCIT=(
-                             _F(VECT_GENE=CHARGENX,
+                             _F(VECT_ASSE=CHARGENX,
                                  FONC_MULT=ACC_X,),
-                              _F(VECT_GENE=CHARGENY,
+                              _F(VECT_ASSE=CHARGENY,
                                  FONC_MULT=ACC_Y,),
-                              _F(VECT_GENE=CHARGENZ,
+                              _F(VECT_ASSE=CHARGENZ,
                                  FONC_MULT=ACC_Z,),
-                              _F(VECT_GENE=VGENX,
+                              _F(VECT_ASSE=VGENX,
                                  FONC_MULT=ACC_X,),
-                              _F(VECT_GENE=VGENY,
+                              _F(VECT_ASSE=VGENY,
                                  FONC_MULT=ACC_Y,),
-                              _F(VECT_GENE=VGENZ,
+                              _F(VECT_ASSE=VGENZ,
                                  FONC_MULT=ACC_Z,),
                           ),);
 

@@ -1,9 +1,9 @@
-# MODIF  DATE 23/03/2010   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -96,10 +96,12 @@ DEPLINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 TRANSI=DYNA_LINE_TRAN(MODELE=MODELE,
                       MATR_MASS=MASSE,
                       MATR_RIGI=RIGIDITE,
-                      NEWMARK=_F(),
-                      ETAT_INIT=_F(DEPL_INIT=DEPLINI,),
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
+                      ETAT_INIT=_F(DEPL=DEPLINI,),
                       SOLVEUR=_F(METHODE='LDLT',),
-                      INCREMENT=_F(LIST_INST=LINST,),);
+#                      INCREMENT=_F(LIST_INST=LINST,),);
+                      INCREMENT=_F(PAS=pdt,
+                                   INST_FIN=tfin,),);
 
 DX_DIS2=RECU_FONCTION(RESULTAT=TRANSI,
                       NOM_CHAM='DEPL',
@@ -109,8 +111,8 @@ DX_DIS2=RECU_FONCTION(RESULTAT=TRANSI,
 TRANSX=DYNA_LINE_TRAN(MODELE=MODELE,
                       MATR_MASS=MASDIAG,
                       MATR_RIGI=RIGIDITE,
-                      DIFF_CENTRE=_F(),
-                      ETAT_INIT=_F(DEPL_INIT=DEPLINI,),
+                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
+                      ETAT_INIT=_F(DEPL=DEPLINI,),
                       SOLVEUR=_F(METHODE='LDLT',),
                       INCREMENT=_F(PAS=pdt,
                                    INST_FIN=tfin,),);
@@ -134,9 +136,10 @@ MACRO_PROJ_BASE(BASE=MODES,
                                   TYPE_VECT='DEPL',
                                   VECT_ASSE=DEPLINI,),);
 
-TRANSMO=DYNA_TRAN_MODAL(MASS_GENE=MAGE,
-                        RIGI_GENE=RIGE,
-                        ETAT_INIT=_F(DEPL_INIT_GENE=DIGE,),
+TRANSMO=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                        MATR_MASS=MAGE,
+                        MATR_RIGI=RIGE,
+                        ETAT_INIT=_F(DEPL=DIGE,),
                         INCREMENT=_F(INST_FIN=tfin,
                                      PAS=pdt,),);
 

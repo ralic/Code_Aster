@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,7 +109,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                  "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
                                  "SING_ELEM","SING_ELNO",
                               #  CRIT
-                                 "SIEQ_ELNO","SIEQ_ELGA","CRIT_ELNO",
+                                 "SIEQ_ELNO","SIEQ_ELGA",
                                  "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
                                  "ENDO_ELGA","ENDO_ELNO",
                                  "SITQ_ELNO","EPTQ_ELNO",
@@ -235,7 +235,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                            into=("SIEQ_ELNO","SIEQ_ELGA",
                                  "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
                                  "ENDO_ELGA","ENDO_ELNO",
-                                 "CRIT_ELNO","SITQ_ELNO","EPTQ_ELNO",
+                                 "SITQ_ELNO","EPTQ_ELNO",
                                  ) ),
                 EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                      CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
@@ -301,7 +301,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                  "EPFD_ELNO","EPFD_ELGA","EPVC_ELNO","EPVC_ELGA",
                                  "EPFP_ELNO","EPFP_ELGA",
                                  "VARC_ELGA",
-                                 "VARI_ELNO","VATU_ELNO","VACO_ELNO","CRIT_ELNO",
+                                 "VARI_ELNO","VATU_ELNO","VACO_ELNO",
                                  "VAEX_ELGA","VAEX_ELNO",
                                  # CRIT
                                  "SIEQ_ELNO","SIEQ_ELGA","SITQ_ELNO","EPTQ_ELNO",
@@ -422,7 +422,6 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("SIEQ_ELNO","SIEQ_ELGA",
                                  "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
-                                 "CRIT_ELNO",
                                  "ENDO_ELGA","ENDO_ELNO",
                                  "PMPB_ELNO","PMPB_ELGA","SITQ_ELNO","EPTQ_ELNO",
                                  ) ),

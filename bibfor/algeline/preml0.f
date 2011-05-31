@@ -1,7 +1,7 @@
       SUBROUTINE PREML0(N1,N2,DIAG,COL,DELG,PRNO,DEEQ,NEC,P,Q,LBD1,LBD2,
      &                  RL,RL1,RL2,NRL,LT,LMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 30/05/2011   AUTEUR ABBAS M.ABBAS 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,11 +162,11 @@ C     VERIFICATION DES CONNEXIONS DES LAGRANGES
         IER = 0
         DO 90 I = 1,N1
           IF (LBD1(I).NE.0) THEN
-            WRITE (IFM,*) 'LE DDL BLOQUE: ',I,' A POUR LAMBDA1: ',
-     &        LBD1(I)
-            WRITE (IFM,*) 'LE DDL BLOQUE: ',I,' A POUR LAMBDA2: ',
-     &        LBD2(I)
-            IF (LBD2(I).EQ.0) IER = 1
+C            WRITE (IFM,*) 'LE DDL BLOQUE: ',I,' A POUR LAMBDA1: ',
+C     &        LBD1(I)
+C            WRITE (IFM,*) 'LE DDL BLOQUE: ',I,' A POUR LAMBDA2: ',
+C     &        LBD2(I)
+C            IF (LBD2(I).EQ.0) IER = 1
           ELSE IF (LBD2(I).NE.0) THEN
             IER = 1
           END IF

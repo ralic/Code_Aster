@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D THH2MS)
 # wtnv136c.para = tps_job 150 mem_job 128Mo mpi_nbcpu 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -338,6 +338,7 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                  )
 
 U2=STAT_NON_LINE(reuse=U2,
+                 INFO=1,
                  MODELE=MODELE,
                  CHAM_MATER=CHMAT,
                  EXCIT=(_F( CHARGE = DEP_FIX, ),
@@ -349,7 +350,7 @@ U2=STAT_NON_LINE(reuse=U2,
                  ETAT_INIT=_F(EVOL_NOLI=U2,),
                  INCREMENT=_F(LIST_INST = TEMPS2,),
                  NEWTON=_F( MATRICE = 'TANGENTE',REAC_ITER = 1,),
-                 SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',PRE_COND='LDLT_SP',),
+                 SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',PRE_COND='LDLT_SP',PCENT_PIVOT=20,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=40,
                                 ITER_GLOB_ELAS=50,RESI_GLOB_RELA = RESI_GLOB_RELA,
                                 ),

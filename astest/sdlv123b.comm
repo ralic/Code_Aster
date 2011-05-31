@@ -1,4 +1,4 @@
-# MODIF  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -99,11 +99,11 @@ evol=DYNA_LINE_TRAN(   MODELE=MODELE,
                        CHAM_MATER=CHAMPMAT,
                        MATR_MASS=MASSE,
                        MATR_RIGI=RIGI,
-                       NEWMARK=_F(),
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        EXCIT=_F(CHARGE=CH_P,
                                 FONC_MULT=FONC,),
                        INCREMENT=_F(LIST_INST=TEMPLI,),
-                       ARCHIVAGE=_F(LIST_ARCH=INTLI,),);
+                       ARCHIVAGE=_F(PAS_ARCH=20,),);
 
 FF=DEFI_FOND_FISS( MAILLAGE=MAIL,
                    FOND_FISS=_F( GROUP_NO='LP2P7',),

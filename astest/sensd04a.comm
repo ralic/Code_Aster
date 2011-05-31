@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
 # RESPONSABLE H.ANDRIAMBOLOLONA
 # TITRE Sensibilite au chargement/condition limite dans DYNA_LYNE_TRAN
 # sensd04a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -104,8 +104,7 @@ DYTRN=DYNA_LINE_TRAN(MODELE=MO,CARA_ELEM=CARELEM,
                            _F(CHARGE=CLIM2,),
                            _F(FONC_MULT=FC,CHARGE=CHF),
                            ),
-                    SENSIBILITE=(F1,F2,D1),
-                    NEWMARK=_F(),)
+                    SENSIBILITE=(F1,F2,D1),)
 
 PAS = (I_FIN - I_DEBUT)/100.
 
@@ -116,7 +115,7 @@ DYTRD=DYNA_LINE_TRAN(MODELE=MO,CARA_ELEM=CARELEM,
                            _F(FONC_MULT=FC,CHARGE=CHF),
                            ),
                     SENSIBILITE=(F1,F2),
-                    DIFF_CENTRE=_F(),)
+                    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),)
 
 I_FIN = 2.E-4
 L_TMPS=DEFI_LIST_REEL(DEBUT=I_DEBUT,
@@ -125,13 +124,12 @@ L_TMPS=DEFI_LIST_REEL(DEBUT=I_DEBUT,
 DYTRN=DYNA_LINE_TRAN(MODELE=MO,CARA_ELEM=CARELEM,
                     MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                     INCREMENT=_F(LIST_INST=L_TMPS,),
-                    reuse=DYTRN,ETAT_INIT=_F(DYNA_TRANS=DYTRN,),
+                    reuse=DYTRN,ETAT_INIT=_F(RESULTAT=DYTRN,),
                     EXCIT=(
                            _F(CHARGE=CLIM2,),
                            _F(FONC_MULT=FC,CHARGE=CHF),
                            ),
-                    SENSIBILITE=(F1,F2,D1),
-                    NEWMARK=_F(),)
+                    SENSIBILITE=(F1,F2,D1),)
 
 DEP_INI=CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='NOEU_DEPL_R',
@@ -154,15 +152,14 @@ ACC_INI=CREA_CHAMP(OPERATION='EXTR',
 DYTRNI=DYNA_LINE_TRAN(MODELE=MO,CARA_ELEM=CARELEM,
                     MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                     INCREMENT=_F(LIST_INST=L_TMPS,),
-                    ETAT_INIT=_F(DEPL_INIT=DEP_INI,
-                                 VITE_INIT=VIT_INI,
-                                 ACCE_INIT=ACC_INI,),
+                    ETAT_INIT=_F(DEPL=DEP_INI,
+                                 VITE=VIT_INI,
+                                 ACCE=ACC_INI,),
                     EXCIT=(
                            _F(CHARGE=CLIM2,),
                            _F(FONC_MULT=FC,CHARGE=CHF),
                            ),
-                    SENSIBILITE=(F1,F2,D1),
-                    NEWMARK=_F(),)
+                    SENSIBILITE=(F1,F2,D1),)
 
 #
 # 7. Test

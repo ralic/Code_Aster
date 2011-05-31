@@ -1,6 +1,6 @@
-      SUBROUTINE CRSMSP(SOLVBZ,MATASZ)
+      SUBROUTINE CRSMSP(SOLVBZ,MATASZ,PCPIV )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) SOLVBZ,MATASZ
+      INTEGER       PCPIV
 C-----------------------------------------------------------------------
 C     CREATION D'UNE SD SOLVEUR MUMPS SIMPLE PRECISION UTILISEE COMME
 C     PRECONDITIONNEUR
@@ -26,6 +27,7 @@ C     ATTENTION A LA COHERENCE AVEC CRSVL2 ET CRSVMU
 C-----------------------------------------------------------------------
 C IN  K*  SOLVBZ    : NOM DE LA SD SOLVEUR MUMPS BIDON
 C IN  K*  MATASZ    : MATRICE DU SYSTEME
+C IN  I   PCPIV     : VALEUR DE PCENT_PIVOT
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
@@ -106,7 +108,7 @@ C     POSTTRAITEMENTS
       ZR(JSLVR-1+4) = 0.D0
 
       ZI(JSLVI-1+1) = -1
-      ZI(JSLVI-1+2) = 20
+      ZI(JSLVI-1+2) = PCPIV
       ZI(JSLVI-1+3) = 0
       ZI(JSLVI-1+4) = -9999
       ZI(JSLVI-1+5) = -9999

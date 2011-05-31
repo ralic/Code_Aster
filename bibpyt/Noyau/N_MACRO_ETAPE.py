@@ -1,28 +1,28 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
-""" 
+"""
     Ce module contient la classe MACRO_ETAPE qui sert à vérifier et à exécuter
     une commande
 """
@@ -50,15 +50,15 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       """
          Attributs :
 
-            - definition : objet portant les attributs de définition d'une étape 
-              de type macro-commande. Il est initialisé par 
+            - definition : objet portant les attributs de définition d'une étape
+              de type macro-commande. Il est initialisé par
               l'argument oper.
 
             - reuse : indique le concept d'entrée réutilisé. Il se trouvera donc
-              en sortie si les conditions d'exécution de l'opérateur 
+              en sortie si les conditions d'exécution de l'opérateur
               l'autorise
 
-            - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé 
+            - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé
               avec l'argument args.
 
       """
@@ -80,8 +80,8 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       self.etapes = []
       self.index_etapes = {}
       self.sds = []
-      #  Dans le cas d'une macro écrite en Python, l'attribut Outputs est un 
-      #  dictionnaire qui contient les concepts produits de sortie 
+      #  Dans le cas d'une macro écrite en Python, l'attribut Outputs est un
+      #  dictionnaire qui contient les concepts produits de sortie
       #  (nom : ASSD) déclarés dans la fonction sd_prod
       self.Outputs = {}
       self.sd = None
@@ -108,30 +108,30 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
 
    def Build_sd(self,nom):
       """
-         Construit le concept produit de l'opérateur. Deux cas 
+         Construit le concept produit de l'opérateur. Deux cas
          peuvent se présenter :
-        
-           - le parent n'est pas défini. Dans ce cas, l'étape prend en charge 
+
+           - le parent n'est pas défini. Dans ce cas, l'étape prend en charge
              la création et le nommage du concept.
 
-           - le parent est défini. Dans ce cas, l'étape demande au parent la 
+           - le parent est défini. Dans ce cas, l'étape demande au parent la
              création et le nommage du concept.
 
       """
       self.sdnom=nom
       try:
-         # On positionne la macro self en tant que current_step pour que les 
+         # On positionne la macro self en tant que current_step pour que les
          # étapes créées lors de l'appel à sd_prod et à op_init aient la macro
-         #  comme parent 
+         #  comme parent
          self.set_current_step()
          if self.parent:
             sd= self.parent.create_sdprod(self,nom)
-            if type(self.definition.op_init) == types.FunctionType: 
+            if type(self.definition.op_init) == types.FunctionType:
                apply(self.definition.op_init,(self,self.parent.g_context))
          else:
             sd=self.get_sd_prod()
             if sd != None and self.reuse == None:
-               # On ne nomme le concept que dans le cas de non reutilisation 
+               # On ne nomme le concept que dans le cas de non reutilisation
                # d un concept
                sd.set_name(nom)
          self.reset_current_step()
@@ -160,7 +160,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       # On marque les concepts CO pour verification ulterieure de leur bonne utilisation
       l=self.get_all_co()
       for c in l:
-          #if not hasattr(c,"_etape") or c._etape is not c.etape: 
+          #if not hasattr(c,"_etape") or c._etape is not c.etape:
              c._etape=self
       return l
 
@@ -213,8 +213,8 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
         else:
           self.sd= sd_prod(etape=self)
           self.typret=sd_prod
-          # Si la commande est obligatoirement reentrante et reuse n'a pas ete specifie, c'est une erreur. 
-          # On ne fait rien ici. L'erreur sera traitee par la suite. 
+          # Si la commande est obligatoirement reentrante et reuse n'a pas ete specifie, c'est une erreur.
+          # On ne fait rien ici. L'erreur sera traitee par la suite.
       # précaution
       if self.sd is not None and not isinstance(self.sd, ASSD):
          raise AsException("""
@@ -266,7 +266,7 @@ Causes possibles :
           On tient compte des commandes qui modifient le contexte
           comme DETRUIRE ou les macros
       """
-      # L'étape courante pour laquelle le contexte a été calculé est 
+      # L'étape courante pour laquelle le contexte a été calculé est
       # mémorisée dans self.index_etape_courante
       # Si on insère des commandes (par ex, dans EFICAS), il faut
       # préalablement remettre ce pointeur à 0
@@ -293,7 +293,7 @@ Causes possibles :
 
    def supprime(self):
       """
-         Méthode qui supprime toutes les références arrières afin que 
+         Méthode qui supprime toutes les références arrières afin que
          l'objet puisse etre correctement détruit par le garbage collector
       """
       N_MCCOMPO.MCCOMPO.supprime(self)
@@ -318,7 +318,7 @@ Causes possibles :
       if not hasattr(co,'etape'):
          # Le concept vaut None probablement. On ignore l'appel
          return
-      # 
+      #
       # On cherche a discriminer les differents cas de typage d'un concept
       # produit par une macro qui est specifie dans un mot cle simple.
       # On peut passer plusieurs fois par type_sdprod ce qui explique
@@ -331,7 +331,7 @@ Causes possibles :
       #         la propriete du concept de la macro parent a la macro courante (self)
       #         en verifiant que le type est valide
       # Cas 4 : La concept est la propriete d'une etape fille. Ceci veut dire qu'on est
-      #         deja passe par type_sdprod et que la propriete a ete transfere a une 
+      #         deja passe par type_sdprod et que la propriete a ete transfere a une
       #         etape fille. Cas semblable a Cas 3.
       # Cas 5 : Le concept est produit par une etape externe a la macro.
       #
@@ -341,18 +341,18 @@ Causes possibles :
          # Recherche du mot cle simple associe au concept
          mcs=self.get_mcs_with_co(co)
          if len(mcs) != 1:
-            raise AsException("""Erreur interne. 
+            raise AsException("""Erreur interne.
 Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
          mcs=mcs[0]
          if not self.typeCO in mcs.definition.type:
-            raise AsException("""Erreur interne. 
+            raise AsException("""Erreur interne.
 Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self
          # affectation du bon type du concept et
          # initialisation de sa partie "sd"
          if CONTEXT.debug:print "changement de type:",co,t
          co.change_type(t)
-         
+
          self.sdprods.append(co)
 
       elif co.etape== self:
@@ -366,7 +366,7 @@ Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pa
            #Le concept a été créé par une macro parente
            # Le type du concept doit etre coherent avec le type demande (seulement derive)
            if not isinstance(co,t):
-             raise AsException("""Erreur interne. 
+             raise AsException("""Erreur interne.
 Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co.__class__))
 
          self.sdprods.append(co)
@@ -375,7 +375,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
          # Cas 3 : le concept est produit par la macro parente (self.parent)
          # on transfere la propriete du concept a la macro fille
          # et on change le type du concept comme demande
-         # Au prealable, on verifie que le concept existant (co) est une instance 
+         # Au prealable, on verifie que le concept existant (co) est une instance
          # possible du type demande (t)
          # Cette règle est normalement cohérente avec les règles de vérification des mots-clés
          if not isinstance(co,t):
@@ -384,11 +384,11 @@ Impossible de changer le type du concept produit (%s) en (%s).
 Le type actuel (%s) devrait etre une classe derivee du nouveau type (%s)""" % (co,t,co.__class__,t))
          mcs=self.get_mcs_with_co(co)
          if len(mcs) != 1:
-            raise AsException("""Erreur interne. 
+            raise AsException("""Erreur interne.
 Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
          mcs=mcs[0]
          if not self.typeCO in mcs.definition.type:
-            raise AsException("""Erreur interne. 
+            raise AsException("""Erreur interne.
 Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self
          # On ne change pas le type car il respecte la condition isinstance(co,t)
@@ -396,13 +396,13 @@ Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pa
          self.sdprods.append(co)
 
       elif self.issubstep(co.etape):
-         # Cas 4 : Le concept est propriété d'une sous etape de la macro (self). 
+         # Cas 4 : Le concept est propriété d'une sous etape de la macro (self).
          # On est deja passe par type_sdprod (Cas 3 ou 1).
          # Il suffit de le mettre dans la liste des concepts produits (self.sdprods)
-         # Le type du concept et t doivent etre derives. 
+         # Le type du concept et t doivent etre derives.
          # Il n'y a aucune raison pour que la condition ne soit pas verifiee.
          if not isinstance(co,t):
-            raise AsException("""Erreur interne. 
+            raise AsException("""Erreur interne.
 Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co.__class__))
          self.sdprods.append(co)
 
@@ -412,7 +412,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
          return
 
    def issubstep(self,etape):
-      """ 
+      """
           Cette methode retourne un entier indiquant si etape est une
           sous etape de la macro self ou non
           1 = oui
@@ -424,8 +424,8 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       return 0
 
    def register(self,etape):
-      """ 
-          Enregistrement de etape dans le contexte de la macro : liste etapes 
+      """
+          Enregistrement de etape dans le contexte de la macro : liste etapes
           et demande d enregistrement global aupres du JDC
       """
       self.etapes.append(etape)
@@ -434,7 +434,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       return idetape
 
    def reg_sd(self,sd):
-      """ 
+      """
            Methode appelee dans l __init__ d un ASSD a sa creation pour
            s enregistrer (reserve aux ASSD créés au sein d'une MACRO)
       """
@@ -442,7 +442,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       return self.jdc.o_register(sd)
 
    def create_sdprod(self,etape,nomsd):
-      """ 
+      """
           Cette methode doit fabriquer le concept produit retourne
           par l'etape etape et le nommer.
 
@@ -479,19 +479,19 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
          # est bien coherent avec celui initialement affecte par la macro (voir ci dessus)
          # on affecte au concept ce type car il peut etre plus precis (derive, en general)
          sd.__class__=sdprod
-         # On force également le nom stocké dans l'attribut sdnom : on lui donne le nom 
+         # On force également le nom stocké dans l'attribut sdnom : on lui donne le nom
          # du concept associé à nomsd
          etape.sdnom=sd.nom
       elif etape.definition.reentrant != 'n' and etape.reuse != None:
          # On est dans le cas d'une commande avec reutilisation d'un concept existant
-         # get_sd_prod fait le necessaire : verifications, associations, etc. mais ne cree 
+         # get_sd_prod fait le necessaire : verifications, associations, etc. mais ne cree
          # pas un nouveau concept. Il retourne le concept reutilise
          sd= etape.get_sd_prod()
          # Dans le cas d'un concept nomme automatiquement : _xxx, __xxx,
-         # On force le nom stocke dans l'attribut sdnom  de l'objet etape : on lui donne le nom 
+         # On force le nom stocke dans l'attribut sdnom  de l'objet etape : on lui donne le nom
          # du concept  reutilise (sd ou etape.reuse c'est pareil)
          # Ceci est indispensable pour eviter des erreurs lors des verifications des macros
-         # En effet une commande avec reutilisation d'un concept verifie que le nom de 
+         # En effet une commande avec reutilisation d'un concept verifie que le nom de
          # la variable a gauche du signe = est le meme que celui du concept reutilise.
          # Lorsqu'une telle commande apparait dans une macro, on supprime cette verification.
          if (etape.sdnom == '' or etape.sdnom[0] == '_'):
@@ -504,7 +504,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       return sd
 
    def NommerSdprod(self,sd,sdnom,restrict='non'):
-      """ 
+      """
           Cette methode est appelee par les etapes internes de la macro
           La macro appelle le JDC pour valider le nommage
           On considere que l espace de nom est unique et géré par le JDC
@@ -518,15 +518,11 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       # est de verifier que le nom n'est pas deja attribue. Ceci est fait en delegant
       # au JDC par l'intermediaire du parent.
 
-      #XXX attention inconsistence : prefix et gcncon ne sont pas 
-      # définis dans le package Noyau. La methode NommerSdprod pour
+      #XXX attention inconsistence : gcncon n'est pas
+      # défini dans le package Noyau. La methode NommerSdprod pour
       # les macros devrait peut etre etre déplacée dans Build ???
 
       if CONTEXT.debug : print "MACRO.NommerSdprod: ",sd,sdnom
-
-      if hasattr(self,'prefix'):
-        # Dans le cas de l'include_materiau on ajoute un prefixe au nom du concept
-        if sdnom != self.prefix:sdnom=self.prefix+sdnom
 
       if self.Outputs.has_key(sdnom):
         # Il s'agit d'un concept de sortie de la macro produit par une sous commande
@@ -549,7 +545,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
         else:
           sdnom=self.gcncon('_')
       else:
-        # On est dans le cas d'un nom de concept global. 
+        # On est dans le cas d'un nom de concept global.
         pass
 
       if restrict == 'non':
@@ -675,7 +671,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       return etape
 
    def copy_intern(self,etape):
-      """ Cette méthode effectue la recopie des etapes internes d'une macro 
+      """ Cette méthode effectue la recopie des etapes internes d'une macro
           passée en argument (etape)
       """
       self.etapes=[]
@@ -695,7 +691,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
           new_etp.copy_intern(etp)
           self.etapes.append(new_etp)
           self.index_etapes[new_etp] = len(self.etapes) - 1
-          
+
 
    def reset_jdc(self,new_jdc):
        """
@@ -731,8 +727,8 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
    def sd_accessible(self):
       """On peut acceder aux "valeurs" (jeveux) des ASSD dans
       les macro-commandes qui sont localement en PAR_LOT="NON"
-      sauf pour INCLUDE et INCLUDE_MATERIAU.
+      sauf pour INCLUDE.
       """
       if CONTEXT.debug: print ' `- MACRO sd_accessible :', self.nom
-      return self.parent.sd_accessible() or not self.nom.startswith('INCLUDE')
+      return self.parent.sd_accessible() or not self.is_include()
 
