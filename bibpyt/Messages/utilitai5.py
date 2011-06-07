@@ -1,8 +1,8 @@
-#@ MODIF utilitai5 Messages  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai5 Messages  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -284,14 +284,6 @@ Erreur Programmeur / UTTCPU  :
  Vous essayer de stocker la SD charge dans la SD résultat.
  Ce n'est pas possible pour une SD résultat de type %(k1)s,
  on ne stocke pas la charge.
-"""),
-
-95 : _("""
-  le noeud %(k1)s ne supporte pas la composante %(k2)s
-"""),
-
-96 : _("""
-  le noeud %(k1)s le noeud %(k2)s ne supporte pas la composante %(k3)s
 """),
 
 97 : _("""

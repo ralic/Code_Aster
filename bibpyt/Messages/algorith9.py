@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algorith9 Messages  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,10 +22,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-1 : _("""
- le champ de température : TEMP_INIT(NUM_INIT) n'existe pas.
-"""),
 
 2 : _("""
  la méthode de Newmark est programmée sous sa forme implicite: 

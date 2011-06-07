@@ -1,7 +1,7 @@
-      SUBROUTINE DIEVEN(SDDISC,EVEN  ,LACTI )
+      SUBROUTINE DIEVEN(SDDISC,IEVENT,LACTI )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C 
       IMPLICIT   NONE
       CHARACTER*19  SDDISC
-      CHARACTER*(*) EVEN
+      INTEGER       IEVENT
       LOGICAL       LACTI
 C
 C ----------------------------------------------------------------------
@@ -34,32 +34,18 @@ C
 C ----------------------------------------------------------------------
 C
 C IN  SDDISC : SD DISCRETISATION TEMPORELLE
-C IN  EVEN   : NOM D'EVENEMENT A ACTIVER
+C IN  IEVENT : INDICE DE L'EVENEMENT ACTIVE
 C OUT LACTI  : .TRUE. SI ACTIVE
 C              .FALSE. SI DESACTIVE
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      NECHEC,IECHEC,IEVENT
-      CHARACTER*8  K8BID
       INTEGER      IBID
       REAL*8       R8BID
-      CHARACTER*16 NOMEVE,ACTIVE
+      CHARACTER*16 ACTIVE
 C
 C ----------------------------------------------------------------------
-C      
-      CALL UTDIDT('L'   ,SDDISC,'ECHE',IBID  ,'NB_OCC',
-     &            R8BID ,NECHEC,K8BID )
-      IEVENT = 0
-      LACTI  = .FALSE.
-C
-C --- RECHERCHE DU NUMERO D'OCCURENCE DE L'EVENEMENT
-C
-      DO 10 IECHEC = 1,NECHEC
-        CALL UTDIDT('L'   ,SDDISC,'ECHE',IECHEC,'NOM_EVEN',
-     &              R8BID ,IBID  ,NOMEVE)
-        IF (EVEN.EQ.NOMEVE) IEVENT = IECHEC
- 10   CONTINUE      
+C           
 C
 C --- LECTURE DE L'EVENEMENT
 C
@@ -71,7 +57,7 @@ C
         ELSEIF (ACTIVE.EQ.'NON') THEN
           LACTI  = .FALSE.
         ELSE
-          WRITE(6,*) 'DIEVEN: ',NOMEVE,IEVENT,ACTIVE
+          WRITE(6,*) 'DIEVEN: ',IEVENT,ACTIVE
           CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF      

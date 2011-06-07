@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 06/06/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE  Validation du solveur PETSc en elasticite lineaire 3D
 # petsc01h.para = tps_job 60 mem_job 1000Mo mpi_nbcpu 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,7 +68,8 @@ EVOL=DYNA_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LIST,),
                    SOLVEUR=_F(METHODE='PETSC',
                               ALGORITHME='GMRES',
-                              PRE_COND='LDLT_SP',),);
+                              PRE_COND='LDLT_SP',
+                              PCENT_PIVOT=20,),);
 
 TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    NUME_ORDRE=2,

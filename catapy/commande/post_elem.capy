@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                fr="Calcul de quantités globales (masse, inerties, énergie, ...) sur tout ou partie du modèle",
 
          regles=(UN_PARMI('MASS_INER', 'ENER_POT', 'ENER_CIN','TRAV_EXT','MINMAX',
-                          'WEIBULL', 'RICE_TRACEY', 'CARA_GEOM','CHAR_LIMITE',
+                          'WEIBULL', 'RICE_TRACEY', 'CARA_GEOM','CHAR_LIMITE','NORME',
                           'CARA_POUTRE', 'INDIC_ENER', 'INDIC_SEUIL','VOLUMOGRAMME',
                           'AIRE_INTERNE','ENER_ELAS','ENER_TOTALE','ENER_DISS','INTEGRALE'),
                 ),
@@ -297,6 +297,36 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                        INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
                        LIST_INST      = SIMP(statut='f',typ=listr8_sdaster),
          ),
+
+         NORME  = FACT(statut='f',max=1,
+                       fr="calcul des extrema en espace d'une CMP d'un champ, pour tous les instants spécifiés",
+                       regles=(UN_PARMI('TOUT','GROUP_MA'),
+                               UN_PARMI('CHAM_GD','RESULTAT'),
+                               PRESENT_PRESENT('CHAM_GD','MODELE'),
+                               PRESENT_PRESENT('RESULTAT','NOM_CHAM'),),
+                       TOUT         = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                       GROUP_MA     = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                       TYPE_MAILLE  = SIMP(statut='f',typ='TXM',into=('2D','3D',)),
+                       TYPE_NORM    = SIMP(statut='f',typ='TXM',into=('L2',)),
+                       RESULTAT       = SIMP(statut='f',typ=(evol_noli,evol_ther,evol_elas) ),
+                       NOM_CHAM       = SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
+                       CHAM_GD        = SIMP(statut='f',typ=(cham_no_sdaster,cham_elem) ),
+                       MODELE         = SIMP(statut='f',typ=modele_sdaster),
+
+                       b_norme = BLOC(condition = "( RESULTAT != None )",
+                               regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
+                              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+                              b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                                  PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+                              b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                                  PRECISION       =SIMP(statut='o',typ='R',),),
+                              TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                              NUME_ORDRE     = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+                              LIST_ORDRE     = SIMP(statut='f',typ=listis_sdaster),
+                              INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+                              LIST_INST      = SIMP(statut='f',typ=listr8_sdaster),
+                              ),
+                       ),
 
 
          MINMAX  = FACT(statut='f',max=1,

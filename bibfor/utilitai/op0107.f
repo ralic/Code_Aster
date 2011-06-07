@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF UTILITAI  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,6 +165,23 @@ C                   ----------
 
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL PEEINT ( RESU, MODELE, NBOCC )
+
+      ENDIF
+
+      CALL GETFAC ( 'NORME' , NBOCC )
+C                   ----------
+      IF ( NBOCC .NE. 0 ) THEN
+
+C         --- ON RECUPERE LE MODELE
+         CALL GETVID ( 'NORME', 'CHAM_GD', 1,1,1, CHDEF, N1 )
+         IF (N1.NE.0) THEN
+            CALL GETVID ( 'NORME', 'MODELE', 1,1,1, MODELE, N2 )
+         ELSE
+            CALL GETVID ( 'NORME', 'RESULTAT' , 1,1,1, RESUCO, NR )
+            CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
+         ENDIF
+
+         CALL PENORM ( RESU, MODELE )
 
       ENDIF
 

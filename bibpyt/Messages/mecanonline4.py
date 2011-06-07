@@ -1,4 +1,4 @@
-#@ MODIF mecanonline4 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline4 Messages  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,14 +25,6 @@ cata_msg = {
 
 3 : _("""
  Calcul des valeurs propres en grandes déformations
-"""),
-
-5 : _("""
-Le fichier pour le SUIVI_DDL doit etre défini dans la première occurrence
-"""),
-
-6 : _("""
-Le fichier pour le SUIVI_DDL a été donné sans unité logique
 """),
 
 14 : _("""

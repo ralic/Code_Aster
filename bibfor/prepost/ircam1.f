@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 06/06/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -270,15 +270,6 @@ C
             ENDIF
             IF ( NIVINF.GT.1 ) THEN
               WRITE (IFM,4002) NOMTYP(TYMAST), TYGEOM
-            ENDIF
-            IF(IRET.NE.-1)THEN
-              NBVAL = 0
-              CALL MDEXCV(NOFIMD,IDFIMD,NOCHMD,NUMORD,NUMPT,
-     &                    TYPENT,TYGEOM,NBVAL, IRET2 )
-              IF( NBVAL.GT.0 ) THEN
-                NTYMAS=NOMTYP(TYMAST)
-                CALL U2MESK('F','MED_99',1,NTYMAS)
-              ENDIF
             ENDIF
           ENDIF
 C

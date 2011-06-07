@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 01/02/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 06/06/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -542,15 +542,6 @@ cata_msg = {
 
 98 : _("""
   -> Fichier med :  %(k1)s champ :  %(k2)s 
-"""),
-
-99 : _("""
-  -> Des éléments finis différents s'appuient sur un meme type de maille(%(k1)s).
-     Le nombre de valeurs à écrire est différent entre ces deux types
-     d'éléments, on ne peut pas écrire le champ complet au format med.
-  -> Risque & Conseil:
-     Veuillez utiliser la restriction géométrique GROUP_MA de l'opérateur
-     IMPR_RESU pour spécifier les mailles à considérer.
 """),
 
 }

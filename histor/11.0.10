@@ -1,0 +1,788 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 06/06/2011 - 12:33:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017011 DU 2011-05-26 08:22:34
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.8, les cas-tests forma03c, sdns106a, ssnl136b, ssnp133f,g, ssnv138e et ssnv157k s'arretent en erreur fatale sur Aster4, Rocks et Calibre 5.
+FONCTIONNALITE
+   En NEW11.0.8, les cas-tests forma03c, sdns106a, ssnl136b, ssnp133f,g, ssnv138e et ssnv157k
+   s'arretent en erreur fatale sur Aster4, Rocks et Calibre 5.
+   Ces cas-tests sont en échec suite à la restitution de la fiche 16957
+   
+   
+   Forma03c,ssnl136b: j'ai supprimé un GOTO de trop
+   sdns106a: un oubli dans l'explicite. On arrête le chrono du pas alors que c'est OP0070 qui
+   doit le faire
+   ssnp133f,g,ssnv157k: la fonctionnalité DIVE_ITER_PILO était cassée suite a la nouvelle
+   capture des erreurs + suppression abusive de la routine xmdeco
+   ssnv138e: un ASSERT de trop dans nmactn + oubli qu'on pouvait avoir PLUSIEURS événements
+   DELTA_GRANDEUR
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    les cas-tests casses
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015965 DU 2010-11-25 07:57:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    CTC1 - Coefficients variables
+FONCTIONNALITE
+   L'idée est de permettre de rendre variable les coefficients (de régularisation et
+   d'augmentation) au cours du calcul.
+   Application: adaptation automatique des coefficients d'augmentation (travail de thèse de
+   Dzifa) et de pénalisation (issue9332)
+   Principe: copier les paramètres actuellement dans DEFICO (DEFI_CONTACT) vers RESOCO
+   (STAT_NON_LINE)
+   
+   Cette fiche est purement architecturale: elle n'introduit aucune nouvelle fonctionnalité.
+   
+   Deux routines créées:
+   CFMMCI : Initialise les coefficients en les recopiant de DEFICO (DEFI_CONTACT) vers RESOCO
+   (STAT_NON_LINE)
+   CFMMCO : Acces aux coefficients variables
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016787 DU 2011-04-15 08:13:17
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Suppression branches mortes
+FONCTIONNALITE
+   Les routines suivantes ne sont plus appelées. 
+   DIARCH, NTDOED (scories du chantier ARCHIVAGE)
+   CHKCMP, IMPFIH, IMPINF, IMPPRE, NMEXT4, NMEXTE, NMIMPF (scories du chantier AFFICHAGE)
+   On les supprime
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR berard       BERARD Alexandre       DATE 06/06/2011 - 12:20:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016055 DU 2010-12-13 08:07:13
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Anomalie PROJ_CHAMP('ELGA')
+FONCTIONNALITE
+   Problème
+   ========
+   
+   En voulant tester la méthode de projection aux points de Gauss, un utilisateur est tombé sur une erreur 
+   utilisateur dans PROJ_CHAMP. Le message n'était pas clair et mal formaté. 
+   
+   
+   Analyse et solution
+   ===================
+   
+   Suite à la correction de la fiche issue17009, le message est maintenant plus compréhensible. L'erreur 
+   initiale vient du fait que PROJ_CHAMP / ECLA_PG ne sait pas traiter le cas de figure demandé par 
+   l'utilisateur, tout comme MACR_ECLA_PG dont il réutilise la programmation.
+   
+   
+   Deux remarques
+   ==============
+   
+   1. Je ne pense pas qu'il soit de mon ressort de faire évoluer la commande PROJ_CHAMP pour que le 
+   découpage en ECLA_PG s'adapte aux familles de points de Gauss demandées par l'utilisateur. 
+   
+   2. Une telle erreur montre que la méthode ECLA_PG nécessite la programmation a priori de l'éclatement de 
+   toutes les mailles du code, ce qui n'était pas dans le cahier des charges initial de la thèse. Le 
+   manuscrit donnera des pistes pour des méthodes plus génériques ; toutefois, aucune restitution n'est 
+   prévue dans Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Test perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016704 DU 2011-04-01 07:27:28
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    PROJ_CHAMP('ELGA') transforme les types de champs
+FONCTIONNALITE
+   Problème
+   ========
+   
+   En utilisant la méthode de projection aux points de Gauss, un utilisateur du forum a effectué un test 
+   dans lequel PROJ_CHAMP('ELGA') transformait un champ de contraintes équivalentes SIEQ_ELGA en champ
+   de contraintes SIEF_ELGA. De plus, les valeurs étaient fausses car un champ non nul est transformé en
+   champ nul.
+   
+   
+   Analyse et solution
+   ===================
+   
+   Dans la création du champ projeté, le nom de l'option et le nom du paramètre étaient vides lors de 
+   l'appel à la routine CESCEL. On corrige la routine PJELGA en renseignant ces deux valeurs. Le test de 
+   l'utilisateur du forum tourne correctement.
+   
+   
+   Impact fortran
+   ==============
+   
+   pjelga.f
+   
+   
+   Remarque
+   ========
+   
+   La projection a initialement été développée pour transférer des SIEF_ELGA et des VARI_ELGA. Il paraît 
+   important de réfléchir au sens de projeter des quantités comme SIEQ_ELGA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Test fourni par l'utilisateur du forum
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 06/06/2011 - 02:55:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017050 DU 2011-06-01 13:25:15
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    En 11.0.9 petsc01h manque de mxc3xa9moire sur Aster4 MPI
+FONCTIONNALITE
+   Express
+   =======
+   
+   En 11.0.9, petsc01h manque de mémoire lors de la préparation du préconditionneur.
+   
+    !--------------------------------------------------------------------------------!
+    ! <F> <PETSC_15>                                                                 !
+    !                                                                                !
+    ! Solveur PETSc :                                                                !
+    !   La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire. !
+    !                                                                                !
+    !   Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.                !
+    !                                                                                !
+    !                                                                                !
+    ! Cette erreur est fatale. Le code s'arrete.                                     !
+    !--------------------------------------------------------------------------------!
+   
+   Bien que ayant tourné dans mon astout, ce test ne veut plus tourner en batch avec la
+   valeur par défaut de PCENT_PIVOT (10).
+   
+   On augmente PCENT_PIVOT à 20.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    petsc01h
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017061 DU 2011-06-06 06:11:03
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.9, le cas-test gcpc001a s'arrete en erreur fatale sur Rocks.
+FONCTIONNALITE
+   En NEW11.0.9, le cas-test gcpc001a s'arrete en erreur fatale sur Rocks.
+   
+      !--------------------------------------------------------------------------------!
+      ! <F> <ALGELINE5_76>                                                             !
+      !                                                                                !
+      ! Solveur GCPC :                                                                 !
+      !   La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire. !
+      !                                                                                !
+      !   Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.                !
+      !                                                                                !
+      !                                                                                !
+      ! Cette erreur est fatale. Le code s'arrete.                                     !
+      !--------------------------------------------------------------------------------!
+   
+   On augmente la valeur de PCENT_PIVOT (mot-clé récemment introduit pour ce solveur) de 10
+   (défaut) à 20.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    gcpc001a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 06/06/2011 - 02:57:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017015 DU 2011-05-26 08:52:21
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.0.8, 22 cas-tests dont hsnv132b sont en erreur fatale sur Rocks.
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En NEW11.0.8, 22 cas-tests dont hsnv132b sont en erreur fatale sur Rocks.
+   Le problème se situe dans la commande CALC_G, si option = CALC_K_G en 2d X-FEM.
+   Le mesasge d'erreur dit qu'il faut définir la direction du champ THETA.
+   
+   
+   Solution :
+   ----------
+   
+   Une variable mal initialisée était à l'origine du problème qui faisait croire que l'on
+   était dans le cas FEM, pour lequel il faut donner la direction du champ THETA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests CALC_G
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 06/06/2011 - 12:27:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017065 DU 2011-06-06 06:27:24
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.9, les cas-tests zzzz237a et zzzz274d s'arretent en erreur fatale sur Rocks et Calibre 5.
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW11.0.9, les cas-tests zzzz237a et zzzz274d s'arretent en erreur fatale sur Rocks et
+   Calibre 5.
+   
+   
+   Solution :
+   ----------
+   Une variable non intialisées provoque un plantage en ASSERT dans CCBCOP. Je modifie cette
+   routine pour ne plus tomber dans cet ASSERT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz274d
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014475 DU 2010-01-22 15:18:19
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 - Automatiser la recuperation des champs de CALCUL pour CALC_ELEM
+FONCTIONNALITE
+   Demande :
+   ---------
+   """
+   On voudrait mettre en place la récupération automatique des champs de CALCUL pour
+   CALC_ELEM (et à terme pour CALC_CHAMP).
+   """
+   
+   
+   Réalisation :
+   -------------
+   Fiche traitée et détaillée dans les fiches :
+   - issue15510 : Interdire la réentrance de CALC_ELEM,
+   - issue15573 : Création de CALCOP (traitement des options de CALC_ELEM),
+   - issue16925 : Création de CALC_CHAMP,
+   - issue16968 : Options de CALC_NO,
+   - issue16983 : Destruction des champs intermédiaires,
+   - issue17031 : Ajout des options FORC_NODA et REAC_NODA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013980 DU 2009-10-05 14:12:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MED et champ THM
+FONCTIONNALITE
+   Problème :
+   ----------
+   Cette fiche traite des problèmes soulevés par les champs THM qui ne portent pas toujours
+   les mêmes composantes sur les différents points de Gauss d'un même élément.
+   
+   
+   Analyse :
+   ---------
+   Il y plusieurs problèmes. Le premier concerne les champs qui ne portent pas les mêmes
+   composantes sur toutes leurs types "géométriques" par exemple, SIEF_ELGA peut porter SIXX
+   sur certains points de Gauss et N sur certains autres.
+   
+   Dans le format MED, on suppose qu'un champ porte toutes les composantes qui sont définies
+   sur lui sur toutes les entités. Donc pour SIEF_ELGA, si j'ai SIXX et N dans mon champ, MED
+   s'attend à ce que ces deux composantes soient présentes sur tous les points de Gauss
+   (qu'ils appartiennent à des éléments 3D ou de structure). Aujourd'hui dans Aster, on met
+   des zéros pour les composantes non portées par un point de Gauss.
+   
+   Le but de cette fiche était donc d'éclater les champs dans IMPR_RESU en modifiant le
+   catalogue des grandeurs simples pour créer des groupes de composantes mais aussi de
+   restreindre l'impression sur un groupe de mailles (exemple : n'imprimer N que sur les
+   mailles portant cette composante).  Ensuite sur cette base-là il aurait fallu être en
+   mesure de refusionner les champs en cas de relecture dans LIRE_RESU.
+   
+   L'utilisateur qui a demandé l'impression de SIEF_ELGA se retrouverait donc avec les champs
+   SIEF_ELGA_SIGM, SIEF_ELGA_EFGE, etc. De plus chaque champ serait défini sur des ensembles
+   disjoints du maillage.
+   
+   Bref, une usine à gaz qui n'a été demandé par aucun utilisateur (c'est moi qui ai émis la
+   fiche).
+   
+   D'autant qu'aujourd'hui, tous les outils sont présents pour le faire simplement grâce à
+   NOM_CHAM_MED et NOM_RESU_MED.
+   
+   Deuxième problème, dans Aster, on peut avec des champs ELGA avec une sorte d'éléments
+   portant différentes famille de points de Gauss (ex : SEG2 avec à certains endroits FPG3 et
+   à d'autres FPG1). Aujourd'hui l'impression de ce type de champs provoque une erreur fatale
+   MED_99. Mais avec MED3.0 cette limitation peut-être levée. Je la lève donc dans le cadre
+   de cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz263a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009567 DU 2006-03-16 16:41:09
+TYPE evolution concernant Code_Aster (VERSION 8.2)
+TITRE
+    AR01 - Catalogue de la commande CALC_ELEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Lorsqu'on choisie TYPE_OPTION='TOUTE' les blocs conditionnels sont permis pour toutes les
+   options de calcul. En effet on peux, par exemple, choisir TYPE_OPTION='TOUTE',
+   OPTION='ERRE_ELNO_ELGA', NIV_COUCHE='MOY' (ce qui n'a aucun sens) alors que
+   TYPE_OPTION='INDI_ERRE', OPTION='ERRE_ELNO_ELGA', NIV_COUCHE='MOY' est interdit (cf. EFICAS).
+   
+   Le problème vient du fait que dans chaque bloc de groupe d'options ("SIGM_MASSIF",
+   "SIGM_STRUCT", "EPSI", "ENER", "CRIT", "DERIVEES", "INDI_ERRE", "AUTRES") il y a un
+   certain nombre de mots clés asservis par une condition or ces conditions ne sont pas
+   répercutées dans le bloc de groupe d'options "TOUTES".
+   
+   Je crois que pour résoudre ce problème, il faudrait dupliquer les blocs conditionnels de
+   chaque TYPE_OPTION au niveau du TYPE_OPTION='TOUTES'.
+   """
+   
+   
+   Solution :
+   ----------
+   Comme la commande CALC_ELEM va être supprimée et que CALC_CHAMP n'aura pas de blocs comme
+   CALC_ELEM, cette fiche n'a plus de raison d'être.
+   
+   Je la classe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 06/06/2011 - 02:41:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013875 DU 2009-09-14 16:09:30
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    Calculer les normes L2 et H1 d'un champ
+FONCTIONNALITE
+   Objectif
+   ========
+   Enrichir l'operateur POST_ELEM pour calculer la norme L2 d'un champ pour les elements de
+   milieux 
+   continus.
+   Cette fiche est la premiere pierre a l'edifice, il restera a :
+   - prendre en compte les elements de structure et les discrets,
+   - realiser le calcul de la norme H1.
+   
+   Syntaxe
+   =======
+   tb=POST_ELEM(
+           ...,
+          f  NORME=_F(
+                f   TYPE_NORM =   'L2',
+                f   TYPE_MAILLE = / '2D'
+                                  / '3D'
+                f  /  TOUT='OUI'(defaut),
+                       GROUP_MA=group_ma
+                o  /   CHAM_GD = cham_gd,
+                   /   RESULTAT =resu,
+                       NOM_CHAM = nom_cham,
+                       NUME_ORDRE=nume_ordre,
+                       ...,
+                     ),
+             ...,
+           )
+   
+   
+   Methodologie
+   ============
+   - on recupere le champ (soit par lecture de cham_gd, soit par extraction de nom_cham au
+   numero d'ordre 
+   num_ordre de la sd Resultat resu), 
+   - on le reduit (pour ne conserver que les mailles demandees),
+   - on le transforme en champ elementaire simple aux points de Gauss,
+   - on appelle 'calcul' avec l'option 'COOR_ELGA' pour recuperer les poids des points de Gauss,
+   - on appelle 'calcul' avec l'option 'NORME_L2' pour calculer un champ constant par element
+   de composante 
+   unique 'X1' correspondant a la norme au
+   carree,
+   - on somme chaque contribution X1, puis on calcule la racine de cette valeur pour obtenir
+   la norme L2 du 
+   champ.
+   
+   Impact developpement
+   ====================
+   
+   1) bibfor
+   
+   - un appel a une routine specifique au calcul de la norme L2 (penorm.f) a ete ajoute dans
+   l'op0107 
+   (POST_ELEM),
+   - developpement de la routine penorm.f,
+   - creation d'un nouveau te (te0563.f) dedie on calcul de la norme L2.
+   
+   Precision sur le calcul de la norme L2 d'un vecteur u:
+   On approxime le calcul de la norme L2 par une quadrature de Gauss en passant par l'element
+   de reference :
+   
+                                 nV    nPG  nCMP
+                /                ---   ---  ---
+        2      (      2          \     \    \             2
+   ||u||   =    \   U   dV   ~   /     /    /   W_ref  . U      |det(J    ) |
+        2        )               ---   ---  ---      j    i,j,k       i,j
+                /                i=1   j=1  k=1
+               V
+   ou : -  nV, nPG, nCMP sont resp. le nombre d'elements consideres, le nombre de points de
+   Gauss et le 
+   nombre de composantes du champ.
+        -  w_ref   =  le poids du poids de Gauss j de l'element de reference,
+                j
+   
+        -   U    =  la composante k du vecteur U de l'element i evalue au point de Gauss j
+             i,j,k
+   
+        -  det(J   ) = le déterminant de la matrice jacobienne 
+                i,j
+   
+   2) catalo
+   
+   a) modification de 108 catalogues d’éléments :
+   - ajout de l'option NORME_L2 :
+        NORME_L2            563   IN__   EGGEOP_R PCOORPG  EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR
+                                  OUT__  ENORME   PNORME
+   - ajout des modes locaux  ENORME, EMNEUT_R (les autres étant connus)
+   - les éléments permettant ce calcul sont :
+   gener_me3d_2.cata gener_me3d_3.cata gener_meax_2.cata gener_thpl_2.cata gener_th3d_2.cata
+   gener_th3d_3.cata
+   
+   
+   b) nouveau catalogue d'option:  norme_l2.cata
+   paramètres IN : 
+      PCOORPG : champ de coordonnees et poids des points de gauss
+      PCHAMPG : champ aux points de Gauss sur lequel la norme est calculee
+      PCOEFR  : carte de coefficients (utile pour les tenseurs)
+   parametres OUT : 
+      PNORME NEUT_R ELEM__
+   
+   3) validation
+   
+   Nouveau cas-test ZZZZ291 avec 2 modelisations:
+   - modelisation A : phenomene mecanique, modelisation 3D,
+   - modelisation B : phenomene thermique, modelisation PLAN.
+   Le calcul de la norme L2 est effectue sur des champs de temperature, de deplacements, de
+   contraintes 
+   suivant differentes discretisations (NOEU, ELNO, ELGA).
+   La validation a ete effectuee par le biais de POST_ELEM/INTEGRALE en integrant un champ
+   dont les valeurs 
+   correspondent a la norme au carre des valeurs du champ. 
+   
+   4) documentation
+   - Enrichissement de la doc U4.81.22 (POST_ELEM) pour presenter la nouvelle fonctionnalite.
+   - Creation de la doc V1.01.291 pour decrire le cas-test ZZZZ291.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.81.22, V1.01.291
+VALIDATION
+    Passage des tests joints
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 06/07/2011 - 09:51:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016980 DU 2011-05-23 13:10:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    evolution POST_DYNA_ALEA
+FONCTIONNALITE
+   Ajout de deux nouvelles sorties dans la table des sorties  : 
+   1) la réponse maximale moyenne : nom MAX_MOY
+   2) et le facteur de peak : nom FACT_PIC
+   
+   Nouveau mot-clé: DUREE (la durée du signal).
+   
+   MAX_MOY et FACT_PC sont calculées si DUREE est renseigné.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.84.04, V2.02.104
+VALIDATION
+    sdll104a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT zzzz291a                      tardieu N.TARDIEU          446    446      0
+ CASTEST AJOUT zzzz291b                      tardieu N.TARDIEU          207    207      0
+ CASTEST MODIF forma03c                        abbas M.ABBAS            162      1      1
+ CASTEST MODIF gcpc001a                       desoza T.DESOZA           143      3      3
+ CASTEST MODIF petsc01h                       desoza T.DESOZA           120      3      2
+ CASTEST MODIF sdll104a                      zentner I.ZENTNER          531     19     19
+ CASTEST MODIF sdns106a                        abbas M.ABBAS            372      1      1
+ CASTEST MODIF ssnl122a                      tardieu N.TARDIEU          405      1      2
+ CASTEST MODIF ssnl123a                      tardieu N.TARDIEU          375      2      3
+ CASTEST MODIF ssnl135a                      tardieu N.TARDIEU          734      1      2
+ CASTEST MODIF ssnl135b                      tardieu N.TARDIEU          740      1      2
+ CASTEST MODIF ssnl135c                      tardieu N.TARDIEU          744      1      2
+ CASTEST MODIF ssnl136b                        abbas M.ABBAS            369      1      1
+ CASTEST MODIF ssnp133f                        abbas M.ABBAS            305      1      1
+ CASTEST MODIF ssnv138e                        abbas M.ABBAS            333      2      2
+ CASTEST MODIF ssnv157k                        abbas M.ABBAS            138      1      1
+ CASTEST MODIF zzzz263a                     sellenet N.SELLENET         654      8      2
+CATALOGU AJOUT options/norme_l2              tardieu N.TARDIEU           34     34      0
+CATALOGU MODIF options/tou_ini_elga          tardieu N.TARDIEU           38      2      1
+CATALOGU MODIF options/tou_ini_elno          tardieu N.TARDIEU           36      2      2
+CATALOGU MODIF typelem/gener_2d2g            tardieu N.TARDIEU          172      5      1
+CATALOGU MODIF typelem/gener_2dilp0          tardieu N.TARDIEU          161      5      1
+CATALOGU MODIF typelem/gener_ac3d_3          tardieu N.TARDIEU          100      6      1
+CATALOGU MODIF typelem/gener_acpla2          tardieu N.TARDIEU           92      6      1
+CATALOGU MODIF typelem/gener_ei2d_2          tardieu N.TARDIEU          153      6      2
+CATALOGU MODIF typelem/gener_ei3d_3          tardieu N.TARDIEU          146      6      2
+CATALOGU MODIF typelem/gener_ej2d_hm         tardieu N.TARDIEU          151      6      2
+CATALOGU MODIF typelem/gener_ej3d_hm         tardieu N.TARDIEU          155      5      1
+CATALOGU MODIF typelem/gener_ejah22          tardieu N.TARDIEU          211      5      1
+CATALOGU MODIF typelem/gener_ejdh22          tardieu N.TARDIEU          210      5      1
+CATALOGU MODIF typelem/gener_me2dg_1         tardieu N.TARDIEU          347      5      1
+CATALOGU MODIF typelem/gener_me2dg_2         tardieu N.TARDIEU          363      5      1
+CATALOGU MODIF typelem/gener_me2dsi_2        tardieu N.TARDIEU          352      5      1
+CATALOGU MODIF typelem/gener_me2fl2          tardieu N.TARDIEU          118      6      1
+CATALOGU MODIF typelem/gener_me2fp2          tardieu N.TARDIEU          115      6      1
+CATALOGU MODIF typelem/gener_me3a13          tardieu N.TARDIEU          253      5      1
+CATALOGU MODIF typelem/gener_me3a33          tardieu N.TARDIEU          206      5      1
+CATALOGU MODIF typelem/gener_me3a42          tardieu N.TARDIEU           78      7      2
+CATALOGU MODIF typelem/gener_me3a43          tardieu N.TARDIEU          257      5      1
+CATALOGU MODIF typelem/gener_me3a61          tardieu N.TARDIEU           71      8      2
+CATALOGU MODIF typelem/gener_me3a62          tardieu N.TARDIEU          181      5      1
+CATALOGU MODIF typelem/gener_me3a63          tardieu N.TARDIEU           70      7      2
+CATALOGU MODIF typelem/gener_me3a64          tardieu N.TARDIEU          184      5      1
+CATALOGU MODIF typelem/gener_me3d_2          tardieu N.TARDIEU          219      7      1
+CATALOGU MODIF typelem/gener_me3d_3          tardieu N.TARDIEU          645      5      1
+CATALOGU MODIF typelem/gener_me3df3          tardieu N.TARDIEU           94      6      1
+CATALOGU MODIF typelem/gener_me3dg_3         tardieu N.TARDIEU          356      5      1
+CATALOGU MODIF typelem/gener_me3di3          tardieu N.TARDIEU          256      5      1
+CATALOGU MODIF typelem/gener_me3du3          tardieu N.TARDIEU          261      5      1
+CATALOGU MODIF typelem/gener_me3fl3          tardieu N.TARDIEU          133      6      1
+CATALOGU MODIF typelem/gener_me3g33          tardieu N.TARDIEU          177      5      1
+CATALOGU MODIF typelem/gener_me3h13          tardieu N.TARDIEU          253      5      1
+CATALOGU MODIF typelem/gener_me3h23          tardieu N.TARDIEU          247      5      1
+CATALOGU MODIF typelem/gener_me3h33          tardieu N.TARDIEU          183      5      1
+CATALOGU MODIF typelem/gener_me3h43          tardieu N.TARDIEU          256      5      1
+CATALOGU MODIF typelem/gener_me3h53          tardieu N.TARDIEU          250      5      1
+CATALOGU MODIF typelem/gener_me_xh           tardieu N.TARDIEU          347      5      1
+CATALOGU MODIF typelem/gener_me_xhc          tardieu N.TARDIEU          357      5      1
+CATALOGU MODIF typelem/gener_me_xhh          tardieu N.TARDIEU          363      5      1
+CATALOGU MODIF typelem/gener_me_xht          tardieu N.TARDIEU          345      5      1
+CATALOGU MODIF typelem/gener_me_xhtc         tardieu N.TARDIEU          347      5      1
+CATALOGU MODIF typelem/gener_me_xt           tardieu N.TARDIEU          345      5      1
+CATALOGU MODIF typelem/gener_me_xtc          tardieu N.TARDIEU          347      5      1
+CATALOGU MODIF typelem/gener_meaa12          tardieu N.TARDIEU          169      5      1
+CATALOGU MODIF typelem/gener_meaa22          tardieu N.TARDIEU          218      5      1
+CATALOGU MODIF typelem/gener_meaa32          tardieu N.TARDIEU          218      5      1
+CATALOGU MODIF typelem/gener_meaa62          tardieu N.TARDIEU          166      5      1
+CATALOGU MODIF typelem/gener_meaa64          tardieu N.TARDIEU          169      5      1
+CATALOGU MODIF typelem/gener_meafo2          tardieu N.TARDIEU          203      5      1
+CATALOGU MODIF typelem/gener_meag32          tardieu N.TARDIEU          160      5      1
+CATALOGU MODIF typelem/gener_meagi2          tardieu N.TARDIEU          201      5      1
+CATALOGU MODIF typelem/gener_meah12          tardieu N.TARDIEU          228      5      1
+CATALOGU MODIF typelem/gener_meah22          tardieu N.TARDIEU          225      5      1
+CATALOGU MODIF typelem/gener_meah32          tardieu N.TARDIEU          166      5      1
+CATALOGU MODIF typelem/gener_meah42          tardieu N.TARDIEU          222      5      1
+CATALOGU MODIF typelem/gener_meah52          tardieu N.TARDIEU          228      5      1
+CATALOGU MODIF typelem/gener_meax_2          tardieu N.TARDIEU          562      5      1
+CATALOGU MODIF typelem/gener_meax_2_xh       tardieu N.TARDIEU          313      3      1
+CATALOGU MODIF typelem/gener_meax_2_xht      tardieu N.TARDIEU          296      3      1
+CATALOGU MODIF typelem/gener_meax_2_xt       tardieu N.TARDIEU          292      3      1
+CATALOGU MODIF typelem/gener_meaxf2          tardieu N.TARDIEU           95      6      1
+CATALOGU MODIF typelem/gener_meaxs2          tardieu N.TARDIEU          488      5      1
+CATALOGU MODIF typelem/gener_mecpl2          tardieu N.TARDIEU          588      5      1
+CATALOGU MODIF typelem/gener_mecpl2_xh       tardieu N.TARDIEU          330      4      1
+CATALOGU MODIF typelem/gener_mecpl2_xhc      tardieu N.TARDIEU          336      5      1
+CATALOGU MODIF typelem/gener_mecpl2_xhh      tardieu N.TARDIEU          325      3      1
+CATALOGU MODIF typelem/gener_mecpl2_xht      tardieu N.TARDIEU          311      5      1
+CATALOGU MODIF typelem/gener_mecpl2_xhtc     tardieu N.TARDIEU          299      5      1
+CATALOGU MODIF typelem/gener_mecpl2_xt       tardieu N.TARDIEU          306      5      1
+CATALOGU MODIF typelem/gener_mecpl2_xtc      tardieu N.TARDIEU          294      5      1
+CATALOGU MODIF typelem/gener_meda12          tardieu N.TARDIEU          169      5      1
+CATALOGU MODIF typelem/gener_meda22          tardieu N.TARDIEU          220      5      1
+CATALOGU MODIF typelem/gener_meda32          tardieu N.TARDIEU          220      5      1
+CATALOGU MODIF typelem/gener_meda62          tardieu N.TARDIEU          166      5      1
+CATALOGU MODIF typelem/gener_meda64          tardieu N.TARDIEU          169      5      1
+CATALOGU MODIF typelem/gener_medg32          tardieu N.TARDIEU          160      5      1
+CATALOGU MODIF typelem/gener_medgn_2         tardieu N.TARDIEU          285      5      1
+CATALOGU MODIF typelem/gener_medh12          tardieu N.TARDIEU          230      5      1
+CATALOGU MODIF typelem/gener_medh22          tardieu N.TARDIEU          257      5      1
+CATALOGU MODIF typelem/gener_medh32          tardieu N.TARDIEU          166      5      1
+CATALOGU MODIF typelem/gener_medh42          tardieu N.TARDIEU          221      5      1
+CATALOGU MODIF typelem/gener_medh52          tardieu N.TARDIEU          230      5      1
+CATALOGU MODIF typelem/gener_medha2          tardieu N.TARDIEU          148      5      1
+CATALOGU MODIF typelem/gener_medhb2          tardieu N.TARDIEU          221      5      1
+CATALOGU MODIF typelem/gener_medpl2          tardieu N.TARDIEU          597      5      1
+CATALOGU MODIF typelem/gener_medpl2_xh       tardieu N.TARDIEU          324      3      1
+CATALOGU MODIF typelem/gener_medpl2_xhc      tardieu N.TARDIEU          334      5      1
+CATALOGU MODIF typelem/gener_medpl2_xhh      tardieu N.TARDIEU          326      3      1
+CATALOGU MODIF typelem/gener_medpl2_xht      tardieu N.TARDIEU          304      3      1
+CATALOGU MODIF typelem/gener_medpl2_xhtc     tardieu N.TARDIEU          296      5      1
+CATALOGU MODIF typelem/gener_medpl2_xt       tardieu N.TARDIEU          302      3      1
+CATALOGU MODIF typelem/gener_medpl2_xtc      tardieu N.TARDIEU          293      5      1
+CATALOGU MODIF typelem/gener_mefls2          tardieu N.TARDIEU           76      6      1
+CATALOGU MODIF typelem/gener_meh33           tardieu N.TARDIEU          154      5      1
+CATALOGU MODIF typelem/gener_mepgi2          tardieu N.TARDIEU          201      5      1
+CATALOGU MODIF typelem/gener_mepli2          tardieu N.TARDIEU          242      5      1
+CATALOGU MODIF typelem/gener_meplu2          tardieu N.TARDIEU          252      5      1
+CATALOGU MODIF typelem/gener_meshb3          tardieu N.TARDIEU          329      5      1
+CATALOGU MODIF typelem/gener_mevf1           tardieu N.TARDIEU           54      7      2
+CATALOGU MODIF typelem/gener_mf2fi2          tardieu N.TARDIEU          146      5      1
+CATALOGU MODIF typelem/gener_mf3d_3          tardieu N.TARDIEU          146      5      1
+CATALOGU MODIF typelem/gener_mv2d_2          tardieu N.TARDIEU          285      5      1
+CATALOGU MODIF typelem/gener_mv3d_3          tardieu N.TARDIEU          325      5      1
+CATALOGU MODIF typelem/gener_mv3dn_3         tardieu N.TARDIEU          325      5      1
+CATALOGU MODIF typelem/gener_th3d_2          tardieu N.TARDIEU          161      7      2
+CATALOGU MODIF typelem/gener_th3d_3          tardieu N.TARDIEU          264      7      2
+CATALOGU MODIF typelem/gener_thaxf2          tardieu N.TARDIEU          146      6      1
+CATALOGU MODIF typelem/gener_thpl_2          tardieu N.TARDIEU          346      9      3
+CATALOPY MODIF commande/defi_fonc_elec       tardieu N.TARDIEU           73      3      3
+CATALOPY MODIF commande/post_dyna_alea       zentner I.ZENTNER           58      3      2
+CATALOPY MODIF commande/post_elem            tardieu N.TARDIEU          579     32      2
+ FORTRAN AJOUT algorith/cfmmci                 abbas M.ABBAS            110    110      0
+ FORTRAN AJOUT algorith/cfmmco                 abbas M.ABBAS            135    135      0
+ FORTRAN AJOUT elements/te0563               tardieu N.TARDIEU           91     91      0
+ FORTRAN AJOUT utilitai/penorm               tardieu N.TARDIEU          494    494      0
+ FORTRAN MODIF algorith/cfapre                 abbas M.ABBAS            225      7      5
+ FORTRAN MODIF algorith/dieven                 abbas M.ABBAS             65      6     20
+ FORTRAN MODIF algorith/eneven                 abbas M.ABBAS             63      6     18
+ FORTRAN MODIF algorith/mmchml                 abbas M.ABBAS            256     41     17
+ FORTRAN MODIF algorith/mmmbca                 abbas M.ABBAS            430      6      4
+ FORTRAN MODIF algorith/ndexpl                 abbas M.ABBAS            142      2      2
+ FORTRAN MODIF algorith/ndxcvg                 abbas M.ABBAS            118     23      3
+ FORTRAN MODIF algorith/ndxdec                 abbas M.ABBAS            110      2      5
+ FORTRAN MODIF algorith/nmactn                 abbas M.ABBAS            206      3      5
+ FORTRAN MODIF algorith/nmevdr                 abbas M.ABBAS            219     12      9
+ FORTRAN MODIF algorith/nmnewt                 abbas M.ABBAS            375      2      2
+ FORTRAN MODIF algorith/pjelga                berard A.BERARD           127      2      2
+ FORTRAN MODIF algorith/xmdeco                 abbas M.ABBAS             75      1      4
+ FORTRAN MODIF calculel/ccbcop              sellenet N.SELLENET         228      2      2
+ FORTRAN MODIF calculel/op0100               geniaut S.GENIAUT          995     13     14
+ FORTRAN MODIF modelisa/cfmmvd                 abbas M.ABBAS            117      6      4
+ FORTRAN MODIF modelisa/cfmxsd                 abbas M.ABBAS            199     16      4
+ FORTRAN MODIF prepost/ircam1               sellenet N.SELLENET         352      1     10
+ FORTRAN MODIF utilitai/op0107               tardieu N.TARDIEU          339     18      1
+ FORTRAN SUPPR algorith/diarch                 abbas M.ABBAS             98      0     98
+ FORTRAN SUPPR algorith/impfih                 abbas M.ABBAS             83      0     83
+ FORTRAN SUPPR algorith/impinf                 abbas M.ABBAS            104      0    104
+ FORTRAN SUPPR algorith/imppre                 abbas M.ABBAS            101      0    101
+ FORTRAN SUPPR algorith/nmext4                 abbas M.ABBAS             66      0     66
+ FORTRAN SUPPR algorith/nmexte                 abbas M.ABBAS            110      0    110
+ FORTRAN SUPPR algorith/nmimpf                 abbas M.ABBAS             63      0     63
+ FORTRAN SUPPR algorith/ntdoed                 abbas M.ABBAS            124      0    124
+ FORTRAN SUPPR utilitai/chkcmp                 abbas M.ABBAS            138      0    138
+  PYTHON MODIF Macro/post_dyna_alea_ops      zentner I.ZENTNER          445     11     11
+  PYTHON MODIF Messages/algorith9              abbas M.ABBAS            264      1      5
+  PYTHON MODIF Messages/mecanonline4           abbas M.ABBAS             88      1      9
+  PYTHON MODIF Messages/med                 sellenet N.SELLENET         547      1     10
+  PYTHON MODIF Messages/utilitai5              abbas M.ABBAS            297      2     10
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    7        1517      1517             +1517
+ MODIF :  152       39616       827     349      +478
+ SUPPR :    9         887               887      -887
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  168       42020      2344    1236     +1108 

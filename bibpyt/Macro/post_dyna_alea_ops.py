@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF post_dyna_alea_ops Macro  DATE 07/06/2011   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,7 +222,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       NOEUD_I=args['NOEUD_I']
       OPTION=args['OPTION']
       MOMENT=args['MOMENT']
-#      DUREE=args['DUREE']    
+      DUREE=args['DUREE']    
 
       
 
@@ -410,15 +410,15 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
               dlign['ECART'] = sqrt(val_mom[0])
 
      
-#               if DUREE != None :
-#                  Ts=DUREE
-#                  vop=sqrt(val_mom[2] /val_mom[0])/(2.*pi)
-#                  Nu=Ts*vop/(-log(0.5))
-#                  deltau=sqrt(1.- val_mom[1] **2/(val_mom[2]*val_mom[0]) )
-#                  valNd=2.*Nu*(1-exp(-(deltau)**1.2*sqrt(pi*log(2.*Nu))));
-#                  val_peak=sqrt(2.*log(valNd))
-#                  dlign['F_PEAK'] = val_peak   # -- facteur de peak (oour max moyen)         
-#                  dlign['MAX_MOY'] = val_peak*sqrt(val_mom[0])    # -- max moyen  
+              if DUREE != None :
+                 Ts=DUREE
+                 vop=sqrt(val_mom[2] /val_mom[0])/(2.*pi)
+                 Nu=Ts*vop/(-log(0.5))
+                 deltau=sqrt(1.- val_mom[1] **2/(val_mom[2]*val_mom[0]) )
+                 valNd=2.*Nu*(1-exp(-(deltau)**1.2*sqrt(pi*log(2.*Nu))));
+                 val_peak=sqrt(2.*log(valNd))
+                 dlign['FACT_PIC'] = val_peak   # -- facteur de peak (oour max moyen)         
+                 dlign['MAX_MOY'] = val_peak*sqrt(val_mom[0])    # -- max moyen  
                              
               if abs(val_mom[2])>=1e-20 :
                     dlign['NB_EXTREMA_P_S'] = 1./pi*sqrt(val_mom[4]/val_mom[2])

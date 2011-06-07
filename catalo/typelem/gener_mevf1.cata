@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,9 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (PRES)
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
+    ENORME   = NEUT_R   ELEM__         (X1       )
+    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -46,4 +49,6 @@ OPTION__
     CHAR_MECA_PESA_R    427   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG                              
+                              OUT__  EGGEOP_R PCOORPG 
+    NORME_L2            563   IN__   EGGEOP_R PCOORPG  EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR
+                              OUT__  ENORME   PNORME                             

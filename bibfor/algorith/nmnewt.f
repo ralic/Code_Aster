@@ -9,7 +9,7 @@
      &                  ETA   ,NBITER,FINPAS,ACTPAS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -295,7 +295,7 @@ C
      &            VEELEM,ERROR )
 C
       IF (ERROR) THEN
-        ACTITE = 1
+        GOTO 315
       ELSE
         ACTITE = 2
         ITERAT = ITERAT + 1

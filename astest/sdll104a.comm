@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
+# MODIF  DATE 07/06/2011   AUTEUR ZENTNER I.ZENTNER 
 # TITRE SYSTEME DE DEUX POUTRES SOUMIS A UNE EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,7 +182,7 @@ STADE=POST_DYNA_ALEA(  INTE_SPEC=INTKTJ1,
                           NUME_ORDRE_J = 1,
                           NUME_ORDRE_I = 1,
                           INFO=2,
-#                           DUREE =10.,
+                           DUREE =10.,
                       )   
                       
 TEST_TABLE(TABLE=STADE,
@@ -193,22 +193,22 @@ TEST_TABLE(TABLE=STADE,
                    VALE=5.5220842862402  ,  
                    CRITERE = 'RELATIF', PRECISION=1.E-05, REFERENCE = 'NON_REGRESSION',); 
 
-# TEST_TABLE(TABLE=STADE,
-#                        FILTRE=(
-#                  _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
-#                  _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
-#                    NOM_PARA='F_PEAK',
-#                    VALE=3.3761135643155  ,  
-#                    CRITERE = 'RELATIF', PRECISION=1.E-05,REFERENCE = 'NON_REGRESSION',);     
-#                    
-# TEST_TABLE(TABLE=STADE,
-#                        FILTRE=(
-#                  _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
-#                  _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
-#                    NOM_PARA='MAX_MOY',
-#                    VALE=1.8643183662069E+01    ,  
-#                    CRITERE = 'RELATIF', PRECISION=1.E-05,REFERENCE = 'NON_REGRESSION',);                       
-#                                        
+TEST_TABLE(TABLE=STADE,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
+                   NOM_PARA='FACT_PIC',
+                   VALE=3.3761135643155  ,  
+                   CRITERE = 'RELATIF', PRECISION=1.E-05,REFERENCE = 'NON_REGRESSION',);     
+                   
+TEST_TABLE(TABLE=STADE,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),                          
+                   NOM_PARA='MAX_MOY',
+                   VALE=1.8643183662069E+01    ,  
+                   CRITERE = 'RELATIF', PRECISION=1.E-05,REFERENCE = 'NON_REGRESSION',);                       
+                                       
                                                                                
 IMPR_TABLE(TABLE=STADE,
            UNITE=8,
@@ -238,7 +238,7 @@ test_KT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1 ),);
 TEST_TABLE( TABLE= test_KT,
                        NOM_PARA= 'ECART_TYPE ',   
                        VALE =5.52208 ,
-                       CRITERE = 'RELATIF', PRECISION=1.E-02, REFERENCE = 'ANALYTIQUE',);                                                                    
+                       CRITERE = 'RELATIF', PRECISION=1.E-02, REFERENCE = 'AUTRE_ASTER',);                                                                    
                                           
 # IMPR_TABLE(TABLE=test_KT,
 #            UNITE=8,
