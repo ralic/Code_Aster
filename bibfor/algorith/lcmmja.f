@@ -4,7 +4,7 @@
      &                       DY,  DRDY,  IRET               )
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,7 @@ C           NR     :  DIMENSION DECLAREE DRDY
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       OUT IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT , NR, NBFSYS
+      INTEGER         NMAT , NR, NBFSYS
       INTEGER         NBCOMM(NMAT,3),IFA,I,IRET
       INTEGER         IFL,ITMAX
       INTEGER         NUECOU,KR(5),IMIN,IMAX
@@ -63,8 +63,7 @@ C     ALLOCATION DYNAMIQUE
       CHARACTER*16    CPMONO(5*NMAT+1)
       CHARACTER*8     TYPMOD
 C     ----------------------------------------------------------------
-      COMMON /TDIM/   NDT , NDI
-C     ----------------------------------------------------------------
+
       IRET=0
       NBFSYS=NBCOMM(NMAT,2)
 C     test pour verifier que KOCKS_RAUCH n'est pas mélangé avec d'autres

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 # ssna111b.para = tps_job 880 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,36 +114,33 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
                    CONTACT  = CONT,
-                   COMP_INCR=(
-                              _F(RELATION='VMIS_ISOT_LINE',
-                                DEFORMATION='SIMO_MIEHE',
-                                GROUP_MA='GM15',),
+                   COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',
+                                 DEFORMATION='SIMO_MIEHE',
+                                 GROUP_MA='GM15',),
                               _F(RELATION='ELAS',
-                                GROUP_MA='GM17',),
-                                  ),
+                                 GROUP_MA='GM17',),),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                  INST_FIN=1.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6),
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
 
 # On calcule la force de reaction du massif
 # attention : la force est en n/radian
 RESU=CALC_NO(reuse =RESU,
-
-
              OPTION='REAC_NODA',
              RESULTAT=RESU,);
 
 TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
-                            GROUP_NO='GM12',
-                            RESULTAT=RESU,
-                            NOM_CHAM='REAC_NODA',
-                            TOUT_ORDRE='OUI',
-                            RESULTANTE='DY',
-                            OPERATION='EXTRACTION',),);
+                                 GROUP_NO='GM12',
+                                 RESULTAT=RESU,
+                                 NOM_CHAM='REAC_NODA',
+                                 TOUT_ORDRE='OUI',
+                                 RESULTANTE='DY',
+                                 OPERATION='EXTRACTION',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=0.50,
@@ -231,21 +228,21 @@ DY=RECU_FONCTION(RESULTAT=RESU,
                  GROUP_NO='GM16')
 
 IMPR_FONCTION(FORMAT='AGRAF',
-            UNITE=25, UNITE_DIGR=26,
-            LEGENDE_X='Deplacement (mm)',
-            LEGENDE_Y='Force (N/rd)',
-            COURBE=(_F(FONC_X = DY,
-                       FONC_Y = FY,)));
+              UNITE=25, UNITE_DIGR=26,
+              LEGENDE_X='Deplacement (mm)',
+              LEGENDE_Y='Force (N/rd)',
+              COURBE=(_F(FONC_X = DY,
+                         FONC_Y = FY,)));
 
 RNY=RECU_FONCTION(RESULTAT=RESU,
-                 NOM_CHAM='REAC_NODA',
-                 NOM_CMP='DY',
-                 GROUP_NO='GM16')
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='GM16')
 
 IMPR_FONCTION(FORMAT='AGRAF',
-            UNITE=27, UNITE_DIGR=28,
-            TITRE='RNY',
-            COURBE=_F(FONCTION=RNY,),)
+              UNITE=27, UNITE_DIGR=28,
+              TITRE='RNY',
+              COURBE=_F(FONCTION=RNY,),)
 
 
 FIN();

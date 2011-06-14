@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 04/04/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,9 +115,9 @@ cata_msg = {
      NOMBRE D'ENREGISTREMENTS MAXIMUM        :  %(i2)d
      LONGUEUR D'ENREGISTREMENT (OCTETS)      :  %(i3)d
      NOMBRE TOTAL D'ACCES EN LECTURE         :  %(i4)d
-     VOLUME DES ACCES EN LECTURE             :  %(r1).2f Mo.
+     VOLUME DES ACCES EN LECTURE             :  %(r1)12.2f Mo.
      NOMBRE TOTAL D'ACCES EN ECRITURE        :  %(i5)d
-     VOLUME DES ACCES EN ECRITURE            :  %(r2).2f Mo.
+     VOLUME DES ACCES EN ECRITURE            :  %(r2)12.2f Mo.
      NOMBRE D'IDENTIFICATEURS UTILISES       :  %(i6)d
      TAILLE MAXIMUM DU REPERTOIRE            :  %(i7)d
      POURCENTAGE D'UTILISATION DU REPERTOIRE :  %(i8)d %%
@@ -176,6 +176,13 @@ cata_msg = {
      -memjeveux_stat sur la ligne de commande). 
 """),
 
+33 : _("""
+  Statistiques mémoire (Mo) : %(r9)9.2f / %(r5)9.2f / %(r2)9.2f (VmPeak / Optimum / Minimum)
+"""),
+
+34 : _("""
+  Statistiques mémoire (Mo) : %(r5)9.2f / %(r2)9.2f (Optimum / Minimum)
+"""),
 
 36 : _("""  
      Le nombre d'enregistrements maximum de la base %(k1)s sera modifié

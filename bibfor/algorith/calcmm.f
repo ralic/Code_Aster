@@ -6,7 +6,7 @@
         CHARACTER*16 CPMONO(5*NMAT+1),COMP(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,10 +35,8 @@ C     CETTE ROUTINE CALCULE LES TENSEURS MS POUR GAGNER DU TEMPS
 C
 C     ----------------------------------------------------------------
       CHARACTER*16 NOMFAM
-      REAL*8 MS(6),NG(3)
-      REAL*8 Q(3,3),LG(3)
-      REAL*8 IDEN(3,3)
-      INTEGER NBFSYS,I,IFA,NBSYS,IS,J,IR
+      REAL*8 MS(6),NG(3),Q(3,3),LG(3),IDEN(3,3)
+      INTEGER NBFSYS,I,IFA,NBSYS,IS,J,IR,NS
       DATA IDEN/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
 
@@ -48,26 +46,51 @@ C         CALCUL DES TENSEURS MS POUR GAGNER DU TEMPS
          CALL U2MESS('F','ALGORITH_68')
       ENDIF
       IR=0
-C ROTATION RESEAU DEBUT
-      IF (IROTA.EQ.2) THEN
-          IR=1
-          DO 29 I = 1, 3
-          DO 29 J=1,3
-             Q(I,J)=VIND(NVI-19+3*(I-1)+J)+IDEN(I,J)
- 29       CONTINUE
-      ENDIF
-      NBCOMM(NMAT,1)=IROTA
-C ROTATION RESEAU FIN
+     
+      IF (COMP(3)(1:5).NE.'PETIT') THEN
+C  en vue d'optimiser, stocker lg et ng
+         NS=0
+         DO 11 IFA=1,NBFSYS
+            NOMFAM=CPMONO(5*(IFA-1)+1)
+            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,IR,Q)
+            NS=NS+NBSYS
+11       CONTINUE
+         IR=0
+         DO 12 IFA=1,NBFSYS
+            NOMFAM=CPMONO(5*(IFA-1)+1)
+            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,IR,Q)
+            DO 13 IS=1,NBSYS
+               CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG,LG,IR,Q)
+               DO 14 I=1,3
+                  TOUTMS(IFA,IS,I)=LG(I)
+                  TOUTMS(IFA,IS,I+3)=NG(I)
+ 14             CONTINUE
+ 13          CONTINUE
+ 12       CONTINUE
+ 
+      ELSE
+      
+C        ROTATION RESEAU ROTA_RESEAU_CALC - DEBUT
+         IF (IROTA.EQ.2) THEN
+                IR=1
+                DO 29 I = 1, 3
+                DO 29 J=1,3
+                   Q(I,J)=VIND(NVI-19+3*(I-1)+J)+IDEN(I,J)
+ 29             CONTINUE
+             ENDIF
+         ENDIF
+         NBCOMM(NMAT,1)=IROTA
+C        ROTATION RESEAU FIN
 
-      DO 2 IFA=1,NBFSYS
-         NOMFAM=CPMONO(5*(IFA-1)+1)
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,IR,Q)
-         DO 3 IS=1,NBSYS
-            CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG,LG,IR,Q)
-            DO 4 I=1,6
-               TOUTMS(IFA,IS,I)=MS(I)
- 4          CONTINUE
+         DO 2 IFA=1,NBFSYS
+            NOMFAM=CPMONO(5*(IFA-1)+1)
+            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,IR,Q)
+            DO 3 IS=1,NBSYS
+               CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG,LG,IR,Q)
+               DO 4 I=1,6
+                  TOUTMS(IFA,IS,I)=MS(I)
+ 4             CONTINUE
 
- 3       CONTINUE
- 2    CONTINUE
+ 3          CONTINUE
+ 2       CONTINUE
       END

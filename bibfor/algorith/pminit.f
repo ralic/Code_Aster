@@ -2,7 +2,7 @@
      &NOMPAR,ANG,PGL,IROTA,EPSM,SIGM,VIM,VIP,DEFIMP,COEF,INDIMP,
      &FONIMP,CIMPO,KEL,SDDISC,PARCRI,PRED,MATREL,OPTION)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,21 +68,24 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       INTEGER      NDIM,N1,NBVARI,NBPAR,I,J,K,IMATE,KPG,KSP,NBOCC,N2
-      INTEGER      IEPSI,ICONT,IROTA,DEFIMP,INDIMP(6)
+      INTEGER      IEPSI,ICONT,IGRAD,IROTA,DEFIMP,INDIMP(9),NCMP
       INTEGER      PRED,MATREL,NBVITA
       INTEGER      ILIGNE,ICOLON,FONACT(28)
-      CHARACTER*4  NOMEPS(6),NOMSIG(6)
-      CHARACTER*8  TYPMOD(2),K8B,TABLE,FONIMP(6)
-      CHARACTER*8  FONEPS(6),FONSIG(6),TYPPAR(NBVARI+16),VALEF
-      CHARACTER*16 OPTION,NOMPAR(NBVARI+16),PREDIC,MATRIC
+      CHARACTER*4  NOMEPS(6),NOMSIG(6),NOMGRD(9)
+      CHARACTER*8  TYPMOD(2),K8B,TABLE,FONIMP(9),FONGRD(9)
+      CHARACTER*8  FONEPS(6),FONSIG(6),TYPPAR(NBVARI+19),VALEF
+      CHARACTER*16 OPTION,NOMPAR(NBVARI+19),PREDIC,MATRIC
       CHARACTER*19 LISINS,SDDISC
-      REAL*8       INSTAM,ANG(7),SIGM(6),EPSM(6),VALE
-      REAL*8       VIM(NBVARI),VIP(NBVARI),VR(NBVARI+16)
+      REAL*8       INSTAM,ANG(7),SIGM(6),EPSM(9),VALE
+      REAL*8       VIM(NBVARI),VIP(NBVARI),VR(NBVARI+19)
       REAL*8       SIGI,REP(7),R8DGRD,KEL(6,6),CIMPO(6,12)
       REAL*8       ANGD(3),ANG1,PGL(3,3),XYZGAU,COEF,INSTIN
-      REAL*8       PARCRI(12),PARCON(9),ANGEUL(3)
+      REAL*8       PARCRI(*),PARCON(9),ANGEUL(3),ID(9)
+      
       DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
       DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
+      DATA NOMGRD/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
+      DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 
 C     INITIALISATIONS
       NDIM=3
@@ -102,23 +105,39 @@ C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
          CALL U2MESS('A','COMPOR2_6')
          NBVITA=99
       ENDIF
-      NBPAR=1+6+6+2+NBVITA+1
+      NCMP=6
+      IGRAD=0
+      CALL GETVID(' ',NOMGRD(1),1,1,1,FONGRD(1),N1)
+      IF (N1.NE.0) THEN
+         NCMP=9
+         IGRAD=1
+      ENDIF
+         
+      NBPAR=1+NCMP+6+2+NBVITA+1
       NOMPAR(1)='INST'
       DO 10 I=1,NBPAR
          TYPPAR(I)='R'
  10   CONTINUE
+      IF (IGRAD.EQ.1) THEN
+         DO 132 I=1,NCMP
+            NOMPAR(1+I)=NOMGRD(I)
+ 132     CONTINUE
+      ELSE
+         DO 131 I=1,NCMP
+            NOMPAR(1+I)=NOMEPS(I)
+ 131     CONTINUE
+      ENDIF
       DO 13 I=1,6
-         NOMPAR(1+I)=NOMEPS(I)
-         NOMPAR(7+I)=NOMSIG(I)
+         NOMPAR(1+NCMP+I)=NOMSIG(I)
  13   CONTINUE
-      NOMPAR(14)='TRACE'
-      NOMPAR(15)='VMIS'
+      NOMPAR(1+NCMP+6+1)='TRACE'
+      NOMPAR(1+NCMP+6+2)='VMIS'
       DO 11 I=1,MIN(9,NBVITA)
-         WRITE(NOMPAR(15+I),'(A,I1)') 'V',I
+         WRITE(NOMPAR(1+NCMP+6+2+I),'(A,I1)') 'V',I
   11  CONTINUE
       IF (NBVITA.GT.9) THEN
          DO 12 I=10,MIN(99,NBVITA)
-            WRITE(NOMPAR(15+I),'(A,I2)') 'V',I
+            WRITE(NOMPAR(1+NCMP+6+2+I),'(A,I2)') 'V',I
   12     CONTINUE
       ENDIF
 
@@ -157,7 +176,11 @@ C        ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
           ANG(4) = 2.D0
       ENDIF
 
-      CALL R8INIR(6, 0.D0, EPSM, 1)
+      IF (NCMP.EQ.6) THEN
+         CALL R8INIR(9, 0.D0, EPSM, 1)
+      ELSE
+         CALL DCOPY(9,ID,1,EPSM,1)
+      ENDIF
       CALL R8INIR(6, 0.D0, SIGM, 1)
       CALL R8INIR(NBVARI,0.D0, VIM, 1)
       CALL R8INIR(NBVARI,0.D0, VIP, 1)
@@ -231,6 +254,7 @@ C     ----------------------------------------
       CALL R8INIR(6*12,0.D0, CIMPO, 1)
       ICONT=0
       IEPSI=0
+      IGRAD=0
       DO 23 I=1,6
          INDIMP(I)=0
  23   CONTINUE
@@ -242,15 +266,24 @@ C     ----------------------------------------
             FONIMP(I)=FONEPS(I)
             IEPSI=IEPSI+1
             INDIMP(I)=1
-         ELSE
+         ELSEIF (N2.NE.0) THEN
             CIMPO(I,I)=1.D0
             FONIMP(I)=FONSIG(I)
             ICONT=ICONT+1
             INDIMP(I)=0
          ENDIF
   14  CONTINUE
+      DO 141 I=1,9
+         CALL GETVID(' ',NOMGRD(I),1,1,1,FONGRD(I),N1)
+         IF (N1.NE.0) THEN
+            FONIMP(I)=FONGRD(I)
+            IGRAD=IGRAD+1
+            INDIMP(I)=2
+         ENDIF
+ 141  CONTINUE
       DEFIMP=0
       IF (IEPSI.EQ.6) DEFIMP=1
+      IF (IGRAD.EQ.9) DEFIMP=2
 
 C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
       CALL GETFAC('MATR_C1',NBOCC)
@@ -283,11 +316,11 @@ C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
 C     ----------------------------------------
 C     ECRITURE ETAT INITIAL DANS TABLE
 C     ----------------------------------------
-      CALL DCOPY(6,SIGM,1,VR(8),1)
-      CALL DCOPY(6,EPSM,1,VR(2),1)
-      VR(14)=0.D0
-      VR(15)=0.D0
-      CALL DCOPY(NBVARI,VIM,1,VR(16),1)
+      CALL DCOPY(NCMP,EPSM,1,VR(2),1)
+      CALL DCOPY(6,SIGM,1,VR(NCMP+2),1)
+      VR(1+NCMP+6+1)=0.D0
+      VR(1+NCMP+6+2)=0.D0
+      CALL DCOPY(NBVARI,VIM,1,VR(1+NCMP+6+3),1)
       VR(1)=INSTAM
       VR(NBPAR)=0
       CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,K8B,0)
@@ -299,15 +332,14 @@ C     ----------------------------------------
       INSTIN = 0.D0
       CALL NMCRLI(INSTIN,LISINS,SDDISC)
 
-
-
 C     ----------------------------------------
 C     NEWTON
 C     ----------------------------------------
       PRED=1
       CALL GETVTX('NEWTON','PREDICTION',1,1,1,PREDIC,N1)
-       CALL DCOPY(6,SIGM,1,VR(8),1)
-      IF (PREDIC.EQ.'ELASTIQUE') PRED=0
+      IF (N1.NE.0) THEN
+         IF (PREDIC.EQ.'ELASTIQUE') PRED=0
+      ENDIF
       MATREL=0
       OPTION='FULL_MECA'
       CALL GETVTX('NEWTON','MATRICE',1,1,1,MATRIC,N1)
@@ -320,8 +352,9 @@ C     ----------------------------------------
       ENDIF
 
 C     IMPL_EX N'EST PAS DISPONIBLE (FONACT : VOIR ISFONC)
-      FONACT(28)=0
-
+      DO 99 I=1,28
+         FONACT(I)=0
+  99  CONTINUE
 C     ----------------------------------------
 C     LECTURE DES PARAMETRES DE CONVERGENCE
 C     ----------------------------------------

@@ -1,6 +1,6 @@
       SUBROUTINE JEAGCO(SCHIN, SCHOUT, NBOCNW, LONTNW, CLAOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,8 +62,8 @@ C
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
      +                 DN2(N)
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C     ------------------------------------------------------------------

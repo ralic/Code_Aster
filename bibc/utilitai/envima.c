@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF ENVIMA UTILITAI  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -92,10 +92,6 @@ INTEGER STDCALL(NCR8EM,ncr8em)() { return REAL_NB_CHIFFRES_SIGNIFICATIFS; }
 
 /* ------------------------------------- VALEUR ENTIERE MAXIMALE */
 INTEGER STDCALL(ISMAEM,ismaem)() { return (INTEGER)ISMAX; }
-
-/* ---------------------------------  LONGUEUR UNITE D'ADRESSAGE */
-/* reste du Cray : 8 de longueur 1 */
-INTEGER STDCALL(LOUAEM,louaem)() { return 1; }
 
 /* ------------------------------------------  TAILLE DE FICHIER
  exprimee en kilo (1024) */

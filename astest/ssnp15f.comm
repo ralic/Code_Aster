@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 # ssnp15f.para = tps_job 100 mem_job 100Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -225,7 +225,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.035265,
-                   PRECISION=0.006,),
+                   PRECISION=(0.006,1.e-6)),
                 _F(RESULTAT=U,
                    INST=2.0,
                    NOM_CHAM='EPSI_ELNO',
@@ -233,7 +233,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.020471,
-                   PRECISION=0.006,),
+                   PRECISION=(0.006,1.e-6)),
                 _F(RESULTAT=U,
                    INST=2.0,
                    NOM_CHAM='EPSP_ELGA',
@@ -241,7 +241,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                    MAILLE='CUBE',
                    POINT=1,
                    VALE=0.033946,
-                   PRECISION=0.006,),
+                   PRECISION=(0.006,1.e-6)),
                 _F(RESULTAT=U,
                    INST=2.0,
                    NOM_CHAM='EPSP_ELGA',
@@ -249,14 +249,14 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                    MAILLE='CUBE',
                    POINT=1,
                    VALE=0.02025,
-                   PRECISION=0.006,),
+                   PRECISION=(0.006,1.e-6)),
                 _F(RESULTAT=U,
                    INST=2.0,
                    NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V1',
                    MAILLE='CUBE',
                    NOEUD='NO2',
-                   VALE=0.042329,),),);
+                   VALE=(0.042329,1.e-6)),),);
 
 # TEST DES INDICATEURS DE CHARGE - DECHARGE
 
@@ -341,7 +341,8 @@ TEST_TABLE(TABLE=ENER_TO2,
 
 TEST_TABLE(TABLE=ENER_TO2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.0,),
+                     VALE=2.0,
+                     PRECISION=1.E-5,),
            NOM_PARA='TOTALE',
            VALE=9.58487,
            CRITERE='RELATIF',

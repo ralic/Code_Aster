@@ -1,11 +1,11 @@
-      SUBROUTINE LCMMJP (MOD, NMAT, MATER, TIMED, TIMEF,
+      SUBROUTINE LCMMJP (MOD, NMAT, MATER, TIMED, TIMEF, COMP,
      &                   NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,
-     &                   ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
+     &                   ITMAX,TOLER,VINF,VIND,
      &                   DSDE , DRDY, OPTION, IRET)
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,6 @@ C         NVI    :  NOMBRE DE VARIABLES INTERNES
 C         VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
 C         ITMAX  :  ITER_INTE_MAXI
 C         TOLER  :  RESI_INTE_RELA
-C         SIGD   :  CONTRAINTES A T
-C         SIGF   :  CONTRAINTES A T+DT
 C         VIND   :  VARIABLES INTERNES A T
 C         VINF   :  VARIABLES INTERNES A T+DT
 C         DRDY   :  MATRICE JACOBIENNE
@@ -57,24 +55,17 @@ C
 C     OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 C     ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT , NVI, ITMAX
-      INTEGER         K,J,NR, IRET,NS
+      INTEGER NDT , NDI , NMAT , NVI, ITMAX
+      INTEGER K,J,NR, IRET,NS,NBCOMM(NMAT,3)
 C DIMENSIONNEMENT DYNAMIQUE
-      REAL*8          DRDY(NR,NR),DSDE(6,6)
-      REAL*8          MATER(NMAT*2),KYL(6,6),DET,I6(6,6)
-      REAL*8          TOLER
-      REAL*8          YD(NR),YF(NR),DY(NR),UN,ZERO
+      REAL*8 DRDY(NR,NR),DSDE(6,*),KYL(6,6),DET,I6(6,6),ZINV(6,6)
+      REAL*8 TOLER,MATER(*),YF(NR),DY(NR),UN,ZERO,TIMED,TIMEF,PGL(3,3)
       REAL*8 Z0(6,6),Z1(6,(NR-NDT)),Z2((NR-NDT),6),Z3((NR-NDT),(NR-NDT))
-        REAL*8 TOUTMS(5,24,6),HSR(5,24,24),MS(6),NG(3), Q(3,3),LG(3)
-
+      REAL*8 TOUTMS(5,24,6),HSR(5,24,24),VIND(*),VINF(*)
       CHARACTER*8     MOD
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*), OPTION
       PARAMETER       ( UN   =  1.D0   )
       PARAMETER       ( ZERO =  0.D0   )
-
-      INTEGER         NBCOMM(NMAT,3)
-      INTEGER         NBFSYS,NBSYS,IS,NSFA,NUVRF, NUVR,IFA
-      REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
-      CHARACTER*16    CPMONO(5*NMAT+1),NOMFAM, OPTION
       COMMON /TDIM/ NDT,NDI
       DATA  I6        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
      1                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
@@ -85,30 +76,8 @@ C DIMENSIONNEMENT DYNAMIQUE
 
 C -  INITIALISATION
 
-      NSFA = 6
-      NUVRF = 6
-      NBFSYS = NBCOMM(NMAT,2)
-      NS = 0
+      NS=NR-NDT
       IRET=0
-C - RECUPERER LES SOUS-MATRICES BLOC
-
-      CALL LCEQVN ( NDT  ,  SIGD , YD )
-      CALL LCEQVN ( NDT  ,  SIGF , YF )
-
-      DO 99 IFA = 1, NBFSYS
-         NOMFAM = CPMONO(5*(IFA-1)+1)
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
-         NUVR = NUVRF
-          DO 98 IS = 1, NBSYS
-            YD(NSFA+IS)=VIND(NUVR+2)
-            YF(NSFA+IS)=VINF(NUVR+2)
-            DY(NSFA+IS)=VINF(NUVR+2)-VIND(NUVR+2)
-            NUVR = NUVRF + 3
-  98     CONTINUE
-            NS = NS + NBSYS
-  99     CONTINUE
-      NUVRF = NUVRF + 3*NBSYS
-      NSFA = NSFA + NBSYS
 
 C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
       IF (OPTION.EQ. 'RIGI_MECA_TANG') THEN
@@ -116,44 +85,54 @@ C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
           CALL R8INIR(NR,0.D0, YF, 1)
           CALL R8INIR(NVI,0.D0, VIND, 1)
           CALL LCMMJA ( MOD, NMAT, MATER, TIMED, TIMEF,
-     &    ITMAX,TOLER,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,VIND,
-     &    YF,DY,DRDY, IRET)
+     &      ITMAX,TOLER,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     &      NR, VIND,YF,DY,DRDY, IRET)
       ENDIF
 
+C - RECUPERER LES SOUS-MATRICES BLOC
 
-        DO 101 K=1,6
-        DO 101 J=1,6
-           Z0(K,J)=DRDY(K,J)
- 101     CONTINUE
-        DO 201 K=1,6
-        DO 201 J=1,NS
-           Z1(K,J)=DRDY(K,NDT+J)
- 201     CONTINUE
+      DO 101 K=1,6
+      DO 101 J=1,6
+         Z0(K,J)=DRDY(K,J)
+ 101   CONTINUE
+      DO 201 K=1,6
+      DO 201 J=1,NS
+         Z1(K,J)=DRDY(K,NDT+J)
+ 201   CONTINUE
 
-        DO 301 K=1,NS
-        DO 301 J=1,6
-           Z2(K,J)=DRDY(NDT+K,J)
- 301     CONTINUE
-        DO 401 K=1,NS
-        DO 401 J=1,NS
-           Z3(K,J)=DRDY(NDT+K,NDT+J)
- 401     CONTINUE
-C       Z2=INVERSE(Z3)*Z2
-        CALL MGAUSS ('NFWP',Z3, Z2, NS, NS, 6, DET, IRET )
+      DO 301 K=1,NS
+      DO 301 J=1,6
+         Z2(K,J)=DRDY(NDT+K,J)
+ 301   CONTINUE
+      DO 401 K=1,NS
+      DO 401 J=1,NS
+         Z3(K,J)=DRDY(NDT+K,NDT+J)
+ 401   CONTINUE
+C     Z2=INVERSE(Z3)*Z2
+      CALL MGAUSS ('NFWP',Z3, Z2, NS, NS, 6, DET, IRET )
 
-C       KYL=Z1*INVERSE(Z3)*Z2
-        CALL PROMAT(Z1,6,6,NS,Z2,NS,NS,6,KYL)
+C     KYL=Z1*INVERSE(Z3)*Z2
+      CALL PROMAT(Z1,6,6,NS,Z2,NS,NS,6,KYL)
 
-C       Z0=Z0+Z1*INVERSE(Z3)*Z2
-        DO 501 K=1,6
-        DO 501 J=1,6
-           Z0(K,J)=Z0(K,J)-KYL(K,J)
-           DSDE(K,J)=I6(K,J)
- 501    CONTINUE
+C     Z0=Z0+Z1*INVERSE(Z3)*Z2
+      DO 501 K=1,6
+      DO 501 J=1,6
+         Z0(K,J)=Z0(K,J)-KYL(K,J)
+ 501  CONTINUE
+ 
+      CALL DCOPY(36,I6,1,ZINV,1)
+      CALL MGAUSS ('NFWP',Z0, ZINV, 6, 6, 6, DET, IRET )
+      
+      IF (COMP(3)(1:5).EQ.'PETIT') THEN
+      
+C        DSDE = INVERSE(Z0-Z1*INVERSE(Z3)*Z2)
 
-C       DSDE = INVERSE(Z0-Z1*INVERSE(Z3)*Z2)
-
-C        CALL MGAUSS ('NFVP',Z0, DSDE, 6, 6, 6, DET, IRET )
-        CALL MGAUSS ('NFWP',Z0, DSDE, 6, 6, 6, DET, IRET )
-
+         CALL DCOPY(36,ZINV,1,DSDE,1)
+         
+      ELSE
+      
+         CALL LCMMKG(ZINV,VIND,VINF,NMAT,MATER,MOD,NR,DSDE)
+      
+      ENDIF
+       
       END

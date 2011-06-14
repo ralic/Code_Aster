@@ -1,10 +1,10 @@
-        SUBROUTINE LCAFYD (LOI, MATERF, NBCOMM,NMAT,NVI,VIND,YD)
+        SUBROUTINE LCAFYD (COMP,MATERF,NBCOMM,NMAT,MOD,NVI,VIND,NR,YD)
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,16 +31,20 @@ C          NMAT   :  DIMENSION MATER
 C          NVI    :  NOMBRE DE VARIABLES INTERNES
 C     OUT  YD     :  VECTEUR INITIAL
 C     ----------------------------------------------------------------
-      INTEGER         NDT,NVI,NMAT,NDI,NS,I,NBCOMM(NMAT,3)
-      REAL*8          YD(*),MATERF(NMAT,2),VIND(*)
-      CHARACTER*16    LOI
+      INTEGER         NDT,NVI,NMAT,NDI,NS,I,NBCOMM(NMAT,3),NR
+      REAL*8          YD(*),MATERF(NMAT,2),VIND(*),FE(3,3)
+      REAL*8          ID(3,3),HOOKF(6,6),EPSEGL(6)
+      CHARACTER*16    LOI,COMP(*)
+      CHARACTER*8     MOD
       COMMON /TDIM/   NDT  , NDI
+      DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
 
 C     INITIALISATION DE YD EN IMPLICITE
-
+      LOI=COMP(1)
       IF (LOI(1:8).EQ.'MONOCRIS') THEN
-         NS=(NVI-8)/3
+C ATTENTION !         NS=(NVI-8)/3
+         NS=NR-NDT
          IF ((MATERF(NBCOMM(1,1),2).EQ.4).OR.
      &       (MATERF(NBCOMM(1,1),2).EQ.5)) THEN
 C            KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
@@ -53,6 +57,22 @@ C           AUTRES COMPORTEMENTS MONOCRISTALLINS
             DO 103 I=1,NS
                YD(NDT+I)=VIND(6+3*(I-1)+2)
  103        CONTINUE
+         ENDIF
+
+         IF (COMP(3)(1:5).NE.'PETIT') THEN
+C les 9 variables internes  de 6+3*ns+1 à 6+3*ns+9
+C REPRESENTENT FE - ID       
+            CALL DCOPY(9,VIND(6+3*NS+1),1,FE,1)
+            CALL DAXPY(9,+1.D0,ID,1,FE,1)
+            CALL LCGRLA(FE,EPSEGL)
+            IF (MATERF(NMAT,2).EQ.0) THEN
+               CALL LCOPLI  ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOKF )
+            ELSEIF (MATERF(NMAT,2).EQ.1) THEN
+               CALL LCOPLI  ( 'ORTHOTRO' , MOD , MATERF(1,1) , HOOKF )
+            ENDIF
+C Y contient H*(FeT.Fe-Id)/2, ce ne sont pas exactement les PK2
+C Y contient ensuite les ns alpha_s ou gamma_s suivant la loi
+            CALL LCPRMV(HOOKF,EPSEGL,YD)
          ENDIF
       ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
 C        CORRESPONDANCE ENTRE LES VARIABLES INTERNES ET LES EQUATIONS

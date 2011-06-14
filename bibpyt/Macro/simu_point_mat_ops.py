@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 28/02/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   itetra=0
   CMP_EPS=['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ']
   CMP_SIG=['SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
-  
+
   if COMP_INCR  :
      lcomp = COMP_INCR.List_F()[0]
   if COMP_ELAS   :
@@ -72,8 +72,12 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   if itetra==0 :
      if COMP_INCR != None : 
         if lcomp['DEFORMATION'] != 'PETIT' :
-           itetra=1
-           UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
+           if args.has_key('GRAD_IMPOSE'):
+              if args['GRAD_IMPOSE'] != None:  
+                 itetra=0
+           else :
+              itetra=1
+              UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
      elif COMP_ELAS != None :
         lcomp = COMP_ELAS.List_F()[0]
         if lcomp['DEFORMATION'] != 'PETIT' :
@@ -87,6 +91,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
        
        isig=0
        ieps=0
+       igrd=0
        nbsig=6
 #      par défaut contraintes nulles
        if SIGM_IMPOSE:
@@ -95,29 +100,36 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
        if EPSI_IMPOSE:
           EPS=EPSI_IMPOSE[0].cree_dict_valeurs(EPSI_IMPOSE[0].mc_liste)
           ieps=1
+       if args.has_key('GRAD_IMPOSE'):
+          if args['GRAD_IMPOSE'] != None:  
+             FIJ=args['GRAD_IMPOSE'][0].cree_dict_valeurs(args['GRAD_IMPOSE'][0].mc_liste)
+             igrd=1
 
        motscles={}
 #       verif
-       for index in range(nbsig):
-           iks=CMP_SIG[index]
-           ike=CMP_EPS[index]
-           inds=0
-           inde=0
-           if ieps :
-             if EPS[ike]!=None :
-                inde=1
-           if isig :
-             if SIG[iks]!=None :
-                inds=1
-           if inde*inds!=0 :
-              UTMESS('F','COMPOR2_2',valk=iks)
-           if inde==1 :
-              motscles[ike] = EPS[ike]
-           elif inds==1:
-              motscles[iks]= SIG[iks]
-           else:
-              motscles[iks]=__fonczero
- 
+       if igrd :
+          for i in FIJ.keys():
+            motscles[i]=FIJ[i]
+       else :
+          for index in range(nbsig):
+              iks=CMP_SIG[index]
+              ike=CMP_EPS[index]
+              inds=0
+              inde=0
+              if ieps :
+                if EPS[ike]!=None :
+                   inde=1
+              if isig :
+                if SIG[iks]!=None :
+                   inds=1
+              if inde*inds!=0 :
+                 UTMESS('F','COMPOR2_2',valk=iks)
+              if inde==1 :
+                 motscles[ike] = EPS[ike]
+              elif inds==1:
+                 motscles[iks]= SIG[iks]
+              else:
+                 motscles[iks]=__fonczero
 #      Etat initial
        etatinit=0
        if SIGM_INIT != None :

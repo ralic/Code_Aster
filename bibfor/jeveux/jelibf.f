@@ -1,5 +1,5 @@
       SUBROUTINE JELIBF ( COND , CLAS , INFO )
-C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
 C         ET DE FERMER LES FICHIERS ASSOCIES
@@ -41,8 +41,8 @@ C ----------------------------------------------------------------------
       INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,

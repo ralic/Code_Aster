@@ -1,0 +1,143 @@
+# MODIF  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+
+# TITRE : VISC_ISOT_TRAC SIMU_POINT_MAT AVEC GRAD IMPOSE
+# ssnd113b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSND113B',NIV_PUB_WEB='INTERNET'))
+
+
+# DEFINITION & AFFECTATION DES PROPRIETES MECANIQUES
+# ----------------------------------------------------------------
+#xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#
+# Courbe Sigma=f(epsilon_totale) du CEA
+#xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#
+
+SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',
+                     VALE=
+                    (0.002409731,477.1267177,
+                     0.010088627,512.5481424,
+                     0.020280218,550.4832447,
+                     0.030431091,580.3560802,
+                     0.040551839,604.2641624,
+                     0.050650258,623.7511615,
+                     0.060732087,639.9532866,
+                     0.07080155 ,653.7069759,
+                     0.080861758,665.6281229,
+                     0.090915002,676.1703617,
+                     0.100962969,685.6679458,
+                     0.111006906,694.3672945,
+                     0.121047728,702.4501998,
+                     0.131086116,710.0509006,
+                     0.138111812,715.1387392,
+                     0.141122569,717.2686429,
+                     0.151157459,724.1769214,
+                     0.201315999,755.5677203,
+                     0.301585802,808.9887868,
+                     0.401811696,853.7159011,
+                     0.502001836,891.3634826,
+                     0.602161926,923.0614179,
+                     0.702296719,949.7503941,
+                     0.802410212,972.221955,
+                     0.90250577 ,991.1425412,
+                     1.002586229,1007.073281,),
+                     PROL_DROITE='LINEAIRE',);
+
+# A TITRE INDICATIF ON DONNE LES PARAMETRES DE ROUSSELIER
+# AYANT SERVIS POUR LE CALCUL DE REFERENCE
+MA_EPR=DEFI_MATERIAU(ELAS=_F(E=215000.0,
+                             NU=0.3,
+                             ALPHA=0.0,),
+                     TRACTION=_F(SIGM=SIGM_F,),
+                     VISC_SINH=_F( SIGM_0=6176.,
+                                   EPSI_0=3.31131121483e13,
+                                   M=6.76,),
+                     ROUSSELIER=_F(D=0.0001,
+                                   SIGM_1=1575.0,
+                                   PORO_INIT=5e-09,),);
+
+# ------------------------------------------------------------
+
+#  PREMIER CALCUL : VITESSE LENTE  10-3 s-1
+# ------------------------------------------------------------
+
+IFIN = 2000.0;
+
+
+
+FCT_L=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,IFIN,0.2,),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+L_INSTL=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(_F(JUSQU_A=IFIN,
+                                      NOMBRE=100,),),);
+
+L_ARCH_L=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=IFIN,
+                                      NOMBRE=20,),);
+
+F1=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,1.0,IFIN,1.2),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+
+F2=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,1.0,IFIN,1.),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+ZERO=DEFI_CONSTANTE(VALE=0.)
+
+TABLRESU=SIMU_POINT_MAT(INFO=1,
+                      MATER=MA_EPR,
+                      ARCHIVAGE=_F(LIST_INST=L_ARCH_L),
+                      COMP_INCR=_F(RELATION='VISC_ISOT_TRAC',
+                                   DEFORMATION='SIMO_MIEHE',
+                                   RESI_INTE_RELA=1e-09,
+                                   ITER_INTE_MAXI=10,),
+                      INCREMENT=_F(LIST_INST=L_INSTL,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      GRAD_IMPOSE= _F(F11=F2,
+                                      F22=F1,
+                                      F33=F2,
+                                      F12=ZERO,
+                                      F13=ZERO,
+                                      F21=ZERO,
+                                      F23=ZERO,
+                                      F31=ZERO,
+                                      F32=ZERO,
+                                   ),
+                       );
+
+IMPR_TABLE(TABLE=TABLRESU)
+
+TEST_TABLE( TABLE=TABLRESU,
+            NOM_PARA='VMIS',
+            FILTRE=_F(NOM_PARA = 'INST', VALE=IFIN),
+            VALE = 5.98289E+02,
+               REFERENCE='AUTRE_ASTER'
+           )
+TEST_TABLE( TABLE=TABLRESU,
+            NOM_PARA='V1',
+            FILTRE=_F(NOM_PARA = 'INST', VALE=IFIN),
+            VALE = 1.18814E-01,
+               REFERENCE='AUTRE_ASTER'
+           )
+FIN();

@@ -5,9 +5,10 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C RESPONSABLE LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,8 +39,8 @@ C     ------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C     ------------------------------------------------------------------
@@ -104,13 +105,13 @@ C
         NUMEXT = (K-1)/NBENRG(ICI)
         IADLOC =  K - (NUMEXT*NBENRG(ICI))
         CALL CODENT(NUMEXT+1,'G',NOMBA1(6:7))
-        CALL READDR (NOMBA1,ISZON(JISZON+IADITP),LGBL1/LOUA,IADLOC,IERR)
+        CALL READDR (NOMBA1,ISZON(JISZON+IADITP),LGBL1,IADLOC,IERR)
         IF (IERR .NE. 0 ) THEN
           CALL U2MESS('F','JEVEUX_47')
         ENDIF
         CALL CODENT(NUMEXT+1,'G',NOMBA2(6:7))
         CALL WRITDR ( NOMBA2, ISZON(JISZON + IADITP),
-     &                LGBL2/LOUA, IADLOC, -1, IB, IERR )
+     &                LGBL2, IADLOC, -1, IB, IERR )
         IF (IERR .NE. 0 ) THEN
           CALL U2MESS('F','JEVEUX_48')
         ENDIF

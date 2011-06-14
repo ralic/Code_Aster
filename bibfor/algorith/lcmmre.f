@@ -1,9 +1,9 @@
         SUBROUTINE LCMMRE ( TYPMOD, NMAT, MATERD, MATERF,
-     3      COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR, NR, NVI,VIND,
-     1       ITMAX, TOLER, TIMED, TIMEF,YD ,YF,DEPS, DY, R, IRET)
+     &      COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR, NR, NVI,VIND,
+     &       ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,DY,R,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,34 +58,59 @@ C         NR     :  DIMENSION DECLAREE DRDY
 C     OUT R      :  RESIDU DU SYSTEME NL A T + DT
 C         IRET   :  CODE RETOUR
 C     ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT, NR, NVI, NSFV, IRET
-      INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,ITMAX,IEXP
+      INTEGER NDT , NDI , NMAT, NR, NVI, NSFV, IRET
+      INTEGER NBFSYS,IFA,NBSYS,IS,ITMAX
+      INTEGER NBCOMM(NMAT,3),NSFA,IFL,NUECOU
 C
-      REAL*8          DKOOH(6,6), FKOOH(6,6),TIMED, TIMEF
-      REAL*8          SIGF(6)   , SIGD(6)
-      REAL*8          DEPS(6)   ,     DEPSE(6), DEVI(6),DT
-      REAL*8          EPSED(6) , EPSEF(6), H1SIGF(6),VIND(*)
-      REAL*8          MATERD(NMAT*2) ,MATERF(NMAT*2)
-      REAL*8          MS(6),NG(3),TAUS,DGAMMA,DALPHA,DP,RP
-      REAL*8          R(NR),DY(NR),YD(NR),YF(NR),TOLER
-      REAL*8          TOUTMS(5,24,6), HSR(5,24,24),Q(3,3),LG(3)
-C
-      CHARACTER*8     TYPMOD
-      INTEGER         NBCOMM(NMAT,3),NSFA,IFL,NUECOU
-      REAL*8          PGL(3,3),DGAMM1,ALPHAM
-      REAL*8          CRIT,ALPHAP,SGNS,GAMMAP,EXPBP(24)
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
-      CHARACTER*16 NOMFAM,NECOUL,NECRIS,NECRCI
+      REAL*8 DKOOH(6,6),FKOOH(6,6),TIMED, TIMEF
+      REAL*8 SIGF(6), SIGD(6), MSNS(3,3),PGL(3,3),DGAMM1
+      REAL*8 DEPS(*),DEPSE(6), DEVI(6),DT
+      REAL*8 EPSED(6) , FETFE6(6), H1SIGF(6),VIND(*)
+      REAL*8 MATERD(NMAT*2) ,MATERF(NMAT*2),EPSEF(6)
+      REAL*8 MS(6),NG(3),TAUS,DGAMMA,DALPHA,DP,RP
+      REAL*8 R(NR),DY(NR),YD(NR),YF(NR),TOLER,FE(3,3)
+      REAL*8 TOUTMS(5,24,6), HSR(5,24,24),Q(3,3),LG(3),ID6(6)
+      REAL*8 HOOKF(6,6),GAMSNS(3,3),FP(3,3)
+      REAL*8 CRIT,SGNS,EXPBP(24)
+      CHARACTER*8  TYPMOD
+      CHARACTER*16 CPMONO(5*NMAT+1),COMP(*),NOMFAM
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
+      DATA ID6/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C
       DT=TIMEF-TIMED
-      CALL LCEQVN ( NDT , YF(1)       , SIGF)
-      CALL R8INIR(6, 0.D0, DEVI, 1)
+C
+C                 -1                     -1
+C -   HOOKF, HOOKD , DFDS , FETFE6 = HOOKD  SIGD + DEPS - DEPSP
+C
+      IF (MATERF(NMAT).EQ.0) THEN
+         CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERD(1) , DKOOH )
+         CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERF(1) , FKOOH )
+         CALL LCOPLI  ( 'ISOTROPE' , TYPMOD , MATERF(1) , HOOKF )
+      ELSEIF (MATERF(NMAT).EQ.1) THEN
+         CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERD(1) , DKOOH )
+         CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , FKOOH )
+         CALL LCOPLI  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , HOOKF )
+      ENDIF
 
+      IF (COMP(3)(1:5).NE.'PETIT') THEN
+C Y contient : SIGF=PK2 (sans les SQRT(2) !), puis les alpha_s
+         CALL LCEQVN(NDT,YF(1),SIGF)
+C        CONTRAINTES PK2          
+C Y contient : FeTFe - Id, puis les alpha_s
+         CALL LCPRMV(FKOOH,SIGF,FETFE6)
+         CALL DSCAL(6,2.D0,FETFE6,1)
+         CALL R8INIR(6,0.D0,DEVI,1)
+         CALL R8INIR(9,0.D0,GAMSNS,1)
+         CALL DAXPY(6,1.D0,ID6,1,FETFE6,1)
+      ELSE
+         CALL LCEQVN(NDT,YF(1),SIGF)
+         CALL R8INIR(6,0.D0,DEVI,1)
+      ENDIF
       NBFSYS=NBCOMM(NMAT,2)
       IRET=0
+      
 
 C     NSFA : debut de la famille IFA dans DY et YD, YF
       NSFA=6
@@ -93,84 +118,35 @@ C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
 
       DO 6 IFA=1,NBFSYS
-         IFL=NBCOMM(IFA,1)
+      
+         IFL=NBCOMM(IFA,1)           
          NUECOU=NINT(MATERF(NMAT+IFL))
-
-         NOMFAM=CPMONO(5*(IFA-1)+1)
-C         NMATER=CPMONO(5*(IFA-1)+2)
-         NECOUL=CPMONO(5*(IFA-1)+3)
-         NECRIS=CPMONO(5*(IFA-1)+4)
-         NECRCI=CPMONO(5*(IFA-1)+5)
+         NOMFAM=CPMONO(5*(IFA-1)+1)       
 
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
 
          DO 7 IS=1,NBSYS
 
-C           CALCUL DE LA SCISSION REDUITE =
-C           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
-C           TAU      : SCISSION REDUITE TAU=SIG:MS
-            DO 101 I=1,6
-               MS(I)=TOUTMS(IFA,IS,I)
- 101         CONTINUE
-
-            TAUS=0.D0
-            DO 10 I=1,6
-               TAUS=TAUS+SIGF(I)*MS(I)
- 10         CONTINUE
-
-            NUVI=NSFV+3*(IS-1)
-
-C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA-SAUD MODELES DD
-            IF ((NUECOU.NE.4).AND.(NUECOU.NE.5)) THEN
-
-                DGAMM1=DY(NSFA+IS)
-                ALPHAM=VIND(NUVI+1)
-                CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
-     &            ITMAX, TOLER,ALPHAM,DGAMM1,DALPHA, IRET)
-                IF (IRET.NE.0) GOTO 9999
-
-                ALPHAP=ALPHAM+DALPHA
-                GAMMAP=YD(NSFA+IS)+DGAMM1
-            ELSE
-C           POUR KOCKS-RAUCH ET DD_CFC ALPHA est la variable principale
-               ALPHAP=YD(NSFA+IS)+DY(NSFA+IS)
-               GAMMAP=VIND(NUVI+2)
-            ENDIF
-
-            IF (NUECOU.NE.4) THEN
-C               ECROUISSAGE ISOTROPE : CALCUL DE R(P)
-                IEXP=0
-                IF (IS.EQ.1) IEXP=1
-                CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,IS,
-     &                      NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,
-     &                      EXPBP,RP)
-            IF (IRET.GT.0) GOTO 9999
-            ENDIF
-
-C           ECOULEMENT VISCOPLASTIQUE
-C           ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)
-C           ET L'EXPLICITE (NMVPRK-GERPAS-RK21CO-RDIF01)
-C           CAS IMPLCITE : IL FAUT PRENDRE EN COMPTE DT
-C           CAS EXPLICITE : IL NE LE FAUT PAS (C'EST FAIT PAR RDIF01)
-C
-            CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF(1),IFA,
-     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),
-     &      RP,ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+            CALL LCMMLC(COMP,NMAT,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NSFV,
+     &      NSFA,IFA,NBSYS,IS,DT,NVI,VIND,SIGF,FETFE6,YD,DY,
+     &      ITMAX,TOLER,MATERF,EXPBP,NUECOU,
+     &      TAUS,DALPHA,DGAMMA,DP,CRIT,SGNS,RP,MSNS,MS,IRET)
 
             IF (IRET.GT.0) GOTO 9999
 
-C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN
             IF ((NUECOU.EQ.4).OR.(NUECOU.EQ.5)) THEN
 C              POUR KOCKS-RAUCH ALPHA représente la variable principale
                R(NSFA+IS)=-(DY(NSFA+IS)-DALPHA)
             ELSE
+               DGAMM1=DY(NSFA+IS)
                R(NSFA+IS)=-(DGAMM1-DGAMMA)
             ENDIF
 
-            DO 9 ITENS=1,6
-               DEVI(ITENS)=DEVI(ITENS)+MS(ITENS)*DGAMMA
-  9         CONTINUE
-
+            IF (COMP(3)(1:5).EQ.'PETIT') THEN
+               CALL DAXPY(6,DGAMMA,MS,1,DEVI,1)
+            ELSE
+               CALL DAXPY(9,DGAMMA,MSNS,1,GAMSNS,1)
+            ENDIF
   7     CONTINUE
 
         NSFA=NSFA+NBSYS
@@ -178,24 +154,21 @@ C              POUR KOCKS-RAUCH ALPHA représente la variable principale
 
   6   CONTINUE
 
-      CALL LCEQVN ( NDT , YD(1)       , SIGD)
-C
-C                 -1                     -1
-C -   HOOKF, HOOKD , DFDS , EPSEF = HOOKD  SIGD + DEPS - DEPSP
-C
-      IF (MATERF(NMAT).EQ.0) THEN
-         CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERD(1) , DKOOH )
-         CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERF(1) , FKOOH )
-      ELSEIF (MATERF(NMAT).EQ.1) THEN
-         CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERD(1) , DKOOH )
-         CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , FKOOH )
+      IF (COMP(3)(1:5).NE.'PETIT') THEN
+         CALL CALCFE(NR,NDT,VIND,DEPS,GAMSNS,FE,FP,IRET)       
+         IF (IRET.GT.0) GOTO 9999
+         CALL LCGRLA ( FE,FETFE6)
+         CALL LCPRMV ( FKOOH,   SIGF  , H1SIGF )
+         CALL LCDIVE ( FETFE6,   H1SIGF  , R(1) )
+      ELSE      
+         CALL LCEQVN ( NDT , YD(1)       , SIGD)
+         CALL LCPRMV ( DKOOH,   SIGD  , EPSED )
+         CALL LCDIVE ( DEPS ,   DEVI  , DEPSE )
+         CALL LCSOVE ( EPSED,   DEPSE , EPSEF )
+C LA PREMIERE EQUATION EST  (HF-1)SIGF -(HD-1)SIGD -(DEPS-DEPSP)=0
+         CALL LCPRMV ( FKOOH,   SIGF  , H1SIGF )
+         CALL LCDIVE ( EPSEF,   H1SIGF  , R(1) )
       ENDIF
-      CALL LCPRMV ( DKOOH,   SIGD  , EPSED )
-      CALL LCDIVE ( DEPS ,   DEVI  , DEPSE )
-      CALL LCSOVE ( EPSED,   DEPSE , EPSEF )
-C      TENTATIVE DE NORMALISATION DU SYSTEME :
-C     LA PREMIERE EQUATION EST  (HF-1)SIGF - (HD-1)SIGD - (DEPS-DEPSP)=0
-      CALL LCPRMV ( FKOOH,   SIGF  , H1SIGF )
-      CALL LCDIVE ( EPSEF,   H1SIGF  , R(1) )
+      
 9999  CONTINUE
       END

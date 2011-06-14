@@ -1,6 +1,6 @@
       SUBROUTINE TE0002(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     CALCUL DES TERMES ELEMENTAIRES DE LAGRANGE
 C     ELEMENTS  D_DEPL_R_.... / D_TEMP_R_.... / D_PRES_C_....
@@ -46,11 +46,13 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8       K(10,10),VALPAR(4),RESULT
+      INTEGER      I,IER,J,NDL,IP,JALPHA,JMAT,JDIMP,JDMUL,JGEOM,JLAGR
+      INTEGER      JVEC,JTIME,NBPAR
       COMPLEX*16   KC(10,10)
       CHARACTER*8  NOMPAR(4)
       CHARACTER*19 NOMFON
       CHARACTER*16 OPTION,NOMTE
-C DEB ------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       NDL = 1
 C
@@ -79,6 +81,7 @@ C
   130     CONTINUE
           IP = IP + I
   140   CONTINUE
+C
       ELSE IF (OPTION(6:11) .EQ. 'DDLM_C') THEN
         CALL JEVECH ('PDDLMUC', 'L', JDMUL)
         DO 115 I = 1, NDL + 2
@@ -101,6 +104,7 @@ C
  135      CONTINUE
           IP = IP + I
  145    CONTINUE
+C
       ELSE IF (OPTION(6:11) .EQ. 'BTLA_R') THEN
         CALL JEVECH ('PDDLMUR', 'L', JDMUL)
         CALL JEVECH ('PLAGRAR', 'L', JLAGR)
@@ -109,20 +113,26 @@ C
         ZR(JMAT  )=ZR(JDMUL)*(ZR(JLAGR+1)+ZR(JLAGR+2))
         ZR(JMAT+1)=0.D0
         ZR(JMAT+2)=0.D0
+C
       ELSE IF (OPTION(6:9)  .EQ. 'BU_R') THEN
         CALL JEVECH ('PDDLMUR', 'L', JDMUL)
         CALL JEVECH ('PDDLIMR', 'L', JDIMP)
+        CALL JEVECH ('PALPHAR', 'L', JALPHA)
         IF(OPTION(1:4) .EQ. 'MECA') CALL JEVECH ('PVECTUR', 'E', JMAT)
         IF(OPTION(1:4) .EQ. 'THER') CALL JEVECH ('PVECTTR', 'E', JMAT)
-        ZR(JMAT  )=ZR(JDMUL)*(ZR(JDIMP+1)+ZR(JDIMP+2))
+        ZR(JMAT  )=0.D0
         ZR(JMAT+1)=ZR(JDMUL)*ZR(JDIMP)
+     &                             -ZR(JALPHA)*(ZR(JDIMP+1)-ZR(JDIMP+2))
         ZR(JMAT+2)=ZR(JDMUL)*ZR(JDIMP)
+     &                             +ZR(JALPHA)*(ZR(JDIMP+1)-ZR(JDIMP+2))
+C
       ELSE IF (OPTION(6:11) .EQ. 'DDLI_R') THEN
         CALL JEVECH ('PDDLIMR', 'L', JDIMP)
         IF (OPTION(1:4) .EQ. 'MECA') CALL JEVECH ('PVECTUR','E',JVEC)
         IF (OPTION(1:4) .EQ. 'THER') CALL JEVECH ('PVECTTR','E',JVEC)
         ZR(JVEC-1+NDL+1) = ZR(JDIMP-1+1)
         ZR(JVEC-1+NDL+2) = ZR(JDIMP-1+1)
+C
       ELSE IF (OPTION(6:11) .EQ. 'DDLI_C') THEN
         CALL JEVECH ('PDDLIMC', 'L', JDIMP)
         IF (OPTION(1:4) .EQ. 'MECA') CALL JEVECH ('PVECTUC','E',JVEC)
@@ -130,6 +140,7 @@ C
         IF (OPTION(1:4) .EQ. 'ACOU') CALL JEVECH ('PVECTTC','E',JVEC)
         ZC(JVEC-1+NDL+1) = ZC(JDIMP-1+1)
         ZC(JVEC-1+NDL+2) = ZC(JDIMP-1+1)
+C
       ELSE IF (OPTION(6:11) .EQ. 'DDLI_F') THEN
         CALL JEVECH ('PDDLIMF', 'L', JDIMP)
         CALL JEVECH ('PGEOMER', 'L', JGEOM)
@@ -156,5 +167,5 @@ C
            ZR(JVEC-1+NDL+2) = RESULT
         ENDIF
       ENDIF
-C FIN ------------------------------------------------------------------
+C ----------------------------------------------------------------------
       END

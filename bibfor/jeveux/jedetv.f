@@ -1,6 +1,6 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C TOLE CRP_18 CRS_508 CRS_512 CRS_505
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
@@ -65,8 +65,8 @@ C
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
      &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      &               IDMARQ     , IDNOM      ,             IDLONG     ,

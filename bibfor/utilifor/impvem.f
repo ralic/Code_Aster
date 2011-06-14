@@ -1,6 +1,7 @@
       SUBROUTINE IMPVEM ( IFI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 30/05/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C RESPONSABLE LEFEBVRE
+C MODIF UTILIFOR  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +35,7 @@ C
       INTEGER        NCISEM , NCR8EM
       REAL*8         R8BAEM , R8PREM , R8MAEM , R8MIEM , R8GAEM , R8NNEM
       REAL*8         RMIREM , RMAREM , RMINEM , RMAXEM
-      INTEGER        ISMAEM , ISNNEM , LOUAEM , LOFIEM , ISPBEM
+      INTEGER        ISMAEM , ISNNEM , LOFIEM , ISPBEM
       REAL*8         R8VIDE , R8PI   , R8DEPI , R8DGRD , R8RDDG
 C
       PARAMETER    ( NTEST = 32 )
@@ -52,7 +53,7 @@ C
       DATA ( LABEL(I), I=8,12) /
      1   'XXXXXX  ',
      2   'XXXXXX  ',
-     3   'LOUAEM  EN OCTETS      ',
+     3   'XXXXXX  ',
      4   'LOFIEM  EN OCTETS      ',
      5   'MOFIEM  EN OCTETS      '   /
 C
@@ -137,11 +138,6 @@ C
       WRITE ( IFI , '((1X,A,I3))' )
      +   LABEL( 8) , NCISEM() ,
      +   LABEL( 9) , NCR8EM()
-C
-      WRITE ( IFI , '(/,A,/)' )
-     &   ' ----- LONGUEUR UNITE D''ADRESSAGE'
-      WRITE ( IFI , '((1X,A,I3))' )
-     +   LABEL(10) , LOUAEM()
 C
       WRITE ( IFI , '(/,A,/)' )
      &   ' ----- LONGUEUR ET TAILLE DE FICHIER'

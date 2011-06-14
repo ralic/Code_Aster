@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,9 @@ MODE_LOCAL__
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
-    EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
+    EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDEFPNO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
@@ -98,8 +100,11 @@ MODE_LOCAL__
                                         QYX      QYY      QZX      QZY      )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     QXX      QXY
                                         QYX      QYY      QZX      QZY      )
-    ECONTPG2 = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     )
-    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG )
+    ECONTPG2 = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     QXX      QXY
+                                        QYX      QYY      QZX      QZY      )
+    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG )
@@ -295,17 +300,17 @@ OPTION__
     EPVC_ELNO           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDFVCNO  PDEFOVC
-    EPMQ_ELGA      336   IN__   EDEFOPG  PDEFORR
+    EPMQ_ELGA           336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    EPEQ_ELGA      336   IN__   EDEFOPG  PDEFORR
+    EPEQ_ELGA           336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    SIEQ_ELGA      336   IN__   ECONTPG2 PCONTRR
+    SIEQ_ELGA           336   IN__   ECONTPG2 PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
-    EPMQ_ELNO      336   IN__   EDEFONO  PDEFORR
+    EPMQ_ELNO           336   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    EPEQ_ELNO      336   IN__   EDEFONO  PDEFORR
+    EPEQ_ELNO           336   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    SIEQ_ELNO      330   IN__   ECONTPG  PCONTRR
+    SIEQ_ELNO           330   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     ERME_ELEM           377   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR

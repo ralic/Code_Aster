@@ -1,8 +1,9 @@
       SUBROUTINE JXDEPS ( IADINI , IADFIN , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 31/03/2008   AUTEUR ASSIRE A.ASSIRE 
+C RESPONSABLE LEFEBVRE
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -17,6 +18,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C     DEPLACEMENT D'UNE ZONE MEMOIRE 
+C     ------------------------------------------------------------------
+C IN  IADINI : ADRESSE INITIALE
+C IN  IADFIN : ADRESSE CIBLE
+C IN  LSO : LONGUEUR DE LA ZONE A DEPLACER
+C     ------------------------------------------------------------------
 C TOLE CFT_720 CFT_726 CFT_726 CRP_18 CRS_508
       IMPLICIT REAL*8 (A-H,O-Z)
 C             ROUTINE AVEC ADHERENCE SYSTEME    CRAY
@@ -32,8 +39,8 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INTEGER          MSLOIS
       COMMON /JENVJE/  MSLOIS
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C DEB ------------------------------------------------------------------
       IF ( IAND ( JK1ZON + IADINI - 1 , MSLOIS ) .EQ. 0 .AND.
      +     IAND ( JK1ZON + IADFIN - 1 , MSLOIS ) .EQ. 0 .AND.

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,6 +93,8 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
                PRESENT_ABSENT('MATR_C1','SIGM_IMPOSE','EPSI_IMPOSE'),
                PRESENT_ABSENT('MATR_C2','SIGM_IMPOSE','EPSI_IMPOSE'),
                PRESENT_ABSENT('VECT_IMPO', 'SIGM_IMPOSE','EPSI_IMPOSE'),
+               EXCLUS('EPSI_IMPOSE','GRAD_IMPOSE'),
+               EXCLUS('SIGM_IMPOSE','GRAD_IMPOSE'),
      ),
                
      SIGM_IMPOSE=FACT(statut='f',
@@ -110,6 +112,18 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
            EPXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            EPXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            EPYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                      ),
+     GRAD_IMPOSE=FACT(statut='f',
+           regles = ( ENSEMBLE('F11','F12','F13','F21','F22','F23','F31','F32','F33',),),
+           F11 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F12 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F13 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F21 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F22 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F23 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F31 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F32 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           F33 = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
                       ),
      MATR_C1=FACT(statut='f',max='**',
            VALE          =SIMP(statut='o',typ='R',max=1, ),

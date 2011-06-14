@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,8 +37,8 @@ C     ------------------------------------------------------------------
 C
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
@@ -109,12 +109,15 @@ C
       IF(IRES .GT. 0) THEN
         WRITE(IRES,*) ' '
         WRITE(IRES,'(2A,F11.2,A)') 
-     +        ' <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR ',
-     +        'L''EXECUTION :                ',RVAL(2),' Mo'
+     &        ' <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR ',
+     &        'L''EXECUTION :                ',RVAL(2),' Mo'
+        WRITE(IRES,'(2A,F11.2,A)') 
+     &        ' <I> <FIN> MEMOIRE JEVEUX OPTIMALE REQUISE POUR ',
+     &        'L''EXECUTION :                ',RVAL(5),' Mo'
         IF (RVAL(9).GT.0) THEN 
           WRITE(IRES,'(2A,F11.2,A)') 
-     +        ' <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS'
-     +        ,' LORS DE L''EXECUTION :',RVAL(9)/1024,' Mo'
+     &        ' <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS'
+     &        ,' LORS DE L''EXECUTION :',RVAL(9)/1024,' Mo'
         ENDIF
       ENDIF
 C
@@ -151,9 +154,25 @@ C
      &                  VALI(7),' Mo.'    
             WRITE(IFM,*) ' '
           ENDIF         
-          WRITE(IFM,*) '  MAXIMUM DE MEMOIRE UTILISEE PAR'
-          WRITE(IFM,'(2A,F11.2,A)') '   LE PROCESSUS LORS DE '
-     &                 ,'L''EXECUTION    :  ',RVAL(9)/1024,' Mo.'
+          WRITE(IFM,'(A,F11.2,A)') 
+     &       '   MEMOIRE JEVEUX MINIMALE REQUISE POUR L''EXECUTION :',
+     &       RVAL(2),' Mo'
+          WRITE(IFM,'(A)') '     - IMPOSE DE NOMBREUX ACCES DISQUE'
+          WRITE(IFM,'(A)') '     - RALENTIT LA VITESSE D''EXECUTION'
+          WRITE(IFM,'(A,F11.2,A)') 
+     &       '   MEMOIRE JEVEUX OPTIMALE REQUISE POUR L''EXECUTION :',
+     &       RVAL(5),' Mo'
+          WRITE(IFM,'(A)') '     - LIMITE LES ACCES DISQUE'
+          WRITE(IFM,'(A)') '     - AMELIORE LA VITESSE D''EXECUTION'
+          IF (RVAL(9).GT.0) THEN 
+            WRITE(IFM,'(A,F11.2,A)') 
+     &       '   MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :',
+     &       RVAL(9)/1024,' Mo'
+          WRITE(IFM,'(A)') '     - COMPREND LA MEMOIRE CONSOMMEE PAR '//
+     &       ' JEVEUX, '
+          WRITE(IFM,'(A)') '       LE SUPERVISEUR PYTHON, '//
+     &       'LES LIBRAIRIES EXTERNES'
+          ENDIF
           WRITE(IFM,*) ' '
           CALL ENLIRD(LADATE)
           WRITE(IFM,*) '<I>       FIN D''EXECUTION LE : '//LADATE

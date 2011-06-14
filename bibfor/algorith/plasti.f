@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -213,15 +213,15 @@ C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
         REAL*8          TIMED,       TIMEF,     TEMPD,    TEMPF  , TREF
-        REAL*8          EPSD(6),     DEPS(6)
-        REAL*8          EPSDT(6),    DEPST(6)
+        REAL*8          EPSD(9),     DEPS(9)
+        REAL*8          EPSDT(9),    DEPST(9)
         REAL*8          SIGD(6),     SIGF(6)
 C
         REAL*8          SEUIL, THETA, DT, DEVG(6), DEVGII
 C
         REAL*8          VP(3),VECP(3,3),TAMPON(*)
 C
-        REAL*8          DSDE(6,6),  PGL(3,3), ANGMAS(3)
+        REAL*8          DSDE(6,*),  PGL(3,3), ANGMAS(3)
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
 C ON SUPPOSE ICI QUE LE NOMBRE DE FAMILLES DE SYSTEME DE GLISSEMENT EN
@@ -276,13 +276,20 @@ C
          ENDIF
       ENDIF
 
-C --  RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
-      CALL LCDEDI(FAMI,KPG,KSP, NMAT,  MATERD, MATERF,
+      IF ((COMP(3).EQ.'SIMO_MIEHE').AND.(COMP(1).EQ.'MONOCRISTAL')) THEN
+C        GDEF_MONO : PAS DE DEFORM. THERMIQUE
+         CALL DCOPY(9,DEPST,1,DEPS,1)
+         CALL DCOPY(9,EPSDT,1,EPSD,1)
+      
+      ELSE
+C --     RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
+         CALL LCDEDI(FAMI,KPG,KSP, NMAT,  MATERD, MATERF,
      &            TEMPD, TEMPF,TREF,DEPST, EPSDT, DEPS, EPSD )
 C
-C --  RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
-      CALL LCDEHY(FAMI, KPG, KSP, NMAT, MATERD, MATERF,
+C --     RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
+         CALL LCDEHY(FAMI, KPG, KSP, NMAT, MATERD, MATERF,
      &            DEPS, EPSD )
+      ENDIF
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
       IF  ( ABS(VIND (NVI)) .LE. EPSI ) THEN
@@ -302,15 +309,23 @@ C     OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
 C     ----------------------------------------------------------------
 C
       IF ( OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA' ) THEN
-C --     INTEGRATION ELASTIQUE SUR DT
-         CALL LCELAS(LOI, MOD , NMAT, MATERD, MATERF, MATCST,
+      
+      IF ((COMP(3).EQ.'SIMO_MIEHE').AND.(COMP(1).EQ.'MONOCRISTAL')) THEN
+C          GDEF_MONO : PAS DE SEUIL CAR C'EST PLUS COMPLIQUE
+           SEUIL=1.D0
+           
+         ELSE
+         
+C --        INTEGRATION ELASTIQUE SUR DT
+            CALL LCELAS(LOI, MOD , NMAT, MATERD, MATERF, MATCST,
      &               NVI, DEPS, SIGD, VIND,   SIGF,   VINF,
      &               THETA)
 
-C --     PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
-         CALL LCCNVX(FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
+C --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
+            CALL LCCNVX(FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
      &               SIGF, VIND, NBCOMM, CPMONO, PGL, NVI,
      &               VP,VECP, HSR, TOUTMS, TIMED,TIMEF, SEUIL)
+         ENDIF
 C
          IF ( SEUIL .GE. 0.D0 ) THEN
 C --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
@@ -358,7 +373,7 @@ C   ------>    VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> ELASTIQUE
                IF( TYPMA .EQ. 'COHERENT' ) THEN
                   IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
                      CALL LCJPLC(LOI,MOD,NMAT,MATERF,
-     &                           TIMED,TIMEF,NBCOMM,CPMONO,
+     &                           TIMED,TIMEF,COMP,NBCOMM,CPMONO,
      &                           PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
      &                           ITMAX,TOLER,SIGD,VIND,SIGD,VIND,
      &                           DSDE,DRDY,OPT,IRET)
@@ -388,7 +403,7 @@ C   ------>    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------>    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                IF     ( TYPMA .EQ. 'COHERENT' ) THEN
                   CALL LCJPLC(LOI,MOD,NMAT,MATERF,
-     &                        TIMED,TIMEF,NBCOMM,CPMONO,
+     &                        TIMED,TIMEF,COMP,NBCOMM,CPMONO,
      &                        PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
      &                        ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
      &                        DSDE,DRDY,OPT,IRET)

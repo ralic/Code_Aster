@@ -6,7 +6,7 @@
      &                  MEELEM,MEASSE,VEELEM,VEASSE,SDNUME,
      &                  LDCCVG,FACCVG,CODERE)
 C
-C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -180,7 +180,7 @@ C
      &            COMPOR,LISCHA,CARCRI,FONACT,DEFICO,
      &            SDDYNA,VALINC,SOLALG,VEELEM,VEASSE,
      &            SDTIME,LDCCVG,CODERE,CNPILO,CNDONN,
-     &            SDNUME)
+     &            SDNUME,MATASS)
 C
 C --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
 C     

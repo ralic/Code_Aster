@@ -1,11 +1,11 @@
-        SUBROUTINE LCJPLC (LOI,MOD,NMAT,MATER,TIMED,TIMEF,
+        SUBROUTINE LCJPLC (LOI,MOD,NMAT,MATER,TIMED,TIMEF,COMP,
      &                     NBCOMM,CPMONO,PGL,TOUTMS,HSR,
      &                     NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,
      &                     SIGD,VIND,DSDE,DRDY,OPTION,IRET)
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,16 +46,16 @@ C       ----------------------------------------------------------------
       INTEGER         NBCOMM(NMAT,3)
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
       REAL*8  DRDY(NR,NR)
-      CHARACTER*16    CPMONO(5*NMAT+1)
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C       ----------------------------------------------------------------
        IRET=0
          IF     ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
             CALL  CVMJPL (MOD,NMAT,MATER,
      &        TIMED, TIMEF,EPSD,DEPS,SIGF,VINF,SIGD,VIND,NVI,NR,DSDE)
          ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS'     ) THEN
-            CALL  LCMMJP (MOD,NMAT,MATER,
-     &                    TIMED, TIMEF, NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &                    NR,NVI,ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
+            CALL  LCMMJP (MOD,NMAT,MATER,TIMED, TIMEF, COMP,
+     &                    NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     &                    NR,NVI,ITMAX,TOLER,VINF,VIND,
      &                    DSDE , DRDY, OPTION, IRET)
          ENDIF
 C

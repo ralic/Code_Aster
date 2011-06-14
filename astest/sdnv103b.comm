@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103b.para = tps_job 370 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,16 +129,15 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 FORMULATION='DEPLACEMENT',
                                 BETA = 0.49,   # Beta
                                 GAMMA = 0.9  ), # Gamma
-                  NEWTON=_F(   REAC_INCR=1,
-                                MATRICE='TANGENTE',
-                                REAC_ITER=1,),
+                  NEWTON=_F(REAC_INCR=1,
+                            MATRICE='TANGENTE',
+                            REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                   ITER_GLOB_MAXI=20,
                                   ARRET='OUI',),
                    SOLVEUR=_F(SYME='OUI',
                               METHODE='LDLT', ),
-                   ARCHIVAGE=_F(
-                                LIST_INST=L_SAUV),
+                   ARCHIVAGE=_F(LIST_INST=L_SAUV),
                    );
 
 #####################################################
@@ -212,23 +211,23 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   INST = 8.E-05,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'B1',
           CRITERE = 'RELATIF', PRECISION = (1.E-6, 1.E-10),
-          NOM_CMP = 'DX',    VALE = 2.7947013994357E+00, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DX',    VALE = 2.8520590986648, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.8' ),
      _F(  RESULTAT = RESU,   INST = 8.E-05,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'A2',
           CRITERE = 'RELATIF', PRECISION = (3.E-6, 1.E-10),
-          NOM_CMP = 'DY',    VALE = -1.2568536629436E+01, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DY',    VALE = -12.630684919428, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.8' ),
      _F(  RESULTAT = RESU,   INST = 8.E-05,
           NOM_CHAM = 'VITE',   GROUP_NO = 'B1',
           CRITERE = 'RELATIF', PRECISION = (1.E-6, 1.E-10),
-          NOM_CMP = 'DX',    VALE = -9.5582549814500E+02, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DX',    VALE = -910.37341846814, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.8' ),
      _F(  RESULTAT = RESU,   INST = 8.E-05,
           NOM_CHAM = 'VITE',   GROUP_NO = 'A2',
           CRITERE = 'RELATIF', PRECISION = (3.E-6, 1.E-10),
-          NOM_CMP = 'DY',    VALE = 1.5420902143906E+04, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DY',    VALE = 15644.454998633, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.8' ),
         ),);
 
 #####################################################
@@ -334,9 +333,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =1.4698443979790E+02,
+           VALE     =121.87471210428,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -344,9 +343,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =1.9216675183769E+02,
+           VALE     =168.83647570183,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -354,9 +353,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =3.0682317581419E+02,
+           VALE     =274.50544666916,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -364,9 +363,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =4.0694295472816E+02,
+           VALE     =370.78388125536,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -374,9 +373,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =2.2314887441211E+02,
+           VALE     =190.06519579897,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -384,9 +383,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =2.1993148768291E+02,
+           VALE     =186.42130490234,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -394,9 +393,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =2.1827059647362E+02,
+           VALE     =185.0821317481,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -404,9 +403,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='R',
            CRITERE  = 'RELATIF',
            PRECISION=1.E-5,
-           VALE     =2.0682813544661E+02,
+           VALE     =178.73231490728,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '7.1.6' )
+           VERSION  = '11.0.8' )
 
 
 FIN()

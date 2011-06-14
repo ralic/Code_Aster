@@ -1,6 +1,7 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C RESPONSABLE LEFEBVRE
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,8 +77,8 @@ C
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C ----------------------------------------------------------------------
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS , GENRI , TYPEI , CLASI
       CHARACTER*16     K16
@@ -121,6 +122,7 @@ C DEB ------------------------------------------------------------------
       KATTR(2)(17:24) =' '
       KATTR(3)(17:24) =' '
       CALL ENLIRD(KATTR(4))
+      LOUA = 1
       WRITE(KATTR(5),'(''LBIS='',I2,'' LOIS='',I2,'' LOUA='',I2)')
      &                   LBIS, LOIS, LOUA
       IRET = HDFWAT (IDG,NOMATR,5,KATTR)

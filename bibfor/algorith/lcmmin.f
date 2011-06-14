@@ -4,7 +4,7 @@
      &                      TIMED,TIMEF,VIND,SIGD,EPSTR )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,9 +64,9 @@ C
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
-      INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS
-      REAL*8          EVP(6)
-      REAL*8          PGL(3,3),MS(6),NG(3),Q(3,3),LG(3)
+      INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS,NS
+      REAL*8          EVP(6),FE(3,3),DF(3,3),FE1(3,3),FE1T(3,3)
+      REAL*8          PGL(3,3),MS(6),NG(3),Q(3,3),LG(3),FETFE(3,3)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*16    NOMFAM
       REAL*8          TIMED,TIMEF,VIND(*),SIGD(6),SIGDN(6)
@@ -98,16 +98,25 @@ C
 C - SOLUTION INITIALE = ELASTIQUE
 C
       ELSEIF (TYPESS.EQ.1.OR.TYPESS.EQ.-1) THEN
-
+         NS=NR-NDT
          IF (MATERF(NMAT,1).EQ.0) THEN
             CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
          ELSEIF (MATERF(NMAT,1).EQ.1) THEN
             CALL LCOPLI ( 'ORTHOTRO' , MOD , MATERF(1,1) , HOOK )
          ENDIF
-
-         CALL LCTRMA (HOOK , HOOK)
-         CALL LCPRMV ( HOOK    , DEPS , DSIG  )
-         CALL LCEQVN ( NDT     , DSIG , DY(1) )
+C        GDEF : INITIALISATION PAR FET.DFT.DF.FE
+         IF (COMP(3)(1:5).NE.'PETIT') THEN
+            CALL DCOPY(9,VIND(6+3*NS+1),1,FE,1)
+            CALL DCOPY(9,DEPS,1,DF,1)
+            CALL PMAT(3,DF,FE,FE1)
+            CALL LCTR2M(3,FE1,FE1T)
+            CALL PMAT(3,FE1T,FE1,FETFE)
+            CALL TNSVEC(3,3,FETFE,DY,1.D0 ) 
+         ELSE
+            CALL LCTRMA (HOOK , HOOK)
+            CALL LCPRMV ( HOOK    , DEPS , DSIG  )
+            CALL LCEQVN ( NDT     , DSIG , DY(1) )
+         ENDIF
 C
 C - SOLUTION INITIALE = EXPLICITE
 C

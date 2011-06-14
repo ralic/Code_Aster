@@ -3,9 +3,9 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,17 +38,16 @@ C     --- 4  = BASELEM
 C     ------------------------------------------------------------------
       PARAMETER          ( MXDFCA = 4 ,       MXCATA = 10 )
       CHARACTER*32  DFNOM(MXDFCA)     , NOM (MXCATA)
-      CHARACTER*72  DFTITR(MXDFCA)    , TITRE(MXCATA)
-      CHARACTER*24 VALK
+      CHARACTER*24  VALK
       INTEGER       DFUNIT(MXDFCA)    , UNITE(MXCATA)
 C     ------------------------------------------------------------------
 C     OPTIONS PAR DEFAUT :
 C
-      DATA ( DFNOM(I), DFTITR(I), DFUNIT(I), I=1,MXDFCA) /
-     &    'COMMANDE_PRIVEE  ', 'COMMANDES PRIVEES                  ',03,
-     &    'COMMANDE         ', 'COMMANDES OFFICIELLES              ',02,
-     &    'CATAELEM         ', 'CATALOGUES DE CALCUL               ',04,
-     &    'ELEMBASE         ', 'BASE CATALOGUE ELEMENT             ',04/
+      DATA ( DFNOM(I), DFUNIT(I), I=1,MXDFCA) /
+     &    'COMMANDE_PRIVEE  ',03,
+     &    'COMMANDE         ',02,
+     &    'CATAELEM         ',04,
+     &    'ELEMBASE         ',04/
 C     ------------------------------------------------------------------
 C
       CALL ULDEFI(6,' ','MESSAGE','A','N','N')
@@ -78,8 +77,6 @@ C
             CALL UTREMT( NOM(IOCC) , DFNOM , MXDFCA , IPLACE )
             IF ( IPLACE .GT. 0 )  UNITE(IOCC) = DFUNIT(IPLACE)
          ENDIF
-         TITRE(IOCC) = ' '
-         CALL GETVTX(MOTFAC,'TITRE',IOCC,IUN,IUN,TITRE(IOCC),NBTITR)
   10  CONTINUE
 C
 C     --- CATALOGUE DES ELEMENTS ---
@@ -90,7 +87,7 @@ C     --- CATALOGUE DES ELEMENTS ---
       DO 300 ICATA = 1 , NBOCC
          IF (NOM(ICATA).EQ.DFNOM(3) .OR. NOM(ICATA).EQ.DFNOM(4) ) THEN
             IF (UNITE(ICATA).GT.0) THEN
-               CALL IBCATC(NOM(ICATA),UNITE(ICATA),TITRE(ICATA),IER1)
+               CALL IBCATC(NOM(ICATA),UNITE(ICATA),IER1)
                IER = IER + IER1
             ENDIF
             NOM(ICATA) = '  '
@@ -98,7 +95,7 @@ C     --- CATALOGUE DES ELEMENTS ---
          ENDIF
  300  CONTINUE
       IF ( NBCATA .EQ. 0 .AND. NOMCMD .EQ. 'DEBUT' ) THEN
-         CALL IBCATC(DFNOM(IELTDF),DFUNIT(IELTDF),DFTITR(IELTDF),IER1)
+         CALL IBCATC(DFNOM(IELTDF),DFUNIT(IELTDF),IER1)
          IER = IER + IER1
       ENDIF
       CALL UTTCPU('CPU.IBCATA','FIN',' ')

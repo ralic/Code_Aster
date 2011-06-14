@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,6 +25,7 @@ ENTETE__ ELEMENT__ D_DEPL_R_H4Y      MAILLE__ SEG3
    ENS_NOEUD__  EN2     =     1
 
 MODE_LOCAL__
+    MALPHAR  = NEUT_R   ELEM__         (X1       )
     MDDLIMC  = DDLI_C   ELEM__         (C        )
     MDDLIMF  = DDLI_F   ELEM__         (C        )
     MDDLIMR  = DDLI_R   ELEM__         (C        )
@@ -50,7 +51,7 @@ MATRICE__
 OPTION__
     MECA_BTLA_R         2     IN__   MDDLMUR  PDDLMUR  DDL_MECA PLAGRAR
                               OUT__  MVECTUR  PVECTUR
-    MECA_BU_R           2     IN__   DDL_MECA PDDLIMR  MDDLMUR  PDDLMUR
+    MECA_BU_R           2     IN__   DDL_MECA PDDLIMR  MDDLMUR  PDDLMUR  MALPHAR  PALPHAR
                               OUT__  MVECTUR  PVECTUR
     MECA_DDLI_C         2     IN__   MDDLIMC  PDDLIMC
                               OUT__  MVECTUC  PVECTUC

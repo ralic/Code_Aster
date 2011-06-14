@@ -1,12 +1,12 @@
-      SUBROUTINE IBCATC(TYPE,IUNIT,TITRE,IER)
+      SUBROUTINE IBCATC(TYPE,IUNIT,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)     TYPE,      TITRE
+      CHARACTER*(*)     TYPE      
       INTEGER                IUNIT,      IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CATAELEM  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -24,11 +24,8 @@ C ======================================================================
 C MAIN DE LA LECTURE DES CATALOGUE
 C     -----------------------------------------------------------------
 C
-      COMMON /CIMP/ IMP,IULMES,IULIST,IULVIG
-C
       IF(TYPE .EQ. 'CATAELEM' ) THEN
          CALL INCCAT
-         IF ( IMP.GT.0) WRITE(IMP,*) TITRE
          CALL LCCATA(IUNIT)
       ELSEIF(TYPE .EQ. 'ELEMBASE' ) THEN
          CALL IBCAEL('LIRE')

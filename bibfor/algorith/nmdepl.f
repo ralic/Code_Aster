@@ -7,7 +7,7 @@
      &                  CONV  ,ERROR )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -171,7 +171,7 @@ C
      &                RESOCO,SDPILO,ITERAT,SDNUME,DELTAT,
      &                VALINC,SOLALG,VEELEM,VEASSE,SDTIME,
      &                SDDISC,ETA   ,RHO   ,OFFSET,LDCCVG,
-     &                PILCVG)
+     &                PILCVG,MATASS)
           CONV(10) = 0
           CONV(11) = 1.D0
           IF (PILCVG .EQ. 1) THEN
@@ -189,7 +189,7 @@ C
      &                DEFICO,RESOCO,DELTAT,VALINC,SOLALG,
      &                VEELEM,VEASSE,SDTIME,SDDISC,ETAN  ,
      &                CONV  ,ETA   ,RHO   ,OFFSET,LDCCVG,
-     &                PILCVG)
+     &                PILCVG,MATASS)
         ELSE
           CALL NMRELI(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &                COMPOR,LISCHA,CARCRI,FONACT,ITERAT,

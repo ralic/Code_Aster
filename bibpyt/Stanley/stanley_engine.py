@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 14/06/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -553,7 +553,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     else: raise "Erreur! Pas de DISPLAY defini!"   # Ce cas est normalement impossible car Stanley doit avoir un DISPLAY pour pouvoir s'ouvrir
 
     # Local ou Distant ?
-    if (mdisplay is ['localhost', '127.0.0.1']) or (hostname == mdisplay[0:len(hostname)]) or (hostname in ['localhost', '127.0.0.1']):
+    if (mdisplay is ['localhost', '127.0.0.1']) or (hostname == mdisplay[0:len(hostname)]) or (hostname in ['localhost', '127.0.0.1']) or (hostname == self.dparam['machine_salome']['val']):
         mode_local = True
     else:
         mode_local = False

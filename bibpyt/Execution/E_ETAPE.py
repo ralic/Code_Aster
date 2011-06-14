@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -214,18 +214,10 @@ class ETAPE:
          echo_mess=[decalage]
          if avec_temps:
             rval = aster.jeinfo()
-            echo_mem = """%s  #  USAGE DE LA MEMOIRE JEVEUX""" % (decalage)
-            echo_mem += os.linesep +"""%s  #     - MEMOIRE DYNAMIQUE CONSOMMEE : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[2],rval[4])
-            echo_mem += os.linesep +"""%s  #     - MEMOIRE UTILISEE            : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[0],rval[1])
-            if rval[5] > 0. :
-              if rval[8] > 0. :
-                echo_mem += os.linesep +"""%s  #  USAGE DE LA MEMOIRE POUR LE PROCESSUS""" % (decalage)
-                echo_mem += os.linesep +"""%s  #     - VmPeak : %12.2f Mo - VmData : %12.2f Mo - VmSize : %12.2f Mo """ % (decalage, rval[8]/1024, rval[5]/1024, rval[6]/1024)
-                echo_mem += os.linesep
-              else :
-                echo_mem += os.linesep +"""%s  #  USAGE DE LA MEMOIRE POUR LE PROCESSUS""" % (decalage)
-                echo_mem += os.linesep +"""%s  #     - VmData : %12.2f Mo - VmSize : %12.2f Mo """ % (decalage, rval[5]/1024, rval[6]/1024)
-                echo_mem += os.linesep
+            if (rval[5] > 0. and rval[8] > 0.) :
+              echo_mem = """%s  #  STATISTIQUES MEMOIRE (Mo) : %9.2f / %9.2f / %9.2f (VmPeak / Optimum / Minimum)"""% (decalage, rval[8]/1024, rval[4], rval[1])
+            else :
+              echo_mem = """%s  #  STATISTIQUES MEMOIRE (Mo) : %9.2f / %9.2f (Optimum / Minimum)"""% (decalage, rval[4], rval[1])
 
             echo_fin = "%s  #  FIN COMMANDE NO : %04d   USER+SYST:%12.2fs (SYST:%12.2fs, ELAPS:%12.2fs)" \
                % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst, elapsed)

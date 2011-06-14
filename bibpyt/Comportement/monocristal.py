@@ -1,4 +1,4 @@
-#@ MODIF monocristal Comportement  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF monocristal Comportement  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ loi = LoiComportement(
    nom_vari       = None,
    mc_mater       = None,
    modelisation   = ('3D','AXIS','D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'SIMO_MIEHE'),
    nom_varc       = ('TEMP'),
    algo_inte         = ('NEWTON','NEWTON_RELI','RUNGE_KUTTA','NEWTON_PERT',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

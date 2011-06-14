@@ -1,8 +1,9 @@
       SUBROUTINE JXLIBD ( IDCO , IDOS , IC , IADDI , LONOI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C RESPONSABLE LEFEBVRE
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,8 +36,8 @@ C ----------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,

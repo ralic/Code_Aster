@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128c.para = tps_job 100 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,7 +26,7 @@
 # MODELE
 # MAILLAGE : ELEMENT 2D TRIANGLE A 3 NOEUDS
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
-#
+
 
 DEBUT( CODE=_F(  NOM = 'SSNV128C',NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM=('CALCULEL2_63'))
@@ -41,34 +41,36 @@ DEBUT( CODE=_F(  NOM = 'SSNV128C',NIV_PUB_WEB='INTERNET'),
 #......................................................................
 
 PRE_GIBI()
-#
+
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),)
-#
+
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE = 'MECANIQUE',
                        MODELISATION = 'D_PLAN',)
               )
-#
+
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=(_F(GROUP_MA = 'LPRESV',),
                                _F(GROUP_MA = 'LPRESH',))
                 )
-#
+
 MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
                              NU = 0.2,)
                     )
-#
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT = 'OUI',
                              MATER = MATPLA,)
                     )
-#
+
+CHA0=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=(_F(GROUP_MA = 'LBATI',  DX = 0.0, DY = 0.0,),
+                               _F(GROUP_NO = 'PPS',    DX = 0.0, DY = 0.0,),
+                               _F(GROUP_MA = 'LBLOCX', DX = 0.0,)),
+                   )
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_MA = 'LBATI',  DX = 0.0, DY = 0.0,),
-                              _F(GROUP_NO = 'PPS',    DX = 0.0, DY = 0.0,),
-                              _F(GROUP_MA = 'LBLOCX', DX = 0.0,)),
                     PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07,),
                               _F(GROUP_MA = 'LPRESH', PRES = 15.E07,))
                    )
@@ -88,7 +90,7 @@ CHA2=DEFI_CONTACT(MODELE         = MO,
                         )
                   )
 
-#
+
 CHA3=DEFI_CONTACT(MODELE         = MO,
                   FORMULATION    = 'DISCRETE',
                   FROTTEMENT     = 'COULOMB',
@@ -106,26 +108,26 @@ CHA3=DEFI_CONTACT(MODELE         = MO,
                         )
                   )
                   
-#
-#
+
+
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
                     VALE=(0.0,0.0,1.0,1.0,)
                     )
-#
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5,)
                       )
 #
-#-----------------------------------------------------------
+##-----------------------------------------------------------
 #
 U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   MODELE    = MO,
                   CHAM_MATER = CHMAT,
-                  EXCIT      =(_F(CHARGE = CHA1,
-                                  FONC_MULT = RAMPE,),
-                               ),
+                  EXCIT       =(_F(CHARGE = CHA0,),
+                                _F(CHARGE = CHA1,
+                                   FONC_MULT = RAMPE,),),
                   CONTACT    = CHA2,             
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   INCREMENT  = _F(LIST_INST = L_INST,),
@@ -134,19 +136,19 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                                  RESI_GLOB_RELA = 1.0E-5,),
 #                  INFO=2,
                )
-#
+
 U2M=CALC_ELEM(reuse=U2M,
               OPTION=('SIEF_ELNO', 'VARI_ELNO',),
               RESULTAT=U2M,
              )
-#
+
 DEPL2M=CREA_CHAMP(OPERATION='EXTR',
                   TYPE_CHAM='NOEU_DEPL_R',
                   NOM_CHAM='DEPL',
                   RESULTAT=U2M,
                   INST=1.0
                 )
-#
+
 TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -199,13 +201,13 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                 ))
        )
 #
-#-----------------------------------------------------------
+##-----------------------------------------------------------
 #
 U2L=STAT_NON_LINE(MODELE    = MO,
                   CHAM_MATER = CHMAT,
-                  EXCIT      =(_F(CHARGE = CHA1,
-                                  FONC_MULT = RAMPE,),
-                               ),
+                  EXCIT       =(_F(CHARGE = CHA0,),
+                                _F(CHARGE = CHA1,
+                                   FONC_MULT = RAMPE,),),
                   CONTACT    = CHA2,                                
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   SOLVEUR    = _F(SYME='OUI',
@@ -216,19 +218,19 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                                  RESI_GLOB_RELA = 1.0E-5,),
 #                  INFO=2,
                )
-#
+
 U2L=CALC_ELEM(reuse=U2L,
               OPTION=('SIEF_ELNO', 'VARI_ELNO',),
               RESULTAT=U2L,
              )
-#
+
 DEPL2L=CREA_CHAMP(OPERATION='EXTR',
                   TYPE_CHAM='NOEU_DEPL_R',
                   NOM_CHAM='DEPL',
                   RESULTAT=U2L,
                   INST=1.0
                 )
-#
+
 TEST_RESU(RESU=(_F(RESULTAT   = U2L,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -280,37 +282,37 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2L,
                    VERSION    = '7.1.11',
                 ))
        )
-#
+
 #-----------------------------------------------------------
-#
+
 U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   MODELE      = MO,
-                 CHAM_MATER  = CHMAT,
-                 EXCIT       =(_F(CHARGE = CHA1,
-                                  FONC_MULT = RAMPE,),
-                               ),
+                  CHAM_MATER  = CHMAT,
+                  EXCIT       =(_F(CHARGE = CHA0,),
+                                _F(CHARGE = CHA1,
+                                   FONC_MULT = RAMPE,),),
                   CONTACT    = CHA3,                                
-                 COMP_ELAS   = _F(RELATION = 'ELAS',),
-                 NEWTON      = _F(REAC_ITER = 1,),
-                 INCREMENT   = _F(LIST_INST = L_INST,),
-                 CONVERGENCE = _F(ARRET = 'OUI',
-                                  ITER_GLOB_MAXI = 200,
-                                  RESI_GLOB_RELA = 1.0E-5,),
-#                 INFO=2,
+                  COMP_ELAS   = _F(RELATION = 'ELAS',),
+                  NEWTON      = _F(REAC_ITER = 1,),
+                  INCREMENT   = _F(LIST_INST = L_INST,),
+                  CONVERGENCE = _F(ARRET = 'OUI',
+                                   ITER_GLOB_MAXI = 200,
+                                   RESI_GLOB_RELA = 1.0E-5,),
+#                  INFO=2,
                )
-#
+
 U3M=CALC_ELEM(reuse=U3M,
             OPTION=('SIEF_ELNO', 'VARI_ELNO',),
             RESULTAT=U3M,
            )
-#
+
 DEPL3M=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='NOEU_DEPL_R',
                  NOM_CHAM='DEPL',
                  RESULTAT=U3M,
                  INST=1.0
                 )
-#
+
 TEST_RESU(RESU=(_F(RESULTAT   = U3M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -362,14 +364,14 @@ TEST_RESU(RESU=(_F(RESULTAT   = U3M,
                    VERSION    = '7.1.11',
                 ))
        )
-#
+
 #-----------------------------------------------------------
-#
+
 U3L=STAT_NON_LINE(MODELE      = MO,
                  CHAM_MATER  = CHMAT,
-                 EXCIT       =(_F(CHARGE = CHA1,
-                                  FONC_MULT = RAMPE,),
-                               ),
+                 EXCIT       =(_F(CHARGE = CHA0,),
+                               _F(CHARGE = CHA1,
+                                  FONC_MULT = RAMPE,),),
                  CONTACT    = CHA3,              
                  COMP_ELAS   = _F(RELATION = 'ELAS',),
                  SOLVEUR     = _F(SYME='OUI',
@@ -381,19 +383,19 @@ U3L=STAT_NON_LINE(MODELE      = MO,
                                   RESI_GLOB_RELA = 1.0E-5,),
 #                 INFO=2,
                )
-#
+
 U3L=CALC_ELEM(reuse=U3L,
             OPTION=('SIEF_ELNO', 'VARI_ELNO',),
             RESULTAT=U3L,
            )
-#
+
 DEPL3L=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='NOEU_DEPL_R',
                  NOM_CHAM='DEPL',
                  RESULTAT=U3L,
                  INST=1.0
                 )
-#
+
 TEST_RESU(RESU=(_F(RESULTAT   = U3L,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -445,7 +447,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U3L,
                    VERSION    = '7.1.11',
                 ))
        )
-#
-#
+
+
 FIN()
-#
+

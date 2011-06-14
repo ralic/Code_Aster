@@ -1,28 +1,29 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DU MODE EXTERNE DE LA MACRO-COMMANDE DE RECALAGE
 # zzzz159f.para = tps_job 150 mem_job 300Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='ZZZZ159F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 # RESPONSABLE ASSIRE A.ASSIRE
 
 import os, sys, glob, math
+from distutils.sysconfig import get_python_lib
 
 ROOT = os.getcwd()
 
@@ -35,15 +36,23 @@ for REPPY in ['Eficas', 'Python']:
       commande = fic
       print "Zzzzzzzzzz"
       break
-if not commande: raise aster.error,"<F> Probleme : impossible de recuperer le chemin de recal.py" 
+if not commande:
+    raise aster.error,"<F> Probleme : impossible de recuperer le chemin de recal.py"
 
 
 ASTER_ROOT = os.environ['ASTER_ROOT']
-sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
-sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
+sys.path.append(get_python_lib(prefix=ASTER_ROOT))
+sys.path.append(os.path.join(ROOT, REPPY))
+# ne pas exporter le contenu sys.path car il contient les repertoires
+# de la version de python courante (conflit possible si as_run utilise
+# un autre python)
+lpath = os.environ.get('PYTHONPATH', '').split(os.pathsep)
+lpath.append(get_python_lib(prefix=ASTER_ROOT))
+lpath.append(os.path.join(ROOT, REPPY))
+os.environ['PYTHONPATH'] = os.pathsep.join(lpath)
 
 from Utilitai.System import ExecCommand
-from asrun.profil       import ASTER_PROFIL
+from asrun.profil import ASTER_PROFIL
 
 arguments = ' --objective=fcalc --objective_type=float --gradient_type=no --mr_parameters=fort.2 '
 commande = '%s %s %s' % (sys.executable, commande, arguments)
@@ -142,7 +151,7 @@ fval = fonction(x0)
 
 TBL=CREA_TABLE(LISTE=(_F(LISTE_R=[ fval ],
                          PARA='FVAL'),
-                      )); 
+                      ));
 
 TEST_TABLE(TABLE=TBL,
            NOM_PARA='FVAL',

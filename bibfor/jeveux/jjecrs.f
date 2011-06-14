@@ -1,6 +1,7 @@
       SUBROUTINE JJECRS ( IADMI, IADYN, ICLAS, IDOS, IDCO, CUS, IMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C RESPONSABLE LEFEBVRE
+C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,8 +40,8 @@ C ----------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C ----------------------------------------------------------------------
-      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C ---                  ISTAT(1)->X , (2)->U , (3)->A , (4)->D

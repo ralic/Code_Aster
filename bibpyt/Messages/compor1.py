@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF compor1 Messages  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -363,5 +363,8 @@ suivantes : - D_PLAN_GRAD_VARI
 """),
 67 : _("""
 Dans la définition du materiau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS 
+"""),
+68 : _("""
+Le comportement MONOCRISTAL en grandes deformations SIMO_MIEHE n'est pas compatible avec RUNGE_KUTTA. Utiliser NEWTON. 
 """),
 }
