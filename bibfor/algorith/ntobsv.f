@@ -1,7 +1,8 @@
-      SUBROUTINE NTOBSV(NOMA  ,SDOBSE,TEMPZ ,NUMINS,INST  )
+      SUBROUTINE NTOBSV(NOMA  ,SDSENS,SDIETO,SDOBSE,NUMINS,
+     &                  INST  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,13 +24,13 @@ C
       IMPLICIT NONE 
       INTEGER       NUMINS
       CHARACTER*8   NOMA
-      CHARACTER*(*) TEMPZ
       CHARACTER*19  SDOBSE
+      CHARACTER*24  SDIETO,SDSENS
       REAL*8        INST  
 C 
 C ----------------------------------------------------------------------
 C
-C ROUTINE MECA_NON_LINE (ALGORITHME)
+C ROUTINE THER_NON_LINE (ALGORITHME)
 C
 C REALISER UNE OBSERVATION 
 C      
@@ -37,25 +38,21 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NOMA   : NOM DU MAILLAGE
+C IN  SDEXTR : NOM DE LA SD POUR EXTRACTION
+C IN  SDIETO : SD GESTION IN ET OUT
 C IN  SDOBSE : SD OBSERVATION
-C IN  TEMP   : VARIABLE TEMPERATURE
 C IN  INST   : INSTANT COURANT
 C      
 C ----------------------------------------------------------------------
 C
       LOGICAL      LOBSV
-      CHARACTER*19 K19BLA,TEMP
-      CHARACTER*24 K24BLA
 C      
 C ----------------------------------------------------------------------
 C 
 C
 C --- INITIALISATIONS
 C
-      K19BLA = ' '
-      K24BLA = ' '
       LOBSV  = .FALSE.
-      TEMP   = TEMPZ(1:19)
 C
 C --- DOIT-ON FAIRE UNE OBSERVATION  ?
 C
@@ -64,9 +61,8 @@ C
 C --- AU MOINS UNE OBSERVATION
 C
       IF (LOBSV) THEN
-        CALL NMOBSE(NOMA  ,SDOBSE,K24BLA,NUMINS,INST  ,
-     &              K19BLA,K19BLA,K19BLA,K19BLA,K19BLA,
-     &              K19BLA,K19BLA,K19BLA,K19BLA,TEMP  )
+        CALL NMOBSE(NOMA  ,SDSENS,SDIETO,SDOBSE,NUMINS,
+     &              INST  )
       ENDIF
 C
       END

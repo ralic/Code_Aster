@@ -1,0 +1,178 @@
+      SUBROUTINE OP0155()
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PELLET J.PELLET
+C ======================================================================
+C     COMMANDE :  POST_CHAMP
+C ----------------------------------------------------------------------
+      IMPLICIT NONE
+C   ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER IFM,NIV,N0,NUORD,JORDR,NUCOU,NUFIB,NANGL
+      INTEGER IRET,JPARA,IE,NBORDR,I,NUORDR,IBID,N1
+      INTEGER J,JNOMPA,IADIN,IADOU,NBAC,NBPA,NBPARA
+      CHARACTER*8 RESU,MODELE,CARELE,K8B,NOMRES,MATE
+      CHARACTER*8 MODEAV
+      CHARACTER*3 NICOU,TYPE
+      CHARACTER*16 CRIT,K16B,MOTFAC,TYPESD,NOMSYM,NOPARA
+      CHARACTER*19 CHIN,CHEXTR,RESU19,EXCIT,LIGREL
+      CHARACTER*24 NOMPAR
+      REAL*8 PREC
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+
+      CALL INFMAJ()
+      CALL INFNIV(IFM,NIV)
+
+      CALL GETRES(NOMRES,TYPESD,K16B)
+      CALL GETVID(' ','RESULTAT',1,1,1,RESU,N0)
+      RESU19=RESU
+
+C     -- SELECTION DES NUMERO D'ORDRE :
+C     ---------------------------------
+      PREC=-1.D0
+      CRIT=' '
+      CALL GETVR8(' ','PRECISION',0,1,1,PREC,IE)
+      CALL GETVTX(' ','CRITERE',0,1,1,CRIT,IE)
+      CALL RSUTNU(RESU19,' ',0,'&&OP0155.NUME_ORDRE',NBORDR,PREC,CRIT,
+     &            IRET)
+      CALL ASSERT(IRET.EQ.0)
+      CALL ASSERT(NBORDR.GT.0)
+      CALL JEVEUO('&&OP0155.NUME_ORDRE','L',JORDR)
+
+
+C     -- 1. ON CREE LA SD_RESULTAT NOMRES :
+C     ---------------------------------------------
+      CALL RSCRSD('G',NOMRES,TYPESD,NBORDR)
+
+
+
+C     -- 2. EXTR_XXXX SUR LE SOUS-POINT SOUHAITE :
+C     ---------------------------------------------
+
+C     -- 2.1 : QUEL MOTFAC ?
+      CALL GETFAC('EXTR_COQUE',N1)
+      IF (N1.EQ.1) THEN
+        MOTFAC='EXTR_COQUE'
+      ELSE
+        CALL GETFAC('EXTR_TUYAU',N1)
+        IF (N1.EQ.1) THEN
+          MOTFAC='EXTR_TUYAU'
+        ELSE
+          CALL GETFAC('EXTR_PMF',N1)
+          CALL ASSERT(N1.EQ.1)
+          MOTFAC='EXTR_PMF'
+        ENDIF
+      ENDIF
+
+C     -- 2.2 : NOMSYM, NUCOU, NICOU, NANGL, NUFIB
+      CALL GETVTX(MOTFAC,'NOM_CHAM',1,1,1,NOMSYM,IBID)
+      IF (MOTFAC.EQ.'EXTR_COQUE' .OR. MOTFAC.EQ.'EXTR_TUYAU') THEN
+        CALL GETVIS(MOTFAC,'NUME_COUCHE',1,1,1,NUCOU,IBID)
+        CALL GETVTX(MOTFAC,'NIVE_COUCHE',1,1,1,NICOU,IBID)
+        IF (MOTFAC.EQ.'EXTR_TUYAU') THEN
+          CALL GETVIS(MOTFAC,'ANGLE',1,1,1,NANGL,IBID)
+        ENDIF
+      ELSEIF (MOTFAC.EQ.'EXTR_PMF') THEN
+        CALL GETVIS(MOTFAC,'NUME_FIBRE',1,1,1,NUFIB,IBID)
+      ENDIF
+
+C     -- 2.3 : BOUCLE SUR LES CHAMPS
+      MODEAV=' '
+      DO 10,I=1,NBORDR
+        NUORDR=ZI(JORDR+I-1)
+        CALL RSEXCH(RESU19,NOMSYM,NUORDR,CHIN,IRET)
+        IF (IRET.EQ.0) THEN
+
+C         -- 2.4.1 : MODELE, CARELE, LIGREL :
+          CALL RSLESD(RESU,NUORDR,MODELE,MATE,CARELE,EXCIT,IBID)
+          IF (MODELE.NE.MODEAV) THEN
+            CALL EXLIMA(' ',1,'G',MODELE,LIGREL)
+            MODEAV=MODELE
+          ENDIF
+
+          CALL RSEXCH(NOMRES,NOMSYM,NUORDR,CHEXTR,IRET)
+          CALL ASSERT(IRET.EQ.100)
+          CALL W155CH(CHIN,CARELE,LIGREL,CHEXTR,MOTFAC,NUCOU,NICOU,
+     &                NANGL,NUFIB)
+          CALL RSNOCH(NOMRES,NOMSYM,NUORDR,' ')
+        ENDIF
+   10 CONTINUE
+
+
+C     -- 3 RECOPIE DES PARAMETRES DE RESU VERS NOMRES :
+C     -------------------------------------------------
+      NOMPAR = '&&OP0155'//'.NOMS_PARA'
+      CALL RSNOPA ( RESU, 2, NOMPAR, NBAC, NBPA )
+      NBPARA = NBAC + NBPA
+      CALL JEVEUO ( NOMPAR, 'L', JNOMPA )
+
+      DO 50 I = 1 , NBORDR
+        NUORDR=ZI(JORDR+I-1)
+        DO 40 J = 1 , NBPARA
+          NOPARA = ZK16(JNOMPA-1+J)
+          CALL RSADPA(RESU,'L',1,NOPARA,NUORDR,1,IADIN,TYPE)
+          CALL RSADPA(NOMRES,'E',1,NOPARA,NUORDR,1,IADOU,TYPE)
+          IF (TYPE(1:1).EQ.'I') THEN
+            ZI(IADOU) = ZI(IADIN)
+          ELSEIF (TYPE(1:1).EQ.'R') THEN
+            ZR(IADOU) = ZR(IADIN)
+          ELSEIF (TYPE(1:1).EQ.'C') THEN
+            ZC(IADOU) = ZC(IADIN)
+          ELSEIF (TYPE(1:3).EQ.'K80') THEN
+            ZK80(IADOU) = ZK80(IADIN)
+          ELSEIF (TYPE(1:3).EQ.'K32') THEN
+            ZK32(IADOU) = ZK32(IADIN)
+          ELSEIF (TYPE(1:3).EQ.'K24') THEN
+            ZK24(IADOU) = ZK24(IADIN)
+            IF(NOPARA(1:5).EQ.'EXCIT'.AND.ZK24(IADIN)(1:2).NE.'  ')THEN
+              ZK24(IADOU) = NOMRES//ZK24(IADIN)(9:)
+              CALL COPISD(' ','G',ZK24(IADIN)(1:19),ZK24(IADOU)(1:19))
+            ENDIF
+          ELSEIF (TYPE(1:3).EQ.'K16') THEN
+            ZK16(IADOU) = ZK16(IADIN)
+          ELSEIF (TYPE(1:2).EQ.'K8') THEN
+            ZK8(IADOU) = ZK8(IADIN)
+          ENDIF
+   40   CONTINUE
+   50 CONTINUE
+
+
+
+      CALL JEDETR(NOMPAR)
+      CALL JEDEMA()
+      END

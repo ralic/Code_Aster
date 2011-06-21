@@ -1,4 +1,4 @@
-#@ MODIF mecanonline4 Messages  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline4 Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,41 +42,11 @@ cata_msg = {
 """),
 
 22 : _("""
- L'etat initial n'appartient pas à un EVOL_NOLI :
- on suppose qu'on part d'un état a vitesses nulles
+ On suppose qu'on part d'un état a vitesses nulles
 """),
 
-41 : _("""
- Le champ des déplacements (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
- dans le concept EVOL_NOLI de nom <%(k1)s>
-"""),
-
-42 : _("""
- Le champ des contraintes (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
- dans le concept EVOL_NOLI de nom <%(k1)s>
-"""),
-
-43 : _("""
- Le champ des vitesses (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
- dans le concept EVOL_NOLI de nom <%(k1)s>
- On suppose qu'on part d'un champ de vitesses nulles.
-"""),
-
-44 : _("""
- Le champ des accélérations (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
- dans le concept EVOL_NOLI de nom <%(k1)s>
- On calcule un champ d'accélérations initiales, ce qui est possible puisque les vitesses initiales sont nulles
-"""),
-
-45 : _("""
- Le champ des accélérations (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
- dans le concept EVOL_NOLI de nom <%(k1)s>
- On ne peut pas calculer un champ d'accélérations initiales, car les vitesses initiales ne sont pas nulles
-"""),
-
-46 : _("""
- Le champ des variables internes (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
- dans le concept EVOL_NOLI de nom <%(k1)s>
+23 : _("""
+ On estime une accélération initiale.
 """),
 
 47 : _("""

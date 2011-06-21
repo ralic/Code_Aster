@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 20/06/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,7 +159,7 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
 #     2) parametre du mode de calcul de dt+
 #     ----------------------------------------
 
-      MODE_CALCUL_TPLUS =SIMP(statut='f',typ='TXM',into=("FIXE","DELTA_GRANDEUR","ITER_NEWTON","FORMULE","IMPLEX"),defaut='FIXE',
+      MODE_CALCUL_TPLUS =SIMP(statut='f',typ='TXM',into=("FIXE","DELTA_GRANDEUR","ITER_NEWTON","IMPLEX"),defaut='FIXE',
                               max=1),
 
          b_mfixe           =BLOC(condition = "MODE_CALCUL_TPLUS == 'FIXE' ",fr="fixe",
@@ -178,12 +178,6 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
 #                                                                        au nombre d'iter de Newton precedent
       NB_ITER_NEWTON_REF          =SIMP(statut='o',typ='I',max=1),
                                   ),
-         b_mformule           =BLOC(condition = "MODE_CALCUL_TPLUS == 'FORMULE' ",fr=" ",
-#      dans le cas FORMULE
-           regles=UN_PARMI('FORMULE_TPLUS','NOM_SCHEMA'),
-      FORMULE_TPLUS     =SIMP(statut='f',typ=formule),
-      NOM_SCHEMA        =SIMP(statut='f',typ='TXM',into=("OLIVER",)),
-                                   ),
 
 # les schemas pre-definis :
 #  abaqus :

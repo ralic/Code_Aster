@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,12 +18,12 @@
 # ======================================================================
 # RESPONSABLE PELLET
 
-def calc_ferrailage_prod(RESULTAT,**args):
+def calc_ferraillage_prod(RESULTAT,**args):
    if AsType(RESULTAT) != None : return AsType(RESULTAT)
    raise AsException("type de concept resultat non prevu")
 
 
-CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferrailage_prod, reentrant='o',
+CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_prod, reentrant='o',
             UIinfo={"groupes":("Post-traitements","Outils-métier",)},
                  fr="calcul de cartes de densité de ferraillage ",
 

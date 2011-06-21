@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C     ------------------------------------------------------------------
       LOGICAL      TROUVE, ENDUR
       INTEGER ICODRE
       CHARACTER*2  K2C, K2L
+      CHARACTER*8  KBID
 C     ------------------------------------------------------------------
 C
       CALL INFNIV ( IFM, NIV )
@@ -67,7 +68,7 @@ C
       IF ( .NOT. TROUVE ) GOTO 9999
 C
       N0 = MIN ( NK , NL )
-      CALL LIMEND ( NOMMAT, SALTM, 'WOHLER', ENDUR )
+      CALL LIMEND ( NOMMAT, SALTM, 'WOHLER', KBID, ENDUR )
       IF ( ENDUR ) THEN
          UKL = 0.D0
       ELSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,7 +66,7 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
 
 
 FISS1=DEFI_FOND_FISS(         MAILLAGE=MA,
-                              FOND_FISS=_F(  NOEUD = ( 'N2613', 'N2610', 'N2867',
+                              FOND_FISS=_F(NOEUD = ( 'N2613', 'N2610', 'N2867',
                                                      'N2864', 'N2863', 'N2858',
                                                      'N3203', 'N3200', 'N3499',
                                                      'N3496', 'N4072',
@@ -78,10 +78,12 @@ FISS1=DEFI_FOND_FISS(         MAILLAGE=MA,
                                                      'N6841', 'N6835', 'N6957',
                                                      'N6951', 'N6971', 'N6965',
                                                      'N6962',
-                                                   )),
+                                                   ),
+                                           DTAN_ORIG=( 1.,  0.,  0.,),
+                                           DTAN_EXTR=( 0.,  1.,  0.,)
+
+                                                   ),
                                LEVRE_SUP=_F(  GROUP_MA = 'LEVREINS'),
-                               DTAN_ORIG=( 1.,  0.,  0.,),
-                               DTAN_EXTR=( 0.,  1.,  0.,)
                       )
 
 #

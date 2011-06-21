@@ -1,7 +1,7 @@
       SUBROUTINE AVDOWH( NBVEC, NBORDR, NOMMAT, NOMCRI, NCYCL, GDEQ,
-     &                   DOMEL, NRUPT )
+     &                   GRDVIE, FORVIE,DOMEL, NRUPT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/05/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,10 +23,11 @@ C RESPONSABLE F1BHHAJ J.ANGLES
       INTEGER      NBVEC, NBORDR, NCYCL(NBVEC)
       REAL*8       GDEQ(NBVEC*NBORDR)
       REAL*8       NRUPT(NBVEC*NBORDR), DOMEL(NBVEC*NBORDR)
-      CHARACTER*8  NOMMAT
-      CHARACTER*16 NOMCRI
+      CHARACTER*8  NOMMAT, GRDVIE
+      CHARACTER*16 NOMCRI, FORVIE
 C ----------------------------------------------------------------------
-C BUT: CALCULER LE DOMMAGE ELEMENTAIRE DE WOHLER POUR TOUS LES CYCLES
+C BUT: CALCULER LE DOMMAGE ELEMENTAIRE A PARTIR D'UNE COURBE 
+C      GRANDEUR EQ - VIE POUR TOUS LES CYCLES
 C      ELEMETAIRES DE CHAQUE VECTEUR NORMAL.
 C ----------------------------------------------------------------------
 C ARGUMENTS :
@@ -65,14 +66,16 @@ C     ------------------------------------------------------------------
       INTEGER        IVECT, ICYCL, ADRS, I
       REAL*8         R8MAEM
       INTEGER        ICODRE
-      CHARACTER*16   PHENOM
+      CHARACTER*16   PHENOM, KBID
+      CHARACTER*8    NOMGRD
       LOGICAL        LIMIT
 C     ------------------------------------------------------------------
 
 C234567                                                              012
 
       CALL JEMARQ()
-C Initialisation
+      
+C INITITIALISATION
        DO 100 I = 1,NBVEC*NBORDR    
          DOMEL(I) = 0
 100   CONTINUE 
@@ -93,7 +96,7 @@ C Initialisation
                CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI    ',GDEQ(ADRS),
      &                  1,'MANSON_C',NRUPT(ADRS),ICODRE,1)
 
-               CALL LIMEND( NOMMAT, GDEQ(ADRS), 'MANSON_C', LIMIT )
+               CALL LIMEND( NOMMAT, GDEQ(ADRS), 'MANSON_C',KBID, LIMIT )
                IF (LIMIT) THEN
                   NRUPT(ADRS)=R8MAEM()
                ELSE
@@ -106,9 +109,9 @@ C Initialisation
 
  20         CONTINUE
  10      CONTINUE
-
-      ELSE
-
+      
+      ELSEIF (( NOMCRI(1:14) .EQ. 'MATAKE_MODI_AV' ) .OR.
+     &         ( NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AV' )) THEN
          CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', ICODRE )
          IF (ICODRE .EQ. 1 ) THEN
             CALL U2MESK('F','FATIGUE1_90',1,NOMCRI(1:16))
@@ -118,7 +121,7 @@ C Initialisation
             DO 40 ICYCL=1, NCYCL(IVECT)
                ADRS = (IVECT-1)*NBORDR + ICYCL
 
-               CALL LIMEND( NOMMAT, GDEQ(ADRS), 'WOHLER', LIMIT)
+               CALL LIMEND( NOMMAT, GDEQ(ADRS), 'WOHLER', KBID, LIMIT)
                IF (LIMIT) THEN
                   NRUPT(ADRS)=R8MAEM()
                ELSE
@@ -131,7 +134,49 @@ C Initialisation
 
  40         CONTINUE
  30      CONTINUE
+      
+      ELSEIF (NOMCRI(1:7) .EQ. 'FORMULE') THEN        
+            
+         DO 50 IVECT=1, NBVEC
+            DO 60 ICYCL=1, NCYCL(IVECT)
+               ADRS = (IVECT-1)*NBORDR + ICYCL
+               
+               CALL LIMEND( NOMMAT, GDEQ(ADRS), GRDVIE, FORVIE, LIMIT)
 
+               IF (LIMIT) THEN
+                  NRUPT(ADRS)=R8MAEM()
+               ELSE
+
+                  IF (GRDVIE(1:6) .EQ. 'WOHLER') THEN          
+                     NOMGRD = 'SIGM    '
+                     GRDVIE(7:8) = '  '    
+                     
+                     CALL RCVALE(NOMMAT,'FATIGUE',1,NOMGRD,
+     &                  GDEQ(ADRS),1,GRDVIE,NRUPT(ADRS),ICODRE,1)
+                  ENDIF
+                  
+                  IF (GRDVIE(1:8) .EQ. 'MANSON_C') THEN          
+                     NOMGRD = 'EPSI    '
+                     CALL RCVALE(NOMMAT,'FATIGUE',1,NOMGRD,
+     &                  GDEQ(ADRS),1,GRDVIE,NRUPT(ADRS),ICODRE,1)
+     
+                  ENDIF
+            
+                  IF (GRDVIE(1:8) .EQ.'FORM_VIE') THEN 
+                     CALL RENRFA(FORVIE,GDEQ(ADRS),NRUPT(ADRS),ICODRE)
+                  ENDIF
+                  
+                  DOMEL(ADRS) = 1.0D0/NRUPT(ADRS)
+                  NRUPT(ADRS) = NINT(NRUPT(ADRS))
+                   
+               ENDIF               
+
+
+ 60         CONTINUE
+ 50      CONTINUE      
+      
+
+       
       ENDIF 
     
       CALL JEDEMA()

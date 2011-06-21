@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,8 +72,8 @@ C     ------------------------------------------------------------------
       REAL*8   FSS(14),PM(3),PMPB(3),NORM(3),MY(3),MZ(3),R12XIY,A12
       REAL*8   RAD,ANGARC,ANGS2
       REAL*8   CARSEC(6), R8BID
-      REAL*8   UGP(12),DUG(12),KLV(78),DULY,FOR2,FOR3,PLOUF
-      REAL*8   ULP(12),DUL(12),KTY2,DVL(12),DPE(12),DVE(12)
+      REAL*8   UGP(12),DUG(12),KLV(78),DULY,FORCE(3),PLOUF
+      REAL*8   ULP(12),DUL(12),DVL(12),DPE(12),DVE(12)
       REAL*8   SIM(12),SIP(12),FONO(12),VARMO(7),VARPL(7)
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
@@ -326,14 +326,10 @@ C
                CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
             END IF
             IF (ZK16(ICOMPO).EQ.'DIS_CHOC') THEN
-               DO 301 I = 1,7
-                  VARMO(I) = 0.D0
-301            CONTINUE
-               DO 401 I = 1,12
-                  DVL(I) = 0.D0
-                  DPE(I) = 0.D0
-                  DVE(I) = 0.D0
-401            CONTINUE
+               CALL R8INIR( 7, ZERO, VARMO, 1)
+               CALL R8INIR(12, ZERO, DVL,   1)
+               CALL R8INIR(12, ZERO, DPE,   1)
+               CALL R8INIR(12, ZERO, DVE,   1)
 C              RELATION DE COMPORTEMENT DE CHOC : FORCES NODALES
                CALL JEVECH('PVECTUR','E',IFONO)
                DO 501 I = 1,NEQ
@@ -343,14 +339,18 @@ C              RELATION DE COMPORTEMENT DE CHOC : FORCES NODALES
 C
                ILOGIC = 0
                PLOUF = 0.D0
-               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
-     &                  PLOUF,PLOUF,SIP,FONO,PLOUF,PLOUF)
-               CALL DICHOC(NBT,NEQ,NNO,NC,ZI(LMATER),DUL,ULP,
-     &                  ZR(IGEOM),PGL,KLV,KTY2,DULY,DVL,DPE,DVE,
-     &                  FOR2,FOR3,VARMO,VARPL)
+               CALL R8INIR(3,ZERO,FORCE,1)
+               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,
+     &                     KLV,ULP,SIM,ILOGIC,PLOUF,
+     &                     SIP,FONO,FORCE,NDIM)
+               CALL DICHOC(NBT,NEQ,NNO,NC,ZI(LMATER),
+     &                     DUL,ULP,ZR(IGEOM),PGL,KLV,
+     &                     DULY,DVL,DPE,DVE,FORCE,
+     &                     VARMO,VARPL,NDIM)
                ILOGIC = 2
-               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
-     &                  KTY2,DULY,SIP,ZR(IFONO),FOR2,FOR3)
+               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,
+     &                     KLV,ULP,SIM,ILOGIC,DULY,
+     &                     SIP,ZR(IFONO),FORCE,NDIM)
                DO 601 I = 1,NEQ
                   ZR(IFONO+I-1) = ZR(IFONO+I-1)-FONO(I)
 601            CONTINUE

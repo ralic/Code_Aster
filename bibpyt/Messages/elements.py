@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF elements Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -284,28 +284,26 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 66 : _("""
- si NOEUD_ORIG : donner un GROUP_MA ou une liste de mailles
- on ne réordonne pas les GROUP_NO et les listes de noeuds.
+ Si vous avez renseigné le mot-clé NOEUD_ORIG, donnez un groupe de mailles sous GROUP_MA ou une liste de mailles
+ sous MAILLE. On ne réordonne pas les groupes de noeuds et les listes de noeuds.
 """),
 
 67 : _("""
- le GROUP_NO :  %(k1)s n'existe pas.
+ Le groupe de noeuds %(k1)s n'existe pas.
 """),
 
+
 68 : _("""
- le noeud origine  %(k1)s ne fait pas partie du chemin
+ Le noeud origine  %(k1)s ne fait pas partie du chemin.
 """),
 
 69 : _("""
- le noeud origine  %(k1)s  n'est pas une extremité
+ Le noeud origine  %(k1)s  n'est pas une extremité.
 """),
 
-70 : _("""
- pas d'origine définie par NOEUD_ORIG ou GROUP_NO_ORIG
-"""),
 
 71 : _("""
- échec dans la recherche du noeud origine
+ La recherche du noeud origine échoue
 """),
 
 72 : _("""
@@ -313,20 +311,11 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 73 : _("""
- le GROUP_MA :  %(k1)s n'existe pas.
+ Le GROUP_MA :  %(k1)s n'existe pas.
 """),
 
-74 : _("""
- si le fond est une courbe fermée MAILLE_ORIG ou GROUP_MA_ORIG doit accompagner NOEUD_ORIG
-"""),
 
-75 : _("""
- le noeud_orig n'appartient pas a la maille_orig
-"""),
 
-76 : _("""
- la maille_orig %(k1)s  n'appartient pas au fond de fissure
-"""),
 
 77 : _("""
  le noeud extremité  %(k1)s  n'est pas le dernier noeud
@@ -337,7 +326,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 83 : _("""
- le type des mailles des lèvres doit etre quadrangle ou triangle
+ Le type des mailles des lèvres doit être quadrangle ou triangle.
 """),
 
 84 : _("""

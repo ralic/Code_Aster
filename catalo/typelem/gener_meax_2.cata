@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ TYPE_GENE__
 ENTETE__ ELEMENT__ MEAXQU4          MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO NOEU)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
-   OPTION__   CALC_DG                 -1
-   OPTION__   CALC_DG_F               -1
-   OPTION__   DESI_ELNO          -1
+   OPTION__   CALC_DG        -1
+   OPTION__   CALC_DG_F      -1
+   OPTION__   DESI_ELNO      -1
 ENTETE__ ELEMENT__ MDAXQU4          MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO NOEU)
 ENTETE__ ELEMENT__ MEAXQU8          MAILLE__ QUAD8
@@ -36,9 +36,9 @@ ENTETE__ ELEMENT__ MEAXQU9          MAILLE__ QUAD9
 ENTETE__ ELEMENT__ MEAXTR3          MAILLE__ TRIA3
    ELREFE__  TR3       GAUSS__  RIGI=FPG1  MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO NOEU)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
-   OPTION__   CALC_DG                 -1
-   OPTION__   CALC_DG_F               -1
-   OPTION__   DESI_ELNO          -1
+   OPTION__   CALC_DG        -1
+   OPTION__   CALC_DG_F      -1
+   OPTION__   DESI_ELNO      -1
 ENTETE__ ELEMENT__ MEAXTR6          MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG3  MASS=FPG6  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO NOEU)
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
@@ -161,6 +161,8 @@ MATRICE__
     MMATZZR = MSIZ_R DDL_NOZ1 DDL_NOZ1
 
 OPTION__
+    SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
+                              OUT__  ECONTPG  PSIGMR    ECONTPC  PSIGMC
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
@@ -229,13 +231,11 @@ OPTION__
                               OUT__  EKTHETA  PGTHETA
     CALC_NOEU_BORD      290   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
-    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CARA_GEOM                -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_DLAG_MECAST    577   IN__   ECONTPG  PCONTRR  DDL_MECA PDEPLAR  ZVARCPG  PVARCMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  DDL_MECA PVECTTH
                               OUT__  MVECTUR  PVECTUR
-    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CHAR_LIMITE              -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_EPSA_R    421   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
@@ -428,8 +428,8 @@ OPTION__
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           82    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX   OUT__  XXXXXX   XXXXXX
-    MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX   OUT__  XXXXXX   XXXXXX
+    MASS_MECA_DIAG           -1    IN__    OUT__    XXXXXX   XXXXXX
+    MASS_MECA_EXPLI          -1    IN__    OUT__    XXXXXX   XXXXXX
     MASS_ZZ1            293   IN__   NGEOMER  PGEOMER
                               OUT__  MMATZZR  PMATZZR
     MECA_SENS_CHAR      540   IN__   CSOUSOP  PARSENS  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTMS
@@ -500,8 +500,7 @@ OPTION__
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCMR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR  ECONTPG  PCONTXR
-    RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_RO             -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_SENSI     81    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                                      CMATERC  PMATSEN  DDL_MECA PVAPRIN
                               OUT__  MVECTUR  PVECTUR

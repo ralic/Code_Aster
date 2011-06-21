@@ -1,9 +1,9 @@
-#@ MODIF B_ETAPE Build  DATE 05/07/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -208,7 +208,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
              dans le cas contraire getexm retourne la valeur 0.
       """
       if CONTEXT.debug : prbanner("getexm '%s' '%s' "%(nom_motfac,nom_motcle))
-      
+
       presence = int( self.get_mcsimp(nom_motfac, nom_motcle) != None )
       if CONTEXT.debug : print '\tGETEXM : ',"presence= ",presence
       return presence
@@ -299,7 +299,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           de la ième occurrence du MCF nom_motfac.
       """
       valeur=self.get_valeur_motcle(nom_motfac,iocc,nom_motcle)
-      
+
       if valeur :
          chk = self.check_assd(valeur)
          if not chk:
@@ -309,7 +309,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
             print "! ERREUR incoherence fortran/catalogue de commande, concept attendu et non :"
             print "!", valeur
             raise AssertionError
-      
+
          return self.transforme_valeur_nom(valeur)
       else :
          return None
@@ -491,15 +491,17 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       self._cache_func = getattr(self, '_cache_func', {})
 
       if self._cache_func.get(nom_fonction):
-         objet_sd =self._cache_func[nom_fonction]['fonction']
+         objet_sd = self._cache_func[nom_fonction]['fonction']
       else:
-         objet_sd =self.parent.get_sd_avant_etape(nom_fonction.strip(),self)
+         objet_sd =self.parent.get_sd_avant_etape(nom_fonction.strip(), self)
+         #objet_sd = self.get_concept(nom_fonction.strip())
          self._cache_func[nom_fonction]= { 'fonction' : objet_sd }
+      assert objet_sd is not None, "concept inconnu : %s" % nom_fonction.strip()
 
       if len(nom_param) != len(val) :
          msgerr = """Le nombre de valeurs est différent du nombre de paramètres"""
          return 4, msgerr, None
-      
+
       if self._cache_func.get(nom_fonction).get(nom_param):
          inter = self._cache_func[nom_fonction][nom_param]
       else:
@@ -513,7 +515,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
             msgerr = """Les paramètres de la formule n'ont pas été fournis.
 Paramètres manquants : %s""" % args
             return 4, msgerr, None
-         
+
          if len(dble) > 0:
             args = list(dble)
             args.sort()
@@ -521,7 +523,7 @@ Paramètres manquants : %s""" % args
             msgerr = """Certains paramètres de la formule ont été fournis plusieurs fois.
 Paramètres répétés : %s""" % args
             return 4, msgerr, None
-      
+
       # appel de fonction definie dans le corps du jeu de commandes
       try:
            context={}
@@ -591,7 +593,7 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
       nom_motcle=nom_motcle.strip()
 
       valeur=self.get_valeur_motcle_pour_getvid(nom_motfac,iocc,nom_motcle)
-      
+
       if valeur == None:
          if CONTEXT.debug : print "\tGETVID : valeur =",None
          return 0,()

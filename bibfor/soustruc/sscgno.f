@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF SOUSTRUC  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE  CRP_20
+C TOLE  CRP_20 
 C ----------------------------------------------------------------------
 C     BUT: TRAITER LE MOT CLEF CREA_GROUP_NO
 C          DE L'OPERATEUR: DEFI_GROUP
@@ -46,11 +46,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER       NALAR
-      CHARACTER*8  ALARM
+      INTEGER       NALAR, NBMA
+      CHARACTER*8  ALARM, TYPM, NDORIG, NDEXTR
       CHARACTER*8  MA,NONO,NOGNO,NOGNO2,K8B,KPOS,NOM1,PREFIX
       CHARACTER*16 CONCEP,CMD,OPTION, MOTCLE, TYPMCL, MOTFAC
-      CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO,LISNOM
+      CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO
       CHARACTER*24 VALK(2)
       CHARACTER*80 CARD
 C     ------------------------------------------------------------------
@@ -333,20 +333,10 @@ C         -- TRAITEMENT DE L'OPTION "NOEUD_ORDO" :
 C         ----------------------------------------
           ELSE IF (OPTION(1:10).EQ.'NOEUD_ORDO') THEN
             PREFIX = '&&SSCGNO'
-            CALL FONFIS ( PREFIX, MA, MOTFAC, IOCC,
-     &                                        1, MOTCLE, TYPMCL, 'V' )
-            LISNOM = PREFIX//'.FOND      .NOEU'
-            CALL JELIRA(LISNOM,'LONMAX',NBNO,K8B)
-            CALL JEVEUO(LISNOM,'L',IDNONO)
-
-            CALL WKVECT(LISNO,'V V I',NBNO,IDLINO)
-            DO 90 I = 1,NBNO
-              CALL JENONU(JEXNOM(NOMNOE,ZK8(IDNONO-1+I)),NUNO)
-              ZI(IDLINO-1+I) = NUNO
- 90         CONTINUE
-
-            CALL JEDETR ( PREFIX//'.FOND      .NOEU' )
-            CALL JEDETR ( PREFIX//'.FOND      .TYPE' )
+            CALL CGNOOR ( PREFIX, MA, MOTFAC, IOCC, 1, MOTCLE, TYPMCL,
+     &              'OUVERT', NBMA, NDORIG, NDEXTR, TYPM)
+            CALL ORNOFD ( PREFIX, MA, NBMA, LISNO, NDORIG, NDEXTR, 'V')
+            CALL JELIRA(LISNO,'LONUTI',NBNO,K8B)
 
 C         -- TRAITEMENT DE L'OPTION FISS_XFEM :
 C         ----------------------------------------

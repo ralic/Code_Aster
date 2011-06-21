@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 30/05/2011   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE SELLENET N.SELLENET
 def calc_champ_prod(RESULTAT,**args):
@@ -80,7 +80,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              into=(
                                     "SIEF_ELNO","SIEF_NOEU",
                                     #"SIGM_ELNO","SIGM_NOEU",
-                                    "SIEF_ELGA",
+                                    "SIEF_ELGA","SIGM_ELGA","EFGE_ELGA",
                                     "SIPO_ELNO","SIPO_NOEU",
                                     #"EFGE_ELNO","EFGE_NOEU",
                                     #"EFCA_ELNO",
@@ -131,12 +131,12 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de contraintes et efforts generalises",
                              into=(
-                                    "SIEF_ELNO","SIEF_NOEU",
+                                    "SIEF_ELNO","SIEF_NOEU","SIGM_ELGA","EFGE_ELGA",
                                     #"EFCA_ELNO","EFCA_NOEU"
                                     "SITU_ELNO","SICO_ELNO","SICO_NOEU","SIPO_ELNO","SIPO_NOEU",
                                   ),
                             ),
-         
+
          DEFORMATION  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de deformations",
                              into=(
@@ -147,7 +147,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                     "EPSI_NOEU","EPSP_NOEU","EPVC_NOEU","EPFD_NOEU","EPFP_NOEU",
                                   ),
                             ),
-         
+
          ENERGIE      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul d'energies",
                              into=(
@@ -158,7 +158,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                     "DISS_ELGA","DISS_ELNO",
                                   ),
                              ),
-         
+
          CRITERES     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de criteres",
                              into=(
@@ -171,7 +171,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                     "PMPB_NOEU",
                                   ),
                             ),
-         
+
          VARI_INTERNE = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de variables internes",
                              into=(
@@ -179,7 +179,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                     "VAEX_ELGA","VAEX_NOEU","VAEX_ELNO",
                                   ),
                             ),
-         
+
          b_nom_vari   = BLOC(condition = "VARI_INTERNE in ('VAEX_ELNO','VAEX_ELGA')",
              NOM_VARI = SIMP(statut='o',typ='TXM',min= 1,max='**',
                              fr="nom de la variable a extraire",
@@ -190,7 +190,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                     ),
                             ),
                             ),
-         
+
          HYDRAULIQUE  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de flux hydraulique",
                              into=(
@@ -231,7 +231,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
 
     #INVARIANT    =FACT(statut='f', max='**',
                        #fr="Options pour le calcul d'invariants",
-                           ##produira SIEQ_XXXX et EPEQ_XXXX a la place de 
+                           ##produira SIEQ_XXXX et EPEQ_XXXX a la place de
                            ##"EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
                            ##"EQUI_ELNO_EPSI","EQUI_ELGA_EPSI",
                            ##"EQUI_ELNO_EPME","EQUI_ELGA_EPME",

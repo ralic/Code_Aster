@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,6 @@ cata_msg = {
 1 : _("""
  Echec dans le calcul des matrices elastiques pour l'amortissement.
 """),
-
-
-
 
 23 : _("""
  Le calcul de l'accélération initiale a ignoré les chargements de type:
@@ -62,6 +59,9 @@ cata_msg = {
 
  Conseils :
    Avez-vous bien affecté une masse sur tous les éléments ?
+ 
+ Certains éléments ne peuvent évaluer de matrice masse.
+ Dans ce cas, vous pouvez donner un champ d'accélération explicitement nul dans ETAT_INIT pour supprimer l'alarme.
 """),
 
 

@@ -2,7 +2,7 @@
      &                  NUMARC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -97,9 +97,14 @@ C
             VALR(1) = INSDER
             VALR(2) = INST2
             CALL U2MESR('F','ARCHIVAGE_1',2,VALR)
+          ELSE
+            CALL NMTTCH(SDDISC,INST2 ,NUMDER)
+            NUMARC = NUMDER  
           ENDIF
+        ELSE
+          NUMARC = NUMDER + 1
         ENDIF
-        NUMARC = NUMDER + 1
+        
       ELSE
         CALL ASSERT(NUMDER.EQ.0)
         NUMARC = 0

@@ -1,11 +1,11 @@
       SUBROUTINE NOEDDL(NUME,NBNOE,LNONOE,NEQ,IVEC)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                NBNOE,       NEQ,IVEC(NEQ,NBNOE)
+      INTEGER                NBNOE,       NEQ,IVEC(NEQ)
       CHARACTER*14      NUME
       CHARACTER*(*)                LNONOE(NBNOE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,11 +27,11 @@ C IN : NUME   : NOM D'UN NUME_DDL
 C IN : NBNOE  : NOMBRE DE NOEUD DE LA LISTE LNONOE
 C IN : LNONOE : LISTE DE NOMS DE NOEUD
 C IN : NEQ    : NOMBRE D'EQUATIONS DE NUME
-C IN : IVEC   : TABLEAU DE POINTEURS DE DDLS DEJA ALLOUE.
+C IN : IVEC   : VECTEUR DE POINTEURS DE DDLS DEJA ALLOUE.
 C
 C     OUT:
 C     IVEC EST REMPLI DE 0 OU DE 1
-C     IVEC(IEQ,INOE) =
+C     IVEC(IEQ) =
 C       - 1 SI LE IEQ-EME NOEUD DE NUME A POUR NOM: LNONOE(INOE)
 C       - 0 SINON
 C ----------------------------------------------------------------------
@@ -59,11 +59,13 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C ----------------------------------------------------------------------
 C
 C     - MISE A ZERO DE IVEC:
+C     - NON NECESSAIRE, L'OBJET EST CREE/DETRUIT A CHAQUE FOIS 
+C     - DANS MSTGET
       CALL JEMARQ()
-      DO 10 I = 1,NEQ
-          DO 10 J = 1,NBNOE
-              IVEC(I,J) = 0
- 10   CONTINUE
+C      DO 10 I = 1,NEQ
+C          DO 10 J = 1,NBNOE
+C              IVEC(I,J) = 0
+C 10   CONTINUE
 C
       NOMNU(1:14)  = NUME
       NOMNU(15:19) = '.NUME'
@@ -85,7 +87,7 @@ C
          IEQ   = ZI(IAPRNO-1+(NEC+2)*(NUNOE-1)+1)
          NBCMP = ZI(IAPRNO-1+(NEC+2)*(NUNOE-1)+2)
          DO 22 I = 1,NBCMP
-            IVEC(IEQ+I-1,IN) = 1
+            IVEC(IEQ+I-1) = 1
  22      CONTINUE
  20   CONTINUE
 C

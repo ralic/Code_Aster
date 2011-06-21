@@ -1,15 +1,15 @@
       SUBROUTINE ACMATA(JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
      &                    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM, 
-     &                    JRESUN,NOMMET,NOMMAT,NOMCRI,VALA,COEFPA,VRESU)
+     &                    JRESUN,NOMMET,NOMMAT,VRESPC)
       IMPLICIT   NONE
       INTEGER    JVECTN, JVECTU, JVECTV, NBORDR, KWORK
       INTEGER    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG, JDTAUM,JRESUN
-      CHARACTER*16  NOMMET, NOMCRI
+      CHARACTER*16  NOMMET
       CHARACTER*8   NOMMAT
-      REAL*8     VRESU(24), VALA,COEFPA
+      REAL*8     VRESPC(24)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/05/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,6 +30,7 @@ C TOLE CRP_20 CRP_21
 C ---------------------------------------------------------------------
 C BUT: POUR LA FATIGUE A AMPLITUDE CONSTANTE
 C      DETERMINER LE PLAN DES MAX DES TAU_MAX ET CALCULER DES GRANDEURS
+C
 C
 C REMARQUE: CETTE SUBROUTINE EST APPLICABLE POUR UN NOEUD OU IPG EGALE
 C           A 1 ET SOMPGW = SOMNOW,JVECPG = JVECNO  
@@ -87,15 +88,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER      I, J, K, N 
-      INTEGER      NBVEC, DIM
-      INTEGER      MNMAX(2), IRET
-      INTEGER      JVPG1, JVPG2
+      INTEGER      I, J, K, N
+      INTEGER      NBVEC, DIM ,MNMAX(2), JVPG1, JVPG2
       INTEGER      JVECN2, JVECU2, JVECV2, JVECN1, JVECU1, JVECV1
       INTEGER      ADRS, ICODRE
 C
       REAL*8       EPSILO, GAMMA, PI, R8PI, DPHI
-      REAL*8       COEPRE, GAMMAM, PHIM, DGAM2, DPHI2, PHI0, DTAUM(2)
+      REAL*8       GAMMAM, PHIM, DGAM2, DPHI2, PHI0, DTAUM(2)
       REAL*8       NXM(2), NYM(2), NZM(2)
       REAL*8       SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FXM(2), FYM(2)
       REAL*8       FZM(2), EPSXX, EPSYY, EPSZZ, EPSXY, EPSXZ, EPSYZ
@@ -103,13 +102,11 @@ C
       REAL*8       EPSZM(2), EPNORM(2), EPNMAX(2), SEPNMX(2), NORMOY(2)
       REAL*8       EPNMOY(2), R8B, VALE, VALNU, C1, C2
       REAL*8       PHYDRO, PHYDRM
-      REAL*8       SIGEQ(2), NRUPT(2), DOM(2)
-      REAL*8       R8MAEM
-      CHARACTER*16 PHENOM
-      LOGICAL      ENDUR
+
 C     ------------------------------------------------------------------
 C
 C234567  
+
       CALL WKVECT( '&&ACMATA.VECT_NORMA1', 'V V R', 27, JVECN1 )
       CALL WKVECT( '&&ACMATA.VECT_TANGU1', 'V V R', 27, JVECU1 )
       CALL WKVECT( '&&ACMATA.VECT_TANGV1', 'V V R', 27, JVECV1 )
@@ -122,15 +119,12 @@ C234567
       
       EPSILO = 1.0D-7
       PI = R8PI()   
-
-C RECUPERATION DU COEFFICIENT DE PRE-ECROUISSAGE DONNE PAR L'UTILISATEUR
-
-      CALL GETVR8(' ','COEF_PREECROU',1,1,1,COEPRE,IRET)
-                                                             
+      
+                                                            
 C PROJECTION DE L'HISTORIQUE DU CISAILLEMENT DANS UN PLAN.
 
       NBVEC = 209
-        
+      
       CALL TAURLO(NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
      &            SOMPGW, JRWORK, TSPAQ, IPG, JVECPG)
             
@@ -145,7 +139,7 @@ C    PANT DE POINTER SUR LE VECTEUR NORMAL ASSOCIE.
 C 2/ CDU RAYON CIRCONSCRIT
 
       CALL RAYCIR(JVECPG, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
-
+  
 C 3/ CDU 1ER MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 
       DTAUM(1) = 0.0D0
@@ -243,7 +237,7 @@ C     TAU POUR UN POINT DE GAUSS ET DU VECTEUR DE TRAVAIL
 C     TANT DE POINTER SUR LE VECTEUR NORMAL ASSOCIE.
 
 C 4-2/L DU RAYON CIRCONSCRIT
-         
+  
          CALL RAYCIR(JVPG2, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
 
 C 4-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
@@ -323,7 +317,7 @@ C     TANT DE POINTER SUR LE VECTEUR NORMAL ASSOCIE.
 C 5-2/L DU RAYON CIRCONSCRIT
         
          CALL RAYCIR(JVPG1, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
-
+    
 C 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 
          DTAUM(K) = 0.0D0
@@ -358,7 +352,7 @@ C CALCLA CONTRAINTE NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 C DE LRAINTE NORMALE MOYENNE SUR LE PLAN CRITIQUE,
 C DE LRMATION NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 C DE LRMATION NORMALE MOYENNE SUR LE PLAN CRITIQUE.
-
+    
          CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
      &               VALE,ICODRE,0)
          IF (ICODRE .EQ. 1) THEN
@@ -440,53 +434,6 @@ C CALCEPSILON NORMALE = vect_EPS.vect_n
          NORMOY(K) = SNORM(K)/NBORDR
          EPNMOY(K) = SEPNMX(K)/NBORDR
 
-C ---------------------------------------------------------------
-C     =========================================
-C        CRITERES AVEC PLANS CRITIQUES        /
-C     =========================================
-C ---------------------------------------------------------------
-
-
-C 1/ C DE MATAKE
-         IF (NOMCRI(1:14) .EQ. 'MATAKE_MODI_AC') THEN
-            IF ( NORMAX(K) .GT. 0.0D0 ) THEN
-               SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*NORMAX(K))
-               SIGEQ(K) = SIGEQ(K)*COEFPA
-            ELSE
-               SIGEQ(K) = COEPRE*DTAUM(K)
-               SIGEQ(K) = SIGEQ(K)*COEFPA
-            ENDIF
-         ENDIF
-
-C 2/ C DE DANG VAN
-         IF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
-            IF ( PHYDRM .GT. 0.0D0 ) THEN
-               SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*PHYDRM)
-               SIGEQ(K) = SIGEQ(K)*COEFPA
-            ELSE
-               SIGEQ(K) = COEPRE*DTAUM(K)
-               SIGEQ(K) = SIGEQ(K)*COEFPA
-            ENDIF
-         ENDIF
-
-C PAS TERE DE FATEMI ET SOCIE EN ELASTIQUE ET AMPLITUDE CONSTANTE,
-C CELAAS DE SENS.
-
-C CALCNOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
-         
-         CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, ICODRE )
-         IF ( ICODRE .EQ. 1 ) CALL U2MESS('F','FATIGUE1_24')
-
-         CALL LIMEND( NOMMAT,SIGEQ(K),'WOHLER',ENDUR)
-         IF (ENDUR) THEN
-            NRUPT(K)=R8MAEM()
-         ELSE
-            CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',SIGEQ(K),
-     &                  1,'WOHLER  ',NRUPT(K),ICODRE,1)
-         ENDIF
-
-         DOM(K) = 1.D0/NRUPT(K)
-         NRUPT(K) = NINT(NRUPT(K))
 
  440  CONTINUE
 
@@ -495,30 +442,30 @@ C POURE POINT DE GAUSS DE CHAQUE MAILLE MAX DE DTAU_MAX ET LE
 C VECTRMAL ASSOCIE.
 
 
-      VRESU(1) = DTAUM(1)
-      VRESU(2) = NXM(1)
-      VRESU(3) = NYM(1)
-      VRESU(4) = NZM(1)
-      VRESU(5) = NORMAX(1)
-      VRESU(6) = NORMOY(1)
-      VRESU(7) = EPNMAX(1)
-      VRESU(8) = EPNMOY(1)
-      VRESU(9) = SIGEQ(1)
-      VRESU(10) = NRUPT(1)
-      VRESU(11) = DOM(1)
-      VRESU(12) = DTAUM(2)
-      VRESU(13) = NXM(2)
-      VRESU(14) = NYM(2)
-      VRESU(15) = NZM(2)
-      VRESU(16) = NORMAX(2)
-      VRESU(17) = NORMOY(2)
-      VRESU(18) = EPNMAX(2)
-      VRESU(19) = EPNMOY(2)
-      VRESU(20) = SIGEQ(2)
-      VRESU(21) = NRUPT(2)
-      VRESU(22) = DOM(2)
-      VRESU(23) = 0.0D0
-      VRESU(24) = 0.0D0
+      VRESPC(1) = DTAUM(1)
+      VRESPC(2) = NXM(1)
+      VRESPC(3) = NYM(1)
+      VRESPC(4) = NZM(1)
+      VRESPC(5) = NORMAX(1)
+      VRESPC(6) = NORMOY(1)
+      VRESPC(7) = EPNMAX(1)
+      VRESPC(8) = EPNMOY(1)
+      VRESPC(9) = 0.0D0
+      VRESPC(10) = 0.0D0
+      VRESPC(11) = 0.0D0
+      VRESPC(12) = DTAUM(2)
+      VRESPC(13) = NXM(2)
+      VRESPC(14) = NYM(2)
+      VRESPC(15) = NZM(2)
+      VRESPC(16) = NORMAX(2)
+      VRESPC(17) = NORMOY(2)
+      VRESPC(18) = EPNMAX(2)
+      VRESPC(19) = EPNMOY(2)
+      VRESPC(20) = 0.0D0
+      VRESPC(21) = 0.0D0
+      VRESPC(22) = 0.0D0
+      VRESPC(23) = 0.0D0
+      VRESPC(24) = 0.0D0
       
       CALL JEDETR('&&ACMATA.VECT_NORMA1')
       CALL JEDETR('&&ACMATA.VECT_TANGU1')

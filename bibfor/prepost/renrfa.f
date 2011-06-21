@@ -1,0 +1,129 @@
+      SUBROUTINE RENRFA( NOMFOR,VALGRD,NRUPT,ICODRE)
+
+      IMPLICIT NONE
+      CHARACTER*16        NOMFOR
+      INTEGER            ICODRE
+      REAL*8             VALGRD, NRUPT
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ----------------------------------------------------------------------
+C     OBTENTION DU NOMBRE DE CYLE A LA RUPTURE A PARTIR D'UN GRANDEUR 
+C     EQUIVALENT ET UNE COURBE DE GRANDEUR_DUREE DE VIE 
+C     ARGUMENTS D'ENTREE:
+C        NOMMAT : NOM UTILISATEUR DU MATERIAU
+C        PHENOM : NOM DU PHENOMENE
+C        NBPAR  : NOMBRE DE PARAMETRES DANS NOMPAR ET VALPAR
+C        NOMPAR : NOMS DES PARAMETRES(EX: TEMPERATURE )
+C        VALPAR : VALEURS DES PARAMETRES
+C        NBRES  : NOMBRE DE RESULTATS
+C        NOMRES : NOM DES RESULTATS (EX: E,NU,... )
+C                 TELS QU'IL FIGURENT DANS LA COMMANDE MATERIAU
+C     ARGUMENTS DE SORTIE:
+C     VALRES : VALEURS DES RESULTATS APRES RECUPERATION ET INTERPOLATION
+C     ICODRE : POUR CHAQUE RESULTAT, 0 SI ON A TROUVE, 1 SINON
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER            JPROL,NP, NBMX, NDAT, I
+      CHARACTER*24       CHNOM, CBID
+      CHARACTER*8        NOMPF, TYPFON, NOMPFI
+      REAL*8             LNF(20), GRD(20), NRUPT2, LNRUP, GRDMAX 
+      DATA  LNF/ 1.D7, 5.D6, 1.D6, 5.D5, 2.D5, 1.D5, 5.D4, 2.D4,
+     &           1.2D4, 1.D4, 5.D3,2.D3,1.D3, 5.D2, 
+     &           2.D2, 1.D2, 5.D1, 2.D1, 1.D1 , 1.D0 /
+     
+      CALL JEMARQ()
+      
+C RECUPERER LE NOM DE PARAMETRE GRANDEUR_EQUIVALEN          
+
+      NBMX=30
+      CHNOM(20:24) = '.PROL'
+      CHNOM(1:19) = NOMFOR
+      NRUPT = 0.D0
+      
+      CALL JEVEUO(CHNOM,'L',JPROL)
+      TYPFON = ZK24(JPROL-1+1)(1:8)
+            
+      CALL FONBPA ( NOMFOR, ZK24(JPROL), CBID, NBMX, NP, NOMPF )   
+   
+      IF  (TYPFON .EQ. 'FONCTION') THEN 
+      
+C A PARTIR DE GRANDEUR EQUI, ON RESOUT LE NOMBRE DE CYCLE AVEC 
+C LA FONCTION DU TYPE: NBRUPT = F(VALGRD)  
+         CALL FOINTE('F',NOMFOR, NP, NOMPF,VALGRD, NRUPT,ICODRE)
+         
+      ELSE
+C A PARTIR DE GRANDEUR EQUI, ON RESOUT LE NOMBRE DE CYCLE AVEC 
+C LA FONCTION DU TYPE:  VALGRD = F(NBRUPT) 
+C ON DEFINIT  FONCT = FONCT(NBRUPT) =  F(NBRUPT)- VALGRD   
+C ON VA RESOUDRE L'EQUATION POUR TROUVER NBRUPT TEL QUE 1<NBRUPT<10^7
+
+         NDAT = 20
+         CALL FONBPA ( NOMFOR, ZK24(JPROL), CBID, NBMX, NP, NOMPFI )
+
+C VERIFIER QUE LA FORMULE A LA VARIABLE NRUPT = N_F         
+         IF ((NOMPFI.NE. 'NBRUP') .OR. (NP .NE. 1))  THEN
+             CALL U2MESS('F','FATIGUE1_93')
+         ENDIF
+         
+C VERIFIER QUE  VALGRD < GRDMAX
+         CALL FOINTE('F',NOMFOR, NP, NOMPFI, LNF(20), GRDMAX,ICODRE)
+       
+         IF (VALGRD .GT. GRDMAX) THEN
+             CALL U2MESS('F','FATIGUE1_94')
+         ENDIF
+         
+         DO 10 I = 1, NDAT                  
+            CALL FOINTE('F',NOMFOR, NP, NOMPFI, LNF(I), GRD(I),ICODRE)  
+               IF (GRD(I) .GT. VALGRD ) THEN
+C                   NRUPT2 = LNF(I)+
+C      &           (LNF(I-1)-LNF(I))/(GRD(I-1)-GRD(I))*(VALGRD-GRD(I)) 
+     
+                  LNRUP = LOG(LNF(I))+
+     &         (LOG(LNF(I-1))-LOG(LNF(I)))/(LOG(GRD(I-1))- LOG(GRD(I)))
+     &              *(LOG(VALGRD)-LOG(GRD(I))) 
+                  NRUPT = EXP(LNRUP)
+
+               GOTO 20
+               
+            ENDIF       
+10       CONTINUE                 
+      ENDIF 
+       
+20    CONTINUE  
+     
+      CALL JEDEMA()
+      END

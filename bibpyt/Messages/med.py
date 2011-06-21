@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 06/06/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 20/06/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -518,6 +518,15 @@ cata_msg = {
 
 93 : _("""
      Fin de l'écriture MED de  %(k1)s 
+"""),
+
+94 : _("""
+  Vous imprimez un champ dont le maillage change au cours du temps.
+  Ce type de champ n'est pas autorisé.
+  -> Conseil :
+     Si la structure de données résultat a été produite par
+     CREA_RESU, vérifiez que les champs fournis à cette commande
+     reposent sur un seul et même maillage.
 """),
 
 95 : _("""

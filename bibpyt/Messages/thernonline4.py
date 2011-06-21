@@ -1,4 +1,4 @@
-#@ MODIF thernonline4 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF thernonline4 Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,9 +23,5 @@ def _(x) : return x
 
 cata_msg = {
 
-41 : _("""
- Le champ des températures (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
- dans le concept EVOL_THER de nom <%(k1)s>
-"""),
 
 }

@@ -1,9 +1,9 @@
       SUBROUTINE AVSIGN( NBVEC, NBORDR, VECTN, VWORK, TDISP, KWORK,
-     &                   SOMMW, TSPAQ, I, NOMCRI, VSIGN )
+     &                   SOMMW, TSPAQ, I, NOMCRI,FORDEF, VSIGN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,6 +23,7 @@ C RESPONSABLE F1BHHAJ J.ANGLES
       INTEGER       NBVEC, NBORDR, TDISP, KWORK, SOMMW, TSPAQ, I
       REAL*8        VECTN(3*NBVEC)
       REAL*8        VWORK(TDISP), VSIGN(NBVEC*NBORDR)
+      LOGICAL    FORDEF
       CHARACTER*16  NOMCRI
 C ----------------------------------------------------------------------
 C BUT: CALCULER LA CONTRAINTE NORMALE POUR TOUS LES VECTEURS NORMAUX
@@ -70,7 +71,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER    N, DECAL, IVECT, IORDR, ADRS
+      INTEGER    N, DECAL, IVECT, IORDR, ADRS 
       REAL*8     NX, NY, NZ
       REAL*8     SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FX, FY, FZ, NORM
 C     ------------------------------------------------------------------
@@ -78,9 +79,10 @@ C     ------------------------------------------------------------------
 C234567                                                              012
 
       CALL JEMARQ()
-
+      
       N = 1
-      IF ( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) THEN
+      IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR. 
+     &  FORDEF ) THEN
          DECAL = 12
       ELSE
          DECAL = 6

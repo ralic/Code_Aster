@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,6 @@ C     ---------------------
       IF (NBCA1.NE.0) THEN
          IF ((NBCA3.EQ.0).AND.(NBCA4.EQ.0)) THEN
             CALL CAPRES (CHAR,LIGRMO,NOMA,NDIM,FONREE)
-            CALL TECART (CHAR//'.CHME.PRESS')
          ENDIF
       ENDIF
 C
@@ -63,7 +62,6 @@ C
             IALLOC=1
          ENDIF
          CALL CAFOND (CHAR,LIGRMO,IALLOC,NOMA,FONREE)
-         CALL TECART (CHAR//'.CHME.PRESS')
       ENDIF
 C
 C     MOT CLE FORCE_TUYAU :
@@ -79,14 +77,12 @@ C
             IALLOC=1
          ENDIF
          CALL CAFOTU (CHAR,LIGRMO,IALLOC,NOMA,FONREE)
-         CALL TECART (CHAR//'.CHME.PRESS')
       ENDIF
 C
 C     MOT CLE FLUX_THM_REP :
 C     ----------------------
       IF (NBCA2.NE.0) THEN
          CALL CAFTHM (CHAR,LIGRMO,NOMA,FONREE)
-         CALL TECART (CHAR//'.CHME.FLUX')
       ENDIF
 C
 C-----------------------------------------------------------------------

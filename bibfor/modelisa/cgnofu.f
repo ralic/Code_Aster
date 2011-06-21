@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBNO
       CHARACTER*(*)       MOFAZ, NOMAZ, LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,14 +60,15 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER        IRET, NRF, NLF, NBNOT, NBMAT, NBMB, NBNB, NBNC,
      &               I, J, IDCOOR, JMAIL, JNOTR, IDLINO, JTRAV, JNOBE,
-     &               IDNONO, INO1, INO2, INO, JNORD, NBNOR, IREST
+     &               IDNONO, INO1, INO2, INO, JNORD, NBNOR, IREST,
+     &               NBMA
       REAL*8         C1(3), C2(3), NB(3), C1NB(3), C1C2(3), LC1C2, PSCA,
      &               ZERO, RFUT, RFUT2, LFUT, LCUMUL, XC1H, XC2H, R,
      &               C2NB(3), LC1NB, R8MAEM, X, Y, Z, XMIN, XMAX, LC2NB,
      &               C2H(3), YMIN, YMAX, ZMIN, ZMAX, HNB(3), C1H(3),L12
-      CHARACTER*8    K8B, NOMA, PREFIX
+      CHARACTER*8    K8B, NOMA, PREFIX, TYPM, NDORIG, NDEXTR
       CHARACTER*16   MOTFAC, MOTCLE(3), TYPMCL(3)
-      CHARACTER*24   LISNOE, NOMNOE, MESMAI, LISNOM
+      CHARACTER*24   LISNOE, MESMAI, LISNOM
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -77,8 +78,6 @@ C     ---------------
       MOTFAC = MOFAZ
       NOMA   = NOMAZ
       LISNOE = LISNOZ
-C
-      NOMNOE = NOMA//'.NOMNOE'
 C
       ZERO = 0.0D0
 C
@@ -121,8 +120,10 @@ C     ---------------------------
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
       PREFIX    = '&&CGNOFU'
-      CALL FONFIS ( PREFIX, NOMA, MOTFAC, IOCC, 2, MOTCLE, TYPMCL, 'V')
-      LISNOM = PREFIX//'.FOND      .NOEU'
+      CALL CGNOOR ( PREFIX, NOMA, MOTFAC, IOCC, 2, MOTCLE, TYPMCL, 
+     &               'OUVERT', NBMA, NDORIG, NDEXTR, TYPM)
+      LISNOM = PREFIX//'.NOEUD'
+      CALL ORNOFD ( PREFIX, NOMA, NBMA, LISNOM, NDORIG, NDEXTR, 'V')
       CALL JELIRA ( LISNOM, 'LONMAX', NBNC, K8B )
       CALL JEVEUO ( LISNOM, 'L', IDNONO )
 C
@@ -154,8 +155,8 @@ C
 C
 C ------ RECUPERATION DE LA DIRECTION DEFINISSANT L'AXE DU SEGMENT :
 C        ---------------------------------------------------------
-         CALL JENONU(JEXNOM(NOMNOE,ZK8(IDNONO+I-1)),INO1)
-         CALL JENONU(JEXNOM(NOMNOE,ZK8(IDNONO+I  )),INO2)
+         INO1 = ZI(IDNONO+I-1)
+         INO2 = ZI(IDNONO+I  )
 C
          C1(1) = ZR(IDCOOR-1+3*(INO1-1)+1)
          C1(2) = ZR(IDCOOR-1+3*(INO1-1)+2)
@@ -299,8 +300,7 @@ C
       CALL JEDETR ( '&&CGNOFU.NOEUDS_CUBE' )
       CALL JEDETR ( '&&CGNOFU.NOEUDS_TROUVES' )
       CALL JEDETR ( '&&CGNOFU.NOEUD_BETON' )
-      CALL JEDETR ( PREFIX//'.FOND      .NOEU' )
-      CALL JEDETR ( PREFIX//'.FOND      .TYPE' )
+      CALL JEDETR ( LISNOM )
 C
       CALL JEDEMA()
 C

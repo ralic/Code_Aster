@@ -8,7 +8,7 @@
       LOGICAL           LHAIGH,                     LKE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER ICODRE
-      CHARACTER*8  NOMRES,NOMPAR
+      CHARACTER*8  NOMRES,NOMPAR, KBID
       CHARACTER*10 PHENO
       REAL*8        NRUPT,DELTA
       LOGICAL       ENDUR
@@ -71,7 +71,7 @@ C
          NBPAR     = 1
          PHENO     = 'FATIGUE   '
          NOMPAR    = 'SIGM    '
-         CALL LIMEND(NOMMAT,DELTA,'WOHLER',ENDUR)
+         CALL LIMEND(NOMMAT,DELTA,'WOHLER',KBID, ENDUR)
          IF (ENDUR) THEN
             DOM(I) = 0.D0
          ELSE

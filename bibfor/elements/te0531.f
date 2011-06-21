@@ -1,7 +1,7 @@
       SUBROUTINE TE0531(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +21,12 @@ C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
 
-C      ROUTINE PROCHE DE TE0335 (3D) MAIS PARTICULIERE POUR LES
-C      SHB8 CAR LES CMP DE CONTRAINTES CONTIENNENT AUSSI DES
-C     TERMES DE STABILISATION
+C      ROUTINE PROCHE DE TE0335 (3D)
 C
 C     BUT:       POUR LES ELEMENTS SHB8 , CALCUL DES
 C                GRANDEURS EQUIVALENTES SUIVANTES
 C                AUX POINTS DE GAUSS :
-C                    POUR LES CONTRAINTES  A PARTIR DE SIEF_ELGA
-C                                                   OU SIEF_ELGA
+C                    POUR LES CONTRAINTES  A PARTIR DE SIGM_ELGA
 C                DANS CET ORDRE :
 C                . CONTRAINTES EQUIVALENTES  :
 C                        . VON MISES                    (= 1 VALEUR)
@@ -52,7 +49,7 @@ C ----------------------------------------------------------------------
       INTEGER ICONT,IEQUIF
       INTEGER IDCP,KP,J,I
       INTEGER NNO,NCEQ,NPG,NNOS
-      REAL*8 EQPG(NEQMAX*NPGMAX),SIGMA(30),FSTAB(12)
+      REAL*8 EQPG(NEQMAX*NPGMAX)
       CHARACTER*16 NOMTE,OPTION
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -82,10 +79,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
         EQPG(I) = 0.0D0
    10 CONTINUE
 
-C     TRI ENTRE LES CONTRAINTES ET LES TERMES DE STABILISATION
-
-      CALL SHBCSF(ZR(ICONT),SIGMA,FSTAB)
-
 C -   CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
 
       IF (OPTION(6:9).EQ.'ELGA') THEN
@@ -95,8 +88,7 @@ C -       DEFORMATIONS
         IF (OPTION(1:4).EQ.'SIEQ') THEN
           DO 50 KP = 1,NPG
             IDCP = (KP-1)*NCEQ
-C            CALL FGEQUI(ZR(ICONT+ (KP-1)*6),'SIGM',3,EQPG(IDCP+1))
-            CALL FGEQUI(SIGMA((KP-1)*6+1),'SIGM_DIR',3,EQPG(IDCP+1))
+            CALL FGEQUI(ZR(ICONT+(KP-1)*6),'SIGM_DIR',3,EQPG(IDCP+1))
    50     CONTINUE
         END IF
 

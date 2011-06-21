@@ -2,7 +2,7 @@
      &                  NNOINT,NUME91,RAIINT,SSAMI)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,8 +76,9 @@ C-- VARIABLES DE LA ROUTINE
      &             LPRNO,LNDDLI,IPOS1,IPOS2,NOEU,NBEC,ICON1,ICON2,
      &             NOEUCO,NUMNO,LCONNC,LREFN,LDPRS,LDORS,LDDEEQ,LIPOS,
      &             LDNUEQ,LDDELG,NEQDDL,NOZERO,NO1,NO2,LINDNO,
-     &             INDEQ,ISMHC,INDDDL,NEQD2,NBVOIS,
-     &             NBVMAX,LCOORD,LRAINT,LMAINT
+     &             INDEQ,ISMHC,INDDDL,NEQD2,NBVOIS,IRET,
+     &             NBVMAX,LCOORD,LRAINT,LMAINT,
+     &             ISLVK,ISLVR,ISLVI   
       REAL*8       RAYON,DIST,MINDIS,MAXDIS,KR(12,12),MR(12,12),
      &             DIREC(3),PTREF(3),TEMP,LONG,VTEST(3)
       CHARACTER*8  K8BID,NOMMA
@@ -180,7 +181,7 @@ C-- BOUCLE SUR LES NOEUDS D'INTERFACE
         DO 20 J1=1,NNOINT-I1+1
           NOEUCO=ZI(LNDDLI+J1-1)
           ICON1=ZI(LPRNO+(NOEUCO-1)*(2+NBEC))
-          ICON2=ICON1+ZI(LPRNO+(NOEUCO-1)*(2+NBEC)+1)
+          ICON2=ICON1+ZI(LPRNO+(NOEUCO-1)*(2+NBEC)+1)-1
           NUMNO=0
 
           DO 30 K1=ZI(LSMDI+IPOS1),ZI(LSMDI+IPOS2)
@@ -281,7 +282,48 @@ C-- ON REMPLIT LE BLOC DIAGONAL DU NOEUD COURANT
 
 C-- CREATION DU SOLVEUR
       SOLVEU=NUME91//'.SOLV'
-      CALL CRSOLV ('LDLT','SANS',SOLVEU,'V')
+      
+C-- TEST SUR LA PRESENCE DE MUMPS POUR ACCELERER LE CALCUL    
+      CALL HASLIB('MUMPS',IRET)
+      IF (IRET .EQ. 0) THEN
+        CALL CRSOLV ('LDLT','SANS',SOLVEU,'V')
+      ELSE    
+        IF (NEQ .LT. 120) THEN     
+C-- SOLVEUR = LDLT / OPTIONS PAR DEFAUT      
+          CALL CRSOLV ('LDLT','SANS',SOLVEU,'V')
+        ELSE   
+C-- SOLVEUR = MUMPS / OPTIONS PAR DEFAUT
+          CALL WKVECT(SOLVEU//'.SLVK','V V K24',12,ISLVK)
+          CALL WKVECT(SOLVEU//'.SLVR','V V R',4,ISLVR)
+          CALL WKVECT(SOLVEU//'.SLVI','V V I',7,ISLVI)
+
+          ZK24(ISLVK-1+1)  = 'MUMPS                   '
+          ZK24(ISLVK-1+2)  = 'AUTO                    '
+          ZK24(ISLVK-1+3)  = 'AUTO                    '
+          ZK24(ISLVK-1+4)  = 'AUTO                    '
+          ZK24(ISLVK-1+5)  = 'NON                     '
+          ZK24(ISLVK-1+6)  = 'OUI                     '
+          ZK24(ISLVK-1+7)  = 'NON                     '
+          ZK24(ISLVK-1+8)  = 'NON                     '
+          ZK24(ISLVK-1+9)  = 'NON                     '
+          ZK24(ISLVK-1+10) = 'NON                     '
+          ZK24(ISLVK-1+11) = 'AUTO                    '
+          ZK24(ISLVK-1+12) = 'NON                     '
+
+          ZR(ISLVR-1+1) = -1.D0
+          ZR(ISLVR-1+2) = -1.D0
+          ZR(ISLVR-1+3) = 0.D0
+          ZR(ISLVR-1+4) = 0.D0
+
+          ZI(ISLVI-1+1) = 9
+          ZI(ISLVI-1+2) = 50
+          ZI(ISLVI-1+3) = 0
+          ZI(ISLVI-1+4) = -9999
+          ZI(ISLVI-1+5) = -9999
+          ZI(ISLVI-1+6) = -9999
+          ZI(ISLVI-1+7) = -9999
+        ENDIF
+      ENDIF  
 
 C-----------------------------------------------------C
 C--                                                 --C

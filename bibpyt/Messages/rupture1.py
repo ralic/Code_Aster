@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 19/04/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture1 Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,14 +28,6 @@ le nombre de noeuds d'un fond de fissure fermé est pair.
 -> Risque et Conseil :
 Veuillez utiliser une autre option de lissage
 (par exemple, le lissage 'LAGRANGE' pour le champ theta)
-"""),
-
-2: _("""
-%(k1)s n'est pas un groupe de mailles du maillage.
-"""),
-
-3: _("""
-%(k1)s n'est pas un groupe de noeuds du maillage.
 """),
 
 
@@ -174,12 +166,7 @@ qu'avec la déformation GROT_GDEP.
 Le champ de nom symbolique %(k1)s existe déjà dans la SD RESULTAT  %(k1)s.
 """),
 
-29: _("""
-Arret sur erreur(s) 'utilisateur': deux mailles du fond de fissure sont
-non consécutives dans la numérotation des noeuds.
--> Risque et Conseil :
-Veuillez revoir l'ordre des mailles fournies au mot-clé MAILLE.
-"""),
+
 
 30: _("""
 Il faut donner 3 composantes de la direction.

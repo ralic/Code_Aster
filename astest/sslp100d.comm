@@ -1,9 +1,9 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 # sslp100d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -330,6 +330,17 @@ _F( CHAM_GD = U1S_1, NOEUD = 'N10', NOM_CMP = 'DY',
    ),);
 
 
+# CREATION D'UN CHAMP d'ACCELERATION NULLE
+ACCNUL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='AFFE',
+              MODELE=MOG,
+              AFFE=_F(TOUT    = 'OUI',
+                      NOM_CMP = ('DX','DY'),
+                      VALE    = (0.,0.),),
+              
+              );
+
+
 U=DYNA_NON_LINE( reuse=U,
             MODELE=MOG,
             CHAM_MATER=CHMATG,
@@ -341,7 +352,11 @@ U=DYNA_NON_LINE( reuse=U,
                         _F( CAS_CHARGE = 'CHF1', TOUT = 'OUI'),
                         _F( CAS_CHARGE = 'CHF2', TOUT = 'OUI'),
                         ),
-            ETAT_INIT= _F(EVOL_NOLI=U),
+            ETAT_INIT= _F(EVOL_NOLI=U,
+                          ACCE=ACCNUL,
+            
+            
+            ),
             COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
                        _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
                         ),

@@ -1,21 +1,21 @@
-#@ MODIF include_materiau_ops Macro  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF include_materiau_ops Macro  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -53,7 +53,11 @@ FTEMP = 'temp_eval'
 FCOEF = 'coef_unit'
 DEFI_MOTSCLES = 'defi_motscles'
 MOTSCLES = 'motscles'
-COMMANDES = ['DEFI_FONCTION', 'DEFI_NAPPE', 'CALC_FONCTION', 'DETRUIRE']
+COMMANDES = [
+    'DEFI_FONCTION', 'DEFI_CONSTANTE', 'DEFI_NAPPE', 'CALC_FONCTION',
+    'FORMULE', 'CALC_FONC_INTERP',
+    'DETRUIRE',
+]
 
 
 def build_context(unite, temp):
@@ -89,6 +93,7 @@ def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
     """Macro INCLUDE_MATERIAU"""
     import aster
     from Accas import _F
+    from Cata.cata import formule
     from Utilitai.Utmess import UTMESS
 
     DEFI_MATERIAU  = self.get_cmd('DEFI_MATERIAU')
@@ -121,9 +126,13 @@ def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
     kwcata = context.get(MOTSCLES)
     if kwcata is None:
         UTMESS('F', 'SUPERVIS2_6', valk=bnmat)
+    # certains concepts cachés doivent être connus plus tard (au moins les objets FORMULE)
+    to_add = dict([(v.nom, v) for k, v in context.items() if isinstance(v, formule)])
+    self.sdprods.extend(to_add.values())
     if INFO == 2:
         aster.affiche('MESSAGE', " Mots-clés issus du catalogue : \n%s" \
             % pprint.pformat(kwcata))
+        aster.affiche('MESSAGE', 'Concepts transmis au contexte global :\n%s' % to_add)
 
     # filtre des mots-clés
     for mcf, value in kwcata.items():

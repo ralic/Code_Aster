@@ -8,7 +8,7 @@
       CHARACTER*(*)  CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C --- ---------------------------------------------------------------
       REAL*8       R8BID
       LOGICAL      NONSYM
       CHARACTER*8  K8BID
+      CHARACTER*11 CARBID
 C --- ---------------------------------------------------------------
 C
 
@@ -78,7 +79,6 @@ C        COEFFICIENT AMORTISSEMENT HYSTERETIQUE
             ZR (JDVINF+9) = ETA
          ENDIF
          ZK8(JDCINF+10)   = 'TYDI    '
-         CALL INFDIS('CODE',IBID,ZR(JDVINF+10),CAR)
 C
          NONSYM = ( ISYM .EQ. 2 )
          NTP = J
@@ -92,6 +92,7 @@ C
 100      CONTINUE
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_N
          IF (CAR(3:7).EQ.'T_D_N') THEN
+            CARBID = '_DIS_'//CAR(3:7)
             CALL ASSERT( ISYM .EQ. 1 )
             NCMP = 9
             IF (CAR(1:1).EQ.'M')THEN
@@ -107,6 +108,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_N
             ENDIF
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_L
          ELSEIF (CAR(3:7).EQ.'T_D_L') THEN
+            CARBID = '_DIS_'//CAR(3:7)
             CALL ASSERT( ISYM .EQ. 1 )
             IF (CAR(1:1).EQ.'M') THEN
                NCMP = 0
@@ -125,6 +127,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_L
             ENDIF
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_D_N
          ELSEIF (CAR(3:8).EQ.'TR_D_N') THEN
+            CARBID = '_DIS_'//CAR(3:8)
             CALL ASSERT( ISYM .EQ. 1 )
             NCMP = 36
             IF (CAR(1:1).EQ.'M') THEN
@@ -158,6 +161,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_D_N
             ENDIF
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_D_L
          ELSEIF (CAR(3:8).EQ.'TR_D_L') THEN
+            CARBID = '_DIS_'//CAR(3:8)
             CALL ASSERT( ISYM .EQ. 1 )
             IF (CAR(1:1).EQ.'M') THEN
                NCMP = 0
@@ -185,6 +189,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_D_L
             ENDIF
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_N
          ELSEIF (CAR(3:5).EQ.'T_N') THEN
+            CARBID = '_DIS_'//CAR(3:5)
             IF ( NONSYM ) THEN
                NCMP = 9
             ELSE
@@ -199,6 +204,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_N
             NCMP = 9
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_L
          ELSEIF (CAR(3:5).EQ.'T_L') THEN
+            CARBID = '_DIS_'//CAR(3:5)
             IF ( NONSYM ) THEN
                NCMP = 36
             ELSE
@@ -213,6 +219,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_L
             NCMP = 36
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_N
          ELSEIF (CAR(3:6).EQ.'TR_N') THEN
+            CARBID = '_DIS_'//CAR(3:6)
             IF ( NONSYM ) THEN
                NCMP = 36
             ELSE
@@ -227,6 +234,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_N
             NCMP = 36
 C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_L
          ELSEIF (CAR(3:6).EQ.'TR_L') THEN
+            CARBID = '_DIS_'//CAR(3:6)
             IF ( NONSYM ) THEN
                NCMP = 144
             ELSE
@@ -240,6 +248,7 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_L
 45          CONTINUE
             NCMP = 144
          ENDIF
+         CALL INFDIS('CODE',IBID,ZR(JDVINF+10),CARBID)
 C
          IF(IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),NCMP,ISYM)
 200   CONTINUE

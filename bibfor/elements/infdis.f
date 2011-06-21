@@ -5,7 +5,7 @@
       INTEGER        IVALE
       REAL*8         RVALE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,19 +75,25 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER        NBELEM,II,JDC,JJ,KK,IADZI,IAZK24,ICOORD
-      PARAMETER     (NBELEM=4)
+      PARAMETER     (NBELEM=8)
       INTEGER        LENMND(NBELEM),LENMDD(NBELEM)
-      CHARACTER*6    ELEMND(NBELEM),ELEMDD(NBELEM)
+      CHARACTER*13   ELEMND(NBELEM),ELEMDD(NBELEM)
       CHARACTER*20   CARACZ
 
       CHARACTER*8    NOMMAI,MAILLA
       INTEGER        NBNOEU
       REAL*8         R8BID
 
-      DATA ELEMND/'T_N   ','TR_N  ','T_L   ','TR_L  '/
-      DATA LENMND/3,4,3,4/
-      DATA ELEMDD/'T_D_N ','TR_D_N','T_D_L ','TR_D_L'/
-      DATA LENMDD/5,6,5,6/
+      DATA ELEMND /  '_DIS_T_N     ','_DIS_TR_N    ',
+     &               '_DIS_T_L     ','_DIS_TR_L    ',
+     &               '2D_DIS_T_N   ','2D_DIS_TR_N  ',
+     &               '2D_DIS_T_L   ','2D_DIS_TR_L  '/
+      DATA LENMND /   8, 9, 8, 9,10,11,10,11/
+      DATA ELEMDD /  '_DIS_T_D_N   ','_DIS_TR_D_N  ',
+     &               '_DIS_T_D_L   ','_DIS_TR_D_L  ',
+     &               '2D_DIS_T_D_N ','2D_DIS_TR_D_N',
+     &               '2D_DIS_T_D_L ','2D_DIS_TR_D_L'/
+      DATA LENMDD /  10,11,10,11,12,13,12,13/
 C
 C     ORDRE DE STOCKAGE DANS LA CARTE : CINFDI
 C     0     1     2     3     4     5     6     7     8     9     10
@@ -107,17 +113,17 @@ C
          CALL TECAEL(IADZI,IAZK24)
          NOMMAI = ZK24(IAZK24-1+3)
          NBNOEU = ZI(IADZI+1)
-         CARACZ = KVALE(1:2)
-         CALL U2MESG(CARACZ,'DISCRETS_30',1,NOMMAI,1,NBNOEU,0,R8BID)
+         CALL U2MESG(KVALE(1:1)//'+','DISCRETS_30',
+     &      1,NOMMAI,1,NBNOEU,0,R8BID)
          MAILLA = ZK24(IAZK24)
          CALL JEVEUO(MAILLA//'.COORDO    .VALE','L',ICOORD)
          DO 10 JJ=1,NBNOEU
             II = ZI(IADZI+1+JJ)
             IF ( JJ .EQ. NBNOEU ) THEN
-               CALL U2MESG(CARACZ(1:1),'DISCRETS_31',
+               CALL U2MESG(KVALE(1:1),'DISCRETS_31',
      &            1,ZK24(IAZK24-1+3+JJ),0,NBNOEU,3,ZR(ICOORD+3*(II-1)))
             ELSE
-               CALL U2MESG(CARACZ,'DISCRETS_31',
+               CALL U2MESG(KVALE(1:1)//'+','DISCRETS_31',
      &            1,ZK24(IAZK24-1+3+JJ),0,NBNOEU,3,ZR(ICOORD+3*(II-1)))
             ENDIF
 10       CONTINUE
@@ -131,6 +137,7 @@ C
                GOTO 9995
             ENDIF
 20       CONTINUE
+         CALL ASSERT( .FALSE. )
 9995     CONTINUE
          IVALE  = 0
          RVALE  = 0.0D0
@@ -154,7 +161,7 @@ C
                ENDIF
             ENDIF
 30       CONTINUE
-         GOTO 9999
+         CALL ASSERT( IVALE.NE.0 )
       ELSE IF ( QUEST .EQ. 'INIT' ) THEN
          CARACZ = KVALE
          IF      ( CARACZ(1:3) .EQ. 'REP' ) THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,13 +72,13 @@ CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                               _F(CHARGE=SYMETR1,),),);
 
 # POST-TRAITEMENT
-FISS=DEFI_FOND_FISS(    MAILLAGE=MA,
-                          FOND_FISS=_F(  GROUP_MA = 'FOND', ),
-                          LEVRE_SUP=_F(  GROUP_MA = 'LEV_SUP'),
-                          LEVRE_INF=_F(  GROUP_MA = 'LEV_INF'),
-                          DTAN_ORIG=(  0.,  1.,  0., ),
-                          DTAN_EXTR=(  0.,  1., 0., )
-                       )
+FISS=DEFI_FOND_FISS(MAILLAGE=MA,
+                    FOND_FISS=_F(GROUP_MA = 'FOND',
+                                 DTAN_ORIG=(  0.,  1.,  0., ),
+                                 DTAN_EXTR=(  0.,  1.,  0., ),),
+                    LEVRE_SUP=_F(  GROUP_MA = 'LEV_SUP'),
+                    LEVRE_INF=_F(  GROUP_MA = 'LEV_INF'),
+                   );
 
 FFX=DEFI_FISS_XFEM(MODELE=MO,
                    DEFI_FISS=_F(GROUP_MA_FISS='LEV_SUP',

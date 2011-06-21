@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C     OPERATEUR POST_RCCM: CALCUL DU KE, SALT, NADM
 C
 C     ------------------------------------------------------------------
       REAL*8       UN, XM, XN, SNS3, TROISM,R8MAEM
+      CHARACTER*8  KBID
       REAL*8 VALR(2)
       INTEGER ICODRE
       LOGICAL       ENDUR
@@ -67,7 +68,7 @@ C
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM EN UTILISANT
 C --- LA COURBE DE WOHLER AUX EXTREMITES DU CHEMIN :
 C     --------------------------------------------
-      CALL LIMEND( NOMMAT,SALT,'WOHLER',ENDUR)
+      CALL LIMEND( NOMMAT,SALT,'WOHLER',KBID,ENDUR)
       IF (ENDUR) THEN
          NADM=R8MAEM()
       ELSE

@@ -1,0 +1,50 @@
+      SUBROUTINE HASLIB(LIBRAZ,IRET)
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF HASLIB UTILITAI  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+      IMPLICIT NONE
+      CHARACTER*(*) LIBRAZ
+      INTEGER       IRET
+!--------------------------------------------------------------
+! BUT : CONNAITRE LA DISPONIBILITE D'UNE LIBRAIRIE EXTERNE
+
+! IN : LIBRAI :
+!     /'MUMPS'  : POUR DEMANDER LA FACTORISATION DU PRECONDITIONNEUR
+!     /'PETSC'  : POUR DEMANDER LA RESOLUTION ITERATIVE
+
+! OUT : IRET    : CODE_RETOUR :
+!            1  : INSTALLE
+!            0  : PAS INSTALLE
+!---------------------------------------------------------------
+      CHARACTER*5  LIBRAI
+!---------------------------------------------------------------
+      LIBRAI = LIBRAZ
+      IRET=0
+      IF (LIBRAI.EQ.'MUMPS') THEN
+#ifdef _HAVE_MUMPS
+        IRET=1
+#endif
+      ELSE IF (LIBRAI.EQ.'PETSC') THEN
+#ifdef _HAVE_PETSC
+        IRET=1
+#endif
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      END
+

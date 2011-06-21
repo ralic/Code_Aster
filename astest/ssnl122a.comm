@@ -1,4 +1,4 @@
-# MODIF  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE CANTILEVER MULTI-FIBRES : FORCE PONCTUELLE
 # ssnl122a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -398,7 +398,23 @@ CHAM_ELEM=(
       NOM_CMP  = 'V1', VALE =0.0 , CRITERE='ABSOLU', PRECISION = 1.0E-10),
  ),
 )
-#----------------------------------------------------------------------
+
+#------------------------------------------------------------------------------------------
+# validation de POST_CHAMP / EXTR_PMF :
+#----------------------------------------
+STNL=CALC_CHAMP(reuse =STNL, RESULTAT=STNL, TOUT_ORDRE='OUI', CONTRAINTE='SIGM_ELGA')
+
+STNLB=POST_CHAMP(RESULTAT=STNL,  NUME_ORDRE=(1,2), GROUP_MA='S002',
+               EXTR_PMF =_F(NOM_CHAM='SIGM_ELGA', NUME_FIBRE=11,))
+
+TEST_RESU(RESU=_F(RESULTAT=STNL, NUME_ORDRE=2, NOM_CHAM='SIGM_ELGA', REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
+                   NOM_CMP='SIXX', MAILLE='E00202', POINT=2, SOUS_POINT= 11, VALE=6.5714285714286E+06
+                   ))
+
+TEST_RESU(RESU=_F(RESULTAT=STNLB, NUME_ORDRE=2, NOM_CHAM='SIGM_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
+                   NOM_CMP='SIXX', MAILLE='E00202', POINT=2,                 VALE=6.5714285714286E+06
+                   ))
+#-----------------------------------------------------------------------------------------
 
 
 

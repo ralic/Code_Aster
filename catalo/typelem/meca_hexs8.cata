@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,9 +111,23 @@ MODE_LOCAL__
     ERICTRA  = RICE_TRA ELEM__         (TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ   )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
+    ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
+    ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
+                                        N        VY       VZ       MT       MFY      MFZ
+                                        BX       NXX      NYY      NXY      MXX      MYY
+                                        MXY      QX       QY       FX       FY       FZ
+                                        MX       MY       MZ       SIGN     SITX     SITY
+                                        SITZ     VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3
+                                        VMIS_SG  SN       SVY      SVZ      SMT      SMFY
+                                        SMFZ     MASF     ENTR     DISS     FLHX     FLHY
+                                        FLHZ     FLUX     FLUY     FLUZ     PM       PMPB
+                                        SIP      M11      FH11X    FH11Y    FH11Z    ENT11
+                                        M12      FH12X    FH12Y    FH12Z    ENT12    M21
+                                        FH21X    FH21Y    FH21Z    ENT21    M22      FH22X
+                                        FH22Y    FH22Z    ENT22    QPRIM    FHTX     FHTY     )
+    ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         N        VY       VZ       MT       MFY      MFZ
                                         BX       NXX      NYY      NXY      MXX      MYY
                                         MXY      QX       QY       FX       FY       FZ
@@ -154,6 +168,8 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR
+                              OUT__  ESIGMPG  PSIGMR    ESIGMPC  PSIGMC
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
@@ -259,7 +275,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DERA_ELGA           489   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR
+    DERA_ELGA           489   IN__   ESIGMPG  PCONTMR  ESIGMPG  PCONTPR  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR
                                      CCOMPOR  PCOMPOR
                               OUT__  EDERAPG  PDERAPG
     DERA_ELNO           4     IN__   EDERAPG  PDERAPG
@@ -267,7 +283,7 @@ OPTION__
     ECIN_ELEM           12    IN__   DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
-    ENDO_ELGA           512   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC
+    ENDO_ELGA           512   IN__   CCOMPOR  PCOMPOR  ESIGMPG  PCONTGM  ESIGMPG  PCONTGP  CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ETRIAPG  PTRIAGM  ZVARIPG  PVARIMR
                                      ZVARIPG  PVARIPR
                               OUT__  ETRIAPG  PTRIAPG
@@ -339,13 +355,13 @@ OPTION__
                               OUT__  EDFEQPG  PDEFOEQ
     EPEQ_ELGA      335   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    SIEQ_ELGA      335   IN__   ECONTPG  PCONTRR
+    SIEQ_ELGA      335   IN__   ESIGMPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
     EPMQ_ELNO      335   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
     EPEQ_ELNO      335   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    SIEQ_ELNO      330   IN__   ECONTPG  PCONTRR
+    SIEQ_ELNO      330   IN__   ESIGMPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     ERME_ELEM           375   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR

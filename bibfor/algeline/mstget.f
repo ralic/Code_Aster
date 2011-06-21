@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,14 +120,8 @@ C
             CALL WKVECT('&&MSTGET.NOM.NOEUD','V V K8',NNOE,JNOE)
             CALL GETVEM(NOMMA,'NOEUD',MOTFAC,'NOEUD',
      &          I,1,NNOE,ZK8(JNOE),NI)
-            CALL WKVECT('&&MSTGET.LISTE.NOEUD','V V I',NNOE*NEQ,LNOE)
+            CALL WKVECT('&&MSTGET.LISTE.NOEUD','V V I',NEQ,LNOE)
             CALL NOEDDL(NUME,NNOE,ZK8(JNOE),NEQ,ZI(LNOE))
-            DO 14 IN = 2,NNOE
-               IND = (IN-1)*NEQ
-               DO 16 IEQ = 0,NEQ-1
-                  ZI(LNOE+IEQ) = MAX(ZI(LNOE+IEQ),ZI(LNOE+IND+IEQ))
- 16            CONTINUE
- 14         CONTINUE
          ENDIF
 C
          CALL GETVEM(NOMMA,'GROUP_NO',MOTFAC,'GROUP_NO',
@@ -151,14 +145,8 @@ C           --- ECLATE LE GROUP_NO EN NOEUD ---
                   ZK8(JNOE+II) = NOMNOE
  20            CONTINUE
  18         CONTINUE
-            CALL WKVECT('&&MSTGET.LISTE.NOEUD','V V I',NNOE*NEQ,LNOE)
+            CALL WKVECT('&&MSTGET.LISTE.NOEUD','V V I',NEQ,LNOE)
             CALL NOEDDL(NUME,NNOE,ZK8(JNOE),NEQ,ZI(LNOE))
-            DO 22 IN = 2,NNOE
-               IND = (IN-1)*NEQ
-               DO 24 IEQ = 0,NEQ-1
-                  ZI(LNOE+IEQ) = MAX(ZI(LNOE+IEQ),ZI(LNOE+IND+IEQ))
- 24            CONTINUE
- 22         CONTINUE
          ENDIF
 C
 C        --- LES COMPOSANTES ---

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,11 +140,12 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     FOND_FISS=_F(GROUP_MA='LFF1',
                                  GROUP_NO_ORIG='NFF1',
-                                 GROUP_NO_EXTR='NFF2',),
+                                 GROUP_NO_EXTR='NFF2',
+                                 DTAN_ORIG=(1.,0.,0.,),
+                                 DTAN_EXTR=(0.,1.,0.,),),
                     LEVRE_SUP=_F(GROUP_MA='LEVINFS',),
                     LEVRE_INF=_F(GROUP_MA='LEVINF1',),
-                    DTAN_ORIG=(1.,0.,0.,),
-                    DTAN_EXTR=(0.,1.,0.,),);
+                   );
 
 RSUP = 0.5;
 

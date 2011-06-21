@@ -1,0 +1,687 @@
+# MODIF  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+#
+# TITRE FATIGUE, AMPLITUDE VARIABLE, TEST DU CRITERE FORMULE QUI 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            VA RETROUVER LE CRITER DE MATAKE_MODI_AV
+# sslv135k.para = tps_job 160 mem_job 800Mo ncpus 1 liste_test S
+#----------------------------------------------------------------------
+#    Cas test sslv135k : cube 3D
+#                        Essai de chargement cyclique bi-axial
+#                        critere en formule
+#----------------------------------------------------------------------
+#        Unites : Newton , Millimetre , Seconde (N,MM,S,->Mpa)
+#----------------------------------------------------------------------
+#
+#               y       a
+#               I<------------->                     a = 10 mm
+#                     Face1                                    2
+#                   (dessus)                         S = 100 mm
+#               P1              P2
+#               o--------------o
+#              /I             /I
+#        P5   / I        P6  / I
+#            o--+-----------o  I
+#            I  I   Face5   I  I  Face4
+#  Face3     I  I (derri.)  I  I (cote d.)
+# (cote g.)  I  I           I  I
+#            I  I  P3       I  I P4
+#            I  o-----------I--o      - x
+#            I /            I /
+#         P7 I/          P8 I/
+#            o--------------o
+#
+#          /       Face2
+#         z      (dessous)
+#
+#
+#    CHARGEMENT     FX(T) <=> +      FY(T) <=> x
+#
+#            I
+#            I                 x                       x
+#            I
+#   1.0E+4 N I     +        x     x        +        x     x
+#            I  +     +        3s    4s +     +
+#           -I-----I-----I-----I-----I-----I-----I-----I-----I----> T
+#            I    1s    2s  +     +                 +     +
+#            I  x     x        +        x     x        +
+#            I
+#  -2.0E+4 N I     x                       x
+#            I
+#
+#
+# L'AMPLITUDE DE FX(T) = 2.0E+4 N, SA VALEUR MOYENNE = 0.0
+# L'AMPLITUDE DE FY(T) = 4.0E+4 N, SA VALEUR MOYENNE = 0.0
+#
+# A L'INSTANT 0S, FX(T) = 0.0 N  ET  FY(T) = 0.0 N
+# A L'INSTANT 1S, FX(T) = 1.0E+4 N  ET  FY(T) = -2.0E+4 N
+# A L'INSTANT 2S, FX(T) = 0.0 N  ET  FY(T) = 0.0 N
+# A L'INSTANT 3S, FX(T) = -1.0E+4 N  ET  FY(T) = 2.0E+4 N
+# A L'INSTANT 4S, FX(T) = 0.0 N  ET  FY(T) = 0.0 N
+# PUIS NOUS REPETONS UNE SECONDE FOIS CE CYCLE DE CHARGEMENT.
+#
+#----------------------------------------------------------------------
+#
+# DANS CE CAS TEST NOUS TESTONS LE CRITERE EN FORMULE AUX POINTS DE GAUSS
+# ET AUX NOEUDS
+#----------------------------------------------------------------------
+#
+# REMARQUE :
+# LA PRESENCE DE VALEURS DE REFERENCE MULTIPLES DANS CE CAS-TEST S'EXPLIQUE
+# PAR L'EXISTENCE DE 2 PLANS CRITIQUES, DONC 2 VECTEURS NORMAUX POUR UNE
+# VALEUR DE DOMMAGE MAX. AUTREMENT DIT, LE DOMMAGE MAX EST ASSOCIE A 2 PLANS.
+#
+DEBUT( CODE =_F( NOM = 'sslv135k', NIV_PUB_WEB = 'INTRANET', VISU_EFICAS='NON' ), );
+
+CUBE = LIRE_MAILLAGE( )
+
+CUBE=DEFI_GROUP(reuse = CUBE,
+                ALARME='OUI',
+                CREA_GROUP_NO=(_F(GROUP_MA='FACE1',
+                                  CRIT_NOEUD='TOUS'),
+                               _F(GROUP_MA='FACE2',
+                                  CRIT_NOEUD='TOUS'),
+                               _F(GROUP_MA='FACE3',
+                                  CRIT_NOEUD='TOUS'),
+                               _F(GROUP_MA='FACE4',
+                                CRIT_NOEUD='TOUS'),
+                               _F(GROUP_MA='FACE5',
+                                  CRIT_NOEUD='TOUS'),
+                               _F(GROUP_MA='FACE6',
+                                  CRIT_NOEUD='TOUS')),
+                MAILLAGE=CUBE,
+               );
+
+CUBE=DEFI_GROUP(reuse = CUBE,
+                ALARME='OUI',
+                CREA_GROUP_MA=(_F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE1',
+                                  NOM='FACE1_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE2',
+                                  NOM='FACE2_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE3',
+                                  NOM='FACE3_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE4',
+                                  NOM='FACE4_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE5',
+                                  NOM='FACE5_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE6',
+                                  NOM='FACE6_3D')),
+                MAILLAGE=CUBE,
+               );
+
+WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
+                            INTERPOL='LOG',
+                          PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE',
+                         VALE=(  138.,    1000000.,
+                                 152.,     500000.,
+                                 165.,     200000.,
+                                 180.,     100000.,
+                                 200.,      50000.,
+                                 250.,      20000.,
+                                 295.,      12000.,
+                                 305.,      10000.,
+                                 340.,       5000.,
+                                 430.,       2000.,
+                                 540.,       1000.,
+                                 690.,        500.,
+                                 930.,        200.,
+                                1210.,        100.,
+                                1590.,         50.,
+                                2210.,         20.,
+                                2900.,         10.,  )  )
+
+#               _____________________________
+#              I                             I
+#              I      AMPLITUDE VARIABLE     I
+#              I_____________________________I
+#
+
+COEF   = DEFI_FONCTION (  NOM_PARA    ='INST',
+                          PROL_DROITE  ='LINEAIRE',
+                          PROL_GAUCHE ='LINEAIRE',
+                          VALE        =( 0.,    0.,
+                                         1.,  100.,
+                                         2.,    0.,
+                                         3., -100.,
+                                         4.,    0.,
+                                         5.,  100.,
+                                         6.,    0.,
+                                         7., -100.,
+                                         8.,    0.,
+                                        )
+                       )
+
+ACIER   = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
+                                                NU       = .3,
+                                                ALPHA    = 0. ),
+                            FATIGUE        =_F( WOHLER   = WHOL, ),
+                            CISA_PLAN_CRIT =_F( CRITERE = 'MATAKE_MODI_AV',
+                                                MATAKE_A  = 1.0,
+                                                MATAKE_B  = 2.0,
+                                                COEF_FLEX_TORS = 1.5 )
+                          )
+
+LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
+                           INTERVALLE =_F (JUSQU_A= 8.0, NOMBRE = 16  )
+                                         );
+
+TROISD   = AFFE_MODELE    ( MAILLAGE   =    CUBE,
+                            AFFE       =_F ( PHENOMENE    = 'MECANIQUE',
+                                             MODELISATION = '3D',
+                                             TOUT         = 'OUI'    ))
+
+MAT   = AFFE_MATERIAU    ( MAILLAGE    =   CUBE,
+                           AFFE        =_F ( TOUT       = 'OUI',
+                                             MATER      = ACIER,
+                                             ))
+# POUR RETROUVER LE CRITERE MATAKE-MODI-AV   
+# POUR LE CHARGEMENT VARIBALE, LE CRITER EST DEFINIT SUR UN SOUS-CYCLE ELEMENTAIRE
+# APRES AVOIR COMPTE PAR LA METHODE RAINFLOW DLA CISSION PROJETEE
+# CETTE CRITERE EST APPLIQUEE POUR TROUVER LE PLAN SUR LAQUELLE LE SOMMANGE EST MAXIMAL
+# ON NOTE QUE LE SOUS-CYCLE CONSISTE 2 POINTS: 1 ET 2
+    
+CRIT_FAT =   FORMULE(
+           NOM_PARA=('TAUPR_1','TAUPR_2','SIGN_1','SIGN_2'),
+           VALE=''' 1.5*( abs(TAUPR_1-TAUPR_2)/2.0 + max(0,SIGN_1, SIGN_2) ) '''
+           )
+           
+WHOL_F =   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
+           )
+###WHOL_Fb EST UNE FONCTION TABULEE DE WHOL_F
+###ON LANCE WHOL_Fb POUR OBTENIR LES VALEURS DE REFERENCE DE ENDO
+
+WHOL_Fb=DEFI_FONCTION(   NOM_PARA='SIGM',
+                         INTERPOL='LOG',
+                         PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE',
+                         VALE=(   99.40397376,  1.0E+06,
+                                  119.7956424,  5.0E+05,
+                                  153.3085836,  2.0E+05,
+                                    184.75821,  1.0E+05,
+                                  222.6593931,  5.0E+04,
+                                   284.948563,  2.0E+04,
+                                   326.955129,  1.2E+04,
+                                  343.4027321,  1.0E+04,
+                                  413.8481526,  5.0E+03,
+                                  529.6225539,  2.0E+03,
+                                  638.2689916,  1.0E+03,
+                                  769.2030912,  5.0E+02,
+                                  984.3883634,  2.0E+02,
+                                  1186.325173,  1.0E+02,
+                                  1429.687173,  5.0E+01,
+                                  1829.643475,  2.0E+01,
+                                  2204.975387,  1.0E+01,
+                              )  
+                          )
+           
+# CHARGEMENT SELON LES 2 AXES X ET Y
+# ----------------------------------
+
+TR_CS  = AFFE_CHAR_MECA (
+                        MODELE       =  TROISD,
+                        FACE_IMPO    =(_F( GROUP_MA= 'FACE3' ,DX=0.),
+                                       _F( GROUP_MA= 'FACE2' ,DY=0.) ),
+                        DDL_IMPO     =(_F( GROUP_NO= 'P3' , DZ=0.) ),
+                        FORCE_FACE   =(_F( GROUP_MA= 'FACE4', FX=1.),
+                                       _F( GROUP_MA= 'FACE1', FY=-2.) )
+                         );
+
+# CALCUL AVEC STAT_NON_LINE
+# -------------------------
+
+SOL_NL = STAT_NON_LINE ( TITRE      =
+                'TEST TRACTION-COMPRESSION ALTERNEE - MATAKE_MODI_AV',
+                        MODELE     =   TROISD,
+                        CHAM_MATER =   MAT,
+                        EXCIT      =_F ( CHARGE       = TR_CS,
+                                         FONC_MULT    = COEF,
+                                         TYPE_CHARGE  = 'FIXE_CSTE'),
+                        COMP_ELAS  =_F ( RELATION     = 'ELAS',
+                                         DEFORMATION  = 'PETIT',
+                                         TOUT         = 'OUI'    ),
+                        INCREMENT  =_F ( LIST_INST    = LINST, ),
+                        NEWTON     =_F ( MATRICE      = 'ELASTIQUE',
+                                         REAC_INCR    = 0 ))
+
+SOL_NL = CALC_ELEM( reuse    = SOL_NL,
+                    RESULTAT = SOL_NL,
+                    OPTION   = 'SIEF_ELNO',
+
+                  )
+
+SOL_NL = CALC_NO( reuse    = SOL_NL,
+                  RESULTAT = SOL_NL,
+                  TOUT = 'OUI',
+                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D'),
+                  OPTION   = 'SIEF_NOEU'
+                )
+
+# CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX POINTS DE GAUSS
+# -----------------------------------------------------------------------
+
+FATI_NL=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                      OPTION        = 'DOMA_ELGA',
+                      TYPE_CHARGE   = 'NON_PERIODIQUE',
+                      MAILLAGE      = CUBE,
+                      GROUP_MA      = ('CUBE'),
+                      RESULTAT      = SOL_NL,
+                      CHAM_MATER    = MAT,
+                      COEF_PREECROU = 1.0,
+                      CRITERE       = 'MATAKE_MODI_AV',
+                      PROJECTION    = 'UN_AXE',
+                    )
+                    
+
+# CALCUL DE LA FATIGUE AUX POINTS DE GAUSS SUR LES MAILLES VOLUMIQUES
+# -------------------------------------------------------------------
+#  CONNEXES AUX FACES 4, 5 ET 6
+# -----------------------------
+
+FATI_NL2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                       OPTION        = 'DOMA_ELGA',
+                       TYPE_CHARGE   = 'NON_PERIODIQUE',
+                       RESULTAT      = SOL_NL,
+                       CHAM_MATER    = MAT,
+                       COEF_PREECROU = 1.0,
+                       GROUP_MA      = ('FACE4_3D', 'FACE5_3D', 'FACE6_3D'),
+                       MAILLAGE      = CUBE,
+                       CRITERE       = 'MATAKE_MODI_AV',
+                       PROJECTION    = 'UN_AXE',
+                 )
+
+# CALCUL DE LA FATIGUE SUR LES FACES 1, 2 ET 3 DE LA STRUCTURE AUX NOEUDS
+# -----------------------------------------------------------------------
+
+F_NLNO1A=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                       OPTION        = 'DOMA_NOEUD',
+                       TYPE_CHARGE   = 'NON_PERIODIQUE',
+                       RESULTAT      = SOL_NL,
+                       CHAM_MATER    = MAT,
+                       COEF_PREECROU = 1.0,
+                       GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                       MAILLAGE      = CUBE,
+                       CRITERE       = 'MATAKE_MODI_AV',
+                       PROJECTION    = 'UN_AXE'
+                     )
+
+# CALCUL DE LA FATIGUE SUR LES FACES 1, 2 ET 3 DE LA STRUCTURE AUX NOEUDS
+# -----------------------------------------------------------------------
+
+F_NLNO2A=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                       OPTION        = 'DOMA_NOEUD',
+                       TYPE_CHARGE   = 'NON_PERIODIQUE',
+                       RESULTAT      = SOL_NL,
+                       CHAM_MATER    = MAT,
+                       COEF_PREECROU = 1.0,
+                       GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                       MAILLAGE      = CUBE,
+                       CRITERE       = 'MATAKE_MODI_AV',
+                       PROJECTION    = 'DEUX_AXES'
+                     )
+
+# -------------------------
+# CALCUL AVEC MECA_STATIQUE
+# -------------------------
+
+SOL_L = MECA_STATIQUE ( TITRE      =
+                'TEST TRACTION-COMPRESSION ALTERNEE - MATAKE_MODI_AV',
+                        MODELE     =   TROISD,
+                        CHAM_MATER =   MAT,
+                        EXCIT      =_F ( CHARGE       = TR_CS,
+                                         FONC_MULT    = COEF ),
+                        LIST_INST  =   LINST,
+                     )
+
+SOL_L = CALC_ELEM( reuse      = SOL_L,
+                   RESULTAT   = SOL_L,
+                   OPTION     = 'SIGM_ELNO',
+
+                 )
+
+SOL_L = CALC_NO( reuse    = SOL_L,
+                 RESULTAT = SOL_L,
+                 OPTION   = 'SIGM_NOEU'
+               )
+
+
+# CREATION D'UN GROUP_NO ET D'UN GROUP_MA DE TEST (POUR EXTR_COMP)
+# ----------------------------------------------------------------
+
+CUBE = DEFI_GROUP( reuse    = CUBE,
+                   MAILLAGE = CUBE,
+                   CREA_GROUP_NO = _F(NOM='GNOTEST1',
+                                      NOEUD=('N1','N206',),))
+CUBE = DEFI_GROUP( reuse    = CUBE,
+                   MAILLAGE = CUBE,
+                   CREA_GROUP_MA = _F(NOM='GMATEST1',
+                                      MAILLE=('M60',),))
+                                      
+                                      
+#######TEST AVEC CRITERE = FORMULE ET 'DOMA_NOEUD',
+FAT_LNO=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                      OPTION        = 'DOMA_NOEUD',
+                      TYPE_CHARGE   = 'NON_PERIODIQUE',
+                      RESULTAT      = SOL_L,
+                      CHAM_MATER    = MAT,
+                      COEF_PREECROU = 1.0,
+                      GROUP_MA      = ('FACE1', 'FACE3', 'FACE5'),
+                      MAILLAGE      = CUBE,
+                      CRITERE       = 'FORMULE_CRITERE',
+                      FORMULE_GRDEQ   = CRIT_FAT,
+                      COURBE_GRD_VIE  = 'WOHLER',
+                      PROJECTION    = 'UN_AXE',
+                    )
+
+FAT_LN1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                      OPTION        = 'DOMA_NOEUD',
+                      TYPE_CHARGE   = 'NON_PERIODIQUE',
+                      RESULTAT      = SOL_L,
+                      CHAM_MATER    = MAT,
+                      COEF_PREECROU = 1.0,
+                      GROUP_MA      = ('FACE1', 'FACE3', 'FACE5'),
+                      MAILLAGE      = CUBE,
+                      CRITERE       = 'FORMULE_CRITERE',
+                      FORMULE_GRDEQ   = CRIT_FAT,
+                      COURBE_GRD_VIE  = 'FORM_VIE',
+                      FORMULE_VIE     = WHOL,
+                      PROJECTION      = 'UN_AXE',
+                    )
+                    
+FAT_LN2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                      OPTION        = 'DOMA_NOEUD',
+                      TYPE_CHARGE   = 'NON_PERIODIQUE',
+                      RESULTAT      = SOL_L,
+                      CHAM_MATER    = MAT,
+                      COEF_PREECROU = 1.0,
+                      GROUP_MA      = ('FACE1', 'FACE3', 'FACE5'),
+                      MAILLAGE      = CUBE,
+                      CRITERE       = 'FORMULE_CRITERE',
+                      FORMULE_GRDEQ   = CRIT_FAT,
+                      COURBE_GRD_VIE  = 'FORM_VIE',
+                      FORMULE_VIE     = WHOL_F,
+                      PROJECTION      = 'UN_AXE',
+                    )
+
+
+# TEST DES RESULTATS OBTENUS AUX POINTS DE GAUSS AVEC STAT_NON_LINE
+# -----------------------------------------------------------------
+TEST_RESU(CHAM_NO=( _F( CHAM_GD = FAT_LNO,
+                        NOM_CMP = 'VNM1X',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = (-3.7460659341591E-01,3.9073112848927E-01),),
+                    _F( CHAM_GD = FAT_LNO,
+                        NOM_CMP = 'VNM1Y',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = (9.2718385456679E-01,9.2050485345244E-01),),
+                    _F( CHAM_GD = FAT_LNO,
+                        NOM_CMP = 'VNM1Z',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = 0.0000000000000E+00,
+                        CRITERE = 'ABSOLU' ),
+                    _F( CHAM_GD = FAT_LNO,
+                        NOM_CMP = 'ENDO1',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = 7.0498448750536E-04 ),
+                   )
+             )
+             
+TEST_RESU(CHAM_NO=( _F( CHAM_GD = FAT_LN1,
+                        NOM_CMP = 'VNM1X',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = (-3.7460659341591E-01,3.9073112848927E-01),),
+                    _F( CHAM_GD = FAT_LN1,
+                        NOM_CMP = 'VNM1Y',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = (9.2718385456679E-01,9.2050485345244E-01),),
+                    _F( CHAM_GD = FAT_LN1,
+                        NOM_CMP = 'VNM1Z',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = 0.0000000000000E+00,
+                        CRITERE = 'ABSOLU' ),
+                    _F( CHAM_GD = FAT_LN1,
+                        NOM_CMP = 'ENDO1',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = 7.0498448750536E-04 ),
+                   )
+             )
+             
+TEST_RESU(CHAM_NO=( _F( CHAM_GD = FAT_LN2,
+                        NOM_CMP = 'VNM1X',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = (-3.7460659341591E-01,3.9073112848927E-01),),
+                    _F( CHAM_GD = FAT_LN2,
+                        NOM_CMP = 'VNM1Y',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = (9.2718385456679E-01,9.2050485345244E-01),),
+                    _F( CHAM_GD = FAT_LN2,
+                        NOM_CMP = 'VNM1Z',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 1.0E-10,
+                        VERSION = '7.03.29',
+                        VALE = 0.0000000000000E+00,
+                        CRITERE = 'ABSOLU' ),
+                    _F( CHAM_GD = FAT_LN2,
+                        NOM_CMP = 'ENDO1',
+                        NOEUD = 'N206',
+                        REFERENCE = 'AUTRE_ASTER',
+                        PRECISION = 4.0E-3,
+                        VERSION = '7.03.29',
+                        VALE = 3.3058593819495E-04 ),
+                   )
+             )
+             
+                                              
+#######TEST AVEC CRITERE = FORMULE ET 'DOMA_ELGA'
+FATI_L0=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                     OPTION        = 'DOMA_ELGA',
+                     TYPE_CHARGE   = 'NON_PERIODIQUE',
+                     MAILLAGE      = CUBE,
+                     GROUP_MA      = ('CUBE'),
+                     RESULTAT      = SOL_L,
+                     CHAM_MATER    = MAT,
+                     COEF_PREECROU = 1.0,
+                     CRITERE       = 'FORMULE_CRITERE',
+                     FORMULE_GRDEQ   = CRIT_FAT,
+                     COURBE_GRD_VIE  = 'WOHLER',
+                     PROJECTION    = 'UN_AXE',
+                   )
+                   
+FATI_L1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                     OPTION        = 'DOMA_ELGA',
+                     TYPE_CHARGE   = 'NON_PERIODIQUE',
+                     MAILLAGE      = CUBE,
+                     GROUP_MA      = ('CUBE'),
+                     RESULTAT      = SOL_L,
+                     CHAM_MATER    = MAT,
+                     COEF_PREECROU = 1.0,
+                     CRITERE       = 'FORMULE_CRITERE',
+                     FORMULE_GRDEQ   = CRIT_FAT,
+                     COURBE_GRD_VIE  = 'FORM_VIE',
+                     FORMULE_VIE     = WHOL,
+                     PROJECTION      = 'UN_AXE',
+                   )
+                   
+FATI_L2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                     OPTION        = 'DOMA_ELGA',
+                     TYPE_CHARGE   = 'NON_PERIODIQUE',
+                     MAILLAGE      = CUBE,
+                     GROUP_MA      = ('CUBE'),
+                     RESULTAT      = SOL_L,
+                     CHAM_MATER    = MAT,
+                     COEF_PREECROU = 1.0,
+                     CRITERE       = 'FORMULE_CRITERE',
+                     FORMULE_GRDEQ   = CRIT_FAT,
+                     COURBE_GRD_VIE  = 'FORM_VIE',
+                     FORMULE_VIE     = WHOL_F,
+                     PROJECTION      = 'UN_AXE',
+                   )
+                   
+TEST_RESU(CHAM_ELEM=( _F( CHAM_GD = FATI_L0,
+                          NOM_CMP = 'VNM1X',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = (-3.7460659341591E-01,3.9073112848927E-01),),
+                      _F( CHAM_GD = FATI_L0,
+                          NOM_CMP = 'VNM1Y',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = (9.2718385456679E-01,9.2050485345244E-01),),
+                      _F( CHAM_GD = FATI_L0,
+                          NOM_CMP = 'VNM1Z',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = 0.0000000000000E+00,
+                          CRITERE = 'ABSOLU' ),
+                      _F( CHAM_GD = FATI_L0,
+                          NOM_CMP = 'ENDO1',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = 7.0498448750536E-04 ),
+                )
+          )                   
+
+TEST_RESU(CHAM_ELEM=( _F( CHAM_GD = FATI_L1,
+                          NOM_CMP = 'VNM1X',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = (-3.7460659341591E-01,3.9073112848927E-01),),
+                      _F( CHAM_GD = FATI_L1,
+                          NOM_CMP = 'VNM1Y',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = (9.2718385456679E-01,9.2050485345244E-01),),
+                      _F( CHAM_GD = FATI_L1,
+                          NOM_CMP = 'VNM1Z',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = 0.0000000000000E+00,
+                          CRITERE = 'ABSOLU' ),
+                      _F( CHAM_GD = FATI_L1,
+                          NOM_CMP = 'ENDO1',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = 7.0498448750536E-04 ),
+                )
+          )                   
+
+# ON REMARQUE LA COURBE DE WOHLER F EST TRES DIFFERENT DE WOHLER
+TEST_RESU(CHAM_ELEM=( _F( CHAM_GD = FATI_L2,
+                          NOM_CMP = 'VNM1X',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = (-3.7460659341591E-01,3.9073112848927E-01),),
+                      _F( CHAM_GD = FATI_L2,
+                          NOM_CMP = 'VNM1Y',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VERSION = '7.03.29',
+                          VALE = (9.2718385456679E-01,9.2050485345244E-01),),
+                      _F( CHAM_GD = FATI_L2,
+                          NOM_CMP = 'VNM1Z',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 1.0E-10,
+                          VALE = 0.0000000000000E+00,
+                          CRITERE = 'ABSOLU' ),
+                      _F( CHAM_GD = FATI_L2,
+                          NOM_CMP = 'ENDO1',
+                          MAILLE = 'M60',
+                          POINT = 3,
+                          REFERENCE = 'AUTRE_ASTER',
+                          PRECISION = 4.0E-3,
+                          VALE = 3.3058593819495E-04 ),
+                )
+          )                   
+
+FIN( )

@@ -1,9 +1,9 @@
-# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -209,6 +209,8 @@ MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
 BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
                                   _F( MODE_INTF = MODESTA1,
                                       NMAX_MODE = 999)),
+                           ORTHO='OUI',
+                           MATRICE=MASS_1,           
                            INTERF_DYNA=LINT1_CL,
                            NUME_REF=NUMDDL_1)
 
@@ -299,6 +301,22 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        SQUELETTE=SQUEL,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI')
+
+#
+#  RESTITUTION SUR UNE SOUS STRUCTURE
+#
+
+MODGLSS=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
+                           SOUS_STRUC='CARRE2',
+                           TOUT_ORDRE='OUI')
+
+#
+#  TEST DE CALC_ELEM SUR UN RESULTAT RESTITUE
+#
+
+MODGLSS=CALC_ELEM(RESULTAT= MODGLSS,reuse=MODGLSS,
+                   OPTION='SIEF_ELGA')
+
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,

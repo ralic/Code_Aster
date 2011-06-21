@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,12 +85,12 @@ MA=DEFI_GROUP(reuse=MA,       MAILLAGE=MA,CREA_GROUP_NO=(
                   _F(  NOM = 'GNO1099', NOEUD = ('NO1099',)),
                   _F(  NOM = 'GNO1259', NOEUD = ('NO1259',))))
 
-FISS1=DEFI_FOND_FISS(    MAILLAGE=MA,
-                       FOND_FISS=_F(  GROUP_NO = 'FONFIS'),
-                  LEVRE_SUP=_F(  GROUP_MA = 'GRPRES'),
-#                 NORMALE : (0. 0. -1.)
-                      VECT_GRNO_ORIG=('GNO9','GNO1099',),
-                      VECT_GRNO_EXTR=('GNO9','GNO1259',)
+FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
+                     FOND_FISS=_F(GROUP_NO = 'FONFIS',
+                                  VECT_GRNO_ORIG=('GNO9','GNO1099',),
+                                  VECT_GRNO_EXTR=('GNO9','GNO1259',)),
+                     LEVRE_SUP=_F(  GROUP_MA = 'GRPRES'),
+#                    NORMALE : (0. 0. -1.)
                     )
 
 #

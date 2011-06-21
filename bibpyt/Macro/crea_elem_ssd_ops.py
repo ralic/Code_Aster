@@ -1,4 +1,4 @@
-#@ MODIF crea_elem_ssd_ops Macro  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF crea_elem_ssd_ops Macro  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
     _matrigi = ASSE_MATRICE(NUME_DDL = _nume_ddl,
                             MATR_ELEM = _kelem,)
 
-    __mmass = ASSE_MATRICE(NUME_DDL = _nume_ddl,
+    _mmass = ASSE_MATRICE(NUME_DDL = _nume_ddl,
                            MATR_ELEM = __melem,)
 
     # recuperation des options de MODE_ITER_SIMULT (equivalent CALC_MODAL)
@@ -106,7 +106,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
                             **motscfa)
 
         __modes = MODE_ITER_SIMULT(MATR_A = _matrigi,
-                                   MATR_B = __mmass,
+                                   MATR_B = _mmass,
                                    INFO = args['INFO'],
                                    **motscit)
 
@@ -174,7 +174,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
             mcfacti.append( _F(**arg_int))
             modstati['MODE_INTERF'] = mcfacti
             _mode_intf = MODE_STATIQUE(MATR_RIGI = _matrigi,
-                                           MATR_MASS = __mmass,
+                                           MATR_MASS = _mmass,
                                            SOLVEUR = mSolveur,
                                            **modstati)
             lmodint.append(_mode_intf)
@@ -250,7 +250,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
 
     elem = {}
     elem['MATR_RIGI'] = _matrigi
-    elem['MATR_MASS'] = __mmass
+    elem['MATR_MASS'] = _mmass
   
     self.DeclareOut('macr_elem', self.sd)
     macr_elem = MACR_ELEM_DYNA(BASE_MODALE = _base_modale,

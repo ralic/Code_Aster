@@ -13,7 +13,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +81,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &     SPMECA(2),SPTHER(2),SPMECS(2),SPTHES(2),SPTHEM,SPMECM,
      &     SIMPIJ,KEMECA,KETHER,KEMECS,KETHES,PM,PB,PMPB,PMS,PBS,PMPBS,
      &     SPMEC2(2),SPMECP,SPMECQ(2),SPTHE2(2),SPTHEP(2),SPTHEQ(2)
-      CHARACTER*8 K8B,KNUMES
+      CHARACTER*8 K8B,KNUMES, KBID
 CCC
       INTEGER ICODRE
       LOGICAL     ENDUR,CMAX,MECA
@@ -365,7 +365,7 @@ C
      &                                        ZR(JMFUS-1+INDI+1)
         END IF
 
-        CALL LIMEND( MATER, SALTIJ(1), 'WOHLER', ENDUR )
+        CALL LIMEND( MATER, SALTIJ(1), 'WOHLER',KBID, ENDUR )
         IF (ENDUR) THEN
           UG=0.D0
         ELSE

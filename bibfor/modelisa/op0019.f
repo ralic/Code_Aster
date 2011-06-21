@@ -1,6 +1,6 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -448,6 +448,8 @@ C --- AFFECTATION DES MATRICES AUX RAIDEURS MISS
 C --- ------------------------------------------------------------------
 C --- COMPACTAGE DE LA CARTE : '.CVENTCXF'
       IF (NBCART.GT.0) THEN
+C        -- TECART N'EST PAS APPELE POUR UNE SURCHARGE "FINE" MAIS
+C           POUR LE COMPACTAGE
          CALL TECART(CARTCF)
 C        DESTRUCTION DES CHAMPS
          TMPNCF = CARTCF//'.NCMP'

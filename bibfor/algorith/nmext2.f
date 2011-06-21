@@ -2,7 +2,7 @@
      &                  EXTRCP,LISTNO,LISTCP,CHNOEU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -107,13 +107,13 @@ C
           INOR   = INO
         ELSE
           INOR   = 1
-        ENDIF      
+        ENDIF    
 C
 C ----- AFFECTATION DES VALEURS AUX NOEUDS
 C
         DO 35 IVALCP = 1,NVALCP
           VALR   = ZR(JNOEU+IVALCP-1
-     &                     +NBNO*(INOR-1))
+     &                     +NBCMP*(INOR-1))
           VAL2R  = VALRES(IVALCP) 
           IF (EXTRCH.EQ.'VALE') THEN
             ZR(JNOEU+IVALCP-1

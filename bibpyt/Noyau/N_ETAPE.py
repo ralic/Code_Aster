@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -427,6 +427,6 @@ Causes possibles :
       """
       # pourrait être appelée par une commande fortran faisant appel à des fonctions python
       # on passe la main au parent
-      return self.parent.get_concept()
+      return self.parent.get_concept(nomsd)
 
 

@@ -6,7 +6,7 @@
       INTEGER                  NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       INTEGER  ICODBA,ICODHS
       CHARACTER*4  MODE
       CHARACTER*8  NOMRE1,NOMRE2,NOMPA1,NOMP(2),NOMRES(10)
-      CHARACTER*8  CARA,NOMPAR
+      CHARACTER*8  CARA,NOMPAR, KBID
       CHARACTER*10 PHENO
       REAL*8       NRUPT,DELTA,DNAP,EPMAX,VALP(2),VAL(10)
       REAL*8       SALT,X,RE,SLMODI,Y
@@ -125,7 +125,7 @@ C
           IF(MODE.EQ.'FONC') THEN
             NBPAR = 1
             NOMPAR = 'SIGM'
-            CALL LIMEND( NOMMAT,DNAP,'WOHLER',ENDUR)
+            CALL LIMEND( NOMMAT,DNAP,'WOHLER',KBID, ENDUR)
             IF (ENDUR) THEN
                 DOM(I) = 0.D0
             ELSE

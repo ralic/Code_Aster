@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF elements5 Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,36 +41,31 @@ cata_msg = {
 """),
 
 15 : _("""
- FONFIS - occurence %(i1)s : les objets précédemment évoqués sont inexistants
- ou de type incompatible.
+A l'occurrence %(i1)s, les objets précédemment évoqués sont inexistants ou de type incompatible.
 """),
 
 16 : _("""
- FONFIS - occurence %(i1)s : les mailles spécifiées ne permettent pas de définir
- une ligne continue.
- Conseil (si opérateur DEFI_FOND_FISS) : vérifier le groupe de maille du fond de fissure.
+Les mailles fournies sont non consécutives dans la numérotation des noeuds.
+En effet, les mailles segment doivent être ordonnées de telle sorte que pour deux segments consécutifs, le 2ème noeud sommet du 1er segment soit le même que le 1er noeud sommet du 2ème segment.
+
+Conseil : Pour ordonner les mailles du fond de fissure, veuillez 
+utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR).
 """),
 
 17 : _("""
- FONFIS - Trop de noeuds dans le groupe de noeuds %(k1)s.
- --> Noeud utilisé : %(k2)s
-"""),
-
-18 : _("""
- FONFIS - Trop de mailles dans le groupe de mailles GROUP_MA_ORIG.
- --> Maille utilisée : %(k1)s
+Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le noeud %(k2)s.
 """),
 
 19 : _("""
- FONFIS - Occurence %(i1)s : maille %(k1)s inexistante.
+ A l'occurrence %(i1)s, la maille %(k1)s est inexistante.
 """),
 
 20 : _("""
- FONFIS - Occurence %(i1)s : maille %(k1)s non linéique.
+ A l'occurrence %(i1)s, la maille %(k1)s n'est pas linéique.
 """),
 
 21 : _("""
- FONFIS - Occurence %(i1)s : mélange de SEG2 et de SEG3 (maille %(k1)s).
+ A l'occurrence %(i1)s, le mélange de SEG2 et de SEG3 (maille %(k1)s) n'est possible.
 """),
 
 22 : _("""

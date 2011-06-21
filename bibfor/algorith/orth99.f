@@ -1,10 +1,11 @@
-      SUBROUTINE ORTH99 ( NOMRES )
+      SUBROUTINE ORTH99 ( NOMRES , RITZ )
       IMPLICIT  NONE
       CHARACTER*8         NOMRES
+      INTEGER             RITZ
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +49,10 @@ C
 C-----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------------
       INTEGER       IFM,NIV,N1,IER,IBID,IMATRA,NBMODE,JORDM,IADRI1,
      &              IDDEEQ,LLNEQU,NEQ,IDMODE,JTRAV1,JTRAV3,JTRAV4,
-     &              IOROL,IORNE,IAD,JIAD,JVALE,IEQ,I
+     &              IOROL,IORNE,IAD,JIAD,JVALE,IEQ,I,NINDEP,LREFE
       REAL*8        ALPHA,RBID
       COMPLEX*16    CBID
-      CHARACTER*8   K8B,MATRAS,BASE
+      CHARACTER*8   K8B,MATRAS,BASE,ORTHO,INTF
       CHARACTER*16   TYPBAS
       CHARACTER*14  NU, NUMDD1, NUMDDA,MATRI1
       CHARACTER*19  MATR,CHAMOL
@@ -68,7 +69,20 @@ C
 C----------------------------------------------------------------------
 C --- RECUPERATION DE LA MATRICE ASSEMBLEE
 C-----------------------------------------------------------------------
-      CALL GETVID ( 'ORTHO_BASE', 'MATRICE'     , 1,1,1, MATRAS, N1 )
+    
+      IF (RITZ .EQ. 1) THEN
+           
+        CALL GETVTX('  ','ORTHO',1,1,8,ORTHO,IBID)
+
+        IF (ORTHO .EQ. 'OUI     ') THEN
+          CALL GETVID (' ', 'MATRICE'     , 1,1,1, MATRAS, N1 )
+        ELSE
+          GOTO 9999
+        ENDIF
+      ELSE
+        CALL GETVID ( 'ORTHO_BASE', 'MATRICE'     , 1,1,1, MATRAS, N1 )
+      ENDIF
+
       IF (N1.NE.0) THEN
         CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
      &                                            NUMDDA,IER)
@@ -78,13 +92,19 @@ C-----------------------------------------------------------------------
         CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
      &              NUMDDA,IER)
       ELSE
-        MATR=' '
-      ENDIF
+          MATR=' '
+      ENDIF    
+
 C----------------------------------------------------------------------
 C --- RECUPERATION DES MODES PROPRES
 C-----------------------------------------------------------------------
 C
-      CALL GETVID ( 'ORTHO_BASE', 'BASE', 1,1,1, BASE, N1 )
+      IF (RITZ .EQ. 1) THEN
+        BASE=NOMRES
+      ELSE
+        CALL GETVID ( 'ORTHO_BASE', 'BASE', 1,1,1, BASE, N1 )
+      ENDIF  
+      
 C RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
       CALL GETTCO ( BASE, TYPBAS )
       CALL RSORAC ( BASE, 'LONUTI', IBID, RBID, K8B, CBID, RBID,
@@ -102,8 +122,11 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
         CALL DISMOI('F','NOM_NUME_DDL',MATRI1,'MATR_ASSE',IBID,
      &                NUMDD1,IER)
       ELSE
-        NUMDD1 = ZK24(IADRI1+1)(1:14)
+        NUMDD1 = ZK24(IADRI1+3)(1:14)
       ENDIF
+      
+      INTF=ZK24(IADRI1+4)(1:8)
+      
       IF (NUMDD1.NE.NUMDDA) THEN
           CALL U2MESS('I','ALGELINE2_81')
       ENDIF
@@ -111,13 +134,13 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
       CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )
       CALL JEVEUO(NU//'.NUME.NEQU','L',LLNEQU)
       NEQ = ZI(LLNEQU)
-
       CALL WKVECT ('&&ORTH99.BASE','V V R',NBMODE*NEQ,IDMODE)
       IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE')) THEN
          CALL COPMOD(BASE,'DEPL',NEQ,NU,NBMODE,ZR(IDMODE))
       ELSE
          CALL COPMO2(BASE,NEQ,NU,NBMODE,ZR(IDMODE))
       ENDIF
+C-- FINALEMENT SI, DONC RECOPIE OK      
 
 C-----------------------------------------------------------------------
       CALL WKVECT ('&&ORTH99.TRAV1'   ,'V V R',NEQ       ,JTRAV1)
@@ -129,16 +152,42 @@ C
  50   CONTINUE
 C
       IF (MATR.EQ.' ') THEN
-C Orthonormalisation L2
+C ORTHONORMALISATION L2
         CALL VPGSKP ( NEQ, NBMODE, ZR(IDMODE), ALPHA, IMATRA, 0,
      &                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
       ELSE
-C Orthonormalisation par rapport a la matrice
+C ORTHONORMALISATION PAR RAPPORT A LA MATRICE
         CALL VPGSKP ( NEQ, NBMODE, ZR(IDMODE), ALPHA, IMATRA, 2,
      &                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
       ENDIF
+C MISE A ZEROS DES VECTEURS NON INDEPENDANTS       
+      CALL VECIND(MATR,IDMODE,NEQ,NBMODE,0,NINDEP)
 C
+C-- GESTION DES CONCEPTS REENTRANTS
+      CALL JEEXIN(NOMRES//'           .DESC',IER)
+      IF (IER .NE. 0) THEN
+        CALL WKVECT('&&ORTH99.VECT_TEMP','V V I',NBMODE,IBID)
+        DO 10 I=1,NBMODE
+          ZI(IBID+I-1)=ZI(JORDM+I-1)
+  10    CONTINUE
+        JORDM=IBID
+        CALL JEDETC('G',NOMRES,1)
+      ENDIF
       CALL RSCRSD('G',NOMRES,'MODE_MECA',NBMODE)
+      
+C-- CREATION DU REFD POUR SD_VERI, ET REUTILISATION ULTERIEURE      
+      CALL JEEXIN(NOMRES(1:8)//'           .REFD',IBID)
+      IF (IBID .EQ. 0) THEN
+        CALL WKVECT(NOMRES//'           .REFD','G V K24',7,LREFE)
+        ZK24(LREFE)=' '
+        ZK24(LREFE+1)=' '
+        ZK24(LREFE+2)=' '
+        ZK24(LREFE+3)=NUMDD1
+        ZK24(LREFE+4)=INTF
+        ZK24(LREFE+5)=' '
+        ZK24(LREFE+6)='RITZ'
+        CALL JELIBE(NOMRES//'           .REFD')
+      ENDIF
 C
 C
       IORNE =0
@@ -188,6 +237,13 @@ C
       CALL JEDETR('&&ORTH99.TRAV3')
       CALL JEDETR('&&ORTH99.TRAV4')
       CALL JEDETR('&&ORTH99.BASE')
+      CALL JEDETR('&&ORTH99.VECT_TEM')
 C
+
+ 9999 CONTINUE
+ 
+C      CALL JELIBE(NOMRES//'           .REFD')
+ 
+ 
       CALL JEDEMA()
       END

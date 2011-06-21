@@ -1,7 +1,7 @@
-      SUBROUTINE NMEXTT(NOMCHA,TYPCHA)
+      SUBROUTINE NMEXTT(SDIETO,NOMCHA,TYPCHA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      CHARACTER*24  NOMCHA
+      CHARACTER*24  SDIETO,NOMCHA
       CHARACTER*4   TYPCHA
 C
 C ----------------------------------------------------------------------
@@ -33,45 +33,71 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  SDIETO : SD GESTION IN ET OUT
 C IN  NOMCHA : NOM DU CHAMP
 C OUT TYPCHA : TYPE DU CHAMP
 C             'NOEU'
 C             'ELGA'
 C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
+C
+      CHARACTER*24 IOINFO,IOLCHA
+      INTEGER      JIOINF,JIOLCH
+      INTEGER      ZIOCH  
+      INTEGER      ICHAM
+      CHARACTER*24 LOCCHA      
+C
 C ----------------------------------------------------------------------
 C
-
+      CALL JEMARQ()
 C
 C --- INITIALISATIONS
 C
       TYPCHA = 'XXXX'
 C
+C --- ACCES SD IN ET OUT
+C
+      IOINFO = SDIETO(1:19)//'.INFO'
+      IOLCHA = SDIETO(1:19)//'.LCHA'
+      CALL JEVEUO(IOINFO,'L',JIOINF)
+      CALL JEVEUO(IOLCHA,'L',JIOLCH)
+      ZIOCH  = ZI(JIOINF+4-1)
+C
+C --- INDICE DU CHAMP
+C
+      CALL NMETOB(SDIETO,NOMCHA,ICHAM )
+C
+C --- LOCALISATION DU CHAMP
+C
+      LOCCHA = ZK24(JIOLCH+ZIOCH*(ICHAM-1)+5-1)
+C
 C --- TYPE DE CHAMP
 C
-      IF ( NOMCHA .EQ. 'TEMP' ) THEN
-        TYPCHA = 'NOEU'        
-      ELSEIF ( NOMCHA .EQ. 'DEPL' ) THEN
-        TYPCHA = 'NOEU'
-      ELSEIF ( NOMCHA .EQ. 'VITE' ) THEN
-        TYPCHA = 'NOEU'
-      ELSEIF ( NOMCHA .EQ. 'ACCE' ) THEN
-        TYPCHA = 'NOEU'
-      ELSEIF ( NOMCHA .EQ. 'FORC_NODA' ) THEN
-        TYPCHA = 'NOEU'        
-      ELSEIF ( NOMCHA .EQ. 'DEPL_ABSOLU' ) THEN
-        TYPCHA = 'NOEU'
-      ELSEIF ( NOMCHA .EQ. 'VITE_ABSOLU' ) THEN
-        TYPCHA = 'NOEU'
-      ELSEIF ( NOMCHA .EQ. 'ACCE_ABSOLU' ) THEN
-        TYPCHA = 'NOEU'
-      ELSEIF ( NOMCHA .EQ. 'VALE_CONT' ) THEN
-        TYPCHA = 'NOEU'
-      ELSEIF ( NOMCHA .EQ. 'SIEF_ELGA' ) THEN
+      IF (LOCCHA.EQ.'ELGA') THEN
         TYPCHA = 'ELGA'
-      ELSEIF ( NOMCHA .EQ. 'VARI_ELGA' ) THEN
-        TYPCHA = 'ELGA'
+      ELSEIF (LOCCHA.EQ.'NOEU') THEN
+        TYPCHA = 'NOEU'
       ELSE
-        CALL ASSERT(.FALSE.)    
-      ENDIF  
-
+        WRITE(6,*) 'LOCALISATION INTERDITE POUR OBSV: ',LOCCHA
+        CALL ASSERT(.FALSE.)
+      ENDIF 
+C
+      CALL JEDEMA()
       END

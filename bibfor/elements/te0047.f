@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,10 +63,10 @@ C
 C ----------------------------------------------------------------------
       REAL*8      ANG(3),PGL(3,3),KLV(78),KLV2(78),XD(3)
       REAL*8      UGM(12),UGP(12),DUG(12),COORG(12)
-      REAL*8      ULM(12),ULP(12),DUL(12),KTY2,DVL(12),DPE(12),DVE(12)
+      REAL*8      ULM(12),ULP(12),DUL(12),DVL(12),DPE(12),DVE(12)
       REAL*8      VARMO(7),VARPL(7),VARIPC(7)
       REAL*8      DTEMPS,TEMPER,IRRAP,R8BID
-      REAL*8      DDOT,DULY,FOR2,FOR3,PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
+      REAL*8      DDOT,DULY,FORCE(3),PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
       REAL*8      ZERO,MOINS1
 
       INTEGER     NBT,NNO,NC,NEQ,IGEOM,ICONTM,IDEPLM,IDEPLP,ICOMPO
@@ -381,8 +381,10 @@ C --- CALCUL DES EFFORTS GENERALISES ET DES FORCES NODALES
             CALL JEVECH('PCONTPR','E',ICONTP)
             ILOGIC = 0
             PLOUF = 0.D0
-            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,DUL,ZR(ICONTM),ILOGIC,
-     &                PLOUF,PLOUF,ZR(ICONTP),ZR(IFONO),PLOUF,PLOUF)
+            CALL R8INIR(3,ZERO,FORCE,1)
+            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,
+     &                  KLV,DUL,ZR(ICONTM),ILOGIC,PLOUF,
+     &                  ZR(ICONTP),ZR(IFONO),FORCE,NDIM)
          END IF
          GOTO 800
       END IF
@@ -684,8 +686,10 @@ C        ET DES VARIABLES INTERNES
             CALL JEVECH('PVARIPR','E',IVARIP)
             ILOGIC = 0
             PLOUF = 0.D0
-            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,DUL,ZR(ICONTM),ILOGIC,
-     &                  PLOUF,PLOUF,ZR(ICONTP),ZR(IFONO),PLOUF,PLOUF)
+            CALL R8INIR(3,ZERO,FORCE,1)
+            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,
+     &                  KLV,DUL,ZR(ICONTM),ILOGIC,PLOUF,
+     &                  ZR(ICONTP),ZR(IFONO),FORCE,NDIM)
             DO 25 I = 1,7
                ZR(IVARIP+I-1) = VARIPC(I)
                ZR(IVARIP+I+6) = VARIPC(I)
@@ -711,8 +715,9 @@ C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PMATERC','L',IMATE)
          CALL JEVECH('PVARIMR','L',IVARIM)
 C ---    RELATION DE COMPORTEMENT DE L'ARMEMENT
+         CALL R8INIR(3,ZERO,FORCE,1)
          CALL DIARME(NBT,NEQ,ZI(IMATE),ULM,DUL,ULP,ZR(ICONTM),
-     &               ZR(IVARIM),KLV,VARIP,KTY2,DULY)
+     &               ZR(IVARIM),KLV,VARIP,FORCE(1),DULY)
 C ---    ACTUALISATION DE LA MATRICE TANGENTE
          IF ( OPTION.EQ.'FULL_MECA' .OR.
      &        OPTION.EQ.'RIGI_MECA_TANG' ) THEN
@@ -727,10 +732,10 @@ C        ET DES VARIABLES INTERNES
             CALL JEVECH('PCONTPR','E',ICONTP)
             CALL JEVECH('PVARIPR','E',IVARIP)
             ILOGIC = 1
-            PLOUF = 0.D0
-            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,DUL,ZR(ICONTM),ILOGIC,
-     &             KTY2,DULY,ZR(ICONTP),ZR(IFONO),PLOUF,PLOUF)
-            ZR(IVARIP) = VARIP
+            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,
+     &                  KLV,DUL,ZR(ICONTM),ILOGIC,DULY,
+     &                  ZR(ICONTP),ZR(IFONO),FORCE,NDIM)
+            ZR(IVARIP)   = VARIP
             ZR(IVARIP+1) = VARIP
          END IF
          GOTO 800
@@ -760,12 +765,7 @@ C
 C        ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
          CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
          IF (IRET2.GT.0) IRRAP=0.D0
-
-C         IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
-C      &    OPTION(1:9).EQ.'FULL_MECA') THEN
-C           CALL JEVECH('PMATUNS','E',IMAT)
-C         ENDIF
-
+C
          IF ( OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &        OPTION(1:9).EQ.'FULL_MECA' ) THEN
             CALL JEVECH('PVECTUR','E',IFONO)
@@ -795,9 +795,16 @@ C ======================================================================
 C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PCADISK','L',JDC)
          CALL INFDIS('REPK',IREP,R8BID,K8BID)
-         CALL DCOPY(NBT,ZR(JDC),1,KLV,1)
+C        ABSOLU VERS LOCAL ? ---
+C        IREP = 1 = MATRICE EN REPERE GLOBAL ==> PASSER EN LOCAL ---
          IF (IREP.EQ.1) THEN
-            CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
+            IF (NDIM.EQ.3) THEN
+               CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
+            ELSE IF (NDIM.EQ.2) THEN
+               CALL UT2MGL(NNO,NC,PGL,ZR(JDC),KLV)
+            END IF
+         ELSE
+            CALL DCOPY(NBT,ZR(JDC),1,KLV,1)
          END IF
          CALL JEVECH('PMATERC','L',IMATE)
          CALL JEVECH('PVARIMR','L',IVARIM)
@@ -807,7 +814,11 @@ C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PINSTPR','L',JINST)
          CALL TECACH('ONN','PVITPLU',1,IVITP,IRET)
          IF (IRET.EQ.0) THEN
-            CALL UTPVGL(NNO,NC,PGL,ZR(IVITP),DVL)
+            IF (NDIM.EQ.3) THEN
+               CALL UTPVGL(NNO,NC,PGL,ZR(IVITP),DVL)
+            ELSE IF (NDIM.EQ.2) THEN
+               CALL UT2VGL(NNO,NC,PGL,ZR(IVITP),DVL)
+            ENDIF
          ELSE
             DO 40 I = 1,12
                DVL(I) = 0.D0
@@ -815,7 +826,11 @@ C ---    PARAMETRES EN ENTREE
          END IF
          CALL TECACH('ONN','PDEPENT',1,IDEPEN,IRET)
          IF (IRET.EQ.0) THEN
-            CALL UTPVGL(NNO,NC,PGL,ZR(IDEPEN),DPE)
+            IF (NDIM.EQ.3) THEN
+               CALL UTPVGL(NNO,NC,PGL,ZR(IDEPEN),DPE)
+            ELSE IF (NDIM.EQ.2) THEN
+               CALL UT2VGL(NNO,NC,PGL,ZR(IDEPEN),DPE)
+            ENDIF
          ELSE
             DO 50 I = 1,12
                DPE(I) = 0.D0
@@ -823,22 +838,30 @@ C ---    PARAMETRES EN ENTREE
          END IF
          CALL TECACH('ONN','PVITENT',1,IVITEN,IRET)
          IF (IRET.EQ.0) THEN
-            CALL UTPVGL(NNO,NC,PGL,ZR(IVITEN),DVE)
+            IF (NDIM.EQ.3) THEN
+               CALL UTPVGL(NNO,NC,PGL,ZR(IVITEN),DVE)
+            ELSE IF (NDIM.EQ.2) THEN
+               CALL UT2VGL(NNO,NC,PGL,ZR(IVITEN),DVE)
+            ENDIF
          ELSE
             DO 60 I = 1,12
                DVE(I) = 0.D0
 60          CONTINUE
          END IF
 C ---    RELATION DE COMPORTEMENT DE CHOC
-         CALL DICHOC(NBT,NEQ,NNO,NC,ZI(IMATE),DUL,ULP,ZR(IGEOM),PGL,
-     &              KLV,KTY2,DULY,DVL,DPE,DVE,FOR2,
-     &              FOR3,VARMO,VARPL)
-
+         CALL DICHOC(NBT,NEQ,NNO,NC,ZI(IMATE),
+     &               DUL,ULP,ZR(IGEOM),PGL,KLV,
+     &               DULY,DVL,DPE,DVE,FORCE,
+     &               VARMO,VARPL,NDIM)
 C ---    ACTUALISATION DE LA MATRICE TANGENTE
          IF ( OPTION.EQ.'FULL_MECA' .OR.
      &        OPTION.EQ.'RIGI_MECA_TANG' ) THEN
             CALL JEVECH('PMATUUR','E',IMAT)
-            CALL UTPSLG(NNO,NC,PGL,KLV,ZR(IMAT))
+            IF (NDIM.EQ.3) THEN
+               CALL UTPSLG(NNO,NC,PGL,KLV,ZR(IMAT))
+            ELSE IF (NDIM.EQ.2) THEN
+               CALL UT2MLG(NNO,NC,PGL,KLV,ZR(IMAT))
+            ENDIF
          END IF
 
 C ---    CALCUL DES EFFORTS GENERALISES, DES FORCES NODALES
@@ -849,8 +872,9 @@ C        ET DES VARIABLES INTERNES
             CALL JEVECH('PCONTPR','E',ICONTP)
             CALL JEVECH('PVARIPR','E',IVARIP)
             ILOGIC = 2
-            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,DUL,ZR(ICONTM),ILOGIC,
-     &               KTY2,DULY,ZR(ICONTP),ZR(IFONO),FOR2,FOR3)
+            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,
+     &                  KLV,DUL,ZR(ICONTM),ILOGIC,DULY,
+     &                  ZR(ICONTP),ZR(IFONO),FORCE,NDIM)
             DO 70 I = 1,7
                ZR(IVARIP+I-1) = VARPL(I)
                IF (NNO.EQ.2) ZR(IVARIP+I+6) = VARPL(I)

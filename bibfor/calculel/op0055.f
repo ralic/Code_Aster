@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,229 +38,170 @@ C
       CHARACTER*24                          ZK24
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
-      CHARACTER*8        KBID
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNOM
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER       NBV, IFM, IRET,IRETEX,IRETNO,IRETOR,JEXTR,JNORM
-      INTEGER       JORIG,NIV,N1,N2, IOC, ILEV,NBNO,IRETS,IRETI
-      REAL*8        PS1, PS2, R8PREM, ZERO,DDOT,VALR(6)
-      CHARACTER*8   K8B, RESU, NOMA, ENTIT1, ENTIT2,FONLEV(2)
-      CHARACTER*16  TYPE, OPER, TYPFON, MOTCLE(2), TYPMCL(2)
-      DATA FONLEV /'FOND_INF','FOND_SUP'/
+      INTEGER       IADR1
+      INTEGER       NBOCC, NBNOFF
+      INTEGER       IBID, IOCC, IDON, IDONN, NDONN
+      INTEGER       IRET1, IRET2, IRET, IRETS
+      INTEGER       N1, N2
+      CHARACTER*6   K6B, TYPFON, NOMPRO
+      CHARACTER*8   K8B, RESU, NOMA, ENTNOM
+      CHARACTER*9   ENTIT(8)
+      CHARACTER*13  MOTCL(8)
+      CHARACTER*16  TYPRES, OPER
+      CHARACTER*24  VALK(3)
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()
+      NOMPRO = 'OP0055'
 C
-      CALL INFMAJ
-      CALL INFNIV ( IFM, NIV )
 C
 C ---  RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
-      CALL GETRES (RESU,TYPE,OPER)
+      CALL GETRES (RESU,TYPRES,OPER)
 C
-C ---  MAILLAGE
-C      --------
+C ---  RECUPERATIONS RELATIVES AU MAILLAGE
+C      -----------------------------------
 C
-      CALL GETVID (' ', 'MAILLAGE', 0, 1, 1, NOMA, NBV)
+      CALL GETVID (' ', 'MAILLAGE', 0, 1, 1, NOMA, NBOCC)
 C
-C ---  MOTS CLES FACTEUR : FOND, FOND_INF, FOND_SUP, FOND_FERME
-C      --------------------------------------------------------
+C     ---------------------------------------------------------------
+C     RECUPERATION DU TYPE DE FOND 
+C     OUVERT OU FERME OU INF/SUP
+C     ---------------------------------------------------------------
 C
-      ENTIT1 = 'NOEUD'
-      ENTIT2 = 'MAILLE'
-      CALL GETFAC ( 'FOND_FISS', NBV )
-      IF (NBV.GT.0) TYPFON = 'FOND_FISS'
-      CALL GETFAC ( 'FOND_FERME', NBV )
-      IF (NBV.GT.0) TYPFON = 'FOND_FERME'
-      CALL GETFAC ( 'FOND_INF',NBV)
-      ILEV=0
-10    CONTINUE
-      IF (NBV.GT.0)THEN
-         ILEV=ILEV+1
-         TYPFON=FONLEV(ILEV)
-      ENDIF
-      CALL GETVTX ( TYPFON, 'NOEUD_ORIG'   , 1,1,0, K8B, N1 )
-      CALL GETVTX ( TYPFON, 'GROUP_NO_ORIG', 1,1,0, K8B, N2 )
-      IF ( N1+N2 .EQ. 0 ) THEN
-         CALL GVERIF ( RESU, NOMA, TYPFON, ENTIT2 )
-      ELSE
-         IOC = 1
-         MOTCLE(1) = 'GROUP_MA'
-         MOTCLE(2) = 'MAILLE'
-         TYPMCL(1) = 'GROUP_MA'
-         TYPMCL(2) = 'MAILLE'
-         CALL FONFIS ( RESU, NOMA, TYPFON, IOC,
-     &                    2, MOTCLE, TYPMCL, 'G')
-      ENDIF
-      CALL GVERIF(RESU,NOMA,TYPFON,ENTIT1)
-      IF(ILEV.EQ.1)GOTO 10
-      IF (ILEV.EQ.0) THEN
-        CALL JELIRA (RESU//'.FOND      .NOEU' , 'LONMAX', NBNO, K8B)
-      ELSE
-        CALL JELIRA (RESU//'.FOND_INF  .NOEU' , 'LONMAX', NBNO, K8B)
-      ENDIF
-C
-
-C CAS 3D
-      IF (NBNO .GT. 1) THEN
-C
-C ---  MOT CLE FACTEUR : LEVRE_SUP
-C      ---------------------------
-C
-        CALL GVERIF(RESU,NOMA,'LEVRE_SUP',ENTIT2)
-C
-C ---  MOT CLE FACTEUR : LEVRE_INF
-C      ---------------------------
-C
-        CALL GVERIF(RESU,NOMA,'LEVRE_INF',ENTIT2)
-C
-C ---  MOT CLE FACTEUR : NORMALE
-C      -------------------------
-C
-        CALL GVERIF(RESU,NOMA,'NORMALE',KBID)
-C
-C ---  MOT CLE FACTEUR : DTAN_ORIG
-C      ------------------------------
-C
-        CALL GVERIF(RESU,NOMA,'DTAN_ORIG'   ,KBID)
-C
-C ---  MOT CLE FACTEUR : DTAN_EXTR
-C      --------------------------------
-C
-        CALL GVERIF(RESU,NOMA,'DTAN_EXTR'     ,KBID)
-C
-C ---  MOT CLE FACTEUR : VECT_GRNO_ORIG
-C      --------------------------------
-C
-        CALL GVERIF(RESU,NOMA,'VECT_GRNO_ORIG',KBID)
-C
-C ---  MOT CLE FACTEUR : VECT_GRNO_EXTR
-C      --------------------------------
-C
-        CALL GVERIF(RESU,NOMA,'VECT_GRNO_EXTR',KBID)
-C
-C VERIFICATION DE L'ORTHOGONALITE DE LA NORMALE AU PLAN DES LEVRES
-C  ET DES 2 DIRECTIONS TANGENTES
-C
-          CALL JEEXIN(RESU//'.NORMALE',IRETNO)
-          CALL JEEXIN(RESU//'.DTAN_ORIGINE',IRETOR)
-          CALL JEEXIN(RESU//'.DTAN_EXTREMITE',IRETEX)
-          IF(IRETOR.NE.0.AND.IRETEX.NE.0) THEN
-            CALL JEVEUO(RESU//'.DTAN_ORIGINE','L',JORIG)
-            CALL JEVEUO(RESU//'.DTAN_EXTREMITE','L',JEXTR)
-          ENDIF
-          IF(IRETNO.NE.0.AND.IRETOR.NE.0.AND.IRETEX.NE.0) THEN
-            CALL JEVEUO(RESU//'.NORMALE','L',JNORM)
-            CALL JEVEUO(RESU//'.DTAN_ORIGINE','L',JORIG)
-            CALL JEVEUO(RESU//'.DTAN_EXTREMITE','L',JEXTR)
-            PS1=DDOT(3,ZR(JNORM),1,ZR(JORIG),1)
-            PS2=DDOT(3,ZR(JNORM),1,ZR(JEXTR),1)
-            ZERO = R8PREM()
-            IF(ABS(PS1).GT.ZERO) THEN
-               VALR(1) = ZR(JNORM)
-               VALR(2) = ZR(JNORM+1)
-               VALR(3) = ZR(JNORM+2)
-               VALR(4) = ZR(JORIG)
-               VALR(5) = ZR(JORIG+1)
-               VALR(6) = ZR(JORIG+2)
-               CALL U2MESR('F','RUPTURE0_78',6,VALR)
-            ENDIF
-            IF(ABS(PS2).GT.ZERO) THEN
-               VALR(1) = ZR(JNORM)
-               VALR(2) = ZR(JNORM+1)
-               VALR(3) = ZR(JNORM+2)
-               VALR(4) = ZR(JEXTR)
-               VALR(5) = ZR(JEXTR+1)
-               VALR(6) = ZR(JEXTR+2)
-               CALL U2MESR('F','RUPTURE0_79',6,VALR)
-            ENDIF
-          ENDIF
-C
-C   EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
-C
-        CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRETS)
-        IF(IRETS.NE.0) THEN
-          CALL  GNORMF ( NBNO,NOMA,RESU,ILEV,TYPFON )
-        ENDIF
-
-C CAS 2D
-      ELSE
-C
-C ---  MOT CLE FACTEUR : LEVRE_SUP
-C      ---------------------------
-C
-        CALL GVERI1(RESU,NOMA,'LEVRE_SUP',ILEV)
-C
-C ---  MOT CLE FACTEUR : LEVRE_INF
-C      ---------------------------
-C
-        CALL GVERI1(RESU,NOMA,'LEVRE_INF',ILEV)
-C
-C ---  MOT CLE FACTEUR : NORMALE
-C      -------------------------
-C
-        CALL GVERI1(RESU,NOMA,'NORMALE',ILEV)
-        CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRETS)
-        IRETNO = 1
-        IRETOR = 0
-        IRETEX = 0
-
-      ENDIF
-
-C
-C IMPRESSION DES OBJETS
-C
-      IF ( NIV .GT. 1 ) THEN
-        CALL JEEXIN(RESU//'.FOND      .NOEU',IRET)
-        IF(IRET.NE.0) THEN
-           CALL JEIMPO(IFM,RESU//'.FOND      .NOEU',' ',
-     &          'OBJET POUR LE MOT CLE FOND')
+      CALL GETFAC ( 'FOND_FISS', NBOCC )
+      DO 1 IOCC=1,NBOCC
+      
+        CALL GETVTX ( 'FOND_FISS', 'TYPE_FOND', IOCC,1,0, K6B, N1)
+        IF (N1.NE.0) THEN
+          CALL GETVTX ( 'FOND_FISS', 'TYPE_FOND', IOCC,1,1, TYPFON, N1)
         ELSE
-           CALL JEIMPO(IFM,RESU//'.FOND_INF  .NOEU',' ',
-     &          'OBJET POUR LE MOT CLE FOND_FISS_INF')
-           CALL JEIMPO(IFM,RESU//'.FOND_SUP  .NOEU',' ',
-     &          'OBJET POUR LE MOT CLE FOND_FISS_SUP')
+          TYPFON = 'OUVERT'
         ENDIF
 C
-        IF(IRETS.NE.0) THEN
-          CALL JEIMPO(IFM,RESU//'.LEVRESUP  .MAIL',' ',
-     &                  'OBJET POUR LE MOT CLE LEVRE_SUP')
-        ENDIF
+C      
+C     ---------------------------------------------------------------
+C     VERIFICATION DE L'EXISTANCE DES ENTITES DU MAILLAGE RENSEIGNEES
+C     ET CONSTRUCTION DE VECTEURS DE TRAVAIL POUR CHACUNE D'ELLES
+C     ---------------------------------------------------------------
 C
-        CALL JEEXIN(RESU//'.LEVREINF  .MAIL',IRETI)
-        IF(IRETI.NE.0) THEN
-            CALL JEIMPO(IFM,RESU//'.LEVREINF  .MAIL',' ',
-     &                'OBJET POUR LE MOT CLE LEVRE_INF')
+        ENTIT(1)  = '.NOMNOE'
+        ENTIT(2)  = '.NOMMAI'
+        ENTIT(3)  = '.GROUPENO'
+        ENTIT(4)  = '.GROUPEMA'
+        ENTIT(5)  = '.NOMNOE'
+        ENTIT(6)  = '.GROUPENO'
+        MOTCL(1)  = 'NOEUD'
+        MOTCL(2)  = 'MAILLE'
+        MOTCL(3)  = 'GROUP_NO'
+        MOTCL(4)  = 'GROUP_MA' 
+        MOTCL(5)  = 'NOEUD_ORIG'
+        MOTCL(6)  = 'GROUP_NO_ORIG'
+        IF (TYPFON.EQ.'OUVERT') THEN
+          ENTIT(7)  = '.NOMNOE'
+          ENTIT(8)  = '.GROUPENO'
+          MOTCL(7)  = 'NOEUD_EXTR'
+          MOTCL(8)  = 'GROUP_NO_EXTR'
+          NDONN = 8
+        ELSEIF (TYPFON.EQ.'FERME') THEN
+          ENTIT(7)  = '.NOMMAI'
+          ENTIT(8)  = '.GROUPEMA'
+          MOTCL(7)  = 'MAILLE_ORIG'
+          MOTCL(8)  = 'GROUP_MA_ORIG' 
+          NDONN = 8
+        ELSE
+          NDONN = 6
         ENDIF
-C
-        IF(IRETNO.NE.0) THEN
-          CALL JEIMPO(IFM,RESU//'.NORMALE',' ',
-     &                  'OBJET POUR LE MOT CLE NORMALE')
-        ENDIF
-C
-        IF(IRETOR.NE.0) THEN
-          CALL JEIMPO(IFM,RESU//'.DTAN_ORIGINE',' ',
-     &                  'OBJET POUR LE MOT CLE DTAN_ORIG')
-        ENDIF
-C
-        IF(IRETEX.NE.0) THEN
-          CALL JEIMPO(IFM,RESU//'.DTAN_EXTREMITE',' ',
-     &                  'OBJET POUR LE MOT CLE DTAN_EXTR')
-        ENDIF
-C
-        IF(IRETS.NE.0) THEN
-          CALL JEIMPO(IFM,RESU//'.SUPNORM   .NOEU',' ',
-     &                  'NOEUDS SUR NORMALE AU FOND : LEVRE_SUP')
-        ENDIF
-C
-        IF(IRETI.NE.0) THEN
-          CALL JEIMPO(IFM,RESU//'.INFNORM   .NOEU',' ',
-     &                  'NOEUDS SUR NORMALE AU FOND : LEVRE_INF')
-        ENDIF
+        DO 11 IDONN=1,NDONN
+          CALL GETVTX ( 'FOND_FISS', MOTCL(IDONN), IOCC,1,0, K8B, N1)
+          N1 = -N1
+          IF (N1.GT.0) THEN
+            CALL WKVECT ('&&'//NOMPRO//'.'//MOTCL(IDONN),
+     &                     'V V K8', N1, IADR1)
+            CALL GETVTX('FOND_FISS', MOTCL(IDONN), IOCC,1,N1,
+     &                     ZK8(IADR1),N2)
+            DO 111 IDON=1,N1
+              ENTNOM = ZK8(IADR1-1 + IDON)
+              CALL JENONU(JEXNOM(NOMA//ENTIT(IDONN),ENTNOM),IBID)
+              IF (IBID.EQ.0) THEN
+                VALK(1) = ENTNOM
+                VALK(2) = MOTCL(IDONN)
+                VALK(3) = TYPFON
+                CALL U2MESK('F','RUPTURE0_7',3,VALK)
+              ENDIF
+ 111        CONTINUE
+          ENDIF
+ 11     CONTINUE
 
+C
+C
+C       ---------------------------------------------------------------
+C       CONSTRUCTION DE FOND DE FISSURE
+C       ---------------------------------------------------------------
+C
+C        SI LE MOT CLE FACTEUR EST NOEUD OU GROUP_NO
+C        ----------------------------------------
+C
+          CALL JEEXIN ('&&'//NOMPRO//'.NOEUD',    IRET1 )
+          CALL JEEXIN ('&&'//NOMPRO//'.GROUP_NO', IRET2 )
+          IF ((IRET1.NE.0).OR.(IRET2.NE.0)) THEN
+            CALL FONNOE ( RESU, NOMA, NOMPRO, TYPFON, NBNOFF)
+          ENDIF
+C
+C        SI LE MOT CLE FACTEUR EST MAILLE OU GROUP_MA
+C        ----------------------------------------
+C
+          CALL JEEXIN ('&&'//NOMPRO//'.MAILLE',   IRET1 )
+          CALL JEEXIN ('&&'//NOMPRO//'.GROUP_MA', IRET2 )
+          IF ((IRET1.NE.0).OR.(IRET2.NE.0)) THEN
+            CALL FONMAI ( RESU, NOMA, TYPFON, IOCC, NBNOFF)
+          ENDIF
+CC       
+C        
+C       DESTRUCTION DES VECTEURS DE TRAVAIL
+C       ----------------------------------------
+        DO 20 IDONN=1,NDONN
+          CALL JEEXIN ( '&&'//NOMPRO//'.'//MOTCL(IDONN), IRET )
+          IF (IRET.NE.0) CALL JEDETR('&&'//NOMPRO//'.'//MOTCL(IDONN))
+  20    CONTINUE
+        
+  1   CONTINUE
+C
+C
+C     ---------------------------------------------------------------
+C     VERIFICATION DES DONNEES SUR LES LEVRES ET LES VECTEURS
+C     ---------------------------------------------------------------
+C
+C
+C     TRAITEMENT DES LEVRES: LEVRE_SUP ET LEVRE_INF
+C     ----------------------------------------
+C
+      CALL FONLEV(RESU,NOMA,NBNOFF)
+
+C
+C     TRAITEMENT DE LA NORMALE ET DES 
+C     MOTS CLES FACTEUR : DTAN_EXTR, DTAN_ORIG
+C                         VECT_GRNO_ORIG, VECT_GRNO_EXTR
+C     ----------------------------------------
+C
+      CALL FONVEC(RESU,NOMA,NBNOFF)
+
+
+C
+C
+C     ---------------------------------------------------------------
+C     EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
+C     ---------------------------------------------------------------
+C
+      CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRETS)
+      IF((IRETS.NE.0).AND.(NBNOFF.GT.1)) THEN
+        CALL  FONNOF ( RESU,NOMA,TYPFON,NBNOFF )
       ENDIF
-C
 
+C
       CALL JEDEMA()
       END

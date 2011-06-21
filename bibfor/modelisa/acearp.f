@@ -4,7 +4,7 @@
       CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,11 +62,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3),R8BID
       CHARACTER*1  KMA(3), K1BID
-      CHARACTER*8  NOMNOE, NOGP, NOMMAI, K8BID, NOMU, CAR(NBCAR)
-      CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD
-      CHARACTER*19 CART(3), LIGMO, CARTDI
-      CHARACTER*19 VREPXV, VREPXN
-      CHARACTER*24 TMPND(3), TMPVD(3)
+      CHARACTER*8  NOMNOE,NOGP,NOMMAI,K8BID,NOMU,CAR(NBCAR),LAMASS
+      CHARACTER*16 REP,REPDIS(NRD),CONCEP,CMD
+      CHARACTER*19 CART(3),LIGMO,CARTDI
+      CHARACTER*19 VREPXV,VREPXN
+      CHARACTER*24 TMPND(3),TMPVD(3)
       CHARACTER*24 TMPDIS, MLGNNO, MLGNMA, TMCINF, TMVINF, MODNEM
 
 
@@ -125,9 +125,7 @@ C --- RECUPERATION DE LA DIMENSION GEOMETRIQUE DU MODELE
          IBID = IBID - 20
          NDIM=2
       ENDIF
-      IF (IBID.EQ.3) THEN
-         NDIM=3
-      ENDIF
+      IF (IBID.EQ.3) NDIM=3
 C     POUR LES DISCRETS C'EST OBLIGATOIREMENT DU 2D OU 3D
       CALL ASSERT( (NDIM.EQ.2).OR.(NDIM.EQ.3) )
 C
@@ -138,7 +136,6 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
 C     SI LA CARTE N'EXISTE PAS ON LA CREE
       CALL JEEXIN(TMCINF,IXCI)
       IF (IXCI.EQ.0) CALL ALCART('G',CARTDI,NOMA,'CINFDI')
-C
       CALL JEVEUO(TMCINF,'E',JDCINF)
       CALL JEVEUO(TMVINF,'E',JDVINF)
 C     PAR DEFAUT POUR M, A, K :
@@ -156,7 +153,7 @@ C        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
       CALL INFDIS('INIT',IBID,ZR(JDVINF+9),ZK8(JDCINF+9))
       ZK8(JDCINF+10) = 'TYDI    '
       CALL INFDIS('INIT',IBID,ZR(JDVINF+10),ZK8(JDCINF+10))
-
+C --- CREATION DES CARTES
       DO 220 I = 1 , 3
          CART(I)  = NOMU//'.CARDISC'//KMA(I)
          TMPND(I) = CART(I)//'.NCMP'
@@ -170,9 +167,7 @@ C        SI LES CARTES N'EXISTENT PAS ON LES CREES
          CALL JEVEUO(TMPVD(I),'E',JDV(I))
 220   CONTINUE
 C
-
 C     RECUPERATION DU NIVEAU D'IMPRESSION
-C     -----------------------------------
       CALL INFNIV(IBID,NIV)
       IR = 0
 C --- BOUCLE SUR LES OCCURRENCES DE DISCRET
@@ -236,32 +231,29 @@ C           DISCRETS EN TRANSLATION ET ROTATION
      &               (CAR(NC)(1:8) .EQ. 'A_TR_D_N').OR.
      &               (CAR(NC)(1:8) .EQ. 'A_TR_D_L')
 C
-            IF (TRANSL .EQV. TRAROT) THEN
-               CALL U2MESK('F','MODELISA_17',1,CAR(NC))
-            ENDIF
+            IF (TRANSL .EQV. TRAROT)
+     &         CALL U2MESK('F','MODELISA_17',1,CAR(NC))
 C
             IF ( TRANSL ) THEN
-               IF ( II+3 .GT. NVAL) THEN
-                  CALL U2MESS('F','DISCRETS_21')
-               ENDIF
+               LAMASS = 'M'//CAR(NC)(2:7)
+               IF ( II+3 .GT. NVAL) CALL U2MESS('F','DISCRETS_21')
                DO 132 J = 1,3
                   VALE(J) = VAL(II+J)
 132            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
-            ENDIF
-C
-            IF ( TRAROT ) THEN
-               IF ( II+6 .GT. NVAL) THEN
-                  CALL U2MESS('F','DISCRETS_21')
-               ENDIF
+            ELSEIF ( TRAROT ) THEN
+               LAMASS = 'M'//CAR(NC)(2:8)
+               IF ( II+6 .GT. NVAL) CALL U2MESS('F','DISCRETS_21')
                DO 131 J = 1,6
                   VALE(J) = VAL(II+J)
 131            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
+            ELSE
+               CALL ASSERT( .FALSE. )
             ENDIF
 C
             IF (IXNW.NE.0.AND.NGP.EQ.0) THEN
@@ -322,12 +314,9 @@ C                 A LA SURFACE, ET CE N'EST PAS NORMAL
                   CALL U2MESK('F','MODELISA_21',1,NOMNOE)
  22            CONTINUE
 C              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
-C               IFR = IUNIFI('RESULTAT')
-               IF ( IREP .EQ. 1) THEN
-                  LOREP  = 6
-               ELSE
-                  LOREP  = 5
-               ENDIF
+C              IFR = IUNIFI('RESULTAT')
+               LOREP  = 5
+               IF ( IREP .EQ. 1) LOREP  = 6
                IF ( IUNITE .GT. 0 ) THEN
                   IF ( TRANSL ) THEN
                      WRITE(IUNITE,1005) CAR(NC)(1:LOKM)
@@ -393,8 +382,18 @@ C                 POUR EUROPLEXUS PREPARATION DE L'ATTRIBUT PYTHON
                         CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
                      ENDIF
                   ENDIF
-C
+C                 AFFECTATION DES VALEURS REPARTIES
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
+     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
+     &                        JDCINF,JDVINF,ISYM,IFM)
+                  CALL NOCART(CARTDI, 3,' ','NOM',1,ZK8(JD),0,' ',
+     &                        DIMCAR)
+                  CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',
+     &                        NCMP)
+C                 AFFECTATION DE MATRICE MASSE NULLE
+                  IV = 1
+                  CALL R8INIR(NBVAL,0.0D0,VAL,1)
+                  CALL AFFDIS(NDIM,IREP,ETA,LAMASS,VAL,
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
      &                        JDCINF,JDVINF,ISYM,IFM)
                   CALL NOCART(CARTDI, 3,' ','NOM',1,ZK8(JD),0,' ',
@@ -406,11 +405,8 @@ C
                LOKM   = 0
                IF ( TRANSL ) LOKM = 7
                IF ( TRAROT ) LOKM = 8
-               IF ( IREP .EQ. 1) THEN
-                  LOREP  = 6
-               ELSE
-                  LOREP  = 5
-               ENDIF
+               LOREP  = 5
+               IF ( IREP .EQ. 1) LOREP  = 6
                IF ( IUNITE .GT. 0 ) THEN
                   IF ( TRANSL ) THEN
                      WRITE(IUNITE,1005) CAR(NC)(1:LOKM)
@@ -446,12 +442,20 @@ C
      &                        LIGMO,DIMCAR)
                   CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      &                        LIGMO,NCMP)
+C                 AFFECTATION DE MATRICE MASSE NULLE
+                  IV = 1
+                  CALL R8INIR(NBVAL,0.0D0,VAL,1)
+                  CALL AFFDIS(NDIM,IREP,ETA,LAMASS,VAL,
+     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
+     &                        JDCINF,JDVINF,ISYM,IFM)
+                  CALL NOCART(CARTDI, -3,' ','NUM',KK,' ',ZI(JDDI),
+     &                        LIGMO,DIMCAR)
+                  CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+     &                        LIGMO,NCMP)
  36            CONTINUE
             ENDIF
  34      CONTINUE
-         IF ( II .NE. NVAL) THEN
-            CALL U2MESS('F','DISCRETS_21')
-         ENDIF
+         IF ( II .NE. NVAL)  CALL U2MESS('F','DISCRETS_21')
  30   CONTINUE
 
       IF (IXNW.NE.0) CALL JEDETR(TMPDIS)
@@ -472,7 +476,7 @@ C
       ENDIF
 C
       CALL JEDEMA()
-
+C
  1000 FORMAT(/,
      &    ' <DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
      &    '(REPERE ',A6,'), OCCURRENCE ',I4)
@@ -482,10 +486,8 @@ C
  1010 FORMAT(' _F(',A,'=''',A8,''', CARA=''',A,''',',/,
      &       '    VALE=(',3(1X,1PE12.5,','),'),',/,
      &       '    REPERE=''',A,'''),')
-
  1011 FORMAT(' _F(',A,'=''',A8,''', CARA=''',A,''',',/,
      &       '    VALE=(',3(1X,1PE12.5,','),/,
      &       '          ',3(1X,1PE12.5,','),'),',/,
      &       '    REPERE=''',A,'''),')
-
       END

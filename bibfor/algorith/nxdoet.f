@@ -1,9 +1,8 @@
-      SUBROUTINE NXDOET(MODELE,NUMEDD,LREUSE,LOSTAT,LNONL ,
-     &                  INPSCO,NBPASE,INITPR,VTEMP ,VHYDR ,
-     &                  INSTIN)
+      SUBROUTINE NXDOET(MODELE,NUMEDD,LREUSE,LOSTAT,SDSENS,
+     &                  SDIETO,INITPR,INSTIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,11 +22,10 @@ C ======================================================================
 C
       IMPLICIT NONE
       CHARACTER*24  MODELE
-      LOGICAL       LOSTAT,LREUSE,LNONL
-      CHARACTER*24  VTEMP,VHYDR,NUMEDD
+      LOGICAL       LOSTAT,LREUSE
+      CHARACTER*24  NUMEDD,SDSENS,SDIETO
       REAL*8        INSTIN
-      INTEGER       INITPR,NBPASE
-      CHARACTER*(*) INPSCO
+      INTEGER       INITPR
 C
 C ----------------------------------------------------------------------
 C
@@ -41,9 +39,6 @@ C
 C IN  MODELE : NOM DU MODELE
 C IN  NUMEDD : NUME_DDL
 C IN  LREUSE : .TRUE. SI REUSE
-C IN  LNONL  : .TRUE. SI NON-LINEAIRE
-C IN  INPSCO : SD CONTENANT LA LISTE DES NOMS POUR LA SENSIBILITE
-C IN  NBPASE : NOMBRE DE PARAMETRES SENSIBLES
 C OUT LOSTAT : .TRUE. SI L'ON CALCULE UN CAS STATIONNAIRE
 C OUT INITPR : TYPE D'INITIALISATION
 C              -1 : PAS D'INITIALISATION. (VRAI STATIONNAIRE)
@@ -53,8 +48,6 @@ C               2 : CHAMP AUX NOEUDS
 C               3 : RESULTAT D'UN AUTRE CALCUL
 C OUT INSTIN : INSTANT INITIAL
 C                R8VIDE SI NON DEFINI
-C OUT VTEMP  : CHAMP DE TEMPERATURE INITIALE
-C OUT VHYDR  : CHAMP D'HYDRATATION INITIALE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -75,19 +68,22 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
+      CHARACTER*24 IOINFO,IOLCHA
+      INTEGER      JIOINF,JIOLCH
+      INTEGER      NBCHAM,ZIOCH
+      
       CHARACTER*8  K8BID ,CALCRI,RESULT,RESULS
-      CHARACTER*24 CHAMP ,REPSTA,EVOL
-      CHARACTER*24 LIGRMO
-      CHARACTER*16 MOTFAC,TYPRES
-      INTEGER      N1,IBID,IERD,IRET
-      INTEGER      I, NEQ,NOCC,NUMEIN,NRPASE
-      INTEGER      JTEMP,NNCP
-      INTEGER      IAUX,JAUX
+      CHARACTER*24 REPSTA,EVOL
+      CHARACTER*24 NOMCHA,NOMCHS
+      INTEGER      ICHAM
+      CHARACTER*16 MOTFAC
+      INTEGER      IBID,IERD,IRET
+      INTEGER      NMSENN,NBPASE,NRPASE
+      INTEGER      I, NEQ,NOCC,NUMEIN
+      INTEGER      JTEMP
       REAL*8       TEMPCT,R8VIDE
       INTEGER      IFM,NIV
-      COMPLEX*16   CBID
-      LOGICAL      EVONOL,LHYD0,LEINIT
-      CHARACTER*19 HYDRIC,HYDRIS,HYDZER
+      LOGICAL      EVONOL,LEINIT
 C
 C ----------------------------------------------------------------------
 C
@@ -101,30 +97,22 @@ C
       EVONOL = .FALSE.
       LOSTAT = .FALSE.
       LEINIT = .FALSE.
-      LHYD0  = .FALSE.
-      HYDRIC = '&&NXDOET.HYDR_C'
-      HYDRIS = '&&NXDOET.HYDR_S'
-      HYDZER = '&&NXDOET.HYDR_R'
       MOTFAC = 'ETAT_INIT'    
 C      
-      CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID  ,LIGRMO,IRET)
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
 C
-C --- PREPARATION CHAM_ELEM_S NUL POUR HYDRATATION
+C --- NB PARAMETRES SENSIBLES
 C
-      IF (LNONL) THEN
-        CALL MECACT('V',HYDRIC,'MODELE',LIGRMO,'HYDR_R',1,
-     &              'HYDR',IBID,0.D0,CBID,K8BID)
-        CALL CARCES(HYDRIC,'ELNO',' ','V',HYDRIS,IRET)
-        CALL CESCEL(HYDRIS,LIGRMO,'RESI_RIGI_MASS','PHYDRPP',
-     &              'NON',NNCP,'V',HYDZER,'F',IBID)
-      ENDIF
+      NBPASE = NMSENN(SDSENS)
 C
-C --- HYDRATATION NULLE PAR DEFAUT EN NON-LINEAIRE
-C      
-      IF (LNONL) THEN
-        LHYD0 = .TRUE.
-      ENDIF
+C --- ACCES SD IN ET OUT
+C
+      IOINFO = SDIETO(1:19)//'.INFO'
+      IOLCHA = SDIETO(1:19)//'.LCHA'
+      CALL JEVEUO(IOINFO,'L',JIOINF)
+      CALL JEVEUO(IOLCHA,'L',JIOLCH)
+      ZIOCH  = ZI(JIOINF+4-1)
+      NBCHAM = ZI(JIOINF+1-1)
 C
 C --- ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
 C
@@ -143,6 +131,8 @@ C
       ELSE
         IF (LREUSE) THEN
           CALL U2MESS('A','ETATINIT_1')
+        ELSE
+          CALL U2MESS('I','ETATINIT_20')  
         ENDIF
       ENDIF
 C
@@ -170,111 +160,98 @@ C
 C --- PAS DE PRECISION --> C'EST UN CALCUL STATIONNAIRE
 C
       CALL GETFAC(MOTFAC,NOCC)
+      CALL ASSERT(NOCC.LE.1)
       IF (NOCC .EQ. 0 ) THEN
         LOSTAT = .TRUE.
         INITPR = -1
-        CALL VTZERO(VTEMP)
-      ELSE
-        DO 10 NRPASE = NBPASE,0,-1
+        GOTO 99
+      ENDIF    
 C
-C ------- NOM DES CHAMPS
+C --- BOUCLE SUR LES CHAMPS A LIRE
 C
-          IAUX = NRPASE
-          JAUX = 4
-          CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,VTEMP ) 
-          CALL JEVEUO(VTEMP(1:19)//'.VALE','E',JTEMP)
+      DO 10 ICHAM  = 1,NBCHAM
+        DO 15 NRPASE = NBPASE,0,-1
+C
+C ------- ETAT INITIAL DEFINI PAR UN CONCEPT DE TYPE EVOL_THER
+C
+          IF (NRPASE.GT.0) THEN
+            CALL NTNSLE(SDSENS,NRPASE,'RESULT',RESULS)
+            RESULT = RESULS
+          ELSE
+            RESULT = EVOL(1:8)
+          ENDIF
+C
+C ------- LECTURE DU CHAMP - ETAT_INIT/EVONOL
 C
           IF (EVONOL) THEN
-C
-C --------- ETAT INITIAL DEFINI PAR UN CONCEPT DE TYPE EVOL_THER
-C
-            IF (NRPASE.GT.0) THEN
-              JAUX = 3
-              CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,RESULS)
-              RESULT = RESULS
-            ELSE
-              RESULT = EVOL(1:8)
-            ENDIF
-C
-C --------- LECTURE DES TEMPERATURES (OU DERIVE)
-C            
             INITPR = 3
-            CALL RSEXCH(RESULT,'TEMP',NUMEIN,CHAMP,IRET)
-            IF (IRET.EQ.0) THEN
-              CALL VTCOPY(CHAMP,VTEMP )
-            ELSE
-              CALL U2MESK('F','THERNONLINE4_41',1,EVOL  )
-            ENDIF
-C
-C --------- LECTURE DE L'HYDRATATION
-C
-            IF (LNONL) THEN
-              CALL RSEXCH(RESULT,'HYDR_ELNO',NUMEIN,CHAMP ,IRET)
-              IF (IRET.GT.0) THEN
-                LHYD0 = .TRUE.
-              ELSE
-                LHYD0 = .FALSE.
-                CALL ASSERT(NBPASE.EQ.0)
-                CALL COPISD('CHAMP_GD','V',CHAMP,VHYDR)
-              ENDIF
-            ENDIF
+            CALL NMETL1(RESULT,NUMEIN,SDIETO,SDSENS,NRPASE,
+     &                  ICHAM )
           ELSE
 C
-C --------- TEMPERATURE INITIALE STATIONNAIRE
+C --------- NOM DU CHAMP DANS SD RESULTAT
 C
-            CALL GETVTX(MOTFAC,'STATIONNAIRE',1,1,1,REPSTA,N1)
-            IF ( N1 .GT. 0 ) THEN
-              IF ( REPSTA(1:3) .EQ. 'OUI' ) THEN
-                LOSTAT = .TRUE.
-                INITPR = 0
+            NOMCHS = ZK24(JIOLCH+ZIOCH*(ICHAM-1)+1-1)
+C
+C --------- NOM DU CHAMP DANS OPERATEUR
+C
+            CALL NMETNC(SDIETO,SDSENS,NRPASE,ICHAM ,NOMCHA)
+C
+            IF (NOMCHS.EQ.'TEMP') THEN
+              CALL JEVEUO(NOMCHA(1:19)//'.VALE','E',JTEMP)
+C
+C ----------- TEMPERATURE INITIALE PAR UN CHAMP
+C
+              CALL GETVID(MOTFAC,'CHAM_NO',1,1,1,K8BID ,NOCC)
+              IF (NOCC.EQ.1) THEN
+                INITPR = 2
+                CALL NMETL2(MOTFAC,SDIETO,SDSENS,NRPASE,ICHAM )
               ENDIF
-            ENDIF
 C
-C --------- TEMPERATURE INITIALE UNIFORME
+C ----------- TEMPERATURE INITIALE STATIONNAIRE
 C
-            CALL GETVR8(MOTFAC,'VALE',1,1,1,TEMPCT,N1)
-            IF (N1.GT.0) THEN
-              INITPR = 1
-              DO 222  I = 1 , NEQ
-                ZR(JTEMP+I-1) = TEMPCT
-  222         CONTINUE
-            ENDIF         
-C
-C --------- RECUPERATION D'UN CHAM_NO DE TEMPERATURE
-C
-            CALL GETVID(MOTFAC,'CHAM_NO',1,1,1,CHAMP,N1)
-            IF (N1.GT.0) THEN
-              INITPR = 2
-              CALL CHPVER('F',CHAMP(1:19),'NOEU','TEMP_R',IERD)
-              CALL DISMOI('F','TYPE_RESU',CHAMP,'RESULTAT',IBID,
-     &                    TYPRES,IERD)
-              IF (TYPRES.EQ.'CHAMP') THEN
-                CALL VTCOPY(CHAMP,VTEMP)
-              ELSE
-                CALL ASSERT(.FALSE.)
+              CALL GETVTX(MOTFAC,'STATIONNAIRE',1,1,1,REPSTA,NOCC)
+              IF ( NOCC .GT. 0 ) THEN
+                IF ( REPSTA(1:3) .EQ. 'OUI' ) THEN
+                  LOSTAT = .TRUE.
+                  INITPR = 0
+                  ZK24(JIOLCH+ZIOCH*(ICHAM-1)+4-1) = 'STATIONNAIRE'
+                ENDIF
               ENDIF
-            ENDIF
+C
+C ----------- TEMPERATURE INITIALE UNIFORME
+C
+              CALL GETVR8(MOTFAC,'VALE',1,1,1,TEMPCT,NOCC)
+              IF (NOCC.GT.0) THEN
+                INITPR = 1
+                DO 222  I = 1 , NEQ
+                  ZR(JTEMP+I-1) = TEMPCT
+                  ZK24(JIOLCH+ZIOCH*(ICHAM-1)+4-1) = 'VALE'
+  222           CONTINUE
+              ENDIF
 C            
-C --------- TEMPERATURE UNIFORME OU CHAMP AU NOEUDS==> PB DERIVEE INITI
-C --------- ALISE PAR UN CAUCHY NUL.
+C ----------- TEMPERATURE UNIFORME OU CHAMP AU NOEUDS==> PB DERIVEE
+C ----------- INITIALISE PAR UN CAUCHY NUL.
 C
-            IF ( NRPASE.NE.0 ) THEN
-              IF ((INITPR.EQ.1).OR.(INITPR.EQ.2)) THEN
-                CALL VTZERO(VTEMP)
+              IF ( NRPASE.NE.0 ) THEN
+                IF ((INITPR.EQ.1).OR.(INITPR.EQ.2)) THEN
+                  CALL VTZERO(NOMCHA)
+                ENDIF
               ENDIF
+            ELSE
+              CALL NMETL2(MOTFAC,SDIETO,SDSENS,NRPASE,ICHAM )
             ENDIF
-            
-          ENDIF  
-  10    CONTINUE
-      ENDIF
+          ENDIF
 C
-      IF (LHYD0) THEN
-        CALL COPISD('CHAMP_GD','V',HYDZER,VHYDR)
-      ENDIF
+C ------- LECTURE DU CHAMP - VERIFICATIONS
 C
-      CALL DETRSD('CHAMP',HYDRIC)
-      CALL DETRSD('CHAMP',HYDRIS)
-      CALL DETRSD('CHAMP',HYDZER)
+          CALL NTETL3(RESULT,SDIETO,SDSENS,NRPASE,ICHAM ,
+     &                TEMPCT) 
+  15    CONTINUE
+  10  CONTINUE
+C
+  99  CONTINUE
+C
       CALL JEDEMA()
 C
       END

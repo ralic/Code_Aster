@@ -1,7 +1,8 @@
       SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
-     &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
+     &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI,NOMFOR,
+     &                  GRDVIE,FORVIE, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/05/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +24,8 @@ C TOLE  CRP_20
       IMPLICIT     NONE
       INTEGER      JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NUMPAQ, NBMAP
       INTEGER      TSPAQ
-      CHARACTER*16 NOMCRI, NOMMET
+      CHARACTER*8  GRDVIE
+      CHARACTER*16 NOMCRI, NOMMET,NOMFOR ,FORVIE
       CHARACTER*19 CESR
 C ---------------------------------------------------------------------
 C BUT: DETERMINER LE PLAN INCLINE POUR LEQUEL DELTA_TAU EST MAXIMUM
@@ -80,7 +82,7 @@ C     ------------------------------------------------------------------
       INTEGER      NBPG, SOMPGW, NBPGP, L, JDTAUM, JRESUN
       INTEGER      LOR8EM, LOISEM,ICMP, VALI(2)
       REAL*8       DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18)
-      REAL*8       PHI0, VALA, VALB, COEFPA, VRESU(24)
+      REAL*8       PHI0, VALA, VALB, COEFPA, VRESU2(24)
       INTEGER      ICODWO
       CHARACTER*8  CHMAT1, NOMMAT
       CHARACTER*10 OPTIO
@@ -202,16 +204,16 @@ C ET DES PARAMETRES ASSOCIES AU CRITERE CHOISI POUR LA MAILLE COURANTE.
          
 C INITIALISATION DE VRESU         
        DO 450 I = 1,24    
-         VRESU(I) = 0
+         VRESU2(I) = 0
 450   CONTINUE 
 
          DO 420 IPG=1, NBPG
-         
+
 C REMPACER PAR ACMATA                  
-            CALL ACMATA ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
+            CALL ACGRDO ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
      &                    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM, 
      &                    JRESUN, NOMMET, NOMMAT, NOMCRI,VALA,
-     &                    COEFPA, VRESU)
+     &                    COEFPA, NOMFOR, GRDVIE, FORVIE, VRESU2)
 
 C 
 C C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
@@ -227,7 +229,7 @@ C              -- TOUTES LES MAILLES NE SAVENT PAS CALCULER LA FATIGUE :
                ENDIF
                JAD = ABS(JAD)
                ZL(JCERL - 1 + JAD) = .TRUE.
-               ZR(JCERV - 1 + JAD) = VRESU(ICMP)
+               ZR(JCERV - 1 + JAD) = VRESU2(ICMP)
 
  550        CONTINUE
 

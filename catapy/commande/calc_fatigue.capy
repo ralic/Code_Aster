@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,18 +99,34 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
            NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**' ),
            COEF_PREECROU =SIMP(statut='f',typ='R',defaut= 1.0E+0),
            b_period       =BLOC(condition = "TYPE_CHARGE == 'PERIODIQUE'",
-               CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE_MODI_AC","DANG_VAN_MODI_AC","VMIS_TRESCA") ),
+               CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE_MODI_AC",
+                                                              "DANG_VAN_MODI_AC","VMIS_TRESCA","FORMULE_CRITERE") ),
                b_fati_p  =BLOC(condition = "(CRITERE == 'MATAKE_MODI_AC' or CRITERE == 'DANG_VAN_MODI_AC')",
                    METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),
+               ),
+               
+               b_fati_pf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
+                   FORMULE_GRDEQ   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                   COURBE_GRD_VIE  = SIMP(statut='o',typ='TXM',into=("WOHLER","MANSON_C","FORM_VIE") ),
+                   b_fati_pfvie  = BLOC(condition = "(COURBE_GRD_VIE == 'FORM_VIE')",
+                        FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                  ),
                ),
            ),
            b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',
-                                   into=("MATAKE_MODI_AV","DANG_VAN_MODI_AV","FATESOCI_MODI_AV","VMIS_TRESCA") ),
+                                   into=("MATAKE_MODI_AV","DANG_VAN_MODI_AV","FATESOCI_MODI_AV","FORMULE_CRITERE","VMIS_TRESCA") ),
                b_fati_np  =BLOC(condition =
-                               "(CRITERE == 'MATAKE_MODI_AV' or CRITERE == 'DANG_VAN_MODI_AV' or CRITERE == 'FATESOCI_MODI_AV')",
+                               "(CRITERE != 'VMIS_TRESCA')",
                    PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
                    DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),
+               ),
+               b_fati_npf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
+                   FORMULE_GRDEQ   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                   COURBE_GRD_VIE  = SIMP(statut='o',typ='TXM',into=("WOHLER","MANSON_C","FORM_VIE") ),
+                   b_fati_npfvie  = BLOC(condition = "(COURBE_GRD_VIE == 'FORM_VIE')",
+                        FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                  ),
                ),
            ),
          ),

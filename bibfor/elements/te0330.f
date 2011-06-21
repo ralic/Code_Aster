@@ -1,7 +1,7 @@
       SUBROUTINE TE0330(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C ----------------------------------------------------------------------
       INTEGER NNO,NCEQ,NPG,NNOS,NCMP
       INTEGER NDIM1,NBVA
       REAL*8 EQPG(NEQMAX*NPGMAX),EQNO(NEQMAX*NNOMAX)
-      REAL*8 SIGMA(30), FSTAB(12), HYD
+      REAL*8 SIGMA(30), HYD
       CHARACTER*6  TYPMOD
       CHARACTER*16 NOMTE,OPTION
 
@@ -106,16 +106,9 @@ C -   CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
 
       ELSEIF(TYPMOD.EQ.'3D'.OR. TYPMOD.EQ.'COQUE') THEN
 
-         IF(NOMTE.EQ.'MECA_SHB8') THEN
-C        TRI ENTRE LES CONTRAINTES ET LES TERMES DE STABILISATION
-            CALL SHBCSF(ZR(ICONT),SIGMA,FSTAB)
-         ENDIF
          DO 100 KP = 1,NPG
            IDCP = (KP-1)*NCMP
-           IF(NOMTE.EQ.'MECA_SHB8') THEN
-              CALL FGEQUI(SIGMA((KP-1)*NBVA+1),'SIGM',NDIM1,
-     &                    EQPG(IDCP+1))
-           ELSEIF(TYPMOD.EQ.'COQUE') THEN
+           IF(TYPMOD.EQ.'COQUE') THEN
               CALL FGEQUI(ZR(ICONT+(KP-1)*NBVA),'SIGM',NDIM1,
      &                    EQNO(IDCP+1))
            ELSE

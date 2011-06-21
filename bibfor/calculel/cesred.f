@@ -1,5 +1,5 @@
       SUBROUTINE CESRED(CES1Z,NBMA,LIMA,NBCMP,LICMP,BASE,CES2Z)
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +135,7 @@ C     3- CREATION DE CES2 :
 C     ---------------------------------------
       IF (NBCMP.GT.0) THEN
         CALL CESCRE(BASE,CES2,TYPCES,MA,NOMGD,NCMP2,LICMP,ZI(JNBPT),
-     &              ZI(JNBSP),ZI(JNBCMP))
+     &              ZI(JNBSP),-NBCMP)
       ELSE
         CALL CESCRE(BASE,CES2,TYPCES,MA,NOMGD,NCMP2,ZK8(JCE1C),
      &              ZI(JNBPT),ZI(JNBSP),ZI(JNBCMP))

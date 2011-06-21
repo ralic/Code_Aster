@@ -1,9 +1,9 @@
-      SUBROUTINE NXNOLI(MODELE,MATE  ,CARELE,COMPOR,LOSTAT,
-     &                  LREUSE,LNONL ,LEVOL ,PARA  ,SDDISC,
-     &                  SDCRIT,NBPASE,INPSCO,VHYDR ,LISCH2)
+      SUBROUTINE NXNOLI(MODELE,MATE  ,CARELE,LOSTAT,LREUSE,
+     &                  LNONL ,LEVOL ,PARA  ,SDDISC,SDCRIT,
+     &                  SDSENS,SDIETO,LISCH2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,13 +23,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER       NBPASE
       REAL*8        PARA(*)
       LOGICAL       LNONL,LOSTAT,LREUSE,LEVOL
-      CHARACTER*(*) INPSCO
       CHARACTER*19  SDDISC,SDCRIT
-      CHARACTER*24  VHYDR,COMPOR
-      CHARACTER*24  MODELE,MATE  ,CARELE
+      CHARACTER*24  MODELE,MATE  ,CARELE,SDSENS,SDIETO
       CHARACTER*19  LISCH2
 C
 C ----------------------------------------------------------------------
@@ -68,8 +65,7 @@ C
       INTEGER      IFM,NIV
       CHARACTER*24 NOOBJ,RESULT     
       LOGICAL      FORCE
-      INTEGER      NRPASE
-      INTEGER      IAUX,JAUX      
+      INTEGER      NMSENN,NBPASE,NRPASE     
 C
 C ----------------------------------------------------------------------
 C
@@ -86,11 +82,12 @@ C --- INSTANT INITIAL
 C
       NUMINS = 0
       FORCE  = .TRUE.
+      NBPASE = NMSENN(SDSENS)
 C
 C --- DETERMINATION DU NOM DE LA SD INFO_CHARGE STOCKEE
 C --- DANS LA SD RESULTAT
 C       
-      NOOBJ  = '12345678'//'.1234'//'.EXCIT'           
+      NOOBJ  = '12345678.1234.EXCIT'           
       CALL GNOMSD(NOOBJ,10,13)
       LISCH2 = NOOBJ(1:19) 
 C
@@ -107,9 +104,7 @@ C
 C --- CREATION DE LA SD EVOL_THER OU NETTOYAGE DES ANCIENS NUMEROS
 C
       DO 20 NRPASE = 0,NBPASE
-        JAUX = 3
-        IAUX = NRPASE
-        CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,RESULT)
+        CALL NTNSLE(SDSENS,NRPASE,'RESULT',RESULT)
         IF (LREUSE) THEN
           CALL ASSERT(NUMARC.NE.0)
           CALL RSRUSD(RESULT,NUMARC)
@@ -123,12 +118,9 @@ C --- ARCHIVAGE ETAT INITIAL
 C
       IF ((.NOT.LREUSE).AND.(.NOT.LOSTAT).AND.LEVOL) THEN
         CALL U2MESS('I','ARCHIVAGE_4')
-        JAUX = 3
-        IAUX = 0
-        CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,RESULT)
-        CALL NTARCH(NUMINS,MODELE,MATE  ,CARELE,COMPOR,
-     &              LNONL ,PARA  ,SDDISC,SDCRIT,NBPASE,
-     &              INPSCO,VHYDR ,LISCH2,FORCE )
+        CALL NTARCH(NUMINS,MODELE,MATE  ,CARELE,LNONL ,
+     &              PARA  ,SDDISC,SDCRIT,SDSENS,SDIETO,
+     &              LISCH2,FORCE )
       ENDIF     
 C
       CALL JEDEMA()

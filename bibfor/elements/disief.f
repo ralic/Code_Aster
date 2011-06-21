@@ -1,15 +1,16 @@
-      SUBROUTINE DISIEF (NBT,NEQ,NNO,NC,PGL,KLV,DUL,SIM,
-     &                   ILOGIC,KTY2,DULY,SIP,FONO,FOR2,FOR3)
+      SUBROUTINE DISIEF(NBT,NEQ,NNO,NC,PGL,
+     &                  KLV,DUL,SIM,ILOGIC,DULY,
+     &                  SIP,FONO,FORCE,DIMELE)
 C ----------------------------------------------------------------------
-      IMPLICIT REAL * 8 (A-H,O-Z)
-      INTEGER NBT,NEQ,ILOGIC,NNO,NC
-      REAL*8  PGL(3,3),KLV(NBT),DUL(NEQ),SIM(NEQ),KTY2,DULY
-      REAL*8  SIP(NEQ),FONO(NEQ)
+      IMPLICIT NONE
+      INTEGER  NBT,NEQ,ILOGIC,NNO,NC,DIMELE
+      REAL*8   PGL(3,3),KLV(NBT),DUL(NEQ),SIM(NEQ),DULY
+      REAL*8   SIP(NEQ),FONO(NEQ),FORCE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,33 +41,26 @@ C       KLV    : MATRICE DE "RAIDEUR TANGENTE"
 C       DUL    : INCREMENT DE DEPLACEMENT LOCAL
 C       SIM    : EFFORTS GENERALISES A L'INSTANT PRECEDENT
 C       ILOGIC : VAUT 1 DANS LES CAS DU COMPORTEMENT "ARME" (ARMEMENT)
-C       KTY2   :
 C       DULY   :
 C
 C OUT : SIP    : EFFORTS GENERALISES ACTUALISES
 C       FONO   : FORCES NODALES
 C
-C**************** DECLARATION DES VARIABLES LOCALES ********************
+C =============== DECLARATION DES VARIABLES LOCALES ====================
 C
-      REAL*8 KLC(144),FL(12)
+      INTEGER  N,I
+      REAL*8   KLC(144),FL(12),ZERO,R8PREM
 C
+C ----------------------------------------------------------------------
 C
-C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
       ZERO = 0.D0
-      EPSI = 1.D-20
-C
 C --- DEMI-MATRICE KLV TRANSFORMEE EN MATRICE PLEINE KLC
-C
       CALL VECMA (KLV,NBT,KLC,NEQ)
-C
 C --- CALCUL DE FL = KLC.DUL (INCREMENT D'EFFORT)
-C
       CALL PMAVEC ('ZERO',NEQ,KLC,DUL,FL)
-C
 C --- EFFORTS GENERALISES AUX NOEUDS 1 ET 2 (REPERE LOCAL)
-C         ---- ON CHANGE LE SIGNE DES EFFORTS SUR LE PREMIER NOEUD
-C         ---- POUR LES MECA_DIS_TR_L ET MECA_DIS_T_L
-C
+C     ON CHANGE LE SIGNE DES EFFORTS SUR LE PREMIER NOEUD
+C     POUR LES MECA_DIS_TR_L ET MECA_DIS_T_L
       IF ( NNO.EQ.1 ) THEN
          DO 90 I = 1,NEQ
             SIP(I)      = FL(I) + SIM(I)
@@ -74,58 +68,58 @@ C
  90      CONTINUE
       ELSEIF ( NNO.EQ.2 ) THEN
          DO 100 I = 1,NC
-            SIP(I)      = -FL(I)      + SIM(I)
-            SIP(I+NC) =  FL(I+NC) + SIM(I+NC)
-            FL(I)       =  FL(I)      - SIM(I)
-            FL(I+NC)  =  FL(I+NC) + SIM(I+NC)
+            SIP(I)      = -FL(I)    + SIM(I)
+            SIP(I+NC)   =  FL(I+NC) + SIM(I+NC)
+            FL(I)       =  FL(I)    - SIM(I)
+            FL(I+NC)    =  FL(I+NC) + SIM(I+NC)
  100     CONTINUE
       ENDIF
 C
 C --- PETITE MODIF POUR LES ARMEMENTS
-C
       IF (ILOGIC.EQ.1) THEN
-         SIP(2) = SIM(2) + KTY2*DULY
-         SIP(8) = SIM(8) + KTY2*DULY
-         FL(2)  = -SIM(2) - KTY2*DULY
-         FL(8) = SIM(8) + KTY2*DULY
-      END IF
+         SIP(2) =  SIM(2) + FORCE(1)*DULY
+         SIP(8) =  SIM(8) + FORCE(1)*DULY
+         FL(2)  = -SIM(2) - FORCE(1)*DULY
+         FL(8)  =  SIM(8) + FORCE(1)*DULY
+      ENDIF
       IF (ILOGIC.EQ.2) THEN
          IF (NNO.EQ.1) THEN
-            FL(1) = KTY2
-            FL(2) = FOR2
-            FL(3) = FOR3
-            SIP(1) = KTY2
-            SIP(2) = FOR2
-            SIP(3) = FOR3
+            FL(1)  = FORCE(1)
+            FL(2)  = FORCE(2)
+            SIP(1) = FORCE(1)
+            SIP(2) = FORCE(2)
+            IF ( DIMELE.EQ.3 ) THEN
+               FL(3)  = FORCE(3)
+               SIP(3) = FORCE(3)
+            ENDIF
          ELSEIF (NNO.EQ.2) THEN
-            FL(1) = -KTY2
-            SIP(1) = KTY2
-            FL(1+NC) = KTY2
-            SIP(1+NC) = KTY2
-            FL(2) = -FOR2
-            SIP(2) = FOR2
-            FL(2+NC) = FOR2
-            SIP(2+NC) = FOR2
-            FL(3) = -FOR3
-            SIP(3) = FOR3
-            FL(3+NC) = FOR3
-            SIP(3+NC) = FOR3
-         END IF
-         IF (ABS(KTY2).LT.EPSI) THEN
-            DO 1 N = 1,NEQ
-             FL(N) = ZERO
-             SIP(N) = ZERO
-    1       CONTINUE
-         END IF
-      END IF
+            FL(1)     = -FORCE(1)
+            SIP(1)    =  FORCE(1)
+            FL(1+NC)  =  FORCE(1)
+            SIP(1+NC) =  FORCE(1)
+            FL(2)     = -FORCE(2)
+            SIP(2)    =  FORCE(2)
+            FL(2+NC)  =  FORCE(2)
+            SIP(2+NC) =  FORCE(2)
+            IF ( DIMELE.EQ.3 ) THEN
+               FL(3)     = -FORCE(3)
+               SIP(3)    =  FORCE(3)
+               FL(3+NC)  =  FORCE(3)
+               SIP(3+NC) =  FORCE(3)
+            ENDIF
+         ENDIF
+         IF ( ABS(FORCE(1)).LT.R8PREM() ) THEN
+            DO 10 N = 1,NEQ
+               FL(N)  = ZERO
+               SIP(N) = ZERO
+10          CONTINUE
+         ENDIF
+      ENDIF
 C
 C --- FORCES NODALES AUX NOEUDS 1 ET 2 (REPERE GLOBAL)
-C
       IF (NC.NE.2) THEN
          CALL UTPVLG ( NNO, NC, PGL, FL, FONO )
       ELSE
          CALL UT2VLG ( NNO, NC, PGL, FL, FONO )
       ENDIF
-C ----------------------------------------------------------------------
-C
       END

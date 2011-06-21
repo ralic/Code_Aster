@@ -9,7 +9,7 @@
       CHARACTER*8         NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C     ------------------------------------------------------------------
       REAL*8              TYPEKE, SPMECA, SPTHER
       INTEGER ICODRE
       CHARACTER*2  K2C, K2L
+      CHARACTER*8  KBID
 C     ------------------------------------------------------------------
 C
       CALL INFNIV ( IFM, NIV )
@@ -99,7 +100,7 @@ C
 C
       IF ( TROUVE ) THEN
 C
-         CALL LIMEND ( NOMMAT, SALTM, 'WOHLER', ENDUR )
+         CALL LIMEND ( NOMMAT, SALTM, 'WOHLER',KBID, ENDUR )
          IF ( ENDUR ) THEN
             U1KL=0.D0
          ELSE
@@ -119,7 +120,7 @@ C
          SPTHER=0.D0
          CALL RC36SA ( NOMMAT, MATSE, MATSE, SNKL, SP,
      &                TYPEKE, SPMECA, SPTHER, SALTKL, SM )
-         CALL LIMEND ( NOMMAT, SALTKL, 'WOHLER', ENDUR )
+         CALL LIMEND ( NOMMAT, SALTKL, 'WOHLER',KBID, ENDUR )
          IF ( ENDUR ) THEN
             U2KL=0.D0
          ELSE

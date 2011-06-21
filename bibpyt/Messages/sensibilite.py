@@ -1,8 +1,8 @@
-#@ MODIF sensibilite Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF sensibilite Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,12 +88,8 @@ cata_msg = {
  EXICHA différent de 0 et 1
 """),
 
-21 : _("""
- Pour faire une reprise avec un calcul de sensibilité, il faut renseigner "evol_noli" dans "etat_init"
-"""),
-
 22 : _("""
- L'option sensibilité lagrangienne non opérationnelle en non lineaire
+ L'option sensibilité lagrangienne non opérationnelle en non-linéaire
 """),
 
 31 : _("""

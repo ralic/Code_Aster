@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 24/05/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,6 +61,13 @@ Quand les propriétés matériau dépendent de la température, il faut fournir
 en entrée de POST_K1_K2_K3 le champ de température utilisé pour le calcul 
 mécanique, sous le mot clé EVOL_THER.
 """),
+
+7: _("""
+L'entité %(k1)s renseignée au mot-clé %(k2)s sous %(k3)s n'est pas dans le maillage.
+-> Risque et Conseil :
+Veuillez vérifier les données fournies au mot-clé %(k2)s.
+"""),
+
 
 9: _("""
 Dans le cas d'une SD RESULTAT de type DYNA_TRANS,
@@ -236,6 +243,26 @@ Plusieurs instants trouvés dans la table pour l'instant %(r1)f.
 ABSC_CURV non croissants pour %(k1)s.
 """),
 
+41 : _("""
+Le groupe de mailles %(k1)s défini sous le mot-clé GROUP_MA n'existe pas.
+"""),
+
+42 : _("""
+Dans le cas où le fond est une courbe fermée, les mot-clés MAILLE_ORIG ou GROUP_MA_ORIG doivent accompagner le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG.
+"""),
+
+43 : _("""
+Le noeud défini le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG n'appartient pas à la maille définie 
+sous le mot-clé MAILLE_ORIG ou GROUP_MA_ORIG.
+"""),
+
+44 : _("""
+La maille %(k1)s définie sous le mot-clé MAILLE_ORIG ou GROUP_MA_ORIG n'appartient pas au fond de fissure.
+"""),
+
+45 : _("""
+Une seule maille doit constitué le groupe de mailles GROUP_MA_ORIG. La maille utilisée est %(k1)s.
+"""),
 
 46: _("""
 Il faut au moins trois noeuds dans le plan défini par les lèvres et perpendiculaire 
@@ -314,36 +341,13 @@ Les mailles du fond de fissure doivent toutes être du meme type.
 Modifiez le maillage ou définissez plusieurs fonds de fissure consécutifs.
 """),
 
-61 : _("""
-Le groupe de noeuds  %(k1)s définissant le fond de fissure n'est pas ordonné.
--> Risque et Conseil :
-Il faut ordonner les noeuds du fond de fissure. 
-Les options SEGM_DROI_ORDO et NOEUD_ORDO de l'opérateur 
-DEFI_GROUP/CREA_GROUP_NO peuvent etre utilisées.
-."""),
 
-62 : _("""
-Arret sur erreur utilisateur : deux GROUP_NO consécutifs incohérents dans la 
-définition du fond de fissure.
--> Risque et Conseil :
-Les noeuds de chaque groupe doivent etre ordonnés et le dernier noeud d'un
-groupe identique au premier noeud du groupe suivant dans la liste.
-"""),
+
 
 63 : _("""
 Les mailles du fond de fissure doivent etre du type segment (SEG2 ou SEG3).
 """),
 
-64 : _("""
-Arret sur erreur utilisateur : deux mailles ou groupes de mailles du fond de
-fissure sont non consécutives dans la numérotation des noeuds.
-En effet, le fond de fissures doit être discrétisé avec des mailles segment 
-ordonnées de telle sorte que pour deux segments consécutifs, le 2ème noeud sommet
-du 1er segment soit le même que le 1er noeud sommet du 2ème segment.
-
-Conseil : Pour ordonner les mailles du fond de fissure, veuillez 
-utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR).
-"""),
 
 65 : _("""
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la
@@ -355,17 +359,13 @@ Vérifiez que les mailles définies correspondent bien aux faces des éléments
 """),
 
 66 : _("""
-La liste de noeuds définissant le fond de fissure n'est pas ordonnée. 
+Le groupe de noeuds ou la liste de noeuds définissant le fond de fissure n'est pas ordonné.
 -> Risque et Conseil :
-Veuillez vérifier l'ordre des noeuds.
-"""),
+Il faut ordonner les noeuds du fond de fissure. 
+Les options SEGM_DROI_ORDO et NOEUD_ORDO de l'opérateur 
+DEFI_GROUP/CREA_GROUP_NO peuvent etre utilisées.
+."""),
 
-67 : _("""
-Arret sur erreur utilisateur : le fond de fissure possède un noeud
-répété deux fois (noeud  %(k1)s). 
--> Risque et Conseil :
-Veuillez revoir la définition du fond dans FOND_FISS ou FOND_FERME.
-"""),
 
 68 : _("""
 Les mailles de FOND_INF et de FOND_SUP sont de type différent.
@@ -381,22 +381,16 @@ géométriquement et que les groupes de noeuds sont ordonnés dans le meme sens.
 """), 
 
 70 : _("""
-Erreur utilisateur : la lèvre supérieure possède une maille répétée 2 fois : 
-maille  %(k1)s. 
+Erreur utilisateur : la lèvre définie sous %(k1)s possède une maille répétée 2 fois : 
+maille  %(k2)s. 
 -> Risque et Conseil :
 Veuillez revoir les données.
 """),
 
-71 : _("""
-Erreur utilisateur : la lèvre inférieure possède une maille répétée 2 fois : 
-maille  %(k1)s. 
--> Risque et Conseil :
-Veuillez revoir les données.
-"""),
 
 72 : _("""
 Le noeud %(k1)s du fond de fissure n'est rattaché à aucune maille surfacique
-de la lèvre supérieure.
+de la lèvre définie sous %(k2)s.
 -> Risque et Conseil :
 Veuillez vérifier les groupes de mailles.
 """), 
@@ -408,12 +402,7 @@ surfacique en commun. Maille en commun : %(k1)s
 Revoir les données.
 """),
 
-74: _("""
-Le noeud %(k1)s du fond de fissure n'est rattaché à aucune maille
-surfacique de la lèvre inférieure.
--> Risque et Conseil :
-Veuillez vérifier les groupes de mailles.
-"""), 
+ 
 
 75 : _("""
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la
@@ -426,17 +415,11 @@ sur la lèvre.
 
 76: _("""
 Le noeud %(k1)s du fond de fissure n'appartient à aucune des mailles
-de la lèvre supérieure. 
+de la lèvre définie sous %(k2)s.
 -> Risque et Conseil :
 Veuillez revoir les données.
 """), 
 
-77: _("""
-Le noeud %(k1)s du fond de fissure n'appartient à aucune des mailles
-de la lèvre inférieure. 
--> Risque et Conseil :
-Veuillez revoir les données.
-"""), 
 
 78: _("""
 La tangente à l'origine n'est pas orthogonale à la normale :

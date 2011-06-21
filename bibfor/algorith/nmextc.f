@@ -1,7 +1,7 @@
-      SUBROUTINE NMEXTC(PHENOZ,MOTFAC,IOCC  ,NOMCHA,LEXTR )
+      SUBROUTINE NMEXTC(SDIETO,MOTFAC,IOCC  ,NOMCHA,LEXTR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,8 +23,7 @@ C
       IMPLICIT      NONE
       CHARACTER*16  MOTFAC
       INTEGER       IOCC
-      CHARACTER*(*) PHENOZ
-      CHARACTER*24  NOMCHA
+      CHARACTER*24  NOMCHA,SDIETO
       LOGICAL       LEXTR 
 C
 C ----------------------------------------------------------------------
@@ -37,32 +36,42 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  PHENOM : TYPE DE PHENOMENE A EXTRAIRE
-C               TH             - THERMIQUE
-C               ME             - MECANIQUE
-C               MEST           - MECANIQUE - STATIQUE
-C               MEDY           - MECANIQUE - DYNAMIQUE
-C               MEDY_MUAP      - MECANIQUE - DYNAMIQUE - MULTI-APPUI
-C               ME**_****_CONT - MECANIQUE - CONTACT
+C IN  SDIETO : SD GESTION IN ET OUT
 C IN  MOTFAC : MOT-FACTEUR POUR LIRE 
 C IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
 C OUT NOMCHA : NOM DU CHAMP
 C OUT LEXTR  : .TRUE. SI LE CHAMP EST EXTRACTABLE (COMPATIBLE AVEC
 C               PHENOMENE)
-C  
 C
-C ----------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      CHARACTER*16 PHENOM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
+C
       CHARACTER*8  K8BID
       INTEGER      NCHP,N1
+      INTEGER      ICHAM
 C
 C ----------------------------------------------------------------------
 C
+      CALL JEMARQ()
 C
 C --- INITIALISATIONS
 C
-      PHENOM = PHENOZ
       LEXTR  = .TRUE.
 C
 C --- LECTURE: IL FAUT UN CHAMP ET UN SEUL
@@ -76,50 +85,18 @@ C --- NOM DU CHAMP
 C
       CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,1,1,NOMCHA,NCHP)
 C
-C --- CONFORMITE DU CHAMP SUIVANT PHENOMENE
+C --- INDICE DU CHAMP
 C
-      IF ( NOMCHA .EQ. 'TEMP' ) THEN
-        IF (PHENOM(1:2).EQ.'ME') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'DEPL' ) THEN
-        IF (PHENOM(1:2).EQ.'TH') LEXTR  = .FALSE.
-
-      ELSEIF ( NOMCHA .EQ. 'FORC_NODA' ) THEN
-        IF (PHENOM(1:2).EQ.'TH') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'VITE' ) THEN
-        IF (PHENOM(3:4).NE.'DY') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'ACCE' ) THEN
-        IF (PHENOM(3:4).NE.'DY') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'DEPL_ABSOLU' ) THEN
-        IF (PHENOM(6:9).NE.'MUAP') LEXTR  = .FALSE.
-               
-      ELSEIF ( NOMCHA .EQ. 'VITE_ABSOLU' ) THEN
-        IF (PHENOM(6:9).NE.'MUAP') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'ACCE_ABSOLU' ) THEN
-        IF (PHENOM(6:9).NE.'MUAP') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'VALE_CONT' ) THEN
-        IF (PHENOM(11:14).NE.'CONT') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'SIEF_ELGA' ) THEN
-        IF (PHENOM(1:2).EQ.'TH') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'VARI_ELGA' ) THEN
-        IF (PHENOM(1:2).EQ.'TH') LEXTR  = .FALSE.
-      
-      ELSEIF ( NOMCHA .EQ. 'SIEF_ELEM' ) THEN
-        IF (PHENOM(1:2).EQ.'TH') LEXTR  = .FALSE.
-        
-      ELSEIF ( NOMCHA .EQ. 'VARI_ELEM' ) THEN
-        IF (PHENOM(1:2).EQ.'TH') LEXTR  = .FALSE.
-            
+      CALL NMETOB(SDIETO,NOMCHA,ICHAM )
+C 
+C --- OBSERVABLE ?
+C
+      IF (ICHAM.EQ.0) THEN
+        LEXTR = .FALSE.
       ELSE
-        LEXTR  = .FALSE.
-        
+        LEXTR = .TRUE.
       ENDIF
+C
+      CALL JEDEMA()
 C
       END

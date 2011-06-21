@@ -1,4 +1,4 @@
-#@ MODIF discrets Messages  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF discrets Messages  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,23 +148,23 @@ AFFE_CARA_ELEM/RIGI_PARASOL
 
 25 :_("""
 Vous utilisez des discrets %(k1)s alors que vous n'avez pas affecté ses caractéristiques.
-Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET OU DISCRET_2D.
 """),
 
 26 :_("""
-Vous utilisez des discrets %(k1)s pour affecter des MASSES alors que vous n'avez pas affecté
+Vous utilisez la matrice de MASSE pour un discret %(k1)s alors que vous n'avez pas affecté
 les caractéristiques de masses. Par défaut la masse est nulle.
 Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
 
 27 :_("""
-Vous utilisez des discrets %(k1)s pour affecter des RAIDEURS alors que vous n'avez pas affecté
+Vous utilisez la matrice de RAIDEUR pour un discret %(k1)s alors que vous n'avez pas affecté
 les caractéristiques de raideurs. Par défaut la raideur est nulle.
 Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
 
 28 :_("""
-Vous utilisez des discrets %(k1)s pour affecter des AMORTISSEMENTS alors que vous n'avez pas affecté
+Vous utilisez la matrice d'AMORTISSEMENT pour un discrets %(k1)s alors que vous n'avez pas affecté
 les caractéristiques d'amortissements. Par défaut l'amortissement est nul.
 Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
@@ -173,7 +173,7 @@ Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
    Maille de nom %(k1)s, de %(i1)d noeud(s).
    Nom et coordonnées des noeuds :
 """),
-31 :_("""      %(k1)s   %(r1)12.5E   %(r2)12.5E   %(r3)12.5E
+31 :_("""      %(k1)8s   %(r1)12.5E   %(r2)12.5E   %(r3)12.5E
 """),
 
 }

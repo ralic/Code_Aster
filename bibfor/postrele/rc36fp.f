@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C
       CALL RC36F1 ( NBSIGR, NOCC, SALTIJ, ISK, ISL, NK, NL, N0,
      &              NBP12, NBP23, NBP13, SIGR, YAPASS, TYPASS, NSITUP )
 C
-      CALL LIMEND ( NOMMAT, SALTM, 'WOHLER', ENDUR )
+      CALL LIMEND ( NOMMAT, SALTM, 'WOHLER',K8B, ENDUR )
       IF ( ENDUR ) THEN
          UKL = 0.D0
       ELSE

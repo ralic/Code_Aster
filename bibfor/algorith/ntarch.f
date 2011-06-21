@@ -1,9 +1,9 @@
-      SUBROUTINE NTARCH(NUMINS,MODELE,MATE  ,CARELE,COMPOZ,
-     &                  LNONL ,PARA  ,SDDISC,SDCRIT,NBPASE,
-     &                  INPSCO,VHYDR ,LISCH2,FORCE )
+      SUBROUTINE NTARCH(NUMINS,MODELE,MATE  ,CARELE,LNONL ,
+     &                  PARA  ,SDDISC,SDCRIT,SDSENS,SDIETO,
+     &                  LISCH2,FORCE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,12 +22,11 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      INTEGER       NUMINS,NBPASE
+      CHARACTER*24  SDSENS,SDIETO
+      INTEGER       NUMINS
       REAL*8        PARA(*)
       LOGICAL       LNONL,FORCE
-      CHARACTER*(*) INPSCO
       CHARACTER*19  SDDISC,SDCRIT
-      CHARACTER*24  VHYDR,COMPOZ
       CHARACTER*24  MODELE,MATE  ,CARELE
       CHARACTER*19  LISCH2
 C
@@ -62,23 +61,20 @@ C
       LOGICAL      DIDERN,LSENS
       REAL*8       INSTAM,INSTAN
       REAL*8       DIINST
-      INTEGER      IRET,IAUX,JAUX
+      INTEGER      IRET
       INTEGER      NUMARC
-      INTEGER      JINST 
-      INTEGER      NRPASE
-      CHARACTER*19 K19BID,VTEMP,TEMP,HYDR,COMPOR
+      INTEGER      JINST
+      INTEGER      NMSENN,NBPASE,NRPASE
+      CHARACTER*19 K19BID
       CHARACTER*8  K8BID,NOPASE,RESULT    
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- INITIALISATIONS
-C      
-      COMPOR = COMPOZ(1:19)
-C
 C --- FONCTIONNALITES ACTIVEES
 C    
+      NBPASE = NMSENN(SDSENS)
       LSENS  = NBPASE.GT.0
 C
 C --- IMPRESSION EVENTUELLE DES MESURES DE TEMPS
@@ -105,9 +101,7 @@ C
 C
 C ----- NOM SD RESULTAT
 C
-        IAUX   = 0
-        JAUX   = 3
-        CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,RESULT )
+        CALL NTNSLE(SDSENS,0,'RESULT',RESULT)
 C
 C ----- INSTANT DEJA ARCHIVE ?
 C
@@ -123,22 +117,12 @@ C ----- AFFICHAGE
 C
         CALL U2MESS('I','ARCHIVAGE_5')
 C
-C ----- NOM DES CHAMPS
-C
-        IAUX   = 0
-        JAUX   = 4
-        CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,VTEMP  )
-        TEMP   = VTEMP(1:19)
-        HYDR   = VHYDR(1:19)
-        JAUX   = 3
-        CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,RESULT )
-C
 C ----- EXTENSION DE RESULT SI TROP PETIT (DOUBLEMENT)
 C
         CALL RSEXCH(RESULT,'TEMP',NUMARC,K19BID,IRET  )
         IF (IRET.EQ.110) THEN
           CALL RSAGSD(RESULT,0)
-        ENDIF               
+        ENDIF   
 C
 C ----- ARCHIVAGE DES PARAMETRES
 C
@@ -147,8 +131,9 @@ C
 C
 C ----- ARCHIVAGE DES CHAMPS
 C
-        CALL NTARCE(RESULT,SDDISC,LNONL ,INSTAN,NUMARC,
-     &              FORCE ,COMPOR,TEMP  ,HYDR  )       
+        NRPASE = 0
+        CALL NMARCE(SDSENS,SDIETO,RESULT,SDDISC,INSTAN,
+     &              NUMARC,NRPASE,FORCE )       
 C
 C ----- CAS SENSIBLE
 C
@@ -160,15 +145,8 @@ C
 C
 C --------- NOM DES CHAMPS SENSIBLES
 C
-             IAUX = NRPASE
-             JAUX = 1
-             CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,NOPASE)
-             JAUX = 3
-             CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,RESULT)
-             JAUX = 4
-             CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,VTEMP )
-             TEMP   = VTEMP(1:19)
-             HYDR   = VHYDR(1:19)
+            CALL NTNSLE(SDSENS,NRPASE,'NOPASE',NOPASE)
+            CALL NTNSLE(SDSENS,NRPASE,'RESULT',RESULT)
 C
 C --------- AFFICHAGE
 C
@@ -181,8 +159,8 @@ C
 C
 C --------- ARCHIVAGE DES CHAMPS SENSIBLES
 C
-            CALL NTARCE(RESULT,SDDISC,LNONL ,INSTAN,NUMARC,
-     &                  FORCE ,COMPOR,TEMP  ,HYDR  )       
+            CALL NMARCE(SDSENS,SDIETO,RESULT,SDDISC,INSTAN,
+     &                  NUMARC,NRPASE,FORCE )     
   10      CONTINUE              
         ENDIF
       ENDIF

@@ -3,7 +3,7 @@
      &                  VEFREQ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,6 @@ C
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
@@ -86,7 +85,7 @@ C-- VARIABLES DE LA ROUTINE
      &             LINLAG,LALPI,LBETA,LMATK,LMATM,LMAPRO,LKPRO,
      &             LMORED,LMATRM,LMATRK,LWORK,LLWORK,LALPR,LDDLD,
      &             LFREQ,LINDFR,LKRYL,LMATH,LIMPED,LMOLOL,LMOLOR,
-     &             LMATMA,NDECI,ISINGU,NPVNEG,IRET,NBVECT,IBID,
+     &             LMATMA,IRET,NBVECT,IBID,
      &             DECAL,JWORK,
      &             NO,NBSST,LINDIN,COEFF,
      &             LVP,LINTRF
@@ -95,7 +94,7 @@ C-- VARIABLES DE LA ROUTINE
      &             RAND
       PARAMETER    (PI=3.141592653589793238462643D0)
       COMPLEX*16   CBID
-      CHARACTER*1  LISTYP(2)
+      CHARACTER*1  LISTYP(2)     
       CHARACTER*19 LISMAT(2),IMPED,SOLVEU,NUME91
       CHARACTER*24 VALK
 
@@ -135,8 +134,8 @@ C------------------------------------------------------------C
       CALL DISMOI('F','SOLVEUR',SSAMI,'MATR_ASSE',IBID,SOLVEU,IBID)
       CALL DISMOI('F','NOM_NUME_DDL',SSAMI,'MATR_ASSE',IBID,
      &            NUME91,IBID)
-      CALL TLDLG3('LDLT','SANS',1,LIMPED,1,0,0,NDECI,ISINGU,NPVNEG,
-     &            IRET,SOLVEU)
+      CALL PRERES(SOLVEU,'V',IRET,'&&OP0091.MATPRE',IMPED,IBID,1)
+      
       IF (IRET.EQ.2) THEN
                   VALK = IMPED
          CALL U2MESK('F', 'ALGELINE4_37',1,VALK)

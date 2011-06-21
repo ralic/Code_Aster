@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,17 +91,17 @@ RINF3=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.375,  26.69, 1.5625,))
 
 RSUP3=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 1.6465, 26.69, 3.125, ))
 
-FISS1=DEFI_FOND_FISS(    MAILLAGE=MA,
-                   FOND_FISS=_F(  GROUP_NO = 'FONFIS',  ),
-                   LEVRE_SUP=_F(  GROUP_MA = 'GRPRES',  ),
-                   DTAN_ORIG=( 0.,  1.,  0.,),
-                   DTAN_EXTR=( 1.,  0.,  0.,)
-                    )
+FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
+                     FOND_FISS=_F(GROUP_NO='FONFIS',
+                                  DTAN_ORIG=( 0.,  1.,  0.,),
+                                  DTAN_EXTR=( 1.,  0.,  0.,)),
+                     LEVRE_SUP=_F(GROUP_MA='GRPRES',),
+                     )
 
-FISS11=DEFI_FOND_FISS(    MAILLAGE=MA,
-                   FOND_FISS=_F(  GROUP_NO = 'FONFIS',  ),
-                   NORMALE=(0.,1.,0.),
-                    )
+FISS11=DEFI_FOND_FISS(MAILLAGE=MA,
+                      FOND_FISS=_F(GROUP_NO='FONFIS',),
+                      NORMALE=(0.,1.,0.),
+                     )
 
 #----------------------------------------------------------------------
 #                           COURONNE 1

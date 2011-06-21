@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ OPTION__
    IN__
         PCONCOR  SIEF_R
        <<  PCONCOR : CONTRAINTES DE COQUES (SICO_ELNO) >>
-        PCONTRR  SIEF_R 'RESU!SIEF_ELGA!N'
+        PCONTRR  SIEF_R 'RESU!SIGM_ELGA!N'
        <<  PCONTRR : CONTRAINTES  >>
     OUT__
 PCONTEQ SIEF_R ELNO__

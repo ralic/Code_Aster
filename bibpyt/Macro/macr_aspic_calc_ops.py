@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -720,15 +720,16 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       if not FERME:
          motscles['FOND_FISS']=_F(GROUP_MA     =TABMA8[j],
                                   GROUP_NO_ORIG=NOMGRO[j][0],
-                                  GROUP_NO_EXTR=NOMGRE[j][0],)
-         motscles['VECT_GRNO_ORIG']=NOMGRO[j]
-         motscles['VECT_GRNO_EXTR']=NOMGRE[j]
+                                  GROUP_NO_EXTR=NOMGRE[j][0],
+                                  VECT_GRNO_ORIG=NOMGRO[j],
+                                  VECT_GRNO_EXTR=NOMGRE[j])
       else:
          if TYPE_MAILLAGE.find('AXIS')!=-1  : grnoorig=NOMGRE[j][0]
 #                  si AXIS, P_FON1 est remplace par P_FON2 pour
 #                  fermer le fond de fissure
          else                               : grnoorig=NOMGRO[j][0]
-         motscles['FOND_FERME']=_F(GROUP_MA     =TABMA8[j],
+         motscles['FOND_FISS']=_F(TYPE_FOND='FERME',
+                                   GROUP_MA     =TABMA8[j],
                                    GROUP_NO_ORIG=grnoorig,
                                    GROUP_MA_ORIG=NOMMA[j],)
       fond3d[j]=DEFI_FOND_FISS( MAILLAGE  = MAILLAGE,

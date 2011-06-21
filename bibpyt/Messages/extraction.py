@@ -1,4 +1,4 @@
-#@ MODIF extraction Messages  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF extraction Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

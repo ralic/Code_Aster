@@ -1,4 +1,4 @@
-#@ MODIF observation Messages  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF observation Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,11 +25,7 @@ def _(x) : return x
 cata_msg = {
 
 3 : _("""
-Il y aura, au maximum, %(i1)d observations à chaque instant sélectionné pour cela.
-"""),
-
-4 : _("""
-Il y a %(i1)d observations et on ne peut pas en faire plus de %(i2)d.
+ Observations: il y aura, au maximum, %(i1)d observations à chaque instant sélectionné pour cela.
 """),
 
 5 : _("""
@@ -52,9 +48,16 @@ Le nombre de SUIVI_DDL permis dépend de l'affichage du tableau de convergence et
 """),
 
 37 : _("""
-  %(i1)d observations réalisées pour ce pas de temps
+  Observations: %(i1)d réalisations pour ce pas de temps
 """),
 
+38 : _("""
+  Observations: une réalisation pour ce pas de temps
+"""),
+
+39 : _("""
+  Observations: pas de réalisation pour ce pas de temps
+"""),
 
 
 }

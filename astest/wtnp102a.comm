@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # ======================================================================
@@ -293,9 +293,19 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                                 ITER_GLOB_MAXI=20),
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
+                 OBSERVATION = _F(NOM_CHAM='SIEF_ELGA',
+                                  EVAL_CMP='VALE',
+                                  NOM_CMP='M11',
+                                  EVAL_ELGA='MAX',
+                                  TOUT='OUI'), 
                  ARCHIVAGE=_F(PAS_ARCH=1,
                               ),
                  );
+                 
+TAB_OBS=RECU_TABLE(CO=U0,
+                   NOM_TABLE='OBSERVATION',);
+                   
+IMPR_TABLE(   TABLE=TAB_OBS,)          
 
 U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',

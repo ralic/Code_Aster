@@ -1,7 +1,8 @@
-      SUBROUTINE NTCROB(NOMA  ,NOMO  ,RESULT,VTEMPZ,SDOBSE)
+      SUBROUTINE NTCROB(NOMA  ,NOMO  ,RESULT,SDSENS,SDIETO,
+     &                  SDOBSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,10 +20,10 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C
-      IMPLICIT      NONE
-      CHARACTER*8   RESULT,NOMA,NOMO
-      CHARACTER*19  SDOBSE   
-      CHARACTER*(*) VTEMPZ
+      IMPLICIT     NONE
+      CHARACTER*8  RESULT,NOMA,NOMO
+      CHARACTER*19 SDOBSE   
+      CHARACTER*24 SDIETO,SDSENS
 C
 C ----------------------------------------------------------------------
 C
@@ -33,9 +34,10 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  VTEMPZ : CHAMP DE TEMPERATURE
 C IN  NOMA   : NOM DU MAILLAGE 
 C IN  NOMO   : NOM DU MODELE
+C IN  SDIETO : SD GESTION IN ET OUT
+C IN  SDSENS : SD SENSIBILITE
 C IN  SDOBSE : NOM DE LA SD POUR OBSERVATION
 C IN  RESULT : NOM UTILISATEUR DU RESULTAT
 C
@@ -61,10 +63,8 @@ C
       INTEGER      NMAX
       PARAMETER    (NMAX=99)
       INTEGER      IFM,NIV
-      INTEGER      NTOBS,NBOCC,VALI(2)
-      CHARACTER*16 PHENOM
+      INTEGER      NTOBS,NBOCC
       CHARACTER*16 MOTFAC
-      CHARACTER*19 TEMP,K19BLA
 C      
 C ----------------------------------------------------------------------
 C      
@@ -80,35 +80,24 @@ C
 C --- INITIALISATIONS
 C
       NTOBS  = 0
-      MOTFAC = 'OBSERVATION'
-      TEMP   = VTEMPZ(1:19)
-      K19BLA = ' '     
+      MOTFAC = 'OBSERVATION'  
 C
 C --- NOMBRE OCCURRENCES
 C
       CALL GETFAC(MOTFAC,NBOCC)
       IF (NBOCC.GT.NMAX) THEN
-        VALI(1) = NBOCC
-        VALI(2) = NMAX
-        CALL U2MESI('F','OBSERVATION_4',2,VALI)
+        CALL ASSERT(.FALSE.)
       ENDIF      
-C
-C --- PHENOMENE ACTIF
-C
-      PHENOM = 'TH'
 C
 C --- LECTURE DES DONNEES
 C
-      CALL NMEXTR(NOMA  ,NOMO  ,SDOBSE,PHENOM,K19BLA,
-     &            K19BLA,K19BLA,TEMP  ,MOTFAC,NBOCC ,
-     &            NTOBS ) 
+      CALL NMEXTR(NOMA  ,NOMO  ,SDOBSE,SDIETO,SDSENS,
+     &            MOTFAC,NBOCC ,NTOBS ) 
 C
 C --- CONTROLE
 C
-      IF (NTOBS.GT.NMAX) THEN
-        VALI(1) = NTOBS
-        VALI(2) = NMAX
-        CALL U2MESI('F','OBSERVATION_4',2,VALI)
+      IF (NTOBS.NE.0) THEN
+        CALL U2MESI('I','OBSERVATION_3',1,NTOBS)
       ENDIF
 C
 C --- LECTURE LISTES INSTANTS

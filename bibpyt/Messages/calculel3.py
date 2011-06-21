@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel3 Messages  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,15 +229,9 @@ cata_msg = {
  données incorrectes.
 """),
 
-46 : _("""
-Erreur de programmation :
-  On cherche à utiliser dans CALCUL un cham_elem "IN" ayant %(i1)d composantes
-  alors que le catalogue de l'élément en attend %(i2)d.
 
-Conseils :
-  Il s'agit probablement d'une erreur de programmation.
-  Mais il faut peut etre émettre une demande d'évolution pour traiter ce cas.
-"""),
+
+
 
 47 : _("""
 Possible erreur d'utilisation :

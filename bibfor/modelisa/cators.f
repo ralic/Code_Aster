@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -254,7 +254,6 @@ C
   40      CONTINUE
         ENDIF
 C
-        CALL TECART(CARFLU)
 
 C
         CALL JEDETR(CHARGE//'.CARA_TORSION')

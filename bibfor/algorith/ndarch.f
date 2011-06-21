@@ -2,7 +2,7 @@
      &                  NUMARC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,29 +62,13 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      LOGICAL      NDYNLO,LEXGE,LMUAP
+      LOGICAL      NDYNLO,LEXGE
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
-C --- FONCTIONNALITES ACTIVEES
-C
-      LEXGE  = NDYNLO(SDDYNA,'EXPL_GENE')
-      LMUAP  = NDYNLO(SDDYNA,'MULTI_APPUI')
-C
-C --- ARCHIVAGE DES DEPL/VITE/ACCE D'ENTRAINEMENTS EN MULTI-APPUIS
-C
-      IF (LMUAP) THEN
-        CALL NDMAPA(RESULT,DEPL  ,VITE  ,ACCE  ,SDDYNA,
-     &              NUMARC)
-      END IF
-C
-C --- CALCUL MODAL EN EXPLICITE
-C
-      IF (LEXGE) THEN
-        CALL NDARAM(RESULT,SDDYNA,NUMARC)
-      ENDIF   
+C     A RESORBER
+      CALL ASSERT(.FALSE.)  
 C
       CALL JEDEMA()
       END

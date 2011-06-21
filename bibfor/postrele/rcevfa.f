@@ -9,7 +9,7 @@
       LOGICAL       KEMIXT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C
 C
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM
 C
-            CALL LIMEND( NOMMAT,SALTO,'WOHLER',ENDUR)
+            CALL LIMEND( NOMMAT,SALTO,'WOHLER',K8B, ENDUR)
             IF (ENDUR) THEN
                NADMO=R8MAEM()
             ELSE
@@ -155,7 +155,7 @@ C
               ENDIF
             ENDIF
 C
-            CALL LIMEND( NOMMAT,SALTE,'WOHLER',ENDUR)
+            CALL LIMEND( NOMMAT,SALTE,'WOHLER',K8B,ENDUR)
             IF (ENDUR) THEN
                NADME=R8MAEM()
             ELSE

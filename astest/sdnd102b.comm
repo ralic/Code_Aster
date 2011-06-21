@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -241,7 +241,7 @@ MODE=NORM_MODE(reuse =MODE,
 # CALCUL DIRECT
 # -------------
 
-TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,
+TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,INFO=1,
                       CHAM_MATER=CH_MAT,
                       MODE_STAT=MODE_STA,
                       CARA_ELEM=CARA_ELE,
@@ -278,17 +278,44 @@ TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,
                                       LIST_INST=L_INST,),
                                    _F(NOM_CMP='DX',
                                       NOEUD='NO1',
-                                      NOM_CHAM='VITE_ABSOLU',),
+                                      NOM_CHAM='ACCE_ABSOLU',
+                                      LIST_INST=L_INST,),
                                   ),
-                      SUIVI_DDL=(_F(NOM_CMP='DX',
-                                    NOEUD='NO1',
-                                    NOM_CHAM='DEPL_ABSOLU',),
-                                 _F(NOM_CMP='DX',
-                                    NOEUD='NO1',
-                                    NOM_CHAM='VITE_ABSOLU',),
-                                 ),
                       ARCHIVAGE=_F(LIST_INST=L_INST2,), 
 );
+
+TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
+                   INST       = 0.01,
+                   NOM_CHAM   = 'DEPL_ABSOLU',
+                   NOM_CMP    = 'DX',
+                   NOEUD      = 'NO1',
+                   VALE       = -1.3572651273638E-04,
+                   PRECISION  = 1.E-10,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '11.0.11',
+             ),)
+             
+TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
+                   INST       = 0.01,
+                   NOM_CHAM   = 'VITE_ABSOLU',
+                   NOM_CMP    = 'DX',
+                   NOEUD      = 'NO1',
+                   VALE       = -0.013437896293417,
+                   PRECISION  = 1.E-10,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '11.0.11',
+             ),)
+
+TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
+                   INST       = 0.01,
+                   NOM_CHAM   = 'ACCE_ABSOLU',
+                   NOM_CMP    = 'DX',
+                   NOEUD      = 'NO1',
+                   VALE       = 0.53582679497900,
+                   PRECISION  = 1.E-10,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '11.0.11',
+             ),)
 
 TAB_OBS=RECU_TABLE(CO=TRAN_DY,
                    NOM_TABLE='OBSERVATION',);
@@ -307,8 +334,35 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE=0.01,),),
            NOM_PARA='VALE',
-           VALE=-1.48888E-04,
+           VALE=-1.3572651273638E-04,
            REFERENCE='NON_REGRESSION',);
+           
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='VITE_ABSOLU',),
+                   _F(NOM_PARA='NOM_OBJET',
+                     VALE_K='VALEUR',),     
+                   _F(NOM_PARA='INST',
+                      CRIT_COMP='EQ',
+                      VALE=0.01,),),
+           NOM_PARA='VALE',
+           VALE=-0.013437896293417,
+           REFERENCE='NON_REGRESSION',);
+           
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='ACCE_ABSOLU',),
+                   _F(NOM_PARA='NOM_OBJET',
+                     VALE_K='VALEUR',),     
+                   _F(NOM_PARA='INST',
+                      CRIT_COMP='EQ',
+                      VALE=0.01,),),
+           NOM_PARA='VALE',
+           VALE=0.53582679497900,
+           REFERENCE='NON_REGRESSION',);           
+           
 
 NO1_DXD=RECU_FONCTION(RESULTAT=TRAN_DY,
                       LIST_INST=LISTIMP,
@@ -336,15 +390,15 @@ NO1_DXA=RECU_FONCTION(RESULTAT=TRAN_DY,
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=NO1_DXD,
                          VALE_PARA=0.01,
-                         VALE_REFE=-1.48888E-04,
+                         VALE_REFE=-1.3572651273638E-04,
                          CRITERE='RELATIF',),
                       _F(FONCTION=NO1_DXV,
                          VALE_PARA=0.01,
-                         VALE_REFE=-0.0128759,
+                         VALE_REFE=-0.013437896293417,
                          CRITERE='RELATIF',),
                       _F(FONCTION=NO1_DXA,
                          VALE_PARA=0.01,
-                         VALE_REFE=0.587785,
+                         VALE_REFE=0.53582679497900,
                          CRITERE='RELATIF',),),);
 
 #

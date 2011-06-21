@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF archivage Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

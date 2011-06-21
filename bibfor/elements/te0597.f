@@ -1,6 +1,6 @@
       SUBROUTINE TE0597(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER NBCOUM,NBSECM,JNBSPI,IRET
       INTEGER VALI
-      PARAMETER (NBSECM=32,NBCOUM=10)
+      PARAMETER(NBSECM=32,NBCOUM=10)
       REAL*8 PI,DEUXPI,POI(2),ANGLE,DXA
       REAL*8 PGL(3,3),HK(4,4),PGL4(3,3)
       REAL*8 R8PI,OMEGA,VNO(4),VPG(4)
@@ -67,44 +67,44 @@ C ---
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,JCOOPG,IVF,IDFDK,
      &            JDFD2,JGANO)
 
-      PI = R8PI()
-      DEUXPI = 2.D0*PI
+      PI=R8PI()
+      DEUXPI=2.D0*PI
 
       CALL JEVECH('PNBSP_I','L',JNBSPI)
-      NBCOU = ZI(JNBSPI-1+1)
-      NBSEC = ZI(JNBSPI-1+2)
+      NBCOU=ZI(JNBSPI-1+1)
+      NBSEC=ZI(JNBSPI-1+2)
 
 C=====RECUPERATION NOMBRE DE COUCHES ET DE SECTEURS ANGULAIRES
 
 
       IF (NBCOU*NBSEC.LE.0) THEN
         CALL U2MESS('F','ELEMENTS4_46')
-      END IF
+      ENDIF
       IF (NBCOU.GT.NBCOUM) THEN
-        VALI = NBCOUM
-        CALL U2MESG('F', 'ELEMENTS5_2',0,' ',1,VALI,0,0.D0)
-      END IF
+        VALI=NBCOUM
+        CALL U2MESG('F','ELEMENTS5_2',0,' ',1,VALI,0,0.D0)
+      ENDIF
       IF (NBSEC.GT.NBSECM) THEN
-        VALI = NBSECM
-        CALL U2MESG('F', 'ELEMENTS5_3',0,' ',1,VALI,0,0.D0)
-      END IF
+        VALI=NBSECM
+        CALL U2MESG('F','ELEMENTS5_3',0,' ',1,VALI,0,0.D0)
+      ENDIF
       CALL JEVECH('PNUMCOR','L',JNUMC)
-      NUMCOU = ZI(JNUMC)
-      NORDO = ZI(JNUMC+1)
-      ANGLE = ZI(JNUMC+2)*PI/180.D0
+      NUMCOU=ZI(JNUMC)
+      NORDO=ZI(JNUMC+1)
+      ANGLE=ZI(JNUMC+2)*PI/180.D0
 C     ICOU EST LA POSITION DU POINT D'INTEGRATION DANS L'EPAISSEUR
 C     NORDO = -1 (INF), OU 0 (MOY) OU +1 (SUP)
-      ICOU = 2*NUMCOU + NORDO
-      IF (NUMCOU.LE.0 .OR. NUMCOU.GT.NBCOU) CALL U2MESS('F','ELEMENTS3_9
-     &5')
+      ICOU=2*NUMCOU+NORDO
+      IF (NUMCOU.LE.0 .OR. NUMCOU.GT.NBCOU) CALL U2MESS('F',
+     &    'ELEMENTS3_95')
       CALL ASSERT((ANGLE.GE.0.D0) .AND. (ANGLE.LE.DEUXPI))
 
 C  CONTRUCTION DE LA MATRICE H(I,J) = MATRICE DES VALEURS DES
 C  FONCTIONS DE FORMES AUX POINT DE GAUSS
 
-      DO 20,K = 1,NNO
-        DO 10,IGAU = 1,NPG
-          HK(K,IGAU) = ZR(IVF-1+NNO* (IGAU-1)+K)
+      DO 20,K=1,NNO
+        DO 10,IGAU=1,NPG
+          HK(K,IGAU)=ZR(IVF-1+NNO*(IGAU-1)+K)
    10   CONTINUE
    20 CONTINUE
 
@@ -118,28 +118,28 @@ C     --- RECUPERATION DES ORIENTATIONS ---
 
 C ---- REPERAGE POSITION OMEGA
 
-      DXA = PI/NBSEC
-      ISECT = INT((OMEGA+ANGLE)/DXA) + 1
-      POI(1) = 1.D0 - ((OMEGA+ANGLE)/DXA+1.D0-ISECT)
-      POI(2) = 1.D0 - (ISECT- (OMEGA+ANGLE)/DXA)
-      IF (ISECT.GT. (2*NBSEC)) ISECT = ISECT - 2*NBSEC
-      IF (ISECT.LT.1) ISECT = ISECT + 2*NBSEC
+      DXA=PI/NBSEC
+      ISECT=INT((OMEGA+ANGLE)/DXA)+1
+      POI(1)=1.D0-((OMEGA+ANGLE)/DXA+1.D0-ISECT)
+      POI(2)=1.D0-(ISECT-(OMEGA+ANGLE)/DXA)
+      IF (ISECT.GT.(2*NBSEC))ISECT=ISECT-2*NBSEC
+      IF (ISECT.LT.1)ISECT=ISECT+2*NBSEC
 
-      IF (ISECT.LE.0 .OR. ISECT.GT. (2*NBSEC)) THEN
+      IF (ISECT.LE.0 .OR. ISECT.GT.(2*NBSEC)) THEN
         CALL U2MESS('F','ELEMENTS4_51')
-      END IF
+      ENDIF
 
-      DO 30 I = 1,NPG
-        VPG(I) = 0.D0
+      DO 30 I=1,NPG
+        VPG(I)=0.D0
    30 CONTINUE
 
-       IF (OPTION.EQ.'VATU_ELNO') THEN
+      IF (OPTION.EQ.'VATU_ELNO') THEN
         CALL JEVECH('PVARIGR','L',JIN)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
 
-        READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
+        READ (ZK16(ICOMPO-1+2),'(I16)')NBVARI
         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-        LGPG = MAX(JTAB(6),1)*JTAB(7)
+        LGPG=MAX(JTAB(6),1)*JTAB(7)
 
 C       -- RECUPERATION DES VARIABLES INTERNES
 C       -- NBVARI = NOMBRES DE VARIABLES INTERNES
@@ -151,157 +151,155 @@ C       -- TRANSFERT AUX NOEUDS ET STOCKAGE A PVARINR
 
 C        BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 
-        DO 100 I = ISECT,ISECT + 1
+        DO 100 I=ISECT,ISECT+1
 
-          IF ((NNO.EQ.3) .AND. (NPG.EQ.1113)) THEN
+          IF ((NNO.EQ.3) .AND. (NPG.EQ.3)) THEN
 C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
 
-            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))*NBVARI
+            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))*NBVARI
 
-            DO 60 INO = 1,NNO
+            DO 60 INO=1,NNO
               IF (INO.EQ.1) THEN
-                IH = 2
-                I1 = 1
-                I2 = 3
-                J1 = KPGS
-                J2 = 2*LGPG + KPGS
-                J3 = LGPG + KPGS
-              ELSE IF (INO.EQ.2) THEN
-                IH = 1
-                I1 = 3
-                I2 = 1
-                J1 = 2*LGPG + KPGS
-                J2 = KPGS
-                J3 = LGPG + KPGS
+                IH=2
+                I1=1
+                I2=3
+                J1=KPGS
+                J2=2*LGPG+KPGS
+                J3=LGPG+KPGS
+              ELSEIF (INO.EQ.2) THEN
+                IH=1
+                I1=3
+                I2=1
+                J1=2*LGPG+KPGS
+                J2=KPGS
+                J3=LGPG+KPGS
               ELSE
-                K2 = 2*NBVARI
-                DO 40 INVAR = 1,NBVARI
-                  ZR(JOUT-1+K2+INVAR) = ZR(JOUT-1+K2+INVAR) +
-     &                                  ZR(JIN-1+LGPG+KPGS+INVAR)*
-     &                                  POI(I-ISECT+1)
-   40           CONTINUE
-                GO TO 60
-              END IF
-              K2 = NBVARI* (INO-1)
-              DO 50 INVAR = 1,NBVARI
-                ZR(JOUT-1+K2+INVAR) = ZR(JOUT-1+K2+INVAR) +
-     &                                (HK(IH,I2)*ZR(JIN-1+J1+INVAR)-
-     &                                HK(IH,I1)*ZR(JIN-1+J2+INVAR)-
-     &                                ZR(JIN-1+J3+INVAR)*
-     &                                (HK(3,I1)*HK(IH,I2)-HK(3,
-     &                                I2)*HK(IH,I1)))/
-     &                                (HK(1,1)*HK(2,3)-HK(1,3)*HK(2,1))*
+                K2=2*NBVARI
+                DO 40 INVAR=1,NBVARI
+                  ZR(JOUT-1+K2+INVAR)=ZR(JOUT-1+K2+INVAR)+
+     &                                ZR(JIN-1+LGPG+KPGS+INVAR)*
      &                                POI(I-ISECT+1)
+   40           CONTINUE
+                GOTO 60
+
+              ENDIF
+              K2=NBVARI*(INO-1)
+              DO 50 INVAR=1,NBVARI
+                ZR(JOUT-1+K2+INVAR)=ZR(JOUT-1+K2+INVAR)+
+     &                              (HK(IH,I2)*ZR(JIN-1+J1+INVAR)-
+     &                              HK(IH,I1)*ZR(JIN-1+J2+INVAR)-
+     &                              ZR(JIN-1+J3+INVAR)*
+     &                              (HK(3,I1)*HK(IH,I2)-HK(3,I2)*HK(IH,
+     &                              I1)))/(HK(1,1)*HK(2,3)-
+     &                              HK(1,3)*HK(2,1))*POI(I-ISECT+1)
    50         CONTINUE
    60       CONTINUE
 
           ELSE
-            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))*NBVARI
+            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))*NBVARI
 
-            DO 90 INVAR = 1,NBVARI
-              DO 70 KP = 1,NPG
-                J2 = LGPG* (KP-1) + KPGS + INVAR
-                VPG(KP) = ZR(JIN-1+J2)*POI(I-ISECT+1)
+            DO 90 INVAR=1,NBVARI
+              DO 70 KP=1,NPG
+                J2=LGPG*(KP-1)+KPGS+INVAR
+                VPG(KP)=ZR(JIN-1+J2)*POI(I-ISECT+1)
    70         CONTINUE
-              NNOS = 2
+              NNOS=2
               CALL PPGAN2(JGANO,1,VPG,VNO)
-              DO 80 INO = 1,NNO
-                K2 = NBVARI* (INO-1)
-                ZR(JOUT-1+K2+INVAR) = ZR(JOUT-1+K2+INVAR) + VNO(INO)
+              DO 80 INO=1,NNO
+                K2=NBVARI*(INO-1)
+                ZR(JOUT-1+K2+INVAR)=ZR(JOUT-1+K2+INVAR)+VNO(INO)
    80         CONTINUE
    90       CONTINUE
 
 
-          END IF
+          ENDIF
 
   100   CONTINUE
 
-       ELSE IF ((OPTION.EQ.'EPTU_ELNO') .OR.
-     &         (OPTION.EQ.'SITU_ELNO')) THEN
+      ELSEIF ((OPTION.EQ.'EPTU_ELNO') .OR. (OPTION.EQ.'SITU_ELNO')) THEN
 
-         IF ((OPTION.EQ.'EPTU_ELNO')) THEN
+        IF ((OPTION.EQ.'EPTU_ELNO')) THEN
 
 C ======== RAPPEL DES DEFORMATIONS ====================
 
           CALL JEVECH('PDEFORR','L',JIN)
 
           CALL JEVECH('PDEFONO','E',JCONN)
-         ELSE IF (OPTION.EQ.'SITU_ELNO') THEN
+        ELSEIF (OPTION.EQ.'SITU_ELNO') THEN
 
 C ======== RAPPEL DES CONTRAINTES ====================
 
           CALL JEVECH('PCONTRR','L',JIN)
 
           CALL JEVECH('PSIGNOD','E',JCONN)
-        END IF
+        ENDIF
 
-        LGPG = (2*NBSEC+1)* (2*NBCOU+1)*6
-        DO 170 I = ISECT,ISECT + 1
+        LGPG=(2*NBSEC+1)*(2*NBCOU+1)*6
+        DO 170 I=ISECT,ISECT+1
 
           IF ((NNO.EQ.3) .AND. (NPG.EQ.3)) THEN
 C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
 
-            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))*6
-            DO 130 INO = 1,NNO
+            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))*6
+            DO 130 INO=1,NNO
               IF (INO.EQ.1) THEN
-                IH = 2
-                I1 = 1
-                I2 = 3
-                J1 = KPGS
-                J2 = 2*LGPG + KPGS
-                J3 = LGPG + KPGS
-              ELSE IF (INO.EQ.2) THEN
-                IH = 1
-                I1 = 3
-                I2 = 1
-                J1 = 2*LGPG + KPGS
-                J2 = KPGS
-                J3 = LGPG + KPGS
+                IH=2
+                I1=1
+                I2=3
+                J1=KPGS
+                J2=2*LGPG+KPGS
+                J3=LGPG+KPGS
+              ELSEIF (INO.EQ.2) THEN
+                IH=1
+                I1=3
+                I2=1
+                J1=2*LGPG+KPGS
+                J2=KPGS
+                J3=LGPG+KPGS
               ELSE
-                K2 = 12
-                DO 110 INVAR = 1,6
-                  ZR(JCONN-1+K2+INVAR) = ZR(JCONN-1+K2+INVAR) +
-     &                                   ZR(JIN-1+LGPG+KPGS+INVAR)*
-     &                                   POI(I-ISECT+1)
+                K2=12
+                DO 110 INVAR=1,6
+                  ZR(JCONN-1+K2+INVAR)=ZR(JCONN-1+K2+INVAR)+
+     &                                 ZR(JIN-1+LGPG+KPGS+INVAR)*
+     &                                 POI(I-ISECT+1)
   110           CONTINUE
-                GO TO 130
-              END IF
-              K2 = 6* (INO-1)
-              DO 120 INVAR = 1,6
-                ZR(JCONN-1+K2+INVAR) = ZR(JCONN-1+K2+INVAR) +
-     &                                 (HK(IH,I2)*ZR(JIN-1+J1+INVAR)-
-     &                                 HK(IH,I1)*ZR(JIN-1+J2+INVAR)-
-     &                                 ZR(JIN-1+J3+INVAR)*
-     &                                 (HK(3,I1)*HK(IH,I2)-HK(3,
-     &                                 I2)*HK(IH,I1)))/
-     &                                 (HK(1,1)*HK(2,3)-
-     &                                 HK(1,3)*HK(2,1))*POI(I-ISECT+1)
+                GOTO 130
+
+              ENDIF
+              K2=6*(INO-1)
+              DO 120 INVAR=1,6
+                ZR(JCONN-1+K2+INVAR)=ZR(JCONN-1+K2+INVAR)+
+     &                               (HK(IH,I2)*ZR(JIN-1+J1+INVAR)-
+     &                               HK(IH,I1)*ZR(JIN-1+J2+INVAR)-
+     &                               ZR(JIN-1+J3+INVAR)*
+     &                               (HK(3,I1)*HK(IH,I2)-HK(3,I2)*HK(IH,
+     &                               I1)))/(HK(1,1)*HK(2,3)-
+     &                               HK(1,3)*HK(2,1))*POI(I-ISECT+1)
   120         CONTINUE
   130       CONTINUE
 
           ELSE
-            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))*6
-            DO 160 INVAR = 1,6
-              DO 140 KP = 1,NPG
-                J2 = LGPG* (KP-1) + KPGS + INVAR
-                VPG(KP) = ZR(JIN-1+J2)*POI(I-ISECT+1)
+            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))*6
+            DO 160 INVAR=1,6
+              DO 140 KP=1,NPG
+                J2=LGPG*(KP-1)+KPGS+INVAR
+                VPG(KP)=ZR(JIN-1+J2)*POI(I-ISECT+1)
   140         CONTINUE
-              NNOS = 2
+              NNOS=2
               CALL PPGAN2(JGANO,1,VPG,VNO)
-              DO 150 INO = 1,NNO
-                K2 = 6* (INO-1)
-                ZR(JCONN-1+K2+INVAR) = ZR(JCONN-1+K2+INVAR) + VNO(INO)
+              DO 150 INO=1,NNO
+                K2=6*(INO-1)
+                ZR(JCONN-1+K2+INVAR)=ZR(JCONN-1+K2+INVAR)+VNO(INO)
   150         CONTINUE
   160       CONTINUE
 
-          END IF
+          ENDIF
 
   170   CONTINUE
 
-       ELSE IF ((OPTION.EQ.'EPTQ_ELNO') .OR.
-     &         (OPTION.EQ.'SITQ_ELNO')) THEN
+      ELSEIF ((OPTION.EQ.'EPTQ_ELNO') .OR. (OPTION.EQ.'SITQ_ELNO')) THEN
 
-         IF (OPTION.EQ.'EPTQ_ELNO') THEN
+        IF (OPTION.EQ.'EPTQ_ELNO') THEN
 
 C ======== RAPPEL DES CONTRAINTES ====================
 
@@ -309,67 +307,67 @@ C ======== RAPPEL DES CONTRAINTES ====================
 
           CALL JEVECH('PDENOEQ','E',JCONN)
 
-         ELSE IF (OPTION.EQ.'SITQ_ELNO') THEN
+        ELSEIF (OPTION.EQ.'SITQ_ELNO') THEN
 
 C ======== RAPPEL DES CONTRAINTES ====================
 
           CALL JEVECH('PCONTEQ','L',JIN)
 
           CALL JEVECH('PCOEQNO','E',JCONN)
-        END IF
+        ENDIF
 
-        LGPG = (2*NBSEC+1)* (2*NBCOU+1)
-        DO 210 I = ISECT,ISECT + 1
+        LGPG=(2*NBSEC+1)*(2*NBCOU+1)
+        DO 210 I=ISECT,ISECT+1
 
           IF ((NNO.EQ.3) .AND. (NPG.EQ.3)) THEN
 C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
 
-            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))
-            DO 180 INO = 1,NNO
+            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))
+            DO 180 INO=1,NNO
               IF (INO.EQ.1) THEN
-                IH = 2
-                I1 = 1
-                I2 = 3
-                J1 = KPGS
-                J2 = 2*LGPG + KPGS
-                J3 = LGPG + KPGS
-              ELSE IF (INO.EQ.2) THEN
-                IH = 1
-                I1 = 3
-                I2 = 1
-                J1 = 2*LGPG + KPGS
-                J2 = KPGS
-                J3 = LGPG + KPGS
+                IH=2
+                I1=1
+                I2=3
+                J1=KPGS
+                J2=2*LGPG+KPGS
+                J3=LGPG+KPGS
+              ELSEIF (INO.EQ.2) THEN
+                IH=1
+                I1=3
+                I2=1
+                J1=2*LGPG+KPGS
+                J2=KPGS
+                J3=LGPG+KPGS
               ELSE
-                K2 = 2
-                ZR(JCONN-1+K2+1) = ZR(JCONN-1+K2+1) +
-     &                             ZR(JIN-1+LGPG+KPGS+1)*POI(I-ISECT+1)
-                GO TO 180
-              END IF
-              K2 = (INO-1)
-              ZR(JCONN-1+K2+1) = ZR(JCONN-1+K2+1) +
-     &                           (HK(IH,I2)*ZR(JIN-1+J1+1)-
-     &                           HK(IH,I1)*ZR(JIN-1+J2+1)-
-     &                           ZR(JIN-1+J3+1)* (HK(3,I1)*HK(IH,
-     &                           I2)-HK(3,I2)*HK(IH,I1)))/
-     &                           (HK(1,1)*HK(2,3)-HK(1,3)*HK(2,1))*
-     &                           POI(I-ISECT+1)
+                K2=2
+                ZR(JCONN-1+K2+1)=ZR(JCONN-1+K2+1)+
+     &                           ZR(JIN-1+LGPG+KPGS+1)*POI(I-ISECT+1)
+                GOTO 180
+
+              ENDIF
+              K2=(INO-1)
+              ZR(JCONN-1+K2+1)=ZR(JCONN-1+K2+1)+
+     &                         (HK(IH,I2)*ZR(JIN-1+J1+1)-
+     &                         HK(IH,I1)*ZR(JIN-1+J2+1)-
+     &                         ZR(JIN-1+J3+1)*(HK(3,I1)*HK(IH,I2)-HK(3,
+     &                         I2)*HK(IH,I1)))/(HK(1,1)*HK(2,3)-
+     &                         HK(1,3)*HK(2,1))*POI(I-ISECT+1)
   180       CONTINUE
 
           ELSE
-            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))
-            DO 190 KP = 1,NPG
-              J2 = LGPG* (KP-1) + KPGS + 1
-              VPG(KP) = ZR(JIN-1+J2)*POI(I-ISECT+1)
+            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))
+            DO 190 KP=1,NPG
+              J2=LGPG*(KP-1)+KPGS+1
+              VPG(KP)=ZR(JIN-1+J2)*POI(I-ISECT+1)
   190       CONTINUE
-            NNOS = 2
+            NNOS=2
             CALL PPGAN2(JGANO,1,VPG,VNO)
-            DO 200 INO = 1,NNO
-              K2 = (INO-1)
-              ZR(JCONN-1+K2+1) = ZR(JCONN-1+K2+1) + VNO(INO)
+            DO 200 INO=1,NNO
+              K2=(INO-1)
+              ZR(JCONN-1+K2+1)=ZR(JCONN-1+K2+1)+VNO(INO)
   200       CONTINUE
 
-          END IF
+          ENDIF
 
   210   CONTINUE
 
@@ -377,6 +375,6 @@ C     FIN STOCKAGE
 
       ELSE
         CALL U2MESK('F','ELEMENTS4_49',1,OPTION)
-      END IF
+      ENDIF
 
       END

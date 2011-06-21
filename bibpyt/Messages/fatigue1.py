@@ -1,8 +1,8 @@
-#@ MODIF fatigue1 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF fatigue1 Messages  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -376,5 +376,25 @@ cata_msg={
 
 """),
 
+91: _("""
+ Dans CALC_FATIGUE  pour le critère d'amorçage fournis par la formule, le calcul de la grandeur %(k1)s 
+ n'est pas disponible. Merci de forunir les noms des grandeurs disponibles ou contacter le développeur. 
+"""),
+
+92: _("""
+ Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, pour déterminer le plan de dommage maximal,
+ il n'est pas possible de projeter simultanément la contrainte et la déformation. Les grandeurs sont incompatibles avec le critère requis. 
+"""),
+
+93: _("""
+ Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, le mot-cle FORMULE_VIE est fournis par une formule
+ le seule paramètre accepté est NBRUP, c-à-d, N_f, car le critère formule est pour GRDEQ = f(N_f). Changez le nom et vérifiez bien que la fonction est de type: GRDEQ = f(N_f).
+"""),
+
+94: _("""
+ Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-cle FORMULE_VIE est fournis 
+ par la formule, la grandeur équivalente pour l'instant est plus grande que f(N_f =1 ). Vérifiez la formule
+ de la courbe FORMULE_VIE.  
+"""),
 
 }

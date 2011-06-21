@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,7 @@ def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN#
                         "ECIN_ELEM",
                         "EFCA_ELNO",
                         "EFCA_NOEU",
+                        "EFGE_ELGA",
                         "EFGE_ELNO",
                         "EFGE_NOEU",
                         "ENDO_ELGA",
@@ -151,6 +152,7 @@ def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN#
                         "SIEQ_ELGA",
                         "SIEQ_ELNO",
                         "SIEQ_NOEU",
+                        "SIGM_ELGA",
                         "SIGM_ELNO",
                         "SIGM_NOEU",
                         "SING_ELEM",

@@ -7,7 +7,7 @@
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C     ------------------------------------------------------------------
 C
       REAL*8    R8VIDE, E, EC, PARA(3), M, N, NADM, SALTM, SALTH,
      &          KEMECA, KETHER, KETHE1, VALR(2),R8MAEM
+      CHARACTER*8 KBID
       INTEGER ICODRE
       LOGICAL       ENDUR
 C DEB ------------------------------------------------------------------
@@ -91,7 +92,7 @@ C
 
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM : TR. 1
 C
-         CALL LIMEND( NOMMAT,SALTIJ(1),'WOHLER',ENDUR)
+         CALL LIMEND( NOMMAT,SALTIJ(1),'WOHLER',KBID, ENDUR)
          IF (ENDUR) THEN
             NADM=R8MAEM()
          ELSE
@@ -111,7 +112,7 @@ C
            SALTIJ(2) = SALTM + SALTH
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM : TR. 2
 C
-           CALL LIMEND( NOMMAT,SALTIJ(2),'WOHLER',ENDUR)
+           CALL LIMEND( NOMMAT,SALTIJ(2),'WOHLER',KBID, ENDUR)
            IF (ENDUR) THEN
               NADM=R8MAEM()
            ELSE

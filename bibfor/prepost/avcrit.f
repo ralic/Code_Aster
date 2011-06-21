@@ -1,8 +1,8 @@
       SUBROUTINE AVCRIT( NBVEC, NBORDR, VALA, COEFPA, NCYCL, VMIN,
-     &                   VMAX, OMIN, OMAX, NOMCRI, VSIGN, VPHYDR,
-     &                   GDREQ )
+     &                   VMAX, OMIN, OMAX, NOMCRI,NOMFOR,
+     &                   VSIGN, VPHYDR,GDREQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,8 @@ C RESPONSABLE F1BHHAJ J.ANGLES
       REAL*8        VMIN(NBVEC*(NBORDR+2)), VMAX(NBVEC*(NBORDR+2))
       REAL*8        VSIGN(NBVEC*NBORDR), VPHYDR(NBORDR)
       REAL*8        GDREQ(NBVEC*NBORDR)
-      CHARACTER*16  NOMCRI
+      CHARACTER*16  NOMCRI, FORVIE,NOMFOR
+      CHARACTER*8   GRDVIE
 C ----------------------------------------------------------------------
 C BUT: CALCULER LA CONTRAINTE EQUIVALENTE POUR TOUS LES VECTEURS NORMAUX
 C      A TOUS LES NUMEROS D'ORDRE.
@@ -76,14 +77,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER     IVECT, AD0, AD1, AD2, ICYCL, NVAL
-      REAL*8     COEPRE
+      INTEGER      IVECT, AD0, AD1, AD2, ICYCL, NVAL, IPAR, J, NP
+      INTEGER      IBID, NPARMA, JPROF
+      REAL*8       COEPRE, VALPAR(8), VALPU(8)
+      CHARACTER*8  NOMPF(8), NOMPAR(8)
+      CHARACTER*24 CHNOM, CBID
 C     ------------------------------------------------------------------
+      DATA  NOMPAR/  'TAUPR_1','TAUPR_2','SIGN_1','SIGN_2',
+     &               'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2'  /
+C-----------------------------------------------------------------------
 C
 C234567                                                              012
 
       CALL JEMARQ()
-C
+       
       CALL GETVR8(' ','COEF_PREECROU',1,1,1,COEPRE,NVAL)
 
 C 1. CRITERE MATAKE_MODI_AV (MATAKE MODIFIE AMPLITUDE VARIABLE)
@@ -98,7 +105,7 @@ C 1. CRITERE MATAKE_MODI_AV (MATAKE MODIFIE AMPLITUDE VARIABLE)
      &                       VALA*MAX(VSIGN(AD0+OMAX(AD2)),
      &                                VSIGN(AD0+OMIN(AD2)),0.0D0)
                GDREQ(AD1)= GDREQ(AD1)*COEFPA
-
+           
  20         CONTINUE
  10      CONTINUE
 
@@ -113,8 +120,9 @@ C 2. CRITERE DE DANG_VAN MODIFIE (AMPLITUDE VARIABLE)
                GDREQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
      &                       VALA*MAX(VPHYDR(OMAX(AD2)),
      &                                VPHYDR(OMIN(AD2)),0.0D0)
+     
                GDREQ(AD1)= GDREQ(AD1)*COEFPA
-
+               
  40         CONTINUE
  30      CONTINUE
 
@@ -135,6 +143,62 @@ C    AMPLITUDE VARIABLE)
 
  60         CONTINUE
  50      CONTINUE
+ 
+C 3. CRITERE FORMULE(AMPLITUDE VARIABLE) 
+
+      ELSEIF (NOMCRI(1:7) .EQ. 'FORMULE') THEN  
+C NOMBRE DE PARAMETRES DISPONIBLES
+         NPARMA = 8
+C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR         
+         CHNOM(20:24) = '.PROL'
+         CHNOM(1:19) = NOMFOR
+      
+         CALL JEVEUO(CHNOM,'L',JPROF)
+         CALL FONBPA ( NOMFOR, ZK24(JPROF), CBID, NPARMA, NP, NOMPF )  
+     
+C VALEURS DE CES PARAMETRES,CORRESSPOND A NOMPAR POUR CHAQUE SOUS-CYCLE 
+
+         DO 80 IVECT=1, NBVEC
+            AD0 = (IVECT-1)*NBORDR
+            DO 70 ICYCL=1, NCYCL(IVECT)
+               AD1 = (IVECT-1)*NBORDR + ICYCL
+               AD2 = (IVECT-1)*(NBORDR+2) + ICYCL
+               
+C POUR REFERENCIER               
+C                VALPAR(1) = TAUPR_1
+C                VALPAR(2) = TAUPR_2
+C                VALPAR(3) = SIGN_1
+C                VALPAR(4) = SIGN_2 
+C                VALPAR(5) = PHYDR_1
+C                VALPAR(6) = PHYDR_2
+C                VALPAR(7) = EPSPR_1 
+C                VALPAR(8) = EPSPR_2
+               
+               VALPAR(1) = VMAX(AD2)
+               VALPAR(2) = VMIN(AD2)
+               VALPAR(3) = VSIGN(AD0+OMAX(AD2))
+               VALPAR(4) = VSIGN(AD0+OMIN(AD2))
+               VALPAR(5) = VPHYDR(OMAX(AD2))
+               VALPAR(6) = VPHYDR(OMIN(AD2))             
+               VALPAR(7) = VMAX(AD2)
+               VALPAR(8) = VMIN(AD2)  
+                  
+C CALCULER LE GRANDEUR EQUIVALENT
+    
+               DO 75 J = 1, NP
+                  DO 65 IPAR = 1, NPARMA
+                     IF (NOMPF(J).EQ.NOMPAR(IPAR)) THEN
+                        VALPU(J) =  VALPAR(IPAR) 
+                        GOTO 75            
+                     ENDIF
+65                CONTINUE             
+75             CONTINUE          
+ 
+               CALL FOINTE('F',NOMFOR, NP, NOMPF,VALPU, GDREQ(AD1),IBID)
+70          CONTINUE
+80      CONTINUE 
+ 
+
 
       ENDIF
 

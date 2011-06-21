@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -253,7 +253,13 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                   EXCIT      =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
                                ),
-                  CONTACT    = CHA2,             
+                  CONTACT    = CHA2,
+                  OBSERVATION  = _F(NOM_CHAM='DEPL',
+                                    NOM_CMP='DX',
+                                    EVAL_CMP = 'VALE',
+                                    TOUT='OUI',
+                                    PAS_OBSE=1,
+                                 ),           
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   SOLVEUR    = _F(SYME='OUI',
                                   METHODE = 'LDLT',),
@@ -264,6 +270,12 @@ U2L=STAT_NON_LINE(MODELE    = MO,
 #                  INFO=2,
                )
 #
+
+TAB_OBS=RECU_TABLE(CO=U2L,
+                   NOM_TABLE='OBSERVATION',);
+                   
+IMPR_TABLE(   TABLE=TAB_OBS,)                
+
 U2L=CALC_ELEM(reuse=U2L,
               OPTION=('SIEF_ELNO', 'VARI_ELNO',),
               RESULTAT=U2L,
@@ -343,7 +355,7 @@ U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                  CONVERGENCE = _F(ARRET = 'OUI',
                                   ITER_GLOB_MAXI = 200,
                                   RESI_GLOB_RELA = 1.0E-5,),
-#                 INFO=2,
+                 INFO=2,
                )
 #
 U3M=CALC_ELEM(reuse=U3M,

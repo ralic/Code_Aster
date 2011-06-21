@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,85 +17,83 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GALENNE E.GALENNE
-DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",op=55,sd_prod=fond_fiss,reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
-                    fr="Définition de lèvres et d'un fond de fissure en 3D",
-         regles=(UN_PARMI('FOND_FISS','FOND_FERME','FOND_INF'),
-                 EXCLUS('FOND_FERME','DTAN_ORIG'),
-                 EXCLUS('FOND_FERME','DTAN_EXTR'),
-                      EXCLUS('FOND_FERME','VECT_GRNO_ORIG'),
-                      EXCLUS('FOND_FERME','VECT_GRNO_EXTR'),
-                 UN_PARMI('LEVRE_SUP','NORMALE'),
-                      EXCLUS('LEVRE_INF','NORMALE'),
-                 ENSEMBLE('DTAN_ORIG','DTAN_EXTR'),
-                 ENSEMBLE('FOND_SUP','FOND_INF'),
-                 EXCLUS('FOND_INF','FOND_FISS'),
-                 EXCLUS('FOND_INF','FOND_FERME'),
-                      ENSEMBLE('VECT_GRNO_ORIG','VECT_GRNO_EXTR'),
-                      EXCLUS('DTAN_ORIG','VECT_GRNO_ORIG'),
-                      EXCLUS('DTAN_EXTR','VECT_GRNO_EXTR') ,),
-           MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
-           FOND_FISS       =FACT(statut='f',
-             regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),
-                     EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),
-                          EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
-             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-#  à mettre à jour le max vaut-il 1
-             NOEUD_ORIG      =SIMP(statut='f',typ=no,),
-             GROUP_NO_ORIG   =SIMP(statut='f',typ=grno,),
-             NOEUD_EXTR      =SIMP(statut='f',typ=no,),
-             GROUP_NO_EXTR   =SIMP(statut='f',typ=grno,),
-           ),
-           FOND_FERME      =FACT(statut='f',
-             regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),
-                          EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
-             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-             NOEUD_ORIG      =SIMP(statut='f',typ=no,),
-             GROUP_NO_ORIG   =SIMP(statut='f',typ=grno,),
-             MAILLE_ORIG     =SIMP(statut='f',typ=ma,),
-             GROUP_MA_ORIG   =SIMP(statut='f',typ=grma,),
-           ),
-           FOND_INF       =FACT(statut='f',
-             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-             NOEUD_ORIG      =SIMP(statut='f',typ=no,),
-             GROUP_NO_ORIG   =SIMP(statut='f',typ=grno,),
-             NOEUD_EXTR      =SIMP(statut='f',typ=no,),
-             GROUP_NO_EXTR   =SIMP(statut='f',typ=grno,),
-           ),
-           FOND_SUP       =FACT(statut='f',
-             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-             NOEUD_ORIG      =SIMP(statut='f',typ=no,),
-             GROUP_NO_ORIG   =SIMP(statut='f',typ=grno,),
-             NOEUD_EXTR      =SIMP(statut='f',typ=no,),
-             GROUP_NO_EXTR   =SIMP(statut='f',typ=grno,),
-           ),
-           LEVRE_SUP       =FACT(statut='f',
-             regles=(UN_PARMI('GROUP_MA','MAILLE'),),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           ),
-           LEVRE_INF       =FACT(statut='f',
-             regles=(UN_PARMI('GROUP_MA','MAILLE', ),),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           ),
-           NORMALE         =SIMP(statut='f',typ='R',max='**'),
-           PREC_NORM       =SIMP(statut='f',typ='R',defaut=0.1),
-           DTAN_ORIG       =SIMP(statut='f',typ='R',max='**'),
-           DTAN_EXTR       =SIMP(statut='f',typ='R',max='**'),
-           VECT_GRNO_ORIG  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max=2),
-           VECT_GRNO_EXTR  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max=2),
-           INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-)  ;
+
+DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
+                    op=55,
+                    sd_prod=fond_fiss,
+                    reentrant='n',
+                    UIinfo={"groupes":("Modélisation",)},fr="Définition de lèvres et d'un fond de fissure",
+
+    MAILLAGE  = SIMP(statut='o',typ=maillage_sdaster ),
+
+    # definition du fond de fissure
+    FOND_FISS = FACT(statut='o',max=2,
+    
+                     TYPE_FOND = SIMP(statut='f',typ='TXM',into=("OUVERT","FERME","INF","SUP"),defaut="OUVERT"),
+
+                     NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                     GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max=1   ),
+                     GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max=1   ),
+                     MAILLE   = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                     regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
+
+                     # possibilite d'ordonnencement automatique du fond si groupe de mailles
+                     b_grma = BLOC(condition = "(GROUP_MA != None or MAILLE != None) and TYPE_FOND != 'FERME'",
+                                   NOEUD_ORIG    =SIMP(statut='f',typ=no,  max=1),
+                                   GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
+                                   regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
+
+                                   # si ordo 
+                                   b_ordo = BLOC(condition = "NOEUD_ORIG != None or GROUP_NO_ORIG != None",
+                                                 NOEUD_EXTR    = SIMP(statut='f',typ=no,  max=1),
+                                                 GROUP_NO_EXTR = SIMP(statut='f',typ=grno,max=1),
+                                                 regles=(EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
+                                                ),
+                                  ),
+                     # possibilite d'ordonnencement automatique du fond si groupe de mailles
+                     b_grma_ferme= BLOC(condition = "(GROUP_MA != None or MAILLE != None) and TYPE_FOND == 'FERME'",
+                                        NOEUD_ORIG    =SIMP(statut='f',typ=no,  max=1),
+                                        GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
+                                        regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
+
+                                        # si ordo 
+                                        b_ordo_ferme = BLOC(condition = "NOEUD_ORIG != None or GROUP_NO_ORIG != None",
+                                                            MAILLE_ORIG   = SIMP(statut='f',typ=ma,  max=1),
+                                                            GROUP_MA_ORIG = SIMP(statut='f',typ=grma,  max=1),
+                                                            regles=(UN_PARMI('MAILLE_ORIG','GROUP_MA_ORIG'),),
+                                                           ),
+                                       ),
+                    # definition des directions des tangentes aux bords (uniquement pour les fonds non fermes)
+                    b_dtan = BLOC(condition = "TYPE_FOND != 'FERME'",
+                                  DTAN_ORIG       =SIMP(statut='f',typ='R',max='**'),
+                                  DTAN_EXTR       =SIMP(statut='f',typ='R',max='**'),
+                                  VECT_GRNO_ORIG  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max=2),
+                                  VECT_GRNO_EXTR  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max=2),
+                                  regles=(EXCLUS('DTAN_ORIG','VECT_GRNO_ORIG'),
+                                             EXCLUS('DTAN_EXTR','VECT_GRNO_EXTR'),),
+                                 ),
+                    ),
+
+    # definition des levres de la fissure
+    regles=(UN_PARMI('LEVRE_SUP','NORMALE'),
+            EXCLUS('LEVRE_INF','NORMALE'),),
+
+    LEVRE_SUP       =FACT(statut='f',max=1,
+                          regles=(UN_PARMI('GROUP_MA','MAILLE'),),
+                          GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                          MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                          ),
+
+    LEVRE_INF       =FACT(statut='f',max=1,
+                          regles=(UN_PARMI('GROUP_MA','MAILLE'),),
+                          GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                          MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                          ),
+
+    NORMALE         =SIMP(statut='f',typ='R',max='**'),
+
+    PREC_NORM       =SIMP(statut='f',typ='R',defaut=0.1),
+
+    INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+
+)  

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 # TITRE  PARALLEPEPIPEDE ISOTROPE TRANSVERSE SOUS SON PROPRE POIDS
 # sslv121a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,10 +65,11 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CH,),
                    );
 
-RESU=CALC_ELEM( reuse= RESU, RESULTAT= RESU,
+RESU=CALC_CHAMP( reuse= RESU, RESULTAT= RESU, CONTRAINTE=('SIGM_ELGA',), )
 
-               OPTION=('SIGM_ELNO',),
-                )
+RESU=CALC_ELEM( reuse= RESU, RESULTAT= RESU, OPTION=('SIGM_ELNO',), )
+
+
 #---------------------------------------------------------------------
 
 TEST_RESU(RESU=(

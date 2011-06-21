@@ -6,7 +6,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -363,11 +363,11 @@ C ---       RECTANGLE OU CERCLE
             CALL NOCART(CARTGE,3,' ','NOM',1,NOMMAI,0,' ',13)
          ENDIF
  76   CONTINUE
-C
+
 C --- COMPACTAGE DES CARTES
       CALL TECART(CARTPO)
       CALL TECART(CARTGE)
-C
+
 C --- NETTOYAGE
       CALL JEDETR('&&ACEAPO.TAB_PARA')
       CALL JEDETR('&&ACEAPO.NCP')

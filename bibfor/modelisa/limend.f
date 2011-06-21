@@ -1,6 +1,6 @@
-      SUBROUTINE LIMEND( NOMMAZ,SALT,NOMRES,LIMIT)
+      SUBROUTINE LIMEND( NOMMAZ,SALT,NOMRES,FORVIE, LIMIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       LOGICAL            LIMIT
-      CHARACTER*(*)      NOMMAZ,NOMRES
+      CHARACTER*(*)      NOMMAZ,NOMRES,FORVIE
       REAL*8             SALT
 C ----------------------------------------------------------------------
 C     TEST PERMETTANT DE SAVOIR SI ON EST EN DESSOUS DE LA LIMITE
@@ -56,16 +56,23 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER        IRET,IVALR,NBR,NBC,IVALK,NBK,NBF,IK,IVALF,IPROL
-      REAL*8              VALLIM
-      CHARACTER*10       NOMPHE
-      CHARACTER*8        NOMFON,K8BID
-      CHARACTER*8        NOMMAT
-
+      INTEGER        JPROF, NBMX, NP, IBID
+      REAL*8         VALLIM, NLIMIM
+      CHARACTER*10   NOMPHE
+      CHARACTER*8    NOMFON,K8BID,NOMMAT, NOMPF
+      CHARACTER*16   TYPFON 
+      CHARACTER*24   CHNOM, CBID
+      
       CALL JEMARQ()
 
       NOMMAT = NOMMAZ
       NOMPHE = 'FATIGUE   '
       LIMIT = .FALSE.
+C NOMBRE DE PARAMETTRES MAX
+      NBMX = 30
+      
+C LA DUREE DE VIE A 10^7
+      NLIMIM = 1.D7
 
       IF ( NOMRES(1:6) .EQ. 'WOHLER' ) THEN
 
@@ -150,6 +157,59 @@ C        CONSTANT
   30     CONTINUE
          CALL U2MESS('F','MODELISA4_91')
   40     CONTINUE
+  
+      ELSEIF ( NOMRES(1:8) .EQ. 'FORM_VIE' ) THEN
+
+C    DANS LE CAS OU LE MOT CLE N'EST PAS MANSON_COFFIN NI WOHLERS
+         CHNOM(20:24) = '.PROL'
+         CHNOM(1:19) = FORVIE
+         CALL JEVEUO(CHNOM,'L',IPROL)
+         TYPFON = ZK24(IPROL-1+1)(1:8)
+ 
+         CALL FONBPA ( FORVIE, ZK24(IPROL), CBID, NBMX, NP, NOMPF ) 
+                                 
+         IF  (TYPFON .EQ. 'FONCTION') THEN 
+            CHNOM(20:24) = '.VALE'
+            CHNOM(1:19) = FORVIE
+         
+            CALL JEVEUO(CHNOM,'L',JPROF)
+         
+            CALL JELIRA (CHNOM,'LONMAX',NBR,K8BID)
+         
+            NBF = NBR/2
+
+            DO 50 IK = 1, NBF
+              CHNOM(20:24) = '.VALE'
+              CHNOM(1:19) = FORVIE         
+              CALL JEVEUO(CHNOM,'L',IVALF)
+
+              IF ( (ZK24(IPROL-1+5)(1:1).EQ.'E') .OR.
+     &            (ZK24(IPROL-1+5)(1:1).EQ.'C') ) THEN
+                VALLIM=ZR(IVALF)
+                IF (SALT.LT.VALLIM) THEN
+                   LIMIT=.TRUE.
+                ENDIF
+              ENDIF
+              GOTO 60
+  50        CONTINUE
+            CALL U2MESS('F','MODELISA4_91')
+  60        CONTINUE
+
+         ELSE
+C C'EST UNE FORMULE
+
+C VERIFIER QUE LA FORMULE A LA VARIABLE NRUPT = N_F         
+            IF ((NOMPF.NE. 'NBRUP') .OR. (NP .NE. 1))  THEN
+               CALL U2MESS('F','FATIGUE1_93')
+            ENDIF
+                   
+            CALL FOINTE('F',FORVIE, NP, NOMPF,NLIMIM, VALLIM,IBID)
+            
+            IF (SALT.LT.VALLIM) THEN
+                LIMIT=.TRUE.
+            ENDIF
+            
+         ENDIF
 
       ENDIF
 

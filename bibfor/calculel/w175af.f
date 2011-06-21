@@ -4,7 +4,7 @@
       CHARACTER*19 CHFER1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,6 @@ C     --------------------------------------------
         ENDIF
    30 CONTINUE
 
-      CALL TECART(CHFER1)
       CALL JEDETR(CHFER1//'.NCMP')
       CALL JEDETR(CHFER1//'.VALV')
 

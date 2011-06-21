@@ -6,7 +6,7 @@
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
      &             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM, VALE(2)
       LOGICAL      SEISME,ENDUR
       INTEGER ICODRE
-      CHARACTER*8  K8B, NOMMAT, NOEUD, VALK(7)
+      CHARACTER*8  K8B, NOMMAT, NOEUD, VALK(7), KBID
       CHARACTER*24 MOMEPI, MOMEPJ, NOMMAI, NOMNOE, CONNEX,
      &             MATEPI, MATEPJ
       REAL*8       TYPEKE,SPMECA,SPTHER
@@ -363,7 +363,7 @@ C
 C
 C ----------- CALCUL DU FACTEUR D'USAGE
 C
-              CALL LIMEND ( NOMMAT, SALTIJ, 'WOHLER', ENDUR )
+              CALL LIMEND ( NOMMAT, SALTIJ, 'WOHLER',KBID, ENDUR )
               IF ( ENDUR ) THEN
                   UG=0.D0
               ELSE

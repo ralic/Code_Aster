@@ -1,0 +1,182 @@
+      SUBROUTINE W155MA(NUMA,NUCOU,NICOU,NANGL,NUFIB,MOTFAC,
+     &   JCE2D,JCE2L,JCE2V,JCE5D,JCE5L,JCE5V,KSP1,KSP2,C1,C2,IRET)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PELLET J.PELLET
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER NUMA,NUCOU,NANGL,NUFIB,KSP1,KSP2
+      INTEGER JCE2L,JCE2D,JCE2V,IRET,JCE5L,JCE5D,JCE5V
+      REAL*8 C1,C2
+      CHARACTER*3 NICOU
+      CHARACTER*16 MOTFAC
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER IPOSI,NBCOU,NBSEC,ISECT,ICOU,NPGH
+      INTEGER IAD2,NBGH,NBFIB,IAD2A,IAD2B
+      REAL*8 POI(2),OMEGA,PI,R8PI,ANGLE,DXA
+
+C ----------------------------------------------------------------------
+C BUT : DETERMINER KSP1, KSP2, C1 ET C2
+C       TELS QUE POUR LA MAILLE NUMA, LE SOUS-POINT SPECIFIE PAR
+C       (MOTFAC,NUCOU,NICOU,NANGL,NUFIB)
+C       SOIT = C1*KSP1+C2*KSP2
+C OUT IRET : / 0 -> OK : ON PEUT UTILISER C1,C2,KSP1 ET KSP2
+C            / 1 -> LA MAILLE NUMA N'EST PAS CONCERNEE
+C
+C REMARQUE : L'INTERPOLATION N'EST NECESSAIRE QUE POUR LES TUYAUX.
+C            DANS LES AUTRES CAS, KSP2=KSP1, C2=0., C1=1.
+C ----------------------------------------------------------------------
+      IRET=0
+
+
+
+C     -- CALCUL DE IPOSI=1,2,3 : POSITION DANS LA COUCHE
+      IF (MOTFAC.EQ.'EXTR_COQUE' .OR. MOTFAC.EQ.'EXTR_TUYAU') THEN
+        IF (NICOU.EQ.'INF') THEN
+          IPOSI=1
+        ELSEIF (NICOU.EQ.'MOY') THEN
+          IPOSI=2
+        ELSEIF (NICOU.EQ.'SUP') THEN
+          IPOSI=3
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ENDIF
+
+
+
+
+      IF (MOTFAC.EQ.'EXTR_COQUE') THEN
+C     ---------------------------------
+        CALL ASSERT(NUCOU.GE.1)
+C       -- EXTR_COQUE EST UTILISE POUR LES COQUES ET GRILLES :
+C       -- CMP1 = COQ_NCOU
+        CALL CESEXI('C',JCE2D,JCE2L,NUMA,1,1,1,IAD2A)
+C       -- CMP5 = GRI_NCOU
+        CALL CESEXI('C',JCE2D,JCE2L,NUMA,1,1,5,IAD2B)
+
+        IF (IAD2A.LE.0.AND.IAD2B.LE.0) THEN
+          IRET=1
+          GOTO 9999
+        ENDIF
+        IF (IAD2A.GT.0) THEN
+          NBCOU=ZI(JCE2V-1+IAD2A)
+          NPGH=3
+        ELSE
+          CALL ASSERT(IAD2B.GT.0)
+          NBCOU=ZI(JCE2V-1+IAD2B)
+          NPGH=1
+        ENDIF
+        CALL ASSERT(NUCOU.LE.NBCOU)
+
+        IF (NPGH.EQ.1) THEN
+          CALL ASSERT(IPOSI.EQ.2)
+          KSP1=NUCOU
+        ELSEIF (NPGH.EQ.3) THEN
+          KSP1=((NUCOU-1)*NPGH)+IPOSI
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        KSP2=KSP1
+        C1=1.D0
+        C2=0.D0
+
+
+      ELSEIF (MOTFAC.EQ.'EXTR_PMF') THEN
+C     ---------------------------------
+        CALL ASSERT(NUFIB.GE.1)
+C       -- CMP4 = NBFIBR
+        CALL CESEXI('C',JCE2D,JCE2L,NUMA,1,1,4,IAD2)
+        IF (IAD2.LE.0) THEN
+          IRET=1
+          GOTO 9999
+        ENDIF
+        NBFIB=ZI(JCE2V-1+IAD2)
+C       -- LE NOMBRE DE FIBRES EST TOUJOURS TRUANDE DE 6 AU MOINS
+        CALL ASSERT(NUFIB.LE.NBFIB-6)
+        KSP1=NUFIB
+        KSP2=KSP1
+        C1=1.D0
+        C2=0.D0
+
+
+      ELSEIF (MOTFAC.EQ.'EXTR_TUYAU') THEN
+C     ---------------------------------
+        CALL ASSERT(NUCOU.GE.1)
+C       -- CMP2 = TUY_NCOU
+        CALL CESEXI('C',JCE2D,JCE2L,NUMA,1,1,2,IAD2)
+        IF (IAD2.LE.0) THEN
+          IRET=1
+          GOTO 9999
+        ENDIF
+        NBCOU=ZI(JCE2V-1+IAD2)
+        CALL ASSERT(NUCOU.LE.NBCOU)
+C       -- CMP3 = TUY_NSEC
+        CALL CESEXI('C',JCE2D,JCE2L,NUMA,1,1,3,IAD2)
+        CALL ASSERT(IAD2.GT.0)
+        NBSEC=ZI(JCE2V-1+IAD2)
+        CALL ASSERT(NUCOU.LE.NBCOU)
+        ICOU=2*(NUCOU-1)+IPOSI
+
+C       -- CMP1 = ANGZZK
+        CALL CESEXI('C',JCE5D,JCE5L,NUMA,1,1,1,IAD2)
+        OMEGA=ZR(JCE5V-1+IAD2)
+
+C       -- MORCEAU DE CODE EXTRAIT DE TE0597 :
+        PI=R8PI()
+        ANGLE=NANGL*PI/180.D0
+C       CALL CARCOU(...,OMEGA)
+        DXA=PI/NBSEC
+        ISECT=INT((OMEGA+ANGLE)/DXA)+1
+        POI(1)=1.D0-((OMEGA+ANGLE)/DXA+1.D0-ISECT)
+        POI(2)=1.D0-(ISECT-(OMEGA+ANGLE)/DXA)
+        IF (ISECT.GT.(2*NBSEC))ISECT=ISECT-2*NBSEC
+        IF (ISECT.LT.1)ISECT=ISECT+2*NBSEC
+        IF (ISECT.LE.0 .OR. ISECT.GT.(2*NBSEC)) CALL U2MESS('F',
+     &      'ELEMENTS4_51')
+C       -- FIN MORCEAU TE0597
+        KSP1=(2*NBSEC+1)*(ICOU-1)+ISECT
+        KSP2=KSP1+1
+        C1=POI(1)
+        C2=POI(2)
+
+
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+9999  CONTINUE
+
+
+      END

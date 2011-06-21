@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,15 +150,15 @@ TEST_TABLE(  TABLE=TB2L,
              VALE=-2.9234662032891E+05,
              PRECISION=0.00001)
 
-FISS=DEFI_FOND_FISS(    MAILLAGE=MA,
-                          FOND_FISS=_F(  GROUP_MA = 'LFF1',
+FISS=DEFI_FOND_FISS(MAILLAGE=MA,
+                    FOND_FISS=_F(GROUP_MA = 'LFF1',
                                  GROUP_NO_ORIG = 'NFF1',
-                                 GROUP_NO_EXTR = 'NFF2'),
-                          LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
-                          LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
-                          DTAN_ORIG=(  1.,  0.,  0., ),
-                          DTAN_EXTR=(  0.,  1., 0., )
-                       )
+                                 GROUP_NO_EXTR = 'NFF2',
+                                 DTAN_ORIG=(  1.,  0.,  0., ),
+                                 DTAN_EXTR=(  0.,  1.,  0., ),),
+                    LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
+                    LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
+                   )
 
 RSUP=0.5
 
@@ -472,12 +472,12 @@ TEST_TABLE(TABLE=TABL_KTO,
 
 # TEST INFORMATIQUE : VALIDATION DE DEFI_FOND_FISS
 FISSM=DEFI_FOND_FISS(MAILLAGE=MA,
-                     FOND_FISS=_F(  GROUP_MA = 'LFF1',),
+                     FOND_FISS=_F(GROUP_MA = 'LFF1',
+                                  DTAN_ORIG=(  1.,  0., 0., ),
+                                  DTAN_EXTR=(  0.,  1., 0., ),),
                      LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
                      LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
-                     DTAN_ORIG=(  1.,  0.,  0., ),
-                     DTAN_EXTR=(  0.,  1., 0., )
-                     )
+                    )
 
 TABL_KTM=POST_K1_K2_K3(MODELISATION='3D',
                        MAILLAGE=MA,
@@ -508,12 +508,12 @@ MA = DEFI_GROUP (reuse = MA,
                    )
 
 FISSN=DEFI_FOND_FISS(MAILLAGE=MA,
-                     FOND_FISS=_F(  GROUP_NO = 'NLFF1',),
-                     LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
-                     LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
-                     DTAN_ORIG=(  1.,  0.,  0., ),
-                     DTAN_EXTR=(  0.,  1., 0., )
-                       )
+                     FOND_FISS=_F(GROUP_NO = 'NLFF1',
+                                  DTAN_ORIG=(  1.,  0., 0., ),
+                                  DTAN_EXTR=(  0.,  1., 0., ),),
+                     LEVRE_SUP=_F(GROUP_MA = 'LEVINFS'),
+                     LEVRE_INF=_F(GROUP_MA = 'LEVINF1'),
+                    )
 
 TABL_KTN=POST_K1_K2_K3(MODELISATION='3D',
                        MAILLAGE=MA,

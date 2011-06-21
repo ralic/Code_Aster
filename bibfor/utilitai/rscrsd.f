@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=40)
+      PARAMETER (NCMEC1=42)
       PARAMETER (NCMEC2=49)
       PARAMETER (NCMEC3=41)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
@@ -79,6 +79,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EFGE_ELNO',        'EFGE_NOEU',         'EFCA_ELNO',
      & 'EFCA_NOEU',        'EPSI_ELGA',         'EPSI_ELNO',
      & 'EPSI_NOEU',        'EPTU_ELNO',         'SIEF_ELGA',
+     & 'SIGM_ELGA',        'EFGE_ELGA',
      & 'SIEF_ELNO',        'SIEF_NOEU',         'SIGM_ELNO',
      & 'SIGM_NOEU',        'EPTQ_ELNO',         'SITQ_ELNO',
      & 'SICA_ELNO',        'SICA_NOEU',         'SIZ1_NOEU',
@@ -114,11 +115,11 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EPMQ_ELGA',       'EPMQ_ELNO',       'EPMQ_NOEU',
      & 'DEDE_ELNO',       'DEDE_NOEU',       'DESI_ELNO',
      & 'DESI_NOEU',       'PMPB_ELGA',       'PMPB_ELNO',
-     & 'PMPB_NOEU',       
+     & 'PMPB_NOEU',
      & 'EPFP_ELNO',       'EPFP_ELGA',
      & 'EPFD_ELNO',       'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',
-     & 'VACO_ELNO',       
+     & 'VACO_ELNO',
      & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',
      & 'SPMX_ELGA',       'MODE_FLAMB',
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',

@@ -1,7 +1,7 @@
       SUBROUTINE MOIN93(MASSE,RAIDE,RAIDFA,NBMOIN,MATMOD,VEFREQ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,12 @@ C     ------------------------------------------------------------------
      &             LINDDL,LDDLD,NBNOEU,
      &             LPRNO,NNOINT,IPOS1,IPOS2,NUMNO,
      &             NBCMPM,NBEC,NDDLIN,LNOINT,
-     &             CONNEC,LCONNC,SIZECO,
-     &             LINTRF,
+     &             CONNEC,LCONNC,SIZECO,LINTRF,
      &             LINLAG,LIPOS,LFREQ
 
       PARAMETER    (NBCMPM=10)
       INTEGER      DECO(NBCMPM)
-      REAL*8        RBID,
-     &             SHIFT
+      REAL*8       RBID,SHIFT
 
       CHARACTER*8  K8B,K8BID,NOMMA
       CHARACTER*14 NUME,NUME91
@@ -212,10 +210,11 @@ C-- DESTRUCTION DES OBJETS TEMPORAIRES --C
 C--                                    --C
 C----------------------------------------C
 
-      CALL DETRSD('NUME_DDL',NUME91)
+      CALL DETRSD('SOLVEUR','&&NUME91')
       CALL JEDETR(NUME91(1:14)//'.NUME.REFN')
       CALL DETRSD('MATR_ASSE',SSAMI)
       CALL DETRSD('MATR_ASSE',RAIINT)
+      CALL DETRSD('NUME_DDL',NUME91)
 
       CALL JEDETR('&&MODL91      .MODG.SSNO')
       CALL JEDETR('&&MODL91      .MODG.SSME')

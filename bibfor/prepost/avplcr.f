@@ -1,19 +1,20 @@
       SUBROUTINE AVPLCR(NBVEC, VECTN, VECTU, VECTV, NBORDR, KWORK,
      &                   SOMNOW, VWORK, TDISP, TSPAQ, I, NOMCRI, 
-     &                   FATSOC,PROAXE,NOMMAT,VALA,   
-     &                   COEFPA, CUDOMX, NXM, NYM, NZM )
+     &                   NOMFOR,GRDVIE, FORVIE,FORDEF,FATSOC,PROAXE,   
+     &                   NOMMAT,VALA,COEFPA, CUDOMX, NXM, NYM, NZM )
       IMPLICIT      NONE
       INTEGER       NBORDR, KWORK, I, NBVEC
-      INTEGER       SOMNOW, TDISP, TSPAQ, IPGN
+      INTEGER       SOMNOW, TDISP, TSPAQ
+      LOGICAL       FORDEF
       REAL*8        VECTN(3*NBVEC), VECTU(3*NBVEC), VECTV(3*NBVEC)
       REAL*8        VWORK(TDISP), FATSOC
-      CHARACTER*16  NOMCRI,PROAXE
-      CHARACTER*8   NOMMAT
+      CHARACTER*16  NOMCRI,PROAXE,NOMFOR,FORVIE
+      CHARACTER*8   NOMMAT,GRDVIE
       REAL*8        VALA, COEFPA
       REAL*8        CUDOMX, NXM, NYM, NZM
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/05/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -100,7 +101,7 @@ C     ------------------------------------------------------------------
       REAL*8        VECN2(3*NBVEC), VECU2(3*NBVEC), VECV2(3*NBVEC) 
       REAL*8        VECN1(3*NBVEC), VECU1(3*NBVEC), VECV1(3*NBVEC)
       REAL*8        DGAM2, PI, R8PI, PHI0  
-C--------------------------
+C     --------------------------
       EPSILO = 1.0D-7
       PI = R8PI()
       
@@ -112,13 +113,14 @@ C--------------------------
             
          CALL  AVCIPR( NBVEC1, VECTN, VECTU, VECTV,
      &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,  
-     &         I, NOMCRI, FATSOC, PROAXE, PSEUIL, METHOD, 
-     &         NCYCL,VMIN,VMAX, OMIN, OMAX)
+     &         I, NOMCRI, FORDEF, FATSOC, PROAXE, PSEUIL,  
+     &         METHOD,NCYCL,VMIN,VMAX, OMIN, OMAX)
      
 C REMPACER PAR SUBROUTINE AVGRDO          
  
          CALL AVGRDO(NBVEC1, NBORDR, VECTN, VWORK, TDISP, KWORK,
-     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI, VALA,   
+     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI, 
+     &             NOMFOR,GRDVIE, FORVIE, FORDEF,VALA,   
      &             COEFPA, NCYCL,VMIN,VMAX, OMIN, OMAX,CUDOMX,VNORMX)
   
 
@@ -170,8 +172,8 @@ C 9.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
             
             CALL  AVCIPR( NBVEC1, VECN2, VECU2, VECV2,
      &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,  
-     &         I, NOMCRI, FATSOC, PROAXE, PSEUIL, METHOD, 
-     &         NCYCL,VMIN,VMAX, OMIN, OMAX)  
+     &         I, NOMCRI, FORDEF, FATSOC, PROAXE, PSEUIL,  
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)  
        
      
          ELSE
@@ -192,15 +194,16 @@ C 9.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
 
             CALL  AVCIPR( NBVEC1, VECN2, VECU2, VECV2,
      &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,  
-     &         I, NOMCRI, FATSOC, PROAXE, PSEUIL, METHOD, 
-     &         NCYCL,VMIN,VMAX, OMIN, OMAX )  
+     &         I, NOMCRI, FORDEF, FATSOC, PROAXE, PSEUIL,  
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX )  
      
          ENDIF
          
 C REMPACER PAR SUBROUTINE AVGRDO          
  
          CALL AVGRDO(NBVEC1, NBORDR, VECN2, VWORK, TDISP, KWORK,
-     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI, VALA,   
+     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI, 
+     &             NOMFOR,GRDVIE, FORVIE, FORDEF, VALA,   
      &             COEFPA,NCYCL,VMIN,VMAX, OMIN, OMAX,CUDOMX, VNORMX )
      
 
@@ -254,8 +257,8 @@ C 10.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
             
             CALL  AVCIPR( NBVEC1, VECN1, VECU1, VECV1,
      &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,  
-     &         I, NOMCRI, FATSOC, PROAXE, PSEUIL, METHOD, 
-     &         NCYCL,VMIN,VMAX, OMIN, OMAX)  
+     &         I, NOMCRI, FORDEF, FATSOC, PROAXE, PSEUIL,  
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)  
      
          ELSE
             DGAM2 = 1.0D0*(PI/180.0D0)
@@ -275,14 +278,15 @@ C 10.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
      
             CALL  AVCIPR( NBVEC1, VECN1, VECU1, VECV1,
      &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,  
-     &         I, NOMCRI, FATSOC, PROAXE, PSEUIL, METHOD, 
-     &         NCYCL,VMIN,VMAX, OMIN, OMAX)    
+     &         I, NOMCRI, FORDEF, FATSOC, PROAXE, PSEUIL,  
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)    
          ENDIF
          
 C REMPACER PAR SUBROUTINE AVGRDO          
  
          CALL AVGRDO(NBVEC1, NBORDR, VECN1, VWORK, TDISP, KWORK,
-     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI, VALA,   
+     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI, 
+     &             NOMFOR,GRDVIE, FORVIE, FORDEF, VALA,   
      &             COEFPA,NCYCL,VMIN,VMAX,OMIN,OMAX, CUDOMX, VNORMX )
      
 C  VECTEUR NORMAL ASSOCIE AUX PLAN CRITIQUE  TROUVE  

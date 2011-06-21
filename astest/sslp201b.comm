@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN_SI
 # RESPONSABLE VABHHTS J.PELLET
 # sslp201b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -550,15 +550,15 @@ TEST_RESU(RESU=(_F(RESULTAT=MSLIN,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEQ_ELGA',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=904758968.545,
-                   PRECISION=1e-10,
+                   VALE=9.0475896827084E+08,
+                   PRECISION=1e-9,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MSLIN,
                    NUME_ORDRE=2,
                    NOM_CHAM='SIEQ_ELGA',
                    TYPE_TEST='SOMM_ABS',
                    VALE=917485491.455,
-                   PRECISION=6e-10,
+                   PRECISION=2e-9,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MSLIN,
                    NUME_ORDRE=3,

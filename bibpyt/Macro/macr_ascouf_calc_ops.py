@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -697,13 +697,14 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     motscles = {}
     if FOND_FISS != None : self.DeclareOut('fonfis',FOND_FISS)
     if TYPE_MAILLAGE =='FISS_COUDE' :
-       motscles['FOND_FISS']=_F(GROUP_NO='FONDFISS')
-       motscles['VECT_GRNO_ORIG']= ('PFOR','THOR')
-       motscles['VECT_GRNO_EXTR']= ('PFEX','THEX')
+       motscles['FOND_FISS']=_F(GROUP_NO='FONDFISS',
+                                VECT_GRNO_ORIG=('PFOR','THOR'),
+                                VECT_GRNO_EXTR= ('PFEX','THEX'))
     else :
-       motscles['FOND_FERME']=_F(GROUP_MA='FONDFISS',
-                                 GROUP_NO_ORIG='PFOR',
-                                 GROUP_MA_ORIG='MAIL_ORI')
+       motscles['FOND_FISS']=_F(TYPE_FOND='FERME',
+                                GROUP_MA='FONDFISS',
+                                GROUP_NO_ORIG='PFOR',
+                                GROUP_MA_ORIG='MAIL_ORI')
     fonfis=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
                           LEVRE_SUP=_F(GROUP_MA='FACE1'),
                           LEVRE_INF=_F(GROUP_MA='FACE2'),

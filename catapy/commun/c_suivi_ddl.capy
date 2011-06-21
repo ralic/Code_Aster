@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMUN  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,7 @@ def C_SUIVI_DDL() : return FACT(statut='f',max=4,
            NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
                                    into=("DEPL","VITE","ACCE",
                                          "FORC_NODA",
-                                         "SIEF_ELGA","VARI_ELGA",                                        
-                                         "DEPL_ABSOLU","VITE_ABSOLU","ACCE_ABSOLU",)),
+                                         "SIEF_ELGA","VARI_ELGA",)),
           
            EVAL_CHAM       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
                                    into=("MIN","MAX","MOY","VALE",),),
@@ -41,10 +40,7 @@ def C_SUIVI_DDL() : return FACT(statut='f',max=4,
                                             (NOM_CHAM=='VITE') or \
                                             (NOM_CHAM=='ACCE') or \
                                             (NOM_CHAM=='FORC_NODA') or \
-                                            (NOM_CHAM=='VALE_CONT') or \
-                                            (NOM_CHAM=='DEPL_ABSOLU') or \
-                                            (NOM_CHAM=='VITE_ABSOLU') or \
-                                            (NOM_CHAM=='ACCE_ABSOLU')",                                 
+                                            (NOM_CHAM=='VALE_CONT')",                                 
                                  regles   =(UN_PARMI('NOEUD','GROUP_NO','GROUP_MA','MAILLE','TOUT')),
                                  TOUT            =SIMP(statut='d',typ='TXM',into=("OUI",) ),
                                  NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
