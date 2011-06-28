@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ def _(x) : return x
 cata_msg = {
 
 2 : _("""
- la méthode de Newmark est programmée sous sa forme implicite: 
+ la méthode de Newmark est programmée sous sa forme implicite:
  le paramètre BETA ne doit pas etre nul.
  """),
 
@@ -139,10 +139,6 @@ cata_msg = {
 
 49 : _("""
  l'instant de récuperation est en dehors du domaine de calcul.
-"""),
-
-50 : _("""
- pas de mailles fournies
 """),
 
 55 : _("""

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 
-from Macro.macr_ecla_pg_ops import macr_ecla_pg_ops
 
 def macr_ecla_pg_prod(self,RESULTAT,MAILLAGE,RESU_INIT,**args):
   self.type_sdprod(RESULTAT,AsType(RESU_INIT))
@@ -26,10 +25,13 @@ def macr_ecla_pg_prod(self,RESULTAT,MAILLAGE,RESU_INIT,**args):
   return None
 
 
-MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",op=macr_ecla_pg_ops,sd_prod=macr_ecla_pg_prod, reentrant='n',
-             UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
-             fr="Permettre la visualisation des champs aux points de Gauss d'une SD_RESULTAT sans lissage ni interpolation",
-
+MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",
+                   op=OPS('Macro.macr_ecla_pg_ops.macr_ecla_pg_ops'),
+                   sd_prod=macr_ecla_pg_prod,
+                   reentrant='n',
+                   UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
+                   fr="Permettre la visualisation des champs aux points de Gauss d'une " \
+                      "SD_RESULTAT sans lissage ni interpolation",
 
              # SD résultat ,modèle et champs à "éclater" :
              RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster,fr="RESULTAT à éclater",),

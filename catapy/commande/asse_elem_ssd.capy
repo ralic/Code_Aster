@@ -1,24 +1,23 @@
-#& MODIF COMMANDE  DATE 03/01/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ANDRIAM H.ANDRIAMBOLOLONA
 
-from Macro.asse_elem_ssd_ops import asse_elem_ssd_ops
 
 def asse_elem_ssd_prod(self,RESU_ASSE_SSD,**args):
     MTYPES = {
@@ -34,11 +33,11 @@ def asse_elem_ssd_prod(self,RESU_ASSE_SSD,**args):
     return None
 
 ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD",
-        op=asse_elem_ssd_ops,
-        sd_prod=asse_elem_ssd_prod,
-        reentrant='n',
-        fr="Enchainer les commandes DEFI_MODELE_GENE, NUME_DDL_GENE et ASSE_MATR_GENE",
-        UIinfo={"groupes":("Matrices/vecteurs",)},
+                    op=OPS('Macro.asse_elem_ssd_ops.asse_elem_ssd_ops'),
+                    sd_prod=asse_elem_ssd_prod,
+                    reentrant='n',
+                    fr="Enchainer les commandes DEFI_MODELE_GENE, NUME_DDL_GENE et ASSE_MATR_GENE",
+                    UIinfo={"groupes":("Matrices/vecteurs",)},
 
 # pour les concepts de sortie
         RESU_ASSE_SSD = FACT( statut='o', max=1,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE DESROCHES X.DESROCHES
 
-from Macro.macro_elas_mult_ops import macro_elas_mult_ops
 
 def macro_elas_mult_prod(self,NUME_DDL,CAS_CHARGE,**args ):
   if isinstance(NUME_DDL,CO) :
@@ -29,9 +28,13 @@ def macro_elas_mult_prod(self,NUME_DDL,CAS_CHARGE,**args ):
   if CAS_CHARGE[0]['MODE_FOURIER'] != None : return fourier_elas
   raise AsException("type de concept resultat non prevu")
 
-MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro_elas_mult_prod,reentrant='f',
-            UIinfo={"groupes":("Résolution",)},
-         fr="Calculer les réponses statiques linéaires pour différents cas de charges ou modes de Fourier",
+MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",
+                      op=OPS('Macro.macro_elas_mult_ops.macro_elas_mult_ops'),
+                      sd_prod=macro_elas_mult_prod,
+                      reentrant='f',
+                      UIinfo={"groupes":("Résolution",)},
+                      fr="Calculer les réponses statiques linéaires pour différents cas " \
+                         "de charges ou modes de Fourier",
          regles=(UN_PARMI('CHAR_MECA_GLOBAL','LIAISON_DISCRET', ),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),

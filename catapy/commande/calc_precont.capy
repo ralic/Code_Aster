@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,18 +18,10 @@
 # ======================================================================
 # RESPONSABLE MICHEL S.MICHEL
 
-from Macro.calc_precont_ops import calc_precont_ops
 
-
-# ===========================================================================
-#           CATALOGUE DE LA MACRO "CALC_PRECONT"
-#           -----------------------------------------
-# USAGE :
-#
-#
-# ===========================================================================
-
-CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
+CALC_PRECONT=MACRO(nom="CALC_PRECONT",
+                   op=OPS('Macro.calc_precont_ops.calc_precont_ops'),
+                   sd_prod=evol_noli,
                    fr="Imposer la tension définie par le BPEL dans les cables",
                    reentrant='f',UIinfo={"groupes":("Modélisation",)},
          reuse =SIMP(statut='f',typ='evol_noli'),

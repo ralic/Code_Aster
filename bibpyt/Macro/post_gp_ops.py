@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF post_gp_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -254,7 +254,7 @@ def post_gp_ops(self, **args):
 
       # indices des mailles du dernier group_ma
       # (pour avoir le nombre de mailles par tranche)
-      l_mailles_last_gm = maya.GROUPEMA.get()[l_copo_tot[-1].ljust(8)]
+      l_mailles_last_gm = maya.sdj.GROUPEMA.get()[l_copo_tot[-1].ljust(8)]
 
       # initialisation des concepts reutilises dans la boucle
       # on suppose que chaque tranche a le meme nombre de mailles
@@ -266,10 +266,10 @@ def post_gp_ops(self, **args):
       T_el = [None]*len(l_mailles_last_gm)*nb_tranches
 
       # on recupere les sd en dehors de la boucle
-      maya_GROUPEMA = maya.GROUPEMA.get()
-      maya_NOMMAI = maya.NOMMAI.get()
-      maya_CONNEX = maya.CONNEX.get()
-      maya_NOMNOE = maya.NOMNOE.get()
+      maya_GROUPEMA = maya.sdj.GROUPEMA.get()
+      maya_NOMMAI = maya.sdj.NOMMAI.get()
+      maya_CONNEX = maya.sdj.CONNEX.get()
+      maya_NOMNOE = maya.sdj.NOMNOE.get()
 
    # liste des tables tb_Gpmax repartie aux noeuds
    l_tb_Gpmax_noeuds = []
@@ -1285,11 +1285,11 @@ def Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
         tmp_mesure = NP.zeros(num_ord)
         tab_noeud=[]
         tab_maille=[]
-        for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
-          if ltyma[maya.TYPMAIL.get()[maille_courante]][0:3]=='SEG':
-            connexe = maya.CONNEX.get()[maille_courante]
-            tab_noeud = tab_noeud + [maya.NOMNOE.get()[connexe[i]-1] for i in range(2)]
-            tab_maille.append(maya.NOMMAI.get()[maille_courante])
+        for maille_courante in maya.sdj.GROUPEMA.get()[mon_nom.ljust(8)]:
+          if ltyma[maya.sdj.TYPMAIL.get()[maille_courante]][0:3]=='SEG':
+            connexe = maya.sdj.CONNEX.get()[maille_courante]
+            tab_noeud = tab_noeud + [maya.sdj.NOMNOE.get()[connexe[i]-1] for i in range(2)]
+            tab_maille.append(maya.sdj.NOMMAI.get()[maille_courante])
         tab_DEP_el = Coord_Recup(tab_noeud,tab_maille,resu)
         num_ord_init  = tab_DEP_el.NUME_ORDRE[0]
         # Calcul de la surface des mailles du copeau courant pour chaque instant
@@ -1342,13 +1342,13 @@ def Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
    l_ep_copeaux_tot_3D = []
 
    mon_nom = 'Mai_Plan'
-   COOR = maya.COORDO.VALE.get()
+   COOR = maya.sdj.COORDO.VALE.get()
 
    # Recupération des noeuds de fond de fissure appartenant à la tranche courante
    Recup_Noeuds_Copeaux(False,maya,l_copo_tot[0])
    Recup_3D(maya,0,mon_nom)
-   l_noeud_fond = [noeud_courant for noeud_courant in maya.GROUPENO.get()['Nds_Floc'.ljust(8)]]
-   tab_DEP_el   = Coord_Recup([maya.NOMNOE.get()[x-1] for x in maya.GROUPENO.get()['Nds_Floc'.ljust(8)]] ,None,resu)
+   l_noeud_fond = [noeud_courant for noeud_courant in maya.sdj.GROUPENO.get()['Nds_Floc'.ljust(8)]]
+   tab_DEP_el   = Coord_Recup([maya.sdj.NOMNOE.get()[x-1] for x in maya.sdj.GROUPENO.get()['Nds_Floc'.ljust(8)]] ,None,resu)
    coord_fond   = [(tab_DEP_el.COOR_X[x],tab_DEP_el.COOR_Y[x], tab_DEP_el.COOR_Z[x]) for x in range(len(l_noeud_fond))]
 
    for C_k in range(len(l_copo_tot)) :
@@ -1370,11 +1370,11 @@ def Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
        tmp_mesure = NP.zeros(num_ord)
        tab_noeud  = []
        tab_maille = []
-       for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
-           if ltyma[maya.TYPMAIL.get()[maille_courante]][0:4]=='QUAD':
-               connexe   = maya.CONNEX.get()[maille_courante]
-               tab_noeud = tab_noeud + [maya.NOMNOE.get()[connexe[i]-1] for i in range(4)]
-               tab_maille.append(maya.NOMMAI.get()[maille_courante])
+       for maille_courante in maya.sdj.GROUPEMA.get()[mon_nom.ljust(8)]:
+           if ltyma[maya.sdj.TYPMAIL.get()[maille_courante]][0:4]=='QUAD':
+               connexe   = maya.sdj.CONNEX.get()[maille_courante]
+               tab_noeud = tab_noeud + [maya.sdj.NOMNOE.get()[connexe[i]-1] for i in range(4)]
+               tab_maille.append(maya.sdj.NOMMAI.get()[maille_courante])
        tab_DEP_el    = Coord_Recup(tab_noeud,tab_maille,resu)
        num_ord_init  = tab_DEP_el.NUME_ORDRE[0]
 
@@ -1412,11 +1412,11 @@ def Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
        # Calcul de la distance du copeau au fond d'entaille
        coord_nds = []
        dist_moy=0.
-       for noeud_courant in maya.GROUPENO.get()['Nds_Delt'.ljust(8)]:
+       for noeud_courant in maya.sdj.GROUPENO.get()['Nds_Delt'.ljust(8)]:
             coord_nds = (COOR[(noeud_courant-1)*3],COOR[(noeud_courant-1)*3+1],COOR[(noeud_courant-1)*3+2])
             dist_moy  = dist_moy + CalDist(coord_nds,NP.zeros(3),coord_fond,[tuple(NP.zeros(3))]*len(coord_fond))
 
-       l_ep_copeaux_tot_3D.append(dist_moy/len(maya.GROUPENO.get()['Nds_Delt'.ljust(8)]))
+       l_ep_copeaux_tot_3D.append(dist_moy/len(maya.sdj.GROUPENO.get()['Nds_Delt'.ljust(8)]))
 
    Supr_mano(maya,mon_nom)
 

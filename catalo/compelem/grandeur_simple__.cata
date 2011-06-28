@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+%& MODIF COMPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -500,8 +500,8 @@ GRANDEUR_SIMPLE__
                    E2X, E2Y, E2Z : DDLS enrichis (CRACKTIP2) X-FEM
                    E3X, E3Y, E3Z : DDLS enrichis (CRACKTIP3) X-FEM
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
-       LAGS_C :
-       LAGS_F1, LAGS_F2 :
+       LAGS_C, LAG2_C, LAG3_C, LAG4_C :
+       LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -541,9 +541,10 @@ GRANDEUR_SIMPLE__
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
                     H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
-                    LAGR     E1X      E1Y      E1Z      E2X
+                    H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
-                    LAGS_C   LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3
+                    LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
+                    LAG4_C  LAG4_F1   LAG4_F2  UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
@@ -572,8 +573,8 @@ GRANDEUR_SIMPLE__
                    E2X, E2Y, E2Z : DDLS enrichis (CRACKTIP2) X-FEM
                    E3X, E3Y, E3Z : DDLS enrichis (CRACKTIP3) X-FEM
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
-       LAGS_C :
-       LAGS_F1, LAGS_F2 :
+       LAGS_C, LAG2_C, LAG3_C, LAG4_C :
+       LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -613,9 +614,10 @@ GRANDEUR_SIMPLE__
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
                     H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
-                    LAGR     E1X      E1Y      E1Z      E2X
+                    H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
-                    LAGS_C   LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3
+                    LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
+                    LAG4_C  LAG4_F1   LAG4_F2  UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
@@ -644,8 +646,8 @@ GRANDEUR_SIMPLE__
                    E2X, E2Y, E2Z : DDLS enrichis (CRACKTIP2) X-FEM
                    E3X, E3Y, E3Z : DDLS enrichis (CRACKTIP3) X-FEM
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
-       LAGS_C :
-       LAGS_F1, LAGS_F2 :
+       LAGS_C, LAG2_C, LAG3_C, LAG4_C :
+       LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -684,9 +686,10 @@ GRANDEUR_SIMPLE__
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
                     H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
-                    LAGR     E1X      E1Y      E1Z      E2X
+                    H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
-                    LAGS_C   LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3
+                    LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
+                    LAG4_C  LAG4_F1   LAG4_F2  UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6

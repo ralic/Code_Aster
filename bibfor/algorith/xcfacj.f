@@ -1,0 +1,196 @@
+      SUBROUTINE XCFACJ(JPTINT,PTMAX,IPT,JAINT,LSN,IGEOM,NNO,NDIM,
+     &               NFISS,IFISS,FISCO,NFISC,LLIN,TYPMA)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRS_1404
+C
+      IMPLICIT NONE
+      INTEGER       JPTINT,PTMAX,IPT,JAINT,IGEOM,NNO,NDIM
+      REAL*8        LSN(*)
+      INTEGER       NFISS,IFISS,FISCO(*),NFISC
+      CHARACTER*8   TYPMA
+
+C              TROUVER LES PTS D'INTER ENTRE LES JONCTIONS DE FISSURE
+C                 ET LES FACES POUR LES ELEMENTS MULTI-HEAVISIDE
+C
+C     ENTREE
+C       JPTINT   : ADRESSE DES COORDONNEES DES POINTS D'INTERSECTION
+C       PTMAX    : NOMBRE MAX DE POINTS D'INTERSECTION
+C       IPT      : COMPTEUR DE NOMBRE DE POINTS D'INTERSECTION
+C       JAINT    : ADRESSE DES INFOS SUR LES ARETES ASSOCIEES
+C       LSN      : VALEURS DE LA LEVEL SET NORMALE
+C       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
+C       NNO      : NOMBRE DE NOEUDS DE L'ELEMENT
+C       NDIM     : DIMENSION DE L'ESPACE
+C       NFISS    : NOMBRE DE FISSURES VUES DANS L'ÉLÉMENT
+C       IFISS    : NUMÉRO DE LA FISSURE EN COURS
+C       FISCO    : NUM ET COEF DES FISS SUR LESQUELLES IFISS SE BRANCHE
+C       NFISC    : NOMBRE DE FISSURES SUR LESQUELLES IFISS SE BRANCHE
+C       TYPMA    : TYPE DE LA MAILLE ASSOCIEE A L'ELEMENT
+C
+C     SORTIE
+C       JPTINT   : ADRESSE DES COORDONNEES DES POINTS D'INTERSECTION
+C       IPT      : COMPTEUR DE NOMBRE DE POINTS D'INTERSECTION
+C       JAINT    : ADRESSE DES INFOS SUR LES ARETES ASSOCIEES
+C
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      CHARACTER*8   ELREF,ALIAS
+      REAL*8        R8MAEM,RBID,LSNA,LSNB,LSJA,LSJB,LSJ
+      REAL*8        R8PREM,A(3),B(3),C(3),MP(2),PREC,FF(NNO)
+      REAL*8        LONCAR,PADIST,DMIN,DIST,DST
+      REAL*8        M(3),SOMLSN,EPSI(2),COORMA(8)
+      INTEGER       I,NBF,IBID,IFQ,J,JMIN,CODRET
+      INTEGER       FA(6,4),IBID3(12,3),IFISC,JFISC,INO
+      INTEGER       NNOF,NA,NB,IRET,NNE
+      LOGICAL       LLIN,ISMALI,CHGSGN,LAJPF
+C ----------------------------------------------------------------------
+
+      CALL JEMARQ()
+      CALL ELREF1(ELREF)
+      PREC=100.D0*R8PREM()
+      CALL CONFAC(TYPMA,IBID3,IBID,FA,NBF)
+      
+C     BOUCLE SUR LES FACES
+      DO 200 IFQ=1,NBF
+
+        LAJPF = .FALSE.
+        IF (FA(IFQ,4).EQ.0) THEN
+          NNOF = 3
+          ALIAS = 'TR3'
+        ELSE
+          NNOF = 4
+          ALIAS='QU4'
+        ENDIF
+        CALL ASSERT(NNOF.LE.4)
+
+C       RECHERCHE DES INTERSECTION ENTRE LSN ET LES LSJ SUR LA FACE
+
+        DO 100 I =1,NNOF
+          SOMLSN = SOMLSN + ABS( LSN(FA(IFQ,I)) )
+ 100    CONTINUE
+        IF (SOMLSN.EQ.0.D0) GOTO 200
+
+        DO 110 IFISC=1,NFISC
+          CHGSGN = .FALSE.
+          DO 120 I=1,NNOF
+            NA = FA(IFQ,I)
+            IF (I.EQ.1) THEN
+              NB = FA(IFQ,NNOF)
+            ELSE
+              NB = FA(IFQ,I-1)
+            ENDIF
+            LSNA=LSN((NA-1)*NFISS+IFISS)
+            LSNB=LSN((NB-1)*NFISS+IFISS)
+            LSJA=LSN((NA-1)*NFISS+FISCO(2*IFISC-1))*FISCO(2*IFISC)
+            LSJB=LSN((NB-1)*NFISS+FISCO(2*IFISC-1))*FISCO(2*IFISC)
+            COORMA(2*I-1)=LSJA
+            COORMA(2*I)=LSNA
+C           SI LE FOND COINCIDE AVEC UN COTE DE LA FACE, ON SORT
+            IF (LSNA.EQ.0.D0.AND.LSNB.EQ.0.D0.AND.
+     &          LSJA.EQ.0.D0.AND.LSJB.EQ.0.D0) GOTO 110
+C           ON ACCEPTE SI LE FRONT EST SUR UN NOEUD OU UN PT DE L'ARETE
+            IF (LSNA.EQ.0.D0.AND.LSJA.EQ.0.D0.OR.
+     &         LSNA.EQ.0.D0.AND.LSNB.EQ.0.D0.AND.
+     &          (LSJA*LSJB).LT.R8PREM()) CHGSGN = .TRUE.
+C           ON ACCEPTE SI UNE ARETE DE LA FACETTE EST COUPÉE
+            IF (ABS(LSNA-LSNB).GT.R8PREM().AND.
+     &          (LSJB-LSNB*(LSJA-LSJB)/(LSNA-LSNB)).LT.PREC.OR.
+     &          ABS(LSNA-LSNB).LE.R8PREM().AND.
+     &          (LSJA*LSJB).LT.R8PREM()) CHGSGN = .TRUE.
+ 120      CONTINUE
+          IF (.NOT. CHGSGN) GOTO 110
+
+C         ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT À LSN=LSJ=0
+          MP(1)=0.D0
+          MP(2)=0.D0
+          CALL REEREG('C',ALIAS,NNOF,COORMA,MP,2,EPSI,IRET)
+          IF (IRET.EQ.1) GOTO 110
+C         ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE
+          IF (ALIAS.EQ.'QU4') THEN
+            IF (ABS(EPSI(1)).GT.1.D0) GOTO 110
+            IF (ABS(EPSI(2)).GT.1.D0) GOTO 110
+          ELSEIF (ALIAS.EQ.'TR3') THEN
+            IF (EPSI(1).LT.0.D0)         GOTO 110
+            IF (EPSI(2).LT.0.D0)         GOTO 110
+            IF (EPSI(1)+EPSI(2).GT.1.D0) GOTO 110
+          ENDIF
+          MP(1)=EPSI(1)
+          MP(2)=EPSI(2)
+          CALL ELRFVF(ALIAS,MP,NNOF,FF,NNE)
+          DO 130 JFISC=IFISC+1,NFISC
+            LSJ = 0
+            DO 140 J=1,NNOF
+              INO = FA(IFQ,J)
+              LSJ = LSJ +
+     &         LSN((INO-1)*NFISS+FISCO(2*JFISC-1))*FISCO(2*JFISC)*FF(J)
+ 140        CONTINUE
+            IF (LSJ.GT.0) GOTO 110
+ 130      CONTINUE
+          LAJPF = .TRUE.
+          DO 150 I=1,NDIM
+            M(I)=0
+            DO 160 J=1,NNOF
+              INO = FA(IFQ,J)
+              M(I) = M(I) + ZR(IGEOM-1+NDIM*(INO-1)+I) * FF(J)
+ 160        CONTINUE
+ 150      CONTINUE
+
+ 110    CONTINUE
+
+        IF (LAJPF) THEN
+C       POUR IGNORER LES POINTS CONFONDUS AVEC CEUX 
+C       DETECTES DANS XCFACE LORSQUE LE PT EST EXACT SUR UNE ARETE
+          DO 250 J=1,IPT
+            DST=PADIST(NDIM,M,ZR(JPTINT-1+NDIM*(J-1)+1))
+            IF (DST.LE.R8PREM()) LAJPF = .FALSE.
+ 250      CONTINUE
+        ENDIF
+
+        IF (LAJPF) THEN
+C       ON AJOUTE A LA LISTE LE POINT M
+          DO 260 I=1,NDIM
+            A(I) =  ZR(IGEOM-1+NDIM*(FA(IFQ,1)-1)+I) 
+            B(I) =  ZR(IGEOM-1+NDIM*(FA(IFQ,2)-1)+I) 
+            C(I) =  ZR(IGEOM-1+NDIM*(FA(IFQ,3)-1)+I) 
+ 260      CONTINUE          
+          LONCAR=(PADIST(NDIM,A,B)+PADIST(NDIM,A,C))/2.D0
+          CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,M,LONCAR,JAINT,0,0,0.D0)
+        ENDIF
+ 200  CONTINUE
+
+
+      CALL JEDEMA()
+      END

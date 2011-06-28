@@ -1,21 +1,23 @@
-      SUBROUTINE XMMAA1(NDIM  ,JNNE ,NDEPLE ,NNC   ,JNNM   ,
+        SUBROUTINE XMMAA1(NDIM  ,JNNE ,NDEPLE ,NNC   ,JNNM   ,
      &                NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                FFM   ,JACOBI,JPCAI ,COEFCA,NORM  ,
-     &                TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
-     &                NCONTA,JDDLE,JDDLM,MMAT  )
+     &                FFM   ,JACOBI,JPCAI ,COEFCR,COEFCP,
+     &                COEFEC,LPENAC,NORM  ,TYPMAI,NSINGE,
+     &                NSINGM,RRE   ,RRM   ,NCONTA,JDDLE,
+     &                JDDLM,NFHE,NFHM,LMULTI,HEAVNO,HEAVFA,MMAT  )
 
       IMPLICIT NONE
       INTEGER     NDIM,JNNE(3),JNNM(3)
       INTEGER     NSINGE,NSINGM,NCONTA
-      INTEGER     NFAES,JPCAI,CFACE(5,3)
-      REAL*8      MMAT(168,168),NORM(3)
+      INTEGER     NFAES,JPCAI,CFACE(5,3),NFHE,NFHM,HEAVNO(8),HEAVFA(*)
+      REAL*8      MMAT(336,336),NORM(3)
       REAL*8      HPG,FFC(9),FFE(9),FFM(9),JACOBI
-      REAL*8      COEFCA,RRE,RRM
+      REAL*8      COEFCR,COEFCP,COEFEC,RRE,RRM
       CHARACTER*8 TYPMAI
       INTEGER     NDEPLE,NNC,JDDLE(2),JDDLM(2)
+      LOGICAL     LPENAC,LMULTI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,10 +87,27 @@ C ----------------------------------------------------------------------
 C
       INTEGER I,J,K,L,M,II,JJ,IN,PL,XOULA,JJN,IIN,NDDLE
       INTEGER NNE,NNES,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
-      REAL*8  MM
+      INTEGER INI,INJ,PLI,PLJ,IFH,IDDL,JDDL
+      REAL*8  MM,IESCL(6),JESCL(6),IMAIT(6),JMAIT(6)
 C
 C ----------------------------------------------------------------------
 C
+C
+C --- INITIALISATION
+C
+      IESCL(1) = 1
+      IESCL(2) =-1
+      IESCL(2+NFHE)=-RRE
+      JESCL(1) = 1
+      JESCL(2) =-1
+      JESCL(2+NFHE)=-RRE
+      IMAIT(1) = 1
+      IMAIT(2) = 1
+      IMAIT(2+NFHM)= RRM
+      JMAIT(1) = 1
+      JMAIT(2) = 1
+      JMAIT(2+NFHM)= RRM
+
 C --------------------- CALCUL DE [A] ----------------------------------
 C
       NNE=JNNE(1)
@@ -105,37 +124,35 @@ C
       DO 10 K = 1,NDIM
         DO 20 I = 1,NNC
           IN=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,PL)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,NFHE,PL)
+          IF (LMULTI) PL = PL + (HEAVNO(I)-1)*NDIM
           DO 30 J = 1,NDEPLE
-C --- BLOCS ES:CONT, CONT:ES
-            MM = HPG*FFC(I)*FFE(J)*JACOBI*NORM(K)
+            MM = HPG*FFC(I)*FFE(J)*JACOBI*NORM(K)*COEFEC
             CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
-            JJ = JJN+K
-            MMAT(PL,JJ) = -MM
-            MMAT(JJ,PL) = -MM
-            JJ = JJ + NDIM
-            MMAT(PL,JJ) =  MM
-            MMAT(JJ,PL) =  MM
-            DO 40 M = 1,NSINGE
-              JJ = JJ + NDIM
-              MMAT(PL,JJ) = RRE * MM
-              MMAT(JJ,PL) = RRE * MM
+            IF (LMULTI) THEN
+              DO 35 IFH = 1,NFHE
+                JESCL(1+IFH)=HEAVFA(NFHE*(J-1)+IFH)
+   35         CONTINUE
+            ENDIF
+            DO 40 JDDL=1,1+NFHE+NSINGE
+              JJ = JJN + (JDDL-1)*NDIM + K
+              MMAT(PL,JJ) = -JESCL(JDDL)*MM
+              MMAT(JJ,PL) = -JESCL(JDDL)*MM
    40       CONTINUE
    30     CONTINUE
           DO 50 J = 1,NNM
-C --- BLOCS MA:CONT, CONT:MA
-            MM = HPG*FFC(I)*FFM(J)*JACOBI*NORM(K)
+            MM = HPG*FFC(I)*FFM(J)*JACOBI*NORM(K)*COEFEC
             CALL INDENT(J,DDLMS,DDLMM,NNMS,JJN)
-            JJ = NDDLE + JJN + K
-            MMAT(PL,JJ) = MM
-            MMAT(JJ,PL) = MM
-            JJ = JJ + NDIM
-            MMAT(PL,JJ) = MM
-            MMAT(JJ,PL) = MM
-            DO 60 M = 1,NSINGM
-              JJ = JJ + NDIM
-              MMAT(PL,JJ) = RRM * MM
-              MMAT(JJ,PL) = RRM * MM
+            JJN = JJN + NDDLE
+            IF (LMULTI) THEN
+              DO 55 IFH = 1,NFHM
+                JMAIT(1+IFH)=HEAVFA(NFHE*NDEPLE+NFHM*(J-1)+IFH)
+   55         CONTINUE
+            ENDIF
+            DO 60 JDDL=1,1+NFHM+NSINGM
+              JJ = JJN + (JDDL-1)*NDIM + K
+              MMAT(PL,JJ) = JMAIT(JDDL)*MM
+              MMAT(JJ,PL) = JMAIT(JDDL)*MM
    60       CONTINUE
    50     CONTINUE
    20   CONTINUE
@@ -146,107 +163,81 @@ C
       DO 100 K = 1,NDIM
         DO 110 L = 1,NDIM
           DO 200 I = 1,NDEPLE
+            CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
             DO 210 J = 1,NDEPLE
-C --- BLOCS ES:ES
-              MM = HPG*COEFCA*FFE(I)*NORM(L)*FFE(J)*JACOBI*NORM(K)
-              CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
               CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
-              II = IIN + L
-              JJ = JJN + K
-              MMAT(II,JJ) =  MM
-              JJ = JJ + NDIM
-              MMAT(II,JJ) = -MM
-              MMAT(JJ,II) = -MM
-              II = II + NDIM
-              MMAT(II,JJ) =  MM
-              DO 215 M = 1,NSINGE
-                JJ = JJ + NDIM
-                II = II - NDIM
-                MMAT(II,JJ) = -RRE * MM
-                MMAT(JJ,II) = -RRE * MM
-                II = II + NDIM
-                MMAT(II,JJ) =  RRE * MM
-                MMAT(JJ,II) =  RRE * MM
-                II = II + NDIM
-                MMAT(II,JJ) =  RRE * RRE * MM
-  215         CONTINUE
-  210       CONTINUE
-            DO 220 J = 1,NNM
-C --- BLOCS ES:MA, MA:ES
-              MM = HPG*COEFCA*FFE(I)*NORM(L)*FFM(J)*JACOBI*NORM(K)
-              CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
-              CALL INDENT(J,DDLMS,DDLMM,NNMS,JJN)
-              II = IIN + L
-              JJ = NDDLE + JJN + K
-              MMAT(II,JJ) = -MM
-              MMAT(JJ,II) = -MM
-              JJ = JJ + NDIM
-              MMAT(II,JJ) = -MM
-              MMAT(JJ,II) = -MM
-              II = II + NDIM
-              JJ = JJ - NDIM
-              MMAT(II,JJ) =  MM
-              MMAT(JJ,II) =  MM
-              JJ = JJ + NDIM
-              MMAT(II,JJ) =  MM
-              MMAT(JJ,II) =  MM
-              DO 230 M = 1,NSINGM
-                II = II - NDIM
-                JJ = JJ + NDIM
-                MMAT(II,JJ) = -RRM * MM
-                MMAT(JJ,II) = -RRM * MM
-                II = II + NDIM
-                MMAT(II,JJ) =  RRM * MM
-                MMAT(JJ,II) =  RRM * MM
-                JJ = JJ - NDIM
+              IF(LPENAC) THEN
+                MM = 0.D0
+              ELSE
+                MM = HPG*COEFCR*FFE(I)*NORM(L)*FFE(J)*JACOBI*NORM(K)
+              ENDIF
+              IF (LMULTI) THEN
+                DO 220 IFH = 1,NFHE
+                  IESCL(1+IFH)=HEAVFA(NFHE*(I-1)+IFH)
+                  JESCL(1+IFH)=HEAVFA(NFHE*(J-1)+IFH)
+  220           CONTINUE
+              ENDIF
+              DO 230 IDDL=1,1+NFHE+NSINGE
+                II = IIN + (IDDL-1)*NDIM + L
+                DO 240 JDDL=1,1+NFHE+NSINGE
+                  JJ = JJN + (JDDL-1)*NDIM + K
+                  MMAT(II,JJ) = IESCL(IDDL)*JESCL(JDDL)*MM
+  240           CONTINUE
   230         CONTINUE
-              DO 240 M = 1,NSINGE
-                II = II + NDIM
-                JJ = JJ - NDIM
-                MMAT(II,JJ) =  RRE * MM
-                MMAT(JJ,II) =  RRE * MM
-                JJ = JJ + NDIM
-                MMAT(II,JJ) =  RRE * MM
-                MMAT(JJ,II) =  RRE * MM
-                II = II - NDIM
-  240         CONTINUE
-              DO 250 M = 1,NSINGE*NSINGM
-                II = II + NDIM
-                JJ = JJ + NDIM
-                MMAT(II,JJ) =  RRE * RRM * MM
-                MMAT(JJ,II) =  RRE * RRM * MM
-  250         CONTINUE
-  220       CONTINUE
-  200     CONTINUE
-
-          DO 300 I = 1,NNM
-            DO 320 J = 1,NNM
-C --- BLOCS MA:MA
-              MM = HPG*COEFCA*FFM(I)*NORM(L)*FFM(J)*JACOBI*NORM(K)
-              CALL INDENT(I,DDLMS,DDLMM,NNMS,IIN)
+  210       CONTINUE
+            DO 250 J = 1,NNM
               CALL INDENT(J,DDLMS,DDLMM,NNMS,JJN)
-              II = NDDLE + IIN + L
-              JJ = NDDLE + JJN + K
-
-              MMAT(II,JJ) =  MM
-              JJ = JJ + NDIM
-              MMAT(II,JJ) =  MM
-              MMAT(JJ,II) =  MM
-              II = II + NDIM
-              MMAT(II,JJ) =  MM
-              DO 330 M = 1,NSINGM
-                JJ = JJ + NDIM
-                II = II - NDIM
-                MMAT(II,JJ) =  RRM * MM
-                MMAT(JJ,II) =  RRM * MM
-                II = II + NDIM
-                MMAT(II,JJ) =  RRM * MM
-                MMAT(JJ,II) =  RRM * MM
-                II = II + NDIM
-                MMAT(II,JJ) =  RRM * RRM * MM
-  330         CONTINUE
+              JJN = JJN + NDDLE
+              IF(LPENAC) THEN
+                MM = 0.D0
+              ELSE
+                MM = HPG*COEFCR*FFE(I)*NORM(L)*FFM(J)*JACOBI*NORM(K)
+              ENDIF
+              IF (LMULTI) THEN
+                DO 260 IFH = 1,NFHE
+                  IESCL(1+IFH)=HEAVFA(NFHE*(I-1)+IFH)
+  260           CONTINUE
+                DO 270 IFH = 1,NFHM
+                  JMAIT(1+IFH)=HEAVFA(NFHE*NDEPLE+NFHM*(J-1)+IFH)
+  270           CONTINUE
+              ENDIF
+              DO 280 IDDL=1,1+NFHE+NSINGE
+                II = IIN + (IDDL-1)*NDIM + L
+                DO 290 JDDL=1,1+NFHM+NSINGM
+                  JJ = JJN + (JDDL-1)*NDIM + K
+                  MMAT(II,JJ) = -IESCL(IDDL)*JMAIT(JDDL)*MM
+                  MMAT(JJ,II) = -IESCL(IDDL)*JMAIT(JDDL)*MM
+  290           CONTINUE
+  280         CONTINUE
+  250       CONTINUE
+  200     CONTINUE
+          DO 300 I = 1,NNM
+            CALL INDENT(I,DDLMS,DDLMM,NNMS,IIN)
+            IIN = IIN + NDDLE
+            DO 320 J = 1,NNM
+              CALL INDENT(J,DDLMS,DDLMM,NNMS,JJN)
+              JJN = JJN + NDDLE
+              IF(LPENAC) THEN
+                MM = 0.D0
+              ELSE
+                MM = HPG*COEFCR*FFM(I)*NORM(L)*FFM(J)*JACOBI*NORM(K)
+              ENDIF
+              IF (LMULTI) THEN
+                DO 330 IFH = 1,NFHM
+                  IMAIT(1+IFH)=HEAVFA(NFHE*NDEPLE+NFHM*(I-1)+IFH)
+                  JMAIT(1+IFH)=HEAVFA(NFHE*NDEPLE+NFHM*(J-1)+IFH)
+  330           CONTINUE
+              ENDIF
+              DO 340 IDDL=1,1+NFHM+NSINGM
+                II = IIN + (IDDL-1)*NDIM + L
+                DO 350 JDDL=1,1+NFHM+NSINGM
+                  JJ = JJN + (JDDL-1)*NDIM + K
+                  MMAT(II,JJ) = IMAIT(IDDL)*JMAIT(JDDL)*MM
+  350           CONTINUE
+  340         CONTINUE
   320       CONTINUE
   300     CONTINUE
+C
   110   CONTINUE
   100 CONTINUE
       ELSE
@@ -256,12 +247,13 @@ C
       DO 510 K = 1,NDIM
         DO 520 I = 1,NNC
           IN=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,PL)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,NFHE,PL)
+          IF (LMULTI) PL = PL + (HEAVNO(I)-1)*NDIM
           DO 530 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
             CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
             JJ = JJN + K
-            MM = HPG*FFC(I)*FFE(J)*JACOBI*NORM(K)
+            MM = HPG*FFC(I)*FFE(J)*JACOBI*NORM(K)*COEFEC
             MMAT(PL,JJ) = RRE * MM
             MMAT(JJ,PL) = RRE * MM
   530     CONTINUE
@@ -275,7 +267,11 @@ C
           DO 620 I = 1,NDEPLE
             DO 630 J = 1,NDEPLE
 C --- BLOCS ES:ES
-              MM = HPG*COEFCA*FFE(I)*NORM(L)*FFE(J)*JACOBI*NORM(K)
+              IF(LPENAC) THEN
+                MM = 0.D0
+              ELSE
+                MM = HPG*COEFCR*FFE(I)*NORM(L)*FFE(J)*JACOBI*NORM(K)
+              ENDIF
               CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
               CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
               II = IIN + L
@@ -285,6 +281,22 @@ C --- BLOCS ES:ES
   620     CONTINUE
   610   CONTINUE
   600 CONTINUE
+      ENDIF
+C --------------------- CALCUL DE [C] ----------------------------------
+C
+C-------------- SEULEUMENT EN METHODE PENALISEE ------------------------
+
+      IF(LPENAC)THEN
+        DO 710 I = 1,NNC
+          DO 720 J = 1,NNC
+            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
+            INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI,NCONTA)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,NFHE,PLJ)
+            MMAT(PLI,PLJ) = -HPG*FFC(J)*FFC(I)*JACOBI*
+     &       COEFEC*COEFEC/COEFCP
+ 720      CONTINUE
+ 710    CONTINUE
       ENDIF
 C
       END

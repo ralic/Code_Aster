@@ -1,9 +1,10 @@
       SUBROUTINE XTLAGM(TYPMAI,NDIM  ,NNC   ,JNN    ,
      &                  NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &                  FFC   ,LFROTT,NCONTA,DLAGRC,DLAGRF)
+     &                  FFC   ,LFROTT,NCONTA,
+     &                  NFHE,LMULTI,HEAVNO,DLAGRC,DLAGRF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,13 +24,13 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NDIM,NNC,JNN(3),NDDLS,NCONTA
+      INTEGER      NDIM,NNC,JNN(3),NDDLS,NCONTA,NFHE,HEAVNO(8)
       INTEGER      JDEPDE,JPCAI
       REAL*8       FFC(9)
       CHARACTER*8  TYPMAI
       REAL*8       DLAGRC,DLAGRF(2)
       INTEGER      CFACE(5,3),NFACE
-      LOGICAL      LFROTT
+      LOGICAL      LFROTT,LMULTI
 C
 C ----------------------------------------------------------------------
 C
@@ -64,12 +65,13 @@ C ----------------------------------------------------------------------
 C
       CALL XTLAGC(TYPMAI,NDIM  ,NNC   ,JNN   ,
      &            NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &            FFC   ,NCONTA,DLAGRC)
+     &            FFC   ,NCONTA,
+     &            NFHE  ,LMULTI,HEAVNO,DLAGRC)
 C
       IF (LFROTT) THEN
         CALL XTLAGF(TYPMAI,NDIM  ,NNC   ,JNN   ,
      &              NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &              FFC   ,NCONTA,DLAGRF)
+     &              FFC   ,NCONTA,NFHE  ,DLAGRF)
       ENDIF
 C
       END

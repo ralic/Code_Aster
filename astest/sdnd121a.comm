@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MASSE-RESSORT AVEC CHOCS SOUS EXCITATION FORCEE
 # sdnd121a.para = tps_job 600 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,6 +91,7 @@ F_ASSE=ASSE_VECTEUR(VECT_ELEM=F_ELEM,
 
 # Calcul des matrices generalisees :
 MACRO_PROJ_BASE(BASE=modes,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('M_GENE'),
                                    MATR_ASSE=M_ASSE,),
                                 _F(MATRICE=CO('K_GENE'),

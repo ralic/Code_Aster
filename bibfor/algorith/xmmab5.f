@@ -1,20 +1,20 @@
       SUBROUTINE XMMAB5(NDIM  ,NNOL ,NNOF, PLA,
-     &                    IPGF,IVFF  ,FFC   ,JAC   ,COEFFR,
-     &                    NOEUD ,SEUIL,TAU1,TAU2,MU,IK,
-     &                    IFA,CFACE,LACT ,
-     &                    LPENAF,MMAT )
+     &                  IPGF,IVFF  ,FFC   ,JAC   ,COEFFR,
+     &                  COEFEF,NOEUD ,SEUIL,TAU1,TAU2,MU,IK,
+     &                  IFA,CFACE,LACT ,
+     &                  LPENAF,MMAT )
 
       IMPLICIT NONE
       INTEGER     NDIM,NNOL,NNOF,IVFF,IPGF
       INTEGER     CFACE(5,3),IFA
       INTEGER     PLA(27),LACT(8)
-      REAL*8      MMAT(204,204)
+      REAL*8      MMAT(216,216)
       REAL*8      FFC(8),JAC,TAU1(3),TAU2(3)
-      REAL*8      SEUIL,MU,COEFFR,IK(3,3)
+      REAL*8      SEUIL,MU,COEFFR,IK(3,3),COEFEF
       LOGICAL     NOEUD,LPENAF
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
 
 C
 C ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
@@ -122,7 +123,7 @@ C         CALCUL DE TAIKTA = TAUT.(ID-KN).TAU
             DO 183 L = 1,NDIM-1
               MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &        + (MU*SEUIL/COEFFR)*
-     &        FFI*FFJ*TAIKTA(K,L)*JAC
+     &        FFI*FFJ*TAIKTA(K,L)*JAC*COEFEF*COEFEF
  183        CONTINUE
  182      CONTINUE
  181    CONTINUE

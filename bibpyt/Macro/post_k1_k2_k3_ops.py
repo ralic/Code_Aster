@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
 def verif_type_fond_fiss(ndim,FOND_FISS) :
    from Utilitai.Utmess     import  UTMESS
    if ndim == 3 :
-      Typ = FOND_FISS.FOND_______TYPE.get()
+      Typ = FOND_FISS.sdj.FOND_______TYPE.get()
 #     attention : Typ est un tuple contenant une seule valeur
       if Typ[0].rstrip() != 'SEG2' and Typ[0].rstrip() != 'SEG3' :
          UTMESS('F','RUPTURE0_12')
@@ -134,10 +134,10 @@ def get_noeud_fond_fiss(FOND_FISS) :
    """ retourne la liste des noeuds de FOND_FISS"""
    import string as S
    from Utilitai.Utmess     import  UTMESS
-   Lnoff = FOND_FISS.FOND_______NOEU.get()
+   Lnoff = FOND_FISS.sdj.FOND_______NOEU.get()
    if Lnoff == None :
 #     Cas double fond de fissure : par convention les noeuds sont ceux de fond_inf
-      Lnoff = FOND_FISS.FONDINF____NOEU.get()
+      Lnoff = FOND_FISS.sdj.FONDINF____NOEU.get()
       if Lnoff == None : UTMESS('F','RUPTURE0_11')
    Lnoff = map(S.rstrip,Lnoff)
    return Lnoff
@@ -163,7 +163,7 @@ def get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args) :
       elif ndim == 3 :
 
 #        determination du pas de parcours des noeuds : 1 (tous les noeuds) ou 2 (un noeud sur 2)
-         Typ = FOND_FISS.FOND_______TYPE.get()
+         Typ = FOND_FISS.sdj.FOND_______TYPE.get()
          Typ = Typ[0].rstrip()
          if (Typ == 'SEG2') or (Typ =='SEG3' and TOUT == 'OUI') :
             pas = 1
@@ -174,8 +174,8 @@ def get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args) :
          NO_SANS = []
          NO_AVEC = []
          if GROUP_NO!=None :
-            collgrno = MAILLAGE.GROUPENO.get()
-            cnom     = MAILLAGE.NOMNOE.get()
+            collgrno = MAILLAGE.sdj.GROUPENO.get()
+            cnom     = MAILLAGE.sdj.NOMNOE.get()
             if type(GROUP_NO) not in EnumTypes :
                GROUP_NO = (GROUP_NO,)
             for m in xrange(len(GROUP_NO)) :
@@ -191,8 +191,8 @@ def get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args) :
             else :
                NO_AVEC = NOEUD
          if SANS_GROUP_NO!=None :
-            collgrno = MAILLAGE.GROUPENO.get()
-            cnom     = MAILLAGE.NOMNOE.get()
+            collgrno = MAILLAGE.sdj.GROUPENO.get()
+            cnom     = MAILLAGE.sdj.NOMNOE.get()
             if type(SANS_GROUP_NO) not in EnumTypes :
                SANS_GROUP_NO = (SANS_GROUP_NO,)
             for m in xrange(len(SANS_GROUP_NO)) :
@@ -274,12 +274,12 @@ def get_Plev(self,ListmaS,RESULTAT):
          iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
          MAILLAGE = self.get_concept(nom_ma.strip())
 
-         cmail=MAILLAGE.NOMMAI.get()
+         cmail=MAILLAGE.sdj.NOMMAI.get()
          for i in range(len(cmail)) :
              if cmail[i] == ListmaS[0] :
                 break
-         colcnx=MAILLAGE.CONNEX.get()
-         cnom = MAILLAGE.NOMNOE.get()
+         colcnx=MAILLAGE.sdj.CONNEX.get()
+         cnom = MAILLAGE.sdj.NOMNOE.get()
          NO_TMP = []
          for k in range(len(colcnx[i+1])) :
             NO_TMP.append(cnom[colcnx[i+1][k]-1])
@@ -405,11 +405,11 @@ def get_dico_levres(lev,FOND_FISS,ndim,Lnoff,Nnoff):
       import string as S
       from Utilitai.Utmess     import  UTMESS
       if lev == 'sup' :
-         Nnorm = FOND_FISS.SUPNORM____NOEU.get()
+         Nnorm = FOND_FISS.sdj.SUPNORM____NOEU.get()
          if not Nnorm :
             UTMESS('F','RUPTURE0_19')
       elif lev == 'inf' :
-         Nnorm = FOND_FISS.INFNORM____NOEU.get()
+         Nnorm = FOND_FISS.sdj.INFNORM____NOEU.get()
          if not Nnorm :
             UTMESS('F','RUPTURE0_20')
       Nnorm = map(S.rstrip,Nnorm)
@@ -578,8 +578,8 @@ def verif_resxfem(self,RESULTAT) :
       if len(n_modele)==0 :
          UTMESS('F','RUPTURE0_18')
       MODEL = self.get_concept(n_modele)
-      xcont = MODEL.xfem.XFEM_CONT.get()
-      return (xcont,MODEL)
+      xcont = MODEL.sdj.xfem.XFEM_CONT.get()
+      return (xcont, MODEL)
 
 #---------------------------------------------------------------------------------------------------------------
 
@@ -627,12 +627,12 @@ def get_coor_xfem(args,FISSURE,ndim):
 
       from Utilitai.Utmess     import  UTMESS
 
-      Listfo = FISSURE.FONDFISS.get()
-      Basefo = FISSURE.BASEFOND.get()
+      Listfo = FISSURE.sdj.FONDFISS.get()
+      Basefo = FISSURE.sdj.BASEFOND.get()
       NB_POINT_FOND = args['NB_POINT_FOND']
 
 #     Traitement du cas fond multiple
-      Fissmult = FISSURE.FONDMULT.get()
+      Fissmult = FISSURE.sdj.FONDMULT.get()
       Nbfiss = len(Fissmult)/2
       Numfiss = args['NUME_FOND']
       if  Numfiss <= Nbfiss and Nbfiss > 1 :
@@ -962,7 +962,7 @@ def get_liste_inst(tabsup,args,LIST_ORDRE,NUME_ORDRE,INST,LIST_INST,EnumTypes) :
                   NUME_ORDRE=(NUME_ORDRE,)
                l_ord=list(NUME_ORDRE)
             elif LIST_ORDRE !=None :
-               l_ord = LIST_ORDRE.VALE.get()
+               l_ord = LIST_ORDRE.sdj.VALE.get()
             l_inst = []
             for ord in l_ord :
               if ord in l_ord_tab :
@@ -1460,7 +1460,7 @@ def get_meth3(self,abscs,coefg,coefg3,kgsig,isig,saut2,INFO,ndim) :
 
 def get_erreur(self,ndim,__tabi) :
 
-      """retourne l'erreur selon les méthodes. 
+      """retourne l'erreur selon les méthodes.
       En FEM/X-FEM, on ne retient que le K_MAX de la méthode 1."""
       from Accas import _F
       import aster
@@ -1676,7 +1676,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #   ------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #   ------------------------------------------------------------------
-   matph = MATER.NOMRC.get()
+   matph = MATER.sdj.NOMRC.get()
    phenom=None
    for cmpt in matph :
        if cmpt[:4]=='ELAS' :
@@ -1799,13 +1799,13 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          if not RESULTAT :
             UTMESS('F','RUPTURE0_16')
 
-         ListmaS = FOND_FISS.LEVRESUP___MAIL.get()
+         ListmaS = FOND_FISS.sdj.LEVRESUP___MAIL.get()
 
          if not ListmaS :
             UTMESS('F','RUPTURE0_19')
 
          if SYME_CHAR == 'SANS':
-            ListmaI = FOND_FISS.LEVREINF___MAIL.get()
+            ListmaI = FOND_FISS.sdj.LEVREINF___MAIL.get()
 
 #        Dictionnaire des coordonnees des noeuds du fond
          d_coorf = get_coor_libre(self,Lnoff,RESULTAT,ndim)
@@ -1815,8 +1815,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #        Calcul des normales a chaque noeud du fond
          if ndim == 3 :
-            DTANOR = FOND_FISS.DTAN_ORIGINE.get()
-            DTANEX = FOND_FISS.DTAN_EXTREMITE.get()
+            DTANOR = FOND_FISS.sdj.DTAN_ORIGINE.get()
+            DTANEX = FOND_FISS.sdj.DTAN_EXTREMITE.get()
          elif ndim ==2 :
             DTANOR = False
             DTANEX = False

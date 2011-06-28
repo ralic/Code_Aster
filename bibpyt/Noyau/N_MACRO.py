@@ -1,9 +1,9 @@
-#@ MODIF N_MACRO Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -167,7 +167,7 @@ class MACRO(N_ENTITE.ENTITE):
       """
       if self.op is not None and (type(self.op) != types.IntType or self.op > 0) :
         self.cr.fatal("L'attribut 'op' doit etre un entier signé : %s" %`self.op`)
-      if self.proc is not None and type(self.proc) != types.FunctionType:
+      if self.proc is not None and not callable(self.proc):
         self.cr.fatal("L'attribut op doit etre une fonction Python : %s" % `self.proc`)
       if type(self.regles) != types.TupleType :
         self.cr.fatal("L'attribut 'regles' doit etre un tuple : %s" %`self.regles`)

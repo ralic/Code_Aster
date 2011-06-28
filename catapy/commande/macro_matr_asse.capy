@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
 
-from Macro.macro_matr_asse_ops import macro_matr_asse_ops
 
 def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
   if not MATR_ASSE:  raise AsException("Impossible de typer les concepts resultats")
@@ -45,8 +44,9 @@ def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
     self.type_sdprod(m['MATRICE'],t)
   return None
 
-MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
-            UIinfo={"groupes":("Matrices et vecteurs",)},
+MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",
+                      op=OPS('Macro.macro_matr_asse_ops.macro_matr_asse_ops'),
+                      UIinfo={"groupes":("Matrices et vecteurs",)},
                       sd_prod=macro_matr_asse_prod,
                       fr="Calcul des matrices assemblées (rigidité, masse, amortissement,...) ",
          MODELE          =SIMP(statut='o',typ=modele_sdaster),

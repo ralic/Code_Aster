@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE GREFFET N.GREFFET
 
-from Macro.macro_matr_ajou_ops import macro_matr_ajou_ops
 
 def macro_matr_ajou_prod(self,MATR_AMOR_AJOU,MATR_MASS_AJOU,MATR_RIGI_AJOU,FORC_AJOU,**args):
   self.type_sdprod(MATR_AMOR_AJOU,matr_asse_gene_r)
@@ -30,10 +29,12 @@ def macro_matr_ajou_prod(self,MATR_AMOR_AJOU,MATR_MASS_AJOU,MATR_RIGI_AJOU,FORC_
 
   return None
 
-MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=macro_matr_ajou_ops,sd_prod=macro_matr_ajou_prod,
-            UIinfo={"groupes":("Résolution","Matrices et vecteurs",)},
-            fr="Calculer de facon plus condensée qu'avec CALC_MATR_AJOU des matrices de masse, d'amortissement"
-              +" ou de rigidité ajoutés",
+MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",
+                      op=OPS('Macro.macro_matr_ajou_ops.macro_matr_ajou_ops'),
+                      sd_prod=macro_matr_ajou_prod,
+                      UIinfo={"groupes":("Résolution","Matrices et vecteurs",)},
+                      fr="Calculer de facon plus condensée qu'avec CALC_MATR_AJOU des " \
+                         "matrices de masse, d'amortissement ou de rigidité ajoutés",
       regles=(AU_MOINS_UN('MODE_MECA','DEPL_IMPO','MODELE_GENE'),
               AU_MOINS_UN('MATR_MASS_AJOU','MATR_AMOR_AJOU','MATR_RIGI_AJOU'),
               EXCLUS('MODE_MECA','DEPL_IMPO','MODELE_GENE'),

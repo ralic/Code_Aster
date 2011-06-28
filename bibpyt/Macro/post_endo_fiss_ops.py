@@ -1,4 +1,4 @@
-#@ MODIF post_endo_fiss_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF post_endo_fiss_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -284,14 +284,14 @@ def post_endo_fiss_ops(self,
       UTMESS('F','POST0_33')
 
 
-  n_mail = __modtot.MODELE.LGRF.get()
+  n_mail = __modtot.sdj.MODELE.LGRF.get()
   n_mail = n_mail[0].strip()
   __mail = self.get_concept(n_mail)
-  Coortot  = __mail.COORDO.VALE.get()
+  Coortot  = __mail.sdj.COORDO.VALE.get()
   Xtot     = Coortot[0:len(Coortot):3]
   Ytot     = Coortot[1:len(Coortot):3]
 
-  dime = __mail.DIME.get()[5]
+  dime = __mail.sdj.DIME.get()[5]
   if dime != 2 :
     UTMESS('F','POST0_34')
 
@@ -448,7 +448,7 @@ def post_endo_fiss_ops(self,
     idxpred2 = vfind(Nonvide,nbPoints)
 
     Ybarort  = dx0.valeurs
-    Coor0    = __MAI.COORDO.VALE.get()
+    Coor0    = __MAI.sdj.COORDO.VALE.get()
     Coorxort = NP.array(Coor0[0:len(Coor0):3] , float)
     Cooryort = NP.array(Coor0[1:len(Coor0):3] , float)
 
@@ -563,7 +563,7 @@ def post_endo_fiss_ops(self,
     idxpred  = vfind(Nonvide,nbPoints)
     Ybarort  = dx0.valeurs
 
-    Coor0    = __MAI.COORDO.VALE.get()
+    Coor0    = __MAI.sdj.COORDO.VALE.get()
     Coorxort = NP.array(Coor0[0:len(Coor0):3] , float)
     Cooryort = NP.array(Coor0[1:len(Coor0):3] , float)
     Coorxort = NP.take(Coorxort,Nonvide-1)
@@ -728,7 +728,7 @@ def post_endo_fiss_ops(self,
             break
 
         Ybarort = dx0.valeurs
-        Coor0    = __MAI.COORDO.VALE.get()
+        Coor0    = __MAI.sdj.COORDO.VALE.get()
         Coorxort = NP.array(Coor0[0:len(Coor0):3] , float)
         Cooryort = NP.array(Coor0[1:len(Coor0):3] , float)
         Coorxort = NP.take(Coorxort,Nonvide-1)

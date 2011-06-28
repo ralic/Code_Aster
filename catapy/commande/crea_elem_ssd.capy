@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,21 +18,19 @@
 # ======================================================================
 # RESPONSABLE ANDRIAM H.ANDRIAMBOLOLONA
 
-from Macro.crea_elem_ssd_ops import crea_elem_ssd_ops
-
 def crea_elem_ssd_prod(self,NUME_DDL,**args):
     if NUME_DDL:
         self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
     return macr_elem_dyna
 
 CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
-         op=crea_elem_ssd_ops,
-         sd_prod=crea_elem_ssd_prod,
-         reentrant='n',
-         fr="Creation de macro-element dynamique en enchainant les commandes : \
-             CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, MODE_ITER_SIMULT, \
-             DEFI_INTERF_DYNA, DEFI_BASE_MODALE et MACR_ELEM_DYNA",
-         UIinfo={"groupes":("Matrices/vecteurs",)},
+                    op=OPS('Macro.crea_elem_ssd_ops.crea_elem_ssd_ops'),
+                    sd_prod=crea_elem_ssd_prod,
+                    reentrant='n',
+                    fr="Creation de macro-element dynamique en enchainant les commandes : "\
+                       "CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, MODE_ITER_SIMULT, "\
+                       "DEFI_INTERF_DYNA, DEFI_BASE_MODALE et MACR_ELEM_DYNA",
+                    UIinfo={"groupes":("Matrices/vecteurs",)},
 
 # pour CAL_MATR_ELEM + NUME_DDL + ASSE_MATRICE + MODE_ITER_SIMULT + MODE_STATIQUE
          MODELE          =SIMP(statut='o',typ=modele_sdaster),

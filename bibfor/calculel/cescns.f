@@ -1,6 +1,6 @@
-      SUBROUTINE CESCNS(CESZ,CELFPZ,BASE,CNSZ)
+      SUBROUTINE CESCNS(CESZ,CELFPZ,BASE,CNSZ,COMP,CRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,8 @@ C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
       IMPLICIT NONE
       CHARACTER*(*) CNSZ,CESZ,BASE,CELFPZ
+      CHARACTER*1   COMP
+      INTEGER       CRET
 C ------------------------------------------------------------------
 C BUT: TRANSFORMER UN CHAM_ELEM_S EN CHAM_NO_S
 C ------------------------------------------------------------------
@@ -32,12 +34,19 @@ C    CET OBJET N'EST UTILISE QUE SI CESZ EST 'ELGA'
 C    CET OBJET EST OBTENU PAR LA ROUTINE CELFPG.F
 
 C CNSZ   IN/JXOUT K19 : SD CHAM_NO_S RESULTAT
-C BASE    IN      K1  : BASE DE CREATION POUR CNSZ : G/V/L
+C BASE   IN       K1  : BASE DE CREATION POUR CNSZ : G/V/L
+C COMP   IN           : COMPORTEMENT EN PRESENCE DE SOUS-POINTS
+C    'F' : EMISSION D'UNE ERREUR <F>
+C    'A' : EMISSION D'UNE ALARME POUR PREVENIR L'UTILISATEUR
+C    ' ' : SILENCE => CODE RETOUR
+C CRET   OUT      I   : CODE RETOUR
+C    0   : SI TOUT EST OK
+C    100 : EN PRESENCE D'UN CHAMP ELEM A SOUS-POINTS
 C-----------------------------------------------------------------------
 
 C  PRINCIPES RETENUS POUR LA CONVERSION :
 
-C  1) ON NE TRAITE QUE LES CHAM_ELEM_S REELS ou complexes
+C  1) ON NE TRAITE QUE LES CHAM_ELEM_S REELS OU COMPLEXES
 
 C  2) ON SE RAMENE TOUJOURS A UN CHAMP ELNO
 C     PUIS ON FAIT LA MOYENNE ARITHMETIQUE DES MAILLES
@@ -62,10 +71,10 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER      IMA,IBID,NCMP,ICMP,JCNSL,JCNSV
+      INTEGER      IMA,IBID,NCMP,ICMP,JCNSL,JCNSV,ISPT
       INTEGER      JCESD,JCESV,JCESL,NBMA,IRET,NBNO
       INTEGER      INO,NUNO,NBPT,IAD1,ILCNX1,IACNX1
-      INTEGER      JCESK,JCESC,NBNOT,JNBNO,IEQ
+      INTEGER      JCESK,JCESC,NBNOT,JNBNO,IEQ,NBSP
       CHARACTER*1  KBID
       CHARACTER*3  TSCA
       CHARACTER*8  MA,NOMGD
@@ -110,8 +119,16 @@ C     TEST SI CHAMP ELNO
       CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',ILCNX1)
       CALL JELIRA(CES1//'.CESC','LONMAX',NCMP,KBID)
 
-C     LE NOMBRE DE SOUS-POINTS NE PEUT ETRE >1
-      CALL ASSERT(ZI(JCESD-1+4).LE.1)
+      CRET = 0
+C     EMISSION D'UN MESSAGE POUR SIGNIFIER QU'ON VA FILTRER
+C     LES MAILLES CONTENANT DES SOUS-POINTS
+      IF ( ZI(JCESD-1+4).GT.1 ) THEN
+        IF ( COMP.NE.' ' ) THEN
+          CALL U2MESS(COMP,'UTILITAI_3')
+        ELSE
+          CRET = 100
+        ENDIF
+      ENDIF
 
 C     ON ATTEND SEULEMENT DES REELS OU DES COMPLEXES
       CALL ASSERT((TSCA.EQ.'R').OR.(TSCA.EQ.'C'))
@@ -134,26 +151,39 @@ C     -------------------------------------------
 
         DO 20,IMA = 1,NBMA
           NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
+          NBSP = ZI(JCESD-1+5+4* (IMA-1)+2)
           NBNO = ZI(ILCNX1+IMA) - ZI(ILCNX1-1+IMA)
 
           CALL ASSERT(NBNO.EQ.NBPT)
-          DO 10,INO = 1,NBNO
-            CALL CESEXI('C',JCESD,JCESL,IMA,INO,1,ICMP,IAD1)
-            IF (IAD1.LE.0) GO TO 10
+          IF ( NBSP.EQ.1 ) THEN
+            DO 10,INO = 1,NBNO
+              CALL CESEXI('C',JCESD,JCESL,IMA,INO,1,ICMP,IAD1)
+              IF (IAD1.LE.0) GO TO 10
 
-            NUNO = ZI(IACNX1+ZI(ILCNX1-1+IMA)-2+INO)
-            IEQ = (NUNO-1)*NCMP + ICMP
-            ZL(JCNSL-1+IEQ) = .TRUE.
-            IF (TSCA.EQ.'R') THEN
-               IF(ZI(JNBNO-1+NUNO).EQ.0) ZR(JCNSV-1+IEQ)=0.D0
-               ZR(JCNSV-1+IEQ) = ZR(JCNSV-1+IEQ) + ZR(JCESV-1+IAD1)
-            ELSEIF (TSCA.EQ.'C') THEN
-               IF(ZI(JNBNO-1+NUNO).EQ.0) ZC(JCNSV-1+IEQ)=(0.D0,0.D0)
-               ZC(JCNSV-1+IEQ) = ZC(JCNSV-1+IEQ) + ZC(JCESV-1+IAD1)
-            ENDIF
-            ZI(JNBNO-1+NUNO) = ZI(JNBNO-1+NUNO) + 1
+              NUNO = ZI(IACNX1+ZI(ILCNX1-1+IMA)-2+INO)
+              IEQ = (NUNO-1)*NCMP + ICMP
+              ZL(JCNSL-1+IEQ) = .TRUE.
+              IF (TSCA.EQ.'R') THEN
+                IF(ZI(JNBNO-1+NUNO).EQ.0) ZR(JCNSV-1+IEQ)=0.D0
+                ZR(JCNSV-1+IEQ) = ZR(JCNSV-1+IEQ) + ZR(JCESV-1+IAD1)
+              ELSEIF (TSCA.EQ.'C') THEN
+                IF(ZI(JNBNO-1+NUNO).EQ.0) ZC(JCNSV-1+IEQ)=(0.D0,0.D0)
+                ZC(JCNSV-1+IEQ) = ZC(JCNSV-1+IEQ) + ZC(JCESV-1+IAD1)
+              ENDIF
+              ZI(JNBNO-1+NUNO) = ZI(JNBNO-1+NUNO) + 1
 
-   10     CONTINUE
+   10       CONTINUE
+          ELSE
+          DO 50,INO = 1,NBNO
+            DO 60,ISPT = 1,NBSP
+              CALL CESEXI('C',JCESD,JCESL,IMA,INO,ISPT,ICMP,IAD1)
+              IF (IAD1.LE.0) GO TO 60
+              NUNO = ZI(IACNX1+ZI(ILCNX1-1+IMA)-2+INO)
+              IEQ = (NUNO-1)*NCMP + ICMP
+              ZL(JCNSL-1+IEQ) = .FALSE.
+   60       CONTINUE
+   50     CONTINUE
+          ENDIF
    20   CONTINUE
 
         DO 30,NUNO = 1,NBNOT

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,23 +17,25 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
-DETRUIRE=MACRO(nom="DETRUIRE",op=-7,
-            UIinfo={"groupes":("Gestion du travail",)},
-              fr="Détruit des concepts utilisateurs dans la base GLOBALE ou des objets JEVEUX",
-             op_init=ops.detruire,
-             regles=(UN_PARMI('CONCEPT','OBJET',),),
-            CONCEPT     =FACT(statut='f',max='**',
-                regles=(DERIVABLE('NOM'),),
-                NOM         =SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),
-                SENSIBILITE =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),
-                                 fr="Paramètre de sensibilité.",
-                                 ang="Sensitivity parameter",max='**'),
-            ),
-            OBJET  =FACT(statut='f',max='**',
-               CLASSE      =SIMP(statut='f',typ='TXM',into=('G','V','L'),defaut='G'),
-               CHAINE      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
-               POSITION    =SIMP(statut='f',typ='I'  ,max='**'),
-            ),
-            ALARME        =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',),
-            INFO          =SIMP(statut='f',typ='I',into=(1,2),defaut=2, ),
-);
+DETRUIRE=MACRO(nom="DETRUIRE",
+               op=-7,
+               UIinfo={"groupes":("Gestion du travail",)},
+               fr="Détruit des concepts utilisateurs dans la base GLOBALE ou des objets JEVEUX",
+               op_init=ops.build_detruire,
+    regles=(UN_PARMI('CONCEPT', 'OBJET',),),
+
+    CONCEPT = FACT(statut='f',max='**',
+        regles=(DERIVABLE('NOM'),),
+        NOM         = SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),
+        SENSIBILITE = SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),
+                           fr="Paramètre de sensibilité.",
+                           ang="Sensitivity parameter",max='**'),
+    ),
+    OBJET = FACT(statut='f',max='**',
+       CLASSE   = SIMP(statut='f', typ='TXM', into=('G', 'V', 'L'), defaut='G'),
+       CHAINE   = SIMP(statut='o', typ='TXM', validators=NoRepeat(), max='**'),
+       POSITION = SIMP(statut='f', typ='I', max='**'),
+    ),
+    ALARME = SIMP(statut='f', typ='TXM', into=('OUI', 'NON'), defaut='OUI',),
+    INFO   = SIMP(statut='f', typ='I', into=(1, 2), defaut=2, ),
+)

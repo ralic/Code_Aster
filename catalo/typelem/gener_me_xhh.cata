@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,7 +144,7 @@ MODE_LOCAL__
                                  EN1   (DX   DY   DZ   H1X  H1Y  H1Z  )
                                  EN2   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  )
                                  EN3   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  H3X  H3Y  H3Z  )
-                                 EN4   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  H3X  H3Y  H3Z  H4X  H4Y  )
+                                 EN4   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  H3X  H3Y  H3Z  H4X  H4Y  H4Z  )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX   DY   DZ   )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
@@ -339,7 +339,7 @@ OPTION__
                                      E54NEUTR PBASECO  E18NEUTR PGESCLA  E18NEUTR PGMAITR  E18NEUTR PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  FISCO_I PFISCO
                               OUT__  E198NEUR PPINTTO  E768NEUI PCNSETO  E192NEUI PHEAVTO  E10NEUTI  PLONCHA
-                                     E30NEUTR PAINTER  E1NEUTR  PCRITER
+                                     E30NEUTR PAINTER
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R

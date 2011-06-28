@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -302,11 +302,10 @@ cata_msg={
 """),
 
 45: _("""
-      Le contact est normalement actif sur la maille %(k1)s, or cette maille est connectée à
-      plusieures fissures. Le multi-Heaviside n'a pas été généralisé au contact.
-      On désactive le contact sur cette maille, ce qui peut conduire à des résultats faux.
-      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
-      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+      Jonction X-FEM et contact
+
+      Une facette de contact XFEM doit être redécoupé. Ceci n'est pas implémenté pour l'instant.
+      Les efforts de contact ne seront pas prise en compte sur cette facette.
 """),
 
 46: _("""

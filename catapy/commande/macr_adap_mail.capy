@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,6 @@
 # RESPONSABLE GNICOLAS G.NICOLAS
 
 
-from Macro.macr_adap_mail_ops import macr_adap_mail_ops
 
 def macr_adap_mail_prod(self, MAJ_CHAM, ADAPTATION, **args):
 #
@@ -42,10 +41,12 @@ def macr_adap_mail_prod(self, MAJ_CHAM, ADAPTATION, **args):
   return None
 
 
-MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_adap_mail_prod,
+MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
+                     op=OPS('Macro.macr_adap_mail_ops.macr_adap_mail_ops'),
+                     sd_prod=macr_adap_mail_prod,
                      fr="Adapter un maillage avec le logiciel HOMARD.",
                      ang="Mesh adaptation with the HOMARD software.",
-                     docu="U7.03.01",UIinfo={"groupes":("Maillage",)},
+                     UIinfo={"groupes":("Maillage",)},
 #
 # 1. Le niveau d'information
 #

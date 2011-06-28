@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -25,10 +25,20 @@ def extr_table_prod(TYPE_RESU,**args):
      return defs[typ]
   raise AsException("type de concept resultat non prevu")
 
-EXTR_TABLE=OPER(nom="EXTR_TABLE",op=173,sd_prod=extr_table_prod,reentrant='n',
-            UIinfo={"groupes":("Résultats et champs","Tables")},
-         fr="Extraire d'une table des concepts Code_Aster",
-         TYPE_RESU       =SIMP(statut='o',typ='TXM',),
+EXTR_TABLE=OPER(nom="EXTR_TABLE",
+                op=173,
+                sd_prod=extr_table_prod,
+                reentrant='n',
+                UIinfo={"groupes":("Résultats et champs","Tables")},
+                fr="Extraire d'une table des concepts Code_Aster",
+         TYPE_RESU       =SIMP(statut='o',typ='TXM',
+                               into=('MATR_ASSE_GENE_R', 'MATR_ELEM_DEPL_R',
+                                     'VECT_ELEM_DEPL_R',
+                                     'CHAM_GD_SDASTER', 'CHAM_NO_SDASTER',
+                                     'CARTE_SDASTER', 'CHAM_ELEM',
+                                     'MODE_MECA',
+                                     'FONCTION_SDASTER', 'FONCTION_C', 'NAPPE_SDASTER',
+                                     'ENTIER',),),
 
          TABLE           =SIMP(statut='o',typ=(table_sdaster,table_container)),
 
@@ -50,5 +60,5 @@ EXTR_TABLE=OPER(nom="EXTR_TABLE",op=173,sd_prod=extr_table_prod,reentrant='n',
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
          ),
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
 )  ;

@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF E_ETAPE Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -17,8 +17,6 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-#
-#
 # ======================================================================
 
 """
@@ -32,6 +30,8 @@ from os import times
 from Noyau.N_utils import prbanner
 from Noyau.N_Exception import AsException
 from Noyau.N_MACRO_ETAPE import MACRO_ETAPE
+from Noyau.N_info import message, SUPERV
+
 import genpy
 import aster
 import checksd
@@ -63,9 +63,7 @@ class ETAPE:
                -  2 = execution effective
         - icmd  : numéro d'ordre de la commande
       Retour : iertot = nombre d erreurs
-
       """
-
       if CONTEXT.debug :
            prbanner(" appel de l operateur %s numero %s " % (self.definition.nom,self.definition.op))
 
@@ -251,6 +249,7 @@ class ETAPE:
       Le seul cas ou on appelle plusieurs fois Execute est pour la
       commande INCLUDE (appel dans op_init)
       """
+      message.debug(SUPERV, "%s par_lot=%s", self.nom, self.jdc and self.jdc.par_lot)
       if not self.jdc or self.jdc.par_lot != "NON" :
          return
 
@@ -262,22 +261,28 @@ class ETAPE:
       if not cr.estvide():
         raise EOFError
 
-      self.Build()
+      #self.set_current_step()
+      #try:
+      if True:
+         self.Build()
 
-      self.setmode(1)
-      self.Exec()
-      self.setmode(2)
-      try:
-          self.Exec()
-      except self.codex.error:
-          self.detruit_sdprod()
-          raise
+         self.setmode(1)
+         self.Exec()
+         self.setmode(2)
+         try:
+            self.Exec()
+         except self.codex.error:
+            self.detruit_sdprod()
+            raise
+      #except:
+          #self.reset_current_step()
+      #self.reset_current_step()
 
    def detruit_sdprod(self):
       """ Cette méthode supprime le concept produit par la commande
           du registre tenu par le JDC
       """
-      if self.sd != None:
+      if self.sd is not None:
           self.jdc.del_concept(self.sd.nom)
 
    def BuildExec(self):
@@ -285,7 +290,7 @@ class ETAPE:
       Cette methode realise l execution complete d une etape, en mode commande par commande :
              - construction,
              - execution
-      en une seule passe. Utilise en mode PAR_LOT='NON'
+      en une seule passe. Utilise en mode PAR_LOT='OUI'
 
       L'attribut d'instance executed indique que l'etape a deja ete executee
       Cette methode peut etre appelee plusieurs fois mais l'execution proprement
@@ -293,17 +298,24 @@ class ETAPE:
       Le seuls cas ou on appelle plusieurs fois Execute est pour la
       commande INCLUDE (appel dans op_init)
       """
-
+      message.debug(SUPERV, "BuildExec %s", self.nom)
       if hasattr(self,"executed") and self.executed == 1:return
       self.executed=1
 
-      # Construction des sous-commandes
-      self.Build()
+      #self.set_current_step()
+      #try:
+      if True:
+         # Construction des sous-commandes
+         self.Build()
 
-      self.setmode(1)
-      self.Exec()
-      self.setmode(2)
-      self.Exec()
+         self.setmode(1)
+         self.Exec()
+         self.setmode(2)
+         self.Exec()
+      #except:
+         #self.reset_current_step()
+         #raise
+      #self.reset_current_step()
 
    def get_liste_etapes(self,liste):
       liste.append(self.etape)

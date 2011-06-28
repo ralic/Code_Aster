@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF utilitai Messages  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,6 +30,19 @@ cata_msg = {
 
 2 : _("""
  il ne faut pas demander 'TR' derrière cara si le type d'élément discret ne prend pas en compte la rotation
+"""),
+
+3 : _("""
+ Il a été demandé de convertir un champ par éléments aux noeuds en un
+ champ aux noeuds. Or le champ par éléments aux noeuds contient des
+ sous-points alors que un champ aux noeuds ne peut pas en contenir.
+ De ce fait, les mailles contenant des sous-points vont être exclues.
+
+ Conseil :
+   Si vous utilisez CALC_CHAMP pour calculer un champ aux noeuds et
+   que vous souhaitez récupérer des valeurs sur les mailles ayant des
+   sous-points, veuillez d'abord utiliser la commande POST_CHAMP pour
+   extraire des sous-points.
 """),
 
 5 : _("""

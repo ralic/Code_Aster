@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,16 +20,17 @@
 # RESPONSABLE COURTOIS M.COURTOIS
 
 # Modules Python
-import types
-import string,linecache,os,traceback,re
+import os
+import traceback
 import pickle
 import re
-from pprint import pprint
+from math import sqrt, pi, atan2, tan, log, exp
 
 # Modules Eficas
 import Accas
 from Accas import ASSD
 from Noyau.ascheckers     import CheckLog
+from Noyau.N_info import message, SUPERV
 
 try:
    import aster
@@ -60,11 +61,14 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    if CODE != None:
       jdc.fico = CODE['NOM']
    if aster_exists:
+      # pb en cas d'erreur dans FIN : appeler reset_print_function dans traiter_fin_exec ?
+      #from functools import partial
+      #asprint = partial(aster.affiche, 'MESSAGE')
+      #message.register_print_function(asprint)
       # en POURSUITE, ne pas écraser la mémorisation existante.
       if not hasattr(jdc, 'memo_sensi'):
          jdc.memo_sensi = MEMORISATION_SENSIBILITE()
       jdc.memo_sensi.reparent(jdc)
-
       # ne faire qu'une fois
       if not hasattr(jdc, 'msg_init'):
          # messages d'alarmes désactivés
@@ -73,12 +77,10 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
                IGNORE_ALARM = [IGNORE_ALARM]
             for idmess in IGNORE_ALARM:
                MessageLog.disable_alarm(idmess)
-
       # en POURSUITE, conserver le catalogue de comportement picklé
       if not hasattr(jdc, 'catalc'):
          from Comportement import catalc
          jdc.catalc = catalc
-
       jdc.msg_init = True
 
 
@@ -89,7 +91,6 @@ def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args):
    # La commande DEBUT ne peut exister qu'au niveau jdc
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
-
    commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO)
 
 
@@ -148,10 +149,11 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
        concep=concepts[pos+8:pos+24]
        nomcmd=concepts[pos+24:pos+40]
        statut=concepts[pos+40:pos+48]
-       print nomres,concep,nomcmd,statut
-       if nomres[0] not in (' ','.','&') and statut != '&DETRUIT':
-          exec nomres+'='+string.lower(concep)+'()' in self.parent.g_context,d
-       elif statut == '&DETRUIT' : self.jdc.nsd = self.jdc.nsd+1
+       message.info(SUPERV, '%s %s %s %s', nomres, concep, nomcmd, statut)
+       if nomres[0] not in (' ', '.', '&') and statut != '&DETRUIT':
+          exec nomres+'='+concep.lower()+'()' in self.parent.g_context,d
+       elif statut == '&DETRUIT':
+          self.jdc.nsd = self.jdc.nsd+1
        pos=pos+80
      # ces ASSD seront écrasées par le pick.1,
      # on vérifiera la cohérence de type entre glob.1 et pick.1
@@ -168,21 +170,20 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
      # variables qui ne sont pas des concepts.
      # On supprime du pickle_context les concepts valant None, ca peut
      # etre le cas des concepts non executés, placés après FIN.
-     pickle_context=get_pickled_context()
-     if self.jdc.info_level > 1:
-        UTMESS('I', 'SUPERVIS2_1')
-     if pickle_context==None :
+     message.info(SUPERV, 'SUPERVIS2_1', utmess=True)
+     pickle_context = get_pickled_context()
+     if pickle_context == None:
         UTMESS('F', 'SUPERVIS_86')
         return
      self.jdc.restore_pickled_attrs(pickle_context)
-     from Cata.cata  import ASSD,entier
+     from Cata.cata  import entier
      from Noyau.N_CO import CO
      for elem in pickle_context.keys():
          if isinstance(pickle_context[elem], ASSD):
-            pickle_class=pickle_context[elem].__class__
+            pickle_class = pickle_context[elem].__class__
             # on rattache chaque assd au nouveau jdc courant (en poursuite)
-            pickle_context[elem].jdc=self.jdc
-            pickle_context[elem].parent=self.jdc
+            pickle_context[elem].jdc = self.jdc
+            pickle_context[elem].parent = self.jdc
             # le marquer comme 'executed'
             pickle_context[elem].executed = 1
             # pour que sds_dict soit cohérent avec g_context
@@ -201,11 +202,11 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
                if poursu_class != pickle_class :
                   UTMESS('F','SUPERVIS_87',valk=[elem])
                   return
-            elif pickle_class not in (CO,entier) :
+            elif pickle_class not in (CO, entier) :
             # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
             # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
             # meme situation pour le type 'entier' produit uniquement par DEFI_FICHIER
-               UTMESS('F','SUPERVIS_88',valk=[elem,str(pickle_class)])
+               UTMESS('F','SUPERVIS_88', valk=[elem,str(pickle_class)])
                return
             # rétablir le catalogue de SD (pas pour les CO)
             if pickle_class is not CO:
@@ -217,7 +218,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
                if self.jdc.info_level > 1:
                   UTMESS('I', 'SUPERVIS2_4',
                          valk=(elem, type(pickle_context[elem]).__name__.upper()))
-         if pickle_context[elem]==None : del pickle_context[elem]
+         if pickle_context[elem]==None:
+            del pickle_context[elem]
      self.g_context.update(pickle_context)
      return
 
@@ -268,7 +270,7 @@ def POURSUITE_context(self,d):
    # On ajoute directement les concepts dans le contexte du jdc
    # XXX est ce que les concepts ne sont pas ajoutés plusieurs fois ??
    for v in self.g_context.values():
-      if isinstance(v,ASSD) :
+      if isinstance(v, ASSD) :
          self.jdc.sds.append(v)
 
 def build_poursuite(self,**args):
@@ -279,7 +281,7 @@ def build_poursuite(self,**args):
    # Il n y a pas besoin d executer self.codex.poursu (c'est deja fait dans
    # la fonction sdprod de la commande (ops.POURSUITE))
    self.set_icmd(1)
-   self.jdc.UserError=self.codex.error
+   self.jdc.UserError = self.codex.error
    return 0
 
 def INCLUDE(self,UNITE,**args):
@@ -317,10 +319,8 @@ def build_include(self,**args):
    #ier=self.codex.opsexe(self,icmd,-1,1)
    return ier
 
-def detruire(self,d):
-   """
-       Cette fonction est la fonction op_init de la PROC DETRUIRE
-   """
+def build_detruire(self,d):
+   """Fonction op_init de DETRUIRE."""
    list_co = set()
    sd = []
    # par nom de concept (typ=assd)
@@ -367,7 +367,9 @@ def detruire(self,d):
          del d[nom]
       if self.jdc.sds_dict.has_key(nom):
          del self.jdc.sds_dict[nom]
-      # On signale au parent que le concept s n'existe plus apres l'étape self
+      #XXX/memoire suppression du concept et de sa partie SD
+      #co.supprime()
+      # On signale au parent que le concept n'existe plus après l'étape self
       self.parent.delete_concept_after_etape(self, co)
       # marque comme détruit == non executé
       co.executed = 0
@@ -395,3 +397,88 @@ def build_DEFI_FICHIER(self,**args):
     icmd=0
     ier=self.codex.opsexe(self,icmd,-1,26)
     return ier
+
+def build_formule(self, d):
+    """Fonction ops de FORMULE."""
+    NOM_PARA = self.etape['NOM_PARA']
+    VALE = self.etape['VALE']
+    VALE_C = self.etape['VALE_C']
+    if type(NOM_PARA) not in (list, tuple):
+        NOM_PARA = [NOM_PARA, ]
+    for para in NOM_PARA:
+        if para.strip() != para:
+            raise Accas.AsException("nom de paramètre invalide (contient des blancs)" \
+               " : %s" % repr(para))
+    if self.sd == None:
+        return
+    if VALE     != None :
+        texte = ''.join(VALE.splitlines())
+    elif VALE_C != None :
+        texte = ''.join(VALE_C.splitlines())
+    self.sd.setFormule(NOM_PARA, texte.strip())
+
+def build_gene_vari_alea(self, d):
+    """Fonction ops de la macro GENE_VARI_ALEA."""
+    from Utilitai.Utmess import UTMESS
+    a = self.etape['BORNE_INF']
+    moyen = self.etape['VALE_MOY' ]
+    TYPE = self.etape['TYPE']
+    if self['INIT_ALEA'] is not None:
+        jump = self.etape['INIT_ALEA' ]
+        self.iniran(jump)
+    if TYPE == 'EXP_TRONQUEE':
+        b = self.etape['BORNE_SUP']
+        if a >= b:
+            UTMESS('F', 'PROBA0_1', valr=[a, b])
+        elif moyen <= a or moyen >= b:
+            UTMESS('F', 'PROBA0_2', valr=[a, moyen, b])
+        k = 1. / (moyen - a)
+        if exp(-b * k) < 1.e-12:
+            UTMESS('F', 'PROBA0_3')
+        # résolution par point fixe
+        eps = 1.E-4
+        nitmax = 100000
+        test = 0.
+        while abs((test - k) / k) > eps:
+            test = k
+            k = 1. / (moyen - (a * exp(-a * k) - b * exp(-b * k)) / \
+                               (exp(-a * k) - exp(-b * k)))
+        # génération de la variable aléatoire
+        alpha = exp(-a * k) - exp(-b * k)
+        self.sd.valeur = -(log(exp(-a * k) - alpha * self.getran()[0])) / k
+    elif TYPE == 'EXPONENTIELLE':
+       if moyen <= a:
+          UTMESS('F', 'PROBA0_4', valr=[moyen, a])
+       v = moyen - a
+       u = self.getran()[0]
+       x = -log(1 - u)
+       self.sd.valeur = a + v * x
+    elif TYPE == 'GAMMA':
+       delta = self.etape['COEF_VAR' ]
+       if moyen <= a:
+          UTMESS('F', 'PROBA0_4', valr=[moyen, a])
+       v = moyen - a
+       alpha = 1. / delta**2
+       if alpha <= 1.:
+          UTMESS('F', 'PROBA0_5')
+       gamma2 = alpha - 1.
+       gamm1 = 1. / gamma2
+       beta = sqrt(2. * alpha - 1.)
+       beta2 = 1. / beta**2
+       f0 = 0.5 + (1. / pi) * atan2(-gamma2 / beta, 1.)
+       c1 = 1. - f0
+       c2 = f0 - 0.5
+       vref = 0.
+       vv     = -1.
+       while -vv > vref:
+          u = self.getran()[0]
+          gamdev = beta * tan(pi * (u * c1 + c2)) + gamma2
+          unif = self.getran()[0]
+          if unif < 0.:
+             UTMESS('F', 'PROBA0_6')
+          vv = -log(unif)
+          vref = log(1 + beta2 * ((gamdev - gamma2)**2)) \
+               + gamma2 * log(gamdev * gamm1) - gamdev + gamma2
+       if vv <= 0.:
+          UTMESS('F', 'PROBA0_7')
+       self.sd.valeur = a + v * delta**2 * gamdev

@@ -1,8 +1,8 @@
-#@ MODIF co_modele_gene SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_modele_gene SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,16 +19,17 @@
 # ======================================================================
 
 import Accas
-from SD import *
-from sd_modele_gene import sd_modele_gene
+from Accas import ASSD
 
-# -----------------------------------------------------------------------------
-class modele_gene(ASSD, sd_modele_gene):
+class modele_gene(ASSD):
+   cata_sdj = "SD.sd_modele_gene.sd_modele_gene"
+
    def LIST_SOUS_STRUCT(self) :
       """ retourne la liste des sous structures du modele generalise
          la liste des macro-elements sous-jacents"""
       if not self.accessible():
          raise Accas.AsException("Erreur dans modele_gene.LIST_SOUS_STRUCT en PAR_LOT='OUI'")
+      import aster
       nommodgen=self.get_name()
       ncham=nommodgen+(8-len(nommodgen))*' '
       ssno=aster.getvectjev(ncham+(14-len(ncham))*' '+'.MODG.SSNO')
@@ -40,6 +41,7 @@ class modele_gene(ASSD, sd_modele_gene):
          [ (ss1, nom_liais1,  ss2 , nom_liais2), ...] """
       if not self.accessible() :
          raise Accas.AsException("Erreur dans modele_gene.LIST_LIAIS_STRUCT en PAR_LOT='OUI'")
+      import aster
       nommodgen=self.get_name()
       ncham=nommodgen+(8-len(nommodgen))*' '
       lidf=aster.getcolljev(ncham+(14-len(ncham))*' '+'.MODG.LIDF')

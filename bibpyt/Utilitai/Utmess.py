@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -649,6 +649,7 @@ def __fake__():
     UTMESS('I', 'SUPERVIS_40')    # surcharge émis par asrun
     UTMESS('I', 'SUPERVIS_96')    # émis depuis le C (inisig)
     UTMESS('I', 'SUPERVIS_97')    # émis depuis le C (inisig)
+    UTMESS('I', 'SUPERVIS2_1')    # émis dans ops
     UTMESS('I', 'GENERIC_1')      # dans des tests pour traiter les exceptions
     UTMESS('I', 'CATAMESS_6')
     UTMESS('I', 'CATAMESS_41')

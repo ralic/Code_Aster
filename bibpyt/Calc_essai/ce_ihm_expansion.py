@@ -1,4 +1,4 @@
-#@ MODIF ce_ihm_expansion Calc_essai  DATE 03/01/2011   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_ihm_expansion Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,7 +132,7 @@ class InterfaceCorrelation(Frame):
         """
         self.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
-        l = Label(self,text="Expansion de donnees", pady=5, font=("Helvetica", "16") )
+        l = Label(self,text=u"Expansion de données", pady=5, font=("Helvetica", "16") )
         l.grid(row=0)
 
         select_box = self.interface_selection(self)
@@ -152,14 +152,14 @@ class InterfaceCorrelation(Frame):
         Label(f, text="   ").grid(row=0, column=0, columnspan=3, sticky='w'+'e' )
         
         # menu de selection du resultat numerique
-        Label(f,text="Base numérique d'expansion").grid(row=1,column=0,sticky='e')
+        Label(f,text=u"Base numérique d'expansion").grid(row=1,column=0,sticky='e')
         self.var_resu_num = StringVar()
         self.menu_resu_num = MyMenu( f, options = self.objects.get_mode_meca_name(),
                                      var = self.var_resu_num, cmd = self.num_changed )
         self.menu_resu_num.grid(row=1, column=1, sticky='ew')
 
         # menu de selection du resultat experimental
-        Label(f,text="Résultat expérimental").grid(row=1,column=2,sticky='e')
+        Label(f,text=u"Résultat expérimental").grid(row=1,column=2,sticky='e')
         self.var_resu_exp = StringVar()
         self.menu_resu_exp = MyMenu( f, options = self.objects.get_resultats_name(),
                                      var = self.var_resu_exp, cmd = self.exp_changed )
@@ -181,10 +181,10 @@ class InterfaceCorrelation(Frame):
 ##        self.menu_norme_exp.grid(row=2, column=3, sticky='ew')
 
         # Type de resu experimental (dyna_harmo ou modes)
-        Label(f,text="Type de résultat expérimental").grid(row=1,column=4,columnspan=2)
-        Radiobutton(f,text='resultat harmonique',value='harmo',
+        Label(f,text=u"Type de résultat expérimental").grid(row=1,column=4,columnspan=2)
+        Radiobutton(f,text=u"résultat harmonique",value='harmo',
                     variable=self.type_resu_exp).grid(row=2,column=4)
-        Radiobutton(f,text='modes',value='mode',
+        Radiobutton(f,text=u"modes",value='mode',
                     variable=self.type_resu_exp).grid(row=2,column=5)
 
         Label(f, text="   ").grid(row=3, column=0, columnspan=3, sticky='w'+'e' )
@@ -199,7 +199,7 @@ class InterfaceCorrelation(Frame):
     def num_changed(self):
         mdo = self.objects
         resu_num = norme_num = None
-        if self.var_resu_num.get() != 'Choisir':
+        if self.var_resu_num.get() != "Choisir":
             self.resu_num = mdo.get_mode_meca(self.var_resu_num.get())
             self.liste_num.set_resu(self.resu_num) # remplissage de la liste des frequences
 ##        if self.var_norme_num.get() != 'Choisir':
@@ -209,7 +209,7 @@ class InterfaceCorrelation(Frame):
     def exp_changed(self):
         mdo = self.objects
         self.resu_exp = self.norme_exp = None
-        if self.var_resu_exp.get() != 'Choisir':
+        if self.var_resu_exp.get() != "Choisir":
             self.resu_exp = mdo.get_resultats(self.var_resu_exp.get())
             if isinstance(self.resu_exp,DynaHarmo):
                 self.type_resu_exp.set('harmo')
@@ -231,20 +231,20 @@ class InterfaceCorrelation(Frame):
         self.export_name=StringVar()
         self.param = None
         self.suffix = ['_NX','_EX','_ET','_RD']
-        listres = ['résultat numérique   extrait  NX',
-                   'résultat expérimental extrait EX',
-                   'résultat étendu ET',
-                   'résultat réduit RD']
+        listres = ["résultat numérique   extrait  NX",
+                   "résultat expérimental extrait EX",
+                   "résultat étendu ET",
+                   "résultat réduit RD"]
 
         f = Frame(root,relief='sunken',borderwidth=1)
 
-        self.param_proj_mesu=ParamProjMesuModal(f, "Paramètres de PROJ_MESU_MODAL")
+        self.param_proj_mesu=ParamProjMesuModal(f, u"Paramètres de PROJ_MESU_MODAL")
         self.param = self.param_proj_mesu.get_option()
 
         # parametres de proj_mesu_modal
         paraf = Frame(f,borderwidth = 1)    
-        Label(paraf, text="Paramètres de PROJ_MESU_MODAL").grid(row=0,column=0,rowspan=2,sticky='nswe' )
-        Checkbutton(paraf,text="Réglages",
+        Label(paraf, text=u"Paramètres de PROJ_MESU_MODAL").grid(row=0,column=0,rowspan=2,sticky='nswe' )
+        Checkbutton(paraf,text=u"Réglages",
                     command=self.display_expans_param_frame,
                     variable=self.var_expans_param_frame_visible,
                     indicatoron=0).grid(row=2,column=0,pady=5,sticky='e')
@@ -252,14 +252,14 @@ class InterfaceCorrelation(Frame):
 
         #lancer le calcul
         launchf =  Frame(f,borderwidth = 1)
-        Button(launchf,text='Calculer',command=self.prepare_calcul).grid(row=2,column=0,sticky='w')
+        Button(launchf,text="Calculer",command=self.prepare_calcul).grid(row=2,column=0,sticky='w')
         Entry(launchf,textvariable=self.export_name, bg='white' ).grid(row=2,column=1,pady=2)
         launchf.grid(row=1,column=0,sticky='ew',pady=10,padx=10 )
         
         
-        self.liste_num = ModeFreqList( f, "Modes Numériques" )
+        self.liste_num = ModeFreqList( f, u"Modes Numériques" )
         self.liste_num.grid(row=0, column=3, rowspan=3, sticky='nsew',pady=10,padx=10  )
-        self.liste_exp = ModeFreqList( f, "Modes Expérimentaux" )
+        self.liste_exp = ModeFreqList( f, u"Modes Expérimentaux" )
         self.liste_exp.grid(row=0, column=4, rowspan=3, sticky='nsew',pady=10,padx=10  )
         
         f.grid(row=1, sticky='ew')
@@ -270,7 +270,7 @@ class InterfaceCorrelation(Frame):
         self.expans_param_frame = frm1 = Toplevel()
         frm1.rowconfigure(0,weight=1)
         frm1.columnconfigure(0,weight=1)
-        self.param_proj_mesu = ParamProjMesuModal(frm1, "Paramètres de PROJ_MESU_MODAL")
+        self.param_proj_mesu = ParamProjMesuModal(frm1, u"Paramètres de PROJ_MESU_MODAL")
         self.param_proj_mesu.grid(row=0,column=0,sticky='nsew')
         if self.param:
             self.param_proj_mesu.set_option(self.param)
@@ -311,13 +311,13 @@ class InterfaceCorrelation(Frame):
         bir2 = Checkbutton(f1,variable=self.is_resu2,command=self.cb_changed)
         bir2.grid(row=1, column = 0,sticky='e',padx=20)
 
-        Label(f1,text="Resultat 1").grid(row=0,column=1,sticky='w')
+        Label(f1,text=u"Résultat 1").grid(row=0,column=1,sticky='w')
         self.var_resu1 = StringVar()
         self.menu_resu1 = MyMenu( f1, options = mdo.get_resultats_name(),
                                   var = self.var_resu1, cmd = self.visu1_changed )
         self.menu_resu1.grid(row=0, column=2, sticky='ew',padx=20)
 
-        Label(f1,text="Resultat 2").grid(row=1,column=1,sticky='w')
+        Label(f1,text=u"Résultat 2").grid(row=1,column=1,sticky='w')
         self.var_resu2 = StringVar()
         self.menu_resu2 = MyMenu( f1, options = mdo.get_resultats_name(),
                                   var = self.var_resu2, cmd = self.visu2_changed )
@@ -325,11 +325,11 @@ class InterfaceCorrelation(Frame):
 
         f2 = Frame(f)        
         f2.grid(row=1,column=1)
-        self.mac_button = Button(f2,text='    MAC    ',command=self.view_macs,state='disabled')
+        self.mac_button = Button(f2,text="    MAC    ",command=self.view_macs,state='disabled')
         self.mac_button.grid(row=1,column=0, sticky='ew' )
-        self.phi_button = Button(f2,text='Déformées',command=self.view_modes,state='disabled')
+        self.phi_button = Button(f2,text=u"Déformées",command=self.view_modes,state='disabled')
         self.phi_button.grid(row=2,column=0, sticky='ew')
-        self.frf_button = Button(f2,text='    FRF    ',command=self.view_frf)
+        self.frf_button = Button(f2,text="    FRF    ",command=self.view_frf)
         self.frf_button.grid(row=3,column=0, sticky='ew' )
 
         return f
@@ -453,13 +453,13 @@ class InterfaceCorrelation(Frame):
         """
         # Validité des donnees :
         if self.resu_num == None or self.resu_exp == None:
-            self.mess.disp_mess("Il manque des données pour le calcul")
+            self.mess.disp_mess(u"Il manque des données pour le calcul")
             return
         if self.resu_num.modele == None:
-            self.mess.disp_mess("Il manque le modele associe au résultat numérique")
+            self.mess.disp_mess(u"Il manque le modele associe au résultat numérique")
             return
         if self.resu_exp.modele == None:
-            self.mess.disp_mess("Il manque le modele associe au résultat expérimental")
+            self.mess.disp_mess(u"Il manque le modele associe au résultat expérimental")
             return
 
         self.modes_num_list = self.liste_num.selection()

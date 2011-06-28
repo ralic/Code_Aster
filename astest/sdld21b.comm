@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21b.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,7 +71,7 @@ MODES=MODE_ITER_INV(   MATR_A=MATASSR,  MATR_B=MATASSM,
                          FREQ = (5.,10.,15.,20.,24.,27.,30.,32.,))  )
 
 MACRO_PROJ_BASE( BASE=MODES,
-                 PROFIL = 'PLEIN',
+                 STOCKAGE = 'PLEIN',
                  NB_VECT=8,
                  MATR_ASSE_GENE=(
                    _F(

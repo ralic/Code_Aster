@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -66,7 +66,7 @@ MODE_LOCAL__
                                  EN1   (DX   DY   DZ   H1X  H1Y  H1Z  )
                                  EN2   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  )
                                  EN3   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  H3X  H3Y  H3Z  )
-                                 EN4   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  H3X  H3Y  H3Z  H4X  H4Y  )
+                                 EN4   (DX   DY   DZ   H1X  H1Y  H1Z  H2X  H2Y  H2Z  H3X  H3Y  H3Z  H4X  H4Y  H4Z)
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
@@ -81,7 +81,7 @@ MODE_LOCAL__
     E18NEUI  = NEUT_I   ELEM__         (X[18])
     E54NEUI  = NEUT_I   ELEM__         (X[54])
     E10NEUTR = NEUT_R   ELEM__         (X[10])
-    E48NEUTR = NEUT_R   ELEM__         (X[18])
+    E48NEUTR = NEUT_R   ELEM__         (X[48])
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     FISCO_I  = NEUT_I   ELEM__         (X[2]     )

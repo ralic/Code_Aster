@@ -3,7 +3,7 @@
      &                  MMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,12 +22,12 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       REAL*8       DDT1(3,3),DDT2(3,3),DDT3(3,3),DDT4(3,3),PP(3,3)
-      REAL*8       P(3,3),MMAT(204,204)
+      REAL*8       P(3,3),MMAT(216,216)
       REAL*8       JAC,FFP(27),RR
       INTEGER      NDIM,DDLH,DDLS,NNO,SINGU
 C.......................................................................
 C
-C         CALCUL DES MATRICES DE CONTACT FROTTEMENT
+C         CALCUL DES MATRICES DE CONTACT FROTTEMENT 
 C                 LOI COHESIVE - POUR X-FEM
 C                     (METHODE CONTINUE)
 C

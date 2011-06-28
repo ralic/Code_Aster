@@ -1,7 +1,8 @@
       SUBROUTINE XMMJEU(NDIM  ,  JNNM,JNNE,NDEPLE,
      &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
      &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
-     &                  JDDLE,JDDLM, JEU   )
+     &                  JDDLE ,JDDLM ,NFHE  ,NFHM  ,LMULTI,
+     &                  HEAVFA,JEU   )
       IMPLICIT NONE
       INTEGER NDIM
       REAL*8  NORM(3)
@@ -9,11 +10,12 @@
       REAL*8  JEU
       INTEGER JGEOM,JDEPDE,JDEPM,NDEPLE
       INTEGER JNNM(3),JNNE(3),JDDLE(2),JDDLM(2)
-      INTEGER NSINGE,NSINGM
+      INTEGER NSINGE,NSINGM,NFHE,NFHM,HEAVFA(*)
       REAL*8  RRE,RRM
+      LOGICAL LMULTI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +32,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
 C
 C ROUTINE XFEM (METHODE XFEM-GG - TE)
 C
@@ -46,7 +49,7 @@ C IN  NNC    : NOMBRE DE NOEUDS DE LA MAILLE DE CONTACT
 C IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
 C IN  NSINGE : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
 C IN  NSINGM : NOMBRE DE FONCTIONS SINGULIERE MAIT RES
-C IN  ddles : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
+C IN  DDLES : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C IN  RRE    : SQRT LSN PT ESCLAVE
 C IN  RRM    : SQRT LSN PT MAITRE
 C IN  NORM   : VALEUR DE LA NORMALE
@@ -76,14 +79,20 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER IDIM,INOM,ISINGE,INOES,ISINGM,IN,JN,NDDLE
       INTEGER PL,DDLES,DDLEM,DDLMS,DDLMM,NNE,NNES,NNEM,NNM,NNMS
-
-      REAL*8  POSE(3),POSM(3)
+      INTEGER IFH,IDDL
+      REAL*8  POSE(3),POSM(3),IESCL(6),IMAIT(6),POS
 C
 C ----------------------------------------------------------------------
 C
 C
 C --- INNITIALISATION
 C
+      IESCL(1) = 1
+      IESCL(2) =-1
+      IESCL(2+NFHE)=-RRE
+      IMAIT(1) = 1
+      IMAIT(2) = 1
+      IMAIT(2+NFHM)= RRM
       NNE=JNNE(1)
       NNES=JNNE(2)
       NNEM=JNNE(3)
@@ -103,53 +112,51 @@ C --- CALCUL DE LA POSITION COURANTE DU POINT ESCLAVE
 C
       DO 10 IDIM = 1,NDIM
         DO 20 INOES = 1,NDEPLE
+          CALL INDENT(INOES,DDLES,DDLEM,NNES,IN)
           IF (NNM.NE.0) THEN
-            CALL INDENT(INOES,DDLES,DDLEM,NNES,IN)
-            PL           = IN + IDIM
-            POSE(IDIM) = POSE(IDIM) +
-     &                   FFE(INOES)*(
-     &                      ZR(JGEOM+NDIM*(INOES-1)+IDIM-1) +
-     &                      ZR(JDEPDE-1+PL) -
-     &                      ZR(JDEPDE-1+PL+NDIM) +
-     &                      ZR(JDEPM-1+PL) -
-     &                      ZR(JDEPM-1+PL+NDIM)
-     &                   )
-          ENDIF
-          DO 25 ISINGE = 1,NSINGE
-            CALL INDENT(INOES+1,DDLES,DDLEM,NNES,IN)
-            PL           = IN - 2*NDIM + IDIM
+            IF (LMULTI) THEN
+              DO 30 IFH = 1,NFHE
+                IESCL(1+IFH)=HEAVFA(NFHE*(INOES-1)+IFH)
+   30         CONTINUE
+            ENDIF
+            POS = ZR(JGEOM-1+NDIM*(INOES-1)+IDIM)
+            DO 40 IDDL=1,1+NFHE+NSINGE
+              PL = IN + (IDDL-1)*NDIM + IDIM
+              POS = POS + IESCL(IDDL)*(ZR(JDEPDE-1+PL)+ZR(JDEPM-1+PL))
+   40       CONTINUE
+            POSE(IDIM) = POSE(IDIM) + POS*FFE(INOES)
+          ELSE
+            PL = IN + IDIM
             POSE(IDIM) = POSE(IDIM) - RRE*FFE(INOES)*
      &                    (ZR(JDEPDE-1+PL)+ZR(JDEPM-1+PL))
- 25       CONTINUE
+          ENDIF
  20     CONTINUE
  10   CONTINUE
 C
 C --- CALCUL DE LA POSITION COURANTE DU POINT MAITRE
 C
-      DO 11 IDIM = 1,NDIM
-        DO 30 INOM = 1,NNM
-          CALL INDENT(INOM,DDLMS,DDLMM,NNMS,JN)
-          PL = NDDLE + JN + IDIM
-          POSM(IDIM) = POSM(IDIM)+
-     &                 FFM(INOM)*(
-     &                   ZR(JGEOM-1+NNE*NDIM+(INOM-1)*NDIM+IDIM) +
-     &                   ZR(JDEPDE-1+PL) +
-     &                   ZR(JDEPDE-1+PL+NDIM) +
-     &                   ZR(JDEPM-1+PL) +
-     &                   ZR(JDEPM-1+PL+NDIM)
-     &                 )
-          DO 40 ISINGM = 1,NSINGM
-            PL         = PL + 2*NDIM
-            POSM(IDIM) = POSM(IDIM) + RRM*FFM(INOM)*
-     &                    (ZR(JDEPDE-1+PL)+ZR(JDEPM-1+PL))
- 40       CONTINUE
- 30     CONTINUE
- 11   CONTINUE
+      DO 50 IDIM = 1,NDIM
+        DO 60 INOM = 1,NNM
+          CALL INDENT(INOM,DDLMS,DDLMM,NNMS,IN)
+          IN = IN + NDDLE
+          IF (LMULTI) THEN
+            DO 70 IFH = 1,NFHM
+              IMAIT(1+IFH)=HEAVFA(NFHE*NNE+NFHM*(INOM-1)+IFH)
+   70       CONTINUE
+          ENDIF
+          POS = ZR(JGEOM-1+NNE*NDIM+(INOM-1)*NDIM+IDIM)
+          DO 80 IDDL=1,1+NFHM+NSINGM
+            PL = IN + (IDDL-1)*NDIM + IDIM
+            POS = POS + IMAIT(IDDL)*(ZR(JDEPDE-1+PL)+ZR(JDEPM-1+PL))
+   80     CONTINUE
+          POSM(IDIM) = POSM(IDIM) + POS*FFM(INOM)
+ 60     CONTINUE
+ 50   CONTINUE
 C
 C --- CALCUL DU JEU
 C
-      DO 70 IDIM = 1,NDIM
+      DO 90 IDIM = 1,NDIM
         JEU  = JEU  + NORM(IDIM)*(POSE(IDIM)-POSM(IDIM))
-  70  CONTINUE
+  90  CONTINUE
 C
       END

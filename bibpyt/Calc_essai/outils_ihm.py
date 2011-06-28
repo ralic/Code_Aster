@@ -1,21 +1,21 @@
-#@ MODIF outils_ihm Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF outils_ihm Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE BODEL C.BODEL
@@ -82,7 +82,7 @@ class TabbedWindow(Frame):
     def create_canvas(self):
         self.vsb = Scrollbar(self,orient='vertical')
         self.vsb.grid(row=1, column=1, sticky='nse')
-        self.main = Canvas(self,yscrollcommand=self.vsb.set, 
+        self.main = Canvas(self,yscrollcommand=self.vsb.set,
                            height=700,width=1000)
         self.main.grid(row=1, column=0, sticky="nswe")
 ##        self.main.rowconfigure(1, weight=1)
@@ -126,7 +126,7 @@ class MessageBoxInteractif(Frame):
     """!Classe dans laquelle on stocke la fentre de message (string)
     et qui permet d'ecrire dans un .mess separe si l'utilisateur en a fait
     la demande"""
-    
+
     def __init__(self, root):
         Frame.__init__(self, root, borderwidth=0,relief='flat',width=1000,height=200)
         titre = Label(self, text='Fenetre de messages' )
@@ -288,7 +288,7 @@ class GroupNoList(ModeList):
         ModeList.__init__(self, root, title)
 
     def set_mesh(self, mail):
-        groupno = mail.GROUPENO.get()
+        groupno = mail.sdj.GROUPENO.get()
         self.fill_modes( zip( groupno.keys(), groupno.keys() ) )
 
 
@@ -299,7 +299,7 @@ class GroupMaList(ModeList):
         ModeList.__init__(self, root, "Choisissez les groupes de mailles")
 
     def set_mesh(self, mail):
-        groupno = mail.GROUPEMA.get()
+        groupno = mail.sdj.GROUPEMA.get()
         self.fill_modes( zip( groupno.keys(), groupno.keys() ) )
 
 
@@ -369,7 +369,7 @@ class OptionFrame(Frame):
             w.grid(row=r, column=1,sticky='ew')
             self.widgets.append(w)
             r+=1
-            
+
 
 
 class ParamModeIterSimult(Frame):
@@ -400,7 +400,7 @@ class ParamModeIterSimult(Frame):
                                       ("Coef d'orthogonalisation",Entry,
                                        { 'textvariable':self.para_ortho } ),
                                       ])
-        
+
 
         self.sorensen.grid(row=1,column=0,sticky="WE",columnspan=2)
         Label(self,text="Option").grid(row=2,column=0)
@@ -432,13 +432,13 @@ class ParamModeIterSimult(Frame):
             self.opt_panel.destroy()
         if opt == "CENTRE":
             panel = OptionFrame(self, None, [
-                ("Fréquence",Entry,{'textvariable':self.opt_freq1}),
+                (u"Fréquence",Entry,{'textvariable':self.opt_freq1}),
                 ("NMax (-1 pour tout)",Entry,{'textvariable':self.opt_nmax_freq}),
                 ])
         elif opt == "BANDE":
             panel = OptionFrame(self, None, [
-                ("Fréquence min",Entry,{'textvariable':self.opt_freq1}),
-                ("Fréquence max",Entry,{'textvariable':self.opt_freq2}),
+                (u"Fréquence min",Entry,{'textvariable':self.opt_freq1}),
+                (u"Fréquence max",Entry,{'textvariable':self.opt_freq2}),
                 ])
         elif opt == "PLUS_PETITE":
             panel = OptionFrame(self, None, [
@@ -448,7 +448,7 @@ class ParamModeIterSimult(Frame):
             raise RuntimeError("Unknown option '%s'" % opt)
         self.opt_panel = panel
         panel.grid(row=3,column=0,columnspan=2,sticky="WE")
-        
+
 
     def get_calc_freq(self):
         opt = self.opt_option.get()
@@ -509,19 +509,19 @@ class ParamModeIterInv(Frame):
         if self.opt_panel:
             self.opt_panel.destroy()
         if opt == "PROCHE":
-            panel = ModeList(self, "Fréquences proches")
+            panel = ModeList(self, u"Fréquences proches")
             panel.fill_modes( [ (f, "% 6.2f Hz"%f) for f in self.frequences ] )
         elif opt == "SEPARE":
             panel = OptionFrame(self, None, [
-                ("Fréquence min",Entry,{'textvariable':self.opt_freq1}),
-                ("Fréquence max",Entry,{'textvariable':self.opt_freq2}),
+                (u"Fréquence min",Entry,{'textvariable':self.opt_freq1}),
+                (u"Fréquence max",Entry,{'textvariable':self.opt_freq2}),
                 ("NMAX iter separe",Entry,{'textvariable':self.nmax_iter_separe}),
                 ("Precision separe",Entry,{'textvariable':self.prec_separe}),
                 ])
         elif opt == "AJUSTE":
             panel = OptionFrame(self, None, [
-                ("Fréquence min",Entry,{'textvariable':self.opt_freq1}),
-                ("Fréquence max",Entry,{'textvariable':self.opt_freq2}),
+                (u"Fréquence min",Entry,{'textvariable':self.opt_freq1}),
+                (u"Fréquence max",Entry,{'textvariable':self.opt_freq2}),
                 ("NMAX iter separe",Entry,{'textvariable':self.nmax_iter_separe}),
                 ("Precision separe",Entry,{'textvariable':self.prec_separe}),
                 ("NMAX iter ajuste",Entry,{'textvariable':self.nmax_iter_ajuste}),
@@ -531,7 +531,7 @@ class ParamModeIterInv(Frame):
             raise RuntimeError("Unknown option '%s'" % opt)
         self.opt_panel = panel
         panel.grid(row=4,column=0,columnspan=2,sticky="WE")
-        
+
 
     def get_calc_freq(self):
         opt = self.opt_option.get()
@@ -555,7 +555,7 @@ class ParamProjMesuModal(Frame):
     """Un panneau pour spécifier les paramètres de résolution
     de PROJ_MESU_MODAL
     """
-    
+
     def __init__(self, root, title, **kwargs):
         Frame.__init__(self, root, **kwargs)
         Label(self, text=title).grid(row=0, column=0, columnspan=1)
@@ -590,12 +590,12 @@ class ParamProjMesuModal(Frame):
                 ])
             self.regul_meth.set('NON')
         elif opt == "LU":
-            panel = Label(self,text="Pas de paramétrage")            
+            panel = Label(self,text=u"Pas de paramétrage")
         else:
             raise RuntimeError("Unknown option '%s'" % opt)
         self.opt_panel = panel
         panel.grid(row=3,column=0,columnspan=2,sticky="WE")
-        
+
     def get_option(self):
         return {'METHODE':self.methode.get(),'REGUL':self.regul_meth.get(),
                 'COEF_PONDER':self.regul.get(),'EPS':self.eps.get()}
@@ -606,7 +606,7 @@ class ParamProjMesuModal(Frame):
         self.regul.set(options['COEF_PONDER'])
         self.eps.set(options['EPS'])
 
-        
+
     def get_resolution(self):
         mc = {}
         opt = self.methode.get()
@@ -622,8 +622,8 @@ class ParamProjMesuModal(Frame):
         return mc
 
 
-        
-        
+
+
 class RowDict(dict):
     """Un dictionaire utilisé pour décrire
     chaque group de DDL.
@@ -633,7 +633,7 @@ class RowDict(dict):
         dict.__init__(self, *args, **kargs)
         self.chgt_repere_choix = StringVar()
         self.chgt_repere_choix.set("AUCUN")
-    
+
     def set_chgt_rep(self, chgt_rep):
         """Garde en référence une instance de `ChgtRepereDialogue'."""
         self.chgt_rep = chgt_rep
@@ -697,7 +697,7 @@ class ChgtRepereDialogue(Toplevel):
 
     def _build_selection(self, root):
         """Construit la séléction du type de changement de repère."""
-        fra = Frame(root, relief="flat", borderwidth=4) 
+        fra = Frame(root, relief="flat", borderwidth=4)
         fra.grid(row=0, column=0, columnspan=2, padx=4, pady=5)
         self.fra = fra
 
@@ -714,16 +714,16 @@ class ChgtRepereDialogue(Toplevel):
                       self.chgt_repere_choix,
                       self.chgt_repere_changed)
         menu.grid(row=1, column=1, padx=4, pady=2)
-    
+
     def _set_interface(self):
         """Construit le dialogue à son ouverture. Les choix courants
         de l'utilsateur sont affichés."""
         self.dialog_titre.set(self.type_sel % self.row_dict["NOM"])
-        
+
         ancien_row_choix = self.row_dict.chgt_repere_choix.get()
         self.chgt_repere_choix.set(ancien_row_choix)
         self.chgt_repere_changed()
-    
+
     def chgt_repere_changed(self):
         """Construit l'interface pour le type de changement de repère
         selectionné."""
@@ -732,7 +732,7 @@ class ChgtRepereDialogue(Toplevel):
         self.tmp_widgets = {"labels" : [], "values" : []}
         choix = self.chgt_repere_choix.get()
         self._update_interface[choix]()
-        
+
     def _insert_vector(self, param_key, row_offset=0):
         """Place un vecteur dans l'interface."""
         if param_key in self.row_dict["CHGT_REP"]:
@@ -742,15 +742,15 @@ class ChgtRepereDialogue(Toplevel):
         vec = VecteurEntry(self.fra, default_values, self.mess)
         vec.grid(init_col=1, row=2 + row_offset)
         self.tmp_widgets["values"].append(vec)
-    
-    def _update_utilisateur(self): 
+
+    def _update_utilisateur(self):
         """Reconstruit l'interface pour le changement
         de repère UTILISATEUR"""
         lab = Label(self.fra, text="Angle nautique :")
         lab.grid(row=2, column=0,
                  padx=4, pady=2, sticky='w'+'e')
         self.tmp_widgets["labels"].append(lab)
-           
+
         self._insert_vector("ANGL_NAUT")
 
     def _update_cylindrique(self):
@@ -782,7 +782,7 @@ class ChgtRepereDialogue(Toplevel):
         menu.grid(row=2, column=0,
                   padx=4, pady=2, sticky='w' + 'e')
         self.tmp_widgets["labels"].append(menu)
-        
+
         has_old_value = False
         for idx, veckey in enumerate(["VECT_X", "VECT_Y"]):
             if veckey in self.row_dict["CHGT_REP"]:
@@ -794,12 +794,12 @@ class ChgtRepereDialogue(Toplevel):
             vectext = self.normale_vector_choix_lst[0]
             self.normale_vector_choix.set(vectext)
             self._insert_vector("VECT_X")
-        
+
     def validate_data(self):
         """Valide les données entrées et les place sur le dictionaire
         de résultat."""
         choix = self.chgt_repere_choix.get()
-        
+
         if  choix == "AUCUN":
             param_res = {}
         else:
@@ -820,7 +820,7 @@ class ChgtRepereDialogue(Toplevel):
 
         self.row_dict["CHGT_REP"] = param_res
         self.row_dict.chgt_repere_choix.set(choix)
-        
+
         self.hide()
 
     def hide(self):
@@ -838,11 +838,11 @@ class ChgtRepereDialogue(Toplevel):
             self.is_active = False
         else:
             self.mess.disp_mess(
-                "Un dialogue pour le groupe '%s' " \
-                "est déjà ouvert. " % self.row_dict["NOM"])
+                u"Un dialogue pour le groupe '%s' " \
+                u"est déjà ouvert. " % self.row_dict["NOM"])
             self.mess.disp_mess(
-                "Il doit d'abord être fermé pour pouvoir lancer " \
-                "un autre changement de repère." 
+                u"Il doit d'abord être fermé pour pouvoir lancer " \
+                u"un autre changement de repère."
                 )
 
 
@@ -852,13 +852,13 @@ class GroupNoWidget(Frame):
     pour ajouter un changement de repère peuvent y être
     ajoutes.
     """
-    
+
     def __init__(self, root, nlines, **kwargs):
         Frame.__init__(self, root, **kwargs)
         self.root = root
         self.nlines = nlines
         self.kwargs = kwargs
-        
+
         self.data = []
         self.widgets = []
         self.ypos = 0
@@ -898,12 +898,12 @@ class GroupNoWidget(Frame):
         for wlist in self.widgets:
             for wid in wlist:
                 wid.destroy()
-        
+
         self.data = []
         self.widgets = []
         STYLE = self.BTNSTYLE.copy()
         STYLE.update(self.kwargs)
-        
+
         for row_user_dict in user_data:
             row_dict = RowDict(row_user_dict.items())
             row_widgets = []
@@ -924,7 +924,7 @@ class GroupNoWidget(Frame):
                 row_widgets.append(but)
 
             row_dict["DDL_VARS"] = row_ddl_vars
-            
+
             if self.chgt_rep:
                 row_dict["CHGT_REP"] = {}
                 row_dict.set_chgt_rep(self.chgt_rep)
@@ -932,10 +932,10 @@ class GroupNoWidget(Frame):
                              textvariable=row_dict.chgt_repere_choix,
                              command=row_dict.affiche_chgt_rep)
                 row_widgets.append(but)
-            
+
             self.data.append(row_dict)
             self.widgets.append(row_widgets)
-        
+
         self.redraw()
 
     def redraw(self):
@@ -954,7 +954,7 @@ class GroupNoWidget(Frame):
     def get_selected(self):
         """Retourne la liste des groupes de DDL
         selectionés.
-        
+
         Exemple de resultat retourne [{'NOM_CMP': ['DZ'], 'NOM': 'GRNO1   ','CHGT_REP': {'VECT_Y': (0.0, 1.0, 0.0), 'REPERE': 'NORMALE'}},
                                       {'NOM_CMP': ['DX', 'DY', 'DZ'], 'NOM': 'SUP_NO  ', 'CHGT_REP': {}}]"""
         resu_lst = []
@@ -1004,7 +1004,7 @@ class DispFRFDialogue(Toplevel):
         self.var_resu = [StringVar(),StringVar()]
         self.exci_no = [StringVar(),StringVar()]   # 'N1','N2'...
         self.exci_ddl = [StringVar(),StringVar()]  # 'FX','FY','FZ'
-        self.freq_min = [StringVar(),StringVar()]  
+        self.freq_min = [StringVar(),StringVar()]
         self.freq_max = [StringVar(),StringVar()]
         self.df = [StringVar(),StringVar()]
         self.param_calc = [{'noeud':self.exci_no[0],'ddl':self.exci_ddl[0],'freq_min':self.freq_min[0],
@@ -1018,7 +1018,7 @@ class DispFRFDialogue(Toplevel):
         self.param_disp = [{'champ':self.champ_visu[0],'noeud':self.visu_no[0],'ddl':self.visu_ddl[0]},
                            {'champ':self.champ_visu[1],'noeud':self.visu_no[1],'ddl':self.visu_ddl[1]}]
         self.errmess1 = " ERREUR : Donnees incompletes pour le calcul"
-        
+
 
         self.var_champ = StringVar()
         self.visu_ddl = StringVar()
@@ -1045,8 +1045,8 @@ class DispFRFDialogue(Toplevel):
 
         self.f.grid_remove()
         self._build_interface()
-            
-            
+
+
 
     def _build_interface(self):
         """Construit l'interface de dialogue :
@@ -1064,7 +1064,7 @@ class DispFRFDialogue(Toplevel):
         f1.columnconfigure(0,weight=1)
         f1.columnconfigure(1,weight=1)
 
-        Label(f1, text="Choix des concepts a visualiser").grid(row=0,column=0,columnspan = 2,pady=5)        
+        Label(f1, text="Choix des concepts a visualiser").grid(row=0,column=0,columnspan = 2,pady=5)
 
         # Resultat 1
         f11 = self.choix_resu(f1,0)
@@ -1072,7 +1072,7 @@ class DispFRFDialogue(Toplevel):
         # Resultat 2
         f12 = self.choix_resu(f1,1)
         f12.grid(row=1,column=1,sticky='nsew')
-        
+
         f1.grid(row=0,column=0)
 
         if self.dyna[0] or self.dyna[1]:
@@ -1104,11 +1104,11 @@ class DispFRFDialogue(Toplevel):
            f3.grid(row=4,column=0,columnspan=2,sticky='nsew')
 
         return f1
-        
+
 
     def frame_excit(self,parent,num_resu,nom_resu,param):
         f = Frame(parent, relief='sunken', borderwidth=1)
-        
+
         texte = "Simulation du resultat harmonique pour " + nom_resu
         Label(f, text=texte).grid(row=0,column=0, columnspan = 2,pady=5)
         Label(f, text="Noeud d'excitation").grid(row=1, column=0, sticky='e')
@@ -1116,7 +1116,7 @@ class DispFRFDialogue(Toplevel):
         Label(f, text="Direction d'excitation").grid(row=2, column=0, sticky='e')
         ddls = ('FX','FY','FZ')
         MyMenu(f, var = param['ddl'],options = ddls).grid(row=2, column=1, sticky='ew')
-                           
+
         Label(f,text='Parametres de calcul').grid(row=3,column=0,columnspan=2,pady=5)
         Label(f,text='Frequence min').grid(row=4,column=0, sticky='e')
         Entry(f,textvariable = param['freq_min']).grid(row=4,column=1, sticky='we')
@@ -1126,8 +1126,8 @@ class DispFRFDialogue(Toplevel):
         Entry(f,textvariable = param['df']).grid(row=6,column=1, sticky='we')
 
         fonc = 'prep_calc'+str(num_resu+1)
-        Button(f,text='Calculer',command=getattr(self,fonc)).grid(row=7,column=1,sticky='e')            
-      
+        Button(f,text='Calculer',command=getattr(self,fonc)).grid(row=7,column=1,sticky='e')
+
         return f
 
     def frame_disp(self,parent,num_resu,param):
@@ -1146,7 +1146,7 @@ class DispFRFDialogue(Toplevel):
         MyMenu(f, var = param['ddl'],options = self.ddls[num_resu]).grid(row=3, column=1, sticky='ew')
 
         return f
-         
+
 
     def prep_calc1(self):
         self.prep_calc(0,self.resu[0],self.param_calc[0])
@@ -1162,14 +1162,14 @@ class DispFRFDialogue(Toplevel):
         mdo = self.ce_objects
         if isinstance(self.modes_couple,ModeMeca): nom = self.modes_couple
         else: nom = " "
-            
-              
+
+
         if isinstance(resu,ModeMeca):
             # le concept 1 est un mode_meca : verification de la presence des donnees d'entree pour le calcul :
             if not self.verif_param(param) :
                 self.mess.disp_mess(self.errmess1)
                 return
-            
+
             if resu.obj.nom != nom:
                 kass = resu.kass
                 mass = resu.mass
@@ -1202,14 +1202,14 @@ class DispFRFDialogue(Toplevel):
             if not para:return False                      # la case n'est pas remplie
             if para.split()[0] == 'Choisir':return False  # le menu est reste sur 'Choisir'
         return True
-        
+
 
     def choix_champ(self,dyna):
         # la liste des champs non vides dans dyna
         champs = []
-        desc = dyna.obj.DESC.get()
+        desc = dyna.obj.sdj.DESC.get()
         for ind_cha in range(3): # On regarde uniquement la presence de DEPL, VITE et ACCE
-            if dyna.obj.TACH.get()[ind_cha+1][0].split():
+            if dyna.obj.sdj.TACH.get()[ind_cha+1][0].split():
                 champs.append(desc[ind_cha].split()[0])
         return champs
 
@@ -1221,7 +1221,7 @@ class DispFRFDialogue(Toplevel):
 
     def choix_ddl(self,num_resu):
         # la liste des ddls dispos pour le champ selectionne
-        from Cata.cata import CREA_CHAMP, DETRUIRE, IMPR_CO 
+        from Cata.cata import CREA_CHAMP, DETRUIRE, IMPR_CO
         ddls = []
         self.champ_choisi[num_resu] = self.param_disp[num_resu]['champ'].get()
         try:
@@ -1237,7 +1237,7 @@ class DispFRFDialogue(Toplevel):
                                 PARTIE='REEL')
 
             phi = __PHI2.EXTR_COMP(' ',[],1)
-            
+
             DETRUIRE(CONCEPT = _F(NOM=(__PHI,__PHI2)))
             comp = phi.comp
 
@@ -1255,7 +1255,7 @@ class DispFRFDialogue(Toplevel):
 
         self.update()
 
-              
+
 
 
     def calc_dyna_line_harm(self,resu,mass,kass,cass,param):
@@ -1273,12 +1273,12 @@ class DispFRFDialogue(Toplevel):
         ddl = param['ddl'].get()
 
         modele = resu.modele.obj
-        
+
         mcfact = { 'NOEUD' : noeud, ddl : 1.0 }
         try:
             __char = AFFE_CHAR_MECA( MODELE = modele,
                                      FORCE_NODALE = mcfact )
-                                                              
+
             __dyna = DYNA_LINE_HARM( MATR_MASS = mass,
                                      MATR_RIGI = kass,
                                      MATR_AMOR = cass,
@@ -1291,7 +1291,7 @@ class DispFRFDialogue(Toplevel):
             message = "ERREUR ASTER : " + mess.GetText('I',err.id_message, err.valk, err.vali, err.valr)
             self.mess.disp_mess( message)
             return
-            
+
         dyna = DynaHarmo( self.ce_objects, __dyna.nom, __dyna )
         self.ce_objects.update(__dyna.nom, __dyna )
         self.update()
@@ -1336,7 +1336,7 @@ class DispFRFDialogue(Toplevel):
                                             NOM_CMP = ddl )
                     except aster.error,err:
                         message = "ERREUR ASTER : " + mess.GetText('I',err.id_message, err.valk, err.vali, err.valr)
-                        self.mess.disp_mess( message) 
+                        self.mess.disp_mess( message)
                         return
 
                     fonc_py = __fonc.convert('complex')
@@ -1345,7 +1345,7 @@ class DispFRFDialogue(Toplevel):
                     legende.append("%s %s_%s" % (dynas[ind].nom,champ,ddl))
                     couleur.append(ind+1)
 
-        module = [abs(kk) for kk in ordo]               
+        module = [abs(kk) for kk in ordo]
 
         self.param_visu.visu_courbe(freq, module, couleur, legende, 'LIN', 'LIN')
 
@@ -1356,7 +1356,7 @@ class DispFRFDialogue(Toplevel):
         self.withdraw()
 
 
-# Récupération du concept donnant la composante 
+# Récupération du concept donnant la composante
 # du déplacement (DX, DY...DRZ) à partir de l'indice
 # du degré de liberté
 NOMCMP = aster.getcolljev('&CATA.GD.NOMCMP'.ljust(24))
@@ -1368,14 +1368,14 @@ def sort_compo_key(compo_key):
     return ORDERED_DDL_PATTERN.index(compo_key.strip())
 
 def find_composantes(grp_noeuds, noeuds_def, mess = None):
-    """Retourne les composantes du déplacement (DX, DY...DRZ) 
+    """Retourne les composantes du déplacement (DX, DY...DRZ)
     pour chaque groupe de noeuds. Les noeuds sont définis par
     leur indice provenant du maillage."""
     composantes = {}
 
     if not grp_noeuds:
         return None
-    
+
     for grp, noeud_idxs in grp_noeuds.items():
         grp_comp = set()
         for noeud_idx in noeud_idxs:
@@ -1387,7 +1387,7 @@ def find_composantes(grp_noeuds, noeuds_def, mess = None):
                         idx = 30*i + j - 1
                         grp_comp.add(DEPL_R[idx])
         composantes[grp] = grp_comp
-    
+
     return composantes
 
 
@@ -1400,7 +1400,7 @@ class _SelectionBase(Frame):
         kwargs = self._parse_kwargs(kwargs)
 
         Frame.__init__(self, root, **kwargs)
-        
+
         Label(self, text=title, **kwargs).grid(row=0, column=0, columnspan=2)
         Label(self, text=' ', pady=30, **kwargs).grid(row=1, column=0, columnspan=2)
         self.grp = GroupNoWidget(self, 2, **kwargs)
@@ -1417,21 +1417,21 @@ class _SelectionBase(Frame):
         if 'command' in kwargs:
             self.cmd = kwargs['command']
             del kwargs['command']
-        
+
         if 'chgt_rep' in kwargs:
             self.chgt_rep = kwargs['chgt_rep']
             del kwargs['chgt_rep']
-        
+
         return kwargs
 
     def set_modele_maillage(self, modl, maillage):
         pass
-    
+
     def set_modele(self, modl, concepts):
-        noma = modl.MODELE.LGRF.get()[0].strip()
+        noma = modl.sdj.MODELE.LGRF.get()[0].strip()
         maillage = concepts[noma]
-        self.set_modele_maillage(modl, maillage) 
-    
+        self.set_modele_maillage(modl, maillage)
+
     def set_resultat(self, modele):
         """Place un concept de type `Resultat' pour
         la représentation des groupe de noeuds ou de mailles
@@ -1453,9 +1453,9 @@ class _SelectionBase(Frame):
                 except TypeError: # version de python < 2.4
                     ddl_keys.sort()
                 data.append({"NOM": grp, "NOM_CMP" : ddl_keys})
-        
+
         self.grp.set_data(data)
-   
+
     def get_selected(self):
         """retourne [{'NOM_CMP':['DX','DZ'], 'NOM': 'grno1   ',
                       'CHGT_REP': {'VECT_Y': (0.0, 1.0, 0.0), 'REPERE': 'NORMALE'}},
@@ -1474,31 +1474,31 @@ class SelectionNoeuds(_SelectionBase):
         _SelectionBase.__init__(self, root, title, **kwargs)
         if self.chgt_rep:
             self.chgt_rep.set_type_sel("Groupe de noeuds: %s.")
-        
+
     def set_modele_maillage(self, modl, maillage):
         """groupno = {'grno1':(1,3,4,5),'grno2':(2,6,7)...}
            PRNM decrit les ddl portes par les noeuds du modele
            (voir wiki aster pour plus de precisions)
         """
-        noeuds_def = modl.MODELE.PRNM.get()
-        groupno = maillage.GROUPENO.get()
+        noeuds_def = modl.sdj.MODELE.PRNM.get()
+        groupno = maillage.sdj.GROUPENO.get()
         composantes = find_composantes(groupno, noeuds_def)
         self.display_comp(composantes)
 
 
 class SelectionMailles(_SelectionBase):
-    
+
     def __init__(self, root, title, **kwargs):
         _SelectionBase.__init__(self, root, title, **kwargs)
         if self.chgt_rep:
             self.chgt_rep.set_type_sel("Groupe de mailles: %s.")
-        
+
     def set_modele_maillage(self, modl, maillage):
-        noeuds_def = modl.MODELE.PRNM.get()
-        groupma = maillage.GROUPEMA.get()
-        mailles_def = maillage.CONNEX.get()
-        
-        groupno = {} 
+        noeuds_def = modl.sdj.MODELE.PRNM.get()
+        groupma = maillage.sdj.GROUPEMA.get()
+        mailles_def = maillage.sdj.CONNEX.get()
+
+        groupno = {}
         for grp, mailles in groupma.items():
             noeuds = []
             groupno[grp] = noeuds
@@ -1541,8 +1541,8 @@ class VecteurEntry:
                 res_values.append(val)
             except ValueError:
                 self.mess.disp_mess(
-                    "Mauvaise entrée: " \
-                    "un des champs semble ne pas être un réel."
+                    u"Mauvaise entrée: " \
+                    u"un des champs semble ne pas être un réel."
                     )
                 return None
 
@@ -1559,14 +1559,14 @@ class VecteurEntry:
 
 
 class CalcEssaiXmgr(Xmgr):
-    """Une interface à Xmgrace pouvant être lancée 
-    plusieur fois en même temps (l'unique différence 
+    """Une interface à Xmgrace pouvant être lancée
+    plusieur fois en même temps (l'unique différence
     avec la version Stanley)."""
 
     def __init__(self, xmgr_idx, gr_max = 10, options=None,
                        xmgrace=aster.repout() + '/xmgrace'):
 
-        self.gr_max   = gr_max        # nombre de graphes 
+        self.gr_max   = gr_max        # nombre de graphes
         self.gr_act   = 0             # numero du graphe actif
         self.sets     = [0]*gr_max    # nombre de sets par graphe
         self.nom_pipe = 'xmgr%i.pipe' % xmgr_idx  # nom du pipe de communication
@@ -1581,7 +1581,7 @@ class CalcEssaiXmgr(Xmgr):
           os.remove(self.nom_pipe)
         os.mkfifo(self.nom_pipe)
         self.pipe = open(self.nom_pipe,'a+')
-     
+
         # Lancement de xmgrace
         shell = self.xmgrace + ' -noask '
         if options != None :
@@ -1591,7 +1591,7 @@ class CalcEssaiXmgr(Xmgr):
         # Teste le DISPLAY avant de lancer xmgrace...
         if os.environ.has_key('DISPLAY'):
           UTMESS('I','STANLEY_9',valk=[shell])
-          self.controle = Popen3(shell)  
+          self.controle = Popen3(shell)
 
           # Mise a l'echelle des graphes
           for i in xrange(gr_max) :
@@ -1648,18 +1648,18 @@ class XmgrManager:
         self.xmgr_nb += 1
         xmgr = CalcEssaiXmgr(self.xmgr_nb)
         self.xmgr_list.append(xmgr)
-        
-        xmgr.Titre('Courbe', 'Sous_titre')
-        xmgr.Axe_x('Fréquence')
-        xmgr.Axe_y('Amplitude')
-        
+
+        xmgr.Titre("Courbe", "Sous_titre")
+        xmgr.Axe_x(u"Fréquence")
+        xmgr.Axe_y("Amplitude")
+
         for ordo, leg in zip(ordonnees, legende):
             cbr = Courbe(abscisses, ordo)
             xmgr.Courbe(cbr,leg)
-        
+
         xmgr.Ech_x(self.echelle_dict[ech_x])
         xmgr.Ech_y(self.echelle_dict[ech_y])
-    
+
     def fermer(self):
         """Enlève les fichiers temporaires utlisés
         pour les graphiques et les pipe avec Xmgrace."""
@@ -1667,13 +1667,13 @@ class XmgrManager:
             xmgr.Fermer()
 
 
-    
+
 #-------------------------------------------------------------------------------
-   
+
 class Compteur:
     cpt=-1  # attribut de classe
-    
-    def __init__(self):             
+
+    def __init__(self):
         Compteur.cpt = Compteur.cpt +1 # incrémentation du compteur de classe
         self.cpt = Compteur.cpt  # affectation à l'attribut d'instance
 
@@ -1687,13 +1687,13 @@ class MacMode(Canvas):
 
     Cet objet accepte un canvas produit par Tk. sa méthode
     display permet de redessiner une matrice sur ce canvas
-    
+
     """
     def __init__(self, root, **kwargs):
         """!Constructeur
 
         \param canvas l'objet canvas Tkinter
-        
+
          - items la liste des labels
          - mat la matrice des valeurs à représenter
         """
@@ -1702,7 +1702,7 @@ class MacMode(Canvas):
         self.items = {}
         # la matrice des valeurs à représenter
         self.mat = None
-        
+
     def show_mat(self, mat):
         """!Change la matrice à afficher"""
         self.mat = mat
@@ -1747,7 +1747,7 @@ class MacMode(Canvas):
 
     def configure(self, event):
         """!Callback appelé lors du redimensionnement
-        
+
         dans ce cas on recrée le canvas en prenant en compte les nouvelles
         dimensions
         """
@@ -1877,4 +1877,4 @@ class MacWindowFrame(Frame):
             return "None"
 
 
-        
+

@@ -1,26 +1,25 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE BOYERE E.BOYERE
 
-from Macro.macro_proj_base_ops import macro_proj_base_ops
 
-def macro_proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,**args ):
+def macro_proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,STOCKAGE,**args ):
   if MATR_ASSE_GENE != None:
     for m in MATR_ASSE_GENE:
       self.type_sdprod(m['MATRICE'],matr_asse_gene_r)
@@ -29,14 +28,15 @@ def macro_proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,**args ):
       self.type_sdprod(v['VECTEUR'],vect_asse_gene)
   return None
 
-MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",op=macro_proj_base_ops,
-         regles=(AU_MOINS_UN('MATR_ASSE_GENE','VECT_ASSE_GENE')),
-            UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
+MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",
+                      op=OPS('Macro.macro_proj_base_ops.macro_proj_base_ops'),
+                      regles=(AU_MOINS_UN('MATR_ASSE_GENE','VECT_ASSE_GENE')),
+                      UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
                       sd_prod=macro_proj_base_prod,
          fr="Projection des matrices et/ou vecteurs assemblés sur une base (modale ou de RITZ)",
          BASE            =SIMP(statut='o',typ=(mode_meca,mode_gene) ),
          NB_VECT         =SIMP(statut='f',typ='I',defaut= 9999),
-         PROFIL          =SIMP(statut='f',typ='TXM',defaut="DIAG",into=("PLEIN","DIAG") ),
+         STOCKAGE        =SIMP(statut='f',typ='TXM',defaut="PLEIN",into=("PLEIN","DIAG") ),
          MATR_ASSE_GENE  =FACT(statut='f',max='**',
            MATRICE         =SIMP(statut='o',typ=CO,),
            regles=(UN_PARMI('MATR_ASSE','MATR_ASSE_GENE',),),

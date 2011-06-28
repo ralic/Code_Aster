@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,6 +128,7 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        CALC_FREQ=_F(OPTION='TOUT',),);
 
 MACRO_PROJ_BASE(BASE=MODES,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
                                    MATR_ASSE=MASSE,),
                                 _F(MATRICE=CO('RIGE'),

@@ -8,7 +8,7 @@
       CHARACTER*(*)  CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/06/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,10 +110,16 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_L
          ELSEIF (CAR(3:7).EQ.'T_D_L') THEN
             CARBID = '_DIS_'//CAR(3:7)
             CALL ASSERT( ISYM .EQ. 1 )
+            NCMP = 36
             IF (CAR(1:1).EQ.'M') THEN
-               NCMP = 0
+               ZR (JDV(J))    =  VAL(IV)
+               ZR (JDV(J)+2)  =  VAL(IV)
+               ZR (JDV(J)+5)  =  VAL(IV)
+               ZR (JDV(J)+9)  =  VAL(IV)
+               ZR (JDV(J)+14) =  VAL(IV)
+               ZR (JDV(J)+20) =  VAL(IV)
+               IV = IV + 1
             ELSE
-               NCMP = 36
                ZR (JDV(J))    =  VAL(IV)
                ZR (JDV(J)+2)  =  VAL(IV+1)
                ZR (JDV(J)+5)  =  VAL(IV+2)
@@ -163,10 +169,22 @@ C --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_D_L
          ELSEIF (CAR(3:8).EQ.'TR_D_L') THEN
             CARBID = '_DIS_'//CAR(3:8)
             CALL ASSERT( ISYM .EQ. 1 )
+            NCMP = 144
             IF (CAR(1:1).EQ.'M') THEN
-               NCMP = 0
+               ZR (JDV(J)   ) =  VAL(IV)
+               ZR (JDV(J)+ 2) =  VAL(IV)
+               ZR (JDV(J)+ 5) =  VAL(IV)
+               ZR (JDV(J)+ 9) =  VAL(IV+1)
+               ZR (JDV(J)+14) =  VAL(IV+2)
+               ZR (JDV(J)+20) =  VAL(IV+3)
+               ZR (JDV(J)+27) =  VAL(IV)
+               ZR (JDV(J)+35) =  VAL(IV)
+               ZR (JDV(J)+44) =  VAL(IV)
+               ZR (JDV(J)+54) =  VAL(IV+1)
+               ZR (JDV(J)+65) =  VAL(IV+2)
+               ZR (JDV(J)+77) =  VAL(IV+3)
+               IV = IV + 4
             ELSE
-               NCMP = 144
                ZR (JDV(J)   ) =  VAL(IV)
                ZR (JDV(J)+ 2) =  VAL(IV+1)
                ZR (JDV(J)+ 5) =  VAL(IV+2)

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_TRAN_MODAL
 # sdld31b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -222,6 +222,7 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGI,
                                     APPROCHE='COMPLEXE',),);
 
 MACRO_PROJ_BASE(BASE=MODES,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('PMASS'),
                                    MATR_ASSE=MASS,),
                                 _F(MATRICE=CO('PRIGI'),

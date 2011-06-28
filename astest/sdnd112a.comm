@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST EFFET LAME FLUIDE ENTRE DEUX STRUCTURES MOBILES
 # sdnd112a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,7 +91,9 @@ DEPLPHY1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
                           )
 
 #
-MACRO_PROJ_BASE(  BASE=MODE_BIC,MATR_ASSE_GENE=(
+MACRO_PROJ_BASE(  BASE=MODE_BIC,
+                  STOCKAGE='DIAG',
+                  MATR_ASSE_GENE=(
                    _F( 
                                    MATRICE = CO("MASSEGEN"),
                                    MATR_ASSE = MASS_BIC),

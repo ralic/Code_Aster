@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF OPTIONS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -34,6 +34,6 @@ OPTION__
         PLSN     NEUT_R
         PLST     NEUT_R        
         PBASECO  NEUT_R
-
+        PHEAVNO  NEUT_I
    OUT__
         PSEUIL  NEUT_R ELEM__

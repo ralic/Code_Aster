@@ -1,7 +1,7 @@
       SUBROUTINE XMVEF3(NDIM  ,NNOL ,NNOF,PLA,
      &                    IPGF,IVFF  ,FFC ,REAC12,PB,JAC,
      &                    NOEUD ,SEUIL,TAU1,TAU2,
-     &                    IFA,CFACE,LACT,
+     &                    IFA,CFACE,LACT,COEFEF,
      &                    CPENFR,CSTAFR,MU ,LPENAF,
      &                    VTMP )
 
@@ -10,11 +10,11 @@
       INTEGER     CFACE(5,3),IFA,LACT(8)
       REAL*8      VTMP(400),TAU1(3),TAU2(3)
       REAL*8      FFC(8),JAC,PB(3),REAC12(3)
-      REAL*8      CPENFR,CSTAFR,SEUIL,MU
+      REAL*8      CPENFR,CSTAFR,SEUIL,MU,COEFEF
       LOGICAL     NOEUD,LPENAF
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,7 +120,7 @@ C
          IF(NDIM.EQ.3) METR(2)=DDOT(NDIM,TAU2(1),1,RPB,1)
            DO 195 K=1,NDIM-1
              VTMP(PLI+K) = VTMP(PLI+K)
-     &       + MU*SEUIL/CSTAFR * METR(K)*FFI*JAC
+     &       + MU*SEUIL/CSTAFR * METR(K)*FFI*JAC*COEFEF
  195       CONTINUE
  194     CONTINUE
 

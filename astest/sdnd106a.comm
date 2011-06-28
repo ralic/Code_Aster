@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FRICTION SLIDER WITH STATIC AND DYNAMIC FRICTION COEFFICIENTS 
 # sdnd106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,7 +108,7 @@ IMPR_RESU(MODELE=MODEL,
 
 
 MACRO_PROJ_BASE(BASE=MODES,
-                PROFIL='PLEIN',
+                STOCKAGE='PLEIN',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('M_GENERA'),
                                    MATR_ASSE=M_ASSEMB,),
                                 _F(MATRICE=CO('K_GENERA'),

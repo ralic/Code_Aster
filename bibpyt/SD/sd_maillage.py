@@ -1,4 +1,4 @@
-#@ MODIF sd_maillage SD  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF sd_maillage SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

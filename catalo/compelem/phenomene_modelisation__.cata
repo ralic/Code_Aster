@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -392,33 +392,63 @@ PHENOMENE_MODELISATION__
               MAILLE__ PYRAM13   ELEMENT__ MECA_XHTC_PY13_X
               MAILLE__ TETRA10   ELEMENT__ MECA_XHTC_TE10_X
 
-       MODELISATION__ '3DXHH'            DIM__ 3 3   CODE__ '3XH'
+       MODELISATION__ '3DXH1'            DIM__ 3 3   CODE__ '3XA'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
               MAILLE__ HEXA8     ELEMENT__ MECA_XH1_HEXA8
-              MAILLE__ HEXA8     ELEMENT__ MECA_XH2_HEXA8
-              MAILLE__ HEXA8     ELEMENT__ MECA_XH3_HEXA8
-              MAILLE__ HEXA8     ELEMENT__ MECA_XH4_HEXA8
               MAILLE__ PENTA6    ELEMENT__ MECA_XH1_PENTA6
-              MAILLE__ PENTA6    ELEMENT__ MECA_XH2_PENTA6
-              MAILLE__ PENTA6    ELEMENT__ MECA_XH3_PENTA6
-              MAILLE__ PENTA6    ELEMENT__ MECA_XH4_PENTA6
               MAILLE__ PYRAM5    ELEMENT__ MECA_XH1_PYRAM5
-              MAILLE__ PYRAM5    ELEMENT__ MECA_XH2_PYRAM5
-              MAILLE__ PYRAM5    ELEMENT__ MECA_XH3_PYRAM5
-              MAILLE__ PYRAM5    ELEMENT__ MECA_XH4_PYRAM5
               MAILLE__ TETRA4    ELEMENT__ MECA_XH1_TETRA4
-              MAILLE__ TETRA4    ELEMENT__ MECA_XH2_TETRA4
-              MAILLE__ TETRA4    ELEMENT__ MECA_XH3_TETRA4
-              MAILLE__ TETRA4    ELEMENT__ MECA_XH4_TETRA4
               MAILLE__ QUAD4     ELEMENT__ MECA_XH1_FACE4
-              MAILLE__ QUAD4     ELEMENT__ MECA_XH2_FACE4
-              MAILLE__ QUAD4     ELEMENT__ MECA_XH3_FACE4
-              MAILLE__ QUAD4     ELEMENT__ MECA_XH4_FACE4
               MAILLE__ TRIA3     ELEMENT__ MECA_XH1_FACE3
+
+       MODELISATION__ '3DXH2'            DIM__ 3 3   CODE__ '3XB'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH2_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH2_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH2_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH2_TETRA4
+              MAILLE__ QUAD4     ELEMENT__ MECA_XH2_FACE4
               MAILLE__ TRIA3     ELEMENT__ MECA_XH2_FACE3
+
+       MODELISATION__ '3DXH3'            DIM__ 3 3   CODE__ '3XC'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH3_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH3_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH3_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH3_TETRA4
+              MAILLE__ QUAD4     ELEMENT__ MECA_XH3_FACE4
               MAILLE__ TRIA3     ELEMENT__ MECA_XH3_FACE3
+
+       MODELISATION__ '3DXH4'            DIM__ 3 3   CODE__ '3XD'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH4_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH4_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH4_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH4_TETRA4
+              MAILLE__ QUAD4     ELEMENT__ MECA_XH4_FACE4
               MAILLE__ TRIA3     ELEMENT__ MECA_XH4_FACE3
 
+
+       MODELISATION__ '3DXH2C'           DIM__ 3 3   CODE__ '3XE'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH2C_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH2C_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH2C_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH2C_TETRA4
+
+       MODELISATION__ '3DXH3C'           DIM__ 3 3   CODE__ '3XF'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH3C_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH3C_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH3C_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH3C_TETRA4
+
+       MODELISATION__ '3DXH4C'           DIM__ 3 3   CODE__ '3XG'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH4C_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH4C_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH4C_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH4C_TETRA4
 %-------------------------------------------------------------------
 
        MODELISATION__ 'SHB'             DIM__ 3 3   CODE__ 'SHB'
@@ -729,6 +759,8 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHC
               MAILLE__ QUAD4     ELEMENT__ MECPQU4_XHC
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XHC
+       MODELISATION__ 'C_PLAN2XHC_X'       DIM__ 2 2   CODE__ 'CX0'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI   TYPMOD=C_PLAN
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHC_X
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XHC_X
 
@@ -738,6 +770,9 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHC
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XHC
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHC
+
+       MODELISATION__ 'D_PLAN2XHC_X'       DIM__ 2 2   CODE__ 'DX0'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHC_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHC_X
 
@@ -769,36 +804,79 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XHTC
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHTC_X
 
-       MODELISATION__ 'C_PLAN_XHH'         DIM__ 2 2   CODE__ 'CXH'
+       MODELISATION__ 'C_PLAN_XH1'         DIM__ 2 2   CODE__ 'CXA'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
               MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH1
-              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH2
-              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH3
-              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH4
               MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH1
-              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH2
-              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH3
-              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH4
-              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH1
-              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH2
-              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH3
-              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH4
 
-       MODELISATION__ 'D_PLAN_XHH'         DIM__ 2 2   CODE__ 'DXH'
+       MODELISATION__ 'C_PLAN_XH2'         DIM__ 2 2   CODE__ 'CXB'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH2
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH2
+
+       MODELISATION__ 'C_PLAN_XH3'         DIM__ 2 2   CODE__ 'CXC'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH3
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH3
+
+       MODELISATION__ 'C_PLAN_XH4'         DIM__ 2 2   CODE__ 'CXD'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH4
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH4
+
+       MODELISATION__ 'C_PLAN_XH2C'        DIM__ 2 2   CODE__ 'CXE'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH2C
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH2C
+
+       MODELISATION__ 'C_PLAN_XH3C'        DIM__ 2 2   CODE__ 'CXF'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH3C
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH3C
+
+       MODELISATION__ 'C_PLAN_XH4C'        DIM__ 2 2   CODE__ 'CXG'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH4C
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH4C
+
+       MODELISATION__ 'D_PLAN_XH1'         DIM__ 2 2   CODE__ 'DXA'
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH1
-              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH2
-              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH3
-              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH4
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH1
-              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH2
-              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH3
-              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH4
               MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH1
+
+       MODELISATION__ 'D_PLAN_XH2'         DIM__ 2 2   CODE__ 'DXB'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH2
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH2
               MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH2
+
+       MODELISATION__ 'D_PLAN_XH3'         DIM__ 2 2   CODE__ 'DXC'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH3
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH3
               MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH3
+
+       MODELISATION__ 'D_PLAN_XH4'         DIM__ 2 2   CODE__ 'DXD'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH4
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH4
               MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH4
 
+       MODELISATION__ 'D_PLAN_XH2C'        DIM__ 2 2   CODE__ 'DXE'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH2C
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH2C
+
+       MODELISATION__ 'D_PLAN_XH3C'        DIM__ 2 2   CODE__ 'DXF'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH3C
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH3C
+
+       MODELISATION__ 'D_PLAN_XH4C'        DIM__ 2 2   CODE__ 'DXG'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH4C
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH4C
 %-------------------------------------------------------------------
 
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'

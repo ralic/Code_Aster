@@ -1,8 +1,8 @@
-#@ MODIF co_list_inst SD  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF co_list_inst SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,9 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from SD import *
-from sd_list_inst import sd_list_inst
+from Accas import ASSD
 
-# -----------------------------------------------------------------------------
-class list_inst(ASSD, sd_list_inst):
-   pass
+class list_inst(ASSD):
+    cata_sdj = "SD.sd_list_inst.sd_list_inst"

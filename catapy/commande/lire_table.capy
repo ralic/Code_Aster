@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +18,12 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
-from Macro.lire_table_ops import lire_table_ops
 
-LIRE_TABLE=MACRO(nom="LIRE_TABLE",op=lire_table_ops,sd_prod=table_sdaster,
+LIRE_TABLE=MACRO(nom="LIRE_TABLE",
+                 op=OPS('Macro.lire_table_ops.lire_table_ops'),
+                 sd_prod=table_sdaster,
                  fr="Lecture d'un fichier contenant une table",
-            UIinfo={"groupes":("Lecture","Tables",)},
+                 UIinfo={"groupes":("Lecture","Tables",)},
          UNITE           = SIMP(statut='o', typ='I' ),
          FORMAT          = SIMP(statut='f', typ='TXM', into=("ASTER", "LIBRE"), defaut="ASTER"),
          NUME_TABLE      = SIMP(statut='f', typ='I', defaut=1),

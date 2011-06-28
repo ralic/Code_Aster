@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,12 +42,10 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       IOC1,IOC2, IOC3, IOC4, NBMA, NBMAIL, JNUM, JNOM,
-     &              IOC11,LLREF,LLNBS,NBSECT,IOC12,IBID,IER
-      REAL*8        TRANS(3),ANGL(3)
-      CHARACTER*8   K8B, MODELG, RESCYC, NOMRES, NOMA, NOMSQU
+      INTEGER       IOC1,IOC2, IOC3,
+     &              IOC11,LLREF,LLNBS,NBSECT,IOC12,IBID
+      CHARACTER*8    MODELG, RESCYC, NOMRES, NOMA, NOMSQU
       CHARACTER*16  NOMOPE, NOMCMD
-      CHARACTER*24  NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -56,10 +54,8 @@ C
       CALL GETRES ( NOMRES, NOMCMD, NOMOPE )
       CALL GETFAC('CYCLIQUE',IOC1)
       CALL GETVID ( ' ', 'MODELE_GENE', 1,1,1, MODELG, IOC2 )
-      CALL GETVID ( ' ', 'MAILLAGE'   , 1,1,1, NOMA  , IOC3 )
-      CALL GETVID ( ' ', 'SQUELETTE'  , 1,1,1, NOMSQU, IOC4 )
-C
-C------------------------CAS CYCLIQUE-----------------------------------
+      CALL GETVID ( ' ', 'SQUELETTE'  , 1,1,1, NOMSQU, IOC3 )
+
 C
 C------------------------CAS CYCLIQUE-----------------------------------
 C
@@ -79,7 +75,7 @@ C
 C--------------------------CAS CLASSIQUE--------------------------------
 C
       ELSEIF ( IOC2 .NE. 0 ) THEN
-         IF (IOC4 .EQ. 0) THEN
+         IF (IOC3 .EQ. 0) THEN
             CALL CLA110 ( NOMRES , MODELG )
          ELSE
 C           --- FUSION DES NOEUDS D'INTERFACE D'UN SQUELETTE EXISTANT --
@@ -87,30 +83,6 @@ C           --- FUSION DES NOEUDS D'INTERFACE D'UN SQUELETTE EXISTANT --
 C           -- L'OBJET .INV.SKELETON EST FAUX : ON LE DETRUIT
             CALL JEDETR(NOMRES//'.INV.SKELETON')
          ENDIF
-C
-C--------------------------UN SQUELETTE---------------------------------
-C
-      ELSEIF ( IOC3 .NE. 0 ) THEN
-         TRANS(1) = 0.D0
-         TRANS(2) = 0.D0
-         TRANS(3) = 0.D0
-         CALL GETVR8 ( ' ', 'TRANS', 1,1,3, TRANS, IOC3 )
-         ANGL(1) = 0.D0
-         ANGL(2) = 0.D0
-         ANGL(3) = 0.D0
-         CALL GETVR8 ( ' ', 'ANGL_NAUT', 1,1,3, ANGL, IOC3 )
-         CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMAIL,K8B,IER)
-         NBMA = 1
-         NOMVEI = '&&OP0110.MAILLE.NUM'
-         NOMVEK = '&&OP0110.MAILLE.NOM'
-         CALL WKVECT ( NOMVEI, 'V V I' , NBMAIL, JNUM  )
-         CALL WKVECT ( NOMVEK, 'V V K8', NBMAIL, JNOM  )
-         CALL PALIM2 ( ' ', 1, NOMA, NOMVEI, NOMVEK, NBMA )
-         NBMA = NBMA - 1
-         IF ( NBMA .EQ. 0 ) THEN
-            CALL U2MESS('F','ALGORITH9_50')
-         ENDIF
-         CALL SQU110 ( NOMRES,NOMA,NBMA,ZK8(JNOM),TRANS,ANGL)
       ENDIF
 C
 C

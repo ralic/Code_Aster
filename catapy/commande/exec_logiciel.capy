@@ -1,36 +1,37 @@
-#& MODIF COMMANDE  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 
-from Macro.exec_logiciel_ops import exec_logiciel_ops
 def exec_logiciel_prod(self, MAILLAGE, **args):
    if MAILLAGE != None:
       mcf = MAILLAGE[0]
       self.type_sdprod(mcf['MAILLAGE'], maillage_sdaster)
    return None
 
-EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",op=exec_logiciel_ops, sd_prod=exec_logiciel_prod,
+EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
+                      op=OPS('Macro.exec_logiciel_ops.exec_logiciel_ops'),
+                      sd_prod=exec_logiciel_prod,
                       fr="Exécute un logiciel ou une commande système depuis Aster",
                       UIinfo={"groupes":("Gestion du travail","Outils-métier",)},
-      
-      regles = ( AU_MOINS_UN('LOGICIEL', 'MAILLAGE', 'SALOME'), 
-                 EXCLUS('MACHINE_DISTANTE','MAILLAGE'), 
+
+      regles = ( AU_MOINS_UN('LOGICIEL', 'MAILLAGE', 'SALOME'),
+                 EXCLUS('MACHINE_DISTANTE','MAILLAGE'),
                  EXCLUS('MAILLAGE','SALOME'),
                  ),
 
@@ -75,7 +76,7 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",op=exec_logiciel_ops, sd_prod=exec_log
                                fr="Liste des fichiers d'entrée du script Salome"),
          FICHIERS_SORTIE   = SIMP(statut='f', typ='TXM', validators=NoRepeat(),max='**',
                                fr="Liste des fichiers générés par le script Salome"),
-         NOM_PARA          = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(), 
+         NOM_PARA          = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
                                fr="Liste des noms des paramètres à modifier dans le script Salome"),
          VALE              = SIMP(statut='f',typ='TXM',max='**',
                                fr="Valeur des paramètres à) modifier dans le script Salome"),
@@ -83,6 +84,6 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",op=exec_logiciel_ops, sd_prod=exec_log
 
       CODE_RETOUR_MAXI = SIMP(statut='f', typ='I', defaut=0, val_min=-1,
                               fr="Valeur maximale du code retour toléré (-1 pour l'ignorer)"),
-      
+
       INFO     = SIMP(statut='f', typ='I', defaut=2, into=(1,2),),
 )

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,35 +18,13 @@
 # ======================================================================
 # RESPONSABLE MICHEL S.MICHEL
 
-from Macro.defi_cable_bp_ops import defi_cable_bp_ops
 
-# ===========================================================================
-#           CATALOGUE DE LA MACRO "DEFI_CABLE_BP"
-#           -----------------------------------------
-#
-# USAGE :
-# Entrée :
-#  - MODELE
-#  - CABLE
-#  - CHAM_MATER
-#  - CARA_ELEM
-#  - GROUP_MA_BETON
-#  - DEFI_CABLE
-#  - TENSION_INIT
-#  - RECUL_ANCRAGE
-#  - RELAXATION
-#  - CONE
-#      RAYON
-#      LONGUEUR
-#      PRESENT          OUI ou NON deux fois
-#  - TITRE
-#  - INFO               1 / 2
-#
-# ===========================================================================
-
-DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=cabl_precont,
-                   fr="Calculer les profils initiaux de tension le long des cables de précontrainte d'une structure en béton",
-                   reentrant='n',UIinfo={"groupes":("Modélisation",)},
+DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",
+                    op=OPS('Macro.defi_cable_bp_ops.defi_cable_bp_ops'),
+                    sd_prod=cabl_precont,
+                    fr="Calculer les profils initiaux de tension le long des cables " \
+                       "de précontrainte d'une structure en béton",
+                    reentrant='n',UIinfo={"groupes":("Modélisation",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),

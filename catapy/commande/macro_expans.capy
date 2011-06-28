@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE BODEL C.BODEL
 
-from Macro.macro_expans_ops import macro_expans_ops
 
 def macro_expans_prod(self, MODELE_MESURE, RESU_NX, RESU_EX, RESU_ET, RESU_RD, **args):
     RESU_EXP = MODELE_MESURE['MESURE']
@@ -34,7 +33,7 @@ def macro_expans_prod(self, MODELE_MESURE, RESU_NX, RESU_EX, RESU_ET, RESU_RD, *
     return None
 
 MACRO_EXPANS=MACRO(nom="MACRO_EXPANS",
-                   op=macro_expans_ops,
+                   op=OPS('Macro.macro_expans_ops.macro_expans_ops'),
                    sd_prod=macro_expans_prod,
                    reentrant='n',
                    UIinfo={"groupes":("Outils-métier","Dynamique",)},

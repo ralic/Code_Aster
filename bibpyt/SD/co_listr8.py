@@ -1,8 +1,8 @@
-#@ MODIF co_listr8 SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_listr8 SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,22 +19,20 @@
 # ======================================================================
 
 import Accas
-from SD import *
-from sd_listr8 import sd_listr8
+from Accas import ASSD
 
-# -----------------------------------------------------------------------------
-class listr8_sdaster(ASSD, sd_listr8):
+class listr8_sdaster(ASSD):
+   cata_sdj = "SD.sd_listr8.sd_listr8"
+
    def Valeurs(self) :
       """
       Retourne la liste des valeurs : [val1, ..., valN]
       """
-      from Utilitai.Utmess import UTMESS
-      if self.accessible():
-         vale='%-19s.VALE' % self.get_name()
-         t_vale = aster.getvectjev(vale)
-         if t_vale == None:
-            UTMESS('F', 'SDVERI_2', valk=[vale])
-         return list(t_vale)
-      else:
+      if not self.accessible():
          raise Accas.AsException("Erreur dans listr8.Valeurs en PAR_LOT='OUI'")
+      from Utilitai.Utmess import UTMESS
+      t_vale = self.sdj.VALE.get()
+      if t_vale == None:
+         UTMESS('F', 'SDVERI_2', valk=[vale])
+      return list(t_vale)
 

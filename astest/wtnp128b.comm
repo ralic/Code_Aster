@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp128b.para = tps_job 350 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,12 +205,17 @@ PRESS=AFFE_CHAR_MECA(
     _F(GROUP_NO  =('OUVERT',),PRE1=pimp,),    
   ),);
 
-IMPER=AFFE_CHAR_CINE(
+#IMPER=AFFE_CHAR_CINE(
+#  MODELE=MO,
+#  MECA_IMPO=(
+#    _F(GROUP_MA=('FISSURE',),LH1=0.),   
+#  ),);
+        
+IMPER=AFFE_CHAR_MECA(
   MODELE=MO,
-  MECA_IMPO=(
+  DDL_IMPO=(
     _F(GROUP_MA=('FISSURE',),LH1=0.),   
   ),);
-        
 ####################################
 ## INITIALISATION DES CHAMPS
 ####################################

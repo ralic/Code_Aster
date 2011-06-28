@@ -1,0 +1,2073 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 06/28/2011 - 05:04:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016960 DU 2011-05-19 13:22:13
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    types extraits par EXTR_TABLE
+FONCTIONNALITE
+   On apporte la précision sur les types de concept que EXTR_TABLE 
+   peut extraire.
+   
+   Côté source, on enrichit le champ into du catalogue pour éviter de 
+   tomber sur l'assert du fortran.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests EXTR_TABLE
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010965 DU 2007-06-11 13:39:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR06 - sd_fonction et D4.02.02
+FONCTIONNALITE
+   La doc d4.02.02 a été mise à jour il y a déjà longtemps, et corrigée récemment.
+   
+   En revanche, le test sslv200b n'était pas avec SDVERI='OUI', plus rien ne s'y oppose.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv200b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014588 DU 2010-02-09 14:43:04
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Passage en python 2.6
+FONCTIONNALITE
+   Fait dans 10.5 et 11.
+   
+   Sur python 2.7 : on suit Salomé donc on attend.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tout !
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017173 DU 2011-06-21 13:31:41
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    plantage de CALC_NO avec l'opérande GROUP_NO_RESU
+FONCTIONNALITE
+   Si on utilise par erreur la syntaxe '_F(...)' au lieu d'une liste/tuple de valeurs, le
+   message n'est pas très clair.
+   
+   On obtient :
+   
+    . !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    . ! erreur non prevue et non traitee prevenir la maintenance fort.1 !
+    . ! Traceback (most recent call last): . . . . . . . . . . . . . . .!
+    . ! . .File "./Python/Noyau/N_JDC.py", line 205, in exec_compile . .!
+    . ! . . exec self.proc_compile in self.g_context . . . . . . . . . .!
+    . ! . .File "fort.1", line 2, in <module> . . . . . . . . . . . . . !
+    . ! . . PAR_LOT=_F('OUI', 'NON'), . . . . . . . . . . . . . . . . . !
+    . ! .TypeError: __init__() takes exactly 1 argument (3 given) . . . !
+    . !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   
+   
+   On tente d'améliorer le message (on ne peut rien dire sur le mot-clé simple en cause, ici
+   PAR_LOT, car c'est l'utilisation de _F qui est incorrecte). On aura maintenant :
+   
+    . !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    . ! erreur non prevue et non traitee prevenir la maintenance fort.1 . . !
+    . ! Traceback (most recent call last): . . . . . . . . . . . . . . . . .!
+    . ! . .File "./Python/Noyau/N_JDC.py", line 205, in exec_compile . . . .!
+    . ! . . exec self.proc_compile in self.g_context . . . . . . . . . . . .!
+    . ! . .File "fort.1", line 2, in <module> . . . . . . . . . . . . . . . !
+    . ! . . PAR_LOT=_F('OUI', 'NON'), . . . . . . . . . . . . . . . . . . . !
+    . ! . .File "./Python/Noyau/N__F.py", line 37, in __init__ . . . . . . .!
+    . ! . . raise SyntaxError("Valeur invalide pour '_F('. "\ . . . . . . . !
+    . ! .SyntaxError: Valeur invalide pour '_F('. On attend cette syntaxe : !
+    . ! _F(MCSIMP=valeur, ...) . . . . . . . . . . . . . . . . . . . . . . .!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test xc3xa9lxc3xa9mentaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016847 DU 2011-04-27 12:37:09
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Bug CALC_FONCTION(integre,methode='simpson')
+FONCTIONNALITE
+   Problème
+   ========
+   
+   On intègre la fonction linéaire par morceaux suivante :
+    . X . . . f(X)
+   0.000000 1.000000
+   1.000000 2.000000
+   2.000000 0.000000
+   3.000000 3.000000
+   
+   Par la méthode des trapèzes, on obtient :
+   0.000000 0.000000
+   1.000000 1.500000
+   2.000000 2.500000
+   3.000000 4.000000
+   
+   Par la méthode de Simpson, on obtient :
+   0.000000 0.000000
+   1.000000 1.500000
+   2.000000 3.000000
+   3.000000 3.166667
+   
+   
+   Explication
+   ===========
+   
+   "It's not a bug, it's a feature".
+   L'intégration par la méthode des trapèzes est "exacte" sur 
+   cette fonction linéaire par morceaux.
+   
+   La méthode de Simpson consiste à intégrer une parabole 
+   passant par trois points consécutifs.
+   Sur cette fonction à 4 points, les polynômes sont assez 
+   éloignés des segments de droites : ce n'est pas faux, c'est 
+   l'hypothèse de cette méthode d'intégration !
+   
+   D'ailleurs, on voit que si on "raffine" la fonction 
+   initiale, on obtient :
+   
+    . X . . . f(X) . trapeze . simpson
+   0.000000 1.000000 0.000000 0.000000
+   0.500000 1.500000 0.625000 0.625000
+   1.000000 2.000000 1.500000 1.500000
+   1.500000 1.000000 2.250000 2.375000
+   2.000000 0.000000 2.500000 2.500000
+   2.500000 1.500000 2.875000 2.791667
+   3.000000 3.000000 4.000000 4.000000
+   
+   (si on découpe par nombre impair d'intervalles, on est plus 
+   éloigné).
+   
+   La méthode de Simpson est bien plus précise, en o(1/n4), que 
+   la méthode des trapèzes, en o(1/n2), mais pour des fonctions 
+   C4, pas des fonctions quelconques.
+   
+   La documentation n'est visiblement pas assez claire, on la 
+   précise.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.32.04
+VALIDATION
+    test joint xc3xa0 la fiche
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017149 DU 2011-06-17 08:51:35
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    IMPR_FONCTION format EPS
+FONCTIONNALITE
+   Problème
+   ========
+   
+   IMPR_FONCTION au format XMGRACE peut produire directement un 
+   fichier image (png, postscript encapsulé, etc.) en appelant 
+   lui-même xmgrace.
+   
+   Or, on tombe sur ce message :
+   
+   /aster/outils/xmgrace -hdevice EPS -hardcopy -printfile 
+   fort.82.hardcopy fort.82.wrk
+   Can't open display
+   Failed initializing GUI, exiting
+   
+   
+   Correction
+   ==========
+   
+   Pour éviter ce problème, il faut appeler gracebat au lieu de 
+   xmgrace (c'est en fait un simple lien mais qui se comporte 
+   différemment et n'initialise pas la partie ihm).
+   
+   IMPR_FONCTION essaie déjà d'appeler gracebat s'il existe 
+   dans 'outils'. Il n'y a donc que le lien à mettre dans le 
+   répertoire '$ASTER_ROOT/outils'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test joint xc3xa0 la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015990 DU 2010-11-30 08:09:03
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Se passer de Macro dans eficas
+FONCTIONNALITE
+   Aujourd'hui, dans eficas, il est nécessaire d'embarquer avec 
+   le catalogue plusieurs répertoires : Macro, Utilitai, SD, 
+   Cata_Utils.
+   
+   Comme son nom l'indique, Cata_Utils contient des fonctions 
+   utilitaires pour le catalogue : on garde tel quel (on pourra 
+   déplacer dans un .capy quand il ne restera que cela).
+   
+   Utilitai est a priori nécessaire que pour Utmess : faire un 
+   état des liens des usages qui persistent dans le cata.py.
+   
+   SD contient la définition des concepts (ex. 
+   fonction_sdaster) et de leur structure de données associées 
+   (ex. sd_fonction). Les concepts sont nécessaires, pas les 
+   sdd. Fera l'objet d'une autre fiche.
+   
+   Macro contient les ops des macro-commandes. On peut 
+   facilement s'en passer.
+   
+   On crée un enrobage qui permettra de n'importer l'ops 
+   uniquement lors de la phase d'exécution. Cet enrobage est 
+   nommé OPS (par commodité, on a créé aussi OP_INIT qui n'est 
+   qu'un alias vers OPS).
+   
+   Exemple d'utilisation :
+   
+   Avant :
+    from Macro.asse_elem_ssd_ops import asse_elem_ssd_ops
+    ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD", 
+   op=asse_elem_ssd_ops,
+   ...
+   
+   Maintenant :
+    ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD", 
+   op=OPS('Macro.asse_elem_ssd_ops.asse_elem_ssd_ops'),
+   ...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017201 DU 2011-06-27 07:38:43
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Séparation concept et catalogue de structure de données
+FONCTIONNALITE
+   Cette fiche est une première étape avant celles sur la 
+   consommation mémoire du superviseur.
+   
+   Jusqu'ici, un concept (ex. evol_noli) est défini comme ceci 
+   :
+   
+   evol_noli
+   -> evol_sdaster
+   -> resultat_sdaster
+   -> (ASSD, sd_resultat)
+   
+   Il hérite donc de ASSD (classe chapeau de tous les concepts) 
+   et de son catalogue de structure de données.
+   
+   1. le catalogue de structure de données doit donc être 
+   embarqué dans eficas (alors qu'on ne l'utilise qu'à 
+   l'exécution et, encore, pas systématiquement).
+   
+   2. il y a une référence arrière du catasd vers le concept ce 
+   qui ne simplifie pas la destruction (raisonnable !), mais 
+   impose quelques contorsions quand il faut recréer le 
+   catalogue de sd d'un concept (par exemple dans une macro qui 
+   fait du faux reuse en détruisant le concept en entrée et en 
+   le recréant ensuite).
+   
+   Le catalogue de sd devient un attribut, nommé sdj, du 
+   concept. Il est construit à la volée quand on en a besoin. 
+   On peut donc le détruire sans crainte quand on modifie le 
+   concept.
+   
+   Avec cette séparation, on peut déplacer (remettre !) ce qui 
+   concerne la définition des concepts dans le catalogue 
+   (*.capy / cata.py) et laisser la partie sd dans bibpyt/SD.
+   
+   Impact pour les développeurs : l'accès à la structure de 
+   données est légèrement modifier.
+   
+   Là où on faisait :
+   - cmail = MAILLAGE.NOMMAI.get()
+   on fera :
+   + cmail = MAILLAGE.sdj.NOMMAI.get()
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u1.03.02
+VALIDATION
+    liste complète
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017193 DU 2011-06-23 11:11:35
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.12, les cas-tests sdls121a,b et zzzz159b échouent sur Rocks.
+FONCTIONNALITE
+   Lors de la mise à jour d'asrun, le paramètre 
+   batch_distrib_hostfile n'a pas été conservé.
+   Il contient les ressources disponibles pour la distribution 
+   (ici de l'exécution des cas-tests).
+   
+   Les tests MACR_RECAL, réservant plusieurs processeurs pour 
+   limiter la surcharge machine, ne pouvaient plus être soumis.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests impliqués
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 06/28/2011 - 05:04:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016577 DU 2011-03-09 07:46:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    NUME_DDL_GENE  et MACRO_PROJ_BASE : mettre le mot-cle 'PROFIL' a 'PLEIN' par defaut
+FONCTIONNALITE
+   On propose les deux modifications suivantes dans MACRO_PROJ_BASE et NUME_DDL_GENE :  
+   1. Uniformiser la syntaxe entre NUME_DDL_GENE et MACRO_PROJ_BASE. Dans la seconde, le
+   mot-cle PROFIL devient STOCKAGE, plus explicite.
+   
+   2. Dans MACRO_PROJ_BASE, le mot-cle STOCKAGE est fixe a 'PLEIN' par defaut. Cela engendre
+   une perte de performance pour celui qui travaille sur des matrices effectivement
+   diagonales qui vont etre considerees comme pleines si on ne mentionne pas explicitement
+   STOCKAGE='DIAG'  (calcul sur base de modes propres), mais evite les resultats faux pour
+   celui qui travaille sur des matrices non diagonales (exemple : lorsqu'on utilise des modes
+   statiques).
+   
+   On modifie les cas-test en consequence pour ne pas perdre en performance.
+   On ecrit deux mots dans la doc de MACRO_PROJ_BASE pour donner les cas d'utilisation de
+   l'une ou l'autre des options.
+   Modifie : 
+    - macro_proj_base.capy
+    - nume_ddl_gene.capy
+    - efica01a, forma01d, forma12c, forma12d, sdld04a, sdld102a, sdld103a, sdld103b,
+   sdld105a, sdld21b, sdld22a, sdld22b, sdld29a, sdld31b, sdld320a, sdld321a, sdld321b,
+   sdld321c, sdld325a, sdld325b, sdld34a, sdll06a, sdll06b, sdll107a, sdll109a, sdll109b,
+   sdll109c, sdll109d, sdll113a, sdll113b, sdll115b, sdll126a, sdll127a, sdll127b, sdll127c,
+   sdll138a, sdls114a, sdls114b, sdnd100b, sdnd102a, sdnd103a, sdnd105a, sdnd105b, sdnd106a,
+   sdnd110a, sdnd111a, sdnd112a, sdnd120a, sdnd121a, sdnl111a, sdnl111b, 
+   sdnl132a, sdnl32a, sdnl301a, sdnv101a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.63.11, U4.65.03
+VALIDATION
+    sdll107a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016578 DU 2011-03-09 07:51:30
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Suppression de NUME_DDL  dans OBSERVATION  et LIRE_RESU
+FONCTIONNALITE
+   Les operateurs OBSERVATION et LIRE_RESU acceptent traditionnellement le mot-cle NUME_DDL
+   pour imposer la numerotation des DDL de sortie. On a vu d'experience que cela pouvait
+   conduire dans certains cas (assez frequents dans des operations de calcul-essai) a des
+   structures en sortie ne possedant pas finalement de DDL. L'utilisation des mots-cles
+   MATR_A  et MATR_B a donc ete introduite et est plus rigoureuse pour le remplissage du REFD
+   en sortie. Leur utilisation permet d'eviter certains bugs dans des operations en aval.
+   
+   On propose de supprimer le mot-cle NUME_DDL et de recuperer le NUME_DDL de la sd de sortie
+   directement dans la donnee des matrices en entree.
+   
+   On ajoute une verification supplementaire, a savoir que les NUME_DDL associes aux matrices
+   MATR_A et MATR_B sont les memes.
+   
+   Routines modifiees : 
+    - lire_resu.capy,
+    - lrrefd.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U7.02.01
+VALIDATION
+    sdls112a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015607 DU 2010-09-27 13:22:55
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MAC_MODE en python
+FONCTIONNALITE
+   La proposition qui donne son titre a la fiche est abandonnee, et l'operateur MAC_MODES
+   garde son code fortran.
+   
+   L'evolution proposee dans le cadre de cette fiche concerne, un test plus rigoureux sur le
+   nume_ddl : on verifie que le nume_ddl des deux bases testees est le meme (avant on ne
+   verifiait que l'égalite du nombre d'equations). On utilise IDENSD pour cela.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdls112a, sdls112b
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016875 DU 2011-05-03 16:07:19
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Mauvais formatage des fichiers python de CALC_ESSAI
+FONCTIONNALITE
+   Sur certaines machines, les widgets contenant des caracteres avec accents n'apparaissent
+   pas dans la fenetre interactive de CALC_ESSAI. Cela marche en changeant de formatage, mais
+   cete solution reste adherente au type de formatage utilise par le PC.
+   
+   Solution proposee : merci a Mathieu pour l'astuce : tous les strings apparaissant dans
+   k'IHM sont precedes d'un u (pour formatage unicode). Exemple : Text=u"toto".
+   Tk est capable de prendre en compte l'affichage unicode et de le transcrire en formatage
+   adapte.
+   Solution testee sur ubuntu, PC calibre et aster4.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    graphique
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016784 DU 2011-04-14 12:17:26
+TYPE anomalie concernant Code_Aster (VERSION 10.4)
+TITRE
+    Couverture de squ110
+FONCTIONNALITE
+   J'ajoute Mohammed dans la liste pour avis.
+   
+   La fonctionnalité DEFI_SQUELETTE(MAILLAGE=XXX) a l'air d'avoir ete concue pour CADYRO, qui
+   n'existe plus. En tout cas, c'est ce qui est ecrit dans la doc.
+   Cette fonctionnalite a l'air de plus de ne rien faire de special : "Cela permet de
+   visualiser une deformee modale sur tout ou partie du maillage donne sous le mot-cle MAILLAGE".
+   Il y a egalement possibilite de translation et/ou rotation du maillage... Mais tout cela
+   se fait deja par ailleurs.
+   
+   La stratégie preconisee pour visualiser de grosses deformees est la suivante :
+    - soit on definit un maillage de peau a la main (dans Salomé) et on projette le resultat
+   sur ce maillage avec PROJ_CHAMP
+    - soit in utilise l'option extract surface dans Paraview.
+   
+   Dans tous les cas, l'option MAILLAGE n'est plus tres utile. On propose de la supprimer.
+   Du coup : 
+    - on modifie defi_squelette.capy et op0110.f
+    - suppression de squ110.f.
+   La doc de DEFI_SQUELETTE est modifiee en consequence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.24.01
+VALIDATION
+    sdlv301
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015277 DU 2010-06-30 14:59:40
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Validation de l'option INITIAL dans ASSE_VECT_GENE
+FONCTIONNALITE
+   Apres verification, l'option INITIAL  est bien testee dans le cas-test zzzz208b. Olivier
+   Nicolas avait ajoute ce cas-test en version 8.1.
+   On peut fermer cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz208b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 06/28/2011 - 09:39:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017194 DU 2011-06-23 14:45:06
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    Message d'alarme suite restitution fiche 16723, 3xc3xa8me tour
+FONCTIONNALITE
+   Il restait encore des messages d'alarmes DISCRETS_[26,27,28] dans quelques cas tests, liés
+   principalement à MISS et impossible à éviter.
+   
+   Les mots clefs DISCRET, DISCRET_2D, RIGI_PARASOL sont traités, il restait à traiter
+   RIGI_MISS_3D.
+   Il restait également un AFFE_CARA_ELEM caché dans les macros de CALC_ESSAI.
+   
+   RIGI_MISS_3D sert à affecter des discrets de type "K", il est impossible d'affecter des
+   discrets de type "M" ou "A". Lors d'un STAT_NON_LINE (avec pesanteur) ou d'un
+   DYNA_NON_LINE, le message DISCRETS_26 (pour les masses) et DISCRETS_28 (pour les
+   amortissements) étaient donc émis sans que l'utilisateur ne puisse l'éviter.
+   
+   En faisant dans AFFE_CARA_ELEM :
+     DISCRET      =_F(GROUP_MA='XXXX',CARA='M_TR_D_N', VALE=ZERO)
+     RIGI_MISS_3D =_F(GROUP_MA='XXXX', ...)
+   RIGI_MISS_3D écrase la carte déjà existante sur les discrets, il est donc impossible
+   d'éviter le message.
+   
+   Correction : lorsque l'on fait RIGI_MISS_3D, on affecte réellement une matrice de masse et
+   d'amortissement nulle sur le discret.
+   
+   Impact Fortran : acearm (MISS)
+   Impact python  : Calc_essai/ce_calcul_modifstruct.py  (Affe_Cara_Elem dans la macro)
+   Tests modifiés : miss05a miss06a sdll137b sdll137c sdls108a zzzz115a zzzz200a zzzz200b
+   zzzz200c zzzz200d. Affectation des matrices nulles, pour ne plus avoir le message.
+   
+   Bilan des messages avant (maintenant 0):
+   miss05a.mess    DISCRETS_27          émise    761 fois
+   miss06a.mess    DISCRETS_26          émise 620301 fois
+   sdll137b.mess   DISCRETS_26          émise      6 fois
+   sdll137c.mess   DISCRETS_26          émise      8 fois
+   sdls108a.mess   DISCRETS_27          émise    552 fois
+   zzzz115a.mess   DISCRETS_27          émise     26 fois
+   zzzz200a.mess   DISCRETS_27          émise     26 fois
+   zzzz200b.mess   DISCRETS_26          émise    378 fois
+   zzzz200b.mess   DISCRETS_27          émise    591 fois
+   zzzz200c.mess   DISCRETS_27          émise     27 fois
+   zzzz200d.mess   DISCRETS_27          émise 104312 fois
+   zzzz200d.mess   DISCRETS_28          émise 112448 fois
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage des cas tests
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017195 DU 2011-06-23 15:44:14
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    Element 1D : rxc3xa9sorption de VMIS_POUTRE* (phase 1)
+FONCTIONNALITE
+   La fiche complète : 15655
+   -------------------------
+   
+   Contexte/Objectifs
+   ================== 
+   Pour les éléments 1D (modélisations POU_D_E, POU_D_T, POU_D_TG) il est possible d'utiliser
+   un critère global de plasticité. La difficulté est de déterminer les coefficients qui
+   dépendent à la fois de la géométrie de la section et des limites élastique et plastique du
+   matériau.
+   
+   Pour faire de la plasticité dans les poutres il FAUT utiliser les multi-fibres POU_D_EM ou
+   POU_D_TGM.
+   
+   L'objectif de ces travaux est la résorption des matériaux VMIS_POUTRE, VMIS_POUTRE_FO et
+   des comportements VMIS_POU_LINE, VMIS_POU_FLEJOU ainsi que de ECRO_FLEJOU et de toutes les
+   subroutines appelées.
+   
+   
+   1ère étape Transformer les cas tests qui utilisent ces matériaux avec des multifibres.
+   --------------------------------------------------------------------------------------
+   ssnl106j  # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
+   ssnl106k  # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
+   ssnl106l  # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
+   ssnl116b  # TITRE CALCUL DU TRONCON BE DU CIG DES RENARDIERES
+   ssnl132c  # TITRE SIMULATION NUMERIQUE DU COMPORTEMENT D'UN ASSEMBLAGE COMBUSTIBLE
+   ssnl132d  # TITRE SIMULATION NUMERIQUE DU COMPORTEMENT D'UN ASSEMBLAGE COMBUSTIBLE
+   ssnl501g  # TITRE : POUTRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
+   zzzz131b  # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
+   
+   
+   REMARQUE IMPORTANTE :
+   Ajout d'une nouvelle modélisation en multifibres, sans résorption des comportements.
+   Les phases suivantes :
+   - correction de la fiche 16766,
+   - résorption des comportements et suppression des cas tests (cf fiche 15655).
+   - modification des noms (pour ne pas avoir de lettre manquante dans les modélisations)
+   - restitution des doc V.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage des cas tests
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016863 DU 2011-05-02 15:30:11
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR03 AFFE_CARA_ELEM + DISCRETS. Ajout de M_TR_D_L, M_T_D_L
+FONCTIONNALITE
+   Ajout des discrets M_T_D_L et M_TR_D_L
+   
+   C'est seulement un ajout dans le catalogue AFFE_CARA_ELEM et une petite modification dans
+   afdi2d et afdi3d. Il n'y a pas de nouveaux éléments finis. L'objectif est de faciliter la
+   vie de l'utilisateur.
+   * Pour un M_T_D_L .  Il faut donner 1 valeur de masse (3D et 2D).
+   * Pour un M_TR_D_L.  Il faut donner 1 valeur de masse (3D et 2D), valeurs d'inertie 3 en
+   3D et 1 en 2D.
+   
+   
+   Impact Catalogue : affe_cara_elem
+   Impact Fortran   : afdi2d afdi3d
+   
+   Cas tests :
+   'M_T_D_L'  : miss06a, zzzz200b,c
+   'M_TR_D_L' : sdll137c
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.42.01
+VALIDATION
+    Passage des cas tests
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 06/27/2011 - 12:58:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017196 DU 2011-06-24 05:54:59
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    Rxc3xa9sorption API hdf5  v16
+FONCTIONNALITE
+   La librairie hdf5 est utilisée dans JEVEUX pour sauvegarder et relire une base GLOBALE. 
+   Suite au basculement vers la version hdf5-1.8.4 (issue16349) on résorbe les appels qui ne
+   sont supportés qu'en utilisant l'option --with-default-api-version=v16.
+    
+   Cela concerne les fonctions C suivantes : 
+   
+   hdfnbo.c
+   hdfnom.c
+   hdfrat.c
+   hdftyp.c
+   
+   Les appels à H5Giterate, H5Aopen_name et H5Gget_objinfo sont respectivement remplacés par
+   H5Giterate_by_name, H5Aopen_by_name et H5Oget_info_by_name.
+   
+   Après cette évolution, il n'est plus nécessaire d'utiliser l'option de construction de la
+   librairie hdf avec l'API v16.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnl130a zzzz119a
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016349 DU 2011-02-02 12:45:31
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    HDF5 1.8.5
+FONCTIONNALITE
+   But de la fiche : mise à niveau des librairies hdf5 suite au passage med3.0.2
+   
+   Pour s'aligner sur les préconisations de Salome, c'est la version hdf5-1.8.4 qui a été
+   installée sur les plates-formes aster4-Calibre6, Calibre5 et clpaster-Rocks.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste complxc3xa8te
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 06/27/2011 - 01:42:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015559 DU 2010-09-16 15:25:48
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    X-FEM : Extension des mailles multi-fissurees au contact petit glissement
+FONCTIONNALITE
+   Le but de cette fiche est de fournir une première approche 
+   pour le traitement du contact en petits ou grands 
+   glissements dans un cas d'intersection de fissures traitées 
+   par le formalisme X-FEM. L'application est le traitement de 
+   réseaux de fissures ou de failles.
+   
+   
+   Cette fiche est en 5 parties. On propose de l'étendre aux 
+   grands glissements, le traitement étant exactement le même 
+   qu'en HPP, la seule différence est la phase d'appariement 
+   que l'on adapte en conséquence. On décrit ces modifications 
+   dans la cinquième partie de la fiche.
+   
+   
+   ************************************************************
+   ****
+   1) Ajout des types d'éléments X-FEM multi-Heaviside avec 
+   contact
+   ************************************************************
+   ****
+   
+   on ajoute les catalogues gener_me*_xhhc.cata qui 
+   contiennent les éléments :
+   
+   *_XH2C attribut XH2C ENS_NOEUD = EN2
+   *_XH3C attribut XH3C ENS_NOEUD = EN3
+   *_XH4C attribut XH4C ENS_NOEUD = EN4
+   
+   possédant les DDL_MECA :
+   
+   EN2 = D H1 H2 LAGS_ LAG2_
+   EN3 = D H1 H2 H3 LAGS_ LAG2_ LAG3_
+   EN4 = D H1 H2 H3 H4 LAGS_ LAG2_ LAG3_ LAG4_
+   
+   Si l'utilisateur définit le contact dans MODI_MODELE_XFEM :
+   
+   On calcule le nombre de ddl Heavisides (n_Heav) nécéssaires 
+   pour l'enrichissement
+   - S'il est traversé par au moins une fissure c'est un 
+   élément '_XH'+n_Heav+'C'
+   - Sinon c'est un élément '_XH'+n_Heav
+   
+   On fait correspondre les numéros de ddl Heaviside aux 
+   numéros de ddl de contact, cela simplifie l'implémentation. 
+   La SD FISSNO (fissure associée au num de ddl) est alors 
+   aussi valable pour les ddl de Lagrange.
+   
+   CATALOGUES : 
+   
+   gener_me_xhhc, gener_mecpl_xhhc, gener_medpl_xhhc
+   d_depl_r_h4z
+   d_depl_r_lag2_c, d_depl_r_lag2_f1, d_depl_r_lag2_f2
+   d_depl_r_lag3_c, d_depl_r_lag3_f1, d_depl_r_lag3_f2
+   d_depl_r_lag4_c, d_depl_r_lag4_f1, d_depl_r_lag4_f2
+   grandeur_simple, phenomene_modelisation
+   
+   FORTRAN :
+   
+   xtyele, xmoajo, xmoimp, xmoini, xmolig, xteini
+   
+   ********************
+   2) Gestion de la LBB
+   ********************
+   
+   Des ddl de lagranges ayant des noms différents peuvent 
+   correspondre à la  même fissure, il doit être possible 
+   d'imposer des relations du type LAGS_C = LAG2_C par exemple.
+   Dans la routine xconta on boucle sur les fissures, l'algo 
+   LBB est indépendament fait pour chaque fissure. Il faut 
+   donc récupérer le numéro de ddl associé au numéro de 
+   fissure en un noeud donné.
+   
+   On crée alors la SD MODELE://'HEAVNO' (champ elno) qui 
+   renvoie pour un numéro de fissure, le numéro de ddl 
+   Heaviside (même que Lagrange) associé au noeud. HEAVNO est 
+   facile à construire, il s'agit de l'inverse de FISSNO, on 
+   le construit dans la routine xfisno en même temps que
+   celui-ci.
+   
+   La SD LISEQ est associé à la liste LISEQ_LAGR qui contient 
+   les numéros de ddl pour l'imposition dans XRELCO. Par 
+   exemple si LISEQ = (26,27) et LISEQ_LAGR = (1,3), on 
+   imposera l'égalité entre le ddl LAG3_C du noeud 27 
+   et LAGS_C du noeud 26.
+   
+   FORTRAN :
+   
+   xfisno : création de la sd HEAVNO
+   xconta, xlagsp
+   xlag2c : nouvelle routine pour la création de LISEQ_LAGR
+   xrelco : utilisation de LISEQ_LAGR
+   
+   SD_XFEM.PY : ajout de HEAVNO et de LISEQ_LAGR en facultatif
+   
+   ******************************************
+   3) Assemblage des contribution dans les TE
+   ******************************************
+   
+   En multi-Heaviside, le jeu entre les parties maitre et 
+   esclave n'est plus strictement dépendant du ddl saut de 
+   déplacement correspondant à la fissure (-2*b) mais peut 
+   dépendre du saut de déplacement des autres fissures. Lors 
+   de l'assemblage des contribution de contact, il faut donc 
+   avoir accès au jeu à prendre en compte pour chacune des 
+   fissures. On crée donc la SD MODELE://TOPOFAC.HE dans le 
+   te0510 pour les éléments multi-Heav.
+   Elle stocke pour chaque facette, la valeur des fonctions 
+   Heaviside des côtés maître et esclave associées à chacune 
+   des fissures. Le jeu est alors calculé pour une facette 
+   donnée en faisant :
+   
+   Somme_{ifh=1,nfh}(coef_{esclave}-coef_{maitre})_{ifh}*b_
+   {ifh}
+   
+   En pratique coef_{esclave} et coef_{maitre} sont stockés 
+   par fissure, on utilise FISSNO pour les avoir en fonction 
+   de ifh (ddl Heaviside).Notons que cette structure de donnée 
+   est pour les facettes de contact analogue à la SD 
+   MODELE://TOPOSE.HEA pour les sous-éléments
+   d'intégration volumique.
+   
+   Lors de l'assemblage, on ajoute une boucle sur les fissures 
+   qui encapsule les te0533/534. Pour chaque fissure kfiss :
+   
+   On assemble les contribution sur les ddl de déplacement 
+   ainsi :
+   
+   Boucle comme avant sur les facettes et les points 
+   d'intégrations
+     Boucle sur les noeuds ino
+       Boucle sur les ddl Heavisides ifh
+         On utilise fissno(ino,ifh) pour récupérer la fissure 
+   ifiss
+         On utilise topofac.he pour calculer le jeu 
+   correspondant
+   
+   On assemble les contribution sur les ddl de Lagrange ainsi :
+   
+   Boucle sur les noeud ino
+     on utilise la SD HEAVNO pour récupérer la place du ddl 
+   Heaviside que l'on stocke dans le vecteur PLA
+     PLA(ino)=PLI(ino)+HEAVNO(ino,kfiss)
+   
+   Boucle comme avant sur les facettes et les points 
+   d'intégrations.
+     Boucle sur les noeuds ino
+       Récupération de PLA(ino)
+   
+   Les numéros de ddl Heaviside correspondent aux numéros de 
+   ddl de contact, cela simplifie l'élimination. Ainsi lorsque 
+   le statut du noeud vaut 0, on élimine à la fois le ddl 
+   Heaviside et le ddl de contact.
+   
+   CATALOGUES
+   
+   char_meca_cont.cata, char_meca_frot.cata, rigi_cont.cata, 
+   rigi_frot.cata
+   gener_mecpl2_xhtc.cata, gener_medpl2_xhtc.cata, 
+   gener_me_xhtc.cata
+   gener_mecpl2_xtc.cata, gener_medpl2_xtc.cata, 
+   gener_me_xtc.cata
+   gener_mecpl2_xhc.cata,gener_medpl2_xhc.cata, 
+   gener_me_xhc.cata
+   
+   FORTRAN
+   
+   te0510, xcface : création de la SD TOPOFAC.HE
+   nmelcm, nmelcv, xmmbca : champs d'entrée HEAVNO, FISSNO et 
+   TOPOFAC.HE
+   te0532, te0533, te0534, xmmaa3, xmmsa3,xmvec2 : jeu et 
+   assemblage
+   xmma4, xmmab3, xmmab4, xmmab5, xmmab6,  xmmco1, matcox : 
+   dimensionnement 
+   de mmat(204,204) -> mmat(216,216)
+   xteddl : elimination des ddl de contact
+   
+   SD_XFEM.PY : ajout de TOPOFAC.HE
+   
+   **********************************
+   4) Elements coupés plusieurs fois
+   **********************************
+   
+   Un élément peut être redécoupé plusieurs fois. Cependant on 
+   ne redécoupe pas les facettes. Dans le cas où une facette 
+   doit être redécoupé, elle est désactivée. Cette 
+   approximation est introduite pour le moment car il 
+   semblerait que le nombre de ddl de contact présents dans la 
+   jonction ne soit pas suffisant pour faire une intérpolation 
+   P1 discontinue.
+   Pour une fissure qui se branche sur une autre, on introduit 
+   une interpolation de type P0. La recherche des points 
+   d'intersections avec l'autre fissure se fait avec le même 
+   algorithme que pour la recherche des points en fond de 
+   fissure.
+   
+   Toutes les structures de données du contact sont dupliquées 
+   par le nombre de fissures vues par l'élément :
+   -Les SD TOPOFAC.xxx crées dans le te0510
+   -Les SD contenant les infos par point d'intégration (statut 
+   de contact, ...) crées dans xmele1
+   -Les SD des caractéristiques par zones de contact 
+   (glissière, coefs ...) crées dans xmele2
+   
+   Dans les te0532/33/34, chaque fissure possède donc ses 
+   propres points d'intégration et ses propres 
+   caractéristiques de contact.
+   
+   Pour faciliter cette duplication, l'appel à xbarvi dans 
+   xconta est descendu dans la boucle sur les fissures. La SD 
+   contenant la liste des arêtes connectées 
+   MODELE://'.CONTACT.CNCTE' devient FISS(i)//'.CNCTE'.
+   
+   FORTRAN
+   
+   xtopoc, te0510 : duplication topofac.xxx
+   xaint2 : appelé après le te0510, pour modifier le champ 
+   topofac.ai dans le cas d'un conflit LBB
+   xcfacj : appelé par xcface pour trouver les points 
+   d'intersection
+   xconta, xbarvi, xappar : LBB et SD FISS://'.CNCTE'
+   xmele1, xmele2, xmchex, xmmbca, xreacl, te0532, te0533, 
+   te0534 : 
+   duplication defico, statuts et seuils aux points de gauss
+   
+   ***********************************
+   5) Extension aux grands glissements
+   ***********************************
+   
+   Il s'agit d'étendre la formulation contact multi-Heaviside 
+   au grand glissement. Les stratégies des 4 premières parties 
+   restent valable. On ajoute quelques modifications pour 
+   l'appariement. Voici les étapes :
+   
+   -On prend en compte les éléments multi-H lors de la 
+   création des mailles  esclaves de contact dans xmacon.
+   Si par exemple un élément est découpé par 2 fissures 
+   correspondant à deux zones de contact différentes, on 
+   créera des points d'intégration pour la 
+   première zone en fonction du nombre de facette de la 
+   fissure correspondante.
+   Puis pour cette même maille, on créera d'autres points 
+   d'intégration pour la deuxième zone en fonction du nombre 
+   de facette de l'autre fissure correspondante.
+   
+   -La réactualisation des coordonnées des facettes est 
+   généralisée au Multi-H dans le te0519, il suffit de 
+   calculer le déplacement en prenant en compte tout les ddl 
+   Heaviside.
+   
+   -Appariement entre les points des facettes esclaves et les 
+   facettes maitres, on ajoute ifiss et ifism dans la SD 
+   RESOCO//'.TABFIN'. Ils 
+   correspondent pour l'appariement aux numéros locaux de 
+   fissures dans les mailles esclave et maitre respectivement.
+   
+   -Création du Ligrel des éléments tardifs, c'est ici que les 
+   modifs sont les plus importantes. En effet il faut 
+   maintenant prendre en compte tous 
+   les types d'appariement possible. Par exemple, une maille 
+   esclave d'attribut XFEM XH4C peut être associée à une 
+   maille maitre d'attribut XFEM XH2C. Cela fait un nombre 
+   important d'éléments tardifs à introduire car il faut 
+   prendre en compte tout les types de mailles (tria3, quad4, 
+   tetra4 ...) pour les modélisations différentes (C_PLAN, 
+   D_PLAN, 3D).
+   Tous les éléments tardifs multi-Heavisides possibles sont 
+   contenus dans 3 nouveaux catalogues (générées à l'aide d'un 
+   script python):
+   gener_mecpl2_xhc_xh.cata, gener_medpl2_xhc_xh.cata, 
+   gener_me_xhc_xh.cata.
+   
+   -Dans xmligr, on ne compare plus le type d'élément tardif à 
+   un tableau statique qui contiendrait trop de données (plus 
+   de 200 éléments) mais à un tableau dynamique qui est 
+   dimensionné au nombre de grel du ligrel.
+   Pour savoir à quel numéro de grel correspond l'élément, on 
+   l'associe à :
+   type de modélisation, types de mailles esclaves et maitre, 
+   types d'attributs XFEM esclaves et maitre
+   
+   -Dans xmcart, on utilise ifiss et ifism stockés dans 
+   RESOCO//'.TABFIN' 
+   pour construire les cartes tardives STANO, PINTER, AINTER 
+   et CCFACE.
+   On ajoute aussi 2 nouvelles cartes qui contiennent 
+   TOPOFAC.HE pour le point d'intégration (coté maitre et 
+   esclave) afin de calculer le jeu dans les te0363/66/67 et 
+   HEAVNO qui contient la place du ddl de contact 
+   (uniquement côté esclave).
+   
+   -Une fois dans les TE, on procède comme en HPP, mais on a 
+   pas de boucle sur les fissures (faite dans xmacon) et pas 
+   de boucle sur les facettes et les points d'intégration (ces 
+   deux dernières boucles sont déjà faites dans xappar). 
+   
+   CATALOGUES
+   
+   geom_fac.cata, gener_mecpl2_xhh_xh, gener_medpl2_xhh_xh, 
+   gener_me_xhh_xh   
+   
+   FORTRAN
+   
+   xconno, xmacon : création des SD contact xfem grand 
+   glissement
+   xgecfi, te0519 : réactualisation des facettes
+   cfmmvd, xappar, xmcoor, xcopco, xmrept, xmrema, xpivit, 
+   xmrlst, xmpint : appariement
+   xmligr xmelel, xmcart : création des éléments tardifs et 
+   remplissage de leurs cartes
+   xmtbca, te0363, xmmjec, te0366, te0367, xplma2, xmelet, 
+   xmmjeu, xtlagc, xtlagf, xtlagm, xmmaa0, xmmaa1, xmmab0, 
+   xmmab1, xmmab2, xmvec0, xmvec1, xmvef0,xmvef1, xtedd2 : jeu 
+   et assemblage
+   
+   VALIDATION
+   
+   ssnv510abcdef : COMPRESSION UNIAXIALE D UN BLOC MULTI-
+   FISSURE
+   ssnv511efgh   : BLOC DECOUPE PAR DEUX INTERFACES 
+   INTERSECTEES AVEC X-FEM
+   ssnv512fghij  : BLOC DECOUPE PAR UNE FISSURE VERTICALE SE 
+   BRANCHANT ENTRE 2 FISSURES HORIZONTALES AVEC X-FEM
+   ssnv513efgh   : BLOC DECOUPE PAR TROIS INTERFACES SE 
+   BRANCHANT SEQUENTIELLEMENT AVEC X-FEM
+   
+   DOCUMENTATION
+   
+   v6.04.510, v6.04.511, v6.04.512, v6.04.513, d9.05.06, 
+   d4.10.02, r5.03.53
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : v6.04.510; v6.04.511; v6.04.512; v6.04.513;d9.05.06;d4.10.02; r5.03.53
+VALIDATION
+    Cas-test
+NB_JOURS_TRAV  : 80.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016572 DU 2011-03-08 15:31:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    X-FEM : Amelioration du conditionnement des elements Heaviside
+FONCTIONNALITE
+   Cette fiche propose une amélioration qui permet de résoudre 
+   des problèmes de conditionnement du système causés par les
+   enrichissements de type  Heaviside.
+   Dans le cas des jonctions, le conditionnement n'est pas 
+   borné par le critère actuel sur la longueur des arêtes 
+   coupées.
+   L'idée clé est de rajouter un critère basé sur une 
+   estimation des intégrales de volumes des termes de rigidité.
+   Dans le cas classique, ce nouveau critère améliore aussi la 
+   gestion du conditionnement pour les mailles
+   multi-linéaires et quadratiques.
+   
+   Tout ce passe dans l'opérateur MODI_MODELE_XFEM. Pour 
+   chaque ddl Heaviside actif (statut=1), on évalue la 
+   rigidité associée au support de son noeud, ainsi que la 
+   rigidité du support où la fonction Heaviside vaut +1 et -1 :
+   
+   initialisation Rt = 0 ; R+ = 0 ; R- = 0
+   boucle sur les mailles M connexes du noeud I
+     boucle sur les sous-éléments SE de M
+       calcul du volume V du SE
+       calcul du centre de gravité G du SE
+       calcul du max des dérivées des fonctions de formes DFF 
+   de G au noeud I dans M
+       évaluation de la rigidité R = V*DFF^2
+       soit H la valeur fonction Heaviside dans SE
+       Rt = Rt + R
+       si (H=+1) : R+ = R+ + R
+       si (H=-1) : R- = R- + R
+   
+   Si le critère d'élimination (min(R-;R+)/Rt < Crit) est 
+   vérifié, le statut du noeud dans MODELE://'.STNO'
+   est mis à zéro. Le ddl sera alors directement éliminé dans 
+   les TE.
+   
+   Crit est un paramètre renseigné par l'utilisateur dans 
+   MODI_MODELE_XFEM sous le mot clé CRITERE.
+   Il est fixé par défaut à 1.1E-9. On obtient alors en multi-
+   linéaire un conditionnement maximum de l'ordre de 10^10.
+   
+   Notons qu'un critère volumique (non prise en compte du 
+   terme DFF^2) élimine des ddl à tord dans les cas
+   multi-linéaire et quadratique ce qui conduit à une 
+   dégradation des résultats.
+   
+   IMPACT SOURCES :
+   
+   fortran :
+   
+   xcodec  xconno  xcrvol  xstan2  xtopoi te0514 : critère de 
+   rigidité
+   te0366  te0367  te0533  te0534  xtedd2 : pour l'élimination 
+   des ddl Heaviside dans les te de contact
+   caxfem : résorption xdelh
+   
+   catalo : 
+   
+   gener_mecpl2_xhc gener_medpl2_xhc gener_me_xhc : ajout 
+   STANO pour les TE de contact (HPP)
+   gener_mecpl2_xhc_xh  gener_medpl2_xhc_xh : dimensionnement 
+   STANO (GG)
+   
+   gener_meax_2_xh  gener_mecpl2_xht  gener_me_xtc       
+   gener_meax_2_xht gener_mecpl2_xhtc gener_medpl2_xht   
+   gener_meax_2_xt  gener_mecpl2_xt   gener_medpl2_xhtc  
+   gener_mecpl2_xh  gener_mecpl2_xtc  gener_medpl2_xt    
+   gener_medpl2_xh  gener_medpl2_xtc  gener_me_xt_2
+   gener_me_xh      gener_me_xt.cata  gener_me_xhh  
+   gener_medpl2_xhh  gener_mecpl2_xhh
+   gener_me_xht     gener_me_xhtc     topose : suppression de 
+   la SD MODELE(1:8)//'.TOPOSE.CRI'
+   
+   sd_xfem.py : suppression de la SD MODELE://'LISNOH'
+   modi_modele_xfem.capy : modification de la valeur associée 
+   au mot clé CRITERE
+   
+   DOCUMENTATION :
+   
+   d4.10.02
+   
+   VALIDATION :
+   
+   tout les cas tests X-FEM.
+   
+   Remarque : il n'est plus utile de faire appel à 
+   AFFE_CHAR_MECA(LIAISON_XFEM='OUI') dans les cas X-FEM sans 
+   contact.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : d4.10.02;
+VALIDATION
+    cas-test
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016709 DU 2011-04-01 11:20:24
+TYPE evolution concernant Code_Aster (VERSION 9.1)
+TITRE
+    X-FEM : Contact avec penalisation en grands glissements
+FONCTIONNALITE
+   Contact grand glissement pénalisé en formulation X-FEM
+   
+   Validé en RTA du 28/04/2011
+   
+   Evolution:
+   ----------
+   
+   On implémente le contact en formulation pénalisé en grand glissement pour la méthode
+   X-FEM, ce qui uniformise petits et grands glissements puisque la méthode est désormais
+   disponible dans les deux cas.
+   
+   Conformément à ce qui a déjà été fait en grands glissements X-FEM, il n'y a pas de boucle
+   de point fixe sur les seuils de frottements. On introduit les termes supplémentaires
+   appropriés dans la matrice tangente de la méthode de Newton (voir Doc R5.03.53). On
+   introduit également une rigidité tangentielle à la première itération afin de pouvoir
+   converger avec des coefficients de pénalisation raisonnablement élevés sur les problèmes
+   partiellement adhérents. Ce travail de débranchement est   générique et pourra être
+   réutilisé lors du débranchement de la boucle de point fixe sur la méthode continue.
+   
+   Pour les deux méthodes de contact X-FEM pénalisées, deux ajustements sont effectués:
+   1- On introduit un coefficient de mise à l'échelle égal automatiquement au coefficient de
+   pénalisation afin d'avoir un conditionnement optimal. 
+   2- Dans l'équation d'équilibre et afin de satisfaire rigoureusement la LBB, on remplace la
+   force de contact explicite en déplacement par celle issue de l'équation de contact.
+   
+   
+   Sources impactées:
+   ------------------
+   
+   Introduction de la méthode pénalisée en grands glissements :
+   MODIF te0367.f xmmaa0.f xmmab0.f xmmab2.f xmvec0.f xmvef1.f
+         te0366.f xmcart.f xmmaa1.f xmmab1.f xmvec1.f xmvef0.f  
+   
+   
+   Austement méthode pénalisée en petits glissements : 
+   MODIF xmvef3.f xmmab3.f  xmmab6.f xmmaa4.f xmmab5.f xmvec2.f xmmaa3.f te0533.f te0534.f
+   te0548.f     te0532.f
+   
+   Validation :
+   ------------
+   
+   Ajout de quatre nouveaux cas tests en grands glissements pénalisé :
+   ssnp503q - ssnp504g Analogues respectifs des modélisations F mais en pénalisation.
+                       Valide les grands glissements et l'ajustement 2-
+   ssnv209o-p Analogues respectivement des modélisations j et k.
+              Valide la stratégie pour les cas partiellement adhérents.
+   
+   Non régression des cas tests en petits glissements méthode pénalisée.
+   
+   Impact documentation:
+   ---------------------
+   
+   R5.03.53, R7.02.12, V6.03.53, V6.03.54, V6.04.209
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R5.03.53, R7.02.12, V6.03.53, V6.03.54, V6.04.209
+VALIDATION
+    AUTRE_ASTER
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016990 DU 2011-05-25 09:01:01
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Post-traitement des lagrange de contact X-FEM
+FONCTIONNALITE
+   Anomalie:
+   ---------
+   Le contact X-FEM utilise un coefficient d'échelle  COEF_ECHELLE afin de rendre les
+   lagranges du même ordre de grandeur que les déplacements, ce qui améliore le
+   conditionnement. Actuellement, l'utilisateur récupère en post-traitement les valeurs mises
+   à échelle et doit multiplier par COEF_ECHELLE (égal à 1.e6 par défaut actuellement) pour
+   retrouver la valeur correcte. On souhaite rendre l'opération de mise à échelle
+   transparente à l'utilisateur.
+   
+   Réalisation:
+   ------------
+   Afin de s'assurer que toute visualisation des pressions de contact par l'utilisateur soit
+   correcte, on agit à la sortie de la résolution du système. Dans nmresd, si du contact
+   X-FEM est détecté on appelle une routine de mise à l'échelle de l'incrément de
+   déplacement. Cette routine récupère le coefficient de mise à l'échelle, puis à l'aide du
+   prof_chno repère les composantes de type LAGS_C qu'elle multiplie par le coefficient
+   d'échelle. Lors de la récupération du multiplicateur de contact pour le calcul des
+   vecteurs élémentaires, on enlève cette multiplication puisqu'elle a déjà été effectuée en
+   amont.
+   
+   Sources modifiées:
+   ------------------
+   MODIF nmresd.f nmprta.f nmdesc.f ndxpre.f
+   AJOUT nmmear.f
+   
+   Validation:
+   -----------
+   SSNV186
+   
+   Impact documentation:
+   ---------------------
+   r7.02.12
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : r7.02.12
+VALIDATION
+    NON_REGRESSION
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 06/27/2011 - 01:42:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017057 DU 2011-06-03 14:03:56
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+    Blocage du ddl LH1 avec AFFE_CHAR_MECA
+FONCTIONNALITE
+   Dans le cas des modélisations _JHMS, il n'y a pas possibilités de bloquer le
+   multiplicateur de lagrange hydraulique LH1 par AFFE_CHAR_MECA. Seul AFFE_CHAR_CINE
+   l'autorise sans raison théorique à cela.
+   
+   On rajoute donc LH1 dans le catalogue de AFFE_CHAR_MECA  et on crée le catalogue
+   correspondant d_depl_r_lh1.cata (merci Josselin) pour que cela fonctionne.
+   
+   On modifie le test wtnp128b (AFFE_CHAR_CINE devient AFFE_CHAR_MECA) pour que cet ajout
+   soit bien testé.
+   
+   Par ailleurs la doc U4.44.01 est mise à jour.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+    Passage wtnp128b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 06/27/2011 - 01:36:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017151 DU 2011-06-17 13:11:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    rxc3xa9sorption AFFE_CHAR_OPS011 incomplxc3xa8te
+FONCTIONNALITE
+   Demande :
+   ---------
+   Resorption de AFFE_CHAR_OPS011 et des routines liées : op0190, char11, cators.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017168 DU 2011-06-21 12:10:43
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Couverture de code et debug
+FONCTIONNALITE
+   On déplace certaines routines dans le répertoire debug car elles ne servent qu'à l'affichage :
+   cuimp2
+   dbgcal
+   imppiv
+   impre2
+   jeprsg
+   rvinfa
+   rvinfo
+   surfc1
+   surfc2
+   surfcl
+   surfcp
+   surfll
+   
+   Pour jeimpr, on modifie zzzz110b pour qu'il couvre cette routine.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017038 DU 2011-05-30 12:38:11
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 - Chantier CALC_CHAMP : champs xc3xa0 sous-points aux noeuds
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Dans l'opérateur CALC_CHAMP, nous souhaitions simplifier la vie de l'utilisateur en
+   calculant pour lui les champs nécessaires pour le calcul de l'option demandée.
+   
+   Or cela pose problème pour les champs à sous-points si l'utilisateur demande une option
+   XXXX_NOEU. En effet le passage ELNO -> NOEU n'est pas possible pour les champs à sous-points.
+   """
+   
+   
+   Solution :
+   ----------
+   On rend possible le passage ELNO -> NOEU pour les champs à sous-points en filtrant les
+   mailles contenant des sous-points lors du passage cham_elem_s cham_no_s.
+   
+   On ajoute aussi un message pour prévenir l'utilisateur de ce qui est fait :
+   """
+    Il a été demandé de convertir un champ par éléments aux noeuds en un
+    champ aux noeuds. Or le champ par éléments aux noeuds contient des
+    sous-points alors que un champ aux noeuds ne peut pas en contenir.
+    De ce fait, les mailles contenant des sous-points vont être filtrées.
+   
+    Conseil :
+    . Si vous utilisez CALC_CHAMP pour calculer un champ aux noeuds et
+    . que vous souhaitez récupérer des valeurs sur les mailles ayant des
+    . sous-points, veuillez d'abord utiliser la commande POST_CHAMP pour
+    . extraire des sous-points.
+   """
+   
+   La routine modifiée est cescns. On rajoute deux arguments à cette routine pour permettre à
+   l'utilisateur développeur de préciser le comportement en de présence de sous-points :
+   - Emission de l'alarme,
+   - Pas d'émission d'alarme mais code retour = 100.
+   
+   
+   Validation :
+   ------------
+   ssls101m modifié pour lui faire calculer VARI_ELNO et VARI_NOEU + ajout d'un IMPR_RESU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssls101m modifixc3xa9
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017157 DU 2011-06-20 11:21:26
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Dxc3xa9gradation des temps de certains cas-tests en 11.0.10 dans STAT_NON_LINE et DYNA_NON_LINE
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dégradation des temps CPU de STAT_NON_LINE sur les tests ssnv138e, ssnl135a, ssnl135c,
+   sdnl111f.
+   
+   
+   Analyse :
+   ---------
+   J'ai fait passé callgrind sur ssnv138e et sur ssnl135a et j'ai constaté que c'est la
+   routine nmfcor qui consomme plus de temps qu'avant.
+   
+   C'est donc la fiche issue15774 qui est responsable. Le but de cette fiche est de prendre
+   en compte les conditions de Dirichlet en correction dans STAT_NON_LINE et DYNA_NON_LINE.
+   Pour ce faire, il faut ajouter au second membre en correction la différence entre la
+   valeur de la condition de Dirichlet et la valeur du degré de liberté à l'itération de
+   Newton précédente.
+   
+   Cet modification ajoute donc obligatoirement des calculs. Ce qui explique le temps CPU
+   supplémentaire.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF hdf/hdfnbo                   lefebvre J-P.LEFEBVRE        95     28      6
+       C MODIF hdf/hdfnom                   lefebvre J-P.LEFEBVRE       109     32      9
+       C MODIF hdf/hdfrat                   lefebvre J-P.LEFEBVRE        74      3      2
+       C MODIF hdf/hdftyp                   lefebvre J-P.LEFEBVRE       127     34     12
+ CASTEST AJOUT ssnl106j                       flejou J-L.FLEJOU         465    465      0
+ CASTEST AJOUT ssnl106k                       flejou J-L.FLEJOU         462    462      0
+ CASTEST AJOUT ssnl106l                       flejou J-L.FLEJOU         215    215      0
+ CASTEST AJOUT ssnl116b                       flejou J-L.FLEJOU         224    224      0
+ CASTEST AJOUT ssnl132c                       flejou J-L.FLEJOU         923    923      0
+ CASTEST AJOUT ssnl132d                       flejou J-L.FLEJOU        1005   1005      0
+ CASTEST AJOUT ssnl501g                       flejou J-L.FLEJOU         175    175      0
+ CASTEST AJOUT ssnp503q                       massin P.MASSIN           232    232      0
+ CASTEST AJOUT ssnp504g                       massin P.MASSIN           235    235      0
+ CASTEST AJOUT ssnv209p                       massin P.MASSIN           370    370      0
+ CASTEST AJOUT ssnv510d                       massin P.MASSIN           271    271      0
+ CASTEST AJOUT ssnv510e                       massin P.MASSIN           273    273      0
+ CASTEST AJOUT ssnv510f                       massin P.MASSIN           305    305      0
+ CASTEST AJOUT ssnv511e                       massin P.MASSIN           325    325      0
+ CASTEST AJOUT ssnv511f                       massin P.MASSIN           328    328      0
+ CASTEST AJOUT ssnv511g                       massin P.MASSIN           357    357      0
+ CASTEST AJOUT ssnv511h                       massin P.MASSIN           394    394      0
+ CASTEST AJOUT ssnv512f                       massin P.MASSIN           363    363      0
+ CASTEST AJOUT ssnv512g                       massin P.MASSIN           361    361      0
+ CASTEST AJOUT ssnv512h                       massin P.MASSIN           395    395      0
+ CASTEST AJOUT ssnv512i                       massin P.MASSIN           428    428      0
+ CASTEST AJOUT ssnv512j                       massin P.MASSIN           364    364      0
+ CASTEST AJOUT ssnv513e                       massin P.MASSIN           354    354      0
+ CASTEST AJOUT ssnv513f                       massin P.MASSIN           354    354      0
+ CASTEST AJOUT ssnv513g                       massin P.MASSIN           387    387      0
+ CASTEST AJOUT ssnv513h                       massin P.MASSIN           421    421      0
+ CASTEST AJOUT zzzz131b                       flejou J-L.FLEJOU         609    609      0
+ CASTEST MODIF efica01a                     courtois M.COURTOIS         290      2      1
+ CASTEST MODIF forma01d                     courtois M.COURTOIS         322      2      1
+ CASTEST MODIF forma12c                     courtois M.COURTOIS         129      2      1
+ CASTEST MODIF forma12d                     courtois M.COURTOIS         162      2      1
+ CASTEST MODIF miss05a                        flejou J-L.FLEJOU         764      1      1
+ CASTEST MODIF miss06a                        flejou J-L.FLEJOU         644     21     31
+ CASTEST MODIF perfe03a                     courtois M.COURTOIS         334      1      1
+ CASTEST MODIF sdld04a                      courtois M.COURTOIS         650      4      2
+ CASTEST MODIF sdld102a                     courtois M.COURTOIS         909      2      1
+ CASTEST MODIF sdld103a                     courtois M.COURTOIS         630      4      2
+ CASTEST MODIF sdld103b                     courtois M.COURTOIS         427      4      2
+ CASTEST MODIF sdld105a                     courtois M.COURTOIS         280      2      1
+ CASTEST MODIF sdld21b                      courtois M.COURTOIS         694      2      2
+ CASTEST MODIF sdld22a                      courtois M.COURTOIS         319      2      2
+ CASTEST MODIF sdld22b                      courtois M.COURTOIS         336      2      2
+ CASTEST MODIF sdld29a                      courtois M.COURTOIS         228      2      2
+ CASTEST MODIF sdld31b                      courtois M.COURTOIS         373      2      1
+ CASTEST MODIF sdld320a                     courtois M.COURTOIS         452      2      2
+ CASTEST MODIF sdld321a                     courtois M.COURTOIS         457      3      3
+ CASTEST MODIF sdld321b                     courtois M.COURTOIS         355      2      2
+ CASTEST MODIF sdld321c                     courtois M.COURTOIS         352      2      2
+ CASTEST MODIF sdld325a                     courtois M.COURTOIS         501      2      2
+ CASTEST MODIF sdld325b                     courtois M.COURTOIS         532      2      2
+ CASTEST MODIF sdld34a                      courtois M.COURTOIS         188      2      1
+ CASTEST MODIF sdll06a                      courtois M.COURTOIS         233      4      2
+ CASTEST MODIF sdll06b                      courtois M.COURTOIS         196      4      2
+ CASTEST MODIF sdll107a                     courtois M.COURTOIS        2022      4      2
+ CASTEST MODIF sdll109a                     courtois M.COURTOIS        2091      2      1
+ CASTEST MODIF sdll109b                     courtois M.COURTOIS        1937      2      1
+ CASTEST MODIF sdll109c                     courtois M.COURTOIS        1713      2      1
+ CASTEST MODIF sdll109d                     courtois M.COURTOIS        2093      2      1
+ CASTEST MODIF sdll113a                     courtois M.COURTOIS         439      4      2
+ CASTEST MODIF sdll113b                     courtois M.COURTOIS         490      4      2
+ CASTEST MODIF sdll115b                     courtois M.COURTOIS         804      7      3
+ CASTEST MODIF sdll126b                     courtois M.COURTOIS         201      2      2
+ CASTEST MODIF sdll127a                     courtois M.COURTOIS         431      3      3
+ CASTEST MODIF sdll127b                     courtois M.COURTOIS       10226      3      3
+ CASTEST MODIF sdll127c                     courtois M.COURTOIS       10227      3      3
+ CASTEST MODIF sdll129a                     courtois M.COURTOIS         764      2      2
+ CASTEST MODIF sdll137b                       flejou J-L.FLEJOU         597     10      7
+ CASTEST MODIF sdll137c                       flejou J-L.FLEJOU         664     16     12
+ CASTEST MODIF sdll138a                     courtois M.COURTOIS         671      2      1
+ CASTEST MODIF sdll140a                     courtois M.COURTOIS         408      2      2
+ CASTEST MODIF sdll141e                     courtois M.COURTOIS         204      1      1
+ CASTEST MODIF sdll403a                     courtois M.COURTOIS         240      4      2
+ CASTEST MODIF sdls108a                       flejou J-L.FLEJOU        2473      9      4
+ CASTEST MODIF sdls114a                     courtois M.COURTOIS         342      2      1
+ CASTEST MODIF sdls114b                     courtois M.COURTOIS         317      2      1
+ CASTEST MODIF sdnd100b                     courtois M.COURTOIS         211      4      2
+ CASTEST MODIF sdnd102a                     courtois M.COURTOIS         384      4      2
+ CASTEST MODIF sdnd103a                     courtois M.COURTOIS         316      4      2
+ CASTEST MODIF sdnd105a                     courtois M.COURTOIS         225      4      2
+ CASTEST MODIF sdnd105b                     courtois M.COURTOIS         222      4      2
+ CASTEST MODIF sdnd106a                     courtois M.COURTOIS         259      2      2
+ CASTEST MODIF sdnd110a                     courtois M.COURTOIS         328      4      2
+ CASTEST MODIF sdnd111a                     courtois M.COURTOIS         384      4      2
+ CASTEST MODIF sdnd112a                     courtois M.COURTOIS         294      4      2
+ CASTEST MODIF sdnd120a                     courtois M.COURTOIS         283      4      2
+ CASTEST MODIF sdnd121a                     courtois M.COURTOIS         249      2      1
+ CASTEST MODIF sdnl111a                     courtois M.COURTOIS         258      4      2
+ CASTEST MODIF sdnl111b                     courtois M.COURTOIS         177      4      2
+ CASTEST MODIF sdnl112b                     courtois M.COURTOIS         557      2      2
+ CASTEST MODIF sdnl112c                     courtois M.COURTOIS         626      2      2
+ CASTEST MODIF sdnl132a                     courtois M.COURTOIS         441      2      1
+ CASTEST MODIF sdnl301a                     courtois M.COURTOIS         427      2      2
+ CASTEST MODIF sdnl32a                      courtois M.COURTOIS         252      4      2
+ CASTEST MODIF sdnv101a                     courtois M.COURTOIS        1372      4      2
+ CASTEST MODIF ssls101m                     sellenet N.SELLENET         133     12      3
+ CASTEST MODIF sslv200b                     courtois M.COURTOIS        1061      2      2
+ CASTEST MODIF sslv317a                     courtois M.COURTOIS         484      2      2
+ CASTEST MODIF ssnd106a                     courtois M.COURTOIS         234      1      1
+ CASTEST MODIF ssnd106b                     courtois M.COURTOIS         221      1      1
+ CASTEST MODIF ssnd106c                     courtois M.COURTOIS         236      1      1
+ CASTEST MODIF ssnd106d                     courtois M.COURTOIS         211      1      1
+ CASTEST MODIF ssnd107a                     courtois M.COURTOIS         241      1      1
+ CASTEST MODIF ssnd107b                     courtois M.COURTOIS         256      1      1
+ CASTEST MODIF ssnd108a                     courtois M.COURTOIS         251      1      1
+ CASTEST MODIF ssnv182h                       massin P.MASSIN           288      5      6
+ CASTEST MODIF ssnv186a                       massin P.MASSIN           198      3      3
+ CASTEST MODIF ssnv186b                       massin P.MASSIN           228      5      5
+ CASTEST MODIF ssnv186c                       massin P.MASSIN           197      4      5
+ CASTEST MODIF ssnv186d                       massin P.MASSIN           195      4      5
+ CASTEST MODIF ssnv186e                       massin P.MASSIN           188      3      3
+ CASTEST MODIF ssnv186f                       massin P.MASSIN           202      3      3
+ CASTEST MODIF ssnv186g                       massin P.MASSIN           209      3      3
+ CASTEST MODIF ssnv186h                       massin P.MASSIN           210      5      5
+ CASTEST MODIF ssnv186i                       massin P.MASSIN           199      3      3
+ CASTEST MODIF ssnv186j                       massin P.MASSIN           192      2      2
+ CASTEST MODIF ssnv186k                       massin P.MASSIN           212      3      3
+ CASTEST MODIF ssnv510a                       massin P.MASSIN           272     72     18
+ CASTEST MODIF ssnv510b                       massin P.MASSIN           270     70     18
+ CASTEST MODIF ssnv510c                       massin P.MASSIN           302     99     24
+ CASTEST MODIF wtnp128b                       massin P.MASSIN           441      9      4
+ CASTEST MODIF zmat008a                     courtois M.COURTOIS         219      1      1
+ CASTEST MODIF zzzz110b                     sellenet N.SELLENET         114      3      1
+ CASTEST MODIF zzzz115a                       flejou J-L.FLEJOU         398     11      3
+ CASTEST MODIF zzzz189a                     courtois M.COURTOIS         297      5      5
+ CASTEST MODIF zzzz200a                       flejou J-L.FLEJOU         469     11      9
+ CASTEST MODIF zzzz200b                       flejou J-L.FLEJOU        1154     30     21
+ CASTEST MODIF zzzz200c                       flejou J-L.FLEJOU         504      7      3
+ CASTEST MODIF zzzz200d                       flejou J-L.FLEJOU        1133     18     13
+ CASTEST MODIF zzzz256a                     courtois M.COURTOIS         117      2      2
+CATALOGU AJOUT typelem/d_depl_r_h4z           massin P.MASSIN            64     64      0
+CATALOGU AJOUT typelem/d_depl_r_lag2_c        massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag2_f1       massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag2_f2       massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag3_c        massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag3_f1       massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag3_f2       massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag4_c        massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag4_f1       massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lag4_f2       massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/d_depl_r_lh1           massin P.MASSIN            65     65      0
+CATALOGU AJOUT typelem/gener_me_xhh_xh        massin P.MASSIN           350    350      0
+CATALOGU AJOUT typelem/gener_me_xhhc          massin P.MASSIN           374    374      0
+CATALOGU AJOUT typelem/gener_mecpl2_xhh_xh     massin P.MASSIN           260    260      0
+CATALOGU AJOUT typelem/gener_mecpl2_xhhc      massin P.MASSIN           349    349      0
+CATALOGU AJOUT typelem/gener_medpl2_xhh_xh     massin P.MASSIN           260    260      0
+CATALOGU AJOUT typelem/gener_medpl2_xhhc      massin P.MASSIN           349    349      0
+CATALOGU MODIF compelem/grandeur_simple__     massin P.MASSIN          2135     16     13
+CATALOGU MODIF compelem/phenomene_modelisation__     massin P.MASSIN          1833    110     32
+CATALOGU MODIF options/char_meca_cont         massin P.MASSIN            54      5      2
+CATALOGU MODIF options/char_meca_frot         massin P.MASSIN            54      5      2
+CATALOGU MODIF options/full_meca              massin P.MASSIN            81      3      2
+CATALOGU MODIF options/geom_fac               massin P.MASSIN            38      5      2
+CATALOGU MODIF options/rigi_cont              massin P.MASSIN            54      6      4
+CATALOGU MODIF options/rigi_frot              massin P.MASSIN            53      6      4
+CATALOGU MODIF options/topofa                 massin P.MASSIN            41      4      3
+CATALOGU MODIF options/topose                 massin P.MASSIN            36      2      3
+CATALOGU MODIF options/xcvbca                 massin P.MASSIN            51      4      3
+CATALOGU MODIF options/xreacl                 massin P.MASSIN            39      2      2
+CATALOGU MODIF typelem/gener_me_xh            massin P.MASSIN           339      2      2
+CATALOGU MODIF typelem/gener_me_xhc           massin P.MASSIN           349      8      7
+CATALOGU MODIF typelem/gener_me_xhc_xh        massin P.MASSIN           167     38     62
+CATALOGU MODIF typelem/gener_me_xhh           massin P.MASSIN           354      3      3
+CATALOGU MODIF typelem/gener_me_xhh_2         massin P.MASSIN           121      4      4
+CATALOGU MODIF typelem/gener_me_xht           massin P.MASSIN           337      2      2
+CATALOGU MODIF typelem/gener_me_xhtc          massin P.MASSIN           339      4      3
+CATALOGU MODIF typelem/gener_me_xt            massin P.MASSIN           337      2      2
+CATALOGU MODIF typelem/gener_me_xt_2          massin P.MASSIN            95      3      3
+CATALOGU MODIF typelem/gener_me_xtc           massin P.MASSIN           339      4      3
+CATALOGU MODIF typelem/gener_meax_2_xh        massin P.MASSIN           304      2      2
+CATALOGU MODIF typelem/gener_meax_2_xht       massin P.MASSIN           288      2      2
+CATALOGU MODIF typelem/gener_meax_2_xt        massin P.MASSIN           283      2      2
+CATALOGU MODIF typelem/gener_mecpl2_xh        massin P.MASSIN           323      2      2
+CATALOGU MODIF typelem/gener_mecpl2_xhc       massin P.MASSIN           328      8      7
+CATALOGU MODIF typelem/gener_mecpl2_xhc_xh     massin P.MASSIN           180     46     82
+CATALOGU MODIF typelem/gener_mecpl2_xhh       massin P.MASSIN           316      3      3
+CATALOGU MODIF typelem/gener_mecpl2_xht       massin P.MASSIN           303      2      2
+CATALOGU MODIF typelem/gener_mecpl2_xhtc      massin P.MASSIN           291      4      3
+CATALOGU MODIF typelem/gener_mecpl2_xt        massin P.MASSIN           298      2      2
+CATALOGU MODIF typelem/gener_mecpl2_xtc       massin P.MASSIN           286      4      3
+CATALOGU MODIF typelem/gener_medpl2_xh        massin P.MASSIN           316      2      2
+CATALOGU MODIF typelem/gener_medpl2_xhc       massin P.MASSIN           326      8      7
+CATALOGU MODIF typelem/gener_medpl2_xhc_xh     massin P.MASSIN           181     46     84
+CATALOGU MODIF typelem/gener_medpl2_xhh       massin P.MASSIN           317      5      5
+CATALOGU MODIF typelem/gener_medpl2_xht       massin P.MASSIN           297      2      2
+CATALOGU MODIF typelem/gener_medpl2_xhtc      massin P.MASSIN           288      4      3
+CATALOGU MODIF typelem/gener_medpl2_xt        massin P.MASSIN           294      2      2
+CATALOGU MODIF typelem/gener_medpl2_xtc       massin P.MASSIN           285      4      3
+CATALOGU SUPPR commande/affe_char_ops011    sellenet N.SELLENET          34      0     34
+CATALOPY MODIF commande/affe_cara_elem        flejou J-L.FLEJOU         636     44      4
+CATALOPY MODIF commande/affe_char_meca        massin P.MASSIN           771     17      5
+CATALOPY MODIF commande/asse_elem_ssd       courtois M.COURTOIS          85      2      3
+CATALOPY MODIF commande/calc_ecrevisse      courtois M.COURTOIS         175      5      3
+CATALOPY MODIF commande/calc_essai          courtois M.COURTOIS         127      2      3
+CATALOPY MODIF commande/calc_europlexus     courtois M.COURTOIS         150      4      3
+CATALOPY MODIF commande/calc_fonction       courtois M.COURTOIS         169      5      4
+CATALOPY MODIF commande/calc_miss           courtois M.COURTOIS         169      2      3
+CATALOPY MODIF commande/calc_modal          courtois M.COURTOIS         102      4      4
+CATALOPY MODIF commande/calc_mode_rotation   courtois M.COURTOIS          59      8      5
+CATALOPY MODIF commande/calc_precont        courtois M.COURTOIS          75      4     12
+CATALOPY MODIF commande/calc_spec           courtois M.COURTOIS          66      5      4
+CATALOPY MODIF commande/calc_table          courtois M.COURTOIS         140      4      3
+CATALOPY MODIF commande/crea_elem_ssd       courtois M.COURTOIS          93      5      7
+CATALOPY MODIF commande/defi_cable_bp       courtois M.COURTOIS          53      7     29
+CATALOPY MODIF commande/defi_fonc_elec      courtois M.COURTOIS          76      7      4
+CATALOPY MODIF commande/defi_inte_spec      courtois M.COURTOIS          65      5      4
+CATALOPY MODIF commande/defi_part_feti      courtois M.COURTOIS          65      5      4
+CATALOPY MODIF commande/defi_sol_miss       courtois M.COURTOIS          48      7      5
+CATALOPY MODIF commande/detruire            courtois M.COURTOIS          41     17     15
+CATALOPY MODIF commande/dyna_iss_vari       courtois M.COURTOIS          76      6      7
+CATALOPY MODIF commande/exec_logiciel       courtois M.COURTOIS          89      4      3
+CATALOPY MODIF commande/extr_table          courtois M.COURTOIS          64     14      4
+CATALOPY MODIF commande/formule             courtois M.COURTOIS          36     14     28
+CATALOPY MODIF commande/gene_vari_alea      courtois M.COURTOIS          45      9      6
+CATALOPY MODIF commande/impr_diag_campbell   courtois M.COURTOIS          37      5      4
+CATALOPY MODIF commande/impr_fonction       courtois M.COURTOIS         139      7      5
+CATALOPY MODIF commande/impr_oar            courtois M.COURTOIS          71      5      4
+CATALOPY MODIF commande/impr_table          courtois M.COURTOIS         124      5      4
+CATALOPY MODIF commande/info_fonction       courtois M.COURTOIS         103      8      5
+CATALOPY MODIF commande/lire_fonction       courtois M.COURTOIS          69      6      5
+CATALOPY MODIF commande/lire_inte_spec      courtois M.COURTOIS          41      7      5
+CATALOPY MODIF commande/lire_resu           courtois M.COURTOIS         295      6      6
+CATALOPY MODIF commande/lire_table          courtois M.COURTOIS          35      4      3
+CATALOPY MODIF commande/macr_adap_mail      courtois M.COURTOIS         731      5      4
+CATALOPY MODIF commande/macr_ascouf_calc    courtois M.COURTOIS         145      6      4
+CATALOPY MODIF commande/macr_ascouf_mail    courtois M.COURTOIS         150      7      5
+CATALOPY MODIF commande/macr_aspic_calc     courtois M.COURTOIS         158      8      5
+CATALOPY MODIF commande/macr_aspic_mail     courtois M.COURTOIS          99      6      4
+CATALOPY MODIF commande/macr_cara_poutre    courtois M.COURTOIS          79      7      5
+CATALOPY MODIF commande/macr_ecla_pg        courtois M.COURTOIS          66      7      5
+CATALOPY MODIF commande/macr_ecre_calc      courtois M.COURTOIS         185      7      4
+CATALOPY MODIF commande/macr_ecrevisse      courtois M.COURTOIS         290      7      4
+CATALOPY MODIF commande/macr_info_mail      courtois M.COURTOIS         127      3      3
+CATALOPY MODIF commande/macr_lign_coupe     courtois M.COURTOIS         130      6      5
+CATALOPY MODIF commande/macr_recal          courtois M.COURTOIS         131      6      6
+CATALOPY MODIF commande/macr_spectre        courtois M.COURTOIS          73      5      4
+CATALOPY MODIF commande/macro_elas_mult     courtois M.COURTOIS          86      7      4
+CATALOPY MODIF commande/macro_expans        courtois M.COURTOIS          74      2      3
+CATALOPY MODIF commande/macro_matr_ajou     courtois M.COURTOIS          91      6      5
+CATALOPY MODIF commande/macro_matr_asse     courtois M.COURTOIS         111      3      3
+CATALOPY MODIF commande/macro_miss_3d       courtois M.COURTOIS          69      4      4
+CATALOPY MODIF commande/macro_mode_meca     courtois M.COURTOIS          91      5      4
+CATALOPY MODIF commande/macro_proj_base     courtois M.COURTOIS          54      6      6
+CATALOPY MODIF commande/modi_modele_xfem      massin P.MASSIN            31      3      3
+CATALOPY MODIF commande/nume_ddl_gene       courtois M.COURTOIS          35      4      4
+CATALOPY MODIF commande/observation         courtois M.COURTOIS         169      3      5
+CATALOPY MODIF commande/post_bordet         courtois M.COURTOIS          64      6      8
+CATALOPY MODIF commande/post_coque          courtois M.COURTOIS          41      8      5
+CATALOPY MODIF commande/post_decollement    courtois M.COURTOIS          33      5      4
+CATALOPY MODIF commande/post_dyna_alea      courtois M.COURTOIS          60      6      4
+CATALOPY MODIF commande/post_endo_fiss      courtois M.COURTOIS          78      8      9
+CATALOPY MODIF commande/post_gp             courtois M.COURTOIS         122      4      3
+CATALOPY MODIF commande/post_k1_k2_k3       courtois M.COURTOIS         112      6      5
+CATALOPY MODIF commande/post_k_trans        courtois M.COURTOIS          68      7      5
+CATALOPY MODIF commande/propa_fiss          courtois M.COURTOIS         158      4      3
+CATALOPY MODIF commande/raff_xfem           courtois M.COURTOIS          29      5      4
+CATALOPY MODIF commande/simu_point_mat      courtois M.COURTOIS         165      6      5
+CATALOPY MODIF commande/stanley             courtois M.COURTOIS          36      5      4
+CATALOPY MODIF commande/test_compor         courtois M.COURTOIS          88      4      3
+CATALOPY MODIF commande/test_fichier        courtois M.COURTOIS          46      4      4
+CATALOPY MODIF commande/test_fonction       courtois M.COURTOIS          98      5      4
+CATALOPY MODIF commande/test_temps          courtois M.COURTOIS          50      5      4
+CATALOPY MODIF entete/accas                 courtois M.COURTOIS         212      9     23
+ FORTRAN AJOUT algorith/nmmea2                massin P.MASSIN           119    119      0
+ FORTRAN AJOUT algorith/nmmear                massin P.MASSIN           189    189      0
+ FORTRAN AJOUT algorith/xaint2                massin P.MASSIN           348    348      0
+ FORTRAN AJOUT algorith/xcfacj                massin P.MASSIN           196    196      0
+ FORTRAN AJOUT algorith/xlag2c                massin P.MASSIN           113    113      0
+ FORTRAN DEPLA algorith/cuimp2                debug/ sellenet        N.SELLENET          97      0      0
+ FORTRAN DEPLA calculel/dbgcal                debug/ sellenet        N.SELLENET         123      0      0
+ FORTRAN DEPLA jeveux/jeprsg                  debug/ sellenet        N.SELLENET         159      0      0
+ FORTRAN DEPLA modelisa/impre2                debug/ sellenet        N.SELLENET         120      0      0
+ FORTRAN DEPLA modelisa/surfc1                debug/ sellenet        N.SELLENET         149      0      0
+ FORTRAN DEPLA modelisa/surfc2                debug/ sellenet        N.SELLENET         362      0      0
+ FORTRAN DEPLA modelisa/surfcl                debug/ sellenet        N.SELLENET         389      0      0
+ FORTRAN DEPLA modelisa/surfcp                debug/ sellenet        N.SELLENET         154      0      0
+ FORTRAN DEPLA modelisa/surfll                debug/ sellenet        N.SELLENET         200      0      0
+ FORTRAN DEPLA postrele/rvinfa                debug/ sellenet        N.SELLENET         113      0      0
+ FORTRAN DEPLA postrele/rvinfo                debug/ sellenet        N.SELLENET          93      0      0
+ FORTRAN DEPLA utilitai/imppiv                debug/ sellenet        N.SELLENET         131      0      0
+ FORTRAN MODIF algeline/op0141              courtois M.COURTOIS         394     23     17
+ FORTRAN MODIF algorith/matcox                massin P.MASSIN           129      2      2
+ FORTRAN MODIF algorith/ndxpre                massin P.MASSIN           166      3      3
+ FORTRAN MODIF algorith/nmdesc                massin P.MASSIN           177      2      2
+ FORTRAN MODIF algorith/nmelcm                massin P.MASSIN           330     17      4
+ FORTRAN MODIF algorith/nmelcv                massin P.MASSIN           316     17      4
+ FORTRAN MODIF algorith/nmprta                massin P.MASSIN           202      2      2
+ FORTRAN MODIF algorith/nmresd                massin P.MASSIN           125     11      5
+ FORTRAN MODIF algorith/op0110              courtois M.COURTOIS          97      8     36
+ FORTRAN MODIF algorith/xappar                massin P.MASSIN           426     90     55
+ FORTRAN MODIF algorith/xbarvi                massin P.MASSIN           371    166    177
+ FORTRAN MODIF algorith/xcface                massin P.MASSIN           453    111     80
+ FORTRAN MODIF algorith/xcodec                massin P.MASSIN           114     13     12
+ FORTRAN MODIF algorith/xconno                massin P.MASSIN           234      9      6
+ FORTRAN MODIF algorith/xcopco                massin P.MASSIN           119     13     23
+ FORTRAN MODIF algorith/xcrvol                massin P.MASSIN           122     80     63
+ FORTRAN MODIF algorith/xgecfi                massin P.MASSIN           162     38     15
+ FORTRAN MODIF algorith/xgrals              sellenet N.SELLENET         108      4      4
+ FORTRAN MODIF algorith/xlagsp                massin P.MASSIN           477     43     23
+ FORTRAN MODIF algorith/xmcart                massin P.MASSIN           420    248    198
+ FORTRAN MODIF algorith/xmchba                massin P.MASSIN            79      4      2
+ FORTRAN MODIF algorith/xmchex                massin P.MASSIN           119     11      6
+ FORTRAN MODIF algorith/xmcoor                massin P.MASSIN           122     15     27
+ FORTRAN MODIF algorith/xmele1                massin P.MASSIN           230     66     27
+ FORTRAN MODIF algorith/xmele2                massin P.MASSIN           224     47    139
+ FORTRAN MODIF algorith/xmelel                massin P.MASSIN           143    106     76
+ FORTRAN MODIF algorith/xmelet                massin P.MASSIN           268     28      8
+ FORTRAN MODIF algorith/xmligr                massin P.MASSIN           253     69    121
+ FORTRAN MODIF algorith/xmmaa0                massin P.MASSIN            95     21      9
+ FORTRAN MODIF algorith/xmmaa1                massin P.MASSIN           302    137    125
+ FORTRAN MODIF algorith/xmmaa3                massin P.MASSIN           224     62     38
+ FORTRAN MODIF algorith/xmmaa4                massin P.MASSIN            81      6      6
+ FORTRAN MODIF algorith/xmmab0                massin P.MASSIN           110     29     18
+ FORTRAN MODIF algorith/xmmab1                massin P.MASSIN           412    126     63
+ FORTRAN MODIF algorith/xmmab2                massin P.MASSIN           455    108     68
+ FORTRAN MODIF algorith/xmmab3                massin P.MASSIN           159      8      8
+ FORTRAN MODIF algorith/xmmab4                massin P.MASSIN           124      2      2
+ FORTRAN MODIF algorith/xmmab5                massin P.MASSIN           132      6      5
+ FORTRAN MODIF algorith/xmmab6                massin P.MASSIN           123      9      9
+ FORTRAN MODIF algorith/xmmbca                massin P.MASSIN           244     18      9
+ FORTRAN MODIF algorith/xmmco1                massin P.MASSIN           113      2      2
+ FORTRAN MODIF algorith/xmmjeu                massin P.MASSIN           162     48     41
+ FORTRAN MODIF algorith/xmmsa3                massin P.MASSIN           110     38     18
+ FORTRAN MODIF algorith/xmpint                massin P.MASSIN            83      2      2
+ FORTRAN MODIF algorith/xmrema                massin P.MASSIN           365     77     89
+ FORTRAN MODIF algorith/xmrept                massin P.MASSIN           171     33     44
+ FORTRAN MODIF algorith/xmrlst                massin P.MASSIN           116      7     13
+ FORTRAN MODIF algorith/xmtbca                massin P.MASSIN           252     73     76
+ FORTRAN MODIF algorith/xmvec0                massin P.MASSIN            79     18      9
+ FORTRAN MODIF algorith/xmvec1                massin P.MASSIN           177     71     35
+ FORTRAN MODIF algorith/xmvec2                massin P.MASSIN           170     37     20
+ FORTRAN MODIF algorith/xmvef0                massin P.MASSIN            99     19     11
+ FORTRAN MODIF algorith/xmvef1                massin P.MASSIN           200     37     16
+ FORTRAN MODIF algorith/xmvef3                massin P.MASSIN           127      4      4
+ FORTRAN MODIF algorith/xoripe                massin P.MASSIN           413      3      3
+ FORTRAN MODIF algorith/xpivit                massin P.MASSIN           158     16     21
+ FORTRAN MODIF algorith/xplma2                massin P.MASSIN            54      5      4
+ FORTRAN MODIF algorith/xprls               sellenet N.SELLENET         314      4      4
+ FORTRAN MODIF algorith/xprpls              sellenet N.SELLENET         270      3      3
+ FORTRAN MODIF algorith/xprrei              sellenet N.SELLENET         576      3      3
+ FORTRAN MODIF algorith/xprreo              sellenet N.SELLENET         585      2      2
+ FORTRAN MODIF algorith/xprtor              sellenet N.SELLENET         676      3      3
+ FORTRAN MODIF algorith/xprupw              sellenet N.SELLENET         624      2      2
+ FORTRAN MODIF algorith/xreacl                massin P.MASSIN           179      5      5
+ FORTRAN MODIF algorith/xstan2                massin P.MASSIN           297    209    146
+ FORTRAN MODIF algorith/xtopoc                massin P.MASSIN           177     51     25
+ FORTRAN MODIF algorith/xtopoi                massin P.MASSIN           161      5      8
+ FORTRAN MODIF calculel/calcop              sellenet N.SELLENET         248      6      3
+ FORTRAN MODIF calculel/ccchno              sellenet N.SELLENET         109      4      4
+ FORTRAN MODIF calculel/cescns              sellenet N.SELLENET         209     37      7
+ FORTRAN MODIF calculel/chpchd              sellenet N.SELLENET         261      3      3
+ FORTRAN MODIF calculel/pjefch              sellenet N.SELLENET         129      2      2
+ FORTRAN MODIF elements/ggdtet              sellenet N.SELLENET         110      3      3
+ FORTRAN MODIF elements/reereg                massin P.MASSIN           149      3      3
+ FORTRAN MODIF elements/te0002                massin P.MASSIN           173      7      5
+ FORTRAN MODIF elements/te0363                massin P.MASSIN           257     35     22
+ FORTRAN MODIF elements/te0366                massin P.MASSIN           391     70     41
+ FORTRAN MODIF elements/te0367                massin P.MASSIN           359     59     37
+ FORTRAN MODIF elements/te0510                massin P.MASSIN           349    172     39
+ FORTRAN MODIF elements/te0514                massin P.MASSIN           404      7     17
+ FORTRAN MODIF elements/te0519                massin P.MASSIN           179     39     13
+ FORTRAN MODIF elements/te0532                massin P.MASSIN           392     84     47
+ FORTRAN MODIF elements/te0533                massin P.MASSIN           570    116     53
+ FORTRAN MODIF elements/te0534                massin P.MASSIN           562    126     53
+ FORTRAN MODIF elements/te0548                massin P.MASSIN           196      5      8
+ FORTRAN MODIF elements/xmmjec                massin P.MASSIN           164     47     36
+ FORTRAN MODIF elements/xtedd2                massin P.MASSIN           198     43     15
+ FORTRAN MODIF elements/xteddl                massin P.MASSIN           291     16      4
+ FORTRAN MODIF elements/xteini                massin P.MASSIN           161      7      4
+ FORTRAN MODIF elements/xtlagc                massin P.MASSIN           107      8      5
+ FORTRAN MODIF elements/xtlagf                massin P.MASSIN           108      4      4
+ FORTRAN MODIF elements/xtlagm                massin P.MASSIN            77      8      6
+ FORTRAN MODIF jeveux/jeagco                lefebvre J-P.LEFEBVRE       287      2      2
+ FORTRAN MODIF jeveux/jecrec                lefebvre J-P.LEFEBVRE       275      3      4
+ FORTRAN MODIF jeveux/jedebu                lefebvre J-P.LEFEBVRE       285      2      2
+ FORTRAN MODIF jeveux/jedema                lefebvre J-P.LEFEBVRE       136      2      2
+ FORTRAN MODIF jeveux/jedetc                lefebvre J-P.LEFEBVRE       218      3      3
+ FORTRAN MODIF jeveux/jedetr                lefebvre J-P.LEFEBVRE       246      2      2
+ FORTRAN MODIF jeveux/jedisp                lefebvre J-P.LEFEBVRE       106      2      2
+ FORTRAN MODIF jeveux/jedupo                lefebvre J-P.LEFEBVRE       307      2      2
+ FORTRAN MODIF jeveux/jeecra                lefebvre J-P.LEFEBVRE       261      3      3
+ FORTRAN MODIF jeveux/jeexin                lefebvre J-P.LEFEBVRE        98      3      3
+ FORTRAN MODIF jeveux/jeimpa                lefebvre J-P.LEFEBVRE       199      2      2
+ FORTRAN MODIF jeveux/jeimpd                lefebvre J-P.LEFEBVRE       195      3      3
+ FORTRAN MODIF jeveux/jeimpm                lefebvre J-P.LEFEBVRE       252      3      3
+ FORTRAN MODIF jeveux/jeimpo                lefebvre J-P.LEFEBVRE       274      3      3
+ FORTRAN MODIF jeveux/jeinif                lefebvre J-P.LEFEBVRE       621      3      3
+ FORTRAN MODIF jeveux/jelibz                lefebvre J-P.LEFEBVRE       128      3      3
+ FORTRAN MODIF jeveux/jelihd                lefebvre J-P.LEFEBVRE       611      3      2
+ FORTRAN MODIF jeveux/jelira                lefebvre J-P.LEFEBVRE       311      2      2
+ FORTRAN MODIF jeveux/jemarq                lefebvre J-P.LEFEBVRE       104      3      3
+ FORTRAN MODIF jeveux/jenuno                lefebvre J-P.LEFEBVRE       153      2      2
+ FORTRAN MODIF jeveux/jeprat                lefebvre J-P.LEFEBVRE       196      3      3
+ FORTRAN MODIF jeveux/jerazo                lefebvre J-P.LEFEBVRE       198      3      3
+ FORTRAN MODIF jeveux/jetass                lefebvre J-P.LEFEBVRE       269      3      3
+ FORTRAN MODIF jeveux/jeveuo                lefebvre J-P.LEFEBVRE       156      3      3
+ FORTRAN MODIF jeveux/jexatr                lefebvre J-P.LEFEBVRE        74      2      2
+ FORTRAN MODIF jeveux/jjallc                lefebvre J-P.LEFEBVRE       183      3      3
+ FORTRAN MODIF jeveux/jjalls                lefebvre J-P.LEFEBVRE       521      2      2
+ FORTRAN MODIF jeveux/jjallt                lefebvre J-P.LEFEBVRE        87      3      4
+ FORTRAN MODIF jeveux/jjalty                lefebvre J-P.LEFEBVRE        84      3      3
+ FORTRAN MODIF jeveux/jjarep                lefebvre J-P.LEFEBVRE       311      3      3
+ FORTRAN MODIF jeveux/jjcrec                lefebvre J-P.LEFEBVRE       137      2      2
+ FORTRAN MODIF jeveux/jjcroc                lefebvre J-P.LEFEBVRE       215      2      2
+ FORTRAN MODIF jeveux/jjecrs                lefebvre J-P.LEFEBVRE       139      3      3
+ FORTRAN MODIF jeveux/jjimpo                lefebvre J-P.LEFEBVRE       207      2      2
+ FORTRAN MODIF jeveux/jjlibp                lefebvre J-P.LEFEBVRE       122      3      3
+ FORTRAN MODIF jeveux/jjlide                lefebvre J-P.LEFEBVRE       580      3      3
+ FORTRAN MODIF jeveux/jjlirs                lefebvre J-P.LEFEBVRE        67      3      3
+ FORTRAN MODIF jeveux/jjmzat                lefebvre J-P.LEFEBVRE        65      3      3
+ FORTRAN MODIF jeveux/jxallm                lefebvre J-P.LEFEBVRE        60      3      3
+ FORTRAN MODIF jeveux/jxcopy                lefebvre J-P.LEFEBVRE       135      3      3
+ FORTRAN MODIF jeveux/jxdeps                lefebvre J-P.LEFEBVRE        73      3      3
+ FORTRAN MODIF jeveux/jxecrb                lefebvre J-P.LEFEBVRE       119      3      3
+ FORTRAN MODIF jeveux/jxecro                lefebvre J-P.LEFEBVRE       241      3      3
+ FORTRAN MODIF jeveux/jxlibd                lefebvre J-P.LEFEBVRE       107      3      3
+ FORTRAN MODIF jeveux/jxlibm                lefebvre J-P.LEFEBVRE        33      3      3
+ FORTRAN MODIF jeveux/jxlirb                lefebvre J-P.LEFEBVRE       108      3      3
+ FORTRAN MODIF jeveux/jxliro                lefebvre J-P.LEFEBVRE       104      2      2
+ FORTRAN MODIF jeveux/jxlocs                lefebvre J-P.LEFEBVRE        79      2      2
+ FORTRAN MODIF jeveux/jxveri                lefebvre J-P.LEFEBVRE       198      3      3
+ FORTRAN MODIF jeveux/jxveuo                lefebvre J-P.LEFEBVRE       259      2      2
+ FORTRAN MODIF modelisa/acearm                flejou J-L.FLEJOU         265     41      6
+ FORTRAN MODIF modelisa/afdi2d                flejou J-L.FLEJOU         237     15      5
+ FORTRAN MODIF modelisa/afdi3d                flejou J-L.FLEJOU         274     23      5
+ FORTRAN MODIF modelisa/caxfem                massin P.MASSIN           172      1      6
+ FORTRAN MODIF modelisa/cfmmvd                massin P.MASSIN           117      2      2
+ FORTRAN MODIF modelisa/xconta                massin P.MASSIN           165     26      6
+ FORTRAN MODIF modelisa/xfisno                massin P.MASSIN           197     44      3
+ FORTRAN MODIF modelisa/xmacon                massin P.MASSIN           259     63     49
+ FORTRAN MODIF modelisa/xmoajo                massin P.MASSIN            99     10     11
+ FORTRAN MODIF modelisa/xmoimp                massin P.MASSIN           198     33     23
+ FORTRAN MODIF modelisa/xmoini                massin P.MASSIN           134     15      5
+ FORTRAN MODIF modelisa/xmolig                massin P.MASSIN           572     44     32
+ FORTRAN MODIF modelisa/xrelco                massin P.MASSIN           232     24      8
+ FORTRAN MODIF modelisa/xtyele                massin P.MASSIN           342     34     35
+ FORTRAN MODIF prepost/lrrefd               courtois M.COURTOIS         120     25     16
+ FORTRAN MODIF prepost/op0106               sellenet N.SELLENET         807      2      2
+ FORTRAN MODIF prepost/op132b               sellenet N.SELLENET         837      2      2
+ FORTRAN MODIF prepost/xpoajd                 massin P.MASSIN           297      5      4
+ FORTRAN MODIF utilifor/ecri3e              lefebvre J-P.LEFEBVRE        35      1      3
+ FORTRAN MODIF utilifor/ecrr3e              lefebvre J-P.LEFEBVRE        36      1      3
+ FORTRAN MODIF utilitai/uttcp0              lefebvre J-P.LEFEBVRE       148      2      3
+ FORTRAN SUPPR algorith/xdelh                 massin P.MASSIN            98      0     98
+ FORTRAN SUPPR algorith/xmele3                massin P.MASSIN           177      0    177
+ FORTRAN SUPPR algorith/xmele4                massin P.MASSIN           173      0    173
+ FORTRAN SUPPR algorith/xmele5                massin P.MASSIN            93      0     93
+ FORTRAN SUPPR modelisa/cators              sellenet N.SELLENET         264      0    264
+ FORTRAN SUPPR modelisa/char11              sellenet N.SELLENET          78      0     78
+ FORTRAN SUPPR modelisa/op0190              sellenet N.SELLENET          56      0     56
+  PYTHON AJOUT Noyau/N_OPS                  courtois M.COURTOIS          35     35      0
+  PYTHON AJOUT Noyau/N_info                 courtois M.COURTOIS         264    264      0
+  PYTHON MODIF Accas/__init__               courtois M.COURTOIS          81      3      2
+  PYTHON MODIF Build/B_ETAPE                courtois M.COURTOIS         811      3      2
+  PYTHON MODIF Build/B_JDC                  courtois M.COURTOIS         181      3      1
+  PYTHON MODIF Build/B_MACRO_ETAPE          courtois M.COURTOIS         212      3      5
+  PYTHON MODIF Calc_essai/cata_ce           courtois M.COURTOIS        1212     14     14
+  PYTHON MODIF Calc_essai/ce_calc_spec      courtois M.COURTOIS         959     11     11
+  PYTHON MODIF Calc_essai/ce_calcul_modifstruct   courtois M.COURTOIS        1171     14     12
+  PYTHON MODIF Calc_essai/ce_ihm_expansion   courtois M.COURTOIS         483     28     28
+  PYTHON MODIF Calc_essai/ce_ihm_identification   courtois M.COURTOIS         818      7      7
+  PYTHON MODIF Calc_essai/ce_ihm_modifstruct   courtois M.COURTOIS         877     12     12
+  PYTHON MODIF Calc_essai/ce_ihm_parametres   courtois M.COURTOIS         852     26     26
+  PYTHON MODIF Calc_essai/outils_ihm        courtois M.COURTOIS        1880     30     30
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         484    117     30
+  PYTHON MODIF Execution/E_ETAPE            courtois M.COURTOIS         322     20      8
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         385      9      5
+  PYTHON MODIF Execution/E_MACRO_ETAPE      courtois M.COURTOIS         242      8      6
+  PYTHON MODIF Execution/E_SUPERV           courtois M.COURTOIS         411     25     20
+  PYTHON MODIF Execution/checksd            courtois M.COURTOIS         105     20     17
+  PYTHON MODIF Macro/calc_essai_ops         courtois M.COURTOIS         206      3      3
+  PYTHON MODIF Macro/calc_precont_ops       courtois M.COURTOIS         429     12     59
+  PYTHON MODIF Macro/dyna_iss_vari_ops      courtois M.COURTOIS         588     11     11
+  PYTHON MODIF Macro/macr_lign_coupe_ops    courtois M.COURTOIS         982      5      5
+  PYTHON MODIF Macro/macro_expans_ops       courtois M.COURTOIS         197      4      4
+  PYTHON MODIF Macro/macro_proj_base_ops    courtois M.COURTOIS          62     26     23
+  PYTHON MODIF Macro/observation_ops        courtois M.COURTOIS        1157     14     14
+  PYTHON MODIF Macro/post_dyna_alea_ops     courtois M.COURTOIS         445      2      2
+  PYTHON MODIF Macro/post_endo_fiss_ops     courtois M.COURTOIS         868      7      7
+  PYTHON MODIF Macro/post_gp_ops            courtois M.COURTOIS        1462     21     21
+  PYTHON MODIF Macro/post_k1_k2_k3_ops      courtois M.COURTOIS        2047     25     25
+  PYTHON MODIF Macro/propa_fiss_ops         courtois M.COURTOIS         955      8      8
+  PYTHON MODIF Macro/test_fonction_ops      courtois M.COURTOIS         950     18     15
+  PYTHON MODIF Messages/algeline2           courtois M.COURTOIS         426      5      5
+  PYTHON MODIF Messages/algorith9           courtois M.COURTOIS         260      1      5
+  PYTHON MODIF Messages/calcessai0          courtois M.COURTOIS          73      9      2
+  PYTHON MODIF Messages/precalcul           sellenet N.SELLENET          44      2      2
+  PYTHON MODIF Messages/utilitai            sellenet N.SELLENET         388     14      1
+  PYTHON MODIF Messages/xfem                  massin P.MASSIN           422      5      6
+  PYTHON MODIF Noyau/N_ASSD                 courtois M.COURTOIS         196     55     40
+  PYTHON MODIF Noyau/N_ETAPE                courtois M.COURTOIS         436     10      6
+  PYTHON MODIF Noyau/N_FONCTION             courtois M.COURTOIS         110     33     44
+  PYTHON MODIF Noyau/N_JDC                  courtois M.COURTOIS         560      8      9
+  PYTHON MODIF Noyau/N_MACRO                courtois M.COURTOIS         191      3      3
+  PYTHON MODIF Noyau/N_MACRO_ETAPE          courtois M.COURTOIS         732      9     11
+  PYTHON MODIF Noyau/N__F                   courtois M.COURTOIS          59      6      3
+  PYTHON MODIF Noyau/N_types                courtois M.COURTOIS          68      2      3
+  PYTHON MODIF Noyau/N_utils                courtois M.COURTOIS         197     48      4
+  PYTHON MODIF Noyau/asojb                  courtois M.COURTOIS         347      3      3
+  PYTHON MODIF Noyau/basetype               courtois M.COURTOIS         166     15     22
+  PYTHON MODIF Noyau/context                courtois M.COURTOIS          77      8      4
+  PYTHON MODIF SD/co_base_modale            courtois M.COURTOIS          24      4      8
+  PYTHON MODIF SD/co_cabl_precont           courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_cara_elem              courtois M.COURTOIS          48      8      8
+  PYTHON MODIF SD/co_carte                  courtois M.COURTOIS          25      4      7
+  PYTHON MODIF SD/co_cham_elem              courtois M.COURTOIS          73     13     14
+  PYTHON MODIF SD/co_cham_mater             courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_cham_no                courtois M.COURTOIS         103     14     21
+  PYTHON MODIF SD/co_champ                  courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_char_acou              courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_char_cine_acou         courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_char_cine_meca         courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_char_cine_ther         courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_char_meca              courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_char_ther              courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_compor                 courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_contact                courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_corresp_2_mailla       courtois M.COURTOIS          24      5      6
+  PYTHON MODIF SD/co_courbe                 courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_fiss_xfem              courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_fonction               courtois M.COURTOIS         352     19     18
+  PYTHON MODIF SD/co_fond_fiss              courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_gfibre                 courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_grille                 courtois M.COURTOIS          26      3      6
+  PYTHON MODIF SD/co_interf_dyna_clas       courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_list_inst              courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_listis                 courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_listr8                 courtois M.COURTOIS          38      9     11
+  PYTHON MODIF SD/co_macr_elem_dyna         courtois M.COURTOIS         120     14     14
+  PYTHON MODIF SD/co_macr_elem_stat         courtois M.COURTOIS          24      5      8
+  PYTHON MODIF SD/co_maillage               courtois M.COURTOIS          50     10     13
+  PYTHON MODIF SD/co_mater                  courtois M.COURTOIS          53      6      6
+  PYTHON MODIF SD/co_matr_asse              courtois M.COURTOIS          69      9     14
+  PYTHON MODIF SD/co_matr_asse_gd           courtois M.COURTOIS          42      4      7
+  PYTHON MODIF SD/co_matr_asse_gene         courtois M.COURTOIS         208     17     19
+  PYTHON MODIF SD/co_matr_elem              courtois M.COURTOIS          38      5      7
+  PYTHON MODIF SD/co_melasflu               courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_mode_cycl              courtois M.COURTOIS          25      5      7
+  PYTHON MODIF SD/co_mode_meca              courtois M.COURTOIS          24      4      8
+  PYTHON MODIF SD/co_modele                 courtois M.COURTOIS          24      5      8
+  PYTHON MODIF SD/co_modele_gene            courtois M.COURTOIS          49      8      6
+  PYTHON MODIF SD/co_nume_ddl               courtois M.COURTOIS          24      5      8
+  PYTHON MODIF SD/co_nume_ddl_gene          courtois M.COURTOIS          24      5      8
+  PYTHON MODIF SD/co_resultat               courtois M.COURTOIS          56     13     10
+  PYTHON MODIF SD/co_resultat_dyn           courtois M.COURTOIS          24      4      8
+  PYTHON MODIF SD/co_sd_feti                courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_spectre                courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_squelette              courtois M.COURTOIS          24      4      8
+  PYTHON MODIF SD/co_surface                courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_table                  courtois M.COURTOIS         108     28     37
+  PYTHON MODIF SD/co_table_container        courtois M.COURTOIS          26      6      9
+  PYTHON MODIF SD/co_table_fonction         courtois M.COURTOIS          28      7      9
+  PYTHON MODIF SD/co_tran_gene              courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_type_flui_stru         courtois M.COURTOIS          24      5      7
+  PYTHON MODIF SD/co_vect_asse_gene         courtois M.COURTOIS         111     31     21
+  PYTHON MODIF SD/co_vect_elem              courtois M.COURTOIS          36      5      7
+  PYTHON MODIF SD/sd_carte                  courtois M.COURTOIS          73      2      9
+  PYTHON MODIF SD/sd_cham_elem              courtois M.COURTOIS          89      2      6
+  PYTHON MODIF SD/sd_cham_gene              courtois M.COURTOIS          45      2      2
+  PYTHON MODIF SD/sd_cham_mater             courtois M.COURTOIS         184      2      2
+  PYTHON MODIF SD/sd_cham_no                courtois M.COURTOIS          77      2      5
+  PYTHON MODIF SD/sd_champ                  courtois M.COURTOIS          77     31     21
+  PYTHON MODIF SD/sd_char_cine              courtois M.COURTOIS         103      2      2
+  PYTHON MODIF SD/sd_char_ther              courtois M.COURTOIS          72      2      2
+  PYTHON MODIF SD/sd_compor                 courtois M.COURTOIS         190      2      2
+  PYTHON MODIF SD/sd_contact                courtois M.COURTOIS         289      2      2
+  PYTHON MODIF SD/sd_courbe_lm              courtois M.COURTOIS          56      3      3
+  PYTHON MODIF SD/sd_courbe_sa              courtois M.COURTOIS          58      2      2
+  PYTHON MODIF SD/sd_fonction               courtois M.COURTOIS         166      2      2
+  PYTHON MODIF SD/sd_gfibre                 courtois M.COURTOIS          50      2      2
+  PYTHON MODIF SD/sd_interf_dyna_clas       courtois M.COURTOIS         113      2      2
+  PYTHON MODIF SD/sd_l_table                courtois M.COURTOIS          56      8      7
+  PYTHON MODIF SD/sd_ligrel                 courtois M.COURTOIS          92      2      2
+  PYTHON MODIF SD/sd_listis                 courtois M.COURTOIS          67      2      2
+  PYTHON MODIF SD/sd_listr8                 courtois M.COURTOIS          76      2      2
+  PYTHON MODIF SD/sd_macr_elem_dyna         courtois M.COURTOIS          70      3      3
+  PYTHON MODIF SD/sd_macr_elem_stat         courtois M.COURTOIS         120      4      4
+  PYTHON MODIF SD/sd_maillage               courtois M.COURTOIS         122      1      1
+  PYTHON MODIF SD/sd_mater                  courtois M.COURTOIS          95      2      2
+  PYTHON MODIF SD/sd_matr_asse              courtois M.COURTOIS          48      2      2
+  PYTHON MODIF SD/sd_matr_asse_com          courtois M.COURTOIS          69      2      2
+  PYTHON MODIF SD/sd_matr_asse_gd           courtois M.COURTOIS          38      2      2
+  PYTHON MODIF SD/sd_matr_asse_gene         courtois M.COURTOIS          42      2      2
+  PYTHON MODIF SD/sd_matr_elem              courtois M.COURTOIS          70      2      2
+  PYTHON MODIF SD/sd_melasflu               courtois M.COURTOIS         195      2      2
+  PYTHON MODIF SD/sd_mode_cycl              courtois M.COURTOIS          95      2      2
+  PYTHON MODIF SD/sd_modele                 courtois M.COURTOIS          62      2      2
+  PYTHON MODIF SD/sd_modele_gene            courtois M.COURTOIS         116      2      2
+  PYTHON MODIF SD/sd_nume_ddl_com           courtois M.COURTOIS          38      2      2
+  PYTHON MODIF SD/sd_proj_mesu              courtois M.COURTOIS          87      2      2
+  PYTHON MODIF SD/sd_reperage_1d            courtois M.COURTOIS          37      2      2
+  PYTHON MODIF SD/sd_resuelem               courtois M.COURTOIS          52      2      2
+  PYTHON MODIF SD/sd_resultat               courtois M.COURTOIS         183      2      2
+  PYTHON MODIF SD/sd_resultat_dyn           courtois M.COURTOIS          50      2      2
+  PYTHON MODIF SD/sd_solveur                courtois M.COURTOIS          43      1      1
+  PYTHON MODIF SD/sd_spectre                courtois M.COURTOIS         198      2      2
+  PYTHON MODIF SD/sd_squelette              courtois M.COURTOIS          61      2      2
+  PYTHON MODIF SD/sd_surface                courtois M.COURTOIS          38      2      2
+  PYTHON MODIF SD/sd_table                  courtois M.COURTOIS          75      2      2
+  PYTHON MODIF SD/sd_table_container        courtois M.COURTOIS          85      2      2
+  PYTHON MODIF SD/sd_table_fonction         courtois M.COURTOIS          50      2      2
+  PYTHON MODIF SD/sd_tran_gene              courtois M.COURTOIS         151      2      2
+  PYTHON MODIF SD/sd_type_flui_stru         courtois M.COURTOIS         339      2      2
+  PYTHON MODIF SD/sd_vect_elem              courtois M.COURTOIS          35      2      2
+  PYTHON MODIF SD/sd_xfem                     massin P.MASSIN           148      7      7
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         681      2      1
+  PYTHON SUPPR Macro/gene_vari_alea_ops     courtois M.COURTOIS           0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   51       14515     14515            +14515
+ MODIF :  538      163018      6898    5328     +1570
+ SUPPR :    9         973               973      -973
+ DEPLA :   12        2090 
+         ----      ------     ------  ------   ------
+ TOTAL :  610      180596     21413    6301    +15112 

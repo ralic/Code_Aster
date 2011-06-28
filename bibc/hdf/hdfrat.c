@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrat hdf  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF hdfrat hdf  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+/* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
@@ -54,7 +55,7 @@ INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INT
   k=ln-1;
   while (nom[k] == ' ') { k--;}
   nom[k+1] = '\0';
-  if ( (attr = H5Aopen_name(ida,nom)) >= 0) {
+  if ( (attr = H5Aopen(ida,nom,H5P_DEFAULT)) >= 0) { 
     atyp = H5Aget_type(attr);
     lt=H5Tget_size(atyp);
     aspa = H5Aget_space(attr);

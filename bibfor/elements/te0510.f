@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,23 +51,24 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
       CHARACTER*8   ELP,TYPMA
-      CHARACTER*24  PINTER,AINTER
+      CHARACTER*24  PINTER,AINTER,HEAVFA
       INTEGER       IGEOM,JLSN,JLST,JGRLSN,JGRLST
       INTEGER       JOUT1,JOUT2,JOUT3,JOUT4,JOUT5,JOUT6,JOUT7
       INTEGER       JPTINT,JAINT,IADZI,IAZK24
-      INTEGER       NINTER,NFACE,CFACE(5,3),AR(12,3),NBAR
-      INTEGER       I,J,K,JJ,NNOP
-      REAL*8        ND(3),GRLT(3),TAU1(3),TAU2(3),NORME,PS
+      INTEGER       NINTER,NFACE,CFACE(5,3),IN,IA,NA,NB,AR(12,3),NBAR
+      INTEGER       I,J,K,JJ,NLI,NNOP
+      REAL*8        LONGAR,AL,ND(3),GRLT(3),TAU1(3),TAU2(3),NORME,PS
       REAL*8        NORM2,PTREE(3),PTREF(3),RBID,RBID6(6),RBID3(3,3)
-      REAL*8        FF(20), DFDI(20,3)
-      INTEGER       NDIM,IBID,NPTF,NBTOT,NFISS
-      LOGICAL       LBID,ISMALI
-      INTEGER       ZXAIN,XXMMVD
+      REAL*8        FF(20), DFDI(20,3),LSN
+      INTEGER       NDIM,IBID,NPTF,NBTOT,NFISS,JTAB(7),IRET
+      LOGICAL       LBID,ISMALI,ELIM,ELIM2
+      INTEGER       ZXAIN,XXMMVD,IFISS,NCOMPP,NCOMPA,NCOMPB,NCOMPC
+      INTEGER      JFISCO,JPTHEA,JFISS,KFISS,KCOEF,NCOMPH,HE,HESCL,HMAIT
+      INTEGER      JFISC,NFISC,IFISC,NFISC2
       CHARACTER*16  ENR
 C......................................................................
 
       CALL JEMARQ()
-
       ZXAIN = XXMMVD('ZXAIN')
       CALL ELREF1(ELP)
       CALL ELREF4(ELP,'RIGI',NDIM,NNOP,IBID,IBID,IBID,IBID,IBID,IBID)
@@ -85,7 +86,6 @@ C     RECUPERATION DES ENTRÉES / SORTIE
       CALL JEVECH('PLONCHA','E',JOUT4)
       CALL JEVECH('PBASECO','E',JOUT5)
       CALL JEVECH('PGESCLA','E',JOUT6)
-      CALL JEVECH('PGMAITR','E',JOUT7)
 
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
@@ -93,57 +93,104 @@ C     RECUPERATION DES ENTRÉES / SORTIE
       CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)
       IF (ENR.EQ.'XH1'.OR.ENR.EQ.'XH2'.OR.
      &    ENR.EQ.'XH3'.OR.ENR.EQ.'XH4') THEN
-        NFISS = 2
-      ELSE
-        NFISS = 1
+C --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
+        GOTO 999
       ENDIF
-
-C ----------------------------------------------------------------------
-C     RECHERCHE DES INTERSECTIONS ARETES-FISSURE
-C     ET DÉCOUPAGE EN FACETTES
-
+      CALL TECACH('NOO','PLST',7,JTAB,IRET)
+C     NOMBRE DE FISSURES
+      NFISS = JTAB(7)
+      IF (NFISS.GT.1) THEN
+        CALL JEVECH('PFISCO','L',JFISCO)
+        CALL JEVECH('PHEAVFA','E',JOUT7)
+        CALL TECACH('OOO','PHEAVFA',2,JTAB,IRET)
+        NCOMPH = JTAB(2)
+      ELSE
+        CALL WKVECT('&&TE0510.PFISCO','V V I',2,JFISCO)
+      ENDIF
+C     DIMENSSION DES GRANDEURS DANS LA CARTE
+      CALL TECACH('OOO','PPINTER',2,JTAB,IRET)
+      NCOMPP = JTAB(2)
+      CALL TECACH('OOO','PGESCLA',2,JTAB,IRET)
+      CALL ASSERT(JTAB(2).EQ.NCOMPP)
+      CALL TECACH('OOO','PAINTER',2,JTAB,IRET)
+      NCOMPA = JTAB(2)
+      CALL TECACH('OOO','PBASECO',2,JTAB,IRET)
+      NCOMPB = JTAB(2)
+      CALL TECACH('OOO','PCFACE',2,JTAB,IRET)
+      NCOMPC = JTAB(2)
       PINTER='&&TE0510.PTINTER'
       AINTER='&&TE0510.ATINTER'
+      HEAVFA='&&TE0510.HEAVFA'
+C
+C --- BOUCLE SUR LES FISSURES
+C
+      DO 10 IFISS=1,NFISS
+C ----------------------------------------------------------------------
+C       RECHERCHE DES INTERSECTIONS ARETES-FISSURE
+C       ET DÉCOUPAGE EN FACETTES
+        CALL WKVECT('&&TE0510.FISC','V V I',2*NFISS,JFISC)
+        IFISC = IFISS
+        NFISC = 0
+  80    CONTINUE
+        IF (ZI(JFISCO-1+2*IFISC-1).GT.0) THEN
+C       STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
+          NFISC = NFISC+1
+          ZI(JFISC-1+2*(NFISC-1)+2) = ZI(JFISCO-1+2*IFISC)
+          IFISC = ZI(JFISCO-1+2*IFISC-1)
+          ZI(JFISC-1+2*(NFISC-1)+1) = IFISC
+          GOTO 80
+        ENDIF
 
-      IF (NFISS.EQ.1) THEN
+        NFISC2 = 0
+        DO 20 JFISS = IFISS+1,NFISS
+C       STOCKAGE DES FISSURES QUI SE BRANCHENT SUR IFISS
+          KFISS = ZI(JFISCO-1+2*JFISS-1)
+          DO 30 I = NFISC+1,NFISC+NFISC2
+            IF (ZI(JFISC-1+2*(I-1)+1).EQ.KFISS) THEN
+              NFISC2 = NFISC2 + 1
+              ZI(JFISC-1+2*(NFISC+NFISC2-1)+1) = JFISS
+            ENDIF
+  30      CONTINUE
+          IF (KFISS.EQ.IFISS)  THEN
+            NFISC2 = NFISC2 + 1
+            ZI(JFISC-1+2*(NFISC+NFISC2-1)+1) = JFISS
+          ENDIF
+  20    CONTINUE
+
         IF (.NOT.ISMALI(ELP) .AND. NDIM.LE.2) THEN
           CALL XCFAQ2(JLSN,JLST,JGRLSN,IGEOM,PINTER,NINTER,
      &                AINTER,NFACE,NPTF,CFACE,NBTOT)
         ELSE
-          CALL XCFACE(ZR(JLSN),ZR(JLST),JGRLSN,IGEOM,ENR,
+          CALL XCFACE(ELP,ZR(JLSN),ZR(JLST),JGRLSN,IGEOM,ENR,
+     &                NFISS,IFISS,ZI(JFISC),NFISC,
      &                PINTER,NINTER,AINTER,NFACE,NPTF,CFACE)
           NBTOT=NINTER
         ENDIF
         CALL JEVEUO(PINTER,'L',JPTINT)
         CALL JEVEUO(AINTER,'L',JAINT)
-      ELSE
-C --- PAS D'ELEMENTS DOUBLES COUPÉES POUR L'INSTANT
-        NINTER= 0
-        NBTOT = 0
-        NFACE = 0
-        NPTF  = 0
-      ENDIF
+        IF (NFISS.GT.1.AND.NBTOT.GT.0)
+     &                    CALL WKVECT(HEAVFA,'V V I',NBTOT*NFISS,JPTHEA)
 
-C     ARCHIVAGE DE PINTER, AINTER, GESCLA, GMAITR ET BASECO
+C       ARCHIVAGE DE PINTER, AINTER, GESCLA, GMAITR ET BASECO
 
-      DO 110 I=1,NBTOT
-        DO 111 J=1,NDIM
-          PTREE(J)=ZR(JPTINT-1+NDIM*(I-1)+J)
-          ZR(JOUT6-1+NDIM*(I-1)+J)=PTREE(J)
-          ZR(JOUT7-1+NDIM*(I-1)+J)=PTREE(J)
- 111    CONTINUE
+        DO 110 I=1,NBTOT
+          DO 111 J=1,NDIM
+            PTREE(J)=ZR(JPTINT-1+NDIM*(I-1)+J)
+            ZR(JOUT6-1+NCOMPP*(IFISS-1)+NDIM*(I-1)+J) = PTREE(J)
+ 111      CONTINUE
 C    ON TRANFORME LES COORDONNÉES RÉELES EN COORD. DANS L'ÉLÉMENT DE REF
-       CALL REEREF(ELP,LBID,NNOP,IBID,IGEOM,PTREE,IBID,LBID,
-     &      NDIM,RBID, RBID,
-     &      RBID,IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID3,'NON',
-     &      PTREF,FF,DFDI,RBID3,RBID6,RBID3)
+          CALL REEREF(ELP,LBID,NNOP,IBID,IGEOM,PTREE,IBID,LBID,
+     &              NDIM,RBID, RBID,
+     &              RBID,IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID3,'NON',
+     &              PTREF,FF,DFDI,RBID3,RBID6,RBID3)
 
-        DO 112 JJ=1,NDIM
-          ZR(JOUT1-1+NDIM*(I-1)+JJ)=PTREF(JJ)
- 112    CONTINUE
-        DO 113 J=1,ZXAIN
-          ZR(JOUT2-1+ZXAIN*(I-1)+J)=ZR(JAINT-1+ZXAIN*(I-1)+J)
- 113    CONTINUE
+          DO 112 JJ=1,NDIM
+            ZR(JOUT1-1+NCOMPP*(IFISS-1)+NDIM*(I-1)+JJ) = PTREF(JJ)
+ 112      CONTINUE
+          DO 113 J=1,ZXAIN
+            ZR(JOUT2-1+NCOMPA*(IFISS-1)+ZXAIN*(I-1)+J)=
+     &                                         ZR(JAINT-1+ZXAIN*(I-1)+J)
+ 113      CONTINUE
 
 C     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
 C     ND EST LA NORMALE À LA SURFACE : GRAD(LSN)
@@ -151,66 +198,152 @@ C     TAU1 EST LE PROJETÉ DE GRAD(LST) SUR LA SURFACE
 C     TAU2 EST LE PRODUIT VECTORIEL : ND ^ TAU1
 
 C       INITIALISATION TAU1 POUR CAS 2D
-        TAU1(3)=0.D0
-        CALL VECINI(3,0.D0,ND)
-        CALL VECINI(3,0.D0,GRLT)
+          TAU1(3)=0.D0
+          CALL VECINI(3,0.D0,ND)
+          CALL VECINI(3,0.D0,GRLT)
 
-        DO 114 J=1,NDIM
-          DO 115 K=1,NNOP
-            ND(J)  = ND(J) + FF(K)*ZR(JGRLSN-1+NDIM*(K-1)+J)
-            GRLT(J)= GRLT(J) + FF(K)*ZR(JGRLST-1+NDIM*(K-1)+J)
- 115      CONTINUE
- 114    CONTINUE
+          DO 114 J=1,NDIM
+            DO 115 K=1,NNOP
+              ND(J)   = ND(J) +
+     &                   FF(K)*ZR(JGRLSN-1+NDIM*(NFISS*(K-1)+IFISS-1)+J)
+              GRLT(J) = GRLT(J) +
+     &                   FF(K)*ZR(JGRLST-1+NDIM*(NFISS*(K-1)+IFISS-1)+J)
+ 115        CONTINUE
+ 114      CONTINUE
 
-        CALL NORMEV(ND,NORME)
-        PS=DDOT(NDIM,GRLT,1,ND,1)
-        DO 116 J=1,NDIM
-          TAU1(J)=GRLT(J)-PS*ND(J)
- 116    CONTINUE
+          CALL NORMEV(ND,NORME)
+          PS=DDOT(NDIM,GRLT,1,ND,1)
+          DO 116 J=1,NDIM
+            TAU1(J)=GRLT(J)-PS*ND(J)
+ 116      CONTINUE
 
-        CALL NORMEV(TAU1,NORME)
+          CALL NORMEV(TAU1,NORME)
 
-        IF (NORME.LT.1.D-12) THEN
-C         ESSAI AVEC LE PROJETE DE OX
-          TAU1(1)=1.D0-ND(1)*ND(1)
-          TAU1(2)=0.D0-ND(1)*ND(2)
-          IF (NDIM .EQ. 3) TAU1(3)=0.D0-ND(1)*ND(3)
-          CALL NORMEV(TAU1,NORM2)
-          IF (NORM2.LT.1.D-12) THEN
-C           ESSAI AVEC LE PROJETE DE OY
-            TAU1(1)=0.D0-ND(2)*ND(1)
-            TAU1(2)=1.D0-ND(2)*ND(2)
-            IF (NDIM .EQ. 3) TAU1(3)=0.D0-ND(2)*ND(3)
+          IF (NORME.LT.1.D-12) THEN
+C           ESSAI AVEC LE PROJETE DE OX
+            TAU1(1)=1.D0-ND(1)*ND(1)
+            TAU1(2)=0.D0-ND(1)*ND(2)
+            IF (NDIM .EQ. 3) TAU1(3)=0.D0-ND(1)*ND(3)
             CALL NORMEV(TAU1,NORM2)
+            IF (NORM2.LT.1.D-12) THEN
+C             ESSAI AVEC LE PROJETE DE OY
+              TAU1(1)=0.D0-ND(2)*ND(1)
+              TAU1(2)=1.D0-ND(2)*ND(2)
+              IF (NDIM .EQ. 3) TAU1(3)=0.D0-ND(2)*ND(3)
+              CALL NORMEV(TAU1,NORM2)
+            ENDIF
+            CALL ASSERT(NORM2.GT.1.D-12)
           ENDIF
-          CALL ASSERT(NORM2.GT.1.D-12)
-        ENDIF
-        IF (NDIM .EQ. 3) THEN
-         CALL PROVEC(ND,TAU1,TAU2)
-        ENDIF
+          IF (NDIM .EQ. 3) THEN
+           CALL PROVEC(ND,TAU1,TAU2)
+          ENDIF
 C
-        DO 117 J=1,NDIM
-          ZR(JOUT5-1+NDIM*NDIM*(I-1)+J)  =ND(J)
-          ZR(JOUT5-1+NDIM*NDIM*(I-1)+J+NDIM)=TAU1(J)
-          IF (NDIM .EQ. 3)
-     &    ZR(JOUT5-1+NDIM*NDIM*(I-1)+J+2*NDIM)=TAU2(J)
- 117    CONTINUE
- 110  CONTINUE
+          DO 117 J=1,NDIM
+            ZR(JOUT5-1+NCOMPB*(IFISS-1)+NDIM*NDIM*(I-1)+J)  =ND(J)
+            ZR(JOUT5-1+NCOMPB*(IFISS-1)+NDIM*NDIM*(I-1)+J+NDIM)=TAU1(J)
+            IF (NDIM .EQ. 3)
+     &     ZR(JOUT5-1+NCOMPB*(IFISS-1)+NDIM*NDIM*(I-1)+J+2*NDIM)=TAU2(J)
+ 117      CONTINUE
 
-C     ARCHIVAGE DE CFACE
-      DO 120 I=1,NFACE
-        DO 121 J=1,NPTF
-          ZI(JOUT3-1+NPTF*(I-1)+J)=CFACE(I,J)
- 121    CONTINUE
- 120  CONTINUE
+          IF (NFISS.GT.1) THEN
+C    CALCUL DES FONCTIONS HEAVISIDE AUX POINTS D'INTER
+            DO 130 JFISS = 1,NFISS
+              LSN = 0
+              DO 131 K = 1,NNOP
+                LSN = LSN + FF(K) * ZR(JLSN-1+NFISS*(K-1)+JFISS)
+ 131          CONTINUE
+              IF (ABS(LSN).GT.1.D-11) THEN
+                ZI(JPTHEA-1+NFISS*(I-1)+JFISS) = NINT(SIGN(1.D0,LSN))
+              ENDIF
+ 130        CONTINUE
+          ENDIF
+
+ 110    CONTINUE
+
+C     ARCHIVAGE DE CFACE ET DE HEAVFA
+        DO 120 I=1,NFACE
+          DO 121 J=1,NPTF
+            ZI(JOUT3-1+NCOMPC*(IFISS-1)+NPTF*(I-1)+J)=CFACE(I,J)
+ 121      CONTINUE
+          IF (NFISS.GT.1) THEN
+            ELIM = .FALSE.
+            ELIM2= .FALSE.
+            DO 122 JFISS = 1,NFISS
+              IF (JFISS.EQ.IFISS) THEN
+C    ESCLAVE = -1, MAITRE = +1
+                HESCL = -1
+                HMAIT = +1
+              ELSE
+                HE = 0
+                DO 123 J=1,NPTF
+                  IF (ZI(JPTHEA-1+NFISS*(CFACE(I,J)-1)+JFISS).NE.0.AND.
+     &                 ZI(JPTHEA-1+NFISS*(CFACE(I,J)-1)+JFISS).NE.HE.AND
+     &                 .HE.NE.0) THEN
+                    ELIM = .TRUE.
+                  ENDIF
+                  IF (HE.EQ.0)HE=ZI(JPTHEA-1+NFISS*(CFACE(I,J)-1)+JFISS)
+
+ 123            CONTINUE
+                
+C    ESCLAVE = HE, MAITRE = HE
+                HESCL = HE
+                HMAIT = HE
+C    ON MODIFIE LA VALEUR DANS LE CAS DE FONCTION JONCTION
+                KFISS = JFISS
+ 124            CONTINUE
+                IF (ZI(JFISCO-1+2*(KFISS-1)+1).GT.0.AND.HE.NE.0) THEN
+                  KCOEF = ZI(JFISCO-1+2*(KFISS-1)+2)
+                  KFISS = ZI(JFISCO-1+2*(KFISS-1)+1)
+                  IF (KFISS.EQ.IFISS) THEN
+C    SI ON SE BRANCHE DU COTÉ MAITRE, MISE À ZÉRO DU COTÉ ESCLAVE
+                    IF (KCOEF.EQ.-1) HESCL = 0
+C    SI ON SE BRANCHE DU COTÉ ESCLAVE, MISE À ZÉRO DU COTÉ MAITRE
+                    IF (KCOEF.EQ.1) HMAIT = 0
+                  ELSE
+C    SI PAS BRANCHÉ ET PAS DU BON CÔTÉ, MISE À ZÉRO DES DEUX CÔTÉS
+                    HE = 0
+                    DO 125 J=1,NPTF
+                      IF (HE.EQ.0)
+     &                        HE=ZI(JPTHEA-1+NFISS*(CFACE(I,J)-1)+KFISS)
+ 125                CONTINUE
+                    IF (KCOEF*HE.EQ.1) THEN
+                      HESCL = 0
+                      HMAIT = 0
+                      ELIM = .FALSE.
+                    ENDIF
+                  ENDIF
+                  GOTO 124
+                ENDIF
+                ELIM2 = ELIM2.OR.ELIM
+              ENDIF
+              ZI(JOUT7-1+NCOMPH*(NFISS*(IFISS-1)+JFISS-1)+2*I-1) = HESCL
+              ZI(JOUT7-1+NCOMPH*(NFISS*(IFISS-1)+JFISS-1)+2*I)   = HMAIT
+ 122        CONTINUE
+            IF (ELIM2) THEN
+              CALL U2MESK('A','XFEM_45', 1 ,NOMTE)
+              GOTO 998
+            ENDIF
+          ENDIF
+ 120    CONTINUE
 
 C     ARCHIVAGE DE LONCHAM
-      ZI(JOUT4-1+1)=NINTER
-      ZI(JOUT4-1+2)=NFACE
-      ZI(JOUT4-1+3)=NPTF
 
-      CALL JEDETR(PINTER)
-      CALL JEDETR(AINTER)
+        ZI(JOUT4+3*(IFISS-1)-1+2)=NFACE
+ 998    CONTINUE
+        ZI(JOUT4+3*(IFISS-1)-1+1)=NINTER
 
+        ZI(JOUT4+3*(IFISS-1)-1+3)=NPTF
+
+        CALL JEDETR(PINTER)
+        CALL JEDETR(AINTER)
+        IF (NFISS.GT.1.AND.NBTOT.GT.0) CALL JEDETR(HEAVFA)
+        CALL JEDETR('&&TE0510.FISC')
+  90  CONTINUE
+
+      IF (NFISS.EQ.1) CALL JEDETR('&&TE0510.PFISCO')
+  10  CONTINUE
+C
+ 999  CONTINUE
+C
       CALL JEDEMA()
       END

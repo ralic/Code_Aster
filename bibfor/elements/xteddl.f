@@ -3,7 +3,7 @@
      &                  MAT,VECT,DDLM,NFISS,JFISNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
        INTEGER      IFH,FISNO(NNO,NFISS)
        CHARACTER*8  TYENEL
        CHARACTER*19 POSDDL
-       LOGICAL      LELIM
+       LOGICAL      LELIM,LMULTC
        REAL*8       R8MAEM,DMAX,DMIN,CODIA
 C
 C-------------------------------------------------------------
@@ -101,6 +101,12 @@ C     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
        IF (TYENEL(1:2).EQ.'XT') IELIM=2
        IF (TYENEL(1:3).EQ.'XHT') IELIM=3
       IF (LCONTX) IELIM=4
+C     APPROCHE (HIX, HIY, HIZ) <-> (LAGI_C,LAGI_F1,LAGI_F2) POUR MULTI-H
+      IF (NFISS.GT.1.AND.TYENEL(4:4).EQ.'C') THEN
+        LMULTC = .TRUE.
+      ELSE
+        LMULTC = .FALSE.
+      ENDIF
 
 C     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
       POSDDL = '&&XTEDDL.POSDDL'
@@ -125,6 +131,8 @@ C         PB DE STATUT DES NOEUDS ENRICHIS
 C           ON SUPPRIME LES DDL H
               DO 10 K = 1,NDIM
                 ZI(JPOS-1+IN+NDIM*IFH+K)=1
+C           ON SUPPRIME LES DDL C SI MULTI-HEAVISIDE AVEC CONTACT
+                IF (LMULTC) ZI(JPOS-1+IN+NDIM*(NFH+IFH)+K)=1
    10         CONTINUE
               LELIM=.TRUE.
             ENDIF
@@ -184,14 +192,17 @@ C           ON SUPPRIME LES DDLS H ET E
 C         4) CAS DU CONTACT
 C         ------------------------------
           IF (INO.LE.NNOS) THEN
-            ISTATU = STANO(INO)
-            IF (ISTATU.EQ.0) THEN
-C           ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
-              DO 70 K = 1,NDIM
-                ZI(JPOS-1+IN+NDIM*(1+NFH+NFE)+K)=1
-   70         CONTINUE
-              LELIM=.TRUE.
-            ENDIF
+
+            DO 80 IFH = 1,MAX(1,NFH)
+              ISTATU = STANO((INO-1)*MAX(1,NFH)+IFH)
+              IF (ISTATU.EQ.0) THEN
+C             ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
+                DO 70 K = 1,NDIM
+                  ZI(JPOS-1+IN+NDIM*(NFH+NFE+IFH)+K)=1
+   70           CONTINUE
+                LELIM=.TRUE.
+              ENDIF
+  80        CONTINUE
           ENDIF
         ENDIF
 
@@ -223,6 +234,7 @@ C        L'ELIMINATION DES DDLS HEAVISIDE
             ENDIF
  110      CONTINUE
           CODIA=(DMAX+DMIN)/2.0D0
+          IF (CODIA.EQ.0) CODIA = 1
         ENDIF
 
 C     POUR LES OPTIONS CONCERNANT DES MATRICES :

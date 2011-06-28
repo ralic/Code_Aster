@@ -1,18 +1,19 @@
       SUBROUTINE XMVEC2(NDIM,NNO,NNOS,NNOL ,NNOF,PLA,IPGF,IVFF,
      &                  FFC,FFP,REAC,JAC,NFH,NOEUD,SAUT,
-     &                  SINGU,ND,RR,E,CPENCO ,LPENAC,DDLS,DDLM,
+     &                  SINGU,ND,RR,COEFEC,CPENCO ,LPENAC,DDLS,DDLM,
+     &                  JFISNO,NFISS,IFISS,JHEAFA,NCOMPH,IFA,
      &                  VTMP )
 
       IMPLICIT NONE
       INTEGER     NDIM,NNO,NNOS,NNOL,NNOF
-      INTEGER     IVFF,IPGF,PLA(27)
-      INTEGER     NFH,SINGU,DDLS,DDLM
-      REAL*8      VTMP(400),E,CPENCO,SAUT(3),ND(3)
+      INTEGER     IVFF,IPGF,PLA(27),NFH
+      INTEGER     SINGU,DDLS,DDLM,JFISNO,NFISS,IFISS,JHEAFA,NCOMPH,IFA
+      REAL*8      VTMP(400),COEFEC,CPENCO,SAUT(3),ND(3)
       REAL*8      FFC(8),FFP(27),JAC,REAC,RR
       LOGICAL     NOEUD,LPENAC
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,11 +92,14 @@ C
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
-      INTEGER I,J,IN,PLI
+      INTEGER I,J,IN,PLI,IFH,COEFI
       REAL*8  FFI,DN
+      LOGICAL LMULTC
 C
 C ----------------------------------------------------------------------
 C
+      COEFI = 2
+      LMULTC = NFISS.GT.1
       DN = 0.D0
       DO 143 J = 1,NDIM
         DN = DN + SAUT(J)*ND(J)
@@ -107,35 +111,48 @@ C
 C     PENALISATION DU CONTACT
         DO 153 I = 1,NNO
           CALL INDENT(I,DDLS,DDLM,NNOS,IN)
-
-          DO 154 J = 1,NFH*NDIM
-            VTMP(IN+NDIM+J) = VTMP(IN+NDIM+J) -
-     &      (CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC
- 154      CONTINUE
+          DO 156 IFH = 1,NFH
+            IF (LMULTC) THEN
+              COEFI = ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA)
+     &              - ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA-1)
+            ENDIF
+            DO 154 J = 1,NDIM
+              VTMP(IN+NDIM*IFH+J) = VTMP(IN+NDIM*IFH+J) +
+     &        REAC*COEFI*FFP(I)*ND(J)*JAC
+ 154        CONTINUE
+ 156      CONTINUE
           DO 155 J = 1,SINGU*NDIM
-            VTMP(IN+NDIM*(1+NFH)+J) = VTMP(IN+NDIM*(1+NFH)+J) -
-     &      (CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC
+            VTMP(IN+NDIM*(1+NFH)+J) = VTMP(IN+NDIM*(1+NFH)+J) +
+     &      REAC*COEFI*FFP(I)*RR*ND(J)*JAC
  155       CONTINUE
  153     CONTINUE
-       ELSE
-         DO 150 I = 1,NNO
-           CALL INDENT(I,DDLS,DDLM,NNOS,IN)
-
-           DO 151 J = 1,NFH*NDIM
-             VTMP(IN+NDIM+J) = VTMP(IN+NDIM+J) +
-     &       (REAC-CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC
- 151       CONTINUE
-           DO 152 J = 1,SINGU*NDIM
-             VTMP(IN+NDIM*(1+NFH)+J) = VTMP(IN+NDIM*(1+NFH)+J) +
-     &       (REAC-CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC
- 152       CONTINUE
- 150     CONTINUE
-       ENDIF
+      ELSE
+        DO 150 I = 1,NNO
+          CALL INDENT(I,DDLS,DDLM,NNOS,IN)
+          DO 157 IFH = 1,NFH
+            IF (LMULTC) THEN
+              COEFI = ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA)
+     &              - ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA-1)
+            ENDIF
+            DO 151 J = 1,NDIM
+              VTMP(IN+NDIM*IFH+J) = VTMP(IN+NDIM*IFH+J) +
+     &        (REAC-CPENCO*DN)*COEFI*FFP(I)*ND(J)*JAC
+ 151        CONTINUE
+ 157      CONTINUE
+          DO 152 J = 1,SINGU*NDIM
+            VTMP(IN+NDIM*(1+NFH)+J) = VTMP(IN+NDIM*(1+NFH)+J) +
+     &      (REAC-CPENCO*DN)*COEFI*FFP(I)*RR*ND(J)*JAC
+ 152      CONTINUE
+ 150    CONTINUE
+      ENDIF
 C
 C --- TERME LN2
 C
        DO 160 I = 1,NNOL
-
          PLI=PLA(I)
          IF (NOEUD) THEN
            FFI=FFC(I)
@@ -143,9 +160,9 @@ C
            FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
          ENDIF
 
-         VTMP(PLI) = VTMP(PLI) - DN * FFI * JAC * E
+         VTMP(PLI) = VTMP(PLI) - DN * FFI * JAC * COEFEC
          IF (LPENAC) THEN
-           VTMP(PLI) = VTMP(PLI) - REAC*FFI*JAC/CPENCO*E
+           VTMP(PLI) = VTMP(PLI) - REAC*FFI*JAC/CPENCO*COEFEC
          ENDIF
 
  160     CONTINUE

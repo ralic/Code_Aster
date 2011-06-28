@@ -1,9 +1,10 @@
       SUBROUTINE XTLAGC(TYPMAI,NDIM  ,NNC   ,JNN    ,
      &                  NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &                  FFC   ,NCONTA,DLAGRC)
+     &                  FFC   ,NCONTA,
+     &                  NFHE,LMULTI,HEAVNO,DLAGRC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,12 +24,13 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NDIM,NNC,JNN(3)
-      INTEGER      JDEPDE,JPCAI
+      INTEGER      NDIM,NNC,JNN(3),NFHE
+      INTEGER      JDEPDE,JPCAI,HEAVNO(8)
       REAL*8       FFC(9)
       CHARACTER*8  TYPMAI
       REAL*8       DLAGRC
       INTEGER      CFACE(5,3),NFACE,NCONTA
+      LOGICAL      LMULTI
 C
 C ----------------------------------------------------------------------
 C
@@ -95,7 +97,8 @@ C
       DO 230 INO = 1,NNC
 C --- XOULA NE SERT PLUS A RIEN AVEC LA FORMULATION NOEUDS SOMMETS !!!
         IN     = XOULA(CFACE ,NFACE ,INO   ,JPCAI ,TYPMAI,NCONTA)
-        CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,IN    ,PL    )
+        CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,IN    ,NFHE  ,PL    )
+        IF (LMULTI) PL = PL + (HEAVNO(INO)-1)*NDIM
         DLAGRC = DLAGRC+FFC(INO)*ZR(JDEPDE-1+PL+1-1)
  230  CONTINUE
 C

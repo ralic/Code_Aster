@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,6 +39,7 @@ from N_Exception import AsException
 import N_utils
 from N_utils import AsType
 from N_ASSD import ASSD
+from N_info import message, SUPERV
 
 class ETAPE(N_MCCOMPO.MCCOMPO):
    """
@@ -119,6 +120,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
              le nommage du concept.
 
       """
+      message.debug(SUPERV, "Build_sd %s", self.nom)
       self.sdnom=nom
       try:
          if self.parent:
@@ -243,7 +245,8 @@ Causes possibles :
       N_MCCOMPO.MCCOMPO.supprime(self)
       self.jdc=None
       self.appel=None
-      if self.sd : self.sd.supprime()
+      if self.sd:
+         self.sd.supprime()
 
    def isactif(self):
       """
@@ -256,9 +259,11 @@ Causes possibles :
           Methode utilisee pour que l etape self se declare etape
           courante. Utilise par les macros
       """
+      message.debug(SUPERV, "call etape.set_current_step", stack_id=-1)
       cs= CONTEXT.get_current_step()
       if self.parent != cs :
-         raise "L'étape courante %s devrait etre le parent de self : %s" % (cs,self)
+         raise AsException("L'étape courante", cs.nom, cs,
+                           "devrait etre le parent de", self.nom, self)
       else :
          CONTEXT.unset_current_step()
          CONTEXT.set_current_step(self)
@@ -270,7 +275,8 @@ Causes possibles :
       """
       cs= CONTEXT.get_current_step()
       if self != cs :
-         raise "L'étape courante %s devrait etre self : %s" % (cs,self)
+         raise AsException("L'étape courante", cs.nom, cs,
+                           "devrait etre", self.nom, self)
       else :
          CONTEXT.unset_current_step()
          CONTEXT.set_current_step(self.parent)
@@ -428,5 +434,3 @@ Causes possibles :
       # pourrait être appelée par une commande fortran faisant appel à des fonctions python
       # on passe la main au parent
       return self.parent.get_concept(nomsd)
-
-

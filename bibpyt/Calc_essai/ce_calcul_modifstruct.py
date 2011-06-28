@@ -1,21 +1,21 @@
-#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE BODEL C.BODEL
@@ -75,7 +75,7 @@ class CalcEssaiModifStruct:
 
         self.modes_ide = None
         self.modes_expansion = None
-        
+
         self.sumail = None
         self.mailx = None
         self.modlx = None
@@ -186,7 +186,7 @@ class CalcEssaiModifStruct:
         Ils peuvent etre proposes a partir de la selection des groupes
         'capteur' et 'interface'."""
         self.modes_expansion = modes_expansion
-    
+
     def find_maillage_modif_from(self, modc_name):
         """Trouve le maillage modif dans la memoire JEVEUX"""
         # existence du modele
@@ -248,7 +248,7 @@ class CalcEssaiModifStruct:
 
             if modllu == self.support_modele.nom:
                 support_modele = resu.obj
-                refd = support_modele.REFD.get()
+                refd = support_modele.sdj.REFD.get()
                 nom_raideur = refd[0].strip()
 
                 if nom_raideur == self.matr_rig.nom:
@@ -269,7 +269,7 @@ class CalcEssaiModifStruct:
                                  "du modele support" )
 
             return
-        
+
         self.support_modele_res = support_modele
         self.nume_support_modele = numesup
         self.matr_masse = matr_masse
@@ -361,7 +361,7 @@ class CalcEssaiModifStruct:
 
         self.x_resgen = ModeMeca(None, __RESGEN.nom, __RESGEN, self.mess)
         self.base_expansion = self.x_resgen
-        
+
         clear_concept(__NUMGEN)
         clear_concept(__KPROJ)
         clear_concept(__MPROJ)
@@ -414,7 +414,7 @@ class CalcEssaiModifStruct:
             self.calc_base_es(grno)
             _MEXP = self.base_expansion.obj
         self.x_mexp = _MEXP
-        
+
         clear_concept( self.x_proj )
         self.x_proj = None
         try:
@@ -430,7 +430,7 @@ class CalcEssaiModifStruct:
             self.mess.disp_mess( message)
             return
         self.x_proj = _PROJ
-        
+
         # Condensation de la mesure sur les DDL INTERFACES
         clear_concept( self.x_ssexp )
         self.x_ssexp = None
@@ -465,7 +465,7 @@ class CalcEssaiModifStruct:
     def modele_couple(self):
         """Creation du modele couple"""
         self.cpl.reinit(self.modlx, self.mailx, self.x_mailcond, self.sumail )
-        
+
         try:
             self.cpl.copy()
         except Exception, err:
@@ -521,39 +521,41 @@ class CalcEssaiModifStruct:
         self.i_modlint = __MODL
 
         __CARA=AFFE_CARA_ELEM(MODELE=self.i_modlint,
-                              DISCRET=_F(GROUP_MA=self.group_ma_int,
-                                         REPERE='GLOBAL',
-                                         CARA='K_T_D_N',
-                                         VALE=(0.,0.,0.,),
-                                         ),);
+                              DISCRET=(
+                                 _F(GROUP_MA=self.group_ma_int, REPERE='GLOBAL',
+                                    CARA='K_T_D_N', VALE=(0.,0.,0.,),),
+                                 _F(GROUP_MA=self.group_ma_int, REPERE='GLOBAL',
+                                    CARA='M_T_D_N', VALE=(0.,),),
+                              ),
+         )
 
         __KEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                              MODELE=self.i_modlint,
                              CARA_ELEM=__CARA,
-                             );
+                             )
 
         __MEL=CALC_MATR_ELEM(OPTION='MASS_MECA',
                              MODELE=self.i_modlint,
                              CARA_ELEM=__CARA,
-                             );
+                             )
 
         clear_concept( self.i_numint )
         self.i_numint = None
-        
-        __NUM=NUME_DDL( MATR_RIGI=__KEL,);
+
+        __NUM=NUME_DDL( MATR_RIGI=__KEL,)
         self.i_numint = __NUM
-        
+
         clear_concept( self.i_kas )
         self.i_kas = None
-        __KAS=ASSE_MATRICE( MATR_ELEM=__KEL,NUME_DDL=self.i_numint,);
+        __KAS=ASSE_MATRICE( MATR_ELEM=__KEL,NUME_DDL=self.i_numint,)
         self.i_kas = __KAS
-        
+
         clear_concept( self.i_mas )
         self.i_mas = None
         __MAS=ASSE_MATRICE( MATR_ELEM=__MEL,NUME_DDL=self.i_numint,);
         self.i_mas = __MAS
-        
-        
+
+
 
     def indicateur_choix_base_expansion(self):
         """Expansion statique du champ de deplacements aux interfaces"""
@@ -580,7 +582,7 @@ class CalcEssaiModifStruct:
         except aster.error,err :
             message = "ERREUR ASTER : " + mess.GetText('I',err.id_message, err.valk, err.vali, err.valr)
             self.mess.disp_mess( message)
-            return            
+            return
 
         self.projmsint = __PROJMS
         clear_concept( self.i_deplpr )
@@ -723,7 +725,7 @@ class CalcEssaiModifStruct:
             self.base_proj = self.calc_base_lmme(x_bsmo, calc_freq)
         else:
             self.base_proj = x_bsmo
-        return self.base_proj 
+        return self.base_proj
 
 
     def _can_get_nume_support_model(self):
@@ -757,7 +759,7 @@ class CalcEssaiModifStruct:
         self.condensation()
         self.modele_couple()
         self.maillage_iface()
-        
+
     def calc_modes_modele_couple(self, mode_simult, calc_freq):
         if "NMAX_FREQ" in calc_freq:
             if calc_freq['NMAX_FREQ'] <= 0:

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,9 +17,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ZENTNER I.ZENTNER
-from Macro.defi_inte_spec_ops import defi_inte_spec_ops
 
-DEFI_INTE_SPEC=MACRO(nom="DEFI_INTE_SPEC",op= defi_inte_spec_ops,sd_prod=table_fonction,
+DEFI_INTE_SPEC=MACRO(nom="DEFI_INTE_SPEC",
+                     op=OPS('Macro.defi_inte_spec_ops.defi_inte_spec_ops'),
+                     sd_prod=table_fonction,
                      reentrant='n',
                      fr="Définit une matrice interspectrale",
                      UIinfo={"groupes":("Fonctions",)},

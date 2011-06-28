@@ -1,8 +1,8 @@
-#@ MODIF calcessai0 Messages  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calcessai0 Messages  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -62,5 +62,12 @@ Le résultat expérimental est un dyna_harmo : il n'est pas possible d'en extraire
 des numéros d'ordre avec MACRO_EXPANS. Le mots-clés NMUE_MODE et NUME_ORDRE
 sont ignorés.
 """),
+14: _("""
+Erreur dans le calcul de MAC : le nume_ddl associé à la base %(k1)s
+n'existe pas. Si cette base a été créée avec PROJ_CHAMP, ne pas oublier
+de mentionner explicitement le nume_ddl de la sd résultat avec le mot-clé
+NUME_DDL.
+"""),
+
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,7 +148,9 @@ MODES=LIRE_RESU(FORMAT='MED',
                 MAILLAGE=MAYA,);
 
 ##
-MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
+MACRO_PROJ_BASE(  BASE=MODES,
+                  STOCKAGE='DIAG',
+                  MATR_ASSE_GENE=(
                    _F(
                                    MATRICE = CO("M_PROJ"),
                                    MATR_ASSE = M_ASSE),

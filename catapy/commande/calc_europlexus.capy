@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,17 +17,18 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
-from Macro.calc_europlexus_ops import calc_europlexus_ops
 
 def calc_europlexus_prod(self,COURBE=None,**args):
   if COURBE is not None:
       self.type_sdprod(args['TABLE_COURBE'],table_sdaster)
   return evol_noli
 
-CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",op=calc_europlexus_ops,sd_prod=calc_europlexus_prod,
-        reentrant='n',
-        UIinfo={"groupes":("Outils-métier","Dynamique",)},
-        fr="Chainage Code_Aster-Europlexus",
+CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
+                        op=OPS('Macro.calc_europlexus_ops.calc_europlexus_ops'),
+                        sd_prod=calc_europlexus_prod,
+                        reentrant='n',
+                        UIinfo={"groupes":("Outils-métier","Dynamique",)},
+                        fr="Chainage Code_Aster-Europlexus",
 
         LOGICIEL = SIMP(statut='f', typ='TXM', defaut='/home/europlex/EPXD/bin/europlexus'),
 

@@ -3,12 +3,12 @@
      &                  SINGU,RR,TAU1,TAU2,MMAT)
       IMPLICIT NONE
       INTEGER     NDIM,NNO,NFH,DDLS,SINGU
-      REAL*8      MMAT(204,204),DSIDEP(6,6)
+      REAL*8      MMAT(216,216),DSIDEP(6,6)
       REAL*8      FFP(27),JAC,ND(3)
       REAL*8      PP(3,3),P(3,3),RR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

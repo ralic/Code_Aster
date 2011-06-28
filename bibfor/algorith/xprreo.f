@@ -8,7 +8,7 @@
      &               CNXINV,NODTOR,ELETOR,LIGGRD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -498,7 +498,7 @@ C---------------------------------------------------
 
 C  PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
          CALL CELCES (CELGLT, 'V', CHAMS)
-         CALL CESCNS (CHAMS, ' ', 'V', CNSGLT)
+         CALL CESCNS (CHAMS, ' ', 'V', CNSGLT, ' ', IBID)
          CALL JEVEUO (CNSGLT//'.CNSV','E',JGLTNO)
 
 C-------------------------------------------------

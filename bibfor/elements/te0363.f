@@ -1,7 +1,7 @@
        SUBROUTINE TE0363(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,11 @@ C
       CHARACTER*8  TYPMAI,TYPMAE,TYPMAM,TYPMAC,TYPMEC
       INTEGER      NDIM,NDDL,NNE(3),NNM(3),NNC
       INTEGER      NSINGE,NSINGM,LACT(8),NLACT,NINTER
-      INTEGER      JPCPO,JPCAI
+      INTEGER      JPCPO,JPCAI,JHEAFA,JHEANO
       INTEGER      JGEOM,JDEPDE
       INTEGER      INDCO,MEMCO,INDNOR,IGLISS,NFAES
-      INTEGER      JOUT1,JOUT2,JOUT3
-      INTEGER      INCOCA
+      INTEGER      JOUT
+      INTEGER      INCOCA,NFHE,NFHM
       REAL*8       JEUCA,TAU1(3),TAU2(3),NORM(3)
       REAL*8       COORE(3),COORM(3),COORC(2)
       REAL*8       DLAGRC
@@ -66,6 +66,7 @@ C
       REAL*8       RRE,RRM,FFEC(8)
       PARAMETER    (PREC=1.D-16)
       INTEGER      CFACE(5,3),CONTAC,DDLE(2),DDLM(2),IBID,NDEPLE
+      LOGICAL      LMULTI
 C
 C ----------------------------------------------------------------------
 C
@@ -76,9 +77,11 @@ C
       CALL XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
      &                  NDIM  , NDDL   , NNE   , NNM  ,
      &                  NNC   , DDLE  , DDLM  ,
-     &                  CONTAC, NDEPLE , NSINGE, NSINGM)
+     &                  CONTAC, NDEPLE , NSINGE, NSINGM,NFHE,NFHM)
 
-      CALL ASSERT(NDDL.LE.168)
+      CALL ASSERT(NDDL.LE.336)
+      LMULTI = .FALSE.
+      IF (NFHE.GT.1.OR.NFHM.GT.1) LMULTI = .TRUE.
 C
 C --- INITIALISATIONS
 C
@@ -125,13 +128,21 @@ C --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 C
       CALL JEVECH('PGEOMER','E',JGEOM )
       CALL JEVECH('PDEPL_P','E',JDEPDE)
-
+C
+      IF (LMULTI) THEN
+C
+C --- RECUPERATION DES FONCTION HEAVISIDES SUR LES FACETTES
+C
+        CALL JEVECH('PHEAVFA','L',JHEAFA )
+C
+C --- RECUPERATION DE LA PLACE DES LAGRANGES
+C
+        CALL JEVECH('PHEAVNO','L',JHEANO )
+      ENDIF
 C
 C --- RECUPERATION DES CHAMPS DE SORTIE
 C
-      CALL JEVECH('PINCOCA','E',JOUT1)
-      CALL JEVECH('PINDCOT','E',JOUT2)
-      CALL JEVECH('PINDMEM','E',JOUT3)
+      CALL JEVECH('PINDCOO','E',JOUT)
 C
 C --- FONCTIONS DE FORMES
 C
@@ -183,21 +194,23 @@ C --- CALCUL DE L'INCREMENT DE REACTION DE CONTACT
 C
       CALL XTLAGC(TYPMAI,NDIM  ,NNC   ,NNE    ,
      &              DDLE(1),NFAES ,CFACE ,JDEPDE,JPCAI  ,
-     &              FFC   ,CONTAC,DLAGRC)
+     &              FFC   ,CONTAC,
+     &              NFHE  ,LMULTI,ZI(JHEANO),DLAGRC)
 C
 C --- EVALUATION DES JEUX - CAS DU CONTACT
 C
       CALL XMMJEC(NDIM  ,NNM ,NNE ,NDEPLE,
      &                  NSINGE,NSINGM,FFE   ,FFM   ,NORM  ,
      &                  JGEOM ,JDEPDE,RRE   ,RRM ,
-     &                  DDLE,DDLM,JEUCA )
+     &                  DDLE  ,DDLM  ,NFHE  ,NFHM  ,LMULTI,
+     &                  ZI(JHEAFA),JEUCA )
 C
 C
 C --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE
 C
       IF (INDNOR .EQ. 1) THEN
         IF ((IGLISS.EQ.0).OR.(MEMCO.EQ.0)) THEN
-          ZR(JOUT2)= 0.D0
+          ZI(JOUT-1+2)= 0.D0
           GO TO 999
         ENDIF
       ENDIF
@@ -208,26 +221,26 @@ C
       IF (INDCO.EQ.1) THEN
         IF (DLAGRC.GT.-1.D-3) THEN
           IF ((IGLISS.EQ.1).AND.(MEMCO.EQ.1)) THEN
-            ZR(JOUT2) = 1.D0
-            ZI(JOUT3) = 1
+            ZI(JOUT-1+2) = 1
+            ZI(JOUT-1+3) = 1
           ELSE IF (IGLISS.EQ.0) THEN
-            ZR(JOUT2) = 0.D0
+            ZI(JOUT-1+2) = 0
             INCOCA = 1
           ENDIF
         ELSE
-          ZR(JOUT2) = 1.D0
-          ZI(JOUT3) = 1
+          ZI(JOUT-1+2) = 1
+          ZI(JOUT-1+3) = 1
         END IF
 C
 C --- SI LE NON-CONTACT A ETE POSTULÉ, ON TESTE LA VALEUR DU JEU
 C
       ELSE IF (INDCO .EQ. 0) THEN
         IF (JEUCA.GT.PREC) THEN
-          ZR(JOUT2) = 1.D0
-          ZI(JOUT3) = 1
+          ZI(JOUT-1+2) = 1
+          ZI(JOUT-1+3) = 1
           INCOCA = 1
         ELSE
-          ZR(JOUT2) = 0.D0
+          ZI(JOUT-1+2) = 0.D0
         END IF
 C
       ELSE
@@ -238,7 +251,7 @@ C
 C
 C --- ENREGISTREMENT DU CHAMP DE SORTIE
 C
-      ZI(JOUT1)=INCOCA
+      ZI(JOUT-1+1)=INCOCA
 C
       CALL JEDEMA()
       END

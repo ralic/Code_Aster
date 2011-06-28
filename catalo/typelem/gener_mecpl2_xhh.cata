@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -239,7 +239,7 @@ OPTION__
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  STANO_I  PSTANO
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E36NEUTR PPINTTO  E54NEUI  PCNSETO
                                      E18NEUI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
+                                     N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO   FISNO_I  PHEAVNO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
@@ -300,7 +300,7 @@ OPTION__
                                      E12NEUTR  PBASECO  E6NEUTR  PGESCLA  E6NEUTR  PGMAITR  E6NEUTR  PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  N2NEUT_R PGRADLN  FISCO_I PFISCO
                               OUT__  E36NEUTR PPINTTO  E54NEUI  PCNSETO  E18NEUI  PHEAVTO  E9NEUTI  PLONCHA
-                                     E15NEUTR PAINTER  E1NEUTR  PCRITER  E22NEUTR PPMILTO
+                                     E15NEUTR PAINTER  E22NEUTR PPMILTO
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R

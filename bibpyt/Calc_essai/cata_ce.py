@@ -1,8 +1,8 @@
-#@ MODIF cata_ce Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF cata_ce Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -254,10 +254,10 @@ class ModeMeca(Resultat):
 
     def get_nom_cham(self):
         """ Recherche le type de champ rempli dans la sd ('ACCE', 'DEPL'...)"""
-        desc = self.obj.DESC.get()
+        desc = self.obj.sdj.DESC.get()
         if desc :
           for ind_cham in range(len(desc)):
-            tach = self.obj.TACH.get()[ind_cham+1]
+            tach = self.obj.sdj.TACH.get()[ind_cham+1]
             if tach[0].strip():
                 self.nom_cham = desc[ind_cham].strip()
                 return
@@ -306,11 +306,11 @@ class DynaHarmo(Resultat):
 
 
     def get_maillage(self):
-        desc = self.obj.DESC.get()
+        desc = self.obj.sdj.DESC.get()
         for ind_cham in range(3):
             # on ne s'interesse qu'aux champ 'DEPL','VITE' et 'ACCE' pour gagner du temps
-          if self.obj.TACH.get() :
-            tach = self.obj.TACH.get()[ind_cham+1][0]
+          if self.obj.sdj.TACH.get() :
+            tach = self.obj.sdj.TACH.get()[ind_cham+1][0]
             if tach.strip():
                refe = self.nom.ljust(8)+".%03i.000001.REFE" %(ind_cham+1)
                if aster.getvectjev(refe):
@@ -335,10 +335,10 @@ class DynaHarmo(Resultat):
 
     def get_nom_cham(self):
         """ Recherche le type de champ rempli dans la sd ('ACCE', 'DEPL'...)"""
-        desc = self.obj.DESC.get()
+        desc = self.obj.sdj.DESC.get()
         if desc :
           for ind_cham in range(len(desc)):
-            tach = self.obj.TACH.get()[ind_cham+1]
+            tach = self.obj.sdj.TACH.get()[ind_cham+1]
             if tach[0].strip():
                 self.nom_cham = desc[ind_cham].strip()
                 return self.nom_cham
@@ -808,8 +808,8 @@ class Modele:
 
 
     def get_maillage(self):
-        if self.obj.MODELE.LGRF.exists:
-            _maillag = self.obj.MODELE.LGRF.get()
+        if self.obj.sdj.MODELE.LGRF.exists:
+            _maillag = self.obj.sdj.MODELE.LGRF.get()
             self.maya_name = _maillag[0].strip()
             self.maya = self.objects.maillages[self.maya_name]
         else:
@@ -844,10 +844,10 @@ class Modele:
             for matr_name, matr in self.objects.matrices.items():
                 iret,ibid,nom_modele = aster.dismoi('F','NOM_MODELE',matr_name,'MATR_ASSE')
                 if nom_modele.strip() == self.nom.strip() :
-                    if matr.REFA.get()[3].strip() == 'RIGI_MECA':
+                    if matr.sdj.REFA.get()[3].strip() == 'RIGI_MECA':
                         self.kass = matr
                         self.kass_name = matr_name
-                    if matr.REFA.get()[3].strip() == 'MASS_MECA':
+                    if matr.sdj.REFA.get()[3].strip() == 'MASS_MECA':
                         self.mass = matr
                         self.mass_name = matr_name
 
@@ -1159,7 +1159,7 @@ def nume_ddl_phy(resu):
     maya = resu.maya
     nume = []
     for ind in range(nb_ddl):
-        nom_no = maya.NOMNOE.get()[num_no[ind]-1]
+        nom_no = maya.sdj.NOMNOE.get()[num_no[ind]-1]
         nume.append(nom_no.strip()+'_'+comp[ind].strip())
 
     DETRUIRE(CONCEPT=_F(NOM=(__CHAMP0,),), INFO=1,)

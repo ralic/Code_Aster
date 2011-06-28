@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,12 +19,13 @@
 
 # RESPONSABLE CORUS M.CORUS
 
-from Macro.calc_spec_ops import calc_spec_ops
 
-CALC_SPEC=MACRO(nom="CALC_SPEC",op= calc_spec_ops,sd_prod=table_fonction,
-                     reentrant='n',
-                     fr="Calcule une matrice interspectrale ou des fonctions de transferts",
-                     UIinfo={"groupes":("Fonctions",)},
+CALC_SPEC=MACRO(nom="CALC_SPEC",
+                op=OPS('Macro.calc_spec_ops.calc_spec_ops'),
+                sd_prod=table_fonction,
+                reentrant='n',
+                fr="Calcule une matrice interspectrale ou des fonctions de transferts",
+                UIinfo={"groupes":("Fonctions",)},
          TAB_ECHANT      =FACT(statut='f',
            NOM_TAB         =SIMP(statut='o',typ=table_sdaster),
            LONGUEUR_ECH    =FACT(statut='f',

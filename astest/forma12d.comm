@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP DYNAMIQUE LINEAIRE
 # forma12d.para = tps_job 180 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,6 +92,7 @@ MOSTRA=MACRO_ELAS_MULT(MODELE=MODELE,
                                      CHAR_MECA=FOSA,),);
 
 MACRO_PROJ_BASE(BASE=MODES,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MAGENE'),
                                    MATR_ASSE=MASSE,),
                                 _F(MATRICE=CO('GEGENE'),

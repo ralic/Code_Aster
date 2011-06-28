@@ -1,8 +1,8 @@
-#@ MODIF co_fonction SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,16 +19,16 @@
 # ======================================================================
 
 import Accas
-from SD import *
-from sd_fonction import sd_fonction_aster
+from Accas import ASSD
 
 import os
 import numpy
 from math import pi
 
-# -----------------------------------------------------------------------------
 # types 'fonction' :
 class fonction_class(ASSD):
+   cata_sdj = "SD.sd_fonction.sd_fonction_aster"
+
    def Valeurs(self):
       pass
    def Parametres(self):
@@ -41,7 +41,7 @@ class fonction_class(ASSD):
       if self.accessible():
         TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
         objev = '%-19s.PROL' % self.get_name()
-        prol = aster.getvectjev(objev)
+        prol = self.sdj.PROL.get()
         if prol == None:
            UTMESS('F', 'SDVERI_2', valk=[objev])
         dico={
@@ -76,11 +76,11 @@ class fonction_class(ASSD):
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
             Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']],
-            Leg=os.linesep.join(self.TITR.get()) )
+            Leg=os.linesep.join(self.sdj.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
 
-# -----------------------------------------------------------------------------
-class fonction_sdaster(fonction_class, sd_fonction_aster):
+class fonction_sdaster(fonction_class):
+
    def convert(self,arg='real'):
       """
       Retourne un objet de la classe t_fonction
@@ -104,7 +104,7 @@ class fonction_sdaster(fonction_class, sd_fonction_aster):
       from Utilitai.Utmess import UTMESS
       if self.accessible():
         vale = '%-19s.VALE' % self.get_name()
-        lbl = aster.getvectjev(vale)
+        lbl = self.sdj.VALE.get()
         if lbl == None:
           UTMESS('F', 'SDVERI_2', valk=[vale])
         lbl = list(lbl)
@@ -147,12 +147,11 @@ class fonction_sdaster(fonction_class, sd_fonction_aster):
       __ff=self.convert()
       return __ff(val)
 
-# -----------------------------------------------------------------------------
 class para_sensi(fonction_sdaster):
    pass
 
-# -----------------------------------------------------------------------------
-class fonction_c(fonction_class, sd_fonction_aster):
+class fonction_c(fonction_class):
+
    def convert(self,arg='real'):
       """
       Retourne un objet de la classe t_fonction ou t_fonction_c,
@@ -194,7 +193,7 @@ class fonction_c(fonction_class, sd_fonction_aster):
       from Utilitai.Utmess import UTMESS
       if self.accessible():
          vale = '%-19s.VALE' % self.get_name()
-         lbl = aster.getvectjev(vale)
+         lbl = self.sdj.VALE.get()
          if lbl == None:
            UTMESS('F', 'SDVERI_2', valk=[vale])
          lbl = list(lbl)
@@ -235,7 +234,7 @@ class fonction_c(fonction_class, sd_fonction_aster):
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
          Lab=[para['NOM_PARA'], '%s_R' % para['NOM_RESU'], '%s_I' % para['NOM_RESU']],
-         Leg=os.linesep.join(self.TITR.get()) )
+         Leg=os.linesep.join(self.sdj.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
    def __call__(self,val):
       ### Pour EFICAS : substitution de l'instance de classe
@@ -246,8 +245,8 @@ class fonction_c(fonction_class, sd_fonction_aster):
       __ff=self.convert(arg='complex')
       return __ff(val)
 
-# -----------------------------------------------------------------------------
-class nappe_sdaster(fonction_class, sd_fonction_aster):
+class nappe_sdaster(fonction_class):
+
    def convert(self):
       """
       Retourne un objet de la classe t_nappe, représentation python de la nappe
@@ -275,6 +274,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       Retourne la liste des valeurs du parametre,
       et une liste de couples (abscisses,ordonnees) de chaque fonction.
       """
+      import aster
       from Utilitai.Utmess import UTMESS
       if not self.accessible():
          raise Accas.AsException("Erreur dans nappe.Valeurs en PAR_LOT='OUI'")
@@ -297,6 +297,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel,
       et une liste de dictionnaire des parametres de chaque fonction.
       """
+      import aster
       from Utilitai.Utmess import UTMESS
       if not self.accessible():
          raise Accas.AsException("Erreur dans nappe.Parametres en PAR_LOT='OUI'")
@@ -336,7 +337,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       dp=self.Parametres()[0]
       for lx,ly in lv:
          gr.AjoutCourbe(Val=[lx,ly], Lab=[dp['NOM_PARA_FONC'],dp['NOM_RESU']],
-            Leg=os.linesep.join(self.TITR.get()) )
+            Leg=os.linesep.join(self.sdj.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
    def __call__(self,val1,val2):
       ### Pour EFICAS : substitution de l'instance de classe

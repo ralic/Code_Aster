@@ -1,15 +1,17 @@
-       SUBROUTINE XMMSA3(NDIM,NNO,NNOS,FFP,NDDL,NVEC,V1,V2,V3,
-     &                   NFH,SINGU,RR,DDLS,DDLM,SAUT)
+       SUBROUTINE XMMSA3(NDIM,NNO,NNOS,FFP,NDDL,NVEC,V1,
+     &                  V2,V3,NFH,SINGU,RR,DDLS,DDLM,
+     &                  JFISNO,NFISS,IFISS,JHEAFA,NCOMPH,IFA,
+     &                  SAUT)
 
       IMPLICIT NONE
       INTEGER     NDIM,NNO,NNOS
       INTEGER     NFH,DDLS,DDLM
-      INTEGER     SINGU,NVEC,NDDL
+      INTEGER     SINGU,NVEC,NDDL,JFISNO,NFISS,IFISS,JHEAFA,NCOMPH,IFA
       REAL*8      SAUT(3),RR,FFP(27)
-      REAL*8      V1(NDDL),V2(NDDL),V3(NDDL)
+      REAL*8      V1(NDDL),V2(*),V3(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +28,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
 
 C
 C ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
@@ -69,22 +72,39 @@ C
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
-      REAL*8  RB,RBID
+      INTEGER I,J,IN,IFH,COEFI
+      LOGICAL LMULTC
 C
 C ----------------------------------------------------------------------
 
-      CALL ASSERT(NVEC.GT.0)
-      IF(NVEC.EQ.1) THEN
-         CALL XMMSA4(NDIM,NNO,NNOS,FFP,NDDL,NVEC,V1,RB,RBID,
-     &               NFH,SINGU,RR,DDLS,DDLM,SAUT)
-      ELSE IF(NVEC.EQ.2) THEN
-         CALL XMMSA4(NDIM,NNO,NNOS,FFP,NDDL,NVEC,V1,V2,RBID,
-     &               NFH,SINGU,RR,DDLS,DDLM,SAUT)
-      ELSE IF(NVEC.EQ.3) THEN
-         CALL XMMSA4(NDIM,NNO,NNOS,FFP,NDDL,NVEC,V1,V2,V3,
-     &               NFH,SINGU,RR,DDLS,DDLM,SAUT)
-      ELSE
-         CALL ASSERT(.FALSE.)
-      ENDIF
+      CALL ASSERT(NVEC.GT.0.AND.NVEC.LE.3)
+      CALL VECINI(3,0.D0,SAUT)
+      COEFI = 2
+      LMULTC = NFISS.GT.1
+      DO 161 I = 1,NNO
+        CALL INDENT(I,DDLS,DDLM,NNOS,IN)
+        DO 164 IFH=1,NFH
+          IF (LMULTC) THEN
+            COEFI = ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA)
+     &            - ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA-1)
+          ENDIF
+          DO 162 J = 1,NDIM
+            SAUT(J) = SAUT(J) - COEFI*FFP(I)*V1(IN+NDIM*IFH+J)
+            IF(NVEC.GE.2) 
+     &        SAUT(J) = SAUT(J) - COEFI*FFP(I)*V2(IN+NDIM*IFH+J)
+            IF(NVEC.EQ.3) 
+     &        SAUT(J) = SAUT(J) - COEFI*FFP(I)*V3(IN+NDIM*IFH+J)
+ 162      CONTINUE
+ 164    CONTINUE
+        DO 163 J = 1,SINGU*NDIM
+           SAUT(J) = SAUT(J)-COEFI*FFP(I)*RR*V1(IN+NDIM*(1+NFH)+J)
+           IF(NVEC.GE.2) 
+     &        SAUT(J) = SAUT(J)-COEFI*FFP(I)*RR*V2(IN+NDIM*(1+NFH)+J)
+           IF(NVEC.EQ.3) 
+     &        SAUT(J) = SAUT(J)-COEFI*FFP(I)*RR*V3(IN+NDIM*(1+NFH)+J)
+ 163    CONTINUE
+ 161  CONTINUE
 
       END

@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,8 +35,7 @@ import N_OBJECT
 import N_CR
 from N_Exception import AsException
 from N_ASSD import ASSD
-
-
+from N_info import message, SUPERV
 
 
 MemoryErrorMsg = """MemoryError :
@@ -202,6 +201,7 @@ Causes possibles :
          # est recalculé
          # mais les constantes sont perdues
          self.const_context=self.g_context
+         message.debug(SUPERV, "pass")
          exec self.proc_compile in self.g_context
 
          CONTEXT.unset_current_step()
@@ -231,10 +231,10 @@ Causes possibles :
         etype, value, tb = sys.exc_info()
         l= traceback.extract_tb(tb)
         s= traceback.format_exception_only("Erreur de nom",e)[0][:-1]
-        message = "erreur de syntaxe,  %s ligne %d" % (s,l[-1][1])
+        msg = "erreur de syntaxe,  %s ligne %d" % (s,l[-1][1])
         if CONTEXT.debug :
           traceback.print_exc()
-        self.cr.exception(message)
+        self.cr.exception(msg)
         CONTEXT.unset_current_step()
 
       except self.UserError,exc_val:
@@ -272,7 +272,7 @@ Causes possibles :
           Par defaut il n'y a pas de traitement. Elle doit etre surchargee
           pour en introduire un
        """
-       print "FIN D'EXECUTION",mode,etape
+       message.info(SUPERV, "FIN D'EXECUTION %s %s", mode, etape)
 
    def traiter_user_exception(self,exc_val):
        """Cette methode realise un traitement sur les exceptions utilisateur
@@ -288,6 +288,7 @@ Causes possibles :
       """
       self.etapes.append(etape)
       self.index_etapes[etape] = len(self.etapes) - 1
+      message.debug(SUPERV, "#%d %s", self.index_etapes[etape], etape.nom)
       return self.g_register(etape)
 
    def o_register(self,sd):
@@ -341,8 +342,6 @@ Causes possibles :
           Si le nom est deja utilise, leve une exception
           Met le concept créé dans le concept global g_context
       """
-      if CONTEXT.debug : print "JDC.NommerSdprod ",sd,sdnom
-
       o=self.sds_dict.get(sdnom,None)
       if isinstance(o,ASSD):
          raise AsException("Nom de concept deja defini : %s" % sdnom)
@@ -357,6 +356,7 @@ Causes possibles :
       # En plus si restrict vaut 'non', on insere le concept dans le contexte du JDC
       if restrict == 'non':
          self.g_context[sdnom]=sd
+         message.debug(SUPERV, "g_context[%r] = %s", sdnom, sd)
 
    def reg_sd(self,sd):
       """
@@ -501,7 +501,6 @@ Causes possibles :
       """
       if etape_courante is None:
          etape_courante = CONTEXT.get_current_step()
-         #etape_courante = self.etapes[self.index_etape_courante]
       return self.get_contexte_avant(etape_courante)
 
 

@@ -1,21 +1,21 @@
-#@ MODIF ce_ihm_modifstruct Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF ce_ihm_modifstruct Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE BODEL C.BODEL
@@ -38,7 +38,7 @@ from Calc_essai.ce_calcul_modifstruct import CalcEssaiModifStruct
 
 class InterfaceModifStruct(Frame):
     """!Interface principale de l'outil de calcul de modification structurale
-    
+
     """
     def __init__(self,
                  root,
@@ -65,8 +65,8 @@ class InterfaceModifStruct(Frame):
         self.param_visu = param_visu
         self.modifstruct = CalcEssaiModifStruct(macro, ce_objects, self.mess, outputs)
         self.main = self
-        self.font1 = tkFont.Font( family="Helvetica", size=16 )
-        self.font2 = tkFont.Font( family="Helvetica", size=14 )
+        self.font1 = tkFont.Font( family='Helvetica', size=16 )
+        self.font2 = tkFont.Font( family='Helvetica', size=14 )
         self.interface_modifstruct()
 
     def setup(self):
@@ -78,7 +78,7 @@ class InterfaceModifStruct(Frame):
         self.expansion.setup(mdo)
         self.couplage.setup(mdo)
         self.visu.setup(mdo)
-        
+
 
     def teardown(self):
         """!Appelee par le gestionnaire de tab lors du masquage (passage a un autre tab)
@@ -135,7 +135,7 @@ class InterfaceExpansion(Frame):
         self.columnconfigure(2, weight=1)
         self.rowconfigure(1, weight=1)
         self.term = []
-        
+
         objects = self.root.objects
         # Déclaration des variables Tk
         self.var_resu_exp = StringVar()
@@ -169,7 +169,7 @@ class InterfaceExpansion(Frame):
         self.menu_resu_exp.grid(row=0, column=1, sticky = 'ew')
 
 
-        
+
         # menu de selection du modele support
         Label(f,text="Modele support").grid(row=1,column=0,sticky='w' )
         self.menu_modl_sup = MyMenu( f, objects.get_model_name(),
@@ -185,7 +185,7 @@ class InterfaceExpansion(Frame):
 
 
         Label(f, text="Methode (base expansion)").grid(row=3,column=0,sticky='w')
-        
+
         self.dic_condens_meth = {
             "ES" : "Expansion statique",
             "LMME" : "Expansion statique projetee",
@@ -209,7 +209,7 @@ class InterfaceExpansion(Frame):
         self.capteur = SelectionNoeuds(f, "Noeuds et DDL capteur",
                                        bg='#90a090',command=self.capteur_changed )
         self.capteur.grid(row=5,column=0,columnspan=2,pady=3,sticky='ew')
-        
+
         # menu de selection du groupe de noeuds interface
         self.iface = SelectionNoeuds(f, "Noeuds et DDL interface",
                                      bg='#9090a0',command=self.iface_changed)
@@ -221,7 +221,7 @@ class InterfaceExpansion(Frame):
 
         Button(f,text="Valider", command=self.anything_changed).grid(row=8,
                                                                      column=1,
-                                                                     sticky = 'e')        
+                                                                     sticky = 'e')
 
         # -----------------------------------------------------------------
         # menu de selection des modes identifies experimentalement
@@ -260,8 +260,8 @@ class InterfaceExpansion(Frame):
         """ Actualisation des concepts dans les listes lorsqu'on a change de tab"""
         self.menu_resu_exp.update( mdo.get_mode_meca_name() , self.var_resu_exp , self.refresh_list_exp )
         self.menu_modl_sup.update( mdo.get_model_name() , self.var_modl_sup , self.modele_support_changed )
-        self.menu_modlx.update(    mdo.get_model_name() , self.var_modlx    , self.modele_modif_changed )   
-        
+        self.menu_modlx.update(    mdo.get_model_name() , self.var_modlx    , self.modele_modif_changed )
+
     def configure_param_lmme_dialog(self):
         w = Toplevel()
         w.protocol('WM_DELETE_WINDOW', self.hide_param_dialog)
@@ -298,12 +298,12 @@ class InterfaceExpansion(Frame):
         mat_asse = self.root.objects.matrices.items()
         mat_rigi = []
         for name, obj in mat_asse:
-            LIME = obj.LIME.get()
+            LIME = obj.sdj.LIME.get()
             if not LIME:
                 continue
             for k in LIME:
                 obj = obj_dict[k.strip()]
-                refe = obj.RERR.get()
+                refe = obj.sdj.RERR.get()
                 modl = refe[0].strip()  # Modele
                 typ = refe[1].strip()   # Type matrice (Masse ou raideur)
                 if typ=="RIGI_MECA" and modl==modsup:
@@ -332,28 +332,28 @@ class InterfaceExpansion(Frame):
         else:
             self.button_reglage_lmme['state'] = 'normal'
         self.anything_changed()
-    
+
     def group_no_capteur_changed(self):
         """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
         pass
 ##        self.anything_changed()
-    
+
     def group_no_iface_changed(self):
         """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
         pass
 ##        self.anything_changed()
-    
+
     def mat_raideur_changed(self):
         self.anything_changed()
-    
+
     def modele_modif_changed(self):
         self.anything_changed()
-    
+
     def iface_changed(self):
         """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
         pass
 ##        self.anything_changed()
-    
+
     def capteur_changed(self):
         """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
         pass
@@ -373,7 +373,7 @@ class InterfaceExpansion(Frame):
             disp_mess("Il faut donner les donnees experimentales")
             retour = False
 
-        # modele support        
+        # modele support
         modlsup = self.var_modl_sup.get()
         try:
             self.modif_struct.find_support_modele_from(modlsup)
@@ -384,8 +384,8 @@ class InterfaceExpansion(Frame):
         objects = self.modif_struct.objects
         matr_rig = objects.get_matr(self.var_raid_name.get())
         if matr_rig == None :
-            disp_mess( ("Il faut selectionner une matrice raideur " \
-                        "parmi celles proposées!") )
+            disp_mess( (u"Il faut selectionner une matrice raideur " \
+                        u"parmi celles proposées!") )
             retour = False
         else:
             self.modif_struct.set_stiffness_matrix(matr_rig)
@@ -400,7 +400,7 @@ class InterfaceExpansion(Frame):
             retour = False
         else:
             self.modif_struct.set_sensor_groups(grno_capt)
-        
+
         grno_iface= self.iface.get_selected()
         self.modif_struct.set_interface_groups(grno_iface)
 
@@ -413,7 +413,7 @@ class InterfaceExpansion(Frame):
         if retour == False:
             disp_mess("calcul impossible !!")
             return False
-        
+
         return True
 
     def refresh_list_sup(self):
@@ -431,15 +431,15 @@ class InterfaceExpansion(Frame):
         self.modif_struct.find_modele_modif_from(self.var_modlx.get())
 
 
-        
+
         # Getting the frequency from the interface for the LMME method
         calc_freq = None
-        if self.modif_struct.method_name == "LMME": 
+        if self.modif_struct.method_name == "LMME":
             calc_freq=self.param_mode_iter_simult_lmme.get_calc_freq()
-        
+
         x_bsmo = self.modif_struct.calc_base_proj(calc_freq)
         self.liste_sup.set_resu(x_bsmo)
-        
+
         # on sauve le nom du modele sup utilisé
         # pour calculer la base d'expansion (pour affichage par GMSH)
         #self.base_expansion_modl = modlsup
@@ -460,7 +460,7 @@ class InterfaceExpansion(Frame):
         #                    be, self.root.mess)
 
         # Ordres a afficher
-        if self.modif_struct.method_name == "LMME": 
+        if self.modif_struct.method_name == "LMME":
             modes_expansion = self.liste_sup.selection()
         else:
             modes_expansion = []
@@ -468,14 +468,14 @@ class InterfaceExpansion(Frame):
                 node,comp = self.modif_struct.calc_base_es().get_modes_data()['NOEUD_CMP'][num-1].split()
                 modes_expansion.append(node)
                 modes_expansion.append(comp)
-      
+
 
 
         #if not (isinstance(be,tuple) or isinstance(be,list)):
         #    be = tuple(be)
         term = self.param_visu.visu_resu(resultat=be,
                                          nume_mode=modes_expansion)
-        
+
         self.term.append( term )
 
     def view_model_exp(self):
@@ -503,7 +503,7 @@ class InterfaceCouplage(Frame):
         self.param_visu = param_visu
         self.mess = mess
         self.term = []
-        
+
         # Titre du panneau
         # ----------------
         Label(self, text="Couplage modification / modele condense",
@@ -514,7 +514,7 @@ class InterfaceCouplage(Frame):
         self.columnconfigure(1,weight=1)
         #self.columnconfigure(2,weight=1)
         self.rowconfigure(1,weight=1)
-        
+
 
         # Parametres de PROJ_MESU_MODAL pour le couplage
         # ----------------------------------------------
@@ -524,7 +524,7 @@ class InterfaceCouplage(Frame):
 
         Label(f1, text=" Parametres de PROJ_MESU_MODAL",
               bg='#f0f0f0').grid(row=0,column=0,sticky='nw')
-        
+
         self.var_expans_param_frame_visible = IntVar()
         Checkbutton(f1,text="Reglages",
                     command=self.display_expans_param_frame,
@@ -551,7 +551,7 @@ class InterfaceCouplage(Frame):
 
         Label(f2, text="Calcul modal sur le modele couple",
               bg='#f0f0f0').grid(row=0,column=0,sticky='nw')
-        
+
         Label(f2, text="Mode de calcul ").grid(row=1,column=0,sticky='w')
         self.var_meth_modes_couple = StringVar()
         self.menu_meth_modes_couple = MyMenu( f2, ['MODE_ITER_SIMULT','MODE_ITER_INV'],
@@ -578,7 +578,7 @@ class InterfaceCouplage(Frame):
         frm2.protocol("WM_DELETE_WINDOW", self.hide_couplage_param_frame)
         Button(frm2,text="OK",command=self.hide_couplage_param_frame).grid(row=1,column=0)
         frm2.withdraw()
-        
+
 
         f3 = Frame(self,borderwidth=1)
         f3.grid(row=3,column=0,padx=60)
@@ -605,7 +605,7 @@ class InterfaceCouplage(Frame):
 
         Label(f5, text="Qualite de la base expansion",
               bg='#f0f0f0').grid(row=0,column=0,sticky='nw')
-        
+
         self.dic_mac_meth = {
             "MAC" : "Calcul de MAC classic",
             "IERI" : "Critere IERI",
@@ -627,7 +627,7 @@ class InterfaceCouplage(Frame):
 
         Button(f5,text="Valider", command=self.indic_qualite).grid(row=3,
                                                                      column=2,
-                                                                     sticky = 'e')        
+                                                                     sticky = 'e')
 
         # Affichage de MAC_MODE / comparaison frequences
         # ---------------------
@@ -679,7 +679,7 @@ class InterfaceCouplage(Frame):
     def notify_expans_ok(self):
         mdo = self.root.objects
         mstruct = self.root.modifstruct
-    
+
     def refresh_list_resu(self):
         resu = self.modif_struct.modes_couple
         self.liste_resu.set_resu( resu )
@@ -690,7 +690,7 @@ class InterfaceCouplage(Frame):
         expans = self.root.expansion
         disp_mess = self.root.mess.disp_mess
         retour = True
-        
+
         # resultat experimentaux
         resu_exp_name = expans.var_resu_exp.get()
         try:
@@ -704,28 +704,28 @@ class InterfaceCouplage(Frame):
             self.modif_struct.find_support_modele_from(modlsup_name)
         except KeyError:
             disp_mess("Il faut donner le modele support")
-        
+
         grno_capt = expans.capteur.get_selected()
         self.modif_struct.set_sensor_groups(grno_capt)
         grno_iface = expans.iface.get_selected()
         self.modif_struct.set_interface_groups(grno_iface)
-        
+
         modes_ide = expans.liste_exp.selection()
         if not modes_ide:
-            disp_mess("Il faut sélectionner des modes " \
-                      "du modèle experimental pour la condensation")
+            disp_mess(u"Il faut sélectionner des modes " \
+                      u"du modèle experimental pour la condensation")
             retour = False
         else:
             self.modif_struct.set_modes_ide(modes_ide)
 
         modes_expansion = [int(m) for m in expans.liste_sup.selection()]
         if not modes_expansion:
-            disp_mess("Il faut sélectionner des modes " \
-                      "de la base d'expansion pour la condensation")
+            disp_mess(u"Il faut sélectionner des modes " \
+                      u"de la base d'expansion pour la condensation")
             retour = False
         else:
             self.modif_struct.set_modes_expansion(modes_expansion)
-        
+
         choix = self.var_meth_modes_couple.get()
         self.modif_struct.set_resolution_calc_modal(choix)
 
@@ -742,12 +742,12 @@ class InterfaceCouplage(Frame):
         if retour == False:
             disp_mess("Calcul impossible !!")
             return False
-            
+
         return True
 
     def calc_condensation(self):
-        """Lance le calcul de condensation sur la structure modifiée.""" 
-        
+        """Lance le calcul de condensation sur la structure modifiée."""
+
         if not self._can_set_modif_struct_para():
             return
 
@@ -765,7 +765,7 @@ class InterfaceCouplage(Frame):
             calc_freq = self.param_inv_modes_couple.get_calc_freq()
             mode_simult = 0
         self.modif_struct.calc_modes_modele_couple(mode_simult, calc_freq)
-    
+
         self.refresh_list_resu()
 
     def indic_qualite(self):
@@ -780,7 +780,7 @@ class InterfaceCouplage(Frame):
 
         self.mw.clear_modes()
         self.modif_struct.indicateur_choix_base_expansion()
-    
+
         modes1 = self.modif_struct.i_deplint
         modes2 = self.modif_struct.i_deplxint
 
@@ -792,7 +792,7 @@ class InterfaceCouplage(Frame):
 
     def mac_changed(self):
         self.modif_struct.set_crit_method(self.mac_meth.get())
-    
+
     def choix_ponder(self):
         self.modif_struct.set_crit_ponder(self.crit_ponder.get())
 
@@ -802,7 +802,7 @@ class InterfaceCouplage(Frame):
 class InterfaceVisu(Frame):
 
     def __init__(self, root, modif_struct, param_visu, mess):
-        """!Creation de l'interface pour visualisation 
+        """!Creation de l'interface pour visualisation
             et compariaison modele initial / modele modifie
 
         permet de choisir d'afficher les modes avec gmsh
@@ -854,7 +854,7 @@ class InterfaceVisu(Frame):
         resu2 = self.modif_struct.modes_retr.obj
 
         term = self.param_visu.visu_resu( resultat=[resu1, resu2])
-        
+
         self.term.append( term )
 
 
@@ -871,7 +871,7 @@ class InterfaceVisu(Frame):
 
         sumail = self.modif_struct.sumail
         modes_couple = self.modif_struct.modes_couple
-         
+
         DispFRFDialogue(self.root.mess, mdo, self.param_visu, resu1, resu2, sumail,modes_couple)
 
 

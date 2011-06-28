@@ -1,8 +1,8 @@
-#@ MODIF ce_ihm_parametres Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF ce_ihm_parametres Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -123,7 +123,7 @@ class InterfaceParametres(Frame):
         #self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
         #self.rowconfigure(3, weight=1)
-        l = Label(self,text=" CALC_ESSAI : Paramètres de visualisation",
+        l = Label(self,text=u" CALC_ESSAI : Paramètres de visualisation",
                   padx = 270, pady=5, font=("Helvetica", "16") )
         l.grid(row=0, sticky='nsew')
 
@@ -166,11 +166,11 @@ class InterfaceParametres(Frame):
         # les parametres vont dans 'f'
         logiciels_frame = Frame(f, borderwidth=4)
         
-        label_parametres_salome = Label(logiciels_frame, text="Paramètres Salome")
+        label_parametres_salome = Label(logiciels_frame, text=u"Paramètres Salome")
         label_parametres_salome.grid(row=2, column=1, columnspan=2)
         self.salome_widgets.append(label_parametres_salome)
         
-        label_port = Label(logiciels_frame, text="Port")
+        label_port = Label(logiciels_frame, text=u"Port")
         label_port.grid(row=3, column=1, sticky='w')
         self.salome_widgets.append(label_port)
         
@@ -179,11 +179,11 @@ class InterfaceParametres(Frame):
         self.salome_widgets.append(entry_salome_port)
         self.salome_port.set(self.get_runnig_salome_port())
         
-        label_parametres_distant = Label(logiciels_frame, text="Paramètres mode distant")
+        label_parametres_distant = Label(logiciels_frame, text=u"Paramètres mode distant")
         label_parametres_distant.grid(row=5, column=2, columnspan=3)
         self.distant_widgets.append(label_parametres_distant)
         
-        label_machine_name = Label(logiciels_frame, text="Nom machine")
+        label_machine_name = Label(logiciels_frame, text=u"Nom machine")
         label_machine_name.grid(row=6, column=2, sticky='w')
         self.distant_widgets.append(label_machine_name)
         
@@ -192,7 +192,7 @@ class InterfaceParametres(Frame):
         self.distant_widgets.append(entry_machine_name)
         self.machine_distante_name.set(self.get_machine_name())
         
-        label_user_name = Label(logiciels_frame, text="Nom utilisateur")
+        label_user_name = Label(logiciels_frame, text=u"Nom utilisateur")
         label_user_name.grid(row=7, column=2, sticky='w')
         self.distant_widgets.append(label_user_name)
         
@@ -201,7 +201,7 @@ class InterfaceParametres(Frame):
         self.distant_widgets.append(entry_user)
         self.user.set(self.get_user())
         
-        label_protocole = Label(logiciels_frame, text="Protocole de copie")
+        label_protocole = Label(logiciels_frame, text=u"Protocole de copie")
         label_protocole.grid(row=8, column=2, sticky='w')
         self.distant_widgets.append(label_protocole)
         
@@ -214,7 +214,7 @@ class InterfaceParametres(Frame):
         button_scp.grid(row=8, column=4, sticky='w')
         self.distant_widgets.append(button_scp)
         
-        button_verifier_protocole = Button(logiciels_frame, text='Vérifier protocole', command=self.check_protocole)
+        button_verifier_protocole = Button(logiciels_frame, text=u'Vérifier protocole', command=self.check_protocole)
         button_verifier_protocole.grid(row=9, column=3, columnspan=2)
         self.distant_widgets.append(button_verifier_protocole)
         
@@ -234,27 +234,27 @@ class InterfaceParametres(Frame):
         # => On desactive les widgets du mode distant
         self.activate_or_deactivate_distant_widgets()
         
-        label_choix_logiciel = Label(logiciels_frame, text="Choix du logiciel")
+        label_choix_logiciel = Label(logiciels_frame, text=u"Choix du logiciel")
         label_choix_logiciel.grid(row=0, column=0, columnspan=3 )
-        button_gmsh = Radiobutton(logiciels_frame, text="Gmsh/Xmgrace", value="Gmsh/Xmgrace", variable=self.logiciel,
+        button_gmsh = Radiobutton(logiciels_frame, text=u"Gmsh/Xmgrace", value="Gmsh/Xmgrace", variable=self.logiciel,
                                   command = self.deactivate_salome_widgets  )
         button_gmsh.grid(row=1, column=0, sticky='w')
         
-        button_salome = Radiobutton(logiciels_frame, text="Salome", value="Salome", variable=self.logiciel,
+        button_salome = Radiobutton(logiciels_frame, text=u"Salomé", value="Salome", variable=self.logiciel,
                                     command = self.activate_salome_widgets )
         button_salome.grid(row=2, column=0, rowspan=3, sticky='w')
         
         if __salome__ is not True:
             self.logiciel.set("Gmsh/Xmgrace")
-            self.mess.disp_mess( "Le module python 'pylotage' semble être absent, ou mal configuré.")
-            self.mess.disp_mess( "On désactive le choix Salome.")
+            self.mess.disp_mess( u"Le module python 'pylotage' semble être absent, ou mal configuré.")
+            self.mess.disp_mess( u"On désactive le choix Salomé.")
             StateDeactivate(self.salome_widgets+[button_salome])
         elif not self.is_salome_launched():
             self.logiciel.set("Gmsh/Xmgrace")
             self.deactivate_salome_widgets()
-            self.mess.disp_mess( "Salome n'a pas été trouvé en local. On utilise Gmsh/Xmgrace.")
+            self.mess.disp_mess( u"Salomé n'a pas été trouvé en local. On utilise Gmsh/Xmgrace.")
         else:
-            self.logiciel.set("Salome")
+            self.logiciel.set(u"Salomé")
         
         logiciels_frame.grid(row=1)
         
@@ -303,10 +303,10 @@ class InterfaceParametres(Frame):
                 idx = omniNames_params.index("-start") + 1 
                 salome_port = int(omniNames_params[idx])
             except:
-                msg = "Problème lors de la détermination du port Salome.\n"
-                msg += "Veuillez déterminer manuellement le port de Salome, en tapant ceci dans l'interpréteur python embarqué de Salome:\n"
-                msg += "import NSparam\n"
-                msg += "NSparam.getNSparams()"
+                msg =  u"Problème lors de la détermination du port Salome.\n"
+                msg += u"Veuillez déterminer manuellement le port de Salome, en tapant ceci dans l'interpréteur python embarqué de Salome:\n"
+                msg += u"import NSparam\n"
+                msg += u"NSparam.getNSparams()"
                 self.mess.disp_mess(msg)
         return salome_port
     
@@ -333,11 +333,11 @@ class InterfaceParametres(Frame):
         
         # si la commande n'est pas terminee apres 5s, on la tue
         if wpid == pid and returncode == 0:
-            self.mess.disp_mess("Le protocole %s est correctement configuré."%self.protocole.get())
+            self.mess.disp_mess(u"Le protocole %s est correctement configuré."%self.protocole.get())
             self.protocole_ok = True
         else:
             os.kill(pid, signal.SIGTERM)
-            self.mess.disp_mess("Le protocole %s est mal configuré. Vérifiez vos paramètres."%self.protocole.get())
+            self.mess.disp_mess(u"Le protocole %s est mal configuré. Vérifiez vos paramètres."%self.protocole.get())
             self.protocole_ok = False
         pass
 
@@ -589,15 +589,15 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
                                studyName = self.study_name,
                                machineName = self.machine_name  )
         except:
-            self.mess.disp_mess("Impossible de trouver le module VISU de la machine %s sur le port %i" \
-                              %(self.machine_name, self.salome_port))
-            self.mess.disp_mess("Conseil : si i existe une cession de Salomé, pensez à activer le modue Visu")
+            self.mess.disp_mess(u"Impossible de trouver le module VISU de la machine %s sur le port %i" \
+                               %(self.machine_name, self.salome_port))
+            self.mess.disp_mess(u"Conseil : si i existe une cession de Salomé, pensez à activer le modue Visu")
             return
         
         # Transfert vers machine distante
         if self.mode_distant:
             if not self.protocole_ok:
-                self.mess.disp_mess("Le protocole %s est mal configuré. Vérifiez vos paramètres."%self.protocole)
+                self.mess.disp_mess(u"Le protocole %s est mal configuré. Vérifiez vos paramètres."%self.protocole)
                 return
             ok = self.transfert_med_file()
             if not ok:

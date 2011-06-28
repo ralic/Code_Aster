@@ -1,22 +1,22 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GENIAUT S.GENIAUT
 # MODELISATION A : METHODE MAILLAGE DE PROPA_FISS
@@ -81,7 +81,7 @@ rsup = 5*h
 
 # MATERIAU
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3));
-                          
+
 
 # PSEUDO liste d'instants
 L_INST=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1))
@@ -102,13 +102,13 @@ lect_ma_ini = 'true'
 pas_debut = 0
 
 for i_propa in xrange(pas_debut,nb_pas) :
-   
+
    print '\n'*2+'#'*60+'\n'+' '*5+'pas de propagation numero',i_propa,'\n'+'#'*60
 
-   # Lecture du maillage de la fissure 
+   # Lecture du maillage de la fissure
    if i_propa == 0 :
-   
-      # creation de la fissure initiale : maillage surfacique d'une fissure circulaire de 1 mm de rayon 
+
+      # creation de la fissure initiale : maillage surfacique d'une fissure circulaire de 1 mm de rayon
       MAX=CO('MAX')
       MABID=CO('MABID')
 
@@ -128,11 +128,11 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  GROUP_MA_FOND  ='FOND',
                  NB_POINT_FOND  = 40 );
 
-      DETRUIRE(CONCEPT=_F(NOM=MABID),INFO=1) 
+      DETRUIRE(CONCEPT=_F(NOM=MABID),INFO=1)
 
       # impression du maillage surfacique de la fissure initiale
-      # IMPR_RESU(FORMAT='MED',UNITE=22,RESU=_F(MAILLAGE=MAX))   
-   
+      # IMPR_RESU(FORMAT='MED',UNITE=22,RESU=_F(MAILLAGE=MAX))
+
    elif i_propa != 0 :
 
       # reprise avec un maillage existant
@@ -143,16 +143,16 @@ for i_propa in xrange(pas_debut,nb_pas) :
       else :
          MAX=LIRE_MAILLAGE(FORMAT='MED',UNITE=200+i_propa-1)
          DEFI_FICHIER(ACTION='LIBERER',UNITE=200+i_propa-1)
-      
+
    lect_ma_ini = 'false'
 
 
-      
+
 #-----------------------------------------------------------------------------------------
 #                RAFFINEMENT DU MAILLAGE
 #-----------------------------------------------------------------------------------------
 
- 
+
    # cette procedure raffine le maillage grace a un critere en distance
    # autour de la fissure definie par un GROUP_MA
 
@@ -164,11 +164,11 @@ for i_propa in xrange(pas_debut,nb_pas) :
 
 
    # Valeur seuil de la taille des mailles raffinees, qui depend du nombre de raffinements prevus
-   # Remarque : au debut, les mailles sont tellement grossieres que l'on est oblige de 'forcer' 
+   # Remarque : au debut, les mailles sont tellement grossieres que l'on est oblige de 'forcer'
    # leur raffinement dans un tore dont le rayon diminue au fur et a mesure des iterations de raffinement
-   
+
    val=[-1.*max(rayon/5.,h0/(2.**k)) for k in range(nb_raff)]
-   
+
    # Superposition du maillage initial grossier de la structure avec le maillae de la fissure
    MA[0] = ASSE_MAILLAGE(MAILLAGE_1 = MASTR,
                          MAILLAGE_2 = MAX,
@@ -178,7 +178,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                    AFFE=_F(GROUP_MA='M_TOUT',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D'))
-                          
+
    #Definition de la fissure sur le maillage en entree
    FISS=DEFI_FISS_XFEM(MODELE=MOD,
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i_propa),
@@ -197,15 +197,15 @@ for i_propa in xrange(pas_debut,nb_pas) :
                      OPERATION='EXTR',
                      FISSURE=FISS,
                      NOM_CHAM='LTNO')
- 
+
    # Critere initial : on peut utiliser RAFF_XFEM ici car la fissure
-   # est definie sur le maillage en entree du raffinement 
+   # est definie sur le maillage en entree du raffinement
    CHERR[0] = RAFF_XFEM(FISSURE=FISS)
 
    # erreur en distance pour une fissure: -r
    MDISTF=FORMULE(NOM_PARA=('X1','X2'),VALE= '-1.*sqrt(X1**2+X2**2)');
 
-   
+
    # Raffinements successifs autour du fond de fissure
    # la boucle de raffinement recalcule les level sets par interpolation Homard, puis re-calcul du critere
 
@@ -228,10 +228,10 @@ for i_propa in xrange(pas_debut,nb_pas) :
                                   CHAM_MAJ = LSN[i_raff+1]),
                                _F(TYPE_CHAM='NOEU_NEUT_R',
                                   CHAM_GD  = LST[i_raff],
-                                  CHAM_MAJ = LST[i_raff+1]),),                             
+                                  CHAM_MAJ = LST[i_raff+1]),),
                      ELEMENTS_NON_HOMARD='IGNORER')
 
-      # pour re-calculer le critere, on ne peut plus utiliser RAFF_XFEM 
+      # pour re-calculer le critere, on ne peut plus utiliser RAFF_XFEM
       # car cette commande aurait besoin de la fissure sur le dernier maillage raffine
       # (on n'a plus de concept sf_fiss_xfem)
       # on re-calcule le critere de distance a la main, a partir des level sets actualisees
@@ -246,7 +246,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                               NOM_CMP_RESU='X2',),
                         );
 
-      #On affecte a chaque noeud du maillage MA[i_raff+1] la formule MDISTF 
+      #On affecte a chaque noeud du maillage MA[i_raff+1] la formule MDISTF
       CHFOR=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                         OPERATION='AFFE',
                         MAILLAGE=MA[i_raff+1],
@@ -262,7 +262,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                        CHAM_PARA=(LSN[i_raff+1],LSTB,));
 
 
-      #Champ d'Erreur de la fissure 
+      #Champ d'Erreur de la fissure
       CHERR[i_raff+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='ASSE',
                           MAILLAGE=MA[i_raff+1],
@@ -271,9 +271,9 @@ for i_propa in xrange(pas_debut,nb_pas) :
                                   NOM_CMP='X1',
                                   NOM_CMP_RESU='X1',
                                 ),
-                        ); 
+                        );
 
-      DETRUIRE(CONCEPT=_F(NOM=(LSTB,CHFOR,CERRB)),INFO=1) 
+      DETRUIRE(CONCEPT=_F(NOM=(LSTB,CHFOR,CERRB)),INFO=1)
 
    # Creation des listes des groupes surfaciques et lineiques correspondants a la fissure
    list_FISS = []
@@ -290,7 +290,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                                           _F(NOM=list_FOND),),)
 
 
-   #Impression du dernier maillage raffine de la structure 
+   #Impression du dernier maillage raffine de la structure
    IMPR_RESU(FORMAT='MED',UNITE=24+i_propa,RESU=_F(MAILLAGE=MA[nb_raff]))
 
    DEFI_FICHIER(ACTION='LIBERER',UNITE=24+i_propa)
@@ -303,17 +303,17 @@ for i_propa in xrange(pas_debut,nb_pas) :
    DETRUIRE(CONCEPT=_F(NOM=(MOD,FISS,MDISTF)),INFO=1)
 
 
- 
+
 #-----------------------------------------------------------------------------------------
 #               RESOLUTION DU PROBLEME
 #-----------------------------------------------------------------------------------------
 
 
    # Relecture du maillage de la structure raffine
-   MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=24+i_propa)  
-           
-                    
-   #Superposition du maillage raffine de la structure avec la fissure 
+   MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=24+i_propa)
+
+
+   #Superposition du maillage raffine de la structure avec la fissure
    MA_INI = ASSE_MAILLAGE(MAILLAGE_1 = MA,
                           MAILLAGE_2 = MAX,
                           OPERATION='SUPERPOSE')
@@ -327,12 +327,12 @@ for i_propa in xrange(pas_debut,nb_pas) :
    FISS=DEFI_FISS_XFEM(MODELE=MOD_SAIN,
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i_propa),
                                     GROUP_MA_FOND='FOND_'+str(i_propa),),
-                       ORIE_FOND=_F(PFON_INI  = (pfx,pfy,pfz),   
+                       ORIE_FOND=_F(PFON_INI  = (pfx,pfy,pfz),
                                     VECT_ORIE = ( 0., 0., 1.),
                                     POINT_ORIG= ( x0, y0, z0),),)
-    
-#    #On verifie que la fissure a bien un seul fond, sinon arret immediat du calcul 
-#    NBFOND=FISS.FONDMULT.get()
+
+#    #On verifie que la fissure a bien un seul fond, sinon arret immediat du calcul
+#    NBFOND=FISS.sdj.FONDMULT.get()
 #    if len(NBFOND)!=2 :
 #      print'Plusieurs fonds de fissure : ',len(NBFOND)/2
 #      FIN()
@@ -369,12 +369,12 @@ for i_propa in xrange(pas_debut,nb_pas) :
                       INCREMENT=_F(LIST_INST=L_INST),
                       NEWTON=_F(REAC_ITER=1),
                       )
-                      
-   RESU = EXTR_RESU(RESULTAT=RESX,ARCHIVAGE=_F(NUME_ORDRE=1,),);                 
-  
+
+   RESU = EXTR_RESU(RESULTAT=RESX,ARCHIVAGE=_F(NUME_ORDRE=1,),);
+
    DETRUIRE(CONCEPT=_F(NOM=(RESX)),INFO=1)
-  
-   # Visualisation X-FEM 
+
+   # Visualisation X-FEM
    MA_XFEM=POST_MAIL_XFEM(MODELE=MOD_X)
 
    MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -410,13 +410,13 @@ for i_propa in xrange(pas_debut,nb_pas) :
                              R_SUP=rsup,
                              FISSURE=FISS,),);
 
-              
+
    #Impression de la table brute
    IMPR_TABLE(TABLE=TAB_KG,);
 
    # test des valeurs de K au dernier pas de propagation
    if i_propa == nb_pas-1 :
-   
+
       TEST_TABLE(TABLE=TAB_KG,
                  NOM_PARA='K1',
                  TYPE_TEST='MAX',
@@ -424,7 +424,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  CRITERE='RELATIF',
                  PRECISION=0.02,
                  VERSION='10.3.2',
-                 REFERENCE='NON_REGRESSION');   
+                 REFERENCE='NON_REGRESSION');
 
       TEST_TABLE(TABLE=TAB_KG,
                  NOM_PARA='K1',
@@ -432,26 +432,26 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  VALE=4.83556E+04,
                  CRITERE='RELATIF',
                  PRECISION=0.01,
-                 VERSION='10.3.2',                 
-                 REFERENCE='NON_REGRESSION');   
+                 VERSION='10.3.2',
+                 REFERENCE='NON_REGRESSION');
 
 #-----------------------------------------------------------------------------------------
 #                PROPAGATION
 #-----------------------------------------------------------------------------------------
 
    MAX1=CO('MAX1')
-   MA1=CO('MA1')      
+   MA1=CO('MA1')
 
    # attention : les cefficients de la loi de Paris donnes par CENAERO fonctionnent pour un
    # deltaKeq en MPa.sqrt(mm), or la table des K en entree est en Pa.sqrt(m)
-   
+
 
    PROPA_FISS(METHODE_PROPA='MAILLAGE',
               ITERATION=i_propa+1,
               DA_MAX=damax, # increment d'avancee maximal
               MAIL_STRUC=MA,  #maillage de la structure
               FISSURE=_F(FISS_ACTUELLE  = FISS,
-                         MAIL_ACTUEL    = MAX, # maillage initial de la fissure (entree) 
+                         MAIL_ACTUEL    = MAX, # maillage initial de la fissure (entree)
                          MAIL_PROPAGE   = MAX1,# maillage de la fissure surfacique propagee (sortie)
                          TABLE          = TAB_KG,
                          GROUP_MA_FISS='FISS',
@@ -460,8 +460,8 @@ for i_propa in xrange(pas_debut,nb_pas) :
               LOI_PROPA=_F(LOI='PARIS',
                            M=m,
                            N=n,
-                           C=C*(sqrt(1e3)*1e-6)**m,  
-                           MATER=MAT),                                      
+                           C=C*(sqrt(1e3)*1e-6)**m,
+                           MATER=MAT),
               MAIL_TOTAL = MA1,                #fissure en sortie
               COMP_LINE=_F(COEF_MULT_MINI=0.,
                            COEF_MULT_MAXI=1.),

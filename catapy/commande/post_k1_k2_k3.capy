@@ -1,28 +1,29 @@
-#& MODIF COMMANDE  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GALENNE E.GALENNE
-from Macro.post_k1_k2_k3_ops import post_k1_k2_k3_ops
-POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdaster,
-                   fr="Calcul des facteurs d'intensité de contraintes en 2D et en 3D par extrapolation des sauts de déplacements"
-                     +" sur les lèvres de la fissure",
-                   reentrant='n',
-            UIinfo={"groupes":("Post-traitements","Rupture",)},
+POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
+                    op=OPS('Macro.post_k1_k2_k3_ops.post_k1_k2_k3_ops'),
+                    sd_prod=table_sdaster,
+                    fr="Calcul des facteurs d'intensité de contraintes en 2D et en 3D par "\
+                       "extrapolation des sauts de déplacements sur les lèvres de la fissure",
+                    reentrant='n',
+                    UIinfo={"groupes":("Post-traitements","Rupture",)},
 
            regles=(UN_PARMI('RESULTAT','TABL_DEPL_SUP'),
                    EXCLUS('FISSURE','FOND_FISS'),
@@ -42,11 +43,11 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
 
 #        bloc correspondant a la donnee du fond de fissure pour les fissures maillees
          b_fond_fiss_res   =BLOC (condition="((FOND_FISS!= None)and(RESULTAT!= None))",
-                         
+
               b_ref_3d     =BLOC (condition="MODELISATION=='3D'",
                                   TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
                                 ),
-                         
+
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -90,7 +91,7 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
          TABL_DEPL_INF =SIMP(statut='f',typ=table_sdaster,
                              fr="Table issue de post_releve_t sur les noeuds de la lèvre inférieure"),
          ABSC_CURV_MAXI=SIMP(statut='o',typ='R',
-                             fr="Distance maximum à partir du fond de fissure à utiliser pour le calcul"),  
+                             fr="Distance maximum à partir du fond de fissure à utiliser pour le calcul"),
          PREC_VIS_A_VIS=SIMP(statut='f',typ='R',defaut=0.1),
          TOUT_ORDRE    =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -106,6 +107,6 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
              ),
          INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
          VECT_K1       =SIMP(statut='f',typ='R',max=3,min=3,
-                             fr="Vecteur normal au plan de fissure, orienté de la lèvre inférieure vers la lèvre supérieure"),  
-         TITRE         =SIMP(statut='f',typ='TXM',max='**'),  
+                             fr="Vecteur normal au plan de fissure, orienté de la lèvre inférieure vers la lèvre supérieure"),
+         TITRE         =SIMP(statut='f',typ='TXM',max='**'),
 )  ;

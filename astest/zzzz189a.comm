@@ -1,22 +1,22 @@
-# MODIF  DATE 18/04/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
-# TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON       
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON
 # zzzz189a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ==================================================================================================
 #
@@ -68,10 +68,10 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
 
   # On recupere la connectivite, les noms des mailles,
   # les coordonnees et le groupes de mailles GROUP_MA
-  coordo=MAILLAGE.COORDO.VALE.get()
-  connex=MAILLAGE.CONNEX.get()
-  nommai=MAILLAGE.NOMMAI.get()
-  groupma=MAILLAGE.GROUPEMA.get()[GROUP_MA.ljust(8)]
+  coordo=MAILLAGE.sdj.COORDO.VALE.get()
+  connex=MAILLAGE.sdj.CONNEX.get()
+  nommai=MAILLAGE.sdj.NOMMAI.get()
+  groupma=MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(8)]
 
   # On met en forme les coordonnees : matrice 3 colonnes
   coordo=NP.reshape(coordo,[len(coordo)/3,3])
@@ -121,11 +121,11 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
 
          # Meme remarque que precedemment sur les listes Python
          nom_maille=nommai[ima-1]
-       
-         # On boucle sur les arguments de la fonction pour 
-         # creer une liste de mots-cle facteurs que l'on va 
+
+         # On boucle sur les arguments de la fonction pour
+         # creer une liste de mots-cle facteurs que l'on va
          # retourner pour l'utiliser dans AFFE_CARA_ELEM
-         # Noter que comme GRILLE est un mot-cle facteur, il 
+         # Noter que comme GRILLE est un mot-cle facteur, il
          # contient un dictionnaire
          mon_dico={}
          for cle in args["GRILLE"].keys():
@@ -134,7 +134,7 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
          mon_dico["ANGL_REP"]=(alpha,beta)
 
          LISTE_CARA.append(mon_dico)
-  
+
   return LISTE_CARA
 
 # ==================================================================================================

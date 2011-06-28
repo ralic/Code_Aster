@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 21/03/2011   AUTEUR MICHEL S.MICHEL 
+#@ MODIF calc_precont_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,8 +26,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                 COMP_INCR,ETAT_INIT,METHODE,
                                 RECH_LINEAIRE,CONVERGENCE,INCREMENT,SOLVEUR,
                                 INFO,TITRE,**args):
-
-
   """
      Ecriture de la macro CALC_PRECONT
   """
@@ -72,21 +70,17 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   dIncrement=INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
   __prec = dIncrement['PRECISION']
 
-
-#  import pdb ; pdb.set_trace()
-
   __L0   = dIncrement['LIST_INST']
   from SD.co_listr8 import listr8_sdaster
   from SD.co_list_inst import list_inst
 
   if   type(__L0) == listr8_sdaster:
-  #cas où liste definie par DEFI_LIST_REEL 
+  #cas où liste definie par DEFI_LIST_REEL
      __L1   = __L0.Valeurs()
   elif type(__L0) == list_inst:
   # cas où liste definie par DEFI_LIST_INST
      tmp = __L0.get_name().ljust(8) + '.LIST.' + 'DITR'.ljust(18)
      __L1 = aster.getvectjev(tmp)
-
 
   # Traitement de l'etat initial
   if ETAT_INIT:
@@ -151,14 +145,14 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   motscle5={}
 
   if METHODE=='IMPL_EX':
-     motscle4['IMPL_EX']=args['IMPL_EX'].List_F() 
-     motscle5['IMPL_EX']=args['IMPL_EX'].List_F() 
+     motscle4['IMPL_EX']=args['IMPL_EX'].List_F()
+     motscle5['IMPL_EX']=args['IMPL_EX'].List_F()
   else:
      motscle4['NEWTON']=args['NEWTON'].List_F()
      motscle5['NEWTON']=args['NEWTON'].List_F()
 #     for j in dNewton.keys():
 #       if dNewton[j]==None : del dNewton[j]
-       
+
 
   dConvergence=CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste)
   for i in dConvergence.keys():
@@ -198,8 +192,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   motscle2['RELA_CINE_BP']=[]
   motscle3={}
   motscle3['RELA_CINE_BP']=[]
-  __GROUP_MA_A=[]
-  Result = [[None]*1]
+  set_GROUP_MA_A = set()
   for mcabl in CABLE_BP:
     # Creation de mots-cles pour les AFFE_CHAR_MECA
     motscles['RELA_CINE_BP'].append(_F(CABLE_BP=mcabl,
@@ -214,69 +207,29 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
     # Creation de __GROUP_MA_A : liste des noms des cables contenus
     # dans chaque concept CABLE_BP = cables  a activer
-    __TCAB = RECU_TABLE(CO=mcabl,NOM_TABLE='CABLE_BP');
-    __nb = 0
-    while 1:
-      try:
-          Result[__nb][0] = __TCAB['NOM_CABLE',__nb+1]
-          __CAB = __TCAB['NOM_CABLE',__nb+1]
-          if __nb == 0:
-            __GROUP_MA_A.append(__CAB)
-          else:
-            i = 0
-            # enlève les doublons
-            for m in __GROUP_MA_A:
-              i=i+1
-              if __CAB == m:
-                break
-              if i == len(__GROUP_MA_A):
-                __GROUP_MA_A.append(__CAB)
-
-          __nb = __nb + 1
-          Result.append([None]*1)
-    #   Si on a lu toutes les valeurs alors on sort de la boucle
-      except KeyError:
-        break
+    __TCAB = RECU_TABLE(CO=mcabl, NOM_TABLE='CABLE_BP')
+    col_nom_cable = __TCAB.EXTR_TABLE().NOM_CABLE
+    set_GROUP_MA_A.update(col_nom_cable.values())
+  __GROUP_MA_A = list(set_GROUP_MA_A)
 
   # Creation de __GROUP_MA_I : liste des noms des cables contenus
   # dans chaque CABLE_BP_INACTIF
   # __GROUP_MA_CABLE = liste des cables actifs et inactifs
-  Result = [[None]*1]
-  __GROUP_MA_I=[]
+  set_GROUP_MA_I = set()
 
   if CABLE_BP_INACTIF:
-    for mcabl in CABLE_BP_INACTIF:
-      __TCA0 = RECU_TABLE(CO=mcabl,NOM_TABLE='CABLE_BP');
-      __nb = 0
-      while 1:
-        try:
-            Result[__nb][0] = __TCA0['NOM_CABLE',__nb+1]
-            __CA0 = __TCA0['NOM_CABLE',__nb+1]
-            if __nb == 0:
-              __GROUP_MA_I.append(__CA0)
-            else:
-              i = 0
-              # enlève les doublons
-              for m in __GROUP_MA_I:
-                i=i+1
-                if __CA0 == m:
-                  break
-                if i == len(__GROUP_MA_I):
-                  __GROUP_MA_I.append(__CA0)
-
-            __nb = __nb + 1
-            Result.append([None]*1)
-      #   Si on a lu toutes les valeurs alors on sort de la boucle
-        except KeyError:
-          break
     motscle6={}
     motscle6['RELA_CINE_BP']=[]
     for mcabl in CABLE_BP_INACTIF:
+      __TCA0 = RECU_TABLE(CO=mcabl, NOM_TABLE='CABLE_BP')
+      col_nom_cable = __TCA0.EXTR_TABLE().NOM_CABLE
+      set_GROUP_MA_I.update(col_nom_cable.values())
+
       # Creation de mots-cles pour les AFFE_CHAR_MECA
       motscle6['RELA_CINE_BP'].append(_F(CABLE_BP=mcabl,
                                          SIGM_BPEL = 'NON',
                                          RELA_CINE = 'OUI',) )
-
+  __GROUP_MA_I = list(set_GROUP_MA_I)
   __GROUP_MA_CABLES = __GROUP_MA_A + __GROUP_MA_I
 
 
@@ -414,7 +367,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   dExcit1.append(_F(CHARGE = _F_CA,
                     FONC_MULT=__FCT ),)
 
-  
+
   if self.reuse:
     motscle4['reuse'] = self.reuse
 
@@ -432,7 +385,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      ARCHIVAGE = _F(INST = __TINT),
                      INFO     =INFO,
                      TITRE = TITRE,
-                     EXCIT = dExcit1,  
+                     EXCIT = dExcit1,
                      **motscle4)
 
   # Recuperation du dernier numero d'ordre pour pouvoir  l'écraser dans RES
@@ -460,7 +413,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      METHODE=METHODE,
 #                     NEWTON =dNewton,
 #                     IMPL_EX=dImplex,
-    
+
                      RECH_LINEAIRE = dRech_lin,
                      CONVERGENCE=dConvergence,
                      SOLVEUR = dSolveur,
@@ -469,7 +422,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      INFO  =INFO,
                      TITRE = TITRE,
                      EXCIT =dExcit2,
-                     **motscle5 
+                     **motscle5
                      )
 
   return ier

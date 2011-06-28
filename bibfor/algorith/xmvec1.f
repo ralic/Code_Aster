@@ -1,12 +1,13 @@
       SUBROUTINE XMVEC1(NDIM,JNNE,NDEPLE,NNC   ,JNNM   ,
      &                  HPG   ,NFAES ,FFC   ,FFE   ,FFM   ,
-     &                  JACOBI,DLAGRC,JPCAI ,CFACE ,COEFCA,
-     &                  JEU   ,NORM  ,TYPMAI,NSINGE,NSINGM,
-     &                  RRE   ,RRM   ,NCONTA,JDDLE,JDDLM,
-     &                  VTMP  )
+     &                  JACOBI,DLAGRC,JPCAI ,CFACE ,COEFCR,
+     &                  COEFCP,COEFEC,LPENAC,JEU   ,NORM  ,
+     &                  TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
+     &                  NCONTA,JDDLE ,JDDLM,NFHE  ,NFHM  ,
+     &                  LMULTI,HEAVNO,HEAVFA,VTMP  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,10 +30,12 @@ C
       INTEGER  NDIM,JNNE(3),JNNM(3),NNC,NFAES
       INTEGER  JPCAI,CFACE(3,5),NSINGE,NSINGM
       REAL*8   HPG,FFC(9),JACOBI,FFE(9),FFM(9)
-      REAL*8   DLAGRC,JEU,NORM(3),COEFCA,RRE,RRM
-      REAL*8   VTMP(168)
+      REAL*8   DLAGRC,JEU,NORM(3),COEFCR,COEFCP,RRE,RRM
+      REAL*8   VTMP(336),COEFEC
       CHARACTER*8  TYPMAI
       INTEGER  NCONTA,NDEPLE,JDDLE(2),JDDLM(2)
+      INTEGER  NFHE,NFHM,HEAVNO(8),HEAVFA(*)
+      LOGICAL  LPENAC,LMULTI
 C
 C ----------------------------------------------------------------------
 C
@@ -55,7 +58,7 @@ C IN  FFC    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ELC
 C IN  FFE    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ESC
 C IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  DLAGRC : LAGRANGE DE CONTACT AU POINT D'INTÈGRATION
+C IN  DLAGRC : LAGRANGE DE CONTACT AU POINT D'INT…GRATION
 C IN  JPCAI  : POINTEUR VERS LE VECT DES ARRETES ESCLAVES INTERSECTEES
 C IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 C IN  COEFCA : COEF_REGU_CONT
@@ -69,9 +72,20 @@ C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
       INTEGER I,J,K,II,IN,PL,XOULA,IIN,NDDLE
       INTEGER NNE,NNES,NNEM,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
-      REAL*8  VV
+      INTEGER IFH,IDDL
+      REAL*8  VV,IESCL(6),IMAIT(6)
 C ----------------------------------------------------------------------
 C
+C
+C --- INITIALISATION
+C
+      IESCL(1) = 1
+      IESCL(2) =-1
+      IESCL(2+NFHE)=-RRE
+      IMAIT(1) = 1
+      IMAIT(2) = 1
+      IMAIT(2+NFHM)= RRM
+
 C --------------------- CALCUL DE [L1_CONT]-----------------------------
 C
       NNE=JNNE(1)
@@ -89,53 +103,75 @@ C
 C
       DO 10 J = 1,NDIM
         DO 20 I = 1,NDEPLE
-C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
-          VV = HPG*JACOBI*(DLAGRC-COEFCA*JEU) *
-     &          FFE(I)*NORM(J)
           CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
-          II = IIN + J
-          VTMP(II) = -VV
-          II = II + NDIM
-          VTMP(II) =  VV
-          DO 25 K = 1,NSINGE
-            II = II + NDIM
-            VTMP(II) = RRE * VV
+          IF(LPENAC) THEN
+            VV = HPG*JACOBI*DLAGRC*
+     &          FFE(I)*NORM(J)
+          ELSE
+            VV = HPG*JACOBI*(DLAGRC-COEFCR*JEU) *
+     &          FFE(I)*NORM(J)
+          ENDIF
+          IF (LMULTI) THEN
+            DO 15 IFH = 1,NFHE
+              IESCL(1+IFH)=HEAVFA(NFHE*(I-1)+IFH)
+   15       CONTINUE
+          ENDIF
+          DO 25 IDDL=1,1+NFHE+NSINGE
+            II = IIN + (IDDL-1)*NDIM + J
+            VTMP(II) = -IESCL(IDDL)*VV
    25     CONTINUE
    20   CONTINUE
         DO 30 I = 1,NNM
-C --- BLOCS MA,CL ; MA,EN ; (MA,SI)
-          VV = HPG*JACOBI*(DLAGRC-COEFCA*JEU) *
-     &          FFM(I)*NORM(J)
           CALL INDENT(I,DDLMS,DDLMM,NNMS,IIN)
-          II = NDDLE + IIN + J
-          VTMP(II) = VV
-          II = II + NDIM
-          VTMP(II) = VV
-          DO 35 K = 1,NSINGM
-            II = II + NDIM
-            VTMP(II) = RRM * VV
-   35     CONTINUE
+          IIN = IIN + NDDLE
+           IF(LPENAC) THEN
+             VV = HPG*JACOBI*DLAGRC*
+     &            FFM(I)*NORM(J)
+          ELSE
+             VV = HPG*JACOBI*(DLAGRC-COEFCR*JEU) *
+     &            FFM(I)*NORM(J)
+          ENDIF
+          IF (LMULTI) THEN
+            DO 35 IFH = 1,NFHM
+              IMAIT(1+IFH)=HEAVFA(NFHE*NNE+NFHM*(I-1)+IFH)
+   35       CONTINUE
+          ENDIF
+          DO 45 IDDL=1,1+NFHM+NSINGM
+            II = IIN + (IDDL-1)*NDIM + J
+            VTMP(II) = IMAIT(IDDL)*VV
+   45     CONTINUE
    30   CONTINUE
    10 CONTINUE
       ELSE
       DO 50 J = 1,NDIM
         DO 60 I = 1,NDEPLE
 C --- BLOCS ES,SI
-          VV = HPG*JACOBI*(DLAGRC-COEFCA*JEU) *
+          IF(LPENAC) THEN
+            VV = HPG*JACOBI*DLAGRC*
      &          FFE(I)*NORM(J)
+          ELSE
+            VV = HPG*JACOBI*(DLAGRC-COEFCR*JEU) *
+     &          FFE(I)*NORM(J)
+          ENDIF
           CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
           II = IIN + J
           VTMP(II) = RRE * VV
-   60   CONTINUE
-   50 CONTINUE
+60      CONTINUE
+50    CONTINUE
       ENDIF
 C
 C --------------------- CALCUL DE [L2]----------------------------------
 C
       DO 40 I = 1,NNC
         IN=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-        CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,PL)
-        VTMP(PL) = -HPG*JACOBI*JEU*FFC(I)
-   40 CONTINUE
+        CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,NFHE,PL)
+        IF (LMULTI) PL = PL + (HEAVNO(I)-1)*NDIM
+        IF(LPENAC) THEN
+          VTMP(PL) = -HPG*JACOBI*(DLAGRC/COEFCP+JEU)
+     &     *COEFEC*FFC(I)
+        ELSE
+          VTMP(PL) = -HPG*JACOBI*JEU*COEFEC*FFC(I)
+        ENDIF
+40    CONTINUE
 C
       END

@@ -1,8 +1,8 @@
-#@ MODIF __init__ Accas  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF __init__ Accas  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,6 +71,7 @@ from Noyau.N_FONCTION import FONCTION
 from Noyau.N_FONCTION import formule,formule_c
 from Noyau.N_CO import CO
 from Noyau.N__F import _F
+from Noyau.N_OPS import OPS
 
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType

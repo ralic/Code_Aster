@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 07/06/2011   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF post_dyna_alea_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,7 +96,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       from Utilitai.stats   import normcdf
 
       if FRAGILITE['LIST_PARA'] != None :
-         liste_a = FRAGILITE['LIST_PARA'].VALE.get()
+         liste_a = FRAGILITE['LIST_PARA'].sdj.VALE.get()
       elif FRAGILITE['VALE'] != None :
          liste_a =FRAGILITE['VALE']
 

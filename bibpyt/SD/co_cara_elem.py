@@ -1,8 +1,8 @@
-#@ MODIF co_cara_elem SD  DATE 20/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF co_cara_elem SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,16 +18,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from SD import *
-from sd_cara_elem import sd_cara_elem
+from Accas import ASSD
 
-# -----------------------------------------------------------------------------
-class cara_elem(ASSD, sd_cara_elem):
+class cara_elem(ASSD):
+   cata_sdj = "SD.sd_cara_elem.sd_cara_elem"
+
    def toEPX(self):
       # s'il y a un problème sur la structure de données ==> <F>
       try:
-         EPXnoeud = self.CARRIGXN.get()
-         EPXval   = self.CARRIGXV.get()
+         EPXnoeud = self.sdj.CARRIGXN.get()
+         EPXval   = self.sdj.CARRIGXV.get()
          lenEPXval   = len(EPXval)
          lenEPXnoeud = len(EPXnoeud)*6
       except:

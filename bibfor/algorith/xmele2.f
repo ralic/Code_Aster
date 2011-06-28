@@ -2,7 +2,7 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,18 +72,17 @@ C
 C
       INTEGER       IFM,NIV
       INTEGER       IBID,IAD,IGRP,I,IMA,IFIS,IZONE,XXCONI
-      INTEGER       NMAENR,MMINFI
-      CHARACTER*8   NOMFIS
+      INTEGER       NMAENR,MMINFI,NBMA,JNBSP,JCELD,ISPT,ICMP
+      CHARACTER*8   NOMFIS,K8BID
       INTEGER       JCESL,JCESV,JCESD,JMOFIS
       CHARACTER*24  GRP(3),XINDIC
       INTEGER       JGRP,JINDIC
       CHARACTER*19  CHELSI
-      REAL*8        MMINFR,COEFCR,COEFFF,COEFFR,INTEGR,COECHE
-      REAL*8        COCAUS,COFAUS,COCAUP,COFAUP,RELATI,CZMFER
+      REAL*8        MMINFR,COEF(NBCMP)
       CHARACTER*19  VALK(2)
       INTEGER       VALI(1)
       INTEGER       JMAIL,ITYELE
-      CHARACTER*16  TYPELE
+      CHARACTER*16  TYPELE,ENR
 C
       DATA LICMP    /'RHON','MU','RHOTK','INTEG','COECH',
      &    'COSTCO','COSTFR','COPECO','COPEFR','RELA','CZMFE'/
@@ -103,10 +102,22 @@ C --- INITIALISATIONS
 C
       CHELSI = '&&XMELE2.CES'
 C
+C --- RECOPIE DU NOMBRE DE SOUS POINTS DE TOPOSE.HEA DANS LE CHAMP NBSP
+C
+      CALL CELCES(MODELE//'.TOPOSE.HEA','V','&&XMELE2.HEAV')
+      CALL JEVEUO('&&XMELE2.HEAV      .CESD','L', JCESD)
+      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
+      CALL WKVECT('&&XMELE2.NBSP' ,'V V I',NBMA,JNBSP)
+      DO 10 IMA = 1,NBMA
+        ZI(JNBSP-1+IMA) = ZI(JCESD-1+5+4*(IMA-1)+2)
+  10  CONTINUE
+C
+
+C
 C --- CREATION DU CHAM_ELEM_S
 C
       CALL CESCRE('V',CHELSI,'ELEM',NOMA,'XCONTAC',NBCMP,LICMP,
-     &            -1,-1,-NBCMP)
+     &            -1,ZI(JNBSP),-NBCMP)
 C
 C --- ACCES AU CHAM_ELEM_S
 C
@@ -141,17 +152,17 @@ C
 C
 C --- CARACTERISTIQUES DU CONTACT POUR LA FISSURE EN COURS
 C
-        COEFCR  = MMINFR(DEFICO,'COEF_REGU_CONT',IZONE )
-        COEFFR  = MMINFR(DEFICO,'COEF_REGU_FROT',IZONE )
-        COEFFF  = MMINFR(DEFICO,'COEF_COULOMB'  ,IZONE )
-        COECHE  = MMINFR(DEFICO,'COEF_ECHELLE'  ,IZONE )
-        INTEGR  = MMINFI(DEFICO,'INTEGRATION'   ,IZONE )
-        COCAUS  = MMINFR(DEFICO,'COEF_STAB_CONT',IZONE )
-        COFAUS  = MMINFR(DEFICO,'COEF_STAB_FROT',IZONE )
-        COCAUP  = MMINFR(DEFICO,'COEF_PENA_CONT',IZONE )
-        COFAUP  = MMINFR(DEFICO,'COEF_PENA_FROT',IZONE )
-        RELATI  = MMINFR(DEFICO,'RELATION'      ,IZONE )
-        CZMFER  = MMINFR(DEFICO,'CZM_FERMETURE' ,IZONE )
+        COEF(1) = MMINFR(DEFICO,'COEF_REGU_CONT',IZONE )
+        COEF(2) = MMINFR(DEFICO,'COEF_COULOMB'  ,IZONE )
+        COEF(3) = MMINFR(DEFICO,'COEF_REGU_FROT',IZONE )
+        COEF(4) = MMINFI(DEFICO,'INTEGRATION'   ,IZONE )
+        COEF(5) = MMINFR(DEFICO,'COEF_ECHELLE'  ,IZONE )
+        COEF(6) = MMINFR(DEFICO,'COEF_STAB_CONT',IZONE )
+        COEF(7) = MMINFR(DEFICO,'COEF_STAB_FROT',IZONE )
+        COEF(8) = MMINFR(DEFICO,'COEF_PENA_CONT',IZONE )
+        COEF(9) = MMINFR(DEFICO,'COEF_PENA_FROT',IZONE )
+        COEF(10)= MMINFR(DEFICO,'RELATION'      ,IZONE )
+        COEF(11)= MMINFR(DEFICO,'CZM_FERMETURE' ,IZONE )
 C
 C --- ACCES AU CHAMP INDICATEUR
 C
@@ -170,132 +181,27 @@ C
 C
 C --- ON NE TRAITE QUE LES MAILLES DE CONTACT
 C
-               ITYELE=ZI(JMAIL-1+IMA)
-               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYELE),TYPELE)
-               IF (IGRP.EQ.1) THEN
-                 IF (TYPELE(9:11).NE.'XHC'.AND.
-     &                TYPELE(6:8).NE.'XHC') GOTO 120
-               ELSEIF (IGRP.EQ.2) THEN
-                 IF (TYPELE(9:11).NE.'XTC'.AND.
-     &                TYPELE(6:8).NE.'XTC') GOTO 120
-               ELSEIF (IGRP.EQ.3) THEN
-                 IF(TYPELE(9:12).NE.'XHTC'.AND.
-     &                TYPELE(6:9).NE.'XHTC')GOTO 120
-               ELSE
-                 CALL ASSERT(.FALSE.)
-               ENDIF
-
+              ITYELE=ZI(JMAIL-1+IMA)
+              CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYELE),TYPELE)
+              CALL TEATTR(TYPELE,'S','XFEM',ENR,IBID)
+              IF (ENR(3:3).NE.'C'.AND.ENR(4:4).NE.'C') GOTO 120
 C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,1,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 1
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COEFCR
+C --- RECUPERATION DU NUMÉRO DE SOUS POINT ISPT
 C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,2,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 2
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COEFFF
+              DO 130 ISPT=1,ZI(JNBSP-1+IMA)
+                CALL CESEXI('S',JCESD,JCESL,IMA,1,ISPT,1,IAD)
+                IF (IAD.LT.0) GOTO 140
+ 130          CONTINUE
+              CALL ASSERT(.FALSE.)
+ 140          CONTINUE
 C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,3,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 3
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COEFFR
+C --- RECOPIE EFFECTIVE DES CHAMPS
 C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,4,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 4
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = INTEGR
-C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,5,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 5
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COECHE
-C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,6,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 6
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COCAUS
-C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,7,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 6
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COFAUS
-C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,8,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 6
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COCAUP
-C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,9,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 6
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-              ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COFAUP
-C
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,10,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 6
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
+              DO 150 ICMP = 1,NBCMP
+                CALL CESEXI('S',JCESD,JCESL,IMA,1,ISPT,ICMP,IAD)
                 ZL(JCESL-1-IAD) = .TRUE.
-                ZR(JCESV-1-IAD) = RELATI
-
-              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,11,IAD)
-              IF (IAD.GE.0) THEN
-                VALI(1) = 6
-                VALK(1) = CHELSI(1:19)
-                VALK(2) = 'ELEM'
-                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
-              ENDIF
-                ZL(JCESL-1-IAD) = .TRUE.
-                ZR(JCESV-1-IAD) = CZMFER
-
+                ZR(JCESV-1-IAD) = COEF(ICMP)
+ 150          CONTINUE
  120       CONTINUE
           ENDIF
  1000    CONTINUE
@@ -304,12 +210,14 @@ C
 C
 C --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 C
-      CALL CESCEL(CHELSI,LIGREL,'RIGI_CONT','PDONCO','OUI',IBID,'V',
+      CALL CESCEL(CHELSI,LIGREL,'RIGI_CONT','PDONCO','NON',IBID,'V',
      &            CHELEM,'F',IBID)
 C
-C --- DESTRUCTION DU CHAM_ELEM_S
+C --- MENAGE
 C
       CALL DETRSD('CHAM_ELEM_S',CHELSI)
+      CALL DETRSD('CHAM_ELEM_S','&&XMELE2.HEAV')
+      CALL JEDETR('&&XMELE2.NBSP')
 C
       CALL JEDEMA()
 C

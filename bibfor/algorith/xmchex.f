@@ -1,7 +1,7 @@
-      SUBROUTINE XMCHEX(NOMA  ,NBMA  ,CHELEX)
+      SUBROUTINE XMCHEX(NOMA  ,NBMA  ,LTNO  ,CHELEX)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      CHARACTER*19  CHELEX
+      CHARACTER*19  LTNO,CHELEX
       INTEGER       NBMA
       CHARACTER*8   NOMA
 C
@@ -65,13 +65,18 @@ C
       INTEGER       VALI(1)
 C
       INTEGER       IAD,IMA
-      INTEGER       JCESL,JCESV,JCESD
+      INTEGER       JCESL,JCESV,JCESD,JCESD2
 C
       DATA LICMP    / 'NPG_DYN', 'NCMP_DYN'/
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
+      CALL JEMARQ()       
+C
+C --- POUR RÉCUPÈRER LE NOMBRE DE SOUS POINTS DE TOPOSE.HEA
+C
+      CALL CELCES(LTNO,'V','&&XMCHEX.LTNO')
+      CALL JEVEUO('&&XMCHEX.LTNO      .CESD','L', JCESD2)
 C
 C --- CREATION DU CHAM_ELEM_S VIERGE
 C
@@ -95,7 +100,7 @@ C
           CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
         ENDIF
         ZL(JCESL-1-IAD) = .TRUE.
-        ZI(JCESV-1-IAD) = NBSPG
+        ZI(JCESV-1-IAD) = NBSPG*ZI(JCESD2-1+5+4*(IMA-1)+2)
         CALL CESEXI('C',JCESD,JCESL,IMA,1,1,2,IAD)
         IF (IAD.GE.0) THEN
           VALI(1) = 1
@@ -107,7 +112,7 @@ C
         ZI(JCESV-1-IAD) = 1
 100   CONTINUE
 C
-
+      CALL DETRSD('CHAM_ELEM_S','&&XMCHEX.LTNO')
 C
       CALL JEDEMA()
 C

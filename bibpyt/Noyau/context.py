@@ -1,4 +1,4 @@
-#@ MODIF context Noyau  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF context Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,10 +24,13 @@
 _root=None
 _cata=None
 debug=0
+from Noyau.N_info import message, SUPERV
 
-# L'usage a certainement dévié : le current step est plutôt le parent courant
-# que l'étape courante. Pour cela, l'exécution des étapes (ou macro-étape)
-# devrait appelée les méthodes set/get_current_step des étapes...
+# Le "current step" est l'étape courante.
+# Une macro se déclare étape courante dans sa méthode Build avant de construire
+# ses étapes filles ou dans BuildExec avant de les exécuter.
+# Les étapes simples le font aussi : dans Execute et BuildExec.
+# (Build ne fait rien pour une étape)
 
 def set_current_step(step):
    """
@@ -36,6 +39,7 @@ def set_current_step(step):
    global _root
    if _root : raise "Impossible d'affecter _root. Il devrait valoir None"
    _root=step
+   message.debug(SUPERV, "current_step = %s", step.nom, stack_id=-1)
 
 def get_current_step():
    """

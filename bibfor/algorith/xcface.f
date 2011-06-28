@@ -1,14 +1,17 @@
-      SUBROUTINE XCFACE(LSN,LST,JGRLSN,IGEOM,ENR,
+      SUBROUTINE XCFACE(ELREF,LSN,LST,JGRLSN,IGEOM,ENR,
+     &                  NFISS,IFISS,FISCO,NFISC,
      &                  PINTER,NINTER,AINTER,NFACE,NPTF,CFACE)
       IMPLICIT NONE
 
       REAL*8        LSN(*),LST(*)
       INTEGER       JGRLSN,IGEOM,NINTER,NFACE,CFACE(5,3),NPTF
+      INTEGER       NFISS,IFISS,FISCO(*),NFISC
+      CHARACTER*8   ELREF
       CHARACTER*24  PINTER,AINTER
       CHARACTER*16  ENR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +29,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
+C TOLE CRS_1404
 C                     TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 C                      ET LE PLAN DE FISSURE ET D…COUPAGE EN FACETTES
 C
@@ -36,13 +40,18 @@ C       LST      : VALEURS DE LA LEVEL SET TANGENTE
 C       JGRLSN   : ADRESSE DU GRADIENT DE LA LEVEL SET NORMALE
 C       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
 C       ENR      : VALEUR DE L'ATTRIBUT DE L'ELEMENT
+C       NFISS    : NOMBRE DE FISSURES VUES DANS L'…L…MENT
+C       IFISS    : NUM…RO DE LA FISSURE EN COURS
+C       FISCO    : NUM ET COEF DES FISS SUR LESQUELLES IFISS SE BRANCHE
+C       NFISC    : NOMBRE DE FISSURES SUR LESQUELLES IFISS SE BRANCHE
 C
 C     SORTIE
-C       PINTER  : COORDONNEES DES POINTS D'INTERSECTION
-C       NINTER  : NOMBRE DE POINTS D'INTERSECTION
-C       AINTER  : INFOS ARETE ASSOCIEE AU POINTS D'INTERSECTION
-C       NFACE   : NOMBRE DE FACETTES
-C       CFACE   : CONNECTIVITE DES NOEUDS DES FACETTES
+
+C       PINTER  : COORDONNEES DES POINTS D'INTERSECTION POUR IFISS
+C       NINTER  : NOMBRE DE POINTS D'INTERSECTION POUR IFISS
+C       AINTER  : INFOS ARETE ASSOCIEE AU POINTS D'INTERSECTI POUR IFISS
+C       NFACE   : NOMBRE DE FACETTES POUR IFISS
+C       CFACE   : CONNECTIVITE DES NOEUDS DES FACETTES POUR IFISS
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -65,22 +74,25 @@ C
       REAL*8          A(3),B(3),C(3),LSNA,LSNB,PADIST,LONGAR,TAMPOR(5)
       REAL*8          ALPHA,BAR(3),OA(3),M(3),AM(3),ND(3),PS,PS1,LAMBDA
       REAL*8          H(3),OH(3),NOH,COS,NOA,TRIGOM,R3(3),THETA(6),EPS
-      REAL*8          R8PI,DDOT,AB(2),LSTA,LSTB,LSTC,ABPRIM(2),PREC
-      REAL*8          R8PREM
-      INTEGER         J,AR(12,3),NBAR,NA,NB,JPTINT,INS,JAINT
+      REAL*8          R8PI,DDOT,AB(2),LSTA,LSTB,LSTC,ABPRIM(2),PREC,PRE2
+      REAL*8          LSJA(NFISC+1),LSJB(NFISC+1),LSJC,BETA,R8PREM
+      REAL*8          R8MAEM,MINLSN
+      INTEGER         J,AR(12,3),NBAR,NA,NB,NC,JPTINT,INS,JAINT
       INTEGER         IA,I,IPT,IBID,PP,PD,NNO,K
       INTEGER         IADZI,IAZK24,NDIM,PTMAX
       CHARACTER*8     TYPMA,ELP
       INTEGER         ZXAIN,XXMMVD
-      LOGICAL         LLIN,ISMALI
+      LOGICAL         LLIN,ISMALI,LCONT,LAJPA,LAJPB,LAJPC
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
       EPS=-1.0D-10
-C   PREC PERMET D"EVITER LES ERREURS DE PRÈCISION CONDUISANT
+
+C   PREC PERMET D"EVITER LES ERREURS DE PR…CISION CONDUISANT
 C   A IA=IN=0 POUR LES MAILLES DU FRONT
       PREC = 1000*R8PREM()
+      MINLSN = 1*R8MAEM()
 
       ZXAIN = XXMMVD('ZXAIN')
       CALL ELREF1(ELP)
@@ -91,6 +103,9 @@ C   A IA=IN=0 POUR LES MAILLES DU FRONT
       ELSEIF (NDIM .EQ. 2) THEN
          PTMAX=2
       ENDIF
+      LCONT = (ENR(3:3).EQ.'C').OR.(ENR(4:4).EQ.'C')
+      PRE2 = 0
+      IF (LCONT) PRE2 = PREC
 
 C     1) RECHERCHE DES POINTS D'INTERSECTION
 C     --------------------------------------
@@ -120,112 +135,128 @@ C     ILS FAUT DONC LES REPERER, ALORS NINTER = -1 (CA SERT DANS XDELCO)
       ENDIF
 
       IPT=0
-C     COMPTEUR DE POINT INTERSECTION = NOEUD SOMMENT
+C       COMPTEUR DE POINT INTERSECTION = NOEUD SOMMENT
       INS=0
       CALL CONARE(TYPMA,AR,NBAR)
 
-C     BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
+C       BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
       DO 100 IA=1,NBAR
 
 C       NUM NO DE L'ELEMENT
         NA=AR(IA,1)
         NB=AR(IA,2)
-        LSNA=LSN(NA)
-        LSNB=LSN(NB)
-        LSTA=LST(NA)
-        LSTB=LST(NB)
-        DO 110 I=1,NDIM
-          A(I)=ZR(IGEOM-1+NDIM*(NA-1)+I)
-          B(I)=ZR(IGEOM-1+NDIM*(NB-1)+I)
- 110    CONTINUE
-        IF (NDIM.LT.3) THEN
-              A(3)=0.D0
-              B(3)=0.D0
-              C(3)=0.D0
-        ENDIF
-        LONGAR=PADIST(NDIM,A,B)
-
-        IF ((ENR.EQ.'XHC').OR. (ENR.EQ.'XHTC')) THEN
-          IF ((LSNA*LSNB).LE.0.D0) THEN
-            IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.PREC)) THEN
-C             ON AJOUTE A LA LISTE LE POINT A
-              IF (LSTA.GE.0.D0.AND.LLIN) THEN
-               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,
-     &                     JAINT,0,0,0.D0)
-              ELSE
-               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,
-     &                     JAINT,0,NA,0.D0)
-              ENDIF
-            ENDIF
-            IF (LSNB.EQ.0.D0.AND.LSTB.LE.PREC) THEN
-C             ON AJOUTE A LA LISTE LE POINT B
-              IF (LSTB.GE.0.D0.AND.LLIN) THEN
-               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,
-     &                     JAINT,0,0,0.D0)
-              ELSE
-               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,
-     &                     JAINT,0,NB,0.D0)
-              ENDIF
-            ENDIF
-            IF (LSNA.NE.0.D0.AND.LSNB.NE.0.D0) THEN
-C             INTERPOLATION DES COORDONN??ES DE C
-              DO 130 I=1,NDIM
-                C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))
- 130          CONTINUE
-C             POSITION DU PT D'INTERSECTION SUR L'ARETE
-              ALPHA=PADIST(NDIM,A,C)
-              LSTC=LSTA-(LSNA/(LSNB-LSNA))*(LSTB-LSTA)
-              IF (LSTC.LE.PREC) THEN
-                IF (LSTC.GE.0.D0.AND.LLIN) THEN
-                  CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,
-     &                        JAINT,0,0,0.D0)
-                ELSE
-                  CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,
-     &                        JAINT,IA,0,ALPHA)
-                ENDIF
-              ENDIF
+        NC=IA
+        LSNA=LSN((NA-1)*NFISS+IFISS)
+        LSNB=LSN((NB-1)*NFISS+IFISS)
+        IF (LSNA.LT.MINLSN) MINLSN=LSNA
+        IF (LSNB.LT.MINLSN) MINLSN=LSNB
+        IF ((LSNA*LSNB).LE.0.D0) THEN
+          LSTA=LST((NA-1)*NFISS+IFISS)
+          LSTB=LST((NB-1)*NFISS+IFISS)
+          DO 110 I=1,NDIM
+            A(I)=ZR(IGEOM-1+NDIM*(NA-1)+I)
+            B(I)=ZR(IGEOM-1+NDIM*(NB-1)+I)
+ 110      CONTINUE
+          IF (NDIM.LT.3) THEN
+            A(3)=0.D0
+            B(3)=0.D0
+            C(3)=0.D0
+          ENDIF
+          LONGAR=PADIST(NDIM,A,B)
+C
+          LAJPA = .FALSE.
+          LAJPB = .FALSE.
+          LAJPC = .FALSE.
+C
+          IF (LSNA.EQ.0.D0.AND.LSTA.LE.PRE2) THEN
+C           ON AJOUTE A LA LISTE LE POINT A
+            LAJPA = .TRUE.
+            IF (LCONT.AND.LLIN.AND.LSTA.GE.0.D0) NA=0
+          ENDIF
+          IF (LSNB.EQ.0.D0.AND.LSTB.LE.PRE2) THEN
+C           ON AJOUTE A LA LISTE LE POINT B
+            LAJPB = .TRUE.
+            IF (LCONT.AND.LLIN.AND.LSTB.GE.0.D0) NB=0
+          ENDIF
+          IF (LSNA.NE.0.D0.AND.LSNB.NE.0.D0) THEN
+C           INTERPOLATION DES COORDONNEES DE C
+            BETA = LSNA/(LSNB-LSNA)
+            DO 120 I=1,NDIM
+              C(I)=A(I)-BETA*(B(I)-A(I))
+ 120        CONTINUE
+C           POSITION DU PT D'INTERSECTION SUR L'ARETE
+            ALPHA=PADIST(NDIM,A,C)
+            LSTC=LSTA-BETA*(LSTB-LSTA)
+            IF (LSTC.LE.PREC) THEN
+              LAJPC = .TRUE.
+              IF (LCONT.AND.LLIN.AND.LSTC.GE.0.D0) NC = 0
             ENDIF
           ENDIF
-
-        ELSE
-          IF ((LSNA*LSNB).LE.0.D0) THEN
-            IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.0.D0)) THEN
-C             ON AJOUTE A LA LISTE LE POINT A
-              CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,
-     &                    JAINT,0,NA,0.D0)
-            ENDIF
-            IF (LSNB.EQ.0.D0.AND.LSTB.LE.0.D0) THEN
-C             ON AJOUTE A LA LISTE LE POINT B
-              CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,
-     &                    JAINT,0,NB,0.D0)
-            ENDIF
-            IF (LSNA.NE.0.D0.AND.LSNB.NE.0.D0) THEN
-C             INTERPOLATION DES COORDONN…ES DE C
-              DO 140 I=1,NDIM
-                C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))
- 140          CONTINUE
-C             POSITION DU PT D'INTERSECTION SUR L'ARETE
-              ALPHA=PADIST(NDIM,A,C)
-              LSTC=LSTA-(LSNA/(LSNB-LSNA))*(LSTB-LSTA)
-
-C             CAS OU LE FRONT EST EXCATEMENT SUR L'ARETE
-C             IF (LSTC.LE.PREC.AND.LSTC.GT.0.D0) THEN
-              IF (LSTC.LE.PREC) THEN
-                IF (LSTC.GT.0.D0) LSTC=0.D0
-                CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,
-     &                      JAINT,IA,0,
-     &                      ALPHA)
+C         MODIFICATION EN TENANT COMPTE DE LA LEVEL SET JONCTION
+          IF (NFISC.GT.0) THEN
+C           POUR LES FISSURES SUR LESQUELLES IFISS SE BRANCHE
+            CALL ASSERT(NA.GT.0.AND.NB.GT.0.AND.NC.GT.0)
+            DO 130 J=1,NFISC
+              LSJA(J)=LSN((NA-1)*NFISS+FISCO(2*J-1))*FISCO(2*J)
+              LSJB(J)=LSN((NB-1)*NFISS+FISCO(2*J-1))*FISCO(2*J)
+ 130        CONTINUE
+            DO 140 J=1,NFISC
+              IF (LAJPA) THEN
+                IF (LSJA(J).GT.PRE2) LAJPA = .FALSE.
+                IF (LCONT.AND.LSJA(J).GE.0) NA = 0
+              ENDIF
+              IF (LAJPB) THEN
+                IF (LSJB(J).GT.PRE2) LAJPB = .FALSE.
+                IF (LCONT.AND.LSJB(J).GE.0) NB = 0
+              ENDIF
+              IF (LAJPC) THEN
+                LSJC=LSJA(J)-BETA*(LSJB(J)-LSJA(J))
+                IF (LSJC.GT.PREC) LAJPC = .FALSE.
+                IF (LCONT.AND.LSJC.GE.0) NC = 0
+              ENDIF
+ 140        CONTINUE
+          ENDIF
+          DO 150 J = NFISC+1,NFISS
+C           POUR LES FISSURES QUI SE BRANCHENT SUR IFISS
+            K = FISCO(2*J-1)
+            IF (K.GT.0) THEN
+              LSJA(1) = LSN((NA-1)*NFISS+K)
+              LSJB(1) = LSN((NB-1)*NFISS+K)
+              IF (LAJPA.AND.ABS(LSJA(1)).LT.1D-12) THEN
+                NA = 0
+              ENDIF
+              IF (LAJPB.AND.ABS(LSJB(1)).LT.1D-12) THEN
+                NB = 0
+              ENDIF
+              IF (LAJPC) THEN
+                LSJC=LSJA(1)-BETA*(LSJB(1)-LSJA(1))
+C             ON RETIENT LE NUM D'ARETE AVEC LE SIGNE -
+C             POUR REP…RER L'ARETE DANS XAINT2
+                IF (ABS(LSJC).LT.1D-12) NC = -ABS(NC)
               ENDIF
             ENDIF
-          ENDIF
+ 150      CONTINUE
+C
+          IF (LAJPA) CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,
+     &                           JAINT,0,NA,0.D0)
+          IF (LAJPB) CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,
+     &                           JAINT,0,NB,0.D0)
+          IF (LAJPC) CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,
+     &                           JAINT,NC,0,ALPHA)
         ENDIF
 
  100  CONTINUE
 
+C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECT…ES
+      IF (NFISC.GT.0) THEN
+        CALL XCFACJ(JPTINT,PTMAX,IPT,JAINT,LSN,IGEOM,NNO,NDIM,
+     &               NFISS,IFISS,FISCO,NFISC,LLIN,TYPMA)
+      ENDIF
 C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
-      CALL XCFACF(JPTINT,PTMAX,IPT,JAINT,LSN,LST,IGEOM,NNO,NDIM,
+      IF (ENR(2:2).EQ.'T'.OR.ENR(3:3).EQ.'T') THEN
+        CALL XCFACF(JPTINT,PTMAX,IPT,JAINT,LSN,LST,IGEOM,NNO,NDIM,
      &                                                    LLIN,TYPMA)
-
+      ENDIF
       NINTER=IPT
 
 C     2) DECOUPAGE EN FACETTES TRIANGULAIRES DE LA SURFACE DEFINIE
@@ -248,7 +279,7 @@ C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
         CALL VECINI(3,0.D0,ND)
         DO 210 I=1,NNO
          DO 211 J=1,3
-           ND(J)=ND(J)+ZR(JGRLSN-1+3*(I-1)+J)/NNO
+           ND(J)=ND(J)+ZR(JGRLSN-1+3*(NFISS*(I-1)+IFISS-1)+J)/NNO
  211     CONTINUE
  210    CONTINUE
 
@@ -368,40 +399,40 @@ C     CAS 2D
       ELSEIF (NDIM .EQ. 2) THEN
 
         DO 800 I=1,5
-         DO 801 J=1,3
-           CFACE(I,J)=0
- 801     CONTINUE
+          DO 801 J=1,3
+            CFACE(I,J)=0
+ 801      CONTINUE
  800    CONTINUE
         IF (NINTER .EQ. 2) THEN
 C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
-        CALL VECINI(2,0.D0,ND)
-        DO 810 I=1,NNO
-         DO 811 J=1,2
-           ND(J)=ND(J)+ZR(JGRLSN-1+2*(I-1)+J)/NNO
- 811     CONTINUE
- 810    CONTINUE
+          CALL VECINI(2,0.D0,ND)
+          DO 810 I=1,NNO
+            DO 811 J=1,2
+           ND(J)=ND(J)+ZR(JGRLSN-1+2*(NFISS*(I-1)+IFISS-1)+J)/NNO
+ 811        CONTINUE
+ 810      CONTINUE
 
-        DO 841 J=1,2
-           A(J)=ZR(JPTINT-1+J)
-           B(J)=ZR(JPTINT-1+2+J)
-           AB(J)=B(J)-A(J)
- 841    CONTINUE
+          DO 841 J=1,2
+            A(J)=ZR(JPTINT-1+J)
+            B(J)=ZR(JPTINT-1+2+J)
+            AB(J)=B(J)-A(J)
+ 841      CONTINUE
 
-        ABPRIM(1)=-AB(2)
-        ABPRIM(2)=AB(1)
+          ABPRIM(1)=-AB(2)
+          ABPRIM(2)=AB(1)
 
-        IF (DDOT(2,ABPRIM,1,ND,1) .LT. 0.D0) THEN
-         DO 852 K=1,2
-           TAMPOR(K)=ZR(JPTINT-1+K)
-           ZR(JPTINT-1+K)=ZR(JPTINT-1+2+K)
-           ZR(JPTINT-1+2+K)=TAMPOR(K)
- 852     CONTINUE
-         DO 853 K=1,4
-           TAMPOR(K)=ZR(JAINT-1+K)
-           ZR(JAINT-1+K)=ZR(JAINT-1+ZXAIN+K)
-           ZR(JAINT-1+ZXAIN+K)=TAMPOR(K)
- 853     CONTINUE
-        ENDIF
+          IF (DDOT(2,ABPRIM,1,ND,1) .LT. 0.D0) THEN
+            DO 852 K=1,2
+              TAMPOR(K)=ZR(JPTINT-1+K)
+              ZR(JPTINT-1+K)=ZR(JPTINT-1+2+K)
+              ZR(JPTINT-1+2+K)=TAMPOR(K)
+ 852        CONTINUE
+            DO 853 K=1,4
+              TAMPOR(K)=ZR(JAINT-1+K)
+              ZR(JAINT-1+K)=ZR(JAINT-1+ZXAIN+K)
+              ZR(JAINT-1+ZXAIN+K)=TAMPOR(K)
+ 853        CONTINUE
+          ENDIF
           NFACE=1
           NPTF=2
           CFACE(1,1)=1
@@ -415,8 +446,8 @@ C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
 C       PROBLEME DE DIMENSION : NI 2D, NI 3D
         CALL ASSERT(NDIM.EQ.2 .OR. NDIM.EQ.3)
       ENDIF
-
+      IF (NFISS.GT.1.AND.MINLSN.EQ.0) NFACE = 0
+      IF (NFACE.EQ.0) NINTER = 0
  999  CONTINUE
-
       CALL JEDEMA()
       END

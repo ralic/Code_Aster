@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE NISTOR I.NISTOR
 
-from Macro.calc_modal_ops import calc_modal_ops
 
 def calc_modal_prod(self,AMORTISSEMENT,**args):
   if AMORTISSEMENT=="NON": return mode_meca
@@ -26,10 +25,11 @@ def calc_modal_prod(self,AMORTISSEMENT,**args):
   raise AsException("type de concept resultat non prevu")
 
 
-CALC_MODAL=MACRO(nom="CALC_MODAL",op=calc_modal_ops,
-            UIinfo={"groupes":("Résolution","Dynamique",)},
-                      sd_prod=calc_modal_prod,
-                    fr="Calcul des modes propres reels ou complexes dans une seule commande",
+CALC_MODAL=MACRO(nom="CALC_MODAL",
+                 op=OPS('Macro.calc_modal_ops.calc_modal_ops'),
+                 UIinfo={"groupes":("Résolution","Dynamique",)},
+                 sd_prod=calc_modal_prod,
+                 fr="Calcul des modes propres reels ou complexes dans une seule commande",
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          AMORTISSEMENT    =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),

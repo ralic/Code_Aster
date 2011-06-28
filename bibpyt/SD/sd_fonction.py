@@ -1,8 +1,8 @@
-#@ MODIF sd_fonction SD  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF sd_fonction SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ class sd_fonction_aster(sd_titre):
         if typfon == 'NAPPE' :
             assert len(prol) > 7  , (prol,self)
         else :
-            # tester que le prol[5] est bien le nom de la fonction 
+            # tester que le prol[5] est bien le nom de la fonction
             assert len(prol) == 6  , (prol,self)
 
         if ltabul :  # type d'interpolation

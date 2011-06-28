@@ -1,29 +1,27 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_MACRO_ETAPE Build  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+"""
+"""
 
-"""
-"""
 # Modules Python
 import string, traceback,sys
 import types
@@ -46,7 +44,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       pass
 
    def Build(self):
-      """ 
+      """
       Fonction : Construction d'une étape de type MACRO
 
       La construction n'est à faire que pour certaines macros.
@@ -55,9 +53,9 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       """
       self.set_current_step()
       self.building=None
-      # Chaque macro_etape doit avoir un attribut cr du type CR 
+      # Chaque macro_etape doit avoir un attribut cr du type CR
       # (compte-rendu) pour stocker les erreurs eventuelles
-      # et doit l'ajouter au cr de l'etape parent pour construire un 
+      # et doit l'ajouter au cr de l'etape parent pour construire un
       # compte-rendu hierarchique
       self.cr=self.CR(debut='Etape : '+self.nom + '    ligne : '+`self.appel[0]` + '    fichier : '+`self.appel[1]`,
                        fin = 'Fin Etape : '+self.nom)
@@ -74,7 +72,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
          self.reset_current_step()
          return ier
       except:
-         # Si une exception a ete levee, on se contente de remettre le step courant au pere 
+         # Si une exception a ete levee, on se contente de remettre le step courant au pere
          # et on releve l'exception
          self.reset_current_step()
          raise
@@ -83,7 +81,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       """
           Construction d'une étape de type MACRO.
 
-          On ne construit pas les sous commandes et le 
+          On ne construit pas les sous commandes et le
           current step est supposé correctement initialisé
       """
       ier = self._Build()
@@ -99,7 +97,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       ier=0
       try:
          if self.definition.proc is not None:
-            # On est dans le cas d'une macro en Python. On evalue la fonction 
+            # On est dans le cas d'une macro en Python. On evalue la fonction
             # self.definition.proc dans le contexte des valeurs de mots clés (d)
             # La fonction proc doit demander la numerotation de la commande (appel de set_icmd)
             d=self.cree_dict_valeurs(self.mc_liste)
@@ -162,7 +160,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       return type + "9" + string.zfill(str(self.jdc.nsd),6)
 
    def DeclareOut(self,nom,concept):
-      """ 
+      """
           Methode utilisee dans une macro lors de la construction
           de cette macro en Python (par opposition a une construction en Fortran).
           Elle a pour but de specifier le mapping entre un nom de concept local
@@ -189,7 +187,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       return ier
 
    def get_sd_avant_etape(self,nom,etape):
-      """ 
+      """
           Retourne le concept de nom nom defini avant l etape etape
       """
       sd=self.parent.get_sd_avant_etape(nom,self)

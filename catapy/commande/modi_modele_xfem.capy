@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,7 +24,7 @@ MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu
                            
     MODELE_IN       =SIMP(statut='o',typ=modele_sdaster,min=1,max=1,),
     FISSURE         =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
-    CRITERE         =SIMP(statut='f',typ='R',defaut=1.1E-4),
+    CRITERE         =SIMP(statut='f',typ='R',defaut=1.1E-9),
     INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,)),
     CONTACT        
      =SIMP(statut='f',typ='TXM',defaut='SANS',into=("P1P1","P1P1A","P2P1","SANS"),min=1,max=1,),

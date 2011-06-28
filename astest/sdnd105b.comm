@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHOC DE DEUX MASSES AU COMPORTEMENT FLAMBAGE PLASTIQUE
 # sdnd105b.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,7 +82,9 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,  MATR_B=MASSE,
 #-----------------------------------------------------------------------
 
 
-MACRO_PROJ_BASE(  BASE=MODE_MEC,MATR_ASSE_GENE=(
+MACRO_PROJ_BASE(  BASE=MODE_MEC,
+                  STOCKAGE='DIAG',
+                  MATR_ASSE_GENE=(
                      _F(  MATRICE = CO("MASS_GEN"),
                                       MATR_ASSE = MASSE),
                      _F(  MATRICE = CO("RIGI_GEN"),

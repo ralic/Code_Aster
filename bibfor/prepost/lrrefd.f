@@ -4,7 +4,7 @@
       CHARACTER*19 PRCHND
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,11 +59,13 @@ C
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER IRET,IRET1,IRET2,IRET3,IBID
+      INTEGER IRET,IRET1,IRET2,IBID
       INTEGER JREFD
 
       CHARACTER*8 MATRA,MATRB
-      CHARACTER*14 NUDDL
+      CHARACTER*14 NUDDB, NUDDA
+      CHARACTER*19 PRONU1, PRONU2
+      LOGICAL IDENSD
 C
 C ----------------------------------------------------------------------
 C
@@ -75,33 +77,40 @@ C
       PRCHND = ' '
       MATRA  = ' '
       MATRB  = ' '
-      NUDDL  = ' '
+      NUDDA  = ' '
+      NUDDB  = ' '
 
       IBID = 1
 
       CALL GETVID(' ','MATR_A',IBID,1,1,MATRA,IRET1)
-      CALL GETVID(' ','NUME_DDL',0,1,1,NUDDL,IRET2)
-      CALL GETVID(' ','MATR_B',IBID,1,1,MATRB,IRET3)
+      CALL GETVID(' ','MATR_B',IBID,1,1,MATRB,IRET2)
 
-      IF(IRET2.EQ.1)THEN
-        CALL DISMOI('F','PROF_CHNO',NUDDL,'NUME_DDL',
+      IF (IRET2.EQ.1) THEN
+        CALL U2MESS('I','PREPOST_14')
+        CALL DISMOI('F','NOM_NUME_DDL',MATRB,'MATR_ASSE',
+     &                 IBID,NUDDB,IRET)
+        CALL DISMOI('F','PROF_CHNO',NUDDB,'NUME_DDL',
      &                   IBID,PRCHND,IRET)
       ENDIF
 
-
-      IF ((IRET3.EQ.1).AND.(IRET2.NE.1)) THEN
-        CALL U2MESS('I','PREPOST_14')
-        CALL DISMOI('F','NOM_NUME_DDL',MATRB,'MATR_ASSE',
-     &                 IBID,NUDDL,IRET)
-        CALL DISMOI('F','PROF_CHNO',NUDDL,'NUME_DDL',
-     &                   IBID,PRCHND,IRET)
+C     VERIFICATION : LES NUME_DDL DES MATRICES A ET B SONT IDENTIQUES
+      IF (IRET1.EQ.1 .AND. IRET2.EQ.1) THEN
+        CALL DISMOI('F', 'NOM_NUME_DDL', MATRA, 'MATR_ASSE',
+     &              IBID, NUDDA, IRET)
+        IF (NUDDB.NE.NUDDA) THEN
+          PRONU1=(NUDDB//'.NUME')
+          PRONU2=(NUDDA//'.NUME')
+          IF (.NOT.IDENSD('PROF_CHNO',PRONU1,PRONU2)) THEN
+            CALL U2MESS('F','ALGELINE2_79')
+          ENDIF
+        ENDIF
       ENDIF
 
       CALL WKVECT(RESU//'           .REFD','G V K24',7,JREFD)
       ZK24(JREFD-1+1) = MATRA
       ZK24(JREFD-1+2) = MATRB
       ZK24(JREFD-1+3) = ' '
-      ZK24(JREFD-1+4) = NUDDL
+      ZK24(JREFD-1+4) = NUDDB
       ZK24(JREFD-1+5) = ' '
       ZK24(JREFD-1+6) = ' '
       ZK24(JREFD-1+7) = ' '

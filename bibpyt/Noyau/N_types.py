@@ -1,4 +1,4 @@
-#@ MODIF N_types Noyau  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_types Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,8 +22,6 @@
 """
    Ce module contient des fonctions utilitaires pour tester les types
 """
-
-from N_ASSD import ASSD
 
 
 # use isinstance() instead of type() because objects returned from numpy arrays
@@ -56,6 +54,7 @@ def is_enum(obj):
     return is_list(obj) or is_tuple(obj)
 
 def is_assd(obj):
+    from N_ASSD import ASSD
     return isinstance(obj, ASSD)
 
 

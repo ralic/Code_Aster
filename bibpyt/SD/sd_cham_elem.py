@@ -1,8 +1,8 @@
-#@ MODIF sd_cham_elem SD  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_elem SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,12 +20,10 @@
 
 from SD import *
 from SD.sd_titre import sd_titre
-
 from SD.sd_ligrel import sd_ligrel
 
 
 class sd_cham_elem(sd_titre):
-#-------------------------------------
     nomj = SDNom(fin=19)
     CELD = AsVI(docu='CHML', )
     CELV = AsObject(genr='V', xous='S', type=Parmi('C', 'I', 'K', 'R'), ltyp=Parmi(4,8,16), )
@@ -75,7 +73,6 @@ class sd_cham_elem(sd_titre):
             assert lggrel > 0 , (lggrel,kgrel)
             assert lggrel >= nbel*lgcata , (lggrel,kgrel,nbel,lgcata)
 
-
             for iel in range(nbel) :
                 nbsp  =celd[debugr+4+4*iel+1]
                 ncdyn =celd[debugr+4+4*iel+2]
@@ -89,5 +86,4 @@ class sd_cham_elem(sd_titre):
                    assert ncdyn == 0 , (ncdyn,kgrel,iel)
                    assert lgchel == lgcata*nbsp , (lgchel,lgcata,nbsp,kgrel,iel)
                 assert adiel > 0 , (adiel,kgrel,iel)
-
 

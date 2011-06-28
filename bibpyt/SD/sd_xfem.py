@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+#@ MODIF sd_xfem SD  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,6 +84,9 @@ class sd_fiss_xfem(AsBase):
     LISCO  = Facultatif(AsVR(SDNom(nomj='.LISCO')))
     LISEQ  = Facultatif(AsVI(SDNom(nomj='.LISEQ')))
     LISRL  = Facultatif(AsVI(SDNom(nomj='.LISRL')))
+    LISEQ_LAGR  = Facultatif(AsVI(SDNom(nomj='.LISEQ_LAGR')))
+    CNCTE  = Facultatif(AsVI(SDNom(nomj='.CNCTE')))
+    
 
 # I.4) objets relatifs au contact
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractéristiques de l'étude :
@@ -124,11 +127,8 @@ class sd_modele_xfem(AsBase):
     TOPOFAC_CF  = sd_cham_elem(SDNom(nomj='.TOPOFAC.CF'))
     TOPOFAC_LO  = sd_cham_elem(SDNom(nomj='.TOPOFAC.LO'))
     TOPOFAC_BA  = sd_cham_elem(SDNom(nomj='.TOPOFAC.BA'))
-
-    TOPOFAC_GM  = sd_cham_elem(SDNom(nomj='.TOPOFAC.GM'))
-    TOPOFAC_GE  = sd_cham_elem(SDNom(nomj='.TOPOFAC.GE'))
+    TOPOFAC_HE  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.HE')))
     TOPOFAC_OE  = sd_cham_elem(SDNom(nomj='.TOPOFAC.OE'))
-    TOPOFAC_OM  = sd_cham_elem(SDNom(nomj='.TOPOFAC.OM'))
 
 # II.3) objets concatenes relatifs aux level sets
 
@@ -137,12 +137,12 @@ class sd_modele_xfem(AsBase):
     BASLOC = sd_cham_elem(SDNom(nomj='.BASLOC'))
     STNO   = sd_cham_elem(SDNom(nomj='.STNO'))
     FISSNO = sd_cham_elem(SDNom(nomj='.FISSNO'))
+    HEAVNO = sd_cham_elem(SDNom(nomj='.HEAVNO'))
     NOXFEM = sd_cham_no()
-    LISNOH = Facultatif(AsVI())
 
 # II.4) autres objets
 
     XFEM_CONT   = AsVI(lonmax=1) # contact ou pas
     FISS   = AsVK8()             # noms des fissures
     NFIS   = AsVI(lonmax=1,)     # nombre de fissures
-    XMAFIS = sd_carte()          # pour chaque maille : nom de la fissure
+    XMAFIS = sd_cham_elem(SDNom(nomj='.XMAFIS')) # pour chaque maille : nom de(s) fissure(s)

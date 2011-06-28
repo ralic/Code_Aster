@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -17,8 +17,6 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-#
-#
 # ======================================================================
 
 
@@ -27,6 +25,7 @@ from os import times
 import aster
 import string
 from Noyau.N__F import _F
+from Noyau.N_info import message, SUPERV
 
 class MACRO_ETAPE(E_ETAPE.ETAPE):
    """
@@ -65,6 +64,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       Le seul cas ou on appelle plusieurs fois Execute est pour INCLUDE
       (appel dans op_init)
       """
+      message.debug(SUPERV, "%s par_lot=%s", self.nom, self.jdc and self.jdc.par_lot)
       if not self.jdc or self.jdc.par_lot != "NON" :
          return
 
@@ -108,7 +108,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       # préfixés par '.' dans la base jeveux
       # Pour ne pas avoir l'affichage en cas de IMPR_MACRO='NON'
       # on déclare l'étape DETRUIRE fille de la macro en cours
-      # par set_current_step
+      # par set_current_step (fait dans l'exécution de DETRUIRE)
       self.set_current_step()
       if self.nom!='DETRUIRE' :
          s_obj=set()
@@ -164,8 +164,10 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
    def BuildExec(self):
       """
-      Cette methode enchaine en une seule passe les phases de construction et d'execution
+      Cette methode enchaine en une seule passe les phases de construction et d'execution.
+      Utilisée en PAR_LOT='OUI'.
       """
+      message.debug(SUPERV, "BuildExec %s", self.nom)
       self.set_current_step()
       self.building=None
       # Chaque macro_etape doit avoir un attribut cr du type CR
@@ -232,7 +234,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       self.reset_current_step()
 
    def get_liste_etapes(self,liste):
-      if self.nom=='INCLUDE' :
+      if self.nom == 'INCLUDE' :
          for e in self.etapes:
              e.get_liste_etapes(liste)
       else :

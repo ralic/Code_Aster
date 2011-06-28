@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE BODEL C.BODEL
 NUME_DDL_GENE=OPER(nom="NUME_DDL_GENE",op= 127,sd_prod=nume_ddl_gene,
-                   fr="Etablissement de la numérotation des ddl d'un modèle établi en coordonnées généralisées",
+                   fr="Etablissement de la numérotation des ddl d'un modèle etabli en coordonnées généralisees",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=UN_PARMI('MODELE_GENE','BASE'),
@@ -29,7 +29,7 @@ NUME_DDL_GENE=OPER(nom="NUME_DDL_GENE",op= 127,sd_prod=nume_ddl_gene,
                                     ),
          BASE     =SIMP(statut='f',typ=(mode_meca,mode_gene ) ),
              b_base     =BLOC(condition = "BASE != None",
-               STOCKAGE     =SIMP(statut='f',typ='TXM',defaut="DIAG",into=("DIAG","PLEIN") ),
+               STOCKAGE     =SIMP(statut='f',typ='TXM',defaut="PLEIN",into=("DIAG","PLEIN") ),
                NB_VECT     =SIMP(statut='f',typ='I',defaut= 9999 ),
                              ),
 )  ;

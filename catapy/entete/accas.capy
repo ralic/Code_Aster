@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF ENTETE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,7 @@ from __future__ import division
 import Accas
 from Accas import *
 from Accas import _F
+from Accas import OPS
 from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
 from math import pi ,exp,log, log10, sqrt
 import ops
@@ -35,7 +36,6 @@ except ImportError:
   pass
 
 
-# -----------------------------------------------------------------------------
 JdC = JDC_CATA(code='ASTER',
                execmodul=None,
                regles = (AU_MOINS_UN('DEBUT','POURSUITE'),
@@ -77,14 +77,12 @@ class reel(ASSD):
          #validateur into et valid
          return self
 
-# -----------------------------------------------------------------------------
 # Type geometriques
 class no  (GEOM):pass
 class grno(GEOM):pass
 class ma  (GEOM):pass
 class grma(GEOM):pass
 
-# -----------------------------------------------------------------------------
 from SD.co_cabl_precont     import cabl_precont
 from SD.co_cara_elem        import cara_elem
 from SD.co_cham_mater       import cham_mater
@@ -113,44 +111,36 @@ from SD.co_surface          import surface_sdaster
 from SD.co_tran_gene        import tran_gene
 from SD.co_type_flui_stru   import type_flui_stru
 
-# -----------------------------------------------------------------------------
 # modeles :
 from SD.co_modele      import modele_sdaster
 from SD.co_modele_gene import modele_gene
 
-# -----------------------------------------------------------------------------
 # materiau
 from SD.co_mater import mater_sdaster
 
-# -----------------------------------------------------------------------------
 # macro-elements :
 from SD.co_macr_elem_dyna import macr_elem_dyna
 from SD.co_macr_elem_stat import macr_elem_stat
 
-# -----------------------------------------------------------------------------
 # liste :
 from SD.co_listr8 import listr8_sdaster
 
-# -----------------------------------------------------------------------------
 # maillage :
 from SD.co_maillage  import maillage_sdaster
 from SD.co_squelette import squelette
 from SD.co_grille    import grille_sdaster
 
-# -----------------------------------------------------------------------------
 # champs
 from SD.co_champ     import cham_gd_sdaster
 from SD.co_cham_no   import cham_no_sdaster
 from SD.co_carte     import carte_sdaster
 from SD.co_cham_elem import cham_elem
 
-# -----------------------------------------------------------------------------
 # resultat : (evol_sdaster,mode_stat,mode_meca)
 from SD.co_resultat     import resultat_sdaster, resultat_jeveux
 from SD.co_resultat_dyn import resultat_dyn
 from SD.co_mode_meca    import mode_meca
 
-# -----------------------------------------------------------------------------
 class acou_harmo    (resultat_dyn):pass
 class dyna_harmo    (resultat_dyn):pass
 class dyna_trans    (resultat_dyn):pass
@@ -159,14 +149,12 @@ class mode_acou     (resultat_dyn):pass
 class mode_flamb    (resultat_dyn):pass
 class mode_gene     (resultat_dyn):pass
 
-# -----------------------------------------------------------------------------
 class comb_fourier  (resultat_sdaster):pass
 class fourier_elas  (resultat_sdaster):pass
 class fourier_ther  (resultat_sdaster):pass
 class mult_elas     (resultat_sdaster):pass
 class theta_geom    (resultat_sdaster):pass
 
-# -----------------------------------------------------------------------------
 # resultat_sdaster/evol_sdaster :
 class evol_sdaster(resultat_sdaster):pass
 class evol_char(evol_sdaster):pass
@@ -175,15 +163,12 @@ class evol_noli(evol_sdaster):pass
 class evol_ther(evol_sdaster):pass
 class evol_varc(evol_sdaster):pass
 
-# -----------------------------------------------------------------------------
 # resultat_sdaster/mode_meca :
 class mode_meca_c(mode_meca):pass
 
-# -----------------------------------------------------------------------------
 # fonctions / nappe / para_sensi
 from SD.co_fonction import fonction_sdaster, para_sensi, fonction_c, nappe_sdaster
 
-# -----------------------------------------------------------------------------
 # matr_asse :
 from SD.co_matr_asse      import matr_asse
 from SD.co_matr_asse_gene import matr_asse_gene
@@ -195,32 +180,33 @@ from SD.co_matr_asse_gd import matr_asse_gd, \
                                matr_asse_pres_r, matr_asse_pres_c, \
                                matr_asse_temp_r, matr_asse_temp_c
 
-# -----------------------------------------------------------------------------
 # matr_elem :
 from SD.co_matr_elem import matr_elem, \
                             matr_elem_depl_r, matr_elem_depl_c, \
                                               matr_elem_pres_c, \
                             matr_elem_temp_r
 
-# -----------------------------------------------------------------------------
 # table :
 from SD.co_table import table_sdaster, table_jeveux
 from SD.co_table_fonction import table_fonction
 from SD.co_table_container import table_container
 
-# -----------------------------------------------------------------------------
 # vect_asse_gene :
 from SD.co_vect_asse_gene import vect_asse_gene
 
-# -----------------------------------------------------------------------------
 # vect_elem :
 from SD.co_vect_elem import vect_elem, \
                             vect_elem_depl_r, \
                             vect_elem_pres_r, vect_elem_pres_c, \
                             vect_elem_temp_r
 
-
-# -----------------------------------------------------------------------------
 # corresp_2_mailla :
 from SD.co_corresp_2_mailla import corresp_2_mailla
+
+
+# utilisé par exemple par des macros où tout est fait dans l'init.
+def empty_macro(self, **args):
+    """Macro vide."""
+    self.set_icmd(1)
+    return 0
 

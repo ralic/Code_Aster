@@ -1,8 +1,8 @@
-#@ MODIF sd_cham_no SD  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF sd_cham_no SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,12 +25,10 @@ from SD.sd_prof_chno import sd_prof_chno
 
 
 class sd_cham_no(sd_titre):
-#------------------------------------
     nomj = SDNom(fin=19)
     VALE = AsVect(ltyp=Parmi(4,8,16,24), type=Parmi('C', 'I', 'K', 'R'), docu=Parmi('', '2', '3'), )
     REFE = AsVK24(lonmax=4)
     DESC = AsVI(docu='CHNO', )
-
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
@@ -51,7 +49,7 @@ class sd_cham_no(sd_titre):
     def check_cham_no_i_REFE(self, checker):
         if not self.exists() : return
         if checker.names.has_key(self.REFE): return
-        
+
         mail, prof_chno = self.u_refe()
 
         # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
@@ -69,12 +67,11 @@ class sd_cham_no(sd_titre):
     def check_cham_no_DESC(self, checker):
         if not self.exists(): return
         if checker.names.has_key(self.DESC): return
-        
+
         gd, num = self.u_desc()
         if (num < 0):
            nb_ec = sdu_nb_ec(gd)
            assert self.DESC.lonmax == 2 + nb_ec
         else:
            assert self.DESC.lonmax == 2
-           
-        
+

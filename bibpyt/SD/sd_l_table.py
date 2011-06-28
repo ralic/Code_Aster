@@ -1,8 +1,8 @@
-#@ MODIF sd_l_table SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_l_table SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,12 +44,13 @@ class sd_l_table(AsBase):
         ltnt = self.LTNT.get()
         ltns = self.LTNS.get()
         nbtable=self.LTNT.lonuti
-        sdu_compare(self.LTNT,checker,nbtable,'>',0,'NBUTI(LTNT)>0')
-        sdu_compare(self.LTNS,checker,self.LTNS.lonuti,'==',nbtable,'NBUTI(LTNS)==NBUTI(LTNT)')
+        sdu_compare(self.LTNT, checker, nbtable, '>', 0, 'NBUTI(LTNT)>0')
+        sdu_compare(self.LTNS, checker, self.LTNS.lonuti, '==', nbtable, 'NBUTI(LTNS)==NBUTI(LTNT)')
         for k in range(nbtable) :
             petinom=ltnt[k].strip()
             nomtabl=ltns[k].strip()
-            sdu_compare(self.LTNT,checker,petinom,'!=','',"LTNT[k]!=''")
-            sdu_compare(self.LTNS,checker,nomtabl,'!=','',"LTNS[k]!=''")
-            sd2 = sd_table(nomtabl) ; sd2.check(checker)
+            sdu_compare(self.LTNT, checker, petinom, '!=', '', "LTNT[k]!=''")
+            sdu_compare(self.LTNS, checker, nomtabl, '!=', '', "LTNS[k]!=''")
+            sd2 = sd_table(nomtabl)
+            sd2.check(checker)
 

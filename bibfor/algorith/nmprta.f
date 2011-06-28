@@ -6,7 +6,7 @@
      &                  MEELEM,MEASSE,VEELEM,VEASSE,SDNUME,
      &                  LDCCVG,FACCVG,CODERE)
 C
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -194,7 +194,7 @@ C --- RESOLUTION K.DU = DF
 C
       CALL NMRESD(FONACT,SDDYNA,SDTIME,SOLVEU,NUMEDD,
      &            INSTAP,MAPREC,MATASS,CNDONN,CNPILO,
-     &            CNCINE,SOLALG)   
+     &            CNCINE,MODELE,DEFICO,SOLALG)   
 C
 9999  CONTINUE         
 C      

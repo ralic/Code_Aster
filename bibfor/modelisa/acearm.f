@@ -1,6 +1,6 @@
       SUBROUTINE ACEARM(NOMA,NOMO,LMAX,NOEMAF,NBOCC,IVR,IMPR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 28/06/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +53,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IRLTO,ITBMP,NDIM,IXCI,JDCINF,JDVINF,I,IXCKMA,IOC
       INTEGER      IREP,ISYM,IMPRIS,NU,NFR,NGP,NGL,IFREQ,NMA,LDGM,NBPO
       INTEGER      IN,NFREQ,IV,JD,NCMP,L,NBLI,NCMP2,IBID,IER,ICF
-      REAL*8       ETA,VALE(3),R8BID,FREQ,COEF
+      REAL*8       ETA,VALE(3),R8BID,FREQ,COEF,ZERO(5)
       CHARACTER*1  KMA(3)
+      CHARACTER*7  LEDISC
       CHARACTER*8  NOGP,NOMMAI,NOGL,K8B,NOMU,K8BID
       CHARACTER*9  CARA
       CHARACTER*16 REP,REPDIS(NRD),CONCEP,CMD,K16NOM
@@ -163,6 +164,9 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
             CALL RIGMI2(NOMA,NOGL,IFREQ,NFREQ,IMPRIS,ZR(IRGM2),
      &                 ZR(IRGM3),ZR(IRLTO))
          ENDIF
+C
+         CALL R8INIR(5,0.0D0,ZERO,1)
+C
          CARA = 'K_T_D_N'
          IF (NGP.NE.0) THEN
             CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
@@ -183,7 +187,24 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
      &                     JDCINF,JDVINF,ISYM,IMPR)
                CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
                CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
- 41         CONTINUE
+C              AFFECTATION MATRICE MASSE NULLE
+               IV = 1
+               LEDISC = 'M_T_D_N'
+               CALL AFFDIS(NDIM,IREP,ETA,LEDISC,ZERO,JDC,
+     &                     JDV,IVR,IV,KMA,NCMP,L,
+     &                     JDCINF,JDVINF,ISYM,IMPR)
+               CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
+               CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+C              AFFECTATION MATRICE AMORTISSEMENT NULLE
+               IV = 1
+               LEDISC = 'A_T_D_N'
+               CALL AFFDIS(NDIM,IREP,ETA,LEDISC,ZERO,JDC,
+     &                     JDV,IVR,IV,KMA,NCMP,L,
+     &                     JDCINF,JDVINF,ISYM,IMPR)
+               CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
+               CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+41          CONTINUE
+
          ENDIF
 C
          CARA = 'K_T_D_L'
@@ -196,7 +217,7 @@ C
             DO 22 IN = 0,NMA-1
                CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
                ZK8(ITBMP+IN) = NOMMAI
- 22         CONTINUE
+22          CONTINUE
             CALL R8INIR(3,0.D0,VALE,1)
             DO 42 I = 1,NBLI
                IV = 1
@@ -208,9 +229,23 @@ C
      &                     IVR,IV,KMA,NCMP2,L,JDCINF,JDVINF,ISYM,IMPR)
                CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
                CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP2)
- 42         CONTINUE
+C              AFFECTATION MATRICE MASSE NULLE
+               IV = 1
+               LEDISC = 'M_T_D_L'
+               CALL AFFDIS(NDIM,IREP,ETA,LEDISC,ZERO,JDC,JDV,
+     &                     IVR,IV,KMA,NCMP2,L,JDCINF,JDVINF,ISYM,IMPR)
+               CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
+               CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP2)
+C              AFFECTATION MATRICE AMORTISSEMENT NULLE
+               IV = 1
+               LEDISC = 'A_T_D_L'
+               CALL AFFDIS(NDIM,IREP,ETA,LEDISC,ZERO,JDC,JDV,
+     &                     IVR,IV,KMA,NCMP2,L,JDCINF,JDVINF,ISYM,IMPR)
+               CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
+               CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP2)
+42          CONTINUE
          ENDIF
- 30   CONTINUE
+30    CONTINUE
 C
       CALL JEDETR('&&TMPRIGMA')
       CALL JEDETR('&&TMPRIGM2')

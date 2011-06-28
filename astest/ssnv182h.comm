@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182h.para = tps_job 100 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -68,12 +68,11 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                FISS_MAIT    = FISS,
                                INTEGRATION  = 'GAUSS',
                                CONTACT_INIT = 'OUI',
-                               COEF_ECHELLE = 1.,
                                COULOMB      = 1.0,
                                ALGO_CONT    = 'PENALISATION',
-                               COEF_PENA_CONT    = 1.E23,
+                               COEF_PENA_CONT    = 1.E14,
                                ALGO_FROT    = 'PENALISATION',
-                               COEF_PENA_FROT    = 1.E16,                             
+                               COEF_PENA_FROT    = 1.E12,                             
                                SEUIL_INIT   = -1.E11,
                              ), 
                          ),
@@ -134,7 +133,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=5,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=10,
+                              PCENT_PIVOT=100,
                               NPREC=-1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);

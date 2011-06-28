@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,13 +18,14 @@
 # ======================================================================
 # RESPONSABLE DURAND C.DURAND
 
-from Macro.macr_lign_coupe_ops import macr_lign_coupe_ops
 
-MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table_sdaster,
-                       reentrant='n',
-            UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
-            fr="Extraction des valeurs d'un résultat dans une ou plusieurs tables sur des lignes de coupe définies"
-             +" par deux points et un intervalle",
+MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
+                      op=OPS('Macro.macr_lign_coupe_ops.macr_lign_coupe_ops'),
+                      sd_prod=table_sdaster,
+                      reentrant='n',
+                      UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
+                      fr="Extraction des valeurs d'un résultat dans une ou plusieurs tables sur " \
+                         "des lignes de coupe définies par deux points et un intervalle",
             regles=(UN_PARMI("RESULTAT","CHAM_GD"),),
 
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ),

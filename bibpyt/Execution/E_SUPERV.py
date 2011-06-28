@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -17,8 +17,6 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-#
-#
 # ======================================================================
 
 
@@ -64,7 +62,7 @@ class SUPERV:
 
     pyaster JDC.py -eficas_path $(HOME)/Eficas -commandes sslp09a.comm -memjeveux 8
 """
-#XXX Voir s'il est possible de rajouter le traitement des options rep_outils, rep_dex, h, help, aide
+#XXX unifier le parser en supprimant celui de asterm.c
 
    def __init__(self):pass
 
@@ -80,6 +78,13 @@ class SUPERV:
       sortie.write( '\n' )
       sortie.flush()
       return
+
+   def error(self, *args):
+      """Cet enrobage permet de s'assurer que le sys.path a été enrichi
+      pour permettre d'importer Noyau."""
+      from Noyau.N_info import message, SUPERV
+      message.error(SUPERV, *args)
+
 
    def getargs(self):
       """
@@ -176,10 +181,10 @@ class SUPERV:
       """
       cr = self.JdC.report()
       if not cr.estvide() :
-         self.MESSAGE("ERREUR A LA VERIFICATION DU CATALOGUE - INTERRUPTION")
-         print ">> Catalogue de commandes : DEBUT RAPPORT"
-         print cr
-         print ">> Catalogue de commandes : FIN RAPPORT"
+         self.error("ERREUR A LA VERIFICATION DU CATALOGUE - INTERRUPTION")
+         self.error(">> Catalogue de commandes : DEBUT RAPPORT")
+         self.error(str(cr))
+         self.error(">> Catalogue de commandes : FIN RAPPORT")
          return 1
 
    def Execute(self, params):
@@ -212,10 +217,10 @@ class SUPERV:
       j.timer.Stop(" . compile")
 
       if not j.cr.estvide():
-         self.MESSAGE("ERREUR DE COMPILATION DANS ACCAS - INTERRUPTION")
-         print ">> JDC.py : DEBUT RAPPORT"
-         print j.cr
-         print ">> JDC.py : FIN RAPPORT"
+         self.error("ERREUR DE COMPILATION DANS ACCAS - INTERRUPTION")
+         self.error(">> DEBUT RAPPORT")
+         self.error(str(j.cr))
+         self.error(">> FIN RAPPORT")
          j.supprime()
          return 1
 
@@ -224,11 +229,11 @@ class SUPERV:
       j.timer.Stop(" . exec_compile")
       ier=0
       if not j.cr.estvide():
-         self.MESSAGE("ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION")
+         self.error("ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION")
+         self.error(">> DEBUT RAPPORT")
+         self.error(str(j.cr))
+         self.error(">> FIN RAPPORT")
          ier=1
-         print ">> JDC.py : DEBUT RAPPORT"
-         print j.cr
-         print ">> JDC.py : FIN RAPPORT"
 
       if self.interact:
          # Si l'option -interact est positionnée on ouvre un interpreteur interactif
@@ -243,10 +248,10 @@ class SUPERV:
       cr=j.report()
       j.timer.Stop(" . report")
       if not cr.estvide():
-         self.MESSAGE("ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION")
-         print ">> JDC.py : DEBUT RAPPORT"
-         print cr
-         print ">> JDC.py : FIN RAPPORT"
+         self.error("ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION")
+         self.error(">> DEBUT RAPPORT")
+         self.error(str(cr))
+         self.error(">> FIN RAPPORT")
          return 1
 
       if self.verif:return

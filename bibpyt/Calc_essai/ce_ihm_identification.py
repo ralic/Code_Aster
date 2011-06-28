@@ -1,8 +1,8 @@
-#@ MODIF ce_ihm_identification Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF ce_ihm_identification Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -155,7 +155,7 @@ class InterfaceIdentification(Frame):
     def _construit_colonne_1(self):
         col = Frame(self, relief = 'sunken', borderwidth=1)
         # Menu de choix des donnes de calcul en entree
-        Label(col, text="Choix des données de calcul",
+        Label(col, text=u"Choix des données de calcul",
               font=self.font2).grid(row=0, padx=50, pady=2)
         
         box_cd = self._choix_base_modale(col) 
@@ -196,12 +196,12 @@ class InterfaceIdentification(Frame):
         fra = Frame(root, relief='sunken', borderwidth=1)
 
         Label(fra,
-              text="Définition du concept d'observabilité",
+              text=u"Définition du concept d'observabilité",
               font=self.font2).grid(row=0, column=0, columnspan=3)   
         
         # Menu choix du modele experimental associé
         # aux donnees en fonctionnement
-        Label(fra, text="Modèle expérimental").grid(row=1,column=0, sticky='ew')
+        Label(fra, text=u"Modèle expérimental").grid(row=1,column=0, sticky='ew')
         self.nom_obs_modele = StringVar()
         self.menu_obs_modele = MyMenu(fra,
                                       self.objects.get_model_name(),
@@ -209,7 +209,7 @@ class InterfaceIdentification(Frame):
                                       self._observabilite_changed)
         self.menu_obs_modele.grid(row=2, column=0, sticky='we')
 
-        Label(fra, text="Base de déformées").grid(row=1,column=1, sticky='ew')
+        Label(fra, text=u"Base de déformées").grid(row=1,column=1, sticky='ew')
         self.nom_obs_resu = StringVar()
         self.menu_obs_resu = MyMenu(fra,
                                     self.objects.get_mode_meca_name(),
@@ -242,7 +242,7 @@ class InterfaceIdentification(Frame):
         """Définition du concept de commandabilité."""
         fra = Frame(root, relief='sunken', borderwidth=1)
         
-        Label(fra, text="Définition du concept de commandabilité",
+        Label(fra, text=u"Définition du concept de commandabilité",
               font=self.font2).grid(row=0, column=0, columnspan=3)
         
         Label(fra, text="Modèle de controlabilite"

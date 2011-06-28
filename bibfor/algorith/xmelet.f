@@ -1,10 +1,10 @@
       SUBROUTINE XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
      &                  NDIM  , NDDL   , JNNE   , JNNM  ,
      &                  NNC   , JDDLE  , JDDLM  ,
-     &                  NCONTA, NDEPLE , NSINGE, NSINGM)
+     &                  NCONTA, NDEPLE , NSINGE, NSINGM,NFHE,NFHM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C
       INTEGER      NDIM,NDDL,NNC
       INTEGER      NSINGE,NSINGM,NCONTA
       INTEGER      JNNE(3), JNNM(3),NDEPLE
-      INTEGER      JDDLE(2),JDDLM(2)
+      INTEGER      JDDLE(2),JDDLM(2),NFHE,NFHM
 C
 C ----------------------------------------------------------------------
 C
@@ -65,6 +65,9 @@ C OUT NCONTA : TYPE DE CONTACT (1=P1P1, 2=P1P1A, 3=P2P1)
 C OUT NDEPLE : NOMBRE DE NOEUDS ESCL POSSEDANT DES DDLS DE DEPLACEMENT
 C OUT NSINGE : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
 C OUT NSINGM : NOMBRE DE FONCTIONS SINGULIERE MAITRES
+C OUT NFHE   : NOMBRE DE DDL HEAVISIDES ESCLAVE
+C OUT NFHM   : NOMBRE DE DDL HEAVISIDE MAITRE
+C
 C
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -118,18 +121,34 @@ C
 C
 C --- NOMBRE DE FONCTIONS SINGULIERES
 C
-      IF (ENRE.EQ.'H') THEN
+      IF (ENRE(1:1).EQ.'H') THEN
         NSINGE = 0
-      ELSEIF ((ENRE.EQ.'C').OR.(ENRE.EQ.'T')) THEN
+        NFHE = 1
+        IF (ENRE(2:2).EQ.'2') NFHE = 2
+        IF (ENRE(2:2).EQ.'3') NFHE = 3
+        IF (ENRE(2:2).EQ.'4') NFHE = 4
+      ELSEIF (ENRE.EQ.'C') THEN
         NSINGE = 1
+        NFHE = 1
+      ELSEIF (ENRE.EQ.'T') THEN
+        NSINGE = 1
+        NFHE = 0
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
 C
-      IF (ENRM.EQ.'C') THEN
-        NSINGM = 1
-      ELSEIF ((ENRM.EQ.'H').OR.(ENRM.EQ.'T')) THEN
+      IF (ENRM(1:1).EQ.'H') THEN
         NSINGM = 0
+        NFHM = 1
+        IF (ENRM(2:2).EQ.'2') NFHM = 2
+        IF (ENRM(2:2).EQ.'3') NFHM = 3
+        IF (ENRM(2:2).EQ.'4') NFHM = 4
+      ELSEIF (ENRM.EQ.'C') THEN
+        NSINGM = 1
+        NFHM = 1
+      ELSEIF (ENRM.EQ.'T') THEN
+        NSINGM = 0
+        NFHM = 0
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
@@ -201,6 +220,7 @@ C
         JDDLE(1)  = 2*NDIM
       ELSE
         JDDLE(1)  = NDIM *(3+NSINGE)
+        JDDLE(1)  = NDIM *(1+2*NFHE+NSINGE)
       ENDIF
 C
 C --- NOMBRE DE DDLS D'UN NOEUD MILIEU ESCLAVE
@@ -217,7 +237,7 @@ C
         JDDLM(1)  = 0
         JDDLM(2)  = 0
       ELSE
-        JDDLM(1)  = NDIM *(2+NSINGM)
+        JDDLM(1)  = NDIM *(1+NFHM+NSINGM)
         IF (.NOT.ISMALI(TYPMAM)) JDDLM(2)  = JDDLM(1)
       ENDIF
 C

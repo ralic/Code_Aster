@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,6 @@
 # RESPONSABLE GALENNE E.GALENNE
 
 
-from Macro.propa_fiss_ops import propa_fiss_ops
 
 def propa_fiss_prod(self,**args):
   if  args.has_key('MAIL_TOTAL')  :
@@ -37,9 +36,11 @@ def propa_fiss_prod(self,**args):
           self.type_sdprod(numfis['FISS_PROPAGEE'],fiss_xfem)
   return None
 
-PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
-            fr="Propagation de fissure avec X-FEM",reentrant='n',
-            UIinfo={"groupes":("Post-traitements","Rupture",)},
+PROPA_FISS=MACRO(nom="PROPA_FISS",
+                 op=OPS('Macro.propa_fiss_ops.propa_fiss_ops'),
+                 sd_prod=propa_fiss_prod,
+                 fr="Propagation de fissure avec X-FEM",reentrant='n',
+                 UIinfo={"groupes":("Post-traitements","Rupture",)},
 
         METHODE_PROPA = SIMP(statut='o',typ='TXM',
                                into=("SIMPLEXE","UPWIND","MAILLAGE","INITIALISATION") ),

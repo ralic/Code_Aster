@@ -9,7 +9,7 @@
      &               NODTOR,ELETOR,LIGGRD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               NBNOMA,ITYPMA,IADF,IADMET,IADDFI,INO,IMA,IADALP,
      &               NUNO,NBMA,JDELFI,JDEFIL,JDEFID,JALPHA,JALPHL,J,I,
      &               JALPHD,JGLSNO,JZERO,JNOSOM,JRESDU,NMANOI,JMANOI,
-     &               IMAI,NUMAI,JCOOR,JTMDIM,NDIME,NUMIN
+     &               IMAI,NUMAI,JCOOR,JTMDIM,NDIME,NUMIN,IER
       REAL*8         SIGNLS,SIGMLS,SDIFF,LSPREC,SIGLST,SDIFFT,
      &               LSNOUV,R8PREM,JI(3),
      &               DIST,DISMIN,R8MAEM
@@ -484,7 +484,7 @@ C---------------------------------------------------
 
 C  PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
          CALL CELCES (CELGLS, 'V', CHAMS)
-         CALL CESCNS (CHAMS, ' ', 'V', CNSGLS)
+         CALL CESCNS (CHAMS, ' ', 'V', CNSGLS, ' ', IER)
          CALL JEVEUO (CNSGLS//'.CNSV','E',JGLSNO)
 
 C---------------------------------------

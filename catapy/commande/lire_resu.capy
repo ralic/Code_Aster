@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,7 @@ def lire_resu_prod(TYPE_RESU,**args):
 def l_nom_cham_pas_elga(): return (
      "ACCE",
      "ACCE_ABSOLU",
+     "CRIT_ELNO",
      "DERA_ELNO",
      "DERA_NOEU",
      "DEDE_ELNO",
@@ -141,12 +142,12 @@ def l_nom_cham_pas_elga(): return (
                            )
 
 LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
-            UIinfo={"groupes":("Lecture","Résultats et champs",)},
+            UIinfo={"groupes":("Lecture","Resultats et champs",)},
                fr="Lire dans un fichier, soit format IDEAS, soit au format ENSIGHT soit au format MED,"
                  +" des champs et les stocker dans une SD résultat",
 
 
-# 0) mots clés généraux :
+# 0) mots cles generaux :
 #----------------------
          TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER","EVOL_ELAS","EVOL_NOLI","MODE_MECA",
                                                           "MODE_MECA_C","DYNA_TRANS","DYNA_HARMO","HARM_GENE",
@@ -261,20 +262,19 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
             fr="Affecte des valeurs nulles la ou le champ n'est pas defini (sinon il y a NaN)"),
          ),
 
-# 2) blocs selon le type du résultat :
+# 2) blocs selon le type du resultat :
 #---------------------------------
          b_mode_meca     =BLOC(condition="(TYPE_RESU=='MODE_MECA')or(TYPE_RESU=='MODE_MECA_C')",
            # Ces mots cles sont stockes dans l'objet .REFD des mode_meca
            # Ces mots cles sont aussi utilises  pour imposer la numerotation des cham_no de DEPL_R
            MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,max=1),
            MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,max=1),
-           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),max=1,),
          ),
 
 
 # 3) autres blocs :
 #---------------------------------
-         b_extrac        =BLOC(condition="1",fr="accès à un champ dans la structure de données résultat",
+         b_extrac        =BLOC(condition="1",fr="acces a un champ dans la structure de donnees resultat",
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST','FREQ','LIST_FREQ'),),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),

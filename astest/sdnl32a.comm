@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE IMPACT D'UNE POUTRE ARTICULEE SUR APPUI ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,7 +93,9 @@ MAILLAGE=POUTRE,
                                _F(  NOEUD = 'NO11',
                                  NOM_CMP = 'DY',   VALE = -2.96786)) )
 
-MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
+MACRO_PROJ_BASE(  BASE=MODES,
+                  STOCKAGE='DIAG',
+                  MATR_ASSE_GENE=(
                    _F(
                                    MATRICE = CO("MASSEGEN"),
                                    MATR_ASSE = MATRMASS),

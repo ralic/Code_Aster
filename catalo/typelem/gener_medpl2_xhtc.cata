@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,6 +112,7 @@ MODE_LOCAL__
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
+    E1NEUTK  = NEUT_K8  ELEM__         (Z1       )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -260,11 +261,11 @@ OPTION__
                               OUT__  E4NEUTR  PPINTER  E10NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA
                                      E8NEUTR  PBASECO  E4NEUTR  PGESCLA  E4NEUTR  PGMAITR  E4NEUTR  PGESCLO
     GEOM_FAC            519   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLA   E4NEUTR  PPINTER  E3NEUTI  PLONCHA
-                                     E4NEUTR  PGESCLO  N1NEUT_R PLST
+                                     E4NEUTR  PGESCLO  N1NEUT_R PLST     E1NEUTK  NOMFIS
                               OUT__  E4NEUTR  PNEWGES  E4NEUTR  PNEWGEM  E8NEUTR  PBASESC  E8NEUTR  PBASMAI
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     E10NEUTR PAINTER  E1NEUTR  PCRITER
+                                     E10NEUTR PAINTER
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F

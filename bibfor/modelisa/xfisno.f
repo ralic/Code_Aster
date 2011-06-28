@@ -1,6 +1,6 @@
       SUBROUTINE XFISNO(NOMA  ,MODELX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,11 +52,13 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
 
       INTEGER JLCNX,JNBSP,JNBSP2,JCESFD,JCESFL,JCESFV,JCESD,JCESL,JCESV
+      INTEGER JCESD2,JCESV2,JCESL2,JXC
       INTEGER NBMA,IMA,NBNO,INO,NHEAV,IHEAV,NFISS,IFISS
       INTEGER IRET,IBID,IAD,NNCP
       CHARACTER*8   K8BID
-      CHARACTER*19  FISSNO,CES,CESF,LIGREL
+      CHARACTER*19  FISSNO,CES,CESF,LIGREL,CES2,HEAVNO
       CHARACTER*32  JEXATR
+      LOGICAL      LCONT
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -67,6 +69,16 @@ C
       FISSNO = MODELX(1:8)//'.FISSNO'
       CES  = '&&XFISNO.FISSNO'
       CESF = '&&XFISNO.STNO'
+C
+C --- LE CONTACT EST-IL DÉCLARÉ
+C
+      CALL JEVEUO(MODELX(1:8)//'.XFEM_CONT','L',JXC)
+      CALL ASSERT(ZI(JXC).LE.1)
+      LCONT = ZI(JXC).EQ.1
+      IF (LCONT) THEN
+        HEAVNO = MODELX(1:8)//'.HEAVNO'
+        CES2 = '&&XFISNO.HEAVNO'
+      ENDIF
 C
 C --- TRANSFO CHAM_ELEM -> CHAM_ELEM_S DE STANO
 C
@@ -94,6 +106,17 @@ C
       CALL JEVEUO(CES//'.CESV','E',JCESV)
       CALL JEVEUO(CES//'.CESL','E',JCESL)
 C
+C --- SI CONTACT, CREATION DE LA SD ELNO HEAVNO
+C
+      IF (LCONT) THEN
+        CALL CESCRE('V',CES2,'ELNO',NOMA,'NEUT_I',1,'X1',
+     &              IBID,ZI(JNBSP),-1)
+C
+        CALL JEVEUO(CES2//'.CESD','L',JCESD2)
+        CALL JEVEUO(CES2//'.CESV','E',JCESV2)
+        CALL JEVEUO(CES2//'.CESL','E',JCESL2)
+      ENDIF
+C
 C --- INFOS SUR LE MAILLAGE
 C
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IRET)
@@ -117,6 +140,12 @@ C
                   IF (IAD.LT.0) THEN
                     ZL(JCESL-1-IAD) = .TRUE.
                     ZI(JCESV-1-IAD) = IFISS
+                    IF (LCONT) THEN
+                      CALL CESEXI('S',JCESD2,JCESL2,IMA,INO,IFISS,1,IAD)
+                      CALL ASSERT(IAD.LT.0)
+                      ZL(JCESL2-1-IAD) = .TRUE.
+                      ZI(JCESV2-1-IAD) = IHEAV
+                    ENDIF
                     GOTO 30
                   ENDIF
  40             CONTINUE
@@ -134,13 +163,20 @@ C
                   IF (IAD.LT.0) THEN
                     ZL(JCESL-1-IAD) = .TRUE.
                     ZI(JCESV-1-IAD) = IFISS
+                    IF (LCONT) THEN
+                      CALL CESEXI('S',JCESD2,JCESL2,IMA,INO,IFISS,1,IAD)
+                      CALL ASSERT(IAD.LT.0)
+                      ZL(JCESL2-1-IAD) = .TRUE.
+                      ZI(JCESV2-1-IAD) = IHEAV
+                    ENDIF
                     GOTO 50
                   ENDIF
  60             CONTINUE
               ENDIF
  50         CONTINUE
 C
-C --- FIN DES DEUX PASSES, LA SD EST DEFINI ENTIEREMENT POUR LE NOEUD
+C --- FIN DES DEUX PASSES, FISSNO EST DEFINI ENTIEREMENT POUR LE NOEUD
+C ---                      HEAVNO N'EST PAS COMPLET
 C
  20       CONTINUE
         ENDIF
@@ -151,6 +187,11 @@ C
       CALL CESCEL(CES,LIGREL,'FULL_MECA','PFISNO','NON',NNCP,'G',FISSNO,
      &            'F',IBID)
       CALL DETRSD('CHAM_ELEM_S',CES)
+      IF (LCONT) THEN
+        CALL CESCEL(CES2,LIGREL,'FULL_MECA','PHEAVNO','NAN',NNCP,'G',
+     &            HEAVNO,'F',IBID)
+        CALL DETRSD('CHAM_ELEM_S',CES2)
+      ENDIF
       CALL DETRSD('CHAM_ELEM_S',CESF)
       CALL JEDEMA()
       END

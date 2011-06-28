@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF propa_fiss_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,7 +111,7 @@ def recup_Elas(LOI):
          UTMESS('F','RUPTURE1_50')
       dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
       mat = dLoi['MATER']
-      matph = mat.NOMRC.get()
+      matph = mat.sdj.NOMRC.get()
       phenom=None
       for cmpt in matph :
          if cmpt[:4]=='ELAS' :
@@ -355,11 +355,11 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     for Fiss in Fissures :
       fiss0 =    Fiss['FISS_ACTUELLE']
       MAIL_FISS1 =  Fiss['MAIL_ACTUEL']
-      dime= MAIL_FISS1.DIME.get()
+      dime= MAIL_FISS1.sdj.DIME.get()
       dime = dime[5]
 
 #    Verification qu on a bien un fond unique
-      Fissmult = fiss0.FONDMULT.get()
+      Fissmult = fiss0.sdj.FONDMULT.get()
       Nbfiss = len(Fissmult)/2
       if Nbfiss >1 :
          UTMESS('F','RUPTURE1_48',vali=Nbfiss)
@@ -508,7 +508,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         nbnofo = len(lisnofo)
 
 # Correction de la position des noeuds (equirepartition)
-        Coorfo = fiss0.FONDFISS.get()
+        Coorfo = fiss0.sdj.FONDFISS.get()
         absmax = Coorfo[-1]
         abscf = [0.]*nbnofo
         for i in range(nbnofo) :
@@ -526,8 +526,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         d_coorf = dict(l_coorf)
 
 # Boucle sur le fond : coordonnees du point propage
-        Basefo = fiss0.BASEFOND.get()
-        Listfo = fiss0.FONDFISS.get()
+        Basefo = fiss0.sdj.BASEFOND.get()
+        Listfo = fiss0.sdj.FONDFISS.get()
         Vorig = Fiss['DTAN_ORIG']
         Vextr = Fiss['DTAN_EXTR']
         if (Damax ==None) :
@@ -654,7 +654,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         Xf =  d_coorf['NXA%i' %(it)][0]
         Yf =  d_coorf['NXA%i' %(it)][1]
 
-        VPVNi = fiss0.BASEFOND.get()
+        VPVNi = fiss0.sdj.BASEFOND.get()
         V = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeq[numfis][0][1],RmM[numfis][0][1])
         beta = BETA[numfis][0][1]
         Xf2 = Xf +V*(VPVNi[2]*cos(beta)+VPVNi[0]*sin(beta))

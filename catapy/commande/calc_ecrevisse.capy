@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/02/2011   AUTEUR BOTTONI M.BOTTONI 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE BOTTONI M.BOTTONI
 
-from Macro.calc_ecrevisse_ops import calc_ecrevisse_ops
 
 def calc_ecrevisse_prod(self,CHARGE_MECA,CHARGE_THER1,CHARGE_THER2,TABLE,DEBIT,**args):
 
@@ -31,9 +30,12 @@ def calc_ecrevisse_prod(self,CHARGE_MECA,CHARGE_THER1,CHARGE_THER2,TABLE,DEBIT,*
 
 
 
-CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",op=calc_ecrevisse_ops,sd_prod=calc_ecrevisse_prod,reentrant='n',
+CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",
+                     op=OPS('Macro.calc_ecrevisse_ops.calc_ecrevisse_ops'),
+                     sd_prod=calc_ecrevisse_prod,
+                     reentrant='n',
                      UIinfo={"groupes":("Outils-métier",)},fr="Procedure de couplage avec Ecrevisse",
-                      regles   = (UN_PARMI('LOGICIEL','VERSION'),),
+                     regles   = (UN_PARMI('LOGICIEL','VERSION'),),
 
 #      CONCEPTS SORTANTS : 2 CHARGEMENTS THERMIQUE + 1 MECANIQUE + 2 TABLES POUR LE POST-TRAITEMENT
 #      ********************************************

@@ -1,31 +1,29 @@
-#& MODIF COMMANDE  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE BARGELLINI R.BARGELLINI
 
-
-from Macro.post_bordet_ops import post_bordet_ops
-
-
-
-POST_BORDET =MACRO(nom="POST_BORDET", op=post_bordet_ops,sd_prod=table_sdaster,
+POST_BORDET =MACRO(nom="POST_BORDET",
+                   op=OPS('Macro.post_bordet_ops.post_bordet_ops'),
+                   sd_prod=table_sdaster,
                    UIinfo={"groupes":("Outils-métier","Rupture",)},
-                   docu="",reentrant='n',fr="calcul de la probabilite de clivage via le modele de Bordet",
+                   reentrant='n',
+                   fr="calcul de la probabilite de clivage via le modele de Bordet",
          regles=(UN_PARMI('TOUT','GROUP_MA'),
                  UN_PARMI('INST','NUME_ORDRE'),
                  ),
@@ -45,9 +43,9 @@ POST_BORDET =MACRO(nom="POST_BORDET", op=post_bordet_ops,sd_prod=table_sdaster,
                                  VOLU_REFE        =SIMP(statut='o',typ='R',val_min=0.E+0),
                                  SIG_CRIT         =SIMP(statut='o',typ='R',val_min=0.E+0),
                                  SEUIL_REFE       =SIMP(statut='o',typ='R',val_min=0.E+0),
-                                 SEUIL_CALC       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster)),                   
+                                 SEUIL_CALC       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster)),
                                  DEF_PLAS_REFE    =SIMP(statut='o',typ='R'),),),
-                                 
+
          b_prop          =BLOC( condition = "PROBA_NUCL=='NON'",
                           PARAM =FACT(statut='o',
                                  M                =SIMP(statut='o',typ='R',val_min=0.E+0),
@@ -57,10 +55,10 @@ POST_BORDET =MACRO(nom="POST_BORDET", op=post_bordet_ops,sd_prod=table_sdaster,
                                  SEUIL_REFE       =SIMP(statut='o',typ='R',val_min=0.E+0),
                                  SEUIL_CALC       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),),
                                  ),
-                                 ),    
-                                  
+                                 ),
+
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
                                       fr="Resultat d'une commande globale STAT_NON_LINE"),
          TEMP            =SIMP(statut='o',typ=(fonction_sdaster,'R')),
-         COEF_MULT       =SIMP(statut='f',typ='R', defaut=1.),                   
+         COEF_MULT       =SIMP(statut='f',typ='R', defaut=1.),
            )

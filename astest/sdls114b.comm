@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -245,6 +245,7 @@ for i in range(0,5) :
 ##############################################
 
 MACRO_PROJ_BASE(BASE=MODE,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GE'),
                                    MATR_ASSE=MA_ASS,),
                                 _F(MATRICE=CO('RIGI_GE'),

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C     OPERATEUR DE CALCUL DU MAC DE DEUX BASES MODALES
 C     ------------------------------------------------------------------
 C
@@ -41,7 +42,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1,N2,N3,IBID,NBMOD1,NBMOD2,IADRI1,IADRI2,
      &              NEQ,IDBAS1,IDBAS2,IDBAS3,IDVEC3,
      &              I,J,NBPARA,INOM,ITYP,IND,IMATRA,IDVEC1,
-     &              IDDEEQ,IDVEC2,IFM,NIV,LLNEQ1,NEQ1,LLNEQ2,NEQ2,IRET
+     &              IDDEEQ,IDVEC2,IFM,NIV,LLNEQ1,NEQ1,LLNEQ2,IRET
       INTEGER       IDDL,IER
       REAL*8        RBID,PIJ,DDOT,PII,PJJ
       COMPLEX*16    CBID,DCMPLX,ZTEMP,DCONJG
@@ -51,9 +52,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14  NU, NUMDD1, NUMDD2, NUMDDA
       CHARACTER*16  NOMCMD, TYPCON,TYPBA1,TYPBA2,
      &              MATRI1,MATRI2,DEPL
-      CHARACTER*19  MATR
+      CHARACTER*19  MATR, PRONU1, PRONU2, PRONUA
       CHARACTER*24  CHAMOL
-      LOGICAL       C1,C2,ZCMPLX,IERI
+      LOGICAL       C1,C2,ZCMPLX,IERI,IDENSD
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
@@ -126,7 +127,7 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
       CALL JEVEUO(BASE1//'           .REFD','L',IADRI1)
       IF ((TYPBA1(1:9).EQ.'MODE_MECA')
      &     .OR.(TYPBA1(1:9).EQ.'MODE_GENE')) THEN
-C On passe par les matrices du REFD
+C       On passe par les matrices du REFD
         MATRI1 = ZK24(IADRI1)
         CALL EXISD('MATR_ASSE',MATRI1,IRET)
         IF (IRET.NE.0) THEN
@@ -136,9 +137,14 @@ C On passe par les matrices du REFD
           NUMDD1 = ZK24(IADRI1+3)(1:14)
         ENDIF
       ELSE
-C On passe par la numerotation du REFD
+C       On passe par la numerotation du REFD
         NUMDD1 = ZK24(IADRI1+3)(1:14)
       ENDIF
+      CALL EXISD('NUME_DDL',NUMDD1,IRET)
+      IF (IRET.NE.1) THEN
+        CALL U2MESK('F','CALCESSAI0_14',1,BASE1)
+      ENDIF
+
       CALL JEVEUO(NUMDD1//'.NUME.NEQU','L',LLNEQ1)
       NEQ1 = ZI(LLNEQ1)
 
@@ -156,24 +162,24 @@ C On passe par la numerotation du REFD
       ELSE
         NUMDD2 = ZK24(IADRI2+3)(1:14)
       ENDIF
+      CALL EXISD('NUME_DDL',NUMDD2,IRET)
+      IF (IRET.NE.1) THEN
+        CALL U2MESK('F','CALCESSAI0_14',1,BASE2)
+      ENDIF
       CALL JEVEUO(NUMDD2//'.NUME.NEQU','L',LLNEQ2)
-      NEQ2 = ZI(LLNEQ2)
 
-      IF (NEQ1.NE.NEQ2) THEN
-         CALL U2MESS('F','ALGELINE2_79')
+C ---- Verification : les deux nume_ddl doivent etre identiques
+      PRONU1=(NUMDD1//'.NUME')
+      PRONU2=(NUMDD2//'.NUME')
+      IF (.NOT.IDENSD('PROF_CHNO',PRONU1,PRONU2)) THEN
+        CALL U2MESS('F','ALGELINE2_80')
       ENDIF
 
-      IF (NUMDD1.NE.NUMDD2) THEN
-        IF (NEQ1.NE.NEQ2) THEN
-         CALL U2MESS('F','ALGELINE2_79')
-        ELSE
-         CALL U2MESS('I','ALGELINE2_80')
-        ENDIF
-      ENDIF
-C PAR DEFAUT ON PREND EN REFERENCE LA NUMEROTATION DE LA BASE 1
+C --- Verification : le nume_ddl doit etre celui de la MATR_ASSE
       IF (MATR.NE.' ') THEN
-        IF (NUMDD1.NE.NUMDDA) THEN
-          CALL U2MESS('I','ALGELINE2_81')
+        PRONUA=(NUMDDA//'.NUME')
+        IF (.NOT.IDENSD('PROF_CHNO',PRONU1,PRONUA)) THEN
+          CALL U2MESS('F','ALGELINE2_81')
         ENDIF
         NU = NUMDDA(1:14)
         CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )

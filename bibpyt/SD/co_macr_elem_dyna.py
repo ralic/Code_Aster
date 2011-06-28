@@ -1,28 +1,27 @@
-#@ MODIF co_macr_elem_dyna SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_macr_elem_dyna SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-import Accas
-from SD import *
-from sd_macr_elem_dyna import sd_macr_elem_dyna
-
 import numpy
+
+import Accas
+from Accas import ASSD
 
 def VALE_triang2array(vect_VALE, dim, dtype=None):
    """Conversion (par recopie) de l'objet .VALE decrivant une matrice pleine
@@ -43,8 +42,8 @@ def VALE_triang2array(vect_VALE, dim, dtype=None):
 
    return valeur
 
-# -----------------------------------------------------------------------------
-class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
+class macr_elem_dyna(ASSD):
+   cata_sdj = "SD.sd_macr_elem_dyna.sd_macr_elem_dyna"
 
    def EXTR_MATR_GENE(self,typmat) :
       """ retourne les valeurs des matrices generalisees reelles
@@ -58,11 +57,11 @@ class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
          raise Accas.AsException("Erreur dans macr_elem_dyna.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
       if (typmat=='MASS_GENE') :
-         macr_elem = self.MAEL_MASS
+         macr_elem = self.sdj.MAEL_MASS
       elif (typmat=='RIGI_GENE') :
-         macr_elem = self.MAEL_RAID
+         macr_elem = self.sdj.MAEL_RAID
       elif (typmat=='AMOR_GENE') :
-         macr_elem = self.MAEL_AMOR
+         macr_elem = self.sdj.MAEL_AMOR
       else:
          raise Accas.AsException("Le type de la matrice est incorrect")
 
@@ -81,16 +80,17 @@ class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
          typmat='RIGI_GENE' pour obtenir la matrice de raideur generalisee
          typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
          Attributs ne retourne rien """
+      import aster
       if not self.accessible():
          raise Accas.AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
 
       nommacr=self.get_name()
       if (typmat=='MASS_GENE') :
-         macr_elem = self.MAEL_MASS
+         macr_elem = self.sdj.MAEL_MASS
       elif (typmat=='RIGI_GENE') :
-         macr_elem = self.MAEL_RAID
+         macr_elem = self.sdj.MAEL_RAID
       elif (typmat=='AMOR_GENE') :
-         macr_elem = self.MAEL_AMOR
+         macr_elem = self.sdj.MAEL_AMOR
       else:
          raise Accas.AsException("Le type de la matrice est incorrect")
       nom_vale = macr_elem.VALE.nomj()

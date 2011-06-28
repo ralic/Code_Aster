@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -493,8 +493,9 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if self._cache_func.get(nom_fonction):
          objet_sd = self._cache_func[nom_fonction]['fonction']
       else:
-         objet_sd =self.parent.get_sd_avant_etape(nom_fonction.strip(), self)
+         #XXX ne fonctionne pas en poursuite (cf. zzzz100a)
          #objet_sd = self.get_concept(nom_fonction.strip())
+         objet_sd =self.parent.get_sd_avant_etape(nom_fonction.strip(), self)
          self._cache_func[nom_fonction]= { 'fonction' : objet_sd }
       assert objet_sd is not None, "concept inconnu : %s" % nom_fonction.strip()
 

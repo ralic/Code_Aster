@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME 3 MASSES 2 RESSORTS  A 18 DDL (+AMORTISSEURS DISCRETS)
 # sdld320a.para = tps_job 360 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
 # ------------------------------
 
 MACRO_PROJ_BASE(BASE=MODES,
-                PROFIL='PLEIN',
+                STOCKAGE='PLEIN',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MASSEGEN'),
                                    MATR_ASSE=MATRMASS,),
                                 _F(MATRICE=CO('RIGIDGEN'),

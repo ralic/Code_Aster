@@ -1,20 +1,21 @@
       SUBROUTINE XMMAA3(NDIM  ,NNO   ,NNOS  ,NNOL ,NNOF,PLA,
-     &                    IPGF,IVFF  ,FFC   ,FFP   ,E     ,JAC   ,
+     &                    IPGF,IVFF  ,FFC   ,FFP   ,COEFEC,JAC   ,
      &                    NFH   ,NOEUD ,ND    ,CPENCO,CSTACO,
-     &                    SINGU ,RR    ,DDLS  ,DDLM  ,
-     &                    LPENAC,MMAT )
+     &                    SINGU ,RR    ,DDLS  ,DDLM  ,LPENAC,
+     &                    JFISNO,NFISS ,IFISS ,JHEAFA,NCOMPH,IFA,
+     &                    MMAT )
 
       IMPLICIT NONE
       INTEGER     NDIM,NNO,NNOS,NNOL,NNOF,IVFF,IPGF
       INTEGER     NFH,DDLS,DDLM
-      INTEGER     SINGU,PLA(27)
-      REAL*8      MMAT(204,204),ND(3)
+      INTEGER     SINGU,PLA(27),JFISNO,NFISS,IFISS,JHEAFA,NCOMPH,IFA
+      REAL*8      MMAT(216,216),ND(3)
       REAL*8      FFC(8),FFP(27),JAC
-      REAL*8      CPENCO,CSTACO,RR,E
+      REAL*8      CPENCO,CSTACO,RR,COEFEC
       LOGICAL     NOEUD,LPENAC
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +51,7 @@ C IN  IPGF   : NUMÉRO DU POINTS DE GAUSS
 C IN  IVFF   : ADRESSE DANS ZR DU TABLEAU FF(INO,IPG)
 C IN  FFC    : FONCTIONS DE FORME DE L'ELEMENT DE CONTACT
 C IN  FFP    : FONCTIONS DE FORME DE L'ELEMENT PARENT
-C IN  E      : COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
+C IN  COEFEC : COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
 C IN  JAC    : PRODUIT DU JACOBIEN ET DU POIDS
 C IN  NFH    : NOMBRE DE FONCTIONS HEAVYSIDE
 C IN  NOEUD  : INDICATEUR FORMULATION (T=NOEUDS , F=ARETE)
@@ -63,7 +64,7 @@ C IN  RR     : DISTANCE AU FOND DE FISSURE
 C IN  DDLS   : NOMBRE DE DDL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
 C IN  DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
 C IN  LPENAC : INDICATEUR DE PENALISATION DU CONTACT
-C I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT
+C I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT 
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C
@@ -84,12 +85,17 @@ C
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
-      INTEGER I,J,K,L,JN,IN
+      INTEGER I,J,K,L,JN,IN,IFH,JFH,COEFI,COEFJ
       INTEGER PLI,PLJ
       REAL*8  FFI,FFJ
+      LOGICAL LMULTC
 C
 C ----------------------------------------------------------------------
 C
+      COEFI = 2
+      COEFJ = 2
+      LMULTC = NFISS.GT.1
+C I.1 CALCUL DE A
       DO 130 I = 1,NNOL
 
         PLI=PLA(I)
@@ -101,29 +107,30 @@ C
 
         DO 131 J = 1,NNO
           CALL INDENT(J,DDLS,DDLM,NNOS,JN)
-
-          DO 132 L = 1,NFH*NDIM
-            MMAT(PLI,JN+NDIM+L)=
-     &      MMAT(PLI,JN+NDIM+L)+
-     &      2.D0 * FFI * FFP(J) * ND(L) * JAC * E
-C
-            IF(.NOT.LPENAC)THEN
-              MMAT(JN+NDIM+L,PLI)=
-     &        MMAT(JN+NDIM+L,PLI)+
-     &        2.D0 * FFI * FFP(J) * ND(L) * JAC * E
+          DO 134 JFH = 1,NFH
+            IF (LMULTC) THEN
+              COEFJ = ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(J-1)+JFH)-1)+2*IFA)
+     &              - ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(J-1)+JFH)-1)+2*IFA-1)
             ENDIF
- 132      CONTINUE
+            DO 132 L = 1,NDIM
+              MMAT(PLI,JN+NDIM*JFH+L) = MMAT(PLI,JN+NDIM*JFH+L)
+     &        + COEFJ * FFI * FFP(J) * ND(L) * JAC * COEFEC
 C
+C LBB : ON PREND AUSSI LE TERME EN PENALISATION
+C
+              MMAT(JN+NDIM*JFH+L,PLI) = MMAT(JN+NDIM*JFH+L,PLI)
+     &        + COEFJ * FFI * FFP(J) * ND(L) * JAC * COEFEC
+ 132        CONTINUE
+C
+ 134      CONTINUE
           DO 133 L = 1,SINGU*NDIM
-            MMAT(PLI,JN+NDIM*(1+NFH)+L)=
-     &      MMAT(PLI,JN+NDIM*(1+NFH)+L)+
-     &      2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * E
+            MMAT(PLI,JN+NDIM*(1+NFH)+L) = MMAT(PLI,JN+NDIM*(1+NFH)+L)
+     &      + COEFJ * FFI * FFP(J) * RR * ND(L) * JAC * COEFEC
 C
-            IF(.NOT.LPENAC)THEN
-              MMAT(JN+NDIM*(1+NFH)+L,PLI)=
-     &        MMAT(JN+NDIM*(1+NFH)+L,PLI)+
-     &        2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * E
-            ENDIF
+            MMAT(JN+NDIM*(1+NFH)+L,PLI)= MMAT(JN+NDIM*(1+NFH)+L,PLI)
+     &      + COEFJ * FFI * FFP(J) * RR * ND(L) * JAC * COEFEC
  133      CONTINUE
 
  131    CONTINUE
@@ -131,26 +138,42 @@ C
  130  CONTINUE
 C
 C     I.2. CALCUL DE A_U
+C ABSENT SI PENALISAATION
+
+      IF(.NOT.LPENAC) THEN
       DO 140 I = 1,NNO
         CALL INDENT(I,DDLS,DDLM,NNOS,IN)
-
         DO 141 J = 1,NNO
           CALL INDENT(J,DDLS,DDLM,NNOS,JN)
-
-          DO 142 K = 1,NFH*NDIM
-            DO 143 L = 1,NFH*NDIM
-              MMAT(IN+NDIM+K,JN+NDIM+L) =
-     &        MMAT(IN+NDIM+K,JN+NDIM+L) +
-     &        4.D0*CPENCO*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC
- 143        CONTINUE
+          DO 148 IFH = 1,NFH
+            IF (LMULTC) THEN
+              COEFI = ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA)
+     &              - ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                  +ZI(JFISNO-1+NFH*(I-1)+IFH)-1)+2*IFA-1)
+            ENDIF
+            DO 149 JFH = 1,NFH
+              IF (LMULTC) THEN
+                COEFJ = ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                    +ZI(JFISNO-1+NFH*(J-1)+JFH)-1)+2*IFA)
+     &                - ZI(JHEAFA-1+NCOMPH*(NFISS*(IFISS-1)
+     &                    +ZI(JFISNO-1+NFH*(J-1)+JFH)-1)+2*IFA-1)
+              ENDIF
+              DO 142 K = 1,NDIM
+                DO 143 L = 1,NDIM
+                  MMAT(IN+NDIM*IFH+K,JN+NDIM*JFH+L) =
+     &            MMAT(IN+NDIM*IFH+K,JN+NDIM*JFH+L) +
+     &            COEFI*COEFJ*CPENCO*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC
+ 143            CONTINUE
 C
-            DO 144 L = 1,SINGU*NDIM
-              MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) =
-     &        MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) +
-     &        4.D0*CPENCO*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC
- 144        CONTINUE
-C
- 142      CONTINUE
+                DO 144 L = 1,SINGU*NDIM
+                  MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) =
+     &            MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) +
+     &            4.D0*CPENCO*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC
+ 144            CONTINUE
+ 142          CONTINUE
+ 149        CONTINUE
+ 148      CONTINUE
 
           DO 145 K = 1,SINGU*NDIM
             DO 146 L = 1,NFH*NDIM
@@ -168,7 +191,8 @@ C
  145      CONTINUE
 
  141    CONTINUE
- 140  CONTINUE
+ 140   CONTINUE
+      ENDIF
 C
 C     I.3. SI PENALISATION PURE CALCUL DE C
       IF (LPENAC) THEN
@@ -191,7 +215,7 @@ C     I.3. SI PENALISATION PURE CALCUL DE C
             ENDIF
 C
             MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
-     &                     - FFJ * FFI * JAC / CSTACO * E * E
+     &               - FFJ * FFI * JAC / CSTACO *COEFEC*COEFEC
 
  221        CONTINUE
  220      CONTINUE

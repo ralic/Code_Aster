@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE D UN SYSTEME MASSES-RESSORTS A UN SEISME AVEC CORRECTION STATIQUE
 # sdld105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,6 +130,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 #-----------------------------------------------------------------------
 
 MACRO_PROJ_BASE(BASE=MODE_EXT,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GEN'),
                                    MATR_ASSE=MASSE,),
                                 _F(MATRICE=CO('RIGI_GEN'),

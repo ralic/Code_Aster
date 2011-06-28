@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF observation_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,7 +82,7 @@ def observation_ops(self,
     mayanum = self.get_concept(maillage)
 
     # modele numerique 2D ou 3D
-    typmod= mayanum.DIME.get()
+    typmod= mayanum.sdj.DIME.get()
     typmod = typmod[5]
 
     # recuperation du maillage associe au modele experimental
@@ -535,7 +535,7 @@ def observation_ops(self,
                 modele = MODELE_2
                 chnormx = chnorm.EXTR_COMP('DX',[],1)
                 ind_noeuds = chnormx.noeud
-                nom_allno = [mayaexp.NOMNOE.get()[k-1] for k in ind_noeuds]
+                nom_allno = [mayaexp.sdj.NOMNOE.get()[k-1] for k in ind_noeuds]
 
                 # on met les noeuds conernes sous forme de liste et on va
                 # chercher les noeuds des mailles pour 'MAILLE' et 'GROUP_MA'
@@ -1012,27 +1012,27 @@ def find_no(maya,mcsimp):
         list_no = list(mcsimp['NOEUD'])
     elif mcsimp.has_key('GROUP_NO') :
         for group in mcsimp['GROUP_NO'] :
-            list_ind_no = list(numpy.array(maya.GROUPENO.get()[group.ljust(8)])-1)
+            list_ind_no = list(numpy.array(maya.sdj.GROUPENO.get()[group.ljust(8)])-1)
             for ind_no in list_ind_no :
-                nomnoe = maya.NOMNOE.get()[ind_no]
+                nomnoe = maya.sdj.NOMNOE.get()[ind_no]
                 if nomnoe not in list_no :
                     list_no.append(nomnoe)
     elif mcsimp.has_key('MAILLE') :
         for mail in mcsimp['MAILLE'] :
-            for index in range(len(maya.NOMMAI.get())):
-                if maya.NOMMAI.get()[index].strip() == mail:
+            for index in range(len(maya.sdj.NOMMAI.get())):
+                if maya.sdj.NOMMAI.get()[index].strip() == mail:
                     nu_ma = index
-            for ind_no in maya.CONNEX.get()[nu_ma+1]:
-                    nomnoe = maya.NOMNOE.get()[ind_no-1]
+            for ind_no in maya.sdj.CONNEX.get()[nu_ma+1]:
+                    nomnoe = maya.sdj.NOMNOE.get()[ind_no-1]
                     if nomnoe not in list_no:
                         list_no.append(nomnoe)
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA'] :
-            list_nu_ma = list(numpy.array(maya.GROUPEMA.get()
+            list_nu_ma = list(numpy.array(maya.sdj.GROUPEMA.get()
                                             [group.ljust(8)]) - 1)
             for nu_ma in list_nu_ma:
-                for ind_no in maya.CONNEX.get()[nu_ma+1]:
-                    nomnoe = maya.NOMNOE.get()[ind_no-1]
+                for ind_no in maya.sdj.CONNEX.get()[nu_ma+1]:
+                    nomnoe = maya.sdj.NOMNOE.get()[ind_no-1]
                     if nomnoe not in list_no:
                         list_no.append(nomnoe)
 
@@ -1060,9 +1060,9 @@ def find_ma(maya,mcsimp):
             list_ma.append(mail)
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA'] :
-            list_ind_ma = list(numpy.array(maya.GROUPEMA.get()[group.ljust(8)])-1)
+            list_ind_ma = list(numpy.array(maya.sdj.GROUPEMA.get()[group.ljust(8)])-1)
             for ind_ma in list_ind_ma :
-                nommail = maya.NOMMAI.get()[ind_ma]
+                nommail = maya.sdj.NOMMAI.get()[ind_ma]
                 if nommail not in list_ma :
                     list_ma.append(nommail)
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CAMPBELL POUR UN ROTOR AVEC PALIERS A CARACTERISTIQUES VARIABLES
 # sdll129a.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -481,7 +481,7 @@ for kk in range(0,nbV,1) :
                                    _F(MATR_ASSE=AMOR[kk], COEF_R=1.,),))
 
    MACRO_PROJ_BASE(BASE=MODES,
-                PROFIL='PLEIN',
+                STOCKAGE='PLEIN',
                 MATR_ASSE_GENE=(_F(MATRICE=MAGE[kk],
                                    MATR_ASSE=MASS[kk],),
                                 _F(MATRICE=RIGE[kk],

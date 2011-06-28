@@ -1,4 +1,4 @@
-#@ MODIF B_JDC Build  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_JDC Build  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,19 +6,19 @@
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -28,6 +28,7 @@
 import sys
 
 from Noyau import N_ASSD
+from Noyau.N_info import message, SUPERV
 
 # Modules liés à la sensibilité
 from B_SENSIBILITE_JDC import SENSIBILITE_JDC
@@ -52,7 +53,7 @@ class JDC(CODE):
      """
         Cette méthode ajoute etape dans la liste des etapes : self.etapes
         et retourne un numéro d'enregistrement
-        En plus, elle rend actives les étapes comprises entre DEBUT, POURSUITE 
+        En plus, elle rend actives les étapes comprises entre DEBUT, POURSUITE
         et FIN et inactives les autres.
      """
      if etape.nom in ('DEBUT', 'POURSUITE') and self.actif_status == 0:
@@ -74,15 +75,15 @@ class JDC(CODE):
 
 
   def Build(self):
-    """ 
+    """
     Fonction : Construction des étapes du jeu de commandes
 
     Toutes les étapes n'ont pas besoin d'etre construites.
     En général, seules certaines macros nécessitent d'etre construites.
     Cependant, on demande à toutes les étapes de se construire,
     cette phase pouvant etre réduite à sa plus simple expression.
-    Il faut prendre garde que en cas d'exécution en mode commande par 
-    commande, la construction doit etre immédiatement suivie par l'exécution 
+    Il faut prendre garde que en cas d'exécution en mode commande par
+    commande, la construction doit etre immédiatement suivie par l'exécution
     éventuellement précédée par la vérification
     """
     # Pour etre sur de ne pas se planter sur l appel a set_context on le met d abord a blanc
@@ -101,6 +102,7 @@ class JDC(CODE):
     ier=0
     for e in self.etapes:
       if not e.isactif():continue
+      message.debug(SUPERV, "call etape.Build : %s, %s", e.nom, e)
       ret=e.Build()
       ier=ier+ret
       if ret == 0:
@@ -111,7 +113,7 @@ class JDC(CODE):
 
   def _Build(self):
      """
-         Cette méthode réalise le traitement de construction pour le 
+         Cette méthode réalise le traitement de construction pour le
          JDC lui meme
      """
      if CONTEXT.debug : print "Build_JDC ",self.nom
@@ -136,7 +138,7 @@ class JDC(CODE):
        self.modexec=mode
 
   def get_sd_avant_etape(self,nom_sd,etape):
-     """ 
+     """
          Cette méthode retourne la SD de nom nom_sd qui est éventuellement
           définie avant etape
      """
@@ -170,7 +172,7 @@ class JDC(CODE):
          self.sensibilite_jdc = sensibilite_jdc
 
      return codret, est_sensible
-     
+
 
   def cree_jdc_sensible(self) :
      """

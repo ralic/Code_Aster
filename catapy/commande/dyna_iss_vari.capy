@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +18,18 @@
 # ======================================================================
 # RESPONSABLE ZENTNER I.ZENTNER
 
-from Macro.dyna_iss_vari_ops import dyna_iss_vari_ops
-#
 def dyna_iss_vari_prod(self, FONC_SIGNAL,**args):
    if FONC_SIGNAL !=None :
        return tran_gene
    else:
       return  table_fonction
    raise AsException("type de concept resultat non prevu")
-#
 
-
-DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",op=dyna_iss_vari_ops ,   sd_prod=dyna_iss_vari_prod,
-                    fr="Calcul du spectre de réponse ou de la reponse temporelle sismique incoherente par decomposition spectrale",
+DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",
+                    op=OPS('Macro.dyna_iss_vari_ops.dyna_iss_vari_ops'),
+                    sd_prod=dyna_iss_vari_prod,
+                    fr="Calcul du spectre de réponse ou de la reponse temporelle " \
+                       "sismique incoherente par decomposition spectrale",
                     reentrant='n',
                     UIinfo={"groupes":("Outils métier",)},
          regles=(UN_PARMI('FONC_SIGNAL','NB_FREQ'),),

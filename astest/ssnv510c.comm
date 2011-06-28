@@ -1,9 +1,9 @@
-# MODIF  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE COMPRESSION UNIAXIALE D UN BLOC MULTI-FISSURE
-# ssnv510c.para = tps_job 50 mem_job 128Mo ncpus 1 liste_test S
+# ssnv510c.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,7 @@
 # tps_job 30 mem_job 128Mo ncpus 1 liste_test R
 
 #
-# CE TEST VALIDE LES ELEMENTS XFEM 3D MULTI-HEAVISIDE
+# CE TEST VALIDE LES ELEMENTS XFEM 3D MULTI-HEAVISIDE EN CONTACT HPP
 #
 
 DEBUT(CODE=_F(NOM='SSNV510C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
@@ -31,15 +31,26 @@ PRE_GIBI();
 
 MAILLAG=LIRE_MAILLAGE(INFO=1,);
 
-
 # Re-orientation du maillage de peau
 MAILLAG=MODI_MAILLAGE(reuse =MAILLAG,
                       MAILLAGE=MAILLAG,
-                      ORIE_PEAU_3D=(_F(GROUP_MA='SURG',),),
+                      ORIE_PEAU_3D=_F(GROUP_MA=('ENV','SD','SG'),),
                       );
 
+MAILLAG=DEFI_GROUP(reuse =MAILLAG,
+                   MAILLAGE=MAILLAG,
+                   CREA_GROUP_MA=(_F(NOM='FACE',
+                                    OPTION='FACE_NORMALE',
+                                    VECT_NORMALE=(0,0,-1,),),
+                                  _F(NOM='SH',
+                                    OPTION='FACE_NORMALE',
+                                    VECT_NORMALE=(0,1,0,),),
+                                  _F(NOM='SB',
+                                    OPTION='FACE_NORMALE',
+                                    VECT_NORMALE=(0,-1,0,),),),);
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG,
-                     AFFE=(_F(GROUP_MA=('VOLU','SURG',),
+                     AFFE=(_F(GROUP_MA=('VOLU','SH','SG',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),),);
 
@@ -66,8 +77,52 @@ FISS4=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=(FISS1,FISS2,FISS3,FISS4),
+                         FISSURE=(FISS1,FISS2,FISS3,FISS4,),
+                         CONTACT = 'P1P1',
                          INFO=1,);
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      ITER_CONT_MAXI = 10,
+                      ZONE = (_F(
+                                 INTEGRATION   = 'NOEUD',
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'NON',
+                                 COEF_ECHELLE  = 1.,
+                                 FISS_MAIT     = FISS1,
+                                 ALGO_LAGR     = 'VERSION2',
+                              ),
+                              _F(
+                                 INTEGRATION   = 'NOEUD',
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'NON',
+                                 COEF_ECHELLE  = 1.,
+                                 FISS_MAIT     = FISS2,
+                                 ALGO_LAGR     = 'VERSION2',
+                              ),
+                             _F(
+                                 INTEGRATION   = 'NOEUD',
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'NON',
+                                 COEF_ECHELLE  = 1.,
+                                 FISS_MAIT     = FISS3,
+                                 ALGO_LAGR     = 'VERSION2',
+                              ),
+                             _F(
+                                 INTEGRATION   = 'NOEUD',
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'NON',
+                                 COEF_ECHELLE  = 1.,
+                                 FISS_MAIT     = FISS4,
+                                 ALGO_LAGR     = 'VERSION2',
+                              ),
+                            ),
+                    );
+
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',
+                      CONTACT_XFEM=CTXFEM,
+                      INFO=1,);
 
 E=100.0E6
 nu=0.0
@@ -96,30 +151,31 @@ def depy(y) :
    return 0
 
 CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     PRES_REP=(_F(GROUP_MA='SURG',PRES = PRESSION,),),);
+                     PRES_REP=(_F(GROUP_MA='SG',PRES = PRESSION,),),);
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(_F(GROUP_MA='SURD',DX=0,DY=0,DZ=0,
-                                                H1X=0,H1Y=0,H1Z=0,
-                                                H2X=0,H2Y=0,H2Z=0,),),);
-
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      INFO=1,);
+                   DDL_IMPO=(_F(GROUP_MA='SD',DX=0,H1X=0,H2X=0,H3X=0,H4X=0,),
+                             _F(GROUP_MA='SB',DY=0),
+                             _F(GROUP_MA='FACE',DZ=0,H1Z=0,H2Z=0,H3Z=0,H4Z=0,),),
+                   PRES_REP=(_F(GROUP_MA='SH',PRES = 10e6,),),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,INFO=1,
-                    CHAM_MATER=CHAMPMAT,            
+                    CHAM_MATER=CHAMPMAT,
+                    CONTACT = CTXFEM,
                     EXCIT=(_F(CHARGE=CHXFEM,),                                    
                            _F(CHARGE=CH1),
                            _F(CHARGE=CH2),),
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOLU',),
                     INCREMENT=_F(LIST_INST=L_INST,),
-                    NEWTON=_F(REAC_ITER=1,),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               PCENT_PIVOT=30,),
+                    NEWTON=_F(REAC_ITER=1),
+                    CONVERGENCE=_F(ARRET='OUI',RESI_GLOB_RELA=1E-14),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     );
 
@@ -147,11 +203,17 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT SUR LES LEVRES',
                                TOUT_CMP='OUI',
                                OPERATION='EXTRACTION',),);
 
+depl_y = FORMULE(NOM_PARA=('DY','COOR_Y',),
+                 VALE='DY+COOR_Y/10');
+
 TABDEP = CALC_TABLE(reuse = TABDEP,
                      TABLE = TABDEP,
-                     ACTION=_F(OPERATION='TRI',
-                               NOM_PARA='COOR_Y',
-                               ORDRE='CROISSANT',),);
+                     ACTION=(_F(OPERATION='TRI',
+                                NOM_PARA='COOR_Y',
+                                ORDRE='CROISSANT',),
+                             _F(OPERATION = 'OPER',
+                                NOM_PARA  = 'DY-DY',
+                                FORMULE = depl_y,),),);
 
 # FILTRE SUR LES NOMS DES NOEUDS POUR NE GARDER QUE LES NP (COTE MAITRE)
 
@@ -167,7 +229,7 @@ TABDEPP = CALC_TABLE(TABLE = TABDEP,
                                  NOM_PARA  = 'DX-DXP',
                                  FORMULE = depl_p,),
                               _F(OPERATION = 'EXTR',
-                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DX-DXP',),),),);
+                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DZ','DX-DXP','DY-DY',),),),);
 
 IMPR_TABLE(TABLE=TABDEPP,
            TRI=_F(NOM_PARA = ('COOR_Y','COOR_X',),
@@ -187,7 +249,7 @@ TABDEPM = CALC_TABLE(TABLE = TABDEP,
                                  NOM_PARA  = 'DX-DXM',
                                  FORMULE = depl_m,),
                               _F(OPERATION = 'EXTR',
-                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DX-DXM',),),),);
+                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DZ','DX-DXM','DY-DY',),),),);
 
 IMPR_TABLE(TABLE=TABDEPM,
            TRI=_F(NOM_PARA = ('COOR_Y','COOR_X',),
@@ -201,7 +263,14 @@ TEST_TABLE(TABLE=TABDEPP,
                  CRITERE='ABSOLU',
                  PRECISION=1E-12,);
 TEST_TABLE(TABLE=TABDEPP,
-                 NOM_PARA='DY',
+                 NOM_PARA='DY-DY',
+                 TYPE_TEST='SOMM_ABS',
+                 VALE=0.0,
+                 REFERENCE ='ANALYTIQUE',
+                 CRITERE='ABSOLU',
+                 PRECISION=1E-12,);
+TEST_TABLE(TABLE=TABDEPP,
+                 NOM_PARA='DZ',
                  TYPE_TEST='SOMM_ABS',
                  VALE=0.0,
                  REFERENCE ='ANALYTIQUE',
@@ -215,9 +284,15 @@ TEST_TABLE(TABLE=TABDEPM,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='ABSOLU',
                  PRECISION=1E-12,);
-
 TEST_TABLE(TABLE=TABDEPM,
-                 NOM_PARA='DY',
+                 NOM_PARA='DY-DY',
+                 TYPE_TEST='SOMM_ABS',
+                 VALE=0.0,
+                 REFERENCE ='ANALYTIQUE',
+                 CRITERE='ABSOLU',
+                 PRECISION=1E-12,);
+TEST_TABLE(TABLE=TABDEPM,
+                 NOM_PARA='DZ',
                  TYPE_TEST='SOMM_ABS',
                  VALE=0.0,
                  REFERENCE ='ANALYTIQUE',

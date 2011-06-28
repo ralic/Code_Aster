@@ -1,29 +1,28 @@
-#@ MODIF co_matr_asse_gene SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_matr_asse_gene SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-import Accas
-from SD import *
-from sd_matr_asse_gene import sd_matr_asse_gene
 
 import numpy
 import math
+
+import Accas
+from Accas import ASSD
 
 def VALM_triang2array(dict_VALM, dim, dtype=None):
    """Conversion (par recopie) de l'objet .VALM decrivant une matrice pleine
@@ -57,11 +56,9 @@ def VALM_diag2array(dict_VALM, dim, dtype=None):
       valeur[i,i] =  diag[i]
    return valeur
 
-# -----------------------------------------------------------------------------
-class matr_asse_gene(ASSD, sd_matr_asse_gene):
-   pass
+class matr_asse_gene(ASSD):
+    cata_sdj = "SD.sd_matr_asse_gene.sd_matr_asse_gene"
 
-# -----------------------------------------------------------------------------
 class matr_asse_gene_r(matr_asse_gene):
   def EXTR_MATR_GENE(self) :
     """ retourne les valeurs de la matrice generalisee reelle
@@ -71,17 +68,17 @@ class matr_asse_gene_r(matr_asse_gene):
     if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
-    desc=numpy.array(self.DESC.get())
+    desc=numpy.array(self.sdj.DESC.get())
     # On teste si le DESC de la matrice existe
     if (desc==None):
        raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
     # Si le stockage est plein
     if desc[2]==2 :
-       valeur = VALM_triang2array(self.VALM.get(), desc[1])
+       valeur = VALM_triang2array(self.sdj.VALM.get(), desc[1])
 
     # Si le stockage est diagonal
     elif desc[2]==1 :
-       valeur = VALM_diag2array(self.VALM.get(), desc[1])
+       valeur = VALM_diag2array(self.sdj.VALM.get(), desc[1])
 
     # Sinon on arrete tout
     else:
@@ -92,11 +89,12 @@ class matr_asse_gene_r(matr_asse_gene):
     """ envoie les valeurs d'un tableau numpy dans des matrices
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
+    import aster
     if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
-    desc=numpy.array(self.DESC.get())
+    desc=numpy.array(self.sdj.DESC.get())
 
     # On teste si le DESC de la matrice existe
     if (desc==None):
@@ -133,7 +131,6 @@ class matr_asse_gene_r(matr_asse_gene):
       raise KeyError
     return
 
-# -----------------------------------------------------------------------------
 class matr_asse_gene_c(matr_asse_gene):
   def EXTR_MATR_GENE(self) :
     """ retourne les valeurs de la matrice generalisee complexe
@@ -143,16 +140,16 @@ class matr_asse_gene_c(matr_asse_gene):
     if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene_c.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
-    desc = numpy.array(self.DESC.get())
+    desc = numpy.array(self.sdj.DESC.get())
     if desc == None:
        raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster ")
     # Si le stockage est plein
     if desc[2] == 2 :
-       valeur = VALM_triang2array(self.VALM.get(), desc[1], complex)
+       valeur = VALM_triang2array(self.sdj.VALM.get(), desc[1], complex)
 
     # Si le stockage est diagonal
     elif desc[2]==1 :
-       valeur = VALM_diag2array(self.VALM.get(), desc[1], complex)
+       valeur = VALM_diag2array(self.sdj.VALM.get(), desc[1], complex)
 
     # Sinon on arrete tout
     else:
@@ -163,12 +160,13 @@ class matr_asse_gene_c(matr_asse_gene):
     """ envoie les valeurs d'un tableau numpy dans des matrices
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
+    import aster
     if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene_c.RECU_MATR_GENE en PAR_LOT='OUI'")
 
     numpy.asarray(matrice)
     ncham=self.get_name()
-    desc=numpy.array(self.DESC.get())
+    desc=numpy.array(self.sdj.DESC.get())
 
     # On teste si le DESC de la matrice existe
     if (desc==None):

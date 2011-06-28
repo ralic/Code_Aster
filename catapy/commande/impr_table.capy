@@ -1,27 +1,28 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
-from Macro.impr_table_ops import impr_table_ops
 
-IMPR_TABLE=MACRO(nom="IMPR_TABLE",op=impr_table_ops,sd_prod=None,
-            UIinfo={"groupes":("Impression","Tables",)},
-                fr="Impression du contenu d'une table dans un fichier",
+IMPR_TABLE=MACRO(nom="IMPR_TABLE",
+                 op=OPS('Macro.impr_table_ops.impr_table_ops'),
+                 sd_prod=None,
+                 UIinfo={"groupes":("Impression","Tables",)},
+                 fr="Impression du contenu d'une table dans un fichier",
            regles=(DERIVABLE("TABLE"),),
    TABLE          =SIMP(statut='o',typ=table_sdaster),
    SENSIBILITE    =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
@@ -120,4 +121,4 @@ IMPR_TABLE=MACRO(nom="IMPR_TABLE",op=impr_table_ops,sd_prod=None,
 
    TITRE          =SIMP(statut='f',typ='TXM',max='**'),
    INFO           =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-)  
+)

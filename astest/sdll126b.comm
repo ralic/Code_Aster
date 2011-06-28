@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_TRAN_MODAL
 # sdll126b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,7 +149,7 @@ forz = FORMULE(VALE='-sin(OM*INST)',
                NOM_PARA='INST',);
 
 MACRO_PROJ_BASE(BASE=MODES,
-                PROFIL='PLEIN',
+                STOCKAGE='PLEIN',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
                                    MATR_ASSE=MASSE,),
                                 _F(MATRICE=CO('RIGE'),

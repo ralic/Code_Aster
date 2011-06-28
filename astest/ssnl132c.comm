@@ -1,0 +1,923 @@
+# MODIF  DATE 28/06/2011   AUTEUR FLEJOU J-L.FLEJOU 
+# TITRE SIMULATION NUMERIQUE DU COMPORTEMENT D'UN ASSEMBLAGE COMBUSTIBLE EN COMPRESSION ET EN FLEXION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+# ssnl132c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# UTILISATION : COMPARAISON DE LA SIMULATION NUMERIQUE D'UN ASSEMBLAGE
+#               COMBUSTIBLE EN COMPRESSION AVEC LES RESULTATS EXPERIMENTAUX
+
+DEBUT(CODE=_F( NOM = 'SSNL132C',NIV_PUB_WEB='INTRANET',VISU_EFICAS='NON'))
+
+
+#####################################################
+#####################################################
+##     DONNEES GENERALES DU PROBLEME               ##
+#####################################################
+#####################################################
+
+###########################################
+#        Caracteristiques materiaux       #
+###########################################
+
+# embout superieur
+EES0= 1.99e+11;
+EES1= 1.75e+11;
+NUES0= 0.3;
+NUES1= 0.3;
+Kesup= 1.5E+8;
+RHOES= 898162.6 ;
+# embout inferieur
+EEI0= 1.99e+11 ;
+EEI1= 1.75e+11 ;
+NUEI0= 0.3 ;
+NUEI1= 0.3 ;
+Keinf= 2.6E+8;
+RHOEI= 351651.1 ;
+# Tube guide
+ETU0= 9.84e+10 ;
+ETU1= 7.80e+10 ;
+NUTU0= 0.3 ;
+RHOTU= 6310. ;
+# Crayon
+ECR0= 9.84e+10 ;
+ECR1= 7.80e+10 ;
+NUCR0= 0.3 ;
+RHOCR= 38050. ;
+# systeme de maintien
+EMA0= 2.0E11 ;
+EMA1= 1.84E11 ;
+NUMA0= 0.3 ;
+NUMA1= 0.3 ;
+MPZMA0= 349. ;
+SYMA0= 1.03E9 ;
+DSMA0= 0.0 ;
+CAYMA0= 0.84 ;
+CAZMA0= 0.84 ;
+CBYMA0= 0.105 ;
+CBZMA0= 0.105 ;
+RHOMA = 0. ;
+UELA  = 0.105 ;
+FELA  = 1480. ;
+#####################################
+#   Caracteristiques geometriques      #
+#####################################
+# Caracteristiques geometriques des tubes-guides (longueur,rayon,epaisseur)
+LONTU = 4.5445 ;
+XINFT = 0.140 ;
+#  Partie courante
+RAY1GU = 0.006225 ;
+EP1GU = 0.0005 ;
+#  Partie retreinte
+RAY2GU = 0.006225 ;
+EP2GU = 0.00118 ;
+# Caracteristiques geometriques des crayons (longueur,rayon, epaisseur)
+LONCR = 4.4973;
+XINFC = 0.1660;
+RAYCRA = 0.00475;
+EPCRA = 0.00057;
+# longueur de la colonne fissile d'un crayon pour profil axial flux
+L_COLON    = 4.2672;
+L_BOUCHI = 0.0145;
+# Caracteristiques geometriques du systeme de maintien
+# composante ressort dans le plan horiz lgres (cf fichier fichier maillage gibi
+LGRES= 0.1165;
+## hauteur de ressort de maintien comme dans gibi
+HRESS= 0.073;
+#longueur des embouts
+Leinf = 0.14;
+Lesup = 0.0988;
+
+##############################################################
+# CARACTERISTIQUES GEOMETRIQUES EMBOUTS                      #
+##############################################################
+Heinf = ((Leinf*Keinf)/EEI0)**0.5;
+Hesup = ((Lesup*Kesup)/EES0)**0.5;
+##############################################################
+# AFFECTATION DES CARACTERISTIQUES GEOMETRIQUES ELEMENTAIRES #
+##############################################################
+#
+##############################################################
+# TUBES-GUIDES
+# PARTIE COURANTE
+S_TG_C=3.1415*(RAY1GU**2-(RAY1GU-EP1GU)**2);
+I_TG_C=3.1415/4*(RAY1GU**4-(RAY1GU-EP1GU)**4);
+# PARTIE RETREINTE
+S_TG_R=3.1415*(RAY2GU**2-(RAY2GU-EP2GU)**2);
+I_TG_R=3.1415/4*(RAY2GU**4-(RAY2GU-EP2GU)**4);
+# LAISON PARTIE COURANTE-RETREINT : BIAIS
+# on fait une aproximation en prenant le d moyen sur la hauteur du cone
+EPMOY=(EP1GU+EP2GU)/2;
+S_TG_B=3.1415*(RAY2GU**2-(RAY2GU-EPMOY)**2);
+I_TG_B=3.1415/4*(RAY2GU**4-(RAY2GU-EPMOY)**4);
+#
+# CRAYONS
+S_CR=3.1415*(RAYCRA**2-(RAYCRA-EPCRA)**2);
+I_CR=3.1415/4*(RAYCRA**4-(RAYCRA-EPCRA)**4);
+
+#####################################
+#   Rigidites des composants         #
+#####################################
+########    Grilles de melanges  ########
+# Rigidite en rotation des liaisons grille-tube guide
+KR_GM = 990. ;
+# NOMBRE DE TUBES-GUIDES
+NBTG=25;
+# NOMBRE DE CRAYONS
+NBCR=264.;
+# TOTAL
+NBTU =289.;
+#
+########################################
+# CARACTERISTIQUES DU SYST DE MAINTIEN #
+########################################
+LSYMA=((LGRES*LGRES)+(HRESS*HRESS))**(1/2) ;
+HYMA= (4.*SYMA0*LGRES*LSYMA)/(6.*EMA0*UELA) ;
+HZMA= (6.*LGRES*FELA)/(SYMA0*HYMA*HYMA) ;
+MEZMA0= SYMA0*HZMA*(HYMA*HYMA)/6. ;
+NPMA0= HYMA*HZMA*SYMA0 ;
+MEYMA0= SYMA0*HYMA*HZMA*HZMA/6.;
+MPYMA0= 1.5*MEYMA0 ;
+MPXMA0= 100.*NPMA0 ;
+SYMA1=  (SYMA0*EMA1)/EMA0  ;
+NPMA1=  (NPMA0*EMA1)/EMA0  ;
+MEYMA1= (MEYMA0*EMA1)/EMA0 ;
+MPYMA1= (MPYMA0*EMA1)/EMA0 ;
+MEZMA1= (MEZMA0*EMA1)/EMA0 ;
+MPZMA1= (MPZMA0*EMA1)/EMA0 ;
+MPXMA1= (MPXMA0*EMA1)/EMA0 ;
+#
+
+#####################################################
+#####################################################
+##            COURBES DE RECALAGE                  ##
+#####################################################
+#####################################################
+
+# Effort axial max sur embout Sup
+EFF_COMP = 40000. ;
+# Definition de la courbe de reference essai de compression
+# charge en compression
+COMP_CH=DEFI_FONCTION(
+   NOM_PARA='DX',
+   VALE=(
+         0.        ,0.,
+         2.5E-04   ,1.0331E+04,
+         6.63E-04  ,2.5E+04,
+         1.E-03    ,3.4702E+04,
+         1.23E-03  ,4.E+04,
+         ),
+   PROL_DROITE='CONSTANT',
+   PROL_GAUCHE='CONSTANT',);
+# decharge en compression
+COMP_DCH=DEFI_FONCTION(
+   NOM_PARA='DX',
+   VALE=(
+         2.35E-04,   0.,
+         3.87E-04,   5000.,
+         5.18E-04,   1.0331E+04,
+         8.49E-04,   2.5E+04,
+         1.09E-03,   3.5E+04,
+         1.23E-03,   4.E+04,
+   ),
+   PROL_DROITE='CONSTANT',
+   PROL_GAUCHE='CONSTANT',);
+
+# Definition des courbes de reference essai de flexion
+# Effort axial constant sur embout Sup
+EFF_FLEX = 9000. ;
+# Charge
+
+#####################################################
+#####################################################
+##    MAILLAGE,MODELE,CHARGEMENT,MATERIAU            ##
+#####################################################
+#####################################################
+
+
+###########################################
+#        LECTURE DU MAILLAGE              #
+###########################################
+#
+MA1=LIRE_MAILLAGE();
+
+MA1=DEFI_GROUP(
+   reuse =MA1,
+   MAILLAGE=MA1,
+   CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),
+              );
+#
+# LECTURE DU MAILLAGE DE LA SECTION RECTANGULAIRE DU SYSTEME DE MAINTIEN
+#
+MA_MAINT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
+
+###########################################
+#        AFFECTATION DU MODELE            #
+###########################################
+#
+MO1=AFFE_MODELE(MAILLAGE=MA1,
+ AFFE=(_F(GROUP_MA=('PQSUP'),
+          PHENOMENE='MECANIQUE',
+          MODELISATION='DKT',),
+       _F(GROUP_MA='CRAYON',
+          PHENOMENE='MECANIQUE',
+          MODELISATION='POU_D_TGM',),
+       _F(GROUP_MA='T_GUIDE',
+          PHENOMENE='MECANIQUE',
+          MODELISATION='POU_D_TGM',),
+       _F(GROUP_MA=('EBOSUP','EBOINF'),
+          PHENOMENE='MECANIQUE',
+          MODELISATION='POU_D_T',),
+       _F(GROUP_MA='MAINTIEN',
+          PHENOMENE='MECANIQUE',
+          MODELISATION='POU_D_TGM',),
+       _F(GROUP_MA=('ELA','RIG'),
+          PHENOMENE='MECANIQUE',
+          MODELISATION='DIS_TR',),
+          ),);
+
+###########################################
+#        FIBRES                           #
+###########################################
+#
+GF=DEFI_GEOM_FIBRE(
+   SECTION =_F( GROUP_FIBRE='S_MAINT',
+                  MAILLAGE_SECT = MA_MAINT, TOUT_SECT = 'OUI',
+                  COOR_AXE_POUTRE = (0., 0.,),),
+   FIBRE =(
+          _F(GROUP_FIBRE='SCRAYON',
+          COOR_AXE_POUTRE = (0.,0.,),
+          CARA='SURFACE',
+          VALE=(
+             0.,(RAYCRA-EPCRA/2),S_CR/4,
+             0.,-(RAYCRA-EPCRA/2),S_CR/4,
+             (RAYCRA-EPCRA/2),0.,S_CR/4,
+            -(RAYCRA-EPCRA/2),0.,S_CR/4,
+                )
+               ),
+          _F(GROUP_FIBRE='SLGUIDE',
+               COOR_AXE_POUTRE = (0.,0.,),
+               CARA='SURFACE',
+               VALE=(
+                0.,(RAY1GU-EP1GU/2),S_TG_C/4,
+                0.,-(RAY1GU-EP1GU/2),S_TG_C/4,
+                (RAY1GU-EP1GU/2),0.,S_TG_C/4,
+               -(RAY1GU-EP1GU/2),0.,S_TG_C/4,
+                    )
+               ),
+          _F(GROUP_FIBRE='SBIAIS',
+               COOR_AXE_POUTRE = (0.,0.,),
+                CARA='SURFACE',
+                VALE=(
+                0.,(RAY2GU-EPMOY/2),S_TG_B/4,
+                0.,-(RAY2GU-EPMOY/2),S_TG_B/4,
+                (RAY2GU-EPMOY/2),0.,S_TG_B/4,
+               -(RAY2GU-EPMOY/2),0.,S_TG_B/4,
+                    )
+               ),
+          _F(GROUP_FIBRE='SRETRE',
+               COOR_AXE_POUTRE = (0.,0.,),
+                CARA='SURFACE',
+                VALE=(
+                0.,(RAY2GU-EP2GU/2),S_TG_R/4,
+                0.,-(RAY2GU-EP2GU/2),S_TG_R/4,
+                (RAY2GU-EP2GU/2),0.,S_TG_R/4,
+               -(RAY2GU-EP2GU/2),0.,S_TG_R/4,
+                    )
+               ),
+                    ))
+##########################################################
+#        AFFECTATION DES CARACTERISTIQUES DES ELEMENTS   #
+##########################################################
+#
+carel=[0.]*78;
+#
+
+CARA1=AFFE_CARA_ELEM( MODELE=MO1, POUTRE=(
+                   _F(GROUP_MA='CRAYON',
+                          SECTION='CERCLE',
+                          CARA=('R','EP'),
+                          VALE=(RAYCRA,EPCRA),),
+#     _F(GROUP_MA='CRAYON',
+#  SECTION='GENERALE',
+#  CARA=('A','IZ','IY','JX','AY','AZ','EY','EZ'),
+#  VALE=(S_CR,I_CR,I_CR,I_CR*2,1,1,0,0),),
+
+     _F(GROUP_MA='LGUIDE', SECTION='GENERALE',
+        CARA=('A','IZ','IY','JX','AY','AZ',),
+        VALE=(S_TG_C,I_TG_C,I_TG_C,I_TG_C*2,1,1),),
+     _F(GROUP_MA='RETRE',
+        SECTION='GENERALE',
+        CARA=('A','IZ','IY','JX','AY','AZ'),
+   VALE=(S_TG_R,I_TG_R,I_TG_R,I_TG_R*2,1,1),),
+_F(GROUP_MA='BIAIS',
+        SECTION='GENERALE',
+        CARA=('A','IZ','IY','JX','AY','AZ'),
+        VALE=(S_TG_B,I_TG_B,I_TG_B,I_TG_B*2,1,1),),
+     _F(GROUP_MA=('MAINTI_Y','MAINTI_Z'),
+        SECTION='RECTANGLE',
+        CARA=('HY','HZ'),
+        VALE=(HYMA,HZMA),),
+     _F(GROUP_MA=('EBOINF'),
+        SECTION='RECTANGLE',
+        CARA='H',
+        VALE= Heinf,),
+     _F(GROUP_MA=('EBOSUP'),
+        SECTION='RECTANGLE',
+        CARA='H',
+        VALE= Hesup,),
+           ),
+   COQUE=(
+      _F(GROUP_MA=('PQSUP'),
+         COQUE_NCOU=1,
+         EPAIS=1.,
+         ANGL_REP=(90.,0.,),
+          ),
+           ),
+   GEOM_FIBRE=GF,
+   MULTIFIBRE =(
+          _F(GROUP_MA='MAINTIEN',
+          GROUP_FIBRE='S_MAINT',
+               ),
+          _F(GROUP_MA='CRAYON',
+             GROUP_FIBRE='SCRAYON',
+               ),
+          _F(GROUP_MA='LGUIDE',
+             GROUP_FIBRE='SLGUIDE',
+               ),
+          _F(GROUP_MA='BIAIS',
+             GROUP_FIBRE='SBIAIS',
+               ),
+          _F(GROUP_MA='RETRE',
+          GROUP_FIBRE='SRETRE',
+               ),
+                    ),
+     DISCRET=(
+          _F(GROUP_MA='ELA_ME', REPERE='LOCAL',
+             CARA = 'K_TR_L', VALE = carel,),
+          _F(GROUP_MA='ELA_ME', REPERE='LOCAL',
+             CARA = 'M_TR_L', VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+          _F(GROUP_MA='ELA_EX', REPERE='LOCAL',
+             CARA = 'K_TR_L', VALE = carel,),
+          _F(GROUP_MA='ELA_EX', REPERE='LOCAL',
+             CARA = 'M_TR_L', VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+          _F(GROUP_MA='RIG_ME', REPERE='LOCAL',
+            CARA='K_TR_D_L',
+            VALE=((1.E9*NBTG/4),(1.E9*NBTG/4),0.,(KR_GM*NBTG/8.),
+            (1.E9*NBTG/4),(KR_GM*NBTG/8.),),),
+          _F(GROUP_MA='RIG_ME', REPERE='LOCAL',
+             CARA = 'M_TR_L', VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+          _F(GROUP_MA='RIG_EX', REPERE='LOCAL',
+             CARA='K_TR_D_L',
+             VALE=((1.E9*NBTG/4),(1.E9*NBTG/4),0.,(KR_GM*NBTG/8.),
+             (1.E9*NBTG/4),(KR_GM*NBTG/8.),),),
+          _F(GROUP_MA='RIG_EX', REPERE='LOCAL',
+             CARA = 'M_TR_L', VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),),
+
+     ORIENTATION=(
+               _F(GROUP_MA=('ELA_EX','ELA_ME','RIG_EX','RIG_ME'),
+                  CARA='VECT_Y',
+                  VALE=(1.,0.,0.),),
+               _F(GROUP_MA=('MAINTI_Y'),
+                  CARA='VECT_Y',
+                  VALE=(0. ,1. ,0.),),
+               _F(GROUP_MA=('MAINTI_Z'),
+                  CARA='VECT_Y',
+                  VALE=(0. ,0. ,1. ),),
+                    ),
+               );
+
+MA1=MODI_MAILLAGE(
+   reuse =MA1,
+   MAILLAGE=MA1,
+   ORIE_NORM_COQUE=
+      _F(   GROUP_MA='PQSUP',
+            VECT_NORM=(-1.,0.,0.),
+            GROUP_NO='PQ1',),
+  INFO=1,);
+
+#####################################################
+#              DEFINITION DES MATERIAUX             #
+#####################################################
+#
+#     EMBOUT SUPERIEUR
+MT_ES=DEFI_MATERIAU(ELAS=_F(E=EES0,
+                               NU=NUES0,
+                               RHO=RHOES,
+                    ),);
+
+#   EMBOUT INFERIEUR
+MT_EI=DEFI_MATERIAU(ELAS=_F(E=EEI0,
+                               NU=NUEI0,
+                               RHO=RHOEI,
+                    ),);
+MT_RIG=DEFI_MATERIAU(ELAS=_F(E=1.0,
+                     NU=0.0,
+                     RHO=0.0,
+                     ALPHA=0.0,),);
+
+# #    LIAISON GRILLE/CRAYON
+
+M_GM=DEFI_MATERIAU(DIS_GRICRA=_F(KN_AX=100000.*NBCR,
+                                  KT_AX=2.e6*NBCR,
+                                   F_SER=80.*NBCR,
+                                  COUL_AX=0.6,
+                                  ANG1=0.0009,
+                                  ANG2=0.0026,
+                                  PEN1=460.*NBCR,
+                                  PEN2=77.*NBCR,
+                                  PEN3=70.*NBCR,
+                                   ),
+                     ELAS=_F( E = 1.E5, NU = 0.3,),
+                                   );
+
+#    SYSTEME DE MAINTIEN
+MT_MA=DEFI_MATERIAU(ELAS=_F(E=EMA0,
+                               NU=NUMA0,
+                               RHO=RHOMA,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=DSMA0,
+                                    SY=SYMA0,),);
+
+#     TUBE GUIDE
+MT_TU1=DEFI_MATERIAU(ELAS=_F(
+                     E     =  (ETU0*NBTG),
+                     NU    =  NUTU0,
+                     RHO   =  (RHOTU*NBTG),),
+      );
+
+#     CRAYON
+MT_CR=DEFI_MATERIAU( ELAS=_F(
+                     E     =  (ECR0*NBCR),
+                     NU    =  NUCR0,
+                     RHO   =  (RHOCR*NBCR),),
+      );
+
+#     PQSUP
+MT_PLAQ=DEFI_MATERIAU(
+        ELAS=_F(E=1.E14, NU=0.3, RHO=0., ALPHA=0.,),);
+
+##############################################################
+#           AFFECTATION DES MATERIAUX                        #
+##############################################################
+COMPF1=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MT_TU1,
+                  MULTIFIBRE=(_F(GROUP_FIBRE=('SLGUIDE','SBIAIS','SRETRE'),
+                                 MATER=MT_TU1),))
+COMPF2=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MT_CR,
+                  MULTIFIBRE=( _F(GROUP_FIBRE=('SCRAYON'),
+                                 MATER=MT_CR),))
+COMPF3=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MT_MA,
+                  MULTIFIBRE=( _F(GROUP_FIBRE=('S_MAINT'),
+                                 MATER=MT_MA),))
+
+A_MAT=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=(_F(GROUP_MA=('PQSUP'),
+                             MATER=MT_PLAQ,),
+                          _F(GROUP_MA=('MAINTIEN'),
+                             MATER=MT_MA,),
+                          _F(GROUP_MA='CRAYON',
+                             MATER=MT_CR,),
+                          _F(GROUP_MA='T_GUIDE',
+                             MATER=MT_TU1,),
+                          _F(GROUP_MA='EBOINF',
+                             MATER=MT_EI,),
+                          _F(GROUP_MA=('EBOSUP'),
+                             MATER=MT_ES,),
+                          _F(GROUP_MA='RIG',
+                             MATER=MT_RIG,),
+                          _F(GROUP_MA='ELA_EX_B',
+                             MATER=M_GM,),
+                          _F(GROUP_MA='ELA_EX_T',
+                             MATER=M_GM,),
+                          _F(GROUP_MA='ELA_ME',
+                             MATER=M_GM,),
+                            ),
+              AFFE_COMPOR=(_F(GROUP_MA=('MAINTIEN'),
+                             COMPOR=COMPF3,),
+                            _F(GROUP_MA=('CRAYON'),
+                             COMPOR=COMPF2,),
+                           _F(GROUP_MA=('T_GUIDE'),
+                             COMPOR=COMPF1,),),
+                            );
+
+####################################################
+#   DEFINITION DES CHARGEMENTS ET DES COND. LIM.   #
+####################################################
+
+# CONDITIONS LIMITES
+# ---------------------
+CL_CTC=DEFI_CONTACT(
+   MODELE=MO1,
+   FORMULATION = 'DISCRETE',
+   ZONE=(_F(APPARIEMENT='NODAL',
+              NORMALE = 'ESCL',
+              VECT_ESCL = 'FIXE',
+              ESCL_FIXE=(1.,0.,0.),
+              GROUP_MA_ESCL='PINF',
+              GROUP_MA_MAIT='CR_BAS',)
+              ,
+           _F(APPARIEMENT='NODAL',
+              NORMALE = 'ESCL',
+              VECT_ESCL = 'FIXE',
+              ESCL_FIXE=(-1.,0.,0.),
+              GROUP_MA_ESCL='PSUP',
+              GROUP_MA_MAIT='CR_HAU',),),
+   );
+
+
+CL_PERM=AFFE_CHAR_MECA(MODELE=MO1,
+                       DDL_IMPO=(_F(GROUP_MA='PQSUP',
+                                    DX=0.,   DY=0.,   DZ=0.,),
+                                 _F(GROUP_MA='ASSEM2',
+                                    DY=0.,),
+                                 _F(GROUP_NO='FIX',
+                                    DX=0.,
+                                    DZ=0.,
+                                    DRX=0.,
+                                      ),
+                                 _F(GROUP_NO='CRAYON',
+                                    DRX=0.,
+                                      ),
+                                 _F(GROUP_MA=('EBOSUP','EBOINF'),
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    ),
+     _F(GROUP_NO=('PGRIL_1','PGRIL_2','PGRIL_3','PGRIL_4',
+                  'PGRIL_5','PGRIL_6','PGRIL_7','PGRIL_8',
+                  'PGRIL_9','PGRIL_10',),
+                  DY=0.,DRX=0.,DRY=0.,DRZ=0.),
+                 ),
+        LIAISON_UNIF=(
+                _F(GROUP_MA='GRIL_1',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_2',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_3',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_4',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_5',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_6',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_7',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_8',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_9',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                _F(GROUP_MA='GRIL_10',
+                DDL=('DX','DY','DZ','DRX','DRY','DRZ',),),
+        ),
+                                    );
+
+BLOQ=AFFE_CHAR_MECA(MODELE=MO1,
+                    DDL_IMPO=_F(GROUP_NO=('PGRIL_1','PGRIL_2','PGRIL_3','PGRIL_4',
+                                          'PGRIL_5','PGRIL_6','PGRIL_7','PGRIL_8',
+                                          'PGRIL_9','PGRIL_10',),
+                                DX=0.,),
+                    );
+
+
+#
+#      CHARGEMENT
+# ---------------------
+PESANT=AFFE_CHAR_MECA(MODELE=MO1,
+                      PESANTEUR=_F(GRAVITE=9.81,
+                                   DIRECTION=(-1.,0.,0.),),);
+
+
+# Compression initiale
+TIR_CR=AFFE_CHAR_MECA(
+   MODELE=MO1,
+   DDL_IMPO=
+   _F(GROUP_NO='CR_BAS',DX=-1.E-3,),);
+DEPL_CR=DEFI_FONCTION(
+   NOM_PARA='INST',
+   VALE=(
+     -2.,  0. ,
+     -1.,  1. ,),);
+
+
+CL_DI_FR=AFFE_CHAR_MECA(
+      MODELE=MO1,
+      FORCE_NODALE=
+         _F(GROUP_NO='PEBO_S',
+            FX=(-1.),),);
+
+if 0:
+  CL_GRI_6=AFFE_CHAR_MECA(
+      MODELE=MO1,
+      DDL_IMPO=
+         _F(GROUP_NO='PGRIL_6',
+            DZ=1.E-3,),);
+
+FOR_MAIN=DEFI_FONCTION(NOM_PARA='INST',
+                       VALE=(
+                  0.,   0. ,
+                  1.,   1.e-10 ,
+                  2.,   1.0331E+04,
+                  3.,   2.5E+04,
+                  4.,   3.4702E+04,
+                  5.,   4.E+04,
+                  6.,   3.5E+04,
+                  7.,   2.5E+04,
+                  8.,   1.0331E+04,
+                  9.,   5000.,
+                  10.,   0.
+                  ),
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+
+
+###############################################
+#  DEFINITION DES LISTES D INSTANTS           #
+###############################################
+
+L_INST1=DEFI_LIST_REEL(
+   DEBUT=-2.,
+   INTERVALLE=(
+      _F(JUSQU_A=-1.,   NOMBRE=10,),
+               ),);
+
+L_INST11=DEFI_LIST_REEL(
+   DEBUT=-1.,
+   INTERVALLE=(
+      _F(JUSQU_A=0.,   NOMBRE=10,),
+               ),);
+
+L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=1.0,
+                                     NOMBRE=2,),
+                                  _F(JUSQU_A=10.0,
+                                     NOMBRE=45,),),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=-2.0,
+                      INTERVALLE=(_F(JUSQU_A=-1.,
+                                       NOMBRE=10,),
+                                  _F(JUSQU_A=0.,
+                                       NOMBRE=10,),
+                                  _F(JUSQU_A=1.0,
+                                       NOMBRE=2,),
+                                  _F(JUSQU_A=10.0,
+                                       NOMBRE=45,),
+                                  ),);
+
+#####################################################################
+#####################################################################
+#     CALCUL INITIAL COMMUN A L ESSAI DE COMPRESSION ET DE FLEXION  #
+#####################################################################
+#####################################################################
+
+RESU=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
+                   MODELE=MO1,
+                   CHAM_MATER=A_MAT,
+                   CARA_ELEM=CARA1,
+                   EXCIT=(_F(CHARGE=TIR_CR, FONC_MULT=DEPL_CR,),
+                          _F(CHARGE=BLOQ,),
+                          _F(CHARGE=CL_PERM,),
+                          _F(CHARGE=PESANT,),
+                          ),
+                   CONTACT = CL_CTC,
+                   COMP_INCR=(
+                          _F(RELATION='MULTIFIBRE',
+                             GROUP_MA=('CRAYON','T_GUIDE','MAINTIEN'),
+                             ITER_INTE_MAXI=500),
+                          _F(RELATION='DIS_GRICRA',
+                             ITER_INTE_MAXI=500,
+                             GROUP_MA='ELA'),
+                          _F(RELATION='ELAS',
+                             GROUP_MA=('EBOINF','EBOSUP',
+                                       'RIG',
+           'PQSUP'),),),
+                   INCREMENT=_F(
+                                 LIST_INST=L_INST1,
+                                 ),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.e-06,
+                                  ITER_GLOB_MAXI=50,),
+                   ARCHIVAGE=_F(LIST_INST=L_INST1,),);
+
+RESU=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
+                   reuse = RESU,
+                   MODELE=MO1,
+                   CHAM_MATER=A_MAT,
+                   CARA_ELEM=CARA1,
+                   EXCIT=(_F(CHARGE=CL_PERM,),
+                          _F(CHARGE=PESANT,),
+                          ),
+                   CONTACT  = CL_CTC,
+                   COMP_INCR=(
+                          _F(RELATION='MULTIFIBRE',
+                             GROUP_MA=('CRAYON','T_GUIDE','MAINTIEN'),
+                             ITER_INTE_MAXI=500),
+                          _F(RELATION='DIS_GRICRA',
+                             GROUP_MA='ELA',
+                             ITER_INTE_MAXI=500,),
+                          _F(RELATION='ELAS',
+                             GROUP_MA=('EBOINF','EBOSUP',
+                                       'RIG','PQSUP'),),),
+                   INCREMENT=_F(
+                                LIST_INST=L_INST11,),
+                   ETAT_INIT=_F(
+                                EVOL_NOLI=RESU,
+                                INST=-1.,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.e-06,
+                                  ITER_GLOB_MAXI=50,),
+                   ARCHIVAGE=_F(LIST_INST=L_INST11,),);
+
+
+#####################################################################
+#####################################################################
+#     POURSUITE ESSAI DE COMPRESSION                                #
+#####################################################################
+#####################################################################
+
+# CALCUL
+
+COMPR=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
+                    MODELE=MO1,
+                    CHAM_MATER=A_MAT,
+                    CARA_ELEM=CARA1,
+                    EXCIT=(_F(CHARGE=CL_DI_FR,FONC_MULT=FOR_MAIN,),
+                           _F(CHARGE=CL_PERM,),
+                           _F(CHARGE=PESANT,),
+                           ),
+                    COMP_INCR=(
+                          _F(RELATION='MULTIFIBRE',
+                             GROUP_MA=('CRAYON','T_GUIDE','MAINTIEN'),
+                             ITER_INTE_MAXI=500),
+                           _F(RELATION='DIS_GRICRA',
+                              ITER_INTE_MAXI=500,
+                              GROUP_MA='ELA',),
+                           _F(RELATION='ELAS',
+                              GROUP_MA=('EBOINF','EBOSUP',
+                                        'RIG','PQSUP'),),),
+                    INCREMENT=_F(
+                           LIST_INST=L_INST2,
+                           ),
+                    ETAT_INIT=_F(EVOL_NOLI=RESU,
+                                 INST=0.,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.e-06,
+                                  ITER_GLOB_MAXI=50,),
+                    ARCHIVAGE=_F(LIST_INST=L_INST2,),);
+
+
+# POST_TRAITEMENT
+
+
+COMPR=CALC_NO(reuse =COMPR,
+  RESULTAT=COMPR,
+
+  TOUT_ORDRE='OUI',
+  OPTION='FORC_NODA',
+
+
+         );
+
+# Deplacement de l'embout
+DX1=RECU_FONCTION(
+   RESULTAT=COMPR,
+   NOM_CHAM='DEPL',
+   NOM_CMP='DX',
+   GROUP_NO='PEBO_S',
+   PROL_DROITE='CONSTANT',
+   PROL_GAUCHE='CONSTANT',);
+DXTOTA=CALC_FONCTION(
+                     COMB=(_F(FONCTION=DX1,COEF=-1.,),),
+                     );
+
+# Force exercee sur l'embout
+POST3=POST_RELEVE_T(
+   ACTION=_F(INTITULE='FORCES',
+             GROUP_NO=('PEBO_S'),
+             RESULTAT=COMPR,
+             NOM_CHAM='FORC_NODA',
+             RESULTANTE=('DX','DY','DZ'),
+             REPERE='GLOBAL',
+             OPERATION='EXTRACTION',),);
+FORC3=RECU_FONCTION(
+             TABLE=POST3,
+             PARA_X='INST',
+             PARA_Y='DX',
+             PROL_DROITE='CONSTANT',
+             PROL_GAUCHE='CONSTANT',);
+
+FORXA=CALC_FONCTION(
+   COMB=_F(FONCTION=FORC3, COEF=-1.,),
+   );
+
+FODEA=CREA_TABLE( FONCTION=_F(FONCTION=DXTOTA, ), )
+FODEA=CALC_TABLE( reuse=FODEA,TABLE=FODEA,
+                ACTION=_F(OPERATION='RENOMME', NOM_PARA=('DX',  'X1'), ) )
+FODEP=CREA_TABLE( FONCTION=_F(FONCTION=FORXA , ), )
+FODEP=CALC_TABLE( reuse=FODEP,TABLE=FODEP,
+                ACTION=_F(OPERATION='RENOMME',NOM_PARA=('DX',  'Y'), ) )
+FODEP=CALC_TABLE( reuse=FODEP,TABLE=FODEP,
+                ACTION=_F(OPERATION='COMB',TABLE=FODEA,NOM_PARA=('INST'), ) )
+FODEP=CALC_TABLE( reuse=FODEP,TABLE=FODEP,
+                ACTION=_F(OPERATION='RENOMME',NOM_PARA=('INST','K'), ) )
+
+# on decale sur 0. l'ordonnee de la fonction DXTOTA.
+# Pour blinder, TEST_FONCTION de la valeur de la premiere ordonnee, ini
+ini=0.000599976075691
+
+
+TEST_FONCTION ( VALEUR =_F( FONCTION  = DXTOTA,
+                            VALE_PARA = 0.5,
+                            REFERENCE = 'ANALYTIQUE',
+                            VALE_REFE = ini,         ), )
+fini=FORMULE(NOM_PARA='X1',VALE='X1-ini')
+FODEP=CALC_TABLE(reuse=FODEP,TABLE=FODEP,
+                 ACTION=_F(OPERATION='OPER',FORMULE=fini,NOM_PARA='X') )
+
+
+
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 2.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=1.0331E+04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 2.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.06,VALE=2.5E-04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 3.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=2.5E+04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 3.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=6.63E-04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 4.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=3.4702E+04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 4.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=1.E-03)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 5.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=4.E+04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 5.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=1.23E-03)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 6.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=3.5E+04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 6.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=1.09E-03)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 7.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=2.5E+04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 7.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=8.49E-04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 8.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=1.0331E+04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 8.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.12,VALE=5.18E-04)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 9.00000E+00),),
+           NOM_PARA='Y',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.05,VALE=5000.)
+TEST_TABLE(TABLE=FODEP,FILTRE=(_F(NOM_PARA = 'K',VALE = 9.00000E+00),),
+           NOM_PARA='X',REFERENCE = 'SOURCE_EXTERNE',CRITERE='RELATIF',
+           PRECISION=0.18,VALE=3.87E-04)
+
+
+
+
+FIN();

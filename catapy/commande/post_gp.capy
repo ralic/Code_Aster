@@ -1,24 +1,23 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE WADIER Y.WADIER
-   
-from Macro.post_gp_ops import post_gp_ops
+
 
 def post_gp_prod(self, TABL_GPMAX,TABL_GP, **kargs):
    """Typage des sd_prod
@@ -32,21 +31,23 @@ def post_gp_prod(self, TABL_GPMAX,TABL_GP, **kargs):
    return table_sdaster
 
 
-POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
+POST_GP=MACRO(nom="POST_GP",
+              op=OPS('Macro.post_gp_ops.post_gp_ops'),
+              sd_prod=post_gp_prod,
               fr="Calcul du critère énergétique Gp suite à un calcul thermo-mécanique",
               reentrant='n',
               UIinfo={"groupes":("Post-traitements","Rupture",)},
               regles=(UN_PARMI('IDENTIFICATION', 'PREDICTION'),
                       UN_PARMI('THETA_2D','THETA_3D'),),
-      
+
       # Résultat, modèle, comportement, chargement
       RESULTAT     = SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),
       RESU_THER    = SIMP(statut='f',typ=evol_ther,),
       MODELE       = SIMP(statut='o',typ=modele_sdaster),
       MATER        = SIMP(statut='o',typ=mater_sdaster),
-      
+
       COMP_ELAS    = C_COMP_ELAS('POST_GP'),
-      
+
       LIST_INST    = SIMP(statut='o',typ=listr8_sdaster),
 
       TYPE_DEF = SIMP(statut='f',typ='TXM', defaut="PETIT", into=("PETIT","GRAND")),
@@ -56,10 +57,10 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
             TYPE_CHARGE = SIMP(statut='f', typ='TXM', defaut="FIXE", into=("FIXE",)),
       ),
       SYME_CHAR    = SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS")),
-      
+
       b_direction     =BLOC(condition = "(THETA_2D != None) ",
           DIRECTION    = SIMP(statut='o', typ='R', max=3),),
-      
+
       THETA_2D     = FACT(statut='f', max='**',
                           fr="paramètres de définition des champs theta",
             GROUP_NO    = SIMP(statut='o', typ=grno, validators=NoRepeat(), max='**'),
@@ -70,7 +71,7 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
            # correction axisymétrie
             RAYON_AXIS   = SIMP(statut='f', typ='R', val_min=0., defaut=1.),
             TRANCHE = FACT(statut='o', max=1,
-     
+
                            GROUP_MA  = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
                            ),),
 
@@ -87,7 +88,7 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
                 LISSAGE_G        =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",
                                   into=("LEGENDRE","LAGRANGE","LAGRANGE_NO_NO","LAGRANGE_REGU"),),
                              ),
-    
+
             FOND_FISS       =SIMP(statut='o',typ=fond_fiss,max=1,),
             TRANCHE = FACT(statut='o', max='**',
                            GROUP_MA  = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
@@ -101,19 +102,19 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       # critère sur Gp
       CRIT_MAXI_GP = SIMP(statut='f', typ='TXM', defaut="ABSOLU",
                           into=("RELATIF","ABSOLU")),
-            
+
       # identification
       IDENTIFICATION = FACT(statut='f', max=1,
             KJ_CRIT     = SIMP(statut='o', typ='R', val_min=0., max='**'),
             TEMP        = SIMP(statut='o', typ='R', val_min=0., max='**'),
       ),
-      
+
       # prédiction
       PREDICTION   = FACT(statut='f', max=1,
             GP_CRIT     = SIMP(statut='o', typ='R', val_min=0., max='**'),
             TEMP        = SIMP(statut='o', typ='R', val_min=0., max='**'),
       ),
-      
+
       # table résultat
       TABL_GPMAX    = SIMP(statut='o', typ=CO,),
       TABL_GP       = SIMP(statut='f', typ=CO,),

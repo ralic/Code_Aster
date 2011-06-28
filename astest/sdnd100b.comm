@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,7 +119,9 @@ MAILLAGE=POUTRE,
                            )
 
 #
-MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
+MACRO_PROJ_BASE(  BASE=MODES,
+                  STOCKAGE='DIAG',
+                  MATR_ASSE_GENE=(
                     _F(  MATRICE = CO("MASSEGEN"),
                                      MATR_ASSE = MATRMASS),
                     _F(  MATRICE = CO("RIGIDGEN"),

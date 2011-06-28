@@ -1,25 +1,22 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE BODEL C.BODEL
-
-from Macro.observation_ops import observation_ops
-
 
 def observation_prod(self, RESULTAT, **args):
     if  AsType(RESULTAT) == mode_meca :
@@ -33,10 +30,11 @@ def observation_prod(self, RESULTAT, **args):
     else :
         return None
 
-OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
-            UIinfo={"groupes":("Matrices et vecteurs",)},
-                      sd_prod=observation_prod,
-                      fr="Calcul de l'observabilite d'un champ aux noeuds ",
+OBSERVATION=MACRO(nom="OBSERVATION",
+                  op=OPS('Macro.observation_ops.observation_ops'),
+                  UIinfo={"groupes":("Matrices et vecteurs",)},
+                  sd_prod=observation_prod,
+                  fr="Calcul de l'observabilite d'un champ aux noeuds ",
 #
          MODELE_1        =SIMP(statut='o',typ=modele_sdaster),
          MODELE_2        =SIMP(statut='o',typ=modele_sdaster),
@@ -65,7 +63,7 @@ OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
                 fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
          ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
 
-         TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",), 
+         TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
                 fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
 
 #           PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",

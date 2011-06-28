@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MASSE RESSORT AVEC EXCITATION HARMONIQUE ET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,7 +132,9 @@ DEPLPHY3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
 
 #
 #
-MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
+MACRO_PROJ_BASE(  BASE=MODES,
+                  STOCKAGE='DIAG',
+                  MATR_ASSE_GENE=(
                    _F(
                                    MATRICE = CO("MASSEGEN"),
                                    MATR_ASSE = MATRMASS),

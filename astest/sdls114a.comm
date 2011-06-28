@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,7 +119,7 @@ MA_ASS=ASSE_MATRICE(MATR_ELEM=MMASSE,
 
 AMO_ASS=ASSE_MATRICE(MATR_ELEM=MAMOR,
                     NUME_DDL=NUM,);
-
+                    
 VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
                     NUME_DDL=NUM,);
 
@@ -230,6 +230,7 @@ for i in range(0,5) :
 ##############################################
 
 MACRO_PROJ_BASE(BASE=MODE,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GE'),
                                    MATR_ASSE=MA_ASS,),
                                 _F(MATRICE=CO('RIGI_GE'),
@@ -260,7 +261,7 @@ RESUDYNA = REST_GENE_PHYS(RESU_GENE = RES_DYNA,
 RESUDYNA =CALC_CHAMP(reuse =RESUDYNA ,
                    MODELE=MO,
                    CHAM_MATER=CM,
-                    CONTRAINTE=('SIEF_ELGA'),
+                   CONTRAINTE=('SIEF_ELGA'),
                    RESULTAT=RESUDYNA ,);
 
 RESUDYNA =CALC_NO(reuse =RESUDYNA ,

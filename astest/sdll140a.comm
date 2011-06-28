@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC 3 DISQUES (CADYRO : DLRR08)
 # REFERENCE : M. LALANNE, G. FERRARIS -        RORORDYNAMIC, PREDICTION IN
 # ENGINEERING - pp 68-71
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
                                                                                                        
 
 MACRO_PROJ_BASE(BASE=MODES,
-                PROFIL='PLEIN',
+                STOCKAGE='PLEIN',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
                                    MATR_ASSE=MASSE,),
                                 _F(MATRICE=CO('RIGE'),

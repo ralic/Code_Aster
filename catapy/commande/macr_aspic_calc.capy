@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GALENNE E.GALENNE
-from Macro.macr_aspic_calc_ops import macr_aspic_calc_ops
 
 def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_2,RESU_THER,**args):
   if MODELE      != None:self.type_sdprod(MODELE,modele_sdaster)
@@ -28,9 +27,13 @@ def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_
   if RESU_THER   != None:self.type_sdprod(RESU_THER,evol_ther)
   return evol_noli
 
-MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_aspic_calc_prod,
-            fr="Réalise un calcul prédéfini de piquages sains ou fissurés ainsi que les post-traitements associés ",
-            UIinfo={"groupes":("Résolution","Outils-métier",)},reentrant='n',
+MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",
+                      op=OPS('Macro.macr_aspic_calc_ops.macr_aspic_calc_ops'),
+                      sd_prod=macr_aspic_calc_prod,
+                      fr="Réalise un calcul prédéfini de piquages sains ou fissurés " \
+                         "ainsi que les post-traitements associés ",
+                      UIinfo={"groupes":("Résolution","Outils-métier",)},
+                      reentrant='n',
 
          TYPE_MAILLAGE   =SIMP(statut='o',typ='TXM',
                                into=("SAIN_FIN","SAIN_GROS","FISS_COUR_DEB","FISS_COUR_NONDEB","FISS_LONG_DEB",

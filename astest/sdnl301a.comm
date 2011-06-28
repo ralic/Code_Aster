@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -286,7 +286,7 @@ MACRO_PROJ_BASE(BASE=BASEMODA,
                                    MATR_ASSE=MATM),
                                 _F(MATRICE  =CO('AMORPRO2'),
                                    MATR_ASSE=MATA)),
-                PROFIL='PLEIN');
+                STOCKAGE='PLEIN');
                 
 VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
                         VECT_ASSE    =VECT,

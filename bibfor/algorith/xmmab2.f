@@ -1,13 +1,14 @@
       SUBROUTINE XMMAB2(NDIM  ,JNNE,NDEPLE,NNC   ,JNNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI, LAMBDA,COEFCA,
-     &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
+     &                  FFM   ,JACOBI,JPCAI, LAMBDA,COEFCR,
+     &                  COEFCP,COEFEC,COEFEF,JEU   ,COEFFR,
+     &                  COEFFP,LPENAF,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,NRESE ,MPROJ ,NORM  ,TYPMAI,
      &                  NSINGE,NSINGM,RRE   ,RRM   ,NVIT  ,
-     &                  NCONTA,JDDLE,JDDLM,MMAT  )
+     &                  NCONTA,JDDLE,JDDLM,NFHE,MMAT  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,12 +29,14 @@ C TOLE CRP_21
 C
       IMPLICIT NONE
       INTEGER  NDIM,NNC,JNNE(3),JNNM(3),NFAES,JPCAI,CFACE(5,3)
-      INTEGER  NSINGE,NSINGM
+      INTEGER  NSINGE,NSINGM,NFHE
       INTEGER  NVIT,NCONTA,NDEPLE,JDDLE(2),JDDLM(2)
-      REAL*8   HPG,FFC(9),FFE(9),FFM(9),JACOBI,NORM(3)
-      REAL*8   LAMBDA,COEFFF,COEFFA,RRE,RRM,COEFCA,JEU
-      REAL*8   TAU1(3),TAU2(3),RESE(3),NRESE,MMAT(168,168),MPROJ(3,3)
+      REAL*8   HPG,FFC(9),FFE(9),FFM(9),JACOBI,NORM(3),COEFCP
+      REAL*8   LAMBDA,COEFFF,COEFFR,RRE,RRM,COEFCR,JEU,COEFFP
+      REAL*8   COEFEC,COEFEF
+      REAL*8   TAU1(3),TAU2(3),RESE(3),NRESE,MMAT(336,336),MPROJ(3,3)
       CHARACTER*8  TYPMAI
+      LOGICAL  LPENAF
 C
 C ----------------------------------------------------------------------
 C
@@ -87,6 +90,7 @@ C
       INTEGER   NNE,NNES,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
       REAL*8    C1(3),C2(3),C3(3),D1(3),D2(3),D3(3),H1(3),H2(3)
       REAL*8    G(3,3),D(3,3),B(3,3),C(3,3),R(3,3),MP,MB,MBT,MM,MMT
+      REAL*8    F(3,3),TT(3,3)
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
@@ -106,8 +110,9 @@ C
           D(I,J) = 0.D0
           B(I,J) = 0.D0
           R(I,J) = 0.D0
-    2   CONTINUE
-    1 CONTINUE
+          TT(I,J)=0.D0
+2       CONTINUE
+1     CONTINUE
       DO 3 K = 1,3
         C1(K) = MPROJ(K,1)
         C2(K) = MPROJ(K,2)
@@ -117,7 +122,7 @@ C
         D3(K) = 0.D0
         H1(K) = 0.D0
         H2(K) = 0.D0
-    3 CONTINUE
+3     CONTINUE
 C
 C --- G = [K][P_TAU]
 C
@@ -129,7 +134,7 @@ C
         G(K,1) = D1(K)
         G(K,2) = D2(K)
         G(K,3) = D3(K)
-    4 CONTINUE
+4     CONTINUE
 C
 C --- D = [P_TAU]*[K]*[P_TAU]
 C
@@ -137,9 +142,9 @@ C
         DO 14 J = 1,NDIM
           DO 15 K = 1,NDIM
             D(I,J) = G(K,I)*MPROJ(K,J) + D(I,J)
-  15      CONTINUE
-  14    CONTINUE
-  13  CONTINUE
+15        CONTINUE
+14      CONTINUE
+13    CONTINUE
 C
       CALL MKKVEC(RESE,NRESE,NDIM,TAU1,H1)
       CALL MKKVEC(RESE,NRESE,NDIM,TAU2,H2)
@@ -152,16 +157,16 @@ C
           B(1,I) = RESE(K)*MPROJ(K,I)+B(1,I)
           B(2,I) = H1(K)*MPROJ(K,I)+B(2,I)
           B(3,I) = H2(K)*MPROJ(K,I)+B(3,I)
-  25    CONTINUE
-  24  CONTINUE
+25      CONTINUE
+24    CONTINUE
 C
 C --- C = (P_B)[P_TAU]*(N)
 C
       DO 8 I = 1,NDIM
         DO 9 J = 1,NDIM
           C(I,J) = B(1,I)*NORM(J)
-    9   CONTINUE
-    8 CONTINUE
+9       CONTINUE
+8     CONTINUE
 C
 C --- R = [TAU1,TAU2][K-ID][TAU1,TAU2]
 C
@@ -170,9 +175,26 @@ C
         R(1,2) = (TAU1(K)-H1(K))*TAU2(K) + R(1,2)
         R(2,1) = (TAU2(K)-H2(K))*TAU1(K) + R(2,1)
         R(2,2) = (TAU2(K)-H2(K))*TAU2(K) + R(2,2)
- 857  CONTINUE
+857   CONTINUE
 C
-      MP = (LAMBDA-COEFCA*JEU)*COEFFF*HPG*JACOBI
+C---- TT = [TAU1,TAU2][ID][TAU1,TAU2]
+C
+      DO 301 I = 1,NDIM
+        TT(1,1) = TAU1(I)*TAU1(I) + TT(1,1)
+        TT(1,2) = TAU1(I)*TAU2(I) + TT(1,2)
+        TT(2,1) = TAU2(I)*TAU1(I) + TT(2,1)
+        TT(2,2) = TAU2(I)*TAU2(I) + TT(2,2)
+301   CONTINUE
+C
+      IF(LPENAF) THEN
+        IF(LAMBDA.EQ.0.D0) THEN
+          MP = -COEFCP*COEFFF*HPG*JACOBI/COEFFP
+        ELSE
+          MP = LAMBDA*COEFFF*HPG*JACOBI
+        ENDIF
+      ELSE
+        MP = (LAMBDA-COEFCR*JEU)*COEFFF*HPG*JACOBI
+      ENDIF
       DDLE = DDLES*NNES+DDLEM*(NNE-NNES)
 
       IF (NNM.NE.0) THEN
@@ -183,14 +205,16 @@ C
         DO 10 K = 1,NDIM
           IF (L.EQ.1) THEN
             MB  = 0.D0
-            MBT = COEFFF*HPG*JACOBI*B(L,K)
+            MBT = COEFFF*HPG*JACOBI*B(L,K)*COEFEC
           ELSE
-            MB  = NVIT*HPG*JACOBI*B(L,K)
-            MBT = MP*B(L,K)
+            IF(.NOT.LPENAF) MB  = NVIT*HPG*JACOBI*B(L,K)
+            IF(LPENAF)      MB = NVIT*HPG*JACOBI*B(L,K)*COEFEF
+            IF(.NOT.LPENAF) MBT = MP*B(L,K)
+            IF(LPENAF)      MBT = 0.D0
           ENDIF
           DO 20 I = 1,NNC
             INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
             II = PLI+L-1
             DO 30 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
@@ -207,8 +231,8 @@ C --- BLOCS ES:CONT, CONT:ES
                 JJ = JJ + NDIM
                 MMAT(II,JJ) = RRE * MM
                 MMAT(JJ,II) = RRE * MMT
-   40         CONTINUE
-   30       CONTINUE
+40            CONTINUE
+30          CONTINUE
             DO 50 J = 1,NNM
 C --- BLOCS MA:CONT, CONT:MA
               MM = MB*FFC(I)*FFM(J)
@@ -224,18 +248,23 @@ C --- BLOCS MA:CONT, CONT:MA
                 JJ = JJ + NDIM
                 MMAT(II,JJ) = RRM * MM
                 MMAT(JJ,II) = RRM * MMT
-   60         CONTINUE
-   50       CONTINUE
-   20     CONTINUE
-   10   CONTINUE
-   70 CONTINUE
+60            CONTINUE
+50          CONTINUE
+20        CONTINUE
+10      CONTINUE
+70    CONTINUE
 C
 C --------------------- CALCUL DE [BU] ---------------------------------
 C
       DO 100 K = 1,NDIM
         DO 110 L = 1,NDIM
-          MB  = -MP*COEFFA*D(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(L,K)
-          MBT = -MP*COEFFA*D(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(K,L)
+          IF(LPENAF) THEN
+            MB  = -MP*COEFFP*D(L,K)
+            MBT = -MP*COEFFP*D(L,K)
+          ELSE
+            MB  = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            MBT = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(K,L)
+          ENDIF
           DO 200 I = 1,NDEPLE
             DO 210 J = 1,NDEPLE
 C --- BLOCS ES:ES
@@ -261,8 +290,8 @@ C --- BLOCS ES:ES
                 MMAT(JJ,II) =  RRE * MMT
                 II = II + NDIM
                 MMAT(II,JJ) =  RRE * RRE * MM
-  215         CONTINUE
-  210       CONTINUE
+215           CONTINUE
+210         CONTINUE
             DO 220 J = 1,NNM
 C --- BLOCS ES:MA, MA:ES
               MM = MB *FFE(I)*FFM(J)
@@ -292,7 +321,7 @@ C --- BLOCS ES:MA, MA:ES
                 MMAT(II,JJ) =  RRM * MM
                 MMAT(JJ,II) =  RRM * MMT
                 JJ = JJ - NDIM
-  230         CONTINUE
+230           CONTINUE
               DO 240 M = 1,NSINGE
                 II = II + NDIM
                 JJ = JJ - NDIM
@@ -302,15 +331,15 @@ C --- BLOCS ES:MA, MA:ES
                 MMAT(II,JJ) =  RRE * MM
                 MMAT(JJ,II) =  RRE * MMT
                 II = II - NDIM
-  240         CONTINUE
+240           CONTINUE
               DO 250 M = 1,NSINGE*NSINGM
                 II = II + NDIM
                 JJ = JJ + NDIM
                 MMAT(II,JJ) =  RRE * RRM * MM
                 MMAT(JJ,II) =  RRE * RRM * MMT
-  250         CONTINUE
-  220       CONTINUE
-  200     CONTINUE
+250           CONTINUE
+220         CONTINUE
+200       CONTINUE
           DO 300 I = 1,NNM
             DO 320 J = 1,NNM
 C --- BLOCS MA:MA
@@ -336,11 +365,11 @@ C --- BLOCS MA:MA
                 MMAT(JJ,II) =  RRM * MMT
                 II = II + NDIM
                 MMAT(II,JJ) =  RRM * RRM * MM
-  330         CONTINUE
-  320       CONTINUE
-  300     CONTINUE
-  110   CONTINUE
-  100 CONTINUE
+330           CONTINUE
+320         CONTINUE
+300       CONTINUE
+110     CONTINUE
+100   CONTINUE
 C
       ELSE
 C
@@ -350,14 +379,16 @@ C
         DO 510 K = 1,NDIM
           IF (L.EQ.1) THEN
             MB  = 0.D0
-            MBT = COEFFF*HPG*JACOBI*B(L,K)
+            MBT = COEFFF*HPG*JACOBI*B(L,K)*COEFEC
           ELSE
-            MB  = NVIT*HPG*JACOBI*B(L,K)
-            MBT = MP*B(L,K)
+            IF(.NOT.LPENAF)MB  = NVIT*HPG*JACOBI*B(L,K)
+            IF(LPENAF) MB = NVIT*HPG*JACOBI*B(L,K)*COEFEF
+            IF(.NOT.LPENAF) MBT = MP*B(L,K)
+            IF(LPENAF) MBT = 0.D0
           ENDIF
           DO 520 I = 1,NNC
             INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
             II = PLI+L-1
             DO 530 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
@@ -367,16 +398,20 @@ C --- BLOCS ES:CONT, CONT:ES
               JJ = JJN + K
               MMAT(II,JJ) = RRE * MM
               MMAT(JJ,II) = RRE * MMT
-  530       CONTINUE
-  520     CONTINUE
-  510   CONTINUE
-  550 CONTINUE
+530         CONTINUE
+520       CONTINUE
+510     CONTINUE
+550   CONTINUE
 C
 C --------------------- CALCUL DE [BU] ---------------------------------
 C
       DO 600 K = 1,NDIM
         DO 610 L = 1,NDIM
-          MB  = -MP*COEFFA*D(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(L,K)
+          IF(LPENAF) THEN
+            MB  = -MP*COEFFP*D(L,K)
+          ELSE
+            MB  = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+          ENDIF
           DO 620 I = 1,NDEPLE
             DO 630 J = 1,NDEPLE
 C --- BLOCS ES:ES
@@ -386,10 +421,10 @@ C --- BLOCS ES:ES
               II = IIN + L
               JJ = JJN + K
               MMAT(II,JJ) = RRE * RRE * MM
-  630       CONTINUE
-  620     CONTINUE
-  610   CONTINUE
-  600 CONTINUE
+630         CONTINUE
+620       CONTINUE
+610     CONTINUE
+600   CONTINUE
       ENDIF
 C
 C --------------------- CALCUL DE [F] ----------------------------------
@@ -398,18 +433,23 @@ C
       DO 400 I = 1,NNC
         DO 410 J = 1,NNC
           INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,PLI)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
           INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,PLJ)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,NFHE,PLJ)
           DO 420 L = 1,NDIM-1
             DO 430 K = 1,NDIM-1
-              II = PLI+L
-              JJ = PLJ+K
-              MMAT(II,JJ) =JACOBI*HPG*FFC(I)*FFC(J)*R(L,K)/COEFFA
- 430        CONTINUE
- 420      CONTINUE
- 410    CONTINUE
- 400  CONTINUE
+              II = PLI+K
+              JJ = PLJ+L
+              IF(LPENAF) THEN
+                MMAT(II,JJ) = HPG*FFC(I)*FFC(J)*JACOBI*TT(K,L)*
+     &           COEFEF*COEFEF/COEFFP
+              ELSE
+                MMAT(II,JJ) =JACOBI*HPG*FFC(I)*FFC(J)*R(K,L)/COEFFR
+              ENDIF
+430         CONTINUE
+420       CONTINUE
+410     CONTINUE
+400   CONTINUE
       ENDIF
 C
       END

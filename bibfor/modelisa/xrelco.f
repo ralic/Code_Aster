@@ -2,7 +2,7 @@
      &                  NBASCO,LISREL,NREL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,20 +65,23 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER     NBDDL,XXMMVD,ZXBAS
-      PARAMETER  (NBDDL=3)
+      INTEGER     NBDDL,XXMMVD,ZXEDG,ZXBAS
+      PARAMETER  (NBDDL=12)
       CHARACTER*8 DDLC(NBDDL)
 C
       REAL*8       RBID,BETAR,COEFR(6),DDOT
-      REAL*8       TAUA(3,2),TAUB(3,2),TAUC(3,2)
-      INTEGER      IER,JLIS1,NDIME(8),NEQ,I,NRL,JLIS2,JLIS3,K,IRET
-      INTEGER      NUNO(8),NDIM,JCNSD,JCNSV,JCNSL,IAD,J
+      REAL*8       TAUA(3,2),TAUB(3,2),TAUC(3,2),TAU(3,2,4)
+      INTEGER      IER,JLIS1,NDIME(8),NEQ,I,NRL,JLIS2,JLIS3,K,IBID,IRET
+      INTEGER      NUNO(8),NDIM,JCNSD,JCNSV,JCNSL,IAD,J,NRS,JLIS4,L,NNS
       CHARACTER*8  NOEUD(8),K8BID,DDL(8)
       CHARACTER*19 CHS
       COMPLEX*16   CBID
-
+      LOGICAL      LMULTI
 C
-      DATA DDLC /'LAGS_C','LAGS_F1','LAGS_F2'/
+      DATA DDLC /'LAGS_C','LAGS_F1','LAGS_F2',
+     &            'LAG2_C','LAG2_F1','LAG2_F2',
+     &            'LAG3_C','LAG3_F1','LAG3_F2',
+     &            'LAG4_C','LAG4_F1','LAG4_F2'/
 C
 C ----------------------------------------------------------------------
 C
@@ -105,11 +108,19 @@ C
       ELSE
         CALL JEVEUO(NLISEQ,'L',JLIS1)
         CALL JELIRA(NLISEQ,'LONMAX',NEQ,K8BID)
+        CALL JEEXIN(NLISEQ(1:14)//'_LAGR',IER)
+        IF (IER.EQ.0) THEN
+          LMULTI = .FALSE.
+        ELSE
+          LMULTI = .TRUE.
+          CALL JEVEUO(NLISEQ(1:14)//'_LAGR','L',JLIS2)
+        ENDIF
       ENDIF
 
       DO 10 I = 1,NEQ/2
         NUNO(1)  = ZI(JLIS1-1+2*(I-1)+1)
         NUNO(2)  = ZI(JLIS1-1+2*(I-1)+2)
+
         CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUNO(1)),NOEUD(1))
         CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUNO(2)),NOEUD(2))
 C
@@ -119,8 +130,13 @@ C
 C --- RELATION POUR LES MULTIPLICATEURS DE CONTACT ET FROTTEMENT
 C
         DO 20 J = 1,NDIM
-          DDL(1) = DDLC(J)
-          DDL(2) = DDLC(J)
+          IF (.NOT.LMULTI) THEN
+            DDL(1) = DDLC(J)
+            DDL(2) = DDLC(J)
+          ELSE
+            DDL(1) = DDLC(3*(ZI(JLIS2-1+2*(I-1)+1)-1)+J)
+            DDL(2) = DDLC(3*(ZI(JLIS2-1+2*(I-1)+2)-1)+J)
+          ENDIF
           CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIME,RBID,2,BETAR,CBID,
      &              K8BID,'REEL','REEL','12',0.D0,LISREL)
           NREL = NREL + 1

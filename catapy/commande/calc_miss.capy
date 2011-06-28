@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,10 +28,9 @@ def calc_miss_sdprod(self, TYPE_RESU, **kwargs):
     else:
         return None
 
-from Macro.calc_miss_ops import calc_miss_ops
 
 CALC_MISS = MACRO(nom="CALC_MISS",
-                  op=calc_miss_ops,
+                  op=OPS('Macro.calc_miss_ops.calc_miss_ops'),
                   sd_prod=calc_miss_sdprod,
                   fr="Préparation des données, exécution du logiciel Miss3D, et post-traitement",
                   UIinfo={"groupes":("Résolution","Outils-métier",)},

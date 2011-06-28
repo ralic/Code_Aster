@@ -1,24 +1,22 @@
-#@ MODIF N_utils Noyau  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_utils Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -57,8 +55,8 @@ except:
 
 
 def callee_where(niveau=4):
-   """ 
-      recupere la position de l appel 
+   """
+      recupere la position de l appel
    """
    frame=cur_frame(niveau)
    if frame == None: return 0,"inconnu",0,{}
@@ -90,7 +88,7 @@ def prbanner(s):
 
 
 def repr_float(valeur):
-  """ 
+  """
       Cette fonction représente le réel valeur comme une chaine de caractères
       sous forme mantisse exposant si nécessaire cad si le nombre contient plus de
       5 caractères
@@ -151,3 +149,49 @@ def repr_float(valeur):
   s=s+'E'+neg*'-'+repr(cpt)
   return s
 
+
+def import_object(uri):
+    """Load and return a python object (class, function...).
+    Its `uri` looks like "mainpkg.subpkg.module.object", this means
+    that "mainpkg.subpkg.module" is imported and "object" is
+    the object to return.
+    """
+    path = uri.split('.')
+    modname = '.'.join(path[:-1])
+    if len(modname) == 0:
+        raise ImportError(u"invalid uri: %s" % uri)
+    mod = object = '?'
+    objname = path[-1]
+    try:
+        __import__(modname)
+        mod = sys.modules[modname]
+    except ImportError, err:
+        raise ImportError(u"can not import module : %s (%s)" % (modname, str(err)))
+    try:
+        object = getattr(mod, objname)
+    except AttributeError, err:
+        raise AttributeError(u"object (%s) not found in module '%s'. "
+            "Module content is: %s" % (objname, modname, tuple(dir(mod))))
+    return object
+
+
+class Enum(object):
+    """
+    This class emulates a C-like enum for python. It is initialized with a list
+    of strings to be used as the enum symbolic keys. The enum values are automatically
+    generated as sequencing integer starting at 0.
+    """
+    def __init__(self, *keys):
+        """Constructor"""
+        self._dict_keys = {}
+        for inum, key in enumerate(keys):
+            setattr(self, key, 2**inum)
+            self._dict_keys[2**inum] = key
+
+    def exists(self, value):
+        """Tell if value is in the enumeration"""
+        return self.get_id(value) is not None
+
+    def get_id(self, value):
+        """Return the key associated to the given value"""
+        return self._dict_keys.get(value, None)

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 DEBUT(CODE=_F(NOM='SDNL132A',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='ALGELINE3_66')
 # TITRE PENDULE RIGIDE AVEC CONTACT ET FROTTEMENT
@@ -113,6 +113,7 @@ freq=DEFI_LIST_REEL(DEBUT=0.0,
                                   NOMBRE=100,),);
 
 MACRO_PROJ_BASE(BASE=mode,
+                STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('K_ASS'),
                                    MATR_ASSE=K,),
                                 _F(MATRICE=CO('M_ASS'),

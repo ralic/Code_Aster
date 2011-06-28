@@ -1,9 +1,9 @@
       SUBROUTINE XTLAGF(TYPMAI,NDIM  ,NNC   ,JNN        ,
      &                  NDDLS,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &                  FFC   ,NCONTA,DLAGRF)
+     &                  FFC   ,NCONTA,NFHE  ,DLAGRF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NDIM,NNC,JNN(3),NCONTA
+      INTEGER      NDIM,NNC,JNN(3),NCONTA,NFHE
       INTEGER      JDEPDE,JPCAI
       REAL*8       FFC(9)
       CHARACTER*8  TYPMAI
@@ -97,7 +97,7 @@ C
         DO 231 INO = 1,NNC
           IN    = XOULA(CFACE ,NFACE ,INO   ,JPCAI ,
      &                  TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,IN    ,PL    )
+          CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,IN    ,NFHE  ,PL    )
           DLAGRF(IDIM-1) = DLAGRF(IDIM-1)+
      &          FFC(INO)*ZR(JDEPDE-1+PL+IDIM-1)
  231    CONTINUE

@@ -5,16 +5,16 @@
      &                  NAXT3,NAXQ4,NAXQ8,NAXT6,NAX2,NAX3)
       IMPLICIT NONE
 
-      INTEGER       NH8(11),NH20(7),NP6(11),NP15(7),NP5(11),NP13(7)
-      INTEGER       NT4(11),NT10(7)
-      INTEGER       NCPQ4(11),NCPQ8(7),NCPT3(11),NCPT6(7), NDPQ4(11)
-      INTEGER       NDPQ8(7),NDPT3(11),NDPT6(7),NF4(11),NF8(7),NF3(11)
+      INTEGER       NH8(14),NH20(7),NP6(14),NP15(7),NP5(14),NP13(7)
+      INTEGER       NT4(14),NT10(7)
+      INTEGER       NCPQ4(14),NCPQ8(7),NCPT3(14),NCPT6(7), NDPQ4(14)
+      INTEGER       NDPQ8(7),NDPT3(14),NDPT6(7),NF4(11),NF8(7),NF3(11)
       INTEGER       NF6(7),NPF2(11),NPF3(7),NH8X(7),NP6X(7),NP5X(7)
       INTEGER       NT4X(7),NCPQ4X(7),NCPT3X(7),NDPQ4X(7),NDPT3X(7)
       INTEGER       NAXT3(7),NAXQ4(7),NAXQ8(7),NAXT6(7),NAX2(7),NAX3(7)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C
         NAX3(I)=0
         NAXT3(I)=0
  10   CONTINUE
-       DO 20 I=8,11
+      DO 20 I=8,11
         NH8(I)=0
         NP6(I)=0
         NP5(I)=0
@@ -118,7 +118,17 @@ C
         NF3(I)=0
         NPF2(I)=0
  20   CONTINUE
-
+      DO 30 I=12,14
+        NH8(I)=0
+        NP6(I)=0
+        NP5(I)=0
+        NT4(I)=0
+        NCPT3(I)=0
+        NCPQ4(I)=0
+        NDPQ4(I)=0
+        NDPT3(I)=0
+ 30   CONTINUE
+      
 
       CALL JEDEMA()
       END

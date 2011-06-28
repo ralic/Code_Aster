@@ -1,29 +1,30 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE VOLDOIRE F.VOLDOIRE
 
-from Macro.macr_spectre_ops import macr_spectre_ops
 
-MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",op=macr_spectre_ops,sd_prod=table_sdaster,
-                       reentrant='n',
-                       UIinfo={"groupes":("Post-traitements","Outils-métier",)},
-                       fr="Calcul de spectre, post-traitement de séisme",
+MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",
+                   op=OPS('Macro.macr_spectre_ops.macr_spectre_ops'),
+                   sd_prod=table_sdaster,
+                   reentrant='n',
+                   UIinfo={"groupes":("Post-traitements","Outils-métier",)},
+                   fr="Calcul de spectre, post-traitement de séisme",
          MAILLAGE      =SIMP(statut='o',typ=maillage_sdaster,),
          PLANCHER      =FACT(statut='o',max='**',
             regles=(AU_MOINS_UN('NOEUD','GROUP_NO' ),),
@@ -38,7 +39,7 @@ MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",op=macr_spectre_ops,sd_prod=table_sdaster,
            LIST_INST     =SIMP(statut='f',typ=listr8_sdaster ),
            LIST_FREQ     =SIMP(statut='f',typ=listr8_sdaster ),
            FREQ          =SIMP(statut='f',typ='R',max='**'),
-           NORME         =SIMP(statut='o',typ='R'),  
+           NORME         =SIMP(statut='o',typ='R'),
            RESU          =FACT(statut='o',max='**',
                 regles=(UN_PARMI('RESU_GENE','RESULTAT'),),
                 RESU_GENE     =SIMP(statut='f',typ=tran_gene),
@@ -59,7 +60,7 @@ MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",op=macr_spectre_ops,sd_prod=table_sdaster,
                               ),
          ),
          b_depl  =BLOC( condition = "NOM_CHAM=='DEPL'",
-           LIST_INST     =SIMP(statut='f',typ=listr8_sdaster),  
+           LIST_INST     =SIMP(statut='f',typ=listr8_sdaster),
            RESU          =FACT(statut='o',max=3,
                 regles=(UN_PARMI('RESU_GENE','RESULTAT'),),
                 RESU_GENE     =SIMP(statut='f',typ=tran_gene),

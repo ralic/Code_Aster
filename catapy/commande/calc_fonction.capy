@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
-from Macro.calc_fonction_ops import calc_fonction_ops
 def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
                        ENVELOPPE,FRACTILE,SPEC_OSCI,ASSE,FFT,COMPOSE,CORR_ACCE,PUISSANCE,
                        LISS_ENVELOP,ABS, REGR_POLYNOMIALE, **args):
@@ -61,10 +60,12 @@ def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
    raise AsException("type de concept resultat non prevu")
 
 
-CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_fonction_prod
-                    ,fr="Effectue des opérations mathématiques sur des concepts de type fonction",
-                     reentrant='n',
-            UIinfo={"groupes":("Fonctions",)},
+CALC_FONCTION=MACRO(nom="CALC_FONCTION",
+                    op=OPS('Macro.calc_fonction_ops.calc_fonction_ops'),
+                    sd_prod=calc_fonction_prod,
+                    fr="Effectue des opérations mathématiques sur des concepts de type fonction",
+                    reentrant='n',
+                    UIinfo={"groupes":("Fonctions",)},
          regles=(UN_PARMI('DERIVE','INTEGRE','SPEC_OSCI','COMB','COMB_C','ENVELOPPE',
                           'COMPOSE','EXTRACTION','ASSE','FFT','CORR_ACCE', 'PUISSANCE',
                           'LISS_ENVELOP','INVERSE','ABS','FRACTILE','REGR_POLYNOMIALE'),),

@@ -8,7 +8,7 @@
       INTEGER        NDIM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -237,7 +237,7 @@ C        NORMAL LEVEL SET
      &                LPAOUT,'V','OUI')
 
          CALL CELCES (CELGLS, 'V', CHAMS)
-         CALL CESCNS (CHAMS, ' ', 'V', GRLN)
+         CALL CESCNS (CHAMS, ' ', 'V', GRLN, ' ', IBID)
 
          CALL JEDETC(' ',CNOLS,1)
          CALL JEDETC(' ',CELGLS,1)
@@ -257,7 +257,7 @@ C        TANGENTIAL LEVEL SET
      &                LPAOUT,'V','OUI')
 
          CALL CELCES (CELGLS, 'V', CHAMS)
-         CALL CESCNS (CHAMS, ' ', 'V', GRLT)
+         CALL CESCNS (CHAMS, ' ', 'V', GRLT, ' ', IBID)
 
          CALL JEDETC(' ',CNOLS,1)
          CALL JEDETC(' ',CELGLS,1)

@@ -1,4 +1,4 @@
-#@ MODIF co_mater SD  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_mater SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,18 +18,18 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-import Accas
-from SD import *
-from sd_mater import sd_mater
+from Accas import ASSD
 
-# -----------------------------------------------------------------------------
-class mater_sdaster(ASSD, sd_mater):
+class mater_sdaster(ASSD):
+   cata_sdj = "SD.sd_mater.sd_mater"
+
    def RCVALE(self, phenomene, nompar=(), valpar=(), nomres=(), stop=1):
       """Appel à la routine fortran RCVALE pour récupérer les valeurs des
       propriétés du matériau.
       """
       if not self.accessible():
          raise Accas.AsException("Erreur dans mater.RCVALE en PAR_LOT='OUI'")
+      import aster
       from Utilitai.Utmess import UTMESS
       # vérification des arguments
       if not type(nompar) in (list, tuple):

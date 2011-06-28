@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 # sdll403a.para = tps_job 60 mem_job 130Mo ncpus 1 liste_test S
@@ -178,9 +178,11 @@ IMPR_RESU( FORMAT='IDEAS',UNITE=75,
 
 MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',
                  FORMAT='IDEAS',
-                 MAILLAGE=MAYA,
                  UNITE=75,
                  NOM_CHAM='DEPL',
+                 MATR_A=K_MODAL,
+                 MATR_B=M_ASSE,
+                 MODELE=STRUCTUR,
                  FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
                                  NUME_DATASET=55,
                                  RECORD_6=(1,2,3,8,2,6,),

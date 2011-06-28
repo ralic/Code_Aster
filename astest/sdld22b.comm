@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 # sdld22b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,7 +186,7 @@ MODES=MODE_ITER_INV(  MATR_A=MATRRIGI,  MATR_B=MATRMASS,
                        FREQ = ( 5.,10.,15.,20.,24.,27.,30.,32.,)) )
 
 MACRO_PROJ_BASE(  BASE=MODES,
-                  PROFIL = 'PLEIN',
+                  STOCKAGE = 'PLEIN',
                   MATR_ASSE_GENE=(
                    _F(
                                    MATRICE = CO("MASSEGEN"),

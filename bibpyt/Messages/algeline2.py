@@ -1,8 +1,8 @@
-#@ MODIF algeline2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algeline2 Messages  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -334,15 +334,15 @@ cata_msg = {
 """),
 
 79 : _("""
- base modale 1 et 2 avec numerotations de taille incompatible
+ Les NUME_DDL associés aux matrices MATR_A et MATR_B sont différents.
 """),
 
 80 : _("""
- base modale 1 et 2 avec numerotations incompatibles
+ bases modales BASE_1 et BASE_2 avec numerotations incompatibles
 """),
 
 81 : _("""
- base modale et matrice avec numerotations incompatibles
+ bases modales et matrice MATR_ASSE avec numerotations incompatibles
 """),
 
 82 : _("""

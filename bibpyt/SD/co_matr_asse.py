@@ -1,4 +1,4 @@
-#@ MODIF co_matr_asse SD  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF co_matr_asse SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,57 +18,52 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from SD import *
-from sd_matr_asse import sd_matr_asse
-from sd_nume_ddl  import sd_nume_ddl
-from SD.sd_stoc_morse import sd_stoc_morse
+from Accas import ASSD
 import numpy
 
-# -----------------------------------------------------------------------------
-class matr_asse(ASSD, sd_matr_asse):
+class matr_asse(ASSD):
+    cata_sdj = "SD.sd_matr_asse.sd_matr_asse"
 
+    def EXTR_MATR(self) :
+        """ retourne les valeurs de la matrice  dans un format numpy
+            Attributs retourne
+              - self.valeurs : numpy.array contenant les valeurs """
+        from SD.sd_stoc_morse import sd_stoc_morse
 
-  def EXTR_MATR(self) :
-    """ retourne les valeurs de la matrice  dans un format numpy
-        Attributs retourne
-          - self.valeurs : numpy.array contenant les valeurs """
+        if not self.accessible():
+            raise Accas.AsException("Erreur dans matr_asse.EXTR_MATR en PAR_LOT='OUI'")
 
-    if not self.accessible():
-       raise Accas.AsException("Erreur dans matr_asse.EXTR_MATR en PAR_LOT='OUI'")
+        refa = numpy.array(self.sdj.REFA.get())
+        ma=refa[0]
+        nu=refa[1]
+        smos = sd_stoc_morse(nu[:14]+'.SMOS')
 
-    refa = numpy.array(self.REFA.get())
-    ma=refa[0]
-    nu=refa[1]
-    smos = sd_stoc_morse(nu[:14]+'.SMOS')
+        valm=self.sdj.VALM.get()
+        smhc=smos.SMHC.get()
+        smdi=smos.SMDI.get()
 
-    valm=self.VALM.get()
-    smhc=smos.SMHC.get()
-    smdi=smos.SMDI.get()
+        sym=len(valm)==1
+        dim=len(smdi)
+        nnz=smdi[dim-1]
 
-    sym=len(valm)==1
-    dim=len(smdi)
-    nnz=smdi[dim-1]
+        triang_sup = numpy.array(valm[1])
+        if sym:
+            triang_inf = triang_sup
+        else:
+            triang_inf = numpy.array(valm[2])
 
-    triang_sup = numpy.array(valm[1])
-    if sym:
-      triang_inf = triang_sup
-    else:
-      triang_inf = numpy.array(valm[2])
+        if type(valm[1][0]) == type(1.j) :
+            dtype=complex
+        else :
+            dtype=float
+        valeur=numpy.zeros([dim, dim], dtype=dtype)
 
-    if type(valm[1][0]) == type(1.j) :
-       dtype=complex
-    else :
-       dtype=float
-    valeur=numpy.zeros([dim, dim], dtype=dtype)
+        jcol=1
+        for kterm in range(1,nnz+1):
+            ilig=smhc[kterm-1]
+            if (smdi[jcol-1] < kterm):
+                jcol=jcol+1
+            valeur[jcol-1,ilig-1]=triang_inf[kterm-1]
+            valeur[ilig-1,jcol-1]=triang_sup[kterm-1]
 
-    jcol=1
-    for kterm in range(1,nnz+1):
-      ilig=smhc[kterm-1]
-      if (smdi[jcol-1] < kterm) : jcol=jcol+1
-
-      valeur[jcol-1,ilig-1]=triang_inf[kterm-1]
-      valeur[ilig-1,jcol-1]=triang_sup[kterm-1]
-
-
-
-    return valeur
+        return valeur

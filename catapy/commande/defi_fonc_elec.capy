@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,17 +18,20 @@
 # ======================================================================
 # RESPONSABLE LEVY S.LEVY
 
-from Macro.defi_fonc_elec_ops import defi_fonc_elec_ops
 
-DEFI_FONC_ELEC=MACRO(nom="DEFI_FONC_ELEC",op=defi_fonc_elec_ops,sd_prod=fonction_sdaster,reentrant='n',
-            UIinfo={"groupes":("Outils-métier",)},
-                    fr="Définir une fonction du temps intervenant dans le calcul des forces de LAPLACE",
-      regles=(UN_PARMI('COUR_PRIN','COUR'),
-              EXCLUS('COUR','COUR_SECO'), ),
+DEFI_FONC_ELEC=MACRO(nom="DEFI_FONC_ELEC",
+                     op=OPS('Macro.defi_fonc_elec_ops.defi_fonc_elec_ops'),
+                     sd_prod=fonction_sdaster,
+                     reentrant='n',
+                     UIinfo={"groupes":("Outils-métier",)},
+                     fr="Définir une fonction du temps intervenant dans le calcul des " \
+                        "forces de LAPLACE",
+         regles=(UN_PARMI('COUR_PRIN','COUR'),
+                 EXCLUS('COUR','COUR_SECO'), ),
          FREQ            =SIMP(statut='f',typ='R',defaut= 50.),
          SIGNAL          =SIMP(statut='f',typ='TXM',defaut="COMPLET",into=("COMPLET","CONTINU") ),
          COUR            =FACT(statut='f',max='**',
-         fr="Définition du courant de court-circuit",
+           fr="Définition du courant de court-circuit",
            regles=(UN_PARMI('PHI_CC_1','INTC_CC_1'),
                    UN_PARMI('PHI_CC_2','INTC_CC_2'),),
            INTE_CC_1       =SIMP(statut='o',typ='R'),

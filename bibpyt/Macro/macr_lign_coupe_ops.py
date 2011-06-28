@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 23/05/2011   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,8 +83,8 @@ def crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__ma
   if len(l_horsmat) > 0:
 
        nderh=l_horsmat.index(l_horsmat[len(l_horsmat)-1])
-       cnom = list(__macou.NOMNOE.get())
-       l_coor = __macou.COORDO.VALE.get()
+       cnom = list(__macou.sdj.NOMNOE.get())
+       l_coor = __macou.sdj.COORDO.VALE.get()
        indent=os.linesep+' '*12
        l_surlig = []
        l_horslig = []
@@ -100,8 +100,8 @@ def crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__ma
 
   elif reste > 0:
 
-       cnom = list(__macou.NOMNOE.get())
-       l_coor = __macou.COORDO.VALE.get()
+       cnom = list(__macou.sdj.NOMNOE.get())
+       l_coor = __macou.sdj.COORDO.VALE.get()
        indent=os.linesep+' '*12
        l_surlig = []
        for j in l_matiere[:nderm+1]:

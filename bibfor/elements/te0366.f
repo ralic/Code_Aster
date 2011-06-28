@@ -1,7 +1,7 @@
        SUBROUTINE TE0366(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
       INTEGER      N
-      PARAMETER    (N=168)
+      PARAMETER    (N=336)
 C
       INTEGER      I,J,IJ,NFAES
       INTEGER      NDIM,NDDL,NNC
@@ -61,23 +61,24 @@ C
       INTEGER      JPCPI,JPCAI,JPCCF,JSTNO
       INTEGER      INDNOR,IFROTT,INDCO
       INTEGER      CFACE(5,3)
-      INTEGER      JDEPDE,JDEPM,JGEOM
+      INTEGER      JDEPDE,JDEPM,JGEOM,JHEAFA,JHEANO
       REAL*8       MMAT(N,N),TAU1(3),TAU2(3),NORM(3)
       REAL*8       MPROJT(3,3)
       REAL*8       COORE(3),COORM(3),COORC(2)
-      REAL*8       FFE(9),FFM(9),FFC(9),DFFC(3,9)
+      REAL*8       FFE(8),FFM(8),FFC(8),DFFC(2,8)       
       REAL*8       JACOBI,HPG
       CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
       REAL*8       GEOPI(9)
-      REAL*8       COEFFF,COEFCA,COEFFA,COEFFP
-      REAL*8       RESE(3),NRESE
+      REAL*8       COEFFF,COEFCR,COEFFR,COEFFP,COEFEC
+      REAL*8       COEFCP,RESE(3),NRESE,COEFEF
       REAL*8       RRE,RRM,JEU,R8BID
       REAL*8       DDEPLE(3),DDEPLM(3),DLAGRC,DLAGRF(2)
-      LOGICAL      LPENAF,LESCLX,LMAITX,LCONTX
+      LOGICAL      LPENAF,LESCLX,LMAITX,LCONTX,LPENAC
       INTEGER      CONTAC,IBID,NPTE
-      INTEGER      NDEPLE,NNE(3),NNM(3),DDLE(2),DDLM(2)
+      INTEGER      NDEPLE,NNE(3),NNM(3),DDLE(2),DDLM(2),NFHE,NFHM
       REAL*8       FFEC(8)
+      LOGICAL      LMULTI
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -87,9 +88,11 @@ C
       CALL XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
      &                  NDIM  , NDDL   , NNE   , NNM  ,
      &                  NNC   , DDLE  , DDLM  ,
-     &                  CONTAC, NDEPLE , NSINGE, NSINGM)
+     &                  CONTAC, NDEPLE , NSINGE, NSINGM,NFHE,NFHM)
 
       CALL ASSERT(NDDL.LE.N)
+      LMULTI = .FALSE.
+      IF (NFHE.GT.1.OR.NFHM.GT.1) LMULTI = .TRUE.
 C
 C --- INITIALISATIONS
 C
@@ -114,9 +117,11 @@ C
       TAU2(3)  = ZR(JPCPO-1+9)
       INDCO    = NINT(ZR(JPCPO-1+11))
       NINTER   = NINT(ZR(JPCPO-1+31))
-      COEFCA   = ZR(JPCPO-1+13)
-      COEFFA   = ZR(JPCPO-1+14)
+      COEFCR   = ZR(JPCPO-1+13)
+      COEFFR   = ZR(JPCPO-1+14)
       COEFFF   = ZR(JPCPO-1+15)
+      COEFCP   = ZR(JPCPO-1+33)
+      COEFFP   = ZR(JPCPO-1+34)
       IFROTT   = NINT(ZR(JPCPO-1+16))
       INDNOR   = NINT(ZR(JPCPO-1+17))
       HPG      = ZR(JPCPO-1+19)
@@ -137,6 +142,13 @@ C --- SQRT LSN PT ESCLAVE ET MAITRE
       RRM       = ZR(JPCPO-1+23)
       IF (NNM(1).EQ.0) RRE = 2*RRE
 C
+      LPENAF=((COEFFR.EQ.0.D0).AND.(COEFFP.NE.0.D0))
+      LPENAC=((COEFCR.EQ.0.D0).AND.(COEFCP.NE.0.D0))
+      IF(LPENAC)      COEFEC = COEFCP
+      IF(.NOT.LPENAC) COEFEC = ZR(JPCPO-1+32)
+      IF(LPENAF)      COEFEF = COEFFP
+      IF(.NOT.LPENAF) COEFEF = 1.D0
+C
 C --- RECUPERATION DES DONNEES DE LA CARTE CONTACT PINTER (VOIR XMCART)
 C
       CALL JEVECH('PCAR_PI','L',JPCPI )
@@ -155,10 +167,16 @@ C
       CALL JEVECH('PDEPL_P','E',JDEPDE)
       CALL JEVECH('PDEPL_M','L',JDEPM )
 C
-C --- PAS DE 'PENALISATION' EN GRANDS GLISSEMENTS
+      IF (LMULTI) THEN
 C
-      COEFFP=0.0D0
-      LPENAF=.FALSE.
+C --- RECUPERATION DES FONCTION HEAVISIDES SUR LES FACETTES
+C
+        CALL JEVECH('PHEAVFA','L',JHEAFA )
+C
+C --- RECUPERATION DE LA PLACE DES LAGRANGES
+C
+        CALL JEVECH('PHEAVNO','L',JHEANO )
+      ENDIF
 C
 C --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÉ CFACE (MAILLE ESCLAVE)
 C --- CE QUI SUIT N'EST VALABLE QU'EN 2D POUR LA FORMULATION QUADRATIQUE
@@ -220,9 +238,10 @@ C --- CALCUL DES MATRICES A, AT, AU - CAS DU CONTACT
 C
           CALL XMMAA1(NDIM  ,NNE, NDEPLE  ,NNC   ,NNM   ,
      &                NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                FFM   ,JACOBI,JPCAI ,COEFCA,NORM  ,
-     &                TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
-     &                CONTAC,DDLE,DDLM,MMAT  )
+     &                FFM   ,JACOBI,JPCAI ,COEFCR,COEFCP,
+     &                COEFEC,LPENAC,NORM  ,TYPMAI,NSINGE,
+     &                NSINGM,RRE   ,RRM   ,CONTAC,DDLE,DDLM,
+     &                NFHE,NFHM,LMULTI,ZI(JHEANO),ZI(JHEAFA),MMAT  )
 
 C
         ELSE IF (INDCO .EQ. 0) THEN
@@ -232,7 +251,8 @@ C --- CALCUL DE LA MATRICE C - CAS SANS CONTACT
 C
             CALL XMMAA0(NDIM  ,NNC   ,NNE  ,HPG   ,
      &                  NFAES ,CFACE ,FFC   ,JACOBI,JPCAI ,
-     &                  COEFCA,TYPMAI,DDLE,CONTAC,MMAT  )
+     &                  COEFCR,COEFCP,COEFEC,LPENAC,TYPMAI,
+     &                  DDLE,CONTAC,NFHE,LMULTI,ZI(JHEANO),MMAT  )
           ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
@@ -244,10 +264,11 @@ C --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT
 C
         CALL XTLAGC(TYPMAI,NDIM  ,NNC   ,NNE    ,
      &              DDLE(1),NFAES ,CFACE ,JDEPDE,JPCAI  ,
-     &              FFC   ,CONTAC,DLAGRC)
+     &              FFC   ,CONTAC,
+     &              NFHE  ,LMULTI,ZI(JHEANO),DLAGRC)
 
         IF (COEFFF.EQ.0.D0) INDCO = 0
-        IF (DLAGRC.EQ.0.D0) INDCO = 0
+        IF ((DLAGRC.EQ.0.D0).AND.(.NOT.LPENAC)) INDCO = 0
         IF (IFROTT.NE.3)    INDCO = 0
 C
         IF (INDCO.EQ.0) THEN
@@ -256,9 +277,10 @@ C
 C --- CALCUL DE LA MATRICE F - CAS SANS FROTTEMENT
 C
             CALL XMMAB0(NDIM  ,NNC   ,NNE  ,NFAES ,
-     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCA,
-     &                  TYPMAI,CFACE ,TAU1  ,TAU2  ,DDLE,
-     &                  CONTAC,MMAT  )
+     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCR,
+     &                  LPENAC,COEFEF,TYPMAI,CFACE ,TAU1  ,
+     &                  TAU2  ,DDLE,CONTAC,
+     &                  NFHE,LMULTI,ZI(JHEANO),MMAT  )
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C
@@ -273,21 +295,22 @@ C --- CALCUL DES INCREMENTS - LAGRANGE DE FROTTEMENT
 C
           CALL XTLAGF(TYPMAI,NDIM  ,NNC   ,NNE    ,
      &                DDLE,NFAES ,CFACE ,JDEPDE,JPCAI  ,
-     &                FFC   ,CONTAC,DLAGRF)
+     &                FFC   ,CONTAC,NFHE  ,DLAGRF)
 C
 C --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C
-          CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFA,
+          CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFR,
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
      &                NRESE ,COEFFP,LPENAF)
 C
 C --- CALCUL DU JEU
 C
 
-       CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
-     &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
+          CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
+     &                  NSINGE,NSINGM,FFE   ,FFM   ,NORM  ,
      &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
-     &                  DDLE,DDLM, JEU   )
+     &                  DDLE  ,DDLM  ,NFHE  ,NFHM  ,LMULTI,
+     &                  ZI(JHEAFA),JEU   )
 
 
 C
@@ -297,11 +320,12 @@ C --- CALCUL DE B, BT, BU - CAS ADHERENT
 C
             CALL XMMAB1(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG ,FFC ,FFE ,
-     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,COEFCA,
-     &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
+     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,COEFCR,
+     &                  COEFCP,COEFEC,COEFEF,JEU   ,COEFFR,
+     &                  COEFFP,COEFFF,LPENAF,TAU1  ,TAU2  ,
      &                  RESE  ,MPROJT,NORM  ,TYPMAI,NSINGE,
      &                  NSINGM,RRE   ,RRM   ,NVIT  ,CONTAC,
-     &                  DDLE,DDLM,MMAT  )
+     &                  DDLE,DDLM,NFHE,MMAT  )
 C
           ELSE IF (INADH.EQ.0) THEN
 C
@@ -309,11 +333,12 @@ C --- CALCUL DE B, BT, BU, F - CAS GLISSANT
 C
             CALL XMMAB2(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI, DLAGRC,COEFCA,
-     &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
+     &                  FFM   ,JACOBI,JPCAI, DLAGRC,COEFCR,
+     &                  COEFCP,COEFEC,COEFEF,JEU   ,COEFFR,
+     &                  COEFFP,LPENAF,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,NRESE ,MPROJT,NORM  ,TYPMAI,
      &                  NSINGE,NSINGM,RRE,RRM,NVIT,CONTAC,
-     &                  DDLE,DDLM,MMAT  )
+     &                  DDLE,DDLM,NFHE,MMAT  )
           END IF
         ELSE
           CALL ASSERT(.FALSE.)
@@ -327,20 +352,24 @@ C --- SUPPRESSION DES DDLS SUPERFLUS (CONTACT ET XHTC)
 C
       LESCLX = NSINGE.EQ.1.AND.NNM(1).NE.0
       LMAITX = NSINGM.EQ.1
-      IF (CONTAC.EQ.1 .OR. CONTAC.EQ.3) THEN
-        LCONTX = NLACT.LT.NNE(2)
-      ENDIF
-
-      IF (LESCLX.OR.LMAITX.OR.LCONTX) THEN
-        CALL JEVECH('PSTANO' ,'L',JSTNO)
-        CALL XTEDD2(NDIM,NNE,NDEPLE,NNM ,NDDL,OPTION,
-     &              LESCLX,LMAITX,LCONTX,ZI(JSTNO),LACT,
-     &              DDLE,MMAT  ,R8BID  )
-      ENDIF
+      LCONTX = (CONTAC.EQ.1.OR.CONTAC.EQ.3).AND.NLACT.LT.NNE(2)
+      CALL JEVECH('PSTANO' ,'L',JSTNO)
+      CALL XTEDD2(NDIM,NNE,NDEPLE,NNM ,NDDL,OPTION,
+     &            LESCLX,LMAITX,LCONTX,ZI(JSTNO),LACT,DDLE,DDLM,
+     &            NFHE,NFHM,LMULTI,ZI(JHEANO),MMAT  ,R8BID  )
 C
 C --- RECOPIE VALEURS FINALES (SYMETRIQUE OU NON)
 C
-      IF (OPTION.EQ.'RIGI_CONT'.OR.INDCO.EQ.0) THEN
+       IF(LPENAC.OR.LPENAF) THEN
+        CALL JEVECH('PMATUNS','E',IMATT)
+        DO 801 J = 1,NDDL
+          DO 811 I = 1,NDDL
+            IJ = NDDL*(I-1) + J
+            ZR(IMATT+IJ-1) = MMAT(I,J)
+ 811      CONTINUE
+ 801    CONTINUE
+      ELSE IF ((OPTION.EQ.'RIGI_CONT').OR.(COEFFF.EQ.0.D0)
+     &          .OR.(IFROTT.NE.3)) THEN
         CALL JEVECH('PMATUUR','E',IMATT)
         DO 700 J = 1,NDDL
           DO 710 I = 1,J

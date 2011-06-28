@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -41,10 +41,11 @@ OPTION__
         PCAR_AI  NEUT_R
         PCOHES   NEUT_R
         PBASECO  NEUT_R
-
+        PFISNO   NEUT_I
+        PHEAVNO  NEUT_I
+        PHEAVFA  NEUT_I
    OUT__
         PINCOCA NEUT_I ELEM__
         PINDCOO NEUT_I ELEM__
         PINDMEM NEUT_I ELEM__
-        PINDCOT NEUT_R ELEM__
         PCOHESO NEUT_R ELEM__

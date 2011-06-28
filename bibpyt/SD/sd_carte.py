@@ -1,8 +1,8 @@
-#@ MODIF sd_carte SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_carte SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,10 +22,7 @@ from SD import *
 from SD.sd_titre import sd_titre
 from SD.sd_util import *
 
-
-
 class sd_carte(sd_titre):
-#----------------------------
     nomj = SDNom(fin=19)
 
     DESC = AsVI(docu='CART', )
@@ -34,7 +31,6 @@ class sd_carte(sd_titre):
 
     NOLI = Facultatif(AsVK24())
     LIMA = Facultatif(AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
-
 
     def exists(self):
         return self.NOMA.exists
@@ -51,7 +47,6 @@ class sd_carte(sd_titre):
         # sd2=sd_maillage(noma[0]); sd2.check(checker)
         # Rem : si on vérifie le sd_maillage, il me semble que sdll503a se plante (RuntimeError: maximum recursion depth exceeded)
 
-
     def check_DESC(self,checker):
         if not self.exists() : return
         desc=self.DESC.get()
@@ -67,7 +62,6 @@ class sd_carte(sd_titre):
             code=desc[3+2*kedit]
             assert abs(code) in (1,2,3) , (code, kedit, desc)
 
-
     def check_VALE(self,checker):
         if not self.exists() : return
         n1=self.VALE.lonmax
@@ -76,5 +70,4 @@ class sd_carte(sd_titre):
         numgd    =desc[0]
         ncmp_max=len(sdu_licmp_gd(numgd))
         assert n1==ncmp_max*n_gd_max , (n1, ncmp_max, n_gd_max)
-
 

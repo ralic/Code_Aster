@@ -1,8 +1,8 @@
-#@ MODIF sd_macr_elem_dyna SD  DATE 22/09/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF sd_macr_elem_dyna SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ class sd_macr_elem_dyna_m(AsBase):
     nomj = SDNom(fin=18)
     DESC = AsVI   (SDNom(nomj='_DESC'),lonmax=3)
     REFE = AsVK24 (SDNom(nomj='_REFE'),lonmax=2)
-    VALE = AsObject (SDNom(nomj='_VALE'),type=Parmi('C','R',),) 
+    VALE = AsObject (SDNom(nomj='_VALE'),type=Parmi('C','R',),)
 
     def check_macr_elem_dyna_m_1(self,checker):
         vale=self.VALE.get()
@@ -66,5 +66,5 @@ class sd_macr_elem_dyna(AsBase):
 
     def check_macr_elem_dyna_1(self,checker):
         nbdef=self.MAEL_MASS.DESC.get()[1]
-        sdu_compare(self.MAEL_INER_VALE, checker,len(self.MAEL_INER_VALE.get()),'==',3*nbdef,'LONMAX(MAEL_INER_VALE)')
+        sdu_compare(self.MAEL_INER_VALE, checker, len(self.MAEL_INER_VALE.get()), '==', 3*nbdef, 'LONMAX(MAEL_INER_VALE)')
 

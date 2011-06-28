@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,6 +34,7 @@ from Noyau.N_Exception import AsException
 from Noyau.N_ASSD import ASSD
 from Noyau.N_ENTITE import ENTITE
 from Noyau.N_JDC    import MemoryErrorMsg
+from Noyau.N_info import message, SUPERV
 import aster
 
 from Noyau import basetype
@@ -44,7 +45,7 @@ class JDC:
    # attributs accessibles depuis le fortran par les méthodes génériques
    # get_jdc_attr et set_jdc_attr
    l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro')
-   
+
    # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
    l_pick_attr = ('memo_sensi', 'catalc')
 
@@ -64,15 +65,17 @@ class JDC:
         if CONTEXT.debug :
           print e,e.nom,e.isactif()
         try:
-           if e.isactif(): e.Exec()
+           if e.isactif():
+               message.debug(SUPERV, "call etape.Exec : %s %s", e.nom, e)
+               e.Exec()
         except EOFError:
            # L'exception EOFError a ete levee par l'operateur FIN
            raise
 
    def BuildExec(self):
       """
-         Cette methode realise les passes de Build et d'Execution en mode par_lot="NON"
-         Elle est utilisee par le superviseur dans le cadre d'une execution par lot (voir ParLotMixte)
+         Cette methode realise les passes de Build et d'Execution en mode par_lot="OUI"
+         Elle est utilisee par le superviseur (voir ParLotMixte)
       """
       # initexec est defini dans le package Build et cette fonction (Exec)
       # ne peut etre utilisee que si le module E_JDC est assemble avec le package Build
@@ -99,7 +102,8 @@ class JDC:
       try:
          for e in self.etapes:
              if CONTEXT.debug : print e,e.nom,e.isactif()
-             if e.isactif(): e.BuildExec()
+             if e.isactif():
+                 e.BuildExec()
 
       except self.codex.error,exc_val:
          self.traiter_user_exception(exc_val)

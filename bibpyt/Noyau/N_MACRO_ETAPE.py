@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,6 +39,7 @@ import N_utils
 from N_utils import AsType
 from N_CO import CO
 from N_ASSD import ASSD
+from N_info import message, SUPERV
 
 class MACRO_ETAPE(N_ETAPE.ETAPE):
    """
@@ -118,6 +119,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
              création et le nommage du concept.
 
       """
+      message.debug(SUPERV, "Build_sd %s", self.nom)
       self.sdnom=nom
       try:
          # On positionne la macro self en tant que current_step pour que les
@@ -139,7 +141,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
          self.reset_current_step()
          raise AsException("Etape ",self.nom,'ligne : ',self.appel[0],
                               'fichier : ',self.appel[1],e)
-      except (EOFError,self.UserError):
+      except (EOFError, self.UserError):
          # Le retablissement du step courant n'est pas strictement necessaire. On le fait pour des raisons de coherence
          self.reset_current_step()
          raise
@@ -195,7 +197,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
           # les concepts produits dans self.sdprods, il faut le mettre à zéro avant de l'appeler
           self.sdprods=[]
           sd_prod= apply(sd_prod,(self,),d)
-        except (EOFError,self.UserError):
+        except (EOFError, self.UserError), exc:
           raise
         except:
           if CONTEXT.debug: traceback.print_exc()
@@ -347,18 +349,15 @@ Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
          if not self.typeCO in mcs.definition.type:
             raise AsException("""Erreur interne.
 Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
-         co.etape=self
+         co.etape = self
          # affectation du bon type du concept et
-         # initialisation de sa partie "sd"
-         if CONTEXT.debug:print "changement de type:",co,t
          co.change_type(t)
-
          self.sdprods.append(co)
 
-      elif co.etape== self:
+      elif co.etape == self:
          # Cas 2 : le concept est produit par la macro (self)
          # On est deja passe par type_sdprod (Cas 1 ou 3).
-         if co.etape==co._etape:
+         if co.etape == co._etape:
            #Le concept a été créé par la macro (self)
            #On peut changer son type
            co.change_type(t)
@@ -522,8 +521,6 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       # défini dans le package Noyau. La methode NommerSdprod pour
       # les macros devrait peut etre etre déplacée dans Build ???
 
-      if CONTEXT.debug : print "MACRO.NommerSdprod: ",sd,sdnom
-
       if self.Outputs.has_key(sdnom):
         # Il s'agit d'un concept de sortie de la macro produit par une sous commande
         sdnom=self.Outputs[sdnom].nom
@@ -555,6 +552,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
          # On ajoute dans le contexte de la macro les concepts nommes
          # Ceci est indispensable pour les CO (macro) dans un INCLUDE
          self.g_context[sdnom]=sd
+         message.debug(SUPERV, "g_context[%s] = %s", sdnom, sd)
       else:
          # La demande de nommage vient probablement d'une macro qui a mis
          # le concept dans son contexte. On ne traite plus que le nommage (restrict="oui")

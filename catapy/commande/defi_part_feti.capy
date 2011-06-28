@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,9 +18,10 @@
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
 
-from Macro.defi_part_feti_ops import defi_part_feti_ops
 
-DEFI_PART_FETI=MACRO(nom="DEFI_PART_FETI",op=defi_part_feti_ops,sd_prod=sd_feti_sdaster,
+DEFI_PART_FETI=MACRO(nom="DEFI_PART_FETI",
+                     op=OPS('Macro.defi_part_feti_ops.defi_part_feti_ops'),
+                     sd_prod=sd_feti_sdaster,
                      reentrant='n',UIinfo={"groupes":("Modélisation",)},
                      fr="Creation partitionnement en sous-domaines pour FETI",
          regles=(UN_PARMI('MAILLAGE','MODELE'),PRESENT_PRESENT('MODELE','EXCIT'),),

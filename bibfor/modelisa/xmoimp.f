@@ -4,16 +4,16 @@
      &            NAXT3,NAXQ4,NAXQ8,NAXT6, NAX2, NAX3)
       IMPLICIT NONE
 
-      INTEGER       NH8(11),NH20(7),NP6(11),NP15(7),NP5(11),NP13(7)
-      INTEGER       NT4(11),NT10(7)
-      INTEGER       NCPQ4(11),NCPQ8(7),NCPT3(11),NCPT6(7), NDPQ4(11)
-      INTEGER       NDPQ8(7),NDPT3(11),NDPT6(7),NF4(11),NF8(7),NF3(11)
+      INTEGER       NH8(14),NH20(7),NP6(14),NP15(7),NP5(14),NP13(7)
+      INTEGER       NT4(14),NT10(7)
+      INTEGER       NCPQ4(14),NCPQ8(7),NCPT3(14),NCPT6(7), NDPQ4(14)
+      INTEGER       NDPQ8(7),NDPT3(14),NDPT6(7),NF4(11),NF8(7),NF3(11)
       INTEGER       NF6(7),NPF2(11),NPF3(7),NH8X(7),NP6X(7),NP5X(7)
       INTEGER       NT4X(7),NCPQ4X(7),NCPT3X(7),NDPQ4X(7),NDPT3X(7)
       INTEGER       NAXT3(7),NAXQ4(7),NAXQ8(7),NAXT6(7),NAX2(7),NAX3(7)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,52 +69,60 @@ C
 
       WRITE(IFM,*)'IMPRESSION DES ELEMENTS X-FEM '
       WRITE(IFM,807)'TYPE','XH','XT','XHT','XHC','XTC','XHTC',
-     &'XH1','XH2','XH3','XH4'
-      IF(NH8(7).NE.0) WRITE(IFM,809)'HEXA8'  ,
+     &'XH1','XH2','XH3','XH4','XH2C','XH3C','XH4C'
+      IF(NH8(7).NE.0) WRITE(IFM,810)'HEXA8'  ,
      &    NH8(1)  ,NH8(2)  ,NH8(3),  NH8(4)  ,NH8(5)  ,NH8(6),
-     &    NH8(8)  ,NH8(9),  NH8(10), NH8(11)
+     &    NH8(8)  ,NH8(9),  NH8(10), NH8(11) ,
+     &    NH8(12) ,NH8(13), NH8(14)
       IF(NH20(7).NE.0)
      &    WRITE(IFM,808)'HEXA20'  ,NH20(1) ,NH20(2) ,NH20(3),
      &                             NH20(4) ,NH20(5) ,NH20(6)
-      IF(NP6(7).NE.0) WRITE(IFM,809)'PENTA6'  ,
+      IF(NP6(7).NE.0) WRITE(IFM,810)'PENTA6'  ,
      &    NP6(1)  ,NP6(2)  ,NP6(3),  NP6(4)  ,NP6(5)  ,NP6(6),
-     &    NP6(8)  ,NP6(9),  NP6(10), NP6(11)
+     &    NP6(8)  ,NP6(9),  NP6(10), NP6(11) ,
+     &    NP6(12) ,NP6(13), NP6(14)
       IF(NP15(7).NE.0)
      &    WRITE(IFM,808)'PENTA15' ,NP15(1) ,NP15(2) ,NP15(3),
      &                             NP15(4) ,NP15(5) ,NP15(6)
-      IF(NP5(7).NE.0) WRITE(IFM,809)'PYRAM5'  ,
+      IF(NP5(7).NE.0) WRITE(IFM,810)'PYRAM5'  ,
      &    NP5(1)  ,NP5(2)  ,NP5(3)  ,NP5(4)  ,NP5(5) ,NP5(6),
-     &    NP5(8)  ,NP5(9)  ,NP5(10) ,NP5(11)
+     &    NP5(8)  ,NP5(9)  ,NP5(10) ,NP5(11) ,
+     &    NP5(12) ,NP5(13) ,NP5(14)
       IF(NP13(7).NE.0)
      &    WRITE(IFM,808)'PYRAM13' ,NP13(1) ,NP13(2) ,NP13(3),
      &                             NP13(4) ,NP13(5) ,NP13(6)
-      IF(NT4(7).NE.0) WRITE(IFM,809)'TETRA4'  ,
+      IF(NT4(7).NE.0) WRITE(IFM,810)'TETRA4'  ,
      &    NT4(1)  ,NT4(2)  ,NT4(3)  ,NT4(4)  ,NT4(5) ,NT4(6),
-     &    NT4(8)  ,NT4(9)  ,NT4(10) ,NT4(11)
+     &    NT4(8)  ,NT4(9)  ,NT4(10) ,NT4(11) ,
+     &    NT4(12) ,NT4(13) ,NT4(14)
       IF(NT10(7).NE.0)
      &    WRITE(IFM,808)'TETRA10' ,NT10(1) ,NT10(2) ,NT10(3),
      &                             NT10(4) ,NT10(5) ,NT10(6)
-      IF(NCPQ4(7).NE.0) WRITE(IFM,809)'CP QUAD4',
+      IF(NCPQ4(7).NE.0) WRITE(IFM,810)'CP QUAD4',
      &    NCPQ4(1),NCPQ4(2),NCPQ4(3),NCPQ4(4),NCPQ4(5),NCPQ4(6),
-     &    NCPQ4(8),NCPQ4(9),NCPQ4(10),NCPQ4(11)
+     &    NCPQ4(8),NCPQ4(9),NCPQ4(10),NCPQ4(11),
+     &    NCPQ4(12),NCPQ4(13),NCPQ4(14)
       IF(NCPQ8(7).NE.0)
      &    WRITE(IFM,808)'CP QUAD8',NCPQ8(1),NCPQ8(2),NCPQ8(3),
      &                             NCPQ8(4),NCPQ8(5),NCPQ8(6)
-      IF(NCPT3(7).NE.0) WRITE(IFM,809)'CP TRIA3',
+      IF(NCPT3(7).NE.0) WRITE(IFM,810)'CP TRIA3',
      &    NCPT3(1),NCPT3(2),NCPT3(3),NCPT3(4),NCPT3(5),NCPT3(6),
-     &    NCPT3(8),NCPT3(9),NCPT3(10),NCPT3(11)
+     &    NCPT3(8),NCPT3(9),NCPT3(10),NCPT3(11),
+     &    NCPT3(12),NCPT3(13),NCPT3(14)
       IF(NCPT6(7).NE.0)
      &    WRITE(IFM,808)'CP TRIA6',NCPT6(1),NCPT6(2),NCPT6(3),
      &                             NCPT6(4),NCPT6(5),NCPT6(6)
-      IF(NDPQ4(7).NE.0) WRITE(IFM,809)'DP QUAD4',
+      IF(NDPQ4(7).NE.0) WRITE(IFM,810)'DP QUAD4',
      &    NDPQ4(1),NDPQ4(2),NDPQ4(3),NDPQ4(4),NDPQ4(5),NDPQ4(6),
-     &    NDPQ4(8),NDPQ4(9),NDPQ4(10),NDPQ4(11)
+     &    NDPQ4(8),NDPQ4(9),NDPQ4(10),NDPQ4(11),
+     &    NDPQ4(12),NDPQ4(13),NDPQ4(14)
       IF(NDPQ8(7).NE.0)
      &    WRITE(IFM,808)'DP QUAD8',NDPQ8(1),NDPQ8(2),NDPQ8(3),
      &                             NDPQ8(4),NDPQ8(5),NDPQ8(6)
-      IF(NDPT3(7).NE.0) WRITE(IFM,809)'DP TRIA3',
+      IF(NDPT3(7).NE.0) WRITE(IFM,810)'DP TRIA3',
      &    NDPT3(1),NDPT3(2),NDPT3(3),NDPT3(4),NDPT3(5),NDPT3(6),
-     &    NDPT3(8),NDPT3(9),NDPT3(10),NDPT3(11)
+     &    NDPT3(8),NDPT3(9),NDPT3(10),NDPT3(11),
+     &    NDPT3(12),NDPT3(13),NDPT3(14)
       IF(NDPT6(7).NE.0)
      &    WRITE(IFM,808)'DP TRIA6',NDPT6(1),NDPT6(2),NDPT6(3),
      &                             NDPT6(4),NDPT6(5),NDPT6(6)
@@ -179,10 +187,12 @@ C
       IF (NBELX.EQ.0.AND.NBELXC.EQ.0) CALL U2MESS('F','XFEM_16')
 
  807  FORMAT (5X,A19,2X,A6,2X,A6,2X,A6,2X,A6,2X,A6,2X,A6,
-     &        2X,A6,2X,A6,2X,A6,2X,A6)
+     &        2X,A6,2X,A6,2X,A6,2X,A6,2X,A6,2X,A6,2X,A6)
  808  FORMAT (5X,A19,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6)
  809  FORMAT (5X,A19,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6,
      &        I6,2X,I6,2X,I6,2X,I6,2X,I6)
+ 810  FORMAT (5X,A19,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6,
+     &        I6,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6,2X,I6)
 
       CALL JEDEMA()
       END
