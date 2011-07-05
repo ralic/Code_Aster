@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1688,6 +1688,11 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ TR6_DP_2D
               MAILLE__ QUAD9     ELEMENT__ QU9_DP_2D
               MAILLE__ QUAD8     ELEMENT__ QU8_DP_2D
+
+       MODELISATION__ '3D_DIL'        DIM__ 3 3   CODE__ 'D3D'
+              MAILLE__ TETRA10   ELEMENT__ T10_3D
+              MAILLE__ PENTA15   ELEMENT__ P15_3D
+              MAILLE__ HEXA20    ELEMENT__ H20_3D
 
    PHENOMENE__  THERMIQUE       CODE__  'TH'
 

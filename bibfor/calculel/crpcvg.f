@@ -7,9 +7,9 @@
       CHARACTER*(*)       LIMA1, LIMA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ C
      +               JGMA2, IMA, IMA1, IMA2, INO, INO1, INO2, NBNOMA,
      +               NUTYP1, NUMGL1, IAMAC1, ILMAC1,
      +               NUTYP2, NUMGL2, IAMAC2, ILMAC2,
-     +               JCOOR1, JCOOR2, JNUM1, JNUM2
+     +               JCOOR1, JCOOR2, JNUM1, JNUM2, JMA
       REAL*8         X1, Y1, Z1, X2, Y2, Z2, V1, V2, V3
       REAL*8         VALR(3)
       LOGICAL        ERREUR
@@ -109,52 +109,56 @@ C
       DO 10  IMA = 1 , NBMA1
 C
          IMA1 = ZI(JGMA1+IMA-1)
-         IMA2 = ZI(JGMA2+IMA-1)
-C
          NUTYP1 = ZI(JTYMA1-1+IMA1)
-         NUTYP2 = ZI(JTYMA2-1+IMA2)
-         IF ( NUTYP1 .NE. NUTYP2 ) THEN
+         DO 100 JMA = 1, NBMA1
+            IMA2 = ZI(JGMA2+JMA-1)
+            NUTYP2 = ZI(JTYMA2-1+IMA2)
+C
+            DO 20 INO = 1 , NBNOMA(IMA1)
+               INO1 = NUMGL1(IMA1,INO)
+               INO2 = NUMGL2(IMA2,INO)
+               X1 =  ZR(JCOOR1-1+3*(INO1-1)+1)
+               Y1 =  ZR(JCOOR1-1+3*(INO1-1)+2)
+               Z1 =  ZR(JCOOR1-1+3*(INO1-1)+3)
+               X2 =  ZR(JCOOR2-1+3*(INO2-1)+1)
+               Y2 =  ZR(JCOOR2-1+3*(INO2-1)+2)
+               Z2 =  ZR(JCOOR2-1+3*(INO2-1)+3)
+               V1 = ABS ( X2 - X1 - TRAN(1) )
+               V2 = ABS ( Y2 - Y1 - TRAN(2) )
+               V3 = ABS ( Z2 - Z1 - TRAN(3) )
+               ERREUR = .FALSE.
+               IF ( V1 .GT. PREC )  ERREUR = .TRUE.
+               IF ( V2 .GT. PREC )  ERREUR = .TRUE.
+               IF ( V3 .GT. PREC )  ERREUR = .TRUE.
+               IF ( ERREUR ) THEN
+                   GOTO 100
+               ENDIF
+C
+               LINOEU(INO2) = INO1
+C
+ 20         CONTINUE
+ 
+            IF ( NUTYP1 .NE. NUTYP2 ) THEN
                VALK (1) = GMA1
                VALK (2) = GMA2
-            CALL U2MESG('F', 'CALCULEL5_68',2,VALK,0,0,0,0.D0)
-         ENDIF
-C
-         DO 20 INO = 1 , NBNOMA(IMA1)
-            INO1 = NUMGL1(IMA1,INO)
-            INO2 = NUMGL2(IMA2,INO)
-            X1 =  ZR(JCOOR1-1+3*(INO1-1)+1)
-            Y1 =  ZR(JCOOR1-1+3*(INO1-1)+2)
-            Z1 =  ZR(JCOOR1-1+3*(INO1-1)+3)
-            X2 =  ZR(JCOOR2-1+3*(INO2-1)+1)
-            Y2 =  ZR(JCOOR2-1+3*(INO2-1)+2)
-            Z2 =  ZR(JCOOR2-1+3*(INO2-1)+3)
-            V1 = ABS ( X2 - X1 - TRAN(1) )
-            V2 = ABS ( Y2 - Y1 - TRAN(2) )
-            V3 = ABS ( Z2 - Z1 - TRAN(3) )
-            ERREUR = .FALSE.
-            IF ( V1 .GT. PREC )  ERREUR = .TRUE.
-            IF ( V2 .GT. PREC )  ERREUR = .TRUE.
-            IF ( V3 .GT. PREC )  ERREUR = .TRUE.
-            IF ( ERREUR ) THEN
-               CALL JENUNO(JEXNUM(MA1//'.NOMMAI', IMA1 ), NOMA1 )
-               CALL JENUNO(JEXNUM(MA2//'.NOMMAI', IMA2 ), NOMA2 )
-               VALK (1) = NOMA1
-               VALK (2) = MA1
-               VALK (3) = NOMA2
-               VALK (4) = MA2
-               VALR(1)  = TRAN(1)
-               VALR(2)  = TRAN(2)
-               VALR(3)  = TRAN(3)
-               CALL U2MESG('F', 'CALCULEL5_69',4,VALK,0,0,1,VALR)
+               CALL U2MESG('F', 'CALCULEL5_68',2,VALK,0,0,0,0.D0)
             ENDIF
+ 
+            ZI(JNUM1+IMA-1) = IMA1
+            ZI(JNUM2+IMA-1) = IMA2
+            GOTO 10
+ 100     CONTINUE
 C
-            LINOEU(INO2) = INO1
-C
- 20      CONTINUE
-C
-         ZI(JNUM1+IMA-1) = IMA1
-         ZI(JNUM2+IMA-1) = IMA2
-C
+         CALL JENUNO(JEXNUM(MA1//'.NOMMAI', IMA1 ), NOMA1 )
+         CALL JENUNO(JEXNUM(MA2//'.NOMMAI', IMA2 ), NOMA2 )
+         VALK(1)  = NOMA1
+         VALK(2)  = MA1
+         VALK(3)  = NOMA2
+         VALK(4)  = MA2
+         VALR(1)  = TRAN(1)
+         VALR(2)  = TRAN(2)
+         VALR(3)  = TRAN(3)
+         CALL U2MESG('F', 'CALCULEL5_69',4,VALK,0,0,1,VALR)
  10   CONTINUE
 C
       CALL JEDEMA()

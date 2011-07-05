@@ -1,4 +1,4 @@
-#@ MODIF co_table SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_table SD  DATE 05/07/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,15 +25,24 @@ class table_sdaster(ASSD):
     cata_sdj = "SD.sd_table.sd_table"
 
     def __getitem__(self, key):
+        """Retourne la valeur d'une cellule de la table.
+        Exemple : TAB['INST', 1] retourne la 1ère valeur de la colonne 'INST'."""
+        import aster
         from Utilitai.Utmess import UTMESS
         if not self.accessible():
             raise Accas.AsException("Erreur dans table.__getitem__ en PAR_LOT='OUI'")
         assert len(key) == 2
         para, numlign = key
-        column = getattr(self.EXTR_TABLE(), para)
+        tabnom = self.sdj.TBLP.get()
         try:
-            res = column.values()[numlign - 1]
-        except IndexError:
+            i = tabnom.index('%-24s' % para)
+            resu = aster.getvectjev(tabnom[i + 2])
+            exist = aster.getvectjev(tabnom[i + 3])
+            assert resu is not None
+            assert exist is not None
+            assert exist[numlign - 1] != 0
+            res = resu[numlign - 1]
+        except (IndexError, AssertionError):
             # pour __getitem__, il est plus logique de retourner KeyError.
             raise KeyError
         return res
@@ -53,8 +62,9 @@ class table_sdaster(ASSD):
             titr = ''
         return titr
 
-    def EXTR_TABLE(self) :
-        """Produit un objet Table à partir du contenu d'une table Aster
+    def EXTR_TABLE(self, para=None) :
+        """Produit un objet Table à partir du contenu d'une table Aster.
+        On peut limiter aux paramètres listés dans 'para'.
         """
         def Nonefy(l1,l2) :
             if l2 == 0:
@@ -76,6 +86,16 @@ class table_sdaster(ASSD):
         tabnom=list(v_tblp)
         nparam=len(tabnom)/4
         lparam=[tabnom[4*i:4*i+4] for i in range(nparam)]
+        # restriction aux paramètres demandés
+        if para is not None:
+            if type(para) not in (list, tuple):
+                para = [para, ]
+            para = [p.strip() for p in para]
+            restr = []
+            for ip in lparam:
+                if ip[0].strip() in para:
+                    restr.append(ip)
+            lparam = restr
         dval={}
         # liste des paramètres et des types
         lpar=[]

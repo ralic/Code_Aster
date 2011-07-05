@@ -1,0 +1,65 @@
+POURSUITE(CODE=_F( NOM = 'SSLV117A'),PAR_LOT = 'NON')
+
+import numpy as N
+
+class REF :
+
+  def R2(self,x,y,z)      : return x*x+y*y+z*z
+
+  def Gradteta(self,x,y,z): 
+    c = self.R2(x,y,z)*4.
+    return (c*x,c*y,c*z)
+    
+  def Epsi(self,x,y,z) :
+    a0 = -1./3.
+    a4 =  1./7.
+    c  = a0 + a4*self.R2(x,y,z)**2
+    d  = 4.*a4*self.R2(x,y,z)
+    return (c+d*x*x,c+d*y*y,c+d*z*z,d*x*y,d*x*z,d*y*z)
+
+
+ref = REF() 
+
+epxx = N.array(EPSI.EXTR_COMP('EPXX',['CUBE']).valeurs)
+epyy = N.array(EPSI.EXTR_COMP('EPYY',['CUBE']).valeurs)
+epzz = N.array(EPSI.EXTR_COMP('EPZZ',['CUBE']).valeurs)
+epxy = N.array(EPSI.EXTR_COMP('EPXY',['CUBE']).valeurs)
+epxz = N.array(EPSI.EXTR_COMP('EPXZ',['CUBE']).valeurs)
+epyz = N.array(EPSI.EXTR_COMP('EPYZ',['CUBE']).valeurs)
+w    = N.array(GAUSS.EXTR_COMP('W',['CUBE']).valeurs)
+x    = N.array(GAUSS.EXTR_COMP('X',['CUBE']).valeurs)
+y    = N.array(GAUSS.EXTR_COMP('Y',['CUBE']).valeurs)
+z    = N.array(GAUSS.EXTR_COMP('Z',['CUBE']).valeurs)
+
+gfxx = N.array(EPSI.EXTR_COMP('DGONFX1',['CUBE_REG']).valeurs)
+gfyy = N.array(EPSI.EXTR_COMP('DGONFX2',['CUBE_REG']).valeurs)
+gfzz = N.array(EPSI.EXTR_COMP('DGONFX3',['CUBE_REG']).valeurs)
+wg   = N.array(GAUSS.EXTR_COMP('W',['CUBE_REG']).valeurs)
+xg   = N.array(GAUSS.EXTR_COMP('X',['CUBE_REG']).valeurs)
+yg   = N.array(GAUSS.EXTR_COMP('Y',['CUBE_REG']).valeurs)
+zg   = N.array(GAUSS.EXTR_COMP('Z',['CUBE_REG']).valeurs)
+
+(refxx,refyy,refzz,refxy,refxz,refyz) = ref.Epsi(x,y,z)
+(refgx,refgy,refgz) = ref.Gradteta(xg,yg,zg)
+
+quad    = (  (epxx-refxx)**2 +   (epyy-refyy)**2 + 2*(epxy-refxy)**2
+           + (epzz-refzz)**2 + 2*(epxz-refxz)**2 + 2*(epyz-refyz)**2 )
+err_eps = (N.dot(w,quad)/N.add.reduce(w))**0.5
+
+quadgf  = (  (gfxx-refgx)**2 +   (gfyy-refgy)**2 + (gfzz-refgz)**2)
+err_vol = (N.dot(wg,quadgf)/N.add.reduce(wg))**0.5
+
+
+TAB = CREA_TABLE(LISTE=(_F(PARA='MAILLAGE',LISTE_K='MA1'),
+                        _F(PARA='ERR_EPS',LISTE_R=err_eps),
+                        _F(PARA='ERR_VOL',LISTE_R=err_vol),),)
+
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='ERR_EPS',
+	   FILTRE = _F(NOM_PARA='MAILLAGE',VALE_K='MA1'),VALE=0.0038977398943897098,REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='ERR_VOL',
+	   FILTRE = _F(NOM_PARA='MAILLAGE',VALE_K='MA1'),VALE=0.062372121711127042,REFERENCE='ANALYTIQUE',)
+
+FIN()

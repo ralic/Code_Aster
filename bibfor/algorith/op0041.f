@@ -1,7 +1,7 @@
       SUBROUTINE OP0041()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,19 +148,36 @@ C        DEFINED
 
 C     CHECK IF THE USER HAS GIVEN THE CRACK FROM WHICH THE GRID MUST
 C     BE COPIED
-      CALL GETVID('DEFI_FISS_GRILLE','FISSURE',1,0,1,FISGRI,IRET)
+      CALL GETVID(' ','FISS_GRILLE',1,0,1,FISGRI,IRET)
       IF (IRET.GT.0) THEN
-C        YES, THE GRID INFOS ARE DUPLICATED FOR THE NEW CRACK
+C        YES, THE GRID INFOS ARE DUPLICATED FOR THE NEW CRACK.
+C        CHECK IF A GRID IS ASSOCIATED TO THE GIVEN CRACK.
+         CALL JEEXIN(FISGRI//'.GRI.MODELE',IBID)
+         IF (IBID.EQ.0) CALL U2MESS('F','XFEM_68')
+
          CALL JEDUPO(FISGRI//'.GRI.MODELE','G',
      &               FISS(1:8)//'.GRI.MODELE',.FALSE.)
          CALL COPISD('CHAMP','G',FISGRI//'.GRI.LNNO',
      &                           FISS(1:8)//'.GRI.LNNO')
-         CALL COPISD('CHAMP','G',FISGRI//'.GRI.LTNO',
-     &                           FISS(1:8)//'.GRI.LTNO')
          CALL COPISD('CHAMP','G',FISGRI//'.GRI.GRLNNO',
      &                           FISS(1:8)//'.GRI.GRLNNO')
-         CALL COPISD('CHAMP','G',FISGRI//'.GRI.GRLTNO',
-     &                           FISS(1:8)//'.GRI.GRLTNO')
+
+         CALL JEEXIN(FISGRI//'.GRI.LTNO  .REFE',IBID)
+         IF (IBID.GT.0) THEN
+            CALL COPISD('CHAMP','G',FISGRI//'.GRI.LTNO',
+     &                              FISS(1:8)//'.GRI.LTNO')
+            CALL COPISD('CHAMP','G',FISGRI//'.GRI.GRLTNO',
+     &                              FISS(1:8)//'.GRI.GRLTNO')
+         ENDIF
+
+         CALL JEEXIN(FISGRI//'.PRO.RAYON_TORE',IBID)
+         IF (IBID.GT.0) THEN
+            CALL JEDUPO(FISGRI//'.PRO.RAYON_TORE','G',
+     &                  FISS(1:8)//'.PRO.RAYON_TORE',.FALSE.)
+            CALL JEDUPO(FISGRI//'.PRO.NOEUD_TORE','G',
+     &                  FISS(1:8)//'.PRO.NOEUD_TORE',.FALSE.)
+         ENDIF
+
          GRILLE=.FALSE.
          WRITE(IFM,*)'  LA GRILLE AUXILIAIRE UTILISEE POUR LA FISSURE ',
      &                FISGRI
@@ -169,66 +186,6 @@ C        YES, THE GRID INFOS ARE DUPLICATED FOR THE NEW CRACK
          WRITE(IFM,*)'  ET LES LEVEL SETS DEFINIES SUR CETTE GRILLE ONT'
      &               //' ETE PRESERVEES.'
       ENDIF
-
-C     CHECK IF THE USER HAS GIVEN THE GRID LEVEL SETS, INSTEAD
-      CALL GETVID('DEFI_FISS_GRILLE','CHAM_NO_LSN_GRILLE',1,0,1,
-     &            CHGRI,IRET)
-      IF (IRET.GT.0) THEN
-C        YES, THE LEVEL SETS INFOS ARE IMPOSED TO THE NEW CRACK maiaux
-         CALL JEVEUO(CHGRI(1:8)//'           .REFE','L',IBID)
-         TMP = ZK24(IBID)
-         IF (TMP(1:8).NE.MAIAUX) THEN
-            MSG(1)=CHGRI
-            MSG(2)=TMP(1:8)
-            MSG(3)=MAIAUX
-            CALL U2MESK('F','XFEM2_96',3,MSG)
-         ENDIF
-         CALL COPISD('CHAMP','G',CHGRI,FISS(1:8)//'.GRI.LNNO')
-
-         CALL GETVID('DEFI_FISS_GRILLE','CHAM_NO_LST_GRILLE',1,0,1,
-     &                CHGRI,IRET)
-         CALL JEVEUO(CHGRI(1:8)//'           .REFE','L',IBID)
-         TMP = ZK24(IBID)
-         IF (TMP(1:8).NE.MAIAUX) THEN
-            MSG(1)=CHGRI
-            MSG(2)=TMP(1:8)
-            MSG(3)=MAIAUX
-            CALL U2MESK('F','XFEM2_96',3,MSG)
-         ENDIF
-         CALL COPISD('CHAMP','G',CHGRI,FISS(1:8)//'.GRI.LTNO')
-
-         CALL GETVID('DEFI_FISS_GRILLE','CHAM_NO_GRLSN_GRILLE',1,0,1,
-     &                CHGRI,IRET)
-         CALL JEVEUO(CHGRI(1:8)//'           .REFE','L',IBID)
-         TMP = ZK24(IBID)
-         IF (TMP(1:8).NE.MAIAUX) THEN
-            MSG(1)=CHGRI
-            MSG(2)=TMP(1:8)
-            MSG(3)=MAIAUX
-            CALL U2MESK('F','XFEM2_96',3,MSG)
-         ENDIF
-         CALL COPISD('CHAMP','G',CHGRI,FISS(1:8)//'.GRI.GRLNNO')
-
-         CALL GETVID('DEFI_FISS_GRILLE','CHAM_NO_GRLST_GRILLE',1,0,1,
-     &                CHGRI,IRET)
-         CALL JEVEUO(CHGRI(1:8)//'           .REFE','L',IBID)
-         TMP = ZK24(IBID)
-         IF (TMP(1:8).NE.MAIAUX) THEN
-            MSG(1)=CHGRI
-            MSG(2)=TMP(1:8)
-            MSG(3)=MAIAUX
-            CALL U2MESK('F','XFEM2_96',3,MSG)
-         ENDIF
-         CALL COPISD('CHAMP','G',CHGRI,FISS(1:8)//'.GRI.GRLTNO')
-
-         GRILLE=.FALSE.
-
-         WRITE(IFM,*)'  '
-         WRITE(IFM,*)'  LES CHAMPS DONNES PAR DEFI_FISS_GRILLE ONT ETE '
-     &              //'UTILISES POUR DEFINIR'
-         WRITE(IFM,*)'  LES LEVEL SETS SUR LA GRILLE.'
-      ENDIF
-
 
 C --- OJBET INFORMATIONS : TYPE_DISCONT ET CHAM_DISCONT
       INFO = FISS//'.INFO'

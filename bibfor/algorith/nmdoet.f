@@ -2,7 +2,7 @@
      &                  SDPILO,SDDYNA,SDERRO,SDIETO,SOLALG,
      &                  LACC0 ,INSTIN)
 C
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -245,7 +245,7 @@ C
 C ------- VERIFICATIONS SUR LE CHAMP
 C
           CALL NMETL3(MODELE,COMPOR,EVONOL,RESULT,NUMEIN,
-     &                SDIETO,SDSENS,NRPASE,ICHAM )
+     &                SDIETO,SDSENS,LEINIT,NRPASE,ICHAM )
 C    
   15    CONTINUE
   10  CONTINUE

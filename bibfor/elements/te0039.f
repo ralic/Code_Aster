@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
       REAL*8   CARSEC(6), R8BID
       REAL*8   UGP(12),DUG(12),KLV(78),DULY,FORCE(3),PLOUF
       REAL*8   ULP(12),DUL(12),DVL(12),DPE(12),DVE(12)
-      REAL*8   SIM(12),SIP(12),FONO(12),VARMO(7),VARPL(7)
+      REAL*8   SIM(12),SIP(12),FONO(12),VARMO(8),VARPL(8)
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
@@ -326,7 +326,7 @@ C
                CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
             END IF
             IF (ZK16(ICOMPO).EQ.'DIS_CHOC') THEN
-               CALL R8INIR( 7, ZERO, VARMO, 1)
+               CALL R8INIR( 8, ZERO, VARMO, 1)
                CALL R8INIR(12, ZERO, DVL,   1)
                CALL R8INIR(12, ZERO, DPE,   1)
                CALL R8INIR(12, ZERO, DVE,   1)

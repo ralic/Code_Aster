@@ -1,7 +1,7 @@
-      SUBROUTINE NMTTCH(SDDISC,INST  ,NUME  )
+      SUBROUTINE NMTTCH(RESULT,INST  ,NUME  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,19 +23,19 @@ C
       IMPLICIT     NONE
       REAL*8       INST
       INTEGER      NUME
-      CHARACTER*19 SDDISC
+      CHARACTER*8  RESULT
 C
 C ----------------------------------------------------------------------
 C
 C ROUTINE *_NON_LINE (UTILITAIRE - SELEC. INST.)
 C
-C RECHERCHE DE L'iNDICE DANS LA SD RESULTAT JUSTE AVANT L'INSTANT
+C RECHERCHE DE L'INDICE DANS LA SD RESULTAT JUSTE AVANT L'INSTANT
 C DONNE
 C
 C ----------------------------------------------------------------------
 C
 C
-C IN  SDDISC : SD DISCRETISATION
+C IN  RESULT : NOM DE LA SD RESULTAT
 C IN  INST   : INSTANT A RECHERCHER
 C OUT NUME   : INDICE A ECRASER
 C
@@ -58,11 +58,10 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER*24 TPSDIT
+      CHARACTER*24 NOMOBJ
       INTEGER      JTEMPS
-      INTEGER      NBINST,IBID,I,NBINTV
-      CHARACTER*8  K8BID
-      REAL*8       R8BID,TOLE,R8PREM
+      INTEGER      NBINST,I,NBINTV
+      REAL*8       TOLE,R8PREM
       REAL*8       DTMIN,INS,DT
 C
 C ----------------------------------------------------------------------
@@ -71,13 +70,9 @@ C
 C
 C --- ACCES SD_DISC
 C    
-      TPSDIT = SDDISC(1:19)//'.DITR'
-      CALL JEVEUO(TPSDIT,'L',JTEMPS) 
-      
-      CALL UTDIDT('L'   ,SDDISC,'LIST',IBID  ,'NBINST',R8BID ,
-     &            NBINST,K8BID )
-
-      TOLE = R8PREM()
+      TOLE   = R8PREM()
+      NOMOBJ = '&&NMTTCH.LISTE'
+      CALL RSLIPA(RESULT,'INST',NOMOBJ,JTEMPS,NBINST)   
 C
 C --- RECHERCHE INSTANT
 C
@@ -103,12 +98,14 @@ C
  45     CONTINUE
         INST   = INS
         CALL UTACLI(INST  ,ZR(JTEMPS),NBINST,TOLE  ,NUME  )
-        NUME = NUME + 1    
+        NUME = NUME + 1  
       ENDIF
 C
       IF (NUME .LT. 0) THEN
         CALL U2MESS('F','DISCRETISATION_89')
       ENDIF
+C   
+      CALL JEDETR(NOMOBJ)
 C
       CALL JEDEMA()
 

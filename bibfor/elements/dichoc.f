@@ -8,10 +8,10 @@ C ----------------------------------------------------------------------
       REAL*8   DUL(NEQ),UTL(NEQ),DVL(NEQ)
       REAL*8   DPE(NEQ),DVE(NEQ)
       REAL*8   KLV(NBT),DULY,XG(6),PGL(3,3)
-      REAL*8   VARMO(7),VARPL(7),FORCE(3)
+      REAL*8   VARMO(8),VARPL(8),FORCE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,6 +192,7 @@ C        VITESSE TANGENTE
          VARPL(2) = DEPZ
          VARPL(3) = VITY
          VARPL(4) = VITZ
+         VARPL(8) = DEPX
 C
 C     ELEMENT A 1 NOEUD
       ELSE
@@ -283,6 +284,7 @@ C        VITESSE TANGENTE
          VARPL(2) = DEPZ
          VARPL(3) = VITY
          VARPL(4) = VITZ
+         VARPL(8) = DEPX
       ENDIF
 C
       END

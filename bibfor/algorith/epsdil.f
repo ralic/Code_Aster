@@ -2,8 +2,9 @@
      +                  DIMDEF,DIMUEL,NDIM,NDDLS,NDDLM,NNO,NNOS,NNOM,
      +                  INTERP,AXI,REGULA,DEPLP,DEFGEP)
 C ======================================================================
+C RESPONSABLE FERNANDES R.FERNANDES
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +47,10 @@ C ======================================================================
      +               REGULA,B,POIDS,POIDS2)
          ELSE IF (INTERP.EQ.'SL') THEN
             CALL CABRSL(KPI,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,GEOM,
+     +               DIMDEF,DIMUEL,NDIM,NDDLS,NDDLM,NNO,NNOS,NNOM,AXI,
+     +               REGULA,B,POIDS,POIDS2)
+         ELSE IF (INTERP.EQ.'P1') THEN
+            CALL CABRP1(KPI,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,GEOM,
      +               DIMDEF,DIMUEL,NDIM,NDDLS,NDDLM,NNO,NNOS,NNOM,AXI,
      +               REGULA,B,POIDS,POIDS2)
          ENDIF

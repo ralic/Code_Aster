@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+#@ MODIF xfem Messages  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -417,6 +417,39 @@ cata_msg={
 67: _("""
   -> ---Eléments XFEM quadratiques 2D---
      Newton : nombre d'itérations maximal atteint
+"""),
+
+68: _("""
+  -> Aucune grille n'est associée à la fissure donnée par FISS_GRILLE.
+
+  -> Risque & Conseil:
+     Veuillez donner une fissure avec une grille associée.
+     
+"""),
+
+69: _("""
+  -> La fissure à propager a été définie par DEFI_FISS_XFEM en donnant directement les deux
+     champs level sets (mots-clé CHAMP_NO_LSN et CHAMP_NO_LST).
+     Aucune grille auxiliaire n'a été associée à cette fissure.
+
+  -> Risque & Conseil:
+     Dans le cas où les deux champs level sets ont été obtenus d'une fissure propagée par
+     PROPA_FISS, les informations sur la localisation du domaine (mot-clé ZONE_MAJ) et sur
+     l'utilisation d'une grille auxiliaire ont été perdues, ce qui fait que le calcul de la 
+     propagation de la fissure pourrait donner des résultats faux.
+
+     Vous pouvez ignorer cette alarme seulement si les deux champs level sets donnés dans
+     DEFI_FISS_XFEM:
+     - n'ont pas été calculés par PROPA_FISS, c'est-à-dire qu'ils n'ont pas été extraits
+       d'une fissure propagée par PROPA_FISS
+     - ont été extraits d'une fissure propagée par PROPA_FISS sans grille auxiliaire associée
+       et la mise à jours des level sets a été faite sur tous les noeuds du maillage
+       (mot-clé ZONE_MAJ='TOUT' dans PROPA_FISS)
+
+     Dans tous les autres cas, pour éviter des résultats faux, il faut absolument associer
+     une grille auxiliaire à la fissure à propager, grille héritée de la fissure de laquelle
+     les deux level sets ont été extraites (mot-clé FISS_GRILLE de DEFI_FISS_XFEM).
+     
 """),
 
 }

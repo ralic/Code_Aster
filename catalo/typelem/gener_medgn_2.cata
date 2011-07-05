@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 04/07/2011   AUTEUR BEAURAIN J.BEAURAIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,7 +98,7 @@ MODE_LOCAL__
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    EREFCO   = PREC     ELEM__         (SIGM     DAMG   )
+    EREFCO   = PREC     ELEM__         (SIGM     VARI   )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
     CCDTAU   = PILO_R   ELEM__         (A0       )

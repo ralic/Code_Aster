@@ -12,7 +12,7 @@
      &                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ C
       INTEGER       YAMEC,YAP1,YAP2,YATE
       INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE ,II,JJ
       INTEGER       KPI,IPI
-      INTEGER       I,J,N,K,KJI
+      INTEGER       I,J,N,K,KJI,NVIM,NBCOMP
       REAL*8        DFDI(NNO,3),DFDI2(NNOS,3)
       REAL*8        GEOM(NDIM,NNO),CRIT(*),POIDS,POIDS2
       REAL*8        DEPLP(DIMUEL),DEPLM(DIMUEL)
@@ -348,7 +348,34 @@ C ======================================================================
      &          MECANI,PRESS1,PRESS2,TEMPE,
      &          CRIT,RINSTM,RINSTP,DT,
      &          R,DRDS,DSDE,CODRET)
-         ENDIF
+C ======================================================================
+C --- ATTENTION CI-DESSOUS IL N'Y A PAS D'IMPACT DE CALCUL -------------
+C --- ON RECOPIE POUR LA METHODE D'INTEGRATION SELECTIVE LES CONTRAINTES
+C --- CALCULEES AUX POINTS DE GAUSS SUR LES NOEUDS POUR DES QUESTIONS DE
+C --- POST-TRAITEMENT --------------------------------------------------
+C ======================================================================
+C --- POUR LES VARIABLES INTERNES ON PASSE PAR COMPOR POUR RECUPERER ---
+C --- L'INFORMATION SUR LE NOMBRE DE VI DE LA LOI MECA CORRESPONDANTE --
+C --- CETTE IDENTIFICATION SE FAIT NORMALEMENT AU NIVEAU DE NVITHM -----
+C --- ATTENTION : NBCOMP EST LE NOMBRE DE VARIABLES DANS LA CARTE COMPOR
+C --- DE GRANDEUR_SIMPLE AVANT LA DEFINITION DU NOMBRE DE VARIABLES ----
+C --- INTERNES ASSOCIEES AUX RELATIONS DE COMPORTEMENT POUR LA THM -----
+C --- SA VALEUR EST A REPRENDRE A L'IDENTIQUE DE LA ROUTINE NVITHM -----
+C --- A CE JOUR ELLE VAUT : PARAMETER ( NBCOMP = 7 + 9 ) ---------------
+C ======================================================================
+         IF (MECANI(1).EQ.1) THEN
+            IF (KPI .GT. NPG) THEN
+               DO 110 I=1,6
+                  CONTP((KPI-1)*DIMCON+I) = CONTP((KPI-NPG-1)*DIMCON+I)
+ 110           CONTINUE
+               NBCOMP = 9 + 7
+               READ (COMPOR(NBCOMP+4),'(I16)') NVIM
+               DO 112 I=1,NVIM
+                  VARIP((KPI-1)*NBVARI+I) = VARIP((KPI-NPG-1)*NBVARI+I)
+ 112           CONTINUE
+            ENDIF
+          ENDIF
+       ENDIF
        IF ( CODRET.NE.0) THEN
          GOTO 9000
        ENDIF

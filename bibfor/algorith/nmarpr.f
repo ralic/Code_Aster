@@ -1,8 +1,8 @@
-      SUBROUTINE NMARPR(SDDISC,MOTFAC,LREUSE,NUMDER,INSDER,
-     &                  NUMARC)
+      SUBROUTINE NMARPR(RESULT,SDDISC,MOTFAC,LREUSE,NUMDER,
+     &                  INSDER,NUMARC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,6 +27,7 @@ C
       LOGICAL      LREUSE
       INTEGER      NUMDER,NUMARC
       CHARACTER*19 SDDISC
+      CHARACTER*8  RESULT
 C
 C ----------------------------------------------------------------------
 C
@@ -37,6 +38,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  RESULT : NOM DE LA SD RESULTAT
 C IN  SDDISC : SD DISCRETISATION
 C IN  MOTFAC : MOT-FACTEUR POUR LIRE ARCHIVAGE
 C IN  NUMDER : DERNIER NUMERO ARCHIVE DANS RESULT 
@@ -98,7 +100,7 @@ C
             VALR(2) = INST2
             CALL U2MESR('F','ARCHIVAGE_1',2,VALR)
           ELSE
-            CALL NMTTCH(SDDISC,INST2 ,NUMDER)
+            CALL NMTTCH(RESULT,INST2 ,NUMDER)
             NUMARC = NUMDER  
           ENDIF
         ELSE

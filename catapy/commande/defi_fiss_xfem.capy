@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,13 +21,20 @@
 DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
                fr="Définition des caratéristiques d'une fissure ou d'une interface avec X-FEM",
+            regles = EXCLUS('MODELE_GRILLE','FISS_GRILLE'),
 
 # ------------------------------------------------------------------------------------------------------------------------
 #                       modele sous-jacent
 # ------------------------------------------------------------------------------------------------------------------------
 
     MODELE                =SIMP(statut='o',typ=modele_sdaster),
+
+# ------------------------------------------------------------------------------------------------------------------------
+#                       grille auxiliaire
+# ------------------------------------------------------------------------------------------------------------------------
+
     MODELE_GRILLE         =SIMP(statut='f',typ=modele_sdaster,max=1,position='global'),
+    FISS_GRILLE           =SIMP(statut='f',typ=fiss_xfem,max=1),
 
 # ------------------------------------------------------------------------------------------------------------------------
 #                       fissure/interface
@@ -107,26 +114,6 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
                             ),
 
 # ------------------------------------------------------------------------------------------------------------------------
-#                       grille (pour Homard)
-# ------------------------------------------------------------------------------------------------------------------------
-
-    DEFI_FISS_GRILLE       =FACT(statut='f',max=1,
-
-      b_fissure            =BLOC(condition="MODELE_GRILLE == None",
-           FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),
-                                ),
-
-      b_levelset_grille    =BLOC(condition="MODELE_GRILLE != None" ,
-           CHAM_NO_LSN_GRILLE  =SIMP(statut='o',typ=cham_no_sdaster,max=1),
-           CHAM_NO_LST_GRILLE  =SIMP(statut='o',typ=cham_no_sdaster,max=1),
-           CHAM_NO_GRLSN_GRILLE=SIMP(statut='o',typ=cham_no_sdaster,max=1),
-           CHAM_NO_GRLST_GRILLE=SIMP(statut='o',typ=cham_no_sdaster,max=1),
-                                 ),
-                                 ),
-
-                           
-
-# ------------------------------------------------------------------------------------------------------------------------
 #                       partie du maillage potentiellement enrichie
 # ------------------------------------------------------------------------------------------------------------------------
 
@@ -176,7 +163,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                       branchement
 # ------------------------------------------------------------------------------------------------------------------------
 
-    b_jonction            =BLOC(condition = "MODELE_GRILLE == None ",
+    b_jonction            =BLOC(condition = "(MODELE_GRILLE == None) and (FISS_GRILLE == None)",
         JONCTION              =FACT(statut='f',max=1,
           FISSURE             =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
           POINT               =SIMP(statut='o',typ='R',max=3,),

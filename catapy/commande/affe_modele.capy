@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -172,6 +172,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_HH2S",     # RESP. : GRANET S.GRANET
                                   "D_PLAN_2DG",      # RESP. : GRANET S.GRANET
                                   "D_PLAN_DIL",      # RESP. : GRANET S.GRANET
+                                  "3D_DIL",          # RESP. : GRANET S.GRANET
                                   "AXIS_THM",        # RESP. : GRANET S.GRANET
                                   "AXIS_HHM",        # RESP. : GRANET S.GRANET
                                   "AXIS_HM",         # RESP. : GRANET S.GRANET

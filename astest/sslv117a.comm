@@ -1,0 +1,129 @@
+# MODIF  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+# TITRE  - VALIDATION 3D DE LA MODELISATION A MICRO-DILATATION
+# sslv117a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE FERNANDES R.FERNANDES
+
+DEBUT(CODE=_F(NOM='SSLV117A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MA1 = LIRE_MAILLAGE(FORMAT='MED')
+  
+MA2 = CREA_MAILLAGE(
+  MAILLAGE  =  MA1,
+  LINE_QUAD = _F(TOUT='OUI', PREF_NOEUD='Q'),
+  )
+  
+MA = CREA_MAILLAGE(MAILLAGE=MA2,
+                  CREA_GROUP_MA=(_F(NOM         = 'CUBE_REG',
+                                    GROUP_MA    = 'CUBE',
+                                    PREF_MAILLE = 'MR'),),);
+
+MA = DEFI_GROUP( reuse    = MA,
+                 MAILLAGE = MA,
+                 CREA_GROUP_NO = ( _F(TOUT_GROUP_MA='OUI',),),);
+
+MO = AFFE_MODELE(
+  MAILLAGE = MA,
+  AFFE     = (_F(GROUP_MA='CUBE', PHENOMENE='MECANIQUE', MODELISATION='3D'),
+              _F(GROUP_MA='CUBE_REG', PHENOMENE='MECANIQUE', MODELISATION='3D_DIL'),
+  ))
+  
+poisson = 0.0
+young   = 1.0
+  
+MAT = DEFI_MATERIAU(
+  ELAS = _F(E=young, NU=poisson),
+  )
+
+MAT2= DEFI_MATERIAU( ELAS_2NDG = _F(A1          =  1.0/4.0,
+                                    A2          =  0.0,
+                                    A3          =  0.0,
+                                    A4          =  0.0,
+                                    A5          =  0.0,),
+                     NON_LOCAL  = _F(PENA_LAGR  =  0.0,),);
+
+CHMAT = AFFE_MATERIAU(
+  MAILLAGE = MA,
+  AFFE     = (_F(GROUP_MA = 'CUBE', MATER = MAT),
+              _F(GROUP_MA = 'CUBE_REG', MATER = MAT2),))
+  
+R2   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "X*X+Y*Y+Z*Z" )
+GF   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "-1.+R2(X,Y,Z)*R2(X,Y,Z)" )
+UX   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "X*(-1./3.+1./7.*R2(X,Y,Z)*R2(X,Y,Z))")
+UY   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "Y*(-1./3.+1./7.*R2(X,Y,Z)*R2(X,Y,Z))")
+UZ   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "Z*(-1./3.+1./7.*R2(X,Y,Z)*R2(X,Y,Z))")
+BX   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "X*4.*(10.-R2(X,Y,Z))")
+BY   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "Y*4.*(10.-R2(X,Y,Z))")
+BZ   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "Z*4.*(10.-R2(X,Y,Z))")
+ZERO = DEFI_CONSTANTE(VALE = 0)
+  
+DEPL_IMP = AFFE_CHAR_MECA_F(
+  MODELE    = MO,
+  DDL_IMPO = (
+    _F(GROUP_NO='BORD_EXT', GONF=GF),),
+  FACE_IMPO = (
+    _F(GROUP_MA='BORD_EXT', DX=UX, DY=UY, DZ=UZ),
+    _F(GROUP_MA='SYME_X',   DX=ZERO),
+    _F(GROUP_MA='SYME_Y',   DY=ZERO),
+    _F(GROUP_MA='SYME_Z',   DZ=ZERO),
+    ),
+  )
+ 
+FORC_IMP = AFFE_CHAR_MECA_F(
+  MODELE        = MO,
+  FORCE_INTERNE = _F(GROUP_MA='CUBE', FX=BX, FY=BY, FZ=BZ),
+  )
+    
+INSTANTS = DEFI_LIST_REEL(
+  DEBUT      = 0,
+  INTERVALLE = _F(JUSQU_A=1, NOMBRE=1),
+  )
+  
+EVOL = STAT_NON_LINE(
+  MODELE     = MO,
+  CHAM_MATER = CHMAT,
+  INCREMENT  = _F(LIST_INST=INSTANTS),
+  COMP_INCR  = _F(RELATION='ELAS'),
+  SOLVEUR    = _F(METHODE='MUMPS',PCENT_PIVOT=50),
+  EXCIT      = (
+    _F(CHARGE = DEPL_IMP),
+    _F(CHARGE = FORC_IMP),
+    ),
+  )
+
+CALC_ELEM(reuse = EVOL,
+  RESULTAT =  EVOL,
+  OPTION   = 'EPSI_ELGA',
+  )
+
+GAUSS = CALC_CHAM_ELEM(
+  MODELE     =  MO,
+  CHAM_MATER =  CHMAT,
+  OPTION     = 'COOR_ELGA',
+  )
+  
+EPSI = CREA_CHAMP(
+  TYPE_CHAM = 'ELGA_EPSI_R',
+  OPERATION = 'EXTR',
+  RESULTAT  =  EVOL,
+  NOM_CHAM  = 'EPSI_ELGA',
+  INST      =  1,
+  )    
+
+FIN()

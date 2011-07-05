@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -261,11 +261,14 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
 # VALEURS DE REFENCE DU CAS TEST: C.F. DOC DU CAS TEST HSNA100A
 
 TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 56,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   
+               NUME_ORDRE = 44,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 104.,  PRECISION = 1.E-2, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 73,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   
+               NUME_ORDRE = 61,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 95.,   PRECISION = 2.E-2, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 84,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',  
+               NUME_ORDRE = 72,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 78.,   PRECISION = 1.E-2, ))
            )
 
@@ -273,20 +276,20 @@ TEST_RESU(RESU=(
 # VALEURS DE REFERENCE ASTER DE LA VERSION 5.1.2
 
 TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 72,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 60,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 100.1,  PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 74,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 62,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 92.8,   PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 76,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 64,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 87.2,   PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 78,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 66,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 82.9,   PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 80,
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 68,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 79.5,   PRECISION = 1.E-3, ))
            )
 
 ###################
-# CALCUL MACANIQUE
+# CALCUL MECANIQUE
 ###################
 
 #
@@ -437,7 +440,7 @@ RESUMECA=STAT_NON_LINE(
 # VALEURS DE REFERENCE ASTER DE LA VERSION 7.3.1
 
 TEST_RESU(
-           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
+           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',  INST     = 1.70294E+09,
              GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -1.8582096E-01,
               REFERENCE = 'NON_REGRESSION', VERSION = '7.3.1'   )
             )
@@ -456,7 +459,7 @@ RESUSTAT=MECA_STATIQUE( MODELE=MOMECA,
 #
 
 TEST_RESU(
-           RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
+           RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',  INST     = 1.70294E+09,
              GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -2.780327E-01,
              REFERENCE = 'NON_REGRESSION', VERSION = '7.3.21' )
             )

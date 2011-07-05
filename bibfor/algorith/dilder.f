@@ -6,10 +6,11 @@ C ======================================================================
       REAL*8       DSDE2G(NDIM,NDIM),DRDE(DIMCON,DIMDEF),RPENA
       CHARACTER*2  INTERP
 C ======================================================================
+C RESPONSABLE FERNANDES R.FERNANDES
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -50,7 +51,7 @@ C ======================================================================
      +                                  DSDE2G(J,I)
  40      CONTINUE
  30   CONTINUE
-      IF (INTERP.EQ.'P0') THEN
+      IF (INTERP.NE.'SL') THEN
          DRDE(ADCOR1,ADDER3)=DRDE(ADCOR1,ADDER3)+1.0D0
          DRDE(ADCOR3,ADDER1)=DRDE(ADCOR3,ADDER1)-1.0D0
       ENDIF

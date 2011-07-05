@@ -1,4 +1,4 @@
-# MODIF  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 05/07/2011   AUTEUR LABBE M.LABBE 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106i.para = tps_job 500 mem_job 64Mo ncpus 1 liste_test S
@@ -893,7 +893,7 @@ TEST_TABLE(TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
            NOM_PARA='MYG_MYL',
-           VALE=-0.0126078075575,
+           VALE=-0.0153432073735,
            CRITERE='ABSOLU',
            PRECISION=1e-06,
            REFERENCE='NON_REGRESSION',);
@@ -913,7 +913,7 @@ TEST_TABLE(TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),
            NOM_PARA='MYG_MYL',
-           VALE=0.414629285776,
+           VALE=0.407308918708,
            CRITERE='ABSOLU',
            PRECISION=1e-06,
            REFERENCE='NON_REGRESSION',);
@@ -933,7 +933,7 @@ TEST_TABLE(TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.25,),
            NOM_PARA='MYG_MYL',
-           VALE=0.352502428708,
+           VALE=6.06590338204E-03,
            CRITERE='ABSOLU',
            PRECISION=1e-06,
            REFERENCE='NON_REGRESSION',);
@@ -953,7 +953,7 @@ TEST_TABLE(TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
            NOM_PARA='MYG_MYL',
-           VALE=-0.0115706840973,
+           VALE=-0.0126293718713,
            CRITERE='ABSOLU',
            PRECISION=1e-06,
            REFERENCE='NON_REGRESSION',);
@@ -973,7 +973,7 @@ TEST_TABLE(TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            NOM_PARA='MYG_MYL',
-           VALE=0.290646013671,
+           VALE=0.288903788683,
            CRITERE='ABSOLU',
            PRECISION=1e-06,
            REFERENCE='NON_REGRESSION',);

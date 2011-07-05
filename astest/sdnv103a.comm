@@ -1,6 +1,6 @@
-
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 04/07/2011   AUTEUR GREFFET N.GREFFET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
+# sdnv103a.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -122,6 +122,14 @@ L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
                                   _F(JUSQU_A=80.E-6,
                                      NOMBRE=316,),),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI=1.E-30,),);
+#
+#  On teste la sous-division du pas de temps
+#  On en profite aussi pour avoir un schema en temps plus adapte
+#
 RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
@@ -133,17 +141,26 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                  DEFORMATION='PETIT',
                                  GROUP_MA='VOL_RIG',),),
                    ETAT_INIT=_F(VITE=VIT_0,),
-                   INCREMENT=_F(LIST_INST=L_INST,
+                   INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=2.5E-7,),
-                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+#  Ancien schema en temps :
+#                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+#                                 FORMULATION='DEPLACEMENT',
+#                                 BETA=0.49,GAMMA=0.9,),
+#
+#  Schema "optimal" car on manque d'amortissement en lineaire :
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
-                                BETA=0.49,GAMMA=0.9,),
-                   NEWTON=_F(REAC_INCR=1,
+                                MODI_EQUI='NON',ALPHA=-0.6,),
+                   NEWTON=_F(
+                             REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    SOLVEUR=_F(SYME='OUI',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-                                  ITER_GLOB_MAXI=20,
+#  On force le sous-decoupage du pas de temps :
+#                                  ITER_GLOB_MAXI=20,
+                                  ITER_GLOB_MAXI=5,
                                   ARRET='OUI',),
                    );
 

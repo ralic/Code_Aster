@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C ----------------------------------------------------------------------
       REAL*8      ANG(3),PGL(3,3),KLV(78),KLV2(78),XD(3)
       REAL*8      UGM(12),UGP(12),DUG(12),COORG(12)
       REAL*8      ULM(12),ULP(12),DUL(12),DVL(12),DPE(12),DVE(12)
-      REAL*8      VARMO(7),VARPL(7),VARIPC(7)
+      REAL*8      VARMO(8),VARPL(8),VARIPC(7)
       REAL*8      DTEMPS,TEMPER,IRRAP,R8BID
       REAL*8      DDOT,DULY,FORCE(3),PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
       REAL*8      ZERO,MOINS1
@@ -808,7 +808,7 @@ C        IREP = 1 = MATRICE EN REPERE GLOBAL ==> PASSER EN LOCAL ---
          END IF
          CALL JEVECH('PMATERC','L',IMATE)
          CALL JEVECH('PVARIMR','L',IVARIM)
-         DO 30 I = 1,7
+         DO 30 I = 1,8
             VARMO(I) = ZR(IVARIM+I-1)
 30       CONTINUE
          CALL JEVECH('PINSTPR','L',JINST)
@@ -875,9 +875,9 @@ C        ET DES VARIABLES INTERNES
             CALL DISIEF(NBT,NEQ,NNO,NC,PGL,
      &                  KLV,DUL,ZR(ICONTM),ILOGIC,DULY,
      &                  ZR(ICONTP),ZR(IFONO),FORCE,NDIM)
-            DO 70 I = 1,7
+            DO 70 I = 1,8
                ZR(IVARIP+I-1) = VARPL(I)
-               IF (NNO.EQ.2) ZR(IVARIP+I+6) = VARPL(I)
+               IF (NNO.EQ.2) ZR(IVARIP+I+7) = VARPL(I)
 70          CONTINUE
          END IF
          GOTO 800

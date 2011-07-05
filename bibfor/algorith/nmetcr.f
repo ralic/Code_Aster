@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO,SDIETO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -118,7 +118,7 @@ C -- .TRUE. SI CHAMP EST ECRIT DANS ARCHIVAGE
       DATA LARCH   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .TRUE. ,.FALSE.,.FALSE.,
+     &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE./
 C -- MOT-CLEF DANS OBSERVATION, ' ' SI PAS DE MOT-CLEF
@@ -247,7 +247,7 @@ C
      &                NOMCHS(ICHAM),NOMGD (ICHAM),
      &                MOTCEI(ICHAM),MOTCOB(ICHAM),
      &                LOCCHA(ICHAM),
-     &                LETIN (ICHAM),LARCH (ICHAM))  
+     &                LETIN (ICHAM),LARCH (ICHAM))
         ENDIF  
    30 CONTINUE
       CALL ASSERT(ICH.EQ.NBCHAM)  

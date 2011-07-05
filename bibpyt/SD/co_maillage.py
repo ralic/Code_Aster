@@ -1,4 +1,4 @@
-#@ MODIF co_maillage SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_maillage SD  DATE 05/07/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,13 +38,15 @@ class maillage_sdaster(ASSD):
       if not self.accessible():
          raise Accas.AsException("Erreur dans maillage.LIST_GROUP_MA en PAR_LOT='OUI'")
       import aster
-      ngpma=[]
-      ltyma =aster.getvectjev("&CATA.TM.NOMTM")
-      catama=aster.getcolljev("&CATA.TM.TMDIM")
+      ngpma = []
+      ltyma = aster.getvectjev("&CATA.TM.NOMTM")
+      catama = aster.getcolljev("&CATA.TM.TMDIM")
       dic_gpma = self.sdj.GROUPEMA.get()
-      dimama=[catama[ltyma[ma-1]][0] for ma in self.sdj.TYPMAIL.get()]
+      if dic_gpma is None:
+          return ngpma
+      dimama = [catama[ltyma[ma-1]][0] for ma in self.sdj.TYPMAIL.get()]
       for grp in dic_gpma.keys():
-         dim=max([dimama[ma-1] for ma in dic_gpma[grp]])
-         ngpma.append((grp.strip(),len(dic_gpma[grp]),dim))
+         dim = max([dimama[ma-1] for ma in dic_gpma[grp]])
+         ngpma.append((grp.strip(), len(dic_gpma[grp]),dim))
       return ngpma
 

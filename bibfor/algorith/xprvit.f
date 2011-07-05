@@ -10,7 +10,7 @@
       REAL*8         LCMIN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C     MULTIPLE CRACK FRONTS
 
 C     BISECTION METHOD AND VELOCITY INTERPOLATION
       REAL*8         TOLLD,DPREC,DS,VP,BETAP
-      INTEGER        MAXITE,JMAX
+      INTEGER        MAXITE,JLIMSX,JLIMDX
 
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -117,9 +117,6 @@ C     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
 C     RECUPERATION DU FOND DE FISSURE
       CALL JEVEUO(FISS//'.FONDFISS','L',JFONF)
       CALL DISMOI('F','NB_POINT_FOND',FISS,'FISS_XFEM',NBPTFF,K8B,IRET)
-
-C     MAXIMUM VALUE FOR JMIN
-      JMAX = NBPTFF-1
 
 C     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
       CALL JEVEUO(FISS//'.FONDMULT','L',JFMULT)
@@ -508,6 +505,22 @@ C           INITIAL VALUE FOR DS
 C           TOLERANCE TO CHECK THE CONVERGENCE
             TOLLD =  1.0D-2*LCMIN
 
+C           CALCULATE THE LIMITS FOR JMIN ON THE ACTUAL CRACK FRONT
+            JLIMSX = 0
+            JLIMDX = 0
+            DO 205 FON=1,NUMFON
+               IF ((JMIN.GE.ZI(JFMULT-1+2*FON-1)).AND.
+     &             (JMIN.LE.ZI(JFMULT-1+2*FON))) THEN
+                  JLIMSX = ZI(JFMULT-1+2*FON-1)
+                  JLIMDX = ZI(JFMULT-1+2*FON)
+                  GOTO 204
+               ENDIF
+205         CONTINUE
+
+            CALL ASSERT(2.GT.1)
+
+204         CONTINUE
+
 C           SEARCH THE PROJECTED POINT BY THE BISECTION METHOD
             DO 206 J=1,MAXITE
 
@@ -621,18 +634,18 @@ C              UPDATE THE PROJECTED POINT POSITION ON THE FRONT
                SMIN=SMIN+DS
 
 C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
-               IF ((SMIN.LT.0.D0).AND.(JMIN.GT.1)) THEN
+               IF ((SMIN.LT.0.D0).AND.(JMIN.GT.JLIMSX)) THEN
                   JMIN=JMIN-1
                   SMIN=1.D0
-               ELSE IF ((SMIN.LT.0.D0).AND.(JMIN.EQ.1)) THEN
+               ELSE IF ((SMIN.LT.0.D0).AND.(JMIN.EQ.JLIMSX)) THEN
                   SMIN=0.D0
                   GOTO 207
                ENDIF
 
-               IF ((SMIN.GT.1.D0).AND.(JMIN.LT.JMAX)) THEN
+               IF ((SMIN.GT.1.D0).AND.(JMIN.LT.JLIMDX)) THEN
                   JMIN=JMIN+1
                   SMIN=0.D0
-               ELSE IF ((SMIN.GT.1.D0).AND.(JMIN.EQ.JMAX)) THEN
+               ELSE IF ((SMIN.GT.1.D0).AND.(JMIN.EQ.JLIMDX)) THEN
                   SMIN=1.D0
                   GOTO 207
                ENDIF

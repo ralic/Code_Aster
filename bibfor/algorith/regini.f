@@ -3,9 +3,9 @@
      +                  TYPMOD,DIMUEL,NNO,NNOM,NNOS,REGULA,AXI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -109,17 +109,12 @@ C ======================================================================
       NDDLS = NDIM + NDIM*NDIM
       NDDLM = NDIM
 C ======================================================================
-      IF (OPTION(1:9).EQ.'RIGI_MECA'      .OR.
-     +    OPTION.EQ.'RAPH_MECA'      .OR.
-     +    OPTION(1:9).EQ.'FULL_MECA'      .OR.
-     +    OPTION.EQ.'FORC_NODA'          ) THEN
-         ADDER1 = 1
-         ADDER2 = ADDER1+DEF1
-         ADDER3 = ADDER2+DEF2
-         ADCOR1 = 1
-         ADCOR2 = ADCOR1+CONT1
-         ADCOR3 = ADCOR2+CONT2
-      ENDIF
+      ADDER1 = 1
+      ADDER2 = ADDER1+DEF1
+      ADDER3 = ADDER2+DEF2
+      ADCOR1 = 1
+      ADCOR2 = ADCOR1+CONT1
+      ADCOR3 = ADCOR2+CONT2
       NNOM   = NNO - NNOS
       DIMUEL = NNOS*NDDLS + NNOM*NDDLM + NNOC*NDIM*NDIM
 C ======================================================================

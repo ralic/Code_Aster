@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+#@ MODIF sd_xfem SD  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,6 +51,7 @@ class sd_fiss_xfem(AsBase):
     CARAFOND        = Facultatif(AsVR(lonmax=12,))
     JONFISS = Facultatif(AsVK8())
     JONCOEF = Facultatif(AsVI())
+    CHAMPS_LVS = Facultatif(AsVL(SDNom(nomj='.CHAMPS.LVS'),lonmax=1))
 #   objets relatifs a la grille auxiliaire
     GRILLE_MODELE  = Facultatif(AsVK8(SDNom(nomj='.GRI.MODELE'),lonmax=1,))
     GRILLE_LNNO    = Facultatif(sd_cham_no(SDNom(nomj='.GRI.LNNO')))

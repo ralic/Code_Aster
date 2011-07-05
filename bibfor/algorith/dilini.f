@@ -3,10 +3,11 @@
      +                  DIMCON,TYPMOD,DIMUEL,NNO,NNOM,NNOS,REGULA,AXI,
      +                  INTERP)
 C ======================================================================
+C RESPONSABLE FERNANDES R.FERNANDES
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -87,10 +88,18 @@ C ======================================================================
          INTERP = 'SL'
          ELRF1  = 'QU8'
          ELRF2  = 'QU4'
-      ELSEIF ( ELREFE.EQ.'H27' ) THEN
-         CALL U2MESK('F','DVP_4',1,ELREFE)
-         ELRF1 = 'H20'
-         ELRF2 = 'HE8'
+      ELSEIF ( ELREFE.EQ.'T10' ) THEN
+         INTERP = 'P1'
+         ELRF1  = 'T10'
+         ELRF2  = 'TE4'
+      ELSEIF ( ELREFE.EQ.'P15' ) THEN
+         INTERP = 'P1'
+         ELRF1  = 'P15'
+         ELRF2  = 'PE6'
+      ELSEIF ( ELREFE.EQ.'H20' ) THEN
+         INTERP = 'P1'
+         ELRF1  = 'H20'
+         ELRF2  = 'HE8'
       ELSE
          CALL U2MESK('F','DVP_4',1,ELREFE)
       ENDIF
@@ -106,13 +115,23 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DU TYPE DE LA MODELISATION --------------------------
 C ======================================================================
-      TYPMOD(1) = 'D_PLAN  '
+      IF ( NOMTE(5:6).EQ.'DP' ) THEN
+         TYPMOD(1) = 'D_PLAN  '
+      ELSE IF ( NOMTE(5:6).EQ.'3D' ) THEN
+         TYPMOD(1) = '3D  '
+      ELSE
+C       NOM D'ELEMENT ILLICITE
+        CALL ASSERT(NOMTE(5:6).EQ.'DP' .OR. NOMTE(5:6).EQ.'3D' )
+      ENDIF
 C ======================================================================
       IF (INTERP.EQ.'P0') THEN
          CALL DIMP0(NDIM,NNO,NNOS,DIMDEF,DIMCON,NNOM,NNOC,NDDLS,NDDLM,
      +              NDDLC,DIMUEL,REGULA)
       ELSE IF (INTERP.EQ.'SL') THEN
          CALL DIMSL(NDIM,NNO,NNOS,DIMDEF,DIMCON,NNOM,NNOC,NDDLS,NDDLM,
+     +              NDDLC,DIMUEL,REGULA)
+      ELSE IF (INTERP.EQ.'P1') THEN
+         CALL DIMP1(NDIM,NNO,NNOS,DIMDEF,DIMCON,NNOM,NNOC,NDDLS,NDDLM,
      +              NDDLC,DIMUEL,REGULA)
       ENDIF
 C ======================================================================
