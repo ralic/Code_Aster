@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI
 # wtnv134a.para = tps_job 250 mem_job 391Mo ncpus 1 liste_test S
@@ -262,7 +262,9 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                           160.0, 15000,));
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS1 ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS     = 10,
                                  SUBD_NIVEAU  = 10,),)
 

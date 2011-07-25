@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128b.para = tps_job 190 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,6 +96,7 @@ CHA3=DEFI_CONTACT(MODELE         = MO,
                           GROUP_MA_ESCL  = 'LCONTA',
                           APPARIEMENT    = 'MAIT_ESCL',
                           NORMALE        = 'MAIT',
+                          SANS_GROUP_NO  = 'PPS',
                           ALGO_CONT      = 'PENALISATION',
                           ALGO_FROT      = 'PENALISATION',
                           E_T            = 1.0E11,

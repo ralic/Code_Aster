@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
 # wtnv135a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -260,9 +260,11 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS2 ,),
-                                ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                         SUBD_PAS=10,
-                                         SUBD_PAS_MINI=0.01,),)
+                                ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                         ACTION        = 'DECOUPE',
+                                         SUBD_METHODE  = 'MANUEL',
+                                         SUBD_PAS      = 10,
+                                         SUBD_PAS_MINI = 0.01,),)
 
 
 U2=STAT_NON_LINE( 

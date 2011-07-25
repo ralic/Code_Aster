@@ -3,7 +3,7 @@
       CHARACTER*8 MODELE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 49)
+      PARAMETER (NTYMAX = 66)
       INTEGER EDCONN
       PARAMETER (EDCONN=1)
       INTEGER EDMAIL
@@ -85,7 +85,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
      &              'TR6QU8  ','QU8TR6  ','TR6QU9  ','QU9TR6  ',
      &              'QU8TR3  ','TR3QU8  ','QU8QU4  ','QU4QU8  ',
      &              'QU8QU9  ','QU9QU8  ','QU9QU4  ','QU4QU9  ',
-     &              'QU9TR3  ','TR3QU9  ','SEG32   ','SEG23   '/
+     &              'QU9TR3  ','TR3QU9  ','SEG32   ','SEG23   ',
+     &              'QU4QU4  ','TR3TR3  ','HE8HE8  ','PE6PE6  ',
+     &              'TE4TE4  ','QU8QU8  ','TR6TR6  ','SE2TR3  ',
+     &              'SE2TR6  ','SE2QU4  ','SE2QU8  ','SE2QU9  ',
+     &              'SE3TR3  ','SE3TR6  ','SE3QU4  ','SE3QU8  ',
+     &              'SE3QU9  '/
 
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
@@ -99,7 +104,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
-     &              0,         0,         0,         0/
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0/
 C-----------------------------------------------------------------------
 
       CALL JEMARQ()

@@ -1,10 +1,10 @@
       SUBROUTINE MMELEL(NDIM  ,NTYMA1,NTYMA2,IORDR,NNDEL ,
      &                  NUMTYP)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,14 +27,18 @@ C
       INTEGER      NNDEL
       INTEGER      IORDR
       INTEGER      NUMTYP
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
 C RETOURNE DES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
 C DEUX ELEMENTS DE SURFACE
-C      
+C
+C LORS DES MODIFICATIONS DE MMELEL, IL FAUT ASSURER LA COHERENCE AVEC
+C  - MMLIGR / MMELTC / MMELTF / MMELTM / MMELTN / MMELEM
+C  - CATALOGUES &CATA.TM ET ELEMENTS DE CONTACT
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -67,32 +71,36 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      NBTYP
-      PARAMETER    (NBTYP=30)
-      CHARACTER*8  CPL(NBTYP,2)
+      PARAMETER   (NBTYP=40)
+      CHARACTER*8  CPL(NBTYP,2),VALK(2)
       INTEGER      K
-      CHARACTER*16 MMELTM,NOMTM 
+      CHARACTER*16 MMELTM,NOMTM
       INTEGER      MMELTN
 C
       DATA (CPL(K,1),K=1,NBTYP) /
-     &      'SEG2','SEG3','SEG2','SEG3','TRIA3',
+     &      'SEG2' ,'SEG3' ,'SEG2' ,'SEG3' ,'TRIA3',
      &      'TRIA3','TRIA6','TRIA6','QUAD4','QUAD4',
      &      'QUAD8','QUAD8','QUAD4','TRIA3','TRIA6',
      &      'QUAD4','TRIA6','QUAD8','TRIA6','QUAD9',
      &      'QUAD8','TRIA3','QUAD8','QUAD9','QUAD9',
-     &      'QUAD4','QUAD9','TRIA3','QUAD9','SEG2'/
+     &      'QUAD4','QUAD9','TRIA3','QUAD9','SEG2' ,
+     &      'SEG2', 'SEG2' ,'SEG2' ,'SEG2' ,'SEG2' ,
+     &      'SEG3' ,'SEG3', 'SEG3' ,'SEG3' ,'SEG3' /
       DATA (CPL(K,2),K=1,NBTYP) /
-     &      'SEG2','SEG3','SEG3','SEG2','TRIA3',
+     &      'SEG2' ,'SEG3' ,'SEG3' ,'SEG2' ,'TRIA3',
      &      'TRIA6','TRIA3','TRIA6','QUAD4','QUAD8',
      &      'QUAD4','QUAD8','TRIA3','QUAD4','QUAD4',
      &      'TRIA6','QUAD8','TRIA6','QUAD9','TRIA6',
      &      'TRIA3','QUAD8','QUAD9','QUAD8','QUAD4',
-     &      'QUAD9','TRIA3','QUAD9','QUAD9','SEG2'/
+     &      'QUAD9','TRIA3','QUAD9','QUAD9','SEG2' ,
+     &      'TRIA3','TRIA6','QUAD4','QUAD8','QUAD9',
+     &      'TRIA3','TRIA6','QUAD4','QUAD8','QUAD9'/
 
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C      
+C
       IORDR = 0
       NNDEL = 0
 C
@@ -106,10 +114,12 @@ C
   10  CONTINUE
 C
       IF (IORDR.EQ.0) THEN
-        CALL ASSERT(.FALSE.)
+        VALK(1) = NTYMA1
+        VALK(2) = NTYMA2
+        CALL U2MESK('F','CONTACT_96',2,VALK)
       ELSE
         NOMTM  = MMELTM(IORDR)
-        CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOMTM),NUMTYP)  
+        CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOMTM),NUMTYP)
       ENDIF
 C
 C --- DISTINCTION POUTRE/POUTRE ET 2D/2D
@@ -120,7 +130,7 @@ C
         ELSE
           IORDR = 30
         ENDIF
-      ENDIF   
+      ENDIF
 C
       CALL JEDEMA()
 C

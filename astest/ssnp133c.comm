@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
 # ssnp133c.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,10 +160,11 @@ INS_ARCH = DEFI_LIST_REEL(
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                         ECHEC=_F(
-                  SUBD_METHODE='UNIFORME',
-                  SUBD_PAS  = 2,
+                  ACTION        = 'DECOUPE',
+                  SUBD_METHODE  = 'MANUEL',
+                  SUBD_PAS      = 2,
                   SUBD_PAS_MINI = 1.E-8,
-                  SUBD_NIVEAU=10,
+                  SUBD_NIVEAU   = 10,
                                  ),)
 
 EVOL = STAT_NON_LINE(INFO=1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE POST_BORDET EN 2D ET 3D
 # zzzz268a.para = tps_job 45 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,9 +56,11 @@ INST=DEFI_LIST_REEL(DEBUT=0.,
                     INTERVALLE=_F(JUSQU_A=10.0,
                                   PAS=1.,),);
 INSTANTS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=INST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                SUBD_PAS=4,
-                                SUBD_NIVEAU=4,),);
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 4,
+                                 SUBD_NIVEAU   = 4,),);
 ##########################################################
 # CHARGEMENT
 ##########################################################

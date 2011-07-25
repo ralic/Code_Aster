@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,166 +19,357 @@
 # RESPONSABLE GENIAUT S.GENIAUT
 
 
-# bloc utilisé deux fois à l'identique
-bloc_unif = BLOC(condition = "SUBD_METHODE == 'UNIFORME'",
-                SUBD_COEF_PAS_1=SIMP(statut='f',typ='R',defaut=1.0,val_min=0.0,max=1,
-                                     fr="Coefficient multiplicateur de la 1ère subdivision"),
-                SUBD_PAS       =SIMP(statut='f',typ='I',defaut=4,val_min=2,max=1,
-                                     fr="Nombre de subdivision d'un pas de temps"),
 
-                b_subd_unif_manu  =   BLOC(condition="METHODE == 'MANUEL'",
-                    regles=(AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),
-                    SUBD_NIVEAU=SIMP(statut='f',typ='I',val_min=2,defaut=3,max=1,
-                                     fr="Nombre maximum de niveau de subdivision d'un pas de temps"),
-                    SUBD_PAS_MINI=SIMP(statut='f',typ='R',defaut=0.,val_min=0.0,max=1,
-                                       fr="Pas de temps en dessous duquel on ne subdivise plus"),
-                ),
+# Bloc pour decoupe automatique
+bloc_auto   =BLOC(fr                = "Subdivision de type automatique",
+                  condition         = "SUBD_METHODE == 'AUTO'",
+                  SUBD_PAS_MINI     = SIMP(fr                = "Pas de temps en dessous duquel on ne subdivise plus",
+                                           statut            = 'f',
+                                           typ               = 'R',
+                                           val_min           = 0.0,
+                                           max               = 1,
+                                           defaut            = 0.,
+                                           ),                                            
+                  )
 
-                b_subd_unif_auto  =   BLOC(condition="METHODE == 'AUTO'",
-                    SUBD_PAS_MINI=SIMP(statut='f',typ='R',defaut=0.,val_min=0.0,max=1,
-                                       fr="Pas de temps en dessous duquel on ne subdivise plus"),
-                ),
-            ) # fin si UNIFORME
+# Bloc pour decoupe automatique - Version collision
+bloc_auto2  =BLOC(fr                = "Subdivision de type automatique",
+                  condition         = "SUBD_METHODE == 'AUTO'",
+                  SUBD_PAS_MINI     = SIMP(fr                = "Pas de temps en dessous duquel on ne subdivise plus",
+                                           statut            = 'f',
+                                           typ               = 'R',
+                                           val_min           = 0.0,
+                                           max               = 1,
+                                           defaut            = 0.,
+                                           ),
+                  PREC_COLLISION    = SIMP(fr                = "Parametre de decoupe fine du pas de temps",
+                                           statut            = 'f',
+                                           typ               = 'R',
+                                           val_min           = 0.0,
+                                           max               = 1,
+                                           defaut            = 0.,
+                                           ),  
+                  DUREE_COLLISION   = SIMP(fr                = "Duree de decoupe fine du pas de temps apres la collision",
+                                           statut            = 'f',
+                                           typ               = 'R',
+                                           val_min           = 0.0,
+                                           max               = 1,
+                                           defaut            = 0.,
+                                           ),                                            
+                  )
+                 
+# Bloc pour decoupe manuel
+bloc_manu   =BLOC(fr                = "Subdivision de type manuel",
+                  condition         = "SUBD_METHODE == 'MANUEL'",
+                  regles            = (AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),
+                  SUBD_PAS          = SIMP(fr                = "Nombre de subdivision d'un pas de temps",
+                                           statut            = 'f',
+                                           typ               = 'I',
+                                           val_min           = 2,
+                                           max               = 1,
+                                           defaut            = 4,
+                                           ),       
+                  SUBD_NIVEAU       = SIMP(fr                = "Nombre maximum de niveau de subdivision d'un pas de temps",
+                                           statut            = 'f',
+                                           typ               = 'I',
+                                           val_min           = 2,
+                                           max               = 1,
+                                           defaut            = 3,
+                                           ),
+                  SUBD_PAS_MINI     = SIMP(fr                = "Pas de temps en dessous duquel on ne subdivise plus",
+                                           statut            = 'f',
+                                           typ               = 'R',
+                                           val_min           = 0.0,
+                                           max               = 1,
+                                           defaut            = 0.,
+                                           ),               
+                 )
+                                        
+# Bloc pour decoupe du pas de temps
+bloc_deco   =BLOC(fr                = "Action de decoupe du pas temps",
+                  condition         = "ACTION == 'DECOUPE' or ACTION == 'AUTRE_PILOTAGE'",
+                  SUBD_METHODE      = SIMP(fr                = "Méthode de subdivision des pas de temps en cas de divergence",
+                                           statut            = 'f',
+                                           typ               = 'TXM',
+                                           max               = 1,
+                                           into              = ("MANUEL","AUTO"),
+                                           defaut            = "MANUEL",
+                                           ),
+                  b_deco_manu       = bloc_manu,
+                  b_deco_auto       = bloc_auto,
+                 )
 
-DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n',
-            UIinfo={"groupes":("Fonctions",)},
-               fr="Définition de la gestion de la liste d'instants",
+
+# Bloc pour decoupe du pas de temps - special pour collision
+bloc_deco2  =BLOC(fr                = "Action de decoupe du pas temps",
+                  condition         = "ACTION == 'DECOUPE'",
+                  SUBD_METHODE      = SIMP(fr                = "Méthode de subdivision des pas de temps en cas de divergence",
+                                           statut            = 'f',
+                                           typ               = 'TXM',
+                                           max               = 1,
+                                           into              = ("MANUEL","AUTO"),
+                                           defaut            = "AUTO",
+                                           ),
+                  b_deco_manu       = bloc_manu,
+                  b_deco_auto2      = bloc_auto2,
+                 )
+   
+# Bloc pour extrapolation du nombre d'iterations de Newton
+bloc_supp   =BLOC(fr                = "Action d'extrapolation du nombre d'iterations de Newton",
+                  condition         = "ACTION == 'ITER_SUPPL'",
+                  PCENT_ITER_PLUS   = SIMP(fr                = "Pourcentage d'itérations autorisées en plus",
+                                           statut            = 'f',
+                                           typ               = 'I',
+                                           val_min           = 20,
+                                           max               = 1,
+                                           defaut            = 50,
+                                           ),
+                  SUBD_METHODE      = SIMP(fr                = "Méthode de subdivision des pas de temps en cas de divergence",
+                                           statut            = 'f',
+                                           typ               = 'TXM',
+                                           max               = 1,
+                                           into              = ("MANUEL","AUTO"),
+                                           defaut            = "MANUEL",
+                                           ),
+                  b_deco_manu       = bloc_manu,
+                  b_deco_auto       = bloc_auto,
+                 )
+   
+# Bloc pour adaptation du coefficient de penalisation
+bloc_pene   =BLOC(fr                = "Action d' adaptation du coefficient de penalisation",
+                  condition         = "ACTION == 'ADAPT_COEF_PENA'",
+                  COEF_MULT_MAXI    = SIMP(fr                = "Coefficient multiplicateur maximum du coefficient de penalisation",
+                                           statut            = 'f',
+                                           typ               = 'R',
+                                           val_min           = 1.,
+                                           max               = 1,
+                                           defaut            = 1000,
+                                           ),
+                 )
+                
+DEFI_LIST_INST = OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n',
+                      UIinfo={"groupes":("Fonctions",)},
+                      fr="Définition de la gestion de la liste d'instants",
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 # mot-cle pour la definition a priori de la liste d'instant
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-    DEFI_LIST             =FACT(statut='o',max=1,
-
-      METHODE  =SIMP(statut='o',typ='TXM',into=("MANUEL","AUTO",),defaut="MANUEL",max=1,position='global' ),
-
-         b_manuel            =BLOC(condition = "METHODE == 'MANUEL' ",fr="Liste d'instants donnée par l'utilisateur",
-           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-                                  ),
-
-         b_auto              =BLOC(condition = "(METHODE == 'AUTO') ",fr="Gestion automatique de la liste d'instants",
-           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-           PAS_MINI    =SIMP(statut='f',typ='R',val_min=1.e-12,max=1),
-           PAS_MAXI    =SIMP(statut='f',typ='R',max=1),
-           NB_PAS_MAXI =SIMP(statut='f',typ='I',val_max=1000000,max=1,defaut=1000000),
-                                  ),
-
-                      ),
+DEFI_LIST   =FACT(fr                = "Definition a priori de la liste d'instants",
+                  statut            = 'o',
+                  max               = 1,
+                  METHODE           = SIMP(fr                = "Methode de definition de la liste d'instants",
+                                           statut            = 'o',
+                                           typ               = 'TXM',
+                                           max               = 1,
+                                           position          = 'global',
+                                           into              = ("MANUEL","AUTO",),
+                                           defaut            = "MANUEL",
+                                           ),
+                  b_manuel          = BLOC(fr                = "Liste d'instants donnée par l'utilisateur",
+                                           condition         = "METHODE == 'MANUEL' ",
+                                           LIST_INST         = SIMP(statut          = 'o',
+                                                                    typ             = listr8_sdaster,
+                                                                    ),
+                                           ),
+                  b_auto            = BLOC(fr                = "Gestion automatique de la liste d'instants",
+                                           condition         = "(METHODE == 'AUTO') ",
+                                           LIST_INST         = SIMP(statut          = 'o',
+                                                                    typ             = listr8_sdaster,
+                                                                    ),
+                                           PAS_MINI          = SIMP(statut          = 'f',
+                                                                    typ             = 'R',
+                                                                    max             = 1,
+                                                                    val_min         = 1.e-12,
+                                                                    ),
+                                           PAS_MAXI          = SIMP(statut          = 'f',
+                                                                    typ             = 'R',
+                                                                    max             = 1,
+                                                                    ),
+                                           NB_PAS_MAXI       = SIMP(statut          = 'f',
+                                                                    typ             = 'I',
+                                                                    max             = 1,
+                                                                    val_max         = 1000000,
+                                                                    defaut          = 1000000,
+                                                                    ),
+                                           ),
+                 ),
 # ----------------------------------------------------------------------------------------------------------------------------------
 # mot-cle pour le comportement en cas d'echec (on doit recommencer le meme instant)
 # ----------------------------------------------------------------------------------------------------------------------------------
+  
+ECHEC       =FACT(fr                = "Comportement en cas d'echec",
+                  statut            = 'd',
+                  max               = '**',
+                  EVENEMENT         = SIMP(fr                = "Type de l'evenement",
+                                           statut            = 'f',
+                                           typ               = 'TXM',
+                                           max               = 1,
+                                           into              = ("ERREUR","DELTA_GRANDEUR","COLLISION","INTERPENETRATION"),
+                                           defaut            = "ERREUR",
+                                           ),
+                  b_erreur          = BLOC(fr                = "Event: erreur ou iter_maxi",
+                                           condition         = "EVENEMENT == 'ERREUR' ",
+                                           ACTION            = SIMP(fr              = "Actions possibles",
+                                                                    statut          = 'f',
+                                                                    max             = 1,
+                                                                    typ             = 'TXM',
+                                                                    into            = ("ARRET","DECOUPE","ITER_SUPPL",
+                                                                                       "AUTRE_PILOTAGE"),
+                                                                    defaut          = "DECOUPE",
+                                                                    ),
+                                           b_deco            = bloc_deco,
+                                           b_supp            = bloc_supp,
+                                           ),
+                  b_edelta          = BLOC(fr                = "Event: l'increment d'une composante d'un champ depasse le seuil",
+                                           condition         = "EVENEMENT == 'DELTA_GRANDEUR' ",
+                                           VALE_REF          = SIMP(fr              = "Valeur du seuil",
+                                                                    statut          = 'o',
+                                                                    typ             = 'R',
+                                                                    max             = 1,
+                                                                    ),
+                                           NOM_CHAM          = SIMP(fr              = "Nom du champ",
+                                                                    statut          = 'o',
+                                                                    typ             = 'TXM',
+                                                                    max             = 1,
+                                                                    into            = ("DEPL","VARI_ELGA","SIEF_ELGA",),
+                                                                    ),
+                                           NOM_CMP           = SIMP(fr              = "Nom de la composante",
+                                                                    statut          = 'o',
+                                                                    typ             = 'TXM',
+                                                                    max             = 1,
+                                                                    ),
+                                           ACTION            = SIMP(fr              = "Actions possibles",
+                                                                    statut          = 'f',
+                                                                    max             = 1,
+                                                                    typ             = 'TXM',
+                                                                    into            = ("ARRET","DECOUPE",),
+                                                                    defaut          = "DECOUPE",
+                                                                    ),
+                                           b_deco            = bloc_deco,
+                                           ),
+                  b_colli           = BLOC(fr                = "Event: collision",
+                                           condition         = "EVENEMENT == 'COLLISION' ",
+                                           ACTION            = SIMP(fr              = "Actions possibles",
+                                                                    statut          = 'f',
+                                                                    max             = 1,
+                                                                    typ             = 'TXM',
+                                                                    into            = ("ARRET","DECOUPE",),
+                                                                    defaut          = "DECOUPE",
+                                                                    ),
+                                           b_deco2           = bloc_deco,
+                                           ),
+                  b_penetration     = BLOC(fr                = "Event: interpenetration des surfaces en contact",
+                                           condition         = "EVENEMENT == 'INTERPENETRATION' ",
+                                           PENE_MAXI         = SIMP(fr              = "Valeur maxi de l'interpenetration",
+                                                                    statut          = 'o',
+                                                                    typ             = 'R',
+                                                                    max             = 1,
+                                                                    ),
+                                           
+                                           
+                                           ACTION            = SIMP(fr              = "Actions possibles",
+                                                                    statut          = 'f',
+                                                                    max             = 1,
+                                                                    typ             = 'TXM',
+                                                                    into            = ("ARRET","ADAPT_COEF_PENA",),
+                                                                    defaut          = "ADAPT_COEF_PENA",
+                                                                    ),
+                                           b_pene            = bloc_pene,
+                                           ),                         
 
-    ECHEC  =FACT(statut='d',max='**',
-
-        EVENEMENT     =SIMP(statut='f',typ='TXM',into=("ERREUR","DELTA_GRANDEUR","DIVE_ITER_PILO"),defaut="ERREUR",max=1 ),
-
-        b_edelta           =BLOC(condition = "EVENEMENT == 'DELTA_GRANDEUR' ",fr=" ",
-#      event-driven : on sous-decoupe si l'increment d'une composante d'un champ depasse le seuil
-            VALE_REF          =SIMP(statut='o',typ='R',max=1),
-            NOM_CHAM          =SIMP(statut='o',typ='TXM',into=("DEPL","VARI_ELGA","SIEF_ELGA",),max=1),
-            NOM_CMP           =SIMP(statut='o',typ='TXM',max=1),
-
-            SUBD_METHODE    =SIMP(statut='f',typ='TXM',into =("AUCUNE","UNIFORME"),defaut="UNIFORME",max=1,
-                            fr="Méthode de subdivision des pas de temps en cas de diconvergence pour event-driven"),
-
-            b_subd_unif = bloc_unif,
-
-        ), # fin si DELTA_GRANDEUR
-
-        b_subd_erreur  =   BLOC(condition="EVENEMENT == 'ERREUR'",
-            SUBD_METHODE    =SIMP(statut='f',typ='TXM',into =("AUCUNE","UNIFORME","EXTRAPOLE"),defaut="UNIFORME",max=1,
-                                  fr="Méthode de subdivision des pas de temps en cas de divergence pour erreur"),
-
-            b_subd_unif = bloc_unif,
-
-            b_subd_extr=BLOC(condition = "SUBD_METHODE == 'EXTRAPOLE'",
-                SUBD_OPTION    =SIMP(statut='f',typ='TXM', into =("IGNORE_PREMIERES","GARDE_DERNIERES",),
-                                     defaut="IGNORE_PREMIERES",
-                    fr="Technique d'extrapolation : les 1ere itérations sont ignorées ou les dernières sont gardées"),
-                SUBD_ITER_IGNO =SIMP(statut='f',typ='I',defaut=3,val_min=3,max=1,
-                                     fr="Les n premières itérations sont ignorées pour l'extrapolation"),
-                SUBD_ITER_FIN  =SIMP(statut='f',typ='I',defaut=8,val_min=3,max=1,
-                                     fr="Seules les n dernières itérations sont prises pour l'extrapolation"),
-                SUBD_PAS       =SIMP(statut='f',typ='I',defaut=4,val_min=2,max=1,
-                                     fr="Nombre de subdivision d'un pas de temps en cas ERREUR"),
-
-                b_subd_unif_manu  =   BLOC(condition="METHODE == 'MANUEL'",
-                    regles=(AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),
-                    SUBD_NIVEAU=SIMP(statut='f',typ='I',val_min=2,max=1,
-                                     fr="Nombre maximum de niveau de subdivision d'un pas de temps"),
-                    SUBD_PAS_MINI=SIMP(statut='f',typ='R',defaut=0.,val_min=0.0,max=1,
-                                       fr="Pas de temps en dessous duquel on ne subdivise plus"),
-                ),
-
-                b_subd_unif_auto  =   BLOC(condition="METHODE == 'AUTO'",
-                    SUBD_PAS_MINI=SIMP(statut='f',typ='R',defaut=0.,val_min=0.0,max=1,
-                                       fr="Pas de temps en dessous duquel on ne subdivise plus"),
-                ),
-
-                SUBD_ITER_PLUS =SIMP(statut='f',typ='I',defaut=50,val_min=20,max=1,
-                                     fr="% itération autorisée en plus"),
-            ), # fin si EXTRAPOLE
-        ), # fin si ERREUR
-
-   ), # fin ECHEC
+                 ),
 
 # ----------------------------------------------------------------------------------------------------------------------------------
-# mot-cle pour le comportement en cas de succes (on a bien converge)
+# Mot-cle pour le comportement en cas de succes (on a bien converge)
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-  b_adap  =   BLOC(condition="METHODE == 'AUTO'",
+b_adap  =   BLOC(condition="METHODE == 'AUTO'",
 
-    ADAPTATION  =FACT(statut='d',max='**',
+ADAPTATION  =FACT(fr                = "Parametres de l'evenement declencheur de l'adaptation du pas de temps",
+                  statut            = 'd',
+                  max               = '**',
+                  EVENEMENT         = SIMP(fr                = "Nom de l'evenement declencheur de l'adaptation",
+                                           statut            = 'f',
+                                           max               = 1,
+                                           typ               = 'TXM',
+                                           into              = ("SEUIL","TOUT_INST","AUCUN"),
+                                           defaut            = "SEUIL",
+                                           ),
+                  b_adap_seuil      = BLOC(fr                = "Seuil d'adaptation",
+                                           condition         = "EVENEMENT == 'SEUIL' ",
+                                           regles            = (PRESENT_PRESENT('NB_INCR_SEUIL','NOM_PARA',),
+                                                                PRESENT_PRESENT('NB_INCR_SEUIL','CRIT_COMP',),
+                                                                PRESENT_PRESENT('NB_INCR_SEUIL','CRIT_COMP',),),
+                                           NB_INCR_SEUIL     = SIMP(statut          = 'f',
+                                                                    typ             = 'I',
+                                                                    defaut          =  2,
+                                                                   ),
+                                           NOM_PARA          = SIMP(statut          = 'f',
+                                                                    typ             = 'TXM',
+                                                                    into            = ("NB_ITER_NEWTON",),
+                                                                    defaut          = "NB_ITER_NEWTON",
+                                                                    ),
+                                           CRIT_COMP         = SIMP(statut          = 'f',
+                                                                    typ             = 'TXM',
+                                                                    into            = ("LT","GT","LE","GE"),
+                                                                    defaut          = "LE",
+                                                                    ),
+                                           b_vale_I          = BLOC(fr              = "Valeur entiere",
+                                                                    condition       = "NOM_PARA == 'NB_ITER_NEWTON' ",
+                                                                    VALE_I          = SIMP(statut='f',typ='I',),
+                                                                    ),
+                                           ),
 
-#     1) parametres de l'evenement declencheur
-#     ----------------------------------------
 
-      EVENEMENT       =SIMP(statut='f',typ='TXM',into=("SEUIL","TOUT_INST","AUCUN"),defaut="SEUIL",max=1 ),
-
-         b_adap_seuil       =BLOC(condition = "EVENEMENT == 'SEUIL' ",fr="seuil de re-decoupe",
-
-#          FORMULE_SEUIL          =SIMP(statut='f',typ=formule),
-
-#          b_adap_seuil_nf   =   BLOC(condition="FORMULE_SEUIL == None",
-#              critere : si on fait NB_INCR_SEUIL fois de suite des increments verifiant le critere
-               regles=(PRESENT_PRESENT('NB_INCR_SEUIL','NOM_PARA',),
-                       PRESENT_PRESENT('NB_INCR_SEUIL','CRIT_COMP',),
-                       PRESENT_PRESENT('NB_INCR_SEUIL','CRIT_COMP',),),
-               NB_INCR_SEUIL     =SIMP(statut='f',typ='I',defaut=2),
-               NOM_PARA          =SIMP(statut='f',typ='TXM',into=("NB_ITER_NEWTON",),defaut="NB_ITER_NEWTON"),
-               CRIT_COMP         =SIMP(statut='f',typ='TXM',into=("LT","GT","LE","GE"),defaut="LE"),
-#                   b_vale_R           =BLOC(condition = "NOM_PARA == 'DP' ",fr="valeur reelle",
-#                VALE              =SIMP(statut='o',typ='R'),
-#                                           ),
-                  b_vale_I           =BLOC(condition = "NOM_PARA == 'NB_ITER_NEWTON' ",fr="valeur entiere",
-               VALE_I            =SIMP(statut='f',typ='I'),
-                                          ),
-#                                    ),
-                                ),
-
-#     2) parametre du mode de calcul de dt+
-#     ----------------------------------------
-
-      MODE_CALCUL_TPLUS =SIMP(statut='f',typ='TXM',into=("FIXE","DELTA_GRANDEUR","ITER_NEWTON","IMPLEX"),defaut='FIXE',
-                              max=1),
-
-         b_mfixe           =BLOC(condition = "MODE_CALCUL_TPLUS == 'FIXE' ",fr="fixe",
-#      dans le cas FIXE :(deltaT+) = (deltaT-)x(1+PCENT_AUGM/100)
-      PCENT_AUGM                 =SIMP(statut='f',typ='R',defaut=100.,val_min=-100.,max=1),
-                               ),
-         b_mdelta           =BLOC(condition = "MODE_CALCUL_TPLUS == 'DELTA_GRANDEUR' ",fr=" ",
+#
+#  Parametres du mode de calcul de dt+
+#      dans le cas FIXE            :(deltaT+) = (deltaT-)x(1+PCENT_AUGM/100)
 #      dans le cas DELTA_GRANDEUR : (deltaT+) = (deltaT-)x(VALREF/deltaVAL) : l'acceleration est inversement proportionnelle
 #                                                                             a la variation de la grandeur
-      VALE_REF          =SIMP(statut='o',typ='R',max=1),
-      NOM_CHAM          =SIMP(statut='o',typ='TXM',into=("DEPL","VARI_ELGA","SIEF_ELGA",),max=1),
-      NOM_CMP           =SIMP(statut='o',typ='TXM',max=1),
-                                  ),
-         b_mitnew           =BLOC(condition = "MODE_CALCUL_TPLUS == 'ITER_NEWTON' ",fr=" ",
-#      dans le cas ITER_NEWTON : (deltaT+) = (deltaT-) x sqrt(VALREF/N) : l'acceleration est inversement proportionnelle
-#                                                                        au nombre d'iter de Newton precedent
-      NB_ITER_NEWTON_REF          =SIMP(statut='o',typ='I',max=1),
-                                  ),
+#      dans le cas ITER_NEWTON    : (deltaT+) = (deltaT-) x sqrt(VALREF/N)  : l'acceleration est inversement proportionnelle
+#                                                                             au nombre d'iterations de Newton precedent
 
+                  MODE_CALCUL_TPLUS = SIMP(fr                = "Parametres du mode de calcul de dt+",
+                                           statut            = 'f',
+                                           max               = 1,
+                                           typ               = 'TXM',
+                                           into              = ("FIXE","DELTA_GRANDEUR","ITER_NEWTON","IMPLEX"),
+                                           defaut            = 'FIXE',
+                                           ), 
+
+                  b_mfixe           = BLOC(fr                = "Mode de calcul de dt+: fixe",
+                                           condition         = "MODE_CALCUL_TPLUS == 'FIXE' ",
+                                           PCENT_AUGM        = SIMP(statut          = 'f',
+                                                                    max             = 1,
+                                                                    typ             = 'R',
+                                                                    defaut          = 100.,
+                                                                    val_min         = -100.,
+                                                                    ),
+                                           ),
+                  b_mdelta          = BLOC(fr                = "Mode de calcul de dt+: increment d'une grandeur",
+                                           condition         = "MODE_CALCUL_TPLUS == 'DELTA_GRANDEUR' ",
+                                           VALE_REF          = SIMP(statut          = 'o',
+                                                                    max             = 1,
+                                                                    typ             = 'R',
+                                                                    ),
+                                           NOM_CHAM          = SIMP(statut          = 'o',
+                                                                    max             = 1,
+                                                                    typ             = 'TXM',
+                                                                    into            = ("DEPL","VARI_ELGA","SIEF_ELGA",),
+                                                                    ),
+                                           NOM_CMP           = SIMP(statut          = 'o',
+                                                                    max             = 1,
+                                                                    typ             = 'TXM',),
+                                           ),
+                  b_mitnew          = BLOC(fr                = "Mode de calcul de dt+: nb iterations de Newton",
+                                           condition         = "MODE_CALCUL_TPLUS == 'ITER_NEWTON' ",
+                                           NB_ITER_NEWTON_REF= SIMP(statut          = 'o',
+                                                                    max             = 1,
+                                                                    typ             = 'I',
+                                                                    ),
+                                           ),
+                  
 # les schemas pre-definis :
 #  abaqus :
 #      EVENEMENT       ='SEUIL'

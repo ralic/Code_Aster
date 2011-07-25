@@ -1,4 +1,4 @@
-#@ MODIF test_compor_ops Macro  DATE 26/04/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF test_compor_ops Macro  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -423,7 +423,10 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                          METHODE='MANUEL',
                                         # PAS_MINI=1.0E-12
                                          ),
-                             ECHEC=_F(SUBD_PAS=10),
+                             ECHEC=_F(EVENEMENT    = 'ERREUR',
+                                      ACTION       = 'DECOUPE',
+                                      SUBD_METHODE = 'MANUEL',
+                                      SUBD_PAS     = 10),
                            # ADAPTATION=_F(EVENEMENT='SEUIL'),
                             );
       _TIMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='TEMP',
@@ -515,7 +518,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                          METHODE='MANUEL',
                                         # PAS_MINI=1.0E-12
                                          ),
-                             ECHEC=_F(SUBD_PAS=10),
+                             ECHEC=_F(EVENEMENT    = 'ERREUR',
+                                      ACTION       = 'DECOUPE',
+                                      SUBD_METHODE = 'MANUEL',),
                            # ADAPTATION=_F(EVENEMENT='SEUIL'),
                             );
           if (NB_VARI > 0):
@@ -708,7 +713,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                        _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
               _DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
-                            ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
+                            ECHEC=_F(EVENEMENT    = 'ERREUR',
+                                     ACTION       = 'DECOUPE',
+                                     SUBD_METHODE = 'MANUEL',
                                      SUBD_PAS=10,
                                      SUBD_NIVEAU=10,),)
       #       Resout le pb a deformation imposee
@@ -757,7 +764,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
           if args['VERI_MATR_OPTION'] is not None :
               motscles['COMP_INCR'][0]['VALE_PERT_RELA']=args['VERI_MATR_OPTION'].List_F()[0]['VALE_PERT_RELA']
           _DEFLIS2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = _Linst,),
-                            ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
+                            ECHEC=_F(EVENEMENT    = 'ERREUR',
+                                      ACTION       = 'DECOUPE',
+                                      SUBD_METHODE = 'MANUEL',
                                      SUBD_PAS=10,
                                      SUBD_NIVEAU=10,),)
       #       Resout le pb a deformation imposee

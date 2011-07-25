@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDL_ELGA POUR ----
 # ssnp125a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -135,8 +135,11 @@ TEMPS=DEFI_LIST_REEL(   DEBUT=0.,
                     )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_PAS=10,
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 10,
+                                 SUBD_NIVEAU   = 4,
                                  SUBD_PAS_MINI = 0.000001),)
                     
 try :

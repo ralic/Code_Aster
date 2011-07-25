@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
 # wtnv132b.para = tps_job 800 mem_job 212Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -247,7 +247,9 @@ SIEF=CREA_CHAMP(INFO=1,
                         VALE=(P0,P0,P0,),),);
 
 DEFLISTT =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=5,SUBD_NIVEAU=10),)
 
 # Pas d Initialisation des contraintes

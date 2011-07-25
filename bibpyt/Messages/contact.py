@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,37 +88,33 @@ Le vecteur MAIT_VECT_Y ou ESCL_VECT_Y est nul !
 """),
 
 60 : _("""
-La maille %(k1)s est de type 'SEG' (poutres) en 3D sans donner la normale pour l'appariement.
-Vous devez utilisez l'option NORMALE:
-- FIXE: qui décrit une normale constante pour la poutre
-- ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
+La maille %(k1)s est de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas être déterminée automatiquement.
+Vous devez utilisez l'option NORMALE :
+- FIXE : qui décrit une normale constante pour la poutre
+- ou VECT_Y : qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
 """),
 
 61 : _("""
-Le noeud %(k1)s fait partie d'une maille de type 'SEG' (poutres) en 3D sans donner la normale pour l'appariement.
-Vous devez utilisez l'option NORMALE:
-- FIXE: qui décrit une normale constante pour la poutre
+Le noeud %(k1)s fait partie d'une maille de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas être déterminée automatiquement.
+Vous devez utilisez l'option NORMALE :
+- FIXE : qui décrit une normale constante pour la poutre
 - ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
 """),
 
 
 84 : _("""
-Le modèle mélangent des mailles avec des modélisations de dimensions 
-différentes (2D avec 3D ou macro-éléments).
-A ce moment du fichier de commande, on ne peut dire si ce mélange sera
-compatible avec le contact.
-
+Le modèle mélange des mailles avec des modélisations de dimensions différentes (2D avec 3D ou macro-éléments).
+À ce moment du fichier de commandes, on ne peut dire si ce mélange sera compatible avec le contact.
 """),
 
 85 : _("""
-L'alarme CONTACT_84 se transforment en erreur fatale !
-Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisations planes (D_PLAN, C_PLAN ou AXI)
+L'alarme CONTACT_84 se transforme en erreur fatale !
+Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisation plane (D_PLAN, C_PLAN ou AXI)
 avec des mailles affectées d'une modélisation 3D. 
-
 """),
 
 88 : _("""
-Ne pas utiliser REAC_INCR=0 avec le frottement.
+N'utilisez pas REAC_INCR=0 avec le frottement.
 """),
 
 93 : _("""
@@ -138,6 +134,14 @@ Contact méthode continue. La modélisation COQUE_3D n'est pas encore compatible a
 Contact méthode continue. Les options RACCORD_LINE_QUAD et FOND_FISSURE sont exclusives.
 """),
 
+96 : _("""
+Contact méthode continue. La prise en compte d'un contact entre une maille '%(k1)s' et une maille '%(k2)s' n'est pas prévu.
+
+Conseils :
+- utilisez une formulation 'DISCRETE'
+- contactez votre assistance technique
+"""),
+
 97 : _("""
 Contact méthode continue. Pour l'option SANS_GROUP_NO et SANS_GROUP_NO_FR, l'intégration aux noeuds est obligatoire.
 """),
@@ -148,9 +152,9 @@ Contact méthode continue. Pour l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL
 
 99 : _("""
 Contact méthode continue. Vos surfaces de contact esclaves comportent des QUAD8 et vous avez demandé l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL'
-L'intégration au noeuds est incompatible avec cette option.
+L'intégration aux noeuds est incompatible avec cette option.
 
-Conseils : utilisez un autre schéma d'intégration ou bien des QUAD9.
+Conseil : utilisez un autre schéma d'intégration ou bien des QUAD9.
 
 """),
 

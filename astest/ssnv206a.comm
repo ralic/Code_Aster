@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH LETK
@@ -110,7 +110,9 @@ COEF1=DEFI_FONCTION(      NOM_PARA='INST',
                        )
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_NIVEAU=5, ),)
 
 #***********************************************************************
@@ -172,8 +174,10 @@ TEMPS2=DEFI_LIST_REEL(   DEBUT=7000.,
                                                         ))
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS2),
-                        ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
-                                 SUBD_NIVEAU=10, ),)
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'AUTO',
+                                 ),)
 
 ARCHI=DEFI_LIST_REEL(   DEBUT=7000.,
                          INTERVALLE=(_F(  JUSQU_A = 8000.00,   NOMBRE = 10, ),

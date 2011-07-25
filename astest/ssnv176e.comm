@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAIS BIAXIAUX EN 3D - COMPORTEMENT ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,9 +118,10 @@ CHR_3 = AFFE_CHAR_MECA( MODELE = MO,
                       );
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_NIVEAU=10,
-                                 SUBD_PAS=4,
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_NIVEAU   = 10,
+                                 SUBD_PAS      = 4,
                                  SUBD_PAS_MINI = 1e-5),)
 
 

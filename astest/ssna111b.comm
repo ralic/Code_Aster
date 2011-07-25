@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 # ssna111b.para = tps_job 880 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,9 +105,10 @@ F=DEFI_FONCTION(NOM_PARA='INST',
                       );
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
-                        ECHEC=_F(SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1.E-6,
-                                 SUBD_COEF_PAS_1=1.0,),)
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1.E-6,),)
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,

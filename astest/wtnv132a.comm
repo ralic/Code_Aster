@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -219,7 +219,9 @@ SIEF=CREA_CHAMP(INFO=1,
 
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=2,
                                  SUBD_NIVEAU=10,),);
 

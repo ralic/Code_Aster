@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ENONCE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTION
 # forma03b.para = tps_job 110 mem_job 64Mo ncpus 1 liste_test S
@@ -96,7 +96,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                      NOMBRE=20,),),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
-                        ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
+                        ECHEC=_F(ACTION='ITER_SUPPL',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=2,
                                  SUBD_NIVEAU=20,),)
 
@@ -126,9 +127,6 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
                      ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   INST_FIN=TFIN,
-#                                  SUBD_METHODE='EXTRAPOLE',
-#                                  SUBD_PAS=2,
-#                                  SUBD_NIVEAU=20,
                                   ),
                      NEWTON=_F(REAC_ITER=1,),
                      RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
@@ -249,9 +247,11 @@ L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
                                       NOMBRE=10,),),);
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),
-                        ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
-                                 SUBD_PAS=2,
-                                 SUBD_NIVEAU=20,),)
+                        ECHEC=_F(EVENEMENT    = 'ERREUR',
+                                 ACTION       = 'DECOUPE',
+                                 SUBD_METHODE = 'MANUEL',
+                                 SUBD_PAS     = 2,
+                                 SUBD_NIVEAU  = 20,),)
 
 RESUNL2=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CM,

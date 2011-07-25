@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2011   AUTEUR LABBE M.LABBE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106j.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
@@ -369,13 +369,15 @@ inst1=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                      LIST_INST=inst2,),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=0.0001,),);
 
 DEFLIST2=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                      LIST_INST=inst2,),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=0.0001,),);
 

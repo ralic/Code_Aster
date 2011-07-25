@@ -1,8 +1,8 @@
-      SUBROUTINE UTDIDT(GETSET,SD,TYPQUE,IOCC,QUEST,VALR,VALI,VALK)
-      IMPLICIT      NONE
+      SUBROUTINE UTDIDT(GETSET,SDDISC,TYPQUE,IOCC  ,QUEST,
+     &                  VALR  ,VALI  ,VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,14 +19,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_20
 C RESPONSABLE GENIAUT S.GENIAUT
 C
+      IMPLICIT      NONE
       INTEGER       IOCC,VALI
       REAL*8        VALR
       CHARACTER*1   GETSET
       CHARACTER*4   TYPQUE
       CHARACTER*(*) QUEST,VALK
-      CHARACTER*19  SD
+      CHARACTER*19  SDDISC
 C
 C ----------------------------------------------------------------------
 C
@@ -38,17 +40,17 @@ C   CONFORMITE AVEC LA ROUTINE OP0028 (DEFI_LIST_INST)
 C
 C ----------------------------------------------------------------------
 C
-C IN     GETSET : 'L' -> LECTURE
-C                 'E' -> ECRITURE
-C IN     SD     : SDDISC LOCALE A OP00700
-C IN     TYPQUE : TYPE DE QUESTION : 'LIST, 'ECHE' OU 'ADAP'
-C IN     IOCC   : NUMERO D'OCCURENCE DE 'ECHE' OU 'ADAP'
-C IN     QUEST  : QUESTION
-C IN/OUT VALI   : VALEUR ENTIERE
-C IN/OUT VALR   : VALEUR REELE
-C IN/OUT VALK   : CHAINE DE CARACTERES
+C IN  GETSET : 'L' -> LECTURE
+C              'E' -> ECRITURE
+C IN  SDDISC : SDDISC LOCALE A OP00700
+C IN  TYPQUE : TYPE DE DEMANDE (LIST, ECHE OU ADAP)
+C IN  IOCC   : NUMERO OCCURRENCE (POUR ECHEC/ADAPT)
+C IN  QUEST  : QUESTION
+C I/O VALI   : VALEUR ENTIERE
+C I/O VALR   : VALEUR REELLE
+C I/O VALK   : VALEUR CHAINE
 C
-C ----------------------------------------------------------------------
+C 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER      ZI
@@ -68,15 +70,35 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER      LEEVR,LEEVK,LESUR,LAEVR,LATPR,LATPK
-      PARAMETER   (LEEVR=4,LEEVK=3,LESUR=8)
-      PARAMETER   (LAEVR=6,LATPR=6,LATPK=4)
-
-      INTEGER      IRET,N,JLIR,JPIL
-      INTEGER      JEEVR,JEEVK,JESUR,JAEVR,JATPR,JATPK
-      CHARACTER*8  K8BID
+      INTEGER      DFLLVD,LEEVR,LEEVK,LESUR,LAEVR,LATPR,LATPK
+      INTEGER      IECHEC,IADAPT
+      CHARACTER*24 TPSINF,TPSPIL
+      INTEGER      JLINR,JPIL
+      CHARACTER*24 TPSEVR,TPSEVK,TPSESU
+      INTEGER      JEEVR,JEEVK,JESUR
+      CHARACTER*24 TPSAVR,TPSAVK,TPSTPR,TPSTPK
+      INTEGER      JAEVR,JAEVK,JATPR,JATPK
 C
 C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      IF (GETSET.EQ.'L') THEN
+        VALK = ' '
+        VALI = 0
+        VALR = 0.D0
+      ENDIF
+C
+C --- TAILLE DES VECTEURS
+C
+      LEEVR  = DFLLVD('LEEVR')
+      LEEVK  = DFLLVD('LEEVK')
+      LESUR  = DFLLVD('LESUR')
+      LAEVR  = DFLLVD('LAEVR')
+      LATPR  = DFLLVD('LATPR')
+      LATPK  = DFLLVD('LATPK')
 C
       CALL ASSERT(TYPQUE.EQ.'LIST'.OR.
      &            TYPQUE.EQ.'ECHE'.OR.
@@ -89,63 +111,98 @@ C                     QUESTION SUR LA LISTE
 C     ------------------------------------------------------------------
 
       IF (TYPQUE.EQ.'LIST') THEN
-
-        CALL ASSERT(QUEST.EQ.'DTMIN' .OR.
-     &              QUEST.EQ.'METHODE'.OR.
-     &              QUEST.EQ.'PAS_MINI'.OR.
-     &              QUEST.EQ.'PAS_MAXI'.OR.
-     &              QUEST.EQ.'NB_PAS_MAXI'.OR.
-     &              QUEST.EQ.'NBINST'.OR.
-     &              QUEST.EQ.'DT-'.OR.
-     &              QUEST.EQ.'ALGO_DECOUPE'.OR.
-     &              QUEST.EQ.'JINST')
+        TPSINF = SDDISC(1:19)//'.LINF'
+        CALL JEVEUO(TPSINF,GETSET,JLINR )
 
         IF (QUEST.EQ.'METHODE') THEN
-          CALL JEVEUO(SD//'.LINF','L',JLIR)
-          VALI = NINT(ZR(JLIR-1+1))
-          IF (VALI.EQ.1) VALK = 'MANUEL'
-          IF (VALI.EQ.2) VALK = 'AUTO'
-          IF (VALI.EQ.3) VALK = 'CFL'
-          IF (VALI.EQ.4) VALK = 'MODAL'
-
-        ELSEIF (QUEST.EQ.'DTMIN') THEN
-          CALL JEVEUO(SD//'.LINF','L',JLIR)
-          VALR = ZR(JLIR-1+5)
-
-        ELSEIF (QUEST.EQ.'PAS_MINI') THEN
-          CALL JEVEUO(SD//'.LINF','L',JLIR)
-          VALR = ZR(JLIR-1+2)
-
-        ELSEIF (QUEST.EQ.'PAS_MAXI') THEN
-          CALL JEVEUO(SD//'.LINF','L',JLIR)
-          VALR = ZR(JLIR-1+3)
-
-        ELSEIF (QUEST.EQ.'NB_PAS_MAXI') THEN
-          CALL JEVEUO(SD//'.LINF','L',JLIR)
-          VALI = NINT(ZR(JLIR-1+4))
-
-        ELSEIF (QUEST.EQ.'DT-') THEN
-          CALL JEVEUO(SD//'.LINF',GETSET,JLIR)
-          IF (GETSET.EQ.'L') VALR = ZR(JLIR-1+6)
-          IF (GETSET.EQ.'E') ZR(JLIR-1+6) = VALR
-
-        ELSEIF (QUEST.EQ.'NBINST') THEN
-          CALL JELIRA(SD//'.DITR','LONMAX',VALI,K8BID)
-
-        ELSEIF (QUEST.EQ.'JINST') THEN
-          CALL JEVEUO(SD//'.DITR','L',VALI)
-
-        ELSEIF (QUEST.EQ.'ALGO_DECOUPE') THEN
-          CALL JEVEUO(SD//'.LINF',GETSET,JLIR)
           IF (GETSET.EQ.'L') THEN
-            IF (ZR(JLIR-1+7).EQ.0.D0) VALK = 'NON'
-            IF (ZR(JLIR-1+7).EQ.1.D0) VALK = 'OUI'
-            IF (ZR(JLIR-1+7).EQ.2.D0) VALK = 'DECOUPE'
+            VALI = NINT(ZR(JLINR-1+1))
+            IF (VALI.EQ.1) VALK = 'MANUEL'
+            IF (VALI.EQ.2) VALK = 'AUTO'
           ELSEIF (GETSET.EQ.'E') THEN
-            CALL ASSERT (VALK.EQ.'DECOUPE')
-            ZR(JLIR-1+7)=2.D0
+            IF (VALK.EQ.'MANUEL') THEN
+              ZR(JLINR-1+1) = 1
+            ELSEIF (VALK.EQ.'AUTO') THEN
+              ZR(JLINR-1+1) = 2
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+          
+        ELSEIF (QUEST.EQ.'PAS_MINI') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JLINR-1+2)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+2) = VALR
           ENDIF
 
+        ELSEIF (QUEST.EQ.'PAS_MAXI') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JLINR-1+3)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+3) = VALR
+          ENDIF
+
+        ELSEIF (QUEST.EQ.'NB_PAS_MAXI') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JLINR-1+4))
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+4) = VALI
+          ENDIF
+
+        ELSEIF (QUEST.EQ.'DTMIN') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JLINR-1+5)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+5) = VALR
+          ENDIF
+
+        ELSEIF (QUEST.EQ.'DT-') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JLINR-1+6)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+6) = VALR
+          ENDIF
+
+        ELSEIF (QUEST.EQ.'EXIS_DECOUPE') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JLINR-1+7))
+            IF (VALI.EQ.0) VALK = 'NON'
+            IF (VALI.EQ.1) VALK = 'OUI'
+          ELSEIF (GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'NON') THEN
+              ZR(JLINR-1+7) = 0
+            ELSEIF (VALK.EQ.'OUI') THEN
+              ZR(JLINR-1+7) = 1
+            ELSE
+              WRITE(6,*) 'VALK: ',VALK
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+
+        ELSEIF (QUEST.EQ.'NBINST') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JLINR-1+8))
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+8) = VALI
+          ENDIF
+          
+        ELSEIF (QUEST.EQ.'NECHEC') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JLINR-1+9))
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+9) = VALI
+          ENDIF
+
+        ELSEIF (QUEST.EQ.'NADAPT') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JLINR-1+10))
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JLINR-1+10) = VALI
+          ENDIF
+
+        ELSE
+          CALL ASSERT(.FALSE.)
 
         ENDIF
 
@@ -154,139 +211,243 @@ C                     QUESTION SUR L'ECHEC
 C     ------------------------------------------------------------------
 
       ELSEIF (TYPQUE.EQ.'ECHE') THEN
-      
-        CALL ASSERT(QUEST.EQ.'NOM_EVEN'.OR.
-     &              QUEST.EQ.'NOM_CHAM'.OR.
-     &              QUEST.EQ.'NOM_CMP'.OR.
-     &              QUEST.EQ.'VALE_REF'.OR.
-     &              QUEST.EQ.'CRIT_COMP'.OR.
-     &              QUEST.EQ.'SUBD_METH'.OR.
-     &              QUEST.EQ.'SUBD_PAS'.OR.
-     &              QUEST.EQ.'SUBD_PAS_MINI'.OR.
-     &              QUEST.EQ.'SUBD_COEF_PAS_1'.OR.
-     &              QUEST.EQ.'SUBD_NIVEAU'.OR.
-     &              QUEST.EQ.'SUBD_ITER_IGNO'.OR.
-     &              QUEST.EQ.'SUBD_ITER_FIN'.OR.
-     &              QUEST.EQ.'SUBD_ITER_PLUS'.OR.
-     &              QUEST.EQ.'CHOIX_SOLU_PILO'.OR.
-     &              QUEST.EQ.'ESSAI_ITER_PILO'.OR.          
-     &              QUEST.EQ.'VERIF_EVEN'.OR.    
-     &              QUEST.EQ.'NB_OCC')
+        TPSEVR = SDDISC(1:19)//'.EEVR'
+        TPSEVK = SDDISC(1:19)//'.EEVK'
+        TPSESU = SDDISC(1:19)//'.ESUR'
+        TPSPIL = SDDISC(1:19)//'.EPIL'
+        CALL JEVEUO(TPSEVR,GETSET,JEEVR )
+        CALL JEVEUO(TPSEVK,GETSET,JEEVK )
+        CALL JEVEUO(TPSESU,GETSET,JESUR )
+        CALL JEVEUO(TPSPIL,GETSET,JPIL  )
+        IECHEC = IOCC
         
-        IF (QUEST.EQ.'NB_OCC') THEN
-          CALL JELIRA(SD//'.EEVR','LONMAX',IRET,K8BID)
-          VALI = IRET /LEEVR
-
-        ELSEIF (QUEST.EQ.'NOM_EVEN') THEN
-          CALL JEVEUO(SD//'.EEVR','L',JEEVR)
-          N = NINT(ZR(JEEVR-1+LEEVR*(IOCC-1)+1))
-          IF (N.EQ.0) VALK = 'DIVERGENCE_ITER'
-          IF (N.EQ.1) VALK = 'DIVERGENCE_ERRE'
-          IF (N.EQ.2) VALK = 'DELTA_GRANDEUR'
-          IF (N.EQ.3) VALK = 'COLLISION'
-          IF (N.EQ.4) VALK = 'DIVE_ITER_PILO'
-
-        ELSEIF (QUEST.EQ.'VERIF_EVEN') THEN
-          CALL JEVEUO(SD//'.EEVR',GETSET,JEEVR)
+        IF (QUEST.EQ.'NOM_EVEN') THEN
           IF (GETSET.EQ.'L') THEN
-            IF (ZR(JEEVR-1+LEEVR*(IOCC-1)+4).EQ.1) THEN
-              VALK='OUI'
-            ELSEIF (ZR(JEEVR-1+LEEVR*(IOCC-1)+4).EQ.0) THEN
-              VALK='NON'
-            ENDIF
+            
+            VALI = NINT(ZR(JEEVR-1+LEEVR*(IECHEC-1)+1))
+            
+            IF (VALI.EQ.0) VALK = 'DIVE_ERRE'
+            IF (VALI.EQ.1) VALK = 'DIVE_ITER'
+            IF (VALI.EQ.2) VALK = 'DELTA_GRANDEUR'
+            IF (VALI.EQ.3) VALK = 'COMP_NCVG'
+            IF (VALI.EQ.4) VALK = 'COLLISION'
+            IF (VALI.EQ.5) VALK = 'INTERPENETRATION'
           ELSEIF (GETSET.EQ.'E') THEN
-            IF (VALK.EQ.'OUI') THEN
-              ZR(JEEVR-1+LEEVR*(IOCC-1)+4)=1
-            ELSEIF (VALK.EQ.'NON') THEN
-              ZR(JEEVR-1+LEEVR*(IOCC-1)+4)=0
+            IF (VALK.EQ.'DIVE_ITER') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 0
+            ELSEIF (VALK.EQ.'DIVE_ERRE') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 1
+            ELSEIF (VALK.EQ.'DELTA_GRANDEUR') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 2
+            ELSEIF (VALK.EQ.'COMP_NCVG') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 3
+            ELSEIF (VALK.EQ.'COLLISION') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 4
+            ELSEIF (VALK.EQ.'INTERPENETRATION') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 5            
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF
           ENDIF
 
+        ELSEIF (QUEST.EQ.'ACTION') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JEEVR-1+LEEVR*(IECHEC-1)+2))
+            IF (VALI.EQ.0) VALK = 'ARRET'
+            IF (VALI.EQ.1) VALK = 'DECOUPE'
+            IF (VALI.EQ.2) VALK = 'ITER_SUPPL'
+            IF (VALI.EQ.3) VALK = 'AUTRE_PILOTAGE'
+            IF (VALI.EQ.4) VALK = 'ADAPT_COEF_PENA'
+          ELSEIF (GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'ARRET') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 0.D0
+            ELSEIF (VALK.EQ.'DECOUPE') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 1.D0
+            ELSEIF (VALK.EQ.'EXTRAPOLE') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 2.D0
+            ELSEIF (VALK.EQ.'AUTRE_PILOTAGE') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 3.D0
+            ELSEIF (VALK.EQ.'ADAPT_COEF_PENA') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 4.D0             
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+          
+        ELSEIF (QUEST.EQ.'VERIF_EVEN') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JEEVR-1+LEEVR*(IECHEC-1)+3))
+            IF (VALI.EQ.0) VALK = 'OUI'
+            IF (VALI.EQ.1) VALK = 'NON'
+          ELSEIF (GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'OUI') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+3) = 0            
+            ELSEIF (VALK.EQ.'NON') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+3) = 1
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+C
+C ----- PARAMETRES EVENEMENT 'DELTA_GRANDEUR'
+C
         ELSEIF (QUEST.EQ.'NOM_CHAM') THEN
-          CALL JEVEUO(SD//'.EEVK','L',JEEVK)
-          VALK = ZK16(JEEVK-1+LEEVK*(IOCC-1)+2)
+          IF (GETSET.EQ.'L') THEN
+            VALK = ZK16(JEEVK-1+LEEVK*(IECHEC-1)+1)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZK16(JEEVK-1+LEEVK*(IECHEC-1)+1) = VALK
+          ENDIF  
 
         ELSEIF (QUEST.EQ.'NOM_CMP') THEN
-          CALL JEVEUO(SD//'.EEVK','L',JEEVK)
-          VALK = ZK16(JEEVK-1+LEEVK*(IOCC-1)+3)
+          IF (GETSET.EQ.'L') THEN
+            VALK = ZK16(JEEVK-1+LEEVK*(IECHEC-1)+2)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZK16(JEEVK-1+LEEVK*(IECHEC-1)+2) = VALK
+          ENDIF
+          
+        ELSEIF (QUEST.EQ.'CRIT_COMP') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALK = ZK16(JEEVK-1+LEEVK*(IECHEC-1)+3)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZK16(JEEVK-1+LEEVK*(IECHEC-1)+3) = VALK
+          ENDIF          
 
         ELSEIF (QUEST.EQ.'VALE_REF') THEN
-          CALL JEVEUO(SD//'.EEVR','L',JEEVR)
-          VALR = ZR(JEEVR-1+LEEVR*(IOCC-1)+3)
-
-        ELSEIF (QUEST.EQ.'CRIT_COMP') THEN
-          CALL JEVEUO(SD//'.EEVR','L',JEEVR)
-          VALI = NINT(ZR(JEEVR-1+LEEVR*(IOCC-1)+2))
-          IF (VALI.EQ.1) VALK = 'LT'
-          IF (VALI.EQ.2) VALK = 'GT'
-          IF (VALI.EQ.3) VALK = 'LE'
-          IF (VALI.EQ.4) VALK = 'GE'
-
-        ELSEIF (QUEST.EQ.'SUBD_METH') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
           IF (GETSET.EQ.'L') THEN
-            N = NINT(ZR(JESUR-1+LESUR*(IOCC-1)+1))
-            IF (N.EQ.0) VALK = 'AUCUNE'
-            IF (N.EQ.1) VALK = 'UNIFORME'
-            IF (N.EQ.2) VALK = 'EXTRAP_IGNO'
-            IF (N.EQ.3) VALK = 'EXTRAP_FIN'
+            VALR = ZR(JEEVR-1+LEEVR*(IECHEC-1)+5)
           ELSEIF (GETSET.EQ.'E') THEN
-            IF (VALK .EQ. 'AUCUNE')      N=0
-            IF (VALK .EQ. 'UNIFORME')    N=1
-            IF (VALK .EQ. 'EXTRAP_IGNO') N=2
-            IF (VALK .EQ. 'EXTRAP_FIN')  N=3
-            ZR(JESUR-1+LESUR*(IOCC-1)+1) = N
+            ZR(JEEVR-1+LEEVR*(IECHEC-1)+5) = VALR
+          ENDIF
+C
+C ----- PARAMETRES EVENEMENT 'INTERPENETRATION'    
+C
+        ELSEIF (QUEST.EQ.'PENE_MAXI') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JEEVR-1+LEEVR*(IECHEC-1)+6)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JEEVR-1+LEEVR*(IECHEC-1)+6) = VALR
+          ENDIF          
+C
+C ----- PARAMETRES ACTION 'DECOUPE'
+C          
+        ELSEIF (QUEST.EQ.'SUBD_METHODE') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+1))
+            IF (VALI.EQ.0) VALK = 'AUCUNE'
+            IF (VALI.EQ.1) VALK = 'MANUEL'
+            IF (VALI.EQ.2) VALK = 'AUTO'
+          ELSEIF (GETSET.EQ.'E') THEN
+            IF (VALK .EQ. 'AUCUNE')     THEN
+              ZR(JESUR-1+LESUR*(IECHEC-1)+1) = 0
+            ELSEIF (VALK .EQ. 'MANUEL') THEN
+              ZR(JESUR-1+LESUR*(IECHEC-1)+1) = 1
+            ELSEIF (VALK .EQ. 'AUTO')   THEN
+              ZR(JESUR-1+LESUR*(IECHEC-1)+1) = 2
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+          
+        ELSEIF (QUEST.EQ.'SUBD_METHODE_AUTO') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+10))
+            IF (VALI.EQ.1) VALK = 'COLLISION'
+            IF (VALI.EQ.2) VALK = 'EXTRAPOLE'
+          ELSEIF (GETSET.EQ.'E') THEN
+            IF (VALK .EQ. 'COLLISION')     THEN
+              ZR(JESUR-1+LESUR*(IECHEC-1)+10) = 1
+            ELSEIF (VALK .EQ. 'EXTRAPOLE') THEN
+              ZR(JESUR-1+LESUR*(IECHEC-1)+10) =21
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF  
+          
+        ELSEIF (QUEST.EQ.'SUBD_PAS') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+2))
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+2) = VALI
           ENDIF
 
-        ELSEIF (QUEST.EQ.'SUBD_PAS') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
-          VALI = NINT(ZR(JESUR-1+LESUR*(IOCC-1)+2))
-
         ELSEIF (QUEST.EQ.'SUBD_PAS_MINI') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
-          VALR = ZR(JESUR-1+LESUR*(IOCC-1)+3)
-
-        ELSEIF (QUEST.EQ.'SUBD_COEF_PAS_1') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
-          VALR = ZR(JESUR-1+LESUR*(IOCC-1)+4)
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+3)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+3) = VALR
+          ENDIF
 
         ELSEIF (QUEST.EQ.'SUBD_NIVEAU') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
-          VALI = NINT(ZR(JESUR-1+LESUR*(IOCC-1)+5))
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+4))
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+4) = VALI
+          ENDIF
 
-        ELSEIF (QUEST.EQ.'SUBD_ITER_IGNO') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
-          VALI = NINT(ZR(JESUR-1+LESUR*(IOCC-1)+6))
+        ELSEIF (QUEST.EQ.'PREC_COLLISION') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+5)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+5) = VALR
+          ENDIF
 
-        ELSEIF (QUEST.EQ.'SUBD_ITER_FIN') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
-          VALI = NINT(ZR(JESUR-1+LESUR*(IOCC-1)+7))
-
-        ELSEIF (QUEST.EQ.'SUBD_ITER_PLUS') THEN
-          CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
-          VALR = ZR(JESUR-1+LESUR*(IOCC-1)+8)
-          VALI = NINT(VALR)
-        
+        ELSEIF (QUEST.EQ.'DUREE_COLLISION') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+6)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+6) = VALR
+          ENDIF
+          
+        ELSEIF (QUEST.EQ.'SUBD_RATIO') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+9))
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+9) = VALI
+          ENDIF
+C
+C ----- PARAMETRES ACTION 'ITER_SUPPL'     
+C
+        ELSEIF (QUEST.EQ.'PCENT_ITER_PLUS') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+7)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+7) = VALR
+          ENDIF
+C
+C ----- PARAMETRES ACTION 'ADAPT_COEF_PENA'     
+C
+        ELSEIF (QUEST.EQ.'ADAPT_COEF_PENA') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+8)
+          ELSEIF (GETSET.EQ.'E') THEN
+            ZR(JESUR-1+LESUR*(IECHEC-1)+78) = VALR
+          ENDIF
+C
+C ----- PARAMETRES ACTION 'AUTRE_PILOTAGE'     
+C       
         ELSEIF (QUEST.EQ.'CHOIX_SOLU_PILO') THEN
-          CALL JEVEUO(SD//'.EPIL',GETSET,JPIL)
-          N = ZI(JPIL)
-          IF(GETSET.EQ.'L') THEN
-            IF(N.EQ.1) VALK = 'NATUREL'
-            IF(N.EQ.2) VALK = 'AUTRE'
+          IF (GETSET.EQ.'L') THEN
+            VALI = ZI(JPIL)
+            IF (VALI.EQ.1) VALK = 'NATUREL'
+            IF (VALI.EQ.2) VALK = 'AUTRE'
           ELSE IF(GETSET.EQ.'E') THEN
-            IF(VALK.EQ.'NATUREL') ZI(JPIL)=1
-            IF(VALK.EQ.'AUTRE') ZI(JPIL)=2                     
+            IF(VALK.EQ.'NATUREL') THEN  
+              ZI(JPIL)=1
+            ELSEIF(VALK.EQ.'AUTRE') THEN
+              ZI(JPIL)=2
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF                    
           ENDIF
           
         ELSEIF (QUEST.EQ.'ESSAI_ITER_PILO') THEN
-          CALL JEVEUO(SD//'.EPIL',GETSET,JPIL)
           IF(GETSET.EQ.'L') THEN
-            VALI = ZI(JPIL+1)
+             VALI = ZI(JPIL+1)
           ELSE IF(GETSET.EQ.'E') THEN
             ZI(JPIL+1) = VALI                     
-          ENDIF 
+          ENDIF
+        ELSE
+          CALL ASSERT(.FALSE.)  
         
         ENDIF
 
@@ -295,109 +456,172 @@ C                     QUESTION SUR L'ADAPTATION
 C     ------------------------------------------------------------------
 
       ELSEIF (TYPQUE.EQ.'ADAP') THEN
-
-        CALL ASSERT(QUEST.EQ.'NOM_EVEN'.OR.
-     &              QUEST.EQ.'NB_INCR_SEUIL'.OR.
-     &              QUEST.EQ.'NOM_PARA'.OR.
-     &              QUEST.EQ.'CRIT_COMP'.OR.
-     &              QUEST.EQ.'VALE'.OR.
-     &              QUEST.EQ.'METHODE'.OR.
-     &              QUEST.EQ.'PCENT_AUGM'.OR.
-     &              QUEST.EQ.'VALE_REF'.OR.
-     &              QUEST.EQ.'NOM_CHAM'.OR.
-     &              QUEST.EQ.'NOM_CMP'.OR.
-     &              QUEST.EQ.'NU_CMP'.OR.
-     &              QUEST.EQ.'NB_ITER_NEWTON_REF'.OR.
-     &              QUEST.EQ.'NB_EVEN_OK'.OR.
-     &              QUEST.EQ.'NB_OCC')
-
-        IF (QUEST.EQ.'NB_OCC') THEN
-          CALL JELIRA(SD//'.AEVR','LONMAX',IRET,K8BID)
-          VALI = IRET /LAEVR
-
-        ELSEIF (QUEST.EQ.'NOM_EVEN') THEN
-          CALL JEVEUO(SD//'.AEVR','L',JAEVR)
-          N = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+1))
-          IF (N.EQ.0) VALK = 'AUCUN'
-          IF (N.EQ.1) VALK = 'TOUT_INST'
-          IF (N.EQ.2) VALK = 'SEUIL_SANS_FORMULE'
-          IF (N.EQ.3) VALK = 'SEUIL_AVEC_FORMULE'
+        TPSAVR = SDDISC(1:19)//'.AEVR'
+        TPSAVK = SDDISC(1:19)//'.AEVK'
+        TPSTPR = SDDISC(1:19)//'.ATPR'
+        TPSTPK = SDDISC(1:19)//'.ATPK'
+        TPSPIL = SDDISC(1:19)//'.EPIL' 
+        CALL JEVEUO(TPSAVR,GETSET,JAEVR )
+        CALL JEVEUO(TPSAVK,GETSET,JAEVK )
+        CALL JEVEUO(TPSTPR,GETSET,JATPR )
+        CALL JEVEUO(TPSTPK,GETSET,JATPK )
+        CALL JEVEUO(TPSPIL,GETSET,JPIL  )
+        IADAPT = IOCC
+        
+        IF (QUEST.EQ.'NOM_EVEN') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JAEVR-1+LAEVR*(IADAPT-1)+1))
+            IF (VALI.EQ.0) VALK = 'AUCUN'
+            IF (VALI.EQ.1) VALK = 'TOUT_INST'
+            IF (VALI.EQ.2) VALK = 'SEUIL_SANS_FORMULE'
+            IF (VALI.EQ.3) VALK = 'SEUIL_AVEC_FORMULE'
+          ELSEIF(GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'AUCUN') THEN
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+1) = 0
+            ELSEIF (VALK.EQ.'TOUT_INST') THEN
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+1) = 1
+            ELSEIF (VALK.EQ.'SEUIL_SANS_FORMULE') THEN            
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+1) = 2
+            ELSEIF (VALK.EQ.'SEUIL_AVEC_FORMULE') THEN  
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+1) = 3
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
 
         ELSEIF (QUEST.EQ.'NB_INCR_SEUIL') THEN
-          CALL JEVEUO(SD//'.AEVR','L',JAEVR)
-          VALI = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+2))
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JAEVR-1+LAEVR*(IADAPT-1)+2))
+          ELSEIF(GETSET.EQ.'E') THEN
+            ZR(JAEVR-1+LAEVR*(IADAPT-1)+2) = 1
+          ENDIF
 
         ELSEIF (QUEST.EQ.'NOM_PARA') THEN
-          CALL JEVEUO(SD//'.AEVR','L',JAEVR)
-          VALI = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+3))
-          IF (VALI.EQ.1) VALK = 'NB_ITER_NEWT'
-          IF (VALI.EQ.2) VALK = 'DP'
+          IF (GETSET.EQ.'L') THEN 
+            VALI = NINT(ZR(JAEVR-1+LAEVR*(IADAPT-1)+3))
+            IF (VALI.EQ.1) VALK = 'NB_ITER_NEWT'
+            IF (VALI.EQ.2) VALK = 'DP'
+          ELSEIF(GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'NB_ITER_NEWT') THEN
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+3) = 1
+            ELSEIF (VALK.EQ.'SEUIL_AVEC_FORMULE') THEN  
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+3) = 2
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF            
+          ENDIF
 
         ELSEIF (QUEST.EQ.'CRIT_COMP') THEN
-          CALL JEVEUO(SD//'.AEVR','L',JAEVR)
-          VALI = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+4))
-          IF (VALI.EQ.1) VALK = 'LT'
-          IF (VALI.EQ.2) VALK = 'GT'
-          IF (VALI.EQ.3) VALK = 'LE'
-          IF (VALI.EQ.4) VALK = 'GE'
+          IF (GETSET.EQ.'L') THEN 
+            VALI = NINT(ZR(JAEVR-1+LAEVR*(IADAPT-1)+4))
+            IF (VALI.EQ.1) VALK = 'LT'
+            IF (VALI.EQ.2) VALK = 'GT'
+            IF (VALI.EQ.3) VALK = 'LE'
+            IF (VALI.EQ.4) VALK = 'GE'
+          ELSEIF(GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'LT') THEN
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+4) = 1
+            ELSEIF (VALK.EQ.'GT') THEN  
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+4) = 2
+            ELSEIF (VALK.EQ.'LE') THEN
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+4) = 3
+            ELSEIF (VALK.EQ.'GE') THEN  
+              ZR(JAEVR-1+LAEVR*(IADAPT-1)+4) = 4              
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
 
         ELSEIF (QUEST.EQ.'VALE') THEN
-          CALL JEVEUO(SD//'.AEVR',GETSET,JAEVR)
           IF (GETSET.EQ.'L') THEN
-            VALR = ZR(JAEVR-1+LAEVR*(IOCC-1)+5)
-            VALI = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+5))
+            VALR = ZR(JAEVR-1+LAEVR*(IADAPT-1)+5)
+            VALI = NINT(ZR(JAEVR-1+LAEVR*(IADAPT-1)+5))
           ELSEIF (GETSET.EQ.'E') THEN
-            ZR(JAEVR-1+LAEVR*(IOCC-1)+5) = VALR
+            ZR(JAEVR-1+LAEVR*(IADAPT-1)+5) = VALR
           ENDIF
 
         ELSEIF (QUEST.EQ.'NB_EVEN_OK') THEN
-          CALL JEVEUO(SD//'.AEVR',GETSET,JAEVR)
           IF (GETSET.EQ.'L') THEN
-            VALR = ZR(JAEVR-1+LAEVR*(IOCC-1)+6)
+            VALR = ZR(JAEVR-1+LAEVR*(IADAPT-1)+6)
             VALI = NINT(VALR)
           ELSEIF (GETSET.EQ.'E') THEN
-            ZR(JAEVR-1+LAEVR*(IOCC-1)+6) = VALI
+            ZR(JAEVR-1+LAEVR*(IADAPT-1)+6) = VALI
           ENDIF
 
         ELSEIF (QUEST.EQ.'METHODE') THEN
-          CALL JEVEUO(SD//'.ATPR','L',JATPR)
-          VALI = NINT(ZR(JATPR-1+LATPR*(IOCC-1)+1))
-          IF (VALI.EQ.1) VALK = 'FIXE'
-          IF (VALI.EQ.2) VALK = 'DELTA_GRANDEUR'
-          IF (VALI.EQ.3) VALK = 'ITER_NEWTON'
-          IF (VALI.EQ.4) VALK = 'FORMULE'
-C!!!!!!!!!!!!!!!!!!!!!!!!!!
-          IF (VALI.EQ.5) VALK = 'IMPLEX'
-C          IF (VALI.EQ.6) VALK = 'IMPLEX2'
-C!!!!!!!!!!!!!!!!!!!!!!!!!!
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JATPR-1+LATPR*(IADAPT-1)+1))
+            IF (VALI.EQ.1) VALK = 'FIXE'
+            IF (VALI.EQ.2) VALK = 'DELTA_GRANDEUR'
+            IF (VALI.EQ.3) VALK = 'ITER_NEWTON'
+            IF (VALI.EQ.4) VALK = 'FORMULE'
+            IF (VALI.EQ.5) VALK = 'IMPLEX'
+          ELSEIF(GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'FIXE') THEN
+              ZR(JATPR-1+LATPR*(IADAPT-1)+1) = 1
+            ELSEIF (VALK.EQ.'DELTA_GRANDEUR') THEN  
+              ZR(JATPR-1+LATPR*(IADAPT-1)+1) = 2
+            ELSEIF (VALK.EQ.'ITER_NEWTON') THEN  
+              ZR(JATPR-1+LATPR*(IADAPT-1)+1) = 3
+            ELSEIF (VALK.EQ.'FORMULE') THEN  
+              ZR(JATPR-1+LATPR*(IADAPT-1)+1) = 4
+            ELSEIF (VALK.EQ.'IMPLEX') THEN  
+              ZR(JATPR-1+LATPR*(IADAPT-1)+1) = 5
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+
         ELSEIF (QUEST.EQ.'PCENT_AUGM') THEN
-          CALL JEVEUO(SD//'.ATPR','L',JATPR)
-          VALR = ZR(JATPR-1+LATPR*(IOCC-1)+2)
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JATPR-1+LATPR*(IADAPT-1)+2)
+          ELSEIF(GETSET.EQ.'E') THEN
+            ZR(JATPR-1+LATPR*(IADAPT-1)+2) = VALR
+          ENDIF
 
         ELSEIF (QUEST.EQ.'VALE_REF') THEN
-          CALL JEVEUO(SD//'.ATPR','L',JATPR)
-          VALR = ZR(JATPR-1+LATPR*(IOCC-1)+3)
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JATPR-1+LATPR*(IADAPT-1)+3)
+          ELSEIF(GETSET.EQ.'E') THEN
+            ZR(JATPR-1+LATPR*(IADAPT-1)+3) = VALR
+          ENDIF
 
         ELSEIF (QUEST.EQ.'NU_CMP') THEN
-          CALL JEVEUO(SD//'.ATPR','L',JATPR)
-          VALR = ZR(JATPR-1+LATPR*(IOCC-1)+4)
-          VALI = NINT(VALR)
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JATPR-1+LATPR*(IADAPT-1)+4)
+            VALI = NINT(VALR)
+          ELSEIF(GETSET.EQ.'E') THEN
+            ZR(JATPR-1+LATPR*(IADAPT-1)+4) = VALI
+          ENDIF
 
         ELSEIF (QUEST.EQ.'NB_ITER_NEWTON_REF') THEN
-          CALL JEVEUO(SD//'.ATPR','L',JATPR)
-          VALR = ZR(JATPR-1+LATPR*(IOCC-1)+5)
-          VALI = NINT(VALR)
-
+          IF (GETSET.EQ.'L') THEN
+            VALR = ZR(JATPR-1+LATPR*(IADAPT-1)+5)
+            VALI = NINT(VALR)
+          ELSEIF(GETSET.EQ.'E') THEN
+            ZR(JATPR-1+LATPR*(IADAPT-1)+5) = VALI
+          ENDIF
+        
         ELSEIF (QUEST.EQ.'NOM_CHAM') THEN
-          CALL JEVEUO(SD//'.ATPK','L',JATPK)
-          VALK = ZK16(JATPK-1+LATPK*(IOCC-1)+2)
+          IF (GETSET.EQ.'L') THEN
+            VALK = ZK16(JATPK-1+LATPK*(IADAPT-1)+2)
+          ELSEIF(GETSET.EQ.'E') THEN
+            ZK16(JATPK-1+LATPK*(IADAPT-1)+2) = VALK
+          ENDIF            
 
         ELSEIF (QUEST.EQ.'NOM_CMP') THEN
-          CALL JEVEUO(SD//'.ATPK','L',JATPK)
-          VALK = ZK16(JATPK-1+LATPK*(IOCC-1)+3)
+          IF (GETSET.EQ.'L') THEN
+            VALK = ZK16(JATPK-1+LATPK*(IADAPT-1)+3)
+          ELSEIF(GETSET.EQ.'E') THEN
+            ZK16(JATPK-1+LATPK*(IADAPT-1)+3) = VALK
+          ENDIF 
+        
+        ELSE
+          CALL ASSERT(.FALSE.)
 
         ENDIF
 
       ENDIF
-     
+C
+      CALL JEDEMA()     
       END

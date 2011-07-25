@@ -1,5 +1,5 @@
 
-# MODIF  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE MONOCRISTAL OCTAEDRIQUE MERIC-CAILLETAUD EXPLICITE ET IMPLICITE AVEC SIMU_POINT_MAT
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv171b.para = tps_job 600 mem_job 512Mo mem_aster 10 ncpus 1 liste_test S
@@ -64,7 +64,8 @@ COMPOR1=DEFI_COMPOR( ROTA_RESEAU='POST',
 
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_NIVEAU=10),)
 MONOIMPL=SIMU_POINT_MAT(INFO=1,

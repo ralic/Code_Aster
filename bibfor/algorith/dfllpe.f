@@ -1,0 +1,71 @@
+      SUBROUTINE DFLLPE(MCFACT,IECHEC,EVEN ,PENMAX,NOCHAM,
+     &                  NOCMP ,CRICMP,VALERE)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+      CHARACTER*16 MCFACT
+      INTEGER      IECHEC
+      CHARACTER*16 EVEN
+      REAL*8       PENMAX
+      REAL*8       VALERE
+      CHARACTER*16 NOCHAM,NOCMP,CRICMP
+C
+C ----------------------------------------------------------------------
+C
+C OPERATEUR DEFI_LIST_INST
+C
+C LECTURE DES PARAMETRES DE L'EVENEMENT
+C
+C ----------------------------------------------------------------------
+C
+C IN  MCFACT : MOT-CLEF FACTEUR POUR LIRE L'ECHEC
+C IN  IECHEC : NUMERO OCCURRENCE ECHEC
+C IN  EVEN   : NOM DE L'EVENEMENT
+C OUT PENMAX : VALEUR DE PENE_MAXI
+C OUT CRICMP : VALEUR DE CRIT_COMP
+C OUT VALERE : VALEUR DE VALE_REF
+C OUT NOCHAM : VALEUR DE NOM_CHAM
+C OUT NOCMP  : VALEUR DE NOM_CMP
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER IBID 
+C
+C ----------------------------------------------------------------------
+C
+      PENMAX = 0.D0
+      VALERE = 0.D0
+      NOCHAM = ' '
+      NOCMP  = ' '
+      CRICMP = ' '
+C
+C --- EVENEMENT
+C        
+      IF (EVEN.EQ.'DELTA_GRANDEUR') THEN
+        CALL GETVR8(MCFACT,'VALE_REF',IECHEC,1,1,VALERE,IBID)
+        CALL GETVTX(MCFACT,'NOM_CHAM',IECHEC,1,1,NOCHAM,IBID)
+        CALL GETVTX(MCFACT,'NOM_CMP' ,IECHEC,1,1,NOCMP ,IBID)
+        CRICMP = 'GT'
+      ELSEIF (EVEN.EQ.'INTERPENETRATION') THEN
+        CALL GETVR8(MCFACT,'PENE_MAXI',IECHEC,1,1,PENMAX,IBID)
+      ENDIF
+C
+      END

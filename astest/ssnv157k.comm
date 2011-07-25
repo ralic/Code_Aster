@@ -1,4 +1,4 @@
-# MODIF  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D DPLAN
 # ssnv157k.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,12 +66,12 @@ FONCMULT=DEFI_FONCTION(NOM_PARA='INST',
                        VALE=(-1.,0,0,0.005),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
-                        ECHEC=(_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_NIVEAU = 10,
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'AUTRE_PILOTAGE',
                                  SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1e-6,),
-                               _F(EVENEMENT='DIVE_ITER_PILO'), 
-                               ),);
+                                 SUBD_METHODE = 'MANUEL',
+                                 SUBD_NIVEAU=10,
+                                 ),);
 
 EVOL1=STAT_NON_LINE(CHAM_MATER=CHMAT,
                     MODELE=MO,
@@ -120,14 +120,14 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
 TEST_RESU(RESU=(  _F(
                RESULTAT = EVOL1,
                REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 33,
+               NUME_ORDRE = 42,
                NOEUD = 'N2',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DY',
                VALE = 9.54359E-3), _F(
                RESULTAT = EVOL1,
                REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 33,
+               NUME_ORDRE = 42,
                MAILLE = 'M31',
                POINT = 2,
                NOM_CHAM = 'VARI_ELGA',

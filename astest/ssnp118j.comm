@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_FAT_MIX
 # ssnp118j.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,9 +131,9 @@ FCT = DEFI_FONCTION(
   )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
-                        ECHEC=_F(SUBD_METHODE = 'UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS     = 4,
-                                 SUBD_COEF_PAS_1 = 0.01,
                                  SUBD_NIVEAU  = 5,
                                 ),)
 

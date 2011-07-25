@@ -1,6 +1,7 @@
       SUBROUTINE OP0033()
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,11 +19,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
+C
       IMPLICIT NONE
-C-----------------------------------------------------------------------
-C           OPERATEUR    CALC_POINT_MAT
-C-----------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C  OPERATEUR    CALC_POINT_MAT
+C ----------------------------------------------------------------------
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER ZI
       COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
@@ -37,11 +41,13 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
       INTEGER      NDIM,IRET,N1,NBVARI,NBPAR,I,INCELA,IER
       INTEGER      IMATE,KPG,KSP,ITER,PRED,NCMP
       INTEGER      NVIMAX,NTAMAX,MATREL,IROTA,DEFIMP,LICCVG(5)
-      INTEGER      INDIMP(9),NUMINS,ACTION,ITGT,NBVITA
+      INTEGER      INDIMP(9),NUMINS,ACTITE,ACTION,ITGT,NBVITA
       PARAMETER    ( NVIMAX = 10000 )
       PARAMETER    ( NTAMAX = NVIMAX+16 )
       INTEGER      NCMPMA,DIMAKI,DIMANV,IGRAD
@@ -51,10 +57,10 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       PARAMETER (DIMANV=4)
       PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
       CHARACTER*4  FAMI,CARGAU
-      CHARACTER*8  TYPMOD(2),MATER,TABLE,FONIMP(9)
+      CHARACTER*8  TYPMOD(2),MATER,TABLE,FONIMP(9),TYPPAR(NTAMAX)
       CHARACTER*16 OPTION,COMPOR(NCMPMA),NOMPAR(NTAMAX),OPT2
       CHARACTER*19 CODI,SDDISC,K19B,SDCRIT
-      CHARACTER*19 TABINC,TABIN0
+      CHARACTER*19 TABINC,TABIN0,TABSOL
       REAL*8       INSTAM,INSTAP,ANG(7),R8B,CARCRI(9),FEM(9)
       REAL*8       DEPS(9),SIGM(6),SIGP(6),EPSP(9),EPSM(9),EPS(9)
       REAL*8       VIM(NVIMAX),VIP(NVIMAX),VR(NTAMAX),R1(12)
@@ -63,11 +69,12 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       REAL*8       WORK(10),SDEPS(6),SSIGP(6),SVIP(NVIMAX),SMATR(36)
       REAL*8       MATPER(36),VARIA(2*36),EPSILO,PGL(3,3),VIMP33(3,3)
       REAL*8       VIMP2(3,3),COEF,PARCRI(12),DIINST,JM,JP,JD
-      LOGICAL      FINPAS,DIDERN,ITEMAX,LEVDRI,CONVER
+      LOGICAL      FINPAS,DIDERN,ITEMAX,CONVER
       DATA SDDISC            /'&&OP0033.SDDISC'/
       DATA SDCRIT            /'&&OP0033.SDCRIT'/
       DATA TABIN0            /'&&OP0033.TABIN0'/
       DATA TABINC            /'&&OP0033.TABINC'/
+      DATA TABSOL            /'&&OP0033.TABSOL'/
 
 C ======================================================================
 C --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
@@ -107,10 +114,14 @@ C-------------------------------------------------------------------
 C-------------------------------------------------------------------
       
 C     INITIALISATIONS SD    
-      CALL PMINIT(IMATE,NBVARI,NDIM,TYPMOD,TABLE,NBPAR,NBVITA,NOMPAR,
-     &  ANG,PGL,IROTA,EPSM,SIGM,VIM,VIP,DEFIMP,COEF,INDIMP,FONIMP,CIMPO,
-     &  KEL,SDDISC,PARCRI,PRED,MATREL,OPTION)
+      CALL PMINIT(IMATE ,NBVARI,NDIM  ,TYPMOD,TABLE ,
+     &            NBPAR ,NBVITA,NOMPAR,TYPPAR,ANG   ,PGL   ,
+     &            IROTA ,EPSM  ,SIGM  ,VIM   ,VIP   ,
+     &            DEFIMP,COEF  ,INDIMP,FONIMP,CIMPO ,
+     &            KEL   ,SDDISC,PARCRI,PRED  ,MATREL,
+     &            OPTION)
       CALL TBCOPI('V',TABLE,TABIN0)
+   
 
 C --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
 C
@@ -122,11 +133,13 @@ C     BOUCLE SUR lES INSTANTS
 C==================================
 
  200   CONTINUE
- 
+         DO 11 I=1,5
+           LICCVG(I)=0
+ 11      CONTINUE 
 C        RECUPERATION DU NUMERO D'ORDRE ET DE L'INSTANT COURANTS
 C        DECOUPE INITIALE DU PAS DE TEMPS
 C      
-         CALL NMDCIN(SDDISC,K19B,NUMINS)
+         CALL NMDCIN(SDDISC,NUMINS)
          INSTAM = DIINST(SDDISC, NUMINS-1)
          INSTAP = DIINST(SDDISC, NUMINS  )
          
@@ -235,7 +248,7 @@ C           ITERATIONS DE NEWTON
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     
  300     CONTINUE
- 
+       
             ITER = ITER + 1
             CALL DCOPY(12,R,1,DDY,1)
             
@@ -244,6 +257,7 @@ C           RESOLUTION DE DRDY*DDY = - R(Y)  CARGAU = 'NCSP'
             CALL MGAUSS ( CARGAU,DRDY,DDY,12,12,1,R8B,IRET )
             IF(IRET.NE.0) THEN
                LICCVG(5) = 1
+               CONVER = .FALSE.
                GOTO 500
             ENDIF
             
@@ -270,6 +284,7 @@ C           CALCUL DU RESIDU
             CALL PMIMPR(1,INSTAP,INDIMP,FONIMP,VALIMP,ITER,DEPS,SIGP,
      &                  VIP,NBVARI,R,R8B,R8B)
             IF(IRET.NE.0) THEN
+               CONVER = .FALSE.
                LICCVG(2) = 1
                GOTO 500
             ENDIF
@@ -290,34 +305,35 @@ C           CALCUL EVENTUEL DE LA MATRICE TGTE PAR PERTURBATION
             ENDIF    
             
 C           VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-            CALL PMCONV(R,RINI,R1,INSTAP,SIGP,COEF,ITER,INDIMP,
-     &                  PARCRI,IRET,ITEMAX)
+            CALL PMCONV(R     ,RINI  ,R1    ,INSTAP,SIGP  ,
+     &                  COEF  ,ITER  ,INDIMP,PARCRI,CONVER,
+     &                  ITEMAX)
 
-C           ENREGISTRE LES ERREURS A CETTE ITERATION
-            CALL DIERRE(SDDISC,SDCRIT,ITER)      
-
-  540       CONTINUE
-  
-C           ON A CONVERGE ON FINIT LE PAS DE TEMPS
-            IF (IRET.EQ.0)  GOTO 550
-
-C           CA NE SE PASSE PAS BIEN... -> ON VA TENTER DE REDECOUPER
-            IF ( IRET.EQ.2) GOTO 500
-            
-C           ITERATION SUIVANTE
-            CALL ASSERT(IRET.EQ.1)
-            GOTO 300
+C           ENREGISTRE LES RESIDUS A CETTE ITERATION
+            CALL DIERRE(SDDISC,SDCRIT,ITER)
+C           VERIFICATION DES EVENT-DRIVEN
+  500       CONTINUE
+            CALL DETRSD('TABLE',TABSOL)
+            CALL TBCRSD(TABSOL,'V')
+            CALL TBAJPA(TABSOL,NBPAR,NOMPAR,TYPPAR)
+            CALL PMSTA1(SIGM,SIGP,DEPS,VIM,VIP,NBVITA,
+     &                   NBPAR,NOMPAR,TABSOL,
+     &                  VR,IGRAD)
+            CALL PMEVDR(SDDISC,TABSOL,LICCVG,ITEMAX,CONVER,
+     &                  ACTITE)
+C
+C           ON CONTINUE NEWTON
+            IF (ACTITE.EQ.2) GOTO 300
 
 C ======================================================================
 C     FIN DES ITERATIONS DE NEWTON
 C ======================================================================
 
- 500     CONTINUE
-C
 C        GESTION DE LA DECOUPE DU PAS DE TEMPS
 C        EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS 
-C        DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
-         CALL PMDECO(PARCRI,SDDISC,ITER,NUMINS,ITEMAX,LICCVG,ACTION) 
+C        DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE        
+         CALL PMACTN(SDDISC,PARCRI,ITER  ,NUMINS,ITEMAX,
+     &               LICCVG,ACTITE,ACTION)
 C
 C ---    ACTION
 C          0 ARRET DU CALCUL
@@ -327,7 +343,7 @@ C          3 ON FINIT LE PAS DE TEMPS
          IF (ACTION.EQ.1) THEN
            GOTO 600
          ELSEIF (ACTION.EQ.2) THEN
-           GOTO 540
+           GOTO 300
          ELSEIF (ACTION.EQ.3) THEN
            GOTO 550
          ELSEIF (ACTION.EQ.0) THEN
@@ -344,14 +360,8 @@ C        ---------------------------------------------------------------
          CALL TBCOPI('V',TABIN0,TABINC)
          CALL PMSTA1(SIGM,SIGP,DEPS,VIM,VIP,NBVITA,NBPAR,NOMPAR,TABINC,
      &               VR,IGRAD)
-C        TABINC DISPONIBLE POUR NMEVDR
-         CONVER = .TRUE.
-         CALL PMEVDR(SDDISC,CONVER,TABINC,LICCVG,LEVDRI)
 
          CALL DETRSD('TABLE',TABINC)
-
-C        SI EVENT-DRIVEN ON VA TENTER DE REDECOUPER
-         IF (LEVDRI) GOTO 500
 
 C        ADAPTATION DU NOUVEAU PAS DE TEMPS
 C        PAS DE GESTION DE DELTA_GRANDEUR ACTUELLEMENT
@@ -376,7 +386,6 @@ C==================================
 C     FIN BOUCLE SUR LES INSTANTS
 C==================================
 
- 900  CONTINUE  
+ 900  CONTINUE 
       CALL JEDEMA()
-
       END

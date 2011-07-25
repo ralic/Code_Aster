@@ -1,4 +1,4 @@
-# MODIF  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -629,7 +629,8 @@ RESGL = 3e-05;
 
 # ----------------------------------------------------------------------
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-6),)
 
@@ -659,7 +660,6 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                   NOM_CMP=('DX','DY','DZ',),),
                       CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
                                      ITER_GLOB_MAXI=NBGL,),
-#                      SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),
                       );
 # ----------------------------------------------------
 # Pour : BARRE, POU_D_TGM, CABLE

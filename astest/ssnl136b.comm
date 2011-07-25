@@ -1,4 +1,4 @@
-# MODIF  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl136b.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,7 +23,8 @@ DEBUT(CODE=_F( NOM = 'SSNL136B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
 
 #========================================================================
 # CE CAS-TEST PRESENTE LA PARTICULARITE DE COMPARER LA FONCTIONNALITE
-# SOLVEUR/STOP_SINGULIER='DECOUPE' DE STAT_NON_LINE EN VARIANT LE TYPE DE
+# DE DECOUPE DU PAS EN CAS DE SINGULARITE DE LA MATRICE
+# DE STAT_NON_LINE EN VARIANT LE TYPE DE
 # DETECTION DE SINGULARITE (MULT_FRONT/LDLT VERSUS MUMPS).
 #========================================================================
 
@@ -81,7 +82,8 @@ TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                                    NOMBRE=60,),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-6),)
 
@@ -100,8 +102,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
-                              METHODE='MULT_FRONT',
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
                    ),);
 
 
@@ -254,8 +255,7 @@ RESOM=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
-                              METHODE='MUMPS',
+                   SOLVEUR=_F(METHODE='MUMPS',
                    ),);
 
 

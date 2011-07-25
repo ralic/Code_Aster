@@ -4,7 +4,7 @@
       CHARACTER*19 SOLVEU
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,12 +45,12 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
       INTEGER      ISTOP,NSOLVE,IBID,NPREC,ILGRF,
-     &             JLIR,ISLVK,ISLVR,ISLVI
+     &             ISLVK,ISLVR,ISLVI
       REAL*8       EPSMAT
       CHARACTER*3  SYME,MIXPRE,KMD
       CHARACTER*8  KSTOP,MODELE
-      CHARACTER*8  METHOD,LISINS,PARTIT
-      CHARACTER*16 NOMSOL,TYPECO
+      CHARACTER*8  METHOD,PARTIT
+      CHARACTER*16 NOMSOL
       CHARACTER*19 LIGREL
       INTEGER      EXIMC,GETEXM
 C------------------------------------------------------------------
@@ -84,16 +84,10 @@ C ----- STOP SINGULIER/NPREC
       EXIMC=GETEXM(NOMSOL,'NPREC')
       IF (EXIMC .EQ. 1) THEN
         CALL GETVIS(NOMSOL,'NPREC',1,1,1,NPREC,IBID)
-        IF (KSTOP.EQ.'NON') THEN
-          ISTOP=1
-        ELSE IF (KSTOP.EQ.'DECOUPE') THEN
-          CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,IBID)
-          CALL GETTCO(LISINS,TYPECO)
-          IF (TYPECO.EQ.'LIST_INST') THEN
-            CALL JEVEUO(LISINS//'.LIST.INFOR','L',JLIR)
-            IF (ZR(JLIR-1+7).NE.0) ISTOP = 1
-          ENDIF
-          IF (ISTOP.EQ.0) CALL U2MESS('F','ALGORITH11_81')
+        IF (KSTOP.EQ.'OUI') THEN
+          ISTOP = 0
+        ELSEIF (KSTOP.EQ.'NON') THEN
+          ISTOP = 1
         ENDIF
       ENDIF
 

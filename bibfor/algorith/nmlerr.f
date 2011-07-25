@@ -1,7 +1,7 @@
-      SUBROUTINE NMLERR(SDDISC,ACTION,INFZ,ITERAT,VALR,VALI)
+      SUBROUTINE NMLERR(SDDISC,ACTION,INFZ,VALR,VALI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C
       CHARACTER*19  SDDISC
       CHARACTER*1   ACTION
       CHARACTER*(*) INFZ
-      INTEGER       ITERAT,VALI
+      INTEGER       VALI
       REAL*8        VALR(*)
 C
 C ----------------------------------------------------------------------
@@ -38,26 +38,19 @@ C
 C IN  SDDISC : SD DISCRETISATION
 C IN  ACTION : 'L' OU 'E'
 C IN  INFO   : TYPE D'INFO A STOCKER OU A LIRE
-C   0 MXITER               : MAX( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
-C   1 MNITER               : MIN( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
-C   2 NBITER               : NOMBRE MAX ITERATIONS (Y COMPRIS EXTRAPOL)
-C   3 PAS_MINI_ELAS        : PAS_MINI_ELAS
-C   4 RESI_GLOB_RELA       : RESI_GLOB_RELA DONNE
-C   5 RESI_GLOB_MAXI       : RESI_GLOB_MAXI
-C   6 TYPE_RESI            :  =1 ON A DONNE RESI_GLOB_RELA
+C   1 MXITER               : MAX( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
+C   2 MNITER               : MIN( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
+C   3 NBITER               : NOMBRE MAX ITERATIONS (Y COMPRIS EXTRAPOL)
+C   4 PAS_MINI_ELAS        : PAS_MINI_ELAS
+C   5 RESI_GLOB_RELA       : RESI_GLOB_RELA DONNE
+C   6 RESI_GLOB_MAXI       : RESI_GLOB_MAXI
+C   7 TYPE_RESI            :  =1 ON A DONNE RESI_GLOB_RELA
 C                             =2 ON A DONNE RESI_GLOB_MAXI
 C                             =3 C'EST (1) ET (2)
 C                             =0 ON A RIEN DONNE ==> =1 (DEFAUT)
-C   7 INIT_NEWTON_KRYLOV   : RESIDU INITIAL POUR NEWTON KRYLOV
-C   8 ITER_NEWTON_KRYLOV   : RESIDU COURANT POUR NEWTON KRYLOV
-C   9 ITERSUP              : =3 ON AUTORISE DES ITERATIONS EN PLUS
-C  10 VRELA                : RESI_GLOB_RELA A L'ITERATION
-C  11 VMAXI                : RESI_GLOB_MAXI A L'ITERATION
-C  12 VCHAR                : SECOND MEMBRE  A L'ITERATION
-C     VRELA_TOUS           : TOUS LES RESI_GLOB_RELA  [0,ITERAT]
-C     VMAXI_TOUS           : TOUS LES RESI_GLOB_MAXI  [0,ITERAT]
-C     VCHAR_TOUS           : TOUS LES SECONDS MEMBRES [0,ITERAT]
-C IN  ITERAT : ITERATION DE NEWTON
+C   8 INIT_NEWTON_KRYLOV   : RESIDU INITIAL POUR NEWTON KRYLOV
+C   9 ITER_NEWTON_KRYLOV   : RESIDU COURANT POUR NEWTON KRYLOV
+C  10 ITERSUP              : =3 ON AUTORISE DES ITERATIONS EN PLUS
 C
 C I/O VALR(*)   : REEL   A ECRIRE OU A LIRE
 C     VALI      : ENTIER A ECRIRE OU A LIRE
@@ -80,150 +73,85 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      CHARACTER*24 TPSERR
-      INTEGER      JERRE,DECAL,II
+C
+      CHARACTER*24 INFOCV
+      INTEGER      JIFCV
       CHARACTER*24 INFO
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C --- INITIALISATIONS
 C
-      TPSERR = SDDISC(1:19)//'.ERRE'
-      CALL JEVEUO(TPSERR,'E',JERRE)
+      INFOCV = SDDISC(1:19)//'.IFCV'
+      CALL JEVEUO(INFOCV,'E',JIFCV)
       INFO   = INFZ
 C
       CALL ASSERT( (ACTION.EQ.'E').OR.(ACTION.EQ.'L') )
 C
       IF (INFO.EQ.'MXITER') THEN
-         DECAL = 0
-         IF (ACTION.EQ.'L') THEN
-            VALI  = NINT(ZR(JERRE+DECAL))
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALI
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALI  = NINT(ZR(JIFCV+1-1))
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+1-1) = VALI
+        ENDIF
       ELSEIF (INFO.EQ.'MNITER') THEN
-         DECAL = 1
-         IF (ACTION.EQ.'L') THEN
-            VALI  = NINT(ZR(JERRE+DECAL))
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALI
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALI  = NINT(ZR(JIFCV+2-1))
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+2-1) = VALI
+        ENDIF
       ELSEIF (INFO.EQ.'NBITER') THEN
-         DECAL = 2
-         IF (ACTION.EQ.'L') THEN
-            VALI  = NINT(ZR(JERRE+DECAL))
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALI
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALI  = NINT(ZR(JIFCV+3-1))
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+3-1) = VALI
+        ENDIF
       ELSEIF (INFO.EQ.'PAS_MINI_ELAS') THEN
-         DECAL = 3
-         IF (ACTION.EQ.'L') THEN
-            VALR(1)  = ZR(JERRE+DECAL)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALR(1)
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALR(1)  = ZR(JIFCV+4-1)
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+4-1) = VALR(1)
+        ENDIF
       ELSEIF (INFO.EQ.'RESI_GLOB_RELA') THEN
-         DECAL = 4
-         IF (ACTION.EQ.'L') THEN
-            VALR(1)  = ZR(JERRE+DECAL)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALR(1)
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALR(1)  = ZR(JIFCV+5-1)
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+5-1) = VALR(1)
+        ENDIF
       ELSEIF (INFO.EQ.'RESI_GLOB_MAXI') THEN
-         DECAL = 5
-         IF (ACTION.EQ.'L') THEN
-            VALR(1)  = ZR(JERRE+DECAL)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALR(1)
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALR(1)  = ZR(JIFCV+6-1)
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+6-1) = VALR(1)
+        ENDIF
       ELSEIF (INFO.EQ.'TYPE_RESI') THEN
-         DECAL = 6
-         IF (ACTION.EQ.'L') THEN
-            VALI  = NINT(ZR(JERRE+DECAL))
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALI
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALI  = NINT(ZR(JIFCV+7-1))
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+7-1) = VALI
+        ENDIF
       ELSEIF (INFO.EQ.'INIT_NEWTON_KRYLOV') THEN
-         DECAL = 7
-         IF (ACTION.EQ.'L') THEN
-            VALR(1)  = ZR(JERRE+DECAL)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALR(1)
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALR(1)  = ZR(JIFCV+8-1)
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+8-1) = VALR(1)
+        ENDIF
       ELSEIF (INFO.EQ.'ITER_NEWTON_KRYLOV') THEN
-         DECAL = 8
-         IF (ACTION.EQ.'L') THEN
-            VALR(1)  = ZR(JERRE+DECAL)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALR(1)
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALR(1)  = ZR(JIFCV+9-1)
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+9-1) = VALR(1)
+        ENDIF
       ELSEIF (INFO.EQ.'ITERSUP') THEN
-         DECAL = 9
-         IF (ACTION.EQ.'L') THEN
-            VALI  = NINT(ZR(JERRE+DECAL))
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL) = VALI
-         ENDIF
-
-C !!! A PARTIR D'ICI LE DECALAGE EST FAIT AVEC ITERAT
-C     IL NE FAUT DONC PLUS RIEN STOCKER AVEC UN ADRESSAGE STATIQUE
-      ELSEIF (INFO.EQ.'VRELA') THEN
-         DECAL = 10
-         IF (ACTION.EQ.'L') THEN
-            VALR(1) = ZR(JERRE+DECAL+2*ITERAT)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL+2*ITERAT) = VALR(1)
-         ENDIF
-      ELSEIF (INFO.EQ.'VMAXI') THEN
-         DECAL = 11
-         IF (ACTION.EQ.'L') THEN
-            VALR(1) = ZR(JERRE+DECAL+2*ITERAT)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL+2*ITERAT) = VALR(1)
-         ENDIF
-      ELSEIF (INFO.EQ.'VCHAR') THEN
-         DECAL = 12
-         IF (ACTION.EQ.'L') THEN
-            VALR(1) = ZR(JERRE+DECAL+2*ITERAT)
-         ELSEIF (ACTION.EQ.'E') THEN
-            ZR(JERRE+DECAL+2*ITERAT) = VALR(1)
-         ELSE
-           CALL ASSERT(.FALSE.)
-         ENDIF  
-C --- RETOURNE LE VECTEUR DE TOUTES LES ERREURS [0,ITERAT]
-C     !!! A LA VALEUR DE DECAL !!!
-C     POUR VRELA_TOUS C'EST LA MEME QUE VRELA
-C          VMAXI_TOUS C'EST LA MEME QUE VMAXI
-      ELSEIF (INFO.EQ.'VRELA_TOUS') THEN
-         DECAL = 10
-         IF (ACTION.EQ.'L') THEN
-            DO 30 II = 0, ITERAT
-               VALR(II+1) = ZR(JERRE+DECAL+2*II)
-30          CONTINUE
-         ELSE
-            CALL ASSERT(.FALSE.)
-         ENDIF
-      ELSEIF (INFO.EQ.'VMAXI_TOUS') THEN
-         DECAL = 11
-         IF (ACTION.EQ.'L') THEN
-            DO 40 II = 0, ITERAT
-               VALR(II+1) = ZR(JERRE+DECAL+2*II)
-40          CONTINUE
-         ELSE
-            CALL ASSERT(.FALSE.)
-         ENDIF
-      ELSEIF (INFO.EQ.'VCHAR_TOUS') THEN
-         DECAL = 12
-         IF (ACTION.EQ.'L') THEN
-            DO 50 II = 0, ITERAT
-               VALR(II+1) = ZR(JERRE+DECAL+2*II)
-50          CONTINUE
-         ELSE
-            CALL ASSERT(.FALSE.)
-         ENDIF
+        IF (ACTION.EQ.'L') THEN
+          VALI  = NINT(ZR(JIFCV+10-1))
+        ELSEIF (ACTION.EQ.'E') THEN
+          ZR(JIFCV+10-1) = VALI
+        ENDIF
       ELSE
-         CALL ASSERT(.FALSE.)
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL JEDEMA()

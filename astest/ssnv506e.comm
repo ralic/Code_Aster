@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 # ssnv506e.para = tps_job 220 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,7 +108,8 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=34,),),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=9.9999999999999995E-07,),)
 

@@ -3,7 +3,7 @@
      &                  LAXIS ,LELTF )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,14 +28,14 @@ C
       CHARACTER*8  TYPMAE, TYPMAM
       CHARACTER*16 NOMTE
       LOGICAL      LAXIS,LELTF
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
 C RETOURNE DES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
 C DEUX ELEMENTS DE SURFACE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -67,10 +67,10 @@ C
 C
 C --- ELEMENT AVEC DDL DE FROTTEMENT ?
 C
-      LELTF    = LTEATT(' ','FROTTEMENT','OUI')       
+      LELTF    = LTEATT(' ','FROTTEMENT','OUI')
 C
 C --- NOMBRE DE COMPOSANTES LAGRANGIENS (NON DEPLACEMENT)
-C     
+C
       IF (LELTF) THEN
 C ----- COMPOSANTES 2D : LAGS_C   LAGS_F1
 C ----- COMPOSANTES 3D : LAGS_C   LAGS_F1  LAGS_F2
@@ -305,10 +305,80 @@ C --- 'QU9'
         TYPMAM = 'QU9'
         NNM  = 9
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS2T3' .OR. NOMTE.EQ.'COS2T3') THEN
+        NDIM = 3
+        TYPMAE  = 'SE2'
+        NNE  = 2
+        TYPMAM = 'TR3'
+        NNM  = 3
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS2T6' .OR. NOMTE.EQ.'COS2T6') THEN
+        NDIM = 3
+        TYPMAE  = 'SE2'
+        NNE  = 2
+        TYPMAM = 'TR6'
+        NNM  = 6
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS2Q4' .OR. NOMTE.EQ.'COS2Q4') THEN
+        NDIM = 3
+        TYPMAE  = 'SE2'
+        NNE  = 2
+        TYPMAM = 'QU4'
+        NNM  = 4
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS2Q8' .OR. NOMTE.EQ.'COS2Q8') THEN
+        NDIM = 3
+        TYPMAE  = 'SE2'
+        NNE  = 2
+        TYPMAM = 'QU8'
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS2Q9' .OR. NOMTE.EQ.'COS2Q9') THEN
+        NDIM = 3
+        TYPMAE  = 'SE2'
+        NNE  = 2
+        TYPMAM = 'QU9'
+        NNM  = 9
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS3T3' .OR. NOMTE.EQ.'COS3T3') THEN
+        NDIM = 3
+        TYPMAE  = 'SE3'
+        NNE  = 3
+        TYPMAM = 'TR3'
+        NNM  = 3
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS3T6' .OR. NOMTE.EQ.'COS3T6') THEN
+        NDIM = 3
+        TYPMAE  = 'SE3'
+        NNE  = 3
+        TYPMAM = 'TR6'
+        NNM  = 6
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS3Q4' .OR. NOMTE.EQ.'COS3Q4') THEN
+        NDIM = 3
+        TYPMAE  = 'SE3'
+        NNE  = 3
+        TYPMAM = 'QU4'
+        NNM  = 4
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS3Q8' .OR. NOMTE.EQ.'COS3Q8') THEN
+        NDIM = 3
+        TYPMAE  = 'SE3'
+        NNE  = 3
+        TYPMAM = 'QU8'
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFS3Q9' .OR. NOMTE.EQ.'COS3Q9') THEN
+        NDIM = 3
+        TYPMAE  = 'SE3'
+        NNE  = 3
+        TYPMAM = 'QU9'
+        NNM  = 9
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
-C      
+C
 C --- NOMBRE DE NOEUDS PORTANT DES LAGRANGES
 C
       NNL    = NNE
@@ -323,9 +393,9 @@ C
 C
 C --- NOMBRE DE COMPOSANTES TOTAL DEPL + LAGR_C + LAGR_F
 C
-      NBDM   = NDIM + NBCPS  
-C      
+      NBDM   = NDIM + NBCPS
+C
       CALL ASSERT(NDDL.LE.81)
-      CALL ASSERT((NDIM.EQ.2).OR.(NDIM.EQ.3))           
+      CALL ASSERT((NDIM.EQ.2).OR.(NDIM.EQ.3))
 C
       END

@@ -5,9 +5,9 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 11/07/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -109,7 +109,7 @@ C
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,CHBID,IERD)
 
       CALL JEVEUO(CHFOND,'L',IFON)
-      CALL JEVEUO(BASFON,'E',JBAS)
+      CALL JEVEUO(BASFON,'L',JBAS)
 
 C          -----------------------
       CALL GETVR8 ('THETA','DTAN_ORIG',1,1,0,ZRBID,NORIG)
@@ -295,7 +295,8 @@ C               DISTANCE MN
                     ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
                     ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
                   ENDIF
-C CORRECTION DE LA DIRECTION A L ORIGINE
+
+C                 CORRECTION DE LA DIRECTION A L ORIGINE
                   IF ((JMIN .EQ. 1) .AND. (NORIG.NE.0) ) THEN
                     GRTX0=ZR(JORIG+1-1)* ZR(IMODU)
                     GRTY0=ZR(JORIG+2-1)* ZR(IMODU)
@@ -318,7 +319,8 @@ C CORRECTION DE LA DIRECTION A L ORIGINE
                       ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
                     ENDIF
                   ENDIF
-C CORRECTION DE LA DIRECTION A L ETREMITE
+
+C                 CORRECTION DE LA DIRECTION A L ETREMITE
                   IF ((JMIN .EQ. (LNOFF-1)) .AND. (NEXTR.NE.0) ) THEN
                     GRTX0=ZR(JBAS+(LNOFF-1-1)*6+4-1)* ZR(IMODU)
                     GRTY0=ZR(JBAS+(LNOFF-1-1)*6+5-1)* ZR(IMODU)
@@ -341,6 +343,7 @@ C CORRECTION DE LA DIRECTION A L ETREMITE
                       ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
                     ENDIF
                   ENDIF
+                  
                 ENDIF
               ENDIF
  500      CONTINUE

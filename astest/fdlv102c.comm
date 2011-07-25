@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 11/07/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE CALCUL DE MASSE AJOUTEE SUR BASE MODALE CALCULEE PAR SSD
 # fdlv102c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,16 +103,16 @@ STRUCT=AFFE_MODELE(  MAILLAGE=MASTRUC,AFFE=(
 PARAM=AFFE_CARA_ELEM( MODELE=STRUCT,DISCRET_2D=(
                           _F( GROUP_MA = 'LIG9', CARA = 'K_T_D_L',
                                         VALE = (1.E7, 1., )),
-                          _F( GROUP_MA = 'LIG9', CARA = 'M_T_L',
-                                        VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
+                          _F( GROUP_MA = 'LIG9', CARA = 'M_T_D_L',
+                                        VALE = (0.,)),
                           _F( GROUP_MA = 'LIG10', CARA = 'K_T_D_L',
                                         VALE = (1.E7, 1., )),
-                          _F( GROUP_MA = 'LIG10', CARA = 'M_T_L',
-                                        VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
+                          _F( GROUP_MA = 'LIG10', CARA = 'M_T_D_L',
+                                        VALE = (0.,)),
                           _F( GROUP_MA = 'LIG11', CARA = 'K_T_D_L',
                                         VALE = (1., 1.E8, )),
-                          _F( GROUP_MA = 'LIG11', CARA = 'M_T_L',
-                                        VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
+                          _F( GROUP_MA = 'LIG11', CARA = 'M_T_D_L',
+                                        VALE = (0.,)),
                           _F( GROUP_MA = 'LIG12', CARA = 'K_T_D_L',
                                         VALE = (1., 1.E8, )),
                           _F( GROUP_MA = 'LIG12', CARA = 'M_T_L',

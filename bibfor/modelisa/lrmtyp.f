@@ -2,7 +2,7 @@
      &                    MODNUM, NUANOM, NUMNOA )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ---------------------------------------------------------------------
       IMPLICIT NONE
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 56)
+      PARAMETER (NTYMAX = 66)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
 C
@@ -98,7 +98,10 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      &              'QU8QU9  ','QU9QU8  ','QU9QU4  ','QU4QU9  ',
      &              'QU9TR3  ','TR3QU9  ','SEG32   ','SEG23   ',
      &              'QU4QU4  ','TR3TR3  ','HE8HE8  ','PE6PE6  ',
-     &              'TE4TE4  ','QU8QU8  ','TR6TR6  '/
+     &              'TE4TE4  ','QU8QU8  ','TR6TR6  ','SE2TR3  ',
+     &              'SE2TR6  ','SE2QU4  ','SE2QU8  ','SE2QU9  ',
+     &              'SE3TR3  ','SE3TR6  ','SE3QU4  ','SE3QU8  ',
+     &              'SE3QU9  '/
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
      &                         203,       0,         206,
@@ -113,7 +116,10 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
-     &              0,         0,         0/
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0/
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
 C

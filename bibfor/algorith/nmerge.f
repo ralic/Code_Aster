@@ -1,7 +1,7 @@
       SUBROUTINE NMERGE(QUESTI,TYPERR,SDERRO,VALUEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/05/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -138,14 +138,16 @@ C
         ELSEIF (ZL(JECOD+4-1)) THEN
           CALL NMIMPR('IMPR','ERREUR','CONT_ERR ',0.D0,1)
         ELSEIF (ZL(JECOD+5-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','CONT_SING',0.D0,0)  
+          CALL NMIMPR('IMPR','ERREUR','CONT_SING',0.D0,0)
+        ELSEIF (ZL(JECOD+8-1)) THEN
+          CALL NMIMPR('IMPR','ERREUR','ITER_MAXI',0.D0,1)          
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
       ELSEIF (QUESTI.EQ.'INI') THEN
-          DO 15 I=1,9
-            ZL(JECOD+I-1) = .FALSE.
- 15       CONTINUE               
+        DO 15 I=1,9
+          ZL(JECOD+I-1) = .FALSE.
+ 15     CONTINUE               
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

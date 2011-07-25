@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THHD, 2D ,
 # wtnp112e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -216,9 +216,11 @@ CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
                                    PRE2=0.,),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LI),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_PAS=4,
-                                 SUBD_PAS_MINI=10.,),)
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 4,
+                                 SUBD_PAS_MINI = 10.,),)
 
 RESU0=STAT_NON_LINE(
                 MODELE=MODELE,

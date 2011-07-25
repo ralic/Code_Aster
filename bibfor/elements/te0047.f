@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 12/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C ----------------------------------------------------------------------
       REAL*8      UGM(12),UGP(12),DUG(12),COORG(12)
       REAL*8      ULM(12),ULP(12),DUL(12),DVL(12),DPE(12),DVE(12)
       REAL*8      VARMO(8),VARPL(8),VARIPC(7)
-      REAL*8      DTEMPS,TEMPER,IRRAP,R8BID
+      REAL*8      DTEMPS,TEMPER,R8BID
       REAL*8      DDOT,DULY,FORCE(3),PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
       REAL*8      ZERO,MOINS1
 
@@ -762,10 +762,6 @@ C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PINSTPR','L',JTP)
 C
-C        ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
-         CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
-         IF (IRET2.GT.0) IRRAP=0.D0
-C
          IF ( OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &        OPTION(1:9).EQ.'FULL_MECA' ) THEN
             CALL JEVECH('PVECTUR','E',IFONO)
@@ -774,8 +770,7 @@ C
          END IF
          CALL DICRGR(FAMI,OPTION,NEQ,NC,ZI(IMATE),
      &              ULM,DUL,ZR(ICONTM),ZR(IVARIM),
-     &              PGL,KLV,ZR(IVARIP),ZR(IFONO),ZR(ICONTP),
-     &              IRRAP)
+     &              PGL,KLV,ZR(IVARIP),ZR(IFONO),ZR(ICONTP))
 
          IF ( OPTION.EQ.'FULL_MECA' .OR.
      &        OPTION.EQ.'RIGI_MECA_TANG' ) THEN

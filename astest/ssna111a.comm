@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,9 +91,10 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=50,),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
-                        ECHEC=_F(SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1.E-4,
-                                 SUBD_COEF_PAS_1=1.0,),)
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1.E-4,),)
 
 F=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,  0.0,

@@ -1,7 +1,7 @@
       SUBROUTINE DIEVEN(SDDISC,IEVENT,LACTI )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,9 +45,6 @@ C
       CHARACTER*16 ACTIVE
 C
 C ----------------------------------------------------------------------
-C           
-C
-C --- LECTURE DE L'EVENEMENT
 C
       IF (IEVENT.NE.0) THEN
         CALL UTDIDT('L'   ,SDDISC,'ECHE',IEVENT,'VERIF_EVEN',

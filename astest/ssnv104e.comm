@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -163,7 +163,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                        NOM_CMP='SIYY',
                        VALE=-2971.3699999999999,
                        CRITERE='RELATIF',
-                       PRECISION=0.02,),
+                       PRECISION=0.01,),
           RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
@@ -179,7 +179,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                    NOEUD='N287',
                    VALE=-0.110211,
                    CRITERE='RELATIF',
-                   PRECISION=0.040000000000000001,),
+                   PRECISION=0.03,),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
@@ -187,7 +187,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                    NOEUD='N287',
                    VALE=-0.162911,
                    CRITERE='RELATIF',
-                   PRECISION=0.02,),
+                   PRECISION=0.01,),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
@@ -195,7 +195,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                    NOEUD='N285',
                    VALE=-0.16594600000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.059999999999999998,),
+                   PRECISION=0.04,),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
@@ -203,7 +203,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                    NOEUD='N285',
                    VALE=-0.62966599999999995,
                    CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3)));
+                   PRECISION=5.E-3)));
 
 # Impression au format GMSH
 # IMPR_RESU(FORMAT='GMSH',

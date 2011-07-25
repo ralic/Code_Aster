@@ -3,7 +3,7 @@
      &                  SDOBSE,LEVOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C
       CHARACTER*19  SDDISC
       LOGICAL       LEVOL,LOSTAT,LNONL,LREUSE
       CHARACTER*19  SDOBSE
-      CHARACTER*24  RESULZ,MODELE
+      CHARACTER*24  RESULZ,MODELE      
       CHARACTER*24  SDIETO,SDSENS
 C
 C ----------------------------------------------------------------------
@@ -38,7 +38,6 @@ C
 C CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
 C
 C ----------------------------------------------------------------------
-C
 C
 C IN  RESULT : NOM UTILISATEUR DU RESULTAT
 C IN  MAILLA : NOM DU MAILLAGE

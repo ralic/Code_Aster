@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 31/05/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF mecanonline6 Messages  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,9 +39,9 @@ cata_msg = {
  avec le schéma IMPLEX (DEFI_LIST_INST/MODE_CALCUL_TPLUS='IMPLEX') nécessite 
  de traiter la résolution par la méthode IMPLEX (STAT/DYNA_NON_LINE/METHODE='IMPL_EX').
  Conseil :
- - Choisissez STAT/DYNA_NON_LINE/METHODE='IMPL_EX'
- - ou bien choisissez un autre schéma d'adaptation du pas de temps (DEFI_LIST_INST/MODE_CALCUL_TPLUS).
-"""),
+   - Choisissez STAT/DYNA_NON_LINE/METHODE='IMPL_EX'
+   - ou bien choisissez un autre schéma d'adaptation du pas de temps (DEFI_LIST_INST/MODE_CALCUL_TPLUS).
+ """),
 
 10 : _("""
   Le mode vibratoire de numéro d'ordre %(i1)d a pour fréquence %(r1)19.12e
@@ -123,10 +123,6 @@ cata_msg = {
     * Temps total pour le contact (résolution)    : %(k2)s
 """),
 
-24 : _("""
-  Subdivision du pas de temps en %(i1)d sous-pas
-"""),
-
 25 : _("""
   Critère(s) de convergence atteint(s)
 """),
@@ -168,7 +164,7 @@ cata_msg = {
 """),
 
 35 : _("""
- Vérifiez votre modèle ou essayez de subdiviser le pas de temps
+ Vérifiez votre modèle ou essayez d'activer la gestion des événements (découpe du pas de temps par exemple) dans la commande DEFI_LIST_INST.
 """),
 
 36 : _("""

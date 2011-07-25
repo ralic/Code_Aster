@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
 # ssnv138b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,7 +114,8 @@ D_FONC=DEFI_FONCTION(
 #
 #
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=1e-08,),)
 

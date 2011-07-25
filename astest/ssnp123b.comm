@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 # ssnp123b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,7 +60,8 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0,),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION       = 'DECOUPE',
+                                 SUBD_METHODE = 'MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 0.001),)
 

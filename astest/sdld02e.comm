@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 11/07/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 # sdld02e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,9 +109,9 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                                       GROUP_MA='GM4',
                                       VALE=(1.E5,0.,),),
                                    _F(REPERE='LOCAL',
-                                      CARA='M_T_L',
+                                      CARA='M_T_D_L',
                                       GROUP_MA='GM4',
-                                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+                                      VALE=(0.,),),
                                    _F(REPERE='LOCAL',
                                       CARA='K_T_D_N',
                                       NOEUD=('P1','P8',),

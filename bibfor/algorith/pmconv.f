@@ -1,9 +1,9 @@
       SUBROUTINE PMCONV(R,RINI,R1,INST,SIGP,COEF,ITER,INDIMP,
-     &                  PARCRI,IRET,ITEMAX)
+     &                  PARCRI,CONVER,ITEMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -30,20 +30,18 @@ C IN   SIGP   : CONTRAINTES ACTUELLES (POUR CONSTRUIRE LE DENOMINATEUR)
 C IN   COEF   : COEF POUR ADIMENSIONNALISER LE PB
 C IN   ITER   : NUMERO D'ITERATION
 C IN   PARCRI : PARAMETRES DE CONVERGENCE GLOBAUX
-C OUT  IRET   : CODE RETOUR = 0 SI CONVERGENCE 
-C OUT  IRET   : CODE RETOUR = 1 SI NON CONVERGENCE ITERATION SUIVANTE
-C OUT  IRET   : CODE RETOUR = 2 SI NOMBRE D'ITERATIONS MAXI ATTEINT
-C OUT  ITEMAX : NOMBRE D'ITERATIONS MAXI ATTEINT
+C OUT  ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE
+C OUT  CONVER : .TRUE. SI CONVERGENCE REALISEE
 
 C-----------------------------------------------------------------------
       IMPLICIT NONE
       INTEGER      NIV,IFM,IND,INDIMP(6)
-      INTEGER      IRET,I
+      INTEGER      I
       INTEGER      ITMAX,ITER,IRELA
       REAL*8       R8PREM,INST,PARCRI(12)
       REAL*8       R(12),RINI(12),R1(12),SIGP(6),COEF,R8B(12)
       REAL*8       EE,E1,E2,TOLER,E1INI,E2INI,ER1,EINI,R8VIDE
-      LOGICAL      ITEMAX
+      LOGICAL      ITEMAX,CONVER
       CHARACTER*8  FONIMP(6)
 C-----------------------------------------------------------------------
 
@@ -53,7 +51,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 C-----------------------------------------------------------------------
-      IRET=0            
+      CONVER=.FALSE.            
       E1=0.D0
       E2=0.D0
       E1INI=0.D0
@@ -71,7 +69,7 @@ C        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
          IF (ER1.LE.R8PREM()) THEN
             EE=ER1
             IND=4
-            IRET=0
+            CONVER=.TRUE.
             GOTO 9999
          ENDIF         
       ENDIF
@@ -113,15 +111,18 @@ C     TEST RELATIF OU ABSOLU
       IF ( ITER .LT. ITMAX ) THEN
 C -      NON CONVERGENCE ITERATION SUIVANTE
          IF ( EE .GT. TOLER ) THEN
-            IRET=1
+           CONVER = .FALSE.
+         ELSE
+           CONVER = .TRUE.  
          ENDIF
       ELSE
 C -      NB ITERATION MAXIMUM ATTEINT SANS CONVERGENCE
-         IRET=2
+         CONVER=.FALSE.
          ITEMAX=.TRUE.
          CALL U2MESS('I','COMPOR2_5')
       ENDIF
  9999 CONTINUE
+C
       IF (NIV.EQ.2) THEN
          CALL PMIMPR(IND,INST,INDIMP,FONIMP,R8B,ITER,
      &               R8B,R8B,R8B,1,R8B,EE,EINI)

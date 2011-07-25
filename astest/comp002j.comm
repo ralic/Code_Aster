@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST MONOCRISTAL  3D UTILISANT SIMU_POINT_MAT
 # comp002j.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,7 +184,8 @@ for i in range(Ncal):
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
         DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
-                                ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                ECHEC=_F(ACTION='DECOUPE',
+                                         SUBD_METHODE='MANUEL',
                                          SUBD_PAS=10,
                                          SUBD_NIVEAU=2,),)
 
@@ -262,7 +263,8 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = Linst,),
-                                ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                ECHEC=_F(ACTION='DECOUPE',
+                                         SUBD_METHODE='MANUEL',
                                          SUBD_PAS=10,
                                          SUBD_NIVEAU=2,),)
 

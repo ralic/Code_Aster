@@ -1,7 +1,7 @@
-%& MODIF COMPELEM  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ MAILLE__ SEG2       2       DIM__  1   CODE__  'SE2'
 
 MAILLE__ SEG22      4       DIM__  1   CODE__  'S22'
    ELREFE__ V_SEG22
-         FAMILLE__ FPG1        4
+         FAMILLE__ FPG1        1
 
 MAILLE__ SEG3       3       DIM__  1   CODE__  'SE3'
    ELREFE__ SE3
@@ -87,7 +87,7 @@ MAILLE__ SEG3       3       DIM__  1   CODE__  'SE3'
 
 MAILLE__ SEG33      6       DIM__  1   CODE__  'S33'
    ELREFE__ V_SEG33
-         FAMILLE__ FPG1        6
+         FAMILLE__ FPG1        1
 
 MAILLE__ SEG4       4       DIM__  1   CODE__  'SE4'
    ELREFE__ SE4
@@ -117,7 +117,7 @@ MAILLE__ TRIA3      3       DIM__  2   CODE__  'TR3'
 
 MAILLE__ TRIA33     6       DIM__  2   CODE__  'T33'
    ELREFE__ V_TRIA33
-         FAMILLE__ FPG1        6
+         FAMILLE__ FPG1        1
 
 MAILLE__ TRIA6      6       DIM__  2   CODE__  'TR6'
    ELREFE__ TR6
@@ -135,7 +135,7 @@ MAILLE__ TRIA6      6       DIM__  2   CODE__  'TR6'
 
 MAILLE__ TRIA66     12      DIM__  2   CODE__  'T66'
    ELREFE__ V_TRIA66
-         FAMILLE__ FPG1        12
+         FAMILLE__ FPG1        1
 
 MAILLE__ TRIA7      7       DIM__  2   CODE__  'TR7'
    ELREFE__ MEC3TR7H
@@ -165,7 +165,7 @@ MAILLE__ QUAD4      4       DIM__  2   CODE__  'QU4'
 
 MAILLE__ QUAD44     8       DIM__  2   CODE__  'Q44'
    ELREFE__ V_QUAD44
-         FAMILLE__ FPG1        8
+         FAMILLE__ FPG1        1
 
 MAILLE__ QUAD8      8       DIM__  2   CODE__  'QU8'
    ELREFE__ QU8
@@ -179,7 +179,7 @@ MAILLE__ QUAD8      8       DIM__  2   CODE__  'QU8'
 
 MAILLE__ QUAD88     16      DIM__  2   CODE__  'Q88'
    ELREFE__ V_QUAD88
-         FAMILLE__ FPG1        16
+         FAMILLE__ FPG1        1
 
 MAILLE__ QUAD9      9       DIM__  2   CODE__  'QU9'
    ELREFE__ QU9
@@ -194,7 +194,7 @@ MAILLE__ QUAD9      9       DIM__  2   CODE__  'QU9'
 
 MAILLE__ QUAD99     18      DIM__  2   CODE__  'Q99'
    ELREFE__ V_QUAD99
-         FAMILLE__ FPG1        18
+         FAMILLE__ FPG1        1
 
 MAILLE__ TETRA4     4       DIM__  3   CODE__  'TE4'
    ELREFE__ TE4
@@ -431,3 +431,42 @@ MAILLE__ TR6TR6     12      DIM__  2   CODE__  'TT5'
    ELREFE__ V_TR6TR6
          FAMILLE__ FPG1        1
 
+MAILLE__ SE2TR3     5       DIM__  2   CODE__  'ST1'
+   ELREFE__ V_SE2TR3
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE2TR6     8       DIM__  2   CODE__  'ST2'
+   ELREFE__ V_SE2TR6
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE2QU4     6       DIM__  2   CODE__  'SQ1'
+   ELREFE__ V_SE2QU4
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE2QU8     10      DIM__  2   CODE__  'SQ2'
+   ELREFE__ V_SE2QU8
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE2QU9     11      DIM__  2   CODE__  'SQ3'
+   ELREFE__ V_SE2QU9
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE3TR3     6       DIM__  2   CODE__  'ST3'
+   ELREFE__ V_SE3TR3
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE3TR6     9       DIM__  2   CODE__  'ST4'
+   ELREFE__ V_SE3TR6
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE3QU4     7       DIM__  2   CODE__  'SQ4'
+   ELREFE__ V_SE3QU4
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE3QU8     11      DIM__  2   CODE__  'SQ5'
+   ELREFE__ V_SE3QU8
+         FAMILLE__ FPG1        1
+
+MAILLE__ SE3QU9     12      DIM__  2   CODE__  'SQ6'
+   ELREFE__ V_SE3QU9
+         FAMILLE__ FPG1        1

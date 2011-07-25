@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/08/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -163,7 +163,8 @@ LIS_INST=DEFI_LIST_REEL(       DEBUT=0.0,INTERVALLE=(
                            )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LIS_INST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 0.00000001),)
 #

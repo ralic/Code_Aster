@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,7 +161,8 @@ INS_ARCH = DEFI_LIST_REEL(
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                         ECHEC=_F(
-                  SUBD_METHODE='UNIFORME',
+                  ACTION       = 'DECOUPE',
+                  SUBD_METHODE = 'MANUEL',
                   SUBD_PAS  = 10,
                   SUBD_PAS_MINI = 1.E-20,
                   SUBD_NIVEAU=10,

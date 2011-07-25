@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+%& MODIF TYPELEM  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -147,6 +147,56 @@ ENTETE__ ELEMENT__ CFT6T6           MAILLE__ TRIA66
    ATTRIBUT__  FROTTEMENT=OUI 
    ENS_NOEUD__  EN2     =     1  2  3  4  5  6
    ENS_NOEUD__  EN1     =     7  8  9  10  11  12
+ENTETE__ ELEMENT__ CFS2T3           MAILLE__ SE2TR3
+   ELREFE__  V_SE2TR3
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2
+   ENS_NOEUD__  EN1     =     3  4  5
+ENTETE__ ELEMENT__ CFS2T6           MAILLE__ SE2TR6
+   ELREFE__  V_SE2TR6
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2
+   ENS_NOEUD__  EN1     =     3  4  5  6  7  8
+ENTETE__ ELEMENT__ CFS2Q4           MAILLE__ SE2QU4
+   ELREFE__  V_SE2QU4
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2
+   ENS_NOEUD__  EN1     =     3  4  5  6
+ENTETE__ ELEMENT__ CFS2Q8           MAILLE__ SE2QU8
+   ELREFE__  V_SE2QU8
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2
+   ENS_NOEUD__  EN1     =     3  4  5  6  7  8  9  10
+ENTETE__ ELEMENT__ CFS2Q9           MAILLE__ SE2QU9
+   ELREFE__  V_SE2QU9
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2
+   ENS_NOEUD__  EN1     =     3  4  5  6  7  8  9  10  11
+ENTETE__ ELEMENT__ CFS3T3           MAILLE__ SE3TR3
+   ELREFE__  V_SE3TR3
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2  3
+   ENS_NOEUD__  EN1     =     3  4  5
+ENTETE__ ELEMENT__ CFS3T6           MAILLE__ SE3TR6
+   ELREFE__  V_SE3TR6
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2  3
+   ENS_NOEUD__  EN1     =     3  4  5  6  7  8
+ENTETE__ ELEMENT__ CFS3Q4           MAILLE__ SE3QU4
+   ELREFE__  V_SE3QU4
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2  3
+   ENS_NOEUD__  EN1     =     3  4  5  6
+ENTETE__ ELEMENT__ CFS3Q8           MAILLE__ SE3QU8
+   ELREFE__  V_SE3QU8
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2  3
+   ENS_NOEUD__  EN1     =     3  4  5  6  7  8  9  10
+ENTETE__ ELEMENT__ CFS3Q9           MAILLE__ SE3QU9
+   ELREFE__  V_SE3QU9
+   ATTRIBUT__  FROTTEMENT=OUI 
+   ENS_NOEUD__  EN2     =     1  2  3
+   ENS_NOEUD__  EN1     =     3  4  5  6  7  8  9  10  11
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2011   AUTEUR LABBE M.LABBE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
 # ssnl119a.para = tps_job 480 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,10 +127,7 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                  COMP_INCR=(_F(RELATION='MULTIFIBRE'),
                                ),
                  INCREMENT=_F(LIST_INST=LINST,
-#                              NUME_INST_FIN=20,
-#                              INST_FIN=1.4
                               ),
-                # NEWTON=_F(MATRICE='ELASTIQUE',),
                  NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
                                 ITER_GLOB_MAXI=250,),
@@ -208,106 +205,17 @@ TEST_RESU(RESU=(
 
 # **************************************************************
 #
-#              Pour TEST_RESU : Resultats a 3 instants
-#
-# **************************************************************
-LINSTD=DEFI_LIST_REEL(DEBUT=0.0,
-   INTERVALLE=(_F(JUSQU_A= 0.100,  NOMBRE=2,),
-               _F(JUSQU_A= 1.400,  NOMBRE=2,),
-               _F(JUSQU_A= 2.680,  NOMBRE=10,),
-              ),
-)
-
-LINST2 = DEFI_LIST_INST(
-   DEFI_LIST=_F(
-      METHODE   = 'MANUEL',
-      LIST_INST =  LINSTD,
-   ),
-   ECHEC=_F(
-      EVENEMENT='ERREUR',
-      SUBD_METHODE    = 'EXTRAPOLE',
-      SUBD_OPTION     = 'GARDE_DERNIERES',
-      SUBD_PAS_MINI   = 0.10E-10,
-      SUBD_NIVEAU     = 70,
-      SUBD_ITER_FIN   = 15,
-      SUBD_ITER_PLUS  = 110,
-   ),
-)
-
-# **************************************************************
-#
-#              Methode de subdivision
-#                 EXTRAPOLE,  OPTION = 'GARDE_DERNIERES'
-#
-# **************************************************************
-U2=STAT_NON_LINE(
-   MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
-   EXCIT=(
-      _F(CHARGE=BLOCAGE,),
-      _F(CHARGE=DEPIMP, FONC_MULT=FOFO,),),
-   COMP_INCR=(
-      _F(RELATION='MULTIFIBRE',      GROUP_MA='POUTRE',),
-   ),
-   INCREMENT= _F(LIST_INST=LINST2,),
-   NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
-   CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-6,ITER_GLOB_MAXI = 50,
-   ),
-)
-U2=CALC_NO(  reuse= U2, RESULTAT= U2, OPTION='REAC_NODA', )
-U2=CALC_CHAMP(reuse= U2, RESULTAT= U2,  DEFORMATION=('EPSI_ELGA'),)
-
-TEST_RESU(RESU=(
-   # Reactions
-   _F(RESULTAT=U2, INST=Temps[0], NOM_CHAM='REAC_NODA',         GROUP_NO = 'A', NOM_CMP='DY', VALE=React[0],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(5.E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[1], NOM_CHAM='REAC_NODA',         GROUP_NO = 'A', NOM_CMP='DY', VALE=React[1],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(6.E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[2], NOM_CHAM='REAC_NODA',         GROUP_NO = 'A', NOM_CMP='DY', VALE=React[2],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(6.E-2,1.0E-5), ),
-   # Contraintes acier tendu
-   _F(RESULTAT=U2, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[0],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(7.E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[1],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(5.E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[2],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(5.E-2,1.0E-5)),
-   # Contraintes acier comprime
-   _F(RESULTAT=U2, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[0],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(4.E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[1],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(7.E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[2],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.E-2,1.0E-5), ),
-   # Deformations acier tendu
-   _F(RESULTAT=U2, INST=Temps[0], NOM_CHAM='EPSI_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[0],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.5E-3,1.0E-05), ),
-   _F(RESULTAT=U2, INST=Temps[1], NOM_CHAM='EPSI_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[1],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(5.00E-4,1.0E-05), ),
-   _F(RESULTAT=U2, INST=Temps[2], NOM_CHAM='EPSI_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[2],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(6.5E-2,1.0E-05), ),
-   # Contraintes beton comprime
-   _F(RESULTAT=U2, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[0],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[1],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[2],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-1,1.0E-5), ),
-   # Contraintes beton tendu
-   _F(RESULTAT=U2, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[0],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-4,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[1],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-2,1.0E-5), ),
-   _F(RESULTAT=U2, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[2],
-      REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-2,1.0E-5), ),
-   )
-)
-
-# **************************************************************
-#
 #              Methode de subdivision (celle par defaut)
 #                 EXTRAPOLE,  OPTION = 'IGNORE_PREMIERES'
 #
 # **************************************************************
+
+LINSTD=DEFI_LIST_REEL(DEBUT=0.0,
+   INTERVALLE=(_F(JUSQU_A= 0.100,  NOMBRE=2,),
+               _F(JUSQU_A= 1.400,  NOMBRE=2,),
+               _F(JUSQU_A= 2.680,  NOMBRE=10,),
+              ),)
+
 LINST3 = DEFI_LIST_INST(
    DEFI_LIST=_F(
       METHODE   = 'MANUEL',
@@ -315,10 +223,10 @@ LINST3 = DEFI_LIST_INST(
    ),
    ECHEC=_F(
       EVENEMENT       = 'ERREUR',
-      SUBD_METHODE    = 'EXTRAPOLE',
+      ACTION          = 'ITER_SUPPL',
       SUBD_PAS_MINI   = 0.10E-10,
       SUBD_NIVEAU     = 50,
-      SUBD_ITER_PLUS  = 110,
+      PCENT_ITER_PLUS = 100,
    ),
 )
 

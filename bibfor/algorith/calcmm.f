@@ -6,7 +6,7 @@
         CHARACTER*16 CPMONO(5*NMAT+1),COMP(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,20 +23,26 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE JOUMANA J.EL-GHARIB
+C RESPONSABLE PROIX J-M.PROIX
 C       IN
 C         NBCOMM :  NOMBRE DE COEF COEFTIAU PAR FAMILLE
 C         CPMONO :  NOMS DES LOIS COEFTIAU PAR FAMILLE
+C           NMAT :  NOMBRE MAXI DE COEF MATERIAU
 C          PGL   : MATRICE DE PASSAGE GLOBAL LOCAL DU MONOCRISTAL
+C         COMP   :  COMPOR - LOI ET TYPE DE DEFORMATION
+C         NVI    :  NB VARIABLES INTERNES
+C         VIND   :  VARIABLES INTERNES A T
+C         IROTA  :  >0 POUR ROTATION DE RESEAU, 0 SINON
 C     OUT:
-C           TOUTMS  :  TOUS LES TENSEURS MS
+C        TOUTMS  :  TOUS LES TENSEURS MUS=sym(MS*NS) en HPP, 
+C                   TOUS LES VECTEURS MS ET NS en gdef
 C
 C     CETTE ROUTINE CALCULE LES TENSEURS MS POUR GAGNER DU TEMPS
 C
 C     ----------------------------------------------------------------
       CHARACTER*16 NOMFAM
       REAL*8 MS(6),NG(3),Q(3,3),LG(3),IDEN(3,3)
-      INTEGER NBFSYS,I,IFA,NBSYS,IS,J,IR,NS
+      INTEGER NBFSYS,I,IFA,NBSYS,IS,J,IR
       DATA IDEN/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
 
@@ -49,12 +55,6 @@ C         CALCUL DES TENSEURS MS POUR GAGNER DU TEMPS
      
       IF (COMP(3)(1:5).NE.'PETIT') THEN
 C  en vue d'optimiser, stocker lg et ng
-         NS=0
-         DO 11 IFA=1,NBFSYS
-            NOMFAM=CPMONO(5*(IFA-1)+1)
-            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,IR,Q)
-            NS=NS+NBSYS
-11       CONTINUE
          IR=0
          DO 12 IFA=1,NBFSYS
             NOMFAM=CPMONO(5*(IFA-1)+1)
@@ -72,12 +72,11 @@ C  en vue d'optimiser, stocker lg et ng
       
 C        ROTATION RESEAU ROTA_RESEAU_CALC - DEBUT
          IF (IROTA.EQ.2) THEN
-                IR=1
-                DO 29 I = 1, 3
-                DO 29 J=1,3
-                   Q(I,J)=VIND(NVI-19+3*(I-1)+J)+IDEN(I,J)
- 29             CONTINUE
-             ENDIF
+            IR=1
+            DO 29 I = 1, 3
+            DO 29 J=1,3
+               Q(I,J)=VIND(NVI-19+3*(I-1)+J)+IDEN(I,J)
+ 29         CONTINUE
          ENDIF
          NBCOMM(NMAT,1)=IROTA
 C        ROTATION RESEAU FIN
@@ -93,4 +92,5 @@ C        ROTATION RESEAU FIN
 
  3          CONTINUE
  2       CONTINUE
+      ENDIF
       END

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN
 # TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
 # sdnl113a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test R
@@ -228,11 +228,11 @@ LINST=DEFI_LIST_REEL(DEBUT=TMIN,
                                    PAS=PASDT,),),
                                    );
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST,),
-                        ECHEC=_F(
-#                                 SUBD_METHODE='EXTRAPOLE',
-                                 SUBD_METHODE = 'UNIFORME',
-                                 SUBD_PAS=2,
-                                 SUBD_PAS_MINI=PASDT/20,),);
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 2,
+                                 SUBD_PAS_MINI = PASDT/20,),);
 
 RESULT=DYNA_NON_LINE(MODELE=MO,
                      CHAM_MATER=CHMAT,

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 # wtnv123f.para = tps_job 200 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -241,7 +241,9 @@ EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',
                        )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS1 ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=5,
                                  SUBD_PAS_MINI=0.01,),)
 

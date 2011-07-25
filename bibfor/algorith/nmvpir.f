@@ -7,7 +7,7 @@
      &                   SIGP,VIP,DSIDEP,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -282,6 +282,9 @@ C        PARAMETRES DE LA LOI DE FLUAGE
             FLUPHI=COEVIL(5)
             IRRAP = FLUPHI*INSTAP
             IRRAM = FLUPHI*INSTAM
+         ELSE
+            IRRAP = IRRAP - IRRAM + VIM(2)
+            IRRAM = VIM(2)
          ENDIF
          IF (IRRAP.LT.IRRAM) THEN
             CALL U2MESS('F','ALGORITH8_88')
@@ -302,6 +305,9 @@ C        PARAMETRES DE LA LOI DE FLUAGE
             FLUPHI=COEVIL(5)
             IRRAP = FLUPHI*INSTAP
             IRRAM = FLUPHI*INSTAM
+         ELSE
+            IRRAP = IRRAP - IRRAM + VIM(2)
+            IRRAM = VIM(2)
          ENDIF
          IF (IRRAP.LT.IRRAM) THEN
             CALL U2MESS('F','ALGORITH8_88')
@@ -500,6 +506,9 @@ C
          IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN
             CALL LCDEVI ( SIGP , DEV )
             VIP(1)= VIM(1) + DP1*LCNRTS( DEV )
+            IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
+               VIP(2) = IRRAP
+            ENDIF
          ELSE
             VIP(1) = VIM(1) + SQRT(2.D0*DELTP2/3.D0)
          ENDIF

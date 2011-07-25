@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,7 +117,7 @@ C
      &'                                ' )
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX=56)
+      PARAMETER (NTYMAX=66)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
       INTEGER EDNOEU

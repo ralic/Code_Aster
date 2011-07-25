@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE EPROUVETTE CT 2D AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,7 +151,8 @@ L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
 
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                   LIST_INST=L_INST1,),
-                     ECHEC=_F(SUBD_METHODE='UNIFORME',
+                     ECHEC=_F(ACTION        = 'DECOUPE',
+                              SUBD_METHODE  = 'MANUEL',
                               SUBD_NIVEAU=10,),);
 
 #-----------------------------------------------------------

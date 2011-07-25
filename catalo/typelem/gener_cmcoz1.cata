@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+%& MODIF TYPELEM  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,7 +63,6 @@ MODE_LOCAL__
                                  EN2   (DX       DY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CCONFR   = NEUT_R   ELEM__         (X[38])
-    CCONF2   = NEUT_R   ELEM__         (X[5])                                        
     ENEUTR   = NEUT_R   ELNO__ IDEN__  (X1    )
 
 VECTEUR__
@@ -78,5 +77,5 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     RIGI_CONT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PVITE_M  DDL_MECA PACCE_M
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
-                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS                           
+                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM

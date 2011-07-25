@@ -6,7 +6,7 @@
      &                  MEASSE,VEELEM,VEASSE,ACTPAS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,8 +85,7 @@ C
 C ----------------------------------------------------------------------
 C
       CHARACTER*24 K24BLA
-      INTEGER      INCRUN
-      LOGICAL      ERROR
+      INTEGER      INCRUN,ACTITE
 C
 C ----------------------------------------------------------------------
 C
@@ -128,15 +127,11 @@ C
 C
 C --- ESTIMATION DE LA CONVERGENCE
 C
-      CALL NDXCVG(SDDISC,SDERRO,ERROR )
+      CALL NDXCVG(SDDISC,SDERRO,VALINC,ACTITE)
 C
 C --- EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 C --- DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
 C
-      IF (ERROR) THEN
-        CALL NDXDEC(SDDISC,NUMINS,ACTPAS)
-      ELSE
-        ACTPAS = 1
-      ENDIF
+      CALL NDXDEC(SDDISC,NUMINS,ACTITE,ACTPAS)
 C
       END

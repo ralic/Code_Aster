@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF discretisation Messages  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,24 +33,9 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
  Si vous faites une reprise de calcul (REUSE), vous pouvez utiliser le mot-clef ETAT_INIT/INST_ETAT_INIT pour corriger celà.
 """),
 
-3 : _("""
-Le nombre de subdivisions du pas de temps doit être plus grand que 1 (SUBD_PAS)
-"""),
-
-
 5 : _("""
  L'adaptation du pas de temps a été désactivée. Seuls les instants définis par LIST_INST seront calculés
  (hormis les sous-découpages éventuels).
-"""),
-
-6 : _("""
- valeur de SUBD_ITER_IGNO incoherent avec ITER_GLOB_MAXI.
- augmentez ITER_GLOB_MAXI
-"""),
-
-7 : _("""
- valeur de SUBD_ITER_FIN incoherent avec ITER_GLOB_MAXI.
- augmentez ITER_GLOB_MAXI
 """),
 
 8 : _("""
@@ -63,24 +48,12 @@ Le nombre de subdivisions du pas de temps doit être plus grand que 1 (SUBD_PAS)
 
 9 : _("""
  Attention, en cas d'erreur (contact, loi de comportement, pilotage, ...), le pas de temps
- ne sera pas re-decoupe.
+ ne sera pas re-découpé.
 """),
 
 
 10 : _("""
- On ne peut définir qu'une seule occurence de ECHEC/EVENEMENT='ERREUR'.
-"""),
-
-11 : _("""
- La valeur du pas de temps retenu (%(r1)s) est inférieure à PAS_MINI.
-"""),
-
-12 : _("""
- La valeur du pas de temps retenu (%(r1)s) est supérieure à PAS_MAXI.
-"""),
-
-13 : _("""
- On a depassé le nombre maximal de pas de temps autorisé.
+ On ne peut définir qu'une seule occurrence de ECHEC/EVENEMENT='ERREUR'.
 """),
 
 14 : _("""
@@ -90,6 +63,19 @@ Le nombre de subdivisions du pas de temps doit être plus grand que 1 (SUBD_PAS)
 
 15 : _("""
  Attention : MODE_CALCUL_TPLUS = 'IMPLEX' ne permet qu'un mot clé ADAPTATION
+"""),
+
+40 : _("""
+  Le solveur <%(k1)s> ne permet pas la détection de singularité.
+  La découpe du pas de temps en cas d'erreur (pivot nul) n'est donc pas possible.
+"""),
+
+50 : _("""
+  Déclenchement de l'événement <%(k1)s>.
+"""),
+
+51 : _("""
+  Traitement de l'événement <%(k1)s>.
 """),
 
 86 : _("""
@@ -106,20 +92,12 @@ La liste d'instants n'est pas strictement croissante.
 Instant initial introuvable dans la liste d'instants (LIST_INST).
 """),
 
-90 : _("""
-Instant final introuvable dans la liste d'instants (LIST_INST).
-"""),
-
 92 : _("""
- NUME_INST_INIT plus grand que NUME_INST_FIN
-"""),
-
-93: _("""
- NUME_INST_INIT n'appartient pas à la liste d'instants
+ NUME_INST_INIT est plus grand que NUME_INST_FIN
 """),
 
 94 : _("""
-  -> Le numto d'ordre correspondant à l'instant final de calcul NUME_INST_FIN
+  -> Le numéro d'ordre correspondant à l'instant final de calcul NUME_INST_FIN
      n'appartient pas à la liste des numéros d'ordre.
      Dans ce cas, Aster considère pour numéro d'ordre final, le dernier de
      la liste fournie.
@@ -129,8 +107,5 @@ Instant final introuvable dans la liste d'instants (LIST_INST).
      d'ordre.
 """),
 
-99 : _("""
-Le nombre de niveau de subdivisions doit etre plus grand que 1 (SUBD_NIVEAU)
-"""),
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 # ssnv197d.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,7 +181,8 @@ CARAEL=AFFE_CARA_ELEM(MODELE=MODELE,
                       INFO = 1,);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_PAS_MINI =0.00001 ),)
 

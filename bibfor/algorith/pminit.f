@@ -1,8 +1,12 @@
-      SUBROUTINE PMINIT(IMATE,NBVARI,NDIM,TYPMOD,TABLE,NBPAR,NBVITA,
-     &NOMPAR,ANG,PGL,IROTA,EPSM,SIGM,VIM,VIP,DEFIMP,COEF,INDIMP,
-     &FONIMP,CIMPO,KEL,SDDISC,PARCRI,PRED,MATREL,OPTION)
+      SUBROUTINE PMINIT(IMATE ,NBVARI,NDIM  ,TYPMOD,TABLE ,
+     &                  NBPAR ,NBVITA,NOMPAR,TYPPAR,ANG   ,PGL   ,
+     &                  IROTA ,EPSM  ,SIGM  ,VIM   ,VIP   ,
+     &                  DEFIMP,COEF  ,INDIMP,FONIMP,CIMPO ,
+     &                  KEL   ,SDDISC,PARCRI,PRED  ,MATREL,
+     &                  OPTION)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +24,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21 CRS_1404
+C
       IMPLICIT NONE
+C
 C-----------------------------------------------------------------------
 C     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
 C-----------------------------------------------------------------------
 C
-C IN   IMATE  : adresse materiau codé
+C IN   IMATE  : adresse materiau code
 C IN   NBVARI : Nombre de variables internes
 C IN   NDIM   : 3
 C OUT  TYPMOD : 3D
@@ -52,6 +58,7 @@ C OUT  MATREL : MATRICE TANGENTE = 1 SI ELASTIQUE
 C OUT  OPTION : FULL_MECA OU RAPH_MECA
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER ZI
       COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
@@ -66,7 +73,9 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
       INTEGER      NDIM,N1,NBVARI,NBPAR,I,J,K,IMATE,KPG,KSP,NBOCC,N2
       INTEGER      IEPSI,ICONT,IGRAD,IROTA,DEFIMP,INDIMP(9),NCMP
       INTEGER      PRED,MATREL,NBVITA
@@ -75,22 +84,25 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       CHARACTER*8  TYPMOD(2),K8B,TABLE,FONIMP(9),FONGRD(9)
       CHARACTER*8  FONEPS(6),FONSIG(6),TYPPAR(NBVARI+19),VALEF
       CHARACTER*16 OPTION,NOMPAR(NBVARI+19),PREDIC,MATRIC
-      CHARACTER*19 LISINS,SDDISC
+      CHARACTER*19 LISINS,SDDISC,SOLVEU
       REAL*8       INSTAM,ANG(7),SIGM(6),EPSM(9),VALE
       REAL*8       VIM(NBVARI),VIP(NBVARI),VR(NBVARI+19)
       REAL*8       SIGI,REP(7),R8DGRD,KEL(6,6),CIMPO(6,12)
-      REAL*8       ANGD(3),ANG1,PGL(3,3),XYZGAU,COEF,INSTIN
+      REAL*8       ANGD(3),ANG1,PGL(3,3),XYZGAU(3),COEF,INSTIN
       REAL*8       PARCRI(*),PARCON(9),ANGEUL(3),ID(9)
       
       DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
       DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
       DATA NOMGRD/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
       DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
-
+C
+C ----------------------------------------------------------------------
+C
 C     INITIALISATIONS
       NDIM=3
       TYPMOD(1)='3D'
       TYPMOD(2)=' '
+      SOLVEU   = '&&OP0033'
 
 C     ----------------------------------------
 C     RECUPERATION DU NOM DE LA TABLE PRODUITE
@@ -149,7 +161,7 @@ C     ----------------------------------------
 C     TRAITEMENT DES ANGLES
 C     ----------------------------------------
       CALL R8INIR ( 7, 0.D0, ANG ,1 )
-      CALL R8INIR ( 7, 0.D0, ANGEUL ,1 )
+      CALL R8INIR ( 3, 0.D0, ANGEUL ,1 )
       CALL R8INIR(3, 0.D0, XYZGAU, 1)
       CALL GETVR8('MASSIF','ANGL_REP',1,1,3,ANG(1),N1)
       CALL GETVR8('MASSIF','ANGL_EULER',1,1,3,ANGEUL,N2)
@@ -175,7 +187,6 @@ C        ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
           ENDIF
           ANG(4) = 2.D0
       ENDIF
-
       IF (NCMP.EQ.6) THEN
          CALL R8INIR(9, 0.D0, EPSM, 1)
       ELSE
@@ -199,6 +210,7 @@ C        VERIFS
          PGL(3,3)=1.D0
 C VOIR GENERALISATION A 3 ANGLES AVEC CALL MATROT
       ENDIF
+      
 
 C     ----------------------------------------
 C     ETAT INITIAL
@@ -350,7 +362,6 @@ C     ----------------------------------------
             OPTION='RAPH_MECA'
          ENDIF
       ENDIF
-
 C     IMPL_EX N'EST PAS DISPONIBLE (FONACT : VOIR ISFONC)
       DO 99 I=1,28
          FONACT(I)=0
@@ -361,6 +372,6 @@ C     ----------------------------------------
       CALL NMDOCN(K24BID,PARCRI,PARCON)
 
 C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
-      CALL NMCRSU(SDDISC,LISINS,PARCRI,FONACT)
+      CALL NMCRSU(SDDISC,LISINS,PARCRI,FONACT,SOLVEU)
 
       END

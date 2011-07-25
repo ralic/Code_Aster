@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 1000 mem_job 128Mo ncpus 1 liste_test S
@@ -260,7 +260,8 @@ SIEF=CREA_CHAMP(INFO=1,
                  );
 
 DEFLISTT =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=5,SUBD_NIVEAU=10),)
 
 # Pas d Initialisation des contraintes
@@ -579,7 +580,9 @@ TI_LI_IN=DEFI_LIST_REEL(DEBUT=-1.e-6, INTERVALLE=_F(JUSQU_A=0.,
 FOC2 = DEFI_CONSTANTE( VALE=9.81001) ;                        
 
 DEFLIST3 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TI_LI_IN),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,SUBD_NIVEAU=10),)
 
 U9B=STAT_NON_LINE(MODELE=MOD[9],
@@ -653,7 +656,9 @@ LIST=DEFI_LIST_REEL(DEBUT=0.0,
 #   deplacement solution 
 
 DEFLIST4 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LIST ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME'))
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',))
 
 U9B=STAT_NON_LINE(reuse=U9B, 
                  MODELE=MOD[9],
@@ -840,13 +845,17 @@ MODEP = NORM_MODE(MODE=RESMOD, NORME='TRAN_ROTA',
                   );
                                                                                       
 DEFLISTh =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INSTh ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=2,SUBD_NIVEAU=20),)
                                  
 L_amor=CALC_AMOR_MODAL(
         AMOR_RAYLEIGH=_F(MODE_MECA = MODET,
                          AMOR_ALPHA=7.0E-5, AMOR_BETA=0.),
                        );
+
+ACCE0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MOD[9],
+                   AFFE=_F(TOUT='OUI',NOM_CMP=('DX', 'DY', 'DZ',),VALE = (0., 0., 0.,),),);
 
 U9B2=DYNA_NON_LINE(
                  MODELE=MOD[9],
@@ -878,7 +887,10 @@ U9B2=DYNA_NON_LINE(
                  PROJ_MODAL=_F(MODE_MECA = MODEP), 
                  AMOR_MODAL=_F(MODE_MECA = MODET,LIST_AMOR=L_amor), 
                  ETAT_INIT=_F(EVOL_NOLI=U9B,
-                              INST=0.0,PRECISION=1.E-6,),
+                              INST=0.0,PRECISION=1.E-6,
+#  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
+#  a cause du modele, on ne peut calculer une acceleration non nulle :
+                              ACCE = ACCE0,),  
                  INCREMENT=_F(
                               LIST_INST=DEFLISTh, 
                               PRECISION=1.E-6,),

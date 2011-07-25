@@ -1,8 +1,8 @@
-#@ MODIF sd_list_inst SD  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_list_inst SD  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,7 +25,7 @@ class sd_list_inst(AsBase):
 
 # 1) objets relatifs a la liste
 
-    LIST_INFOR = AsVR(SDNom(nomj='.LIST.INFOR'),lonmax=7,)
+    LIST_INFOR = AsVR(SDNom(nomj='.LIST.INFOR'),lonmax=10,)
     LIST_DITR  = AsVR(SDNom(nomj='.LIST.DITR'))
 
     ECHE_EVENR = AsVR(SDNom(nomj='.ECHE.EVENR'))

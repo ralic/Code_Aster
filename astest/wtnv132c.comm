@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONSTRUCTION PAR COUCHES D'UNE COLONNE DE SOL AVEC MODELE DE HUJEUX
 # wtnv132c.para = tps_job 450 mem_job 212Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -226,7 +226,9 @@ SIEF=CREA_CHAMP(INFO=1,
                         VALE=(P0,P0,P0,),),);
 
 DEFLISTT =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=2,SUBD_NIVEAU=2),)
 
 # Pas d Initialisation des contraintes

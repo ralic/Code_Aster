@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE A.FOUCAULT
 # TITRE ETUDE: TUBE BETON SOUS PRESSION INTERNE AVEC LE MODELE UMLV
 # ssna121a.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test S
@@ -114,7 +114,8 @@ LINST=DEFI_LIST_REEL(DEBUT=-1.0,
                                     ),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=3,
                                  SUBD_PAS_MINI =1E-6 ),)
 

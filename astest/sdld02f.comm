@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 11/07/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 # sdld02f.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,19 +72,22 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
        _F( NOEUD = ('P8', 'P8',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.))
                    )
 
+# Pour des questions de couverture de code GM4 est 2 fois
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
         ORIENTATION=_F(  GROUP_NO = 'GN4',   CARA = 'ANGL_NAUT',
                          VALE = ( 53.130102,  0.,   0.,  )),
         DISCRET_2D=(_F(  CARA = 'K_TR_D_L',   REPERE = 'LOCAL',
                          GROUP_MA = 'GM4',    VALE = (1.E5,0.,0., )),
-                    _F(  CARA = 'M_TR_L',   REPERE = 'LOCAL',
-                         GROUP_MA = 'GM4',    VALE = (0., 0., 0., 0., 0., 0.,0., 0., 0.,
-                                            0., 0., 0.,0., 0., 0.,0., 0., 0.,0., 0., 0.,)),
+                    _F(  CARA = 'M_TR_L',     REPERE = 'LOCAL',
+                         GROUP_MA = 'GM4',    VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                                                      0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,)),
+                    _F(  CARA = 'M_TR_D_L',   REPERE = 'LOCAL',
+                         GROUP_MA = 'GM4',    VALE = (0., 0.,)),
                     _F(  CARA = 'K_TR_D_N',   REPERE = 'LOCAL',
                          NOEUD = ( 'P1','P8',),   VALE = (1.E5,0.,0., )),
-                    _F(  CARA = 'M_TR_N',   REPERE = 'LOCAL',
+                    _F(  CARA = 'M_TR_N',     REPERE = 'LOCAL',
                          NOEUD = ( 'P1','P8',),   VALE = (0. ,0. ,0., 0. ,0. ,0., )),
-                    _F(  CARA = 'M_TR_D_N', REPERE = 'GLOBAL',
+                    _F(  CARA = 'M_TR_D_N',   REPERE = 'GLOBAL',
                          GROUP_NO = 'GN4',    VALE = (10.,10.,0.,0.,)),)
                          )
 

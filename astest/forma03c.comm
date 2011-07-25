@@ -1,4 +1,4 @@
-# MODIF  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
 # forma03c.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
@@ -99,7 +99,6 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
                                  COEF_MULT=1.0,
                                  GROUP_NO='G',
                                  NOM_CMP='DY',),
-                     SOLVEUR=_F(STOP_SINGULIER='DECOUPE'),
 #                      SUIVI_DDL=(_F(NUME_SUIVI=1,
 #                                    NOM_CHAM='DEPL',
 #                                    NOM_CMP='DY',

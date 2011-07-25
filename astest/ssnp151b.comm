@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE EPROUVETTE CT 3D AVEC ELEMENTS D'INTERFACE (HEXA20) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151b.para = tps_job 900 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,8 +149,9 @@ L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                     
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                   LIST_INST=L_INST1,),
-                     ECHEC=_F(SUBD_METHODE='UNIFORME',
-                              SUBD_NIVEAU=10,),);
+                     ECHEC=_F(ACTION        = 'DECOUPE',
+                              SUBD_METHODE  = 'MANUEL',
+                              SUBD_NIVEAU   = 10,),);
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS D'ARCHIVAGE

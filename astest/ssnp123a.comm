@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,8 +61,10 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                           1.0, 1.0,),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_PAS=4,
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 4,
                                  SUBD_PAS_MINI = 0.001),)
 
 # CALCUL

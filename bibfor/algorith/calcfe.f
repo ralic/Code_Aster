@@ -1,7 +1,7 @@
       SUBROUTINE CALCFE(NR,NDT,VIND,DF,GAMSNS,FE,FP,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,18 +18,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C       ----------------------------------------------------------------
+C       MONOCRISTAL : CALCUL DE Fe et Fp, F=Fe.Fp
+C       IN  NR     :  DIMENSION DECLAREE DRDY
+C           NDT    :  NOMBRE DE COMPOSANTES DE SIGMA (6)
+C           NVI    :  NOMBRE DE VARIABLES INTERNES
+C           VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
+C                     contiennent Fe(t), Fp(t)
+C           DF     :  Increment de Gradient de deformation 
+C           GAMSNS :  Somme de dGamma.Ms*Ns
+C       OUT FE     :  Gradient de tranformation elastique
+C           FP     :  Gradient de tranformation plastique
 C
       REAL*8 FE(3,3),DF(3,3),GAMSNS(3,3),DFFE(3,3),DFPM(3,3),FEM(3,3)
       REAL*8 VIND(*),ID(3,3),DET,COEF,DFP(3,3),EXPO,FP(3,3)
       REAL*8 FPM(3,3),DFPMAX,DFPMIN,DET2,R8PREM
       INTEGER NR, NDT, NS, IRET, IOPT, I
-      LOGICAL NOCONV
       DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
-
       
       IRET=0
-      IOPT=1
+      IOPT=2
       NS=NR-NDT
       CALL DCOPY(9,VIND(6+3*NS+1),1,FEM,1)
       CALL DCOPY(9,VIND(6+3*NS+10),1,FPM,1)      
@@ -53,7 +62,7 @@ C        TEST ANALOGUE A SIMO_MIEHE NMGPFI
             IF (DFP(I,I).GT.DFPMAX) DFPMAX=DFP(I,I)
             IF (DFP(I,I).LT.DFPMIN) DFPMIN=DFP(I,I)
  10      CONTINUE
-         IF ((DFPMAX.GT.1.D2).OR.(DFPMIN.LT.1.D-2)) THEN
+         IF ((DFPMAX.GT.1.D3).OR.(DFPMIN.LT.1.D-3)) THEN
            IRET=1
            GOTO 9999
          ENDIF
@@ -85,7 +94,7 @@ C        linearisation directe de exp(-dgamma.ms x ns)
             IF (DFPM(I,I).GT.DFPMAX) DFPMAX=DFPM(I,I)
             IF (DFPM(I,I).LT.DFPMIN) DFPMIN=DFPM(I,I)
  20      CONTINUE
-         IF ((DFPMAX.GT.1.D2).OR.(DFPMIN.LT.1.D-2)) THEN
+         IF ((DFPMAX.GT.1.D3).OR.(DFPMIN.LT.1.D-3)) THEN
            IRET=1
            GOTO 9999
          ENDIF

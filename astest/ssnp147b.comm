@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE  MODELISATION DE L'AMORCAGE DE FISSURE AVEC LE MODELE ENDO_HETEROGENE
 # ssnp147b.para = tps_job 50 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,9 +158,10 @@ RAMPE= DEFI_FONCTION(  NOM_PARA = 'INST',
 
 
 INSTEL2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTEL),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_PAS=2,
-                                 SUBD_PAS_MINI=0.00001,))
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 2,
+                                 SUBD_PAS_MINI = 0.00001,))
 
 EVOEL=STAT_NON_LINE(
                     SOLVEUR=_F(METHODE='MULT_FRONT',),

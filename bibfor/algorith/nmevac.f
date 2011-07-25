@@ -1,0 +1,134 @@
+      SUBROUTINE NMEVAC(SDDISC,IEVDAC,NUMINS,ITERAT,RETACT)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*19 SDDISC
+      INTEGER      IEVDAC
+      INTEGER      ITERAT,NUMINS
+      INTEGER      RETACT
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C ACTIONS SUITE A UN EVENEMENT
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDDISC : SD DISCRETISATION
+C IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+C IN  ITERAT : NUMERO D'ITERATION DE NEWTON
+C IN  NUMINS : NUMERO D'INSTANT
+C OUT RETACT : CODE RETOUR
+C     1 - ON DECOUPE LE PAS DE TEMPS
+C     2 - ON AUTORISE DES ITERATIONS EN PLUS
+C     3 - ON REFAIT LE PAS DE TEMPS
+C     4 - ECHEC DE L'ACTION
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C 
+      INTEGER      IBID
+      REAL*8       R8BID
+      CHARACTER*16 ACTION
+      INTEGER      RETSUP,RETDEC,RETSWA
+      LOGICAL      TRYDEC
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      RETACT = 4
+      TRYDEC = .FALSE.
+C
+C --- QUELLE ACTION ?
+C
+      CALL UTDIDT('L'   ,SDDISC,'ECHE',IEVDAC,'ACTION'  ,
+     &            R8BID ,IBID  ,ACTION)
+C
+C --- REALISATION DE L'ACTION
+C 
+      IF (ACTION.EQ.'ARRET') THEN
+        RETACT = 4
+        TRYDEC = .FALSE.
+      ELSEIF (ACTION.EQ.'ITER_SUPPL') THEN
+        CALL NMITSP(SDDISC,ITERAT,RETSUP)
+        IF (RETSUP.EQ.0) THEN 
+          TRYDEC = .TRUE.          
+        ELSEIF (RETSUP.EQ.1) THEN
+          RETACT = 2
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ELSEIF (ACTION.EQ.'DECOUPE') THEN
+        TRYDEC = .TRUE.
+      ELSEIF (ACTION.EQ.'AUTRE_PILOTAGE') THEN 
+        CALL NMEVDP(SDDISC,IEVDAC,RETSWA)
+        IF (RETSWA.EQ.0) THEN
+          TRYDEC = .TRUE.
+        ELSEIF (RETSWA.EQ.1) THEN
+          RETACT = 3
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ELSEIF (ACTION.EQ.'ADAPT_COEF_PENA') THEN
+C        CALL NMADCP()
+        TRYDEC = .FALSE.  
+        CALL ASSERT(.FALSE.)
+      ELSE
+        CALL ASSERT(.FALSE.)      
+      ENDIF
+C
+C --- CAS DE LA DECOUPE
+C
+      IF (TRYDEC) THEN
+        CALL NMDECO(SDDISC,NUMINS,ITERAT,IEVDAC,RETDEC)
+        IF (RETDEC.EQ.0) THEN
+          RETACT = 4
+        ELSEIF (RETDEC.EQ.1) THEN
+          RETACT = 1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ENDIF
+C
+      CALL JEDEMA()
+      END

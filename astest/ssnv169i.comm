@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2011   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169i.para = tps_job 240 mem_job 128Mo ncpus 1 liste_test S
@@ -169,8 +169,9 @@ L_INS = DEFI_LIST_REEL( DEBUT = -1.0,
                           );
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INS ),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_NIVEAU = 4,
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_NIVEAU   = 4,
                                  ),)
                           
 # SOLUTION : ANALYSE QUASI STATIQUE                          

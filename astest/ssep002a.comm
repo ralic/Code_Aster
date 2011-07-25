@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CHARGE LIMITE INF - COUDE AVEC SOUS EPAISSEUR
 # ssep002a.para = tps_job 512 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,18 +135,11 @@ COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=DEFLIST,),
                     PILOTAGE=_F(TYPE='LONG_ARC',
                                 COEF_MULT=1.,
-                                #ETA_PILO_MIN=0.01,
-                                #ETA_PILO_R_MIN=0.001,
                                 SELECTION='ANGL_INCR_DEPL',
                                 GROUP_NO='PILO',
                                 NOM_CMP=('DX','DY','DZ',),),
                     NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                    #CONVERGENCE=_F(
-                                   #SIGM_REFE=200.,
-                                   #RESI_REFE_RELA=0.001,
-                                   # ITER_GLOB_MAXI=100,),
-                    SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
-                               METHODE = 'MUMPS'),
+                    SOLVEUR=_F(METHODE = 'MUMPS'),
                     SUIVI_DDL=(_F(NOM_CMP='DZ',
                                   GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV',),
                                   EVAL_CHAM='MAX',

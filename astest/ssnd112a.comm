@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
 # ssnd112a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -273,6 +273,7 @@ IMPR_RESU(FORMAT='MED',
                  ),
           );
 
+IMPR_RESU(RESU=_F(RESULTAT=SOLNL))
 
 numpg=5
 
@@ -516,7 +517,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=rho[12],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
                         VALE_REFE=1.719314E-05,
-                        PRECISION=0.24,
+                        PRECISION=0.25,
                         REFERENCE='AUTRE_ASTER',),
                         );
 
@@ -535,13 +536,13 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[12],
 TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR,
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
-                        VALE_REFE=293.247095,
+                        VALE_REFE=292.9184,
                         REFERENCE='NON_REGRESSION',),
                         );
 TEST_FONCTION(VALEUR=_F(FONCTION=rho[1],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
-                        VALE_REFE=1.425E-05,
+                        VALE_REFE=1.42257E-05 ,
                         REFERENCE='NON_REGRESSION',),
                         );
 
@@ -569,14 +570,14 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
 TEST_FONCTION(VALEUR=_F(FONCTION=rho[12],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
-                        VALE_REFE=1.309E-05,
+                        VALE_REFE=1.30596E-05,
                         REFERENCE='NON_REGRESSION',),
                         );
 
 TEST_FONCTION(VALEUR=_F(FONCTION=gamma[12],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
-                        VALE_REFE=0.088585,
+                        VALE_REFE=0.0884,
                         REFERENCE='NON_REGRESSION',),
                         );
 

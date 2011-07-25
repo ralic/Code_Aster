@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE EN TRACTION - TEST CORR_ACIER EN COQUE_3D
 # ssnl127e.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,8 @@ CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR,), )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-06),)
 
@@ -172,7 +173,8 @@ CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR2,), )
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST2),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-06),)
 
@@ -251,7 +253,8 @@ CHMAT3=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR3,), )
 
 DEFLIST3 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST3),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-06),)
 

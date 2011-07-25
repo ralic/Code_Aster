@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,16 +163,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _decoup = False
-
-#  Le déclenchement du re-découpage quand la matrice est non inversible n'est possible que dans MECA_NON_LINE
-   if _type == 'NL':
-      _decoup = True
-   if COMMAND == 'THER_NON_LINE':
-      _decoup = False
-
-# ----------------------------------------------------------------------------------------------------------------------------------
-
    _singu_non = False
 
 #  Dans DEFI_BASE_MODALE, NON est le défaut de STOP_SINGULIER 
@@ -265,10 +255,8 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 #  STOP_SINGULIER
    _into = ("OUI", "NON", )
-   if _decoup:
-      _into = ("OUI", "NON", "DECOUPE", )
-
    _defaut = "OUI"
+   
    if _singu_non:
       _defaut = "NON"
 

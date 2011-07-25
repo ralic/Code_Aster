@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,7 +171,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N291',
                        NOM_CMP = 'SIYY',
                        VALE = -1.9787E+03,
-                       PRECISION = 12.E-02,
+                       PRECISION = 7.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO1,
@@ -179,7 +179,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -1.9787E+03,
-                       PRECISION = 2.E-02,
+                       PRECISION = 1.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO1,
@@ -187,7 +187,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -1.9787E+03,
-                       PRECISION = 20.E-02,
+                       PRECISION = 15.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO2,
@@ -195,7 +195,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N291',
                        NOM_CMP = 'SIYY',
                        VALE = -2.7983E+03,
-                       PRECISION = 10.E-02,
+                       PRECISION = 5.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO2,
@@ -203,7 +203,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -2.7983E+03,
-                       PRECISION = 5.E-02,
+                       PRECISION = 3.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO2,
@@ -219,7 +219,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N291',
                        NOM_CMP = 'SIYY',
                        VALE = -3.4272E+03,
-                       PRECISION = 7.E-02,
+                       PRECISION = 2.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO3,
@@ -227,7 +227,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -3.4272E+03,
-                       PRECISION = 5.E-02,
+                       PRECISION = 3.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO3,
@@ -243,7 +243,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N291',
                        NOM_CMP = 'SIYY',
                        VALE = -3.9574E+03,
-                       PRECISION = 8.E-02,
+                       PRECISION = 3.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO4,
@@ -251,7 +251,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -3.9574E+03,
-                       PRECISION = 6.E-02,
+                       PRECISION = 4.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO4,
@@ -259,7 +259,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -3.9574E+03,
-                       PRECISION = 14.5E-02,
+                       PRECISION = 15E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO5,
@@ -267,7 +267,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N291',
                        NOM_CMP = 'SIYY',
                        VALE = -4.4245E+03,
-                       PRECISION = 15.E-02,
+                       PRECISION = 6.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO5,
@@ -275,7 +275,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -4.4245E+03,
-                       PRECISION = 7.E-02,
+                       PRECISION = 4.E-02,
                        CRITERE = 'RELATIF'),
             _F(
                        CHAM_GD = SIELNO5,
@@ -283,7 +283,7 @@ TEST_RESU(CHAM_ELEM=(
                        NOEUD = 'N55',
                        NOM_CMP = 'SIYY',
                        VALE = -4.4245E+03,
-                       PRECISION = 15.5E-02,
+                       PRECISION = 15E-02,
                        CRITERE = 'RELATIF'))
            )
 #

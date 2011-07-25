@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE GENIAUT S.GENIAUT
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISCOCHAB
 # comp002i.para = tps_job 250 mem_job 512Mo mem_aster 20 ncpus 1 liste_test R
@@ -239,9 +239,10 @@ for i in range(Ncal):
                                     _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
    DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
-                        ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
-                                 SUBD_PAS=10,
-                                 SUBD_NIVEAU=10,),)
+                        ECHEC=_F(ACTION       = 'DECOUPE',
+                                 SUBD_METHODE = 'AUTO',
+                                 
+                                 ),)
    # Resout le pb a deformation imposee
    RESU[i]=SIMU_POINT_MAT(
                           COMP_INCR   =_F(RELATION=compor,ITER_INTE_MAXI=1500),

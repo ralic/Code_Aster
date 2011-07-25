@@ -4,7 +4,7 @@
       CHARACTER*(*) FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,10 +57,11 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       LEXI=.FALSE.
-
+      LIGREL='&&W039CA.LIGREL'
+      
       IF (.NOT.(FORM.EQ.'MED'.OR.FORM.EQ.'RESULTAT'))GOTO 20
 
-      LIGREL='&&W039CA.LIGREL'
+      
 
       CALL GETFAC('CONCEPT',NOCC)
       DO 10 IOCC=1,NOCC

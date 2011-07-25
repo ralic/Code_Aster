@@ -1,4 +1,4 @@
-# MODIF  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM NON CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,14 +169,13 @@ INS_ARCH = DEFI_LIST_REEL(
                           )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
-                        ECHEC=(_F(
-                  SUBD_METHODE='UNIFORME',
-                  SUBD_PAS  = 10,
-                  SUBD_PAS_MINI = 1.E-20,
-                  SUBD_NIVEAU=20,
-                                 ),
-                                 _F(
-                                 EVENEMENT='DIVE_ITER_PILO',),),)
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 10,
+                                 SUBD_PAS_MINI = 1.E-20,
+                                 SUBD_NIVEAU   = 20,),
+                        )
 EVOL = STAT_NON_LINE(
   MODELE = MODELEK,
   CHAM_MATER = CHAMPMA,

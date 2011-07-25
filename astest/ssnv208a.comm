@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN
 # ssnv208a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,9 +117,10 @@ COEF2=DEFI_FONCTION(NOM_PARA='INST',
                           10.0, .2));
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_PAS=10,
-                                 SUBD_NIVEAU=10),)
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 10,
+                                 SUBD_NIVEAU   = 10),)
 
 #***********************************************************************
 #    PRECONSOLIDATION ELASTIQUE JUSQU'A 100KPA

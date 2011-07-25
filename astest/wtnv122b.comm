@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
 # wtnv122b.para = tps_job 100 mem_job 300Mo mem_aster 50 ncpus 1 liste_test S
@@ -167,9 +167,11 @@ TEMPS2=DEFI_LIST_REEL(   DEBUT=1.,INTERVALLE=(
                          )
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS2 ),
-                        ECHEC=_F(SUBD_METHODE = 'UNIFORME',
-                                 SUBD_PAS     = 10,
-                                 SUBD_PAS_MINI=0.001,
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 10,
+                                 SUBD_PAS_MINI = 0.001,
                                 ),)
 
 #CALCUL ELASTIQUE

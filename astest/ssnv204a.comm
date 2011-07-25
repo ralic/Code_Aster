@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR)
 # ssnv204a.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -185,13 +185,15 @@ COEF2=DEFI_FONCTION(NOM_PARA='INST',
                           10.0, 2*P0));
 
 DEFLIST0 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS0),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_PAS_MINI =0.00001 ),)
 
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_PAS_MINI =0.00001 ),)
 
@@ -278,9 +280,11 @@ VAR2=CREA_CHAMP(INFO=2,
 #***********************************************************************
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS2),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_PAS=10,
-                                 SUBD_PAS_MINI =0.00001 ),)
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 10,
+                                 SUBD_PAS_MINI = 0.00001 ),)
 
 U2=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAI HYDROSTATIQUE AVEC LA LOI DRUCKER-PRAGER ASSOCIEE, ECROUISSAGE LINEAIRE
 # ssnv221a.para = tps_job 300 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,10 +87,11 @@ TEMPS1 = DEFI_LIST_REEL( DEBUT = 0.,
                                        _F( JUSQU_A = 40.,
                                            NOMBRE  = 500,),  ),)
 
-DEFLIST1 = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST    =  TEMPS1),
-                           ECHEC     = _F( SUBD_METHODE = 'UNIFORME',
-                                           SUBD_PAS     = 4.,
-                                           SUBD_NIVEAU  = 10),)
+DEFLIST1 = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST     =  TEMPS1),
+                           ECHEC     = _F( ACTION        = 'DECOUPE',
+                                           SUBD_METHODE  = 'MANUEL',
+                                           SUBD_PAS      = 4.,
+                                           SUBD_NIVEAU   = 10),)
 
 
 

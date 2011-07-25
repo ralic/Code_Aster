@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
 # ssnv139b.para = tps_job 300 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,8 +92,9 @@ L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
 DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST,
                                      METHODE='AUTO',
                                      PAS_MINI=1.0E-12),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_PAS=4,
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 4,
                                  SUBD_PAS_MINI = 1e-7),
                         ADAPTATION=_F(EVENEMENT='SEUIL'),
                         );
@@ -107,8 +108,6 @@ NONLIN=STAT_NON_LINE(       MODELE=MODELE_1,
                          COMP_ELAS=_F( 
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP'),
-                         SOLVEUR=_F(
-                STOP_SINGULIER='DECOUPE'),
                          INCREMENT=_F( 
                 LIST_INST = DEFLIST1,),
                             NEWTON=_F( 

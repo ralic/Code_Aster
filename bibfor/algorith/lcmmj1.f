@@ -1,10 +1,11 @@
-      SUBROUTINE LCMMJ1 (TYPMOD, NMAT, MATERF,TIMED, TIMEF,
-     &                   ITMAX,TOLER,NBCOMM,CPMONO,PGL,TOUTMS,HSR,
-     &                   NR,VIND,YF,DY,DRDY,IRET)
+      SUBROUTINE LCMMJ1(TAUR,MATERF,CPMONO,IFA,NMAT,NBCOMM,DT,
+     &                  NSFV,NSFA,IR,IS,NBSYS,HSR,VIND,DY,ITMAX,TOLER,
+     &                  DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
       IMPLICIT NONE
+C TOLE CRP_21
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,208 +24,111 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J.M.PROIX
 C       ----------------------------------------------------------------
-C       MONOCRISTAL : CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY
-C                    DY    = ( DSIG + DGAMMA PAR SYST )
-C                    Y     = ( SIG   GAMMA P par syst. gliss)
-C       IN  TYPMOD    :  TYPE DE MODELISATION
-C           NMAT   :  DIMENSION MATER
+C       MONOCRISTAL : DERIVEES DES TERMES UTILES POUR LE CALCUL  
+C                    DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY
+C                    cf. R5.03.11 comportements MONO_VISC*
+C       IN  
+C           TAUR   :  SCISSION REDUITE SYSTEME IR
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TIMED  :  ISTANT PRECEDENT
-C           TIMEF  :  INSTANT ACTUEL
+C           CPMONO :  NOM DES COMPORTEMENTS
+C           IFA    :  NUMERO FAMILLE
+C           NMAT   :  DIMENSION MATER
+C           NBCOMM :  INCIDES DES COEF MATERIAU
+C           DT     :  ACCROISSEMENT INSTANT ACTUEL
+C           NSFV   :  DEBUT DES SYST. GLIS. DE LA FAMILLE IFA DANS VIND
+C           NSFA   :  DEBUT DES SYST. GLIS. DE LA FAMILLE IFA DANS Y
+C           IS     :  NUMERO DU SYST. GLIS. S
+C           IR     :  NUMERO DU SYST. GLIS. R
+C           NBSYS  :  NOMBRE DE SYSTEMES DE GLISSEMENT FAMILLE IFA
+C           HSR    :  MATRICE D'INTERACTION
+C           VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
+C           DY     :  SOLUTION           =  ( DSIG DX1 DX2 DP (DEPS3) )
 C           ITMAX  :  ITER_INTE_MAXI
 C           TOLER  :  RESI_INTE_RELA
-C           COMP   :  NOM COMPORTEMENT
-C           NBCOMM :  INCIDES DES COEF MATERIAU
-C           CPMONO :  NOM DES COMPORTEMENTS
-C           PGL    :  MATRICE DE PASSAGE
-C           TOUTMS :  TENSEURS D'ORIENTATION
-C           HSR    :  MATRICE D'INTERACTION
-C           NVI    :  NOMBRE DE VARIABLES INTERNES
-C           VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
-C           YF     :  VARIABLES A T + DT =  ( SIGF X1F X2F PF (EPS3F) )
-C           DY     :  SOLUTION           =  ( DSIG DX1 DX2 DP (DEPS3) )
-C           NR     :  DIMENSION DECLAREE DRDY
-C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
+C       OUT DGSDTS :  derivee dGammaS/dTauS
+C       OUT DKSDTS :  dkS/dTaus
+C       OUT DGRDBS :  dGammaR/dBetaS
+C       OUT DKRDBS :  dkR/dBetaS
 C       OUT IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT , NR, NBFSYS, NUVS, IEXP
-      INTEGER         NBCOMM(NMAT,3),NUVI,IFA,NBSYS,IS,I,IRET
-      INTEGER         IR,NSFA,NUVR,NSFV,ITMAX
-      INTEGER         NUVIR
-      REAL*8          VIND(*),DGDTAU,DGDRS
-      REAL*8          TOUTMS(5,24,6),HSR(5,24,24), EXPBP(24)
-      REAL*8          SIGF(6),FHOOK(6,6),CRITR,DRSDPS
-      REAL*8          Q(3,3),LG(3)
-      REAL*8          PGL(3,3),MS(6),NG(3),TAUS,TIMED, TIMEF
-      REAL*8          DP,YF(*),DY(*),DRDY(NR,NR),SMSMS(6,6),DGDGAS
-      REAL*8          MATERF(NMAT*2), DT,RP
-      REAL*8          MSMS(6,6)
-      REAL*8          MSDGDT(6,6),DGAMMS,RR
-      REAL*8          ALPHAM,DALPHA,ALPHAP,CRIT,DALDGA,DGAMMA
-      REAL*8          SGNS,TAUR,SGNR,ALPHAR,GAMMAP,PM,GAMMAR
-      REAL*8          DGDAL,DGAMMR,ALPHMR,PS,TOLER
-      REAL*8          PMR,DALPHR,PSR,DGDGAR,DPR,DRSDPR
+      INTEGER NMAT,NUVR,NUVS,IEXP,IR,NSFA,NSFV,ITMAX
+      INTEGER NBCOMM(NMAT,3),NUVI,IFA,NBSYS,IS,IRET
+      REAL*8 VIND(*),DGDTAU,DGRDRR
+      REAL*8 HSR(5,24,24), EXPBP(24),DP,DY(*)
+      REAL*8 MATERF(NMAT*2), DT,DGAMMS,RR
+      REAL*8 ALPHAM,DALPHA,ALPHAR,CRIT,DARDGR,DGAMMA
+      REAL*8 SGNS,TAUR,SGNR,GAMMAR,PM,PMS
+      REAL*8 DGRDAR,TOLER,DRRDPS,PS,PETITH
+      REAL*8 DGSDTS,DKSDTS,DGRDBS,DKRDBS
       CHARACTER*16    CPMONO(5*NMAT+1)
-      CHARACTER*16    NOMFAM,NECOUL,NECRIS,NECRCI
-      CHARACTER*8     TYPMOD
-C     ----------------------------------------------------------------
-      COMMON /TDIM/   NDT , NDI
+      CHARACTER*16    NECOUL,NECRIS,NECRCI
 C     ----------------------------------------------------------------
       IRET=0
-      CALL R8INIR ( NR*NR, 0.D0 , DRDY, 1 )
-      CALL R8INIR ( 36, 0.D0 , MSDGDT, 1 )
-      DT=TIMEF-TIMED
-      CALL LCEQVN ( NDT , YF(1)       , SIGF )
-      NBFSYS=NBCOMM(NMAT,2)
-C     NSFA : debut de la famille IFA dans DY et YD, YF
-      NSFA=6
-C     NSFV : debut de la famille IFA dans les variables internes
-      NSFV=6
-C     LE NUMERO GLOBAL DU SYSTEME IS DANS Y EST NUVS
-      DO 6 IFA=1,NBFSYS
-         NOMFAM=CPMONO(5*(IFA-1)+1)
-         NECOUL=CPMONO(5*(IFA-1)+3)
-         NECRIS=CPMONO(5*(IFA-1)+4)
-         NECRCI=CPMONO(5*(IFA-1)+5)
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
-         DO 7 IS=1,NBSYS
-C           CALCUL DE LA SCISSION REDUITE =
-            DO 101 I=1,6
-               MS(I)=TOUTMS(IFA,IS,I)
- 101        CONTINUE
-            TAUS=0.D0
-            DO 9 I=1,6
-               TAUS=TAUS+SIGF(I)*MS(I)
- 9          CONTINUE
-            NUVS=NSFA+IS
-            NUVI=NSFV+3*(IS-1)
-            PM=VIND(NUVI+3)
-            ALPHAM=VIND(NUVI+1)
-            DGAMMS=DY(NUVS)
-            GAMMAP=VIND(NUVI+2)+DGAMMS
+      DGSDTS=0.D0
+      DKSDTS=0.D0
+      DGRDBS=0.D0
+      DKRDBS=0.D0
+      
+      NECOUL=CPMONO(5*(IFA-1)+3)
+      NECRIS=CPMONO(5*(IFA-1)+4)
+      NECRCI=CPMONO(5*(IFA-1)+5)
+      
+      NUVR=NSFA+IR
+      NUVS=NSFA+IS
+      NUVI=NSFV+3*(IR-1)
+C      PM=VIND(NUVI+3)
+      ALPHAM=VIND(NUVI+1)
+      DGAMMS=DY(NUVR)
+      GAMMAR=VIND(NUVI+2)+DGAMMS
 
-C           CALCUL DE DALPHA
-            CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
-     &                   ITMAX,TOLER, ALPHAM,DGAMMS,DALPHA,IRET )
-            IF (IRET.GT.0)  GOTO 9999
-            ALPHAP=ALPHAM+DALPHA
+C     CALCUL DE DALPHA
+      CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
+     &             ITMAX,TOLER, ALPHAM,DGAMMS,DALPHA,IRET )
+      IF (IRET.GT.0)  GOTO 9999
+      ALPHAR=ALPHAM+DALPHA
 
-C           CALCUL DE R(P) : RP=R0+Q*(1.D0-EXP(-B*P))
-C            future version
-C            CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-C     &        IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,RP,IRET)
-C            IF (IRET.GT.0)  GOTO 9999
-            IEXP=1
-            CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &           IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
+C     CALCUL DE R(P) : RP=R0+Q*(1.D0-EXP(-B*P))
+C        ECROUISSAGE ISOTROPE : CALCUL DE R(P)
+         IEXP=0
+         IF (IR.EQ.1) IEXP=1
+      CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
+     &     IR,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RR)
 
-C           CALCUL de DGAMMA
-            CALL LCMMFE(TAUS,MATERF(NMAT+1),MATERF(1),IFA,
-     &           NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),
-     &           DY(NSFA+1),RP,ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,
-     &           SGNS,HSR,IRET)
-            IF (IRET.GT.0)  GOTO 9999
+C     CALCUL de DGAMMA et de CRIT
+      CALL LCMMFE(TAUR,MATERF(NMAT+1),MATERF(1),IFA,
+     &     NMAT,NBCOMM,NECOUL,IR,NBSYS,VIND(NSFV+1),
+     &     DY(NSFA+1),RR,ALPHAR,GAMMAR,DT,DALPHA,DGAMMA,DP,CRIT,
+     &     SGNS,HSR,IRET)
+      IF (IRET.GT.0)  GOTO 9999
 
-            IF (CRIT.GT.0.D0) THEN
-C              CALCUL de dF/dtau
-               CALL LCMMJF( TAUS,MATERF(NMAT+1),MATERF(1),
-     &               IFA,NMAT,NBCOMM,DT,NECOUL,IS,0,NBSYS,VIND(NSFV+1),
-     &               DY(NSFA+1),HSR,RP,ALPHAP,DALPHA,GAMMAP,
-     &               DGAMMS,SGNS,DGDTAU,DGDAL,DGDRS,IRET)
-               IF (IRET.GT.0)  GOTO 9999
-C------------------------
-C              dR1/dS
-C------------------------
-               CALL LCPRTE(MS,MS,MSMS)
-               CALL LCPRSM(DGDTAU, MSMS, SMSMS)
-               CALL LCSOMA(MSDGDT, SMSMS, MSDGDT)
-C------------------------
-C              dR2/dS
-C------------------------
-               DO 29 I=1,6
-                   DRDY(NUVS,I)=-MS(I)*DGDTAU
- 29            CONTINUE
-C------------------------
-C              dR1/dGammaS
-C------------------------
-C              CALCUL DE dRr/dps
-               PS=PM+ABS(DGAMMA)
-               CALL LCMMJI( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &          HSR,IS,IS,PS,DRSDPS)
+      IF (CRIT.GT.0.D0) THEN
+C        CALCUL de dF/dtau
+         CALL LCMMJF( TAUR,MATERF(NMAT+1),MATERF(1),
+     &         IFA,NMAT,NBCOMM,DT,NECOUL,IR,IS,NBSYS,VIND(NSFV+1),
+     &         DY(NSFA+1),HSR,RR,ALPHAR,DALPHA,GAMMAR,
+     &         DGAMMS,SGNS,DGDTAU,DGRDAR,DGRDRR,PETITH,IRET)
+         IF (IRET.GT.0)  GOTO 9999
+         
+         DGSDTS=DGDTAU
+         DKSDTS=DGDTAU
+         
+C        CALCUL DE dRr/dps
+C         PS=PM+ABS(DY(NUVS))
+         PMS=VIND(NSFV+3*(IS-1)+3)
+         PS=PMS+ABS(DY(NUVS))
+         CALL LCMMJI( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
+     &    HSR,IR,IS,PS,DRRDPS)
 
-C              CALCUL DE DALPHAs/dGAMMAs
-               CALL LCMMJC(MATERF(NMAT+1),IFA,NMAT,NBCOMM,
-     &              IS,IS,NECRCI,DGAMMA,ALPHAM,DALPHA,SGNS,DALDGA)
-C------------------------
-C              terme dR1/dGammaS
-C------------------------
-               DGDGAS=DGDAL*DALDGA+DGDRS*DRSDPS*SGNS
-               DO 191 I=1,6
-                  DRDY(I,NUVS)=DRDY(I,NUVS)+TOUTMS(IFA,IS,I)*DGDGAS
- 191           CONTINUE
-C------------------------
-C              terme dR2s/dGammas
-C------------------------
-               DRDY(NUVS,NUVS)=1.D0-DGDGAS
-C------------------------
-C              terme dR2s/dGammar, pour r  /= s
-C------------------------
-               DO 22 IR=1,NBSYS
-                  IF (IR.EQ.IS) GOTO 22
-C                 Calcul de TauR (scission reduite du systeme R)
-                  TAUR=0.D0
-                  DO 91 I=1,6
-                     TAUR=TAUR+SIGF(I)*TOUTMS(IFA,IR,I)
- 91               CONTINUE
-                  NUVR=NSFA+IR
-                  NUVIR=NSFV+3*(IR-1)
-                  PMR=VIND(NUVIR+3)
-                  ALPHMR=VIND(NUVIR+1)
-                  DGAMMR=DY(NUVR)
+C        CALCUL DE DALPHAs/dGAMMAs
+         CALL LCMMJC(MATERF(NMAT+1),IFA,NMAT,NBCOMM,
+     &        IR,IS,NECRCI,DGAMMS,ALPHAM,DALPHA,SGNR,DARDGR)
 
-C                 CALCUL DE R(Pr) : RP=R0+Q*(1.D0-EXP(-B*Pr))
-                  IEXP=1
-                  CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &               IR,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RR)
-
-                  CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
-     &                   ITMAX,TOLER, ALPHMR,DGAMMR,DALPHR,IRET )
-                  IF (IRET.GT.0)  GOTO 9999
-
-                  ALPHAR=ALPHMR+DALPHR
-                  GAMMAR=VIND(NUVIR+2)+DGAMMR
-                  CALL LCMMFE(TAUR,MATERF(NMAT+1),MATERF(1),IFA,
-     &                     NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),
-     &                 DY(NSFA+1),RR,ALPHAR,GAMMAR,DT,DALPHR,DGAMMR,DPR,
-     &                 CRITR,SGNR,HSR,IRET)
-                  IF (IRET.GT.0)  GOTO 9999
-
-C                 CALCUL DE dRs/dpr
-                  PSR=PMR+DPR
-                  CALL LCMMJI( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &                         HSR,IS,IR,PSR,DRSDPR)
-
-                  DGDGAR=DGDRS*DRSDPR*SGNR
-                  DRDY(NUVS,NUVR)=-DGDGAR
-
-  22           CONTINUE
-
-            ELSE
-               DRDY(NUVS,NUVS)=1.0D0
-            ENDIF
-
-  7     CONTINUE
-        NSFA=NSFA+NBSYS
-        NSFV=NSFV+NBSYS*3
-  6   CONTINUE
-
-      IF (MATERF(NMAT).EQ.0) THEN
-         CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERF(1) , FHOOK )
-      ELSEIF (MATERF(NMAT).EQ.1) THEN
-         CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , FHOOK )
+         DGRDBS=DGRDAR*DARDGR+DGRDRR*DRRDPS*SGNS
+         
+         DKRDBS=DGRDBS
+         
       ENDIF
-
-      CALL LCSOMA(MSDGDT, FHOOK, MSDGDT)
-      CALL LCICMA (MSDGDT, 6,6,NDT,NDT,1,1,DRDY,NR,NR,1,1)
+      
 9999  CONTINUE
+
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 # zzzz175a.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
@@ -37,7 +37,9 @@ l_inst=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=T_final,PAS=pas_de_temps,),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = l_inst),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=1.E-1),)
 #

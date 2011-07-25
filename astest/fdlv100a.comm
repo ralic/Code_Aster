@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 11/07/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE INCOMPRESSIBLE
 # fdlv100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,8 +75,8 @@ CHARGE=AFFE_CHAR_THER( MODELE=FLUIDE,
 CHAMPCAR=AFFE_CARA_ELEM( MODELE=STRUCT,
                          DISCRET_2D=(_F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
                                         VALE = (1.E5, 1.E5, )),
-                                    _F( GROUP_MA = 'RESSORT', CARA = 'M_T_L',
-                                        VALE = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ))))
+                                    _F( GROUP_MA = 'RESSORT', CARA = 'M_T_D_L',
+                                        VALE = (0.0, ))))
 
 CHARGS=AFFE_CHAR_MECA( MODELE=STRUCT,DDL_IMPO=(
                     _F( GROUP_NO = 'NOEUPIST', DY = 0.),

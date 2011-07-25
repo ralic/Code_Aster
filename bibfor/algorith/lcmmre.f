@@ -3,7 +3,7 @@
      &       ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,DY,R,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,16 +23,14 @@ C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C       ----------------------------------------------------------------
-C     MONOCRISTAL  : CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = R(DY)
-C                  VARINT =  DEPSVP (DALPHAS DGAMMAS DPS) PAR SYSTEME
-C                  DY =  DSIG (DGAMMAS PAR SYSTEME)
-C                  Y  =  SIG   (GAMMAS  PAR SYSTEME)
-C                  R  = ( R1  R2   )
-C  CAS PARTICULEIR : POUR KOCKS-RAUCH, DY = DSIG  DRs s=1,Ns
-C  KOCKS-RAUCH, VARINT = DEPSVP (DRS DGAMMAS DPS) PAR SYSTEME
-C  ATTENTION IL FAUT CALCULER -R
+C     MONOCRISTAL  : CALCUL DES RESIDUS DU SYSTEME NL A RESOUDRE = R(DY)
+C                    CF. R5.03.11
+C                    DY =  DSIG (DBETA PAR SYSTEME)
+C                    Y  =  SIG   (BETA  PAR SYSTEME)
+C                    R  = ( R1  R2   )
+C                    ATTENTION IL FAUT CALCULER -R
 C
-C     IN  TYPMOD    :  TYPE DE MODELISATION
+C     IN  TYPMOD :  TYPE DE MODELISATION
 C         NMAT   :  DIMENSION MATER
 C         MATERD :  COEFFICIENTS MATERIAU A T
 C         MATERF :  COEFFICIENTS MATERIAU A T+DT
@@ -42,18 +40,17 @@ C         CPMONO :  NOM DES COMPORTEMENTS
 C         PGL    :  MATRICE DE PASSAGE
 C         TOUTMS :  TENSEURS D'ORIENTATION
 C         HSR    :  MATRICE D'INTERACTION
+C         NR     :  DIMENSION DECLAREE DRDY
 C         NVI    :  NOMBRE DE VARIABLES INTERNES
 C         VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
 C         ITMAX  :  ITER_INTE_MAXI
 C         TOLER  :  RESI_INTE_RELA
 C         TIMED  :  ISTANT PRECEDENT
 C         TIMEF  :  INSTANT ACTUEL
-C         YD     :  VARIABLES A T       = ( SIGD VIND (EPSD3)  )
-C         YF     :  VARIABLES A T + DT  = ( SIGF VINF (EPSF3)  )
-C         DY     :  SOLUTION ESSAI      = ( DSIG DVIN (DEPS3) )
-C         DEPS   :  INCREMENT DE DEFORMATION
-C         YF     :  VARIABLES A T + DT =  ( SIGF X1F X2F PF (EPS3F) )
-C         DY     :  SOLUTION           =  ( DSIG DX1 DX2 DP (DEPS3) )
+C         YD     :  VARIABLES A T       = ( SIGD BETAD )
+C         YF     :  VARIABLES A T + DT  = ( SIGF BETAF )
+C         DEPS   :  INCREMENT DE DEFORMATION OU GRADIENT DF
+C         DY     :  SOLUTION  =  ( DSIG DBETA )
 C         NR     :  DIMENSION DECLAREE DRDY
 C     OUT R      :  RESIDU DU SYSTEME NL A T + DT
 C         IRET   :  CODE RETOUR
@@ -65,49 +62,33 @@ C
       REAL*8 DKOOH(6,6),FKOOH(6,6),TIMED, TIMEF
       REAL*8 SIGF(6), SIGD(6), MSNS(3,3),PGL(3,3),DGAMM1
       REAL*8 DEPS(*),DEPSE(6), DEVI(6),DT
-      REAL*8 EPSED(6) , FETFE6(6), H1SIGF(6),VIND(*)
+      REAL*8 EPSED(6) , EPSGL(6), H1SIGF(6),VIND(*)
       REAL*8 MATERD(NMAT*2) ,MATERF(NMAT*2),EPSEF(6)
-      REAL*8 MS(6),NG(3),TAUS,DGAMMA,DALPHA,DP,RP
+      REAL*8 MUS(6),NG(3),TAUS,DGAMMA,DALPHA,DP,RP
       REAL*8 R(NR),DY(NR),YD(NR),YF(NR),TOLER,FE(3,3)
-      REAL*8 TOUTMS(5,24,6), HSR(5,24,24),Q(3,3),LG(3),ID6(6)
-      REAL*8 HOOKF(6,6),GAMSNS(3,3),FP(3,3)
+      REAL*8 TOUTMS(5,24,6), HSR(5,24,24),Q(3,3),LG(3)
+      REAL*8 GAMSNS(3,3),FP(3,3)
       REAL*8 CRIT,SGNS,EXPBP(24)
       CHARACTER*8  TYPMOD
       CHARACTER*16 CPMONO(5*NMAT+1),COMP(*),NOMFAM
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
-      DATA ID6/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C
       DT=TIMEF-TIMED
-C
-C                 -1                     -1
-C -   HOOKF, HOOKD , DFDS , FETFE6 = HOOKD  SIGD + DEPS - DEPSP
-C
+C     INVERSE DE L'OPERATEUR D'ELASTICITE DE HOOKE
       IF (MATERF(NMAT).EQ.0) THEN
          CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERD(1) , DKOOH )
          CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERF(1) , FKOOH )
-         CALL LCOPLI  ( 'ISOTROPE' , TYPMOD , MATERF(1) , HOOKF )
       ELSEIF (MATERF(NMAT).EQ.1) THEN
          CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERD(1) , DKOOH )
          CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , FKOOH )
-         CALL LCOPLI  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , HOOKF )
       ENDIF
 
-      IF (COMP(3)(1:5).NE.'PETIT') THEN
-C Y contient : SIGF=PK2 (sans les SQRT(2) !), puis les alpha_s
-         CALL LCEQVN(NDT,YF(1),SIGF)
-C        CONTRAINTES PK2          
-C Y contient : FeTFe - Id, puis les alpha_s
-         CALL LCPRMV(FKOOH,SIGF,FETFE6)
-         CALL DSCAL(6,2.D0,FETFE6,1)
-         CALL R8INIR(6,0.D0,DEVI,1)
-         CALL R8INIR(9,0.D0,GAMSNS,1)
-         CALL DAXPY(6,1.D0,ID6,1,FETFE6,1)
-      ELSE
-         CALL LCEQVN(NDT,YF(1),SIGF)
-         CALL R8INIR(6,0.D0,DEVI,1)
-      ENDIF
+      CALL R8INIR(9,0.D0,GAMSNS,1)
+      CALL LCEQVN(NDT,YF(1),SIGF)
+      CALL R8INIR(6,0.D0,DEVI,1)
+      
       NBFSYS=NBCOMM(NMAT,2)
       IRET=0
       
@@ -123,19 +104,22 @@ C     NSFV : debut de la famille IFA dans les variables internes
          NUECOU=NINT(MATERF(NMAT+IFL))
          NOMFAM=CPMONO(5*(IFA-1)+1)       
 
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NG,LG,0,Q)
 
          DO 7 IS=1,NBSYS
+C           CALCUL DE LA SCISSION REDUITE
+            CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,TOUTMS,TAUS,MUS,MSNS)
+C           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT            
+            CALL LCMMLC(NMAT,NBCOMM,CPMONO,HSR,NSFV,NSFA,IFA,NBSYS,IS,
+     &                  DT,NVI,VIND,YD,DY,ITMAX,TOLER,MATERF,EXPBP,TAUS,
+     &                  DALPHA,DGAMMA,DP,CRIT,SGNS,RP,IRET)
 
-            CALL LCMMLC(COMP,NMAT,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NSFV,
-     &      NSFA,IFA,NBSYS,IS,DT,NVI,VIND,SIGF,FETFE6,YD,DY,
-     &      ITMAX,TOLER,MATERF,EXPBP,NUECOU,
-     &      TAUS,DALPHA,DGAMMA,DP,CRIT,SGNS,RP,MSNS,MS,IRET)
-
-            IF (IRET.GT.0) GOTO 9999
+            IF (IRET.GT.0) THEN
+               GOTO 9999
+            ENDIF
 
             IF ((NUECOU.EQ.4).OR.(NUECOU.EQ.5)) THEN
-C              POUR KOCKS-RAUCH ALPHA représente la variable principale
+C           POUR LES LOIS DD_* ALPHA représente la variable principale
                R(NSFA+IS)=-(DY(NSFA+IS)-DALPHA)
             ELSE
                DGAMM1=DY(NSFA+IS)
@@ -143,7 +127,7 @@ C              POUR KOCKS-RAUCH ALPHA représente la variable principale
             ENDIF
 
             IF (COMP(3)(1:5).EQ.'PETIT') THEN
-               CALL DAXPY(6,DGAMMA,MS,1,DEVI,1)
+               CALL DAXPY(6,DGAMMA,MUS,1,DEVI,1)
             ELSE
                CALL DAXPY(9,DGAMMA,MSNS,1,GAMSNS,1)
             ENDIF
@@ -156,10 +140,12 @@ C              POUR KOCKS-RAUCH ALPHA représente la variable principale
 
       IF (COMP(3)(1:5).NE.'PETIT') THEN
          CALL CALCFE(NR,NDT,VIND,DEPS,GAMSNS,FE,FP,IRET)       
-         IF (IRET.GT.0) GOTO 9999
-         CALL LCGRLA ( FE,FETFE6)
+         IF (IRET.GT.0) THEN
+            GOTO 9999
+         ENDIF
+         CALL LCGRLA ( FE,EPSGL)
          CALL LCPRMV ( FKOOH,   SIGF  , H1SIGF )
-         CALL LCDIVE ( FETFE6,   H1SIGF  , R(1) )
+         CALL LCDIVE ( EPSGL,   H1SIGF  , R(1) )
       ELSE      
          CALL LCEQVN ( NDT , YD(1)       , SIGD)
          CALL LCPRMV ( DKOOH,   SIGD  , EPSED )

@@ -1,18 +1,16 @@
       SUBROUTINE DICRGR(FAMI,OPTION,NEQ,NC,ICODMA,ULM,
-     &                  DUL,SIM,VARIM,PGL,KLV,VARIP,FONO,SIP,
-     &                  IRRAP)
+     &                  DUL,SIM,VARIM,PGL,KLV,VARIP,FONO,SIP)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
       INTEGER NEQ,ICODMA,NC
-      REAL*8 ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(5)
-      REAL*8 PGL(3,3),VARIP(5),FONO(NEQ)
-      REAL*8 IRRAP,KLV(78)
+      REAL*8 ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(6)
+      REAL*8 PGL(3,3),VARIP(6),FONO(NEQ),KLV(78)
       CHARACTER*(*) FAMI
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 12/07/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,14 +73,14 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 
-      INTEGER CODRE1(4),CODRE2(2),CODRE3,CODRE4(5),CODRE5(5)
+      INTEGER CODRE1(4),CODRE2(2),CODRE3,CODRE4(5),CODRE5(5),IRET2
       CHARACTER*8 NOMRE1(4),NOMRE2(2),NOMRE3,NOMRE4(5),NOMRE5(5)
       CHARACTER*8 NOMPAR(2)
 
       INTEGER     NPG,NNO,NBPAR
       INTEGER     IRETP,IRETM
       REAL*8      VALRE1(4),VALRE2(2),VALRE3,VALRE4(5),VALRE5(5)
-      REAL*8      VALPAR(2)
+      REAL*8      VALPAR(2),IRRAM,IRRAP
       REAL*8      FNO,H1
       REAL*8      DUX,DUY,DPH,DTH
       REAL*8      UXM,PHM,THM
@@ -129,8 +127,16 @@ C recuperation des donnees materiau pour le discret
       KTAX=VALRE1(2)/4.D0
       ETAX=VALRE1(3)*KTAX
 
+C     ON RECUPERE L'INCREMENT D'IRRADIATION SUR LE 1ER PG :
+      CALL RCVARC(' ','IRRA','-','RIGI',1,1,IRRAM,IRET2)
+      IF (IRET2.GT.0) IRRAM=0.D0
+      CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
+      IF (IRET2.GT.0) IRRAP=0.D0
+      IRRAP = IRRAP - IRRAM + VARIM(6)
+
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',0,' ',0.D0,2,
      &            NOMRE2,VALRE2,CODRE2,0)
+C
       IF (CODRE2(1).EQ.0) THEN
         FNO=VALRE2(1)/4.D0
         MUAX=VALRE2(2)
@@ -145,6 +151,7 @@ C recuperation des donnees materiau pour le discret
         NOMPAR(1)='TEMP'
         VALPAR(2)=IRRAP
         VALPAR(1)=TEMP
+
         CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
      &              NBPAR,NOMPAR,VALPAR,1,
      &              NOMRE3,VALRE3,CODRE3,0)
@@ -153,7 +160,7 @@ C recuperation des donnees materiau pour le discret
             MUAX=VALRE2(2)
         ENDIF
       ENDIF
-
+      
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
      &            0,' ',0.D0,5,
      &            NOMRE4,VALRE4,CODRE4,0)
@@ -193,7 +200,7 @@ C
 C
 C---calcul de l'evolution des variables internes et des forces
 C---pour FULL_MECA et RAPH_MECA
-
+      
       IF ((OPTION(1:9).EQ.'FULL_MECA').OR.(OPTION(1:9).EQ.'RAPH_MECA'))
      &        THEN
 C
@@ -320,7 +327,7 @@ Cles conditions limites doivent imposer que ça ne tourne pas
         FL(5)=-KPHI*(KHM+DKH)
         FL(5+NC)=KPHI*(KHM+DKH)
 
-
+        VARIP(6)=IRRAP
       ENDIF
 C
 C
@@ -378,5 +385,4 @@ C
         NNO = 2
         CALL UTPVLG(NNO,NC,PGL,FL,FONO)
       ENDIF
-
       END

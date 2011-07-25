@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE  CALCUL DU FACTEUR D'INTENSITE DE CONTRAINTES PAR LA REGULARISATION DES
 # ssnp148a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,8 @@ INSTEL=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1,NOMBRE=1),
                       );
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTEL),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=0.000001,),)
 

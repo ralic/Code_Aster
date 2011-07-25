@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE LA MODELISATION GVNO + LOI ENDO_CARRE EN AXIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,7 +71,8 @@ INSTANTS  = DEFI_LIST_REEL(DEBUT = 6.,
                            )                      
                                                       
 TEMPS     = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = INSTANTS),
-                           ECHEC     = _F(SUBD_METHODE='UNIFORME',
+                           ECHEC     = _F(ACTION='DECOUPE',
+                                          SUBD_METHODE='MANUEL',
                                           SUBD_NIVEAU=2,
                                           SUBD_PAS=3,
                                           )                          

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 # ssnv204c.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,7 +173,8 @@ COEF1=DEFI_FONCTION(NOM_PARA='INST',
                            10.0, -0.005,));
 
 DEFLIST0 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS0),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_PAS_MINI =0.00001 ),)
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 # wtna109a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -235,7 +235,10 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                              ),);
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INST1),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_NIVEAU = 5,
                                  SUBD_PAS=10,
                                  SUBD_PAS_MINI=10.0,),)
 

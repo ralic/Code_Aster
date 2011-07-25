@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CHARGE LIMITE INF - TUBE AVEC SOUS EPAISSEUR
 # ssep001a.para = tps_job 512 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,8 +139,7 @@ COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',TOUT='OUI',),
                                 GROUP_NO='PILO',
                                 NOM_CMP=('DX','DY','DZ',),),
                     NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                    SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
-                                       METHODE='MUMPS'),
+                    SOLVEUR=_F(METHODE='MUMPS'),
                                        
                     SUIVI_DDL=(_F(NOM_CMP='DZ',
                                   GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV',),

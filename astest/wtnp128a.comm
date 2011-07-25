@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp128a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -261,7 +261,9 @@ CH_VARI=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
                         ECHEC=_F(
-                  SUBD_METHODE='UNIFORME',
+                  EVENEMENT     = 'ERREUR',
+                  ACTION        = 'DECOUPE',
+                  SUBD_METHODE  = 'MANUEL',
                   SUBD_PAS  = 5,
                   SUBD_PAS_MINI = 1.E-10,
                   SUBD_NIVEAU=12,

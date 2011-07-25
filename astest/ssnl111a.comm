@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -392,7 +392,8 @@ SIGY3_T=RECU_FONCTION(
                           )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=5,
                                  SUBD_PAS_MINI = 0.001),)
 
