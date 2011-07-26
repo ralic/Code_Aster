@@ -1,9 +1,9 @@
-      SUBROUTINE NMCVGI(TYPAFF)
+      SUBROUTINE NMCVGI(SDIMPR,TYPAFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*6 TYPAFF           
+      CHARACTER*24 SDIMPR
+      CHARACTER*6  TYPAFF           
 C 
 C ----------------------------------------------------------------------
 C
@@ -32,6 +33,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  SDIMPR : SD AFFICHAGE
 C IN  TYPAFF : TYPE AFFICHAGE
 C               'CVG_OK'  MESSAGE DE CONVERGENCE NORMALE 
 C               'CVG_MX'  MESSAGE DE CONVERGENCE SI CRITERE 
@@ -45,24 +47,24 @@ C
 C ----------------------------------------------------------------------
 C
       IF (TYPAFF.EQ.'CVG_OK') THEN
-        CALL NMIMPR('TABL',' ',' ',0.D0,0) 
-        CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
-        CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
-        CALL NMIMPR('IMPR','CONV_RECA',' ',0.D0,0)        
+        CALL NMIMPR(SDIMPR,'TABL',' ',' ',0.D0,0) 
+        CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'IMPR','CONV_OK',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'IMPR','CONV_RECA',' ',0.D0,0)        
       ELSEIF (TYPAFF.EQ.'CVG_MX') THEN
-        CALL NMIMPR('TABL',' ',' ',0.D0,0) 
-        CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
-        CALL NMIMPR('IMPR','CONV_MAXI',' ',0.D0,0)
-        CALL NMIMPR('IMPR','CONV_RECA',' ',0.D0,0) 
+        CALL NMIMPR(SDIMPR,'TABL',' ',' ',0.D0,0) 
+        CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'IMPR','CONV_MAXI',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'IMPR','CONV_RECA',' ',0.D0,0) 
       ELSEIF (TYPAFF.EQ.'CVG_NO') THEN
-        CALL NMIMPR('TABL',' ',' ',0.D0,0) 
-        CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
-        CALL NMIMPR('IMPR','CONV_NONE',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'TABL',' ',' ',0.D0,0) 
+        CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'IMPR','CONV_NONE',' ',0.D0,0)
       ELSEIF (TYPAFF.EQ.'CVG_FO') THEN
-        CALL NMIMPR('TABL',' ',' ',0.D0,0) 
-        CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
-        CALL NMIMPR('IMPR','CONV_FORC',' ',0.D0,0)
-        CALL NMIMPR('IMPR','CONV_RECA',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'TABL',' ',' ',0.D0,0) 
+        CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'IMPR','CONV_FORC',' ',0.D0,0)
+        CALL NMIMPR(SDIMPR,'IMPR','CONV_RECA',' ',0.D0,0)
       ELSE
         CALL ASSERT(.FALSE.)   
       ENDIF     

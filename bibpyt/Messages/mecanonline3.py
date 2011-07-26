@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline3 Messages  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,10 +25,10 @@ cata_msg = {
 
 1 : _("""
  Il y a trop de colonnes à afficher dans le tableau de convergence.
- La largeur maximale affichable est de 256 caractères, donc 14 colonnes maximum.
+ La largeur maximale affichable est de 256 caractères, donc 14 colonnes au maximum.
  Or vous avez <%(i1)d> colonnes !
  Si vous avez des colonnes SUIVI_DDL, supprimez-en.
- Sinon, utiliser la commande AFFICHAGE pour choisir les colonnes à afficher.
+ VOos pouvez éventuellement désactiver INFO_RESIDU ou INFO_TEMPS.
 """),
 
 2 : _("""

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',
      & 'INDL_ELGA',       'VAEX_ELGA',       'VAEX_ELNO',
      & 'VAEX_NOEU',       'MODE_MECA',       'SIEF_SENO_SEGA',
-     & 'COHE_ELGA',       'INDC_ELGA',       'SECO_ELGA',
+     & 'COHE_ELEM',       'INDC_ELEM',       'SECO_ELEM',
      & 'VARC_ELGA',       'FERRAILLAGE',     'EPVC_NOEU',
      & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA'/
 C     ------------------------------------------------------------------

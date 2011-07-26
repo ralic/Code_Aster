@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO,SDIETO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -82,7 +82,7 @@ C
 C -- NOM DU CHAMP DANS LA SD RESULTAT
       DATA NOMCHS  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,
      &              'COMPORTEMENT','VITE'        ,'ACCE'        ,
-     &              'INDC_ELGA'   ,'SECO_ELGA'   ,'COHE_ELGA'   ,
+     &              'INDC_ELEM'   ,'SECO_ELEM'   ,'COHE_ELEM'   ,
      &              'VALE_CONT'   ,'MODE_FLAMB'  ,'MODE_MECA'   ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
      &              'FORC_NODA'/

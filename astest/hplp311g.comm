@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE MURA 11.17 FISSURE SOUS FLUX DE CHALEUR UNIFORME
 # hplp311g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,8 +181,7 @@ RESU=CREA_RESU(  OPERATION='AFFE',
 #
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                          FOND_FISS=_F( GROUP_NO = ('P0',)),
-                           NORMALE=(0., 1., 0.,)
-                      )
+                     )
 
 #
 THETA0=CALC_THETA(       MODELE=MO,

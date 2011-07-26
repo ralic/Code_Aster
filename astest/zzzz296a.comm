@@ -1,0 +1,214 @@
+# MODIF  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+# TITRE VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR LA MODELISATION TUYAU_3M
+# zzzz296a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'zzzz296a',NIV_PUB_WEB='INTERNET'))
+
+# lecture maillage lineique
+MAPOU=LIRE_MAILLAGE(UNITE=20,);
+
+MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='TUYAU_3M',),);
+
+BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10, NU=0.0,  RHO=2400.0,),)
+
+POUCA_0=AFFE_CARA_ELEM( MODELE=MOPOU,
+                        INFO=1,
+                        POUTRE=_F(  GROUP_MA=('POUTRE'),
+                                    SECTION='CERCLE',
+                                    CARA=('R','EP'),
+                                    VALE=(10.,1.),
+                                    TUYAU_NSEC = 4,
+                                    TUYAU_NCOU = 2,
+                                    ),
+                        );
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
+                    AFFE=_F(GROUP_MA='POUTRE', MATER=BETON,),
+                          );
+
+BLOCAGE=AFFE_CHAR_MECA( MODELE=MOPOU,
+                        DDL_IMPO=(_F(GROUP_NO='ENC', DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0,),
+                                 ),);
+CHARGE=AFFE_CHAR_MECA(  MODELE=MOPOU,
+                        FORCE_NODALE=(_F(GROUP_NO='CHA',FX = 100,FY = 100,FZ = -100.)
+                                 ),);
+
+FOFO=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,3.5,3.5),
+                   PROL_DROITE='EXCLU',
+                   PROL_GAUCHE='EXCLU',);
+
+
+LINST=DEFI_LIST_REEL(   DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=0.1,  NOMBRE=2,),
+                                    _F(JUSQU_A=1.4,  NOMBRE=10,),
+                                    _F(JUSQU_A=2.84 ,  NOMBRE=9,),
+                                    _F(JUSQU_A=3. ,  NOMBRE=10,),
+                                    ),
+                    );
+
+U_0=STAT_NON_LINE(MODELE=MOPOU,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=POUCA_0,
+                 EXCIT=(_F(CHARGE=BLOCAGE,),
+                        _F(CHARGE=CHARGE,
+                           FONC_MULT=FOFO,),),
+                 COMP_INCR=(_F(RELATION='ELAS'),),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                 NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=3.E-5,
+                                ITER_GLOB_MAXI=250,),
+                 );
+
+
+U_0=CALC_ELEM(  TYPE_OPTION = 'EPSI',
+                OPTION='EPSI_ELGA',
+                reuse =U_0,RESULTAT=U_0,
+             );
+
+# U_90=STAT_NON_LINE(MODELE=MOPOU,
+                 # CHAM_MATER=CHMAT,
+                 # CARA_ELEM=POUCA_90,
+                 # EXCIT=(_F(CHARGE=BLOCAGE,),
+                        # _F(CHARGE=CHARGE,
+                           # FONC_MULT=FOFO,),),
+                 # COMP_INCR=(_F(RELATION='ELAS'),),
+                 # INCREMENT=_F(LIST_INST=LINST,),
+                 # NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
+                 # CONVERGENCE=_F(RESI_GLOB_RELA=3.E-5,
+                                # ITER_GLOB_MAXI=250,),
+                 # );
+
+
+# U_90=CALC_ELEM(OPTION='EPSI_ELGA',
+             # reuse =U_90,RESULTAT=U_90,
+             # );
+
+TB_0=CREA_TABLE(RESU=_F(RESULTAT=U_0,GROUP_MA='POUTRE',NOM_CHAM='EPSI_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 1))
+IMPR_TABLE(TABLE=TB_0)
+
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_X',
+            VALE= -3.448831614)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Y',
+            VALE= -3.448831614)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Z',
+            VALE= 7.573872228)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=2 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_X',
+            VALE= -6.872673211)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=2 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Y',
+            VALE= 2.127326789)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=2 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Z',
+            VALE= 5.421555423)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=3 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_X',
+            VALE= -6.138558031)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=3 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Y',
+            VALE= 6.589364031)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=3 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Z',
+            VALE= 0.225403)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=19 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_X',
+            VALE= -3.652955759)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=19 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Y',
+            VALE= -3.652955759)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=19 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Z',
+            VALE= 7.982120519)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=21 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_X',
+            VALE= -6.492111421)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=21 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Y',
+            VALE= 6.942917421)
+
+TEST_TABLE( TABLE=TB_0,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=21 ),),
+            REFERENCE='ANALYTIQUE',
+            NOM_PARA='COOR_Z',
+            VALE= 0.225403)
+
+
+FIN()

@@ -1,0 +1,180 @@
+# MODIF  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+# TITRE  FISSURE LENTILLE EN TRACTION
+# sslv155a.para = tps_job 30 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLV155A',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI'),
+      DEBUG=_F(SDVERI='OUI'))
+
+# MODELISATION A : FEM 2D-AXI, MAILLAGE QUADRATIQUE
+
+# parametres utiles
+#------------------
+
+# angle de la lentile
+alpha = pi / 4.0
+
+# valeur nominale de la force imposee
+sig = 1000000.
+
+# rayon de la fissure
+R = 2
+
+# rayon circulaire de la lentille
+a = R * sin(alpha)
+
+h = 0.025
+
+MA_TMP=LIRE_MAILLAGE(FORMAT='MED')
+
+MA=CREA_MAILLAGE(MAILLAGE=MA_TMP,
+                     CREA_POI1=_F(NOM_GROUP_MA='FOND',
+                                  GROUP_NO='FOND',),);
+
+# Barsoum (si on n'utilise pas DEFI_FISS_XFEM)
+# MA=MODI_MAILLAGE(reuse = MA,
+#                  MAILLAGE = MA,
+#                  MODI_MAILLE = _F(OPTION = 'NOEUD_QUART',
+#                                   GROUP_NO_FOND = 'FOND')
+#                  )
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_2D=_F(GROUP_MA=('SUP','INF','EXT','AXI','LEV_INF','LEV_SUP',),),);
+
+MODE=AFFE_MODELE(MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='AXIS'))
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='TOUS',
+                               TOUT='OUI',),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000e6,
+                            NU=0.3))
+
+MATE=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=ACIER))
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODE,
+                    DDL_IMPO=(_F(GROUP_MA='AXI',DX=0,),
+                              _F(GROUP_NO='D'  ,DY=0,),),
+                    PRES_REP=_F(GROUP_MA=('SUP','INF','EXT'),PRES=-sig)
+                    )
+
+RESU=MECA_STATIQUE(MODELE=MODE,
+                   CHAM_MATER=MATE,
+                   EXCIT=_F(CHARGE=CHAR)
+                   )
+
+FISS=DEFI_FOND_FISS(MAILLAGE=MA,
+                    FOND_FISS=_F(GROUP_NO='FOND',),
+                    LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
+                    LEVRE_INF=_F(GROUP_MA='LEV_INF',),
+                    )
+
+# direction du champ theta a ecrire en fonction des parametres d'entree
+CG=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   DIRECTION=(cos(alpha),sin(alpha),0),
+                   R_INF=2*h,
+                   R_SUP=5*h,),
+          RESULTAT=RESU,
+          OPTION='CALC_K_G')
+
+IMPR_TABLE(TABLE=CG)
+
+FISSX=DEFI_FISS_XFEM(MODELE=MODE,
+                     DEFI_FISS=_F(GROUP_MA_FISS='LEV_INF',
+                                  GROUP_MA_FOND='FOND',),
+                     )
+
+# ici, la direction est facultative mais permet d'ameliorer la 
+# precision sur K2 : de 10% -> 5%
+CGX=CALC_G(THETA=_F(FISSURE=FISSX,
+                    DIRECTION=(cos(alpha),sin(alpha),0),
+                    R_INF=2*h,
+                    R_SUP=5*h,),
+          RESULTAT=RESU,
+          OPTION='CALC_K_G')
+
+IMPR_TABLE(TABLE=CGX)
+
+PK=POST_K1_K2_K3(MODELISATION='AXIS',
+                 FOND_FISS=FISS,
+                 MATER=ACIER,
+                 RESULTAT=RESU,
+                 ABSC_CURV_MAXI=5*h,
+                 VECT_K1=(-sin(alpha),cos(alpha),0,))
+
+IMPR_TABLE(TABLE=PK)
+
+K1ref = 0.877*(2/pi)*sig*sqrt(pi*a)
+K2ref = 0.235*(2/pi)*sig*sqrt(pi*a)
+
+TEST_TABLE(TABLE=CG,
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
+
+# erreur de -120% sur K2 pour DEFI_FOND_FISS, cf fiche 17288
+# TEST_TABLE(TABLE=CG,
+#            NOM_PARA='K2',
+#            VALE=K2ref,
+#            PRECISION=0.05,
+#            REFERENCE='ANALYTIQUE')
+
+# du coup, on fait un test de non regression pour etre sur que l'erreur reste la !
+# en attendant la correction
+TEST_TABLE(TABLE=CG,
+           NOM_PARA='K2',
+           VALE=-63622.969090467,
+           PRECISION=1e-6,
+           REFERENCE='NON_REGRESSION')
+
+TEST_TABLE(TABLE=CGX,
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=CGX,
+           NOM_PARA='K2',
+           VALE=K2ref,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=PK,
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=PK,
+           NOM_PARA='K2',
+           VALE=K2ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
+
+FIN()

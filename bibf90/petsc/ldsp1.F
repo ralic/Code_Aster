@@ -1,7 +1,7 @@
       SUBROUTINE LDSP1(pc,ierr)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF LDSP1 PETSC  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF LDSP1 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -18,7 +18,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
-
+!----------------------------------------------------------------
+!
+!  PRECONDITIONNEUR ISSU D'UNE FACTORISATION SIMPLE PRECISION
+!
+!----------------------------------------------------------------
 #ifdef _HAVE_PETSC
 
 !================================================================
@@ -28,12 +32,7 @@
 #include "include/finclude/petscpc.h"
 #include "include/finclude/petscksp.h"
 !================================================================
-      CHARACTER*19 SOLVBD
-      CHARACTER*19 NOMAT,NOSOLV
-      INTEGER      JREFA,IRET
-      COMMON /LDLTSP/xlocal,xscatt,xglobal,SOLVBD,NOMAT,NOSOLV
-!================================================================
-! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
+! --- DECLARATIONS NORMALISEES JEVEUX ---------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -48,24 +47,30 @@
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-!================================================================
-!  Variables PETSc
+!----------------------------------------------------------------
+!     VARIABLES LOCALES
+      INTEGER      JREFA,IRET
+!     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
+      CHARACTER*19 SPSOMU,SPMAT,SPSOLV
+      Vec          xlocal,xglobal
+      VecScatter   xscatt
+      COMMON /LDLTSP/xlocal,xscatt,xglobal,SPSOMU,SPMAT,SPSOLV
+!----------------------------------------------------------------
+!     Variables PETSc
       PetscInt ierr
       PC  pc
-      Vec xlocal,xglobal
-      VecScatter   xscatt
-!================================================================
+!----------------------------------------------------------------
 
       CALL JEMARQ()
 
-! -- LA MATRICE A ETE TRAITEE PAR PETSC DONC ELLE EST CONSIDEREE
-! -- COMME FACTORISEE, SI ON LA LAISSE COMME CA MUMPH VA LA
-! -- CONSIDERER COMME TELLE ET NE FERA PAS DE FACTO SP
-      CALL JEVEUO(NOMAT//'.REFA','E',JREFA)
-      ZK24(JREFA-1+8)=' '
+! --  LA MATRICE A ETE TRAITEE PAR PETSC DONC ELLE EST CONSIDEREE
+! --  COMME FACTORISEE, SI ON LA LAISSE COMME CA MUMPH VA LA
+! --  CONSIDERER COMME TELLE ET NE FERA PAS DE FACTO SP
+      CALL JEVEUO(SPMAT//'.REFA','E',JREFA)
+      ZK24(JREFA-1+8) = ' '
 
 ! --  APPEL A LA ROUTINE DE FACTO SP POUR LE PRECONDITIONNEMENT
-      CALL PCMUMP(NOMAT,NOSOLV,IRET  )
+      CALL PCMUMP(SPMAT,SPSOLV,IRET  )
 
       ierr = IRET
 

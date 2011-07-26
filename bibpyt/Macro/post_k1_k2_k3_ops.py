@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -701,7 +701,7 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,VECT_K1,DTAN_ORIG,DTAN_EXTR,ndim) :
            if DTAN_EXTR != None :
               VP[i] = NP.array(DTAN_EXTR)
               VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-              verif = NP.dot(NP.transpose(VP[i]),VN[0])
+              verif = NP.dot(NP.transpose(VP[i]),VN[i])
               if abs(verif) > 0.01:
                  UTMESS('A','RUPTURE1_34',valr=[VN[i][0],VN[i][1],VN[i][2]])
            else :

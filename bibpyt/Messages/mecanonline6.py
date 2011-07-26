@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline6 Messages  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,84 +43,16 @@ cata_msg = {
    - ou bien choisissez un autre schéma d'adaptation du pas de temps (DEFI_LIST_INST/MODE_CALCUL_TPLUS).
  """),
 
+5 : _("""
+ Nombre total de noeuds esclaves pour le contact: %(i1)d 
+"""),
+
 10 : _("""
   Le mode vibratoire de numéro d'ordre %(i1)d a pour fréquence %(r1)19.12e
 """),
 
 11 : _("""
   Le mode de flambement de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
-"""),
-
-12 : _("""
-  Temps CPU consommé dans ce pas de temps: %(k1)s.
-    * Temps par itération de Newton     : %(k2)s ( %(i1)d itérations )
-    * Temps total archivage             : %(k3)s
-    * Temps total création numérotation : %(k4)s ( %(i2)d créations )
-    * Temps total factorisation matrice : %(k5)s ( %(i3)d factorisations )
-    * Temps total intégration LDC       : %(k6)s ( %(i4)d intégrations )
-    * Temps total résolution K.U=F      : %(k7)s ( %(i5)d résolutions )
-"""),
-
-13 : _("""
-    * Temps total résolution contact    : %(k1)s ( %(i1)d itérations )
-"""),
-
-14 : _("""
-  Statistiques de résolution du contact discret dans ce pas de temps.
-    * Nombre d'itérations de contact          : %(i1)d 
-    * Nombre de réactualisations géométriques : %(i2)d 
-    * Temps total consommé par l'appariement  : %(k1)s
-    * Temps total consommé par la résolution  : %(k2)s
-    * Nombre final de liaisons de contact     : %(i3)d 
-"""),
-
-15 : _("""
-    * Nombre final de liaisons de frottement  : %(i1)d 
-"""),
-
-16 : _("""
-  Statistiques de résolution du contact continu dans ce pas de temps.
-    * Nombre d'itérations de contact                       : %(i1)d 
-    * Nombre d'itérations de réactualisations géométriques : %(i2)d 
-"""),
-
-17 : _("""
-  Statistiques sur tout le transitoire.
-    * Nombre de pas de temps                      : %(i1)d 
-    * Nombre d'itérations de Newton               : %(i2)d 
-    * Nombre de création numérotation             : %(i3)d
-    * Nombre de factorisation matrice             : %(i4)d 
-    * Nombre d'intégration LDC                    : %(i5)d
-    * Nombre de résolution K.U=F                  : %(i6)d
-"""),
-
-18 : _("""
-    * Nombre d'itérations de recherche linéaire   : %(i1)d 
-"""),
-
-19 : _("""
-    * Nombre d'itérations du solveur FETI         : %(i1)d 
-"""),
-
-20 : _("""
-    * Nombre d'itérations de contact              : %(i1)d 
-    * Nombre de réactualisations géométriques     : %(i2)d 
-"""),
-
-21 : _("""
-    * Nombre d'itérations de frottement           : %(i1)d 
-"""),
-
-22 : _("""
-    * Temps total création numérotation           : %(k1)s 
-    * Temps total factorisation matrice           : %(k2)s 
-    * Temps total intégration LDC                 : %(k3)s
-    * Temps total résolution K.U=F                : %(k4)s 
-"""),
-
-23 : _("""
-    * Temps total pour le contact (appariement)   : %(k1)s
-    * Temps total pour le contact (résolution)    : %(k2)s
 """),
 
 25 : _("""
@@ -175,8 +107,5 @@ cata_msg = {
   Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
  """),
 
-38 : _("""
-    * Nombre d'itérations de frottement                    : %(i1)d 
-"""),
 
 }

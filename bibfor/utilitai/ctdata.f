@@ -9,7 +9,7 @@
       CHARACTER*19 CHPGS
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,13 +66,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8 K8B
-      INTEGER JKCHA,I,IBID,IRET,JLNO,JCMP,N1,JLMA,N2,N3
-      CHARACTER*8 NOMO,NOMGD
-      CHARACTER*8 TYPMCL(4),LPAIN(1),LPAOUT(1)
+      INTEGER JKCHA,I,IBID,IRET,JLNO,JCMP,N1,JLMA,N2,N3,NCHI,N0,N4,N5
+      CHARACTER*8 NOMO,NOMGD,NOCA
+      CHARACTER*8 TYPMCL(4),LPAIN(6),LPAOUT(1)
       CHARACTER*16 MOTCLE(4)
       CHARACTER*19 LIGREL
-      CHARACTER*24 CHGEOM,LCHIN(1),LCHOUT(1)
-      LOGICAL EXIGEO
+      CHARACTER*24 CHGEOM,LCHIN(6),LCHOUT(1)
+      LOGICAL EXIGEO,EXICAR
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -85,6 +85,9 @@ C
       LIGREL = ' '
       NOMO=' '
       TYPGD=' '
+      EXICAR=.FALSE.
+      CALL GETVID('RESU','RESULTAT'  ,1,1,0,K8B,N0)
+      CALL GETVID('RESU','CHAM_GD'  ,1,1,0,K8B,N4)
       DO 60 I=1,NBVAL
          IF(ZK24(JKCHA+I-1)(1:18).NE.'&&CHAMP_INEXISTANT')THEN
              CALL DISMOI('F','TYPE_CHAMP',ZK24(JKCHA+I-1)(1:19),
@@ -104,6 +107,31 @@ C
                 CALL DISMOI('F','NOM_MODELE',ZK24(JKCHA+I-1)(1:19),
      &                     'CHAMP',IBID,NOMO,IRET)
                 LIGREL=NOMO//'.MODELE'
+             ENDIF
+             IF(TYCH.EQ.'ELGA')THEN
+C               CARACTERISTIQUES POUR LES CAS DES ELEMENTS A SOUS POINTS
+                IF(N0.NE.0) THEN
+                    CALL DISMOI('C','CARA_ELEM',ZK24(JKCHA+I-1)(1:8),
+     &                     'RESULTAT',IBID,NOCA,IRET)
+                    IF(IRET.EQ.0)EXICAR=.TRUE.
+                ELSEIF(N4.NE.0) THEN
+                    CALL GETVID('RESU','CARA_ELEM'  ,1,1,1,NOCA,N5)
+                    IF(N5.NE.0)EXICAR=.TRUE.
+                ENDIF
+C               DIMENSION MODELE POUR IMPRESSION COOR POINT GAUSS
+                CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',IBID,K8B,IRET)
+                NDIM=IBID
+                IF (IBID.GE.100) THEN
+                  IBID = IBID - 100
+                  NDIM=1
+                ENDIF
+                IF (IBID.GE.20) THEN
+                  IBID = IBID - 20
+                  NDIM=2
+                ENDIF
+                IF (IBID.EQ.3) THEN
+                  NDIM=3
+                ENDIF
              ENDIF
              GOTO 61
          ENDIF
@@ -160,17 +188,34 @@ C          VERIFICATIONS
            ENDIF
            NBNO=0
 
-           IF(TYCH.EQ.'ELGA')THEN
+            IF(TYCH.EQ.'ELGA')THEN
 
               CALL MEGEOM(NOMO,' ',EXIGEO,CHGEOM)
               LCHIN(1)=CHGEOM(1:19)
               LPAIN(1)='PGEOMER'
-              LCHOUT(1)='&&PEECAL.PGCOOR'
-              LPAOUT(1)='PCOORPG'
+              NCHI=1
+              IF(EXICAR)THEN
+                NCHI=6
+                LCHIN(2)=NOCA//'.CARORIEN'
+                LPAIN(2)='PCAORIE'
+                LCHIN(3)=NOCA//'.CAFIBR'
+                LPAIN(3)='PFIBRES'
+                LCHIN(4)=NOCA//'.CANBSP'
+                LPAIN(4)='PNBSP_I'
+                LCHIN(5)=NOCA//'.CARCOQUE'
+                LPAIN(5)='PCACOQU'
+                LCHIN(6)=NOCA//'.CARGEOPO'
+                LPAIN(6)='PCAGEPO'
+                LCHOUT(1)='&&CTDATA.PGCOOR'
+                LPAOUT(1)='PCOORPG'
+                CALL CESVAR(NOCA,' ',LIGREL,LCHOUT(1))
+              ELSE
+                LCHOUT(1)='&&CTDATA.PGCOOR'
+                LPAOUT(1)='PCOORPG'
+              ENDIF
 
-              CALL CALCUL('S','COOR_ELGA',LIGREL,1,LCHIN,LPAIN,1,
+              CALL CALCUL('S','COOR_ELGA',LIGREL,NCHI,LCHIN,LPAIN,1,
      &                  LCHOUT,LPAOUT,'V','OUI')
-
               CALL CELCES(LCHOUT(1),'V',CHPGS)
 
            ENDIF

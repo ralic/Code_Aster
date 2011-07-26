@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,8 +102,7 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                         MATER = MA) )
 
 FOND=DEFI_FOND_FISS( MAILLAGE=M,
-                       FOND_FISS=_F( NOEUD = 'N1'),
-                       NORMALE=(-0.5, 8.6602540379E-01,  0.,))
+                       FOND_FISS=_F( NOEUD = 'N1'),)
 
 #---------------------------------------------------------------------
 #          MODELISATION ET CALCUL EN CONTRAINTES PLANES

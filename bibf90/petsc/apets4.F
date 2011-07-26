@@ -1,9 +1,9 @@
       SUBROUTINE APETS4(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS4 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS4 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -19,9 +19,11 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
       INTEGER      KPTSC
-!--------------------------------------------------------------
+!----------------------------------------------------------------
 !
-!---------------------------------------------------------------
+!  CREATION DU SOLVEUR DE KRYLOV PETSC (INSTANCE NUMERO KPTSC)
+!
+!----------------------------------------------------------------
 
 #ifdef _HAVE_PETSC
 
@@ -32,7 +34,7 @@
 #include "include/finclude/petscksp.h"
 #include "include/finclude/petscpc.h"
 !================================================================
-! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
+! --- DECLARATIONS NORMALISEES JEVEUX ---------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -47,35 +49,29 @@
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-!================================================================
-! DECLARATIONS DE VARIABLES
+!----------------------------------------------------------------
+!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
+      INTEGER      NMXINS
+      PARAMETER   (NMXINS=5)
 !
-      INTEGER NMXINS
-      PARAMETER (NMXINS=5)
-
+!     VARIABLES LOCALES
       INTEGER JSLVK,JSLVR,JSLVI
       INTEGER NMAXIT,IFM,NIV
-
+!
       CHARACTER*24 ALGO
       CHARACTER*19 NOMAT,NOSOLV
       CHARACTER*14 NONU
-
+!
       REAL*8 RESIRE
-
-!     -- ON STOCKE AU PLUS NMXINS INSTANCES DE PETSC
-!     -- PLUS PRECISEMENT LES MATRICES, SOLVEURS, ETC
+!
+!     COMMUN DE SAUVEGARDE DES INSTANCES
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
-      CHARACTER*14 NONUS(NMXINS)
-      Mat      Ap(NMXINS)
-      KSP      Kp(NMXINS)
+      CHARACTER*14  NONUS(NMXINS)
+      Mat              Ap(NMXINS)
+      KSP              Kp(NMXINS)
       COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
 !=================================================================
-!  Variables PETSc
-!
-!  A       - matrix that defines linear system
-!  ksp    - KSP context
-!  x, b - approx solution, RHS vectors
-!
+!     Variables PETSc
       PetscInt maxits,ierr
       PetscReal rtol,atol,dtol
       Mat A
@@ -85,12 +81,12 @@
 
       CALL INFNIV(IFM,NIV)
 
-!     -- ON RECUPERE DANS LE COMMON L'INSTANCE COURANTE
-      NOMAT=NOMATS(KPTSC)
-      NOSOLV=NOSOLS(KPTSC)
-      NONU=NONUS(KPTSC)
-      A=Ap(KPTSC)
-      ksp=Kp(KPTSC)
+!     -- LECTURE DU COMMUN
+      NOMAT  = NOMATS(KPTSC)
+      NOSOLV = NOSOLS(KPTSC)
+      NONU   =  NONUS(KPTSC)
+      A      =     Ap(KPTSC)
+      ksp    =     Kp(KPTSC)
 
       CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
       CALL JEVEUO(NOSOLV//'.SLVR','L',JSLVR)
@@ -99,9 +95,8 @@
       RESIRE = ZR(JSLVR-1+2)
       NMAXIT = ZI(JSLVI-1+2)
 
-!     -- choix de l'algo KSP:
-!     ----------------------
-! ("BCGS","BICG","CG","CR","GMRES","TFQMR",),defaut="CG" ),
+!     -- choix de l'algo KSP :
+!     ------------------------
       IF (ALGO.eq.'BCGS') THEN
          call KSPSetType(ksp,KSPBCGS,ierr)
       ELSEIF (ALGO.eq.'BICG') THEN
@@ -120,10 +115,10 @@
       ENDIF
       CALL ASSERT(ierr.EQ.0)
 
-C     -- paramètres numériques :
-C     ----------------------------
+!     -- paramètres numériques :
+!     --------------------------
 
-C     -- nb iter max :
+!     -- nb iter max :
       if (NMAXIT.LE.0) THEN
         maxits = PETSC_DEFAULT_INTEGER
       ELSE
@@ -131,7 +126,6 @@ C     -- nb iter max :
       ENDIF
 
       rtol = RESIRE
-
       atol = PETSC_DEFAULT_DOUBLE_PRECISION
       dtol = PETSC_DEFAULT_DOUBLE_PRECISION
 
@@ -139,8 +133,8 @@ C     -- nb iter max :
 
 !      call KSPSetFromOptions(ksp,ierr)
 
-C     - pour suivre le boulot de KSP ?
-C     ---------------------------------
+!     - pour suivre les itérations de Krylov
+!     --------------------------------------
       IF (NIV.GE.2) THEN
          call KSPMonitorSet(ksp,KSPMonitorTrueResidualNorm,
      &               PETSC_NULL_OBJECT,PETSC_NULL_FUNCTION,ierr)

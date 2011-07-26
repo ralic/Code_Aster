@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -188,7 +188,7 @@ C     MOTS CLES FACTEUR : DTAN_EXTR, DTAN_ORIG
 C                         VECT_GRNO_ORIG, VECT_GRNO_EXTR
 C     ----------------------------------------
 C
-      CALL FONVEC(RESU,NOMA,NBNOFF)
+      CALL FONVEC(RESU,NOMA)
 
 
 C
@@ -198,7 +198,7 @@ C     EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
 C     ---------------------------------------------------------------
 C
       CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRETS)
-      IF((IRETS.NE.0).AND.(NBNOFF.GT.1)) THEN
+      IF(IRETS.NE.0) THEN
         CALL  FONNOF ( RESU,NOMA,TYPFON,NBNOFF )
       ENDIF
 

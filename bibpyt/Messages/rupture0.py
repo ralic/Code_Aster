@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture0 Messages  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,6 +68,11 @@ L'entité %(k1)s renseignée au mot-clé %(k2)s sous %(k3)s n'est pas dans le maill
 Veuillez vérifier les données fournies au mot-clé %(k2)s.
 """),
 
+8: _("""
+La normale au premier noeud en fond de fissure n'est pas unique.
+-> Risque et Conseil :
+Veuillez vérifier la présence symétrie dans la construction de la fissure.
+"""),
 
 9: _("""
 Dans le cas d'une SD RESULTAT de type DYNA_TRANS,
@@ -201,6 +206,10 @@ Calcul possible pour aucun noeud du fond.
 Veuillez vérifier les données, notamment celles du mot-clé DIRECTION.
 """),
 
+31: _("""
+Il n'y a pas de mailles de bord connectées au noeud %(k1)s.
+"""),
+
 32: _("""
 Différence entre la normale au plan déduite de VECT_K1 et la normale 
 au plan de la fissure calculée pour le noeud %(i1)d :
@@ -224,6 +233,10 @@ Il y a plusieurs causes possibles :
   fissure : les segments pour l'interpolation du déplacement des lèvres, 
   perpendiculaires au fond de fissure et de longueur ABSC_CURV_MAXI, ne doivent
   pas "sortir" de la matière.
+"""),
+
+34: _("""
+Les lèvres de la fissure sont trop décollées.
 """),
 
 
@@ -413,14 +426,6 @@ définies correspondent bien aux faces des éléments 2D qui s'appuient
 sur la lèvre.
 """),
 
-76: _("""
-Le noeud %(k1)s du fond de fissure n'appartient à aucune des mailles
-de la lèvre définie sous %(k2)s.
--> Risque et Conseil :
-Veuillez revoir les données.
-"""), 
-
-
 78: _("""
 La tangente à l'origine n'est pas orthogonale à la normale :
    Normale aux lèvres de la fissure : %(r1)f %(r2)f %(r3)f
@@ -528,13 +533,6 @@ Accès impossible au mode propre champ : %(k1)s pour le numéro d'ordre : %(i1)d.
 
 96: _("""
 Option non disponible actuellement.
-"""), 
-
-98: _("""
-Récupération impossible de la normale dans le fond de fissure FOND_FISS.
--> Risque et Conseil :
-Un problème a du se produire lors de la création de la structure de données 
-FOND_FISS. Vérifiez les données dans DEFI_FOND_FISS.
 """), 
 
 99: _("""

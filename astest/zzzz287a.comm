@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION ELEMENTAIRE DE L'OPERATEUR POST_RUPTURE
 # zzzz287a.para = tps_job 20 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,70 +99,100 @@ for i,crit in enumerate(l_crit_bifurcation[0:2] ):
               REFERENCE='ANALYTIQUE')
 
 #---------------------------------------------------------------------------------------
+#  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'K_EQ'
+#---------------------------------------------------------------------------------------
+
+# l_crit_cumul_1 = ['CUMUL_G','QUADRATIQUE',]
+# l_crit_cumul_2 = ['LINEAIRE','THETA','MODE_I']
+# 
+# E=205000.0E6
+# nu=0.3
+# ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu))
+
+# for crit in l_crit_cumul_1 :
+#                
+#    TAB=POST_RUPTURE(TABLE=TAB,
+#                     reuse=TAB,
+#                     OPERATION='K_EQ',
+#                     CUMUL=crit,
+#                     NOM_PARA='K_EQ_'+crit,
+#                     MATER=ACIER)
+
+# for crit in ['LINEAIRE','MODE_I']:
+#                
+#    TAB=POST_RUPTURE(TABLE=TAB,
+#                     reuse=TAB,
+#                     OPERATION='K_EQ',
+#                     CUMUL=crit,
+#                     NOM_PARA='K_EQ_'+crit)
+# 
+# IMPR_TABLE(TABLE=TAB)
+
+
+#---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'COMPTAGE_CYCLES'
 #---------------------------------------------------------------------------------------
 
-# # test du comptage RAINFLOW
-# TAB2=LIRE_TABLE(UNITE=46)        
-# 
-# TAB3=POST_RUPTURE(TABLE=TAB2,
-#                   OPERATION='COMPTAGE_CYCLES',
-#                   NOM_PARA=('K_EQ','K_EQBIS'),
-#                   COMPTAGE='RAINFLOW')
-# 
-# IMPR_TABLE(TABLE=TAB3)
-# 
-# TEST_TABLE(TABLE=TAB3,
-#            NOM_PARA='CYCLE',
-#            FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-#            TYPE_TEST='MAX',
-#            VALE_I=14,
-#            CRITERE='ABSOLU',
-#            REFERENCE='ANALYTIQUE',)
-# 
-# TEST_TABLE(TABLE=TAB3,
-#            NOM_PARA='CYCLE',
-#            FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=2),
-#            TYPE_TEST='MAX',
-#            VALE_I=1,
-#            CRITERE='ABSOLU',
-#            REFERENCE='ANALYTIQUE',)
-# 
-# # test du comptage unitaire
-# TAB4=LIRE_TABLE(UNITE=47)        
-# 
-# TAB5=POST_RUPTURE(TABLE=TAB4,
-#                   OPERATION='COMPTAGE_CYCLES',
-#                   NOM_PARA=('K1','K2'),
-#                   COMPTAGE='UNITAIRE',
-#                   COEF_MULT_MINI=10.,
-#                   COEF_MULT_MAXI=20.)
-# 
-# IMPR_TABLE(TABLE=TAB5)
-# 
-# TEST_TABLE(TABLE=TAB5,
-#            NOM_PARA='DELTA_K1',
-#            FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-#            VALE=40.,
-#            CRITERE='ABSOLU',
-#            REFERENCE='ANALYTIQUE',)
+# test du comptage RAINFLOW
+TAB2=LIRE_TABLE(UNITE=46)        
+
+TAB3=POST_RUPTURE(TABLE=TAB2,
+                  OPERATION='COMPTAGE_CYCLES',
+                  NOM_PARA=('K_EQ','K_EQBIS'),
+                  COMPTAGE='RAINFLOW',
+                  DELTA_OSCI=0.3)
+
+IMPR_TABLE(TABLE=TAB3)
+
+TEST_TABLE(TABLE=TAB3,
+           NOM_PARA='CYCLE',
+           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+           TYPE_TEST='MAX',
+           VALE_I=12,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=TAB3,
+           NOM_PARA='CYCLE',
+           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=2),
+           TYPE_TEST='MAX',
+           VALE_I=1,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',)
+
+# test du comptage unitaire
+TAB4=LIRE_TABLE(UNITE=47)        
+
+TAB5=POST_RUPTURE(TABLE=TAB4,
+                  OPERATION='COMPTAGE_CYCLES',
+                  NOM_PARA=('K1','K2'),
+                  COMPTAGE='UNITAIRE',
+                  COEF_MULT_MINI=10.,
+                  COEF_MULT_MAXI=20.)
+
+IMPR_TABLE(TABLE=TAB5)
+
+TEST_TABLE(TABLE=TAB5,
+           NOM_PARA='DELTA_K1',
+           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+           VALE=40.,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',)
            
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'LOI_PROPA'
 #---------------------------------------------------------------------------------------
 
-TAB6=LIRE_TABLE(UNITE=50)        
-
-TAB6=POST_RUPTURE(TABLE=TAB6,
-                  reuse=TAB6,
+TAB3=POST_RUPTURE(TABLE=TAB3,
+                  reuse=TAB3,
                   OPERATION='LOI_PROPA',
                   LOI='PARIS',
                   C=1,
                   M=2.)
 
-IMPR_TABLE(TABLE=TAB6)
+IMPR_TABLE(TABLE=TAB3)
 
-TEST_TABLE(TABLE=TAB6,
+TEST_TABLE(TABLE=TAB3,
            NOM_PARA='DELTA_A',
            FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
                    _F(NOM_PARA='CYCLE', CRIT_COMP='EQ',VALE_I=1)),
@@ -174,10 +204,106 @@ TEST_TABLE(TABLE=TAB6,
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'CUMUL_CYCLES'
 #---------------------------------------------------------------------------------------
 
-# TAB7=POST_RUPTURE(TABLE=TAB6,
-#                   OPERATION='CUMUL_CYCLES')
-# 
-# IMPR_TABLE(TABLE=TAB7)
+TAB6=POST_RUPTURE(TABLE=TAB3,
+                  OPERATION='CUMUL_CYCLES')
+
+IMPR_TABLE(TABLE=TAB6)
+
+da_ref = 227./6.
+TEST_TABLE(TABLE=TAB6,
+           NOM_PARA='DELTA_A',
+           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+           VALE=da_ref,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE')
+
+#---------------------------------------------------------------------------------------
+#  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'PILO_PROPA'
+#---------------------------------------------------------------------------------------
+
+# validation dans le cas de 2 fissures dont la 1ere possede 2 fonds
+
+# lecture de la table des DA pour le 2eme fond de la 1ere fissure
+TAB7=LIRE_TABLE(UNITE=51)        
+
+# combinaison des 2 tables (une pour chacun des 2 fonds de la 1ere fissure)
+# et on supprime les colonnes inutiles
+TAB67=CALC_TABLE(TABLE=TAB6,
+                 ACTION=(_F(OPERATION='COMB',TABLE=TAB7,NOM_PARA=('NUM_PT','NUME_FOND')),
+                         _F(OPERATION='SUPPRIME',NOM_PARA=('DELTA_K_EQ','DELTA_K_EQBIS')),
+                         )
+                  )
+
+IMPR_TABLE(TABLE=TAB67)
+
+# lecture de la table des DA pour le 1er fond de la 2eme fissure
+TAB8=LIRE_TABLE(UNITE=52)        
+
+# test du pilotage en increment de nombre de cycles
+dn = 100.
+TAB9=POST_RUPTURE(OPERATION='PILO_PROPA',
+                  TABLE=(TAB67,TAB8),
+                  DELTA_N = dn)
+
+IMPR_TABLE(TABLE=TAB9)
+
+TEST_TABLE(TABLE=TAB9,
+           NOM_PARA='DELTA_A',
+           FILTRE=(
+                   _F(NOM_PARA='FISSURE',VALE_K='FISS1'),
+                   _F(NOM_PARA='NUME_FOND',VALE_I=1),
+                   _F(NOM_PARA='NUM_PT',VALE_I=1),
+                   ),
+           VALE=da_ref * dn,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=TAB9,
+           NOM_PARA='DELTA_CYCLE',
+           TYPE_TEST='MAX',
+           VALE=dn,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=TAB9,
+           NOM_PARA='DELTA_CYCLE',
+           TYPE_TEST='MIN',
+           VALE=dn,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE')
+
+# test du pilotage en increment d'avancee max
+da_max = 1.
+TAB10=POST_RUPTURE(OPERATION='PILO_PROPA',
+                  TABLE=(TAB67,TAB8),
+                   DELTA_A_MAX = da_max)
+
+IMPR_TABLE(TABLE=TAB10)
+
+TEST_TABLE(TABLE=TAB10,
+           NOM_PARA='DELTA_A',
+           FILTRE=(
+                   _F(NOM_PARA='FISSURE',VALE_K='FISS1'),
+                   _F(NOM_PARA='NUME_FOND',VALE_I=1),
+                   _F(NOM_PARA='NUM_PT',VALE_I=1),
+                   ),
+           VALE=da_max,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=TAB10,
+           NOM_PARA='DELTA_CYCLE',
+           TYPE_TEST='MAX',
+           VALE=da_max/da_ref,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=TAB10,
+           NOM_PARA='DELTA_CYCLE',
+           TYPE_TEST='MIN',
+           VALE=da_max/da_ref,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE')
 
 #---------------------------------------------------------------------------------------
 

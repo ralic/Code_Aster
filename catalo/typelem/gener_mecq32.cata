@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ MODE_LOCAL__
                                         REP      )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
+    EGGEOP_R = GEOM_R   ELGA__ MASS    (X        Y        Z        W       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -142,7 +142,7 @@ OPTION__
     CHAR_MECA_TEMP_R    419   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                               OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER  CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
                               OUT__  EGGEOP_R PCOORPG
     DEGE_ELNO                -1    IN__    OUT__    XXXXXX   XXXXXX
     ECIN_ELEM      406   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER

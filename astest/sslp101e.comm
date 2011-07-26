@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE AVEC PRESSION VARIABLE SUR LES LEVRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,7 +100,9 @@ THETA6=CALC_THETA(     MODELE=MO,
 
 FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                        FOND_FISS=_F( NOEUD = 'N668'),
-                       NORMALE=(0., 1., 0.,))
+                       SYME='OUI',
+                       LEVRE_SUP=_F(MAILLE='M306'),
+)
 
 # ---- G, K1 ET K2 AVEC CHARGEMENT PRES_REP  ----------------------
 

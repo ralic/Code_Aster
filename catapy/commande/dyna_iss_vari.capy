@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 26/07/2011   AUTEUR ZENTNER I.ZENTNER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,13 +42,15 @@ DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",
               MODE_INTERF  =SIMP(statut='o',typ='TXM',into=("CORP_RIGI","TOUT")),
          ),
          MATR_COHE       =FACT(statut='o',
-              VITE_ONDE       =SIMP(statut='o',typ='R'),
-              PARA_ALPHA     =SIMP(statut='f',typ='R',defaut=0.5),
+              TYPE = SIMP(statut='o',typ='TXM' , into=("MITA_LUCO","ABRAHAMSON")   ),            
+              b_type_coh = BLOC(condition="TYPE=='MITA_LUCO' ",
+                 VITE_ONDE       =SIMP(statut='f',typ='R', defaut=600.),
+                 PARA_ALPHA     =SIMP(statut='f',typ='R',defaut=0.5),),
          ),
 #        LIST_FREQ        =SIMP(statut='o',typ='liste' ),
          UNITE_RESU_FORC = SIMP(statut='f',typ='I',defaut=33),
          UNITE_RESU_IMPE  = SIMP(statut='f',typ='I',defaut=32),
-         TYPE             = SIMP(statut='f',typ='TXM',into=("BINAIRE","ASCII"), defaut="ASCII"),
+         TYPE             = SIMP(statut='f',typ='TXM', into=("BINAIRE","ASCII"), defaut="ASCII"),
 #         NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE") , validators=NoRepeat(),max=3,defaut="DEPL" ),
 #
          MATR_GENE         = FACT(statut='o',

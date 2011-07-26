@@ -1,0 +1,218 @@
+      SUBROUTINE FONNO6 (RESU,NOMA,NDIM,NSOMMT,INA,NBNOSE,COMPTE,ISEG,
+     %          NOE,INDR,NBNOEL,IND1,VNORM,VTANG)
+      IMPLICIT NONE
+      CHARACTER*8         RESU, NOMA
+      INTEGER             NDIM,NSOMMT,INA,NBNOSE,COMPTE,ISEG,NOE(4,4)
+      INTEGER             INDR(2),NBNOEL,IND1
+      REAL*8              VNORM(2,3),VTANG(2,3)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C       ----------------------------------------------------------------
+      
+C       VERIF
+C       ----------------------------------------------------
+C    ENTREES
+C       RESU   : NOM DU CONCEPT RESULTAT
+C       NOMA   : NOM DU MAILLAGE
+C       NDIM   : DIMENSION DU MODELE
+C       NSOMMT : NOMBRE DE NOEUD SOMMET PRESENT EN FOND DE FISSURE
+C       INA    : INDICE DU NOEUD SOMMET DANS LA LISTE DES NOEUDS DU 
+C                FOND DE FISSURE
+C       NBNOSE : NOMBRE DE NOEUD PAR SEGMENT
+C       COMPTE : NOMBRE DE FACES LIBRES
+C       ISEG   : INDICE DU SOMMET COURANT
+C       NOE    : NOEUDS DES FACES CONTENANT NA et NB ET APPARTENANT AUX
+C                MAILLES CONNECTEES AU NOEUD SOMMET COURANT 
+C                ET AUX LEVRES
+C       INDR   : INDICES DES FACES LIBRES DANS LA LISTE DES FACES 
+C                DES MAILLES CONNECTEES AU FOND DE FISSURE
+C       NBNOEL : NOMBRE DE NOEUDS SOMMETS PAR ELEMENTS
+C     ENTREE/SORTIE
+C       IND1   : INDICE DE LA FACE A CONSIDERER CELUI-CI N'EST CALCULE 
+C                UNE FOIS POUR TOUTE AU DEBUT
+C       VNORM  : VECTEUR NORMAL AU FOND DE FISSURE DU SEGMENT NA NB 
+C       VTANG  : VECTEUR PRODUIT VECTORIEL DE VNORM ET DU SEGMENT NA NB 
+
+C       ----------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32     JEXNOM, JEXNUM,JEXATR
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+      INTEGER       JMALE,IAMASE,ITYP,IATYMA,JTANO,JVECT
+      INTEGER       I,J,INO2,IRO,IRET,INP,COMP6
+      INTEGER       NBLEV,NN,INO1
+      REAL*8        S,NORM1,NORM2
+      REAL*8        VECT1(3),VECT2(3),VECT3(3)
+      CHARACTER*6   SYME
+      CHARACTER*8   K8B, TYPE
+
+
+C     -----------------------------------------------------------------
+C           
+      CALL JEMARQ() 
+C
+C     RECUPERATION DE L'ADRESSE DES TYPFON DE MAILLES
+      CALL JEVEUO ( NOMA//'.TYPMAIL','L',IATYMA)
+C
+C     RECUPERATION DES LEVRES
+      CALL GETVTX (' ', 'SYME', 1,1,1, SYME, IRET)
+      CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEVEUO (RESU//'.LEVRESUP  .MAIL', 'L', JMALE )     
+        CALL JELIRA (RESU//'.LEVRESUP  .MAIL' , 'LONUTI', NBLEV, K8B)
+      ENDIF
+C
+C     RECUPERATION DE L'ADRESSE DES NOEUDS DE FOND DE FISSURE
+      CALL JEEXIN(RESU//'.DTAN_ORIGINE',IRO)
+      IF (IRO.NE.0) THEN
+        CALL JEVEUO (RESU//'.DTAN_ORIGINE', 'L', JTANO )
+      ENDIF 
+
+      CALL JEVEUO(RESU//'.BASEFOND','E',JVECT)
+
+      CALL ASSERT(COMPTE.NE.0)
+C     ON VERIFIE QUE LES DEUX VECTEURS NORMAUX AU FOND
+C     ONT MEME SENS
+      S = (VNORM(1,1)*VNORM(2,1)+VNORM(1,2)*VNORM(2,2)+
+     &         VNORM(1,3)*VNORM(2,3))
+      IF (S.LE.(0.D0)) THEN 
+        IF ((SYME.EQ.'OUI').AND.(ISEG.EQ.1)) THEN
+          DO 170 I=1,NBLEV
+            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JMALE-1 + I)),IRET)
+            CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',IRET),'L',IAMASE)
+            ITYP = IATYMA-1+IRET
+            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
+            CALL DISMOI('F','NBNO_TYPMAIL',TYPE,'TYPE_MAILLE',
+     &                 NN,K8B,IRET)
+            DO 171 INP=1,2
+              COMP6=0
+              DO 172 J=1,NN
+                DO 173 INO1=1,NBNOEL
+                IF (ZI(IAMASE-1 + J).EQ.NOE(INDR(INP),INO1)) THEN
+                  COMP6 = COMP6+1  
+                ENDIF
+  173           CONTINUE
+  172         CONTINUE
+              IF (COMP6.EQ.NBNOEL) THEN
+                IND1 = INP
+                GOTO 180
+              ENDIF
+  171       CONTINUE
+  170     CONTINUE
+C       SI LA TANGENTE EST DONNEE A L'ORIGINE ON LA PREND EN COMPTE
+C       EN CHOISISANT LE VECTEUR TANGENT AYANT LE MEME SENS
+        ELSEIF ((IRO.NE.0).AND.(ISEG.EQ.1)) THEN
+          S = (ZR(JTANO)*VNORM(2,1)+ZR(JTANO+1)*VNORM(2,2)+
+     &         ZR(JTANO+2)*VNORM(2,3))
+          IF (S.LE.0.D0) THEN
+           S = (ZR(JTANO)*VNORM(1,1)+ZR(JTANO+1)*VNORM(1,2)+
+     &            ZR(JTANO+2)*VNORM(1,3))
+           CALL ASSERT(S.GT.0.D0)
+           IND1=1
+          ELSE
+           IND1=2
+          ENDIF
+        ELSEIF ((SYME.EQ.'NON').AND.(IRO.EQ.0).AND.(ISEG.EQ.1)) THEN
+          CALL U2MESS('F','RUPTURE0_8')
+        ENDIF
+      ELSE
+        IF (ABS(1.D0-SQRT(S)).GT.1D-4) THEN
+          CALL U2MESS('F','RUPTURE0_34')
+        ELSEIF (ABS(1.D0-SQRT(S)).EQ.1.D0) THEN
+          CALL U2MESS('F','RUPTURE1_19')
+        ENDIF
+      ENDIF 
+
+  180 CONTINUE
+
+
+
+      IF (IND1.EQ.0) THEN
+        NORM1 = SQRT((VNORM(1,1)+VNORM(2,1))**2+(VNORM(1,2)
+     &               +VNORM(2,2))**2+(VNORM(1,3)+VNORM(2,3))**2)
+        S = (VTANG(1,1)*VTANG(2,1)+VTANG(1,2)*VTANG(2,2)+
+     &       VTANG(1,3)*VTANG(2,3))
+        IF (SYME.EQ.'NON') THEN
+          CALL ASSERT(ABS(1-S).LT.1D-4)
+        ELSE
+          CALL ASSERT(ABS(1+S).LT.1D-4)
+          VTANG(2,1) = -VTANG(2,1)
+          VTANG(2,2) = -VTANG(2,2)
+          VTANG(2,3) = -VTANG(2,3)
+        ENDIF
+        NORM2 = SQRT((VTANG(1,1)+VTANG(2,1))**2+(VTANG(1,2)
+     &        +VTANG(2,2))**2+(VTANG(1,3)+VTANG(2,3))**2)
+        DO 190 I=1,3
+          ZR(JVECT-1+6*(INA-1)+I)   = (VNORM(1,I)+VNORM(2,I))/NORM1
+          ZR(JVECT-1+6*(INA-1)+I+3) = (VTANG(1,I)+VTANG(2,I))/NORM2
+ 190    CONTINUE
+      ELSE
+        NORM1 = SQRT(VNORM(IND1,1)**2+VNORM(IND1,2)**2
+     &              +VNORM(IND1,3)**2)
+        NORM2 = SQRT(VTANG(IND1,1)**2+VTANG(IND1,2)**2
+     &              +VTANG(IND1,3)**2)
+        DO 191 I=1,3
+          ZR(JVECT-1+6*(INA-1)+I)   = VNORM(IND1,I)/NORM1
+          ZR(JVECT-1+6*(INA-1)+I+3) = VTANG(IND1,I)/NORM2
+ 191     CONTINUE
+      ENDIF
+
+C     ON TESTE LA COPLANARITE DES SEGMENTS EN FOND DE FISSURE
+C  
+      IF ((ISEG.GT.1).AND.(NDIM.EQ.3)) THEN   
+        DO 200 I=1,3
+          VECT1(I)   = ZR(JVECT-1+6*(INA-2)+I+3)
+          VECT2(I)   = ZR(JVECT-1+6*(INA-1)+I+3)
+ 200    CONTINUE
+        CALL PROVEC(VECT1,VECT2,VECT3)
+        CALL NORMEV(VECT3,NORM1)
+        CALL ASSERT(NORM1.LE.1D-1)
+      ENDIF
+ 
+      CALL JEDETR('&&FONNOR.MACOFOND')
+
+
+
+C     LA BASE LOCALE AUX NOEUDS QUI NE SONT PAS NOEUD-SOMMET EST 
+C     CELLE CALCULEE AUX ELEMENTS
+      IF (NBNOSE.GE.3) THEN 
+        DO 310 INO2=2,NBNOSE-1
+           I = (ISEG-1)*(NBNOSE-1)+INO2
+           DO 311 J=1,6
+              ZR(JVECT-1+6*(I-1)+J) = ZR(JVECT-1+6*(INA-1)+J)
+ 311       CONTINUE       
+ 310    CONTINUE
+      ENDIF
+      CALL JEDEMA()
+      END

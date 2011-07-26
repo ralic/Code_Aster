@@ -1,8 +1,8 @@
       SUBROUTINE NMASSI(MODELE,NUMEDD,LISCHA,FONACT,SDDYNA,
      &                  VALINC,VEELEM,VEASSE,CNDONN,MATASS)
-C ----------------------------------------------------------------------
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

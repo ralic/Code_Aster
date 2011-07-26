@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETS3 PETSC  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS3 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -20,9 +20,11 @@
 ! ==================================================================
       CHARACTER*(*) ACTION
       INTEGER      KPTSC
-!--------------------------------------------------------------
+!----------------------------------------------------------------
 !
-!---------------------------------------------------------------
+!  CREATION DU PRECONDITIONNEUR PETSC (INSTANCE NUMERO KPTSC)
+!
+!----------------------------------------------------------------
 
 #ifdef _HAVE_PETSC
 
@@ -30,10 +32,10 @@
 #include "include/finclude/petsc.h"
 #include "include/finclude/petscvec.h"
 #include "include/finclude/petscmat.h"
-#include "include/finclude/petscpc.h"
 #include "include/finclude/petscksp.h"
+#include "include/finclude/petscpc.h"
 !================================================================
-! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
+! --- DECLARATIONS NORMALISEES JEVEUX ---------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -48,110 +50,116 @@
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-!================================================================
-! DECLARATIONS DE VARIABLES
+!----------------------------------------------------------------
+!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
+      INTEGER      NMXINS
+      PARAMETER   (NMXINS=5)
 !
-      INTEGER NMXINS
-      PARAMETER (NMXINS=5)
-
+!     VARIABLES LOCALES
       INTEGER JSLVK,JSLVR,JSLVI
       INTEGER NIREMP,NSMDI
-
+!
       CHARACTER*24 PRECON
-      CHARACTER*19 NOMAT,NOSOLV,SOLVBD
+      CHARACTER*19 NOMAT,NOSOLV
       CHARACTER*14 NONU
       CHARACTER*4  KBID
-
+!
       REAL*8 FILLIN
-
-!     -- ON STOCKE AU PLUS NMXINS INSTANCES DE PETSC
-!     -- PLUS PRECISEMENT LES MATRICES, SOLVEURS, ETC
+!
+!     COMMUN DE SAUVEGARDE DES INSTANCES
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
-      CHARACTER*14 NONUS(NMXINS)
-      Mat      Ap(NMXINS)
-      KSP      Kp(NMXINS)
+      CHARACTER*14  NONUS(NMXINS)
+      Mat              Ap(NMXINS)
+      KSP              Kp(NMXINS)
       COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
-
-
-!      -- SUBROUTINES EXTERNES POUR L'UTILISATION DU
-!      -- PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
-       external LDSP1
-       external LDSP2
-!     -- COMMON POUR L'UTILISATION DU PRECONDITIONNEUR
-!     -- SIMPLE PRECISION LDLT_SP
-      COMMON /LDLTSP/xlocal,xscatt,xglobal,SOLVBD,NOMAT,NOSOLV
-
-!=================================================================
-!  Variables PETSc
 !
-!  A       - matrix that defines linear system
-!  ksp    - KSP context
-!  x, b - approx solution, RHS vectors
+!     SUBROUTINES EXTERNES POUR L'UTILISATION DU
+!     PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
+      external LDSP1
+      external LDSP2
 !
-      PetscMPIInt rang,size,ier
-      PetscInt fill,ierr,NEQ
-      PetscReal fillp
-      Vec xlocal,xglobal
+!     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
+      CHARACTER*19 SPSOMU,SPMAT,SPSOLV
+      Vec          xlocal,xglobal
       VecScatter   xscatt
+      COMMON /LDLTSP/xlocal,xscatt,xglobal,SPSOMU,SPMAT,SPSOLV
+!----------------------------------------------------------------
+!     Variables PETSc
+      PetscMPIInt rang,size,ier
+      PetscInt fill,ierr,neq
+      PetscReal fillp
       Mat A
       KSP ksp,kspp
       PC  pc,pcp
-!=================================================================
+!----------------------------------------------------------------
       CALL JEMARQ()
 
-!     -- ON RECUPERE DANS LE COMMON L'INSTANCE COURANTE
-      NOMAT=NOMATS(KPTSC)
-      NOSOLV=NOSOLS(KPTSC)
-      NONU=NONUS(KPTSC)
-      A=Ap(KPTSC)
-      ksp=Kp(KPTSC)
+!     -- LECTURE DU COMMUN
+      NOMAT  = NOMATS(KPTSC)
+      NOSOLV = NOSOLS(KPTSC)
+      NONU   =  NONUS(KPTSC)
+      A      =     Ap(KPTSC)
+      ksp    =     Kp(KPTSC)
 
       CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
       CALL JEVEUO(NOSOLV//'.SLVR','L',JSLVR)
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
-      PRECON=ZK24(JSLVK-1+2)
-      FILLIN=ZR(JSLVR-1+3)
-      NIREMP=ZI(JSLVI-1+4)
+      PRECON = ZK24(JSLVK-1+2)
+      FILLIN =   ZR(JSLVR-1+3)
+      NIREMP =   ZI(JSLVI-1+4)
 
-      fill=NIREMP
-      fillp=FILLIN
+      fill  = NIREMP
+      fillp = FILLIN
 
 !     ----- RECUPERE LE RANG DU PROCESSUS
       CALL MPI_COMM_RANK(PETSC_COMM_WORLD, rang, ier)
       CALL MPI_COMM_SIZE(PETSC_COMM_WORLD, size, ier)
 
-
 !     -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
 !     -----------------------------------------------------
       IF (PRECON.EQ.'LDLT_SP') THEN
-        IF (ACTION.EQ.'PRERES') THEN
-!         LDLT_SP EST MIS EN OEUVRE PAR DES APPELS A 2 ROUTINES EXTERNES
-          call KSPGetPC(ksp,pc,ierr)
-          call PCSetType(pc,PCSHELL,ierr)
-          call PCShellSetSetUp(pc,LDSP1,ierr)
-          call PCShellSetApply(pc,LDSP2,ierr)
-!         CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
-          CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
-          NEQ=NSMDI
-          call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,NEQ,xlocal,
-     &                                                             ierr)
-          CALL ASSERT(ierr.EQ.0)
-          call VecCreateSeq(PETSC_COMM_SELF,NEQ,xglobal,ierr)
-          CALL ASSERT(ierr.EQ.0)
-          call VecScatterCreateToAll(xlocal,xscatt,xglobal,ierr)
-          CALL ASSERT(ierr.EQ.0)
-!         INSTANCIATION DU PRECONDITIONNEUR
-          call PCSetUp(pc,ierr)
-!         ERREUR : PCENT_PIVOT PAS SUFFISANT
-          IF (ierr.NE.0) THEN
-            CALL U2MESS('F','PETSC_15')
-          ENDIF
-        ELSE IF (ACTION.EQ.'RESOUD') THEN
-!         CREATION SOLVEUR BIDON SIMPLE PRECISION
-          SOLVBD=ZK24(JSLVK-1+3)
-          CALL CRSMSP(SOLVBD,NOMAT,0)
-        ENDIF
-        GOTO 999
+         IF (ACTION.EQ.'PRERES') THEN
+!           LDLT_SP FAIT APPEL A DEUX ROUTINES EXTERNES
+            call KSPGetPC(ksp,pc,ierr)
+            CALL ASSERT(ierr.EQ.0)
+            call PCSetType(pc,PCSHELL,ierr)
+            CALL ASSERT(ierr.EQ.0)
+            call PCShellSetSetUp(pc,LDSP1,ierr)
+            CALL ASSERT(ierr.EQ.0)
+            call PCShellSetApply(pc,LDSP2,ierr)
+            CALL ASSERT(ierr.EQ.0)
+!
+            CALL ASSERT(SPMAT.EQ.' ')
+            SPMAT  = NOMAT
+            CALL ASSERT(SPSOLV.EQ.' ')
+            SPSOLV = NOSOLV
+!           INSTANCIATION DU PRECONDITIONNEUR
+            call PCSetUp(pc,ierr)
+!           ERREUR : PCENT_PIVOT PAS SUFFISANT
+            IF (ierr.NE.0) THEN
+              CALL U2MESS('F','PETSC_15')
+            ENDIF
+         ELSE IF (ACTION.EQ.'RESOUD') THEN
+!           CREATION SOLVEUR BIDON SIMPLE PRECISION
+            SPSOMU = ZK24(JSLVK-1+3)
+            CALL CRSMSP(SPSOMU,NOMAT,0)
+!           CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
+            CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
+            neq=NSMDI
+!
+            CALL ASSERT(xlocal.EQ.0)
+            call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,neq,xlocal,
+     &                        ierr)
+            CALL ASSERT(ierr.EQ.0)
+!
+            CALL ASSERT(xscatt.EQ.0)
+            CALL ASSERT(xglobal.EQ.0)
+            call VecScatterCreateToAll(xlocal,xscatt,xglobal,ierr)
+            CALL ASSERT(ierr.EQ.0)
+         ELSE
+            CALL ASSERT(.FALSE.)
+         ENDIF
+         GOTO 999
       ENDIF
 
 
@@ -163,10 +171,14 @@
 ! CAR ON NE VEUT PAS ETRE OBLIGE D'APPELER KSPSetUp
          kspp=ksp
          call KSPGetPC(kspp,pcp,ierr)
+         CALL ASSERT(ierr.EQ.0)
          call PCSetType(pcp,PCBJACOBI,ierr)
+         CALL ASSERT(ierr.EQ.0)
          call KSPSetUp(kspp,ierr)
+         CALL ASSERT(ierr.EQ.0)
          call PCBJacobiGetSubKSP(pcp,PETSC_NULL_INTEGER,
      &                               PETSC_NULL_INTEGER,ksp,ierr)
+         CALL ASSERT(ierr.EQ.0)
       ELSE
 ! size.LE.1 i.e. SEQUENTIEL
          IF (ACTION.NE.'PRERES') GOTO 999
@@ -176,15 +188,22 @@
 !     -------------------------------
 ! ("LDLT_INC","JACOBI","SOR"),defaut="LDLT_INC" ),
       call KSPGetPC(ksp,pc,ierr)
+      CALL ASSERT(ierr.EQ.0)
       IF (PRECON.eq.'LDLT_INC') THEN
          call PCSetType(pc,PCILU,ierr)
+         CALL ASSERT(ierr.EQ.0)
          call PCFactorSetLevels(pc,fill,ierr)
+         CALL ASSERT(ierr.EQ.0)
          call PCFactorSetFill(pc,fillp,ierr)
+         CALL ASSERT(ierr.EQ.0)
          call PCFactorSetMatOrderingType(pc,MATORDERING_NATURAL,ierr)
+         CALL ASSERT(ierr.EQ.0)
       ELSEIF (PRECON.eq.'JACOBI') THEN
          call PCSetType(pc,PCJACOBI,ierr)
+         CALL ASSERT(ierr.EQ.0)
       ELSEIF (PRECON.eq.'SOR') THEN
          call PCSetType(pc,PCSOR,ierr)
+         CALL ASSERT(ierr.EQ.0)
       ELSE
          CALL ASSERT(.FALSE.)
       ENDIF

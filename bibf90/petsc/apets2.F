@@ -1,9 +1,9 @@
       SUBROUTINE APETS2(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS2 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS2 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -19,9 +19,11 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
       INTEGER      KPTSC
-!--------------------------------------------------------------
+!----------------------------------------------------------------
 !
-!---------------------------------------------------------------
+!  REMPLISSAGE DE LA MATRICE PETSC (INSTANCE NUMERO KPTSC)
+!
+!----------------------------------------------------------------
 
 #ifdef _HAVE_PETSC
 
@@ -32,7 +34,7 @@
 #include "include/finclude/petscksp.h"
 #include "include/finclude/petscpc.h"
 !================================================================
-! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
+! --- DECLARATIONS NORMALISEES JEVEUX ---------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       INTEGER*4 ZI4
@@ -49,70 +51,58 @@
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-!================================================================
-! DECLARATIONS DE VARIABLES
+      CHARACTER*32 JEXNUM
+!----------------------------------------------------------------
+!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
+      INTEGER      NMXINS
+      PARAMETER   (NMXINS=5)
 !
-      INTEGER NMXINS
-      PARAMETER (NMXINS=5)
-
+!     VARIABLES LOCALES
       INTEGER   NSMDI,NSMHC,N,NZ,NVALM,NLONG
       INTEGER   JSMDI,JSMHC,JDXI1,JDXI2,JDVAL1,JDVAL2,JVALM,JVALM2
       INTEGER   K,ILIG,JCOL,NZDEB,NZFIN
       INTEGER   LTERM,ITERM,JTERM
-
+!
       CHARACTER*19 NOMAT,NOSOLV
+      CHARACTER*16 IDXI1,IDXI2,TRANS1,TRANS2
       CHARACTER*14 NONU
       CHARACTER*4  KBID
-
+!
       LOGICAL LMNSY
-
+!
       REAL*8 VALM
-
-      CHARACTER*16 IDXI1,IDXI2,TRANS1,TRANS2
+!
       PARAMETER (IDXI1 ='&&APETS2.IDXI1__')
       PARAMETER (IDXI2 ='&&APETS2.IDXI2__')
       PARAMETER (TRANS1='&&APETS2.TRANS1_')
       PARAMETER (TRANS2='&&APETS2.TRANS2_')
-
-      CHARACTER*32 JEXNUM
-
 !
-!     -- ON STOCKE AU PLUS NMXINS INSTANCES DE PETSC
-!     -- PLUS PRECISEMENT LES MATRICES, SOLVEURS, ETC
+!     COMMUN DE SAUVEGARDE DES INSTANCES
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
-      CHARACTER*14 NONUS(NMXINS)
-      Mat      Ap(NMXINS)
-      KSP      Kp(NMXINS)
+      CHARACTER*14  NONUS(NMXINS)
+      Mat              Ap(NMXINS)
+      KSP              Kp(NMXINS)
       COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
-!=================================================================
-!  Variables PETSc
-!
-!  A       - matrix that defines linear system
-!  ksp    - KSP context
-!  x, b - approx solution, RHS vectors
-!
-      PetscInt low,high,NEQ,dlow,ierr
+!----------------------------------------------------------------
+!     Variables PETSc
+      PetscInt low,high,neq,dlow,ierr
       Mat A
-!=================================================================
+!----------------------------------------------------------------
       CALL JEMARQ()
 
-!     -- ON RECUPERE DANS LE COMMON L'INSTANCE COURANTE
-      NOMAT=NOMATS(KPTSC)
-      NOSOLV=NOSOLS(KPTSC)
-      NONU=NONUS(KPTSC)
-      A=Ap(KPTSC)
-
+!     -- LECTURE DU COMMUN
+      NOMAT  = NOMATS(KPTSC)
+      NOSOLV = NOSOLS(KPTSC)
+      NONU   =  NONUS(KPTSC)
+      A      =     Ap(KPTSC)
+!
       CALL JEVEUO(NONU//'.SMOS.SMDI','L',JSMDI)
       CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
       CALL JEVEUO(NONU//'.SMOS.SMHC','L',JSMHC)
       CALL JELIRA(NONU//'.SMOS.SMHC','LONMAX',NSMHC,KBID)
       N=NSMDI
-      NEQ=N
-
-!     DANS PETSc, LES MATRICES SONT STOCKEES NON SYMETRIQUES
+      neq=N
       NZ=ZI(JSMDI-1+N)
-      CALL ASSERT(NZ.LE.NSMHC)
-
 
       CALL JELIRA(NOMAT//'.VALM','NMAXOC',NVALM,KBID)
       IF (NVALM.EQ.1) THEN
@@ -124,13 +114,11 @@
       END IF
 
       CALL JEVEUO(JEXNUM(NOMAT//'.VALM',1),'L',JVALM)
-      CALL JELIRA(JEXNUM(NOMAT//'.VALM',1),'LONMAX',
-     &             NLONG,KBID)
+      CALL JELIRA(JEXNUM(NOMAT//'.VALM',1),'LONMAX',NLONG,KBID)
       CALL ASSERT(NLONG.EQ.NZ)
       IF (LMNSY) THEN
          CALL JEVEUO(JEXNUM(NOMAT//'.VALM',2),'L',JVALM2)
-         CALL JELIRA(JEXNUM(NOMAT//'.VALM',2),'LONMAX',
-     &             NLONG,KBID)
+         CALL JELIRA(JEXNUM(NOMAT//'.VALM',2),'LONMAX',NLONG,KBID)
          CALL ASSERT(NLONG.EQ.NZ)
       END IF
 
@@ -138,6 +126,7 @@
 !     high donne la premiere ligne stockee par le processus (rang+1)
 !     ATTENTION ces indices commencent a zero (convention C de PETSc)
       call MatGetOwnershipRange(A,low,high,ierr)
+      CALL ASSERT(ierr.EQ.0)
 
       CALL WKVECT(IDXI1,'V V S',N,JDXI1)
       CALL WKVECT(IDXI2,'V V S',N,JDXI2)
@@ -148,7 +137,7 @@
       ITERM=0
       JTERM=0
 
-C cas ou on possede le premier bloc de lignes
+!     cas ou on possede le premier bloc de lignes
       IF (low.EQ.0) THEN
          LTERM=LTERM+1
          call MatSetValue(A,0,0,ZR(JVALM),INSERT_VALUES,ierr)
@@ -157,7 +146,8 @@ C cas ou on possede le premier bloc de lignes
          dlow=0
       END IF
 
-C on commence par s'occuper du nombres de NZ par ligne dans le bloc diagonal
+!     on commence par s'occuper du nombres de NZ par ligne
+!     dans le bloc diagonal
       DO JCOL = low+dlow, high-1
          NZDEB = ZI(JSMDI+JCOL-1) + 1
          NZFIN = ZI(JSMDI+JCOL)
@@ -192,8 +182,8 @@ C on commence par s'occuper du nombres de NZ par ligne dans le bloc diagonal
          JTERM=0
       END DO
 
-C ensuite on complete le tableau du bloc hors diagonal         
-      DO JCOL = high, NEQ-1
+!     ensuite on complete le tableau du bloc hors diagonal         
+      DO JCOL = high, neq-1
          NZDEB = ZI(JSMDI+JCOL-1) + 1
          NZFIN = ZI(JSMDI+JCOL)
          DO K = NZDEB, NZFIN
@@ -220,7 +210,7 @@ C ensuite on complete le tableau du bloc hors diagonal
       CALL JELIBE(JEXNUM(NOMAT//'.VALM',1))
       IF (LMNSY) CALL JELIBE(JEXNUM(NOMAT//'.VALM',2))
 
-C on n'oublie pas de detruire les tableaux apres avoir alloue correctement
+!     on n'oublie pas de detruire les tableaux apres avoir alloue correctement
       CALL JEDETR(IDXI1)
       CALL JEDETR(IDXI2)
       CALL JEDETR(TRANS1)

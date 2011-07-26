@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*8         RESU, NOMA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C-----------------------------------------------------------------------
 C FONCTION REALISEE:
 C
 C     CALCUL DE LA NORMALE AU FOND DE FISSURE POUR DEFI_FOND_FISS 
-C     EN 2D DE LA NORMALE
+C     EN 2D ET 3D DE LA BASE LOCALE
 C
 C     ENTREES:
 C        RESU   : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
@@ -44,149 +44,198 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
+      CHARACTER*32     JEXNOM, JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       IDLINO, JNOLS, JLIMA, JNOE1, JNOE2, IDCOOR
-      INTEGER       JNORM,  IERA,  INOLS
-      INTEGER       NBMAI,  INIV,  INO
-      INTEGER       IRET,   IRE1,  IRE2,  IN
-      INTEGER       NVENOR, NBNOE,  N1,   NBNOLS, IM
-      INTEGER       NUMORI, NUMFIN, COMPT,INDICE, NBNO
-      REAL*8        ZRBID,D
-      REAL*8        X1,Y1,Z1,X2,Y2,Z2,DMAX,XSUP,YSUP,ZSUP
-      REAL*8        PSUP(3),VZ(3),VNORM(6)
-      CHARACTER*9   TYPLEV(2),MOTFAC, VALK(2)
-      CHARACTER*6   NOMPRO
-      CHARACTER*8   K8B, TYPE
-      
-      CHARACTER*24  OBJ3,NOMOB1,NOMOB2
+      INTEGER       JNOE1,JVECT,JTYP
+      INTEGER       I,J,INA,INB,ISEG,IND1,IRET,NSOMMT,NBNOSE,NBNOFF
+      INTEGER       NA,NB,NRET,COMPTE,NDIM,NBNOEL,NSEG,NBMAX,NBMAC
+      INTEGER       INDIC(4),NOE(4,4),INDR(2),TABLEV(2)
+      REAL*8        S,NORM1,NORM2,X1,Y1
+      REAL*8        VNORM(2,3),VTANG(2,3)
+      CHARACTER*8   K8B, TYPE,TYPFON,NOEUA
+      CHARACTER*16  CASFON
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
-      NOMPRO = 'FONNOR'
-      TYPLEV(1) = 'LEVRE_SUP'
-      TYPLEV(2) = 'LEVRE_INF'
+
+C     ------------------------------------------------------------------
+C     INITIALISATIONS
+C     ------------------------------------------------------------------
+
 C
-      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA , N1 )
-      CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IDCOOR )
-      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOE,K8B,IRET)
-
-C     -----------------------------------------------------------------
+C     RECUPERATION DES INFORMATIONS RELATIVES AU MAILLAGE
 C
-C OBJETS DE MAILLAGE : OBJ1 A OBJ3
-
-      OBJ3 = NOMA//'.NOMNOE'
 C
-      DO 10 INIV=1,2
-        MOTFAC = TYPLEV(INIV)
-        IF ( MOTFAC .EQ. 'LEVRE_SUP' ) THEN
-          NOMOB1 = RESU//'.LEVRESUP  .MAIL'
-          NOMOB2 = RESU//'.SUPNORM   .NOEU'
-        ELSE
-          NOMOB1 = RESU//'.LEVREINF  .MAIL'
-          NOMOB2 = RESU//'.INFNORM   .NOEU'
-        ENDIF
-        CALL JELIRA(NOMOB1 , 'LONUTI', NBMAI, K8B)
-        CALL JEVEUO(NOMOB1 ,'L',JNOE2)
-        CALL WKVECT ( '&&'//NOMPRO//'_TRAV'  , 'V V I', NBNOE, IDLINO )
-        CALL WKVECT ( '&&'//NOMPRO//'_NOEU_NORM_SUP', 
-     &                                           'V V I', NBNOE, JNOLS)
-        CALL WKVECT ( '&&'//NOMPRO//'_MAILLE_LEV_SUP', 
-     &                                           'V V I', NBMAI, JLIMA)
-        DO 601 IM = 1 , NBMAI
-           CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JNOE2-1 + IM)),
-     &                                               ZI(JLIMA-1 + IM) )
- 601    CONTINUE
-        CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMAI,
-     &                                      ZI(JNOLS), NBNOLS, 'TOUS' )
-
-        CALL JEEXIN(RESU//'.FOND      .NOEU',IRET)
-        IF(IRET.NE.0) THEN
-          CALL JELIRA(RESU//'.FOND      .NOEU' , 'LONUTI', NBNO, K8B)
-          CALL JEVEUO(RESU//'.FOND      .NOEU' ,'L',JNOE1)
-        ELSE
-          IF (MOTFAC .EQ. 'LEVRE_SUP') THEN
-            CALL JELIRA(RESU//'.FOND_SUP  .NOEU' , 'LONUTI', NBNO, K8B)
-            CALL JEVEUO(RESU//'.FOND_SUP  .NOEU' ,'L',JNOE1)
-          ELSEIF (MOTFAC .EQ. 'LEVRE_INF') THEN
-            CALL JELIRA(RESU//'.FOND_INF  .NOEU' , 'LONUTI', NBNO, K8B)
-            CALL JEVEUO(RESU//'.FOND_INF  .NOEU' ,'L',JNOE1)
-          ENDIF
-        ENDIF
-        CALL JENONU(JEXNOM(OBJ3,ZK8(JNOE1)), NUMORI )
-        X1 = ZR(IDCOOR-1 + 3*(NUMORI-1)+1)
-        Y1 = ZR(IDCOOR-1 + 3*(NUMORI-1)+2)
-        Z1 = ZR(IDCOOR-1 + 3*(NUMORI-1)+3)
-        DMAX = 0.D0
-        XSUP = 0.D0
-        YSUP = 0.D0
-        ZSUP = 0.D0
-        COMPT = 0
-        DO 602 IN = 1 , NBNOLS
-          INO = JNOLS+IN-1
-          IF ( ZI(INO) .EQ. NUMORI ) THEN
-            COMPT = COMPT + 1
-            GOTO 602
-          ENDIF
-          X2 = ZR(IDCOOR-1 + 3*(ZI(INO)-1)+1)
-          Y2 = ZR(IDCOOR-1 + 3*(ZI(INO)-1)+2)
-          Z2 = ZR(IDCOOR-1 + 3*(ZI(INO)-1)+3)
-          D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-          XSUP = XSUP + X2
-          YSUP = YSUP + Y2
-          ZSUP = ZSUP + Z2
-          IF  (D .GT. DMAX) THEN
-            DMAX = D
-            NUMFIN = ZI(INO)
-          ENDIF
-602     CONTINUE
-
-        IF(COMPT .EQ. 0)  THEN
-           VALK(1) = ZK8(JNOE1)
-           VALK(2) = MOTFAC
-           CALL U2MESK('F','RUPTURE0_76',2, VALK)
-        ENDIF
-        CALL OREINO ( NOMA, ZI(JNOLS), NBNOLS, NUMORI ,
-     &         NUMFIN,ZR(IDCOOR),'RELATIF',0.1D0,IERA,IRET)
-        CALL WKVECT(NOMOB2,'G V K8',20,INOLS)
-        DO 603 IN = 1 , MIN(NBNOLS,20)
-          CALL JENUNO(JEXNUM(OBJ3,ZI(JNOLS-1 + IN)),
-     &                                           ZK8(INOLS-1 + IN))
-603     CONTINUE
-C CALCUL DE LA NORMALE
-        PSUP(1) = X1 - XSUP/(NBNOLS-1)
-        PSUP(2) = Y1 - YSUP/(NBNOLS-1)
-        PSUP(3) = Z1 - ZSUP/(NBNOLS-1)
-        VZ(1) = 0.D0
-        VZ(2) = 0.D0
-        VZ(3) = 1.D0
-        INDICE = 3*(INIV-1)
-        VNORM(INDICE+1) = 0.D0
-        VNORM(INDICE+2) = 0.D0
-        VNORM(INDICE+3) = 0.D0
-        CALL PROVEC ( VZ,PSUP,  VNORM(INDICE+1) )
-        CALL NORMEV(VNORM(INDICE+1),ZRBID)
-        CALL JEDETR ( '&&'//NOMPRO//'_TRAV' )
-        CALL JEDETR ( '&&'//NOMPRO//'_NOEU_NORM_SUP' )
-        CALL JEDETR ( '&&'//NOMPRO//'_MAILLE_LEV_SUP' )
-  10  CONTINUE
-
-      CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
-      CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NVENOR)
-      CALL JEEXIN(RESU//'.SUPNORM   .NOEU',IRE1)
-      CALL JEEXIN(RESU//'.INFNORM   .NOEU',IRE2)
-      CALL ASSERT(IRE1.NE.0)
-      IF(IRE2.NE.0)THEN
-        ZR(JNORM-1 + 1) =   (VNORM(1)+VNORM(4))/2.D0
-        ZR(JNORM-1 + 2) = (VNORM(2)+VNORM(5))/2.D0
-        ZR(JNORM-1 + 3) = (VNORM(3)+VNORM(6))/2.D0
+C     RECUPERATION DU CONCEPT DU MAILLAGE
+      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA , NRET )
+C
+C     RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8B,IRET)
+C
+C     RECUPERATION DES NOEUDS DU FOND DE FISSURE
+C
+      CALL JEEXIN(RESU//'.FOND      .NOEU',IRET)
+      IF (IRET.NE.0) THEN
+C       RECUPERATION DE L'ADRESSE DES NOEUDS DE FOND DE FISSURE
+        CALL JEVEUO (RESU//'.FOND      .NOEU', 'L', JNOE1 )     
+C       RECUPERATION DU NOMBRE DE NOEUD
+        CALL JELIRA (RESU//'.FOND      .NOEU' , 'LONUTI', NBNOFF, K8B)
       ELSE
-        ZR(JNORM-1 + 1)   = VNORM(1)
-        ZR(JNORM-1 + 2) = VNORM(2)
-        ZR(JNORM-1 + 3) = VNORM(3)
+C       RECUPERATION DE L'ADRESSE DES NOEUDS DE FOND DE FISSURE
+        CALL JEVEUO (RESU//'.FOND_SUP  .NOEU', 'L', JNOE1 )     
+C       RECUPERATION DU NOMBRE DE NOEUD
+        CALL JELIRA (RESU//'.FOND_SUP  .NOEU' , 'LONUTI', NBNOFF, K8B)
       ENDIF
+C
+C     RECUPERATION DU TYPE DE MAILLE EN FOND DE FISSURE EN 3D
+      IF (NDIM.EQ.3) THEN
+        CALL JEVEUO (RESU//'.FOND      .TYPE', 'L', JTYP )
+        TYPFON = ZK8(JTYP)
+C       SUIVANT LE CAS QUADRATIQUE/LINEAIRE EN 3D DEUX MAILLES SONT 
+C       CONNECTEES SI ELLES ONT AU MOINS NBMAX NOEUDS EN COMMUN
+C       NBNOSE : NOMBRE DE NOEUDS PAR "SEGMENT" DE FOND DE FISSURE 
+        IF (TYPFON.EQ.'NOE2'.OR.TYPFON.EQ.'SEG2') THEN
+          CASFON = 'LINEAIRE'
+          NBNOSE = 2
+          NBMAX  = 3
+        ELSEIF (TYPFON.EQ.'NOE3'.OR.TYPFON.EQ.'SEG3') THEN
+          CASFON = 'QUADRATIQUE'
+          NBNOSE = 3
+          NBMAX  = 6
+        ELSE
+          NBNOSE = 2
+          NBMAX  = 3
+
+        ENDIF
+      ELSE
+          NBNOSE = 2
+          NBMAX  = 3
+      ENDIF
+      IF (NDIM.EQ.2) CASFON = '2D'
+C     
+C
+C     ALLOCATION DU VECTEUR DES BASES LOCALES      
+      CALL WKVECT (RESU//'.BASEFOND'  , 'G V R', 6*NBNOFF, JVECT )
+C
+C
+C     ALLOCATION DU VECTEUR CONTENANT LES MAILLES CONNECTEES AU FOND
+C     DE FISSURE ET AYANT UN BORD LIBRE 
+      IF (NDIM.EQ.2) THEN
+        CALL ASSERT(NBNOFF.EQ.1)
+C       NOMBRE DE SOMMETS EN FOND DE FISSURE
+        NSOMMT = 1
+C       NOMBRE DE SOMMETS A TRAITER
+        NSEG = 1
+      ELSEIF (NDIM.EQ.3) THEN
+        CALL ASSERT(NBNOFF.GT.1)
+C       NOMBRE DE SOMMETS EN FOND DE FISSURE
+        IF (CASFON.EQ.'LINEAIRE')    NSOMMT =  NBNOFF
+        IF (CASFON.EQ.'QUADRATIQUE') NSOMMT = (NBNOFF-1)/2+1
+C       NOMBRE DE SOMMETS A TRAITER = NB SEG ?
+        NSEG = NSOMMT-1
+      ENDIF      
 
 C
+      IND1 = 0
+C
+C     ------------------------------------------------------------------
+C     BOUCLE SUR LES "SEGMENTS" DU FOND DE FISSURE
+C     ------------------------------------------------------------------
+C
+      DO 100 ISEG=1,NSEG
+        
+C       INDICES DES NOEUDS SOMMETS DU SEGMENT
+        IF (CASFON.EQ.'LINEAIRE'.OR.CASFON.EQ.'2D') THEN
+          INA = ISEG
+          INB = ISEG+1
+        ELSEIF (CASFON.EQ.'QUADRATIQUE') THEN
+          INA = 2*ISEG-1
+          INB = 2*ISEG+1
+        ENDIF
+
+C       NUMEROS DES NOEUDS SOMMETS DU SEGMENT
+        NOEUA = ZK8(JNOE1-1+INA)
+        CALL JENONU (JEXNOM(NOMA//'.NOMNOE',NOEUA),NA)
+        IF (NDIM.EQ.3) THEN
+          CALL JENONU (JEXNOM(NOMA//'.NOMNOE',ZK8(JNOE1-1+INB)),NB)
+        ENDIF
+
+C
+C       1) RECUP DES NUMEROS DES MAILLES CONNECTEES AU SEGMENT DU FOND
+C       ----------------------------------------------------------------
+C
+        CALL FONNO1 (NOMA,NDIM,NA,NB,NBMAC)
+C
+C       2) PARMI LES MAILLES CONNECTEES AU SEGMENT DU FOND, FILTRAGE DES
+C          MAILLES CONNECTEES A 1 LEVRE (CAD AYANT UNE FACE LIBRE) 
+C          -> REMPLISSAGE DE JMALEV
+C       ----------------------------------------------------------------
+C
+        CALL FONNO2 (NOMA,NBMAC,NBNOFF,NBNOSE,
+     %               NBMAX,NOEUA,TABLEV)
+     
+C
+C       3) RECUP DES FACES CONNECTEES AU FOND 
+C          POUR CHACUNE DES 2 MAILLES
+C       ----------------------------------------------------
+
+        CALL FONNO3 (NOMA,TABLEV,NDIM,NA,NB,NOE)
+
+
+C       4) FILTRE DES FACES LIBRES
+C       ----------------------------------------------------
+C
+        CALL FONNO4 (NOMA,NBMAC,TABLEV,NOE,NBNOFF,INDIC)
+
+C       5) CALCUL DES VECTEURS DE LA BASE LOCALE
+C       ----------------------------------------------------
+        CALL FONNO5 (NOMA,INDIC,NBNOFF,NOE,NA,NB,NDIM,
+     %         NBNOEL,INDR,COMPTE,VNORM,VTANG)
+
+C       6) VERIF
+C       ----------------------------------------------------
+        CALL FONNO6 (RESU,NOMA,NDIM,NSOMMT,INA,NBNOSE,COMPTE,ISEG,
+     %        NOE,INDR,NBNOEL,IND1,VNORM,VTANG)
+
+
+ 100  CONTINUE
+
+C     ------------------------------------------------------------------
+
+      IF (NDIM.EQ.3) THEN
+C       CALCUL DE LA BASE LOCALE AU DERNIER SOMMET
+        DO 200 J=1,6
+          ISEG = (NSOMMT-1)*(NBNOSE-1)+1
+          ZR(JVECT-1+6*(ISEG-1)+J) = 
+     &           ZR(JVECT-1+6*(NSOMMT-2)*(NBNOSE-1)+J)
+ 200     CONTINUE
+C       LA BASE LOCALE AUX NOEUDS SOMMET EST CALCULEE 
+C       COMME MOYENNE DES BASES LOCALES VOISINES
+        DO 400 ISEG=2,NSOMMT-1,-1          
+          DO 410 J=1,6
+            X1 = ZR(JVECT-1+6*((ISEG-2)*(NBNOSE-1))+J)
+            Y1 = ZR(JVECT-1+6*((ISEG-1)*(NBNOSE-1))+J)
+            ZR(JVECT-1+6*((ISEG-1)*(NBNOSE-1))+J) = (X1+Y1)/2.D0
+ 410     CONTINUE
+ 400    CONTINUE
+C       NORMALISATION
+        DO 500 ISEG=1,NBNOFF
+          NORM1 = 0.D0
+          NORM2 = 0.D0
+          DO 510 J=1,3
+            NORM1 = NORM1 + ZR(JVECT-1+6*(ISEG-1)+J)**2
+            NORM2 = NORM2 + ZR(JVECT-1+6*(ISEG-1)+J+3)**2
+ 510      CONTINUE                 
+          DO 520 J=1,3
+            ZR(JVECT-1+6*(ISEG-1)+J) = ZR(JVECT-1+6*(ISEG-1)+J)
+     &                                                    /SQRT(NORM1)
+            ZR(JVECT-1+6*(ISEG-1)+J+3) = ZR(JVECT-1+6*(ISEG-1)+J+3)
+     &                                                    /SQRT(NORM2)
+ 520      CONTINUE
+ 500    CONTINUE
+      ENDIF
+     
+
       CALL JEDEMA()
       END

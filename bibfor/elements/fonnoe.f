@@ -3,7 +3,7 @@
       CHARACTER*6         TYPFON, NOMOBJ
       CHARACTER*8         RESU, NOMA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8   TYPM
       CHARACTER*24  NOEORD,TRAV
       CHARACTER*24  NCNCIN,ENTREE,OBTRAV
-      LOGICAL       LFON
+      LOGICAL       LFON,TEST,ISMALI
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
       NOMPRO = 'FONNOE'
@@ -165,6 +165,17 @@ C           D'AVOIR DES MAILLES SEG
  212    CONTINUE
         CALL U2MESS('F','RUPTURE0_66')
  216    CONTINUE
+        IF (TYPMP.EQ.'        ') THEN
+          NUMA = ZI(JCNCIN-1 + ADRA)
+          ITYP = IATYMA-1+NUMA
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
+          TEST = ISMALI(TYPE)
+          IF (TEST) THEN
+            TYPMP = 'NOE2'
+          ELSE
+            TYPMP = 'NOE3'
+          ENDIF
+        ENDIF
         CALL JEDETR(TRAV)
  210  CONTINUE
 C

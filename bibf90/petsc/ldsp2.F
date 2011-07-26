@@ -1,7 +1,7 @@
       SUBROUTINE LDSP2(pc,x,y,ierr)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF LDSP2 PETSC  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF LDSP2 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -28,26 +28,27 @@
 #include "include/finclude/petscpc.h"
 #include "include/finclude/petscksp.h"
 !================================================================
-      CHARACTER*19 SOLVBD
-      CHARACTER*19 NOMAT,NOSOLV
       COMPLEX*16   CBID
       INTEGER      IRET
-      COMMON /LDLTSP/xlocal,xscatt,xglobal,SOLVBD,NOMAT,NOSOLV
-!=================================================================
-!  Variables PETSc
+!     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
+      CHARACTER*19 SPSOMU,SPMAT,SPSOLV
+      Vec          xlocal,xglobal
+      VecScatter   xscatt
+      COMMON /LDLTSP/xlocal,xscatt,xglobal,SPSOMU,SPMAT,SPSOLV
+!----------------------------------------------------------------
+!     Variables PETSc
       PetscInt ierr
       PC  pc
-      Vec x,y,xlocal,xglobal
-      VecScatter   xscatt
+      Vec x,y
       PetscScalar XX(1)
       PetscOffset xidx
-!=================================================================
+!----------------------------------------------------------------
 
-! -- COPIE DU VECTEUR D'ENTREE, CAR ERREUR S'IL EST TRANSFORME
+! --  COPIE DU VECTEUR D'ENTREE, CAR ERREUR S'IL EST TRANSFORME
       call VecCopy(x,xlocal, ierr)
       CALL ASSERT(ierr.EQ.0)
       
-! -- RECUPERATION DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
+! --  RECUPERATION DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
       call VecScatterBegin(xscatt,xlocal,xglobal,INSERT_VALUES,
      &                                             SCATTER_FORWARD,ierr)
       CALL ASSERT(ierr.EQ.0)
@@ -58,11 +59,11 @@
       call VecGetArray(xglobal,XX,xidx,ierr)
       CALL ASSERT(ierr.EQ.0)
 
-! -- APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
-      CALL AMUMPH('RESOUD',SOLVBD,NOMAT,XX(xidx+1),CBID,' ',1,IRET,
+! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
+      CALL AMUMPH('RESOUD',SPSOMU,SPMAT,XX(xidx+1),CBID,' ',1,IRET,
      &            .TRUE.)
 
-! -- ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
+! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
       call VecRestoreArray(xglobal,XX,xidx,ierr)
       CALL ASSERT(ierr.EQ.0)
       call VecScatterBegin(xscatt,xglobal,y,INSERT_VALUES,
@@ -76,7 +77,7 @@
 
 #else
 
-!      DECLARATION BIDON POUR ASSURER LA COMPILATION
+!     DECLARATION BIDON POUR ASSURER LA COMPILATION
       INTEGER pc,x,y,ierr
 
 #endif

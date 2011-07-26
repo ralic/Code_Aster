@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -514,7 +514,6 @@ FISSN=DEFI_FOND_FISS(MAILLAGE=MA,
                      LEVRE_SUP=_F(GROUP_MA = 'LEVINFS'),
                      LEVRE_INF=_F(GROUP_MA = 'LEVINF1'),
                     )
-
 TABL_KTN=POST_K1_K2_K3(MODELISATION='3D',
                        MAILLAGE=MA,
                        MATER=MAT,

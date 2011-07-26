@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE MURAKAMI 8.20 FISSURE DEVIEE A L'INTERFACE ENTRE DEUX DEMI-PLANS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,7 +93,6 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
 
 FOND1=DEFI_FOND_FISS(    MAILLAGE=MA,
                             FOND_FISS=_F( GROUP_NO = ('P0',)),
-                            NORMALE=(-0.707106781, -0.707106781, 0.,)
                       )
 
 THETA01=CALC_THETA(       MODELE=MO,

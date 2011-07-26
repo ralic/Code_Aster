@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+#& MODIF COMMANDE  DATE 26/07/2011   AUTEUR FERNANDES R.FERNANDES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,15 +24,28 @@ POST_MAC3COEUR = MACRO(nom     = "POST_MAC3COEUR",
                        op      =  post_mac3coeur_ops,
 
            TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("TEST","900","1300","N4","EPR") ),
-           # TYPE DE COEUR A CONSIDERER
-           
            RESULTAT     = SIMP(statut='o',typ=evol_noli),                             # SD_RESULTAT
            INST         = SIMP(statut='o',typ='R', max=1),                            # INSTANT
+           
            LAME    = FACT(statut='f',max='**',
-                      fr="Post-traitement des lames d'eau, par grille ou valeurs min/max",
-                      regles=UN_PARMI('NUME_GRILLE','TYPE_RESU',),
+                          fr="Post-traitement des lames d'eau, par grille ou valeurs min/max",
+                 regles = UN_PARMI('NUME_GRILLE','TYPE_RESU',),
                  NUME_GRILLE  = SIMP(statut='f',typ='I', max=1),                      # NUMERO DE LA GRILLE A POST-TRAITER
-                 UNITE        = SIMP(statut='o',typ='I', max=1),                      # NUMERO DE L'UNITE LOGIQUE POUR LE POST
-                 TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI") ),)    # EXTREMA POUR LE POST
-           );
+                 TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),      # EXTREMA POUR LE POST
+                 FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
+                 UNITE        = SIMP(statut='o',typ='I', max=1),),                    # NUMERO DE L'UNITE LOGIQUE POUR LE POST
+           
+           DEFORMATION = FACT(statut='f',max='**',
+                              fr="Post-traitement des deformations, par grille ou valeurs min/max",
+       
+                 UNITE        = SIMP(statut='o',typ='I', max=1),   
+                 FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
+                 NOM_CMP      = SIMP(statut='f',typ='TXM',into=("DY","DZ","NORME")),
+                 
+                 TYPE_VISU = SIMP(statut='f',typ='TXM',into=("AMPLITUDE","MODULE","VECTEUR","DEFORME")),
+                 regles=UN_PARMI('NUME_GRILLE','TYPE_RESU','POSITION','NOM_CMP'),
+                 NUME_GRILLE  = SIMP(statut='f',typ='I', max=1), # NUMERO DE LA GRILLE A POST-TRAITER
+                 TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),
+                 POSITION     = SIMP(statut='f',typ='TXM', max=1),  
+                 CONCEPTION   = SIMP(statut='f',typ='TXM', max=1),))
 

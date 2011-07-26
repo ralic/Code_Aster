@@ -1,7 +1,7 @@
-      SUBROUTINE IMPSUI(NBSUIV,ZDEF  ,COLACT,ICOL  )
+      SUBROUTINE IMPSUI(SDSUIV,ZDEF  ,COLACT,NCOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,9 +21,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INTEGER      ZDEF,ICOL
-      CHARACTER*19 COLACT
-      INTEGER      NBSUIV  
+      INTEGER      ZDEF,NCOL
+      CHARACTER*19 SDSUIV,COLACT 
 C
 C ----------------------------------------------------------------------
 C
@@ -34,10 +33,10 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  SDSUIV : NOM DE LA SD POUR LE SUIVI
 C IN  ZDEF   : NOMBRE MAXI DE COLONNES DISPONIBLES POUR L'AFFICHAGE
-C IN  NBSUIV : NOMBRE DE SUIVIS EN TEMPS REEL
 C IN  COLACT : VECTEUR D'ACTIVATION DES COLONNES
-C I/O ICOL   : INDICE DE LA PROCHAINE COLONNE DANS COLACT
+C OUT NCOL   : NOMBRE DE COLONNES ACTIVES DANS COLACT
 C
 C COLACT CONTIENT LA LISTE DES CODES D'AFFICHAGES
 C
@@ -60,16 +59,25 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C      
-      INTEGER      ISUI,NCOL,NSUIMX  
-      INTEGER      JIMCOL        
+      INTEGER      ISUI,ICOL,NSUIMX
+      INTEGER      JIMCOL 
+      INTEGER      NBSUIV      
+      CHARACTER*24 OBSINF
+      INTEGER      JOBSIN       
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+C --- NOMBRE DE SUIVI_DDL
+C
+      OBSINF = SDSUIV(1:14)//'     .INFO'
+      CALL JEVEUO(OBSINF,'L',JOBSIN)
+      NBSUIV = ZI(JOBSIN+1-1)
+C
 C --- NOMBRE DE COLONNES ACTIVES
 C
-      NCOL   = ICOL - 1
+      ICOL   = NCOL
       NSUIMX = ZDEF - NCOL
 C
 C --- ACCES
@@ -81,9 +89,13 @@ C
       ENDIF
 C
       DO 10 ISUI = 1, NBSUIV
-        ZI(JIMCOL+ICOL-1) = -ISUI
         ICOL              = ICOL + 1
+        ZI(JIMCOL+ICOL-1) = -ISUI
    10 CONTINUE
+C
+C --- NOMBRE DE COLONNES ACTIVES
+C
+      NCOL  = NCOL + NBSUIV
 C
       CALL JEDEMA()
 

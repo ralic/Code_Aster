@@ -2,7 +2,7 @@
      &                  MMCVCA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,7 +155,7 @@ C
       NZOCO  = CFDISI(DEFICO,'NZOCO')
       NTPC   = CFDISI(DEFICO,'NTPC')
       MMCVCA = .TRUE.
-      POSNOE = 0      
+      POSNOE = 0  
       LEXIG  = CFDISL(DEFICO,'EXIS_GLISSIERE')
 C     
 C --- ACCES SD POUR LE FLIP-FLOP
@@ -360,7 +360,7 @@ C
      &                  JEU   ,JEUVIT,ASPERI,LAMBDC,COEFCR,
      &                  MMCVCA,SCOTCH,XANEW ,XSNEW )
             ZR(JTABF+ZTABF*(IPTC-1)+22) = XSNEW
-            ZR(JTABF+ZTABF*(IPTC-1)+23) = XANEW                 
+            ZR(JTABF+ZTABF*(IPTC-1)+23) = XANEW     
 C
 C --------- TRAITEMENT DU FLIP_FLOP
 C               

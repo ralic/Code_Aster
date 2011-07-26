@@ -1,7 +1,7 @@
-      SUBROUTINE NMERGE(QUESTI,TYPERR,SDERRO,VALUEL)
+      SUBROUTINE NMERGE(SDERRO,QUESTI,TYPERR,VALUEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24  SDERRO   
+      CHARACTER*24  SDERRO
       CHARACTER*3   QUESTI
       CHARACTER*3   TYPERR
       LOGICAL       VALUEL
@@ -39,7 +39,6 @@ C IN  SDERRO : SD ERREUR
 C IN  QUESTI : ACTION A REALISER
 C               'SET' - ACTIVE UN CODE ERREUR
 C               'GET' - DIT SI LE CODE ERREUR EST ACTIF
-C               'PRT' - IMPRIME MESSAGE ERREUR
 C IN  TYPERR : TYPE ERREUR
 C               'LDC' - ERR. INTEG. COMPORTEMENT
 C               'PIL' - ERR. PILOTAGE
@@ -78,11 +77,11 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- ACCES SDS
+C --- ACCES SD ERROR
 C
       ERRCOD = SDERRO(1:19)//'.CODE'              
       CALL JEVEUO(ERRCOD,'E',JECOD)    
-      
+C  
       IF (QUESTI.EQ.'GET') THEN
         IF (TYPERR.EQ.'LDC') THEN
           VALUEL = ZL(JECOD+1-1)
@@ -128,26 +127,10 @@ C
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-      ELSEIF (QUESTI.EQ.'PRT') THEN
-        IF (ZL(JECOD+1-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','ECHEC_LDC',0.D0,1)
-        ELSEIF (ZL(JECOD+2-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','ECHEC_PIL',0.D0,1)
-        ELSEIF (ZL(JECOD+3-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','MATR_SING',0.D0,0)
-        ELSEIF (ZL(JECOD+4-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','CONT_ERR ',0.D0,1)
-        ELSEIF (ZL(JECOD+5-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','CONT_SING',0.D0,0)
-        ELSEIF (ZL(JECOD+8-1)) THEN
-          CALL NMIMPR('IMPR','ERREUR','ITER_MAXI',0.D0,1)          
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
       ELSEIF (QUESTI.EQ.'INI') THEN
-        DO 15 I=1,9
-          ZL(JECOD+I-1) = .FALSE.
- 15     CONTINUE               
+          DO 15 I=1,9
+            ZL(JECOD+I-1) = .FALSE.
+ 15       CONTINUE               
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

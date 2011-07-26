@@ -1,7 +1,7 @@
-      SUBROUTINE NMIMPM(PHASE ,NATURZ,ARGZ  ,ARGR  ,ARGI  )
+      SUBROUTINE NMIMPM(SDIMPR,PHASE ,NATURZ,ARGZ  ,ARGR  ,ARGI  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
+      CHARACTER*24  SDIMPR
       CHARACTER*4   PHASE
       CHARACTER*(*) NATURZ
       CHARACTER*(*) ARGZ(*)
@@ -36,6 +37,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  SDIMPR : SD AFFICHAGE
 C IN  PHASE  : 'INIT' INITIALISATION
 C              'TITR' AFFICHAGE DE L'EN TETE DES PAS DE TEMPS
 C              'IMPR' IMPRESSION DES MESSAGES
@@ -65,7 +67,6 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER*24  SDIMPR
       CHARACTER*24  IMPINF
       INTEGER       JIMPIN
       INTEGER       LARGE ,UNITE,ILIGNE,UIMPR,IUNIFI
@@ -76,10 +77,6 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
-C --- INITIALISATIONS
-C
-      SDIMPR  = '&&OP0070.IMPR.'
 C
 C --- RECUPERATION DES PARAMETRES
 C

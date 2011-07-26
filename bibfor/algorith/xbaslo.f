@@ -1,7 +1,7 @@
       SUBROUTINE XBASLO(NOMA  ,FISS  ,GRLT  ,GRLN  , NDIM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       INTEGER           LONG,NFON,NBNO,IRET,INO,J
       REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1,XIJ,YIJ,ZIJ,EPS,D,NORM2
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,XN,YN,ZN,A(3)
-      REAL*8            R8MAEM,R8PREM
+      REAL*8            R8MAEM
 C
       DATA LICMP / 'X1','X2','X3',
      &             'X4','X5','X6',
@@ -165,7 +165,6 @@ C           VECTEUR IJ ET IM
 C           PARAM S (PRODUIT SCALAIRE...)
             S        = XIJ*XIM + YIJ*YIM + ZIJ*ZIM
             NORM2 = XIJ*XIJ + YIJ *YIJ + ZIJ*ZIJ
-            IF (NORM2.LE.R8PREM()) CALL U2MESS('F','XFEM2_39')
             S        = S/NORM2
 C           SI N=P(M) SORT DU SEGMENT
             IF ((S-1).GE.EPS) S = 1.D0

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,6 +25,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                     UIinfo={"groupes":("Modélisation",)},fr="Définition de lèvres et d'un fond de fissure",
 
     MAILLAGE  = SIMP(statut='o',typ=maillage_sdaster ),
+    INFO      =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 
     # definition du fond de fissure
     FOND_FISS = FACT(statut='o',max=2,
@@ -74,26 +75,34 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                                  ),
                     ),
 
-    # definition des levres de la fissure
-    regles=(UN_PARMI('LEVRE_SUP','NORMALE'),
-            EXCLUS('LEVRE_INF','NORMALE'),),
+    CONFIG_INIT  = SIMP(statut='f',typ='TXM',into=("COLLEE","DECOLLEE"), defaut="COLLEE",position='global'),
 
-    LEVRE_SUP       =FACT(statut='f',max=1,
-                          regles=(UN_PARMI('GROUP_MA','MAILLE'),),
-                          GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                          MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+    SYME         = SIMP(statut='f',typ='TXM',into=("OUI","NON"),         defaut="NON",   position='global'),
+    
+    b_levres_sup = BLOC(condition = "SYME == 'OUI'",
+                        LEVRE_SUP = FACT(statut='o',max=1,
+                                         regles=(UN_PARMI('GROUP_MA','MAILLE'),),
+                                         GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                                         MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                                        ),
                           ),
+    b_levres     = BLOC(condition = "SYME == 'NON'",
+                        LEVRE_SUP =FACT(statut='f',max=1,
+                                        regles=(UN_PARMI('GROUP_MA','MAILLE'),),
+                                        GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                                        MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                                        ),
+                        LEVRE_INF =FACT(statut='f',max=1,
+                                        regles=(UN_PARMI('GROUP_MA','MAILLE'),),
+                                        GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                                        MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                                        ),
+                        ),  
 
-    LEVRE_INF       =FACT(statut='f',max=1,
-                          regles=(UN_PARMI('GROUP_MA','MAILLE'),),
-                          GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                          MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-                          ),
+    # dans le cas decolle
+    b_decolle    = BLOC(condition = "CONFIG_INIT == 'DECOLLEE' and SYME == 'NON'",
+                     NORMALE   =SIMP(statut='o',typ='R',max=3),),
 
-    NORMALE         =SIMP(statut='f',typ='R',max='**'),
-
-    PREC_NORM       =SIMP(statut='f',typ='R',defaut=0.1),
-
-    INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+    PREC_NORM    = SIMP(statut='f',typ='R',defaut=0.1),
 
 )  

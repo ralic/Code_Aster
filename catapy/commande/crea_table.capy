@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -86,6 +86,8 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=36,sd_prod=crea_table_prod,
                                b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
                                        PRECISION       =SIMP(statut='o',typ='R',),),
                             ),
+                        b_cham_gd   =BLOC(condition = "CHAM_GD != None",
+                               CARA_ELEM       =SIMP(statut='f',typ=cara_elem),),
                       TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
                       NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
                       TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

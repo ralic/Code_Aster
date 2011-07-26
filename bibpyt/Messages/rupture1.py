@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture1 Messages  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,6 +109,7 @@ Il faut définir la normale au fond de fissure.
 Veuillez revoir la mise en données de l'opérateur DEFI_FOND_FISS
 (mot-clé NORMALE).
 """),
+
 
 20: _("""
 Une déformation initiale est présente dans la charge. Ceci est incompatible 
@@ -369,7 +370,7 @@ Conseil : utiliser le critère par défaut.
 """),
 
 61:_("""
-Impossinle de réaliser le comptage sur les quantités demandées car 
+Impossible de réaliser le comptage sur les quantités demandées car 
 le nombre de cycles pour chaqune d'elles est différent.
 Conseil : limiter le comptage des cycles à une seule quantité (K_EQ par exemple).
 """),
@@ -387,4 +388,13 @@ Pour le comptage %(k1)s, la table doit comporter uniquement 1 instant/nume_ordre
 Or la table %(k2)s contient %(i1)s instants/nume_ordre.
 Conseil : Vérifier la table en entrée ou utiliser un autre type de comptage des cycles.
 """),
+
+65:_("""
+La table %(k1)s ne doit pas contenir le paramètre %(k2)s.
+"""),
+
+66:_("""
+L'opération %(k1)s nécessite une seule table sous le mot-clé TABLE, or il y en a %(i1)s.
+"""),
+
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102b.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,6 +40,7 @@ M=DEFI_GROUP(  reuse=M,
 
 FISS=DEFI_FOND_FISS(MAILLAGE=M,
                     FOND_FISS=_F(GROUP_MA='DG',),
+                    CONFIG_INIT='DECOLLEE',
                     NORMALE=(0.,1.,0.));
 
 

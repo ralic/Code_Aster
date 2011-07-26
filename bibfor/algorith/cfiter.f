@@ -1,9 +1,9 @@
       SUBROUTINE CFITER(RESOCO,ACCES ,TYPOPE,VALI  ,VALR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE MABBAS M.ABBAS
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*24 RESOCO
@@ -73,71 +73,11 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      CFMMVD,ZDIAG
-      CHARACTER*24 DIAGI,DIAGT
-      INTEGER      JDIAGI,JDIAGT
-      INTEGER      I
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
-C --- ACCES OBJETS
-C      
-      DIAGI  = RESOCO(1:14)//'.DIAG.ITER'
-      DIAGT  = RESOCO(1:14)//'.DIAG.TIME'
-      CALL JEVEUO(DIAGI,'E',JDIAGI)
-      CALL JEVEUO(DIAGT,'E',JDIAGT)
-      ZDIAG  = CFMMVD('ZDIAG')
-C
-C ---
-C  
-      IF (ACCES.EQ.'I') THEN
-        DO 10 I = 1,ZDIAG
-          ZI(JDIAGI-1+I) = 0
-          ZR(JDIAGT-1+I) = 0.D0
-  10    CONTINUE                          
-      ELSEIF (ACCES.EQ.'E') THEN
-        IF (TYPOPE.EQ.'CONT') THEN
-          ZI(JDIAGI-1+1) = ZI(JDIAGI-1+1)+VALI 
-          ZI(JDIAGI-1+6) = VALI       
-        ELSE IF (TYPOPE.EQ.'LIAC') THEN
-          ZI(JDIAGI-1+2) = VALI
-        ELSE IF (TYPOPE.EQ.'LIAF') THEN
-          ZI(JDIAGI-1+3) = VALI                   
-        ELSE IF (TYPOPE.EQ.'FROT') THEN
-          ZI(JDIAGI-1+5) = ZI(JDIAGI-1+5)+VALI
-C          
-        ELSE IF (TYPOPE.EQ.'TIMA') THEN
-          ZR(JDIAGT-1+1) = ZR(JDIAGT-1+1)+VALR
-        ELSE IF (TYPOPE.EQ.'TIMG') THEN
-          ZR(JDIAGT-1+2) = ZR(JDIAGT-1+2)+VALR
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-      ELSE IF (ACCES.EQ.'L') THEN
-        IF (TYPOPE.EQ.'CONT') THEN
-          VALI = ZI(JDIAGI-1+6) 
-        ELSE IF (TYPOPE.EQ.'LIAC') THEN
-          VALI = ZI(JDIAGI-1+2) 
-        ELSE IF (TYPOPE.EQ.'LIAF') THEN
-          VALI = ZI(JDIAGI-1+3)
-        ELSE IF (TYPOPE.EQ.'FROT') THEN
-          VALI = ZI(JDIAGI-1+5)                      
-        ELSE IF (TYPOPE.EQ.'CONC') THEN
-          VALI = ZI(JDIAGI-1+1) 
-C                                               
-        ELSE IF (TYPOPE.EQ.'TIMA') THEN
-          VALR = ZR(JDIAGT-1+1)
-        ELSE IF (TYPOPE.EQ.'TIMG') THEN
-          VALR = ZR(JDIAGT-1+2)           
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
 
+C A RESORBER
+      CALL ASSERT(.FALSE.)
 
-      CALL JEDEMA()
       END

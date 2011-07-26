@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -107,12 +107,8 @@ evol=DYNA_LINE_TRAN(   MODELE=MODELE,
 
 FF=DEFI_FOND_FISS( MAILLAGE=MAIL,
                    FOND_FISS=_F( GROUP_NO='LP2P7',),
+                   SYME='OUI',
                    LEVRE_SUP=_F(GROUP_MA='SP1P2',),
-                  )
-
-FF2=DEFI_FOND_FISS( MAILLAGE=MAIL,
-                   FOND_FISS=_F( GROUP_NO='LP2P7',),
-                   NORMALE=(0.,1.,0.),
                   )
 
 THETA1=CALC_THETA( MODELE=MODELE,
@@ -160,11 +156,11 @@ GL1=CALC_G(         THETA=_F(FOND_FISS=FF,
                     LISSAGE=_F(LISSAGE_THETA='LAGRANGE',LISSAGE_G='LAGRANGE'),
                   )
 
-# ICI IL FAUT FOURNIR LA DIRECTION CAR LE FOND FF2 N'EST DEFINI QUE PAR DES NOEUDS
+# ICI IL FAUT FOURNIR LA DIRECTION CAR LE FOND FF N'EST DEFINI QUE PAR DES NOEUDS
 # DONC ON NE CONNAIT PAS LE SENS DE LA DIRECTION DU CHAMP THETA
 # (RQ : CELA EST CORRECT CAR LE FOND DE FISSURE EST DROIT)
 GL11=CALC_G(         THETA=_F( DIRECTION=(1.,0.,0.,),
-                               FOND_FISS=FF2,
+                               FOND_FISS=FF,
                                R_INF = 3.,
                                R_SUP = 10.),
                     RESULTAT=evol,

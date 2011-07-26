@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,6 @@ FOND=DEFI_FOND_FISS(MAILLAGE=MA,
                     FOND_FISS=_F(GROUP_MA = 'LFF',
                                  DTAN_ORIG=(1., 0., 0.,),
                                  DTAN_EXTR=(0., 1., 0.,),),
-                    NORMALE=(0., 0., 1.,),
                    )
 
 THETA=CALC_THETA(
@@ -195,7 +194,7 @@ TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 2),
-                      VALE=6.8612112828502E+00,
+                      VALE=6.8522251324191,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -206,7 +205,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 2)),
                   NOM_PARA='G_BILIN',
-                      VALE=6.8612112828502E+00,
+                      VALE=6.8522251324191,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -215,7 +214,7 @@ TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 3),
-                      VALE=4.7526068735044E+01,
+                      VALE=4.7489137403723E+01,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
              )
@@ -226,7 +225,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 3)),
                   NOM_PARA='G_BILIN',
-                      VALE=4.7526068735044E+01,
+                      VALE=4.7489137403723E+01,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -235,7 +234,7 @@ TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 4),
-                      VALE=2.7428584896561E+00,
+                      VALE=2.7381990143176,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -246,7 +245,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 4)),
                   NOM_PARA='G_BILIN',
-                      VALE=2.7428584896561E+00,
+                      VALE=2.7381990143176,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -257,7 +256,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 1)),
                   NOM_PARA='G_BILIN',
-                      VALE=1.1195802561347E+01,
+                      VALE=1.1187734597351E+01,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -268,7 +267,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 3)),
                   NOM_PARA='G_BILIN',
-                      VALE=1.1412041046649E+01,
+                      VALE=1.1409217944182E+01,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -283,7 +282,7 @@ TEST_TABLE(        TABLE=GMAX,FILTRE=(
                     _F(  NOM_PARA = 'Q_4',
                              VALE = 0.)),
                   NOM_PARA='G',
-                      VALE=4.7526068735043E+01,
+                  VALE=4.7489137403723E+01,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )
@@ -298,7 +297,7 @@ TEST_TABLE(        TABLE=GMAX,FILTRE=(
                     _F(  NOM_PARA = 'Q_4',
                              VALE = 1.)),
                   NOM_PARA='G',
-                      VALE=2.3849529761643E+02,
+                      VALE=2.3833162040594E+02,
                  PRECISION=5.0E-8,
                  REFERENCE='NON_REGRESSION'
             )

@@ -1,0 +1,170 @@
+      SUBROUTINE NMTIMR(SDTIME,TIMERZ,PHASE ,VALR  )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*24  SDTIME
+      CHARACTER*(*) TIMERZ
+      CHARACTER*1   PHASE
+      REAL*8        VALR
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (UTILITAIRE)
+C
+C GESTION DES TIMERS - LECTURE INFORMATIONS
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDTIME : SD TIMER
+C IN  TIMER  : NOM DU TIMER
+C              'PAS'               TIMER PAS DE TEMPS
+C              'ITE'               TIMER ITERATION DE NEWTON
+C              'ARC'               TIMER ARCHIVAGE
+C              'POST_TRAITEMENT'   TIMER POST_PROCESSING
+C              'FACTOR'            TIMER FACTORISATION
+C              'SOLVE'             TIMER RESOLUTION
+C              'INTEGRATION'       TIMER INTEG. LDC
+C              'ASSE_MATR'         TIMER ASSEMBLAGE MATRICES
+C              'CONT_GEOM'         TIMER APPARIEMENT CONTACT
+C              'CTCD_ALGO'         TIMER RESOLUTION CONTACT DISCRET
+C              'CTCC_CONT'         TIMER RESOLUTION CONTACT CONTINU
+C              'CTCC_FROT'         TIMER RESOLUTION FROTTEMENT CONTINU
+C              'CTCC_MATR'         TIMER CALCUL MATRICE CONTINU
+C              'SECO_MEMB'         TIMER CALCUL SECOND MEMBRE
+C IN  PHASE  : TYPE DE VALEUR EN LECTURE
+C              'N' SUR L'ITERATION DE NEWTON COURANTE
+C              'P' SUR LE PAS COURANT
+C              'T' SUR TOUT LE TRANSITOIRE 
+C OUT VALR   : TEMPS MESURE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*24 TIMET,TIMEP,TIMEN
+      INTEGER      JTIMET,JTIMEP,JTIMEN
+      CHARACTER*24 TIMER
+C      
+C ----------------------------------------------------------------------
+C      
+      CALL JEMARQ()
+C    
+C --- INITIALISATIONS
+C                
+      TIMER  = TIMERZ
+C
+C --- ACCES SD TIMER
+C
+      TIMET  = SDTIME(1:19)//'.TIMT'
+      TIMEP  = SDTIME(1:19)//'.TIMP'
+      TIMEN  = SDTIME(1:19)//'.TIMN'
+      CALL JEVEUO(TIMET ,'L',JTIMET)
+      CALL JEVEUO(TIMEP ,'L',JTIMEP)
+      CALL JEVEUO(TIMEN ,'L',JTIMEN)
+C                  
+      IF (TIMER.EQ.'TEMPS_PHASE') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+1-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+1-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+2-1)
+        
+      ELSEIF (TIMER.EQ.'FACTOR') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+4-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+4-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+4-1)
+        
+      ELSEIF (TIMER.EQ.'SOLVE') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+5-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+5-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+5-1)
+        
+      ELSEIF (TIMER.EQ.'INTEGRATION') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+6-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+6-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+6-1)
+        
+      ELSEIF (TIMER.EQ.'CONT_GEOM') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+7-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+7-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+7-1)
+
+      ELSEIF (TIMER.EQ.'CTCC_MATR') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+8-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+8-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+8-1)
+
+      ELSEIF (TIMER.EQ.'CTCC_CONT') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+9-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+9-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+9-1)    
+   
+      ELSEIF (TIMER.EQ.'CTCC_FROT') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+10-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+10-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+10-1)
+       
+      ELSEIF (TIMER.EQ.'CTCD_ALGO') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+11-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+11-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+11-1)
+
+      ELSEIF (TIMER.EQ.'POST_TRAITEMENT') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+12-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+12-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+12-1)
+
+      ELSEIF (TIMER.EQ.'CTCC_PREP') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+13-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+13-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+13-1)
+        
+      ELSEIF (TIMER.EQ.'SECO_MEMB') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+14-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+14-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+14-1)
+
+      ELSEIF (TIMER.EQ.'ASSE_MATR') THEN
+        IF (PHASE.EQ.'P') VALR = ZR(JTIMEP+15-1)
+        IF (PHASE.EQ.'T') VALR = ZR(JTIMET+15-1)
+        IF (PHASE.EQ.'N') VALR = ZR(JTIMEN+15-1)
+
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+      CALL JEDEMA()
+      END

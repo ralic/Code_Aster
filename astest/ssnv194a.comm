@@ -1,7 +1,7 @@
-# MODIF  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
-# ssnv194a.para = tps_job 280 mem_job 70Mo ncpus 1 liste_test R
+# ssnv194a.para = tps_job 560 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,7 @@ MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                           MATER=ACIER,),);
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
-                     DDL_IMPO=(
+                    DDL_IMPO=(
                      _F(GROUP_NO='ARRIERE',
                                  DX=0.0,),
                         _F(GROUP_NO='BAS',
@@ -104,7 +104,6 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                        _F(GROUP_NO='HAUT',
                                    DZ=1.0),
                                    ),)
-
 
 MONO1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
@@ -138,10 +137,15 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                                  COMPOR=MONO1,
                                  ALGO_INTE='NEWTON_RELI',
                                  DEFORMATION='PETIT',
-                                 TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=LINST),
+                                 TOUT='OUI',
+                                 #RESI_INTE_RELA=1.0E-12,
+                                 #ITER_INTE_MAXI=50,
+                                 ),
+                    INCREMENT=_F(LIST_INST=LINST,
+                                 ),
                     NEWTON=_F(PREDICTION='EXTRAPOL',
-                              REAC_ITER=1,)
+                              REAC_ITER=1,),
+                    INFO=1,
                     )
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
@@ -213,5 +217,111 @@ TEST_RESU(RESU=(
                    VALE=8.015907E-03,
                    REFERENCE='NON_REGRESSION',),
                    ),)
+
+# Avec des conditions aux limites AFFE_CHAR_CINE
+
+TRAC_CIN=AFFE_CHAR_CINE(MODELE=TROISD,
+                    MECA_IMPO=(
+                     _F(GROUP_NO='ARRIERE',
+                                 DX=0.0,),
+                        _F(GROUP_NO='BAS',
+                                 DZ=0.0,),
+                       _F(GROUP_NO='GAUCHE',
+                                 DY=0.0,),
+                       _F(GROUP_NO='HAUT',
+                                   DZ=1.0),
+                                   ),)
+
+SOLNL_CI=STAT_NON_LINE(MODELE=TROISD,
+                    CHAM_MATER=MAT,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=_F(CHARGE=TRAC_CIN,
+                             FONC_MULT=COEF,
+                             TYPE_CHARGE='FIXE_CSTE',),
+                    COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                 COMPOR=MONO1,
+                                 ALGO_INTE='NEWTON_RELI',
+                                 DEFORMATION='PETIT',
+                                 TOUT='OUI',
+                                 #RESI_INTE_RELA=1.0E-12,
+                                 #ITER_INTE_MAXI=50,
+                                 ),
+                    INCREMENT=_F(LIST_INST=LINST,
+                                 ),
+                    NEWTON=_F(PREDICTION='EXTRAPOL',
+                              REAC_ITER=1,),
+                    INFO=1,
+                    )
+
+SOLNL_CI=CALC_ELEM(reuse =SOLNL_CI,
+                 RESULTAT=SOLNL_CI,
+                 OPTION=('EPSI_ELGA','EPSP_ELGA','EPSP_ELNO'),);
+
+SOLNL_CI=CALC_NO(reuse =SOLNL_CI,
+                 RESULTAT=SOLNL_CI,
+                 OPTION=('EPSP_NOEU'),);
+
+
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLNL_CI,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='M1',
+                   POINT=1,
+                   PRECISION=(0.0005,1e-06,),
+                   VALE=-25.172,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=SOLNL_CI,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=-1.49584E-03,
+                   PRECISION=(0.0001,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=SOLNL_CI,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPYY',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=-2.70269E-03,
+                   PRECISION=(0.0001,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=SOLNL_CI,
+                   INST=TFIN,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=-2.587725E-03,
+                   PRECISION=(0.0001,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),),);
+
+
+
+IMPR_RESU(RESU=_F(RESULTAT=SOLNL_CI,INST=TFIN,NOM_CHAM='VARI_ELGA',NOM_CMP=('V79','V80','V81'),VALE_MIN='OUI',VALE_MAX='OUI'))
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=SOLNL_CI,
+                   INST=TFIN,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V79',
+                   TYPE_TEST='MAX',
+                   PRECISION=(0.0001,1e-06,),
+                   VALE=488.168492,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=SOLNL_CI,
+                   INST=TFIN,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V80',
+                   TYPE_TEST='MAX',
+                   PRECISION=(0.0001,1e-06,),
+                   VALE=8.015907E-03,
+                   REFERENCE='AUTRE_ASTER',),
+                   ),)
+
 FIN()
 

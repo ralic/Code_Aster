@@ -1,9 +1,9 @@
       SUBROUTINE IMPFOT(TIME,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ C ======================================================================
 C
       IMPLICIT NONE
       REAL*8        TIME
-      CHARACTER*(*) CHAINE
+      CHARACTER*24  CHAINE
 C
 C ----------------------------------------------------------------------
 C
@@ -55,9 +55,9 @@ C
           WRITE(CHAINE,30) HEURE,MINUT,SECOND
         ENDIF
       ENDIF
-
- 10   FORMAT (12X            ,F4.1,' s')
- 20   FORMAT ( 9X     ,I2,' m ',I2,' s')
- 30   FORMAT (I6,' h ',I2,' m ',I2,' s')
-
+C  
+ 10   FORMAT (16X             ,F6.3,' s')
+ 20   FORMAT (15X      ,I2,' m ',I2,' s')
+ 30   FORMAT (I12,' h ',I2,' m ',I2,' s')
+C
       END

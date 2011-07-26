@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,8 +96,9 @@ MATRICE__
 
 OPTION__
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
-                              OUT__  ECONTPG  PSIGMR    ECONTPC  PSIGMC
-    COOR_ELGA           478   IN__   NGEOMER  PGEOMER OUT__  EGGEOP_R PCOORPG
+                              OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
+    COOR_ELGA           478   IN__   NGEOMER  PGEOMER  CCAORIE  PCAORIE  ENBSP_I  PNBSP_I  CCAGEPO  PCAGEPO
+                              OUT__  EGGEOP_R PCOORPG
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL

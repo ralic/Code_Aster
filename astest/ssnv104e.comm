@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -81,6 +81,22 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                      NOMBRE=10),
                                   _F(JUSQU_A=2.0,
                                      NOMBRE=10)));
+
+RESU0=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(
+                          _F(CHARGE=CHA2,
+                             FONC_MULT=RAMPE)),
+                   CONTACT  = CHA1,          
+                   COMP_ELAS=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                      
+                   AFFICHAGE=(_F(INFO_RESIDU='OUI',
+                                 INFO_TEMPS='OUI',
+                                 UNITE=37,),),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -203,7 +219,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                    NOEUD='N285',
                    VALE=-0.62966599999999995,
                    CRITERE='RELATIF',
-                   PRECISION=5.E-3)));
+                   PRECISION=5.00E-3)));
 
 # Impression au format GMSH
 # IMPR_RESU(FORMAT='GMSH',

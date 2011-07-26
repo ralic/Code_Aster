@@ -1,7 +1,7 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,8 @@ C     ------------------------------------------------------------------
       CHARACTER*24 CHTEMP,CHTREF,CHTIME,CHNUMC,CHMASS,CHFREQ
       COMPLEX*16 CCOEF
       LOGICAL EXITIM
+      CHARACTER*8 LPAIN(6),LPAOUT(1)
+      CHARACTER*24 LCHIN(6),LCHOUT(1)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -72,7 +74,6 @@ C
       RUNDF = R8VIDE()
 
       CALL GETRES(CHELEM,TYPE,OPER)
-
       CALL GETVID(' ','ACCE',0,1,0,OPTION,N1)
       IF (N1.NE.0) THEN
          CALL U2MESS('A','CALCULEL3_96')
@@ -133,8 +134,24 @@ C        ------------------------
 
 C        -- OPTION POINTS DE GAUSS :
       ELSE IF (OPTION.EQ.'COOR_ELGA') THEN
-        CALL CALCUL('S',OPTION,LIGREL,1,CHGEOM,'PGEOMER ',1,CHELEM,
-     &              'PCOORPG ',BASE,'OUI')
+        LCHIN(1)=CHGEOM
+        LPAIN(1)='PGEOMER'
+        LCHIN(2)=CHCARA(1)
+        LPAIN(2)='PCAORIE'
+        LCHIN(3)=CHCARA(17)
+        LPAIN(3)='PFIBRES'
+        LCHIN(4)=CHCARA(16)
+        LPAIN(4)='PNBSP_I'
+        LCHIN(5)=CHCARA(7)
+        LPAIN(5)='PCACOQU'
+        LCHIN(6)=CHCARA(5)
+        LPAIN(6)='PCAGEPO'
+        LCHOUT(1)=CHELEM
+        LPAOUT(1)='PCOORPG'
+        CALL CESVAR(CARA,' ',LIGREL,LCHOUT(1))
+
+        CALL CALCUL('S',OPTION,LIGREL,6,LCHIN,LPAIN,1,LCHOUT,
+     &              LPAOUT,BASE,'OUI')
 C        ------------------------
 C        -- OPTIONS ACOUSTIQUES :
 C        ------------------------

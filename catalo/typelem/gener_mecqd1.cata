@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ OPTION__
     CHAR_MECA_TEMP_R    225   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           478   IN__   NGEOMER  PGEOMER
+    COOR_ELGA           478   IN__   NGEOMER  PGEOMER  CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
                               OUT__  EGGEOP_R PCOORPG
     DEGE_ELNO      228   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFGNO  PDEFOGR

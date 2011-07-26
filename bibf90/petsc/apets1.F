@@ -1,9 +1,9 @@
       SUBROUTINE APETS1(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS1 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS1 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -19,9 +19,12 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
       INTEGER      KPTSC
-!--------------------------------------------------------------
+!----------------------------------------------------------------
 !
-!---------------------------------------------------------------
+!  CREATION DE LA MATRICE PETSC (INSTANCE NUMERO KPTSC)
+!  PREALLOCATION
+!
+!----------------------------------------------------------------
 
 #ifdef _HAVE_PETSC
 
@@ -32,7 +35,7 @@
 #include "include/finclude/petscksp.h"
 #include "include/finclude/petscpc.h"
 !================================================================
-! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
+! --- DECLARATIONS NORMALISEES JEVEUX ---------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       INTEGER*4 ZI4
@@ -49,73 +52,67 @@
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-!================================================================
-! DECLARATIONS DE VARIABLES
+!----------------------------------------------------------------
+!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
+      INTEGER      NMXINS
+      PARAMETER   (NMXINS=5)
 !
-      INTEGER NMXINS
-      PARAMETER (NMXINS=5)
-
-      INTEGER   NSMDI,NSMHC,NZ,NBLLOC
-      INTEGER   JSMDI,JSMHC,JIDXD,JIDXO
-      INTEGER   I,K,ILIG,JCOL,NBO,NBD,NZDEB,NZFIN
-
+!     VARIABLES LOCALES
+      INTEGER      NSMDI,NSMHC,NZ,NBLLOC
+      INTEGER      JSMDI,JSMHC,JIDXD,JIDXO
+      INTEGER      I,K,ILIG,JCOL,NBO,NBD,NZDEB,NZFIN
+!
       CHARACTER*19 NOMAT,NOSOLV
+      CHARACTER*16 IDXO, IDXD
       CHARACTER*14 NONU
       CHARACTER*4  KBID
-
-      CHARACTER*16 IDXO, IDXD
-      PARAMETER (IDXO  ='&&APETS1.IDXO___')
-      PARAMETER (IDXD  ='&&APETS1.IDXD___')
-
 !
-!     -- ON STOCKE AU PLUS NMXINS INSTANCES DE PETSC
-!     -- PLUS PRECISEMENT LES MATRICES, SOLVEURS, ETC
+      PARAMETER   (IDXO  ='&&APETS1.IDXO___')
+      PARAMETER   (IDXD  ='&&APETS1.IDXD___')
+!
+!     COMMUN DE SAUVEGARDE DES INSTANCES
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
-      CHARACTER*14 NONUS(NMXINS)
-      Mat      Ap(NMXINS)
-      KSP      Kp(NMXINS)
+      CHARACTER*14  NONUS(NMXINS)
+      Mat              Ap(NMXINS)
+      KSP              Kp(NMXINS)
       COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
-!=================================================================
-!  Variables PETSc
-!
-!  A       - matrix that defines linear system
-!  ksp    - KSP context
-!  x, b - approx solution, RHS vectors
-!
-      PetscInt low,high,NEQ,ierr
-      Mat A
-!=================================================================
+!----------------------------------------------------------------
+!     Variables PETSc
+      PetscInt low,high,neq,ierr
+      Vec tmp
+!----------------------------------------------------------------
       CALL JEMARQ()
 
-!     -- ON RECUPERE DANS LE COMMON L'INSTANCE COURANTE
-      NOMAT=NOMATS(KPTSC)
-      NOSOLV=NOSOLS(KPTSC)
-      NONU=NONUS(KPTSC)
-      A=Ap(KPTSC)
-
+!     -- LECTURE DU COMMUN
+      NOMAT  = NOMATS(KPTSC)
+      NOSOLV = NOSOLS(KPTSC)
+      NONU   =  NONUS(KPTSC)
+!
       CALL JEVEUO(NONU//'.SMOS.SMDI','L',JSMDI)
       CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
       CALL JEVEUO(NONU//'.SMOS.SMHC','L',JSMHC)
       CALL JELIRA(NONU//'.SMOS.SMHC','LONMAX',NSMHC,KBID)
-      NEQ=NSMDI
-
-!     DANS PETSc, LES MATRICES SONT STOCKEES NON SYMETRIQUES
-      NZ=ZI(JSMDI-1+NSMDI)
-      CALL ASSERT(NZ.LE.NSMHC)
+      neq = NSMDI
+      NZ = ZI(JSMDI-1+NSMDI)
 
 !     low donne la premiere ligne stockee localement
 !     high donne la premiere ligne stockee par le processus (rang+1)
 !     ATTENTION ces indices commencent a zero (convention C de PETSc)
-      call MatGetOwnershipRange(A,low,high,ierr)
+      call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,neq,tmp,ierr)
+      CALL ASSERT(ierr.EQ.0)
+      call VecGetOwnershipRange(tmp,low,high,ierr)
+      CALL ASSERT(ierr.EQ.0)
+      call VecDestroy(tmp,ierr)
+      CALL ASSERT(ierr.EQ.0)
 
-! nb de lignes que l'on stocke localement
+!     nb de lignes que l'on stocke localement
       NBLLOC = high - low
 
-! ces deux vecteurs sont les d_nnz et o_nnz a passer a PETSc
+!     ces deux vecteurs sont les d_nnz et o_nnz a passer a PETSc
       CALL WKVECT(IDXO,'V V S',NBLLOC,JIDXO)
       CALL WKVECT(IDXD,'V V S',NBLLOC,JIDXD)
 
-! initialisation des deux vecteurs         
+!     initialisation des deux vecteurs         
       DO I = 1, NBLLOC
          ZI4(JIDXO-1+I) = 0
          ZI4(JIDXD-1+I) = 0
@@ -132,7 +129,8 @@
       NBO = 0
       NBD = 0
 
-! on commence par s'occuper du nombre de NZ par ligne dans le bloc diagonal
+!     on commence par s'occuper du nombre de NZ par ligne
+!     dans le bloc diagonal
       DO JCOL = low+1, high-1
          NZDEB = ZI(JSMDI+JCOL-1) + 1
          NZFIN = ZI(JSMDI+JCOL)
@@ -145,15 +143,14 @@
                ZI4(JIDXD-1+(ILIG-low)) = ZI4(JIDXD-1+(ILIG-low)) + 1
             END IF
          END DO
-         ZI4(JIDXD-1+(JCOL+1-low)) = ZI4(JIDXD-1+(JCOL+1-low)) + NBD 
-     &                                                         - 1
+         ZI4(JIDXD-1+(JCOL+1-low)) = ZI4(JIDXD-1+(JCOL+1-low)) + NBD - 1
          ZI4(JIDXO-1+(JCOL+1-low)) = ZI4(JIDXO-1+(JCOL+1-low)) + NBO
          NBD = 0
          NBO = 0
       END DO
 
-! ensuite on complete le tableau du bloc hors diagonal         
-      DO JCOL = high, NEQ-1
+!     ensuite on complete le tableau du bloc hors diagonal         
+      DO JCOL = high, neq-1
          NZDEB = ZI(JSMDI+JCOL-1) + 1
          NZFIN = ZI(JSMDI+JCOL)
          DO K = NZDEB, NZFIN
@@ -168,31 +165,28 @@
          END DO
       END DO
 
-      call MatDestroy(A,ierr)
-      CALL ASSERT(ierr.EQ.0)
-      call MatCreateMPIAIJ(PETSC_COMM_WORLD,PETSC_DECIDE,PETSC_DECIDE
-     &                                    ,NEQ,NEQ,
-     &                                    PETSC_NULL_INTEGER,ZI4(JIDXD),
-     &                                    PETSC_NULL_INTEGER,ZI4(JIDXO),
-     &                                    A,ierr)
-
-      CALL ASSERT(ierr.EQ.0)
-      Ap(KPTSC)=A
-!       call MatMPIAIJSetPreallocation(A,PETSC_NULL_INTEGER,ZI4(JIDXD),
-!      &                                 PETSC_NULL_INTEGER,ZI4(JIDXO),
-!      &                                 ierr)
-!       CALL ASSERT(ierr.EQ.0)
-
       CALL JELIBE(NONU//'.SMOS.SMDI')
       CALL JELIBE(NONU//'.SMOS.SMHC')
 
-! on n'oublie pas de detruire les tableaux apres avoir alloue correctement
+      call MatCreateMPIAIJ(PETSC_COMM_WORLD,
+     &                     PETSC_DECIDE,PETSC_DECIDE,neq,neq,
+     &                     PETSC_NULL_INTEGER,ZI4(JIDXD),
+     &                     PETSC_NULL_INTEGER,ZI4(JIDXO),
+     &                     Ap(KPTSC),ierr)
+
+      CALL ASSERT(ierr.EQ.0)
+
+!     on n'oublie pas de detruire les tableaux
+!     apres avoir alloue correctement
       CALL JEDETR(IDXO)
       CALL JEDETR(IDXD)
 
-! permet de dire a PETSc que les blocs fournis sont "tries" (plus rapide)
-      call MatSetOption(A,MAT_ROWS_SORTED,ierr)
-      call MatSetOption(A,MAT_COLUMNS_SORTED,ierr)
+!     permet de dire a PETSc que les blocs fournis
+!     sont "tries" (plus rapide)
+      call MatSetOption(Ap(KPTSC),MAT_ROWS_SORTED,ierr)
+      CALL ASSERT(ierr.EQ.0)
+      call MatSetOption(Ap(KPTSC),MAT_COLUMNS_SORTED,ierr)
+      CALL ASSERT(ierr.EQ.0)
       
       CALL JEDEMA()
 

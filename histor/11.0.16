@@ -1,0 +1,1312 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 07/26/2011 - 06:55:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013409 DU 2009-05-13 10:02:58
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MN06 - Cumul du tps calcul en fonction des instants
+FONCTIONNALITE
+   Demande initiale:
+   =================
+   
+   On souhaite pouvoir connaitre l'évolution du temps calcul cumulé au cours des instants,
+   c'est-à-dire pouvoir disposer d'une courbe : 
+   - abscisse : instants de la liste initiale (sans les redécoupages du pas, pour avoir
+   unicité des valeurs)
+   - ordonnée : cumul du temps calcul à chaque instant (en tenant compte du temps lié aux
+   éventuels redécoupages).
+   
+   Réponse:
+   ========
+   
+   On enrichit le tableau de convergence que l'on peut sortir sur une unité en mode csv grâce
+   au mot-clef UNITE d'AFFICHAGE
+   On ajoute le mot-clef INFO_TEMPS='OUI'/'NON' dans AFFICHAGE
+   Quand ce mot-clef est activé, à chaque itération de Newton, on ajoute dans la colonne
+   "ITER_TIME", le temps passé dans l'itération.
+   
+   Cette modification est assez lourde car jusqu'à présent, bizarrement, on ne mesurait
+   jamais le temps passé dans la prédiction !
+   
+   On en profite pour faire du ménage dans les statistiques et revoir l'architecture de
+   mesure des temps, ce qui impacte près de 110 routines (nouvelle SD: la structure SDSTAT)
+   
+   On a supprimé le temps passé dans la factorisation symbolique et dans l'archivage (qui
+   sont très faibles par rapport aux autres temps).
+   Par contre, on a ajouté le temps passé dans la construction des matrices de
+   contact/frottement en méthode CONTINUE.
+   
+   Avec un script Python, voire un simple tableur, on pourra faire les manipulations
+   souhaitées (temps cumulé)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+    visuelle,ssnv104e
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017294 DU 2011-07-18 08:17:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    DEF2 - Amélioration mesures STAT_NON_LINE
+FONCTIONNALITE
+   Lors de la réalisation de la fiche issue13409, je me suis aperçu de certains problèmes de
+   mesure du temps CPU.
+   Je remets tout à plat (routines, mesures et SD)
+   
+   On mesure désormais:
+   - l'assemblage des matrices
+   - le calcul du second membre
+   - le calcul des matrices de contact (méthode continue)
+   - le post-traitement (flambement, modes vibratoires)
+   On a supprimé le temps passé dans la factorisation symbolique (qui
+   est très faible par rapport aux autres temps).
+   
+   Ce qui impacte près de 110 routines (nouvelle SD: la structure SDSTAT)
+   
+   Voici un exemple d'affichage:
+   
+     Temps CPU consommé dans ce pas de temps: 2 m 25 s.
+   
+       * Temps moyen par itération de Newton : 10.414 s ( 14 itérations     )
+       * Temps assemblage matrice            : 13.580 s
+       * Temps total factorisation matrice   : 30.440 s ( 14 factorisations )
+       * Temps construction second membre    : 5.090 s
+       * Temps total intégration LDC         : 50.950 s ( 21 intégrations   )
+       * Temps total résolution K.U=F        : 36.530 s ( 14 résolutions    )
+       * Temps construction matrices contact : 1.830 s ( 14 constructions  )
+       * Temps préparation données contact   : 1.480 s ( 7 préparations   )
+       * Temps appariement contact           : 1.780 s ( 4 itérations     )
+       * Temps contact                       : 0.670 s ( 7 boucles        )
+       * Temps autres opérations             : 3.440 s
+   
+   Cette évolution permet de répondre à la question: mais pourquoi le temps "autres
+   opérations" (en STA10) était si grand quand on fait du contact méthode continue ?
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    visuelle,ssnv104e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 07/26/2011 - 06:55:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017282 DU 2011-07-11 17:08:53
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    PREDICTION='EXTRAPOL' et AFFE_CHAR_CINE
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Dans le cadre de l'AOM issue17230, on a rencontré des difficultés pour obtenir des
+   résultats stables (modification des résidus et du nombre d'itérations de Newton) dans un
+   calcul d'agrégats.
+   Pensant que le coupable était l'utilisation de conditions aux limites cinématiques
+   (AFFE_CHAR_CINE), nous avons modifié le cas-test SSNV194A qui utilise la prédiction
+   'EXTRAPOL', pour remplacer les CL dualisées par des CL éliminées on obtient alors un échec
+   dans l'intégration de la LdC.
+   
+   Analyse
+   =======
+   
+   Avec Jean-Michel nous avons essayé de comprendre pourquoi, ce qui en ressort :
+   - ce n'est pas un bug des LdC mono-cristallines
+   - on constate (même si c'est difficile à comparer) que le déplacement donné par EXTRAPOL
+   est très différent dès le second pas de temps selon que l'on a des CL dualisées ou éliminées
+   ==> le coupable semblait donc plutôt être la prédiction par extrapolation.
+   
+   Après analyse, il y a effectivement un bug dans le traitement de PREDICTION='EXTRAPOL'
+   avec des conditions AFFE_CHAR_CINE : la projection sur l'espace des conditions aux limites
+   cinématiquement admissibles est mal faite.
+   Le même bug existe donc aussi pour PREDICTION='DEPL_CALCULE'.
+   
+   Pour les CL éliminées on se contentait en effet de remplacer dans le déplacement donné
+   (par DEPL_CALCULE ou EXTRAPOL) les ddls cinématiques par leur valeur imposée.
+   Alors qu'il faut chercher le déplacement delta.u (donc sur *tous* les ddls) qui permet de
+   vérifier les CL sur les ddls cinématiques.
+   En effet la projection sur l'espace des déplacements cinématiquement admissibles peut tout
+   à fait modifier les ddls non contraints par des CL.
+   
+   Correction
+   ==========
+   
+   Impact : nmacin.f(nouveau)  nmassd.f  nmdesc.f  nmprca.f actcin.f(supprimée)
+   
+   À faire en V10 (sauf nmdesc.f).
+   
+   Validation
+   ==========
+   
+   Tous les tests utilisant DEPL_CALCULE ou EXTRAPOL sont OK.
+   J'ajoute à SSNV194A (car il a plus d'une maille) un calcul avec AFFE_CHAR_CINE. Avant
+   correction, le test échoue, maintenant il donne des résultats presque identiques à
+   AFFE_CHAR_MECA. On note un petit écart sur 3 des valeurs testées inférieur à 0.05%. Je
+   choisis donc AUTRE_ASTER comme comparaison.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv194a
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 07/26/2011 - 02:09:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017296 DU 2011-07-18 09:10:12
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    [FORUM] Impression med incomplxc3xa8te
+FONCTIONNALITE
+   Problème :
+   ----------
+   Un bug a été découvert par un utilisateur d'aster libre. Il a constaté que les impressions
+   au format MED qu'il réalisait étaient incomplètes.
+   
+   
+   Analyse :
+   ---------
+   C'est suite à ma correction de la fiche 16753 que ce bug a été introduit. C'est en fait un
+   test mal fait dans IRMAMA qui conduisait à filtrer trop de mailles du maillage à imprimer.
+   
+   Je corrige donc ce test.
+   
+   La correction est à reporter en version d'exploitation.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.4.2
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0.5
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 07/26/2011 - 11:46:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017274 DU 2011-07-08 15:40:21
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Fuite mxc3xa9moire dans l'interface PETSc
+FONCTIONNALITE
+   Express
+   =======
+   
+   Dans le cadre de l'AOM 17230, on a constaté l'augmentation progressive de la mémoire
+   consommée par un calcul Aster utilisant PETSc avec le préconditionneur LDLT_SP.
+   Les gens de la THM ont également constaté cette dérive mémoire.
+   Plus précisément la quantité système VmPeak augmente indéfiniment, cette augmentation
+   provoque à coup sûr l'arrêt des calculs lancés en batch pour cause de limite mémoire atteinte.
+   
+   Analyse
+   =======
+   
+   Il s'agit d'une fuite mémoire dans l'interface PETSc. Une réécriture partielle de
+   l'interface dans un premier temps n'a pas permis de localiser l'erreur.
+   Dans un second temps un cas-test utilisant PETSc et LDLT_SP a été lancé sous Valgrind.
+   Cela a permis de détecter des variables non initialisées et de mettre le doigt par *pure
+   chance* sur une possible fuite mémoire interne à PETSc (sans gravité cependant).
+   
+   Néanmoins en examinant de plus près la fonction PETSc appelée avant cette possible fuite,
+   je me suis rendu compte d'une erreur de programmation (de mon fait) qui existe depuis
+   l'introduction de PETSc dans Aster. C'est cette erreur qui provoque la fuite mémoire.
+   Comme elle a été reprise lors de l'ajout de LDLT_SP cela explique pourquoi la dérive
+   mémoire est encore plus forte.
+   
+   Détails (pour mémoire)
+   ======================
+   
+           call VecCreateSeq(PETSC_COMM_SELF,NEQ,xgth,ierr)
+           CALL ASSERT(ierr.EQ.0)
+           call VecScatterCreateToAll(b,ctx,xgth,ierr)
+           CALL ASSERT(ierr.EQ.0)
+   
+   La fonction VecScatterCreateToAll a besoin en entrée d'un vecteur b et crée à partir de ce
+   dernier un contexte ctx et un vecteur séquentiel xgth.
+   La doc n'étant pas très claire à ce sujet à l'époque (elle a été enrichie depuis) on
+   créait inutilement le vecteur xgth au préalable et on perdait son adresse ensuite.
+   
+   À chaque appel à PETSc la mémoire augmentait donc d'environ 8*NEQ octets (le double avec
+   LDLT_SP).
+   
+   Correction
+   ==========
+   
+   Réécriture partielle de l'interface et correction des variables non init. :
+   crsvpe.f
+   apets1.F  apets2.F  apets3.F  apets4.F  apetsc.F  apetsr.F  ldsp1.F  ldsp2.F
+   
+   Validation
+   ==========
+   
+   Tous les tests PETSc + validation du fait que VmPeak est constant au cours d'un calcul
+   (petsc01e en forcant à faire 100 pas de temps au lieu d'un).
+   
+   Remarque : l'étude de l'AOM 17230 passe désormais dans une classe mpi_4G dès que 4
+   processeurs et plus sont utilisés.
+   
+   V10
+   ===
+   
+   Impact : apetsr.F apets3.F
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    vmpeak+tests petsc
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017317 DU 2011-07-22 09:28:56
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    LDLT_INC dans PETSc : niveau de remplissage nxc3xa9gatif
+FONCTIONNALITE
+   Express
+   =======
+   
+   Dans issue17274, l'interface PETSc a été partiellement réécrite et des vérifications
+   supplémentaires ont été ajoutées.
+   On se rend compte ainsi compte qu'en commandes éclatées, le nombre de niveaux de la
+   factorisation incomplète passé à PETSc est négatif (-9999). On peut même s'en rendre
+   compte en consultant les .mess :
+   
+   [0]PETSC ERROR: --------------------- Error Message ------------------------------------
+   [0]PETSC ERROR: Argument out of range!
+   [0]PETSC ERROR: negative levels!
+   [0]PETSC ERROR: ------------------------------------------------------------------------
+   
+   Désormais un ASSERT empêche l'exécution de continuer. Il faut donc corriger le petit bug
+   (interversion de 2 valeurs dans la sd_solveur).
+   
+   Impact : op0014.f
+   
+   À faire en V10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    petsc01c
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fernandes    FERNANDES Roméo       DATE 07/26/2011 - 02:59:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017320 DU 2011-07-25 05:35:14
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Extension des possibilitxc3xa9s de post-traitement de l'opxc3xa9rateur POST_MAC3COEUR
+FONCTIONNALITE
+   L'objectif de cette fiche était de tracer l'extension des possibilités de l'opérateur
+   POST_MAC3COEUR dédié au post-traitement des déformations des assemblages combustibles en
+   réacteur.
+   
+   On ajoute ainsi les fonctionnalités suivantes:
+   1/ Au format GRACE (voir images en pièces jointe sur coeur N4) :
+   - l'amplitude des déformations latérales des assemblages dans le coeur
+   - le module des déformations dans le coeur
+   - l'orientation des déformations dans le coeur
+   - la déformée d'un assemblage
+   
+   2/ Au format TABLE :
+   - les amplitudes de déformations
+   - les lames d'eau.
+   
+   Opérateur :
+   
+   POST_MAC3COEUR = (
+                  TYPE_COEUR   = ("TEST","900","1300","N4","EPR"),
+                  RESULTAT,
+                  INST,
+     	       LAME    = _F( NUME_GRILLE,
+                                TYPE_RESU    = ("MINI","MAXI"),
+      	                     FORMAT       = ("GRACE","TABLE"),
+                                UNITE,),           
+   	       DEFORMATION = _F(NUME_GRILLE,
+                                   TYPE_RESU    = ("MINI","MAXI"),
+      	                        FORMAT       = ("GRACE","TABLE"),
+                                   UNITE,
+                                   NOM_CMP      = ("DY","DZ","NORME"),
+   		             AUTRE = ("AMPLITUDE","MODULE","VECTEUR","DEFORME"),
+                                AC,  
+                                CONCEPTION,)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V1.02.103, U4.90.12
+VALIDATION
+    mac3c02a + perso
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 07/26/2011 - 05:06:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017040 DU 2011-05-31 09:32:07
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    X-FEM : bug dans reereg si element de bord non plan
+FONCTIONNALITE
+   Un developpeur a rep?r? un bug dans la routine reereg.f
+   Cette routine calcule par un newton la position d'un point dans l'espace de r?f?rence ?
+   partir de sa position dans le rep?re re?l.
+   La bug se produit dans le cas o? la maille de bord n'est pas plane et conduit ? un ?chec
+   de convergence.
+   
+   Solution propos?e :  il ne faut donc pas prendre la ndim-i?me composante
+   dans le calcul de l'erreur.
+   
+   En l'absence de cas-test mettant en jeu des mailles ? bords courbes, on classe la fiche
+   sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucun
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017024 DU 2011-05-26 14:30:42
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    RUPT : bug dans DEFI_FISS_XFEM lors de l'orientation du fond de fissure
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   Un calcul FEM sur une fissure 3D plante dans DEFI_FISS_XFEM au niveau de l'orientation
+   du fond de fissure par un call assert (dans xoriff.f) :
+   on trouve un nombre impair de points du fond de fissure appartenant au bord de la structure !
+   
+   cas-test : sslv155 (fissure lentille), mod?lisation 3D FEM (non restitu?e)
+   
+   
+   Explication :
+   -------------
+   
+   Pour pouvoir v?rifier si l'orientation du fond a ?t? faite correctement, on v?rifie que
+   les points aux extr?mit?s du fond de fissure correspondent bien ? des points "de bord".
+   
+   Pour savoir si un point du fond est un point de bord :
+   - boucle sur les facettes des ?l?ments volumiques
+   d?termination d'un point tel que lsn=lst=0 -> point du fond
+   si les 3 noeuds de cette facette ne sont communs qu'? une seule maille volumique alors on
+   consid?re que c'est une facette de bord -> le point du fond est donc un point "de bord".
+   
+   La grosse subtilit? est que certaines facettes sont ignor?es dans la boucle :
+   - les facettes qui coincide avec la surface de la fissure (o? lsn=0 partout),
+   - les facettes qui ont un cot? qui coincide avec le fond de fissure (lst=0 et lsn=0).
+   Ce qui empeche donc de boucler sur des facettes correspondant aux levres.
+   
+   Dans le cas pr?sent, les facettes dont un cote est confondu avec le fond ne sont pas ignor?es.
+   La raison est certainement un pb de pr?cision num?rique (? cause du fait que la fissure
+   est non plane avec des l?vres ouvertes). Or ces facettes non ignor?es sont des facettes de
+   bord (? juste titre). Donc tous les points du fond de fissure sont consid?r?s comme des
+   points de bord ! Ce qui a pour cons?quence de d?finir un fond de fissure par morceaux.
+   Ce probl?me de pr?cision num?rique reste ? approfondir.
+   
+   On pourrait aussi dire que l'on ne fait pas la recherche des points de bords pour les
+   fissures maill?es (car cela ne sert quasi ? rien en pratique). Le pb est que l'on ne sait
+   pas distinguer ? ce niveau si la fissure est maill?e ou non. Mot-cl? en plus ?
+   
+   L'autre solution est d'attendre...
+   En effet, suite ? la r?forme de DEFI_FOND_FISS (fiche 14537 pr?vue pour fin 2011), les
+   fissures maill?es seront toutes trait?es par DEFI_FOND_FISS, et DEFI_FISS_XFEM ne traitera
+   que les fissures non maill?es, ce qui r?soudra le probl?me.
+   
+   
+   Conclusion :
+   ------------
+   
+   On classe la fiche sans suite et on attend que les fissures maill?es passent toutes par
+   DEFI_FOND_FISS.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucun
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017190 DU 2011-06-23 10:49:46
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.0.12, le cas-test sslp310a s'arrete en erreur fatale sur Aster4, Rocks et Calibre 5.
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   Le test sslp310a est cass? en 11.0.12 sur toutes les plateformes.
+                                                                                            
+                         
+   Analyse :
+   ---------
+   Ce probl?me est une cons?quence de la fiche 17155 (appels inutiles ? tecart).
+   Dans le cadre de la fiche 17155, j'ai supprim? l'appel ? tecart dans la routine cbpres.f
+   parce qu'il ne sert ? rien.
+                                                                                            
+                         
+   Mais la programmation de la routine gchs2f (CALC_G) n'est pas correcte si on n'a pas
+   utilis? tecart (si on utilise tecart, les "zones" de la carte sont toujours affect?es ?
+   des listes de mailles)
+                                                                                            
+                         
+   Correction :
+   ------------
+   La bonne correction serait de corriger la routine gchs2f.f (par exemple en passant par des
+   champs simples).
+   Mais Samuel G?niaut pense que le traitement des charges dans CALC_G sera revu profond?ment
+   (et prochainement).
+                                                                                            
+                         
+   Je propose donc une correction "l?g?re" en attendant :
+   Dans la routine gcharg, avant d'appeler gcharf (et donc gch2sf), on appelle tecart sur les
+   cartes ? fusionner.
+                                                                                            
+                         
+   Validation :
+   ------------
+   Le test sslp310a est OK
+                                                                                            
+                         
+   Fichierjoint : la routine gcharg.f corrig?e
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslp310a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017303 DU 2011-07-19 07:21:18
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    RUPT : cas test fissure non-plane
+FONCTIONNALITE
+   Contexte :
+   ----------
+   
+   Cette fiche r?pond ? la 2?me partie du manque de validation en m?canique de la rupture
+   (voir fiche 17257) : cas test avec fissure non plane.
+   
+   
+   Solution :
+   ----------
+   
+   On propose dans cette fiche un nouveau cas test :
+   
+   sslv155 : Fissure lentille en tracion
+   mod?lisation a : FEM 2d-axi
+   mod?lisation b : X-FEM 2d-axi
+   mod?lisation c : X-FEM 3d
+   
+   Il n'a pas ?tait possible de r?aliser le maillage FEM de la fissure en 3d avec Salom?. Il
+   n'y a donc pas de mod?lisation FEM 3d.
+   
+   Ce test met en jeu une fissure non-plane en forme de lentille, en traction.
+   La solution en milieu infini est connue de mani?re analytique.
+   On teste ? chaque fois les K1 et K2 pour les commandes POST_K1_K2_K3 et CALC_G.
+   
+   En FEM 2d-axi, le maillage est quadratique et relativement fin en fond de fissure
+   (h=0.025). On obtient des erreurs entre 1% et 5%. Cela est assez ?trange car normalement,
+   pour une telle finesse, on pourrait s'attendre ? une bien meilleure pr?cision.
+   En X-FEM 2d-axi, le maillage est lin?aire. Pour obtenir la m?me pr?cision, on est oblig?
+   de raffiner encode davantage (h=0.007).
+   En X-FEM 3d, un tel raffinement est impossible compte-tenu des limitations en temps CPU
+   des cas-tests. On se limite ? h=0.03, et les erreurs sont par cons?quent relativement
+   importantes : 10-20%
+   
+   
+   Ce test a permis notamment de d?couvrir un bug (cf. fiche 17288) en 2d dans
+   DEFI_FOND_FISS+CALC_G pour les fissures non planes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.04.155
+VALIDATION
+    sslv155a, b, c
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017121 DU 2011-06-10 14:06:42
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    X-FEM : Champs de nom incorrect
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   Dans le cadre de la fiche issue16442, quelqu'un a remarqu? que les champs INDC_ELGA,
+   SECO_ELGA et
+   COHE_ELGA utilis? en entr?e/sortie de STAT_NON_LINE, semblent ?tre des champs ELEM et non
+   des champs ELGA (la v?rif automatique implant?e dans la fiche issue17073 le montre)
+   
+   Le vocabulaire est tr?s trompeur car ce sont des champs ELEM.
+   
+   
+   Solution : 
+   ----------
+   
+   On renomme : 
+   COHE_ELGA -> COHE_ELEM
+   INDC_ELGA -> INDC_ELEM
+   SECO_ELGA -> SECO_ELEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.51.03
+VALIDATION
+    aucun
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016683 DU 2011-03-30 10:56:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    RUPT : comptage des cycles pour la propagation
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   Afin de traiter des propagations de fissure en fatigue sous chargement variable, on
+   souhaite pouvoir faire du comptage de cycles de K pour un calcul de propagation, en
+   r?-utilisant la commande POST_FATIGUE.
+   
+   
+   
+   Solution :
+   ----------
+   
+   On introduit une nouvelle option dans l'op?rateur POST_RUPTURE : OPERATION =
+   'COMPTAGE_CYCLES' :
+   
+    . . .b_Comptage = BLOC(condition="OPERATION == 'COMPTAGE_CYCLES' .",fr="Comptage des cycles",
+   
+    . . . . . . . . . . NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
+    . . . . . . . . . . . . . . . . . . fr="Nom des quantit?s sur lesquelles s'effectuent le
+   comptage"),
+    . . . . . . . . . . COMPTAGE =
+   SIMP(statut='o',typ='TXM',into=("RAINFLOW","RCCM","NATUREL","UNITAIRE")),
+   
+    . . . . . . . . . . DELTA_OSCI = SIMP(statut='f',typ='R',defaut= 0.0E+0),
+   
+   
+    . . . . . . . . . . b_Comptage_Unitaire = BLOC(condition="COMPTAGE=='UNITAIRE'",
+    . . . . . . . . . . . . . . . . . . . . . . . .fr="comptage unitaire pour les amplitudes
+   constantes",
+   
+    . . . . . . . . . . . . . . . . . . . . . . . .COEF_MULT_MINI = SIMP(statut='o',typ='R',),
+    . . . . . . . . . . . . . . . . . . . . . . . .COEF_MULT_MAXI = SIMP(statut='o',typ='R',),
+   
+    . . . . . . . . . . . . . . . . . . . . . . . ),
+   
+    . . . . . . . . . . . .),
+   
+   On autorise plusieurs quantit?s ? compter (par ex K1, K2 et K3), sous r?serve que l'on
+   trouve le m?me nombre de cycles pour chaque quantit?.
+   
+   On ne travaille que sur un fond de fissure a la fois (comme CALG_G)
+   s'il y a plusieurs instant, il faut que cela soit sur le m?me fond !
+   
+   On r?alise les v?rifications suivantes :
+   - si NUME_FOND est pr?sent dans la table, v?rifier qu'il n'y a qu'un fond
+   
+   Pour le comptage unitaire :
+   - On v?rifie que la table initiale ne contient qu'un seul instant (colonne INST ou
+   NUME_ORDRE).
+   - La table cr??e contient toutes les colonnes de la table initiales, sauf les colonnes
+   INST et NUME_ORDRE, remplac?es par la colonne CYCLE. 
+   
+   Pour les autres comptages, on utilise un appel ? POST_FATIGUE.
+   Pour chaque point du fond, on r?cup?re l'histoire de la quantit? ? compter puis on appelle
+   POST_FATIGUE.
+   Attention, il faut que les colonnes de la table (hors INST et NUME_ORDRE) ne varient pour
+   ce point. On recopie dans la table finale les 1eres valeurs des autres colonnes (param?tre
+   auxiliaires, comm par ex. NUME_FOND, ABSC_CURV...), sans v?rifier que les valeurs
+   suivantes sont identiques.
+   
+   
+   Validation :
+   zzzz287a (test informatique)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.04, V1.01.287, U2.05.01
+VALIDATION
+    zzzz287a
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016685 DU 2011-03-30 11:02:18
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    RUPT : cumul des avancxc3xa9es sur les cycles
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   Afin de traiter des propagations de fissure en fatigue, on souhaite pouvoir faire du cumul
+   de cycles K.
+   Apr?s le comptage des cycles, on obtient une grandeur (Delta_Keq, Delta_A...) dont on
+   souhaite faire la moyenne sur les cyclces.
+   
+   Solution :
+   ----------
+   
+   On introduit une nouvelle option dans l'op?rateur POST_RUPTURE : OPERATION = 'CUMUL_CYCLES' :
+   
+    . . .b_cumul = BLOC(condition="OPERATION == 'CUMUL_CYCLES' .",fr="Cumul sur les cycles",
+   
+    . . . . . . . . . . NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_A",fr="Nom
+   de la colonne ? traiter"),
+    . . . . . . . . . . CUMUL . .=
+   SIMP(statut='f',typ='TXM',max=1,defaut="LINEAIRE",into=('LINEAIRE',)),
+    . . . . . . . . .
+    . . . . . . . . . . ),
+   
+   On autorise qu'une seule quantit? ? cumuler.
+   
+   On ne travaille que sur un fond de fissure a la fois (comme CALG_G)
+   s'il y a plusieurs instant, il faut que cela soit sur le m?me fond !
+   
+   On r?alise les v?rifications suivantes :
+   - si NUME_FOND est pr?sent dans la table, v?rifier qu'il n'y a qu'un fond
+   - on v?rifie que la table initiale ne contient la colonne CYCLE
+   
+   La table cr??e contient toutes les colonnes de la table initiales, sauf la colonne CYCLE.
+   Attention, en un point du fond, il faut que les autres colonnes de la table ne varient au
+   cours des cycles. On recopie dans la table finale les 1eres valeurs des autres colonnes
+   (param?tre 
+   auxiliaires, comm par ex. NUME_FOND, ABSC_CURV...), sans v?rifier que les valeurs
+   suivantes sont identiques.
+   
+   
+   Validation :
+   zzzz287a (test informatique)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.04, V1.01.287
+VALIDATION
+    zzzz287a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016686 DU 2011-03-30 11:05:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    RUPT : pilotage de la propagation
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   Afin de traiter des propagations de fissure, on souhaite pouvoir piloter la propagation :
+   - soit en imposant le nombre de cycles (plus exactement l'incr?ment de nombre de cycles),
+   - soit en imposant la l'incr?ment d'avanc?e maximale.
+   
+   On doit tenir compte de tous les points de tous les fonds de toutes les fissures.
+   
+   
+   Solution :
+   ----------
+   
+   On introduit une nouvelle option dans l'op?rateur POST_RUPTURE : OPERATION = 'PILO_PROPA' :
+   
+    . . .b_pilo_propa = BLOC(condition="OPERATION == 'PILO_PROPA' .",fr="Pilotage de la
+   propagation",
+   
+    . . . . . . . . . . . . .regles . . .= UN_PARMI('DELTA_A_MAX','DELTA_N'),
+    . . . . . . . . . . . . .DELTA_A_MAX =
+   SIMP(statut='f',typ='R',max=1,val_min=0.,fr="Pilotage en incr?ment d'avanc?e max"),
+    . . . . . . . . . . . . .DELTA_N . . = SIMP(statut='f',typ='R',max=1,val_min=1
+   ,fr="Pilotage en incr?ment de nombre de blocs"),
+    . . . . . . . . .
+    . . . . . . . . . . ),
+   
+   Contrairement aux autres OPERATION de POST_RUPTURE, chaque table d'entr?e peut contenir
+   plusieurs fonds de fissure.
+   Chaque table correspond ? une fissure.
+   
+   Restriction :
+   La gestion d'une liste de tables en entr?e en reuse ne marche pas encore, cela fait
+   l'objet d'une autre fiche !
+   On se contente dans cette fiche de ne traiter d'une seule table en entr?e, donc qu'une
+   seule fissure (potentiellement ? fonds multiples).
+   
+   
+   Validation :
+   zzzz287a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.04, V1.01.287
+VALIDATION
+    zzzz287a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 26/07/2011 - 17:57:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015646 DU 2010-09-30 15:48:36
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    PMF + Coques multi-couches : Position des points d'integration
+FONCTIONNALITE
+   Calculer les positions des sou-points pour les : PMF, DKT, DST, Q4G, COQUE_3D (en 3D et en
+   2D), GRILLES, TUYAUX.
+   Les coordonn�es seront calcul�es lors d'un appel � CREA_TABLE.
+   CREA_TABLE est donc modifi�e pour que lors de l'impression des champs ELGA sur des �l�ments �
+   sous-points, les coordonn�es des sous-points soient imprim�s dans le rep�re GLOBAL et non
+   plus les coordonn�es du point de Gauss comme actuellement.
+   
+   Pour les PMF :
+   - dans les catalogues on fait passer PNBSP_I, PFIBRE et CAORIE en IN  de l'option COOR_ELGA
+   - dans te0478 on calcule pour chaque fibre le vecteur GM et on le transforme dans le
+   rep�re global pour l'additionner aux coordonn�es du point de gauss
+   
+   Pour les COQUES et PLAQUES  (3D) :
+   - dans les catalogues on fait passer CACOQU en IN de l'option COOR_ELGA
+   - dans te0488 on calcule vecteur normal � la coque (1 pour les DKT, DST et 1 par point de
+   Gauss pour les COQUES_3D) et pour chaque couche on ajoute la position du point fois le
+   vecteur normal (en 
+   tenant compte de l'excentricit�)
+   
+   Pour les GRILLES :
+   - bien qu'on puisse mettre plusieurs couches (GRIL_NCOU) pour les GRILLE_EXCENTRE aussi
+   bien que pour les GRILLE_MEMBRANE, CA NE SERT A RIEN !!!!!
+   En effet les calculs sont fait pour UNE SEULE COUCHE (voir te0431). Pour l'option
+   COOR_ELGA, on ne calcule (dans te0488) que la position de CE SEUL sous-point. En tenant
+   compte toutefois de l'orientation et l'excentrement �ventuel des GRILLE_EXCENTRE.
+   
+   Impacts:
+   fortran : op0038.f te0478.f te0488.f ctdata.f cteltb.f
+   catalo/options: coor_elga.cata
+   catalo/typelem: gener_mecq32.cata  gener_mecqd1.cata  gener_medkt2.cata  gener_megrc2.cata
+                   gener_mepmf1.cata  gener_mepmf2.cata  gener_metu61.cata  met3seg3.cata
+                   met3seg4.cata
+   catapy : crea_table.capy
+   
+   
+   Cas tests :
+   - [V1.01.293]: ZZZZ293 - Validation de la position des sous-points des PMF
+   - [V1.01.294]: ZZZZ294 - Validation de la position des sous-points des plaques 3D
+   - [V1.01.295]: ZZZZ295 - Validation de la position des sous-points des plaques 2D
+   - [V1.01.296]: ZZZZ296 - Validation de la position des sous-points des tuyaux
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.293, V1.01.294, V1.01.295, V1.01.296
+VALIDATION
+    Nouveaux cas tests
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 07/26/2011 - 04:50:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014537 DU 2010-02-01 16:42:48
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    RUPT : base locale en fond de fissure calculee par DEFI_FOND_FISS
+FONCTIONNALITE
+   Objectif:
+   --------
+   Construire une base locale aux noeuds définissant le fond de fissure 
+   via DEFI_FOND_FISS.
+   
+   Réalisation:
+   ------------
+   - La base locale décrite dans le vecteur .BASEFOND, est constituée 
+   de 2 vecteurs normés en chaque noeud du fond de fissure (vecteur 
+   normal au fond de fissure, vecteur direction de propagation). 
+   
+   - Deux nouveaux mot-clés ont été introduits afin de :
+   -- distinguer les fissures collées (mot-clé "COLLEE" valeur par défaut) des fissures
+   décollées (mot-clé "DECOLLEE"),car le vecteur normal au plan de la fissure n'est autorisé
+   que dans le cas décollé, et est alors obligatoire.
+   
+   -- identifier le cas symétrique(mot-clé SYME='OUI' ou 'NON' valeur par défaut)
+   
+   - Le travail a été réalisé en 2D et en 3D.
+   
+   
+   - Le vecteur VECT_K1 de post_k1_k2_k3 n'a pas été supprimé car il 
+   correspondra au premier vecteur de la base locale.
+   
+   Documentation:
+   --------------
+   La documentation D4.10.01 de FOND_FISS est revue entièrement et la documentation U4.82.01
+   est complétée.
+   
+   Validation:
+   ----------
+   Aucun cas-test supplémentaire n'a été introduit car la supression du mot-clé NORMALE dans
+   le cas décollé a permis de tester la construction de la base locale en 2D et 3D et sont
+   utilisation via CALC_G, CALC_THETA et POST_K1_K2_K3. 55 cas-tests ont été modifié pour y
+   supprimer le mot-clé NORMALE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.01, D4.10.02
+VALIDATION
+    tous les tests DEFI_FOND_FISS
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017190 DU 2011-06-23 10:49:46
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.0.12, le cas-test sslp310a s'arrete en erreur fatale sur Aster4, Rocks et Calibre 5.
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le test sslp310a est cassé en 11.0.12 sur toutes les plateformes.
+                                                                                            
+                         
+   Analyse :
+   ---------
+   Ce problème est une conséquence de la fiche 17155 (appels inutiles à tecart).
+   Dans le cadre de la fiche 17155, j'ai supprimé l'appel à tecart dans la routine cbpres.f
+   parce qu'il ne sert à rien.
+                                                                                            
+                         
+   Mais la programmation de la routine gchs2f (CALC_G) n'est pas correcte si on n'a pas
+   utilisé tecart (si on utilise tecart, les "zones" de la carte sont toujours affectées à
+   des listes de mailles)
+                                                                                            
+                         
+   Correction :
+   ------------
+   La bonne correction serait de corriger la routine gchs2f.f (par exemple en passant par des
+   champs simples).
+   Mais Samuel Géniaut pense que le traitement des charges dans CALC_G sera revu profondément
+   (et prochainement).
+                                                                                            
+                         
+   Je propose donc une correction "légère" en attendant :
+   Dans la routine gcharg, avant d'appeler gcharf (et donc gch2sf), on appelle tecart sur les
+   cartes à fusionner.
+                                                                                            
+                         
+   Validation :
+   ------------
+   Le test sslp310a est OK
+                                                                                            
+                         
+   Fichierjoint : la routine gcharg.f corrigée
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslp310a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 07/26/2011 - 03:26:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016007 DU 2010-12-02 13:33:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Intégrer la fonction de cohérence Abrahamson dans DYNA_ISS_VARI
+FONCTIONNALITE
+   Objet:
+   ------------------------------------------
+   Intégration de la fonction de cohérence de Abrahamson (fonction de cohérence acceptée par
+   la NRC pour la prise en compte de la variabilité spatiale dans les études d'ISS des
+   installations nucléaires américaines).
+   --------------------------------------------
+   
+   
+   Je propose la syntaxe suivante:
+   
+   MATR_COHE =FACT(statut='o',
+                 TYPE=SIMP(statut='o',typ='TXM',into=("MITA_LUCO","ABRAHAMSON")),            
+                    b_type_coh = BLOC(condition="TYPE=='MITA_LUCO' ",
+                    VITE_ONDE       =SIMP(statut='o',typ='R'),
+                    PARA_ALPHA     =SIMP(statut='f',typ='R',defaut=0.5),),
+            ),
+   
+   
+   Ceci amène à l'introduction d'un nouveau mot-clé pour désigner le modèle de fonction de
+   cohérence choisi:  TYPE ('MITA_LUCO' ou 'ABRAHAMSON').
+   
+   ---------------------------------------------------------
+   ---------------------------------------------------------
+   
+   Je restitue également une modification du traitement de FREQ_FIN:
+   suite aux discussions avec Georges, il semble préférable de laisser l'utilisateur choisir
+   une fréquence de fin du calcul (FREQ_FIN) inférieur à la fréquence de coupure (FREQ_COUP).
+   Dans ce cas, on complète la réponse par des zeros (pour des fréquences entre FREQ_FIN et
+   FREQ_COUP selon Shannon). Ceci est en cohérence avec ce qui est pratiqué pour CALC_MISS et
+   peut réduire le temps de calcul. L'utilisateur doit néanmoins bien choisir la fréquence de
+   fin de calcul afin de ne pas fausser le résultat. Dans les calculs avec variabilité
+   spatiale, on peut parfois aller jusque 50Hz pour des SRO avec un contenu important en
+   hautes fréquences.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V2.03.118, U4.53.31
+VALIDATION
+    sdls118b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sslv155a                      geniaut S.GENIAUT          180    180      0
+ CASTEST AJOUT sslv155b                      geniaut S.GENIAUT          210    210      0
+ CASTEST AJOUT sslv155c                      geniaut S.GENIAUT          315    315      0
+ CASTEST AJOUT zzzz293a                        labbe M.LABBE            206    206      0
+ CASTEST AJOUT zzzz293b                        labbe M.LABBE            208    208      0
+ CASTEST AJOUT zzzz293c                        labbe M.LABBE            201    201      0
+ CASTEST AJOUT zzzz293d                        labbe M.LABBE            201    201      0
+ CASTEST AJOUT zzzz294a                        labbe M.LABBE            633    633      0
+ CASTEST AJOUT zzzz294b                        labbe M.LABBE            326    326      0
+ CASTEST AJOUT zzzz294c                        labbe M.LABBE            434    434      0
+ CASTEST AJOUT zzzz294d                        labbe M.LABBE             88     88      0
+ CASTEST AJOUT zzzz295a                        labbe M.LABBE            436    436      0
+ CASTEST AJOUT zzzz295b                        labbe M.LABBE            436    436      0
+ CASTEST AJOUT zzzz295c                        labbe M.LABBE            436    436      0
+ CASTEST AJOUT zzzz296a                        labbe M.LABBE            214    214      0
+ CASTEST MODIF hpla310a                      macocco K.MACOCCO         1046      3      2
+ CASTEST MODIF hpla311a                      macocco K.MACOCCO          341      3      3
+ CASTEST MODIF hpla311b                      macocco K.MACOCCO          297      3      2
+ CASTEST MODIF hplp100a                      macocco K.MACOCCO          300      3      3
+ CASTEST MODIF hplp101a                      macocco K.MACOCCO          412      1      2
+ CASTEST MODIF hplp101b                      macocco K.MACOCCO          109      1      2
+ CASTEST MODIF hplp310a                      macocco K.MACOCCO          844      3      3
+ CASTEST MODIF hplp310b                      macocco K.MACOCCO          851      3      3
+ CASTEST MODIF hplp311a                      macocco K.MACOCCO          450      1      2
+ CASTEST MODIF hplp311b                      macocco K.MACOCCO          319      1      2
+ CASTEST MODIF hplp311c                      macocco K.MACOCCO          360      1      2
+ CASTEST MODIF hplp311d                      macocco K.MACOCCO          317      1      2
+ CASTEST MODIF hplp311e                      macocco K.MACOCCO          359      1      2
+ CASTEST MODIF hplp311f                      macocco K.MACOCCO          315      1      2
+ CASTEST MODIF hplp311g                      macocco K.MACOCCO          352      1      2
+ CASTEST MODIF hplv103a                      macocco K.MACOCCO          485      7      6
+ CASTEST MODIF mac3c02a                    fernandes R.FERNANDES         82     11      7
+ CASTEST MODIF sdls114a                      macocco K.MACOCCO          341      1      2
+ CASTEST MODIF sdls118a                      zentner I.ZENTNER          482      6      6
+ CASTEST MODIF sdls118b                      zentner I.ZENTNER          596    127      8
+ CASTEST MODIF sdlv123b                      macocco K.MACOCCO          264      4      8
+ CASTEST MODIF ssla310a                      macocco K.MACOCCO          466      1      2
+ CASTEST MODIF ssla311b                      macocco K.MACOCCO           92      4      2
+ CASTEST MODIF sslp101b                      macocco K.MACOCCO          385      4      3
+ CASTEST MODIF sslp101c                      macocco K.MACOCCO          404      4      2
+ CASTEST MODIF sslp101e                      macocco K.MACOCCO          592      4      2
+ CASTEST MODIF sslp101f                      macocco K.MACOCCO          290      4      2
+ CASTEST MODIF sslp103a                      macocco K.MACOCCO          241      2      3
+ CASTEST MODIF sslp310a                      macocco K.MACOCCO         1298      1      2
+ CASTEST MODIF sslp311a                      macocco K.MACOCCO          268      1      3
+ CASTEST MODIF sslp311b                      macocco K.MACOCCO          268      1      3
+ CASTEST MODIF sslp311c                      macocco K.MACOCCO          263      1      3
+ CASTEST MODIF sslp311d                      macocco K.MACOCCO          268      1      3
+ CASTEST MODIF sslp314a                      macocco K.MACOCCO          232      1      2
+ CASTEST MODIF sslp314b                      macocco K.MACOCCO          248      1      2
+ CASTEST MODIF sslp314c                      macocco K.MACOCCO          265      1      2
+ CASTEST MODIF sslp314d                      macocco K.MACOCCO          134      1      2
+ CASTEST MODIF sslp314e                      macocco K.MACOCCO          134      1      2
+ CASTEST MODIF sslp314f                      macocco K.MACOCCO          134      1      2
+ CASTEST MODIF sslv110a                      macocco K.MACOCCO          604      2      1
+ CASTEST MODIF sslv110b                      macocco K.MACOCCO          290      1      2
+ CASTEST MODIF sslv110d                      macocco K.MACOCCO          298      1      2
+ CASTEST MODIF sslv110e                      macocco K.MACOCCO          362      3      3
+ CASTEST MODIF sslv134a                      macocco K.MACOCCO          375      6      4
+ CASTEST MODIF sslv134b                      macocco K.MACOCCO          610      1      2
+ CASTEST MODIF sslv134c                      macocco K.MACOCCO          282      1      2
+ CASTEST MODIF sslv134e                      macocco K.MACOCCO          306     11     12
+ CASTEST MODIF sslv134f                      macocco K.MACOCCO          325      1      2
+ CASTEST MODIF ssnp102b                      macocco K.MACOCCO          388      2      1
+ CASTEST MODIF ssnp110a                      macocco K.MACOCCO          299      3      2
+ CASTEST MODIF ssnp110b                      macocco K.MACOCCO          274      3      2
+ CASTEST MODIF ssnp110e                      macocco K.MACOCCO          810      3      2
+ CASTEST MODIF ssnp131b                      macocco K.MACOCCO          273      4      2
+ CASTEST MODIF ssnp311a                      macocco K.MACOCCO          491      1      2
+ CASTEST MODIF ssnp312a                      macocco K.MACOCCO          664      3      3
+ CASTEST MODIF ssnp312b                      macocco K.MACOCCO          612      2      3
+ CASTEST MODIF ssnv104e                        abbas M.ABBAS            460     18      2
+ CASTEST MODIF ssnv108a                      macocco K.MACOCCO          316      1      3
+ CASTEST MODIF ssnv194a                        abbas M.ABBAS            327    116      6
+ CASTEST MODIF ssnv218a                      macocco K.MACOCCO          385      2      1
+ CASTEST MODIF zzzz287a                      geniaut S.GENIAUT          311    181     55
+CATALOGU MODIF options/coor_elga               labbe M.LABBE             31      7      2
+CATALOGU MODIF typelem/gener_mecq32            labbe M.LABBE            302      3      3
+CATALOGU MODIF typelem/gener_mecqd1            labbe M.LABBE            192      2      2
+CATALOGU MODIF typelem/gener_medkt2            labbe M.LABBE            371      3      2
+CATALOGU MODIF typelem/gener_megrc2            labbe M.LABBE            191      3      2
+CATALOGU MODIF typelem/gener_mepmf1            labbe M.LABBE            266      2      2
+CATALOGU MODIF typelem/gener_mepmf2            labbe M.LABBE            262      2      2
+CATALOGU MODIF typelem/gener_metu61            labbe M.LABBE            258      2      2
+CATALOGU MODIF typelem/met3seg3                labbe M.LABBE            255      3      2
+CATALOGU MODIF typelem/met3seg4                labbe M.LABBE            251      2      2
+CATALOPY MODIF commande/crea_table             labbe M.LABBE            107      4      2
+CATALOPY MODIF commande/defi_fond_fiss       macocco K.MACOCCO          108     18      9
+CATALOPY MODIF commande/dyna_iss_vari        zentner I.ZENTNER           78      6      4
+CATALOPY MODIF commande/post_mac3coeur     fernandes R.FERNANDES         51     20      7
+CATALOPY MODIF commande/post_rupture         geniaut S.GENIAUT          162     50      4
+CATALOPY MODIF commun/c_affichage              abbas M.ABBAS             25      3      2
+FORTRAN90 MODIF petsc/apets1                   desoza T.DESOZA           195     51     57
+FORTRAN90 MODIF petsc/apets2                   desoza T.DESOZA           223     37     47
+FORTRAN90 MODIF petsc/apets3                   desoza T.DESOZA           224     76     57
+FORTRAN90 MODIF petsc/apets4                   desoza T.DESOZA           147     28     34
+FORTRAN90 MODIF petsc/apetsc                   desoza T.DESOZA           254     93     74
+FORTRAN90 MODIF petsc/apetsr                   desoza T.DESOZA           374    105    112
+FORTRAN90 MODIF petsc/ldsp1                    desoza T.DESOZA            86     20     15
+FORTRAN90 MODIF petsc/ldsp2                    desoza T.DESOZA            86     10      9
+ FORTRAN AJOUT algeline/nmacin                 abbas M.ABBAS             92     92      0
+ FORTRAN AJOUT algorith/mmmcpt                 abbas M.ABBAS            183    183      0
+ FORTRAN AJOUT algorith/nmcont                 abbas M.ABBAS            124    124      0
+ FORTRAN AJOUT algorith/nmcrst                 abbas M.ABBAS             84     84      0
+ FORTRAN AJOUT algorith/nmerim                 abbas M.ABBAS             84     84      0
+ FORTRAN AJOUT algorith/nmrinc                 abbas M.ABBAS             47     47      0
+ FORTRAN AJOUT algorith/nmrini                 abbas M.ABBAS            127    127      0
+ FORTRAN AJOUT algorith/nmrtim                 abbas M.ABBAS            177    177      0
+ FORTRAN AJOUT algorith/nmrvai                 abbas M.ABBAS            246    246      0
+ FORTRAN AJOUT algorith/nmtima                 abbas M.ABBAS            111    111      0
+ FORTRAN AJOUT algorith/nmtimr                 abbas M.ABBAS            170    170      0
+ FORTRAN AJOUT elements/fonno1               macocco K.MACOCCO          114    114      0
+ FORTRAN AJOUT elements/fonno2               macocco K.MACOCCO          128    128      0
+ FORTRAN AJOUT elements/fonno3               macocco K.MACOCCO          171    171      0
+ FORTRAN AJOUT elements/fonno4               macocco K.MACOCCO          139    139      0
+ FORTRAN AJOUT elements/fonno5               macocco K.MACOCCO          162    162      0
+ FORTRAN AJOUT elements/fonno6               macocco K.MACOCCO          218    218      0
+ FORTRAN MODIF algeline/crsvpe                desoza T.DESOZA           144      7      4
+ FORTRAN MODIF algeline/op0014                desoza T.DESOZA           327      2      2
+ FORTRAN MODIF algorith/accel0                 abbas M.ABBAS            168     12      9
+ FORTRAN MODIF algorith/algocg                 abbas M.ABBAS            600      8      4
+ FORTRAN MODIF algorith/algocl                 abbas M.ABBAS            501      9      7
+ FORTRAN MODIF algorith/algoco                 abbas M.ABBAS            527      8      6
+ FORTRAN MODIF algorith/algocp                 abbas M.ABBAS            277      7      5
+ FORTRAN MODIF algorith/algogl                 abbas M.ABBAS            494      8      6
+ FORTRAN MODIF algorith/cfalgo                 abbas M.ABBAS            183     23     19
+ FORTRAN MODIF algorith/cfiter                 abbas M.ABBAS             83      5     65
+ FORTRAN MODIF algorith/cfmmma                 abbas M.ABBAS             94      3      4
+ FORTRAN MODIF algorith/cfmxpo                 abbas M.ABBAS            108      5      5
+ FORTRAN MODIF algorith/cfmxre                 abbas M.ABBAS            153     11      4
+ FORTRAN MODIF algorith/fro2gd                 abbas M.ABBAS            618      9      7
+ FORTRAN MODIF algorith/frogdp                 abbas M.ABBAS            509      8      6
+ FORTRAN MODIF algorith/frolgd                 abbas M.ABBAS            950      9      7
+ FORTRAN MODIF algorith/fropgd                 abbas M.ABBAS            736      9      6
+ FORTRAN MODIF algorith/impcod                 abbas M.ABBAS             91      9      9
+ FORTRAN MODIF algorith/impfot                 abbas M.ABBAS             63      8      8
+ FORTRAN MODIF algorith/impin0                 abbas M.ABBAS            122     23     18
+ FORTRAN MODIF algorith/impini                 abbas M.ABBAS            147      4     16
+ FORTRAN MODIF algorith/implec                 abbas M.ABBAS            109     12     18
+ FORTRAN MODIF algorith/impref                 abbas M.ABBAS            289     19     19
+ FORTRAN MODIF algorith/impsdl                 abbas M.ABBAS            143      6      2
+ FORTRAN MODIF algorith/impstd                 abbas M.ABBAS            217     30     13
+ FORTRAN MODIF algorith/impsui                 abbas M.ABBAS            102     22     10
+ FORTRAN MODIF algorith/memokg               macocco K.MACOCCO          246      9      5
+ FORTRAN MODIF algorith/mmmbca                 abbas M.ABBAS            430      1      1
+ FORTRAN MODIF algorith/ndassp                 abbas M.ABBAS            230     29     23
+ FORTRAN MODIF algorith/ndexpl                 abbas M.ABBAS            143     25     19
+ FORTRAN MODIF algorith/ndxcvg                 abbas M.ABBAS             92      6      5
+ FORTRAN MODIF algorith/ndxdec                 abbas M.ABBAS            154      6      4
+ FORTRAN MODIF algorith/ndxnpa                 abbas M.ABBAS            151      6      5
+ FORTRAN MODIF algorith/ndxpre                 abbas M.ABBAS            170     27     23
+ FORTRAN MODIF algorith/ndxprm                 abbas M.ABBAS            257     17     18
+ FORTRAN MODIF algorith/nmactn                 abbas M.ABBAS            178      7      4
+ FORTRAN MODIF algorith/nmarch                 abbas M.ABBAS            210      8      7
+ FORTRAN MODIF algorith/nmassd                 abbas M.ABBAS            147     25     35
+ FORTRAN MODIF algorith/nmassi                 abbas M.ABBAS            153      2      2
+ FORTRAN MODIF algorith/nmassp                 abbas M.ABBAS            137     13     12
+ FORTRAN MODIF algorith/nmassx                 abbas M.ABBAS            206     17      8
+ FORTRAN MODIF algorith/nmbudi                 abbas M.ABBAS             94      1      1
+ FORTRAN MODIF algorith/nmcalv                 abbas M.ABBAS            325     15      7
+ FORTRAN MODIF algorith/nmcere                 abbas M.ABBAS            237     18     10
+ FORTRAN MODIF algorith/nmcese                 abbas M.ABBAS            220     17     16
+ FORTRAN MODIF algorith/nmceta                 abbas M.ABBAS            246     19     17
+ FORTRAN MODIF algorith/nmchar                 abbas M.ABBAS            387     22     21
+ FORTRAN MODIF algorith/nmchht                 abbas M.ABBAS            234     30     28
+ FORTRAN MODIF algorith/nmchse                 abbas M.ABBAS            201     19     16
+ FORTRAN MODIF algorith/nmcofr                 abbas M.ABBAS            139     14     17
+ FORTRAN MODIF algorith/nmcoma                 abbas M.ABBAS            277     26     24
+ FORTRAN MODIF algorith/nmconv                 abbas M.ABBAS            407     47     61
+ FORTRAN MODIF algorith/nmcore                 abbas M.ABBAS            260      4      4
+ FORTRAN MODIF algorith/nmcoun                 abbas M.ABBAS            132     12     12
+ FORTRAN MODIF algorith/nmcret                 abbas M.ABBAS            173     10      9
+ FORTRAN MODIF algorith/nmcrti                 abbas M.ABBAS            120     34     60
+ FORTRAN MODIF algorith/nmctcc                 abbas M.ABBAS            159      3      3
+ FORTRAN MODIF algorith/nmctcd                 abbas M.ABBAS            172     15     13
+ FORTRAN MODIF algorith/nmctcf                 abbas M.ABBAS            179      2      2
+ FORTRAN MODIF algorith/nmctgo                 abbas M.ABBAS            196      9      9
+ FORTRAN MODIF algorith/nmcvgi                 abbas M.ABBAS             72     20     18
+ FORTRAN MODIF algorith/nmdepl                 abbas M.ABBAS            245     29     27
+ FORTRAN MODIF algorith/nmdesc                 abbas M.ABBAS            183     36     30
+ FORTRAN MODIF algorith/nmdiri                 abbas M.ABBAS            106      2      2
+ FORTRAN MODIF algorith/nmerge                 abbas M.ABBAS            139      4     21
+ FORTRAN MODIF algorith/nmerro                 abbas M.ABBAS            132     57     30
+ FORTRAN MODIF algorith/nmetc0               geniaut S.GENIAUT          157      4      4
+ FORTRAN MODIF algorith/nmetcc               geniaut S.GENIAUT          149      4      4
+ FORTRAN MODIF algorith/nmetcr               geniaut S.GENIAUT          275      2      2
+ FORTRAN MODIF algorith/nmevac                 abbas M.ABBAS            137      7      4
+ FORTRAN MODIF algorith/nmevdp                 abbas M.ABBAS            100      5      3
+ FORTRAN MODIF algorith/nmevdr                 abbas M.ABBAS            101      6      5
+ FORTRAN MODIF algorith/nmfcor                 abbas M.ABBAS            230     39     32
+ FORTRAN MODIF algorith/nmfint                 abbas M.ABBAS            145     11     11
+ FORTRAN MODIF algorith/nmflam                 abbas M.ABBAS            233     15     10
+ FORTRAN MODIF algorith/nmflma                 abbas M.ABBAS            357     12      9
+ FORTRAN MODIF algorith/nmible                 abbas M.ABBAS            203     22     18
+ FORTRAN MODIF algorith/nmihht                 abbas M.ABBAS            108     12     10
+ FORTRAN MODIF algorith/nmimp0                 abbas M.ABBAS            134      2      2
+ FORTRAN MODIF algorith/nmimpa                 abbas M.ABBAS            106      2      2
+ FORTRAN MODIF algorith/nmimpi                 abbas M.ABBAS            115      6      4
+ FORTRAN MODIF algorith/nmimpl                 abbas M.ABBAS            244      2    108
+ FORTRAN MODIF algorith/nmimpm                 abbas M.ABBAS            116      4      7
+ FORTRAN MODIF algorith/nmimpr                 abbas M.ABBAS             55      8      5
+ FORTRAN MODIF algorith/nmimps                 abbas M.ABBAS            136      1      1
+ FORTRAN MODIF algorith/nmimpt                 abbas M.ABBAS            129      2      2
+ FORTRAN MODIF algorith/nmimpx                 abbas M.ABBAS             85      1      1
+ FORTRAN MODIF algorith/nmimre                 abbas M.ABBAS            128      2      4
+ FORTRAN MODIF algorith/nmimrv                 abbas M.ABBAS            100      8      8
+ FORTRAN MODIF algorith/nminit                 abbas M.ABBAS            290     38     32
+ FORTRAN MODIF algorith/nminmc                 abbas M.ABBAS            209     12     10
+ FORTRAN MODIF algorith/nminvc                 abbas M.ABBAS            136     12     11
+ FORTRAN MODIF algorith/nmitsp                 abbas M.ABBAS            151      5      3
+ FORTRAN MODIF algorith/nmnble                 abbas M.ABBAS            138     12      4
+ FORTRAN MODIF algorith/nmnewt                 abbas M.ABBAS            388     68     57
+ FORTRAN MODIF algorith/nmnoli                 abbas M.ABBAS            158     11     10
+ FORTRAN MODIF algorith/nmnpas                 abbas M.ABBAS            187      9      7
+ FORTRAN MODIF algorith/nmnume                 abbas M.ABBAS             88      5     10
+ FORTRAN MODIF algorith/nmpich                 abbas M.ABBAS            146     15     13
+ FORTRAN MODIF algorith/nmpost                 abbas M.ABBAS            162     21     16
+ FORTRAN MODIF algorith/nmprac                 abbas M.ABBAS            183     13     12
+ FORTRAN MODIF algorith/nmprca                 abbas M.ABBAS            202     48     63
+ FORTRAN MODIF algorith/nmprde                 abbas M.ABBAS            175     20     16
+ FORTRAN MODIF algorith/nmpred                 abbas M.ABBAS            153     25     20
+ FORTRAN MODIF algorith/nmprma                 abbas M.ABBAS            262     24     23
+ FORTRAN MODIF algorith/nmprof                 abbas M.ABBAS             88      4     13
+ FORTRAN MODIF algorith/nmprta                 abbas M.ABBAS            207     29     24
+ FORTRAN MODIF algorith/nmreli                 abbas M.ABBAS            119     11      9
+ FORTRAN MODIF algorith/nmrelp                 abbas M.ABBAS            382     12      8
+ FORTRAN MODIF algorith/nmrenu                 abbas M.ABBAS            117      5     12
+ FORTRAN MODIF algorith/nmrepl                 abbas M.ABBAS            367     15     13
+ FORTRAN MODIF algorith/nmresd                 abbas M.ABBAS            125     12     12
+ FORTRAN MODIF algorith/nmrigi                 abbas M.ABBAS            135     13     13
+ FORTRAN MODIF algorith/nmsens                 abbas M.ABBAS            272     16     13
+ FORTRAN MODIF algorith/nmspec                 abbas M.ABBAS            172     18     11
+ FORTRAN MODIF algorith/nmstat                 abbas M.ABBAS            414    308    194
+ FORTRAN MODIF algorith/nmtble                 abbas M.ABBAS            204     20     23
+ FORTRAN MODIF algorith/nmtime                 abbas M.ABBAS            240    127    275
+ FORTRAN MODIF algorith/nmxmat                 abbas M.ABBAS            170     27     12
+ FORTRAN MODIF algorith/nmxvec                 abbas M.ABBAS            169     14     13
+ FORTRAN MODIF algorith/nsassp                 abbas M.ABBAS            219     12      5
+ FORTRAN MODIF algorith/op0070                 abbas M.ABBAS            362     49     42
+ FORTRAN MODIF algorith/op0186                 abbas M.ABBAS            632      4      7
+ FORTRAN MODIF algorith/pmactn                 abbas M.ABBAS            184      5      2
+ FORTRAN MODIF algorith/xbaslo               geniaut S.GENIAUT          210      2      3
+ FORTRAN MODIF calculel/gcharg               macocco K.MACOCCO          483     18      1
+ FORTRAN MODIF calculel/meficg               macocco K.MACOCCO          483      9      4
+ FORTRAN MODIF calculel/op0038                 labbe M.LABBE            178     21      4
+ FORTRAN MODIF calculel/op0055               macocco K.MACOCCO          207      3      3
+ FORTRAN MODIF calculel/op0171                 abbas M.ABBAS            394      5      7
+ FORTRAN MODIF elements/fonnoe               macocco K.MACOCCO          223     13      2
+ FORTRAN MODIF elements/fonnor               macocco K.MACOCCO          241    182    133
+ FORTRAN MODIF elements/fonvec               macocco K.MACOCCO          175     12     17
+ FORTRAN MODIF elements/gcour2               macocco K.MACOCCO          637     20      5
+ FORTRAN MODIF elements/gcouro               macocco K.MACOCCO          423     14      6
+ FORTRAN MODIF elements/te0478                 labbe M.LABBE            203    146      4
+ FORTRAN MODIF elements/te0488                 labbe M.LABBE            177     96      6
+ FORTRAN MODIF jeveux/impmem                   abbas M.ABBAS             47      1      1
+ FORTRAN MODIF modelisa/cfmmvd                 abbas M.ABBAS            115      3      5
+ FORTRAN MODIF modelisa/cfmxsd                 abbas M.ABBAS            191      4     12
+ FORTRAN MODIF prepost/irmama                 delmas J.DELMAS           132      2      2
+ FORTRAN MODIF utilitai/ctdata                 labbe M.LABBE            242     54      9
+ FORTRAN MODIF utilitai/cteltb                 labbe M.LABBE            358      2      2
+ FORTRAN MODIF utilitai/rscrsd               geniaut S.GENIAUT          433      2      2
+ FORTRAN SUPPR algeline/actcin                 abbas M.ABBAS             79      0     79
+  PYTHON AJOUT Messages/discretisation2        abbas M.ABBAS             42     42      0
+  PYTHON AJOUT Messages/mecanonline7           abbas M.ABBAS            105    105      0
+  PYTHON AJOUT Messages/mecanonline8           abbas M.ABBAS            129    129      0
+  PYTHON MODIF Mac3coeur/post_mac3coeur_ops  fernandes R.FERNANDES        474    300     11
+  PYTHON MODIF Macro/dyna_iss_vari_ops       zentner I.ZENTNER          605     38     21
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       geniaut S.GENIAUT         2047      2      2
+  PYTHON MODIF Macro/post_rupture_ops        geniaut S.GENIAUT          663    254     26
+  PYTHON MODIF Messages/mecanonline3           abbas M.ABBAS            113      3      3
+  PYTHON MODIF Messages/mecanonline6           abbas M.ABBAS            111      5     76
+  PYTHON MODIF Messages/mecanonline            abbas M.ABBAS            106      1     16
+  PYTHON MODIF Messages/rupture0             macocco K.MACOCCO          544     14     16
+  PYTHON MODIF Messages/rupture1             geniaut S.GENIAUT          400     12      2
+  PYTHON MODIF Messages/xfem2                geniaut S.GENIAUT          570      1      8
+  PYTHON MODIF SD/sd_fond_fiss               macocco K.MACOCCO           38      3      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   35        7177      7177             +7177
+ MODIF :  240       66531      4530    3264     +1266
+ SUPPR :    1          79                79       -79
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  276       73787     11707    3343     +8364 

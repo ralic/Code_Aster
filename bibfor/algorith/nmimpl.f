@@ -2,7 +2,7 @@
      &                  ARGI  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,8 +89,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8           R8BID
-      CHARACTER*24     VALK(8)
-      INTEGER          VALI(8),IBID
+      INTEGER          IBID
       CHARACTER*16     K16BID,OPTASS
       CHARACTER*24     NATURE
 C
@@ -154,111 +153,6 @@ C --- IMPRESSION DES MODES DE FLAMBEMENT
 C
       ELSE IF (NATURE .EQ. 'IMPR_MODE_FLAM') THEN
         CALL U2MESG('I','MECANONLINE6_11',0,' ',1,ARGI,1,ARGR)
-C
-C --- TEMPS PASSE DANS UN PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'TPS_PAS') THEN
-        CALL IMPFOT(ARGR(1),VALK(1))
-        CALL IMPFOT(ARGR(8),VALK(2))
-        CALL IMPFOT(ARGR(2),VALK(3))
-        CALL IMPFOT(ARGR(3),VALK(4))
-        CALL IMPFOT(ARGR(4),VALK(5))
-        CALL IMPFOT(ARGR(5),VALK(6))
-        CALL IMPFOT(ARGR(6),VALK(7))
-        VALI(1) = ARGI(8)
-        VALI(2) = ARGI(3)
-        VALI(3) = ARGI(4)
-        VALI(4) = ARGI(5)
-        VALI(5) = ARGI(6)
-        CALL AFFICH('MESSAGE',' ')
-        CALL U2MESG('I','MECANONLINE6_12',7,VALK,5,VALI,0,0.D0)
-C
-C ----- CONTACT
-C
-        IF (ARGI(7).NE.0) THEN
-          CALL IMPFOT(ARGR(7),VALK(1))
-          VALI(1) = ARGI(7)
-          CALL U2MESG('I','MECANONLINE6_13',1,VALK,1,VALI,0,0.D0)
-        ENDIF
-        CALL AFFICH('MESSAGE',' ')
-C        
-C --- IMPRESSION DE LA CONSOMMATION MEMOIRE
-C
-      ELSE IF (NATURE .EQ. 'CONS_MEM') THEN       
-        CALL IMPMEM()
-C
-C --- STAT. CONTACT DISCRET SUR UN PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'STAT_CTCD') THEN
-        CALL AFFICH('MESSAGE',' ')
-        VALI(1) = ARGI(1)
-        VALI(2) = ARGI(2)
-        VALI(3) = ARGI(3)
-        CALL IMPFOT(ARGR(1),VALK(1))
-        CALL IMPFOT(ARGR(2),VALK(2))
-        CALL U2MESG('I','MECANONLINE6_14',2,VALK,3,VALI,0,0.D0)
-C
-C ----- FROTTEMENT
-C
-        IF (ARGI(4).GT.0) THEN
-          VALI(1) = ARGI(4)
-          CALL U2MESI('I','MECANONLINE6_15',1,VALI)
-        ENDIF
-        CALL AFFICH('MESSAGE',' ')
-C
-C --- STAT. CONTACT CONTINU SUR UN PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'STAT_CTCC') THEN
-        CALL AFFICH('MESSAGE',' ')
-        VALI(1) = ARGI(1)
-        VALI(2) = ARGI(3)
-        CALL U2MESI('I','MECANONLINE6_16',2,VALI)
-        IF (ARGI(2).NE.0) THEN
-          VALI(1) = ARGI(2)
-          CALL U2MESI('I','MECANONLINE6_38',1,VALI)
-        ENDIF
-        CALL AFFICH('MESSAGE',' ')
-C
-C --- TEMPS PASSE DANS TOUT LE TRANSITOIRE
-C
-      ELSE IF (NATURE .EQ. 'TPS_FIN') THEN
-        CALL AFFICH('MESSAGE',' ')
-        CALL AFFICH('MESSAGE',LIGNE)
-        VALI(1) = ARGI(11)
-        VALI(2) = ARGI(5)
-        VALI(3) = ARGI(1)
-        VALI(4) = ARGI(2)
-        VALI(5) = ARGI(3)
-        VALI(6) = ARGI(4)
-        CALL U2MESI('I','MECANONLINE6_17',6,VALI)
-        IF (ARGI(6).NE.0) THEN
-          VALI(1) = ARGI(6)
-          CALL U2MESI('I','MECANONLINE6_18',1,VALI)
-        ENDIF
-        IF (ARGI(7).NE.0) THEN
-          VALI(1) = ARGI(7)
-          CALL U2MESI('I','MECANONLINE6_19',1,VALI)
-        ENDIF
-        IF (ARGI(9).NE.0) THEN
-          VALI(1) = ARGI(9)
-          VALI(2) = ARGI(8)
-          CALL U2MESI('I','MECANONLINE6_20',2,VALI)
-          IF (ARGI(10).NE.0) THEN
-            VALI(1) = ARGI(10)
-            CALL U2MESI('I','MECANONLINE6_21',1,VALI)
-          ENDIF
-        ENDIF
-        CALL IMPFOT(ARGR(1),VALK(1))
-        CALL IMPFOT(ARGR(2),VALK(2))
-        CALL IMPFOT(ARGR(3),VALK(3))
-        CALL IMPFOT(ARGR(4),VALK(4))
-        CALL U2MESK('I','MECANONLINE6_22',4,VALK)
-        IF (ARGI(9).NE.0) THEN
-          CALL IMPFOT(ARGR(5),VALK(1))
-          CALL IMPFOT(ARGR(6),VALK(2))
-          CALL U2MESK('I','MECANONLINE6_23',2,VALK)
-        ENDIF
-        CALL AFFICH('MESSAGE',LIGNE)
 C
 C --- ERREUR
 C

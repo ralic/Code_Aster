@@ -1,7 +1,7 @@
       SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,14 +74,14 @@ C
       INTEGER      JDDLTI
 
 
-      DATA (TITCOL(J,1),J=1,3)/ '   ITERATIONS   ',
-     &                          '     NEWTON     ',
+      DATA (TITCOL(J,1),J=1,3)/ '     NEWTON     ',
+     &                          '    ITERATION   ',
      &                          '                '/
       DATA FORCOL(1) /1/
 
 
       DATA (TITCOL(J,2),J=1,3)/ '   INCREMENT    ',
-     &                          '     TEMPS      ',
+     &                          '    INSTANT     ',
      &                          '                '/
       DATA FORCOL(2) /2/
 
@@ -122,21 +122,21 @@ C
       DATA FORCOL(8) /3/
 
 
-      DATA (TITCOL(J,9),J=1,3)/ '  ITERATIONS    ',
-     &                          '   RECH. LIN.   ',
+      DATA (TITCOL(J,9),J=1,3)/ '  RECH.  LINE.  ',
+     &                          '    NB. ITER    ',
      &                          '                '/
       DATA FORCOL(9) /1/
 
 
-      DATA (TITCOL(J,10),J=1,3)/ '  COEFFICIENT   ',
-     &                           '   RECH. LIN.   ',
+      DATA (TITCOL(J,10),J=1,3)/ '  RECH.  LINE.  ',
+     &                           '  COEFFICIENT   ',
      &                           '      RHO       '/
       DATA FORCOL(10) /2/
 
 
-      DATA (TITCOL(J,11),J=1,3)/ '   PARAMETRE    ',
-     &                           '    PILOTAGE    ',
-     &                           '  ETA_PILOTAGE  '/
+      DATA (TITCOL(J,11),J=1,3)/ '    PILOTAGE    ',
+     &                           '  COEFFICIENT   ',
+     &                           '      ETA       '/
       DATA FORCOL(11) /2/
 
 
@@ -171,7 +171,7 @@ C
 
       DATA (TITCOL(J,17),J=1,3)/ '     CONTACT    ',
      &                           '    DISCRET     ',
-     &                           '   ITERATIONS   '/
+     &                           '    NB. ITER    '/
       DATA FORCOL(17) /1/
 
 
@@ -189,19 +189,19 @@ C
 
       DATA (TITCOL(J,20),J=1,3)/ '     CONTACT    ',
      &                           '    BCL. GEOM.  ',
-     &                           '   ITERATIONS   '/
+     &                           '    ITERATION   '/
       DATA FORCOL(20) /1/
 
 
       DATA (TITCOL(J,21),J=1,3)/ '     CONTACT    ',
      &                           '    BCL. FROT.  ',
-     &                           '   ITERATIONS   '/
+     &                           '    ITERATION   '/
       DATA FORCOL(21) /1/
 
 
       DATA (TITCOL(J,22),J=1,3)/ '     CONTACT    ',
      &                           '    BCL. CONT.  ',
-     &                           '   ITERATIONS   '/
+     &                           '    ITERATION   '/
       DATA FORCOL(22) /1/
 
 
@@ -225,13 +225,13 @@ C
 
       DATA (TITCOL(J,26),J=1,3)/ '                ',
      &                           '                ',
-     &                           '                '/     
+     &                           '                '/       
       DATA FORCOL(26) /2/
 
 
       DATA (TITCOL(J,27),J=1,3)/ '     FETI       ',
      &                           '                ',
-     &                           '   ITERATIONS   '/
+     &                           '    NB. ITER    '/
       DATA FORCOL(27) /1/
 
 
@@ -256,9 +256,9 @@ C
      &                           '    AU POINT    '/
       DATA FORCOL(31) /3/
 
-      DATA (TITCOL(J,32),J=1,3)/ '                ',
-     &                           '                ',
-     &                           '                '/
+      DATA (TITCOL(J,32),J=1,3)/ '     NEWTON     ',
+     &                           '  TEMPS CALCUL  ',
+     &                           '   (SECONDES)   '/
       DATA FORCOL(32) /2/
 C
 C ----------------------------------------------------------------------

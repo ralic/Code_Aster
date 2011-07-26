@@ -10,7 +10,7 @@
       CHARACTER*24 NKCHA,NKCMP,MESMAI,NIVAL,NRVAL,NIORD
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -236,7 +236,7 @@ C                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
  240                   CONTINUE
                     ELSEIF(TYCH.EQ.'ELGA')THEN
                        DO 241 J=1,NDIM
-                          CALL CESEXI('C',JCPGD,JCPGL,IMA,IPT,1,
+                          CALL CESEXI('C',JCPGD,JCPGL,IMA,IPT,ISPT,
      &                                    J,IAD)
                           IF(IAD.GT.0)THEN
                              ZR(JR+KK)=ZR(JCPGV+IAD-1)

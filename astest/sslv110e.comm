@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,8 +99,8 @@ FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
                      )
 
 FISS11=DEFI_FOND_FISS(MAILLAGE=MA,
-                      FOND_FISS=_F(GROUP_NO='FONFIS',),
-                      NORMALE=(0.,1.,0.),
+                      FOND_FISS=_F(GROUP_NO='FONFIS',
+                                  DTAN_ORIG=( 0.,  1.,  0.,),),
                      )
 
 #----------------------------------------------------------------------

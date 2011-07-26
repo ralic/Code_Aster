@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 # sslp101c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,8 +101,10 @@ THETA6=CALC_THETA(     MODELE=MO,
                        DIRECTION=( 1., 0., 0.,))
 
 FOND=DEFI_FOND_FISS( MAILLAGE=MA,
-                       FOND_FISS=_F( NOEUD = 'N668'),
-                       NORMALE=(0., 1., 0.,))
+                     FOND_FISS=_F( NOEUD = 'N668'),
+                     SYME='OUI',
+                     LEVRE_SUP=_F(MAILLE='M306'),
+)
 
 G1=CALC_G(              RESULTAT=RESU,
                         THETA=_F(THETA=THETA1),

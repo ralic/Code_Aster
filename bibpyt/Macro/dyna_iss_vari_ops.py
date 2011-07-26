@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 26/07/2011   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,7 +102,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 #         NB_FREQ= int(floor(len(vale_fre)/2)+1)  # signal nombre pair: N/2+1
          OMF =1./(2.*DT)
          FREQ_INIT=0.0
-
+         FREQ_COUP=  ((NB_FREQ-1)*PAS)      
         # liste des frequences complete
          l_freq_sig=[]
          for k in range(NB_FREQ):
@@ -112,7 +112,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
          FREQ_FIN  =  args['FREQ_MAX']
          if  FREQ_FIN  !=None :
-            assert (FREQ_FIN > (NB_FREQ-1)*PAS),  'FREQ_FIN = ' + str(FREQ_FIN)  +'  < frequence de coupure: augmenter FREQ_FIN'
+#            assert (FREQ_FIN > (NB_FREQ-1)*PAS),  'FREQ_FIN = ' + str(FREQ_FIN)  +'  < frequence de coupure: augmenter FREQ_FIN'
+            if   FREQ_FIN < FREQ_COUP:
+               print 'FREQ_FIN = ', FREQ_FIN, ' < ', 'FREQUENCE DE COUPURE =',  FREQ_COUP   , ' on complete par zero'
+
+
             PAS  =  args['FREQ_PAS']
             NB_FREQ = int(ceil(FREQ_FIN/ PAS))+1
             FREQ_INIT =0.0
@@ -197,9 +201,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       VEC = NP.zeros((NB_FREQ,nbmodt))+1j
    abscisse = [None]*NB_FREQ
 
-  # PARAMETRES fonction de cohérence
-   VITE_ONDE = MATR_COHE['VITE_ONDE']
-   alpha = MATR_COHE['PARA_ALPHA']
+
+# MODEL fonction de cohérence
+   MODEL = MATR_COHE['TYPE']
+   print 'MODEL :',   MODEL 
+
 
 #   # PARAMETRE nom_champ
 #    cham_calc=NOM_CHAM
@@ -229,34 +235,40 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       XX=noe_interf[:,0]
       YY=noe_interf[:,1]
 #
+ 
+      if MODEL=='MITA_LUCO' :  
+  # PARAMETRES fonction de cohérence
+         VITE_ONDE = MATR_COHE['VITE_ONDE']
+         alpha = MATR_COHE['PARA_ALPHA']
 # # ----MITA & LUCO
-      XN=NP.repeat(XX,nbno)
-      YN=NP.repeat(YY,nbno)
-      XR=NP.reshape(XN,(nbno,nbno))
-      YR=NP.reshape(YN,(nbno,nbno))
-      XRT=NP.transpose(XR)
-      YRT=NP.transpose(YR)
-      DX=XR-XRT
-      DY=YR-YRT
-      DIST=DX**2+DY**2
+         XN=NP.repeat(XX,nbno)
+         YN=NP.repeat(YY,nbno)
+         XR=NP.reshape(XN,(nbno,nbno))
+         YR=NP.reshape(YN,(nbno,nbno))
+         XRT=NP.transpose(XR)
+         YRT=NP.transpose(YR)
+         DX=XR-XRT
+         DY=YR-YRT
+         DIST=DX**2+DY**2
 
-      COHE=NP.exp(-(DIST*(alpha*freqk/VITE_ONDE)**2.))
+         COHE=NP.exp(-(DIST*(alpha*freqk/VITE_ONDE)**2.))
 
-# #----ABRAHAMSON (EPRI)
-#       p_a1=1.647
-#       p_a2=1.01
-#       p_a3=0.4
-#       p_n1=7.02
-#    #    p_n2=1.685
-#       COHE=NP.zeros((nbno,nbno))
-#       for no1 in range(nbno):
-#          for no2 in range(nbno):
-#             dist_xi=sqrt((XX[no1]-XX[no2])**2+(YY[no1]-YY[no2])**2)
-#             p_n2=5.1-0.51*log(dist_xi+10.)
-#             pfc=-1.886+2.221*log(4000./(dist_xi+1.)+1.5)
-#             term1=1.+(freqk*tanh(p_a3*dist_xi)/(p_a1*pfc))**p_n1
-#             term2=1.+(freqk*tanh(p_a3*dist_xi)/(p_a2*pfc))**p_n2
-#             COHE[no1,no2]=1./sqrt(term1* term2)
+      elif MODEL=='ABRAHAMSON' :
+#----ABRAHAMSON (EPRI)
+         p_a1=1.647
+         p_a2=1.01
+         p_a3=0.4
+         p_n1=7.02
+   #    p_n2=1.685
+         COHE=NP.zeros((nbno,nbno))
+         for no1 in range(nbno):
+            for no2 in range(nbno):
+               dist_xi=sqrt((XX[no1]-XX[no2])**2+(YY[no1]-YY[no2])**2)
+               p_n2=5.1-0.51*log(dist_xi+10.)
+               pfc=-1.886+2.221*log(4000./(dist_xi+1.)+1.5)
+               term1=1.+(freqk*tanh(p_a3*dist_xi)/(p_a1*pfc))**p_n1
+               term2=1.+(freqk*tanh(p_a3*dist_xi)/(p_a2*pfc))**p_n2
+               COHE[no1,no2]=1./sqrt(term1* term2)
 #
   #---------------------------------------------------------
       # On desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
@@ -558,17 +570,22 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
          for  k,freqk in enumerate(l_freq_sig):
             coef_a=(vale_re[k]+vale_im[k]*1.j)
   #  ------------ interpolation du vecteur POD  VEC (NB_FREQ, nbmodt)
-            vale_i=NP.searchsorted(abscisse, freqk)
+            if  freqk >= FREQ_FIN:              
+  #              print  k, freqk, vale_i,  'FREQ_FIN: ', FREQ_FIN
+               VEC_real=VEC[-1]*0.0
+               VEC_imag=VEC[-1]*0.0                             
+            else:      
+               vale_i=NP.searchsorted(abscisse, freqk)
 #         print  freqk, vale_i,  abscisse[vale_i-1], abscisse[vale_i]
-            if vale_i ==0:
-               VEC_comp=VEC[0]*coef_a
-               VEC_real=VEC_comp.real
-               VEC_imag=VEC_comp.imag
-            else:
-               dfp=(freqk-abscisse[vale_i-1])/(abscisse[vale_i]-abscisse[vale_i-1])
-               VEC_comp=(VEC[vale_i-1]+dfp*(VEC[vale_i]-VEC[vale_i-1]))*coef_a
-               VEC_real=VEC_comp.real
-               VEC_imag=VEC_comp.imag
+               if vale_i ==0:
+                  VEC_comp=VEC[0]*coef_a
+                  VEC_real=VEC_comp.real
+                  VEC_imag=VEC_comp.imag
+               else:
+                  dfp=(freqk-abscisse[vale_i-1])/(abscisse[vale_i]-abscisse[vale_i-1])
+                  VEC_comp=(VEC[vale_i-1]+dfp*(VEC[vale_i]-VEC[vale_i-1]))*coef_a
+                  VEC_real=VEC_comp.real
+                  VEC_imag=VEC_comp.imag
             nomcham = __dyge0.sdj.TACH.get()[ii_cham][k].strip()
             tup_re=tuple(VEC_real)
             tup_im=tuple(VEC_imag)

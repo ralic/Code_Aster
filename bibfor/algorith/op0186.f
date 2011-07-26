@@ -1,6 +1,6 @@
       SUBROUTINE OP0186()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,6 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*4 TYPCAL
       CHARACTER*8 EVOLSC,NOPASE,MAILLA
       CHARACTER*8 K8BID
-      CHARACTER*12 K12BID
       CHARACTER*13 INPSCO
       CHARACTER*19 SDOBSE
       CHARACTER*16 TYSD
@@ -476,7 +475,7 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
 
             IF (ITEMAX .AND. .NOT.CONVER) THEN
               WRITE (IFM,FMT1)
-              CALL NMIMPR('IMPR','ERREUR','ITER_MAXI',0.D0,0)
+              CALL U2MESS('I','MECANONLINE6_31')
             ENDIF
             CALL UTTCPU('CPU.OP0186.2','FIN',' ')
             CALL UTTCPR('CPU.OP0186.2',4,TPS2)
@@ -484,10 +483,9 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
               IF (2.D0*TPS2(4).GT.0.95D0*TPS2(1)-TPS3(4)) THEN
                 WRITE (IFM,FMT1)
                 ITAB(1) = NUMINS
-                ITAB(2) = ITERAT
                 RTAB(1) = TPS2(4)
                 RTAB(2) = TPS2(1)
-                CALL UTEXCM(28,'MECANONLINE_79',0,K8B,2,ITAB,2,RTAB)
+                CALL UTEXCM(28,'DISCRETISATION2_79',0,K8B,1,ITAB,2,RTAB)
               ELSE
                 GO TO 20
               END IF
@@ -597,11 +595,10 @@ C
           WRITE (IFM,'(/)')
           TPEX = TPS1(3)
           IF (TPS1(4).GT.0.48D0*TPS1(1)) THEN
-            K12BID = 'PAS DE TEMPS'
             ITAB(1) = NUMINS
             RTAB(1) = TPS2(4)
             RTAB(2) = TPS2(1)
-            CALL UTEXCM(28,'MECANONLINE_80',1,K12BID,1,ITAB,2,RTAB)
+            CALL UTEXCM(28,'DISCRETISATION2_80',0,K8BID,1,ITAB,2,RTAB)
           END IF
 
       IF (FINPAS) GOTO 500

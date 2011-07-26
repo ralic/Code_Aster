@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem2 Messages  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,13 +129,6 @@ cata_msg = {
      Veuillez redéfinir VECT_ORIE.
 """),
 
-
-39 : _("""
-  -> Deux points du fond de fissure sont très proches ou coincident.
-  -> Risque & Conseil :
-     Vérifier les définitions des level sets et la liste des points du fond
-     de fissure trouvés. Si c'est normal, contactez votre correspondant.
-"""),
 
 50 : _("""
   -> Le maillage utilisé pour la représentation des level sets est 2D

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,6 @@ CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
 #
 FOND1=DEFI_FOND_FISS(    MAILLAGE=MA,
                             FOND_FISS=_F( GROUP_NO = ('P0',)),
-                            NORMALE=(-0.5, 0.866025404, 0.,)
                       )
 
 #
@@ -173,7 +172,6 @@ TEST_TABLE(       TABLE=G01D,
 #
 FOND2=DEFI_FOND_FISS(    MAILLAGE=MA,
                             FOND_FISS=_F( GROUP_NO = ('P0G',)),
-                            NORMALE=(0.5, -0.866025404, 0.,)
                        )
 
 #

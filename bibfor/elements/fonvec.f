@@ -1,9 +1,8 @@
-      SUBROUTINE FONVEC ( RESU, NOMA, NBNOFF )
+      SUBROUTINE FONVEC ( RESU, NOMA )
       IMPLICIT NONE
       CHARACTER*8         RESU, NOMA
-      INTEGER             NBNOFF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +28,6 @@ C
 C     ENTREES:
 C        RESU       : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
 C        NOMA       : NOM DU MAILLAGE
-C        NBNOFF     : NOMBRE DE NOEUDS EN FOND DE FISSURE
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -66,18 +64,6 @@ C
       CALL JEVEUO ( COOVAL, 'L', JVALE )
 C
 C     --------------------------------------------------------------
-      CALL GETVR8 (' ','NORMALE',1,1,0,ZRBID,NVENOR)
-      IF(NVENOR.NE.0) THEN
-        NVENOR = -NVENOR
-        CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
-        CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NVENOR)
-      ELSE
-        IF (NBNOFF.EQ.1) THEN
-          CALL FONNOR(RESU, NOMA )
-        ENDIF
-      ENDIF
-C
-C     --------------------------------------------------------------
       CALL GETVR8 ('FOND_FISS','DTAN_ORIG',1,1,0,ZRBID,NDTAOR)
       IF(NDTAOR.NE.0) THEN
         NDTAOR = -NDTAOR
@@ -94,7 +80,16 @@ C     --------------------------------------------------------------
       ENDIF
 C
 C     --------------------------------------------------------------
-
+      CALL GETVR8 (' ','NORMALE',1,1,0,ZRBID,NVENOR)
+      IF(NVENOR.NE.0) THEN
+        NVENOR = -NVENOR
+        CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
+        CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NVENOR)
+      ELSE
+          CALL FONNOR(RESU, NOMA )
+      ENDIF
+C
+C     --------------------------------------------------------------
       CALL GETVEM (NOMA,'GROUP_NO',
      &                'FOND_FISS','VECT_GRNO_ORIG',1,1,0,NOMGRP,NVEOR)
       IF(NVEOR.NE.0) THEN
