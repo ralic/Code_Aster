@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fonction_ops Macro  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -334,9 +334,8 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
    macro='TEST_FONCTION'
    import aster
    from Accas import _F
+   from Cata.cata import formule, formule_c, fonction_sdaster, fonction_c, nappe_sdaster
    from Utilitai.Utmess import UTMESS
-   from Noyau.N_FONCTION import formule, formule_c
-   from SD.co_fonction import fonction_sdaster, fonction_c, nappe_sdaster
    from SD.sd_fonction import sd_fonction
    from Cata_Utils.t_fonction import t_fonction_c
 

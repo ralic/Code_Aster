@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,6 +191,17 @@ class ASSD(object):
 
 
 class assd(ASSD):
-   def __convert__(cls,valeur):
-      return valeur
-   __convert__=classmethod(__convert__)
+    def __convert__(cls, valeur):
+        # On accepte les vraies ASSD et les objets 'entier' et 'reel'
+        # qui font tout pour se faire passer pour de vrais entiers/réels.
+        if isinstance(valeur, ASSD) or type(valeur) in (int, float):
+            return valeur
+        raise ValueError("On attend un objet concept.")
+    __convert__ = classmethod(__convert__)
+
+
+class not_checked(ASSD):
+    def __convert__(cls, valeur):
+        return valeur
+    __convert__ = classmethod(__convert__)
+

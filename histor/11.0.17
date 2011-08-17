@@ -1,0 +1,1294 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 08/17/2011 - 10:29:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017181 DU 2011-06-22 09:16:22
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    petite coquille dans le SDVERI de tran_gene
+FONCTIONNALITE
+   En relisant la doc D de la sd_tran_gene, j'ai repéré une petite coquille dans le SDVERI de
+   la structure de données : une petite erreur d'indice faisait vérifier deux fois la matrice
+   de raideur généralisée plutôt que de le faire d'abord pour la matrice de raideur puis la
+   matrice
+   de masse.
+   Je corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR colombo      COLOMBO Daniele        DATE 08/16/2011 - 04:46:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017264 DU 2011-07-07 09:10:03
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.00.14, le cas-test sslv315d s'arrete en erreur fatale sur Rocks.
+FONCTIONNALITE
+   L'erreur a été introduite avec la fiche 16973 dans l'algorithme de bissection utilisé pour
+   la recherche de la projection sur le fond de la fissure des points du domaine (routine
+   xprvit.f).
+   
+   La position potentielle du point projeté est localisée par deux paramètres: le segment du
+   fond auquel le point projeté appartient et la position du point sur ce segment. Le segment
+   est localisé par le numéro d'un de ses deux points d'extrémité dans la liste des points du
+   fond. En étant les points du fond ordonnés dans la liste selon une abscisse curviligne
+   définie au long du fond, le point d'extrémité utilisé est toujours le premier point
+   rencontré en parcourant le fond selon la direction définie par l'abscisse curviligne. Cela
+   implique que la valeur maximale de l'indice qui localise ce point d'extrémité dans la
+   liste est égale au nombre des points du fond dans la liste (du fond ou du morceau du fond
+   considéré dans le cas de fond formé par plusieurs morceaux) moins 1, c'est-à-dire égale à
+   la valeur de l'indice pour l'avant-dernier point de la liste.
+   
+   Au contraire actuellement cette valeur maximale est prise égale au nombre des points du
+   fond dans la liste, comme calculé à la ligne 515 de xprvit.f:
+   
+   JLIMDX = ZI(JFMULT-1+2*FON)
+   
+   Il peut donc arriver que pendant la recherche du projeté on dépasse la taille du vecteur
+   qui contienne les points du fond de la fissure, ce qui cause l'erreur «floating point error».
+   
+   Il suffit de corriger la valeur maximale de l'indice:
+   
+   JLIMDX = ZI(JFMULT-1+2*FON)-1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    le cas test lui-mxc3xaame
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 08/17/2011 - 04:37:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016582 DU 2011-03-09 10:14:23
+TYPE evolution concernant astk (VERSION )
+TITRE
+    Ignorer les paramxc3xa8tres de lancement quand seul "SURCHARGE" est cochxc3xa9
+FONCTIONNALITE
+   Les paramètres sciemment positionnés par l'utilisateur ne 
+   peuvent pas être ignorés.
+   Il n'est pas souhaitable de faire des exceptions pour 
+   certains paramètres...
+   
+   En ce qui concerne le nombre de processeurs, il est 
+   automatiquement ramené à 1 par asrun dans la phase de 
+   surcharge. Cependant, c'est l'interface qui peut interdire la 
+   soumission s'il n'est pas autorisé de demander plus d'un 
+   processeur en interactif.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    par l'utilisateur lui-mxc3xaame
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017327 DU 2011-07-26 10:43:52
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Ne rien importer dans les catalogues de commandes
+FONCTIONNALITE
+   Suite à la réalisation de issue15990, le catalogue de 
+   commandes est de plus en plus auto-portant.
+   Pour les macros, il ne faut pas faire d'import de l'ops dans 
+   le catalogue de la macro... Comme on ne le vérifie pas, les 
+   développeurs le font quand même.
+   
+   On l'interdit maintenant : toutes les macros doivent définir 
+   leur op avec OPS("uri").
+   
+   On termine ici le chantier :
+   
+   - la définition des concepts migre de bibpyt/SD/co_***.py 
+   vers catapy/entete/co_***.capy qui sont ainsi concaténés à 
+   la suite de accas.capy
+   
+   - il n'y a donc plus d'import des "concepts" dans 
+   accas.capy.
+   
+   - certains sont regroupés dans un seul fichier (car l'ordre 
+   de définition est alors important) : c'est le cas des 
+   variantes de resultat_sdaster, resultat_dyn, evol_*...
+   
+   - en dehors de Accas, Noyau, Build, Validation, Execution 
+   (superviseur, avec une variante dans eficas), seul ops.py 
+   est nécessaire pour importer le catalogue.
+   
+   - les imports globaux doivent être faits dans accas.capy.
+   
+   - il ne devraient pas être nécessaire de faire des imports 
+   dans les catalogues de commandes.
+   
+   - dans la définition des concepts (et leurs méthodes 
+   spécifiques pour l'exécution), si des imports sont 
+   nécessaires, il faut les faire sous les méthodes qui en ont 
+   besoin.
+   
+   
+   On ajoute des vérifications à la fin du catalogue pour 
+   tester qu'il n'y a pas d'import illicite. On vérifie les 
+   plus classiques : numpy, Table, UTMESS...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : d5.01.02, d5.01.03
+VALIDATION
+    compilation catalogue
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017343 DU 2011-07-28 08:42:03
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Variable non initialisxc3xa9e dans CALC_MISS
+FONCTIONNALITE
+   Dans CALC_MISS, lorsque l'on post-traite en certains lieux 
+   (TYPE_RESU='TABLE'), si le chargement n'est pas fourni dans 
+   les 3 directions, il y a des concepts non initialisés que 
+   l'on cherche à détruire.
+   
+   Les réponses sont récupérées sous forme de fonction dans les 
+   directions pour lesquelles une accélération a été fournie.
+   
+   Cependant, on essaie de DETRUIRE les 3 réponses quoiqu'il 
+   arrive. On corrige cela.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    miss03a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017295 DU 2011-07-18 08:49:47
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Impression des messages avec UTMESS 'I'
+FONCTIONNALITE
+   """
+   L'affichage d'un message en mode 'I' provoque 
+   systématiquement un saut de ligne.
+   """
+   
+   => Sans suite : s'il n'y a pas de saut de ligne en début de 
+   message, UTMESS n'en ajoute pas !
+   
+   Exemple dans mecanonline7.py :
+   
+   2 : _("""    * Temps moyen par itération de Newton : %(k1)s ( 
+   %(i1)d itérations     )
+   """),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017223 DU 2011-06-30 15:42:30
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    concept de nom constant dans une formule dans une boucle
+FONCTIONNALITE
+   Problème
+   ========
+   
+   L’enchaînement :
+   
+   fonc = DEFI_FONCTION(NOM_PARA='X', VALE=(0., 0., 100., 
+   100.))
+   form = FORMULE(NOM_PARA='X', VALE="""2*fonc(X)""")
+   eval = CALC_FONC_INTERP(FONCTION=form, VALE_PARA=(1., 10.))
+   DETRUIRE(CONCEPT=_F(NOM=(fonc, form, eval)))
+   
+   ne fonctionne pas en PAR_LOT='OUI'.
+   On fait en général ce genre de chose dans une boucle.
+   
+   
+   Analyse
+   =======
+   
+   Cela n'a a priori jamais été possible !
+   L'évaluation de la formule (dans CALC_FONC_INTERP) est fait 
+   dans le contexte global (attribut g_context) qui contient 
+   l'ensemble des objets connus dans le jeu de commandes.
+   En fait, g_context est l'image courante du contexte. Sauf 
+   que en PAR_LOT='OUI', on construit toutes les commandes, 
+   puis on exécute.
+   Or g_context est modifié par DETRUIRE et donc à l'exécution 
+   de CALC_FONC_INTERP, 'fonc' n'est plus dans g_context.
+   
+   
+   Correction
+   ==========
+   
+   Lors de l'évaluation de la formule, il ne faut pas utiliser 
+   g_context, mais get_contexte_avant(etape_courante) qui 
+   reconstruit le contexte à un moment donné.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test fourni
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017022 DU 2011-05-26 12:15:40
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    IMPR_CO et CONCEPT
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Si on remplit IMPR_CO/CONCEPT/NOM dans Eficas, le jeu de 
+   commandes est :
+   
+   IMPR_CO(CONCEPT=_F(NOM='ma'))
+   
+   Alors qu'il ne faudrait pas les cotes :
+   
+   IMPR_CO(CONCEPT=_F(NOM=ma))
+   
+   D'ailleurs, ce jeu de commandes passe la phase d'analyse 
+   mais échoue à l'exécution lors du getvid.
+   
+   
+   Correction
+   ==========
+   
+   Dans le catalogue, NOM = SIMP(typ=assd, ...).
+   Or la classe assd accepte n'importe quelle valeur (cf. sa 
+   méthode __convert__).
+   
+   On se sert de cette faille dans MACR_RECAL pour accepter en 
+   entrée des tableaux numpy ou dans CALC_TABLE pour prendre en 
+   entrée une liste de valeurs de types hétérogènes (une valeur 
+   par colonne).
+   
+   On propose que le type assd vérifie effectivement que 
+   l'utilisateur a fourni un concept.
+   Et on crée un nouveau type qui ne sera pas vérifié (baptisé 
+   not_checked).
+   
+   Aujourd'hui, eficas écrit le concept entre "'", il ne 
+   faudrait pas pour le type assd.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test simple
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017364 DU 2011-08-02 12:26:55
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    [FORUM] LIRE_FONCTION complexe
+FONCTIONNALITE
+   Problème
+   --------
+   
+   LIRE_FONCTION d'une fonction complexe échoue si on utilise la 
+   lecture de deux colonnes module et phase.
+   
+   Correction
+   ----------
+   
+   La lecture d'un fichier pour produire une fonction complexe 
+   n'est pas testé. Cela n'a jamais fonctionné, ni été utilisé 
+   avec module/phase !
+   On corrige et on teste dans zzzz100e.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.32.02
+VALIDATION
+    zzzz100e
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 08/16/2011 - 06:24:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017254 DU 2011-07-05 10:48:21
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Anomalie xc3xa0 l'utilisation de MACR_LIGN_COUPE
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Erreur rencontrée sur un calcul d'agrégats à MMC à l'utilisation d'un MACR_LIGN_COUPE :
+   
+   '''
+   Si nous souhaitons récuperer la variable interne V79 ou une de ses composantes (contrainte
+   projetée sur le plan de clivage) projetée sur une ligne via MACR_LIGN_COUP, nous avons une
+   erreur Segmentation Fault (fichier erreur : Error.txt, fichier de commande :
+   2D_100G_OA_B_0.01_Q_poursuite_V79.comm).
+   Pour ce faire, nous avons calculé le champ de toutes les variables internes avec la commande :
+   SIG=CALC_ELEM(reuse =SIG,
+                 MODELE=MO,
+                 RESULTAT=SIG,
+                 OPTION='VARI_ELNO',);
+   
+   puis nous projetons tous les champs sur une ligne :
+   Sig_Cli = MACR_LIGN_COUPE(RESULTAT=SIG,
+   			  NOM_CHAM='VARI_ELNO',		  
+   			  LIGN_COUPE= _F(TYPE = 'SEGMENT', NB_POINTS = 10, COOR_ORIG = (100,500,0), COOR_EXTR =
+   (900,500,0),),);
+   
+   Est-il possible de projeter seulement la variable interne V79?
+   '''
+   
+   Analyse
+   =======
+   
+   Tout d'abord il est possible de ne relever qu'une composante d'un champ par l'utilisation
+   de NOM_CMP : cela corrige le problème.
+   
+   S'agissant de l'erreur de segmentation elle est due en fait à POST_RELEVE_T appelé par
+   MACR_LIGN_COUPE. Lorsqu'on ne précise pas de composantes, la relève sur la ligne demandée
+   est faite sur toutes les composantes (soit 81 ici), or dans POST_RELEVE_T, on trouve dans
+   un sous-programme (rvpara.f) un tableau statique de taille 50 dans lequel les composantes
+   trouvées dans le champ sont écrites.
+   Un écrasement mémoire se produit donc.
+   
+   Correction
+   ==========
+   
+   On stocke désormais les composantes relevées dans un tableau JEVEUX que l'on redimensionne
+   au besoin (taille x2 avec JUVECA). La taille initiale est fixée à 100.
+   
+   À faire en V10. Impact : rvpara.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017291 DU 2011-07-13 15:08:29
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Plantage dans PETSC
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   '''
+   Le test joint a été créé par Élodie R. lors de son stage sur l'adaptation de maillages.
+   Le plantage a lieu apparemment dans la partie Python au niveau de la ligne 492 du fichier
+   couche2.comm, lors de l'appel à la commande suivante :
+   groupma1 = HOM[n].sdj.GROUPENO.get()['G1'.ljust(8)]; #Numeros des noeuds du groupe 1
+   
+   L'erreur invoquée, par PETSc (!!), fait salement planter le calcul sans qu'on ait trouvé
+   de raison valable.
+   On n'a malheureusement pas réussi à reproduire le planton sur un cas plus simple !
+   Ce plantage est gênant car il nous empêche d'exécuter notre calcul d'adaptation de
+   maillages plus loin.
+   '''
+   
+   Analyse
+   =======
+   
+   Lors de manipulation d'objets Aster depuis le Python, le mécanisme d'interception de PETSc
+   se déclenche.
+   C'est étrange :
+   - lorsque l'on désactive ce mécanisme d'interception, tout se passe bien
+   - avec un autre solveur linéaire pour le calcul, tout se passe bien
+   
+   Difficile d'en dire plus d'autant plus que la base n'est plus utilisable (mise à jour).
+   
+   On constate cependant à la lecture du fichier d'output dans les informations données par
+   PETSc qu'il y a eu un problème lors de compilation précédentes avec un mélange d'includes :
+   - actuellement dans le config.txt, les includes pointent la version de PETSc compilée en
+   optimisé
+   - les infos affichées par PETSc disent qu'on est linké avec la version en mode debug, cela
+   signifie qu'à un moment les includes pointaient vers cette version.
+   
+   Depuis une partie de l'interface a été recompilée, cela veut dire que des includes
+   différents ont été utilisés par les différents sources de l'interface.
+   Les différences sont très légères entre les 2 includes mais peuvent peut être expliquer ce
+   comportement :
+   
+   no debug :
+   #ifndef PETSC_HAVE_STRICMP
+   #define PETSC_HAVE_STRICMP 1
+   #endif
+   
+   debug :
+   #ifndef PETSC_USE_DEBUG
+   #define PETSC_USE_DEBUG 1
+   #endif
+   
+   La prochaine mise à jour entrainera une recompilation complète de l'interface avec les
+   bons includes ce qui corrigera peut être le problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    nxc3xa9ant
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017299 DU 2011-07-18 12:44:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    solveur iteratif PETSc en sequentiel et en //
+FONCTIONNALITE
+   Demande
+   =======
+   
+   '''
+   1) Quand on utilise le solveur iteratif PETSc en NEW11 sur aster4, on tombe sur le message
+   F suivant :
+   
+   "<F> <FERMETUR_10>   
+     Le solveur "PETSc" n'est pas installé sur cette machine.
+   
+   Ce qui peut laisser perplexe.
+   Rien n'est dit de spécifique dans la doc U2.08.03 sur l'usage de PETSc.
+   
+   2) En NEW11_mpi, avec un seul proc, le calcul ne se lance pas, et le message d'erreur est
+   pire :
+   
+   mpirun.lsf: LSF_PJL_TYPE is undefined. Exit ...
+   
+   3) En NEW11_mpi avec 2 procs, ça marche.
+   '''
+   
+   Correction
+   ==========
+   
+   1) On modifie le message dans FERMETUR pour le cas où le support de PETSc n'a pas été
+   activé à la compilation.
+   On conseille aussi de vérifier si une version parallèle n'existerait pas avec un tel support.
+   
+   2) Corrigé par Mathieu avec ASTK 1.10.1 (issue17249)
+   
+   3) On fait des ajouts documentaires dans la doc SOLVEUR et U2 sur les solveurs pour
+   rappeler que PETSc n'est disponible qu'en version parallèle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.50.01,U2.08.03
+VALIDATION
+    nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017337 DU 2011-07-27 14:33:03
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Recherche d'un DEPL_CALCULE dans un EVOL_NOLI
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Lorsqu'une prédiction de type DEPL_CALCULE est choisie, on doit fournir un EVOL_NOLI pour
+   y lire le champ de déplacement servant de prédicteur à chaque instant de calcul.
+   
+   Lorsque ce champ n'existe pas à un instant de calcul donné mais qu'il est encadré par 2
+   autres instants dans l'EVOL_NOLI fourni, on procède alors à une interpolation linéaire.
+   Dans les autres cas, on doit s'arrêter en erreur (pas de prolongement à droite ni à
+   gauche). En pratique cela veut dire que la liste d'instants calculés du EVOL_NOLI fourni
+   doit englober la liste d'instants du calcul courant.
+   L'arrêt en erreur était bien programmé mais le prolongement à droite et à gauche était
+   aussi activé (prolongement constant), on ne tombait donc jamais dans l'erreur fatale.
+   
+   Correction
+   ==========
+   
+   Le prolongement est maintenant exclu et déclenchera une erreur fatale.
+   
+   Impact : nmprdc.f   À faire en V10
+   
+   !--------------------------------------------------------------------------------------------------------------------------------!
+   ! <F> <MECANONLINE2_27>                                                                  
+                                          !
+   !                                                                                        
+                                          !
+   !  La prédiction par DEPL_CALCULE à l'instant de calcul 11.000000 à partir du concept
+   RESU0 n'a pas pu être construite.          !
+   !  Explications possibles :                                                              
+                                          !
+   !   - le concept ne contient pas de champs de déplacement                                
+                                          !
+   !   - l'instant de calcul demandé est en dehors de l'intervalle des instants calculés dans
+   le concept fourni (il n'y a pas de    !
+   ! prolongement à gauche ni à droite)                                                     
+                                          !
+   !                                                                                        
+                                          !
+   !  Conseil :                                                                             
+                                          !
+   !  - vérifiez que le concept fourni sous le mot-clé EVOL_NOLI contient suffisamment
+   d'instants pour interpoler le champ souhaité !
+   !                                                                                        
+                                          !
+   !                                                                                        
+                                          !
+   ! Cette erreur est fatale. Le code s'arrete.                                             
+                                          !
+   !--------------------------------------------------------------------------------------------------------------------------------!
+   
+   Validation
+   ==========
+   
+   Dans le test ZZZZ237A, après correction une erreur fatale est déclenchée.
+   On modifie le test (EVOL_NOLI trop court) et il reste OK.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz237a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017338 DU 2011-07-27 15:55:36
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Suite de la projection cinxc3xa9matiquement admissible
+FONCTIONNALITE
+   Express
+   =======
+   
+   Dans issue17282, j'ai mal corrigé la projection cinématiquement admissible. En effet je
+   n'avais pas compris que le champ cinématique était déjà un delta (c'est à dire incrémental).
+   Du coup pour construire le vecteur des ddls cinématiques imposés, on faisait :
+   
+   CNCIND = Delta_U_donne - U_prediction
+   
+   alors qu'il fallait faire :
+   
+   CNCIND = Delta_U_donne - Delta_U_prediction
+   
+   En NEW11 cela marchait quand même car on a maintenant une correction des conditions aux
+   limites au cours des itérations de Newton. En fait cela ne marchait pas parfaitement :
+   c'est cette erreur qui expliquait les petites différences observées (mais ignorées) entre
+   AFFE_CHAR_MECA et AFFE_CHAR_CINE.
+   
+   C'est en essayant de faire le report en version 10 de issue17282 qu'on s'est aperçu du
+   problème : il n'y a en effet pas d'équilibrage des CL dans cette version.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.194
+VALIDATION
+    ssnv194a et tests utilisant EXTRAPOL/DEPL_CALCULE
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017352 DU 2011-07-28 12:47:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Remplacement des puissances de 2 (entiers codxc3xa9s) par des shifts logiques
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Dans le cadre de l'affaire TI sur les performances de Code_Aster et en étudiant des
+   résultats de profiling de calculs, on s'est aperçu que la fonction puissance (de la
+   bibliothèque mathématique fortran) pouvait apparaître en tête des plus gros consommateurs,
+   notamment pour des cas-tests.
+   
+   Analyse
+   =======
+   
+   L'utilisation de la fonction puissance dans Aster, outre certains calculs élémentaires ou
+   LdC, est due aux entiers codés. C'est à dire aux (tableaux d') entiers qui permettent de
+   stocker de l'information chacun sur 30 bits.
+   Ce sont donc des opérations du type 2**N.
+   
+   Rappel : une opération du type X**N_CONSTANT où X est un REAL*8 et N_CONSTANT un entier
+   fixé est automatiquement remplacé par le compilateur par un produit de X, N_CONSTANT fois.
+   
+   On peut avantageusement remplacer cette opération puissance par un décalage logique de
+   bits (logical shift) qui consiste à simplement déplacer des bits en mémoire (vers la
+   gauche) pour calculer le produit d'un entier par 2^n.
+   
+   En pratique cela veut dire :
+   
+   écrire PUISS = LSHIFT(1,N) au lieu de PUISS = 2**N
+   
+   Gain
+   ====
+   
+   Ce changement a été effectué sur une sélection de routines centrales du code (appelées par
+   des utilitaires) : 
+   
+   cnscno.f editgd.f creprn.f nddl.f exisdg.f iposdg.f assvec.f assma2.f
+   
+   Il faut bien comprendre que le gain est visible sur des cas-tests car l'utilisation
+   d'entiers codés (que l'on peut voir comme un coût fixe) représente une part du test
+   comparable aux vrais calculs, sur des études le gain sera moins avéré.
+   
+   Exemple sur SDNL111F : gain de 20%
+   
+    * == AVANT ==
+    * DYNA_NON_LINE            :      21.69 :       0.67 :      22.36 :      22.79 *
+   
+    * == APRES ==
+    * DYNA_NON_LINE            :      16.81 :       0.59 :      17.40 :      17.36 *
+   
+   Ce gain de 20% correspond à peu près au coût de la fonction puissance qui a été annulée
+   comme l'atteste un profiling :
+   
+   == AVANT ==
+     %   cumulative   self              self     total           
+    time   seconds   seconds    calls   s/call   s/call  name    
+    21.39      4.60     4.60 497968848     0.00     0.00  exisdg_
+    19.34      8.76     4.16                             __powi8i8
+     5.02      9.84     1.08    73440     0.00     0.00  nmpl3d_
+     4.18     10.74     0.90  6202500     0.00     0.00  trigd_
+   
+   == APRES ==
+    25.46      4.28     4.28 497968848     0.00     0.00  exisdg_
+     6.73      5.41     1.13    73440     0.00     0.00  nmpl3d_
+     5.24      6.29     0.88  6202500     0.00     0.00  trigd_
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017347 DU 2011-07-28 09:10:44
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.16, les cas-tests perfe03a et ssnv194a s'arretent anormalement sur Rocks.
+FONCTIONNALITE
+   '''
+   En NEW11.0.16, les cas-tests perfe03a et ssnv194a s'arretent anormalement sur Rocks.
+   
+   On obtient un NO_RESU_FILE. Les deux cas-tests sont des calculs d'agrégats. Le problème 
+   vient de l'intégration de la loi de comportement. 
+   
+   Ce problème pourrait être lié à la fiche 17282 de T. De Soza.
+   '''
+   
+   Petite erreur de ma part effectivement.
+   Corrigée par issue17338.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv194a,perf03a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 08/16/2011 - 04:53:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017246 DU 2011-07-04 10:23:16
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : Necs
+TITRE
+    Calcul de normal d'un QUAD4 triangle
+FONCTIONNALITE
+   Anomalie :
+   --------
+   
+   Il peut arriver dans un maillage qu'un QUAD4 soit triangulaire, c'est à dire un 
+   QUAD4 qui a trois nœuds alignés. Quand on lance un calcul avec une maille de ce 
+   type pour laquelle les trois nœuds alignés sont les trois premiers nœuds de 
+   l'élément, celui-ci crash avec le message d'erreur suivant au moment du calcul 
+   de la normale :
+   
+      !-------------------------------------------------------!
+      ! <EXCEPTION> <DVP_2>                                   !
+      !                                                       !
+      !    Erreur numerique (floating point exception).       !
+      !                                                       !
+      !                                                       !
+      !                                                       !
+      ! Il y a probablement une erreur dans la programmation. !
+      ! Veuillez contacter votre assistance technique.        !
+      !-------------------------------------------------------!
+   
+   Solution :
+   --------
+   Cette erreur est due à une division par 0 (en fait la quantité 12^13 quand les 
+   cotés 12 et 13 sont colinéaires).
+   On se protège de cette division en arrêtant en erreur fatale avec le message 
+   suivant dans DXQPGL : 
+   
+      ! Le quadrangle de nom QUAD1 est degenere : les cotes 1-2 et 1-3 sont 
+   colineaires. !
+   
+   car il ne faut pas continuer le calcul avec une maille aplatie.
+   
+   A noter que MACR_INFO_MAIL détecte ce problème et imprime le message :
+   le quadrangle est croisé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    fichiers associés à la fiche
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017308 DU 2011-07-20 08:26:14
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    MODI_REPERE avec un champ EPME_ELNO
+FONCTIONNALITE
+   Anomalie :
+   --------
+   Un utilisateur voudrait passer un champ EPME_ELNO en coordonnées cylindriques 
+   avec l'opérateur MODI_REPERE,
+   et a le message suivant :
+   
+      !--------------------------------------------------------------------!
+      ! <EXCEPTION> <ALGORITH2_14>                                         !
+      !                                                                    !
+      ! champ EPME_ELNO non traité par le changement de repère cylindrique !
+      !--------------------------------------------------------------------!
+   
+   ça marche avec un champ EPSP_ELNO.
+   
+   Correction :
+   ----------
+   On ajoute EPME_ELNO ainsi que quelques autres oubliés dans chrpel comme champs 
+   traitables en repère cylindrique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    fichiers associés à la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017332 DU 2011-07-26 15:35:38
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    POST_ELEM>MASSE_INER>GROUP_MA
+FONCTIONNALITE
+   Dans la doc de POST_ELEM>MASS_INER, il est dit que les mots clés TOUT='OUI', 
+   GROUP_MA et MAILLE s'excluent mutuellement.
+   Or à la fin de la doc, il est donné un exemple qui fait le contraire : il 
+   contient TOUT='OUI' et GROUP_MA.
+   
+   En effet, dans le catalogue, il y a AU_MOINS_UN('TOUT','GROUP_MA','MAILLE')
+   
+   Pour être homogène avec les autres commandes, on impose un seul mot-clé par 
+   occurence de chaque mot-clé facteur.
+   On met donc UN_PARMI('TOUT','GROUP_MA','MAILLE') dans le catalogue de la 
+   commande POST_ELEM pour tous les mot-clé facteur.
+   
+   Validation : on corrige tous les cas-tests qui utilisaient 2 ou + de mot-clé 
+   dans une occurence : 31 cas-tests modifiés dans la liste complète.
+   
+   Documentation : U4.81.22 : on supprime l'exemple qui utilisait plusieurs mot_clé
+   dans la même occurence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.22
+VALIDATION
+    SDLL09A SDLL109A SDLL109B SDLL109C SDLL108B SDLL23A SDLL23C SSLP201B SSLP200A SSLP200B
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017269 DU 2011-07-08 12:03:29
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+    Prxc3xa9ciser la notice des xc3xa9lxc3xa9ments plaques, coques etc
+FONCTIONNALITE
+   Evolution demandée :
+   ------------------
+   Il faut bien préciser dans [U2.02.01] Notice d’utilisation des éléments 
+   plaques, coques et coques volumiques SHB que les grandeurs calculées par les 
+   opérateurs de résolution MECA_STATIQUE et *_NON_LINE sont exprimées dans le 
+   repère *intrinsèque* des éléments.
+   
+   Traitement:
+   ----------
+   En fait, ce sont les champs ELGA qui sont exprimés dans le repère intrinsèque à 
+   l'élément, et ce, non seulement en sortie de MECA_STATIQUE et *_NON_LINE, mais 
+   aussi en sortie de CALC_ELEM.
+   On a pris le parti (qui se défend), de ne pas changer de repère les champs "non 
+   connectés d'un élément à l'autre", donc ayant pour support les points de Gauss,
+   et de passer en repère local les champs aux noeuds, qui sont donc connectés par 
+   les noeuds où on peut comparer les valeurs sur les éléments concourants.
+   
+   
+   Néanmoins, ce choix est critiquable au niveau de la commande CALC_ELEM puisque
+   
+   RESU =CALC_ELEM(RESULTAT=RESU,reuse=RESU,
+                           REPE_COQUE=_F(NIVE_COUCHE='SUP',
+   			              ANGL_REP=(30.,30.,)),
+                  OPTION=('SIEF_ELGA','SIGM_ELNO', ))
+   
+   conduit actuellement à des contraintes aux points de Gauss dans le repère 
+   intrinsèque, donc qui ignorent le repère introduit par ANGL_REP !
+   et à des contraintes aux noeuds dans le repère local.
+   
+   Dans les nouveaux post-traitements, maintenant qu'on dissocie calcul du champ 
+   et changement de repère, cette logique a été abandonnée :
+   la commande MODI_REPERE traitant un champ ELGA lui appliquera le repère défini 
+   par ANGL_REP. L'utilisateur aura donc le choix pour les champs ELGA :
+   
+   - en sortie de CALC_CHAMP et POST_CHAMP : dans le repère intrinsèque
+   
+   - en sortie de MODI_REPERE : dans le repère local défini par ANGL_REP
+   
+   On prévient donc de ceci dans [U2.02.01] Notice d’utilisation des éléments 
+   plaques, coques et coques volumiques SHB
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.02.01
+VALIDATION
+    sans
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nistor       NISTOR Ionel           DATE 08/16/2011 - 02:23:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017357 DU 2011-08-01 13:18:53
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Crxc3xa9ation de la macro-commande DYNA_VIBRA
+FONCTIONNALITE
+   Objectif:
+   --------------------------------------------
+   L’objectif de cette évolution est la création d’une macro-commande unique pour lancer les
+   calculs de dynamique vibratoire : analyses transitoires ou harmoniques, sur base modale ou
+   base physique. Selon le type d’analyse choisi par l’utilisateur, la macro-commande va
+   lancer un des opérateurs actuels suivants : DYNA_TRAN_MODAL, DYNA_LINE_TRAN ou DYNA_LINE_HARM.
+   
+   Le catalogue de la nouvelle macro-commande est une concaténation par fusion des catalogues
+   des commandes ci-dessus mentionnées. L’harmonisation de leurs syntaxes (fiche REX 14699) a
+   grandement facilité les choses.
+   Pour orienter le calcul vers la bonne commande « historiques », deux nouveau mots-clé ont
+   été ajoutés
+   BASE_CALCUL =SIMP(statut='o',typ='TXM',into=("PHYS","GENE") ), 
+   TYPE_CALCUL =SIMP(statut='o',typ='TXM',into=("HARM","TRAN") ),
+   Ces mots-clés sont importants et obligatoire à renseigner (statut='o'). Ils permettent de
+   préciser quel genre de calcul on veut effectuer. BASE_CALCUL permet de choisir entre un
+   calcul sur base physique ('PHYS') et un calcul sur base modale ('GENE'). On choisit
+   d'effectuer soit un calcul harmonique ('HARM') soit un calcul transitoire ('TRAN') avec
+   TYPE_CALCUL.
+   
+   Le type du concept en sortie de DYNA_VIBRA dépend du contenu des deux mots-clés.  Si
+   l'utilisateur veut réaliser un calcul transitoire sur base physique ('PHYS'/'TRAN') on
+   produira un concept de type dyna_trans.  Avec 'HARM' (+ 'PHYS' ou 'GENE') le calcul
+   produit un concept de type dyna_harmo, harm_gene ou acou_harmo. Avec 'TRAN' et 'GENE' on
+   va produire un concept de type tran_gene.
+   Pour le reste des mots-clé spécifiques à l’analyse souhaitée, rien n’a changé par rapport
+   à la syntaxe des anciennes commandes.
+   
+   La perspective du chantier (2012) est la résorption des commandes accompagnée par la
+   création d’un opérateur fortran à la place de la macro-commande. Un travail de
+   mutualisation des sources est également à prévoir au même temps et la création de deux
+   nouvelles structures de données pour la dynamique vibratoire : une pour stocker les
+   résultats sur base physique et l’autre pour stocker les résultats sur base modale.
+   
+   Impact dans le sources :
+   --------------------------------------
+   - catalogue de la macro-commande : dyna_vibra.capy
+   - la source Python de la macro-commande : dyna_vibra_ops.py
+   - algorith3.py – introduction de deux messages d’erreur (15 et 19) pour blinder le
+   catalogue de la macro contre l’utilisation illicite de deux schémas d’intégration
+   non-disponibles pour les analyses choisies 
+   - ajout de DYNA_VIBRA dans B_SENSIBILITE_COMMANDES_SENSIBLES.py
+   
+   Validation :
+   ---------------------------------------
+   - Analyse transitoire base physique
+   miss06c 
+   sensd04a
+   - Analyse transitoire base modale
+   forma01d 
+   sdls114a 
+   sdnd102a 
+   sdnd110a 
+   sdnd111a 
+   sdnd112a 
+   sdnl104a 
+   sdnl105a 
+   sdnl32a
+   - Analyse harmonique base physique
+   sdld313d 
+   sensd11c
+   - Analyse harmonique base modale
+   sdls08a 
+   shlv100a
+   
+   Documentation
+   -------------------------------------------------
+   - doc U4 de la macro-commande
+   - doc des cas-tests : V1.10.125, V1.01.171, V7.15.100, V2.03.114, V5.01.102, V5.02.112,
+   V5.02.104, V5.02.105, V5.02.032, V1.01.217
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.03, V1.10.125, V1.01.171, V7.15.100, V2.03.114, V5.01.102, V5.02.112, V5.02.104, V5.02.105, V5.02.032, V1.01.217
+VALIDATION
+    miss06c, sensd04a, forma01d, sdls114a, sdnd102a, sdnd110a, sdnd111a, sdnd112a, sdnl104a, sdnl105,  sdnl32a, sdld313d, sensd11c,sdls08a, shlv100a
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017360 DU 2011-08-01 13:37:56
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    nouveau mot-clxc3xa9 facteur dans DYNA_TRAN_MODAL pour les 3 paramxc3xa8tres concernant LAME_FLUIDE
+FONCTIONNALITE
+   Objectif:
+   -----------------
+   Mettre dans un mot-clé facteur quelques mots-clé simples qui renseignent des paramètres
+   pour la modélisation LAME_FLUIDE dans la commande DYNA_TRAN_MODAL
+   
+   Description du travail:
+   -----------------
+   Il s'agit d'un résidu de la fiche 14699 (harmonisation de la syntaxe DLT/DLH/DTM). Dans
+   DTM il existe 3 mots-clé simples, au premier niveau, qui concernent seulement la
+   définition d'une lame fluide (qui se fait, en grande partie, dans CHOC): NMAX_ITER,
+   RESI_RELA et LAMBDA .
+   Ces 3 mots-clé ont été réunis sous un mot-clé facteur (PARA_LAME_FLUI=_F()) pour
+   plus de clarté et pour faciliter grandement le macro python de DYNA_VIBRA( fiche 17357)
+   
+   Impact dans les sources:
+   ------------------------
+   -dyna_tran_modal.capy
+   -mdtr74.f, ssdt74.f
+   
+   Impact documentaire:
+   ------------------------
+   U4.53.21
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.21
+VALIDATION
+    liste des cas-tests appelant LAME_FLUIDE dans DTM
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017359 DU 2011-08-01 13:28:56
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Correction d'un message dans ALGORITH5
+FONCTIONNALITE
+   Problème:
+   ---------------------------------
+   Dans le message algorith5_25 on donne une information concernant la valeur par défaut pour
+   "gamma" . Il n'est pas précisé qu'est ce que représente gamma mais en creusant un peu on
+   trouve qu'il s'agit d'un angle nautique. Le problème c'est que récemment, après
+   l'harmonisation de la syntaxe DLT/DLH/DTM (fiche 14699), il existe un paramètre gamma pour
+   le schéma
+   d'intégration de NEWMARK (qui a aussi une valeur par défaut, différente de celle pour
+   l'angle nautique). Comme le message algorith5_25 peut s'afficher à l'exécution de
+   DYNA_TRAN_MODAL il peut faire croire à l'utilisateur que la valeur du gamma pour le schéma
+   d'intégration est autre que celle indiquée dans la doc.
+   
+   Résolution:
+   ---------------------------------
+   Je propose de rendre plus claire ce message en ajoutant "angle nautique" pour designer la
+   signification de Gamma.
+   
+   Impact dans les sources:
+   ---------------------------------
+   algorith5.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF forma01d                       nistor I.NISTOR           323      4      3
+ CASTEST MODIF mac3c01a                     desroche X.DESROCHES        434      5      5
+ CASTEST MODIF miss02a                      desroche X.DESROCHES        546      3      3
+ CASTEST MODIF miss03a                      desroche X.DESROCHES        260      5      5
+ CASTEST MODIF miss04a                      desroche X.DESROCHES        339      3      3
+ CASTEST MODIF miss04b                      desroche X.DESROCHES        475      3      3
+ CASTEST MODIF miss06c                        nistor I.NISTOR           834     10      7
+ CASTEST MODIF miss07a                      desroche X.DESROCHES        368      3      3
+ CASTEST MODIF miss07b                      desroche X.DESROCHES        418      4      4
+ CASTEST MODIF sdld313d                       nistor I.NISTOR           353     13      5
+ CASTEST MODIF sdll09a                      desroche X.DESROCHES        650      4      4
+ CASTEST MODIF sdll108b                     desroche X.DESROCHES        450      4      4
+ CASTEST MODIF sdll109a                     desroche X.DESROCHES       2091     12     12
+ CASTEST MODIF sdll109b                     desroche X.DESROCHES       1937      6      6
+ CASTEST MODIF sdll109c                     desroche X.DESROCHES       1714      5      4
+ CASTEST MODIF sdll109d                     desroche X.DESROCHES       2093     12     12
+ CASTEST MODIF sdll114a                     desroche X.DESROCHES        423      6      4
+ CASTEST MODIF sdll138a                     desroche X.DESROCHES        671      3      3
+ CASTEST MODIF sdll23a                      desroche X.DESROCHES        649      3      3
+ CASTEST MODIF sdll23b                      desroche X.DESROCHES        459      3      3
+ CASTEST MODIF sdll23c                      desroche X.DESROCHES        470      3      3
+ CASTEST MODIF sdls08a                        nistor I.NISTOR           369      7      3
+ CASTEST MODIF sdls108a                     desroche X.DESROCHES       2473      4      4
+ CASTEST MODIF sdls114a                       nistor I.NISTOR           345      6      2
+ CASTEST MODIF sdnd102a                       nistor I.NISTOR           388      7      3
+ CASTEST MODIF sdnd110a                       nistor I.NISTOR           329      5      4
+ CASTEST MODIF sdnd111a                       nistor I.NISTOR           384      5      5
+ CASTEST MODIF sdnd112a                       nistor I.NISTOR           298     11      7
+ CASTEST MODIF sdnl104a                       nistor I.NISTOR           279     10      4
+ CASTEST MODIF sdnl105a                       nistor I.NISTOR           546     10      7
+ CASTEST MODIF sdnl32a                        nistor I.NISTOR           254      7      5
+ CASTEST MODIF sdnv102a                     desroche X.DESROCHES        669      3      3
+ CASTEST MODIF sdnv103a                     desroche X.DESROCHES        234      1      1
+ CASTEST MODIF sensd04a                       nistor I.NISTOR           272     13      5
+ CASTEST MODIF sensd11c                       nistor I.NISTOR           219      7      3
+ CASTEST MODIF shlv100a                       nistor I.NISTOR           676      3      2
+ CASTEST MODIF ssla200a                     desroche X.DESROCHES       1329      4      4
+ CASTEST MODIF ssla200b                     desroche X.DESROCHES       1359      4      4
+ CASTEST MODIF ssll107d                     desroche X.DESROCHES        244      2      2
+ CASTEST MODIF sslp200a                     desroche X.DESROCHES       1469      4      4
+ CASTEST MODIF sslp200b                     desroche X.DESROCHES       1526      4      4
+ CASTEST MODIF sslp201a                     desroche X.DESROCHES       1217      4      4
+ CASTEST MODIF sslp201b                     desroche X.DESROCHES       1464      4      4
+ CASTEST MODIF sslv155a                     desroche X.DESROCHES        180      1      1
+ CASTEST MODIF sslv200a                     desroche X.DESROCHES       1101      4      4
+ CASTEST MODIF sslv200b                     desroche X.DESROCHES       1061      4      4
+ CASTEST MODIF ssnp144c                     desroche X.DESROCHES        537      1      1
+ CASTEST MODIF ssnv194a                       desoza T.DESOZA           327      6      6
+ CASTEST MODIF tplv101c                     desroche X.DESROCHES        158      2      2
+ CASTEST MODIF wtnv123e                     desroche X.DESROCHES        646      1      1
+ CASTEST MODIF zzzz100e                     courtois M.COURTOIS         151     29      2
+ CASTEST MODIF zzzz121a                     desroche X.DESROCHES        274      3      2
+ CASTEST MODIF zzzz121b                     desroche X.DESROCHES        756      7      7
+ CASTEST MODIF zzzz205a                     desroche X.DESROCHES        138      7      6
+ CASTEST MODIF zzzz237a                       desoza T.DESOZA           400      2      2
+CATALOPY AJOUT commande/dyna_vibra            nistor I.NISTOR           446    446      0
+CATALOPY AJOUT commande/zzz_end_cata        courtois M.COURTOIS          29     29      0
+CATALOPY AJOUT entete/co_cabl_precont       courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_cara_elem          courtois M.COURTOIS          47     47      0
+CATALOPY AJOUT entete/co_cham_gd_sdaster    courtois M.COURTOIS         146    146      0
+CATALOPY AJOUT entete/co_cham_mater         courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_char_acou          courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_char_cine_acou     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_char_cine_meca     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_char_cine_ther     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_char_contact       courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_char_meca          courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_char_ther          courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_compor_sdaster     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_corresp_2_mailla   courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_courbe_sdaster     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_entier             courtois M.COURTOIS          36     36      0
+CATALOPY AJOUT entete/co_fiss_xfem          courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_fonction_class     courtois M.COURTOIS         345    345      0
+CATALOPY AJOUT entete/co_fond_fiss          courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_gfibre_sdaster     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_interf_dyna_clas   courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_list_inst          courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_listis_sdaster     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_listr8_sdaster     courtois M.COURTOIS          36     36      0
+CATALOPY AJOUT entete/co_macr_elem_dyna     courtois M.COURTOIS         115    115      0
+CATALOPY AJOUT entete/co_macr_elem_stat     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_maillage_sdaster   courtois M.COURTOIS          56     56      0
+CATALOPY AJOUT entete/co_mater_sdaster      courtois M.COURTOIS          51     51      0
+CATALOPY AJOUT entete/co_matr_asse          courtois M.COURTOIS          88     88      0
+CATALOPY AJOUT entete/co_matr_asse_gene     courtois M.COURTOIS         206    206      0
+CATALOPY AJOUT entete/co_matr_elem          courtois M.COURTOIS          37     37      0
+CATALOPY AJOUT entete/co_melasflu_sdaster   courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_mode_cycl          courtois M.COURTOIS          24     24      0
+CATALOPY AJOUT entete/co_modele_gene        courtois M.COURTOIS          45     45      0
+CATALOPY AJOUT entete/co_modele_sdaster     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_nume_ddl_gene      courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_nume_ddl_sdaster   courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_reel               courtois M.COURTOIS          39     39      0
+CATALOPY AJOUT entete/co_resultat_sdaster   courtois M.COURTOIS          85     85      0
+CATALOPY AJOUT entete/co_sd_feti_sdaster    courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_spectre_sdaster    courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_surface_sdaster    courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_table_sdaster      courtois M.COURTOIS         134    134      0
+CATALOPY AJOUT entete/co_tran_gene          courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_type_flui_stru     courtois M.COURTOIS          23     23      0
+CATALOPY AJOUT entete/co_vect_asse_gene     courtois M.COURTOIS         109    109      0
+CATALOPY AJOUT entete/co_vect_elem          courtois M.COURTOIS          35     35      0
+CATALOPY MODIF commande/calc_ifs_dnl        courtois M.COURTOIS         253      7      5
+CATALOPY MODIF commande/calc_mac3coeur      courtois M.COURTOIS          43      3      4
+CATALOPY MODIF commande/calc_table          courtois M.COURTOIS         140      3      3
+CATALOPY MODIF commande/debut               courtois M.COURTOIS         108      4      2
+CATALOPY MODIF commande/defi_fichier        courtois M.COURTOIS          72      6      3
+CATALOPY MODIF commande/dyna_tran_modal       nistor I.NISTOR           267      8      6
+CATALOPY MODIF commande/gene_vari_alea      courtois M.COURTOIS          45      2      2
+CATALOPY MODIF commande/include             courtois M.COURTOIS          30      9      5
+CATALOPY MODIF commande/include_materiau    courtois M.COURTOIS          42      2      4
+CATALOPY MODIF commande/lire_fonction       courtois M.COURTOIS          69      2      2
+CATALOPY MODIF commande/macr_recal          courtois M.COURTOIS         131      5      5
+CATALOPY MODIF commande/post_elem           desroche X.DESROCHES        579     15     15
+CATALOPY MODIF commande/post_mac3coeur      courtois M.COURTOIS          52      9      8
+CATALOPY MODIF commande/post_rupture        courtois M.COURTOIS         163      5      4
+CATALOPY MODIF commande/poursuite           courtois M.COURTOIS         113      8      4
+CATALOPY MODIF entete/accas                 courtois M.COURTOIS          57     22    177
+ FORTRAN MODIF algorith/chrpel              desroche X.DESROCHES        949      8      3
+ FORTRAN MODIF algorith/mdtr74                nistor I.NISTOR           811      4      4
+ FORTRAN MODIF algorith/nmprca                desoza T.DESOZA           202      2      2
+ FORTRAN MODIF algorith/nmprdc                desoza T.DESOZA           121      7      6
+ FORTRAN MODIF algorith/ssdt74                nistor I.NISTOR           386      4      4
+ FORTRAN MODIF algorith/xprvit               colombo D.COLOMBO          836      2      2
+ FORTRAN MODIF assembla/assma2                desoza T.DESOZA           187      5      3
+ FORTRAN MODIF assembla/assvec                desoza T.DESOZA           996      4      5
+ FORTRAN MODIF assembla/nddl                  desoza T.DESOZA            57      3      5
+ FORTRAN MODIF calculel/cnscno                desoza T.DESOZA           391      4      2
+ FORTRAN MODIF calculel/creprn                desoza T.DESOZA           320      4      2
+ FORTRAN MODIF calculel/editgd                desoza T.DESOZA           119      4      3
+ FORTRAN MODIF calculel/exisdg                desoza T.DESOZA            43      5      4
+ FORTRAN MODIF elements/dxqpgl              desroche X.DESROCHES        155      6      2
+ FORTRAN MODIF postrele/iposdg                desoza T.DESOZA            95      6      5
+ FORTRAN MODIF postrele/rvpara                desoza T.DESOZA           672     54     21
+  PYTHON AJOUT Macro/dyna_vibra_ops           nistor I.NISTOR            93     93      0
+  PYTHON MODIF Accas/__init__               courtois M.COURTOIS          80      4      5
+  PYTHON MODIF Build/B_ETAPE                courtois M.COURTOIS         809      5      7
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES     nistor I.NISTOR           262      4      3
+  PYTHON MODIF Build/B_utils                courtois M.COURTOIS         217     19      2
+  PYTHON MODIF Execution/E_ETAPE            courtois M.COURTOIS         322      3      3
+  PYTHON MODIF Macro/calc_fonction_ops      courtois M.COURTOIS         445      1      2
+  PYTHON MODIF Macro/calc_precont_ops       courtois M.COURTOIS         428      2      3
+  PYTHON MODIF Macro/lire_fonction_ops      courtois M.COURTOIS         264      2      1
+  PYTHON MODIF Macro/post_bordet_ops        courtois M.COURTOIS         337      2      2
+  PYTHON MODIF Macro/test_fonction_ops      courtois M.COURTOIS         949      2      3
+  PYTHON MODIF Messages/algorith3             nistor I.NISTOR           259     11      1
+  PYTHON MODIF Messages/algorith5             nistor I.NISTOR           349      3      3
+  PYTHON MODIF Messages/fermetur              desoza T.DESOZA           111     18     12
+  PYTHON MODIF Messages/mecanonline2          desoza T.DESOZA           110      9      3
+  PYTHON MODIF Messages/modelisa10          desroche X.DESROCHES         56     17     12
+  PYTHON MODIF Miss/miss_post               courtois M.COURTOIS         619      6      2
+  PYTHON MODIF Noyau/N_ASSD                 courtois M.COURTOIS         207     14      3
+  PYTHON MODIF Noyau/N_MACRO                courtois M.COURTOIS         192      4      3
+  PYTHON MODIF Noyau/N_MCSIMP               courtois M.COURTOIS         190      3      3
+  PYTHON MODIF Noyau/N_OPS                  courtois M.COURTOIS          45     11      1
+  PYTHON MODIF Noyau/N_info                 courtois M.COURTOIS         269      6      1
+  PYTHON MODIF SD/sd_tran_gene                boyere E.BOYERE           151      2      2
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         683      7      5
+  PYTHON MODIF Utilitai/utils               courtois M.COURTOIS         102      1     18
+  PYTHON SUPPR SD/co_base_modale            courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_cabl_precont           courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_cara_elem              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_carte                  courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_cham_elem              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_cham_mater             courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_cham_no                courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_champ                  courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_char_acou              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_char_cine_acou         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_char_cine_meca         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_char_cine_ther         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_char_meca              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_char_ther              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_compor                 courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_contact                courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_corresp_2_mailla       courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_courbe                 courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_fiss_xfem              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_fonction               courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_fond_fiss              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_gfibre                 courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_grille                 courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_interf_dyna_clas       courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_list_inst              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_listis                 courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_listr8                 courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_macr_elem_dyna         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_macr_elem_stat         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_maillage               courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_mater                  courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_matr_asse              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_matr_asse_gd           courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_matr_asse_gene         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_matr_elem              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_melasflu               courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_mode_cycl              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_mode_meca              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_modele                 courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_modele_gene            courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_nume_ddl               courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_nume_ddl_gene          courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_resultat               courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_resultat_dyn           courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_sd_feti                courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_spectre                courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_squelette              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_surface                courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_table                  courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_table_container        courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_table_fonction         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_tran_gene              courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_type_flui_stru         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_vect_asse_gene         courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR SD/co_vect_elem              courtois M.COURTOIS           0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   49        2846      2846             +2846
+ MODIF :  111       53989       694     643       +51
+ SUPPR :   55           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  215       56835      3540     643     +2897 

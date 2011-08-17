@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_precont_ops Macro  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,6 +34,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   import string
   import types
   from Accas import _F
+  from Cata.cata import listr8_sdaster, list_inst
   from Noyau.N_utils import AsType
   from Utilitai.Utmess     import  UTMESS
   ier=0
@@ -71,8 +72,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   __prec = dIncrement['PRECISION']
 
   __L0   = dIncrement['LIST_INST']
-  from SD.co_listr8 import listr8_sdaster
-  from SD.co_list_inst import list_inst
 
   if   type(__L0) == listr8_sdaster:
   #cas où liste definie par DEFI_LIST_REEL

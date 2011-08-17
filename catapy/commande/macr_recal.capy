@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",
                     EXCLUS('LIST_POIDS','COURBE'),),
 
          UNITE_ESCL      =SIMP(statut='o',typ='I'),
-         RESU_EXP        =SIMP(statut='f',typ=assd,max='**'),
+         RESU_EXP        =SIMP(statut='f',typ=not_checked,max='**'),
          COURBE          =FACT(statut='f',max='**',
               FONC_EXP        =SIMP(statut='o',typ=(fonction_sdaster),),
               NOM_FONC_CALC   =SIMP(statut='o',typ='TXM',),
@@ -43,15 +43,15 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",
               PARA_Y          =SIMP(statut='o',typ='TXM',),
               POIDS           =SIMP(statut='f',typ='R',),
          ),
-         RESU_CALC       =SIMP(statut='f',typ=assd,max='**'),
-         LIST_PARA       =SIMP(statut='f',typ=assd,max='**'),
+         RESU_CALC       =SIMP(statut='f',typ=not_checked,max='**'),
+         LIST_PARA       =SIMP(statut='f',typ=not_checked,max='**'),
          PARA_OPTI       =FACT(statut='f',max='**',
              NOM_PARA = SIMP(statut='o',typ='TXM'),
              VALE_INI = SIMP(statut='o',typ='R'),
              VALE_MIN = SIMP(statut='o',typ='R'),
              VALE_MAX = SIMP(statut='o',typ='R'),
          ),
-         LIST_POIDS      =SIMP(statut='f',typ=assd,max='**'),
+         LIST_POIDS      =SIMP(statut='f',typ=not_checked,max='**'),
 
          UNITE_RESU      =SIMP(statut='f',typ='I',defaut=91),
          PARA_DIFF_FINI  =SIMP(statut='f',typ='R',defaut=0.001),

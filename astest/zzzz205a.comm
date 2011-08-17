@@ -1,9 +1,9 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 
 # TITRE CALCUL DE L'ENERGIE CINETIQUE EN 2D D'UNE PLAQUE RECTANGULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,8 +70,8 @@ VITE=CREA_RESU(reuse=VITE,OPERATION='AFFE',
 #
 MASSE=POST_ELEM(  MODELE=MO,
                         CHAM_MATER=CHMAT,
-                        MASS_INER=_F(  GROUP_MA = ( 'GM100','GM200', ),
-                                    TOUT = 'OUI') )
+                        MASS_INER=(_F(  GROUP_MA = ( 'GM100','GM200', ),),
+                                    _F(TOUT = 'OUI') ))
 
 IMPR_TABLE(TABLE=MASSE)
 
@@ -86,8 +86,9 @@ TEST_TABLE(      TABLE=MASSE,
 # CALCUL DE L'ENERGIE CINETIQUE -----------------------
 #
 ENER=POST_ELEM(   MODELE=MO,   CHAM_MATER=CHMAT,
-                 RESULTAT=VITE,ENER_CIN=_F(
-                                           GROUP_MA=('GM100','GM200'),TOUT='OUI') )
+                 RESULTAT=VITE,ENER_CIN=(_F(
+                                           GROUP_MA=('GM100','GM200'),),
+                                         _F(TOUT='OUI') ))
 IMPR_TABLE(TABLE=ENER)
 TEST_TABLE(      TABLE=ENER,
                    FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MA',),

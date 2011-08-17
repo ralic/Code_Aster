@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE SUR BASE MODALE)
 # sdld313d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,7 +153,9 @@ LISFREQ1=DEFI_LIST_REEL(VALE=L_REEL1,);
 LISFREQ2=DEFI_LIST_REEL(VALE=L_REEL2,);
 LISFREQ=DEFI_LIST_REEL(VALE=L_REEL,);
 
-REPHARM=DYNA_LINE_HARM(MATR_MASS=MATRMASS,
+REPHARM=DYNA_VIBRA(BASE_CALCUL='PHYS',
+                   TYPE_CALCUL='HARM',
+                   MATR_MASS=MATRMASS,
                        MATR_RIGI=MATRRIGI,
                        SOLVEUR=_F( METHODE='LDLT', ),
                        LIST_FREQ=LISFREQ1,
@@ -161,7 +163,9 @@ REPHARM=DYNA_LINE_HARM(MATR_MASS=MATRMASS,
                                 COEF_MULT=1.0,
                                 PHAS_DEG=0.0,),);
 
-REPHARM=DYNA_LINE_HARM(reuse=REPHARM,
+REPHARM=DYNA_VIBRA(BASE_CALCUL='PHYS',
+                   TYPE_CALCUL='HARM',
+                   reuse=REPHARM,
                        RESULTAT=REPHARM,
                        MATR_MASS=MATRMASS,
                        MATR_RIGI=MATRRIGI,
@@ -195,7 +199,9 @@ FGEN=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMGEN,
                     VECT_ASSE=VECTASC,);
 
-REPHARMG=DYNA_LINE_HARM(MATR_MASS=MGEN,
+REPHARMG=DYNA_VIBRA(BASE_CALCUL='GENE',
+                   TYPE_CALCUL='HARM',
+                   MATR_MASS=MGEN,
                        MATR_RIGI=KGEN,
                        SOLVEUR=_F( METHODE='LDLT', ),
                        LIST_FREQ=LISFREQ1,
@@ -203,7 +209,9 @@ REPHARMG=DYNA_LINE_HARM(MATR_MASS=MGEN,
                                 COEF_MULT=1.0,
                                 PHAS_DEG=0.0,),);
 
-REPHARMG=DYNA_LINE_HARM(reuse=REPHARMG,
+REPHARMG=DYNA_VIBRA(BASE_CALCUL='GENE',
+                   TYPE_CALCUL='HARM',
+                   reuse=REPHARMG,
                        RESULTAT=REPHARMG,
                        MATR_MASS=MGEN,
                        MATR_RIGI=KGEN,

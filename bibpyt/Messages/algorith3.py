@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algorith3 Messages  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,6 +56,11 @@ cata_msg = {
  on archive au moins un champ.
 """),
 
+15 : _("""
+ La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
+ transitoires sur base modale
+"""),
+
 16 : _("""
 A l'instant %(r1)f, l'erreur vaut %(r2)f
 Cette erreur est supérieure à 1.
@@ -69,6 +74,11 @@ On arrete de le réduire, car le nombre de réductions a atteint %(i1)d, qui est l
 
 18 : _("""
  La liste des instants de calcul ne doit contenir qu'un seul pas 
+"""),
+
+19 : _("""
+ La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
+ transitoires sur base physique
 """),
 
 20 : _("""

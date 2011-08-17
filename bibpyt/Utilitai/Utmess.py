@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -649,14 +649,16 @@ def __fake__():
     UTMESS('I', 'SUPERVIS_40')    # surcharge émis par asrun
     UTMESS('I', 'SUPERVIS_96')    # émis depuis le C (inisig)
     UTMESS('I', 'SUPERVIS_97')    # émis depuis le C (inisig)
-    UTMESS('I', 'SUPERVIS2_1')    # émis dans ops
     UTMESS('I', 'GENERIC_1')      # dans des tests pour traiter les exceptions
+    UTMESS('I', 'CATAMESS_55')    # pour u2mesg.f via UTPRIN
+    UTMESS('I', 'CATAMESS_69')    # pour u2mesg.f via UTPRIN
+    UTMESS('I', 'CATAMESS_70')    # pour u2mesg.f via UTPRIN
+    # message.info/error/warn
+    UTMESS('I', 'SUPERVIS2_1')    # émis dans ops
+    # utilisé ici
     UTMESS('I', 'CATAMESS_6')
     UTMESS('I', 'CATAMESS_41')
-    UTMESS('I', 'CATAMESS_55')    # pour u2mesg.f
     UTMESS('I', 'CATAMESS_57')
-    UTMESS('I', 'CATAMESS_69')    # pour u2mesg.f
-    UTMESS('I', 'CATAMESS_70')    # pour u2mesg.f
     UTMESS('I', 'CATAMESS_89')
     UTMESS('I', 'CATAMESS_90')
     UTMESS('I', 'CATAMESS_91')

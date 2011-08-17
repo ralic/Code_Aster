@@ -3,7 +3,7 @@
       REAL*8              XYZG(3,*), PGL(3,3)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     VERIFICATION QUE L'ELEMENT EST REELLEMENT PLAN
 C
 C     ------------------------------------------------------------------
       REAL*8  VX,VY,VZ , XI,YI,ZZI , XJ,YJ,ZZJ , XK,YK,ZZK , XL,YL,ZZL
-      REAL*8  NORM
+      REAL*8  NORM, R8MIEM
       REAL*8  X12,Y12,Z12,X13,Y13,Z13,X14,Y14,Z14
       REAL*8  UX, UY, UZ, PSCAL, NORMU, NORM4, DIST
       INTEGER IADZI,IAZK24
@@ -136,6 +136,10 @@ C     PSCAL = (SCALAIRE) T14 P_SCAL U
 C
 C     DISTANCE DU POINT 4 AU PLAN (123)
       NORMU = SQRT( (UX*UX) + (UY*UY) + (UZ*UZ) )
+      IF ( NORMU.LT.R8MIEM() ) THEN
+         CALL TECAEL(IADZI,IAZK24)
+         CALL U2MESK('F', 'MODELISA10_5',1,ZK24(IAZK24+2))
+      ENDIF
       NORM4 = SQRT( (X14*X14) + (Y14*Y14) + (Z14*Z14) )
       DIST  = PSCAL / NORMU
       PSCAL = DIST  / NORM4

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN_SI
 # RESPONSABLE VABHHTS J.PELLET
 # sslp201b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -1128,9 +1128,9 @@ TABLE1=POST_ELEM(MASS_INER=(_F(GROUP_MA='GMA8',),
                  CARA_ELEM=CARA1,
                  TITRE='MASSE INERTIE ET CENTRE DE GRAVITE',);
 
-TABLE2=POST_ELEM(ENER_POT=_F(TOUT='OUI',
-                             MAILLE=('M44','M99',),
-                             GROUP_MA='GMA8',),
+TABLE2=POST_ELEM(ENER_POT=(_F(TOUT='OUI',),
+                            _F( MAILLE=('M44','M99',),),
+                             _F(GROUP_MA='GMA8',),),
                  RESULTAT=MSLI2,
                  INST=5.5,);
 

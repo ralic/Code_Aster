@@ -1,21 +1,21 @@
-#@ MODIF calc_fonction_ops Macro  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_fonction_ops Macro  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -46,16 +46,16 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
    from Utilitai.Utmess import  UTMESS
    import aster_fonctions
    EnumTypes = (list, tuple)
-   
+
    ### On importe les definitions des commandes a utiliser dans la macro
    DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
    IMPR_FONCTION  = self.get_cmd('IMPR_FONCTION')
    DEFI_NAPPE     = self.get_cmd('DEFI_NAPPE')
-   
+
    ### Comptage commandes + déclaration concept sortant
    self.set_icmd(1)
    self.DeclareOut('C_out',self.sd)
-   
+
    # éléments de contexte
    ctxt = Context()
    ### l'ensemble est dans un try/except pour recuperer les erreurs du module t_fonction
@@ -79,12 +79,12 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
          ctxt.f = __ff.nom
          __ex=__ff.inverse()
       ###
-      if (ABS         != None): 
+      if (ABS         != None):
          __ff=ABS['FONCTION'].convert()
          ctxt.f = __ff.nom
          __ex=__ff.abs()
       ###
-      if (COMPOSE     != None): 
+      if (COMPOSE     != None):
          __ff=COMPOSE['FONC_RESU'].convert()
          __fg=COMPOSE['FONC_PARA'].convert()
          ctxt.f = [__ff.nom, __fg.nom]
@@ -107,7 +107,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             for mcfact in COMB :
                __ex=mcfact['FONCTION'].convert()
                list_fonc.append(__ex)
-         
+
          __ex = 0.
          for item, comb in zip(list_fonc, COMB):
             ctxt.f = item.nom
@@ -126,7 +126,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             for mcfact in COMB_C :
                __ex=mcfact['FONCTION'].convert(arg='complex')
                list_fonc.append(__ex)
-      
+
          __ex = 0.
          for item, comb in zip(list_fonc, COMB_C):
             if comb['COEF_R'] != None:
@@ -140,13 +140,13 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             __ex = item * coef + __ex
          # on prend les paramètres de la 1ère fonction
          __ex.para = copy.copy(list_fonc[0].para)
-      
+
       ### mot clé LIST_PARA uniquement présent si COMB ou COMB_C
       if (COMB != None) or (COMB_C != None) :
          if (args['LIST_PARA'] != None) :
             __ex=__ex.evalfonc(args['LIST_PARA'].Valeurs())
       ###
-      if (PUISSANCE   != None): 
+      if (PUISSANCE   != None):
          __ff=PUISSANCE['FONCTION'].convert()
          ctxt.f = __ff.nom
          __ex=__ff
@@ -299,10 +299,10 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
               UTMESS('S','FONCT0_36')
          __ff=SPEC_OSCI['FONCTION'].convert()
          ctxt.f = __ff.nom
-         
+
          # appel à SPEC_OSCI
          spectr = aster_fonctions.SPEC_OSCI(__ff.vale_x, __ff.vale_y, l_freq, l_amor)
-      
+
          # construction de la nappe
          vale_para = l_amor
          para      = { 'INTERPOL'      : ['LIN', 'LOG'],
@@ -334,7 +334,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
          sp_lisse=liss_enveloppe.lissage(nappe=sp_nappe,fmin=LISS_ENVELOP['FREQ_MIN'],fmax=LISS_ENVELOP['FREQ_MAX'],elarg=LISS_ENVELOP['ELARG'],tole_liss=LISS_ENVELOP['TOLE_LISS'])
          para_fonc=__ff.l_fonc[0].para
          l_fonc=[]
-         for val in sp_lisse.listTable: 
+         for val in sp_lisse.listTable:
             l_fonc.append(t_fonction(sp_lisse.listFreq,val,para_fonc))
          __ex=t_nappe(vale_para=sp_lisse.listAmor,l_fonc=l_fonc,para=__ff.para)
       ###
@@ -366,11 +366,11 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
       UTMESS('F', 'FONCT0_29', valk=(ctxt.f, str(msg)))
    except FonctionError, msg:
       UTMESS('F', 'FONCT0_30', valk=(ctxt.f, str(msg), traceback.format_exc()))
-  
+
    ### creation de la fonction produite par appel à DEFI_FONCTION
    ### on récupère les paramètres issus du calcul de __ex
    ### et on les surcharge par ceux imposés par l'utilisateur
-   
+
    if isinstance(__ex,t_fonction) or isinstance(__ex,t_fonction_c):
       para=__ex.para
       if NOM_PARA    != None: para['NOM_PARA']    = NOM_PARA
@@ -396,7 +396,6 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
       if PROL_GAUCHE   != None: para['PROL_GAUCHE']   = PROL_GAUCHE
       if NOM_PARA_FONC != None: para['NOM_PARA_FONC'] = NOM_PARA_FONC
       if INTERPOL      != None: para['INTERPOL']      = INTERPOL
-      print para
       C_out=DEFI_NAPPE(PARA=__ex.vale_para.tolist(),
                        DEFI_FONCTION=def_fonc,
                        **para)
@@ -418,7 +417,7 @@ class Context(object):
    """
    def __init__(self):
       self.__nomf = None
-   
+
    def get_val(self):
       """Retourne le texte formatté.
       """
@@ -436,11 +435,11 @@ class Context(object):
       except:
          res = 'erreur de programmation !'
       return res
-   
+
    def set_val(self, value):
       self.__nomf = value
-   
+
    def del_val(self):
       del self.__nomf
-   
+
    f = property(get_val, set_val, del_val, "")

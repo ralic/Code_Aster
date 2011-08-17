@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ LIRE_FONCTION=MACRO(nom="LIRE_FONCTION",
                     reentrant='n',
                     UIinfo={"groupes":("Lecture","Fonctions",)},
          FORMAT          =SIMP(statut='f',typ='TXM',into=("LIBRE",),defaut="LIBRE"  ),
-         TYPE            =SIMP(statut='f',typ='TXM',into=("Fonctions","FONCTION_C","NAPPE"),defaut="FONCTION"  ),
+         TYPE            =SIMP(statut='f',typ='TXM',into=("FONCTION","FONCTION_C","NAPPE"),defaut="FONCTION"  ),
          SEPAR           =SIMP(statut='f',typ='TXM',into=("None",",",";","/"),defaut="None" ),
          INDIC_PARA      =SIMP(statut='f',typ='I',min=2,max=2,defaut=[1,1]),
          b_fonction      =BLOC(condition = "TYPE=='FONCTION' ",

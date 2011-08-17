@@ -1,4 +1,4 @@
-# MODIF  DATE 30/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DU MOT-CLE LIAISON_UNILATER PAR UNE CONDITION PORTANT SUR DES DEPLACEMENTS
 # zzzz237a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,7 +117,7 @@ RESU0=STAT_NON_LINE(MODELE=MO,
                           ),
                    CONTACT  = CONT,
                    COMP_INCR=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=L_TPS,INST_FIN=10.),
+                   INCREMENT=_F(LIST_INST=L_TPS,),
                    SOLVEUR=_F(SYME='OUI',),
                    );
 

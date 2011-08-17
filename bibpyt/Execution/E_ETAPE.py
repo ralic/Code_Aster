@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,8 +35,6 @@ from Noyau.N_info import message, SUPERV
 import genpy
 import aster
 import checksd
-from E_Global import MessageLog
-from Utilitai.Utmess import UTMESS
 
 class ETAPE:
    """
@@ -64,6 +62,7 @@ class ETAPE:
         - icmd  : numéro d'ordre de la commande
       Retour : iertot = nombre d erreurs
       """
+      from E_Global import MessageLog
       if CONTEXT.debug :
            prbanner(" appel de l operateur %s numero %s " % (self.definition.nom,self.definition.op))
 
@@ -202,6 +201,7 @@ class ETAPE:
       Intention : afficher sur la sortie standard (par defaut) la fin du
                   cartouche de la commande apres son execution.
       """
+      from Utilitai.Utmess import UTMESS
       voir = (not isinstance(self.parent,MACRO_ETAPE)) or \
              (self.parent.nom=='INCLUDE'             ) or \
              (self.jdc.impr_macro==1                 )

@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (POSEE-POSEE)
 # sdll114a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -151,14 +151,16 @@ CARELY=AFFE_CARA_ELEM(    MODELE=MOPOU, INFO=2,
 MASSX=POST_ELEM(    MODELE=MOPOU,
                       CHAM_MATER=AMPOU,
                       CARA_ELEM=CARELX,
-                      MASS_INER=_F(  GROUP_MA = 'POU',  MAILLE = 'M1'),
+                      MASS_INER=(_F(  GROUP_MA = 'POU', ),
+                      _F( MAILLE = 'M1'),),
                       TITRE=( 'POUTRE AFFINE  ',)
                   )
 
 MASSY=POST_ELEM(    MODELE=MOPOU,
                       CHAM_MATER=AMPOU,
                       CARA_ELEM=CARELY,
-                      MASS_INER=_F(  GROUP_MA = 'POU',   MAILLE = 'M1'),
+                      MASS_INER=(_F(  GROUP_MA = 'POU', ),
+                      _F( MAILLE = 'M1'),),
                       TITRE=( 'POUTRE AFFINE ROTATION 90',)
                   )
 

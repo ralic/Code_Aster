@@ -1,28 +1,28 @@
-#@ MODIF N_MCSIMP Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
-""" 
+"""
     Ce module contient la classe MCSIMP qui sert à controler la valeur
     d'un mot-clé simple par rapport à sa définition portée par un objet
     de type ENTITE
@@ -30,7 +30,7 @@
 
 from copy import copy
 
-from Noyau.N_ASSD import ASSD,assd
+from Noyau.N_ASSD import ASSD
 from Noyau.N_CO import CO
 import N_OBJECT
 from N_CONVERT import ConversionFactory
@@ -73,7 +73,7 @@ class MCSIMP(N_OBJECT.OBJECT):
          self.etape = None
 
    def GETVAL(self,val):
-      """ 
+      """
           Retourne la valeur effective du mot-clé en fonction
           de la valeur donnée. Defaut si val == None
       """
@@ -86,7 +86,7 @@ class MCSIMP(N_OBJECT.OBJECT):
    def get_valeur(self):
       """
           Retourne la "valeur" d'un mot-clé simple.
-          Cette valeur est utilisée lors de la création d'un contexte 
+          Cette valeur est utilisée lors de la création d'un contexte
           d'évaluation d'expressions à l'aide d'un interpréteur Python
       """
       v = self.valeur
@@ -135,7 +135,7 @@ class MCSIMP(N_OBJECT.OBJECT):
       self.etape=parent.etape
 
    def get_sd_utilisees(self):
-      """ 
+      """
           Retourne une liste qui contient la ou les SD utilisée par self si c'est le cas
           ou alors une liste vide
       """
@@ -149,7 +149,7 @@ class MCSIMP(N_OBJECT.OBJECT):
       return l
 
    def get_sd_mcs_utilisees(self):
-      """ 
+      """
           Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
             - Si aucune sd n'est utilisée, le dictionnaire est vide.
             - Sinon, la clé du dictionnaire est le mot-clé simple ; la valeur est

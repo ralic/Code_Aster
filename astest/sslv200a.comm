@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 # sslv200a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
@@ -926,9 +926,9 @@ TABLE1=POST_ELEM(        MODELE=MO,
 
 TABLE2=POST_ELEM(     RESULTAT=MSLIN,
                               INST=5.5,
-                          ENER_POT=_F( TOUT = 'OUI',
-                                    GROUP_MA = 'GMA21',
-                                    MAILLE = ('M44', 'M99',)) )
+                          ENER_POT=(_F( TOUT = 'OUI',),
+                                    _F(GROUP_MA = 'GMA21',),
+                                    _F(MAILLE = ('M44', 'M99',)) ))
 
 #ENGENDRE_TEST (  CO=(TABLE1,TABLE2), )
 

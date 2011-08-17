@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE TEST EFFET LAME FLUIDE ENTRE DEUX STRUCTURES MOBILES
 # sdnd112a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,13 +120,15 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.,
 GRILLE=DEFI_OBSTACLE(   TYPE='BI_PLAN_Z' )
 
 #
-TRAN_GE1=DYNA_TRAN_MODAL(  MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
+TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                     BASE_CALCUL='GENE',
+                     MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
                        SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                        AMOR_MODAL=_F(AMOR_REDUIT=( 0.0, 0.0,),),
                        ETAT_INIT=_F( DEPL= DEPLINI1),
-                       NMAX_ITER=100,
-                       LAMBDA=10.,
-                       RESI_RELA=1.E-5,
+                 PARA_LAME_FLUI = _F(NMAX_ITER=100,
+                                      LAMBDA=10.,
+                                      RESI_RELA=1.E-5,),
 # CONDITION DE CHOC ENTRE LE NOEUD 2 ET LE NOEUD 12
 # TEST SUR LA DIFFERENCE DES DEPLACEMENTS ABSOLUS
                 CHOC=_F(  GROUP_NO_1 = 'MASSES1',
@@ -205,13 +207,15 @@ TEST_RESU(RESU=( _F(  RESULTAT = DYNATRA1,  INST = 0.05,
           )
 
 #
-TRAN_GE2=DYNA_TRAN_MODAL(  MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
+TRAN_GE2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                     BASE_CALCUL='GENE',
+                     MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        AMOR_MODAL=_F(AMOR_REDUIT=( 0.0, 0.0,),),
                        ETAT_INIT=_F( DEPL = DEPLINI1),
-                       NMAX_ITER=100,
-                       LAMBDA=10.,
-                       RESI_RELA=1.E-5,
+                 PARA_LAME_FLUI=_F(NMAX_ITER=100,
+                                    LAMBDA=10.,
+                                   RESI_RELA=1.E-5),
 # CONDITION DE CHOC ENTRE LE NOEUD 2 ET LE NOEUD 12
 # TEST SUR LA DIFFERENCE DES DEPLACEMENTS ABSOLUS
                 CHOC=_F(  GROUP_NO_1 = 'MASSES1',

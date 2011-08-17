@@ -4,9 +4,9 @@ C
       INTEGER DG(*),CMP
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -21,6 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_6
 C
 C***********************************************************************
 C
@@ -51,7 +52,7 @@ C
       NBEC  = (CMP - 1)/30 + 1
       CMPT  = 0
       RESTE = CMP - 30*(NBEC-1)
-      CODE  = 2**RESTE
+      CODE  = LSHIFT(1,RESTE)
 C
       IF ( IAND(DG(NBEC),CODE) .EQ. CODE ) THEN
 C
@@ -61,7 +62,7 @@ C
 C
             DO 11, I = 1, 30, 1
 C
-               CODE = 2**I
+               CODE = LSHIFT(1,I)
 C
                IF ( IAND(VALEC,CODE) .EQ. CODE) THEN
 C
@@ -77,7 +78,7 @@ C
 C
          DO 20, I = 1, RESTE, 1
 C
-            CODE = 2**I
+            CODE = LSHIFT(1,I)
 C
             IF ( IAND(VALEC,CODE) .EQ. CODE) THEN
 C

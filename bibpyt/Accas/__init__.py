@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF __init__ Accas  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,14 +64,13 @@ from A_EXCLUS import EXCLUS
 from A_ENSEMBLE import ENSEMBLE
 from A_A_CLASSER import A_CLASSER
 
-from Noyau.N_ASSD import ASSD,assd
+from Noyau.N_ASSD import ASSD, assd, not_checked
 from Noyau.asojb  import AsBase
 from Noyau.N_GEOM import GEOM,geom
-from Noyau.N_FONCTION import FONCTION
-from Noyau.N_FONCTION import formule,formule_c
+from Noyau.N_FONCTION import FONCTION, formule, formule_c
 from Noyau.N_CO import CO
 from Noyau.N__F import _F
-from Noyau.N_OPS import OPS
+from Noyau.N_OPS import OPS, EMPTY_OPS
 
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType

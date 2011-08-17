@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 # ssla200a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -1128,9 +1128,9 @@ TABLE1=POST_ELEM(        MODELE=MO,
 
 TABLE2=POST_ELEM(         RESULTAT=MSLI2,
                               INST=5.5,
-                          ENER_POT=_F( TOUT = 'OUI',
-                                    GROUP_MA = 'GMA8',
-                                    MAILLE = ('M44', 'M99',)) )
+                          ENER_POT=(_F( TOUT = 'OUI',),
+                                    _F(GROUP_MA = 'GMA8',),
+                                    _F(MAILLE = ('M44', 'M99',))) )
 
 #ENGENDRE_TEST (  CO=(TABLE1,TABLE2), )
 

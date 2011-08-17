@@ -10,7 +10,7 @@
       REAL*8         LCMIN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 16/08/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -512,7 +512,7 @@ C           CALCULATE THE LIMITS FOR JMIN ON THE ACTUAL CRACK FRONT
                IF ((JMIN.GE.ZI(JFMULT-1+2*FON-1)).AND.
      &             (JMIN.LE.ZI(JFMULT-1+2*FON))) THEN
                   JLIMSX = ZI(JFMULT-1+2*FON-1)
-                  JLIMDX = ZI(JFMULT-1+2*FON)
+                  JLIMDX = ZI(JFMULT-1+2*FON)-1
                   GOTO 204
                ENDIF
 205         CONTINUE

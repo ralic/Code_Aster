@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,9 +117,6 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
                     PRECISION       =SIMP(statut='o',typ='R',),),
          ),         
-         NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 20 ),
-         RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
-         LAMBDA          =SIMP(statut='f',typ='R',defaut= 10. ),
 
          EXCIT           =FACT(statut='f',max='**',
            regles=(UN_PARMI('FONC_MULT','COEF_MULT','ACCE'),
@@ -188,9 +185,14 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                BETA            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
                CHI             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
                DELTA           =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+               
            ),
          ),
-         VERI_CHOC       =FACT(statut='f',max='**',
+         PARA_LAME_FLUI =FACT(statut='d',
+           NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 20 ),
+           RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
+           LAMBDA          =SIMP(statut='f',typ='R',defaut= 10. ),),
+         VERI_CHOC       =FACT(statut='f',
            STOP_CRITERE    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 0.5 ),
          ),
@@ -247,7 +249,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            RELATION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-         IMPRESSION      =FACT(statut='f',max='**',
+         IMPRESSION      =FACT(statut='f',
            regles=(EXCLUS('TOUT','NIVEAU'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NIVEAU          =SIMP(statut='f',typ='TXM',into=("DEPL_LOC","VITE_LOC","FORC_LOC","TAUX_CHOC") ),

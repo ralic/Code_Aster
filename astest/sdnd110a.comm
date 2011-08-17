@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE LACHER D'UNE MASSE AVEC FORCE LAME FLUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,7 +147,7 @@ PLANY=DEFI_OBSTACLE(   TYPE='BI_PLAN_Y' )
 #
 # PREMIER CAS PROFIL POISEUILLE V=0.1 M/S
 #
-DYNAMOD1=DYNA_TRAN_MODAL(
+DYNAMOD1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        MATR_MASS=MASSEGEN,
                        MATR_RIGI=RIGIDGEN,
@@ -157,8 +157,9 @@ DYNAMOD1=DYNA_TRAN_MODAL(
                                   INST_FIN = 0.190,
                                   PAS = 2.5E-5),
                       ARCHIVAGE=_F(  PAS_ARCH = 10),
+                      PARA_LAME_FLUI=_F(
                        NMAX_ITER=20,
-                       RESI_RELA=1.E-5,
+                       RESI_RELA=1.E-5,),
                       CHOC=_F(
                                NOEUD_1 = 'NO1',
                                NOEUD_2 = 'NO2',
@@ -239,7 +240,7 @@ TEST_RESU( RESU=_F(
 #
 # DEUXIEME CAS PROFIL UNIFORME V=0.1 M/S
 #
-DYNAMOD2=DYNA_TRAN_MODAL(
+DYNAMOD2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        MATR_MASS=MASSEGEN,
                        MATR_RIGI=RIGIDGEN,

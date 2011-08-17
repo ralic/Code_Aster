@@ -1,8 +1,8 @@
-#@ MODIF fermetur Messages  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fermetur Messages  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,22 +24,25 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
-Le solveur "MUMPS" n'est pas installé sur cette machine.
+Le solveur "MUMPS" n'est pas installé dans cette version de Code_Aster.
+
+Conseil : Vérifiez que vous avez sélectionné la bonne version de Code_Aster.
+          Attention, certains solveurs ne sont disponibles que dans les versions parallèles de Code_Aster.
 """),
 
 2: _("""
-La bibliothèque "MED" n'est pas installée sur cette machine.
+La bibliothèque "MED" n'est pas installée dans cette version de Code_Aster.
 """),
 
 3: _("""
-La bibliothèque "HDF5" n'est pas installée sur cette machine.
+La bibliothèque "HDF5" n'est pas installée dans cette version de Code_Aster.
 """),
 
 4: _("""
-La bibliothèque "ZMAT" n'est pas installée sur cette machine ou bien elle
+La bibliothèque "ZMAT" n'est pas installée dans cette version de Code_Aster ou bien elle
 n'a pas été trouvée.
 
-Conseil : Vérifier que l'environnement est correctement défini,
+Conseil : Vérifiez que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
@@ -54,7 +57,7 @@ Erreur de programmation :
 """),
 
 7: _("""
-Le logiciel "SCOTCH" n'est pas installé sur cette machine.
+Le renuméroteur "SCOTCH" n'est pas installé dans cette version de Code_Aster.
 """),
 
 8: _("""
@@ -70,7 +73,10 @@ Erreur de programmation :
 """),
 
 10: _("""
-Le solveur "PETSc" n'est pas installé sur cette machine.
+Le solveur "PETSc" n'est pas installé dans cette version de Code_Aster.
+
+Conseil : Vérifiez que vous avez sélectionné la bonne version de Code_Aster.
+          Attention, certains solveurs ne sont disponibles que dans les versions parallèles de Code_Aster.
 """),
 
 11: _("""
@@ -80,7 +86,7 @@ Erreur de programmation :
 """),
 
 12: _("""
-La bibliothèque "YACS" n'est pas installée sur cette machine.
+La bibliothèque "YACS" n'est pas installée dans cette version de Code_Aster.
 """),
 
 13 : _("""
@@ -88,7 +94,7 @@ La bibliothèque %(k1)s n'a pas pu être chargée.
 
 Nom de la bibliothèque : %(k2)s
 
-Conseil : Vérifier que l'environnement est correctement défini,
+Conseil : Vérifiez que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
@@ -98,7 +104,7 @@ Le symbole demandé n'a pas été trouvé dans la bibliothèque %(k1)s.
 Nom de la bibliothèque : %(k2)s
         Nom du symbole : %(k3)s
 
-Conseil : Vérifier que l'environnement est correctement défini,
+Conseil : Vérifiez que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 

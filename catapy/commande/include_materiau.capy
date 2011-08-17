@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,10 +18,8 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
-from Macro.include_materiau_ops import include_materiau_ops
-
 INCLUDE_MATERIAU = MACRO(nom="INCLUDE_MATERIAU",
-                         op=include_materiau_ops,
+                         op=OPS("Macro.include_materiau_ops.include_materiau_ops"),
                          sd_prod=mater_sdaster,
             UIinfo={"groupes":("Modélisation", "Gestion du travail", )},
             fr="Récupérer les caractéristiques d'un matériau dans le Catalogue Materiaux d'Aster ",

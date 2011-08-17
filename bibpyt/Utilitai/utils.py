@@ -1,4 +1,4 @@
-#@ MODIF utils Utilitai  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utils Utilitai  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,23 +59,6 @@ def _printDBG(*args):
     if not DEBUG:
         return
     _print(*args)
-
-
-def miss_dble(list1, list2):
-    """miss = elements de list1 absents de list2
-      dble = elements de list2 presents dans list1, fournis plusieurs fois."""
-    s_ini = set(list1)
-    inter = s_ini.intersection(list2)
-    miss = s_ini.copy()
-    dble = set()
-    for para in list2:
-        try:
-            miss.remove(para)
-        except KeyError:
-            if set(para).issubset(s_ini) and para.strip() != '':
-                dble.add(para)
-    return miss, inter, dble
-
 
 # les commandes fortran pourraient appeller cette fonction
 def get_titre_concept(co=None):

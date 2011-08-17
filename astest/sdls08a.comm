@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -258,7 +258,9 @@ LIFREQ=DEFI_LIST_REEL(DEBUT=3,
                       INTERVALLE=_F(JUSQU_A=6,
                                     NOMBRE=3,),);
 
-DYNGEN=DYNA_LINE_HARM(MATR_MASS=MGEN,
+DYNGEN=DYNA_VIBRA(TYPE_CALCUL='HARM',
+                  BASE_CALCUL='GENE',
+                  MATR_MASS=MGEN,
                       MATR_RIGI=KGEN,
                       MATR_AMOR=CGEN,
                       SOLVEUR=_F( METHODE='LDLT', ),
@@ -269,7 +271,9 @@ DYNGEN=DYNA_LINE_HARM(MATR_MASS=MGEN,
 KGENC=COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=KGEN,
                                COEF_C=('RI',1.0,0.01,),),);
 
-DYNGENC=DYNA_LINE_HARM(MATR_MASS=MGEN,
+DYNGENC=DYNA_VIBRA(TYPE_CALCUL='HARM',
+                  BASE_CALCUL='GENE',
+                  MATR_MASS=MGEN,
                       MATR_RIGI=KGENC,
                       AMOR_MODAL=_F(AMOR_REDUIT=(0.01,),),
                       SOLVEUR=_F( METHODE='LDLT', ),

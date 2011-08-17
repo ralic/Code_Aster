@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,7 +29,6 @@ from os import times
 from types import ClassType, TypeType
 
 # Module Eficas
-import Noyau.N_FONCTION
 from Noyau.N_utils import prbanner, AsType
 from Noyau.N_types import is_int, is_float, is_float_or_int, is_complex, is_str, is_enum, is_assd
 from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_ASSD,N_ENTITE
@@ -37,12 +36,11 @@ from Noyau import N_FACT,N_BLOC,N_SIMP
 from Noyau.N_Exception import AsException
 from Noyau.N_GEOM  import GEOM
 import B_utils
-from B_CODE import CODE
+import B_CODE
 import B_OBJECT
-from Utilitai.utils import miss_dble
 
 
-class ETAPE(B_OBJECT.OBJECT,CODE):
+class ETAPE(B_OBJECT.OBJECT,B_CODE.CODE):
    """
    Cette classe implémente les méthodes relatives à la phase de construction d'une étape.
    """
@@ -507,7 +505,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          inter = self._cache_func[nom_fonction][nom_param]
       else:
          # paramètres manquants, paramètres en double
-         miss, inter, dble = miss_dble(objet_sd.nompar, nom_param)
+         miss, inter, dble = B_utils.miss_dble(objet_sd.nompar, nom_param)
          self._cache_func[nom_fonction][nom_param] = inter
          if len(miss) > 0:
             args = list(miss)
@@ -529,7 +527,7 @@ Paramètres répétés : %s""" % args
       try:
            context={}
            # mettre le contexte du parent de l'étape courante (INCLUDE par exemple)
-           context.update(self.parent.g_context)
+           context.update(self.parent.get_contexte_avant(self))
            # récupération des constantes locales en cas de MACRO
            context.update(getattr(self.parent, 'macro_const_context', {}))
            # on reduit le dict au seul parametre de la formule

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE RESSORT AVEC EXCITATION HARMONIQUE ET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,7 +190,7 @@ NOM_PARA = 'INST',
                             )
 
 #
-DYNAMOD1=DYNA_TRAN_MODAL(
+DYNAMOD1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        MATR_MASS=MASSEGEN,
                        MATR_RIGI=RIGIDGEN,
@@ -199,8 +199,8 @@ DYNAMOD1=DYNA_TRAN_MODAL(
                                    INST_FIN = 2.,
                                    PAS = 1.E-5),
                       ARCHIVAGE=_F(  PAS_ARCH = 10),
-                       NMAX_ITER=30,
-                       RESI_RELA=1.2E-2,
+                      PARA_LAME_FLUI=_F(NMAX_ITER=30,
+                       RESI_RELA=1.2E-2,),
                        EXCIT=_F(
                       VECT_ASSE = FOGENE,
                       FONC_MULT = FONCTIO1),
@@ -283,7 +283,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-DYNAMOD2=DYNA_TRAN_MODAL(
+DYNAMOD2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        MATR_MASS=MASSEGEN,
                        MATR_RIGI=RIGIDGEN,
                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),

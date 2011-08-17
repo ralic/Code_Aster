@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # TITRE : Table de Neubert
 # sdll108b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,9 +66,9 @@ COND_LIM=AFFE_CHAR_MECA(  MODELE=MOD,
 
 TABL_MAS=POST_ELEM(  MODELE=MOD,
                          CHAM_MATER=CHMAT,   CARA_ELEM=CARLEM,
-                         MASS_INER=_F(  TOUT = 'OUI',
-                                     GROUP_MA = ( 'POU_D_T',  'MAS_COIN',
-                                                 'MAS_INTE', )) )
+                         MASS_INER=(_F(  TOUT = 'OUI',),
+                                 _F( GROUP_MA = ( 'POU_D_T',  'MAS_COIN',
+                                                 'MAS_INTE', ))) )
 
 RIGI_ELE=CALC_MATR_ELEM(  MODELE=MOD,   OPTION='RIGI_MECA',
                               CHAM_MATER=CHMAT,   CARA_ELEM=CARLEM,

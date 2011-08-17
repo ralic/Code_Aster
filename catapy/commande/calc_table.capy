@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,14 +111,14 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
                     fr="Ajoute une ligne à la table initiale",
          NOM_PARA = SIMP(statut='o',typ='TXM',max='**',
                          fr="Noms des paramètres dont les valeurs sont fournies sous VALE"),
-         VALE     = SIMP(statut='o',typ=assd,max='**', fr='Valeurs des paramètres'),
+         VALE     = SIMP(statut='o',typ=not_checked,max='**', fr='Valeurs des paramètres'),
       ),
 
       b_ajout_col = BLOC(condition="OPERATION == 'AJOUT_COLONNE'",
                     fr="Ajoute une colonne constante à la table initiale",
          NOM_PARA = SIMP(statut='o',typ='TXM',max='**',
                          fr="Noms des paramètres des colonnes à ajouter"),
-         VALE   = SIMP(statut='o', typ=assd, max='**',
+         VALE   = SIMP(statut='o', typ=not_checked, max='**',
                        fr="Valeur constante pour chaque colonne"),
       ),
 

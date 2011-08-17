@@ -1,10 +1,10 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,21 +63,24 @@ C
       INTEGER IFM, NIV
       INTEGER IOCC, IBID, IAUX, JAUX
       INTEGER NRPASS, NBPASS, ADRECG
-      INTEGER       JCHEM, JCHAM, JRESU, JNCMP, NCMP, I,
-     &              JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD,
-     &              JTRAN, N1, N2, N3, JCMP1, JCMP2, JCMP3, NBC, NUME,
-     &              IRET, NBP, JINST, JORDR, JMODE, JABSC, JFREQ,
-     &              JNOEU, N11, N12, N13, N14, N15, N16, N17, N18,
-     &              JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
+      INTEGER JCHEM, JCHAM, JRESU, JNCMP, NCMP, I
+      INTEGER JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD
+      INTEGER JTRAN, N1, N2, N3, JCMP1, JCMP2, JCMP3, NBC, NUME
+      INTEGER IRET, NBP, JINST, JORDR, JMODE, JABSC, JFREQ
+      INTEGER JNOEU, N11, N12, N13, N14, N15, N16, N17, N18
+      INTEGER JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
       REAL*8        R8B
       LOGICAL       LMIMA, LMOYE, LEXTR, LMOYGR
       COMPLEX*16    C16B
-      CHARACTER*8   K8B, RESU, NOCMP(50), TYPARA(100), NOMCMP
+      CHARACTER*8   K8B, RESU, TYPARA(100), NOMCMP
       CHARACTER*16  K16B, NOMSY, TYSD
       CHARACTER*24  NOMOBJ, CHEXTR, NOPARA(100), KNUME
       CHARACTER*24 VALK(3)
       CHARACTER*24  NORECG
       CHARACTER*24  K24BID
+C
+      CHARACTER*24  NOCMP
+      INTEGER      JNOCMP,NCMPMX
 C
       LOGICAL OK
 C     ------------------------------------------------------------------
@@ -103,6 +106,9 @@ C
       ENDIF
 C               12   345678   9012345678901234
       NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
+      NOCMP  = '&&'//NOMPRO//'_NOM_CMP_TABLE  '
+      NCMPMX = 100
+      CALL WKVECT(NOCMP ,'V V K8',NCMPMX,JNOCMP)
 C
       JABSC = 0
       JCHEM = 0
@@ -255,10 +261,15 @@ C
             CALL JEVEUO ( NOMOBJ, 'L', JCMP1 )
             DO 10 I = 1 , NBC
                DO 12 J = 1 , NCMP
-                  IF ( NOCMP(J) .EQ. ZK8(JCMP1+I-1) ) GOTO 10
+                  IF ( ZK8(JNOCMP-1+J) .EQ. ZK8(JCMP1+I-1) ) GOTO 10
  12            CONTINUE
                NCMP = NCMP + 1
-               NOCMP(NCMP) = ZK8(JCMP1+I-1)
+               IF (NCMP.GT.NCMPMX) THEN
+                 NCMPMX = 2*NCMPMX
+                 CALL JUVECA(NOCMP ,NCMPMX)
+                 CALL JEVEUO(NOCMP ,'E',JNOCMP)
+               ENDIF
+               ZK8(JNOCMP-1+NCMP) = ZK8(JCMP1+I-1)
  10         CONTINUE
             CALL JEDETR ( NOMOBJ )
          ENDIF
@@ -291,28 +302,43 @@ C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
                      CALL CODENT ( ZI(JNUCP+I-1), 'G', K8B )
                      NOMCMP = 'VARI_'//K8B(1:3)
                      DO 122 J = 1 , NCMP
-                        IF ( NOCMP(J) .EQ. NOMCMP ) GOTO 120
+                        IF ( ZK8(JNOCMP-1+J) .EQ. NOMCMP ) GOTO 120
  122                 CONTINUE
                      NCMP = NCMP + 1
-                     NOCMP(NCMP) = NOMCMP
+                     IF (NCMP.GT.NCMPMX) THEN
+                       NCMPMX = 2*NCMPMX
+                       CALL JUVECA(NOCMP ,NCMPMX)
+                       CALL JEVEUO(NOCMP ,'E',JNOCMP)
+                     ENDIF
+                     ZK8(JNOCMP-1+NCMP) = NOMCMP
  120              CONTINUE
                ELSE
                   DO 124 I = 1 , NBC
                      DO 126 J = 1 , NCMP
-                        IF ( NOCMP(J) .EQ. ZK8(JCMP2+I-1) ) GOTO 124
+                        IF (ZK8(JNOCMP-1+J).EQ.ZK8(JCMP2+I-1)) GOTO 124
  126                 CONTINUE
                      NCMP = NCMP + 1
-                     NOCMP(NCMP) = ZK8(JCMP2+I-1)
+                     IF (NCMP.GT.NCMPMX) THEN
+                       NCMPMX = 2*NCMPMX
+                       CALL JUVECA(NOCMP ,NCMPMX)
+                       CALL JEVEUO(NOCMP ,'E',JNOCMP)
+                     ENDIF
+                     ZK8(JNOCMP-1+NCMP) = ZK8(JCMP2+I-1)
  124              CONTINUE
                ENDIF
                CALL JEDETR ( '&&'//NOMPRO//'.NU_CMP' )
             ELSE
                DO 20 I = 1 , NBC
                   DO 22 J = 1 , NCMP
-                     IF ( NOCMP(J) .EQ. ZK8(JCMP2+I-1) ) GOTO 20
+                     IF ( ZK8(JNOCMP-1+J) .EQ. ZK8(JCMP2+I-1) ) GOTO 20
  22               CONTINUE
                   NCMP = NCMP + 1
-                  NOCMP(NCMP) = ZK8(JCMP2+I-1)
+                  IF (NCMP.GT.NCMPMX) THEN
+                    NCMPMX = 2*NCMPMX
+                    CALL JUVECA(NOCMP ,NCMPMX)
+                    CALL JEVEUO(NOCMP ,'E',JNOCMP)
+                  ENDIF
+                  ZK8(JNOCMP-1+NCMP) = ZK8(JCMP2+I-1)
  20            CONTINUE
             ENDIF
             CALL JEDETR ( '&&'//NOMPRO//'.NCMP' )
@@ -332,10 +358,15 @@ C
             CALL GETVTX (MCF,'RESULTANTE',IOCC,1,NBC,ZK8(JCMP3),N1)
             DO 30 I = 1 , NBC
                DO 32 J = 1 , NCMP
-                  IF ( NOCMP(J) .EQ. ZK8(JCMP3+I-1) ) GOTO 30
+                  IF ( ZK8(JNOCMP-1+J) .EQ. ZK8(JCMP3+I-1) ) GOTO 30
  32            CONTINUE
                NCMP = NCMP + 1
-               NOCMP(NCMP) = ZK8(JCMP3+I-1)
+               IF (NCMP.GT.NCMPMX) THEN
+                 NCMPMX = 2*NCMPMX
+                 CALL JUVECA(NOCMP ,NCMPMX)
+                 CALL JEVEUO(NOCMP ,'E',JNOCMP)
+               ENDIF
+               ZK8(JNOCMP-1+NCMP) = ZK8(JCMP3+I-1)
  30         CONTINUE
             CALL JEDETR ( '&&'//NOMPRO//'.NCMP' )
          ENDIF
@@ -471,7 +502,7 @@ C
       IF ( (LEXTR .OR. LMOYE) .AND. JNCMP .NE. 0 ) THEN
          DO 40 I = 1 , NCMP
             NBP = NBP + 1
-            NOPARA(NBP) = NOCMP(I)
+            NOPARA(NBP) = ZK8(JNOCMP-1+I)
             TYPARA(NBP) = 'R'
  40      CONTINUE
       ENDIF
@@ -634,6 +665,8 @@ C              12345678      9012345678901234
       K24BID = LATAB1(1:8)//'           .TITR'
       CALL TITREA('T',LATAB1,LATAB1,K24BID,'C',' ',0,'G' )
 C
-      CALL JEDEMA ( )
+      CALL JEDETR(NOCMP )
+C
+      CALL JEDEMA()
 C
       END

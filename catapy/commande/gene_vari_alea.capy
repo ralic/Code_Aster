@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 GENE_VARI_ALEA=MACRO(nom="GENE_VARI_ALEA",
                      op_init=ops.build_gene_vari_alea,
-                     op=empty_macro,
+                     op=EMPTY_OPS,
                      sd_prod=reel,
                      reentrant='n',
                      fr="Générer une réalisation d'une variable aléatoire réelle " \

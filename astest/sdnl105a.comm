@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 # sdnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,8 +166,9 @@ OBSTACLE=DEFI_OBSTACLE(TYPE='BI_PLAN_Y',);
 
 
 #
-
-TRAN_GE1=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                   BASE_CALCUL='GENE',
+                   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          MATR_MASS=M_PROJ,
                          MATR_RIGI=K_PROJ,
                          INCREMENT=_F(INST_INIT=0.,
@@ -189,8 +190,9 @@ TRAN_GE1=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          INFO=1,);
 
 #
-
-TRAN_GE2=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+TRAN_GE2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                   BASE_CALCUL='GENE',
+                   SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                          MATR_MASS=M_PROJ,
                          MATR_RIGI=K_PROJ,
                          INCREMENT=_F(INST_INIT=0.,
@@ -217,8 +219,9 @@ TRAN_GE2=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                                   RIGI_NOR=1.E+8,),),);
 
 #
-
-TRAN_GE3=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+TRAN_GE3=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                   BASE_CALCUL='GENE',
+                   SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                          MATR_MASS=M_PROJ,
                          MATR_RIGI=K_PROJ,
                          INCREMENT=_F(INST_INIT=0.,

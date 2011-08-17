@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 # sdll23c.para = tps_job 60 mem_job 270Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,8 +74,8 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME1      )
 
 TABL_MAS=POST_ELEM(  MODELE=MODELE,
                          CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
-                        MASS_INER=_F(  TOUT = 'OUI',
-                                    GROUP_MA = 'MAILLAGE')
+                        MASS_INER=(_F(  TOUT = 'OUI',),
+                                    _F( GROUP_MA = 'MAILLAGE'))
                       )
 
 IMPR_TABLE(   TABLE=TABL_MAS )

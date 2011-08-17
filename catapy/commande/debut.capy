@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,10 +17,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
-DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
+DEBUT=MACRO(nom="DEBUT",
+            op=OPS("ops.build_debut"),
+            repetable='n',
             UIinfo={"groupes":("Gestion du travail",)},
-           fr="Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers",
-          sd_prod=ops.DEBUT,
+            fr="Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers",
+            sd_prod=ops.DEBUT,
 
          PAR_LOT         =SIMP(fr="mode de traitement des commandes",statut='f',typ='TXM',
                            into=("OUI","NON"),defaut="OUI"),

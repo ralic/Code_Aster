@@ -1,8 +1,8 @@
-#@ MODIF modelisa10 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa10 Messages  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,28 +24,33 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
-Le vecteur definissant l'axe de rotation a une composante non nulle suivant Ox ou Oz,
-ce qui induit un chargement non axisymetrique. Avec une modelisation AXIS ou AXIS_FOURIER,
-l'axe de rotation doit etre dirige suivant Oy.
+Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oz,
+ce qui induit un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
+l'axe de rotation doit être dirigé suivant Oy.
 """),
 
 2 : _("""
-Les coordonnees du centre de rotation ont au moins une composante non nulle, ce qui induit
-un chargement non axisymetrique. Avec une modelisation AXIS ou AXIS_FOURIER,
-le centre de rotation doit etre confondu avec l'origine.
+Les coordonnées du centre de rotation ont au moins une composante non nulle, ce qui induit
+un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
+le centre de rotation doit être confondu avec l'origine.
 """),
 
 3 : _("""
-Le vecteur definissant l'axe de rotation a une composante non nulle suivant Ox ou Oy,
-ce qui induit des forces centrifuges hors plan. Avec une modelisation C_PLAN ou D_PLAN,
-l'axe de rotation doit être dirige suivant Oz.
+Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oy,
+ce qui induit des forces centrifuges hors plan. Avec une modélisation C_PLAN ou D_PLAN,
+l'axe de rotation doit être dirigé suivant Oz.
 """),
 
 
 4 : _("""
 Les mailles affectées à la modélisation TUYAU ne semblent pas former des lignes continues.
-Il y a probablement un probleme dans le maillage (superposition d'éléments par exemple).
+Il y a probablement un problème dans le maillage (superposition d'éléments par exemple).
 Pour obtenir le détail des mailles affectées, utilisez INFO=2. 
+"""),
+
+5 : _("""
+Le quadrangle de nom %(k1)s est dégénéré : les cotés 1-2 et 1-3 sont colinéaires.
+Reprenez votre maillage.
 """),
 
 }

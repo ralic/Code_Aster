@@ -1,24 +1,26 @@
-#& MODIF COMMANDE  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GENIAUT S.GENIAUT
-from Macro.post_rupture_ops import post_rupture_ops
-POST_RUPTURE=MACRO(nom="POST_RUPTURE",op=post_rupture_ops,sd_prod=table_sdaster,
+
+POST_RUPTURE=MACRO(nom="POST_RUPTURE",
+                   op=OPS("Macro.post_rupture_ops.post_rupture_ops"),
+                   sd_prod=table_sdaster,
                    fr="post-traitements en Rupture",
                    reentrant='f',
                    UIinfo={"groupes":("Résultats et champs","Rupture",)},
@@ -36,7 +38,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",op=post_rupture_ops,sd_prod=table_sdaster,
                                                   'CUMUL_CYCLES',
                                                   'PILO_PROPA',
                                                  )
-                       ),                   
+                       ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'ABSC_CURV_NORM'
@@ -46,13 +48,13 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",op=post_rupture_ops,sd_prod=table_sdaster,
       b_absc = BLOC(condition="OPERATION == 'ABSC_CURV_NORM'",fr="normalise l'abscisse curviligne",
 
                     NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="ABSC_CURV_NORM",fr="Nom de la nouvelle colonne"),
-                  
+
                    ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'ANGLE_BIFURCATION'
 #-----------------------------------------------------------------------------------------------------------------------------------
-                  
+
       b_angle = BLOC(condition="OPERATION == 'ANGLE_BIFURCATION'  ",fr="Angle de bifurcation",
 
                      NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="BETA",fr="Nom de la nouvelle colonne"),
@@ -62,7 +64,6 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",op=post_rupture_ops,sd_prod=table_sdaster,
                                    MATER = SIMP(statut='o',typ=mater_sdaster,),
                                    MODELISATION  =SIMP(statut='o',typ='TXM',into=("AXIS","D_PLAN","C_PLAN"),),
                                    ),
-                  
                      ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
@@ -99,7 +100,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",op=post_rupture_ops,sd_prod=table_sdaster,
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'COMPTAGE_CYCLES'
 #-----------------------------------------------------------------------------------------------------------------------------------
-                  
+
       b_Comptage = BLOC(condition="OPERATION == 'COMPTAGE_CYCLES'  ",fr="Comptage des cycles",
 
                      NOM_PARA   = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
@@ -120,7 +121,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",op=post_rupture_ops,sd_prod=table_sdaster,
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'LOI_PROPA'
 #-----------------------------------------------------------------------------------------------------------------------------------
-                  
+
       b_Loi_Propa   = BLOC(condition="OPERATION == 'LOI_PROPA'  ",fr="calcul de l'incrément d'avancée de fissure par cycle",
 
          NOM_PARA       = SIMP(statut='f',typ='TXM',defaut="DELTA_A"   ,max=1,fr="Nom de la nouvelle colonne"),
@@ -130,19 +131,19 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",op=post_rupture_ops,sd_prod=table_sdaster,
          b_paris = BLOC(condition = "LOI=='PARIS'",
                         C = SIMP(statut='o',typ='R',),
                         M = SIMP(statut='o',typ='R',),
-                       ),
+         ),
 
-                        ),
+      ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'CUMUL_CYCLES'
 #-----------------------------------------------------------------------------------------------------------------------------------
-                  
+
       b_cumul = BLOC(condition="OPERATION == 'CUMUL_CYCLES'  ",fr="Cumul sur les cycles",
 
                      NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_A",fr="Nom de la colonne à traiter"),
                      CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="LINEAIRE",into=('LINEAIRE',)),
-                  
+
                      ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------

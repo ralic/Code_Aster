@@ -1,6 +1,6 @@
       SUBROUTINE CREPRN(LIGREZ,MOLOCZ,BASEZ,PRNMZ,PRNSZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
+C TOLE CRP_6
+C
       IMPLICIT NONE
 C-----------------------------------------------------------------
 C  BUT : CREATION :
@@ -273,7 +275,7 @@ C       ----------------------------------------------------
           CALL U2MESS('F','ASSEMBLA_10')
         END IF
 
-        ICODLA = 2**ICMP
+        ICODLA = LSHIFT(1,ICMP)
 
         DO 120,IMA = 1,NBSMA
           NOMACR = ZK8(IANMCR-1+IMA)

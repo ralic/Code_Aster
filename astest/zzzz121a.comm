@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 # zzzz121a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,7 +116,8 @@ for k in range(1,10):
 #
    MCG[k]=POST_ELEM(   MODELE=MODE[k],
                        CHAM_MATER=MATE[k],
-      MASS_INER=_F(  GROUP_MA = ( 'MOITIE1', 'MOITIE2', ),   TOUT = 'OUI', ),
+      MASS_INER=(_F(  GROUP_MA = ( 'MOITIE1', 'MOITIE2', ),),
+         _F(TOUT = 'OUI', ),),
       TITRE='MASSE, CENTRE DE GRAVITE ET INERTIE DE LA STRUCTURE'
                     )
 #

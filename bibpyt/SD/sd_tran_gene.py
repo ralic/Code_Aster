@@ -1,4 +1,4 @@
-#@ MODIF sd_tran_gene SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_tran_gene SD  DATE 17/08/2011   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,7 @@ class sd_tran_gene(sd_titre) :
         assert refd[0] != '' , refd
         sd2= sd_matr_asse_gene(refd[0]) ; sd2.check()
         assert refd[1] != '' , refd
-        sd2= sd_matr_asse_gene(refd[0]) ; sd2.check()
+        sd2= sd_matr_asse_gene(refd[1]) ; sd2.check()
         if refd[2] != '' :
             sd2= sd_matr_asse_gene(refd[2]) ; sd2.check()
         assert refd[3] != '' , refd

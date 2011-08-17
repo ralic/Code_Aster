@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv194a.para = tps_job 560 mem_job 128Mo ncpus 1 liste_test R
@@ -205,7 +205,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V79',
                    TYPE_TEST='MAX',
-                   PRECISION=(0.000001,1e-06,),
+                   PRECISION=1e-06,
                    VALE=488.168492,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLNL,
@@ -213,7 +213,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V80',
                    TYPE_TEST='MAX',
-                   PRECISION=(0.000001,1e-06,),
+                   PRECISION=1e-06,
                    VALE=8.015907E-03,
                    REFERENCE='NON_REGRESSION',),
                    ),)
@@ -269,7 +269,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL_CI,
                    NOM_CMP='SIXX',
                    MAILLE='M1',
                    POINT=1,
-                   PRECISION=(0.0005,1e-06,),
+                   PRECISION=(0.0001,1e-06,),
                    VALE=-25.172,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=SOLNL_CI,
@@ -310,7 +310,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V79',
                    TYPE_TEST='MAX',
-                   PRECISION=(0.0001,1e-06,),
+                   PRECISION=1e-06,
                    VALE=488.168492,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=SOLNL_CI,
@@ -318,7 +318,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V80',
                    TYPE_TEST='MAX',
-                   PRECISION=(0.0001,1e-06,),
+                   PRECISION=1e-06,
                    VALE=8.015907E-03,
                    REFERENCE='AUTRE_ASTER',),
                    ),)

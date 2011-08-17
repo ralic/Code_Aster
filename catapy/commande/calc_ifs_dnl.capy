@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,10 +20,12 @@
 #
 # MACRO DE COUPLAGE IFS AVEC SATURNE VIA YACS
 #
-from Macro.calc_ifs_dnl_ops import calc_ifs_dnl_ops
-#
-CALC_IFS_DNL= MACRO(nom='CALC_IFS_DNL',op=calc_ifs_dnl_ops,sd_prod=evol_noli,reentrant='f',
-            fr="Calcul de l'évolution dynamique d'une structure couplée à un domaine fluide (résolu avec le code Saturne) via YACS",
+CALC_IFS_DNL= MACRO(nom='CALC_IFS_DNL',
+                    op=OPS("Macro.calc_ifs_dnl_ops.calc_ifs_dnl_ops"),
+                    sd_prod=evol_noli,
+                    reentrant='f',
+                    fr="Calcul de l'évolution dynamique d'une structure couplée à un "\
+                       "domaine fluide (résolu avec le code Saturne) via YACS",
             UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS',),
                  CONCEPT_SENSIBLE('ENSEMBLE'),),

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER ILI, NUNOEL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,13 +19,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_6
 C----------------------------------------------------------------------
 C IN  ILI    I : NUMERO DU GROUPE DANS LE LIGREL
 C IN  NUNOEL I : NUMERO DU NOEUD
 C OUT NDDL   I : NOMBRE DE DDLS DE CE NOEUD
-C----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
 C----------------------------------------------------------------------
@@ -49,7 +47,7 @@ C---- DEBUT
       NDDL = 0
       DO 100 IEC = 1,NEC
          DO 10 J = 1,30
-            K = IAND(ZZPRNO(ILI,NUNOEL,IEC+2),2**J)
+            K = IAND(ZZPRNO(ILI,NUNOEL,IEC+2),LSHIFT(1,J))
             IF (K.GT.0) THEN
                NDDL = NDDL + 1
 

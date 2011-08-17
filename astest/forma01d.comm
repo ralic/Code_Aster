@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 # forma01d.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,8 +160,9 @@ LISTER=DEFI_LIST_REEL(DEBUT=0.0,
 #
 #
 #-----------------------------------------------------------------------
-
-TRANGEN1=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+                    BASE_CALCUL='GENE',
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          MATR_MASS=MASS_GEN,
                          MATR_RIGI=RIGI_GEN,
             AMOR_MODAL=_F(AMOR_REDUIT=(0.02,0.02,0.03,0.04,0.05,),),

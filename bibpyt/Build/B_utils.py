@@ -1,24 +1,24 @@
-#@ MODIF B_utils Build  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_utils Build  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -31,7 +31,7 @@ import sys
 from Noyau.N_ASSD import ASSD
 
 def RETLIST(v,mxval):
-   """ 
+   """
        Cette fonction retourne un tuple dont le premier element est sa longueur reelle
        eventuellement negative si supérieure a mxval
        et le deuxieme la liste complete qui sera tronquee a mxval dans le fortran
@@ -180,10 +180,10 @@ def Typast(ty):
       Cette fonction retourne une chaine de caracteres indiquant le type
       du concept ou de la liste de concepts passé en argument (ty)
    """
-   if type(ty) in (list, tuple): 
+   if type(ty) in (list, tuple):
 #      t=ty[0]
       return [Typast(elem) for elem in ty]
-   else : 
+   else :
       t=ty
    if t is None : return ""
    if t == 'I'  : return "IS "
@@ -198,3 +198,20 @@ def Typast(ty):
       return t.__name__
    return ""
 
+# utilisés pour l'évaluation des formules
+def miss_dble(list1, list2):
+    """Retourne 3 objets set :
+    - miss = elements de list1 absents de list2,
+    - inter = intersection de list1 et list2,
+    - dble = elements de list2 presents dans list1, fournis plusieurs fois."""
+    s_ini = set(list1)
+    inter = s_ini.intersection(list2)
+    miss = s_ini.copy()
+    dble = set()
+    for para in list2:
+        try:
+            miss.remove(para)
+        except KeyError:
+            if set(para).issubset(s_ini) and para.strip() != '':
+                dble.add(para)
+    return miss, inter, dble

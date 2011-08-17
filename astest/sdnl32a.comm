@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE IMPACT D'UNE POUTRE ARTICULEE SUR APPUI ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,9 +114,10 @@ LISTER=DEFI_LIST_REEL(  DEBUT=0.001,
                           INTERVALLE=_F(  JUSQU_A = 1.2E-2, NOMBRE = 11))
 
 #-----------------------------------------------------------------------
-
-TRANGEN=DYNA_TRAN_MODAL(  MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
-                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGEN=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                     BASE_CALCUL='GENE',
+                      MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
+                     SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                         AMOR_MODAL=_F(AMOR_REDUIT=( 0.01, 0.01, 0.01, 0.01, 0.01,
                                             0.01, 0.01, 0.01, 0.01, 0.01, ),),
                         ETAT_INIT=_F( VITE = VITINI),
@@ -181,9 +182,10 @@ TEST_FONCTION( VALEUR=_F(  FONCTION = F1,
                          VALE_REFE = 1.33693E+01)   )
 
 #-----------------------------------------------------------------------
-
-TRANGEN2=DYNA_TRAN_MODAL(  MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
-                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGEN2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                     BASE_CALCUL='GENE',
+                      MATR_MASS=MASSEGEN,   MATR_RIGI=RIGIDGEN,
+                      SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                         AMOR_MODAL=_F(AMOR_REDUIT=( 0.01, 0.01, 0.01, 0.01, 0.01,
                                             0.01, 0.01, 0.01, 0.01, 0.01, ),),
                         ETAT_INIT=_F( VITE = VITINI),
