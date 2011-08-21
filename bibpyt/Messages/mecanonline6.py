@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline6 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,12 +18,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# Attention a ne pas faire de retour à la ligne !
+
 def _(x) : return x
 
 cata_msg = {
 
 1 : _("""
- Instant de calcul: %(r1)19.12e 
+ Instant de calcul: %(r1)19.12e - Niveau de découpe: %(i1)d
 """),
 
 2 : _("""
@@ -96,16 +98,15 @@ cata_msg = {
 """),
 
 35 : _("""
- Vérifiez votre modèle ou essayez d'activer la gestion des événements (découpe du pas de temps par exemple) dans la commande DEFI_LIST_INST.
+ <Erreur> Il n'y a pas assez de temps CPU pour continuer les itérations de Newton
 """),
 
-36 : _("""
-    Le résidu de type <%(k1)s> vaut %(r1)19.12e au noeud et degré de liberté <%(k2)s> 
-"""),
+36 : _("""    Le résidu de type <%(k1)s> vaut %(r1)19.12e au noeud et degré de liberté <%(k2)s>"""),
 
 37 : _("""
   Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
  """),
+
 
 
 }

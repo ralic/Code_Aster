@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 28/03/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,6 +104,23 @@ Le cham_no_s est vide (i.e. il n'a aucune valeur).
 Erreur lors d'une transformation de cham_no_s en cham_no :
  Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
 """),
+
+14: _("""
+Erreur utilisateur dans la commande POST_CHAMP :
+ On demande l'extraction des champs sur une couche de numéro supérieur au nombre de couches.
+"""),
+
+15: _("""
+Erreur utilisateur dans la commande POST_CHAMP :
+ On demande l'extraction pour des champs n'ayant pas de "sous-points".
+"""),
+
+16: _("""
+Erreur utilisateur dans la commande POST_CHAMP :
+ On demande l'extraction des champs sur une fibre de numéro supérieur au nombre de fibres.
+"""),
+
+
 
 
 

@@ -4,7 +4,7 @@
      &                  RESOCO,VALINC,SOLALG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,7 +92,8 @@ C
       INTEGER      JDEPP ,JDEPDE
       INTEGER      INDRO ,ISNNEM 
       CHARACTER*2  CODRET
-      LOGICAL      SCOTCH     
+      LOGICAL      SCOTCH
+      INTEGER      DININS,LENIVO   
 C      
 C ----------------------------------------------------------------------
 C
@@ -116,7 +117,8 @@ C
       IF (LEXPL) THEN
         CALL NMIMPR(SDIMPR,'TITR','EXPLICITE',' ',INSTAP,0)
       ELSE
-        CALL NMIMPR(SDIMPR,'TITR','IMPLICITE',' ',INSTAP,0)
+        LENIVO = DININS(SDDISC,NUMINS)
+        CALL NMIMPR(SDIMPR,'TITR','IMPLICITE',' ',INSTAP,LENIVO)
       ENDIF  
 C
 C --- REINITIALISATION DU TABLEAU DE CONVERGENCE

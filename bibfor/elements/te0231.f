@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -195,7 +195,7 @@ C---- COMME POUR LA LONGUEUR
    60 CONTINUE
 
       IF (OPTION(8:9).EQ.'NO') THEN
-        CALL PPGAN2(JGANO,6,EFFOPG,ZR(IEFFOR))
+        CALL PPGAN2(JGANO,1,6,EFFOPG,ZR(IEFFOR))
       ELSE
         DO 70 I = 1,NPG
           ZR(IEFFOR-1+6* (I-1)+1) = EFFOPG(6* (I-1)+1)

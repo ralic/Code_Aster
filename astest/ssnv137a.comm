@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/08/2011   AUTEUR DURAND C.DURAND 
 # TITRE CABLE DE PRECONTRAINTE DANS UNE POUTRE DROITE EN BETON
 # ssnv137a.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,12 +129,6 @@ EVOLNOLI=CALC_ELEM( reuse=EVOLNOLI,
                             OPTION=('SIEF_ELNO','SIEQ_ELGA'),
                           RESULTAT=EVOLNOLI,
               )
-
-
-IMPR_RESU(RESU=(_F(RESULTAT=EVOLNOLI,
-NOM_CHAM='SIEQ_ELGA',GROUP_MA='POUTRE'),
-_F(RESULTAT=EVOLNOLI,
-NOM_CHAM='SIEF_ELGA',GROUP_MA='POUTRE'),),);
 
 
 #
@@ -706,5 +700,51 @@ TEST_RESU(   RESU=(_F(  RESULTAT = EVOLNOLI,
 
 #
 
-FIN( )
+VOLUM1=POST_ELEM( RESULTAT=EVOLNOLI,
+                  VOLUMOGRAMME=  _F(NOM_CMP='PRIN_1',
+                                    TYPE_MAILLE='3D',
+                                    TOUT='OUI',
+                                    NOM_CHAM='SIEQ_ELGA',
+                                    NORME='RELATIF',
+                                    BORNES=(-1.E+08,1.E+08),
+                                    NB_INTERV=5),
+                  MODELE=MODELE,
+              )
+
+TEST_TABLE(TABLE=VOLUM1,
+           FILTRE=(_F(NOM_PARA='NOM_CMP',
+                      VALE_K='PRIN_1',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=2,),),
+           NOM_PARA='DISTRIBUTION',
+           VALE=5.40695,
+           REFERENCE='NON_REGRESSION',)
+
+
+VOLUM2=POST_ELEM( RESULTAT=EVOLNOLI,
+                  VOLUMOGRAMME=  _F(NOM_CMP='PRIN_1',
+                                    TYPE_MAILLE='3D',
+                                    TOUT='OUI',
+                                    NOM_CHAM='SIEQ_ELGA',
+                                    NORME='ABSOLU',
+                                    BORNES=(-1.E+07,0.),
+                                    NB_INTERV=8),
+                  MODELE=MODELE,
+              )
+
+TEST_TABLE(TABLE=VOLUM2,
+           FILTRE=(_F(NOM_PARA='NOM_CMP',
+                      VALE_K='PRIN_1',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=3,),),
+           NOM_PARA='DISTRIBUTION',
+           VALE=4.32016,
+           REFERENCE='NON_REGRESSION',)
+
+
+FIN()
 #

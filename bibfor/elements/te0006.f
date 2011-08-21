@@ -1,7 +1,7 @@
       SUBROUTINE TE0006(OPTION,NOMTE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,13 +98,13 @@ C --- OPTION : SIEF_ELNO ------------------------------------------
 C ======================================================================
       ELSE IF (OPTION.EQ.'SIEF_ELNO') THEN
          NCMP = DIMCON
-         CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
+         CALL PPGAN2(JGANO,1,NCMP,ZR(ICHG),ZR(ICHN))
 C ======================================================================
 C --- OPTION : VARI_ELNO ------------------------------------------
 C ======================================================================
       ELSE IF (OPTION.EQ.'VARI_ELNO') THEN
          READ (ZK16(ICOMPO+1),'(I16)') NCMP
-         CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
+         CALL PPGAN2(JGANO,1,NCMP,ZR(ICHG),ZR(ICHN))
 C ======================================================================
 C --- OPTION : EPSI_ELGA ------------------------------------------
 C ======================================================================

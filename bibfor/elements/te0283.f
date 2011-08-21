@@ -1,6 +1,6 @@
       SUBROUTINE TE0283(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -229,6 +229,6 @@ CCDIR$ IVDEP
    71   CONTINUE
       ENDIF
       IF (ZK16(ICOMP) (1:9).EQ.'THER_HYDR')
-     &              CALL PPGAN2(JGANO2,1,HYDRGP,ZR(IHYDRP))
+     &              CALL PPGAN2(JGANO2,1,1,HYDRGP,ZR(IHYDRP))
 C FIN ------------------------------------------------------------------
       END

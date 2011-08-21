@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+%& MODIF TYPELEM  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,6 +37,7 @@ MODE_LOCAL__
     CCACOQU  = CACOQU   ELEM__         (EP       ALPHA    BETA     KAPPA    CTOR     EXCENT
                                         INERTIE  )
     CCACO3D  = CACO3D   ELEM__         (CRF      )
+    CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
     ECODRET  = CODE_I   ELEM__         (IRET     )
@@ -76,6 +77,7 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
+    EDEFOPG  = EPSI_R   ELGA__ MASS    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECONTPG  = SIEF_R   ELGA__ MASS    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ MASS    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNOR = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -85,6 +87,12 @@ MODE_LOCAL__
                                         QX       QY       )
     EEFGENOC = SIEF_C   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
                                         QX       QY       )
+    EEFGEPG  = SIEF_R   ELGA__ MASS    (NXX      NYY      NXY      MXX      MYY      MXY
+                                        QX       QY       )
+    EDEFGPG  = EPSI_R   ELGA__ MASS    (EXX      EYY      EXY      KXX      KYY      KXY
+                                        GAX      GAY      )
+    EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
+                                        GAX      GAY      )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
@@ -237,6 +245,12 @@ OPTION__
     REFE_FORC_NODA      416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
+    REPE_TENS           443   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  ECONTPG  PCOGAIN  EDEFOPG  PDEGAIN  
+                                     ESIGMNOR PCONOIN  EDEFONO  PDENOIN  CCACOQU  PCACOQU 
+                              OUT__  ECONTPG  PCOGAOUT EDEFOPG  PDEGAOUT ESIGMNOR PCONOOUT EDEFONO  PDENOOUT
+    REPE_GENE           443   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  EEFGEPG  PEFGAIN  EDEFGPG  PDGGAIN  
+                                     EEFGENOR PEFNOIN  EDEFGNO  PDGNOIN  CCACOQU  PCACOQU 
+                              OUT__  EEFGEPG  PEFGAOUT EDEFGPG  PDGGAOUT EEFGENOR PEFNOOUT EDEFGNO  PDGNOOUT
     RICE_TRACEY              -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA           401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I

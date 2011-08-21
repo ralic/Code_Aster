@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ASSEMBLA  DATE 22/08/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,6 +93,7 @@ C ---------------------------------------------------------------------
      &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,ILIMPB,
      &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,COMPT,
      &             NIVMPI,RANG,NBLOG,NBPROC
+      INTEGER LSHIFT
 
       REAL*8       TEMPS(6),RBID
       INTEGER VALI(4)

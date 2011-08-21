@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
       PARAMETER          (MXCMEL = 162)
       PARAMETER          (NBNOMX = 27)
       PARAMETER          (NBCONT =  6)
-      INTEGER            NBSIGM, IHARMO, NH, IDIM, IRET
+      INTEGER            NBSIGM, IHARMO, NH, IDIM, IRET, NBSP
       REAL*8             EPSI(NBCONT), EPSIM(NBCONT), DELTA(NBCONT)
       REAL*8             INSTAN, NHARM, REPERE(7)
       REAL*8             ENERPG(NBNOMX), EPSS(MXCMEL)
@@ -334,7 +334,8 @@ C     =======================================
  110       CONTINUE
         ELSE
           NCMP = 1
-          CALL PPGAN2 ( JGANO, NCMP, ENERPG, ZR(IDENER) )
+          NBSP = 1
+          CALL PPGAN2 ( JGANO, NBSP, NCMP, ENERPG, ZR(IDENER) )
         ENDIF
 C
 C --- OPTION ETOT_ELEM

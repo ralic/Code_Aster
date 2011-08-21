@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       LOGICAL AXI,GRAND
       REAL*8 EPS(6),VPG(162),POIDS,DFDI(60),F(3,3),RBID,TMP
-      INTEGER JGANO,NDIM,NCMP,NNO,NPG,KPG,KK,KSIG,NNOS
+      INTEGER JGANO,NDIM,NCMP,NNO,NPG,KPG,KK,KSIG,NNOS,NBSP
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEPL,IDEFO
 C ......................................................................
 
@@ -60,6 +60,7 @@ C ......................................................................
       GRAND = .FALSE.
       AXI = .FALSE.
       NCMP = 6
+      NBSP = 1
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
@@ -90,7 +91,7 @@ C         (DEFORMATIONS AUX POINTS DE GAUSS OU AUX NOEUDS)
           ZR(IDEFO+KK-1) = VPG(KK)
    30   CONTINUE
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-        CALL PPGAN2(JGANO,NCMP,VPG,ZR(IDEFO))
+        CALL PPGAN2(JGANO,NBSP,NCMP,VPG,ZR(IDEFO))
       END IF
 
       END

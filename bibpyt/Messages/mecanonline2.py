@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline2 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,16 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+ L'erreur précédente est fatale.
+ Conseils:
+   - S'il s'agit d'un manque de temps CPU, augmentez-le.
+   - Vérifiez votre modèle 
+   - Essayez d'activer la gestion des événements (découpe du pas de temps par exemple) dans la commande DEFI_LIST_INST.
+ 
+ La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
+"""),
 
 3 : _("""
 

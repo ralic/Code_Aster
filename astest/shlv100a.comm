@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (PENTA6 HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -438,11 +438,12 @@ TEST_RESU(RESU=(
 
 
 RESU1=MODI_REPERE(RESULTAT=DYNAH,
-                  MODI_CHAM=_F(MAILLE=('MA253',),
+                  MODI_CHAM=_F(
                                TYPE_CHAM='TENS_3D',
                                NOM_CHAM='SIGM_ELNO',
                                NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
-                  DEFI_REPERE=_F(REPERE='CYLINDRIQUE',AXE_Z=(0.,0.,1.,),
+                  REPERE='CYLINDRIQUE',
+                  AFFE=_F(AXE_Z=(0.,0.,1.,),MAILLE=('MA253',),
                                  ORIGINE=(0.,0.,0.,),),
                                );
 
@@ -515,11 +516,12 @@ TEST_RESU(RESU=(
       ),)
 
 RESU2=MODI_REPERE(RESULTAT=DYNAH,
-                  MODI_CHAM=_F(MAILLE=('MA253',),
+                  MODI_CHAM=_F(
                                TYPE_CHAM='TENS_3D',
                                NOM_CHAM='SIGM_NOEU',
                                NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
-                  DEFI_REPERE=_F(REPERE='CYLINDRIQUE',AXE_Z=(0.,0.,1.,),
+                  REPERE='CYLINDRIQUE',
+                  AFFE=_F(AXE_Z=(0.,0.,1.,),MAILLE=('MA253',),
                                  ORIGINE=(0.,0.,0.,),),
                                 );
 
@@ -558,11 +560,12 @@ TEST_RESU(RESU=(
 #
 
 RESU3=MODI_REPERE(RESULTAT=DYNAH,
-                  MODI_CHAM=_F(MAILLE=('MA253',),
+                  MODI_CHAM=_F(
                                TYPE_CHAM='TENS_3D',
                                NOM_CHAM='SIGM_ELNO',
                                NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
-                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+REPERE='UTILISATEUR',
+                  AFFE=_F(MAILLE=('MA253',),
                                  ANGL_NAUT=(0.,0.,0.,),),
                                );
 
@@ -602,11 +605,12 @@ TEST_RESU(RESU=(
 
 
 RESU4=MODI_REPERE(RESULTAT=DYNAH,
-                  MODI_CHAM=_F(MAILLE=('MA253',),
+                  MODI_CHAM=_F(
                                TYPE_CHAM='TENS_3D',
                                NOM_CHAM='SIGM_NOEU',
                                NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
-                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+REPERE='UTILISATEUR',
+                  AFFE=_F(MAILLE=('MA253',),
                                  ANGL_NAUT=(0.,0.,0.,),),
                   );
 
@@ -642,11 +646,12 @@ TEST_RESU(RESU=(
       ),)
 
 RESU5=MODI_REPERE(RESULTAT=DYNAH,
-                  MODI_CHAM=_F(MAILLE=('MA253',),
+                  MODI_CHAM=_F(
                                TYPE_CHAM='VECT_3D',
                                NOM_CHAM='DEPL',
                                NOM_CMP=('DX','DY','DZ',),),
-                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+REPERE='UTILISATEUR',
+                  AFFE=_F(MAILLE=('MA253',),
                                  ANGL_NAUT=(0.,0.,0.,),),
                   );
 

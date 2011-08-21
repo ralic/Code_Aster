@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,13 +29,13 @@ Erreur utilisateur (dans la commande AFFE_MATERIAU) :
   Dans ce matériau, il existe un coefficient de dilatation (ELAS/ALPHA)
   qui est une fonction de la température.
   Pour pouvoir utiliser cette fonction, il est nécessaire de transformer
-  cette fonction (changement de repère : TEMP_DEF_ALPHA -> TEMP_REF).
+  cette fonction (changement de repère : "TEMP_DEF_ALPHA" -> "TEMP_REF").
   Pour cela, l'utilisateur doit fournir une température de référence.
 
 Solution :
   Vérifier que les mailles affectées par le matériau %(k2)s sont bien
   toutes affectées par une température de référence
-  (AFFE/TEMP_REF ou AFFE_VARC/NOM_VARC='TEMP',VALE_REF).
+  (mot clé AFFE_VARC/NOM_VARC='TEMP',VALE_REF=...).
 """),
 
 2: _("""

@@ -1,6 +1,6 @@
       SUBROUTINE TUSIEF(OPTION,NOMTE,NBRDDL,B,VIN,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -298,7 +298,7 @@ C              KZ=D(DRZ)/DX
           DO 130 IGAU = 1,NPG
             VPG(IGAU) = DEGG(6* (IGAU-1)+I)
   130     CONTINUE
-          CALL PPGAN2(JGANO,1,VPG,VNO)
+          CALL PPGAN2(JGANO,1,1,VPG,VNO)
           DO 140 J = 1,NNO
             ZR(JOUT+6* (J-1)+I-1) = VNO(J)
   140     CONTINUE

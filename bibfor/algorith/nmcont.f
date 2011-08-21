@@ -1,8 +1,8 @@
-      SUBROUTINE NMCONT(FONACT,SDIMPR,SDERRO,DEFICO,RESOCO,
-     &                  MAXREL,SDTIME,CONVER)
+      SUBROUTINE NMCONT(FONACT,SDIMPR,SDERRO,SDDISC,DEFICO,
+     &                  RESOCO,MAXREL,SDTIME,CONVER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,6 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
+      CHARACTER*19 SDDISC
       CHARACTER*24 SDTIME,SDIMPR,SDERRO,DEFICO,RESOCO
       INTEGER      FONACT(*)
       LOGICAL      MAXREL,CONVER
@@ -31,7 +32,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME)
 C
-C AFFICHAGE DU TABLEAU DE CONVERGENCE
+C AFFICHAGE SUR ITERATION DE NEWTON
 C
 C ----------------------------------------------------------------------
 C
@@ -57,30 +58,36 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER*16 K16BLA
-      LOGICAL      LTABL,ERROR
+      CHARACTER*16 K16BLA,NOMEVD
+      LOGICAL      LTABL,ERROR,ITEMAX,MTCPUI
       REAL*8       TIME
       INTEGER      IBID,MMITGO
       LOGICAL      ISFONC,LCTCD
       LOGICAL      CFDISL,LALLV,CTCGEO,CTCFIX
       CHARACTER*24 CLREAC
       INTEGER      JCLREA
+      LOGICAL      LACTI
+      INTEGER      IECHEC,NECHEC
+      CHARACTER*8  K8BID
+      REAL*8       R8BID
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+C --- INITIALISATIONS
+C
+      K16BLA = ' '
+C
 C --- FONCTIONNALITES ACTIVEES
 C
       LCTCD  = ISFONC(FONACT,'CONT_DISCRET')
 C
-C --- ERREUR OU PAS ?
+C --- ERREURS
 C
       CALL NMERGE(SDERRO,'GET','ALL',ERROR )
-C
-C --- INITIALISATIONS
-C
-      K16BLA = ' ' 
+      CALL NMERGE(SDERRO,'GET','ITX',ITEMAX)
+      CALL NMERGE(SDERRO,'GET','TIN',MTCPUI) 
 C
 C --- TEMPS PASSE DANS L'ITERATION
 C      
@@ -119,6 +126,25 @@ C
           ENDIF
         ENDIF
       ENDIF
+C
+C --- AFFICHAGE ERREUR
+C
+      IF (ERROR.OR.ITEMAX.OR.MTCPUI) THEN
+        CALL NMERIM(SDERRO,SDIMPR)
+      ENDIF
+C      
+C --- AFFICHAGE EVENT-DRIVEN DECLENCHE
+C
+      CALL UTDIDT('L'   ,SDDISC,'LIST',IBID  ,'NECHEC',
+     &            R8BID ,NECHEC,K8BID )
+      DO 100 IECHEC = 1,NECHEC
+        CALL DIEVEN(SDDISC,IECHEC,LACTI )
+        IF (LACTI) THEN
+          CALL UTDIDT('L'   ,SDDISC,'ECHE',IECHEC,'NOM_EVEN',
+     &                R8BID ,IBID  ,NOMEVD)
+          CALL U2MESK('I','DISCRETISATION_50',1,NOMEVD)
+        ENDIF
+ 100  CONTINUE    
 C
       CALL JEDEMA()
       END

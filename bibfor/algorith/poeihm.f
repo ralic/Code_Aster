@@ -9,7 +9,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C =====================================================================
       DATA NMIL  /8,6/
 C =====================================================================
       IF (MODINT .NE. 'RED' ) THEN
-         CALL PPGAN2(JGAO,NCMP,VPG,VNO1)
+         CALL PPGAN2(JGAO,1,NCMP,VPG,VNO1)
 
          DO 110 I=1,NNO1
                DO 120 J=1,NVIM
@@ -125,8 +125,8 @@ C =====================================================================
             DO 200 I=1,NCMP*NPG2
                SPG2(I) = VPG(NCMP*NPG+I)
  200        CONTINUE
-            CALL PPGAN2(JGAPG1,NCMP,SPG1,SEFPG1)
-            CALL PPGAN2(JGASO1,NCMP,SPG2,SEFSO1)
+            CALL PPGAN2(JGAPG1,1,NCMP,SPG1,SEFPG1)
+            CALL PPGAN2(JGASO1,1,NCMP,SPG2,SEFSO1)
             DO 10 I=1,NNO1
                DO 20 J=1,NVIM
                   VNO((NEXT(I)-1)*NCMP+J) = SEFPG1((I-1)*NCMP+J)
@@ -137,8 +137,8 @@ C =====================================================================
                   VNO((NEXT2(I)-1)*NCMP+J) = SEFSO1((I-1)*NCMP+J)
  30            CONTINUE
  10         CONTINUE
-            CALL PPGAN2(JGAPG2,NCMP,SPG1,SEFPG2)
-            CALL PPGAN2(JGASO2,NCMP,SPG2,SEFSO2)
+            CALL PPGAN2(JGAPG2,1,NCMP,SPG1,SEFPG2)
+            CALL PPGAN2(JGASO2,1,NCMP,SPG2,SEFSO2)
             DO 40 I=1,NNO2
                DO 50 J=1,NVIM
                   VNO((NMIL(I)-1)*NCMP+J) = SEFPG1((I-1)*NCMP+J)
@@ -159,8 +159,8 @@ C =====================================================================
             DO 400 I=1,NCMP*NPG2
                VPG2(I) = VPG(NCMP*NPG+I)
  400        CONTINUE
-            CALL PPGAN2(JGAPG1,NCMP,VPG1,VARPG1)
-            CALL PPGAN2(JGASO1,NCMP,VPG2,VARSO1)
+            CALL PPGAN2(JGAPG1,1,NCMP,VPG1,VARPG1)
+            CALL PPGAN2(JGASO1,1,NCMP,VPG2,VARSO1)
             DO 70 I=1,NNO1
                DO 80 J=1,NVIM
                   VNO((NEXT(I)-1)*NCMP+J) = VARPG1((I-1)*NCMP+J)
@@ -171,8 +171,8 @@ C =====================================================================
                   VNO((NEXT2(I)-1)*NCMP+J) = VARSO1((I-1)*NCMP+J)
  90            CONTINUE
  70         CONTINUE
-            CALL PPGAN2(JGAPG2,NCMP,VPG1,VARPG2)
-            CALL PPGAN2(JGASO2,NCMP,VPG2,VARSO2)
+            CALL PPGAN2(JGAPG2,1,NCMP,VPG1,VARPG2)
+            CALL PPGAN2(JGASO2,1,NCMP,VPG2,VARSO2)
             DO 71 I=1,NNO2
                DO 81 J=1,NVIM
                   VNO((NMIL(I)-1)*NCMP+J) = VARPG1((I-1)*NCMP+J)

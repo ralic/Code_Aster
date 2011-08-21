@@ -1,4 +1,4 @@
-#@ MODIF discretisation2 Messages  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF discretisation2 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

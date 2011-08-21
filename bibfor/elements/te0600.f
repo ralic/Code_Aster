@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE GRANET S.GRANET
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -431,7 +431,7 @@ C ======================================================================
   210          CONTINUE
   200       CONTINUE
          ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-            CALL PPGAN2(JGANO,6,EPSM,ZR(IDEFO))
+            CALL PPGAN2(JGANO,1,6,EPSM,ZR(IDEFO))
          ELSE
             CALL ASSERT(.FALSE.)
          ENDIF

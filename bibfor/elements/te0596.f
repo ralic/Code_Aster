@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       REAL*8             POIDS, DFDX(9), DFDY(9)
       REAL*8             EPSI, R8PREM,  DLAGTE(18), GRADT(2)
       REAL*8             THETAX, THETAY
-      INTEGER            IGEOM, NCMP, KP, I, K, IDEB, IFIN
+      INTEGER            IGEOM, NCMP, NBSP, KP, I, K, IDEB, IFIN
       INTEGER            ITEMP, IDEULT, IDLAGT, ITHETA
       INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
 C
@@ -119,6 +119,7 @@ C
 C
 C
       NCMP = 1
-      CALL PPGAN2 ( JGANO, NCMP, DLAGTE, ZR(IDLAGT) )
+      NBSP = 1
+      CALL PPGAN2 ( JGANO, NBSP, NCMP, DLAGTE, ZR(IDLAGT) )
 C
       END

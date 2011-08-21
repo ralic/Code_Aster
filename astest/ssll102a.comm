@@ -1,4 +1,4 @@
-# MODIF  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,8 +165,8 @@ RESU2=MODI_REPERE(
                                 _F(NOM_CHAM   = 'EFCA_ELNO',
                                    NOM_CMP    = ('FX','FY','FZ','MX','MY','MZ',),
                                    TYPE_CHAM  = 'TORS_3D',),),
-                   DEFI_REPERE = _F(
-                                   REPERE    = 'UTILISATEUR',
+                   REPERE    = 'UTILISATEUR',
+                   AFFE = _F(
                                    ANGL_NAUT = (0.,0.,0.,),
                                   ),
                   INFO=1,

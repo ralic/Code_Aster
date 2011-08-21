@@ -4,7 +4,7 @@
       CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,6 +119,9 @@ C DEB-------------------------------------------------------------------
       ELSEIF ( QUESTI .EQ. 'NOM_MODELE' ) THEN
          CALL JEVEUO ( NOMOB//'.CELK','L', JCELK )
          CALL DISMLG (  QUESTI, ZK24(JCELK), REPI, REPK, IERD )
+
+      ELSEIF ( QUESTI .EQ. 'MXNBSP' ) THEN
+        REPI=MAX(1,ZI(JCELD-1+3))
 
       ELSEIF ( QUESTI .EQ. 'MXVARI' ) THEN
         REPI=MAX(1,ZI(JCELD-1+4))

@@ -1,7 +1,7 @@
       SUBROUTINE TE0580 ( OPTION, NOMTE )
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C                          --------------
  12       CONTINUE
  10     CONTINUE
 C       -- PASSAGE GAUSS -> NOEUDS :
-        CALL PPGAN2 ( JGANO, 6, VPG ,  VNO )
+        CALL PPGAN2 ( JGANO, 1, 6, VPG ,  VNO )
 C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
         CALL DXSIRO ( NNO, T2VE, VNO, ZR(JSIGM) )
 C
@@ -94,7 +94,7 @@ C                               --------------
             VPG(IPG) = ZR(JVARI-1+(IPG-1)*NCMP*NBSP+(NUSP-1)*NCMP+ICMP)
  22       CONTINUE
 C         -- PASSAGE GAUSS -> NOEUDS :
-          CALL PPGAN2 ( JGANO, 1, VPG ,  VNO )
+          CALL PPGAN2 ( JGANO, 1, 1, VPG ,  VNO )
           DO 24, INO=1,NNO
             ZR(JVARN-1 + (INO-1)*NCMP + ICMP) = VNO(INO)
  24       CONTINUE

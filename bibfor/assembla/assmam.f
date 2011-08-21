@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ASSEMBLA  DATE 22/08/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -237,7 +237,7 @@ C ------------------------------------------------------------------
 C ------------------------------------------------------------------
 C
 C     -- IL EXISTE TROIS FORMES DE CALCUL DISTRIBUE (DS LE SENS TOUS LES
-C        PROCESSEURS NE CONNAISSENT QU'UNE PARTIE DE LA MATRICE) BASES 
+C        PROCESSEURS NE CONNAISSENT QU'UNE PARTIE DE LA MATRICE) BASES
 C        SUR UNE PARTITION:
 C        * FETI SEQ ET //
 C        * // DISTRIBUE
@@ -551,8 +551,7 @@ C         =============================
 
 C           3.1 TRAITEMENT DES MACRO-ELEMENTS :
 C           ----------------------------------
-            CALL ASSMA2(LMASYM,TT,MAT19,NU14,NCMP,MATEL,C1,JVALM,JTMP2,
-     &                  LGTMP2)
+            CALL ASSMA2(LMASYM,TT,NU14,NCMP,MATEL,C1,JVALM,JTMP2,LGTMP2)
 
 
 C           3.2 TRAITEMENT DES ELEMENTS FINIS CLASSIQUES

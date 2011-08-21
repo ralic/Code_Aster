@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE SOUS PRESSION A TEMPERATURE CONSTANTE 
 # hsnv134b.para = tps_job 900 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,14 +32,6 @@
 # *flow norton
 # K 253.5497
 # n 4.39
-# *criterion anisotropic orthotropic
-# c11 0.294267      c22 0.6666667      c33 0.476
-# c44 0.5            c55  0.5           c66 0.5
-# c12 -0.242467      c23  -0.4242    c31 -0.0518
-# *isotropic constant
-# R0 0.
-# ***return
-
 DEBUT(CODE=_F(NOM='HSNV134B',NIV_PUB_WEB='INTERNET',),);
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
@@ -200,17 +192,19 @@ U=CALC_NO(reuse =U,
 
 U_C=MODI_REPERE(RESULTAT=U,
                 INST=100.,
-                MODI_CHAM=(_F(GROUP_NO=('NA','NB'),
+                MODI_CHAM=(_F(
                               TYPE_CHAM='TENS_3D',
                               NOM_CHAM='SIEF_NOEU',
                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
-                           _F(GROUP_NO=('NA','NB'),
+                           _F(
                               TYPE_CHAM='TENS_3D',
                               NOM_CHAM='EPSI_NOEU',
                               NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),),),
-                   DEFI_REPERE=_F(REPERE='CYLINDRIQUE',
-                                  ORIGINE=(0.0,0.0,0.0,),
-                                  AXE_Z=(0.0,0.0,1.0,),),);
+                 REPERE='CYLINDRIQUE',
+                                 AFFE=_F( ORIGINE=(0.0,0.0,0.0,),
+                                  AXE_Z=(0.0,0.0,1.0,),
+                                  GROUP_NO=('NA','NB'),),
+                                  );
 
 # NA (CE NOEUD SE SITUE A L INTERIEUR DU TUBE EN Y=0)
 # TEST DES TROIS DEFORMATIONS ET DES TROIS CONTRAINTES

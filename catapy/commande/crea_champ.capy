@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,8 +129,12 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                              ),
 #        ------------------------------------------------------------------
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
-             regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE'),),
-#                     PRESENT_PRESENT('GRILLE_AUX','FISSURE'),),
+             regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE'),
+                     PRESENT_ABSENT('MAILLAGE','FISSURE','RESULTAT'),
+                     PRESENT_ABSENT('FISSURE','MAILLAGE','RESULTAT','TABLE'),
+                     PRESENT_ABSENT('RESULTAT','FISSURE','MAILLAGE','TABLE'),
+                     PRESENT_ABSENT('TABLE','RESULTAT','FISSURE'),
+                     ),
              MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
              FISSURE         =SIMP(statut='f',typ=(fiss_xfem) ),
              RESULTAT        =SIMP(statut='f',typ=(resultat_sdaster) ),
@@ -144,11 +148,8 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                                                                   "GRI.LNNO","GRI.LTNO","GRI.GRLNNO","GRI.GRLTNO")),
 
              ),
-                 
+
              b_extr_table    =BLOC(condition = "TABLE != None",
-                      regles=( EXCLUS('MODELE','MAILLAGE'),
-                               EXCLUS('PROL_ZERO','MAILLAGE'),),
-                      MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster),),
                       MODELE          =SIMP(statut='f',typ=(modele_sdaster),),
                       OPTION          =SIMP(statut='f',typ='TXM'),
                       PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),

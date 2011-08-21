@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF utilitai8 Messages  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -251,7 +251,7 @@ Conseil:
 60 : _("""
  L'intégrale d'un champ sur des éléments de structure
 (poutre, plaque, coque, tuyau, poutre multi-fibres) n'est pas programmée.
- Réduiser la zone de calcul par le mot-clé GROUP_MA/MAILLE.
+ Réduisez la zone de calcul par le mot-clé GROUP_MA/MAILLE.
 """),
 
 61 : _("""

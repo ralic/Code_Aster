@@ -1,4 +1,4 @@
-#@ MODIF etatinit Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF etatinit Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# Attention a ne pas faire de retour à la ligne !
 
 def _(x) : return x
 
@@ -51,36 +53,24 @@ cata_msg = {
   Le champ <%(k1)s> (ou sa dérivée pour la sensibilité) n'est pas trouvé dans l'ETAT_INIT et on ne sait pas l'initialiser à zéro.
 """),
 
-31 : _("""
-  Le champ <%(k1)s> est initialisé a zéro.
-"""),
+31 : _("""  Le champ <%(k1)s> est initialisé a zéro"""),
 
-32 : _("""
-  Le champ <%(k1)s> est lu dans l'ETAT_INIT dans la structure de données résultats de nom <%(k2)s>.
-"""),
+32 : _("""  Le champ <%(k1)s> est lu dans l'ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""),
 
-33 : _("""
-  Le champ <%(k1)s> est lu dans l'ETAT_INIT, par un champ donné explicitement.
-"""),
+33 : _("""  Le champ <%(k1)s> est lu dans l'ETAT_INIT, par un champ donné explicitement"""),
 
-34 : _("""
-  Le champ de température initiale est calculé par un état stationnaire.
-"""),
+34 : _("""  Le champ de température initiale est calculé par un état stationnaire"""),
 
-35 : _("""
-  Le champ de température initiale est donné par une valeur qui vaut %(r1)19.12e.
-"""),
+35 : _("""  Le champ de température initiale est donné par une valeur qui vaut %(r1)19.12e"""),
 
 50 : _("""
   Le champ <%(k1)s> est d'un type inconnu.
 """),
 
-51 : _("""
-  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On le convertit automatiquement.
-"""),
+51 : _("""  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On le convertit automatiquement"""),
 
 52 : _("""
-  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On ne sait pas le convertir automatiquement.
+  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On ne sait pas le convertir automatiquement
 """),
 
 }

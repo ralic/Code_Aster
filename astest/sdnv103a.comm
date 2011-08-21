@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103a.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,7 +123,9 @@ L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
                                      NOMBRE=316,),),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
-                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        ECHEC=_F(EVENEMENT='ERREUR',
+                                 ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
                                  SUBD_PAS=2,
                                  SUBD_PAS_MINI=1.E-30,),);
 #

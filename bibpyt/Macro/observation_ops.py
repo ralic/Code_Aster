@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF observation_ops Macro  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -505,16 +505,16 @@ def observation_ops(self,
                       maya = mayanum
                     list_ma = find_ma(maya, {typ : modi_rep[typ]})
 
-                mcfact1.update({ 'MAILLE'    : list_ma })
                 angl_naut = crea_repere_xy(vect_x, vect_y)
 
-                mcfact2.update({ 'REPERE'    : 'UTILISATEUR',
+                mcfact2.update({ 'MAILLE'    : list_ma ,
                                  'ANGL_NAUT' : angl_naut })
 
                 argsm = {'MODI_CHAM'   : mcfact1,
-                        'DEFI_REPERE' : mcfact2 }
+                        'AFFE' : mcfact2 }
 
                 __bidon = MODI_REPERE( RESULTAT    = __proj,
+                                      REPERE    = 'UTILISATEUR',
                                       NUME_ORDRE  = num_ordr,
                                       **argsm)
                 DETRUIRE( CONCEPT= _F( NOM = __proj ), INFO=1)
@@ -551,12 +551,12 @@ def observation_ops(self,
                     ind_no = nom_allno.index(nomnoe)
                     angl_naut = crea_repere(chnorm, ind_no, vect)
 
-                    mcfact1.update({ 'NOEUD'     : nomnoe })
-                    mcfact2.update({ 'REPERE'    : 'UTILISATEUR',
+                    mcfact2.update({ 'NOEUD'     : nomnoe,
                                      'ANGL_NAUT' : angl_naut})
                     argsm = {'MODI_CHAM'   : mcfact1,
-                            'DEFI_REPERE' : mcfact2 }
+                            'AFFE' : mcfact2 }
                     __bid[k+1] = MODI_REPERE( RESULTAT    = __bid[k],
+                                              REPERE    = 'UTILISATEUR',
                                               TOUT_ORDRE  = 'OUI',
                                               CRITERE     = 'RELATIF',
                                               **argsm)
@@ -570,26 +570,27 @@ def observation_ops(self,
               if type_cham == 'TENS_2D' or type_cham == 'TENS_3D' :
                   for typ in ['MAILLE','GROUP_MA',]:
                     if modi_rep.has_key(typ) :
-                        mcfact1.update({typ : modi_rep[typ]})
+                        mcfact2.update({typ : modi_rep[typ]})
               else:
                 for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA']:
                     if modi_rep.has_key(typ) :
-                        mcfact1.update({typ : modi_rep[typ]})
+                        mcfact2.update({typ : modi_rep[typ]})
 
               if modi_rep['REPERE'] == 'CYLINDRIQUE' :
                     origine = modi_rep['ORIGINE']
                     axe_z   = modi_rep['AXE_Z']
-                    mcfact2.update({ 'REPERE'  : 'CYLINDRIQUE',
+                    mcfact2.update({ 
                                      'ORIGINE' : origine,
                                      'AXE_Z'   : axe_z })
 
               elif modi_rep['REPERE'] == 'UTILISATEUR' :
                     angl_naut = modi_rep['ANGL_NAUT']
-                    mcfact2.update({ 'REPERE'    : 'UTILISATEUR',
+                    mcfact2.update({ 
                                      'ANGL_NAUT' : angl_naut })
 
               argsm = {'MODI_CHAM'   : mcfact1,
-                      'DEFI_REPERE' : mcfact2 }
+                      'REPERE'  :  modi_rep['REPERE'],
+                      'AFFE' : mcfact2 }
 
               __bidon = MODI_REPERE( RESULTAT    = __proj,
                                      CRITERE     = 'RELATIF',

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,7 +239,7 @@ C
       IF (OPTION(8:9).EQ.'NO') THEN
         NCMP = 3
         NNOS = 3
-        CALL PPGAN2(JGANO,NCMP,FLUPG,ZR(IFLUXN))
+        CALL PPGAN2(JGANO,1,NCMP,FLUPG,ZR(IFLUXN))
       END IF
 C
       END

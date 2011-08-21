@@ -1,0 +1,355 @@
+# MODIF  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+# TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
+# tplp107b.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# importation de sympy 
+import sympy,math
+
+# ================================================================================================================================================================================
+def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
+     """ RESULTAT  : SD Resultat contenant la solution calculee
+         Sol_Ana   : Solution analytique sous forme d une liste de FORMULEs Aster
+         MAIL      : SD Maillage
+         MODELE    : SD Modele de la solution calculee
+         GROUP_MA  : Entitee sur laquelle on veut calculer la norme
+
+         OUT : {'NormeL2Erreur':NormeL2Erreur,'NormeInfSolAna':NormeInfSolAna,'NormeInfErreur':NormeInfErreur}
+     """
+
+     # ========================================================================================
+     #          Creation de la solution analytique en deplacement
+     # ========================================================================================
+     CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
+                     NOM_CHAM='GEOMETRIE', MAILLAGE=MAIL, INFO=1);
+
+     TEMP1=CREA_CHAMP(OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_NEUT_F',
+                      MAILLAGE=MAIL,
+                      AFFE=(_F( GROUP_MA=GROUP_MA, NOM_CMP = 'X1', VALE_F = Sol_Ana[0]),
+                           ),);
+
+     TEMP2=CREA_CHAMP(OPERATION='EVAL',
+                      TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=TEMP1,
+                      CHAM_PARA=CHXN);
+
+     Uana=CREA_CHAMP(OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_TEMP_R',
+                     MAILLAGE=MAIL,
+                     ASSE=(_F(GROUP_MA=GROUP_MA,
+                              CHAM_GD = TEMP2,
+                              NOM_CMP = 'X1',
+                              NOM_CMP_RESU = 'TEMP',),
+                           ));
+
+     Ucalc = CREA_CHAMP(OPERATION='EXTR',
+                        NOM_CHAM = 'TEMP' , TYPE_CHAM = 'NOEU_TEMP_R',
+                        RESULTAT = RESULTAT ,);
+
+     # ========================================================================================
+     #          Creation de la solution analytique en deplacement aux points d'integration
+     # ========================================================================================
+
+     CHXG=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELGA_GEOM_R',PROL_ZERO='OUI',
+                     CHAM_GD=CHXN, MODELE=MODELE, );
+
+
+     TEMP3=CREA_CHAMP(OPERATION='AFFE',
+                      TYPE_CHAM='ELGA_NEUT_F',
+                      MODELE=MODELE,
+                      PROL_ZERO='OUI',
+                      AFFE=(_F(GROUP_MA=GROUP_MA,
+                               NOM_CMP = 'X1',
+                               VALE_F = Sol_Ana[0]),
+                            ),);
+
+     UanaG=CREA_CHAMP(OPERATION='EVAL',
+                      TYPE_CHAM='ELGA_NEUT_R',
+                      CHAM_F=TEMP3,
+                      CHAM_PARA=CHXG,
+                      );
+
+     # ========================================================================================
+     #          Creation de la solution calculee en deplacement aux points d'integration
+     # ========================================================================================
+
+     Ucalc1=CREA_CHAMP(OPERATION='ASSE',
+                       TYPE_CHAM='NOEU_NEUT_R',
+                       MAILLAGE=MAIL,
+                       ASSE=(_F(GROUP_MA=GROUP_MA,
+                                CHAM_GD = Ucalc,
+                                NOM_CMP = 'TEMP',
+                                NOM_CMP_RESU = 'X1',),
+                             ),);
+
+     UcalcG=CREA_CHAMP(OPERATION='DISC',
+                       TYPE_CHAM='ELGA_NEUT_R',
+                       MODELE=MODELE,
+                       PROL_ZERO='OUI',
+                       CHAM_GD=Ucalc1,
+                       );
+
+
+     # ========================================================================================
+     #          Calcul de la norme L2 de l'erreur en deplacement et de la repartition de l'erreur
+     # ========================================================================================
+
+     DIFFG=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_TEMP_R',MODELE=MODELE,
+                      PROL_ZERO='OUI',
+                      ASSE=(_F(GROUP_MA=GROUP_MA, CHAM_GD=UcalcG,CUMUL='OUI',COEF_R=1., NOM_CMP='X1',NOM_CMP_RESU='TEMP',),
+                            _F(GROUP_MA=GROUP_MA, CHAM_GD=UanaG, CUMUL='OUI',COEF_R=-1.,NOM_CMP='X1',NOM_CMP_RESU='TEMP',),
+                            ),);
+
+     DIFFN=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=MODELE,
+                      PROL_ZERO='OUI',
+                      ASSE=(_F(GROUP_MA=GROUP_MA, CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='TEMP',NOM_CMP_RESU='TEMP',),
+                            _F(GROUP_MA=GROUP_MA, CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='TEMP',NOM_CMP_RESU='TEMP',),
+                            ),);
+
+     tab=POST_ELEM(NORME=_F(TYPE_NORM='L2',
+                            GROUP_MA=GROUP_MA,
+                            CHAM_GD=DIFFG,
+                            MODELE=MODELE,
+                            ),)
+     NormeL2Erreur=tab['VALE_NORM',1]
+
+
+     DETRUIRE(CONCEPT=(_F(NOM=CHXN),
+                        _F(NOM=TEMP1),
+                        _F(NOM=TEMP2),
+                        _F(NOM=CHXG),
+                        _F(NOM=TEMP3),
+                        _F(NOM=UanaG),
+                        _F(NOM=Ucalc1),
+                        _F(NOM=UcalcG),
+                        _F(NOM=DIFFG),
+                        _F(NOM=tab),
+                       ),
+               INFO=1,
+              );
+
+     return {'NormeL2Erreur':NormeL2Erreur,'Ucalc':Ucalc,'Uana':Uana, 'DIFFN':DIFFN}
+# ================================================================================================================================================================================
+
+
+
+DEBUT(CODE=_F( NOM = 'TPLP107B',NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='NON',
+      DEBUG=_F(SDVERI='OUI',),
+      IGNORE_ALARM='SUPERVIS_1',)
+
+# Conductivite thermique du milieu
+Lambda=15;
+
+# ========================================================================================
+#          Creation de la solution manufacturee
+# ========================================================================================
+
+# definition des variables du calcul symbolique
+X,Y=sympy.symbols('XY');
+S=sympy.Function('S');
+T=sympy.Function('T');
+N=sympy.Function('N');
+F=sympy.Function('F');
+
+
+# Definition de la solution manufacturee
+T=100*(X**6+Y**6);
+
+
+# Deduction de la fonction source de chaleur, ie: S=-laplacien(F(X,Y))
+S=-Lambda*(sympy.diff(sympy.diff(T,X),X)+sympy.diff(sympy.diff(T,Y),Y));
+
+
+# Deduction des conditions de Neumann
+N=Lambda*sympy.diff(T,X);
+
+
+
+#Definition du materiau
+ACIER=DEFI_MATERIAU(THER=_F(LAMBDA=Lambda),);
+
+                          
+# Transformation des formules Sympy en formules Aster
+TT=FORMULE(NOM_PARA=('X','Y'),VALE=str(T));
+SS=FORMULE(NOM_PARA=('X','Y'),VALE=str(S));
+NN=FORMULE(NOM_PARA=('X','Y'),VALE=str(N));
+
+
+
+#================================================================================================
+# Debut de l'etude de la convergence           
+#================================================================================================
+  
+#nombre de remaillege
+nb_remail=4;
+
+
+# initialisation des listes
+MA=[None]*(nb_remail);
+NormeL2Erreur=[None]*(nb_remail);
+TailleMaille=[(1./2.**(i+1)) for i in range(nb_remail)]
+
+
+
+#Lecture du maillage de depart au format MED
+MA[0]=LIRE_MAILLAGE( FORMAT='MED');
+
+
+
+#================================================================================================
+# Debut de boucle d'evaluation de convergence
+#================================================================================================
+
+for remail in range(0,nb_remail):
+
+
+     # ========================================================================================
+     #          Preparation de calcul sur le nouveau maillage        
+     # ========================================================================================
+     
+     MO=AFFE_MODELE(MAILLAGE=MA[remail],
+                    AFFE=_F(TOUT = 'OUI',
+                             PHENOMENE='THERMIQUE',
+                             MODELISATION='PLAN',),
+                   );    
+                               
+                               
+                                            
+     CHMAT=AFFE_MATERIAU(MAILLAGE=MA[remail],
+                         AFFE=_F(TOUT='OUI',
+                                 MATER=ACIER,),
+                         ); 
+                                  
+     CLIMIT=AFFE_CHAR_THER_F(MODELE=MO,
+                             TEMP_IMPO=(_F(GROUP_MA='GAUCHE',
+                                           TEMP=TT,),
+                                        _F(GROUP_MA='BAS',
+                                           TEMP=TT,),
+                                        _F(GROUP_MA='HAUT',
+                                           TEMP=TT,),
+                                       ),
+                             FLUX_REP = _F(GROUP_MA='DROITE',
+                                           FLUN=NN,),
+                             SOURCE  = _F(GROUP_MA='SURFACE',
+                                          SOUR=SS,),
+                            );                                           
+                                      
+     # Phase de resolution proprement dite 
+     resolut=THER_LINEAIRE(MODELE=MO,
+                           CHAM_MATER=CHMAT,
+                           EXCIT=_F(CHARGE=CLIMIT,),
+                           );
+                           
+
+     # ========================================================================================
+     #          Calcul des normes d'erreur 
+     # ========================================================================================
+     
+     dicResu=NormeAster(resolut, [TT], MA[remail], MO, 'SURFACE');
+     
+
+     NormeL2Erreur [remail]=dicResu['NormeL2Erreur']
+
+     
+   
+     # ========================================================================================
+     #          Adaptationn de maillage proprement dite
+     # ========================================================================================
+     
+     if remail<(nb_remail-1) :
+         MA[remail+1]=CO('MA_%d' % (remail+1))
+         MACR_ADAP_MAIL(ADAPTATION = 'RAFFINEMENT_UNIFORME',
+                        MAILLAGE_N =MA[remail],
+                        MAILLAGE_NP1 =MA[remail+1],
+                         );
+                    
+
+                   
+         # Destruction des concepts inutilises dans les prochaines etapes de la boucle
+         DETRUIRE(CONCEPT=(_F(NOM=MO,),
+                           _F(NOM=CHMAT),
+                           _F(NOM=CLIMIT),
+                           _F(NOM=resolut),
+                           _F(NOM=Uana),
+                           _F(NOM=Ucalc),
+                           _F(NOM=DIFFN),
+                           ),
+                   INFO=1,
+                  );
+                  
+                  
+print 'Norme L2 de l erreur= %e' %dicResu['NormeL2Erreur']
+
+PenteL2=-math.log( NormeL2Erreur[-1]/NormeL2Erreur[-2])/math.log(2.)
+
+
+#================================================================================================
+# Impression de la courbe de convergence
+#================================================================================================
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=82,
+              PILOTE='EPS',
+              BORNE_X=(min(TailleMaille)*0.7,max(TailleMaille)*1.3),
+              BORNE_Y=(min(NormeL2Erreur)*0.7,max(NormeL2Erreur)*1.3),
+              COURBE=(_F(ABSCISSE=TailleMaille,
+                         ORDONNEE=NormeL2Erreur,
+                         ),
+                     ),
+              TITRE='Erreur ||\qT\sh\N-\2T\N\Q || en norme L\s2\N',
+              SOUS_TITRE='Solution manufacturee T(x,y) ordre 6 - Ordre de convergence = %f '%(PenteL2),
+              LEGENDE_X='h',
+              LEGENDE_Y='L\s2\N(Erreur)',
+              ECHELLE_X='LOG',
+              ECHELLE_Y='LOG',
+              INFO=2,)
+
+#================================================================================================
+#               Validations
+#================================================================================================
+
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFFN   ,                              
+                     REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+                     TYPE_TEST= 'SOMM_ABS', VALE=  1.6435694872364 ),
+          )
+
+
+# On cree une liste bidon pour pouvoir
+# definir une fonction testable par TEST_RESU
+BIDON=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0., 1.,
+                          1., PenteL2));
+
+TEST_FONCTION(VALEUR=_F(FONCTION = BIDON,
+                        PRECISION = 1.E-2,
+                        VALE_PARA = 1.,
+                        REFERENCE = 'ANALYTIQUE',
+                        VALE_REFE = 3.,)
+              )
+
+
+FIN();
+
+
+
+
+

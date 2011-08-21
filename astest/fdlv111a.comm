@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/08/2011   AUTEUR GREFFET N.GREFFET 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 # fdlv111a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,14 +193,20 @@ INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 401, PAS = 1))
 
 
 
+ACCE0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
+                   AFFE=_F(TOUT='OUI',NOM_CMP=('DX', 'DY', 'DZ',),VALE = (0., 0., 0.,),),);
+
 DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
                           EXCIT=_F(  CHARGE = COND_LIM,
                                   FONC_MULT = FONC),
                      #    ETAT_INIT=_F(  INST_INIT = 0.),
+#  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
+#  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
+                        ETAT_INIT=_F(  ACCE = ACCE0,),
                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-9),                     
                           COMP_INCR=_F( RELATION = 'ELAS',
                                   TOUT = 'OUI'),
-                         SOLVEUR=_F( STOP_SINGULIER = 'NON'),
+#                         SOLVEUR=_F( STOP_SINGULIER = 'NON'),
                          NEWTON=_F(  MATRICE = 'ELASTIQUE', 
                                  REAC_INCR = 0,
                                  REAC_ITER = 0),

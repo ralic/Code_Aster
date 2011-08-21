@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF archivage Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,8 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
+# Attention a ne pas faire de retour à la ligne !
+
 def _(x) : return x
 
 cata_msg = {
@@ -31,28 +33,21 @@ cata_msg = {
 """),
 
 4 : _("""
- Archivage de l'état initial
-"""),
+ Archivage de l'état initial"""),
 
 5 : _("""
   Archivage des champs
 """),
 
-6 : _("""
-    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d
-"""),
+6 : _("""    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d"""),
 
 7 : _("""
  Archivage des champs dérivés par rapport à %(k1)s
 """),
 
-8 : _("""
-    Mode vibratoire stocké pour le numéro d'ordre %(i1)d  
-"""),
+8 : _("""    Mode vibratoire stocké pour le numéro d'ordre %(i1)d """),
 
-9 : _("""
-    Mode de flambement stocké pour le numéro d'ordre %(i1)d  
-"""),
+9 : _("""    Mode de flambement stocké pour le numéro d'ordre %(i1)d """),
 
 
 }

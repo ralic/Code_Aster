@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -417,17 +417,6 @@ GRANDEUR_SIMPLE__
        COOR :
 >>
     CORR_R   = R    CORR
-
-<<  CRRU_R   : Critères de rupture dans les couches (post-traitement)
-       SIGL  :  contrainte suivant la 1ère direction orthotropie
-       SIGT  :  contrainte suivant la 2ème direction orthotropie
-       SIGLT :  contrainte de cisaillement
-       CRIL  : critère de rupture suivant la 1ère direction orthotropie
-       CRIT  :  critère de rupture suivant la 2ème direction orthotropie
-       CRILT : critère de rupture en cisaillement suivant LT
-       CRITH : critère de TSAI-HILL
->>
-    CRRU_R   = R    SIGL  SIGT  SIGLT  CRIL     CRIT   CRILT    CRITH
 
 <<  DCEL_I Type:I
        NPG_DYN  : Nombre de sous-points pour un cham_elem a sous-points

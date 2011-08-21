@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE ORTHOTROPE EN TRACTION UNIAXIALE HORS AXES D'ORTHOTROPIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,8 @@ DEF2=MODI_REPERE(RESULTAT=DEF,
                  MODI_CHAM=_F(NOM_CHAM='SIGM_ELNO',
                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
                               TYPE_CHAM='TENS_2D',),
-                 DEFI_REPERE=_F(REPERE='UTILISATEUR',
+REPERE='UTILISATEUR',
+                 AFFE=_F(
                                 ANGL_NAUT=(30.0),),);
 #
 # TEST_RESU DE LA CONTRAINTE DANS LE REPERE D'ORTHOPRTIE
@@ -267,7 +268,8 @@ DEFNL2=MODI_REPERE(RESULTAT=DEFNL,
                  MODI_CHAM=_F(NOM_CHAM='SIEF_ELNO',
                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
                               TYPE_CHAM='TENS_2D',),
-                 DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                 REPERE='UTILISATEUR',
+                 AFFE=_F(
                                 ANGL_NAUT=(30.0),),)
 
 SIGNL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',

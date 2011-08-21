@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/07/2000
 # AUTEUR : F. LEBOUVIER
@@ -183,7 +183,8 @@ RESU2=MODI_REPERE(RESULTAT=RES_NORM,
                   MODI_CHAM=_F(TYPE_CHAM='VECT_3D',
                                NOM_CHAM='DEPL',
                                NOM_CMP=('DX','DY','DZ',),),
-                  DEFI_REPERE=_F(REPERE='CYLINDRIQUE',
+                  REPERE='CYLINDRIQUE',
+                  AFFE=_F(
                                  ORIGINE=(0.0,0.0,0.0,),
                                  AXE_Z=(0.0,0.0,1.0,),),
                   INFO=2,);

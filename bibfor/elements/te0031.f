@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -360,7 +360,7 @@ C     ------------------------------------------
           CALL DXREPE ( PGL, T2EV, T2VE)
           CALL DXEFR2 ( NPG, T2VE, EFFINT, EFFGT )
           CALL JEVECH ( 'PSIEFNOR', 'E', ICHN   )
-          CALL PPGAN2 ( JGANO, 6, EFFGT, ZR(ICHN) )
+          CALL PPGAN2 ( JGANO, 1, 6, EFFGT, ZR(ICHN) )
 C
 C
       ELSEIF ( OPTION.EQ.'VARI_ELNO' ) THEN
@@ -370,7 +370,7 @@ C     ------------------------------------------
           CALL TECACH ( 'OON', 'PVARIGR', 7, JTAB, IRET )
           NCMP = JTAB(6)*JTAB(7)
 
-          CALL PPGAN2 ( JGANO, NCMP, ZR(ICHG), ZR(ICHN))
+          CALL PPGAN2 ( JGANO, 1, NCMP, ZR(ICHG), ZR(ICHN))
 C
 C
       ELSEIF ( OPTION.EQ.'FORC_NODA' ) THEN

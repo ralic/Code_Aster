@@ -3,7 +3,7 @@
       CHARACTER*16       OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,6 +93,6 @@ C
  101  CONTINUE
 C
       NCMP = 3
-      CALL PPGAN2(JGANO,NCMP,FLPG,ZR(IFLUX))
+      CALL PPGAN2(JGANO,1,NCMP,FLPG,ZR(IFLUX))
 C
       END

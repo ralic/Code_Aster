@@ -6,7 +6,7 @@
       CHARACTER*16 OPTION
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,7 +62,7 @@ C =====================================================================
       REAL*8     SIEFPG(NNOMAX*DIMMAX),SIEFSO(NNOMAX*DIMMAX)
 C =====================================================================
       IF (MODINT .NE. 'RED' ) THEN
-         CALL PPGAN2(JGANO,NCMP,VPG,VNO)
+         CALL PPGAN2(JGANO,1,NCMP,VPG,VNO)
       ELSE
 C =====================================================================
 C --- MATRICE DE PASSAGE POINTS DE GAUSS -> SOMMETS JGANPG ------------
@@ -91,8 +91,8 @@ C =====================================================================
             DO 200 I=1,NCMP*NPG2
                SPG2(I) = VPG(NCMP*NPG+I)
  200        CONTINUE
-            CALL PPGAN2(JGANPG,NCMP,SPG1,SIEFPG)
-            CALL PPGAN2(JGANSO,NCMP,SPG2,SIEFSO)
+            CALL PPGAN2(JGANPG,1,NCMP,SPG1,SIEFPG)
+            CALL PPGAN2(JGANSO,1,NCMP,SPG2,SIEFSO)
             DO 10 I=1,NNO
                DO 20 J=1,NVIM
                   VNO((I-1)*NCMP+J) = SIEFPG((I-1)*NCMP+J)
@@ -113,8 +113,8 @@ C =====================================================================
             DO 400 I=1,NCMP*NPG2
                VPG2(I) = VPG(NCMP*NPG+I)
  400        CONTINUE
-            CALL PPGAN2(JGANPG,NCMP,VPG1,VARIPG)
-            CALL PPGAN2(JGANSO,NCMP,VPG2,VARISO)
+            CALL PPGAN2(JGANPG,1,NCMP,VPG1,VARIPG)
+            CALL PPGAN2(JGANSO,1,NCMP,VPG2,VARISO)
             DO 40 I=1,NNO
                DO 50 J=1,NVIM
                   VNO((I-1)*NCMP+J) = VARIPG((I-1)*NCMP+J)

@@ -3,9 +3,9 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -52,7 +52,7 @@ C
       INTEGER            NBNOMX, NDIMAX, NNO, 
      +                   NNOS, IPOIDS, IVF, IDFDE, JGANO,
      +                   NPG, I, J ,K, NDIM, IGAU, IDIM, JDIM, INO,
-     +                   IGEOM, IDEPL, IGRADU, NCMP
+     +                   IGEOM, IDEPL, IGRADU, NCMP, NBSP
       PARAMETER         ( NBNOMX = 9 )
       PARAMETER         ( NDIMAX = 2 )
       REAL*8             GRADPG(NDIMAX,NDIMAX,NBNOMX), ZERO
@@ -140,7 +140,8 @@ C --- AUX NOEUDS :
 C     ----------
 C
         NCMP = 4
-        CALL PPGAN2 ( JGANO, NCMP, GRADPG, GRADNO )
+        NBSP = 1
+        CALL PPGAN2 ( JGANO, NBSP, NCMP, GRADPG, GRADNO )
 C
 C ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES GRADIENTS DE
 C ---- DEPLACEMENT AUX NOEUDS :

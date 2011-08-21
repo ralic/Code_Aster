@@ -1,7 +1,8 @@
-      SUBROUTINE NMIMPT(SDIMPR,NATURZ,TITRE ,LIGNE ,ARGR  )
+      SUBROUTINE NMIMPT(SDIMPR,NATURZ,TITRE ,LIGNE ,ARGR  ,
+     &                  ARGI  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +25,8 @@ C
       CHARACTER*24  SDIMPR
       CHARACTER*(*) NATURZ
       CHARACTER*(*) LIGNE,TITRE(3)
-      REAL*8        ARGR(*)
+      REAL*8        ARGR(*)      
+      INTEGER       ARGI(*)
 C 
 C ----------------------------------------------------------------------
 C
@@ -45,7 +47,7 @@ C             VIBRDYNA   : CALCUL DES MODES VIBRATOIRES
 C IN  TITRE  : EN-TETE DU TABLEAU DE CONVERGENCE
 C IN  LIGNE  : LIGNE POINTILLEE DE SEPARATION
 C IN  ARGR   : ARGUMENTS DE TYPE REEL
-C               
+C IN  ARGI   : ARGUMENTS EVENTUELS DE TYPE ENTIER             
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -72,7 +74,7 @@ C
       INTEGER          LARGE
       CHARACTER*9      NATURE
       REAL*8           TIME
-      INTEGER          ILIGNE,IBID
+      INTEGER          ILIGNE,IBID,LENIVO
       INTEGER          IFM,IUNIFI
 C
 C ----------------------------------------------------------------------
@@ -100,7 +102,8 @@ C
 C --- ENTETE
 C
       IF (NATURE.EQ.'IMPLICITE') THEN
-        CALL U2MESR('I','MECANONLINE6_1',1,TIME)
+        LENIVO = ARGI(1)
+        CALL U2MESG('I','MECANONLINE6_1',0,' ',1,LENIVO,1,TIME)
         CALL IMPSDR(SDIMPR,'INCR_INST',' ',TIME,IBID)
         CALL AFFICH('MESSAGE',' ')
         CALL NMIMPX(SDIMPR,IFM   ,LIGNE)
@@ -109,7 +112,8 @@ C
  30     CONTINUE  
         CALL NMIMPX(SDIMPR,IFM   ,LIGNE)
       ELSEIF (NATURE.EQ.'EXPLICITE') THEN
-        CALL U2MESR('I','MECANONLINE6_1',1,TIME)
+        LENIVO = ARGI(1)
+        CALL U2MESG('I','MECANONLINE6_1',0,' ',1,LENIVO,1,TIME)
         CALL AFFICH('MESSAGE',' ') 
       ELSEIF (NATURE.EQ.'FLAMBSTA') THEN
         CALL U2MESS('I','MECANONLINE6_2')

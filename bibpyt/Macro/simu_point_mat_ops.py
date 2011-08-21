@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -658,7 +658,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
               _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),TYPE_CHAM='TENS_3D',),
               _F(NOM_CHAM=nomepsi,NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),TYPE_CHAM='TENS_3D',),
                                   ),
-                     DEFI_REPERE=_F(REPERE='UTILISATEUR',ANGL_NAUT=angles),);
+                            REPERE='UTILISATEUR',
+                            AFFE=_F(ANGL_NAUT=angles),);
       else :
           angles=ANGLE
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1,MODI_CHAM=(
@@ -666,7 +667,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                      _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),TYPE_CHAM='TENS_2D',),
                      _F(NOM_CHAM=nomepsi,NOM_CMP=('EPXX','EPYY','EPZZ','EPXY'),TYPE_CHAM='TENS_2D',),
                                   ),
-                     DEFI_REPERE=_F(REPERE='UTILISATEUR',ANGL_NAUT=angles),);
+                            REPERE='UTILISATEUR',
+                            AFFE=_F(ANGL_NAUT=angles),);
  
 #     -- Recuperation des courbes
 

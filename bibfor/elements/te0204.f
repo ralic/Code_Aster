@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -346,7 +346,7 @@ C =====================================================================
 110       CONTINUE
 120     CONTINUE
 C
-        CALL PPGAN2 (JGANO,NCMP,EPSIPG,EPSNO)
+        CALL PPGAN2 (JGANO,1,NCMP,EPSIPG,EPSNO)
         DO 121 I=1,NNO*NCMP
           EPSINO(I) = EPSINO(I)+EPSNO(I)
 121     CONTINUE

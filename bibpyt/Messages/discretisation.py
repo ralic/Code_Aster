@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF discretisation Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,11 +71,11 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
 """),
 
 50 : _("""
-  Déclenchement de l'événement <%(k1)s>.
+  Déclenchement de l'événement <%(k1)s>
 """),
 
 51 : _("""
-  Traitement de l'événement <%(k1)s>.
+  Traitement de l'action pour l'événement <%(k1)s>
 """),
 
 86 : _("""

@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF utilitai7 Messages  DATE 22/08/2011   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,6 +80,13 @@ cata_msg={
   Erreur utilisateur dans la commande POST_ELEM/INTEGRALE :
     Le champ %(k1)s est un cham_elem ELEM,
     Il faut renseigner le mot clé INTEGRALE / DEJA_INTEGRE= 'OUI' / 'NON'
+"""),
+
+14 : _("""
+  POST_ELEM VOLUMOGRAMME
+  Numéro d'occurence du mot-clé VOLUMOGRAMME = %(i1)d
+  Numéro d'ordre                             = %(i2)d
+  Volume total concerné                      = %(r1)g
 """),
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD (ROTATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -260,11 +260,13 @@ TEST_RESU(RESU=(
 #  TESTS MODI_REPERE SUR TORSEURS D'EFFORTS (ELNO ET NOEU)
 #
 RESU1=MODI_REPERE(RESULTAT=DYNHARM,
-                  MODI_CHAM=_F(MAILLE=('M251','M252','M255',),
+                  MODI_CHAM=_F(
                                TYPE_CHAM='TORS_3D',
                                NOM_CHAM='EFGE_ELNO',
                                NOM_CMP=('NXX','MXX','MYY','MXY','QX','QY',),),
-                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                      REPERE='UTILISATEUR',
+                      AFFE=_F(
+                                MAILLE=('M251','M252','M255',),
                                  ANGL_NAUT=(0.,),),
                               );
 
@@ -287,11 +289,13 @@ TEST_RESU(RESU=(
       ),)
 
 RESU2=MODI_REPERE(RESULTAT=DYNHARM,
-                  MODI_CHAM=_F(MAILLE=('M251','M252','M255',),
+                  MODI_CHAM=_F(
                                TYPE_CHAM='TORS_3D',
                                NOM_CHAM='EFGE_NOEU',
                                NOM_CMP=('NXX','MXX','MYY','MXY','QX','QY',),),
-                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                  REPERE='UTILISATEUR',
+                  AFFE=_F(
+                                MAILLE=('M251','M252','M255',),
                                  ANGL_NAUT=(0.,),),
                                 );
 

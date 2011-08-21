@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN 3D (PENTA6 HEXA8)
 # sslv04a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -659,8 +659,8 @@ RESU1=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE    = 'UTILISATEUR',
+                REPERE    = 'UTILISATEUR',
+                AFFE = _F(
                                    ANGL_NAUT = (0.,0.,0.,),
                                   ),
                   INFO=2,
@@ -733,8 +733,8 @@ RESU2=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE     = 'CYLINDRIQUE',
+                REPERE     = 'CYLINDRIQUE',
+                AFFE = _F(
                                    ORIGINE    = (0.0, 0.0, 0.0,),
                                    AXE_Z      = (0.0, 0.0, 1.0,),
                                   ),
@@ -822,8 +822,8 @@ RESU3=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE      = 'UTILISATEUR',
+                REPERE      = 'UTILISATEUR',
+                AFFE = _F(
                                    VECT_X     = (1., 1., 0.,),
                                    VECT_Y     = (-1, 1, 0.,),
                                   ),
@@ -841,8 +841,8 @@ RESU4=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE    = 'UTILISATEUR',
+                REPERE    = 'UTILISATEUR',
+                AFFE = _F(
                                    ANGL_NAUT = (-45.,0.,0.,),
                                   ),
                   INFO=2,
@@ -929,8 +929,8 @@ RESU5=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE      = 'UTILISATEUR',
+                REPERE      = 'UTILISATEUR',
+                AFFE = _F(
                                    VECT_X     = (0.70710678, 0.70710678, -1.,),
                                    VECT_Y     = (-1., 1, 0.,),
                                    ),
@@ -948,8 +948,8 @@ RESU6=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE    = 'UTILISATEUR',
+                REPERE    = 'UTILISATEUR',
+                AFFE = _F(
                                    ANGL_NAUT = (0.,-45.,0.,),
                                   ),
                   INFO=2,
@@ -966,8 +966,8 @@ RESU7=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE    = 'UTILISATEUR',
+                REPERE    = 'UTILISATEUR',
+                AFFE = _F(
                                    ANGL_NAUT = (-45.,0.,0.,),
                                   ),
                   INFO=2,
@@ -1054,8 +1054,8 @@ RESU8=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
                                    REPERE      = 'UTILISATEUR',
+                AFFE = _F(
                                    VECT_X     = (0.70710678, -0.70710678, 1.,),
                                    VECT_Y     = (1.0, 1.0, 0.,),
                                  ),
@@ -1073,8 +1073,8 @@ RESU9=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
                                    REPERE    = 'UTILISATEUR',
+                AFFE = _F(
                                    ANGL_NAUT = (0.,45.,0.,),
                                   ),
                   INFO=2,
@@ -1091,8 +1091,8 @@ RESU10=MODI_REPERE(
                                 _F(NOM_CHAM    = 'DEPL',
                                    NOM_CMP     = ('DX','DY','DZ',),
                                    TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
                                    REPERE    = 'UTILISATEUR',
+                AFFE = _F(
                                    ANGL_NAUT = (45.,0.,0.,),
                                   ),
                   INFO=2,

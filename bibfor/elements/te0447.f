@@ -1,6 +1,6 @@
        SUBROUTINE TE0447 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       LOGICAL       AXI, GRAND
       INTEGER       KPG,KSIG, NNO, NNOS, NPG, IPOIDS, IVF,  NDIM, NCMP
-      INTEGER       IDFDE, IDEPL, IGEOM, IDEFO, KK, JGANO
+      INTEGER       IDFDE, IDEPL, IGEOM, IDEFO, KK, JGANO, NBSP
       REAL*8        POIDS, DFDI(81), F(3,3), R, EPS(6), VPG(36)
       REAL*8        TMP
 C ......................................................................
@@ -58,6 +58,7 @@ C ......................................................................
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       NCMP = 2*NDIM
+      NBSP = 1
       AXI   = NOMTE(3:4).EQ.'AX'
       GRAND = .FALSE.
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -90,7 +91,7 @@ C         (DEFORMATIONS AUX POINTS DE GAUSS OU AUX NOEUDS)
             ZR(IDEFO+KK-1)= VPG(KK)
  30     CONTINUE
       ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
-        CALL PPGAN2 ( JGANO, NCMP, VPG, ZR(IDEFO) )
+        CALL PPGAN2 ( JGANO, NBSP, NCMP, VPG, ZR(IDEFO) )
       ENDIF
 
       END

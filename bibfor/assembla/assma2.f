@@ -1,7 +1,6 @@
-      SUBROUTINE ASSMA2(LMASYM,TT,MAT19,NU14,NCMP,MATEL,C1,JVALM,JTMP2,
-     &                  LGTMP2)
+      SUBROUTINE ASSMA2(LMASYM,TT,NU14,NCMP,MATEL,C1,JVALM,JTMP2,LGTMP2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ASSEMBLA  DATE 22/08/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +42,7 @@ C-----------------------------------------------------------------------
       REAL*8 C1
       LOGICAL LMASYM,LMESYM
       CHARACTER*2 TT
-      CHARACTER*19 MAT19,MATEL
+      CHARACTER*19 MATEL
       CHARACTER*8 MO,MA,KBID,NOGDCO,NOGDSI,NOMACR
       CHARACTER*14 NU14,NUM2
       INTEGER NBECMX
@@ -56,6 +55,7 @@ C-----------------------------------------------------------------------
       INTEGER K2,N1,KNO,L,NUGD,NBEC,IANCMP,LGNCMP,ICMP,INDIK8
       INTEGER NBSMA,NBSSA,NCMP,NBVEL,NDDL1,NDDL2,JTMP2,LGTMP2
       INTEGER NEC,NM,NMXCMP,NNOE,I,JEC
+      INTEGER LSHIFT
 C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
 C-----------------------------------------------------------------------

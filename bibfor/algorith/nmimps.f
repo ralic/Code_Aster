@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPS(SDIMPR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,7 @@ C
       INTEGER        JIMPCO,JIMPIN
       CHARACTER*24   IMPCOL,IMPINF
       INTEGER        ICOL,IRESI,ICOD,IARG
-      INTEGER        NCOL,NRESIF,IBID
+      INTEGER        NCOL,IBID
       CHARACTER*9    COLONN
       REAL*8         VALR(1)
       CHARACTER*16   VALK(2)
@@ -98,7 +98,6 @@ C
 C --- INITIALISATIONS
 C    
       IARG   = 0
-      NRESIF = 0
       CALL ASSERT(ZCOL.EQ.16)
 C
 C --- BOCULE SUR LES RESIDUS
@@ -111,12 +110,11 @@ C
         ENDIF
         DO 15 ICOL = 1,NCOL
           IF (ZI(JIMPCO-1+ICOL).EQ.ICOD) THEN
-            IARG = IARG + 1
-            RESNOM(IARG) = ZK16(JIMPCT-1+IRESI)
-            RESVAL(IARG) = ZR(JIMPCV-1+IRESI)
-            RESNOE(IARG) = ZK16(JIMPCL-1+IRESI)
             IF (ZL(JIMPCA-1+IRESI)) THEN
-              NRESIF = NRESIF + 1
+              IARG = IARG + 1
+              RESNOM(IARG) = ZK16(JIMPCT-1+IRESI)
+              RESVAL(IARG) = ZR(JIMPCV-1+IRESI)
+              RESNOE(IARG) = ZK16(JIMPCL-1+IRESI)
             ENDIF
           ENDIF
  15     CONTINUE        
@@ -124,12 +122,16 @@ C
 C
 C --- AFFICHAGE
 C      
-      DO 20 IARG = 1,NRESIF
-        VALK(1) = RESNOM(IARG)
-        VALK(2) = RESNOE(IARG)
-        VALR(1) = RESVAL(IARG)
-        CALL U2MESG('I','MECANONLINE6_36',2,VALK,0,IBID,1,VALR)
-  20  CONTINUE   
+      IARG = 0
+      DO 20 IRESI = 1,NRESI
+        IF (ZL(JIMPCA-1+IRESI)) THEN
+          IARG = IARG + 1
+          VALK(1) = RESNOM(IARG)
+          VALK(2) = RESNOE(IARG)
+          VALR(1) = RESVAL(IARG)
+          CALL U2MESG('I','MECANONLINE6_36',2,VALK,0,IBID,1,VALR)
+        ENDIF
+  20  CONTINUE 
 C
       CALL JEDEMA()
 

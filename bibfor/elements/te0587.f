@@ -1,6 +1,6 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -204,7 +204,7 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
               VPG(KP) = ZR(JIN+LGPG* (KP-1)+IC-1)
   110       CONTINUE
             NNOS = 2
-            CALL PPGAN2(JGANO,1,VPG,VNO)
+            CALL PPGAN2(JGANO,1,1,VPG,VNO)
 
             DO 120 I = 1,NNO
               ZR(JOUT+LGPG* (I-1)+IC-1) = VNO(I)
@@ -420,7 +420,7 @@ C STOCKAGE DES EFG
               VPG(KP) = FNO(KP,IC)
   250       CONTINUE
             NNOS = 2
-            CALL PPGAN2(JGANO,1,VPG,VNO)
+            CALL PPGAN2(JGANO,1,1,VPG,VNO)
             DO 260 INO = 1,NNO
               ZR(JOUT+6* (INO-1)+IC-1) = VNO(INO)
   260       CONTINUE

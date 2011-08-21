@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
+#& MODIF COMMANDE  DATE 22/08/2011   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -277,6 +277,8 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                                NOM_CHAM     = SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
                                NOM_CMP      = SIMP(statut='o',typ='TXM'),
                                NB_INTERV    = SIMP(statut='f',typ='I',defaut=5),
+                               BORNES       = SIMP(statut='f',typ='R',validators=NoRepeat(),min=2,max=2),
+                               NORME        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
                               ),
          b_volumogramme = BLOC(condition = "( VOLUMOGRAMME != None )",
                        fr="calcul de la distribution du volume d'une structure vis-à-vis d'une composante",

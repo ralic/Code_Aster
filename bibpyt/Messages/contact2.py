@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact2 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

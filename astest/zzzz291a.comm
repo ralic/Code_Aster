@@ -1,4 +1,4 @@
-# MODIF  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE VALIDATION DE POST_ELEM NORME EN 3D
 # zzzz291a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,23 +37,23 @@ DEBUT(CODE=_F( NOM = 'ZZZZ291A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),P
 # ======================================================================
 
 
-MA=LIRE_MAILLAGE( FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA, 
-               CREA_GROUP_MA=(
-                              _F(NOM='CUBE',TOUT='OUI'),
-                              _F(NOM='1D',UNION=('AE','DA','HE','DH','AB',
-                                                 'EF','CD','GH','BF','BC',
-                                                 'FG','CG'),),
-                              _F(NOM='1D2D',UNION=('2D','1D',),),
-                              _F(NOM='3D',  DIFFE=('CUBE','1D2D',),),
-                             ),)
+              CREA_GROUP_MA=(
+                             _F(NOM='CUBE',TOUT='OUI'),
+                             _F(NOM='1D',UNION=('AE','DA','HE','DH','AB',
+                                                'EF','CD','GH','BF','BC',
+                                                'FG','CG'),),
+                             _F(NOM='1D2D',UNION=('2D','1D',),),
+                             _F(NOM='3D',  DIFFE=('CUBE','1D2D',),),
+                            ),)
 
 MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA, 
-               DETR_GROUP_MA=_F(NOM=('1D2D','1D'),),)
+              DETR_GROUP_MA=_F(NOM=('1D2D','1D'),),)
 
 MA=MODI_MAILLAGE(reuse=MA,  MAILLAGE=MA,
-              ORIE_PEAU_3D=_F(GROUP_MA='BCGF'),)
+                 ORIE_PEAU_3D=_F(GROUP_MA='BCGF'),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
@@ -80,34 +80,34 @@ RESU=CALC_NO(reuse=RESU, RESULTAT=RESU, OPTION='SIEF_NOEU')
 # Extraction des champs (DEPL, SIEF_ELNO, SIEF_ELGA)
 
 DEPL=CREA_CHAMP(OPERATION='EXTR', 
-                 TYPE_CHAM='NOEU_DEPL_R',
-                 NOM_CHAM='DEPL',  
-                 NUME_ORDRE=1, 
-                 RESULTAT=RESU);
+                TYPE_CHAM='NOEU_DEPL_R',
+                NOM_CHAM='DEPL',  
+                NUME_ORDRE=1, 
+                RESULTAT=RESU);
 
 SIGA=CREA_CHAMP(OPERATION='EXTR', 
-                 TYPE_CHAM='ELGA_SIEF_R',
-                 NOM_CHAM='SIEF_ELGA',  
-                 NUME_ORDRE=1, 
-                 RESULTAT=RESU);
+                TYPE_CHAM='ELGA_SIEF_R',
+                NOM_CHAM='SIEF_ELGA',  
+                NUME_ORDRE=1, 
+                RESULTAT=RESU);
 
 SIGELNO=CREA_CHAMP(OPERATION='EXTR', 
-                 TYPE_CHAM='ELNO_SIEF_R',
-                 NOM_CHAM='SIEF_ELNO',  
-                 NUME_ORDRE=1, 
-                 RESULTAT=RESU);
+                   TYPE_CHAM='ELNO_SIEF_R',
+                   NOM_CHAM='SIEF_ELNO',  
+                   NUME_ORDRE=1, 
+                   RESULTAT=RESU);
 
 SIGNOEU=CREA_CHAMP(OPERATION='EXTR', 
-                 TYPE_CHAM='NOEU_SIEF_R',
-                 NOM_CHAM='SIEF_NOEU',  
-                 NUME_ORDRE=1, 
-                 RESULTAT=RESU);
+                   TYPE_CHAM='NOEU_SIEF_R',
+                   NOM_CHAM='SIEF_NOEU',  
+                   NUME_ORDRE=1, 
+                   RESULTAT=RESU);
 
 DEPLELGA=CREA_CHAMP(OPERATION='DISC', 
-                 TYPE_CHAM='ELGA_DEPL_R',
-                 PROL_ZERO='OUI', 
-                 CHAM_GD=DEPL, 
-                 MODELE=MO, );
+                    TYPE_CHAM='ELGA_DEPL_R',
+                    PROL_ZERO='OUI', 
+                    CHAM_GD=DEPL, 
+                    MODELE=MO, );
 
 
 # Formule
@@ -437,6 +437,75 @@ TEST_TABLE(TABLE=TBB6,
            VALE=2.5926081379162E+11,
            PRECISION=0.000001,
            REFERENCE='NON_REGRESSION',);
+
+
+
+#  VERIFICATION DE LA PRISE EN COMPTE DU FILTRAGE DES ELEMENTS FINIS
+#  
+# ======================================================================
+
+# Definition du probleme mixte 3D/coque
+MOMIX=AFFE_MODELE(MAILLAGE=MA,
+                  AFFE=(_F(GROUP_MA='3D',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D'),
+                        _F(GROUP_MA='2D',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DKT',),
+                      ));
+
+
+CARAEL=AFFE_CARA_ELEM(MODELE=MOMIX,
+                      COQUE=_F(GROUP_MA='2D',  EPAIS = 1.e-1, ANGL_REP=(20,10),))
+
+CHARMIX=AFFE_CHAR_MECA(MODELE=MOMIX,
+                       FACE_IMPO=_F(GROUP_MA='BCGF', SANS_GROUP_NO=('B'), DNOR=1),
+                       DDL_IMPO=_F(GROUP_NO=('A','B','D','E'),
+                                    DX=0.0, DY=0.0, DZ=0.0,),)
+
+RESUMIX=MECA_STATIQUE(MODELE=MOMIX, CARA_ELEM=CARAEL, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHARMIX,),);
+
+# Calcul de la norme L2 par POST_ELEM/NORME
+NSIGMIX=POST_ELEM(NORME=_F(TYPE_NORM='L2',
+                           RESULTAT=RESUMIX,
+                           NOM_CHAM='SIEF_ELGA',
+                           GROUP_MA='3D',
+                           MODELE=MOMIX),)
+
+# Calcul de la norme L2 par POST_ELEM/INTEGRALE
+SIGNOMIX=CREA_CHAMP(OPERATION='EXTR', 
+                    TYPE_CHAM='ELGA_SIEF_R',
+                    NOM_CHAM='SIEF_ELGA',  
+                    NUME_ORDRE=1, 
+                    RESULTAT=RESUMIX);
+
+F3DSIG=CREA_CHAMP(OPERATION='AFFE',
+                  TYPE_CHAM='ELGA_NEUT_F',
+                  PROL_ZERO='OUI',
+                  MODELE=MOMIX,
+                  AFFE=_F(GROUP_MA='3D',  NOM_CMP='X1',  VALE_F=FNORM6),
+                );
+
+TEMPZZ=CREA_CHAMP(OPERATION='EVAL',
+                  TYPE_CHAM='ELGA_NEUT_R',
+                  CHAM_F=F3DSIG,
+                  CHAM_PARA=SIGNOMIX);
+
+NormeZZ=POST_ELEM(MODELE=MOMIX,
+                  CHAM_GD=TEMPZZ,
+                  CHAM_MATER=CHMAT,
+                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D'),);
+
+NormZZ=math.sqrt(NormeZZ['INTE_X1',1]);
+
+# Comparaison
+TEST_TABLE(TABLE=NSIGMIX,
+           NOM_PARA='VALE_NORM',
+           VALE=NormZZ,
+           PRECISION=1.e-8,
+           REFERENCE='AUTRE_ASTER',);
+
+
 
 FIN();
 

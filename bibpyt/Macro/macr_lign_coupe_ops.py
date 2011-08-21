@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -215,22 +215,22 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
 
     motscles={}
     motscles['MODI_CHAM']=[]
-    motscles['DEFI_REPERE']=[]
+    motscles['AFFE']=[]
     motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM),)
     ANGL_NAUT=[]
     ANGL_NAUT.append(alpha)
     if dime ==3:
        ANGL_NAUT.append(beta)
        ANGL_NAUT.append(gamma)
-    motscles['DEFI_REPERE'].append(_F(REPERE='UTILISATEUR',ANGL_NAUT=ANGL_NAUT),)
-    __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+    motscles['AFFE'].append(_F(ANGL_NAUT=ANGL_NAUT),)
+    __remodr=MODI_REPERE(RESULTAT=resin,REPERE='UTILISATEUR',**motscles)
 
 
   if m['TYPE']=='ARC':
     if m['REPERE'] == 'CYLINDRIQUE' :
       motscles={}
       motscles['MODI_CHAM']=[]
-      motscles['DEFI_REPERE']=[]
+      motscles['AFFE']=[]
       motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM),)
       ORIGINE=[]
       ORIGINE.append(m['CENTRE'][0])
@@ -241,10 +241,10 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
         AXE_Z.append(m['DNOR'][0])
         AXE_Z.append(m['DNOR'][1])
         AXE_Z.append(m['DNOR'][2])
-        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=ORIGINE,AXE_Z=AXE_Z),)
+        motscles['AFFE'].append(_F(ORIGINE=ORIGINE,AXE_Z=AXE_Z),)
       elif dime ==2:
-        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=ORIGINE,),)
-      __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+        motscles['AFFE'].append(_F(ORIGINE=ORIGINE,),)
+      __remodr=MODI_REPERE(RESULTAT=resin,REPERE='CYLINDRIQUE',**motscles)
     else :
       UTMESS('F','POST0_5',valk=[m['TYPE'],m['REPERE']])
 
@@ -369,29 +369,29 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
           gamma=gamma*180/pi
           motscles={}
           motscles['MODI_CHAM']=[]
-          motscles['DEFI_REPERE']=[]
+          motscles['AFFE']=[]
           noeu=dictu.keys()
-          motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM,NOEUD=cnom[noeu[j-1]-1]),)
+          motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM,),)
           ANGL_NAUT=[]
           ANGL_NAUT.append(alpha)
           if dime ==3:
             ANGL_NAUT.append(beta)
             ANGL_NAUT.append(gamma)
-          motscles['DEFI_REPERE'].append(_F(REPERE='UTILISATEUR',ANGL_NAUT=ANGL_NAUT),)
-          __resu[j]=MODI_REPERE(RESULTAT=__resu[j-1],**motscles)
+          motscles['AFFE'].append(_F(ANGL_NAUT=ANGL_NAUT,NOEUD=cnom[noeu[j-1]-1]),)
+          __resu[j]=MODI_REPERE(RESULTAT=__resu[j-1],REPERE='UTILISATEUR',**motscles)
       __remodr=__resu[j]
 
 
     motscles={}
     motscles['MODI_CHAM']=[]
-    motscles['DEFI_REPERE']=[]
+    motscles['AFFE']=[]
     motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM),)
     if m['REPERE'] == 'CYLINDRIQUE' :
       if dime ==3:
-        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=m['ORIGINE'],AXE_Z=m['AXE_Z']),)
+        motscles['AFFE'].append(_F(ORIGINE=m['ORIGINE'],AXE_Z=m['AXE_Z']),)
       elif dime ==2:
-        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=m['ORIGINE'],),)
-      __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+        motscles['AFFE'].append(_F(ORIGINE=m['ORIGINE'],),)
+      __remodr=MODI_REPERE(RESULTAT=resin,REPERE='CYLINDRIQUE',**motscles)
     elif m['REPERE'] == 'UTILISATEUR':
       alpha=m['ANGL_NAUT'][0]
       beta =m['ANGL_NAUT'][1]
@@ -401,8 +401,8 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
       if dime ==3:
         ANGL_NAUT.append(beta)
         ANGL_NAUT.append(gamma)
-      motscles['DEFI_REPERE'].append(_F(REPERE='UTILISATEUR',ANGL_NAUT=ANGL_NAUT),)
-      __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+      motscles['AFFE'].append(_F(ANGL_NAUT=ANGL_NAUT),)
+      __remodr=MODI_REPERE(RESULTAT=resin,REPERE='UTILISATEUR',**motscles)
 
 
   return __remodr

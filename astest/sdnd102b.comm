@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/08/2011   AUTEUR GREFFET N.GREFFET 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -280,7 +280,35 @@ TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,INFO=1,
                                       NOEUD='NO1',
                                       NOM_CHAM='ACCE_ABSOLU',
                                       LIST_INST=L_INST,),
-                                  ),
+                                    _F(NOM_CMP='DX',
+                                      NOEUD='NO2',
+                                      NOM_CHAM='DEPL',
+                                      LIST_INST=L_INST,),
+                                    _F(NOM_CMP='DX',
+                                      NOEUD='NO2',
+                                      NOM_CHAM='VITE',
+                                      LIST_INST=L_INST,),
+                                 ),
+#  Pour valider les valeurs de SUIVI_DDL, on peut comparer visuellement avec
+#  ce qui sera sorti par la table OBSERVATION. Pour cela on sort les valeurs dans le .resu
+#  pour temps = 0,01 s.
+#  Les valeurs MIN de SUIV_DDL pour t = 0,01 s doivent valoir les valeurs au noeud N02.
+                      SUIVI_DDL=(
+                                 _F(NOM_CMP='DX',
+                                    NOEUD='NO2',
+                                    NOM_CHAM='DEPL',),
+                                 _F(NOM_CMP='DX',
+                                    GROUP_MA='RESSORT1',
+                                    EVAL_CHAM='MIN',
+                                    NOM_CHAM='DEPL',),
+                                 _F(NOM_CMP='DX',
+                                    NOEUD='NO2',
+                                    NOM_CHAM='VITE',),
+                                 _F(NOM_CMP='DX',
+                                    GROUP_MA='RESSORT1',
+                                    EVAL_CHAM='MIN',
+                                    NOM_CHAM='VITE',),
+                                ),
                       ARCHIVAGE=_F(LIST_INST=L_INST2,), 
 );
 
@@ -320,9 +348,10 @@ TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
 TAB_OBS=RECU_TABLE(CO=TRAN_DY,
                    NOM_TABLE='OBSERVATION',);
 
+#  Impression de la table permettant de comparer aux valeurs SUIVI_DDL :
 IMPR_TABLE(TABLE=TAB_OBS,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.01,),);
+                     VALE=0.1,),);
 
 TEST_TABLE(TABLE=TAB_OBS,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',

@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF elements5 Messages  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,6 +221,26 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
    La méthode IMPL_EX ne peut pas être utilisée avec la loi de comportement que vous
    avez choisi ; sur les éléments 2D et 3D elle n'est utilisable qu'avec VMIS_ISOT_LINE,
    ENDO_FRAGILE et ENDO_ISOT_BETON
+"""),
+
+51 : _("""
+  CHAMP :  %(k1)s  non traité sous le type COQUE_GENE. Les champs traités sont
+  EFGE et DEGE (ELGA ou ELNO) 
+"""),
+
+52 : _("""
+  CHAMP :  %(k1)s  non traité sous le type TENS_3D. Les champs traités sont
+  SIGM et EPSI (ELGA ou ELNO) 
+"""),
+
+53 : _("""
+  TYPE :  %(k1)s  non traité pour les coques. Les types traités sont
+  TENS_3D et COQUE_GENE. 
+"""),
+
+54 : _("""
+  Le nbre de sous-points est :%(i1)s. Il doit soit valoir 1 (si on a déja extrait le champ) soit un
+  multiple de 3 (si le champ est complet).
 """),
 
 }
