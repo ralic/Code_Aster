@@ -3,10 +3,10 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF UTILITAI  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,7 +56,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16 NOMTE,PHENOM,NOMODL,TYVOIS
       CHARACTER*19 NOMOB
       CHARACTER*32 REPK
-      INTEGER JLGRF,IRET,NBGREL,IGREL,JLIEL,NEL,ITYPEL,I7,JSSSA,N1
+      INTEGER JLGRF,IRET,NBGREL,IGREL,JLIEL,NEL,ITYPEL,JSSSA,N1
       INTEGER IGE2,IGR,IAGREL,ITE,IGE1,IGE3,IRET2,NBGR
       INTEGER JNOMAC,NBSM,ISM,IANBNO,IANOMO,IBID,DIMGE1
 C DEB ------------------------------------------------------------------
@@ -219,32 +219,13 @@ C     -----------------------------------------------------------------
             ELSE IF (QUESTI.EQ.'EXI_THM') THEN
               IF  (LTEATT (NOMTE,'THM','OUI')) THEN
                 REPK='OUI'
+                IF ( (NOMTE.EQ.'HM_D_PLAN_SE3_P').OR.
+     &               (NOMTE.EQ.'HM_DPQ8_P').OR.
+     &               (NOMTE.EQ.'HM_DPTR6_P')) THEN
+                  REPK='OUI_P'
+                ENDIF
                 GO TO 40
               ENDIF
-
-            ELSE IF (QUESTI.EQ.'EXI_THM_CT') THEN
-              I7 = INDEX(NOMTE,'THM_LI')
-              IF (I7.NE.0) THEN
-                REPK = 'OUI'
-                GO TO 40
-              ELSE
-                IF (NOMTE(1:2).EQ.'SO') THEN
-                  REPK = 'OUI'
-                  GO TO 40
-                END IF
-              END IF
-
-            ELSE IF (QUESTI.EQ.'EXI_THM_VR') THEN
-              I7 = INDEX(NOMTE,'THM_NOSY')
-              IF (I7.NE.0) THEN
-                REPK = 'OUI'
-                GO TO 40
-              ELSE
-                IF (NOMTE(1:2).EQ.'SN') THEN
-                  REPK = 'OUI'
-                  GO TO 40
-                END IF
-              END IF
 
             ELSE
               CALL ASSERT(.FALSE.)

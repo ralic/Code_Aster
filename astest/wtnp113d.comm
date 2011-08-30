@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
 # ======================================================================
 # TITRE : RESATURATION D UNE ALVEOLE TEST THH2D, 2D ,
 # wtnp113d.para = tps_job 3200 mem_job 256Mo ncpus 1 liste_test L
@@ -260,6 +260,8 @@ CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    TEMP=0.,),);
 
+INST_ETAT_INIT=473040000.;
+
 RESU0=STAT_NON_LINE(
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT0,
@@ -280,7 +282,7 @@ RESU0=STAT_NON_LINE(
                                   RHO_MAX = 1.1,
                                   ITER_LINE_MAXI = 3,),
                 INCREMENT=_F(  LIST_INST = LI,
-                             INST_FIN = 473040000.,),
+                             INST_FIN =INST_ETAT_INIT,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
@@ -323,6 +325,50 @@ DEP1=CREA_CHAMP(MAILLAGE=MAIL,
                         _F(CHAM_GD=INID,GROUP_NO='INT_ALV',),
                              ),);
 
+INST_SANS_RL = 31536.E6;
+
+RESU0=STAT_NON_LINE(reuse=RESU0,
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT0,
+                EXCIT=(
+                        _F(CHARGE=CALHAU,),
+                        _F(CHARGE=CALBAS,),
+                        _F(CHARGE=CALTEMP,),
+                        _F(CHARGE=CALGAZ,),),
+                COMP_INCR=_F(
+                 RELATION = 'KIT_THH',
+                 RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
+                INCREMENT=_F( LIST_INST = LI,INST_FIN=INST_SANS_RL,
+                              ),
+                RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  ,
+                                  RHO_MIN = 0.3,
+                                  RHO_MAX = 1.1,
+                                  ITER_LINE_MAXI = 3,),
+                ETAT_INIT = _F (SIGM=SIG1,
+                                VARI=VARI1,
+                                DEPL=DEP1,
+                                INST_ETAT_INIT=INST_ETAT_INIT, ),
+                NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=50,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=70,),
+              );
+
+SIG2=CREA_CHAMP(OPERATION='EXTR',
+                    TYPE_CHAM='ELGA_SIEF_R',
+                    NOM_CHAM='SIEF_ELGA',
+                    RESULTAT=RESU0,
+                    INST=INST_SANS_RL,);
+VARI2=CREA_CHAMP(OPERATION='EXTR',
+                    TYPE_CHAM='ELGA_VARI_R',
+                    NOM_CHAM='VARI_ELGA',
+                    RESULTAT=RESU0,
+                    INST=INST_SANS_RL,);
+DEP2=CREA_CHAMP(OPERATION='EXTR',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    NOM_CHAM='DEPL',
+                    RESULTAT=RESU0,
+                    INST=INST_SANS_RL,);
+
 RESU0=STAT_NON_LINE(reuse=RESU0,
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT0,
@@ -336,14 +382,10 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                  RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
                 INCREMENT=_F( LIST_INST = LI,
                               ),
-                RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  ,
-                                  RHO_MIN = 0.3,
-                                  RHO_MAX = 1.1,
-                                  ITER_LINE_MAXI = 3,),
-                ETAT_INIT = _F (SIGM=SIG1,
-                                VARI=VARI1,
-                                DEPL=DEP1,
-                                INST_ETAT_INIT=473040000., ),
+                ETAT_INIT = _F (SIGM=SIG2,
+                                VARI=VARI2,
+                                DEPL=DEP2,
+                                INST_ETAT_INIT=INST_SANS_RL, ),
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=70,),

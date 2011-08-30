@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 29/08/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,28 +67,34 @@ ENTETE__ ELEMENT__ MEQ4QU4          MAILLE__ QUAD4
    OPTION__   MASS_MECA_EXPLI-1
 
 MODE_LOCAL__
-    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
-    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CCACOQU  = CACOQU   ELEM__         (EP       ALPHA    BETA     CTOR     EXCENT   INERTIE )
+
+    CCACOQU  = CACOQU   ELEM__         (EP       ALPHA    BETA     CTOR     EXCENT   INERTIE  )
+
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC
+                                        PERTURB  TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR )
+
     ECODRET  = CODE_I   ELEM__         (IRET     )
-    CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
+
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT[9])
+                                        XXXX2    KIT[9]   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
+
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
+
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     NACCELR  = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
-    ECOURAN  = NEUT_R   ELEM__         (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    EENECNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
-    EDISSNO  = DISS_R   ELEM__         (TOTALE   ENDO     PLAS  )
+
+    EDISSR   = DISS_R   ELEM__         (TOTALE   ENDO     PLAS     )
+    EDISSPG  = DISS_R   ELGA__ RIGI    (TOTALE   ENDO     PLAS     )
+    EDISSNO  = DISS_R   ELNO__ IDEN__  (TOTALE   ENDO     PLAS     )
+
+    EENERR   = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
+    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION  )
+    EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  )
+
     CEPSINR  = EPSI_R   ELEM__         (EXX      EYY      EXY      KXX      KYY      KXY      )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
@@ -96,33 +102,52 @@ MODE_LOCAL__
                                         GAX      GAY      )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
+
+    CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG   CEQUI    SIGACI   SIGBET   PIVA
+                                        PIVB     )
+    CFER2_R  = FER2_R   ELEM__         (DNSXI    DNSXS    DNSYI    DNSYS    DNST     SIGMBE
+                                        EPSIBE   )
+
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
+
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
-    COMEG2R  = OME2_R   ELEM__         (OMEG2    )
+
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTIMER   = INST_R   ELEM__         (INST     DELTAT   THETA    )
+
+    CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
+    ECOURAN  = NEUT_R   ELEM__         (X1       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    CITERAT  = NEUT_R   ELEM__         (X1       )
+    ECASECT  = NEUT_R   ELEM__         (X[16]    )
+
+    COMEG2R  = OME2_R   ELEM__         (OMEG2    )
+
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
+
     ENBSP_I  = NBSP_I   ELEM__         (COQ_NCOU )
+
     CNUMCOR  = NUMC_I   ELEM__         (NUMC     ORDO     )
+
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
+
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
+
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
-    ECASECT  = NEUT_R   ELEM__         (X[16])
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    EDISSPG  = DISS_R   ELGA__ RIGI    (TOTALE   ENDO     PLAS   )
-    EDISSNN  = DISS_R   ELNO__ IDEN__  (TOTALE   ENDO     PLAS   )
-    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION   )
-    EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION   )
     ESIGMNOR = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNOC = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG )
@@ -134,15 +159,16 @@ MODE_LOCAL__
                                         QX       QY       )
     EEFG2NOR = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
     EEFG2NOC = SIEF_C   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
+
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
+
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+
     EVITNOR  = VNOR_C   ELEM__         (VNOR     )
-    CITERAT  = NEUT_R   ELEM__         (X1       )
-    CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG  CEQUI   SIGACI  SIGBET  PIVA     PIVB )
-    CFER2_R  = FER2_R   ELEM__         (DNSXI     DNSXS   DNSYI   DNSYS   DNST    SIGMBE   EPSIBE)
 
 VECTEUR__
     MVECTAR = VDEP_R NACCELR
@@ -154,12 +180,6 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
-                              OUT__  ECONTPG  PSIGMR    ECONTPC  PSIGMC
-    COOR_ELGA           488   IN__   NGEOMER  PGEOMER  CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
-                              OUT__  EGGEOP_R PCOORPG
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
-                              OUT__  ZVARCPG  PVARCPR
     ACCEPTANCE          329   IN__   NACCELR  PACCELR  NGEOMER  PGEOMER  CNUMMOD  PNUMMOD
                               OUT__  MVECTAR  PVECTUR
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
@@ -167,13 +187,13 @@ OPTION__
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                      ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
-    CARA_GEOM                -1    IN__    OUT__    XXXXXX   XXXXXX
+    CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CARA_SECT_POUT3     513   IN__   NGEOMER  PGEOMER
                               OUT__  ECASECT  PCASECT
     CARA_SECT_POUT4     513   IN__   NGEOMER  PGEOMER  CGEOMER  PORIGIN
                               OUT__  MVECTUR  PVECTU1  MVECTUR  PVECTU2
-    CHAR_LIMITE              -1    IN__    OUT__    XXXXXX   XXXXXX
-    CALC_FERRAILLAGE   146    IN__   CCACOQU  PCACOQU  CFER1_R  PFERRA1  EEFGENOR PEFFORR
+    CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
+    CALC_FERRAILLAGE    146    IN__   CCACOQU  PCACOQU  CFER1_R  PFERRA1  EEFGENOR PEFFORR
                               OUT__  CFER2_R  PFERRA2
     CHAR_MECA_EPSI_R    35    IN__   CCACOQU  PCACOQU  CEPSINR  PEPSINR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I
@@ -189,9 +209,9 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    32    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRSU_F         -1    IN__    OUT__    XXXXXX   XXXXXX
-    CHAR_MECA_PRSU_R         -1    IN__    OUT__    XXXXXX   XXXXXX
-    CHAR_MECA_ROTA_R         -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_MECA_PRSU_F    -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_MECA_PRSU_R    -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_MECA_ROTA_R    -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_SECH_R    312   IN__   CMATERC  PMATERC    OUT__  MVECTUR  PVECTUR
     CHAR_MECA_SFCO3D    487   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFFCO3D
                                      NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
@@ -202,23 +222,23 @@ OPTION__
     CHAR_MECA_TEMP_R    35    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER  CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
+                              OUT__  EGGEOP_R PCOORPG
     DEGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                               OUT__  EDEFGNO  PDEFOGR
     DISS_ELGA           413   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  CCACOQU  PCACOQU
                                      CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
-                              OUT__  EDISSPG  PDISSDR
-    DISS_ELNO           413   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  CCACOQU  PCACOQU
-                                     CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
-                              OUT__  EDISSNN  PDISSDR
+                              OUT__  EDISSPG  PDISSPG
+    DISS_ELNO           4     IN__   EDISSPG  PDISSPG
+                              OUT__  EDISSNO  PDISSNO
     ECIN_ELEM           31    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENERR   PENERCR
     EFGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CFREQR   PFREQR    NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                                      ZVARCPG  PVARCRR
-                              OUT__  EEFGENOR PEFFORR
-                                     EEFGENOC PEFFORC
+                              OUT__  EEFGENOR PEFFORR  EEFGENOC PEFFORC
     ENEL_ELGA           412   IN__   ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR
                                      ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
@@ -229,21 +249,19 @@ OPTION__
                               OUT__  EENEDNN  PENERDR
     ENER_DISS           413   IN__   NGEOMER  PGEOMER  CCOMPOR  PCOMPOR  CMATERC  PMATERC  ZVARIPG  PVARIPR
                                      CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
-                              OUT__  EDISSNO  PDISSD1
+                              OUT__  EDISSR  PDISSD1
     ENER_ELAS           412   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                                      CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
-                              OUT__  EENEDNO  PENERD1
-    ENER_TOTALE              -1    IN__    OUT__    XXXXXX   XXXXXX
+                              OUT__  EENERR   PENERD1
+    ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           31    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     EPSI_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
-    SIEQ_ELNO           330   IN__   ESIGMNOR PCONCOR
-                              OUT__  ECOEQNO  PCONTEQ
     FORC_NODA           31    IN__   CCACOQU  PCACOQU  ECONTPG  PCONTMR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
@@ -261,17 +279,19 @@ OPTION__
                                      CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    INDIC_ENER               -1    IN__    OUT__    XXXXXX   XXXXXX
-    INDIC_SEUIL              -1    IN__    OUT__    XXXXXX   XXXXXX
+    INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
+    INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     MASS_INER           31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      ZVARCPG  PVARCPR
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_DIAG           -1    IN__    OUT__    XXXXXX   XXXXXX
+    MASS_MECA_DIAG      -1    IN__    OUT__    XXXXXX   XXXXXX
     MASS_MECA_EXPLI     31    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  CCACOQU  PCACOQU
-                                    ENBSP_I  PNBSP_I
+                                     ENBSP_I  PNBSP_I
                               OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      475   IN__   CSOUSOP  PARSENS  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTMS
                                      ECONTPG  PCONTPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
@@ -317,14 +337,14 @@ OPTION__
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                                      CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    REFE_FORC_NODA      -1    IN__    OUT__    XXXXXX   XXXXXX
     REPE_TENS           442   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  ECONTPG  PCOGAIN  EDEFOPG  PDEGAIN  
                                      ESIGMNOR PCONOIN  EDEFONO  PDENOIN  CCACOQU  PCACOQU
                               OUT__  ECONTPG  PCOGAOUT EDEFOPG  PDEGAOUT ESIGMNOR PCONOOUT EDEFONO  PDENOOUT
     REPE_GENE           442   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  EEFGEPG  PEFGAIN  EDEFGPG  PDGGAIN  
                                      EEFGENOR PEFNOIN  EDEFGNO  PDGNOIN  CCACOQU  PCACOQU
                               OUT__  EEFGEPG  PEFGAOUT EDEFGPG  PDGGAOUT EEFGENOR PEFNOOUT EDEFGNO  PDGNOOUT
-    RICE_TRACEY              -1    IN__    OUT__    XXXXXX   XXXXXX
+    RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA           31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                               OUT__  MMATUUR  PMATUUR
@@ -334,10 +354,10 @@ OPTION__
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                                      CITERAT  PITERAT
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_GE             -1    IN__    OUT__    XXXXXX   XXXXXX
+    RIGI_MECA_GE        -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
-    RIGI_MECA_RO             -1    IN__    OUT__    XXXXXX   XXXXXX
+    RIGI_MECA_RO        -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_SENSI     31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                                      DDL_MECA PVAPRIN  CMATERC  PMATSEN
@@ -352,23 +372,23 @@ OPTION__
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                                      CITERAT  PITERAT
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                                     ZVARCPG  PVARCRR
-                              OUT__  ECONTPG  PCONTRR
-                                     ECONTPC  PCONTRC
-    SIEF_ELNO           31    IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  NGEOMER  PGEOMER
-                                     ENBSP_I  PNBSP_I
-                              OUT__  EEFG2NOR PSIEFNOR
-                                     EEFG2NOC PSIEFNOC
     SICO_ELNO           580   IN__   CCACOQU  PCACOQU  ECONTPG  PCONTRR  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
                                      CNUMCOR  PNUMCOR
                               OUT__  ESIGMNOR PSIGNOD
+    SIEF_ELGA           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                              OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
+    SIEF_ELNO           31    IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  NGEOMER  PGEOMER
+                                     ENBSP_I  PNBSP_I
+                              OUT__  EEFG2NOR PSIEFNOR EEFG2NOC PSIEFNOC
+    SIEQ_ELNO           330   IN__   ESIGMNOR PCONCOR
+                              OUT__  ECOEQNO  PCONTEQ
+    SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
+                              OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                                      ZVARCPG  PVARCRR
-                              OUT__  ESIGMNOR PCONTRR
-                                     ESIGMNOC PCONTRC
+                              OUT__  ESIGMNOR PCONTRR  ESIGMNOC PCONTRC
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENBSP_I  PNBSP_I  CPRES_R  PPRES_R
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
@@ -380,4 +400,4 @@ OPTION__
                               OUT__  ZVARINO  PVARINR
     VARI_ELNO           31    IN__   CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-    WEIBULL                  -1    IN__    OUT__    XXXXXX   XXXXXX
+    WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX

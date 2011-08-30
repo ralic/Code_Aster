@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,11 +26,7 @@ cata_msg={
 1 : _("""
 Lecture du fichier pick.1..."""),
 
-2 : _("""%(k1)-8s %(k2)-16s ok"""),
-
 3 : _("""%(k1)-8s %(k2)-16s ignoré"""),
-
-4 : _("""%(k1)-8s %(k2)-16s sans SD"""),
 
 5 : _("""
 Erreur inattendue lors de l'exécution de la commande '%(k1)s'.

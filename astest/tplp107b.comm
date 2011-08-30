@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 29/08/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
 # tplp107b.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,6 +21,8 @@
 
 # importation de sympy 
 import sympy,math
+# cet import inutile est du au plantage sur la machine clpaster (fiche 17434)
+import numpy
 
 # ================================================================================================================================================================================
 def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
@@ -150,7 +152,7 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
 
 
 
-DEBUT(CODE=_F( NOM = 'TPLP107B',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NOM='TPLP107B',NIV_PUB_WEB='INTERNET'),
       PAR_LOT='NON',
       DEBUG=_F(SDVERI='OUI',),
       IGNORE_ALARM='SUPERVIS_1',)

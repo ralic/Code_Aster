@@ -2,9 +2,9 @@
      &                  INSTAP,DEPMOZ,DEPDEZ,VECELZ,INSTAM,
      &                  COMPOR,CARCRI,LIGREZ,VITEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,7 +68,7 @@ C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*5 SUFFIX
       CHARACTER*8 NOMCHA,LPAIN(15),PAOUT,K8BID,AFFCHA,KBID,NEWNOM
-      CHARACTER*16 OPTION,REPCT,REPVR
+      CHARACTER*16 OPTION
       CHARACTER*24 CHGEOM,CHCARA(18),CHTIME,LIGREL,LIGRMO
       CHARACTER*24 LCHIN(15),CHTIM2,LIGRCH,EVOLCH
       CHARACTER*19 RESUEL,RESUFV(1),DEPMOI,DEPDEL,VITES
@@ -87,7 +87,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       DATA NOMOPF/'SF1D1D','??????','??????','PRSU_F','      ','SFCO3D'/
       DATA NOMPAR/'FR1D1D','PESANR','ROTATR','PRESSR','      ','FRCO3D'/
       DATA NOMPAF/'FF1D1D','??????','??????','PRESSF','      ','FFCO3D'/
-      DATA NBOPT/10,15,9,9,0,9/
+      DATA NBOPT/10,15,10,9,0,9/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -175,8 +175,6 @@ C     -------------------------------------
 
         IF (NUMCHM.EQ.4) THEN
           SOMME = 0
-          CALL DISMOI('F','EXI_THM_CT',MODELE,'MODELE',IBID,REPCT,IERD)
-          CALL DISMOI('F','EXI_THM_VR',MODELE,'MODELE',IBID,REPVR,IERD)
 
           DO 20 K = 1,NBCHMX
             IF (NOMLIG(K).EQ.'.FORNO') THEN
@@ -198,12 +196,7 @@ C     -------------------------------------
                 OPTION = 'CHAR_MECA_'//NOMOPF(K)
                 LPAIN(1) = 'P'//NOMPAF(K)
               ELSE
-                IF (((REPCT(1:3).EQ.'OUI').OR. (REPVR(1:
-     &              3).EQ.'OUI')) .AND. (K.EQ.2)) THEN
-                  OPTION = 'CHAR_MECA_THMG'
-                ELSE
-                  OPTION = 'CHAR_MECA_'//NOMOPR(K)
-                END IF
+                OPTION = 'CHAR_MECA_'//NOMOPR(K)
                 LPAIN(1) = 'P'//NOMPAR(K)
               END IF
 

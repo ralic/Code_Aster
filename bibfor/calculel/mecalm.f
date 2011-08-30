@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,6 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*8 K8B,NOMA,CHAREP
       CHARACTER*8 CARELE,KIORD,KIORDM
       CHARACTER*8 LERES0,BLAN8
-      CHARACTER*8 SAVCAR(2)
       CHARACTER*19 PFCHNO
       CHARACTER*16 NOMCMD,OPTION,OPTIO2,OPTIOX,TYPES,K16B
       CHARACTER*16 BLAN16,TYPEMO
@@ -164,8 +163,6 @@ C               123456789012345678901234
       CHVREF='&&'//NOMPRO//'.CHVREF'
       BASE='G'
       COEF=UN
-      SAVCAR(1)='????????'
-      SAVCAR(2)='????????'
       RUNDF=R8VIDE()
 
 C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
@@ -418,7 +415,6 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
      &                  NBORDR,NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             IF (IRET.GT.0)GOTO 90
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -590,7 +586,6 @@ C    ------------------------------------------------------------------
      &                  NBORDR,NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
             IF (IRET.GT.0)GOTO 110
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -645,7 +640,6 @@ C    ------------------------------------------------------------------
      &                  NBORDR,NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             IF (IRET.GT.0)GOTO 150
             CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
@@ -682,7 +676,6 @@ C    ------------------------------------------------------------------
      &                  NBORDR,NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             IF (OPTION.EQ.'SIEQ_ELNO') THEN
               IF (TYSD.EQ.'FOURIER_ELAS') CALL U2MESK('F',
      &            'CALCULEL6_83',1,OPTION)
@@ -1023,7 +1016,6 @@ C    ------------------------------------------------------------------
      &                  NBORDR,NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,2,RESUCO,'EFGE_ELNO',IORDR,CHSIG,
      &                  OPTION,IRET)
             CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
@@ -1056,7 +1048,6 @@ C     ------------------------------------------------------------------
      &                  NBORDR,NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
 
 C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
 C           -------------------------------------------------

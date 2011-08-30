@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102d.para = tps_job 70 mem_job 100Mo ncpus 1 liste_test S
@@ -139,6 +139,9 @@ LIAI=AFFE_CHAR_MECA(
 # --------------------------------------------------------------------
 #
 
+# LES ZONES DE CONTACT NE CONTIENNENT PAS LES NOEUDS LIES
+# C'EST POURQUOI IL N'EST PAS NECESSAIRE D'UTILISER SANS_GROUP_NO ICI
+
 CONT = DEFI_CONTACT(MODELE      = MOD,
                     FORMULATION = 'CONTINUE',
                     REAC_GEOM   = 'CONTROLE',
@@ -258,12 +261,12 @@ TEST_RESU(
                   RESULTAT = RESU,
                   NUME_ORDRE = 1,
                   REFERENCE = 'NON_REGRESSION',
-                  VERSION   = '6.2.8',
+                  VERSION   = '11.0.18',
                   NOM_CHAM = 'DEPL',
                   GROUP_NO = 'PA4',
                   NOM_CMP = 'DY',
-                  VALE = -8.4052577528286E-01,
-                  PRECISION = 1.0,
+                  VALE = -0.84132697158385,
+                  PRECISION = 1.0E-10,
                   CRITERE = 'RELATIF')
            )
 
@@ -292,7 +295,7 @@ TEST_TABLE(    TABLE=REACENC,
                NOM_PARA='DY',
                REFERENCE='SOURCE_EXTERNE',
                VALE=17229.58,
-               PRECISION=3.0E-2,
+               PRECISION=1.6E-2,
                CRITERE='RELATIF' )
 
 # --------------------------------------------------------------------
@@ -302,9 +305,9 @@ TEST_TABLE(    TABLE=REACENC,
 TEST_TABLE(     TABLE=REACENC,
                 NOM_PARA='DY',
                 REFERENCE='NON_REGRESSION',
-                VERSION = '6.2.8',
-                VALE=1.7475291318274E+04,
-                PRECISION=1.0,
+                VERSION = '11.0.18',
+                VALE=17501.616242436,
+                PRECISION=1.0E-10,
                 CRITERE='RELATIF' )
 
 FIN()

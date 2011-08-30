@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    MAILLE='M368',
                    POINT=1,
                    SOUS_POINT=1,
-                   VALE=532100.0,
+                   VALE=4.9919514420373E+05,
                    PRECISION=0.001,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU,
@@ -218,7 +218,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    MAILLE='M368',
                    POINT=1,
                    SOUS_POINT=1,
-                   VALE=499200.0,
+                   VALE=5.3215554257317E+05,
                    PRECISION=0.001,
                    REFERENCE='NON_REGRESSION',),
                    ),);

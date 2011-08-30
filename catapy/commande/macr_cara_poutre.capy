@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,8 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
                            fr="demi maillage par rapport a y=0"),
 
          GROUP_MA       =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                           fr="Calcul des caractéristiques équivalentes a plusieurs sections disjointes"),
+                              fr="Calcul des caractéristiques équivalentes a plusieurs "
+                                 "sections disjointes"),
 
          GROUP_MA_BORD  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                            fr="Groupe(s) de mailles linéiques, bord(s) de(s) section(s)"),
@@ -58,10 +59,12 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
             b_gma_bord  =BLOC( condition = "GROUP_MA_BORD != None",
                fr=" calcul des carac. mecaniques",
                regles=(UN_PARMI('NOEUD','GROUP_NO')),
-               NOEUD           =SIMP(statut='f',typ=no,  max='**',
-                                 fr="Simplement pour empecher des pivots nuls le cas echeant. Fournir un noeud quelconque"),
+               NOEUD           =SIMP(statut='f',typ=no,max='**',
+                                     fr="Simplement pour empecher des pivots nuls le cas echeant. "
+                                        "Fournir un noeud quelconque"),
                GROUP_NO        =SIMP(statut='f',typ=grno,max='**',
-                                 fr="Simplement pour empecher des pivots nuls le cas echeant. Fournir un noeud quelconque"),
+                                     fr="Simplement pour empecher des pivots nuls le cas echeant. "
+                                        "Fournir un noeud quelconque par GROUP_MA"),
                GROUP_MA_INTE   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                                  fr="groupes de mailles linéiques bordant des trous dans la section"),
             ),

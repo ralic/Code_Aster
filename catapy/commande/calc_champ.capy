@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -180,7 +180,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                   ),
                             ),
 
-         b_nom_vari   = BLOC(condition = "VARI_INTERNE in ('VAEX_ELNO','VAEX_ELGA')",
+         b_nom_vari   = BLOC(condition = "au_moins_un(VARI_INTERNE, ('VAEX_ELNO','VAEX_ELGA'))",
              NOM_VARI = SIMP(statut='o',typ='TXM',min= 1,max='**',
                              fr="nom de la variable a extraire",
                into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",

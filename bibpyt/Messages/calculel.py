@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 30/08/2011   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -292,6 +292,16 @@ Conseils :
 
 49 : _("""
  le CHAM_ELEM : %(k1)s a des sous-points.
+"""),
+
+
+50 : _("""
+ Vous cherchez à projeter un champ inhabituel sur le modèle final.
+ Vérifiez que les modélisations que vous utilisez sont compatibles.
+
+ Message destiné aux développeurs :
+ Le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
+ Champ : %(k4)s
 """),
 
 52 : _("""

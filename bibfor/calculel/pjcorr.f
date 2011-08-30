@@ -1,7 +1,7 @@
       SUBROUTINE PJCORR(NOMO2,CHBID,CNS1Z,CES2Z,
      &     LIGREL,CORRES,OPTION,NOMPAR,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 30/08/2011   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     ------------------
       CHARACTER*8 NOMGD,MA,LICMP(2)
       CHARACTER*19 CNS1,CES2,CEL2
       CHARACTER*19 CHAM1S,DCEL
+      CHARACTER*24 VALK(5)
       INTEGER  JPO, IPO,NBMA
       INTEGER JCE2C,JCE2L,JCE2V,JCE2D,JCE2K
 
@@ -86,14 +87,9 @@ C     ------------------------------------------
       CALL JEVEUO(CNS1//'.CNSV','L',JCNS1V)
       CALL JEVEUO(CNS1//'.CNSL','L',JCNS1L)
 
-
       NOMGD = ZK8(JCNS1K-1+2)
       NBNO1 = ZI(JCNS1D-1+1)
-
-      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
-
-      NBMAX=ZI(JCNS1D-1+2)
+      NBMAX = ZI(JCNS1D-1+2)
 
 
 C------------------------------------------------------------------
@@ -155,10 +151,27 @@ C     -----------------------------
 
         CALL ALCHML(LIGREL,OPTION,NOMPAR,'V',CEL2,IRET,DCEL)
 
+        IF (IRET.EQ.1) THEN
+          VALK(1) = NOMPAR
+          VALK(2) = OPTION
+          VALK(3) = LIGREL
+          VALK(4) = CEL2
+          CALL U2MESK('F','CALCULEL_50',4,VALK)
+        ENDIF
+
       ELSE
         CALL ALCHML(LIGREL,OPTION,NOMPAR,'V',CEL2,IRET,' ')
-      ENDIF
 
+        IF (IRET.EQ.1) THEN
+          VALK(1) = NOMPAR
+          VALK(2) = OPTION
+          VALK(3) = LIGREL
+          VALK(4) = CEL2
+          CALL U2MESK('F','CALCULEL_50',4,VALK)
+        ENDIF
+
+      ENDIF
+      
       CALL CELCES(CEL2,'V',CES2)
       CALL DETRSD('CHAM_ELEM',CEL2)
 

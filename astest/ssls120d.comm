@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,11 +39,7 @@ MODI_MAILLAGE(reuse =MAIL,
                                       GROUP_NO='A1',),
                    );
 
-CARAEL1=AFFE_CARA_ELEM(MODELE=MODMECA,
-                       COQUE=_F(GROUP_MA='VIROLE',
-                                EPAIS=4.E-2,),);
-
-CARAEL2=AFFE_CARA_ELEM(MODELE=MODMECA,
+CARAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
                        COQUE=_F(GROUP_MA='VIROLE',
                                 EPAIS=4.E-2,
                                 ANGL_REP=(0.0,-90.0),),);
@@ -97,14 +93,13 @@ PH=AFFE_CHAR_MECA_F(MODELE=MODMECA,
 
 ELAS1=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT1,
-                    CARA_ELEM=CARAEL1,
+                    CARA_ELEM=CARAEL,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
                            _F(CHARGE=PH,),),
                     );
 
 CALC_ELEM( reuse= ELAS1 ,RESULTAT= ELAS1 ,
-           REPE_COQUE =_F(ANGL_REP=(0.0,-90.0),
-                          NUME_COUCHE=1,),
+           REPE_COQUE =_F( NUME_COUCHE=1,),
            OPTION='SIGM_ELNO',);
 
 R = 5.7;
@@ -185,7 +180,7 @@ DZMAX2 = (-NuLT*P*R*L)/ET/h/2.
 
 ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT2,
-                    CARA_ELEM=CARAEL2,
+                    CARA_ELEM=CARAEL,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
                            _F(CHARGE=PH,),),);
 

@@ -1,21 +1,21 @@
-#@ MODIF impr_table_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE MCOURTOI M.COURTOIS
@@ -109,7 +109,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          print 'IMPRESSION DE LA TABLE : %s' % sdtab.get_name()
 
       if args['TITRE']:
-         tab.titr=args['TITRE'] + '\n' + tab.titr
+         tab.titr=os.linesep.join(args['TITRE'] + (tab.titr, ))
 
       # ----- 2. Filtres
       for Fi in Filtre:
@@ -138,10 +138,10 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       for p in nom_para:
          if not p in tab.para:
            UTMESS('A','TABLE0_7',valk=p)
-      
+
       # sélection des paramètres et suppression des colonnes vides
       timp = tab.SansColonneVide(nom_para)
-      
+
       # passage des mots-clés de mise en forme à la méthode Impr
       kargs=args.copy()
       kargs.update({
@@ -165,12 +165,12 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
             'cdeb'   : args['DEBUT_LIGNE'],
             'cfin'   : args['FIN_LIGNE'],
          }
-      
+
       # 4.2. au format AGRAF
       elif FORMAT=='AGRAF':
          kargs['dform']={ 'formR' : '%12.5E' }
          kfonc['FORMAT']='TABLEAU'
-      
+
       # 4.3. au format XMGRACE et dérivés
       elif FORMAT=='XMGRACE':
          kargs['dform']={ 'formR' : '%.8g' }

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 29/08/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
 # tplp107a.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,8 +21,10 @@
 
 # Import du module de calcul symbolique Sympy
 import sympy
+# cet import inutile est du au plantage sur la machine clpaster (fiche 17434)
+import numpy
 
-DEBUT(CODE=_F( NOM = 'TPLP107A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='TPLP107A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # Concductivite thermique
 Lambda=15;

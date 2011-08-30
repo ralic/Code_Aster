@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fonction_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    isTestOk = 0
    vtc = valRef[0]
    if is_enum(vtc):
-      assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) )
+      assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) ), vtc[0]
       if vtc[0]=='RI':
          vtc = vtc[1]+1j*vtc[2]
       else:
@@ -77,7 +77,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    for i in range(len(valRef)):
       vtc = valRef[i]
       if is_enum(vtc):
-         assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) )
+         assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) ), vtc[0]
          if vtc[0]=='RI':
             vtc = vtc[1]+1j*vtc[2]
          else:
@@ -91,7 +91,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
 
    vtc = valRef[curI]
    if is_enum(vtc):
-      assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) )
+      assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) ), vtc[0]
       if vtc[0]=='RI':
          vtc = vtc[1]+1j*vtc[2]
       else:
@@ -414,11 +414,8 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
                valref = dres['VALE_REFE_C']
             else:
                valref = dres['VALE_REFE']
-            # L'enjeu est de transformer valref en tableau
-            if not is_enum(valref): valref = [valref,]
-            else:
-               if is_str(valref[0]):
-                  valref = [valref,]
+            if is_str(valref[0]):
+               valref = [valref,]
 
             intervalle = dres['INTERVALLE']
 
@@ -940,7 +937,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             txt.append('NOOK PB INTERPOLATION. VOIR MESSAGE CI-DESSUS')
          else:
             # Test et affichage de la valeur
-            curDict=TesterValeur(fctProl[2],valePara,[valeRef,],res,epsi,crit,'NON')
+            curDict=TesterValeur(fctProl[2],valePara,valeRef,res,epsi,crit,'NON')
             AfficherResultat(curDict,fctProl[2].strip(),ref,legende,crit,res,valePara,txt)
 
    # On affiche txt dans le fichier RESULTAT

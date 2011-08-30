@@ -1,8 +1,8 @@
-#@ MODIF joint_meca_rupt Comportement  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF joint_meca_rupt Comportement  DATE 29/08/2011   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,8 +28,8 @@ loi = LoiComportement(
              Enfin elle permet de modéliser, avec les éléments de joint HM, un couplage entre 
              la mécanique et l'écoulement de fluide dans la fissure""",
    num_lc         = 45,
-   nb_vari        = 17,
-   nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DOMTAN','PCDOMTAN','SAUT_N','SAUT_T1','SAUT_T2', 'EPAISSJO','SIGN_GLO','GRADP_X','GRADP_Y','GRADP_Z','FH_X','FH_Y','FH_Z'),
+   nb_vari        = 18,
+   nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DOMTAN','PCDOMTAN','SAUT_N','SAUT_T1','SAUT_T2', 'EPAISSJO','SIGN_GLO','GRADP_X','GRADP_Y','GRADP_Z','FH_X','FH_Y','FH_Z','PRESF'),
    mc_mater       = ('JOINT_MECA_RUPT'),
    modelisation   = ('3D','PLAN','AXIS','ELEMJOINT','EJ_HYME'),
    deformation    = ('PETIT'),

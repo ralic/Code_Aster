@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 def calc_erreur_prod(RESULTAT,**args):
@@ -80,14 +80,10 @@ CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
                                  "SING_ELEM","SING_ELNO",
                                  "ERTH_ELEM","ERTH_ELNO",),),
 
-     b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM') or \
-                                 (type(OPTION)==type(()) and 'QIRE_ELEM' in OPTION) or \
-                                 (type(OPTION)==type(()) and 'QIZ1_ELEM' in OPTION) or \
-                                 (type(OPTION)==type(()) and 'QIZ2_ELEM' in OPTION)",
+     b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                      RESU_DUAL=SIMP(statut='o',typ=resultat_sdaster,fr="Résultat du problème dual"),),
 
-     b_sing    =BLOC(condition= "OPTION == 'SING_ELEM' or \
-                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+     b_sing    =BLOC(condition= "'SING_ELEM' in OPTION",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="Précision demandée pour calculer la carte de taille des éléments"),
                     TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",

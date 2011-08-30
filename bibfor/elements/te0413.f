@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/08/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,11 +26,9 @@ C
 C      CALCUL DE LA DENSITE DE DISSIPATION
 C      A L'EQUILIBRE POUR LES ELEMENTS DKT
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'DISS_ELGA'
-C      .SOIT AUX NOEUDS               : OPTION 'DISS_ELNO'
 C      .SOIT L INTEGRALE PAR ELEMENT  : OPTION 'ENER_DISS'
 C
 C      OPTIONS : 'DISS_ELGA'
-C                'DISS_ELNO'
 C                'ENER_DISS'
 C
 C ENTREES  ---> OPTION : OPTION DE CALCUL
@@ -53,22 +51,19 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER    NNOMX
-      PARAMETER (NNOMX=4)
       INTEGER    NPGMX
       PARAMETER (NPGMX=4)
 
       REAL*8   PGL(3,3),COEF,DEUX
       REAL*8   QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
       REAL*8   DISSE(NPGMX),DISSP(NPGMX)
-      REAL*8   DISST(NPGMX),DSE,DSP,DST,AUXM(NNOMX),AUXF(NNOMX)
-      REAL*8   AUXT(NNOMX)
+      REAL*8   DISST(NPGMX),DSE,DSP,DST
       REAL*8   R8B(8),EP,SEUIL
-      REAL*8   HIC,COEHSD
+      REAL*8   HIC,COEHSD,NBSP
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  JGEOM,IPG,IDENER,IMATE,NBSP
-      INTEGER  ICOMPO,ICACOQ,I,NCMP,JVARI,NBVAR,JTAB(7),IVPG
+      INTEGER  JGEOM,IPG,IDENER,IMATE
+      INTEGER  ICOMPO,ICACOQ,NCMP,JVARI,NBVAR,JTAB(7),IVPG
       INTEGER  JNBSPI,NBCOU,NPGH,IRET,ICOU,IGAUH,ISP,TMA(3,3)
 
       CHARACTER*16 VALK(2)
@@ -92,10 +87,8 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 
-C      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
-C     +                                         IVF,IDFDX,IDFD2,JGANO)
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,
-     +                                         IVF,IDFDX,IDFD2,JGANO)
+     &                                         IVF,IDFDX,IDFD2,JGANO)
 
       GRILLE = .FALSE.
       IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
@@ -110,10 +103,9 @@ C     +                                         IVF,IDFDX,IDFD2,JGANO)
 
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'
 
-      IF ( ZK16(ICOMPO)(1:7).EQ.'GLRC_DM'.OR.
-     &     ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE'.OR.
-     &   (LKIT  .AND. ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM' )
-     &   ) THEN
+      IF ((ZK16(ICOMPO)(1:7).EQ.'GLRC_DM')      .OR.
+     &    (ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE') .OR.
+     &    (LKIT.AND.(ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM'))) THEN
 
       CALL JEVECH('PCACOQU','L',ICACOQ)
 
@@ -141,7 +133,6 @@ C     +                                         IVF,IDFDX,IDFD2,JGANO)
       DST = 0.0D0
 
       IF ( GRILLE ) THEN
-C        TYPMOD(2) = 'MEGRDKT '
         NPGH = 1
         COEF = DEUX
       ELSE
@@ -171,12 +162,8 @@ C      ===================================
          IF ( DKQ ) THEN
            CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
            POIDS = ZR(IPOIDS+IPG-1)*JACOB(1)
-C           CALL DXQBM ( QSI, ETA, JACOB(2), BM )
-C           CALL DKQBF ( QSI, ETA, JACOB(2), CARA, BF )
          ELSE
            POIDS = ZR(IPOIDS+IPG-1)*CARA(7)
-C           CALL DXTBM ( CARA(9), BM )
-C           CALL DKTBF ( QSI, ETA, CARA, BF )
          ENDIF
 
         CALL JEVECH('PMATERC','L',IMATE)
@@ -192,7 +179,6 @@ C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 C        ==========================================================
          IF ((OPTION(1:4).EQ.'DISS') .OR. (OPTION(6:9).EQ.'DISS')) THEN
 
-           NCMP = JTAB(6)*JTAB(7)
            NBSP=JTAB(7)
 
            IF(DKG) THEN
@@ -203,8 +189,6 @@ C        ==========================================================
              DISST(IPG) = DISSE(IPG) + DISSP(IPG)
 
              DSE = DSE + DISSE(IPG)*POIDS
-C             DSP = DSP + DISSP(IPG)*POIDS
-C             DST = DST + DISST(IPG)*POIDS
              DST = DSE
            ELSE
              DO 80,ICOU = 1,NBCOU
@@ -245,7 +229,7 @@ C ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
 C ---- ELASTIQUE EN SORTIE
 C      -------------------
       IF(OPTION(1:4) .EQ. 'DISS') THEN
-        CALL JEVECH('PDISSDR','E',IDENER)
+        CALL JEVECH('PDISSPG','E',IDENER)
       ELSE IF(OPTION(1:4) .EQ. 'ENER') THEN
         CALL JEVECH('PDISSD1','E',IDENER)
       ENDIF
@@ -259,34 +243,12 @@ C     ==============================
            ZR(IDENER-1+(IPG-1)*3 +3) = DISSP(IPG)
  100     CONTINUE
 C
-C --- OPTION DISS_ELNO
-C     =======================================
-      ELSEIF (OPTION(1:9).EQ.'DISS_ELNO') THEN
-        IF (NPG.EQ.1) THEN
-           DO 110 I = 1, NNOEL
-              ZR(IDENER-1+(I-1)*3 +1) = DISST(1)
-              ZR(IDENER-1+(I-1)*3 +2) = DISSE(1)
-              ZR(IDENER-1+(I-1)*3 +3) = DISSP(1)
- 110       CONTINUE
-        ELSE
-          NCMP = 1
-          NBSP = 1
-          CALL PPGAN2 ( JGANO, NBSP, NCMP, DISST, AUXT)
-          CALL PPGAN2 ( JGANO, NBSP, NCMP, DISSE, AUXM)
-          CALL PPGAN2 ( JGANO, NBSP, NCMP, DISSP, AUXF)
-          DO 120 I = 1, NNOEL
-             ZR(IDENER-1+(I-1)*3 +1) = AUXT(I)
-             ZR(IDENER-1+(I-1)*3 +2) = AUXM(I)
-             ZR(IDENER-1+(I-1)*3 +3) = AUXF(I)
- 120      CONTINUE
-        ENDIF
-C
 C --- OPTION ENER_ELAS
 C     ================
       ELSEIF (OPTION(1:9).EQ.'ENER_DISS') THEN
-        ZR(IDENER   ) = DST
-        ZR(IDENER +1) = DSE
-        ZR(IDENER +2) = DSP
+        ZR(IDENER-1+1) = DST
+        ZR(IDENER-1+2) = DSE
+        ZR(IDENER-1+3) = DSP
       ENDIF
 
       ELSE

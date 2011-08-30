@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ MO=AFFE_MODELE(
            )
 
 CARAC=AFFE_CARA_ELEM(  MODELE=MO,
-           COQUE=_F( COQUE_NCOU=2,
+           COQUE=_F( COQUE_NCOU=2, ANGL_REP = (90., -53.13,),
                      GROUP_MA = 'TOUT',
                      EPAIS = 2.,
                      A_CIS = 0.8333333333,))
@@ -138,9 +138,7 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM( reuse=U,   RESULTAT=U,
                       TOUT_ORDRE='OUI',
-             REPE_COQUE =_F( NUME_COUCHE=1,
-                             NIVE_COUCHE='SUP',
-                             ANGL_REP = (90., -53.13,),),
+             REPE_COQUE =_F( NUME_COUCHE=1, NIVE_COUCHE='SUP'),
                      OPTION=('EPSI_ELNO',
                              'SIEF_ELNO',
                              'VARI_ELNO',
@@ -150,20 +148,17 @@ U=CALC_ELEM( reuse=U,   RESULTAT=U,
 U1=CALC_ELEM(  RESULTAT=U,
                TOUT_ORDRE='OUI',
                OPTION=('VACO_ELNO',),
-               REPE_COQUE =_F( NIVE_COUCHE='INF',
-                               ANGL_REP = (90., -53.13,),),);
+               REPE_COQUE =_F( NIVE_COUCHE='INF'));
 
 U2=CALC_ELEM(  RESULTAT=U,
                TOUT_ORDRE='OUI',
                OPTION='VACO_ELNO',
-               REPE_COQUE =_F( NIVE_COUCHE='MOY',
-                               ANGL_REP = (90., -53.13,),),);
+               REPE_COQUE =_F( NIVE_COUCHE='MOY'));
 
 U3=CALC_ELEM(  RESULTAT=U,
                TOUT_ORDRE='OUI',
                OPTION='VACO_ELNO',
-               REPE_COQUE =_F( NIVE_COUCHE='SUP',
-                               ANGL_REP = (90., -53.13,),),);
+               REPE_COQUE =_F( NIVE_COUCHE='SUP'));
 
 TEST_RESU(RESU=(_F(
                    RESULTAT = U,  NOM_CHAM = 'DEPL',  NOEUD = 'NO1',

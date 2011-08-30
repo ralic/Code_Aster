@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,6 +77,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
 
          b_rigi_rota       =BLOC(condition = "OPTION=='RIGI_ROTA'",
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
            CHARGE            =SIMP(statut='o',typ=char_meca,validators=NoRepeat(),max='**' ),
          ),
 

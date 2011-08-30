@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,11 +90,21 @@ class MCSIMP(N_OBJECT.OBJECT):
           d'évaluation d'expressions à l'aide d'un interpréteur Python
       """
       v = self.valeur
-      # Singleton : on retourne l'element
-      # Permet aussi d'ignorer l'erreur : concept=COMMANDE(),
-      # ou 'concept' est un tuple de longueur 1 a cause de la virgule.
-      if type(v) in (list, tuple) and len(v) == 1:
+      # Si singleton et max=1, on retourne la valeur.
+      # Si une valeur simple et max='**', on retourne un singleton.
+      # (si liste de longueur > 1 et max=1, on sera arrêté plus tard)
+      # Pour accepter les numpy.array, on remplace : "type(v) not in (list, tuple)"
+      # par "not has_attr(v, '__iter__')".
+      if v is None:
+          pass
+      elif type(v) in (list, tuple) and len(v) == 1 and self.definition.max == 1:
          v = v[0]
+      elif not hasattr(v, '__iter__') and self.definition.max != 1:
+          v = (v, )
+      # traitement particulier pour les complexes ('RI', r, i)
+      if 'C' in self.definition.type and self.definition.max != 1 \
+        and v[0] in ('RI', 'MP'):
+          v = (v, )
       return v
 
    def get_val(self):

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)   OPTIOZ , NOMTZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,28 +44,33 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL       MATRIC
       CHARACTER*16  OPTION , NOMTE
 C ----------------------------------------------------------------------
-C
+
       OPTION = OPTIOZ
       NOMTE  = NOMTZ
-C
+
       CALL JEVEUO ('&INEL.'//NOMTE(1:8)//'.DESI', 'L' , LZI )
       NB2 = ZI(LZI-1+2)
-C
+
+      IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA'.OR.
+     &    OPTION(1:9).EQ.'RIGI_MECA')THEN
+C        -- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
+         CALL COSIRO (NOMTE,'PCONTMR','UI','G',IBID,'S')
+      ENDIF
+
+
       MATRIC = ( OPTION(1:9) .EQ.'FULL_MECA'  .OR.
      &           OPTION(1:10).EQ.'RIGI_MECA_' )
-C
+
       CALL JEVECH ('PGEOMER', 'L', JGEOM )
       CALL JEVECH ('PDEPLMR', 'L', IDEPLM)
       CALL JEVECH ('PDEPLPR', 'L', IDEPLP)
       CALL JEVECH ('PCOMPOR', 'L', ICOMPO)
-C
+
       IF ( ZK16(ICOMPO+3)(1:9) .EQ. 'COMP_ELAS' ) THEN
 C          ------------------------------------
-C  SEULE RELATION ADMISE : ELAS
+C       SEULE RELATION ADMISE : ELAS
         IF ( ZK16(ICOMPO)(1:5) .NE. 'ELAS ' ) THEN
-C
            CALL U2MESK('F','ELEMENTS5_46',1,ZK16(ICOMPO))
-C
         ENDIF
 
 C
@@ -141,5 +146,10 @@ C
       ENDIF
 C
  9999 CONTINUE
+
+      IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
+C        -- PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
+         CALL COSIRO (NOMTE,'PCONTPR','IU','G',IBID,'R')
+      ENDIF
 C
       END

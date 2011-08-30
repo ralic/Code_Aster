@@ -4,9 +4,9 @@
       CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,15 +48,15 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER IAUX,IBID,IALIEL,IANOMA,ICO,ICP,IGREL,JNFIS
-      INTEGER IRET,ITYPEL,NBGREL,NEL,LXLGUT
+      INTEGER IALIEL,IANOMA,ICO,IGREL,JNFIS
+      INTEGER IRET,ITYPEL,NBGREL,NEL
 C
       CHARACTER*1 K1BID
       CHARACTER*4 TYTM
       CHARACTER*8 MA,NOMOB
       CHARACTER*16 NOMTE,NOMODL,NOMOD2
       CHARACTER*19 NOLIG
-      CHARACTER*32 REPK,K32BID
+      CHARACTER*32 REPK
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -137,91 +137,6 @@ C              D'AUTRES PLUS SIGNIFICATIFS :
         REPK='#AUCUNE'
 
    30   CONTINUE
-
-C     -------------------------------------------
-      ELSEIF (QUESTI.EQ.'MODELISATION_THM') THEN
-C     -------------------------------------------
-        K32BID='NON'
-C
-        CALL JEEXIN(NOLIG//'.LIEL',IRET)
-        IF (IRET.EQ.0)GOTO 50
-        CALL JELIRA(NOLIG//'.LIEL','NUTIOC',NBGREL,K1BID)
-        IF (NBGREL.LE.0)GOTO 50
-        ICO=0
-        ICP=0
-        NOMODL=' '
-
-        DO 40,IGREL=1,NBGREL
-          CALL JEVEUO(JEXNUM(NOLIG//'.LIEL',IGREL),'L',IALIEL)
-          CALL JELIRA(JEXNUM(NOLIG//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
-          ITYPEL=ZI(IALIEL-1+NEL)
-          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
-          CALL DISMTE('MODELISATION',NOMTE,REPI,REPK,IERD)
-
-          NOMOD2=REPK(1:16)
-          IF ((NOMOD2(1:6).EQ.'D_PLAN') .OR.
-     &        (NOMOD2(1:6).EQ.'C_PLAN')) THEN
-            IBID=8
-          ELSEIF (NOMOD2(1:4).EQ.'AXIS') THEN
-            IBID=6
-          ELSEIF (NOMOD2(1:2).EQ.'3D') THEN
-            IBID=4
-          ELSE
-            GOTO 40
-
-          ENDIF
-          IF (NOMOD2(IBID:IBID).EQ.'H') THEN
-            IF (NOMOD2(IBID:IBID+4).EQ.'HH2MD' .OR.
-     &          NOMOD2(IBID:IBID+4).EQ.'HH2MS' .OR.
-     &          NOMOD2(IBID:IBID+2).EQ.'HH2' .OR.
-     &          NOMOD2(IBID:IBID+1).EQ.'HH' .OR.
-     &          NOMOD2(IBID:IBID+2).EQ.'HHM' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'HHMD' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'HHMS' .OR.
-     &          NOMOD2(IBID:IBID+1).EQ.'HM' .OR.
-     &          NOMOD2(IBID:IBID+2).EQ.'HMD' .OR.
-     &          NOMOD2(IBID:IBID+2).EQ.'HMS') THEN
-              ICO=ICO+1
-              IAUX=LXLGUT(NOMOD2)
-              IF (NOMOD2(IAUX-1:IAUX).EQ.'_P') THEN
-                ICP=ICP+1
-              ENDIF
-            ENDIF
-          ELSEIF (NOMOD2(IBID:IBID).EQ.'T') THEN
-            IF (NOMOD2(IBID:IBID+2).EQ.'THH' .OR.
-     &          NOMOD2(IBID:IBID+4).EQ.'THH2D' .OR.
-     &          NOMOD2(IBID:IBID+5).EQ.'THH2MD' .OR.
-     &          NOMOD2(IBID:IBID+5).EQ.'THH2MS' .OR.
-     &          NOMOD2(IBID:IBID+4).EQ.'THH2S' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'THHD' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'THHM' .OR.
-     &          NOMOD2(IBID:IBID+4).EQ.'THHMD' .OR.
-     &          NOMOD2(IBID:IBID+4).EQ.'THHMS' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'THHS' .OR.
-     &          NOMOD2(IBID:IBID+2).EQ.'THM' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'THMD' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'THMS' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'THVD' .OR.
-     &          NOMOD2(IBID:IBID+3).EQ.'THVS') THEN
-              ICO=ICO+1
-              IAUX=LXLGUT(NOMOD2)
-              IF (NOMOD2(IAUX-1:IAUX).EQ.'_P') THEN
-                ICP=ICP+1
-              ENDIF
-            ENDIF
-          ENDIF
-
-   40   CONTINUE
-        REPK=K32BID
-        IF (ICO.GT.0) THEN
-          IF (ICP.GT.0) THEN
-            REPK='OUI_P'
-          ELSE
-            REPK='OUI'
-          ENDIF
-        ENDIF
-   50   CONTINUE
-C
 
 C     ------------------------------------------
       ELSEIF ((QUESTI.EQ.'NB_NO_MAILLA') .OR.

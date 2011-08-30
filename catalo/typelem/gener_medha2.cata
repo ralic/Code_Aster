@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 29/08/2011   AUTEUR GRANET S.GRANET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ MODE_LOCAL__
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
-    EREFCO   = PREC     ELEM__         (FHYDR1   )
+    EREFCO   = PREC     ELEM__         (SIGM     FHYDR1   )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (M11      FH11X    FH11Y    )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (M11      FH11X    FH11Y    )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (M11      FH11X    FH11Y    )

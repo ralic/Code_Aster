@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 29/08/2011   AUTEUR LAVERNE J.LAVERNE 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 3D A L'AIDE DES ELEMENTS DE JOINT HYME ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142f.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -211,19 +211,22 @@ U_HM=STAT_NON_LINE(MODELE=MO,
 ################### POST TRAITEMENT U_HM  #######################
 
 U_HM=CALC_CHAMP(reuse =U_HM,
-               RESULTAT=U_HM,
+                RESULTAT=U_HM,
                 VARI_INTERNE=('VARI_ELNO'),
-               GROUP_MA='JOINT');
+#                GROUP_MA='JOINT'
+                );
 
 U_HM=CALC_CHAMP(reuse =U_HM,
-               RESULTAT=U_HM,
+                RESULTAT=U_HM,
                 CONTRAINTE=('SIEF_ELNO'),
-               GROUP_MA='JOINT');
+#                GROUP_MA='JOINT'
+                );
 
 U_HM=CALC_NO(reuse =U_HM,
              RESULTAT=U_HM,
              OPTION=('VARI_NOEU','SIEF_NOEU'),
-             GROUP_MA='JOINT');
+#             GROUP_MA='JOINT'
+             );
 
 # SAUT NORMAL DANS LE JOINT
 SAUTHM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -261,6 +264,14 @@ PRE_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO = ('J_CURV',),
                                NOM_CMP='PRE1'),);
 
+# PRESSION DANS LE JOINT A PARTIR DE V18 :
+P_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='PRESS INTERPOL',
+                             RESULTAT=U_HM,
+                             NOM_CHAM='VARI_NOEU',
+                             INST=tfin,
+                             GROUP_NO=('J_CURV',),
+                             NOM_CMP='V18',),);
 
 ################### TESTS U_F COMPARAISON GEFDYN ####################
 # REMARQUE : IL S'AGIT ICI DE COMPARER AVEC DES CALCULS REALISES SUR
@@ -297,6 +308,7 @@ TEST_TABLE(TABLE=SNT_HM,
 
 ################### TESTS U_HM  NON REGRESSION #######################
 
+# SAUT ET CONTRAINTE NORMALE
 TEST_TABLE(TABLE=SAUTHM,
            FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.3)),
            NOM_PARA='V7',
@@ -330,10 +342,33 @@ TEST_TABLE(TABLE=SNT_HM,
            VALE=-3.8320E+05,
            REFERENCE='NON_REGRESSION')
 
+# PRESSION
+TEST_TABLE(TABLE=PRE_HM,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.8)),
+           NOM_PARA='PRE1',
+           VALE=8.82899E+04,
+           REFERENCE='NON_REGRESSION')         
+TEST_TABLE(TABLE=P_HM,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.8)),
+           NOM_PARA='V18',
+           VALE=8.82899E+04 ,
+           REFERENCE='NON_REGRESSION')
+
+TEST_TABLE(TABLE=PRE_HM,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.4)),
+           NOM_PARA='PRE1',
+           VALE=3.28254E+04,
+           REFERENCE='NON_REGRESSION')         
+TEST_TABLE(TABLE=P_HM,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.4)),
+           NOM_PARA='V18',
+           VALE=3.28254E+04 ,
+           REFERENCE='NON_REGRESSION')
+
 IMPR_TABLE(TABLE=SAUTHM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'),);
 IMPR_TABLE(TABLE=SNT_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'),);
 IMPR_TABLE(TABLE=SNM_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V11'),);
 IMPR_TABLE(TABLE=PRE_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','PRE1'),TRI=_F(NOM_PARA='COOR_X'));
-
+IMPR_TABLE(TABLE=P_HM,  FORMAT='TABLEAU',NOM_PARA=('COOR_X','V18' ),TRI=_F(NOM_PARA='COOR_X'));
 
 FIN(FORMAT_HDF='OUI',)

@@ -3,7 +3,7 @@
       REAL*8               XYZG(3,*), PGL(3,3)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     IN  XYZG  R  9   COORDONNEES  X1 Y1 Z1 X2 Y2 ...
-C     OUT PGL   R 3,3  MATRICE DE PASSAGE GLOBAL LOCAL
+C     OUT PGL   R 3,3  MATRICE DE PASSAGE GLOBAL INTRINSEQUE
 C     -----------------------------------------------------------------
-C     CONSTRUCTION DE LA MATRICE DE PASSAGE GLOBAL --> LOCAL
+C     CONSTRUCTION DE LA MATRICE DE PASSAGE GLOBAL --> INTRINSEQUE
 C     POUR UNE MAILLE TRIANGLE DKT OU DST
 C                                                        3
 C                                                        *

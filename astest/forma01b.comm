@@ -1,4 +1,4 @@
-# MODIF  DATE 14/03/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 
 DEBUT(CODE=_F(NOM='FORMA01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -55,8 +55,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 # CARACTERISTIQUES DES COQUES
 
 CARA_COQ=AFFE_CARA_ELEM(MODELE=MODMECA,
-                        COQUE=_F(GROUP_MA=('TUYAU','EFOND',),
-                                 EPAIS=0.02,),);
+                        COQUE=_F(GROUP_MA=('TUYAU','EFOND',), EPAIS=0.02, ANGL_REP=(90.,0.)),);
 #
 # DEFINITION DES CONDITIONS AUX LIMITES
 #    ENCASTREMENT SUR LA SECTION ENCAST
@@ -124,8 +123,7 @@ RESU2=MECA_STATIQUE(MODELE=MODMECA,
 
 RESU1=CALC_ELEM(reuse =RESU1,
                 RESULTAT=RESU1,
-                REPE_COQUE=_F(NIVE_COUCHE='INF',
-                              VECTEUR=(0.,0.,1.,),),
+                REPE_COQUE=_F(NIVE_COUCHE='INF',),
                 OPTION=('SIGM_ELNO','SIEQ_ELNO',),);
 
 
@@ -241,13 +239,13 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 RESU4=CALC_ELEM(OPTION='SIGM_ELNO',
                  RESULTAT=RESU2,
                  GROUP_MA='TUBEH',
-                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY',VECTEUR=(0.,1.,0.)),
+                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY'),
                  ),)
-                 
+
 RESU3=CALC_ELEM(OPTION='SIGM_ELNO',
                  RESULTAT=RESU2,
                  GROUP_MA='TUBEH',
-                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY',ANGL_REP=(90.,0.)),
+                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY'),
                  ),)
 
 

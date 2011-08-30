@@ -1,22 +1,22 @@
-# MODIF  DATE 01/03/2011   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 30/08/2011   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # MODELISATION B : 3D + GRILLE_MEMBRANE
 
@@ -84,7 +84,7 @@ LECAR=AFFE_CARA_ELEM(
 # ENSUITE IL FAUT TOUT FAIRE EN DOUBLE 5ACIER ET BETON) CAR LES MAILLES S'APPUIENT SUR LES MEMES NOEUDS
 
 T0A=CREA_CHAMP(
-                OPERATION='AFFE', 
+                OPERATION='AFFE',
                 TYPE_CHAM='NOEU_TEMP_R',
                 MAILLAGE=MA,
                 AFFE=_F(
@@ -94,8 +94,8 @@ T0A=CREA_CHAMP(
                        )
             )
 
-T1A=CREA_CHAMP( 
-                OPERATION='AFFE', 
+T1A=CREA_CHAMP(
+                OPERATION='AFFE',
                 TYPE_CHAM='NOEU_TEMP_R',
                 MAILLAGE=MA,
                 AFFE=_F(
@@ -105,7 +105,7 @@ T1A=CREA_CHAMP(
                         ),
                 )
 
-T1B=CREA_CHAMP( 
+T1B=CREA_CHAMP(
                 OPERATION='AFFE',
                 TYPE_CHAM='NOEU_TEMP_R',
                 MAILLAGE=MA,
@@ -117,7 +117,7 @@ T1B=CREA_CHAMP(
               )
 
 TA=CREA_RESU(
-            OPERATION='AFFE', 
+            OPERATION='AFFE',
             TYPE_RESU='EVOL_THER',
             NOM_CHAM='TEMP',
             AFFE=(  _F(CHAM_GD = T0A, INST = 0.,),
@@ -135,7 +135,7 @@ TB=CREA_RESU(
             )
 
 TEMPERA=CREA_RESU(
-                    OPERATION='PREP_VRC2', 
+                    OPERATION='PREP_VRC2',
                     TYPE_RESU='EVOL_THER',
                     PREP_VRC2= _F( MODELE=LEMOD, CARA_ELEM=LECAR, EVOL_THER = TA, ),)
 
@@ -157,12 +157,12 @@ MATAF=AFFE_MATERIAU(   INFO=1,
                                     EVOL=TEMPERA,
                                     NOM_VARC='TEMP',
                                     NOM_CHAM='TEMP',
-                                    VALE_REF=20.0), 
+                                    VALE_REF=20.0),
                                 _F( GROUP_MA='GEOB',
                                     EVOL=TB,
                                     NOM_VARC='TEMP',
                                     NOM_CHAM='TEMP',
-                                    VALE_REF=20.0), 
+                                    VALE_REF=20.0),
                                 ),
                 )
 # ----------------------------------------------
@@ -173,7 +173,7 @@ CL=AFFE_CHAR_MECA(
                     MODELE=LEMOD,
                     DDL_IMPO=(  _F(GROUP_MA = 'FAA', DX = 0.),
                                 _F(GROUP_MA = 'LIA', DZ = 0.),
-                                _F(GROUP_NO = 'P1',  DY = 0.),  
+                                _F(GROUP_NO = 'P1',  DY = 0.),
                                 ),
                 )
 
@@ -191,15 +191,14 @@ DEP=STAT_NON_LINE(  MODELE=LEMOD,
                     EXCIT=      _F( CHARGE = CL,),
                     COMP_INCR=  _F( RELATION = 'ELAS',),
                     INCREMENT=  _F( LIST_INST = ZLIST,),
-                    NEWTON=     _F( MATRICE = 'TANGENTE',
-                                    REAC_ITER = 10,),
+                    NEWTON=     _F( MATRICE = 'ELASTIQUE',),
                     CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-3,
                                    ITER_GLOB_MAXI = 30,),
                                    )
-DEPB=CALC_ELEM( 
+DEPB=CALC_ELEM(
                 OPTION     = ('SIEF_ELNO',),
                 RESULTAT   = DEP,
-                GROUP_MA='GEOB' 
+                GROUP_MA='GEOB'
                  )
 DEPB=CALC_NO(reuse = DEPB,
              RESULTAT=DEPB,
@@ -239,7 +238,7 @@ TEST_RESU(
              REFERENCE='ANALYTIQUE',
             ),
          ))
-DEPA=CALC_ELEM( 
+DEPA=CALC_ELEM(
                 OPTION     = ('SIEF_ELNO',),
                 RESULTAT   = DEP,
                 GROUP_MA='GEOA')

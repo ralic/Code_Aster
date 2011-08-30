@@ -1,25 +1,25 @@
-#@ MODIF raff_xfem_ops Macro  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF raff_xfem_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
-     
+
 def raff_xfem_ops(self,FISSURE,INFO,**args):
    """
    Macro RAFF_XFEM
@@ -43,7 +43,7 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
 
    # Le concept sortant (de type cham_no_sdaster ou derive)
    self.DeclareOut('chamout', self.sd)
-   
+
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    FORMULE       = self.get_cmd('FORMULE')
@@ -51,10 +51,7 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
    DETRUIRE      = self.get_cmd('DETRUIRE')
 
 #  recuperation de la liste des fissures
-   if type(FISSURE) == tuple :
-      nbfiss = len(FISSURE)
-   else :
-      nbfiss = 1
+   nbfiss = len(FISSURE)
 
 #  formule distance pour une fissure: -r
    __MDISTF=FORMULE(NOM_PARA=('X1','X2'),VALE= '-1.*sqrt(X1**2+X2**2)');
@@ -68,14 +65,11 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
 
    for i in range(0,nbfiss) :
 
-      if nbfiss == 1 :
-         fiss = FISSURE
-      else :
-         fiss = FISSURE[i]
+      fiss = FISSURE[i]
 
       # recuperation du type de discontinuite :'FISSURE' ou 'INTERFACE'
       # si FISSURE   : l'erreur est la distance au fond de fissure
-      # si INTERFACE : l'erreur est la distance a l'interface 
+      # si INTERFACE : l'erreur est la distance a l'interface
       iret,ibid,typ_ds = aster.dismoi('F','TYPE_DISCONTINUITE',fiss.nom,'FISS_XFEM')
       typ_ds=typ_ds.rstrip()
 
@@ -90,7 +84,7 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
       nom_ma=nom_ma.strip()
       MA = self.get_concept(nom_ma)
 
-      if typ_ds == 'FISSURE' : 
+      if typ_ds == 'FISSURE' :
          __CHLTB=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
                           NOM_CHAM='LTNO',
@@ -106,10 +100,10 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
                                  NOM_CMP_RESU='X2',),
                            );
 
-         DETRUIRE(CONCEPT=_F(NOM=__CHLTB),INFO=1) 
+         DETRUIRE(CONCEPT=_F(NOM=__CHLTB),INFO=1)
 
       # On affecte à chaque noeud du maillage MA la formule __MDISTF ou __MDISTI
-      if typ_ds == 'FISSURE' : 
+      if typ_ds == 'FISSURE' :
          __CHFOR=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                            OPERATION='AFFE',
                            MAILLAGE=MA,
@@ -117,32 +111,32 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
                                    NOM_CMP='X1',
                                    VALE_F=__MDISTF,),
                           );
-      elif typ_ds == 'INTERFACE' : 
+      elif typ_ds == 'INTERFACE' :
          __CHFOR=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                            OPERATION='AFFE',
                            MAILLAGE=MA,
                            AFFE=_F(TOUT='OUI',
                                    NOM_CMP='X1',
                                    VALE_F=__MDISTI,),
-                          );  
-      
+                          );
+
       # on evalue en tout noeud le champ de formules
-      if typ_ds == 'FISSURE' : 
+      if typ_ds == 'FISSURE' :
          __CERRB=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EVAL',
                        CHAM_F=__CHFOR,
                        CHAM_PARA=(__CHLN,__CHLT,));
 
-         DETRUIRE(CONCEPT=_F(NOM=__CHLT),INFO=1) 
+         DETRUIRE(CONCEPT=_F(NOM=__CHLT),INFO=1)
 
-      elif typ_ds == 'INTERFACE' : 
+      elif typ_ds == 'INTERFACE' :
          __CERRB=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EVAL',
                        CHAM_F=__CHFOR,
                        CHAM_PARA=(__CHLN,));
 
-      DETRUIRE(CONCEPT=_F(NOM=__CHLN),INFO=1) 
-      DETRUIRE(CONCEPT=_F(NOM=__CHFOR),INFO=1) 
+      DETRUIRE(CONCEPT=_F(NOM=__CHLN),INFO=1)
+      DETRUIRE(CONCEPT=_F(NOM=__CHFOR),INFO=1)
 
       # champ d'Erreur de la fissure i
       __CERR[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
@@ -153,16 +147,16 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
                                   NOM_CMP='X1',
                                   NOM_CMP_RESU='X'+str(i+1),
                                 ),
-                        ); 
+                        );
 
       list_err.append(__CERR[i])
       list_nom_cmp.append('X'+str(i+1))
       for_max = for_max+'X'+str(i+1)+','
 
-      DETRUIRE(CONCEPT=_F(NOM=__CERRB),INFO=1) 
+      DETRUIRE(CONCEPT=_F(NOM=__CERRB),INFO=1)
 
    # si nbfiss = 1, c'est directement X1
-   # si nbfiss > 1 : on prend le max des erreurs de chaque fissure 
+   # si nbfiss > 1 : on prend le max des erreurs de chaque fissure
    for_max = for_max+')'
 
    if nbfiss == 1 :
@@ -170,7 +164,7 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
    else :
       __Erreur=FORMULE(NOM_PARA=(list_nom_cmp),VALE= for_max);
 
-   # Définition de l'erreur en chaque noeud du maillage           
+   # Définition de l'erreur en chaque noeud du maillage
    __CHFORM=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                      OPERATION='AFFE',
                      MAILLAGE=MA,
@@ -186,12 +180,12 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
                      CHAM_PARA=(list_err));
 
    for i in range(0,nbfiss) :
-      DETRUIRE(CONCEPT=_F(NOM=__CERR[i]),INFO=1) 
+      DETRUIRE(CONCEPT=_F(NOM=__CERR[i]),INFO=1)
 
-   DETRUIRE(CONCEPT=_F(NOM=__MDISTF),INFO=1) 
-   DETRUIRE(CONCEPT=_F(NOM=__MDISTI),INFO=1) 
-   DETRUIRE(CONCEPT=_F(NOM=__Erreur),INFO=1) 
-   DETRUIRE(CONCEPT=_F(NOM=__CHFORM),INFO=1) 
+   DETRUIRE(CONCEPT=_F(NOM=__MDISTF),INFO=1)
+   DETRUIRE(CONCEPT=_F(NOM=__MDISTI),INFO=1)
+   DETRUIRE(CONCEPT=_F(NOM=__Erreur),INFO=1)
+   DETRUIRE(CONCEPT=_F(NOM=__CHFORM),INFO=1)
 
    return
- 
+

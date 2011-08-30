@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,16 +139,16 @@ CONT = DEFI_CONTACT(MODELE      = MOD,
                                _F(  GROUP_MA_MAIT = 'LAB1',
                                     GROUP_MA_ESCL = 'CEP2',
                                     SANS_GROUP_NO = ('PA1', 'PP2',),
-                                    APPARIEMENT = 'MAIT_ESCL',
+                                    NORMALE = 'MAIT_ESCL',
                                     ALGO_CONT = 'LAGRANGIEN'),
                                _F(  GROUP_MA_MAIT = 'CME2',
                                     GROUP_MA_ESCL = 'CEP3',
-                                    APPARIEMENT = 'MAIT_ESCL',
+                                    NORMALE = 'MAIT_ESCL',
                                     ALGO_CONT = 'LAGRANGIEN'),
                                _F(  GROUP_MA_MAIT = 'CME3',
                                     GROUP_MA_ESCL = 'LCD4',
                                     SANS_GROUP_NO = ('PM3', 'PD4',),
-                                    APPARIEMENT = 'MAIT_ESCL',
+                                    NORMALE = 'MAIT_ESCL',
                                     ALGO_CONT = 'LAGRANGIEN')
                           ),
                      );
@@ -256,8 +256,8 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   GROUP_NO = 'PA4',
                   NOM_CMP = 'DY',
-                  VALE = -8.4110581760223E-01,
-                  PRECISION = 1.0E-02,
+                  VALE = -0.84132962263449,
+                  PRECISION = 1.0E-10,
                   CRITERE = 'RELATIF')
            )
 
@@ -286,7 +286,7 @@ TEST_TABLE(        TABLE=REACENC,
                  NOM_PARA='DY',
                 REFERENCE='SOURCE_EXTERNE',
                      VALE=17229.58,
-               PRECISION=1.60E-2,
+               PRECISION=1.6E-2,
                CRITERE='RELATIF' )
 
 # --------------------------------------------------------------------
@@ -296,8 +296,8 @@ TEST_TABLE(        TABLE=REACENC,
 TEST_TABLE(        TABLE=REACENC,
                  NOM_PARA='DY',
                 REFERENCE='NON_REGRESSION',
-                     VALE=1.7491524383319E+04,
-               PRECISION=1.E-02,
+                     VALE=17502.684649358,
+               PRECISION=1.E-10,
                CRITERE='RELATIF' )
 
 FIN()

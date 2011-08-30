@@ -4,7 +4,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/08/2011   AUTEUR GRANET S.GRANET 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -308,6 +308,32 @@ C ======================================================================
                  ZR(IRES+L+2) = ZR(IRES+L+2) -
      +                                POIDS*DELTAT*FLUTH*ZR(IVF2+KK+I-1)
  60           CONTINUE
+          END IF
+C ======================================================================
+C --- SI MODELISATION = H ---------------------------------------------
+C ======================================================================
+          IF (NOMTE(1:2).EQ.'H_') THEN
+             NAPRE1 = 0
+             IF (IOPT.EQ.1) THEN
+                FLU1 = ZR(IFLUX+ (KP-1)+NAPRE1)
+             ELSE IF (IOPT.EQ.2) THEN
+                R = 0.D0
+                Z = 0.D0
+                DO 69 I = 1,NNO2
+                   L = (KP-1)*NNO2 + I
+                   R = R + ZR(IGEOM+2*I-2)*ZR(IVF2+L-1)
+                   Z = Z + ZR(IGEOM+2*I-1)*ZR(IVF2+L-1)
+ 69             CONTINUE
+                VALPAR(1) = R
+                VALPAR(2) = Z
+                CALL FOINTE('FM',ZK8(IFLUXF+NAPRE1),3,NOMPAR,VALPAR,
+     +                                                        FLU1,IRET)
+             END IF
+             DO 79 I = 1,NNO2
+                L = 1* (I-1) - 1
+                ZR(IRES+L+1) = ZR(IRES+L+1) -
+     +                                POIDS*DELTAT*FLU1*ZR(IVF2+KK+I-1)
+ 79          CONTINUE
           END IF
 C ======================================================================
 C --- SI MODELISATION = HM ---------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO Noyau  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,7 +122,7 @@ class MACRO(N_ENTITE.ENTITE):
       self.fichier_ini = fichier_ini
       # Attribut op_init : Fonction a appeler a la construction de l operateur sauf si == None
       self.op_init=op_init
-      self.entites=args
+      self.entites = args
       current_cata=CONTEXT.get_current_cata()
       if niveau == None:
          self.niveau=None
@@ -132,6 +132,7 @@ class MACRO(N_ENTITE.ENTITE):
          self.niveau.enregistre(self)
       self.UIinfo=UIinfo
       self.affecter_parente()
+      self.check_definition(self.nom)
 
    def __call__(self,reuse=None,**args):
       """
@@ -188,5 +189,4 @@ class MACRO(N_ENTITE.ENTITE):
           des cycles de références
       """
       self.niveau=None
-
 

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -716,32 +716,38 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
       else :
          mcfact=self
       # On a trouvé le mot cle facteur
-      dico_mcsimp=mcfact.cree_dict_valeurs(mcfact.mc_liste)
+      dico_mcsimp = mcfact.cree_dict_valeurs(mcfact.mc_liste)
+      if self.nom == 'TEST_RESU' and dico_mcsimp.get('VALE_C') != None:
+          pass
       lmc=[]
       lty=[]
-      for name in dico_mcsimp.keys() :
-         if dico_mcsimp[name] != None :
-            lmc.append(name)
-            if is_enum(dico_mcsimp[name])      : obj=dico_mcsimp[name][0]
-            else                               : obj=dico_mcsimp[name]
-            if isinstance(obj, (N_ASSD.ASSD, N_ENTITE.ENTITE, N_MCLIST.MCList)):
-               lty.append(type(obj).__name__)
-            if is_complex(obj)                 : lty.append('C8')
-            if is_float(obj)                   : lty.append('R8')
-            if is_str(obj):
-                if obj.strip() in ('RI','MP')  : lty.append('C8')
-                else                           : lty.append('TX')
-            if is_int(obj):
-            ### on gere le cas d un reel entre par l utilisateur sans le '.' distinctif d un entier
-            ### pour ca on teste la presence de R8 dans la liste des types attendus cote catalogue
-                                               child=mcfact.definition.get_entite(name)
-                                               list_cata=B_utils.Typast(child.type)
-                                               if ('IS ' not in list_cata) and  ('R8 ' in list_cata) :
-                                                 lty.append('R8')
-                                               elif ('IS ' not in list_cata) and  ('C8 ' in list_cata) :
-                                                 lty.append('C8')
-                                               else :
-                                                 lty.append('I')
+      for name, obj in dico_mcsimp.items() :
+         if obj is None:
+            continue
+         lmc.append(name)
+         if is_enum(obj):
+            obj = obj[0]
+            # cas liste de complexes sous la forme RI/MP !
+            if is_enum(obj):
+                obj = obj[0]
+         if isinstance(obj, (N_ASSD.ASSD, N_ENTITE.ENTITE, N_MCLIST.MCList)):
+            lty.append(type(obj).__name__)
+         if is_complex(obj)                 : lty.append('C8')
+         if is_float(obj)                   : lty.append('R8')
+         if is_str(obj):
+             if obj.strip() in ('RI','MP')  : lty.append('C8')
+             else                           : lty.append('TX')
+         if is_int(obj):
+         ### on gere le cas d un reel entre par l utilisateur sans le '.' distinctif d un entier
+         ### pour ca on teste la presence de R8 dans la liste des types attendus cote catalogue
+                                            child=mcfact.definition.get_entite(name)
+                                            list_cata=B_utils.Typast(child.type)
+                                            if ('IS ' not in list_cata) and  ('R8 ' in list_cata) :
+                                              lty.append('R8')
+                                            elif ('IS ' not in list_cata) and  ('C8 ' in list_cata) :
+                                              lty.append('C8')
+                                            else :
+                                              lty.append('I')
       assert len(lmc) == len(lty), "cardinalité différente : \n%s\n%s" % (lmc, lty)
       return (lmc,lty)
 

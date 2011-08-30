@@ -1,6 +1,6 @@
       SUBROUTINE VDREPE ( NOMTEZ , MATEVN , MATEVG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,14 +131,18 @@ C       -------
         IF ( NORM .LE. R8PREM() ) THEN
           CALL U2MESS('F','ELEMENTS_49')
         ENDIF
-C
+
         PJDX = PJDX/NORM
         PJDY = PJDY/NORM
         PJDZ = PJDZ/NORM
-C
+
         C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
         S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-C
+
+C       -- (C,S) N'EST PAS TOUJOURS EXACTEMENT DE NORME=1:
+        C=C/SQRT(C*C+S*S)
+        S=S/SQRT(C*C+S*S)
+
         MATEVN(1,1,INO) =  C
         MATEVN(2,1,INO) =  S
         MATEVN(1,2,INO) = -S
@@ -180,23 +184,24 @@ C       ---------------------
         PJDY = DY - PS*PGL(3,2)
         PJDZ = DZ - PS*PGL(3,3)
         NORM = SQRT (PJDX*PJDX + PJDY*PJDY + PJDZ*PJDZ)
-        IF ( NORM .LE. R8PREM() ) THEN
-          CALL U2MESS('F','ELEMENTS_49')
-        ENDIF
-C
+        IF ( NORM .LE. R8PREM())  CALL U2MESS('F','ELEMENTS_49')
+
         PJDX = PJDX/NORM
         PJDY = PJDY/NORM
         PJDZ = PJDZ/NORM
-C
+
         C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
         S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-C
+
+C       -- (C,S) N'EST PAS TOUJOURS EXACTEMENT DE NORME=1:
+        C=C/SQRT(C*C+S*S)
+        S=S/SQRT(C*C+S*S)
+
         MATEVG(1,1,IGAU) =  C
         MATEVG(2,1,IGAU) =  S
         MATEVG(1,2,IGAU) = -S
         MATEVG(2,2,IGAU) =  C
-C
+
   40  CONTINUE
-C
-C.============================ FIN DE LA ROUTINE ======================
+
       END

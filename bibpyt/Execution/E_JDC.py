@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,7 +27,7 @@
 # Modules Python
 import sys, types,os, string, fpformat
 from os import times
-import pickle
+import cPickle as pickle
 
 # Modules Eficas
 from Noyau.N_Exception import AsException
@@ -244,7 +244,7 @@ class JDC:
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
 
        file=open('pick.1','w')
-       pickle.dump(context,file)
+       pickle.dump(context, file, protocol=-1)
        if self.info_level > 1:
           self.timer_fin.Stop("pickle")
 
@@ -271,7 +271,7 @@ class JDC:
               # pour accélérer, on supprime le catalogue de SD devenu inutile.
               if isinstance(value, ASSD):
                   value.supprime_sd()
-              pickle.dumps(value)
+              pickle.dumps(value, protocol=-1)
               d[key]=value
            except:
               # Si on ne peut pas pickler value on ne le met pas dans le contexte filtré

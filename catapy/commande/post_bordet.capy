@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,10 +30,10 @@ POST_BORDET =MACRO(nom="POST_BORDET",
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                            fr="le calcul ne sera effectué que sur ces mailles"),
-         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),),
          PRECISION =SIMP(statut='f',typ='R',validators=NoRepeat(),val_min=0.,val_max=1E-3,defaut=1E-6),
          CRITERE   =SIMP(statut='f',typ='TXM',defaut="ABSOLU",into=("RELATIF","ABSOLU") ),
-         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),),
          PROBA_NUCL      =SIMP(statut='f',typ='TXM',into=("NON","OUI"), defaut="NON",
                       fr="prise en compte du facteur exponentiel"),
          b_nucl          =BLOC( condition = "PROBA_NUCL=='OUI'",

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE AVEC ARMATURES SOUS PRESSION.  GRILLE_MEMBRANE TRIA3
 # ssns107a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,21 +188,5 @@ TEST_RESU(RESU=(
             ),
         ))
 
-#------------------------------------------------------------------------------------------
-# validation de POST_CHAMP / EXTR_COQUE (pour les grilles) :
-#-----------------------------------------------------------
-RESU=CALC_CHAMP(reuse =RESU, RESULTAT=RESU, TOUT_ORDRE='OUI', CONTRAINTE='SIGM_ELGA')
-
-RESUB=POST_CHAMP(RESULTAT=RESU, NUME_ORDRE=1, GROUP_MA='GM100007',
-               EXTR_COQUE =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=1, NIVE_COUCHE='MOY' ),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELGA', REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   NOM_CMP='SIXX', MAILLE='M1192', POINT=1, SOUS_POINT= 1, VALE=3.8459974778504E+06
-                   ))
-
-TEST_RESU(RESU=_F(RESULTAT=RESUB, NUME_ORDRE=1, NOM_CHAM='SIGM_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
-                   NOM_CMP='SIXX', MAILLE='M1192', POINT=1,                VALE=3.8459974778504E+06
-                   ))
-#-----------------------------------------------------------------------------------------
 
 FIN()

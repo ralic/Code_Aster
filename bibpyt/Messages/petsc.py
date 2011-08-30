@@ -1,4 +1,4 @@
-#@ MODIF petsc Messages  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF petsc Messages  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,5 +121,13 @@ Solveur PETSc :
   La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
 
   Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.
+"""),
+
+16 : _("""
+Solveur PETSc :
+  La résolution du système linéaire a abouti mais la solution obtenue ne vérifie pas le critère de convergence.
+  Cela peut arriver lorsque la matrice du système linéaire est mal conditionnée.
+
+  Conseil : utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
 """),
 }

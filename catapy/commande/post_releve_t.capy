@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DESROCHES X.DESROCHES
 POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f',
@@ -23,11 +23,11 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
             docu="U4.81.21",UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
 
          ACTION          =FACT(statut='o',max='**',
-                               regles=(UN_PARMI('RESULTAT','CHAM_GD'),), 
+                               regles=(UN_PARMI('RESULTAT','CHAM_GD'),),
 
            OPERATION       =SIMP(statut='o',typ='TXM',into=("EXTRACTION","MOYENNE","MOYENNE_ARITH","EXTREMA"),
-           validators=NoRepeat(),max=2),
-           INTITULE        =SIMP(statut='o',typ='TXM'),  
+                                 validators=NoRepeat(), max=2),
+           INTITULE        =SIMP(statut='o',typ='TXM'),
 
            CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,
                                                  cham_elem,),),
@@ -73,19 +73,19 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
            ),
 
            b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des résultats",
-                                 regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','NUME_MODE','LIST_MODE',         
-                                                'INST','LIST_INST','FREQ','LIST_FREQ','NOEUD_CMP','NOM_CAS'), ),           
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),),  
+                                 regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','NUME_MODE','LIST_MODE',
+                                                'INST','LIST_INST','FREQ','LIST_FREQ','NOEUD_CMP','NOM_CAS'), ),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),  
+             NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
-             NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),  
+             NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              LIST_MODE       =SIMP(statut='f',typ=listis_sdaster),
              NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
-             NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),  
-             FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),  
+             NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+             FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
-             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),  
+             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
              b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
@@ -94,7 +94,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
                  PRECISION       =SIMP(statut='o',typ='R',),),
            ),
 
-           b_extrema   =BLOC(condition="OPERATION == 'EXTREMA'",
+           b_extrema   =BLOC(condition="'EXTREMA' in OPERATION",
                              fr="recherche de MIN MAX",
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -103,10 +103,10 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
               NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
               TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",)),
-              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),  
+              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
            ),
 
-           b_MOYENNE_ARITH   =BLOC(condition="OPERATION == 'MOYENNE_ARITH'",
+           b_MOYENNE_ARITH   =BLOC(condition="'MOYENNE_ARITH' in OPERATION",
                              fr="moyenne sur des groupes",
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -115,23 +115,23 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
               NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
               TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",)),
-              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),  
+              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
            ),
 
-           b_autre   =BLOC(condition="OPERATION != 'EXTREMA' and OPERATION != 'MOYENNE_ARITH'",
+           b_autre   =BLOC(condition="aucun(OPERATION, ('EXTREMA', 'MOYENNE_ARITH'))",
                            fr="extraction et moyenne",
                            regles=(AU_MOINS_UN('CHEMIN','GROUP_NO','NOEUD'),
                                    EXCLUS('CHEMIN','GROUP_NO'),
                                    EXCLUS('CHEMIN','NOEUD'),
                                    PRESENT_ABSENT('CHEMIN','GROUP_MA','MAILLE'),
                                    UN_PARMI('TOUT_CMP','NOM_CMP','INVARIANT','ELEM_PRINCIPAUX','RESULTANTE'),
-                                   PRESENT_PRESENT('TRAC_DIR','DIRECTION'),          
+                                   PRESENT_PRESENT('TRAC_DIR','DIRECTION'),
                                    ENSEMBLE('MOMENT','POINT'),
                                    PRESENT_PRESENT('MOMENT','RESULTANTE'),
                                    PRESENT_ABSENT('TOUT_CMP','TRAC_DIR','TRAC_NOR'),
                                    EXCLUS('TRAC_DIR','TRAC_NOR'),
                                    PRESENT_PRESENT('ORIGINE','AXE_Z'),),
-                   
+
               CHEMIN          =SIMP(statut='f',typ=(courbe_sdaster,surface_sdaster) ),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -140,25 +140,25 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
 
               TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",)),
-              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),  
+              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
               INVARIANT       =SIMP(statut='f',typ='TXM',into=("OUI",)),
               ELEM_PRINCIPAUX =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-              RESULTANTE      =SIMP(statut='f',typ='TXM',max='**'),  
+              RESULTANTE      =SIMP(statut='f',typ='TXM',max='**'),
 
-              MOMENT          =SIMP(statut='f',typ='TXM',max='**'),  
-              POINT           =SIMP(statut='f',typ='R',max='**'),  
+              MOMENT          =SIMP(statut='f',typ='TXM',max='**'),
+              POINT           =SIMP(statut='f',typ='R',max='**'),
 
               REPERE          =SIMP(statut='f',typ='TXM',defaut="GLOBAL",
                                  into=("GLOBAL","LOCAL","POLAIRE","UTILISATEUR","CYLINDRIQUE"),),
-              ANGL_NAUT       =SIMP(statut='f',typ='R',min=3,max=3),  
-              ORIGINE         =SIMP(statut='f',typ='R',min=3,max=3),  
-              AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),  
+              ANGL_NAUT       =SIMP(statut='f',typ='R',min=3,max=3),
+              ORIGINE         =SIMP(statut='f',typ='R',min=3,max=3),
+              AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),
 
               TRAC_NOR        =SIMP(statut='f',typ='TXM',into=("OUI",)),
               TRAC_DIR        =SIMP(statut='f',typ='TXM',into=("OUI",)),
-              DIRECTION       =SIMP(statut='f',typ='R',max='**'),  
- 
-              VECT_Y          =SIMP(statut='f',typ='R',max='**'),  
+              DIRECTION       =SIMP(statut='f',typ='R',max='**'),
+
+              VECT_Y          =SIMP(statut='f',typ='R',max='**'),
               MOYE_NOEUD      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
            ),
 
@@ -166,5 +166,5 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
 
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),  
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 )  ;

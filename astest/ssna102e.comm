@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,19 +100,20 @@ CONT = DEFI_CONTACT(MODELE        = MOD,
                     FORMULATION   = 'DISCRETE',
                     ITER_GCP_MAXI = 500,
                     RESI_ABSO     = 1.E-3,
-                    ZONE=(
-                               _F(APPARIEMENT='MAIT_ESCL',
-                                  ALGO_CONT='GCP',
-                                  GROUP_MA_MAIT='LAB1',
-                                  GROUP_MA_ESCL='CEP2',),
-                             _F(APPARIEMENT='MAIT_ESCL',
-                                ALGO_CONT='GCP',
-                                GROUP_MA_MAIT='CME2',
-                                GROUP_MA_ESCL='CEP3',),
-                             _F(APPARIEMENT='MAIT_ESCL',
-                                ALGO_CONT='GCP',
-                                GROUP_MA_MAIT='CME3',
-                                GROUP_MA_ESCL='LCD4',),
+                    ZONE=(_F(APPARIEMENT='MAIT_ESCL',
+                             ALGO_CONT='GCP',
+                             GROUP_MA_MAIT='LAB1',
+                             GROUP_MA_ESCL='CEP2',
+                             SANS_GROUP_NO=('PP2',),),
+                          _F(APPARIEMENT='MAIT_ESCL',
+                             ALGO_CONT='GCP',
+                             GROUP_MA_MAIT='CME2',
+                             GROUP_MA_ESCL='CEP3',),
+                          _F(APPARIEMENT='MAIT_ESCL',
+                             ALGO_CONT='GCP',
+                             GROUP_MA_MAIT='CME3',
+                             GROUP_MA_ESCL='LCD4',
+                             SANS_GROUP_NO=('PD4',),),
                           ),
                      );
 
@@ -147,7 +148,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    NEWTON=_F(MATRICE='ELASTIQUE',),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
                                   ),
-                   INFO=2,);
+                   INFO=1,);
 #
 # --------------------------------------------------------------------
 #                    CALCUL DES CONTRAINTES AUX NOEUDS
@@ -195,11 +196,10 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   GROUP_NO='PA4',
-                  VALE=-0.840525775283,
+                  VALE=-0.84097549432745,
                   CRITERE='RELATIF',
-                  PRECISION=1.2E-3,
-                  REFERENCE='AUTRE_ASTER',
-                  VERSION='9.1.6',),);
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='11.0.18',),);
 #
 # --------------------------------------------------------------------
 #                CALCUL DE LA REACTION A L'ENCASTREMENT
@@ -229,11 +229,10 @@ TEST_TABLE(TABLE=REACENC,
 
 TEST_TABLE(TABLE=REACENC,
            NOM_PARA='DY',
-           VALE=17475.2913183,
+           VALE=17490.329212551,
            CRITERE='RELATIF',
-           PRECISION=1.5e-3,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.1.6',);
+           VERSION='11.0.18',);
 
 
 

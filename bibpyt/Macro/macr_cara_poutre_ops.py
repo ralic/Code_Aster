@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -240,23 +240,28 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- DE LAPLACE EST PRIS EGAL A Y DANS TOUTE LA SECTION :
 #     --------------------------------------------------
 
-
-     motscles={}
-     if args['NOEUD']!=None:
+     mctimpo = {}
+     if args['NOEUD'] != None:
         nthno = args['NOEUD']
-        if type(nthno)!=types.StringType : UTMESS('F','POUTRE0_3')
-        motscles['TEMP_IMPO']=(_F(NOEUD=nthno,TEMP=__fnsec0))
-     if args['GROUP_NO']!=None:
-        collgrno=aster.getcolljev(string.ljust(__nomapi.nom,8)+'.GROUPENO')
-        nomnoe  =aster.getvectjev(string.ljust(__nomapi.nom,8)+'.NOMNOE')
-        l_no=collgrno[string.ljust(args['GROUP_NO'],8)]
-        if len(l_no)!=1 : UTMESS('F','POUTRE0_3')
+        if len(nthno) != 1:
+            UTMESS('F','POUTRE0_3')
+        mctimpo['TEMP_IMPO'] = (_F(NOEUD=nthno[0], TEMP=__fnsec0))
+     elif args['GROUP_NO'] != None:
+        grthno = args['GROUP_NO']
+        if len(grthno) != 1:
+            UTMESS('F','POUTRE0_3')
+        grthno = grthno[0]
+        collgrno = aster.getcolljev('%-8s.GROUPENO' % __nomapi.nom)
+        nomnoe = aster.getvectjev('%-8s.NOMNOE' % __nomapi.nom)
+        l_no = collgrno[string.ljust(grthno, 8)]
+        if len(l_no) != 1:
+            UTMESS('F','POUTRE0_3')
         nthno=nomnoe[l_no[0]-1]
-        motscles['TEMP_IMPO']=(_F(NOEUD=nthno,TEMP=__fnsec0))
+        mctimpo['TEMP_IMPO']=(_F(NOEUD=nthno,TEMP=__fnsec0))
      __chart2=AFFE_CHAR_THER_F(MODELE=__nomoth,
                                SOURCE=_F(TOUT='OUI',
                                          SOUR=__fnsec1,),
-                               **motscles   )
+                               **mctimpo   )
 
 # --- RESOLUTION DE     LAPLACIEN(PHI) = -Y
 # ---              AVEC D(PHI)/D(N) = 0 SUR LE CONTOUR :
@@ -283,21 +288,10 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- DE LAPLACE EST PRIS EGAL A Z DANS TOUTE LA SECTION :
 #     --------------------------------------------------
 
-     motscles={}
-     if args['NOEUD']!=None:
-        nthno = args['NOEUD']
-        motscles['TEMP_IMPO']=_F(NOEUD=nthno,TEMP=__fnsec0)
-     if args['GROUP_NO']!=None:
-        collgrno=aster.getcolljev(string.ljust(__nomapi.nom,8)+'.GROUPENO')
-        nomnoe  =aster.getvectjev(string.ljust(__nomapi.nom,8)+'.NOMNOE')
-        l_no=collgrno[string.ljust(args['GROUP_NO'],8)]
-        if len(l_no)!=1 : UTMESS('F','POUTRE0_3')
-        nthno=nomnoe[l_no[0]-1]
-        motscles['TEMP_IMPO']=_F(NOEUD=nthno,TEMP=__fnsec0)
      __chart3=AFFE_CHAR_THER_F(MODELE=__nomoth,
                                SOURCE=_F(TOUT='OUI',
                                          SOUR=__fnsec2,),
-                               **motscles)
+                               **mctimpo)
 
 # --- RESOLUTION DE     LAPLACIEN(PHI) = -Z
 # ---              AVEC D(PHI)/D(N) = 0 SUR LE CONTOUR :
@@ -579,34 +573,20 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- CALCUL DES CARACTERISTIQUES GEOMETRIQUES DE LA SECTION :
 #     ------------------------------------------------------
 
-     if type(GROUP_MA_BORD)==types.StringType :
-        l_group_ma_bord=[GROUP_MA_BORD,]
-     else:
-        l_group_ma_bord= GROUP_MA_BORD
-     if type(GROUP_MA)==types.StringType :
-        l_group_ma=[GROUP_MA,]
-     else:
-        l_group_ma= GROUP_MA
-
+     l_group_ma_bord = GROUP_MA_BORD
+     l_group_ma = GROUP_MA
      l_noeud=None
 
-     if args['NOEUD']!=None:
-       if type(args['NOEUD'])==types.StringType :
-          l_noeud=[args['NOEUD'],]
-       else:
-          l_noeud= args['NOEUD']
+     if args['NOEUD'] != None:
+       l_noeud = args['NOEUD']
 
-     if args['GROUP_NO']!=None:
-       collgrno=aster.getcolljev(string.ljust(__nomlma.nom,8)+'.GROUPENO')
-       nomnoe  =aster.getvectjev(string.ljust(__nomlma.nom,8)+'.NOMNOE')
+     elif args['GROUP_NO'] != None:
+       collgrno = aster.getcolljev('%-8s.GROUPENO' % __nomlma.nom)
+       nomnoe = aster.getvectjev('%-8s.NOMNOE' % __nomlma.nom)
        l_nu_no =[]
-       if type(args['GROUP_NO'])==types.StringType :
-          l_gr_no=[args['GROUP_NO'],]
-       else:
-          l_gr_no= args['GROUP_NO']
-       for grno in l_gr_no:
-          l_nu_no =l_nu_no+list(collgrno[string.ljust(grno,8)])
-       l_noeud =[nomnoe[no_i-1] for no_i in l_nu_no]
+       for grno in args['GROUP_NO']:
+          l_nu_no.extend(collgrno[string.ljust(grno,8)])
+       l_noeud = [nomnoe[no_i-1] for no_i in l_nu_no]
 
      if len(l_group_ma)!=len(l_group_ma_bord):
         UTMESS('F','POUTRE0_1')

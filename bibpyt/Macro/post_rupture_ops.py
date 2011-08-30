@@ -1,48 +1,41 @@
-#@ MODIF post_rupture_ops Macro  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_rupture_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-def verif_nb_table(OPERATION,TABLE) :
+import numpy as NP
+from Utilitai.Utmess import UTMESS
+
+def verif_nb_table(OPERATION, TABLE) :
    """ verification que le nombre de tables est correct et retourne le nombre de tables"""
-
-   from Utilitai.Utmess     import  UTMESS
-
    # une ou plusieurs tables en entree ?
-   try :
-      len(TABLE)
-      nb_tabin = len(TABLE)
-   except TypeError :
-      nb_tabin = 1
+   nb_tabin = len(TABLE)
 
    # seule PILO_PROPA autorise plusieurs tables
-   if OPERATION is not 'PILO_PROPA' :
+   if OPERATION is not 'PILO_PROPA':
       if nb_tabin != 1 :
          UTMESS('F','RUPTURE1_66',valk=(OPERATION), vali=nb_tabin)
-   
+
    return  nb_tabin
 
 
 def verif_reuse(OPERATION,obj_reuse) :
    # verification que reuse est correctement employe
-
-   from Utilitai.Utmess     import  UTMESS
-
    if OPERATION in ('ABSC_CURV_NORM','ANGLE_BIFURCATION','LOI_PROPA',) :
       if not obj_reuse :
          UTMESS('F','RUPTURE1_62',valk=(OPERATION))
@@ -52,32 +45,26 @@ def verif_reuse(OPERATION,obj_reuse) :
          UTMESS('F','RUPTURE1_63',valk=(OPERATION))
 
 
-def verif_un_fond(tabin,TABLE,OPERATION):
+def verif_un_fond(tabin, OPERATION):
    """ verification qu'il n'y a qu'un fond de fissure """
-
-   from Utilitai.Utmess     import  UTMESS
-
    # si NUME_FOND est present dans la table
    if 'NUME_FOND' in tabin.para:
       # récupération de la liste des NUME_FOND dans un ensemble (set)
       snum = set(tabin.NUME_FOND.values())
       nfond = len(snum)
       if nfond > 1:
-         UTMESS('F','RUPTURE1_5',valk=(OPERATION,TABLE.nom),vali=nfond)
+         UTMESS('F','RUPTURE1_5',valk=(OPERATION,tabin.nom),vali=nfond)
 
 
-def verif_un_instant(tabin,TABLE,OPERATION,COMPTAGE):
+def verif_un_instant(tabin, OPERATION, COMPTAGE):
    """ verification qu'il n'y a qu'un instant ou numero d'ordre """
-
-   from Utilitai.Utmess     import  UTMESS
-
    # si NUME_ORDRE est present dans la table
    if 'NUME_ORDRE' in tabin.para:
       # récupération de la liste des NUME_ORDRE dans un ensemble (set)
       s = set(tabin.NUME_ORDRE.values())
       n = len(s)
       if n > 1:
-         UTMESS('F','RUPTURE1_64',valk=(COMPTAGE,TABLE.nom),vali=n)
+         UTMESS('F','RUPTURE1_64',valk=(COMPTAGE, tabin.nom),vali=n)
 
    # si INST est present dans la table
    if 'INST' in tabin.para:
@@ -85,27 +72,23 @@ def verif_un_instant(tabin,TABLE,OPERATION,COMPTAGE):
       s = set(tabin.INST.values())
       n = len(s)
       if n > 1:
-         UTMESS('F','RUPTURE1_64',valk=(COMPTAGE,TABLE.nom),vali=n)
+         UTMESS('F','RUPTURE1_64',valk=(COMPTAGE, tabin.nom),vali=n)
 
 
-
-def verif_exi(tabin,TABLE,col):
+def verif_exi(tabin, col):
    """ verification que la colonne col existe """
-   from Utilitai.Utmess     import  UTMESS
    if not col in tabin.para:
-      UTMESS('F','RUPTURE1_59',valk=(TABLE.nom,col))
+      UTMESS('F','RUPTURE1_59',valk=(tabin.nom,col))
 
 
-def verif_non_exi(tabin,TABLE,col):
+def verif_non_exi(tabin, col):
    """ verification que la colonne col n'existe pas"""
-   from Utilitai.Utmess     import  UTMESS
    if col in tabin.para:
-      UTMESS('F','RUPTURE1_65',valk=(TABLE.nom,col))
+      UTMESS('F','RUPTURE1_65',valk=(tabin.nom,col))
 
 
 def sittmax(k1,k2):
    """ critere maximum hoop stress"""
-   import numpy as NP
    if k2 == 0.:
       return 0.
    else:
@@ -114,9 +97,6 @@ def sittmax(k1,k2):
 
 def amestoy(k1,k2,crit_ang):
    """ criteres de Amestoy, Bui, Dang Van : K1 max, K2 nul et G max (uniquement en 2D)"""
-   import numpy as NP
-   from Utilitai.Utmess     import  UTMESS
-
    # attention, K2_nul ne marche pas pour un angle > 60
    # et pour les grands angles K1_MAX est tres sensible au signe de K1
    # donc si k1 est negatif ou nul, on force k1 = +0
@@ -149,19 +129,18 @@ def amestoy(k1,k2,crit_ang):
    elif crit_ang == 'K2_NUL':
       i = l.index(min(l))
    # calcul de phi par rapport à l'indice trouve
-   if i<10 : 
+   if i<10 :
       phi = i*10.
    else :
       phi = -(i-9)*10.
-      
+
    if  crit_ang == 'K2_NUL' and abs(phi)>60 :
       UTMESS('A','RUPTURE1_60')
-   
 
    return phi
 
-#------------------------------------------------------------------------------------------------------     
-def post_rupture_ops(self,TABLE,OPERATION,**args):
+#------------------------------------------------------------------------------------------------------
+def post_rupture_ops(self, TABLE, OPERATION, **args):
    """
    Macro POST_RUPTURE
    """
@@ -169,16 +148,13 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
    macro = 'POST_RUPTURE'
    from Accas import _F
-   from Utilitai.Utmess     import  UTMESS
-   from numpy import sign
-   import numpy as NP
 
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
    # Le concept sortant (de type table) est tabout
    self.DeclareOut('tabout', self.sd)
-   
+
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    FORMULE       = self.get_cmd('FORMULE')
@@ -193,24 +169,27 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
    # verification que le nombre de tables est correct
    # et retourne le nombre de tables
-   nb_tabin = verif_nb_table(OPERATION,TABLE)
+   nb_tabin = verif_nb_table(OPERATION, TABLE)
 
    # verification que reuse est correctement employe
    verif_reuse(OPERATION,self.reuse)
 
-   if nb_tabin == 1 :
-      # extraction de la table en entree dans l'espace python -> table python
-      tabin = TABLE.EXTR_TABLE()
-   
+   # extraction de la ou des tables en entree dans l'espace python -> table python
+   l_tabin = [t.EXTR_TABLE() for t in TABLE]
+   if nb_tabin == 1:
+      # pour simplifier l'écriture
+      tabin = l_tabin.pop()
+      TABIN = TABLE[0]
+
 
    #-----------------------------------------------------------------------
    if OPERATION == 'ABSC_CURV_NORM' :
 
       # verification que la table contient une colonne 'ABSC_CURV'
-      verif_exi(tabin,TABLE,'ABSC_CURV')
+      verif_exi(tabin, 'ABSC_CURV')
 
-      # verification qu'il n'y a qu'un fond de fissure 
-      verif_un_fond(tabin,TABLE,OPERATION)
+      # verification qu'il n'y a qu'un fond de fissure
+      verif_un_fond(tabin, OPERATION)
 
       # récupération de l'abscisse maximale et ajout dans l'environnement
       smax = max(tabin.ABSC_CURV.values())
@@ -218,8 +197,8 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
       __NORM_ABS=FORMULE(NOM_PARA=('ABSC_CURV'),VALE='ABSC_CURV/smax');
 
-      tabout=CALC_TABLE(TABLE=TABLE,
-                        reuse=TABLE,
+      tabout=CALC_TABLE(TABLE=TABIN,
+                        reuse=TABIN,
                         ACTION=_F(OPERATION='OPER',
                                   FORMULE=__NORM_ABS,
                                   NOM_PARA=args['NOM_PARA']))
@@ -228,17 +207,17 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
    #-----------------------------------------------------------------------
    if OPERATION == 'ANGLE_BIFURCATION' :
 
-      # verification qu'il n'y a qu'un fond de fissure 
-      verif_un_fond(tabin,TABLE,OPERATION)
-      
+      # verification qu'il n'y a qu'un fond de fissure
+      verif_un_fond(tabin, OPERATION)
+
       crit_ang = args['CRITERE']
       self.update_const_context({'crit_ang' : crit_ang})
 
       # verification que la table contient les colonnes necessaires
       if crit_ang in ('SITT_MAX','K1_MAX','K2_NUL','G_MAX') :
-         verif_exi(tabin,TABLE,'K1')
-         verif_exi(tabin,TABLE,'K2')
-         
+         verif_exi(tabin, 'K1')
+         verif_exi(tabin, 'K2')
+
       if crit_ang == 'SITT_MAX' :
 
          __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='sittmax(K1,K2)*180./pi')
@@ -250,14 +229,14 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
          # criteres uniquement valables en 2D
          # mais comment savoir ?
-         
+
          __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='amestoy(K1,K2,crit_ang)')
 
          # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
          self.update_const_context({'amestoy' : amestoy})
 
-      tabout=CALC_TABLE(TABLE=TABLE,
-                        reuse=TABLE,
+      tabout=CALC_TABLE(TABLE=TABIN,
+                        reuse=TABIN,
                         ACTION=_F(OPERATION='OPER',
                                   FORMULE=__angle_deg,
                                   NOM_PARA=args['NOM_PARA']))
@@ -267,7 +246,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
    if OPERATION == 'K_EQ' :
 
       cumul=args['CUMUL']
-      
+
       if 'K3' in tabin.para :
          ndim = 3
       else :
@@ -275,16 +254,16 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
       # verification que la table contient les colonnes necessaires
       if cumul in ('LINEAIRE','QUADRATIQUE','THETA') :
-         verif_exi(tabin,TABLE,'K1')
-         verif_exi(tabin,TABLE,'K2')
+         verif_exi(tabin, 'K1')
+         verif_exi(tabin, 'K2')
          if ndim==3 :
-            verif_exi(tabin,TABLE,'K3')
+            verif_exi(tabin, 'K3')
 
       if cumul == 'CUMUL_G' :
 #            recup de E et nu, attention avec la dependance a INST et X, Y, Z
-         verif_exi(tabin,TABLE,'G')
+         verif_exi(tabin, 'G')
          __cumul = FORMULE(NOM_PARA='G',VALE='sqrt(E)/(1-nu**2)*G)')
-      
+
       elif cumul == 'QUADRATIQUE' :
 #         nu=
          if ndim==3 :
@@ -301,7 +280,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
       elif cumul == 'MODE_I' :
 
-         verif_exi(tabin,TABLE,'K1')
+         verif_exi(tabin, 'K1')
          __cumul = FORMULE(NOM_PARA='K1',VALE='K1')
 
       elif cumul == 'THETA' :
@@ -311,14 +290,15 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 #         lthet = verit_cond_theta(tabin)
 #         if not lthet :
 #              emission Alarme et sortie directe
-         
+
          __THETA_PL=FORMULE(NOM_PARA=('K1','K2'),VALE='2.*atan((K1+sqrt(K1**2+8.*K2**2))/(4.*K2))')
          __THETA_MO=FORMULE(NOM_PARA=('K1','K2'),VALE='2.*atan((K1-sqrt(K1**2+8.*K2**2))/(4.*K2))')
          __KTHET_PL=FORMULE(NOM_PARA=('K1','K2','THETA_PL'),VALE='(K1*(cos(THETA_PL/2))**2-3./2.*K2*sin(THETA_PL))*cos(THETA_PL/2)')
          __KTHET_MO=FORMULE(NOM_PARA=('K1','K2','THETA_MO'),VALE='(K1*(cos(THETA_MO/2))**2-3./2.*K2*sin(THETA_MO))*cos(THETA_MO/2)')
          __KTHET   =FORMULE(NOM_PARA=('KTHET_PL','KTHET_MO'),VALE='max(KTHET_PL,KTHET_MO)')
 
-         tabout=CALC_TABLE(TABLE=TABLE,reuse=TABLE,
+         tabout=CALC_TABLE(TABLE=TABIN,
+                           reuse=TABIN,
                            ACTION=(_F(OPERATION='OPER',FORMULE=__THETA_PL,NOM_PARA='THETA_PL'),
                                    _F(OPERATION='OPER',FORMULE=__THETA_MO,NOM_PARA='THETA_MO'),
                                    _F(OPERATION='OPER',FORMULE=__KTHET_PL,NOM_PARA='KTHET_PL'),
@@ -333,15 +313,15 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
             __cumul=FORMULE(NOM_PARA=('KTHET'),VALE='KTHET')
 
 
-      tabout=CALC_TABLE(TABLE=TABLE,
-                        reuse=TABLE,
+      tabout=CALC_TABLE(TABLE=TABIN,
+                        reuse=TABIN,
                         ACTION=_F(OPERATION='OPER',
                                   FORMULE=__cumul,
                                   NOM_PARA=args['NOM_PARA']))
 
       # menage
       if cumul == 'THETA' :
-         tabout=CALC_TABLE(TABLE=TABLE,reuse=TABLE,
+         tabout=CALC_TABLE(TABLE=TABIN,reuse=TABIN,
                            ACTION=(_F(OPERATION='SUPPRIME',NOM_PARA='THETA_PL'),
                                    _F(OPERATION='SUPPRIME',NOM_PARA='THETA_MO'),
                                    _F(OPERATION='SUPPRIME',NOM_PARA='KTHET_PL'),
@@ -354,13 +334,13 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
    if OPERATION == 'COMPTAGE_CYCLES' :
 
       COMPTAGE=args['COMPTAGE']
-      
-      # verification qu'il n'y a qu'un fond de fissure 
-      verif_un_fond(tabin,TABLE,OPERATION)
+
+      # verification qu'il n'y a qu'un fond de fissure
+      verif_un_fond(tabin, OPERATION)
 
       # quantites sur lesquelles s'effectue le comptage
       list_q = args['NOM_PARA']
-      
+
       # convertion en une liste si on n'a une quantité pour pouvoir itérer dessus
       if  type(list_q) == str : list_q = [list_q]
 
@@ -368,7 +348,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
       if  type(list_q) == tuple : list_q = list(list_q)
 
       for q in list_q:
-         verif_exi(tabin,TABLE,q)
+         verif_exi(tabin, q)
 
       nq = len(list_q)
 
@@ -383,10 +363,10 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
          # recuperation des mot-clés
          COEF_MULT_MAXI=args['COEF_MULT_MAXI']
          COEF_MULT_MINI=args['COEF_MULT_MINI']
-      
+
          # verification qu'il n'y a qu'un instant (ou instant absent)
-         verif_un_instant(tabin,TABLE,OPERATION,COMPTAGE)
-      
+         verif_un_instant(tabin, OPERATION, COMPTAGE)
+
          for i,q in enumerate(list_q):
 
             # definition de la formule
@@ -397,11 +377,11 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
             mostcles={}
             if i==0 :
-               mostcles['TABLE']=TABLE
+               mostcles['TABLE']=TABIN
             else :
                mostcles['TABLE']=tabout
                mostcles['reuse']=tabout
-               
+
             tabout=CALC_TABLE(ACTION=(_F(OPERATION='OPER',FORMULE=__delta_unit,NOM_PARA='DELTA_'+q),
                                       _F(OPERATION='SUPPRIME',NOM_PARA=q)),
                               **mostcles)
@@ -417,11 +397,11 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
          tabout=CALC_TABLE(reuse=tabout,TABLE=tabout,
                            ACTION=_F(OPERATION='AJOUT_COLONNE',VALE=1,NOM_PARA='CYCLE'))
 
-      
-      # vrai comptage des cycles avec POST_FATIGUE
-      else : 
 
-         verif_exi(tabin,TABLE,'INST')
+      # vrai comptage des cycles avec POST_FATIGUE
+      else :
+
+         verif_exi(tabin, 'INST')
 
          __delta = FORMULE(NOM_PARA=('VALE_MIN','VALE_MAX'),VALE='VALE_MAX-VALE_MIN')
 
@@ -434,7 +414,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
          tabout=CREA_TABLE(LISTE=_F(LISTE_I=(0,),PARA='&BIDON&'))
 
          # boucle sur les points du fond de fissure
-         nbpt=max(TABLE.EXTR_TABLE().NUM_PT.values())
+         nbpt=max(tabin.NUM_PT.values())
 
          for ipt in range(nbpt):
 
@@ -444,7 +424,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
             __TABC=[None]*nq
             for i,q in enumerate(list_q):
 
-               __EVOLQ=RECU_FONCTION(TABLE=TABLE,
+               __EVOLQ=RECU_FONCTION(TABLE=TABIN,
                                    PARA_X='INST',
                                    PARA_Y=q,
                                    FILTRE=_F(NOM_PARA='NUM_PT',
@@ -491,7 +471,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
             for para in l_para_aux :
                # on prend la 1ere valeur (pour bien faire, il faudrait verifier que toutes
                # les valeurs sont bien identiques
-               vale= tab_tmp[para][0]  
+               vale= tab_tmp[para][0]
                __TABC[0]=CALC_TABLE(reuse=__TABC[0],
                                     TABLE=__TABC[0],
                                     ACTION=_F(OPERATION='AJOUT_COLONNE',
@@ -500,25 +480,25 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
 
             # on concatene la table avec la table sortie
             tabout=CALC_TABLE(reuse=tabout,
-                               TABLE=tabout,
-                               ACTION=_F(TABLE=__TABC[0],OPERATION='COMB'))
+                              TABLE=tabout,
+                              ACTION=_F(TABLE=__TABC[0],OPERATION='COMB'))
 
          # on supprime la colonne bidon
          tabout=CALC_TABLE(TABLE=tabout,
-                            reuse=tabout,
-                            TITRE=tabout.nom,
-                            ACTION=_F(OPERATION='SUPPRIME',NOM_PARA='&BIDON&'))
+                           reuse=tabout,
+                           TITRE=tabout.nom,
+                           ACTION=_F(OPERATION='SUPPRIME',NOM_PARA='&BIDON&'))
 
    #-----------------------------------------------------------------------
    if OPERATION == 'LOI_PROPA' :
 
-      # verification qu'il n'y a qu'un fond de fissure 
-      verif_un_fond(tabin,TABLE,OPERATION)
+      # verification qu'il n'y a qu'un fond de fissure
+      verif_un_fond(tabin, OPERATION)
 
       # nom de la colonne correspondant au delta_K_eq
       dkeq = args['NOM_DELTA_K_EQ']
-      verif_exi(tabin,TABLE,dkeq)
-      
+      verif_exi(tabin, dkeq)
+
       loi = args['LOI']
       C = args['C']
       M = args['M']
@@ -531,8 +511,8 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
          self.update_const_context({'C' : C})
          self.update_const_context({'M' : M})
 
-      tabout=CALC_TABLE(TABLE=TABLE,
-                        reuse=TABLE,
+      tabout=CALC_TABLE(TABLE=TABIN,
+                        reuse=TABIN,
                         ACTION=_F(OPERATION='OPER',
                                   FORMULE=__da,
                                   NOM_PARA=args['NOM_PARA']))
@@ -540,14 +520,14 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
    #-----------------------------------------------------------------------
    if OPERATION == 'CUMUL_CYCLES' :
 
-      # verification qu'il n'y a qu'un fond de fissure 
-      verif_un_fond(tabin,TABLE,OPERATION)
+      # verification qu'il n'y a qu'un fond de fissure
+      verif_un_fond(tabin, OPERATION)
 
       # quantité sur laquelle s'effectue le cumul
       q = args['NOM_PARA']
-      verif_exi(tabin,TABLE,q)
+      verif_exi(tabin, q)
 
-      verif_exi(tabin,TABLE,'CYCLE')
+      verif_exi(tabin, 'CYCLE')
 
       # creation d'une table vide (en fait qui contient juste une ligne qui sera supprimee en fin)
       tabout=CREA_TABLE(LISTE=_F(LISTE_I=(0,),PARA='&BIDON&'))
@@ -569,7 +549,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
          l_vale=[]
          for para in l_para :
             # on prend la 1ere valeur (pour bien faire, il faudrait verifier que toutes
-            # les valeurs sont bien identiques et ne pas copier les colonnes dont les 
+            # les valeurs sont bien identiques et ne pas copier les colonnes dont les
             # valeurs ne sont pas identiques...)
             l_vale.append(dic[para][0])
 
@@ -577,7 +557,7 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
          l_para.append(q)
          da_cycle = NP.array(tab.DELTA_A.values())
          moy = da_cycle.mean()
-         l_vale.append(moy)         
+         l_vale.append(moy)
 
          # ajout dans la table de cette ligne
          tabout=CALC_TABLE(reuse=tabout,
@@ -592,61 +572,55 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
                         reuse=tabout,
                         TITRE=tabout.nom,
                         ACTION=_F(OPERATION='SUPPRIME',NOM_PARA='&BIDON&'))
-         
+
    #-----------------------------------------------------------------------
    if OPERATION == 'PILO_PROPA' :
 
       # creation d'une table vide (en fait qui contient juste une ligne qui sera supprimee en fin)
       tabout=CREA_TABLE(LISTE=_F(LISTE_I=(0,),PARA='&BIDON&'))
 
-      if nb_tabin ==1 :
-         TABLE = (TABLE,)
-
       # pour toutes les tables en entrees (cad toutes les fissures)
-      tabin=[None]*nb_tabin
-      for i in range(nb_tabin) :
-         tabin[i] = TABLE[i].EXTR_TABLE()
-
+      for i, tab_i in enumerate(l_tabin) :
          # verification que DELTA_A existe
-         verif_exi(tabin[i],TABLE[i],'DELTA_A')
+         verif_exi(tab_i, 'DELTA_A')
 
          # verification que DELTA_CYCLE n'existe pas
-         verif_non_exi(tabin[i],TABLE[i],'DELTA_CYCLE')
+         verif_non_exi(tab_i, 'DELTA_CYCLE')
 
          # verification que DELTA_A_PILO n'existe pas
-         verif_non_exi(tabin[i],TABLE[i],'DELTA_A_PILO')
+         verif_non_exi(tab_i, 'DELTA_A_PILO')
 
       # Pilotage en increment du nombre de cycles ou en increment d'avancee max ?
       DN_pilo    = args['DELTA_N']
       DAmax_pilo = args['DELTA_A_MAX']
       assert (DN_pilo or DAmax_pilo)
-              
+
       # si pilotage en increment d'avancee max : calcul du l'increment de cycles pilo
       if DAmax_pilo :
 
          # récupération de l'avancee max des points des fonds pour toutes les fissures
          damax=0
-         for i in range(nb_tabin) :
-            damax = max( damax , max(tabin[i].DELTA_A.values()))
-         
+         for tab_i in l_tabin:
+            damax = max( damax , max(tab_i.DELTA_A.values()))
+
          # increment de cycles pilo
          DN_pilo = DAmax_pilo/damax
 
-      # quelque soit le type de pilotage : mise a jour du DELTA_A et ecriture du DN 
-      __DNpilo=FORMULE(NOM_PARA='DELTA_A',VALE= 'DN_pilo * DELTA_A ')
+      # quelque soit le type de pilotage : mise a jour du DELTA_A et ecriture du DN
+      __DNpilo=FORMULE(NOM_PARA='DELTA_A', VALE= 'DN_pilo * DELTA_A ')
       self.update_const_context({'DN_pilo' : DN_pilo})
-      
-      for i in range(nb_tabin) :
 
-         __tabtmp=CALC_TABLE(TABLE=TABLE[i],
-                           ACTION=(
+      for TABLE_i in TABLE:
+
+         __tabtmp=CALC_TABLE(TABLE=TABLE_i,
+                             ACTION=(
                                  _F(OPERATION='OPER',FORMULE=__DNpilo,NOM_PARA='DELTA_A_PILO'),
                                  _F(OPERATION='AJOUT_COLONNE',VALE=DN_pilo,NOM_PARA='DELTA_CYCLE'),
                                  _F(OPERATION='SUPPRIME',NOM_PARA='DELTA_A'),
                                  _F(OPERATION='RENOMME',NOM_PARA=('DELTA_A_PILO','DELTA_A')),
                                  ),
-                         )
-      
+                            )
+
          # combinaison de la table courante avec la 1ere table
          tabout=CALC_TABLE(reuse=tabout,
                            TABLE=tabout,
@@ -658,6 +632,6 @@ def post_rupture_ops(self,TABLE,OPERATION,**args):
                         TITRE=tabout.nom,
                         ACTION=_F(OPERATION='SUPPRIME',NOM_PARA='&BIDON&'))
 
-         
+
    return
- 
+

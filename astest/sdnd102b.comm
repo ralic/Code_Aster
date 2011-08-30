@@ -1,4 +1,4 @@
-# MODIF  DATE 22/08/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 30/08/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -317,7 +317,7 @@ TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
                    NOM_CHAM   = 'DEPL_ABSOLU',
                    NOM_CMP    = 'DX',
                    NOEUD      = 'NO1',
-                   VALE       = -1.3572651273638E-04,
+                   VALE       = -1.4888774372446E-04,
                    PRECISION  = 1.E-10,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.11',
@@ -328,7 +328,7 @@ TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
                    NOM_CHAM   = 'VITE_ABSOLU',
                    NOM_CMP    = 'DX',
                    NOEUD      = 'NO1',
-                   VALE       = -0.013437896293417,
+                   VALE       = -0.012875905370012,
                    PRECISION  = 1.E-10,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.11',
@@ -339,7 +339,7 @@ TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
                    NOM_CHAM   = 'ACCE_ABSOLU',
                    NOM_CMP    = 'DX',
                    NOEUD      = 'NO1',
-                   VALE       = 0.53582679497900,
+                   VALE       = 0.58778525229247,
                    PRECISION  = 1.E-10,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.11',
@@ -348,7 +348,7 @@ TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
 TAB_OBS=RECU_TABLE(CO=TRAN_DY,
                    NOM_TABLE='OBSERVATION',);
 
-#  Impression de la table permettant de comparer aux valeurs SUIVI_DDL :
+#  Impression de la table permettant de comparer aux valeurs OBSERVATION :
 IMPR_TABLE(TABLE=TAB_OBS,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.1,),);
@@ -363,7 +363,7 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE=0.01,),),
            NOM_PARA='VALE',
-           VALE=-1.3572651273638E-04,
+           VALE=-1.4888774372446E-04,
            REFERENCE='NON_REGRESSION',);
            
 TEST_TABLE(TABLE=TAB_OBS,
@@ -376,7 +376,7 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE=0.01,),),
            NOM_PARA='VALE',
-           VALE=-0.013437896293417,
+           VALE=-0.012875905370012,
            REFERENCE='NON_REGRESSION',);
            
 TEST_TABLE(TABLE=TAB_OBS,
@@ -389,46 +389,8 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE=0.01,),),
            NOM_PARA='VALE',
-           VALE=0.53582679497900,
+           VALE=0.58778525229247,
            REFERENCE='NON_REGRESSION',);           
-           
-
-NO1_DXD=RECU_FONCTION(RESULTAT=TRAN_DY,
-                      LIST_INST=LISTIMP,
-                      NOM_CHAM='DEPL_ABSOLU',
-                      NOM_CMP='DX',
-                      NOEUD='NO1',
-                      PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
-
-NO1_DXV=RECU_FONCTION(RESULTAT=TRAN_DY,
-                      LIST_INST=LISTIMP,
-                      NOM_CHAM='VITE_ABSOLU',
-                      NOM_CMP='DX',
-                      NOEUD='NO1',
-                      PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
-
-NO1_DXA=RECU_FONCTION(RESULTAT=TRAN_DY,
-                      LIST_INST=LISTIMP,
-                      NOM_CHAM='ACCE_ABSOLU',
-                      NOM_CMP='DX',
-                      NOEUD='NO1',
-                      PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
-
-TEST_FONCTION(VALEUR=(_F(FONCTION=NO1_DXD,
-                         VALE_PARA=0.01,
-                         VALE_REFE=-1.3572651273638E-04,
-                         CRITERE='RELATIF',),
-                      _F(FONCTION=NO1_DXV,
-                         VALE_PARA=0.01,
-                         VALE_REFE=-0.013437896293417,
-                         CRITERE='RELATIF',),
-                      _F(FONCTION=NO1_DXA,
-                         VALE_PARA=0.01,
-                         VALE_REFE=0.53582679497900,
-                         CRITERE='RELATIF',),),);
 
 #
 #=======================================================================

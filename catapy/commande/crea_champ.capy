@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -151,7 +151,6 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 
              b_extr_table    =BLOC(condition = "TABLE != None",
                       MODELE          =SIMP(statut='f',typ=(modele_sdaster),),
-                      OPTION          =SIMP(statut='f',typ='TXM'),
                       PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
                  ),
              b_extr_resultat =BLOC(condition = "RESULTAT != None",

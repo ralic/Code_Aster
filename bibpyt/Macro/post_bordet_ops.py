@@ -1,4 +1,4 @@
-#@ MODIF post_bordet_ops Macro  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_bordet_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,18 +29,8 @@ def maxi(x,y):
       return y
 
 #corps de la macro
-def post_bordet_ops(self,
-TOUT,
-GROUP_MA,
-INST,
-PRECISION,
-CRITERE,
-NUME_ORDRE,
-PROBA_NUCL,
-RESULTAT,
-PARAM,
-TEMP,
-COEF_MULT,**args):
+def post_bordet_ops(self, TOUT, GROUP_MA, INST, PRECISION, CRITERE, NUME_ORDRE,
+                    PROBA_NUCL, RESULTAT, PARAM, TEMP, COEF_MULT,**args):
    import numpy as NP
    import aster
    from Accas import _F
@@ -122,7 +112,8 @@ COEF_MULT,**args):
                       TOUT='OUI',
                       OPTION='COOR_ELGA',);
    if GROUP_MA:
-      __VOL=__VOL_PG.EXTR_COMP('W',[GROUP_MA])
+      GROUP_MA = list(GROUP_MA)
+      __VOL=__VOL_PG.EXTR_COMP('W', GROUP_MA)
    elif TOUT :
       __VOL=__VOL_PG.EXTR_COMP('W',[])
 
@@ -235,16 +226,16 @@ COEF_MULT,**args):
 #
 
       if GROUP_MA:
-         __PRIN[ordre]=__S_TOT[ordre].EXTR_COMP('PRIN_3',[GROUP_MA],0).valeurs;
+         __PRIN[ordre]=__S_TOT[ordre].EXTR_COMP('PRIN_3',GROUP_MA,0).valeurs;
 
 #Pour la deformation plastique, on construit de quoi calculer sa norme de VMises
-         __EP[ordre][0]=__EPSP[ordre].EXTR_COMP('EPXX',[GROUP_MA],0).valeurs;
-         __EP[ordre][1]=__EPSP[ordre].EXTR_COMP('EPYY',[GROUP_MA],0).valeurs;
-         __EP[ordre][2]=__EPSP[ordre].EXTR_COMP('EPZZ',[GROUP_MA],0).valeurs;
-         __EP[ordre][3]=__EPSP[ordre].EXTR_COMP('EPXY',[GROUP_MA],0).valeurs;
+         __EP[ordre][0]=__EPSP[ordre].EXTR_COMP('EPXX',GROUP_MA,0).valeurs;
+         __EP[ordre][1]=__EPSP[ordre].EXTR_COMP('EPYY',GROUP_MA,0).valeurs;
+         __EP[ordre][2]=__EPSP[ordre].EXTR_COMP('EPZZ',GROUP_MA,0).valeurs;
+         __EP[ordre][3]=__EPSP[ordre].EXTR_COMP('EPXY',GROUP_MA,0).valeurs;
          if ndim==3:
-            __EP[ordre][4]=EPSP[ordre].EXTR_COMP('EPXZ',[GROUP_MA],0).valeurs;
-            __EP[ordre][5]=EPSP[ordre].EXTR_COMP('EPYZ',[GROUP_MA],0).valeurs;
+            __EP[ordre][4]=EPSP[ordre].EXTR_COMP('EPXZ',GROUP_MA,0).valeurs;
+            __EP[ordre][5]=EPSP[ordre].EXTR_COMP('EPYZ',GROUP_MA,0).valeurs;
 
       elif TOUT:
          __PRIN[ordre]=__S_TOT[ordre].EXTR_COMP('PRIN_3',[],0).valeurs;

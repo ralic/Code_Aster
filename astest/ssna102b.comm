@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -233,7 +233,7 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
 TEST_RESU(
             RESU=_F(
                   RESULTAT = RESU,
-                  NUME_ORDRE = 2,
+                  INST = 1.0,
                   REFERENCE = 'SOURCE_EXTERNE',
                   NOM_CHAM = 'DEPL',
                   GROUP_NO = 'PA4',
@@ -250,13 +250,13 @@ TEST_RESU(
 TEST_RESU(
             RESU=_F(
                   RESULTAT = RESU,
-                  NUME_ORDRE = 2,
+                  INST = 1.0,
                   REFERENCE = 'NON_REGRESSION',
                   NOM_CHAM = 'DEPL',
                   GROUP_NO = 'PA4',
                   NOM_CMP = 'DY',
-                  VALE = -8.4110581760223E-01,
-                  PRECISION = 1.0E-02,
+                  VALE = -0.84138214212689,
+                  PRECISION = 1.0E-10,
                   CRITERE = 'RELATIF')
            )
 
@@ -295,8 +295,8 @@ TEST_TABLE(        TABLE=REACENC,
 TEST_TABLE(        TABLE=REACENC,
                  NOM_PARA='DY',
                 REFERENCE='NON_REGRESSION',
-                     VALE=1.7491524383319E+04,
-               PRECISION=1.E-02,
+                     VALE=17503.141467521,
+               PRECISION=1.E-10,
                CRITERE='RELATIF' )
 
 FIN()

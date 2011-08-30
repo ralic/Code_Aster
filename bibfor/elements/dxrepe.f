@@ -3,7 +3,7 @@
       REAL*8              PGL(3,3) , T2EV(*), T2VE(*)
 C     ---------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,13 +20,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     ------------------------------------------------------------------
-C         CALCUL DE LA MATRICE DE PASSAGE DU REPERE DE L'ELEMENT A
-C         LA VARIETE (LE REPERE DE LA VARIETE EST OBTENU PAR LA MATRICE
-C         DE PASSAGE GLOBAL -> LOCAL) AINSI QUE SON INVERSE
+C   BUT : CALCULER :
+C     T2EV : LA MATRICE DE PASSAGE (2X2) : UTILISATEUR -> INTRINSEQUE
+C     T2VE : LA MATRICE DE PASSAGE (2X2) : INTRINSEQUE -> UTILISATEUR
 C
-C         POUR TOUTES LES OPTIONS DE POST TRAITEMENT COQUE
-C     ------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)

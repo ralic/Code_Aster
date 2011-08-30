@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -328,4 +328,10 @@ C         ---------------------------------------
         CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
 
       END IF
+
+      IF (OPTION.EQ.'SIEF_ELGA') THEN
+C ---   PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
+        CALL COSIRO(NOMTE,'PCONTRR','IU','G',JSIGM,'S')
+      ENDIF
+
       END

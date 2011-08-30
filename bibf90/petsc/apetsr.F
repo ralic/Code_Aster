@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC ,RSOLU ,VCINE )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSR PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETSR PETSC  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -99,8 +99,8 @@
       PetscInt           ierr,neq,low,high,i
       PetscInt           maxits
       PetscReal          rtol,atol,dtol
-      Vec                b,xgth
-      PetscScalar        XX(1)
+      Vec                b,x,r,xgth
+      PetscScalar        XX(1),ires,fres
       PetscOffset        xidx
       VecScatter         ctx
       KSPConvergedReason indic
@@ -217,7 +217,9 @@
 !        2.4 RESOLUTION :
 !        ----------------
 
-         call KSPSolve(ksp,b,b,ierr)
+         call VecDuplicate(b,x,ierr)
+         CALL ASSERT(ierr.EQ.0)
+         call KSPSolve(ksp,b,x,ierr)
          IF (ierr.GT.0) then
             CALL U2MESS('F','PETSC_13')
          ENDIF
@@ -257,17 +259,42 @@
             ENDIF
          ENDIF
 
-!        2.5 RECOPIE DE LA SOLUTION:
-!        --------------------------
+!        2.4b VERIFICATION DE LA SOLUTION :
+!        ----------------------------------
+
+         call VecDuplicate(x,r,ierr)
+         CALL ASSERT(ierr.EQ.0)
+!        r = Ax
+         call MatMult(A,x,r,ierr)
+         CALL ASSERT(ierr.EQ.0)
+!        r = b - Ax
+         call VecAYPX(r,-1.D0,b,ierr)
+         CALL ASSERT(ierr.EQ.0)
+!        fres = ||r||_2
+         call VecNorm(r,NORM_2,fres,ierr)
+         CALL ASSERT(ierr.EQ.0)
+!        ires = ||b||_2
+         call VecNorm(b,NORM_2,ires,ierr)
+         CALL ASSERT(ierr.EQ.0)
+!
+         call KSPGetTolerances(ksp,rtol,atol,dtol,maxits,ierr)
+         CALL ASSERT(ierr.EQ.0)
+!        
+         IF (fres.GT.SQRT(rtol)*ires) THEN
+            CALL U2MESS('F','PETSC_16')
+         ENDIF
+
+!        2.5 RECOPIE DE LA SOLUTION :
+!        ----------------------------
 
 !        -- RECONSTRUCTION DE LA LA SOLUTION SUR CHAQUE PROC
 
-         call VecScatterCreateToAll(b,ctx,xgth,ierr)
+         call VecScatterCreateToAll(x,ctx,xgth,ierr)
          CALL ASSERT(ierr.EQ.0)
-         call VecScatterBegin(ctx,b,xgth,INSERT_VALUES,SCATTER_FORWARD,
+         call VecScatterBegin(ctx,x,xgth,INSERT_VALUES,SCATTER_FORWARD,
      &                        ierr)
          CALL ASSERT(ierr.EQ.0)
-         call VecScatterEnd(ctx,b,xgth,INSERT_VALUES,SCATTER_FORWARD,
+         call VecScatterEnd(ctx,x,xgth,INSERT_VALUES,SCATTER_FORWARD,
      &                      ierr)
          CALL ASSERT(ierr.EQ.0)
          call VecScatterDestroy(ctx,ierr)
@@ -294,6 +321,10 @@
          call VecDestroy(xgth,ierr)
          CALL ASSERT(ierr.EQ.0)
          call VecDestroy(b,ierr)
+         CALL ASSERT(ierr.EQ.0)
+         call VecDestroy(x,ierr)
+         CALL ASSERT(ierr.EQ.0)
+         call VecDestroy(r,ierr)
          CALL ASSERT(ierr.EQ.0)
 
 !        -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
@@ -324,8 +355,8 @@
       ELSE IF (ACTION.EQ.'DETR_MAT') THEN
 !     -----------------------------------
 
-!        3.0 RECUPERATION DES POINTEURS:
-!        ------------------------------
+!        3.0 RECUPERATION DES POINTEURS :
+!        --------------------------------
 
          A   = Ap(KPTSC)
          ksp = Kp(KPTSC)

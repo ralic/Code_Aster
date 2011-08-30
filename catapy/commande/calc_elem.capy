@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,6 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
      REPE_COQUE      =FACT(statut='f',max='**',
                            fr="définiton du lieu de post-traitement",
-                           regles=EXCLUS('ANGL_REP','VECTEUR'),
           TOUT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
           GROUP_MA     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
           MAILLE       =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
@@ -75,10 +74,6 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
           PLAN         =SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL"),
                                fr="Plan de calcul pour les plaques excentrées" ),
 
-          ANGL_REP     =SIMP(statut='f',typ='R',min=2,max=2,
-                           fr="définition du repere de post-traitement, par défaut ANGL_REP=(0.,0.)"),
-          VECTEUR      =SIMP(statut='f',typ='R',min=3,max=3,
-                           fr="définition du repere de post-traitement, par défaut VECTEUR=(1.,0.,0.)"),
                             ),
 
 #    options pour des resultats lineaires

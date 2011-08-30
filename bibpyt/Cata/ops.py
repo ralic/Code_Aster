@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 # Modules Python
 import os
 import traceback
-import pickle
+import cPickle as pickle
 import re
 from math import sqrt, pi, atan2, tan, log, exp
 
@@ -208,16 +208,6 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
             # meme situation pour le type 'entier' produit uniquement par DEFI_FICHIER
                UTMESS('F','SUPERVIS_88', valk=[elem,str(pickle_class)])
                return
-            # rétablir le catalogue de SD (pas pour les CO)
-            if pickle_class is not CO:
-               pickle_context[elem].rebuild_sd()
-               if self.jdc.info_level > 1:
-                  UTMESS('I', 'SUPERVIS2_2',
-                         valk=(elem, type(pickle_context[elem]).__name__.upper()))
-            else:
-               if self.jdc.info_level > 1:
-                  UTMESS('I', 'SUPERVIS2_4',
-                         valk=(elem, type(pickle_context[elem]).__name__.upper()))
          if pickle_context[elem]==None:
             del pickle_context[elem]
      self.g_context.update(pickle_context)
