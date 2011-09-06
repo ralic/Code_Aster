@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        ZERO,EPI,EPAIS,EPTOT
       REAL*8        PGL(3,3), XYZL(3,4), R8BID,VALR(2)
       REAL*8        DEPL(24)
-      REAL*8        EFFGT(32), SIGTOT(24)
+      REAL*8        EFFGT(32), SIGTOT(24),EFFPG(32)
       REAL*8        T2EV(4), T2VE(4)
       LOGICAL       DKG
       INTEGER       ICODRE
@@ -77,7 +77,8 @@ C
      &    OPTION.NE.'EFGE_ELNO' .AND.
      &    OPTION.NE.'SIGM_ELNO' .AND.
      &    OPTION.NE.'EPSI_ELNO' .AND.
-     &    OPTION.NE.'DEGE_ELNO') THEN
+     &    OPTION.NE.'DEGE_ELNO' .AND.
+     &    OPTION.NE.'DEGE_ELGA') THEN
 CC OPTION DE CALCUL INVALIDE
         CALL ASSERT(.FALSE.)
       END IF
@@ -326,6 +327,22 @@ C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C         ---------------------------------------
         CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
+
+
+C
+C               ----------------------------
+      ELSE IF ( OPTION(1:9) .EQ. 'DEGE_ELGA' ) THEN
+C               ----------------------------
+
+        CALL JEVECH('PDEFOPG','E',JEFFG)
+C
+        CALL DXDEGE ( NOMTE, XYZL, DEPL, PGL, EFFPG) 
+C
+C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
+C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
+C         ---------------------------------------
+
+        CALL DXEFRO(NP,T2VE,EFFPG,ZR(JEFFG))
 
       END IF
 

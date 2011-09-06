@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost5 Messages  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,11 +29,11 @@ cata_msg = {
 """),
 
 2 : _("""
-Champ inexistant SIEF_ELGA ou SIEF_ELGA numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
+Champ inexistant SIEF_ELGA ou SIEF_ELGA numero d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 3 : _("""
-Champ inexistant DEPL numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
+Champ inexistant DEPL numero d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 4 : _("""
@@ -59,6 +59,11 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  taille necessaire :  %(i2)d
 """),
 
+9 : _("""
+ Champ inexistant STRX_ELGA ou STRX_ELGA numero d'ordre %(k1)s pour le calcul de l'option %(k2)s,
+ il manque certainement le champ STRX_ELGA en argument de CALC_NO.
+"""),
+
 10 : _("""
  le noeud traite  n'est associe a aucune maille volumique.
  numero du noeud =  %(i1)d
@@ -66,7 +71,7 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
 """),
 
 16 : _("""
- appel erronenumero d'ordre %(i1)d code retour de rsexch : %(i2)d
+ appel errone numero d'ordre %(i1)d code retour de rsexch : %(i2)d
  pb cham_no %(k1)s
 """),
 

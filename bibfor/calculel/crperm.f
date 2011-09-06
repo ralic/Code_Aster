@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,11 +51,11 @@ C
       COMPLEX*16     CBID
       CHARACTER*8    K8B, CRIT, RESU1, RESU2, RESU3, MA1, MA2,
      &               GMA1, GMA2
-      CHARACTER*16   TYPRES, NOMCMD, CHAM(3), OPTION
+      CHARACTER*16   TYPRES, NOMCMD, CHAM(4), OPTION
       CHARACTER*24 VALK(2)
       CHARACTER*19   PRCHNO
       CHARACTER*24   CH1, CH2, CHS1, CHS2, LINOEU,
-     &               LIMA1, LIMA2, LIGREL, CHSI1(3), CHSI2(3)
+     &               LIMA1, LIMA2, LIGREL, CHSI1(4), CHSI2(4)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -96,6 +96,7 @@ C
       ELSE
          NBCHAM = -N1
          CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,NBCHAM, CHAM, N1 )
+
       ENDIF
 C
       CALL DISMOI('F','NB_NO_MAILLA',MA2,'MAILLAGE',NBNO2,K8B,IBID)
@@ -154,6 +155,13 @@ C
             CHS2 = '&&CRPERM.VARI_2'
             CALL CELCES ( CH2, 'V', CHS2 )
             CHSI2(IC) = CHS2
+         ELSEIF ( CHAM(IC) .EQ. 'STRX_ELGA' ) THEN
+            CHS1 = '&&CRPERM.STRX_1'
+            CALL CELCES ( CH1, 'V', CHS1 )
+            CHSI1(IC) = CHS1
+            CHS2 = '&&CRPERM.STRX_2'
+            CALL CELCES ( CH2, 'V', CHS2 )
+            CHSI2(IC) = CHS2
          ENDIF
 C
  100  CONTINUE
@@ -202,6 +210,7 @@ C
                CALL CNTRAN ( ZI(JLINO), NBNO2, CHS1, CHS2 )
             ELSE
                CALL CETRAN ( ZI(JLIM1), ZI(JLIM2), NBMA, CHS1, CHS2 )
+
             ENDIF
 C
  20      CONTINUE

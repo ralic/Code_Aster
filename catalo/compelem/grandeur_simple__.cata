@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF COMPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1977,6 +1977,28 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DELNMK : paramètre de Newmark DELTA
 >>
     STAOUDYN = R    STAOUDYN ALFNMK   DELNMK
+
+<<  STRX_R  Type:R Champs spécial pour les éléments de structure
+       N : effort normal
+       VY : effort tranchant suivant CY efforts internes des poutres
+       VZ : effort tranchant suivant CZ efforts internes des poutres
+       MT : moment de torsion suivant CX
+       MFY : moment de flexion suivant GY
+       MFZ : moment de flexion suivant GZ
+       BX : bi-moment (poutre avec gauchissement)
+       EPXX
+       GAXY
+       GAXZ
+       GAT
+       KY
+       KZ
+       GAX
+       DXINT
+>>
+    STRX_R = R     N        VY       VZ       MT       MFY      MFZ
+             BX       EPXX     GAXY     GAXZ     GAT      KY
+             KZ        GAX     DXINT
+
 
 <<  TEMP_C Type:C Température inconnue du phénomène thermique
        TEMP : température

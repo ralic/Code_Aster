@@ -1,6 +1,6 @@
       SUBROUTINE TE0478 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,9 +83,9 @@ C POIDS * JACOBIEN (JACOBIEN=L/2)
         CALL MATROT(ZR(IORIEN),PGL)
 
         IF(NOMTE.EQ.'MECA_POU_D_EM')THEN
-          DECGA=(NBFIB+6)*4
+          DECGA=NBFIB*4
         ELSE
-          DECGA=(NBFIB+7)*4
+          DECGA=NBFIB*4
         ENDIF
         GM1(1)=0.D0
 C boucle sur les fibres (4 valeurs par fibre, X,Y,Z,W)

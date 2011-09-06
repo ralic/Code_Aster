@@ -1,6 +1,6 @@
       SUBROUTINE TE0477(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
-C
       IMPLICIT REAL*8 (A-H,O-Z)
-
 C          ELEMENT SHB8PS
       PARAMETER (NBRES=2)
       CHARACTER*8 TYPMOD
@@ -81,7 +78,6 @@ C - PARAMETRES EN ENTREE
         INSTM = ZR(IINSTM)
         INSTP = ZR(IINSTP)
 C - PARAMETRES EN SORTIE
-
         IF (OPTION(1:16).EQ.'RIGI_MECA_TANG' .OR.
      &      OPTION(1:9).EQ.'FULL_MECA') THEN
           CALL JEVECH('PMATUUR','E',IMATUU)
@@ -93,7 +89,6 @@ C
           CALL JEVECH('PCONTPR','E',ICONTP)
           CALL JEVECH('PVARIPR','E',IVARIP)
         END IF
-
 C - PARAMETRES MATERIAU
 
         NOMRES(1) = 'E'
@@ -129,7 +124,12 @@ C ----       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
 C  =============================================
 C  -  ACTUALISATION : GEOM ORIG + DEPL DEBUT PAS
 C  =============================================
-        IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
+        IF (ZK16(ICOMPO+2).NE.'PETIT') THEN
+           IF (ZK16(ICOMPO+2).NE.'GROT_GDEP') THEN
+              CALL U2MESG('F','COMPOR1_69',1,ZK16(ICOMPO+2),0,0,0,0.D0)
+           ENDIF 
+        ENDIF
+        IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
           IF (OPTION(1:16).EQ.'RIGI_MECA_TANG' .OR.
      &        OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &        OPTION(1:9).EQ.'FULL_MECA') THEN
@@ -204,7 +204,6 @@ C
           END IF
 C
           DO 80 IPG=1,NPG
-C
              EPS2D(1)  = EPSLOC(6*(IPG-1)+1)
              EPS2D(2)  = EPSLOC(6*(IPG-1)+2)
              EPS2D(3)  = EPSLOC(6*(IPG-1)+3)
@@ -289,8 +288,8 @@ C ----       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
   110         CONTINUE
   120       CONTINUE
             CALL SH8RIG(ZR(IGEOM),PARA,RE)
-            IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
-C ----   RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
+            IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
+C ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
               IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
                 DO 130 I=1,12
                   FSTAB(I) = ZR(ICONTM+I-1+6)
@@ -323,8 +322,8 @@ C
   180         CONTINUE
   190       CONTINUE
             CALL SH6RIG(ZR(IGEOM),PARA,RE6)
-            IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
-C ----   RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
+            IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
+C ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
               IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
                 DO 210 I=1,5
                   DO 200 J=1,6
@@ -352,8 +351,8 @@ C
   240         CONTINUE
   250       CONTINUE
             CALL SH1RIG(ZR(IGEOM),PARA,RE15)
-            IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
-C ----   RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
+            IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
+C ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
               IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
                 DO 270 I=1,15
                   DO 260 J=1,6
@@ -381,8 +380,8 @@ C
   300         CONTINUE
   310       CONTINUE
             CALL SH2RIG(ZR(IGEOM),PARA,RE20)
-            IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
-C ----   RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
+            IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
+C ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
               IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
                 DO 330 I=1,20
                   DO 320 J=1,6
@@ -412,8 +411,9 @@ C  ===============================================================
         IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &      OPTION(1:9).EQ.'FULL_MECA') THEN
 C  -  ACTUALISATION : GEOM DEBUT PAS + INCR ITER
-          IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
-            DO 360 I = 1,3*NNO
+
+          IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
+             DO 360 I = 1,3*NNO
               ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLP+I-1)
   360       CONTINUE
           END IF
@@ -444,7 +444,7 @@ C ----      ZR(IVECTU) : FORCES INTERNES FIN DE PAS
           PARA(4) = 0
           PARA(5) = 1
           PARA(6) = LAG
-          IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
+          IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
             DO 370 I = 1,3*NNO
               XIDEPP(I) = ZR(IDEPLP+I-1)
   370       CONTINUE

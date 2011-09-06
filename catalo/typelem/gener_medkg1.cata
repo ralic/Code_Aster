@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/08/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,8 @@ MODE_LOCAL__
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  )
     CEPSINR  = EPSI_R   ELEM__         (EXX      EYY      EXY      KXX      KYY      KXY      )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
+                                        GAX      GAY      )
+    EDEFGPG  = EPSI_R   ELGA__ RIGI    (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
@@ -138,6 +140,9 @@ OPTION__
     DEGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                               OUT__  EDEFGNO  PDEFOGR
+    DEGE_ELGA           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
+                              OUT__  EDEFGPG  PDEFOPG
     DISS_ELGA           413   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  CCACOQU  PCACOQU
                                      CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  EDISSPG  PDISSPG

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
 #====================================================================== 
 #
 # TITRE : VALIDATION DE LA TEMPERATURE RELATION = 'VISC_IRRA_LOG' 
@@ -56,7 +56,7 @@ tmax = 1.
 compor='VISC_IRRA_LOG'
 
 # Nombre de variables internes
-Nbvari = 1
+Nbvari = 2
 
 #=====================================================================
 #               MATERIAU  FONCTION  DE  LA  TEMPERATURE
@@ -181,7 +181,7 @@ for i in range(NCAL):
                                              MATRICE='TANGENTE',
                                              REAC_ITER=1,),
                                  EPSI_IMPOSE=_F(EPXX=epsimp),
-                                 VARI_INIT=_F(VALE=(VXM)),
+                                 VARI_INIT=_F(VALE=[Vim[j] for j in range(Nbvari)]),
                                  SIGM_INIT=_F(SIXX=SXM),
                                  EPSI_INIT=_F(EPXX=EXM, EPYY=0.,EPZZ=0.,EPXY=0.,EPXZ=0.,EPYZ=0.),
                                  INFO=1,);
@@ -192,7 +192,8 @@ for i in range(NCAL):
              
           SXM = RESU[i]['SIXX',2]
 
-          VXM = RESU[i]['V1',2]
+          Vim[0] = RESU[i]['V1',2]
+          Vim[1] = RESU[i]['V2',2]
           
           IMPR_TABLE(TABLE=RESU[i]);
           

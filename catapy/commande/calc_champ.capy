@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,8 +95,8 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              fr="Options pour le calcul de deformations",
                              into=(
                                     "EPSI_ELNO","EPSI_ELGA","EPSG_ELGA","EPSG_ELNO",
-                                    "EPME_ELNO","EPME_ELGA","DEGE_ELNO","EPTU_ELNO",
-                                    "EPVC_ELNO","EPVC_ELGA","EPSI_NOEU",
+                                    "EPME_ELNO","EPME_ELGA","DEGE_ELNO","DEGE_ELGA",
+                                    "EPTU_ELNO","EPVC_ELNO","EPVC_ELGA","EPSI_NOEU",
                                     "EPSG_NOEU","EPVC_NOEU",
                                   ),
                             ),

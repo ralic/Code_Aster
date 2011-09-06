@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,7 +90,80 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
                _F( JUSQU_A = 3., NOMBRE = 10))
 )
 
+
+# LE CALCUL NON LINEAIRE QUI SUIT EST FAIT EN 3 FOIS
+# UNIQUEMENT DANS LE BUT DE VALIDER L'UTILISATION DE
+# 'reuse' AVEC LES PMF QUI ONT BESOIN DE CHAMP SPECIAL
+# STRX_ELGA
 REST=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CAREL,
+                             EXCIT=_F(
+                CHARGE = CHART,
+                FONC_MULT = FONCT),
+                         COMP_INCR=_F( RELATION = 'MULTIFIBRE',
+                ITER_INTE_MAXI = 50,
+                RESI_INTE_RELA = 1.E-6 ),
+                         INCREMENT=_F(
+                LIST_INST = LINST,INST_FIN=1.0),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
+                            NEWTON=_F(
+                MATRICE='ELASTIQUE'),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 20,)
+              )
+
+
+REST=STAT_NON_LINE(reuse=REST, ETAT_INIT=_F(EVOL_NOLI=REST),
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CAREL,
+                             EXCIT=_F(
+                CHARGE = CHART,
+                FONC_MULT = FONCT),
+                         COMP_INCR=_F( RELATION = 'MULTIFIBRE',
+                ITER_INTE_MAXI = 50,
+                RESI_INTE_RELA = 1.E-6 ),
+                         INCREMENT=_F(
+                LIST_INST = LINST,INST_FIN=2.0),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
+                            NEWTON=_F(
+                MATRICE='ELASTIQUE'),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 20,)
+              )
+
+DEPL=CREA_CHAMP(
+    TYPE_CHAM='NOEU_DEPL_R',
+    OPERATION='EXTR',
+    RESULTAT=REST,
+    NOM_CHAM='DEPL',
+    NUME_ORDRE= 11 )
+
+SIGM=CREA_CHAMP(
+    TYPE_CHAM='ELGA_SIEF_R',
+    OPERATION='EXTR',
+    RESULTAT=REST,
+    NOM_CHAM='SIEF_ELGA',
+    NUME_ORDRE= 11 )
+
+VARI=CREA_CHAMP(
+    TYPE_CHAM='ELGA_VARI_R',
+    OPERATION='EXTR',
+    RESULTAT=REST,
+    NOM_CHAM='VARI_ELGA',
+    NUME_ORDRE= 11 )
+
+STRX=CREA_CHAMP(
+    TYPE_CHAM='ELGA_STRX_R',
+    OPERATION='EXTR',
+    RESULTAT=REST,
+    NOM_CHAM='STRX_ELGA',
+    NUME_ORDRE= 11 )
+
+
+REST=STAT_NON_LINE(reuse=REST,ETAT_INIT=_F(DEPL=DEPL,SIGM=SIGM,VARI=VARI,STRX=STRX,INST_ETAT_INIT=2.0),
                             MODELE=MO,
                         CHAM_MATER=CHMAT1,
                          CARA_ELEM=CAREL,

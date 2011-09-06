@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
+%& MODIF TYPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,8 @@ MODE_LOCAL__
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ
+                                        GAX      )
+    EDEFGPG  = EPSI_R   ELGA__ RIGI    (EPXX     GAXY     GAXZ     GAT      KY       KZ
                                         GAX      )
     CFLAPLA  = FLAPLA   ELEM__         (NOMAIL   NOGEOM   )
     CFRELEC  = FELECR   ELEM__         (X1       Y1       Z1       X2       Y2       Z2
@@ -160,6 +162,9 @@ OPTION__
     DEGE_ELNO           158   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDEFGNO  PDEFOGR
+    DEGE_ELGA           158   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                              OUT__  EDEFGPG  PDEFOPG
     ECIN_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     EFCA_ELNO           39    IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
                               OUT__  EEFFONO  PEFFORR

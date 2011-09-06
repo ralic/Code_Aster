@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,8 +40,8 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=42)
-      PARAMETER (NCMEC2=49)
+      PARAMETER (NCMEC1=43)
+      PARAMETER (NCMEC2=50)
       PARAMETER (NCMEC3=41)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
@@ -88,11 +88,12 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EPEQ_ELGA',        'EPEQ_ELNO',         'EPEQ_NOEU',
      & 'ALPH0_ELGA_EPSP',  'ALPHP_ELGA_ALPH0',  'VARI_NON_LOCAL',
      & 'LANL_ELGA',        'SIRO_ELEM',         'FLHN_ELGA',
-     & 'SIPM_ELNO'/
+     & 'SIPM_ELNO',        'STRX_ELGA'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC2/
-     & 'DEGE_ELNO',       'DEGE_NOEU',       'EPOT_ELEM',
+     & 'DEGE_ELNO',       'DEGE_NOEU',       'DEGE_ELGA',
+     & 'EPOT_ELEM',
      & 'ECIN_ELEM',       'FORC_NODA',       'REAC_NODA',
      & 'ERME_ELEM',       'ERME_ELNO',       'ERME_NOEU',
      & 'ERZ1_ELEM',       'ERZ2_ELEM',       'QIRE_ELEM',

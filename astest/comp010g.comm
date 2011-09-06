@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
 #====================================================================== 
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'VISC_TAHERI' 
@@ -46,10 +46,6 @@ Tmax = 500.
 
 epsi = 1.E-10
 
-ZERO = DEFI_CONSTANTE(VALE=0.0);
-
-UN   = DEFI_CONSTANTE(VALE=1.0);
-
 tmax = 1.
 
 compor='VISC_TAHERI'
@@ -64,59 +60,64 @@ Nbvari = 9
 # Parametres elastiques 
 YOUN=DEFI_FONCTION(  NOM_PARA='TEMP',
                      VALE=(T0,   200000.,
-                           Tmax, 180000.)  )
+                           Tmax, 180000.,
+                           )  )
   
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.0E-5,
                                          Tmax, 2.0E-5,),);
 
-R_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     72.,
-                                 1000.,  50.,      ))
-
-
-ALPHA_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     .3,
-                                 1000.,  .25,       ))
-
-M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     .1,
-                                 1000.,  .15,       ))
-
-A_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     312.,
-                                 1000.,  200.,       ))
-
-B_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                           PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     30.,
-                                 1000.,  20.,       ))
-
-C1_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     -.012,
-                                 1000.,  -.010,      ))
-
-C_INF_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     .065,
-                                 1000.,  .050,       ))
+ZERO = DEFI_CONSTANTE(VALE=0.0);
 
 S_T=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='CONSTANT',
                            PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     450.,
-                                 1000.,  400.,      ))
+                          VALE=( T0,     450.,
+                                 Tmax,   400.,      ))
+                                 
+C_INF_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( T0,     .065,
+                                 Tmax,   .060,       ))
+                                 
+C1_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( T0,     -.012,
+                                 Tmax,   -.010,      ))
+
+B_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                           PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( T0,     30.,
+                                 Tmax,   20.,       ))
+
+M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( T0,     .1,
+                                 Tmax,   .15,       ))
+
+A_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( T0,     312.,
+                                 Tmax,   200.,       ))
+
+ALPHA_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( T0,     .3,
+                                 Tmax,   .25,       ))
+
+R_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( T0,     72.,
+                                 Tmax,  50.,      ))
+
+
+
                                         
 MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                 NU=ZERO,
@@ -132,6 +133,8 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                   S     = S_T)
                      );
 
+
+    
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=tmax,
                                      NOMBRE=NCAL,),
@@ -163,6 +166,8 @@ IMPR_TABLE(TABLE=U,);
 
 SXM = 0.
 EXM = 0.
+EYM = 0.
+EZM = 0.
 
 Vim = N.zeros(Nbvari)
 
@@ -213,17 +218,19 @@ for i in range(NCAL):
                                  EPSI_IMPOSE=_F(EPXX=epsimp),
                                  VARI_INIT=_F(VALE=[Vim[j] for j in range(Nbvari)]),
                                  SIGM_INIT=_F(SIXX=SXM),
-                                 EPSI_INIT=_F(EPXX=EXM, EPYY=0.,EPZZ=0.,EPXY=0.,EPXZ=0.,EPYZ=0.),
+                                 EPSI_INIT=_F(EPXX=EXM, EPYY=EYM,EPZZ=EZM,EPXY=0.,EPXZ=0.,EPYZ=0.),
                                  INFO=1,);
                                  
           # recuperation des valeurs initiales du futur pas de temps dans la table resultat
           
-          EXM = RESU[i]['EPXX',1]
+          EXM = RESU[i]['EPXX',2]
+          EYM = RESU[i]['EPYY',2]
+          EZM = RESU[i]['EPZZ',2]
              
-          SXM = RESU[i]['SIXX',1]
+          SXM = RESU[i]['SIXX',2]
 
           for j in range(Nbvari):
-             Vim[j] = RESU[i]['V'+str(j+1),1]
+             Vim[j] = RESU[i]['V'+str(j+1),2]
           
           IMPR_TABLE(TABLE=RESU[i]);
           
@@ -249,3 +256,38 @@ for i in range(NCAL):
                      REFERENCE='AUTRE_ASTER',);
 
 FIN();
+
+
+LMT2  = [None]*(NCAL)
+time=0.
+tfin=1.
+for i in range(NCAL):        
+    timem = time     
+    time = timem + tfin/NCAL
+    Ti = TREF + time/tfin * (Tmax - TREF)
+    Tm = TREF + timem/tfin * (Tmax - TREF)
+    LMT2[i]=DEFI_MATERIAU(ELAS=_F(E=YOUN(Ti),
+                                         NU=0.,
+                                         ALPHA=0.),
+                        TAHERI=_F(R_0   = R_0_T(Ti),
+                                  ALPHA = ALPHA_T(Ti),
+                                  M     = M_T(Ti),
+                                  A     = A_T(Ti),
+                                  B     = B_T(Ti),
+                                  C1    = C1_T(Ti),
+                                  C_INF = C_INF_T(Ti),
+                                  S     = S_T(Ti))
+
+# faire evoluer TEST_COMPOR pour prendre en compte EPYY et EPZZ initaux
+# pour les comportements comme VISC_TAHERI qui en ont besoin.
+                                 );
+tabresu=TEST_COMPOR(INFO=1,
+              MATER=MATERI,COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
+              LIST_MATER=LMT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=TREF,TEMP_FIN=Tmax,
+              NEWTON=_F(REAC_ITER=1),
+              NB_VARI=Nbvari,  
+              VARI_TEST=('V1','V2','V9'),
+              )
+
+IMPR_TABLE(TABLE=tabresu)
+

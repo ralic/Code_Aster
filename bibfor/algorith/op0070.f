@@ -1,7 +1,7 @@
       SUBROUTINE OP0070()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C
       INTEGER      ZMEELM,ZMEASS,ZVEELM,ZVEASS
       PARAMETER    (ZMEELM=9 ,ZMEASS=4 ,ZVEELM=22,ZVEASS=32)
       INTEGER      ZSOLAL,ZVALIN
-      PARAMETER    (ZSOLAL=17,ZVALIN=18)
+      PARAMETER    (ZSOLAL=17,ZVALIN=20)
 C
 C --- GESTION CODES RETOURS
 C
@@ -64,7 +64,7 @@ C
 C
       INTEGER      IBID
 C
-      REAL*8       ETA   
+      REAL*8       ETA
 C
       CHARACTER*8  RESULT,MAILLA
 C
@@ -178,7 +178,7 @@ C
 C --- QUELQUES FONCTIONNALITES ACTIVEES
 C
       LIMPL  = NDYNLO(SDDYNA,'IMPLICITE')
-      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')  
+      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
       LSTAT  = NDYNLO(SDDYNA,'STATIQUE' )
       LMPAS  = NDYNLO(SDDYNA,'MULTI_PAS')
 C
@@ -216,8 +216,8 @@ C
 C
       CALL NMTIME(SDTIME,'END','PAS')
       CALL NMRINC(SDSTAT,'PAS')
-      
-C     
+
+C
 C ======================================================================
 C  FIN DU PAS DE TEMPS
 C ======================================================================
@@ -237,7 +237,7 @@ C
         GOTO 1000
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF  
+      ENDIF
 C
  550  CONTINUE
 C
@@ -266,7 +266,7 @@ C
      &            LISCH2,FORCE )
       CALL ONERRF('EXCEPTION+VALID',K16BID,IBID  )
 C
-      CALL NMTIME(SDTIME,'END','ARC')      
+      CALL NMTIME(SDTIME,'END','ARC')
 C
 C --- ADAPTATION DU NOUVEAU PAS DE TEMPS
 C

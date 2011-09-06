@@ -1,7 +1,7 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE CYLINDRE CREUX THERMOELASTICITE LINEAIRE - TEST UMAT AXIS
-# umat001a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
+# umat001a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

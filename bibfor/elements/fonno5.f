@@ -1,13 +1,12 @@
       SUBROUTINE FONNO5 (NOMA,INDIC,NBNOFF,NOE,NA,NB,NDIM,
-     %                NBNOEL,INDR,COMPTE,VNORM,VTANG)
+     %                   NBNOEL,INDR,VNOR,VDIR)
       IMPLICIT NONE
       CHARACTER*8     NOMA
       INTEGER         INDIC(4),NBNOFF,NOE(4,4),NA,NB,NDIM,NBNOEL,INDR(2)
-      INTEGER         COMPTE
-      REAL*8          VNORM(2,3),VTANG(2,3)
+      REAL*8          VNOR(2,3),VDIR(2,3)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,27 +23,32 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C       ----------------------------------------------------------------
-      
-C       CALCUL DES VECTEURS DE LA BASE LOCALE
-C       ----------------------------------------------------
-C    ENTREES
-C       NOMA   : NOM DU MAILLAGE
-C       INDIC  : INDICE DES FACES INTERNES
-C       NBNOFF : NOMBRE DE NOEUD EN FOND DE FISSURE
-C       NOE    : NOEUDS DES FACES CONTENANT NA et NB ET APPARTENANT AUX
-C                MAILLES CONNECTEES AU NOEUD SOMMET COURANT 
-C                ET AUX LEVRES
-C       NA     : NUMERO DU NOEUD SOMMET COURANT
-C       NB     : NUMERO DU NOEUD SOMMET SUIVANT
-C    SORTIE
-C       NBNOEL : NOMBRE DE NOEUDS SOMMETS PAR ELEMENTS
-C       INDR   : INDICES DES FACES LIBRES
-C       COMPTE : NOMBRE DE FACES LIBRES
-C       VNORM  : VECTEUR NORMAL AU FOND DE FISSURE DU SEGMENT NA NB 
-C       VTANG  : VECTEUR PRODUIT VECTORIEL DE VNORM ET DU SEGMENT NA NB 
-C       
-C       ----------------------------------------------------
+C
+C     ------------------------------------------------------------------
+C     BUT : CALCUL DES VECTEURS DE LA BASE LOCALE : 
+C             - VNOR : VECTEUR NORMAL A LA SURFACE DE LA FISSURE
+C             - VDIR : VECTEUR DANS LA DIRECTION DE PROPAGATION
+
+C           RQ : CHACUN CONTIENT EN FAIT 2 VECTEURS (UN PAR LEVRE)
+C     ------------------------------------------------------------------
+C
+C ENTREES
+C     NOMA   : NOM DU MAILLAGE
+C     INDIC  : INDICE DES FACES INTERNES
+C     NBNOFF : NOMBRE DE NOEUD EN FOND DE FISSURE
+C     NOE    : NOEUDS DES FACES CONTENANT NA et NB ET APPARTENANT AUX
+C              MAILLES CONNECTEES AU NOEUD SOMMET COURANT 
+C              ET AUX LEVRES
+C     NA     : NUMERO DU NOEUD SOMMET COURANT
+C     NB     : NUMERO DU NOEUD SOMMET SUIVANT
+C
+C SORTIES
+C     NBNOEL : NOMBRE DE NOEUDS SOMMETS PAR ELEMENTS
+C     INDR   : INDICES DES FACES LIBRES
+C     VNOR   : VECTEUR NORMAL A LA SURFACE DE LA FISSURE
+C     VDIR   : VECTEUR DANS LA DIRECTION DE PROPAGATION
+C     
+C     ----------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -63,7 +67,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER     JCOOR
+      INTEGER     JCOOR,COMPTE
       INTEGER     INDICE,INP,INO1,INO2,ICO
       INTEGER     M(8)
       REAL*8      VECT1(3),VECT2(3),VECT3(3),VECT4(3),NORM1
@@ -125,8 +129,8 @@ C           CALCUL DU VECTEUR NORMAL A LA FACE
             CALL PROVEC(VECT4,VECT1,VECT3)
             CALL NORMEV(VECT3,NORM1)
             DO 157 ICO=1,3
-              VNORM(COMPTE,ICO) = VECT4(ICO)
-              VTANG(COMPTE,ICO) = VECT3(ICO)
+              VNOR(COMPTE,ICO) = VECT3(ICO)
+              VDIR(COMPTE,ICO) = VECT4(ICO)
  157        CONTINUE
           ELSE
 C           LE NOEUD DU FOND DOIT ETRE LE PREMIER
@@ -151,8 +155,8 @@ C           CALCUL DU VECTEUR NORMAL A L'ARETE
             VECT3(3)=1.D0
             CALL PROVEC(VECT3,VECT1,VECT2)
             DO 160 ICO=1,3
-              VNORM(COMPTE,ICO) = VECT2(ICO)
-              VTANG(COMPTE,ICO) = VECT1(ICO)
+              VNOR(COMPTE,ICO) = VECT2(ICO)
+              VDIR(COMPTE,ICO) = VECT1(ICO)
  160        CONTINUE
           ENDIF      
           INDR(COMPTE) = INP      

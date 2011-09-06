@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155a.para = tps_job 30 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,7 +94,6 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     LEVRE_INF=_F(GROUP_MA='LEV_INF',),
                     )
 
-# direction du champ theta a ecrire en fonction des parametres d'entree
 CG=CALC_G(THETA=_F(FOND_FISS=FISS,
                    DIRECTION=(cos(alpha),sin(alpha),0),
                    R_INF=2*h,
@@ -138,20 +137,11 @@ TEST_TABLE(TABLE=CG,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
-# erreur de -120% sur K2 pour DEFI_FOND_FISS, cf fiche 17288
-# TEST_TABLE(TABLE=CG,
-#            NOM_PARA='K2',
-#            VALE=K2ref,
-#            PRECISION=0.05,
-#            REFERENCE='ANALYTIQUE')
-
-# du coup, on fait un test de non regression pour etre sur que l'erreur reste la !
-# en attendant la correction
 TEST_TABLE(TABLE=CG,
            NOM_PARA='K2',
-           VALE=-63622.969090467,
-           PRECISION=1e-6,
-           REFERENCE='NON_REGRESSION')
+           VALE=K2ref,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=CGX,
            NOM_PARA='K1',

@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture0 Messages  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,9 +69,11 @@ Veuillez vérifier les données fournies au mot-clé %(k2)s.
 """),
 
 8: _("""
-La normale au premier noeud en fond de fissure n'est pas unique.
--> Risque et Conseil :
-Veuillez vérifier la présence symétrie dans la construction de la fissure.
+Problème dans la création de la base locale au fond de fissure.
+Il est impossible de déterminer le sens de la direction de propagation (vecteur tangent aux lèvres).
+Dans le cas symétrique (SYME='OUI') il faut : 
+- soit donner les lèvres de la fissure (LEVRE_SUP),
+- soit indiquer le vecteut tangent au point origine du fond de fissure (DTAN_ORIG).
 """),
 
 9: _("""
@@ -236,9 +238,28 @@ Il y a plusieurs causes possibles :
 """),
 
 34: _("""
-Les lèvres de la fissure sont trop décollées.
+L'hypothèse de lèvres collées n'est pas valide.
+Conseil : il faut utiliser CONFIG_INIT='DECOLLEE'.
+Ou bien vérifier l'utilisation du mot-clé SYME.
 """),
 
+35: _("""
+Attention, le vecteur tangent au 1er noeud du fond de fissure (DTAN_ORIG) est dans le sens
+opposé à celui calculé automatiquement (%(r1)f %(r2)f %(r3)f).
+Cela est probablement une erreur, qui peut conduire à des résultats faux.
+-> Risque et Conseil :
+  - vérifiez DTAN_ORIG,
+  - ou bien ne le renseignez pas.
+"""),
+
+36: _("""
+Attention, le vecteur tangent au denier noeud du fond de fissure (DTAN_EXTR) est dans le sens
+opposé à celui calculé automatiquement (%(r1)f %(r2)f %(r3)f).
+Cela est probablement une erreur, qui peut conduire à des résultats faux.
+-> Risque et Conseil :
+  - vérifiez DTAN_EXTR,
+  - ou bien ne le renseignez pas.
+"""),
 
 37: _("""
 Le numéro d'ordre %(i1)d n'a pas été trouvé dans la table.
@@ -354,19 +375,23 @@ Les mailles du fond de fissure doivent toutes être du meme type.
 Modifiez le maillage ou définissez plusieurs fonds de fissure consécutifs.
 """),
 
-
-
-
-63 : _("""
-Les mailles du fond de fissure doivent etre du type segment (SEG2 ou SEG3).
+61 : _("""
+L'angle entre 2 vecteurs normaux consécutifs est supérieur à 10 degrés.
+Cela signifie que la fissure est fortement non plane.
+-> Risque et Conseil :
+ - Le calcul des facteurs d'intensité des contraintes sera potentiellement imprécis,
+ - Un raffinement du fond de fissure est probablement nécessaire.
 """),
 
+63 : _("""
+Les mailles du fond de fissure doivent être du type segment (SEG2 ou SEG3).
+"""),
 
 65 : _("""
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la
 fissure (%(k2)s).
 -> Risque et Conseil :
-Les mailles des lèvres doivent etre du type quadrangle ou triangle. 
+Les mailles des lèvres doivent être du type quadrangle ou triangle. 
 Vérifiez que les mailles définies correspondent bien aux faces des éléments
 3D qui s'appuient sur la lèvre.
 """),
@@ -395,7 +420,7 @@ géométriquement et que les groupes de noeuds sont ordonnés dans le meme sens.
 
 70 : _("""
 Erreur utilisateur : la lèvre définie sous %(k1)s possède une maille répétée 2 fois : 
-maille  %(k2)s. 
+maille %(k2)s. 
 -> Risque et Conseil :
 Veuillez revoir les données.
 """),

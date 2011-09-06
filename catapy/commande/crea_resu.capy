@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -143,7 +143,8 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          b_perm_cham =BLOC(condition = "OPERATION == 'PERM_CHAM'",
 
            TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_NOLI",) ),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","SIEF_ELGA","VARI_ELGA",),validators=NoRepeat(),max='**' ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","SIEF_ELGA","VARI_ELGA","STRX_ELGA"),
+                                 validators=NoRepeat(),max='**'),
            RESU_INIT       =SIMP(statut='o',typ=evol_noli),
            INST_INIT       =SIMP(statut='f',typ='R'),
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),

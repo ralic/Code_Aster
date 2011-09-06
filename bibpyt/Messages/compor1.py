@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,8 +75,8 @@ cata_msg={
 """),
 
 9 : _("""
-Arret suite à l'échec de l'intégration de la loi de comportement.
-Verifiez vos paramètres, la cohérence des unités.
+Arrêt suite à l'échec de l'intégration de la loi de comportement.
+Vérifiez vos paramètres, la cohérence des unités.
 Essayez d'augmenter ITER_INTE_MAXI, ou de subdiviser le pas de temps 
 localement via ITER_INTE_PAS.
 """),
@@ -104,7 +104,7 @@ localement via ITER_INTE_PAS.
  """),
 
 16 : _("""
-Arret suite à l'échec de l'intégration de la loi de comportement.
+Arrêt suite à l'échec de l'intégration de la loi de comportement.
 
 Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
@@ -119,7 +119,7 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 19 : _("""
-  MONOCRISTAL :: écrouissage cinematique non trouvé.
+  MONOCRISTAL :: écrouissage cinématique non trouvé.
 """),
 
 20 : _("""
@@ -212,8 +212,8 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 41: _("""
  CAM_CLAY :: 
  Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
- La subdivision du pas de temps au niveau global est déclanchée.
- Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
+ La subdivision du pas de temps au niveau global est déclenchée.
+ Il faut pour cela l'autoriser avec la commande DEFI_LIST_INST.
  Info sur les bornes :
    Valeur maxi :   <%(r1)E>
    borne correspondant à <%(k2)s> : <%(r2)E>
@@ -248,17 +248,17 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme
 """),
 
 47: _("""
- La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modeliser
+ La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
  des contraintes planes (ou des coques) avec ce comportement, on utilise ALGO_C_PLAN='DEBORST'
 """),
 
 48: _("""
- La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modeliser
+ La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
  des contraintes 1D (barres, poutres) avec ce comportement, on utilise ALGO_1D='DEBORST'
 """),
 
 49: _("""
- La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
+ La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
 50: _("""
@@ -271,23 +271,23 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme
 """),
 
 52: _("""
- La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modeliser
+ La modélisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modéliser
  des contraintes planes (ou des coques) avec ce comportement, il est inutile d'utiliser ALGO_C_PLAN='DEBORST'
 """),
 
 53: _("""
- La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modeliser
+ La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modéliser
  des contraintes 1D (barres, poutres) avec ce comportement, il est inutile d'utiliser ALGO_1D='DEBORST'
 """),
 
 54: _("""
  ECRO_LINE : la pente d'écrouissage H et/ou le module d'Young E ne sont pas compatibles :
              H doit être strictement inférieur à E. Ici H=<%(r1)E>, et E=<%(r2)E>.
-             Pour modéliser de l'elasticité linéaire, il suffit de choisir SY grand, et H < E.
+             Pour modéliser l'elasticité linéaire, il suffit de choisir SY grand, et H < E.
 """),
 
 55: _("""
-La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvée de solution pour
+La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvé de solution pour
 le nombre d'itération donné <%(i1)d>.\n
 Info pour le debug
    Borne 0                 : <%(r1).15E>
@@ -323,7 +323,7 @@ Le franchissement du seuil de fluage ne se fait pas dans la tolérence donnée dan
 pour la loi IRRAD3M, par le mot clef TOLER_ET.
    Tolérence sur le franchissement du seuil : <%(r1)E>
    Erreur sur le franchissement du seuil    : <%(r2)E>
-La subdivision du pas de temps au niveau global est déclanchée.
+La subdivision du pas de temps au niveau global est déclenchée.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
 """),
 
@@ -332,11 +332,11 @@ Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_
 """),
 
 60: _("""
-Couplage: on ne fait pas dependre E, MU et ALPHA de la temperature T, on prend T=0 comme pour ENDO_ISOT_BETON
+Couplage: on ne fait pas dépendre E, MU et ALPHA de la température T, on prend T=0 comme pour ENDO_ISOT_BETON
 """),
 
 61: _("""
-Couplage: on fait dependre E, MU et ALPHA de la temperature maximale Tmax, comme pour MAZARS
+Couplage: on fait dépendre E, MU et ALPHA de la température maximale Tmax, comme pour MAZARS
 """),
 
 63 : _("""
@@ -364,7 +364,13 @@ suivantes : - D_PLAN_GRAD_VARI
 67 : _("""
 Dans la définition du materiau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS 
 """),
+
 68 : _("""
-Le comportement MONOCRISTAL en grandes deformations SIMO_MIEHE n'est pas compatible avec RUNGE_KUTTA. Utiliser NEWTON. 
+Le comportement MONOCRISTAL en grandes déformations SIMO_MIEHE n'est pas compatible avec RUNGE_KUTTA. Utiliser NEWTON. 
 """),
+
+69 : _("""
+Le type de déformations %(k1)s n'est pas compatible avec les modélisations SHB. Utilisez PETIT ou GROT_GDEP. 
+"""),
+
 }

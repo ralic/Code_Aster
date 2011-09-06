@@ -10,7 +10,7 @@ C ----------------------------------------------------------------------
       LOGICAL  OKDIRE(6)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 06/09/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,9 +97,9 @@ C           CALCUL DE LA FORCE A T+
             VITESS = ABS(DULEL/DT)
             IF ( VITESS .GT. R8MIN ) THEN
                IF ( DULEL .GT. ZERO ) THEN
-                  FPLUS =  KR*((VITESS)**PUISS)
-               ELSE
                   FPLUS = -KR*((VITESS)**PUISS)
+               ELSE
+                  FPLUS =  KR*((VITESS)**PUISS)
                ENDIF
             ELSE
                FPLUS = ZERO
@@ -113,7 +113,7 @@ C           RAIDEUR QUASI-TANGENTE AU COMPORTEMENT
                RAIDE(II)  = ABS((FPLUS - FMOIN))/DULEL
             ENDIF
 C           CALCUL DE L'ENERGIE DISSIPEE
-            VARIPL(IENER) = VARIMO(IENER) + FPLUS*DULEL
+            VARIPL(IENER) = VARIMO(IENER) - FPLUS*DULEL
          ENDIF
 20    CONTINUE
 

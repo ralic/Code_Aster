@@ -1,6 +1,6 @@
       SUBROUTINE TE0517(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,9 @@ C
 
       INTEGER NBFIB,KP,ADR,NCOMP,I,CARA,NE,JACF,NCARFI
       INTEGER ICOMPO,ICGP,ICONTN,IORIEN,IVECTU
-      INTEGER JTAB(7), LX, IPOS, INO, IREFCO
+      INTEGER JTAB(7), LX,INO, IREFCO,ISTRXR,ISTRXM
 C
-      INTEGER IDEPLM,IDEPLP,IGEOM,IRET,ISECT,IMATE,K,KK,NPG
+      INTEGER IDEPLM,IDEPLP,IGEOM,IRET,ISECT,IMATE,K,NPG,IFGM
       REAL*8  UTG(14),XUG(6),XD(3),ANG1(3),DDOT,EY,EZ,TEMP
       REAL*8  XL,XL2,TET1,TET2,ALFA1,BETA1,GAMMA1,GAMMA,VALRES(2)
       REAL*8  XLS2,D1B(7,14),CO(3),AA,E,NU,G,ALFAY,ALFAZ,PHIY,PHIZ
@@ -72,6 +72,8 @@ C
       PARAMETER (ZERO=0.D+0, DEUX=2.0D+0)
 C ----------------------------------------------------------------------
       NNO = 2
+C     NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
+      NCOMP=15
 
       IF ( OPTION .EQ. 'REFE_FORC_NODA  ' ) THEN
          IF(NOMTE.EQ.'MECA_POU_D_EM')THEN
@@ -94,8 +96,6 @@ C ----------------------------------------------------------------------
       ELSE
         NC  = 7
 C       --- RECUPERATION DES CARACTERISTIQUES DES FIBRES
-C       NOMBRE DE VARIABLES PAR POINT DE GAUSS EN PLUS DU NBFIB
-        NCOMP = 7
         CALL JEVECH('PNBSP_I','L',I)
         NBFIB = ZI(I)
 C       IF ( ZI(I+1).NE.1 ) THEN
@@ -132,21 +132,20 @@ C     --------------------------------------
      &         NOMTE(1:13).EQ.'MECA_POU_D_TG') THEN
 
          CALL JEVECH('PCONTRR','L',ICGP)
+         CALL JEVECH('PSTRXRR','L',ISTRXR)
          CALL JEVECH('PSIEFNOR','E',ICONTN)
 
-C !!!   MAGOUILLE POUR STOCKER LES FORCES INTEGREES !!!
-C       ELLES SONT DEJA CALCULEES ET STOCKEES APRES LES FIBRES
-C         ON RECUPERE L'EFFORT STOCKE AUX NOEUDS 1 ET 2
+
+C --- CALCUL DES FORCES INTEGREES
          DO 200 I = 1 , NC
             FL(I)    = ZERO
             FL(I+NC) = ZERO
             DO 202 KP = 1 , 3
-               ADR = ICGP+(NBFIB+NCOMP)*(KP-1)+ NBFIB + I - 1
+               ADR=ISTRXR+NCOMP*(KP-1)+I-1
                FL(I)   = FL(I)   +ZR(ADR)*D1B3(1,KP)
                FL(I+NC)= FL(I+NC)+ZR(ADR)*D1B3(2,KP)
 202         CONTINUE
 200      CONTINUE
-C !!!   FIN MAGOUILLE !!!
 
 C !!!   A CAUSE DE LA PLASTIFICATION DE LA SECTION LES EFFORTS
 C          N,MFY,MFZ DOIVENT ETRE RECALCULES POUR LES NOEUDS 1 ET 2
@@ -164,7 +163,7 @@ C          CALCUL DES EFFORTS GENERALISES A PARTIR DES CONTRAINTES
             DO 230 I= 1 , NBFIB
                SIGFIB = ZERO
                DO 240 KP = 1 , 3
-                  ADR = ICGP+(NBFIB+NCOMP)*(KP-1) + I - 1
+                  ADR = ICGP+NBFIB*(KP-1) + I - 1
                   SIGFIB = SIGFIB + ZR(ADR)*D1B3(NE,KP)
 240            CONTINUE
                IF ( I .EQ. 1 ) THEN
@@ -192,7 +191,6 @@ C          CALCUL DES EFFORTS GENERALISES A PARTIR DES CONTRAINTES
 312      CONTINUE
          ZR(ICONTN+2*(NC+1)+1-1) = TMAX(2)
          ZR(ICONTN+2*(NC+1)+2-1) = TMIN(2)
-
 C     --------------------------------------
       ELSEIF ( OPTION .EQ. 'FORC_NODA'.OR.
      &         OPTION .EQ. 'SIEF_ELNO' ) THEN
@@ -206,10 +204,11 @@ C     --------------------------------------
 
             IF(OPTION.EQ.'FORC_NODA') THEN
                CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
+               CALL JEVECH ( 'PSTRXMR','L',ISTRXR)
             ELSE
                CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
+               CALL JEVECH ( 'PSTRXRR','L',ISTRXR)
             ENDIF
-            CALL ASSERT(JTAB(7).EQ. (NBFIB+6))
 C ---       LONGUEUR DE L'ELEMENT ---
             LX = IGEOM - 1
             XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2 +
@@ -217,14 +216,13 @@ C ---       LONGUEUR DE L'ELEMENT ---
      &                 (ZR(LX+6)-ZR(LX+3))**2 )
             XL2 = XL/DEUX
 
-C ---       ON UTILISE LE STOCKAGE
-            IPOS=JTAB(1)+NBFIB
-            NX=ZR(IPOS-1+1)
-            TY=ZR(IPOS-1+2)
-            TZ=ZR(IPOS-1+3)
-            MX=ZR(IPOS-1+4)
-            MY=ZR(IPOS-1+5)
-            MZ=ZR(IPOS-1+6)
+            NX=ZR(ISTRXR-1+1)
+            TY=ZR(ISTRXR-1+2)
+            TZ=ZR(ISTRXR-1+3)
+            MX=ZR(ISTRXR-1+4)
+            MY=ZR(ISTRXR-1+5)
+            MZ=ZR(ISTRXR-1+6)
+
 C ---       ET ENFIN LE VECTEUR NODAL
 
             FL(7) = NX
@@ -253,6 +251,7 @@ C           --- FORC_NODA : PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
          ELSE
             CALL JEVECH('PVECTUR','E',IVECTU)
             CALL JEVECH('PCONTMR','L',ICGP)
+            CALL JEVECH('PSTRXMR','L',ISTRXM)
 C           --- IL FAUT TENIR COMPTE DU CHGT DE GEOMETRIE
 C           --- POUR CALCULER LA MATRICE DE PASSAGE
             CALL JEVECH('PCOMPOR','L',ICOMPO)
@@ -332,13 +331,16 @@ C           POIDS DES POINTS DE GAUSS
             CO(2) = 8.D0/9.D0
             CO(3) = 5.D0/9.D0
 
+
+
+
             CALL R8INIR(2*NC,0.D0,FL,1)
             DO 400 KP = 1,3
                CALL JSD1FF(KP,XL,PHIY,PHIZ,D1B)
-               KK = ICGP-1+(NBFIB+NCOMP)*(KP-1) + NBFIB
+               IFGM=NCOMP*(KP-1)-1
                DO 410 K = 1,2*NC
                   DO 420 I = 1,NC
-                     FL(K)=FL(K) + XLS2*ZR(KK+I)*D1B(I,K)*CO(KP)
+                   FL(K)=FL(K) + XLS2*ZR(ISTRXM+IFGM+I)*D1B(I,K)*CO(KP)
 420               CONTINUE
 410            CONTINUE
 400         CONTINUE

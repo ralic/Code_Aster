@@ -1,4 +1,4 @@
-#@ MODIF post_rupture_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_rupture_ops Macro  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -555,7 +555,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
          # rajout de la derniere colonne : moyenne des valeurs
          l_para.append(q)
-         da_cycle = NP.array(tab.DELTA_A.values())
+         da_cycle = NP.array(tab.values()[q])
          moy = da_cycle.mean()
          l_vale.append(moy)
 

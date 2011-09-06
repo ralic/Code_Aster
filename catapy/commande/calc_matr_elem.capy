@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
+#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +72,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          b_rigi_geom       =BLOC(condition = "OPTION=='RIGI_GEOM'",
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
            SIEF_ELGA         =SIMP(statut='o',typ=cham_elem ),
+           STRX_ELGA         =SIMP(statut='f',typ=cham_elem ),
            MODE_FOURIER      =SIMP(statut='f',typ='I',defaut= 0 ),
          ),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,20 +78,18 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
     CONFIG_INIT  = SIMP(statut='f',typ='TXM',into=("COLLEE","DECOLLEE"), defaut="COLLEE",position='global'),
 
     SYME         = SIMP(statut='f',typ='TXM',into=("OUI","NON"),         defaut="NON",   position='global'),
+
+#   remarque : dans le cas symetrique, il faut soit LEVRE_SUP, soit DTAN_ORIG
+#   mais impossible de faire une regle.
+
+    LEVRE_SUP =FACT(statut='f',max=1,
+                    regles=(UN_PARMI('GROUP_MA','MAILLE'),),
+                    GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                    MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                    ),
     
-    b_levres_sup = BLOC(condition = "SYME == 'OUI'",
-                        LEVRE_SUP = FACT(statut='o',max=1,
-                                         regles=(UN_PARMI('GROUP_MA','MAILLE'),),
-                                         GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                                         MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-                                        ),
-                          ),
-    b_levres     = BLOC(condition = "SYME == 'NON'",
-                        LEVRE_SUP =FACT(statut='f',max=1,
-                                        regles=(UN_PARMI('GROUP_MA','MAILLE'),),
-                                        GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                                        MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-                                        ),
+    b_levre_inf  = BLOC(condition = "SYME == 'NON'",
+
                         LEVRE_INF =FACT(statut='f',max=1,
                                         regles=(UN_PARMI('GROUP_MA','MAILLE'),),
                                         GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

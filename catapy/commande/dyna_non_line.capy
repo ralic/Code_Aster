@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,6 +96,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
            SIGM            =SIMP(statut='f',typ=(cham_elem,carte_sdaster)),
            VARI            =SIMP(statut='f',typ=cham_elem),
+           STRX            =SIMP(statut='f',typ=cham_elem),
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
            NUME_ORDRE      =SIMP(statut='f',typ='I'),
            INST            =SIMP(statut='f',typ='R'),

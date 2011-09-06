@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+%& MODIF TYPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,7 @@ MODE_LOCAL__
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPXZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPXZ     )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY      )
+    EDEFGPG  = EPSI_R   ELGA__ RIGI    (EXX      EYY      EXY      KXX      KYY      KXY      )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MY       MZ       REP      )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MY       MZ       REP      )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -112,6 +113,8 @@ OPTION__
                               OUT__  EGGEOP_R PCOORPG
     DEGE_ELNO      228   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFGNO  PDEFOGR
+    DEGE_ELGA      228        IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+                              OUT__  EDEFGPG  PDEFOPG
     ECIN_ELEM                -1    IN__    OUT__    XXXXXX   XXXXXX
     EFGE_ELNO      231   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR

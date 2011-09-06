@@ -2,22 +2,22 @@
      &                  DEFICO,RESOCO,SDIETO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
@@ -65,15 +65,15 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      ZIOCH,NBMAX
-      PARAMETER    (ZIOCH = 10,NBMAX=16 )
+      PARAMETER    (ZIOCH = 10,NBMAX=17 )
       INTEGER      NBCHAM,NBCHIN,NBCHOU
-      CHARACTER*24 IOINFO,IOLCHA
+      CHARACTER*24 IOINFO,IOLCHA,KSTR
       INTEGER      JIOINF,JIOLCH
       INTEGER      ICHAM,ICH
       LOGICAL      NDYNLO,ISFONC,CFDISL
-      LOGICAL      LXFCM,LDYNA,LXFFM,LXCZM,LCONT,LNOEU,LMUAP
+      LOGICAL      LXFCM,LDYNA,LXFFM,LXCZM,LCONT,LNOEU,LMUAP,LPMF
       LOGICAL      LVIBR,LFLAM
-      INTEGER      IFM,NIV
+      INTEGER      IFM,NIV,IBID,IERD
       LOGICAL      CHAACT(NBMAX)
 C
       CHARACTER*24 NOMCHS(NBMAX),MOTCOB(NBMAX)
@@ -85,49 +85,49 @@ C -- NOM DU CHAMP DANS LA SD RESULTAT
      &              'INDC_ELEM'   ,'SECO_ELEM'   ,'COHE_ELEM'   ,
      &              'VALE_CONT'   ,'MODE_FLAMB'  ,'MODE_MECA'   ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
-     &              'FORC_NODA'/
+     &              'FORC_NODA'   ,'STRX_ELGA'/
 C -- NOM DE LA GRANDEUR
       DATA NOMGD   /'DEPL_R','SIEF_R','VARI_R',
      &              'COMPOR','DEPL_R','DEPL_R',
      &              'NEUT_I','NEUT_R','NEUT_R',
      &              'DEPL_R','DEPL_R','DEPL_R',
      &              'DEPL_R','DEPL_R','DEPL_R',
-     &              'DEPL_R'/
+     &              'DEPL_R','STRX_R'/
 C -- MOT-CLEF DANS ETAT_INIT, ' ' SI PAS DE MOT-CLEF
       DATA MOTCEI  /'DEPL','SIGM','VARI',
      &              ' '   ,'VITE','ACCE',
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,' '   ,' '   ,
-     &              ' '/
+     &              ' '   ,'STRX '/
 C -- LOCALISATION DU CHAMP
       DATA LOCCHA  /'NOEU','ELGA','ELGA',
      &              'ELGA','NOEU','NOEU',
      &              'ELEM','ELEM','ELEM',
      &              'NOEU','NOEU','NOEU',
      &              'NOEU','NOEU','NOEU',
-     &              'NOEU'/ 
+     &              'NOEU','ELGA'/
 C -- .TRUE. SI CHAMP EST LU DANS ETAT_INIT
       DATA LETIN   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.FALSE.,.FALSE.,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .FALSE./
+     &              .FALSE.,.TRUE./
 C -- .TRUE. SI CHAMP EST ECRIT DANS ARCHIVAGE
       DATA LARCH   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .FALSE./
+     &              .FALSE.,.TRUE./
 C -- MOT-CLEF DANS OBSERVATION, ' ' SI PAS DE MOT-CLEF
       DATA MOTCOB  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,
      &              ' '           ,'VITE'        ,'ACCE'        ,
      &              ' '           ,' '           ,' '           ,
      &              'VALE_CONT'   ,' '           ,' '           ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
-     &              'FORC_NODA'/
+     &              'FORC_NODA'   ,'STRX_ELGA'/
 C
 C ----------------------------------------------------------------------
 C
@@ -155,13 +155,16 @@ C
       LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE'  )
       LXFCM  = ISFONC(FONACT,'CONT_XFEM'  )
       LCONT  = ISFONC(FONACT,'CONTACT'    )
-      LMUAP  = NDYNLO(SDDYNA,'MULTI_APPUI') 
+      LMUAP  = NDYNLO(SDDYNA,'MULTI_APPUI')
       LFLAM  = ISFONC(FONACT,'CRIT_FLAMB' )
       LVIBR  = ISFONC(FONACT,'MODE_VIBR'  )
       IF (LXFCM) THEN
         LXFFM  = ISFONC(FONACT,'FROT_XFEM')
         LXCZM  = CFDISL(DEFICO,'EXIS_XFEM_CZM')
       ENDIF
+      CALL DISMOI('F','EXI_PMF',MODELE,'MODELE',IBID,KSTR,IERD)
+      LPMF=(KSTR(1:3).EQ.'OUI')
+
 C
 C --- CHAMPS STANDARDS: DEPL/SIEF_ELGA/VARI_ELGA/FORC_NODA
 C
@@ -186,15 +189,15 @@ C
       IF (LXFCM) THEN
         CHAACT(7) = .TRUE.
         IF (LXFFM) THEN
-          CHAACT(8) = .TRUE.        
-        ENDIF            
+          CHAACT(8) = .TRUE.
+        ENDIF
         IF (LXCZM) THEN
           CHAACT(9) = .TRUE.
         ENDIF
       ENDIF
 C
 C --- CONTACT
-C      
+C
       IF (LCONT) THEN
         LNOEU = CFDISL(DEFICO,'ALL_INTEG_NOEUD')
         IF (LNOEU) THEN
@@ -211,7 +214,7 @@ C
 C --- MODES VIBRATOIRES
 C
       IF (LVIBR) THEN
-        CHAACT(12) = .TRUE.    
+        CHAACT(12) = .TRUE.
       ENDIF
 C
 C --- DEPL/VITE/ACCE D'ENTRAINEMENT EN MULTI-APPUIS
@@ -219,7 +222,13 @@ C
       IF (LMUAP) THEN
         CHAACT(13) = .TRUE.
         CHAACT(14) = .TRUE.
-        CHAACT(15) = .TRUE.    
+        CHAACT(15) = .TRUE.
+      ENDIF
+C
+C --- POUTRE MULTI_FIBRE
+C
+      IF(LPMF) THEN
+        CHAACT(17) = .TRUE.
       ENDIF
 C
 C --- DECOMPTE DES CHAMPS
@@ -229,8 +238,8 @@ C
           NBCHAM = NBCHAM + 1
           IF (LETIN(ICHAM)) NBCHIN = NBCHIN + 1
           IF (LARCH(ICHAM)) NBCHOU = NBCHOU + 1
-        ENDIF  
-   20 CONTINUE        
+        ENDIF
+   20 CONTINUE
 C
 C --- CREATION SD CHAMPS
 C
@@ -248,17 +257,17 @@ C
      &                MOTCEI(ICHAM),MOTCOB(ICHAM),
      &                LOCCHA(ICHAM),
      &                LETIN (ICHAM),LARCH (ICHAM))
-        ENDIF  
+        ENDIF
    30 CONTINUE
-      CALL ASSERT(ICH.EQ.NBCHAM)  
+      CALL ASSERT(ICH.EQ.NBCHAM)
 C
 C --- NOM DES CHAMPS DANS OP0070
-C      
+C
       CALL NMETCC(SDIETO,COMPOR,SDDYNA,SDPOST,RESOCO,
      &            NBCHAM,ZIOCH )
 C
 C --- NOM DES CHAMPS NULS
-C      
+C
       CALL NMETC0(MODELE,SDIETO,COMPOR,RESOCO,NBCHAM,
      &            ZIOCH )
 C
@@ -268,8 +277,8 @@ C
       CALL WKVECT(IOINFO,'V V I',4,JIOINF)
       ZI(JIOINF+1-1) = NBCHAM
       ZI(JIOINF+2-1) = NBCHIN
-      ZI(JIOINF+3-1) = NBCHOU 
-      ZI(JIOINF+4-1) = ZIOCH 
+      ZI(JIOINF+3-1) = NBCHOU
+      ZI(JIOINF+4-1) = ZIOCH
 C
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+%& MODIF TYPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,7 @@ MODE_LOCAL__
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
+    EDEFGPG  = EPSI_R   ELGA__ RIGI    (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
     EDEFOPG  = EPSI_R   ELGA__ RIGI   (EPXX     )
     EDEFOPC  = EPSI_C   ELGA__ RIGI   (EPXX     )
     CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
@@ -87,6 +88,9 @@ MODE_LOCAL__
     EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EENEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+    ESTRAUX  = STRX_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ
+                                        BX       EPXX     GAXY     GAXZ     GAT      KY
+                                        KZ        GAX     DXINT)
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -152,10 +156,14 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER  CCAORIE  PCAORIE  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
                               OUT__  EGGEOP_R PCOORPG
-    DEGE_ELNO      158   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES
+    DEGE_ELNO           158   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR
                               OUT__  EDEFGNO  PDEFOGR
+    DEGE_ELGA           158   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCRR
+                              OUT__  EDEFGPG  PDEFOPG
     ECIN_ELEM                -1    IN__    OUT__    XXXXXX   XXXXXX
     EFCA_ELNO      39    IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
                               OUT__  EEFFONO  PEFFORR
@@ -174,15 +182,15 @@ OPTION__
                               OUT__  EDEFOPG  PDEFORR
                                      EDEFOPC  PDEFORC
     FORC_NODA           517   IN__   CCAORIE  PCAORIE  ECONTPG  PCONTMR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
-                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
+                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ESTRAUX  PSTRXMR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           535   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ESTRAUX  PSTRXMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
-                                     MVECTUR  PVECTUR
+                                     MVECTUR  PVECTUR  ESTRAUX  PSTRXPR
     FULL_MECA_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_ENER               -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL              -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -215,8 +223,9 @@ OPTION__
                                      ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ESTRAUX  PSTRXMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+                                     ESTRAUX  PSTRXPR
     REFE_FORC_NODA      517   IN__   EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     RICE_TRACEY              -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -238,17 +247,16 @@ OPTION__
                                      ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     ZVARIPG  PVARIMR
+                                     ZVARIPG  PVARIMR  ESTRAUX  PSTRXMR
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA      537   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  DDL_MECA PDEPLAR
+    SIEF_ELGA      537   IN__        CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  DDL_MECA PDEPLAR
                                      ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      CCOMPOR  PCOMPOR
-                              OUT__  ECONTPG  PCONTRR
-                                     ECONTPC  PCONTRC
-    SIEF_ELNO      517   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
+                              OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
+    SIEF_ELNO      517   IN__        CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
                                      DDL_MECA PDEPPLU  ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
+                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ESTRAUX  PSTRXRR
                               OUT__  EEFGENO  PSIEFNOR
                                      EEFGENC  PSIEFNOC
     SICA_ELNO                -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -258,7 +266,7 @@ OPTION__
                               OUT__  ECAFIEL  PCAFI_R  ENBSP_I  PNBSP_I
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
-                                     EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F
+                                     EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F  ESTRAUX  PSTRX_R
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGENO  PSIEF_R  ZVARINO  PVARI_R  NGEOMER PGEOM_R  EEINST_R PINST_R
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R

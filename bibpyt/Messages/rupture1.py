@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture1 Messages  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,13 +101,6 @@ n'est pas possible.
 -> Risque et Conseil :
 Veuillez consulter la documentation U4.82.03 pour déterminer une
 association satisfaisante.
-"""),
-
-19: _("""
-Il faut définir la normale au fond de fissure.
--> Risque et Conseil :
-Veuillez revoir la mise en données de l'opérateur DEFI_FOND_FISS
-(mot-clé NORMALE).
 """),
 
 

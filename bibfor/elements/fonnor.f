@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*8         RESU, NOMA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,14 +47,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       JNOE1,JVECT,JTYP
-      INTEGER       I,J,INA,INB,ISEG,IND1,IRET,NSOMMT,NBNOSE,NBNOFF
-      INTEGER       NA,NB,NRET,COMPTE,NDIM,NBNOEL,NSEG,NBMAX,NBMAC
+      INTEGER       JNOE1,JBASNO,JTYP,JBASSE
+      INTEGER       I,J,INA,INB,ISEG,IFL,IRET,NBNOSE,NBNOFF,INC
+      INTEGER       NA,NB,NRET,NDIM,NBNOEL,NSEG,NBMAX,NBMAC
       INTEGER       INDIC(4),NOE(4,4),INDR(2),TABLEV(2)
-      REAL*8        S,NORM1,NORM2,X1,Y1
-      REAL*8        VNORM(2,3),VTANG(2,3)
+      REAL*8        VDIR(2,3),VNOR(2,3),NORME
+      CHARACTER*6   NOMPRO 
       CHARACTER*8   K8B, TYPE,TYPFON,NOEUA
       CHARACTER*16  CASFON
+      CHARACTER*19  BASNOF,BASSEG,MACOFO
+      PARAMETER    (NOMPRO='FONNOR')
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -115,29 +117,29 @@ C       NBNOSE : NOMBRE DE NOEUDS PAR "SEGMENT" DE FOND DE FISSURE
       IF (NDIM.EQ.2) CASFON = '2D'
 C     
 C
-C     ALLOCATION DU VECTEUR DES BASES LOCALES      
-      CALL WKVECT (RESU//'.BASEFOND'  , 'G V R', 6*NBNOFF, JVECT )
+C     ALLOCATION DU VECTEUR DES BASES LOCALES PAR NOEUD DU FOND  :
+C           - VECTEUR DIRECTION DE PROPA
+C           - VECTEUR NORMAL (A LA SURFACE)
+      BASNOF = RESU//'.BASEFOND'
+      CALL WKVECT (BASNOF,'G V R',6*NBNOFF,JBASNO)
 C
 C
-C     ALLOCATION DU VECTEUR CONTENANT LES MAILLES CONNECTEES AU FOND
-C     DE FISSURE ET AYANT UN BORD LIBRE 
+C     NSEG : NOMBRE DE "SEGMENTS" DU FOND A TRAITER
       IF (NDIM.EQ.2) THEN
         CALL ASSERT(NBNOFF.EQ.1)
-C       NOMBRE DE SOMMETS EN FOND DE FISSURE
-        NSOMMT = 1
-C       NOMBRE DE SOMMETS A TRAITER
         NSEG = 1
       ELSEIF (NDIM.EQ.3) THEN
         CALL ASSERT(NBNOFF.GT.1)
-C       NOMBRE DE SOMMETS EN FOND DE FISSURE
-        IF (CASFON.EQ.'LINEAIRE')    NSOMMT =  NBNOFF
-        IF (CASFON.EQ.'QUADRATIQUE') NSOMMT = (NBNOFF-1)/2+1
-C       NOMBRE DE SOMMETS A TRAITER = NB SEG ?
-        NSEG = NSOMMT-1
+        IF (CASFON.EQ.'LINEAIRE')    NSEG =  NBNOFF-1
+        IF (CASFON.EQ.'QUADRATIQUE') NSEG = (NBNOFF-1)/2
       ENDIF      
 
+C     VECTEUR TEMPORAIRE DES BASES LOCALES PAR SEGMENT DU FOND
+      BASSEG = '&&'//NOMPRO//'.BASSEG'
+      CALL WKVECT(BASSEG,'V V R',6*NSEG,JBASSE)
 C
-      IND1 = 0
+C     INDICE DE LA FACE A CONSIDERER (FACE DE LA LEVRE, VOIR FONNO6)
+      IFL = 0
 C
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES "SEGMENTS" DU FOND DE FISSURE
@@ -145,16 +147,20 @@ C     ------------------------------------------------------------------
 C
       DO 100 ISEG=1,NSEG
         
-C       INDICES DES NOEUDS SOMMETS DU SEGMENT
-        IF (CASFON.EQ.'LINEAIRE'.OR.CASFON.EQ.'2D') THEN
+C       INDICES DES NOEUDS DU SEGMENT :
+C       NOEUDS SOMMETS (INA ET INB), NOEUD MILIEU (INC)
+        IF (CASFON.EQ.'2D') THEN
+          INA = ISEG
+        ELSEIF (CASFON.EQ.'LINEAIRE') THEN
           INA = ISEG
           INB = ISEG+1
         ELSEIF (CASFON.EQ.'QUADRATIQUE') THEN
           INA = 2*ISEG-1
           INB = 2*ISEG+1
+          INC = 2*ISEG
         ENDIF
 
-C       NUMEROS DES NOEUDS SOMMETS DU SEGMENT
+C       NUMEROS (ABSOLUS) DES NOEUDS SOMMETS DU SEGMENT : NA ET NB
         NOEUA = ZK8(JNOE1-1+INA)
         CALL JENONU (JEXNOM(NOMA//'.NOMNOE',NOEUA),NA)
         IF (NDIM.EQ.3) THEN
@@ -163,79 +169,95 @@ C       NUMEROS DES NOEUDS SOMMETS DU SEGMENT
 
 C
 C       1) RECUP DES NUMEROS DES MAILLES CONNECTEES AU SEGMENT DU FOND
-C       ----------------------------------------------------------------
+C          -> REMPLISSAGE DE MACOFO
+C       --------------------------------------------------------------
 C
-        CALL FONNO1 (NOMA,NDIM,NA,NB,NBMAC)
+C       VECTEUR DES MAILLES CONNECTEES AU SEGMENT DU FOND
+        MACOFO = '&&'//'NOMPRO'//'.MACOFOND'
+        CALL FONNO1 (NOMA,NDIM,NA,NB,NBMAC,MACOFO)
+C
 C
 C       2) PARMI LES MAILLES CONNECTEES AU SEGMENT DU FOND, FILTRAGE DES
 C          MAILLES CONNECTEES A 1 LEVRE (CAD AYANT UNE FACE LIBRE) 
-C          -> REMPLISSAGE DE JMALEV
+C          -> REMPLISSAGE DE TABLEV
 C       ----------------------------------------------------------------
 C
-        CALL FONNO2 (NOMA,NBMAC,NBNOFF,NBNOSE,
-     %               NBMAX,NOEUA,TABLEV)
-     
+        CALL FONNO2 (MACOFO,NOMA,NBMAC,NBNOFF,NBNOSE,
+     &               NBMAX,NOEUA,TABLEV)
+C     
 C
 C       3) RECUP DES FACES CONNECTEES AU FOND 
 C          POUR CHACUNE DES 2 MAILLES
+C          -> REMPLISSAGE DE NOE
 C       ----------------------------------------------------
 
         CALL FONNO3 (NOMA,TABLEV,NDIM,NA,NB,NOE)
-
-
+C
+C
 C       4) FILTRE DES FACES LIBRES
+C          -> REMPLISSAGE DE INDIC
 C       ----------------------------------------------------
 C
-        CALL FONNO4 (NOMA,NBMAC,TABLEV,NOE,NBNOFF,INDIC)
+        CALL FONNO4 (MACOFO,NOMA,NBMAC,TABLEV,NOE,NBNOFF,INDIC)
+        CALL JEDETR (MACOFO)
 
-C       5) CALCUL DES VECTEURS DE LA BASE LOCALE
-C       ----------------------------------------------------
+C       5) CALCUL DES VECTEURS DE LA BASE LOCALE : 
+C          -> REMPLISSAGE DE VDIR ET VNOR
+C            VNOR : VECTEUR NORMAL A LA SURFACE DE LA FISSURE
+C            VDIR : VECTEUR DANS LA DIRECTION DE PROPAGATION
+C        RQ : CHACUN CONTIENT EN FAIT 2 VECTEURS (UN PAR LEVRE)
+C       --------------------------------------------------------
+C
         CALL FONNO5 (NOMA,INDIC,NBNOFF,NOE,NA,NB,NDIM,
-     %         NBNOEL,INDR,COMPTE,VNORM,VTANG)
-
-C       6) VERIF
+     &               NBNOEL,INDR, VNOR,VDIR)
+C
+C
+C       6) DETERMINATION DU VRAI VECTEUR ET BASE PAR SEGMENT
+C          -> REMPLISSAGE DE BASSEG
 C       ----------------------------------------------------
-        CALL FONNO6 (RESU,NOMA,NDIM,NSOMMT,INA,NBNOSE,COMPTE,ISEG,
-     %        NOE,INDR,NBNOEL,IND1,VNORM,VTANG)
+C
+        CALL FONNO6 (RESU,NOMA,NDIM,INA,NBNOSE,ISEG,NSEG,
+     &               NOE,INDR,NBNOEL,IFL,VNOR,VDIR,BASSEG)
+     
+C
+C
+C       7) EN 3D : BASE LOCALE : PASSAGE SEGMENTS -> NOEUDS
+C          -> REMPLISSAGE DE BASNOF
+C       ---------------------------------------------------
 
+        IF (NDIM.EQ.3) THEN
+         
+C         MOYENNE POUR LES NOEUDS SOMMENTS INA ET INB
+C         DIRECT POUR LE NOEUD MILIEU INC
+          DO 110 J=1,6
+
+            ZR(JBASNO-1+6*(INA-1)+J)=( ZR(JBASNO-1+6*(INA -1)+J)
+     &                                +ZR(JBASSE-1+6*(ISEG-1)+J) )/2.D0
+
+            ZR(JBASNO-1+6*(INB-1)+J)=( ZR(JBASNO-1+6*(INB -1)+J)
+     &                                +ZR(JBASSE-1+6*(ISEG-1)+J) )/2.D0
+
+            IF (CASFON.EQ.'QUADRATIQUE') 
+     &        ZR(JBASNO-1+6*(INC-1)+J) = ZR(JBASSE-1+6*(ISEG-1)+J)
+
+ 110      CONTINUE     
+
+C         NORMALISATIONS
+          CALL NORMEV(ZR(JBASNO-1+6*(INA-1)+1),NORME)
+          CALL NORMEV(ZR(JBASNO-1+6*(INB-1)+1),NORME)
+
+        ELSEIF (NDIM.EQ.2) THEN
+         
+          DO 120 J=1,6
+            ZR(JBASNO-1+6*(INA-1)+J) = ZR(JBASSE-1+6*(ISEG-1)+J)        
+ 120      CONTINUE     
+        
+        ENDIF  
 
  100  CONTINUE
 
-C     ------------------------------------------------------------------
-
-      IF (NDIM.EQ.3) THEN
-C       CALCUL DE LA BASE LOCALE AU DERNIER SOMMET
-        DO 200 J=1,6
-          ISEG = (NSOMMT-1)*(NBNOSE-1)+1
-          ZR(JVECT-1+6*(ISEG-1)+J) = 
-     &           ZR(JVECT-1+6*(NSOMMT-2)*(NBNOSE-1)+J)
- 200     CONTINUE
-C       LA BASE LOCALE AUX NOEUDS SOMMET EST CALCULEE 
-C       COMME MOYENNE DES BASES LOCALES VOISINES
-        DO 400 ISEG=2,NSOMMT-1,-1          
-          DO 410 J=1,6
-            X1 = ZR(JVECT-1+6*((ISEG-2)*(NBNOSE-1))+J)
-            Y1 = ZR(JVECT-1+6*((ISEG-1)*(NBNOSE-1))+J)
-            ZR(JVECT-1+6*((ISEG-1)*(NBNOSE-1))+J) = (X1+Y1)/2.D0
- 410     CONTINUE
- 400    CONTINUE
-C       NORMALISATION
-        DO 500 ISEG=1,NBNOFF
-          NORM1 = 0.D0
-          NORM2 = 0.D0
-          DO 510 J=1,3
-            NORM1 = NORM1 + ZR(JVECT-1+6*(ISEG-1)+J)**2
-            NORM2 = NORM2 + ZR(JVECT-1+6*(ISEG-1)+J+3)**2
- 510      CONTINUE                 
-          DO 520 J=1,3
-            ZR(JVECT-1+6*(ISEG-1)+J) = ZR(JVECT-1+6*(ISEG-1)+J)
-     &                                                    /SQRT(NORM1)
-            ZR(JVECT-1+6*(ISEG-1)+J+3) = ZR(JVECT-1+6*(ISEG-1)+J+3)
-     &                                                    /SQRT(NORM2)
- 520      CONTINUE
- 500    CONTINUE
-      ENDIF
-     
+C     MENAGE
+      CALL JEDETR(BASSEG)     
 
       CALL JEDEMA()
       END

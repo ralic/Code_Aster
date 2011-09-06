@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,8 @@ C NOMBRE DE POINTS DE GAUSS
 
       IF ( OPTION .EQ. 'DEGE_ELNO' ) THEN
          CALL JEVECH ('PDEFOGR', 'E', JEFFG )
+      ELSE IF ( OPTION .EQ. 'DEGE_ELGA' ) THEN
+         CALL JEVECH ('PDEFOPG', 'E', JEFFG )
       ELSE
          CH16 = OPTION
          CALL U2MESK('F','ELEMENTS2_47',1,CH16)
@@ -189,23 +191,35 @@ C
             DEGE(KP,1) = DEGE(KP,1) - EPSTHE
 C
 30       CONTINUE
+
+         IF (OPTION.EQ.'DEGE_ELGA') THEN
+             DO 36 KP=1,3
+               ZR(JEFFG-1+(KP-1)*NC + 1) = DEGE(KP,1)
+               ZR(JEFFG-1+(KP-1)*NC + 2) = DEGE(KP,2)
+               ZR(JEFFG-1+(KP-1)*NC + 3) = DEGE(KP,3)
+               ZR(JEFFG-1+(KP-1)*NC + 4) = DEGE(KP,4)
+               ZR(JEFFG-1+(KP-1)*NC + 5) = DEGE(KP,4)
+               ZR(JEFFG-1+(KP-1)*NC + 6) = DEGE(KP,6)
+36           CONTINUE
+         ELSE   
 C        --- POUR LE POINT 1 ---
-         KSI1 = -SQRT( 5.D0 / 3.D0 )
-         D1B3(1,1) = KSI1*(KSI1-1.D0)/2.0D0
-         D1B3(1,2) = 1.D0-KSI1*KSI1
-         D1B3(1,3) = KSI1*(KSI1+1.D0)/2.0D0
+           KSI1 = -SQRT( 5.D0 / 3.D0 )
+           D1B3(1,1) = KSI1*(KSI1-1.D0)/2.0D0
+           D1B3(1,2) = 1.D0-KSI1*KSI1
+           D1B3(1,3) = KSI1*(KSI1+1.D0)/2.0D0
 C        --- POUR LE POINT 2 ---
-         KSI1 = SQRT( 5.D0 / 3.D0 )
-         D1B3(2,1) = KSI1*(KSI1-1.D0)/2.0D0
-         D1B3(2,2) = 1.D0-KSI1*KSI1
-         D1B3(2,3) = KSI1*(KSI1+1.D0)/2.0D0
+           KSI1 = SQRT( 5.D0 / 3.D0 )
+           D1B3(2,1) = KSI1*(KSI1-1.D0)/2.0D0
+           D1B3(2,2) = 1.D0-KSI1*KSI1
+           D1B3(2,3) = KSI1*(KSI1+1.D0)/2.0D0
 C
-         DO 42 I = 1,NC
-            DO 44 KP = 1 , 3
-               ZR(JEFFG+I-1)   =ZR(JEFFG+I-1)    +DEGE(KP,I)*D1B3(1,KP)
-               ZR(JEFFG+NC+I-1)=ZR(JEFFG+NC+I-1) +DEGE(KP,I)*D1B3(2,KP)
-44          CONTINUE
-42       CONTINUE
+           DO 42 I = 1,NC
+             DO 44 KP = 1 , 3
+                ZR(JEFFG+I-1)   =ZR(JEFFG+I-1)   +DEGE(KP,I)*D1B3(1,KP)
+                ZR(JEFFG+NC+I-1)=ZR(JEFFG+NC+I-1)+DEGE(KP,I)*D1B3(2,KP)
+44           CONTINUE
+42        CONTINUE
+        ENDIF
       ELSE
 C
 C     POUTRE MULTIFIBRES MECA_POU_D_EM
@@ -213,16 +227,29 @@ C     POUTRE MULTIFIBRES MECA_POU_D_EM
          NC  = 6
 C        --- PASSAGE DES DEPLACEMENTS DANS LE REPERE LOCAL ---
          CALL UTPVGL(NNO,NC,PGL,ZR(JDEPL),UL)
-         DO 50 IN=1,2
-            CALL PMFPTI(-IN,XL,XI,WI,B,GG)
+C
+         IF(OPTION.EQ.'DEGE_ELNO') THEN
+            DO 50 IN=1,2
+               CALL PMFPTI(-IN,XL,XI,WI,B,GG)
 C   ZERO POUR LA VARIABLE ALPHA DES MODES INCOMPATIBLES CAR NON ACTIF
 C   SI CALCUL ELASTIQUE (RIGI_MECA et X_X_DEPL)
-            CALL PMFDGE(B,GG,UL,ZERO,DEGEM)
-            IPOS=JEFFG+NC*(IN-1)
-            DO 60 I = 1, NC
-               ZR(IPOS+I-1) = DEGEM(I)
-60          CONTINUE
-50       CONTINUE
+               CALL PMFDGE(B,GG,UL,ZERO,DEGEM)
+               IPOS=JEFFG+NC*(IN-1)
+               DO 60 I = 1, NC
+                  ZR(IPOS+I-1) = DEGEM(I)
+60             CONTINUE
+50          CONTINUE
+C
+         ELSEIF(OPTION.EQ.'DEGE_ELGA') THEN
+            DO 55 IN=1,2
+               CALL PMFPTI(IN,XL,XI,WI,B,GG)
+               CALL PMFDGE(B,GG,UL,ZERO,DEGEM)
+               IPOS=JEFFG+NC*(IN-1)
+               DO 65 I = 1, NC
+                  ZR(IPOS+I-1) = DEGEM(I)
+65             CONTINUE
+55          CONTINUE
+         ENDIF
       ENDIF
 
       END

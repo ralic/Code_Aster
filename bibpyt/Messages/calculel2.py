@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel2 Messages  DATE 05/09/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,6 +118,12 @@ Erreur utilisateur dans la commande POST_CHAMP :
 16: _("""
 Erreur utilisateur dans la commande POST_CHAMP :
  On demande l'extraction des champs sur une fibre de numéro supérieur au nombre de fibres.
+"""),
+
+17: _("""
+Erreur utilisateur dans la commande CREA_CHAMP :
+ Incohérence entre le champ %(k1)s associé au maillage %(k2)s
+ et le maillage %(k3)s
 """),
 
 

@@ -1,9 +1,9 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 06/09/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE DISCRETS AVEC COMPORTEMENT VISQUEUX 3D : T ET TR SUR NOEUD ET SEG2
-# ssnd101a.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test R
+# ssnd101a.para = tps_job 200 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,6 +22,9 @@
 # DISCRET 3D AVEC COMPORTEMENT VISQUEUX
 #    K_T_D_L    K_TR_D_L
 #    K_T_D_N    K_TR_D_N
+# A LA FIN DU FICHIER DE COMMANDE, ON COMPARE DIS_VISC EN LINEAIRE
+# AVEC UNE MODELISATION UTILISANT UN AMORTISSEMENT DONNE DANS
+# AFFE_CARA_ELEM
 #=======================================================================
 
 from math import pow
@@ -244,9 +247,9 @@ def InstVale(Freq,Fmax,Puis,Dt,Tmax):
    LKp = NP.arange(1.0,alpha+1.0)
    LKm = NP.arange(0.0,alpha)+0.5
    lesinstp =  NP.array(map(round,LKp/(Freq*Dt)))*Dt
-   lesvalep =  Fmax*NP.power(abs(NP.cos(lesinstp*2.0*pi*Freq)),Puis)
+   lesvalep = -Fmax*NP.power(abs(NP.cos(lesinstp*2.0*pi*Freq)),Puis)
    lesinstm =  NP.array(map(round,LKm/(Freq*Dt)))*Dt
-   lesvalem = -Fmax*NP.power(abs(NP.cos(lesinstm*2.0*pi*Freq)),Puis)
+   lesvalem = +Fmax*NP.power(abs(NP.cos(lesinstm*2.0*pi*Freq)),Puis)
    return list(lesinstp)+list(lesinstm),list(lesvalep)+list(lesvalem)
 
 # On utilise la liste et pas un LesDiscrets.key(). Cela permet d'imposer l'ordre
@@ -360,5 +363,162 @@ for LeDiscret in ListeDiscrets:
       motclefs['CONCEPT'].append(_F(NOM=LaF[ii]))
       motclefs['CONCEPT'].append(_F(NOM=LeD[ii]))
    DETRUIRE(INFO=1,ALARME='NON',**motclefs)
+
+# C'EST A PARTIR D'ICI QU'ON COMPARE DIS_VISC A UN AMORTISSEMENT DISCRET PROVENANT D'AFFE_CARA_ELEM
+MOD2=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=(_F(GROUP_MA='DIS_T',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_T',),),);
+
+# ON BLOQUE LE SEG2 PAR UN DE SES COTE
+CD_LIM=AFFE_CHAR_MECA(MODELE=MOD2,
+                      DDL_IMPO=_F(NOEUD=('N6',),
+                                  DX=0,
+                                  DY=0,
+                                  DZ=0,),);
+
+NUME=NUME_DDL(MODELE=MOD2,
+              CHARGE=CD_LIM,);
+
+# PREMIERE PASSE : UTILISATION DE DIS_VISC
+AMORT1=DEFI_MATERIAU(DIS_VISC=_F(PUIS_DX=1,
+                                 COEF_DX=100,),);
+
+MATER1=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(GROUP_MA='DIS_T',
+                              MATER=AMORT1,),),);
+
+# ON NE DONNE ICI QU'UNE RAIDEUR ET QU'UNE MASSE
+CARADIS1=AFFE_CARA_ELEM(MODELE=MOD2,
+                        DISCRET=(_F(REPERE='LOCAL',
+                                    SYME='OUI',
+                                    CARA='K_T_D_L',
+                                    GROUP_MA='DIS_T',
+                                    VALE=(1,0,0,),),
+                                 _F(REPERE='LOCAL',
+                                    CARA='M_T_D_L',
+                                    GROUP_MA='DIS_T',
+                                    VALE=1.0,),),);
+
+RIGIELE1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MOD2,
+                        CHAM_MATER=MATER1,
+                        CARA_ELEM=CARADIS1,
+                        CHARGE=CD_LIM,);
+
+MASSELE1=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MOD2,
+                        CHAM_MATER=MATER1,
+                        CARA_ELEM=CARADIS1,
+                        CHARGE=CD_LIM,);
+
+MD1=ASSE_MATRICE(MATR_ELEM=MASSELE1,
+                 NUME_DDL=NUME,);
+
+SEISMEX1=CALC_CHAR_SEISME(MATR_MASS=MD1,
+                          DIRECTION=(1,0,0,),
+                          MONO_APPUI='OUI',);
+
+CH_SEIS1=AFFE_CHAR_MECA(MODELE=MOD2,
+                        VECT_ASSE=SEISMEX1,);
+
+# LE CHARGEMENT EST UNE RAMPE
+ACCEL_X=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0,0,
+                            1,-10,),);
+
+LIST_INC=DEFI_LIST_REEL(DEBUT=0,
+                        INTERVALLE=_F(JUSQU_A=1,
+                                      PAS=0.002,),);
+
+# CALCUL AVEC DIS_VISC
+D_N_L1=DYNA_NON_LINE(MODELE=MOD2,
+                     CHAM_MATER=MATER1,
+                     CARA_ELEM=CARADIS1,
+                     EXCIT=(_F(CHARGE=CD_LIM,),
+                            _F(CHARGE=CH_SEIS1,
+                               FONC_MULT=ACCEL_X,),),
+                     COMP_INCR=_F(RELATION='DIS_VISC',
+                                  GROUP_MA='DIS_T',),
+                     INCREMENT=_F(LIST_INST=LIST_INC,),
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                     FORMULATION='DEPLACEMENT',),);
+
+AMORT2=DEFI_MATERIAU(ELAS=_F(E=0,
+                             NU=0,
+                             AMOR_ALPHA=0,
+                             AMOR_BETA=0,),);
+
+MATER2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(GROUP_MA='DIS_T',
+                              MATER=AMORT2,),),);
+
+# CETTE FOIS-CI, ON DONNE L'AMORTISSEMENT VIA AFFE_CARA_ELEM
+CARADIS2=AFFE_CARA_ELEM(MODELE=MOD2,
+                        DISCRET=(_F(REPERE='LOCAL',
+                                    SYME='OUI',
+                                    CARA='A_T_D_L',
+                                    GROUP_MA='DIS_T',
+                                    VALE=(100,0,0,),),
+                                 _F(REPERE='LOCAL',
+                                    SYME='OUI',
+                                    CARA='K_T_D_L',
+                                    GROUP_MA='DIS_T',
+                                    VALE=(1,0,0,),),
+                                 _F(REPERE='LOCAL',
+                                    CARA='M_T_D_L',
+                                    GROUP_MA='DIS_T',
+                                    VALE=1,),),);
+
+RIGIELE2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MOD2,
+                        CHAM_MATER=MATER2,
+                        CARA_ELEM=CARADIS2,
+                        CHARGE=CD_LIM,);
+
+MASSELE2=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MOD2,
+                        CHAM_MATER=MATER2,
+                        CARA_ELEM=CARADIS2,
+                        CHARGE=CD_LIM,);
+
+MD2=ASSE_MATRICE(MATR_ELEM=MASSELE2,
+                 NUME_DDL=NUME,);
+
+SEISMEX2=CALC_CHAR_SEISME(MATR_MASS=MD2,
+                          DIRECTION=(1,0,0,),
+                          MONO_APPUI='OUI',);
+
+CH_SEIS2=AFFE_CHAR_MECA(MODELE=MOD2,
+                        VECT_ASSE=SEISMEX2,);
+
+D_N_L2=DYNA_NON_LINE(MODELE=MOD2,
+                     CHAM_MATER=MATER2,
+                     CARA_ELEM=CARADIS2,
+                     EXCIT=(_F(CHARGE=CD_LIM,),
+                            _F(CHARGE=CH_SEIS2,
+                               FONC_MULT=ACCEL_X,),),
+                     COMP_INCR=_F(RELATION='ELAS',
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=LIST_INC,),
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                     FORMULATION='DEPLACEMENT',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=D_N_L1,
+                   NOEUD='N7',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP='DX',
+                   INST=1,
+                   PRECISION=1.E-5,
+                   VALE=4.91083E-02,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=D_N_L2,
+                   NOEUD='N7',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP='DX',
+                   INST=1,
+                   PRECISION=1.E-5,
+                   VALE=4.88534E-02,
+                   REFERENCE='NON_REGRESSION',),),);
 
 FIN()

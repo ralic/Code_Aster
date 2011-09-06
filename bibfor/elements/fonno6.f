@@ -1,13 +1,14 @@
-      SUBROUTINE FONNO6 (RESU,NOMA,NDIM,NSOMMT,INA,NBNOSE,COMPTE,ISEG,
-     %          NOE,INDR,NBNOEL,IND1,VNORM,VTANG)
+      SUBROUTINE FONNO6 (RESU,NOMA,NDIM,INA,NBNOSE,ISEG,NSEG,NOE,INDR,
+     &                   NBNOEL,IFL,VNOR,VDIR,BASSEG)
       IMPLICIT NONE
       CHARACTER*8         RESU, NOMA
-      INTEGER             NDIM,NSOMMT,INA,NBNOSE,COMPTE,ISEG,NOE(4,4)
-      INTEGER             INDR(2),NBNOEL,IND1
-      REAL*8              VNORM(2,3),VTANG(2,3)
+      INTEGER             NDIM,INA,NBNOSE,ISEG,NOE(4,4)
+      INTEGER             INDR(2),NBNOEL,IFL,NSEG
+      REAL*8              VDIR(2,3),VNOR(2,3)
+      CHARACTER*19        BASSEG
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,31 +25,35 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C       ----------------------------------------------------------------
-      
-C       VERIF
-C       ----------------------------------------------------
-C    ENTREES
+C
+C     ----------------------------------------------------------------
+C     BUTS :
+C        - VERIFIER LA COHERENCE DES 2 VECTEURS DIRECTION
+C        - DANS LE CAS SYME : DETERMINER LA BONNE DIRECTION 
+C     
+C     ----------------------------------------------------
+C
+C  ENTREES
 C       RESU   : NOM DU CONCEPT RESULTAT
 C       NOMA   : NOM DU MAILLAGE
 C       NDIM   : DIMENSION DU MODELE
-C       NSOMMT : NOMBRE DE NOEUD SOMMET PRESENT EN FOND DE FISSURE
 C       INA    : INDICE DU NOEUD SOMMET DANS LA LISTE DES NOEUDS DU 
 C                FOND DE FISSURE
 C       NBNOSE : NOMBRE DE NOEUD PAR SEGMENT
-C       COMPTE : NOMBRE DE FACES LIBRES
-C       ISEG   : INDICE DU SOMMET COURANT
+C       ISEG   : INDICE DU SEGMENT DU FOND DE FISSURE COURANT
+C       NSEG   : NOMBRES DE SEGMENTS DU FOND DE FISSURE
 C       NOE    : NOEUDS DES FACES CONTENANT NA et NB ET APPARTENANT AUX
 C                MAILLES CONNECTEES AU NOEUD SOMMET COURANT 
 C                ET AUX LEVRES
 C       INDR   : INDICES DES FACES LIBRES DANS LA LISTE DES FACES 
 C                DES MAILLES CONNECTEES AU FOND DE FISSURE
 C       NBNOEL : NOMBRE DE NOEUDS SOMMETS PAR ELEMENTS
-C     ENTREE/SORTIE
-C       IND1   : INDICE DE LA FACE A CONSIDERER CELUI-CI N'EST CALCULE 
-C                UNE FOIS POUR TOUTE AU DEBUT
-C       VNORM  : VECTEUR NORMAL AU FOND DE FISSURE DU SEGMENT NA NB 
-C       VTANG  : VECTEUR PRODUIT VECTORIEL DE VNORM ET DU SEGMENT NA NB 
+C       VNOR   : VECTEUR NORMAL A LA SURFACE DE LA FISSURE
+C       VDIR   : VECTEUR DANS LA DIRECTION DE PROPAGATION
+C  ENTREE/SORTIE
+C       IFL    : INDICE DE LA FACE A CONSIDERER (FACE DE LA LEVRE)
+C                (CELUI-CI N'EST CALCULE UNE FOIS POUR TOUTE AU DEBUT)
+C       BAFEFO : BASES LOCALES PAR SEGMENT DU FOND (NORMEE)
 
 C       ----------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -69,150 +74,216 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       JMALE,IAMASE,ITYP,IATYMA,JTANO,JVECT
-      INTEGER       I,J,INO2,IRO,IRET,INP,COMP6
-      INTEGER       NBLEV,NN,INO1
-      REAL*8        S,NORM1,NORM2
-      REAL*8        VECT1(3),VECT2(3),VECT3(3)
+      INTEGER       JMALE,IAMASE,ITYP,IATYMA,JTANO,JTANE,JBASSE
+      INTEGER       I,J,IRET,INP,COMPT,INO
+      INTEGER       ILEV,ITANO,ITANE
+      INTEGER       NBLEV,NN
+      REAL*8        S,NDIR,NNOR,ALPHA,R8PI,ANGMAX,BETA,DDOT
+      REAL*8        VECDIR(3),VECNOR(3),VNPREC(3)
+      REAL*8        TRIGOM
       CHARACTER*6   SYME
       CHARACTER*8   K8B, TYPE
-
+      PARAMETER    (ANGMAX=2.5D0)
 
 C     -----------------------------------------------------------------
 C           
       CALL JEMARQ() 
-C
-C     RECUPERATION DE L'ADRESSE DES TYPFON DE MAILLES
-      CALL JEVEUO ( NOMA//'.TYPMAIL','L',IATYMA)
-C
-C     RECUPERATION DES LEVRES
+
       CALL GETVTX (' ', 'SYME', 1,1,1, SYME, IRET)
-      CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRET)
-      IF (IRET.NE.0) THEN
-        CALL JEVEUO (RESU//'.LEVRESUP  .MAIL', 'L', JMALE )     
-        CALL JELIRA (RESU//'.LEVRESUP  .MAIL' , 'LONUTI', NBLEV, K8B)
+
+C     DIRECTION TANGENTE AU POINT ORIGINE
+      CALL JEEXIN(RESU//'.DTAN_ORIGINE',ITANO)
+      IF (ITANO.NE.0) CALL JEVEUO (RESU//'.DTAN_ORIGINE','L',JTANO)
+
+C     DIRECTION TANGENTE AU POINT EXTREMITE
+      CALL JEEXIN(RESU//'.DTAN_EXTREMITE',ITANE)
+      IF (ITANE.NE.0) CALL JEVEUO (RESU//'.DTAN_EXTREMITE','L',JTANE)
+
+      CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',ILEV)
+
+C     RECUPERATION DE L'ADRESSE DE LA BASE PAR SEGMENT DU FOND
+      CALL JEVEUO(BASSEG,'E',JBASSE)      
+
+
+C     1) VERIFICATION DE LA COHERENCE DES 2 VECTEURS DIRECTION
+C     --------------------------------------------------------
+
+C     ALPHA = ANGLE ENTRE LES 2 VECTEURS (EN DEGRES)
+      S = VDIR(1,1)*VDIR(2,1) + VDIR(1,2)*VDIR(2,2) 
+     &                        + VDIR(1,3)*VDIR(2,3)
+
+C     ATTENTION, NE JAMAIS UTILISER LA FONCTION FORTRAN ACOS
+      ALPHA = TRIGOM('ACOS',S)*180.D0/R8PI()
+
+C     CAS DE FOND "DOUBLE" : ON FEINTE EN FAISANT CROIRE QUE L'ON
+C     EST DANS UNE CONFIG SYMETRIQUE
+      CALL JEEXIN(RESU//'.FOND_SUP  .NOEU',IRET)
+      IF (IRET.NE.0) SYME='OUI'
+
+C     CAS SYMETRIQUE, OU CAS DES FONDS DOUBLES
+      IF (SYME.EQ.'OUI') THEN
+
+C       ANGLE DOIT ETRE EGAL A 180+-2,5 DEGRES, SINON CA VEUT DIRE
+C       QUE L'HYPOTHESE DE LEVRES COLLEES EST FAUSSE : ON PLANTE
+        IF (ABS(ALPHA-180.D0).GT.ANGMAX) CALL U2MESS('F','RUPTURE0_34')
+
+      ELSEIF (SYME.EQ.'NON') THEN
+      
+C       ANGLE DOIT ETRE EGAL A 0+-5 DEGRES, SINON CA VEUT DIRE
+C       QUE L'HYPOTHESE DE LEVRES COLLEES EST FAUSSE : ON PLANTE
+        IF (ABS(ALPHA).GT.2.D0*ANGMAX) CALL U2MESS('F','RUPTURE0_34')
+
       ENDIF
-C
-C     RECUPERATION DE L'ADRESSE DES NOEUDS DE FOND DE FISSURE
-      CALL JEEXIN(RESU//'.DTAN_ORIGINE',IRO)
-      IF (IRO.NE.0) THEN
-        CALL JEVEUO (RESU//'.DTAN_ORIGINE', 'L', JTANO )
-      ENDIF 
 
-      CALL JEVEUO(RESU//'.BASEFOND','E',JVECT)
 
-      CALL ASSERT(COMPTE.NE.0)
-C     ON VERIFIE QUE LES DEUX VECTEURS NORMAUX AU FOND
-C     ONT MEME SENS
-      S = (VNORM(1,1)*VNORM(2,1)+VNORM(1,2)*VNORM(2,2)+
-     &         VNORM(1,3)*VNORM(2,3))
-      IF (S.LE.(0.D0)) THEN 
-        IF ((SYME.EQ.'OUI').AND.(ISEG.EQ.1)) THEN
-          DO 170 I=1,NBLEV
+C     2) DANS LE CAS SYMETRIQUE, RECHERCHE DU BON VECTEUR DIRECTION
+C     CETTE OPERATION N'EST FAITE QU'UNE SEULE FOIS POUR ISEG=1
+C     -------------------------------------------------------------
+
+      IF (SYME.EQ.'OUI'.AND.ISEG.EQ.1) THEN
+
+C       CAS OU LES LEVRES SONT DONNEES  
+        IF (ILEV.NE.0) THEN
+
+          CALL JEVEUO (RESU//'.LEVRESUP  .MAIL', 'L', JMALE )     
+          CALL JELIRA (RESU//'.LEVRESUP  .MAIL', 'LONUTI', NBLEV, K8B)
+
+          CALL JEVEUO (NOMA//'.TYPMAIL','L',IATYMA)
+
+C         BOUCLE SUR LES MAILLES DES LEVRES POUR TROUVER LE BON COTE
+          DO 200 I=1,NBLEV
             CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JMALE-1 + I)),IRET)
             CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',IRET),'L',IAMASE)
             ITYP = IATYMA-1+IRET
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
             CALL DISMOI('F','NBNO_TYPMAIL',TYPE,'TYPE_MAILLE',
      &                 NN,K8B,IRET)
-            DO 171 INP=1,2
-              COMP6=0
-              DO 172 J=1,NN
-                DO 173 INO1=1,NBNOEL
-                IF (ZI(IAMASE-1 + J).EQ.NOE(INDR(INP),INO1)) THEN
-                  COMP6 = COMP6+1  
-                ENDIF
-  173           CONTINUE
-  172         CONTINUE
-              IF (COMP6.EQ.NBNOEL) THEN
-                IND1 = INP
-                GOTO 180
+            DO 210 INP=1,2
+              COMPT=0
+              DO 220 J=1,NN
+                DO 230 INO=1,NBNOEL
+                  IF (ZI(IAMASE-1 + J).EQ.NOE(INDR(INP),INO)) THEN
+                    COMPT = COMPT+1  
+                  ENDIF
+  230           CONTINUE
+  220         CONTINUE
+C             ON A TROUVE UNE FACE COINCIDENTE A UNE LEVRE, ON SORT 
+              IF (COMPT.EQ.NBNOEL) THEN
+                IFL = INP
+                GOTO 300
               ENDIF
-  171       CONTINUE
-  170     CONTINUE
-C       SI LA TANGENTE EST DONNEE A L'ORIGINE ON LA PREND EN COMPTE
-C       EN CHOISISANT LE VECTEUR TANGENT AYANT LE MEME SENS
-        ELSEIF ((IRO.NE.0).AND.(ISEG.EQ.1)) THEN
-          S = (ZR(JTANO)*VNORM(2,1)+ZR(JTANO+1)*VNORM(2,2)+
-     &         ZR(JTANO+2)*VNORM(2,3))
-          IF (S.LE.0.D0) THEN
-           S = (ZR(JTANO)*VNORM(1,1)+ZR(JTANO+1)*VNORM(1,2)+
-     &            ZR(JTANO+2)*VNORM(1,3))
-           CALL ASSERT(S.GT.0.D0)
-           IND1=1
+  210       CONTINUE
+  200     CONTINUE
+        
+C       SI LES LEVRES NE SONT PAS DONNEES, ON TENTE AVEC DTAN_ORIG  
+        ELSEIF (ITANO.NE.0) THEN
+
+C         LE VECTEUR DIRECTION RETENU EST CELUI DANS LE SENS DE DTAN_ORI
+          S = ZR(JTANO)*VDIR(1,1) + ZR(JTANO+1)*VDIR(1,2)
+     &                            + ZR(JTANO+2)*VDIR(1,3)
+
+          IF (S.GE.0D0) THEN
+            IFL=1
           ELSE
-           IND1=2
+C           ON EST SUR QUE CELUI CI EST BON CAR L'ANGLE EST ENVIRON 180
+            IFL=2           
           ENDIF
-        ELSEIF ((SYME.EQ.'NON').AND.(IRO.EQ.0).AND.(ISEG.EQ.1)) THEN
+
+C       SINON, ON PLANTE CAR ON NE SAIT PAS QUELLE DIRECTION CHOISIR
+        ELSE
           CALL U2MESS('F','RUPTURE0_8')
         ENDIF
-      ELSE
-        IF (ABS(1.D0-SQRT(S)).GT.1D-4) THEN
-          CALL U2MESS('F','RUPTURE0_34')
-        ELSEIF (ABS(1.D0-SQRT(S)).EQ.1.D0) THEN
-          CALL U2MESS('F','RUPTURE1_19')
-        ENDIF
-      ENDIF 
 
-  180 CONTINUE
-
-
-
-      IF (IND1.EQ.0) THEN
-        NORM1 = SQRT((VNORM(1,1)+VNORM(2,1))**2+(VNORM(1,2)
-     &               +VNORM(2,2))**2+(VNORM(1,3)+VNORM(2,3))**2)
-        S = (VTANG(1,1)*VTANG(2,1)+VTANG(1,2)*VTANG(2,2)+
-     &       VTANG(1,3)*VTANG(2,3))
-        IF (SYME.EQ.'NON') THEN
-          CALL ASSERT(ABS(1-S).LT.1D-4)
-        ELSE
-          CALL ASSERT(ABS(1+S).LT.1D-4)
-          VTANG(2,1) = -VTANG(2,1)
-          VTANG(2,2) = -VTANG(2,2)
-          VTANG(2,3) = -VTANG(2,3)
-        ENDIF
-        NORM2 = SQRT((VTANG(1,1)+VTANG(2,1))**2+(VTANG(1,2)
-     &        +VTANG(2,2))**2+(VTANG(1,3)+VTANG(2,3))**2)
-        DO 190 I=1,3
-          ZR(JVECT-1+6*(INA-1)+I)   = (VNORM(1,I)+VNORM(2,I))/NORM1
-          ZR(JVECT-1+6*(INA-1)+I+3) = (VTANG(1,I)+VTANG(2,I))/NORM2
- 190    CONTINUE
-      ELSE
-        NORM1 = SQRT(VNORM(IND1,1)**2+VNORM(IND1,2)**2
-     &              +VNORM(IND1,3)**2)
-        NORM2 = SQRT(VTANG(IND1,1)**2+VTANG(IND1,2)**2
-     &              +VTANG(IND1,3)**2)
-        DO 191 I=1,3
-          ZR(JVECT-1+6*(INA-1)+I)   = VNORM(IND1,I)/NORM1
-          ZR(JVECT-1+6*(INA-1)+I+3) = VTANG(IND1,I)/NORM2
- 191     CONTINUE
       ENDIF
 
-C     ON TESTE LA COPLANARITE DES SEGMENTS EN FOND DE FISSURE
-C  
-      IF ((ISEG.GT.1).AND.(NDIM.EQ.3)) THEN   
-        DO 200 I=1,3
-          VECT1(I)   = ZR(JVECT-1+6*(INA-2)+I+3)
-          VECT2(I)   = ZR(JVECT-1+6*(INA-1)+I+3)
- 200    CONTINUE
-        CALL PROVEC(VECT1,VECT2,VECT3)
-        CALL NORMEV(VECT3,NORM1)
-        CALL ASSERT(NORM1.LE.1D-1)
-      ENDIF
- 
-      CALL JEDETR('&&FONNOR.MACOFOND')
+ 300  CONTINUE
 
+C     3) CALCUL DES VRAIS VECTEURS DIRECTION ET NORMAL
+C     ------------------------------------------------
 
+C     CAS OU IL FAUT PRENDRE LA MOYENNE DES 2 VECTEURS
+      IF (SYME.EQ.'NON') THEN
 
-C     LA BASE LOCALE AUX NOEUDS QUI NE SONT PAS NOEUD-SOMMET EST 
-C     CELLE CALCULEE AUX ELEMENTS
-      IF (NBNOSE.GE.3) THEN 
-        DO 310 INO2=2,NBNOSE-1
-           I = (ISEG-1)*(NBNOSE-1)+INO2
-           DO 311 J=1,6
-              ZR(JVECT-1+6*(I-1)+J) = ZR(JVECT-1+6*(INA-1)+J)
- 311       CONTINUE       
+        CALL ASSERT(IFL.EQ.0)
+
+        NDIR = SQRT(    (VDIR(1,1)+VDIR(2,1))**2
+     &                + (VDIR(1,2)+VDIR(2,2))**2
+     &                + (VDIR(1,3)+VDIR(2,3))**2   )
+
+        NNOR = SQRT(    (VNOR(1,1)+VNOR(2,1))**2
+     &                + (VNOR(1,2)+VNOR(2,2))**2
+     &                + (VNOR(1,3)+VNOR(2,3))**2   )
+     
+        DO 310 I=1,3
+          VECDIR(I) = (VDIR(1,I)+VDIR(2,I))/NDIR
+          VECNOR(I) = (VNOR(1,I)+VNOR(2,I))/NNOR
  310    CONTINUE
+
+C     CAS OU IL NE FAUT PRENDRE QU'UN SEUL VECTEUR
+      ELSEIF (SYME.EQ.'OUI') THEN
+
+        CALL ASSERT(IFL.NE.0)
+
+        NDIR = SQRT(    VDIR(IFL,1)**2
+     &                + VDIR(IFL,2)**2
+     &                + VDIR(IFL,3)**2  )
+
+        NNOR = SQRT(    VNOR(IFL,1)**2
+     &                + VNOR(IFL,2)**2
+     &                + VNOR(IFL,3)**2  )
+
+        DO 320 I=1,3
+          VECDIR(I) = VDIR(IFL,I)/NDIR
+          VECNOR(I) = VNOR(IFL,I)/NNOR
+ 320     CONTINUE
+
       ENDIF
+
+
+C     4) VERIFICATION DE LA COHERENCE DE DTAN_ORIG/EXTR ET AFFECTATION
+C     ----------------------------------------------------------------
+
+C     SI DTAN_ORIG EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
+      IF (ITANO.NE.0.AND.ISEG.EQ.1) THEN
+        S = DDOT(3,ZR(JTANO),1,VECDIR,1)
+        IF (S.LE.0.D0) CALL U2MESR('A','RUPTURE0_35',3,VECDIR)
+        DO 410 I=1,3
+          VECDIR(I) = ZR(JTANO-1+I)
+ 410     CONTINUE
+      ENDIF
+
+C     SI DTAN_EXTR EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
+      IF (ITANE.NE.0.AND.ISEG.EQ.NSEG) THEN
+        S = DDOT(3,ZR(JTANE),1,VECDIR,1)
+        IF (S.LE.0.D0) CALL U2MESR('A','RUPTURE0_36',3,VECDIR)
+        DO 420 I=1,3
+          VECDIR(I) = ZR(JTANE-1+I)
+ 420     CONTINUE
+      ENDIF
+
+
+C     5) ECRITURE DE LA BASE PAR SEGMENT DU FOND
+C     -------------------------------------------
+
+        DO 510 I=1,3
+          ZR(JBASSE-1+6*(ISEG-1)+I)   = VECDIR(I)
+          ZR(JBASSE-1+6*(ISEG-1)+I+3) = VECNOR(I)
+ 510    CONTINUE
+
+
+C     6) VERIF QUE LE VECTEUR NORMAL N'EST PAS TROP DIFFERENT DU 
+C     VECTEUR NORMAL DU SEGMENT PRECEDENT (ON TOLERE 10 DEGRES)
+C     ---------------------------------------------------------
+C  
+      IF (ISEG.GT.1) THEN   
+C       RECUP DU VECTEUR NORMAL PRECEDENT
+        DO 610 I=1,3
+          VNPREC(I) = ZR(JBASSE-1+6*(ISEG-2)+I+3)
+ 610    CONTINUE
+        S = DDOT(3,VECNOR,1,VNPREC,1)
+        BETA = TRIGOM('ACOS',S)*180.D0/R8PI()
+        IF (ABS(BETA).GT.10.D0) CALL U2MESS('A','RUPTURE0_61')
+      ENDIF
+
       CALL JEDEMA()
       END

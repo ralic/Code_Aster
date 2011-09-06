@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
       INTEGER I,K,KP,IGEOM,IDEPL,IDEFOR,NNO,NNOS,JGANO,NDIM,NPG
-      INTEGER IVF,IDFDK,IPOIDS
+      INTEGER IVF,IDFDK,IPOIDS,IDEFPG
       CHARACTER*8 ELREFE
       REAL*8 DFDX(3),DEGEPG(24)
       REAL*8 COSA,SINA,COUR,R,ZERO,JAC
@@ -63,7 +63,14 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PDEFOGR','E',IDEFOR)
+
+      IF(OPTION.EQ.'DEGE_ELNO') THEN
+          CALL JEVECH('PDEFOGR','E',IDEFOR)
+      ENDIF
+C
+      IF(OPTION.EQ.'DEGE_ELGA') THEN
+        CALL JEVECH('PDEFOPG','E',IDEFPG)
+      ENDIF
 
       DO 30 KP = 1,NPG
         K = (KP-1)*NNO
@@ -97,10 +104,19 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
         DEGEPG(6* (KP-1)+4) = K11
         DEGEPG(6* (KP-1)+5) = K22
         DEGEPG(6* (KP-1)+6) = ZERO
+        IF(OPTION.EQ.'DEGE_ELGA') THEN
+          ZR(IDEFPG-1+6*(KP-1)+1) = E11
+          ZR(IDEFPG-1+6*(KP-1)+2) = E22
+          ZR(IDEFPG-1+6*(KP-1)+3) = ZERO
+          ZR(IDEFPG-1+6*(KP-1)+4) = K11
+          ZR(IDEFPG-1+6*(KP-1)+5) = K22
+          ZR(IDEFPG-1+6*(KP-1)+6) = ZERO
+        ENDIF
    30 CONTINUE
 
 
 C     -- PASSAGE GAUSS -> NOEUDS :
-      CALL PPGAN2(JGANO,1,6,DEGEPG,ZR(IDEFOR))
-
+        IF(OPTION.EQ.'DEGE_ELNO') THEN
+          CALL PPGAN2(JGANO,1,6,DEGEPG,ZR(IDEFOR))
+        ENDIF
       END

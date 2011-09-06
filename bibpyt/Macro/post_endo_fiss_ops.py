@@ -1,21 +1,21 @@
-#@ MODIF post_endo_fiss_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_endo_fiss_ops Macro  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE BOTTONI M.BOTTONI
 # ---------------------------------------------------------------------------
@@ -23,7 +23,7 @@
 # PROCEDURE PYTHON DU RECHERCHE DU TRAJET DE FISSURATION SUR UN
 #  CHAMP SCALAIRE 2D
 
-
+import numpy as NP
 
 # ----------------------------
 #
@@ -37,7 +37,6 @@
 #    On retourne tous les indices des valeurs cherchees
 #    Vect doit etre un vecteur unidimensionnel
 def vfind(Vect,a) :
-  import numpy as NP
   Vect0 = Vect-a
   lst0  = NP.nonzero(Vect0)[0]
   NP.put(Vect0,lst0, NP.ones(lst0.shape))
@@ -50,7 +49,6 @@ def vfind(Vect,a) :
 #   (element array unidimmensionnel ou matrice avec la deuxieme dimension 1)
 #   a: vecteur d'indices avec le meme cahracteristiques que Vect
 def delEl(Vect,a) :
-  import numpy as NP
   class LengthError(Exception):
     pass
 
@@ -195,7 +193,6 @@ def post_endo_fiss_ops(self,
   from Accas import _F
   from math import radians
   import os
-  import numpy as NP
 
 
   ier = 0
@@ -474,12 +471,10 @@ def post_endo_fiss_ops(self,
       DSb   = DS[0:(l-1)]
       DS1   = NP.concatenate((DSa,DSb))
       Dist  = NP.zeros((len(Ybarort),), float)
-      Gauss = NP.zeros((len(Ybarort),), float)
       for k in range(len(Ybarort)/2):
         Dist[k+1]  = Dist[k]  + DS1[k]
         Dist[-k-1] = Dist[-k] + DS1[-k-1]
-      for k in range(len(Ybarort)):
-        Gauss[k]   = NP.e**(-(2*Dist[k]/(pas/5))**2)
+      Gauss = NP.exp( -(2*Dist/(pas/5))**2 )
 
       Gauss2 = NP.concatenate((Gauss[1:len(Gauss)], NP.array([Gauss[0]])))
       Den    = DS1 * ((Gauss + Gauss2)/2)
@@ -578,9 +573,7 @@ def post_endo_fiss_ops(self,
       xcentre = Coorxort[l]
       ycentre = Cooryort[l]
       Dist    = ((Coorxort-xcentre)**2 + (Cooryort-ycentre)**2)**0.5
-      Gauss = NP.zeros((len(Dist),), float)
-      for m in range(len(Dist)) :
-        Gauss[m] = NP.e**(-(2*Dist[m]/lreg)**2)
+      Gauss = NP.exp( -(2/lreg)**2 * (Dist * Dist) )
       Ybargauss = Ybarort * Gauss
       DeltaL = NP.absolute(Dist[0:len(Dist)-1] - Dist[1:len(Dist)])
       Num = DeltaL * (Ybargauss[0:len(Dist)-1] + Ybargauss[1:len(Dist)])/2
@@ -744,9 +737,7 @@ def post_endo_fiss_ops(self,
           xcentre = Coorxort[l]
           ycentre = Cooryort[l]
           Dist    = ((Coorxort-xcentre)**2 + (Cooryort-ycentre)**2)**0.5
-          Gauss   = NP.zeros((len(Dist),), float)
-          for m in range(len(Dist)) :
-            Gauss[m] = NP.e**(-(2*Dist[m]/lreg)**2)
+          Gauss = NP.exp( -(2/lreg)**2 * (Dist * Dist) )
 
           Ybargauss = Ybarort * Gauss
           DeltaL = NP.absolute(Dist[0:len(Dist)-1] - Dist[1:len(Dist)])

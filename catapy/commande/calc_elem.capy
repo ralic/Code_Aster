@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               # déformations
                                  "EPSI_ELNO","EPSI_ELGA","EPSG_ELGA","EPSG_ELNO",
                                  "EPME_ELNO","EPME_ELGA","DEGE_ELNO","EPTU_ELNO",
-                                 "EPVC_ELNO","EPVC_ELGA",
+                                 "EPVC_ELNO","EPVC_ELGA","DEGE_ELGA",
                               #  ENER
                                  "EPOT_ELEM","ECIN_ELEM","ENEL_ELGA","ENEL_ELNO",
                                  "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM","DISS_ELGA","DISS_ELNO",
@@ -117,14 +117,10 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                fr="nom du champ pour SPMX_ELGA",),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour SPMX_ELGA",  ),
 
-                b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM') or \
-                                        (type(OPTION)==type(()) and 'QIRE_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ1_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ2_ELEM' in OPTION)",
+                b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                     RESU_DUAL=SIMP(statut='o',typ=evol_elas,fr="resultat du probleme dual"),),
 
-               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
-                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+               b_sing =BLOC(condition= "'SING_ELEM' in OPTION",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements"),
                     TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
@@ -153,9 +149,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                             fr="option de calcul des contraintes",
                            into=( "SIEF_ELNO","SIGM_ELNO","SIEF_ELGA",),),
 
-                    b_charge =BLOC( condition = "OPTION in ('SIGM_ELNO','SIEF_ELGA',) or \
-                                      (type(OPTION)==type(()) and  'SIGM_ELNO' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'SIEF_ELGA' in OPTION ) ",
+                    b_charge =BLOC( condition = "au_moins_un(OPTION, ('SIGM_ELNO','SIEF_ELGA'))",
                                       fr="charge contenant les temperatures ou autre charge",
                          EXCIT           =FACT(statut='f',max='**',
                          CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca) ),),
@@ -170,12 +164,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                    "SIPO_ELNO","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
                                    ),),
 
-               b_charge =BLOC( condition = "OPTION in ('SIGM_ELNO','SIEF_ELGA',\
-                                                       'SIPO_ELNO','EFGE_ELNO',) or \
-                                            (type(OPTION)==type(()) and  'SIGM_ELNO' in OPTION ) or \
-                                            (type(OPTION)==type(()) and  'SIEF_ELGA' in OPTION ) or \
-                                            (type(OPTION)==type(()) and  'SIPO_ELNO' in OPTION ) or \
-                                            (type(OPTION)==type(()) and  'EFGE_ELNO' in OPTION ) ",
+               b_charge =BLOC( condition = "au_moins_un(OPTION, ('SIGM_ELNO','SIEF_ELGA', \
+                                                                 'SIPO_ELNO','EFGE_ELNO',)) ",
                                             fr="charge contenant les temperatures ou les efforts répartis (poutres) ou autre",
                     EXCIT           =FACT(statut='f',max='**',
                                           regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
@@ -196,14 +186,9 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
           b_epsi         =BLOC( condition = "TYPE_OPTION=='EPSI'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("EPSI_ELNO","EPSI_ELGA","EPME_ELNO","EPME_ELGA",
-                                 "DEGE_ELNO","EPTU_ELNO","EPVC_ELNO","EPVC_ELGA",),
+                                 "DEGE_ELNO","DEGE_ELGA","EPTU_ELNO","EPVC_ELNO","EPVC_ELGA",),
                                  ),
-b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPSI_ELNO','EPTU_ELNO' ) or \
-                                      (type(OPTION)==type(()) and  'EPSI_ELNO' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'EPTU_ELNO' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'EPSI_ELGA' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'EPME_ELNO' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'EPME_ELGA' in OPTION ) ",
+b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPSI_ELNO','EPTU_ELNO'))",
                                       fr="charge contenant les temperatures",
                     EXCIT           =FACT(statut='f',max='**',
                          CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou,char_cine_meca,) ),),
@@ -214,11 +199,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                            into=("EPOT_ELEM","ECIN_ELEM","ENEL_ELGA","ENEL_ELNO",
                                  "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM","DISS_ELGA","DISS_ELNO",),
                                  ),
-               b_charge =BLOC( condition = "OPTION in ('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO',) or \
-                                      (type(OPTION)==type(()) and  'EPOT_ELEM' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'ENEL_ELGA' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'ENEL_ELNO' in OPTION ) or \
-                                      (type(OPTION)==type(()) and  'ECIN_ELEM' in OPTION ) ",
+               b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO'))",
                                       fr="charge contenant les temperatures",
                     EXCIT           =FACT(statut='f',max='**',
                          CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou) ),),
@@ -241,8 +222,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                   OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("SPMX_ELGA","PRME_ELNO",
                                  ) ),
-               b_maxi    =BLOC( condition = "OPTION=='SPMX_ELGA' or \
-                                (type(OPTION)==type(()) and 'SPMX_ELGA' in OPTION)",
+               b_maxi    =BLOC( condition = "'SPMX_ELGA' in OPTION",
                     NOM_CHAM  =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
                                     fr="Nom du champ pour SPMX_ELGA",),
                     NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),),
@@ -256,14 +236,10 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                  "SING_ELEM","SING_ELNO",
                                  )),
 
-               b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM') or \
-                                        (type(OPTION)==type(()) and 'QIRE_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ1_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ2_ELEM' in OPTION)",
+               b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                     RESU_DUAL=SIMP(statut='o',typ=evol_elas,fr="resultat du probleme dual"),),
 
-               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
-                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+               b_sing =BLOC(condition= "'SING_ELEM' in OPTION",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements" ),
                     TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
@@ -295,7 +271,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                  "EPSP_ELNO","EPSP_ELGA",
                                  "EPFD_ELNO","EPFD_ELGA","EPVC_ELNO","EPVC_ELGA",
                                  "EPFP_ELNO","EPFP_ELGA",
-                                 "VARC_ELGA",
+                                 "VARC_ELGA","DEGE_ELGA",
                                  "VARI_ELNO","VATU_ELNO","VACO_ELNO",
                                  "VAEX_ELGA","VAEX_ELNO",
                                  # CRIT
@@ -317,14 +293,10 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                fr="Nom du champ pour SPMX_ELGA",),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),
 
-               b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM') or \
-                                        (type(OPTION)==type(()) and 'QIRE_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ1_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ2_ELEM' in OPTION)",
+               b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                     RESU_DUAL=SIMP(statut='o',typ=(evol_elas,evol_noli),fr="resultat du probleme dual"),),
 
-               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
-                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+               b_sing =BLOC(condition= "'SING_ELEM' in OPTION",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements" ),
                     TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
@@ -332,7 +304,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                    fr="choix de l'estimateur d'erreur"),),
 
 
-               b_extr = BLOC( condition = "OPTION in ('VAEX_ELNO','VAEX_ELGA')",
+               b_extr = BLOC( condition = "au_moins_un(OPTION, ('VAEX_ELNO','VAEX_ELGA'))",
                              NOM_VARI =SIMP(statut='o',typ='TXM',min= 1,max=1,fr="nom de la variable à extraire",
                          into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
                                "SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV","X11","X22","X33","X12","X13","X23",
@@ -378,13 +350,12 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                            into=( "EPSI_ELNO","EPSI_ELGA","EPSG_ELNO","EPSG_ELGA",
                                  "EPME_ELNO","EPME_ELGA","EPMG_ELNO","EPMG_ELGA",
                                  "EPSP_ELNO","EPSP_ELGA","DEGE_ELNO","EPVC_ELNO","EPVC_ELGA",
-                                 "EPFD_ELNO","EPFD_ELGA","EPFP_ELNO","EPFP_ELGA"),
+                                 "EPFD_ELNO","EPFD_ELGA","EPFP_ELNO","EPFP_ELGA","DEGE_ELGA",),
                                  ),
                EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                     CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                  ),
-         b_epstuyo       =BLOC( condition = "OPTION == 'EPTU_ELNO' or \
-                                  (type(OPTION)==type(()) and  'EPTU_ELNO' in OPTION) ",
+         b_epstuyo       =BLOC( condition = "'EPTU_ELNO' in OPTION",
               EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                     CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                ),
@@ -395,7 +366,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                    into=("VARI_ELNO","VATU_ELNO","VACO_ELNO",
                                          "VAEX_ELGA","VAEX_ELNO"),
                                  ),
-          b_extr         =BLOC( condition = "OPTION in ('VAEX_ELNO','VAEX_ELGA')",
+          b_extr         =BLOC( condition = "au_moins_un(OPTION, ('VAEX_ELNO','VAEX_ELGA'))",
                    NOM_VARI =SIMP(statut='o',typ='TXM',min= 1,max=1,fr="nom de la variable à extraire",
                          into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
                                "SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV","X11","X22","X33","X12","X13","X23",
@@ -425,8 +396,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
           b_autres         =BLOC( condition = "TYPE_OPTION=='AUTRES'",
                   OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("SPMX_ELGA",) ),
-               b_maxi    =BLOC( condition = "OPTION=='SPMX_ELGA' or \
-                                (type(OPTION)==type(()) and 'SPMX_ELGA' in OPTION)",
+               b_maxi    =BLOC( condition = "'SPMX_ELGA' in OPTION",
                     NOM_CHAM  =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
                                     fr="Nom du champ pour SPMX_ELGA",),
                     NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),),
@@ -439,14 +409,10 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                  "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
                                  "SING_ELEM","SING_ELNO",) ),
 
-               b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM') or \
-                                        (type(OPTION)==type(()) and 'QIRE_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ1_ELEM' in OPTION) or \
-                                        (type(OPTION)==type(()) and 'QIZ2_ELEM' in OPTION)",
+               b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                 RESU_DUAL    =SIMP(statut='o',typ=(evol_elas,evol_noli),fr="resultat du probleme dual")),
 
-               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
-                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+               b_sing =BLOC(condition= "'SING_ELEM' in OPTION",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements" ),
                     TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",

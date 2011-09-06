@@ -1,6 +1,6 @@
       SUBROUTINE VDSIRO(NP,NBSP,MATEV,SENS,GOUN,TENS1,TENS2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C -----  ARGUMENTS
            CHARACTER*1 GOUN
            INTEGER NP,NBSP
 C -----  VARIABLES LOCALES
-           REAL*8    WORKEL(4), WORKLO(4), XAB(2,2),ZERO
+           REAL*8    WORKEL(4), WORKLO(4), XAB(2,2)
            REAL*8    TAMPON(2),MATTMP(2,2)
            INTEGER I, KPT, KSP,KPT2
            INTEGER IADZI,IAZK24
@@ -85,7 +85,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
-      ZERO = 0.0D0
       CALL ASSERT(SENS.EQ.'IU'.OR.SENS.EQ.'UI')
       CALL ASSERT(GOUN.EQ.'G'.OR.GOUN.EQ.'N')
 C
@@ -123,7 +122,7 @@ C       -- RECOPIE DE MATEV(KPT) DANS MATTMP :
 
           TENS2(1+6*(I-1)) = WORKLO(1)
           TENS2(2+6*(I-1)) = WORKLO(4)
-          TENS2(3+6*(I-1)) = ZERO
+          TENS2(3+6*(I-1)) = TENS1(3+6*(I-1))
           TENS2(4+6*(I-1)) = WORKLO(2)
           TAMPON(1)=TENS1(5+6*(I-1))
           TAMPON(2)=TENS1(6+6*(I-1))

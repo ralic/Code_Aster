@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,9 +133,7 @@ C     ------------------------------------------------------------
       ELSE IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
         IF (JNBSP.NE.0) THEN
           NBFIBR = ZI(JNBSP-1+1)
-C         -- ON TRUANDE LE NOMBRE DE FIBRES (+6) POUR POUVOIR
-C            STOCKER DANS LES CONTRAINTES UN TORSEUR D'EFFORT
-          ZI(JDCEL-1+1) = NBFIBR + 6
+          ZI(JDCEL-1+1) = NBFIBR
         ELSE
           ZI(JDCEL-1+1) = 1
         END IF
@@ -144,9 +142,7 @@ C            STOCKER DANS LES CONTRAINTES UN TORSEUR D'EFFORT
       ELSE IF (NOMTE.EQ.'MECA_POU_D_TGM') THEN
         IF (JNBSP.NE.0) THEN
           NBFIBR = ZI(JNBSP-1+1)
-C         -- ON TRUANDE LE NOMBRE DE FIBRES POUR POUVOIR STOCKER
-C         LE TORSEUR D'EFFORTS GENERALISES : + 7 (N,VX,VY,MX,MY,MZ,BX)
-          ZI(JDCEL-1+1) = NBFIBR + 7
+          ZI(JDCEL-1+1) = NBFIBR
         ELSE
           ZI(JDCEL-1+1) = 1
         END IF
