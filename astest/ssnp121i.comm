@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              GROUP_MA_ESCL = 'SURESC',
                              GROUP_MA_MAIT = 'SURMAI',
                              CONTACT_INIT  = 'INTERPENETRE',
-                             INTEGRATION   = 'NCOTES2',
+                             INTEGRATION   = 'SIMPSON2',
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1000.,
                           ),

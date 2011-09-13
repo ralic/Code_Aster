@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 # sslx102e.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,10 +22,7 @@
 
 DEBUT(CODE=_F(NOM='SSLX102E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-PRE_GIBI(
-              UNITE_GIBI=19,
-          UNITE_MAILLAGE=20
-          )
+PRE_GIBI()
 
 
 
@@ -161,6 +158,8 @@ TEST_RESU(
                  PRECISION = 1.E-2)
                     )
 
+
+
 MASSEAB=POST_ELEM(   MODELE=MO,
        CHAM_MATER=CHMAT,
        CARA_ELEM=CAREL,
@@ -231,6 +230,18 @@ TEST_TABLE( TABLE=EVOL,
                REFERENCE='ANALYTIQUE',
                 VALE=2.87909288E+00  )
 
+
+#----------------------------------------------------------------------------
+# Validation EFGE_ELGA pour les elements de tuyau apres STAT_NON_LINE :
+#----------------------------------------------------------------------
+RESU2=CALC_ELEM( reuse= RESU2, RESULTAT= RESU2, OPTION=('EFGE_ELGA',), )
+TEST_RESU( RESU= _F( RESULTAT = RESU2, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
+             MAILLE = 'M3', POINT = 3, NOM_CMP = 'MFY', VALE =  -1.70000E+04 , REFERENCE = 'NON_REGRESSION'))
+
+RESU2B=CALC_CHAMP(RESULTAT= RESU2, CONTRAINTE=('EFGE_ELGA',), )
+TEST_RESU( RESU= _F( RESULTAT = RESU2B, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
+             MAILLE = 'M3', POINT = 3, NOM_CMP = 'MFY', VALE =  -1.70000E+04 , REFERENCE = 'NON_REGRESSION'))
+#----------------------------------------------------------------------------
 FIN()
 #
 #

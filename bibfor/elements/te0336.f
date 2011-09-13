@@ -1,7 +1,7 @@
       SUBROUTINE TE0336 ( OPTION , NOMTE )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C                        . DIRECTIONS DES CONTRAINTES EQUIVALENTES
 C                                                       (= 3*3 VALEURS)
 C                        . TRACE                        (= 1 VALEUR)
+C                        . TAUX DE TRIAXIALITE          (= 1 VALEUR)
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
@@ -66,7 +67,7 @@ C                DIMENSIONNE  A  NEQMAX CMP MAX * 9 PG MAX
 C                EQNO (CONT/DEF EQUIVALENT NOEUDS)
 C                DIMENSIONNE  A  NEQMAX CMP MAX * 9 NO MAX
 C ----------------------------------------------------------------------
-      PARAMETER         ( NPGMAX = 9 , NNOMAX = 9 , NEQMAX = 16 )
+      PARAMETER         ( NPGMAX = 9 , NNOMAX = 9 , NEQMAX = 17 )
 C ----------------------------------------------------------------------
       CHARACTER*6        TYPMOD
       CHARACTER*16       OPTION , NOMTE
@@ -110,7 +111,7 @@ C
           NCEQ = 5
           NCMP = 5
       ELSE IF (OPTION(1:4) .EQ. 'SIEQ' )  THEN
-          NCEQ = 16
+          NCEQ = 17
           NCMP = 7
       ENDIF
 C

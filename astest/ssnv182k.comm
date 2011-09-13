@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,8 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS,
-                               INTEGRATION  = 'FPG4',
+                               INTEGRATION  = 'GAUSS',
+                               ORDRE_INT=4,
                                CONTACT_INIT = 'OUI',
                                COEF_ECHELLE = 1.,
                                COULOMB      = 1.0,

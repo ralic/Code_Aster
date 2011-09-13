@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM NON CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,7 +98,8 @@ CTXFEM = DEFI_CONTACT(
             FROTTEMENT     = 'SANS',
             ITER_CONT_MAXI = 4,
             ZONE=(
-                  _F(INTEGRATION='FPG3',                                   
+                  _F(INTEGRATION='GAUSS',
+                     ORDRE_INT=3,                                   
                      ALGO_CONT='CZM',
                      COEF_ECHELLE=1.,
                      FISS_MAIT = FISS,

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,8 @@ C IN  NBORDR : NOMBRE MAX DE NUM. D'ORDRE.
 C ----------------------------------------------------------------------
       INTEGER I,K,IBID,IRET,JORDR
       INTEGER NBCHAM,NBNOVA
-      INTEGER NCMEC1,NCMEC2,NCMEC3,NCMECA,NCTHER,NCTHET,NCVARC,NCACOU
+      INTEGER NCMEC1,NCMEC2,NCMEC3,NCMUTI,NCMECA
+      INTEGER NCTHER,NCTHET,NCVARC,NCACOU
       CHARACTER*1 KBID,BAS1
       CHARACTER*16 TYPES2
       CHARACTER*19 NOMS2
@@ -43,10 +44,12 @@ C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=43)
       PARAMETER (NCMEC2=50)
       PARAMETER (NCMEC3=41)
-      PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
+      PARAMETER (NCMUTI=30)
+      PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3+NCMUTI)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
       CHARACTER*16 CHMEC3(NCMEC3)
+      CHARACTER*16 CHMUTI(NCMUTI)
       CHARACTER*16 CHMECA(NCMECA)
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
@@ -129,6 +132,19 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'COHE_ELEM',       'INDC_ELEM',       'SECO_ELEM',
      & 'VARC_ELGA',       'FERRAILLAGE',     'EPVC_NOEU',
      & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA'/
+C
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHMUTI/
+     & 'UT01_ELGA',       'UT01_ELNO',       'UT01_NOEU',
+     & 'UT02_ELGA',       'UT02_ELNO',       'UT02_NOEU',
+     & 'UT03_ELGA',       'UT03_ELNO',       'UT03_NOEU',
+     & 'UT04_ELGA',       'UT04_ELNO',       'UT04_NOEU',
+     & 'UT05_ELGA',       'UT05_ELNO',       'UT05_NOEU',
+     & 'UT06_ELGA',       'UT06_ELNO',       'UT06_NOEU',
+     & 'UT07_ELGA',       'UT07_ELNO',       'UT07_NOEU',
+     & 'UT08_ELGA',       'UT08_ELNO',       'UT08_NOEU',
+     & 'UT09_ELGA',       'UT09_ELNO',       'UT09_NOEU',
+     & 'UT10_ELGA',       'UT10_ELNO',       'UT10_NOEU'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
@@ -186,7 +202,9 @@ C     --- CREATION DE .DESC  ET  .ORDR ---
       DO 30 I=1,NCMEC3
         CHMECA(I+NCMEC1+NCMEC2)=CHMEC3(I)
    30 CONTINUE
-
+      DO 35 I=1,NCMUTI
+        CHMECA(I+NCMEC1+NCMEC2+NCMEC3)=CHMUTI(I)
+   35 CONTINUE
 C     -- DECLARATION ET INITIALISATION DES PARAMETRES ET VAR. D'ACCES :
 C     ------------------------------------------------------------------
       CALL UTPARA(BAS1,NOMSD,TYPES2,NBORDR)

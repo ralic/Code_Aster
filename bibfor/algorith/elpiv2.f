@@ -3,9 +3,9 @@
      &                  DEFICO,RESOCO)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,7 +90,7 @@ C
       REAL*8        COPMAX
       CHARACTER*1   TYPEAJ, TYPESP
       CHARACTER*2   TYPEC0, TYPEF0, TYPEF1, TYPEF2
-      CHARACTER*19  LIAC,LIOT,MATR,STOC,OUVERT
+      CHARACTER*19  LIAC,LIOT,MACONT,STOC,OUVERT
       INTEGER       JLIAC,JLIOT,JVALE,ISCIB,II,DERCOL,BLOC,JSCBL
 C
 C ----------------------------------------------------------------------
@@ -102,7 +102,7 @@ C --- LECTURE DES STRUCTURES DE DONNEES
 C 
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
-      MATR   = RESOCO(1:14)//'.MATR'
+      MACONT = RESOCO(1:14)//'.MATC'
       STOC   = RESOCO(1:14)//'.SLCS'
       CALL JEVEUO(LIAC  ,'E',JLIAC )
       CALL JEVEUO(LIOT  ,'E',JLIOT )
@@ -150,10 +150,10 @@ C ======================================================================
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-               CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
+               CALL JELIBE(JEXNUM(MACONT//'.UALF',(II+1)))
                ZL(JOUV+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -180,8 +180,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT
 C ======================================================================
          CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &               RESOCO,TYPESP,ILIAC,LLIAC,TYPEC0)
-         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &               TYPEC0,TYPESP,'PIV' ,0.D0)
+         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC,TYPEC0,
+     &               'PIV' )
          GOTO 100
  2000    CONTINUE
 C ======================================================================
@@ -195,10 +195,10 @@ C ======================================================================
             BLOC=DERCOL*(DERCOL+1)/2
             IF (.NOT.ZL(JOUV-1+II)) THEN
                IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-                  CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
+                  CALL JELIBE(JEXNUM(MACONT//'.UALF',(II+1)))
                   ZL(JOUV+II)=.FALSE.
                ENDIF
-               CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+               CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
                ZL(JOUV-1+II)=.TRUE.
             ENDIF
             JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -246,8 +246,8 @@ C ======================================================================
                   POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                   CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF1)
-                  CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &                        TYPEF2,TYPESP,'PIV' ,0.D0)
+                  CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC,TYPEF2,
+     &                        'PIV' )
                   GOTO 100
                ENDIF
             ELSE
@@ -266,8 +266,8 @@ C ======================================================================
                   POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                   CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      +                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF2)
-                  CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &                        TYPEF1,TYPESP,'PIV' ,0.D0)
+                  CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC,TYPEF1,
+     &                        'PIV' )
                   GOTO 100
                ELSE
 C ======================================================================
@@ -290,10 +290,10 @@ C ======================================================================
             BLOC=DERCOL*(DERCOL+1)/2
             IF (.NOT.ZL(JOUV-1+II)) THEN
                IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-                  CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
+                  CALL JELIBE(JEXNUM(MACONT//'.UALF',(II+1)))
                   ZL(JOUV+II)=.FALSE.
                ENDIF
-               CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+               CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
                ZL(JOUV-1+II)=.TRUE.
             ENDIF
             JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -317,8 +317,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
             CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +                             RESOCO, TYPESP, ILIAC, LLIAC, TYPEF0)
-            CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &                  'F3'  ,TYPESP,'PIV' ,0.D0)
+            CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC,'F3'  ,
+     &                  'PIV' )
             GOTO 100
          ENDIF
  3000    CONTINUE
@@ -331,10 +331,10 @@ C ======================================================================
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-               CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
+               CALL JELIBE(JEXNUM(MACONT//'.UALF',(II+1)))
                ZL(JOUV+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -358,8 +358,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
          CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +               RESOCO, TYPESP, ILIAC, LLIAC, TYPEF1)
-         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &               TYPEF1,TYPESP,'PIV' ,0.D0)
+         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC,TYPEF1,
+     &               'PIV' )
          GOTO 100
  4000    CONTINUE
 C ======================================================================
@@ -371,10 +371,10 @@ C ======================================================================
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
-               CALL JELIBE(JEXNUM(MATR//'.UALF',(II+1)))
+               CALL JELIBE(JEXNUM(MACONT//'.UALF',(II+1)))
                ZL(JOUV+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
@@ -398,8 +398,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
          CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +               RESOCO, TYPESP, ILIAC, LLIAC, TYPEF2)
-         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &               TYPEF2,TYPESP,'PIV' ,0.D0)
+         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC,TYPEF2,
+     &               'PIV' )
          GOTO 100
 C ======================================================================
  90   CONTINUE

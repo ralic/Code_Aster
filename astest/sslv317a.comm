@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/09/2011   AUTEUR NICOLAS G.NICOLAS 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,9 +215,9 @@ for i_propa in xrange(pas_debut,nb_pas) :
       LSN[i_raff+1]=CO('LSN_%d' % (i_raff+1))
       LST[i_raff+1]=CO('LST_%d' % (i_raff+1))
 
-      MACR_ADAP_MAIL( ADAPTATION='RAFFINEMENT',
+      MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
                      NIVE_MAX = 8,
-                     GROUP_MA='M_ENRI',
+                     GROUP_MA='M_TOUT',
                      CHAM_GD = CHERR[i_raff],
                      CRIT_RAFF_ABS =val[i_raff],
                      USAGE_CMP = 'RELATIF',
@@ -408,11 +408,11 @@ for i_propa in xrange(pas_debut,nb_pas) :
                   LISSAGE = _F(DEGRE=3),
                   THETA = _F(R_INF=rinf,
                              R_SUP=rsup,
-                             FISSURE=FISS,),);
+                             FISSURE=FISS,),)
 
 
    #Impression de la table brute
-   IMPR_TABLE(TABLE=TAB_KG,);
+   IMPR_TABLE(TABLE=TAB_KG)
 
    # test des valeurs de K au dernier pas de propagation
    if i_propa == nb_pas-1 :
@@ -424,16 +424,16 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  CRITERE='RELATIF',
                  PRECISION=0.02,
                  VERSION='10.3.2',
-                 REFERENCE='NON_REGRESSION');
+                 REFERENCE='NON_REGRESSION')
 
       TEST_TABLE(TABLE=TAB_KG,
                  NOM_PARA='K1',
                  TYPE_TEST='MIN',
                  VALE=4.83556E+04,
                  CRITERE='RELATIF',
-                 PRECISION=0.01,
+                 PRECISION=0.02,
                  VERSION='10.3.2',
-                 REFERENCE='NON_REGRESSION');
+                 REFERENCE='NON_REGRESSION')
 
 #-----------------------------------------------------------------------------------------
 #                PROPAGATION
@@ -465,7 +465,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
               MAIL_TOTAL = MA1,                #fissure en sortie
               COMP_LINE=_F(COEF_MULT_MINI=0.,
                            COEF_MULT_MAXI=1.),
-              INFO=1,);
+              INFO=1,)
 
    # Impression du maillage surfacique de la fissure apres propagation
    DEFI_FICHIER(ACTION='ASSOCIER',UNITE=200+i_propa,FICHIER='./REPE_OUT/mail_fiss_fin_iter_'+str(i_propa)+'.med')

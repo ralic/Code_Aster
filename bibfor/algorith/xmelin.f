@@ -5,7 +5,7 @@ C
       INTEGER     TYPINT
       INTEGER     NNINT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,51 +61,48 @@ C
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 3
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 3
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-      ELSEIF (TYPINT .EQ. 2) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 2
-        IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 3
-        IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 3
-        IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-      ELSEIF (TYPINT .EQ. 3) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 3
-        IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 3
-        IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 6
-        IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-      ELSEIF (TYPINT .EQ. 4) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 5
-        IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 5
-        IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 15
-        IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 15
-      ELSEIF (TYPINT .EQ. 5) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 9
-        IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 9
-        IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 42
-        IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 42
-      ELSEIF (TYPINT .EQ. 6) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 4
-        IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 4
-        IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 4
-        IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 4
-      ELSEIF (TYPINT .EQ. 7) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 5
-        IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 5
-        IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 6
-        IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-      ELSEIF (TYPINT .EQ. 8) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 10
-        IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 10
-        IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 42
-        IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 42
-      ELSEIF (TYPINT .EQ. 12) THEN
-        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 2
       ELSEIF (TYPINT .EQ. 13) THEN
         IF (TYPMA(1:2) .EQ. 'SE') NNINT = 3
-      ELSEIF (TYPINT .EQ. 14) THEN
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 6
+      ELSEIF (TYPINT .EQ. 23) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 5
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT =15
+      ELSEIF (TYPINT .EQ. 34) THEN
         IF (TYPMA(1:2) .EQ. 'SE') NNINT = 4
-      ELSEIF (TYPINT .EQ. 16) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 6
-      ELSEIF (TYPINT .EQ. 17) THEN
-        IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 7
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT =10
+      ELSEIF (TYPINT .EQ. 54) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 6
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT =21
+      ELSEIF (TYPINT .EQ. 84) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 9
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 45
+      ELSEIF (TYPINT .EQ. 22) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 2
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 3
+      ELSEIF (TYPINT .EQ. 32) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 3
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 4        
+      ELSEIF (TYPINT .EQ. 42) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 4
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 6
+      ELSEIF (TYPINT .EQ. 52) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 5
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 7
+      ELSEIF (TYPINT .EQ. 62) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 6
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 12
+      ELSEIF (TYPINT .EQ. 72) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 7
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 12 
+      ELSEIF (TYPINT .EQ. 82) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 8
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 16 
+      ELSEIF (TYPINT .EQ. 92) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 9
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 19 
+      ELSEIF (TYPINT .EQ. 102) THEN
+        IF (TYPMA(1:2) .EQ. 'SE') NNINT = 10
+        IF (TYPMA(1:2) .EQ. 'TR') NNINT = 25                
       ELSE
         CALL ASSERT(.FALSE.)
       END IF

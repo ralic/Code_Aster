@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219b.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -417,6 +417,8 @@ for Raff in range(0,Nb_Raffinement):
                         FORMULATION='CONTINUE',
                         ZONE=_F(GROUP_MA_MAIT=('MAITRE',),
                                 GROUP_MA_ESCL=('ESCLAVE',),
+                                INTEGRATION  = 'GAUSS',
+                                ORDRE_INT    = 4,
                                    ),
                           );
                           

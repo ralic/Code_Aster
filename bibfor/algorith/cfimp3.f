@@ -2,9 +2,9 @@
      &                  INSTAP,NBLIAI,NBLIAC,JCNSVR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,27 +77,26 @@ C
       CHARACTER*8  NOMAPP
       INTEGER      NUMNOE,TYPAPP 
       CHARACTER*4  TYPE2
-      CHARACTER*24 APJEU
-      INTEGER      JAPJEU
+      CHARACTER*24 JEUITE
+      INTEGER      JJEUIT
       CHARACTER*16 NOMPT
-      REAL*8       RN,R,COE,PROD,VARC,AJEUFT
+      REAL*8       RN,R,COE,PROD,VARC,AJEUFT,JEU
       CHARACTER*19 SDAPPA
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ ()
-C
-C --- ACCES SD CONTACT
-C      
-      APJEU  = RESOCO(1:14)//'.APJEU'    
-      CALL JEVEUO(APJEU, 'L',JAPJEU)
-      ZRESU  = CFMMVD('ZRESU')     
+      CALL JEMARQ()
 C
 C --- ACCES SD CONTACT
 C
-      NUMLIA = RESOCO(1:14)//'.NUMLIA' 
+      ZRESU  = CFMMVD('ZRESU')  
+C
+C --- ACCES SD CONTACT
+C
+      NUMLIA = RESOCO(1:14)//'.NUMLIA'
+      JEUITE = RESOCO(1:14)//'.JEUITE'
       CALL JEVEUO(NUMLIA,'L',JNUMLI)
-
+      CALL JEVEUO(JEUITE,'L',JJEUIT)
 C 
 C --- PREMIERS AFFICHAGES      
 C  
@@ -151,14 +150,18 @@ C
 
         VARC   = ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+1 )
         AJEUFT = ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+9 )
+C
+C --- JEU
+C
+        JEU    = ZR(JJEUIT+3*(ILIAI-1)+1-1)
         IF (VARC.NE.0.0D0) THEN
           WRITE (IFM,2000) ILIAI,' (   ',NOMPT ,TYPE2,NOMAPP,
-     &                   ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
+     &                   ') * JEU:',JEU,' * RN:',RN,
      &                   ' * GLI:',AJEUFT,' * R:',R,
      &                   ' * RT/RN:',COE
         ELSE
           WRITE (IFM,2001) ILIAI,' (   ',NOMPT ,TYPE2,NOMAPP,
-     &                   ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
+     &                   ') * JEU:',JEU,' * RN:',RN,
      &                   ' * GLI:',AJEUFT,' * R:',R,
      &                   ' * RT/RN:',COE
         ENDIF

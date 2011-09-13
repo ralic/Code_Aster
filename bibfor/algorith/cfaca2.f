@@ -3,9 +3,9 @@
      &                  NBLIAI,XJVMAX)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,7 +90,7 @@ C
       INTEGER       JLIAC ,JCM1A ,JTYPL
       CHARACTER*19  STOC
       INTEGER       JSCBL,JSCIB,JSCDE
-      CHARACTER*19  OUVERT,MATR
+      CHARACTER*19  OUVERT,MACONT
       INTEGER       JOUV
       CHARACTER*24  APPOIN,APDDL ,APCOEF,APCOFR
       INTEGER       JAPPTR,JAPDDL,JAPCOE,JAPCOF
@@ -107,24 +107,16 @@ C
       LIAC   = RESOCO(1:14)//'.LIAC'
       APCOEF = RESOCO(1:14)//'.APCOEF'
       APCOFR = RESOCO(1:14)//'.APCOFR'
-      MATR   = RESOCO(1:14)//'.MATR'
+      MACONT = RESOCO(1:14)//'.MATC'
       TYPL   = RESOCO(1:14)//'.TYPL'
       STOC   = RESOCO(1:14)//'.SLCS'
 C
-      CALL JEVEUO (APPOIN,'L',JAPPTR)
-      CALL JEVEUO (APDDL, 'L',JAPDDL)
-      CALL JEVEUO (LIAC,  'L',JLIAC )
-      CALL JEVEUO (APCOEF,'L',JAPCOE)
-      IF (LLF.NE.0) THEN
-        CALL JEVEUO (APCOFR,'L',JAPCOF)
-      ELSE
-        IF (LLF1.NE.0) THEN
-          CALL JEVEUO (APCOFR,'L',JAPCOF)
-        ELSE
-          IF (LLF2.NE.0) THEN
-            CALL JEVEUO (APCOFR,'L',JAPCOF)
-          ENDIF
-        ENDIF
+      CALL JEVEUO(APPOIN,'L',JAPPTR)
+      CALL JEVEUO(APDDL, 'L',JAPDDL)
+      CALL JEVEUO(LIAC,  'L',JLIAC )
+      CALL JEVEUO(APCOEF,'L',JAPCOE)
+      IF (LLF+LLF1+LLF2.NE.0) THEN
+        CALL JEVEUO(APCOFR,'L',JAPCOF)
       ENDIF
       CALL JEVEUO(TYPL,'L',JTYPL )
       CALL JEVEUO(STOC//'.SCIB','L',JSCIB)
@@ -138,6 +130,7 @@ C
       DEKLAG = 0
       NBBLOC = ZI(JSCDE-1+3)
       OUVERT = '&CFACA2.TRAV'
+C
       CALL WKVECT (OUVERT,'V V L',NBBLOC,JOUV)
       IF (NDIM.EQ.3) THEN
          DO 100 ILIAC = 1, SPLIAI
@@ -165,10 +158,10 @@ C ======================================================================
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF (II.GT.1) THEN
-               CALL JELIBE(JEXNUM(MATR//'.UALF',(II-1)))
+               CALL JELIBE(JEXNUM(MACONT//'.UALF',(II-1)))
                ZL(JOUV-2+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
@@ -240,10 +233,10 @@ C ======================================================================
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF (II.GT.1) THEN
-               CALL JELIBE(JEXNUM(MATR//'.UALF',(II-1)))
+               CALL JELIBE(JEXNUM(MACONT//'.UALF',(II-1)))
                ZL(JOUV-2+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
@@ -324,10 +317,10 @@ C ======================================================================
             BLOC=DERCOL*(DERCOL+1)/2
             IF (.NOT.ZL(JOUV-1+II)) THEN
                IF (II.GT.1) THEN
-                  CALL JELIBE(JEXNUM(MATR//'.UALF',(II-1)))
+                  CALL JELIBE(JEXNUM(MACONT//'.UALF',(II-1)))
                   ZL(JOUV-2+II)=.FALSE.
                ENDIF
-               CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+               CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
                ZL(JOUV-1+II)=.TRUE.
             ENDIF
             JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
@@ -400,10 +393,10 @@ C ======================================================================
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF (II.GT.1) THEN
-               CALL JELIBE(JEXNUM(MATR//'.UALF',(II-1)))
+               CALL JELIBE(JEXNUM(MACONT//'.UALF',(II-1)))
                ZL(JOUV-2+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
@@ -475,10 +468,10 @@ C ======================================================================
          BLOC=DERCOL*(DERCOL+1)/2
          IF (.NOT.ZL(JOUV-1+II)) THEN
             IF (II.GT.1) THEN
-               CALL JELIBE(JEXNUM(MATR//'.UALF',(II-1)))
+               CALL JELIBE(JEXNUM(MACONT//'.UALF',(II-1)))
                ZL(JOUV-2+II)=.FALSE.
             ENDIF
-            CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',II),'E',JVALE)
             ZL(JOUV-1+II)=.TRUE.
          ENDIF
          JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
@@ -548,7 +541,7 @@ C ======================================================================
 C ======================================================================
 
 C     -- ON CREE L'OBJET .VALM DE LA MATRICE "MORSE" :
-C     CALL UALFVA(MATR,'V')
+C     CALL UALFVA(MACONT,'V')
 
 
       END

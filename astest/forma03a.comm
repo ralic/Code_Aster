@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN ELASTICITE
 # forma03a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -81,5 +81,15 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   CRITERE='RELATIF',
                   PRECISION=0.03,
                   REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIEQ_ELGA',
+                  NOM_CMP='TRIAX',
+                  MAILLE = 'M400',
+                  POINT = 3 ,
+                  VALE=0.401967,
+                  CRITERE='RELATIF',
+                  REFERENCE='NON_REGRESSION',),);
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  MURAKAMI 9.70 FISSURE CIRCULAIRE PERPENDICULAIRE A L'INTERFACE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,6 +60,7 @@ CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
                           )
 
 FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
+                     SYME='OUI',
                      FOND_FISS=_F(NOEUD = ( 'N71',  'N68',  'N93',  'N90',  'N89',  'N84',
                                                  'N115', 'N112', 'N111', 'N106', 'N357', 'N354',
                                                  'N368', 'N365', 'N379', 'N376', 'N389', ),

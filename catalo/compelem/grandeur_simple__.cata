@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+%& MODIF COMPELEM  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1774,6 +1774,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        LH1M   :
        DPRE1P :
        DPRE1M :
+       TRIAX  : Taux de triaxialite
 >>
     SIEF_C   = C    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -1798,7 +1799,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
-       LH1P     LH1M     DPRE1P   DPRE1M
+       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX
 
 <<  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U .. . .. . .))
        SIXX : sigma_xx contraintes dans un milieu continu
@@ -1915,6 +1916,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        LH1M   :
        DPRE1P :
        DPRE1M :
+       TRIAX  : Taux de triaxialite
 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -1939,7 +1941,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
-       LH1P     LH1M     DPRE1P   DPRE1M
+       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX
 
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
        DEGRE : ordre de la singularité

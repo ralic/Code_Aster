@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 12/09/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE COURTOIS M.COURTOIS
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VMIS_JOHN_COOK
 # comp002k.para = tps_job 360 mem_job 256Mo mem_aster 20 ncpus 1 liste_test S
@@ -95,7 +95,7 @@ tabresu=TEST_COMPOR(OPTION='MECA',
               VARI_TEST=('V1','VMIS','TRACE'),
               LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-5]  ,
               YOUNG=YOUNG,POISSON=POISSON,
-              VERI_MATR_OPTION=_F(PREC_ZERO=1.e-6,),
+              VERI_MATR_OPTION=_F(PREC_ZERO=1.e-4,),
               )
 
 IMPR_TABLE(TABLE=tabresu)

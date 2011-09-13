@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,7 +278,7 @@ C
 
 C
       IF ( NOMOPT(6:14) .EQ. 'ELGA_SIGM' ) THEN
-         NTCMP = 16
+         NTCMP = 17
       ELSEIF( NOMOPT(6:14) .EQ. 'ELNO_SIGM' ) THEN
          NTCMP = 7
       ELSEIF( NOMOPT(6:14) .EQ. 'ELGA_EPSI' ) THEN

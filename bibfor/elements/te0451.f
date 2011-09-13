@@ -1,0 +1,204 @@
+      SUBROUTINE TE0451(OPTION,NOMTE)
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PELLET J.PELLET
+C ======================================================================
+C  BUT:  CALCUL DE L'OPTION EFGE_ELGA
+C        POUR LES ELEMENTS DE COQUE A "SOUS-POINTS"
+C        ON PART DE SIEF_ELGA ET ON INTEGRE DANS L'EPAISSEUR
+C ......................................................................
+C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
+
+      INTEGER J1,NBCOU,NPGH,JSIGM,IDEC,JEFF,KCOU,NPG,ITAB(7),IRET
+      INTEGER NBSP,KPG,IBID,NBSIG,NBEFF
+      REAL*8 NXX,NYY,MXX,MYY,NXY,MXY,QX,QY
+      REAL*8 H,HB,HM,HH,C1,C2,C3
+      REAL*8 SIYYB,SIYYM,SIYYH,SIXXB,SIXXM,SIXXH,SIXYB,SIXYM,SIXYH
+      REAL*8 SIYZB,SIYZM,SIYZH,SIXZB,SIXZM,SIXZH
+      CHARACTER*8 ALIAS8
+      CHARACTER*3 CMOD
+C     ------------------------------------------------------------------
+      CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
+      CMOD=ALIAS8(3:5)
+      IF(CMOD.EQ.'DKT'.OR.CMOD.EQ.'DST'.OR.CMOD.EQ.'Q4G'
+     &   .OR.CMOD.EQ.'CQ3') THEN
+       NBSIG=6
+       NBEFF=8
+      ELSEIF(CMOD.EQ.'CQA'.OR.CMOD.EQ.'CQC'.OR.CMOD.EQ.'CQD') THEN
+       NBSIG=4
+       NBEFF=6
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+C     -- EPAISSEUR :
+      CALL JEVECH('PCACOQU','L',J1)
+      H=ZR(J1)
+
+C     -- NOMBRE DE COUCHES :
+      CALL JEVECH('PNBSP_I','L',J1)
+      NBCOU = ZI(J1)
+
+C     -- CONTRAINTES DANS LES COUCHES :
+      CALL TECACH('OOO','PSIEFR',7,ITAB,IRET)
+      JSIGM=ITAB(1)
+      NPG=ITAB(3)
+      NBSP=ITAB(7)
+      NPGH=3
+      CALL ASSERT(NBSP.EQ.NBCOU*NPGH)
+      CALL ASSERT(ITAB(2).EQ.NBSIG*NPG)
+
+C     -- EFFORTS A CALCULER :
+      CALL TECACH('OOO','PEFGER',7,ITAB,IRET)
+      JEFF=ITAB(1)
+      CALL ASSERT(ITAB(2).EQ.NBEFF*NPG)
+
+C     -- BOUCLE SUR LES POINTS DE GAUSS :
+      DO 1, KPG=1,NPG
+        NXX=0.D0
+        NYY=0.D0
+        NXY=0.D0
+        MXX=0.D0
+        MYY=0.D0
+        MXY=0.D0
+        QX=0.D0
+        QY=0.D0
+
+C       -- BOUCLE SUR LES COUCHES :
+        DO 2, KCOU=1,NBCOU
+          IDEC=((KPG-1)*NBCOU +(KCOU-1))*NPGH*NBSIG
+
+C         -- SIXXB, SIYYB, ... : CONTRAINTES AU BAS DE LA COUCHE
+          SIXXB=ZR(JSIGM-1+IDEC+1)
+          SIYYB=ZR(JSIGM-1+IDEC+2)
+          SIXYB=ZR(JSIGM-1+IDEC+4)
+          IF (NBSIG.EQ.6) THEN
+            SIXZB=ZR(JSIGM-1+IDEC+5)
+            SIYZB=ZR(JSIGM-1+IDEC+6)
+          ENDIF
+C         -- SIXXM, SIYYM, ... : CONTRAINTES AU MILIEU DE LA COUCHE
+          SIXXM=ZR(JSIGM-1+IDEC+1+NBSIG)
+          SIYYM=ZR(JSIGM-1+IDEC+2+NBSIG)
+          SIXYM=ZR(JSIGM-1+IDEC+4+NBSIG)
+          IF (NBSIG.EQ.6) THEN
+            SIXZM=ZR(JSIGM-1+IDEC+5+NBSIG)
+            SIYZM=ZR(JSIGM-1+IDEC+6+NBSIG)
+          ENDIF
+
+C         -- SIXXH, SIYYH, ... : CONTRAINTES EN HAUT DE LA COUCHE
+          SIXXH=ZR(JSIGM-1+IDEC+1+2*NBSIG)
+          SIYYH=ZR(JSIGM-1+IDEC+2+2*NBSIG)
+          SIXYH=ZR(JSIGM-1+IDEC+4+2*NBSIG)
+          IF (NBSIG.EQ.6) THEN
+            SIXZH=ZR(JSIGM-1+IDEC+5+2*NBSIG)
+            SIYZH=ZR(JSIGM-1+IDEC+6+2*NBSIG)
+          ENDIF
+
+C         -- HB, HM, HH : "HAUTEUR" DES SOUS-POINTS :
+          HB=-H/2 + (KCOU-1)*H/NBCOU
+          HM=HB+H/(2*NBCOU)
+          HH=HM+H/(2*NBCOU)
+
+C         -- NXX = SOMME DE SIXX (FORMULE DES TRAPEZES) :
+          NXX=NXX+ (H/NBCOU/2.D0)*(SIXXB+SIXXM)/2.D0
+          NXX=NXX+ (H/NBCOU/2.D0)*(SIXXH+SIXXM)/2.D0
+
+C         -- NYY = SOMME DE SIYY (FORMULE DES TRAPEZES) :
+          NYY=NYY+ (H/NBCOU/2.D0)*(SIYYB+SIYYM)/2.D0
+          NYY=NYY+ (H/NBCOU/2.D0)*(SIYYH+SIYYM)/2.D0
+
+C         -- NXY = SOMME DE SIXY (FORMULE DES TRAPEZES) :
+          NXY=NXY+ (H/NBCOU/2.D0)*(SIXYB+SIXYM)/2.D0
+          NXY=NXY+ (H/NBCOU/2.D0)*(SIXYH+SIXYM)/2.D0
+
+          IF (NBEFF.EQ.8) THEN
+C           -- QX = SOMME DE SIXZ (FORMULE DES TRAPEZES) :
+            QX=QX+ (H/NBCOU/2.D0)*(SIXZB+SIXZM)/2.D0
+            QX=QX+ (H/NBCOU/2.D0)*(SIXZH+SIXZM)/2.D0
+
+C           -- QY = SOMME DE SIYZ (FORMULE DES TRAPEZES) :
+            QY=QY+ (H/NBCOU/2.D0)*(SIYZB+SIYZM)/2.D0
+            QY=QY+ (H/NBCOU/2.D0)*(SIYZH+SIYZM)/2.D0
+          ENDIF
+
+C         -- POUR MIEUX INTEGRER LES MOMENTS, ON FAIT L'HYPOTHESE
+C            QUE SIXX, SIYY, ... VARIENT LINEAIREMENT ENTRE
+C             2 SOUS-POINTS ET DONC QUE LE PRODUIT PAR H VARIE EN H**2
+
+C         -- MXX = MOMENT DE SIXX :
+          C1=(SIXXM-SIXXB)/(H/(2*NBCOU))
+          C2=SIXXB-C1*HB
+          C3=C1/3.D0*(HM**3-HB**3) + C2/2.D0*(HM**2-HB**2)
+          MXX=MXX+ C3
+          C1=(SIXXH-SIXXM)/(H/(2*NBCOU))
+          C2=SIXXM-C1*HM
+          C3=C1/3.D0*(HH**3-HM**3) + C2/2.D0*(HH**2-HM**2)
+          MXX=MXX+ C3
+
+C         -- MYY = MOMENT DE SIYY :
+          C1=(SIYYM-SIYYB)/(H/(2*NBCOU))
+          C2=SIYYB-C1*HB
+          C3=C1/3.D0*(HM**3-HB**3) + C2/2.D0*(HM**2-HB**2)
+          MYY=MYY+ C3
+          C1=(SIYYH-SIYYM)/(H/(2*NBCOU))
+          C2=SIYYM-C1*HM
+          C3=C1/3.D0*(HH**3-HM**3) + C2/2.D0*(HH**2-HM**2)
+          MYY=MYY+ C3
+
+C         -- MXY = MOMENT DE SIXY :
+          C1=(SIXYM-SIXYB)/(H/(2*NBCOU))
+          C2=SIXYB-C1*HB
+          C3=C1/3.D0*(HM**3-HB**3) + C2/2.D0*(HM**2-HB**2)
+          MXY=MXY+ C3
+          C1=(SIXYH-SIXYM)/(H/(2*NBCOU))
+          C2=SIXYM-C1*HM
+          C3=C1/3.D0*(HH**3-HM**3) + C2/2.D0*(HH**2-HM**2)
+          MXY=MXY+ C3
+
+ 2      CONTINUE
+
+        ZR(JEFF-1+(KPG-1)*NBEFF +1)=NXX
+        ZR(JEFF-1+(KPG-1)*NBEFF +2)=NYY
+        ZR(JEFF-1+(KPG-1)*NBEFF +4)=MXX
+        ZR(JEFF-1+(KPG-1)*NBEFF +5)=MYY
+        IF (NBEFF.EQ.8) THEN
+          ZR(JEFF-1+(KPG-1)*NBEFF +3)=NXY
+          ZR(JEFF-1+(KPG-1)*NBEFF +6)=MXY
+          ZR(JEFF-1+(KPG-1)*NBEFF +7)=QX
+          ZR(JEFF-1+(KPG-1)*NBEFF +8)=QY
+        ENDIF
+ 1    CONTINUE
+      END

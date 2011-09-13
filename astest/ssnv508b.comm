@@ -1,8 +1,9 @@
-# MODIF  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
+# ssnv508b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,14 +18,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# FROTTEMENT AVEC X-FEM QUADRATIQUES
-# ssnv508b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+# FROTTEMENT AVEC DES ELEMENTS X-FEM QUADRATIQUES
+# ssnv508a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 
 
 DEBUT(CODE=_F(NOM='SSNV508B', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
               
 # CETTE MODELISATION TESTE LA DEFORMEE DE L'INTERFACE SUR UN MAILLAGE
-# QUADRATIQUE, LES MAILLES ETANT COUPEES PAR L'INTERFACE.
+# QUADRATIQUE, LES MAILLES N'ETANT PAS COUPEES PAR L'INTERFACE.
 
 #----------------------------------------------
 #                   MAILLAGE
@@ -34,6 +35,7 @@ n = 1000.0;
 
 # dimensions de la structure
 lx = 2.0;
+
 ly = 3.0;
 
 
@@ -43,44 +45,36 @@ MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_2D=_F(GROUP_MA=('LPRESD','LPRESG','LPRESV',),),);
+                       ORIE_PEAU_2D=_F(GROUP_MA=('LPRESD','LPRESG','LPRESV', 'LENCAV',),),);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(NOEUD='N366',
-                                      NOM='A',),
-                                   _F(NOEUD='N91',
-                                      NOM='B',),
-                                   _F(NOEUD='N1',
-                                      NOM='C',),
-                                   _F(GROUP_MA='MTOT',
-                                      NOM='SURF',),
-                                    ),
-                                  );
-
+                    CREA_GROUP_NO=_F(GROUP_MA='MTOT',NOM='SURF',),);
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(NOM='L1',
+                                      OPTION= 'PLAN',
+                                      POINT =(0,0),
+                                      VECT_NORMALE =(1,0),
+                                      PRECISION=0.00001,),),);
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
 MO=AFFE_MODELE(MAILLAGE=MAILLAG1,
-               AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD','LPRESV',),
+               AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD','LPRESV','LENCAV',),
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
-
-
 LN = FORMULE(VALE='Y',
              NOM_PARA=('X','Y',),);
-
 FISS=DEFI_FISS_XFEM(MODELE=MO,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='MTOT',
                     INFO=1,);
-
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          INFO=1,);
-
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       INFO=1,);
@@ -98,28 +92,20 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=rho,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
-                       MODELE=MO,
-                       AFFE=_F(GROUP_MA='MTOT',
-                               MATER=ACIER,
-                               ),);
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
 
-# --- CONDITIONS LIMITES DE DIRICHLET
 
-CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                  DDL_IMPO=(_F(GROUP_NO='A',
-                               DX=0.0,),
-                            _F(GROUP_NO='B',
-                               DX=0.0,
-                               DY=0.0,),
-                            _F(GROUP_NO='C',
-                               DY=0.0,),
-                               ),
-                  INFO=1,);
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MO,
+                       AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD','LPRESV','LENCAV',),
+                               MATER=ACIER,
+                               ),);
 
+#DROITE X=0 BLOQUEE, PLAQUE INFERIEURE ENCASTREMENT
+CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+                  DDL_IMPO=(_F(GROUP_NO='L1',DX=0.0,),_F(GROUP_MA='LENCAV',DX=0.0,DY=0.0,),),INFO=1,);
 d0 = 1.E-05 ;
 d2 = -2.5 * 1.E-06 ;
 
@@ -130,12 +116,9 @@ def deplv(x) :
 
 FCTDEPLV = FORMULE(VALE='deplv(X)',
                   NOM_PARA=('X','Y',),);
-CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                  FACE_IMPO=_F(GROUP_MA='LPRESV',
-                               DY=FCTDEPLV),);
-
-# --- CONDITIONS LIMITES DE NEUMANN
-
+CH4=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                  FACE_IMPO=_F(GROUP_MA='LPRESV',DY=FCTDEPLV),INFO=1,);
+#pression lineaire : une variable independante
 p2=100000.;
 p1=2.*E*d2;
 
@@ -145,14 +128,13 @@ def pr(y) :
    if y==0.  :  return  0.
 FCTPRES = FORMULE(VALE='pr(Y)',
                   NOM_PARA=('X','Y',),);
+# pour tester option CHAR_MECA_PRES_F
 FCTCIS = FORMULE(VALE='0.',
                   NOM_PARA=('X','Y',),);
 
-CH3=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     PRES_REP=_F(GROUP_MA=('LPRESD','LPRESG',),
-                                 PRES=FCTPRES,
-                                 CISA_2D=FCTCIS),
-                                  );
+
+CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                     PRES_REP=_F(GROUP_MA=('LPRESD','LPRESG',),PRES=FCTPRES,),);
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -165,9 +147,9 @@ L_INS=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CH1,),
-                           _F(CHARGE=CH2,),
-                           _F(CHARGE=CH3,),),
+                           _F(CHARGE=CH4,),
+                           _F(CHARGE=CH,),
+                           _F(CHARGE=CH1,),),
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='MTOT',),
                     INCREMENT=_F(LIST_INST=L_INS,
@@ -178,11 +160,22 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     SOLVEUR=_F(METHODE='MUMPS',),
                     INFO=1,);
 
+
+DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('SURF',),
+                                RESULTAT=UTOT1,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEP,);
+
 #----------------------------------------------
 #             IMPRESSION
 #----------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,)
 
 IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
 
@@ -192,8 +185,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               MODELISATION='C_PLAN',),),
                               );  
 
-RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
-                        RESULTAT  = UTOT1,);
+RES_X1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        )
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,));
 
@@ -219,37 +213,18 @@ DEP2 = CALC_TABLE(TABLE = DEP1,
                                CRIT_COMP = 'NE',
                                VALE      = 0,),),);
 
-#DY=8.02*1.E-6 - 2.5*1.E-6*x*x
-DYMIN=8.02*1.E-6 - 2.5*1.E-6
-DYMAX=8.02*1.E-6
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DY',
-           TYPE_TEST='MIN',
-           VALE=DYMIN,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-6,
-           REFERENCE='ANALYTIQUE',);
+#DX=(-10*x + 0)*1.E-6
+DXMIN= -10*1.E-6
+DXMAX=10*1.E-6
 
 
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DY',
-           TYPE_TEST='MAX',
-           VALE=DYMAX,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-6,
-           REFERENCE='ANALYTIQUE',);
-
-#DX=-p2*x/E
-DXMIN=-p2/E
-DXMAX=p2/E
 
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
            VALE=DXMAX,
            CRITERE='ABSOLU',
-           PRECISION=1.0E-6,
+           PRECISION=1.0E-12,
            REFERENCE='ANALYTIQUE',);
 
 
@@ -258,7 +233,27 @@ TEST_TABLE(TABLE=DEP2,
            TYPE_TEST='MIN',
            VALE=DXMIN,
            CRITERE='ABSOLU',
-           PRECISION=1.0E-6,
+           PRECISION=1.0E-12,
+           REFERENCE='ANALYTIQUE',);
+#DY=8.02*1.E-6 - 2.5*1.E-6*x*x*1.E-6
+DYMIN=8.02*1.E-6 - 2.5*1.E-6
+DYMAX=8.02*1.E-6
+
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE=DYMIN,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-12,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE=DYMAX,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-12,
            REFERENCE='ANALYTIQUE',);
 
 
@@ -266,7 +261,7 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_X1,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 1.8750833333334E-03,PRECISION=1.E-6,
+                     VALE = 1.875083E-03,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.12'),
                 _F(  RESULTAT=RES_X1,NUME_ORDRE=1,
@@ -283,5 +278,6 @@ IMPR_TABLE(TABLE=DEP2,
            FORMAT_R='1PE12.5',
            FORMAT_C='MODULE_PHASE',
            IMPR_FONCTION='NON',);
+
 
 FIN();

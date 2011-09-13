@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF med_aster_module supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF med_aster_module supervis  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -32,45 +32,53 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
    PyObject *listeChamps = (PyObject*)0 ;
-   INTEGER numFichier = 0;
    char* nomFichierMed;
-   
-   if (!PyArg_ParseTuple(args, "s", &nomFichierMed)) return NULL;
-   
-   numFichier = MEDfileOpen(nomFichierMed,MED_ACC_RDONLY);
-   if ( numFichier <= 0 ) return PyList_New(0);
-   
-   INTEGER nbChamps = MEDnField(numFichier);
-   
-   listeChamps = PyList_New(nbChamps);
-   
-   char* nomChamp = MakeBlankFStr(MED_NAME_SIZE);
-   char* nomMaillage = MakeBlankFStr(MED_NAME_SIZE);
+   int nbChamps;
+   char* nomChamp;
+   char* nomMaillage;
+   char* dtUnit;
+   int iChamp;
+   int nbComp;
+   char* nomsComp;
+   char* unitesComp;
+   med_idt numFichier = 0;
    med_bool mailLoc;
    med_field_type typeChamp;
-   char* dtUnit = MakeBlankFStr(MED_NAME_SIZE);
-   INTEGER nbCstp;
-   INTEGER iChamp;
+   med_int nbCstp;
+
+   if (!PyArg_ParseTuple(args, "s", &nomFichierMed)) return NULL;
+
+   numFichier = MEDfileOpen(nomFichierMed,MED_ACC_RDONLY);
+   if ( numFichier <= 0 ) return PyList_New(0);
+
+   nbChamps = (int)MEDnField(numFichier);
+
+   listeChamps = PyList_New(nbChamps);
+
+   nomChamp = MakeBlankFStr(MED_NAME_SIZE);
+   nomMaillage = MakeBlankFStr(MED_NAME_SIZE);
+   dtUnit = MakeBlankFStr(MED_NAME_SIZE);
    for ( iChamp = 1; iChamp <= nbChamps; ++iChamp )
    {
-      INTEGER nbComp = MEDfieldnComponent(numFichier,iChamp);
-      
-      char* nomsComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
-      char* unitesComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
-      
-      MEDfieldInfo(numFichier,iChamp,nomChamp,nomMaillage,&mailLoc,&typeChamp,nomsComp,unitesComp,dtUnit,&nbCstp);
-      
+      nbComp = (int)MEDfieldnComponent(numFichier,iChamp);
+
+      nomsComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
+      unitesComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
+
+      MEDfieldInfo(numFichier,iChamp,nomChamp,nomMaillage,&mailLoc,&typeChamp,nomsComp,
+                   unitesComp,dtUnit,&nbCstp);
+
       PyList_SetItem(listeChamps,iChamp-1,PyString_FromString(nomChamp));
-      
+
       FreeStr(nomsComp);
       FreeStr(unitesComp);
    }
    MEDfileClose(numFichier);
-   
+
    FreeStr(nomChamp);
    FreeStr(nomMaillage);
    FreeStr(dtUnit);
-   
+
    return listeChamps;
 }
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100b.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -355,6 +355,15 @@ TEST_TABLE(
                        VALE=1.005312E-02,
                   PRECISION=1.0E-05
                )
+
+#----------------------------------------------------------------------------
+# Validation EFGE_ELGA pour les elements de coque_axis :
+#----------------------------------------------------------------------
+CALC_CHAMP(reuse=STATNL1, RESULTAT= STATNL1, CONTRAINTE=('EFGE_ELGA',), )
+#IMPR_RESU(RESU=_F(RESULTAT=STATNL1, INST=1.))
+TEST_RESU( RESU= _F( RESULTAT = STATNL1, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
+           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MYY', VALE =   -0.23809523809524, REFERENCE = 'NON_REGRESSION'))
+#----------------------------------------------------------------------------
 
 FIN()
 #

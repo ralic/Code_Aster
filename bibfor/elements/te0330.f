@@ -1,7 +1,7 @@
       SUBROUTINE TE0330(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,12 +31,13 @@ C           . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C           . DIRECTION DES CONTRAINTES PRINCIPALES
 C                              (=3*3 VALEURS)
 C           . TRACE                        (= 1 VALEUR)
+C           . TAUX DE TRIAXIALITE          (= 1 VALEUR)
 C     OPTIONS :  'SIEQ_ELNO'
 
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=16)
+      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=17)
 C ----------------------------------------------------------------------
       INTEGER ICONT,IEQUIF
       INTEGER IDCP,KP,J,I,INO

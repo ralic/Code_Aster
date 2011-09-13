@@ -2,9 +2,9 @@
      &                  SPAVAN,NOMA  ,DEFICO,RESOCO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,28 +78,32 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*1  TYPESP
       CHARACTER*2  TYPEC0    
-      CHARACTER*19 LIAC, LIOT, MATR, STOC,OUVERT
-      INTEGER      JLIAC,JLIOT,JVALE,JVA,JSCDE,JOUV
+      CHARACTER*19 LIAC, LIOT, MACONT, STOC,OUVERT
+      INTEGER      JLIAC,JLIOT,JVALE,JVA,JOUV
       INTEGER      CFDISD,NBBLOC,NBLIAI
       REAL*8       COPMAX
       INTEGER      KK1,KK2,KK1F,KK2F,LLF,LLF1,LLF2
-      INTEGER      NBOTE,PIVOT,LLIAC, II
-      INTEGER      NIV,IFM, BLOC, ISCIB, JSCBL, DERCOL
+      INTEGER      NBOTE,LLIAC
+      INTEGER      IBLC
+      INTEGER      NIV,IFM
+      INTEGER      BLOC,DERCOL
+      INTEGER      JSCIB,JSCBL,JSCDE
+      LOGICAL      PIVNUL
 C
 C ----------------------------------------------------------------------
 C
-      CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
+      CALL INFDBG('CONTACT',IFM,NIV) 
 C 
 C --- LECTURE DES STRUCTURES DE DONNEES
 C 
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
-      MATR   = RESOCO(1:14)//'.MATR'
+      MACONT = RESOCO(1:14)//'.MATC'
       STOC   = RESOCO(1:14)//'.SLCS'
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
-      CALL JEVEUO(STOC//'.SCIB','L',ISCIB)
+      CALL JEVEUO(STOC//'.SCIB','L',JSCIB)
       CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
       CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
 C 
@@ -109,60 +113,75 @@ C
       TYPESP = 'S'
       TYPEC0 = 'C0'
       COPMAX = XJVMAX * 1.0D-08
-      PIVOT  = 0
+      PIVNUL = .FALSE.
       LLF    = 0
       LLF1   = 0
       LLF2   = 0
       NBBLOC = ZI(JSCDE-1+3)
+C
+C --- BLOC EN LECTURE
+C
       OUVERT = '&&ELPIV2.TRAV'
       CALL WKVECT(OUVERT,'V V L',NBBLOC,JOUV)
 C
-        DO 10 KK1=SPAVAN+1,NBLIAC
-          DO 20 KK2=1,NBLIAC
-            IF(KK2.GT.KK1) THEN
-              KK1F = KK2
-              KK2F = KK1
-            ELSE
-              KK1F = KK1
-              KK2F = KK2
-            ENDIF
-            II = ZI(ISCIB-1+KK1F)
-            DERCOL=ZI(JSCBL+II-1)
-            BLOC=DERCOL*(DERCOL+1)/2
-            IF (.NOT.ZL(JOUV-1+II)) THEN
-               IF ((II.GT.1).AND.(KK1F.NE.(SPAVAN+1))) THEN
-                  CALL JELIBE(JEXNUM(MATR//'.UALF',(II-1)))
-                  ZL(JOUV-2+II)=.FALSE.
-               ENDIF
-               CALL JEVEUO (JEXNUM(MATR//'.UALF',II),'E',JVALE)
-               ZL(JOUV-1+II)=.TRUE.
-            ENDIF
-            JVA=JVALE-1+(KK1F-1)*(KK1F)/2-BLOC+KK2F
-            IF(ABS(ZR(JVA)).LT.COPMAX) THEN
-              PIVOT = 1
-            ELSE
-              PIVOT = 0
-              GOTO 10
-            ENDIF
- 20       CONTINUE
-          IF (PIVOT.EQ.1) THEN
+C --- DETECTION DES PIVOTS NULS
 C
-            LLIAC = ZI(JLIAC-1+KK1)
-C
-            ZI(JLIOT+4*NBLIAI) = ZI(JLIOT+4*NBLIAI) + 1
-            NBOTE              = ZI(JLIOT+4*NBLIAI)
-            ZI(JLIOT-1+NBOTE)  = ZI(JLIAC-1+KK1)
-
-            CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     &                  RESOCO,TYPESP,KK1,LLIAC,TYPEC0)
-            CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &                  TYPEC0,TYPESP,'PIV' ,0.D0)
-            GOTO 40
+      DO 10 KK1 = SPAVAN+1,NBLIAC
+        DO 20 KK2 = 1,NBLIAC
+          IF (KK2.GT.KK1) THEN
+            KK1F = KK2
+            KK2F = KK1
+          ELSE
+            KK1F = KK1
+            KK2F = KK2
           ENDIF
- 10     CONTINUE
+          IBLC   = ZI(JSCIB-1+KK1F)
+          DERCOL = ZI(JSCBL+IBLC-1)
+          BLOC   = DERCOL*(DERCOL+1)/2
 C
-40      CONTINUE
-        CALL JEDETR(OUVERT)
-        CALL JEDEMA()
+C ------- ON ACCEDE AU BLOC 
+C          
+          IF (.NOT.ZL(JOUV-1+IBLC)) THEN
+            IF ((IBLC.GT.1).AND.(KK1F.NE.(SPAVAN+1))) THEN
+              CALL JELIBE(JEXNUM(MACONT//'.UALF',(IBLC-1)))
+              ZL(JOUV-2+IBLC) = .FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MACONT//'.UALF',IBLC),'E',JVALE)
+            ZL(JOUV-1+IBLC) = .TRUE.
+          ENDIF
+C
+C ------- ACCES A LA DIAGONALE
+C          
+          JVA    = JVALE-1+(KK1F-1)*(KK1F)/2-BLOC+KK2F
+C
+C ------- PIVOT NUL ?
+C
+          IF (ABS(ZR(JVA)).LT.COPMAX) THEN
+            PIVNUL = .TRUE.
+          ELSE
+            PIVNUL = .FALSE.
+            GOTO 10
+          ENDIF
+ 20     CONTINUE
+C
+C ----- ON SUPPRIME LA LIAISON
+C
+        IF (PIVNUL) THEN
+          LLIAC = ZI(JLIAC-1+KK1)
+          ZI(JLIOT+4*NBLIAI) = ZI(JLIOT+4*NBLIAI) + 1
+          NBOTE              = ZI(JLIOT+4*NBLIAI)
+          ZI(JLIOT-1+NBOTE)  = ZI(JLIAC-1+KK1)
+          CALL CFTABL(INDIC ,NBLIAC,AJLIAI,SPLIAI,LLF   ,
+     &                LLF1  ,LLF2  ,RESOCO,TYPESP,KK1   ,
+     &                LLIAC ,TYPEC0)
+          CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC ,TYPEC0,
+     &                'PIV')
+          GOTO 40
+        ENDIF
+ 10   CONTINUE
+C
+40    CONTINUE
+      CALL JEDETR(OUVERT)
+      CALL JEDEMA()
 C
       END

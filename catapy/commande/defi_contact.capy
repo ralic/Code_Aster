@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -417,8 +417,19 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        ),
 # -- Fonctionnalités spécifiques 'CONTINUE'
                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",
-                                                                 into=("GAUSS","NOEUD","SIMPSON","SIMPSON1","SIMPSON2",
-                                                                                       "NCOTES" ,"NCOTES1" ,"NCOTES2"),),
+                                          into=("NOEUD","GAUSS","SIMPSON","NCOTES","SIMPSON1","SIMPSON2","NCOTES1","NCOTES2"),),
+                                          b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
+                                                          fr="Dégré du polynôme de Legendre donnant les points de Gauss",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=1,max=10),
+                                            ),
+                                          b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
+                                                          fr="Dégré du polynôme interpolateur",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=3,max=10),
+                                            ),
+                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
+                                                          fr="Nombre de partitions du domaine",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,min=1,max=4),
+                                            ),
 #
                                           CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="NON",
                                                                 into=("OUI","INTERPENETRE","NON"),),
@@ -506,11 +517,22 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # -- Fonctionnalités spécifiques 'XFEM'
                                        INTEGRATION    = SIMP(statut='f',
                                                              typ='TXM',
-                                                             defaut="FPG4",
-                                                             into=("GAUSS","FPG2","FPG3","FPG4","FPG6","FPG7",
-                                                                   "NOEUD","SIMPSON","SIMPSON1","NCOTES","NCOTES1","NCOTES2"),),
-
-
+                                                             defaut="GAUSS",
+                                                             
+                                          into=("NOEUD","GAUSS","SIMPSON","NCOTES","SIMPSON1","SIMPSON2","NCOTES1","NCOTES2"),),
+                                          b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
+                                                          fr="Dégré du polynôme de Legendre donnant les points de Gauss",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=6,min=1,max=10),
+                                            ),
+                                          b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
+                                                          fr="Dégré du polynôme interpolateur",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=3,max=10),
+                                            ),
+                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
+                                                          fr="Nombre de partitions du domaine",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,min=1,max=4),
+                                            ),
+                                            
                                        RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
                                                              into=("CZM_EXP_REG","CZM_LIN_REG","NON"),),
 

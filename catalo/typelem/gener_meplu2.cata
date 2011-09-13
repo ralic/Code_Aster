@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -103,7 +103,7 @@ MODE_LOCAL__
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG   )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )

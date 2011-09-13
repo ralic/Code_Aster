@@ -1,7 +1,7 @@
       SUBROUTINE TE0531(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C                        . DIRECTION DES CONTRAINTES PRINCIPALES
 C                                                      (=3*3 VALEURS)
 C                        . TRACE                        (= 1 VALEUR)
+C                        . TAUX DE TRIAXIALITE          (= 1 VALEUR)
 C     OPTION :  'SIEQ_ELGA'
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
@@ -44,7 +45,7 @@ C     REMARQUE:  LA DERNIERE GRANDEUR EST UTILISE
 C                PARTICULIEREMENT POUR DES CALCULS DE CUMUL DE
 C                DOMMAGE EN FATIGUE
 C ----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NEQMAX=16)
+      PARAMETER (NPGMAX=27,NEQMAX=17)
 C ----------------------------------------------------------------------
       INTEGER ICONT,IEQUIF
       INTEGER IDCP,KP,J,I
@@ -69,7 +70,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      NCEQ = 16
+      NCEQ = 17
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEVECH('PCONTRR','L',ICONT)

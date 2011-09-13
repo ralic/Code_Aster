@@ -5,7 +5,7 @@
      &                  VINIT ,VCMP  ) 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,6 +134,7 @@ C
       IREFE  = 0
       IRESI  = 0
       ICHAR  = 0
+      INODA  = 0
       JCCID  = 0
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
 C

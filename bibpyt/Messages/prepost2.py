@@ -1,8 +1,8 @@
-#@ MODIF prepost2 Messages  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost2 Messages  DATE 12/09/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -204,7 +204,8 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 60 : _("""
- on ne sait pas imprimer au format "gmsh" ce type de champ:  %(k1)s 
+ On ne sait pas imprimer au format "gmsh" le champ %(k1)s
+ car il est de type %(k2)s.
 """),
 
 61 : _("""

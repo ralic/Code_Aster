@@ -1,7 +1,7 @@
       SUBROUTINE CFIMP4(DEFICO,RESOCO,NOMA  ,IFM   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,16 +60,16 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      CFMMVD,ZTACF
-      CHARACTER*24 APJEU,TACFIN
-      INTEGER      JAPJEU,JTACF
+      CHARACTER*24 TACFIN
+      INTEGER      JTACF
       CHARACTER*24 APCOEF,TANGCO
       INTEGER      JAPCOE,JTANGO
       CHARACTER*24 APCOFR
       INTEGER      JAPCOF
-      CHARACTER*24 JEUSUP
-      INTEGER      JJSUP
+      CHARACTER*24 JEUSUP,JEUITE
+      INTEGER      JJEUSU,JJEUIT
       CHARACTER*24 APPOIN,NUMLIA
-      INTEGER      JAPPTR,JNUMLI     
+      INTEGER      JAPPTR,JNUMLI    
       CHARACTER*24 NBDDL,APDDL
       INTEGER      JNBDDL,JAPDDL
       INTEGER      CFDISI,CFDISD
@@ -84,7 +84,7 @@ C
       CHARACTER*4  TYPNO,TYPE2
       CHARACTER*19 SDAPPA
       CHARACTER*16 NOMPT
-      REAL*8       JEU,DISSUP
+      REAL*8       JEUOLD,DISSUP
       REAL*8       COEFFF,COEFPN,COEFPT,R8BID
       REAL*8       TAU1(3),TAU2(3),NORM(3)
       LOGICAL      CFCALD,LNODAL,CFDISL,LCTFD,LFROT
@@ -99,28 +99,28 @@ C
       LFROT  = CFDISL(DEFICO,'FROTTEMENT')
 C
       APCOEF = RESOCO(1:14)//'.APCOEF'
-      APJEU  = RESOCO(1:14)//'.APJEU' 
       JEUSUP = RESOCO(1:14)//'.JSUPCO'
       TACFIN = RESOCO(1:14)//'.TACFIN'
       TANGCO = RESOCO(1:14)//'.TANGCO'         
       NUMLIA = RESOCO(1:14)//'.NUMLIA' 
       APPOIN = RESOCO(1:14)//'.APPOIN'
       NBDDL  = RESOCO(1:14)//'.NBDDL'
-      APDDL  = RESOCO(1:14)//'.APDDL' 
+      APDDL  = RESOCO(1:14)//'.APDDL'
+      JEUITE = RESOCO(1:14)//'.JEUITE'
 C
-      CALL JEVEUO(APJEU, 'L',JAPJEU)
       CALL JEVEUO(APCOEF,'L',JAPCOE)          
       IF (LCTFD) THEN
         APCOFR = RESOCO(1:14)//'.APCOFR'
         CALL JEVEUO(APCOFR,'L',JAPCOF)
       ENDIF
-      CALL JEVEUO(JEUSUP,'L',JJSUP )
+      CALL JEVEUO(JEUSUP,'L',JJEUSU)
       CALL JEVEUO(TACFIN,'L',JTACF )   
       CALL JEVEUO(TANGCO,'L',JTANGO)   
       CALL JEVEUO(NUMLIA,'L',JNUMLI)
       CALL JEVEUO(APPOIN,'L',JAPPTR)
       CALL JEVEUO(NBDDL, 'L',JNBDDL)
-      CALL JEVEUO(APDDL ,'L',JAPDDL) 
+      CALL JEVEUO(APDDL ,'L',JAPDDL)
+      CALL JEVEUO(JEUITE,'L',JJEUIT)
 C
       ZTACF  = CFMMVD('ZTACF')
 C
@@ -136,28 +136,31 @@ C
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
       NNOCO  = CFDISI(DEFICO,'NNOCO')
 C
-      WRITE(IFM,*) '<CONTACT_DVLP> *** APPARIEMENT *** '
+      WRITE(IFM,*) '<CONTACT><APPA> RESULTATS DE L''APPARIEMENT' 
 C
 C ----------------------------------------------------------------------
 C --- INFOS SUR LES ZONES DE CONTACT
 C ----------------------------------------------------------------------
 C
-      WRITE(IFM,*) '<CONTACT_DVLP> ------ ZONES ------ '
+      WRITE(IFM,*) '<CONTACT><APPA> ------ ZONES ------ '
 
       WRITE(IFM,1000) NZOCO
       WRITE(IFM,1001) NTNOE
       WRITE(IFM,1002) NBLIAI
 C
-1000  FORMAT (' <CONTACT_DVLP> NOMBRE DE ZONES DE CONTACT        : ',I6)
-1001  FORMAT (' <CONTACT_DVLP> NOMBRE MAXIMAL DE NOEUDS ESCLAVES : ',I6)
-1002  FORMAT (' <CONTACT_DVLP> NOMBRE EFFECTIF DE LIAISONS       : ',I6)
+1000  FORMAT (' <CONTACT><APPA> NOMBRE DE ZONES DE CONTACT        : ',
+     & I6)
+1001  FORMAT (' <CONTACT><APPA> NOMBRE MAXIMAL DE NOEUDS ESCLAVES : ',
+     &I6)
+1002  FORMAT (' <CONTACT><APPA> NOMBRE EFFECTIF DE LIAISONS       : ',
+     &I6)
       
 C
 C ----------------------------------------------------------------------
 C --- INFOS SUR TOUS LES NOEUDS
 C ----------------------------------------------------------------------
 C
-      WRITE(IFM,*) '<CONTACT_DVLP> ------ NOEUDS DE CONTACT ------ '
+      WRITE(IFM,*) '<CONTACT><APPA> ------ NOEUDS DE CONTACT ------ '
 
       DO 30 INO = 1,NNOCO
 C
@@ -208,12 +211,12 @@ C
         ENDIF
         
         
-3000  FORMAT (' <CONTACT_DVLP> NOEUD NUMERO ',I6,' (',A8,') -> NOEUD ',
+3000  FORMAT (' <CONTACT><APPA> NOEUD NUMERO ',I6,' (',A8,') -> NOEUD ',
      &           A4)
-3003  FORMAT (' <CONTACT_DVLP>  * TANGENTE 1  : ',3(1PE15.8,2X))
-3005  FORMAT (' <CONTACT_DVLP>  * TANGENTE 2  : ',3(1PE15.8,2X))
-3006  FORMAT (' <CONTACT_DVLP>  * NORMALE     : ',3(1PE15.8,2X))
-3007  FORMAT (' <CONTACT_DVLP>  * TANGENTE ET NORMALE NON CALCULEES')
+3003  FORMAT (' <CONTACT><APPA>  * TANGENTE 1  : ',3(1PE15.8,2X))
+3005  FORMAT (' <CONTACT><APPA>  * TANGENTE 2  : ',3(1PE15.8,2X))
+3006  FORMAT (' <CONTACT><APPA>  * NORMALE     : ',3(1PE15.8,2X))
+3007  FORMAT (' <CONTACT><APPA>  * TANGENTE ET NORMALE NON CALCULEES')
 
 
   30  CONTINUE
@@ -222,7 +225,7 @@ C ----------------------------------------------------------------------
 C --- INFOS SUR LES NOEUDS ESCLAVES
 C ----------------------------------------------------------------------
 C
-      WRITE(IFM,*) '<CONTACT_DVLP> ----- NOEUDS ESCLAVES ----- '
+      WRITE(IFM,*) '<CONTACT><APPA> ----- NOEUDS ESCLAVES ----- '
 
       DO 40 ILIAI = 1,NBLIAI
 C
@@ -291,9 +294,9 @@ C
 C
 C ----- JEUX
 C
-        JEU     = ZR(JAPJEU+ILIAI-1)
-        DISSUP  = ZR(JJSUP+ILIAI-1)
-        WRITE(IFM,4006) JEU,DISSUP  
+        JEUOLD = ZR(JJEUIT+3*(ILIAI-1)+1-1)
+        DISSUP = ZR(JJEUSU+ILIAI-1)
+        WRITE(IFM,4006) JEUOLD,DISSUP  
 C 
 C ----- PARAMETRES PENALISATION ET FROTTEMENT
 C 
@@ -442,100 +445,100 @@ C
      
   40  CONTINUE
 
-4000  FORMAT (' <CONTACT_DVLP> LIAISON NUMERO ',I6,' (',
+4000  FORMAT (' <CONTACT><APPA> LIAISON NUMERO ',I6,' (',
      &        A16,')') 
 
-4001  FORMAT (' <CONTACT_DVLP>  * APPARIEMENT AVEC NOEUD  ',A8)
-4002  FORMAT (' <CONTACT_DVLP>  * APPARIEMENT AVEC MAILLE ',A8)
-4003  FORMAT (' <CONTACT_DVLP>  * NON APPARIE')
-4004  FORMAT (' <CONTACT_DVLP>  * NOMBRE DE DDLS : ',I6,' DONT ',I6,
+4001  FORMAT (' <CONTACT><APPA>  * APPARIEMENT AVEC NOEUD  ',A8)
+4002  FORMAT (' <CONTACT><APPA>  * APPARIEMENT AVEC MAILLE ',A8)
+4003  FORMAT (' <CONTACT><APPA>  * NON APPARIE')
+4004  FORMAT (' <CONTACT><APPA>  * NOMBRE DE DDLS : ',I6,' DONT ',I6,
      &                        ' POUR NOEUD ESCLAVE',I6)
 
-4006  FORMAT (' <CONTACT_DVLP>  * JEU: ',1PE15.8,' DONT :',1PE15.8,
+4006  FORMAT (' <CONTACT><APPA>  * JEU: ',1PE15.8,' DONT :',1PE15.8,
      &        ' VENANT DE DIST_*')
-4007  FORMAT (' <CONTACT_DVLP>  * NORMALE LISSEE/MOYENNEE: ',
+4007  FORMAT (' <CONTACT><APPA>  * NORMALE LISSEE/MOYENNEE: ',
      &         3(1PE15.8,2X))
-4008  FORMAT (' <CONTACT_DVLP>  * TANGENTE DIRECTION 1   : ',
+4008  FORMAT (' <CONTACT><APPA>  * TANGENTE DIRECTION 1   : ',
      &         3(1PE15.8,2X))
-5008  FORMAT (' <CONTACT_DVLP>  * TANGENTE DIRECTION 2   : ',
+5008  FORMAT (' <CONTACT><APPA>  * TANGENTE DIRECTION 2   : ',
      &         3(1PE15.8,2X))
 
 C
 C --- 3D - ESCLAVE
 C
-4015  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. CONTACT ( ',A8,'):',
+4015  FORMAT ((' <CONTACT><APPA>  * DDL ESCL. CONTACT ( ',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
 
-4016  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT1   ( ',A8,'):',
+4016  FORMAT ((' <CONTACT><APPA>  * DDL ESCL. FROT1   ( ',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
-4017  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT2   ( ',A8,'):',
+4017  FORMAT ((' <CONTACT><APPA>  * DDL ESCL. FROT2   ( ',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
      
 C
 C --- 2D - ESCLAVE
 C     
-4018  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. CONTACT ( ',A8,'):',
+4018  FORMAT ((' <CONTACT><APPA>  * DDL ESCL. CONTACT ( ',A8,'):',
      &           2(I8,2X),' / ',
      &           2(1PE15.8,2X)))
 
-4019  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT1   ( ',A8,'):',
+4019  FORMAT ((' <CONTACT><APPA>  * DDL ESCL. FROT1   ( ',A8,'):',
      &           2(I8,2X),' / ',
      &           2(1PE15.8,2X)))
    
 C
 C --- 3D MAITRE/ESCL - MAITRE
 C
-5001  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,
+5001  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',A8,
      &           '/',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
-5002  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,
+5002  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',A8,
      &           '/',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
-5003  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT2   ( ',A8,
+5003  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. FROT2   ( ',A8,
      &           '/',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
 C
 C --- 3D NODAL - MAITRE
 C    
-5011  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,'):',
+5011  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
-5012  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,'):',
+5012  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))
-5013  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT2   ( ',A8,'):',
+5013  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. FROT2   ( ',A8,'):',
      &           3(I8,2X),' / ',
      &           3(1PE15.8,2X)))  
 C
 C --- 2D MAITRE/ESCL - MAITRE
 C     
-6001  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,
+6001  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',A8,
      &           '/',A8,'):',
      &           2(I8,2X),' / ',
      &           2(1PE15.8,2X)))
-6002  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,
+6002  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',A8,
      &           '/',A8,'):',
      &           2(I8,2X),' / ',
      &           2(1PE15.8,2X)))
 C
 C --- 2D NODAL - MAITRE
 C
-6011  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,'):',
+6011  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',A8,'):',
      &           2(I8,2X),' / ',
      &           2(1PE15.8,2X)))
-6012  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,'):',
+6012  FORMAT ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',A8,'):',
      &           2(I8,2X),' / ',
      &           2(1PE15.8,2X)))
 C
-7000  FORMAT (' <CONTACT_DVLP>  * E_N              :',1PE15.8)
-7001  FORMAT (' <CONTACT_DVLP>  * E_T              :',1PE15.8)
-7003  FORMAT (' <CONTACT_DVLP>  * COULOMB          :',1PE15.8)
+7000  FORMAT (' <CONTACT><APPA>  * E_N              :',1PE15.8)
+7001  FORMAT (' <CONTACT><APPA>  * E_T              :',1PE15.8)
+7003  FORMAT (' <CONTACT><APPA>  * COULOMB          :',1PE15.8)
 C
       
 C

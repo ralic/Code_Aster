@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -160,7 +160,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG )
     EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   RADI_V   RADI_T   )

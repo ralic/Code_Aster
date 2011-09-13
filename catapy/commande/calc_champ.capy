@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -228,25 +228,19 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              into=("FORC_NODA","REAC_NODA",),
                             ),
 
-
-    #INVARIANT    =FACT(statut='f', max='**',
-                       #fr="Options pour le calcul d'invariants",
-                           ##produira SIEQ_XXXX et EPEQ_XXXX a la place de
-                           ##"EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
-                           ##"EQUI_ELNO_EPSI","EQUI_ELGA_EPSI",
-                           ##"EQUI_ELNO_EPME","EQUI_ELGA_EPME",
-                           ##"SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
-          #NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
-                                      ##contraintes
-                                #into=("SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
-                                      #"SIPO_ELNO_DEPL","EFGE_ELNO_DEPL","EFGE_ELNO_CART","SIGM_ELNO_CART",
-                                      #"SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","SIGM_ELNO_TUYO",
-                                      ##deformations
-                                      #"EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELGA_DEPL","EPSG_ELNO_DEPL",
-                                      #"EPME_ELNO_DEPL","EPME_ELGA_DEPL","DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",
-                                      #"EPVC_ELNO","EPVC_ELGA",),),
-                       #),
-
+     # Mot-cle facteur CHAMp UTILisateur
+     CHAM_UTIL = FACT(statut='f', max='**',
+          regles = (UN_PARMI('FORMULE', 'CRITERE'), ),
+          NOM_CHAM = SIMP(statut='o', typ='TXM',
+                          fr="Nom du champ utilisé en donnée",),
+          FORMULE  = SIMP(statut='f', typ=formule, max='**',
+                          fr="Formule permet d'obtenir le critère",),
+          CRITERE  = SIMP(statut='f', typ='TXM',
+                          into=('TRACE', 'VMIS', 'INVA_2'),
+                          fr="Calcule d'un critère pré-défini",),
+          NUME_CHAM_RESU = SIMP(statut='o', typ='I', val_min=1, val_max=20,
+                          fr="Numéro du champ produit. Exemple: 6 produit le champ UT06",),
+     ),
 
      INFO             = SIMP(statut='f',typ='I',defaut= 1,into=(1,2)),
 

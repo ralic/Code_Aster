@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,9 @@ MODE_LOCAL__
                                         QX       QY       )
     EEFGENOC = SIEF_C   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
                                         QX       QY       )
-    EEFGEPG  = SIEF_R   ELGA__ MASS    (NXX      NYY      NXY      MXX      MYY      MXY
+    EEFGEPGR = SIEF_R   ELGA__ MASS    (NXX      NYY      NXY      MXX      MYY      MXY
+                                        QX       QY       )
+    EEFGEPGC = SIEF_C   ELGA__ MASS    (NXX      NYY      NXY      MXX      MYY      MXY
                                         QX       QY       )
     EDEFGPG  = EPSI_R   ELGA__ MASS    (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
@@ -153,24 +155,27 @@ OPTION__
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER  CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
                               OUT__  EGGEOP_R PCOORPG
     DEGE_ELNO                -1    IN__    OUT__    XXXXXX   XXXXXX
-    ECIN_ELEM      406   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
+    ECIN_ELEM           406   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
-    EFGE_ELNO      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+    EFGE_ELGA           451   IN__   ECONTPG  PSIEFR   CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
+                              OUT__  EEFGEPGR PEFGER
+                                     EEFGEPGC PEFGEC
+    EFGE_ELNO           410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                               OUT__  EEFGENOR PEFFORR
                                      EEFGENOC PEFFORC
     ENER_ELAS                -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE              -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPOT_ELEM      401   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+    EPOT_ELEM           401   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                               OUT__  EENEDNO  PENERDR
-    EPSI_ELNO      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+    EPSI_ELNO           410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                                      ENBSP_I  PNBSP_I
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
-    SIEQ_ELNO      330   IN__   ESIGMNOR PCONCOR
+    SIEQ_ELNO           330   IN__   ESIGMNOR PCONCOR
                               OUT__  ECOEQNO  PCONTEQ
     FORC_NODA           416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
@@ -245,12 +250,12 @@ OPTION__
     REFE_FORC_NODA      416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
-    REPE_TENS           443   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  ECONTPG  PCOGAIN  EDEFOPG  PDEGAIN  
-                                     ESIGMNOR PCONOIN  EDEFONO  PDENOIN  CCACOQU  PCACOQU 
+    REPE_TENS           443   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  ECONTPG  PCOGAIN  EDEFOPG  PDEGAIN
+                                     ESIGMNOR PCONOIN  EDEFONO  PDENOIN  CCACOQU  PCACOQU
                               OUT__  ECONTPG  PCOGAOUT EDEFOPG  PDEGAOUT ESIGMNOR PCONOOUT EDEFONO  PDENOOUT
-    REPE_GENE           443   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  EEFGEPG  PEFGAIN  EDEFGPG  PDGGAIN  
-                                     EEFGENOR PEFNOIN  EDEFGNO  PDGNOIN  CCACOQU  PCACOQU 
-                              OUT__  EEFGEPG  PEFGAOUT EDEFGPG  PDGGAOUT EEFGENOR PEFNOOUT EDEFGNO  PDGNOOUT
+    REPE_GENE           443   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  EEFGEPGR PEFGAIN  EDEFGPG  PDGGAIN
+                                     EEFGENOR PEFNOIN  EDEFGNO  PDGNOIN  CCACOQU  PCACOQU
+                              OUT__  EEFGEPGR PEFGAOUT EDEFGPG  PDGGAOUT EEFGENOR PEFNOOUT EDEFGNO  PDGNOOUT
     RICE_TRACEY              -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA           401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I

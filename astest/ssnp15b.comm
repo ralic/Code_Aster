@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. C_PLAN)
 # ssnp15b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,8 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELGA','SIEF_ELNO','VARI_ELNO',),);
+            OPTION=('EPSI_ELGA','SIEF_ELNO','VARI_ELNO','SIEQ_ELGA'),);
+
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
@@ -238,7 +239,23 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.042329,
-                   PRECISION=0.01,),),);
+                   PRECISION=0.01,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='TRIAX',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=2.28000E-01,
+                   REFERENCE='ANALYTIQUE'),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='TRIAX',
+                   MAILLE='CUBE',
+                   POINT=4,
+                   VALE=3.25349E-01,
+                   REFERENCE='ANALYTIQUE'),),);
 
 ENER_TOT=POST_ELEM(ENER_TOTALE=_F(MAILLE='CUBE',),
                    RESULTAT=U,

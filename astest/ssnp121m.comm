@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121m.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,7 +119,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                            _F(
                              GROUP_MA_ESCL = 'SURESC2',
                              GROUP_MA_MAIT = 'SURMAI2',
-                             INTEGRATION   = 'NOEUD',
+                             INTEGRATION   = 'SIMPSON',
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1000.,
                              RACCORD_LINE_QUAD = 'OUI',
@@ -147,7 +147,7 @@ RESU=STAT_NON_LINE (MODELE     = MO,
                     COMP_ELAS  =_F(RELATION='ELAS'),
                     NEWTON=_F(MATRICE='ELASTIQUE',REAC_ITER=1,),
                     CONVERGENCE=_F(ARRET='OUI',
-                    ITER_GLOB_MAXI=30,
+                    ITER_GLOB_MAXI=150,
                     RESI_GLOB_MAXI=1.E-8,),);
 
 

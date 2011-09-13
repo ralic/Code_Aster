@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -197,6 +197,12 @@ C     ---------------------------------------
           TROOM  = VALRES(7)
           TMELT  = VALRES(8)
           DINST = INSTAP-INSTAM
+
+          IF(IRET3 .NE.0 .AND. IRET4 .NE.0)THEN
+            TM = TROOM
+            TP = TROOM
+          ENDIF
+
           CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
      &               EPSP0,TROOM,TMELT,TM,VIM(4),VIM(1),VIM(3),RP,RPRIM)
         ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 12/09/2011   AUTEUR NICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 # zzzz121a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ M[1]=LIRE_MAILLAGE( )
 #
 # Attention : le test d'interpenetration peut etre long (voir la documentation).
 MACR_INFO_MAIL(
-              VERSION_HOMARD='V10_1',
+              VERSION_HOMARD='V10_2',
               MAILLAGE=M[1],
               QUALITE='OUI',
               INTERPENETRATION='OUI',
@@ -205,7 +205,7 @@ for k in range(1,10):
    M[k+1]=CO('M_%d' % (k+1))
 #
    MACR_ADAP_MAIL(
-              VERSION_HOMARD='V10_1',
+              VERSION_HOMARD='V10_2',
               ADAPTATION='RAFFINEMENT',
               MAILLAGE_N = M[k],
               MAILLAGE_NP1 = M[k+1],

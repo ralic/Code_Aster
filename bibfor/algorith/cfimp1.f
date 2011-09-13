@@ -1,9 +1,9 @@
-      SUBROUTINE CFIMP1(NOMA  ,DEFICO,RESOCO,IFM   )
+      SUBROUTINE CFIMP1(PHASE ,NOMA  ,DEFICO,RESOCO,IFM   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,8 +22,8 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
-      CHARACTER*24 DEFICO
-      CHARACTER*24 RESOCO
+      CHARACTER*24 DEFICO,RESOCO
+      CHARACTER*3  PHASE
       INTEGER      IFM
 C      
 C ----------------------------------------------------------------------
@@ -35,8 +35,10 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  DEFICO : SD DE DEFINITION DU CONTACT
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  PHASE  : 'INI' LIAISONS INITIALES
+C              'FIN' LIAISONS FINALES
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
 C
@@ -66,33 +68,38 @@ C
       CHARACTER*14 CHAIAC
       CHARACTER*4  TYPE2
       CHARACTER*2  TYPLIA
-      REAL*8       JEU
+      REAL*8       JEU,JEUOLD,JEUINI
       CHARACTER*10 TYPLI
-      CHARACTER*24 APJEU
-      INTEGER      JAPJEU 
+      CHARACTER*24 JEUITE,JEUX
+      INTEGER      JJEUIT,JJEUX
       CHARACTER*19 LIAC,TYPL 
       INTEGER      JLIAC,JTYPL
       CHARACTER*24 NUMLIA
       INTEGER      JNUMLI     
       CHARACTER*19 SDAPPA
       INTEGER      TYPAPP,ENTAPP 
-      INTEGER      BTOTAL,NDIMG,NBLIAI
+      INTEGER      NDIMG,NBLIAI
+      INTEGER      BTOTAL,NBLIAC,LLF,LLF1,LLF2
+      LOGICAL      CFDISL,LLAGRF,LLAGRC
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ ()
+      CALL JEMARQ()
 C
 C --- ACCES SD CONTACT
 C  
       LIAC   = RESOCO(1:14)//'.LIAC'
       TYPL   = RESOCO(1:14)//'.TYPL'
-      APJEU  = RESOCO(1:14)//'.APJEU'
       NUMLIA = RESOCO(1:14)//'.NUMLIA'
 C
-      CALL JEVEUO(LIAC  ,'L',JLIAC)
-      CALL JEVEUO(APJEU ,'L',JAPJEU)         
+      CALL JEVEUO(LIAC  ,'L',JLIAC)        
       CALL JEVEUO(TYPL  ,'L',JTYPL)   
-      CALL JEVEUO(NUMLIA,'L',JNUMLI)     
+      CALL JEVEUO(NUMLIA,'L',JNUMLI)
+C
+      JEUITE = RESOCO(1:14)//'.JEUITE'
+      JEUX   = RESOCO(1:14)//'.JEUX'
+      CALL JEVEUO(JEUITE,'L',JJEUIT)
+      CALL JEVEUO(JEUX  ,'L',JJEUX )
 C
 C --- SD APPARIEMENT
 C
@@ -100,9 +107,38 @@ C
 C
 C --- INFORMATIONS SUR CONTACT
 C  
+      LLAGRF = CFDISL(DEFICO,'FROT_LAGR')
+      LLAGRC = CFDISL(DEFICO,'CONT_LAGR')
       NDIMG  = CFDISD(RESOCO,'NDIM'  )
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
-      BTOTAL = CFDISD(RESOCO,'BTOTAL')                  
+      NBLIAC = CFDISD(RESOCO,'NBLIAC')
+      LLF    = CFDISD(RESOCO,'LLF'   )
+      LLF1   = CFDISD(RESOCO,'LLF1'  )
+      LLF2   = CFDISD(RESOCO,'LLF2'  )
+      BTOTAL = NBLIAC+LLF+LLF1+LLF2
+C
+C --- AFFICHAGE EN-TETE
+C
+      WRITE(IFM,10)  NBLIAI   
+      IF (PHASE.EQ.'INI') THEN
+        WRITE(IFM,101) NBLIAC
+      ELSEIF (PHASE.EQ.'FIN') THEN
+        WRITE(IFM,301) NBLIAC
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF    
+C     
+      IF (LLAGRF) THEN
+        IF (NDIMG.EQ.2) THEN
+          WRITE(IFM,102) LLF
+        ELSEIF (NDIMG.EQ.3) THEN
+          WRITE(IFM,202) LLF
+          WRITE(IFM,203) LLF1
+          WRITE(IFM,204) LLF2
+        ENDIF
+      ENDIF
+C 
+      WRITE(IFM,20)                 
 C
 C --- BOUCLE SUR LES LIAISONS
 C
@@ -127,15 +163,27 @@ C
         CALL CFNOAP(NOMA  ,DEFICO,TYPAPP,ENTAPP,NOMAPP,
      &              TYPE2 )      
 C
-C --- JEU
+C ----- JEU
 C
-        JEU = ZR(JAPJEU-1+ILIAI)
+        IF (PHASE.EQ.'INI') THEN
+          JEUINI = ZR(JJEUX+3*(ILIAI-1)+1-1)
+          JEUOLD = ZR(JJEUIT+3*(ILIAI-1)+1-1)
+          IF (LLAGRC) THEN
+            JEU = JEUOLD
+          ELSE
+            JEU = JEUINI
+          ENDIF
+        ELSEIF (PHASE.EQ.'FIN') THEN
+          JEU    = ZR(JJEUIT+3*(ILIAI-1)+1-1)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF  
 C
 C --- ACTIF OU NON ?
 C
         ACTIF = 0
 
-        DO 10 ILIAC = 1,BTOTAL
+        DO 90 ILIAC = 1,BTOTAL
           IF (ZI(JLIAC-1+ILIAC).EQ.ILIAI) THEN 
             ACTIF  = 1
 C
@@ -147,25 +195,22 @@ C
               TYPLI = 'CONT.     '
             ELSE IF (TYPLIA.EQ.'F0') THEN
               IF (NDIMG.EQ.3) THEN
-                TYPLI = 'FROT. 1&2 '
+                TYPLI = 'ADHE. 1&2 '
               ELSE
-                TYPLI = 'FROT.     '
+                TYPLI = 'ADHE.     '
               ENDIF
             ELSE IF (TYPLIA.EQ.'F1') THEN
-              TYPLI = 'FROT. 1   '
+              TYPLI = 'ADHE. 1   '
             ELSE IF (TYPLIA.EQ.'F2') THEN
-              TYPLI = 'FROT. 2   '
-            ELSE IF (TYPLIA.EQ.'F3') THEN
-              TYPLI = 'FROT.     '
+              TYPLI = 'ADHE. 2   '
             ENDIF        
           ENDIF
-  10    CONTINUE
+  90    CONTINUE
 C
 C --- IMPRESSION
 C
         IF (ACTIF.EQ.1) THEN
           CHAIAC = ' ACTIVE (JEU: '
-        
           WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                     CHAIAC,JEU,',TYPE: ',TYPLI,')'
         ELSE
@@ -175,12 +220,35 @@ C
 
         ENDIF
   500 CONTINUE
-   
- 1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A14,E10.3,
-     &         A7,A10,A1)
+C
+ 10   FORMAT (' <CONTACT><LIAI> NOMBRE DE LIAISONS '
+     &        'POSSIBLES           :',
+     &       I8)
+C
+ 20   FORMAT (' <CONTACT><LIAI> LISTE DES LIAISONS')
+C
+ 101  FORMAT (' <CONTACT><LIAI> NOMBRE DE LIAISONS '
+     &        'DE CONTACT INITIALES:',I6)
+C
+ 102  FORMAT (' <CONTACT><LIAI>   DONT ADHERENTES :'
+     &       I8)
+C      
+ 202  FORMAT (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 1 & 2 :'
+     &       I8)
+ 203  FORMAT (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 1     :'
+     &       I8)
+ 204  FORMAT (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 2     :'
+     &       I8)
+C
+ 301  FORMAT (' <CONTACT><LIAI> NOMBRE DE LIAISONS '
+     &        ' DE CONTACT FINALES  :',I6)
 
- 1010 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A14,E10.3,
-     &         A1)
+C   
+ 1000 FORMAT (' <CONTACT><LIAI> LIAISON ',I5,A1,A16,A4,A8,A3,A14,
+     &         1PE12.5,A7,A10,A1)
+
+ 1010 FORMAT (' <CONTACT><LIAI> LIAISON ',I5,A1,A16,A4,A8,A3,A14,
+     &         1PE12.5,A1)
 C
       CALL JEDEMA()
 C

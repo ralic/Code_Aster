@@ -1,9 +1,9 @@
       SUBROUTINE MMELIN(NOMA,NUMA,TYPINT,NNINT)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,18 +40,14 @@ C IN  NOMA   : NOM DU MAILLAGE
 C IN  NUMA   : NUMERO ABSOLU DE LA MAILLE
 C IN  TYPINT : TYPE SCHEMA INTEGRATION
 C                 1 NOEUDS
-C                 2 GAUSS
-C                 3 SIMPSON
-C                 4 SIMPSON_1
-C                 5 SIMPSON_2
-C                 6 NEWTON-COTES
-C                 7 NEWTON-COTES_1
-C                 8 NEWTON-COTES_2
+C                X2 GAUSS (X est l'ordre de la quadrature)
+C                Y3 SIMPSON (Y est nombre de partitions du domaine)
+C		         Z4 NEWTON-COTES (Z est dégré du polynôme interpolateur)
 C OUT NNINT  : NOMBRE DE POINTS D'INTEGRATION DE CET ELEMENT
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      IBID
+      INTEGER      IBID, PARAM
       CHARACTER*8  ALIAS
 C
 C ----------------------------------------------------------------------
@@ -59,69 +55,82 @@ C
       CALL MMELTY(NOMA,NUMA,ALIAS,IBID,IBID)
 C
       IF (TYPINT .EQ. 1) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 2
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 3
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 3
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 4
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
-      ELSEIF (TYPINT .EQ. 2) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 2
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 3
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 3
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 4
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
-      ELSEIF (TYPINT .EQ. 3) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 3
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 3
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 6
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 9
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
-      ELSEIF (TYPINT .EQ. 4) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 5
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 5
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 15
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 15
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 21
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 21
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 21
-      ELSEIF (TYPINT .EQ. 5) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 9
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 9
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 42
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 42
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 65
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 65
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 65
-      ELSEIF (TYPINT .EQ. 6) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 4
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 4
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 4
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 4
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 16
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 16
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 16
-      ELSEIF (TYPINT .EQ. 7) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 5
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 5
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 6
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 25
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 25
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 25
-      ELSEIF (TYPINT .EQ. 8) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 10
-        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 10
-        IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 42
-        IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 42
-        IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 100
-        IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 100
-        IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 100
+        IF (ALIAS(1:3) .EQ. 'SE2') THEN
+            NNINT = 2
+        ELSE IF (ALIAS(1:3) .EQ. 'SE3') THEN
+            NNINT = 3
+        ELSE IF (ALIAS(1:3) .EQ. 'TR3') THEN
+            NNINT = 3
+        ELSE IF ((ALIAS(1:3).EQ.'TR6').OR.(ALIAS(1:3).EQ.'TR7')) THEN
+            NNINT = 6
+        ELSE IF (ALIAS(1:3) .EQ. 'QU4') THEN
+            NNINT = 4
+        ELSE IF ((ALIAS(1:3).EQ.'QU8')) THEN
+            NNINT = 8
+        ELSE IF ((ALIAS(1:3).EQ.'QU9')) THEN
+            NNINT = 9
+        ELSE
+            CALL ASSERT(.FALSE.)
+        END IF
+      ELSE IF (MOD(TYPINT,10) .EQ. 2) THEN
+        PARAM = TYPINT/10
+        IF (ALIAS(1:2) .EQ. 'SE') THEN
+            IF ((ALIAS(3:3) .EQ. '3').AND.(PARAM .LE. 2)) THEN
+                NNINT = 3
+            ELSE
+                NNINT = PARAM
+            END IF
+        ELSE IF (ALIAS(1:2) .EQ. 'TR') THEN
+            IF (PARAM .EQ. 1) THEN
+                NNINT = 1
+            ELSE IF (PARAM .EQ. 2) THEN
+                NNINT = 3
+            ELSE IF (PARAM .EQ. 3) THEN
+                NNINT = 4
+            ELSE IF (PARAM .EQ. 4) THEN
+                NNINT = 6
+            ELSE IF (PARAM .EQ. 5) THEN
+                NNINT = 7
+            ELSE IF (PARAM .EQ. 6) THEN
+                NNINT = 12
+            ELSE IF (PARAM .EQ. 7) THEN
+                NNINT = 13
+            ELSE IF (PARAM .EQ. 8) THEN
+                NNINT = 16
+            ELSE IF (PARAM .EQ. 9) THEN
+                NNINT = 19
+            ELSE IF (PARAM .EQ. 10) THEN
+                NNINT = 25
+            ELSE
+                CALL ASSERT(.FALSE.)
+            END IF
+        ELSE IF (ALIAS(1:2) .EQ. 'QU') THEN
+            NNINT = PARAM**2
+        ELSE
+            CALL ASSERT(.FALSE.)
+        END IF
+      ELSE IF (MOD(TYPINT,10) .EQ. 3) THEN
+        PARAM = TYPINT/10
+        IF (ALIAS(1:2) .EQ. 'SE') THEN
+            NNINT = 2*PARAM+1
+        ELSE IF (ALIAS(1:2) .EQ. 'TR') THEN
+            NNINT = 2*(PARAM**2)+3*PARAM+1
+        ELSE IF (ALIAS(1:2) .EQ. 'QU') THEN
+            NNINT = (2*PARAM+1)**2
+        ELSE
+            CALL ASSERT(.FALSE.)
+        END IF
+      ELSE IF (MOD(TYPINT,10) .EQ. 4) THEN
+        PARAM = TYPINT/10
+        IF (ALIAS(1:2) .EQ. 'SE') THEN
+            NNINT = PARAM+1
+        ELSE IF (ALIAS(1:2) .EQ. 'TR') THEN
+            NNINT = (PARAM+1)*(PARAM+2)/2
+        ELSE IF (ALIAS(1:2) .EQ. 'QU') THEN
+            NNINT = (PARAM+1)**2
+        ELSE
+            CALL ASSERT(.FALSE.)
+        END IF
       ELSE
         CALL ASSERT(.FALSE.)
       END IF

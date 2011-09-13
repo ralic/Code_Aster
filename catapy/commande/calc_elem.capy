@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
           b_toutes=BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
                OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="SIEF_ELNO",
                               #  contraintes
-                           into=( "SIEF_ELNO","SIGM_ELNO","SIEF_ELGA",
+                           into=( "SIEF_ELNO","SIGM_ELNO","SIEF_ELGA","EFGE_ELGA",
                                   "SIPO_ELNO","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
                                   "SITU_ELNO","SIRO_ELEM","SIPM_ELNO",
                               # déformations
@@ -161,7 +161,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut='SIEF_ELNO',
                             fr="option de calcul des contraintes ou efforts generalises",
                             into=( "SIEF_ELNO","SIGM_ELNO","SIEF_ELGA","SITU_ELNO",
-                                   "SIPO_ELNO","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
+                                   "SIPO_ELNO","EFGE_EGA","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
                                    ),),
 
                b_charge =BLOC( condition = "au_moins_un(OPTION, ('SIGM_ELNO','SIEF_ELGA', \
@@ -261,7 +261,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol noli",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO","SIRO_ELEM",
-                                  "SITU_ELNO","SICO_ELNO",
+                                  "SITU_ELNO","SICO_ELNO","EFGE_ELGA",
                                   "EFCA_ELNO","SIPO_ELNO","SIPM_ELNO",
                                   "FLHN_ELGA",
                                   # EPSI
@@ -341,7 +341,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                                        fr="options de contraintes non lin poutres, coques",
                OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                               #  contraintes
-                           into=( "SIEF_ELNO","EFCA_ELNO","SITU_ELNO","SICO_ELNO",
+                           into=( "SIEF_ELNO","EFCA_ELNO","SITU_ELNO","SICO_ELNO","EFGE_ELGA",
                            ),),
                              ),
 

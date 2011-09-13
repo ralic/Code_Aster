@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144l.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,7 +96,8 @@ CTXFEM = DEFI_CONTACT(
             FORMULATION    = 'XFEM',
             FROTTEMENT     = 'SANS',
             ITER_CONT_MAXI=4,
-            ZONE=(_F(  INTEGRATION='GAUSS',                                     
+            ZONE=(_F(  INTEGRATION='GAUSS',
+                       ORDRE_INT=3,                                 
                        ALGO_CONT='CZM',
                        COEF_ECHELLE=1.,
                        FISS_MAIT = FISS,

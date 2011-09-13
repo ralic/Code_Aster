@@ -1,0 +1,296 @@
+       SUBROUTINE CFADH3(RESOCO,DEFICO,NOMA  ,NDIM  ,INDIC ,
+     &                   NBLIAC,AJLIAI,SPLIAI,LLF   ,LLF1  ,
+     &                   LLF2  )
+C 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*24 RESOCO,DEFICO
+      CHARACTER*8  NOMA
+      INTEGER      INDIC,NDIM
+      INTEGER      AJLIAI,SPLIAI
+      INTEGER      NBLIAC,LLF,LLF1,LLF2
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
+C
+C VERIFICATION QUE LES LIAISONS SONT BIEN ADHERENTES - VERSION 3D
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON
+C             -1 ON A ENLEVE UNE LIAISON
+C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES
+C I/O AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON CORRECTE DU CALCUL
+C              DE LA MATRICE DE CONTACT ACM1AT
+C I/O SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
+C I/O LLF    : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
+C               PREMIERE DIRECTION (EN 3D)
+C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
+C               SECONDE DIRECTION (EN 3D)
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      BTOTAL
+      INTEGER      ILIAI,ILIAC,ILIAI1,ILIAI2,ILIAC1,ILIAC2
+      INTEGER      ICOMPT
+      INTEGER      COMPTN,COMPTS,COMPTU,COMPTV
+      INTEGER      COMPT0,COMPT1,COMPT2
+      CHARACTER*24 SPLF0
+      INTEGER      JSPLF0
+      REAL*8       COEFFF,LAMBDC,XQUOT
+      REAL*8       LAMBDF,LAMBF1,LAMBF2
+      CHARACTER*1  TYPESP
+      CHARACTER*2  TYPLIA,TYPLI1,TYPLI2
+      CHARACTER*2  TYPEC0,TYPEF0,TYPEF1,TYPEF2
+      CHARACTER*19 LIAC,TYPL,MU
+      INTEGER      JLIAC,JTYPL,JMU
+      CHARACTER*24 TACFIN
+      INTEGER      JTACF
+      INTEGER      CFMMVD,ZTACF
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      TYPESP = 'S'
+      TYPEC0 = 'C0'
+      TYPEF0 = 'F0'
+      TYPEF1 = 'F1'
+      TYPEF2 = 'F2'
+      COMPT0 = 0
+      COMPT1 = 0
+      COMPT2 = 0
+      COMPTS = 0
+      COMPTU = 0
+      COMPTV = 0
+      SPLF0  = '&&CFADH3.SUPLF0'
+      BTOTAL = NBLIAC + LLF + LLF1 + LLF2
+C
+C --- PAS DE LIAISONS ADHERENTES -> ON SORT
+C
+      IF ((LLF+LLF1+LLF2) .EQ. 0) THEN
+        GOTO 999
+      ENDIF
+C
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+C
+      LIAC   = RESOCO(1:14)//'.LIAC'
+      TYPL   = RESOCO(1:14)//'.TYPL'
+      MU     = RESOCO(1:14)//'.MU'
+      TACFIN = RESOCO(1:14)//'.TACFIN'      
+      CALL JEVEUO(LIAC,  'L',JLIAC )
+      CALL JEVEUO(TYPL  ,'L',JTYPL )
+      CALL JEVEUO(MU,    'E',JMU   )
+      CALL JEVEUO(TACFIN,'L',JTACF )
+      ZTACF  = CFMMVD('ZTACF')       
+C
+C --- VECTEUR POUR STOCKER LES LIAISONS (GLISSANTES) A SUPPRIMER
+C
+      CALL WKVECT(SPLF0 ,'V V I',LLF+LLF1+LLF2,JSPLF0)
+C
+C --- DETECTION DES LIAISONS EVENTUELLEMENT GLISSANTES
+C   
+      DO 300 ILIAC1 = 1, BTOTAL
+C
+C ----- PARAMETRES DE LA LIAISON
+C
+        ILIAI1 = ZI(JLIAC+ILIAC1-1)
+        TYPLI1 = ZK8(JTYPL+ILIAC1-1)(1:2)
+C
+        IF (TYPLI1.EQ.TYPEF0) THEN
+C
+C ------- SUIVANT LES DEUX DIRECTIONS
+C
+          COMPTN = 0
+          COMPT0 = COMPT0 + 1
+          DO 400 ILIAC2 = 1, ILIAC1-1
+            ILIAI2 = ZI(JLIAC+ILIAC2-1)
+            TYPLI2 = ZK8(JTYPL+ILIAC2-1)(1:2)
+            COEFFF = ZR(JTACF+ZTACF*(ILIAI2-1)+1-1)
+            IF (TYPLI2.EQ.TYPEC0) THEN
+              COMPTN = COMPTN + 1
+            ENDIF
+            IF (ILIAI1.EQ.ILIAI2) THEN
+C
+C ----------- LAGRANGES DE CONTACT/FROTTEMENT
+C
+              LAMBDC = ZR(JMU+COMPTN-1)
+              LAMBF1 = ZR(JMU+NBLIAC+    COMPT0-1)
+              LAMBF2 = ZR(JMU+NBLIAC+LLF+COMPT0-1)
+              LAMBDF = SQRT(LAMBF1**2 + LAMBF2**2)            
+C  
+              IF (LAMBDC.GT.0.D0 ) THEN
+                XQUOT  = LAMBDF/LAMBDC
+              ELSE
+                XQUOT  = 0.D0
+              ENDIF
+C
+              IF (ABS(XQUOT).GE.COEFFF) THEN
+                COMPTS = COMPTS + 1
+                ZI(JSPLF0+COMPTS+COMPTU+COMPTV-1)  = ILIAC1
+              ELSE
+                ZR(JMU+NBLIAC+COMPT0-COMPTS-1)     = LAMBF1
+                ZR(JMU+NBLIAC+LLF+COMPT0-COMPTS-1) = LAMBF2
+              ENDIF
+              GOTO 300
+            ENDIF
+ 400      CONTINUE
+        ELSEIF (TYPLI1.EQ.TYPEF1) THEN
+C
+C ------- SUIVANT LA PREMIERE DIRECTION
+C
+          COMPTN = 0
+          COMPT1 = COMPT1 + 1
+          DO 401 ILIAC2 = 1, ILIAC1-1
+            ILIAI2 = ZI(JLIAC+ILIAC2-1)
+            TYPLI2 = ZK8(JTYPL+ILIAC2-1)(1:2)
+            COEFFF = ZR(JTACF+ZTACF*(ILIAI2-1)+1-1)
+            IF (TYPLI2.EQ.TYPEC0) THEN
+              COMPTN = COMPTN + 1
+            ENDIF
+            IF (ILIAI1.EQ.ILIAI2) THEN
+C
+C ----------- LAGRANGES DE CONTACT/FROTTEMENT
+C
+              LAMBDC = ZR(JMU+COMPTN-1)
+              LAMBF1 = ZR(JMU+NBLIAC+(NDIM-1)*LLF+COMPT1-1)
+C  
+              IF (LAMBDC.GT.0.D0 ) THEN
+                XQUOT  = ABS(LAMBF1)/LAMBDC
+              ELSE
+                XQUOT  = 0.D0
+              ENDIF
+C
+              IF (ABS(XQUOT).GE.COEFFF) THEN
+                COMPTU = COMPTU + 1
+                ZI(JSPLF0+COMPTS+COMPTU+COMPTV-1)  = ILIAC1
+              ELSE
+                ZR(JMU+NBLIAC+(NDIM-1)*LLF+COMPT1-COMPTU-1) = LAMBF1
+              ENDIF
+              GOTO 300
+            ENDIF
+ 401      CONTINUE            
+        ELSEIF (TYPLI1.EQ.TYPEF2) THEN
+C
+C ------- SUIVANT LA SECONDE DIRECTION
+C
+          COMPTN = 0
+          COMPT2 = COMPT2 + 1
+          DO 402 ILIAC2 = 1, ILIAC1-1
+            ILIAI2 = ZI(JLIAC+ILIAC2-1)
+            TYPLI2 = ZK8(JTYPL+ILIAC2-1)(1:2)
+            COEFFF = ZR(JTACF+ZTACF*(ILIAI2-1)+1-1)
+            IF (TYPLI2.EQ.TYPEC0) THEN
+              COMPTN = COMPTN + 1
+            ENDIF
+            IF (ILIAI1.EQ.ILIAI2) THEN
+C
+C ----------- LAGRANGES DE CONTACT/FROTTEMENT
+C
+              LAMBDC = ZR(JMU+COMPTN-1)
+              LAMBF2 = ZR(JMU+NBLIAC+(NDIM-1)*LLF+LLF1+COMPT2-1)
+C  
+              IF (LAMBDC.GT.0.D0 ) THEN
+                XQUOT  = ABS(LAMBF2)/LAMBDC
+              ELSE
+                XQUOT  = 0.D0
+              ENDIF
+C
+              IF (ABS(XQUOT).GE.COEFFF) THEN
+                COMPTV = COMPTV + 1
+                ZI(JSPLF0+COMPTS+COMPTU+COMPTV-1)  = ILIAC1
+              ELSE
+                ZR(JMU+NBLIAC+(NDIM-1)*LLF+LLF1+COMPT2-COMPTV-1) =
+     &                       LAMBF2
+              ENDIF
+              GOTO 300
+            ENDIF
+ 402      CONTINUE
+        ENDIF
+ 300  CONTINUE
+C
+C --- SUPPRESSION DES LIAISONS QUI SONT EN FAIT GLISSANTES
+C 
+      DO 160 ICOMPT = 1, COMPTS+COMPTU+COMPTV
+        ILIAC  = ZI(JSPLF0+COMPTS+COMPTU+COMPTV-ICOMPT)
+        ILIAI  = ZI(JLIAC+ILIAC-1)
+        TYPLIA = ZK8(JTYPL+ILIAC-1)(1:2)
+        CALL CFTABL(INDIC ,NBLIAC,AJLIAI,SPLIAI,LLF   ,
+     &              LLF1  ,LLF2  ,RESOCO,TYPESP,ILIAC ,
+     &              ILIAI ,TYPLIA)
+        CALL CFIMP2(DEFICO,RESOCO,NOMA  ,ILIAI ,TYPLIA,
+     &              'GLI')
+
+ 160  CONTINUE
+C
+C --- DECALAGES DES LAGRANGES
+C
+      IF ((COMPTS+COMPTU+COMPTV).NE.0) THEN
+        DO 70 ILIAC = 1, LLF
+          ZR(JMU+NBLIAC+LLF+ILIAC-1) =
+     &        ZR(JMU+NBLIAC+LLF+COMPTS+ILIAC-1)
+ 70     CONTINUE
+        DO 80 ILIAC = 1, LLF1
+          ZR(JMU+NBLIAC+(NDIM-1)*LLF+ILIAC-1) =
+     &        ZR(JMU+NBLIAC+(NDIM-1)*(LLF+COMPTS)+ILIAC-1)
+ 80     CONTINUE
+        DO 90 ILIAC = 1, LLF2
+          ZR(JMU+NBLIAC+(NDIM-1)*LLF+LLF1+ILIAC-1) =
+     &        ZR(JMU+NBLIAC+(NDIM-1)*(LLF+COMPTS)+LLF1+COMPTU+ILIAC-1)
+ 90     CONTINUE
+      ENDIF
+C
+      CALL JEDETR(SPLF0)
+C
+ 999  CONTINUE
+      CALL JEDEMA()
+C 
+      END

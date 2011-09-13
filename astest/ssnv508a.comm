@@ -1,8 +1,8 @@
-# MODIF  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -44,19 +44,23 @@ MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_2D=_F(GROUP_MA=('LPRESD','LPRESG','LPRESV',),),);
+                       ORIE_PEAU_2D=_F(GROUP_MA=('LPRESD','LPRESG','LPRESV', 'LENCAV',),),);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(NOEUD='N566',
-                                      NOM='A',),
-                                   _F(NOEUD='N141',
-                                      NOM='B',),     
-                                   _F(NOEUD='N1',
-                                      NOM='C',),     
-                                   _F(GROUP_MA='MTOT',
-                                      NOM='SURF',),
-                                      ),
+                    CREA_GROUP_NO=_F(GROUP_MA='MTOT',
+                                     NOM='SURF',),
+                                      
+                    );
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(NOM='L1',
+                                      OPTION= 'PLAN',
+                                      POINT =(0,0),
+                                      VECT_NORMALE =(1,0),
+                                      PRECISION=0.00001,
+                                        ), ),
                     );
 
 #----------------------------------------------
@@ -64,7 +68,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 #----------------------------------------------
 
 MO=AFFE_MODELE(MAILLAGE=MAILLAG1,
-               AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD','LPRESV',),
+               AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD','LPRESV','LENCAV',),
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
 
@@ -99,25 +103,22 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=rho,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
-                       MODELE=MO,
-                       AFFE=_F(GROUP_MA='MTOT',
-                               MATER=ACIER,
-                               ),);
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
 
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MO,
+                       AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD','LPRESV','LENCAV',),
+                               MATER=ACIER,
+                               ),);
+
+#DROITE X=0 BLOQUEE, PLAQUE INFERIEURE ENCASTREMENT
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                  DDL_IMPO=(_F(GROUP_NO='A',
+                  DDL_IMPO=(_F(GROUP_NO='L1',
                                DX=0.0,),
-                            _F(GROUP_NO='B',
-                               DX=0.0,
-                               DY=0.0,),
-                            _F(GROUP_NO='C',
-                               DY=0.0,),
-                                ),
-                  INFO=1,);
+                               _F(GROUP_MA='LENCAV',DX=0.0,DY=0.0,),),INFO=1,);
 d0 = 1.E-05 ;
 d2 = -2.5 * 1.E-06 ;
 
@@ -130,9 +131,7 @@ FCTDEPLV = FORMULE(VALE='deplv(X)',
                   NOM_PARA=('X','Y',),);
 
 CH4=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                  FACE_IMPO=_F(GROUP_MA='LPRESV',
-                               DY=FCTDEPLV),
-                  INFO=1,);
+                  FACE_IMPO=_F(GROUP_MA='LPRESV',DY=FCTDEPLV),INFO=1,);
 
 #pression lineaire : une variable independante
 p2=100000.;
@@ -144,16 +143,16 @@ def pr(y) :
    if y==0.  :  return  0.
 FCTPRES = FORMULE(VALE='pr(Y)',
                   NOM_PARA=('X','Y',),);
+
 # pour tester option CHAR_MECA_PRES_F
 FCTCIS = FORMULE(VALE='0.',
                   NOM_PARA=('X','Y',),);
 
 
 CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     PRES_REP=_F(GROUP_MA=('LPRESD','LPRESG',),
+                     PRES_REP=_F(GROUP_MA=('LPRESD','LPRESG',),    
                                  PRES=FCTPRES,
-                                 CISA_2D=FCTCIS),
-                                 );
+                                 ),);
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -232,37 +231,18 @@ DEP2 = CALC_TABLE(TABLE = DEP1,
                                CRIT_COMP = 'NE',
                                VALE      = 0,),),);
 
-#DY=8.02*1.E-6 - 2.5*1.E-6*x*x
-DYMIN=8.02*1.E-6 - 2.5*1.E-6
-DYMAX=8.02*1.E-6
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DY',
-           TYPE_TEST='MIN',
-           VALE=DYMIN,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-6,
-           REFERENCE='ANALYTIQUE',);
+#DX=(-10*x + 0)*1.E-6
+DXMIN= -10*1.E-6
+DXMAX=10*1.E-6
 
 
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DY',
-           TYPE_TEST='MAX',
-           VALE=DYMAX,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-6,
-           REFERENCE='ANALYTIQUE',);
-
-#DX=-p2*x/E
-DXMIN=-p2/E
-DXMAX=p2/E
 
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
            VALE=DXMAX,
            CRITERE='ABSOLU',
-           PRECISION=2.5E-6,
+           PRECISION=1.0E-12,
            REFERENCE='ANALYTIQUE',);
 
 
@@ -271,7 +251,28 @@ TEST_TABLE(TABLE=DEP2,
            TYPE_TEST='MIN',
            VALE=DXMIN,
            CRITERE='ABSOLU',
-           PRECISION=2.5E-6,
+           PRECISION=1.0E-12,
+           REFERENCE='ANALYTIQUE',);
+#DY=8.02*1.E-6 - 2.5*1.E-6*x*x
+
+DYMIN=8.02*1.E-6 - 2.5*1.E-6
+DYMAX=8.02*1.E-6
+
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE=DYMIN,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-12,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE=DYMAX,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-12,
            REFERENCE='ANALYTIQUE',);
 
 
@@ -279,7 +280,7 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_X1,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 1.7197E-03,PRECISION=1.E-6,
+                     VALE = 1.505625E-03,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.12'),
                 _F(  RESULTAT=RES_X1,NUME_ORDRE=1,

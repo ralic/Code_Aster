@@ -2,7 +2,7 @@
      &                  NDECI,ISINGU,NPVNEG,IRET,SOLVOP)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/02/2011   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C     ------------------------------------------------------------------
       NEQ = ZI(LMAT+2)
       TYPVAR = ZI(LMAT+3)
       TYPSYM = ZI(LMAT+4)
-      NOMA19 = ZK24(NOM)
+      NOMA19 = ZK24(NOM)(1:19)
       METRES = METREZ
       LMUMPS=.FALSE.
 
@@ -166,8 +166,8 @@ C     ---------------------------------------
 
 C       -- ALLOCATION DE LA MATRICE FACTORISEE (.UALF)  ET RECOPIE
 C          DE .VALM DANS .UALF
-        IF ((NOMA19.NE.'&&OP0070.RESOC.MATR').AND.
-     &      (NOMA19.NE.'&&OP0070.RESUC.MATR')) THEN
+        IF ((NOMA19.NE.'&&OP0070.RESOC.MATC').AND.
+     &      (NOMA19.NE.'&&OP0070.RESUC.MATC')) THEN
           CALL UALFCR(NOMA19,' ')
         ENDIF
 

@@ -1,7 +1,8 @@
-       SUBROUTINE CFMAJM(RESOCO, NDIM, NBLIAC, LLF, LLF1, LLF2)
-C ======================================================================
+      SUBROUTINE CFMAJM(RESOCO,NDIM  ,NBLIAC,LLF   ,LLF1  ,
+     &                  LLF2  )
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,17 +19,35 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ======================================================================
+C 
        IMPLICIT      NONE
        INTEGER       NDIM, NBLIAC, LLF, LLF1, LLF2
        CHARACTER*24  RESOCO
-C ======================================================================
+C
 C ----------------------------------------------------------------------
-C --- BUT : MISE A JOUR DU VECTEUR MU ----------------------------------
+C
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
+C
+C RE-ORDONNE LE VECTEUR MU
+C
 C ----------------------------------------------------------------------
-C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-C ======================================================================
+C
+C
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  NEQ    : NOMBRE D'EQUATIONS
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  NBLIAC : NOMBRE DE LIAISONS ACTIVES
+C IN  LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C IN  LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               PREMIERE DIRECTION (EN 3D)
+C IN  LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               SECONDE DIRECTION (EN 3D)
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -43,72 +62,78 @@ C ======================================================================
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C ======================================================================
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C ======================================================================
+C
       INTEGER       JMU, ILIAC, POSIT, POSMU, JMAJMU, DIMMAJ
       INTEGER       POSNBL, POSLF0, POSLF1, POSLF2
       CHARACTER*19  MU
-C ======================================================================
-      CALL JEMARQ ()
-C ======================================================================
-      MU       = RESOCO(1:14)//'.MU'
-C ======================================================================
-      CALL JEVEUO (MU,    'E', JMU   )
-C ======================================================================
-C --- MISE A JOUR DE MU ------------------------------------------------
-C ======================================================================
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ() 
+C
+C --- INITIALISATIONS
+C
       POSMU  = 0
       POSNBL = 0
       POSLF0 = NBLIAC
       POSLF1 = NBLIAC + (NDIM-1)*LLF
       POSLF2 = NBLIAC + (NDIM-1)*LLF + LLF1
       DIMMAJ = NBLIAC + (NDIM-1)*LLF + LLF1 + LLF2
-      CALL WKVECT ('&&CFMAJM.ORDO','V V R',DIMMAJ,JMAJMU)
+C
+C --- ACCES STRUCTURES DE DONNEES DE CONTACT
+C
+      MU       = RESOCO(1:14)//'.MU'
+      CALL JEVEUO(MU,    'E', JMU   )
+C
+C --- RECOPIE DES VALEURS DANS UN VECTEUR TEMPORAITE
+C
+      CALL WKVECT('&&CFMAJM.ORDO','V V R',DIMMAJ,JMAJMU)
       DO 20 ILIAC = 1, DIMMAJ
-         ZR(JMAJMU-1+ILIAC) = ZR(JMU-1+ILIAC)
+        ZR(JMAJMU-1+ILIAC) = ZR(JMU-1+ILIAC)
  20   CONTINUE
+C
+C --- ECRIT LES LIAISONS DANS L'ORDRE: NBLIAC, LLF, LLF1, LLF2
+C
       DO 10 ILIAC = 1, NBLIAC + LLF + LLF1 + LLF2
-         POSMU = POSMU + 1
-         CALL CFTYLI(RESOCO, ILIAC, POSIT)
-         GOTO (1000, 2000, 3000, 4000) POSIT
-C ======================================================================
-C --- CAS DU CONTACT ---------------------------------------------------
-C ======================================================================
- 1000    CONTINUE
-         POSNBL = POSNBL + 1
-         ZR(JMU-1+POSNBL) = ZR(JMAJMU-1+POSMU)
-         GOTO 10
-C ======================================================================
-C --- CAS DU FROTTEMENT EN 2D OU SUIVANT LES DEUX DIRECTIONS EN 3D -----
-C ======================================================================
- 2000    CONTINUE
-         POSLF0 = POSLF0 + 1
-         ZR(JMU-1+POSLF0) = ZR(JMAJMU-1+POSMU)
-         IF (NDIM.EQ.3) THEN
-            POSMU = POSMU + 1
-            ZR(JMU-1+POSLF0+LLF) = ZR(JMAJMU-1+POSMU)
-         ENDIF
-         GOTO 10
-C ======================================================================
-C --- CAS DU FROTTEMENT SUIVANT LA PREMIERE DIRECTION ------------------
-C ======================================================================
- 3000    CONTINUE
-         POSLF1 = POSLF1 + 1
-         ZR(JMU-1+POSLF1) = ZR(JMAJMU-1+POSMU)
-         GOTO 10
-C ======================================================================
-C --- CAS DU FROTTEMENT SUIVANT LA SECONDE DIRECTION -------------------
-C ======================================================================
- 4000    CONTINUE
-         POSLF2 = POSLF2 + 1
-         ZR(JMU-1+POSLF2) = ZR(JMAJMU-1+POSMU)
+        POSMU  = POSMU + 1
+        CALL CFTYLI(RESOCO,ILIAC,POSIT)
+        GOTO (1000,2000,3000,4000) POSIT
+C 
+C ----- LIAISON DE CONTACT 
+C
+ 1000   CONTINUE
+          POSNBL = POSNBL + 1
+          ZR(JMU-1+POSNBL) = ZR(JMAJMU-1+POSMU)
+          GOTO 10
+C 
+C ----- LIAISON DE FROTTEMENT - 2D OU 3D DANS LES DEUX DIRECTIONS
+C 
+ 2000   CONTINUE
+          POSLF0 = POSLF0 + 1
+          ZR(JMU-1+POSLF0) = ZR(JMAJMU-1+POSMU)
+          IF (NDIM.EQ.3) THEN
+             POSMU = POSMU + 1
+             ZR(JMU-1+POSLF0+LLF) = ZR(JMAJMU-1+POSMU)
+          ENDIF
+          GOTO 10
+C 
+C ----- LIAISON DE FROTTEMENT - 3D PREMIERE DIRECTION
+C
+ 3000   CONTINUE
+          POSLF1 = POSLF1 + 1
+          ZR(JMU-1+POSLF1) = ZR(JMAJMU-1+POSMU)
+          GOTO 10
+C 
+C ----- LIAISON DE FROTTEMENT - 3D SECONDE DIRECTION 
+C
+ 4000   CONTINUE
+          POSLF2 = POSLF2 + 1
+          ZR(JMU-1+POSLF2) = ZR(JMAJMU-1+POSMU)
  10   CONTINUE
-C ======================================================================
-C --- DESTRUCTION DU VECTEUR TAMPON POUR LA MISE A JOUR ----------------
-C ======================================================================
+C 
       CALL JEDETR('&&CFMAJM.ORDO')
-C ======================================================================
-      CALL JEDEMA ()
-C ======================================================================
+      CALL JEDEMA()
+C
       END

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &             LVALF, LNOVA, NBNOVA, LPROL
       REAL*8       RVAL
       LOGICAL      COMPL
-      CHARACTER*8  K8B
+      CHARACTER*8  K8B, NOPN, NOPF
       CHARACTER*16 NOMCMD, TYPRES
       CHARACTER*19 NOMFON, NOMFIN, LISTP, LISTF, TYPCO
-      CHARACTER*24 NOPARP, NOPARF
+      CHARACTER*24 NOPARP, NOPARF, VALK(3)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -129,6 +129,34 @@ C ------------------------------------------------------------------
             ELSE
                CALL U2MESS('F','FONCT0_49')
             ENDIF
+         ENDIF
+C
+C        VERIFIER LA COHERENCE DES NOMS DES PARAMETRES
+         CALL GETVTX(' ','NOM_PARA',1,1,1,NOPN,N1)
+C        FACULTATIF
+         IF (N1.NE.0 .AND. NOPN.NE.NOPARP) THEN
+           VALK(1) = NOMFIN
+           VALK(2) = NOPARP
+           VALK(3) = NOPN
+           IF (TYPCO(1:7).EQ.'FORMULE') THEN
+             CALL U2MESK('F','FONCT0_58',3,VALK)
+           ELSE
+             CALL U2MESK('F','FONCT0_59',3,VALK)
+           ENDIF
+         ENDIF
+
+         CALL GETVTX(' ','NOM_PARA_FONC',1,1,1,NOPF,N1)
+C        OBLIGATOIRE
+         CALL ASSERT(N1.EQ.1)
+         IF (NOPF.NE.NOPARF) THEN
+           VALK(1) = NOMFIN
+           VALK(2) = NOPARF
+           VALK(3) = NOPF
+           IF (TYPCO(1:7).EQ.'FORMULE') THEN
+             CALL U2MESK('F','FONCT0_60',3,VALK)
+           ELSE
+             CALL U2MESK('F','FONCT0_61',3,VALK)
+           ENDIF
          ENDIF
 C
          CALL  CALCNA ( NOMFIN, NOMFON, NBVALP, ZR(LVALP), NOPARP,

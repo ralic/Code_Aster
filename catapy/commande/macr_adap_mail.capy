@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 12/09/2011   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,12 +25,16 @@ def macr_adap_mail_prod(self, MAJ_CHAM, ADAPTATION, **args):
 #
 # 0. Typage des structures produites
 #
-  maillage_np1=args['MAILLAGE_NP1']
-  self.type_sdprod(maillage_np1,maillage_sdaster)
+  #print args
+  if ( args.has_key('MAILLAGE_NP1') ) :
+    if ( args['MAILLAGE_NP1'] is not None ) :
+      maillage_np1=args['MAILLAGE_NP1']
+      self.type_sdprod(maillage_np1, maillage_sdaster)
 #
-  if ( args['MAILLAGE_NP1_ANNEXE'] is not None ) :
-    maillage_np1_annexe=args['MAILLAGE_NP1_ANNEXE']
-    self.type_sdprod(maillage_np1_annexe,maillage_sdaster)
+  if ( args.has_key('MAILLAGE_NP1_ANNEXE') ) :
+    if ( args['MAILLAGE_NP1_ANNEXE'] is not None ) :
+      maillage_np1_annexe=args['MAILLAGE_NP1_ANNEXE']
+      self.type_sdprod(maillage_np1_annexe, maillage_sdaster)
 #
   if MAJ_CHAM == None:return None
 # Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
@@ -54,8 +58,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_1",
-                        into=("V10_1", "V10_N", "V10_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_2",
+                        into=("V10_2", "V10_N", "V10_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -67,24 +71,32 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                 ang="Language for the HOMARD messages." ),
 #
 # 4. Les maillages
-# 4.1. Quel que soit le type de traitement, il faut donner  :
-#      A. Le concept du maillage initial (entree)
-#      B. Le concept du maillage final (sortie)
+# 4.1. Quel que soit le type de traitement, il faut donner le concept du maillage initial (entree)
 #
   MAILLAGE_N   = SIMP(statut='o',typ=maillage_sdaster,
                       fr="Maillage avant adaptation",
                       ang="Mesh before adaptation" ),
 #
-  MAILLAGE_NP1 = SIMP(statut='o',typ=CO,
-                      fr="Maillage après adaptation",
-                      ang="Mesh after adaptation" ),
+# 4.2. Si ce n'est pas une simple lecture :
 #
-# 4.2. Eventuellement, on peut produire un maillage annexe
+  b_maillage = BLOC( condition = " (ADAPTATION != 'LECTURE') " ,
+                          fr="Lectures de champs aux points de Gauss ou aux noeuds par element.",
+                          ang="Readings of the fields over the Gauss points.",
+#
+# 4.2.1. Le concept du maillage final (sortie)
+#
+    MAILLAGE_NP1 = SIMP(statut='o',typ=CO,
+                        fr="Maillage après adaptation",
+                        ang="Mesh after adaptation" ),
+#
+# 4.2.2. Eventuellement, on peut produire un maillage annexe
 #      Actuellement, c'est le maillage n+1, mais de degré différent.
 #
-  MAILLAGE_NP1_ANNEXE = SIMP(statut='f',typ=CO,
-                             fr="Maillage annexe après adaptation",
-                             ang="Additional mesh after adaptation" ),
+    MAILLAGE_NP1_ANNEXE = SIMP(statut='f',typ=CO,
+                              fr="Maillage annexe après adaptation",
+                              ang="Additional mesh after adaptation" ),
+#
+  ) ,
 #
 # 5. Le pilotage de l'adaptation, avec les variantes suivantes :
 #  . Raffinement et deraffinement, selon un champ
@@ -99,7 +111,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
   ADAPTATION = SIMP(statut='o',typ='TXM',
                     into=("RAFF_DERA","RAFFINEMENT","DERAFFINEMENT","RAFFINEMENT_ZONE", \
                           "RAFFINEMENT_UNIFORME","DERAFFINEMENT_UNIFORME", \
-                          "MODIFICATION","RIEN"),
+                          "MODIFICATION", "LECTURE", "RIEN"),
                     fr="Pilotage de l'adaptation : selon un champ ou uniforme.",
                     ang="Adaptation control : either among an field or uniform" ),
 #
@@ -555,7 +567,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 12.2. Le type du champ qui contiendra le resultat de la mise a jour
 #
-    TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO( ('NOEU', 'ELNO', 'ELEM') ),
+    TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO( ('NOEU', 'ELEM', 'ELNO', 'ELGA') ),
                      fr="Type du champ qui contiendra le champ mis à jour",
                      ang="Type of the field for the updated field" ),
 #
@@ -670,44 +682,56 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   ) ,
 #
-# 14. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
-# 14.1. Nombre de noeuds et mailles
+# 14. Le modele pour les lectures de champs aux points de Gauss ou aux noeuds par element
+#
+  b_lectures = BLOC( condition = " (ADAPTATION == 'LECTURE') " ,
+                          fr="Lectures de champs aux points de Gauss.",
+                          ang="Readings of the fields over the Gauss points.",
+#
+      MODELE        = SIMP(statut='o',typ=modele_sdaster,
+                          fr="Modèle",
+                          ang="Model" ),
+#
+  ) ,
+#
+# 15. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
+# 15.1. Nombre de noeuds et mailles
 #
   NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Nombre de noeuds et de mailles du maillage",
                         ang="Number of nodes and meshes in the mesh" ),
 #
-# 14.2. Determination de la qualité des mailles du maillage
+# 15.2. Determination de la qualité des mailles du maillage
 #
   QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                         fr="Qualité du maillage",
                         ang="Quality of the mesh" ),
 #
-# 14.3. Connexite du maillage
+# 15.3. Connexite du maillage
 #
   CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                         fr="Connexité du maillage.",
                         ang="Connexity of the mesh." ),
 #
-# 14.4. Taille des sous-domaines du maillage
+# 15.4. Taille des sous-domaines du maillage
 #
   TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                         fr="Tailles des sous-domaines du maillage.",
                         ang="Sizes of mesh sub-domains." ),
 #
-# 14.5. Controle de la non-interpenetration des mailles
+# 15.5. Controle de la non-interpenetration des mailles
 #
   INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                         fr="Controle de la non interpénétration des mailles.",
                         ang="Overlapping checking." ),
 #
-# 14.6. Propriétés du maillage de calcul
+# 15.6. Propriétés du maillage de calcul
 #
   PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                         fr="Propriétés du maillage de calcul.",
                         ang="Properties of the calculation mesh." ),
 #
-# 15. Unite logique d'un fichier a ajouter a HOMARD.Configuration
+# 16. Unite logique d'un fichier a ajouter a HOMARD.Configuration
 #
   b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
                                 (VERSION_HOMARD == 'V10_N_PERSO') " ,
@@ -720,7 +744,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   ) ,
 #
-# 16. Gestion des mailles autres que celles compatibles avec HOMARD
+# 17. Gestion des mailles autres que celles compatibles avec HOMARD
 #       "REFUSER" : elles sont refusées (defaut)
 #       "IGNORER" : elles sont ignorées
 #

@@ -1,8 +1,8 @@
       SUBROUTINE FGEQUI ( T, TYPZ, NDIM, EQUI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,6 +29,7 @@ C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C                        . DIRECTION DES CONTRAINTES PRINCIPALES
 C                                                       (=3*3 VALEURS)
 C                        . TRACE                        (= 1 VALEUR)
+C                        . TAUX DE TRIAXIALITE          (= 1 VALEUR)
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
@@ -177,6 +178,13 @@ C -      A L AUTRE VECTEUR
 C ------    TRACE DES CONTRAINTES : TRSIG
             EQUI(16) = T(1)+T(2)+T(3)
 
+C ------    TRIAXIALITE DES CONTRAINTES : TRIAX
+
+            IF(EQUI(1).GT.TOL) THEN
+               EQUI(17) = EQUI(16)/3.D0/EQUI(1)
+            ELSE
+               EQUI(17) = 0.D0
+            ENDIF
          ENDIF
       ENDIF
 C

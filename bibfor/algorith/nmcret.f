@@ -2,7 +2,7 @@
      &                  CODERE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -164,7 +164,7 @@ C
           ECHCON(1) = VALI .EQ. 1
           CALL NMERGE(SDERRO,'SET','CC1',ECHCON(1))
           ECHCON(2) = VALI .EQ. 2
-          CALL NMERGE(SDERRO,'SET','CC2',ECHCON(1))
+          CALL NMERGE(SDERRO,'SET','CC2',ECHCON(2))
         ELSE
           WRITE(6,*) 'TYPCOD: ',TYPCOD
           CALL ASSERT(.FALSE.)

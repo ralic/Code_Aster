@@ -1,21 +1,21 @@
-#@ MODIF utilitai8 Messages  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF utilitai8 Messages  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -78,15 +78,15 @@ cata_msg = {
 """),
 
 15 : _("""
-  n'existe pas. 
+  n'existe pas.
 """),
 
 16 : _("""
-  Pour le numéro d'ordre NUME_ORDRE %(i1)d, 
+  Pour le numéro d'ordre NUME_ORDRE %(i1)d,
   l'option %(k1)s n'est pas calculée.
 
-  Conseil : 
-    Vérifiez le nom de la structure de donnée et vérifiez que les champs existent. 
+  Conseil :
+    Vérifiez le nom de la structure de donnée et vérifiez que les champs existent.
     Si le concept n'est pas réentrant les champs ne sont pas cherchés dans %(k2)s.
 """),
 
@@ -164,21 +164,21 @@ cata_msg = {
 """),
 
 31 : _("""
-  Option deja calculée:  option  %(k1)s  NUME_ORDRE  %(i1)d
-  On la recalcule car les données peuvent etre différentes
+  Option déjà calculée:  option  %(k1)s  NUME_ORDRE  %(i1)d
+  On la recalcule car les données peuvent être différentes
 
 """),
 
 32 : _("""
- L'extrapolation ne peut etre faite à gauche (interdit).
+ L'extrapolation ne peut être faite à gauche (interdit).
 """),
 
 33 : _("""
- L'extrapolation ne peut etre faite à droite (interdit).
+ L'extrapolation ne peut être faite à droite (interdit).
 """),
 
 34 : _("""
- L'interpolation ne peut etre faite car aucun champ de : %(k1)s n'est calcule.
+ L'interpolation ne peut être faite car aucun champ de : %(k1)s n'est calcule.
 """),
 
 35 : _("""
@@ -256,7 +256,7 @@ Conseil:
 
 61 : _("""
  Erreur dans les données pour le champ  %(k1)s
- Aucun noeud ne supporte les composantes 
+ Aucun noeud ne supporte les composantes
  %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...
 """),
 
@@ -268,19 +268,19 @@ Conseil:
 
 63 : _("""
  POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas
- (ou ne peut pas) calculer le post traitement demandé 
+ (ou ne peut pas) calculer le post traitement demandé
 Conseil:
-   Limiter le post traitement à des GROUP_MA contenant des mailles 
+   Limiter le post traitement à des GROUP_MA contenant des mailles
 de type valide
 """),
 
 64 : _("""
-  Vous definissez une charge thermique sur un modele mecanique ! 
+  Vous definissez une charge thermique sur un modele mecanique !
   Le MODELE doit être de type thermique.
 """),
 
 65 : _("""
-  Vous definissez une charge mecanique sur un modele thermique ! 
+  Vous definissez une charge mecanique sur un modele thermique !
   Le MODELE doit être de type mécanique.
 """),
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
 # TITRE  PLAQUE CARREE TOURNEE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1149,4 +1149,19 @@ TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                         PRECISION=0.21,
                         GROUP_NO='B1',
                         NOM_CMP='QY',),),);
+
+#----------------------------------------------------------------------------
+# Validation EFGE_ELGA pour les elements COQUE_3D :
+#----------------------------------------------------------------------
+CALC_CHAMP(reuse=RESU, RESULTAT= RESU, CONTRAINTE=('EFGE_ELGA',), )
+IMPR_RESU(RESU=_F(RESULTAT=RESU, NUME_ORDRE=1))
+TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+           MAILLE = 'M2', POINT = 2, NOM_CMP = 'MYY', VALE =  -9.4234585192826E-04    , REFERENCE = 'NON_REGRESSION'))
+TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MXY', VALE =   0.018863679944543      , REFERENCE = 'NON_REGRESSION'))
+TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+           MAILLE = 'M2', POINT = 3, NOM_CMP = 'QX',  VALE =   -0.019501989570637     , REFERENCE = 'NON_REGRESSION'))
+TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+           MAILLE = 'M2', POINT = 4, NOM_CMP = 'QY',  VALE =   -0.025297642143986     , REFERENCE = 'NON_REGRESSION'))
+#----------------------------------------------------------------------------
 FIN();

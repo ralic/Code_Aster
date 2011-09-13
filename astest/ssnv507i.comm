@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE ROTATION D'UNE INCLUSION RIGIDE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,8 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ITER_CONT_MAXI = 15,
                       ITER_GEOM_MAXI = 20,
                       ZONE = (_F(
-                                 INTEGRATION   = 'FPG3',
+                                 INTEGRATION   = 'GAUSS',
+                                 ORDRE_INT=3,
                                  TOLE_PROJ_EXT = 0.0,   
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'OUI',

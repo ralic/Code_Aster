@@ -1,0 +1,605 @@
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+# CAS TEST : SSNP152B
+# TITRE INCLUSION DE DEUX COURONNES
+# ssnp152b.para = tps_job 30 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ELEMENTS LINEAIRES, GRANDES ROTATIONS, DEFORMATIONS PLANES,
+# p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
+
+DEBUT(CODE=_F(NOM='SSNP152B',NIV_PUB_WEB='INTERNET'))
+
+PRE_GMSH();
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
+
+#+----------------------------------------+
+#| noms des groupes de noeuds et mailles  |
+#+----------------------------------------+
+
+MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,CREA_GROUP_MA=(_F(GROUP_MA='GM100',NOM='C1'),
+                     _F(GROUP_MA='GM101',NOM='C2'),                                          
+                     _F(GROUP_MA='GM200',NOM='S1R1'),
+                     _F(GROUP_MA='GM300',NOM='S1R2'),
+                     _F(GROUP_MA='GM400',NOM='S2R2'),
+                     _F(GROUP_MA='GM500',NOM='S2R3'),),
+                                   CREA_GROUP_NO=(_F(GROUP_MA='S1R2',NOM='CONT_N_1'),
+                      _F(GROUP_MA='S2R2',NOM='CONT_N_2'),),);
+
+MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU_2D=(
+            _F(GROUP_MA = 'S1R1',),
+            _F(GROUP_MA = 'S1R2',),
+            _F(GROUP_MA = 'S2R2',),
+            _F(GROUP_MA = 'S2R3',),),);
+            
+
+E1=1.0E9
+E2=1.0E9
+nu1=0.2
+nu2=0.2
+
+MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,));
+MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,));
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(_F(GROUP_MA = 'C1',MATER = MAT1,),
+                            _F(GROUP_MA = 'C2',MATER = MAT2,),),);
+MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'D_PLAN'));
+# pression externe
+p=1.E6;
+R1 = 1.0;
+R2 = 0.6;
+R3 = 0.2;
+# calcul analytique de la pression de contact
+pres_cont = (2*p*R1*R1*(1-nu1))/(R1*R1+R2*R2*(1-2*nu1)+(E1/E2)*((1+nu2)/(1+nu1))*((R1*R1-R2*R2)/(R2*R2-R3*R3))*(R2*R2*(1-2*nu2)+R3*R3));
+
+# couronne externe
+
+a1=(pres_cont*R2*R2-p*R1*R1)/(R1*R1-R2*R2);
+b1=(pres_cont-p)*(R1*R1*R2*R2)/(R1*R1-R2*R2);
+
+eps_r_1 = ((1+nu1)/E1)*(a1*(1-2*nu1)*R1+b1/R1);
+
+ux1 = FORMULE(NOM_PARA=('X','Y',), VALE='eps_r_1*cos(atan2(Y,X))');
+uy1 = FORMULE(NOM_PARA=('X','Y',), VALE='eps_r_1*sin(atan2(Y,X))');
+
+
+CH1=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA = 'S1R1', DX=ux1,DY=uy1,),),);
+
+# couronne interne
+
+a2=-pres_cont*R2*R2/(R2*R2-R3*R3);
+b2=-pres_cont*R2*R2*R3*R3/(R2*R2-R3*R3);
+
+eps_r_2 = ((1+nu2)/E2)*(a2*(1-2*nu2)*R3+b2/R3);
+
+ux2 = FORMULE(NOM_PARA=('X','Y',), VALE='eps_r_2*cos(atan2(Y,X))');
+uy2 = FORMULE(NOM_PARA=('X','Y',), VALE='eps_r_2*sin(atan2(Y,X))');
+
+CH2=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA='S2R3',DX=ux2,DY=uy2,),),);
+
+#+----------------------------------------+
+#|               contact                  |
+#+----------------------------------------+
+CONT_ND = DEFI_CONTACT(MODELE = MO,
+                       FORMULATION    = 'CONTINUE',
+                       REAC_GEOM      = 'AUTOMATIQUE',
+                       ITER_GEOM_MAXI = 50,
+                       LISSAGE        = 'OUI',
+                       ZONE =(
+                           _F(GROUP_MA_ESCL = 'S2R2',
+                              GROUP_MA_MAIT = 'S1R2',
+                              APPARIEMENT   = 'MAIT_ESCL',
+                              NORMALE       = 'MAIT',
+                              INTEGRATION   = 'NOEUD',
+                              TOLE_PROJ_EXT = 0.0001,
+                              ALGO_CONT     = 'STANDARD',
+                              COEF_CONT     = E1,
+                              CONTACT_INIT  = 'OUI',
+                              GLISSIERE     = 'NON',),),);
+CONT_G3 = DEFI_CONTACT(MODELE = MO,
+                       FORMULATION    = 'CONTINUE',
+                       REAC_GEOM      = 'AUTOMATIQUE',
+                       ITER_GEOM_MAXI = 50,
+                       LISSAGE        = 'OUI',
+                       ZONE =(
+                           _F(GROUP_MA_ESCL = 'S2R2',
+                              GROUP_MA_MAIT = 'S1R2',
+                              APPARIEMENT   = 'MAIT_ESCL',
+                              NORMALE       = 'MAIT',
+                              INTEGRATION   = 'GAUSS',
+                              TOLE_PROJ_EXT = 0.0001,
+                              ALGO_CONT     = 'STANDARD',
+                              COEF_CONT     = E1,
+                              CONTACT_INIT  = 'OUI',
+                              GLISSIERE     = 'NON',),),);
+#+----------------------------------------+
+#|               calcul                   |
+#+----------------------------------------+
+
+from math import pow
+
+T=DEFI_LIST_REEL(DEBUT=0.1,INTERVALLE = _F(JUSQU_A = 2.1,NOMBRE=20,),);
+EXP=FORMULE(NOM_PARA='INST',VALE='pow(10,INST-1.1)',);
+RP_EXP=CALC_FONC_INTERP(FONCTION  = EXP,
+         LIST_PARA = T,
+         PROL_DROITE='EXCLU',
+         PROL_GAUCHE='EXCLU',);
+
+INSTS=DEFI_LIST_REEL(DEBUT       = 0.0,
+                     INTERVALLE  = _F(JUSQU_A = 2.1,
+                                      NOMBRE  = 21,),);
+
+RESU1 =  STAT_NON_LINE(MODELE      = MO,
+                       CHAM_MATER  = CHMAT,
+                       EXCIT       = (_F(CHARGE = CH1, FONC_MULT = RP_EXP),
+                                      _F(CHARGE = CH2, FONC_MULT = RP_EXP),),
+                       CONTACT     = CONT_ND,
+                       COMP_INCR   = (_F(RELATION    = 'ELAS',
+                                         DEFORMATION = 'GROT_GDEP',),),
+                       NEWTON      = _F(REAC_INCR=1,REAC_ITER=1),
+                       INCREMENT   = _F(LIST_INST=INSTS,),
+                       CONVERGENCE = _F(ITER_GLOB_MAXI = 20,),
+                       SOLVEUR     = _F(METHODE     = 'MUMPS',
+                                        PCENT_PIVOT = 250,),
+                       ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),
+                       INFO=1,);
+
+RESU2 =  STAT_NON_LINE(MODELE      = MO,
+                       CHAM_MATER  = CHMAT,
+                       EXCIT       = (_F(CHARGE = CH1, FONC_MULT = RP_EXP),
+                                      _F(CHARGE = CH2, FONC_MULT = RP_EXP),),
+                       CONTACT     = CONT_G3,
+                       COMP_INCR   = (_F(RELATION    = 'ELAS',
+                                         DEFORMATION = 'GROT_GDEP',),),
+                       NEWTON      = _F(REAC_INCR=1,REAC_ITER=1),
+                       INCREMENT   = _F(LIST_INST=INSTS,),
+                       CONVERGENCE = _F(ITER_GLOB_MAXI = 20,),
+                       SOLVEUR     = _F(METHODE     = 'MUMPS',
+                                        PCENT_PIVOT = 250,),
+                       ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),
+                       INFO=1,);
+
+#+----------------------------------------+
+#|          tests de validation           |
+#+----------------------------------------+
+
+# noeud
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 1,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.1),
+                   PRECISION  = 0.02,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 2,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.2),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 3,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.3),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 4,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.4),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 5,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.5),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 6,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.6),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 7,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.7),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 8,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.8),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 9,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.9),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 10,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.0),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 11,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.1),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 12,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.2),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 13,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.3),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 14,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.4),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 15,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.5),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 16,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.6),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 17,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.7),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 18,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.8),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 19,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.9),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 20,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(2.0),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 21,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(2.1),
+                   PRECISION  = 0.02,),),);
+
+# gauss
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 1,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.1),
+                   PRECISION  = 0.02,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 2,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.2),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 3,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.3),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 4,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.4),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 5,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.5),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 6,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.6),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 7,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.7),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 8,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.8),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 9,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(0.9),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 10,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.0),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 11,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.1),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 12,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.2),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 13,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.3),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 14,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.4),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 15,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.5),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 16,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.6),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 17,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.7),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 18,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.8),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 19,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(1.9),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 20,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(2.0),
+                   PRECISION  = 0.02,),),);
+                   
+TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'LAGS_C',
+                   REFERENCE  = 'ANALYTIQUE',
+                   NUME_ORDRE = 21,
+                   NOEUD      = 'N10',
+                   VALE_ABS   = 'OUI',
+                   VALE       = pres_cont*EXP(2.1),
+                   PRECISION  = 0.02,),),);
+
+FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,5 +153,17 @@ TEST_RESU(
               S_R=1.0500000141561E+01,
               REFERENCE='NON_REGRESSION',
               VERSION='7.02.8')))
+
+#----------------------------------------------------------------------------
+# Validation EFGE_ELGA pour les elements de tuyau apres MECA_STATIQUE:
+#----------------------------------------------------------------------
+RESU2=CALC_ELEM( reuse= RESU2, RESULTAT= RESU2, OPTION=('EFGE_ELGA',), )
+TEST_RESU( RESU= _F( RESULTAT = RESU2, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
+             MAILLE = 'M102', POINT = 2, NOM_CMP = 'N', VALE =  2.4522370015433E-03 , REFERENCE = 'NON_REGRESSION'))
+
+RESU2B=CALC_CHAMP(RESULTAT= RESU2, CONTRAINTE=('EFGE_ELGA',), )
+TEST_RESU( RESU= _F( RESULTAT = RESU2B, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
+             MAILLE = 'M102', POINT = 2, NOM_CMP = 'N', VALE =  2.4522370015433E-03 , REFERENCE = 'NON_REGRESSION'))
+#----------------------------------------------------------------------------
 FIN()
 #

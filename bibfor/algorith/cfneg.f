@@ -1,11 +1,11 @@
       SUBROUTINE CFNEG (RESOCO,DEFICO,NOMA  ,NDIM  ,INDIC ,
      &                  NBLIAI,NBLIAC,AJLIAI,SPLIAI,LLF   ,
-     &                  LLF1  ,LLF2)
+     &                  LLF1  ,LLF2  ,NBPREN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C
       CHARACTER*8  NOMA
       INTEGER      NDIM
       INTEGER      INDIC
-      INTEGER      AJLIAI,SPLIAI,NBLIAI
+      INTEGER      AJLIAI,SPLIAI,NBLIAI,NBPREN
       INTEGER      NBLIAC,LLF,LLF1,LLF2
 C      
 C ----------------------------------------------------------------------
@@ -63,7 +63,7 @@ C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               PREMIERE DIRECTION (EN 3D)
 C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               SECONDE DIRECTION (EN 3D)
-C
+C OUT NBPREN : NOMBRE DE PRESSION NEGATIVE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -84,7 +84,6 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      IFM,NIV
       INTEGER      DEKLAG, DEKLN, DEKLF0, DEKLF1
       INTEGER      DEKLF2, POSIT, JSPNBL, JSPLF0, JSPLF1, JSPLF2
       INTEGER      JJ, KK, LL, MM, ILIAC, LLIAC, LLJAC, JSPLIA
@@ -95,50 +94,52 @@ C
       CHARACTER*19 LIAC,MU,TYPL
       INTEGER      JLIAC,JMU,JTYPL
 C
-C ======================================================================
+C ----------------------------------------------------------------------
 C
-      CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
 C
-      IF (NBLIAC.EQ.0) THEN
-        GOTO 999
-      ENDIF
-C ======================================================================
-C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C ======================================================================
-      LIAC   = RESOCO(1:14)//'.LIAC'
-      TYPL   = RESOCO(1:14)//'.TYPL'
-      MU     = RESOCO(1:14)//'.MU'
-C ======================================================================
-      CALL JEVEUO(LIAC,  'E',JLIAC )
-      CALL JEVEUO(TYPL  ,'E',JTYPL )
-      CALL JEVEUO(MU,    'E',JMU   )
-C ======================================================================
-C --- INITIALISATION DES VARIABLES
-C ======================================================================
+C --- INITIALISATIONS
+C
       DEKLAG = 0
       DEKLN  = 0
       DEKLF0 = 0
       DEKLF1 = 0
       DEKLF2 = 0
+      NBPREN = 0 
       TYPESP = 'S'
       TYPEC0 = 'C0'
       TYPEF0 = 'F0'
       TYPEF1 = 'F1'
       TYPEF2 = 'F2'
-C ======================================================================
-C --- CREATION D'OBJETS TEMPORAIRES
-C ======================================================================
-      CALL WKVECT ('&&CPNOTE.SUPNBL','V V I',NBLIAC ,JSPNBL)
-      CALL WKVECT ('&&CPNOTE.SPLIAC','V V I',NBLIAC ,JSPLIA)
+C
+C --- PAS DE LIAISON DE CONTACT -> ON SORT
+C
+      IF (NBLIAC.EQ.0) THEN
+        GOTO 999
+      ENDIF
+C 
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+C
+      LIAC   = RESOCO(1:14)//'.LIAC'
+      TYPL   = RESOCO(1:14)//'.TYPL'
+      MU     = RESOCO(1:14)//'.MU'
+C
+      CALL JEVEUO(LIAC,  'E',JLIAC )
+      CALL JEVEUO(TYPL  ,'E',JTYPL )
+      CALL JEVEUO(MU,    'E',JMU   )
+C
+C --- CREATION DES OBJETS DE TRAVAIL
+C
+      CALL WKVECT('&&CFNEG.SUPNBL','V V I',NBLIAC ,JSPNBL)
+      CALL WKVECT('&&CFNEG.SPLIAC','V V I',NBLIAC ,JSPLIA)
       IF (LLF.NE.0) THEN
-         CALL WKVECT ('&&CPNOTE.SUPLF0','V V I',LLF ,JSPLF0)
+        CALL WKVECT('&&CFNEG.SUPLF0','V V I',LLF ,JSPLF0)
       ENDIF
       IF (LLF1.NE.0) THEN
-         CALL WKVECT ('&&CPNOTE.SUPLF1','V V I',LLF1,JSPLF1)
+        CALL WKVECT('&&CFNEG.SUPLF1','V V I',LLF1,JSPLF1)
       ENDIF
       IF (LLF2.NE.0) THEN
-         CALL WKVECT ('&&CPNOTE.SUPLF2','V V I',LLF2,JSPLF2)
+        CALL WKVECT('&&CFNEG.SUPLF2','V V I',LLF2,JSPLF2)
       ENDIF
 C ======================================================================
 C --- LES VALEURS DU VECTEUR SUPNBL SONT NECESSAIREMENT CROISSANTES
@@ -261,10 +262,8 @@ C ======================================================================
          ZR(JMU+3*NBLIAI-1+LLIAC) = 0.0D0
          CALL CFTABL( INDIC, NBLIAC, AJLIAI, SPLIAI, LLF,
      &                 LLF1, LLF2, RESOCO, TYPESP, POSIT, LLIAC, TYPEC0)
-         IF (NIV.GE.2) THEN
-           CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
-     &                 TYPEC0,TYPESP,'NEG' ,LAMBDA)
-         ENDIF
+         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,LLIAC,TYPEC0,
+     &               'NEG' )
  111  CONTINUE
 C ======================================================================
 C --- MISE A JOUR DE MU POUR LE FROTTEMENT
@@ -377,8 +376,10 @@ C ======================================================================
       ENDIF
 C ======================================================================
  999  CONTINUE
+C
+      NBPREN = DEKLN
 C ======================================================================
-      CALL JEDETC('V','&&CPNOTE',1)
+      CALL JEDETC('V','&&CFNEG',1)
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

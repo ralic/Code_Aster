@@ -1,4 +1,4 @@
-# MODIF  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186f.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,6 +61,8 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS,
+                               INTEGRATION  ='GAUSS',
+                               ORDRE_INT=4,
                                CONTACT_INIT = 'OUI',
                                COEF_ECHELLE = 1.E11,
                                COULOMB      = 1.0,

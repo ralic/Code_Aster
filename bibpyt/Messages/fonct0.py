@@ -1,8 +1,8 @@
-#@ MODIF fonct0 Messages  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -349,13 +349,13 @@ Nombre de paramètres fournis : %(i1)d
 Noms des paramètres fournis  : %(ktout)s
 """),
 
-55 : _(""" 
-  La liste des bornes de l'intervalle n'est pas cohérente. 
+55 : _("""
+  La liste des bornes de l'intervalle n'est pas cohérente.
   Elle doit comporter un nombre pair de valeurs.
 """),
 
-56 : _(""" 
-  La borne inf doit etre inférieure à la borne sup. 
+56 : _("""
+  La borne inf doit etre inférieure à la borne sup.
   Veuillez revoir la saisie du mot-clé INTERVALLE.
 """),
 
@@ -368,5 +368,32 @@ avec :
 
 """),
 
+58 :_("""
+Erreur lors de la vérification des noms des paramètres.
+Le nom du premier paramètre de la formule en entrée (%(k1)s) est '%(k2)s'.
+
+Or vous avez demandé à créer une nappe avec NOM_PARA='%(k3)s'.
+"""),
+
+59 :_("""
+Erreur lors de la vérification des noms des paramètres.
+Le nom du paramètre de la nappe en entrée (%(k1)s) est '%(k2)s'.
+
+Or vous avez demandé à créer une nappe avec NOM_PARA='%(k3)s'.
+"""),
+
+60 :_("""
+Erreur lors de la vérification des noms des paramètres.
+Le nom du deuxième paramètre de la formule en entrée (%(k1)s) est '%(k2)s'.
+
+Or vous avez demandé à créer une nappe avec NOM_PARA_FONC='%(k3)s'
+"""),
+
+61 :_("""
+Erreur lors de la vérification des noms des paramètres.
+Le nom du paramètre des fonctions de la nappe en entrée (%(k1)s) est '%(k2)s'.
+
+Or vous avez demandé à créer une nappe avec NOM_PARA_FONC='%(k3)s'
+"""),
 
 }

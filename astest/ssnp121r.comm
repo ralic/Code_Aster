@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE CONTACT DE DEUX BLOCS (PENTA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,7 +90,8 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     ZONE =_F(
                              GROUP_MA_ESCL = 'SURESC',
                              GROUP_MA_MAIT = 'SURMAI',
-                             INTEGRATION   = 'NOEUD',
+                             INTEGRATION   = 'GAUSS',
+                             ORDRE_INT     = 5,
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1000.,
                           ),

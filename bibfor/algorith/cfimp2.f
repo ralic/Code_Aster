@@ -1,10 +1,10 @@
-      SUBROUTINE CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,ILIAI ,
-     &                  TYPLIA,TYPOPE,TYPEOU,JEU)
+      SUBROUTINE CFIMP2(DEFICO,RESOCO,NOMA  ,ILIAI ,TYPLIA,
+     &                  TYPEOU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,14 +22,11 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INTEGER      IFM
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO      
       INTEGER      ILIAI
       CHARACTER*2  TYPLIA
-      CHARACTER*1  TYPOPE
       CHARACTER*3  TYPEOU
-      REAL*8       JEU
 C      
 C ----------------------------------------------------------------------
 C
@@ -52,12 +49,9 @@ C                       SIMULTANEES (3D)
 C                'F1': FROTTEMENT SUIVANT LA PREMIERE DIRECTION (3D)
 C                'F2': FROTTEMENT SUIVANT LA SECONDE DIRECTION (3D)
 C                'F3': FROTTEMENT (2D)
-C IN  TYPOPE : TYPE D'OPERATION DANS LE VECTEUR DES LIAISONS
-C                'A' : AJOUTER UNE LIAISON
-C                'S' : SUPPRIMER UNE LIAISON
-C                'N' : NI AJOUTER, NI SUPPRIMER
 C IN  TYPEOU : LIEU OU L'OPERATION A ETE FAITE
-C                'ALG' : ALGO PRINCIPAL DE CONTACT
+C                'ACT' : ACTIVATION LIAISON DE CONTACT
+C                'LIB' : DESACTIVATION LIAISON DE CONTACT
 C                'NEG' : SUPPRESSION D'UNE LIAISON A PRESSION NEGATIVE
 C                'GLI' : SUPPRESSION D'UNE LIAISON GLISSANTE
 C                'ADH' : AJOUT D'UNE LIAISON ADHERENTE
@@ -68,7 +62,6 @@ C                'SIN' : AFFICHAGE DE LA LIAISON PROVOQUANT UNE MATRICE
 C                         DE CONTACT SINGULIERE
 C                'AGC' : ALARME LORSQUE LE NOMBRE D'ITERATIONS MAX
 C                         DU GCP EST DEPASSE
-C IN  JEU    : JEU DE LA LIAISON OU LAMBDA DANS LE CAS 'PRE'
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -89,133 +82,128 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
+      INTEGER      IFM,NIV
       CHARACTER*24 NUMLIA
       INTEGER      JNUMLI 
-      INTEGER      IP,IZONE,IBID,NIV
+      INTEGER      IP,IZONE
       INTEGER      ENTAPP
       CHARACTER*8  NOMAPP
       CHARACTER*16 NOMNOE
       INTEGER      TYPAPP
-      CHARACTER*40 CHAIAC
-      CHARACTER*10 TYPLI
+      CHARACTER*16 ETALIA
       CHARACTER*4  TYPE2      
       CHARACTER*19 SDAPPA
+      CHARACTER*38 NOMLIA
+      REAL*8       CFDISR,ALJEU
+      CHARACTER*10 TYPLI
+      INTEGER      CFDISD,NDIM
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ ()
-C
-      CALL INFDBG('CONTACT',IBID,NIV) 
+      CALL JEMARQ()
+      CALL INFDBG('CONTACT',IFM,NIV)
 C
 C --- ACCES SD CONTACT
 C
       NUMLIA = RESOCO(1:14)//'.NUMLIA' 
       CALL JEVEUO(NUMLIA,'L',JNUMLI)
 C
+C --- INITIALISATIONS
+C 
+      ALJEU  = CFDISR(DEFICO,'ALARME_JEU'  )
+      NOMLIA = ' '
+      ETALIA = ' '
+      NDIM   = CFDISD(RESOCO,'NDIM'  )
+C
 C --- SD APPARIEMENT
 C
       SDAPPA = RESOCO(1:14)//'.APPA'
 C
-C --- POINT DE CONTACT
+      IF (NIV.GE.2) THEN
+C
+C ----- POINT DE CONTACT
 C      
-      IP     = ZI(JNUMLI+3*(ILIAI-1)+1-1)
+        IP     = ZI(JNUMLI+3*(ILIAI-1)+1-1)
 C
-C --- NOM DU NOEUD ESCLAVE
+C ----- NOM DU NOEUD ESCLAVE
 C
-      CALL APNOMP(SDAPPA,IP    ,NOMNOE)          
+        CALL APNOMP(SDAPPA,IP    ,NOMNOE)          
 C
-C --- INFOS APPARIEMENT
+C ----- INFOS APPARIEMENT
 C
-      CALL APINFI(SDAPPA,'APPARI_TYPE'  ,IP    ,TYPAPP )
-      CALL APINFI(SDAPPA,'APPARI_ENTITE',IP    ,ENTAPP )
-      CALL APINFI(SDAPPA,'APPARI_ZONE'  ,IP    ,IZONE  )    
+        CALL APINFI(SDAPPA,'APPARI_TYPE'  ,IP    ,TYPAPP )
+        CALL APINFI(SDAPPA,'APPARI_ENTITE',IP    ,ENTAPP )
+        CALL APINFI(SDAPPA,'APPARI_ZONE'  ,IP    ,IZONE  )    
 C
-C --- NOM ET TYPE DU MAITRE
+C ----- NOM ET TYPE DU MAITRE
 C
-      CALL CFNOAP(NOMA  ,DEFICO,TYPAPP,ENTAPP,NOMAPP,
-     &            TYPE2 )
+        CALL CFNOAP(NOMA  ,DEFICO,TYPAPP,ENTAPP,NOMAPP,
+     &              TYPE2 )
 C
-C --- ETAT DE LA LIAISON
+C ----- NOM DE LA LIAISON
 C
-      IF (TYPOPE.EQ.'A') THEN
-        CHAIAC = ' ACTIVEE       (JEU:'
-      ELSE IF (TYPOPE.EQ.'S') THEN
-        CHAIAC = ' DESACTIVEE    (JEU:'
-      ELSE
-        CHAIAC = ' INCONNUE      (JEU:'        
-      ENDIF
+        WRITE (NOMLIA,100) ILIAI,'( ',NOMNOE,TYPE2,NOMAPP,'): '
 C
-C --- TYPE DE LA LIAISON
-C      
-      IF (TYPLIA.EQ.'C0') THEN
-        TYPLI = 'CONTACT   '
-      ELSE IF (TYPLIA.EQ.'F0') THEN
-        TYPLI = 'FROT. 1&2 '
-      ELSE IF (TYPLIA.EQ.'F1') THEN
-        TYPLI = 'FROT. 1   '
-      ELSE IF (TYPLIA.EQ.'F2') THEN
-        TYPLI = 'FROT. 2   '
-      ELSE IF (TYPLIA.EQ.'F3') THEN
-        TYPLI = 'FROT.     '
-      ELSE
-        TYPLI = 'ERREUR'  
-      ENDIF
+C ----- TYPE LIAISON
 C
-C --- AFFICHAGE LIAISON
+        TYPLI  = 'CONT.     '
+        IF (TYPLIA.EQ.'C0') THEN
+          TYPLI = 'CONT.     '
+        ELSE IF (TYPLIA.EQ.'F0') THEN
+          IF (NDIM.EQ.3) THEN
+            TYPLI = 'ADHE. 1&2 '
+          ELSE
+            TYPLI = 'ADHE.     '
+          ENDIF
+        ELSE IF (TYPLIA.EQ.'F1') THEN
+          TYPLI = 'ADHE. 1   '
+        ELSE IF (TYPLIA.EQ.'F2') THEN
+          TYPLI = 'ADHE. 2   '
+        ENDIF
 C
-      IF(NIV.GE.2)THEN
-        IF (TYPEOU.EQ.'ALG') THEN
-          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                     CHAIAC,JEU,',TYPE: ',TYPLI,
-     &                     ')'
-        ELSE IF (TYPEOU.EQ.'PRE') THEN
-          CHAIAC = ' PRES. NEGATIVE (MU:'
-          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                     CHAIAC,JEU,',TYPE: ',TYPLI,
-     &                     ')'
+C ----- AFFICHAGE LIAISON
+C
+        IF (TYPEOU.EQ.'ACT') THEN
+          ETALIA = ' CONT - AJOUTE  '
+          WRITE (IFM,1002) NOMLIA,ETALIA
+          
+        ELSEIF (TYPEOU.EQ.'LIB') THEN
+          ETALIA = ' CONT - SUPPRIME'
+          WRITE (IFM,1002) NOMLIA,ETALIA   
+          
         ELSE IF (TYPEOU.EQ.'NEG') THEN
-          CHAIAC = ' PRES. NEGATIVE (MU:'
-          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                     CHAIAC,JEU,',TYPE: ',TYPLI,
-     &                     ')'     
+          ETALIA = ' PRES. NEGATIVE '
+          WRITE (IFM,1000) NOMLIA,ETALIA,' - TYPE ',TYPLI
+
         ELSE IF (TYPEOU.EQ.'PIV') THEN
-          CHAIAC = ' PIVOT NUL         ('
-          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                     CHAIAC,' TYPE: ',TYPLI,
-     &                     ')'
+          ETALIA = ' PIVOT NUL      '
+          WRITE (IFM,1000) NOMLIA,ETALIA,' - TYPE ',TYPLI
+
         ELSE IF (TYPEOU.EQ.'GLI') THEN
-          CHAIAC = ' GLISSANTE - SUPP. ('
-          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                     CHAIAC,' TYPE: ',TYPLI,
-     &                     ')'
+          ETALIA = ' GLIS - SUPPRIME'
+          WRITE (IFM,1000) NOMLIA,ETALIA,' - TYPE ',TYPLI
+          
         ELSE IF (TYPEOU.EQ.'ADH') THEN
-          CHAIAC = ' ADHERENTE - ADD.  ('
-          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                     CHAIAC,' TYPE: ',TYPLI,
-     &                   ')'
+          ETALIA = ' ADHE - AJOUTE  '
+          WRITE (IFM,1000) NOMLIA,ETALIA,' - TYPE ',TYPLI
+          
         ELSE IF (TYPEOU.EQ.'ALJ') THEN
-          CHAIAC = ' DECOLLE DU JEU     '
-          WRITE (IFM,1002) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                     CHAIAC,JEU
-        ELSE IF (TYPEOU.EQ.'SIN') THEN
-          CHAIAC = ' PIVOT NUL         ('
-          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,' TYPE: ',TYPLI,
-     &                   ')'
+          ETALIA = ' DECOLLE DU JEU '
+          WRITE (IFM,1001) NOMLIA,ETALIA,ALJEU
+          
         ELSE IF (TYPEOU.EQ.'AGC') THEN
-          CHAIAC = ') PRESENTE UNE INTERPENETRATION : JEU='
-          WRITE (IFM,1003) ILIAI,' (NOEUD ',NOMNOE,
-     &                     CHAIAC, JEU
+          ETALIA = ' INTERPENETRE   '
+          WRITE (IFM,1002) NOMLIA,ETALIA
+          
+        ELSE
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
-
-    
- 1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A20,E10.3,
-     &         A7,A10,A1)
- 1001 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A20,
-     &         A7,A10,A1)
- 1002 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A20,E10.3)
- 1003 FORMAT (' <CONTACT> <> LA LIAISON ',I5,A16,A8,A38,E10.3)
+C
+  100 FORMAT (I5,A2,A16,A4,A8,A3)
+ 1000 FORMAT (' <CONTACT><CALC> LIAISON ',A38,A16,A8,A10)
+ 1001 FORMAT (' <CONTACT><CALC> LIAISON ',A38,A16,E12.3)
+ 1002 FORMAT (' <CONTACT><CALC> LIAISON ',A38,A16) 
 C
       CALL JEDEMA()     
 C      

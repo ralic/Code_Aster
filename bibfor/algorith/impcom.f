@@ -1,9 +1,9 @@
       SUBROUTINE IMPCOM(INODA ,NOMDDL,CHAINE)    
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -52,8 +52,9 @@ C ----------------------------------------------------------------------
 C
       CHAINE = ' '
       CHNOD =  '  '
+      IF (INODA.EQ.0) GOTO 99
 C
-      WRITE(CHNOD(1:NCHAIN),'(I7.7)')INODA      
+      WRITE(CHNOD(1:NCHAIN),'(I7.7)') INODA      
       K = 1
 C      
       DO 10 I=1,NCHAIN
@@ -65,9 +66,9 @@ C
         ENDIF
  10   CONTINUE
  20   CONTINUE  
-     
+
       CHAINE(2:NCHAIN-K+2) = CHNOD(K:NCHAIN)
       
       CHAINE(9:16) = NOMDDL
-
+ 99   CONTINUE
       END
