@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 # ssnv185h.para = tps_job 130 mem_job 1024Mo mem_aster 70 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -204,22 +204,18 @@ CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CHRIG1,),
-                          _F(CHARGE=CHRIG2,),
-                          _F(CHARGE=CHPRES,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   SOLVEUR=_F(METHODE='MUMPS',PRETRAITEMENTS='SANS',
-                              PCENT_PIVOT=10),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CHRIG1),
+                          _F(CHARGE=CHRIG2),
+                          _F(CHARGE=CHPRES),
+                          ),
+                   SOLVEUR=_F(PCENT_PIVOT=10,
+                            METHODE='MUMPS',
+                            PRETRAITEMENTS='SANS'),
+                   INFO=1,
+                   ); 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------

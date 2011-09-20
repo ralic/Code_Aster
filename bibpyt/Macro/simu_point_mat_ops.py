@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF simu_point_mat_ops Macro  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,8 +92,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
        isig=0
        ieps=0
        igrd=0
-       nbsig=6
-#      par défaut contraintes nulles
+       ic1c2=0
        if SIGM_IMPOSE:
           SIG=SIGM_IMPOSE[0].cree_dict_valeurs(SIGM_IMPOSE[0].mc_liste)
           isig=1
@@ -104,13 +103,29 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           if args['GRAD_IMPOSE'] != None:  
              FIJ=args['GRAD_IMPOSE'][0].cree_dict_valeurs(args['GRAD_IMPOSE'][0].mc_liste)
              igrd=1
+       if args.has_key('MATR_C1') :
+          if args['MATR_C1'] != None:  
+             ic1c2=1
+       if args.has_key('MATR_C2') :
+          if args['MATR_C2'] != None:  
+             ic1c2=1
 
        motscles={}
-#       verif
        if igrd :
           for i in FIJ.keys():
             motscles[i]=FIJ[i]
+       elif ic1c2 :
+          if args.has_key('MATR_C1') :
+             if args['MATR_C1'] != None:  
+                motscles['MATR_C1']  = args['MATR_C1'].List_F() 
+          if args.has_key('MATR_C2'):
+             if args['MATR_C2'] != None:  
+                motscles['MATR_C2']  = args['MATR_C2'].List_F()
+          if args.has_key('VECT_IMPO'):
+             if args['VECT_IMPO'] != None:  
+                motscles['VECT_IMPO']  = args['VECT_IMPO'].List_F()
        else :
+          nbsig=6
           for index in range(nbsig):
               iks=CMP_SIG[index]
               ike=CMP_EPS[index]
@@ -151,22 +166,17 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 #      -- Deroulement du calcul
        motscles['INCREMENT']      = INCREMENT.List_F()
 
+       if args.has_key('FORMAT_TABLE'):
+          if args['FORMAT_TABLE'] != None:  
+             motscles['FORMAT_TABLE']  = args['FORMAT_TABLE']
+  
+       if args.has_key('OPER_TANGENT'):
+          if args['OPER_TANGENT'] != None:  
+             motscles['OPER_TANGENT']  = args['OPER_TANGENT']
+  
        if args.has_key('NB_VARI_TABLE'):
           if args['NB_VARI_TABLE'] != None:  
              motscles['NB_VARI_TABLE']  = args['NB_VARI_TABLE']
- 
-       if args.has_key('MATR_C1'):
-          if args['MATR_C1'] != None:  
-          #   motscles['MATR_C1']  = MATR_C1.List_F()
-             motscles['MATR_C1']  = args['MATR_C1'].List_F()
- 
-       if args.has_key('MATR_C2'):
-          if args['MATR_C2'] != None:  
-             motscles['MATR_C2']  = args['MATR_C2'].List_F()
- 
-       if args.has_key('VECT_IMPO'):
-          if args['VECT_IMPO'] != None:  
-             motscles['VECT_IMPO']  = args['VECT_IMPO'].List_F()
  
        if   ARCHIVAGE   :
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()

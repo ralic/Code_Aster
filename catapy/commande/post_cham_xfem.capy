@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,6 +21,7 @@ def post_cham_xfem_prod(RESULTAT,**args ):
  
   if AsType(RESULTAT) == evol_noli  : return evol_noli
   if AsType(RESULTAT) == mode_meca : return mode_meca
+  if AsType(RESULTAT) == evol_elas  : return evol_elas
 
   raise AsException("type de concept resultat non prevu")
 

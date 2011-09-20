@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,13 +166,6 @@ U1=CALC_ELEM( reuse=U1,
               )
 
 
-U1=CALC_ELEM( reuse=U1,
-              OPTION=('SPMX_ELGA'),
-              RESULTAT=U1,
-              NOM_CHAM='SIEQ_ELGA',
-              NOM_CMP='VMIS',
-              )
-
 IMPR_RESU(RESU=_F(RESULTAT=U1, NOM_CHAM='SIEQ_ELGA',
                   NOM_CMP='VMIS',
                   VALE_MAX='OUI',VALE_MIN='OUI',
@@ -188,22 +181,6 @@ U1=CALC_NO( reuse=U1,
             OPTION='FORC_NODA',
             RESULTAT=U1,
             )
-
-NCOU_M=CREA_CHAMP( OPERATION='EXTR',
-                   TYPE_CHAM='ELGA_SPMA_R',
-                   RESULTAT=U1,
-                   NOM_CHAM='SPMX_ELGA',
-                   TYPE_MAXI='MAXI',
-                   TYPE_RESU='VALE',
-                 ) ;
-
-NCOU_I=CREA_CHAMP( OPERATION='EXTR',
-                   TYPE_CHAM='ELGA_SPMA_R',
-                   RESULTAT=U1,
-                   NOM_CHAM='SPMX_ELGA',
-                   TYPE_MAXI='MAXI',
-                   TYPE_RESU='INST',
-                 ) ;
 
 # CALCUL DE LA ROTATION "GLOBALE" DANS LE COUDE EN FONCTION DE L INSTANT
 
@@ -255,17 +232,6 @@ TEST_RESU(RESU=(
 # NON REGRESSION
 
 
-TEST_RESU(CHAM_ELEM=(
-           _F( CHAM_GD = NCOU_M,
-               MAILLE='M1', POINT=1, NOM_CMP = 'MAX',
-               VALE=1.68015E+08, REFERENCE='NON_REGRESSION',),
-           _F( CHAM_GD = NCOU_I,
-               MAILLE='M1', POINT=1, NOM_CMP = 'MAX',
-               VALE=5.88981E+06, REFERENCE='NON_REGRESSION',),
-          ),    )
-
-
-
 TEST_RESU(RESU=(
            _F( RESULTAT = U1, NOM_CHAM = 'DEPL',
                  GROUP_NO = 'D', NOM_CMP = 'DY',
@@ -276,59 +242,6 @@ TEST_RESU(RESU=(
                  NUME_ORDRE = 8, VALE = 2.1850083894570E-02,
                  REFERENCE = 'NON_REGRESSION'))
           )
-
-
-TEST_RESU(RESU=(
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M1', POINT=1, NOM_CMP = 'MAX',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=8.84099E+07,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M1', POINT=1, NOM_CMP = 'MIN',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=5.88318E+06,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M2', POINT=2, NOM_CMP = 'NCOUMAX',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.00000E+00,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M3', POINT=3, NOM_CMP = 'NCOUMIN',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.00000E+00,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M4', POINT=1, NOM_CMP = 'NSECMAX',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.20000E+01,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M5', POINT=2, NOM_CMP = 'NSECMIN',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.60000E+01,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M6', POINT=3, NOM_CMP = 'NPCOUMAX',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.00000E+00,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M7', POINT=1, NOM_CMP = 'NPCOUMIN',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=2.00000E+00,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M8', POINT=2, NOM_CMP = 'NPSECMAX',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=3.00000E+00,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M9', POINT=3, NOM_CMP = 'NPSECMIN',
-                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=3.00000E+00,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M1', POINT=2, NOM_CMP = 'MAX',
-                  PRECISION = 0.01, NUME_ORDRE = 4, VALE=1.27695E+08,
-                  REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=U1, NOM_CHAM='SPMX_ELGA',
-                  MAILLE='M5', POINT=3, NOM_CMP = 'MIN',
-                  PRECISION = 0.01, NUME_ORDRE = 5, VALE=2.20755E+07,
-                  REFERENCE='NON_REGRESSION',),
-                ) );
-
 
 TEST_RESU(RESU=(
                _F(RESULTAT=U1, NOM_CHAM='SIEQ_ELGA',
@@ -479,6 +392,129 @@ TEST_TABLE(TABLE=TAB2,
            FILTRE=(_F(NOM_PARA = 'INST',VALE = 5.88981E+06),),
            NOM_PARA='ESTAR', PRECISION=0.001,VALE=3.96866E-03,
            REFERENCE = 'NON_REGRESSION',CRITERE='RELATIF')
+
+
+#---------------------------------------------------------------------------------------
+# Validation de POST_CHAMP / MIN_MAX_SP :
+#----------------------------------------
+U1=CALC_CHAMP(reuse=U1, RESULTAT=U1, CONTRAINTE='SIGM_ELGA', NUME_ORDRE=1,)
+U1C=POST_CHAMP(RESULTAT=U1, TOUT='OUI', TOUT_ORDRE='OUI',
+               MIN_MAX_SP =(
+                 _F(NOM_CHAM='SIEQ_ELGA', NOM_CMP='VMIS', TYPE_MAXI='MAXI',     NUME_CHAM_RESU=1 ),
+                 _F(NOM_CHAM='SIEQ_ELGA', NOM_CMP='VMIS', TYPE_MAXI='MINI',     NUME_CHAM_RESU=2 ),
+                 _F(NOM_CHAM='SIGM_ELGA', NOM_CMP='SIYY', TYPE_MAXI='MAXI_ABS', NUME_CHAM_RESU=3 ),
+                 _F(NOM_CHAM='SIGM_ELGA', NOM_CMP='SIYY', TYPE_MAXI='MINI_ABS', NUME_CHAM_RESU=4 ),
+               ))
+#IMPR_RESU(RESU=_F(RESULTAT=U1C))
+# verification des valeurs min/max relevees :
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT01_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=1, NOM_CMP='VAL', VALE = 1.0700867361796E+08, REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT02_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=1, NOM_CMP='VAL', VALE = 8.3875661619264E+06, REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT03_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=2, NOM_CMP='VAL', VALE = 8.3938035236909E+07, REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT04_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=2, NOM_CMP='VAL', VALE = 70046.239281737, REFERENCE='AUTRE_ASTER'))
+
+# verification de la localisation :
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT01_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=1, NOM_CMP='NUCOU', VALE = 1. , REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT01_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=1, NOM_CMP='NUSECT', VALE = 1. , REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT01_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=1, NOM_CMP='POSIC', VALE = -1., REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1C, NOM_CHAM = 'UT01_ELGA', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M3', POINT=1, NOM_CMP='POSIS', VALE = -1, REFERENCE='AUTRE_ASTER'))
+
+# ancienne validation des min/max :
+TEST_RESU(RESU=(
+               _F(RESULTAT=U1C, NOM_CHAM='UT01_ELGA',
+                  MAILLE='M1', POINT=1, NOM_CMP = 'VAL',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=8.84099E+07,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT02_ELGA',
+                  MAILLE='M1', POINT=1, NOM_CMP = 'VAL',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=5.88318E+06,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT01_ELGA',
+                  MAILLE='M2', POINT=2, NOM_CMP = 'NUCOU',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.00000E+00,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT02_ELGA',
+                  MAILLE='M3', POINT=3, NOM_CMP = 'NUCOU',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.00000E+00,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT01_ELGA',
+                  MAILLE='M4', POINT=1, NOM_CMP = 'NUSECT',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.20000E+01,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT02_ELGA',
+                  MAILLE='M5', POINT=2, NOM_CMP = 'NUSECT',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.60000E+01,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT01_ELGA',
+                  MAILLE='M6', POINT=3, NOM_CMP = 'POSIC',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=-1.,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT02_ELGA',
+                  MAILLE='M7', POINT=1, NOM_CMP = 'POSIC',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=0., CRITERE='ABSOLU',
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT01_ELGA',
+                  MAILLE='M8', POINT=2, NOM_CMP = 'POSIS',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT02_ELGA',
+                  MAILLE='M9', POINT=3, NOM_CMP = 'POSIS',
+                  PRECISION = 0.01, NUME_ORDRE = 1, VALE=1.,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT01_ELGA',
+                  MAILLE='M1', POINT=2, NOM_CMP = 'VAL',
+                  PRECISION = 0.01, NUME_ORDRE = 4, VALE=1.27695E+08,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1C, NOM_CHAM='UT02_ELGA',
+                  MAILLE='M5', POINT=3, NOM_CMP = 'VAL',
+                  PRECISION = 0.01, NUME_ORDRE = 5, VALE=2.20755E+07,
+                  REFERENCE='NON_REGRESSION',),
+   ))
+
+NCOU_M=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SPMX_R',
+                   RESULTAT=U1C, NOM_CHAM='UT01_ELGA', TYPE_MAXI='MAXI', TYPE_RESU='VALE',)
+
+NCOU_I=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SPMX_R',
+                   RESULTAT=U1C, NOM_CHAM='UT01_ELGA', TYPE_MAXI='MAXI', TYPE_RESU='INST',)
+
+TEST_RESU(CHAM_ELEM=(
+           _F( CHAM_GD = NCOU_M,
+               MAILLE='M1', POINT=1, NOM_CMP = 'VAL',
+               VALE=1.68015E+08, REFERENCE='NON_REGRESSION',),
+           _F( CHAM_GD = NCOU_I,
+               MAILLE='M1', POINT=1, NOM_CMP = 'VAL',
+               VALE=5.88981E+06, REFERENCE='NON_REGRESSION',),
+          ),    )
+#---------------------------------------------------------------------------------------
+# Validation de POST_CHAMP / MIN_MAX_SP pour un champ de VARI_ELNO:
+#-------------------------------------------------------------------
+U1D=POST_CHAMP(RESULTAT=U1, MAILLE='M5', NUME_ORDRE=1,
+               MIN_MAX_SP =(
+                 _F(NOM_CHAM='VARI_ELNO', NOM_CMP='V2', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1 ),
+               ))
+#IMPR_RESU(RESU=_F(RESULTAT=U1, MAILLE='M5', NUME_ORDRE=1,))
+#IMPR_RESU(RESU=_F(RESULTAT=U1D, MAILLE='M5', NUME_ORDRE=1,))
+# verification des valeurs min/max relevees :
+TEST_RESU(RESU= _F( RESULTAT = U1D, NOM_CHAM = 'UT01_ELNO', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M5', NOEUD='N13', NOM_CMP='VAL', VALE = 3.333333333E-01, REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1D, NOM_CHAM = 'UT01_ELNO', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M5', NOEUD='N13', NOM_CMP='NUCOU', VALE = 1., REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1D, NOM_CHAM = 'UT01_ELNO', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M5', NOEUD='N13', NOM_CMP='NUSECT', VALE = 12., REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1D, NOM_CHAM = 'UT01_ELNO', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M5', NOEUD='N13', NOM_CMP='POSIC', VALE = -1., REFERENCE='AUTRE_ASTER'))
+TEST_RESU(RESU= _F( RESULTAT = U1D, NOM_CHAM = 'UT01_ELNO', NUME_ORDRE=1, PRECISION=1.E-9,
+          MAILLE='M5', NOEUD='N13', NOM_CMP='POSIS', VALE =  1., REFERENCE='AUTRE_ASTER'))
+#---------------------------------------------------------------------------------------
+
+
 
 FIN()
 

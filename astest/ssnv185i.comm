@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185i.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,30 +170,15 @@ CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=2,),);
-F_CH = DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(
-                            0.0,  0.0,
-                            1.0 , 1.0,
-                           ),
-                     PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',
-                    );
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CHF,FONC_MULT = F_CH),
-                          _F(CHARGE=CH,),
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CHF),
+                          _F(CHARGE=CH),
                           ),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                   INFO=1,
+                   ); 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------
@@ -228,7 +213,7 @@ SIF = [None]*nbc
 for i in range(0,nbc) :
 
    SIF[i]=CALC_G(    RESULTAT=UTOT1,
-                     NUME_ORDRE = 2,
+                     NUME_ORDRE = 1,
                      OPTION='CALC_K_G',
                      THETA=_F(FISSURE=FISS,
                               R_INF=RI[i],

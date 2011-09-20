@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD,CHAMP,NOMSYM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 20/09/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*3  CHNOCH
       CHARACTER*6  CHORCH
       CHARACTER*19 NOMD2
-      INTEGER      NUNOCH
+      INTEGER      NUNOCH,JORDR,ITMP
 
       NOMD2 = NOMSD
 
@@ -60,7 +60,9 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHORCH = CHAMP(14:19)
 
       READ(CHNOCH,'(I3)') NUNOCH
-      READ(CHORCH,'(I6)') IORDR
+      READ(CHORCH,'(I6)') ITMP
+      CALL JEVEUO(NOMD2//'.ORDR','L',JORDR)
+      IORDR = ZI(JORDR+ITMP)
       CALL JENUNO(JEXNUM(NOMD2//'.DESC',NUNOCH),NOMSYM)
       IRET = 1
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,6 +132,7 @@ MODE_LOCAL__
     E10NEUTI  = NEUT_I   ELEM__        (X[10]     )
     E15NEUTI = NEUT_I   ELEM__         (X[15]    )
     E18NEUTR = NEUT_R   ELEM__         (X[18]    )
+    E22NEUTR = NEUT_R   ELEM__         (X[22]    )
     E30NEUTR = NEUT_R   ELEM__         (X[30]    )
     E33NEUTR = NEUT_R   ELEM__         (X[33]    )
     E32NEUTI = NEUT_I   ELEM__         (X[32]    )
@@ -171,6 +172,7 @@ MODE_LOCAL__
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        Z        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
+    FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -314,6 +316,13 @@ OPTION__
                                      E33NEUTR PPINTTO  E128NEUI  PCNSETO  E32NEUTI  PHEAVTO
                                      E10NEUTI  PLONCHA  N9NEUT_R  PBASLOR  N1NEUT_R  PLSN     N1NEUT_R PLST
                               OUT__  MMATUUR  PMATUUR
+    SIEF_ELGA           261   IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  E128NEUI  PCNSETO
+                                     DDL_MECA PDEPLAR  NGEOMER  PGEOMER  STANO_I  PSTANO
+                                     CMATERC  PMATERC  E33NEUTR PPINTTO  E32NEUTI  PHEAVTO
+                                     ZVARCPG  PVARCRR  ZVARCPG  PVARCPR  N9NEUT_R PBASLOR
+                                     E10NEUTI  PLONCHA  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
+                              OUT__  ECONTPG  PCONTRR
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N3NEUT_R PGRADLT
                                      N3NEUT_R PGRADLN  N3NEUT_R PGRADLT
                               OUT__  E18NEUTR PPINTER  E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA

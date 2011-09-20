@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,7 +129,6 @@ def l_nom_cham_pas_elga(): return (
      "TEMP",
      "THETA",
      "VALE_CONT",
-     "SPMX_ELGA",
      "VARI_ELNO",
      "VACO_ELNO",
      "VARI_ELNO",

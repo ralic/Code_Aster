@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319d.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,7 +112,6 @@ Mod  = [None]*NPS
 ModX = [None]*NPS
 ChgX = [None]*NPS
 ResX = [None]*NPS
-ResU = [None]*NPS
 SIFL = [None]*NPS
 SIFR = [None]*NPS
 SIFL1 = [None]*NPS
@@ -164,17 +163,11 @@ for i in range(1,NPS-1) :
                       AFFE=_F(TOUT='OUI',
                               MATER=steel,),);
 
-    ResU[i]=STAT_NON_LINE(MODELE=ModX[i],
+    ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=MATE[i],
                          EXCIT=(_F(CHARGE=Char[i],),),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      TOUT='OUI',),
-                         INCREMENT=_F(LIST_INST=TimeStep,
-                                      INST_FIN=1,),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
+                         );
                          
-    ResX[i] = EXTR_RESU(RESULTAT=ResU[i],
-                        ARCHIVAGE=_F(NUME_ORDRE=1),);                   
                          
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE

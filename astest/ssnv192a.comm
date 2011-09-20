@@ -1,4 +1,4 @@
-# MODIF  DATE 01/03/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -306,22 +306,17 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=3.0,
                                     NOMBRE=3,),);
 
-RESU1=STAT_NON_LINE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMA1,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CHRIGI,),
-                           _F(CHARGE=CHPRES,),),
-                    COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='VOL',),
-                    INCREMENT=_F(LIST_INST=L_INS1,
-                                 INST_FIN=1.0,),
-                    NEWTON=_F(REAC_ITER=1,),
-                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
-
-                               RESI_RELA=-1.,),
-                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
-
+RESU1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMA1,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CHRIGI),
+                          _F(CHARGE=CHPRES),
+                          ),
+                   SOLVEUR=_F(PCENT_PIVOT=10,
+                            METHODE='MUMPS',
+                            RESI_RELA=-1.0),
+                   INFO=1,
+                   ); 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------

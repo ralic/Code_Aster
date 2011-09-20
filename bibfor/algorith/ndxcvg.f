@@ -1,7 +1,7 @@
-      SUBROUTINE NDXCVG(SDIMPR,SDDISC,SDERRO,VALINC,ACTITE)
+      SUBROUTINE NDXCVG(SDDISC,SDERRO,VALINC,ACTITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*19 SDDISC,VALINC(*)
-      CHARACTER*24 SDIMPR,SDERRO
+      CHARACTER*24 SDERRO
       INTEGER      ACTITE
 C
 C ----------------------------------------------------------------------
@@ -34,7 +34,6 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  SDIMPR : SD AFFICHAGE
 C IN  SDDISC : SD DISCRETISATION TEMPORELLE
 C IN  SDERRO : GESTION DES ERREURS
 C IN  VALINC : VARIABLE CHAPEAU INCREMENTS DES VARIABLES
@@ -65,6 +64,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      IFM,NIV
       LOGICAL      ITEMAX,CONVER
+      CHARACTER*24 K24BLA
 C
 C ----------------------------------------------------------------------
 C
@@ -82,11 +82,12 @@ C
       ACTITE = 0
       ITEMAX = .FALSE.
       CONVER = .TRUE.
+      K24BLA = ' '
 C
 C --- VERIFICATION DU DECLENCHEMENT DES EVENT-DRIVEN
 C
       CALL NMEVDR(SDDISC,SDERRO,CONVER,VALINC,ITEMAX,
-     &            ACTITE)
+     &            K24BLA,ACTITE)
 C
       CALL JEDEMA()
       END

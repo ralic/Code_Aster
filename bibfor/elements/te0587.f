@@ -1,6 +1,6 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,6 @@ C        - SIEF_ELNO
 C        - EFGE_ELGA
 C        - EPEQ_ELGA
 C        - SIEQ_ELGA
-C        - SPMX_ELGA
 
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -493,172 +492,6 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
   310       CONTINUE
   320     CONTINUE
   330   CONTINUE
-
-C  =========================================
-
-
-C=======================================================================
-      ELSEIF (OPTION.EQ.'SPMX_ELGA') THEN
-C=======================================================================
-
-C ======== RAPPEL DES CONTRAINTES ====================
-
-        CALL JEVECH('PMINMAX','E',JOUT)
-        CALL JEVECH('PNOMCMP','L',JNOM)
-        NOMCHA=ZK24(JNOM)
-        NOMCMP=ZK24(JNOM+1)
-        IF (NOMCHA.EQ.'SIEF_ELGA') THEN
-          CALL JEVECH('PCONTRR','L',JIN)
-          NBCMP=6
-          IF (NOMCMP(1:4).EQ.'SIXX') THEN
-            NUMCMP=1
-          ELSEIF (NOMCMP(1:4).EQ.'SIYY') THEN
-            NUMCMP=2
-          ELSEIF (NOMCMP(1:4).EQ.'SIZZ') THEN
-            NUMCMP=3
-          ELSEIF (NOMCMP(1:4).EQ.'SIXY') THEN
-            NUMCMP=4
-          ELSEIF (NOMCMP(1:4).EQ.'SIXZ') THEN
-            NUMCMP=5
-          ELSEIF (NOMCMP(1:4).EQ.'SIYZ') THEN
-            NUMCMP=6
-          ELSE
-            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
-            GOTO 370
-
-          ENDIF
-        ELSEIF (NOMCHA.EQ.'SIEQ_ELGA') THEN
-          CALL JEVECH('PCONTEQ','L',JIN)
-          NBCMP=3
-          IF (NOMCMP(1:4).EQ.'VMIS') THEN
-            NUMCMP=1
-          ELSEIF (NOMCMP(1:7).EQ.'VMIS_SG') THEN
-            NUMCMP=2
-          ELSEIF (NOMCMP(1:5).EQ.'TRSIG') THEN
-            NUMCMP=3
-          ELSE
-            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
-            GOTO 370
-
-          ENDIF
-        ELSEIF (NOMCHA.EQ.'EPSI_ELGA') THEN
-          CALL JEVECH('PDEFORR','L',JIN)
-          NBCMP=6
-          IF (NOMCMP(1:4).EQ.'EPXX') THEN
-            NUMCMP=1
-          ELSEIF (NOMCMP(1:4).EQ.'EPYY') THEN
-            NUMCMP=2
-          ELSEIF (NOMCMP(1:4).EQ.'EPZZ') THEN
-            NUMCMP=3
-          ELSEIF (NOMCMP(1:4).EQ.'EPXY') THEN
-            NUMCMP=4
-          ELSEIF (NOMCMP(1:4).EQ.'EPXZ') THEN
-            NUMCMP=5
-          ELSEIF (NOMCMP(1:4).EQ.'EPYZ') THEN
-            NUMCMP=6
-          ELSE
-            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
-            GOTO 370
-
-          ENDIF
-        ELSEIF (NOMCHA.EQ.'EPEQ_ELGA') THEN
-          CALL JEVECH('PDEFOEQ','L',JIN)
-          NBCMP=2
-          IF (NOMCMP(1:6).EQ.'INVA_2') THEN
-            NUMCMP=1
-          ELSEIF (NOMCMP(1:8).EQ.'INVA_2SG') THEN
-            NUMCMP=2
-          ELSE
-            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
-            GOTO 370
-
-          ENDIF
-        ELSE
-          CALL U2MESK('A','ELEMENTS4_48',1,NOMCHA)
-          GOTO 370
-
-        ENDIF
-
-C BOUCLE SUR LES POINTS DE GAUSS
-
-        KPGS=0
-
-C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-
-        DO 360 IGAU=1,NPG
-          VALMAX=-R8MAEM()
-          VALMIN=R8MAEM()
-          NCOUMA=0
-          NCOUMI=0
-          NPCOMA=0
-          NPCOMI=0
-          NSECMA=0
-          NSECMI=0
-          NPSEMA=0
-          NPSEMI=0
-
-C INIALISATION DE EFG
-
-          DO 350 ICOU=1,2*NBCOU+1
-
-C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-
-            DO 340 ISECT=1,2*NBSEC+1
-
-              KPGS=KPGS+1
-
-              INDICE=JIN-1+NBCMP*(KPGS-1)
-              VAL=ZR(INDICE+NUMCMP)
-              IF (VAL.GT.VALMAX) THEN
-                VALMAX=VAL
-                IF (ICOU.GT.1) THEN
-                  NCOUMA=ICOU/2
-                  NPCOMA=ICOU-2*NCOUMA+2
-                ELSE
-                  NCOUMA=1
-                  NPCOMA=1
-                ENDIF
-                IF (ISECT.GT.1) THEN
-                  NSECMA=ISECT/2
-                  NPSEMA=ISECT-2*NSECMA+2
-                ELSE
-                  NSECMA=1
-                  NPSEMA=1
-                ENDIF
-              ENDIF
-              IF (VAL.LT.VALMIN) THEN
-                VALMIN=VAL
-                IF (ICOU.GT.1) THEN
-                  NCOUMI=ICOU/2
-                  NPCOMI=ICOU-2*NCOUMI+2
-                ELSE
-                  NCOUMI=1
-                  NPCOMI=1
-                ENDIF
-                IF (ISECT.GT.1) THEN
-                  NSECMI=ISECT/2
-                  NPSEMI=ISECT-2*NSECMI+2
-                ELSE
-                  NSECMI=1
-                  NPSEMI=1
-                ENDIF
-              ENDIF
-  340       CONTINUE
-  350     CONTINUE
-C   MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX
-C   NPCOMIN NPCOMAX NPSECMIN NPSECMAX
-          ZR(JOUT+10*(IGAU-1)+0)=VALMIN
-          ZR(JOUT+10*(IGAU-1)+1)=VALMAX
-          ZR(JOUT+10*(IGAU-1)+2)=NCOUMI
-          ZR(JOUT+10*(IGAU-1)+3)=NCOUMA
-          ZR(JOUT+10*(IGAU-1)+4)=NSECMI
-          ZR(JOUT+10*(IGAU-1)+5)=NSECMA
-          ZR(JOUT+10*(IGAU-1)+6)=NPCOMI
-          ZR(JOUT+10*(IGAU-1)+7)=NPCOMA
-          ZR(JOUT+10*(IGAU-1)+8)=NPSEMI
-          ZR(JOUT+10*(IGAU-1)+9)=NPSEMA
-  360   CONTINUE
-
 
 C  =========================================
 

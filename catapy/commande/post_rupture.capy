@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,8 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
       OPERATION = SIMP(statut='o',typ='TXM',into=(
                                                   'ABSC_CURV_NORM',
                                                   'ANGLE_BIFURCATION',
-#                                                  'K_EQ',
-#                                                  'DELTA_K_EQ',
+                                                  'K_EQ',
+                                                  'DELTA_K_EQ',
                                                   'COMPTAGE_CYCLES',
                                                   'LOI_PROPA',
                                                   'CUMUL_CYCLES',
@@ -74,7 +74,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
                    NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="K_EQ",fr="Nom de la nouvelle colonne"),
                    CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="CUMUL_G",fr="Formule de cumul des modes",
-                                   into=('LINEAIRE','QUADRATIQUE','THETA','CUMUL_G','MODE_I'),),
+                                   into=('LINEAIRE','QUADRATIQUE','CUMUL_G','MODE_I'),),
 
                    b_mater = BLOC(condition="CUMUL in ('QUADRATIQUE','CUMUL_G')",fr="materiau du fond de fissure",
                                   MATER = SIMP(statut='o',typ=mater_sdaster,),
@@ -89,7 +89,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
                        NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_K_EQ",fr="Nom de la nouvelle colonne"),
                        CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="CUMUL_G",fr="Formule de cumul des modes",
-                                       into=('QUADRATIQUE','CUMUL_G','MODE_I','SCHOLLMANN'),),
+                                       into=('QUADRATIQUE','CUMUL_G','MODE_I'),),
 
                        b_mater = BLOC(condition="CUMUL in ('QUADRATIQUE','CUMUL_G')",fr="materiau du fond de fissure",
                                       MATER = SIMP(statut='o',typ=mater_sdaster,),

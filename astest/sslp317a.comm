@@ -1,9 +1,9 @@
-# MODIF  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -156,21 +156,15 @@ CHpres=AFFE_CHAR_MECA(MODELE=MODELEK,
                       PRES_REP=_F(GROUP_MA=('LIG2','LIG3','LIG4'),PRES=-1.e6,),);
 
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1),);
-
-UTOT=STAT_NON_LINE(MODELE=MODELEK,
+UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHARBLO,),
-                          _F(CHARGE=CHARINC,),
-                          _F(CHARGE=CHpres,),
-                          _F(CHARGE=CHXFEM,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='SURF',),
-                   INCREMENT=_F(LIST_INST=L_INST),
-                   INFO=1,);
-
+                   EXCIT=(_F(CHARGE=CHARBLO),
+                          _F(CHARGE=CHARINC),
+                          _F(CHARGE=CHpres),
+                          _F(CHARGE=CHXFEM),
+                          ),
+                   INFO=1,
+                   ); 
 #---------------POST--------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(

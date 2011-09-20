@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,22 +162,16 @@ L_INS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
                                    NOMBRE=1,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMAT,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CH4,),
-                           _F(CHARGE=CH,),
-                           _F(CHARGE=CH1,),),
-                    COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='MTOT',),
-                    INCREMENT=_F(LIST_INST=L_INS,
-                                 INST_FIN=1.0,),
-                    NEWTON=_F(REAC_ITER=1,),
-                    CONVERGENCE=_F(RESI_GLOB_RELA=1E-6,
-                                   ARRET='OUI',),
-                    SOLVEUR=_F(METHODE='MUMPS',),
-                    INFO=1,);
-
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH4),
+                          _F(CHARGE=CH),
+                          _F(CHARGE=CH1),
+                          ),
+                   SOLVEUR=_F(METHODE='MUMPS'),
+                   INFO=1,
+                   ); 
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('SURF',),

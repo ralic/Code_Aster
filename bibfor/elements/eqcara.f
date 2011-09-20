@@ -4,7 +4,7 @@
       CHARACTER*6   TYPMOD
       INTEGER       NDIM, NCEQ ,NCMP, NBVA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -235,20 +235,20 @@ C
       IF (LELE2D) THEN
          TYPMOD = '2D'
          NDIM  = 2
-         NCEQ  = 16
+         NCEQ  = 17
          NCMP  = 7
          IF(LTEATT(' ','INCO','OUI')) NCEQ = 7
       ELSEIF (LELE3D) THEN
          TYPMOD = '3D'
          NDIM  = 3
-         NCEQ  = 16
+         NCEQ  = 17
          NCMP  = 7
          IF(LTEATT(' ','INCO','OUI')) NCEQ = 7
          IF(NOMTE.EQ.'MECA_SHB8') NBVA = 6
       ELSEIF (LELEFO) THEN
          TYPMOD = '3D'
          NDIM  = 3
-         NCEQ  = 16
+         NCEQ  = 17
          NCMP  = 7
       ELSEIF(LELECQ)THEN
          TYPMOD = 'COQUE'

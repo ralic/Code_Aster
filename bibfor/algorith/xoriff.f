@@ -1,7 +1,7 @@
       SUBROUTINE XORIFF(NDIM,NFON,JFON,JBAS,JBORD,PFI,O,VOR,AUTO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
-      EPS = -1.0D-10
+      EPS = -1.0D-14
 
       IF (AUTO) THEN
 C       CAS ORIENTATION AUTOMATIQUE

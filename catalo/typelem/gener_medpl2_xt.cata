@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,6 +90,7 @@ MODE_LOCAL__
     E6NEUTR = NEUT_R    ELEM__         (X[6]     )
     E6NEUTI = NEUT_I    ELEM__         (X[6]     )
     E18NEUI = NEUT_I   ELEM__          (X[18]    )
+    E22NEUTR = NEUT_R   ELEM__         (X[22]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
@@ -124,6 +125,7 @@ MODE_LOCAL__
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
+    FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -270,6 +272,13 @@ OPTION__
                                      E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
                                      E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MMATUUR  PMATUUR
+    SIEF_ELGA      261        IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  E18NEUI  PCNSETO
+                                     DDL_MECA PDEPLAR  NGEOMER  PGEOMER  STANO_I  PSTANO
+                                     CMATERC  PMATERC  E6NEUTR  PPINTTO  E6NEUTI  PHEAVTO
+                                     ZVARCPG  PVARCRR  ZVARCPG  PVARCPR  N6NEUT_R PBASLOR
+                                     E9NEUTI  PLONCHA  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
+                              OUT__  ECONTPG  PCONTRR
     SIEF_ELNO      289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
                               OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT

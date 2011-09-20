@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,32 +24,6 @@
 bloc_auto   =BLOC(fr                = "Subdivision de type automatique",
                   condition         = "SUBD_METHODE == 'AUTO'",
                   SUBD_PAS_MINI     = SIMP(fr                = "Pas de temps en dessous duquel on ne subdivise plus",
-                                           statut            = 'f',
-                                           typ               = 'R',
-                                           val_min           = 0.0,
-                                           max               = 1,
-                                           defaut            = 0.,
-                                           ),                                            
-                  )
-
-# Bloc pour decoupe automatique - Version collision
-bloc_auto2  =BLOC(fr                = "Subdivision de type automatique",
-                  condition         = "SUBD_METHODE == 'AUTO'",
-                  SUBD_PAS_MINI     = SIMP(fr                = "Pas de temps en dessous duquel on ne subdivise plus",
-                                           statut            = 'f',
-                                           typ               = 'R',
-                                           val_min           = 0.0,
-                                           max               = 1,
-                                           defaut            = 0.,
-                                           ),
-                  PREC_COLLISION    = SIMP(fr                = "Parametre de decoupe fine du pas de temps",
-                                           statut            = 'f',
-                                           typ               = 'R',
-                                           val_min           = 0.0,
-                                           max               = 1,
-                                           defaut            = 0.,
-                                           ),  
-                  DUREE_COLLISION   = SIMP(fr                = "Duree de decoupe fine du pas de temps apres la collision",
                                            statut            = 'f',
                                            typ               = 'R',
                                            val_min           = 0.0,
@@ -103,15 +77,22 @@ bloc_deco   =BLOC(fr                = "Action de decoupe du pas temps",
 # Bloc pour decoupe du pas de temps - special pour collision
 bloc_deco2  =BLOC(fr                = "Action de decoupe du pas temps",
                   condition         = "ACTION == 'DECOUPE'",
-                  SUBD_METHODE      = SIMP(fr                = "Méthode de subdivision des pas de temps en cas de divergence",
+                  SUBD_METHODE      = SIMP(fr                = "Méthode de subdivision des pas de temps en cas de collision",
                                            statut            = 'f',
                                            typ               = 'TXM',
                                            max               = 1,
                                            into              = ("MANUEL","AUTO"),
                                            defaut            = "AUTO",
                                            ),
+                  
+                  PREC_COLLISION    = SIMP(fr                = "Parametre de decoupe fine du pas de temps",
+                                           statut            = 'o',
+                                           typ               = 'R',
+                                           val_min           = 0.0,
+                                           max               = 1,
+                                           ),     
                   b_deco_manu       = bloc_manu,
-                  b_deco_auto2      = bloc_auto2,
+                  b_deco_auto       = bloc_auto,
                  )
    
 # Bloc pour extrapolation du nombre d'iterations de Newton
@@ -138,12 +119,12 @@ bloc_supp   =BLOC(fr                = "Action d'extrapolation du nombre d'iterat
 # Bloc pour adaptation du coefficient de penalisation
 bloc_pene   =BLOC(fr                = "Action d' adaptation du coefficient de penalisation",
                   condition         = "ACTION == 'ADAPT_COEF_PENA'",
-                  COEF_MULT_MAXI    = SIMP(fr                = "Coefficient multiplicateur maximum du coefficient de penalisation",
+                  COEF_MAXI         = SIMP(fr                = "Coefficient multiplicateur maximum du coefficient de penalisation",
                                            statut            = 'f',
                                            typ               = 'R',
                                            val_min           = 1.,
                                            max               = 1,
-                                           defaut            = 1000,
+                                           defaut            = 1E12,
                                            ),
                  )
                 
@@ -257,7 +238,7 @@ ECHEC       =FACT(fr                = "Comportement en cas d'echec",
                                                                     into            = ("ARRET","DECOUPE",),
                                                                     defaut          = "DECOUPE",
                                                                     ),
-                                           b_deco2           = bloc_deco,
+                                           b_deco2           = bloc_deco2,
                                            ),
                   b_penetration     = BLOC(fr                = "Event: interpenetration des surfaces en contact",
                                            condition         = "EVENEMENT == 'INTERPENETRATION' ",

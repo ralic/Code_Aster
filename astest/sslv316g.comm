@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316g.para = tps_job 700 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,18 +133,10 @@ for i in range(nbcalc) :
 
    CHXFEM[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],LIAISON_XFEM='OUI',INFO=1,);
 
-   RESU[i]=STAT_NON_LINE(MODELE=MODELX[i],
+   RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(_F(CHARGE=CHXFEM[i],),
                                 _F(CHARGE=CH,),),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      GROUP_MA='VOL',),
-                         INCREMENT=_F(LIST_INST=L_INS1,
-                                      INST_FIN=1.0,),
-                         NEWTON=_F(REAC_ITER=1,),
-#                         SOLVEUR=_F(METHODE='MULT_FRONT',
-#                                    NPREC=12,),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          INFO=1,);
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
@@ -157,7 +149,7 @@ for i in range(nbcalc) :
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
    SIF1[i] = CALC_TABLE(TABLE=SIF[i],
                    ACTION=(_F(OPERATION='EXTR',
-                             NOM_PARA=('NUME_ORDRE','INST','NUM_PT',
+                             NOM_PARA=('NUME_ORDRE','NUM_PT',
                                        'ABSC_CURV','K1','K2',
                                        'K3','G','G_IRWIN','NUME_FOND',),
                              ),
@@ -303,6 +295,7 @@ DEPL=POST_CHAM_XFEM(
 
 DEFI_FICHIER(UNITE=31,);
 IMPR_RESU(FORMAT='MED',
+             MODELE=MODELX[i],
              UNITE=31,
              RESU=_F(RESULTAT=DEPL,),);
 

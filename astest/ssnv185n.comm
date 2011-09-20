@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185n.para = tps_job 1600 mem_job 1024Mo memjeveux_stat 1024 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,19 +141,14 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH1),
+                          _F(CHARGE=CH2),
+                          ),
+                   INFO=1,
+                   ); 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
@@ -277,9 +272,7 @@ IMPR_TABLE(TABLE = PK)
 TEST_TABLE( TABLE=PK,
             NOM_PARA='K1',
             FILTRE=(_F( NOM_PARA = 'PT_FOND',
-                        VALE_I = 1,  ),
-                    _F( NOM_PARA = 'INST',
-                        VALE = 1.,  ),),
+                        VALE_I = 1,  ),),
             VALE=K1REF,
             PRECISION=0.035,
             REFERENCE='ANALYTIQUE' )

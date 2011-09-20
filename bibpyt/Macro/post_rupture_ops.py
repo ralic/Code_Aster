@@ -1,4 +1,4 @@
-#@ MODIF post_rupture_ops Macro  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_rupture_ops Macro  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 
 import numpy as NP
 from Utilitai.Utmess import UTMESS
+from SD.sd_mater     import sd_compor1
 
 def verif_nb_table(OPERATION, TABLE) :
    """ verification que le nombre de tables est correct et retourne le nombre de tables"""
@@ -139,6 +140,54 @@ def amestoy(k1,k2,crit_ang):
 
    return phi
 
+
+def caract_mater(self,mater):
+   """ recupere le module d'Young et le coefficient de poisson du materiau"""
+   matph = mater.sdj.NOMRC.get()
+   phenom=None
+   for cmpt in matph :
+      if cmpt[:4]=='ELAS' :
+         phenom=cmpt
+         break
+   if phenom==None : UTMESS('F','RUPTURE0_5')      
+
+   compor = sd_compor1('%-8s.%s' % (mater.nom, phenom))
+   valk = [s.strip() for s in compor.VALK.get()]
+   valr = compor.VALR.get()
+   dicmat=dict(zip(valk,valr))
+
+   young=dicmat['E']
+   poisson = dicmat['NU']   
+   
+#  E et nu definis avec defi_fonction
+   if young==0.0 and poisson==0.0:    
+      list_oper=valk[: len(valk)/2]
+      list_fonc=valk[len(valk)/2 :]    
+#   valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
+#   et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une 
+#   une seconde partie  
+      try:list_oper.remove("B_ENDOGE")
+      except: ValueError
+      try:list_oper.remove("RHO")     
+      except: ValueError
+      try:list_oper.remove("PRECISIO")
+      except: ValueError
+      try:list_oper.remove("K_DESSIC")
+      except: ValueError      
+      try:list_oper.remove("TEMP_DEF")
+      except: ValueError
+   
+      nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
+      nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])
+    
+      if (nom_fonc_e.sdj.PROL.get()[0].strip()=='CONSTANT' and
+          nom_fonc_nu.sdj.PROL.get()[0].strip()=='CONSTANT'):
+         young  = nom_fonc_e.Ordo()[0]
+         poisson = nom_fonc_nu.Ordo()[0]
+      else:
+         UTMESS('F','RUPTURE1_68')
+   return (young, poisson)
+
 #------------------------------------------------------------------------------------------------------
 def post_rupture_ops(self, TABLE, OPERATION, **args):
    """
@@ -148,7 +197,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
    macro = 'POST_RUPTURE'
    from Accas import _F
-
+   
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
@@ -165,7 +214,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
    POST_FATIGUE  = self.get_cmd('POST_FATIGUE')
    IMPR_TABLE    = self.get_cmd('IMPR_TABLE')
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
-
+   DEFI_CONSTANTE= self.get_cmd('DEFI_CONSTANTE')
 
    # verification que le nombre de tables est correct
    # et retourne le nombre de tables
@@ -241,35 +290,53 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                                   FORMULE=__angle_deg,
                                   NOM_PARA=args['NOM_PARA']))
 
-
    #-----------------------------------------------------------------------
-   if OPERATION == 'K_EQ' :
+   if OPERATION[-4:] == 'K_EQ' :
 
       cumul=args['CUMUL']
-
-      if 'K3' in tabin.para :
+      
+      if len(OPERATION)==4:
+         Q1='K1'
+         Q2='K2'
+         Q3='K3'
+         list_cumul=('LINEAIRE','QUADRATIQUE')
+      else:
+         Q1='DELTA_K1'
+         Q2='DELTA_K2'
+         Q3='DELTA_K3'
+         list_cumul=('QUADRATIQUE')  
+      
+      if Q3 in tabin.para :
          ndim = 3
       else :
          ndim = 2
 
       # verification que la table contient les colonnes necessaires
-      if cumul in ('LINEAIRE','QUADRATIQUE','THETA') :
-         verif_exi(tabin, 'K1')
-         verif_exi(tabin, 'K2')
+      if cumul in list_cumul :
+         verif_exi(tabin, Q1)
+         verif_exi(tabin, Q2)
          if ndim==3 :
-            verif_exi(tabin, 'K3')
-
+            verif_exi(tabin, Q3)      
+      
       if cumul == 'CUMUL_G' :
 #            recup de E et nu, attention avec la dependance a INST et X, Y, Z
          verif_exi(tabin, 'G')
-         __cumul = FORMULE(NOM_PARA='G',VALE='sqrt(E)/(1-nu**2)*G)')
+         
+         (young, poisson)=caract_mater(self,args['MATER'])
+         self.update_const_context({'E' : young})
+         self.update_const_context({'nu' : poisson})
+         
+         __cumul = FORMULE(NOM_PARA='G',VALE='sqrt(E)/((1-nu**2)*G)')
 
       elif cumul == 'QUADRATIQUE' :
 #         nu=
+         (young, poisson)=caract_mater(self,args['MATER']) 
+         self.update_const_context({'nu' : poisson})
+
          if ndim==3 :
-            __cumul=FORMULE(NOM_PARA=('K1','K2','K3'),VALE='sqrt(K1**2+K2**2+K3**2/(1.-nu))')
+            __cumul=FORMULE(NOM_PARA=(Q1,Q2,Q3),VALE='sqrt('+Q1+'**2+'+Q2+'**2+'+Q3+'**2/(1.-nu))')
          elif ndim==2 :
-            __cumul=FORMULE(NOM_PARA=('K1','K2'),     VALE='sqrt(K1**2+K2**2)')
+            __cumul=FORMULE(NOM_PARA=(Q1,Q2),     VALE='sqrt('+Q1+'**2+'+Q2+'**2)')
 
       elif cumul == 'LINEAIRE' :
 
@@ -280,37 +347,8 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
       elif cumul == 'MODE_I' :
 
-         verif_exi(tabin, 'K1')
-         __cumul = FORMULE(NOM_PARA='K1',VALE='K1')
-
-      elif cumul == 'THETA' :
-
-         # condition d'utilisation : |K2| > 0,02 |K1|
-         assert(0==1)
-#         lthet = verit_cond_theta(tabin)
-#         if not lthet :
-#              emission Alarme et sortie directe
-
-         __THETA_PL=FORMULE(NOM_PARA=('K1','K2'),VALE='2.*atan((K1+sqrt(K1**2+8.*K2**2))/(4.*K2))')
-         __THETA_MO=FORMULE(NOM_PARA=('K1','K2'),VALE='2.*atan((K1-sqrt(K1**2+8.*K2**2))/(4.*K2))')
-         __KTHET_PL=FORMULE(NOM_PARA=('K1','K2','THETA_PL'),VALE='(K1*(cos(THETA_PL/2))**2-3./2.*K2*sin(THETA_PL))*cos(THETA_PL/2)')
-         __KTHET_MO=FORMULE(NOM_PARA=('K1','K2','THETA_MO'),VALE='(K1*(cos(THETA_MO/2))**2-3./2.*K2*sin(THETA_MO))*cos(THETA_MO/2)')
-         __KTHET   =FORMULE(NOM_PARA=('KTHET_PL','KTHET_MO'),VALE='max(KTHET_PL,KTHET_MO)')
-
-         tabout=CALC_TABLE(TABLE=TABIN,
-                           reuse=TABIN,
-                           ACTION=(_F(OPERATION='OPER',FORMULE=__THETA_PL,NOM_PARA='THETA_PL'),
-                                   _F(OPERATION='OPER',FORMULE=__THETA_MO,NOM_PARA='THETA_MO'),
-                                   _F(OPERATION='OPER',FORMULE=__KTHET_PL,NOM_PARA='KTHET_PL'),
-                                   _F(OPERATION='OPER',FORMULE=__KTHET_MO,NOM_PARA='KTHET_MO'),
-                                   _F(OPERATION='OPER',FORMULE=__KTHET   ,NOM_PARA='KTHET'),
-                                  )
-                            )
-
-         if ndim==3 :
-            __cumul=FORMULE(NOM_PARA=('KTHET','K3'),VALE='KTHET+0.74*abs(K3)')
-         elif ndim==2 :
-            __cumul=FORMULE(NOM_PARA=('KTHET'),VALE='KTHET')
+         verif_exi(tabin, Q1)
+         __cumul = FORMULE(NOM_PARA=Q1,VALE=Q1)
 
 
       tabout=CALC_TABLE(TABLE=TABIN,
@@ -319,16 +357,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                                   FORMULE=__cumul,
                                   NOM_PARA=args['NOM_PARA']))
 
-      # menage
-      if cumul == 'THETA' :
-         tabout=CALC_TABLE(TABLE=TABIN,reuse=TABIN,
-                           ACTION=(_F(OPERATION='SUPPRIME',NOM_PARA='THETA_PL'),
-                                   _F(OPERATION='SUPPRIME',NOM_PARA='THETA_MO'),
-                                   _F(OPERATION='SUPPRIME',NOM_PARA='KTHET_PL'),
-                                   _F(OPERATION='SUPPRIME',NOM_PARA='KTHET_MO'),
-                                   _F(OPERATION='SUPPRIME',NOM_PARA='KTHET'),
-                                  )
-                            )
+
 
    #-----------------------------------------------------------------------
    if OPERATION == 'COMPTAGE_CYCLES' :

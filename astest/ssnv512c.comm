@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE BLOC DECOUPE PAR UNE FISSURE VERTICALE SE BRANCHANT ENTRE 2 FISSURES HORIZONTALES AVEC X-FEM
 # ssnv512c.para = tps_job 50 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,9 +74,6 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG,
                                 MATER=ACIER,
                                 ),);
 
-VAR1=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.,0.,1.,1.),);
-
 
 def depx(x,y) :
    if y < 2 and y > -2 and x < 0: return -0.25
@@ -99,27 +96,14 @@ CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA=('SD','SG'),DX= DEPL_X,DY= DEPL_Y,DZ= DEPL_Z),),
                    INFO=1,);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1,
-                                    NOMBRE=1,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   #CONTACT=CTXFEM,
-                   EXCIT=(
-                          _F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CH1,FONC_MULT=VAR1),),
-                   COMP_ELAS=(_F(RELATION='ELAS',
-                                 GROUP_MA='VOLU',),),
-                   NEWTON=_F(REAC_INCR=1,REAC_ITER=1),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
-                                  RESI_GLOB_MAXI=1E-6,ARRET='NON')),
-                   #SOLVEUR=_F(METHODE='MUMPS',
-                   #           PCENT_PIVOT=250,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH1),
+                          ),
+                   INFO=1,
+                   ); 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
@@ -147,7 +131,7 @@ DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 DEP = CALC_TABLE(TABLE = DEP,
                  reuse = DEP,
                  ACTION =_F(OPERATION = 'EXTR',
-                            NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DZ'),),);
+                            NOM_PARA=('NOEUD','COOR_X','COOR_Y','DX','DY','DZ'),),);
 
 DEPP = CALC_TABLE(TABLE = DEP,
                      ACTION =(_F(OPERATION = 'FILTRE',

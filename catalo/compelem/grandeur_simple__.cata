@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF COMPELEM  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1306,23 +1306,17 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     MATE_F   = K8   MATE
 
-<<  SPMA_R Type:R
-       MIN :
-       MAX :
-       NCOUMIN :
-       NCOUMAX :
-       NSECMIN :
-       NSECMAX :
-       NPCOUMIN :
-       NPCOUMAX :
-       NPSECMIN :
-       NPSECMAX :
+<<  SPMX_R Type:R
+       VAL    :   valeur "min/max" trouvée
+       NUCOU  :   numéro de la couche ou le "min/max" a été atteint
+       NUSECT :   numéro du secteur ou le "min/max" a été atteint
+       NUFIBR :   numéro de la fibre ou le "min/max" a été atteint
+       POSIC  :   position dans la couche  (-1 : INF, 0: MOY, 1: SUP)
+       POSIS  :   position dans le secteur (-1 : INF, 0: MOY, 1: SUP)
 >>
-    SPMA_R   = R    MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX  NPCOUMIN NPCOUMAX
-                    NPSECMIN NPSECMAX
-%
+    SPMX_R   = R    VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS
+
 %   COMPOSANTES CARACTERISTIQUES DES ELEMENTS A SOUS-POINTS
-%
 <<  NBSP_I Type:I Caracteristique des sous-points
        COQ_NCOU : nombre de couches (COQUE)
        GRI_NCOU : nombre de couches (GRILLE)

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,26 +186,14 @@ for i in range(nbcalc) :
 #
 # RESOLUTIONS AVEC LES DEUX CHARGEMENTS
 #
-  UTOT1[i]=STAT_NON_LINE(MODELE=MODELK[i],
+  UTOT1[i]=MECA_STATIQUE(MODELE=MODELK[i],
                    CHAM_MATER=CHMA[i],
                    EXCIT=(_F(CHARGE=CH1[i])),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='SURF',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
-  UTOT2[i]=STAT_NON_LINE(MODELE=MODELK[i],
+  UTOT2[i]=MECA_STATIQUE(MODELE=MODELK[i],
                    CHAM_MATER=CHMA[i],
                    EXCIT=(_F(CHARGE=CH2[i])),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='SURF',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
                    
 
@@ -216,7 +204,7 @@ for i in range(nbcalc) :
 
 # CAS DU PREMIER CHARGEMENT    
   SI1CH1[i]=CALC_G(RESULTAT=UTOT1[i],
-                   INST=1.,
+                   INST=0.,
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI,
@@ -224,7 +212,7 @@ for i in range(nbcalc) :
                    )
 
   SI2CH1[i]=CALC_G(RESULTAT=UTOT1[i],
-                   INST=1.,
+                   INST=0.,
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
                             NUME_FOND=2,
@@ -233,7 +221,7 @@ for i in range(nbcalc) :
                    )
 
   TG1CH1[i]=CALC_G(RESULTAT=UTOT1[i],
-                   INST=1.,
+                   INST=0.,
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI,
                             R_SUP=RS,),
@@ -245,7 +233,7 @@ for i in range(nbcalc) :
                  
 # CAS DU DEUXIEME CHARGEMENT    
   SI1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
-                   INST=1.,
+                   INST=0.,
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI,
@@ -253,7 +241,7 @@ for i in range(nbcalc) :
                    )
 
   SI2CH2[i]=CALC_G(RESULTAT=UTOT2[i],
-                   INST=1.,
+                   INST=0.,
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
                             NUME_FOND=2,
@@ -262,7 +250,7 @@ for i in range(nbcalc) :
                    )
 
   TG1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
-                   INST=1.,
+                   INST=0.,
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI,
                             R_SUP=RS,),
@@ -314,7 +302,7 @@ for i in range(nbcalc) :
   # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 1
   PK1[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
                        MATER=ACIER,
-                       INST=1.,
+                       INST=0.,
                        FISSURE = FISS[i],
                        NUME_FOND = 2,
                        ABSC_CURV_MAXI = RS,
@@ -324,7 +312,7 @@ for i in range(nbcalc) :
   # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 2
   PK2[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
                        MATER=ACIER,
-                       INST=1.,
+                       INST=0.,
                        FISSURE = FISS[i],
                        NUME_FOND = 2,
                        ABSC_CURV_MAXI = RS,

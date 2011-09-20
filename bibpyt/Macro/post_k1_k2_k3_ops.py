@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1531,14 +1531,19 @@ def get_erreur(self,ndim,__tabi) :
 
       # remove kj_min + sort data
       params = ()
-      if ('INST' in __tabi.EXTR_TABLE().para) : params = ('INST',)
-      if ('NOEUD_FOND' in __tabi.EXTR_TABLE().para) :
-          params =  params + ('NOEUD_FOND',)
-      elif ('PT_FOND' in __tabi.EXTR_TABLE().para) :
-          params =  params + ('PT_FOND',)
+      if   ('FISSURE'    in __tabi.EXTR_TABLE().para) : params = ('FISSURE',)
+      elif ('FOND_FISS'  in __tabi.EXTR_TABLE().para) : params = ('FOND_FISS',)
 
-      if ('ABSC_CURV' in __tabi.EXTR_TABLE().para) :
-          params = params + ('ABSC_CURV',)
+      if   ('NUME_FOND'  in __tabi.EXTR_TABLE().para) : params = params + ('NUME_FOND',)
+
+      if   ('INST'       in __tabi.EXTR_TABLE().para) : params = params + ('INST',)
+      if   ('NUME_ORDRE' in __tabi.EXTR_TABLE().para) : params = params + ('NUME_ORDRE',)
+
+      if   ('NOEUD_FOND' in __tabi.EXTR_TABLE().para) : params = params + ('NOEUD_FOND',)
+      if   ('NUM_PT'     in __tabi.EXTR_TABLE().para) : params = params + ('NUM_PT',)
+      if   ('PT_FOND'     in __tabi.EXTR_TABLE().para) : params = params + ('PT_FOND',)
+
+      if   ('ABSC_CURV'  in __tabi.EXTR_TABLE().para) : params = params + ('ABSC_CURV',)
 
       params = params + ('K1', 'ERR_K1', 'K2', 'ERR_K2',)
       if ndim == 3: params = params + ('K3', 'ERR_K3', 'G',)
@@ -1552,7 +1557,7 @@ def get_erreur(self,ndim,__tabi) :
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_tabout(self,kg,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
+def get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
                Lnofon,dicoF,absfon,Nnoff,tabout) :
 
       """retourne la table de sortie"""
@@ -1574,14 +1579,20 @@ def get_tabout(self,kg,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
          titre = 'ASTER %s - CONCEPT CALCULE PAR POST_K1_K2_K3 LE &DATE A &HEURE \n'%v
 
       if FOND_FISS and MODELISATION=='3D':
+         mcfact.append(_F(PARA='FOND_FISS',LISTE_K=[FOND_FISS.nom,]*3))
+         mcfact.append(_F(PARA='NUME_FOND',LISTE_I=[1,]*3))
          mcfact.append(_F(PARA='NOEUD_FOND',LISTE_K=[Lnofon[ino],]*3))
+         mcfact.append(_F(PARA='NUM_PT',LISTE_I=[ino+1,]*3))
          mcfact.append(_F(PARA='ABSC_CURV',LISTE_R=[dicoF[Lnofon[ino]]]*3))
 
       if FISSURE and MODELISATION=='3D':
+         mcfact.append(_F(PARA='FISSURE',LISTE_K=[FISSURE.nom,]*3))
+         mcfact.append(_F(PARA='NUME_FOND',LISTE_I=[args['NUME_FOND'],]*3))
          mcfact.append(_F(PARA='PT_FOND',LISTE_I=[ino+1,]*3))
          mcfact.append(_F(PARA='ABSC_CURV',LISTE_R=[absfon[ino],]*3))
 
       if FISSURE  and MODELISATION!='3D' and Nnoff!=1 :
+         mcfact.append(_F(PARA='FISSURE',LISTE_K=[FISSURE.nom,]*3))
          mcfact.append(_F(PARA='PT_FOND',LISTE_I=[ino+1,]*3))
 
       mcfact.append(_F(PARA='METHODE',LISTE_I=(1,2,3)))
@@ -1660,7 +1671,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    # Le concept sortant (de type table_sdaster ou dérivé) est tab
    self.DeclareOut('tabout', self.sd)
-
+   
    tabout=[]
 
    # On importe les definitions des commandes a utiliser dans la macro
@@ -1690,28 +1701,63 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    valr = compor.VALR.get()
    dicmat=dict(zip(valk,valr))
 
+#  PROPRIETES MATERIAUX INDEPENDANTES DE LA TEMPERATURE
+   e  = dicmat['E']
+   nu = dicmat['NU']
+
 #  PROPRIETES MATERIAUX DEPENDANTES DE LA TEMPERATURE
    Tempe3D = False
+   
+   if e==0.0 and nu==0.0 :    
+      list_oper=valk[: len(valk)/2]
+      list_fonc=valk[len(valk)/2 :]    
+#     valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
+#     et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une 
+#     une seconde partie  
+
+      try:list_oper.remove("B_ENDOGE")
+      except: ValueError
+      try:list_oper.remove("RHO")     
+      except: ValueError
+      try:list_oper.remove("PRECISIO")
+      except: ValueError
+      try:list_oper.remove("K_DESSIC")
+      except: ValueError      
+      try:list_oper.remove("TEMP_DEF")
+      except: ValueError
+   
+      nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
+      nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])
+      nom_fonc_e_prol  = nom_fonc_e.sdj.PROL.get()[0].strip()
+      nom_fonc_nu_prol = nom_fonc_nu.sdj.PROL.get()[0].strip()
+                         
+      if (nom_fonc_e_prol=='CONSTANT' and nom_fonc_nu_prol=='CONSTANT'):
+         e  = nom_fonc_e.Ordo()[0]
+         nu = nom_fonc_nu.Ordo()[0]
+         try:
+            del dicmat['TEMP_DEF']
+         except: 
+            KeyError    
+      else:
+#        on verifie que les fonctions dependent bien que de la temperature    
+         if ((nom_fonc_e.Parametres()  ['NOM_PARA']!='TEMP' and nom_fonc_e_prol!='CONSTANT') or
+             (nom_fonc_nu.Parametres() ['NOM_PARA']!='TEMP' and nom_fonc_nu_prol!='CONSTANT')):
+            UTMESS('F','RUPTURE1_67')
+     
+      if dicmat.has_key('TEMP_DEF') and not args['EVOL_THER'] :
+         nompar = ('TEMP',)
+         valpar = (dicmat['TEMP_DEF'],)
+         UTMESS('A','RUPTURE0_6',valr=valpar)
+         nomres=['E','NU']
+         valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,2)
+         e = valres[0]
+         nu = valres[1]        
+
    if FOND_FISS and args['EVOL_THER'] :
-#     on recupere juste le nom du resultat thermique (la température est variable de commande)
-      ndim   = 3
-      Tempe3D=True
-      resuth=S.ljust(args['EVOL_THER'].nom,8).rstrip()
-
-   if dicmat.has_key('TEMP_DEF') and not args['EVOL_THER'] :
-      nompar = ('TEMP',)
-      valpar = (dicmat['TEMP_DEF'],)
-      UTMESS('A','RUPTURE0_6',valr=valpar)
-      nomres=['E','NU']
-      valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,2)
-      e = valres[0]
-      nu = valres[1]
-
-
-#   --- PROPRIETES MATERIAUX INDEPENDANTES DE LA TEMPERATURE
-   else :
-      e  = dicmat['E']
-      nu = dicmat['NU']
+#      on recupere juste le nom du resultat thermique (la température est variable de commande)
+       ndim   = 3
+       Tempe3D=True
+       resuth=S.ljust(args['EVOL_THER'].nom,8).rstrip()
 
    if not Tempe3D :
       coefd3 = 0.
@@ -2028,7 +2074,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          kg=NP.array([kg1,kg2,kg3])
          kg=NP.transpose(kg)
 
-         tabout = get_tabout(self,kg,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
+         tabout = get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
                              Lnofon,dicoF,absfon,Nnoff,tabout)
 
 #     Fin de la boucle sur les instants
@@ -2041,7 +2087,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                         TABLE=tabout,
                         ACTION=_F(OPERATION = 'TRI',
                                   NOM_PARA=('INST','ABSC_CURV'),
-                                  ORDRE='CROISSANT'))
-
+                                  ORDRE='CROISSANT'))   
+   
    return ier
 

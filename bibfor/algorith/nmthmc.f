@@ -3,7 +3,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C =====================================================================
       INTEGER       DMTHMC, DMHYDR, DMMECA, JMAIL, ITYPEL
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM, NUMLC
       PARAMETER   ( DMTHMC = 8  )
-      PARAMETER   ( DMHYDR = 4  )
+      PARAMETER   ( DMHYDR = 5  )
       PARAMETER   ( DMMECA = 18 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
@@ -92,6 +92,7 @@ C =====================================================================
       DATA POHYDR / 'HYDR'      ,
      &              'HYDR_UTIL' ,
      &              'HYDR_VGM' ,
+     &              'HYDR_VGC' ,
      &              'HYDR_ENDO' /
 C =====================================================================
 C --- PARTIE MECA -----------------------------------------------------

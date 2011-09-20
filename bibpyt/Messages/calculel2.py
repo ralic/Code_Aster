@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 05/09/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,6 +124,11 @@ Erreur utilisateur dans la commande POST_CHAMP :
 Erreur utilisateur dans la commande CREA_CHAMP :
  Incohérence entre le champ %(k1)s associé au maillage %(k2)s
  et le maillage %(k3)s
+"""),
+
+18: _("""
+Erreur utilisateur dans la commande POST_CHAMP / MIN_MAX_SP :
+ La composante demandée %(k1)s n'est pas trouvée dans le champ %(k2)s
 """),
 
 

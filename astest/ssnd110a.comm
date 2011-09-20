@@ -1,4 +1,4 @@
-# MODIF  DATE 14/03/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CFC 
 # ssnd110a.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -430,6 +430,7 @@ IMPLDD=SIMU_POINT_MAT(INFO=1,
                                    _F(SIXX=S1,SIYY=S2,SIZZ=S3,SIXY=S4,SIXZ=S5,SIYZ=S6),
                                   ),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
+                      OPER_TANGENT='OUI',
                        );
 
 

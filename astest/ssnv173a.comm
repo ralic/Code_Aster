@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,29 +72,13 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                              _F(NOEUD=('N5','N6','N7','N8'),
                                 DX=0.,DY=0.,DZ=DEPZ),),);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
-
-UTOT=STAT_NON_LINE(MODELE=MODELEK,
+UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CH,),
-                          _F(CHARGE=CHXFEM,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.0,),
-#                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
-                                  RESI_GLOB_MAXI=1e-07,
-#                                  RESI_GLOB_RELA=1e-06,
-                                  ),
-#                   SOLVEUR=_F(METHODE='LDLT',
-#                              RENUM='RCMK',
-#                              STOP_SINGULIER='OUI',),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=2,);
-
+                   EXCIT=(_F(CHARGE=CH),
+                          _F(CHARGE=CHXFEM),
+                          ),
+                   INFO=2,
+                   ); 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
@@ -252,44 +236,44 @@ TEST_TABLE(TABLE=DEPM,
 #            VALIDATION DE DEFI_FISS_XFEM/DEFI_FISS/CHAM_NO_LSN   
 # -------------------------------------------------------------   
 
-TBLSN=LIRE_TABLE(UNITE=38, 
+TBLSN=LIRE_TABLE(UNITE=38,INFO=2,
                FORMAT='ASTER',  
                NUME_TABLE=1, 
                SEPARATEUR=' ',
                TITRE='level set normale',)
 
-CHLSN=CREA_CHAMP(OPERATION='EXTR',TABLE=TBLSN,
+CHLSN=CREA_CHAMP(INFO=2,OPERATION='EXTR',TABLE=TBLSN,
                 TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=MAILLAG1)
 
-FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,INFO=2,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(CHAM_NO_LSN=CHLSN),);
 
-CHLSN2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+CHLSN2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',INFO=2,
               OPERATION='EXTR',
               NOM_CHAM='LNNO',
               FISSURE=FISS2,);
 
 
-CHLSN0=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+CHLSN0=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',INFO=2,
               OPERATION='EXTR',
               NOM_CHAM='LNNO',
               FISSURE=FISS,);
 
 DEFI_FICHIER(UNITE=81,FICHIER='./fort.81')
 
-IMPR_RESU(UNITE=81,
+IMPR_RESU(UNITE=81,INFO=2,MODELE=MODELEIN,
           RESU=_F(CHAM_GD=CHLSN2),)
 
-IMPR_RESU(UNITE=81,
+IMPR_RESU(UNITE=81,INFO=2,MODELE=MODELEIN,
           RESU=_F(CHAM_GD=CHLSN),)
 
-IMPR_RESU(UNITE=81,
+IMPR_RESU(UNITE=81,INFO=2,MODELE=MODELEIN,
           RESU=_F(CHAM_GD=CHLSN0),)
 
 DEFI_FICHIER(UNITE=81, ACTION='LIBERER')
 
-TEST_FICHIER(FICHIER='./fort.81',
+TEST_FICHIER(FICHIER='./fort.81',INFO=2,
              EXPR_IGNORE = ('ASTER'),
              REFERENCE='NON_REGRESSION',
              NB_VALE=51,

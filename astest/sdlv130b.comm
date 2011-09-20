@@ -1,9 +1,9 @@
-# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdlv130b.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -147,19 +147,14 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMA1,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CH1,),
-                           _F(CHARGE=CH2,),),
-                    COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='VOL',),
-                    INCREMENT=_F(LIST_INST=L_INS1,
-                                 INST_FIN=1.0,),
-                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,
-                    NEWTON=_F(REAC_ITER=0,),);
-
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMA1,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH1),
+                          _F(CHARGE=CH2),
+                          ),
+                   INFO=1,
+                   ); 
 # CALCUL DES CONTRAINTES ASSOCIEES
 
 CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -280,70 +275,5 @@ TEST_RESU(RESU=_F(RESULTAT=MODES,
                   PRECISION=0.005,
                   REFERENCE='AUTRE_ASTER',),);
 
-#ET LES TESTS DE NON-REGRESSION:
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=1,
-                  PARA='FREQ',
-                  VALE=1.3630686762082,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=2,
-                  PARA='FREQ',
-                  VALE=3.1790626772038,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=3,
-                  PARA='FREQ',
-                  VALE=4.8116665536718,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=4,
-                  PARA='FREQ',
-                  VALE=7.203426795704,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=5,
-                  PARA='FREQ',
-                  VALE=9.9568497004278,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=6,
-                  PARA='FREQ',
-                  VALE=11.629301592131,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=7,
-                  PARA='FREQ',
-                  VALE=17.41394419542,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=8,
-                  PARA='FREQ',
-                  VALE=18.252635880549,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
 
 FIN();

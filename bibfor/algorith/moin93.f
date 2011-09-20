@@ -1,7 +1,6 @@
       SUBROUTINE MOIN93(MASSE,RAIDE,RAIDFA,NBMOIN,MATMOD,VEFREQ)
-      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C           M. CORUS     DATE 4/02/10
 C     ------------------------------------------------------------------
@@ -45,6 +45,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
+      
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*32 JEXNUM
@@ -148,7 +150,6 @@ C-- RECHERCHE DES TYPES DES DDLS ACTIFS
                 ZI(LNOINT+K1)=I1
                 ZI(LNOINT+K1+NNOINT)=IPOS1
                 ZI(LNOINT+K1+2*NNOINT)=6
-
                 CALL ISDECO(ZI(LPRNO+(I1-1)*(2+NBEC)+2),DECO,NBCMPM)
                 L1=1
                 DO 30,N1=1,6
@@ -196,7 +197,7 @@ C--                                             --C
 C-------------------------------------------------C
 
       CALL MODINT(SSAMI,RAIINT,NDDLIN,NBMOIN,SHIFT,MATMOD,MASSE,
-     &              RAIDFA,NEQ,COINT,NODDLI,NNOINT,VEFREQ)
+     &              RAIDFA,NEQ,COINT,NODDLI,NNOINT,VEFREQ,1)
       CALL JEVEUO(VEFREQ,'L',LFREQ)
 
       WRITE(6,*)'    NUMERO    FREQUENCE (HZ)'

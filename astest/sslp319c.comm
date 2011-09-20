@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,9 +22,11 @@
 
 #  REMARQUE : ON TESTE AUSSI LE CALCUL DU CYCLE DANS PROPA_FISS
 #  SANS UTILISER COMP_LINE.
+#  ON IGNORE L'ALARME XFEM2_76 DEPUIS LE FICHE 13329. AVEC LE PASSAGE DE STAT_NON_LINE EN MECA_STATIQUE,
+#  ON NE CALCULE PLUS QU'UN INSTANT. LE CALCUL DE PROPA_FISS EMET ALORS CETTE ALARME.
 
 DEBUT(CODE=_F(NOM='SSLP319C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-      DEBUG=_F(SDVERI='OUI'),
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('XFEM2_76')
         )
 
 #***********************************
@@ -168,13 +170,10 @@ for i in range(1,NPS-1) :
                       AFFE=_F(TOUT='OUI',
                               MATER=steel,),);
 
-    ResX[i]=STAT_NON_LINE(MODELE=ModX[i],
+    ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=MATE[i],
                          EXCIT=_F(CHARGE=Char[i]),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      TOUT='OUI',),
-                         INCREMENT=_F(LIST_INST=TimeStep),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
+                         );
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A GAUCHE

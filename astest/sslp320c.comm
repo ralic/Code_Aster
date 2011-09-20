@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320c.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,17 +152,10 @@ for i in range(1,NPAS+1) :
 
     CHXFE[i]=AFFE_CHAR_MECA(MODELE=MODEL[i],LIAISON_XFEM='OUI',);
     
-    RESU[i]=STAT_NON_LINE(MODELE=MODEL[i],
+    RESU[i]=MECA_STATIQUE(MODELE=MODEL[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(_F(CHARGE=CHXFE[i],),
                                 _F(CHARGE=CHRIG,),),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      GROUP_MA='Surface',),
-                         INCREMENT=_F(LIST_INST=L_INS1,
-                                      INST_FIN=1.0,),
-                         SOLVEUR=_F(METHODE='MULT_FRONT',),
-                         NEWTON=_F(REAC_ITER=1,),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          );
     
     SIF[i]=CALC_G(RESULTAT=RESU[i],

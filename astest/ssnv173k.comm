@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173k.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,20 +99,12 @@ CH2=AFFE_CHAR_MECA(MODELE=MODX,
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODX,
                       LIAISON_XFEM='OUI',);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
-
-UTOT2=STAT_NON_LINE(MODELE=MODX,
+UTOT2=MECA_STATIQUE(MODELE=MODX,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CH2,),
-                          _F(CHARGE=CHXFEM,),),
-                   COMP_ELAS=_F(RELATION='ELAS'),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(REAC_ITER=1),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1E-08),
-                   )
-
+                   EXCIT=(_F(CHARGE=CH2),
+                          _F(CHARGE=CHXFEM),
+                          ),
+                   ); 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   

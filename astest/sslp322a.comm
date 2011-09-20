@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS AVEC 3 TROUS
 # sslp322a.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,19 +149,13 @@ for i in range(NPAS+1) :
                       FORCE_NODALE=_F(GROUP_NO=('P3',),FY=-1.,),
                                     );
 
-    RESV[i]=STAT_NON_LINE(MODELE=MODE[i],
+    RESV[i]=MECA_STATIQUE(MODELE=MODE[i],
                          CHAM_MATER=CHAMA[i],
                          EXCIT=(_F(CHARGE=CHXFE[i],),
                                 _F(CHARGE=CHRIG[i],),),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      GROUP_MA='Surface',),
-                         INCREMENT=_F(LIST_INST=L_INS1,
-                                      INST_FIN=1.0,),
-                         NEWTON=_F(REAC_ITER=1,),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          );
-    RESU[i]=EXTR_RESU(RESULTAT=RESV[i],ARCHIVAGE=_F(NUME_ORDRE=(1,)),);   
-    SIF[i]=CALC_G        (RESULTAT=RESU[i],
+       
+    SIF[i]=CALC_G        (RESULTAT=RESV[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i],
                                    R_INF=RI,
@@ -227,13 +221,13 @@ for i in range(NPAS+1) :
 
     DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
-                          RESULTAT=RESU[i],
+                          RESULTAT=RESV[i],
                           );
 
-#    DEFI_FICHIER(UNITE=30,);
-#    IMPR_RESU(   FORMAT='MED',
-#             UNITE=30,
-#             RESU=_F(RESULTAT=DEPL[i],),);
+    DEFI_FICHIER(UNITE=30,);
+    IMPR_RESU(   FORMAT='MED',
+             UNITE=30,
+             RESU=_F(RESULTAT=DEPL[i],),);
              
 
 FIN();

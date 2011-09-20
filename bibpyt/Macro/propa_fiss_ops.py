@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF propa_fiss_ops Macro  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,10 +191,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   self.set_icmd(1)
 
 #------------------------------------------------------------------
-# CAS 1 : METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND'
+# CAS 1 : METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE'
 #
 
-  if (METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND'):
+  if (METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND') or (METHODE_PROPA == 'GEOMETRIQUE'):
 
     TEST_MAIL=args['TEST_MAIL']
 

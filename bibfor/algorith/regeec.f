@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN, NOMSST
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER          ZI
-      INTEGER VALI(2)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -44,25 +43,26 @@ C
       LOGICAL          ZL
       COMMON  /LVARJE/ ZL(1)
       CHARACTER*8      ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                            ZK80
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
 C
       CHARACTER*32 JEXNUM,JEXNOM
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      I, IAD, IBID, IEQ, IER, IORD, IRET, J, JBID, K,
-     +             LDNEW, LLCHAB, LLCHOL, LLNUEQ, LLORS, LLPRS,
+     +             LDNEW, LLCHAB, LLCHOL, LLNUEQ, LLORS, LLPRS,VALI(2),
      +             NBBAS, NBDDG, NBMOD, NBSST, NEQ, NNO, NUMO, NUSST,
      +             NUTARS, IADPAR(6), LLREF1, LLREF2, LLREF3, LLREF4,
      +             ELIM,NEQET,NEQRED,LMAPRO,LSILIA,LSST,LMOET,I1,K1
       REAL*8       FREQ, GENEK, GENEM, OMEG2, RBID
       CHARACTER*1  K1BID
       CHARACTER*8  KBID, BASMOD, MAILLA, LINT, MODGEN, SOUTR
-      CHARACTER*16 DEPL,NOMPAR(6)
+      CHARACTER*16 DEPL,NOMPAR(6),TYPRES,QUAMOD
       CHARACTER*19 RAID,NUMDDL,NUMGEN,CHAMNE
       CHARACTER*24 CREFE(2),CHAMOL,CHAMBA
       CHARACTER*24 VALK(2),SELIAI,SIZLIA,SST
@@ -197,7 +197,15 @@ C
 C
 C --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 C
-      CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,0, IBID, NNO )
+      
+      CALL GETRES(KBID,TYPRES,QUAMOD)
+      IF (QUAMOD .NE. 'CALC_CORR_SSD') THEN
+        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,0, IBID, NNO )
+      ELSE
+C-- SI ON APPELLE DEPUIS QUAL_MODL, ON RESTITUE TOUS LES MODES
+        NNO=0
+      ENDIF
+          
       IF ( NNO .NE. 0 ) THEN
         NBMOD = -NNO
         CALL WKVECT ( '&&REGEEC.NUME', 'V V I', NBMOD, JBID )

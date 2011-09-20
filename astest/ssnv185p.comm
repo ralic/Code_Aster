@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185p.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,6 +113,23 @@ CH3=AFFE_CHAR_MECA(MODELE=MODELEK,
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.,NOMBRE=1))
 
 # CALCUL AVEC CHARGEMENT FORCE_INTERNE
+#UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+#                   CHAM_MATER=CHAMPMA1,
+#                   EXCIT=(_F(CHARGE=CHXFEM,),
+#                          _F(CHARGE=CH1,),
+#                          _F(CHARGE=CH2,),
+#                          ),
+#                   );                   
+
+# CALCUL AVEC CHARGEMENT PESANTEUR                   
+#UTOT2=MECA_STATIQUE(MODELE=MODELEK,
+#                   CHAM_MATER=CHAMPMA1,
+#                   EXCIT=(_F(CHARGE=CHXFEM,),
+#                          _F(CHARGE=CH1,),
+#                          _F(CHARGE=CH3,),
+#                          ),
+#                   ); 
+# CALCUL AVEC CHARGEMENT FORCE_INTERNE
 UTOT1x=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
@@ -124,8 +141,8 @@ UTOT1x=STAT_NON_LINE(MODELE=MODELEK,
                    INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
                    )
-UTOT1 = EXTR_RESU(RESULTAT=UTOT1x,ARCHIVAGE=_F(NUME_ORDRE=1),);                  
-# CALCUL AVEC CHARGEMENT PESANTEUR                   
+UTOT1 = EXTR_RESU(RESULTAT=UTOT1x,ARCHIVAGE=_F(NUME_ORDRE=1),);
+# CALCUL AVEC CHARGEMENT PESANTEUR
 UTOT2x=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
@@ -137,7 +154,11 @@ UTOT2x=STAT_NON_LINE(MODELE=MODELEK,
                    INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
                    )
-UTOT2 = EXTR_RESU(RESULTAT=UTOT2x,ARCHIVAGE=_F(NUME_ORDRE=1),);   
+UTOT2 = EXTR_RESU(RESULTAT=UTOT2x,ARCHIVAGE=_F(NUME_ORDRE=1),);
+   
+SIGMA_1=CREA_CHAMP( OPERATION='EXTR',INFO=2, TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=UTOT1, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA' );
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DE G
 #------------------------------------------------------------------------
@@ -345,12 +366,11 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
                         INFO          = 2)
-                        
+
 RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
                    RESULTAT=RES_XFEM,
-                   OPTION=('SIEQ_ELGA','SIEQ_ELNO'));
+                   OPTION=('SIEQ_ELGA'));
 
 
 # TESTS DE NON REGRESSION PAR RAPPORT A LA VERSION 10.2.06

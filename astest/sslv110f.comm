@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,22 +106,14 @@ CHAR2=AFFE_CHAR_MECA(INFO=1,
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
-
-UTOT1=STAT_NON_LINE(INFO=1,
-                  MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMAT,              
-                   EXCIT=(_F(CHARGE=CHAR1,),
-                           _F(CHARGE=CHAR2,),
-                          _F(CHARGE=CHXFEM,), ),              
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='TUBE',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   );
-
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CHAR1),
+                          _F(CHARGE=CHAR2),
+                          _F(CHARGE=CHXFEM),
+                          ),
+                   INFO=1,
+                   ); 
 
 SIFTH=CALC_G(  RESULTAT=UTOT1,
                   OPTION='CALC_K_G',

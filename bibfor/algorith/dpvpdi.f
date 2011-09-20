@@ -1,9 +1,9 @@
       SUBROUTINE DPVPDI( NBMAT, MATER, TD, TF, TR, DEPST, DEPS)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -55,8 +55,8 @@ C =====================================================================
         DO 11 II = 1, NDT
          DEPS(II) = DEPST(II)
  11     CONTINUE
-      ELSEIF   (((IISNAN(TR).EQ.1).OR.(IISNAN(TD).EQ.1).OR.
-     &         (IISNAN(TF).EQ.1)).AND.(ALPHA.NE.0.D0)) THEN
+      ELSEIF   (((IISNAN(TR).EQ.0).OR.(IISNAN(TD).EQ.0).OR.
+     &         (IISNAN(TF).EQ.0)).AND.(ALPHA.NE.0.D0)) THEN
         CALL U2MESS('F','CALCULEL_15')
       ENDIF 
 C =====================================================================

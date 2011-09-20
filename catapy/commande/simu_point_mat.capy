@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,11 +42,13 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
    NEWTON          =C_NEWTON(),
    CONVERGENCE     =C_CONVERGENCE(),
 
-   SUPPORT= SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",)),
+   SUPPORT= SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",),defaut=("POINT"),),
 
-   b_PM = BLOC(condition="SUPPORT !=  'ELEMENT'",fr="Simulation sans élément fini",
+   b_PM = BLOC(condition="SUPPORT ==  'POINT'",fr="Simulation sans élément fini",
+      FORMAT_TABLE  =SIMP(statut='f',typ='TXM',max=1,into=("CMP_COLONNE","CMP_LIGNE",),defaut=("CMP_COLONNE"),),
       NB_VARI_TABLE  =SIMP(statut='f',typ='I',max=1,),
-      ARCHIVAGE       =FACT(statut='f',
+      OPER_TANGENT  =SIMP(statut='f',typ='TXM',max=1,into=("OUI","NON",),defaut="NON",),
+       ARCHIVAGE    =FACT(statut='f',
        LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
        INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
        PAS_ARCH        =SIMP(statut='f',typ='I' ),
@@ -88,7 +90,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
               EPYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
                          ),
                ),
-   b_COEF = BLOC(condition="SUPPORT !=  'ELEMENT'",fr="matrice de coefficients",
+   b_COEF = BLOC(condition="SUPPORT ==  'POINT'",fr="matrice de coefficients",
      regles = (PRESENT_ABSENT('SIGM_IMPOSE','MATR_C1','MATR_C2','VECT_IMPO'),
                PRESENT_ABSENT('EPSI_IMPOSE','MATR_C1','MATR_C2','VECT_IMPO'),
                PRESENT_ABSENT('MATR_C1','SIGM_IMPOSE','EPSI_IMPOSE'),

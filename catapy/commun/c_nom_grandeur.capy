@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMUN  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE DESROCHES X.DESROCHES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,7 @@ def C_NOM_GRANDEUR() : return  ( #COMMUN#
 "SIZZ_R",
 "SOUR_F",
 "SOUR_R",
-"SPMA_R",
+"SPMX_R",
 "STRX_R",
 "STAOUDYN",
 "TEMP_C",

@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,29 +83,13 @@ CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                                 INFO=1,);
 
-#   nombre de pas de chargement
-nbpc = 1
-
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=100.0,
-                                    NOMBRE=nbpc,),);
-
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CHXFEM,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=8,
-                                 RESI_GLOB_MAXI=1e-8,),
-#                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
-#                              TYPE_RESOL='SYMGEN',
-#                              RESI_RELA=3e-2,
-#                             ),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                   EXCIT=(_F(CHARGE=CH1),
+                          _F(CHARGE=CHXFEM),
+                          ),
+                   INFO=1,
+                   ); 
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   

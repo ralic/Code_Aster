@@ -2,7 +2,7 @@
      &                  ACTITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,7 +76,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      IFM,NIV
       INTEGER      FACCVG,LDCCVG
-      LOGICAL      ERROR
+      LOGICAL      ERROR,LEVEN,LPOST
+      CHARACTER*24 K24BLA
 C
 C ----------------------------------------------------------------------
 C
@@ -88,6 +89,17 @@ C
       LDCCVG = LICCVG(2)
       FACCVG = LICCVG(5)
       ERROR  = (LDCCVG.EQ.1) . OR. (FACCVG.NE.0)
+      LPOST  = .FALSE.
+      LEVEN  = .FALSE.
+      K24BLA = ' '
+C
+C --- NEWTON A CONVERGE ?
+C
+      IF (CONVER) THEN
+        ACTITE = 0
+      ELSE
+        ACTITE = 2
+      ENDIF
 C
 C --- AFFICHAGE
 C
@@ -98,7 +110,13 @@ C
 C --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 C 
       CALL NMEVEV(SDDISC,CONVER,TABINC,ITEMAX,LDCCVG,
-     &            ERROR ,ACTITE)
+     &            ERROR ,K24BLA,LPOST ,LEVEN )
+C
+C --- UN EVENEMENT DECLENCHE
+C
+      IF (LEVEN) THEN
+        ACTITE = 1
+      ENDIF
 C
       CALL JEDEMA()
       END

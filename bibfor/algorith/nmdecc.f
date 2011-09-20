@@ -1,0 +1,126 @@
+      SUBROUTINE NMDECC(SDDISC,RESOCO,IEVDAC,RATIO ,LDECO )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*19 SDDISC
+      CHARACTER*24 RESOCO
+      INTEGER      IEVDAC
+      REAL*8       RATIO
+      LOGICAL      LDECO
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (GESTION DES EVENEMENTS - DECOUPE)
+C
+C CAS AUTOMATIQUE - COLLLISION
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  SDDISC : SD DISCRETISATION TEMPORELLE
+C IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+C OUT RATIO  : RATIO DU PREMIER PAS DE TEMPS
+C OUT LDECO  : .TRUE. SI DECOUPE
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER      IFM,NIV
+      INTEGER      CFDISD,NBLIAI
+      INTEGER      ILIAI
+      INTEGER      POSNOE   
+      CHARACTER*24 JEUEVD
+      INTEGER      JJEVD
+      CHARACTER*24 NUMLIA
+      INTEGER      JNUMLI
+      REAL*8       JEUSTC,JEUOLD,JEUINI
+      REAL*8       ETATCO,R8GAEM,RATIO2
+      REAL*8       PRECCO
+      INTEGER      IBID
+      CHARACTER*8  K8BID
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... COLLISION'
+      ENDIF
+C
+C --- INITIALISATIONS
+C
+      RATIO  = R8GAEM()
+      LDECO  = .FALSE.
+      CALL UTDIDT('L'   ,SDDISC,'ECHE',IEVDAC,'PREC_COLLISION',
+     &            PRECCO,IBID  ,K8BID )
+C
+C --- PARAMETRES
+C
+      NBLIAI = CFDISD(RESOCO,'NBLIAI')    
+C
+C --- ACCES OBJETS DU CONTACT
+C
+      NUMLIA = RESOCO(1:14)//'.NUMLIA'
+      JEUEVD = RESOCO(1:14)//'.JEVD'
+      CALL JEVEUO(NUMLIA,'L',JNUMLI)
+      CALL JEVEUO(JEUEVD,'E',JJEVD )
+C
+C --- CALCUL DES AFFLEUREMENTS
+C
+      DO 10 ILIAI = 1,NBLIAI
+        POSNOE = ZI(JNUMLI+4*(ILIAI-1)+2-1)
+        JEUINI = ZR(JJEVD+3*(POSNOE-1)+2-1)
+        JEUSTC = ABS(JEUINI)
+        ETATCO = ZR(JJEVD+3*(POSNOE-1)+3-1)
+        JEUOLD = ZR(JJEVD+3*(POSNOE-1)+1-1)
+        IF (ETATCO.EQ.1.D0) THEN
+          IF (JEUINI.LE.PRECCO) THEN
+            RATIO2 = ABS((JEUOLD-PRECCO)/(JEUSTC+JEUOLD))
+            IF (RATIO2.LE.RATIO) RATIO = RATIO2
+            LDECO = .TRUE.
+          ENDIF
+          ZR(JJEVD+3*(POSNOE-1)+3-1) = 1.D0
+        ENDIF
+  10  CONTINUE
+C
+      CALL JEDEMA()
+      END

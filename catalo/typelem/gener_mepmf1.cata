@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+%& MODIF TYPELEM  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,6 +92,9 @@ MODE_LOCAL__
                                         BX       EPXX     GAXY     GAXZ     GAT      KY
                                         KZ        GAX     DXINT)
 
+    EGAMIMA  = SPMX_R   ELGA__ RIGI    ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
+    ENOMIMA  = SPMX_R   ELNO__ IDEN__  ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
+
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
     MVECTUR = VDEP_R DDL_MECA
@@ -165,9 +168,9 @@ OPTION__
                                      ZVARCPG  PVARCRR
                               OUT__  EDEFGPG  PDEFOPG
     ECIN_ELEM                -1    IN__    OUT__    XXXXXX   XXXXXX
-    EFCA_ELNO      39    IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
+    EFCA_ELNO           39    IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
                               OUT__  EEFFONO  PEFFORR
-    EFGE_ELNO      142   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC
+    EFGE_ELNO           142   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC
                                      CCOEFR   PCOEFFR  DDL_MECA PDEPLAR  CFORCEF  PFF1D1D  ECAFIEL  PFIBRES
                                      CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
@@ -177,7 +180,7 @@ OPTION__
     ENER_ELAS                -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE              -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM                -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPSI_ELGA      537   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
+    EPSI_ELGA           537   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFORR
                                      EDEFOPC  PDEFORC
@@ -249,12 +252,12 @@ OPTION__
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  ESTRAUX  PSTRXMR
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA      537   IN__        CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  DDL_MECA PDEPLAR
+    SIEF_ELGA           537   IN__        CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  DDL_MECA PDEPLAR
                                      ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      CCOMPOR  PCOMPOR
                               OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
-    SIEF_ELNO      517   IN__        CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
+    SIEF_ELNO           517   IN__        CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
                                      DDL_MECA PDEPPLU  ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ESTRAUX  PSTRXRR
                               OUT__  EEFGENO  PSIEFNOR
@@ -262,6 +265,8 @@ OPTION__
     SICA_ELNO                -1    IN__    OUT__    XXXXXX   XXXXXX
     SIGM_ELNO                -1    IN__    OUT__    XXXXXX   XXXXXX
     SIPO_ELNO                -1    IN__    OUT__    XXXXXX   XXXXXX
+    MINMAX_SP           99    IN__   NGEOMER  PGEOMER
+                              OUT__  EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECAFIEL  PCAFI_R  ENBSP_I  PNBSP_I
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

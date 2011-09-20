@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,7 +63,7 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
             
     RAYON          =SIMP(statut='o',typ='R',),
           
-    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="UPWIND"),
+    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND","GEOMETRIQUE"),defaut="UPWIND"),
 
     INFO           =SIMP(statut='f',typ='I',defaut= 0,into=(0,1,2) ),
 )  ;

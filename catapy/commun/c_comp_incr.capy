@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 19/09/2011   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,6 +94,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
 # HYDR
                                        "HYDR_UTIL",
                                        "HYDR_VGM",
+                                       "HYDR_VGC",
                                        "HYDR",
                                        "HYDR_ENDO",
                                        ),),

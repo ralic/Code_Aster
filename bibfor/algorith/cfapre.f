@@ -1,7 +1,7 @@
       SUBROUTINE CFAPRE(NOMA  ,DEFICO,RESOCO,NEWGEO,SDAPPA)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -176,8 +176,7 @@ C --------- LIAISON DE CONTACT EFFECTIVE
 C --------- CALCUL LIAISON
             CALL CFAPNO(NOMA  ,NEWGEO,DEFICO,RESOCO,LCTFD ,
      &                  LCTF3D,NDIMG ,IZONE ,POSNOE,NUMNOE,
-     &                  COORNE,POSNOM,TAU1M ,TAU2M ,IP    ,
-     &                  ILIAI )
+     &                  COORNE,POSNOM,TAU1M ,TAU2M ,ILIAI )
 
           ELSEIF (TYPAPP.EQ.2) THEN
 C --------- CARAC. MAITRE
@@ -188,7 +187,7 @@ C --------- CALCUL LIAISON
             CALL CFAPMA(NOMA  ,NEWGEO,DEFICO,RESOCO,LCTFD ,
      &                  LCTF3D,NDIMG ,IZONE ,POSNOE,NUMNOE,
      &                  COORNE,POSMAM,KSIPR1,KSIPR2,TAU1M ,
-     &                  TAU2M ,IP    ,ILIAI )
+     &                  TAU2M ,ILIAI )
           ELSE
             CALL ASSERT(.FALSE.)  
           ENDIF
@@ -201,7 +200,8 @@ C
 C ------- CARACTERISTIQUES DE LA LIAISON POUR LA ZONE
 C
           CALL CFPARZ(RESOCO,ILIAI ,COEFFF,COEFPN,COEFPT,
-     &                COEFTE,DISSUP)
+     &                COEFTE,DISSUP,IZONE ,IP    ,NUMNOE,
+     &                POSNOE)
 C          
   35      CONTINUE       
 C

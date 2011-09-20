@@ -1,9 +1,9 @@
-# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PLAQUE 2D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdls120b.para = tps_job 30 mem_job 48Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -140,23 +140,15 @@ MATM=ASSE_MATRICE(MATR_ELEM=MELM,
 #          RESOLUTION DU PROBLEME STATIQUE
 #---------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMA1,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CH1,),
-                           _F(CHARGE=CH2,),),
-                    COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='SURF',),
-                    INCREMENT=_F(LIST_INST=L_INS1,
-                                 INST_FIN=1.0,),
-                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,
-                    NEWTON=_F(REAC_ITER=0,),);
-
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMA1,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH1),
+                          _F(CHARGE=CH2),
+                          ),
+                   INFO=1,
+                   ); 
 # CALCUL DES CONTRAINTES ASSOCIEES
 
 CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -212,61 +204,6 @@ TEST_RESU(RESU=_F(RESULTAT=MODES,
                   PRECISION=0.015,
                   REFERENCE='AUTRE_ASTER',),);
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=2,
-                  PARA='FREQ',
-                  VALE=24.8954884432,
-                  CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=3,
-                  PARA='FREQ',
-                  VALE=41.820657588,
-                  CRITERE='RELATIF',
-                  PRECISION=0.02,
-                  REFERENCE='AUTRE_ASTER',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=4,
-                  PARA='FREQ',
-                  VALE=84.9058119297,
-                  CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=5,
-                  PARA='FREQ',
-                  VALE=106.179078472,
-                  CRITERE='RELATIF',
-                  PRECISION=0.03,
-                  REFERENCE='AUTRE_ASTER',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=6,
-                  PARA='FREQ',
-                  VALE=134.298251308,
-                  CRITERE='RELATIF',
-                  PRECISION=0.01,
-                  REFERENCE='AUTRE_ASTER',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=7,
-                  PARA='FREQ',
-                  VALE=166.198575696,
-                  CRITERE='RELATIF',
-                  PRECISION=0.01,
-                  REFERENCE='AUTRE_ASTER',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=8,
-                  PARA='FREQ',
-                  VALE=181.048598554,
-                  CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
 
 #ET LES TEST_RESU DE NON-REGRESSION
 
@@ -278,60 +215,5 @@ TEST_RESU(RESU=_F(RESULTAT=MODES,
                   PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',),);
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=2,
-                  PARA='FREQ',
-                  VALE=24.984905550829,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=3,
-                  PARA='FREQ',
-                  VALE=41.143307712655,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=4,
-                  PARA='FREQ',
-                  VALE=84.661769120651,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=5,
-                  PARA='FREQ',
-                  VALE=103.26866537214,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=6,
-                  PARA='FREQ',
-                  VALE=135.24229197402,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=7,
-                  PARA='FREQ',
-                  VALE=165.28393513408,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=8,
-                  PARA='FREQ',
-                  VALE=181.55690936356,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
 
 FIN();

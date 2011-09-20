@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,12 +62,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       CHARACTER*2 CODRET
-      CHARACTER*8 LPAIN(25),LPAOUT(2),KBID
+      CHARACTER*8 LPAIN(32),LPAOUT(2),KBID
       CHARACTER*16 OPTION,NOMCMD,TYPRES
       CHARACTER*19 NOMFON,CHVARC
       CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
-      CHARACTER*19 PMILTO
-      CHARACTER*24 LIGRMO,LIGRCH,LCHIN(25),LCHOUT(2)
+      CHARACTER*19 PMILTO,FISSNO,PINTER
+      CHARACTER*24 LIGRMO,LIGRCH,LCHIN(32),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       CHARACTER*24 CHCHAR,ARGU,CHTIME
       COMPLEX*16 CBID
@@ -123,7 +123,7 @@ C  ---VERIFICATION DE L'EXISTENCE D'UN MODELE X-FEM-------
 
 C  ---  CAS DU MODELE X-FEM-----------
 
-        ILIRES=ILIRES+1
+        ILIRES = ILIRES+1
         PINTTO = MODELE(1:8)//'.TOPOSE.PIN'
         CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
         HEAVTO = MODELE(1:8)//'.TOPOSE.HEA'
@@ -133,40 +133,25 @@ C  ---  CAS DU MODELE X-FEM-----------
         LSN    = MODELE(1:8)//'.LNNO'
         LST    = MODELE(1:8)//'.LTNO'
         STANO  = MODELE(1:8)//'.STNO'
+        FISSNO = MODELE(1:8)//'.FISSNO'
+        PINTER = MODELE(1:8)//'.TOPOFAC.OE'
+      ELSE
+        PINTTO = '&&MERIMO.PINTTO.BID'
+        CNSETO = '&&MERIMO.CNSETO.BID'
+        HEAVTO = '&&MERIMO.HEAVTO.BID'
+        LONCHA = '&&MERIMO.LONCHA.BID'
+        BASLOC = '&&MERIMO.BASLOC.BID'
+        PMILTO = '&&MERIMO.PMILTO.BID'
+        LSN    = '&&MERIMO.LNNO.BID'
+        LST    = '&&MERIMO.LTNO.BID'
+        STANO  = '&&MERIMO.STNO.BID'
+        FISSNO  = '&&MERIMO.FISSNO.BID'
+        PINTER  = '&&MERIMO.PINTER.BID'
+      ENDIF
 
 C ----- REMPLISSAGE DES CHAMPS D'ENTREE
 C
-        LPAIN(1)  = 'PGEOMER'
-        LCHIN(1)  = CHGEOM
-        LPAIN(2)  = 'PMATERC'
-        LCHIN(2)  = MATE
-        LPAIN(3) = 'PPINTTO'
-        LCHIN(3) = PINTTO
-        LPAIN(4) = 'PHEAVTO'
-        LCHIN(4) = HEAVTO
-        LPAIN(5) = 'PLONCHA'
-        LCHIN(5) = LONCHA
-        LPAIN(6) = 'PCNSETO'
-        LCHIN(6) = CNSETO
-        LPAIN(7) = 'PBASLOR'
-        LCHIN(7) = BASLOC
-        LPAIN(8) = 'PLSN'
-        LCHIN(8) = LSN
-        LPAIN(9) = 'PLST'
-        LCHIN(9) = LST
-        LPAIN(10) = 'PSTANO'
-        LCHIN(10) = STANO
-        LPAIN(11) = 'PPMILTO'
-        LCHIN(11) = PMILTO
-
-        CALL CALCUL('S',OPTION,LIGRMO,11,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              BASE,'OUI')
-        CALL REAJRE(MATEL,LCHOUT(1),BASE)
-
-      ELSEIF (ICODE.EQ.0 .AND. IER.EQ.0) THEN
-
-C----- CAS DU MODELE FEM CLASSIQUE---------------
-
+      IF ((IER.NE.0).OR.((IER.EQ.0).AND.(ICODE.EQ.0))) THEN
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
         LPAIN(2) = 'PMATERC'
@@ -189,35 +174,57 @@ C----- CAS DU MODELE FEM CLASSIQUE---------------
         LCHIN(10) = CHCHAR
         LPAIN(11) = 'PGEOME2'
         LCHIN(11) = CHGEOM
-        LPAIN(12) = ' '
-        LCHIN(12) = ' '
-        LPAIN(13) = 'PCAGNBA'
-        LCHIN(13) = CHCARA(11)
-        LPAIN(14) = 'PCAMASS'
-        LCHIN(14) = CHCARA(12)
-        LPAIN(15) = 'PCAPOUF'
-        LCHIN(15) = CHCARA(13)
-        LPAIN(16) = 'PCAGEPO'
-        LCHIN(16) = CHCARA(5)
-        LPAIN(17) = 'PVARCPR'
-        LCHIN(17) = CHVARC
-        LPAIN(18) = 'PTEMPSR'
-        LCHIN(18) = CHTIME
-        LPAIN(19) = 'PNBSP_I'
-        LCHIN(19) = CHCARA(16)
-        LPAIN(20) = 'PFIBRES'
-        LCHIN(20) = CHCARA(17)
-        LPAIN(21) = 'PCOMPOR'
-        LCHIN(21) = COMPOR
-        LPAIN(22) = 'PCINFDI'
-        LCHIN(22) = CHCARA(15)
-        CALL CALCUL('S',OPTION,LIGRMO,22,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
+C        LPAIN(12) = ' '
+C        LCHIN(12) = ' '
+        LPAIN(12) = 'PCAGNBA'
+        LCHIN(12) = CHCARA(11)
+        LPAIN(13) = 'PCAMASS'
+        LCHIN(13) = CHCARA(12)
+        LPAIN(14) = 'PCAPOUF'
+        LCHIN(14) = CHCARA(13)
+        LPAIN(15) = 'PCAGEPO'
+        LCHIN(15) = CHCARA(5)
+        LPAIN(16) = 'PVARCPR'
+        LCHIN(16) = CHVARC
+        LPAIN(17) = 'PTEMPSR'
+        LCHIN(17) = CHTIME
+        LPAIN(18) = 'PNBSP_I'
+        LCHIN(18) = CHCARA(16)
+        LPAIN(19) = 'PFIBRES'
+        LCHIN(19) = CHCARA(17)
+        LPAIN(20) = 'PCOMPOR'
+        LCHIN(20) = COMPOR
+        LPAIN(21) = 'PCINFDI'
+        LCHIN(21) = CHCARA(15)
+        LPAIN(22) = 'PPINTTO'
+        LCHIN(22) = PINTTO
+        LPAIN(23) = 'PHEAVTO'
+        LCHIN(23) = HEAVTO
+        LPAIN(24) = 'PLONCHA'
+        LCHIN(24) = LONCHA
+        LPAIN(25) = 'PCNSETO'
+        LCHIN(25) = CNSETO
+        LPAIN(26) = 'PBASLOR'
+        LCHIN(26) = BASLOC
+        LPAIN(27) = 'PLSN'
+        LCHIN(27) = LSN
+        LPAIN(28) = 'PLST'
+        LCHIN(28) = LST
+        LPAIN(29) = 'PSTANO'
+        LCHIN(29) = STANO
+        LPAIN(30) = 'PPMILTO'
+        LCHIN(30) = PMILTO
+        LPAIN(31) = 'PFISNO'
+        LCHIN(31) = FISSNO
+        LPAIN(32) = 'PPINTER'
+        LCHIN(32) = PINTER
+
+        CALL CALCUL('S',OPTION,LIGRMO,32,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
      &              BASE,'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
         CALL REAJRE(MATEL,LCHOUT(2),BASE)
-        ILIRES = ILIRES +2
-      END IF
-
+        ILIRES = ILIRES +2      
+      ENDIF
       DO 10 ICHA = 1,NCHAR
         LIGRCH = LCHAR(ICHA) (1:8)//'.CHME.LIGRE'
         ARGU = LCHAR(ICHA) (1:8)//'.CHME.LIGRE.LIEL'

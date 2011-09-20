@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,6 +73,8 @@ MODE_LOCAL__
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[6]  )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[6]  )
+    EGAMIMA  = SPMX_R   ELGA__ RIGI    ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
+    ENOMIMA  = SPMX_R   ELNO__ IDEN__  ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -113,7 +115,7 @@ OPTION__
     DEGE_ELGA      228        IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFGPG  PDEFOPG
     ECIN_ELEM                -1    IN__    OUT__    XXXXXX   XXXXXX
-    EFGE_ELGA           451   IN__   ECONTPG PSIEFR  CCACOQU  PCACOQU   ENBSP_I  PNBSP_I
+    EFGE_ELGA           451   IN__   ECONTPG PSIEFR  CCACOQU  PCACOQU   ENBSP_I  PNBSP_I  CMATERC  PMATERC
                               OUT__  EEFFRGR PEFGER
                                      EEFFRGC PEFGEC
     EFGE_ELNO      231   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -186,6 +188,8 @@ OPTION__
     SIGM_ELNO      230   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  ECONTNO  PCONTRR  ECONTNC  PCONTRC
+    MINMAX_SP           99    IN__   NGEOMER  PGEOMER
+                              OUT__  EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENBSP_I  PNBSP_I
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

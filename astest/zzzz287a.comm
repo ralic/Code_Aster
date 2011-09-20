@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION ELEMENTAIRE DE L'OPERATEUR POST_RUPTURE
 # zzzz287a.para = tps_job 20 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,32 +102,70 @@ for i,crit in enumerate(l_crit_bifurcation[0:2] ):
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'K_EQ'
 #---------------------------------------------------------------------------------------
 
-# l_crit_cumul_1 = ['CUMUL_G','QUADRATIQUE',]
-# l_crit_cumul_2 = ['LINEAIRE','THETA','MODE_I']
-# 
-# E=205000.0E6
-# nu=0.3
-# ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu))
+l_crit_cumul_1 = ['CUMUL_G','QUADRATIQUE',]
+l_crit_cumul_2 = ['LINEAIRE','MODE_I']
 
-# for crit in l_crit_cumul_1 :
-#                
-#    TAB=POST_RUPTURE(TABLE=TAB,
-#                     reuse=TAB,
-#                     OPERATION='K_EQ',
-#                     CUMUL=crit,
-#                     NOM_PARA='K_EQ_'+crit,
-#                     MATER=ACIER)
+E=DEFI_CONSTANTE(VALE=205000.0E6)
+NU=DEFI_CONSTANTE(VALE=0.3)
 
-# for crit in ['LINEAIRE','MODE_I']:
-#                
-#    TAB=POST_RUPTURE(TABLE=TAB,
-#                     reuse=TAB,
-#                     OPERATION='K_EQ',
-#                     CUMUL=crit,
-#                     NOM_PARA='K_EQ_'+crit)
-# 
-# IMPR_TABLE(TABLE=TAB)
+ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E,
+                            NU=NU))
 
+for crit in l_crit_cumul_1 :
+
+   TAB=POST_RUPTURE(TABLE=TAB,
+                    reuse=TAB,
+                    OPERATION='K_EQ',
+                    CUMUL=crit,
+                    NOM_PARA='K_EQ_'+crit,
+                    MATER=ACIER)
+
+for crit in l_crit_cumul_2:
+
+   TAB=POST_RUPTURE(TABLE=TAB,
+                    reuse=TAB,
+                    OPERATION='K_EQ',
+                    CUMUL=crit,
+                    NOM_PARA='K_EQ_'+crit)
+
+IMPR_TABLE(TABLE=TAB)
+
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='K_EQ_CUMUL_G',
+           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
+           VALE=4.975486E+05,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='K_EQ_QUADRATIQUE',
+           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
+           VALE=1.,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='K_EQ_LINEAIRE',
+           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
+           VALE=1.,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',)
+           
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='K_EQ_MODE_I',
+           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
+           VALE=1.,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',)
+           
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'COMPTAGE_CYCLES'
@@ -161,7 +199,7 @@ TEST_TABLE(TABLE=TAB3,
            REFERENCE='ANALYTIQUE',)
 
 # test du comptage unitaire
-TAB4=LIRE_TABLE(UNITE=47)        
+TAB4=LIRE_TABLE(UNITE=47)
 
 TAB5=POST_RUPTURE(TABLE=TAB4,
                   OPERATION='COMPTAGE_CYCLES',
@@ -178,6 +216,59 @@ TEST_TABLE(TABLE=TAB5,
            VALE=40.,
            CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',)
+   
+#---------------------------------------------------------------------------------------
+#  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'DELTA_K_EQ'
+#---------------------------------------------------------------------------------------
+
+l_crit_cumul_1 = ['CUMUL_G','QUADRATIQUE',]
+l_crit_cumul_2 = ['MODE_I']
+
+TAB51 =  CALC_TABLE(TABLE=TAB5,
+                    ACTION=_F(OPERATION='AJOUT_COLONNE',NOM_PARA='G',VALE=1.0))
+
+for crit in l_crit_cumul_1 :
+
+   TAB51=POST_RUPTURE(TABLE=TAB51,
+                    reuse=TAB51,
+                    OPERATION='DELTA_K_EQ',
+                    CUMUL=crit,
+                    NOM_PARA='D_K_EQ_'+crit,
+                    MATER=ACIER)
+
+for crit in l_crit_cumul_2:
+
+   TAB51=POST_RUPTURE(TABLE=TAB51,
+                    reuse=TAB51,
+                    OPERATION='DELTA_K_EQ',
+                    CUMUL=crit,
+                    NOM_PARA='D_K_EQ_'+crit)
+
+IMPR_TABLE(TABLE=TAB51)
+
+TEST_TABLE(TABLE=TAB51,
+           NOM_PARA='D_K_EQ_CUMUL_G',
+           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+           VALE=4.975486E+05,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB51,
+           NOM_PARA='D_K_EQ_QUADRATIQ',
+           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+           VALE=56.5685,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB51,
+           NOM_PARA='D_K_EQ_MODE_I',
+           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
+           VALE=40.,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',)
            
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'LOI_PROPA'

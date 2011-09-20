@@ -1,0 +1,269 @@
+# MODIF  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
+# TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
+# sslp319e.para = tps_job 250 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE COLOMBO D.COLOMBO
+
+DEBUT(CODE=_F(NOM='SSLP319E', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),)
+
+#***********************************
+# MAILLAGE ET MODELE
+#***********************************
+
+MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
+                       INFO_MED=1,);
+
+MaiPlate=MODI_MAILLAGE(reuse =MaiPlate,
+                       MAILLAGE=MaiPlate,
+                       ORIE_PEAU_2D=_F(GROUP_MA='force',),);
+
+plate=AFFE_MODELE(MAILLAGE=MaiPlate,
+                   AFFE=(_F(GROUP_MA=('All',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),
+                        _F(GROUP_MA=('force',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),),);
+
+#***********************************
+# MATERIAU
+#***********************************
+
+steel=DEFI_MATERIAU(ELAS=_F(E=2.06E11,
+                            NU=0.33,),);
+
+champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=steel,),);
+
+#***********************************
+# CHARGEMENTS ET CONDITIONS AUX LIMITES
+#***********************************
+
+vinc=AFFE_CHAR_MECA(MODELE=plate,
+                    DDL_IMPO=(_F(GROUP_NO='incastro',
+                                 DX=0,
+                                 DY=0,),
+                              _F(GROUP_NO='carrello',
+                                 DY=0,),),);
+
+force=AFFE_CHAR_MECA(MODELE=plate,
+                     PRES_REP=_F(GROUP_MA='force',
+                                 PRES=-1E6,),);
+
+TimeStep=DEFI_LIST_REEL(DEBUT=0,
+                        INTERVALLE=_F(JUSQU_A=1,
+                                      NOMBRE=1,),);
+
+
+#***********************************
+# DEFINITION DES FISSURES
+#***********************************
+
+# LONGUEUR DE LA FISSURE INITIALE
+a0 = 300
+
+# FISSURE A DROITE
+LNR = FORMULE(VALE='Y',
+              NOM_PARA=('Y'));
+LTR = FORMULE(VALE='(500-a0)-X',
+              NOM_PARA=('X'));
+
+# FISSURE A GAUCHE
+LNL = FORMULE(VALE='Y',
+              NOM_PARA=('Y'));
+LTL = FORMULE(VALE='X+(500-a0)',
+              NOM_PARA=('X'));
+
+# NOMBRE DE PROPAGATIONS
+NPS = 3
+NPS = NPS+2
+
+FissR = [None]*NPS
+FissL = [None]*NPS
+
+FissR[1]=DEFI_FISS_XFEM(MODELE=plate,
+                        DEFI_FISS=_F(FONC_LT=LTR,
+                                     FONC_LN=LNR,),);
+
+FissL[1]=DEFI_FISS_XFEM(MODELE=plate,
+                        DEFI_FISS=_F(FONC_LT=LTL,
+                                     FONC_LN=LNL,),);
+
+#****************************
+# PROPAGATION DES FISSURES
+#****************************
+
+ModX = [None]*NPS
+ChgX = [None]*NPS
+ResX = [None]*NPS
+SIFL = [None]*NPS
+SIFR = [None]*NPS
+SIFL1 = [None]*NPS
+SIFR1 = [None]*NPS
+
+RI = 2*25.
+RS = 2*RI
+
+# AVANCE DE LA FISSURE A CHAQUE ITERATION
+da_fiss = 30.
+
+for i in range(1,NPS-1) :
+
+    ModX[i]=MODI_MODELE_XFEM(MODELE_IN=plate,
+                         FISSURE=(FissL[i],FissR[i]),);
+
+    ChgX[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
+                           LIAISON_XFEM='OUI',);
+
+    ResX[i]=STAT_NON_LINE(MODELE=ModX[i],
+                         CHAM_MATER=champma,
+                         EXCIT=(_F(CHARGE=force,),
+                                _F(CHARGE=vinc,),
+                                _F(CHARGE=ChgX[i],),),
+                         COMP_ELAS=_F(RELATION='ELAS',
+                                      TOUT='OUI',),
+                         INCREMENT=_F(LIST_INST=TimeStep,
+                                      INST_FIN=1,),
+                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
+
+#   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
+#   A GAUCHE
+    SIFL[i]=CALC_G(THETA=_F(FISSURE=FissL[i],
+                            R_INF=RI,
+                            R_SUP=RS,),
+                   RESULTAT=ResX[i],
+                   OPTION='CALC_K_G',);
+
+#   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
+#   A DROITE
+    SIFR[i]=CALC_G(THETA=_F(FISSURE=FissR[i],
+                            R_INF=RI,
+                            R_SUP=RS,),
+                   RESULTAT=ResX[i],
+                   OPTION='CALC_K_G',);
+
+    IMPR_TABLE(TABLE=SIFL[i],);
+    IMPR_TABLE(TABLE=SIFR[i],);
+
+    if ( i != NPS ) :
+      FissL[i+1]=CO('FissL_%d'%(i+1))
+      FissR[i+1]=CO('FissR_%d'%(i+1))
+      PROPA_FISS(MODELE=ModX[i],
+                 FISSURE=(_F(FISS_ACTUELLE=FissL[i],
+                             FISS_PROPAGEE=FissL[i+1],
+                             TABLE=SIFL[i],
+                            ),
+                          _F(FISS_ACTUELLE=FissR[i],
+                             FISS_PROPAGEE=FissR[i+1],
+                             TABLE=SIFR[i],
+                            ),
+                          ),
+                 DA_MAX=da_fiss,
+                 METHODE_PROPA='GEOMETRIQUE',
+                 LOI_PROPA=_F(LOI='PARIS',
+                              C=1.,
+                              M=1.,
+                              N=0.,
+                              MATER=steel),
+                 COMP_LINE=_F(COEF_MULT_MINI=0.,
+                              COEF_MULT_MAXI=1.,
+                             ),
+                 RAYON=RS,
+                 INFO=0,);
+
+#----------------------------------------------
+#         VERIFICATION DES RESULTATS
+#----------------------------------------------
+
+W=1000;
+sigma=1E6
+
+for i in range(1,NPS-1) :
+   
+   a=a0+da_fiss*(i-1)
+#  VALEUR ANALYTIQUE DE KI (BROEK)
+   Y=1.99+0.76*a/W-8.48*(a/W)**2+27.36*(a/W)**3;
+   KI_broek=Y*sigma*sqrt(a);
+
+#  TOLERANCE SUR KII. LA VALEUR ANALYTIQUE EST ZERO CAR LA FISSURE
+#  PROPAGE EN MODE I. CELA N'EST PAS VERIFIER EXACTEMENT POUR LE
+#  MODELE FEM. ON ASSUME QUE LA VALEUR DE KII EST ZERO SI
+#  ELLE EST EGAL A 1% DE LA VALEUR DE KI.
+   TOL_K2=0.01*KI_broek;
+
+   TEST_TABLE(TABLE=SIFL[i],
+              REFERENCE='ANALYTIQUE',
+              NOM_PARA='K1',
+              PRECISION=0.05,
+              TYPE_TEST='MAX',
+              VALE= KI_broek  )
+
+   TEST_TABLE(TABLE=SIFL[i],
+              REFERENCE='ANALYTIQUE',
+              NOM_PARA='K2',
+              PRECISION=TOL_K2,
+              TYPE_TEST='MAX',
+              CRITERE='ABSOLU',
+              VALE= 0.    )
+
+   TEST_TABLE(TABLE=SIFR[i],
+              REFERENCE='ANALYTIQUE',
+              NOM_PARA='K1',
+              PRECISION=0.05,
+              TYPE_TEST='MAX',
+              VALE= KI_broek )
+
+   TEST_TABLE(TABLE=SIFR[i],
+              REFERENCE='ANALYTIQUE',
+              NOM_PARA='K2',
+              PRECISION=TOL_K2,
+              TYPE_TEST='MAX',
+              CRITERE='ABSOLU',
+              VALE= 0.    )
+
+
+#----------------------------------------------
+#         EDITION DE FICHIERS MED
+#----------------------------------------------
+
+MAXFM = [None]*NPS
+MOVIS = [None]*NPS
+DEPL = [None]*NPS
+
+
+for i in range(1,NPS-1) :
+   MAXFM[i]=POST_MAIL_XFEM(MODELE=ModX[i]);
+
+   MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFM[i],
+                         AFFE=_F(TOUT='OUI',
+                                 PHENOMENE='MECANIQUE',
+                                 MODELISATION='C_PLAN',),) 
+
+   DEPL[i]=POST_CHAM_XFEM(
+                          MODELE_VISU   = MOVIS[i],
+                          RESULTAT=ResX[i],
+                          );
+
+   DEFI_FICHIER(UNITE=31,);
+   IMPR_RESU(FORMAT='MED',
+             UNITE=31,
+             RESU=_F(RESULTAT=DEPL[i],),);
+
+FIN();

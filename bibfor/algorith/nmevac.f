@@ -1,8 +1,8 @@
-      SUBROUTINE NMEVAC(SDIMPR,SDDISC,IEVDAC,NUMINS,ITERAT,
-     &                  RETACT)
+      SUBROUTINE NMEVAC(SDIMPR,SDDISC,DEFICO,RESOCO,IEVDAC,
+     &                  NUMINS,ITERAT,RETACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24 SDIMPR
+      CHARACTER*24 SDIMPR,DEFICO,RESOCO
       CHARACTER*19 SDDISC
       INTEGER      IEVDAC
       INTEGER      ITERAT,NUMINS
@@ -66,11 +66,11 @@ C
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C 
+C
       INTEGER      IBID
       REAL*8       R8BID
       CHARACTER*16 ACTION
-      INTEGER      RETSUP,RETDEC,RETSWA
+      INTEGER      RETSUP,RETDEC,RETSWA,RETPEN
       LOGICAL      TRYDEC
 C
 C ----------------------------------------------------------------------
@@ -93,6 +93,7 @@ C
         RETACT = 4
         TRYDEC = .FALSE.
       ELSEIF (ACTION.EQ.'ITER_SUPPL') THEN
+        CALL ASSERT(ITERAT.GE.0)
         CALL NMITSP(SDIMPR,SDDISC,ITERAT,RETSUP)
         IF (RETSUP.EQ.0) THEN 
           TRYDEC = .TRUE.          
@@ -113,9 +114,15 @@ C
           CALL ASSERT(.FALSE.)
         ENDIF
       ELSEIF (ACTION.EQ.'ADAPT_COEF_PENA') THEN
-C        CALL NMADCP()
-        TRYDEC = .FALSE.  
-        CALL ASSERT(.FALSE.)
+        CALL NMADCP(SDDISC,DEFICO,RESOCO,IEVDAC,RETPEN)
+        TRYDEC = .FALSE.
+        IF (RETPEN.EQ.0) THEN
+          RETACT = 4
+        ELSEIF (RETPEN.EQ.1) THEN
+          RETACT = 3
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)      
       ENDIF
@@ -123,7 +130,8 @@ C
 C --- CAS DE LA DECOUPE
 C
       IF (TRYDEC) THEN
-        CALL NMDECO(SDDISC,NUMINS,ITERAT,IEVDAC,RETDEC)
+        CALL NMDECO(SDDISC,RESOCO,NUMINS,ITERAT,IEVDAC,
+     &              RETDEC)
         IF (RETDEC.EQ.0) THEN
           RETACT = 4
         ELSEIF (RETDEC.EQ.1) THEN

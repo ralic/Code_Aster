@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 21/03/2011   AUTEUR GRANET S.GRANET 
+#@ MODIF compor2 Messages  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,8 +47,8 @@ cata_msg={
 """),
 
 6 : _("""
-   SIMU_POINT_MAT : nombre de variables internes trop grand pour la table.
-   On ne stocke que les 99 premières. Utiliser NB_VARI_TABLE pour limiter leur nombre.
+   POLYCRISTAL : nombre de phases trop grand (le nombre maximum de phases vaut actuellement 1000).
+   Faire une demande d'évolution pour lever cette limitation si nécessaire.
 """),
 
 7 : _("""

@@ -1,16 +1,16 @@
       SUBROUTINE XPRVIT(NOMA,FISS,NDIM,NVIT,NBETA,LCMIN,CNSVT,CNSVN,
-     &                  CNSBL,CNSDIS,DISFR)
+     &                  VPOINT,CNSBL,CNSDIS,DISFR,CNSBET,LISTP)
 
       IMPLICIT NONE
       CHARACTER*8    NOMA,FISS
 
-      CHARACTER*19   CNSVT,CNSVN,DISFR,CNSBL,CNSDIS
+      CHARACTER*19   CNSVT,CNSVN,VPOINT,DISFR,CNSBL,CNSDIS,CNSBET,LISTP
       CHARACTER*24   NVIT,NBETA
       INTEGER        NDIM
       REAL*8         LCMIN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2011   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,12 +49,21 @@ C
 C    SORTIE
 C        CNSVT   : CHAM_NO_S VITESSE TANGENTIELLE DE PROPAGATION
 C        CNSVN   : CHAM_NO_S VITESSE NORMALE DE PROPAGATION
+C        VPOINT  : VECTEUR DES VITESSES DE PROPAGATION EN CHAQUE POINT
+C                  DU DOMAINE DE CALCUL (MODULE DE LA VITESSE DU POINT
+C                  PROJETE SUR LE FOND DE LA FISSURE)
 C        CNSBL   : CHAM_NO_S BASE LOCALE POUR CHAQUE NODE DU MAILLAGE
 C                  (AXE NORMALE ET AXE TANGENTE AU PLANE DE LA FISSURE)
 C        CNSDIS  : CHAM_NO_S VECTEUR DISTANCE ENTRE CHAQUE NODE DU
 C                  MAILLAGE ET SON PROJECTION SUR LE FOND DE FISSURE
 C        DISFR   : VECTEUR INDIQUANT LA DISTANCE^2 ENTRE CHAQUE NODE DU
 C                  MAILLAGE NOMA ET LE FOND DU FISSURE
+C        CNSBET  : VECTEUR DES ANGLES DE BIFURCATION DE LA FISSURE
+C                  EN CHAQUE POINT DU DOMAINE DE CALCUL (ANGLE AU POINT
+C                  PROJETE SUR LE FOND DE LA FISSURE)
+C        LISTP   : VECTEUR (A 3 COMPOSANTES) OU LES CORDONNEES DU
+C                  PROJETE DE CHAQUE POINT DU DOMAINE DE CALCUL SUR LE
+C                  FOND DE LA FISSURE SONT STOCKEES
 C
 C     ------------------------------------------------------------------
 C TOLE CRP_20 CRP_6
@@ -76,25 +85,26 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER        I,J,JCOOR,IRET,NBNO,JMIN,NBPTFF,
+      INTEGER        I,J,JCOOR,IRET,NBNO,JMIN,NBPTFF,IBID,
      &               JFONF,JVTFF,JVNFF,JVTL,JVTV,JVNL,JVNV,IFM,NIV,
      &               JVIT,JBETA,JDISFR
       REAL*8         EPS,XM,YM,ZM,R8MAEM,DMIN,SMIN,
      &               XI1,YI1,ZI1,XJ1,YJ1,ZJ1,XIJ,YIJ,ZIJ,XIM,YIM,ZIM,S,
      &               NORM2,XN,YN,ZN,D,R8PREM
-      CHARACTER*8    K8B,TYPCMP(6)
+      CHARACTER*8    K8B,TYPCMP(6),METHOD
       INTEGER        JVFF,JBASEF,JBL,JDIS
 
       REAL*8         BAST(3),TAST(3),N(3),T(3),B(3),MTAST,
      &               MODNOR,MODTAN
 
 C     EULER AXIS AND EULER ANGLE CALCULATIONS
-      INTEGER        JEULER
+      INTEGER        JEULER,JCNSB,JLISTP,JVP
       REAL*8         NI(3),TI(3),BI(3),NJ(3),TJ(3),BJ(3),RIJ(3,3),
      &               TPL(3),NPL(3),BPL(3),AXEUL(3),CALFA,SALFA,MODVEC
       REAL*8         T0,T180,ALFA
       PARAMETER      (T0 = 0.5D0/180.D0*3.1415D0)
       PARAMETER      (T180 = 179.5D0/180.D0*3.1415D0)
+      LOGICAL        ENDPNT
 
 C     MULTIPLE CRACK FRONTS
       INTEGER        JFMULT,NUMFON,FON
@@ -109,6 +119,9 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
+
+C     RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
+      CALL GETVTX(' ','METHODE',1,1,1,METHOD,IBID)
 
 C     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
@@ -153,6 +166,10 @@ C     (VT & VN)
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSVT)
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSVN)
 
+C     CREATE THE VECTOR WHERE THE MODULE OF THE PROPAGATION SPEED IS
+C     STORED FOR EACH POINT (=SQRT(CNSVT**2+CNSVN**2))
+      CALL WKVECT(VPOINT,'V V R8',NBNO,JVP)
+
 C     CREATION DES VECTEURS DE VITESSE DE PROPAGATION EN FOND DE FISSURE
       CALL JEVEUO(NVIT,'E',JVIT)
       CALL JEVEUO(NBETA,'E',JBETA)
@@ -163,6 +180,14 @@ C     CREATION DES VECTEURS DE VITESSE DE PROPAGATION EN FOND DE FISSURE
 C     CREATE THE VECTOR WHERE THE DISTANCE BETWEEN EACH NODE AND THE
 C     CRACK FRONT IS STORED
       CALL WKVECT(DISFR,'V V R8',NBNO,JDISFR)
+
+C     CREATE THE VECTOR WHERE THE PROPAGATION ANGLE IS STORED FOR EACH
+C     POINT
+      CALL WKVECT(CNSBET,'V V R8',NBNO,JCNSB)
+
+C     CREATE THE VECTOR WHERE THE COORDINATES OF THE PROJECTED POINT ARE
+C     STORED FOR EACH POINT
+      CALL WKVECT(LISTP,'V V R8',3*NBNO,JLISTP)
 
       CALL JEVEUO(CNSVT//'.CNSV','E',JVTV)
       CALL JEVEUO(CNSVT//'.CNSL','E',JVTL)
@@ -486,6 +511,11 @@ C               SAVE CPU TIME: THE SQUARE OF THE DISTANCE IS EVALUATED!
 C                 STORE THE DISTANCE VECTOR
                   ZR(JDIS-1+2*(I-1)+1) = XM-XI1
                   ZR(JDIS-1+2*(I-1)+2) = YM-YI1
+
+C                 STORE THE PROJECTED POINT
+                  ZR(JLISTP-1+3*(I-1)+1) = XI1
+                  ZR(JLISTP-1+3*(I-1)+2) = YI1
+                  ZR(JLISTP-1+3*(I-1)+3) = ZI1
                 ENDIF
 
 214          CONTINUE
@@ -504,6 +534,8 @@ C           INITIAL VALUE FOR DS
             DS= 2.0D-1
 C           TOLERANCE TO CHECK THE CONVERGENCE
             TOLLD =  1.0D-2*LCMIN
+C           POINT PROJECTED ON ONE END OF THE FRONT FLAG
+            ENDPNT = .FALSE.
 
 C           CALCULATE THE LIMITS FOR JMIN ON THE ACTUAL CRACK FRONT
             JLIMSX = 0
@@ -639,6 +671,7 @@ C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
                   SMIN=1.D0
                ELSE IF ((SMIN.LT.0.D0).AND.(JMIN.EQ.JLIMSX)) THEN
                   SMIN=0.D0
+                  ENDPNT = .TRUE.
                   GOTO 207
                ENDIF
 
@@ -647,6 +680,7 @@ C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
                   SMIN=0.D0
                ELSE IF ((SMIN.GT.1.D0).AND.(JMIN.EQ.JLIMDX)) THEN
                   SMIN=1.D0
+                  ENDPNT = .TRUE.
                   GOTO 207
                ENDIF
 
@@ -662,6 +696,11 @@ C           CALCULATE THE PROJECTED POINT COORDINATES
             ZN = SMIN*ZIJ+ZI1
             D = (XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+(ZN-ZM)*(ZN-ZM)
             DMIN = D
+
+C           STORE THE COORDINATES OF THE PROJECTED POINT
+            ZR(JLISTP-1+3*(I-1)+1) = XN
+            ZR(JLISTP-1+3*(I-1)+2) = YN
+            ZR(JLISTP-1+3*(I-1)+3) = ZN
 
 C           STORE THE DISTANCE VECTOR
             ZR(JDIS-1+3*(I-1)+1) = XM-XN
@@ -771,6 +810,48 @@ C              T-AXIS
 
             ENDIF
 
+C           CORRECTION OF THE LOCAL BASE FOR THE POINTS PROJECTED ON
+C           ONE END OF THE CRACK FRONT
+            IF ((METHOD.EQ.'GEOMETRI').AND.ENDPNT) THEN
+
+C              NORMAL AXIS OF THE LOCAL BASE
+               N(1) = ZR(JBL-1+2*NDIM*(I-1)+1)
+               N(2) = ZR(JBL-1+2*NDIM*(I-1)+2)
+               N(3) = ZR(JBL-1+2*NDIM*(I-1)+3)
+
+C              Q->P
+               MODVEC =(XM-XN)*N(1)+(YM-YN)*N(2)+(ZM-ZN)*N(3)
+               BI(1) = MODVEC*N(1)
+               BI(2) = MODVEC*N(2)
+               BI(3) = MODVEC*N(3)
+
+C              NEW T-AXIS
+               T(1) = (XM-XN)-BI(1)
+               T(2) = (YM-YN)-BI(2)
+               T(3) = (ZM-ZN)-BI(3)
+               
+C              CHECK THE DIRECTION OF THE NEW T-AXIS WITH RESPECT TO THE
+C              ORIGINAL T-AXIS
+               MODVEC=ZR(JBL-1+2*NDIM*(I-1)+4)*T(1)+
+     &                ZR(JBL-1+2*NDIM*(I-1)+5)*T(2)+
+     &                ZR(JBL-1+2*NDIM*(I-1)+6)*T(3)
+               IF (MODVEC.LT.0.D0) THEN
+C                 MODULUS OF THE NEW T-AXIS. ITS DIRECTION MUST BE 
+C                 CHANGED (-1)
+                  MODVEC = -1*(T(1)**2+T(2)**2+T(3)**2)**0.5D0     
+               ELSE
+C                 MODULUS OF THE NEW T-AXIS. ITS DIRECTION IS OK.
+                  MODVEC = (T(1)**2+T(2)**2+T(3)**2)**0.5D0             
+               ENDIF
+               
+C              STORE THE NEW T-AXIS (THE CORRECT DIRECTION IS DETERMINED
+C              BY THE SIGN OF MODVEC)
+               ZR(JBL-1+2*NDIM*(I-1)+4) = T(1)/MODVEC
+               ZR(JBL-1+2*NDIM*(I-1)+5) = T(2)/MODVEC
+               ZR(JBL-1+2*NDIM*(I-1)+6) = T(3)/MODVEC
+
+            ENDIF
+
          ENDIF
 
 C        ***************************************************************
@@ -788,7 +869,15 @@ C        ***************************************************************
          ZL(JVTL+I-1) = .TRUE.
          ZL(JVNL+I-1) = .TRUE.
 
+C        STORE THE NORM OF THE PROPAGATION VELOCITY AT THE PROJECTED
+C        POINT
+         ZR(JVP+I-1)  = VP
+
          ZR(JDISFR+I-1) = DMIN
+
+C        STORE THE PROPAGATION ANGLE AT THE PROJECTED POINT
+         ZR(JCNSB+I-1) = BETAP
+
 
 200   CONTINUE
 

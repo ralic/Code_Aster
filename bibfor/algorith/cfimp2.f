@@ -2,7 +2,7 @@
      &                  TYPEOU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/09/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -123,7 +123,7 @@ C
 C
 C ----- POINT DE CONTACT
 C      
-        IP     = ZI(JNUMLI+3*(ILIAI-1)+1-1)
+        IP     = ZI(JNUMLI+4*(ILIAI-1)+1-1)
 C
 C ----- NOM DU NOEUD ESCLAVE
 C

@@ -2,7 +2,7 @@
      &                  VALR  ,VALI  ,VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -391,11 +391,18 @@ C
             ZR(JESUR-1+LESUR*(IECHEC-1)+5) = VALR
           ENDIF
 
-        ELSEIF (QUEST.EQ.'DUREE_COLLISION') THEN
+C        ELSEIF (QUEST.EQ.'DUREE_COLLISION') THEN
+C          IF (GETSET.EQ.'L') THEN
+C            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+6)
+C          ELSEIF (GETSET.EQ.'E') THEN
+C            ZR(JESUR-1+LESUR*(IECHEC-1)+6) = VALR
+C          ENDIF
+
+        ELSEIF (QUEST.EQ.'COEF_MAXI') THEN
           IF (GETSET.EQ.'L') THEN
-            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+6)
+            VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+8)
           ELSEIF (GETSET.EQ.'E') THEN
-            ZR(JESUR-1+LESUR*(IECHEC-1)+6) = VALR
+            ZR(JESUR-1+LESUR*(IECHEC-1)+8) = VALR
           ENDIF
           
         ELSEIF (QUEST.EQ.'SUBD_RATIO') THEN
@@ -420,7 +427,7 @@ C
           IF (GETSET.EQ.'L') THEN
             VALR = ZR(JESUR-1+LESUR*(IECHEC-1)+8)
           ELSEIF (GETSET.EQ.'E') THEN
-            ZR(JESUR-1+LESUR*(IECHEC-1)+78) = VALR
+            ZR(JESUR-1+LESUR*(IECHEC-1)+8) = VALR
           ENDIF
 C
 C ----- PARAMETRES ACTION 'AUTRE_PILOTAGE'     

@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF elements4 Messages  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,9 +103,9 @@ cata_msg = {
  le nombre de couches et de secteurs doivent etre supérieurs a 0
 """),
 
-47 : _("""
- composante  %(k1)s  non traitée, on abandonne
-"""),
+
+
+
 
 48 : _("""
  champ  %(k1)s  non traité, on abandonne

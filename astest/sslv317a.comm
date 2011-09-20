@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2011   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,9 +82,6 @@ rsup = 5*h
 # MATERIAU
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3));
 
-
-# PSEUDO liste d'instants
-L_INST=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1))
 
 
 # lecture du maillage grossier de la structure
@@ -360,19 +357,15 @@ for i_propa in xrange(pas_debut,nb_pas) :
                          LIAISON_XFEM='OUI')
 
    # Resolution
-   RESX=STAT_NON_LINE(MODELE=MOD_X,
-                      CHAM_MATER=CHMAT,
-                      EXCIT=(_F(CHARGE=CHXFEM),
-                             _F(CHARGE=ENCAST),
-                             _F(CHARGE=PRESSION),),
-                      COMP_ELAS=_F(RELATION='ELAS'),
-                      INCREMENT=_F(LIST_INST=L_INST),
-                      NEWTON=_F(REAC_ITER=1),
-                      )
+   RESX=MECA_STATIQUE(MODELE=MOD_X,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=ENCAST),
+                          _F(CHARGE=PRESSION),
+                          ),
+                   ); 
 
-   RESU = EXTR_RESU(RESULTAT=RESX,ARCHIVAGE=_F(NUME_ORDRE=1,),);
-
-   DETRUIRE(CONCEPT=_F(NOM=(RESX)),INFO=1)
+   
 
    # Visualisation X-FEM
    MA_XFEM=POST_MAIL_XFEM(MODELE=MOD_X)
@@ -383,7 +376,9 @@ for i_propa in xrange(pas_debut,nb_pas) :
                                 MODELISATION='3D'))
 
    RES_XFEM=POST_CHAM_XFEM(MODELE_VISU=MOD_VISU,
-                           RESULTAT=RESU)
+                           RESULTAT=RESX)
+
+   
 
    # Contraintes equivalentes
    RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
@@ -403,7 +398,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
 
    # LISSAGE LEGENDRE
    # les K sont en Pa.sqrt(m)
-   TAB_KG=CALC_G( RESULTAT=RESU,
+   TAB_KG=CALC_G( RESULTAT=RESX,
                   OPTION='CALC_K_G',
                   LISSAGE = _F(DEGRE=3),
                   THETA = _F(R_INF=rinf,
@@ -474,7 +469,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
 
    # Menage avant iteration de propagation suivante
    DETRUIRE(CONCEPT=_F(NOM=(MA,MA_INI,MOD_SAIN,FISS,MOD_X,CHMAT,ENCAST,PRESSION,CHXFEM,
-                            RESU,MA_XFEM,MOD_VISU,RES_XFEM,TAB_KG,
+                            RESX,MA_XFEM,MOD_VISU,RES_XFEM,TAB_KG,
                             MAX,MA1,MAX1)),INFO=1)
 
    # Destruction du fort.24 : fichier contenant le maillage raffine

@@ -1,9 +1,9 @@
-# MODIF  DATE 15/11/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,26 +66,17 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                              _F(NOEUD=('N5','N6','N7','N8'),
                                 DX=0.,DY=0.,DZ=1.E-6),),);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
 
 MODI_MODELE(reuse=MODELEK, MODELE=MODELEK, PARTITION=_F(PARALLELISME='CENTRALISE'))
-UTOT=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),MODELE=MODELEK,
+UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CH,),
-                          _F(CHARGE=CHXFEM,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.0,),
-#                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
-                                  RESI_GLOB_MAXI=1e-07,
-                                  ),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                   EXCIT=(_F(CHARGE=CH),
+                          _F(CHARGE=CHXFEM),
+                          ),
+                   SOLVEUR=_F(PCENT_PIVOT=10,
+                            METHODE='MUMPS'),
+                   INFO=1,
+                   ); 
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM

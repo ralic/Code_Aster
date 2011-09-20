@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # sslp200b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -554,21 +554,21 @@ TEST_RESU(RESU=(_F(RESULTAT=MSLIN,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEQ_ELGA',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=8.801293002598E+10,
+                   VALE=1.0283187402877E+09,
                    PRECISION=1e-10,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MSLIN,
                    NUME_ORDRE=2,
                    NOM_CHAM='SIEQ_ELGA',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=6.5106395861885E+10,
+                   VALE=1.0427900318577E+09,
                    PRECISION=1e-10,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MSLIN,
                    NUME_ORDRE=3,
                    NOM_CHAM='SIEQ_ELGA',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=1.1596827466394E+11,
+                   VALE=1.0572638448791E+09,
                    PRECISION=1e-10,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MSLIN,

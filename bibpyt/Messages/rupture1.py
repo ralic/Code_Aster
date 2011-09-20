@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture1 Messages  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -388,6 +388,16 @@ La table %(k1)s ne doit pas contenir le paramètre %(k2)s.
 
 66:_("""
 L'opération %(k1)s nécessite une seule table sous le mot-clé TABLE, or il y en a %(i1)s.
+"""),
+
+67:_("""
+Les caractéristiques du matériau ne peuvent dépendre que de la température.
+-> Conseil :
+Veuillez revoir les données du matériau.
+"""),
+
+68:_("""
+La macro-commande POST_RUPTURE ne fonctionne pas quand les paramètres matériau ne sont pas constants.
 """),
 
 }

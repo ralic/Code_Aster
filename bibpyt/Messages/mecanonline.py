@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,21 +86,23 @@ cata_msg = {
 
 
 82 : _("""
-   Arret pour cause de matrice non inversible.
+   Arrêt pour cause de matrice non inversible.
 """),
 
 83 : _("""
-   Arret : absence de convergence avec le nombre d'itérations requis.
+   Arrêt : absence de convergence avec le nombre d'itérations requis.
 """),
 
 84 : _("""
-   Arret par échec dans le pilotage.
+   Arrêt par échec dans le pilotage.
 """),
 
 85 : _("""
-   Arret : absence de convergence au numéro d'instant : %(i1)d
+   Arrêt : absence de convergence au numéro d'instant : %(i1)d
                                   lors de l'itération : %(i2)d
 """),
 
-
+86 : _("""
+   Arrêt par échec du traitement de la collision.
+"""),
 }

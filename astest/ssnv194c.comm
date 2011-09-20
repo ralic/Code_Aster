@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ssnv194c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,12 +102,17 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,#RESI_GLOB_RELA=1.E-4
                                      ),
                    MATER      = ACIER,  
+                   
+                   FORMAT_TABLE='CMP_COLONNE',
+                   
                    NB_VARI_TABLE=6,
+                   
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
                         );  
                                               
+
 IMPR_TABLE(TABLE=SOLNL)
 
 # comparaison a la modelisation A - agregat 10 grains
@@ -123,7 +128,66 @@ TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),
            
 TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),
            NOM_PARA='V3', VALE=2.926067E-03 , REFERENCE='NON_REGRESSION',)
+
+
+# test de FORMAT_TABLE='CMP_LIGNE'           
+
+SOLNL2=SIMU_POINT_MAT(INFO=1,
+                   COMP_INCR=_F(
+                                RELATION='POLYCRISTAL',
+                                COMPOR=COMPORP,
+                                ALGO_INTE='RUNGE_KUTTA',
+                                RESI_INTE_RELA=1.E-6,
+                                ),
+                   NEWTON=_F(
+                             MATRICE='ELASTIQUE',
+                             PREDICTION='EXTRAPOL',
+                             REAC_ITER=0
+                             ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,#RESI_GLOB_RELA=1.E-4
+                                     ),
+                   MATER      = ACIER,  
+                   
+                   FORMAT_TABLE='CMP_LIGNE',
+                   
+                   NB_VARI_TABLE=6,
+                   
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ)
+                        );  
+                                              
+
+IMPR_TABLE(TABLE=SOLNL2)
+
+# comparaison a la modelisation A - agregat 10 grains
+TEST_TABLE(TABLE=SOLNL2, FILTRE=(
+                                _F(NOM_PARA='INST',VALE=TFIN),
+                                _F(NOM_PARA='CMP',VALE_K='SIZZ'),
+                                ),
+           NOM_PARA='VALEUR', PRECISION=0.09,VALE=2.79777E+02, REFERENCE='AUTRE_ASTER',)
+           
+TEST_TABLE(TABLE=SOLNL2, FILTRE=(
+                                _F(NOM_PARA='INST',VALE=TFIN),
+                                _F(NOM_PARA='CMP',VALE_K='V3'),
+                                ),
+           NOM_PARA='VALEUR', PRECISION=0.06,VALE=3.07316E-03, REFERENCE='AUTRE_ASTER',)
+           
+# non regression
+
+TEST_TABLE(TABLE=SOLNL2, FILTRE=(
+                                _F(NOM_PARA='INST',VALE=TFIN),
+                                _F(NOM_PARA='CMP',VALE_K='SIZZ'),
+                                ),
+          NOM_PARA='VALEUR', VALE=3.011351E+02, REFERENCE='NON_REGRESSION')
+           
+TEST_TABLE(TABLE=SOLNL2, FILTRE=(
+                                _F(NOM_PARA='INST',VALE=TFIN),
+                                _F(NOM_PARA='CMP',VALE_K='V3'),
+                                ),
+           NOM_PARA='VALEUR', VALE=2.926067E-03 , REFERENCE='NON_REGRESSION',)
+           
+FIN()
            
 
-FIN()
 

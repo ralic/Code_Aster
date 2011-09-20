@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,6 +102,8 @@ MODE_LOCAL__
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG  CEQUI   SIGACI  SIGBET  PIVA     PIVB )
     CFER2_R  = FER2_R   ELEM__         (DNSXI     DNSXS   DNSYI   DNSYS   DNST    SIGMBE   EPSIBE)
+    EGAMIMA  = SPMX_R   ELGA__ MASS    ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
+    ENOMIMA  = SPMX_R   ELNO__ IDEN__  ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -158,7 +160,7 @@ OPTION__
     ECIN_ELEM           406   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
-    EFGE_ELGA           451   IN__   ECONTPG  PSIEFR   CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
+    EFGE_ELGA           451   IN__   ECONTPG  PSIEFR   CCACOQU  PCACOQU  ENBSP_I  PNBSP_I  CMATERC  PMATERC
                               OUT__  EEFGEPGR PEFGER
                                      EEFGEPGC PEFGEC
     EFGE_ELNO           410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -308,6 +310,8 @@ OPTION__
                                      ESIGMNOC PCONTRC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
+    MINMAX_SP           99    IN__   NGEOMER  PGEOMER
+                              OUT__  EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENBSP_I  PNBSP_I
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

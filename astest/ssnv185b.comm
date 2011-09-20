@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185b.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,21 +112,14 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
-UTOT2=STAT_NON_LINE(MODELE=MODELEK,
+UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-#                   SOLVEUR=_F(METHODE='MUMPS',),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
-UTOT1 = EXTR_RESU(RESULTAT=UTOT2,ARCHIVAGE=_F(NUME_ORDRE=1),);
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH1),
+                          _F(CHARGE=CH2),
+                          ),
+                   INFO=1,
+                   ); 
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
@@ -147,7 +140,7 @@ GLO = [None]*nbc
 
 for i in range(0,nbc) :
 
-   SIF[i]=CALC_G(RESULTAT=UTOT1,
+   SIF[i]=CALC_G(RESULTAT=UTOT2,
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
@@ -156,7 +149,7 @@ for i in range(0,nbc) :
                             LISSAGE_G='LAGRANGE',),);
 
    IMPR_TABLE(TABLE=SIF[i],);
-   GLO[i]=CALC_G(RESULTAT=UTOT1,
+   GLO[i]=CALC_G(RESULTAT=UTOT2,
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
                           R_SUP=RS[i],),
@@ -209,7 +202,7 @@ for i in range(0,nbc) :
               PRECISION=2.5*prec,
               REFERENCE='ANALYTIQUE',);
 
-GLeg=CALC_G(RESULTAT=UTOT1,
+GLeg=CALC_G(RESULTAT=UTOT2,
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[0],
                           R_SUP=RS[0],),
@@ -233,7 +226,7 @@ TEST_TABLE(TABLE=GLeg,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
            
-GLagr=CALC_G(RESULTAT=UTOT1,
+GLagr=CALC_G(RESULTAT=UTOT2,
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[0],
                           R_SUP=RS[0],),
@@ -266,7 +259,7 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
                      FISSURE = FISS,
                      DTAN_ORIG = (0,-1,0),
                      DTAN_EXTR = (0,-1,0),
-                     RESULTAT  = UTOT1,
+                     RESULTAT  = UTOT2,
                      ABSC_CURV_MAXI = 1.5,
                      NB_NOEUD_COUPE = 6,
                      VECT_K1        = ( 0., 0., 1., ),
@@ -279,7 +272,7 @@ TEST_TABLE( TABLE=PK,
             FILTRE=(_F( NOM_PARA = 'PT_FOND',  
                         VALE_I = 1,  ),
                     _F( NOM_PARA = 'INST',  
-                        VALE = 1.,  ),),
+                        VALE = 0.,  ),),
             VALE=K1REF,
             PRECISION=0.05,
             REFERENCE='ANALYTIQUE' )
@@ -295,7 +288,7 @@ MA_XFEM=POST_MAIL_XFEM(
 
 TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                GROUP_NO='VOL',
-                               RESULTAT=UTOT1,
+                               RESULTAT=UTOT2,
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='DX',
@@ -346,7 +339,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               MODELISATION='3D',),) 
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,
+                        RESULTAT      = UTOT2,
                         
                         INFO          = 2)
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,6 +138,7 @@ MODE_LOCAL__
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
+    FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -299,6 +300,13 @@ OPTION__
                                      E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                                      E22NEUTR PPMILTO
                               OUT__  MMATUUR  PMATUUR
+    SIEF_ELGA      261        IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  E36NEUI  PCNSETO
+                                     DDL_MECA PDEPLAR  NGEOMER  PGEOMER  STANO_I  PSTANO
+                                     CMATERC  PMATERC  E6NEUTR  PPINTTO  E6NEUTI  PHEAVTO
+                                     ZVARCPG  PVARCRR  ZVARCPG  PVARCPR  N6NEUT_R PBASLOR
+                                     E6NEUTI  PLONCHA  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
+                              OUT__  ECONTPG  PCONTRR
     SIEF_ELNO      289   IN__   ECONTPG  PCONTRR  E36NEUI  PCNSETO  E6NEUTI  PLONCHA
                               OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT

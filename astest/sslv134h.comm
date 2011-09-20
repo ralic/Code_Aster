@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134h.para = tps_job 280 mem_job 1600Mo mem_aster 33 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,23 +104,16 @@ CHAR2=AFFE_CHAR_MECA(INFO=1,
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
-
-UTOT1=STAT_NON_LINE(INFO=1,
-                  MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMAT,              
-                   EXCIT=(_F(CHARGE=CHAR1,),
-                          _F(CHARGE=CHAR2,),
-                          _F(CHARGE=CHXFEM,),
-                           ),              
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='TUBE',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10));
-
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CHAR1),
+                          _F(CHARGE=CHAR2),
+                          _F(CHARGE=CHXFEM),
+                          ),
+                   SOLVEUR=_F(PCENT_PIVOT=10,
+                            METHODE='MUMPS'),
+                   INFO=1,
+                   ); 
 
 
 #----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185r.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,16 +144,13 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMA1,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CHB,),
-                           _F(CHARGE=CH1,),),
-                    COMP_ELAS=_F(RELATION='ELAS'),
-                    INCREMENT=_F(LIST_INST=L_INS1),
-                    NEWTON=_F(REAC_ITER=1,),
-                   );
-
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMA1,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CHB),
+                          _F(CHARGE=CH1),
+                          ),
+                   ); 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
@@ -225,7 +222,7 @@ TEST_TABLE( TABLE=PK,
             FILTRE=(_F( NOM_PARA = 'PT_FOND',  
                         VALE_I = 1,  ),
                     _F( NOM_PARA = 'INST',  
-                        VALE = 1.,  ),
+                        VALE = 0.,  ),
                         ),
             VALE=K1REF,
             PRECISION=0.04,

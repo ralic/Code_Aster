@@ -1,12 +1,12 @@
       SUBROUTINE PMINIT(IMATE ,NBVARI,NDIM  ,TYPMOD,TABLE ,
-     &                  NBPAR ,NBVITA,NOMPAR,TYPPAR,ANG   ,PGL   ,
+     &                  NBPAR ,IFORTA,NOMPAR,TYPPAR,ANG   ,PGL   ,
      &                  IROTA ,EPSM  ,SIGM  ,VIM   ,VIP   ,
      &                  DEFIMP,COEF  ,INDIMP,FONIMP,CIMPO ,
-     &                  KEL   ,SDDISC,PARCRI,PRED  ,MATREL,
-     &                  OPTION)
+     &                  KEL   ,SDDISC,PARCRI,PRED  ,MATREL,IMPTGT,
+     &                  OPTION, NOMVI, NBVITA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,18 +78,18 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      NDIM,N1,NBVARI,NBPAR,I,J,K,IMATE,KPG,KSP,NBOCC,N2
       INTEGER      IEPSI,ICONT,IGRAD,IROTA,DEFIMP,INDIMP(9),NCMP
-      INTEGER      PRED,MATREL,NBVITA
-      INTEGER      ILIGNE,ICOLON,FONACT(28)
-      CHARACTER*4  NOMEPS(6),NOMSIG(6),NOMGRD(9)
-      CHARACTER*8  TYPMOD(2),K8B,TABLE,FONIMP(9),FONGRD(9)
-      CHARACTER*8  FONEPS(6),FONSIG(6),TYPPAR(NBVARI+19),VALEF
-      CHARACTER*16 OPTION,NOMPAR(NBVARI+19),PREDIC,MATRIC
+      INTEGER      PRED,MATREL,IC1C2,IFORTA,IMPTGT,NBVITA
+      INTEGER      ILIGNE,ICOLON,FONACT(28),NBCOL
+      CHARACTER*4  NOMEPS(6),NOMSIG(6),NOMGRD(9),OPTGT
+      CHARACTER*8  TYPMOD(2),K8B,TABLE,FONIMP(9),FONGRD(9),F0,VK8(2)
+      CHARACTER*8  FONEPS(6),FONSIG(6),TYPPAR(NBVARI+19),VALEF,NOMVI(*)
+      CHARACTER*16 OPTION,NOMPAR(NBVARI+19),PREDIC,MATRIC,FORTAB
       CHARACTER*19 LISINS,SDDISC,SOLVEU
       REAL*8       INSTAM,ANG(7),SIGM(6),EPSM(9),VALE
       REAL*8       VIM(NBVARI),VIP(NBVARI),VR(NBVARI+19)
       REAL*8       SIGI,REP(7),R8DGRD,KEL(6,6),CIMPO(6,12)
       REAL*8       ANGD(3),ANG1,PGL(3,3),XYZGAU(3),COEF,INSTIN
-      REAL*8       PARCRI(*),PARCON(9),ANGEUL(3),ID(9)
+      REAL*8       PARCRI(*),PARCON(9),ANGEUL(3),ID(9),DSIDEP(36)
       
       DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
       DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
@@ -107,16 +107,30 @@ C     INITIALISATIONS
 C     ----------------------------------------
 C     RECUPERATION DU NOM DE LA TABLE PRODUITE
 C     ----------------------------------------
+
       CALL GETRES(TABLE,K24BID,K24BID)
-C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
+      
+      IFORTA=0
+      CALL GETVTX(' ','FORMAT_TABLE',1,1,1,FORTAB,N1)
+      IF (N1.NE.0) THEN
+         IF (FORTAB.EQ.'CMP_LIGNE') THEN
+            IFORTA=1
+         ENDIF
+      ENDIF
+      
       NBVITA=NBVARI
       CALL GETVIS(' ','NB_VARI_TABLE',1,1,1,K,N1)
-      IF (N1.GT.0) THEN
-         NBVITA=K
-      ELSEIF (NBVARI.GT.99) THEN
-         CALL U2MESS('A','COMPOR2_6')
-         NBVITA=99
+      IF (N1.GT.0) NBVITA=K
+      NBVITA=MIN(NBVITA,NBVARI)
+         
+      IMPTGT=0
+      CALL GETVTX(' ','OPER_TANGENT',0,1,1,OPTGT,N1)
+      IF (N1.NE.0) THEN
+         IF (OPTGT.EQ.'OUI') THEN
+            IMPTGT=1
+         ENDIF
       ENDIF
+      
       NCMP=6
       IGRAD=0
       CALL GETVID(' ',NOMGRD(1),1,1,1,FONGRD(1),N1)
@@ -124,36 +138,67 @@ C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
          NCMP=9
          IGRAD=1
       ENDIF
+      
+C     si le nombre de variables internes est trop grand $
+C     on change de format de table
+C     nombre maxi de colonnes dans une table 9999 (cf D4.02.05) 
+      
+      NBCOL=1+NCMP+6+2+NBVITA+1
+      IF (NBCOL.GT.9999) THEN
+          IFORTA=1
+      ENDIF      
          
-      NBPAR=1+NCMP+6+2+NBVITA+1
       NOMPAR(1)='INST'
-      DO 10 I=1,NBPAR
-         TYPPAR(I)='R'
- 10   CONTINUE
-      IF (IGRAD.EQ.1) THEN
-         DO 132 I=1,NCMP
-            NOMPAR(1+I)=NOMGRD(I)
- 132     CONTINUE
-      ELSE
-         DO 131 I=1,NCMP
-            NOMPAR(1+I)=NOMEPS(I)
- 131     CONTINUE
-      ENDIF
-      DO 13 I=1,6
-         NOMPAR(1+NCMP+I)=NOMSIG(I)
- 13   CONTINUE
-      NOMPAR(1+NCMP+6+1)='TRACE'
-      NOMPAR(1+NCMP+6+2)='VMIS'
-      DO 11 I=1,MIN(9,NBVITA)
-         WRITE(NOMPAR(1+NCMP+6+2+I),'(A,I1)') 'V',I
-  11  CONTINUE
-      IF (NBVITA.GT.9) THEN
-         DO 12 I=10,MIN(99,NBVITA)
-            WRITE(NOMPAR(1+NCMP+6+2+I),'(A,I2)') 'V',I
-  12     CONTINUE
-      ENDIF
+      
+      IF (IFORTA.EQ.0) THEN
+C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
+      
+          NBPAR=1+NCMP+6+2+NBVITA+1
+C         ajout KTGT      
+          IF (IMPTGT.EQ.1) NBPAR=NBPAR+36
+          IF (IGRAD.EQ.1) THEN
+             DO 132 I=1,NCMP
+                NOMPAR(1+I)=NOMGRD(I)
+ 132         CONTINUE
+          ELSE
+             DO 131 I=1,NCMP
+                NOMPAR(1+I)=NOMEPS(I)
+ 131         CONTINUE
+          ENDIF
+          DO 13 I=1,6
+             NOMPAR(1+NCMP+I)=NOMSIG(I)
+ 13       CONTINUE
+          NOMPAR(1+NCMP+6+1)='TRACE'
+          NOMPAR(1+NCMP+6+2)='VMIS'
+          DO 11 I=1,NBVITA
+             NOMPAR(1+NCMP+6+2+I)(1:1)='V'
+             CALL CODENT(I,'G',NOMPAR(1+NCMP+6+2+I)(2:16))
+  11      CONTINUE
+C         ajout KTGT
+          IF (IMPTGT.EQ.1) THEN
+             DO 133 I=1,6
+             DO 133 J=1,6
+                K=1+NCMP+6+2+NBVARI+6*(I-1)+J
+                WRITE(NOMPAR(K),'(A,I1,I1)') 'K',I,J
+ 133         CONTINUE
+          ENDIF
 
-      NOMPAR(NBPAR)='NB_ITER'
+          NOMPAR(NBPAR)='NB_ITER'
+          DO 10 I=1,NBPAR
+             TYPPAR(I)='R'
+ 10       CONTINUE
+      ELSE
+          NBPAR=4
+          NOMPAR(2)='GRANDEUR'
+          NOMPAR(3)='CMP'
+          NOMPAR(4)='VALEUR'
+          TYPPAR(1)='R'
+          TYPPAR(2)='K8'
+          TYPPAR(3)='K8'
+          TYPPAR(4)='R'
+      ENDIF
+      
+      
       CALL TBCRSD(TABLE,'G')
       CALL TBAJPA(TABLE,NBPAR,NOMPAR,TYPPAR)
 
@@ -267,8 +312,11 @@ C     ----------------------------------------
       ICONT=0
       IEPSI=0
       IGRAD=0
-      DO 23 I=1,6
+      F0='&&CPM_F0'
+      CALL FOZERO(F0)
+      DO 23 I=1,9
          INDIMP(I)=0
+         FONIMP(I)=F0
  23   CONTINUE
       DO 14 I=1,6
          CALL GETVID(' ',NOMEPS(I),1,1,1,FONEPS(I),N1)
@@ -296,10 +344,11 @@ C     ----------------------------------------
       DEFIMP=0
       IF (IEPSI.EQ.6) DEFIMP=1
       IF (IGRAD.EQ.9) DEFIMP=2
-
+      IC1C2=0
 C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
       CALL GETFAC('MATR_C1',NBOCC)
       IF (NBOCC.NE.0) THEN
+         IC1C2=1
          DO 55 I=1,NBOCC
             CALL GETVIS('MATR_C1','NUME_LIGNE',I,1,1,ILIGNE,N1)
             CALL GETVIS('MATR_C1','NUME_COLONNE',I,1,1,ICOLON,N1)
@@ -309,6 +358,7 @@ C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
       ENDIF
       CALL GETFAC('MATR_C2',NBOCC)
       IF (NBOCC.NE.0) THEN
+         IC1C2=1
          DO 56 I=1,NBOCC
             CALL GETVIS('MATR_C2','NUME_LIGNE',I,1,1,ILIGNE,N1)
             CALL GETVIS('MATR_C2','NUME_COLONNE',I,1,1,ICOLON,N1)
@@ -324,18 +374,63 @@ C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
             FONIMP(ILIGNE)=VALEF
  57      CONTINUE
       ENDIF
+      IF (IC1C2.EQ.1) THEN
+         DO 58 I=1,6
+C affectation de SIGMA_i=0. si rien n'est impose sur la ligne i
+            K=0
+            DO 59 J=1,12
+               IF (CIMPO(I,J).NE.0.D0) THEN
+                  K=1
+               ENDIF
+ 59         CONTINUE
+            IF (K.EQ.0 ) THEN
+               CIMPO(I,I)=1.D0
+            ENDIF 
+ 58      CONTINUE
+         DEFIMP=-1
+         COEF=1.D0
+      ENDIF
 
 C     ----------------------------------------
 C     ECRITURE ETAT INITIAL DANS TABLE
 C     ----------------------------------------
-      CALL DCOPY(NCMP,EPSM,1,VR(2),1)
-      CALL DCOPY(6,SIGM,1,VR(NCMP+2),1)
-      VR(1+NCMP+6+1)=0.D0
-      VR(1+NCMP+6+2)=0.D0
-      CALL DCOPY(NBVARI,VIM,1,VR(1+NCMP+6+3),1)
-      VR(1)=INSTAM
-      VR(NBPAR)=0
-      CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,K8B,0)
+      IF (IFORTA.EQ.0) THEN
+         CALL DCOPY(NCMP,EPSM,1,VR(2),1)
+         CALL DCOPY(6,SIGM,1,VR(NCMP+2),1)
+         VR(1+NCMP+6+1)=0.D0
+         VR(1+NCMP+6+2)=0.D0
+         CALL DCOPY(NBVITA,VIM,1,VR(1+NCMP+6+3),1)
+         VR(1)=INSTAM
+C        ajout KTGT
+         IF (IMPTGT.EQ.1) THEN
+            CALL R8INIR(36,0.D0,DSIDEP, 1)
+            CALL DCOPY(36,DSIDEP,1,VR(1+6+6+3+NBVARI),1)
+         ENDIF
+         VR(NBPAR)=0
+         CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,K8B,0)
+      ELSE
+         VR(1)=INSTAM
+         VK8(1)='EPSI'
+         DO 551 I=1,NCMP
+            VR(2)=EPSM(I)
+            VK8(2)=NOMEPS(I)
+            CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+ 551     CONTINUE
+         VK8(1)='SIGM'
+         DO 552 I=1,NCMP
+            VR(2)=SIGM(I)
+            VK8(2)=NOMSIG(I)
+            CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+ 552     CONTINUE
+         VK8(1)='VARI'
+         DO 553 I=1,NBVITA
+            VR(2)=VIM(I)
+            VK8(2)(1:1)='V'
+            CALL CODENT(I,'G',VK8(2)(2:8))
+            NOMVI(I)=VK8(2)
+            CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+ 553     CONTINUE
+      ENDIF
 
 C     ----------------------------------------
 C     CREATION SD DISCRETISATION

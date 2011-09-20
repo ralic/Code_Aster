@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314c.para = tps_job 140 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,6 @@ CHXFEM = [None]*nbcalc
 CHMAT = [None]*nbcalc
 CHAR = [None]*nbcalc
 RESU = [None]*nbcalc
-RESV = [None]*nbcalc
 SIF = [None]*nbcalc
 LSN = [None]*nbcalc
 LST = [None]*nbcalc
@@ -130,18 +129,11 @@ for i in range(nbcalc) :
                              _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
                              _F(GROUP_NO='P4',DY=0.0,),),);
 
-   RESV[i]=STAT_NON_LINE(MODELE=MODELX[i],
+   RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHMAT[i],
                          EXCIT=(_F(CHARGE=CHXFEM[i],),
                                 _F(CHARGE=CHAR[i],),),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      GROUP_MA='VOL',),
-                         INCREMENT=_F(LIST_INST=L_INS1,
-                                      INST_FIN=1.0,),
-                         NEWTON=_F(REAC_ITER=1,),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          INFO=1,);
-   RESU[i] = EXTR_RESU(RESULTAT=RESV[i],ARCHIVAGE=_F(NUME_ORDRE=1)); 
       
    SIF[i]=POST_K1_K2_K3(RESULTAT=RESU[i],
                       MODELISATION='3D',

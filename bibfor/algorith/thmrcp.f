@@ -12,7 +12,7 @@
      &                 ISOT,DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -636,7 +636,7 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      &                              2, NCRA7(3), VAL7(3), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
@@ -698,7 +698,7 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
      &                            1, NCRA11(2), VAL11(2), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
@@ -779,7 +779,7 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
      &                            1, NCRA37(2), VAL37(2), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
@@ -862,7 +862,7 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
      &                            1, CRAD37(2), VAL37(2), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
@@ -939,7 +939,7 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
      &                            1, NCRA15(2), VAL15(2), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
@@ -1074,7 +1074,8 @@ C
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                       3, NCRA18(1), VAL18(1), ICODRE, 0)
-            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
+            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')
+     &          .OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
      &                               1, NCRA18(4), VAL18(4),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
@@ -1169,7 +1170,8 @@ C
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                       DIM20-7, NCRA20(1), VAL20(1), ICODRE, 0)
-            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
+            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')
+     &         .OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
      &                               1, NCRA20(5), VAL20(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
@@ -1261,7 +1263,8 @@ C       INITIALISATION POUR L'ANISOTROPIE
             VAL22(26) = 0.D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA22, VAL22, ICODRE, 0)
-            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
+            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')
+     &         .OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
      &                               1, NCRA22(5), VAL22(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
@@ -1290,15 +1293,20 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      &                      DIM23-3, NCRA23(4), VAL23(4), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
               IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
               ENDIF
               CALL SATUVG(VG,PVP-P1,VAL22(14),VAL22(15))
-              CALL PERMVG(VG,VAL22(14),VAL22(16),VAL22(17),
-     &          VAL22(18), VAL22(19))
+              IF(HYDR.EQ.'HYDR_VGM')THEN
+                CALL PERMVG(VG,VAL22(14),VAL22(16),VAL22(17),
+     &            VAL22(18), VAL22(19))
+              ELSE
+                CALL PERMVC(VG,VAL22(14),VAL22(16),VAL22(17),
+     &            VAL22(18), VAL22(19))
+              ENDIF
               VAL22(20) = 0.D0
             ELSEIF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', PVP-P1,
@@ -1310,7 +1318,7 @@ C =====================================================================
             NOMPAR(2) = 'PGAZ'
             VALPAR(1) =  VAL22(14)
             VALPAR(2) =  P2
-            IF(HYDR.NE.'HYDR_VGM')THEN
+            IF((HYDR.NE.'HYDR_VGM').AND.(HYDR.NE.'HYDR_VGC'))THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2, NOMPAR, VALPAR,
      &                          5, NCRA22(16), VAL22(16), ICODRE, 1)
             ENDIF
@@ -1399,7 +1407,8 @@ C
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA25, VAL25, ICODRE, 0)
-            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
+            IF ((HYDR.EQ.'HYDR_UTIL').OR.
+     &        (HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC'))THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
      &                               1, NCRA25(5), VAL25(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
@@ -1430,15 +1439,20 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      &                            1, NCRA26(4), VAL26(4), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL25(14),VAL25(15))
-               CALL PERMVG(VG,VAL25(14),VAL25(16),VAL25(17),
+               IF(HYDR.EQ.'HYDR_VGM')THEN
+                 CALL PERMVG(VG,VAL25(14),VAL25(16),VAL25(17),
      &             VAL25(18), VAL25(19))
+               ELSE
+                 CALL PERMVC(VG,VAL25(14),VAL25(16),VAL25(17),
+     &             VAL25(18), VAL25(19))
+               ENDIF
                VAL25(20) = 0.D0
             ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
@@ -1452,7 +1466,7 @@ C =====================================================================
             VALPAR(1) =  VAL25(14)
             VALPAR(2) =  P2
             VALPAR(3) =  T
-            IF(HYDR.NE.'HYDR_VGM')THEN
+            IF((HYDR.NE.'HYDR_VGM').AND.(HYDR.NE.'HYDR_VGC'))THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
      &                          5, NCRA25(16), VAL25(16), ICODRE, 1)
             ENDIF
@@ -1585,7 +1599,8 @@ C
             
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA40, VAL40, ICODRE, 0)
-            IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_VGM') THEN
+            IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_VGM'
+     &          .OR.HYDR.EQ.'HYDR_VGC')THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
      &                               1, NCRA40(5), VAL40(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
@@ -1616,15 +1631,20 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      &                     DIM41-3, NCRA41(4), VAL41(4), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL40(14),VAL40(15))
-               CALL PERMVG(VG,VAL40(14),VAL40(16),VAL40(17),
-     &             VAL40(18), VAL40(19))
+               IF(HYDR.EQ.'HYDR_VGM')THEN
+                 CALL PERMVG(VG,VAL40(14),VAL40(16),VAL40(17),
+     &              VAL40(18), VAL40(19))
+               ELSE
+                 CALL PERMVC(VG,VAL40(14),VAL40(16),VAL40(17),
+     &              VAL40(18), VAL40(19))
+               ENDIF
                VAL40(20) = 0.D0
 
 C
@@ -1640,7 +1660,7 @@ C
             VALPAR(1) =  VAL40(14)
             VALPAR(2) =  P2
             VALPAR(3) =  T
-            IF(HYDR.NE.'HYDR_VGM')THEN
+            IF((HYDR.NE.'HYDR_VGM').AND.(HYDR.NE.'HYDR_VGC'))THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
      &                          5, NCRA40(16), VAL40(16), ICODRE, 1)
             ENDIF
@@ -1797,7 +1817,8 @@ C
             
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, CRAD40, VAL40, ICODRE, 0)
-            IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_UTIL').OR. (HYDR.EQ.'HYDR_VGM')
+     &         .OR. (HYDR.EQ.'HYDR_VGC'))THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
      &                               1, CRAD40(5), VAL40(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
@@ -1826,15 +1847,20 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      &                     DIM41-3, CRAD41(4), VAL41(4), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL40(14),VAL40(15))
-               CALL PERMVG(VG,VAL40(14),VAL40(16),VAL40(17),
+               IF(HYDR.EQ.'HYDR_VGM')THEN
+                 CALL PERMVG(VG,VAL40(14),VAL40(16),VAL40(17),
      &             VAL40(18), VAL40(19))
+               ELSE
+                 CALL PERMVC(VG,VAL40(14),VAL40(16),VAL40(17),
+     &             VAL40(18), VAL40(19))
+               ENDIF
                VAL40(20) = 0.D0
 
 C
@@ -1850,7 +1876,7 @@ C
             VALPAR(1) =  VAL40(14)
             VALPAR(2) =  P2
             VALPAR(3) =  T
-            IF(HYDR.NE.'HYDR_VGM')THEN
+            IF((HYDR.NE.'HYDR_VGM').AND.(HYDR.NE.'HYDR_VGC'))THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
      &                          5, CRAD40(16), VAL40(16), ICODRE, 1)
             ENDIF
@@ -1983,7 +2009,8 @@ C
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA29, VAL29, ICODRE, 0)
-            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
+            IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')
+     &           .OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
      &                               1, NCRA29(5), VAL29(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
@@ -2012,15 +2039,20 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      &                     DIM30-3, NCRA30(4), VAL30(4), ICODRE, 1)
             ENDIF
-            IF (HYDR.EQ.'HYDR_VGM') THEN
+            IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                     5, NVG(1), VG(1), ICODRE, 1)
                IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL29(14),VAL29(15))
-               CALL PERMVG(VG,VAL29(14),VAL29(16),VAL29(17),
+               IF(HYDR.EQ.'HYDR_VGM')THEN
+                 CALL PERMVG(VG,VAL29(14),VAL29(16),VAL29(17),
      &             VAL29(18), VAL29(19))
+               ELSE
+                 CALL PERMVC(VG,VAL29(14),VAL29(16),VAL29(17),
+     &             VAL29(18), VAL29(19))
+               ENDIF
                VAL29(20) = 0.D0
             ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
@@ -2032,7 +2064,7 @@ C =====================================================================
             NOMPAR(2) = 'PGAZ'
             VALPAR(1) =  VAL29(14)
             VALPAR(2) =  P2
-            IF(HYDR.NE.'HYDR_VGM')THEN
+            IF((HYDR.NE.'HYDR_VGM').AND.(HYDR.NE.'HYDR_VGC'))THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2, NOMPAR, VALPAR,
      &                          5, NCRA29(16), VAL29(16), ICODRE, 1)
             IF (THER.NE.' ') THEN
@@ -2127,7 +2159,7 @@ C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
      &                            1, NCRA32(5), VAL32(4), ICODRE, 1)
                ENDIF
-            ELSE IF (HYDR.EQ.'HYDR_VGM') THEN
+            ELSE IF ((HYDR.EQ.'HYDR_VGM').OR.(HYDR.EQ.'HYDR_VGC')) THEN
                CALL U2MESS('F','ALGORITH16_95')
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE CANTILEVER MULTI-FIBRES : FORCE PONCTUELLE
 # ssnl122a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -415,7 +415,37 @@ TEST_RESU(RESU=_F(RESULTAT=STNLB, NUME_ORDRE=2, NOM_CHAM='SIGM_ELGA', REFERENCE=
                    NOM_CMP='SIXX', MAILLE='E00202', POINT=2,                 VALE=6.5714285714286E+06
                    ))
 #-----------------------------------------------------------------------------------------
+# validation de POST_CHAMP / MIN_MAX_SP pour les poutres PMF :
+#-------------------------------------------------------------
+STNLC=POST_CHAMP(  RESULTAT=STNL, MAILLE='E00200',
+              NUME_ORDRE=(1,2),
+              MIN_MAX_SP=(
+                _F( NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1),
+                _F( NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', TYPE_MAXI='MINI', NUME_CHAM_RESU=2),
+             ))
+#IMPR_RESU(RESU=_F(RESULTAT=STNL, NOM_CHAM='SIEF_ELGA', MAILLE='E00200',NUME_ORDRE=(1,2), ))
+#IMPR_RESU(RESU=_F(RESULTAT=STNLC))
 
+# TEST_RESU pour le max de SIXX (UT01_ELGA):
+TEST_RESU(RESU=(
+  _F(RESULTAT=STNLC, NUME_ORDRE=2, NOM_CHAM='UT01_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
+      NOM_CMP='VAL', MAILLE='E00200', POINT=1, VALE=4.0008644731129E+08 ),
+  _F(RESULTAT=STNLC, NUME_ORDRE=2, NOM_CHAM='UT01_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
+      NOM_CMP='NUFIBR', MAILLE='E00200', POINT=1, VALE=36. ),
+  _F(RESULTAT=STNLC, NUME_ORDRE=2, NOM_CHAM='UT01_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
+      NOM_CMP='NUCOU', MAILLE='E00200', POINT=1, VALE=-999. ),
+  ))
+# TEST_RESU pour le min de SIXX (UT02_ELGA) :
+TEST_RESU(RESU=(
+  _F(RESULTAT=STNLC, NUME_ORDRE=2, NOM_CHAM='UT02_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
+      NOM_CMP='VAL', MAILLE='E00200', POINT=1, VALE=-3.7658987468306E+08 ),
+  _F(RESULTAT=STNLC, NUME_ORDRE=2, NOM_CHAM='UT02_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
+      NOM_CMP='NUFIBR', MAILLE='E00200', POINT=1, VALE=34. ),
+  ))
+
+# Quand l'option SIGM_ELNO (ou SIEF_ELNO) calculera SIXX sur chaque fibre, on pourra utiliser MIN_MAX_SP
+# pour tester SIMAX et SIMIN et supprimer ces 2 composantes dans SIEF_ELNO
+#-----------------------------------------------------------------------------------------
 
 
 FIN()

@@ -5,7 +5,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF PREPOST  DATE 20/09/2011   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -182,7 +182,7 @@ C         ----------------------------------------------------
         IFIMED = 0
         CALL MDEXPM(NOFIMD,IFIMED,NOMAMD,EXISTM,NDIM,IRET)
         CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD,
-     &                     MODNUM, NUANOM, NUMNOA )
+     &              MODNUM, NUANOM, NUMNOA )
         IF(TYPCHA(1:4).EQ.'ELNO')THEN
           TYPENT = EDNOMA
         ELSE
@@ -200,10 +200,10 @@ C         ----------------------------------------------------
             CALL JEVEUO(PREFIX//'.NUME','L',INUM)
             GO TO 240
           END IF
-230         CONTINUE
+230     CONTINUE
 
-C           CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
-C           DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
+C         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
+C         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
         IF(TYPCHA(1:4).EQ.'ELNO')THEN
           TYPENT = EDMAIL
           CALL U2MESK('A','MED_53',1,NOCHMD)
@@ -218,11 +218,11 @@ C           DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
               CALL JEVEUO(PREFIX//'.NUME','L',INUM)
               GO TO 240
             END IF
-231           CONTINUE
+231       CONTINUE
         END IF
 
-        END IF
-240       CONTINUE
+      END IF
+240   CONTINUE
 C
       IF(ACCES.NE.'TOUT_ORDRE')THEN
          NPAS0=NBORDR
@@ -234,97 +234,100 @@ C         DETERMINATION DES NUMEROS D'ORDRE MED : ZI(JNUOM)
       IF(NNU.NE.0)THEN
         CALL WKVECT('&&OP0150_NUMORD_MED','V V I',NPAS,JNUOM)
         DO 242 J=1,NPAS
-              ZI(JNUOM+J-1)=ZI(INUM+2*J-1)
-242            CONTINUE
+          IF(ZI(INUM+2*J-1).NE.EDNONO) THEN
+            ZI(JNUOM+J-1)=ZI(INUM+2*J-1)
+          ELSEIF(ZI(INUM+2*(J-1)).NE.EDNONO) THEN
+            ZI(JNUOM+J-1)=ZI(INUM+2*(J-1))
+          ENDIF
+242     CONTINUE
+      ENDIF
+
+      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IRET)
+      CALL WKVECT('&&OP0150_NBPG_MAILLE','V V I',NBMA,JNBPGM)
+      CALL WKVECT('&&OP0150_NBPG_MED','V V I',NBMA,JNBPMM)
+
+C         BOUCLE SUR LES PAS DE TEMPS
+C         ---------------------------
+C     CET ENTIER SERT A AVOIR LA CERTITUDE QUE LE .ORDR PRODUIT
+C     EN SORTIE DE LIRE_RESU SERA STRICTEMENT CROISSANT
+      ORDINS = 1
+      DO 250 ITPS = 1,NPAS0
+        CHANOM = '&&LRFMED.TEMPOR'
+        K64B = ' '
+C
+        IF(NNU.NE.0)THEN
+          NUMORD = ZI(JNUME+ITPS-1)
+          ITPS0=INDIIS(ZI(JNUOM),NUMORD,1,NPAS)
+          IF(ITPS0.EQ.0)THEN
+            CALL U2MESG('A','MED_87',1,RESU,1,NUMORD,0,R8B)
+            GOTO 250
+          ENDIF
+          NUMPT=ZI(INUM+2*ITPS0-2)
+        ELSEIF(NTO.NE.0)THEN
+          NUMORD = ZI(INUM+2*ITPS-1)
+          NUMPT  = ZI(INUM+2*ITPS-2)
+        ELSEIF(NIS.NE.0)THEN
+          INST = ZR(JLIST+ITPS-1)
         ENDIF
 
-        CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IRET)
-        CALL WKVECT('&&OP0150_NBPG_MAILLE','V V I',NBMA,JNBPGM)
-        CALL WKVECT('&&OP0150_NBPG_MED','V V I',NBMA,JNBPMM)
+        CALL LRCHME(CHANOM,NOCHMD,K64B,NOMA,TYPCHA,NOMGD,TYPENT,
+     &              NBCMPV,NCMPVA,NCMPVM,PROLZ,
+     &              IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
+     &              MFICH,LIGREL,OPTION,PARAM,ZI(JNBPGM),ZI(JNBPMM),
+     &              IRET)
 
-C           BOUCLE SUR LES PAS DE TEMPS
-C           ---------------------------
-C       CET ENTIER SERT A AVOIR LA CERTITUDE QUE LE .ORDR PRODUIT
-C       EN SORTIE DE LIRE_RESU SERA STRICTEMENT CROISSANT
-        ORDINS = 1
-        DO 250 ITPS = 1,NPAS0
-           CHANOM = '&&LRFMED.TEMPOR'
-           K64B = '                                '//
-     &'                                '
-C
-           IF(NNU.NE.0)THEN
-              NUMORD = ZI(JNUME+ITPS-1)
-              ITPS0=INDIIS(ZI(JNUOM),NUMORD,1,NPAS)
-              IF(ITPS0.EQ.0)THEN
-                 CALL U2MESG('A','MED_87',1,RESU,1,NUMORD,0,R8B)
-                 GOTO 250
-              ENDIF
-              NUMPT=ZI(INUM+2*ITPS0-2)
-           ELSEIF(NTO.NE.0)THEN
-              NUMORD = ZI(INUM+2*ITPS-1)
-              NUMPT  = ZI(INUM+2*ITPS-2)
-           ELSEIF(NIS.NE.0)THEN
-              INST = ZR(JLIST+ITPS-1)
-           ENDIF
+C         POUR LES CHAM_NO : POUR ECONOMISER L'ESPACE,
+C         ON ESSAYE DE PARTAGER LE PROF_CHNO DU CHAMP CREE AVEC
+C         LE PROF_CHNO PRECEDENT :
+        IF (TYPCHA.EQ.'NOEU') THEN
+          CALL DISMOI('F','PROF_CHNO',CHANOM,'CHAM_NO',IBID,
+     &                PCHN1,IER)
+          IF (.NOT.IDENSD('PROF_CHNO',NOMPRN(1:19),PCHN1)) THEN
+            CALL GNOMSD( NOMPRN,15,19 )
+            CALL COPISD( 'PROF_CHNO', 'G', PCHN1, NOMPRN )
+          END IF
+          CALL JEVEUO( CHANOM//'.REFE', 'E', JREFE )
+          ZK24(JREFE+1) = NOMPRN(1:19)
+          CALL DETRSD( 'PROF_CHNO', PCHN1)
+        END IF
+        IF (NUMORD.EQ.EDNONO) THEN
+          NUMORD = NUMPT
+        END IF
+        IF(NIS.NE.0)THEN
+          NUMORD = ORDINS
+          ORDINS = ORDINS + 1
+        ENDIF
 
-           CALL LRCHME(CHANOM,NOCHMD,K64B,NOMA,TYPCHA,NOMGD,TYPENT,
-     &                 NBCMPV,NCMPVA,NCMPVM,PROLZ,
-     &                 IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
-     &                 MFICH,LIGREL,OPTION,PARAM,ZI(JNBPGM),ZI(JNBPMM),
-     &                 IRET)
+        CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+        IF (IRET.EQ.100) THEN
+        ELSE IF (IRET.EQ.110) THEN
+          CALL RSAGSD(RESU,0)
+          CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+        ELSE
+          VALK (1) = RESU
+          VALK (2) = CHANOM
+          VALI (1) = ITPS
+          VALI (2) = IRET
+          CALL U2MESG('F','UTILITAI8_27',2,VALK,2,VALI,0,0.D0)
+        END IF
+        CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
+        CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
+        CALL RSADPA(RESU,'E',1,ACCE,NUMORD,0,JINST,K8BID)
 
-C              POUR LES CHAM_NO : POUR ECONOMISER L'ESPACE,
-C              ON ESSAYE DE PARTAGER LE PROF_CHNO DU CHAMP CREE AVEC
-C              LE PROF_CHNO PRECEDENT :
-           IF (TYPCHA.EQ.'NOEU') THEN
-              CALL DISMOI('F','PROF_CHNO',CHANOM,'CHAM_NO',IBID,
-     &                        PCHN1,IER)
-              IF (.NOT.IDENSD('PROF_CHNO',NOMPRN(1:19),PCHN1)) THEN
-                 CALL GNOMSD( NOMPRN,15,19 )
-                 CALL COPISD( 'PROF_CHNO', 'G', PCHN1, NOMPRN )
-              END IF
-              CALL JEVEUO( CHANOM//'.REFE', 'E', JREFE )
-              ZK24(JREFE+1) = NOMPRN(1:19)
-              CALL DETRSD( 'PROF_CHNO', PCHN1)
-           END IF
-           IF (NUMORD.EQ.EDNONO) THEN
-              NUMORD = NUMPT
-           END IF
-           IF(NIS.NE.0)THEN
-              NUMORD = ORDINS
-              ORDINS = ORDINS + 1
-           ENDIF
-
-           CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
-           IF (IRET.EQ.100) THEN
-           ELSE IF (IRET.EQ.110) THEN
-              CALL RSAGSD(RESU,0)
-              CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
-           ELSE
-              VALK (1) = RESU
-              VALK (2) = CHANOM
-              VALI (1) = ITPS
-              VALI (2) = IRET
-              CALL U2MESG('F','UTILITAI8_27',2,VALK,2,VALI,0,0.D0)
-           END IF
-           CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
-           CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
-           CALL RSADPA(RESU,'E',1,ACCE,NUMORD,0,JINST,K8BID)
-
-           IF(NIS.NE.0)THEN
-              ZR(JINST) = INST
-           ELSEIF(NNU.NE.0)THEN
-              ZR(JINST) = ZR(IPAS-1+ITPS0)
-           ELSEIF(NTO.NE.0)THEN
-              ZR(JINST) = ZR(IPAS-1+ITPS)
-           ENDIF
-           CALL DETRSD('CHAMP_GD',CHANOM)
-250         CONTINUE
-        CALL JEDETR('&&OP0150_NBPG_MAILLE')
-        CALL JEDETR('&&OP0150_NBPG_MED')
-        CALL JEDETR(NCMPVA)
-        CALL JEDETR(NCMPVM)
-        CALL JEDETR('&&OP0150_NUMORD_MED')
+        IF(NIS.NE.0)THEN
+          ZR(JINST) = INST
+        ELSEIF(NNU.NE.0)THEN
+          ZR(JINST) = ZR(IPAS-1+ITPS0)
+        ELSEIF(NTO.NE.0)THEN
+          ZR(JINST) = ZR(IPAS-1+ITPS)
+        ENDIF
+        CALL DETRSD('CHAMP_GD',CHANOM)
+250   CONTINUE
+      CALL JEDETR('&&OP0150_NBPG_MAILLE')
+      CALL JEDETR('&&OP0150_NBPG_MED')
+      CALL JEDETR(NCMPVA)
+      CALL JEDETR(NCMPVM)
+      CALL JEDETR('&&OP0150_NUMORD_MED')
 C
       CALL JEDEMA()
 C

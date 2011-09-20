@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,18 +151,14 @@ SYMETRI = AFFE_CHAR_MECA(MODELE=MODELEK,
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
-CHAMDEPL=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHMAT,              
-                   EXCIT=(_F(CHARGE=CHXFEM,),                                        
-                          _F(CHARGE=SYMETRI,),
-                          _F(CHARGE=CHPRES,),
-                         ),  
-                   COMP_ELAS=_F(RELATION='ELAS', GROUP_MA=('STRUCT')),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   INFO=1,);
-
+CHAMDEPL=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=SYMETRI),
+                          _F(CHARGE=CHPRES),
+                          ),
+                   INFO=1,
+                   ); 
                    
 
 # POST-TRAITEMENT

@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1161,83 +1161,8 @@ C          CHAMP D'ENTREE POUR COQUES
   200         CONTINUE
               CALL JEDEMA()
   210       CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTION "SPMX_ELGA"
-C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'SPMX_ELGA') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-              CODSEN=1
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
 
-            CALL GETVTX(' ','NOM_CHAM',1,1,1,NOMCHA,NBVAL)
-            CALL GETVTX(' ','NOM_CMP',1,1,1,NOMCMP,NBVAL)
 
-            DO 230,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,NOMCHA,IORDR,CHBID,OPTION,IRET)
-              IF (IRET.GT.0)GOTO 220
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              Z1Z2(1)='Z1'
-              Z1Z2(2)='Z2'
-              NOMS(1)=NOMCHA
-              NOMS(2)=NOMCMP
-              CHCMP='&&OP0058.ELGA_MAXI'
-              CALL MECACT('V',CHCMP,'MODELE',MODELE,'NEUT_K24',2,Z1Z2,
-     &                    IBID,RBID,CBID,NOMS)
-
-              IF ((NOMCHA.EQ.'SIEF_ELGA') .OR.
-     &            (NOMCHA.EQ.'SIEF_ELGA')) THEN
-                CHSIG=CHBID
-                CHEPS=' '
-                CHSEQ=' '
-                CHEEQ=' '
-                CHVARI=' '
-              ELSEIF (NOMCHA.EQ.'EPSI_ELGA') THEN
-                CHSIG=' '
-                CHEPS=CHBID
-                CHSEQ=' '
-                CHEEQ=' '
-                CHVARI=' '
-              ELSEIF (NOMCHA.EQ.'SIEQ_ELGA') THEN
-                CHSIG=' '
-                CHEPS=' '
-                CHSEQ=CHBID
-                CHEEQ=' '
-                CHVARI=' '
-              ELSEIF (NOMCHA.EQ.'EPEQ_ELGA') THEN
-                CHSIG=' '
-                CHEPS=' '
-                CHSEQ=' '
-                CHEEQ=CHBID
-                CHVARI=' '
-              ELSEIF (NOMCHA.EQ.'VARI_ELGA') THEN
-                CHSIG=' '
-                CHEPS=' '
-                CHSEQ=' '
-                CHEEQ=' '
-                CHVARI=CHBID
-              ENDIF
-
-              CALL MECALC(OPTION,MODELE,K24B,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,CHCMP,K24B,CHSIG,CHEPS,CHSIC,K24B,
-     &                    K24B,ZK8(JCHA),K24B,ZERO,CZERO,K24B,K24B,
-     &                    CHELEM,K24B,LIGREL,BASE,CHSEQ,CHEEQ,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,
-     &                    IRET)
-
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  220         CONTINUE
-              CALL JEDEMA()
-  230       CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTION "SIRO_ELEM"
 C    ------------------------------------------------------------------

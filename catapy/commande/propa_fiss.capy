@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,9 +43,9 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",
                  UIinfo={"groupes":("Post-traitements","Rupture",)},
 
         METHODE_PROPA = SIMP(statut='o',typ='TXM',
-                               into=("SIMPLEXE","UPWIND","MAILLAGE","INITIALISATION") ),
+                               into=("SIMPLEXE","UPWIND","MAILLAGE","INITIALISATION","GEOMETRIQUE") ),
 
-        b_hamilton = BLOC(condition="(METHODE_PROPA=='SIMPLEXE') or (METHODE_PROPA=='UPWIND') ",
+        b_hamilton = BLOC(condition="(METHODE_PROPA=='SIMPLEXE') or (METHODE_PROPA=='UPWIND') or (METHODE_PROPA=='GEOMETRIQUE') ",
               MODELE        = SIMP(statut='o',typ=modele_sdaster),
               TEST_MAIL     = SIMP(statut='f',typ='TXM',into=("NON","OUI",),defaut="NON"),
               DA_MAX        = SIMP(statut='o',typ='R',max=1),

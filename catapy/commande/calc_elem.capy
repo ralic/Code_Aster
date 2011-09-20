@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,13 +109,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                  "ENDO_ELGA","ENDO_ELNO",
                                  "SITQ_ELNO","EPTQ_ELNO",
                               #  autres
-                                 "SPMX_ELGA","PRME_ELNO","VARC_ELGA"),),
-
-#              Les 2 mots cles suivants ne sont utiles qu' a l'option SPMX_ELGA
-#              mais  on est obligé de les laisser ici a cause des blocs
-               NOM_CHAM  =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
-                               fr="nom du champ pour SPMX_ELGA",),
-               NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour SPMX_ELGA",  ),
+                                 "PRME_ELNO","VARC_ELGA"),),
 
                 b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                     RESU_DUAL=SIMP(statut='o',typ=evol_elas,fr="resultat du probleme dual"),),
@@ -161,7 +155,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut='SIEF_ELNO',
                             fr="option de calcul des contraintes ou efforts generalises",
                             into=( "SIEF_ELNO","SIGM_ELNO","SIEF_ELGA","SITU_ELNO",
-                                   "SIPO_ELNO","EFGE_EGA","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
+                                   "SIPO_ELNO","EFGE_ELGA","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
                                    ),),
 
                b_charge =BLOC( condition = "au_moins_un(OPTION, ('SIGM_ELNO','SIEF_ELGA', \
@@ -220,13 +214,8 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
 
           b_autres         =BLOC( condition = "TYPE_OPTION=='AUTRES'",
                   OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("SPMX_ELGA","PRME_ELNO",
+                           into=("PRME_ELNO",),
                                  ) ),
-               b_maxi    =BLOC( condition = "'SPMX_ELGA' in OPTION",
-                    NOM_CHAM  =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
-                                    fr="Nom du champ pour SPMX_ELGA",),
-                    NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),),
-                                 ),
 
           b_indi_erreur        =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERME_ELEM",
@@ -283,15 +272,10 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                                  "ENDO_ELGA","ENDO_ELNO","INDL_ELGA","SING_ELEM",
                                  "SING_ELNO","PDIL_ELGA",
                                  "PMPB_ELNO","PMPB_ELGA","ENEL_ELGA","ENEL_ELNO",
-                                 "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM","SPMX_ELGA",
+                                 "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM",
                                  "DISS_ELGA","DISS_ELNO"),
                                ),
 
-#              Les 2 mots cles suivants ne sont utiles qu' a l'option SPMX_ELGA
-#              mais  on est obligé de les laisser ici a cause des blocs
-               NOM_CHAM  =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
-                               fr="Nom du champ pour SPMX_ELGA",),
-               NOM_CMP   =SIMP(statut='f',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),
 
                b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                     RESU_DUAL=SIMP(statut='o',typ=(evol_elas,evol_noli),fr="resultat du probleme dual"),),
@@ -393,14 +377,6 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                                  ) ),
                                  ),
 
-          b_autres         =BLOC( condition = "TYPE_OPTION=='AUTRES'",
-                  OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("SPMX_ELGA",) ),
-               b_maxi    =BLOC( condition = "'SPMX_ELGA' in OPTION",
-                    NOM_CHAM  =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
-                                    fr="Nom du champ pour SPMX_ELGA",),
-                    NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),),
-                                 ),
 
           b_indi_erreur         =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERME_ELEM",

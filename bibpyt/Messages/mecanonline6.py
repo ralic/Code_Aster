@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline6 Messages  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,7 +106,8 @@ cata_msg = {
 37 : _("""
   Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
  """),
-
-
+38 : _("""
+ <Erreur> Echec dans le traitement de la collision.
+"""),
 
 }

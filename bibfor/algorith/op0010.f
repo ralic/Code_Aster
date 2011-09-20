@@ -1,7 +1,7 @@
       SUBROUTINE OP0010()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
       CHARACTER*16   K16BID,TYPDIS
       CHARACTER*19   CNSVT,CNSVN,GRLT,GRLN,CNSLT,CNSLN,CNSEN,
      &               CNSENR,NOESOM,ISOZRO,NORESI,CNXINV,CNSBL,CNSDIS,
-     &               CNSLJ
+     &               CNSLJ,VPOINT
       CHARACTER*24   LISMAE,LISNOE,VCN,GRLR,VCNT,GRLRT
       REAL*8         MESERR(3)
       CHARACTER*8    TEST
@@ -71,6 +71,7 @@ C     MESSAGES
 C     CRACK ADVANCEMENT
       REAL*8         DAMAX,DTTOT,VMAX,RAYON,DAFISS,BMAX
       CHARACTER*24   VVIT,VBETA
+      CHARACTER*19   CNSBET,LISTP
       INTEGER        JBETA
 
 C     LEVELSET AUXILIARY MESH
@@ -412,12 +413,15 @@ C-----------------------------------------------------------------------
 
       CNSVT='&&OP0010.CNSVT'
       CNSVN='&&OP0010.CNSVN'
+      VPOINT='&&OP0010.VPOINT'
+      CNSBET='&&OP0010.CNSBET'
+      LISTP='&&OP0010.LISTP'
       DISFR='&&OP0010.DISFR'
       CNSBL='&&OP0010.CNSBL'
       CNSDIS='&&OP0010.CNSDIS'
 
-      CALL XPRVIT(DNOMA,FISPRE,NDIM,VVIT,VBETA,LCMIN,CNSVT,CNSVN,CNSBL,
-     &            CNSDIS,DISFR)
+      CALL XPRVIT(DNOMA,FISPRE,NDIM,VVIT,VBETA,LCMIN,CNSVT,CNSVN,VPOINT,
+     &            CNSBL,CNSDIS,DISFR,CNSBET,LISTP)
 
 C-----------------------------------------------------------------------
 C     DOMAINS USED FOR THE RESTRICTION AND FOR THE PROJECTION
@@ -531,20 +535,28 @@ C-----------------------------------------------------------------------
 C     AJUSTEMENT DE VT
 C-----------------------------------------------------------------------
 
-      IF (NIV.GE.0) THEN
-         WRITE(IFM,*)
-         WRITE(IFM,*)'OP0010-3) AJUSTEMENT DU CHAMP DES VITESSES VN'
-         WRITE(IFM,903)
-      ENDIF
+      IF (METHOD.NE.'GEOMETRI') THEN
 
-      CALL XPRAJU(DNOMA,FISS,DCNSLT,CNSVT,CNSVN,DTTOT,VMAX)
+         IF (NIV.GE.0) THEN
+            WRITE(IFM,*)
+            WRITE(IFM,*)'OP0010-3) AJUSTEMENT DU CHAMP DES VITESSES VN'
+            WRITE(IFM,903)
+         ENDIF
+
+         CALL XPRAJU(DNOMA,FISS,DCNSLT,CNSVT,CNSVN,DTTOT,VMAX)
+
+      ENDIF
 
 C-----------------------------------------------------------------------
 C     PROPAGATION DES LEVEL SETS
 C-----------------------------------------------------------------------
       IF (NIV.GE.0) THEN
          WRITE(IFM,*)
-         WRITE(IFM,*)'OP0010-4) PROPAGATION DES LEVEL SETS'
+         IF (METHOD.EQ.'GEOMETRI') THEN
+            WRITE(IFM,*)'OP0010-3) MISE A JOUR DES LEVEL SETS'
+         ELSE
+            WRITE(IFM,*)'OP0010-4) PROPAGATION DES LEVEL SETS'
+         ENDIF
          WRITE(IFM,904)
 
 C        WRITE SOME INFORMATIONS
@@ -554,8 +566,17 @@ C        WRITE SOME INFORMATIONS
      &               ,DTTOT
       ENDIF
 
+      IF (METHOD.EQ.'GEOMETRI') THEN
+         WRITE(IFM,*)'   '
+         WRITE(IFM,*)'   UTILISATION DE LA METHODE GEOMETRIQUE.'
+         CALL XPRGEO(DNOMA,DCNSLN,DCNSLT,DGRLN,DGRLT,VPOINT,CNSBL,DTTOT,
+     &               NODTOR,LIGGRD,CNSBET,LISTP)
+         GOTO 1000
+      ENDIF
+
       CALL XPRLS(DNOMA,DCNSLN,DCNSLT,DGRLN,DGRLT,CNSVN,CNSVT,
      &           CNSBL,DTTOT,NODTOR,ELETOR,LIGGRD)
+
 
       CALL JEDETR(CNSVT)
       CALL JEDETR(CNSVN)
@@ -633,9 +654,10 @@ C "ELSE" AVOIDED IN ORDER TO LEAVE ROOM FOR A FUTURE METHOD
      &                DELTAT,NORESI,ISOZRO,NODTOR,ELETOR,LIGGRD)
       ENDIF
 
+      CALL JEDETR(ISOZRO)
+1000  CONTINUE
       CALL JEDETR(VVIT)
       CALL JEDETR(VBETA)
-      CALL JEDETR(ISOZRO)
       CALL JEDETR(NOESOM)
       IF (METHOD(1:6).EQ.'UPWIND') THEN
          IF (.NOT.GRILLE) THEN
@@ -651,7 +673,9 @@ C "ELSE" AVOIDED IN ORDER TO LEAVE ROOM FOR A FUTURE METHOD
       CALL JEDETR(NODTOR)
       CALL JEDETR(ELETOR)
       CALL JEDETR(LIGGRD)
-
+      CALL JEDETR(VPOINT)
+      CALL JEDETR(CNSBET)
+      CALL JEDETR(LISTP)
 
 C-----------------------------------------------------------------------
 C     THE NEW VALUES OF THE LEVELSETS FOR THE AUXILIARY MESH (TWO GRIDS
@@ -684,7 +708,11 @@ C     REAJUSTEMENT DES LEVEL SETS TROP PROCHES DE 0
 C-----------------------------------------------------------------------
       IF (NIV.GE.0) THEN
          WRITE(IFM,*)
-         WRITE(IFM,*)'OP0010-8) ENRICHISSEMENT DE LA SD FISS_XFEM'
+         IF (METHOD.EQ.'GEOMETRI') THEN
+            WRITE(IFM,*)'OP0010-4) ENRICHISSEMENT DE LA SD FISS_XFEM'
+         ELSE
+            WRITE(IFM,*)'OP0010-8) ENRICHISSEMENT DE LA SD FISS_XFEM'
+         ENDIF
          WRITE(IFM,908)
       ENDIF
 

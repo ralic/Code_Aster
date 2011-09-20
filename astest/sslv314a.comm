@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314a.para = tps_job 230 mem_job 1024Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,17 +116,10 @@ for i in range(nbcalc) :
 
    CHXFEM[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],LIAISON_XFEM='OUI',INFO=1,);
 
-   RESU[i]=STAT_NON_LINE(MODELE=MODELX[i],
+   RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(_F(CHARGE=CHXFEM[i],),
                                 _F(CHARGE=CH,),),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      GROUP_MA='VOL',),
-                         INCREMENT=_F(LIST_INST=L_INS1,
-                                      INST_FIN=1.0,),
-#                         SOLVEUR=_F(METHODE='MUMPS',),
-                         NEWTON=_F(REAC_ITER=1,),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          INFO=1,);
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],

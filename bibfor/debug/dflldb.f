@@ -1,7 +1,7 @@
       SUBROUTINE DFLLDB(SDLIST,IFM  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -156,39 +156,7 @@ C
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.1.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... DECOUPE DU PAS'//
      &                   ' DE TEMPS'
-            IF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.1.D0) THEN
-              WRITE(IFM,*) '<DEFILISTINST> ......... MANUEL'
-              WRITE(IFM,*) '<DEFILISTINST> ............ NBRE DE'//
-     &                   ' SUBDIVISIONS DEMANDEES',
-     &                   NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+2))
-              IF (NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+4)).EQ.0) THEN
-                WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE PAS '//
-     &                       ' VAUT MOINS DE : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+3) 
-              ELSE
-                WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE NIVEAU'//
-     &                       ' DE SUBDIVISION VAUT: ',
-     &                       NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+4))
-              ENDIF
-            ELSEIF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.2.D0) THEN
-              WRITE(IFM,*) '<DEFILISTINST> ......... AUTOMATIQUE'
-              WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE PAS '//
-     &                       ' VAUT MOINS DE : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+3)
-              
-              IF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.4.D0) THEN
-                WRITE(IFM,*) '<DEFILISTINST> ............ PRECISION '//
-     &                       ' DE LA COLLISION : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+5)
-                WRITE(IFM,*) '<DEFILISTINST> ............ DUREE '//
-     &                       ' DE LA COLLISION : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+6)
-              ENDIF
-            ENDIF
-     
+            CALL DFLLD2(SDLIST,IFM  ,IECHEC)
      
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.2.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... AUGMENTATION'//
@@ -206,38 +174,14 @@ C
             ELSEIF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.1.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... EN'//
      &                     ' PERMETTANT UN DECOUPAGE EN CAS D''ECHEC'
-              WRITE(IFM,*) '<DEFILISTINST> ......... MANUEL'
-              WRITE(IFM,*) '<DEFILISTINST> ............ NBRE DE'//
-     &                   ' SUBDIVISIONS DEMANDEES',
-     &                   NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+2))
-              IF (NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+5)).EQ.0) THEN
-                WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE PAS '//
-     &                       ' VAUT MOINS DE : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+3) 
-              ELSE
-                WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE NIVEAU'//
-     &                       ' DE SUBDIVISION VAUT: ',
-     &                       NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+4))
-              ENDIF
+              CALL DFLLD2(SDLIST,IFM  ,IECHEC)
+              
             ELSEIF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.2.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... EN'//
      &                     ' PERMETTANT UN DECOUPAGE EN CAS D''ECHEC'
-              WRITE(IFM,*) '<DEFILISTINST> ......... AUTOMATIQUE'
-              WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE PAS '//
-     &                       ' VAUT MOINS DE : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+3)
-              
-              IF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.4.D0) THEN
-                WRITE(IFM,*) '<DEFILISTINST> ............ PRECISION '//
-     &                       ' DE LA COLLISION : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+5)
-                WRITE(IFM,*) '<DEFILISTINST> ............ DUREE '//
-     &                       ' DE LA COLLISION : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+6)
-              ENDIF
+              CALL DFLLD2(SDLIST,IFM  ,IECHEC)
+            ELSE
+              CALL ASSERT(.FALSE.)
             ENDIF     
      
               
@@ -252,28 +196,14 @@ C
             ELSEIF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.1.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... EN'//
      &                     ' PERMETTANT UN DECOUPAGE EN CAS D''ECHEC'
-              WRITE(IFM,*) '<DEFILISTINST> ......... MANUEL'
-              WRITE(IFM,*) '<DEFILISTINST> ............ NBRE DE'//
-     &                   ' SUBDIVISIONS DEMANDEES',
-     &                   NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+2))
-              IF (NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+5)).EQ.0) THEN
-                WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE PAS '//
-     &                       ' VAUT MOINS DE : ',
-     &                        ZR(JESUR-1+LESUR*(IECHEC-1)+3) 
-              ELSE
-                WRITE(IFM,*) '<DEFILISTINST> ............ ARRET '//
-     &                       ' DE LA SUBDIVISION QUAND LE NIVEAU'//
-     &                       ' DE SUBDIVISION VAUT: ',
-     &                       NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+4))
-              ENDIF
+              CALL DFLLD2(SDLIST,IFM  ,IECHEC)
             ENDIF     
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.4.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... ADAPTATION'//
      &                   ' DU COEFFICIENT DE PENALISATION'
             WRITE(IFM,*) '<DEFILISTINST> ......... EN'//
-     &                   ' PERMETTANT UN COEF. MULT. MAXI DE: ',
-     &                   NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+8))
+     &                   ' PERMETTANT UN COEF. MAXI DE: ',
+     &                   ZR(JESUR-1+LESUR*(IECHEC-1)+8)
           
           ELSE
             CALL ASSERT(.FALSE.)  

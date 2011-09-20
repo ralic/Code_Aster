@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,32 +191,22 @@ CHF3=AFFE_CHAR_MECA_F(MODELE=MODELEK,
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
-UTOT2=STAT_NON_LINE(MODELE=MODELEK,
+UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
+                   EXCIT=(_F(CHARGE=CHXFEM),
                           _F(CHARGE=CHF2),
-                          _F(CHARGE=CHBLO),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
-UTOT3=STAT_NON_LINE(MODELE=MODELEK,
+                          _F(CHARGE=CHBLO),
+                          ),
+                   INFO=1,
+                   ); 
+UTOT3=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
+                   EXCIT=(_F(CHARGE=CHXFEM),
                           _F(CHARGE=CHF3),
-                          _F(CHARGE=CHBLO),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                          _F(CHARGE=CHBLO),
+                          ),
+                   INFO=1,
+                   ); 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------

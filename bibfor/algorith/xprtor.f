@@ -11,7 +11,7 @@
       REAL*8         RADTOR,RADIMP
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -473,22 +473,35 @@ C        ***********************************************************
 C        CALCULATE THE NEW LEVEL SETS FOR EACH NODE IF NECESSARY
 C        ***********************************************************
 
-C        ELABORATE EACH NODE OF THE GRID
-         DO 2000 I=1,NNODGR
+C        IF THE CHOSEN METHOD FOR CRACK PROPAGATION IS THE GEOMETRICAL
+C        ONE, I NEED TO FILL IN ONLY THE JLISNO VECTOR: I DON NEED TO
+C        CALCULATE THE NEW LEVEL SETS VALUES AT THE NEW POINTS ADDED
+C        TO THE DOMAIN 
+         IF (METHOD.EQ.'GEOMETRI') THEN
 
-            IF (ZL(JLISNO-1+I)) THEN
+C           ELABORATE EACH NODE OF THE GRID
+            DO 2001 I=1,NNODGR
+               IF (ZL(JLISNO-1+I)) NNODTO=NNODTO+1
+2001        CONTINUE
 
-C              CHECK IF THE LEVEL SET MUST BE CALCULATED FOR THIS NODE
-               IF (.NOT.ZL(JLISOL-1+I)) THEN
+         ELSE
 
-C                 YES, THE LEVEL SET VALUE MUST BE UPDATED
-                  ZR(JLSN-1+I) = 0.D0
-                  ZR(JLST-1+I) = 0.D0
+C           ELABORATE EACH NODE OF THE GRID
+            DO 2000 I=1,NNODGR
 
-C                 CALCULATE THE NORMAL AND TANGENTIAL DISTANCES AS
-C                 A SCALAR PRODUCT BETWEEN THE DISTANCE VECTOR AND THE
-C                 AXIS OF THE LOCAL BASE IN THE NODE
-                  DO 2500 J=1,NDIM
+               IF (ZL(JLISNO-1+I)) THEN
+
+C                CHECK IF THE LEVEL SET MUST BE CALCULATED FOR THIS NODE
+                  IF (.NOT.ZL(JLISOL-1+I)) THEN
+
+C                    YES, THE LEVEL SET VALUE MUST BE UPDATED
+                     ZR(JLSN-1+I) = 0.D0
+                     ZR(JLST-1+I) = 0.D0
+
+C                    CALCULATE THE NORMAL AND TANGENTIAL DISTANCES AS
+C                    A SCALAR PRODUCT BETWEEN THE DISTANCE VECTOR AND
+C                    THE AXIS OF THE LOCAL BASE IN THE NODE
+                     DO 2500 J=1,NDIM
 
                      ZR(JLSN-1+I)=ZR(JLSN-1+I)+ZR(JDISV-1+NDIM*(I-1)+J)*
      &               ZR(JBL-1+2*NDIM*(I-1)+J)
@@ -496,16 +509,18 @@ C                 AXIS OF THE LOCAL BASE IN THE NODE
                      ZR(JLST-1+I)=ZR(JLST-1+I)+ZR(JDISV-1+NDIM*(I-1)+J)*
      &               ZR(JBL-1+2*NDIM*(I-1)+J+NDIM)
 
-2500              CONTINUE
+2500                 CONTINUE
+
+                  ENDIF
+
+C                 INCREMENT THE COUNTER FOR THE NODES IN THE TORUS
+                  NNODTO = NNODTO+1
 
                ENDIF
 
-C              INCREMENT THE COUNTER FOR THE NODES IN THE TORUS
-               NNODTO = NNODTO+1
+2000        CONTINUE
 
-            ENDIF
-
-2000     CONTINUE
+         ENDIF
 
 C        ***********************************************************
 C        - CREATE THE LIST OF THE NUMBER OF THE NODES IN THE TORUS

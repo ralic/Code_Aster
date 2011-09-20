@@ -1,6 +1,6 @@
       SUBROUTINE  CALLIS (NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 20/09/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,11 @@ C
       LOGICAL          ZL
       COMMON  /LVARJE/ ZL(1)
       CHARACTER*8      ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                            ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)     
 C
       CHARACTER*32 JEXNOM, JEXNUM
 C
@@ -69,7 +69,7 @@ C
      &               IBID,NBNO1,NBNO2,IER,LLINT1,LLINT2,
      &               IINC,IREP11,IREP12,IREP21,IREP22,IOPT,
      &               NBEQ1,NBEQ2,DDLA1,DDLA2,IMAST,NBCOL
-      INTEGER        TAILLE(2)
+      INTEGER        TAILLE(2),ICAR(4)
       REAL*8         UN,MOINS1
 
 C
@@ -86,7 +86,6 @@ C--------------NOMRES EST LE NOM DU MODELE GENERALISE
       FMLIA=NOMRES//'      .MODG.LIMA'
       PROMLI=NOMRES//'      .MODG.LIPR'
       MATPRJ='MATPROJ '
-
 C
 C  MINI-PROFNO DES LIAISON ORIENTEES ET NON ORIENTEE
 C
@@ -226,13 +225,17 @@ C       On teste si la liaison est incompatible
             NBLIG=ZI(LDPMLI+(I-1)*9)
           ENDIF                
 C
-C
 C  MATRICE LAGRANGE-LAGRANGE
 C
           IAD=LDPMLI+(I-1)*9+6
           ZI(IAD)=NBLIG
           ZI(IAD+1)=2
           ZI(IAD+2)=NBBLOC+1
+          ICAR(1)=ZI(IAD)
+          ICAR(2)=ZI(IAD+1)
+          ICAR(3)=ZI(IAD+2)
+          ICAR(4)=1
+          
           NBBLOC=NBBLOC+1   
           
 C-------------------------DETERMINATION MATRICES ORIENTEES--------------
@@ -268,9 +271,8 @@ C
 C  MATRICE LAGRANGE-LAGRANGE
 C
           IAD=LDPMLI+(I-1)*9+6
-          CALL INILAG(FMLIA,ZI(IAD))
-C
-
+          CALL INILAG(FMLIA,ICAR)
+          
 C--------------------------------------------------C
 C--                                              --C
 C-- INTERFACES DEFINIES AVEC DES DDL GENERALISES --C
@@ -287,13 +289,15 @@ C       QG1 / QG2 : DDL GENERALISES
 C
 C   ON ASSURE DONC LA CONTINUITE DANS LE 
 C   SOUS ESPACE ENGENDRE PAR PHI1 OU PAR PHI2. 
-C   ON CHOISI ICI PHI1, QUI ESY LA SOUS STRUTURE MAITRE
+C   ON CHOISI ICI LA SOUS STRUTURE ESCLAVE (PAR EX. PHI1)
 C   ON CONSTRUIT DONC LA RELATION LG1.QG1+LG2.QG2=0, SOIT
 C   PHI1^T(L1.PHI1).QC1 + PHI1^T(L2.PHI2).QC2=0
 C
 C   CETTE RELATION NE PERMET DONC PAS UN RECOLLEMNT PARFAIT
 C   A L'INTERFACE, EN PARTICULIER SI PHI1 ET PHI2 SONT TRES
-C   DIFFERENTES
+C   DIFFERENTES. DANS CE CAS, ON VERIFIE LE RANG DE PHI1^T(L2.PHI2)
+C   ET ON FILTRE LES RELATIONS MAL PROJETEES, EN AVERTISSANT 
+C   L'UTILISATEUR
 
         ELSEIF (OPTION(1:6).EQ.'REDUIT') THEN
           
@@ -318,18 +322,18 @@ C          ENDIF
 C-- SOUS STRUCTURE 1
           LINO1='&&VECT_NOEUD_INTERF1'
           INDIN1='&&VECT_IND_DDL_INTERF1'
-          TRAMO1='&&MATR_TRACE_MODE_INT1'
+          TRAMO1='&&MATR_TRACE_MODE_INT1  '
 
           CALL ROTLIR(NOMRES,SST1,INTF1,LINO1,0,INDIN1,
-     &                TRAMO1,DDLA1,NBEQ1,IMAST)
+     &                TRAMO1,DDLA1,NBEQ1,1,I)
 
 C-- SOUS STRUCTURE 2
           LINO2='&&VECT_NOEUD_INTERF2'
           INDIN2='&&VECT_IND_DDL_INTERF2'
-          TRAMO2='&&MATR_TRACE_MODE_INT2'
+          TRAMO2='&&MATR_TRACE_MODE_INT2  '
 
-          CALL ROTLIR(NOMRES,SST2,INTF2,LINO2,I*IRET,INDIN2,
-     &                TRAMO2,DDLA2,NBEQ2,IMAST)
+          CALL ROTLIR(NOMRES,SST2,INTF2,LINO2,IRET,INDIN2,
+     &                TRAMO2,DDLA2,NBEQ2,2,I)
 
 C----------------------------------------C
 C--                                    --C
@@ -389,9 +393,10 @@ C-------------------------------------------------------------------C
      &                   TRAMO2,DDLA2,NBEQ2,TAILLE,INDCOL,NBCOL)
             ZI(IAD)=TAILLE(1)
             ZI(IAD+1)=TAILLE(2)
-     
             NBLIG=TAILLE(1)
+            
           ELSE
+          
             IAD=LDPMLI+(I-1)*9
             NBBLOC=NBBLOC+1
             ZI(IAD+2)=NBBLOC
@@ -399,7 +404,7 @@ C-------------------------------------------------------------------C
      &                   TRAMO1,DDLA1,NBEQ1,TAILLE,INDCOL,NBCOL)
             ZI(IAD)=TAILLE(1)
             ZI(IAD+1)=TAILLE(2)
-        
+
             IAD=LDPMLI+(I-1)*9+3
             NBBLOC=NBBLOC+1
             ZI(IAD+2)=NBBLOC        
@@ -409,8 +414,9 @@ C-------------------------------------------------------------------C
             ZI(IAD+1)=TAILLE(2)
      
             NBLIG=TAILLE(1)
+            
           ENDIF
-                
+                          
           CALL JEDETR(INDCOL)
 C
 C  MATRICE LAGRANGE-LAGRANGE
@@ -420,7 +426,11 @@ C
           ZI(IAD+1)=2
           ZI(IAD+2)=NBBLOC+1
           NBBLOC=NBBLOC+1
-          CALL INILAG(FMLIA,ZI(IAD))
+          ICAR(1)=ZI(IAD)
+          ICAR(2)=ZI(IAD+1)
+          ICAR(3)=ZI(IAD+2)
+          ICAR(4)=IMAST
+          CALL INILAG(FMLIA,ICAR)
                     
 C-- DESTRUCTION DES CONCEPTS TEMPORAIRES
           
@@ -442,7 +452,6 @@ C
       CALL JEDETR(FPLI2O)
       CALL JEDETR(FPLI1N)
       CALL JEDETR(FPLI2N)
-
 C
       CALL JEDEMA()
       END

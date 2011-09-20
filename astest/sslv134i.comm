@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,21 +74,11 @@ MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            MATER=MA,),);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
-
-                   
-RESU=STAT_NON_LINE(MODELE=MODEX,
+RESU=MECA_STATIQUE(MODELE=MODEX,
                    CHAM_MATER=MATE,
-                   EXCIT=_F(CHARGE=CHAR,), 
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='FACE',),
-                   INCREMENT=_F(LIST_INST=L_INST),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   );
-
+                   EXCIT=(_F(CHARGE=CHAR),
+                            ),
+                   ); 
 # IMPR_RESU(RESU=_F(RESULTAT=RESU,),);
 
 
@@ -190,18 +180,12 @@ CHAR_ROT= AFFE_CHAR_MECA(MODELE=MODEX,
                     );                         
                           
                                                
-RESU_ROT=STAT_NON_LINE(MODELE=MODEX,
+RESU_ROT=MECA_STATIQUE(MODELE=MODEX,
                    CHAM_MATER=MATE,
-                   EXCIT=_F(CHARGE=CHAR_ROT,), 
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='FACE',),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                ),
-                   CONVERGENCE = _F(ITER_GLOB_MAXI = 100,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
-
+                   EXCIT=(_F(CHARGE=CHAR_ROT),
+                            ),
+                   INFO=1,
+                   ); 
 
 MA_XROT=POST_MAIL_XFEM(MODELE        = MODEX);
  

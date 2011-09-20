@@ -1,7 +1,7 @@
       SUBROUTINE W155CH(CHIN,CARELE,LIGREL,CHEXTR,MOTFAC,NUCOU,NICOU,
      &                  NANGL,NUFIB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,11 +60,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 LINUMA,LINUTE
       CHARACTER*19 CES1,CES2,CES3,CES4,CES5
       CHARACTER*16 OPTION
-      CHARACTER*8 KBID,LICMP(5),MA,NOMGD,PARAM,TSCA,TYPCES
+      CHARACTER*8 KBID,LICMP(5),MA,NOMGD,TSCA,TYPCES
       CHARACTER*8 NOMPAR
-      INTEGER N1,IRET,IEXI,NBMA,IBID,NBMAT,NUMA,JNBPT,KMA
+      INTEGER IRET,NBMA,IBID,NBMAT,NUMA,JNBPT,KMA
       INTEGER NBPT,KSP1,KSP2,KPT,KCMP,NNCP,JLITE
-      INTEGER IAD1,IAD2,IAD3,IAD4,JLIMA,NCMP
+      INTEGER IAD1,IAD2,IAD4,JLIMA,NCMP
       INTEGER JCE2L,JCE2D,JCE2V,JCE3K,JCE3L,JCE3D,JCE3V,JCE3C
       INTEGER JCE4L,JCE4D,JCE4V,JCE5L,JCE5D,JCE5V,NBSPMX
       REAL*8 C1,C2
@@ -78,6 +78,11 @@ C ----------------------------------------------------------------------
       IF (NBSPMX.LE.1) CALL U2MESS('F','CALCULEL2_15')
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMAT,KBID,IRET)
 
+      CES1='&&W155CH.CES1'
+      CES2='&&W155CH.CES2'
+      CES3='&&W155CH.CES3'
+      CES4='&&W155CH.CES4'
+      CES5='&&W155CH.CES5'
 
 C     1.  LISTE DES MAILLES A TRAITER :
 C     ---------------------------------
@@ -91,8 +96,6 @@ C     ---------------------------------
 
 C     2.  NOMBRE DE COUCHES, SECTEURS ET FIBRES  DES ELEMENTS :
 C     -----------------------------------------------------------
-      CES1='&&W155CH.CES1'
-      CES2='&&W155CH.CES2'
       CALL CELCES(CARELE//'.CANBSP','V',CES1)
 
 C     -- L'ORDRE DES CMPS EST IPORTANT (UTILISE DANS W155MA)
@@ -111,8 +114,6 @@ C     -- L'ORDRE DES CMPS EST IPORTANT (UTILISE DANS W155MA)
 C     2-BIS  VALEUR DE OMEGA (ANGZZK) POUR LES TUYAUX :
 C     -----------------------------------------------------------
       IF (MOTFAC.EQ.'EXTR_TUYAU') THEN
-        CES1='&&W155CH.CES1'
-        CES5='&&W155CH.CES5'
         CALL CARCES(CARELE//'.CARORIEN','ELEM',' ','V',CES1,IRET)
         CALL ASSERT(IRET.EQ.0)
         LICMP(1)='ANGZZK'
@@ -130,7 +131,6 @@ C     -----------------------------------------------------------
 
 C     3. CHIN -> CES3 :
 C     ------------------
-      CES3='&&W155CH.CES3'
       CALL CELCES(CHIN,'V',CES3)
       CALL JEVEUO(CES3//'.CESK','L',JCE3K)
       CALL JEVEUO(CES3//'.CESD','L',JCE3D)
@@ -149,7 +149,6 @@ C     ------------------
 
 C     4. ALLOCATION ET CALCUL DE CHEXTR :
 C     ------------------------------------
-      CES4='&&W155CH.CES4'
       CALL CESCRE('V',CES4,TYPCES,MA,NOMGD,NCMP,ZK8(JCE3C),ZI(JNBPT),-1,
      &            -NCMP)
       CALL JEVEUO(CES4//'.CESD','L',JCE4D)

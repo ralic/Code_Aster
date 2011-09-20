@@ -1,8 +1,8 @@
-#@ MODIF E_Exception Execution  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Exception Execution  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -87,6 +87,8 @@ class ArretCPUError(error):
 class PilotageError(error):
     """Echec du pilotage"""
 
+class CollisionError(error):
+    """Echec de la détection de la collision"""
 
 class ExceptionsStore(object):
     """Class to store the exceptions of 'aster' module.
@@ -131,6 +133,7 @@ ST.register(26, "TraitementContactError", TraitementContactError)
 ST.register(27, "MatriceContactSinguliereError", MatriceContactSinguliereError)
 ST.register(28, "ArretCPUError", ArretCPUError)
 ST.register(29, "PilotageError", PilotageError)
+ST.register(30, "CollisionError", CollisionError)
 
 def add_to_dict_module(dictmodule):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""

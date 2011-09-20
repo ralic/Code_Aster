@@ -1,7 +1,7 @@
       SUBROUTINE NMERGE(SDERRO,QUESTI,TYPERR,VALUEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,6 +49,8 @@ C               'ALL' - AU MOINS UNE DE CES ERREUR
 C               'TIN' - TEMPS CPU BCLE. NEWTON INSUFFISANT
 C               'TIP' - TEMPS CPU BCLE. TEMPS INSUFFISANT
 C               'ITX' - MAXIMUM ITERATION DE NEWTON
+C               'CCC' - ERR. CONTACT COLLISION
+C               'CCP' - ERR. CONTACT PENETRATION
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -93,21 +95,28 @@ C
           VALUEL = ZL(JECOD+4-1)
         ELSEIF (TYPERR.EQ.'CC2') THEN
           VALUEL = ZL(JECOD+5-1)
+        ELSEIF (TYPERR.EQ.'CCC') THEN
+          VALUEL = ZL(JECOD+6-1)
+        ELSEIF (TYPERR.EQ.'CCP') THEN
+          VALUEL = ZL(JECOD+7-1)           
+C
+        ELSEIF (TYPERR.EQ.'TIN') THEN
+          VALUEL = ZL(JECOD+8-1)
+        ELSEIF (TYPERR.EQ.'TIP') THEN
+          VALUEL = ZL(JECOD+9-1)
+        ELSEIF (TYPERR.EQ.'ITX') THEN
+          VALUEL = ZL(JECOD+10-1)
+C
         ELSEIF (TYPERR.EQ.'ALL') THEN
           VALUEL = .FALSE.
-          DO 10 I=1,5
+          DO 10 I = 1,7
             VALUEL = VALUEL.OR.ZL(JECOD+I-1)
- 10       CONTINUE
-        ELSEIF (TYPERR.EQ.'TIN') THEN
-          VALUEL = ZL(JECOD+6-1)
-        ELSEIF (TYPERR.EQ.'TIP') THEN
-          VALUEL = ZL(JECOD+7-1)
-        ELSEIF (TYPERR.EQ.'ITX') THEN
-          VALUEL = ZL(JECOD+8-1)  
+ 10       CONTINUE 
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF                            
-      ELSEIF (QUESTI.EQ.'SET') THEN  
+        ENDIF
+C                            
+      ELSEIF (QUESTI.EQ.'SET') THEN
         IF (TYPERR.EQ.'LDC') THEN
           ZL(JECOD+1-1) = VALUEL
         ELSEIF (TYPERR.EQ.'PIL') THEN
@@ -118,19 +127,26 @@ C
           ZL(JECOD+4-1) = VALUEL
         ELSEIF (TYPERR.EQ.'CC2') THEN
           ZL(JECOD+5-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'TIN') THEN
+        ELSEIF (TYPERR.EQ.'CCC') THEN
           ZL(JECOD+6-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'TIP') THEN
-          ZL(JECOD+7-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'ITX') THEN
+        ELSEIF (TYPERR.EQ.'CCP') THEN
+          ZL(JECOD+7-1) = VALUEL  
+C        
+        ELSEIF (TYPERR.EQ.'TIN') THEN
           ZL(JECOD+8-1) = VALUEL
+        ELSEIF (TYPERR.EQ.'TIP') THEN
+          ZL(JECOD+9-1) = VALUEL
+        ELSEIF (TYPERR.EQ.'ITX') THEN
+          ZL(JECOD+10-1) = VALUEL
+C
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
+C
       ELSEIF (QUESTI.EQ.'INI') THEN
-          DO 15 I=1,9
-            ZL(JECOD+I-1) = .FALSE.
- 15       CONTINUE               
+        DO 15 I=1,10
+          ZL(JECOD+I-1) = .FALSE.
+ 15     CONTINUE               
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
