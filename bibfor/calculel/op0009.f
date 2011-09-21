@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
@@ -50,6 +50,7 @@ C     ------------------------------------------------------------------
       INTEGER NCHAR, N1,JRECC,N2,N3,N4,IER,N5,NH,N6,NCHA,ICHA
       INTEGER IBID,NBRESU,JRELR,IRESU,IEXI,N7
       COMPLEX*16 C16B
+      INTEGER      IARG
       DATA NOMCMP/'INST    ','DELTAT  ','THETA   ','KHI     ',
      &     'R       ','RHO     '/
       DATA TPS/0.D0,2*1.D0,3*0.D0/
@@ -64,22 +65,22 @@ C DEB ------------------------------------------------------------------
       RIGI8 = ' '
       MASS8 = ' '
       SIGG = ' '
-      CALL GETVID(' ','RIGI_MECA',0,1,1,RIGI8,N1)
+      CALL GETVID(' ','RIGI_MECA',0,IARG,1,RIGI8,N1)
       RIGIEL=RIGI8
-      CALL GETVID(' ','MASS_MECA',0,1,1,MASS8,N2)
+      CALL GETVID(' ','MASS_MECA',0,IARG,1,MASS8,N2)
       MASSEL=MASS8
-      CALL GETVTX(' ','OPTION',0,1,1,SUROPT,N3)
-      CALL GETVID(' ','SIEF_ELGA',0,1,1,SIGG,N4)
+      CALL GETVTX(' ','OPTION',0,IARG,1,SUROPT,N3)
+      CALL GETVID(' ','SIEF_ELGA',0,IARG,1,SIGG,N4)
       IF(N4.NE.0)THEN
         CALL CHPVER('F',SIGG,'ELGA','SIEF_R',IER)
       ENDIF
-      CALL GETVID(' ','STRX_ELGA',0,1,1,STRX,N7)
+      CALL GETVID(' ','STRX_ELGA',0,IARG,1,STRX,N7)
       IF(N7.NE.0)THEN
         CALL CHPVER('F',STRX,'ELGA','STRX_R',IER)
       ENDIF
-      CALL GETVR8(' ','INST',0,1,1,TIME,N5)
+      CALL GETVR8(' ','INST',0,IARG,1,TIME,N5)
       IF (N5.EQ.0) TIME = 0.D0
-      CALL GETVIS(' ','MODE_FOURIER',0,1,1,NH,N6)
+      CALL GETVIS(' ','MODE_FOURIER',0,IARG,1,NH,N6)
       KCHA = '&&OP0009.CHARGES'
       CALL MEDOME(MODELE,MATE,CARA,KCHA,NCHA,CTYP,BLAN8)
 C POUR LES MULTIFIBRES ON SE SERT DE COMPOR
@@ -164,11 +165,11 @@ C        COMPOR = ' '
 
 C     -- CREATION DE L'OBJET .RECC :
 C     ------------------------------
-      CALL GETVID(' ','CHARGE',0,1,0,KBID,N1)
+      CALL GETVID(' ','CHARGE',0,IARG,0,KBID,N1)
       IF (N1.LT.0) THEN
         NCHAR=-N1
         CALL WKVECT(MATEL//'.RECC','G V K8',NCHAR,JRECC)
-        CALL GETVID(' ','CHARGE',0,1,NCHAR,ZK8(JRECC),N1)
+        CALL GETVID(' ','CHARGE',0,IARG,NCHAR,ZK8(JRECC),N1)
       ENDIF
 
 

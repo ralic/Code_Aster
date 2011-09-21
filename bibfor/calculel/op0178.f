@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19   NOMSD
       CHARACTER*24   NOMFI,OBJ
       CHARACTER*100  FORM1
+      INTEGER      IARG
 
 
       CALL JEMARQ()
@@ -57,25 +58,25 @@ C     ----------------------------
 C
       IFIC  = 0
       NOMFI = ' '
-      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
+      CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IFIC , N1 )
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
          CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
       ENDIF
 C
       FORMAT = 'ASTER'
-      CALL GETVTX ( ' ', 'FORMAT'   , 0,1,1, FORMAT, IBID )
+      CALL GETVTX ( ' ', 'FORMAT'   , 0,IARG,1, FORMAT, IBID )
 C
-      CALL GETVTX ( ' ', 'FORMAT_R' , 0,1,1, FORMR  ,IBID )
-      CALL GETVTX ( ' ', 'PREC_R'   , 0,1,1, PRECI  ,IBID )
-      CALL GETVTX ( ' ', 'TYPE_TEST', 0,1,1, TYPTES ,IBID )
+      CALL GETVTX ( ' ', 'FORMAT_R' , 0,IARG,1, FORMR  ,IBID )
+      CALL GETVTX ( ' ', 'PREC_R'   , 0,IARG,1, PRECI  ,IBID )
+      CALL GETVTX ( ' ', 'TYPE_TEST', 0,IARG,1, TYPTES ,IBID )
 C
 C ---- FORMAT TEST_RESU / STANDARD
 C
       IF ( FORMAT .EQ. 'ASTER' ) THEN
-         CALL GETVID ( ' ', 'CO', 1,1,0, KBID, N1 )
+         CALL GETVID ( ' ', 'CO', 1,IARG,0, KBID, N1 )
          NCO =-N1
          CALL WKVECT ( '&&OP0178.LCO', 'V V K8', NCO, IALICO )
-         CALL GETVID ( ' ', 'CO', 1,1,NCO, ZK8(IALICO), IBID )
+         CALL GETVID ( ' ', 'CO', 1,IARG,NCO, ZK8(IALICO), IBID )
 
          DO 100 ICO = 1,NCO
             NOMSD = ZK8(IALICO+ICO-1)(1:8)//'           '
@@ -112,7 +113,7 @@ C
 
 C     -- CAS : TOUT:'OUI'
 C    -----------------------------------------
-      CALL GETVTX(' ','TOUT',0,1,1,KBID,N1)
+      CALL GETVTX(' ','TOUT',0,IARG,1,KBID,N1)
       IF (N1.EQ.1) THEN
         CALL JELSTC('G',' ',0,0,KBID,NBVAL)
         NBOBJ = -NBVAL
@@ -139,11 +140,11 @@ C             -- TEST_RESU/S_I(OU S_R) :
 C
 C     -- CAS : CO: L_CO
 C    -----------------------------------------
-      CALL GETVID(' ','CO',0,1,0,KBID,N1)
+      CALL GETVID(' ','CO',0,IARG,0,KBID,N1)
       IF (N1.LT.0) THEN
         NCO = -N1
         CALL WKVECT('&&OP0178.LCO','V V K8',NCO,IALICO)
-        CALL GETVID(' ','CO',0,1,NCO,ZK8(IALICO),IBID)
+        CALL GETVID(' ','CO',0,IARG,NCO,ZK8(IALICO),IBID)
 
         DO 30 ICO = 1,NCO
           CALL JELSTC('G',ZK8(IALICO-1+ICO),1,0,KBID,NBVAL)

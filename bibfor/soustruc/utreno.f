@@ -5,9 +5,9 @@
       CHARACTER*(*)       MCF , MCS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8   K8B, NOGNO
       CHARACTER*16  MCNOEU, MCGRNO
       CHARACTER*24 VALK
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       NOEUD = '        '
@@ -46,14 +47,15 @@ C
          MCGRNO = 'GROUP_NO_EXTR'
       ENDIF
 C
-      CALL GETVTX ( MCF, MCNOEU, IOCC,1,0, K8B, N1 )
+      CALL GETVTX ( MCF, MCNOEU, IOCC,IARG,0, K8B, N1 )
       IF ( N1 .NE. 0 ) THEN
-         CALL GETVEM ( MA, 'NOEUD', MCF, MCNOEU, IOCC,1,1, NOEUD, N1 )
+         CALL GETVEM ( MA, 'NOEUD', MCF, MCNOEU, IOCC,IARG,1, NOEUD,
+     &                 N1 )
       ENDIF
 C
-      CALL GETVTX ( MCF, MCGRNO, IOCC,1,0, K8B, N1)
+      CALL GETVTX ( MCF, MCGRNO, IOCC,IARG,0, K8B, N1)
       IF ( N1 .NE. 0 ) THEN
-         CALL GETVTX ( MCF,  MCGRNO, IOCC,1,1, NOGNO, N1 )
+         CALL GETVTX ( MCF,  MCGRNO, IOCC,IARG,1, NOGNO, N1 )
          CALL UTNONO ( ' ', MA, 'NOEUD', NOGNO, NOEUD, IRET )
          IF ( IRET .EQ. 10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGNO)

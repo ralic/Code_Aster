@@ -3,9 +3,9 @@
       CHARACTER*8 NOMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,6 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 K8B,NOMGNO,NOMGMA,KOUI
       CHARACTER*16 SELEC
       CHARACTER*24 GRPMA,GRPNO
+      INTEGER      IARG
 
 C DEB-------------------------------------------------------------------
 
@@ -61,7 +62,7 @@ C DEB-------------------------------------------------------------------
 
 C     ---  CAS : "TOUT_GROUP_MA"
 C     --------------------------
-      CALL GETVTX('CREA_GROUP_NO','TOUT_GROUP_MA',IOCC,1,1,KOUI,N1)
+      CALL GETVTX('CREA_GROUP_NO','TOUT_GROUP_MA',IOCC,IARG,1,KOUI,N1)
       IF (N1.EQ.1) THEN
         CALL JELIRA(NOMA//'.GROUPEMA','NMAXOC',NBGMA,K8B)
         CALL WKVECT('&&SSGNGM.LISTE_GMA','V V K8',NBGMA,IALGMA)
@@ -75,19 +76,22 @@ C     ---------------------
       ELSE
 
 C      CRITERE DE SELECTION
-        CALL GETVTX('CREA_GROUP_NO','CRIT_NOEUD',IOCC,1,1,SELEC,IBID)
-        CALL GETVEM(NOMA,'GROUP_MA','CREA_GROUP_NO','GROUP_MA',IOCC,1,0,
+        CALL GETVTX('CREA_GROUP_NO','CRIT_NOEUD',IOCC,IARG,1,SELEC,IBID)
+        CALL GETVEM(NOMA,'GROUP_MA','CREA_GROUP_NO','GROUP_MA',IOCC,
+     &              IARG,0,
      &              K8B,NB)
-        CALL GETVTX('CREA_GROUP_NO','NOM',IOCC,1,0,K8B,NO)
+        CALL GETVTX('CREA_GROUP_NO','NOM',IOCC,IARG,0,K8B,NO)
         NBGMA = -NB
         CALL WKVECT('&&SSGNGM.LISTE_GMA','V V K8',NBGMA,IALGMA)
-        CALL GETVEM(NOMA,'GROUP_MA','CREA_GROUP_NO','GROUP_MA',IOCC,1,
+        CALL GETVEM(NOMA,'GROUP_MA','CREA_GROUP_NO','GROUP_MA',IOCC,
+     &              IARG,
      &              NBGMA,ZK8(IALGMA),NB)
         IF (NO.NE.0) THEN
           NBGNO = -NO
           IF (NBGNO.NE.NBGMA) CALL U2MESS('F','MODELISA7_8')
           CALL WKVECT('&&SSGNGM.NOM_GNO','V V K8',NBGNO,IANGNO)
-          CALL GETVTX('CREA_GROUP_NO','NOM',IOCC,1,NBGNO,ZK8(IANGNO),NO)
+          CALL GETVTX('CREA_GROUP_NO','NOM',IOCC,IARG,NBGNO,
+     &                ZK8(IANGNO),NO)
         ELSE
           IANGNO = IALGMA
         END IF

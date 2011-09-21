@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*4 TYP1,TYP2,KNUM
       CHARACTER*8 KBID,CHIN,CHOU,NOMGD
       CHARACTER*19 LIGREL,CHS1,CHS2,CHINS
+      INTEGER      IARG
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
@@ -62,15 +63,15 @@ C      NOMGD : GRANDEUR ASSOCIEE A CHIN
 C      .LPARA1: NOMS DES CHAMPS PARAMETRES POUR LES FONCTIONS
 C ------------------------------------------------------------------
 
-      CALL GETVID(' ','CHAM_F',0,1,1,CHIN,IB)
+      CALL GETVID(' ','CHAM_F',0,IARG,1,CHIN,IB)
 
       CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD,IB)
       IF (NOMGD.NE.'NEUT_F') CALL U2MESS('F','MODELISA4_13')
 
-      CALL GETVID(' ','CHAM_PARA',0,1,0,KBID,N1)
+      CALL GETVID(' ','CHAM_PARA',0,IARG,0,KBID,N1)
       NPARA = -N1
       CALL WKVECT('&&CHPEVA.LPARA1','V V K8',NPARA,JPARA1)
-      CALL GETVID(' ','CHAM_PARA',0,1,NPARA,ZK8(JPARA1),N1)
+      CALL GETVID(' ','CHAM_PARA',0,IARG,NPARA,ZK8(JPARA1),N1)
 
 
 C 2.  ON VERIFIE QUE LES CHAMPS PARA ONT LA MEME DISCRETISATION:

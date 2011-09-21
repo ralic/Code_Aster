@@ -1,7 +1,7 @@
       SUBROUTINE MODINT(SSAMI,RAIINT,NDDLIN,NBMOD,SHIFT,MATMOD,
      &                  MASSE,RAIDE,NEQ,COINT,NODDLI,NNOINT,
      &                  VEFREQ,SWITCH)
-C MODIF ALGORITH  DATE 20/09/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -70,7 +70,6 @@ C
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
 C
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
@@ -97,6 +96,7 @@ C-- VARIABLES DE LA ROUTINE
       CHARACTER*1  LISTYP(2)     
       CHARACTER*19 LISMAT(2),IMPED,SOLVEU,NUME91,NUME,PRNO
       CHARACTER*24 VALK
+      INTEGER      IARG
 
 C-- DEBUT --C
 
@@ -117,7 +117,7 @@ C------------------------------------------------------------C
       LISMAT(1)=RAIINT
       LISMAT(2)=SSAMI
       IF (SWITCH .EQ. 1) THEN
-        CALL GETVR8('MODE_INTERF','FREQ',1,1,1,RBID,IBID)
+        CALL GETVR8('MODE_INTERF','FREQ',1,IARG,1,RBID,IBID)
         SHIFT=-(RBID*2.D0*PI)**2
       ENDIF  
       
@@ -134,8 +134,6 @@ C------------------------------------------------------------C
       CALL DISMOI('F','NOM_NUME_DDL',SSAMI,'MATR_ASSE',IBID,
      &            NUME91,IBID)
       CALL PRERES(SOLVEU,'V',IRET,'&&OP0091.MATPRE',IMPED,IBID,1)
-      
-      
       
       IF (IRET.EQ.2) THEN
                   VALK = IMPED
@@ -161,7 +159,7 @@ C--                                                  --C
 C------------------------------------------------------C
 
 C-- ESTIMATION DU NOMBRE DE MODES A CALCULER PAR SOUS STRUCURE
-      
+
       NORM=DBLE(NBMOD/NBSST)
       TEMP=6.D0/NBSST
 
@@ -329,6 +327,8 @@ C-- CONSTRUCTION DU SOUS ESPACE POUR LE PROBLEME COMPLET
 
   70  CONTINUE
 
+
+
 C-- RELEVE STATIQUE DU SOUS ESPACE DE KRYLOV SUR LE MODELE COMPLET
       CALL DISMOI('F','SOLVEUR',RAIDE,'MATR_ASSE',IBID,SOLVEU,IBID)
       CALL RESOUD(RAIDE,'&&MOIN93.MATPRE',' ',SOLVEU,' ',' ',' ',
@@ -420,6 +420,7 @@ C-- CLASSEMENT DES FREQUENCES PROPRES
           ZR(LFREQ+I1-1)=TEMP
         ENDIF
   260 CONTINUE
+
 
       CALL WKVECT(VEFREQ,'V V R',NBMOD,LVP)
 

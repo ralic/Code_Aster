@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,7 @@ C
 C
       CHARACTER*24 NCMPVA, NCMPVM
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C
 C DEB ------------------------------------------------------------------
 C====
@@ -110,10 +111,10 @@ C====
 C
 C 2.1. ==> FORMAT DU FICHIER
 C
-      CALL GETVTX ( ' ', 'FORMAT', 0, 1, 1, FORMAT, IAUX )
+      CALL GETVTX ( ' ', 'FORMAT', 0,IARG, 1, FORMAT, IAUX )
 C
       IF ( FORMAT.EQ.'MED' ) THEN
-        CALL GETVTX ( ' ', 'NOM_MED', 0, 1, 1, NOCHMD, IAUX )
+        CALL GETVTX ( ' ', 'NOM_MED', 0,IARG, 1, NOCHMD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
           CALL U2MESS('F','MED_96')
         ENDIF
@@ -123,7 +124,7 @@ C
 C
 C 2.2. ==> TYPE DE CHAMP A LIRE
 C
-      CALL GETVTX ( ' ', 'TYPE_CHAM', 0, 1, 1, TYCH, IAUX )
+      CALL GETVTX ( ' ', 'TYPE_CHAM', 0,IARG, 1, TYCH, IAUX )
       CALL GETRES ( CHANOM, TYPECH, NOMCMD )
       NOMGD = TYCH(6:13)
       IF (TYCH(1:11).EQ.'ELGA_SIEF_R') THEN
@@ -150,7 +151,7 @@ C
 C - -  VERIFICATIONS - -
 C
       IF(TYCH(1:2).EQ.'EL')THEN
-         CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMO, IAUX )
+         CALL GETVID ( ' ', 'MODELE', 0,IARG, 1, NOMO, IAUX )
          CALL LRVEMO(NOMO)
       ENDIF
 C
@@ -159,7 +160,7 @@ C
       NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
       NCMPVM = '&&'//NOMPRO//'.'//LCMPVM
 C
-      CALL GETVTX(' ','NOM_CMP_IDEM',0,1,1, REP, IAUX )
+      CALL GETVTX(' ','NOM_CMP_IDEM',0,IARG,1, REP, IAUX )
 C
 C 2.3.1. ==> C'EST PAR IDENTITE DE NOMS
 C
@@ -175,12 +176,12 @@ C
 C
 C 2.3.2. ==> C'EST PAR ASSOCIATION DE LISTE
 C
-        CALL GETVTX(' ',LCMPVA,0,1,0,REP,IAUX)
+        CALL GETVTX(' ',LCMPVA,0,IARG,0,REP,IAUX)
         IF ( IAUX.LT.0 ) THEN
           NBCMPV = -IAUX
         ENDIF
 C
-        CALL GETVTX(' ',LCMPVM,0,1,0,REP,IAUX)
+        CALL GETVTX(' ',LCMPVM,0,IARG,0,REP,IAUX)
         IF ( -IAUX.NE.NBCMPV ) THEN
            VALK(1) = LCMPVA
            VALK(2) = LCMPVM
@@ -189,27 +190,27 @@ C
 C
         IF ( NBCMPV.GT.0 ) THEN
           CALL WKVECT(NCMPVA ,'V V K8',NBCMPV,JCMPVA )
-          CALL GETVTX(' ',LCMPVA,0,1,NBCMPV,ZK8(JCMPVA),IAUX)
+          CALL GETVTX(' ',LCMPVA,0,IARG,NBCMPV,ZK8(JCMPVA),IAUX)
           CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
-          CALL GETVTX(' ',LCMPVM,0,1,NBCMPV,ZK16(JCMPVM),IAUX)
+          CALL GETVTX(' ',LCMPVM,0,IARG,NBCMPV,ZK16(JCMPVM),IAUX)
         ENDIF
 C
       ENDIF
 C
 C 2.4a ==> PROLONGEMENT PAR ZERO OU NOT A NUMBER
 C
-      CALL GETVTX(' ', 'PROL_ZERO', 0, 1, 1, PROLZ, IAUX)
+      CALL GETVTX(' ', 'PROL_ZERO', 0,IARG, 1, PROLZ, IAUX)
       IF (PROLZ .NE. 'OUI') THEN
          PROLZ = 'NAN'
       ENDIF
 C
 C 2.4b ==> UNITE LOGIQUE LIE AU FICHIER
 C
-      CALL GETVIS ( ' ', 'UNITE', 0, 1, 1, UNITE, IAUX )
+      CALL GETVIS ( ' ', 'UNITE', 0,IARG, 1, UNITE, IAUX )
 C
 C 2.5. ==> NOM DU MODELE, NOM DU MAILLAGE ASTER ASSOCIE
 C
-      CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMO, IAUX )
+      CALL GETVID ( ' ', 'MODELE', 0,IARG, 1, NOMO, IAUX )
       IF(IAUX.NE.0)THEN
         LIGREL = NOMO//'.MODELE'
       ELSE
@@ -217,7 +218,7 @@ C                 1234567890123456789
         LIGREL = '                   '
       ENDIF
 
-      CALL GETVID ( ' ', 'MAILLAGE', 0, 1, 1, NOMAAS, IAUX )
+      CALL GETVID ( ' ', 'MAILLAGE', 0,IARG, 1, NOMAAS, IAUX )
       IF ( IAUX.EQ.0 ) THEN
         CALL DISMOI ( 'F', 'NOM_MAILLA', NOMO, 'MODELE',
      &                IAUX, NOMAAS, CODRET )
@@ -228,7 +229,7 @@ C                 1234567890123456789
 C
 C 2.6. ==> NOM DU MAILLAGE MED ASSOCIE
 C
-      CALL GETVTX ( ' ', 'NOM_MAIL_MED', 0, 1, 1, NOMAMD, IAUX )
+      CALL GETVTX ( ' ', 'NOM_MAIL_MED', 0,IARG, 1, NOMAMD, IAUX )
 C
       IF ( IAUX.EQ.0 ) THEN
         NOMAMD = ' '
@@ -237,14 +238,14 @@ C
 C 2.7. CARACTERISTIQUES TEMPORELLES
 C 2.7.1. ==> NUMERO D'ORDRE EVENTUEL
 C
-      CALL GETVIS ( ' ', 'NUME_ORDRE', 0, 1, 1, NUMORD, IAUX )
+      CALL GETVIS ( ' ', 'NUME_ORDRE', 0,IARG, 1, NUMORD, IAUX )
       IF ( IAUX.EQ.0 ) THEN
         NUMORD = EDNONO
       ENDIF
 C
 C 2.7.2. ==> NUMERO DE PAS DE TEMPS EVENTUEL
 C
-      CALL GETVIS ( ' ', 'NUME_PT', 0, 1, 1, NUMPT, JAUX )
+      CALL GETVIS ( ' ', 'NUME_PT', 0,IARG, 1, NUMPT, JAUX )
       IF ( JAUX.EQ.0 ) THEN
         NUMPT = EDNOPT
       ENDIF
@@ -254,11 +255,11 @@ C            PEUT-ETRE UNE VALEUR D'INSTANT
 C
       IF ( IAUX.EQ.0 .AND. JAUX.EQ.0 ) THEN
 C
-        CALL GETVR8 ( ' ', 'INST', 1,1,1, INST, IINST )
+        CALL GETVR8 ( ' ', 'INST', 1,IARG,1, INST, IINST )
 C
         IF ( IINST.NE.0 ) THEN
-          CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC, IAUX )
-          CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT, IAUX )
+          CALL GETVR8 ( ' ', 'PRECISION', 1,IARG,1, PREC, IAUX )
+          CALL GETVTX ( ' ', 'CRITERE'  , 1,IARG,1, CRIT, IAUX )
         ENDIF
 C
       ELSE

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO
       CHARACTER*24 VALK(2)
       CHARACTER*80 CARD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -79,21 +80,21 @@ C     -----------------------------------
 
       MOTFAC = 'CREA_GROUP_NO'
       CALL GETFAC ( MOTFAC, NBOCC )
-      CALL GETVTX(' ','ALARME',1,1,1,ALARM,NALAR)
+      CALL GETVTX(' ','ALARME',1,IARG,1,ALARM,NALAR)
       NBGNAJ = 0
 
 C ----------------------------------------------------------------------
 
       DO 100 , IOCC = 1 , NBOCC
 
-        CALL GETVTX ( MOTFAC, 'NOEUD'        , IOCC,1,0, K8B, N2 )
-        CALL GETVTX ( MOTFAC, 'INTERSEC'     , IOCC,1,0, K8B, N3 )
-        CALL GETVTX ( MOTFAC, 'UNION'        , IOCC,1,0, K8B, N4 )
-        CALL GETVTX ( MOTFAC, 'DIFFE'        , IOCC,1,0, K8B, N5 )
-        CALL GETVTX ( MOTFAC, 'GROUP_MA'     , IOCC,1,0, K8B, N6 )
-        CALL GETVTX ( MOTFAC, 'TOUT_GROUP_MA', IOCC,1,0, K8B, N7 )
-        CALL GETVTX ( MOTFAC, 'GROUP_NO'     , IOCC,1,0, K8B, N8 )
-        CALL GETVTX ( MOTFAC, 'OPTION'       , IOCC,1,0, K8B, N9 )
+        CALL GETVTX ( MOTFAC, 'NOEUD'        , IOCC,IARG,0, K8B, N2 )
+        CALL GETVTX ( MOTFAC, 'INTERSEC'     , IOCC,IARG,0, K8B, N3 )
+        CALL GETVTX ( MOTFAC, 'UNION'        , IOCC,IARG,0, K8B, N4 )
+        CALL GETVTX ( MOTFAC, 'DIFFE'        , IOCC,IARG,0, K8B, N5 )
+        CALL GETVTX ( MOTFAC, 'GROUP_MA'     , IOCC,IARG,0, K8B, N6 )
+        CALL GETVTX ( MOTFAC, 'TOUT_GROUP_MA', IOCC,IARG,0, K8B, N7 )
+        CALL GETVTX ( MOTFAC, 'GROUP_NO'     , IOCC,IARG,0, K8B, N8 )
+        CALL GETVTX ( MOTFAC, 'OPTION'       , IOCC,IARG,0, K8B, N9 )
 
 C ----------------------------------------------------------------------
 C ----- MOT CLEF "TOUT_GROUP_MA" :
@@ -115,7 +116,7 @@ C       ---------------------
 
 C ----------------------------------------------------------------------
 
-        CALL GETVTX ( MOTFAC, 'NOM', IOCC,1,1, NOGNO, N1 )
+        CALL GETVTX ( MOTFAC, 'NOM', IOCC,IARG,1, NOGNO, N1 )
         CALL JENONU ( JEXNOM(GRPNOE,NOGNO), IRET )
         IF (IRET.GT.0) THEN
           CALL U2MESK('F','SOUSTRUC_37',1,NOGNO)
@@ -132,7 +133,7 @@ C ----------------------------------------------------------------------
 C ----- MOT CLEF "INTERSEC" :
 C       ---------------------
         IF (N3.GT.0) THEN
-          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'INTERSEC',IOCC,1,N3,
+          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'INTERSEC',IOCC,IARG,N3,
      &                ZK8(IALIK8),NBID)
 
           CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
@@ -184,7 +185,7 @@ C ----------------------------------------------------------------------
 C ----- MOT CLEF "UNION" :
 C       ------------------
         IF (N4.GT.0) THEN
-          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'UNION',IOCC,1,N4,
+          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'UNION',IOCC,IARG,N4,
      &                ZK8(IALIK8),NBID)
 
           CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
@@ -246,7 +247,7 @@ C ----------------------------------------------------------------------
 C ----- MOT CLEF "DIFFE" :
 C       ------------------
         IF (N5.GT.0) THEN
-          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'DIFFE',IOCC,1,N5,
+          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'DIFFE',IOCC,IARG,N5,
      &                ZK8(IALIK8),NBID)
 
           CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
@@ -298,7 +299,7 @@ C ----------------------------------------------------------------------
 C ----- MOT CLEF "OPTION" :
 C       -------------------
         IF (N9.GT.0) THEN
-          CALL GETVTX ( MOTFAC, 'OPTION', IOCC,1,1, OPTION, N9 )
+          CALL GETVTX ( MOTFAC, 'OPTION', IOCC,IARG,1, OPTION, N9 )
 
 C         -- TRAITEMENT DE L'OPTION "ENV_SPHERE" :
 C         ----------------------------------------
@@ -377,7 +378,7 @@ C ----- MOT CLEF "NOEUD" :
 C       ------------------
         IF ( N2.GT.0 ) THEN
           CALL WKVECT('&&SSCGNO.L_NOEUD','V V K8',N2,ILNOK8)
-          CALL GETVEM(MA,'NOEUD',MOTFAC,'NOEUD',IOCC,1,N2,
+          CALL GETVEM(MA,'NOEUD',MOTFAC,'NOEUD',IOCC,IARG,N2,
      &                ZK8(ILNOK8),NB)
           CALL WKVECT('&&SSCGNO.NOEUD','V V I',N2,JNOEU)
           CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNOT,K8B,IERD)
@@ -417,19 +418,19 @@ C ----------------------------------------------------------------------
 C ----- MOT CLEF "GROUP_NO" :
 C       ---------------------
         IF ( N8.GT.0 ) THEN
-          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'GROUP_NO',IOCC,1,1,
+          CALL GETVEM(MA,'GROUP_NO',MOTFAC,'GROUP_NO',IOCC,IARG,1,
      &                NOGNO2,NBID)
           CALL JENONU(JEXNOM(GRPNOE,NOGNO2),IGN2)
           CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGN2)
 C
-          CALL GETVTX(MOTFAC,'POSITION',IOCC,1,0,KPOS,N6B)
+          CALL GETVTX(MOTFAC,'POSITION',IOCC,IARG,0,KPOS,N6B)
           IND1 = 0
           IND2 = 0
           IF (N6B.EQ.0) THEN
-            CALL GETVIS(MOTFAC,'NUME_INIT',IOCC,1,1,IND1,N6A)
+            CALL GETVIS(MOTFAC,'NUME_INIT',IOCC,IARG,1,IND1,N6A)
             IF (N6A.EQ.0) IND1 = 1
-            CALL GETVIS(MOTFAC,'NUME_FIN',IOCC,1,1,IND2,N6A)
+            CALL GETVIS(MOTFAC,'NUME_FIN',IOCC,IARG,1,IND2,N6A)
             IF (N6A.EQ.0) IND2 = ILI2
             IF (IND2.LT.IND1) CALL U2MESS('F','SOUSTRUC_33')
             IF (ILI2.LT.IND2) CALL U2MESS('F','SOUSTRUC_34')
@@ -451,7 +452,7 @@ C
  82       CONTINUE
           GO TO 100
  80       CONTINUE
-          CALL GETVTX(MOTFAC,'POSITION',IOCC,1,1,KPOS,N6B)
+          CALL GETVTX(MOTFAC,'POSITION',IOCC,IARG,1,KPOS,N6B)
           IF (KPOS.EQ.'INIT') THEN
             ZI(IAGNO) = ZI(IAGN2)
           ELSE IF (KPOS.EQ.'FIN') THEN

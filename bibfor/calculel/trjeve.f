@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,26 +30,27 @@ C ----------------------------------------------------------------------
       CHARACTER*8  CRIT
       CHARACTER*16 TBTXT(2)
       CHARACTER*24 NOMOBJ
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       DO 100 IOCC = 1,NOCC
-        CALL GETVTX('OBJET','NOM',       IOCC,1,1, NOMOBJ, N1 )
-        CALL GETVTX('OBJET','VALE_ABS' , IOCC,1,1, SSIGNE, N1 )
-        CALL GETVR8('OBJET','PRECISION', IOCC,1,1, EPSI,   N1 )
-        CALL GETVTX('OBJET','CRITERE',   IOCC,1,1, CRIT,   N1 )
+        CALL GETVTX('OBJET','NOM',       IOCC,IARG,1, NOMOBJ, N1 )
+        CALL GETVTX('OBJET','VALE_ABS' , IOCC,IARG,1, SSIGNE, N1 )
+        CALL GETVR8('OBJET','PRECISION', IOCC,IARG,1, EPSI,   N1 )
+        CALL GETVTX('OBJET','CRITERE',   IOCC,IARG,1, CRIT,   N1 )
 
         CALL UTEST3('OBJET',IOCC,TBTXT)
 
         WRITE (IFIC,*) '---- OBJET '
         WRITE (IFIC,*) '     ',NOMOBJ
 
-        CALL GETVIS('OBJET','S_I',IOCC,1,1,REFI,N2)
+        CALL GETVIS('OBJET','S_I',IOCC,IARG,1,REFI,N2)
         IF (N2.EQ.1) THEN
 C           -- S_I :
          CALL UTESTO(NOMOBJ,'S_I',TBTXT,REFI,REFR,EPSI,CRIT,IFIC,SSIGNE)
         END IF
 
-        CALL GETVR8('OBJET','S_R',IOCC,1,1,REFR,N2)
+        CALL GETVR8('OBJET','S_R',IOCC,IARG,1,REFR,N2)
         IF (N2.EQ.1) THEN
 C           -- S_R :
          CALL UTESTO(NOMOBJ,'S_R',TBTXT,REFI,REFR,EPSI,CRIT,IFIC,SSIGNE)

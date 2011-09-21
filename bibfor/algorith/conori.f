@@ -1,6 +1,6 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,6 +107,7 @@ C
 C
       PARAMETER ( NBNOMX = 100 )
       CHARACTER*8 MACOR(NBNOMX+2),MACOC(NBNOMX+2),MACOS(NBNOMX+2)
+      INTEGER      IARG
 C
       CALL JEMARQ()
 C
@@ -121,7 +122,7 @@ C     RECHERCHE DU NOMBRE DE GROUP_MA_FISSURE DANS .COMM
 C     ------------------------------------------------------------------
       IC = 1
       CALL GETVEM(MA,'GROUP_MA','ORIE_FISSURE','GROUP_MA',
-     &               IC,1,0,KBID,NBGCO)
+     &               IC,IARG,0,KBID,NBGCO)
       NBGCO = -NBGCO
 C
 C     ==================================================================
@@ -153,7 +154,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DES NOMS DES GROUP_MA_FISSURE DANS .COMM
 C     ------------------------------------------------------------------
          CALL GETVEM(MA,'GROUP_MA','ORIE_FISSURE','GROUP_MA',
-     &                  IC,1,NBGCO,ZK8(IO8GCO),IDUM)
+     &                  IC,IARG,NBGCO,ZK8(IO8GCO),IDUM)
          IF (NIV.EQ.2) THEN
          WRITE(IFM,*) ' '
          WRITE(IFM,*) ' LA LISTE DES ORIE_FISSURE'

@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD, TYPCON, NOMCHA, NOMSY, TYSD
       CHARACTER*19 NOMFON, KNUME, KINST, RESU, MATRAS, FONCT
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -61,8 +62,8 @@ C
 
       CALL GETTCO ( TRANGE, TYSD )
       IF ( TYSD .EQ. 'MODE_GENE' ) THEN
-         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,1,1, K8B,  N1 )
-         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, IBID, N2 )
+         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,IARG,1, K8B,  N1 )
+         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, IBID, N2 )
          IF ( (N1+N2) .NE. 0 ) THEN
             CALL RFMGE1 ( TRANGE )
          ELSE
@@ -71,8 +72,8 @@ CCC  FONCTIONNALITE NON DEVELOPPEE
          ENDIF
          GOTO 9999
       ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN
-         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,1,1, K8B,  N1 )
-         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, IBID, N2 )
+         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,IARG,1, K8B,  N1 )
+         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, IBID, N2 )
          IF ( (N1+N2) .NE. 0 ) THEN
             CALL RFHGE1 ( TRANGE )
          ELSE
@@ -86,17 +87,17 @@ C
       INTERP(2) = 'NON '
       INTRES    = 'NON '
 C
-      CALL GETVTX(' ','CRITERE'     ,0,1,1,CRIT  ,N1)
-      CALL GETVR8(' ','PRECISION'   ,0,1,1,EPSI  ,N1)
-      CALL GETVTX(' ','INTERP_NUME' ,0,1,1,INTRES,N1)
-      CALL GETVTX(' ','INTERPOL'    ,0,1,2,INTERP,N1)
+      CALL GETVTX(' ','CRITERE'     ,0,IARG,1,CRIT  ,N1)
+      CALL GETVR8(' ','PRECISION'   ,0,IARG,1,EPSI  ,N1)
+      CALL GETVTX(' ','INTERP_NUME' ,0,IARG,1,INTRES,N1)
+      CALL GETVTX(' ','INTERPOL'    ,0,IARG,2,INTERP,N1)
       IF ( N1 .EQ. 1 ) INTERP(2) = INTERP(1)
 C
       NOEUD = ' '
       CMP   = ' '
-      CALL GETVTX(' ','NOEUD',0,1,1,NOEUD,N1)
-      CALL GETVTX(' ','NOM_CMP'      ,0,1,1,CMP   ,N2)
-      CALL GETVTX(' ','NOM_CHAM' ,0,1,1,NOMCHA,N3)
+      CALL GETVTX(' ','NOEUD',0,IARG,1,NOEUD,N1)
+      CALL GETVTX(' ','NOM_CMP'      ,0,IARG,1,CMP   ,N2)
+      CALL GETVTX(' ','NOM_CHAM' ,0,IARG,1,NOMCHA,N3)
 C
       CALL JEEXIN(RESU//'.'//NOMCHA(1:4),IRET)
       IF (IRET.EQ.0)  THEN
@@ -170,7 +171,7 @@ C
       ELSE
          CALL JEVEUO(RESU//'.DESC','L',LDESC)
          NBMODE = ZI(LDESC+1)
-         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, NUMCMP, N1 )
+         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, NUMCMP, N1 )
          IF ( N1 .NE. 0 ) THEN
            IF (NUMCMP.GT.NBMODE) CALL U2MESS('F','UTILITAI4_14')
            CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
@@ -218,7 +219,7 @@ C
      &                   NEQ*NBMODE,IDBASE)
              CALL COPMO2(BASEMO,NEQ,NUME,NBMODE,ZR(IDBASE))
            ENDIF
-           CALL GETVTX(' ','GROUP_NO',0,1,1,NOGNO,NGN)
+           CALL GETVTX(' ','GROUP_NO',0,IARG,1,NOGNO,NGN)
            IF (NGN.NE.0) THEN
              CALL JENONU(JEXNOM(NOMA//'.GROUPENO',NOGNO),IGN2)
              IF (IGN2.LE.0)  CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
@@ -241,7 +242,7 @@ C
 C
 C        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
            NFONCT = 0
-           CALL GETVID(' ','ACCE_MONO_APPUI',1,1,1,FONCT,NFONCT)
+           CALL GETVID(' ','ACCE_MONO_APPUI',1,IARG,1,FONCT,NFONCT)
            IF (NFONCT.NE.0) THEN
             IF (NOMCHA(1:4).NE.'ACCE') THEN
 C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
@@ -278,8 +279,8 @@ C
            MONMOT(1) = 'NON'
            MONMOT(2) = 'NON'
            NONMOT   = 'NON'
-           CALL GETVTX(' ','MULT_APPUI',1,1,1,MONMOT(1),N1)
-           CALL GETVTX(' ','CORR_STAT',1,1,1,MONMOT(2),N2)
+           CALL GETVTX(' ','MULT_APPUI',1,IARG,1,MONMOT(1),N1)
+           CALL GETVTX(' ','CORR_STAT',1,IARG,1,MONMOT(2),N2)
            IF (MONMOT(1).EQ.'OUI'.OR.MONMOT(2).EQ.'OUI') NONMOT='OUI'
            IF (NONMOT(1:3) .EQ. 'OUI') THEN
               CALL JEVEUO(RESU//'.F'//NOMCHA(1:3),'L',JFON)

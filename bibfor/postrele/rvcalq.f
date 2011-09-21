@@ -13,7 +13,7 @@ C
       LOGICAL TRIDIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,6 +102,7 @@ C     ------------------------------------------------------------------
 
       INTEGER ASGTU
       REAL*8 SGTU
+      INTEGER      IARG
       SGTU(I) = ZR(ASGTU+I-1)
 C     FORME BILINEAIRE ASSOCIEE AU TENSEUR
       VTV(VAX,VAY,VAZ,VBX,VBY,VBZ) = VAX* (VBX*TXX+VBY*TXY+VBZ*TXZ) +
@@ -116,7 +117,7 @@ C======================================================================
       IF (COURBE.EQ.' ') THEN
         TRIDIM = .FALSE.
       ELSE
-        CALL GETVR8('ACTION','VECT_Y',IOCC,1,3,VECTY,NY)
+        CALL GETVR8('ACTION','VECT_Y',IOCC,IARG,3,VECTY,NY)
         TRIDIM = NY .NE. 0
       END IF
       CALL INFNIV ( IFM, NIV )

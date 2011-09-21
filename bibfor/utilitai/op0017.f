@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,45 +53,46 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*72  CHAINE
 C     ------------------------------------------------------------------
       PARAMETER (NOMPRO='OP0017')
+      INTEGER      IARG
 C
       CALL JEMARQ()
       CALL INFMAJ()
       NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
 C
       NIVO = 0
-      CALL GETVIS ( ' ', 'NIVEAU', 1,1,1, NIVO, N3 )
+      CALL GETVIS ( ' ', 'NIVEAU', 1,IARG,1, NIVO, N3 )
 C
-      CALL GETVTX(' ','ATTRIBUT',0,1,1,CHAINE,N3)
+      CALL GETVTX(' ','ATTRIBUT',0,IARG,1,CHAINE,N3)
       IF (CHAINE(1:3).EQ.'OUI') THEN
          LATTR = .TRUE.
       ELSE
          LATTR = .FALSE.
       END IF
 C
-      CALL GETVTX(' ','CONTENU',0,1,1,CHAINE,N3)
+      CALL GETVTX(' ','CONTENU',0,IARG,1,CHAINE,N3)
       IF (CHAINE(1:3).EQ.'OUI') THEN
          LCONT = .TRUE.
       ELSE
          LCONT = .FALSE.
       END IF
 C
-      CALL GETVTX(' ','BASE',0,1,1,CHAINE,N1)
+      CALL GETVTX(' ','BASE',0,IARG,1,CHAINE,N1)
       BASE=CHAINE(1:1)
 C
       IFI = 0
       NOMFI = ' '
-      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFI  , N2 )
+      CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IFI  , N2 )
       IF ( .NOT. ULEXIS( IFI ) ) THEN
          CALL ULOPEN ( IFI, ' ', NOMFI, 'NEW', 'O' )
       ENDIF
 
       CALL GETFAC('CONCEPT',NBOCC)
       DO 3 IOCC = 1,NBOCC
-         CALL GETVID('CONCEPT','NOM',IOCC,1,0,KBID,NCON)
+         CALL GETVID('CONCEPT','NOM',IOCC,IARG,0,KBID,NCON)
          NCON= -NCON
          IF (NCON.GT.0) THEN
            CALL WKVECT ('&&OP0017.LISTE_CO','V V K8',NCON,IALICO)
-           CALL GETVID('CONCEPT','NOM',IOCC,1,NCON,ZK8(IALICO),N1)
+           CALL GETVID('CONCEPT','NOM',IOCC,IARG,NCON,ZK8(IALICO),N1)
            DO 1, I=1,NCON
              IAUX = IOCC
              CALL JEEXIN(NORECG,IRET)
@@ -112,14 +113,14 @@ C          . NOM DU PARAMETRE DE SENSIBILITE
         ENDIF
  3    CONTINUE
 
-      CALL GETVTX(' ','CHAINE',0,1,1,CHAINE,N2)
+      CALL GETVTX(' ','CHAINE',0,IARG,1,CHAINE,N2)
       IF (N2.GT.0) THEN
          CALL GETLTX(' ','CHAINE',0,1,1,LONG,N3)
-         CALL GETVIS(' ','POSITION',0,1,1,IPOS,N4)
+         CALL GETVIS(' ','POSITION',0,IARG,1,IPOS,N4)
          CALL UTIMSD(IFI,NIVO,LATTR,LCONT,CHAINE(1:LONG),IPOS,BASE)
       END IF
 
-      CALL GETVTX(' ','TOUT',0,1,1,CHAINE,N2)
+      CALL GETVTX(' ','TOUT',0,IARG,1,CHAINE,N2)
       IF (N2.GT.0) THEN
          CALL UTIMSD(IFI,NIVO,LATTR,LCONT,' ',0,BASE)
       END IF

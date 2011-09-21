@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,11 +26,12 @@ C
       INTEGER       OUIELT,IMPR,N1,NBOCC
       CHARACTER*24  FICHIE
       LOGICAL       ULEXIS
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       IMPR   = 0
       FICHIE = ' '
-      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IMPR  , N1 )
+      CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IMPR  , N1 )
       IF ( .NOT. ULEXIS( IMPR ) ) THEN
          CALL ULOPEN ( IMPR, ' ', FICHIE, 'NEW', 'O' )
       ENDIF

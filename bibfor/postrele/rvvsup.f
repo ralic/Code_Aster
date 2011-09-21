@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C
       CHARACTER*8  K8B, RESU, NOMRES
       CHARACTER*24 VALK(4)
       CHARACTER*16 NOMCMD, CONCEP, TYPRES
+      INTEGER      IARG
 C
 C=======================================================================
 C
@@ -57,18 +58,18 @@ C
       DO 10, IOCC = 1, NBPOST, 1
 C
 C     /* QUANTITE (IE : SOMME) */
-         CALL GETVTX('ACTION','RESULTANTE',IOCC,1,0,K8B,N1)
+         CALL GETVTX('ACTION','RESULTANTE',IOCC,IARG,0,K8B,N1)
          N1 = -N1
          IF ( N1 .GT. 0 ) THEN
-            CALL GETVTX('ACTION','RESULTANTE',IOCC,1,0,K8B,N1)
-            CALL GETVTX('ACTION','MOMENT    ',IOCC,1,0,K8B,N2)
+            CALL GETVTX('ACTION','RESULTANTE',IOCC,IARG,0,K8B,N1)
+            CALL GETVTX('ACTION','MOMENT    ',IOCC,IARG,0,K8B,N2)
             N1 = -N1
             N2 = -N2
             IF ( N2 .NE. 0 ) THEN
                IF (((N1.NE.2).AND.(N1.NE.3)) .OR. (N1.NE.N2)) THEN
                   CALL U2MESI('F','POSTRELE_42',1,IOCC)
                ENDIF
-               CALL GETVR8('ACTION','POINT',IOCC,1,0,R8B,N1)
+               CALL GETVR8('ACTION','POINT',IOCC,IARG,0,R8B,N1)
                N1 = -N1
                IF ( (N1.NE.2) .AND. (N1.NE.3) ) THEN
                   CALL U2MESI('F','POSTRELE_43',1,IOCC)
@@ -77,19 +78,19 @@ C     /* QUANTITE (IE : SOMME) */
          ENDIF
 C
 C     /* COHERENCE ACCES DANS RESULTAT */
-         CALL GETVID('ACTION','RESULTAT',IOCC,1,0,NOMRES,N1)
+         CALL GETVID('ACTION','RESULTAT',IOCC,IARG,0,NOMRES,N1)
          N1 = -N1
          IF ( N1 .GT. 0 ) THEN
-            CALL GETVID('ACTION','RESULTAT',IOCC,1,1,NOMRES,N1)
+            CALL GETVID('ACTION','RESULTAT',IOCC,IARG,1,NOMRES,N1)
             CALL GETTCO(NOMRES,TYPRES)
-            CALL GETVID('ACTION','LIST_FREQ',IOCC,1,0,K8B,N1)
-            CALL GETVR8('ACTION','FREQ'     ,IOCC,1,0,ZR, N2)
+            CALL GETVID('ACTION','LIST_FREQ',IOCC,IARG,0,K8B,N1)
+            CALL GETVR8('ACTION','FREQ'     ,IOCC,IARG,0,ZR, N2)
             N1 = MAX(-N1,-N2)
-            CALL GETVID('ACTION','LIST_INST',IOCC,1,0,K8B,N2)
-            CALL GETVR8('ACTION','INST'     ,IOCC,1,0,ZR, N3)
+            CALL GETVID('ACTION','LIST_INST',IOCC,IARG,0,K8B,N2)
+            CALL GETVR8('ACTION','INST'     ,IOCC,IARG,0,ZR, N3)
             N2 = MAX(-N3,-N2)
-            CALL GETVID('ACTION','LIST_MODE',IOCC,1,0,K8B,N3)
-            CALL GETVIS('ACTION','NUME_MODE',IOCC,1,0,ZI, N4)
+            CALL GETVID('ACTION','LIST_MODE',IOCC,IARG,0,K8B,N3)
+            CALL GETVIS('ACTION','NUME_MODE',IOCC,IARG,0,ZI, N4)
             N3 = MAX(-N3,-N4)
             N4 = MAX(N1,N2,N3)
             IF ( N4 .GT. 0 ) THEN

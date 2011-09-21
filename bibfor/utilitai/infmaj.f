@@ -2,9 +2,9 @@
        IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -37,12 +37,14 @@ C-----FIN DE INF001-----------------------------------------------------
 C
        INTEGER    INFO, NBVAL, IUNIFI
        INTEGER    LINFO, GETEXM
+      INTEGER      IARG
 C
        INFO = 1
 C
        LINFO = GETEXM ( ' ' , 'INFO' )
 C
-       IF (LINFO .EQ. 1) CALL GETVIS (' ', 'INFO', 0,1,1, INFO, NBVAL)
+       IF (LINFO .EQ. 1) CALL GETVIS (' ','INFO',0,IARG,1,
+     &                                INFO, NBVAL)
 C
        NIVUTI = INFO
        NIVPGM = INFO

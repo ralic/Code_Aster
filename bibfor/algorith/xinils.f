@@ -2,7 +2,7 @@
      &                  GEOFIS,A,B,R,NOEUD,COTE,VECT1,VECT2,CNSLT,CNSLN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,7 @@ C
       CHARACTER*24  LISMA,LISSE
       LOGICAL       CALLST
       INTEGER       IFM,NIV
+      INTEGER      IARG
 
 C
       CALL JEMARQ()
@@ -212,8 +213,8 @@ C-----------------------------------------------------------------------
 C       DANS LE CAS OU ON DONNE UN CHAMP DE LEVEL SET
 C-----------------------------------------------------------------------
 
-        CALL GETVID('DEFI_FISS','CHAM_NO_LSN',1,1,1,NCHAMN,ME4)
-        CALL GETVID('DEFI_FISS','CHAM_NO_LST',1,1,1,NCHAMT,IBID)
+        CALL GETVID('DEFI_FISS','CHAM_NO_LSN',1,IARG,1,NCHAMN,ME4)
+        CALL GETVID('DEFI_FISS','CHAM_NO_LST',1,IARG,1,NCHAMT,IBID)
 
         CHSLSN='&&XINILS.CHAM_S_LSN'
         CHSLST='&&XINILS.CHAM_S_LST'

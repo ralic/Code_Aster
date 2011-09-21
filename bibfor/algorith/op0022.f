@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,12 +44,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NV,NIV,IFM
       CHARACTER*8 RESU
       CHARACTER*16 CONCEP,NOMCMD,OPERA
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
 
-      CALL GETVTX(' ','OPERATION',0,1,1,OPERA,NV)
+      CALL GETVTX(' ','OPERATION',0,IARG,1,OPERA,NV)
       CALL GETRES(RESU,CONCEP,NOMCMD)
 
       IF (OPERA.EQ.'DEFI') THEN

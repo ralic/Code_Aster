@@ -1,6 +1,6 @@
       SUBROUTINE SSDMGN(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C
       CALL JEMARQ()
       CALL JEVEUO(MAG//'.DIME','L',IADIME)
@@ -65,11 +66,12 @@ C
       NBGNOT=0
       LONT= 0
       DO 2, IOCC=1,NOCC
-        CALL GETVIS('DEFI_GROUP_NO','INDEX',IOCC,1,4,INDI,N1)
+        CALL GETVIS('DEFI_GROUP_NO','INDEX',IOCC,IARG,4,INDI,N1)
         IF (N1.EQ.4) THEN
           UNAUN=.FALSE.
         ELSE
-          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_FIN',IOCC,1,1,KBID,N2)
+          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_FIN',IOCC,IARG,1,
+     &                KBID,N2)
           CALL ASSERT(N2.NE.0)
           UNAUN=.TRUE.
         END IF
@@ -78,8 +80,9 @@ C
 C     --1.1 CAS : INDEX, TOUT OU MAILLE :
 C     -----------------------------------
         IF (.NOT.UNAUN) THEN
-          CALL GETVTX('DEFI_GROUP_NO','TOUT',IOCC,1,1,KBID,N1)
-          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,1,1,NOSMA,N2)
+          CALL GETVTX('DEFI_GROUP_NO','TOUT',IOCC,IARG,1,KBID,N1)
+          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,IARG,1,
+     &                NOSMA,N2)
           IF (N2.EQ.1) THEN
             CALL JEEXIN(JEXNOM(MAG//'.SUPMAIL',NOSMA),IRET)
             IF (IRET.EQ.0) THEN
@@ -110,8 +113,10 @@ C
 C     --3.2 CAS : MAILLE, GROUP_NO_FIN, GROUP_NO_INIT:
 C     -----------------------------------------------
         ELSE
-          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,1,1,NOSMA,N1)
-          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_INIT',IOCC,1,1,NOMGNL,N)
+          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,IARG,1,
+     &                NOSMA,N1)
+          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_INIT',IOCC,IARG,1,
+     &                NOMGNL,N)
 C
           CALL JENONU(JEXNOM(MAG//'.SUPMAIL',NOSMA),ISMA)
           NOMACR= ZK8(IANMCR-1+ISMA)
@@ -146,19 +151,20 @@ C     --3 REMPLISSAGE:
 C     ----------------
       DO 5, IOCC=1,NOCC
         UNAUN=.TRUE.
-        CALL GETVIS('DEFI_GROUP_NO','INDEX',IOCC,1,4,INDI,N1)
+        CALL GETVIS('DEFI_GROUP_NO','INDEX',IOCC,IARG,4,INDI,N1)
         IF (N1.EQ.4) UNAUN=.FALSE.
 C
 C
 C       --3.1 CAS : INDEX, TOUT OU MAILLE :
 C       -----------------------------------
         IF (.NOT.UNAUN) THEN
-          CALL GETVTX('DEFI_GROUP_NO','TOUT',IOCC,1,1,KBID,N1)
-          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,1,1,NOSMA,N2)
+          CALL GETVTX('DEFI_GROUP_NO','TOUT',IOCC,IARG,1,KBID,N1)
+          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,IARG,1,
+     &                NOSMA,N2)
           IF (N2.EQ.1) CALL JENONU(JEXNOM(MAG//'.SUPMAIL',NOSMA),NUSMA)
           LPREF=0
           CALL GETLTX('DEFI_GROUP_NO','PREFIXE',IOCC,1,1,LPREF,NBID)
-          CALL GETVIS('DEFI_GROUP_NO','INDEX',IOCC,1,4,INDI,N3)
+          CALL GETVIS('DEFI_GROUP_NO','INDEX',IOCC,IARG,4,INDI,N3)
           LMAIL=INDI(2)-INDI(1)+1
           LGNL=INDI(4)-INDI(3)+1
           LMAIL=MAX(LMAIL,0)
@@ -166,7 +172,7 @@ C       -----------------------------------
           LONGT= LPREF+LMAIL+LGNL
           IF (LONGT.GT.8) CALL U2MESS('F','SOUSTRUC_61')
           IF (LPREF.GT.0)
-     &    CALL GETVTX('DEFI_GROUP_NO','PREFIXE',IOCC,1,1,PREF,NBID)
+     &    CALL GETVTX('DEFI_GROUP_NO','PREFIXE',IOCC,IARG,1,PREF,NBID)
 C
           DO 51, ISMA=1,NBSMA
             IF((N2.EQ.1).AND.(NUSMA.NE.ISMA)) GO TO 51
@@ -229,9 +235,12 @@ C
 C       --3.2 CAS : MAILLE, GROUP_NO_FIN, GROUP_NO_INIT:
 C       -----------------------------------------------
         ELSE
-          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,1,1,NOSMA,N1)
-          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_INIT',IOCC,1,1,NOMGNL,N)
-          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_FIN',IOCC,1,1,NOMGNG,N)
+          CALL GETVTX('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,IARG,1,
+     &                NOSMA,N1)
+          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_INIT',IOCC,IARG,1,
+     &                NOMGNL,N)
+          CALL GETVTX('DEFI_GROUP_NO','GROUP_NO_FIN',IOCC,IARG,1,
+     &                NOMGNG,N)
 C
           CALL JENONU(JEXNOM(MAG//'.SUPMAIL',NOSMA),ISMA)
           I1NOE=ZI(IADIM2-1+4*(ISMA-1)+3)

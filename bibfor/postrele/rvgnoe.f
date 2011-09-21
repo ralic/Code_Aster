@@ -6,7 +6,7 @@
       CHARACTER*24                           NLSTND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C
       CHARACTER*8  COURBE, CRIT, NOMGRN
       CHARACTER*15 NREPND
       CHARACTER*17 NREPGN
+      INTEGER      IARG
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
@@ -77,15 +78,16 @@ C
 C --- RECUPERATION DES ENTITES
 C
       CALL GETVEM(NMAILA,'GROUP_NO',MCF,'GROUP_NO',
-     &                                  IOCC,1,0,ZK8,NBRGPN)
+     &                                  IOCC,IARG,0,ZK8,NBRGPN)
       CALL GETVEM(NMAILA,'NOEUD',MCF,'NOEUD',
-     &                                  IOCC,1,0,ZK8,NBNEUD)
+     &                                  IOCC,IARG,0,ZK8,NBNEUD)
       NBRGPN = -NBRGPN
       NBNEUD = -NBNEUD
       IF ( NBRGPN .NE. 0 ) THEN
          CALL WKVECT('&OP0051.NOM.GRP.ND','V V K8',NBRGPN,AGRPN)
          CALL GETVEM(NMAILA,'GROUP_NO',MCF,'GROUP_NO',
-     &                                    IOCC,1,NBRGPN,ZK8(AGRPN),N1)
+     &                                    IOCC,IARG,NBRGPN,ZK8(AGRPN),
+     &                                    N1)
          DO 10, I = 1, NBRGPN, 1
             CALL JELIRA(JEXNOM(NREPGN,ZK8(AGRPN+I-1)),'LONUTI',N1,K1B)
             NBTND = NBTND + N1
@@ -94,7 +96,7 @@ C
       IF ( NBNEUD .NE. 0 ) THEN
          CALL WKVECT('&OP0051.NOM.NOEUD','V V K8',NBNEUD,ANEUD)
          CALL GETVEM(NMAILA,'NOEUD',MCF,'NOEUD',
-     &                                   IOCC,1,NBNEUD,ZK8(ANEUD),N1)
+     &                                   IOCC,IARG,NBNEUD,ZK8(ANEUD),N1)
          NBTND = NBTND + NBNEUD
       ENDIF
 C
@@ -172,7 +174,7 @@ C
 C
 C --- CAS PARTICULIER
 C
-      CALL GETVR8 ( 'ACTION', 'VECT_Y', IOCC,1,3, VECTY, NY )
+      CALL GETVR8 ( 'ACTION', 'VECT_Y', IOCC,IARG,3, VECTY, NY )
       IF (NY.NE.0) THEN
 C        VERIFICATIONS PRELIMINAIRES
         IF ((NBNEUD.GE.2.AND.NBRGPN.EQ.0).OR.
@@ -196,8 +198,8 @@ C       EXTREMITE
         I2=ZI(ALSTND-1+LIBRE-1)
         CALL JEVEUO ( NMAILA//'.COORDO    .VALE','L', JVALE )
 C       TOLERANCE
-        CALL GETVTX ( MCF, 'CRITERE'  , IOCC,1,1, CRIT  , N1 )
-        CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,1, TOLE  , N1 )
+        CALL GETVTX ( MCF, 'CRITERE'  , IOCC,IARG,1, CRIT  , N1 )
+        CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,1, TOLE  , N1 )
 C       VERIFICATION QUE LES POINTS SONT ALIGNES
         CALL OREINO(NMAILA,ZI(ALSTND),LIBRE-1,I1,I2,ZR(JVALE),CRIT,
      &              TOLE,IERA,IRET)

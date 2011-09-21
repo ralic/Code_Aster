@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C
 
       LOGICAL      DIRECT
       LOGICAL      LBID
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
 C
@@ -278,11 +279,12 @@ C--
          IMODA = 0
          DO 70 I = 1,NBPSMO
             DIRECT = .FALSE.
-            CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,MONAXE,NA)
+            CALL GETVTX('PSEUDO_MODE','AXE',I,IARG,0,MONAXE,NA)
             IF (NA.NE.0) THEN
                NNAXE = -NA
                CALL WKVECT('&&OP0093.AXE','V V K8',NNAXE,JAXE)
-               CALL GETVTX('PSEUDO_MODE','AXE',I,1,NNAXE,ZK8(JAXE),NA)
+               CALL GETVTX('PSEUDO_MODE','AXE',I,IARG,NNAXE,
+     &                     ZK8(JAXE),NA)
                IFIN = 0
                DO 72 IA = 1,NNAXE
                   MONAXE = ZK8(JAXE+IA-1)
@@ -308,7 +310,7 @@ C--
  72            CONTINUE
                CALL JEDETR('&&OP0093.AXE')
             ELSE
-               CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,3,COEF,NA)
+               CALL GETVR8('PSEUDO_MODE','DIRECTION',I,IARG,3,COEF,NA)
                IF (NA.NE.0) THEN
 C              --- ON NORME LA DIRECTION ---
                  XNORM = ZERO
@@ -319,7 +321,8 @@ C              --- ON NORME LA DIRECTION ---
                  DO 82 ID = 1,3
                   COEF(ID) = COEF(ID) * XNORM
  82              CONTINUE
-                 CALL GETVTX('PSEUDO_MODE','NOM_DIR'  ,I,1,1,NOMDIR,NND)
+                 CALL GETVTX('PSEUDO_MODE','NOM_DIR',I,IARG,1,
+     &                       NOMDIR,NND)
                  DIRECT = .TRUE.
                  IFIN = 1
                ELSE

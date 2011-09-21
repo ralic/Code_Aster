@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ----------- FIN COMMUNS NORMALISES JEVEUX ------------------------
       LOGICAL      DEFONC
       INTEGER      IRET,IRET2, LXLGUT
       INTEGER VALI(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -53,9 +54,9 @@ C
       VERIF = ' '
       DEFONC = .FALSE.
       CALL GETRES(NOMFON,TYPFON,NOMCMD)
-      CALL GETVTX(' ','VERIF'   ,0,1,1,VERIF,N1)
-      CALL GETVR8(' ','PARA'    ,0,1,0,TOTO ,N2)
-      CALL GETVID(' ','FONCTION',0,1,0,K8B  ,N3)
+      CALL GETVTX(' ','VERIF'   ,0,IARG,1,VERIF,N1)
+      CALL GETVR8(' ','PARA'    ,0,IARG,0,TOTO ,N2)
+      CALL GETVID(' ','FONCTION',0,IARG,0,K8B  ,N3)
       NBPARA = ABS(N2)
       IF (N3.NE.0) THEN
          NBFONC = -N3
@@ -73,7 +74,7 @@ C
 C     --- VERIFICATION DE LA CROISSANCE DES PARAMETRES ---
       IF ( VERIF .EQ. 'CROISSANT' ) THEN
          CALL WKVECT('&&OP0004.TEMP.PARA','V V R',NBPARA,LPARC)
-         CALL GETVR8(' ','PARA',0,1,NBPARA,ZR(LPARC),N)
+         CALL GETVR8(' ','PARA',0,IARG,NBPARA,ZR(LPARC),N)
 C        VERIF QUE LES PARA SONT STRICT CROISSANTS
          IRET=2
          CALL FOVERF(ZR(LPARC),NBPARA,IRET)
@@ -85,7 +86,7 @@ C        VERIF QUE LES PARA SONT STRICT CROISSANTS
 C
       IF ( DEFONC ) THEN
          DO 10 IOCC=1, NBFONC
-            CALL GETVR8('DEFI_FONCTION','VALE',IOCC,1,0,RBID,NV)
+            CALL GETVR8('DEFI_FONCTION','VALE',IOCC,IARG,0,RBID,NV)
             NV = -NV
             IF (MOD(NV,2) .NE. 0 ) THEN
                VALI (1) = IOCC
@@ -95,7 +96,7 @@ C
                NBCOUP = NV / 2
                CALL WKVECT('&&OP0004.TEMP.PARA','V V R',NV,LPARA)
                CALL WKVECT('&&OP0004.TEMP.PAR2','V V R',NBCOUP,LPAR2)
-               CALL GETVR8('DEFI_FONCTION','VALE',IOCC,1,NV,
+               CALL GETVR8('DEFI_FONCTION','VALE',IOCC,IARG,NV,
      &                                                ZR(LPARA),NBVAL)
                DO 12 I = 0,NBCOUP-1
                   ZR(LPAR2+I) = ZR(LPARA+2*I)
@@ -122,25 +123,25 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
       CALL ASSERT(LXLGUT(NOMFON).LE.24)
       CALL WKVECT(NOMFON//'.PROL','G V K24',NPROL,LPRO)
       ZK24(LPRO  ) = 'NAPPE   '
-      CALL GETVTX(' ','INTERPOL'   ,0,1,2,INTERP,L1)
+      CALL GETVTX(' ','INTERPOL'   ,0,IARG,2,INTERP,L1)
       IF ( L1 .EQ. 1 ) INTERP(2) = INTERP(1)
       ZK24(LPRO+1) = INTERP(1)//INTERP(2)
-      CALL GETVTX(' ','NOM_PARA'   ,0,1,1,ZK24(LPRO+2),L)
-      CALL GETVTX(' ','NOM_RESU'   ,0,1,1,ZK24(LPRO+3),L)
-      CALL GETVTX(' ','PROL_GAUCHE',0,1,1,ZK24(LPRO+4)(1:1),L)
-      CALL GETVTX(' ','PROL_DROITE',0,1,1,ZK24(LPRO+4)(2:2),L)
+      CALL GETVTX(' ','NOM_PARA'   ,0,IARG,1,ZK24(LPRO+2),L)
+      CALL GETVTX(' ','NOM_RESU'   ,0,IARG,1,ZK24(LPRO+3),L)
+      CALL GETVTX(' ','PROL_GAUCHE',0,IARG,1,ZK24(LPRO+4)(1:1),L)
+      CALL GETVTX(' ','PROL_DROITE',0,IARG,1,ZK24(LPRO+4)(2:2),L)
       ZK24(LPRO+5) = NOMFON
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
       CALL WKVECT(NOMFON//'.PARA','G V R',NBPARA,LPAR)
-      CALL GETVR8(' ','PARA',0,1,NBPARA,ZR(LPAR),N)
+      CALL GETVR8(' ','PARA',0,IARG,NBPARA,ZR(LPAR),N)
 C
       CALL WKVECT('&&OP0004.NOM.FONCTIONS','V V K24',NBFONC,LNOMF)
       IF ( DEFONC ) THEN
-         CALL GETVTX(' ','NOM_PARA_FONC',0,1,1,ZK24(LPRO+6),L)
+         CALL GETVTX(' ','NOM_PARA_FONC',0,IARG,1,ZK24(LPRO+6),L)
          MXVA = 0
          DO  20 IFONC = 1, NBFONC
-            CALL GETVR8('DEFI_FONCTION','VALE',IFONC,1,0,RBID,NBVAL)
+            CALL GETVR8('DEFI_FONCTION','VALE',IFONC,IARG,0,RBID,NBVAL)
             MXVA = MAX(MXVA,-NBVAL)
  20      CONTINUE
          CALL WKVECT('&&OP0004.VALEURS.LUES','V V R',MXVA,JVAL)
@@ -149,7 +150,7 @@ C
             ZK24(LNOMF+IFONC-1) = '&&OP0004.F'
             CALL CODENT(IFONC,'G',ZK24(LNOMF+IFONC-1)(11:19))
             ZK24(LNOMF+IFONC-1)(20:24) = '.VALE'
-            CALL GETVR8('DEFI_FONCTION','VALE',IFONC,1,MXVA,
+            CALL GETVR8('DEFI_FONCTION','VALE',IFONC,IARG,MXVA,
      &                                                ZR(JVAL),NBVAL)
             CALL WKVECT(ZK24(LNOMF+IFONC-1),'V V R',NBVAL,LVAL)
             ZI(LADRF+IFONC-1) = LVAL
@@ -177,17 +178,17 @@ C           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
                ENDIF
             ENDIF
 C
-            CALL GETVTX('DEFI_FONCTION','INTERPOL'   ,IFONC,1,2,
+            CALL GETVTX('DEFI_FONCTION','INTERPOL'   ,IFONC,IARG,2,
      &                                                INTERP,L1)
             IF ( L1 .EQ. 1 ) INTERP(2) = INTERP(1)
             ZK24(LPRO+6+2*IFONC-1) = INTERP(1)//INTERP(2)
-            CALL GETVTX('DEFI_FONCTION','PROL_GAUCHE',IFONC,1,1,
+            CALL GETVTX('DEFI_FONCTION','PROL_GAUCHE',IFONC,IARG,1,
      &                                   ZK24(LPRO+6+2*IFONC)(1:1),L)
-            CALL GETVTX('DEFI_FONCTION','PROL_DROITE',IFONC,1,1,
+            CALL GETVTX('DEFI_FONCTION','PROL_DROITE',IFONC,IARG,1,
      &                                   ZK24(LPRO+6+2*IFONC)(2:2),L)
  30      CONTINUE
       ELSE
-         CALL GETVID(' ','FONCTION',0,1,NBFONC,ZK24(LNOMF),N)
+         CALL GETVID(' ','FONCTION',0,IARG,NBFONC,ZK24(LNOMF),N)
          CALL FOVERN(ZK24(LNOMF),NBFONC,ZK24(LPRO),IRET)
       ENDIF
 C

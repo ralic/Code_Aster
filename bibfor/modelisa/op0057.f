@@ -5,7 +5,7 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,9 @@ C       D ACIER
 C-----------------------------------------------------------------------
       INTEGER IBID
       CHARACTER*16 RELAT
+      INTEGER      IARG
 
-      CALL GETVTX(' ','RELATION',1,1,1,RELAT,IBID)
+      CALL GETVTX(' ','RELATION',1,IARG,1,RELAT,IBID)
 
       IF (RELAT(1:11) .EQ. 'GLRC_DAMAGE') THEN
         CALL DGLRDA()

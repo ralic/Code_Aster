@@ -3,7 +3,7 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,6 +79,7 @@ C
       CHARACTER*8   NOGRNO, TYPMAI, NOGRNP
       CHARACTER*24  GRPNOE
       CHARACTER*32  JEXNOM
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C     ON ORDONNE LES NOEUDS SELON L'ORDRE DES MAILLES
@@ -87,21 +88,21 @@ C
       CALL ORDGMN(MAILLA,'PFONDFIS')
 C
       CALL GETVEM(MAILLA,'GROUP_NO', 'EQUE_PIQUA','GROUP_NO',
-     +              1,1,1,NOGRNO,N1)
+     +              1,IARG,1,NOGRNO,N1)
 C
-      CALL GETVR8 ( 'EQUE_PIQUA', 'E_BASE'   , 1,1,1, EPT1 , N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'DEXT_BASE', 1,1,1, DET1 , N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'L_BASE'   , 1,1,1, D1   , N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'L_CHANF'  , 1,1,1, D2   , N1 )
-      CALL GETVTX ( 'EQUE_PIQUA', 'TYPE'     , 1,1,1, TYPSOU,N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'H_SOUD'   , 1,1,1, H    , N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'ANGL_SOUD', 1,1,1, ALPHA, N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'JEU_SOUD' , 1,1,1, JEU  , N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'E_CORP'   , 1,1,1, EPC  , N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'DEXT_CORP', 1,1,1, DEC  , N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'AZIMUT   ', 1,1,1, THETA, N1 )
-      CALL GETVTX ( 'EQUE_PIQUA', 'RAFF_MAIL', 1,1,1, TYPMAI,N1 )
-      CALL GETVR8 ( 'EQUE_PIQUA', 'X_MAX'    , 1,1,1, XMAX , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'E_BASE'   , 1,IARG,1, EPT1 , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'DEXT_BASE', 1,IARG,1, DET1 , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'L_BASE'   , 1,IARG,1, D1   , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'L_CHANF'  , 1,IARG,1, D2   , N1 )
+      CALL GETVTX ( 'EQUE_PIQUA', 'TYPE'     , 1,IARG,1, TYPSOU,N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'H_SOUD'   , 1,IARG,1, H    , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'ANGL_SOUD', 1,IARG,1, ALPHA, N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'JEU_SOUD' , 1,IARG,1, JEU  , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'E_CORP'   , 1,IARG,1, EPC  , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'DEXT_CORP', 1,IARG,1, DEC  , N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'AZIMUT   ', 1,IARG,1, THETA, N1 )
+      CALL GETVTX ( 'EQUE_PIQUA', 'RAFF_MAIL', 1,IARG,1, TYPMAI,N1 )
+      CALL GETVR8 ( 'EQUE_PIQUA', 'X_MAX'    , 1,IARG,1, XMAX , N1 )
 C
 C
       RMC = ( DEC - EPC ) / 2.0D0

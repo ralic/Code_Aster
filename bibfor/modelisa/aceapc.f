@@ -3,7 +3,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 CARTAR
       CHARACTER*24 TMPNAR, TMPVAR, MLGGMA, MLGNMA, MLGCNX, MLGCOO
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IFM  = IUNIFI('MESSAGE')
@@ -108,19 +109,29 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CAARPO
          XSIZ = 1.D0
 C
          CALL GETVEM(NOMA,'GROUP_MA','DEFI_ARC','GROUP_MA',
-     &              IOC,1,LMAX,ZK8(JDLS),NG)
+     &              IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','DEFI_ARC','MAILLE',
-     &            IOC,1,LMAX,ZK8(JDLS),NM)
-         CALL GETVR8('DEFI_ARC','RAYON'    , IOC,1,1,    XRC      ,NR  )
-         CALL GETVR8('DEFI_ARC','ORIE_ARC' , IOC,1,1,    XANG     ,NA  )
-         CALL GETVR8('DEFI_ARC','COEF_FLEX', IOC,1,1,    XFL      ,NF  )
-         CALL GETVR8('DEFI_ARC','COEF_FLEX_XY',IOC,1,1,  XFLY     ,NFY )
-         CALL GETVR8('DEFI_ARC','COEF_FLEX_XZ',IOC,1,1,  XFLZ     ,NFZ )
-         CALL GETVR8('DEFI_ARC','INDI_SIGM', IOC,1,1,    XSI      ,NS  )
-         CALL GETVR8('DEFI_ARC','INDI_SIGM_XY',IOC,1,1,  XSIY     ,NSY )
-         CALL GETVR8('DEFI_ARC','INDI_SIGM_XZ',IOC,1,1,  XSIZ     ,NSZ )
-         CALL GETVTX('DEFI_ARC','CRITERE'  , IOC,1,1,    CRIT     ,N1  )
-         CALL GETVR8('DEFI_ARC','PRECISION', IOC,1,1,    EPSI     ,N2  )
+     &            IOC,IARG,LMAX,ZK8(JDLS),NM)
+         CALL GETVR8('DEFI_ARC','RAYON',IOC,IARG,1,
+     &               XRC      ,NR  )
+         CALL GETVR8('DEFI_ARC','ORIE_ARC',IOC,IARG,1,
+     &               XANG     ,NA  )
+         CALL GETVR8('DEFI_ARC','COEF_FLEX',IOC,IARG,1,
+     &               XFL      ,NF  )
+         CALL GETVR8('DEFI_ARC','COEF_FLEX_XY',IOC,IARG,1,
+     &               XFLY     ,NFY )
+         CALL GETVR8('DEFI_ARC','COEF_FLEX_XZ',IOC,IARG,1,
+     &               XFLZ     ,NFZ )
+         CALL GETVR8('DEFI_ARC','INDI_SIGM',IOC,IARG,1,
+     &               XSI      ,NS  )
+         CALL GETVR8('DEFI_ARC','INDI_SIGM_XY',IOC,IARG,1,
+     &               XSIY     ,NSY )
+         CALL GETVR8('DEFI_ARC','INDI_SIGM_XZ',IOC,IARG,1,
+     &               XSIZ     ,NSZ )
+         CALL GETVTX('DEFI_ARC','CRITERE',IOC,IARG,1,
+     &               CRIT     ,N1  )
+         CALL GETVR8('DEFI_ARC','PRECISION',IOC,IARG,1,
+     &               EPSI     ,N2  )
 C
          CALL UTCONO ( 'DEFI_ARC', MCLEPT, IOC, NOMA, NDIM, XTAN, NP )
 C

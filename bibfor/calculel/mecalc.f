@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,6 +81,7 @@ C PARAMETRES D'APPELS
       INTEGER IAUX,IBID,IRET1,IRET2,IER,NB,NBIN,NBOUT,IFM,NIV,IRET,IFISS
       INTEGER I1,I2,INDIK8
       LOGICAL INDMEC
+      INTEGER      IARG
 
       CHDEP2 = CHDEPL
       CHELE2 = CHELEM
@@ -332,7 +333,7 @@ CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
                LPAOUT(1) = 'PMINMAX'
             ELSE IF (OPTIO2.EQ.'VAEX_ELGA') THEN
                NOMA=CHGEOM(1:8)
-               CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
+               CALL GETVTX(' ','NOM_VARI',0,IARG,1,VARI,IBID)
                CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
      &                     IBID,R8B,C16B,VARI )
 
@@ -343,7 +344,7 @@ CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
                NBIN =2
             ELSE IF (OPTIO2.EQ.'VAEX_ELNO') THEN
                NOMA=CHGEOM(1:8)
-               CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
+               CALL GETVTX(' ','NOM_VARI',0,IARG,1,VARI,IBID)
                CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
      &                     IBID,R8B,C16B,VARI )
                LPAIN(1) = 'PVARINR'

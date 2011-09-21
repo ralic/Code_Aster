@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/09/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*24 CNOM,VALK(3)
 
       LOGICAL LCOC
+      INTEGER      IARG
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
@@ -115,7 +116,7 @@ C     ---------------------------------------------------------
 
 C       2.1 VERIFICATION DES CARACTERISTIQUES DU CHAMP :
 C       ------------------------------------------------
-        CALL GETVID('ASSE','CHAM_GD',IOCC,1,1,CHAMP,IB)
+        CALL GETVID('ASSE','CHAM_GD',IOCC,IARG,1,CHAMP,IB)
         ZK24(LNOM+IOCC-1) = CHAMP
         CALL DISMOI('F','TYPE_CHAMP',CHAMP,'CHAMP',IB,TYCH2,IB)
         CALL DISMOI('F','NOM_MAILLA',CHAMP,'CHAMP',IB,MA2,IB)
@@ -178,29 +179,30 @@ C     4- BOUCLE SUR LES OCCURENCES DU MOT CLE "ASSE" :
 C     -----------------------------------------------------
       NCHG = 0
       DO 20,IOCC = 1,NBOCC
-        CALL GETVID('ASSE','CHAM_GD',IOCC,1,1,CHAMP,IB)
+        CALL GETVID('ASSE','CHAM_GD',IOCC,IARG,1,CHAMP,IB)
         CALL DISMOI('F','TYPE_CHAMP',CHAMP,'CHAMP',IB,TYCH2,IB)
 
         CUMUL = .FALSE.
-        CALL GETVTX('ASSE','CUMUL',IOCC,1,1,KBID,IB)
+        CALL GETVTX('ASSE','CUMUL',IOCC,IARG,1,KBID,IB)
         IF (KBID.EQ.'OUI') CUMUL = .TRUE.
 
 C       4.0 CALCUL DE LA LISTE DES CMPS ET DU BOOLEEN CHGCMP
 C        QUI INDIQUE QUE L'ON DOIT MODIFIER LES CMPS ET/OU LA GRANDEUR.
 C       ---------------------------------------------------------------
-        CALL GETVTX('ASSE','NOM_CMP',IOCC,1,0,KBID,N1)
+        CALL GETVTX('ASSE','NOM_CMP',IOCC,IARG,0,KBID,N1)
         CHGCMP = .FALSE.
         IF (N1.LT.0) THEN
           NCMP = -N1
           CALL WKVECT('&&CHPASS.LICMP','V V K8',NCMP,JLICMP)
-          CALL GETVTX('ASSE','NOM_CMP',IOCC,1,NCMP,ZK8(JLICMP),IB)
-          CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,1,0,KBID,N1)
+          CALL GETVTX('ASSE','NOM_CMP',IOCC,IARG,NCMP,ZK8(JLICMP),IB)
+          CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,IARG,0,KBID,N1)
           IF (N1.LT.0) THEN
             CHGCMP = .TRUE.
             NCHG = NCHG + 1
             IF (N1.NE.-NCMP) CALL U2MESS('F','UTILITAI_31')
             CALL WKVECT('&&CHPASS.LICMP2','V V K8',NCMP,JLICM2)
-            CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,1,NCMP,ZK8(JLICM2),
+            CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,IARG,NCMP,
+     &                  ZK8(JLICM2),
      &                  IB)
           ENDIF
 
@@ -221,7 +223,7 @@ C       ------------------------------------------------------
 
 
         CALL DISMOI('F','TYPE_SCA',NOMGD2,'GRANDEUR',IB,TSCA,IB)
-        CALL GETVC8('ASSE','COEF_C',IOCC,1,1,COEFC,IRET)
+        CALL GETVC8('ASSE','COEF_C',IOCC,IARG,1,COEFC,IRET)
         IF (IRET.NE.0) THEN
           IF (TSCA.NE.'C') THEN
             CALL U2MESS('F','UTILITAI_33')
@@ -230,7 +232,7 @@ C       ------------------------------------------------------
 
         ELSE
           LCOC = .FALSE.
-          CALL GETVR8('ASSE','COEF_R',IOCC,1,1,COEFR,IB)
+          CALL GETVR8('ASSE','COEF_R',IOCC,IARG,1,COEFR,IB)
         ENDIF
 
 C       4.2 RECUPERATION DE LA LISTE DES NOEUDS OU MAILLES :

@@ -8,7 +8,7 @@
      &                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
       CHARACTER*24 NOMCH0
       CHARACTER*80 TITRE
       LOGICAL      LAMOR
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -64,12 +65,12 @@ C
       MANOMA = NOMA//'.CONNEX'
       LAMOR = IAMOR .NE. 0
       CALL GETRES( K8B, K8B, NOMCMD )
-      CALL GETVIS(' ','UNITE'     ,1,1,1,IFMIS ,NU)
+      CALL GETVIS(' ','UNITE'     ,1,IARG,1,IFMIS ,NU)
       CALL ULOPEN( IFMIS,' ',' ','NEW','O')
-      CALL GETVTX(' ','IMPR_MODE_STAT' ,1,1,1,IMPMOD,NI)
-      CALL GETVTX(' ','IMPR_MODE_MECA' ,1,1,1,IMPMEC,NI)
-      CALL GETVTX(' ','FORMAT_R',1,1,1,FORMIM,NF)
-      CALL GETVTX(' ','SOUS_TITRE',1,1,1,TITRE ,NTI)
+      CALL GETVTX(' ','IMPR_MODE_STAT' ,1,IARG,1,IMPMOD,NI)
+      CALL GETVTX(' ','IMPR_MODE_MECA' ,1,IARG,1,IMPMEC,NI)
+      CALL GETVTX(' ','FORMAT_R',1,IARG,1,FORMIM,NF)
+      CALL GETVTX(' ','SOUS_TITRE',1,IARG,1,TITRE ,NTI)
 C
 C
 C     --- ON RECUPERE LE TYPE D'INTERFACE ---
@@ -104,13 +105,13 @@ C
          WRITE(IMESS,'(A80)') TITRE
       ENDIF
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_INTERF',
-     &          1,1,0,K8B,NBGR)
+     &          1,IARG,0,K8B,NBGR)
       NBGR = -NBGR
       CALL WKVECT('&&IREDM1.GROUP_SOLSTRU','V V K8',NBGR,IDGM)
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_INTERF',
-     &          1,1,NBGR,ZK8(IDGM),NBV)
+     &          1,IARG,NBGR,ZK8(IDGM),NBV)
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_FLU_STR',
-     &           1,1,0,K8B,NBGR2)
+     &           1,IARG,0,K8B,NBGR2)
       NBGR2 = -NBGR2
       IF (NBGR2.EQ.0) THEN
        CALL WKVECT('&&IREDM1.GROUP_FLUSTRU','V V K8',1,IDGM2)
@@ -118,9 +119,9 @@ C
        CALL WKVECT('&&IREDM1.GROUP_FLUSTRU','V V K8',NBGR2,IDGM2)
       ENDIF
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_FLU_STR',
-     &           1,1,NBGR2,ZK8(IDGM2),NBV)
+     &           1,IARG,NBGR2,ZK8(IDGM2),NBV)
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_FLU_SOL',
-     &           1,1,0,K8B,NBGR3)
+     &           1,IARG,0,K8B,NBGR3)
       NBGR3 = -NBGR3
       IF (NBGR3.EQ.0) THEN
        CALL WKVECT('&&IREDM1.GROUP_FLUSOL','V V K8',1,IDGM3)
@@ -128,9 +129,9 @@ C
        CALL WKVECT('&&IREDM1.GROUP_FLUSOL','V V K8',NBGR3,IDGM3)
       ENDIF
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_FLU_SOL',
-     &           1,1,NBGR3,ZK8(IDGM3),NBV)
+     &           1,IARG,NBGR3,ZK8(IDGM3),NBV)
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_SOL_SOL',
-     &           1,1,0,K8B,NBGR4)
+     &           1,IARG,0,K8B,NBGR4)
       NBGR4 = -NBGR4
       IF (NBGR4.EQ.0) THEN
        CALL WKVECT('&&IREDM1.GROUP_LIBRE','V V K8',1,IDGM4)
@@ -138,9 +139,9 @@ C
        CALL WKVECT('&&IREDM1.GROUP_LIBRE','V V K8',NBGR4,IDGM4)
       ENDIF
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_SOL_SOL',
-     &           1,1,NBGR4,ZK8(IDGM4),NBV)
+     &           1,IARG,NBGR4,ZK8(IDGM4),NBV)
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_CONTROL',
-     &           1,1,0,K8B,NBGR5)
+     &           1,IARG,0,K8B,NBGR5)
       NBGR5 = -NBGR5
       IF (NBGR5.EQ.0) THEN
        CALL WKVECT('&&IREDM1.GROUP_CONTROL','V V K8',1,IDGM5)
@@ -148,7 +149,7 @@ C
        CALL WKVECT('&&IREDM1.GROUP_CONTROL','V V K8',NBGR5,IDGM5)
       ENDIF
       CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA_CONTROL',
-     &           1,1,NBGR5,ZK8(IDGM5),NBV)
+     &           1,IARG,NBGR5,ZK8(IDGM5),NBV)
 C
 C
 C        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE

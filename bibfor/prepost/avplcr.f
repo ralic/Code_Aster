@@ -14,7 +14,7 @@
       REAL*8        CUDOMX, NXM, NYM, NZM
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -101,6 +101,7 @@ C     ------------------------------------------------------------------
       REAL*8        VECN2(3*NBVEC), VECU2(3*NBVEC), VECV2(3*NBVEC) 
       REAL*8        VECN1(3*NBVEC), VECU1(3*NBVEC), VECV1(3*NBVEC)
       REAL*8        DGAM2, PI, R8PI, PHI0  
+      INTEGER      IARG
 C     --------------------------
       EPSILO = 1.0D-7
       PI = R8PI()
@@ -109,7 +110,7 @@ C     --------------------------
          
          METHOD = 'RAINFLOW'
     
-         CALL GETVR8(' ','DELTA_OSCI',1,1,1,PSEUIL,NVAL)
+         CALL GETVR8(' ','DELTA_OSCI',1,IARG,1,PSEUIL,NVAL)
             
          CALL  AVCIPR( NBVEC1, VECTN, VECTU, VECTV,
      &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,  

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
       CHARACTER*24  VALK(3)
+      INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -66,7 +67,7 @@ C
 C ---  RECUPERATIONS RELATIVES AU MAILLAGE
 C      -----------------------------------
 C
-      CALL GETVID (' ', 'MAILLAGE', 0, 1, 1, NOMA, NBOCC)
+      CALL GETVID (' ', 'MAILLAGE', 0,IARG, 1, NOMA, NBOCC)
 C
 C     ---------------------------------------------------------------
 C     RECUPERATION DU TYPE DE FOND 
@@ -76,9 +77,10 @@ C
       CALL GETFAC ( 'FOND_FISS', NBOCC )
       DO 1 IOCC=1,NBOCC
       
-        CALL GETVTX ( 'FOND_FISS', 'TYPE_FOND', IOCC,1,0, K6B, N1)
+        CALL GETVTX ( 'FOND_FISS', 'TYPE_FOND', IOCC,IARG,0, K6B, N1)
         IF (N1.NE.0) THEN
-          CALL GETVTX ( 'FOND_FISS', 'TYPE_FOND', IOCC,1,1, TYPFON, N1)
+          CALL GETVTX ('FOND_FISS','TYPE_FOND',IOCC,IARG,1,
+     &                 TYPFON, N1)
         ELSE
           TYPFON = 'OUVERT'
         ENDIF
@@ -117,12 +119,12 @@ C
           NDONN = 6
         ENDIF
         DO 11 IDONN=1,NDONN
-          CALL GETVTX ( 'FOND_FISS', MOTCL(IDONN), IOCC,1,0, K8B, N1)
+          CALL GETVTX ( 'FOND_FISS', MOTCL(IDONN), IOCC,IARG,0, K8B, N1)
           N1 = -N1
           IF (N1.GT.0) THEN
             CALL WKVECT ('&&'//NOMPRO//'.'//MOTCL(IDONN),
      &                     'V V K8', N1, IADR1)
-            CALL GETVTX('FOND_FISS', MOTCL(IDONN), IOCC,1,N1,
+            CALL GETVTX('FOND_FISS', MOTCL(IDONN), IOCC,IARG,N1,
      &                     ZK8(IADR1),N2)
             DO 111 IDON=1,N1
               ENTNOM = ZK8(IADR1-1 + IDON)

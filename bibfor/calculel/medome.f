@@ -7,7 +7,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/05/2011   AUTEUR DESROCHE X.DESROCHES 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19  EXCIT, KNUM
       CHARACTER*8 CRIT
       LOGICAL LPOST
+      INTEGER      IARG
       CALL JEMARQ()
 
 C              12345678
@@ -82,15 +83,15 @@ C
      &        (NOMCMD.EQ.'POST_ELEM')
 
       IF ( LPOST.AND.(RESULT(1:1).NE.' '))THEN
-        CALL GETVIS(' ','NUME_ORDRE',0,1,1,NUORD,INUORD)
+        CALL GETVIS(' ','NUME_ORDRE',0,IARG,1,NUORD,INUORD)
         IF(INUORD.EQ.0.AND.NOMCMD.EQ.'POST_ELEM') THEN
 C
 C     L'UTILISATEUR N'A PAS FOURNI DE NUMERO D'ORDRE :
 C     RECUPERATION DU PREMIER NUMERO D'ORDRE DANS LA SD RESULTAT
 C     ----------------------------------------------------------
           KNUM =   '&&'//NOMPRO//'.NUME_ORDRE'
-          CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
-          CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+          CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
+          CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
           CALL RSUTNU(RESULT,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
           CALL JEVEUO(KNUM,'L',JORDR)
           NUORD = ZI(JORDR)
@@ -125,16 +126,16 @@ C
         ENDIF
       ELSE
 
-        CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
+        CALL GETVID(' ','MODELE'    ,0,IARG,1,MODELE,N1)
         IF (N1.EQ.0) CALL U2MESS('F','CALCULEL6_84')
 
-        CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
+        CALL GETVID(' ','CARA_ELEM' ,0,IARG,1,CARA  ,N2)
         CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)
         IF ((N2.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
      &      CALL U2MESS('A','CALCULEL3_39')
 
 
-        CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N3)
+        CALL GETVID(' ','CHAM_MATER',0,IARG,1,MATERI,N3)
         CALL DISMOI('F','BESOIN_MATER',MODELE,'MODELE',IBID,K8B,IE)
         IF ((NOMCMD.NE.'CALC_MATR_ELEM').AND.
      &    (N3.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
@@ -152,10 +153,10 @@ C
 C   SI IEXCIT=1 ON PREND LE CHARGEMENT DONNE PAR L'UTILISATEUR
 C
       IF(IEXCIT.EQ.1) THEN
-        CALL GETVID(' ','CHARGE'    ,0,1,0,K8B   ,N4)
+        CALL GETVID(' ','CHARGE'    ,0,IARG,0,K8B   ,N4)
         NCHA = -N4
         CALL WKVECT( KCHA ,'V V K8',MAX(1,NCHA),ICHA)
-        CALL GETVID(' ','CHARGE',0,1,NCHA,ZK8(ICHA),N4)
+        CALL GETVID(' ','CHARGE',0,IARG,NCHA,ZK8(ICHA),N4)
 C
 C     -- ON VERIFIE QUE LES CHARGES PORTENT TOUTES SUR LE MEME MODELE.
         IF (NCHA.GT.0) THEN

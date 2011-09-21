@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMSD,NOMSY, TYPMAX,NOCHAM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*19  NOCHA2, CHEXTR, KNUM
       CHARACTER*24 NOMNOE
       CHARACTER*5 SUFV
+      INTEGER      IARG
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       KNUM   = '&&CHMIMA.NUME_ORDRE'
@@ -65,12 +66,12 @@ C ----------------------------------------------------------------------
 C
 C     --- LECTURE DU MOT-CLE TYPE_RESU ---
 C
-      CALL GETVTX(' ','TYPE_RESU'  ,1,1,1,VALEUR,N2)
+      CALL GETVTX(' ','TYPE_RESU'  ,1,IARG,1,VALEUR,N2)
 C
 C     --- RECUPERATION DES NUMEROS D'ORDRE ---
 C
-      CALL GETVR8(' ','PRECISION',1,1,1,EPSI,NP)
-      CALL GETVTX(' ','CRITERE'  ,1,1,1,CRIT,NC)
+      CALL GETVR8(' ','PRECISION',1,IARG,1,EPSI,NP)
+      CALL GETVTX(' ','CRITERE'  ,1,IARG,1,CRIT,NC)
 C
       CALL RSUTNU ( NOMSD, ' ', 0, KNUM, NBORDR, EPSI, CRIT, IRET )
       IF ( NBORDR .EQ. 0 ) THEN

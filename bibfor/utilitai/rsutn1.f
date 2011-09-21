@@ -5,7 +5,7 @@
       CHARACTER*(*)    RESU, MOTCLE, OBJVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,13 +55,14 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   K8B, CRIT
       CHARACTER*24  KNUME
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
 C     --- LECTURE DE LA PRECISION ET DU CRITERE ---
 C
-      CALL GETVR8 ( MOTCLE, 'PRECISION', IOCC,1,1, PREC, NP )
-      CALL GETVTX ( MOTCLE, 'CRITERE'  , IOCC,1,1, CRIT, NC )
+      CALL GETVR8 ( MOTCLE, 'PRECISION', IOCC,IARG,1, PREC, NP )
+      CALL GETVTX ( MOTCLE, 'CRITERE'  , IOCC,IARG,1, CRIT, NC )
 C
 C     --- RECUPERATION DES NUMEROS D'ORDRE ---
 C

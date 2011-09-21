@@ -5,7 +5,7 @@
       CHARACTER*(*) MCFAC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +40,10 @@ C                  0 SINON
 C ----------------------------------------------------------------------
       INTEGER IBID,N2,IRET,IVARI
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
-      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,1,1,NOMCMP,N2)
+      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,IARG,1,NOMCMP,N2)
       CALL ASSERT(N2.EQ.1)
 
 

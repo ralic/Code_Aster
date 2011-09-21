@@ -3,7 +3,7 @@
       CHARACTER*(*)       BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMCMD, TYPCON
       CHARACTER*19 NOMFON
       CHARACTER*24 VITE , NUMEO , NUMO , FREQ
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -60,10 +61,10 @@ C
 C
 C     --- RECUPERATION DES ENTREES ---
 C
-      CALL GETVTX(' ','PARA_Y'    ,0,1,1,PARAY ,N2)
-      CALL GETVTX(' ','TOUT_ORDRE',0,1,1,TTORDR,N3)
-      CALL GETVIS(' ','NUME_MODE' ,0,1,1,NUMMOD,N4)
-      CALL GETVTX(' ','INTERPOL'  ,0,1,2,INTERP,N5)
+      CALL GETVTX(' ','PARA_Y'    ,0,IARG,1,PARAY ,N2)
+      CALL GETVTX(' ','TOUT_ORDRE',0,IARG,1,TTORDR,N3)
+      CALL GETVIS(' ','NUME_MODE' ,0,IARG,1,NUMMOD,N4)
+      CALL GETVTX(' ','INTERPOL'  ,0,IARG,2,INTERP,N5)
       IF ( N5 .EQ. 1 ) INTERP(2) = INTERP(1)
 C
 C     --- REMPLISSAGE DU .PROL ---
@@ -91,10 +92,10 @@ C   --- VERIFICATION DE LA VALIDITE DES NUMEROS D'ORDRE DES VITESSES -
 C
       IF ( TTORDR .NE. 'OUI' ) THEN
          NUMEO = '&&RFBEFL.NUME_ORDRE'
-         CALL GETVIS(' ','NUME_ORDRE',0,1,0,IBID,NBNO)
+         CALL GETVIS(' ','NUME_ORDRE',0,IARG,0,IBID,NBNO)
          NBNO = -NBNO
          CALL WKVECT(NUMEO,'V V I',NBNO,INUMEO)
-         CALL GETVIS(' ','NUME_ORDRE',0,1,NBNO,ZI(INUMEO),N1)
+         CALL GETVIS(' ','NUME_ORDRE',0,IARG,NBNO,ZI(INUMEO),N1)
          MIN = ZI(INUMEO)
          DO 10 I = 1,NBNO
             ID = MIN - ZI(INUMEO + I - 1)

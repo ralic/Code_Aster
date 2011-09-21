@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  K8B
       CHARACTER*19 CARTGR
       CHARACTER*24 TMPNGR, TMPVGR, NOMAGR, NOMAMA, CONNEX
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ( )
 C
@@ -95,15 +96,15 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
         CTR    = 1.D-10
 C
         CALL GETVEM(NOMA,'GROUP_MA','GRILLE','GROUP_MA',
-     &           IOC,1,LMAX,ZK8(JDLS),NG)
+     &           IOC,IARG,LMAX,ZK8(JDLS),NG)
         CALL GETVEM(NOMA,'MAILLE','GRILLE','MAILLE',
-     &         IOC,1,LMAX,ZK8(JDLS),NM)
+     &         IOC,IARG,LMAX,ZK8(JDLS),NM)
 C
-        CALL GETVR8('GRILLE','SECTION'      ,IOC,1,1   ,SL       ,N1)
-        CALL GETVR8('GRILLE','ANGL_REP'     ,IOC,1,2   ,ANG      ,N2)
-        CALL GETVR8('GRILLE','EXCENTREMENT' ,IOC,1,1   ,EZ       ,N3)
-        CALL GETVR8('GRILLE','COEF_RIGI_DRZ',IOC,1,1   ,CTR      ,N4)
-        CALL GETVR8('GRILLE','ORIG_AXE'     ,IOC,1,0   ,ORIG     ,N5)
+        CALL GETVR8('GRILLE','SECTION'      ,IOC,IARG,1   ,SL       ,N1)
+        CALL GETVR8('GRILLE','ANGL_REP'     ,IOC,IARG,2   ,ANG      ,N2)
+        CALL GETVR8('GRILLE','EXCENTREMENT' ,IOC,IARG,1   ,EZ       ,N3)
+        CALL GETVR8('GRILLE','COEF_RIGI_DRZ',IOC,IARG,1   ,CTR      ,N4)
+        CALL GETVR8('GRILLE','ORIG_AXE'     ,IOC,IARG,0   ,ORIG     ,N5)
 C
         ZR(JDVC  ) = SL
         ZR(JDVC+1) = ANG(1)
@@ -127,8 +128,8 @@ C ---     "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 C
         ELSE
 C
-           CALL GETVR8 ( 'GRILLE', 'ORIG_AXE', IOC,1,3 ,ORIG, N5 )
-           CALL GETVR8 ( 'GRILLE', 'AXE'     , IOC,1,3 ,AXEZ, N5 )
+           CALL GETVR8 ( 'GRILLE', 'ORIG_AXE', IOC,IARG,3 ,ORIG, N5 )
+           CALL GETVR8 ( 'GRILLE', 'AXE'     , IOC,IARG,3 ,AXEZ, N5 )
 C
            IF (NG.GT.0) THEN
              NBMAT = 0

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
       CHARACTER*4  NOMCHA
       REAL*8       A(3), A2(3)
       LOGICAL      LISSF
+      INTEGER      IARG
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -63,17 +64,17 @@ C
 C
 C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
-      CALL GETVIS(' ','UNITE_RESU_FORC',1,1,1,IFMIS,N1)
-      CALL GETVTX (' ','NOM_CMP',1,1,1,NOMCMP,NC )
+      CALL GETVIS(' ','UNITE_RESU_FORC',1,IARG,1,IFMIS,N1)
+      CALL GETVTX (' ','NOM_CMP',1,IARG,1,NOMCMP,NC )
       IF (NC.EQ.0) THEN
-        CALL GETVIS(' ','NUME_CHAR',1,1,1,IC,N1)
+        CALL GETVIS(' ','NUME_CHAR',1,IARG,1,IC,N1)
       ENDIF
-      CALL GETVTX (' ','NOM_CHAM',1,1,1,NOMCHA,IBID )
-      CALL GETVR8(' ','FREQ_EXTR',1,1,1,FREQ,NFR)
+      CALL GETVTX (' ','NOM_CHAM',1,IARG,1,NOMCHA,IBID )
+      CALL GETVR8(' ','FREQ_EXTR',1,IARG,1,FREQ,NFR)
       LISSF = .FALSE.
-      CALL GETVTX ( ' ', 'ISSF' , 1,1,1, TISSF, N2 )
+      CALL GETVTX ( ' ', 'ISSF' , 1,IARG,1, TISSF, N2 )
       IF (TISSF(1:3).EQ.'OUI') LISSF = .TRUE.
-      CALL GETVTX (' ','NOM_RESU_FORC',1,1,1,FICHI,NF )
+      CALL GETVTX (' ','NOM_RESU_FORC',1,IARG,1,FICHI,NF )
       IF ( NF .EQ. 0 ) THEN
         K16NOM = ' '
         IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN
@@ -84,8 +85,8 @@ C
       ENDIF
       CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ,ICF)
 C      WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IF= ',ICF
-      CALL GETVID ( ' ', 'BASE'          , 1,1,1, BASEMO, N4 )
-      CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,1,1, NUMGEN, N2 )
+      CALL GETVID ( ' ', 'BASE'          , 1,IARG,1, BASEMO, N4 )
+      CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,IARG,1, NUMGEN, N2 )
 C
       CALL GETTCO ( BASEMO, TYPBAS )
 C

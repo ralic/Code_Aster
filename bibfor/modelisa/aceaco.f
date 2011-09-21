@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  INERT, KORREC, K8B
       CHARACTER*19 CARTCO, K19B
       CHARACTER*24 TMPNCO, TMPVCO
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       PI=R8PI()
@@ -89,24 +90,32 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
          XINER  = 0.D0
          INERT = 'NON'
          CALL GETVEM(NOMA,'GROUP_MA','COQUE','GROUP_MA',
-     +                                IOC,1,LMAX,ZK8(JDLS),NG)
+     +                                IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',  'COQUE','MAILLE',
-     +                                IOC,1,LMAX,ZK8(JDLS),NM)
-         CALL GETVR8('COQUE','EPAIS'        ,IOC,1,1   ,EPA      ,NV  )
+     +                                IOC,IARG,LMAX,ZK8(JDLS),NM)
+         CALL GETVR8('COQUE','EPAIS',IOC,IARG,1,
+     &               EPA      ,NV  )
 C ET POUR LES PARA_SENSI
-         CALL GETVID ( 'COQUE', 'EPAIS_F',IOC,1,0, K8B , NVALF)
+         CALL GETVID ( 'COQUE', 'EPAIS_F',IOC,IARG,0, K8B , NVALF)
          IF (NVALF .NE. 0) THEN
-           CALL GETVID ('COQUE','EPAIS_F',IOC,1,1, K19B ,NVALF)
+           CALL GETVID ('COQUE','EPAIS_F',IOC,IARG,1, K19B ,NVALF)
            CALL JEVEUO(K19B//'.VALE','L',LVAL)
            EPA = ZR(LVAL+1)
          ENDIF
-         CALL GETVR8('COQUE','ANGL_REP'     ,IOC,1,2   ,ANG(1)   ,NA  )
-         CALL GETVR8('COQUE','VECTEUR'      ,IOC,1,3   ,VECT     ,NVEC)
-         CALL GETVR8('COQUE','A_CIS'        ,IOC,1,1   ,KAPPA    ,NK  )
-         CALL GETVTX('COQUE','MODI_METRIQUE',IOC,1,1   ,KORREC   ,NCO )
-         CALL GETVR8('COQUE','COEF_RIGI_DRZ',IOC,1,1   ,RIGI     ,NCR )
-         CALL GETVR8('COQUE','EXCENTREMENT' ,IOC,1,1   ,EXCENT   ,NEX )
-         CALL GETVTX('COQUE','INER_ROTA'    ,IOC,1,1   ,INERT    ,NIN )
+         CALL GETVR8('COQUE','ANGL_REP',IOC,IARG,2,
+     &               ANG(1)   ,NA  )
+         CALL GETVR8('COQUE','VECTEUR',IOC,IARG,3,
+     &               VECT     ,NVEC)
+         CALL GETVR8('COQUE','A_CIS',IOC,IARG,1,
+     &               KAPPA    ,NK  )
+         CALL GETVTX('COQUE','MODI_METRIQUE',IOC,IARG,1,
+     &               KORREC   ,NCO )
+         CALL GETVR8('COQUE','COEF_RIGI_DRZ',IOC,IARG,1,
+     &               RIGI     ,NCR )
+         CALL GETVR8('COQUE','EXCENTREMENT',IOC,IARG,1,
+     &               EXCENT   ,NEX )
+         CALL GETVTX('COQUE','INER_ROTA',IOC,IARG,1,
+     &               INERT    ,NIN )
 
 
          IF(NVEC.NE.0) THEN

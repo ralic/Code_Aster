@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C       ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
         CHARACTER*32       JEXNOM,JEXNUM
 C       ---------------------------------------------------------------
         INTEGER         ICODRE,ICODWO,ICODBA,ICODHS,ICODMA
-        INTEGER         NPARMA, ID, JPROL, NP
+        INTEGER         NPARMA, ID, NP
         CHARACTER*8     NOMU,NOMRES,NOMMAI,K8B,NOMMAT, NOMPF(8)
         CHARACTER*8     NOMFON,NOMNAP,CARA,NOMMOD,GRDVIE
         CHARACTER*8     NOMPA1(3), NOMPA2(8)
@@ -89,7 +89,8 @@ C
         INTEGER         NBPT,NBORD,NBCMP,NUMCMP(6),NTCMP,IBID,IUNIFI
         INTEGER         IVDMG,NUMSYM,NBPT2,NBORD2,IRET,IVCH
         INTEGER VALI(2)
- 
+      INTEGER      IARG
+
 C     ---------------------------------------------------------------
         DATA  NOMPA1/  'DTAUMA', 'PHYDRM' , 'NORMAX'/
 C     ---------------------------------------------------------------
@@ -97,7 +98,7 @@ C     ---------------------------------------------------------------
         DATA  NOMPA2/  'TAUPR_1','TAUPR_2','SIGN_1','SIGN_2',
      &                 'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2'  /
 C       -------------------------------------------------------------
-C       
+C
       CALL JEMARQ()
       CALL INFMAJ()
 C
@@ -109,7 +110,7 @@ C
       CALL GETRES(NOMU,CONCEP,CMD)
 C
 C ---   TYPE DE CALCUL
-      CALL GETVTX(' ','TYPE_CALCUL',1,1,1,TYPCAL,NVAL)
+      CALL GETVTX(' ','TYPE_CALCUL',1,IARG,1,TYPCAL,NVAL)
 C
 C ---------------------------------------------------------------------
 C ---- FATIGUE MULTIAXIALE
@@ -119,49 +120,49 @@ C
 C
 C ---   TYPE DU CHARGEMENT APPLIQUE (PERIODIQUE OU NON_PERIODIQUE)
 C
-        CALL GETVTX(' ','TYPE_CHARGE',1,1,1,TYPCHA,NVAL)
+        CALL GETVTX(' ','TYPE_CHARGE',1,IARG,1,TYPCHA,NVAL)
 C
 C ---   NOM DE L'OPTION (CALCUL AUX POINTS DE GAUSS OU AUX NOEUDS
 C                        CHAM_NO)
-        CALL GETVTX(' ','OPTION',1,1,1,NOMOPT,NVAL)
+        CALL GETVTX(' ','OPTION',1,IARG,1,NOMOPT,NVAL)
 C
 C ---   STRUCTURE RESULTAT CONTENANT LES CHAM_ELEMS DE SIGMA
 C       OU LES CHAM_NOS DE SIGMA
-        CALL GETVID(' ','RESULTAT',1,1,1,NOMRES,NVAL)
+        CALL GETVID(' ','RESULTAT',1,IARG,1,NOMRES,NVAL)
         NOMSD = NOMRES
 C
 C ---   NOM DU CRITERE
-        CALL GETVTX(' ','CRITERE',1,1,1,NOMCRI,NVAL)
-        
-        CALL GETVID(' ','FORMULE_GRDEQ',1,1,1,NOMFOR,NVAL)
-        
+        CALL GETVTX(' ','CRITERE',1,IARG,1,NOMCRI,NVAL)
+
+        CALL GETVID(' ','FORMULE_GRDEQ',1,IARG,1,NOMFOR,NVAL)
+
 C   FORDEF EST UNE BOOLEAN QUI INDIQUE S'IL EXISTE LE PARAMETRE
 C   DE DEFORMATION DAS LA FORMULE (COMME DANS FATEMISOCIE)
-    
+
          FORDEF =  .FALSE.
-         IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN  
+         IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN
 C NOMBRE DE PARAMETRES DISPONIBLES
             NPARMA = 8
-C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR         
+C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
             CHNOM(20:24) = '.PROL'
             CHNOM(1:19) = NOMFOR
-      
+
             CALL JEVEUO(CHNOM,'L',JPROF)
             CALL FONBPA ( NOMFOR, ZK24(JPROF), CBID, NPARMA, NP, NOMPF )
 
-C VERIFIER QUE LE NOM DE GRANDEUR A CALCULER EST BON        
+C VERIFIER QUE LE NOM DE GRANDEUR A CALCULER EST BON
             IF (TYPCHA .EQ. 'NON_PERIODIQUE') THEN
                 DO 10 ID = 1, NP
                    GRDEXI = .FALSE.
                    DO 40 I = 1,NPARMA
                       IF  ( NOMPF(ID) .EQ. NOMPA2(I) ) THEN
                          GRDEXI = .TRUE.
-                      ENDIF                 
+                      ENDIF
 40                 CONTINUE
                    IF ( .NOT. GRDEXI) THEN
                       CALL U2MESK('F','FATIGUE1_91',1, NOMPF(ID))
                    ENDIF
-                   
+
                    IF ( NOMPF(ID)(1:3) .EQ. 'EPS') THEN
                       FORDEF =  .TRUE.
                       DO 20 I = 1, NP
@@ -177,47 +178,47 @@ C VERIFIER QUE LE NOM DE GRANDEUR A CALCULER EST BON
                          ENDIF
 30                    CONTINUE
                    ENDIF
-10              CONTINUE 
+10              CONTINUE
 
             ELSE
-            
+
                 DO 60 ID = 1, NP
                    GRDEXI = .FALSE.
                    DO 50 I = 1,NPARMA
                       IF  ( NOMPF(ID) .EQ. NOMPA1(I) ) THEN
                          GRDEXI = .TRUE.
-                      ENDIF                 
+                      ENDIF
 50                 CONTINUE
 
                    IF ( .NOT. GRDEXI) THEN
                       CALL U2MESK('F','FATIGUE1_91',1, NOMPF(ID))
                    ENDIF
-                   
-60              CONTINUE             
+
+60              CONTINUE
             ENDIF
-               
+
       ENDIF
-      
-        
-        CALL GETVTX(' ','COURBE_GRD_VIE',1,1,1,GRDVIE,NVAL)
-        
-        CALL GETVID(' ','FORMULE_VIE',1,1,1,FORVIE,NVAL)
+
+
+        CALL GETVTX(' ','COURBE_GRD_VIE',1,IARG,1,GRDVIE,NVAL)
+
+        CALL GETVID(' ','FORMULE_VIE',1,IARG,1,FORVIE,NVAL)
 C
 C ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
-        CALL GETVTX(' ','METHODE',1,1,1,NOMMET,NVAL)
+        CALL GETVTX(' ','METHODE',1,IARG,1,NOMMET,NVAL)
         IF (NVAL .EQ. 0) THEN
           NOMMET = '        '
         ENDIF
 C
 C ---   PROJECTION SUR UN AXE OU SUR DEUX AXES
 C       (CHARGEMENT NON_PERIODIQUE UNIQUEMENT)
-        CALL GETVTX(' ','PROJECTION',1,1,1,PROAXE,NVAL)
+        CALL GETVTX(' ','PROJECTION',1,IARG,1,PROAXE,NVAL)
         IF (NVAL .EQ. 0) THEN
           PROAXE = '        '
         ENDIF
 C
 C ---   NOM DU MAILLAGE
-        CALL GETVID(' ','MAILLAGE',1,1,1,NOMMAI,NVAL)
+        CALL GETVID(' ','MAILLAGE',1,IARG,1,NOMMAI,NVAL)
         IF (NVAL .EQ. 0) THEN
           NOMMAI = '        '
         ENDIF
@@ -234,7 +235,7 @@ C ---   CONSTRUCTION DES PAQUETS DE NOEUDS
           CALL PAQNOE(NOMRES, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
      &                GRDVIE, FORVIE, FORDEF, TYPCHA, PROAXE)
         ENDIF
-        
+
 C
         GOTO 7777
       ENDIF
@@ -244,20 +245,20 @@ C ---- CAS GENERAL (CUMUL DE DOMMAGE OU FATIGUE MODALE)
 C ---------------------------------------------------------------------
 C
 C ---   NOM DE LA GRANDEUR EQUIVALENTE
-      CALL GETVTX('HISTOIRE','EQUI_GD',1,1,1,NOMGDE,NVAL)
+      CALL GETVTX('HISTOIRE','EQUI_GD',1,IARG,1,NOMGDE,NVAL)
 C
 C ---   IMPRESSIONS
-      CALL GETVIS(' ' ,'INFO',1,1,1,IMPR,NVAL)
+      CALL GETVIS(' ' ,'INFO',1,IARG,1,IMPR,NVAL)
 C
 C ---   CHAMP : NOM DE L'OPTION RESULTANTE
 C   'DOMA_ELNO_SIGM'/'DOMA_ELGA_SIGM'/'DOMA_ELNO_EPSI'/'DOMA_ELGA_EPSI
 C   'DOMA_ELNO_EPME'/'DOMA_ELGA_EPME'
 C
-      CALL GETVTX(' ','OPTION',1,1,1,NOMOPT,NVAL)
+      CALL GETVTX(' ','OPTION',1,IARG,1,NOMOPT,NVAL)
 C
 C ---   NOM DE LA METHODE DE CALCUL DU DOMMAGE
-      CALL GETVTX(' ','DOMMAGE',1,1,1,MDOMAG,NVAL)
-      CALL GETVID(' ','MATER',1,1,1,NOMMAT,NVAL)
+      CALL GETVTX(' ','DOMMAGE',1,IARG,1,MDOMAG,NVAL)
+      CALL GETVID(' ','MATER',1,IARG,1,NOMMAT,NVAL)
 C
 C ---   NOMBRE DE NUMEROS D ORDRE DE POINTS (NOEUDS/PG) DE CMPS ...
 C       ---------------------------------------------------------------
@@ -314,7 +315,7 @@ C
       IF (TYPCAL(1:13) .EQ. 'CUMUL_DOMMAGE') THEN
 C
 C ---   STRUCTURE RESULTAT CONTENANT LES CHAM_ELEMS DE SIGMA EQUIVALENT
-      CALL GETVID('HISTOIRE','RESULTAT',1,1,1,NOMRES,NVAL)
+      CALL GETVID('HISTOIRE','RESULTAT',1,IARG,1,NOMRES,NVAL)
       NOMSD = NOMRES
 C
       IF(MDOMAG.EQ.'WOHLER') THEN
@@ -354,11 +355,11 @@ C
         CALL RCPARE(NOMMAT,PHENO,CARA,ICODMA)
         IF(ICODMA.NE.0)
      &     CALL U2MESS('F','FATIGUE1_32')
-        CALL GETVID(' ','TAHERI_NAPPE',1,1,1,NOMNAP,NVAL)
+        CALL GETVID(' ','TAHERI_NAPPE',1,IARG,1,NOMNAP,NVAL)
         IF(NVAL.EQ.0) THEN
           CALL U2MESS('F','FATIGUE1_26')
         ENDIF
-        CALL GETVID(' ','TAHERI_FONC',1,1,1,NOMFON,NVAL)
+        CALL GETVID(' ','TAHERI_FONC',1,IARG,1,NOMFON,NVAL)
           IF(NVAL.EQ.0) THEN
             CALL U2MESS('F','FATIGUE1_27')
           ENDIF
@@ -381,7 +382,7 @@ C
         CALL RCPARE(NOMMAT,PHENO,CARA,ICODHS)
         IF(ICODWO.NE.0.AND.ICODBA.NE.0.AND.ICODHS.NE.0)
      &     CALL U2MESS('F','FATIGUE1_30')
-        CALL GETVID(' ','TAHERI_NAPPE',1,1,1,NOMNAP,NVAL)
+        CALL GETVID(' ','TAHERI_NAPPE',1,IARG,1,NOMNAP,NVAL)
         IF(NVAL.EQ.0) THEN
           CALL U2MESS('F','FATIGUE1_26')
         ENDIF
@@ -461,9 +462,9 @@ C ---------------------------------------------------------------------
 C
       ELSEIF (TYPCAL(1:13) .EQ. 'FATIGUE_VIBR') THEN
 C ---   STRUCTURE RESULTAT CONTENANT LES CHAM_ELEMS DE SIGMA EQUIVALENT
-        CALL GETVID('HISTOIRE','RESULTAT',1,1,1,NOMRES,NVAL)
+        CALL GETVID('HISTOIRE','RESULTAT',1,IARG,1,NOMRES,NVAL)
         NOMSD = NOMRES
-        CALL GETVID('HISTOIRE','MODE_MECA',1,1,1,NOMMOD,NVAL)
+        CALL GETVID('HISTOIRE','MODE_MECA',1,IARG,1,NOMMOD,NVAL)
         NOMSD2 = NOMMOD
 C
         IF(MDOMAG.EQ.'WOHLER') THEN
@@ -535,8 +536,8 @@ C
       ENDIF
 C
 C-- NOMBRE ET NUMERO D ORDRE
-      CALL GETVIS('HISTOIRE' ,'NUME_MODE',1,1,0,IBID,NBORD)
-      CALL GETVR8('HISTOIRE' ,'FACT_PARTICI',1,1,0,RBID,NBORD2)
+      CALL GETVIS('HISTOIRE' ,'NUME_MODE',1,IARG,0,IBID,NBORD)
+      CALL GETVR8('HISTOIRE' ,'FACT_PARTICI',1,IARG,0,RBID,NBORD2)
 
       IF(NBORD .NE. NBORD2) THEN
         CALL U2MESS('F','FATIGUE1_86')
@@ -544,9 +545,9 @@ C-- NOMBRE ET NUMERO D ORDRE
 
       NBORD = -NBORD
       CALL WKVECT('&&OP0151.LMODE','V V I',NBORD,JORDR)
-      CALL GETVIS('HISTOIRE','NUME_MODE',1,1,NBORD,ZI(JORDR),IBID)
+      CALL GETVIS('HISTOIRE','NUME_MODE',1,IARG,NBORD,ZI(JORDR),IBID)
       CALL WKVECT('&&OP0151.CMODE','V V R',NBORD,JCOEF)
-      CALL GETVR8('HISTOIRE','FACT_PARTICI',1,1,NBORD,ZR(JCOEF),IBID)
+      CALL GETVR8('HISTOIRE','FACT_PARTICI',1,IARG,NBORD,ZR(JCOEF),IBID)
 C
       IF(IMPR.GE.1) THEN
         TYPEQ = NOMGDE

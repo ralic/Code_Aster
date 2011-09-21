@@ -3,7 +3,7 @@
       CHARACTER*(*) MOTFAZ,BASE,MODELZ,LIGREL
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       CHARACTER*19 LIGRMO
       CHARACTER*24 NOOJB
       INTEGER GETEXM
+      INTEGER      IARG
 C     -----------------------------------------------------------------
 C
       MOTFAC=MOTFAZ
@@ -86,7 +87,7 @@ C     --  SI ON DOIT TOUT PRENDRE , LIGREL = LIGRMO
 C     ------------------------------------------------------
       IF (GETEXM(MOTFAC,'TOUT').EQ.1) THEN
         DO 10,IOCC=1,NOCC
-          CALL GETVTX(MOTFAC,'TOUT',IOCC,1,1,K8BID,N1)
+          CALL GETVTX(MOTFAC,'TOUT',IOCC,IARG,1,K8BID,N1)
           IF (N1.EQ.1)GOTO 60
    10   CONTINUE
       ENDIF

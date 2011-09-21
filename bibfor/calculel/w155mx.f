@@ -1,7 +1,7 @@
       SUBROUTINE W155MX(NOMRES,RESU,NBORDR,LIORDR)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,6 +50,7 @@ C
       CHARACTER*16 MOTFAC,NOMSYM,NOMSY2
       CHARACTER*19 CHIN,CHEXTR,EXCIT,LIGREL,RESU19
       CHARACTER*24 NOMPAR
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -73,9 +74,9 @@ C     ----------------------------------------
 C     -- 2.  : NOMSYM, NOCMP, TYMAXI, TYCH :
 C     --------------------------------------------------
         MOTFAC='MIN_MAX_SP'
-        CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,1,1,NOMSYM,IBID)
-        CALL GETVTX(MOTFAC,'NOM_CMP',IOCC,1,1,NOCMP,IBID)
-        CALL GETVTX(MOTFAC,'TYPE_MAXI',IOCC,1,1,TYMAXI,IBID)
+        CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,IARG,1,NOMSYM,IBID)
+        CALL GETVTX(MOTFAC,'NOM_CMP',IOCC,IARG,1,NOCMP,IBID)
+        CALL GETVTX(MOTFAC,'TYPE_MAXI',IOCC,IARG,1,TYMAXI,IBID)
         TYCH=NOMSYM(6:9)
         CALL ASSERT(TYCH.EQ.'ELNO' .OR. TYCH.EQ.'ELGA')
 
@@ -96,7 +97,7 @@ C         -- 3.1 : MODELE, CARELE, LIGREL :
             ENDIF
 
             NOMSY2='UTXX_'//TYCH
-        CALL GETVIS(MOTFAC,'NUME_CHAM_RESU',IOCC,1,1,NCHOUT,IBID)
+        CALL GETVIS(MOTFAC,'NUME_CHAM_RESU',IOCC,IARG,1,NCHOUT,IBID)
         CALL ASSERT(NCHOUT.GE.1 .AND. NCHOUT.LE.20)
             CALL CODENT(NCHOUT,'D0',NOMSY2(3:4))
             IF (TYCH.EQ.'ELGA') THEN

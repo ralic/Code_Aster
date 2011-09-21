@@ -15,7 +15,7 @@ C
       REAL*8            BORSUP,     BORINF
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,6 +100,7 @@ C
       CHARACTER*24 FICH
       CHARACTER*24 VALK(4)
       CHARACTER*80 TITMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -297,8 +298,8 @@ C         MAILLAGE DONT ON DEMANDE L'IMPRESSION.
         CALL GETRES(CBID,CBID,NOMCMD)
         CALL GETFAC('RESU',NOCC)
         DO 14 IOCC=1,NOCC
-          CALL GETVID('RESU','MAILLAGE',IOCC,1,1,NOMACM,NM)
-          IF(NM.NE.0) CALL GETVTX(' ','FORMAT',1,1,1,FORMCM,N)
+          CALL GETVID('RESU','MAILLAGE',IOCC,IARG,1,NOMACM,NM)
+          IF(NM.NE.0) CALL GETVTX(' ','FORMAT',1,IARG,1,FORMCM,N)
           IF(FORMCM(1:7).EQ.'ENSIGHT') THEN
             LMAYAE=.TRUE.
             GO TO 15

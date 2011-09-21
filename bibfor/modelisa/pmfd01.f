@@ -1,7 +1,7 @@
       SUBROUTINE PMFD01(NOMA,CARELE,VNBFIB,VPOINT,VCARFI,VNBFIG,
      &                  CESDEC,NGMXEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  LICMP(2+99)
       COMPLEX*16 CBID
       INTEGER NGMXEL,NBCP,JSP
+      INTEGER      IARG
 
 C     ------------------------------------------------------------------
 
@@ -67,7 +68,7 @@ C     ------------------------------------------------------------------
       NBCP=2+NGMXEL
 
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,KBID,IBID)
-      CALL GETVID(' ','MODELE',0,1,1,MODELE,IBID)
+      CALL GETVID(' ','MODELE',0,IARG,1,MODELE,IBID)
       LIGRMO = MODELE//'.MODELE'
 
       CALL GETFAC('MULTIFIBRE',NB1)

@@ -4,7 +4,7 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,6 +78,7 @@ C  -----------------
       CHARACTER*16 MOTCLE(2),TYPMCL(2),NCHSYM
       CHARACTER*19 NCHP19
       CHARACTER*24 NCNCIN,NREPE,LISMAI,MALIST,NOMOBJ,VALK(3)
+      INTEGER      IARG
       DATA NBVARI /100/
 C**********************************************************************
 C
@@ -86,10 +87,10 @@ C
       CALL JEVEUO(JEXNUM(LSTCMP,IOCC),'L',ACMP)
       MALIST = '&&RVOUEX_MALIST'
 C
-      CALL GETVID ( MCF, 'CHEMIN', IOCC,1,0, ZK8, NBCRB )
+      CALL GETVID ( MCF, 'CHEMIN', IOCC,IARG,0, ZK8, NBCRB )
       NBCRB = -NBCRB
       IF ( NBCRB .NE. 0 ) THEN
-         CALL GETVID(MCF,'CHEMIN',IOCC,1,NBCRB,COURBE,IBIB)
+         CALL GETVID(MCF,'CHEMIN',IOCC,IARG,NBCRB,COURBE,IBIB)
       ENDIF
 C
       NCHP19 = NCHPT
@@ -125,23 +126,23 @@ C
          NBTROU = 0
          JMMAIL = 1
 C
-         CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,0, K8B, NC )
+         CALL GETVTX ( MCF, 'NOM_CMP', IOCC,IARG,0, K8B, NC )
          IF ( NC.LT.0 .AND. NBCRB.EQ.0 ) THEN
             NBCMP = -NC
             CALL WKVECT ('&&RVOUEX.NOM_CMP','V V K8', NBCMP, JCMP )
-            CALL GETVTX ( MCF,'NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),NC)
+            CALL GETVTX ( MCF,'NOM_CMP',IOCC,IARG,NBCMP,ZK8(JCMP),NC)
 C
 C VERIFICATION QUE LES COMPOSANTES DEMANDEES
 C APPARTIENNENT BIEN AU CHAMP
 C
-            CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1,RESUCO,IBIB )
+            CALL GETVID ( MCF, 'RESULTAT', IOCC,IARG,1,RESUCO,IBIB )
             IF(IBIB.NE.0) THEN
               NOMOBJ = '&&RVOUEX.NOM_CMP1'
               CALL JEEXIN(NOMOBJ,IER)
               IF(IER.NE.0) CALL JEDETR (NOMOBJ)
               CALL UTNCMP ( NCHP19, NBCMP1, NOMOBJ )
               CALL JEVEUO ( NOMOBJ, 'L', JCMP1 )
-              CALL GETVTX ( MCF, 'NOM_CHAM' , IOCC,1,1, NCHSYM, N1 )
+              CALL GETVTX ( MCF, 'NOM_CHAM' , IOCC,IARG,1, NCHSYM, N1 )
               NBR=NBCMP1
               IF(ZK8(JCMP1).EQ.'VARI') NBR=NBVARI
               DO 102 I=1,NBCMP
@@ -167,7 +168,7 @@ C
             CALL JEDETR ( '&&RVOUEX.NOM_CMP' )
          ENDIF
 C
-         CALL GETVTX ( MCF, 'TOUT_CMP', IOCC,1,0, K8B, NTC )
+         CALL GETVTX ( MCF, 'TOUT_CMP', IOCC,IARG,0, K8B, NTC )
          IF ( NTC.LT.0 .AND. NBCRB.EQ.0 ) THEN
             NOMOBJ = '&&RVOUEX.NOMCMP.USER'
             CALL UTNCMP ( NCHP19, NBCMP, NOMOBJ )
@@ -192,8 +193,8 @@ C
 C
                CALL RVGNOE ( MCF, IOCC, NMAILA, LSTNAC, 0, IBID )
 C
-               CALL GETVTX ( MCF, 'GROUP_MA', IOCC,1,0, K8B, N1 )
-               CALL GETVTX ( MCF, 'MAILLE',   IOCC,1,0, K8B, N2 )
+               CALL GETVTX ( MCF, 'GROUP_MA', IOCC,IARG,0, K8B, N1 )
+               CALL GETVTX ( MCF, 'MAILLE',   IOCC,IARG,0, K8B, N2 )
                IF ( (N1+N2) .EQ. 0 ) THEN
                   NBMALU = 0
                ELSE

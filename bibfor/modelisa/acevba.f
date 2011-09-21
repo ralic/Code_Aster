@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   K8B, KIOC, KI, NOMU
       CHARACTER*24 VALK(3)
       CHARACTER*16  K16B, SEC, CONCEP, CMD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -82,15 +83,16 @@ C
       NLG = 0
       DO 10 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
-         CALL GETVTX('BARRE','GROUP_MA'     ,IOC,1,0    ,K8B ,NG)
-         CALL GETVTX('BARRE','MAILLE'       ,IOC,1,0    ,K8B ,NM)
-         CALL GETVTX('BARRE','SECTION'      ,IOC,1,0    ,K8B ,NS)
-         CALL GETVTX('BARRE','SECTION'      ,IOC,1,1    ,SEC ,NSEC)
-         CALL GETVTX('BARRE','CARA'         ,IOC,1,0    ,K8B ,NC)
-         CALL GETVTX('BARRE','CARA'        ,IOC,1,NBCAR,
+         CALL GETVTX('BARRE','GROUP_MA'     ,IOC,IARG,0    ,K8B ,NG)
+         CALL GETVTX('BARRE','MAILLE'       ,IOC,IARG,0    ,K8B ,NM)
+         CALL GETVTX('BARRE','SECTION'      ,IOC,IARG,0    ,K8B ,NS)
+         CALL GETVTX('BARRE','SECTION'      ,IOC,IARG,1    ,SEC ,NSEC)
+         CALL GETVTX('BARRE','CARA'         ,IOC,IARG,0    ,K8B ,NC)
+         CALL GETVTX('BARRE','CARA'        ,IOC,IARG,NBCAR,
      &                ZK8(JCARA),NCAR)
-         CALL GETVR8('BARRE','VALE'         ,IOC,1,0    ,R8B ,NV)
-         CALL GETVR8('BARRE','VALE'         ,IOC,1,NBVAL,ZR(JVALE),NVAL)
+         CALL GETVR8('BARRE','VALE'         ,IOC,IARG,0    ,R8B ,NV)
+         CALL GETVR8('BARRE','VALE',IOC,IARG,NBVAL,
+     &               ZR(JVALE),NVAL)
 C
 C -- CARA
          IF (NCAR.GT.0) THEN

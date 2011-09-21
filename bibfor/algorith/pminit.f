@@ -6,7 +6,7 @@
      &                  OPTION, NOMVI, NBVITA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,8 @@ C-----------------------------------------------------------------------
 C     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
 C-----------------------------------------------------------------------
 C
-C IN   IMATE  : adresse materiau code
-C IN   NBVARI : Nombre de variables internes
+C IN   IMATE  : ADRESSE MATERIAU CODE
+C IN   NBVARI : NOMBRE DE VARIABLES INTERNES
 C IN   NDIM   : 3
 C OUT  TYPMOD : 3D
 C OUT  TABLE  : TABLE RESULTAT
@@ -90,7 +90,8 @@ C
       REAL*8       SIGI,REP(7),R8DGRD,KEL(6,6),CIMPO(6,12)
       REAL*8       ANGD(3),ANG1,PGL(3,3),XYZGAU(3),COEF,INSTIN
       REAL*8       PARCRI(*),PARCON(9),ANGEUL(3),ID(9),DSIDEP(36)
-      
+      INTEGER      IARG
+
       DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
       DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
       DATA NOMGRD/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
@@ -107,54 +108,52 @@ C     INITIALISATIONS
 C     ----------------------------------------
 C     RECUPERATION DU NOM DE LA TABLE PRODUITE
 C     ----------------------------------------
-
       CALL GETRES(TABLE,K24BID,K24BID)
-      
+
       IFORTA=0
-      CALL GETVTX(' ','FORMAT_TABLE',1,1,1,FORTAB,N1)
+      CALL GETVTX(' ','FORMAT_TABLE',1,IARG,1,FORTAB,N1)
       IF (N1.NE.0) THEN
          IF (FORTAB.EQ.'CMP_LIGNE') THEN
             IFORTA=1
          ENDIF
       ENDIF
-      
+
       NBVITA=NBVARI
-      CALL GETVIS(' ','NB_VARI_TABLE',1,1,1,K,N1)
+      CALL GETVIS(' ','NB_VARI_TABLE',1,IARG,1,K,N1)
       IF (N1.GT.0) NBVITA=K
       NBVITA=MIN(NBVITA,NBVARI)
-         
+
       IMPTGT=0
-      CALL GETVTX(' ','OPER_TANGENT',0,1,1,OPTGT,N1)
+      CALL GETVTX(' ','OPER_TANGENT',0,IARG,1,OPTGT,N1)
       IF (N1.NE.0) THEN
          IF (OPTGT.EQ.'OUI') THEN
             IMPTGT=1
          ENDIF
       ENDIF
-      
+
       NCMP=6
       IGRAD=0
-      CALL GETVID(' ',NOMGRD(1),1,1,1,FONGRD(1),N1)
+      CALL GETVID(' ',NOMGRD(1),1,IARG,1,FONGRD(1),N1)
       IF (N1.NE.0) THEN
          NCMP=9
          IGRAD=1
       ENDIF
-      
-C     si le nombre de variables internes est trop grand $
-C     on change de format de table
-C     nombre maxi de colonnes dans une table 9999 (cf D4.02.05) 
-      
+
+C     SI LE NOMBRE DE VARIABLES INTERNES EST TROP GRAND
+C     ON CHANGE DE FORMAT DE TABLE
+C     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
+
       NBCOL=1+NCMP+6+2+NBVITA+1
       IF (NBCOL.GT.9999) THEN
           IFORTA=1
-      ENDIF      
-         
+      ENDIF
+
       NOMPAR(1)='INST'
-      
+
       IF (IFORTA.EQ.0) THEN
 C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
-      
+
           NBPAR=1+NCMP+6+2+NBVITA+1
-C         ajout KTGT      
           IF (IMPTGT.EQ.1) NBPAR=NBPAR+36
           IF (IGRAD.EQ.1) THEN
              DO 132 I=1,NCMP
@@ -174,7 +173,6 @@ C         ajout KTGT
              NOMPAR(1+NCMP+6+2+I)(1:1)='V'
              CALL CODENT(I,'G',NOMPAR(1+NCMP+6+2+I)(2:16))
   11      CONTINUE
-C         ajout KTGT
           IF (IMPTGT.EQ.1) THEN
              DO 133 I=1,6
              DO 133 J=1,6
@@ -197,8 +195,8 @@ C         ajout KTGT
           TYPPAR(3)='K8'
           TYPPAR(4)='R'
       ENDIF
-      
-      
+
+
       CALL TBCRSD(TABLE,'G')
       CALL TBAJPA(TABLE,NBPAR,NOMPAR,TYPPAR)
 
@@ -208,8 +206,8 @@ C     ----------------------------------------
       CALL R8INIR ( 7, 0.D0, ANG ,1 )
       CALL R8INIR ( 3, 0.D0, ANGEUL ,1 )
       CALL R8INIR(3, 0.D0, XYZGAU, 1)
-      CALL GETVR8('MASSIF','ANGL_REP',1,1,3,ANG(1),N1)
-      CALL GETVR8('MASSIF','ANGL_EULER',1,1,3,ANGEUL,N2)
+      CALL GETVR8('MASSIF','ANGL_REP',1,IARG,3,ANG(1),N1)
+      CALL GETVR8('MASSIF','ANGL_EULER',1,IARG,3,ANGEUL,N2)
 
       IF (N1.GT.0) THEN
          ANG(1) = ANG(1)*R8DGRD()
@@ -219,7 +217,7 @@ C     ----------------------------------------
          ENDIF
          ANG(4) = 1.D0
 
-C        ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
+C     ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
       ELSEIF (N2.GT.0) THEN
           CALL EULNAU(ANGEUL,ANGD)
           ANG(1) = ANGD(1)*R8DGRD()
@@ -242,7 +240,7 @@ C        ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
       CALL R8INIR(NBVARI,0.D0, VIP, 1)
       IROTA=0
 C     ANGLE DE ROTATION
-      CALL GETVR8(' ','ANGLE',1,1,1,ANG1,N1)
+      CALL GETVR8(' ','ANGLE',1,IARG,1,ANG1,N1)
       IF ((N1.NE.0).AND.(ANG1.NE.0.D0)) THEN
 C        VERIFS
          IROTA=1
@@ -255,7 +253,7 @@ C        VERIFS
          PGL(3,3)=1.D0
 C VOIR GENERALISATION A 3 ANGLES AVEC CALL MATROT
       ENDIF
-      
+
 
 C     ----------------------------------------
 C     ETAT INITIAL
@@ -263,7 +261,7 @@ C     ----------------------------------------
       CALL GETFAC('SIGM_INIT',NBOCC)
       IF (NBOCC.GT.0) THEN
       DO 15 I=1,6
-         CALL GETVR8('SIGM_INIT',NOMSIG(I),1,1,1,SIGI,N1)
+         CALL GETVR8('SIGM_INIT',NOMSIG(I),1,IARG,1,SIGI,N1)
          IF (N1.NE.0) THEN
             SIGM(I)=SIGI
          ENDIF
@@ -273,7 +271,7 @@ C     ----------------------------------------
       CALL GETFAC('EPSI_INIT',NBOCC)
       IF (NBOCC.GT.0) THEN
       DO 16 I=1,6
-         CALL GETVR8('EPSI_INIT',NOMEPS(I),1,1,1,SIGI,N1)
+         CALL GETVR8('EPSI_INIT',NOMEPS(I),1,IARG,1,SIGI,N1)
          IF (N1.NE.0) THEN
             EPSM(I)=SIGI
          ENDIF
@@ -282,7 +280,7 @@ C     ----------------------------------------
 
       CALL GETFAC('VARI_INIT',NBOCC)
       IF (NBOCC.GT.0) THEN
-         CALL GETVR8('VARI_INIT','VALE',1,1,NBVARI,VIM,N1)
+         CALL GETVR8('VARI_INIT','VALE',1,IARG,NBVARI,VIM,N1)
       ENDIF
 
       KPG=1
@@ -319,8 +317,8 @@ C     ----------------------------------------
          FONIMP(I)=F0
  23   CONTINUE
       DO 14 I=1,6
-         CALL GETVID(' ',NOMEPS(I),1,1,1,FONEPS(I),N1)
-         CALL GETVID(' ',NOMSIG(I),1,1,1,FONSIG(I),N2)
+         CALL GETVID(' ',NOMEPS(I),1,IARG,1,FONEPS(I),N1)
+         CALL GETVID(' ',NOMSIG(I),1,IARG,1,FONSIG(I),N2)
          IF (N1.NE.0) THEN
             CIMPO(I,6+I)=1.D0
             FONIMP(I)=FONEPS(I)
@@ -334,7 +332,7 @@ C     ----------------------------------------
          ENDIF
   14  CONTINUE
       DO 141 I=1,9
-         CALL GETVID(' ',NOMGRD(I),1,1,1,FONGRD(I),N1)
+         CALL GETVID(' ',NOMGRD(I),1,IARG,1,FONGRD(I),N1)
          IF (N1.NE.0) THEN
             FONIMP(I)=FONGRD(I)
             IGRAD=IGRAD+1
@@ -350,9 +348,9 @@ C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
       IF (NBOCC.NE.0) THEN
          IC1C2=1
          DO 55 I=1,NBOCC
-            CALL GETVIS('MATR_C1','NUME_LIGNE',I,1,1,ILIGNE,N1)
-            CALL GETVIS('MATR_C1','NUME_COLONNE',I,1,1,ICOLON,N1)
-            CALL GETVR8('MATR_C1','VALE',I,1,1,VALE,N1)
+            CALL GETVIS('MATR_C1','NUME_LIGNE',I,IARG,1,ILIGNE,N1)
+            CALL GETVIS('MATR_C1','NUME_COLONNE',I,IARG,1,ICOLON,N1)
+            CALL GETVR8('MATR_C1','VALE',I,IARG,1,VALE,N1)
             CIMPO(ILIGNE,ICOLON)=VALE
  55      CONTINUE
       ENDIF
@@ -360,23 +358,23 @@ C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
       IF (NBOCC.NE.0) THEN
          IC1C2=1
          DO 56 I=1,NBOCC
-            CALL GETVIS('MATR_C2','NUME_LIGNE',I,1,1,ILIGNE,N1)
-            CALL GETVIS('MATR_C2','NUME_COLONNE',I,1,1,ICOLON,N1)
-            CALL GETVR8('MATR_C2','VALE',I,1,1,VALE,N1)
+            CALL GETVIS('MATR_C2','NUME_LIGNE',I,IARG,1,ILIGNE,N1)
+            CALL GETVIS('MATR_C2','NUME_COLONNE',I,IARG,1,ICOLON,N1)
+            CALL GETVR8('MATR_C2','VALE',I,IARG,1,VALE,N1)
             CIMPO(ILIGNE,ICOLON+6)=VALE
  56      CONTINUE
       ENDIF
       CALL GETFAC('VECT_IMPO',NBOCC)
       IF (NBOCC.NE.0) THEN
          DO 57 I=1,NBOCC
-            CALL GETVIS('VECT_IMPO','NUME_LIGNE',I,1,1,ILIGNE,N1)
-            CALL GETVID('VECT_IMPO','VALE',I,1,1,VALEF,N1)
+            CALL GETVIS('VECT_IMPO','NUME_LIGNE',I,IARG,1,ILIGNE,N1)
+            CALL GETVID('VECT_IMPO','VALE',I,IARG,1,VALEF,N1)
             FONIMP(ILIGNE)=VALEF
  57      CONTINUE
       ENDIF
       IF (IC1C2.EQ.1) THEN
          DO 58 I=1,6
-C affectation de SIGMA_i=0. si rien n'est impose sur la ligne i
+C AFFECTATION DE SIGMA_I=0. SI RIEN N'EST IMPOSE SUR LA LIGNE I
             K=0
             DO 59 J=1,12
                IF (CIMPO(I,J).NE.0.D0) THEN
@@ -385,7 +383,7 @@ C affectation de SIGMA_i=0. si rien n'est impose sur la ligne i
  59         CONTINUE
             IF (K.EQ.0 ) THEN
                CIMPO(I,I)=1.D0
-            ENDIF 
+            ENDIF
  58      CONTINUE
          DEFIMP=-1
          COEF=1.D0
@@ -435,7 +433,7 @@ C        ajout KTGT
 C     ----------------------------------------
 C     CREATION SD DISCRETISATION
 C     ----------------------------------------
-      CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
+      CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LISINS,N1)
       INSTIN = 0.D0
       CALL NMCRLI(INSTIN,LISINS,SDDISC)
 
@@ -443,13 +441,13 @@ C     ----------------------------------------
 C     NEWTON
 C     ----------------------------------------
       PRED=1
-      CALL GETVTX('NEWTON','PREDICTION',1,1,1,PREDIC,N1)
+      CALL GETVTX('NEWTON','PREDICTION',1,IARG,1,PREDIC,N1)
       IF (N1.NE.0) THEN
          IF (PREDIC.EQ.'ELASTIQUE') PRED=0
       ENDIF
       MATREL=0
       OPTION='FULL_MECA'
-      CALL GETVTX('NEWTON','MATRICE',1,1,1,MATRIC,N1)
+      CALL GETVTX('NEWTON','MATRICE',1,IARG,1,MATRIC,N1)
       IF (N1.NE.0) THEN
          IF (MATRIC.EQ.'ELASTIQUE') THEN
             MATREL=1

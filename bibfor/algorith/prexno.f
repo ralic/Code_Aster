@@ -10,7 +10,7 @@
       CHARACTER*(*)       CHAMP
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       CHARACTER*16 MOTCLE(4), TYPMCL(4)
       CHARACTER*19 CHAMS1
       CHARACTER*24 MESNOE
+      INTEGER      IARG
 C ---------------------------------------------------------------------
 C
       MOTCLE(1) = 'GROUP_NO'
@@ -91,11 +92,11 @@ C
         NBNOEU = NBNO
       ENDIF
 C
-      CALL GETVTX ( 'ACTION', 'NOM_CMP', IOC,1,0,K8B, NBC )
+      CALL GETVTX ( 'ACTION', 'NOM_CMP', IOC,IARG,0,K8B, NBC )
       IF (NBC.NE.0) THEN
          NBCMP = -NBC
          CALL WKVECT('&&PREXNO.NOM_CMP','V V K8',NBCMP,JCMP)
-         CALL GETVTX('ACTION','NOM_CMP',IOC,1,NBCMP,ZK8(JCMP),IBID)
+         CALL GETVTX('ACTION','NOM_CMP',IOC,IARG,NBCMP,ZK8(JCMP),IBID)
       ELSE
          NBCMP = NCMP
       ENDIF

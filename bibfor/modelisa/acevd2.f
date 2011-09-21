@@ -5,7 +5,7 @@
       CHARACTER*(*)     MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8    K8B,NOMU,CAR(NBCAR)
       CHARACTER*16   CONCEP,CMD
       CHARACTER*24   TMPDIS,MLGGNO,MLGNNO,MODNEM,GRPMA
+      INTEGER      IARG
 C --- ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -87,14 +88,14 @@ C
 C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',
-     &               IOC,1,LMAX,ZK8(JDLS),NG)
+     &               IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',MCF,'MAILLE',
-     &               IOC,1,LMAX,ZK8(JDLS),NM)
+     &               IOC,IARG,LMAX,ZK8(JDLS),NM)
          CALL GETVEM(NOMA,'GROUP_NO',MCF,'GROUP_NO',
-     &               IOC,1,LMAX,ZK8(JDLS),NJ)
+     &               IOC,IARG,LMAX,ZK8(JDLS),NJ)
          CALL GETVEM(NOMA,'NOEUD',MCF,'NOEUD',
-     &               IOC,1,LMAX,ZK8(JDLS),NN)
-         CALL GETVTX(MCF,'CARA'     ,IOC,1,NBCAR,CAR      ,NCAR)
+     &               IOC,IARG,LMAX,ZK8(JDLS),NN)
+         CALL GETVTX(MCF,'CARA'     ,IOC,IARG,NBCAR,CAR      ,NCAR)
 C
          IF (NCAR.GT.NCAR) CALL ASSERT(.FALSE.)
          DO 25 ICAR=1,NCAR

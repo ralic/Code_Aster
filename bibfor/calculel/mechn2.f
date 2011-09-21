@@ -4,7 +4,7 @@
       CHARACTER*24              CHNUMC, CHPLAN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  K8B, MOTCLS(2), TYPMCL(2), PLAN
       CHARACTER*16 MOTCLE,KBID,NOMCMD
       CHARACTER*24 MESMAI
+      INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
       CALL GETRES(KBID,KBID,NOMCMD)
@@ -126,9 +127,9 @@ C
      +                                  MOTCLS, TYPMCL, MESMAI, NBMA )
             IF ( NBMA.NE.0 )  CALL JEVEUO ( MESMAI, 'L', JMAIL )
 
-            CALL GETVIS ( MOTCLE, 'NUME_COUCHE', IOC,1,1, NCOU , N1 )
-            CALL GETVTX ( MOTCLE, 'NIVE_COUCHE', IOC,1,1, ORDO , N1 )
-            CALL GETVIS ( MOTCLE, 'ANGLE',       IOC,1,1, NANGL, N1 )
+            CALL GETVIS ( MOTCLE, 'NUME_COUCHE', IOC,IARG,1, NCOU , N1 )
+            CALL GETVTX ( MOTCLE, 'NIVE_COUCHE', IOC,IARG,1, ORDO , N1 )
+            CALL GETVIS ( MOTCLE, 'ANGLE',       IOC,IARG,1, NANGL, N1 )
             IF (ORDO.EQ.'SUP') THEN
                NX3 = 1
             ELSEIF (ORDO.EQ.'MOY') THEN
@@ -146,7 +147,7 @@ C
             CALL NOCART (CHNUMC,3,K8B,'NOM',NBMA,ZK8(JMAIL),IBID,K8B,3)
             ENDIF
 C
-            CALL GETVTX ( MOTCLE, 'PLAN', IOC,1,1, PLAN, N1 )
+            CALL GETVTX ( MOTCLE, 'PLAN', IOC,IARG,1, PLAN, N1 )
             IF (PLAN(1:4).EQ.'MAIL') THEN
                RPLAN = DBLE(0)
             ELSE IF (PLAN(1:3).EQ.'SUP') THEN

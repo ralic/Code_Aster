@@ -4,7 +4,7 @@
       INTEGER  IOCC
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       CHARACTER*19    LIGRMO
       CHARACTER*24    LISMAI,NOOJB
       INTEGER         GETEXM
+      INTEGER      IARG
 C     -----------------------------------------------------------------
 C
       MOTFAC = MOTFAZ
@@ -73,11 +74,11 @@ C     --  SI ON DOIT TOUT PRENDRE , LIGREL = LIGRMO
 C     ------------------------------------------------------
       IF ( MOTFAC .NE. ' ' ) THEN
          IF (GETEXM(MOTFAC,'TOUT') .EQ. 1) THEN
-           CALL GETVTX ( MOTFAC, 'TOUT' , IOCC,1,0, K8BID, N1 )
+           CALL GETVTX ( MOTFAC, 'TOUT' , IOCC,IARG,0, K8BID, N1 )
            IF ( N1 .NE. 0 )  GOTO 9998
          ENDIF
       ELSE
-         CALL GETVTX ( ' ', 'TOUT' , 1,1,0, K8BID, N1 )
+         CALL GETVTX ( ' ', 'TOUT' , 1,IARG,0, K8BID, N1 )
          IF (N1.NE.0)  GOTO 9998
       ENDIF
 

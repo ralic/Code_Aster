@@ -4,9 +4,9 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,13 +57,14 @@ C     ------------------------------------------------------------------
       CHARACTER*24 CONEC,TYPE,NOMMAI,NOMNOE
       CHARACTER*24 GRPMAI,NCHMIN,NMAIL1,NMAIL2,NTPCRB,NNOMMA
       CHARACTER*24 VALK(7)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL INFNIV(IFM,NIV)
 
       CALL GETRES(NOMCRB,TYPCRB,OPERA)
-      CALL GETVR8(' ','PRECISION',0,1,1,EPSI,N2)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,N2)
 
 C----------------------------------------------------------------------
 
@@ -80,12 +81,12 @@ C----------------------------------------------------------------------
       IER = 0
       NBTM = 0
       DO 40,OCC = 1,NBPARM,1
-        CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,0,K8B,N1)
-        CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,0,K8B,N2)
+        CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,IARG,0,K8B,N1)
+        CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,IARG,0,K8B,N2)
         IF (N1.NE.0) THEN
           N1 = -N1
           CALL WKVECT('&&OP0050.MAILLE','V V K8',N1,JMAIL)
-          CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL),N1)
+          CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,IARG,N1,ZK8(JMAIL),N1)
           DO 10,IM = 1,N1,1
             NOMMA = ZK8(JMAIL+IM-1)
             CALL JEEXIN(JEXNOM(NOMMAI,NOMMA),EXISTE)
@@ -113,7 +114,8 @@ C----------------------------------------------------------------------
         IF (N2.NE.0) THEN
           N2 = -N2
           CALL WKVECT('&&OP0050.GROUP_MA','V V K8',N2,JGRMA)
-          CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,N2,ZK8(JGRMA),N2)
+          CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,IARG,N2,
+     &                ZK8(JGRMA),N2)
           DO 30,IG = 1,N2,1
             NOMGR = ZK8(JGRMA+IG-1)
             CALL JENONU(JEXNOM(GRPMAI,NOMGR),EXISTE)
@@ -148,12 +150,12 @@ C----------------------------------------------------------------------
       CALL WKVECT('&INTLISTOTAL','V V I',NBTM,ALSTOT)
       LIBR1 = 1
       DO 80,OCC = 1,NBPARM,1
-        CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,0,K8B,N1)
-        CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,0,K8B,N2)
+        CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,IARG,0,K8B,N1)
+        CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,IARG,0,K8B,N2)
         IF (N1.NE.0) THEN
           N1 = -N1
           CALL WKVECT('&&OP0050.MAILLE','V V K8',N1,JMAIL3)
-          CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL3),N2)
+          CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,IARG,N1,ZK8(JMAIL3),N2)
           DO 50,IM = 1,N1,1
             CALL JENONU(JEXNOM(NOMMAI,ZK8(JMAIL3+IM-1)),NUMM)
             CALL I2RDLI(NUMM,ZI(ALSTOT),LIBR1)
@@ -162,7 +164,8 @@ C----------------------------------------------------------------------
         ELSE
           N2 = -N2
           CALL WKVECT('&&OP0050.GROUP_MA','V V K8',N2,JGRMA)
-          CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,N2,ZK8(JGRMA),N2)
+          CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,IARG,N2,
+     &                ZK8(JGRMA),N2)
           DO 70,IG = 1,N2,1
             NOMGR = ZK8(JGRMA+IG-1)
             CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONUTI',NBM,K1B)
@@ -203,14 +206,14 @@ C     --- ON VERIFIE QU'EN 1 NOEUD ON A AU PLUS 2 MAILLES ---
 C     --- CHOIX DE L'ABSCISSE CURVILIGNE 0. ---
 
       NUMNO = 0
-      CALL GETVTX(' ','NOEUD_ORIG',1,1,0,NOEUD,N1)
+      CALL GETVTX(' ','NOEUD_ORIG',1,IARG,0,NOEUD,N1)
       IF (N1.NE.0) THEN
-        CALL GETVTX(' ','NOEUD_ORIG',1,1,1,NOEUD,N1)
+        CALL GETVTX(' ','NOEUD_ORIG',1,IARG,1,NOEUD,N1)
         CALL JENONU(JEXNOM(NOMNOE,NOEUD),NUMNO)
       ELSE
-        CALL GETVTX(' ','GROUP_NO_ORIG',1,1,0,NOEUD,N1)
+        CALL GETVTX(' ','GROUP_NO_ORIG',1,IARG,0,NOEUD,N1)
         IF (N1.NE.0) THEN
-          CALL GETVTX(' ','GROUP_NO_ORIG',1,1,1,NOEUD,N1)
+          CALL GETVTX(' ','GROUP_NO_ORIG',1,IARG,1,NOEUD,N1)
           CALL UTNONO(' ',NOMAIL,'NOEUD',NOEUD,K8B,IRET)
           IF (IRET.EQ.10) THEN
             CALL U2MESK('F','INTEMAIL_31',1,NOEUD)

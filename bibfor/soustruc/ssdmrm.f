@@ -1,6 +1,6 @@
       SUBROUTINE SSDMRM ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*24 ZK24,VALK(2)
       CHARACTER*32 ZK32,JEXNOM
       CHARACTER*80 ZK80
+      INTEGER      IARG
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETFAC('RECO_SUPER_MAILLE',NOCC)
@@ -78,8 +79,8 @@ C
 C     -- ON RECUPERE LA LISTE DES MAILLES ET LA LISTE DES GROUP_NO:
 C     -------------------------------------------------------------
         CALL GETVTX('RECO_SUPER_MAILLE','SUPER_MAILLE',
-     &               IOCC,1,NBSMA,ZK8(IALIKM),N1)
-        CALL GETVTX('RECO_SUPER_MAILLE','GROUP_NO',IOCC,1,NBSMA,
+     &               IOCC,IARG,NBSMA,ZK8(IALIKM),N1)
+        CALL GETVTX('RECO_SUPER_MAILLE','GROUP_NO',IOCC,IARG,NBSMA,
      &               ZK8(IALIKG),N2)
         IF (N1.LT.0) CALL U2MESS('F','SOUSTRUC_64')
         IF (N1.NE.N2) CALL U2MESS('F','SOUSTRUC_65')
@@ -87,10 +88,11 @@ C     -------------------------------------------------------------
 C
         NBSMAR=N1
 C
-        CALL GETVTX('RECO_SUPER_MAILLE','OPTION',IOCC,1,1,OPTION,N1)
+        CALL GETVTX('RECO_SUPER_MAILLE','OPTION',IOCC,IARG,1,OPTION,N1)
         IF (OPTION(1:11).EQ.'GEOMETRIQUE') THEN
-          CALL GETVR8('RECO_SUPER_MAILLE','PRECISION',IOCC,1,1,PREC,N1)
-          CALL GETVTX('RECO_SUPER_MAILLE','CRITERE',IOCC,1,1,CRIT,N1)
+          CALL GETVR8('RECO_SUPER_MAILLE','PRECISION',IOCC,IARG,1,
+     &                PREC,N1)
+          CALL GETVTX('RECO_SUPER_MAILLE','CRITERE',IOCC,IARG,1,CRIT,N1)
         END IF
 C
         DO 5, I=1,NBSMAR

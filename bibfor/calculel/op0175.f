@@ -1,7 +1,7 @@
       SUBROUTINE OP0175()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C
       CHARACTER*16 CRIT
       CHARACTER*19 CHFER1,CHFER2, CHEFGE, RESU19
       REAL*8 PREC
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -53,13 +54,13 @@ C
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
 
-      CALL GETVID(' ','RESULTAT',1,1,1,RESU,N0)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESU,N0)
       RESU19=RESU
 
 C     -- CHOIX DES INSTANTS DE CALCUL :
 C     ---------------------------------
-      CALL GETVR8(' ','PRECISION',0,1,1,PREC,IE)
-      CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,IE)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,PREC,IE)
+      CALL GETVTX(' ','CRITERE'  ,0,IARG,1,CRIT,IE)
       CALL RSUTNU(RESU19,' ',0,'&&OP0175.NUME_ORDRE',NBORDR,PREC,
      &            CRIT,IRET)
       CALL ASSERT(IRET.EQ.0)

@@ -2,9 +2,9 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,7 @@ C
 C ----------------------------------------------------------------------
       INTEGER       IBID, NBPARM, NBPARS, NBPARA, N1
       CHARACTER*8   K8B, NOMAIL
+      INTEGER      IARG
 C----------------------------------------------------------------------
 C
 C----------------------------------------------------------------------
@@ -35,7 +36,7 @@ C
 C                 LE MAILLAGE DOIT ETRE 2D OU PLAN
 C
 C----------------------------------------------------------------------
-      CALL GETVID ( ' ', 'MAILLAGE' , 0,1,1, NOMAIL, N1 )
+      CALL GETVID ( ' ', 'MAILLAGE' , 0,IARG,1, NOMAIL, N1 )
       CALL DISMOI ('F', 'Z_CST', NOMAIL,'MAILLAGE', IBID, K8B, IBID )
       IF ( K8B(1:3) .EQ. 'NON' ) THEN
          CALL U2MESS('F','INTEMAIL_10')

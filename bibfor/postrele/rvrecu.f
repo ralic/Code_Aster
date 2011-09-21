@@ -5,7 +5,7 @@
       CHARACTER*(*)       MCF,       CHAMP, CHAMPN, NOMVEC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       REAL*8 R8VIDE, R8PREM
       REAL*8 EPSIL, RUNDF
       INTEGER I, IBID, JVAL, JVALN, KVAL, N1, NEQ
+      INTEGER      IARG
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
@@ -65,7 +66,7 @@ C
       CALL JEVEUO (NCH19//'.VALE', 'L', JVAL )
       CALL WKVECT ( VECTEU, 'V V R', NEQ, KVAL)
 C
-      CALL GETVTX ( MCF, 'FORMAT_C', IOCC, 1, 1, FORM, N1 )
+      CALL GETVTX ( MCF, 'FORMAT_C', IOCC,IARG, 1, FORM, N1 )
 C
       IF ( SENSOP.EQ.'SENSIBILITE_MODULE' ) THEN
         NCH19N = CHAMPN

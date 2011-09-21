@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBNO
       CHARACTER*(*)       MOFAZ, NOMAZ, LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32        JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER        IRET, NRF, NLF, NBNOT, NBMAT, NBMB, NBNB, NBNC,
@@ -69,6 +68,7 @@ C
       CHARACTER*8    K8B, NOMA, PREFIX, TYPM, NDORIG, NDEXTR
       CHARACTER*16   MOTFAC, MOTCLE(3), TYPMCL(3)
       CHARACTER*24   LISNOE, MESMAI, LISNOM
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -120,7 +120,7 @@ C     ---------------------------
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
       PREFIX    = '&&CGNOFU'
-      CALL CGNOOR ( PREFIX, NOMA, MOTFAC, IOCC, 2, MOTCLE, TYPMCL, 
+      CALL CGNOOR ( PREFIX, NOMA, MOTFAC, IOCC, 2, MOTCLE, TYPMCL,
      &               'OUVERT', NBMA, NDORIG, NDEXTR, TYPM)
       LISNOM = PREFIX//'.NOEUD'
       CALL ORNOFD ( PREFIX, NOMA, NBMA, LISNOM, NDORIG, NDEXTR, 'V')
@@ -129,13 +129,13 @@ C     ---------------------------
 C
 C --- RECUPERATION DU RAYON DU TUNNEL :
 C     -------------------------------
-      CALL GETVR8 ( MOTFAC, 'RAYON', IOCC,1,1, RFUT, NRF )
+      CALL GETVR8 ( MOTFAC, 'RAYON', IOCC,IARG,1, RFUT, NRF )
       RFUT2 = RFUT * RFUT
 C
 C --- RECUPERATION DE LA LONGUEUR TUNNEL A TRAITER :
 C     --------------------------------------------
       LFUT = R8MAEM( )
-      CALL GETVR8 ( MOTFAC, 'LONGUEUR', IOCC,1,1, LFUT, NLF )
+      CALL GETVR8 ( MOTFAC, 'LONGUEUR', IOCC,IARG,1, LFUT, NLF )
 C
       CALL WKVECT ( '&&CGNOFU.NOEUDS_CUBE'   , 'V V I', NBNOT, JNORD )
       CALL WKVECT ( '&&CGNOFU.NOEUDS_TROUVES', 'V V I', NBNOT, JNOTR )

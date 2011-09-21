@@ -5,9 +5,9 @@
       CHARACTER*24        CHINDI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -59,6 +59,7 @@ C
       CHARACTER*8  MOTCLS(2), TYPMCS(2), MOTCLN(2), TYPMCN(2)
       CHARACTER*16 MOTCLF, NOCMP(NBCMP)
       CHARACTER*24 MESMAI, MESNOE
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -96,14 +97,15 @@ C
 C
       DO 10, IOCC = 1, NBINDI, 1
 C
-         CALL GETVR8 ( MOTCLF, 'C1', IOCC,1,1, VALE(1), N1)
-         CALL GETVR8 ( MOTCLF, 'C2', IOCC,1,1, VALE(2), N1)
-         CALL GETVR8 ( MOTCLF, 'C3', IOCC,1,1, VALE(3), N1)
-         CALL GETVR8 ( MOTCLF, 'K1', IOCC,1,1, VALE(4), N1)
-         CALL GETVR8 ( MOTCLF, 'K2', IOCC,1,1, VALE(5), N1)
-         CALL GETVR8 ( MOTCLF, 'K3', IOCC,1,1, VALE(6), N1)
+         CALL GETVR8 ( MOTCLF, 'C1', IOCC,IARG,1, VALE(1), N1)
+         CALL GETVR8 ( MOTCLF, 'C2', IOCC,IARG,1, VALE(2), N1)
+         CALL GETVR8 ( MOTCLF, 'C3', IOCC,IARG,1, VALE(3), N1)
+         CALL GETVR8 ( MOTCLF, 'K1', IOCC,IARG,1, VALE(4), N1)
+         CALL GETVR8 ( MOTCLF, 'K2', IOCC,IARG,1, VALE(5), N1)
+         CALL GETVR8 ( MOTCLF, 'K3', IOCC,IARG,1, VALE(6), N1)
 C
-         CALL GETVTX ( MOTCLF, 'TYPE_ELEM_STANDARD', IOCC,1,1, TYPE, N1)
+         CALL GETVTX (MOTCLF,'TYPE_ELEM_STANDARD',IOCC,IARG,1,
+     &                TYPE, N1)
          IF ( N1 .EQ. 0 ) THEN
             VALE(7) = 0.D0
          ELSE
@@ -113,8 +115,8 @@ C
             IF ( TYPE(1:3).EQ.'TEE' ) VALE(7) = 40.D0
          ENDIF
 C
-         CALL GETVTX ( MOTCLF, 'GROUP_NO', IOCC,1,0, K8B, N1)
-         CALL GETVTX ( MOTCLF, 'NOEUD'   , IOCC,1,0, K8B, N2)
+         CALL GETVTX ( MOTCLF, 'GROUP_NO', IOCC,IARG,0, K8B, N1)
+         CALL GETVTX ( MOTCLF, 'NOEUD'   , IOCC,IARG,0, K8B, N2)
          IF ( N1+N2 .NE. 0 ) THEN
             CALL RELIEM ( ' ', NOMA, 'NU_NOEUD', MOTCLF, IOCC, 2, 
      +                                MOTCLN, TYPMCN, MESNOE, NBNOEU )
@@ -123,7 +125,7 @@ C
             NBNOEU = 0
          ENDIF
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
          IF ( NBTOU .NE. 0 ) THEN
             DO 100  IM = 1 , NBMA
                IMA = LISTMA(IM)

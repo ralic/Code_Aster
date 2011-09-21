@@ -1,7 +1,7 @@
       SUBROUTINE NMEXTF(MOTFAC,IOCC  ,EXTRCP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,14 +43,15 @@ C ----------------------------------------------------------------------
 C
       CHARACTER*8  TYPEXT
       INTEGER      N1
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
-      CALL GETVTX(MOTFAC,'EVAL_CMP',IOCC,1,1,TYPEXT,N1    )
+      CALL GETVTX(MOTFAC,'EVAL_CMP',IOCC,IARG,1,TYPEXT,N1    )
       IF (TYPEXT.EQ.'VALE') THEN
         EXTRCP = ' '
       ELSEIF (TYPEXT.EQ.'FORMULE') THEN
-        CALL GETVID(MOTFAC,'FORMULE',IOCC,1,1,EXTRCP,N1    )
+        CALL GETVID(MOTFAC,'FORMULE',IOCC,IARG,1,EXTRCP,N1    )
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

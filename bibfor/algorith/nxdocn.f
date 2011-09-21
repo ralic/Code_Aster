@@ -1,6 +1,6 @@
       SUBROUTINE NXDOCN (PARCRI,PARCRR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,22 +32,23 @@ C
 C ----------------------------------------------------------------------
       CHARACTER*16      NOMCVG
       INTEGER           N1,IOCC
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C --- RECUPERATION DES CRITERES DE CONVERGENCE
 C
       NOMCVG = 'CONVERGENCE'
       CALL GETFAC(NOMCVG,IOCC)
       IF ( IOCC .EQ. 1 ) THEN
-        CALL GETVR8(NOMCVG,'RESI_GLOB_MAXI',1,1,1,PARCRR(1),
+        CALL GETVR8(NOMCVG,'RESI_GLOB_MAXI',1,IARG,1,PARCRR(1),
      &                                                   PARCRI(1))
-        CALL GETVR8(NOMCVG,'RESI_GLOB_RELA',1,1,1,PARCRR(2),
+        CALL GETVR8(NOMCVG,'RESI_GLOB_RELA',1,IARG,1,PARCRR(2),
      &                                                   PARCRI(2))
         IF ( PARCRI(1)+PARCRI(2).EQ.0 ) THEN
           PARCRI(2) = 1
           PARCRR(2) = 1.D-6
         ENDIF
 C
-        CALL GETVIS(NOMCVG,'ITER_GLOB_MAXI',1,1,1,PARCRI(3),N1)
+        CALL GETVIS(NOMCVG,'ITER_GLOB_MAXI',1,IARG,1,PARCRI(3),N1)
       ENDIF
 C FIN ------------------------------------------------------------------
       END

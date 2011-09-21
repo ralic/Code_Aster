@@ -7,7 +7,7 @@ C     RESPONSABLE PELLET
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,6 +79,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 EXCISD,VALK(4)
 
       PARAMETER(NOMPRO='RSLESD')
+      INTEGER      IARG
 
 C ----------------------------------------------------------------------
 
@@ -106,7 +107,7 @@ C
       N1=0
       NOMLU=' '
       IF (GETEXM(' ','MODELE').EQ.1) THEN
-        CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
+        CALL GETVID(' ','MODELE'    ,0,IARG,1,NOMLU,N1)
       ENDIF
 
       CALL RSADPA(RESULT,'L',1,'MODELE',NUORD,0,JPARA,K8B)
@@ -145,7 +146,7 @@ C
       CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
       NOMSD=ZK8(JPARA)
       IF (GETEXM(' ','CARA_ELEM').EQ.1) THEN
-        CALL GETVID(' ','CARA_ELEM',0,1,1,NOMLU,N2)
+        CALL GETVID(' ','CARA_ELEM',0,IARG,1,NOMLU,N2)
       ELSE
         N2=0
         NOMLU=' '
@@ -183,7 +184,7 @@ C
 C---  RECUPERATION DU NOM DU CHAMP MATERIAU
 C
       IF (GETEXM(' ','CHAM_MATER').EQ.1) THEN
-        CALL GETVID(' ','CHAM_MATER',0,1,1,NOMLU,N3)
+        CALL GETVID(' ','CHAM_MATER',0,IARG,1,NOMLU,N3)
       ELSE
         N3=0
         NOMLU=' '
@@ -235,10 +236,10 @@ C
           CALL WKVECT(KFON,'V V K8',NCHALU,FCHALU)
 C
           DO 10 IEX = 1, NCHALU
-            CALL GETVID('EXCIT','CHARGE',IEX,1,1,
+            CALL GETVID('EXCIT','CHARGE',IEX,IARG,1,
      &                   ZK8(LCHALU+IEX-1),N1)
 C
-            CALL GETVID('EXCIT','FONC_MULT',IEX,1,1,FONCLU,N2)
+            CALL GETVID('EXCIT','FONC_MULT',IEX,IARG,1,FONCLU,N2)
 
             IF (N2.NE.0) THEN
               ZK8(FCHALU+IEX-1) = FONCLU
@@ -248,11 +249,11 @@ C
       ENDIF
 
       IF (GETEXM(' ','CHARGE').EQ.1) THEN
-        CALL GETVID(' ','CHARGE'    ,0,1,0,K8B   ,N4)
+        CALL GETVID(' ','CHARGE'    ,0,IARG,0,K8B   ,N4)
         NCHA = -N4
         NCHALU = MAX(1,NCHA)
         CALL WKVECT( KCHA ,'V V K8',NCHALU,LCHALU)
-        CALL GETVID(' ','CHARGE',0,1,NCHA,ZK8(LCHALU),N4)
+        CALL GETVID(' ','CHARGE',0,IARG,NCHA,ZK8(LCHALU),N4)
       ENDIF
 C
 C--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT

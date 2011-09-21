@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14 NUME
       CHARACTER*16 TYPE, NOMCMD
       CHARACTER*19 RESU
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA   TABCMP / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C     ------------------------------------------------------------------
@@ -62,7 +63,7 @@ C
 C
 C --- MATRICE DE MASSE
 C
-      CALL GETVID(' ','MATR_MASS',0,1,1,MASSE,NBV)
+      CALL GETVID(' ','MATR_MASS',0,IARG,1,MASSE,NBV)
       CALL MTDSCR(MASSE)
       CALL JEVEUO(MASSE//'           .&INT','E',LMAT)
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUME,IE)
@@ -70,9 +71,9 @@ C
 C
 C --- QUELLE EST LA DIRECTION ?
 C
-      CALL GETVR8(' ','DIRECTION',0,1,0,DEPL,NBD)
+      CALL GETVR8(' ','DIRECTION',0,IARG,0,DEPL,NBD)
       NBDIR = -NBD
-      CALL GETVR8(' ','DIRECTION',0,1,NBDIR,DEPL,NBD)
+      CALL GETVR8(' ','DIRECTION',0,IARG,NBDIR,DEPL,NBD)
 C
 C     --- ON NORMALISE LE VECTEUR ---
       XNORM = 0.D0

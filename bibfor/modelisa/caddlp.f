@@ -4,9 +4,9 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,6 +63,7 @@ C
      &              MOTCL2(2), TYMOC2(2), NOMCMD
       CHARACTER*19  LIGRMO, LISREL, K19BID
       CHARACTER*24  NOMNOE, NCNCIN
+      INTEGER      IARG
 C ----------------------------------------------------------------------
       DATA MOTCLE / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C ----------------------------------------------------------------------
@@ -182,7 +183,8 @@ C           ----------------------------------------------
                   DDL(J)    = ' '
                   DLOC(J)   = ZERO
                   RLN1(J)   = ZERO
-                  CALL GETVR8(MOTFAC,MOTCLE(J),IOC,1,1,DLOC(J),NN1(J))
+                  CALL GETVR8(MOTFAC,MOTCLE(J),IOC,IARG,1,
+     &                        DLOC(J),NN1(J))
                   IF ( NN1(J) .GE. 1 ) RLN1(J) = 1.0D0
 120            CONTINUE
                CALL UTPVLG(1,3,PGL,DLOC,DGLO)
@@ -200,7 +202,8 @@ C           ----------------------------------------------
                   DDL(J+3)    = ' '
                   DLOC(J)     = ZERO
                   RLN1(J)     = ZERO
-                  CALL GETVR8(MOTFAC,MOTCLE(J+3),IOC,1,1,DLOC(J),NN1(J))
+                  CALL GETVR8(MOTFAC,MOTCLE(J+3),IOC,IARG,1,
+     &                        DLOC(J),NN1(J))
                   IF ( NN1(J) .GE. 1 ) RLN1(J) = 1.0D0
 130            CONTINUE
                CALL UTPVLG(1,3,PGL,DLOC,DGLO)

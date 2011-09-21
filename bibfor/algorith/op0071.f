@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C
       CHARACTER*16 TYPRES, NOMCOM, TYPBAS
       CHARACTER*14  NUGENE
       CHARACTER*24 MATRIC
+      INTEGER      IARG
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -60,10 +61,10 @@ C
 C
 C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
-      CALL GETVID ( ' ', 'MATR_ASSE'     , 1,1,1, MATRAS, N1 )
-      CALL GETVID ( ' ', 'MATR_ASSE_GENE', 1,1,1, MATRAS, N3 )
-      CALL GETVID ( ' ', 'BASE'          , 1,1,1, BASEMO, N4 )
-      CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,1,1, NUMGEN, N2 )
+      CALL GETVID ( ' ', 'MATR_ASSE'     , 1,IARG,1, MATRAS, N1 )
+      CALL GETVID ( ' ', 'MATR_ASSE_GENE', 1,IARG,1, MATRAS, N3 )
+      CALL GETVID ( ' ', 'BASE'          , 1,IARG,1, BASEMO, N4 )
+      CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,IARG,1, NUMGEN, N2 )
       NUGENE=NUMGEN
 C
       CALL GETTCO ( BASEMO, TYPBAS )

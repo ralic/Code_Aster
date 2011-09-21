@@ -1,6 +1,6 @@
       SUBROUTINE VECGEN(NOMRES,NUMEG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C
      &             LSST,NBSST,I1,J1
       INTEGER VALI(3)
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
       DATA PGC/'VECGEN'/
@@ -209,7 +210,7 @@ C     B/ RECUPERATION DU NOM DE LA SOUS-STRUCTURE ET ECRITURE DANS
 C        LE .LICH.
 C-----------------------------------------------------------------------
 C
-        CALL GETVTX(MOTFAC,'SOUS_STRUC',I,1,0,NOMSST,IOC)
+        CALL GETVTX(MOTFAC,'SOUS_STRUC',I,IARG,0,NOMSST,IOC)
         IOC = -IOC
         IF (IOC.NE.1) THEN
           VALI (1) = I
@@ -217,7 +218,7 @@ C
           VALI (3) = IOC
           CALL U2MESG('F','ALGORITH15_70',0,' ',3,VALI,0,0.D0)
         ELSE
-          CALL GETVTX(MOTFAC,'SOUS_STRUC',I,1,1,NOMSST,IOC)
+          CALL GETVTX(MOTFAC,'SOUS_STRUC',I,IARG,1,NOMSST,IOC)
         END IF
         ZK8(LDNSST+I-1) = NOMSST
 C
@@ -226,7 +227,7 @@ C     C/ RECUPERATION DU NOM DU SECOND MEMBRE ASSEMBLE, ET ECRITURE
 C        DANS LE .LICH
 C-----------------------------------------------------------------------
 C
-        CALL GETVID(MOTFAC,'VECT_ASSE',I,1,0,NOM2MB,IOC)
+        CALL GETVID(MOTFAC,'VECT_ASSE',I,IARG,0,NOM2MB,IOC)
         IOC = -IOC
         IF (IOC.NE.1) THEN
           VALI (1) = I
@@ -234,7 +235,7 @@ C
           VALI (3) = IOC
           CALL U2MESG('F','ALGORITH15_71',0,' ',3,VALI,0,0.D0)
         ELSE
-          CALL GETVID(MOTFAC,'VECT_ASSE',I,1,1,NOM2MB,IOC)
+          CALL GETVID(MOTFAC,'VECT_ASSE',I,IARG,1,NOM2MB,IOC)
           CALL CHPVER('F',NOM2MB,'NOEU','DEPL_R',IER)
         END IF
 C

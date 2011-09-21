@@ -9,7 +9,7 @@
       LOGICAL          CORFRE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,7 @@ C
       CHARACTER*8  K8B, SPECT, NOEU, GRNOEU, NOMSP0(3), NOMPU(2)
       CHARACTER*9  NIVEAU
       CHARACTER*24 VALE, OBJ1, OBJ2, VALK(2)
+      INTEGER      IARG
 C
 C     ------------------------------------------------------------------
 C
@@ -101,7 +102,7 @@ C
 C
 C     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 C
-      CALL GETVTX('IMPRESSION','NIVEAU',1,1,1,NIVEAU,NIMPR)
+      CALL GETVTX('IMPRESSION','NIVEAU',1,IARG,1,NIVEAU,NIMPR)
       IF (NIMPR.EQ.0) NIVEAU='TOUT     '
 C
 C     --- NOMBRE DE SUPPORTS PAR DIRECTION ---
@@ -116,9 +117,9 @@ C
          XNORM = UN
 C
 C        --- UN SPECTRE SUIVANT UN AXE ---
-         CALL GETVR8(MOTFAC,'AXE',IOC,1,0,R8B,N1)
+         CALL GETVR8(MOTFAC,'AXE',IOC,IARG,0,R8B,N1)
          IF (N1.NE.0) THEN
-            CALL GETVR8(MOTFAC,'AXE' ,IOC,1,3,DIRSP0,N1)
+            CALL GETVR8(MOTFAC,'AXE' ,IOC,IARG,3,DIRSP0,N1)
             XNORM = ZERO
             DO 12 ID = 1,3
                XNORM = XNORM + DIRSP0(ID) * DIRSP0(ID)
@@ -129,11 +130,11 @@ C        --- UN SPECTRE SUIVANT UN AXE ---
                GOTO 10
             ENDIF
             XNORM = UN / SQRT(XNORM)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,IARG,1,SPECT,N1)
             NOMSP0(1) = SPECT
             NOMSP0(2) = SPECT
             NOMSP0(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,IARG,1,ECHEL,N1)
             IF (N1.NE.0) THEN
                ECHSP0(1) = ECHEL
                ECHSP0(2) = ECHEL
@@ -142,14 +143,14 @@ C        --- UN SPECTRE SUIVANT UN AXE ---
 C
 C        --- UN SPECTRE DANS LES 3 DIRECTIONS ---
          ELSE
-         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,0,R8B,N1)
+         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,IARG,0,R8B,N1)
          IF (N1.NE.0) THEN
-            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,3,DIRSP0,N1)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT ,N1)
+            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,IARG,3,DIRSP0,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,IARG,1,SPECT ,N1)
             NOMSP0(1) = SPECT
             NOMSP0(2) = SPECT
             NOMSP0(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,IARG,1,ECHEL,N1)
             IF (N1.NE.0) THEN
                ECHSP0(1) = ECHEL
                ECHSP0(2) = ECHEL
@@ -159,13 +160,13 @@ C
 C        --- 3 SPECTRES DANS LES 3 DIRECTIONS ---
          ELSE
 
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,3,NOMSP0,N1)
-            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,1,3,ECHSP0,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,IARG,3,NOMSP0,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,IARG,3,ECHSP0,N1)
 C
          ENDIF
          ENDIF
 C
-         CALL GETVTX(MOTFAC,'NATURE',IOC,1,1,KNAT,N1)
+         CALL GETVTX(MOTFAC,'NATURE',IOC,IARG,1,KNAT,N1)
          IF (KNAT.EQ.'ACCE') INAT = 1
          IF (KNAT.EQ.'VITE') INAT = 2
          IF (KNAT.EQ.'DEPL') INAT = 3
@@ -175,12 +176,12 @@ C
             IF (ABS(DIRSP0(ID)).GT.EPSI) THEN
                NDIR(ID) = 1
 C
-            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',IOC,1,0,NOEU,N1)
+            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',IOC,IARG,0,NOEU,N1)
             IF (N1.NE.0) THEN
                NNO = -N1
                CALL WKVECT('&&ASEXC2.NOEUD','V V K8',NNO,JNOE)
                CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
-     &                                  IOC,1,NNO,ZK8(JNOE),N1)
+     &                                  IOC,IARG,NNO,ZK8(JNOE),N1)
                DO 20 INO = 1, NNO
                   NOEU = ZK8(JNOE+INO-1)
                   CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
@@ -209,11 +210,11 @@ C
 C
             ELSE
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                                     IOC,1,0,K8B,N1)
+     &                                     IOC,IARG,0,K8B,N1)
                NGR = -N1
                CALL WKVECT('&&ASEXC2.GROUP_NO','V V K8',NGR,JGRN)
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                                     IOC,1,NGR,ZK8(JGRN),N1)
+     &                                     IOC,IARG,NGR,ZK8(JGRN),N1)
                DO 30 IGR = 1, NGR
                   GRNOEU = ZK8(JGRN+IGR-1)
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)

@@ -3,9 +3,9 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/99   AUTEUR AUBHHMB M.BONNAMY 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -52,12 +52,13 @@ C
       REAL*8        RC, ALPHA, XT, YT, ZT, PI, R8PI, BETA, ALPHAR,
      +              XCOU, YCOU, ZCOU
       CHARACTER*24  COORD, DIME 
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C      
-      CALL GETVR8 ( 'TUBE_COUDE', 'R_CINTR'   , 1,1,1, RC      , N1 )
-      CALL GETVR8 ( 'TUBE_COUDE', 'ANGLE'     , 1,1,1, ALPHA   , N1 )
+      CALL GETVR8 ( 'TUBE_COUDE', 'R_CINTR'   , 1,IARG,1, RC      , N1 )
+      CALL GETVR8 ( 'TUBE_COUDE', 'ANGLE'     , 1,IARG,1, ALPHA   , N1 )
 C
       COORD  = MAILLA//'.COORDO    .VALE'
       DIME   = MAILLA//'.DIME           '

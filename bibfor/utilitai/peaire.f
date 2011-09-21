@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  NOPARR(NBPARR)
       CHARACTER*24  GRPMA
       COMPLEX*16    C16B
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA NOPARR / 'GROUP_MA' , 'AIRE' , 'LONGUEUR' /
       DATA TYPARR / 'K8' , 'R' , 'R' /
@@ -72,12 +73,12 @@ C
 C
       DO 10 IOCC = 1 , NBOCC
          CALL GETVEM(NOMA,'GROUP_MA','AIRE_INTERNE','GROUP_MA_BORD',
-     &                                IOCC,1,0,K8B,NGB)
+     &                                IOCC,IARG,0,K8B,NGB)
          IF ( NGB .NE. 0 ) THEN
             NGB = -NGB
             CALL WKVECT ( '&&PEAIRE.GROUP_NO', 'V V K8', NGB, JGB )
             CALL GETVEM(NOMA,'GROUP_MA','AIRE_INTERNE','GROUP_MA_BORD',
-     &                                   IOCC,1,NGB,ZK8(JGB),NG)
+     &                                   IOCC,IARG,NGB,ZK8(JGB),NG)
             DO 40 IGB = 1 , NGB
                CALL JEEXIN ( JEXNOM(GRPMA,ZK8(JGB+IGB-1)), IRET )
                IF ( IRET .EQ. 0 ) THEN

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 CHAM19,NOMFON,TYPBA
       CHARACTER*24 VALK(3),REFD
       CHARACTER*3  TOUTOR
+      INTEGER      IARG
       DATA NOPAOU/'NUME_ORDRE_I','NUME_ORDRE_J'/
       DATA NOPAR/'NOM_CHAM','OPTION','DIMENSION','NOEUD_I','NOM_CMP_I',
      &     'NOEUD_J','NOM_CMP_J','FONCTION_C'/
@@ -65,7 +66,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
-      CALL GETVID(' ','MODE_MECA',1,1,1,MODMEC,IBID)
+      CALL GETVID(' ','MODE_MECA',1,IARG,1,MODMEC,IBID)
       CALL GETTCO(MODMEC,TYPMEC)
 
       CALL RSORAC(MODMEC,'LONUTI',IBID,R8B,K8B,C16B,0.0D0,K8B,NBMOD1,1,
@@ -73,10 +74,10 @@ C-----------------------------------------------------------------------
       CALL WKVECT('&&SPEPH0.NUMERO.ORDRE','V V I',NBMOD1,LNUMOR)
       CALL RSORAC(MODMEC,'TOUT_ORDRE',IBID,R8B,K8B,C16B,0.0D0,K8B,
      &            ZI(LNUMOR),NBMOD1,NBTROU)
-      CALL GETVIS(' ','NUME_ORDRE',1,1,0,IBID,NBMODE)
+      CALL GETVIS(' ','NUME_ORDRE',1,IARG,0,IBID,NBMODE)
       NBMODE = -NBMODE
       IF (NBMODE.EQ.0) THEN
-        CALL GETVTX(' ','TOUT_ORDRE',1,1,1,TOUTOR,IBID)
+        CALL GETVTX(' ','TOUT_ORDRE',1,IARG,1,TOUTOR,IBID)
         IF  (TOUTOR.EQ.'OUI') THEN
           NBMODE=NBMOD1
           CALL WKVECT('&&SPEPH0.LISTEMODES','V V I',NBMOD1,ILMODE)
@@ -85,7 +86,7 @@ C-----------------------------------------------------------------------
             ZI(ILMODE-1+IM)=ZI(LNUMOR+IM-1)
    11     CONTINUE
         ELSE
-          CALL GETVR8(' ','BANDE',1,1,2,BANDE,IBID)
+          CALL GETVR8(' ','BANDE',1,IARG,2,BANDE,IBID)
           IF (IBID.EQ.0) THEN
             CALL U2MESS('F','ALGORITH10_61')
           END IF
@@ -104,12 +105,12 @@ C-----------------------------------------------------------------------
           ENDIF
         ENDIF
       ELSE
-        CALL GETVIS(' ','NUME_ORDRE',1,1,0,ILMODE,IBID)
+        CALL GETVIS(' ','NUME_ORDRE',1,IARG,0,ILMODE,IBID)
         IF (IBID.EQ.0) THEN
           CALL U2MESS('F','ALGORITH10_62')
         END IF
         CALL WKVECT('&&SPEPH0.LISTEMODES','V V I',NBMODE,ILMODE)
-        CALL GETVIS(' ','NUME_ORDRE',1,1,NBMODE,ZI(ILMODE),IBID)
+        CALL GETVIS(' ','NUME_ORDRE',1,IARG,NBMODE,ZI(ILMODE),IBID)
         DO 20 IM = 1,NBMODE
           IF (ZI(ILMODE-1+IM).GT.NBMOD1) THEN
             CALL U2MESS('F','ALGORITH10_32')
@@ -119,23 +120,23 @@ C-----------------------------------------------------------------------
 
       NAPEXC = 0
       MOVREP = 'RELATIF'
-      CALL GETVID(' ','MODE_STAT',1,1,1,MODSTA,IBID)
+      CALL GETVID(' ','MODE_STAT',1,IARG,1,MODSTA,IBID)
       IF (IBID.NE.0) THEN
-        CALL GETVTX('EXCIT','NOEUD',1,1,0,K8B,NAPEXC)
+        CALL GETVTX('EXCIT','NOEUD',1,IARG,0,K8B,NAPEXC)
         NAPEXC = -NAPEXC
         IF (NAPEXC.NE.0) THEN
           CALL WKVECT('&&SPEPH0.LISTENOEEXC','V V K8',NAPEXC,ILNOEX)
-          CALL GETVTX('EXCIT','NOEUD',1,1,NAPEXC,ZK8(ILNOEX),IBID)
+          CALL GETVTX('EXCIT','NOEUD',1,IARG,NAPEXC,ZK8(ILNOEX),IBID)
         END IF
 
-        CALL GETVTX('EXCIT','NOM_CMP',1,1,0,K8B,NCMPEX)
+        CALL GETVTX('EXCIT','NOM_CMP',1,IARG,0,K8B,NCMPEX)
         NCMPEX = -NCMPEX
         IF (NCMPEX.NE.0) THEN
           CALL WKVECT('&&SPEPH0.LISTECMPEXC','V V K8',NCMPEX,ILCPEX)
-          CALL GETVTX('EXCIT','NOM_CMP',1,1,NCMPEX,ZK8(ILCPEX),IBID)
+          CALL GETVTX('EXCIT','NOM_CMP',1,IARG,NCMPEX,ZK8(ILCPEX),IBID)
         END IF
 
-        CALL GETVTX(' ','MOUVEMENT',1,1,1,MOVREP,IBID)
+        CALL GETVTX(' ','MOUVEMENT',1,IARG,1,MOVREP,IBID)
       END IF
 
       IDIM1 = NBMODE + NAPEXC
@@ -148,7 +149,7 @@ C-----------------------------------------------------------------------
 
 C     --- OPTION DE RECOMBINAISON ---
 
-      CALL GETVTX(' ','NOM_CHAM',0,1,1,OPTCHA,IBID)
+      CALL GETVTX(' ','NOM_CHAM',0,IARG,1,OPTCHA,IBID)
 
 C     --- VERIFICATION DES DONNEES INTERSPECTRE ---
 
@@ -178,25 +179,25 @@ C     --- VERIFICATION DES DONNEES INTERSPECTRE ---
 C
 C     --- RECUPERATION DES NOEUDS, NOM_CMP ET MAILLE ---
 
-      CALL GETVTX(' ','NOEUD',0,1,0,K8B,NBN1)
-      CALL GETVTX(' ','NOM_CMP',0,1,0,K8B,NBN2)
+      CALL GETVTX(' ','NOEUD',0,IARG,0,K8B,NBN1)
+      CALL GETVTX(' ','NOM_CMP',0,IARG,0,K8B,NBN2)
       IF (NBN1.NE.NBN2) THEN
         CALL U2MESS('F','ALGORITH10_68')
       END IF
       NBN = -NBN1
       CALL WKVECT('&&SPEPH0.NOEUD_REP','V V K8',NBN,INOEN)
       CALL WKVECT('&&SPEPH0.NOCMP_REP','V V K8',NBN,ICMPN)
-      CALL GETVTX(' ','NOEUD',0,1,NBN,ZK8(INOEN),IBID)
-      CALL GETVTX(' ','NOM_CMP',0,1,NBN,ZK8(ICMPN),IBID)
+      CALL GETVTX(' ','NOEUD',0,IARG,NBN,ZK8(INOEN),IBID)
+      CALL GETVTX(' ','NOM_CMP',0,IARG,NBN,ZK8(ICMPN),IBID)
 
-      CALL GETVTX(' ','MAILLE',0,1,0,K8B,NBMAIL)
+      CALL GETVTX(' ','MAILLE',0,IARG,0,K8B,NBMAIL)
       IF (NBMAIL.NE.0) THEN
         NBMAIL = -NBMAIL
         IF (NBN.NE.NBMAIL) THEN
           CALL U2MESS('F','ALGORITH10_69')
         END IF
         CALL WKVECT('&&SPEPH0.MAILLE_REP','V V K8',NBN,IMAIN)
-        CALL GETVTX(' ','MAILLE',0,1,NBN,ZK8(IMAIN),IBID)
+        CALL GETVTX(' ','MAILLE',0,IARG,NBN,ZK8(IMAIN),IBID)
       END IF
 
 C     --- RECUPERATION DU NUMERO DU DDL ---
@@ -249,7 +250,7 @@ C     --- RECUPERATION DU NUMERO DU DDL ---
         CALL U2MESS('F','CALCULEL_17')
       END IF
 
-      CALL GETVTX(' ','OPTION',0,1,1,OPTCAL,IBID)
+      CALL GETVTX(' ','OPTION',0,IARG,1,OPTCAL,IBID)
       INTPHY = .FALSE.
       INTMOD = .FALSE.
       IF (OPTCAL(1:4).EQ.'TOUT') INTPHY = .TRUE.

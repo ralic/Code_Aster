@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +72,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*24 VALK(2)
       CHARACTER*1 KB
       REAL*8 RBID
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -165,9 +166,9 @@ C       IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
         DNOR=.FALSE.
         TYPRAC=' '
         IF (TYPLIA.EQ.'DEPL') THEN
-          CALL GETVTX(MOTFAC,'DDL_ESCL',IOCC,1,1,DDL2,NDDL2)
+          CALL GETVTX(MOTFAC,'DDL_ESCL',IOCC,IARG,1,DDL2,NDDL2)
           IF (NDDL2.GT.0)DNOR=.TRUE.
-          CALL GETVTX(MOTFAC,'TYPE_RACCORD',IOCC,1,1,TYPRAC,IBID)
+          CALL GETVTX(MOTFAC,'TYPE_RACCORD',IOCC,IARG,1,TYPRAC,IBID)
           IF (TYPRAC.EQ.'COQUE') CALL ASSERT(NDIM.EQ.3)
           IF (TYPRAC.EQ.'COQUE_MASSIF') CALL ASSERT(NDIM.EQ.3)
           IF (TYPRAC.EQ.'MASSIF_COQUE') CALL ASSERT(NDIM.EQ.3)
@@ -251,7 +252,7 @@ C            -------------------------------------------------
 C       1.3 ON ELIMINE DE LINONU2 LES NOEUDS DEJA ELIMINES LORS DES
 C           OCCURENCES PRECEDENTES DE LIAISON_MAILLE
 C       ---------------------------------------------------------------
-        CALL GETVTX(MOTFAC,'ELIM_MULT',IOCC,1,1,KELIM,IBID)
+        CALL GETVTX(MOTFAC,'ELIM_MULT',IOCC,IARG,1,KELIM,IBID)
         IF (KELIM.EQ.'NON') THEN
           KKNO2=0
           CALL WKVECT('&&CALIRC.LINONU2BIS','V V I',NBNO2,JNU2BS)

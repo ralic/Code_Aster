@@ -1,7 +1,7 @@
       SUBROUTINE NMLSSV(MODE  ,LISCHA,NBSST)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C
       CHARACTER*24 FOMUL2
       INTEGER      JFOMU2
       INTEGER      I,IBID
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -76,7 +77,7 @@ C
           FOMUL2 = LISCHA(1:19)//'.FCSS'
           CALL WKVECT(FOMUL2,'V V K24',NBSST,JFOMU2)
           DO 1 I = 1,NBSST
-            CALL GETVID('SOUS_STRUC','FONC_MULT',I,1,1,
+            CALL GETVID('SOUS_STRUC','FONC_MULT',I,IARG,1,
      &                  ZK24(JFOMU2+I-1),IBID)
             IF (IBID.EQ.0) THEN
               ZK24(JFOMU2+I-1) = '&&CONSTA'

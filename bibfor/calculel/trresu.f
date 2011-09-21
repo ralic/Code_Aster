@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*24 NORECG,TRAVR,TRAVI,TRAVC
       CHARACTER*33 TITRES,VALK(3)
       CHARACTER*200 LIGN1,LIGN2
+      INTEGER      IARG
 C     NONOEU= NOM_NOEUD (K8) SUIVI EVENTUELLEMENT DU NOM DU GROUP_NO
 C             A PARTIR DUQUEL ON TROUVE LE NOM DU NOEUD.
 C     ------------------------------------------------------------------
@@ -76,37 +77,37 @@ C     ------------------------------------------------------------------
         NODDL = ' '
         TESTOK = 'NOOK'
 
-        CALL GETVTX('RESU','NOM_CMP',IOCC,1,1,NODDL,N1)
-        CALL GETVID('RESU','RESULTAT',IOCC,1,1,NORESU,N1)
+        CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,1,NODDL,N1)
+        CALL GETVID('RESU','RESULTAT',IOCC,IARG,1,NORESU,N1)
         IAUX = IOCC
         CALL PSRESE('RESU',IAUX,1,NORESU,1,NBPASS,NORECG,IRET)
         CALL JEVEUO(NORECG,'L',ADRECG)
 
         CALL TRPREC ( 'RESU', IOCC, EPSI, CRIT, PREC, CRIT2 )
 
-        CALL GETVTX('RESU','VALE_ABS', IOCC,1,1,SSIGNE,N1)
+        CALL GETVTX('RESU','VALE_ABS', IOCC,IARG,1,SSIGNE,N1)
 
-        CALL GETVR8('RESU','VALE'    , IOCC,1,0,R8B   ,N1)
-        CALL GETVIS('RESU','VALE_I'  , IOCC,1,0,IBID  ,N2)
-        CALL GETVC8('RESU','VALE_C'  , IOCC,1,0,C16B  ,N3)
+        CALL GETVR8('RESU','VALE'    , IOCC,IARG,0,R8B   ,N1)
+        CALL GETVIS('RESU','VALE_I'  , IOCC,IARG,0,IBID  ,N2)
+        CALL GETVC8('RESU','VALE_C'  , IOCC,IARG,0,C16B  ,N3)
         IF( N1 .NE. 0) THEN
           NREF=-N1
           TYPRES = 'R'
           CALL JEDETR(TRAVR)
           CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
-          CALL GETVR8('RESU','VALE', IOCC,1,NREF,ZR(IREFR),IRET)
+          CALL GETVR8('RESU','VALE', IOCC,IARG,NREF,ZR(IREFR),IRET)
         ELSEIF( N2 .NE. 0) THEN
           NREF=-N2
           TYPRES = 'I'
           CALL JEDETR(TRAVI)
           CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
-          CALL GETVIS('RESU','VALE_I', IOCC,1,NREF,ZI(IREFI),IRET)
+          CALL GETVIS('RESU','VALE_I', IOCC,IARG,NREF,ZI(IREFI),IRET)
         ELSEIF( N3 .NE. 0) THEN
           NREF=-N3
           TYPRES = 'C'
           CALL JEDETR(TRAVC)
           CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
-          CALL GETVC8('RESU','VALE_C', IOCC,1,NREF,ZC(IREFC),IRET)
+          CALL GETVC8('RESU','VALE_C', IOCC,IARG,NREF,ZC(IREFC),IRET)
         ENDIF
 
         DO 60,NRPASS = 1,NBPASS
@@ -143,7 +144,7 @@ C                    123456789012345678901234567890123
           LIGN1(NL1+17:NL1+17)='.'
           LIGN2(NL2+17:NL2+17)='.'
 
-          CALL GETVTX('RESU','PARA',IOCC,1,1,NOPARA,N1)
+          CALL GETVTX('RESU','PARA',IOCC,IARG,1,NOPARA,N1)
 
           IF (N1.NE.0) THEN
 
@@ -206,7 +207,7 @@ C                    123456789012345678901234567890123
      &                  CRIT,IFIC,SSIGNE)
           END IF
 
-          CALL GETVTX('RESU','NOM_CHAM',IOCC,1,1,NOPARA,N1)
+          CALL GETVTX('RESU','NOM_CHAM',IOCC,IARG,1,NOPARA,N1)
 
           IF (N1.NE.0) THEN
 
@@ -227,7 +228,7 @@ C                    123456789012345678901234567890123
 
             CALL UTEST3('RESU',IOCC,TBTXT)
 
-            CALL GETVTX('RESU','TYPE_TEST',IOCC,1,1,TYPTES,N1)
+            CALL GETVTX('RESU','TYPE_TEST',IOCC,IARG,1,TYPTES,N1)
 
             IF (N1.NE.0) THEN
 
@@ -248,7 +249,7 @@ C                    123456789012345678901234567890123
                 ENDIF
 
 
-                CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,NODDL,N4)
+                CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,0,NODDL,N4)
 
                 IF (N4.EQ.0) THEN
                   NL1 = LXLGUT(LIGN1)
@@ -278,7 +279,8 @@ C                    123456789012345678901234567890123
                 ELSE
                   NBCMP = -N4
                   CALL WKVECT('&&TRRESU.NOM_CMP','V V K8',NBCMP,JCMP)
-                  CALL GETVTX('RESU','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),
+                  CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,NBCMP,
+     &                        ZK8(JCMP),
      &                        N4)
                   CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
      &                      ZR(IREFR),ZC(IREFC),EPSI,LIGN1,LIGN2,
@@ -288,7 +290,7 @@ C                    123456789012345678901234567890123
 
 
             ELSE
-              CALL GETVTX('RESU','NOM_CMP',IOCC,1,1,NODDL,N1)
+              CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,1,NODDL,N1)
 
               NL1 = LXLGUT(LIGN1)
               NL2 = LXLGUT(LIGN2)
@@ -300,7 +302,7 @@ C                    123456789012345678901234567890123
 
               NONOEU = ' '
               CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IE)
-              CALL GETVEM(NOMMA,'NOEUD','RESU','NOEUD',IOCC,1,1,
+              CALL GETVEM(NOMMA,'NOEUD','RESU','NOEUD',IOCC,IARG,1,
      &                    NONOEU(1:8),N1)
               IF (N1.NE.0) THEN
                 NL1 = LXLGUT(LIGN1)
@@ -311,7 +313,8 @@ C                    123456789012345678901234567890123
                 LIGN2(NL2+17:NL2+17)='.'
               ENDIF
 
-              CALL GETVEM(NOMMA,'GROUP_NO','RESU','GROUP_NO',IOCC,1,1,
+              CALL GETVEM(NOMMA,'GROUP_NO','RESU','GROUP_NO',IOCC,IARG,
+     &                    1,
      &                    NOGRNO,N2)
               IF (N2.NE.0) THEN
                 NL1 = LXLGUT(LIGN1)
@@ -336,9 +339,9 @@ C              RIEN A FAIRE.
               CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IE)
               CALL DISMOI('F','NOM_GD',CHAM19,'CHAMP',IBID,NOMGD,IE)
               CALL UTCMP1(NOMGD,'RESU',IOCC,NODDL,IVARI)
-              CALL GETVIS('RESU','SOUS_POINT',IOCC,1,1,NUSP,N2)
+              CALL GETVIS('RESU','SOUS_POINT',IOCC,IARG,1,NUSP,N2)
               IF (N2.EQ.0) NUSP = 0
-              CALL GETVIS('RESU','POINT',IOCC,1,1,NUPO,N2)
+              CALL GETVIS('RESU','POINT',IOCC,IARG,1,NUPO,N2)
               IF (TYPCH.EQ.'NOEU') THEN
                 IF (N2.NE.0) THEN
                   VALK(1) = NORESU
@@ -385,7 +388,7 @@ C              RIEN A FAIRE.
      &                      ZR(IREFR),ZC(IREFC),TYPRES,
      &                      EPSI,CRIT,IFIC,SSIGNE)
               ELSE IF (TYPCH(1:2).EQ.'EL') THEN
-                CALL GETVEM(NOMMA,'MAILLE','RESU','MAILLE',IOCC,1,1,
+                CALL GETVEM(NOMMA,'MAILLE','RESU','MAILLE',IOCC,IARG,1,
      &                      NOMAIL,N1)
                 IF (N1.EQ.0) THEN
                   CALL U2MESS('F','CALCULEL5_8')

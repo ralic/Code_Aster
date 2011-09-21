@@ -8,7 +8,7 @@
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMSY
       CHARACTER*19 CHAM19
       CHARACTER*24 OBJ1, OBJ2, VALK(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  DIR / 'X' , 'Y' , 'Z' /
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
@@ -153,8 +154,8 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
           CTYP = 'QUAD'
           NT = 0
         ELSE
-          CALL GETVTX(MOTFAC,'TYPE_COMBI',IOC,1,1,CTYP,N1)
-          CALL GETVTX(MOTFAC,'TOUT',IOC,1,1,K8B,NT)
+          CALL GETVTX(MOTFAC,'TYPE_COMBI',IOC,IARG,1,CTYP,N1)
+          CALL GETVTX(MOTFAC,'TOUT',IOC,IARG,1,K8B,NT)
         ENDIF
         IF (CTYP.NE.'QUAD') THEN
           IF (NT.NE.0) THEN
@@ -164,11 +165,11 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
  45           CONTINUE
  44         CONTINUE
           ELSE
-            CALL GETVTX(MOTFAC,'NOEUD',IOC,1,0,NOEU,N1)
+            CALL GETVTX(MOTFAC,'NOEUD',IOC,IARG,0,NOEU,N1)
             IF (N1.NE.0) THEN
               NNO = -N1
               CALL WKVECT('&&ASMSUP.NOEUD','V V K8',NNO,JNOE)
-              CALL GETVTX(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),N1)
+              CALL GETVTX(MOTFAC,'NOEUD',IOC,IARG,NNO,ZK8(JNOE),N1)
               DO 46 INO = 1, NNO
                 NOEU = ZK8(JNOE+INO-1)
                 CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
@@ -189,11 +190,11 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
  46           CONTINUE
               CALL JEDETR('&&ASMSUP.NOEUD')
             ELSE
-              CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,0,K8B,N1)
+              CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,0,K8B,N1)
               IF (N1.NE.0) THEN
                 NGR = -N1
                 CALL WKVECT('&&ASMSUP.GROUP_NO','V V K8',NGR,JGRN)
-                CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,NGR,ZK8(JGRN),N1)
+                CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,NGR,ZK8(JGRN),N1)
                 DO 50 IGR = 1, NGR
                   GRNOEU = ZK8(JGRN+IGR-1)
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)

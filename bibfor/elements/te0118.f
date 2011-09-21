@@ -1,6 +1,6 @@
       SUBROUTINE TE0118(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 VALK(3)
 
       PARAMETER   (TOLENI=1.D-6)
+      INTEGER      IARG
 
 C DEBUT ----------------------------------------------------------------
       CALL JEMARQ()
@@ -119,7 +120,7 @@ C  --------------------------------
 
          CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
-         CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+         CALL GETVID(' ','MODELE',1,IARG,1,NOMO,IBID)
 C
 C --- NOM DU MAILLAGE ATTACHE AU MODELE
 C
@@ -232,7 +233,7 @@ C  --------------------------------
          CALL ASSERT(NNO.LE.8)
 
 
-         CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+         CALL GETVID(' ','MODELE',1,IARG,1,NOMO,IBID)
 C
 C --- NOM DU MAILLAGE ATTACHE AU MODELE
 C
@@ -364,7 +365,7 @@ C  ------------------------
          CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
          CALL ASSERT(NNO.LE.8)
-         CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+         CALL GETVID(' ','MODELE',1,IARG,1,NOMO,IBID)
 C
 C --- NOM DU MAILLAGE ATTACHE AU MODELE
 C

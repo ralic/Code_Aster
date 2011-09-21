@@ -1,7 +1,7 @@
       SUBROUTINE OP0098()
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C
       CHARACTER*8  NOMRES,MAILLA,NOMGD,K8BID
       CHARACTER*19 NUMDDL
       CHARACTER*16 NOMOPE,NOMCON
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -65,7 +66,7 @@ C
 C
 C --- CREATION .REFE
 C
-      CALL GETVID('   ','NUME_DDL',1,1,1,NUMDDL,NBID)
+      CALL GETVID('   ','NUME_DDL',1,IARG,1,NUMDDL,NBID)
       NUMDDL(15:19)='.NUME'
       CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,MAILLA,IERD)
       CALL WKVECT(NOMRES//'.IDC_REFE','G V K24',3,IADREF)

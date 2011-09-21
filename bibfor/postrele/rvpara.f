@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,6 +83,7 @@ C
       INTEGER      JNOCMP,NCMPMX
 C
       LOGICAL OK
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C====
@@ -140,7 +141,7 @@ C
 C
 C 2.1. ==> ON CHERCHE SI C'EST LA BONNE TABLE
 C
-        CALL GETVID ( MCF, 'RESULTAT', IOCC,1,0, K8B, N3 )
+        CALL GETVID ( MCF, 'RESULTAT', IOCC,IARG,0, K8B, N3 )
 C
         IAUX = IOCC
         IF ( N3.NE.0 ) THEN
@@ -169,15 +170,15 @@ C          BONNE TABLE
 C
         IF ( OK ) THEN
 C
-         CALL GETVID ( MCF, 'CHEMIN', IOCC,1,0, K8B, N1 )
+         CALL GETVID ( MCF, 'CHEMIN', IOCC,IARG,0, K8B, N1 )
          IF ( N1 .NE. 0 ) JCHEM = JCHEM + 1
 C
-         CALL GETVID ( MCF, 'CHAM_GD', IOCC,1,0, K8B, N2 )
+         CALL GETVID ( MCF, 'CHAM_GD', IOCC,IARG,0, K8B, N2 )
          IF ( N2 .NE. 0 ) JCHAM = JCHAM + 1
 C
          IF ( N3 .NE. 0 ) THEN
             JRESU = JRESU + 1
-            CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, K8B, N3 )
+            CALL GETVID ( MCF, 'RESULTAT', IOCC,IARG,1, K8B, N3 )
             CALL GETTCO ( K8B, TYSD )
             IF     ( TYSD .EQ. 'EVOL_ELAS'  .OR.
      &               TYSD .EQ. 'EVOL_THER'  .OR.
@@ -204,42 +205,42 @@ C
             ENDIF
          ENDIF
 C
-         CALL GETVID ( MCF, 'LIST_ORDRE', IOCC,1,0, K8B, N11 )
+         CALL GETVID ( MCF, 'LIST_ORDRE', IOCC,IARG,0, K8B, N11 )
          IF ( N11 .NE. 0 ) JORDR = JORDR + 1
 C
-         CALL GETVIS ( MCF, 'NUME_ORDRE', IOCC,1,0, IBID, N12 )
+         CALL GETVIS ( MCF, 'NUME_ORDRE', IOCC,IARG,0, IBID, N12 )
          IF ( N12 .NE. 0 ) JORDR = JORDR + 1
 C
-         CALL GETVID ( MCF, 'LIST_MODE', IOCC,1,0, K8B, N13 )
+         CALL GETVID ( MCF, 'LIST_MODE', IOCC,IARG,0, K8B, N13 )
          IF ( N13 .NE. 0 ) JMODE = JMODE + 1
 C
-         CALL GETVIS ( MCF, 'NUME_MODE', IOCC,1,0, IBID, N14 )
+         CALL GETVIS ( MCF, 'NUME_MODE', IOCC,IARG,0, IBID, N14 )
          IF ( N14 .NE. 0 ) JMODE = JMODE + 1
 C
-         CALL GETVID ( MCF, 'LIST_INST', IOCC,1,0, K8B, N15 )
+         CALL GETVID ( MCF, 'LIST_INST', IOCC,IARG,0, K8B, N15 )
          IF ( N15 .NE. 0 ) JINST = JINST + 1
 C
-         CALL GETVR8 ( MCF, 'INST', IOCC,1,0, R8B, N16 )
+         CALL GETVR8 ( MCF, 'INST', IOCC,IARG,0, R8B, N16 )
          IF ( N16 .NE. 0 ) JINST = JINST + 1
 C
-         CALL GETVID ( MCF, 'LIST_FREQ', IOCC,1,0, K8B, N17 )
+         CALL GETVID ( MCF, 'LIST_FREQ', IOCC,IARG,0, K8B, N17 )
          IF ( N17 .NE. 0 ) JFREQ = JFREQ + 1
 C
-         CALL GETVR8 ( MCF, 'FREQ', IOCC,1,0, R8B, N18 )
+         CALL GETVR8 ( MCF, 'FREQ', IOCC,IARG,0, R8B, N18 )
          IF ( N18 .NE. 0 ) JFREQ = JFREQ + 1
 C
          IF ((N2+N11+N12+N13+N14+N15+N16+N17+N18).EQ.0) JORDR = JORDR+1
 C
-         CALL GETVTX ( MCF, 'TOUT_CMP', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'TOUT_CMP', IOCC,IARG,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
             JNCMP = JNCMP  + 1
             NOMOBJ = '&&'//NOMPRO//'.NCMP'
             IF ( N2 .NE. 0 ) THEN
-               CALL GETVID ( MCF, 'CHAM_GD', IOCC,1,1, NOMSY, N2 )
+               CALL GETVID ( MCF, 'CHAM_GD', IOCC,IARG,1, NOMSY, N2 )
                CALL UTNCMP ( NOMSY, NBC, NOMOBJ )
             ELSE
-               CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, RESU , N3 )
-               CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,1,1, NOMSY, N1 )
+               CALL GETVID ( MCF, 'RESULTAT', IOCC,IARG,1, RESU , N3 )
+               CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,IARG,1, NOMSY, N1 )
 
                CALL RSORAC(RESU,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
      &                                                 NBORDR,1,IBID)
@@ -274,27 +275,27 @@ C
             CALL JEDETR ( NOMOBJ )
          ENDIF
 C
-         CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'NOM_CMP', IOCC,IARG,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
 C
-            CALL GETVTX ( MCF, 'TRAC_NOR'    , IOCC,1,0, K8B, N12)
+            CALL GETVTX ( MCF, 'TRAC_NOR'    , IOCC,IARG,0, K8B, N12)
             IF ( N12 .NE. 0 ) JTRAN = JTRAN  + 1
 C
-            CALL GETVTX ( MCF, 'TRAC_DIR'      , IOCC,1,0, K8B,N14)
+            CALL GETVTX ( MCF, 'TRAC_DIR'      , IOCC,IARG,0, K8B,N14)
             IF ( N14 .NE. 0 ) JTRAD = JTRAD  + 1
 C
             IF ( (N12+N14) .NE. 0 ) GOTO 24
             JNCMP = JNCMP  + 1
             NBC = -N1
             CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP2 )
-            CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,NBC, ZK8(JCMP2),N1)
+            CALL GETVTX ( MCF, 'NOM_CMP', IOCC,IARG,NBC, ZK8(JCMP2),N1)
 C           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
             N11=0
             IF ( N11 .NE. 0 ) THEN
                NUMCMP = -N11
                CALL WKVECT ( '&&'//NOMPRO//'.NU_CMP', 'V V I',
      &                       NUMCMP, JNUCP )
-C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
+C           CALL GETVIS(MCF,'NUME_CMP',IOCC,IARG,NUMCMP,ZI(JNUCP),N11)
             N11=0
                IF (ZK8(JCMP2)(1:4).EQ.'VARI') THEN
                   CALL ASSERT( NBC.EQ.1 )
@@ -345,17 +346,17 @@ C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
          ENDIF
  24      CONTINUE
 C
-         CALL GETVTX ( MCF, 'ELEM_PRINCIPAUX', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'ELEM_PRINCIPAUX', IOCC,IARG,0, K8B, N1 )
          IF ( N1 .NE. 0 ) JPRIN = JPRIN + 1
 C
-         CALL GETVTX ( MCF, 'RESULTANTE', IOCC,1,0, K8B, N1 )
-         CALL GETVTX ( MCF, 'MOMENT'    , IOCC,1,0, K8B, N2 )
+         CALL GETVTX ( MCF, 'RESULTANTE', IOCC,IARG,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'MOMENT'    , IOCC,IARG,0, K8B, N2 )
          IF ( (N1 .NE. 0) .AND. (N2 .NE. 0) ) JMOME = JMOME + 1
          IF ( (N1 .NE. 0) .AND. (N2 .EQ. 0) ) THEN
             JNCMP = JNCMP  + 1
             NBC = -N1
             CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP3 )
-            CALL GETVTX (MCF,'RESULTANTE',IOCC,1,NBC,ZK8(JCMP3),N1)
+            CALL GETVTX (MCF,'RESULTANTE',IOCC,IARG,NBC,ZK8(JCMP3),N1)
             DO 30 I = 1 , NBC
                DO 32 J = 1 , NCMP
                   IF ( ZK8(JNOCMP-1+J) .EQ. ZK8(JCMP3+I-1) ) GOTO 30
@@ -375,7 +376,7 @@ C
          LMOYGR = .FALSE.
          LMOYE = .FALSE.
          LEXTR = .FALSE.
-         CALL GETVTX ( MCF, 'OPERATION', IOCC,1,1, K16B, N3 )
+         CALL GETVTX ( MCF, 'OPERATION', IOCC,IARG,1, K16B, N3 )
          IF ( K16B .EQ. 'EXTREMA' ) LMIMA = .TRUE.
          IF ( K16B .EQ. 'MOYENNE_ARITH' ) LMOYGR = .TRUE.
          IF ( K16B .EQ. 'MOYENNE' ) THEN
@@ -385,21 +386,21 @@ C
          IF ( K16B .EQ. 'EXTRACTION' ) THEN
             LEXTR = .TRUE.
 C
-            CALL GETVTX ( MCF, 'INVARIANT', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MCF, 'INVARIANT', IOCC,IARG,0, K8B, N2 )
             IF ( N2 .NE. 0 ) JINVA = JINVA + 1
 C
             IF ( N1 .EQ. 0 ) JABSC = JABSC + 1
 C
-            CALL GETVTX ( MCF, 'NOEUD', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MCF, 'NOEUD', IOCC,IARG,0, K8B, N2 )
             IF ( (N1 .EQ. 0) .AND. (N2 .NE. 0) ) JNOEU = JNOEU + 1
 C
-            CALL GETVTX ( MCF, 'GROUP_NO', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MCF, 'GROUP_NO', IOCC,IARG,0, K8B, N2 )
             IF ( (N1 .EQ. 0) .AND. (N2 .NE. 0) ) JNOEU = JNOEU + 1
          ENDIF
 C
-         CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,IARG,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
-            CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,1,1, K8B, N1 )
+            CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,IARG,1, K8B, N1 )
             IF ( K8B(1:3) .EQ. 'NON' ) JMAIL = JMAIL + 1
          ENDIF
 C

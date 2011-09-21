@@ -4,7 +4,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16  MOTCLF, MOTCLE(2), MOTCL2(2), LISTMA, LTRANS
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI, MESMA2, CONNEX
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -112,14 +113,16 @@ C
          ZK16(JVALV)   = LISTMA
          ZK16(JVALV+1) = LTRANS
 C
-         CALL GETVR8 ( MOTCLF, 'TRANS', IOCC,1,0, RBID, NTRA )
-         CALL GETVR8 ( MOTCLF, 'SYME' , IOCC,1,0, RBID, NSYM )
+         CALL GETVR8 ( MOTCLF, 'TRANS', IOCC,IARG,0, RBID, NTRA )
+         CALL GETVR8 ( MOTCLF, 'SYME' , IOCC,IARG,0, RBID, NSYM )
          NTRA = -NTRA
          NSYM = -NSYM
          IF (NTRA.NE.0)
-     +      CALL GETVR8 (MOTCLF, 'TRANS',IOCC,1,NTRA, ZR(JTRAN), NTRA)
+     +      CALL GETVR8 (MOTCLF,'TRANS',IOCC,IARG,NTRA,
+     &                   ZR(JTRAN), NTRA)
          IF (NSYM.NE.0)
-     +      CALL GETVR8 (MOTCLF, 'SYME' ,IOCC,1,NSYM, ZR(JTRAN), NSYM)
+     +      CALL GETVR8 (MOTCLF,'SYME',IOCC,IARG,NSYM,
+     &                   ZR(JTRAN), NSYM)
 C
 C ------ GEOMETRIE DU CONDUCTEUR SECONDAIRE
 C
@@ -129,7 +132,7 @@ C
 C
 C ------ GEOMETRIE DU CONDUCTEUR PRINCIPAL
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
          IF ( NBTOU .NE. 0 ) THEN
             IF ( NBMA2 .EQ. 0 ) THEN
                CALL WKVECT ( LISTMA, 'G V I', 2*INTO, JNUMA )

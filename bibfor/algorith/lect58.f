@@ -2,7 +2,7 @@
      &                   LISTIS,PRECIS,CRIT,EPSI,LINOCH,NBNOCH)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
       CHARACTER*32 JEXNOM
-C      
+C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
       CHARACTER*1   PRFNOE
@@ -83,11 +83,15 @@ C
       REAL*8 AMIN,APAS,RBID,RVAL,DIR(3)
       COMPLEX*16 CVAL,CZERO,CUN
       LOGICAL TROUVE,ZCMPLX,FICAB,FICVA,VUCONT,VUDEF
+      INTEGER      IARG
 C
 C----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      ICHAM0 = 0
+      INATU1 = 0
+      NBABS1 = 0
       PRFNOE='N'
 
       REPEM1 (  1 : 50 ) =
@@ -95,6 +99,7 @@ C
       REPEM1 ( 51 : 80 ) =
      & '                              '
       MAILLA = MAIL
+      CVAL = DCMPLX(0.D0,0.D0)
       CZERO = DCMPLX(0.D0,0.D0)
       CUN = DCMPLX(1.D0,0.D0)
       FICAB = .FALSE.
@@ -393,9 +398,9 @@ C TRAITEMENT DES ORIENTATIONS POUR DEPL
           CALL JEVEUO('&&DEFDIR','L',IAGNO2)
           DO 305 I = 1,NBNO2
             IF(ZI(IAGNO2-1 +I) .EQ. INO) THEN
-          CALL GETVIS('REDEFI_ORIENT','CODE_DIR',IOCC,0,1,ICMPM,IBID)
+          CALL GETVIS('REDEFI_ORIENT','CODE_DIR',IOCC,IARG,1,ICMPM,IBID)
               IF(ICMP .EQ. ICMPM) THEN
-          CALL GETVR8('REDEFI_ORIENT','DIRECTION',IOCC,0,3,DIR,IBID)
+          CALL GETVR8('REDEFI_ORIENT','DIRECTION',IOCC,IARG,3,DIR,IBID)
                 IF(ZCMPLX) THEN
                   ZC(JCNSV-1 + IDIR+1) = DCMPLX(DIR(1),0.D0)
                   ZC(JCNSV-1 + IDIR+2) = DCMPLX(DIR(2),0.D0)

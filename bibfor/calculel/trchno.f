@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*17 NONOEU
       CHARACTER*24 TRAVR,TRAVI,TRAVC
       CHARACTER*200 LIGN1,LIGN2
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -72,7 +73,7 @@ C     ------------------------------------------------------------------
         TESTOK = 'NOOK'
         NONOEU = ' '
         NODDL = ' '
-        CALL GETVID('CHAM_NO','CHAM_GD',IOCC,1,1,CHAM19,N1)
+        CALL GETVID('CHAM_NO','CHAM_GD',IOCC,IARG,1,CHAM19,N1)
         LIGN1(1:21)='---- '//MOTCLE(1:8)
         LIGN1(22:22)='.'
         LIGN2(1:21)='     '//CHAM19(1:8)
@@ -80,7 +81,7 @@ C     ------------------------------------------------------------------
 
         CALL UTEST3('CHAM_NO',IOCC,TBTXT)
 
-        CALL GETVTX ( 'CHAM_NO', 'NOM_CMP',   IOCC,1,1, NODDL, N1 )
+        CALL GETVTX ( 'CHAM_NO', 'NOM_CMP',   IOCC,IARG,1, NODDL, N1 )
         IF( N1 .NE. 0) THEN
            NL1 = LXLGUT(LIGN1)
            NL2 = LXLGUT(LIGN2)
@@ -89,7 +90,7 @@ C     ------------------------------------------------------------------
            LIGN1(NL1+17:NL1+17)='.'
            LIGN2(NL2+17:NL2+17)='.'
         ENDIF
-        CALL GETVTX ( 'CHAM_NO', 'VALE_ABS',  IOCC,1,1, SSIGNE,N1 )
+        CALL GETVTX ( 'CHAM_NO', 'VALE_ABS',  IOCC,IARG,1, SSIGNE,N1 )
         IF(SSIGNE.EQ.'OUI')THEN
             NL1 = LXLGUT(LIGN1)
             NL2 = LXLGUT(LIGN2)
@@ -98,34 +99,34 @@ C     ------------------------------------------------------------------
             LIGN1(NL1+17:NL1+17)='.'
             LIGN2(NL2+17:NL2+17)='.'
         ENDIF
-        CALL GETVR8 ( 'CHAM_NO', 'PRECISION', IOCC,1,1, EPSI,  N1 )
-        CALL GETVTX ( 'CHAM_NO', 'CRITERE',   IOCC,1,1, CRIT,  N1 )
+        CALL GETVR8 ( 'CHAM_NO', 'PRECISION', IOCC,IARG,1, EPSI,  N1 )
+        CALL GETVTX ( 'CHAM_NO', 'CRITERE',   IOCC,IARG,1, CRIT,  N1 )
 
-        CALL GETVR8('CHAM_NO','VALE'    , IOCC,1,0,R8B   ,N1)
-        CALL GETVIS('CHAM_NO','VALE_I'  , IOCC,1,0,IBID  ,N2)
-        CALL GETVC8('CHAM_NO','VALE_C'  , IOCC,1,0,C16B  ,N3)
+        CALL GETVR8('CHAM_NO','VALE'    , IOCC,IARG,0,R8B   ,N1)
+        CALL GETVIS('CHAM_NO','VALE_I'  , IOCC,IARG,0,IBID  ,N2)
+        CALL GETVC8('CHAM_NO','VALE_C'  , IOCC,IARG,0,C16B  ,N3)
         IF( N1 .NE. 0) THEN
           NREF=-N1
           TYPRES = 'R'
           CALL JEDETR(TRAVR)
           CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
-          CALL GETVR8('CHAM_NO','VALE', IOCC,1,NREF,ZR(IREFR),IRET)
+          CALL GETVR8('CHAM_NO','VALE', IOCC,IARG,NREF,ZR(IREFR),IRET)
         ELSEIF( N2 .NE. 0) THEN
           NREF=-N2
           TYPRES = 'I'
           CALL JEDETR(TRAVI)
           CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
-          CALL GETVIS('CHAM_NO','VALE_I', IOCC,1,NREF,ZI(IREFI),IRET)
+          CALL GETVIS('CHAM_NO','VALE_I', IOCC,IARG,NREF,ZI(IREFI),IRET)
         ELSEIF( N3 .NE. 0) THEN
           NREF=-N3
           TYPRES = 'C'
           CALL JEDETR(TRAVC)
           CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
-          CALL GETVC8('CHAM_NO','VALE_C', IOCC,1,NREF,ZC(IREFC),IRET)
+          CALL GETVC8('CHAM_NO','VALE_C', IOCC,IARG,NREF,ZC(IREFC),IRET)
         ENDIF
 
 
-        CALL GETVTX('CHAM_NO','TYPE_TEST',IOCC,1,1,TYPTES,N1)
+        CALL GETVTX('CHAM_NO','TYPE_TEST',IOCC,IARG,1,TYPTES,N1)
 
         IF (N1.NE.0) THEN
 
@@ -136,7 +137,7 @@ C     ------------------------------------------------------------------
           LIGN1(NL1+17:NL1+17)='.'
           LIGN2(NL2+17:NL2+17)='.'
 
-          CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,0,NODDL,N4)
+          CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,IARG,0,NODDL,N4)
           IF (N4.EQ.0) THEN
             NL1 = LXLGUT(LIGN1)
             NL11 = LXLGUT(LIGN1(1:NL1-1))
@@ -163,7 +164,8 @@ C     ------------------------------------------------------------------
           ELSE
             NBCMP = -N4
             CALL WKVECT('&&TRCHNO.NOM_CMP','V V K8',NBCMP,JCMP)
-            CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
+            CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,IARG,NBCMP,
+     &                  ZK8(JCMP),N4)
             CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
      &                  ZR(IREFR),ZC(IREFC),EPSI,LIGN1,LIGN2,
      &                  CRIT,IFIC,NBCMP,ZK8(JCMP),SSIGNE)
@@ -172,9 +174,9 @@ C     ------------------------------------------------------------------
 
         ELSE
 
-          CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,1,NODDL,N1)
+          CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,IARG,1,NODDL,N1)
           CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IRET)
-          CALL GETVEM(NOMMA,'NOEUD','CHAM_NO','NOEUD',IOCC,1,1,
+          CALL GETVEM(NOMMA,'NOEUD','CHAM_NO','NOEUD',IOCC,IARG,1,
      &                NONOEU(1:8),N1)
           IF (N1.NE.0) THEN
             NL1 = LXLGUT(LIGN1)
@@ -183,7 +185,7 @@ C     ------------------------------------------------------------------
             LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NONOEU(1:8)
           ENDIF
 
-          CALL GETVEM(NOMMA,'GROUP_NO','CHAM_NO','GROUP_NO',IOCC,1,1,
+          CALL GETVEM(NOMMA,'GROUP_NO','CHAM_NO','GROUP_NO',IOCC,IARG,1,
      &                NOGRNO,N2)
           IF (N2.NE.0) THEN
             NL1 = LXLGUT(LIGN1)

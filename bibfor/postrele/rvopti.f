@@ -9,7 +9,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C     ------------------------------------------------------------------
 C
       INTEGER    IOCC, NC, IER
       INTEGER    LNCH, GETEXM
+      INTEGER      IARG
 C
 C======================================================================
 C
@@ -53,7 +54,7 @@ C        PAR LE MOT CLE "NOM_CHAM"
 C
          LNCH = GETEXM ( MCF, 'NOM_CHAM' )
          IF ( LNCH .EQ. 1 ) THEN
-            CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,1,1, OPTION, NC )
+            CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,IARG,1, OPTION, NC )
             IF ( OPTION(6:9) .EQ. 'NOEU' )  GOTO 9999
          ENDIF
 C

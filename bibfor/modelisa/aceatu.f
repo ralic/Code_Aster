@@ -5,7 +5,7 @@
       CHARACTER*8         NOMA, NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,7 @@ C
       CHARACTER*8  NOMU, CAR, NOMNOE, NOMLU, CRIT
       CHARACTER*16 CONCEP, CMD, NUNOEL
       CHARACTER*24 MLGNMA, MLGNNO, MLGGNO,MLGCOO,MLGCNX,MODMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -234,17 +235,17 @@ C
 C         UN SEUL NOEUD PERMIS
 C
           CALL GETVEM(NOMA,'GROUP_NO',
-     &                'ORIENTATION','GROUP_NO' ,IOC,1,1,NOMLU,NJ  )
+     &                'ORIENTATION','GROUP_NO' ,IOC,IARG,1,NOMLU,NJ  )
           CALL GETVEM(NOMA,'NOEUD',
-     &                'ORIENTATION','NOEUD'    ,IOC,1,1,NOMLU,NN  )
-          CALL GETVTX('ORIENTATION','CARA'     ,IOC,1,1,CAR  ,NCAR)
-          CALL GETVR8('ORIENTATION','VALE'     ,IOC,1,3,VAL  ,NVAL)
-          CALL GETVR8('ORIENTATION','PRECISION',IOC,1,1,EPSI ,IBID)
+     &                'ORIENTATION','NOEUD'    ,IOC,IARG,1,NOMLU,NN  )
+          CALL GETVTX('ORIENTATION','CARA'     ,IOC,IARG,1,CAR  ,NCAR)
+          CALL GETVR8('ORIENTATION','VALE'     ,IOC,IARG,3,VAL  ,NVAL)
+          CALL GETVR8('ORIENTATION','PRECISION',IOC,IARG,1,EPSI ,IBID)
           IF (IBID.EQ.0) THEN
              EPSI=1.D-4
              CRIT='RELATIF'
           ENDIF
-          CALL GETVTX('ORIENTATION','CRITERE'  ,IOC,1,1,CRIT,IBID)
+          CALL GETVTX('ORIENTATION','CRITERE'  ,IOC,IARG,1,CRIT,IBID)
           IF (CAR.EQ.'GENE_TUY') THEN
             IF (NJ.GT.0) THEN
               IF (NJ.EQ.1) THEN

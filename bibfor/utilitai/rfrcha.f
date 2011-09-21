@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 NOEUD,CMP,NOGMA,NOGNO,NOMGD
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA
       CHARACTER*19 NOMFON,CHAM19
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -57,10 +58,10 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
 C
       CALL GETRES(NOMFON,TYPCON,NOMCMD)
 
-      CALL GETVTX(' ','CRITERE',0,1,1,CRIT,N1)
-      CALL GETVR8(' ','PRECISION',0,1,1,EPSI,N1)
+      CALL GETVTX(' ','CRITERE',0,IARG,1,CRIT,N1)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,N1)
       INTRES = 'NON     '
-      CALL GETVTX(' ','INTERP_NUME',0,1,1,INTRES,N1)
+      CALL GETVTX(' ','INTERP_NUME',0,IARG,1,INTRES,N1)
 
       NPOINT = 0
       CMP = ' '
@@ -68,13 +69,13 @@ C
       MAILLE = ' '
       NOGMA = ' '
       NOGNO = ' '
-      CALL GETVTX(' ','MAILLE',0,1,1,MAILLE,NM)
-      CALL GETVTX(' ','GROUP_MA',0,1,1,NOGMA,NGM)
-      CALL GETVIS(' ','SOUS_POINT',0,1,1,NUSP,NP)
+      CALL GETVTX(' ','MAILLE',0,IARG,1,MAILLE,NM)
+      CALL GETVTX(' ','GROUP_MA',0,IARG,1,NOGMA,NGM)
+      CALL GETVIS(' ','SOUS_POINT',0,IARG,1,NUSP,NP)
       IF (NP.EQ.0) NUSP = 0
-      CALL GETVIS(' ','POINT',0,1,1,NPOINT,NP)
-      CALL GETVTX(' ','NOEUD',0,1,1,NOEUD,NN)
-      CALL GETVTX(' ','GROUP_NO',0,1,1,NOGNO,NGN)
+      CALL GETVIS(' ','POINT',0,IARG,1,NPOINT,NP)
+      CALL GETVTX(' ','NOEUD',0,IARG,1,NOEUD,NN)
+      CALL GETVTX(' ','GROUP_NO',0,IARG,1,NOGNO,NGN)
 
       NVERI1 = NM + NGM
       NVERI2 = NN + NP + NGN
@@ -82,7 +83,7 @@ C
 C     -----------------------------------------------------------------
 C                      --- CAS D'UN CHAM_GD ---
 C     -----------------------------------------------------------------
-      CALL GETVID(' ','CHAM_GD',0,1,1,CHAM19,NCH)
+      CALL GETVID(' ','CHAM_GD',0,IARG,1,CHAM19,NCH)
       IF (NCH.NE.0) THEN
         CALL DISMOI('F','TYPE_SUPERVIS',CHAM19,'CHAMP',IBID,TYPCHA,IE)
         CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMA,IE)
@@ -97,7 +98,7 @@ C       ----------------------------------
               CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
             END IF
           END IF
-          CALL GETVTX(' ','NOM_CMP',0,1,1,CMP,NC)
+          CALL GETVTX(' ','NOM_CMP',0,IARG,1,CMP,NC)
           CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
           IF (INOEUD.EQ.0) THEN
             LG1 = LXLGUT(NOEUD)

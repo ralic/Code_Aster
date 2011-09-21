@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C
       CHARACTER*32 FICHI
       CHARACTER*64 BASE
       CHARACTER*80 TITRE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  REFE  /'                  _REFE'/
       DATA  KINST /'&&OP0163.INSTANT'/
@@ -67,8 +68,8 @@ C
       WRITE(IMESS,'(''TYPE DE RESULTAT :'',1X,A16)') CONCEP
 C
 C     ----- RECUPERATION UNITE DE MISS ---
-      CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFMIS, NU )
-      CALL GETVTX ( ' ', 'NOM'  , 1,1,1, FICHI, NF )
+      CALL GETVIS ( ' ', 'UNITE', 1,IARG,1, IFMIS, NU )
+      CALL GETVTX ( ' ', 'NOM'  , 1,IARG,1, FICHI, NF )
       IF ( NF .EQ. 0 ) THEN
         K16NOM = ' '
         IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN
@@ -79,11 +80,11 @@ C     ----- RECUPERATION UNITE DE MISS ---
         CALL ULOPEN ( IFMIS, BASE, ' ', 'NEW', 'O' )
       ENDIF
 C
-      CALL GETVTX(' ','TITRE',1,1,1,TITRE,NTI)
+      CALL GETVTX(' ','TITRE',1,IARG,1,TITRE,NTI)
       IF (NTI.NE.0) WRITE(IMESS,'(A80)') TITRE
 
 C     ----- RECUPERATION DES MODES -----
-      CALL GETVID(' ','MACR_ELEM_DYNA',1,1,1,MAEL,NMM)
+      CALL GETVID(' ','MACR_ELEM_DYNA',1,IARG,1,MAEL,NMM)
       REFE(1:18) = MAEL//'.MAEL_RAID'
       CALL JEVEUO(REFE,'L',JREFE)
       MATRK = ZK24(JREFE+1)

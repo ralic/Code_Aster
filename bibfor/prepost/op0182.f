@@ -2,9 +2,9 @@
       IMPLICIT  NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,6 +67,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       CHARACTER*19  RESU
       CHARACTER*24  TYPE, TABK(NBPARA), NOMFON, NOMF, TYPINI, NOMFG,
      +              TYPOBC, NOMOBC
+      INTEGER      IARG
 C
       DATA NOPARA / 'LIEU'    , 'SECTEUR' , 'TYPE'    , 'ANGL_DEBUT',
      &              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX', 'SURF_INIT' ,
@@ -156,19 +157,19 @@ C     ------------------------------------------------------------------
 C            LES VOLUMES D'USURE TUBE ET OBST PAR SECTEUR
 C     ------------------------------------------------------------------
 C
-      CALL GETVID ( ' ', 'TABL_USURE', 1,1,1, TABPUS, NPU )
+      CALL GETVID ( ' ', 'TABL_USURE', 1,IARG,1, TABPUS, NPU )
       IF ( NPU .NE. 0 ) THEN
          CALL MOREVU ( TABPUS, DINST, NS, SECT, VOLTUB, VOLOBS )
       ENDIF
 C
-      CALL GETVR8 ( ' ', 'V_USUR_TUBE', 1,1,0, VUST, NIS )
+      CALL GETVR8 ( ' ', 'V_USUR_TUBE', 1,IARG,0, VUST, NIS )
       IF ( NIS .NE. 0 ) THEN
          NS = -NIS
          IF ( NS.NE.10 .AND. NS.NE.12 ) THEN
             CALL U2MESS('F','PREPOST3_63')
          ENDIF
-         CALL GETVR8 ( ' ', 'V_USUR_TUBE', 1,1,NS, VUST, NIS )
-         CALL GETVR8 ( ' ', 'V_USUR_OBST', 1,1,NS, VUSO, NIS )
+         CALL GETVR8 ( ' ', 'V_USUR_TUBE', 1,IARG,NS, VUST, NIS )
+         CALL GETVR8 ( ' ', 'V_USUR_OBST', 1,IARG,NS, VUSO, NIS )
          DO 12 I = 1 , NS
             SECT(I)   = (I-1)*360.D0/NS
             VOLTUB(I) = VUST(I)
@@ -182,14 +183,14 @@ C     ------------------------------------------------------------------
 C            REMPLACEMENT DU TUBE PERCE PAR UN TUBE NEUF
 C     ------------------------------------------------------------------
 C
-      CALL GETVR8 ( ' ', 'PERCEMENT', 1,1,1, PERCE, NIS )
+      CALL GETVR8 ( ' ', 'PERCEMENT', 1,IARG,1, PERCE, NIS )
 C
 C     ------------------------------------------------------------------
 C          PARAMETRES POUR L'USURE DES OBSTACLES EN FONCTION DE LA
 C                    HAUTEUR DE LA CARTE OU DU GUIDAGE
 C     ------------------------------------------------------------------
 C
-      CALL GETVID ( ' ', 'GUIDE'   , 1,1,1, GUIDE, N1  )
+      CALL GETVID ( ' ', 'GUIDE'   , 1,IARG,1, GUIDE, N1  )
 C
       CALL TBLIVA(GUIDE,1,'LIEU',
      &            IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'TYPE',
@@ -261,8 +262,8 @@ C
       ARETE  = ASIN(DENC/ROBST)*180.D0/PI
       ARETE2 = 180.D0-ARETE
 C
-      CALL GETVR8 ( ' ', 'R_MOBILE', 1,1,1, RTUBE , NR )
-      CALL GETVID ( ' ', 'CRAYON'  , 1,1,1, OBCRAY, NC )
+      CALL GETVR8 ( ' ', 'R_MOBILE', 1,IARG,1, RTUBE , NR )
+      CALL GETVID ( ' ', 'CRAYON'  , 1,IARG,1, OBCRAY, NC )
       IF (NR.EQ.0) THEN
          IF (NC.EQ.0) THEN
            IF (TYPE(14:17).EQ.'1300') RTUBE = 4.84D-3

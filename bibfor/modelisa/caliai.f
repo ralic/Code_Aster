@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*15 COORDO
       CHARACTER*1 K1BID,NOMPAR(3)
       REAL*8       VALPAR(3),VALE
+      INTEGER      IARG
       DATA NOMPAR /'X','Y','Z'/
 C ----------------------------------------------------------------------
 
@@ -90,9 +91,9 @@ C        DE GROUP_NO OU DE NOEUD
 C        --------------------------------------------------
       NDIM1 = 0
       DO 10 I = 1,NLIAI
-        CALL GETVTX(MOTFAC,MOGROU,I,1,0,K8BID,NENT)
+        CALL GETVTX(MOTFAC,MOGROU,I,IARG,0,K8BID,NENT)
         NDIM1 = MAX(NDIM1,-NENT)
-        CALL GETVTX(MOTFAC,MOTCLE,I,1,0,K8BID,NENT)
+        CALL GETVTX(MOTFAC,MOTCLE,I,IARG,0,K8BID,NENT)
         NDIM1 = MAX(NDIM1,-NENT)
    10 CONTINUE
 
@@ -106,7 +107,7 @@ C        RELATION LINEAIRE
 C        -------------------------------------------------------
       NDIM2 = NDIM1
       DO 40 IOCC = 1,NLIAI
-        CALL GETVTX(MOTFAC,MOGROU,IOCC,1,NDIM1,ZK8(JJJ),NGR)
+        CALL GETVTX(MOTFAC,MOGROU,IOCC,IARG,NDIM1,ZK8(JJJ),NGR)
         NBGT = 0
         DO 20 IGR = 1,NGR
           CALL JEEXIN(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),IRET)
@@ -120,7 +121,7 @@ C        -------------------------------------------------------
           END IF
    20   CONTINUE
         NDIM2 = MAX(NDIM2,NBGT)
-        CALL GETVTX(MOTFAC,MOTCLE,IOCC,1,NDIM1,ZK8(JJJ),NNO)
+        CALL GETVTX(MOTFAC,MOTCLE,IOCC,IARG,NDIM1,ZK8(JJJ),NNO)
         DO 30 INO = 1,NNO
           CALL JENONU(JEXNOM(NOEUMA,ZK8(JJJ+INO-1)),IRET)
           IF (IRET.EQ.0) THEN
@@ -147,14 +148,15 @@ C     BOUCLE SUR LES RELATIONS LINEAIRES
 C     -----------------------------------
       CALL GETRES(CHAR,CONCEP,OPER)
       DO 80 I = 1,NLIAI
-        CALL GETVR8(MOTFAC,'COEF_MULT',I,1,NDIM2,ZR(JCMUR),N2)
+        CALL GETVR8(MOTFAC,'COEF_MULT',I,IARG,NDIM2,ZR(JCMUR),N2)
         IF ( OPER.EQ.'AFFE_CHAR_MECA_F') THEN
-          CALL GETVID(MOTFAC,'COEF_MULT_FONC',I,1,NDIM2,ZK8(JCMUF),N3)
+          CALL GETVID(MOTFAC,'COEF_MULT_FONC',I,IARG,NDIM2,
+     &                ZK8(JCMUF),N3)
         ELSE
           N3=0
         ENDIF
         IF (N3.NE.0) TYPCO2='FONC'
-        CALL GETVTX(MOTFAC,'DDL',I,1,NDIM2,ZK8(JDDL),N1)
+        CALL GETVTX(MOTFAC,'DDL',I,IARG,NDIM2,ZK8(JDDL),N1)
         TYPCOE = 'REEL'
 
 
@@ -178,27 +180,28 @@ C        SUR LE DDL 'TEMP'
 C       -- RECUPERATION DU 2ND MEMBRE :
 C       ------------------------------
         IF (FONREE.EQ.'REEL') THEN
-          CALL GETVR8(MOTFAC,'COEF_IMPO',I,1,1,BETA,NB)
+          CALL GETVR8(MOTFAC,'COEF_IMPO',I,IARG,1,BETA,NB)
           TYPVAL = 'REEL'
         ELSE IF (FONREE.EQ.'FONC') THEN
-          CALL GETVID(MOTFAC,'COEF_IMPO',I,1,1,BETAF,NB)
+          CALL GETVID(MOTFAC,'COEF_IMPO',I,IARG,1,BETAF,NB)
           TYPVAL = 'FONC'
         ELSE IF (FONREE.EQ.'COMP') THEN
-          CALL GETVC8(MOTFAC,'COEF_IMPO',I,1,1,BETAC,NB)
+          CALL GETVC8(MOTFAC,'COEF_IMPO',I,IARG,1,BETAC,NB)
           TYPVAL = 'COMP'
         ELSE
           CALL U2MESS('F','DVP_1')
         END IF
 
 
-        CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,1,0,ZK8(JLIST1),
+        CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,0,
+     &              ZK8(JLIST1),
      &              NG)
         IF (NG.NE.0) THEN
 
 C           -- CAS DE GROUP_NO :
 C           --------------------
           NG = -NG
-          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,1,NG,
+          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,NG,
      &                ZK8(JLIST1),N)
           INDNOE = 0
           DO 70 J = 1,NG
@@ -239,11 +242,11 @@ C           AFFECTATION A LA LISTE DE RELATIONS
 
 C           CAS DE NOEUD :
 C           -------------
-          CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,1,0,ZK8(JLIST1),
+          CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,0,ZK8(JLIST1),
      &                NBNO)
           IF (NBNO.NE.0) THEN
             NBNO = -NBNO
-            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,1,NBNO,
+            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,NBNO,
      &                  ZK8(JLIST1),N)
             IF (TYPCO2.EQ.'FONC') THEN
               DO 100 K=1,N

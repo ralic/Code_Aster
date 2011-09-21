@@ -3,7 +3,7 @@
       CHARACTER*(*)  MODELE, CARTE, CHELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,6 +54,7 @@ C
       CHARACTER*8    K8B, NOMA, MOTCLS(2), TYPMCL(2)
       CHARACTER*19   CHELMS
       CHARACTER*24   MESMAI, LIGRMO
+      INTEGER      IARG
 C --- ------------------------------------------------------------------
       CALL GETFAC ( 'AFFE', NREP )
       IF ( NREP .EQ. 0 ) GOTO 9999
@@ -86,8 +87,8 @@ C
 C
 C --- ------------------------------------------------------------------
       DO 10 IOC = 1 , NREP
-         CALL GETVTX ( 'AFFE', 'MAILLE'  , IOC,1,0, K8B, N1 )
-         CALL GETVTX ( 'AFFE', 'GROUP_MA', IOC,1,0, K8B, N2 )
+         CALL GETVTX ( 'AFFE', 'MAILLE'  , IOC,IARG,0, K8B, N1 )
+         CALL GETVTX ( 'AFFE', 'GROUP_MA', IOC,IARG,0, K8B, N2 )
          IF ( N1+N2 .EQ. 0 ) THEN
             LTOUT = .TRUE.
             NBMA  = NBMAIL
@@ -100,8 +101,8 @@ C --- ------------------------------------------------------------------
 C
          ANG(1) = 0.D0
          ANG(2) = 0.D0
-         CALL GETVR8 ( 'AFFE', 'ANGL_REP', IOC,1,2, ANG , NA   )
-         CALL GETVR8 ( 'AFFE', 'VECTEUR' , IOC,1,3, VECT, NVEC )
+         CALL GETVR8 ( 'AFFE', 'ANGL_REP', IOC,IARG,2, ANG , NA   )
+         CALL GETVR8 ( 'AFFE', 'VECTEUR' , IOC,IARG,3, VECT, NVEC )
          IF (NVEC.NE.0) THEN
             CALL ANGVX ( VECT, ANG(1), ANG(2) )
             ANG(1)=  ANG(1)*180.D0/R8PI()

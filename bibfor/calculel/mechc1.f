@@ -5,7 +5,7 @@
       CHARACTER*(*)  MODELE, MATE, CHCARA(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       CHARACTER*16   MOTCLE, PHENO, OPTION, NOMPAR, CONCEP, NOMCMD
       CHARACTER*19   CARTE, CARTCO, CHELMS
       CHARACTER*24   MESMAI, LIGRMO
+      INTEGER      IARG
 C --- ------------------------------------------------------------------
 C
       IF ( .NOT. EXICAR ) GOTO 9999
@@ -79,8 +80,8 @@ C --- ------------------------------------------------------------------
 C --- ON VERIFIE SI ON DOIT SURCHARGER LA CARTE
       AFAIRE = .FALSE.
       DO 100 IOC = 1 , NREP
-         CALL GETVR8 ( MOTCLE, 'ANGL_REP', IOC,1,0, ANG , NA   )
-         CALL GETVR8 ( MOTCLE, 'VECTEUR' , IOC,1,0, VECT, NVEC )
+         CALL GETVR8 ( MOTCLE, 'ANGL_REP', IOC,IARG,0, ANG , NA   )
+         CALL GETVR8 ( MOTCLE, 'VECTEUR' , IOC,IARG,0, VECT, NVEC )
          IF ( NA+NVEC .NE. 0 )  AFAIRE = .TRUE.
  100  CONTINUE
 C
@@ -166,8 +167,8 @@ C
 C
 C --- ------------------------------------------------------------------
       DO 10 IOC = 1 , NREP
-         CALL GETVTX ( MOTCLE, 'MAILLE'  , IOC,1,0, K8B, N1 )
-         CALL GETVTX ( MOTCLE, 'GROUP_MA', IOC,1,0, K8B, N2 )
+         CALL GETVTX ( MOTCLE, 'MAILLE'  , IOC,IARG,0, K8B, N1 )
+         CALL GETVTX ( MOTCLE, 'GROUP_MA', IOC,IARG,0, K8B, N2 )
          IF ( N1+N2 .EQ. 0 ) THEN
             LTOUT = .TRUE.
             NBMA  = NBMAIL
@@ -181,8 +182,8 @@ C
          ANG(1) = 0.D0
          ANG(2) = 0.D0
          AFAIRE = .FALSE.
-         CALL GETVR8 ( MOTCLE, 'ANGL_REP', IOC,1,2, ANG , NA   )
-         CALL GETVR8 ( MOTCLE, 'VECTEUR' , IOC,1,3, VECT, NVEC )
+         CALL GETVR8 ( MOTCLE, 'ANGL_REP', IOC,IARG,2, ANG , NA   )
+         CALL GETVR8 ( MOTCLE, 'VECTEUR' , IOC,IARG,3, VECT, NVEC )
          IF ( NA+NVEC .NE. 0 )  AFAIRE = .TRUE.
          IF (NVEC.NE.0) THEN
             CALL ANGVX ( VECT, ANG(1), ANG(2) )

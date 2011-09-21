@@ -8,7 +8,7 @@
       CHARACTER*24        NCNCIN
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
      &              R8DGRD, ANGL(3), ALPHA, BETA, GAMMA
       CHARACTER*8   K8B, TYPM
       CHARACTER*24  CONNEX, TYPMAI, COORDO
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -109,7 +110,7 @@ C
 C
 C --- SI VECT_Y
 C
-      CALL GETVR8 ( MOTFAC, 'VECT_Y', IOC,1,3, VECTY, N2 )
+      CALL GETVR8 ( MOTFAC, 'VECT_Y', IOC,IARG,3, VECTY, N2 )
       IF ( N2 .NE. 0 ) THEN
 C        -- VECTEUR COLINEAIRE A LA MAILLE
          VX(1) = ZR(ACOORD+3*(INO2-1)  ) - ZR(ACOORD+3*(INO1-1)  )
@@ -146,7 +147,7 @@ C        -- VECTEUR TANGENT
 C
 C --- SI ANGL_VRIL
 C
-      CALL GETVR8 ( MOTFAC, 'ANGL_VRIL', IOC,1,1, GAMMA, N3 )
+      CALL GETVR8 ( MOTFAC, 'ANGL_VRIL', IOC,IARG,1, GAMMA, N3 )
       IF ( N3 .NE. 0 ) THEN
 C        -- VECTEUR COLINEAIRE A LA MAILLE
          VX(1) = ZR(ACOORD+3*(INO2-1)  ) - ZR(ACOORD+3*(INO1-1)  )

@@ -1,6 +1,6 @@
       SUBROUTINE OP0043 ()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ECHANGE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,17 +32,18 @@ C     ------------------------------------------------------------
       CHARACTER*8  TYPEMA
       CHARACTER*16 K16NOM
       INTEGER      ULISOP,N
+      INTEGER      IARG
 C
       CALL JEMARQ()
       CALL INFMAJ()
 C
-      CALL GETVIS ( ' ', 'UNITE_MAILLAGE' , 1,1,1, NFIS, N )
+      CALL GETVIS ( ' ', 'UNITE_MAILLAGE' , 1,IARG,1, NFIS, N )
 C LECTURE DU MAILLAGE FLUIDE
       K16NOM='                '
       IF ( ULISOP ( NFIS, K16NOM ) .EQ. 0 )  THEN 
         CALL ULOPEN ( NFIS,' ','FICHIER-MODELE','NEW','O')
       ENDIF 
-      CALL GETVTX ( ' ', 'TYPE_MAILLAGE' , 1,1,1, TYPEMA, N )
+      CALL GETVTX ( ' ', 'TYPE_MAILLAGE' , 1,IARG,1, TYPEMA, N )
       CALL PRECOU(NFIS,TYPEMA)
 C
       WRITE(NFIS,*) 'FIN'

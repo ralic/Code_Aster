@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8  XM0,XM2,XM4,DOM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C
       REAL*8       VALMIN,VALMAX,PAS,XIREG,RUNDF,NRUPT
       INTEGER      IBASK,IFONC,IHOSIN,IAWHO2,NBVAL
       LOGICAL ENDUR
+      INTEGER      IARG
 C
 C     ----------------------------------------------------------------
       IFONC  = 0
@@ -57,8 +58,8 @@ C     ----------------------------------------------------------------
       IHOSIN = 0
       PI = R8PI()
       RUNDF = R8VIDE()
-      CALL GETVTX(' ','DOMMAGE',1,1,1,METHOD,NBVAL)
-      CALL GETVID(' ','MATER',1,1,1,NOMMAT,NBVAL)
+      CALL GETVTX(' ','DOMMAGE',1,IARG,1,METHOD,NBVAL)
+      CALL GETVID(' ','MATER',1,IARG,1,NOMMAT,NBVAL)
       PHENO = 'FATIGUE'
       CALL RCCOME (NOMMAT,PHENO,PHENOM,ICODRE(1))
       IF(ICODRE(1).EQ.1) CALL U2MESS('F','FATIGUE1_24')
@@ -80,7 +81,7 @@ C     ----------------------------------------------------------------
 C
 C----  DEFINITION DES BORNES INTEGRATION
 C
-      CALL GETVTX(' ','COMPTAGE',1,1,1,MECOMP,NBVAL)
+      CALL GETVTX(' ','COMPTAGE',1,IARG,1,MECOMP,NBVAL)
       IF (MECOMP.EQ.'PIC     '.AND.XM4.EQ.RUNDF) THEN
         CALL U2MESS('F','FATIGUE1_35')
       ENDIF
@@ -134,10 +135,10 @@ C
 C
 C---------CORRECTION ELASTO-PLASTIQUE
 C
-      CALL GETVTX(' ','CORR_KE',1,1,0,KCORRE,NBVAL)
+      CALL GETVTX(' ','CORR_KE',1,IARG,0,KCORRE,NBVAL)
       IF(NBVAL.NE.0) THEN
-        CALL GETVTX(' ','CORR_KE',1,1,1,KCORRE,NBVAL)
-        CALL GETVID(' ','MATER',1,1,1,NOMMAT,NBVAL)
+        CALL GETVTX(' ','CORR_KE',1,IARG,1,KCORRE,NBVAL)
+        CALL GETVID(' ','MATER',1,IARG,1,NOMMAT,NBVAL)
         IF(KCORRE.EQ.'RCCM') THEN
           NOMRES(1) = 'N_KE'
           NOMRES(2) = 'M_KE'

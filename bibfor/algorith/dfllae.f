@@ -1,7 +1,7 @@
       SUBROUTINE DFLLAE(MCFACT,IECHEC,PCPLUS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,6 +40,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER IRET
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -51,6 +52,6 @@ C
 C
 C --- OPTIONS DE L'ACTION
 C
-      CALL GETVR8(MCFACT,'PCENT_ITER_PLUS',IECHEC,1,1,PCPLUS,IRET)
+      CALL GETVR8(MCFACT,'PCENT_ITER_PLUS',IECHEC,IARG,1,PCPLUS,IRET)
 C
       END

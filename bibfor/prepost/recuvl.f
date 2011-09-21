@@ -6,7 +6,7 @@ C
       CHARACTER*19  TBINST, TBINTH, TBSCRV, TBSCMB
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C --- : TBSCMB : VECTEUR DES ABSCISSES CURVILIGNES COTE METAL DE BASE --
 C ======================================================================
       INTEGER       IBID
       CHARACTER*8   MOTFAC, K8B, TABREV, TABMDB, TABTHR
+      INTEGER      IARG
 C ======================================================================
       CALL JEMARQ()
 C ======================================================================
@@ -49,9 +50,9 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 C ======================================================================
-      CALL GETVID ( MOTFAC , 'TABL_MECA_REV', 1,1,1, TABREV , IBID )
-      CALL GETVID ( MOTFAC , 'TABL_MECA_MDB', 1,1,1, TABMDB , IBID )
-      CALL GETVID ( MOTFAC , 'TABL_THER'    , 1,1,1, TABTHR , IBID )
+      CALL GETVID ( MOTFAC , 'TABL_MECA_REV', 1,IARG,1, TABREV , IBID )
+      CALL GETVID ( MOTFAC , 'TABL_MECA_MDB', 1,IARG,1, TABMDB , IBID )
+      CALL GETVID ( MOTFAC , 'TABL_THER'    , 1,IARG,1, TABTHR , IBID )
 C ======================================================================
 C --- RECUPERATION DES LISTES D'INSTANT --------------------------------
 C ======================================================================

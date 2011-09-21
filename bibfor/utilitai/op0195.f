@@ -1,7 +1,7 @@
       SUBROUTINE OP0195()
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 07/03/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -69,11 +70,11 @@ C      OPTION: OPTION PERMETTANT D'ALLOUER UN CHAM_ELEM "MODELE"
 
 C     ------------------------------------------------------------------
 
-      CALL GETVTX(' ','OPERATION',0,1,1,OPERA,IB)
+      CALL GETVTX(' ','OPERATION',0,IARG,1,OPERA,IB)
 
-      CALL GETVID(' ','MODELE',0,1,1,MO,N1)
+      CALL GETVID(' ','MODELE',0,IARG,1,MO,N1)
       IF (N1.EQ.0) MO = ' '
-      CALL GETVID(' ','MAILLAGE',0,1,1,MA,N1)
+      CALL GETVID(' ','MAILLAGE',0,IARG,1,MA,N1)
       IF (N1.EQ.0) MA = ' '
       IF (MO.NE.' ') THEN
         CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IB,MA2,IB)
@@ -88,16 +89,16 @@ C     ------------------------------------------------------------------
         IF (.NOT.((OPERA.EQ.'ASSE').OR.(OPERA.EQ.'COMB')))
      &       CALL U2MESS('F','UTILITAI3_43')
       ENDIF
-      CALL GETVTX(' ','TYPE_CHAM',0,1,1,TYCHR1,IB)
+      CALL GETVTX(' ','TYPE_CHAM',0,IARG,1,TYCHR1,IB)
       TYCHR = TYCHR1(1:4)
       NOMGD = TYCHR1(6:13)
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IB,TSCA,IB)
 
       PROL0=' '
-      CALL GETVTX(' ','PROL_ZERO',0,1,1,PROL0,IB)
+      CALL GETVTX(' ','PROL_ZERO',0,IARG,1,PROL0,IB)
       IF ((PROL0.EQ.'NON').AND.(TSCA.EQ.'R')) PROL0='NAN'
 
-      CALL GETVTX(' ','OPTION',0,1,1,OPTION,N1)
+      CALL GETVTX(' ','OPTION',0,IARG,1,OPTION,N1)
       IF (N1.EQ.0) OPTION = ' '
 
 
@@ -119,7 +120,7 @@ C         ---------------------------------------------------
 C           -- SI OPERATION 'ASSE', IL Y A PEUT-ETRE UNE MEILLEURE
 C              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
             IF (OPERA.EQ.'ASSE') THEN
-              CALL GETVID('ASSE','CHAM_GD',1,1,1,CHIN,IB)
+              CALL GETVID('ASSE','CHAM_GD',1,IARG,1,CHIN,IB)
               CALL DISMOI('F','NOM_MAILLA',CHIN,'CHAMP',IB,MA2,IB)
               IF (MA2.NE.MA) THEN
                 VALK(1) = CHIN
@@ -218,7 +219,7 @@ C     -----------------------------------------
 
       ELSEIF (OPERA.EQ.'DISC') THEN
 C     -----------------------------------------
-        CALL GETVID(' ','CHAM_GD',0,1,1,CHIN,IB)
+        CALL GETVID(' ','CHAM_GD',0,IARG,1,CHIN,IB)
         CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD2,IB)
         IF (NOMGD.NE.NOMGD2) THEN
 C          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
@@ -233,7 +234,7 @@ C          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
 
       ELSEIF (OPERA.EQ.'EXTR') THEN
 C     -----------------------------------------
-        CALL GETVID(' ','TABLE',0,1,1,TA,N1)
+        CALL GETVID(' ','TABLE',0,IARG,1,TA,N1)
         IF (N1.EQ.0) THEN
           CALL CHPREC(CHOU)
 
@@ -247,8 +248,8 @@ C     -----------------------------------------
 C 4.  SI ON A CREE UN CHAM_NO, ON PEUT IMPOSER SA NUMEROTATION :
 C --------------------------------------------------------------
       IF (TYCHR.EQ.'NOEU') THEN
-        CALL GETVID(' ','CHAM_NO',0,1,1,CH1,I11)
-        CALL GETVID(' ','NUME_DDL',0,1,1,NU1,I12)
+        CALL GETVID(' ','CHAM_NO',0,IARG,1,CH1,I11)
+        CALL GETVID(' ','NUME_DDL',0,IARG,1,NU1,I12)
         IF ((I11+I12).GT.0) THEN
           PRCHN1 = ' '
           IF (I11.GT.0) CALL DISMOI('F','PROF_CHNO',CH1,'CHAM_NO',IB,

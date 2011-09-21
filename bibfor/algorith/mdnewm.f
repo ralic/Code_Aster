@@ -13,7 +13,7 @@
       REAL*8       R8B
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C
       INTEGER     VALI(2),N1, IFM, NIV
       INTEGER     ETAUSR
       CHARACTER*8 TRAN
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
@@ -80,8 +81,8 @@ C
       DEUX   = 2.D0
       DT2    = DT * DT
 C
-      CALL GETVR8('SCHEMA_TEMPS','BETA',1,1,1,BETA,N1)
-      CALL GETVR8('SCHEMA_TEMPS','GAMMA',1,1,1,GAMMA,N1)
+      CALL GETVR8('SCHEMA_TEMPS','BETA',1,IARG,1,BETA,N1)
+      CALL GETVR8('SCHEMA_TEMPS','GAMMA',1,IARG,1,GAMMA,N1)
       RES = 0.25D0* (0.5D0+GAMMA)* (0.5D0*GAMMA)
       TOL = 1.D-8
       IF ( GAMMA.LT.(0.5D0-TOL) .OR. BETA.LT.(RES-TOL) ) THEN
@@ -339,7 +340,7 @@ C
               CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,0,0)
               IF (NOMRES.EQ.'&&OP0074') THEN
 C             --- CAS D'UNE POURSUITE ---
-                 CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,TRAN,NDT)
+                 CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,TRAN,NDT)
                  IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
               ENDIF
                 VALI (1) = IA+I

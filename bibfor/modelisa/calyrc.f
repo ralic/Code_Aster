@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*19 LISREL
       CHARACTER*24 GEOM3, PARA
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -169,7 +170,7 @@ C
 
         DNOR = .FALSE.
         IF (TYPLIA.EQ.'DEPL') THEN
-          CALL GETVTX(MOTFAC,'DDL_ESCL',IOCC,1,1,DDL2,NDDL2)
+          CALL GETVTX(MOTFAC,'DDL_ESCL',IOCC,IARG,1,DDL2,NDDL2)
           IF (NDDL2.GT.0) DNOR = .TRUE.
         END IF
 
@@ -313,19 +314,19 @@ C       =====================================
 C       3.0 RECUPERATION D'UN FACTEUR :
 C       =================
 C        -- 1er groupe maitre --
-        CALL GETVR8(MOTFAC,'COEF_MAIT1',IOCC,1,1,COEF11,ICOEF1)
+        CALL GETVR8(MOTFAC,'COEF_MAIT1',IOCC,IARG,1,COEF11,ICOEF1)
         IF (ICOEF1.LE.0) THEN
           COEF11 = 1.D0
         END IF
         IF (NBMA2.GT.0) THEN
 C        -- 2eme groupe maitre --
-        CALL GETVR8(MOTFAC,'COEF_MAIT2',IOCC,1,1,COEF12,ICOEF2)
+        CALL GETVR8(MOTFAC,'COEF_MAIT2',IOCC,IARG,1,COEF12,ICOEF2)
           IF (ICOEF2.LE.0) THEN
             COEF12 = 1.D0
           END IF
         ENDIF
 C        -- 1er groupe esclave --
-        CALL GETVR8(MOTFAC,'COEF_ESCL',IOCC,1,1,COEF3,ICOEF3)
+        CALL GETVR8(MOTFAC,'COEF_ESCL',IOCC,IARG,1,COEF3,ICOEF3)
         IF (ICOEF3.LE.0) THEN
           COEF3 = 1.D0
         END IF

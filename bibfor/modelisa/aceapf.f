@@ -4,7 +4,7 @@
       CHARACTER*8       NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       B(3), AFL, ACE, RAPP
       CHARACTER*19 CARTPF
       CHARACTER*24 TMPNPF, TMPVPF
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
@@ -77,15 +78,21 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
          ACE  = 0.D0
          RAPP = 0.D0
       CALL GETVEM(NOMA,'GROUP_MA','POUTRE_FLUI','GROUP_MA',
-     +              IOC,1,LMAX,ZK8(JDLS),NG)
+     +              IOC,IARG,LMAX,ZK8(JDLS),NG)
       CALL GETVEM(NOMA,'MAILLE','POUTRE_FLUI','MAILLE',
-     +            IOC,1,LMAX,ZK8(JDLS),NM)
-      CALL GETVR8('POUTRE_FLUI','B_T'       ,IOC,1,1   ,B(1)     ,NB1 )
-      CALL GETVR8('POUTRE_FLUI','B_N'       ,IOC,1,1   ,B(2)     ,NB2 )
-      CALL GETVR8('POUTRE_FLUI','B_TN'      ,IOC,1,1   ,B(3)     ,NB3 )
-      CALL GETVR8('POUTRE_FLUI','A_FLUI'    ,IOC,1,1   ,AFL      ,NAFL)
-      CALL GETVR8('POUTRE_FLUI','A_CELL'    ,IOC,1,1   ,ACE      ,NACE)
-      CALL GETVR8('POUTRE_FLUI','COEF_ECHELLE',IOC,1,1 ,RAPP     ,NR  )
+     +            IOC,IARG,LMAX,ZK8(JDLS),NM)
+      CALL GETVR8('POUTRE_FLUI','B_T',IOC,IARG,1,
+     &            B(1)     ,NB1 )
+      CALL GETVR8('POUTRE_FLUI','B_N',IOC,IARG,1,
+     &            B(2)     ,NB2 )
+      CALL GETVR8('POUTRE_FLUI','B_TN',IOC,IARG,1,
+     &            B(3)     ,NB3 )
+      CALL GETVR8('POUTRE_FLUI','A_FLUI',IOC,IARG,1,
+     &            AFL      ,NAFL)
+      CALL GETVR8('POUTRE_FLUI','A_CELL',IOC,IARG,1,
+     &            ACE      ,NACE)
+      CALL GETVR8('POUTRE_FLUI','COEF_ECHELLE',IOC,IARG,1,
+     &            RAPP     ,NR  )
 C
          IF(NB2.EQ.0 ) B(2) = B(1)
          ZR(JDVC)   = B(1)

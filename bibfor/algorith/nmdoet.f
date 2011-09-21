@@ -2,7 +2,7 @@
      &                  SDPILO,SDDYNA,SDERRO,SDIETO,SOLALG,
      &                  LACC0 ,INSTIN)
 C
-C MODIF ALGORITH  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,6 +98,7 @@ C
       LOGICAL      LZERO
       REAL*8       R8VIDE,COEFAV
       INTEGER      IFM,NIV
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -179,7 +180,7 @@ C
 C
 C --- CONCEPT EVOL_NOLI DONNE DANS ETAT_INIT
 C
-      CALL GETVID(MOTFAC,'EVOL_NOLI',1,1,1,EVOL,NOCC)
+      CALL GETVID(MOTFAC,'EVOL_NOLI',1,IARG,1,EVOL,NOCC)
       CALL ASSERT(NOCC.LE.1)
       EVONOL = NOCC .GT. 0
 C

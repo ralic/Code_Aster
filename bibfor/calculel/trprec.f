@@ -3,9 +3,9 @@
       CHARACTER*(*)       MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -32,32 +32,33 @@ C ----------------------------------------------------------------------
       INTEGER      IOCC, NP, NC
       REAL*8       EPSI, PREC, EPSIR(2)
       CHARACTER*8  CRIT, CRIT2, CRITR(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
-      CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,0, EPSI, NP )
+      CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,0, EPSI, NP )
       NP = -NP
       IF (NP.EQ.0) THEN
          EPSI = 0.001D0
          PREC = 1.D-6
       ELSE IF (NP.EQ.1) THEN
-         CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,1, EPSI, NP )
+         CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,1, EPSI, NP )
          PREC = EPSI
       ELSE
-         CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,2, EPSIR, NP )
+         CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,2, EPSIR, NP )
          EPSI = EPSIR(1)
          PREC = EPSIR(2)
       END IF
 C
-      CALL GETVTX(MCF,'CRITERE',IOCC,1,0,CRIT,NC)
+      CALL GETVTX(MCF,'CRITERE',IOCC,IARG,0,CRIT,NC)
       NC = -NC
       IF (NC.EQ.0) THEN
          CRIT = 'RELATIF'
          CRIT2 = 'RELATIF'
       ELSE IF (NC.EQ.1) THEN
-         CALL GETVTX(MCF,'CRITERE',IOCC,1,1,CRIT,NC)
+         CALL GETVTX(MCF,'CRITERE',IOCC,IARG,1,CRIT,NC)
          CRIT2 = CRIT
       ELSE
-         CALL GETVTX(MCF,'CRITERE',IOCC,1,2,CRITR,NC)
+         CALL GETVTX(MCF,'CRITERE',IOCC,IARG,2,CRITR,NC)
          CRIT = CRITR(1)
          CRIT2 = CRITR(2)
       END IF

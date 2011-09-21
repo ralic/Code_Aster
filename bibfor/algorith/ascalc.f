@@ -11,9 +11,9 @@
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,6 +99,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  NOMSY, NOMSY2, NOPARA(NBPARA)
       CHARACTER*19  KVEC, KVAL
       CHARACTER*24  KVX1, KVX2, KVE2, KVE3, KVE4, OBJ1, OBJ2
+      INTEGER      IARG
 C
       DATA  NOPARA /        'OMEGA2'          , 'MASS_GENE'       ,
      +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ'  /
@@ -142,14 +143,14 @@ C  ---- CONSTITUTION DES GROUPES D'APPUI ----
 C  ---- SI GROUP_APPUI EST PRESENT ----
         IF (NOC.NE.0) THEN
           DO 100 IOC = 1,NOC
-          CALL GETVTX(MOTFA1,'NOEUD',IOC,1,0,NOEU,N1)
+          CALL GETVTX(MOTFA1,'NOEUD',IOC,IARG,0,NOEU,N1)
           IF (N1.NE.0) THEN
             NNO = -N1
             CALL WKVECT('&&ASCALC.NOEUD','V V K8',NNO,JNOE1)
-            CALL GETVTX(MOTFA1,'NOEUD',IOC,1,NNO,ZK8(JNOE1),N1)
+            CALL GETVTX(MOTFA1,'NOEUD',IOC,IARG,NNO,ZK8(JNOE1),N1)
             DO 101 INO = 1, NNO
               NOEU = ZK8(JNOE1+INO-1)
-              CALL GETVTX(MOTFA1,'NOEUD',IOC,1,0,NOEU,N1)
+              CALL GETVTX(MOTFA1,'NOEUD',IOC,IARG,0,NOEU,N1)
               DO 102 IS=1,NBSUP
                 DO 103 ID =1,3
                 IF (NOMSUP((ID-1)*NBSUP+IS).EQ.NOEU) THEN
@@ -168,12 +169,12 @@ C  ---- SI GROUP_APPUI EST PRESENT ----
             OBJ1 = NOMA//'.GROUPENO'
             OBJ2 = NOMA//'.NOMNOE'
             CALL GETVEM(NOMA,'GROUP_NO',MOTFA1,'GROUP_NO',
-     &                                   IOC,1,0,K8B,N1)
+     &                                   IOC,IARG,0,K8B,N1)
             IF (N1.NE.0) THEN
               NGR = -N1
               CALL WKVECT('&&ASCALC.GROUP_NO','V V K8',NGR,JGRN)
               CALL GETVEM(NOMA,'GROUP_NO',MOTFA1,'GROUP_NO',
-     &                                   IOC,1,NGR,ZK8(JGRN),N1)
+     &                                   IOC,IARG,NGR,ZK8(JGRN),N1)
               DO 110 IGR = 1, NGR
                 GRNOEU = ZK8(JGRN+IGR-1)
                 CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)

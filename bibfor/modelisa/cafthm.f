@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF MODELISA  DATE 14/02/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,7 @@ C ======================================================================
       CHARACTER*16  MOTCLF, MOTCLE(2), MODELI
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C ======================================================================
       CALL JEMARQ()
 C
@@ -107,19 +108,23 @@ C --- STOCKAGE DANS LA CARTE
 C
       DO 10 IOCC = 1, NFLUX
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 (MOTCLF, 'FLUN_HYDR1',IOCC,1,1,ZR(JVALV),N1)
-            CALL GETVR8 (MOTCLF, 'FLUN_HYDR2',IOCC,1,1,ZR(JVALV+1),N2)
-            CALL GETVR8 (MOTCLF, 'FLUN'      ,IOCC,1,1,ZR(JVALV+2),N3)
+            CALL GETVR8 (MOTCLF, 'FLUN_HYDR1',IOCC,IARG,1,ZR(JVALV),N1)
+            CALL GETVR8 (MOTCLF,'FLUN_HYDR2',IOCC,IARG,1,
+     &                   ZR(JVALV+1),N2)
+            CALL GETVR8 (MOTCLF,'FLUN',IOCC,IARG,1,
+     &                   ZR(JVALV+2),N3)
          ELSE
-            CALL GETVID(MOTCLF, 'FLUN_HYDR1',IOCC,1,1,ZK8(JVALV),N1)
-            CALL GETVID(MOTCLF, 'FLUN_HYDR2',IOCC,1,1,ZK8(JVALV+1),N2)
-            CALL GETVID(MOTCLF, 'FLUN'      ,IOCC,1,1,ZK8(JVALV+2),N3)
+            CALL GETVID(MOTCLF, 'FLUN_HYDR1',IOCC,IARG,1,ZK8(JVALV),N1)
+            CALL GETVID(MOTCLF,'FLUN_HYDR2',IOCC,IARG,1,
+     &                  ZK8(JVALV+1),N2)
+            CALL GETVID(MOTCLF,'FLUN',IOCC,IARG,1,
+     &                  ZK8(JVALV+2),N3)
          END IF
 C
 C --- TEST SUR LES CAL
 C
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
 C
          IF ( NBTOU .NE. 0 ) THEN
 C

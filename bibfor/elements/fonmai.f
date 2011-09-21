@@ -4,7 +4,7 @@
       CHARACTER*6         TYPFON
       CHARACTER*8         RESU, NOMAIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,6 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16  MOTCLE(2), TYPMCL(2)
       CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE,NOEORD,
      &              MESNOE
+      INTEGER      IARG
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -104,14 +105,14 @@ C
       IF (TYPFON.EQ.'FERME') THEN
 C
         NUMMA = 0
-        CALL GETVTX ( MOTFAC, 'MAILLE_ORIG', 1,1,0, NOMMA, N1 )
+        CALL GETVTX ( MOTFAC, 'MAILLE_ORIG', 1,IARG,0, NOMMA, N1 )
         IF ( N1 .NE. 0 ) THEN
-          CALL GETVTX ( MOTFAC, 'MAILLE_ORIG', 1,1,1, NOMMA, N1 )
+          CALL GETVTX ( MOTFAC, 'MAILLE_ORIG', 1,IARG,1, NOMMA, N1 )
           CALL JENONU ( JEXNOM(NOMMAI,NOMMA), NUMMA )
         ELSE
-          CALL GETVTX ( MOTFAC, 'GROUP_MA_ORIG', 1,1,0, K8B, N1 )
+          CALL GETVTX ( MOTFAC, 'GROUP_MA_ORIG', 1,IARG,0, K8B, N1 )
           IF ( N1 .NE. 0 ) THEN
-            CALL GETVTX ( MOTFAC, 'GROUP_MA_ORIG', 1,1,1, K8B, N1)
+            CALL GETVTX ( MOTFAC, 'GROUP_MA_ORIG', 1,IARG,1, K8B, N1)
             CALL UTNONO ( ' ', NOMAIL, 'MAILLE', K8B, NOMMA, IRET )
             IF ( IRET .EQ. 10 ) THEN
                CALL U2MESK('F','RUPTURE0_41',1,K8B)

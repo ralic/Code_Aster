@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,6 +58,7 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM
+      INTEGER      IARG
 
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
@@ -90,14 +91,14 @@ C
          CALL GETFAC('MONOCRISTAL',NBOCCM)
          CALL WKVECT(COMPOR//'.CPRK', 'G V K16',5*NBOCCM+1,IMK)
          DO 9 IOCC=1,NBOCCM
-            CALL GETVID('MONOCRISTAL','MATER',IOCC,1,1,MATERI,NBMAT)
-            CALL GETVTX('MONOCRISTAL','ECOULEMENT',IOCC,1,1,ECOULE,
+            CALL GETVID('MONOCRISTAL','MATER',IOCC,IARG,1,MATERI,NBMAT)
+            CALL GETVTX('MONOCRISTAL','ECOULEMENT',IOCC,IARG,1,ECOULE,
      &                   NBECOU)
-            CALL GETVTX('MONOCRISTAL','ECRO_ISOT',IOCC,1,1,ECROIS,
+            CALL GETVTX('MONOCRISTAL','ECRO_ISOT',IOCC,IARG,1,ECROIS,
      &                   NBECRO)
-            CALL GETVTX('MONOCRISTAL','ECRO_CINE',IOCC,1,1,ECROCI,
+            CALL GETVTX('MONOCRISTAL','ECRO_CINE',IOCC,IARG,1,ECROCI,
      &                   NBCINE)
-            CALL GETVTX('MONOCRISTAL','ELAS',IOCC,1,1,ELASTI,NBELA1)
+            CALL GETVTX('MONOCRISTAL','ELAS',IOCC,IARG,1,ELASTI,NBELA1)
             IF (NBELA1.GT.0) THEN
                IF (NBELAS.EQ.0) THEN
                   NBELAS=1
@@ -110,7 +111,7 @@ C           CAS DES LOIS DD
                ECROIS=ECOULE
                ECROCI=' '
             ENDIF
-            CALL GETVTX('MONOCRISTAL','FAMI_SYST_GLIS',IOCC,1,1,
+            CALL GETVTX('MONOCRISTAL','FAMI_SYST_GLIS',IOCC,IARG,1,
      &                   FASYGL,NBFASY)
             NOMS(1)=FASYGL
             NOMS(2)=MATERI
@@ -130,7 +131,7 @@ C        INDICATEUR PLASTIQUE
 C        CONTRAINTE DE CLIVAGE MAX
          NVI = NVI+1
 C        ROTATION DE RESEAU
-         CALL GETVTX(' ','ROTA_RESEAU',0,1,1,
+         CALL GETVTX(' ','ROTA_RESEAU',0,IARG,1,
      &                   ROTA,NBROTA)
          IROTA=0
          IF (NBROTA.NE.0) THEN
@@ -164,13 +165,13 @@ C        7 : NVI
 
       ELSEIF (NBOCCP.GT.0) THEN
 
-         CALL GETVTX(' ','LOCALISATION',0,1,1,LOCA,NLOC)
+         CALL GETVTX(' ','LOCALISATION',0,IARG,1,LOCA,NLOC)
          DL=0.D0
          DA=0.D0
          NVLOC=0
          IF (LOCA.EQ.'BETA') THEN
-           CALL GETVR8(' ','DL',0,1,1,DL,NDL)
-           CALL GETVR8(' ','DA',0,1,1,DA,NDA)
+           CALL GETVR8(' ','DL',0,IARG,1,DL,NDL)
+           CALL GETVR8(' ','DA',0,IARG,1,DA,NDA)
            NVLOC=2
          ENDIF
          NCPRK=0
@@ -213,7 +214,7 @@ C        n  :  Variable localisation (ex : DL pour BETA)
          CALL WKVECT('&&OP0059.LISTEMONO','V V K8',NBOCCP,IPL)
          NBMONO=0
          DO 13 IOCC=1,NBOCCP
-            CALL GETVID('POLYCRISTAL','MONOCRISTAL',IOCC,1,1,MONO,
+            CALL GETVID('POLYCRISTAL','MONOCRISTAL',IOCC,IARG,1,MONO,
      &                   NMONO)
 C  On ne stocke pas les doublons
             IMONO=INDIK8(ZK8(IPL),MONO,1,NBMONO)
@@ -269,12 +270,13 @@ C           nombre de variables internes par phase
 C           6+3*Ns+6 = (Evp + Ns(alphas, gammas, ps) +  Sig)
             NVIT=NVIT-3+ZI(IMI-1+7)+6
             JCPRI=JCPRI+3
-            CALL GETVR8('POLYCRISTAL','FRAC_VOL',IOCC,1,1,FVOL,
+            CALL GETVR8('POLYCRISTAL','FRAC_VOL',IOCC,IARG,1,FVOL,
      &                   IFVOL)
-            CALL GETVR8('POLYCRISTAL','ANGL_REP',IOCC,1,3,ORIE,
+            CALL GETVR8('POLYCRISTAL','ANGL_REP',IOCC,IARG,3,ORIE,
      &                   IORIE)
             IF (IORIE.EQ.0) THEN
-                CALL GETVR8('POLYCRISTAL','ANGL_EULER',IOCC,1,3,EULER,
+                CALL GETVR8('POLYCRISTAL','ANGL_EULER',IOCC,IARG,3,
+     &                      EULER,
      &                   IORIE)
                 CALL EULNAU(EULER,ORIE)
             ENDIF
@@ -306,7 +308,7 @@ C on recupere les renseignements dans la SD_GROUP_FIBRE :
 C noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
         NBVF=0
         MOCLEF='MULTIFIBRE'
-        CALL GETVID(' ','GEOM_FIBRE',0,1,1,SDGF,IBID)
+        CALL GETVID(' ','GEOM_FIBRE',0,IARG,1,SDGF,IBID)
         VNBFIG = SDGF//'.NB_FIBRE_GROUPE'
         RNOMGF = SDGF//'.NOMS_GROUPES'
         CALL JEVEUO(VNBFIG,'L',JNFG)
@@ -318,12 +320,12 @@ C noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
            ZI(IAFF-1+IG)=0
  50     CONTINUE
         DO 25 IOCC=1,NBOCCI
-          CALL GETVTX(MOCLEF,'GROUP_FIBRE',IOCC,1,0,K8BID,NBG)
+          CALL GETVTX(MOCLEF,'GROUP_FIBRE',IOCC,IARG,0,K8BID,NBG)
           NBG=-NBG
-          CALL GETVTX(MOCLEF,'GROUP_FIBRE',IOCC,1,NBG,ZK8(IMG),
+          CALL GETVTX(MOCLEF,'GROUP_FIBRE',IOCC,IARG,NBG,ZK8(IMG),
      &                   IBID)
-          CALL GETVID(MOCLEF,'MATER',IOCC,1,1,MATERI,IBID)
-          CALL GETVTX(MOCLEF,'RELATION',IOCC,1,1,NOMREL,IBID)
+          CALL GETVID(MOCLEF,'MATER',IOCC,IARG,1,MATERI,IBID)
+          CALL GETVTX(MOCLEF,'RELATION',IOCC,IARG,1,NOMREL,IBID)
 
           NCOMEL=1
           LCOMEL(NCOMEL)=NOMREL
@@ -364,7 +366,7 @@ C verification de l'utilisation de comp_1d en lien avec fiche 15176
           IDBOR=0
           DO 28 IOCC=1,NBOCCI
             ALGO1D=' '
-            CALL GETVTX(MOCLEF,'ALGO_1D',IOCC,1,1,ALGO1D,IBID)
+            CALL GETVTX(MOCLEF,'ALGO_1D',IOCC,IARG,1,ALGO1D,IBID)
             IF (ALGO1D.EQ.'DEBORST') IDBOR=IDBOR+1
  28       CONTINUE
           IF (IDBOR.GE.1) CALL U2MESS('F','COMPOR1_15')
@@ -380,7 +382,7 @@ C On marque par VIDE les groupes non affectes
           ENDIF
  51     CONTINUE
 C On recupere le nom du materiau pour la torsion et on le met à la fin
-        CALL GETVID(' ','MATER_SECT',0,1,1,MATOR,IBID)
+        CALL GETVID(' ','MATER_SECT',0,IARG,1,MATOR,IBID)
         ZK16(IMK-1+NBGMAX*6+1)=MATOR
         CALL WKVECT(COMPOR//'.CPRI', 'G V I',3,IMI)
 C type 3 = multifibre

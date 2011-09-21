@@ -5,7 +5,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C-----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------------
       CHARACTER*16   TYPBAS
       CHARACTER*14  NU, NUMDD1, NUMDDA,MATRI1
       CHARACTER*19  MATR,CHAMOL
+      INTEGER      IARG
 C----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -72,15 +73,16 @@ C-----------------------------------------------------------------------
     
       IF (RITZ .EQ. 1) THEN
            
-        CALL GETVTX('  ','ORTHO',1,1,8,ORTHO,IBID)
+        CALL GETVTX('  ','ORTHO',1,IARG,8,ORTHO,IBID)
 
         IF (ORTHO .EQ. 'OUI     ') THEN
-          CALL GETVID (' ', 'MATRICE'     , 1,1,1, MATRAS, N1 )
+          CALL GETVID (' ', 'MATRICE'     , 1,IARG,1, MATRAS, N1 )
         ELSE
           GOTO 9999
         ENDIF
       ELSE
-        CALL GETVID ( 'ORTHO_BASE', 'MATRICE'     , 1,1,1, MATRAS, N1 )
+        CALL GETVID ('ORTHO_BASE','MATRICE',1,IARG,1,
+     &               MATRAS, N1 )
       ENDIF
 
       IF (N1.NE.0) THEN
@@ -102,7 +104,7 @@ C
       IF (RITZ .EQ. 1) THEN
         BASE=NOMRES
       ELSE
-        CALL GETVID ( 'ORTHO_BASE', 'BASE', 1,1,1, BASE, N1 )
+        CALL GETVID ( 'ORTHO_BASE', 'BASE', 1,IARG,1, BASE, N1 )
       ENDIF  
       
 C RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES

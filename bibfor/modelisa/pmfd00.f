@@ -1,6 +1,6 @@
       SUBROUTINE PMFD00()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,6 +82,7 @@ C  grandeur_simple__.cata et gener_mepmf1.cata !
       CHARACTER*1 K1BID
 
       INTEGER IFM,NIV
+      INTEGER      IARG
 
       DATA LTYMCL/'MAILLE','GROUP_MA','TOUT'/
 C     ------------------------------------------------------------------
@@ -90,7 +91,7 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
 
-      CALL GETVID(' ','MODELE',1,1,1,NOMO,NBVM)
+      CALL GETVID(' ','MODELE',1,IARG,1,NOMO,NBVM)
       CALL DISMOI('F','PHENOMENE',NOMO,'MODELE',IBID,PHENO,IBID)
       IF (PHENO.NE.'MECANIQUE') GO TO 9999
 
@@ -101,7 +102,7 @@ C     ------------------------------------------------------------------
 
       CALL GETFAC('MULTIFIBRE',NBOCC0)
       IF(NBOCC0.NE.0)THEN
-        CALL GETVID(' ','GEOM_FIBRE',1,1,1,SDGF,IBID)
+        CALL GETVID(' ','GEOM_FIBRE',1,IARG,1,SDGF,IBID)
         VNBFIG = SDGF//'.NB_FIBRE_GROUPE'
         VPOINT = SDGF//'.POINTEUR'
         VCARFI = SDGF//'.CARFI'
@@ -132,7 +133,7 @@ C     -------------------------------------------------------
       IF ((NBOCC0+NBOCC1+NBOCC2+NBOCC3).EQ.0) GO TO 9999
 
 C     -- 2EME CHANCE :
-      CALL GETVID(' ','MODELE',0,1,1,MODELE,IBID)
+      CALL GETVID(' ','MODELE',0,IARG,1,MODELE,IBID)
       LIGRMO = MODELE//'.MODELE'
       CELBID='&&PMFD00.CELBID'
       CALL ALCHML(LIGRMO,'TOU_INI_ELEM','PNBSP_I','V',CELBID,IRET,' ')
@@ -159,13 +160,14 @@ C     ----------------------------------------------------------
      &              LTYMCL,'&&PMFD00.MAILLSEP',NMAILP)
         CALL JEVEUO('&&PMFD00.MAILLSEP','L',JMP)
 C --- NOMBRE DE GROUPES A AFFECTER
-        CALL GETVTX('MULTIFIBRE','GROUP_FIBRE',IOC,1,0,K8B,NGF)
+        CALL GETVTX('MULTIFIBRE','GROUP_FIBRE',IOC,IARG,0,K8B,NGF)
         NGF=-NGF
         IF(NGF.GT.NGMXEL)THEN
           CALL U2MESK('F','MODELISA8_7',1,KNGMX)
         ENDIF
 C --- NOMS DES GROUPES A AFFECTER
-        CALL GETVTX('MULTIFIBRE','GROUP_FIBRE',IOC,1,NGF,ZK8(JNGF),IBID)
+        CALL GETVTX('MULTIFIBRE','GROUP_FIBRE',IOC,IARG,NGF,
+     &              ZK8(JNGF),IBID)
 C --- on compte le nombre de fibres de l'ensemble des groupes de cette
 C     occurence, et on note les numeros de groupes
         NBFIB=0
@@ -244,7 +246,7 @@ C POUR L'INSTANT JE PRENDS IOCP=1 CAR C'EST GALERE A TROUVER...
       IOCP=1
 C  COMPARAISON DE LA SOMME DES AIRES DES FIBRES A L'AIRE DE LA
 C   SECTION DE LA POUTRE
-        CALL GETVR8('POUTRE','PREC_AIRE',IOCP,1,1,EPSA,IRET)
+        CALL GETVR8('POUTRE','PREC_AIRE',IOCP,IARG,1,EPSA,IRET)
         ERRE=ABS(AIRPOU-CASECT(1))/AIRPOU
         IF (ERRE.GT.EPSA)THEN
           VALR(1)=DBLE(IOC)
@@ -255,7 +257,7 @@ C   SECTION DE LA POUTRE
         ENDIF
 
 C       COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
-        CALL GETVR8('POUTRE','PREC_INERTIE',IOC,1,1,EPSI,IRET)
+        CALL GETVR8('POUTRE','PREC_INERTIE',IOC,IARG,1,EPSI,IRET)
         ERRE=ABS(MOINOY-CASECT(5))/MOINOY
         IF (ERRE.GT.EPSI)THEN
           VALR(1)=DBLE(IOC)

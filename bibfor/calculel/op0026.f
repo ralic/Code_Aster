@@ -1,7 +1,7 @@
       SUBROUTINE OP0026()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,6 +82,7 @@ C-----------------------------------------------------------------------
       CHARACTER*19    VALINC(ZVALIN),SOLALG(ZSOLAL)
       LOGICAL         TABRET(0:10)
       INTEGER         FONACT(100)
+      INTEGER      IARG
 C-----------------------------------------------------------------------
       DATA LISCHA     /'&&OP0026.LISCHA'/
       DATA CARELE     /'&&OP0026.CARELE'/
@@ -133,7 +134,7 @@ C     --------------------------
 
 C     RECUPERATION DES OPTIONS DEMANDEES
 C     ----------------------------------
-      CALL GETVTX(' ','OPTION',0,1,3,LOPT,NBOPT)
+      CALL GETVTX(' ','OPTION',0,IARG,3,LOPT,NBOPT)
 
       IF (KNINDI(16,'MATR_TANG_ELEM',LOPT,NBOPT).GT.0) THEN
          OPTION='FULL_MECA'
@@ -156,8 +157,8 @@ C     ------------------------------------------------
 
 C     RECUPERATION DES DEPLACEMENTS
 C     -----------------------------
-      CALL GETVID(' ','DEPL',0,1,1,DEPMOI,N1)
-      CALL GETVID(' ','INCR_DEPL',0,1,1,DEPDEL,N1)
+      CALL GETVID(' ','DEPL',0,IARG,1,DEPMOI,N1)
+      CALL GETVID(' ','INCR_DEPL',0,IARG,1,DEPDEL,N1)
 C     SI LES CHAMPS N'ONT PAS LA MEME NUMEROTATION, ON TRANSFERT DEPMOI
 C     DANS LA NUMEROTATION DE DEPDEL
       CALL DISMOI('F','PROF_CHNO',DEPMOI,'CHAM_NO',IBID,PFCHN1,IBID)
@@ -184,8 +185,8 @@ C     ON CALCULE LE CHAMP DEPPLU=DEPMO1+DEPDEL
 
 C     RECUPERATION DES CONTRAINTES ET VARIABLES INTERNES
 C     --------------------------------------------------
-      CALL GETVID(' ','SIGM',0,1,1,SIGMOI,N1)
-      CALL GETVID(' ','VARI',0,1,1,VARMOI,N1)
+      CALL GETVID(' ','SIGM',0,IARG,1,SIGMOI,N1)
+      CALL GETVID(' ','VARI',0,IARG,1,VARMOI,N1)
 C     VERIFICATION DE LA NATURE DES CHAMPS
       CALL CHPVER('F',SIGMOI,'ELGA','SIEF_R',IRET)
       CALL CHPVER('F',VARMOI,'ELGA','VARI_R',IRET)
@@ -198,8 +199,8 @@ C     ----------------------------
 C     RECUPERATION DU NUMERO D'ORDRE ET DE L'INSTANT COURANTS
 C     -------------------------------------------------------
       LINST=' '
-      CALL GETVIS('INCREMENT','NUME_ORDRE',1,1,1,NUMEOR,N1)
-      CALL GETVID('INCREMENT','LIST_INST',1,1,1,LINST,N1)
+      CALL GETVIS('INCREMENT','NUME_ORDRE',1,IARG,1,NUMEOR,N1)
+      CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LINST,N1)
       INSTAP=DIINST(LINST,NUMEOR-1)
       INSTAM=DIINST(LINST,NUMEOR)
 
@@ -281,7 +282,7 @@ C ======================================================================
       VKK(5)=VEDIRI
       VKK(6)=CODERE
 
-      CALL GETVID(' ','TABLE',0,1,0,K8B,N1)
+      CALL GETVID(' ','TABLE',0,IARG,0,K8B,N1)
 
 C     ---------------------------------------------
 C     CAS 1 - ON CREE UNE NOUVELLE TABLE CONTAINER
@@ -324,7 +325,7 @@ C     CAS 2 - ON ENRICHIT UNE TABLE CONTAINER  OU
 C             ON EN CREE UNE NOUVELLE A PARTIR D'UNE AUTRE
 C     ----------------------------------------------------
 
-        CALL GETVID(' ','TABLE',0,1,1,TABLU,N1)
+        CALL GETVID(' ','TABLE',0,IARG,1,TABLU,N1)
 
         IF(TABLU.NE.TABLE)THEN
           CALL DETRSD('TABLE_CONTAINER',TABLE)

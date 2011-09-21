@@ -4,7 +4,7 @@
       CHARACTER*8       NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       ANG(3), ORIG(3), ANGEUL(3)
       CHARACTER*19 CARTMA
       CHARACTER*24 TMPNMA, TMPVMA
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
@@ -92,13 +93,17 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTMA
          ORIG(2) = 0.D0
          ORIG(3) = 0.D0
          CALL GETVEM(NOMA,'GROUP_MA','MASSIF','GROUP_MA',
-     +                                IOC,1,LMAX,ZK8(JDLS),NG)
+     +                                IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE'  ,'MASSIF','MAILLE',
-     +                                IOC,1,LMAX,ZK8(JDLS),NM)
-         CALL GETVR8('MASSIF','ANGL_REP'    ,IOC,1,3   ,ANG(1)   ,NREP)
-         CALL GETVR8('MASSIF','ANGL_EULER'  ,IOC,1,3   ,ANGEUL(1),NEUL)
-         CALL GETVR8('MASSIF','ANGL_AXE'    ,IOC,1,2   ,ANG(1)   ,NAXE)
-         CALL GETVR8('MASSIF','ORIG_AXE'    ,IOC,1,3   ,ORIG(1)  ,NORIG)
+     +                                IOC,IARG,LMAX,ZK8(JDLS),NM)
+         CALL GETVR8('MASSIF','ANGL_REP',IOC,IARG,3,
+     &               ANG(1)   ,NREP)
+         CALL GETVR8('MASSIF','ANGL_EULER',IOC,IARG,3,
+     &               ANGEUL(1),NEUL)
+         CALL GETVR8('MASSIF','ANGL_AXE',IOC,IARG,2,
+     &               ANG(1)   ,NAXE)
+         CALL GETVR8('MASSIF','ORIG_AXE',IOC,IARG,3,
+     &               ORIG(1)  ,NORIG)
 C
          IF (NREP.NE.0) THEN
              ZR(JDVC  ) = 1.D0

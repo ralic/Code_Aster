@@ -4,9 +4,9 @@
       CHARACTER*80              FICHDF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 16/01/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,11 +27,12 @@ C
 C ----------------------------------------------------------------------
       CHARACTER*16    CBID,NOMCMD,FHDF
       INTEGER         NFHDF
+      INTEGER      IARG
 C
       FICHDF = ' '
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( NOMCMD .EQ. 'POURSUITE') THEN
-        CALL GETVTX(' ','FORMAT_HDF',1,1,1,FHDF,NFHDF)
+        CALL GETVTX(' ','FORMAT_HDF',1,IARG,1,FHDF,NFHDF)
         IF (NFHDF .GT. 0) THEN
           IF ( FHDF .EQ. 'OUI' ) THEN
             FICHDF = 'bhdf.1'

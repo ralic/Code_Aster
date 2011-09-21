@@ -6,7 +6,7 @@
       CHARACTER*16      NOMELE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 MLGNMA, MLGNNO, MLGTMA, MLGGNO, MLGGMA,MLGCOO,MLGCNX
       CHARACTER*24 MODNOE, MODNEM, MODMAI
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA CARORI  /'VECT_Y ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
 C     ------------------------------------------------------------------
@@ -155,15 +156,15 @@ C     --------------------------------------------------
       IF (NBOCC(4).NE.0) THEN
          DO 30 IOC = 1 , NBOCC(4)
             CALL GETVEM(NOMA,'GROUP_MA','ORIENTATION','GROUP_MA',
-     &                  IOC,1,LMAX ,ZK8(JDLS),NG)
+     &                  IOC,IARG,LMAX ,ZK8(JDLS),NG)
             CALL GETVEM(NOMA,'MAILLE','ORIENTATION','MAILLE',
-     &                  IOC,1,LMAX ,ZK8(JDLS),NM)
+     &                  IOC,IARG,LMAX ,ZK8(JDLS),NM)
             CALL GETVEM(NOMA,'GROUP_NO','ORIENTATION','GROUP_NO',
-     &                  IOC,1,LMAX ,ZK8(JDLS),NJ)
+     &                  IOC,IARG,LMAX ,ZK8(JDLS),NJ)
             CALL GETVEM(NOMA,'NOEUD','ORIENTATION','NOEUD',
-     &                  IOC,1,LMAX ,ZK8(JDLS),NN)
-            CALL GETVTX('ORIENTATION','CARA',IOC,1,NBCAR,CAR,NCAR)
-            CALL GETVR8('ORIENTATION','VALE',IOC,1,NBVAL,VAL,NVAL)
+     &                  IOC,IARG,LMAX ,ZK8(JDLS),NN)
+            CALL GETVTX('ORIENTATION','CARA',IOC,IARG,NBCAR,CAR,NCAR)
+            CALL GETVR8('ORIENTATION','VALE',IOC,IARG,NBVAL,VAL,NVAL)
 C
 C ---       "GROUP_MA" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DES
 C                                                    GROUPES DE MAILLES

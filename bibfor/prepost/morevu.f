@@ -5,9 +5,9 @@
       CHARACTER*(*)       TABPUS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,6 +53,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       CHARACTER*8   K8B, CRIT
       CHARACTER*19  NOMTA
       CHARACTER*16  VALEK(2)
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -68,7 +69,7 @@ C     VERIFICATION DES PARAMETRES DE LA TABLE
       CALL TBEXP2( NOMTA, 'V_USUR_OBST_CUMU')
       CALL TBEXP2( NOMTA, 'ANGLE_DEBUT')
 C
-      CALL GETVR8 ( ' ', 'INST', 1,1,1, DINST, NIS )
+      CALL GETVR8 ( ' ', 'INST', 1,IARG,1, DINST, NIS )
       IF ( NIS .EQ. 0 ) THEN
          CALL TBEXV1 ( NOMTA, 'INST', '&&MOREVU.INST','V', NBVPU, K8B )
          CALL JEVEUO ('&&MOREVU.INST', 'L', JINST )

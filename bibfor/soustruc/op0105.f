@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,16 +44,17 @@ C
       CHARACTER*16 KBI1,KBI2
       CHARACTER*8  OPER
       INTEGER      N1, IADIM1, IADIM2, IBID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
 C
-      CALL GETVTX(' ','OPERATION',1,1,1,OPER,N1)
+      CALL GETVTX(' ','OPERATION',1,IARG,1,OPER,N1)
 C
       CALL GETRES( MAG, KBI1, KBI2 )
-      CALL GETVID(' ','MAILLAGE_1',1,1,1,DM(1),N1)
-      CALL GETVID(' ','MAILLAGE_2',1,1,1,DM(2),N1)
+      CALL GETVID(' ','MAILLAGE_1',1,IARG,1,DM(1),N1)
+      CALL GETVID(' ','MAILLAGE_2',1,IARG,1,DM(2),N1)
 C
 C     --OBJET .TITR:
 C     ---------------

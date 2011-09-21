@@ -4,7 +4,7 @@
       CHARACTER*8       NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  FCX
       CHARACTER*19 CARTCA,CARTCF
       CHARACTER*24 TMPNCA, TMPVCA,TMPNCF, TMPVCF
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
@@ -79,20 +80,20 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCA
       DO 10 IOC = 1 , NBOCC
          SCT = 0.D0
          CALL GETVEM(NOMA,'GROUP_MA','CABLE','GROUP_MA',
-     +           IOC,1,LMAX,ZK8(JDLS),NG)
+     +           IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','CABLE','MAILLE',
-     +         IOC,1,LMAX,ZK8(JDLS),NM)
+     +         IOC,IARG,LMAX,ZK8(JDLS),NM)
 
-         CALL GETVR8('CABLE','SECTION' ,IOC,1,1,SCT,NV)
+         CALL GETVR8('CABLE','SECTION' ,IOC,IARG,1,SCT,NV)
          IF (NV.EQ.0) THEN
-           CALL GETVR8('CABLE','A' ,IOC,1,1,SCT,NV)
+           CALL GETVR8('CABLE','A' ,IOC,IARG,1,SCT,NV)
          ENDIF
          ZR(JDVC)   = SCT
-         CALL GETVR8('CABLE','N_INIT',IOC,1,1,TENS ,NT)
+         CALL GETVR8('CABLE','N_INIT',IOC,IARG,1,TENS ,NT)
          ZR(JDVC+1)   = TENS
 
          FCX = '.'
-         CALL GETVID('CABLE','FCX',IOC,1,1,FCX,NFCX)
+         CALL GETVID('CABLE','FCX',IOC,IARG,1,FCX,NFCX)
          ZK8(JDVCF) = FCX
 
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES

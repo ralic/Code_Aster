@@ -1,7 +1,7 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,6 +59,7 @@ C     ------------------------------------------------------------------
       LOGICAL EXITIM
       CHARACTER*8 LPAIN(6),LPAOUT(1)
       CHARACTER*24 LCHIN(6),LCHOUT(1)
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -74,7 +75,7 @@ C
       RUNDF = R8VIDE()
 
       CALL GETRES(CHELEM,TYPE,OPER)
-      CALL GETVID(' ','ACCE',0,1,0,OPTION,N1)
+      CALL GETVID(' ','ACCE',0,IARG,0,OPTION,N1)
       IF (N1.NE.0) THEN
          CALL U2MESS('A','CALCULEL3_96')
       ENDIF
@@ -87,11 +88,11 @@ C
 
       EXITIM = .FALSE.
       PRESS = ' '
-      CALL GETVTX(' ','OPTION',0,1,1,OPTION,N1)
-      CALL GETVID(' ','TEMP',0,1,1,TEMP,N3)
-      CALL GETVID(' ','PRES',0,1,1,PRESS,N4)
-      CALL GETVR8(' ','INST',0,1,1,TIME,N6)
-      CALL GETVIS(' ','MODE_FOURIER',0,1,1,NH,N7)
+      CALL GETVTX(' ','OPTION',0,IARG,1,OPTION,N1)
+      CALL GETVID(' ','TEMP',0,IARG,1,TEMP,N3)
+      CALL GETVID(' ','PRES',0,IARG,1,PRESS,N4)
+      CALL GETVR8(' ','INST',0,IARG,1,TIME,N6)
+      CALL GETVIS(' ','MODE_FOURIER',0,IARG,1,NH,N7)
       IF (N3.NE.0) THEN
           CHTEMP = TEMP
           CALL CHPVER('F',CHTEMP,'NOEU','TEMP_R',IERD)

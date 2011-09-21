@@ -1,9 +1,9 @@
       SUBROUTINE OP0036 ()
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,7 @@ C SENSIBILITE
       INTEGER      NRPASS,NBPASS,ADRECG
       CHARACTER*19 RESUL1,NOPASE,NFCT0
       CHARACTER*24 NORECG,VECTCR,VECTCI
+      INTEGER      IARG
 C SENSIBILITE
       DATA TYPARR / 'R'       , 'R'       /
       DATA TYPARC / 'R'       , 'R'       , 'R'       /
@@ -94,13 +95,13 @@ C     ==========
          DIMMAX=0
 
          DO 50 IOCC=1,NOCC
-            CALL GETVTX('LISTE','PARA',IOCC,1,1,NMPAR,JP)
+            CALL GETVTX('LISTE','PARA',IOCC,IARG,1,NMPAR,JP)
             ZK16(JD+IOCC-1)=NMPAR
-            CALL GETVIS('LISTE','LISTE_I',  IOCC,1,0,IBID,NI)
-            CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,0,IBID,NINDI)
-            CALL GETVR8('LISTE','LISTE_R',  IOCC,1,0,RBID,NR)
-            CALL GETVTX('LISTE','LISTE_K',  IOCC,1,0,KBID,NK)
-            CALL GETVTX('LISTE','TYPE_K',   IOCC,1,1,NTYP,JT)
+            CALL GETVIS('LISTE','LISTE_I',  IOCC,IARG,0,IBID,NI)
+            CALL GETVIS('LISTE','NUME_LIGN',IOCC,IARG,0,IBID,NINDI)
+            CALL GETVR8('LISTE','LISTE_R',  IOCC,IARG,0,RBID,NR)
+            CALL GETVTX('LISTE','LISTE_K',  IOCC,IARG,0,KBID,NK)
+            CALL GETVTX('LISTE','TYPE_K',   IOCC,IARG,1,NTYP,JT)
 
             IF ( NINDI.NE.0 ) THEN
               IF ( (-NI-NR-NK).NE.(-NINDI)) THEN
@@ -108,7 +109,8 @@ C     ==========
               ENDIF
               CALL WKVECT(INDIC,'V V I',-NINDI,III)
               LONGCO=0
-              CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,-NINDI,ZI(III),IR)
+              CALL GETVIS('LISTE','NUME_LIGN',IOCC,IARG,-NINDI,
+     &                    ZI(III),IR)
               DO 55 I=1,-NINDI
                  LONGCO=MAX(LONGCO,ZI(III+I-1))
  55           CONTINUE
@@ -139,11 +141,11 @@ C       ---CREATION DE LA TABLE
          CALL TBCRSV(RESUL1,'G',NOCC,ZK16(JD),ZK8(JY),DIMMAX)
 C
          DO 200 IOCC=1,NOCC
-            CALL GETVIS('LISTE','LISTE_I',IOCC,1,0,IBID,NI)
-            CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,0,IBID,NINDI)
-            CALL GETVR8('LISTE','LISTE_R',IOCC,1,0,RBID,NR)
-            CALL GETVTX('LISTE','LISTE_K',IOCC,1,0,KBID,NK)
-            CALL GETVTX('LISTE','PARA',IOCC,1,1,NMPAR,JP)
+            CALL GETVIS('LISTE','LISTE_I',IOCC,IARG,0,IBID,NI)
+            CALL GETVIS('LISTE','NUME_LIGN',IOCC,IARG,0,IBID,NINDI)
+            CALL GETVR8('LISTE','LISTE_R',IOCC,IARG,0,RBID,NR)
+            CALL GETVTX('LISTE','LISTE_K',IOCC,IARG,0,KBID,NK)
+            CALL GETVTX('LISTE','PARA',IOCC,IARG,1,NMPAR,JP)
             DO 150 J=1,NOCC
                NMPAR1=ZK16(JD+J-1)
                IF ((NMPAR.EQ.NMPAR1).AND.(J.NE.IOCC)) THEN
@@ -154,7 +156,8 @@ C
             IF (NINDI.NE.0)THEN
                NINDI=-NINDI
                CALL WKVECT(INDIC,'V V I',NINDI,III)
-               CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,NINDI,ZI(III),IR)
+               CALL GETVIS('LISTE','NUME_LIGN',IOCC,IARG,NINDI,
+     &                     ZI(III),IR)
             ELSE
                CALL WKVECT(INDIC,'V V I',(-NI-NR-NK),III)
                DO 175 I=1,(-NI-NR-NK)
@@ -167,7 +170,7 @@ C           ---------------
             IF (NI.NE.0)THEN
                NI=-NI
                CALL WKVECT(TRAV,'V V I',NI,JTRAV1)
-               CALL GETVIS('LISTE','LISTE_I',IOCC,1,NI,ZI(JTRAV1),IR)
+               CALL GETVIS('LISTE','LISTE_I',IOCC,IARG,NI,ZI(JTRAV1),IR)
                CALL TBAJCO(RESUL1,NMPAR,'I',NI,ZI(JTRAV1),
      &                     RBID,CBID,KBID,'R',ZI(III))
             ENDIF
@@ -177,7 +180,7 @@ C           --------------
             IF (NR.NE.0)THEN
                NR=-NR
                CALL WKVECT(TRAV,'V V R',NR,JTRAV2)
-               CALL GETVR8('LISTE','LISTE_R',IOCC,1,NR,ZR(JTRAV2),IR)
+               CALL GETVR8('LISTE','LISTE_R',IOCC,IARG,NR,ZR(JTRAV2),IR)
                CALL TBAJCO(RESUL1,NMPAR,'R',NR,IBID,ZR(JTRAV2),
      &                     CBID,KBID,'R',ZI(III))
             ENDIF
@@ -186,25 +189,28 @@ C           LISTE DE CHAINE DE CARACTERES :
 C           -----------------------------
             IF (NK.NE.0)THEN
                NK=-NK
-               CALL GETVTX('LISTE','TYPE_K',IOCC,1,1,NTYP,JT)
+               CALL GETVTX('LISTE','TYPE_K',IOCC,IARG,1,NTYP,JT)
 C              CHAINES DE 8 CARACTERES
                IF(NTYP(2:2).EQ.'8')THEN
                   CALL WKVECT(TRAV,'V V K8',NK,JTRAV3)
-                 CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK8(JTRAV3),IR)
+                 CALL GETVTX('LISTE','LISTE_K',IOCC,IARG,NK,
+     &                       ZK8(JTRAV3),IR)
                   CALL TBAJCO(RESUL1,NMPAR,'K8',NK,IBID,RBID,CBID,
      &                        ZK8(JTRAV3),'R',ZI(III))
 
 C              CHAINES DE 16 CARACTERES
                ELSEIF(NTYP(2:2).EQ.'1')THEN
                   CALL WKVECT(TRAV,'V V K16',NK,JTRAV4)
-                CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK16(JTRAV4),IR)
+                CALL GETVTX('LISTE','LISTE_K',IOCC,IARG,NK,
+     &                      ZK16(JTRAV4),IR)
                   CALL TBAJCO(RESUL1,NMPAR,'K16',NK,IBID,RBID,CBID,
      &                        ZK16(JTRAV4),'R',ZI(III))
 
 C              CHAINES DE 24 CARACTERES
                ELSEIF(NTYP(2:2).EQ.'2')THEN
                   CALL WKVECT(TRAV,'V V K24',NK,JTRAV5)
-                CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK24(JTRAV5),IR)
+                CALL GETVTX('LISTE','LISTE_K',IOCC,IARG,NK,
+     &                      ZK24(JTRAV5),IR)
                   CALL TBAJCO(RESUL1,NMPAR,'K24',NK,IBID,RBID,CBID,
      &                        ZK24(JTRAV5),'R',ZI(III))
                ENDIF
@@ -217,7 +223,7 @@ C     ==============
 C --- CAS : FONCTION
 C     ==============
       ELSEIF(NOCC2.NE.0)THEN
-          CALL GETVID('FONCTION','FONCTION',1,1,1,NFCT,IR)
+          CALL GETVID('FONCTION','FONCTION',1,IARG,1,NFCT,IR)
           IF (NOPASE.EQ.' ') THEN
             NFCT0 = NFCT
           ELSE
@@ -237,7 +243,7 @@ C
      &      ZK24(JPROL).NE.'CONSTANT'.AND.
      &      ZK24(JPROL).NE.'FONCT_C')
      &      CALL U2MESK('F','UTILITAI2_78',1,NOMCMD)
-          CALL GETVTX('FONCTION','PARA',1,1,2,NMPARF,IR)
+          CALL GETVTX('FONCTION','PARA',1,IARG,2,NMPARF,IR)
           IF(IR.EQ.0)THEN
             NMPARF(1)=ZK24(JPROL+2)
             NMPARF(2)=ZK24(JPROL+3)

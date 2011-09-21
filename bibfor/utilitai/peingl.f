@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,6 +154,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*24 MLGGMA,MLGNMA
       CHARACTER*24 CHSIGM,CHDEPM,CHBID
       LOGICAL EXISDG
+      INTEGER      IARG
 
       DATA TYPARR/'I','R','K8','K8','R','R','R'/
       DATA CHVARC,CHVREF /'&&PEINGL.CHVARC','&&PEINGL.CHVARC.REF'/
@@ -192,7 +193,7 @@ C     ---------------
 
 C --- RECUPERATION DU RESULTAT A TRAITER :
 C     ----------------------------------
-      CALL GETVID(' ','RESULTAT',1,1,1,RESUL,NR)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESUL,NR)
 
       IF (NR.EQ.0) THEN
         CALL U2MESS('F','UTILITAI3_76')
@@ -208,11 +209,11 @@ C     -----------------------------------------------------------
 C --- RECUPERATION DE LA PRECISION POUR LE TRAITEMENT DES NUMEROS
 C --- D'ORDRE :
 C     -------
-      CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
+      CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
 
 C --- RECUPERATION DU CRITERE POUR LE TRAITEMENT DES NUMEROS D'ORDRE :
 C     --------------------------------------------------------------
-      CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+      CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
 
 C --- RECUPERATION DES NUMEROS D'ORDRE A TRAITER :
 C     ------------------------------------------
@@ -482,9 +483,10 @@ C      -----------------------------------------------
 C ---   RECUPERATION DES MAILLES POUR LESQUELLES ON VA CALCULER
 C ---   L'INDICATEUR :
 C       ------------
-          CALL GETVTX(OPTION,'TOUT',IOCC,1,0,K8B,NT)
-          CALL GETVEM(NOMA,'MAILLE',OPTION,'MAILLE',IOCC,1,0,K8B,NM)
-          CALL GETVEM(NOMA,'GROUP_MA',OPTION,'GROUP_MA',IOCC,1,0,K8B,NG)
+          CALL GETVTX(OPTION,'TOUT',IOCC,IARG,0,K8B,NT)
+          CALL GETVEM(NOMA,'MAILLE',OPTION,'MAILLE',IOCC,IARG,0,K8B,NM)
+          CALL GETVEM(NOMA,'GROUP_MA',OPTION,'GROUP_MA',IOCC,IARG,0,K8B,
+     &                NG)
 
 C ---   TRAITEMENT DU MOT CLE "TOUT" ,LA QUANTITE EST CALCULEE
 C ---   SUR TOUT LE MODELE :
@@ -558,7 +560,8 @@ C       -----------------------
           IF (NG.NE.0) THEN
             NBGRMA = -NG
             CALL WKVECT('&&PEINGL_GROUPM','V V K8',NBGRMA,JGR)
-            CALL GETVEM(NOMA,'GROUP_MA',OPTION,'GROUP_MA',IOCC,1,NBGRMA,
+            CALL GETVEM(NOMA,'GROUP_MA',OPTION,'GROUP_MA',IOCC,IARG,
+     &                  NBGRMA,
      &                  ZK8(JGR),NG)
 
 C ---     BOUCLE SUR LES GROUPES DE MAILLES :
@@ -654,7 +657,7 @@ C       ----------------------
           IF (NM.NE.0) THEN
             NBMAIL = -NM
             CALL WKVECT('&&PEINGL_MAILLE','V V K8',NBMAIL,JMA)
-            CALL GETVEM(NOMA,'MAILLE',OPTION,'MAILLE',IOCC,1,NBMAIL,
+            CALL GETVEM(NOMA,'MAILLE',OPTION,'MAILLE',IOCC,IARG,NBMAIL,
      &                  ZK8(JMA),NM)
 
 C ---    BOUCLE SUR LES MAILLES :

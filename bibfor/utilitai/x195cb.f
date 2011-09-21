@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*3 TSCA
       CHARACTER*19 CH1,CH2,PFCN1,PFCN2
       LOGICAL IDENSD
+      INTEGER      IARG
 
 C     -----------------------------------------------------------------
 
@@ -63,7 +64,7 @@ C     -- 1. CREATION DU CHAMP "OUT" SUR LE MODELE DU 1ER CHAMP "IN"
 C     -------------------------------------------------------------
 C     -- ATTENTION : LA COMMANDE PEUT ETRE REENTRANTE,
 C        IL NE FAUT PAS DETRUIRE CHOU TOUT DE SUITE.
-      CALL GETVID('COMB','CHAM_GD',1,1,1,CH1,IB)
+      CALL GETVID('COMB','CHAM_GD',1,IARG,1,CH1,IB)
       CH2='&&X195CB.CHOU'
       CALL COPISD('CHAMP','V',CH1,CH2)
 C     -- INITIALISATION A ZERO :
@@ -77,7 +78,7 @@ C     -- INITIALISATION A ZERO :
 C     -- 2. CALCUL DU CONTENU DE CH2 :
 C     ---------------------------------
       DO 10,IOCC = 1,NBOCC
-        CALL GETVID('COMB','CHAM_GD',IOCC,1,1,CH1,IB)
+        CALL GETVID('COMB','CHAM_GD',IOCC,IARG,1,CH1,IB)
 
 C       -- QUELQUES VERIFICATIONS DE COHERENCE :
         CALL DISMOI('F','TYPE_CHAMP',CH1,'CHAMP',IB,TYCH1,IB)
@@ -101,7 +102,7 @@ C       -- QUELQUES VERIFICATIONS DE COHERENCE :
 
 C       -- CUMUL DES VALEURS :
         CALL JEVEUO(CH1//'.VALE','L',JVALE1)
-        CALL GETVR8('COMB','COEF_R',IOCC,1,1,COEFR,IB)
+        CALL GETVR8('COMB','COEF_R',IOCC,IARG,1,COEFR,IB)
         CALL ASSERT(IB.EQ.1)
         IF (TSCA.EQ.'R') THEN
           DO 11, K=1,N1

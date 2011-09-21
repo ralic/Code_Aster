@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C
       CHARACTER*24 NSDS8,NSDS9,NSDS10,NSDS11,NSDS12,NSDS13,NSDS14
       CHARACTER*24 NOMMAI, LISMAI, PARA
       LOGICAL      COUPE, FINI, SWAP, EGFAC, I3EGFA
+      INTEGER      IARG
 C
 C===================================================================
 C
@@ -88,9 +89,9 @@ C
       NDIM  = 3
 C
       CALL GETRES ( SURFAC, TYPRES, OPERA )
-      CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, EPSI  ,N)
-      CALL GETVIS ( ' ', 'INFO'     , 1,1,1, INFO  ,N)
-      CALL GETVID ( ' ', 'MAILLAGE' , 1,1,1, NOMAIL,N)
+      CALL GETVR8 ( ' ', 'PRECISION', 1,IARG,1, EPSI  ,N)
+      CALL GETVIS ( ' ', 'INFO'     , 1,IARG,1, INFO  ,N)
+      CALL GETVID ( ' ', 'MAILLAGE' , 1,IARG,1, NOMAIL,N)
       CALL GETFAC ( 'DEFI_SEGMENT' , NBSGT )
 C
       CALL DISMOI('F','NB_MA_MAILLA',NOMAIL,'MAILLAGE',NBTMA,K1BID,N)
@@ -120,8 +121,8 @@ C     --- TRAITEMENT DES GROUP_MA ET MAILLE ---
 C
       LISMAI = '&&OP0096.NUME_MAIL'
 C
-      CALL GETVTX ( ' ', 'GROUP_MA', 1,1,0, K8B, N1 )
-      CALL GETVTX ( ' ', 'MAILLE'  , 1,1,0, K8B, N2 )
+      CALL GETVTX ( ' ', 'GROUP_MA', 1,IARG,0, K8B, N1 )
+      CALL GETVTX ( ' ', 'MAILLE'  , 1,IARG,0, K8B, N2 )
 C
       IF ( (N1+N2) .EQ. 0 ) THEN
          CALL WKVECT ( LISMAI, 'V V I', NBTMA, JNUMA )

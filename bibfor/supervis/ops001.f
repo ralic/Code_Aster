@@ -4,9 +4,9 @@
       INTEGER VALI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ C     ------------------------------------------------------------------
       PARAMETER             (MXFILE=30)
       COMMON  /SUCC00/ UNITE(MXFILE), NAME(MXFILE)
       COMMON  /SUCN00/ IPASS,IFILE,JCMD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       IF (ICOND .NE. -1) THEN
         CALL U2MESS('E','SUPERVIS_33')
@@ -63,11 +64,11 @@ C     --- ON EMPILE LE NOM SYMBOLIQUE DE L'UNITE DE LECTURE COURANTE ---
       UNITE(IFILE) = NOMSYM
 C
 C     --- NOUVELLE UNITE DE LECTURE ---
-      CALL GETVIS(' ','UNITE',1,1,1,IUNIT,L)
+      CALL GETVIS(' ','UNITE',1,IARG,1,IUNIT,L)
       CALL CODENT(IUNIT, 'D0',NOMSYM(7:8) )
 C     --- ON IMPRIME OUI / NON  ---
 C
-      CALL GETVIS(' ','INFO',1,1,1,IBID,L)
+      CALL GETVIS(' ','INFO',1,IARG,1,IBID,L)
       IF ( IBID .GT. 1 ) THEN
         IWRITE = IUNIFI('MESSAGE')
       ELSE

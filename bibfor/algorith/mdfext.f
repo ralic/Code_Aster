@@ -7,7 +7,7 @@
       CHARACTER*16                    TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,20 +61,21 @@ C
       REAL*8        UN, T, ALPHA
       CHARACTER*19  CHANNO, FONCT
       LOGICAL       LFORC
+      INTEGER      IARG
 C
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       IER = 0
       LFORC = .FALSE.
-      CALL GETVIS('EXCIT','NUME_ORDRE',1,1,0,IBID,NF)
+      CALL GETVIS('EXCIT','NUME_ORDRE',1,IARG,0,IBID,NF)
       LFORC = NF .NE. 0
 C
 C LE TEST SUIVANT EST REALISE DANS MDGENE POUR LA SOUS-STRUCTURATION
 C
       IF (.NOT.LFORC.AND.TYPBAS.NE.'MODELE_GENE     ') THEN
         DO 10 I = 1, NVECT
-          CALL GETVID('EXCIT','VECT_ASSE',I,1,1,CHANNO,L)
+          CALL GETVID('EXCIT','VECT_ASSE',I,IARG,1,CHANNO,L)
           CALL JEVEUO(CHANNO//'.REFE','L',JREF1)
           IF (ZK24(JREF1)(1:8).NE.BASEMO) THEN
             IER = IER + 1
@@ -94,14 +95,14 @@ C
       DO 20 I = 1,NVECT
          T = TINIT
          IF (LFORC) THEN
-           CALL GETVID('EXCIT','FONC_MULT',I,1,1,FONCT,N1)
-           CALL GETVIS('EXCIT','NUME_ORDRE',I,1,1,NUMOR,N2)
+           CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,FONCT,N1)
+           CALL GETVIS('EXCIT','NUME_ORDRE',I,IARG,1,NUMOR,N2)
            IF(NUMOR.GT.NEQGEN) CALL U2MESS('F','ALGORITH5_76')
          ELSE
-           CALL GETVID('EXCIT','VECT_ASSE',I,1,1,CHANNO,N1)
+           CALL GETVID('EXCIT','VECT_ASSE',I,IARG,1,CHANNO,N1)
            CALL JEVEUO(CHANNO//'.VALE','L',JVALE)
 C
-           CALL GETVID('EXCIT','FONC_MULT',I,1,1,FONCT ,N1)
+           CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,FONCT ,N1)
          ENDIF
          IF (N1.NE.0) THEN
             DO 30 K = 1,NBPAS
@@ -118,7 +119,7 @@ C
 C
          ELSE
             ALPHA = UN
-            CALL GETVR8('EXCIT','COEF_MULT',I,1,1,ALPHA,L)
+            CALL GETVR8('EXCIT','COEF_MULT',I,IARG,1,ALPHA,L)
             DO 50 J = 1,NEQGEN
                DO 52 K = 1,NBPAS
                   FEXT(J,K) = FEXT(J,K) + ALPHA * ZR(JVALE+J-1)

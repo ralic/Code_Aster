@@ -2,7 +2,7 @@
      &                  MOTFAC,NBOCC ,NTEXTR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -79,6 +79,7 @@ C
       CHARACTER*8  EXTRCP,EXTRCH,EXTRGA
       CHARACTER*24 LIST
       INTEGER      JLIST
+      INTEGER      IARG
 C      
 C ----------------------------------------------------------------------
 C      
@@ -170,7 +171,7 @@ C
         NOMCHA = ZK24(JEXTCH+2*(ICHAM-1)+1-1)
         NOMCHS = ZK24(JEXTCH+2*(ICHAM-1)+2-1)
         IF (NOMCHA.EQ.'NONE') THEN
-          CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,1,1,NOMCHX,IBID)
+          CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,IARG,1,NOMCHX,IBID)
           CALL U2MESK('A','EXTRACTION_99',1,NOMCHX)
           GOTO 999
         ENDIF

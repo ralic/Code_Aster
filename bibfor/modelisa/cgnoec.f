@@ -1,6 +1,6 @@
       SUBROUTINE CGNOEC (MOFAZ, IOCC, NOMAZ, LISNOZ, NBNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*24   LISNOE
 C
       REAL*8         X0(3), X(3), XX0(3), AXE(3), ANGLE(2)
+      INTEGER      IARG
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ()
@@ -119,11 +120,11 @@ C     -------------------------------------------------
 C
 C --- RECUPERATION DU RAYON DU CYLINDRE :
 C     ---------------------------------
-      CALL GETVR8(MOTFAC,'RAYON',IOCC,1,0,RAYON,NRAYON)
+      CALL GETVR8(MOTFAC,'RAYON',IOCC,IARG,0,RAYON,NRAYON)
       IF (NRAYON.EQ.0) THEN
           CALL U2MESS('F','MODELISA3_74')
       ELSE
-         CALL GETVR8(MOTFAC,'RAYON',IOCC,1,1,RAYON,NB)
+         CALL GETVR8(MOTFAC,'RAYON',IOCC,IARG,1,RAYON,NB)
          IF (RAYON.LE.ZERO) THEN
              CALL U2MESS('F','MODELISA3_75')
          ENDIF
@@ -131,9 +132,9 @@ C     ---------------------------------
 C
 C --- RECUPERATION DE LA DIRECTION DEFINISSANT L'AXE DU CYLINDRE :
 C     ----------------------------------------------------------
-      CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,0,R8BID,NANGLE)
+      CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,IARG,0,R8BID,NANGLE)
       IF (NANGLE.EQ.0) THEN
-          CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,0,R8BID,NVECT)
+          CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,IARG,0,R8BID,NVECT)
           IF (NVECT.EQ.0) THEN
               CALL U2MESS('F','MODELISA3_85')
           ELSE
@@ -141,7 +142,8 @@ C     ----------------------------------------------------------
               IF (NVECT.NE.3) THEN
                   CALL U2MESS('F','MODELISA3_86')
               ELSE
-                  CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,NVECT,AXE,NV)
+                  CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,IARG,NVECT,
+     &                        AXE,NV)
               ENDIF
           ENDIF
       ELSE
@@ -149,7 +151,7 @@ C     ----------------------------------------------------------
           IF (NANGLE.NE.2) THEN
              CALL U2MESS('F','MODELISA3_87')
           ENDIF
-          CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,NANGLE,ANGLE,NV)
+          CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,IARG,NANGLE,ANGLE,NV)
 C
           ANGLE(1) = ANGLE(1)*R8DGRD()
           ANGLE(2) = ANGLE(2)*R8DGRD()
@@ -173,11 +175,11 @@ C
 C
 C --- RECUPERATION DE LA DEMI-EPAISSEUR DE L'ENVELOPPE :
 C     ------------------------------------------------
-      CALL GETVR8(MOTFAC,'PRECISION',IOCC,1,0,PREC,NPREC)
+      CALL GETVR8(MOTFAC,'PRECISION',IOCC,IARG,0,PREC,NPREC)
       IF (NPREC.EQ.0) THEN
              CALL U2MESS('F','MODELISA3_88')
       ELSE
-         CALL GETVR8(MOTFAC,'PRECISION',IOCC,1,1,PREC,NB)
+         CALL GETVR8(MOTFAC,'PRECISION',IOCC,IARG,1,PREC,NB)
          IF (PREC.LE.ZERO) THEN
              CALL U2MESS('F','MODELISA3_89')
          ENDIF

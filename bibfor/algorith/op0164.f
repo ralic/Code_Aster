@@ -3,7 +3,7 @@
 C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
       REAL*8       A(3), A2(3)
       INTEGER*8    LONG1,LONG2,LONG3
       LOGICAL      LISSF, LSYM
+      INTEGER      IARG
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -63,16 +64,16 @@ C
 C
 C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
-      CALL GETVIS(' ','UNITE_RESU_IMPE',1,1,1,IFMIS,N1)
-      CALL GETVR8(' ','FREQ_EXTR',1,1,1,FREQ,NFR)
-      CALL GETVID ( ' ', 'BASE'          , 1,1,1, BASEMO, N4 )
-      CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,1,1, NUMGEN, N2 )
-      CALL GETVTX ( ' ', 'TYPE' , 1,1,1, TYPBIN, N2 )
+      CALL GETVIS(' ','UNITE_RESU_IMPE',1,IARG,1,IFMIS,N1)
+      CALL GETVR8(' ','FREQ_EXTR',1,IARG,1,FREQ,NFR)
+      CALL GETVID ( ' ', 'BASE'          , 1,IARG,1, BASEMO, N4 )
+      CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,IARG,1, NUMGEN, N2 )
+      CALL GETVTX ( ' ', 'TYPE' , 1,IARG,1, TYPBIN, N2 )
       LISSF = .FALSE.
-      CALL GETVTX ( ' ', 'ISSF' , 1,1,1, TISSF, N2 )
+      CALL GETVTX ( ' ', 'ISSF' , 1,IARG,1, TISSF, N2 )
       IF (TISSF(1:3).EQ.'OUI') LISSF = .TRUE.
       LSYM = .FALSE.
-      CALL GETVTX ( ' ', 'SYME' , 1,1,1, TSYM, N2 )
+      CALL GETVTX ( ' ', 'SYME' , 1,IARG,1, TSYM, N2 )
       IF (TSYM(1:3).EQ.'OUI') LSYM = .TRUE.
 C
       CALL GETTCO ( BASEMO, TYPBAS )

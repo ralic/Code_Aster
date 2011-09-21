@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   TABLE, CONCPT, TYP
       CHARACTER*16  NOMCMD, TYPCON, NOMSYM, K16B, NOM
       CHARACTER*24  NOMTAB, KBID
+      INTEGER      IARG
 
 C     ------------------------------------------------------------------
 
@@ -55,14 +56,14 @@ C     ------------------------------------------------------------------
       CALL INFMAJ()
 
       CALL GETRES ( TABLE, TYPCON, NOMCMD )
-      CALL GETVID ( ' ', 'CO'      , 1,1,1, CONCPT, IRET )
+      CALL GETVID ( ' ', 'CO'      , 1,IARG,1, CONCPT, IRET )
 
 
 C --------------------------
 C   EXTRACTION D'UNE TABLE
 C --------------------------
 
-      CALL GETVTX ( ' ', 'NOM_TABLE', 0,1,1, NOMSYM, IRET )
+      CALL GETVTX ( ' ', 'NOM_TABLE', 0,IARG,1, NOMSYM, IRET )
       IF (IRET.NE.0) THEN
         CALL LTNOTB ( CONCPT , NOMSYM , NOMTAB )
         CALL COPISD ( 'TABLE', 'G', NOMTAB, TABLE )
@@ -77,7 +78,7 @@ C   EXTRACTION DE PARAMETRES
 C ----------------------------
 
 C    NOMBRE DE PARAMETRES
-      CALL GETVTX ( ' ', 'NOM_PARA', 0,1,0, K16B, NBPARA )
+      CALL GETVTX ( ' ', 'NOM_PARA', 0,IARG,0, K16B, NBPARA )
       CALL ASSERT(NBPARA.NE.0)
       NBPARA = -NBPARA
 
@@ -102,7 +103,7 @@ C -- NOMS DES PARAMETRES A EXTRAIRE
  10   CONTINUE
 
       ZK16(INOM) = 'NUME_ORDRE'
-      CALL GETVTX (' ', 'NOM_PARA', 0,1,NBPARA, ZK16(INOM+1), IBID)
+      CALL GETVTX (' ', 'NOM_PARA', 0,IARG,NBPARA, ZK16(INOM+1), IBID)
 
       DO 20 I = 1, NBPARA
       NOM = ZK16(INOM + I)

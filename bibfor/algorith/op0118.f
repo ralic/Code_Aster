@@ -1,7 +1,7 @@
       SUBROUTINE OP0118()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C
       CHARACTER*8   K8B, TYPAR(2), NOMVEC
       CHARACTER*16  TYPVEC, NOMCMD, NOPAR(2)
       CHARACTER*19  NOMINF, NOMFON
+      INTEGER      IARG
 C
       DATA NOPAR / 'NUME_ORDRE' , 'FONCTION' /
       DATA TYPAR / 'I'          , 'K24'      /
@@ -74,13 +75,13 @@ C===============
 C 2. LECTURE DES DONNEES LIEES A LA GENERATION
 C===============
 
-      CALL GETVIS ( ' ', 'NB_TIRAGE'     , 0,1,1, NBTIR , L )
+      CALL GETVIS ( ' ', 'NB_TIRAGE'     , 0,IARG,1, NBTIR , L )
       IF (L .EQ. 0) NBTIR = 0
 
-      CALL GETVR8(' ','DUREE_TIRAGE',0,1,1,DUREE,L)
+      CALL GETVR8(' ','DUREE_TIRAGE',0,IARG,1,DUREE,L)
       IF (L .EQ. 0) DUREE = -1.D0
 
-      CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,1,1, JUMP , L )
+      CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,IARG,1, JUMP , L )
       IF (L .NE. 0) CALL INIRAN(JUMP)
 
 C===============

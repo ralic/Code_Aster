@@ -4,9 +4,9 @@
       LOGICAL                     PMPB, SN, SNET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -54,6 +54,7 @@ C
       CHARACTER*8   K8B, VALEK(3), TYPAR0(NPAR0), TYPAR1(NPAR1), TYPTAB
       CHARACTER*16  NOPAR0(NPAR0), NOPAR1(NPAR1), NOPAR2(NPAR2)
       CHARACTER*24  K24A, K24S
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA LIEU   / 'ORIG' , 'EXTR' /
 C
@@ -71,7 +72,7 @@ C
      +              'NUME_SITU', 'PM', 'PB', 'PMPB', 'SN', 'SN*'  /
 C DEB ------------------------------------------------------------------
 C
-      CALL GETVTX ( ' ', 'TYPE_RESU', 1,1,1, TYPTAB , N1 )
+      CALL GETVTX ( ' ', 'TYPE_RESU', 1,IARG,1, TYPTAB , N1 )
 C
       CALL JELIRA ( '&&RC3200.SITU_NUME_GROUP', 'LONMAX', NBGR, K8B )
       CALL JEVEUO ( '&&RC3200.SITU_NUME_GROUP', 'L', JNUMGR )

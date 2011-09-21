@@ -4,9 +4,9 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,6 +53,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -90,40 +91,40 @@ C --- STOCKAGE DANS LA CARTE
 C
       DO 120 IOCC = 1, NBFEL
 C
-         CALL GETVTX ( MOTCLF, 'POSITION', IOCC,1,1, CODE, N)
+         CALL GETVTX ( MOTCLF, 'POSITION', IOCC,IARG,1, CODE, N)
 C
          IF ( N .EQ. 0 ) THEN
             ZCOD = 10.D0
-            CALL GETVR8 ( MOTCLF, 'FX', IOCC, 1, 1, P1(1), N)
-            CALL GETVR8 ( MOTCLF, 'FY', IOCC, 1, 1, P1(2), N)
-            CALL GETVR8 ( MOTCLF, 'FZ', IOCC, 1, 1, P1(3), N)
+            CALL GETVR8 ( MOTCLF, 'FX', IOCC,IARG, 1, P1(1), N)
+            CALL GETVR8 ( MOTCLF, 'FY', IOCC,IARG, 1, P1(2), N)
+            CALL GETVR8 ( MOTCLF, 'FZ', IOCC,IARG, 1, P1(3), N)
             P2(1) = 0.D0
             P2(2) = 0.D0
             P2(3) = 0.D0
          ELSE
             IF (CODE.EQ.'PARA') THEN
-               CALL GETVR8 ( MOTCLF, 'DIST', IOCC, 1, 1, D, N)
+               CALL GETVR8 ( MOTCLF, 'DIST', IOCC,IARG, 1, D, N)
                IF (N.NE.0) THEN
                   ZCOD = 12.D0
                   P1(1)=D
                   P1(2)=0.D0
                   P1(3)=0.D0
-                  CALL GETVR8 ( MOTCLF, 'POINT2', IOCC, 1, 3, P2, N)
+                  CALL GETVR8 ( MOTCLF, 'POINT2', IOCC,IARG, 3, P2, N)
                ELSE
                   ZCOD = 11.D0
-                  CALL GETVR8 ( MOTCLF, 'TRANS', IOCC, 1, 3, P1, N)
+                  CALL GETVR8 ( MOTCLF, 'TRANS', IOCC,IARG, 3, P1, N)
                   P2(1)=0.D0
                   P2(2)=0.D0
                   P2(3)=0.D0
                ENDIF
             ELSEIF (CODE.EQ.'INFI') THEN
                ZCOD = 2.D0
-               CALL GETVR8 ( MOTCLF, 'POINT1', IOCC, 1, 3, P1, N)
-               CALL GETVR8 ( MOTCLF, 'POINT2', IOCC, 1, 3, P2, N)
+               CALL GETVR8 ( MOTCLF, 'POINT1', IOCC,IARG, 3, P1, N)
+               CALL GETVR8 ( MOTCLF, 'POINT2', IOCC,IARG, 3, P2, N)
             ELSEIF (CODE.EQ.'FINI') THEN
                ZCOD = 3.D0
-               CALL GETVR8 ( MOTCLF, 'POINT1', IOCC, 1, 3, P1, N)
-               CALL GETVR8 ( MOTCLF, 'POINT2', IOCC, 1, 3, P2, N)
+               CALL GETVR8 ( MOTCLF, 'POINT1', IOCC,IARG, 3, P1, N)
+               CALL GETVR8 ( MOTCLF, 'POINT2', IOCC,IARG, 3, P2, N)
             ENDIF
          ENDIF
 C
@@ -135,7 +136,7 @@ C
          ZR(JVALV-1+6) = P2(3)
          ZR(JVALV-1+7) = ZCOD
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
 C
          IF ( NBTOU .NE. 0 ) THEN
 C

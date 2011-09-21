@@ -1,7 +1,7 @@
       SUBROUTINE OP0033()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,6 +70,7 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       REAL*8       MATPER(36),VARIA(2*36),EPSILO,PGL(3,3),VIMP33(3,3)
       REAL*8       VIMP2(3,3),COEF,PARCRI(12),DIINST,JM,JP,JD
       LOGICAL      FINPAS,DIDERN,ITEMAX,CONVER
+      INTEGER      IARG
       DATA SDDISC            /'&&OP0033.SDDISC'/
       DATA SDCRIT            /'&&OP0033.SDCRIT'/
       DATA TABINC            /'&&OP0033.TABINC'/
@@ -94,7 +95,7 @@ C ======================================================================
       
 C     RECUPERATION DES OPTIONS DEMANDEES
 C     ----------------------------------
-      CALL GETVID(' ','MATER',0,1,6,MATER,N1)
+      CALL GETVID(' ','MATER',0,IARG,6,MATER,N1)
       
 C     RECUPERATION DU COMPORTEMENT
 C     ----------------------------

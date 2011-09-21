@@ -5,9 +5,9 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +55,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -97,9 +98,9 @@ C
       DO 20 IOCC = 1, NCHGI
 C
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 ( MOTCLF, 'FLUX_X', IOCC,1,1, GRX, NX )
-            CALL GETVR8 ( MOTCLF, 'FLUX_Y', IOCC,1,1, GRY, NY )
-            CALL GETVR8 ( MOTCLF, 'FLUX_Z', IOCC,1,1, GRZ, NZ )
+            CALL GETVR8 ( MOTCLF, 'FLUX_X', IOCC,IARG,1, GRX, NX )
+            CALL GETVR8 ( MOTCLF, 'FLUX_Y', IOCC,IARG,1, GRY, NY )
+            CALL GETVR8 ( MOTCLF, 'FLUX_Z', IOCC,IARG,1, GRZ, NZ )
             DO 22 I = 1, 3
                ZR(JVALV-1+I) = 0.D0
  22         CONTINUE
@@ -107,9 +108,9 @@ C
             IF (NY .NE. 0) ZR(JVALV-1+2) = GRY
             IF (NZ .NE. 0) ZR(JVALV-1+3) = GRZ
          ELSE IF (FONREE.EQ.'FONC') THEN
-            CALL GETVID ( MOTCLF, 'FLUX_X', IOCC,1,1, GRXF, NX )
-            CALL GETVID ( MOTCLF, 'FLUX_Y', IOCC,1,1, GRYF, NY )
-            CALL GETVID ( MOTCLF, 'FLUX_Z', IOCC,1,1, GRZF, NZ )
+            CALL GETVID ( MOTCLF, 'FLUX_X', IOCC,IARG,1, GRXF, NX )
+            CALL GETVID ( MOTCLF, 'FLUX_Y', IOCC,IARG,1, GRYF, NY )
+            CALL GETVID ( MOTCLF, 'FLUX_Z', IOCC,IARG,1, GRZF, NZ )
             DO 24 I = 1, 3
                ZK8(JVALV-1+I) = '&FOZERO'
  24         CONTINUE
@@ -118,7 +119,7 @@ C
             IF (NZ .NE. 0) ZK8(JVALV-1+3) = GRZF
          ENDIF
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
          IF ( NBTOU .NE. 0 ) THEN
             CALL NOCART (CARTE,1,' ','NOM',0,' ', 0,LIGRMO,3)
 C

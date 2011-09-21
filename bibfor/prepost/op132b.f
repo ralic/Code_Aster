@@ -1,6 +1,6 @@
       SUBROUTINE OP132B()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
       LOGICAL EXITIM,LBID,FNOEVO
+      INTEGER      IARG
 
 C     ------------------------------------------------------------------
       DATA INFCHA/'&&INFCHA.INFCHA'/
@@ -108,11 +109,11 @@ C
 C --- OPTIONS A CALCULER
 C
       CALL GETRES(RESUC1,TYPE,OPER)
-      CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,N0)
-      CALL GETVTX(' ','OPTION',1,1,0,OPTION,N2)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESUCO,N0)
+      CALL GETVTX(' ','OPTION',1,IARG,0,OPTION,N2)
       NBOPT=-N2
       CALL WKVECT('&&'//NOMPRO//'.OPTION','V V K16',NBOPT,JOPT)
-      CALL GETVTX(' ','OPTION',1,1,NBOPT,ZK16(JOPT),N2)
+      CALL GETVTX(' ','OPTION',1,IARG,NBOPT,ZK16(JOPT),N2)
 
 C
 
@@ -142,8 +143,8 @@ C              12   345678
       CALL JEVEUO(NORECG,'L',ADRECG)
 C=======================================================================
 
-      CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
-      CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+      CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
+      CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
 
 C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
       DO 260,NRPASS=1,NBPASS
@@ -272,7 +273,7 @@ C INFO. RELATIVE AUX CHARGES
             NBCHAR=0
             ICHAR=1
           ENDIF
-          CALL GETVID(' ','MODELE',1,1,1,MODELE,N0)
+          CALL GETVID(' ','MODELE',1,IARG,1,MODELE,N0)
           IF (N0.NE.0) THEN
             CALL EXLIMA(' ',0,'V',MODELE,LIGREL)
           ENDIF
@@ -285,8 +286,8 @@ C        POUR LES OPTIONS "XXXX_NOEU_XXXX
           NBMA=0
           JMAI=1
 C ------- MAILLES QUI PARTICIPENT A LA MOYENNE
-          CALL GETVTX(' ','MAILLE',1,1,0,K8BID,N0)
-          CALL GETVTX(' ','GROUP_MA',1,1,0,K8BID,N2)
+          CALL GETVTX(' ','MAILLE',1,IARG,0,K8BID,N0)
+          CALL GETVTX(' ','GROUP_MA',1,IARG,0,K8BID,N2)
           IF (N0+N2.NE.0) THEN
             DO 40 IOPT=1,NBOPT
               OPTION=ZK16(JOPT+IOPT-1)

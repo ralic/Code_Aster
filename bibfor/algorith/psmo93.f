@@ -3,7 +3,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 SOLVEU
       CHARACTER*24 MOAUNI,MOAIMP,DDLAC
       LOGICAL      ACCUNI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -69,9 +70,9 @@ C     ------------------------------------------------------------------
       CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMATM)
 
       DO 30 I = 1,NBPSMO
-         CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,K8B,NA)
+         CALL GETVTX('PSEUDO_MODE','AXE',I,IARG,0,K8B,NA)
          IF (NA.NE.0) NBMODA = NBMODA - NA
-         CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,0,R8B,ND)
+         CALL GETVR8('PSEUDO_MODE','DIRECTION',I,IARG,0,R8B,ND)
          IF (ND.NE.0) NBMODA = NBMODA + 1
   30    CONTINUE
 
@@ -90,13 +91,13 @@ C----------------------------------C
       DO 32 I = 1,NBPSMO
 
 C-- PSEUDO MODE AUTOUR D'UN AXE
-        CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,MONAXE,NA)
+        CALL GETVTX('PSEUDO_MODE','AXE',I,IARG,0,MONAXE,NA)
         IF (NA.NE.0) THEN
           NBACC = NBACC + 1
           NNAXE = -NA
           ACCUNI = .TRUE.
           CALL WKVECT('&&OP0093.AXE','V V K8',NNAXE,JAXE)
-          CALL GETVTX('PSEUDO_MODE','AXE',I,1,NNAXE,ZK8(JAXE),NA)
+          CALL GETVTX('PSEUDO_MODE','AXE',I,IARG,NNAXE,ZK8(JAXE),NA)
           DO 34 IA = 1,NNAXE
             MONAXE = ZK8(JAXE+IA-1)
             IF (MONAXE(1:1).EQ.'X') THEN
@@ -123,7 +124,7 @@ C-- PSEUDO MODE AUTOUR D'UN AXE
         ENDIF
 
 C-- PSEUDO MODE DANS UNE DIRECTION
-        CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,3,COEF,ND)
+        CALL GETVR8('PSEUDO_MODE','DIRECTION',I,IARG,3,COEF,ND)
         IF (ND.NE.0) THEN
           NBACC = NBACC + 1
           ACCUNI = .TRUE.

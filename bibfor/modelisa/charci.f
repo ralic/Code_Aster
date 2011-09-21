@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24  CINO, CNUDDL, CVLDDL, NPROL
       CHARACTER*80  TITRE
       LOGICAL       LXFEM
+      INTEGER      IARG
       DATA NPROL/'                   .PROL'/
 C --- DEBUT -----------------------------------------------------------
 C
@@ -100,9 +101,9 @@ C     ------------------------------------------------------------
       EVOIM=' '
       IF (NOC.EQ.0) THEN
         CALL ASSERT(MFAC.EQ.'MECA_IMPO'.OR.MFAC.EQ.'THER_IMPO')
-        CALL GETVID(' ','EVOL_IMPO',1,1,1,EVOIM,N1)
+        CALL GETVID(' ','EVOL_IMPO',1,IARG,1,EVOIM,N1)
         CALL ASSERT(N1.EQ.1)
-        CALL GETVTX(' ','NOM_CMP',1,1,20,LICMP,NLICMP)
+        CALL GETVTX(' ','NOM_CMP',1,IARG,20,LICMP,NLICMP)
         CALL ASSERT(NLICMP.GE.0)
 
         CALL GETTCO(EVOIM,TYPCO)
@@ -218,11 +219,14 @@ C ------- VERIFICATION DE LA COMPOSANTE SUR LES NOEUDS XFEM
           ENDIF
 C
           IF (TYPE.EQ.'R')
-     &             CALL GETVR8(MFAC,K16B,IOC,1,1, ZR(IDVDDL+NBDDL),ILA)
+     &             CALL GETVR8(MFAC,K16B,IOC,IARG,1,
+     &                         ZR(IDVDDL+NBDDL),ILA)
           IF (TYPE.EQ.'C')
-     &             CALL GETVC8(MFAC,K16B,IOC,1,1, ZC(IDVDDL+NBDDL),ILA)
+     &             CALL GETVC8(MFAC,K16B,IOC,IARG,1,
+     &                         ZC(IDVDDL+NBDDL),ILA)
           IF (TYPE.EQ.'F')
-     &             CALL GETVID(MFAC,K16B,IOC,1,1,ZK8(IDVDDL+NBDDL),ILA)
+     &             CALL GETVID(MFAC,K16B,IOC,IARG,1,
+     &                         ZK8(IDVDDL+NBDDL),ILA)
           NBDDL = NBDDL+1
  110    CONTINUE
 

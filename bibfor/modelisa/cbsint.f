@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  MOTCLF
       CHARACTER*19  CARTE
       CHARACTER*24  CHSIG
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -82,7 +83,7 @@ C
 C
              NCMP = 1
              ZK8(JNCMP-1+1) = 'Z1'
-             CALL GETVID ( MOTCLF, 'SIGM', 1,1,1, CHSIG, IBID )
+             CALL GETVID ( MOTCLF, 'SIGM', 1,IARG,1, CHSIG, IBID )
              ZK8(JVALV-1+1) = CHSIG
              CALL NOCART (CARTE, 1, ' ', 'NOM', 0, ' ',0, LIGRMO, NCMP)
 C

@@ -1,7 +1,7 @@
       SUBROUTINE OP0177()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C
       CHARACTER*38 TITRES
       CHARACTER*80 VALK
       CHARACTER*200 LIGN1,LIGN2
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C====
@@ -92,41 +93,41 @@ C
       ENDIF
       WRITE(IFIC,1000)
 C
-      CALL GETVID ( ' ', 'TABLE' ,1,1,1, TABLE0, N1 )
+      CALL GETVID ( ' ', 'TABLE' ,1,IARG,1, TABLE0, N1 )
 C
       CALL GETFAC ( 'FILTRE' , NPARFI )
 C
-      CALL GETVTX ( ' ', 'VALE_ABS' , 1,1,1, SSIGNE, N1 )
-      CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , N1 )
-      CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , N1 )
+      CALL GETVTX ( ' ', 'VALE_ABS' , 1,IARG,1, SSIGNE, N1 )
+      CALL GETVR8 ( ' ', 'PRECISION', 1,IARG,1, PREC  , N1 )
+      CALL GETVTX ( ' ', 'CRITERE'  , 1,IARG,1, CRIT  , N1 )
 C
-      CALL GETVR8(' ','VALE'    , 1,1,0,R8B   ,N1)
-      CALL GETVIS(' ','VALE_I'  , 1,1,0,IBID  ,N2)
-      CALL GETVC8(' ','VALE_C'  , 1,1,0,C16B  ,N3)
+      CALL GETVR8(' ','VALE'    , 1,IARG,0,R8B   ,N1)
+      CALL GETVIS(' ','VALE_I'  , 1,IARG,0,IBID  ,N2)
+      CALL GETVC8(' ','VALE_C'  , 1,IARG,0,C16B  ,N3)
       IF( N1 .NE. 0) THEN
         NREF=-N1
         TYPR = 'R'
         CALL JEDETR(TRAVR)
         CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
-        CALL GETVR8(' ','VALE', 1,1,NREF,ZR(IREFR),IRET)
+        CALL GETVR8(' ','VALE', 1,IARG,NREF,ZR(IREFR),IRET)
       ELSEIF( N2 .NE. 0) THEN
         NREF=-N2
         TYPR = 'I'
         CALL JEDETR(TRAVI)
         CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
-        CALL GETVIS(' ','VALE_I', 1,1,NREF,ZI(IREFI),IRET)
+        CALL GETVIS(' ','VALE_I', 1,IARG,NREF,ZI(IREFI),IRET)
       ELSEIF( N3 .NE. 0) THEN
         NREF=-N3
         TYPR = 'C'
         CALL JEDETR(TRAVC)
         CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
-        CALL GETVC8(' ','VALE_C', 1,1,NREF,ZC(IREFC),IRET)
+        CALL GETVC8(' ','VALE_C', 1,IARG,NREF,ZC(IREFC),IRET)
       ENDIF
 
 
-      CALL GETVTX ( ' ', 'NOM_PARA', 1,1,1, PARA, N1 )
+      CALL GETVTX ( ' ', 'NOM_PARA', 1,IARG,1, PARA, N1 )
 C
-      CALL GETVTX ( ' ', 'TYPE_TEST', 1,1,1, TYPTES, N1 )
+      CALL GETVTX ( ' ', 'TYPE_TEST', 1,IARG,1, TYPTES, N1 )
 C
 C=======================================================================
 C -- SENSIBILITE : NOMBRE DE PASSAGES

@@ -4,7 +4,7 @@
       INTEGER NBNOCH
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C-----  FIN  COMMUNS NORMALISES  JEVEUX -------------------------------
       INTEGER I,ICH,IVAL,NB,NBCMP
       CHARACTER*8 CMP(1000)
       CHARACTER*16 BLANC,NOCHAM,NOIDEA
+      INTEGER      IARG
       DATA BLANC/'                '/
 
       CALL JEMARQ()
@@ -96,38 +97,43 @@ C--------------------------------------------------------------------
         DO 90 ICH = 1,NBNOCH
 
           DO 80 IOCC = 1,NBOCC
-            CALL GETVTX('FORMAT_IDEAS','NOM_CHAM',IOCC,1,1,NOCHAM,NCH)
+            CALL GETVTX('FORMAT_IDEAS','NOM_CHAM',IOCC,IARG,1,
+     &                  NOCHAM,NCH)
             IF (NOCHAM.EQ.LINOCH(ICH)) THEN
 C- NOM_CHAM
               ZK16(LFINOM-1+ICH) = LINOCH(ICH)
 C- NUME_DATASET
-              CALL GETVIS('FORMAT_IDEAS','NUME_DATASET',IOCC,1,1,IVAL,
+              CALL GETVIS('FORMAT_IDEAS','NUME_DATASET',IOCC,IARG,1,
+     &                    IVAL,
      &                    NVAL)
               IF (NVAL.NE.0) THEN
                 ZI(LFINUM-1+ICH) = IVAL
               END IF
 C- RECORD 3
-              CALL GETVIS('FORMAT_IDEAS','RECORD_3',IOCC,1,0,REC,NB)
+              CALL GETVIS('FORMAT_IDEAS','RECORD_3',IOCC,IARG,0,REC,NB)
               NVAL = -NB
-              CALL GETVIS('FORMAT_IDEAS','RECORD_3',IOCC,1,NVAL,REC,NB)
+              CALL GETVIS('FORMAT_IDEAS','RECORD_3',IOCC,IARG,NVAL,
+     &                    REC,NB)
               IF (NVAL.NE.0) THEN
                 DO 40 I = 1,NVAL
                   ZI(LFIPAR-1+ (ICH-1)*800+80+I) = REC(I)
    40           CONTINUE
               END IF
 C- RECORD 6
-              CALL GETVIS('FORMAT_IDEAS','RECORD_6',IOCC,1,0,REC,NB)
+              CALL GETVIS('FORMAT_IDEAS','RECORD_6',IOCC,IARG,0,REC,NB)
               NVAL = -NB
-              CALL GETVIS('FORMAT_IDEAS','RECORD_6',IOCC,1,NVAL,REC,NB)
+              CALL GETVIS('FORMAT_IDEAS','RECORD_6',IOCC,IARG,NVAL,
+     &                    REC,NB)
               IF (NVAL.NE.0) THEN
                 DO 50 I = 1,NVAL
                   ZI(LFIPAR-1+ (ICH-1)*800+200+I) = REC(I)
    50           CONTINUE
               END IF
 C- RECORD 9
-              CALL GETVIS('FORMAT_IDEAS','RECORD_9',IOCC,1,0,REC,NB)
+              CALL GETVIS('FORMAT_IDEAS','RECORD_9',IOCC,IARG,0,REC,NB)
               NVAL = -NB
-              CALL GETVIS('FORMAT_IDEAS','RECORD_9',IOCC,1,NVAL,REC,NB)
+              CALL GETVIS('FORMAT_IDEAS','RECORD_9',IOCC,IARG,NVAL,
+     &                    REC,NB)
               IF (NVAL.NE.0) THEN
                 DO 60 I = 1,NVAL
                   ZI(LFIPAR-1+ (ICH-1)*800+320+I) = REC(I)
@@ -135,40 +141,40 @@ C- RECORD 9
               END IF
 C- POSI_ORDRE
               PARAM='POSI_ORDRE'
-              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
+              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,IARG,2,POSI,NPOSI)
               ZI(LFILOC-1+ (ICH-1)*12+1) = POSI(1)
               ZI(LFILOC-1+ (ICH-1)*12+2) = POSI(2)
 C- POSI_INST
               PARAM='POSI_INST'
-              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
+              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,IARG,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
                 ZI(LFILOC-1+ (ICH-1)*12+3) = POSI(1)
                 ZI(LFILOC-1+ (ICH-1)*12+4) = POSI(2)
               END IF
 C- POSI_FREQ
               PARAM='POSI_FREQ'
-              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
+              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,IARG,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
                 ZI(LFILOC-1+ (ICH-1)*12+5) = POSI(1)
                 ZI(LFILOC-1+ (ICH-1)*12+6) = POSI(2)
               END IF
 C- POSI_NUME_MODE
               PARAM='POSI_NUME_MODE'
-              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
+              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,IARG,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
                 ZI(LFILOC-1+ (ICH-1)*12+7) = POSI(1)
                 ZI(LFILOC-1+ (ICH-1)*12+8) = POSI(2)
               END IF
 C- POSI_MASS_GENE
               PARAM='POSI_MASS_GENE'
-              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
+              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,IARG,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
                 ZI(LFILOC-1+ (ICH-1)*12+9) = POSI(1)
                 ZI(LFILOC-1+ (ICH-1)*12+10) = POSI(2)
               END IF
 C- POSI_AMOR_GENE
               PARAM='POSI_AMOR_GENE'
-              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
+              CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,IARG,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
                 ZI(LFILOC-1+ (ICH-1)*12+11) = POSI(1)
                 ZI(LFILOC-1+ (ICH-1)*12+12) = POSI(2)
@@ -176,9 +182,10 @@ C- POSI_AMOR_GENE
 
 
 C- CMP ET NOMBRE DE COMPOSANTES
-              CALL GETVTX('FORMAT_IDEAS','NOM_CMP',IOCC,1,0,CMP,NB)
+              CALL GETVTX('FORMAT_IDEAS','NOM_CMP',IOCC,IARG,0,CMP,NB)
               NBCMP = -NB
-              CALL GETVTX('FORMAT_IDEAS','NOM_CMP',IOCC,1,NBCMP,CMP,NB)
+              CALL GETVTX('FORMAT_IDEAS','NOM_CMP',IOCC,IARG,NBCMP,
+     &                    CMP,NB)
               IF (NB.NE.0) THEN
                 DO 70 I = 1,NBCMP
                   ZK8(LFICMP-1+ (ICH-1)*1000+I) = CMP(I)

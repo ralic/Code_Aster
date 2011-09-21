@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C
       CHARACTER*8   K8B, MA, MA2, NOMG
       CHARACTER*16  NOMCMD, TYPCON
       CHARACTER*24  GRPMAI, GRPNOE, GRPMAV, GRPNOV
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -53,7 +54,7 @@ C
       CALL INFMAJ()
 C
       CALL GETRES ( MA2, TYPCON, NOMCMD )
-      CALL GETVID(' ','MAILLAGE',1,1,1,MA,N1)
+      CALL GETVID(' ','MAILLAGE',1,IARG,1,MA,N1)
       IF ( MA .NE. MA2 ) THEN
        CALL U2MESS('F','SOUSTRUC_15')
       ENDIF
@@ -108,14 +109,14 @@ C
       CALL GETFAC ( 'CREA_GROUP_NO' , NBOCC )
       NBGRNO = 0
       DO 10 IOCC = 1 , NBOCC
-         CALL GETVTX('CREA_GROUP_NO','TOUT_GROUP_MA',IOCC,1,0,K8B,N1)
+         CALL GETVTX('CREA_GROUP_NO','TOUT_GROUP_MA',IOCC,IARG,0,K8B,N1)
          IF ( N1 .NE. 0 ) THEN
             CALL JELIRA(GRPMAI,'NMAXOC',NBGMA,K8B)
             NBGRNO = NBGRNO + NBGMA
             GOTO 10
          ENDIF
          CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_NO','GROUP_MA',
-     &                   IOCC,1,0,K8B,N2)
+     &                   IOCC,IARG,0,K8B,N2)
          IF ( N2 .NE. 0 ) THEN
             NBGRNO = NBGRNO - N2
             GOTO 10

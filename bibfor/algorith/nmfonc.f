@@ -3,7 +3,7 @@
      &                  SDDYNA,MATE  ,COMPOZ,RESULT,FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,7 @@ C
       INTEGER      JSENSN  
       LOGICAL      ISFONC,LSTAT,LDYNA,LGROT,LENDO
       INTEGER      IFM,NIV 
+      INTEGER      IARG
 C      
 C ----------------------------------------------------------------------
 C      
@@ -356,7 +357,7 @@ C
 C --- ERREUR EN TEMPS
 C
       IF (LSTAT) THEN
-        CALL GETVTX( 'INCREMENT','ERRE_TEMPS',1,1,1,CHAINE,NOCC)
+        CALL GETVTX( 'INCREMENT','ERRE_TEMPS',1,IARG,1,CHAINE,NOCC)
         IF (CHAINE.EQ.'OUI') THEN
           FONACT(21) = 1
         ENDIF

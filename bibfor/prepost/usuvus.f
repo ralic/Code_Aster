@@ -3,9 +3,9 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,10 +34,11 @@ C-----------------------------------------------------------------------
       REAL*8       VUSUR(*), TEMPS(*), PARA(7), FN(*), VG(*)
       CHARACTER*8  K8B
       CHARACTER*24 LOI, MATE
+      INTEGER      IARG
 C
       IFIRES = IUNIFI('RESULTAT')
 C
-      CALL GETVTX(' ','LOI_USURE',0,1,1,LOI,N1)
+      CALL GETVTX(' ','LOI_USURE',0,IARG,1,LOI,N1)
       IRET = 0
       K8B=' '
 C
@@ -48,19 +49,19 @@ C
       IF ( LOI(1:7) .EQ. 'ARCHARD' ) THEN
          IF ( ISUPP .EQ. 1 ) THEN
             WRITE(IFIRES,1000)
-            CALL GETVR8('MOBILE','COEF_USURE',1,1,1,XK,N1)
+            CALL GETVR8('MOBILE','COEF_USURE',1,IARG,1,XK,N1)
             IF ( N1 .EQ. 0 ) THEN
-               CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N2)
+               CALL GETVTX(' ','MATER_USURE',0,IARG,1,MATE,N2)
                CALL USUBAN( MATE, ISUPP, PARA, IRET )
                XK = PARA(1)
             ENDIF
             WRITE(IFIRES,2100)
          ELSEIF ( ISUPP .EQ. 2 ) THEN
-            CALL GETVR8('OBSTACLE','COEF_USURE',1,1,1,XK,N1)
+            CALL GETVR8('OBSTACLE','COEF_USURE',1,IARG,1,XK,N1)
             IF ( N1 .EQ. 0 ) THEN
-               CALL GETVTX(' ','USURE_OBST',0,1,1,K8B,N2)
+               CALL GETVTX(' ','USURE_OBST',0,IARG,1,K8B,N2)
                IF ( K8B(1:3) .EQ. 'OUI' ) THEN
-                  CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N3)
+                  CALL GETVTX(' ','MATER_USURE',0,IARG,1,MATE,N3)
                   CALL USUBAN ( MATE, ISUPP, PARA, IRET )
                   XK = PARA(1)
                ELSE
@@ -82,29 +83,29 @@ C
       ELSEIF ( LOI(1:8) .EQ. 'KWU_EPRI' ) THEN
          IF ( ISUPP .EQ. 1 ) THEN
             WRITE(IFIRES,1010)
-            CALL GETVR8('MOBILE','COEF_USURE',1,1,1,PARA(1),N1)
-            CALL GETVR8('MOBILE','COEF_FNOR' ,1,1,1,PARA(2),N2)
-            CALL GETVR8('MOBILE','COEF_VTAN' ,1,1,1,PARA(3),N3)
-            CALL GETVR8('MOBILE','COEF_K'    ,1,1,1,PARA(4),N4)
-            CALL GETVR8('MOBILE','COEF_C'    ,1,1,1,PARA(5),N5)
+            CALL GETVR8('MOBILE','COEF_USURE',1,IARG,1,PARA(1),N1)
+            CALL GETVR8('MOBILE','COEF_FNOR' ,1,IARG,1,PARA(2),N2)
+            CALL GETVR8('MOBILE','COEF_VTAN' ,1,IARG,1,PARA(3),N3)
+            CALL GETVR8('MOBILE','COEF_K'    ,1,IARG,1,PARA(4),N4)
+            CALL GETVR8('MOBILE','COEF_C'    ,1,IARG,1,PARA(5),N5)
             IF ( N4 .EQ. 0 ) PARA(4) =  5.D0
             IF ( N5 .EQ. 0 ) PARA(5) = 10.D0
-            CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N6)
+            CALL GETVTX(' ','MATER_USURE',0,IARG,1,MATE,N6)
             IF ( N6 .NE. 0 ) THEN
                CALL USUBAN( MATE, ISUPP, PARA, IRET )
             ENDIF
             WRITE(IFIRES,2100)
          ELSEIF ( ISUPP .EQ. 2 ) THEN
-            CALL GETVR8('OBSTACLE','COEF_USURE',1,1,1,PARA(1),N1)
-            CALL GETVR8('OBSTACLE','COEF_FNOR' ,1,1,1,PARA(2),N2)
-            CALL GETVR8('OBSTACLE','COEF_VTAN' ,1,1,1,PARA(3),N3)
-            CALL GETVR8('OBSTACLE','COEF_K'    ,1,1,1,PARA(4),N4)
-            CALL GETVR8('OBSTACLE','COEF_C'    ,1,1,1,PARA(5),N5)
+            CALL GETVR8('OBSTACLE','COEF_USURE',1,IARG,1,PARA(1),N1)
+            CALL GETVR8('OBSTACLE','COEF_FNOR' ,1,IARG,1,PARA(2),N2)
+            CALL GETVR8('OBSTACLE','COEF_VTAN' ,1,IARG,1,PARA(3),N3)
+            CALL GETVR8('OBSTACLE','COEF_K'    ,1,IARG,1,PARA(4),N4)
+            CALL GETVR8('OBSTACLE','COEF_C'    ,1,IARG,1,PARA(5),N5)
             IF ( N4 .EQ. 0 ) PARA(4) =  5.D0
             IF ( N5 .EQ. 0 ) PARA(5) = 10.D0
-            CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N6)
+            CALL GETVTX(' ','MATER_USURE',0,IARG,1,MATE,N6)
             IF ( N6 .NE. 0 ) THEN
-               CALL GETVTX(' ','USURE_OBST',0,1,1,K8B,N2)
+               CALL GETVTX(' ','USURE_OBST',0,IARG,1,K8B,N2)
                IF ( K8B(1:3) .EQ. 'OUI' ) THEN
                   CALL USUBAN( MATE, ISUPP, PARA, IRET )
                ELSE
@@ -139,15 +140,15 @@ C
       ELSEIF ( LOI(1:6) .EQ. 'EDF_MZ' ) THEN
          IF ( ISUPP .EQ. 1 ) THEN
            WRITE(IFIRES,1020)
-           CALL GETVR8('MOBILE','COEF_S'     ,1,1,1,XS,N1)
-           CALL GETVR8('MOBILE','COEF_B'     ,1,1,1,XB,N2)
-           CALL GETVR8('MOBILE','COEF_N'     ,1,1,1,XN,N3)
-           CALL GETVR8('MOBILE','COEF_USURE' ,1,1,1,XA,N4)
+           CALL GETVR8('MOBILE','COEF_S'     ,1,IARG,1,XS,N1)
+           CALL GETVR8('MOBILE','COEF_B'     ,1,IARG,1,XB,N2)
+           CALL GETVR8('MOBILE','COEF_N'     ,1,IARG,1,XN,N3)
+           CALL GETVR8('MOBILE','COEF_USURE' ,1,IARG,1,XA,N4)
            IF ( N1 .EQ. 0 ) XS = 1.14D-16
            IF ( N2 .EQ. 0 ) XB = 1.2D0
            IF ( N3 .EQ. 0 ) XN = 2.44D-08
            IF ( N4 .EQ. 0 ) XA = 1.D-13
-           CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N5)
+           CALL GETVTX(' ','MATER_USURE',0,IARG,1,MATE,N5)
            IF ( N5 .NE. 0 ) THEN
               CALL USUBAN ( MATE, ISUPP, PARA, IRET )
               XS = PARA(1)
@@ -157,17 +158,17 @@ C
            ENDIF
            WRITE(IFIRES,2100)
          ELSEIF ( ISUPP .EQ. 2 ) THEN
-           CALL GETVR8('OBSTACLE','COEF_S'     ,1,1,1,XS,N1)
-           CALL GETVR8('OBSTACLE','COEF_B'     ,1,1,1,XB,N2)
-           CALL GETVR8('OBSTACLE','COEF_N'     ,1,1,1,XN,N3)
-           CALL GETVR8('OBSTACLE','COEF_USURE' ,1,1,1,XA,N4)
+           CALL GETVR8('OBSTACLE','COEF_S'     ,1,IARG,1,XS,N1)
+           CALL GETVR8('OBSTACLE','COEF_B'     ,1,IARG,1,XB,N2)
+           CALL GETVR8('OBSTACLE','COEF_N'     ,1,IARG,1,XN,N3)
+           CALL GETVR8('OBSTACLE','COEF_USURE' ,1,IARG,1,XA,N4)
            IF ( N1 .EQ. 0 ) XS = 1.14D-16
            IF ( N2 .EQ. 0 ) XB = 1.2D0
            IF ( N3 .EQ. 0 ) XN = 2.44D-08
            IF ( N4 .EQ. 0 ) XA = 1.D-13
-           CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N5)
+           CALL GETVTX(' ','MATER_USURE',0,IARG,1,MATE,N5)
            IF ( N5 .NE. 0 ) THEN
-              CALL GETVTX(' ','USURE_OBST',0,1,1,K8B,N6)
+              CALL GETVTX(' ','USURE_OBST',0,IARG,1,K8B,N6)
               IF ( K8B(1:3) .EQ. 'OUI' ) THEN
                  CALL USUBAN ( MATE, ISUPP, PARA, IRET )
                  XS = PARA(2)

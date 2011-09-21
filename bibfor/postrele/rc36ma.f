@@ -3,7 +3,7 @@
       CHARACTER*8 NOMMAT,NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,6 +82,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16 PHENOM,MOTCL1,MOTCL2
       CHARACTER*19 CHNMAT,CHSMAT,CHSMA2
       CHARACTER*24 CHMATA,CHMATB
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -92,7 +93,7 @@ C DEB ------------------------------------------------------------------
       NDIM = NBSITU + NBSEIS
 
 C    RECUP TYPE KE
-      CALL GETVTX ( ' ', 'TYPE_KE', 0,1,1, TYPEKE, NB )
+      CALL GETVTX ( ' ', 'TYPE_KE', 0,IARG,1, TYPEKE, NB )
       IF (TYPEKE.EQ.'KE_MECA')THEN
          TKE=-1.D0
       ELSE
@@ -159,7 +160,7 @@ C        ------------------
 
         NBPA = 1
         NOPA = 'TEMP'
-        CALL GETVR8(MOTCL1,'TEMP_REF_A',IOCC,1,1,TEMPA,NA)
+        CALL GETVR8(MOTCL1,'TEMP_REF_A',IOCC,IARG,1,TEMPA,NA)
 
 C ------ ETAT STABILISE "B"
 C        ------------------
@@ -176,7 +177,7 @@ C        ------------------
 
         NBPB = 1
         NOPB = 'TEMP'
-        CALL GETVR8(MOTCL1,'TEMP_REF_B',IOCC,1,1,TEMPB,NB)
+        CALL GETVR8(MOTCL1,'TEMP_REF_B',IOCC,IARG,1,TEMPB,NB)
 
         DO 50 IM = 1,NBMAIL
 
@@ -301,7 +302,7 @@ C        ------------------
 
         NBPA = 1
         NOPA = 'TEMP'
-        CALL GETVR8(MOTCL2,'TEMP_REF',IOCC,1,1,TEMPA,NA)
+        CALL GETVR8(MOTCL2,'TEMP_REF',IOCC,IARG,1,TEMPA,NA)
 
 C ------ ETAT STABILISE "B"
 C        ------------------
@@ -318,7 +319,7 @@ C        ------------------
 
         NBPB = 1
         NOPB = 'TEMP'
-        CALL GETVR8(MOTCL2,'TEMP_REF',IOCC,1,1,TEMPB,NB)
+        CALL GETVR8(MOTCL2,'TEMP_REF',IOCC,IARG,1,TEMPB,NB)
 
         DO 150 IM = 1,NBMAIL
 

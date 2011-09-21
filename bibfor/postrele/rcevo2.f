@@ -9,7 +9,7 @@
      +               CSTEX, CSMEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ C
       CHARACTER*19 NOMF
       CHARACTER*24 INSTAN, ABSCUR
       CHARACTER*24 VALK(7)
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -97,18 +98,21 @@ C
       DO 10, IOCC = 1, NBTRAN, 1
         CFAIT  = .FALSE.
 C
-        CALL GETVID ( MOTCLF, 'TABL_RESU_MECA', IOCC,1,1, TABL0 , N1 )
-        CALL GETVID ( MOTCLF, 'TABL_SIGM_THER', IOCC,1,1, TABFL0, N1 )
+        CALL GETVID (MOTCLF,'TABL_RESU_MECA',IOCC,IARG,1,
+     &               TABL0 , N1 )
+        CALL GETVID (MOTCLF,'TABL_SIGM_THER',IOCC,IARG,1,
+     &               TABFL0, N1 )
         IF ( N1 .NE. 0 )  FLEXIO = .TRUE.
-        CALL GETVID ( MOTCLF, 'TABL_RESU_PRES', IOCC,1,1, TABPR0, N1 )
+        CALL GETVID (MOTCLF,'TABL_RESU_PRES',IOCC,IARG,1,
+     &               TABPR0, N1 )
         IF ( N1 .NE. 0 )  LROCHT = .TRUE.
 C
         NBINS0 = 0
-        CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,0, R8B, N1 )
+        CALL GETVR8 ( MOTCLF, 'INST', IOCC,IARG,0, R8B, N1 )
         IF ( N1 .NE. 0 ) THEN
            NBINS0 = -N1
         ELSE
-           CALL GETVID ( MOTCLF, 'LIST_INST', IOCC,1,1, NOMF, N1 )
+           CALL GETVID ( MOTCLF, 'LIST_INST', IOCC,IARG,1, NOMF, N1 )
            IF ( N1 .NE. 0 ) THEN
               CALL JELIRA ( NOMF//'.VALE', 'LONMAX', NBINS0, K8B )
            ELSE
@@ -311,15 +315,17 @@ C
       II = 0
       DO 100, IOCC = 1, NBTRAN, 1
 C
-        CALL GETVIS ( MOTCLF, 'NB_OCCUR', IOCC,1,1, NBCYCL, N1 )
+        CALL GETVIS ( MOTCLF, 'NB_OCCUR', IOCC,IARG,1, NBCYCL, N1 )
 C
-        CALL GETVID ( MOTCLF, 'TABL_RESU_MECA', IOCC,1,1, TABL0, N1 )
+        CALL GETVID ( MOTCLF, 'TABL_RESU_MECA', IOCC,IARG,1, TABL0, N1 )
 C
         FLEXII = .FALSE.
-        CALL GETVID ( MOTCLF, 'TABL_SIGM_THER', IOCC,1,1, TABFL0, N1 )
+        CALL GETVID (MOTCLF,'TABL_SIGM_THER',IOCC,IARG,1,
+     &               TABFL0, N1 )
         IF (N1.NE.0) FLEXII = .TRUE.
 C
-        CALL GETVID ( MOTCLF, 'TABL_RESU_PRES', IOCC,1,1, TABPR0, N1 )
+        CALL GETVID (MOTCLF,'TABL_RESU_PRES',IOCC,IARG,1,
+     &               TABPR0, N1 )
         IF (N1.NE.0) THEN
            LROCHT = .TRUE.
            ZK8(JRESP-1+IOCC) = TABPR0
@@ -374,20 +380,22 @@ C
 C
 C ----- ON RECUPERE LES INSTANTS DANS LA TABLE
 C
-        CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,0, R8B, N1 )
+        CALL GETVR8 ( MOTCLF, 'INST', IOCC,IARG,0, R8B, N1 )
         IF ( N1 .NE. 0 ) THEN
           NBINS0 = -N1
           CALL WKVECT ( INSTAN, 'V V R', NBINS0, KINST )
-          CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,NBINS0, ZR(KINST), N1)
-          CALL GETVR8 ( MOTCLF, 'PRECISION', IOCC,1,1, PREC(1), N1 )
-          CALL GETVTX ( MOTCLF, 'CRITERE'  , IOCC,1,1, CRIT(1), N1 )
+          CALL GETVR8 ( MOTCLF, 'INST', IOCC,IARG,NBINS0, ZR(KINST), N1)
+          CALL GETVR8 ( MOTCLF, 'PRECISION', IOCC,IARG,1, PREC(1), N1 )
+          CALL GETVTX ( MOTCLF, 'CRITERE'  , IOCC,IARG,1, CRIT(1), N1 )
         ELSE
-          CALL GETVID ( MOTCLF, 'LIST_INST', IOCC,1,1, NOMF, N1 )
+          CALL GETVID ( MOTCLF, 'LIST_INST', IOCC,IARG,1, NOMF, N1 )
           IF ( N1 .NE. 0 ) THEN
             CALL JELIRA ( NOMF//'.VALE', 'LONMAX', NBINS0, K8B )
             CALL JEVEUO ( NOMF//'.VALE', 'L', KINST )
-            CALL GETVR8 ( MOTCLF, 'PRECISION', IOCC,1,1, PREC(1), N1 )
-            CALL GETVTX ( MOTCLF, 'CRITERE'  , IOCC,1,1, CRIT(1), N1 )
+            CALL GETVR8 (MOTCLF,'PRECISION',IOCC,IARG,1,
+     &                   PREC(1), N1 )
+            CALL GETVTX (MOTCLF,'CRITERE',IOCC,IARG,1,
+     &                   CRIT(1), N1 )
           ELSE
             PREC(1) = 1.0D-06
             CRIT(1) = 'RELATIF'

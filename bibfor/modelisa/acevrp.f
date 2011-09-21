@@ -4,9 +4,9 @@
       CHARACTER*8  NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,6 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 MAGRMA, MANOMA
       CHARACTER*8  K8B
+      INTEGER      IARG
       CALL JEMARQ()
       NBGRMX = 0
       MAGRMA = NOMA//'.GROUPEMA'
@@ -55,7 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DO 10 IOC = 1,NBOCC
 C        --- ON RECUPERE UNE LISTE DE GROUP_MA ---
        CALL GETVEM(NOMA,'GROUP_MA','RIGI_PARASOL','GROUP_MA',
-     +                IOC,1,0,K8B,NBGR)
+     +                IOC,IARG,0,K8B,NBGR)
        NBGR = -NBGR
        NBGRMX = MAX(NBGRMX,NBGR)
  10   CONTINUE
@@ -65,10 +66,10 @@ C        --- ON RECUPERE UNE LISTE DE GROUP_MA ---
       DO 11 IOC = 1,NBOCC
        NOEMA2 = 0
        CALL GETVEM(NOMA,'GROUP_MA','RIGI_PARASOL','GROUP_MA',
-     +                IOC,1,0,K8B,NBGR)
+     +                IOC,IARG,0,K8B,NBGR)
        NBGR = -NBGR
        CALL GETVEM(NOMA,'GROUP_MA','RIGI_PARASOL','GROUP_MA',
-     +                IOC,1,NBGR,ZK8(IDGM),NBV)
+     +                IOC,IARG,NBGR,ZK8(IDGM),NBV)
 C
 C        --- ON ECLATE LES GROUP_MA ---
        DO 20 I = 1,NBGR

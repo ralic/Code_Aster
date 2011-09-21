@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       CHARACTER*19       NOOBRC
       CHARACTER*24       VALK(4)
       CHARACTER*1        K1BID
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -69,7 +70,7 @@ C
 C
       MATIN = ' '
       NBMATI = 0
-      CALL GETVID ( ' ', 'MATER', 1,1,1, MATIN, N1 )
+      CALL GETVID ( ' ', 'MATER', 1,IARG,1, MATIN, N1 )
       IF ( N1 .NE. 0 ) THEN
 C
 C ------ ON VERIFIE QUE L'ON A QUE DES NOUVEAUX MATERIAUX

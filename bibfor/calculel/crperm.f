@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C
       CHARACTER*19   PRCHNO
       CHARACTER*24   CH1, CH2, CHS1, CHS2, LINOEU,
      &               LIMA1, LIMA2, LIGREL, CHSI1(4), CHSI2(4)
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -64,15 +65,15 @@ C
 C --- RECUPERATION DES DONNEES UTILISATEUR :
 C     ------------------------------------
 C
-      CALL GETVID ( ' ', 'RESU_INIT'    , 1,1,1, RESU1, N1 )
-      CALL GETVR8 ( ' ', 'INST_INIT'    , 1,1,1, INST1, N1 )
+      CALL GETVID ( ' ', 'RESU_INIT'    , 1,IARG,1, RESU1, N1 )
+      CALL GETVR8 ( ' ', 'INST_INIT'    , 1,IARG,1, INST1, N1 )
       IF ( N1 .EQ. 0 ) THEN
          CALL JELIRA ( RESU1//'           .ORDR', 'LONUTI', IBID, K8B)
          CALL JEVEUO ( RESU1//'           .ORDR', 'L', JORDR )
          IORD1 = ZI(JORDR+IBID-1)
       ELSE
-         CALL GETVR8 ( ' ', 'PRECISION' , 1,1,1, PREC, N1)
-         CALL GETVTX ( ' ', 'CRITERE'   , 1,1,1, CRIT, N1)
+         CALL GETVR8 ( ' ', 'PRECISION' , 1,IARG,1, PREC, N1)
+         CALL GETVTX ( ' ', 'CRITERE'   , 1,IARG,1, CRIT, N1)
          CALL RSORAC ( RESU1, 'INST', IBID, INST1, K8B, CBID, PREC,
      &                 CRIT, IORD1, 1, NBTROU )
          IF ( NBTROU .EQ. 0 ) THEN
@@ -84,10 +85,10 @@ C
             CALL U2MESG('F', 'CALCULEL5_71',0,' ',0,0,1,VALR)
          ENDIF
       ENDIF
-      CALL GETVID ( ' ', 'MAILLAGE_INIT'  , 1,1,1, MA1  , N1 )
-      CALL GETVID ( ' ', 'RESU_FINAL'     , 1,1,1, RESU2, N1 )
-      CALL GETVID ( ' ', 'MAILLAGE_FINAL' , 1,1,1, MA2  , N1 )
-      CALL GETVTX ( ' ', 'NOM_CHAM'       , 1,1,0, K8B  , N1 )
+      CALL GETVID ( ' ', 'MAILLAGE_INIT'  , 1,IARG,1, MA1  , N1 )
+      CALL GETVID ( ' ', 'RESU_FINAL'     , 1,IARG,1, RESU2, N1 )
+      CALL GETVID ( ' ', 'MAILLAGE_FINAL' , 1,IARG,1, MA2  , N1 )
+      CALL GETVTX ( ' ', 'NOM_CHAM'       , 1,IARG,0, K8B  , N1 )
       IF ( N1 .EQ. 0 ) THEN
          NBCHAM = 3
          CHAM(1) = 'DEPL'
@@ -95,7 +96,7 @@ C
          CHAM(3) = 'VARI_ELGA'
       ELSE
          NBCHAM = -N1
-         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,NBCHAM, CHAM, N1 )
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,NBCHAM, CHAM, N1 )
 
       ENDIF
 C
@@ -179,12 +180,12 @@ C
       DO 10 IP = 1 , NBPERM
 C
          CALL GETVEM ( MA1, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_INIT',
-     &                 IP,1,1, GMA1, N1 )
+     &                 IP,IARG,1, GMA1, N1 )
          CALL GETVEM ( MA2, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_FINAL',
-     &                 IP,1,1, GMA2, N1 )
+     &                 IP,IARG,1, GMA2, N1 )
 C
-         CALL GETVR8 ( 'PERM_CHAM', 'TRAN'      , IP,1,3, TRAN, N1)
-         CALL GETVR8 ( 'PERM_CHAM', 'PRECISION' , IP,1,1, PREC, N1)
+         CALL GETVR8 ( 'PERM_CHAM', 'TRAN'      , IP,IARG,3, TRAN, N1)
+         CALL GETVR8 ( 'PERM_CHAM', 'PRECISION' , IP,IARG,1, PREC, N1)
 C
 C ------ VERIFICATION DES GROUPES DE MAILLES FOURNIES :
 C        --------------------------------------------

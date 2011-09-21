@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       LOGICAL EXITIM
       COMPLEX*16 C16B,CALPHA
+      INTEGER      IARG
 
       DATA NOPARR/'NUME_ORDRE','INST','LIEU','ENTITE','TOTALE',
      &     'POUR_CENT'/
@@ -85,12 +86,12 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CALPHA = (1.D0,1.D0)
       CHTEMP= ' '
 
-      CALL GETVID(' ','CHAM_GD',1,1,1,DEPLA,ND)
+      CALL GETVID(' ','CHAM_GD',1,IARG,1,DEPLA,ND)
       IF(ND.NE.0)THEN
           CALL CHPVE2(DEPLA,3,TABTYP,IER)
       ENDIF
-      CALL GETVID(' ','RESULTAT',1,1,1,RESUL,NR)
-      CALL GETVR8(' ','INST',1,1,1,INST,NI)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESUL,NR)
+      CALL GETVR8(' ','INST',1,IARG,1,INST,NI)
       IF (NI.NE.0) EXITIM = .TRUE.
       IF (NR.NE.0) THEN
         CALL GETTCO(RESUL,TYPRES)
@@ -132,8 +133,8 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
         CALL TBCRSD(RESU,'G')
         CALL TBAJPA(RESU,NBPARD,NOPARD,TYPARD)
       ELSE
-        CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
-        CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+        CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
+        CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
         CALL RSUTNU(RESUL,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
         IF (IRET.NE.0) GO TO 80
         CALL JEVEUO(KNUM,'L',JORD)
@@ -226,10 +227,12 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
         CALL PEENCA(CHELEM,NBPAEP,VARPEP,0,IBID)
 
         DO 60 IOCC = 1,NBOCC
-          CALL GETVTX(OPTION(1:9),'TOUT',IOCC,1,0,K8B,NT)
-          CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,1,0,K8B,
+          CALL GETVTX(OPTION(1:9),'TOUT',IOCC,IARG,0,K8B,NT)
+          CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,IARG,0,
+     &                K8B,
      &                NM)
-          CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,1,0,
+          CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,IARG,
+     &                0,
      &                K8B,NG)
           IF (NT.NE.0) THEN
             CALL PEENCA(CHELEM,NBPAEP,VARPEP,0,IBID)
@@ -246,7 +249,8 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
           IF (NG.NE.0) THEN
             NBGRMA = -NG
             CALL WKVECT('&&PEEPOT_GROUPM','V V K8',NBGRMA,JGR)
-            CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,1,
+            CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,
+     &                  IARG,
      &                  NBGRMA,ZK8(JGR),NG)
             VALEK(2) = 'GROUP_MA'
             DO 40 IG = 1,NBGRMA
@@ -279,7 +283,8 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
           IF (NM.NE.0) THEN
             NBMA = -NM
             CALL WKVECT('&&PEEPOT_MAILLE','V V K8',NBMA,JMA)
-            CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,1,NBMA,
+            CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,IARG,
+     &                  NBMA,
      &                  ZK8(JMA),NM)
             VALEK(2) = 'MAILLE'
             DO 50 IM = 1,NBMA

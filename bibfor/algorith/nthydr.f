@@ -3,9 +3,9 @@
       LOGICAL             HYDRAT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/99   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -23,6 +23,7 @@ C ======================================================================
 C ----------------------------------------------------------------------
       INTEGER       NBOCC, N1, I
       CHARACTER*16  COMP
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       HYDRAT = .FALSE.
@@ -31,7 +32,7 @@ C
 C
       DO 10 I = 1 , NBOCC
 C
-         CALL GETVTX ( 'COMP_THER_NL' , 'RELATION', I,1,1, COMP, N1 )
+         CALL GETVTX ( 'COMP_THER_NL' , 'RELATION', I,IARG,1, COMP, N1 )
 C
          IF ( COMP(1:9) .EQ. 'THER_HYDR' ) HYDRAT = .TRUE.
 C

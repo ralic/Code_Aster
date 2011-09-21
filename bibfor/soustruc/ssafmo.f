@@ -1,6 +1,6 @@
       SUBROUTINE SSAFMO(MO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
+      INTEGER      IARG
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C
 C
@@ -78,7 +79,7 @@ C
 C
 C     -- CAS : TOUT: 'OUI' :
 C     ----------------------
-      CALL GETVTX('AFFE_SOUS_STRUC','TOUT',IOC,1,1,KBID,N1)
+      CALL GETVTX('AFFE_SOUS_STRUC','TOUT',IOC,IARG,1,KBID,N1)
       IF (N1.EQ.1) THEN
         DO 1, I=1,NBSMA
           ZI(IASSSA-1+I)=1
@@ -90,10 +91,10 @@ C
 C     -- CAS : MAILLE: L_MAIL
 C     -----------------------
       CALL GETVTX('AFFE_SOUS_STRUC','SUPER_MAILLE',
-     &                IOC,1,0,KBID,N1)
+     &                IOC,IARG,0,KBID,N1)
       CALL WKVECT('&&SSAFMO.LMAI','V V K8',-N1,IALMAI)
       CALL GETVTX('AFFE_SOUS_STRUC','SUPER_MAILLE',
-     &                IOC,1,-N1,ZK8(IALMAI),N2)
+     &                IOC,IARG,-N1,ZK8(IALMAI),N2)
       NBSS= -N1
       DO 2, I=1,-N1
         NOSMA=ZK8(IALMAI-1+I)

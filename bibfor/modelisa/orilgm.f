@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -63,6 +63,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*19  NOMT19
       CHARACTER*24   NOMNOE, GRMAMA, PARA
       CHARACTER*24 VALK
+      INTEGER      IARG
 C
 C ========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -134,19 +135,20 @@ C     ----------------------------
 C
       DO 100 IOCC = 1 , NBF1
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA',
-     &                                           IOCC, 1, 0, K8B, NG )
+     &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA',
-     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
+     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
 C        PRESENCE DE GROUP_MA_SURF ?
 C        ---------------------------
-         CALL GETVTX(MOFA2D,'GROUP_MA_SURF',IOCC, 1, 0,K8B, NGS )
+         CALL GETVTX(MOFA2D,'GROUP_MA_SURF',IOCC,IARG, 0,K8B, NGS )
          IF(NGS.NE.0)THEN
            NGS = -NGS
            CALL WKVECT ( '&&ORILGM.WORK2', 'V V K8', NGS, JGS )
            CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA_SURF',
-     &                                     IOCC, 1, NGS, ZK8(JGS), NGS )
+     &                                     IOCC,IARG, NGS, ZK8(JGS),
+     &                                      NGS )
            CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMATO,
      &                 K8B,IRET)
            CALL WKVECT ('&&ORILGM.WORK3','V V I', NBMATO, JJV )
@@ -203,20 +205,21 @@ C     ----------------------------
 C
       DO 200 IOCC = 1 , NBF2
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA',
-     &                                           IOCC, 1, 0, K8B, NG )
+     &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA',
-     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
+     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
 
 C        PRESENCE DE GROUP_MA_VOLU ?
 C        ---------------------------
-         CALL GETVTX(MOFA3D,'GROUP_MA_VOLU',IOCC, 1, 0,K8B, NGV )
+         CALL GETVTX(MOFA3D,'GROUP_MA_VOLU',IOCC,IARG, 0,K8B, NGV )
          IF(NGV.NE.0)THEN
            NGV = -NGV
            CALL WKVECT ( '&&ORILGM.WORK2', 'V V K8', NGV, JGV )
            CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA_VOLU',
-     &                                     IOCC, 1, NGV, ZK8(JGV), NGV )
+     &                                     IOCC,IARG, NGV, ZK8(JGV),
+     &                                      NGV )
            CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMATO,
      &                 K8B,IRET)
            CALL WKVECT ('&&ORILGM.WORK3','V V I', NBMATO, JJV )
@@ -274,17 +277,17 @@ C     -------------------------------
 C
       DO 300 IOCC = 1 , NBF3
          ORIVEC = .FALSE.
-         CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,1,0, VECT, N1 )
+         CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,IARG,0, VECT, N1 )
          IF (N1.NE.0)THEN
             ORIVEC = .TRUE.
-            CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,1,-N1, VECT, N1 )
-            CALL GETVTX ( MOFB3D, 'NOEUD', IOCC,1,0, K8B, N2 )
+            CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,IARG,-N1, VECT, N1 )
+            CALL GETVTX ( MOFB3D, 'NOEUD', IOCC,IARG,0, K8B, N2 )
             IF (N2.NE.0)THEN
-               CALL GETVTX ( MOFB3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
+               CALL GETVTX ( MOFB3D, 'NOEUD', IOCC,IARG,1, NNOEUD, N2 )
                CALL JENONU (JEXNOM(NOMNOE,NNOEUD),NOEUD)
                IF(NOEUD.EQ.0)CALL U2MESK('F','MODELISA5_97',1,NNOEUD)
             ELSE
-               CALL GETVTX(MOFB3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
+               CALL GETVTX(MOFB3D,'GROUP_NO',IOCC,IARG,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
                   VALK = NNOEUD
@@ -297,11 +300,11 @@ C
             ENDIF
          ENDIF
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFB3D, 'GROUP_MA',
-     &                                           IOCC, 1, 0, K8B, NG )
+     &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFB3D, 'GROUP_MA',
-     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
+     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
          IF ( ORIVEC ) THEN
             DO 310 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)
@@ -334,17 +337,17 @@ C     ------------------------------
 C
       DO 400 IOCC = 1 , NCF3
          ORIVEC = .FALSE.
-         CALL GETVR8 ( MOFC3D, 'VECT_TANG', IOCC,1,0, VECT, N1 )
+         CALL GETVR8 ( MOFC3D, 'VECT_TANG', IOCC,IARG,0, VECT, N1 )
          IF (N1.NE.0)THEN
             ORIVEC = .TRUE.
-            CALL GETVR8 ( MOFC3D, 'VECT_TANG', IOCC,1,-N1, VECT, N1 )
-            CALL GETVTX ( MOFC3D, 'NOEUD', IOCC,1,0, K8B, N2 )
+            CALL GETVR8 ( MOFC3D, 'VECT_TANG', IOCC,IARG,-N1, VECT, N1 )
+            CALL GETVTX ( MOFC3D, 'NOEUD', IOCC,IARG,0, K8B, N2 )
             IF (N2.NE.0)THEN
-               CALL GETVTX ( MOFC3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
+               CALL GETVTX ( MOFC3D, 'NOEUD', IOCC,IARG,1, NNOEUD, N2 )
                CALL JENONU (JEXNOM(NOMNOE,NNOEUD),NOEUD)
                IF(NOEUD.EQ.0)CALL U2MESK('F','MODELISA5_97',1,NNOEUD)
             ELSE
-               CALL GETVTX(MOFC3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
+               CALL GETVTX(MOFC3D,'GROUP_NO',IOCC,IARG,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
                   VALK = NNOEUD
@@ -357,11 +360,11 @@ C
             ENDIF
          ENDIF
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFC3D, 'GROUP_MA',
-     &                                           IOCC, 1, 0, K8B, NG )
+     &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFC3D, 'GROUP_MA',
-     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
+     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
          IF ( ORIVEC ) THEN
             DO 410 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)

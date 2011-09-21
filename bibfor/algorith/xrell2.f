@@ -2,7 +2,7 @@
      &                  EXILI,NLISEQ,NLISRL,NLISCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,6 +79,7 @@ C
       REAL*8      COEFR(2),COARHY(NARZ,NDIM)
       INTEGER     NUNOA,NUNOB
       CHARACTER*8 K8BID
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -142,7 +143,7 @@ C       CALCUL SCOAR2 : LONGUEUR DE L'ARETE
         DO 211 IA=1,NAR
           SCORAR(IA) = MIN(SCORNO(TABDIR(IA,1)),SCORNO(TABDIR(IA,2)))
           IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN
-          CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NPIL)
+          CALL GETVTX('PILOTAGE','DIRE_PILO',1,IARG,0,K8BID,NPIL)
           NPIL=-NPIL
                 IF(NPIL.GE.1) THEN
                     IF(TABDIR(IA,1).EQ.TABDIR(IA,2)) THEN

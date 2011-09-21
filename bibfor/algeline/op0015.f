@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 SOLVE1,SOLVE2
       COMPLEX*16   CBID
       REAL*8       EPS,RBID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -52,18 +53,18 @@ C
 
       CALL GETRES(XSOL,CONCEP,NOMCMD)
 
-      CALL GETVID('  ','MATR',0,1,1,MATR,NB)
+      CALL GETVID('  ','MATR',0,IARG,1,MATR,NB)
       CALL ASSERT(NB.EQ.1)
 
       MATF=' '
-      CALL GETVID(' ','MATR_PREC',0,1,1,MATF,NB)
+      CALL GETVID(' ','MATR_PREC',0,IARG,1,MATF,NB)
 
-      CALL GETVID('  ','CHAM_NO',0,1,1,SECMBR,NB)
+      CALL GETVID('  ','CHAM_NO',0,IARG,1,SECMBR,NB)
       CALL ASSERT(NB.EQ.1)
       CALL CHPVER('F',SECMBR,'NOEU','*',IER)
 
       VCINE = ' '
-      CALL GETVID('  ','CHAM_CINE',0,1,1,VCINE,NB)
+      CALL GETVID('  ','CHAM_CINE',0,IARG,1,VCINE,NB)
       IF (NB.EQ.1) CALL CHPVER('F',VCINE,'NOEU','*',IER)
 
 
@@ -82,22 +83,22 @@ C          MODIFIER
       ENDIF
 
 C     -- MODIFICATION DU SOLVEUR DU FAIT DE CERTAINS MOTS CLES :
-      CALL GETVR8(' ','RESI_RELA',0,1,1,EPS,NB)
+      CALL GETVR8(' ','RESI_RELA',0,IARG,1,EPS,NB)
       IF (NB.EQ.1) THEN
         CALL JEVEUO(SOLVE2//'.SLVR','E',J1)
         ZR(J1-1+2)=EPS
       ENDIF
-      CALL GETVTX(' ','POSTTRAITEMENTS',1,1,1,KVARI,NB)
+      CALL GETVTX(' ','POSTTRAITEMENTS',1,IARG,1,KVARI,NB)
       IF (NB.EQ.1) THEN
         CALL JEVEUO(SOLVE2//'.SLVK','E',J1)
         ZK24(J1-1+11)=KVARI
       ENDIF
-      CALL GETVIS(' ','NMAX_ITER',0,1,1,MXITER,NB)
+      CALL GETVIS(' ','NMAX_ITER',0,IARG,1,MXITER,NB)
       IF (NB.EQ.1) THEN
         CALL JEVEUO(SOLVE2//'.SLVI','E',J1)
         ZI(J1-1+2)=MXITER
       ENDIF
-      CALL GETVTX(' ','ALGORITHME',1,1,1,KVARI,NB)
+      CALL GETVTX(' ','ALGORITHME',1,IARG,1,KVARI,NB)
       IF ((NB.EQ.1).AND.(METRES.EQ.'PETSC')) THEN
         CALL JEVEUO(SOLVE2//'.SLVK','E',J1)
         ZK24(J1-1+6)=KVARI

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8  NOVARC,NOVAR1,NOVAR2,LIVARC(NMXFAC),KNUMER
       REAL*8 VRCREF(NMXCMP),R8NNEM,RCMP(10),R8VIDE
       LOGICAL ERRGD
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -64,10 +65,10 @@ C ----------------------------------------------------------------------
       CALL INFNIV ( IFM , NIV )
 
       NOMODE = ' '
-      CALL GETVID(' ','MODELE',1,1,1,NOMODE,N1)
+      CALL GETVID(' ','MODELE',1,IARG,1,NOMODE,N1)
 
       CALL GETRES(CHMAT,TYPE,NOMCMD)
-      CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIL,N1)
+      CALL GETVID(' ','MAILLAGE',1,IARG,1,NOMAIL,N1)
 
       MESMAI = '&&OP0006.MES_MAILLES'
       MOTCLE(1) = 'GROUP_MA'
@@ -98,7 +99,7 @@ C     -----------------------------------------
 C     2-1 : CALCUL DE NBVARC, NBCVRC, LIVARC ET LIMFAC
 C           ALLOCATION DES 5 OBJETS : .CVRCNOM .CVRCVARC ...
 C     -------------------------------------------------
-      CALL GETVTX(' ','LIST_NOM_VARC',1,1,NMXFAC,LIVARC,N1)
+      CALL GETVTX(' ','LIST_NOM_VARC',1,IARG,NMXFAC,LIVARC,N1)
       CALL ASSERT(N1.GT.0)
       NBFAC=N1
       DO 1,IFAC=1,NBFAC
@@ -110,11 +111,11 @@ C     -------------------------------------------------
       DO 20,IFAC = 1,NBFAC
         MOFAC=MOTFAC(IFAC)
         CALL ASSERT(MOFAC(1:5).EQ.'VARC_')
-        CALL GETVTX(MOFAC,'NOM_VARC',1,1,1,NOVARC,N1)
+        CALL GETVTX(MOFAC,'NOM_VARC',1,IARG,1,NOVARC,N1)
         CALL ASSERT(N1.EQ.1)
         ITROU=0
         DO 21,IOCC = 1,NBOCCV
-          CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,1,1,NOVAR1,N1)
+          CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,IARG,1,NOVAR1,N1)
           CALL ASSERT(N1.EQ.1)
           IF (NOVAR1.EQ.NOVARC) ITROU=1
 21      CONTINUE
@@ -122,7 +123,7 @@ C     -------------------------------------------------
         NBVARC = NBVARC + 1
         LIVARC(NBVARC) = NOVARC
         LIMFAC(NBVARC) = MOFAC
-        CALL GETVTX(MOFAC,'CMP_GD',1,1,0,K8B,NCMP)
+        CALL GETVTX(MOFAC,'CMP_GD',1,IARG,0,K8B,NCMP)
         CALL ASSERT(NCMP.LT.0)
         NCMP=-NCMP
         NBCVRC=NBCVRC+NCMP
@@ -170,11 +171,13 @@ C     --------------------------------------------
 
 C       2-3 REPLISSAGE DE .CVRCNOM, .CVRCVARC, ...
 C       ------------------------------------------------------------
-        CALL GETVTX(MOFAC,'NOM_VARC',1,1,1,NOVARC,N1)
-        CALL GETVTX(MOFAC,'GRANDEUR',1,1,1,NOMGD,N1)
-        CALL GETVTX(MOFAC,'CMP_GD',1,1,NMXCMP,ZK8(JCVCMP+NBCVRC),NCMP)
+        CALL GETVTX(MOFAC,'NOM_VARC',1,IARG,1,NOVARC,N1)
+        CALL GETVTX(MOFAC,'GRANDEUR',1,IARG,1,NOMGD,N1)
+        CALL GETVTX(MOFAC,'CMP_GD',1,IARG,NMXCMP,
+     &              ZK8(JCVCMP+NBCVRC),NCMP)
         CALL ASSERT(NCMP.GE.1)
-        CALL GETVTX(MOFAC,'CMP_VARC',1,1,NMXCMP,ZK8(JCVNOM+NBCVRC),N1)
+        CALL GETVTX(MOFAC,'CMP_VARC',1,IARG,NMXCMP,
+     &              ZK8(JCVNOM+NBCVRC),N1)
         CALL ASSERT(N1.EQ.NCMP)
         DO 49,K = 1,NCMP
             ZK8(JCVVAR+NBCVRC-1+K) = NOVARC
@@ -183,7 +186,8 @@ C       ------------------------------------------------------------
 
         EXIST = GETEXM(MOFAC,'VALE_DEF')
         IF (EXIST .EQ. 1) THEN
-          CALL GETVR8(MOFAC,'VALE_DEF',1,1,NMXCMP,ZR(JCVDEF+NBCVRC),N1)
+          CALL GETVR8(MOFAC,'VALE_DEF',1,IARG,NMXCMP,
+     &                ZR(JCVDEF+NBCVRC),N1)
           CALL ASSERT(N1.EQ.NCMP)
         ELSE
           DO 50,K = 1,NCMP
@@ -193,13 +197,13 @@ C       ------------------------------------------------------------
 
 
         DO 80,IOCC = 1,NBOCCV
-          CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,1,1,NOVAR2,N1)
+          CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,IARG,1,NOVAR2,N1)
           CALL ASSERT(N1.EQ.1)
           IF (NOVAR2.NE.NOVARC) GO TO 80
 
 C         2-3 CALCUL DE  VRCREF(:) :
 C         ---------------------------
-          CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
+          CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,IARG,NMXCMP,VRCREF,N1)
           CALL ASSERT(N1.GE.0)
           IF (N1.GT.0) THEN
             IF(N1.NE.NCMP) THEN
@@ -221,8 +225,8 @@ C         ------------------------------------------------------------
           NOMCHA = ' '
           ERRGD = .FALSE.
 
-          CALL GETVID('AFFE_VARC','CHAMP_GD',IOCC,1,1,CHAMGD,N1)
-          CALL GETVID('AFFE_VARC','EVOL',IOCC,1,1,EVOL,N2)
+          CALL GETVID('AFFE_VARC','CHAMP_GD',IOCC,IARG,1,CHAMGD,N1)
+          CALL GETVID('AFFE_VARC','EVOL',IOCC,IARG,1,EVOL,N2)
           CALL ASSERT(N1+N2.LE.1)
           IF (N1.EQ.1) THEN
             EVOUCH='CHAMP'
@@ -241,7 +245,7 @@ C         ------------------------------------------------------------
             IF (NOMGD2.NE.NOMGD) ERRGD = .TRUE.
 
           ELSEIF (EVOUCH.EQ.'EVOL') THEN
-            CALL GETVTX('AFFE_VARC','NOM_CHAM',IOCC,1,1,NOMCHA,N1)
+            CALL GETVTX('AFFE_VARC','NOM_CHAM',IOCC,IARG,1,NOMCHA,N1)
 C           -- NOM_CHAMP (VALEUR PAR DEFAUT) :
             IF (N1.EQ.0) THEN
               IF (NOVARC.EQ.'SECH') THEN
@@ -262,9 +266,9 @@ C           -- NOM_CHAMP (VALEUR PAR DEFAUT) :
                 NOMCHA=NOVARC
               ENDIF
             ENDIF
-            CALL GETVTX('AFFE_VARC','PROL_GAUCHE',IOCC,1,1,PROLGA,N1)
-            CALL GETVTX('AFFE_VARC','PROL_DROITE',IOCC,1,1,PROLDR,N1)
-            CALL GETVID('AFFE_VARC','FONC_INST',IOCC,1,1,FINST,N1)
+            CALL GETVTX('AFFE_VARC','PROL_GAUCHE',IOCC,IARG,1,PROLGA,N1)
+            CALL GETVTX('AFFE_VARC','PROL_DROITE',IOCC,IARG,1,PROLDR,N1)
+            CALL GETVID('AFFE_VARC','FONC_INST',IOCC,IARG,1,FINST,N1)
             IF (N1.EQ.0) FINST=' '
 C           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
           END IF
@@ -316,9 +320,9 @@ C           -- ON AFFECTE UNE CARTE CONTENANT DES R8NNEM :
    70     CONTINUE
 
 C         TOUT='OUI' PAR DEFAUT :
-          CALL GETVTX('AFFE_VARC','TOUT',IOCC,1,1,K8B,NBTOU)
-          CALL GETVTX('AFFE_VARC','GROUP_MA',IOCC,1,0,K8B,NBGM1)
-          CALL GETVTX('AFFE_VARC','MAILLE',IOCC,1,0,K8B,NBM1)
+          CALL GETVTX('AFFE_VARC','TOUT',IOCC,IARG,1,K8B,NBTOU)
+          CALL GETVTX('AFFE_VARC','GROUP_MA',IOCC,IARG,0,K8B,NBGM1)
+          CALL GETVTX('AFFE_VARC','MAILLE',IOCC,IARG,0,K8B,NBM1)
           IF (NBGM1+NBM1.EQ.0) NBTOU=1
 
           IF (NBTOU.NE.0) THEN

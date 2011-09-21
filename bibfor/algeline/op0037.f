@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,12 +56,13 @@ C     PARAMETRES "MODE_FLAMB"
      &                NOMA, MAT1,
      &              MAT2, MAT3
       CHARACTER*14  NUME
-      CHARACTER*16  TYPCON, NOMCMD, NORM, NOEUD, NOMSY, OLDNOR
+      CHARACTER*16  TYPCON, NOMCMD, NORM, NOEUD, NOMSY
       CHARACTER*19  K19B,NORECG,CHAMNO
       CHARACTER*24  MASSE, AMOR, RAIDE, REFE, METHOD,
      &              KVEC, KVALI, KVALR, KVALK,
      &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT),
-     &              MATE, CARA, MODELE,TYPEBA
+     &              MATE, CARA, MODELE,TYPEBA, OLDNOR
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
       DATA  KVEC  / '&&OP0037.VAL_PROPRE'/
@@ -83,7 +84,8 @@ C     --- RECUPERATION DU RESULTAT ET DU MODE A TRAITER ---
       CALL GCUCON( MODEOU, TYPCON, IEX    )
 C
       LBASM=.FALSE.
-      CALL GETVID('  ','MODE',1,1,1,MODEIN,L)
+      LAMO=.FALSE.
+      CALL GETVID('  ','MODE',1,IARG,1,MODEIN,L)
 
       IF ( IEX .GT. 0 ) THEN
          IF ( MODEOU .NE. MODEIN ) THEN
@@ -182,9 +184,9 @@ C     --- MATRICES DE REFERENCE DES MODES ---
       IF (TYPEBA(1:1).NE.' ') LBASM=.TRUE.
 
       IF (TYPEBA(1:1).NE.' ') THEN
-        CALL GETVID(' ','RAIDE',0,1,1,MAT1,L1)
-        CALL GETVID(' ','MASSE',0,1,1,MAT2,L2)
-        CALL GETVID(' ','AMOR',0,1,1,MAT3,L3)
+        CALL GETVID(' ','RAIDE',0,IARG,1,MAT1,L1)
+        CALL GETVID(' ','MASSE',0,IARG,1,MAT2,L2)
+        CALL GETVID(' ','AMOR',0,IARG,1,MAT3,L3)
         MASSE = MAT2
         RAIDE = MAT1
         AMOR  = ' '
@@ -239,7 +241,7 @@ C     --- POUR LES MODES DE FLAMBAGE PAS DE MASSE UNITAIRE ---
 
 C     --- OPTION DE NORMALISATION  ---
       METHOD = '                        '
-      CALL GETVTX(' ','NORME',1,1,1,NORM,L)
+      CALL GETVTX(' ','NORME',1,IARG,1,NORM,L)
       IF ( L .NE. 0 ) THEN
          IF      ( NORM .EQ. 'MASS_GENE'      ) THEN
 C        --- CALCUL DE LA MASSE DU MODELE
@@ -306,7 +308,7 @@ C        --- CALCUL DE LA MASSE DU MODELE
          ENDIF
       ENDIF
 C
-      CALL GETVEM(NOMA,'NOEUD',' ','NOEUD',1,1,1,NOEUD,L)
+      CALL GETVEM(NOMA,'NOEUD',' ','NOEUD',1,IARG,1,NOEUD,L)
       IF ( L .NE. 0 ) THEN
          NORM   = 'POINT'
          NCMP   = 1
@@ -316,7 +318,7 @@ C
          IFIN = IDEB + LG
          METHOD(IDEB:IFIN) = ' '//NOEUD(1:LG)
          CALL WKVECT('&&OP0037.LISTE.CMP','V V K8',NCMP,LCMP)
-         CALL GETVTX(' ','NOM_CMP',1,1,1,ZK8(LCMP),L)
+         CALL GETVTX(' ','NOM_CMP',1,IARG,1,ZK8(LCMP),L)
          IF (LREFE) THEN
            CALL POSDDL('NUME_DDL',NUME,NOEUD,ZK8(LCMP),NUMNOE,NUMDDL)
          ELSE
@@ -342,13 +344,13 @@ C
  52      CONTINUE
       ENDIF
 C
-      CALL GETVTX(' ','AVEC_CMP',1,1,0,K8B,L)
+      CALL GETVTX(' ','AVEC_CMP',1,IARG,0,K8B,L)
       IF ( L .NE. 0 ) THEN
          NORM   = 'AVEC_CMP'
          NCMP   = -L
          METHOD(1:9) = 'AVEC_CMP:'
          CALL WKVECT('&&OP0037.LISTE.CMP','V V K8',NCMP,LCMP)
-         CALL GETVTX(' ','AVEC_CMP',1,1,NCMP,ZK8(LCMP),L)
+         CALL GETVTX(' ','AVEC_CMP',1,IARG,NCMP,ZK8(LCMP),L)
          IDEB = 10
          DO 30 IC = 1,NCMP
             LG = LXLGUT(ZK8(LCMP+IC-1))
@@ -363,13 +365,13 @@ C
  32      CONTINUE
       ENDIF
 C
-      CALL GETVTX(' ','SANS_CMP',1,1,0,K8B,L)
+      CALL GETVTX(' ','SANS_CMP',1,IARG,0,K8B,L)
       IF ( L .NE. 0 ) THEN
          NORM   = 'SANS_CMP'
          NCMP   = -L
          METHOD(1:9) = 'SANS_CMP:'
          CALL WKVECT('&&OP0037.LISTE.CMP','V V K8',NCMP,LCMP)
-         CALL GETVTX(' ','SANS_CMP',1,1,NCMP,ZK8(LCMP),L)
+         CALL GETVTX(' ','SANS_CMP',1,IARG,NCMP,ZK8(LCMP),L)
          IDEB = 10
          DO 40 IC = 1,NCMP
             LG = LXLGUT(ZK8(LCMP+IC-1))
@@ -462,8 +464,8 @@ C     --- SIGNE DES MODES ---
       CALL GETFAC ( 'MODE_SIGNE' , MOSIGN )
       IF ( MOSIGN .NE. 0 ) THEN
          CALL GETVEM(NOMA,'NOEUD','MODE_SIGNE','NOEUD',
-     &             1,1,1,NOEUD,L)
-         CALL GETVTX('MODE_SIGNE','NOM_CMP',1,1,1,CMP  ,L)
+     &             1,IARG,1,NOEUD,L)
+         CALL GETVTX('MODE_SIGNE','NOM_CMP',1,IARG,1,CMP  ,L)
          IF (LREFE) THEN
            CALL POSDDL('NUME_DDL', NUME,NOEUD,CMP,NUMNOE,NUMDDL)
          ELSE
@@ -476,7 +478,7 @@ C     --- SIGNE DES MODES ---
             CALL U2MESS('F','ALGELINE2_37')
          ENDIF
          ISIGN = 1
-         CALL GETVTX('MODE_SIGNE','SIGNE',1,1,1,K8B,L)
+         CALL GETVTX('MODE_SIGNE','SIGNE',1,IARG,1,K8B,L)
          IF ( K8B(1:7) .EQ. 'NEGATIF' ) ISIGN = -1
          IF ( TYPMOD .EQ. 'C' ) THEN
             ISIGN = 0
@@ -486,7 +488,7 @@ C     --- SIGNE DES MODES ---
 C
 C RECUPERATION INFORMATIONS SENSIBILITE
       IERD = 1
-      CALL GETVID(' ','SENSIBILITE',1,IERD,1,K8B,ISENS)
+      CALL GETVID(' ','SENSIBILITE',1,IARG,1,K8B,ISENS)
 
       NBPASS = 0
       CALL WKVECT('&&OP0037.COEF_MODE','V V R',NBMODE,LCOEF)
@@ -548,7 +550,7 @@ C        CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
           CALL JEVEUO ( KVALI, 'E', LVALI )
           CALL JEVEUO ( KVALR, 'E', LVALR )
           CALL JEVEUO ( KVALK, 'E', LVALK )
-          MODEOU = K19B
+          MODEOU = K19B(1:8)
 
           IF(LBASM)THEN
             CALL JEVEUO ( KVEC , 'L', LMOD  )

@@ -1,6 +1,6 @@
       SUBROUTINE NTDOOP (LISOPT,NOPT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C
       INTEGER      N1,IER,JOPT
       CHARACTER*8  K8BID
       CHARACTER*16 NOMOPT
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -55,7 +56,7 @@ C
 C
 C --- RECUPERATION DE LA LISTE DES OPTIONS DE CALCUL
 C
-      CALL GETVTX (' ',NOMOPT,0,1,0,K8BID,N1)
+      CALL GETVTX (' ',NOMOPT,0,IARG,0,K8BID,N1)
       NOPT = -N1
       LISOPT = ' '
       IF (NOPT.EQ.0) GOTO 9999
@@ -63,7 +64,7 @@ C
       CALL JEEXIN (LISOPT,IER)
       IF (IER.NE.0) CALL JEDETR (LISOPT)
       CALL WKVECT (LISOPT,'V V K16',NOPT,JOPT)
-      CALL GETVTX(' ',NOMOPT,1,1,NOPT,ZK16(JOPT),N1)
+      CALL GETVTX(' ',NOMOPT,1,IARG,NOPT,ZK16(JOPT),N1)
 C
 C ----------------------------------------------------------------------
  9999 CONTINUE

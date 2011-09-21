@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
       CHARACTER*24  TRAV1, TRAV2, TRAV3, TRAV4, STOK4
       CHARACTER*24  OBJ1, NOMNO, COORN, OBJ2
       CHARACTER*24  THETA, GDTETA
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -65,11 +66,11 @@ C
 C
       CALL GETRES ( RESU, TYPE, OPER )
 C
-      CALL GETVTX (' ', 'OPTION', 0, 1, 1, OPTION, NBV )
+      CALL GETVTX (' ', 'OPTION', 0,IARG, 1, OPTION, NBV )
 C
-      CALL GETVID (' ', 'MODELE', 0, 1, 1, MODELE, NBV )
+      CALL GETVID (' ', 'MODELE', 0,IARG, 1, MODELE, NBV )
 C
-      CALL GETVTX (' ', 'GRAD_NOEU_THETA', 0, 1, 1, OUINON, NBV )
+      CALL GETVTX (' ', 'GRAD_NOEU_THETA', 0,IARG, 1, OUINON, NBV )
 C
       CALL GETFAC ( 'THETA_3D' , NOCC3D )
       CALL GETFAC ( 'THETA_2D' , NOCC2D )
@@ -77,10 +78,10 @@ C
       CALL GETFAC ( 'IMPRESSION' , IMPR )
 C
       IF ( IMPR .NE. 0 ) THEN
-         CALL GETVTX ( 'IMPRESSION', 'FORMAT ', 1,1,1, FORMAT, NBV )
+         CALL GETVTX ( 'IMPRESSION', 'FORMAT ', 1,IARG,1, FORMAT, NBV )
          IFIC   = 0
          FICHIE = ' '
-         CALL GETVIS ( 'IMPRESSION', 'UNITE'  , 1,1,1, IFIC  , N1 )
+         CALL GETVIS ( 'IMPRESSION', 'UNITE'  , 1,IARG,1, IFIC  , N1 )
          IF ( .NOT. ULEXIS( IFIC ) ) THEN
             CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
          ENDIF
@@ -130,16 +131,16 @@ C     ==================================================================
 C
       IF ( NOCC3D .NE. 0 ) THEN
 C
-         CALL GETVID ( ' ', 'FOND_FISS', 0,1,1, FOND, NBV )
+         CALL GETVID ( ' ', 'FOND_FISS', 0,IARG,1, FOND, NBV )
 C
-         CALL GETVR8 ( ' ', 'DIRECTION', 0, 1, 0, R8B, NBR8)
+         CALL GETVR8 ( ' ', 'DIRECTION', 0,IARG, 0, R8B, NBR8)
 C
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             IF ( NBR8 .NE. 3 ) THEN
                CALL U2MESS('F','RUPTURE1_30')
             ELSE
-               CALL GETVR8(' ','DIRECTION', 0, 1, 3, DIR, NBR8)
+               CALL GETVR8(' ','DIRECTION', 0,IARG, 3, DIR, NBR8)
                LDIREC = .TRUE.
             ENDIF
          ENDIF
@@ -187,14 +188,14 @@ C
 C
       IF ( NOCC2D .NE. 0 ) THEN
 C
-         CALL GETVR8(' ','DIRECTION', 0, 1, 0, R8B, NBR8 )
+         CALL GETVR8(' ','DIRECTION', 0,IARG, 0, R8B, NBR8 )
 C
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             IF ( NBR8 .NE. 3 ) THEN
                CALL U2MESS('F','RUPTURE1_30')
             ELSE
-               CALL GETVR8 ( ' ', 'DIRECTION', 0, 1, 3, DIR, NBR8 )
+               CALL GETVR8 ( ' ', 'DIRECTION', 0,IARG, 3, DIR, NBR8 )
                LDIREC = .TRUE.
             ENDIF
          ELSE

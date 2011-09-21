@@ -1,7 +1,7 @@
       SUBROUTINE OP0001()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C
       CHARACTER*64    NOMAMD
       REAL*8          DTOL
       INTEGER         LXLGUT, ILNG
+      INTEGER      IARG
 
       CALL JEMARQ ( )
       VECGRM = '&&OP0001.VECGRM'
@@ -89,18 +90,18 @@ C
 C
       CALL GETRES(NOMU,CONCEP,CMD)
 C
-      CALL GETVIS(' ','UNITE',0,1,1,IFL,IAUX)
+      CALL GETVIS(' ','UNITE',0,IARG,1,IFL,IAUX)
 C
-      CALL GETVTX ( ' ','FORMAT' ,0,1,1,FMT, IAUX )
+      CALL GETVTX ( ' ','FORMAT' ,0,IARG,1,FMT, IAUX )
 C
       IF ( FMT(1:3) .EQ. 'MED' ) THEN
-        CALL GETVTX ( ' ','NOM_MED' ,0,1,1,NOMAMD, IAUX )
+        CALL GETVTX ( ' ','NOM_MED' ,0,IARG,1,NOMAMD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
 C                   12345678901234567890123456789012
           NOMAMD = '                                '//
      &'                                '
         ENDIF
-        CALL GETVIS (' ','INFO_MED',0,1,1,INFMED,IAUX)
+        CALL GETVIS (' ','INFO_MED',0,IARG,1,INFMED,IAUX)
 C
 C   --- LECTURE DES CORRESPONDANCES NOM MED - NOM ASTER
 C
@@ -108,9 +109,9 @@ C
         IF ( NBCGRM.GT.0 ) THEN
            CALL WKVECT(VECGRM, 'V V K32', NBCGRM*2, IVGRM)
            DO 100 I=1, NBCGRM
-              CALL GETVTX('RENOMME','NOM_MED',I,1,1,
+              CALL GETVTX('RENOMME','NOM_MED',I,IARG,1,
      &                    ZK32(IVGRM-1+I*2-1),IBID)
-              CALL GETVTX('RENOMME','NOM'    ,I,1,1,
+              CALL GETVTX('RENOMME','NOM'    ,I,IARG,1,
      &                    ZK32(IVGRM-1+I*2),IBID)
               ILNG = LXLGUT(ZK32(IVGRM-1+I*2))
               CALL ASSERT(ILNG.GT.0 .AND. ILNG.LE.8)
@@ -158,10 +159,10 @@ C     ------------------------------------------------
       CALL GETFAC('ABSC_CURV',IOC)
       IF(IOC.EQ.1) THEN
         ITOUT = 0
-        CALL GETVTX('ABSC_CURV','TOUT',1,1,0,ZK8,NBVAL)
+        CALL GETVTX('ABSC_CURV','TOUT',1,IARG,0,ZK8,NBVAL)
         NBVAL = ABS(NBVAL)
         IF (NBVAL .NE. 0) THEN
-          CALL GETVTX('ABSC_CURV','TOUT',1,1,1,TOTM,N1)
+          CALL GETVTX('ABSC_CURV','TOUT',1,IARG,1,TOTM,N1)
           IF(N1.NE.0) THEN
             ITOUT = 1
             CALL ABSCUR(CONNEX,TYPMAI,COOVAL,NOMU,ITOUT)
@@ -169,7 +170,7 @@ C
           ENDIF
         ELSE
           CALL GETVEM(NOMU,'GROUP_MA','ABSC_CURV','GROUP_MA',
-     &                1,1,0,ZK8,NBVAL)
+     &                1,IARG,0,ZK8,NBVAL)
           NBVAL=ABS(NBVAL)
           IF (NBVAL.NE.0) THEN
             CALL U2MESS('E','MODELISA5_48')
@@ -194,9 +195,9 @@ C     -----------------------------
 C
 C --- PHASE DE VERIFICATION DU MAILLAGE :
 C     ---------------------------------
-      CALL GETVTX('VERI_MAIL','VERIF',1,1,1,VERI,IRET)
+      CALL GETVTX('VERI_MAIL','VERIF',1,IARG,1,VERI,IRET)
       IF (VERI.EQ.'OUI') THEN
-        CALL GETVR8('VERI_MAIL','APLAT',1,1,1,DTOL,IRET)
+        CALL GETVR8('VERI_MAIL','APLAT',1,IARG,1,DTOL,IRET)
         CALL CHCKMA(NOMU,CMD,DTOL)
       ELSE
          CALL U2MESS('A','MODELISA5_49')

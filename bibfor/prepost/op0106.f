@@ -1,7 +1,7 @@
       SUBROUTINE OP0106()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
       LOGICAL EXITIM,LBID,FNOEVO
+      INTEGER      IARG
 
 C     ------------------------------------------------------------------
       DATA INFCHA/'&&INFCHA.INFCHA'/
@@ -109,7 +110,7 @@ C --- PUIS ON PASSE DANS LE MODE "VALIDATION DU CONCEPT EN CAS D'ERREUR"
 
 
       CALL GETRES(RESUC1,TYPE,OPER)
-      CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,N0)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESUCO,N0)
 
 
 C     -- ON VEUT INTERDIRE LA REENTRANCE DE LA COMMANDE SI
@@ -120,11 +121,11 @@ C     --------------------------------------------------------
         MODELE=' '
         MATE=' '
         CARA=' '
-        CALL GETVID(' ','MODELE',1,1,1,MODELE,IBID)
-        CALL GETVID(' ','CHAM_MATER',1,1,1,MATE,IBID)
-        CALL GETVID(' ','CARA_ELEM',1,1,1,CARA,IBID)
-        CALL GETVTX(' ','GROUP_MA',1,1,0,K8BID,NBGMA)
-        CALL GETVTX(' ','MAILLE',1,1,0,K8BID,NBMA)
+        CALL GETVID(' ','MODELE',1,IARG,1,MODELE,IBID)
+        CALL GETVID(' ','CHAM_MATER',1,IARG,1,MATE,IBID)
+        CALL GETVID(' ','CARA_ELEM',1,IARG,1,CARA,IBID)
+        CALL GETVTX(' ','GROUP_MA',1,IARG,0,K8BID,NBGMA)
+        CALL GETVTX(' ','MAILLE',1,IARG,0,K8BID,NBMA)
         NBMA2=MAX(-NBMA,-NBGMA)
         CALL GETFAC('EXCIT',NEXCIT)
         IF (MODELE.NE.' '.OR.MATE.NE.' '.OR.CARA.NE.' '.OR.
@@ -134,10 +135,10 @@ C     --------------------------------------------------------
 
 
 
-      CALL GETVTX(' ','OPTION',1,1,0,OPTION,N2)
+      CALL GETVTX(' ','OPTION',1,IARG,0,OPTION,N2)
       NBOPT=-N2
       CALL WKVECT('&&'//NOMPRO//'.OPTION','V V K16',NBOPT,JOPT)
-      CALL GETVTX(' ','OPTION',1,1,NBOPT,ZK16(JOPT),N2)
+      CALL GETVTX(' ','OPTION',1,IARG,NBOPT,ZK16(JOPT),N2)
 
 C
       IF (RESUC1.NE.RESUCO(1:8)) THEN
@@ -167,8 +168,8 @@ C=======================================================================
       STYPSE=' '
 C=======================================================================
 
-      CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
-      CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+      CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
+      CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
 
 
       CALL RSUTNU(RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
@@ -267,7 +268,7 @@ C INFO. RELATIVE AUX CHARGES
         NBCHAR=0
         ICHAR=1
       ENDIF
-      CALL GETVID(' ','MODELE',1,1,1,MODELE,N0)
+      CALL GETVID(' ','MODELE',1,IARG,1,MODELE,N0)
       IF (N0.NE.0) THEN
         CALL EXLIMA(' ',0,'V',MODELE,LIGREL)
       ENDIF
@@ -278,8 +279,8 @@ C        POUR LES OPTIONS "XXXX_NOEU_XXXX
       NBMA=0
       JMAI=1
 C ------- MAILLES QUI PARTICIPENT A LA MOYENNE
-      CALL GETVTX(' ','MAILLE',1,1,0,K8BID,N0)
-      CALL GETVTX(' ','GROUP_MA',1,1,0,K8BID,N2)
+      CALL GETVTX(' ','MAILLE',1,IARG,0,K8BID,N0)
+      CALL GETVTX(' ','GROUP_MA',1,IARG,0,K8BID,N2)
       IF (N0+N2.NE.0) THEN
         DO 60 IOPT=1,NBOPT
           OPTION=ZK16(JOPT+IOPT-1)

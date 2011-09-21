@@ -1,7 +1,7 @@
       SUBROUTINE OP0058()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
       CHARACTER*19 KNUM,KCHA,SOLVEU
       CHARACTER*24 MATE
       LOGICAL      NEWCAL
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -71,7 +72,7 @@ C --- PUIS ON PASSE DANS LE MODE "VALIDATION DU CONCEPT EN CAS D'ERREUR"
       CALL ONERRF('EXCEPTION+VALID',K16BID,IBID  )
 
       CALL GETRES(RESUC1,CONCEP,NOMCMD)
-      CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,N0)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESUCO,N0)
 
       NEWCAL = .FALSE.
       CALL JEEXIN(RESUC1//'           .DESC',IRET)
@@ -87,11 +88,11 @@ C     --------------------------------------------------------
         MODELE=' '
         MATE=' '
         CARA=' '
-        CALL GETVID(' ','MODELE',1,1,1,MODELE,IBID)
-        CALL GETVID(' ','CHAM_MATER',1,1,1,MATE,IBID)
-        CALL GETVID(' ','CARA_ELEM',1,1,1,CARA,IBID)
-        CALL GETVTX(' ','GROUP_MA',1,1,0,KBID,NBGMA)
-        CALL GETVTX(' ','MAILLE',1,1,0,KBID,NBMA)
+        CALL GETVID(' ','MODELE',1,IARG,1,MODELE,IBID)
+        CALL GETVID(' ','CHAM_MATER',1,IARG,1,MATE,IBID)
+        CALL GETVID(' ','CARA_ELEM',1,IARG,1,CARA,IBID)
+        CALL GETVTX(' ','GROUP_MA',1,IARG,0,KBID,NBGMA)
+        CALL GETVTX(' ','MAILLE',1,IARG,0,KBID,NBMA)
         NBMA2=MAX(-NBMA,-NBGMA)
         CALL GETFAC('EXCIT',NEXCIT)
         IF (MODELE.NE.' '.OR.MATE.NE.' '.OR.CARA.NE.' '.OR.
@@ -101,8 +102,8 @@ C     --------------------------------------------------------
 
 
 
-      CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
-      CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+      CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
+      CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
       CALL RSUTNU(RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
       IF (IRET.EQ.10) THEN
       CALL U2MESK('A','CALCULEL4_8',1,RESUCO)

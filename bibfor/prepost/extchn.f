@@ -9,9 +9,9 @@
       CHARACTER*(*)       MCF
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -178,6 +178,7 @@ C
       LOGICAL      UTILI
       CHARACTER*8  K8B, REPERE
       CHARACTER*24 NOMJV
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -205,11 +206,11 @@ C   ------------------------------
 C
       UTILI = .FALSE.
       IF ( MCF(1:6) .EQ. 'ACTION' ) THEN
-      CALL GETVTX ( MCF, 'REPERE', IOCC,1,1, REPERE, N1 )
+      CALL GETVTX ( MCF, 'REPERE', IOCC,IARG,1, REPERE, N1 )
       IF ( REPERE .EQ. 'UTILISAT' ) THEN
          UTILI = .TRUE.
          NOMJV = '&&EXTCHN.NEW_CHAMP'
-         CALL GETVR8 ( MCF, 'ANGL_NAUT', IOCC,1,3, ANGL, N1 )
+         CALL GETVR8 ( MCF, 'ANGL_NAUT', IOCC,IARG,3, ANGL, N1 )
          ANGL(1) = ANGL(1) * R8DGRD()
          ANGL(2) = ANGL(2) * R8DGRD()
          ANGL(3) = ANGL(3) * R8DGRD()
@@ -219,8 +220,8 @@ C
       ELSEIF ( REPERE .EQ. 'CYLINDRI' ) THEN
          UTILI = .TRUE.
          NOMJV = '&&EXTCHN.NEW_CHAMP'
-         CALL GETVR8 ( MCF, 'ORIGINE', IOCC,1,3, ORIG, N1 )
-         CALL GETVR8 ( MCF, 'AXE_Z'  , IOCC,1,3, AXEZ, N1 )
+         CALL GETVR8 ( MCF, 'ORIGINE', IOCC,IARG,3, ORIG, N1 )
+         CALL GETVR8 ( MCF, 'AXE_Z'  , IOCC,IARG,3, AXEZ, N1 )
          XNORMZ = ZERO
          DO 30 I = 1,3
             XNORMZ = XNORMZ + AXEZ(I)*AXEZ(I)

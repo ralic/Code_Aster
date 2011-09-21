@@ -2,7 +2,7 @@
      &                   LISI2Z,LONLI2,MODZ)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*(*)  MOTFAZ,PREFIZ,NOMAZ,LISI1Z,LISI2Z,MODZ
       INTEGER        IOCC
 C ---------------------------------------------------------------------
-C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C
 C     BUT : CREER LA STRUCTURE INTERMEDIAIRE PRFEIXEE PAR PREFIX
 C           DESCRIVANT LES COUPLES DE NOEUDS EN REGARD AVEC
@@ -91,6 +91,7 @@ C
       CHARACTER*19   PREF19
       CHARACTER*24   CONI, CONR, NOEUMA
       CHARACTER*24   PREFIX, LISIN1, LISIN2, LISOU1, LISOU2
+      INTEGER      IARG
 C
 C ---------------------------------------------------------------------
 C --- DEBUT
@@ -113,16 +114,16 @@ C
       ENDIF
 C
       CALL GETVEM ( NOMA, 'GROUP_NO', MOTFAC, 'GROUP_NO_1',
-     &                                        IOCC, 1, 0, K8BID, NG1 )
+     &                                        IOCC,IARG, 0, K8BID, NG1 )
       IF (NG1.EQ.0) THEN
           CALL GETVEM ( NOMA, 'NOEUD', MOTFAC, 'NOEUD_1',
-     &                                      IOCC, 1, 0, K8BID, NBNO1 )
+     &                                      IOCC,IARG, 0, K8BID, NBNO1 )
           IF (NBNO1.EQ.0) THEN
             CALL GETVEM ( NOMA, 'GROUP_MA', MOTFAC, 'GROUP_MA_1',
-     &                                       IOCC, 1, 0, K8BID, NGM1 )
+     &                                       IOCC,IARG, 0, K8BID, NGM1 )
             IF (NGM1.EQ.0) THEN
               CALL GETVEM ( NOMA, 'MAILLE', MOTFAC, 'MAILLE_1',
-     &                                      IOCC, 1, 0, K8BID, NBMA1 )
+     &                                      IOCC,IARG, 0, K8BID, NBMA1 )
               IF (NBMA1.EQ.0) GOTO 999
             ENDIF
           ENDIF
@@ -145,17 +146,17 @@ C
         CENTRE(I) = 0.0D0
 10     CONTINUE
 C
-      CALL GETVR8 (MOTFAC, 'TRAN', IOCC,1,3,T, NT)
+      CALL GETVR8 (MOTFAC, 'TRAN', IOCC,IARG,3,T, NT)
       IF (NT.LT.0) THEN
         CALL U2MESK('F','MODELISA3_9',1,MOTFAC)
       ENDIF
 C
-      CALL GETVR8 (MOTFAC, 'ANGL_NAUT', IOCC,1,3,THETA, NR)
+      CALL GETVR8 (MOTFAC, 'ANGL_NAUT', IOCC,IARG,3,THETA, NR)
       IF (NR.LT.0) THEN
         CALL U2MESK('F','MODELISA3_10',1,MOTFAC)
       ENDIF
 C
-      CALL GETVR8 (MOTFAC,'CENTRE',IOCC,1,3,CENTRE, NO)
+      CALL GETVR8 (MOTFAC,'CENTRE',IOCC,IARG,3,CENTRE, NO)
       IF (NO.LT.0) THEN
         CALL U2MESK('F','MODELISA3_11',1,MOTFAC)
       ENDIF
@@ -176,22 +177,22 @@ C
          N6 = 0
          N7 = 0
          N8 = 0
-         CALL GETVTX (MOTFAC,'GROUP_NO_1',IOCC,1,1,NOM1,N1)
+         CALL GETVTX (MOTFAC,'GROUP_NO_1',IOCC,IARG,1,NOM1,N1)
          IF(N1.GT.0) VALK(1)='GROUP_NO_1'
-         CALL GETVTX (MOTFAC,'NOEUD_1',   IOCC,1,1,NOM1,N2)
+         CALL GETVTX (MOTFAC,'NOEUD_1',   IOCC,IARG,1,NOM1,N2)
          IF(N2.GT.0) VALK(1)='NOEUD_1   '
-         CALL GETVTX (MOTFAC,'GROUP_MA_1',IOCC,1,1,NOM1,N3)
+         CALL GETVTX (MOTFAC,'GROUP_MA_1',IOCC,IARG,1,NOM1,N3)
          IF(N3.GT.0) VALK(1)='GROUP_MA_1'
-         CALL GETVTX (MOTFAC,'MAILLE_1',  IOCC,1,1,NOM1,N4)
+         CALL GETVTX (MOTFAC,'MAILLE_1',  IOCC,IARG,1,NOM1,N4)
          IF(N4.GT.0) VALK(1)='MAILLE_1  '
 
-         CALL GETVTX (MOTFAC,'GROUP_NO_2',IOCC,1,1,NOM2,N5)
+         CALL GETVTX (MOTFAC,'GROUP_NO_2',IOCC,IARG,1,NOM2,N5)
          IF(N5.GT.0) VALK(2)='GROUP_NO_2'
-         CALL GETVTX (MOTFAC,'NOEUD_2',   IOCC,1,1,NOM2,N6)
+         CALL GETVTX (MOTFAC,'NOEUD_2',   IOCC,IARG,1,NOM2,N6)
          IF(N6.GT.0) VALK(2)='NOEUD_2   '
-         CALL GETVTX (MOTFAC,'GROUP_MA_2',IOCC,1,1,NOM2,N7)
+         CALL GETVTX (MOTFAC,'GROUP_MA_2',IOCC,IARG,1,NOM2,N7)
          IF(N7.GT.0) VALK(2)='GROUP_MA_2'
-         CALL GETVTX (MOTFAC,'MAILLE_2',  IOCC,1,1,NOM2,N8)
+         CALL GETVTX (MOTFAC,'MAILLE_2',  IOCC,IARG,1,NOM2,N8)
          IF(N8.GT.0) VALK(2)='MAILLE_2  '
 
          VALI(1)= LONLI1
@@ -228,10 +229,10 @@ C --- CONSTITUTION DE LA S.D. CONR CONTENANT LES NORMALES
 C --- AUX NOEUDS
 C
       DDL1 = ' '
-      CALL GETVTX ( MOTFAC, 'DDL_1', IOCC,1,1, DDL1, N1 )
+      CALL GETVTX ( MOTFAC, 'DDL_1', IOCC,IARG,1, DDL1, N1 )
 C
       DDL2 = ' '
-      CALL GETVTX ( MOTFAC, 'DDL_2', IOCC,1,1, DDL2, N1 )
+      CALL GETVTX ( MOTFAC, 'DDL_2', IOCC,IARG,1, DDL2, N1 )
 C
       IF (DDL1.EQ.'DNOR' .OR. DDL2.EQ.'DNOR') THEN
          DNOR = .TRUE.

@@ -3,9 +3,9 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -44,6 +44,7 @@ C
       CHARACTER*16 TYPRES, NOMCMD
       CHARACTER*19 NOMFON
       INTEGER      LPROL,  LNOVA,    NK,    IR
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -59,10 +60,10 @@ C
         ZK24(LPROL+3) =  NOMRES
         ZK24(LPROL+4) = 'II      '
         ZK24(LPROL+5) = NOMFON
-        CALL GETVTX(' ','NOM_PARA',1,1,1,KBID,NK)
+        CALL GETVTX(' ','NOM_PARA',1,IARG,1,KBID,NK)
         IF (NK.NE.1) NK=-NK
         CALL WKVECT(NOMFON//'.NOVA','G V K8',NK,LNOVA)
-        CALL GETVTX(' ','NOM_PARA',1,1,NK,ZK8(LNOVA),IR)
+        CALL GETVTX(' ','NOM_PARA',1,IARG,NK,ZK8(LNOVA),IR)
       ENDIF
 C
       CALL JEDEMA()

@@ -6,7 +6,7 @@
 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*14  NUGENE
       CHARACTER*24  NOMCHA
       COMPLEX*16    CBID
+      INTEGER      IARG
 C -----------------------------------------------------------------
 C---------------------------------------------------------------------
 
@@ -93,7 +94,7 @@ C=====================================================================
 
         CALL JELIRA(MODGEN//'      .MODG.SSNO        '
      +           ,'NOMMAX',NBSST,K8BID)
-        CALL GETVTX(' ','AVEC_MODE_STAT',0,1,1,REPON,NN)
+        CALL GETVTX(' ','AVEC_MODE_STAT',0,IARG,1,REPON,NN)
         IF(REPON(1:3).EQ.'NON') THEN
            CALL DELAT(MODGEN,NBSST,NBMO)
            CALL JEVEUO('&&DELAT.INDIC','L',IDELAT)

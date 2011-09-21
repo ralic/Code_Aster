@@ -2,7 +2,7 @@
      &                  NUMFIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,6 +65,7 @@ C
       INTEGER      N1,N2
       REAL*8       INST
       INTEGER      JINST
+      INTEGER      IARG
 C      
 C ----------------------------------------------------------------------
 C      
@@ -80,8 +81,8 @@ C
 C
 C --- LECTURE MOTS-CLEFS
 C      
-      CALL GETVIS(MOTFAC,'NUME_INST_FIN',IOCC,1,1,NUMFIN,N1)
-      CALL GETVR8(MOTFAC,'INST_FIN'     ,IOCC,1,1,INST  ,N2)
+      CALL GETVIS(MOTFAC,'NUME_INST_FIN',IOCC,IARG,1,NUMFIN,N1)
+      CALL GETVR8(MOTFAC,'INST_FIN'     ,IOCC,IARG,1,INST  ,N2)
 C      
 C --- PAS D'OCCURENCE DES MOTS-CLES -> NUMERO INITIAL
 C

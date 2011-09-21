@@ -6,7 +6,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 MODMAI, MLGGMA, MLGNMA
       CHARACTER*8  FCX
       CHARACTER*1  K1BID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -118,14 +119,17 @@ C --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
       DO 10 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
          CALL GETVEM(NOMA,'GROUP_MA','BARRE','GROUP_MA',
-     &           IOC,1,LMAX,ZK8(JDLS),NG)
+     &           IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','BARRE','MAILLE',
-     &         IOC,1,LMAX,ZK8(JDLS),NM)
-         CALL GETVTX('BARRE','SECTION'  ,IOC,1,1     ,SEC       ,NSEC)
-         CALL GETVTX('BARRE','CARA'     ,IOC,1,NBCAR ,ZK8(JCARA),NCAR)
-         CALL GETVR8('BARRE','VALE'     ,IOC,1,NBVAL ,ZR(JVALE) ,NVAL)
+     &         IOC,IARG,LMAX,ZK8(JDLS),NM)
+         CALL GETVTX('BARRE','SECTION',IOC,IARG,1,
+     &               SEC       ,NSEC)
+         CALL GETVTX('BARRE','CARA',IOC,IARG,NBCAR,
+     &               ZK8(JCARA),NCAR)
+         CALL GETVR8('BARRE','VALE',IOC,IARG,NBVAL,
+     &               ZR(JVALE) ,NVAL)
          FCX = '.'
-         CALL GETVID('BARRE','FCX'       ,IOC,1,1    ,FCX ,NFCX)
+         CALL GETVID('BARRE','FCX'       ,IOC,IARG,1    ,FCX ,NFCX)
 C
          IF (SEC.EQ.ZK16(JSECT  )) ISEC = 0
          IF (SEC.EQ.ZK16(JSECT+1)) ISEC = 1

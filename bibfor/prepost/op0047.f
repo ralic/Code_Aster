@@ -1,9 +1,9 @@
       SUBROUTINE OP0047()
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -29,14 +29,15 @@ C     ------------------------------------------------------------
       LOGICAL      LGRCOU
       CHARACTER*8  K8B
       CHARACTER*16 K16B, CMD
+      INTEGER      IARG
 C
       CALL INFMAJ()
       CALL GETRES ( K8B, K16B, CMD )
 C
       IF (CMD(5:9).EQ.'IDEAS') THEN
          LGRCOU = .FALSE.
-         CALL GETVIS ( ' ', 'UNITE_IDEAS'    , 1,1,1, NFIE, N )
-         CALL GETVTX ( ' ', 'CREA_GROUP_COUL', 1,1,1,  K8B, N )
+         CALL GETVIS ( ' ', 'UNITE_IDEAS'    , 1,IARG,1, NFIE, N )
+         CALL GETVTX ( ' ', 'CREA_GROUP_COUL', 1,IARG,1,  K8B, N )
          IF ( K8B(1:3).EQ.'OUI' )  THEN
            LGRCOU = .TRUE.
          ELSE
@@ -45,11 +46,11 @@ C
          
 
       ELSEIF (CMD(5:8).EQ.'GMSH') THEN
-         CALL GETVIS ( ' ', 'UNITE_GMSH'   , 1,1,1, NFIE, N )
+         CALL GETVIS ( ' ', 'UNITE_GMSH'   , 1,IARG,1, NFIE, N )
 
       ENDIF
 C
-      CALL GETVIS ( ' ', 'UNITE_MAILLAGE' , 1,1,1, NFIS, N )
+      CALL GETVIS ( ' ', 'UNITE_MAILLAGE' , 1,IARG,1, NFIS, N )
 C
 C
       IF (CMD(5:9).EQ.'IDEAS') THEN

@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -46,6 +46,7 @@ C
       REAL*8       R8B
       CHARACTER*8  KNUMEC
       CHARACTER*16 MOTCLF
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -54,7 +55,7 @@ C
 C
       NDIM = 0
       DO 10, IOCC = 1, NBCHAR, 1
-         CALL GETVIS ( MOTCLF, 'NUME_CHAR', IOCC,1,1, NUME, N1 )
+         CALL GETVIS ( MOTCLF, 'NUME_CHAR', IOCC,IARG,1, NUME, N1 )
          NDIM = MAX (NDIM, NUME)
  10   CONTINUE
 C
@@ -63,7 +64,7 @@ C
 C
       DO 20, IOCC = 1, NBCHAR, 1
 C
-         CALL GETVIS ( MOTCLF, 'NUME_CHAR', IOCC,1,1, NUME, N1 )
+         CALL GETVIS ( MOTCLF, 'NUME_CHAR', IOCC,IARG,1, NUME, N1 )
 C
          KNUMEC = 'C       '
          CALL CODENT ( NUME , 'D0' , KNUMEC(2:8)  )
@@ -78,30 +79,42 @@ C
 C
 C ------ UN SEUL TENSEUR OU 2 ?
 C
-         CALL GETVR8 ( MOTCLF, 'MX', IOCC,1,0, R8B, N1T )
+         CALL GETVR8 ( MOTCLF, 'MX', IOCC,IARG,0, R8B, N1T )
 C
          IF ( N1T .NE. 0 ) THEN
-            CALL GETVR8 ( MOTCLF, 'FX', IOCC,1,1, ZR(JCHAR-1+1), N1 )
-            CALL GETVR8 ( MOTCLF, 'FY', IOCC,1,1, ZR(JCHAR-1+2), N1 )
-            CALL GETVR8 ( MOTCLF, 'FZ', IOCC,1,1, ZR(JCHAR-1+3), N1 )
-            CALL GETVR8 ( MOTCLF, 'MX', IOCC,1,1, ZR(JCHAR-1+4), N1 )
-            CALL GETVR8 ( MOTCLF, 'MY', IOCC,1,1, ZR(JCHAR-1+5), N1 )
-            CALL GETVR8 ( MOTCLF, 'MZ', IOCC,1,1, ZR(JCHAR-1+6), N1 )
+            CALL GETVR8 ( MOTCLF, 'FX', IOCC,IARG,1, ZR(JCHAR-1+1), N1 )
+            CALL GETVR8 ( MOTCLF, 'FY', IOCC,IARG,1, ZR(JCHAR-1+2), N1 )
+            CALL GETVR8 ( MOTCLF, 'FZ', IOCC,IARG,1, ZR(JCHAR-1+3), N1 )
+            CALL GETVR8 ( MOTCLF, 'MX', IOCC,IARG,1, ZR(JCHAR-1+4), N1 )
+            CALL GETVR8 ( MOTCLF, 'MY', IOCC,IARG,1, ZR(JCHAR-1+5), N1 )
+            CALL GETVR8 ( MOTCLF, 'MZ', IOCC,IARG,1, ZR(JCHAR-1+6), N1 )
 C
          ELSE
-            CALL GETVR8 ( MOTCLF, 'FX_TUBU', IOCC,1,1,ZR(JCHAR-1+1),N1)
-            CALL GETVR8 ( MOTCLF, 'FY_TUBU', IOCC,1,1,ZR(JCHAR-1+2),N1)
-            CALL GETVR8 ( MOTCLF, 'FZ_TUBU', IOCC,1,1,ZR(JCHAR-1+3),N1)
-            CALL GETVR8 ( MOTCLF, 'MX_TUBU', IOCC,1,1,ZR(JCHAR-1+4),N1)
-            CALL GETVR8 ( MOTCLF, 'MY_TUBU', IOCC,1,1,ZR(JCHAR-1+5),N1)
-            CALL GETVR8 ( MOTCLF, 'MZ_TUBU', IOCC,1,1,ZR(JCHAR-1+6),N1)
+            CALL GETVR8 (MOTCLF,'FX_TUBU',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+1),N1)
+            CALL GETVR8 (MOTCLF,'FY_TUBU',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+2),N1)
+            CALL GETVR8 (MOTCLF,'FZ_TUBU',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+3),N1)
+            CALL GETVR8 (MOTCLF,'MX_TUBU',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+4),N1)
+            CALL GETVR8 (MOTCLF,'MY_TUBU',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+5),N1)
+            CALL GETVR8 (MOTCLF,'MZ_TUBU',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+6),N1)
 C
-            CALL GETVR8 ( MOTCLF, 'FX_CORP', IOCC,1,1,ZR(JCHAR-1+7),N1)
-            CALL GETVR8 ( MOTCLF, 'FY_CORP', IOCC,1,1,ZR(JCHAR-1+8),N1)
-            CALL GETVR8 ( MOTCLF, 'FZ_CORP', IOCC,1,1,ZR(JCHAR-1+9),N1)
-            CALL GETVR8 ( MOTCLF, 'MX_CORP',IOCC,1,1,ZR(JCHAR-1+10),N1)
-            CALL GETVR8 ( MOTCLF, 'MY_CORP',IOCC,1,1,ZR(JCHAR-1+11),N1)
-            CALL GETVR8 ( MOTCLF, 'MZ_CORP',IOCC,1,1,ZR(JCHAR-1+12),N1)
+            CALL GETVR8 (MOTCLF,'FX_CORP',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+7),N1)
+            CALL GETVR8 (MOTCLF,'FY_CORP',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+8),N1)
+            CALL GETVR8 (MOTCLF,'FZ_CORP',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+9),N1)
+            CALL GETVR8 (MOTCLF,'MX_CORP',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+10),N1)
+            CALL GETVR8 (MOTCLF,'MY_CORP',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+11),N1)
+            CALL GETVR8 (MOTCLF,'MZ_CORP',IOCC,IARG,1,
+     &                   ZR(JCHAR-1+12),N1)
          ENDIF
 C
  20   CONTINUE

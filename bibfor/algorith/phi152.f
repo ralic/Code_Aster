@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*24  NOMCHA
       CHARACTER*24  PHIB24,CRITER
       COMPLEX*16    CBID
+      INTEGER      IARG
       DATA MAPREC   /'&&OP0152.MAPREC'/
       DATA CHSOL    /'&&OP0152.SOLUTION'/
 C -----------------------------------------------------------------
@@ -77,10 +78,10 @@ C
       SOLVEU = SOLVEZ
       CRITER = '&&RESGRA_GCPC'
       INDICE=0
-      CALL GETVID(' ','MODE_MECA',0,1,1,MODMEC,N5)
-      CALL GETVID(' ','MODELE_FLUIDE',0,1,1,MOFLUI,N1)
-      CALL GETVID(' ','MODELE_INTERFACE',0,1,1,MOINT,N2)
-      CALL GETVID(' ','CHAM_NO',0,1,0,CHAMNO,N6)
+      CALL GETVID(' ','MODE_MECA',0,IARG,1,MODMEC,N5)
+      CALL GETVID(' ','MODELE_FLUIDE',0,IARG,1,MOFLUI,N1)
+      CALL GETVID(' ','MODELE_INTERFACE',0,IARG,1,MOINT,N2)
+      CALL GETVID(' ','CHAM_NO',0,IARG,0,CHAMNO,N6)
 
 C TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 C DES MAILLAGES COMMUNS
@@ -193,7 +194,7 @@ C================================================================
            CALL WKVECT('&&OP0152.PHI1','V V K24',N7,IPHI1)
            CALL WKVECT('&&OP0152.PHI2','V V K24',N7,IPHI2)
            CALL WKVECT('&&OP0152.VEC','V V K8',N7,IVALK)
-           CALL GETVID(' ','CHAM_NO',0,1,N7,ZK8(IVALK),N6)
+           CALL GETVID(' ','CHAM_NO',0,IARG,N7,ZK8(IVALK),N6)
 
            ILIRES = 0
            PHIB24=PHIBAR

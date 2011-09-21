@@ -3,7 +3,7 @@
       CHARACTER*8  NOMRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C
       CHARACTER*24 VALK(4)
 C
       LOGICAL      NOSEUL
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
 C
@@ -88,14 +89,15 @@ C --- CAS CLASSIQUE
 C
       IF(IOC1.GT.0) THEN
         NUMBIS =' '
-        CALL GETVID('CLASSIQUE','INTERF_DYNA',1,1,1,INTF,IBID)
+        CALL GETVID('CLASSIQUE','INTERF_DYNA',1,IARG,1,INTF,IBID)
         CALL DISMOI('F','NOM_NUME_DDL',INTF,'INTERF_DYNA',
      &              IBID,NUMDDL,IRET)
 C        NUMDDL(15:19)='.NUME'
-        CALL GETVID('CLASSIQUE','MODE_MECA',1,1,0,K8BID,NBMOME)
+        CALL GETVID('CLASSIQUE','MODE_MECA',1,IARG,0,K8BID,NBMOME)
         NBMOME = -NBMOME
         CALL WKVECT('&&'//NOMPRO//'.MODE_MECA','V V K8',NBMOME,LTMOME)
-        CALL GETVID('CLASSIQUE','MODE_MECA',1,1,NBMOME,ZK8(LTMOME),IBID)
+        CALL GETVID('CLASSIQUE','MODE_MECA',1,IARG,NBMOME,
+     &              ZK8(LTMOME),IBID)
         DO 10 I=1,NBMOME
           CALL JEVEUO(ZK8(LTMOME-1+I)//'           .REFD','L',LLRES)
           RAID=ZK24(LLRES)
@@ -121,20 +123,20 @@ C --- CAS RITZ
 C
       IF(IOC3.GT.0) THEN
         NOSEUL=.FALSE.
-        CALL GETVID('RITZ','MODE_MECA',1,1,999,K8BID,NBG)
-        CALL GETVID('RITZ','MODE_INTF',2,1,0,K8BID,IBID)
+        CALL GETVID('RITZ','MODE_MECA',1,IARG,999,K8BID,NBG)
+        CALL GETVID('RITZ','MODE_INTF',2,IARG,0,K8BID,IBID)
         IF ((IBID.GT.0).OR.(NBG.GT.1)) THEN 
           NOSEUL=.TRUE.
         ENDIF
-        CALL GETVID('    ','NUME_REF',1,1,1,NUMDDL,IBID)
+        CALL GETVID('    ','NUME_REF',1,IARG,1,NUMDDL,IBID)
         IF ((IBID.EQ.0).AND.NOSEUL) THEN
 C         si on a plus d'un mode_meca en entree, preciser NUME_REF
           CALL U2MESG('E', 'ALGORITH17_8',0,' ',0,0,0,0.D0)
         ENDIF
 C        NUMDDL(15:19)='.NUME'
-        CALL GETVID('  ','INTERF_DYNA',1,1,0,INTF,IOCI)
+        CALL GETVID('  ','INTERF_DYNA',1,IARG,0,INTF,IOCI)
         IF(IOCI.LT.0) THEN
-          CALL GETVID('  ','INTERF_DYNA',1,1,1,INTF,IOCI)
+          CALL GETVID('  ','INTERF_DYNA',1,IARG,1,INTF,IOCI)
         ELSE
           INTF=' '
         ENDIF
@@ -145,7 +147,7 @@ C
       IF (IOC4.GT.0) THEN
         INTF = ' '
 C - RECUPERATION DE LA MASSE
-        CALL GETVID('DIAG_MASS','MODE_MECA',1,1,1,MECA,IBID)
+        CALL GETVID('DIAG_MASS','MODE_MECA',1,IARG,1,MECA,IBID)
         CALL JEVEUO(MECA//'           .REFD','L',LLRES)
         RAID = ZK24(LLRES)
         MASS = ZK24(LLRES+1)
@@ -159,7 +161,7 @@ C --- CAS ORTHO_BASE
 C
       IF(IOC5.GT.0) THEN
         INTF = ' '
-        CALL GETVID('ORTHO_BASE','BASE',1,1,1,MECA,IBID)
+        CALL GETVID('ORTHO_BASE','BASE',1,IARG,1,MECA,IBID)
         CALL JEVEUO(MECA//'           .REFD','L',LLRES)
         RAID = ZK24(LLRES)
         MASS = ZK24(LLRES+1)

@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ C
       CHARACTER*8  K8B, NOMTRC, TYPARR(NBPARR)
       CHARACTER*16 CONCEP, NOMCMD, NOPARR(NBPARR)
       COMPLEX*16   C16B
+      INTEGER      IARG
 C
       DATA NOPARR / 'VITESSE' , 'PARA_EQ' , 'COEF_0' , 'COEF_1' ,
      +              'COEF_2' , 'COEF_3' , 'COEF_4' , 'COEF_5' ,
@@ -73,24 +74,26 @@ C
 C
       LONMAX = 0
       DO 100 I = 1 , NBHIST
-         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,1,0, RBID, NBVAL )
+         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,IARG,0, RBID, NBVAL )
          LONMAX = MAX ( LONMAX , -NBVAL )
  100  CONTINUE
       CALL WKVECT ( '&&OP0094.VALE', 'V V R', LONMAX, JVALE )
 C
       DO 110 I = 1 , NBHIST
-         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,1,0, RBID, NBVAL )
+         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,IARG,0, RBID, NBVAL )
          NBVAL = -NBVAL
-         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,1,NBVAL, ZR(JVALE), NBVAL )
+         CALL GETVR8 ('HIST_EXP','VALE',I,IARG,NBVAL,
+     &                ZR(JVALE), NBVAL )
          CALL TBAJLI ( NOMTRC, 8, NOPARR,IBID,ZR(JVALE),C16B,K8B, 0 )
          XNBV = DBLE(( NBVAL - 8 ) / 4 )
          CALL TBAJLI ( NOMTRC, 1, NOPARR(9),IBID,XNBV,C16B,K8B, I )
  110  CONTINUE
 C
       DO 120 I = 1 , NBHIST
-         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,1,0, RBID, NBVAL )
+         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,IARG,0, RBID, NBVAL )
          NBVAL = -NBVAL
-         CALL GETVR8 ( 'HIST_EXP', 'VALE', I,1,NBVAL, ZR(JVALE), NBVAL )
+         CALL GETVR8 ('HIST_EXP','VALE',I,IARG,NBVAL,
+     &                ZR(JVALE), NBVAL )
          NBV = ( NBVAL - 8 ) / 4
          DO 122 J = 1 , NBV
             IND = JVALE + 8 + 4*(J-1)
@@ -101,13 +104,14 @@ C
 C
 C
       DO 200 I = 1 , NBTRC
-         CALL GETVR8 ( 'TEMP_MS', 'SEUIL', I,1,1, VALE(1), IBID )
-         CALL GETVR8 ( 'TEMP_MS', 'AKM'  , I,1,1, VALE(2), IBID )
-         CALL GETVR8 ( 'TEMP_MS', 'BKM'  , I,1,1, VALE(3), IBID )
-         CALL GETVR8 ( 'TEMP_MS', 'TPLM' , I,1,1, VALE(4), IBID )
-         CALL GETVR8 ( 'GRAIN_AUST', 'DREF'    , I,1,1, VALE(5), IBID )
+         CALL GETVR8 ( 'TEMP_MS', 'SEUIL', I,IARG,1, VALE(1), IBID )
+         CALL GETVR8 ( 'TEMP_MS', 'AKM'  , I,IARG,1, VALE(2), IBID )
+         CALL GETVR8 ( 'TEMP_MS', 'BKM'  , I,IARG,1, VALE(3), IBID )
+         CALL GETVR8 ( 'TEMP_MS', 'TPLM' , I,IARG,1, VALE(4), IBID )
+         CALL GETVR8 ('GRAIN_AUST','DREF',I,IARG,1,
+     &                VALE(5), IBID )
          IF (IBID .EQ. 0) VALE(5) = 0.D0
-         CALL GETVR8 ( 'GRAIN_AUST', 'A', I,1,1, VALE(6), IBID )
+         CALL GETVR8 ( 'GRAIN_AUST', 'A', I,IARG,1, VALE(6), IBID )
          IF (IBID .EQ. 0) VALE(6) = 0.D0
          CALL TBAJLI ( NOMTRC, 6,NOPARR(14), IBID,VALE,C16B,K8B, 0 )
  200  CONTINUE

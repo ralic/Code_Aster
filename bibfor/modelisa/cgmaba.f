@@ -1,6 +1,6 @@
       SUBROUTINE CGMABA (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*16   SELEC
 C
       REAL*8         X0(3), X(3), XX0(3), VECNOR(3), ANGLE(2)
+      INTEGER      IARG
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ()
@@ -107,7 +108,7 @@ C
 C
 C --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
 C     --------------------------------------------------
-      CALL GETVTX(MOTFAC,'CRIT_NOEUD',IOCC,1,1,SELEC,IBID)
+      CALL GETVTX(MOTFAC,'CRIT_NOEUD',IOCC,IARG,1,SELEC,IBID)
 C
 C --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 C     ----------------------------------------
@@ -131,11 +132,11 @@ C     ----------------------------------------------
 C
 C --- RECUPERATION DE LA DEMI-LARGEUR DE LA BANDE :
 C     -------------------------------------------
-      CALL GETVR8(MOTFAC,'DIST',IOCC,1,0,DIST,NDIST)
+      CALL GETVR8(MOTFAC,'DIST',IOCC,IARG,0,DIST,NDIST)
       IF (NDIST.EQ.0) THEN
           CALL U2MESS('F','MODELISA3_67')
       ELSE
-         CALL GETVR8(MOTFAC,'DIST',IOCC,1,1,DIST,NB)
+         CALL GETVR8(MOTFAC,'DIST',IOCC,IARG,1,DIST,NB)
          IF (DIST.LE.ZERO) THEN
              CALL U2MESS('F','MODELISA3_68')
          ENDIF
@@ -144,9 +145,9 @@ C
 C --- RECUPERATION DE LA DIRECTION PERPENDICULAIRE AU PLAN MILIEU
 C --- DE LA BANDE :
 C     -----------
-      CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,0,R8BID,NANGLE)
+      CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,IARG,0,R8BID,NANGLE)
       IF (NANGLE.EQ.0) THEN
-          CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,0,R8BID,NVECT)
+          CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,IARG,0,R8BID,NVECT)
           IF (NVECT.EQ.0) THEN
               CALL U2MESS('F','MODELISA3_69')
           ELSE
@@ -156,7 +157,8 @@ C     -----------
               ELSEIF (NDIM.EQ.2.AND.NVECT.NE.2) THEN
                   CALL U2MESS('F','MODELISA3_71')
               ELSE
-                  CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,NVECT,VECNOR,
+                  CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,IARG,NVECT,
+     &                        VECNOR,
      &                        NV)
               ENDIF
           ENDIF
@@ -164,7 +166,7 @@ C     -----------
           NANGLE = -NANGLE
           NDIM1  =  NDIM - 1
           NANGLE =  MIN (NANGLE,NDIM1)
-          CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,NANGLE,ANGLE,NV)
+          CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,IARG,NANGLE,ANGLE,NV)
          IF ( ABS(NV) .NE. NDIM1 ) THEN
            VALK = MOTFAC
            VALI (1) = IOCC

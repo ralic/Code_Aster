@@ -4,9 +4,9 @@
       CHARACTER*(*)       TABLEZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,6 +75,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*8   K8B, NOMA, NOGRMA
       CHARACTER*19  TABLE
       CHARACTER*24  COOVAL, COODES
+      INTEGER      IARG
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ ( )
@@ -94,10 +95,10 @@ C     -----------------------------------------
 C
 C --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE GRAVITE :
 C     ---------------------------------------------------------------
-      CALL GETVTX('REPERE','GROUP_MA',1,1,0,K8B,NGM)
+      CALL GETVTX('REPERE','GROUP_MA',1,IARG,0,K8B,NGM)
       IF (NGM.NE.0) THEN
           NGM = 1
-          CALL GETVTX('REPERE','GROUP_MA',1,1,NGM,NOGRMA,NGM)
+          CALL GETVTX('REPERE','GROUP_MA',1,IARG,NGM,NOGRMA,NGM)
           NOMA=NOGRMA
           IRET=0
       ELSE

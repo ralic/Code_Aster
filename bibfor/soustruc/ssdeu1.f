@@ -1,6 +1,6 @@
       SUBROUTINE SSDEU1(MOTCLE,NOMA,NBNO,ILISTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*24 ZK24,VALK(2)
       CHARACTER*32 ZK32,JEXNOM
       CHARACTER*80 ZK80
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -74,7 +75,7 @@ C
 C     --CAS NOEUD:
 C     ------------
       CALL GETVEM(NOMA,'NOEUD','EXTERIEUR','NOEUD',
-     &         1,1,0,KBI81,N1)
+     &         1,IARG,0,KBI81,N1)
       IF (N1.NE.0) THEN
          N3=-N1
          IF (NDIM.LT.N3) THEN
@@ -82,7 +83,7 @@ C     ------------
             CALL WKVECT('&&SSDEU1.WK1','V V K8',2*N3,IAWK1)
          END IF
          CALL GETVEM(NOMA,'NOEUD','EXTERIEUR','NOEUD',
-     &            1,1,N3,ZK8(IAWK1),IBID)
+     &            1,IARG,N3,ZK8(IAWK1),IBID)
          NBNO=NBNO+N3
          IF (MOTCLE.EQ.'LISTE') THEN
            DO 100 I=1,N3
@@ -101,7 +102,7 @@ C
 C     --CAS GROUP_NO:
 C     ---------------
       CALL GETVEM(NOMA,'GROUP_NO','EXTERIEUR','GROUP_NO',
-     &            1,1,0,KBI81,N2)
+     &            1,IARG,0,KBI81,N2)
       IF (N2.NE.0) THEN
          N3=-N2
          IF (NDIM.LT.N3) THEN
@@ -109,7 +110,7 @@ C     ---------------
             CALL WKVECT('&&SSDEU1.WK1','V V K8',2*N3,IAWK1)
          END IF
          CALL GETVEM(NOMA,'GROUP_NO','EXTERIEUR','GROUP_NO',
-     &               1,1,N3,ZK8(IAWK1),IBID)
+     &               1,IARG,N3,ZK8(IAWK1),IBID)
          ICO=NBNO
          DO 101 I=1,N3
             CALL JEEXIN(JEXNOM(NOMA//'.GROUPENO',ZK8(IAWK1-1+I)),IRET)

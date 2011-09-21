@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C
       CHARACTER*8   K8B, NOMRES, TABLE, TYPFAT(NBPFAT)
       CHARACTER*16  NOMCMD, CONCEP, NOPFAT(NBPFAT), NOPFA2(4)
       CHARACTER*24  NOMOB1, NOMOB2, NOMOB3
+      INTEGER      IARG
 C     -----------------------------------------------------------------
       DATA  NOPFAT / 'MOMENT_SPEC_0' , 'MOMENT_SPEC_2' ,
      &               'MOMENT_SPEC_4' ,
@@ -64,12 +65,12 @@ C
 C
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
 C
-      CALL GETVR8 ( ' ', 'DUREE'   , 1,1,1, RDUREE, N1 )
+      CALL GETVR8 ( ' ', 'DUREE'   , 1,IARG,1, RDUREE, N1 )
 C
-      CALL GETVID ( ' ', 'TABL_POST_ALEA', 1,1,0, TABLE , NBTAB )
+      CALL GETVID ( ' ', 'TABL_POST_ALEA', 1,IARG,0, TABLE , NBTAB )
 C
       IF ( NBTAB .NE. 0 ) THEN
-        CALL GETVID ( ' ', 'TABL_POST_ALEA', 1,1,1, TABLE, N1 )
+        CALL GETVID ( ' ', 'TABL_POST_ALEA', 1,IARG,1, TABLE, N1 )
 C        CALL TBEXP2(TABLE,'GRANDEUR')
         CALL TBEXP2(TABLE,'LAMBDA_00')
         CALL TBEXP2(TABLE,'LAMBDA_02')
@@ -103,9 +104,9 @@ C        ENDIF
 C
       ELSE
 C
-        CALL GETVR8 ( ' ', 'MOMENT_SPEC_0', 1,1,1, XM0, N1 )
-        CALL GETVR8 ( ' ', 'MOMENT_SPEC_2', 1,1,1, XM2, N1 )
-        CALL GETVR8 ( ' ', 'MOMENT_SPEC_4', 1,1,1, XM4, N1 )
+        CALL GETVR8 ( ' ', 'MOMENT_SPEC_0', 1,IARG,1, XM0, N1 )
+        CALL GETVR8 ( ' ', 'MOMENT_SPEC_2', 1,IARG,1, XM2, N1 )
+        CALL GETVR8 ( ' ', 'MOMENT_SPEC_4', 1,IARG,1, XM4, N1 )
         NBMOM = 1
         CALL WKVECT ( '&&OP0170.MOMENT', 'V V R', 3*NBMOM, IVMOM )
         ZR(IVMOM  ) = XM0

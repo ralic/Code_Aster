@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 GENE, KNUM, KINST, KRANG
       CHARACTER*80 TITRE
       LOGICAL      LHIST, ULEXIS
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -52,13 +53,13 @@ C     ------------------------------------------------------------------
 C
 C     --- FORMAT ---
 C
-      CALL GETVTX ( ' ', 'FORMAT', 1,1,1, FORM, N )
+      CALL GETVTX ( ' ', 'FORMAT', 1,IARG,1, FORM, N )
 C
 C     --- FICHIER ---
 C
       IFI = 0
       FICH = ' '
-      CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFI , N )
+      CALL GETVIS ( ' ', 'UNITE', 1,IARG,1, IFI , N )
       IF ( .NOT. ULEXIS( IFI ) ) THEN
          CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
       ENDIF
@@ -72,7 +73,7 @@ C        --- SEPARATION DES DIFFERENTES OCCURENCES---
 C
          IF ( FORM .EQ. 'RESULTAT' ) WRITE(IFI,'(/,1X,80(''-''))')
 C
-         CALL GETVID(MOTFAC,'RESU_GENE',IOCC,1,1,GENE,NR)
+         CALL GETVID(MOTFAC,'RESU_GENE',IOCC,IARG,1,GENE,NR)
          CALL GETTCO( GENE , TYPCON )
 C
 C        --- ECRITURE DU TITRE ---
@@ -83,19 +84,20 @@ C
 C        --- IMPRESSION DE LA STRUCTURE DU RESU_GENE ---
 C
          IF (TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE') THEN
-            CALL GETVTX(MOTFAC,'INFO_GENE',IOCC,1,1,K8B,N01)
+            CALL GETVTX(MOTFAC,'INFO_GENE',IOCC,IARG,1,K8B,N01)
             IF( K8B(1:3) .EQ. 'OUI' ) CALL RSINFO ( GENE , IFI )
          ENDIF
 C
 C        --- QUELS SONT LES NOM_CHAMP A IMPRIMER ---
 C
          TOUCHA = 'OUI'
-         CALL GETVTX(MOTFAC,'TOUT_CHAM',IOCC,1,1,TOUCHA,N21)
-         CALL GETVTX(MOTFAC,'NOM_CHAM' ,IOCC,1,0,K16BID,N22)
+         CALL GETVTX(MOTFAC,'TOUT_CHAM',IOCC,IARG,1,TOUCHA,N21)
+         CALL GETVTX(MOTFAC,'NOM_CHAM' ,IOCC,IARG,0,K16BID,N22)
          IF ( N22 .LT. 0 ) THEN
             NBNOSY = - N22
             CALL WKVECT('&&OP0157.NOM_SYMB','V V K16',NBNOSY,JNOSY)
-            CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,1,NBNOSY,ZK16(JNOSY),N)
+            CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,IARG,NBNOSY,
+     &                  ZK16(JNOSY),N)
          ELSEIF ( TOUCHA .EQ. 'OUI' ) THEN
             IF (TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE') THEN
               CALL JELIRA(GENE//'.DESC','NOMUTI',NBNOSY,K8B)
@@ -120,14 +122,15 @@ C
          NBCMPG = -1
          JCMPG  =  1
          TOUCMP = '   '
-         CALL GETVTX(MOTFAC,'TOUT_CMP_GENE',IOCC,1,1,TOUCMP,N21)
-         CALL GETVIS(MOTFAC,'NUME_CMP_GENE',IOCC,1,0,IBID  ,N22)
+         CALL GETVTX(MOTFAC,'TOUT_CMP_GENE',IOCC,IARG,1,TOUCMP,N21)
+         CALL GETVIS(MOTFAC,'NUME_CMP_GENE',IOCC,IARG,0,IBID  ,N22)
          IF ( TOUCMP .EQ. 'NON' ) THEN
             NBCMPG = 0
          ELSEIF ( N22 .LT. 0 ) THEN
             NBCMPG = -N22
             CALL WKVECT('&&OP0157.NOM_CMPG','V V I',NBCMPG,JCMPG)
-           CALL GETVIS(MOTFAC,'NUME_CMP_GENE',IOCC,1,NBCMPG,ZI(JCMPG),N)
+           CALL GETVIS(MOTFAC,'NUME_CMP_GENE',IOCC,IARG,NBCMPG,
+     &                 ZI(JCMPG),N)
          ENDIF
 C
 C        --- ON RECHERCHE LES PARAMETRES A ECRIRE ---
@@ -135,14 +138,15 @@ C
          NBPARA = -1
          JPARA  =  1
          TOUPAR = '   '
-         CALL GETVTX(MOTFAC,'TOUT_PARA',IOCC,1,1,TOUPAR,N11)
-         CALL GETVTX(MOTFAC,'NOM_PARA' ,IOCC,1,0,K8B   ,N10)
+         CALL GETVTX(MOTFAC,'TOUT_PARA',IOCC,IARG,1,TOUPAR,N11)
+         CALL GETVTX(MOTFAC,'NOM_PARA' ,IOCC,IARG,0,K8B   ,N10)
          IF ( TOUPAR .EQ. 'NON' ) THEN
             NBPARA = 0
          ELSEIF ( N10 .NE. 0 ) THEN
             NBPARA = -N10
             CALL WKVECT('&&OP0157.NOMUTI_PARA','V V K16',NBPARA,JPARA)
-            CALL GETVTX(MOTFAC,'NOM_PARA',IOCC,1,NBPARA,ZK16(JPARA),N)
+            CALL GETVTX(MOTFAC,'NOM_PARA',IOCC,IARG,NBPARA,
+     &                  ZK16(JPARA),N)
          ENDIF
 C
 C        --- LES ACCES ---
@@ -154,8 +158,8 @@ C
          JRANG  = 1
          IF ( TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE' ) THEN
             KNUM = '&&OP0157.NUME_ORDRE'
-            CALL GETVR8(MOTFAC,'PRECISION',IOCC,1,1,PREC,NP)
-            CALL GETVTX(MOTFAC,'CRITERE'  ,IOCC,1,1,CRIT,NC)
+            CALL GETVR8(MOTFAC,'PRECISION',IOCC,IARG,1,PREC,NP)
+            CALL GETVTX(MOTFAC,'CRITERE'  ,IOCC,IARG,1,CRIT,NC)
             CALL RSUTNU(GENE,MOTFAC,IOCC,KNUM,NBORDR,PREC,CRIT,IRET)
             IF (IRET.NE.0) GOTO 12
             CALL JEVEUO ( KNUM, 'L', JORDR )
@@ -175,7 +179,7 @@ C
 C        --- HISTOR ---
 C
          LHIST = .TRUE.
-         CALL GETVTX(MOTFAC,'INFO_CMP_GENE',IOCC,1,1,K8B,N)
+         CALL GETVTX(MOTFAC,'INFO_CMP_GENE',IOCC,IARG,1,K8B,N)
          IF ( K8B(1:3) .EQ. 'NON' ) LHIST = .FALSE.
 C
          CALL IRGENE (IOCC, GENE, FORM,IFI, NBNOSY,ZK16(JNOSY),

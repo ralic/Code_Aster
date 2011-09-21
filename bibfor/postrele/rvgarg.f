@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ C
       INTEGER      IFR,IUNIFI,J,JORDR,JXVAR,N4,NBC,NBNC,NUMECP(50)
       REAL*8       RBID
       COMPLEX*16   CBID
+      INTEGER      IARG
 C
 C=================== CORPS DE LA ROUTINE =============================
 C
@@ -85,10 +86,10 @@ C
       DO 100, IOCC = 1, NBPOST, 1
          N1 = 0
          N2 = 0
-         CALL GETVTX('ACTION','OPERATION',IOCC,1,0,K8B,N3)
+         CALL GETVTX('ACTION','OPERATION',IOCC,IARG,0,K8B,N3)
          N3 = -N3
          CALL WKVECT('&&RVGARG.NOM.OPERATION','V V K80',N3,ADR)
-         CALL GETVTX('ACTION','OPERATION',IOCC,1,N3,ZK80(ADR),N4)
+         CALL GETVTX('ACTION','OPERATION',IOCC,IARG,N3,ZK80(ADR),N4)
          IF ( N3 .EQ. 1 ) THEN
             TEXT1 = ZK80(ADR + 1-1)
             IF ( TEXT1(1:1) .EQ. 'E' ) THEN
@@ -100,14 +101,14 @@ C
                ZI(AVCODO + IOCC-1) = 2
          ENDIF
          CALL JEDETR('&&RVGARG.NOM.OPERATION')
-         CALL GETVID('ACTION','RESULTAT',IOCC,1,0,K8B,NBRESU)
-         CALL GETVID('ACTION','CHAM_GD' ,IOCC,1,0,K8B,NBCHGD)
+         CALL GETVID('ACTION','RESULTAT',IOCC,IARG,0,K8B,NBRESU)
+         CALL GETVID('ACTION','CHAM_GD' ,IOCC,IARG,0,K8B,NBCHGD)
          NBRESU = -NBRESU
          NBCHGD = -NBCHGD
          IF ( NBRESU .NE. 0 ) THEN
 C        /* CAS D' UN RESULTAT COMPOSE */
-            CALL GETVID('ACTION','RESULTAT',IOCC,1,1,NRESU,N1)
-            CALL GETVTX('ACTION','NOM_CHAM',IOCC,1,1,TEXT80,N1)
+            CALL GETVID('ACTION','RESULTAT',IOCC,IARG,1,NRESU,N1)
+            CALL GETVTX('ACTION','NOM_CHAM',IOCC,IARG,1,TEXT80,N1)
             NCHSYM = TEXT80(1:16)
             CALL JENONU(JEXNOM(NRESU//'           .DESC',NCHSYM),N1)
             IF ( N1 .NE. 0 ) THEN
@@ -146,7 +147,7 @@ C           /* AUCUN CHAMP EFFECTIF ASSOCIE N' A ETE CREE */
             ENDIF
          ELSE
 C        /* CAS D'UN CHAMP_GD */
-            CALL GETVID('ACTION','CHAM_GD',IOCC,1,1,NCHGD,N1)
+            CALL GETVID('ACTION','CHAM_GD',IOCC,IARG,1,NCHGD,N1)
             EXISTE = .TRUE.
             NCHP19 = NCHGD//'           '
          ENDIF
@@ -178,11 +179,16 @@ C        /* IL EST LEGAL, MAIS IL N' ADMET AUCUN CHAMP EFFECTIF */
             CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',
      &                  NBCPGD,K1BID)
             CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',ACPGD)
-            CALL GETVTX('ACTION','NOM_CMP'        ,IOCC,1,0,K8B,NBCMP)
-            CALL GETVTX('ACTION','TOUT_CMP'       ,IOCC,1,0,K8B,NBTCP)
-            CALL GETVTX('ACTION','INVARIANT'      ,IOCC,1,0,K8B,NBINV)
-            CALL GETVTX('ACTION','ELEM_PRINCIPAUX',IOCC,1,0,K8B,NBELP)
-            CALL GETVTX('ACTION','RESULTANTE'     ,IOCC,1,0,K8B,NBSOM)
+            CALL GETVTX('ACTION','NOM_CMP',IOCC,IARG,0,
+     &                  K8B,NBCMP)
+            CALL GETVTX('ACTION','TOUT_CMP',IOCC,IARG,0,
+     &                  K8B,NBTCP)
+            CALL GETVTX('ACTION','INVARIANT',IOCC,IARG,0,
+     &                  K8B,NBINV)
+            CALL GETVTX('ACTION','ELEM_PRINCIPAUX',IOCC,IARG,0,
+     &                  K8B,NBELP)
+            CALL GETVTX('ACTION','RESULTANTE',IOCC,IARG,0,
+     &                  K8B,NBSOM)
             NBCMP = -NBCMP
             NBTCP = -NBTCP
             NBINV = -NBINV
@@ -194,22 +200,22 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                IF ( NBCMP .NE. 0 ) THEN
                   CALL WKVECT('&&OP0051.NOMCMP.USER','V V K8',NBCMP,
      &                         ANCPU1)
-                  CALL GETVTX('ACTION','NOM_CMP',IOCC,1,
+                  CALL GETVTX('ACTION','NOM_CMP',IOCC,IARG,
      &                        NBCMP,ZK8(ANCPU1),N1)
                ELSE
                   IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
                     CALL U2MESS('F','POSTRELE_20')
                   ENDIF
-                  CALL GETVTX('ACTION','RESULTANTE',IOCC,1,0,K8B,N1)
-                  CALL GETVTX('ACTION','MOMENT'    ,IOCC,1,0,K8B,N2)
+                  CALL GETVTX('ACTION','RESULTANTE',IOCC,IARG,0,K8B,N1)
+                  CALL GETVTX('ACTION','MOMENT'    ,IOCC,IARG,0,K8B,N2)
                   N1    = -N1
                   N2    = -N2
                   NBCMP =  N1+N2
                   CALL WKVECT('&&OP0051.NOMCMP.USER','V V K8',NBCMP,
      &                         ANCPU1)
-                  CALL GETVTX('ACTION','RESULTANTE',IOCC,1,
+                  CALL GETVTX('ACTION','RESULTANTE',IOCC,IARG,
      &                        N1,ZK8(ANCPU1),N1)
-                  CALL GETVTX('ACTION','MOMENT',IOCC,1,
+                  CALL GETVTX('ACTION','MOMENT',IOCC,IARG,
      &                        N2,ZK8(ANCPU1+N1),N2)
                ENDIF
                IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN

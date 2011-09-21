@@ -4,9 +4,9 @@
       CHARACTER*8 CHARGE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,6 +64,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       REAL*8 ANGL(3),REEL
       CHARACTER*8 KDDL(NBDDL),KFONC
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C ----------------------------------------------------------------------
       DATA KDDL/'DX','DY','DZ','DRX','DRY','DRZ'/
 C ----------------------------------------------------------------------
@@ -120,8 +121,8 @@ C --- DETERMINATION DU NOMBRE TOTAL DE NOEUDS INTERVENANT ---
 C --- DANS TOUTES LES LIAISONS                            ---
 
       DO 10 I = 1,NLIAI
-        CALL GETVTX(MOTFAC,MOGROU,I,1,0,K8BID,NGRO)
-        CALL GETVTX(MOTFAC,MOTCLE,I,1,0,K8BID,NENT)
+        CALL GETVTX(MOTFAC,MOGROU,I,IARG,0,K8BID,NGRO)
+        CALL GETVTX(MOTFAC,MOTCLE,I,IARG,0,K8BID,NENT)
 
         NGRO = -NGRO
         NBGM = MAX(NBGM,NGRO)
@@ -138,7 +139,7 @@ C --- DANS TOUTES LES LIAISONS                            ---
       CALL WKVECT(TRAV,'V V K8',NDIM,JJJ)
 
       DO 40 IOCC = 1,NLIAI
-        CALL GETVTX(MOTFAC,MOGROU,IOCC,1,NDIM,ZK8(JJJ),NGR)
+        CALL GETVTX(MOTFAC,MOGROU,IOCC,IARG,NDIM,ZK8(JJJ),NGR)
         DO 20 IGR = 1,NGR
           CALL JEEXIN(JEXNOM(GROUMA,ZK8(JJJ+IGR-1)),IRET)
           IF (IRET.EQ.0) THEN
@@ -149,7 +150,7 @@ C --- DANS TOUTES LES LIAISONS                            ---
             CALL JELIRA(JEXNOM(GROUMA,ZK8(JJJ+IGR-1)),'LONUTI',N1,K1BID)
           END IF
    20   CONTINUE
-        CALL GETVTX(MOTFAC,MOTCLE,IOCC,1,NDIM,ZK8(JJJ),NNO)
+        CALL GETVTX(MOTFAC,MOTCLE,IOCC,IARG,NDIM,ZK8(JJJ),NNO)
         DO 30 INO = 1,NNO
           CALL JENONU(JEXNOM(NOEUMA,ZK8(JJJ+INO-1)),IRET)
           IF (IRET.EQ.0) THEN
@@ -174,7 +175,7 @@ C     MISE A JOUR DE LIGRCH ET STOCKAGE DANS LES CARTES
         ANGL(1) = ZERO
         ANGL(2) = ZERO
         ANGL(3) = ZERO
-        CALL GETVR8(MOTFAC,'ANGL_NAUT',I,1,3,ANGL,NA)
+        CALL GETVR8(MOTFAC,'ANGL_NAUT',I,IARG,3,ANGL,NA)
 
         DO 50 I1 = 1,MIN(3,ABS(NA))
           ANGL(I1) = ANGL(I1)*DGRD
@@ -188,7 +189,7 @@ C  --- MATRICE DE PASSAGE AU REPERE GLOBAL ---
         DO 90 I1 = 1,NBDDL
 
           IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8(MOTFAC,KDDL(I1),I,1,1,REEL,IMP)
+            CALL GETVR8(MOTFAC,KDDL(I1),I,IARG,1,REEL,IMP)
 
             IF (IMP.NE.0) THEN
               ZK8(JDDL) = KDDL(I1)
@@ -196,7 +197,7 @@ C  --- MATRICE DE PASSAGE AU REPERE GLOBAL ---
               BETA = REEL
             END IF
           ELSE
-            CALL GETVID(MOTFAC,KDDL(I1),I,1,1,KFONC,IMP)
+            CALL GETVID(MOTFAC,KDDL(I1),I,IARG,1,KFONC,IMP)
 
             IF (IMP.NE.0) THEN
               ZK8(JDDL) = KDDL(I1)
@@ -233,11 +234,11 @@ C  --- MATRICE DE PASSAGE AU REPERE GLOBAL ---
 
 C ---   CAS DE GROUP_NO ---
 
-          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,1,0,
+          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,0,
      &                ZK8(JLISTE),NG)
           IF (NG.NE.0) THEN
             NG = -NG
-            CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,1,NG,
+            CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,NG,
      &                  ZK8(JLISTE),N)
             DO 70 J = 1,NG
               CALL JEVEUO(JEXNOM(GROUMA,ZK8(JLISTE-1+J)),'L',JGR0)
@@ -261,11 +262,12 @@ C --- ET AFFECTATION A LA LISTE DE RELATIONS ---
 
 C ---   CAS DE NOEUD ---
 
-            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,1,0,ZK8(JLISTE),
+            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,0,
+     &                  ZK8(JLISTE),
      &                  NBNO)
             IF (NBNO.NE.0) THEN
               NBNO = -NBNO
-              CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,1,NBNO,
+              CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,NBNO,
      &                    ZK8(JLISTE),N)
 
               DO 80 K = 1,NBNO

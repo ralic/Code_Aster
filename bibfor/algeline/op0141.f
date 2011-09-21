@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19  MATR, PRONU1, PRONU2, PRONUA
       CHARACTER*24  CHAMOL
       LOGICAL       C1,C2,ZCMPLX,IERI,IDENSD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
@@ -73,7 +74,7 @@ C
       CALL INFNIV ( IFM , NIV )
 
 C RECUPERATION DE LA MATRICE ASSEMBLEE SI ELLE EXISTE
-      CALL GETVID ( ' ', 'MATR_ASSE'     , 1,1,1, MATRAS, N1 )
+      CALL GETVID ( ' ', 'MATR_ASSE'     , 1,IARG,1, MATRAS, N1 )
       IF (N1.NE.0) THEN
 C COOL ELLE EXISTE
         CALL MTDSCR ( MATRAS )
@@ -88,14 +89,14 @@ C PAS COOL ELLE EXISTE PAS
       ENDIF
 
       IERI = .FALSE.
-      CALL GETVTX ( ' ','IERI',1,1,1,REP,N1)
+      CALL GETVTX ( ' ','IERI',1,IARG,1,REP,N1)
       IF ( N1.EQ.1 ) THEN
          IF (REP .EQ. 'OUI') IERI = .TRUE.
       ENDIF
 
 C RECUPERATION DES BASES DE MODES
-      CALL GETVID ( ' ', 'BASE_1'          , 1,1,1, BASE1, N2 )
-      CALL GETVID ( ' ', 'BASE_2'          , 1,1,1, BASE2, N3 )
+      CALL GETVID ( ' ', 'BASE_1'          , 1,IARG,1, BASE1, N2 )
+      CALL GETVID ( ' ', 'BASE_2'          , 1,IARG,1, BASE2, N3 )
 
       C1 = .FALSE.
       C2 = .FALSE.

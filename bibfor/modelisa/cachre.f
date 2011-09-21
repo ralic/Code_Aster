@@ -8,9 +8,9 @@
       CHARACTER*(*)     LIGRMO, MOTCL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,6 +65,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
       INTEGER       GETEXM,XTOUT
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -129,19 +130,19 @@ C
          NREP  = 0
          NCMP  = 0
          IF ( MOTCLF .EQ. 'FORCE_POUTRE' ) THEN
-            CALL GETVTX ( MOTCLF, 'TYPE_CHARGE', IOCC,1,1, TYPCH, N )
+            CALL GETVTX ( MOTCLF, 'TYPE_CHARGE', IOCC,IARG,1, TYPCH, N )
             IF (TYPCH.EQ.'VENT') NREP = 2
          ENDIF
          IF (FONREE.EQ.'COMP') THEN
-            CALL GETVC8 ( MOTCLF, 'FX', IOCC, 1, 1, CFX, NFX )
-            CALL GETVC8 ( MOTCLF, 'FY', IOCC, 1, 1, CFY, NFY )
-            CALL GETVC8 ( MOTCLF, 'FZ', IOCC, 1, 1, CFZ, NFZ )
+            CALL GETVC8 ( MOTCLF, 'FX', IOCC,IARG, 1, CFX, NFX )
+            CALL GETVC8 ( MOTCLF, 'FY', IOCC,IARG, 1, CFY, NFY )
+            CALL GETVC8 ( MOTCLF, 'FZ', IOCC,IARG, 1, CFZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
      &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
      &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
-              CALL GETVC8 ( MOTCLF, 'MX', IOCC, 1, 1, CMX, NMX )
-              CALL GETVC8 ( MOTCLF, 'MY', IOCC, 1, 1, CMY, NMY )
-              CALL GETVC8 ( MOTCLF, 'MZ', IOCC, 1, 1, CMZ, NMZ )
+              CALL GETVC8 ( MOTCLF, 'MX', IOCC,IARG, 1, CMX, NMX )
+              CALL GETVC8 ( MOTCLF, 'MY', IOCC,IARG, 1, CMY, NMY )
+              CALL GETVC8 ( MOTCLF, 'MZ', IOCC,IARG, 1, CMZ, NMZ )
             ELSE
               NMX = 0
               NMY = 0
@@ -150,21 +151,21 @@ C
            IF ( NFX+NFY+NFZ+NMX+NMY+NMZ .EQ. 0 ) THEN
                IF ( MOTCLF .EQ. 'FORCE_POUTRE' ) THEN
                  NREP = 1
-                 CALL GETVC8 ( MOTCLF, 'N'  , IOCC, 1, 1, CFX, NFX )
-                 CALL GETVC8 ( MOTCLF, 'VY' , IOCC, 1, 1, CFY, NFY )
-                 CALL GETVC8 ( MOTCLF, 'VZ' , IOCC, 1, 1, CFZ, NFZ )
+                 CALL GETVC8 ( MOTCLF, 'N'  , IOCC,IARG, 1, CFX, NFX )
+                 CALL GETVC8 ( MOTCLF, 'VY' , IOCC,IARG, 1, CFY, NFY )
+                 CALL GETVC8 ( MOTCLF, 'VZ' , IOCC,IARG, 1, CFZ, NFZ )
 C                CALL GETVC8 ( MOTCLF, 'MT' , IOCC, 1, 1, CMX, NMX )
 C                CALL GETVC8 ( MOTCLF, 'MFY', IOCC, 1, 1, CMY, NMY )
 C                CALL GETVC8 ( MOTCLF, 'MFZ', IOCC, 1, 1, CMZ, NMZ )
                ELSE IF ( MOTCLF .EQ. 'FORCE_COQUE' ) THEN
                  NREP = 1
-                 CALL GETVC8 ( MOTCLF, 'PRES', IOCC, 1, 1,CVPRE, NFZ )
+                 CALL GETVC8 ( MOTCLF, 'PRES', IOCC,IARG, 1,CVPRE, NFZ )
                  IF ( NFZ .EQ. 0 ) THEN
-                   CALL GETVC8 ( MOTCLF, 'F1' , IOCC, 1, 1, CFX, NFX )
-                   CALL GETVC8 ( MOTCLF, 'F2' , IOCC, 1, 1, CFY, NFY )
-                   CALL GETVC8 ( MOTCLF, 'F3' , IOCC, 1, 1, CFZ, NFZ )
-                   CALL GETVC8 ( MOTCLF, 'MF1', IOCC, 1, 1, CMX, NMX )
-                   CALL GETVC8 ( MOTCLF, 'MF2', IOCC, 1, 1, CMY, NMY )
+                   CALL GETVC8 ( MOTCLF, 'F1' , IOCC,IARG, 1, CFX, NFX )
+                   CALL GETVC8 ( MOTCLF, 'F2' , IOCC,IARG, 1, CFY, NFY )
+                   CALL GETVC8 ( MOTCLF, 'F3' , IOCC,IARG, 1, CFZ, NFZ )
+                   CALL GETVC8 ( MOTCLF, 'MF1', IOCC,IARG, 1, CMX, NMX )
+                   CALL GETVC8 ( MOTCLF, 'MF2', IOCC,IARG, 1, CMY, NMY )
                    NMZ = 0
                  ELSE
                    CFZ  = -CVPRE
@@ -215,15 +216,15 @@ C                CALL GETVC8 ( MOTCLF, 'MFZ', IOCC, 1, 1, CMZ, NMZ )
                IF (NREP.EQ.2) ZC(JVALV-1+NCMP)  = 2.D0
             ENDIF
          ELSEIF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 ( MOTCLF, 'FX', IOCC, 1, 1, FX, NFX )
-            CALL GETVR8 ( MOTCLF, 'FY', IOCC, 1, 1, FY, NFY )
-            CALL GETVR8 ( MOTCLF, 'FZ', IOCC, 1, 1, FZ, NFZ )
+            CALL GETVR8 ( MOTCLF, 'FX', IOCC,IARG, 1, FX, NFX )
+            CALL GETVR8 ( MOTCLF, 'FY', IOCC,IARG, 1, FY, NFY )
+            CALL GETVR8 ( MOTCLF, 'FZ', IOCC,IARG, 1, FZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
      &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
      &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
-              CALL GETVR8 ( MOTCLF, 'MX', IOCC, 1, 1, MX, NMX )
-              CALL GETVR8 ( MOTCLF, 'MY', IOCC, 1, 1, MY, NMY )
-              CALL GETVR8 ( MOTCLF, 'MZ', IOCC, 1, 1, MZ, NMZ )
+              CALL GETVR8 ( MOTCLF, 'MX', IOCC,IARG, 1, MX, NMX )
+              CALL GETVR8 ( MOTCLF, 'MY', IOCC,IARG, 1, MY, NMY )
+              CALL GETVR8 ( MOTCLF, 'MZ', IOCC,IARG, 1, MZ, NMZ )
             ELSE
               NMX = 0
               NMY = 0
@@ -232,21 +233,26 @@ C                CALL GETVC8 ( MOTCLF, 'MFZ', IOCC, 1, 1, CMZ, NMZ )
            IF ( NFX+NFY+NFZ+NMX+NMY+NMZ .EQ. 0 ) THEN
                IF ( MOTCLF .EQ. 'FORCE_POUTRE' ) THEN
                   NREP = 1
-                  CALL GETVR8 ( MOTCLF, 'N'  , IOCC, 1, 1, FX, NFX )
-                  CALL GETVR8 ( MOTCLF, 'VY' , IOCC, 1, 1, FY, NFY )
-                  CALL GETVR8 ( MOTCLF, 'VZ' , IOCC, 1, 1, FZ, NFZ )
+                  CALL GETVR8 ( MOTCLF, 'N'  , IOCC,IARG, 1, FX, NFX )
+                  CALL GETVR8 ( MOTCLF, 'VY' , IOCC,IARG, 1, FY, NFY )
+                  CALL GETVR8 ( MOTCLF, 'VZ' , IOCC,IARG, 1, FZ, NFZ )
 C                 CALL GETVR8 ( MOTCLF, 'MT' , IOCC, 1, 1, MX, NMX )
 C                 CALL GETVR8 ( MOTCLF, 'MFY', IOCC, 1, 1, MY, NMY )
 C                 CALL GETVR8 ( MOTCLF, 'MFZ', IOCC, 1, 1, MZ, NMZ )
                ELSE IF ( MOTCLF .EQ. 'FORCE_COQUE' ) THEN
                   NREP = 1
-                  CALL GETVR8 (MOTCLF,'PRES', IOCC, 1, 1,VPRE, NFZ)
+                  CALL GETVR8 (MOTCLF,'PRES', IOCC,IARG, 1,VPRE, NFZ)
                   IF ( NFZ .EQ. 0 ) THEN
-                     CALL GETVR8 ( MOTCLF, 'F1' , IOCC, 1, 1, FX, NFX )
-                     CALL GETVR8 ( MOTCLF, 'F2' , IOCC, 1, 1, FY, NFY )
-                     CALL GETVR8 ( MOTCLF, 'F3' , IOCC, 1, 1, FZ, NFZ )
-                     CALL GETVR8 ( MOTCLF, 'MF1', IOCC, 1, 1, MX, NMX )
-                     CALL GETVR8 ( MOTCLF, 'MF2', IOCC, 1, 1, MY, NMY )
+                     CALL GETVR8 (MOTCLF,'F1',IOCC,IARG,1,
+     &                            FX, NFX )
+                     CALL GETVR8 (MOTCLF,'F2',IOCC,IARG,1,
+     &                            FY, NFY )
+                     CALL GETVR8 (MOTCLF,'F3',IOCC,IARG,1,
+     &                            FZ, NFZ )
+                     CALL GETVR8 (MOTCLF,'MF1',IOCC,IARG,1,
+     &                            MX, NMX )
+                     CALL GETVR8 (MOTCLF,'MF2',IOCC,IARG,1,
+     &                            MY, NMY )
                      NMZ = 0
                   ELSE
                      FZ  = -VPRE
@@ -295,15 +301,15 @@ C                 CALL GETVR8 ( MOTCLF, 'MFZ', IOCC, 1, 1, MZ, NMZ )
                IF (NREP.EQ.2) ZR(JVALV-1+NCMP)  = 2.D0
             ENDIF
          ELSE
-            CALL GETVID ( MOTCLF, 'FX', IOCC,1,1, KFX, NFX )
-            CALL GETVID ( MOTCLF, 'FY', IOCC,1,1, KFY, NFY )
-            CALL GETVID ( MOTCLF, 'FZ', IOCC,1,1, KFZ, NFZ )
+            CALL GETVID ( MOTCLF, 'FX', IOCC,IARG,1, KFX, NFX )
+            CALL GETVID ( MOTCLF, 'FY', IOCC,IARG,1, KFY, NFY )
+            CALL GETVID ( MOTCLF, 'FZ', IOCC,IARG,1, KFZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
      &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
      &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
-              CALL GETVID ( MOTCLF, 'MX', IOCC,1,1, KMX, NMX )
-              CALL GETVID ( MOTCLF, 'MY', IOCC,1,1, KMY, NMY )
-              CALL GETVID ( MOTCLF, 'MZ', IOCC,1,1, KMZ, NMZ )
+              CALL GETVID ( MOTCLF, 'MX', IOCC,IARG,1, KMX, NMX )
+              CALL GETVID ( MOTCLF, 'MY', IOCC,IARG,1, KMY, NMY )
+              CALL GETVID ( MOTCLF, 'MZ', IOCC,IARG,1, KMZ, NMZ )
             ELSE
               NMX = 0
               NMY = 0
@@ -312,21 +318,26 @@ C                 CALL GETVR8 ( MOTCLF, 'MFZ', IOCC, 1, 1, MZ, NMZ )
            IF ( NFX+NFY+NFZ+NMX+NMY+NMZ .EQ. 0 ) THEN
                IF ( MOTCLF .EQ. 'FORCE_POUTRE' ) THEN
                   NREP = 1
-                  CALL GETVID ( MOTCLF, 'N'  , IOCC,1,1, KFX, NFX )
-                  CALL GETVID ( MOTCLF, 'VY' , IOCC,1,1, KFY, NFY )
-                  CALL GETVID ( MOTCLF, 'VZ' , IOCC,1,1, KFZ, NFZ )
+                  CALL GETVID ( MOTCLF, 'N'  , IOCC,IARG,1, KFX, NFX )
+                  CALL GETVID ( MOTCLF, 'VY' , IOCC,IARG,1, KFY, NFY )
+                  CALL GETVID ( MOTCLF, 'VZ' , IOCC,IARG,1, KFZ, NFZ )
 C                 CALL GETVID ( MOTCLF, 'MT' , IOCC,1,1, KMX, NMX )
 C                 CALL GETVID ( MOTCLF, 'MFY', IOCC,1,1, KMY, NMY )
 C                 CALL GETVID ( MOTCLF, 'MFZ', IOCC,1,1, KMZ, NMZ )
                ELSE IF ( MOTCLF .EQ. 'FORCE_COQUE' ) THEN
                   NREP = 1
-                  CALL GETVID ( MOTCLF, 'PRES', IOCC,1,1, KFZ, NFZ )
+                  CALL GETVID ( MOTCLF, 'PRES', IOCC,IARG,1, KFZ, NFZ )
                   IF ( NFZ .EQ. 0 ) THEN
-                     CALL GETVID ( MOTCLF, 'F1' , IOCC,1,1, KFX, NFX )
-                     CALL GETVID ( MOTCLF, 'F2' , IOCC,1,1, KFY, NFY )
-                     CALL GETVID ( MOTCLF, 'F3' , IOCC,1,1, KFZ, NFZ )
-                     CALL GETVID ( MOTCLF, 'MF1', IOCC,1,1, KMX, NMX )
-                     CALL GETVID ( MOTCLF, 'MF2', IOCC,1,1, KMY, NMY )
+                     CALL GETVID (MOTCLF,'F1',IOCC,IARG,1,
+     &                            KFX, NFX )
+                     CALL GETVID (MOTCLF,'F2',IOCC,IARG,1,
+     &                            KFY, NFY )
+                     CALL GETVID (MOTCLF,'F3',IOCC,IARG,1,
+     &                            KFZ, NFZ )
+                     CALL GETVID (MOTCLF,'MF1',IOCC,IARG,1,
+     &                            KMX, NMX )
+                     CALL GETVID (MOTCLF,'MF2',IOCC,IARG,1,
+     &                            KMY, NMY )
                      NMZ = 0
                   ELSE
                      NFX = 0
@@ -381,7 +392,7 @@ C --           LA VALEUR LUE DANS LE TE
          IF (NCMP.EQ.0) GOTO 20
 C
          IF ( MOTCLF .EQ. 'FORCE_COQUE' ) THEN
-            CALL GETVTX ( MOTCLF, 'PLAN', IOCC,1,1, PLAN, NPLAN )
+            CALL GETVTX ( MOTCLF, 'PLAN', IOCC,IARG,1, PLAN, NPLAN )
             IF (NPLAN.NE.0) THEN
                NCMP = NCMP + 1
                ZK8(JNCMP-1+NCMP) = 'PLAN'
@@ -404,7 +415,7 @@ C
          XTOUT=GETEXM( MOTCLF, 'TOUT')
          NBTOU=0
          IF (XTOUT .EQ. 1) THEN
-            CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+            CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
          ENDIF
 C
          IF ( NBTOU .NE. 0 ) THEN

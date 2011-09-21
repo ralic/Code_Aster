@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,18 +43,19 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 TYPE,CMD,SYMETR,METHOD
       CHARACTER*19 RESIN,RESOU,VECTOT
       CHARACTER*24 TYPRES
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(RESOU,TYPE,CMD)
 C
 C   Recuperation arguments utilisateurs
 C
-      CALL GETVID(' ','RESULTAT',1,1,1,RESIN,NVAL)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESIN,NVAL)
       IF ( NVAL.EQ.0 ) THEN
-         CALL GETVID(' ','RESU_GENE',1,1,1,RESIN,NVAL)
+         CALL GETVID(' ','RESU_GENE',1,IARG,1,RESIN,NVAL)
       ENDIF
-      CALL GETVTX(' ','METHODE',1,1,1,METHOD,NVAL)
-      CALL GETVTX(' ','SYMETRIE',1,1,1,SYMETR,NVAL)
+      CALL GETVTX(' ','METHODE',1,IARG,1,METHOD,NVAL)
+      CALL GETVTX(' ','SYMETRIE',1,IARG,1,SYMETR,NVAL)
 C   Evaluation sens de la FFT
       CALL GETTCO(RESIN,TYPRES)
       IF ((TYPRES(1:10).EQ.'DYNA_HARMO').OR.
@@ -64,7 +65,7 @@ C   Evaluation sens de la FFT
          NSENS = 1
       ENDIF
 C
-      CALL GETVTX(' ','NOM_CHAM',1,1,3,GRAND,NGRAND)
+      CALL GETVTX(' ','NOM_CHAM',1,IARG,3,GRAND,NGRAND)
       IF (NGRAND .EQ. 0) THEN
           NGRAND = 3
           GRAND(1) = 'DEPL'

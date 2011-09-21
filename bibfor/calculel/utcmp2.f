@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMGD,MCFAC,NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,17 +55,18 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER N2,I,NUCMP,IRET,JNOCMP,LGNCMP
       CHARACTER*8 K8B,NOCMP
       CHARACTER*16 NOMCMD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL GETRES(K8B,K8B,NOMCMD)
 
 
-      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,1,0,K8B,N2)
+      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,IARG,0,K8B,N2)
       NBCMP=-N2
       CALL ASSERT(DIM.GE.NBCMP)
 
-      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,1,NBCMP,NOMCMP,N2)
+      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,IARG,NBCMP,NOMCMP,N2)
 
 
       IF (NOMGD(1:6).EQ.'VARI_R') THEN

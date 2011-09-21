@@ -5,9 +5,9 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,6 +69,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       COMPLEX*16 C16B
       CHARACTER*8 K8BID
       INTEGER LTOUT,LINST,LFREQ,LORDR,GETEXM
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(K8B,CONCEP,NOMCMD)
@@ -86,11 +87,11 @@ C     ------------------------------------------------------------------
       END IF
 
 C     --- CAS "NUME_ORDRE" ---
-      CALL GETVIS(MOTCLE,'NUME_ORDRE',IOCC,1,0,IBID,N1)
+      CALL GETVIS(MOTCLE,'NUME_ORDRE',IOCC,IARG,0,IBID,N1)
       IF (N1.NE.0) THEN
         NBORDR = -N1
         CALL WKVECT(KNUM,'V V I',NBORDR,JORDR)
-        CALL GETVIS(MOTCLE,'NUME_ORDRE',IOCC,1,NBORDR,ZI(JORDR),N1)
+        CALL GETVIS(MOTCLE,'NUME_ORDRE',IOCC,IARG,NBORDR,ZI(JORDR),N1)
         GO TO 100
       END IF
 
@@ -108,11 +109,11 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
           CTYP = '    '
           CALL RSADPA(RESU,'L',1,ZK16(JPARA-1+IACC),IORD,1,IAD,CTYP)
           IF (CTYP(1:1).EQ.'I') THEN
-            CALL GETVIS(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,0,IBID,N2)
+            CALL GETVIS(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,0,IBID,N2)
           ELSE IF (CTYP(1:1).EQ.'R') THEN
-            CALL GETVR8(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,0,R8B,N2)
+            CALL GETVR8(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,0,R8B,N2)
           ELSE IF (CTYP(1:1).EQ.'K') THEN
-            CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,0,K8BID,N2)
+            CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,0,K8BID,N2)
             IF (ZK16(JPARA-1+IACC) (1:9).EQ.'NOEUD_CMP') N2 = N2/2
           END IF
 
@@ -125,19 +126,19 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
             IUT = LXLGUT(CTYP)
             CALL WKVECT(KVACC,'V V '//CTYP(1:IUT),NBVAL,JVAL)
             IF (CTYP(1:1).EQ.'I') THEN
-              CALL GETVIS(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVAL,
+              CALL GETVIS(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVAL,
      &                    ZI(JVAL),N2)
             ELSE IF (CTYP(1:1).EQ.'R') THEN
-              CALL GETVR8(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVAL,
+              CALL GETVR8(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVAL,
      &                    ZR(JVAL),N2)
             ELSE IF (CTYP(1:2).EQ.'K8') THEN
-              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVAL,
+              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVAL,
      &                    ZK8(JVAL),N2)
             ELSE IF (CTYP(1:3).EQ.'K16') THEN
               IF (ZK16(JPARA-1+IACC) (1:9).EQ.'NOEUD_CMP') THEN
                 NBVA2 = 2*NBVAL
                 CALL WKVECT(KNMOD,'V V K8',NBVA2,JNCH)
-                CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVA2,
+                CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVA2,
      &                      ZK8(JNCH),N2)
                 DO 10 II = 1,NBVAL
                   ZK16(JVAL+II-1) = ZK8(JNCH+ (2*II-1)-1)//
@@ -145,17 +146,17 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
    10           CONTINUE
                 CALL JEDETR(KNMOD)
               ELSE
-                CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVAL,
+                CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVAL,
      &                      ZK16(JVAL),N2)
               END IF
             ELSE IF (CTYP(1:3).EQ.'K24') THEN
-              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVAL,
+              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVAL,
      &                    ZK24(JVAL),N2)
             ELSE IF (CTYP(1:3).EQ.'K32') THEN
-              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVAL,
+              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVAL,
      &                    ZK32(JVAL),N2)
             ELSE IF (CTYP(1:3).EQ.'K80') THEN
-              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,NBVAL,
+              CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,IARG,NBVAL,
      &                    ZK80(JVAL),N2)
             END IF
             NBORDR = 1
@@ -289,7 +290,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
 
       LINST = GETEXM(MOTCLE,'LIST_INST')
       IF (LINST .EQ. 1) THEN
-        CALL GETVID(MOTCLE,'LIST_INST',IOCC,1,1,LISTR,N1)
+        CALL GETVID(MOTCLE,'LIST_INST',IOCC,IARG,1,LISTR,N1)
         IF (N1.NE.0) THEN
           CALL RSORAC(RESU,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,NBORDT,1,
      &                IBID)
@@ -334,7 +335,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
 
       LFREQ = GETEXM(MOTCLE,'LIST_FREQ')
       IF (LFREQ .EQ. 1) THEN
-        CALL GETVID(MOTCLE,'LIST_FREQ',IOCC,1,1,LISTR,N1)
+        CALL GETVID(MOTCLE,'LIST_FREQ',IOCC,IARG,1,LISTR,N1)
         IF (N1.NE.0) THEN
           CALL RSORAC(RESU,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,NBORDT,1,
      &                IBID)
@@ -379,7 +380,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
 
       LORDR = GETEXM(MOTCLE,'LIST_ORDRE')
       IF (LORDR .EQ. 1) THEN
-        CALL GETVID(MOTCLE,'LIST_ORDRE',IOCC,1,1,LISTR,N1)
+        CALL GETVID(MOTCLE,'LIST_ORDRE',IOCC,IARG,1,LISTR,N1)
         IF (N1.NE.0) THEN
           CALL JEVEUO(LISTR//'.VALE','L',LACCR)
           CALL JELIRA(LISTR//'.VALE','LONMAX',NBORDR,K8B)

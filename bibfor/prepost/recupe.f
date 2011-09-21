@@ -6,9 +6,9 @@
       CHARACTER*8  NOMA, MATREV, ORIDEF
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,12 +40,13 @@ C ======================================================================
       INTEGER      IBID, IER
       CHARACTER*8  K8B
       CHARACTER*16 MOTFAC
+      INTEGER      IARG
 C ======================================================================
       CALL JEMARQ()
 C ======================================================================
 C --- RECUPERATION DU MAILLAGE -----------------------------------------
 C ======================================================================
-      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA, IBID )
+      CALL GETVID ( ' ', 'MAILLAGE', 1,IARG,1, NOMA, IBID )
 C ======================================================================
 C --- DIMENSION DE L'ESPACE --------------------------------------------
 C ======================================================================
@@ -58,18 +59,18 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES CARACTERISTIQUES DU REVETEMENT ------------------
 C ======================================================================
-      CALL GETVR8 ( ' ', 'EPAIS_REV'  , 1,1,1, LREV    , IBID )
-      CALL GETVID ( ' ', 'MATER_REV'  , 1,1,1, MATREV  , IBID )
+      CALL GETVR8 ( ' ', 'EPAIS_REV'  , 1,IARG,1, LREV    , IBID )
+      CALL GETVID ( ' ', 'MATER_REV'  , 1,IARG,1, MATREV  , IBID )
 C ======================================================================
 C --- RECUPERATION DES DONNEES DE LA FISSURE ---------------------------
 C ======================================================================
-      CALL GETVR8 ( 'FISSURE', 'DECALAGE'   , 1,1,1, DEKLAG , IBID )
+      CALL GETVR8 ( 'FISSURE', 'DECALAGE'   , 1,IARG,1, DEKLAG , IBID )
       IF ( DEKLAG.GT.0.0D0 ) THEN
          CALL U2MESS('F','PREPOST4_60')
       ENDIF
-      CALL GETVR8 ( 'FISSURE', 'PROFONDEUR' , 1,1,1, PRODEF , IBID )
-      CALL GETVR8 ( 'FISSURE', 'LONGUEUR'   , 1,1,1, LONDEF , IBID )
-      CALL GETVTX ( 'FISSURE', 'ORIENTATION', 1,1,1, ORIDEF , IBID )
+      CALL GETVR8 ( 'FISSURE', 'PROFONDEUR' , 1,IARG,1, PRODEF , IBID )
+      CALL GETVR8 ( 'FISSURE', 'LONGUEUR'   , 1,IARG,1, LONDEF , IBID )
+      CALL GETVTX ( 'FISSURE', 'ORIENTATION', 1,IARG,1, ORIDEF , IBID )
 C ======================================================================
 C --- RECUPERATION DU NOMBRE D'OCCURENCE DE K1D ------------------------
 C ======================================================================

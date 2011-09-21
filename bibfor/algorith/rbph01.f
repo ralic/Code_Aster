@@ -8,9 +8,9 @@
       LOGICAL             TOUSNO, MULTAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16  CHAMP(8)
       CHARACTER*19  NOMCHA
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
 C     ------------------------------------------------------------------
@@ -41,7 +42,7 @@ C
       MODE = BASEMO
 C
       CHAMP(1)=' '
-      CALL GETVTX ( ' ', 'TOUT_CHAM', 1,1,1, CHAMP, N1 )
+      CALL GETVTX ( ' ', 'TOUT_CHAM', 1,IARG,1, CHAMP, N1 )
 C
       IF ( CHAMP(1) .EQ. 'OUI' ) THEN
          NBCHAM = 3
@@ -90,9 +91,9 @@ C
 C
       ELSE
 C
-         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,0, CHAMP, N1 )
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,0, CHAMP, N1 )
          NBCHAM = -N1
-         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,NBCHAM, CHAMP, N1 )
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,NBCHAM, CHAMP, N1 )
 C
          DO 10 I = 1 , NBCHAM
          IF ( CHAMP(I) .EQ. 'DEPL' ) THEN

@@ -2,9 +2,9 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       REAL*8       LSUP, VUSURT(*), VUSURO(*), PRUST(*), PARA(7)
       CHARACTER*4  CRIT
       CHARACTER*24 TYPE, TYP1, TYP2
+      INTEGER      IARG
 C
       ZERO = 0.D0
       UN   = 1.D0
@@ -65,14 +66,14 @@ C
       PARA(6) = ZERO
       PARA(7) = ZERO
 C
-      CALL GETVTX(' ','CONTACT',1,1,1,TYPE,N1)
+      CALL GETVTX(' ','CONTACT',1,IARG,1,TYPE,N1)
 C
 C     --- TUBE - BARRE ANTI VIBRATOIRE ---
       IF ( TYPE(1:8) .EQ. 'TUBE_BAV' ) THEN
-         CALL GETVR8(' ','RAYON_MOBILE' ,1,1,1,RAYT,N1)
-         CALL GETVR8(' ','LARGEUR_OBST' ,1,1,1,LSUP,N2)
-         CALL GETVR8(' ','ANGL_INCLI'   ,1,1,1,ANGL,N3)
-         CALL GETVR8(' ','ANGL_IMPACT'  ,1,1,1,AIMP,N4)
+         CALL GETVR8(' ','RAYON_MOBILE' ,1,IARG,1,RAYT,N1)
+         CALL GETVR8(' ','LARGEUR_OBST' ,1,IARG,1,LSUP,N2)
+         CALL GETVR8(' ','ANGL_INCLI'   ,1,IARG,1,ANGL,N3)
+         CALL GETVR8(' ','ANGL_IMPACT'  ,1,IARG,1,AIMP,N4)
          IF ( N4 .NE. 0 ) THEN
             RAPP = COS ( AIMP * R8DGRD() )
          ELSE
@@ -121,10 +122,10 @@ C     --- TUBE - BARRE ANTI VIBRATOIRE ---
 C
 C     --- TUBE - TROU CIRCULAIRE ---
       ELSEIF ( TYPE(1:12) .EQ. 'TUBE_ALESAGE' ) THEN
-         CALL GETVR8(' ','RAYON_MOBILE'    ,1,1,1,RAYT,N1)
-         CALL GETVR8(' ','RAYON_OBST'      ,1,1,1,RAYO,N2)
-         CALL GETVR8(' ','LARGEUR_OBST'    ,1,1,1,LSUP,N3)
-         CALL GETVR8(' ','ANGL_INCLI'      ,1,1,1,ANGL,N4)
+         CALL GETVR8(' ','RAYON_MOBILE'    ,1,IARG,1,RAYT,N1)
+         CALL GETVR8(' ','RAYON_OBST'      ,1,IARG,1,RAYO,N2)
+         CALL GETVR8(' ','LARGEUR_OBST'    ,1,IARG,1,LSUP,N3)
+         CALL GETVR8(' ','ANGL_INCLI'      ,1,IARG,1,ANGL,N4)
          IF ( N4 .NE. 0 ) ANGL = ANGL * R8DGRD()
          PARA(1) = RAYT
          PARA(2) = RAYO
@@ -190,11 +191,11 @@ C
 C     --- TUBE - TROU QUADRIFOLIE OU TRIFOLIE ---
       ELSEIF ( TYPE(1:11) .EQ. 'TUBE_4_ENCO' .OR.
      &         TYPE(1:11) .EQ. 'TUBE_3_ENCO' ) THEN
-         CALL GETVR8(' ','RAYON_MOBILE'    ,1,1,1,PARA(1),N1)
-         CALL GETVR8(' ','RAYON_OBST'      ,1,1,1,PARA(2),N2)
-         CALL GETVR8(' ','LARGEUR_OBST'    ,1,1,1,PARA(3),N3)
-         CALL GETVR8(' ','ANGL_INCLI'      ,1,1,1,PARA(4),N4)
-         CALL GETVR8(' ','ANGL_ISTHME'     ,1,1,1,PARA(7),N5)
+         CALL GETVR8(' ','RAYON_MOBILE'    ,1,IARG,1,PARA(1),N1)
+         CALL GETVR8(' ','RAYON_OBST'      ,1,IARG,1,PARA(2),N2)
+         CALL GETVR8(' ','LARGEUR_OBST'    ,1,IARG,1,PARA(3),N3)
+         CALL GETVR8(' ','ANGL_INCLI'      ,1,IARG,1,PARA(4),N4)
+         CALL GETVR8(' ','ANGL_ISTHME'     ,1,IARG,1,PARA(7),N5)
          IF ( N4 .NE. 0 ) PARA(4) = PARA(4) * R8DGRD()
          PARA(7) = PARA(7) * R8DGRD()
          X1 = ZERO
@@ -260,8 +261,8 @@ C
 C
 C     --- TUBE - TUBE ---
       ELSEIF ( TYPE(1:9) .EQ. 'TUBE_TUBE' ) THEN
-         CALL GETVR8(' ','RAYON_MOBILE'    ,1,1,1,RAYT,N1)
-         CALL GETVR8(' ','ANGL_INCLI'      ,1,1,1,ANGL,N2)
+         CALL GETVR8(' ','RAYON_MOBILE'    ,1,IARG,1,RAYT,N1)
+         CALL GETVR8(' ','ANGL_INCLI'      ,1,IARG,1,ANGL,N2)
          CST1 = ( UN / ( DE * RAYT ) ) ** UNS5
          CST2 = 15.D0 * ANGL * R8DGRD() / 8.D0
          DO 40 I = 1,NBINST
@@ -270,8 +271,8 @@ C     --- TUBE - TUBE ---
 C
 C     --- GRAPPE - ALESAGE ---
       ELSEIF ( TYPE(1:14) .EQ. 'GRAPPE_ALESAGE' ) THEN
-         CALL GETVR8(' ','RAYON_MOBILE'    ,1,1,1,PARA(1),N1)
-         CALL GETVR8(' ','RAYON_OBST'      ,1,1,1,PARA(2),N2)
+         CALL GETVR8(' ','RAYON_MOBILE'    ,1,IARG,1,PARA(1),N1)
+         CALL GETVR8(' ','RAYON_OBST'      ,1,IARG,1,PARA(2),N2)
          X11 = ZERO
          X2 = PARA(2)
          DO 50 I = 1,NBINST

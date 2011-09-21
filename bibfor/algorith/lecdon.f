@@ -3,7 +3,7 @@
       INTEGER           UNITPA
       LOGICAL           PRDEFF,FICEXT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -139,6 +139,7 @@ C
       INTEGER           ZCPAL, ZNPAL  
       CHARACTER*16      K16NOM
       CHARACTER*24      CPAL, NPAL
+      INTEGER      IARG
 C
       CALL JEMARQ()
       NIV = 0
@@ -242,24 +243,24 @@ C   --------------------------------------------------------------------
         IF (NBPAL.GT.PALMAX) CALL U2MESS('F','EDYOS_43')
         ZI(ZNPAL)=NBPAL
         DO 201 IPAL = 1, NBPAL
-          CALL GETVTX('PALIER_EDYOS','GROUP_NO',IPAL,1,0,K8B,N2)
+          CALL GETVTX('PALIER_EDYOS','GROUP_NO',IPAL,IARG,0,K8B,N2)
           IF ( ABS(N2) .EQ. 0 ) THEN
-            CALL GETVTX('PALIER_EDYOS','NOEUD',IPAL,1,0,K8B,N2)
+            CALL GETVTX('PALIER_EDYOS','NOEUD',IPAL,IARG,0,K8B,N2)
             IF ( ABS(N2) .EQ. 0 ) THEN
               CALL U2MESS('F','EDYOS_49')
             ELSE
               NGR = -N2
               NGR = 1
-              CALL GETVTX('PALIER_EDYOS','NOEUD',IPAL,1,NGR,
+              CALL GETVTX('PALIER_EDYOS','NOEUD',IPAL,IARG,NGR,
      &                 CNPAL(IPAL),N2)              
             ENDIF
           ELSE
             NGR = -N2
             NGR = 1
-            CALL GETVTX('PALIER_EDYOS','GROUP_NO',IPAL,1,NGR,
+            CALL GETVTX('PALIER_EDYOS','GROUP_NO',IPAL,IARG,NGR,
      &                 CNPAL(IPAL),N2)
           ENDIF
-          CALL GETVTX('PALIER_EDYOS','TYPE_EDYOS',IPAL,1,NGR,
+          CALL GETVTX('PALIER_EDYOS','TYPE_EDYOS',IPAL,IARG,NGR,
      &                 CTYPE,N2)
           ZK8(ZCPAL+(2*PALMAX)+(IPAL-1))=CNPAL(IPAL)
           ZK8(ZCPAL+(IPAL-1))=CTYPE

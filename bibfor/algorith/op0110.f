@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C
      &              IOC11,LLREF,LLNBS,NBSECT,IOC12,IBID
       CHARACTER*8    MODELG, RESCYC, NOMRES, NOMA, NOMSQU
       CHARACTER*16  NOMOPE, NOMCMD
+      INTEGER      IARG
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -53,22 +54,22 @@ C
 C
       CALL GETRES ( NOMRES, NOMCMD, NOMOPE )
       CALL GETFAC('CYCLIQUE',IOC1)
-      CALL GETVID ( ' ', 'MODELE_GENE', 1,1,1, MODELG, IOC2 )
-      CALL GETVID ( ' ', 'SQUELETTE'  , 1,1,1, NOMSQU, IOC3 )
+      CALL GETVID ( ' ', 'MODELE_GENE', 1,IARG,1, MODELG, IOC2 )
+      CALL GETVID ( ' ', 'SQUELETTE'  , 1,IARG,1, NOMSQU, IOC3 )
 
 C
 C------------------------CAS CYCLIQUE-----------------------------------
 C
       IF ( IOC1 .GT. 0 ) THEN
-        CALL GETVID ('CYCLIQUE','MODE_CYCL' ,1,1,1,RESCYC,IOC11)
+        CALL GETVID ('CYCLIQUE','MODE_CYCL' ,1,IARG,1,RESCYC,IOC11)
         IF (IOC11.GT.0) THEN
           CALL JEVEUO(RESCYC//'.CYCL_REFE','L',LLREF)
           NOMA = ZK24(LLREF)
           CALL JEVEUO(RESCYC//'.CYCL_NBSC','L',LLNBS)
           NBSECT = ZI(LLNBS)
         ELSE
-          CALL GETVID ('CYCLIQUE','MAILLAGE', 1,1,1,NOMA,IOC12)
-          CALL GETVIS('CYCLIQUE','NB_SECTEUR',1,1,1,NBSECT,IBID)
+          CALL GETVID ('CYCLIQUE','MAILLAGE', 1,IARG,1,NOMA,IOC12)
+          CALL GETVIS('CYCLIQUE','NB_SECTEUR',1,IARG,1,NBSECT,IBID)
         ENDIF
         CALL CYC110( NOMRES , NOMA, NBSECT)
 C

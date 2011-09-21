@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8  K8B, MAEL, BASEMO, MASSE, NOMA, LISTAM
       CHARACTER*16 NOMCMD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -159,8 +160,8 @@ C
       ENDIF
 C
 C     ----- RECUPERATION DES AMORTISSEMENTS -----
-      CALL GETVR8(' ','AMOR_REDUIT',0,1,0,R8B,N1)
-      CALL GETVID(' ','LIST_AMOR',0,1,0,K8B,N2)
+      CALL GETVR8(' ','AMOR_REDUIT',0,IARG,0,R8B,N1)
+      CALL GETVID(' ','LIST_AMOR',0,IARG,0,K8B,N2)
       IF (NBMODE.EQ.0) THEN
        CALL WKVECT('&&IREDMI.AMORTISSEMENT','V V R',1,JAMOR)
       ELSE
@@ -169,9 +170,9 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
       IF (N1.NE.0.OR.N2.NE.0) THEN
          IF (N1.NE.0) THEN
             NBAMOR = -N1
-            CALL GETVR8(' ','AMOR_REDUIT',1,1,NBAMOR,ZR(JAMOR),N1)
+            CALL GETVR8(' ','AMOR_REDUIT',1,IARG,NBAMOR,ZR(JAMOR),N1)
          ELSE
-            CALL GETVID(' ','LIST_AMOR',0,1,1,LISTAM,N2)
+            CALL GETVID(' ','LIST_AMOR',0,IARG,1,LISTAM,N2)
             CALL JELIRA(LISTAM//'           .VALE','LONMAX',NBAMOR,K8B)
             CALL JEVEUO(LISTAM//'           .VALE','L',JAMOR)
          ENDIF

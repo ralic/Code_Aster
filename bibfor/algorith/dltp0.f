@@ -4,7 +4,7 @@
       INTEGER   NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  TYPRES, NOMCMD
       CHARACTER*24  VALK            
       COMPLEX*16    C16B
+      INTEGER      IARG
 C     -----------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
@@ -55,11 +56,11 @@ C     --- EST-ON EN REPRISE ? ---
 C
 C     INITIALISATION DE T0 PAR DEFAUT
 
-      CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,DYNA,NDY)
+      CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,DYNA,NDY)
       IF ( NDY .NE. 0 ) THEN
-         CALL GETVIS('ETAT_INIT','NUME_ORDRE' ,1,1,1,NUME,NNI)
+         CALL GETVIS('ETAT_INIT','NUME_ORDRE' ,1,IARG,1,NUME,NNI)
          IF ( NNI .EQ. 0 ) THEN
-            CALL GETVR8('ETAT_INIT','INST_INIT',1,1,1,TEMPS,NT)
+            CALL GETVR8('ETAT_INIT','INST_INIT',1,IARG,1,TEMPS,NT)
             IF ( NT .EQ. 0 ) THEN
                CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
      &                                         PREC,CRIT,NUME,1,NBTROU)
@@ -67,8 +68,8 @@ C     INITIALISATION DE T0 PAR DEFAUT
                 CALL U2MESS('F','ALGORITH3_24')
                ENDIF
             ELSE
-               CALL GETVR8('ETAT_INIT','PRECISION',1,1,1,PREC ,NP)
-               CALL GETVTX('ETAT_INIT','CRITERE'  ,1,1,1,CRIT ,NC)
+               CALL GETVR8('ETAT_INIT','PRECISION',1,IARG,1,PREC ,NP)
+               CALL GETVTX('ETAT_INIT','CRITERE'  ,1,IARG,1,CRIT ,NC)
                CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
      &                                        PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.LT.0) THEN
@@ -103,7 +104,7 @@ C        --- RECUPERATION DE L'INSTANT ---
 C
 C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "LIST_INST" ---
 C
-         CALL GETVID('INCREMENT','LIST_INST',1,1,1,LI,N1)
+         CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LI,N1)
          IF (N1.NE.0) THEN
             CALL JEVEUO(LI//'           .BINT','L',JBINT)
             T0 = ZR (JBINT)
@@ -113,7 +114,7 @@ C
 C     --- DEFINITION DE L'INSTANT INITIAL AVEC "INST_INIT" ---
 C
             T0 = 0.D0
-            CALL GETVR8('INCREMENT','INST_INIT',1,1,1,T0,NP)
+            CALL GETVR8('INCREMENT','INST_INIT',1,IARG,1,T0,NP)
             IF (NP.EQ.0) CALL U2MESS('I','ALGORITH5_62')
          ENDIF
       ENDIF

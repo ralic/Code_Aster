@@ -4,7 +4,7 @@
      >                    NLSMAC, NLSNAC, NOMTAB, XNOVAR)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C
       CHARACTER*4  DOCU
       CHARACTER*1  CA
       LOGICAL      CHOK
+      INTEGER      IARG
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
@@ -84,9 +85,9 @@ C
       CHOK = .TRUE.
       CALL INFNIV ( IFM, NIV )
 C
-      CALL GETVTX(MCF,'OPERATION',IOCC,1,0,K8B,NBOPER)
+      CALL GETVTX(MCF,'OPERATION',IOCC,IARG,0,K8B,NBOPER)
       NBOPER = -NBOPER
-      CALL GETVTX(MCF,'OPERATION',IOCC,1,NBOPER,OPERAT,N0)
+      CALL GETVTX(MCF,'OPERATION',IOCC,IARG,NBOPER,OPERAT,N0)
 C
       IF ( NCH19(1:1) .EQ. '&' ) THEN
          IF (NIV.GT.1) CALL RVINFO(IFM,IOCC,I1,I2,'E',NCHEFF)
@@ -145,15 +146,15 @@ C
      >                     NBNAC, ZI(JLSNAC) )
             ENDIF
 C
-           CALL GETVR8('ACTION','VECT_Y',IOCC,1,3,VECTY,NY)
+           CALL GETVR8('ACTION','VECT_Y',IOCC,IARG,3,VECTY,NY)
            TRIDIM=NY.NE.0
 
             IF ( CHOK ) THEN
                CALL DISMOI('F','NOM_MAILLA',NCH19,'CHAMP',I,MAILLA,IE)
-               CALL GETVID(MCF,'CHEMIN',IOCC,1,0,K8B,NBCRB)
+               CALL GETVID(MCF,'CHEMIN',IOCC,IARG,0,K8B,NBCRB)
                NBCRB = -NBCRB
                IF ( NBCRB .NE. 0 ) THEN
-                  CALL GETVID(MCF,'CHEMIN',IOCC,1,NBCRB,COURBE,N1)
+                  CALL GETVID(MCF,'CHEMIN',IOCC,IARG,NBCRB,COURBE,N1)
                   TYPCO = 'CHEMIN'
                ELSE
                   TYPCO = 'AUTRE'
@@ -162,7 +163,7 @@ C
                SDLIEU = '&&RVPOST.NOM.VECT.LIEU'
                SDEVAL = '&&RVPOST.NOM.VECT.EVAL'
 C
-               CALL GETVTX(MCF,'MOYE_NOEUD',IOCC,1,1,K8B,N)
+               CALL GETVTX(MCF,'MOYE_NOEUD',IOCC,IARG,1,K8B,N)
                IF ( K8B(1:1) .EQ. 'O' ) THEN
                   CA = 'N'
                ELSE
@@ -174,7 +175,7 @@ C
                CALL JELIRA(SDLIEU,'LONMAX',NBSD,K8B)
                CALL JEVEUO(SDLIEU,'L',JSDLI)
                CALL JEVEUO(SDEVAL,'L',JSDEV)
-               CALL GETVTX(MCF,'RESULTANTE',IOCC,1,0,ZK80,NR   )
+               CALL GETVTX(MCF,'RESULTANTE',IOCC,IARG,0,ZK80,NR   )
                 SDNEWR = '&&RVPOST.NEW.REPERE'
                 IF ( REPERE(1:1) .NE. 'G' .AND. .NOT.TRIDIM) THEN
                    CALL RVCHGR(MAILLA,COURBE,NLSNAC,REPERE,SDNEWR,IRET)

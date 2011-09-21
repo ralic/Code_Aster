@@ -1,6 +1,6 @@
       SUBROUTINE CGMASP (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*24   LISMAI
 C
       REAL*8         X0(3), X(3)
+      INTEGER      IARG
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ()
@@ -82,7 +83,7 @@ C     ---------------
 C
 C --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
 C     --------------------------------------------------
-      CALL GETVTX(MOTFAC,'CRIT_NOEUD',IOCC,1,1,SELEC,IBID)
+      CALL GETVTX(MOTFAC,'CRIT_NOEUD',IOCC,IARG,1,SELEC,IBID)
 C
       ZERO  = 0.0D0
 C
@@ -120,11 +121,11 @@ C     --------------------------------------------------
 C
 C --- RECUPERATION DU RAYON DE LA SPHERE :
 C     ----------------------------------
-      CALL GETVR8(MOTFAC,'RAYON',IOCC,1,0,RAYON,NRAYON)
+      CALL GETVR8(MOTFAC,'RAYON',IOCC,IARG,0,RAYON,NRAYON)
       IF (NRAYON.EQ.0) THEN
           CALL U2MESS('F','MODELISA3_82')
       ELSE
-         CALL GETVR8(MOTFAC,'RAYON',IOCC,1,1,RAYON,NB)
+         CALL GETVR8(MOTFAC,'RAYON',IOCC,IARG,1,RAYON,NB)
          IF (RAYON.LE.ZERO) THEN
              CALL U2MESS('F','MODELISA3_83')
          ENDIF

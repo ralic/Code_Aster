@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBNO
       CHARACTER*(*)       MOFAZ, NOMAZ, LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       CHARACTER*8    NOMA, CRIT, NOM1
       CHARACTER*16   MOTFAC, MOTCLE(2), TYPMCL(2)
       CHARACTER*24   LISNOE, NOMNOE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -98,8 +99,8 @@ C     ----------------------------------
 C
 C --- RECUPERATION DE LA PRECISION ET DU CRITERE :
 C     ------------------------------------------
-      CALL GETVR8 ( MOTFAC, 'PRECISION', IOCC,1,1, TOLE, N1 )
-      CALL GETVTX ( MOTFAC, 'CRITERE'  , IOCC,1,1, CRIT, N1 )
+      CALL GETVR8 ( MOTFAC, 'PRECISION', IOCC,IARG,1, TOLE, N1 )
+      CALL GETVTX ( MOTFAC, 'CRITERE'  , IOCC,IARG,1, CRIT, N1 )
 C
 C --- ON ORDONNE :
 C     ----------

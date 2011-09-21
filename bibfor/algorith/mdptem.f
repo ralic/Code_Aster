@@ -10,7 +10,7 @@
       CHARACTER*24       LISINS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  TYPRES,NOMCMD,METHOD
       CHARACTER*19  NUMARC
       CHARACTER*1   K1BID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
@@ -87,22 +88,22 @@ C
       DTU = 1.D+10
       DTMAX = 1.D+10
       LISINS= ' '
-      CALL GETVTX('SCHEMA_TEMPS','SCHEMA',1,1,1,METHOD,N1)
+      CALL GETVTX('SCHEMA_TEMPS','SCHEMA',1,IARG,1,METHOD,N1)
 C      
 C     VERIFICATION DE PRESENCE DU PAS SI ADAPT
 C     (DÉJÀ FAIT DANS MDVERI POUR ITMI)
       IF ( METHOD(1:5) .EQ. 'ADAPT') THEN
-        CALL GETVR8('INCREMENT','PAS',1,1,0,DTA,IBID)
+        CALL GETVR8('INCREMENT','PAS',1,IARG,0,DTA,IBID)
         IF (IBID.EQ.0)
      &     CALL U2MESS('F','ALGORITH3_11')
       ENDIF  
 C
 C     RECUPERATION de TINIT
-      CALL GETVID('ETAT_INIT','RESULTAT',1,1,1, TRAN,NR)
+      CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1, TRAN,NR)
       IF (NR .NE. 0) THEN
-         CALL GETVIS('ETAT_INIT','NUME_ORDRE' ,1,1,1,NUME,NNI)
+         CALL GETVIS('ETAT_INIT','NUME_ORDRE' ,1,IARG,1,NUME,NNI)
          IF ( NNI .EQ. 0 ) THEN
-            CALL GETVR8('ETAT_INIT','INST_INIT',1,1,1, TINIT,NT)
+            CALL GETVR8('ETAT_INIT','INST_INIT',1,IARG,1, TINIT,NT)
             IF (NT .EQ. 0 ) THEN
                CALL JEVEUO(TRAN//'           .INST' ,'L',JINST)
                CALL JELIRA(TRAN//'           .INST' ,'LONUTI',NBINST,
@@ -122,12 +123,12 @@ C     RECUPERATION de TINIT
             TINIT = ZR(JINST+I-1)
          ENDIF    
       ELSE
-         CALL GETVID('INCREMENT','LIST_INST',1,1,1,  LI,NT)
+         CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,  LI,NT)
          IF (NT.NE.0) THEN
             CALL JEVEUO(LI//'           .BINT','L',JBINT)
             TINIT = ZR (JBINT)
          ELSE
-            CALL GETVR8('INCREMENT','INST_INIT',1,1,1,  TINIT,N2)
+            CALL GETVR8('INCREMENT','INST_INIT',1,IARG,1,  TINIT,N2)
             IF (N2.EQ.0) THEN 
               CALL U2MESS('I','ALGORITH5_62') 
             ENDIF
@@ -135,7 +136,7 @@ C     RECUPERATION de TINIT
       ENDIF      
 C
 C     RECUPERATION de DT et TFIN 
-      CALL GETVID('INCREMENT','LIST_INST',1,1,1,  LI,NT)
+      CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,  LI,NT)
       IF (NT.NE.0) THEN
             CALL JEVEUO(LI//'           .BINT','L',JBINT)
             CALL JEVEUO(LI//'           .LPAS','L',JLPAS)
@@ -147,9 +148,9 @@ C     RECUPERATION de DT et TFIN
             ENDIF  
             DTU = ZR (JLPAS)
             TFIN = ZR (JBINT+1)
-            CALL GETVIS('INCREMENT','NUME_FIN',1,1,1,NUMEF,N1)
+            CALL GETVIS('INCREMENT','NUME_FIN',1,IARG,1,NUMEF,N1)
             IF ( N1 .EQ. 0 ) THEN
-               CALL GETVR8('INCREMENT','INST_FIN',1,1,1,TFIN,N1)
+               CALL GETVR8('INCREMENT','INST_FIN',1,IARG,1,TFIN,N1)
                IF ( N1 .EQ. 0 ) GOTO 99
             ELSE
                CALL JEVEUO(LI//'           .VALE','L',JVALR)
@@ -158,13 +159,13 @@ C     RECUPERATION de DT et TFIN
                TFIN = ZR(JVALR+NUMEF)
             ENDIF
       ELSE      
-           CALL GETVR8('INCREMENT','INST_FIN' ,1,1,1,  TFIN,N3)
-           CALL GETVR8('INCREMENT','PAS'      ,1,1,1,   DTU,N4)
+           CALL GETVR8('INCREMENT','INST_FIN' ,1,IARG,1,  TFIN,N3)
+           CALL GETVR8('INCREMENT','PAS'      ,1,IARG,1,   DTU,N4)
            IF (DTU.EQ.0.D0)
      &       CALL U2MESS('F','ALGORITH3_12')
       ENDIF
   99  CONTINUE
-      CALL GETVTX('INCREMENT','VERI_PAS' ,1,1,1,VERIPA,N5)
+      CALL GETVTX('INCREMENT','VERI_PAS' ,1,IARG,1,VERIPA,N5)
       IF ( VERIPA .EQ. 'OUI' ) IVERI = 1
 C
       DO 10 I = 1,NBMODE
@@ -264,8 +265,8 @@ C     SI LA MÉTHODE N'EST PAS ADAPT OU ITMI:
 C     SI LIST_INST DANS ARCHIVAGE ALORS:
 C     BESOIN D'UNE LISTE DES INSTANTS DE CALCUL POUR LA CREATION 
 C     DE LA LISTE D'ARCHIVAGE DANS DYARCH.F
-      CALL GETVID ( 'ARCHIVAGE', 'LIST_INST', 1,1,0, NUMARC, N6 )
-      CALL GETVR8 ( 'ARCHIVAGE', 'INST', 1,1,0, R8BID, N7 )
+      CALL GETVID ( 'ARCHIVAGE', 'LIST_INST', 1,IARG,0, NUMARC, N6 )
+      CALL GETVR8 ( 'ARCHIVAGE', 'INST', 1,IARG,0, R8BID, N7 )
       IF ( N6 .NE.0 .OR. N7 .NE.0 )THEN
         IF ( METHOD(1:5) .NE. 'ADAPT' .OR. 
      &       METHOD      .NE. 'ITMI')      THEN
@@ -282,9 +283,9 @@ C     DE LA LISTE D'ARCHIVAGE DANS DYARCH.F
 C       
 C     GESTION DU PAS MAXIMAL POUR SCHEMA ADAPT
       IF ( METHOD(1:5) .EQ. 'ADAPT') THEN
-        CALL GETVR8('INCREMENT','PAS_MAXI',1,1,1, R8BID,N6)
+        CALL GETVR8('INCREMENT','PAS_MAXI',1,IARG,1, R8BID,N6)
         IF ( N6 .NE. 0 ) THEN
-          CALL GETVR8('INCREMENT','PAS_MAXI',1,1,1,DTMAX,N6)
+          CALL GETVR8('INCREMENT','PAS_MAXI',1,IARG,1,DTMAX,N6)
           IF ( DTMAX .GT. (DTS / 20.D0) ) THEN
             VALR (1) = DTMAX
             VALR (2) = DT

@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDM(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
+      INTEGER      IARG
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       R1= R8DGRD()
@@ -58,7 +59,7 @@ C     ---------------------------------
       NBSMA=0
       DO 1, IOCC=1,NOCC
         CALL GETVID('DEFI_SUPER_MAILLE','MACR_ELEM',
-     &               IOCC,1,0,KBI81,N1)
+     &               IOCC,IARG,0,KBI81,N1)
         NBSMA=NBSMA-N1
  1    CONTINUE
 C
@@ -88,20 +89,21 @@ C     -----------------------------------------
       ISMA=0
       DO 2, IOCC=1,NOCC
 C
-        CALL GETVID('DEFI_SUPER_MAILLE','MACR_ELEM',IOCC,1,NBSMA,
+        CALL GETVID('DEFI_SUPER_MAILLE','MACR_ELEM',IOCC,IARG,NBSMA,
      &  ZK8(IALK81),N1)
         CALL GETVTX('DEFI_SUPER_MAILLE','SUPER_MAILLE',
-     &              IOCC,1,NBSMA,ZK8(IALK82),N2)
+     &              IOCC,IARG,NBSMA,ZK8(IALK82),N2)
         IF (N2.LT.0) CALL U2MESS('F','SOUSTRUC_50')
         IF ((N2.GT.0).AND.(N2.NE.N1)) CALL U2MESS('F','SOUSTRUC_51')
 C
         DO 3 ,K=1,9
           LISR8(K)=0.0D0
  3      CONTINUE
-        CALL GETVR8('DEFI_SUPER_MAILLE','TRAN',IOCC,1,3,LISR8(1),N3)
+        CALL GETVR8('DEFI_SUPER_MAILLE','TRAN',IOCC,IARG,3,LISR8(1),N3)
         CALL GETVR8('DEFI_SUPER_MAILLE','ANGL_NAUT',
-     &               IOCC,1,3,LISR8(4),N4)
-        CALL GETVR8('DEFI_SUPER_MAILLE','CENTRE',IOCC,1,3,LISR8(7),N5)
+     &               IOCC,IARG,3,LISR8(4),N4)
+        CALL GETVR8('DEFI_SUPER_MAILLE','CENTRE',IOCC,IARG,3,
+     &              LISR8(7),N5)
         IF  (N3.LT.0) CALL U2MESS('F','SOUSTRUC_52')
         IF  (N4.LT.0) CALL U2MESS('F','SOUSTRUC_53')
         IF  (N5.LT.0) CALL U2MESS('F','SOUSTRUC_54')

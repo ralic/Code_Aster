@@ -4,9 +4,9 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 12/07/2010   AUTEUR DESROCHES X.DESROCHES 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,6 +64,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 NMAIL1,NMAIL2,NFACOR,NFACEX,NTPCRB
       CHARACTER*24 NPASGT,NPBSGT,NPCARC,NRARC,NSARC,NNOMMA
       CHARACTER*24 VALK(7)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       DGRD = R8DGRD()
@@ -73,7 +74,7 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
       CALL GETRES(NOMCRB,TYPCRB,OPERA)
-      CALL GETVR8(' ','PRECISION',0,1,1,EPSI,N2)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,N2)
 
       CONEC = NOMAIL//'.CONNEX         '
       COORD = NOMAIL//'.COORDO    .VALE'
@@ -84,8 +85,8 @@ C     ------------------------------------------------------------------
 C     --- TRAITEMENT DES GROUP_MA ET MAILLE ---
 
       LISMAI = '&&OP0050.NUME_MAIL'
-      CALL GETVTX(' ','GROUP_MA',0,1,0,K8B,N1)
-      CALL GETVTX(' ','MAILLE',0,1,0,K8B,N2)
+      CALL GETVTX(' ','GROUP_MA',0,IARG,0,K8B,N1)
+      CALL GETVTX(' ','MAILLE',0,IARG,0,K8B,N2)
       IF ((N1+N2).EQ.0) THEN
         CALL WKVECT(LISMAI,'V V I',NBMAIL,JNUMA)
         DO 10,I = 1,NBMAIL,1
@@ -205,12 +206,12 @@ C      /* CALCUL DE L' INTERSECTION */
           ZR(ACARC+2*OCCA) = XC
           ZR(ACARC+2*OCCA+1) = YC
 
-          CALL GETVR8('DEFI_ARC','RAYON',OCCA,1,0,POINT,N1)
+          CALL GETVR8('DEFI_ARC','RAYON',OCCA,IARG,0,POINT,N1)
           IF (N1.NE.0) THEN
-            CALL GETVR8('DEFI_ARC','RAYON',OCCA,1,1,POINT,N1)
+            CALL GETVR8('DEFI_ARC','RAYON',OCCA,IARG,1,POINT,N1)
             R = POINT(1)
             IF (R.LE.0.D0) CALL U2MESS('F','INTEMAIL_5')
-            CALL GETVR8('DEFI_ARC','SECTEUR',OCCA,1,2,POINT,N1)
+            CALL GETVR8('DEFI_ARC','SECTEUR',OCCA,IARG,2,POINT,N1)
             ALFINF = POINT(1)*DGRD
             ALFSUP = POINT(2)*DGRD
             IF ( ( -180.0D0 .GE. ALFINF   ) .OR.
@@ -232,8 +233,8 @@ C      /* CALCUL DE L' INTERSECTION */
             MOTCLE(3) = 'GROUP_NO_EXTR'
             CALL UTCONO('DEFI_ARC',MOTCLE,OCCA,NOMAIL,NDIM,POINB,N1)
 
-            CALL GETVTX('DEFI_ARC','CRITERE',OCCA,1,1,CRIT,N1)
-            CALL GETVR8('DEFI_ARC','PRECISION',OCCA,1,1,EPSI2,N1)
+            CALL GETVTX('DEFI_ARC','CRITERE',OCCA,IARG,1,CRIT,N1)
+            CALL GETVR8('DEFI_ARC','PRECISION',OCCA,IARG,1,EPSI2,N1)
             XRC1 = PADIST(2,POINA,POINT)
             XRC2 = PADIST(2,POINB,POINT)
             IF (CRIT(1:4).EQ.'RELA') THEN

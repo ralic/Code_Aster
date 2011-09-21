@@ -1,7 +1,7 @@
       SUBROUTINE OP0103()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,13 +40,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 MODELE
       INTEGER IB
+      INTEGER      IARG
 
 
       CALL JEMARQ()
 
 C     -- MODIFICATION DE LA PARTITION  :
 C     ---------------------------------------------------
-      CALL GETVID(' ','MODELE',1,1,1,MODELE,IB)
+      CALL GETVID(' ','MODELE',1,IARG,1,MODELE,IB)
       CALL AJLIPA(MODELE,'G')
 
       CALL JEDEMA()

@@ -8,7 +8,7 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
       CHARACTER*24   NOMFCT
       CHARACTER*24  EXCISD
       LOGICAL LCHSD, FONCI, FONC1, FONC2
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -85,7 +86,7 @@ C
       ISPRES=0
 C
       CALL GETFAC('EXCIT',NEXCI)
-      CALL GETVID(' ','RESULTAT',0,1,1,RESU,NRES)
+      CALL GETVID(' ','RESULTAT',0,IARG,1,RESU,NRES)
       LCHSD=.FALSE.
       IF(NRES.NE.0.AND.NEXCI.EQ.0) LCHSD=.TRUE.
       IF(NCHAR.GT.0)CALL WKVECT('&&GCHARG.FONCI','V V L', NCHAR,JFONCI)
@@ -131,7 +132,7 @@ C
              NOMFCT = ZK24(JFCHA-1+I)
              IF(NOMFCT(1:2).EQ.'&&') N1 = 0
            ELSE
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
 
            IF (N1. NE. 0)THEN
@@ -187,7 +188,7 @@ C
              NOMFCT = ZK24(JFCHA-1+I)
              IF(NOMFCT(1:2).EQ.'&&') N1 = 0
            ELSE
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
 
            CHARG= LCHAR(I)//'.CHME.F1D2D'
@@ -243,7 +244,7 @@ C
              NOMFCT = ZK24(JFCHA-1+I)
              IF(NOMFCT(1:2).EQ.'&&') N1 = 0
            ELSE
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
 
            CHARG= LCHAR(I)//'.CHME.F2D3D'
@@ -299,7 +300,7 @@ C
              NOMFCT = ZK24(JFCHA-1+I)
              IF(NOMFCT(1:2).EQ.'&&') N1 = 0
            ELSE
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
 
            CHARG= LCHAR(I)//'.CHME.PRESS'
@@ -356,7 +357,7 @@ C
              NOMFCT = ZK24(JFCHA-1+I)
              IF(NOMFCT(1:2).EQ.'&&') N1 = 0
            ELSE
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
 
            CHARG= LCHAR(I)//'.CHME.EPSIN'
@@ -394,7 +395,7 @@ C
              NOMFCT = ZK24(JFCHA-1+I)
              IF(NOMFCT(1:2).EQ.'&&') N1 = 0
            ELSE
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
 
            CHARG= LCHAR(I)//'.CHME.PESAN'
@@ -431,7 +432,7 @@ C
              NOMFCT = ZK24(JFCHA-1+I)
              IF(NOMFCT(1:2).EQ.'&&') N1 = 0
            ELSE
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
 
            CHARG= LCHAR(I)//'.CHME.ROTAT'

@@ -4,7 +4,7 @@
       CHARACTER*19 PRCHND
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C
       CHARACTER*14 NUDDB, NUDDA
       CHARACTER*19 PRONU1, PRONU2
       LOGICAL IDENSD
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -82,8 +83,8 @@ C
 
       IBID = 1
 
-      CALL GETVID(' ','MATR_A',IBID,1,1,MATRA,IRET1)
-      CALL GETVID(' ','MATR_B',IBID,1,1,MATRB,IRET2)
+      CALL GETVID(' ','MATR_A',IBID,IARG,1,MATRA,IRET1)
+      CALL GETVID(' ','MATR_B',IBID,IARG,1,MATRB,IRET2)
 
       IF (IRET2.EQ.1) THEN
         CALL U2MESS('I','PREPOST_14')

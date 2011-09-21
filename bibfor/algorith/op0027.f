@@ -1,7 +1,7 @@
       SUBROUTINE OP0027()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C
       REAL*8       DELTA
       CHARACTER*8  NOMRES, NOMMAT, K8B
       CHARACTER*16 NOMCMD, CONCEP
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -58,9 +59,9 @@ C
       CALL GETRES ( NOMRES, CONCEP, NOMCMD )
 C
 
-      CALL GETVID ( ' ', 'MATR_MOYEN', 1,1,1, NOMMAT, N1 )
+      CALL GETVID ( ' ', 'MATR_MOYEN', 1,IARG,1, NOMMAT, N1 )
 C
-      CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,1,1, JUMP , N1 )
+      CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,IARG,1, JUMP , N1 )
       IF (N1 .NE. 0) CALL INIRAN(JUMP)
 
       IF (CONCEP.EQ.'MATR_ASSE_GENE_R') THEN
@@ -69,7 +70,7 @@ C===================================================
 C --- GENERATION D UNE MATRICE GENERALISEE ALEATOIRE
 C===================================================
 
-        CALL GETVR8 ( ' ', 'COEF_VAR'     , 1,1,1, DELTA,  N1 )
+        CALL GETVR8 ( ' ', 'COEF_VAR'     , 1,IARG,1, DELTA,  N1 )
 
         CALL JEVEUO(NOMMAT//'           .DESC','L',IDESC)
 
@@ -156,7 +157,7 @@ C -- EXISTENCE DES MATRICES, PRESENCE AMORTISSEMENT, COPIE STUCTURES
         ENDIF
 
 C -- RAIDEUR
-        CALL GETVR8 ( ' ', 'COEF_VAR_RIGI'     , 1,1,1, DELTA,  N1 )
+        CALL GETVR8 ( ' ', 'COEF_VAR_RIGI'     , 1,IARG,1, DELTA,  N1 )
         IF (DELTA.GT.0.D0) THEN
 C GENRRATION RAIDEUR
 
@@ -181,7 +182,7 @@ C COPIE VALEURS RAIDEUR
         ENDIF
 
 C -- MASSE
-        CALL GETVR8 ( ' ', 'COEF_VAR_MASS'     , 1,1,1, DELTA,  N1 )
+        CALL GETVR8 ( ' ', 'COEF_VAR_MASS'     , 1,IARG,1, DELTA,  N1 )
 
         IF (DELTA.GT.0.D0) THEN
 C GENRRATION MASSE
@@ -207,7 +208,7 @@ C COPIE VALEURS MASSE
         ENDIF
 
 C -- AMORTISSEMNT
-        CALL GETVR8 ( ' ', 'COEF_VAR_AMOR'     , 1,1,1, DELTA,  N1 )
+        CALL GETVR8 ( ' ', 'COEF_VAR_AMOR'     , 1,IARG,1, DELTA,  N1 )
 
         IF (DELTA.GT.0.D0) THEN
 C GENRRATION AMORTISSEMENT

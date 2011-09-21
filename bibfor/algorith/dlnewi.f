@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,6 +156,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       VALI(2)
       REAL*8        VALR(2)
       LOGICAL GASYMR, GSYRIE
+      INTEGER      IARG
 
       DATA NOMDDL/'        '/
       DATA VITINI/'&&VITINI'/
@@ -259,7 +260,7 @@ C                  1234567890123456789
       CALL WKVECT('&&'//NOMPRO//'.VITEA','V V R',NEQ,IVITEA)
       CALL WKVECT('&&'//NOMPRO//'.VITA1','V V R',NEQ,IVITA1)
       CALL WKVECT('&&'//NOMPRO//'.ACCEA','V V R',NEQ,IACCEA)
-      CALL GETVID('EXCIT','MODE_STAT',1,1,1,MODSTA,NBV)
+      CALL GETVID('EXCIT','MODE_STAT',1,IARG,1,MODSTA,NBV)
 
 C 1.8. ==> ???
 
@@ -279,18 +280,21 @@ C 1.8. ==> ???
         CALL WKVECT('&&'//NOMPRO//'.IPSD','V V R',NBEXCI*NEQ,JPSDEL)
         DO 108 , IAUX = 1,NBEXCI
 C     --- CAS D'UN ACCELEROGRAMME
-          CALL GETVTX('EXCIT','MULT_APPUI',IAUX,1,1,K8B,ND)
+          CALL GETVTX('EXCIT','MULT_APPUI',IAUX,IARG,1,K8B,ND)
           IF (K8B.EQ.'OUI') THEN
             ZI(JMLTAP+IAUX-1) = 1
-C              CALL GETVID('EXCIT','ACCE',I,1,1,KBID,NA)
+C              CALL GETVID('EXCIT','ACCE',I,IARG,1,KBID,NA)
 C              CALL GETVID('EXCIT','FONC_MULT',I,1,1,KBID,NF)
 C              IF (NA.NE.0) CALL GETVID('EXCIT','ACCE',I,1,1,
 C     &             ZK8(JNOACC+I-1),NA)
 C              IF (NF.NE.0)  CALL GETVID('EXCIT','FONC_MULT',I,1,1,
 C     &             ZK8(JNOACC+I-1),NF)
-            CALL GETVID('EXCIT','ACCE',IAUX,1,1,ZK8(JNOACC+IAUX-1),NA)
-            CALL GETVID('EXCIT','VITE',IAUX,1,1,ZK8(JNOVIT+IAUX-1),NV)
-            CALL GETVID('EXCIT','DEPL',IAUX,1,1,ZK8(JNODEP+IAUX-1),ND)
+            CALL GETVID('EXCIT','ACCE',IAUX,IARG,1,
+     &                  ZK8(JNOACC+IAUX-1),NA)
+            CALL GETVID('EXCIT','VITE',IAUX,IARG,1,
+     &                  ZK8(JNOVIT+IAUX-1),NV)
+            CALL GETVID('EXCIT','DEPL',IAUX,IARG,1,
+     &                  ZK8(JNODEP+IAUX-1),ND)
             CALL TRMULT(MODSTA,IAUX,MAILLA,NEQ,IDDEEQ,
      &                  ZR(JPSDEL+ (IAUX-1)*NEQ))
 
@@ -321,8 +325,8 @@ C 1.9. ==> INTIALISATIONS DIVERSES
 C 1.10. ==> --- PARAMETRES D'INTEGRATION ---
 
       IF ( IINTEG.EQ.1 ) THEN
-        CALL GETVR8('SCHEMA_TEMPS','BETA',1,1,1,BETA,N1)
-        CALL GETVR8('SCHEMA_TEMPS','GAMMA',1,1,1,GAMMA,N1)
+        CALL GETVR8('SCHEMA_TEMPS','BETA',1,IARG,1,BETA,N1)
+        CALL GETVR8('SCHEMA_TEMPS','GAMMA',1,IARG,1,GAMMA,N1)
         RES = 0.25D0* (0.5D0+GAMMA)* (0.5D0*GAMMA)
         TOL = 1.D-8
         IF ( GAMMA.LT.(0.5D0-TOL) .OR. BETA.LT.(RES-TOL) ) THEN
@@ -333,7 +337,7 @@ C 1.10. ==> --- PARAMETRES D'INTEGRATION ---
           CALL U2MESS('F','ALGORITH9_2')
         ENDIF    
       ELSE
-        CALL GETVR8('SCHEMA_TEMPS','THETA',1,1,1,THETA,N1)  
+        CALL GETVR8('SCHEMA_TEMPS','THETA',1,IARG,1,THETA,N1)  
       END IF
 
 C 1.11. ==> --- LISTE DES INSTANTS DE CALCUL ET LES SORTIES ---

@@ -6,7 +6,7 @@
       CHARACTER*(*)       MCFAC, MOCLE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,13 +50,14 @@ C     ------------------------------------------------------------------
       CHARACTER*16 CONCEP, CMD
       CHARACTER*24 COORD, NOMNOE
       CHARACTER*24 VALK(3)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IRET = 0
 C
-      CALL GETVR8 ( MCFAC, MOCLE(1), IOCC,1,0, R8B, N1 )
+      CALL GETVR8 ( MCFAC, MOCLE(1), IOCC,IARG,0, R8B, N1 )
       IF ( N1 .NE. 0 ) THEN
-         CALL GETVR8 ( MCFAC, MOCLE(1), IOCC,1,NDIM, COOR, N1 )
+         CALL GETVR8 ( MCFAC, MOCLE(1), IOCC,IARG,NDIM, COOR, N1 )
          IF ( N1 .LT. NDIM ) THEN
             CALL GETRES ( K8B, CONCEP, CMD )
             VALK (1) = MCFAC
@@ -80,9 +81,9 @@ C
       NOMNOE = NOMAIL//'.NOMNOE         '
       CALL JEVEUO ( COORD, 'L', JCOOR )
 C
-      CALL GETVTX ( MCFAC, MOCLE(2), IOCC,1,0, K8B, N2 )
+      CALL GETVTX ( MCFAC, MOCLE(2), IOCC,IARG,0, K8B, N2 )
       IF ( N2 .NE. 0 ) THEN
-         CALL GETVTX ( MCFAC, MOCLE(2), IOCC,1,1, NOEUD, N2 )
+         CALL GETVTX ( MCFAC, MOCLE(2), IOCC,IARG,1, NOEUD, N2 )
           CALL JENONU ( JEXNOM(NOMNOE,NOEUD), NUMNO )
           IF ( NUMNO .EQ. 0 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )
@@ -99,9 +100,9 @@ C
           GOTO 9999
        ENDIF
 C
-       CALL GETVTX ( MCFAC, MOCLE(3), IOCC,1,1, K8B, N3 )
+       CALL GETVTX ( MCFAC, MOCLE(3), IOCC,IARG,1, K8B, N3 )
        IF ( N3 .NE. 0 ) THEN
-          CALL GETVTX ( MCFAC, MOCLE(3), IOCC,1,1, NOEUD, N3 )
+          CALL GETVTX ( MCFAC, MOCLE(3), IOCC,IARG,1, NOEUD, N3 )
           CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOEUD, K8B, IER )
           IF ( IER .EQ. 10 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )

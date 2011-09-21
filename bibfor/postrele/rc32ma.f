@@ -3,7 +3,7 @@
       CHARACTER*8       MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,12 @@ C
       INTEGER ICODRE(NBCMP)
       CHARACTER*8   NOPA, NOPB, TYPEKE, NOCMP(NBCMP)
       CHARACTER*16  PHENOM, MOTCLF
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
 C    RECUP TYPE KE
-      CALL GETVTX (' ', 'TYPE_KE', 0,1,1, TYPEKE, NB )
+      CALL GETVTX (' ', 'TYPE_KE', 0,IARG,1, TYPEKE, NB )
       IF (TYPEKE.EQ.'KE_MECA')THEN
          TKE=-1.D0
       ELSE
@@ -96,7 +97,7 @@ C
 C ------ ETAT STABILISE "A"
 C        ------------------
 C
-         CALL GETVR8 ( MOTCLF, 'TEMP_REF_A', IOCC,1,1, TEMPA, NA )
+         CALL GETVR8 ( MOTCLF, 'TEMP_REF_A', IOCC,IARG,1, TEMPA, NA )
          IF ( NA .EQ. 0 ) THEN
             NBPA  = 0
             NOPA = ' '
@@ -123,7 +124,7 @@ C
 C ------ ETAT STABILISE "B"
 C        ------------------
 C
-         CALL GETVR8 ( MOTCLF, 'TEMP_REF_B', IOCC,1,1, TEMPB, NB )
+         CALL GETVR8 ( MOTCLF, 'TEMP_REF_B', IOCC,IARG,1, TEMPB, NB )
          IF ( NA .EQ. 0 ) THEN
             NBPB  = 0
             NOPB = ' '

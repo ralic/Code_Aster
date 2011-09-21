@@ -4,7 +4,7 @@
       CHARACTER*19 CHFER1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   K8B,  TYPMCL(2),NOMA,TYPCB
       CHARACTER*16  MOTCLS(2)
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -85,7 +86,7 @@ C     --------------------------------------------
 C     2. MOTS CLES GLOBAUX :
 C     ----------------------
 C     2.1 TYPE_COMB :
-      CALL GETVTX (' ','TYPE_COMB',0,1,1,TYPCB,N1)
+      CALL GETVTX (' ','TYPE_COMB',0,IARG,1,TYPCB,N1)
       CALL ASSERT(TYPCB.EQ.'ELU'.OR.TYPCB.EQ.'ELS')
       IF (TYPCB.EQ.'ELU') VALR=0.D0
       IF (TYPCB.EQ.'ELS') VALR=1.D0
@@ -96,12 +97,12 @@ C     3- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 C     --------------------------------------------
       DO 30 IOCC = 1,NOCC
 
-        CALL GETVR8('AFFE','ENROBG',    IOCC,1,1,ZR(JVALV-1+2),N1)
-        CALL GETVR8('AFFE','CEQUI',     IOCC,1,1,ZR(JVALV-1+3),N2)
-        CALL GETVR8('AFFE','SIGM_ACIER',IOCC,1,1,ZR(JVALV-1+4),N3)
-        CALL GETVR8('AFFE','SIGM_BETON',IOCC,1,1,ZR(JVALV-1+5),N4)
-        CALL GETVR8('AFFE','PIVA',      IOCC,1,1,ZR(JVALV-1+6),N5)
-        CALL GETVR8('AFFE','PIVB',      IOCC,1,1,ZR(JVALV-1+7),N6)
+        CALL GETVR8('AFFE','ENROBG',    IOCC,IARG,1,ZR(JVALV-1+2),N1)
+        CALL GETVR8('AFFE','CEQUI',     IOCC,IARG,1,ZR(JVALV-1+3),N2)
+        CALL GETVR8('AFFE','SIGM_ACIER',IOCC,IARG,1,ZR(JVALV-1+4),N3)
+        CALL GETVR8('AFFE','SIGM_BETON',IOCC,IARG,1,ZR(JVALV-1+5),N4)
+        CALL GETVR8('AFFE','PIVA',      IOCC,IARG,1,ZR(JVALV-1+6),N5)
+        CALL GETVR8('AFFE','PIVB',      IOCC,IARG,1,ZR(JVALV-1+7),N6)
 
         IF (TYPCB.EQ.'ELU') THEN
           IF (N5.EQ.0.OR.N6.EQ.0) CALL U2MESS('F','CALCULEL_73')
@@ -109,7 +110,7 @@ C     --------------------------------------------
           IF (N2.EQ.0) CALL U2MESS('F','CALCULEL_73')
         ENDIF
 
-        CALL GETVTX ( 'AFFE', 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+        CALL GETVTX ( 'AFFE', 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
         IF ( NBTOU .NE. 0 ) THEN
           CALL NOCART(CHFER1,1,' ','NOM',0,' ',0,' ',NCMPMX)
 

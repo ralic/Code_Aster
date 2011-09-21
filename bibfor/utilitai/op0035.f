@@ -1,7 +1,7 @@
       SUBROUTINE OP0035()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C DECLARATION VARIABLES LOCALES
       INTEGER       NBVAL,JKVAL,JTVAL,IBID,K,UL
       INTEGER       NBUNIT, NBFIC
       REAL*8        RVAL,RBID
+      INTEGER      IARG
 C
       CALL JEMARQ()
       CALL INFMAJ
@@ -59,12 +60,12 @@ C=======================================================================
 C- NOM DES PARAMETRES REELS A RECUPERER
 C=======================================================================
 
-      CALL GETVTX(' ','LISTE_INFO',0,1,0,K16BID,NBVAL)
+      CALL GETVTX(' ','LISTE_INFO',0,IARG,0,K16BID,NBVAL)
       NBVAL=-NBVAL
       CALL WKVECT('&&LISTE_INFO','V V K16',NBVAL,JKVAL)
       CALL WKVECT('&&TYPE_INFO','V V K8',NBVAL,JTVAL)
 
-      CALL GETVTX(' ','LISTE_INFO',0,1,NBVAL,ZK16(JKVAL),IBID)
+      CALL GETVTX(' ','LISTE_INFO',0,IARG,NBVAL,ZK16(JKVAL),IBID)
       DO 20 K=1,NBVAL
         IF ( ZK16(JKVAL+K-1) .EQ. 'CPU_RESTANT' ) THEN
           ZK8(JTVAL+K-1) = 'R'
@@ -89,9 +90,9 @@ C         -- TEMPS CPU RESTANT :
           CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),UL,RBID,
      &                CBID,K8BID,0)
         ELSEIF ( ZK16(JKVAL+K-1) .EQ. 'ETAT_UNITE' ) THEN
-          CALL GETVIS(' ','UNITE',      0,1,1,UL,NBUNIT)
+          CALL GETVIS(' ','UNITE',      0,IARG,1,UL,NBUNIT)
           IF ( NBUNIT .EQ. 0 ) THEN
-            CALL GETVTX(' ','FICHIER',0,1,1,KFIC,NBFIC)
+            CALL GETVTX(' ','FICHIER',0,IARG,1,KFIC,NBFIC)
             UL = ULNOMF (KFIC, K8BID, K8BID)
           ENDIF
           ETAT='FERME  '

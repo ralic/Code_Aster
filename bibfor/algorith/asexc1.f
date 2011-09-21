@@ -7,7 +7,7 @@
       LOGICAL          CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8   SPECT, NOMSPE(3), NOMPU(2)
       CHARACTER*9  NIVEAU
       CHARACTER*24 VALE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA   VALE / '                   .VALE' /
       DATA  NOMPU / 'AMOR' , 'FREQ'    /
@@ -83,7 +84,7 @@ C
 C
 C     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 C
-      CALL GETVTX('IMPRESSION','NIVEAU',1,1,1,NIVEAU,NIMPR)
+      CALL GETVTX('IMPRESSION','NIVEAU',1,IARG,1,NIVEAU,NIMPR)
       IF (NIMPR.EQ.0) NIVEAU='TOUT     '
 C
       DO 10 IOC = 1,NBOCC
@@ -97,9 +98,9 @@ C
          XNORM = UN
 C
 C        --- RECUPERATION DE LA DIRECTION DU SPECTRE ---
-         CALL GETVR8(MOTFAC,'AXE',IOC,1,0,R8B,N1)
+         CALL GETVR8(MOTFAC,'AXE',IOC,IARG,0,R8B,N1)
          IF (N1.NE.0) THEN
-            CALL GETVR8(MOTFAC,'AXE' ,IOC,1,3,DIRSPE,N1)
+            CALL GETVR8(MOTFAC,'AXE' ,IOC,IARG,3,DIRSPE,N1)
             XNORM = ZERO
             DO 12 ID = 1,3
                XNORM = XNORM + DIRSPE(ID) * DIRSPE(ID)
@@ -110,11 +111,11 @@ C        --- RECUPERATION DE LA DIRECTION DU SPECTRE ---
                GOTO 10
             ENDIF
             XNORM = UN / SQRT(XNORM)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,IARG,1,SPECT,N1)
             NOMSPE(1) = SPECT
             NOMSPE(2) = SPECT
             NOMSPE(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,IARG,1,ECHEL,N1)
             IF (N1.NE.0) THEN
                ECHSPE(1) = ECHEL
                ECHSPE(2) = ECHEL
@@ -122,14 +123,14 @@ C        --- RECUPERATION DE LA DIRECTION DU SPECTRE ---
             ENDIF
 C
          ELSE
-         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,0,R8B,N1)
+         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,IARG,0,R8B,N1)
          IF (N1.NE.0) THEN
-            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,3,DIRSPE,N1)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT ,N1)
+            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,IARG,3,DIRSPE,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,IARG,1,SPECT ,N1)
             NOMSPE(1) = SPECT
             NOMSPE(2) = SPECT
             NOMSPE(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,IARG,1,ECHEL,N1)
             IF (N1.NE.0) THEN
                ECHSPE(1) = ECHEL
                ECHSPE(2) = ECHEL
@@ -138,12 +139,12 @@ C
 C
          ELSE
 
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,3,NOMSPE,N1)
-            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,1,3,ECHSPE,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,IARG,3,NOMSPE,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,IARG,3,ECHSPE,N1)
          ENDIF
          ENDIF
 C
-         CALL GETVTX(MOTFAC,'NATURE',IOC,1,1,KNAT,N1)
+         CALL GETVTX(MOTFAC,'NATURE',IOC,IARG,1,KNAT,N1)
          IF (KNAT.EQ.'ACCE') INAT = 1
          IF (KNAT.EQ.'VITE') INAT = 2
          IF (KNAT.EQ.'DEPL') INAT = 3

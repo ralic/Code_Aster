@@ -2,7 +2,7 @@
      &                  NLISEQ,NLISRL,NLISCO,NBASCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,6 +95,7 @@ C
       CHARACTER*16  TYPELE,ENR
       CHARACTER*24  XINDIC,GRP(3)
       INTEGER      JINDIC,KK,NMAENR,IENR,JGRP,JXC,IER,JNBPT
+      INTEGER      IARG
 C
       DATA LICMPR/ 'X1' ,'X2' ,'X3' ,
      &             'X4' ,'X5' ,'X6' ,
@@ -235,7 +236,7 @@ C
           IF (ZI(JXC).EQ.3) MAQUA=.FALSE.
           IF (.NOT.MAQUA) EXILI=.TRUE.
           IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN
-             CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NPIL)
+             CALL GETVTX('PILOTAGE','DIRE_PILO',1,IARG,0,K8BID,NPIL)
              NPIL=-NPIL
              IF(NPIL.GE.1) THEN
                 EXILI=.TRUE.
@@ -272,7 +273,7 @@ C
             IA=NINT(ZR(JCESV3-1+IAD3))
 C - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
             IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN
-                CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NPIL)
+                CALL GETVTX('PILOTAGE','DIRE_PILO',1,IARG,0,K8BID,NPIL)
                 NPIL=-NPIL
                 IF(NPIL.GE.1) THEN
                    IF(IA.EQ.0) THEN

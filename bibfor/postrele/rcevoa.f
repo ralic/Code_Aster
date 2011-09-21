@@ -4,7 +4,7 @@
       CHARACTER*16        TYPTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C
       PARAMETER  ( NPARM=2 , NPARD=2 )
       CHARACTER*8  TYPARM(NPARM), TYPARD(NPARD)
       CHARACTER*16 NOPARM(NPARM), NOPARD(NPARD)
+      INTEGER      IARG
       DATA NOPARM / 'THETA', 'FACT_AMORCAGE' /
       DATA TYPARM / 'R', 'R' /
       DATA NOPARD / 'THETA', 'FACT_AMORCAGE' /
@@ -118,7 +119,7 @@ C
 C --- LA PREMIERE TABLE DEFINIT LES THETA A TRAITER
 C     ON VERIFIE QUE LES ABSC_CURV CORRESPONDENT AU RAMORC
 C
-      CALL GETVID ( MOTCLF, 'TABL_SIGM_THETA', 1,1,1, TABLE , N1 )
+      CALL GETVID ( MOTCLF, 'TABL_SIGM_THETA', 1,IARG,1, TABLE , N1 )
       CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
          VALK(1) = TABLE
@@ -160,7 +161,7 @@ C
       NBITOT = 0
       DO 20 IOC = 1, NBTRAN
 C
-        CALL GETVID ( MOTCLF, 'TABL_SIGM_THETA', IOC,1,1, TABLE, N1 )
+        CALL GETVID ( MOTCLF, 'TABL_SIGM_THETA', IOC,IARG,1, TABLE, N1 )
         VALK(1) = TABLE
         DO 22 I1 = 1, 4
            CALL TBEXIP ( TABLE, VALEK(I1), EXIST, K8B )
@@ -170,7 +171,7 @@ C
            ENDIF
  22     CONTINUE
 C
-        CALL GETVR8 ( MOTCLF, 'INST', IOC,1,0, R8B, N1 )
+        CALL GETVR8 ( MOTCLF, 'INST', IOC,IARG,0, R8B, N1 )
         IF ( N1 .NE. 0 ) THEN
           NBINS0 = -N1
           CALL JECROC (JEXNUM('&&RCEVOA.SITUATION',IOC))
@@ -179,9 +180,9 @@ C
           CALL JEECRA (JEXNUM('&&RCEVOA.SITUATION',IOC),
      &                                          'LONUTI', NBINS0, ' ' )
           CALL JEVEUO (JEXNUM('&&RCEVOA.SITUATION',IOC),'E', KINST )
-          CALL GETVR8 ( MOTCLF, 'INST', IOC,1,NBINS0,ZR(KINST), N1 )
+          CALL GETVR8 ( MOTCLF, 'INST', IOC,IARG,NBINS0,ZR(KINST), N1 )
         ELSE
-          CALL GETVID ( MOTCLF, 'LIST_INST', IOC,1,1, NOMF, N1 )
+          CALL GETVID ( MOTCLF, 'LIST_INST', IOC,IARG,1, NOMF, N1 )
           IF ( N1 .NE. 0 ) THEN
             CALL JELIRA ( NOMF//'.VALE', 'LONMAX', NBINS0, K8B )
             CALL JEVEUO ( NOMF//'.VALE', 'L', JINST )
@@ -216,9 +217,10 @@ C
          CALL JELIRA ( JEXNUM('&&RCEVOA.SITUATION',IOC), 'LONUTI',
      &                                                    NBINS0, K8B )
 C
-         CALL GETVIS ( MOTCLF, 'NB_OCCUR', IOC,1,1, NBCYCL, N1 )
+         CALL GETVIS ( MOTCLF, 'NB_OCCUR', IOC,IARG,1, NBCYCL, N1 )
 C
-         CALL GETVID ( MOTCLF, 'TABL_SIGM_THETA', IOC,1,1, TABLE, N1 )
+         CALL GETVID (MOTCLF,'TABL_SIGM_THETA',IOC,IARG,1,
+     &                TABLE, N1 )
 C
          DO 32 I = 1 , NBINS0
             IND = IND + 1

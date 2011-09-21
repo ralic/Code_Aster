@@ -5,7 +5,7 @@
       INTEGER IOCC
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 MODEL1,CRIT,TYPE,MODEL2,KCHML
       CHARACTER*19 CHP,CHPRE,LIGREL
       LOGICAL ACCENO
+      INTEGER      IARG
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
@@ -158,8 +159,8 @@ C              A IRCHME / ELGA :
 
 C     2- ALLOCATION DE RESU2 :
 C     ------------------------------------
-      CALL GETVR8('RESU','PRECISION',1,1,1,PREC,N1)
-      CALL GETVTX('RESU','CRITERE',1,1,1,CRIT,N1)
+      CALL GETVR8('RESU','PRECISION',1,IARG,1,PREC,N1)
+      CALL GETVTX('RESU','CRITERE',1,IARG,1,CRIT,N1)
       CALL RSUTNU(RESU1,'RESU',IOCC,'&&RDTRES.NUME_ORDRE',NBORDR,
      &            PREC,CRIT,IRET)
       IF (IRET.NE.0) THEN

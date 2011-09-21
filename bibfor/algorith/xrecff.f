@@ -7,7 +7,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C
       INTEGER  I,J,K,NFONU,JFONU,IBASFF,JBASU
       REAL*8   SMAX,S,S1,S2,XYZ1,XYZ2
       CHARACTER*24  FONTMP,BASTMP
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -78,7 +79,7 @@ C     RESTRICTION DU FOND ET DE LA BASE AU NUMERO DU FOND DEMANDE
 C     ------------------------------------------------------------------
 
 C     NUMERO DU FOND A TRAITER
-      CALL GETVIS('THETA','NUME_FOND',1,1,1,NUMFON,IBID)
+      CALL GETVIS('THETA','NUME_FOND',1,IARG,1,NUMFON,IBID)
 
       IDEPFI=ZI(IFOMUL-1+2*(NUMFON-1)+1)
       IARRFI=ZI(IFOMUL-1+2*(NUMFON-1)+2)
@@ -108,7 +109,7 @@ C     CREATION DU NOUVEAU FOND ET DE LA NOUVELLE BASE
 C     ------------------------------------------------------------------
 
 C     DOIT-ON PRENDRE UNE REPARTITION UNIFORME ?
-      CALL GETVIS('THETA','NB_POINT_FOND',1,1,1,NFONU,IBID)
+      CALL GETVIS('THETA','NB_POINT_FOND',1,IARG,1,NFONU,IBID)
       IF (IBID.EQ.0) NFONU = 0
 
       IF (NFONU.GT.0) THEN

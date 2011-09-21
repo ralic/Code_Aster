@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C
       CHARACTER*19  CNOINR, CNSINR
       CHARACTER*24  KNUM  , TABL2
       CHARACTER*24  VALK(2)
+      INTEGER      IARG
 C
       CALL JEMARQ()
 C
@@ -72,12 +73,12 @@ C
 C --- RECUPERATION DES DONNEES UTILISATEUR :
 C     ------------------------------------
 C
-      CALL GETVID ( MOTFAC, 'MAILLAGE_FINAL', 1,1,1, NOMMAF, IBID )
-      CALL GETVID ( MOTFAC, 'TABLE'         , 1,1,1, TABLE , IBID )
-      CALL GETVTX ( MOTFAC, 'PROL_DROITE'   , 1,1,1, PDROIT, IBID )
-      CALL GETVTX ( MOTFAC, 'PROL_GAUCHE'   , 1,1,1, PGAUCH, IBID )
-      CALL GETVR8 ( MOTFAC, 'ORIGINE'       , 1,1,3, ORIG  , IBID )
-      CALL GETVR8 ( MOTFAC, 'AXE_Z'         , 1,1,3, AXEZ  , IBID )
+      CALL GETVID ( MOTFAC, 'MAILLAGE_FINAL', 1,IARG,1, NOMMAF, IBID )
+      CALL GETVID ( MOTFAC, 'TABLE'         , 1,IARG,1, TABLE , IBID )
+      CALL GETVTX ( MOTFAC, 'PROL_DROITE'   , 1,IARG,1, PDROIT, IBID )
+      CALL GETVTX ( MOTFAC, 'PROL_GAUCHE'   , 1,IARG,1, PGAUCH, IBID )
+      CALL GETVR8 ( MOTFAC, 'ORIGINE'       , 1,IARG,3, ORIG  , IBID )
+      CALL GETVR8 ( MOTFAC, 'AXE_Z'         , 1,IARG,3, AXEZ  , IBID )
 C
       CALL DISMOI ('F', 'NB_NO_MAILLA', NOMMAF, 'MAILLAGE', NBNOF,
      &                                            K8B,IBID )

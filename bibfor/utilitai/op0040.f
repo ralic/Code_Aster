@@ -1,7 +1,7 @@
       SUBROUTINE OP0040()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,12 +47,13 @@ C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*16 NOMSYM,NOMFI
       CHARACTER*19 RESUIN,NOMCHA
       LOGICAL      ULEXIS
+      INTEGER      IARG
 C
       CALL INFNIV(IFM,NIV)
 C
       IFI = 0
       NOMFI = ' '
-      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFI  , N2 )
+      CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IFI  , N2 )
       IF ( .NOT. ULEXIS( IFI ) ) THEN
          CALL ULOPEN ( IFI, ' ', NOMFI, 'NEW', 'O' )
       ENDIF
@@ -60,7 +61,7 @@ C
       CALL JEMARQ()
 C
 C     RECUPERATION DU NOM DU RESULTAT
-      CALL GETVID (' ', 'RESULTAT', 1,1,1, RESUIN, IBID)
+      CALL GETVID (' ', 'RESULTAT', 1,IARG,1, RESUIN, IBID)
 C
       WRITE(IFI,*) '-----------------------------------------------',
      &                '------------'

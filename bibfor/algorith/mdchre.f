@@ -10,7 +10,7 @@
       CHARACTER*24        MDGENE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       N1, IRET, JCOORD
       REAL*8        TEMPO(3), DIRCHO(3), COORD(3), TXNO
       CHARACTER*24  MDSSNO
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       N1 = 0
@@ -74,18 +75,18 @@ C
 C
       IF ( MOTFAC.EQ.'CHOC' .OR. MOTFAC.EQ.'FLAMBAGE' ) THEN
 C          ------------------------------------------
-         CALL GETVTX ( MOTFAC, 'REPERE', IOC,1,0, REPERE, N1 )
+         CALL GETVTX ( MOTFAC, 'REPERE', IOC,IARG,0, REPERE, N1 )
          IF (N1.EQ.0) THEN
             REPERE = 'GLOBAL'
          ELSE
-            CALL GETVTX ( MOTFAC, 'REPERE', IOC,1,1, REPERE, N1 )
+            CALL GETVTX ( MOTFAC, 'REPERE', IOC,IARG,1, REPERE, N1 )
          ENDIF
-         CALL GETVR8 ( MOTFAC, 'ORIG_OBST', IOC,1,1, TEMPO, N1 )
+         CALL GETVR8 ( MOTFAC, 'ORIG_OBST', IOC,IARG,1, TEMPO, N1 )
       ENDIF
 C
       N1 = -N1
       IF (N1.EQ.3) THEN
-          CALL GETVR8 ( MOTFAC, 'ORIG_OBST', IOC,1,3, TEMPO, N1 )
+          CALL GETVR8 ( MOTFAC, 'ORIG_OBST', IOC,IARG,3, TEMPO, N1 )
           IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
              PARCHO(ILIAI,14) = TEMPO(1)
              PARCHO(ILIAI,15) = TEMPO(2)

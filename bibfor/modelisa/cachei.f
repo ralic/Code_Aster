@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO, MOTCL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -133,21 +134,21 @@ C
       DO 20 IOCC = 1, NCHEI
 C
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 ( MOTCLF, 'EPXX', IOCC, 1, 1, EPXX, NXX )
-            CALL GETVR8 ( MOTCLF, 'EPYY', IOCC, 1, 1, EPYY, NYY )
-            CALL GETVR8 ( MOTCLF, 'EPZZ', IOCC, 1, 1, EPZZ, NZZ )
-            CALL GETVR8 ( MOTCLF, 'EPXY', IOCC, 1, 1, EPXY, NXY )
-            CALL GETVR8 ( MOTCLF, 'EPXZ', IOCC, 1, 1, EPXZ, NXZ )
-            CALL GETVR8 ( MOTCLF, 'EPYZ', IOCC, 1, 1, EPYZ, NYZ )
-            CALL GETVR8 ( MOTCLF, 'EPX',  IOCC, 1, 1, EPX,  NEX )
-            CALL GETVR8 ( MOTCLF, 'KY',   IOCC, 1, 1, XKY,  NKY )
-            CALL GETVR8 ( MOTCLF, 'KZ',   IOCC, 1, 1, XKZ,  NKZ )
-            CALL GETVR8 ( MOTCLF, 'EXX',  IOCC, 1, 1, XEXX, NEXX)
-            CALL GETVR8 ( MOTCLF, 'EYY',  IOCC, 1, 1, XEYY, NEYY)
-            CALL GETVR8 ( MOTCLF, 'EXY',  IOCC, 1, 1, XEXY, NEXY)
-            CALL GETVR8 ( MOTCLF, 'KXX',  IOCC, 1, 1, XKXX, NKXX)
-            CALL GETVR8 ( MOTCLF, 'KYY',  IOCC, 1, 1, XKYY, NKYY)
-            CALL GETVR8 ( MOTCLF, 'KXY',  IOCC, 1, 1, XKXY, NKXY)
+            CALL GETVR8 ( MOTCLF, 'EPXX', IOCC,IARG, 1, EPXX, NXX )
+            CALL GETVR8 ( MOTCLF, 'EPYY', IOCC,IARG, 1, EPYY, NYY )
+            CALL GETVR8 ( MOTCLF, 'EPZZ', IOCC,IARG, 1, EPZZ, NZZ )
+            CALL GETVR8 ( MOTCLF, 'EPXY', IOCC,IARG, 1, EPXY, NXY )
+            CALL GETVR8 ( MOTCLF, 'EPXZ', IOCC,IARG, 1, EPXZ, NXZ )
+            CALL GETVR8 ( MOTCLF, 'EPYZ', IOCC,IARG, 1, EPYZ, NYZ )
+            CALL GETVR8 ( MOTCLF, 'EPX',  IOCC,IARG, 1, EPX,  NEX )
+            CALL GETVR8 ( MOTCLF, 'KY',   IOCC,IARG, 1, XKY,  NKY )
+            CALL GETVR8 ( MOTCLF, 'KZ',   IOCC,IARG, 1, XKZ,  NKZ )
+            CALL GETVR8 ( MOTCLF, 'EXX',  IOCC,IARG, 1, XEXX, NEXX)
+            CALL GETVR8 ( MOTCLF, 'EYY',  IOCC,IARG, 1, XEYY, NEYY)
+            CALL GETVR8 ( MOTCLF, 'EXY',  IOCC,IARG, 1, XEXY, NEXY)
+            CALL GETVR8 ( MOTCLF, 'KXX',  IOCC,IARG, 1, XKXX, NKXX)
+            CALL GETVR8 ( MOTCLF, 'KYY',  IOCC,IARG, 1, XKYY, NKYY)
+            CALL GETVR8 ( MOTCLF, 'KXY',  IOCC,IARG, 1, XKXY, NKXY)
 C
             DO 22 I = 1, NCMP
                ZR(JVALV-1+I) = 0.D0
@@ -173,12 +174,12 @@ C
                  CALL U2MESS('F','MODELISA2_38')
             ENDIF
          ELSE
-            CALL GETVID ( MOTCLF, 'EPXX', IOCC,1,1, KEPXX, NXX )
-            CALL GETVID ( MOTCLF, 'EPYY', IOCC,1,1, KEPYY, NYY )
-            CALL GETVID ( MOTCLF, 'EPZZ', IOCC,1,1, KEPZZ, NZZ )
-            CALL GETVID ( MOTCLF, 'EPXY', IOCC,1,1, KEPXY, NXY )
-            CALL GETVID ( MOTCLF, 'EPXZ', IOCC,1,1, KEPXZ, NXZ )
-            CALL GETVID ( MOTCLF, 'EPYZ', IOCC,1,1, KEPYZ, NYZ )
+            CALL GETVID ( MOTCLF, 'EPXX', IOCC,IARG,1, KEPXX, NXX )
+            CALL GETVID ( MOTCLF, 'EPYY', IOCC,IARG,1, KEPYY, NYY )
+            CALL GETVID ( MOTCLF, 'EPZZ', IOCC,IARG,1, KEPZZ, NZZ )
+            CALL GETVID ( MOTCLF, 'EPXY', IOCC,IARG,1, KEPXY, NXY )
+            CALL GETVID ( MOTCLF, 'EPXZ', IOCC,IARG,1, KEPXZ, NXZ )
+            CALL GETVID ( MOTCLF, 'EPYZ', IOCC,IARG,1, KEPYZ, NYZ )
             DO 111 I = 1, NCMP
                ZK8(JVALV-1+I) = '&FOZERO'
   111       CONTINUE
@@ -190,7 +191,7 @@ C
             IF (NYZ .NE. 0) ZK8(JVALV-1+6) = KEPYZ
          ENDIF
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
 C
          IF ( NBTOU .NE. 0 ) THEN
 C

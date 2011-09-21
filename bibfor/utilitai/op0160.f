@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,22 +25,23 @@ C     ------------------------------------------------------------------
       LOGICAL       ULEXIS
       CHARACTER*8   FORMAT, MACREL
       CHARACTER*16  FICHIE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL INFMAJ()
 C
       IFIC   = 0
       FICHIE = ' '
 C
-      CALL GETVID ( ' ', 'MACR_ELEM_DYNA', 1,1,1, MACREL, N1 )
+      CALL GETVID ( ' ', 'MACR_ELEM_DYNA', 1,IARG,1, MACREL, N1 )
 C
-      CALL GETVTX ( ' ', 'FORMAT', 1,1,1, FORMAT, N1 )
+      CALL GETVTX ( ' ', 'FORMAT', 1,IARG,1, FORMAT, N1 )
 C
 C     ------------------------------------------------------------------
       IF ( FORMAT .EQ. 'IDEAS' ) THEN
 
-         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
+         CALL GETVIS ( ' ', 'VERSION', 1,IARG,1, VERSIO, N1 )
 
-         CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
+         CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IFIC , N1 )
          IF ( .NOT. ULEXIS( IFIC ) ) THEN
             CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
          ENDIF
@@ -58,7 +59,7 @@ C
 C     ------------------------------------------------------------------
 C      ELSEIF ( FORMAT .EQ. 'PLEXUS' ) THEN
 C
-C         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
+C         CALL GETVIS ( ' ', 'VERSION', 1,IARG,1, VERSIO, N1 )
 C
 C         CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
 C         IF ( .NOT. ULEXIS( IFIC ) ) THEN

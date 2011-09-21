@@ -1,7 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -96,11 +96,11 @@ C
       CHARACTER*24 VALK(6)
       CHARACTER*24 NORECG,CORRN,CORRM
       CHARACTER*64 K64BID
-      CHARACTER*64 NOCHMD
       CHARACTER*80 TITRE
 C
       LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH,ULEXIS
       LOGICAL LMAIL,AFAIRE,LREST,LNCMED
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -119,7 +119,7 @@ C     --- RECUPERATION DU NOMBRE DE MISES EN FACTEUR DU MOT-CLE RESU ---
       CALL GETFAC ( 'RESU', NOCC )
 
       DO 100 IOCC = 1,NOCC
-       CALL GETVTX('RESU','NOEUD_CMP',IOCC,1,0,K8B,NMO)
+       CALL GETVTX('RESU','NOEUD_CMP',IOCC,IARG,0,K8B,NMO)
        IF(NMO.NE.0) THEN
          NN = NMO / 2
          IF(2*NN.NE.NMO) THEN
@@ -133,7 +133,7 @@ C     --- LE MODELE ---
 C     -----------------
       LMOD   = .FALSE.
       MODELE = ' '
-      CALL GETVID ( ' ', 'MODELE'  ,1,1,1, MODELE, N )
+      CALL GETVID ( ' ', 'MODELE'  ,1,IARG,1, MODELE, N )
       IF ( N .NE. 0 ) LMOD= .TRUE.
 
 
@@ -157,7 +157,7 @@ C       -- SI RESTREINT, IL FAUT VERIFIER QUE RESU/RESULTAT EST
 C          TOUJOURS FOURNI :
         CALL ASSERT(NOCC.LE.9)
         DO 74,IOCC=1,NOCC
-          CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESUR(IOCC),NM)
+          CALL GETVID('RESU','RESULTAT',IOCC,IARG,1,RESUR(IOCC),NM)
           IF (NM.EQ.0) CALL U2MESS('F','CALCULEL4_5')
   74    CONTINUE
 
@@ -199,7 +199,7 @@ C     --- FORMAT, FICHIER ET UNITE D'IMPRESSION ---
 C     ---------------------------------------------
 C
 C     --- FORMAT ---
-      CALL GETVTX ( ' ', 'FORMAT'  ,1,1,1, FORM , N )
+      CALL GETVTX ( ' ', 'FORMAT'  ,1,IARG,1, FORM , N )
       IF (LREST.AND.FORM.NE.'MED') CALL U2MESS('F','CALCULEL4_3')
 
 C     --- VERIFICATION DE LA COHERENCE ENTRE LE MAILLAGE ---
@@ -207,8 +207,8 @@ C     --- PORTANT LE RESULTAT ET LE MAILLAGE DONNE PAR   ---
 C     --- L'UTILISATEUR DANS IMPR_RESU(FORMAT='IDEAS')   ---
 
       IF (FORM(1:5) .EQ. 'IDEAS') THEN
-         CALL GETVID('RESU','RESULTAT',1,1,1,RESU,NRES)
-         CALL GETVID('RESU','MAILLAGE',1,1,1,NOMA,NMAIL)
+         CALL GETVID('RESU','RESULTAT',1,IARG,1,RESU,NRES)
+         CALL GETVID('RESU','MAILLAGE',1,IARG,1,NOMA,NMAIL)
          IF (NRES*NMAIL .GT.0) THEN
             CALL DISMOI('F','NOM_MAILLA',RESU,'RESULTAT',IBID,NOMSQ,IER)
             IF (NOMSQ .NE. NOMA) THEN
@@ -228,17 +228,17 @@ C     --- VERSION D'ECRITURE  ----
       LGMSH = .FALSE.
       IF ( FORM .EQ. 'CASTEM' ) THEN
          LCASTS = .TRUE.
-         CALL GETVIS ( ' ', 'NIVE_GIBI', 1,1,1, NIVE, N )
+         CALL GETVIS ( ' ', 'NIVE_GIBI', 1,IARG,1, NIVE, N )
 
       ELSEIF ( FORM(1:5) .EQ. 'IDEAS' ) THEN
          VERSIO = 5
-         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N )
+         CALL GETVIS ( ' ', 'VERSION', 1,IARG,1, VERSIO, N )
 
       ELSEIF ( FORM(1:4) .EQ. 'GMSH' ) THEN
          VERSIO = 1
          VERSI2 = 1.0D0
          EPS    = 1.0D-6
-         CALL GETVR8 ( ' ', 'VERSION', 1,1,1, VERSI2, N )
+         CALL GETVR8 ( ' ', 'VERSION', 1,IARG,1, VERSI2, N )
          IF (VERSI2.GT.1.0D0-EPS.AND.VERSI2.LT.1.0D0+EPS) THEN
             VERSIO = 1
          ELSEIF (VERSI2.GT.1.2D0-EPS.AND.VERSI2.LT.1.2D0+EPS) THEN
@@ -249,7 +249,7 @@ C
 C     --- FICHIER ---
       IFI = 0
       FICH = 'F_'//FORM
-      CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFI , N11 )
+      CALL GETVIS ( ' ', 'UNITE', 1,IARG,1, IFI , N11 )
       IFC = IFI
       IF ( .NOT. ULEXIS( IFI ) ) THEN
          CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
@@ -272,14 +272,14 @@ C     -------------------------------------------
                   ZK24(JMODL) = MODELE//'.MODELE'
                ENDIF
                DO 202 IOC2 = 1 , NOCC
-                 CALL GETVID('RESU','RESULTAT',IOC2,1,1,RESU,NR)
+                 CALL GETVID('RESU','RESULTAT',IOC2,IARG,1,RESU,NR)
                  IF ( NR .NE. 0 ) CALL RSCRMO ( IOC2, RESU , NOMJV)
  202           CONTINUE
                NUMEMO = NUMEMO + 1
             ENDIF
 
 C           ---  IMPRESSION DU MAILLAGE -----
-            CALL GETVID('RESU','MAILLAGE',IOCC,1,1,NOMA,NM)
+            CALL GETVID('RESU','MAILLAGE',IOCC,IARG,1,NOMA,NM)
             IF ( NM .NE. 0 ) THEN
                IF ( LMOD  ) THEN
                   CALL DISMOI('C','NOM_MAILLA',MODELE,'MODELE',IBID,
@@ -305,9 +305,9 @@ C     -- VERIFICATIONS POUR GMSH :
          LMAIL=.FALSE.
          LRESU=.FALSE.
          DO 220 IOCC = 1 , NOCC
-            CALL GETVID('RESU','MAILLAGE',IOCC,1,1,NOMA,NM)
-            CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESU,NR)
-            CALL GETVID('RESU','CHAM_GD',IOCC,1,1,RESU,NC)
+            CALL GETVID('RESU','MAILLAGE',IOCC,IARG,1,NOMA,NM)
+            CALL GETVID('RESU','RESULTAT',IOCC,IARG,1,RESU,NR)
+            CALL GETVID('RESU','CHAM_GD',IOCC,IARG,1,RESU,NC)
             IF ( NR.NE.0 .OR. NC.NE.0 ) THEN
                LRESU=.TRUE.
                GOTO 220
@@ -334,11 +334,11 @@ C     -----------------------------------------------------------------
          AFAIRE = .FALSE.
 C
 C        --- FORMAT D'ECRITURE DES REELS ---
-         CALL GETVTX('RESU','FORMAT_R',IOCC,1,1,FORMR,N)
+         CALL GETVTX('RESU','FORMAT_R',IOCC,IARG,1,FORMR,N)
 C
 C        --- MODE D'ECRITURE DES PARAMETRES------
 C            (RMQUE: UNIQUEMENT INTERESSANT POUR FORMAT 'RESULTAT')
-         CALL GETVTX ( 'RESU', 'FORM_TABL', IOCC,1,1, TABL, N )
+         CALL GETVTX ( 'RESU', 'FORM_TABL', IOCC,IARG,1, TABL, N )
          IF ( N .NE. 0 ) THEN
             IF ( TABL(1:3) .EQ. 'OUI' ) THEN
                CECR = 'T'
@@ -350,7 +350,7 @@ C
 C        --- IMPRESSION DES COORDONNEES------
 C            (ECRITURE VARIABLES DE TYPE RESULTAT AU FORMAT 'RESULTAT')
          COOR = ' '
-         CALL GETVTX('RESU','IMPR_COOR',IOCC,1,1,COOR,N)
+         CALL GETVTX('RESU','IMPR_COOR',IOCC,IARG,1,COOR,N)
          IF (N.NE.0 .AND. COOR.EQ.'OUI') LCOR = .TRUE.
 C
 C        --- SEPARATION DES DIFFERENTES OCCURENCES (FORMAT 'RESULTAT')
@@ -360,12 +360,12 @@ C        --- RECHERCHE TYPE DE DONNEES A TRAITER POUR L'OCCURENCE IOCC
 C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
          RESU = ' '
          PARTIE = ' '
-         CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESU,NR)
+         CALL GETVID('RESU','RESULTAT',IOCC,IARG,1,RESU,NR)
          IF (LREST) THEN
            NR=1
            RESU=RESURE(IOCC)
          ENDIF
-         CALL GETVTX('RESU','PARTIE',IOCC,1,1,PARTIE,NP)
+         CALL GETVTX('RESU','PARTIE',IOCC,IARG,1,PARTIE,NP)
          IF(NR.NE.0)THEN
             CALL GETTCO(RESU,TYRES)
             IF(TYRES(1:10).EQ.'DYNA_HARMO' .OR.
@@ -379,7 +379,7 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
             ENDIF
          ENDIF
 
-         CALL GETVID('RESU','CHAM_GD' ,IOCC,1,1,RESU,NC)
+         CALL GETVID('RESU','CHAM_GD' ,IOCC,IARG,1,RESU,NC)
          IF(NC.NE.0)THEN
             RESU19=RESU
             CALL DISMOI('C','NOM_GD',RESU19,'CHAMP',IBID,NOMGD,IER)
@@ -394,7 +394,7 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
          LRESU = NR.NE.0
 C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
          INFMAI = 1
-         CALL GETVTX('RESU','INFO_MAILLAGE',IOCC,1,1,SAUX03,N01)
+         CALL GETVTX('RESU','INFO_MAILLAGE',IOCC,IARG,1,SAUX03,N01)
          IF (N01.NE.0) THEN
            IF (SAUX03.EQ.'OUI'.AND.FORM.EQ.'MED') THEN
              INFMAI = 2
@@ -424,7 +424,7 @@ C             ET QUE L'ON DEMANDE L'IMPRESSION DU MAILLAGE, IL NE FAUDRA
 C             IMPRIMER QUE LA PARTIE DU MAILLAGE AFFECTEE DANS LE MODELE
          NOMA   = ' '
          NOMAB   = ' '
-         CALL GETVID('RESU','MAILLAGE', IOCC,1,1, NOMA, NM )
+         CALL GETVID('RESU','MAILLAGE', IOCC,IARG,1, NOMA, NM )
          IF ( (FORM.EQ.'ASTER').AND.(NOMA.EQ.'        ')) THEN
                CALL U2MESS('A','PREPOST3_70')
          ENDIF
@@ -487,9 +487,9 @@ C          --- NOM DU CHAM_GD ---
            NBORDR    = 1
            CALL WKVECT('&&OP0039.NUM_ORDR','V V I',NBORDR,JORDR)
            ZI(JORDR) = 1
-           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K64BID,N23)
+           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,IARG,0,K64BID,N23)
            NBCMDU = - N23
-           CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,1,NBCMDU,
+           CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,IARG,NBCMDU,
      &                                              ZK80(JNCMED),IRET)
            LNCMED = .TRUE.
 C
@@ -497,10 +497,10 @@ C        --- ECRITURE D'UN RESULTAT_COMPOSE ---
          ELSEIF (NR.NE.0) THEN
 C          --- ON REGARDE QUELS SONT LES NOM_CHAM A IMPRIMER:
            TOUCHA = 'OUI'
-           CALL GETVTX('RESU','TOUT_CHAM',IOCC,1,1,TOUCHA,N21)
-           CALL GETVTX('RESU','NOM_CHAM' ,IOCC,1,0,K16BID,N22)
-           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K64BID,N23)
-           CALL GETVTX('RESU','NOM_RESU_MED' ,IOCC,1,0,K8B,N24)
+           CALL GETVTX('RESU','TOUT_CHAM',IOCC,IARG,1,TOUCHA,N21)
+           CALL GETVTX('RESU','NOM_CHAM' ,IOCC,IARG,0,K16BID,N22)
+           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,IARG,0,K64BID,N23)
+           CALL GETVTX('RESU','NOM_RESU_MED' ,IOCC,IARG,0,K8B,N24)
 C          *** N22 EST NEGATIF SI L'UTILISATEUR DONNE UNE LISTE DE NOMS
 C              (PAR DEFAUT TOUS LES CHAMPS CAR MOT-CLE FACULTATIF)
            IF(ABS(N21)+ABS(N22).EQ.0) N21=1
@@ -525,16 +525,16 @@ C            - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
              CALL WKVECT('&&OP0039.NOM_CH_MED','V V K80',NBNOSY,JNCMED)
 
 C            - ON RECUPERE LA LISTE DES NOMS DONNEE PAR L'UTILISATEUR
-             CALL GETVTX('RESU','NOM_CHAM',IOCC,1,NBNOSY,
+             CALL GETVTX('RESU','NOM_CHAM',IOCC,IARG,NBNOSY,
      &                                                ZK16(JNOSY),N0)
-             CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,1,
+             CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,IARG,
      &                                         NBCMDU,ZK80(JNCMED),IRET)
              LNCMED = .TRUE.
              IF ((NBCMDU.NE.0).AND.(NBCMDU.NE.NBNOSY)) THEN
                CALL U2MESS('F','PREPOST2_1')
              ENDIF
            ELSEIF(N24.LT.0) THEN
-             CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,K8B,N)
+             CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,0,K8B,N)
              IF(N.LT.0) THEN
                 VALK(1)='NOM_CMP'
                 VALK(2)='NOM_RESU_MED'
@@ -542,7 +542,7 @@ C            - ON RECUPERE LA LISTE DES NOMS DONNEE PAR L'UTILISATEUR
              ENDIF
              LNCMED = .TRUE.
              CALL JELIRA(LERESU//'           .DESC','NOMUTI',NBCMDU,K8B)
-             CALL GETVTX('RESU','NOM_RESU_MED' ,IOCC,1,1,RESMED,N24)
+             CALL GETVTX('RESU','NOM_RESU_MED' ,IOCC,IARG,1,RESMED,N24)
              CALL WKVECT('&&OP0039.NOM_SYMB','V V K16',NBCMDU,JNOSY)
              CALL WKVECT('&&OP0039.NOM_CH_MED','V V K80',NBCMDU,JNCMED)
              NBNOSY=NBCMDU
@@ -565,11 +565,12 @@ C            - ON RECUPERE LA LISTE DES NOMS DONNEE PAR L'UTILISATEUR
            ENDIF
 
 C          --- ON REGARDE QUELS SONT LES NOM_CMP A IMPRIMER:
-           CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,K8B,N)
+           CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,0,K8B,N)
            IF(N.LT.0) THEN
              NVCMP=-N
              CALL WKVECT('&&OP0039.VERI_NOM_CMP','V V K8',NVCMP,JVCMP)
-             CALL GETVTX('RESU','NOM_CMP',IOCC,1,NVCMP,ZK8(JVCMP),IBID)
+             CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,NVCMP,
+     &                   ZK8(JVCMP),IBID)
              AFAIRE = .TRUE.
            ENDIF
 
@@ -578,8 +579,8 @@ C
 C          --- NUMEROS D'ORDRE POUR IOCC DU MOT-CLE FACTEUR RESU
            KNUM = '&&OP0039.NUME_ORDRE'
 C          *** TEST DE PRESENCE DES MOTS CLES PRECISION ET CRITERE
-           CALL GETVR8('RESU','PRECISION',IOCC,1,1,PREC,NP)
-           CALL GETVTX('RESU','CRITERE'  ,IOCC,1,1,CRIT,NC)
+           CALL GETVR8('RESU','PRECISION',IOCC,IARG,1,PREC,NP)
+           CALL GETVTX('RESU','CRITERE'  ,IOCC,IARG,1,CRIT,NC)
 C          *** RECUPERATION DES NUMEROS D'ORDRE DE LA STRUCTURE DE
 C             DONNEES DE TYPE RESULTAT LERESU A PARTIR DES VARIABLES
 C             D'ACCES UTILISATEUR 'NUME_ORDRE','FREQ','INST','NOEUD_CMP'
@@ -632,8 +633,8 @@ C
 C          --- ON RECHERCHE LES PARAMETRES A ECRIRE ---
 C              (UNIQUEMENT SI FORMAT FICHIER = 'RESULTAT')
            TOUPAR = 'NON'
-           CALL GETVTX('RESU','TOUT_PARA',IOCC,1,1,TOUPAR,N11)
-           CALL GETVTX('RESU','NOM_PARA' ,IOCC,1,0,K8B   ,N10)
+           CALL GETVTX('RESU','TOUT_PARA',IOCC,IARG,1,TOUPAR,N11)
+           CALL GETVTX('RESU','NOM_PARA' ,IOCC,IARG,0,K8B   ,N10)
            IF(N10.EQ.0 ) N11 = 1
            IF(N11.NE.0.AND.TOUPAR.EQ.'NON') THEN
              NPA =  0
@@ -644,7 +645,7 @@ C              (UNIQUEMENT SI FORMAT FICHIER = 'RESULTAT')
            ELSEIF(N10.NE.0) THEN
              NPA = -N10
              CALL WKVECT('&&OP0039.NOMUTI_PARA','V V K16',NPA,JPA)
-             CALL GETVTX('RESU','NOM_PARA',IOCC,1,NPA,ZK16(JPA),NPA)
+             CALL GETVTX('RESU','NOM_PARA',IOCC,IARG,NPA,ZK16(JPA),NPA)
            ENDIF
          ENDIF
 C
@@ -660,10 +661,10 @@ C              (OPERANDE DE SELECTION SUR DES ENTITES TOPOLOGIQUES)
            NBGRN=0
            NBMA=0
            NBGRM=0
-           CALL GETVTX('RESU','NOEUD'   ,IOCC,1,0,K8B,N1)
-           CALL GETVTX('RESU','GROUP_NO',IOCC,1,0,K8B,N2)
-           CALL GETVTX('RESU','MAILLE'  ,IOCC,1,0,K8B,N3)
-           CALL GETVTX('RESU','GROUP_MA',IOCC,1,0,K8B,N4)
+           CALL GETVTX('RESU','NOEUD'   ,IOCC,IARG,0,K8B,N1)
+           CALL GETVTX('RESU','GROUP_NO',IOCC,IARG,0,K8B,N2)
+           CALL GETVTX('RESU','MAILLE'  ,IOCC,IARG,0,K8B,N3)
+           CALL GETVTX('RESU','GROUP_MA',IOCC,IARG,0,K8B,N4)
            IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
      &          .AND. (FORM(1:7).EQ.'ENSIGHT')) THEN
              CALL U2MESS('A','PREPOST3_72')
@@ -687,7 +688,7 @@ C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
      &                     NBGRN,JLGRN)
                CALL WKVECT('&&OP0039.NOM_GRNO','V V K80',
      &                     NBGRN,JNGRN)
-               CALL GETVTX('RESU','GROUP_NO',IOCC,1,NBGRN,
+               CALL GETVTX('RESU','GROUP_NO',IOCC,IARG,NBGRN,
      &                                               ZK8(JLGRN),IBID)
                ZI(JTOPO-1+3) = NBGRN
              ENDIF
@@ -700,7 +701,7 @@ C                UN TABLEAU DE K8, LISTE DES NOMS DE NOEUDS
 C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
                CALL WKVECT('&&OP0039.LIST_NOE','V V K8',NBNO,JLNO)
                CALL WKVECT('&&OP0039.NOM_NOE','V V K80',NBNO,JNNO)
-               CALL GETVTX('RESU','NOEUD',IOCC,1,NBNO,ZK8(JLNO),IBID)
+               CALL GETVTX('RESU','NOEUD',IOCC,IARG,NBNO,ZK8(JLNO),IBID)
                ZI(JTOPO-1+1) = NBNO
              ENDIF
 C
@@ -714,7 +715,7 @@ C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
      &                     NBGRM,JLGRM)
                CALL WKVECT('&&OP0039.NOM_GRMA','V V K80',
      &                     NBGRM,JNGRM)
-               CALL GETVTX('RESU','GROUP_MA',IOCC,1,NBGRM,
+               CALL GETVTX('RESU','GROUP_MA',IOCC,IARG,NBGRM,
      &                                               ZK8(JLGRM),IBID)
                ZI(JTOPO-1+7) = NBGRM
              ENDIF
@@ -727,7 +728,8 @@ C                UN TABLEAU DE K8, LISTE DES NOMS DE MAILLES
 C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
                CALL WKVECT('&&OP0039.LIST_MAI','V V K8',NBMA,JLMA)
                CALL WKVECT('&&OP0039.NOM_MAI','V V K80',NBMA,JMMA)
-               CALL GETVTX('RESU','MAILLE',IOCC,1,NBMA,ZK8(JLMA),IBID)
+               CALL GETVTX('RESU','MAILLE',IOCC,IARG,NBMA,
+     &                     ZK8(JLMA),IBID)
                ZI(JTOPO-1+5) = NBMA
              ENDIF
 C
@@ -929,16 +931,16 @@ C        --- IMPRESSION DANS UN INTERVALLE   BORINF,BORSUP
 C         BORINF = 0.D
 C         BORSUP = 0.D
          IF((NC.NE.0.OR.NR.NE.0).AND.(FORM.EQ.'RESULTAT')) THEN
-           CALL GETVR8('RESU','BORNE_INF',IOCC,1,1,BORINF,NINF)
-           CALL GETVR8('RESU','BORNE_SUP',IOCC,1,1,BORSUP,NSUP)
+           CALL GETVR8('RESU','BORNE_INF',IOCC,IARG,1,BORINF,NINF)
+           CALL GETVR8('RESU','BORNE_SUP',IOCC,IARG,1,BORSUP,NSUP)
            IF(NINF.NE.0) LINF=.TRUE.
            IF(NSUP.NE.0) LSUP=.TRUE.
          ENDIF
 C
 C        ---- IMPRESSION VALEUR MAX, VALEUR MIN----
          IF((NC.NE.0.OR.NR.NE.0).AND.(FORM.EQ.'RESULTAT')) THEN
-           CALL GETVTX('RESU','VALE_MAX',IOCC,1,1,TMAX,NMA)
-           CALL GETVTX('RESU','VALE_MIN',IOCC,1,1,TMIN,NMI)
+           CALL GETVTX('RESU','VALE_MAX',IOCC,IARG,1,TMAX,NMA)
+           CALL GETVTX('RESU','VALE_MIN',IOCC,IARG,1,TMIN,NMI)
            IF(NMA.NE.0.AND.TMAX.EQ.'OUI') LMAX=.TRUE.
            IF(NMI.NE.0.AND.TMIN.EQ.'OUI') LMIN=.TRUE.
          ENDIF
@@ -954,11 +956,11 @@ C        ********************************************
      &          FORM(1:7).EQ.'ENSIGHT' .OR.
      &          FORM(1:5).EQ.'IDEAS'   .OR.
      &          FORM(1:6).EQ.'CASTEM' ) ) THEN
-           CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,K8B,N)
+           CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,0,K8B,N)
            IF(N.LT.0) THEN
            NBCMP=-N
            CALL WKVECT('&&OP0039.NOM_CMP','V V K8',NBCMP,JCMP)
-           CALL GETVTX('RESU','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),IBID)
+           CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,NBCMP,ZK8(JCMP),IBID)
            ENDIF
          ENDIF
 C
@@ -966,7 +968,7 @@ C        TYPE DE CHAMP A IMPRIMER POUR LE FORMAT GMSH (VERSION >= 1.2)
          TYCHA=' '
          IF( (NC.NE.0.OR.NR.NE.0) .AND.
      &        FORM(1:4).EQ.'GMSH' .AND. VERSIO.GE.2) THEN
-           CALL GETVTX('RESU','TYPE_CHAM',IOCC,1,1,TYCHA,IBID)
+           CALL GETVTX('RESU','TYPE_CHAM',IOCC,IARG,1,TYCHA,IBID)
          ENDIF
 
 C        ***************************************

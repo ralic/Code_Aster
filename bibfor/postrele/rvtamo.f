@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMCMP(*), NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  INTITU, NOMPAR(6)
       CHARACTER*24  NOMVAL, NOMACC, NNORES, NOPARA(18), NOMJV
       CHARACTER*80  VALEK(11)
+      INTEGER      IARG
 C
       DATA NOMPAR / 'MOMENT_0'  ,  'MOMENT_1'  ,  'MINIMUM'   ,
      &              'MAXIMUM'   ,  'MOYE_INT'  ,  'MOYE_EXT'  /
@@ -71,8 +72,8 @@ C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      CALL GETVTX ( 'ACTION', 'INTITULE', IOCC,1,1, INTITU, N1 )
-      CALL GETVID ( 'ACTION', 'CHEMIN'  , IOCC,1,1, COURBE, NC )
+      CALL GETVTX ( 'ACTION', 'INTITULE', IOCC,IARG,1, INTITU, N1 )
+      CALL GETVID ( 'ACTION', 'CHEMIN'  , IOCC,IARG,1, COURBE, NC )
 C
       CALL JELIRA ( JEXNUM(XNOVAR,IOCC),'LONUTI',NBVARI,K8B)
       IF ( NBVARI .EQ. 0 ) THEN

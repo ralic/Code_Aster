@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER N1,NBOCC,NSUP,IOCC,NP,NBPAS,NBVAL,IINTER,ICO,J
       CHARACTER*19 RESU
       CHARACTER*16 NOMCMD,CONCEP
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -68,7 +69,7 @@ C     ------------------------------------------------------------------
 
 
       CALL GETRES(RESU,CONCEP,NOMCMD)
-      CALL GETVR8(' ','VALE',0,1,0,R8B,NV)
+      CALL GETVR8(' ','VALE',0,IARG,0,R8B,NV)
 
 
 C     CAS DU MOT CLE VALE=
@@ -81,7 +82,7 @@ C    ----------------------
         CALL WKVECT(RESU//'.BINT','G V R',NBVALE,JBOR)
         CALL WKVECT(RESU//'.VALE','G V R',NBVALE,JVAL)
         CALL WKVECT('&&OP0024.VALE','V V R',NBVALE,KVAL)
-        CALL GETVR8(' ','VALE',0,1,NBVALE,ZR(KVAL),NV)
+        CALL GETVR8(' ','VALE',0,IARG,NBVALE,ZR(KVAL),NV)
         DO 10 I = 1,NBVALE - 1
           ZR(JPAS+I-1) = ZR(KVAL+I) - ZR(KVAL+I-1)
           ZI(JNBP+I-1) = 1
@@ -95,7 +96,7 @@ C    ----------------------
 C     CAS DU MOT CLE INTERVALLE=
 C    ----------------------------
       ELSE
-        CALL GETVR8(' ','DEBUT',0,1,1,DEBUT,N1)
+        CALL GETVR8(' ','DEBUT',0,IARG,1,DEBUT,N1)
         CALL GETFAC('INTERVALLE',NBOCC)
         TOLER = 1.D-3
 
@@ -104,8 +105,8 @@ C          QU'IL FAUDRA CREER DU FAIT DES ARRONDIS (MOT CLE PAS)
 C       ---------------------------------------------------------
         NSUP = 0
         DO 20 IOCC = 1,NBOCC
-          CALL GETVR8('INTERVALLE','JUSQU_A',IOCC,1,1,FIN,N1)
-          CALL GETVR8('INTERVALLE','PAS',IOCC,1,1,PAS,NP)
+          CALL GETVR8('INTERVALLE','JUSQU_A',IOCC,IARG,1,FIN,N1)
+          CALL GETVR8('INTERVALLE','PAS',IOCC,IARG,1,PAS,NP)
           IF (NP.EQ.1) THEN
             IF (PAS.EQ.0.D0) CALL U2MESS('F','ALGORITH9_16')
 
@@ -131,16 +132,16 @@ C       ---------------------------------------------------------
         CALL WKVECT(RESU//'.NBPA','G V I',NBOCC+NSUP,JNBP)
         CALL WKVECT(RESU//'.BINT','G V R',NBOCC+NSUP+1,JBOR)
 
-        CALL GETVR8(' ','DEBUT',0,1,1,DEBUT,N1)
+        CALL GETVR8(' ','DEBUT',0,IARG,1,DEBUT,N1)
         ZR(JBOR-1+1) = DEBUT
         NBVAL = 1
         IINTER = 0
         DO 30 IOCC = 1,NBOCC
           IINTER = IINTER + 1
-          CALL GETVR8('INTERVALLE','JUSQU_A',IOCC,1,1,FIN,N1)
+          CALL GETVR8('INTERVALLE','JUSQU_A',IOCC,IARG,1,FIN,N1)
 
           XXX = FIN - DEBUT
-          CALL GETVR8('INTERVALLE','PAS',IOCC,1,1,PAS,NP)
+          CALL GETVR8('INTERVALLE','PAS',IOCC,IARG,1,PAS,NP)
 
           IF (NP.EQ.1) THEN
             NBPAS = NINT(XXX/PAS)
@@ -174,7 +175,7 @@ C             -- CREATION D'UN INTERVALLE SUPPLEMENTAIRE:
             END IF
 
           ELSE
-            CALL GETVIS('INTERVALLE','NOMBRE',IOCC,1,1,NBPAS,N1)
+            CALL GETVIS('INTERVALLE','NOMBRE',IOCC,IARG,1,NBPAS,N1)
             IF (NBPAS.LE.0) CALL U2MESS('F','ALGORITH9_17')
             ZI(JNBP-1+IINTER) = NBPAS
             ZR(JPAS-1+IINTER) = XXX/NBPAS

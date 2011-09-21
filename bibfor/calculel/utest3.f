@@ -5,9 +5,9 @@
       CHARACTER*(*)       MCLFAC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -33,22 +33,23 @@ C                (2) = LEGENDE
 C ----------------------------------------------------------------------
       INTEGER N0,N2
       CHARACTER*16 LEGEND,REFER
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 
-      CALL GETVTX(MCLFAC,'LEGENDE',   IOCC,1,0, LEGEND, N0 )
-      CALL GETVTX(MCLFAC,'REFERENCE', IOCC,1,0, REFER,  N2 )
+      CALL GETVTX(MCLFAC,'LEGENDE',   IOCC,IARG,0, LEGEND, N0 )
+      CALL GETVTX(MCLFAC,'REFERENCE', IOCC,IARG,0, REFER,  N2 )
 
       IF(N0.LT.0)THEN
-         CALL GETVTX(MCLFAC,'LEGENDE', IOCC,1,1, LEGEND, N0 )
+         CALL GETVTX(MCLFAC,'LEGENDE', IOCC,IARG,1, LEGEND, N0 )
          CALL LXNOAC(LEGEND,LEGEND)
       ELSE
          LEGEND='XXXX'
       ENDIF
 
       IF(N2.LT.0)THEN
-         CALL GETVTX(MCLFAC,'REFERENCE', IOCC,1,1, REFER, N2 )
+         CALL GETVTX(MCLFAC,'REFERENCE', IOCC,IARG,1, REFER, N2 )
       ELSE
          REFER='NON_DEFINI'
       ENDIF

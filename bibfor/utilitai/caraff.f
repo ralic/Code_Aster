@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  MOTCLF, MOTCLS(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -94,22 +95,22 @@ C     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 C     --------------------------------------------
       DO 30 IOCC = 1,NOCC
 
-        CALL GETVTX ( MOTCLF,'NOEUD',IOCC,1,0,K8B,N1)
+        CALL GETVTX ( MOTCLF,'NOEUD',IOCC,IARG,0,K8B,N1)
         IF (N1.NE.0) CALL U2MESS('F','UTILITAI_12')
 
-        CALL GETVTX ( MOTCLF,'GROUP_NO',IOCC,1,0,K8B,N1)
+        CALL GETVTX ( MOTCLF,'GROUP_NO',IOCC,IARG,0,K8B,N1)
         IF (N1.NE.0) CALL U2MESS('F','UTILITAI_13')
 
-        CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,0, K8B, NBCMP)
+        CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,IARG,0, K8B, NBCMP)
 
         IF (TSCA.EQ.'R') THEN
-          CALL GETVR8 ( MOTCLF, 'VALE'  ,IOCC,1,0, RBID, NBVAR)
+          CALL GETVR8 ( MOTCLF, 'VALE'  ,IOCC,IARG,0, RBID, NBVAR)
         ELSE IF (TSCA.EQ.'I') THEN
-          CALL GETVIS ( MOTCLF, 'VALE_I',IOCC,1,0, IBID, NBVAR)
+          CALL GETVIS ( MOTCLF, 'VALE_I',IOCC,IARG,0, IBID, NBVAR)
         ELSE IF (TSCA.EQ.'C') THEN
-          CALL GETVC8 ( MOTCLF, 'VALE_C',IOCC,1,0, CBID, NBVAR)
+          CALL GETVC8 ( MOTCLF, 'VALE_C',IOCC,IARG,0, CBID, NBVAR)
         ELSE IF (TSCA.EQ.'K8') THEN
-          CALL GETVID ( MOTCLF, 'VALE_F',IOCC,1,0, K8B , NBVAR)
+          CALL GETVID ( MOTCLF, 'VALE_F',IOCC,IARG,0, K8B , NBVAR)
         ELSE
           CALL U2MESK('F','UTILITAI_14',1,TSCA)
         END IF
@@ -120,19 +121,24 @@ C       TEST SUR LES DONNEES INTRODUITES
         ELSE
           NBCMP = -NBCMP
           NBVAR = -NBVAR
-          CALL GETVTX(MOTCLF,'NOM_CMP'  ,IOCC,1,NBCMP,ZK8(JNCMP),NBCMP)
+          CALL GETVTX(MOTCLF,'NOM_CMP',IOCC,IARG,NBCMP,
+     &                ZK8(JNCMP),NBCMP)
           IF (TSCA.EQ.'R') THEN
-            CALL GETVR8 (MOTCLF,'VALE'  ,IOCC,1,NBVAR,ZR(JVALV) ,NBVAR)
+            CALL GETVR8 (MOTCLF,'VALE',IOCC,IARG,NBVAR,
+     &                   ZR(JVALV) ,NBVAR)
           ELSE IF (TSCA.EQ.'I') THEN
-            CALL GETVIS (MOTCLF,'VALE_I',IOCC,1,NBVAR,ZI(JVALV) ,NBVAR)
+            CALL GETVIS (MOTCLF,'VALE_I',IOCC,IARG,NBVAR,
+     &                   ZI(JVALV) ,NBVAR)
           ELSE IF (TSCA.EQ.'C') THEN
-            CALL GETVC8 (MOTCLF,'VALE_C',IOCC,1,NBVAR,ZC(JVALV) ,NBVAR)
+            CALL GETVC8 (MOTCLF,'VALE_C',IOCC,IARG,NBVAR,
+     &                   ZC(JVALV) ,NBVAR)
           ELSE IF (TSCA.EQ.'K8') THEN
-            CALL GETVID (MOTCLF,'VALE_F',IOCC,1,NBVAR,ZK8(JVALV),NBVAR)
+            CALL GETVID (MOTCLF,'VALE_F',IOCC,IARG,NBVAR,
+     &                   ZK8(JVALV),NBVAR)
           END IF
         END IF
 C
-        CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+        CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
         IF ( NBTOU .NE. 0 ) THEN
           CALL NOCART(CARTE,1,' ','NOM',0,' ',0,' ',NBCMP)
 C

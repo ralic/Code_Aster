@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,12 +50,13 @@ C
       REAL*8        LTCHAR, PT(3), PT2(3), DIR(3), ANGL, R8BID
 
       REAL*8        AXE1(3),AXE2(3),PERP(3)
+      INTEGER      IARG
 
 C -DEB------------------------------------------------------------------
 C
       CALL INFMAJ
 C
-      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, MA, N1 )
+      CALL GETVID ( ' ', 'MAILLAGE', 1,IARG,1, MA, N1 )
 C
       CALL GETRES ( MA2, KBI1, KBI2 )
 C
@@ -74,7 +75,7 @@ C     --- TRAITEMENT DU MOT CLEF  "MODI_MAILLE" :
 C     ---------------------------------------------
       CALL GETFAC ( 'MODI_MAILLE', NBOCC )
       IF ( NBOCC .NE. 0 ) THEN
-         CALL GETVTX ( 'MODI_MAILLE', 'OPTION', 1,1,1, OPTION, N1 )
+         CALL GETVTX ( 'MODI_MAILLE', 'OPTION', 1,IARG,1, OPTION, N1 )
          IF ( OPTION .EQ.  'NOEUD_QUART' ) THEN
             CALL MOMABA ( MA )
          ENDIF
@@ -85,8 +86,8 @@ C     --- TRAITEMENT DU MOT CLEF  "DEFORME" :
 C     ---------------------------------------
       CALL GETFAC ( 'DEFORME', NBOCC )
       IF ( NBOCC .NE. 0 ) THEN
-         CALL GETVTX ('DEFORME','OPTION',1,1,1,OPTION,NOP)
-         CALL GETVID ( 'DEFORME', 'DEPL', 1,1,1, DEPLA, N1 )
+         CALL GETVTX ('DEFORME','OPTION',1,IARG,1,OPTION,NOP)
+         CALL GETVID ( 'DEFORME', 'DEPL', 1,IARG,1, DEPLA, N1 )
          CALL DISMOI('F','NOM_MAILLA',DEPLA,'CHAM_NO',IBID,MAB,IBID)
          IF (MAB.NE.MA) THEN
            VALK(1)=MA
@@ -109,18 +110,18 @@ C
 C
 C     --- TRAITEMENT DU MOT CLEF  "TRANSLATION" :
 C     ---------------------------------------
-      CALL GETVR8 ( ' ', 'TRANSLATION', 1,1,0, R8BID, N1 )
+      CALL GETVR8 ( ' ', 'TRANSLATION', 1,IARG,0, R8BID, N1 )
       IF ( N1 .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
          BIDIM = .FALSE.
-         CALL GETVR8 ( ' ', 'TRANSLATION', 1, 1, 0, LTCHAR, DIM )
+         CALL GETVR8 ( ' ', 'TRANSLATION', 1,IARG, 0, LTCHAR, DIM )
          DIM = - DIM
          IF ( DIM .EQ. 2 ) THEN
-           CALL GETVR8 ( ' ', 'TRANSLATION', 1, 1, 2, DIR, N1 )
+           CALL GETVR8 ( ' ', 'TRANSLATION', 1,IARG, 2, DIR, N1 )
            DIR(3) = 0.D0
            BIDIM = .TRUE.
          ELSE
-            CALL GETVR8 ( ' ', 'TRANSLATION', 1, 1, 3, DIR, N1 )
+            CALL GETVR8 ( ' ', 'TRANSLATION', 1,IARG, 3, DIR, N1 )
          ENDIF
          CALL TRANMA ( GEOMI,  DIR, BIDIM )
       ENDIF
@@ -132,16 +133,16 @@ C     ---------------------------------------
       IF ( NBOCC .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
          BIDIM = .FALSE.
-         CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1, 1, 0, LTCHAR, DIM )
+         CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1,IARG, 0, LTCHAR, DIM )
          DIM = - DIM
          IF ( DIM .EQ. 2 ) THEN
-            CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1, 1, 2, PT, N1 )
+            CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1,IARG, 2, PT, N1 )
             PT(3) = 0.D0
             CALL VECINI(3,0.D0,PT2)
             BIDIM = .TRUE.
          ELSE
-            CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1, 1, 3, PT, N1 )
-            CALL GETVR8 ( 'MODI_BASE', 'VECT_Y', 1, 1, 3, PT2, N1 )
+            CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1,IARG, 3, PT, N1 )
+            CALL GETVR8 ( 'MODI_BASE', 'VECT_Y', 1,IARG, 3, PT2, N1 )
          ENDIF
          CALL CHGREF ( GEOMI, PT, PT2, BIDIM )
       ENDIF
@@ -154,23 +155,24 @@ C     ---------------------------------------
          GEOMI = MA//'.COORDO'
          BIDIM = .FALSE.
          DO 10 I = 1 , NBOCC
-            CALL GETVR8 ( 'ROTATION', 'POIN_1', I, 1, 0, LTCHAR, DIM )
-            CALL GETVR8 ( 'ROTATION', 'ANGL', I, 1, 1, ANGL, N1 )
-            CALL GETVR8 ( 'ROTATION', 'POIN_2', I, 1, 0, R8BID, N2 )
+            CALL GETVR8 ( 'ROTATION', 'POIN_1', I,IARG, 0, LTCHAR, DIM )
+            CALL GETVR8 ( 'ROTATION', 'ANGL', I,IARG, 1, ANGL, N1 )
+            CALL GETVR8 ( 'ROTATION', 'POIN_2', I,IARG, 0, R8BID, N2 )
             DIM = - DIM
             IF ( DIM .EQ. 2 ) THEN
-               CALL GETVR8 ( 'ROTATION', 'POIN_1', I, 1, 2, PT, N1 )
+               CALL GETVR8 ( 'ROTATION', 'POIN_1', I,IARG, 2, PT, N1 )
                PT(3) = 0.D0
                CALL VECINI(3,0.D0,PT2)
                CALL VECINI(3,0.D0,DIR)
                BIDIM = .TRUE.
             ELSE
-               CALL GETVR8 ( 'ROTATION', 'POIN_1', I, 1, 3, PT, N1 )
+               CALL GETVR8 ( 'ROTATION', 'POIN_1', I,IARG, 3, PT, N1 )
                IF ( N2 .NE. 0 ) THEN
-                  CALL GETVR8 ( 'ROTATION', 'POIN_2', I, 1, 3, PT2, N1 )
+                  CALL GETVR8 ('ROTATION','POIN_2',I,IARG,3,
+     &                         PT2, N1 )
                   CALL VDIFF(3,PT2,PT,DIR)
                ELSE
-                  CALL GETVR8 ( 'ROTATION', 'DIR', I, 1, 3, DIR, N1 )
+                  CALL GETVR8 ( 'ROTATION', 'DIR', I,IARG, 3, DIR, N1 )
                ENDIF
             ENDIF
             CALL ROTAMA ( GEOMI, PT, DIR, ANGL, BIDIM )
@@ -184,9 +186,9 @@ C     ---------------------------------------
       IF ( NBOCC .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
          DO 20 I = 1 , NBOCC
-            CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 0, PT,   DIM )
-            CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 0, AXE1, N1 )
-            CALL GETVR8 ( 'SYMETRIE', 'AXE_2', I, 1, 0, AXE2, N2 )
+            CALL GETVR8 ( 'SYMETRIE', 'POINT', I,IARG, 0, PT,   DIM )
+            CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I,IARG, 0, AXE1, N1 )
+            CALL GETVR8 ( 'SYMETRIE', 'AXE_2', I,IARG, 0, AXE2, N2 )
 
 C           DIM, N1, N2 = 2 OU 3 ==> IMPOSE PAR LES CATALOGUES
 C           EN 2D : DIM=N1=2    , AXE_2 N'EXISTE PAS N2=0
@@ -198,8 +200,8 @@ C           EN 3D : DIM=N1=N2=3
                IF ( N2 .NE. 0 ) THEN
                   CALL U2MESS('A','ALGORITH9_63')
                ENDIF
-               CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 2, PT,   DIM )
-               CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 2, AXE1, N1 )
+               CALL GETVR8 ( 'SYMETRIE', 'POINT', I,IARG, 2, PT,   DIM )
+               CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I,IARG, 2, AXE1, N1 )
 C              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A Z ET AXE1
                PERP(1) = -AXE1(2)
                PERP(2) =  AXE1(1)
@@ -211,9 +213,9 @@ C              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A Z ET AXE1
                IF ( N2 .NE. DIM ) THEN
                  CALL U2MESS('F','ALGORITH9_64')
                ENDIF
-               CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 3, PT,   DIM )
-               CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 3, AXE1, N1 )
-               CALL GETVR8 ( 'SYMETRIE', 'AXE_2', I, 1, 3, AXE2, N2 )
+               CALL GETVR8 ( 'SYMETRIE', 'POINT', I,IARG, 3, PT,   DIM )
+               CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I,IARG, 3, AXE1, N1 )
+               CALL GETVR8 ( 'SYMETRIE', 'AXE_2', I,IARG, 3, AXE2, N2 )
 C              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A AXE1 ET AXE2
                PERP(1) = AXE1(2)*AXE2(3) - AXE1(3)*AXE2(2)
                PERP(2) = AXE1(3)*AXE2(1) - AXE1(1)*AXE2(3)
@@ -226,10 +228,10 @@ C
 C
 C     --- TRAITEMENT DU MOT CLEF  "ECHELLE" :
 C     ---------------------------------------
-      CALL GETVR8 ( ' ', 'ECHELLE', 1,1,0, R8BID, N1 )
+      CALL GETVR8 ( ' ', 'ECHELLE', 1,IARG,0, R8BID, N1 )
       IF ( N1 .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
-         CALL GETVR8 ( ' ', 'ECHELLE', 1, 1, 1, LTCHAR, N2 )
+         CALL GETVR8 ( ' ', 'ECHELLE', 1,IARG, 1, LTCHAR, N2 )
          CALL ECHELL ( GEOMI,  LTCHAR )
       ENDIF
 C
@@ -259,14 +261,17 @@ C     --- TRAITEMENT DES MOT CLEF  "PLAQ_TUBE" ET "TUBE_COUDE":
 C     --------------------------------------------------------
       CALL GETFAC ( 'PLAQ_TUBE', NBOC1 )
       IF ( NBOC1 .NE. 0 ) THEN
-         CALL GETVR8 ( 'PLAQ_TUBE', 'L_TUBE_P1' , 1,1,1, LTCHAR , N1 )
-         CALL GETVTX ( 'PLAQ_TUBE', 'COUTURE'   , 1,1,1, COUTUR , N1 )
+         CALL GETVR8 ('PLAQ_TUBE','L_TUBE_P1',1,IARG,1,
+     &                LTCHAR , N1 )
+         CALL GETVTX ('PLAQ_TUBE','COUTURE',1,IARG,1,
+     &                COUTUR , N1 )
          IF (COUTUR.EQ.'OUI') CALL ASCELI ( MA )
          CALL ASCTUB ( MA )
       ENDIF
       CALL GETFAC ( 'TUBE_COUDE', NBOC2 )
       IF ( NBOC2 .NE. 0 ) THEN
-        CALL GETVR8 ( 'TUBE_COUDE', 'L_TUBE_P1' , 1,1,1, LTCHAR , N1 )
+        CALL GETVR8 ('TUBE_COUDE','L_TUBE_P1',1,IARG,1,
+     &               LTCHAR , N1 )
         CALL ASCCOU ( MA )
       ENDIF
       IF (NBOC1.NE.0 .OR. NBOC2.NE.0) THEN

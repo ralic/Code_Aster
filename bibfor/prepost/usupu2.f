@@ -3,7 +3,7 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,26 +47,27 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       REAL*8 COEF(*),ANG(*),TEMPS(*)
       REAL*8 VUSTUB(NBPAIR,NBINST),VUSOB(NBPAIR,NBINST)
       REAL*8 PUS(*),PMOYE,POURPU(*),POUPRE(*)
+      INTEGER      IARG
       CALL JEMARQ()
       IFIRES = IUNIFI('RESULTAT')
       NBPT = 0
 C
-      CALL GETVR8(' ','PUIS_USURE',1,1,1,PUUSUR,N1)
+      CALL GETVR8(' ','PUIS_USURE',1,IARG,1,PUUSUR,N1)
       IF ( N1 .NE. 0 ) THEN
          CALL IMPUS ( IFIRES, 0, PUUSUR )
          GOTO 9999
       ENDIF
 C
-      CALL GETVID(' ','RESU_GENE',1,1,1,TRANGE,NT)
+      CALL GETVID(' ','RESU_GENE',1,IARG,1,TRANGE,NT)
       IF ( NT .NE. 0 ) THEN
          CALL JEVEUO(TRANGE//'.DESC','L',JDESC)
          IF ( ZI(JDESC) .EQ. 2 ) THEN
             NBCHOC = ZI(JDESC+2)
-            CALL GETVIS(' ','NB_BLOC'   ,1,1,1,NBLOC,N1)
+            CALL GETVIS(' ','NB_BLOC'   ,1,IARG,1,NBLOC,N1)
             IF ( N1 .EQ. 0 ) NBLOC = 1
-            CALL GETVR8(' ','INST_INIT' ,1,1,1,TDEBUT,N2)
-            CALL GETVR8(' ','INST_FIN'  ,1,1,1,TFIN  ,N3)
-            CALL GETVTX(' ','NOEUD'     ,1,1,1,NOEU  ,N4)
+            CALL GETVR8(' ','INST_INIT' ,1,IARG,1,TDEBUT,N2)
+            CALL GETVR8(' ','INST_FIN'  ,1,IARG,1,TFIN  ,N3)
+            CALL GETVTX(' ','NOEUD'     ,1,IARG,1,NOEU  ,N4)
 C
             CALL JEVEUO(TRANGE//'.NCHO','L',JNCHO)
 C           --- RECHERCHE DU NOEUD DE CHOC ---

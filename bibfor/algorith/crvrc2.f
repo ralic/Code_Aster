@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*19 LIGRMO,CHOUT,RESU1,CHTEMP
       CHARACTER*24 CHCARA(18),LCHIN(10)
       LOGICAL EXICAR
+      INTEGER      IARG
 
 C----------------------------------------------------------------------
       CALL JEMARQ()
@@ -62,9 +63,9 @@ C----------------------------------------------------------------------
 
 
       CALL GETRES(RESU,TYPE,OPER)
-      CALL GETVID('PREP_VRC2','MODELE',1,1,1,MODELE,N1)
-      CALL GETVID('PREP_VRC2','CARA_ELEM',1,1,1,CARELE,N1)
-      CALL GETVID('PREP_VRC2','EVOL_THER',1,1,1,RESU1,N1)
+      CALL GETVID('PREP_VRC2','MODELE',1,IARG,1,MODELE,N1)
+      CALL GETVID('PREP_VRC2','CARA_ELEM',1,IARG,1,CARELE,N1)
+      CALL GETVID('PREP_VRC2','EVOL_THER',1,IARG,1,RESU1,N1)
 
 C     -- ON VERIFIE QUE LE CARA_ELEM S'APPUIE BIEN SUR LE MODELE
       CALL JEEXIN(CARELE//'.CANBSP    .CELK',IEXI)

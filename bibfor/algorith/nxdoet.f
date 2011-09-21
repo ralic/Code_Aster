@@ -2,7 +2,7 @@
      &                  SDIETO,INITPR,INSTIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,6 +84,7 @@ C
       REAL*8       TEMPCT,R8VIDE
       INTEGER      IFM,NIV
       LOGICAL      EVONOL,LEINIT
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -138,7 +139,7 @@ C
 C
 C --- CONCEPT EVOL_THER DONNE DANS ETAT_INIT
 C
-      CALL GETVID(MOTFAC,'EVOL_THER',1,1,1,EVOL,NOCC)
+      CALL GETVID(MOTFAC,'EVOL_THER',1,IARG,1,EVOL,NOCC)
       CALL ASSERT(NOCC.LE.1)
       EVONOL = NOCC.GT.0
 C
@@ -202,7 +203,7 @@ C
 C
 C ----------- TEMPERATURE INITIALE PAR UN CHAMP
 C
-              CALL GETVID(MOTFAC,'CHAM_NO',1,1,1,K8BID ,NOCC)
+              CALL GETVID(MOTFAC,'CHAM_NO',1,IARG,1,K8BID ,NOCC)
               IF (NOCC.EQ.1) THEN
                 INITPR = 2
                 CALL NMETL2(MOTFAC,SDIETO,SDSENS,NRPASE,ICHAM )
@@ -210,7 +211,7 @@ C
 C
 C ----------- TEMPERATURE INITIALE STATIONNAIRE
 C
-              CALL GETVTX(MOTFAC,'STATIONNAIRE',1,1,1,REPSTA,NOCC)
+              CALL GETVTX(MOTFAC,'STATIONNAIRE',1,IARG,1,REPSTA,NOCC)
               IF ( NOCC .GT. 0 ) THEN
                 IF ( REPSTA(1:3) .EQ. 'OUI' ) THEN
                   LOSTAT = .TRUE.
@@ -221,7 +222,7 @@ C
 C
 C ----------- TEMPERATURE INITIALE UNIFORME
 C
-              CALL GETVR8(MOTFAC,'VALE',1,1,1,TEMPCT,NOCC)
+              CALL GETVR8(MOTFAC,'VALE',1,IARG,1,TEMPCT,NOCC)
               IF (NOCC.GT.0) THEN
                 INITPR = 1
                 DO 222  I = 1 , NEQ

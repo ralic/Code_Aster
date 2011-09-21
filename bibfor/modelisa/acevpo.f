@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   K8B, NOMU, CARA(100), KIOC
       CHARACTER*16  SEC, VSEC, CONCEP, CMD
       INTEGER       VALI(3)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -58,14 +59,14 @@ C
       NLG = 0
       DO 100 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
-         CALL GETVTX ( 'POUTRE', 'GROUP_MA' , IOC,1,0,  K8B, NG )
-         CALL GETVTX ( 'POUTRE', 'MAILLE'   , IOC,1,0,  K8B, NM )
-         CALL GETVTX ( 'POUTRE', 'SECTION'  , IOC,1,1,  SEC, NS )
-         CALL GETVTX ( 'POUTRE', 'VARI_SECT', IOC,1,1, VSEC, NVS)
-         CALL GETVTX ( 'POUTRE', 'CARA'     , IOC,1,0,  K8B, NC )
+         CALL GETVTX ( 'POUTRE', 'GROUP_MA' , IOC,IARG,0,  K8B, NG )
+         CALL GETVTX ( 'POUTRE', 'MAILLE'   , IOC,IARG,0,  K8B, NM )
+         CALL GETVTX ( 'POUTRE', 'SECTION'  , IOC,IARG,1,  SEC, NS )
+         CALL GETVTX ( 'POUTRE', 'VARI_SECT', IOC,IARG,1, VSEC, NVS)
+         CALL GETVTX ( 'POUTRE', 'CARA'     , IOC,IARG,0,  K8B, NC )
          NCAR = -NC
-         CALL GETVTX ( 'POUTRE', 'CARA'     , IOC,1,NCAR,CARA,NC)
-         CALL GETVR8 ( 'POUTRE', 'VALE'     , IOC,1,0,  R8B, NV )
+         CALL GETVTX ( 'POUTRE', 'CARA'     , IOC,IARG,NCAR,CARA,NC)
+         CALL GETVR8 ( 'POUTRE', 'VALE'     , IOC,IARG,0,  R8B, NV )
          NVAL = -NV
 C
          IF ( NVAL .NE. NCAR ) THEN

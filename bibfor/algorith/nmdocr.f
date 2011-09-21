@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
+      INTEGER      IARG
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -108,8 +109,8 @@ C     MOTS CLES FACTEUR
         CALL GETFAC(MOCLEF(I),NBOCC)
 C       NOMBRE D'OCCURRENCES
         DO 150 K = 1,NBOCC
-          CALL GETVTX(MOCLEF(I),'ALGO_INTE',K,1,1,ALGO,IRET)
-          CALL GETVTX(MOCLEF(I),'RELATION',K,1,1,COMP,N1)
+          CALL GETVTX(MOCLEF(I),'ALGO_INTE',K,IARG,1,ALGO,IRET)
+          CALL GETVTX(MOCLEF(I),'RELATION',K,IARG,1,COMP,N1)
 C         CREATION DE L'OBJET COMPORTEMENT A PARTIR DU CATALOGUE
           CALL LCCREE(1, COMP, COMCOD)
 
@@ -135,8 +136,8 @@ C         PASSAGE NOM ALGO -> IDENTIFICATEUR (VALEUR REELLE)
 C         IL FAUDRAIT ALERTER L'UTILISATEUR QUI REMPLIRAIT CES MOT-CLES
 C         EN FAISANT ATTENTION AU CAS DES CONTRAINTES PLANES
 C         CE SERA POSSIBLE AVEC LA FICHE 15877
-          CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
-          CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,IRET)
+          CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,IARG,1,RESI,IRET)
+          CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,IARG,1,ITEINT,IRET)
 
           IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
      &      CALL U2MESS('A','ALGORITH7_60')
@@ -144,7 +145,7 @@ C         CE SERA POSSIBLE AVEC LA FICHE 15877
 
           ITEPAS = 0
           IF (MOCLEF(I).EQ.'COMP_INCR') THEN
-            CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS',K,1,1,ITEPAS,IRET)
+            CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS',K,IARG,1,ITEPAS,IRET)
           ENDIF
 C
 C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
@@ -157,37 +158,39 @@ C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
           TYPTGT = 0
           IF ( MOCLEF(I).EQ. 'COMP_INCR') THEN
              CALL GETVIS(MOCLEF(I),'ITER_MAXI_DEBORST',
-     &               K,1,1,ITDEBO,IRET)
-             CALL GETVR8(MOCLEF(I),'RESI_DEBO_MAXI',K,1,1,
-     &                  RESID,IRET)
+     &                   K,IARG,1,ITDEBO,IRET)
+             CALL GETVR8(MOCLEF(I),'RESI_DEBO_MAXI',K,IARG,1,
+     &                   RESID,IRET)
              IF (IRET.NE.0) THEN
                 RESID=-RESID
              ELSE
-                CALL GETVR8(MOCLEF(I),'RESI_DEBO_RELA',K,1,1,
+                CALL GETVR8(MOCLEF(I),'RESI_DEBO_RELA',K,IARG,1,
      &                      RESID,IRET)
              ENDIF
              EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
              IF (EXITS .EQ. 1) THEN
 C               DANS ZR(JVALV+1) ON STOCKE LE TYPE DE MATRICE TGTE
-                CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TYMATG,
+                CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,IARG,1,TYMATG,
      &                      IRET)
                 IF (IRET.EQ.0) THEN
                    TYPTGT = 0
                 ELSE
                    IF (TYMATG.EQ.'PERTURBATION') THEN
                       TYPTGT = 1
-                      CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,1,1,
+                      CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,IARG,1,
      &                            PERT,IRET)
                    ELSEIF (TYMATG.EQ.'VERIFICATION') THEN
                       TYPTGT = 2
-                      CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,1,1,
+                      CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,IARG,1,
      &                            PERT,IRET)
                    ELSEIF (TYMATG(1:16).EQ.'TANGENTE_SECANTE') THEN
 C                     MATRICE EVOLUTIVE TANGENTE/SECANTE
-                      CALL GETVR8(MOCLEF(I),'SEUIL',K,1,1,TSEUIL,IRET)
-                      CALL GETVR8(MOCLEF(I),'AMPLITUDE',K,1,1,TSAMPL,
+                      CALL GETVR8(MOCLEF(I),'SEUIL',K,IARG,1,
+     &                            TSEUIL,IRET)
+                      CALL GETVR8(MOCLEF(I),'AMPLITUDE',K,IARG,1,TSAMPL,
      &                            IRET)
-                      CALL GETVR8(MOCLEF(I),'TAUX_RETOUR',K,1,1,TSRETU,
+                      CALL GETVR8(MOCLEF(I),'TAUX_RETOUR',K,IARG,1,
+     &                            TSRETU,
      &                            IRET)
                    ENDIF
 C                  VERIF QUE TYMATG EST POSSIBLE POUR COMP
@@ -201,7 +204,7 @@ C                  VERIF QUE TYMATG EST POSSIBLE POUR COMP
              ENDIF
 C GLUTE POUR IMPLEX
              IF (NOMCMD(1:13).EQ.'STAT_NON_LINE') THEN
-                CALL GETVTX(' ','METHODE',0,1,1,METHOD,IRET)
+                CALL GETVTX(' ','METHODE',0,IARG,1,METHOD,IRET)
                 IF (IRET.NE.0) THEN
                    IF (METHOD.EQ.'IMPL_EX') THEN
                       WRITE (6,*) 'COMCOD=',COMCOD
@@ -230,8 +233,8 @@ C FIN GLUTE POUR IMPLEX
           ENDIF
 C
           IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
-            CALL GETVR8(MOCLEF(I),'PARM_THETA',K,1,1,THETA,IRET)
-            CALL GETVR8(MOCLEF(I),'PARM_ALPHA',K,1,1,ALPHA ,IRET)
+            CALL GETVR8(MOCLEF(I),'PARM_THETA',K,IARG,1,THETA,IRET)
+            CALL GETVR8(MOCLEF(I),'PARM_ALPHA',K,IARG,1,ALPHA ,IRET)
           ELSE
             THETA=1.D0
             ALPHA=1.D0

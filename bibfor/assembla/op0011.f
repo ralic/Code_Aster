@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,12 +55,13 @@ C----------------------------------------------------------------------
       CHARACTER*16 TYPE,OPER
       CHARACTER*19 CH19, SOLVEU
       CHARACTER*24 CHARGE
+      INTEGER      IARG
 C----------------------------------------------------------------------
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
 
-      CALL GETVTX ( ' ', 'METHODE', 0,1,1, METHOD, NBID )
-      CALL GETVTX ( ' ', 'RENUM'  , 0,1,1, RENUM,  NBID )
+      CALL GETVTX ( ' ', 'METHODE', 0,IARG,1, METHOD, NBID )
+      CALL GETVTX ( ' ', 'RENUM'  , 0,IARG,1, RENUM,  NBID )
 
       CHARGE = '&&OP0011.CHARGES   .LCHA'
       BASE ='GG'
@@ -79,15 +80,15 @@ C     --------------------------------
 
 C --- TRAITEMENT DU MOT CLE MATR_RIGI OU MODELE :
 C     -----------------------------------------
-      CALL GETVID ( ' ', 'MATR_RIGI', 0,1,0, K8B, NBMAT )
+      CALL GETVID ( ' ', 'MATR_RIGI', 0,IARG,0, K8B, NBMAT )
 C
       IF ( NBMAT .EQ. 0 ) THEN
-         CALL GETVID ( ' ', 'MODELE', 1,1,1, MO, NBID )
-         CALL GETVID ( ' ', 'CHARGE', 1,1,0, K8B,NBCHA)
+         CALL GETVID ( ' ', 'MODELE', 1,IARG,1, MO, NBID )
+         CALL GETVID ( ' ', 'CHARGE', 1,IARG,0, K8B,NBCHA)
          NBCHA = -NBCHA
          IF (NBCHA.NE.0) THEN
             CALL WKVECT ( CHARGE, 'V V K24', NBCHA, IACHA )
-            CALL GETVID (' ', 'CHARGE', 1,1,NBCHA, ZK24(IACHA), NBID)
+            CALL GETVID (' ', 'CHARGE', 1,IARG,NBCHA, ZK24(IACHA), NBID)
          ENDIF
          CALL NUMERO (' ',MO, CHARGE(1:19), SOLVEU, BASE, NUDEV )
          CALL JEDETR ( CHARGE )
@@ -96,7 +97,7 @@ C
 
 
       NBMAT = -NBMAT
-      CALL GETVID ( ' ', 'MATR_RIGI', 0,1,NBMAT, TLIMAT, NBMAT )
+      CALL GETVID ( ' ', 'MATR_RIGI', 0,IARG,NBMAT, TLIMAT, NBMAT )
       CALL WKVECT('&&OP001_LIST_MATEL','V V K24',NBMAT,IMATEL)
       DO 10 IL=1,NBMAT
         ZK24(IMATEL+IL-1)=TLIMAT(IL)

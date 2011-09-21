@@ -1,7 +1,7 @@
       SUBROUTINE OP0051()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C
       CHARACTER*24 NACCIS, NACCR8, NCH24, NLSMAC, NLSNAC
       CHARACTER*24 NORECG
       LOGICAL      TROUVE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C====
@@ -134,7 +135,7 @@ C============ DEBUT DE LA BOUCLE SUR LES POST-TRAITEMENTS ==============
 C
       DO 3, IOCC = 1, NBPOST, 1
 C
-        CALL GETVTX('ACTION','OPERATION',IOCC,1,1,K16,IRET)
+        CALL GETVTX('ACTION','OPERATION',IOCC,IARG,1,K16,IRET)
         IF ( K16(1:7) .EQ. 'EXTREMA' ) THEN
           CALL RVMIMA(TABLE1,IOCC)
           GOTO 3
@@ -150,7 +151,7 @@ C
 C
         IF ( IRET.NE.0 ) THEN
 C
-        CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,1,1, K8B, N1 )
+        CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,IARG,1, K8B, N1 )
         IF ( K8B(1:1) .EQ. 'O' ) THEN
           CA = 'N'
         ELSE
@@ -160,7 +161,7 @@ C
 C        --- EST-CE UN RESULTAT ? ---
 C
         RESUCO = '        '
-        CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, RESUCO, NBRESU )
+        CALL GETVID ( MCF, 'RESULTAT', IOCC,IARG,1, RESUCO, NBRESU )
 C
 C 3.1. ==> SENSIBILITE
 C        --- NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
@@ -179,7 +180,7 @@ C        --- SENSIBILITE ET MODULE ---
 C
         IF ( IRET.EQ.0 ) THEN
 C
-        CALL GETVTX ( MCF, 'SENSIBILITE_OPTION', IOCC, 1, 1,
+        CALL GETVTX ( MCF, 'SENSIBILITE_OPTION', IOCC,IARG, 1,
      &                SENSOP, IAUX)
         IF ( IAUX.EQ.0 ) THEN
           SENSOP = 'MODULE_SENSIBILITE'
@@ -224,9 +225,9 @@ C
 C
 C           /* CAS D' UN RESULTAT */
 C
-            CALL GETVTX ( MCF, 'NOM_CHAM' , IOCC,1,1, NCHSYM, N1 )
-            CALL GETVTX ( MCF, 'CRITERE'  , IOCC,1,1, CRITER, N1 )
-            CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,1, EPSI  , N1 )
+            CALL GETVTX ( MCF, 'NOM_CHAM' , IOCC,IARG,1, NCHSYM, N1 )
+            CALL GETVTX ( MCF, 'CRITERE'  , IOCC,IARG,1, CRITER, N1 )
+            CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,1, EPSI  , N1 )
 C
             CALL RVGACC ( IOCC, CODACC, NACCIS, NACCR8, NBACCE )
 C
@@ -265,7 +266,7 @@ C
             CALL JEECRA(JEXNUM(NCHEFF//'.LSCHEFF',1),'LONMAX',1,' ')
             CALL JEVEUO(JEXNUM(NCHEFF//'.LSCHEFF',1),'E',JACC)
 C
-            CALL GETVID ( MCF, 'CHAM_GD', IOCC,1,1, ZK24(JACC), N1 )
+            CALL GETVID ( MCF, 'CHAM_GD', IOCC,IARG,1, ZK24(JACC), N1 )
 C
             CALL DISMOI('F','TYPE_CHAMP',ZK24(JACC),'CHAMP',IBID,K8B,IE)
             IF ( K8B(1:4) .EQ. 'ELNO' ) THEN

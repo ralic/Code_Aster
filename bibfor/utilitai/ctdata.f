@@ -9,7 +9,7 @@
       CHARACTER*19 CHPGS
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 LIGREL
       CHARACTER*24 CHGEOM,LCHIN(6),LCHOUT(1)
       LOGICAL EXIGEO,EXICAR
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -86,8 +87,8 @@ C
       NOMO=' '
       TYPGD=' '
       EXICAR=.FALSE.
-      CALL GETVID('RESU','RESULTAT'  ,1,1,0,K8B,N0)
-      CALL GETVID('RESU','CHAM_GD'  ,1,1,0,K8B,N4)
+      CALL GETVID('RESU','RESULTAT'  ,1,IARG,0,K8B,N0)
+      CALL GETVID('RESU','CHAM_GD'  ,1,IARG,0,K8B,N4)
       DO 60 I=1,NBVAL
          IF(ZK24(JKCHA+I-1)(1:18).NE.'&&CHAMP_INEXISTANT')THEN
              CALL DISMOI('F','TYPE_CHAMP',ZK24(JKCHA+I-1)(1:19),
@@ -115,7 +116,7 @@ C               CARACTERISTIQUES POUR LES CAS DES ELEMENTS A SOUS POINTS
      &                     'RESULTAT',IBID,NOCA,IRET)
                     IF(IRET.EQ.0)EXICAR=.TRUE.
                 ELSEIF(N4.NE.0) THEN
-                    CALL GETVID('RESU','CARA_ELEM'  ,1,1,1,NOCA,N5)
+                    CALL GETVID('RESU','CARA_ELEM'  ,1,IARG,1,NOCA,N5)
                     IF(N5.NE.0)EXICAR=.TRUE.
                 ENDIF
 C               DIMENSION MODELE POUR IMPRESSION COOR POINT GAUSS
@@ -150,7 +151,7 @@ C
            TYPMCL(2) = 'GROUP_NO'
            TYPMCL(3) = 'MAILLE'
            TYPMCL(4) = 'GROUP_MA'
-           CALL GETVTX ('RESU','TOUT',1,1,0, K8B, N1)
+           CALL GETVTX ('RESU','TOUT',1,IARG,0, K8B, N1)
            IF(N1.NE.0)THEN
                CALL WKVECT(MESNOE,'V V I',NBNO,JLNO)
                DO 70 I=1,NBNO
@@ -166,8 +167,8 @@ C
       ELSEIF(TYCH(1:2).EQ.'EL')THEN
 
 C          VERIFICATIONS
-           CALL GETVTX('RESU','NOEUD',1,1,0,K8B, N1)
-           CALL GETVTX('RESU','GROUP_NO',1,1,0,K8B, N2)
+           CALL GETVTX('RESU','NOEUD',1,IARG,0,K8B, N1)
+           CALL GETVTX('RESU','GROUP_NO',1,IARG,0,K8B, N2)
            N3=-N1-N2
            IF(N3.NE.0)CALL U2MESS('F','TABLE0_41')
 
@@ -175,7 +176,7 @@ C          VERIFICATIONS
            MOTCLE(2) = 'GROUP_MA'
            TYPMCL(1) = 'MAILLE'
            TYPMCL(2) = 'GROUP_MA'
-           CALL GETVTX ('RESU','TOUT',1,1,0, K8B, N1)
+           CALL GETVTX ('RESU','TOUT',1,IARG,0, K8B, N1)
            IF(N1.NE.0)THEN
                CALL WKVECT(MESMAI,'V V I',NBMA,JLMA)
                DO 80 I=1,NBMA
@@ -224,12 +225,12 @@ C          VERIFICATIONS
 C
 C  --- 3. RECUPERATION DES COMPOSANTES
 C
-      CALL GETVTX('RESU','NOM_CMP' ,1,1,0,K8B ,N1)
+      CALL GETVTX('RESU','NOM_CMP' ,1,IARG,0,K8B ,N1)
       IF(N1.NE.0)THEN
            NBCMP=-N1
            TOUCMP=.FALSE.
            CALL WKVECT(NKCMP,'V V K8',NBCMP,JCMP)
-           CALL GETVTX('RESU','NOM_CMP' ,1,1,NBCMP,ZK8(JCMP),N1)
+           CALL GETVTX('RESU','NOM_CMP' ,1,IARG,NBCMP,ZK8(JCMP),N1)
       ELSE
            NBCMP=0
            TOUCMP=.TRUE.

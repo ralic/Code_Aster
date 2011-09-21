@@ -1,6 +1,6 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +72,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16   NOMELE(NBTEL),NOMEL1(NBEL1),NOMEL2(NBEL2)
       CHARACTER*19   CARTCF
       CHARACTER*24   MLGNMA,MODNOM,MODNEM,TMPLST,TMPLMA,TMPLNO,TMPNCF
+      INTEGER      IARG
 
       DATA MCLE   /  'GROUP_MA        ','MAILLE          ',
      &               'GROUP_NO        ','NOEUD           '/
@@ -142,7 +143,7 @@ C --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
 
 C --- ------------------------------------------------------------------
 C --- VERIFICATIONS SUPPLEMENTAIRES DE SYNTAXE
-      CALL GETVTX(' ','VERIF',1,1,2,VER,NBVER)
+      CALL GETVTX(' ','VERIF',1,IARG,2,VER,NBVER)
       DO 30 I = 1,3
          IVR(I) = 0
    30 CONTINUE
@@ -246,7 +247,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
 
 C --- ------------------------------------------------------------------
 C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
-      CALL GETVID(' ','MODELE',1,1,1,NOMO,NBVM)
+      CALL GETVID(' ','MODELE',1,IARG,1,NOMO,NBVM)
       MODNOM = NOMO//'.MODELE    .LGRF'
       MODNEM = NOMO//'.MODELE    .NEMA'
 
@@ -326,7 +327,7 @@ C --- VERIFICATION DE L'EXISTENCE DES MAILLES/NOEUDS/GROUPES DECLARES
          DO 90 IOC = 1,NBOCC(ICLF)
             CALL CODENT(IOC,'G',KIOC)
             DO 80 ICLE = 1,NBMCLE(ICLF)
-               CALL GETVTX(MCLF(ICLF),MCLE(ICLE),IOC,1,LMAX,
+               CALL GETVTX(MCLF(ICLF),MCLE(ICLE),IOC,IARG,LMAX,
      &                     ZK8(JDLS),NG)
                CALL VERIMA(NOMA, ZK8(JDLS), NG, MCLE(ICLE))
    80       CONTINUE

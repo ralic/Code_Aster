@@ -28,7 +28,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,6 +108,7 @@ C
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*3   FINPAL(PALMAX)
       CHARACTER*8   CNPAL(PALMAX)
+      INTEGER      IARG
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -353,7 +354,7 @@ C
            CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,NBCHOC,NBREDE)
            IF (NOMRES.EQ.'&&OP0074') THEN
 C          --- CAS D'UNE POURSUITE ---
-              CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,TRAN,NDT)
+              CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,TRAN,NDT)
               IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
            ENDIF
                 VALI (1) = I

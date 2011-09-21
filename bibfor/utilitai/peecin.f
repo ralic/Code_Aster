@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &             MLGGMA,MLGNMA,K24B
       LOGICAL EXITIM
       COMPLEX*16 C16B,CALPHA
+      INTEGER      IARG
 
       DATA NOPARR/'NUME_ORDRE','FREQ','LIEU','ENTITE','TOTALE',
      &     'POUR_CENT'/
@@ -84,13 +85,13 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       EXITIM = .FALSE.
       INST = 0.D0
       CHTEMP=K24B
-      CALL GETVID(' ','CHAM_GD',1,1,1,DEPLA,ND)
+      CALL GETVID(' ','CHAM_GD',1,IARG,1,DEPLA,ND)
       IF(ND.NE.0)THEN
          CALL CHPVE2(DEPLA,3,TABTYP,IER)
       ENDIF
-      CALL GETVR8(' ','FREQ',1,1,1,XFREQ,NF)
-      CALL GETVID(' ','RESULTAT',1,1,1,RESUL,NR)
-      CALL GETVR8(' ','INST',1,1,1,INST,NI)
+      CALL GETVR8(' ','FREQ',1,IARG,1,XFREQ,NF)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESUL,NR)
+      CALL GETVR8(' ','INST',1,IARG,1,INST,NI)
       IF (NI.NE.0) EXITIM = .TRUE.
       IF (NR.NE.0) THEN
         CALL GETTCO(RESUL,TYPRES)
@@ -137,8 +138,8 @@ C      TYPRES = ' '
         CALL TBCRSD(RESU,'G')
         CALL TBAJPA(RESU,NBPARD,NOPARD,TYPARD)
       ELSE
-        CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
-        CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+        CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
+        CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
         CALL RSUTNU(RESUL,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
         IF (IRET.NE.0) GO TO 80
         CALL JEVEUO(KNUM,'L',JORD)
@@ -159,7 +160,7 @@ C        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
 C        --- ON VERIFIE SI L'UTILISATEUR A DEMANDE L'UTILISATION ---
 C        --- D'UNE MATRICE DE MASSE DIAGONALE                    ---
 C        --- DANS LA COMMANDE POST_ELEM                          ---
-        CALL GETVTX(OPTION(1:9),'OPTION',1,1,1,OPTMAS,NT)
+        CALL GETVTX(OPTION(1:9),'OPTION',1,IARG,1,OPTMAS,NT)
         IF (OPTMAS(1:14).EQ.'MASS_MECA_DIAG') THEN
           INUME = 0
           CALL U2MESS('I','UTILITAI3_72')
@@ -276,10 +277,12 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
         CALL PEENCA(CHELEM,NBPAEP,VARPEP,0,IBID)
 
         DO 60 IOCC = 1,NBOCC
-          CALL GETVTX(OPTION(1:9),'TOUT',IOCC,1,0,K8B,NT)
-          CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,1,0,K8B,
+          CALL GETVTX(OPTION(1:9),'TOUT',IOCC,IARG,0,K8B,NT)
+          CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,IARG,0,
+     &                K8B,
      &                NM)
-          CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,1,0,
+          CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,IARG,
+     &                0,
      &                K8B,NG)
           IF (NT.NE.0) THEN
             CALL PEENCA(CHELEM,NBPAEP,VARPEP,0,IBID)
@@ -296,7 +299,8 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
           IF (NG.NE.0) THEN
             NBGRMA = -NG
             CALL WKVECT('&&PEECIN_GROUPM','V V K8',NBGRMA,JGR)
-            CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,1,
+            CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,
+     &                  IARG,
      &                  NBGRMA,ZK8(JGR),NG)
             VALEK(2) = 'GROUP_MA'
             DO 40 IG = 1,NBGRMA
@@ -329,7 +333,8 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
           IF (NM.NE.0) THEN
             NBMA = -NM
             CALL WKVECT('&&PEECIN_MAILLE','V V K8',NBMA,JMA)
-            CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,1,NBMA,
+            CALL GETVEM(NOMA,'MAILLE',OPTION(1:9),'MAILLE',IOCC,IARG,
+     &                  NBMA,
      &                  ZK8(JMA),NM)
             VALEK(2) = 'MAILLE'
             DO 50 IM = 1,NBMA

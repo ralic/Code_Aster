@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMCMD, TYPRES
       CHARACTER*19 NOMFON, NOMFIN, LISTP, LISTF, TYPCO
       CHARACTER*24 NOPARP, NOPARF, VALK(3)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -54,18 +55,18 @@ C
 C
       CALL GETRES ( NOMFON, TYPRES, NOMCMD )
 C
-      CALL GETVID ( ' ', 'FONCTION', 1,1,1, NOMFIN, N1 )
+      CALL GETVID ( ' ', 'FONCTION', 1,IARG,1, NOMFIN, N1 )
       CALL GETTCO ( NOMFIN, TYPCO )
 C
 C --- LISTE DES VALEURS DU PARAMETRE
 C
-      CALL GETVR8 ( ' ', 'VALE_PARA', 1,1,0, RVAL, N1 )
+      CALL GETVR8 ( ' ', 'VALE_PARA', 1,IARG,0, RVAL, N1 )
       IF ( N1 .NE. 0 ) THEN
          NBVALP  = -N1
          CALL WKVECT ( '&&OP0134.VALP', 'V V R', NBVALP, LVALP )
-         CALL GETVR8 ( ' ', 'VALE_PARA', 1,1,NBVALP, ZR(LVALP), N1 )
+         CALL GETVR8 ( ' ', 'VALE_PARA', 1,IARG,NBVALP, ZR(LVALP), N1 )
       ELSE
-         CALL GETVID ( ' ', 'LIST_PARA', 1,1,1, LISTP, N1 )
+         CALL GETVID ( ' ', 'LIST_PARA', 1,IARG,1, LISTP, N1 )
          CALL JEVEUO ( LISTP//'.VALE', 'L', LVALP)
          CALL JELIRA ( LISTP//'.VALE', 'LONUTI', NBVALP, K8B )
       ENDIF
@@ -115,14 +116,14 @@ C
 C ------------------------------------------------------------------
 C                 NAPPE
 C ------------------------------------------------------------------
-         CALL GETVR8 ( ' ', 'VALE_PARA_FONC', 1,1,0, RVAL, N1 )
+         CALL GETVR8 ( ' ', 'VALE_PARA_FONC', 1,IARG,0, RVAL, N1 )
          IF ( N1 .NE. 0 ) THEN
             NBVALF  = -N1
             CALL WKVECT ( '&&OP0134.VALF', 'V V R', NBVALF, LVALF )
-            CALL GETVR8 ( ' ', 'VALE_PARA_FONC', 1,1,NBVALF,
+            CALL GETVR8 ( ' ', 'VALE_PARA_FONC', 1,IARG,NBVALF,
      &                                               ZR(LVALF), N1 )
          ELSE
-            CALL GETVID ( ' ', 'LIST_PARA_FONC', 1,1,1, LISTF, N1 )
+            CALL GETVID ( ' ', 'LIST_PARA_FONC', 1,IARG,1, LISTF, N1 )
             IF (N1 .NE. 0) THEN
                CALL JEVEUO ( LISTF//'.VALE', 'L', LVALF)
                CALL JELIRA ( LISTF//'.VALE', 'LONUTI', NBVALF, K8B )
@@ -132,7 +133,7 @@ C ------------------------------------------------------------------
          ENDIF
 C
 C        VERIFIER LA COHERENCE DES NOMS DES PARAMETRES
-         CALL GETVTX(' ','NOM_PARA',1,1,1,NOPN,N1)
+         CALL GETVTX(' ','NOM_PARA',1,IARG,1,NOPN,N1)
 C        FACULTATIF
          IF (N1.NE.0 .AND. NOPN.NE.NOPARP) THEN
            VALK(1) = NOMFIN
@@ -145,7 +146,7 @@ C        FACULTATIF
            ENDIF
          ENDIF
 
-         CALL GETVTX(' ','NOM_PARA_FONC',1,1,1,NOPF,N1)
+         CALL GETVTX(' ','NOM_PARA_FONC',1,IARG,1,NOPF,N1)
 C        OBLIGATOIRE
          CALL ASSERT(N1.EQ.1)
          IF (NOPF.NE.NOPARF) THEN

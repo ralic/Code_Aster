@@ -3,7 +3,7 @@
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*24 LISNOE
       REAL*8 COEMUR(2),DIRECT(6)
       INTEGER IDIM(2)
+      INTEGER      IARG
       DATA DIRECT/0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0/
 C ----------------------------------------------------------------------
 
@@ -99,14 +100,14 @@ C     ---------------------------------------------
 
         CALL JEVEUO(LISNOE,'L',JLIST)
 
-        CALL GETVTX(MOTFAC,'DDL',IOCC,1,0,K8BID,N1)
+        CALL GETVTX(MOTFAC,'DDL',IOCC,IARG,0,K8BID,N1)
         IF (N1.NE.0) THEN
           N1 = -N1
         END IF
 
         CALL WKVECT('&&CAGROU.DDL','V V K8',N1,JDDL)
 
-        CALL GETVTX(MOTFAC,'DDL',IOCC,1,N1,ZK8(JDDL),N2)
+        CALL GETVTX(MOTFAC,'DDL',IOCC,IARG,N1,ZK8(JDDL),N2)
 
         NONO(1) = ZK8(JLIST)
 

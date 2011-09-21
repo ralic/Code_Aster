@@ -6,7 +6,7 @@
       CHARACTER*8              TYPAC,RESU
       CHARACTER*16        NSYMB
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,11 +62,12 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8 CRIT
       CHARACTER*16 VALK
       CHARACTER*24 NLIST
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
-      CALL GETVID('RESU','CHAM_GD'  ,1,1,0,K8B,N0)
-      CALL GETVID('RESU','RESULTAT'  ,1,1,0,K8B,N1)
+      CALL GETVID('RESU','CHAM_GD'  ,1,IARG,0,K8B,N0)
+      CALL GETVID('RESU','RESULTAT'  ,1,IARG,0,K8B,N1)
 C
 C =============================================================
 C -1- CAS: CHAM_GD
@@ -75,7 +76,7 @@ C =============================================================
       IF(N0.NE.0)THEN
 C
            CALL WKVECT(NKCHA,'V V K24',1,JKCHA)
-           CALL GETVID('RESU','CHAM_GD'  ,1,1,1,ZK24(JKCHA),N0)
+           CALL GETVID('RESU','CHAM_GD'  ,1,IARG,1,ZK24(JKCHA),N0)
            CALL WKVECT(NRVAL,'V V R',1,JRVAL)
            ZR(JRVAL) = 0.0D0
            CALL WKVECT(NIVAL,'V V I',1,JIVAL)
@@ -100,19 +101,19 @@ C         NIVAL = TABLEAU DES VALEURS D'ACCES (ENTIERES)
 C         NRVAL = TABLEAU DES VALEURS D'ACCES (REELLES)
 C         NKCHA = TABLEAU DES NOMS DE CHAMP
 C
-        CALL GETVID('RESU','RESULTAT'  ,1,1,1,RESU,N1)
+        CALL GETVID('RESU','RESULTAT'  ,1,IARG,1,RESU,N1)
 C
-        CALL GETVR8('RESU','PRECISION' ,1,1,1,EPSI,N1)
-        CALL GETVTX('RESU','CRITERE'   ,1,1,1,CRIT,N1)
-        CALL GETVTX('RESU','TOUT_ORDRE',1,1,0,K8B, NBTO)
-        CALL GETVIS('RESU','NUME_ORDRE',1,1,0,IBID,NBNO)
-        CALL GETVID('RESU','LIST_ORDRE',1,1,0,K8B ,NBLO)
-        CALL GETVR8('RESU','INST'      ,1,1,0,R8B ,NBNI)
-        CALL GETVID('RESU','LIST_INST' ,1,1,0,K8B ,NBLI)
-        CALL GETVIS('RESU','MODE'      ,1,1,0,IBID,NBNM)
-        CALL GETVID('RESU','LIST_MODE' ,1,1,0,K8B ,NBLM)
-        CALL GETVR8('RESU','FREQ'      ,1,1,0,R8B ,NBNF)
-        CALL GETVID('RESU','LIST_FREQ' ,1,1,0,K8B ,NBLF)
+        CALL GETVR8('RESU','PRECISION' ,1,IARG,1,EPSI,N1)
+        CALL GETVTX('RESU','CRITERE'   ,1,IARG,1,CRIT,N1)
+        CALL GETVTX('RESU','TOUT_ORDRE',1,IARG,0,K8B, NBTO)
+        CALL GETVIS('RESU','NUME_ORDRE',1,IARG,0,IBID,NBNO)
+        CALL GETVID('RESU','LIST_ORDRE',1,IARG,0,K8B ,NBLO)
+        CALL GETVR8('RESU','INST'      ,1,IARG,0,R8B ,NBNI)
+        CALL GETVID('RESU','LIST_INST' ,1,IARG,0,K8B ,NBLI)
+        CALL GETVIS('RESU','MODE'      ,1,IARG,0,IBID,NBNM)
+        CALL GETVID('RESU','LIST_MODE' ,1,IARG,0,K8B ,NBLM)
+        CALL GETVR8('RESU','FREQ'      ,1,IARG,0,R8B ,NBNF)
+        CALL GETVID('RESU','LIST_FREQ' ,1,IARG,0,K8B ,NBLF)
 C
         NBTO=-NBTO
         NBNO=-NBNO
@@ -135,21 +136,21 @@ C        -- NUME_ORDRE
             TYPAC = 'ORDRE'
             NBVAL =  NBNO
             CALL WKVECT(NIVAL,'V V I',NBNO,JIVAL)
-            CALL GETVIS('RESU','NUME_ORDRE',1,1,NBNO,ZI(JIVAL),N1)
+            CALL GETVIS('RESU','NUME_ORDRE',1,IARG,NBNO,ZI(JIVAL),N1)
 C        -- MODE
           ELSE IF (NBNM .NE. 0 ) THEN
             TYPAC = 'MODE'
             NBVAL =  NBNM
             CALL WKVECT(NIVAL,'V V I',NBNM,JIVAL)
-            CALL GETVIS('RESU','MODE',1,1,NBNM,ZI(JIVAL),N1)
+            CALL GETVIS('RESU','MODE',1,IARG,NBNM,ZI(JIVAL),N1)
 C        -- LIST_ORDRE, LIST_MODE
           ELSE IF (NBLO .NE. 0 ) THEN
             IF(NBLO.NE.0)THEN
                TYPAC = 'ORDRE'
-               CALL GETVID('RESU','LIST_ORDRE',1,1,1,NLIST,N1)
+               CALL GETVID('RESU','LIST_ORDRE',1,IARG,1,NLIST,N1)
             ELSE
                TYPAC = 'MODE'
-               CALL GETVID('RESU','LIST_MODE',1,1,1,NLIST,N1)
+               CALL GETVID('RESU','LIST_MODE',1,IARG,1,NLIST,N1)
             ENDIF
             NLIST(20:24) = '.VALE'
             CALL JELIRA(NLIST,'LONMAX',NBVAL,K8B)
@@ -169,20 +170,20 @@ C        -- INST
             TYPAC = 'INST'
             NBVAL =  NBNI
             CALL WKVECT(NRVAL,'V V R',NBNI,JRVAL)
-            CALL GETVR8('RESU','INST',1,1,NBNI,ZR(JRVAL),N1)
+            CALL GETVR8('RESU','INST',1,IARG,NBNI,ZR(JRVAL),N1)
 C        -- FREQ
           ELSEIF (NBNF .NE. 0 ) THEN
             TYPAC = 'FREQ'
             NBVAL =  NBNF
             CALL WKVECT(NRVAL,'V V R',NBNF,JRVAL)
-            CALL GETVR8('RESU','FREQ',1,1,NBNF,ZR(JRVAL),N1)
+            CALL GETVR8('RESU','FREQ',1,IARG,NBNF,ZR(JRVAL),N1)
           ELSE
             IF ( NBLI .NE. 0 ) THEN
                TYPAC = 'INST'
-               CALL GETVID('RESU','LIST_INST',1,1,1,NLIST,N1)
+               CALL GETVID('RESU','LIST_INST',1,IARG,1,NLIST,N1)
             ELSE
                TYPAC = 'FREQ'
-               CALL GETVID('RESU','LIST_FREQ',1,1,1,NLIST,N1)
+               CALL GETVID('RESU','LIST_FREQ',1,IARG,1,NLIST,N1)
             ENDIF
             NLIST(20:24) = '.VALE'
             CALL JELIRA(NLIST,'LONMAX',NBVAL,K8B)
@@ -228,7 +229,7 @@ C --- 2.2- ON DETERMINE :
 C     ------------------
 C         NKCHA = TABLEAU DES NOMS DE CHAMP
 
-        CALL GETVTX('RESU','NOM_CHAM',1,1,1,NSYMB,N1)
+        CALL GETVTX('RESU','NOM_CHAM',1,IARG,1,NSYMB,N1)
 
         CALL WKVECT(NIORD,'V V I',NBVAL,JNIORD)
         ZI(JNIORD)=-1

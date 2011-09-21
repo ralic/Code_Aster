@@ -3,9 +3,9 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  K8B, OUINON, TYPRES
       CHARACTER*16 FCHIER,FHDF
       CHARACTER*80 FICH
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -68,7 +69,7 @@ C     --- IMPRESSION DES SD RESULTAT
 C
       IFM    = 0
       FCHIER = ' '
-      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFM   , L )
+      CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IFM   , L )
       IF ( .NOT. ULEXIS( IFM ) ) THEN
          CALL ULOPEN ( IFM, ' ', FCHIER, 'NEW', 'O' )
       ENDIF
@@ -101,12 +102,12 @@ C     -- IMPRESSION DE LA TAILLE DES CONCEPTS DE LA BASE GLOBALE:
       CALL UIMPBA('G',IUNMES)
 C
 C     --- RETASSAGE EVENTUEL DE LA GLOBALE
-      CALL GETVTX(' ','RETASSAGE',1,1,1,OUINON,L)
+      CALL GETVTX(' ','RETASSAGE',1,IARG,1,OUINON,L)
       IF(OUINON .EQ. 'OUI') CALL JETASS('G')
 C
 C     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
       FHDF = 'NON'
-      CALL GETVTX(' ','FORMAT_HDF',1,1,1,FHDF,NFHDF)
+      CALL GETVTX(' ','FORMAT_HDF',1,IARG,1,FHDF,NFHDF)
       IF (NFHDF .GT. 0) THEN
         IF ( FHDF .EQ. 'OUI' ) THEN
           FICH = 'bhdf.1'

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8   K8B, RESU2, RESU1
       CHARACTER*16  TYPE,OPER
       CHARACTER*19  NOMCH,CHAM1,RESU19
+      INTEGER      IARG
 
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -78,8 +79,8 @@ C     --------------------------------
 C       BOUCLE SUR LES OCCURRENCES DE ASSE :
 C       -----------------------------------------------------------
       DO 100 IOCC = 1,NBFAC
-        CALL GETVR8 ( 'ASSE', 'TRANSLATION'  , IOCC,1,1, TRANS , N1 )
-        CALL GETVID ( 'ASSE', 'RESULTAT'  , IOCC,1,1, RESU1 , N1 )
+        CALL GETVR8 ( 'ASSE', 'TRANSLATION'  , IOCC,IARG,1, TRANS , N1 )
+        CALL GETVID ( 'ASSE', 'RESULTAT'  , IOCC,IARG,1, RESU1 , N1 )
         RESU19=RESU1
         CALL JELIRA(RESU19//'.ORDR','LONUTI',NBORD1,K8B)
         CALL JEVEUO(RESU19//'.ORDR','L',JORD1)

@@ -1,7 +1,7 @@
       SUBROUTINE UTGETV ( MOTFAC, MOTCLE, IOCC, NOMVEC, NBVAL, TYPE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,7 @@ C
       REAL*8 RBID
 C
       COMPLEX*16 CBID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C====
 C 1. PREALABLES
@@ -134,41 +135,41 @@ C     ------------------------------
 
       ELSE IF (TYPE2.EQ.'IS') THEN
 C     ------------------------------
-        CALL GETVIS ( MOTFA2, MOCLE2, IOCC, 1, 0, IBID, NBVAL )
+        CALL GETVIS ( MOTFA2, MOCLE2, IOCC,IARG, 0, IBID, NBVAL )
         CALL WKVECT ( NOMVE2, 'V V I', MAX(1,-NBVAL), JVEC)
-        CALL GETVIS ( MOTFA2, MOCLE2, IOCC, 1, -NBVAL,
+        CALL GETVIS ( MOTFA2, MOCLE2, IOCC,IARG, -NBVAL,
      &                ZI(JVEC), IAUX )
         TYPE = 'I'
 
       ELSE IF (TYPE2.EQ.'R8') THEN
 C     ------------------------------
-        CALL GETVR8 ( MOTFA2, MOCLE2, IOCC, 1, 0, RBID, NBVAL )
+        CALL GETVR8 ( MOTFA2, MOCLE2, IOCC,IARG, 0, RBID, NBVAL )
         CALL WKVECT ( NOMVE2, 'V V R', MAX(1,-NBVAL), JVEC)
-        CALL GETVR8 ( MOTFA2, MOCLE2, IOCC, 1, -NBVAL,
+        CALL GETVR8 ( MOTFA2, MOCLE2, IOCC,IARG, -NBVAL,
      &                ZR(JVEC), IAUX )
         TYPE = 'R'
 
       ELSE IF (TYPE2.EQ.'C8') THEN
 C     ------------------------------
-        CALL GETVC8 ( MOTFA2, MOCLE2, IOCC, 1,  0, CBID, NBVAL )
+        CALL GETVC8 ( MOTFA2, MOCLE2, IOCC,IARG,  0, CBID, NBVAL )
         CALL WKVECT ( NOMVE2, 'V V C', MAX(1,-NBVAL), JVEC)
-        CALL GETVC8 ( MOTFA2, MOCLE2, IOCC, 1, -NBVAL,
+        CALL GETVC8 ( MOTFA2, MOCLE2, IOCC,IARG, -NBVAL,
      &                ZC(JVEC), IAUX )
         TYPE = 'C'
 
       ELSE IF (TYPE2.EQ.'CO') THEN
 C     ------------------------------
-        CALL GETVID ( MOTFA2, MOCLE2, IOCC, 1,  0, K16BID, NBVAL )
+        CALL GETVID ( MOTFA2, MOCLE2, IOCC,IARG,  0, K16BID, NBVAL )
         CALL WKVECT ( NOMVE2, 'V V K8', MAX(1,-NBVAL), JVEC)
-        CALL GETVID ( MOTFA2, MOCLE2, IOCC, 1, -NBVAL,
+        CALL GETVID ( MOTFA2, MOCLE2, IOCC,IARG, -NBVAL,
      &                ZK8(JVEC), IAUX )
         TYPE = 'K8'
 
       ELSE IF (TYPE2.EQ.'TX') THEN
 C     ------------------------------
-        CALL GETVTX ( MOTFA2, MOCLE2, IOCC, 1,  0, K16BID, NBVAL )
+        CALL GETVTX ( MOTFA2, MOCLE2, IOCC,IARG,  0, K16BID, NBVAL )
         CALL WKVECT ( NOMVE2, 'V V K80', MAX(1,-NBVAL), JVEC)
-        CALL GETVTX ( MOTFA2, MOCLE2, IOCC, 1, -NBVAL,
+        CALL GETVTX ( MOTFA2, MOCLE2, IOCC,IARG, -NBVAL,
      &                ZK80(JVEC), IAUX)
         TYPE = 'K80'
 

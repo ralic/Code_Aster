@@ -3,9 +3,9 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,15 +31,16 @@ C ----------------------------------------------------------------------
       REAL*8       R8B
       CHARACTER*8  K8B, NOMU
       CHARACTER*16 CONCEP, CMD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL GETRES(NOMU,CONCEP,CMD)
 C
       NLM = 0
       NLG = 0
       DO 10 IOC = 1,NBOCC
-         CALL GETVTX('CABLE','GROUP_MA' ,IOC,1,0,K8B,NG  )
-         CALL GETVTX('CABLE','MAILLE'   ,IOC,1,0,K8B,NM  )
-         CALL GETVR8('CABLE','SECTION'  ,IOC,1,0,R8B,NE  )
+         CALL GETVTX('CABLE','GROUP_MA' ,IOC,IARG,0,K8B,NG  )
+         CALL GETVTX('CABLE','MAILLE'   ,IOC,IARG,0,K8B,NM  )
+         CALL GETVR8('CABLE','SECTION'  ,IOC,IARG,0,R8B,NE  )
 C
          IF (IOC.EQ.1 .AND. NE.EQ.0) THEN
             CALL U2MESS('E','MODELISA_52')

@@ -3,7 +3,7 @@
      &                  PCPLUS,CMMAXI,PRCOLL,DUCOLL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,6 +55,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER IRET  
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -62,7 +63,7 @@ C
 C
 C --- ACTION
 C        
-      CALL GETVTX(MCFACT,'ACTION',IECHEC,1,1,ACTION,IRET  )
+      CALL GETVTX(MCFACT,'ACTION',IECHEC,IARG,1,ACTION,IRET  )
       IF (ACTION.EQ.'ARRET') THEN
 C ----- PAS D'OPTIONS
       ELSEIF (ACTION.EQ.'DECOUPE') THEN

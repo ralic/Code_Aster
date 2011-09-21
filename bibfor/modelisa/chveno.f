@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/05/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19  NOMT19
       CHARACTER*24  GRMAMA, MAILMA, PARA
       CHARACTER*24  VALK(2)
+      INTEGER      IARG
 C
       DATA MCFT / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  ,
      &            'EFFE_FOND'  , 'ZONE'  /
@@ -111,7 +112,7 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF
 C
-      CALL GETVTX ( ' ', 'VERI_NORM', 0,1,1, MOT, N )
+      CALL GETVTX ( ' ', 'VERI_NORM', 0,IARG,1, MOT, N )
       IF ( MOT .EQ. 'NON' ) NBMFAC = 0
 C
       NDIM = 0
@@ -141,7 +142,7 @@ C         POUR CERTAINS CHARGEMENTS
             IF (IPRES.EQ.0.AND.IDNOR.EQ.0.AND.IDTAN.EQ.0) GOTO 200
             IF (IDNOR.NE.0) THEN
               IF (FONREE.EQ.'REEL') THEN
-                CALL GETVR8(MOTFAC,'DNOR',IOCC,1,1,DNOR,N)
+                CALL GETVR8(MOTFAC,'DNOR',IOCC,IARG,1,DNOR,N)
                 IF ( ABS(DNOR) .LE. R8PREM() ) GOTO 200
               ENDIF
             ENDIF
@@ -177,13 +178,13 @@ C
 C ---     RECUPERATION DE LA DIMENSION DU PROBLEME
 C
           DO 210  IC = 1 , NBMC
-            CALL GETVTX ( MOTFAC, VALMC(IC), IOCC,1,0, K8B, NBOBJ )
+            CALL GETVTX ( MOTFAC, VALMC(IC), IOCC,IARG,0, K8B, NBOBJ )
             IF ( NBOBJ .EQ. 0 ) GOTO 210
 C
             NBOBJ = -NBOBJ
             CALL WKVECT ( '&&CHVENO.OBJET', 'V V K8', NBOBJ,JGROUP)
             CALL GETVEM ( NOMA, TYPMC(IC), MOTFAC, VALMC(IC),
-     &                       IOCC,1,NBOBJ, ZK8(JGROUP), NBOBJ )
+     &                       IOCC,IARG,NBOBJ, ZK8(JGROUP), NBOBJ )
             IF ( TYPMC(IC) .EQ. 'GROUP_MA' ) THEN
               DO 212  IOBJ = 1 , NBOBJ
                 NOGR = ZK8(JGROUP-1+IOBJ)

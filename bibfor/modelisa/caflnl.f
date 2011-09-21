@@ -4,7 +4,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -86,9 +87,9 @@ C --- STOCKAGE DANS LES CARTES
 C
       DO 10 IOCC = 1, NFLUX
 C
-         CALL GETVID ( MOTCLF, 'FLUN', IOCC,1,1, ZK8(JVALV), NF )
+         CALL GETVID ( MOTCLF, 'FLUN', IOCC,IARG,1, ZK8(JVALV), NF )
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
          IF ( NBTOU .NE. 0 ) THEN
             CALL NOCART (CARTE,1,' ','NOM',0,' ', 0,LIGRMO,NCMP)
 C

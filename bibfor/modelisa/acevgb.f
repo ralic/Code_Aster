@@ -3,9 +3,9 @@
       INTEGER             NBOCC, NLM, NLG
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -30,13 +30,14 @@ C OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 C ----------------------------------------------------------------------
       INTEGER      IOC, NG, NM, NSOM
       CHARACTER*8  K8B
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       NLM = 0
       NLG = 0
       DO 10 IOC = 1 , NBOCC
-         CALL GETVTX ( 'GRILLE', 'GROUP_MA', IOC,1,0, K8B, NG  )
-         CALL GETVTX ( 'GRILLE', 'MAILLE'  , IOC,1,0, K8B, NM  )
+         CALL GETVTX ( 'GRILLE', 'GROUP_MA', IOC,IARG,0, K8B, NG  )
+         CALL GETVTX ( 'GRILLE', 'MAILLE'  , IOC,IARG,0, K8B, NM  )
 C
          NSOM = NG + NM
          IF (NSOM.EQ.NG .OR. NSOM.EQ.NM) THEN

@@ -4,7 +4,7 @@
      &                    NRPASE, INPSCO )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
       COMMON / IVARJE / ZI(1)
       REAL*8            ZR
-      REAL*8 VALR
       COMMON / RVARJE / ZR(1)
       COMPLEX*16        ZC
       COMMON / CVARJE / ZC(1)
@@ -71,6 +70,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER JAUX,IERR
       CHARACTER*8  NOMRES, DYNA, DYNA1
       CHARACTER*19  CHAMP, CHAM2, RESULT
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -91,7 +91,7 @@ C====
 C 2.  --- EST-ON EN REPRISE ? ---
 C====
 C
-      CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,DYNA,NDY)
+      CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,DYNA,NDY)
 C
 C====
 C 3. EN REPRISE
@@ -139,7 +139,7 @@ C
          ENDIF
 
          NUME = 0
-         CALL GETVID('ETAT_INIT','DEPL',1,1,1,CHAMP,NDI)
+         CALL GETVID('ETAT_INIT','DEPL',1,IARG,1,CHAMP,NDI)
          IF (NDI.GT.0) THEN
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
@@ -160,7 +160,7 @@ C
             CALL U2MESS('I','ALGORITH3_28')
          ENDIF
 C
-         CALL GETVID('ETAT_INIT','VITE',1,1,1,CHAMP,NVI)
+         CALL GETVID('ETAT_INIT','VITE',1,IARG,1,CHAMP,NVI)
          IF (NVI.GT.0) THEN
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
@@ -181,7 +181,7 @@ C
             CALL U2MESS('I','ALGORITH3_29')
          ENDIF
 
-         CALL GETVID('ETAT_INIT','ACCE',1,1,1,CHAMP,NAI)
+         CALL GETVID('ETAT_INIT','ACCE',1,IARG,1,CHAMP,NAI)
          IF (NAI.GT.0 .AND. NRPASE.EQ.0) THEN
               CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
               INCHAC = 0

@@ -3,7 +3,7 @@
       CHARACTER*(*)     MOTFAZ, CHARGZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C
       CHARACTER*16  MOTFAC
       CHARACTER*24   NOEUMA, MAILMA, GRMAMA, LISNOE
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -99,12 +100,12 @@ C     -- CALCUL DE IDIM1=NB_NOEUD/MAILLE*NB_MAILLE/GROUP_MA*NB_GROUP_MA
 C        ET VERIFICATION DE L'APPARTENANCE DES GROUP_MA
 C        AUX GROUP_MA DU MAILLAGE
 C        -------------------------------------------------------
-      CALL GETVTX (MOTFAC,MOGRMA,IOCC,1,0,K8BID,NG)
+      CALL GETVTX (MOTFAC,MOGRMA,IOCC,IARG,0,K8BID,NG)
       IF (NG.NE.0) THEN
           NG = -NG
           CALL WKVECT ('&&MALIN1.TRAV1','V V K8',NG,JJJ1)
           CALL GETVEM (NOMA,'GROUP_MA',
-     .                 MOTFAC,MOGRMA,IOCC,1,NG,ZK8(JJJ1),NGR)
+     .                 MOTFAC,MOGRMA,IOCC,IARG,NG,ZK8(JJJ1),NGR)
           DO 10 IGR = 1, NGR
                 CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'L',JGRO)
                 CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'LONUTI',
@@ -124,12 +125,12 @@ C     -- CALCUL DE IDIM2=NB_NOEUD/MAILLE*NB_MAILLE DE LISTE DE MAILLES
 C        ET VERIFICATION DE L'APPARTENANCE DES MAILLES
 C        AUX MAILLES DU MAILLAGE
 C        -------------------------------------------------------
-      CALL GETVTX (MOTFAC,MOMAIL,IOCC,1,0,K8BID,NBMA)
+      CALL GETVTX (MOTFAC,MOMAIL,IOCC,IARG,0,K8BID,NBMA)
       IF (NBMA.NE.0) THEN
           NBMA = -NBMA
           CALL WKVECT ('&&MALIN1.TRAV2','V V K8',NBMA,JJJ2)
           CALL GETVEM (NOMA,'MAILLE',
-     .                 MOTFAC,MOMAIL,IOCC,1,NBMA,ZK8(JJJ2),NMAI)
+     .                 MOTFAC,MOMAIL,IOCC,IARG,NBMA,ZK8(JJJ2),NMAI)
           DO 30 IMA = 1, NMAI
                 CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JJJ2+IMA-1)),
      &                      IBID)
@@ -149,10 +150,10 @@ C    ----------------------------------------------
 C
       INDNOE = 0
 C
-      CALL GETVTX (MOTFAC,MOGRMA,IOCC,1,0,K8BID,NG)
+      CALL GETVTX (MOTFAC,MOGRMA,IOCC,IARG,0,K8BID,NG)
       IF (NG.NE.0) THEN
           NG = -NG
-          CALL GETVTX (MOTFAC,MOGRMA,IOCC,1,NG,ZK8(JJJ1),NGR)
+          CALL GETVTX (MOTFAC,MOGRMA,IOCC,IARG,NG,ZK8(JJJ1),NGR)
           DO 40 IGR = 1, NGR
                CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'L',JGRO)
                CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'LONUTI',
@@ -173,10 +174,10 @@ C
  40       CONTINUE
       ENDIF
 C
-      CALL GETVTX (MOTFAC,MOMAIL,IOCC,1,0,K8BID,NBMA)
+      CALL GETVTX (MOTFAC,MOMAIL,IOCC,IARG,0,K8BID,NBMA)
       IF (NBMA.NE.0) THEN
           NBMA = -NBMA
-          CALL GETVTX (MOTFAC,MOMAIL,IOCC,1,NBMA,ZK8(JJJ2),NMAI)
+          CALL GETVTX (MOTFAC,MOMAIL,IOCC,IARG,NBMA,ZK8(JJJ2),NMAI)
           DO 70 IMA = 1, NMAI
                 CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JJJ2+IMA-1)),
      &                      IBID)

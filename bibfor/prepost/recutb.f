@@ -6,7 +6,7 @@ C
       CHARACTER*32  NOMGRN
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,16 +37,21 @@ C --- : TABTHR : TABLE THERMIQUE ---------------------------------------
 C ======================================================================
       INTEGER      IBID
       CHARACTER*8  MOTFAC
+      INTEGER      IARG
 C ======================================================================
       CALL JEMARQ()
 C ======================================================================
 C --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 C ======================================================================
       MOTFAC = 'K1D'
-      CALL GETVID ( MOTFAC , 'TABL_MECA_REV', IK1D,1,1, TABREV , IBID )
-      CALL GETVID ( MOTFAC , 'TABL_MECA_MDB', IK1D,1,1, TABMDB , IBID )
-      CALL GETVID ( MOTFAC , 'TABL_THER'    , IK1D,1,1, TABTHR , IBID )
-      CALL GETVTX ( MOTFAC , 'INTITULE'     , IK1D,1,1, NOMGRN , IBID )
+      CALL GETVID (MOTFAC,'TABL_MECA_REV',IK1D,IARG,1,
+     &             TABREV , IBID )
+      CALL GETVID (MOTFAC,'TABL_MECA_MDB',IK1D,IARG,1,
+     &             TABMDB , IBID )
+      CALL GETVID (MOTFAC,'TABL_THER',IK1D,IARG,1,
+     &             TABTHR , IBID )
+      CALL GETVTX (MOTFAC,'INTITULE',IK1D,IARG,1,
+     &             NOMGRN , IBID )
 C ======================================================================
       CALL JEDEMA()
 C ======================================================================

@@ -1,7 +1,7 @@
       SUBROUTINE OP0183()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
       LOGICAL EXITIM,FNOEVO
+      INTEGER      IARG
 
 C     ------------------------------------------------------------------
       DATA INFCHA/'&&INFCHA.INFCHA'/
@@ -112,11 +113,11 @@ C --- OPTIONS A CALCULER
 C
       CALL GETRES(RESUC1,TYPE,OPER)
       CALL ASSERT(TYPE.EQ.'DYNA_TRANS')
-      CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,N0)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESUCO,N0)
       CALL ASSERT(RESUCO.NE.RESUC1)
 
 
-      CALL GETVTX(' ','OPTION',1,1,1,OPTION,N2)
+      CALL GETVTX(' ','OPTION',1,IARG,1,OPTION,N2)
       CALL ASSERT(N2.EQ.1 .AND. OPTION.EQ.'FONL_NOEU')
 C
 
@@ -129,8 +130,8 @@ C=======================================================================
       NBPASE=0
 C=======================================================================
 
-      CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
-      CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+      CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NP)
+      CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
 
       CALL RSUTNU(RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
       IF (IRET.EQ.10) THEN
@@ -152,17 +153,17 @@ C=======================================================================
       CHARGE=' '
       MATER=' '
       CALL RSCRSD('G',RESUC1,TYPE,NBORDR)
-      CALL GETVID(' ','MODELE',1,1,1,MODELE,N0)
+      CALL GETVID(' ','MODELE',1,IARG,1,MODELE,N0)
       LIGREL=MODELE(1:8)//'.MODELE'
       CALL ASSERT(N0.EQ.1)
-      CALL GETVID(' ','CHAM_MATER',1,1,1,MATERI,N0)
+      CALL GETVID(' ','CHAM_MATER',1,IARG,1,MATERI,N0)
       IF (N0.GT.0) THEN
         CALL RCMFMC(MATERI,MATER)
       ELSE
         MATER=' '
       ENDIF
       CARAC=' '
-      CALL GETVID(' ','CARA_ELEM',1,1,1,CARAC,N0)
+      CALL GETVID(' ','CARA_ELEM',1,IARG,1,CARAC,N0)
 
 C INFO. RELATIVE AUX CHARGES
       CHARGE=INFCHA//'.LCHA'

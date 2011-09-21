@@ -7,7 +7,7 @@
      &                    NBPASE, INPSCO, BASENO )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,6 +120,7 @@ C
       CHARACTER*16 METHOD
       CHARACTER*16 K16BID, NOMCMD
       CHARACTER*19 CHANNO
+      INTEGER      IARG
 C
 C     -----------------------------------------------------------------
 C
@@ -155,9 +156,9 @@ C
 
 C 2.3. ==> --- LES MATRICES ---
 
-      CALL GETVID(' ','MATR_RIGI',0,1,1,RIGID,NR)
-      CALL GETVID(' ','MATR_MASS',0,1,1,MASSE,NM)
-      CALL GETVID(' ','MATR_AMOR',0,1,1,AMORT,NA)
+      CALL GETVID(' ','MATR_RIGI',0,IARG,1,RIGID,NR)
+      CALL GETVID(' ','MATR_MASS',0,IARG,1,MASSE,NM)
+      CALL GETVID(' ','MATR_AMOR',0,IARG,1,AMORT,NA)
       IF ( NA.LE.0 ) THEN
         WRITE(IFM,*)'PAS DE MATRICE D''AMORTISSEMENT'
         LAMORT = .FALSE.
@@ -186,11 +187,11 @@ C
         NVECA = 0
         NCHAR = 0
         DO 311 , IVEC = 1 , NVECT
-          CALL GETVID('EXCIT','VECT_ASSE',IVEC,1,1,CHANNO,IAUX)
+          CALL GETVID('EXCIT','VECT_ASSE',IVEC,IARG,1,CHANNO,IAUX)
           IF ( IAUX.EQ.1 ) THEN
             NVECA = NVECA + 1
           ENDIF
-          CALL GETVID('EXCIT','CHARGE',   IVEC,1,1,CHANNO,IAUX)
+          CALL GETVID('EXCIT','CHARGE',   IVEC,IARG,1,CHANNO,IAUX)
           IF ( IAUX.EQ.1 ) THEN
             NCHAR = NCHAR + 1
           ENDIF
@@ -207,21 +208,21 @@ C
           DO 312 IVEC= 1, NVECA
             INDIC = INDIC + 1
  3121       CONTINUE
-            CALL GETVID('EXCIT','VECT_ASSE',INDIC,1,1,CHANNO,IAUX)
+            CALL GETVID('EXCIT','VECT_ASSE',INDIC,IARG,1,CHANNO,IAUX)
             IF ( IAUX.EQ.0 ) THEN
                INDIC = INDIC + 1
                GOTO 3121
             ENDIF
             CALL CHPVER('F',CHANNO,'NOEU','DEPL_R', IBID )
             CALL JEVEUO(CHANNO//'.VALE','L',ZI(IAADVE+IVEC-1))
-            CALL GETVID('EXCIT','FONC_MULT',INDIC,1,1
+            CALL GETVID('EXCIT','FONC_MULT',INDIC,IARG,1
      &                  ,ZK24(IALIFO+IVEC-1), IAUX)
             IF ( IAUX.EQ.0 ) THEN
-              CALL GETVID('EXCIT','ACCE',INDIC,1,1
+              CALL GETVID('EXCIT','ACCE',INDIC,IARG,1
      &                  ,ZK24(IALIFO+IVEC-1),IAUX)
               IF ( IAUX.EQ.0) THEN
                  RVAL = 1.D0
-                 CALL GETVR8('EXCIT','COEF_MULT',INDIC,1,1,RVAL,IAUX)
+                 CALL GETVR8('EXCIT','COEF_MULT',INDIC,IARG,1,RVAL,IAUX)
                  ZK24(IALIFO+IVEC-1) = BASENO//'.F_'
                  CALL CODENT(IVEC,'G',ZK24(IALIFO+IVEC-1)(12:19))
                  CALL FOCSTE(ZK24(IALIFO+IVEC-1),'INST',RVAL,'V')
@@ -240,7 +241,7 @@ C
 C 3.1.3. ==> LISTE DES CHARGES
 C
         IF ( NCHAR.NE.0 ) THEN
-          CALL GETVID(' ','MODELE',0,1,1,K8B, IAUX)
+          CALL GETVID(' ','MODELE',0,IARG,1,K8B, IAUX)
           IF ( IAUX.EQ.0 ) THEN
             CALL U2MESS('F','ALGORITH9_26')
           ENDIF
@@ -314,7 +315,7 @@ C 4.2. ==> LECTURE DES PARAMETRES DU MOT CLE FACTEUR SOLVEUR ---
 C
 C 4.3. ==> TYPE D'INTEGRATION
 C
-      CALL GETVTX('SCHEMA_TEMPS','SCHEMA',1,1,1,METHOD,N1)
+      CALL GETVTX('SCHEMA_TEMPS','SCHEMA',1,IARG,1,METHOD,N1)
 C
       IF ( METHOD.EQ.'NEWMARK' ) THEN
         IINTEG = 1

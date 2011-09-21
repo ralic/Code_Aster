@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF astermodule supervis  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -326,7 +326,7 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getltx","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getltx","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -855,6 +855,7 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int idef       = 0 ;
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
@@ -881,18 +882,19 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvc8","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getvc8","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
                                                         ASSERT(PyTuple_Check(res)) ;
-        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
+        ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if(!ok)MYABORT("erreur dans la partie Python");
 
         *nbval = (INTEGER)nval;
         if ( nval < 0 ) nval=(int)*mxval;
         convc8(nval,tup,val);
+        *iarg = (INTEGER)idef;
 
         Py_DECREF(res);
         FreeStr(mfc);
@@ -926,6 +928,7 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int idef       = 0 ;
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
@@ -934,12 +937,11 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
                                                         ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
-                VERIFICATION
-                Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
-                le numero d'occurrence (*iocc) doit etre strictement positif.
-                Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
-
-        */
+         * VERIFICATION
+         * Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
+         * le numero d'occurrence (*iocc) doit etre strictement positif.
+         * Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
+         */
         if( isalpha(mfc[0])&&(*iocc<=0) )
         {
                 printf( "<F> GETVR8 : le numero d'occurence (IOCC=%ld) est invalide\n",*iocc) ;
@@ -951,12 +953,12 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvr8","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getvr8","ssii",mfc,mcs,ioc,(int)*mxval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
                                                        ASSERT(PyTuple_Check(res)) ;
-        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
+        ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if(!ok)MYABORT("erreur dans la partie Python");
 
         *nbval=(INTEGER)nval;
@@ -964,6 +966,7 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         if ( nval>0 ){
                 convr8(nval,tup,val);
         }
+        *iarg = (INTEGER)idef;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mfc);
@@ -1124,9 +1127,12 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
 
 /* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
-                              _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
-                              _IN INTEGER *iarg,_IN INTEGER *mxval,
-                           _INOUT INTEGER *val,_OUT INTEGER *nbval )
+                              _IN char *motcle,_IN STRING_SIZE lcle,
+                              _IN INTEGER *iocc,
+                              _IN INTEGER *iarg,
+                              _IN INTEGER *mxval,
+                           _INOUT INTEGER *val,
+                             _OUT INTEGER *nbval )
 {
         /*
           Procedure GETVIS pour le FORTRAN : emule le fonctionnement
@@ -1148,6 +1154,7 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int idef       = 0 ;
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
@@ -1174,18 +1181,19 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvis","ssiii",mfc,mcs,ioc,*iarg,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getvis","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
+        ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if (!ok)MYABORT("erreur dans la partie Python");
 
         *nbval = (INTEGER)nval;
         if ( nval < 0 ) nval=(int)*mxval;
         convert(nval,tup,val);
+        *iarg = (INTEGER)idef;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mfc);
@@ -1259,7 +1267,7 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvls","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getvls","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1309,6 +1317,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
         PyObject *tup  = (PyObject*)0 ;
         int ok         = 0 ;
         int nval       = 0 ;
+        int idef       = 0 ;
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
@@ -1333,7 +1342,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvtx","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getvtx","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1346,7 +1355,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
                 MYABORT("erreur dans la partie Python");
         }
 
-        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
+        ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if (!ok)MYABORT("erreur au decodage d'une chaine dans le module C aster.getvtx");
 
         *nbval=(INTEGER)nval;
@@ -1354,7 +1363,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
         if ( nval > 0 ){
                 convertxt(nval,tup,txval,ltx);
         }
-
+        *iarg = (INTEGER)idef;
         /* ATTENTION : il ne faut decrementer le compteur de references de res
          *             qu'apres en avoir fini avec l'utilisation de tup.
          *             NE PAS decrementer le compteur de references de tup car
@@ -1391,7 +1400,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         */
         PyObject *res  = (PyObject*)0 ;
         PyObject *tup  = (PyObject*)0 ;
-        int ok,nval,ioc ;
+        int ok,nval,ioc,idef ;
         char *mfc;
         char *mcs;
                                                         ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
@@ -1416,13 +1425,13 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvid","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getvid","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
+        ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if (!ok)MYABORT("erreur dans la partie Python");
 
         *nbval=(INTEGER)nval;
@@ -1430,6 +1439,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         if ( nval > 0 ){
                 convertxt(nval,tup,txval,ltx);
         }
+        *iarg = (INTEGER)idef;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mfc);

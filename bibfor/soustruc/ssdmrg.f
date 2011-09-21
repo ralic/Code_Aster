@@ -1,8 +1,8 @@
       SUBROUTINE SSDMRG(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
+      INTEGER      IARG
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETFAC('RECO_GLOBAL',NOCC)
@@ -73,7 +74,7 @@ C     -----------------------------------------
 C
 C     -- ON RECUPERE LA LISTE DES MAILLES A TRAITER :
 C     -----------------------------------------------
-        CALL GETVTX('RECO_GLOBAL','TOUT',IOCC,1,1,KBID,N1)
+        CALL GETVTX('RECO_GLOBAL','TOUT',IOCC,IARG,1,KBID,N1)
         IF (N1.EQ.1) THEN
           NBSMAR= NBSMA
           DO 3, I=1,NBSMAR
@@ -81,7 +82,7 @@ C     -----------------------------------------------
  3        CONTINUE
         ELSE
           CALL GETVEM(MAG,'MAILLE','RECO_GLOBAL','SUPER_MAILLE',
-     &                IOCC,1,NBSMA,ZK8(IALIK8),N1)
+     &                IOCC,IARG,NBSMA,ZK8(IALIK8),N1)
           IF (N1.LT.0) CALL U2MESS('F','SOUSTRUC_63')
           NBSMAR= N1
           DO 4, I=1,NBSMAR
@@ -90,8 +91,8 @@ C     -----------------------------------------------
  4        CONTINUE
         END IF
 C
-        CALL GETVR8('RECO_GLOBAL','PRECISION',IOCC,1,1,PREC,N1)
-        CALL GETVTX('RECO_GLOBAL','CRITERE',IOCC,1,1,CRIT,N1)
+        CALL GETVR8('RECO_GLOBAL','PRECISION',IOCC,IARG,1,PREC,N1)
+        CALL GETVTX('RECO_GLOBAL','CRITERE',IOCC,IARG,1,CRIT,N1)
 C
           DO 5, I=1,NBSMAR
             ISMA=ZI(IALIIS-1+I)

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,13 +46,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 CONCEP, NOMCMD
       CHARACTER*19 RESU, KCHA, KNUM, TABTYP(3)
       CHARACTER*24 MATE, CHDEF
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
 C
       CALL GETRES ( RESU, CONCEP, NOMCMD )
 C
-      CALL GETVID ( ' ', 'RESULTAT' , 0,1,1, RESUCO, NR )
+      CALL GETVID ( ' ', 'RESULTAT' , 0,IARG,1, RESUCO, NR )
 C
       IF(NR.EQ.0) RESUCO='        '
 C
@@ -82,10 +83,10 @@ C                   -------------
       CALL GETFAC ( 'AIRE_INTERNE' , NBOCC )
 C                   --------------
       IF ( NBOCC .NE. 0 ) THEN
-         CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N1 )
+         CALL GETVID ( ' ', 'MODELE', 1,IARG,1, MODELE, N1 )
          IF(N1.EQ.0)THEN
-               CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , NP )
-               CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , NC )
+               CALL GETVR8 ( ' ', 'PRECISION', 1,IARG,1, PREC  , NP )
+               CALL GETVTX ( ' ', 'CRITERE'  , 1,IARG,1, CRIT  , NC )
                CALL RSUTNU ( RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
                CALL JEVEUO ( KNUM, 'L', JORDR )
             CALL RSADPA(RESUCO,'L',1,'MODELE',ZI(JORDR),0,JPARA,K8B)
@@ -100,21 +101,21 @@ C                   -----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
          CHDEF = ' '
-         CALL GETVTX ( ' ', 'GEOMETRIE', 1,1,1, DEFORM, N1 )
+         CALL GETVTX ( ' ', 'GEOMETRIE', 1,IARG,1, DEFORM, N1 )
          IF ( DEFORM .EQ. 'DEFORMEE' ) THEN
-            CALL GETVID ( ' ', 'CHAM_GD', 1,1,1, CHDEF, N2 )
+            CALL GETVID ( ' ', 'CHAM_GD', 1,IARG,1, CHDEF, N2 )
             IF ( N2 .EQ. 0 ) THEN
                TABTYP(1)='NOEU#DEPL_R'
                TABTYP(2)='NOEU#TEMP_R'
                TABTYP(3)='ELEM#ENER_R'
                KNUM = '&&OP0107.NUME_ORDRE'
-               CALL GETVID ( ' ', 'RESULTAT' , 1,1,1, RESUCO, NR )
-               CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , NP )
-               CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , NC )
+               CALL GETVID ( ' ', 'RESULTAT' , 1,IARG,1, RESUCO, NR )
+               CALL GETVR8 ( ' ', 'PRECISION', 1,IARG,1, PREC  , NP )
+               CALL GETVTX ( ' ', 'CRITERE'  , 1,IARG,1, CRIT  , NC )
                CALL RSUTNU ( RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
                IF ( NBORDR .NE. 1 ) THEN
                   CALL U2MESS('F','UTILITAI2_80')
@@ -136,7 +137,7 @@ C                   -----------
 C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -150,7 +151,7 @@ C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -173,11 +174,11 @@ C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
 
 C         --- ON RECUPERE LE MODELE
-         CALL GETVID ( 'NORME', 'CHAM_GD', 1,1,1, CHDEF, N1 )
+         CALL GETVID ( 'NORME', 'CHAM_GD', 1,IARG,1, CHDEF, N1 )
          IF (N1.NE.0) THEN
-            CALL GETVID ( 'NORME', 'MODELE', 1,1,1, MODELE, N2 )
+            CALL GETVID ( 'NORME', 'MODELE', 1,IARG,1, MODELE, N2 )
          ELSE
-            CALL GETVID ( 'NORME', 'RESULTAT' , 1,1,1, RESUCO, NR )
+            CALL GETVID ( 'NORME', 'RESULTAT' , 1,IARG,1, RESUCO, NR )
             CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          ENDIF
 
@@ -197,11 +198,11 @@ C                   --------------
       CALL GETFAC ( 'MINMAX' , NBOCC )
 C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
-         CALL GETVID ( 'MINMAX', 'CHAM_GD', 1,1,1, CHDEF, N1 )
+         CALL GETVID ( 'MINMAX', 'CHAM_GD', 1,IARG,1, CHDEF, N1 )
          IF (N1.NE.0) THEN
-            CALL GETVID ( 'MINMAX', 'MODELE', 1,1,1, MODELE, N2 )
+            CALL GETVID ( 'MINMAX', 'MODELE', 1,IARG,1, MODELE, N2 )
          ELSE
-            CALL GETVID ( 'MINMAX', 'RESULTAT' , 1,1,1, RESUCO, NR )
+            CALL GETVID ( 'MINMAX', 'RESULTAT' , 1,IARG,1, RESUCO, NR )
             CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          ENDIF
          CALL PEMIMA ( N1, CHDEF, RESU, MODELE, NBOCC )
@@ -212,7 +213,7 @@ C                   ---------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -227,7 +228,7 @@ C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -240,7 +241,7 @@ C                   -----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -253,7 +254,7 @@ C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -266,7 +267,7 @@ C                   ------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -280,7 +281,7 @@ C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -294,7 +295,7 @@ C                   -----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -308,7 +309,7 @@ C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
@@ -323,7 +324,7 @@ C                   -----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
-         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,IARG,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 

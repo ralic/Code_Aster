@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C-----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------------
       CHARACTER*14  NU
       CHARACTER*24  MASSE, NUMDDL, MAILLA
       CHARACTER*19  CHAMOL
+      INTEGER      IARG
 C----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -68,7 +69,7 @@ C----------------------------------------------------------------------
 C --- RECUPERATION DES MODES PROPRES
 C-----------------------------------------------------------------------
 C
-      CALL GETVID ( 'DIAG_MASS', 'MODE_MECA', 1,1,1, MECA, N1 )
+      CALL GETVID ( 'DIAG_MASS', 'MODE_MECA', 1,IARG,1, MECA, N1 )
 C
       CALL JELIRA(  MECA//'           .ORDR','LONUTI',NBMODE,K8B)
       CALL JEVEUO(  MECA//'           .ORDR','L',JORDM)
@@ -86,7 +87,7 @@ C-----------------------------------------------------------------------
 C --- RECUPERATION DES MODES STATIQUES
 C-----------------------------------------------------------------------
 C
-      CALL GETVID ( 'DIAG_MASS', 'MODE_STAT', 1,1,1, STAT, N1 )
+      CALL GETVID ( 'DIAG_MASS', 'MODE_STAT', 1,IARG,1, STAT, N1 )
 C
       CALL JELIRA(STAT//'           .ORDR','LONUTI',NBSTAT,K8B)
       CALL JEVEUO(STAT//'           .ORDR','L',JORDS)

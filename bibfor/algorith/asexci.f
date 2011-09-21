@@ -8,7 +8,7 @@
       LOGICAL            MONOAP, MUAPDE, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*5  MOTFAC
       CHARACTER*8  K8B, NOMA
       CHARACTER*14 NUME
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -82,13 +83,13 @@ C
 C     --- EST-ON EN MONO-APPUI OU MULTI-APPUI ? ---
       IM1 = 0
       IM2 = 0
-      CALL GETVTX(' ','MONO_APPUI',1,1,1,K8B,NM)
+      CALL GETVTX(' ','MONO_APPUI',1,IARG,1,K8B,NM)
       IF ( NM .NE. 0 ) THEN
          IM1 = IM1 + 1
          IF (K8B(1:3).EQ.'OUI' ) MONOAP = .TRUE.
       ENDIF
 C
-      CALL GETVTX(' ','MULTI_APPUI',1,1,1,K8B,NM)
+      CALL GETVTX(' ','MULTI_APPUI',1,IARG,1,K8B,NM)
       IF ( NM .NE. 0 ) THEN
          IM2 = IM2 + 1
          IF (K8B(1:7).EQ.'CORRELE' ) MUAPDE = .FALSE.
@@ -99,13 +100,13 @@ C     --- VERIFICATION DES APPUIS ---
       CALL GETFAC ( MOTFAC, NBOCC )
       DO 10 IOC = 1,NBOCC
 C
-         CALL GETVTX(MOTFAC,'NOEUD',IOC,1,0,K8B,NN)
+         CALL GETVTX(MOTFAC,'NOEUD',IOC,IARG,0,K8B,NN)
          IF ( NN.NE.0 .AND. MONOAP ) THEN
             IER = IER + 1
             CALL U2MESS('E','SEISME_8')
          ENDIF
 C
-         CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,0,K8B,NG)
+         CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,0,K8B,NG)
          IF ( NG.NE.0 .AND. MONOAP ) THEN
             IER = IER + 1
             CALL U2MESS('E','SEISME_8')

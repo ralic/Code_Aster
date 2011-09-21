@@ -7,7 +7,7 @@
 C TOLE CRP_21
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,6 +87,7 @@ C
 C
       CHARACTER*8 NOMMOD
       INTEGER     IAUX
+      INTEGER      IARG
 C
 C====
 C 1. LECTURE DANS LE FICHIER MED
@@ -100,7 +101,7 @@ C
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      &                NROFIC, CODRET )
       ELSEIF ( TYPECH(1:2).EQ.'EL' ) THEN
-        CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMMOD, IAUX )
+        CALL GETVID ( ' ', 'MODELE', 0,IARG, 1, NOMMOD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
           CALL U2MESS('F','MED_71')
         ENDIF

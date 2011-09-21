@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,18 +46,19 @@ C ----------------------------------------------------------------------
       CHARACTER*19  NEWTAB, NEWTA1
       CHARACTER*24  PARA
       CHARACTER*80  VALK
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
 C
-      CALL GETVID ( ' ', 'TABLE'    ,1,1,1, TABLE, N1 )
+      CALL GETVID ( ' ', 'TABLE'    ,1,IARG,1, TABLE, N1 )
       NEWTAB = TABLE
 C
-      CALL GETVTX ( ' ', 'NOM_PARA' , 1,1,1, PARA, N1 )
+      CALL GETVTX ( ' ', 'NOM_PARA' , 1,IARG,1, PARA, N1 )
 C
-      CALL GETVTX ( ' ', 'TYPE_RESU', 1,1,1, TYPESD, N1 )
+      CALL GETVTX ( ' ', 'TYPE_RESU', 1,IARG,1, TYPESD, N1 )
 C
       CALL GETFAC ( 'FILTRE' , NPARFI )
       IF ( NPARFI .NE. 0 ) THEN

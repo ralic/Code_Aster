@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C     ------------------------------------------------------------------
       CHARACTER*14 NUME
       CHARACTER*24 MANONO, MAGRNO, TEXTE, TEXT1, TEXT2, TEXT3
       CHARACTER*24 VALK(4)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -101,36 +102,36 @@ C
 
       DO 10 I = 1,NBIND
          IF (MOTFAC(1:11).EQ.'PSEUDO_MODE') THEN
-            CALL GETVTX(MOTFAC,'AXE',I,1,0,KBID,NA)
-            CALL GETVTX(MOTFAC,'DIRECTION',I,1,0,KBID,ND)
+            CALL GETVTX(MOTFAC,'AXE',I,IARG,0,KBID,NA)
+            CALL GETVTX(MOTFAC,'DIRECTION',I,IARG,0,KBID,ND)
             IF ((NA+ND).NE.0)  GOTO 10
          ENDIF
 
 C
 C        --- LES NOEUDS ---
-         CALL GETVTX(MOTFAC,'TOUT',I,1,0,KBID,NT)
+         CALL GETVTX(MOTFAC,'TOUT',I,IARG,0,KBID,NT)
          IF (NT.NE.0) THEN
             LNOE = JIND1
          ENDIF
 C
          CALL GETVEM(NOMMA,'NOEUD',MOTFAC,'NOEUD',
-     &       I,1,0,KBID,NNOE)
+     &       I,IARG,0,KBID,NNOE)
          IF (NNOE.NE.0) THEN
             NNOE = -NNOE
             CALL WKVECT('&&MSTGET.NOM.NOEUD','V V K8',NNOE,JNOE)
             CALL GETVEM(NOMMA,'NOEUD',MOTFAC,'NOEUD',
-     &          I,1,NNOE,ZK8(JNOE),NI)
+     &          I,IARG,NNOE,ZK8(JNOE),NI)
             CALL WKVECT('&&MSTGET.LISTE.NOEUD','V V I',NEQ,LNOE)
             CALL NOEDDL(NUME,NNOE,ZK8(JNOE),NEQ,ZI(LNOE))
          ENDIF
 C
          CALL GETVEM(NOMMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &          I,1,0,KBID,NBGR)
+     &          I,IARG,0,KBID,NBGR)
          IF (NBGR.NE.0) THEN
             NBGR = -NBGR
             CALL WKVECT('&&MSTGET.GROUP_NO','V V K8',NBGR,IDGN)
             CALL GETVEM(NOMMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &             I,1,NBGR,ZK8(IDGN),NI)
+     &             I,IARG,NBGR,ZK8(IDGN),NI)
 C           --- ECLATE LE GROUP_NO EN NOEUD ---
             CALL COMPNO(NOMMA,NBGR,ZK8(IDGN),NNOE)
             CALL WKVECT('&&MSTGET.POSITION.NOEUD','V V K8',NNOE,JNOE)
@@ -150,7 +151,7 @@ C           --- ECLATE LE GROUP_NO EN NOEUD ---
          ENDIF
 C
 C        --- LES COMPOSANTES ---
-         CALL GETVTX(MOTFAC,'TOUT_CMP',I,1,0,KBID,NTC)
+         CALL GETVTX(MOTFAC,'TOUT_CMP',I,IARG,0,KBID,NTC)
          IF (NTC.NE.0) THEN
             CALL WKVECT('&&MSTGET.LISTE.CMP','V V I',NEQ,LCMP)
             DO 26 IEQ = 0,NEQ-1
@@ -158,11 +159,11 @@ C        --- LES COMPOSANTES ---
  26         CONTINUE
          ENDIF
 C
-         CALL GETVTX(MOTFAC,'AVEC_CMP',I,1,0,KBID,NAC)
+         CALL GETVTX(MOTFAC,'AVEC_CMP',I,IARG,0,KBID,NAC)
          IF (NAC.NE.0) THEN
             NCMP = -NAC
             CALL WKVECT('&&MSTGET.NOM.CMP','V V K8',NCMP,JCMP)
-            CALL GETVTX(MOTFAC,'AVEC_CMP',I,1,NCMP,ZK8(JCMP),NI)
+            CALL GETVTX(MOTFAC,'AVEC_CMP',I,IARG,NCMP,ZK8(JCMP),NI)
             CALL WKVECT('&&MSTGET.LISTE.CMP','V V I',NEQ*NCMP,LCMP)
             CALL PTEDDL('NUME_DDL',NUME,NCMP,ZK8(JCMP),NEQ,ZI(LCMP))
             DO 28 IC = 2,NCMP
@@ -173,11 +174,11 @@ C
  28         CONTINUE
          ENDIF
 C
-         CALL GETVTX(MOTFAC,'SANS_CMP',I,1,0,KBID,NSC)
+         CALL GETVTX(MOTFAC,'SANS_CMP',I,IARG,0,KBID,NSC)
          IF (NSC.NE.0) THEN
             NCMP = -NSC
             CALL WKVECT('&&MSTGET.NOM.CMP','V V K8',NCMP,JCMP)
-            CALL GETVTX(MOTFAC,'SANS_CMP',I,1,NCMP,ZK8(JCMP),NI)
+            CALL GETVTX(MOTFAC,'SANS_CMP',I,IARG,NCMP,ZK8(JCMP),NI)
             NCMP = NCMP + 1
             ZK8(JCMP+NCMP-1) = 'LAGR'
             CALL WKVECT('&&MSTGET.LISTE.CMP','V V I',NEQ*NCMP,LCMP)

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 VALK
       CHARACTER*16  PARAX,PARAY, NOMCMD, TYPCON
       CHARACTER*19  LISTR, NOMFON, RESU
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -52,15 +53,15 @@ C
 C
       CALL GETRES ( NOMFON, TYPCON, NOMCMD )
 C
-      CALL GETVTX ( ' ', 'INTITULE'  , 0,1,1, INTITU, INT  )
-      CALL GETVID ( ' ', 'RESU_GENE' , 0,1,1, RESU  , N    )
-      CALL GETVTX ( ' ', 'PARA_X'    , 0,1,1, PARAX , N    )
-      CALL GETVTX ( ' ', 'PARA_Y'    , 0,1,1, PARAY , N    )
-      CALL GETVID ( ' ', 'LIST_PARA' , 0,1,1, LISTR , IND  )
-      CALL GETVTX ( ' ', 'SOUS_STRUC', 0,1,1, SST   , NSST )
+      CALL GETVTX ( ' ', 'INTITULE'  , 0,IARG,1, INTITU, INT  )
+      CALL GETVID ( ' ', 'RESU_GENE' , 0,IARG,1, RESU  , N    )
+      CALL GETVTX ( ' ', 'PARA_X'    , 0,IARG,1, PARAX , N    )
+      CALL GETVTX ( ' ', 'PARA_Y'    , 0,IARG,1, PARAY , N    )
+      CALL GETVID ( ' ', 'LIST_PARA' , 0,IARG,1, LISTR , IND  )
+      CALL GETVTX ( ' ', 'SOUS_STRUC', 0,IARG,1, SST   , NSST )
 C
-      CALL GETVTX ( ' ', 'NOEUD_CHOC'   , 0,1,1, NOEUD, NC )
-      CALL GETVTX ( ' ', 'GROUP_NO_CHOC', 0,1,1, NOGNO, NG )
+      CALL GETVTX ( ' ', 'NOEUD_CHOC'   , 0,IARG,1, NOEUD, NC )
+      CALL GETVTX ( ' ', 'GROUP_NO_CHOC', 0,IARG,1, NOGNO, NG )
 C
       IF ( NC .NE. 0 ) THEN
 C

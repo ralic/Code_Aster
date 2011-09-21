@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,7 @@ C
 
       REAL*8       VORI(3)
       REAL*8       VAL,VECT(3),R8PREM
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -96,14 +97,15 @@ C
 
 C RECUPERATION DES NOMS DU CHAMP MESURE
 
-      CALL GETVTX ('MODELE_MESURE','NOM_CHAM',1,1,0,NOMCHA,NBCHAM)
+      CALL GETVTX ('MODELE_MESURE','NOM_CHAM',1,IARG,0,NOMCHA,NBCHAM)
       IF (NBCHAM .NE. 0) THEN
         NBCHAM = -NBCHAM
       ELSE
         CALL U2MESS('A','ALGORITH10_93')
       ENDIF
       CALL WKVECT ('&&LISTE_CHAMP', 'V V K16', NBCHAM, LCH)
-      CALL GETVTX ('MODELE_MESURE','NOM_CHAM',1,1,NBCHAM,ZK16(LCH),IBID)
+      CALL GETVTX ('MODELE_MESURE','NOM_CHAM',1,IARG,NBCHAM,
+     &             ZK16(LCH),IBID)
 
 C     -> OBJET MATRICE MODALE REDUITE SUIVANT DIRECTION DE MESURE
 C

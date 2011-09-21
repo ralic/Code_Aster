@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,6 +51,7 @@ C SENSIBILITE
       CHARACTER*24 NORECG
       CHARACTER*24 VALK(2)
       INTEGER NBPASS,ADRECG,NRPASS
+      INTEGER      IARG
 C SENSIBILITE
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -62,10 +63,10 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
 C
-      CALL GETVTX(' ','CRITERE',0,1,1,CRIT,N1)
-      CALL GETVR8(' ','PRECISION',0,1,1,EPSI,N1)
+      CALL GETVTX(' ','CRITERE',0,IARG,1,CRIT,N1)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,N1)
       INTRES = 'NON     '
-      CALL GETVTX(' ','INTERP_NUME',0,1,1,INTRES,N1)
+      CALL GETVTX(' ','INTERP_NUME',0,IARG,1,INTRES,N1)
 
       NPOINT = 0
       CMP = ' '
@@ -73,13 +74,13 @@ C
       MAILLE = ' '
       NOGMA = ' '
       NOGNO = ' '
-      CALL GETVTX(' ','MAILLE',0,1,1,MAILLE,NM)
-      CALL GETVTX(' ','GROUP_MA',0,1,1,NOGMA,NGM)
-      CALL GETVIS(' ','SOUS_POINT',0,1,1,NUSP,NP)
+      CALL GETVTX(' ','MAILLE',0,IARG,1,MAILLE,NM)
+      CALL GETVTX(' ','GROUP_MA',0,IARG,1,NOGMA,NGM)
+      CALL GETVIS(' ','SOUS_POINT',0,IARG,1,NUSP,NP)
       IF (NP.EQ.0) NUSP = 0
-      CALL GETVIS(' ','POINT',0,1,1,NPOINT,NP)
-      CALL GETVTX(' ','NOEUD',0,1,1,NOEUD,NN)
-      CALL GETVTX(' ','GROUP_NO',0,1,1,NOGNO,NGN)
+      CALL GETVIS(' ','POINT',0,IARG,1,NPOINT,NP)
+      CALL GETVTX(' ','NOEUD',0,IARG,1,NOEUD,NN)
+      CALL GETVTX(' ','GROUP_NO',0,IARG,1,NOGNO,NGN)
 
 C     -----------------------------------------------------------------
 C                       --- CAS D'UN RESULTAT ---
@@ -95,7 +96,7 @@ C
       ENDIF
 
 C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
-      CALL GETVID(' ','RESULTAT ',0,1,1,RESUT,NRES)
+      CALL GETVID(' ','RESULTAT ',0,IARG,1,RESUT,NRES)
       DO 60 , NRPASS = 1 , NBPASS
         LAFON1 = '                   '
         LAFON1(1:8) = ZK24(ADRECG+2*NRPASS-2)(1:8)
@@ -112,7 +113,7 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
              ENDIF
           ENDIF
 
-          CALL GETVTX(' ','NOM_PARA_RESU',0,1,1,NPRESU,NPR)
+          CALL GETVTX(' ','NOM_PARA_RESU',0,IARG,1,NPRESU,NPR)
           IF (NPR.NE.0) THEN
             IF (INTRES(1:3).NE.'NON') THEN
               CALL U2MESS('F','UTILITAI4_21')
@@ -121,7 +122,7 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
             GO TO 10
           END IF
 
-          CALL GETVTX(' ','NOM_CHAM',0,1,1,NOMCHA,L)
+          CALL GETVTX(' ','NOM_CHAM',0,IARG,1,NOMCHA,L)
           CALL RSUTNC(RESU,NOMCHA,1,CHAM19,NUMER1,NBTROU)
           IF (NBTROU.EQ.0) CALL U2MESK('F','UTILITAI4_22',1,NOMCHA)
           CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMA,IE)

@@ -4,9 +4,9 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,6 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  TYMOCL(NBMC), MOTCLE(NBMC)
       CHARACTER*24  NOMAMA, NOMATY, NOMJV
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -68,7 +69,7 @@ C
       IER = 0
 C
       IF ( LOPT .EQ. 1) THEN
-        CALL GETVTX ( MCFACT, 'OPTION', IOCC,1,1, OPTION, N1)
+        CALL GETVTX ( MCFACT, 'OPTION', IOCC,IARG,1, OPTION, N1)
         IF ( OPTION .EQ. 'TRIA6_7' ) THEN
           OLDTYP = 'TRIA6'
         ELSEIF ( OPTION .EQ. 'QUAD8_9' ) THEN
@@ -82,19 +83,19 @@ C
       LMAIL = .FALSE.
       LNUME = .FALSE.
       IF ( LNOM .EQ. 1) THEN
-        CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,1,0, K8B, N1)
+        CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,IARG,0, K8B, N1)
         IF ( N1 .NE. 0 ) THEN
-          CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,1,1, PRFM, N1)
+          CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,IARG,1, PRFM, N1)
           LGP = LXLGUT(PRFM)
           LMAIL = .TRUE.
         ELSE
           LGP = 0
           PRFM = ' '
         ENDIF
-        CALL GETVIS ( MCFACT, 'PREF_NUME', IOCC,1,0, IBID, N1)
+        CALL GETVIS ( MCFACT, 'PREF_NUME', IOCC,IARG,0, IBID, N1)
         IF ( N1 .NE. 0 ) THEN
           LNUME = .TRUE.
-          CALL GETVIS ( MCFACT, 'PREF_NUME', IOCC,1,1, NUME, N1 )
+          CALL GETVIS ( MCFACT, 'PREF_NUME', IOCC,IARG,1, NUME, N1 )
         ENDIF
       ENDIF
 C

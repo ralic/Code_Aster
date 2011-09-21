@@ -7,7 +7,7 @@ C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 MONACC,CONCEP,NOMCMD,DEF
       CHARACTER*19 CHEXTR,CHAMP,MONCHA
       CHARACTER*24  VALE,NOMS2,VALK(3)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
       DATA  VALE / '                   .VALE' /
@@ -70,7 +71,7 @@ C
       CALL JEMARQ()
       CALL GETFAC('COMB_DEPL_APPUI',NBOC)
       CALL GETFAC('DEPL_MULT_APPUI',NDEP)
-      CALL GETVID(' ','MODE_MECA',1,1,1,MECA,IBID)
+      CALL GETVID(' ','MODE_MECA',1,IARG,1,MECA,IBID)
 C
       CALL WKVECT('&&ASECON.CUMUL','V V R',NEQ,JCUM)
       CALL WKVECT('&&ASECON.AUX','V V R',NEQ*NBOC,JAUX)
@@ -141,7 +142,8 @@ C
         DO 20 ICAS = 1,NCAS
           NUCAS = ZI(JCAS+ICAS-1)
           DO 40 IDEP = 1,NDEP
-            CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',IDEP,1,1,NUME,IBID)
+            CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',IDEP,IARG,1,
+     &                  NUME,IBID)
              IF (NUME.EQ.NUCAS) THEN
                KNUM = 'N       '
                CALL CODENT(NUCAS, 'D0' , KNUM(2:8) )

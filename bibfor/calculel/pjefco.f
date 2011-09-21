@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
 
       LOGICAL      LDMAX
       REAL*8       DISTMA,R8MAEM
+      INTEGER      IARG
 C----------------------------------------------------------------------
       CALL JEMARQ()
       CALL ASSERT(BASE.EQ.'V')
@@ -85,7 +86,7 @@ C     DETERMINATION DE DISTMA ET LDMAX:
 C     --------------------------------------------------------
       LDMAX = .FALSE.
       DISTMA = R8MAEM()
-      CALL GETVR8(' ','DISTANCE_MAX',1,0,1,DISTMA,N1)
+      CALL GETVR8(' ','DISTANCE_MAX',1,IARG,1,DISTMA,N1)
       IF ( N1.EQ. 1 )  LDMAX = .TRUE.
 
 

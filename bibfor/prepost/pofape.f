@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     --- POST_FATI_MULT -----------------------------------------------
       PARAMETER    ( NBPAPF = 8  )
       CHARACTER*3   TYPPPF(NBPAPF)
       CHARACTER*16  NOMPPF(NBPAPF)
+      INTEGER      IARG
       DATA  NOMPPF / 'CRITERE' , 'VALE_CRITERE' , 'PRES_HYDRO_MAX' ,
      &               'AMPLI_CISSION' , 'RAYON_SPHERE'   ,
      &               'VALE_MIN' , 'VALE_MAX' , 'DOMMAGE'        /
@@ -70,12 +71,12 @@ C
 C
 C     --- RECUPERATION DE LA FONCTION CHARGEMENT ---
 C
-      CALL GETVID ( 'HISTOIRE', 'SIGM_XX',1,1,1, NOMTEN(1), N1 )
-      CALL GETVID ( 'HISTOIRE', 'SIGM_YY',1,1,1, NOMTEN(2), N2 )
-      CALL GETVID ( 'HISTOIRE', 'SIGM_ZZ',1,1,1, NOMTEN(3), N3 )
-      CALL GETVID ( 'HISTOIRE', 'SIGM_XY',1,1,1, NOMTEN(4), N4 )
-      CALL GETVID ( 'HISTOIRE', 'SIGM_XZ',1,1,1, NOMTEN(5), N5 )
-      CALL GETVID ( 'HISTOIRE', 'SIGM_YZ',1,1,1, NOMTEN(6), N6 )
+      CALL GETVID ( 'HISTOIRE', 'SIGM_XX',1,IARG,1, NOMTEN(1), N1 )
+      CALL GETVID ( 'HISTOIRE', 'SIGM_YY',1,IARG,1, NOMTEN(2), N2 )
+      CALL GETVID ( 'HISTOIRE', 'SIGM_ZZ',1,IARG,1, NOMTEN(3), N3 )
+      CALL GETVID ( 'HISTOIRE', 'SIGM_XY',1,IARG,1, NOMTEN(4), N4 )
+      CALL GETVID ( 'HISTOIRE', 'SIGM_XZ',1,IARG,1, NOMTEN(5), N5 )
+      CALL GETVID ( 'HISTOIRE', 'SIGM_YZ',1,IARG,1, NOMTEN(6), N6 )
       NBF = N1 + N2 + N3 + N4 + N5 + N6
 C
 C     --- CHARGEMENT PERIODIQUE ---
@@ -110,12 +111,12 @@ C
       CALL TBAJPA ( RESULT, NBPAPF, NOMPPF, TYPPPF )
 C
       NOMMAT = ' '
-      CALL GETVID ( ' ', 'MATER', 1,1,1, NOMMAT, N1 )
+      CALL GETVID ( ' ', 'MATER', 1,IARG,1, NOMMAT, N1 )
 C
 C     --- DETERMINATION DES CRITERES---
 C
       CRITER = ' '
-      CALL GETVTX ( ' ', 'CRITERE', 1,1,1, CRITER, N1 )
+      CALL GETVTX ( ' ', 'CRITERE', 1,IARG,1, CRITER, N1 )
 C
       CALL TBAJLI (RESULT, 1,NOMPPF(1), IBID,RBID,CBID,CRITER, 0 )
       CALL TBNULI (RESULT, 1,NOMPPF(1), IBID,RBID,CBID,CRITER,
@@ -151,7 +152,7 @@ C
 C
 C     --- CORRECTION POUR CALCUL DU DOMMAGE ----
 C
-      CALL GETVR8 ( ' ', 'COEF_CORR', 1,1,1, PCORR, N1 )
+      CALL GETVR8 ( ' ', 'COEF_CORR', 1,IARG,1, PCORR, N1 )
       IF ( N1 .NE. 0 ) THEN
          VMAX = 2.D0*(RCRIT+VAL(2))*PCORR
          VMIN = 0.D0
@@ -165,7 +166,7 @@ C
 C     --- CALCUL DU DOMMAGE ELEMENTAIRE ---
 C
       KDOMM = ' '
-      CALL GETVTX ( ' ', 'DOMMAGE', 1,1,1, KDOMM, N1 )
+      CALL GETVTX ( ' ', 'DOMMAGE', 1,IARG,1, KDOMM, N1 )
 C
 C     --- CALCUL DU DOMMAGE ELEMENTAIRE DE WOHLER ---
 C         ---------------------------------------

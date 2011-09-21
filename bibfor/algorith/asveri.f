@@ -7,7 +7,7 @@
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 CHEXTR, CHEXT2
       CHARACTER*24 VALK(3)
       COMPLEX*16   CBID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
       DATA  ACCES  / 'ACCE    X       ' , 'ACCE    Y       ',
@@ -55,7 +56,7 @@ C     ------------------------------------------------------------------
 C
       CALL GETRES(RESU,CONCEP,NOMCMD)
       IER = 0
-      CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',1,1,0,K8B,NS)
+      CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',1,IARG,0,K8B,NS)
 C
 C     --- VERIFICATION DES CHAMPS DONNES ---
       IF ( MONOAP ) THEN

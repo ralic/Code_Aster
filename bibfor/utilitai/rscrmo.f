@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMSD , NOMJV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16  NOMSYM
       CHARACTER*19  NOMD2, NOCH19
       CHARACTER*24  KNUM
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -55,17 +56,17 @@ C
       NOMD2 = NOMSD
 C
       KNUM = '&&RSCRMO.NUME_ORDRE'
-      CALL GETVR8 ( 'RESU', 'PRECISION', IOCC,1,1, PREC, NP )
-      CALL GETVTX ( 'RESU', 'CRITERE'  , IOCC,1,1, CRIT, NC )
+      CALL GETVR8 ( 'RESU', 'PRECISION', IOCC,IARG,1, PREC, NP )
+      CALL GETVTX ( 'RESU', 'CRITERE'  , IOCC,IARG,1, CRIT, NC )
       CALL RSUTNU ( NOMSD, 'RESU', IOCC, KNUM, NBORDT, PREC,CRIT,IRET)
       IF ( IRET .NE. 0 ) GOTO 9999
       CALL JEVEUO ( KNUM, 'L', JNUME )
 C
-      CALL GETVTX ('RESU', 'NOM_CHAM' , IOCC,1,0, K8B, N22 )
+      CALL GETVTX ('RESU', 'NOM_CHAM' , IOCC,IARG,0, K8B, N22 )
       IF ( N22 .NE. 0 ) THEN
          NBNOSY = - N22
          CALL WKVECT('&&RSCRMO.NOM_SYMBOL','V V K16',NBNOSY,JNOSY)
-         CALL GETVTX('RESU','NOM_CHAM',IOCC,1,NBNOSY,ZK16(JNOSY),N22)
+         CALL GETVTX('RESU','NOM_CHAM',IOCC,IARG,NBNOSY,ZK16(JNOSY),N22)
       ELSE
          CALL JELIRA ( NOMD2//'.DESC', 'NOMMAX', NBNOSY, K8B )
          IF ( NBNOSY .EQ. 0 ) GOTO 9999

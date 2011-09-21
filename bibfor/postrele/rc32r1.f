@@ -3,9 +3,9 @@
       CHARACTER*8         NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,6 +56,7 @@ C
       CHARACTER*16  NOPAR2(NPAR2), NOPAR1(NPAR1), NOPAR4(NPAR4),
      +              NOPAR6(NPAR6), NOPAR0(NPAR0)
       CHARACTER*24  K24B, K24C, K24T
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA LIEU   / 'ORIG' , 'EXTR' /
 C
@@ -100,7 +101,7 @@ C
      +                          'R', 'R', 'R', 'R', 'R'  /
 C DEB ------------------------------------------------------------------
 C
-      CALL GETVTX ( ' ', 'TYPE_RESU', 1,1,1, TYPTAB , N1 )
+      CALL GETVTX ( ' ', 'TYPE_RESU', 1,IARG,1, TYPTAB , N1 )
 C
       CALL JELIRA ( '&&RC3200.SITU_NUME_GROUP', 'LONMAX', NBGR, K8B )
       CALL JEVEUO ( '&&RC3200.SITU_NUME_GROUP', 'L', JNUMGR )

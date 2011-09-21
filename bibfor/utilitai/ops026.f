@@ -3,9 +3,9 @@
       INTEGER             ICMD , ICOND, IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,6 +30,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8    ACTION, ACCES, TYPE
       CHARACTER*16   KNOM
       CHARACTER*255  FICHIE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL INFMAJ ()
@@ -42,12 +43,12 @@ C
       KTYP   = 'A'
       FICHIE = ' '
 C
-      CALL GETVTX ( ' ', 'ACTION',  1,1,1, ACTION, N1 )
-      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, NF )
-      CALL GETVIS ( ' ', 'UNITE',   1,1,1, UNITE,  NU )
-      CALL GETVTX ( ' ', 'ACCES',   1,1,1, ACCES,  N1 )
+      CALL GETVTX ( ' ', 'ACTION',  1,IARG,1, ACTION, N1 )
+      CALL GETVTX ( ' ', 'FICHIER', 1,IARG,1, FICHIE, NF )
+      CALL GETVIS ( ' ', 'UNITE',   1,IARG,1, UNITE,  NU )
+      CALL GETVTX ( ' ', 'ACCES',   1,IARG,1, ACCES,  N1 )
       IF ( N1 .NE. 0 ) KACC = ACCES(1:1)
-      CALL GETVTX ( ' ', 'TYPE',    1,1,1, TYPE,   N1 )
+      CALL GETVTX ( ' ', 'TYPE',    1,IARG,1, TYPE,   N1 )
       IF ( N1 .NE. 0 ) KTYP = TYPE(1:1)
 C
       IF ( ACTION .EQ. 'LIBERER ' ) THEN

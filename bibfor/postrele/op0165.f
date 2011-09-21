@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM
@@ -47,15 +47,16 @@ C
       INTEGER   ICODRE
       CHARACTER*8   K8B, NOMMAT
       CHARACTER*16  TYPTAB, TYPMEC, KOPT(4), PHENOM
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
 C
       CALL INFMAJ
 C
       SYMAX = R8VIDE()
 C
-      CALL GETVTX ( ' ', 'TYPE_RESU', 1,1,1, TYPTAB , N1 )
+      CALL GETVTX ( ' ', 'TYPE_RESU', 1,IARG,1, TYPTAB , N1 )
 C
-      CALL GETVTX ( ' ', 'TYPE_RESU_MECA',1,1,1, TYPMEC, N1 )
+      CALL GETVTX ( ' ', 'TYPE_RESU_MECA',1,IARG,1, TYPMEC, N1 )
 C
 C     ------------------------------------------------------------------
 C
@@ -65,12 +66,12 @@ C     ------------------------------------------------------------------
 C
       IF ( TYPMEC .EQ. 'EVOLUTION' ) THEN
 C
-         CALL GETVTX ( ' ', 'OPTION',1,1,0, K8B, N1 )
+         CALL GETVTX ( ' ', 'OPTION',1,IARG,0, K8B, N1 )
          NBOPT = -N1
-         CALL GETVTX ( ' ', 'OPTION',1,1,NBOPT, KOPT, N1 )
+         CALL GETVTX ( ' ', 'OPTION',1,IARG,NBOPT, KOPT, N1 )
 C
-         CALL GETVID ( ' ', 'MATER',  1, 1,1,NOMMAT, N1 )
-         CALL GETVR8 ( ' ', 'SY_MAX', 1, 1,1,SYMAX,  N1 )
+         CALL GETVID ( ' ', 'MATER',  1,IARG,1,NOMMAT, N1 )
+         CALL GETVR8 ( ' ', 'SY_MAX', 1,IARG,1,SYMAX,  N1 )
 C
          CALL RCCOME ( NOMMAT, 'RCCM', PHENOM, ICODRE )
          IF (ICODRE.EQ.1)  CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
@@ -85,7 +86,7 @@ C     ------------------------------------------------------------------
 C
       ELSEIF ( TYPMEC .EQ. 'TUYAUTERIE' ) THEN
 C
-         CALL GETVTX ( ' ', 'OPTION',1,1,1, KOPT, N1 )
+         CALL GETVTX ( ' ', 'OPTION',1,IARG,1, KOPT, N1 )
 C
          IF ( KOPT(1) .EQ. 'FATIGUE' ) THEN
 C
@@ -113,9 +114,9 @@ C
            LROCHT = .TRUE.
          ENDIF
 C
-         CALL GETVTX ( ' ', 'OPTION',1,1,0, K8B, N1 )
+         CALL GETVTX ( ' ', 'OPTION',1,IARG,0, K8B, N1 )
          NBOPT = -N1
-         CALL GETVTX ( ' ', 'OPTION',1,1,NBOPT, KOPT, N1 )
+         CALL GETVTX ( ' ', 'OPTION',1,IARG,NBOPT, KOPT, N1 )
          DO 30 IOPT = 1, NBOPT
             IF ( KOPT(IOPT) .EQ. 'PM_PB' ) THEN
                PMPB = .TRUE.
@@ -128,8 +129,8 @@ C
             ENDIF
  30      CONTINUE
 C
-         CALL GETVID ( ' ', 'MATER',  1,1,1, NOMMAT, N1 )
-         CALL GETVR8 ( ' ', 'SY_MAX', 1, 1,1,SYMAX,  N1 )
+         CALL GETVID ( ' ', 'MATER',  1,IARG,1, NOMMAT, N1 )
+         CALL GETVR8 ( ' ', 'SY_MAX', 1,IARG,1,SYMAX,  N1 )
 C
          CALL RC3200 ( PMPB, SN, SNET, FATIGU, LROCHT, NOMMAT, SYMAX )
 C

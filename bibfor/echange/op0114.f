@@ -1,6 +1,6 @@
       SUBROUTINE OP0114 ()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ECHANGE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,6 +53,7 @@ C     COUPLAGE =>
       CHARACTER*16       OPTION,VALK(3)
       CHARACTER*24       AYACS   
       CHARACTER*(LENVAR) NOMVAR
+      INTEGER      IARG
 C     COUPLAGE <=
 C
       CALL JEMARQ()
@@ -70,7 +71,7 @@ C     ------------------------------
 
       CALL GETRES(RESU,CONCEP,NOMCMD)
       
-      CALL GETVTX(' ','DONNEES',  0,1,1,OPTION,IBID)
+      CALL GETVTX(' ','DONNEES',  0,IARG,1,OPTION,IBID)
       IF (NIV.EQ.2) THEN
         VALK(1) = 'OP0114'
         VALK(2) = 'DONNEES'
@@ -90,7 +91,7 @@ C
       CALL WKVECT(RESU//'.VALE','G V R',NBVALE,JVAL)
 
       IF ( OPTION(1:4) .EQ. 'INIT' ) THEN
-        CALL GETVR8(' ','PAS',0,1,1,DT,IBID)
+        CALL GETVR8(' ','PAS',0,IARG,1,DT,IBID)
 C reception des parametres utilisateurs a l iteration 0
         NUMPA4 = 0
         NUMPAS = 0
@@ -145,10 +146,10 @@ C  RECEPTION PAS DE TEMPS DE REFERENCE
         ZR(JBOR+6) = RYACS
         ZR(JVAL+6) = RYACS
       ELSE
-        CALL GETVR8(' ','INST',0,1,1,TF,IBID)
-        CALL GETVIS(' ','NUME_ORDRE_YACS',0,1,1,NUMPAS,IBID)
+        CALL GETVR8(' ','INST',0,IARG,1,TF,IBID)
+        CALL GETVIS(' ','NUME_ORDRE_YACS',0,IARG,1,NUMPAS,IBID)
         NUMPA4 = NUMPAS
-        CALL GETVR8(' ','PAS',0,1,1,DT,IBID)
+        CALL GETVR8(' ','PAS',0,IARG,1,DT,IBID)
         TI = TF
         IF ( OPTION(1:3) .EQ. 'FIN' ) THEN
           NOMVAR = 'END'

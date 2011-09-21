@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,6 +111,7 @@ C     --- VARIABLES LOCALES ---
       LOGICAL EXICAR
 
       CHARACTER*24 VALKM(2)
+      INTEGER      IARG
 
 
       CALL JEMARQ()
@@ -134,12 +135,12 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
       CARELE=' '
-      CALL GETVID(' ','CARA_ELEM',1,1,1,CARELE,N1)
+      CALL GETVID(' ','CARA_ELEM',1,IARG,1,CARELE,N1)
 
-      CALL GETVTX ( ' ', 'OPTION', 1,1,0, K8B, N2 )
+      CALL GETVTX ( ' ', 'OPTION', 1,IARG,0, K8B, N2 )
       NBOPT = -N2
       CALL WKVECT ( LESOPT, 'V V K16', NBOPT, JOPT )
-      CALL GETVTX (' ', 'OPTION'  , 1, 1, NBOPT, ZK16(JOPT), N2)
+      CALL GETVTX (' ', 'OPTION'  , 1,IARG, NBOPT, ZK16(JOPT), N2)
       CALL MODOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
 
@@ -298,7 +299,7 @@ C    -- OPTION "SING_ELEM"
 C    ------------------------------------------------------------------
         ELSEIF (OPTION.EQ.'SING_ELEM') THEN
 
-          CALL GETVR8(' ','PREC_ERR',1,1,1,PREC,IRET1)
+          CALL GETVR8(' ','PREC_ERR',1,IARG,1,PREC,IRET1)
           IF (IRET1.NE.1) THEN
             CALL U2MESS('F','CALCULEL3_12')
           ELSE
@@ -308,7 +309,7 @@ C    ------------------------------------------------------------------
           ENDIF
 
           TYPES=' '
-          CALL GETVTX(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
+          CALL GETVTX(' ','TYPE_ESTI',1,IARG,1,TYPES,IRETER)
           IF (IRETER.GT.0) THEN
             CALL U2MESK('I','CALCULEL3_24',1,TYPES)
           ENDIF

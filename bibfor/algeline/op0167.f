@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/09/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER JNNOMA,JNNOMB,JADRJV,JNONUM,DIMCON,DECALA
       REAL*8 SHRINK,LONMIN
       LOGICAL LOGIC
+      INTEGER      IARG
       DATA VNMCLE /'HEXA20_27 ','PENTA15_18'/
 C     ------------------------------------------------------------------
 
@@ -81,7 +82,7 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
       CALL GETRES(NOMAOU,TYPCON,NOMCMD)
-      CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIN,NN1)
+      CALL GETVID(' ','MAILLAGE',1,IARG,1,NOMAIN,NN1)
 
 C ----------------------------------------------------------------------
 C               TRAITEMENT DU MOT CLE "ECLA_PG"
@@ -89,15 +90,15 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('ECLA_PG',NBECLA)
       IF (NBECLA.GT.0) THEN
-        CALL GETVID('ECLA_PG','MODELE' ,1,1,1,MO,IBID)
+        CALL GETVID('ECLA_PG','MODELE' ,1,IARG,1,MO,IBID)
         CALL ASSERT(IBID.EQ.1)
-        CALL GETVR8('ECLA_PG','SHRINK' ,1,1,1,SHRINK,IBID)
-        CALL GETVR8('ECLA_PG','TAILLE_MIN' ,1,1,1,LONMIN,IBID)
-        CALL GETVTX('ECLA_PG','NOM_CHAM',1,1,0,K16BID,NCH)
+        CALL GETVR8('ECLA_PG','SHRINK' ,1,IARG,1,SHRINK,IBID)
+        CALL GETVR8('ECLA_PG','TAILLE_MIN' ,1,IARG,1,LONMIN,IBID)
+        CALL GETVTX('ECLA_PG','NOM_CHAM',1,IARG,0,K16BID,NCH)
         IF(NCH.LT.0) THEN
           NCH=-NCH
           CALL WKVECT('&&OP0167.NOMCHAMP','V V K16',NCH,ICHAM)
-          CALL GETVTX('ECLA_PG','NOM_CHAM',1,1,NCH,ZK16(ICHAM),NCH)
+          CALL GETVTX('ECLA_PG','NOM_CHAM',1,IARG,NCH,ZK16(ICHAM),NCH)
         ENDIF
         CALL EXLIMA('ECLA_PG',1,'V',MO,LIGREL)
         CHAM1=' '
@@ -138,8 +139,8 @@ C ----------------------------------------------------------------------
         IF (NN1.EQ.0) THEN
           CALL U2MESS('F','ALGELINE2_90')
         ENDIF
-        CALL GETVTX('LINE_QUAD','PREF_NOEUD',1,1,1,PREFIX,N1)
-        CALL GETVIS('LINE_QUAD','PREF_NUME',1,1,1,NDINIT,N1)
+        CALL GETVTX('LINE_QUAD','PREF_NOEUD',1,IARG,1,PREFIX,N1)
+        CALL GETVIS('LINE_QUAD','PREF_NUME',1,IARG,1,NDINIT,N1)
 
         MOTCLE(1)='MAILLE'
         MOTCLE(2)='GROUP_MA'
@@ -179,8 +180,8 @@ C ----------------------------------------------------------------------
         IF (NN1.EQ.0) THEN
           CALL U2MESK('F','MAIL0_14',1,NOMCLE)
         ENDIF
-        CALL GETVTX(NOMCLE,'PREF_NOEUD',1,1,1,PREFIX,N1)
-        CALL GETVIS(NOMCLE,'PREF_NUME',1,1,1,NDINIT,N1)
+        CALL GETVTX(NOMCLE,'PREF_NOEUD',1,IARG,1,PREFIX,N1)
+        CALL GETVIS(NOMCLE,'PREF_NUME',1,IARG,1,NDINIT,N1)
 
         MOTCLE(1)='MAILLE'
         MOTCLE(2)='GROUP_MA'
@@ -242,7 +243,7 @@ C ----------------------------------------------------------------------
         ENDIF
         IQTR=0
         DO 20 IOCC=1,NBMOMA
-          CALL GETVTX('MODI_MAILLE','OPTION',IOCC,1,1,OPTION,N1)
+          CALL GETVTX('MODI_MAILLE','OPTION',IOCC,IARG,1,OPTION,N1)
           IF (OPTION.EQ.'QUAD_TRIA3')IQTR=IQTR+1
    20   CONTINUE
         IF (IQTR.EQ.0) THEN
@@ -254,8 +255,8 @@ C ----------------------------------------------------------------------
           CALL U2MESS('F','ALGELINE2_97')
         ENDIF
 
-        CALL GETVTX('MODI_MAILLE','PREF_MAILLE',1,1,1,PREFIX,N1)
-        CALL GETVIS('MODI_MAILLE','PREF_NUME',1,1,1,NDINIT,N1)
+        CALL GETVTX('MODI_MAILLE','PREF_MAILLE',1,IARG,1,PREFIX,N1)
+        CALL GETVIS('MODI_MAILLE','PREF_NUME',1,IARG,1,NDINIT,N1)
 
         MOTCLE(1)='MAILLE'
         MOTCLE(2)='GROUP_MA'
@@ -282,15 +283,15 @@ C ----------------------------------------------------------------------
           CALL U2MESS('F','ALGELINE2_98')
         ENDIF
 C
-        CALL GETVR8('COQU_VOLU','EPAIS',1,1,1,EPAIS,N1)
-        CALL GETVTX('COQU_VOLU','PREF_NOEUD',1,1,1,PRFNO,N1)
-        CALL GETVTX('COQU_VOLU','PREF_MAILLE',1,1,1,PRFMA,N1)
-        CALL GETVIS('COQU_VOLU','PREF_NUME',1,1,1,NUMMA,N1)
-        CALL GETVTX('COQU_VOLU','PLAN',1,1,1,PLAN,N1)
+        CALL GETVR8('COQU_VOLU','EPAIS',1,IARG,1,EPAIS,N1)
+        CALL GETVTX('COQU_VOLU','PREF_NOEUD',1,IARG,1,PRFNO,N1)
+        CALL GETVTX('COQU_VOLU','PREF_MAILLE',1,IARG,1,PRFMA,N1)
+        CALL GETVIS('COQU_VOLU','PREF_NUME',1,IARG,1,NUMMA,N1)
+        CALL GETVTX('COQU_VOLU','PLAN',1,IARG,1,PLAN,N1)
 C
         IF (PLAN.EQ.'MOY') THEN
           TRANS='INF'
-          CALL GETVTX('COQU_VOLU','TRANSLATION',1,1,1,TRANS,N1)
+          CALL GETVTX('COQU_VOLU','TRANSLATION',1,IARG,1,TRANS,N1)
         ENDIF
 
         NOMJV='&&OP0167.LISTE_MAV'
@@ -403,15 +404,16 @@ C
         IAD=1
         DO 60 IOCC=1,NBMOMA
           ZI(JIAD+IOCC-1)=1
-          CALL GETVTX('MODI_MAILLE','PREF_NOEUD',IOCC,1,0,K8B,N1)
+          CALL GETVTX('MODI_MAILLE','PREF_NOEUD',IOCC,IARG,0,K8B,N1)
           IF (N1.NE.0) THEN
-            CALL GETVTX('MODI_MAILLE','PREF_NOEUD',IOCC,1,1,
+            CALL GETVTX('MODI_MAILLE','PREF_NOEUD',IOCC,IARG,1,
      &                  ZK8(JPRO+IOCC-1),N1)
             LGNO=LXLGUT(ZK8(JPRO+IOCC-1))
           ENDIF
-          CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,1,0,IBID,N1)
-          IF (N1.NE.0) CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,1,1,
-     &                             ZI(JNUM+IOCC-1),N1)
+          CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,IARG,0,IBID,N1)
+          IF (N1.NE.0)
+     &      CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,IARG,1,
+     &                  ZI(JNUM+IOCC-1),N1)
           CALL PALIM2('MODI_MAILLE',IOCC,NOMAIN,MOMANU,MOMANO,
      &                ZI(JIAD+IOCC-1))
           IF (ZI(JIAD+IOCC-1)-1.LE.0) THEN
@@ -446,7 +448,7 @@ C LES AUTRES SE TROUVENT EN INCREMENTANT
 
           IF (NIV.GE.1) THEN
             WRITE (IFM,9000)IOCC
-            CALL GETVTX('MODI_MAILLE','OPTION',IOCC,1,1,OPTION,N1)
+            CALL GETVTX('MODI_MAILLE','OPTION',IOCC,IARG,1,OPTION,N1)
             IF (OPTION.EQ.'TRIA6_7') THEN
               WRITE (IFM,9010)ZI(JIAD+IOCC-1)-1,'TRIA6','TRIA7'
             ELSEIF (OPTION.EQ.'QUAD8_9') THEN
@@ -650,12 +652,12 @@ C     -----------------------------
         IF (NN1.EQ.0) THEN
           CALL U2MESS('F','ALGELINE3_4')
         ENDIF
-        CALL GETVID('REPERE','TABLE',1,1,0,K8B,NTAB)
+        CALL GETVID('REPERE','TABLE',1,IARG,0,K8B,NTAB)
         IF (NTAB.NE.0) THEN
-          CALL GETVID('REPERE','TABLE',1,1,1,TABLE,NTAB)
-          CALL GETVTX('REPERE','NOM_ORIG',1,1,0,K8B,NORI)
+          CALL GETVID('REPERE','TABLE',1,IARG,1,TABLE,NTAB)
+          CALL GETVTX('REPERE','NOM_ORIG',1,IARG,0,K8B,NORI)
           IF (NORI.NE.0) THEN
-            CALL GETVTX('REPERE','NOM_ORIG',1,1,1,NOMORI,NORI)
+            CALL GETVTX('REPERE','NOM_ORIG',1,IARG,1,NOMORI,NORI)
             IF (NOMORI.EQ.'CDG') THEN
               CALL CHCOMA(TABLE,NOMAOU)
             ELSEIF (NOMORI.EQ.'TORSION') THEN
@@ -724,9 +726,9 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
         ZI(JADRJV+IMA-1) = JOPT
         ZI(JNONUM+IMA-1) = IBID
   180 CONTINUE
-      
+
       DECALA = DECALA + NBMAIV
-      
+
       DO 200 IMA=1,NBMAJ1
         NEWMAI=ZK8(JCRMNO+IMA-1)
         INUMOL=ZI(JCRMNU+IMA-1)
@@ -752,7 +754,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
         ZI(JADRJV+DECALA+IMA-1) = JOPT
         ZI(JNONUM+DECALA+IMA-1) = IBID
   200 CONTINUE
-      
+
       DECALA = DECALA + NBMAJ1
 
       DO 220 IMA=1,NBMAJ2
@@ -780,10 +782,10 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
         ZI(JADRJV+DECALA+IMA-1) = JOPT
         ZI(JNONUM+DECALA+IMA-1) = IBID
   220 CONTINUE
-      
+
       DIMCON = DIMCON+NBMAJ3
       CALL JEECRA(CONNEX,'LONT',DIMCON,' ')
-      
+
       DECALA = 0
       DO 500 IMA=1,NBMAIV
         NBPTT = ZI(JNNOMA+DECALA+IMA-1)
@@ -796,7 +798,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
           ZI(JNPT+INO)=ZI(JOPT+INO)
   510   CONTINUE
   500 CONTINUE
-      
+
       DECALA = DECALA + NBMAIV
 
       DO 520 IMA=1,NBMAJ1
@@ -809,7 +811,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
           ZI(JNPT+INO)=ZI(JOPT+INO)
   530   CONTINUE
   520 CONTINUE
-      
+
       DECALA = DECALA + NBMAJ1
 
       DO 540 IMA=1,NBMAJ2
@@ -881,7 +883,7 @@ C ----------------------------------------------------------------------
   240     CONTINUE
   250   CONTINUE
         DO 270 I=1,NBGRMA
-          CALL GETVTX('CREA_GROUP_MA','NOM',I,1,1,NOMG,N1)
+          CALL GETVTX('CREA_GROUP_MA','NOM',I,IARG,1,NOMG,N1)
           CALL ASSERT(N1.EQ.1)
           CALL JEEXIN(JEXNOM(GRPMAI,NOMG),IRET)
           IF (IRET.EQ.0) THEN
@@ -940,7 +942,7 @@ C ----------------------------------------------------------------------
       IF (NBCRP1.NE.0) THEN
         NBGRMA=0
         DO 300 IOCC=1,NBCRP1
-          CALL GETVTX('CREA_POI1','NOM_GROUP_MA',IOCC,1,0,K8B,N1)
+          CALL GETVTX('CREA_POI1','NOM_GROUP_MA',IOCC,IARG,0,K8B,N1)
           IF (N1.NE.0)NBGRMA=NBGRMA+1
   300   CONTINUE
         IF (NBGRMA.NE.0) THEN
@@ -978,9 +980,10 @@ C ----------------------------------------------------------------------
   320       CONTINUE
           ENDIF
           DO 340 IOCC=1,NBCRP1
-            CALL GETVTX('CREA_POI1','NOM_GROUP_MA',IOCC,1,0,K8B,N1)
+            CALL GETVTX('CREA_POI1','NOM_GROUP_MA',IOCC,IARG,0,K8B,N1)
             IF (N1.NE.0) THEN
-              CALL GETVTX('CREA_POI1','NOM_GROUP_MA',IOCC,1,1,NOGMA,N1)
+              CALL GETVTX('CREA_POI1','NOM_GROUP_MA',IOCC,IARG,1,
+     &                    NOGMA,N1)
               CALL JENONU(JEXNOM(GRPMAI,NOGMA),IBID)
               IF (IBID.GT.0) CALL U2MESK('F','ALGELINE3_7',1,NOGMA)
               CALL RELIEM(' ',NOMAIN,'NO_NOEUD',MOTFAC,IOCC,NBMC,MOTCLE,

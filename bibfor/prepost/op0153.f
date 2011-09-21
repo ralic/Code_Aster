@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       CHARACTER*19 TABPUS,NOMTA,NEWTAB
       CHARACTER*24 TYPE, VALK(2)
       COMPLEX*16   C16B
+      INTEGER      IARG
       DATA NOPAR  / 'PUIS_USUR_GLOBAL' ,
      &              'INST' , 'DUREE' , 'ORIG_INST' ,
      &              'V_USUR_TUBE' , 'V_USUR_OBST' , 'P_USUR_TUBE' ,
@@ -84,17 +85,17 @@ C            REMPLACEMENT DU TUBE PERCE PAR UN TUBE NEUF
 C     ------------------------------------------------------------------
 C
       DINST = 0.D0
-      CALL GETVTX ( ' ', 'TUBE_NEUF', 1,1,1, K8B, NTN )
+      CALL GETVTX ( ' ', 'TUBE_NEUF', 1,IARG,1, K8B, NTN )
       IF ( NTN .NE. 0 ) THEN
          CALL EXISD ( 'TABLE', RESU, IRET )
          IF ( IRET .EQ. 0 ) THEN
             CALL U2MESS('F','PREPOST4_7')
          ENDIF
-         CALL GETVID ( ' ', 'TABL_USURE', 1,1,1, K8B, N1 )
+         CALL GETVID ( ' ', 'TABL_USURE', 1,IARG,1, K8B, N1 )
          IF ( K8B .NE. RESU(1:8) ) THEN
             CALL U2MESS('F','PREPOST4_7')
          ENDIF
-         CALL GETVR8 ( ' ', 'INST', 1,1,1, DINST, NIS )
+         CALL GETVR8 ( ' ', 'INST', 1,IARG,1, DINST, NIS )
          IF ( NIS .EQ. 0 ) THEN
             CALL TBEXV1 ( RESU, 'INST', '&&OP0153.INST','V',NBV,K8B)
             CALL JEVEUO ('&&OP0153.INST', 'L', JINST )
@@ -109,7 +110,7 @@ C
       ENDIF
 C
 C     ------------------------------------------------------------------
-      CALL GETVIS(' ','INFO',1,1,1,INFO,N0)
+      CALL GETVIS(' ','INFO',1,IARG,1,INFO,N0)
       IF (INFO.GT.1) THEN
         WRITE(IFIRES,1000)
         WRITE(IFIRES,*)
@@ -125,13 +126,13 @@ C     --- CALCUL DE LA PUISSANCE D'USURE ---
       ENDIF
 C
 C     --- RECUPERATION DES INSTANTS DE CALCUL ---
-      CALL GETVR8(' ','INST',1,1,0,R8B,NI1)
+      CALL GETVR8(' ','INST',1,IARG,0,R8B,NI1)
       IF ( NI1 .NE. 0 ) THEN
          NBINST = -NI1
          CALL WKVECT('&&OP0153.INSTANT','V V R',NBINST,JINST)
-         CALL GETVR8(' ','INST',1,1,NBINST,ZR(JINST),N1)
+         CALL GETVR8(' ','INST',1,IARG,NBINST,ZR(JINST),N1)
       ELSE
-         CALL GETVID(' ','LIST_INST',1,1,1,LINST,N1)
+         CALL GETVID(' ','LIST_INST',1,IARG,1,LINST,N1)
          CALL JELIRA(LINST//'.VALE','LONUTI',NBINST,K8B)
          CALL JEVEUO(LINST//'.VALE','L',JINST)
       ENDIF
@@ -139,7 +140,7 @@ C     --- RECUPERATION DES INSTANTS DE CALCUL ---
       DO 10 I = 0 , NBINST-1
          ZR(JINS2+I) = ZR(JINST+I)
  10   CONTINUE
-      CALL GETVR8(' ','COEF_INST',1,1,1,COINST,N1)
+      CALL GETVR8(' ','COEF_INST',1,IARG,1,COINST,N1)
       IF ( N1 .NE. 0 ) THEN
          DO 12 I = 0 , NBINST-1
             ZR(JINS2+I) = ZR(JINS2+I) * COINST
@@ -170,7 +171,7 @@ C
          EPSIL = 1.D-4
          DO 14 I = 1 , NBSECT
             IF ( I .EQ. 1 ) THEN
-               CALL GETVR8('SECTEUR','ANGL_INIT',1,1,1,ZR(IDANGT),NA)
+               CALL GETVR8('SECTEUR','ANGL_INIT',1,IARG,1,ZR(IDANGT),NA)
 C
 C              LES ANGLES SONT CROISSANTS ENTRE -180. ET +180. :
 C              -----------------------------------------------
@@ -179,7 +180,7 @@ C              -----------------------------------------------
                   CALL U2MESS('F','PREPOST4_8')
                ENDIF
             ENDIF
-            CALL GETVR8('SECTEUR','ANGL_FIN',I,1,1,ZR(IDANGT+I),NA)
+            CALL GETVR8('SECTEUR','ANGL_FIN',I,IARG,1,ZR(IDANGT+I),NA)
             IF ( ZR(IDANGT+I) .LT. ZR(IDANGT+I-1) ) THEN
          CALL U2MESS('F','PREPOST4_9')
             ENDIF
@@ -189,11 +190,11 @@ C              -----------------------------------------------
                   CALL U2MESS('F','PREPOST4_10')
                ENDIF
             ENDIF
-            CALL GETVR8('SECTEUR','COEF_USUR_MOBILE',I,1,1,
+            CALL GETVR8('SECTEUR','COEF_USUR_MOBILE',I,IARG,1,
      &                                             ZR(IDVCTU+I-1),N5)
-            CALL GETVR8('SECTEUR','COEF_USUR_OBST'  ,I,1,1,
+            CALL GETVR8('SECTEUR','COEF_USUR_OBST'  ,I,IARG,1,
      &                                             ZR(IDVCOB+I-1),N5)
-            CALL GETVTX('SECTEUR','CONTACT'         ,I,1,1,
+            CALL GETVTX('SECTEUR','CONTACT'         ,I,IARG,1,
      &                                             ZK16(IDCOTU+I-1),N5)
  14      CONTINUE
       ELSE
@@ -231,12 +232,12 @@ C
       IF ( IRET .NE. 0 ) GOTO 9999
 C
       IF (INDIC.EQ.0) THEN
-         CALL GETVR8(' ','LARGEUR_OBST',1,1,1,HAUT,N1)
+         CALL GETVR8(' ','LARGEUR_OBST',1,IARG,1,HAUT,N1)
          IF (N1.LE.0) THEN
             HAUT=0.011D0
          ENDIF
          IF (INFO.GT.1) WRITE(IFIRES,1130)
-         CALL GETVR8(' ','RAYON_MOBILE',1,1,1,RAYOT,N1)
+         CALL GETVR8(' ','RAYON_MOBILE',1,IARG,1,RAYOT,N1)
          IF (N1.EQ.0) THEN
            CALL U2MESS('F','PREPOST4_11')
          ENDIF
@@ -247,7 +248,7 @@ C
      &         (HAUT*(ZR(IDANGT+I)-ZR(IDANGT+I-1))) )
  22         CONTINUE
  24      CONTINUE
-         CALL GETVR8(' ','RAYON_OBST',1,1,1,RAYOO,N1)
+         CALL GETVR8(' ','RAYON_OBST',1,IARG,1,RAYOO,N1)
          IF (N1.EQ.0) THEN
            CALL U2MESS('F','PREPOST4_12')
          ENDIF
@@ -317,7 +318,7 @@ C
 C     REPRISE EVENTUELLE ET STOCKAGE DE LA TABLE POST_USURE :
 C     -----------------------------------------------------
 C
-      CALL GETVID ( 'ETAT_INIT', 'TABL_USURE', 1,1,1, TABPUS, NPU )
+      CALL GETVID ( 'ETAT_INIT', 'TABL_USURE', 1,IARG,1, TABPUS, NPU )
       IF ( NPU .EQ. 0 ) THEN
          DINST = 0.D0
          CALL TBCRSD(RESU,'G')
@@ -341,7 +342,7 @@ C   ON REPREND UNE TABLE EXISTANTE
          IF (NBSEC2.NE.NBSECT) THEN
           CALL U2MESS('F','PREPOST4_14')
          ENDIF
-         CALL GETVR8 ( 'ETAT_INIT', 'INST_INIT', 1,1,1, DINST, NIS )
+         CALL GETVR8 ( 'ETAT_INIT', 'INST_INIT', 1,IARG,1, DINST, NIS )
          IF (NIS.EQ.0) THEN
             DINST = INSDEB
          ELSEIF (DINST.GT.INSDEB) THEN
@@ -446,7 +447,6 @@ C
  1060 FORMAT(A20,1X,A1,1X,E11.5,1X,A1)
  1080 FORMAT(1P E11.5,2X,E15.9,2X,E15.9,2X,E15.9,2X,E15.9)
  1090 FORMAT(A10,1X,F7.2,A3,F7.2)
- 1100 FORMAT(1P E11.5,3X,E15.9)
  1120 FORMAT(A20,1X,A1,1X,A14)
  1130 FORMAT(
      &'LES PROFONDEURS USEES PAR SECTEUR SONT DES APPROXIMATIONS')

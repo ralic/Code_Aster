@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,13 +66,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 CHAMNO
       CHARACTER*24 LIGRMO,LCHIN(3),LCHOUT(1),NOM
       LOGICAL YANG
+      INTEGER      IARG
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       OPTION = 'ACCEPTANCE'
       INCR = 'BID'
-      CALL GETVID(' ','MODELE_INTERFACE',0,1,1,MOINT,NI)
+      CALL GETVID(' ','MODELE_INTERFACE',0,IARG,1,MOINT,NI)
       IF (NI.LE.0) THEN
         CALL JEVEUO(MODMEC//'           .REFD','L',IREFE)
         CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
@@ -83,7 +84,7 @@ C-----------------------------------------------------------------------
         CALL JEVEUO(ZK24(INOLI) (1:19)//'.LGRF','L',INOMA)
         MAILLA = ZK8(INOMA)
 
-        CALL GETVEM(MAILLA,'GROUP_MA',' ','GROUP_MA',0,1,1,GRMA,NMA)
+        CALL GETVEM(MAILLA,'GROUP_MA',' ','GROUP_MA',0,IARG,1,GRMA,NMA)
         IF (NMA.LE.0) THEN
           LIGRMO = ZK24(INOLI)
         ELSE
@@ -164,11 +165,11 @@ C CALCULS ELEMENTAIRES
       LPAIN(3) = 'PNUMMOD'
       LPAOUT(1) = 'PVECTUR'
 C RECHERCHE SI UN CHAMNO A ETE DONNE
-      CALL GETVID(' ','CHAM_NO',0,1,0,CHAMNO,NCHAM)
+      CALL GETVID(' ','CHAM_NO',0,IARG,0,CHAMNO,NCHAM)
       IF (NCHAM.NE.0) THEN
         NCHAM = -NCHAM
         CALL WKVECT('&&ACCEP1.VEC','V V K8',NCHAM,ICHAM)
-        CALL GETVID(' ','CHAM_NO',0,1,NCHAM,ZK8(ICHAM),NN)
+        CALL GETVID(' ','CHAM_NO',0,IARG,NCHAM,ZK8(ICHAM),NN)
       END IF
 C BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
       DO 70 I = 1,NBM

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       CHARACTER*16  TYPRES,NOMCMD,TYPBAS
       CHARACTER*19  KREFE,KNUME,KINST,HRANGE
       CHARACTER*24  MATRIC,CHAMNO,CREFE(2),CHMOD
+      INTEGER      IARG
 C
 C     ------------------------------------------------------------------
       DATA CHAMNO   /'&&HARM75.CHAMNO'/
@@ -75,7 +76,7 @@ C
 
       MODE = BASEMO
       HRANGE = NOMIN
-      CALL GETVTX ( ' ', 'TOUT_CHAM', 1,1,1, TOUCH, N1 )
+      CALL GETVTX ( ' ', 'TOUT_CHAM', 1,IARG,1, TOUCH, N1 )
       IF (N1.NE.0) THEN
          CALL ASSERT( TOUCH(1:3).EQ.'OUI' )
          NBCHAM = 3
@@ -83,9 +84,9 @@ C
          TYPE(2) = 'VITE'
          TYPE(3) = 'ACCE'
       ELSE
-         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,0, CHAMP, N1 )
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,0, CHAMP, N1 )
          NBCHAM = -N1
-         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,NBCHAM, CHAMP, N1 )
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,NBCHAM, CHAMP, N1 )
          DO 11 I = 1 , NBCHAM
          IF (CHAMP(I)(1:4).EQ.'DEPL') THEN
             TYPE(I) = 'DEPL'
@@ -142,7 +143,7 @@ C
 
 C------ON VERIFIE QUE L'UTILISATEUR A RENSEIGNE LE MEME SUPPORT DE
 C------RESTITUTION DANS LE FICHIER DE COMMANDE
-         CALL GETVID(' ','SQUELETTE',1,1,1,NOMMA,ISK)
+         CALL GETVID(' ','SQUELETTE',1,IARG,1,NOMMA,ISK)
          IF (ISK.NE.0) THEN
            IF (NOMMA.NE.MAILLA) THEN
              VALK (1) = NOMMA
@@ -167,9 +168,9 @@ C
 C
 C     --- RECUPERATION DES FREQUENCES ---
 
-      CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,N1)
-      CALL GETVR8(' ','PRECISION',0,1,1,EPSI,N1)
-      CALL GETVTX(' ','INTERPOL' ,0,1,1,INTERP,N1)
+      CALL GETVTX(' ','CRITERE'  ,0,IARG,1,CRIT,N1)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,N1)
+      CALL GETVTX(' ','INTERPOL' ,0,IARG,1,INTERP,N1)
 C
 
       KNUME = '&&HARM75.NUM_RANG'
@@ -235,7 +236,6 @@ C
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C
- 9999 CONTINUE
       CALL JEDETC(' ','&&HARM75',1)
       CALL TITRE
 C

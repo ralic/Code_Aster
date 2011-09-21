@@ -1,7 +1,7 @@
       SUBROUTINE OP0159()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 CONCEP,NOMCMD
       COMPLEX*16   CBID
       REAL*8       RBID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -59,17 +60,17 @@ C
       CALL GETRES(XSOL,CONCEP,NOMCMD)
       CSOL19=XSOL
 
-      CALL GETVID('  ','MATR',0,1,1,MATR,NB)
+      CALL GETVID('  ','MATR',0,IARG,1,MATR,NB)
       CALL ASSERT(NB.EQ.1)
 
-      CALL GETVID('  ','CHAM_NO',0,1,1,SECMBR,NB)
+      CALL GETVID('  ','CHAM_NO',0,IARG,1,SECMBR,NB)
       CALL ASSERT(NB.EQ.1)
       CALL CHPVER('F',SECMBR,'NOEU','*',IER)
       SECM19=SECMBR
 
 
       VCINE = ' '
-      CALL GETVID('  ','CHAM_CINE',0,1,1,VCINE,NB)
+      CALL GETVID('  ','CHAM_CINE',0,IARG,1,VCINE,NB)
       IF (NB.EQ.1) CALL CHPVER('F',VCINE,'NOEU','*',IER)
       VCI19=VCINE
 

@@ -3,7 +3,7 @@
      &                  SDOBSE,LEVOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C
       INTEGER      N1
       CHARACTER*8  NOMO,RESULT
       CHARACTER*19 LISINS
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -65,7 +66,7 @@ C
       NOMO   = MODELE(1:8)
       RESULT = RESULZ(1:8)
 C
-      CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
+      CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LISINS,N1)
       IF (N1.EQ.0) THEN
         IF (.NOT.LOSTAT) THEN
           CALL U2MESS('F','DISCRETISATION_8')

@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,6 +56,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 MEMOIR
       INTEGER SEGJVX,LSEGJV,L,NCODE,IVAL,NDBG
       REAL*8 VPARJV
+      INTEGER      IARG
 C
 C     --- OPTIONS PAR DEFAUT ---
       CALL JEMARQ()
@@ -71,7 +72,7 @@ C     -- WARNING SUR LES MOTS-CLES CODE ET DEBUG
 
 C     -- DEBUG / JXVERI :
       REPONS = 'NON'
-      CALL GETVTX('DEBUG','JXVERI',1,1,1,REPONS,L)
+      CALL GETVTX('DEBUG','JXVERI',1,IARG,1,REPONS,L)
       IF (L.EQ.0) THEN
          IF ( REPONS .EQ. 'OUI') THEN
             CALL U2MESS('I','SUPERVIS_23')
@@ -82,7 +83,7 @@ C           VOIR ROUTINE EXPASS.F
 
 C     -- DEBUG / SDVERI :
       REPONS = 'NON'
-      CALL GETVTX('DEBUG','SDVERI',1,1,1,REPONS,L)
+      CALL GETVTX('DEBUG','SDVERI',1,IARG,1,REPONS,L)
       IF (L.EQ.0) THEN
         IF (NCODE.GT.0) THEN
 C          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
@@ -103,7 +104,7 @@ C          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
 C     -- DEBUG / JEVEUX :
 C     -----------------------------------------------------
       REPONS = 'NON'
-      CALL GETVTX('DEBUG','JEVEUX',1,1,1,REPONS,L)
+      CALL GETVTX('DEBUG','JEVEUX',1,IARG,1,REPONS,L)
       CALL ASSERT ( REPONS.EQ.'OUI' .OR. REPONS.EQ.'NON')
       IF ( REPONS .EQ. 'OUI') THEN
          CALL U2MESS('I','SUPERVIS_12')
@@ -114,7 +115,7 @@ C     -----------------------------------------------------
 C     -- DEBUG / ENVIMA :
 C     -----------------------------------------------------
       REPONS = 'NON'
-      CALL GETVTX('DEBUG','ENVIMA',1,1,1,REPONS,L)
+      CALL GETVTX('DEBUG','ENVIMA',1,IARG,1,REPONS,L)
       IF ( REPONS .EQ. 'TES' ) THEN
          IFI = IUNIFI ( 'RESULTAT' )
          CALL IMPVEM  ( IFI )
@@ -123,25 +124,25 @@ C     -----------------------------------------------------
 
 C     -- MESURE_TEMPS:
 C     -----------------------------------------------------
-      CALL GETVIS('MESURE_TEMPS','NIVE_DETAIL',1,1,1,MTPNIV,L)
+      CALL GETVIS('MESURE_TEMPS','NIVE_DETAIL',1,IARG,1,MTPNIV,L)
 
 
 C     -- MEMOIRE / GESTION ...  :
 C     -----------------------------------------------------
-      CALL GETVTX('MEMOIRE','GESTION',1,1,1,MEMOIR,L)
-      CALL GETVIS('MEMOIRE','TYPE_ALLOCATION',1,1,1,ISEG,L)
+      CALL GETVTX('MEMOIRE','GESTION',1,IARG,1,MEMOIR,L)
+      CALL GETVIS('MEMOIRE','TYPE_ALLOCATION',1,IARG,1,ISEG,L)
       IF (L.LE.0) ISEG = SEGJVX(-1)
-      CALL GETVIS('MEMOIRE','TAILLE',1,1,1,ITAIL,L)
+      CALL GETVIS('MEMOIRE','TAILLE',1,IARG,1,ITAIL,L)
       IF (L.LE.0) ITAIL = LSEGJV(-1)
-      CALL GETVR8('MEMOIRE','PARTITION',1,1,1,RVAL,L)
+      CALL GETVR8('MEMOIRE','PARTITION',1,IARG,1,RVAL,L)
       IF (L.LE.0) THEN
         R8BID = -1.0D0
         RVAL = VPARJV(R8BID)
       ENDIF
-      CALL GETVIS('MEMOIRE','DYNAMIQUE',1,1,1,IVAL,L)
+      CALL GETVIS('MEMOIRE','DYNAMIQUE',1,IARG,1,IVAL,L)
       CALL JEALDY ( L, IVAL )
 
-      CALL GETVR8('MEMOIRE','TAILLE_BLOC',1,1,1,TBLOC,L)
+      CALL GETVR8('MEMOIRE','TAILLE_BLOC',1,IARG,1,TBLOC,L)
 
       IF ( MEMOIR(1:8) .EQ. 'COMPACTE') THEN
          CALL U2MESS('A','SUPERVIS_25')

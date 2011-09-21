@@ -1,7 +1,7 @@
       SUBROUTINE OP0093 ()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,6 +56,7 @@ C     ------------------------------------------------------------------
      &             RAIDFA
       CHARACTER*24 VALK,MOCB,MOATTA,MOAIMP,MOAUNI,MOINTF,DDLCB,
      &             DDLMN,VEFREQ,DDLAC
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -83,8 +84,8 @@ C---------------------------------------------C
 
       CALL GETRES(RESU,CONCEP,NOMCMD)
 
-      CALL GETVID(' ','MATR_RIGI',1,1,1,RAIDE,NRA)
-      CALL GETVID(' ','MATR_MASS',1,1,1,MASSE,NMA)
+      CALL GETVID(' ','MATR_RIGI',1,IARG,1,RAIDE,NRA)
+      CALL GETVID(' ','MATR_MASS',1,IARG,1,MASSE,NMA)
 
       CALL GETFAC('PSEUDO_MODE',NBPSMO)
       IF (NBPSMO.NE.0) THEN
@@ -185,7 +186,7 @@ C-- CALCUL DES MODES D'INTERFACE
         IF (MASSFA .LT. 1) THEN
           CALL MTDSCR(MASSE)
         ENDIF
-        CALL GETVIS('MODE_INTERF','NBMOD',1,1,1,NBMODI,IBID)
+        CALL GETVIS('MODE_INTERF','NBMOD',1,IARG,1,NBMODI,IBID)
         CALL MOIN93(MASSE,RAIDE,RAIDFA,NBMODI,MOINTF,VEFREQ)
       ENDIF
 

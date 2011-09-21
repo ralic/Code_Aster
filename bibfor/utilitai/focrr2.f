@@ -6,10 +6,10 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 22/07/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,6 +64,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 VALR(2)
       COMPLEX*16 VALC1,VALC2
       LOGICAL NVERI1,NVERI2,NVERI3
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -72,10 +73,10 @@ C     ------------------------------------------------------------------
       CALL GETRES(K8B,TYPCON,NOMCMD)
       CALL GETTCO(RESU,TYPRES)
 
-      CALL GETVR8(' ','INST',1,1,0,R8B,N1)
-      CALL GETVID(' ','LIST_INST',1,1,0,K8B,N2)
-      CALL GETVR8(' ','FREQ',1,1,0,R8B,N3)
-      CALL GETVID(' ','LIST_FREQ',1,1,0,K8B,N4)
+      CALL GETVR8(' ','INST',1,IARG,0,R8B,N1)
+      CALL GETVID(' ','LIST_INST',1,IARG,0,K8B,N2)
+      CALL GETVR8(' ','FREQ',1,IARG,0,R8B,N3)
+      CALL GETVID(' ','LIST_FREQ',1,IARG,0,K8B,N4)
 
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
         NOMACC = 'FREQ'
@@ -90,9 +91,9 @@ C     ------------------------------------------------------------------
         IF (N3.NE.0) THEN
           NBINST = -N3
           CALL WKVECT('&&FOCRR2.INST','V V R',NBINST,JINST)
-          CALL GETVR8(' ','FREQ',1,1,NBINST,ZR(JINST),N3)
+          CALL GETVR8(' ','FREQ',1,IARG,NBINST,ZR(JINST),N3)
         ELSE
-          CALL GETVID(' ','LIST_FREQ',1,1,1,LISTR,N4)
+          CALL GETVID(' ','LIST_FREQ',1,IARG,1,LISTR,N4)
           CALL JEVEUO(LISTR//'.VALE','L',JINST)
           CALL JELIRA(LISTR//'.VALE','LONMAX',NBINST,K8B)
         END IF
@@ -109,9 +110,9 @@ C     ------------------------------------------------------------------
         IF (N1.NE.0) THEN
           NBINST = -N1
           CALL WKVECT('&&FOCRR2.INST','V V R',NBINST,JINST)
-          CALL GETVR8(' ','INST',1,1,NBINST,ZR(JINST),N1)
+          CALL GETVR8(' ','INST',1,IARG,NBINST,ZR(JINST),N1)
         ELSE
-          CALL GETVID(' ','LIST_INST',1,1,1,LISTR,N2)
+          CALL GETVID(' ','LIST_INST',1,IARG,1,LISTR,N2)
           CALL JEVEUO(LISTR//'.VALE','L',JINST)
           CALL JELIRA(LISTR//'.VALE','LONMAX',NBINST,K8B)
         END IF

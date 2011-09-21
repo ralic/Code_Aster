@@ -6,7 +6,7 @@
       CHARACTER*(*) LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 CARTE,LIGREL
       CHARACTER*24 LCHIN(2),LCHOUT(2),MESMAI,MESMAP,VALE
       CHARACTER*24 VALK(4)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -137,9 +138,9 @@ C        POUR APPLIQUER LA PRESSION
 C ------ CALCUL DE L'EFFET DE FOND POUR CHAQUE OCCURENCE
 
         IF (FONREE.EQ.'REEL') THEN
-          CALL GETVR8(MOTCLF,'PRES',IOCC,1,1,PINT,NPR)
+          CALL GETVR8(MOTCLF,'PRES',IOCC,IARG,1,PINT,NPR)
         ELSE
-          CALL GETVID(MOTCLF,'PRES',IOCC,1,1,FPINT,NPR)
+          CALL GETVID(MOTCLF,'PRES',IOCC,IARG,1,FPINT,NPR)
         ENDIF
 
 C ------ BORD DU TROU : CALCUL DE L'AIRE

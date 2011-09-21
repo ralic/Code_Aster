@@ -6,7 +6,7 @@
       REAL*8       EPAIS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       NX,NY,NZ,NT(3),EPS2,SINVEC,COSVEC
       REAL*8       N4N2(3),N4N3(3),NQ(3),NORME,R8RDDG,ANGL
       LOGICAL LOGIC
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -534,7 +535,7 @@ C  -------------------------------------------------------------
   112     CONTINUE
   110   CONTINUE
 C
-        CALL GETVTX('COQU_VOLU','NOM',1,1,1,NOMG,N1)
+        CALL GETVTX('COQU_VOLU','NOM',1,IARG,1,NOMG,N1)
         CALL JEEXIN(JEXNOM(GRPMAI,NOMG),IRET)
         IF (IRET.EQ.0) THEN
           CALL JECROC(JEXNOM(GRPMAI,NOMG))

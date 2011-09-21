@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN, NOMSST
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,6 @@ C
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
 C
       CHARACTER*32 JEXNUM,JEXNOM
 C
@@ -67,6 +66,7 @@ C
       CHARACTER*24 CREFE(2),CHAMOL,CHAMBA
       CHARACTER*24 VALK(2),SELIAI,SIZLIA,SST
       COMPLEX*16   CBID
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
@@ -200,7 +200,7 @@ C
       
       CALL GETRES(KBID,TYPRES,QUAMOD)
       IF (QUAMOD .NE. 'CALC_CORR_SSD') THEN
-        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,0, IBID, NNO )
+        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,IARG,0, IBID, NNO )
       ELSE
 C-- SI ON APPELLE DEPUIS QUAL_MODL, ON RESTITUE TOUS LES MODES
         NNO=0
@@ -209,7 +209,7 @@ C-- SI ON APPELLE DEPUIS QUAL_MODL, ON RESTITUE TOUS LES MODES
       IF ( NNO .NE. 0 ) THEN
         NBMOD = -NNO
         CALL WKVECT ( '&&REGEEC.NUME', 'V V I', NBMOD, JBID )
-        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,NBMOD, ZI(JBID), NNO )
+        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,IARG,NBMOD, ZI(JBID), NNO )
       ELSE
         CALL WKVECT ( '&&REGEEC.NUME', 'V V I', NBMOD, JBID )
         DO 2 I = 1 , NBMOD

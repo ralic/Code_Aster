@@ -11,7 +11,7 @@ C
      &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,6 +84,7 @@ C
       CHARACTER*24 NOLILI, NCONEC, NCNCIN, VALK(2)
       CHARACTER*80 TITMAI
       LOGICAL      LMASU
+      INTEGER      IARG
 C
       CALL JEMARQ ( )
       CHAME  = CHAMEL(1:19)
@@ -258,7 +259,7 @@ C ---------------------------------------------------------------------
            ENDIF
          ENDIF
          CALL JEVEUO(NOMMA//'.TYPMAIL','L',JTYPM)
-         CALL GETVIS ( ' ', 'VERSION', 0,1,1, VERSIO, IRET )
+         CALL GETVIS ( ' ', 'VERSION', 0,IARG,1, VERSIO, IRET )
          CALL JEEXIN('&IRCHML.PERMUTA',IRET)
          IF (IRET.EQ.0) CALL IRADHS(VERSIO)
          CALL JEVEUO('&&IRADHS.PERMUTA','L',JPERM)

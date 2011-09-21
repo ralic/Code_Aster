@@ -4,9 +4,9 @@
       CHARACTER*(*)       MATER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -31,11 +31,12 @@ C OUT : IER    : CODE RETOUR
 C-----------------------------------------------------------------------
       CHARACTER*24 LOI, MATE, TYPE
       CHARACTER*24 VALK(3)
+      INTEGER      IARG
 C
       IER = 0
       MATE = MATER
-      CALL GETVTX(' ','LOI_USURE' ,1,1,1,LOI ,N1)
-      CALL GETVTX(' ','CONTACT'   ,1,1,1,TYPE,N2)
+      CALL GETVTX(' ','LOI_USURE' ,1,IARG,1,LOI ,N1)
+      CALL GETVTX(' ','CONTACT'   ,1,IARG,1,TYPE,N2)
 C
 C **********************************************************************
 C                 M O D E L E     A R C H A R D

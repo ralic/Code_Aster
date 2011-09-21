@@ -11,7 +11,7 @@
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C
       CHARACTER*8  NAMDDL
       CHARACTER*19 MATPRE,MATASS
       CHARACTER*24 NMAT(3),NMATRA
+      INTEGER      IARG
 
 C     ------------------------------------------------------------------
       DATA NAMDDL/'        '/
@@ -78,7 +79,7 @@ C
       FSHIFT = R8DEPI()*FMIN
       ASHIFT = 0.D0
 C
-      CALL GETVR8('CALC_FREQ','AMOR_REDUIT',1,1,1,ASHIFT,IBID)
+      CALL GETVR8('CALC_FREQ','AMOR_REDUIT',1,IARG,1,ASHIFT,IBID)
 C
       IF (ABS(ASHIFT).GE.1.D0) THEN
          ASHIFT = 0.95D0

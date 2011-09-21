@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -46,14 +46,15 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMCMD,CONCEP
       INTEGER I,J,NDIM,NBVALE,NV,JVAL,JBOR,NBOCC,JNBP,N1,NBVAL
       INTEGER KVAL,ICO,NP,JPAS,IOCC
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
       NBVAL = 1
 C
       CALL GETRES(RESU,CONCEP,NOMCMD)
-      CALL GETVIS(' ','VALE',0,1,0,IBID,NV)
-      CALL GETVIS(' ','DEBUT',0,1,1,IDEBUT,N1)
+      CALL GETVIS(' ','VALE',0,IARG,0,IBID,NV)
+      CALL GETVIS(' ','DEBUT',0,IARG,1,IDEBUT,N1)
       CALL GETFAC('INTERVALLE',NBOCC)
 C
       IF (NV.NE.0) THEN
@@ -62,16 +63,17 @@ C
         CALL WKVECT('&&DLIDEF.BORNE','V V I',NBOCC+1,JBOR)
         ZI(JBOR) = IDEBUT
         DO 10 IOCC = 1,NBOCC
-          CALL GETVIS('INTERVALLE','JUSQU_A',IOCC,1,1,ZI(JBOR+IOCC),N1)
+          CALL GETVIS('INTERVALLE','JUSQU_A',IOCC,IARG,1,
+     &                ZI(JBOR+IOCC),N1)
           III = ZI(JBOR+IOCC) - ZI(JBOR-1+IOCC)
           IF (III.LE.0) THEN
             VALI(1) = ZI(JBOR+IOCC-1)
             VALI(2) = ZI(JBOR+IOCC)
             CALL U2MESG('F','ALGORITH13_78',0,' ',2,VALI,0,0.D0)
           ENDIF
-          CALL GETVIS('INTERVALLE','PAS',IOCC,1,0,IBID,NP)
+          CALL GETVIS('INTERVALLE','PAS',IOCC,IARG,0,IBID,NP)
           IF (NP.NE.0) THEN
-            CALL GETVIS('INTERVALLE','PAS',IOCC,1,1,JPAS,N1)
+            CALL GETVIS('INTERVALLE','PAS',IOCC,IARG,1,JPAS,N1)
             JNBP = INT(III/JPAS)
             IREST = III - JNBP*JPAS
             IF (IREST.NE.0) THEN
@@ -81,7 +83,7 @@ C
             ENDIF
 
           ELSE
-            CALL GETVIS('INTERVALLE','NOMBRE',IOCC,1,1,JNBP,N1)
+            CALL GETVIS('INTERVALLE','NOMBRE',IOCC,IARG,1,JNBP,N1)
             IF (JNBP.GT.0) THEN
               IPDT = INT(III/JNBP)
               IREST = III - JNBP*IPDT
@@ -104,7 +106,7 @@ C
         CALL WKVECT(RESU//'           .BINT','G V I',NBVALE,JBOR)
         CALL WKVECT(RESU//'           .VALE','G V I',NBVALE,JVAL)
         CALL WKVECT('&&DLIDEF.VALE','V V I',NBVALE,KVAL)
-        CALL GETVIS(' ','VALE',0,1,NBVALE,ZI(KVAL),NV)
+        CALL GETVIS(' ','VALE',0,IARG,NBVALE,ZI(KVAL),NV)
         DO 20 I = 1,NBVALE - 1
           IF (ZI(KVAL+I-1).GE.ZI(KVAL+I)) THEN
             VALI(1) = ZI(KVAL+I-1)
@@ -127,15 +129,18 @@ C
 C
         ZI(JBOR) = IDEBUT
         DO 30 IOCC = 1,NBOCC
-          CALL GETVIS('INTERVALLE','JUSQU_A',IOCC,1,1,ZI(JBOR+IOCC),N1)
+          CALL GETVIS('INTERVALLE','JUSQU_A',IOCC,IARG,1,
+     &                ZI(JBOR+IOCC),N1)
           III = ZI(JBOR+IOCC) - ZI(JBOR-1+IOCC)
-          CALL GETVIS('INTERVALLE','PAS',IOCC,1,0,IBID,NP)
+          CALL GETVIS('INTERVALLE','PAS',IOCC,IARG,0,IBID,NP)
           IF (NP.NE.0) THEN
-            CALL GETVIS('INTERVALLE','PAS',IOCC,1,1,ZI(JPAS+IOCC-1),N1)
+            CALL GETVIS('INTERVALLE','PAS',IOCC,IARG,1,
+     &                  ZI(JPAS+IOCC-1),N1)
             ZI(JNBP+IOCC-1) = III/ZI(JPAS+IOCC-1)
 
           ELSE
-            CALL GETVIS('INTERVALLE','NOMBRE',IOCC,1,1,ZI(JNBP+IOCC-1),
+            CALL GETVIS('INTERVALLE','NOMBRE',IOCC,IARG,1,
+     &                  ZI(JNBP+IOCC-1),
      &                  N1)
             ZI(JPAS+IOCC-1) = III/ZI(JNBP+IOCC-1)
           ENDIF

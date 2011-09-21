@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 LISMA
       CHARACTER*24 VALK(2)
       CHARACTER*132 CARD
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -71,27 +72,29 @@ C     -----------------------------------
       CALL WKVECT('&&SSCGMA.LII2','V V I',NBIS,IALII2)
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMAT,KBID,IERD)
 
-      CALL GETVTX(' ','ALARME',1,1,1,ALARM,NALAR)
+      CALL GETVTX(' ','ALARME',1,IARG,1,ALARM,NALAR)
 
       NBGNAJ = 0
       DO 210,IOCC = 1,NBGMP
 
-        CALL GETVTX('CREA_GROUP_MA','NOM',IOCC,1,1,NOGMA,N1)
+        CALL GETVTX('CREA_GROUP_MA','NOM',IOCC,IARG,1,NOGMA,N1)
 
         CALL JENONU(JEXNOM(MA//'.GROUPEMA',NOGMA),IBID)
         IF (IBID.GT.0) THEN
             CALL U2MESK('F','ALGELINE3_7',1,NOGMA)
         ENDIF
 
-        CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,1,0,KBID,
+        CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,IARG,0,
+     &              KBID,
      &              N2)
-        CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,1,0,KBID,N3)
-        CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,1,0,KBID,N4)
-        CALL GETVTX('CREA_GROUP_MA','DIFFE   ',IOCC,1,0,KBID,N5)
-        CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_MA','GROUP_MA',IOCC,1,0,
+        CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,IARG,0,KBID,N3)
+        CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,IARG,0,KBID,N4)
+        CALL GETVTX('CREA_GROUP_MA','DIFFE   ',IOCC,IARG,0,KBID,N5)
+        CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_MA','GROUP_MA',IOCC,IARG,
+     &              0,
      &              KBID,N6)
-        CALL GETVTX('CREA_GROUP_MA','OPTION',IOCC,1,0,OPTION,N7)
-        CALL GETVTX('CREA_GROUP_MA','TOUT',IOCC,1,0,TOUT,N8)
+        CALL GETVTX('CREA_GROUP_MA','OPTION',IOCC,IARG,0,OPTION,N7)
+        CALL GETVTX('CREA_GROUP_MA','TOUT',IOCC,IARG,0,TOUT,N8)
         N2 = -N2
         N3 = -N3
         N4 = -N4
@@ -117,7 +120,7 @@ C       -- MOT CLEF MAILLE:
 C       -------------------
         IF (N2.GT.0) THEN
           CALL WKVECT('&&SSCGMA.L_MAILLE','V V K8',N2,ILMAK8)
-          CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,1,N2,
+          CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,IARG,N2,
      &                ZK8(ILMAK8),N1)
           CALL WKVECT('&&SSCGMA.MAILLE','V V I',N2,JMAIL)
           CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMAT,KBID,IERD)
@@ -157,18 +160,20 @@ C       -------------------
 C       -- MOT CLEF GROUP_MA:
 C       ---------------------
         IF (N6.GT.0) THEN
-          CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_MA','GROUP_MA',IOCC,1,1,
+          CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_MA','GROUP_MA',IOCC,
+     &                IARG,1,
      &                NOGMA2,NBID)
-          CALL GETVTX('CREA_GROUP_MA','POSITION',IOCC,1,0,KPOS,N6B)
+          CALL GETVTX('CREA_GROUP_MA','POSITION',IOCC,IARG,0,KPOS,N6B)
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',NOGMA2),IGM2)
           CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
           IND1 = 0
           IND2 = 0
           IF (N6B.EQ.0) THEN
-            CALL GETVIS('CREA_GROUP_MA','NUME_INIT',IOCC,1,1,IND1,N6A)
+            CALL GETVIS('CREA_GROUP_MA','NUME_INIT',IOCC,IARG,1,
+     &                  IND1,N6A)
             IF (N6A.EQ.0) IND1 = 1
-            CALL GETVIS('CREA_GROUP_MA','NUME_FIN',IOCC,1,1,IND2,N6A)
+            CALL GETVIS('CREA_GROUP_MA','NUME_FIN',IOCC,IARG,1,IND2,N6A)
             IF (N6A.EQ.0) IND2 = ILI2
             IF (IND2.LT.IND1) CALL U2MESS('F','SOUSTRUC_33')
             IF (ILI2.LT.IND2) CALL U2MESS('F','SOUSTRUC_34')
@@ -185,7 +190,7 @@ C       ---------------------
    40       CONTINUE
             GO TO 219
           END IF
-          CALL GETVTX('CREA_GROUP_MA','POSITION',IOCC,1,1,KPOS,N6B)
+          CALL GETVTX('CREA_GROUP_MA','POSITION',IOCC,IARG,1,KPOS,N6B)
           IF (KPOS.EQ.'INIT') THEN
             ZI(JLISMA) = ZI(IAGM2)
           ELSE IF (KPOS.EQ.'FIN') THEN
@@ -202,7 +207,8 @@ C       ---------------------
 C       -- MOT CLEF INTER:
 C       -------------------
         IF (N3.GT.0) THEN
-          CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,1,N3,ZK8(IALIK8),
+          CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,IARG,N3,
+     &                ZK8(IALIK8),
      &                NBID)
           DO 50,IGM = 1,N3
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
@@ -255,7 +261,7 @@ C       -------------------
 C       -- MOT CLEF UNION:
 C       -------------------
         IF (N4.GT.0) THEN
-          CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,1,N4,ZK8(IALIK8),
+          CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,IARG,N4,ZK8(IALIK8),
      &                NBID)
           DO 100,IGM = 1,N4
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
@@ -318,7 +324,7 @@ C       -------------------
 C       -- MOT CLEF DIFFE:
 C       -------------------
         IF (N5.GT.0) THEN
-          CALL GETVTX('CREA_GROUP_MA','DIFFE',IOCC,1,N5,ZK8(IALIK8),
+          CALL GETVTX('CREA_GROUP_MA','DIFFE',IOCC,IARG,N5,ZK8(IALIK8),
      &                NBID)
           DO 150,IGM = 1,N5
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
@@ -372,7 +378,7 @@ C       -- MOT CLEF OPTION:
 C       -------------------
         IF (N7.GT.0) THEN
 
-          CALL GETVTX('CREA_GROUP_MA','OPTION',IOCC,1,1,OPTION,NB)
+          CALL GETVTX('CREA_GROUP_MA','OPTION',IOCC,IARG,1,OPTION,NB)
 
 C            -- TRAITEMENT DE L'OPTION FACE_NORMALE :
 C               -----------------------------------
@@ -418,7 +424,7 @@ C       -----------------------------------
   219   CONTINUE
 
         IF (NBMA.GT.0) THEN
-          CALL GETVTX('CREA_GROUP_MA','TYPE_MAILLE',IOCC,1,1,
+          CALL GETVTX('CREA_GROUP_MA','TYPE_MAILLE',IOCC,IARG,1,
      &                TYMA,NTYP)
           IF(TYMA(1:4).NE.'TOUT')THEN
              CALL CGMFTM(TYMA,MA,LISMA,NBMA,IERR)

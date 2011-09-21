@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 CHAMP
       CHARACTER*24 VALK(2)
       COMPLEX*16   CREP,CBID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -62,18 +63,18 @@ C
       INTERP(2) = 'NON '
       INTRES    = 'NON '
 C
-      CALL GETVTX ( ' ', 'CRITERE'     ,1,1,1, CRIT  , N1 )
-      CALL GETVR8 ( ' ', 'PRECISION'   ,1,1,1, EPSI  , N1 )
-      CALL GETVTX ( ' ', 'INTERP_NUME' ,1,1,1, INTRES, N1 )
-      CALL GETVTX ( ' ', 'INTERPOL'    ,1,1,2, INTERP, N1 )
+      CALL GETVTX ( ' ', 'CRITERE'     ,1,IARG,1, CRIT  , N1 )
+      CALL GETVR8 ( ' ', 'PRECISION'   ,1,IARG,1, EPSI  , N1 )
+      CALL GETVTX ( ' ', 'INTERP_NUME' ,1,IARG,1, INTRES, N1 )
+      CALL GETVTX ( ' ', 'INTERPOL'    ,1,IARG,2, INTERP, N1 )
       IF ( N1 .EQ. 1 ) INTERP(2) = INTERP(1)
 C
       NOEUD = ' '
       CMP   = ' '
-      CALL GETVTX ( ' ', 'NOM_CMP',  1,1,1, CMP,    N1  )
-      CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,1, NOMCHA, N2  )
-      CALL GETVTX ( ' ', 'NOEUD',    1,1,1, NOEUD,  N3  )
-      CALL GETVTX ( ' ', 'GROUP_NO', 1,1,1, NOGNO,  NGN )
+      CALL GETVTX ( ' ', 'NOM_CMP',  1,IARG,1, CMP,    N1  )
+      CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,1, NOMCHA, N2  )
+      CALL GETVTX ( ' ', 'NOEUD',    1,IARG,1, NOEUD,  N3  )
+      CALL GETVTX ( ' ', 'GROUP_NO', 1,IARG,1, NOGNO,  NGN )
 C
       KNUME = '&&RFHGE2.NUME_ORDR'
       KINST = '&&RFHGE2.FREQUENCE'

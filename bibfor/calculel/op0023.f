@@ -1,7 +1,7 @@
       SUBROUTINE OP0023()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,9 +33,10 @@ C ----------------------------------------------------------------------
       LOGICAL       ULEXIS
       CHARACTER*8   REPONS
       CHARACTER*16  NOMFI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C     TEST DU MECANISME DE NAN
-      CALL GETVTX(' ','TEST_NAN',1,1,1,REPONS,N)
+      CALL GETVTX(' ','TEST_NAN',1,IARG,1,REPONS,N)
       IF ( REPONS .EQ. 'OUI' ) THEN
          TSTNAN = R8NNEM ( )
          RESNAN = TSTNAN*1.D0

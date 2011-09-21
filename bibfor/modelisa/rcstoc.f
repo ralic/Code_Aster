@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C
       INTEGER            JTYPO,JNOMO,IBK,NBMAX,VALI,LXLGUT
       INTEGER            I,K,II,JFCT,JRPV,JVALE,NBCOUP,N
       INTEGER            IRET,NBFCT,NBPTS,JPROL,NBPTM,LPRO1,LPRO2
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -116,7 +117,7 @@ C
       DO 50  I = 1 , NBOBJ
        IF(ZK8(JTYPO+I-1)(1:2) .EQ. 'TX'  .AND.
      & (NOMRC .EQ. 'ELAS_META' .OR. NOMRC .EQ. 'ELAS_META_FO'))THEN
-            CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,1,1, VALTX, N )
+            CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,IARG,1, VALTX, N )
             IF ( N .EQ. 1 ) THEN
                IF ( ZK16(JNOMO+I-1).EQ.'PHASE_REFE'  .AND.
      &                        VALTX.EQ.'CHAU'        ) THEN
@@ -133,7 +134,7 @@ C
          ENDIF
          IF ( ZK8(JTYPO+I-1)(1:2) .EQ. 'TX'  .AND.
      &        NOMRC .EQ. 'BETON_DOUBLE_DP' ) THEN
-            CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,1,1, VALTX, N )
+            CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,IARG,1, VALTX, N )
             IF ( N .EQ. 1 ) THEN
                IF ( ZK16(JNOMO+I-1).EQ.'ECRO_COMP_P_PIC'
      &            .OR. ZK16(JNOMO+I-1).EQ.'ECRO_TRAC_P_PIC') THEN
@@ -153,7 +154,7 @@ C --- 1- ON TRAITE LES REELS
 C
       DO 100 I = 1 , NBOBJ
          IF ( ZK8(JTYPO+I-1)(1:3) .EQ. 'R8 ' ) THEN
-            CALL GETVR8 ( NOMRC, ZK16(JNOMO+I-1), 1,1,1, VALR8, N )
+            CALL GETVR8 ( NOMRC, ZK16(JNOMO+I-1), 1,IARG,1, VALR8, N )
             IF ( N .EQ. 1 ) THEN
                NBR = NBR + 1
                VALR(NBR) = VALR8
@@ -167,7 +168,7 @@ C --- 2- ON TRAITE LES COMPLEXES
 C
       DO 115 I=1,NBOBJ
          IF ( ZK8(JTYPO+I-1)(1:3) .EQ. 'C8 ' ) THEN
-            CALL GETVC8 ( NOMRC, ZK16(JNOMO+I-1), 1,1,1, VALC8, N )
+            CALL GETVC8 ( NOMRC, ZK16(JNOMO+I-1), 1,IARG,1, VALC8, N )
             IF ( N .EQ. 1 ) THEN
                NBC = NBC + 1
                VALC(NBR+NBC) = VALC8
@@ -181,7 +182,7 @@ C --- 3- ON TRAITE ENSUITE LES CONCEPTS
 C
       DO 110 I = 1 , NBOBJ
          IF ( ZK8(JTYPO+I-1)(1:3) .EQ. 'CO ' )THEN
-            CALL GETVID ( NOMRC, ZK16(JNOMO+I-1), 1,1,1, VALCH, N )
+            CALL GETVID ( NOMRC, ZK16(JNOMO+I-1), 1,IARG,1, VALCH, N )
             IF ( N .EQ. 1 ) THEN
                NBK = NBK + 1
                IF ( ZK16(JNOMO+I-1) .EQ. 'PROF_RHO_F_INT' ) THEN
@@ -200,7 +201,7 @@ C
       IBK = 0
       DO 120 I = 1 , NBOBJ
          IF ( ZK8(JTYPO+I-1)(1:3) .EQ. 'CO ' ) THEN
-            CALL GETVID (NOMRC,ZK16(JNOMO+I-1),1,1,1,VALCH,N)
+            CALL GETVID (NOMRC,ZK16(JNOMO+I-1),1,IARG,1,VALCH,N)
             IF ( N .EQ. 1 ) THEN
                CALL GETTCO ( VALCH, TYPECO )
                IBK = IBK + 1
@@ -413,7 +414,7 @@ C --- 7 VERIFICATION DES NOMS DES PARAMETRES DES TABLES
       IF ( NOMRC(1:10) .EQ. 'META_ACIER')THEN
        DO 720 I=1,NBK
           IF (VALK(NBR+NBC+I)(1:3) .EQ. 'TRC') THEN
-             CALL GETVID(NOMRC,'TRC',1,1,1,TABLE,N)
+             CALL GETVID(NOMRC,'TRC',1,IARG,1,TABLE,N)
              CALL TBEXP2(TABLE,'VITESSE')
              CALL TBEXP2(TABLE,'PARA_EQ')
              CALL TBEXP2(TABLE,'COEF_0')

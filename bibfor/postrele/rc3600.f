@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -51,6 +51,7 @@ C
      +             MOTCLS(2), TYPMCS(2), NOMGD
       CHARACTER*16 NOMCMD, CONCEP, MOTCLF, NOCMP(5)
       CHARACTER*24 MESMAI, NCNCIN, CHINDI, CHCARA, CHRESU
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -61,9 +62,9 @@ C
 C     ------------------------------------------------------------------
 C               LE MATERIAU , MODELE , CARA_ELEM
 C     ------------------------------------------------------------------
-      CALL GETVID ( ' ', 'CHAM_MATER', 1,1,1, NOMMAT, N1 )
-      CALL GETVID ( ' ', 'MODELE'    , 1,1,1, MODELE, N1 )
-      CALL GETVID ( ' ', 'CARA_ELEM' , 1,1,1, CARAEL, N1 )
+      CALL GETVID ( ' ', 'CHAM_MATER', 1,IARG,1, NOMMAT, N1 )
+      CALL GETVID ( ' ', 'MODELE'    , 1,IARG,1, MODELE, N1 )
+      CALL GETVID ( ' ', 'CARA_ELEM' , 1,IARG,1, CARAEL, N1 )
 C
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IERD)
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMAT,K8B,IERD)
@@ -80,7 +81,7 @@ C
       TYPMCS(1) = 'GROUP_MA'
       TYPMCS(2) = 'MAILLE'      
 C
-      CALL GETVTX ( MOTCLF, 'TOUT', 1, 1, 1, K8B, NBTOU )
+      CALL GETVTX ( MOTCLF, 'TOUT', 1,IARG, 1, K8B, NBTOU )
       IF ( NBTOU .NE. 0 ) THEN
          NBMA = NBMAT
          CALL WKVECT ( MESMAI, 'V V I' , NBMA, JMA )

@@ -5,7 +5,7 @@ C
       CHARACTER*8  ORIDEF
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C ======================================================================
       INTEGER       I, IBID, NBVAL1, NBVAL2
       CHARACTER*8   MOTFAC, K8B,TABREV,TABMDB,TABTHR
       CHARACTER*19  TBINS1, TBINS2
+      INTEGER      IARG
 C ======================================================================
       CALL JEMARQ()
 C ======================================================================
@@ -46,9 +47,9 @@ C ======================================================================
 C ======================================================================
 C --- CAS DE LA PREMIERE OCCURENCE DE K1D ------------------------------
 C ======================================================================
-      CALL GETVID ( MOTFAC , 'TABL_MECA_REV', 1,1,1, TABREV , IBID )
-      CALL GETVID ( MOTFAC , 'TABL_MECA_MDB', 1,1,1, TABMDB , IBID )
-      CALL GETVID ( MOTFAC , 'TABL_THER'    , 1,1,1, TABTHR , IBID )
+      CALL GETVID ( MOTFAC , 'TABL_MECA_REV', 1,IARG,1, TABREV , IBID )
+      CALL GETVID ( MOTFAC , 'TABL_MECA_MDB', 1,IARG,1, TABMDB , IBID )
+      CALL GETVID ( MOTFAC , 'TABL_THER'    , 1,IARG,1, TABTHR , IBID )
 C ======================================================================
 C --- VERIFICATION DE LA PRESENCE DE LISTE D'INSTANT -------------------
 C ======================================================================
@@ -85,9 +86,12 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 C ======================================================================
-         CALL GETVID ( MOTFAC , 'TABL_MECA_REV', I,1,1, TABREV , IBID )
-         CALL GETVID ( MOTFAC , 'TABL_MECA_MDB', I,1,1, TABMDB , IBID )
-         CALL GETVID ( MOTFAC , 'TABL_THER'    , I,1,1, TABTHR , IBID )
+         CALL GETVID (MOTFAC,'TABL_MECA_REV',I,IARG,1,
+     &                TABREV , IBID )
+         CALL GETVID (MOTFAC,'TABL_MECA_MDB',I,IARG,1,
+     &                TABMDB , IBID )
+         CALL GETVID (MOTFAC,'TABL_THER',I,IARG,1,
+     &                TABTHR , IBID )
 C ======================================================================
 C --- VERIFICATION DE LA PRESENCE DE LISTE D'INSTANT -------------------
 C ======================================================================
@@ -129,9 +133,12 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 C ======================================================================
-         CALL GETVID ( MOTFAC , 'TABL_MECA_REV', I,1,1, TABREV , IBID )
-         CALL GETVID ( MOTFAC , 'TABL_MECA_MDB', I,1,1, TABMDB , IBID )
-         CALL GETVID ( MOTFAC , 'TABL_THER'    , I,1,1, TABTHR , IBID )
+         CALL GETVID (MOTFAC,'TABL_MECA_REV',I,IARG,1,
+     &                TABREV , IBID )
+         CALL GETVID (MOTFAC,'TABL_MECA_MDB',I,IARG,1,
+     &                TABMDB , IBID )
+         CALL GETVID (MOTFAC,'TABL_THER',I,IARG,1,
+     &                TABTHR , IBID )
          IF (NDIM.EQ.2) THEN
 C ======================================================================
 C --- CAS D'UNE DIMENSION D'ORDRE 2 ------------------------------------

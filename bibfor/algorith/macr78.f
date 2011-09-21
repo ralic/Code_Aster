@@ -4,7 +4,7 @@
       CHARACTER*16  TYPRES
       CHARACTER*19  TRANGE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24  CHAMNO, NOMCHA, NUMEDD, NPRNO
 C      CHARACTER*3  TREDU
       LOGICAL      LREDU
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA NOMCMP   /'DX      ','DY      ','DZ      ',
      &               'DRX     ','DRY     ','DRZ     '/
@@ -67,9 +68,9 @@ C     ---                PORTE LA RESTITUTION                 ---
 C      TOUSNO = .TRUE.
 C
       LREDU = .FALSE.
-C      CALL GETVTX ( ' ', 'REDUC' , 1,1,1, TREDU, N2 )
+C      CALL GETVTX ( ' ', 'REDUC' , 1,IARG,1, TREDU, N2 )
 C      IF (TREDU.EQ.'OUI') LREDU = .TRUE.
-      CALL GETVID (' ','MACR_ELEM_DYNA',1,1,1,MACREL,NMC)
+      CALL GETVID (' ','MACR_ELEM_DYNA',1,IARG,1,MACREL,NMC)
       CALL JEVEUO(MACREL//'.MAEL_REFE','L',IADREF)
       BASEMO = ZK24(IADREF)
       CALL RSORAC(BASEMO,'LONUTI',IBID,RBID,K8B,CBID,RBID,
@@ -147,7 +148,7 @@ C         WRITE(6,*) 'I NUME ',I,ZI(IACONX+I-1)
             ZK8(JNOCMP+2*NEC*(I-1)+2*J-1) = NOMCMP(J)
   22     CONTINUE
   21  CONTINUE
-C        CALL GETVID(' ','NUME_DDL',1,1,1,K8B,IBID)
+C        CALL GETVID(' ','NUME_DDL',1,IARG,1,K8B,IBID)
 C        IF (IBID.NE.0) THEN
 C          CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
 C          NUMEDD = NUMEDD(1:14)//'.NUME'
@@ -156,17 +157,17 @@ C        ENDIF
       CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
       CALL WKVECT('&&MACR78.BASE','V V R',NBMODE*NEQ,IDBASE)
       CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
-      CALL GETVTX(' ','TOUT_CHAM',1,1,0,K8B,N0)
+      CALL GETVTX(' ','TOUT_CHAM',1,IARG,0,K8B,N0)
       IF (N0.NE.0) THEN
          NBCHAM = 3
          CHAMP(1) = 'DEPL'
          CHAMP(2) = 'VITE'
          CHAMP(3) = 'ACCE'
       ELSE
-         CALL GETVTX(' ','NOM_CHAM',1,1,0,CHAMP,N1)
+         CALL GETVTX(' ','NOM_CHAM',1,IARG,0,CHAMP,N1)
          IF (N1.NE.0) THEN
             NBCHAM = -N1
-            CALL GETVTX(' ','NOM_CHAM',1,1,NBCHAM,CHAMP,N1)
+            CALL GETVTX(' ','NOM_CHAM',1,IARG,NBCHAM,CHAMP,N1)
          ELSE
             CALL U2MESS('A','ALGORITH10_93')
             GOTO 9999

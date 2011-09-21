@@ -3,7 +3,7 @@
       IMPLICIT REAL*8  (A-H,O-Z)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       INTEGER       NBSEL,IDSEL,N15,N16,SEL,II
       INTEGER VALI
       CHARACTER*20  TEMPOR
+      INTEGER      IARG
 C
 C -----------------------------------------------------------------
 C-----------------------------------------------------------------
@@ -151,11 +152,11 @@ C RECUPERATION DES NOMS DE MAILLAGES
 
 C RECUPERATION DES MODES SELECTIONNES
 
-      CALL GETVIS(' ','NUME_MODE_MECA',0,1,0,SEL,N15)
+      CALL GETVIS(' ','NUME_MODE_MECA',0,IARG,0,SEL,N15)
       NBSEL=-1*N15
       IF(NBSEL.GT.0) THEN
         CALL WKVECT(TEMPOR,'V V I',NBSEL,IDSEL)
-        CALL GETVIS(' ','NUME_MODE_MECA',0,1,NBSEL,ZI(IDSEL),N16)
+        CALL GETVIS(' ','NUME_MODE_MECA',0,IARG,NBSEL,ZI(IDSEL),N16)
       ENDIF
 
 C VERIFICATION QUE LES NUMEROS DES MODES DONNES PAR L'USER

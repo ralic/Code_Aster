@@ -6,7 +6,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19  CART1, CART2
       CHARACTER*24  PARA, MESMAI
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
 C     VERIFICATION DE L'EXCLUSION :   / FLUN FLUN_INF FLUN_SUP
@@ -81,18 +82,18 @@ C
       DO 1, IOCC = 1, NFLUX
          N5 = 0
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8(MOTCLF,'FLUN'        ,IOCC,1,0,R8B,N11)
-            CALL GETVR8(MOTCLF,'FLUN_INF'    ,IOCC,1,0,R8B,N2 )
-            CALL GETVR8(MOTCLF,'FLUN_SUP'    ,IOCC,1,0,R8B,N3 )
-            CALL GETVID(MOTCLF,'CARA_TORSION',IOCC,1,0,K8B,N12)
+            CALL GETVR8(MOTCLF,'FLUN'        ,IOCC,IARG,0,R8B,N11)
+            CALL GETVR8(MOTCLF,'FLUN_INF'    ,IOCC,IARG,0,R8B,N2 )
+            CALL GETVR8(MOTCLF,'FLUN_SUP'    ,IOCC,IARG,0,R8B,N3 )
+            CALL GETVID(MOTCLF,'CARA_TORSION',IOCC,IARG,0,K8B,N12)
             N1 = N11 + N12
          ELSE IF (FONREE.EQ.'FONC') THEN
-            CALL GETVID(MOTCLF,'FLUN'    ,IOCC,1,0,K8B,N1)
-            CALL GETVID(MOTCLF,'FLUN_INF',IOCC,1,0,K8B,N2)
-            CALL GETVID(MOTCLF,'FLUN_SUP',IOCC,1,0,K8B,N3)
-            CALL GETVID(MOTCLF,'FLUX_X'  ,IOCC,1,0,K8B,N6)
-            CALL GETVID(MOTCLF,'FLUX_Y'  ,IOCC,1,0,K8B,N7)
-            CALL GETVID(MOTCLF,'FLUX_Z'  ,IOCC,1,0,K8B,N8)
+            CALL GETVID(MOTCLF,'FLUN'    ,IOCC,IARG,0,K8B,N1)
+            CALL GETVID(MOTCLF,'FLUN_INF',IOCC,IARG,0,K8B,N2)
+            CALL GETVID(MOTCLF,'FLUN_SUP',IOCC,IARG,0,K8B,N3)
+            CALL GETVID(MOTCLF,'FLUX_X'  ,IOCC,IARG,0,K8B,N6)
+            CALL GETVID(MOTCLF,'FLUX_Y'  ,IOCC,IARG,0,K8B,N7)
+            CALL GETVID(MOTCLF,'FLUX_Z'  ,IOCC,IARG,0,K8B,N8)
             N5 = N6+N7+N8
          ELSE
             CALL U2MESK('F','MODELISA2_37',1,FONREE)
@@ -181,7 +182,8 @@ C
 C
          IF (FONREE.EQ.'REEL') THEN
 C
-            CALL GETVID ( MOTCLF, 'CARA_TORSION', IOCC,1,1, NOMTAB, N )
+            CALL GETVID (MOTCLF,'CARA_TORSION',IOCC,IARG,1,
+     &                   NOMTAB, N )
             IF (N.EQ.1) THEN
 C              VERIFICATION DES PARAMETRES DE LA TABLE 'NOMTAB'
                CALL TBEXP2(NOMTAB,'AIRE')
@@ -189,7 +191,7 @@ C              VERIFICATION DES PARAMETRES DE LA TABLE 'NOMTAB'
                CALL TBEXP2(NOMTAB,'GROUP_MA')
 C
                CALL GETVEM (NOMA,'GROUP_MA',MOTCLF,'GROUP_MA',
-     &                                      IOCC,1,1,MONGRM,NGR)
+     &                                      IOCC,IARG,1,MONGRM,NGR)
                PARA = 'AIRE'
                CALL TBLIVA ( NOMTAB, 1, 'GROUP_MA', IBID, R8B, C16B,
      &                       MONGRM, K8B, R8B, PARA, K8B,
@@ -224,19 +226,19 @@ C
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN'
                ZR(JVALV1-1 + NCMP1) = 2.0D0 * AIRE /  XLONG
             END IF
-            CALL GETVR8 ( MOTCLF, 'FLUN', IOCC,1,1, R8B, N )
+            CALL GETVR8 ( MOTCLF, 'FLUN', IOCC,IARG,1, R8B, N )
             IF (N.EQ.1) THEN
                NCMP1 = NCMP1 + 1
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN'
                ZR(JVALV1-1 + NCMP1)  = R8B
             END IF
-            CALL GETVR8 ( MOTCLF, 'FLUN_INF', IOCC,1,1, R8B, N )
+            CALL GETVR8 ( MOTCLF, 'FLUN_INF', IOCC,IARG,1, R8B, N )
             IF (N.EQ.1) THEN
                NCMP1 = NCMP1 + 1
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN_INF'
                ZR(JVALV1-1 + NCMP1)  = R8B
             END IF
-            CALL GETVR8 ( MOTCLF, 'FLUN_SUP', IOCC,1,1, R8B, N )
+            CALL GETVR8 ( MOTCLF, 'FLUN_SUP', IOCC,IARG,1, R8B, N )
             IF (N.EQ.1) THEN
                NCMP1 = NCMP1 + 1
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN_SUP'
@@ -244,38 +246,38 @@ C
             END IF
 C
          ELSE
-            CALL GETVID ( MOTCLF, 'FLUN', IOCC,1,1, K8B, N )
+            CALL GETVID ( MOTCLF, 'FLUN', IOCC,IARG,1, K8B, N )
             IF (N.EQ.1) THEN
                NCMP1 = NCMP1 + 1
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN'
                ZK8(JVALV1-1 + NCMP1) = K8B
             END IF
-            CALL GETVID ( MOTCLF, 'FLUN_INF', IOCC,1,1, K8B, N )
+            CALL GETVID ( MOTCLF, 'FLUN_INF', IOCC,IARG,1, K8B, N )
             IF (N.EQ.1) THEN
                NCMP1 = NCMP1 + 1
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN_INF'
                ZK8(JVALV1-1 + NCMP1) = K8B
             END IF
-            CALL GETVID ( MOTCLF, 'FLUN_SUP', IOCC,1,1, K8B, N )
+            CALL GETVID ( MOTCLF, 'FLUN_SUP', IOCC,IARG,1, K8B, N )
             IF (N.EQ.1) THEN
                NCMP1 = NCMP1 + 1
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN_SUP'
                ZK8(JVALV1-1 + NCMP1) = K8B
             END IF
 C
-            CALL GETVID ( MOTCLF, 'FLUX_X', IOCC,1,1, K8B, N )
+            CALL GETVID ( MOTCLF, 'FLUX_X', IOCC,IARG,1, K8B, N )
             IF (N.EQ.1) THEN
                NCMP2 = NCMP2 + 1
                ZK8(JNCMP2-1 + NCMP2) = 'FLUX'
                ZK8(JVALV2-1 + NCMP2) = K8B
             END IF
-            CALL GETVID ( MOTCLF, 'FLUX_Y', IOCC,1,1, K8B, N )
+            CALL GETVID ( MOTCLF, 'FLUX_Y', IOCC,IARG,1, K8B, N )
             IF (N.EQ.1) THEN
                NCMP2 = NCMP2 + 1
                ZK8(JNCMP2-1 + NCMP2) = 'FLUY'
                ZK8(JVALV2-1 + NCMP2) = K8B
             END IF
-            CALL GETVID ( MOTCLF, 'FLUX_Z', IOCC,1,1, K8B, N )
+            CALL GETVID ( MOTCLF, 'FLUX_Z', IOCC,IARG,1, K8B, N )
             IF (N.EQ.1) THEN
                NCMP2 = NCMP2 + 1
                ZK8(JNCMP2-1 + NCMP2) = 'FLUZ'
@@ -283,7 +285,7 @@ C
             END IF
          END IF
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
 C
          IF ( NBTOU .NE. 0 ) THEN
             IF (NCMP1.GT.0) THEN

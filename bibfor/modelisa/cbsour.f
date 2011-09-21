@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8   SCALC
       CHARACTER*16  MOTFAC
       CHARACTER*24  CARTE,CHSOUR
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CARTE = CHAR//'.CHTH.SOURE'
@@ -39,7 +40,8 @@ C
       NBCALC = 0
       IF ( FONREE .EQ. 'REEL' ) THEN
          DO 10 IOCC = 1 , NBFAC
-            CALL GETVID ( MOTFAC,'SOUR_CALCULEE',IOCC,1,1,CHSOUR,ICALC)
+            CALL GETVID (MOTFAC,'SOUR_CALCULEE',IOCC,IARG,1,
+     &                   CHSOUR,ICALC)
             NBCALC = NBCALC + ICALC
  10      CONTINUE
          IF ( NBCALC .GT. 1 ) THEN
@@ -50,9 +52,9 @@ C
       ENDIF
 C
       IF ( FONREE .EQ. 'REEL' ) THEN
-         CALL GETVR8 ( MOTFAC, 'SOUR', 1,1,1, R8BID, ISOUR )
+         CALL GETVR8 ( MOTFAC, 'SOUR', 1,IARG,1, R8BID, ISOUR )
       ELSE
-         CALL GETVID ( MOTFAC, 'SOUR', 1,1,1, SCALC, ISOUR )
+         CALL GETVID ( MOTFAC, 'SOUR', 1,IARG,1, SCALC, ISOUR )
       ENDIF
       IF ( ISOUR .EQ. 1 ) THEN
          CALL CASOUR ( CHAR, LIGRMO, NOMA, NDIM, FONREE )

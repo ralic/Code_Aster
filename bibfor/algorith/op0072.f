@@ -1,7 +1,7 @@
       SUBROUTINE OP0072()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       CHARACTER*24 MATRIC,KBID,DEEQ,TYPEBA
       COMPLEX*16   CBID,ZDOTC,DCMPLX
       REAL*8       DDOT, ZERO
+      INTEGER      IARG
 C
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
@@ -64,11 +65,11 @@ C
 C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
       CALL GETRES(NOMRES,TYPRES,NOMCOM)
-      CALL GETVID(' ','NUME_DDL_GENE',0,1,1,NUMGEN,N0)
-      CALL GETVID(' ','VECT_ASSE',0,1,1,VECTAS,N1)
-      CALL GETVID(' ','VECT_ASSE_GENE',0,1,1,VECTAS,N3)
-      CALL GETVID(' ','BASE',0,1,1,BASEMO,N4)
-      CALL GETVTX(' ','TYPE_VECT',0,1,1,NOMTYP,N2)
+      CALL GETVID(' ','NUME_DDL_GENE',0,IARG,1,NUMGEN,N0)
+      CALL GETVID(' ','VECT_ASSE',0,IARG,1,VECTAS,N1)
+      CALL GETVID(' ','VECT_ASSE_GENE',0,IARG,1,VECTAS,N3)
+      CALL GETVID(' ','BASE',0,IARG,1,BASEMO,N4)
+      CALL GETVTX(' ','TYPE_VECT',0,IARG,1,NOMTYP,N2)
       CALL GETTCO(BASEMO,TYPBAS)
 C
 C --- RECUPERATION DU NB DE MODES

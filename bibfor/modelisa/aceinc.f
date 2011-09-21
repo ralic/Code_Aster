@@ -9,7 +9,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 MLGNMA, MLGNNO, MLGGNO, MLGGMA
       CHARACTER*24 MODMAI, MODNEM, MODNOE
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -101,28 +102,28 @@ C
           NN = 0
           IF ( MCL.EQ.10 ) THEN
             CALL GETVEM(NOMA,'GROUP_MA_POI1',MCLF(MCL),
-     &                 'GROUP_MA_POI1',IOC,1,LMAX,ZK8(JDLS),NG)
+     &                 'GROUP_MA_POI1',IOC,IARG,LMAX,ZK8(JDLS),NG)
             IF ( NG .EQ. 0 ) THEN
               CALL GETVEM(NOMA,'GROUP_MA_SEG2',MCLF(MCL),
-     &                    'GROUP_MA_SEG2',IOC,1,LMAX,ZK8(JDLS),NG)
+     &                    'GROUP_MA_SEG2',IOC,IARG,LMAX,ZK8(JDLS),NG)
             ENDIF
           ELSE
             CALL GETVEM(NOMA,'GROUP_MA',MCLF(MCL),'GROUP_MA',
-     &                  IOC,1,LMAX,ZK8(JDLS),NG)
+     &                  IOC,IARG,LMAX,ZK8(JDLS),NG)
             CALL GETVEM(NOMA,'MAILLE',MCLF(MCL),'MAILLE',
-     &                  IOC,1,LMAX,ZK8(JDLS),NM)
+     &                  IOC,IARG,LMAX,ZK8(JDLS),NM)
           ENDIF
           IF ( MCL.EQ.3 .OR. MCL.EQ.4 .OR. MCL.EQ.13 ) THEN
             CALL GETVEM(NOMA,'GROUP_NO',MCLF(MCL),'GROUP_NO',
-     &                  IOC,1,LMAX,ZK8(JDLS),NJ)
+     &                  IOC,IARG,LMAX,ZK8(JDLS),NJ)
             CALL GETVEM(NOMA,'NOEUD',MCLF(MCL),'NOEUD',
-     &                  IOC,1,LMAX,ZK8(JDLS),NN)
+     &                  IOC,IARG,LMAX,ZK8(JDLS),NN)
           ELSEIF ( MCL.EQ.11 ) THEN
-            CALL GETVR8(MCLF(MCL),'ORIG_AXE',IOC,1,0,R8B,NORIG)
+            CALL GETVR8(MCLF(MCL),'ORIG_AXE',IOC,IARG,0,R8B,NORIG)
           ENDIF
           IF (MCL.EQ.1 .OR. MCL.EQ.3 .OR .MCL.EQ.4 .OR .MCL.EQ.13 .OR.
      &        MCL.EQ.10) THEN
-            CALL GETVTX(MCLF(MCL),'CARA',IOC,1,NBCAR,CAR,NCAR)
+            CALL GETVTX(MCLF(MCL),'CARA',IOC,IARG,NBCAR,CAR,NCAR)
             IF (NCAR.GT.0) NCARA = NCAR
           ENDIF
 C

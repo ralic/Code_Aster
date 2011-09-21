@@ -3,7 +3,7 @@
       CHARACTER*(*)       TABRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19  NOMFON, NEWTAB, NEWTA1
       CHARACTER*24  NOPARA, NOMF
       CHARACTER*24  VALK(2)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -56,9 +57,9 @@ C
 C
       CALL GETRES ( NOMFON, TYPCON, NOMCMD )
 C
-      CALL GETVTX ( ' ', 'PARA_X'       , 0,1,1, PARAX , N2 )
-      CALL GETVTX ( ' ', 'PARA_Y'       , 0,1,1, PARAY , N3 )
-      CALL GETVTX ( ' ', 'NOM_PARA_TABL', 0,1,1, NOPARA, N4 )
+      CALL GETVTX ( ' ', 'PARA_X'       , 0,IARG,1, PARAX , N2 )
+      CALL GETVTX ( ' ', 'PARA_Y'       , 0,IARG,1, PARAY , N3 )
+      CALL GETVTX ( ' ', 'NOM_PARA_TABL', 0,IARG,1, NOPARA, N4 )
 C
       INTERP = 'NON NON '
       PROLGD = 'EE      '

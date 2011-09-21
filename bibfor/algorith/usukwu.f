@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,7 @@ C ======================================================================
 C----------------------------------------------------------------------
 C
       REAL*8  FN(*), VG(*), PARA(*)
+      INTEGER      IARG
 C
       IF   = IUNIFI('RESULTAT')
       IRET = 0
@@ -35,8 +36,8 @@ C
 C
 C     --- RECHERCHE DES MAX ---
 C
-      CALL GETVR8(' ','FNOR_MAXI',1,1,1,FNM,N1)
-      CALL GETVR8(' ','VTAN_MAXI',1,1,1,VGM,N2)
+      CALL GETVR8(' ','FNOR_MAXI',1,IARG,1,FNM,N1)
+      CALL GETVR8(' ','VTAN_MAXI',1,IARG,1,VGM,N2)
       IF ( (N1+N2) .EQ. 0 ) THEN
          FNM = ZERO
          VGM = ZERO

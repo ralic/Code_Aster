@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTG(IGEOM,GEOMI,NOMAI,MOTFAC,IOCC)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C
       INTEGER NFONC,JGEOMI,INOI,IER
 
       REAL*8  VX(3)
+      INTEGER      IARG
 C----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -69,9 +70,9 @@ C DEB ------------------------------------------------------------------
 C     PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2] : CALCUL DE GEOMI
 C     --------------------------------------------------------------
       IF ( IGEOM .EQ. 1) THEN
-         CALL GETVID(MOTFAC,'TRANSF_GEOM_1',IOCC,1,3,LFONC,NFONC)
+         CALL GETVID(MOTFAC,'TRANSF_GEOM_1',IOCC,IARG,3,LFONC,NFONC)
       ELSE
-         CALL GETVID(MOTFAC,'TRANSF_GEOM_2',IOCC,1,3,LFONC,NFONC)
+         CALL GETVID(MOTFAC,'TRANSF_GEOM_2',IOCC,IARG,3,LFONC,NFONC)
       ENDIF
       CALL ASSERT(NFONC.GE.0)
       IF (NFONC.GT.0) THEN

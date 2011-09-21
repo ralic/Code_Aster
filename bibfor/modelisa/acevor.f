@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,NLN,NLJ,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8  K8B, CAR(NBCAR), NOMU, CARORI(NCO)
       CHARACTER*16 CMD, CONCEP
       CHARACTER*24 VALK(2)
+      INTEGER      IARG
       DATA CARORI  /'VECT_Y  ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
 C     ------------------------------------------------------------------
 C
@@ -47,14 +48,14 @@ C
 C
       DO 10 IOC = 1,NBOCC
          CALL CODENT(IOC,'G',KIOC)
-         CALL GETVTX('ORIENTATION','GROUP_MA' ,IOC,1,0   ,K8B ,NG)
-         CALL GETVTX('ORIENTATION','MAILLE'   ,IOC,1,0   ,K8B ,NM)
-         CALL GETVTX('ORIENTATION','GROUP_NO' ,IOC,1,0   ,K8B ,NJ)
-         CALL GETVTX('ORIENTATION','NOEUD'    ,IOC,1,0   ,K8B ,NN)
-         CALL GETVTX('ORIENTATION','CARA'    ,IOC,1,0   ,K8B ,NC)
-         CALL GETVTX('ORIENTATION','CARA'    ,IOC,1,NBCAR,CAR,NCAR)
-         CALL GETVR8('ORIENTATION','VALE'     ,IOC,1,0   ,R8B ,NV)
-         CALL GETVR8('ORIENTATION','VALE'     ,IOC,1,NBVAL,VAL,NVAL)
+         CALL GETVTX('ORIENTATION','GROUP_MA' ,IOC,IARG,0   ,K8B ,NG)
+         CALL GETVTX('ORIENTATION','MAILLE'   ,IOC,IARG,0   ,K8B ,NM)
+         CALL GETVTX('ORIENTATION','GROUP_NO' ,IOC,IARG,0   ,K8B ,NJ)
+         CALL GETVTX('ORIENTATION','NOEUD'    ,IOC,IARG,0   ,K8B ,NN)
+         CALL GETVTX('ORIENTATION','CARA'    ,IOC,IARG,0   ,K8B ,NC)
+         CALL GETVTX('ORIENTATION','CARA'    ,IOC,IARG,NBCAR,CAR,NCAR)
+         CALL GETVR8('ORIENTATION','VALE'     ,IOC,IARG,0   ,R8B ,NV)
+         CALL GETVR8('ORIENTATION','VALE'     ,IOC,IARG,NBVAL,VAL,NVAL)
 C
 C -- IOC = 1
          IF (IOC.EQ.1) THEN

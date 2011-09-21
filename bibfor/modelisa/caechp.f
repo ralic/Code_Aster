@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRCH, LIGRMO
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C --- NOMBRE MAX DE TYPE_MAIL DE COUPLAGE ENTRE 2 PAROIS
       CHARACTER*16  MOTCLF
       CHARACTER*24  LIEL, MODL, LLIST1, LLIST2, LLISTT
       CHARACTER*19  CARTE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -98,25 +99,27 @@ C
       DO 100 IOCC = 1, NECHP
 C
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 ( MOTCLF, 'COEF_H', IOCC,1,1, ZR(JVALV) , NH )
+            CALL GETVR8 (MOTCLF,'COEF_H',IOCC,IARG,1,
+     &                   ZR(JVALV) , NH )
          ELSE IF (FONREE.EQ.'FONC') THEN
-            CALL GETVID ( MOTCLF, 'COEF_H', IOCC,1,1, ZK8(JVALV), NH )
+            CALL GETVID (MOTCLF,'COEF_H',IOCC,IARG,1,
+     &                   ZK8(JVALV), NH )
          ENDIF
 C
          DO 101 I = 1 , 3
             T(I) = 0.0D0
 101      CONTINUE
-         CALL GETVR8 ( MOTCLF, 'TRAN', IOCC,1,3, T, NT )
+         CALL GETVR8 ( MOTCLF, 'TRAN', IOCC,IARG,3, T, NT )
 C
          DO 102 I = 1 , 3
             THETA(I) = 0.0D0
 102      CONTINUE
-         CALL GETVR8 ( MOTCLF, 'ANGL_NAUT', IOCC,1,3, THETA, NR )
+         CALL GETVR8 ( MOTCLF, 'ANGL_NAUT', IOCC,IARG,3, THETA, NR )
 C
          DO 103 I = 1 , 3
             O(I) = 0.0D0
 103      CONTINUE
-         CALL GETVR8 ( MOTCLF, 'CENTRE', IOCC,1,3, THETA, NO )
+         CALL GETVR8 ( MOTCLF, 'CENTRE', IOCC,IARG,3, THETA, NO )
 C
          CALL PALIMA (NOMA,MOTCLF,'GROUP_MA_1','MAILLE_1',IOCC,LLIST1)
          CALL PALIMA (NOMA,MOTCLF,'GROUP_MA_2','MAILLE_2',IOCC,LLIST2)

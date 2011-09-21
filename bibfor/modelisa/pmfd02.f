@@ -1,6 +1,6 @@
       SUBROUTINE PMFD02(NOMA,CESDEC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 MOCLES(2),TYPMCL(2),MOCLEF(3)
       CHARACTER*8 K8B
       CHARACTER*24 MESMAI
+      INTEGER      IARG
 
 
       DATA MOCLES/'MAILLE','GROUP_MA'/
@@ -99,7 +100,7 @@ C     -----------------------------------------------------------
         CALL RELIEM(' ',NOMA,'NU_MAILLE','COQUE',IOCC,2,MOCLES,
      &              TYPMCL,MESMAI ,NBMA)
 
-        CALL GETVIS('COQUE','COQUE_NCOU',IOCC,1,1,NBCOU,NBV)
+        CALL GETVIS('COQUE','COQUE_NCOU',IOCC,IARG,1,NBCOU,NBV)
         ZK8(JNCMP-1+1) = 'COQ_NCOU'
         ZI(JVALV-1+1) =  NBCOU
 
@@ -117,7 +118,7 @@ C     -----------------------------------------------------------
         CALL RELIEM(' ',NOMA,'NU_MAILLE','GRILLE',IOCC,2,MOCLES,
      &              TYPMCL,MESMAI ,NBMA)
 
-        CALL GETVIS('GRILLE','GRILLE_NCOU',IOCC,1,1,NBCOU,NBV)
+        CALL GETVIS('GRILLE','GRILLE_NCOU',IOCC,IARG,1,NBCOU,NBV)
         ZK8(JNCMP-1+1) = 'GRI_NCOU'
         ZI(JVALV-1+1) =  NBCOU
 
@@ -135,8 +136,8 @@ C     -----------------------------------------------------------
         CALL RELIEM(' ',NOMA,'NU_MAILLE','POUTRE',IOCC,2,MOCLES,
      &              TYPMCL,MESMAI ,NBMA)
 
-        CALL GETVIS('POUTRE','TUYAU_NCOU',IOCC,1,1,NBCOU,NBV)
-        CALL GETVIS('POUTRE','TUYAU_NSEC',IOCC,1,1,NBSEC,NBV)
+        CALL GETVIS('POUTRE','TUYAU_NCOU',IOCC,IARG,1,NBCOU,NBV)
+        CALL GETVIS('POUTRE','TUYAU_NSEC',IOCC,IARG,1,NBSEC,NBV)
         ZK8(JNCMP-1+1) = 'TUY_NCOU'
         ZK8(JNCMP-1+2) = 'TUY_NSEC'
         ZI(JVALV-1+1) =  NBCOU

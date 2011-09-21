@@ -5,7 +5,7 @@
       REAL*8        PSIDE(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 ACCES
       CHARACTER*19 CHAMNO
       COMPLEX*16   C16B
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA CMP / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C     ------------------------------------------------------------------
@@ -77,9 +78,9 @@ C
 C
 C     --- RECUPERATION DE LA DIRECTION SISMIQUE  ---
 C
-      CALL GETVR8('EXCIT','DIRECTION',NUMEXI,1,0,DEPL,NBD)
+      CALL GETVR8('EXCIT','DIRECTION',NUMEXI,IARG,0,DEPL,NBD)
       NBDIR = -NBD
-      CALL GETVR8('EXCIT','DIRECTION',NUMEXI,1,NBDIR,DEPL,NBD)
+      CALL GETVR8('EXCIT','DIRECTION',NUMEXI,IARG,NBDIR,DEPL,NBD)
 C     --- ON NORMALISE LE VECTEUR ---
       XNORM = 0.D0
       DO 10 I = 1,NBDIR
@@ -96,22 +97,22 @@ C
 C     --- RECUPERATION DES POINTS D'ANCRAGE ---
 C
       CALL GETVEM(MAILLA,'NOEUD','EXCIT','NOEUD',
-     &     NUMEXI,1,0,KBID,NBNO)
+     &     NUMEXI,IARG,0,KBID,NBNO)
       IF (NBNO.NE.0) THEN
 C        --- ON RECUPERE UNE LISTE DE NOEUD ---
          NBNO = - NBNO
          CALL WKVECT('&&TRMULT.NOEUD','V V K8',NBNO,IDNO)
          CALL GETVEM(MAILLA,'NOEUD','EXCIT','NOEUD',
-     &        NUMEXI,1,NBNO,ZK8(IDNO),NBV)
+     &        NUMEXI,IARG,NBNO,ZK8(IDNO),NBV)
       ELSE
 C        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
          CALL GETVEM(MAILLA,'GROUP_NO','EXCIT','GROUP_NO',
-     &           NUMEXI,1,0,KBID,NBGR)
+     &           NUMEXI,IARG,0,KBID,NBGR)
          NBGR = - NBGR
          IF (NBGR.NE.0) THEN
             CALL WKVECT('&&TRMULT.GROUP_NO','V V K8',NBGR,IDGN)
             CALL GETVEM(MAILLA,'GROUP_NO','EXCIT','GROUP_NO',
-     &              NUMEXI,1,NBGR,ZK8(IDGN),NBV)
+     &              NUMEXI,IARG,NBGR,ZK8(IDGN),NBV)
 C           --- ECLATE LE GROUP_NO EN NOEUD ---
             CALL COMPNO(MAILLA,NBGR,ZK8(IDGN),NBNO)
             CALL WKVECT('&&TRMULT.NOEUD','V V K8',NBNO,IDNO)

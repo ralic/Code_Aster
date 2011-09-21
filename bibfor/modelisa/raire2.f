@@ -6,7 +6,7 @@
       REAL*8       RIGNOE(6*NBNOEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C
       REAL*8       R8B, ZERO, X(8), Y(8), Z(8), RIGI(6)
       REAL*8       A(3), B(3), C(3), U(3)
       LOGICAL      LFONC
+      INTEGER      IARG
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -75,26 +76,26 @@ C
       XG = ZERO
       YG = ZERO
       ZG = ZERO
-      CALL GETVR8('ENER_SOL','COOR_CENTRE',1,1,0,R8B,NCG)
+      CALL GETVR8('ENER_SOL','COOR_CENTRE',1,IARG,0,R8B,NCG)
       CALL GETVEM(NOMA,'NOEUD','ENER_SOL','NOEUD_CENTRE',
-     &               1,1,0,K8B,NNO)
+     &               1,IARG,0,K8B,NNO)
       CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_CENTRE',
-     &                  1,1,0,K8B,NGN)
+     &                  1,IARG,0,K8B,NGN)
       IF (NCG.NE.0) THEN
-        CALL GETVR8('ENER_SOL','COOR_CENTRE',1,1,3,C,NCG)
+        CALL GETVR8('ENER_SOL','COOR_CENTRE',1,IARG,3,C,NCG)
         XG = C(1)
         YG = C(2)
         ZG = C(3)
       ELSEIF (NNO.NE.0) THEN
         CALL GETVEM(NOMA,'NOEUD','ENER_SOL','NOEUD_CENTRE',
-     &                 1,1,1,NOMNOE,NNO)
+     &                 1,IARG,1,NOMNOE,NNO)
         CALL JENONU(JEXNOM(MANONO,NOMNOE),INOE)
         XG = ZR(JCOOR+3*(INOE-1)+1-1)
         YG = ZR(JCOOR+3*(INOE-1)+2-1)
         ZG = ZR(JCOOR+3*(INOE-1)+3-1)
       ELSEIF (NGN.NE.0) THEN
         CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_CENTRE',
-     &                    1,1,1,NOMGR,NGN)
+     &                    1,IARG,1,NOMGR,NGN)
         CALL JEVEUO(JEXNOM(MAGRNO,NOMGR),'L',LDGN)
         INOE = ZI(LDGN)
         XG = ZR(JCOOR+3*(INOE-1)+1-1)
@@ -104,17 +105,17 @@ C
 C
 C       RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
 C
-      CALL GETVR8('ENER_SOL','COEF_GROUP',1,1,0,R8B,NCG)
+      CALL GETVR8('ENER_SOL','COEF_GROUP',1,IARG,0,R8B,NCG)
       IF (NCG.NE.0) THEN
         CALL WKVECT('&&RAIRE2.COEGRO','V V R',NBGR,ICOEGR)
-        CALL GETVR8('ENER_SOL','COEF_GROUP',1,1,NBGR,
+        CALL GETVR8('ENER_SOL','COEF_GROUP',1,IARG,NBGR,
      &   ZR(ICOEGR),NCG)
       ELSE
-        CALL GETVID('ENER_SOL','FONC_GROUP',1,1,0,K8B,NCF)
+        CALL GETVID('ENER_SOL','FONC_GROUP',1,IARG,0,K8B,NCF)
         IF (NCF.EQ.0) CALL U2MESS('F','MODELISA6_33')
         CALL WKVECT('&&RAIRE2.FONGRO','V V K8',NBGR,IFONGR)
         LFONC = .TRUE.
-        CALL GETVID('ENER_SOL','FONC_GROUP',1,1,NBGR,ZK8(IFONGR),NFG)
+        CALL GETVID('ENER_SOL','FONC_GROUP',1,IARG,NBGR,ZK8(IFONGR),NFG)
       ENDIF
 C
       DO 20 I = 1,NBGR

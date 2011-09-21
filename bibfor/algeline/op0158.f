@@ -1,7 +1,7 @@
       SUBROUTINE OP0158()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 METRES
       INTEGER IBID,IFM
       INTEGER NIV
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -55,7 +56,7 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
       CALL GETRES(MATFAC,CONCEP,NOMCMD)
-      CALL GETVID('  ','MATR_ASSE',0,1,1,MATASS,IBID)
+      CALL GETVID('  ','MATR_ASSE',0,IARG,1,MATASS,IBID)
       CALL ASSERT(MATASS.EQ.MATFAC)
       MASS = MATASS
       CALL DISMOI('F','METH_RESO',MASS,'MATR_ASSE',IBID,METRES,IBID)

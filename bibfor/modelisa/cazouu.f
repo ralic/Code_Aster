@@ -1,9 +1,9 @@
       SUBROUTINE CAZOUU(MOTFAC,NZOCO ,NOMMCZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -57,6 +57,7 @@ C
       REAL*8       PARAR1
       INTEGER      PARAI1
       CHARACTER*16 PARAK1
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C       
@@ -79,13 +80,13 @@ C
               PARAK  = ' '
               IF (TYPMC(1:1).EQ.'I') THEN
                 TT     = 'I'
-                CALL GETVIS(MOTFAC,NOMMC,IZONE,1,1,PARAI,NOC)
+                CALL GETVIS(MOTFAC,NOMMC,IZONE,IARG,1,PARAI,NOC)
               ELSEIF (TYPMC(1:2).EQ.'TX') THEN
                 TT     = 'T'
-                CALL GETVTX(MOTFAC,NOMMC,IZONE,1,1,PARAK,NOC)
+                CALL GETVTX(MOTFAC,NOMMC,IZONE,IARG,1,PARAK,NOC)
               ELSEIF (TYPMC(1:2).EQ.'R8') THEN
                 TT     = 'R'
-                CALL GETVR8(MOTFAC,NOMMC,IZONE,1,1,PARAR,NOC)
+                CALL GETVR8(MOTFAC,NOMMC,IZONE,IARG,1,PARAR,NOC)
               ELSE
                 CALL ASSERT(.FALSE.)
               ENDIF

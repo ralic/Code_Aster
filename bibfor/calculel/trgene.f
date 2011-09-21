@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 CHAM19, KNUM, RESU19
       CHARACTER*24 TRAVR,TRAVI,TRAVC
       CHARACTER*200 LIGN1,LIGN2
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -74,37 +75,37 @@ C     ------------------------------------------------------------------
 
         CALL TRPREC ( 'GENE', IOCC, EPSI, CRIT, PREC, CRIT2 )
 
-        CALL GETVTX('GENE','VALE_ABS', IOCC,1,1,SSIGNE,N1)
+        CALL GETVTX('GENE','VALE_ABS', IOCC,IARG,1,SSIGNE,N1)
 
-        CALL GETVR8('GENE','VALE'    , IOCC,1,0,R8B   ,N1)
-        CALL GETVIS('GENE','VALE_I'  , IOCC,1,0,IBID  ,N2)
-        CALL GETVC8('GENE','VALE_C'  , IOCC,1,0,C16B  ,N3)
+        CALL GETVR8('GENE','VALE'    , IOCC,IARG,0,R8B   ,N1)
+        CALL GETVIS('GENE','VALE_I'  , IOCC,IARG,0,IBID  ,N2)
+        CALL GETVC8('GENE','VALE_C'  , IOCC,IARG,0,C16B  ,N3)
         IF( N1 .NE. 0) THEN
           NREF=-N1
           TYPRES = 'R'
           CALL JEDETR(TRAVR)
           CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
-          CALL GETVR8('GENE','VALE', IOCC,1,NREF,ZR(IREFR),IRET)
+          CALL GETVR8('GENE','VALE', IOCC,IARG,NREF,ZR(IREFR),IRET)
         ELSEIF( N2 .NE. 0) THEN
           NREF=-N2
           TYPRES = 'I'
           CALL JEDETR(TRAVI)
           CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
-          CALL GETVIS('GENE','VALE_I', IOCC,1,NREF,ZI(IREFI),IRET)
+          CALL GETVIS('GENE','VALE_I', IOCC,IARG,NREF,ZI(IREFI),IRET)
         ELSEIF( N3 .NE. 0) THEN
           NREF=-N3
           TYPRES = 'C'
           CALL JEDETR(TRAVC)
           CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
-          CALL GETVC8('GENE','VALE_C', IOCC,1,NREF,ZC(IREFC),IRET)
+          CALL GETVC8('GENE','VALE_C', IOCC,IARG,NREF,ZC(IREFC),IRET)
         ENDIF
 
-        CALL GETVID('GENE','RESU_GENE',IOCC,1,1,RESU19,N1)
+        CALL GETVID('GENE','RESU_GENE',IOCC,IARG,1,RESU19,N1)
         CALL GETTCO(RESU19,TYSD)
 
 C ----------------------------------------------------------------------
         IF ( TYSD .EQ. 'VECT_ASSE_GENE_R' ) THEN
-          CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,1,1,NCMP,N1)
+          CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
           CALL JEVEUO(RESU19//'.VALE','L',JLUE)
           CALL JELIRA(RESU19//'.VALE','TYPE',IBID,K16B)
 C
@@ -197,7 +198,7 @@ C ----------------------------------------------------------------------
           CALL JEVEUO(KNUM,'L',JORDR)
           NUMORD = ZI(JORDR)
 
-          CALL GETVTX('GENE','PARA',IOCC,1,1,NOPARA,N1)
+          CALL GETVTX('GENE','PARA',IOCC,IARG,1,NOPARA,N1)
           IF (N1.NE.0) THEN
             CALL RSADPA(RESU19,'L',1,NOPARA,NUMORD,1,JLUE,K16B)
             IF (K16B(1:1).NE.TYPRES) THEN
@@ -259,8 +260,8 @@ C ----------------------------------------------------------------------
             GOTO 100
           END IF
 
-          CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,1,1,NSYM,N1)
-          CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,1,1,NCMP,N1)
+          CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
+          CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
           CALL RSEXCH(RESU19,NSYM,NUMORD,CHAM19,IRET)
           IF (IRET.NE.0) CALL U2MESK('F','CALCULEL6_99',1,RESU19)
           CALL JEVEUO(CHAM19//'.VALE','L',JLUE)
@@ -354,16 +355,16 @@ C
 
 C ----------------------------------------------------------------------
         ELSEIF ( TYSD .EQ. 'TRAN_GENE' ) THEN
-          CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,1,1,NSYM,N1)
-          CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,1,1,NCMP,N1)
+          CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
+          CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
 C
           INTERP = 'NON'
           CALL JEVEUO(RESU19//'.INST','L',JINST)
           CALL JELIRA(RESU19//'.INST','LONMAX',NBINST,K16B)
 C
-          CALL GETVR8('GENE','INST',IOCC,1,1,TEMPS,N1)
+          CALL GETVR8('GENE','INST',IOCC,IARG,1,TEMPS,N1)
           IF ( N1 .EQ. 0 ) THEN
-            CALL GETVIS('GENE','NUME_ORDRE',IOCC,1,1,NUMORD,N1)
+            CALL GETVIS('GENE','NUME_ORDRE',IOCC,IARG,1,NUMORD,N1)
             TEMPS = ZR(JINST+NUMORD-1)
           END IF
 C

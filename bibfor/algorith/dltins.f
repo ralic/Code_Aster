@@ -5,7 +5,7 @@
       
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,17 +51,18 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*1  K1BID
       CHARACTER*8  NOMRES, DYNA, LI
       CHARACTER*16 TYPRES, NOMCMD
+      INTEGER      IARG
             
 C     -----------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
 C
 C     --- EST-ON EN REPRISE ? ---
-      CALL GETVID('ETAT_INIT','RESULTAT',1,1,1,DYNA,NDY)
+      CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,DYNA,NDY)
 C
 C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "LIST_INST" ---
 C
-      CALL GETVID('INCREMENT','LIST_INST',1,1,1,LI,N1)
+      CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LI,N1)
       IF (N1.NE.0) THEN
          CALL JEVEUO(LI//'           .LPAS','L',JLPAS)
          CALL JEVEUO(LI//'           .NBPA','L',JNBPA)
@@ -155,9 +156,9 @@ C           --- POUR LE PREMIER INTERVALLE ---
             LISINS= '&&OP0048.FI_JVALE'
          ENDIF
 C
-         CALL GETVIS('INCREMENT','NUME_FIN',1,1,1,NUMEF,N1)
+         CALL GETVIS('INCREMENT','NUME_FIN',1,IARG,1,NUMEF,N1)
          IF ( N1 .EQ. 0 ) THEN
-            CALL GETVR8('INCREMENT','INST_FIN',1,1,1,TFIN,N1)
+            CALL GETVR8('INCREMENT','INST_FIN',1,IARG,1,TFIN,N1)
             IF ( N1 .EQ. 0 ) GOTO 9999
          ELSE
             CALL JEVEUO(LI//'           .VALE','L',JVALR)
@@ -239,8 +240,8 @@ C
 C
 C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "PAS" ---
 C
-      CALL GETVR8('INCREMENT','INST_FIN',1,1,1,TFIN,IBID)
-      CALL GETVR8('INCREMENT','PAS',1,1,1,DT,IBID)
+      CALL GETVR8('INCREMENT','INST_FIN',1,IARG,1,TFIN,IBID)
+      CALL GETVR8('INCREMENT','PAS',1,IARG,1,DT,IBID)
       IF ( DT.EQ.0.D0 ) THEN
         CALL U2MESS('F','ALGORITH3_12')
       ENDIF

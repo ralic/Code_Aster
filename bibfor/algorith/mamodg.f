@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,13 +66,14 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*8   NOMRES
       CHARACTER*19  MAX,MAY,MAZ,STOLCI
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C ------------------------------------------------------------------
 C----- ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE ---
 
       CALL JEMARQ()
 
       CALL INFNIV(IFM,NIV)
-      CALL GETVTX(' ','AVEC_MODE_STAT',0,1,1,REPON,NN)
+      CALL GETVTX(' ','AVEC_MODE_STAT',0,IARG,1,REPON,NN)
       IF (REPON(1:3).EQ.'NON') CALL JEVEUO('&&DELAT.INDIC','L',IDELAT)
 
       CALL JEEXIN(STOLCI//'.SCHC',IRET1)

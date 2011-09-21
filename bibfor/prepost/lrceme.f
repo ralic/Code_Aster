@@ -5,7 +5,7 @@
      &                    NROFIC, LIGREL, OPTION, PARAM, 
      &                    NBPGMA, NBPGMM, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,6 +117,7 @@ C
       CHARACTER*255 KFIC
 C
       LOGICAL      TTT
+      INTEGER      IARG
 C
       CALL JEMARQ ( )
 C
@@ -195,7 +196,7 @@ C
 
       ELSE
       
-        CALL GETVIS ( ' ', 'UNITE', 0, 1, 1, UNITE, IAUX )
+        CALL GETVIS ( ' ', 'UNITE', 0,IARG, 1, UNITE, IAUX )
         CALL ULISOG(UNITE, KFIC, SAUX01)
         IF ( KFIC(1:1).EQ.' ' ) THEN
           CALL CODENT ( UNITE, 'G', SAUX08 )

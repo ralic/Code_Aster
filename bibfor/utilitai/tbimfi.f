@@ -4,9 +4,9 @@
       CHARACTER*19        TABLE, NEWTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -47,6 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       COMPLEX*16   CBID
       CHARACTER*8  K8B
       CHARACTER*80 MONTIT
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -80,36 +81,43 @@ C
       IK = -1
 C
       DO 20 IOC = 1 , NPARFI
-         CALL GETVTX ('FILTRE','NOM_PARA' ,IOC,1,1,ZK24(JPAFI+IOC-1),L)
-         CALL GETVTX ('FILTRE','CRIT_COMP',IOC,1,1,ZK8(JCCFI+IOC-1) ,L)
+         CALL GETVTX ('FILTRE','NOM_PARA',IOC,IARG,1,
+     &                ZK24(JPAFI+IOC-1),L)
+         CALL GETVTX ('FILTRE','CRIT_COMP',IOC,IARG,1,
+     &                ZK8(JCCFI+IOC-1) ,L)
          MONTIT = ' '
-         CALL GETVIS ('FILTRE', 'VALE_I' , IOC,1,0, IBID, L1 )
-         CALL GETVR8 ('FILTRE', 'VALE'   , IOC,1,0, R8B , L2 )
-         CALL GETVC8 ('FILTRE', 'VALE_C' , IOC,1,0, CBID, L3 )
-         CALL GETVTX ('FILTRE', 'VALE_K' , IOC,1,0, K8B , L4 )
+         CALL GETVIS ('FILTRE', 'VALE_I' , IOC,IARG,0, IBID, L1 )
+         CALL GETVR8 ('FILTRE', 'VALE'   , IOC,IARG,0, R8B , L2 )
+         CALL GETVC8 ('FILTRE', 'VALE_C' , IOC,IARG,0, CBID, L3 )
+         CALL GETVTX ('FILTRE', 'VALE_K' , IOC,IARG,0, K8B , L4 )
          IF ( L1 .NE. 0 ) THEN
             II = II + 1
-            CALL GETVIS ('FILTRE','VALE_I', IOC,1,1, ZI(JVIFI+II), L )
+            CALL GETVIS ('FILTRE','VALE_I',IOC,IARG,1,
+     &                   ZI(JVIFI+II), L )
             WRITE(MONTIT,1010) ZK24(JPAFI+IOC-1), ZK8(JCCFI+IOC-1),
      +                         ZI(JVIFI+II)
          ENDIF
          IF ( L2 .NE. 0 ) THEN
             IR = IR + 1
-            CALL GETVR8 ('FILTRE','VALE'     ,IOC,1,1,ZR(JVRFI+IR) ,L)
-            CALL GETVR8 ('FILTRE','PRECISION',IOC,1,1,ZR(JPRFI+IR) ,L)
-            CALL GETVTX ('FILTRE','CRITERE'  ,IOC,1,1,ZK8(JCRFI+IR),L)
+            CALL GETVR8 ('FILTRE','VALE',IOC,IARG,1,
+     &                   ZR(JVRFI+IR) ,L)
+            CALL GETVR8 ('FILTRE','PRECISION',IOC,IARG,1,
+     &                   ZR(JPRFI+IR) ,L)
+            CALL GETVTX ('FILTRE','CRITERE',IOC,IARG,1,
+     &                   ZK8(JCRFI+IR),L)
             WRITE(MONTIT,1020) ZK24(JPAFI+IOC-1), ZK8(JCCFI+IOC-1),
      +                         ZR(JVRFI+IR)
          ENDIF
          IF ( L3 .NE. 0 ) THEN
             IC = IC + 1
-            CALL GETVC8 ('FILTRE','VALE_C', IOC,1,1, ZC(JVCFI+IC),L)
+            CALL GETVC8 ('FILTRE','VALE_C', IOC,IARG,1, ZC(JVCFI+IC),L)
             WRITE(MONTIT,1030) ZK24(JPAFI+IOC-1), ZK8(JCCFI+IOC-1),
      +                         ZC(JVCFI+IC)
          ENDIF
          IF ( L4 .NE. 0 ) THEN
             IK = IK + 1
-            CALL GETVTX ('FILTRE','VALE_K', IOC,1,1, ZK80(JVKFI+IK),L)
+            CALL GETVTX ('FILTRE','VALE_K',IOC,IARG,1,
+     &                   ZK80(JVKFI+IK),L)
             WRITE(MONTIT,1040) ZK24(JPAFI+IOC-1), ZK8(JCCFI+IOC-1),
      +                         ZK80(JVKFI+IK)
          ENDIF

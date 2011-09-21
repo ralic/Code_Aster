@@ -2,7 +2,7 @@
      &                  UNITE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,6 +66,7 @@ C
       INTEGER      IMPTMP
       CHARACTER*3  CMP
       INTEGER      NOC     
+      INTEGER      IARG
 C      
 C ----------------------------------------------------------------------
 C      
@@ -79,7 +80,7 @@ C
 C
 C --- INFO SUR LES RESIDUS      
 C
-      CALL GETVTX(MOTFAC,'INFO_RESIDU',1,1,1,CMP,NOC)
+      CALL GETVTX(MOTFAC,'INFO_RESIDU',1,IARG,1,CMP,NOC)
       IF (NOC.EQ.0) THEN
         LINFRE = .FALSE.
       ELSE
@@ -94,7 +95,7 @@ C
 C
 C --- INFO SUR LE TEMPS     
 C
-      CALL GETVTX(MOTFAC,'INFO_TEMPS',1,1,1,CMP,NOC)
+      CALL GETVTX(MOTFAC,'INFO_TEMPS',1,IARG,1,CMP,NOC)
       IF (NOC.EQ.0) THEN
         LINFTP = .FALSE.
       ELSE
@@ -109,7 +110,7 @@ C
 C
 C --- UNITE FICHIER CSV
 C
-      CALL GETVIS(MOTFAC,'UNITE',1,1,1,UNITE,NOC)
+      CALL GETVIS(MOTFAC,'UNITE',1,IARG,1,UNITE,NOC)
 C
 C --- CREATION SD PROVISOIRE COLONNES ACTIVES
 C

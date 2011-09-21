@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ CC      CHARACTER*8 LERESU, NOPASE
       CHARACTER*24 VALK(3)
       CHARACTER*8 K8BID,MA,FIS
       LOGICAL GRILLE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -81,17 +82,17 @@ C
       CALL GETRES(K8BID,K16BID,NOMCMD)
       NOCH19 = CHOU
 
-      CALL GETVTX(' ','NOEUD_CMP',0,1,0,K8BID,N1)
+      CALL GETVTX(' ','NOEUD_CMP',0,IARG,0,K8BID,N1)
       IF (N1.NE.0 .AND. N1.NE.-2) CALL U2MESS('F','MODELISA4_16')
       NOMCH=' '
-      CALL GETVTX(' ','NOM_CHAM',0,1,1,NOMCH,N2)
+      CALL GETVTX(' ','NOM_CHAM',0,IARG,1,NOMCH,N2)
       TYCHLU=' '
-      CALL GETVTX(' ','TYPE_CHAM',0,1,1,TYCHLU,N2)
+      CALL GETVTX(' ','TYPE_CHAM',0,IARG,1,TYCHLU,N2)
 
 C     1. CAS DE LA RECUPERATION DU CHAMP DE GEOMETRIE D'UN MAILLAGE
 C     ==============================================================
       IF (NOMCH.EQ.'GEOMETRIE') THEN
-        CALL GETVID(' ','MAILLAGE',0,1,1,MA,N1)
+        CALL GETVID(' ','MAILLAGE',0,IARG,1,MA,N1)
         IF (N1.EQ.0) CALL U2MESS('F','MODELISA4_17')
 C
 C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
@@ -114,7 +115,7 @@ C
 
 C     2. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD FISS_XFEM
 C     ==============================================================
-      CALL GETVID(' ','FISSURE',0,1,1,FIS,N1)
+      CALL GETVID(' ','FISSURE',0,IARG,1,FIS,N1)
              IF (N1.EQ.1) THEN
 
 C              VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
@@ -173,11 +174,11 @@ C
 
 C     3. CAS DE LA RECUPERATION D'UN CHAMP D'UNE SD RESULTAT
 C     ==============================================================
-      CALL GETVID(' ','RESULTAT',0,1,1,RESUCO,N1)
+      CALL GETVID(' ','RESULTAT',0,IARG,1,RESUCO,N1)
       INTERP=' '
-      CALL GETVTX(' ','INTERPOL',0,1,1,INTERP,N3)
+      CALL GETVTX(' ','INTERPOL',0,IARG,1,INTERP,N3)
       TYPMAX=' '
-      CALL GETVTX(' ','TYPE_MAXI',0,1,1,TYPMAX,N5)
+      CALL GETVTX(' ','TYPE_MAXI',0,IARG,1,TYPMAX,N5)
       CALL GETTCO(RESUCO,TYSD)
 C
 C     --- SENSIBILITE : NOMBRE DE PASSAGES ---
@@ -205,7 +206,7 @@ C         ===============================
      &    TYSD.EQ.'EVOL_VARC') THEN
 
         IF (INTERP(1:3).EQ.'LIN') THEN
-          CALL GETVR8(' ','INST',0,1,1,INST,N4)
+          CALL GETVR8(' ','INST',0,IARG,1,INST,N4)
           CALL ASSERT(N4.EQ.1)
           PROLDR = 'EXCLUS'
           PROLGA = 'EXCLUS'
@@ -217,8 +218,8 @@ C         ===============================
             CALL CHMIMA(LERESU,NOMCH,TYPMAX,NOCH19)
           ELSE
             KNUM = '&&'//NOMPRO//'.NUME_ORDRE'
-            CALL GETVR8(' ','PRECISION',1,1,1,EPSI,NP)
-            CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+            CALL GETVR8(' ','PRECISION',1,IARG,1,EPSI,NP)
+            CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
             CALL RSUTNU(LERESU,' ',0,KNUM,NBORDR,EPSI,CRIT,IRET)
             IF ((IRET.NE.0) .OR. (NBORDR.GT.1)) GO TO 10
             IF (NBORDR.EQ.0) THEN
@@ -259,8 +260,8 @@ C         ===========================
           CALL U2MESG('F', 'MODELISA8_55',1,VALK,0,0,0,0.D0)
         ELSE
           KNUM = '&&'//NOMPRO//'.NUME_ORDRE'
-          CALL GETVR8(' ','PRECISION',1,1,1,EPSI,NP)
-          CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
+          CALL GETVR8(' ','PRECISION',1,IARG,1,EPSI,NP)
+          CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,NC)
           CALL RSUTNU(LERESU,' ',0,KNUM,NBORDR,EPSI,CRIT,IRET)
           IF ((IRET.NE.0) .OR. (NBORDR.GT.1)) GO TO 10
           IF (NBORDR.EQ.0) THEN

@@ -3,7 +3,7 @@
       CHARACTER*(*) MOINT,CMP,CHNO,MATE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*14  NUM
       CHARACTER*19  CHNUL,CN1,CN2,PCHNO1,PCHNO2
       CHARACTER*24  PRCHNO
+      INTEGER      IARG
 C -----------------------------------------------------------------
 C---------------------------------------------------------------------
 C TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER
@@ -80,7 +81,7 @@ C
 
 C RECUPERATION DE LA TAILLE DE REFERENCE
 
-      CALL GETVR8(' ','DIST_REFE',0,1,1,TAILMI,NBID)
+      CALL GETVR8(' ','DIST_REFE',0,IARG,1,TAILMI,NBID)
 
 
 C ON CREE UN CHAMNO BIDON SUR L INTERFACE THERMIQUE

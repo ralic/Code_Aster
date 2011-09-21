@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*16  TYPRES, NOMCOM
       CHARACTER*19  MAX, MAY, MAZ, CHAMNO, SOLVEU
       CHARACTER*24  BLANC, TIME, NOCHAM, MATE
+      INTEGER      IARG
 C
 C -----------------------------------------------------------------
        DATA NOMCMP / 'INST    ', 'DELTAT  ', 'THETA   ',
@@ -81,15 +82,15 @@ C
 C
 C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
-      CALL GETVID(' ', 'MODELE_FLUIDE'   ,0,1,1, MOFLUI, N1 )
-      CALL GETVID(' ', 'CHARGE'          ,0,1,1, CHAR  , N2 )
-      CALL GETVID(' ', 'MODELE_INTERFACE',0,1,1, MOINT , N3 )
-      CALL GETVID(' ', 'CHAM_MATER'      ,0,1,1, MATERI, N4 )
-      CALL GETVID(' ', 'MODE_MECA'       ,0,1,1, MODMEC, N5 )
-      CALL GETVID(' ', 'NUME_DDL_GENE'   ,0,1,1, NUMGEN, N6 )
-      CALL GETVID(' ', 'MODELE_GENE'     ,0,1,1, MODGEN, N7 )
-      CALL GETVID(' ', 'POTENTIEL'       ,0,1,1, PHIBAR, N8 )
-      CALL GETVTX(' ', 'NOEUD_DOUBLE'    ,0,1,1, ND    , N9 )
+      CALL GETVID(' ', 'MODELE_FLUIDE'   ,0,IARG,1, MOFLUI, N1 )
+      CALL GETVID(' ', 'CHARGE'          ,0,IARG,1, CHAR  , N2 )
+      CALL GETVID(' ', 'MODELE_INTERFACE',0,IARG,1, MOINT , N3 )
+      CALL GETVID(' ', 'CHAM_MATER'      ,0,IARG,1, MATERI, N4 )
+      CALL GETVID(' ', 'MODE_MECA'       ,0,IARG,1, MODMEC, N5 )
+      CALL GETVID(' ', 'NUME_DDL_GENE'   ,0,IARG,1, NUMGEN, N6 )
+      CALL GETVID(' ', 'MODELE_GENE'     ,0,IARG,1, MODGEN, N7 )
+      CALL GETVID(' ', 'POTENTIEL'       ,0,IARG,1, PHIBAR, N8 )
+      CALL GETVTX(' ', 'NOEUD_DOUBLE'    ,0,IARG,1, ND    , N9 )
 C
 C --- LECTURE DES PARAMETRES  SOLVEUR
 C

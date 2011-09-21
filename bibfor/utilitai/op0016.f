@@ -1,6 +1,6 @@
       SUBROUTINE OP0016()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 TXT
       CHARACTER*16 NOMENT
       CHARACTER*1  NOMCLA,K1BID
+      INTEGER      IARG
 C
       CALL INFMAJ()
       IRES=IUNIFI('RESULTAT')
@@ -51,9 +52,9 @@ C
       FICH='MESSAGE'
       IUNI=IMES
 C
-      CALL GETVIS('IMPRESSION','UNITE',1,1,1,IUNI,NUNI)
+      CALL GETVIS('IMPRESSION','UNITE',1,IARG,1,IUNI,NUNI)
       CALL ULDEFI( IUNI,' ',' ','A','N','O' )
-      CALL GETVTX('IMPRESSION','NOM',1,1,1,FICH,NFIC)
+      CALL GETVTX('IMPRESSION','NOM',1,IARG,1,FICH,NFIC)
       IF (NFIC.NE.0) THEN
 C        CALL LXCAPS(FICH)
          IF(FICH(1:8).EQ.'RESULTAT') THEN
@@ -71,16 +72,16 @@ C        CALL LXCAPS(FICH)
       END IF
 C
 C
-      CALL GETVTX(' ','ENTITE',0,1,1,NOMENT,N)
+      CALL GETVTX(' ','ENTITE',0,IARG,1,NOMENT,N)
       IF ( N .EQ. 0 ) GOTO 9999
 C
-      CALL GETVTX(' ','COMMENTAIRE',0,1,1,TXT,N)
+      CALL GETVTX(' ','COMMENTAIRE',0,IARG,1,TXT,N)
       IF (N.EQ.0) TXT=' '
 C
       IF ( NOMENT(1:6) .EQ. 'DISQUE' ) THEN
 C
          NOMCLA = ' '
-         CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
+         CALL GETVTX(' ','CLASSE',0,IARG,1,NOMCLA,N)
          WRITE(IUNI,*) ' '
          CALL JEIMPD(FICH,NOMCLA,TXT)
          WRITE(IUNI,*) ' '
@@ -94,14 +95,14 @@ C
       ELSE IF ( NOMENT .EQ. 'REPERTOIRE' ) THEN
 C
          NOMCLA = ' '
-         CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
+         CALL GETVTX(' ','CLASSE',0,IARG,1,NOMCLA,N)
          WRITE(IUNI,*) ' '
          CALL JEIMPR(FICH,NOMCLA,TXT)
          WRITE(IUNI,*) ' '
 C
       ELSE IF ( NOMENT(1:5) .EQ. 'OBJET' ) THEN
 C
-         CALL GETVTX(' ','NOMOBJ',0,1,1,NOMOBJ,N)
+         CALL GETVTX(' ','NOMOBJ',0,IARG,1,NOMOBJ,N)
          NOML32 = NOMOBJ
          CALL JJVERN(NOML32,0,IRET)
          WRITE(IUNI,*) ' '
@@ -114,16 +115,16 @@ C
             WRITE(IUNI,*) ' '
             WRITE(IUNI,*)' ECRITURE DE L''OBJET : "',NOMOBJ,'"'
          END IF
-         CALL GETVTX(' ','COMMENTAIRE',0,1,1,TXT,N)
+         CALL GETVTX(' ','COMMENTAIRE',0,IARG,1,TXT,N)
          IF (N.EQ.0) TXT=' '
          WRITE(IUNI,*) ' '
          CALL JEIMPA(IUNI,NOMOBJ,TXT)
          WRITE(IUNI,*) ' '
          WRITE(IUNI,*) ' '
          IF (IRET.EQ.2) THEN
-            CALL GETVIS(' ','NUMOC',0,1,1,NUM,N1)
-            CALL GETVTX(' ','NOMOC',0,1,1,NOM,N2)
-            CALL GETVTX(' ','NOMATR',0,1,1,NOM,N3)
+            CALL GETVIS(' ','NUMOC',0,IARG,1,NUM,N1)
+            CALL GETVTX(' ','NOMOC',0,IARG,1,NOM,N2)
+            CALL GETVTX(' ','NOMATR',0,IARG,1,NOM,N3)
 C           CALL LXCAPS(NOM)
             IF (N1.NE.0) THEN
                CALL JEEXIN(JEXNUM(NOMOBJ,NUM),IRET)
@@ -182,8 +183,8 @@ C
       ELSE IF ( NOMENT(1:7) .EQ. 'SYSTEME' ) THEN
 C
          NOMCLA = ' '
-         CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
-         CALL GETVTX(' ','NOMATR',0,1,1,NOM,N3)
+         CALL GETVTX(' ','CLASSE',0,IARG,1,NOMCLA,N)
+         CALL GETVTX(' ','NOMATR',0,IARG,1,NOM,N3)
          IF (N3.NE.0) THEN
             CALL JEPRAT(IUNI,'$'//NOMCLA(1:1),NOM(1:8),' ',TXT)
             WRITE(IUNI,*) ' '
@@ -191,7 +192,7 @@ C
 C
       ELSE IF ( NOMENT(1:8) .EQ. 'ATTRIBUT' ) THEN
 C
-         CALL GETVTX(' ','NOMOBJ',0,1,1,NOMOBJ,N)
+         CALL GETVTX(' ','NOMOBJ',0,IARG,1,NOMOBJ,N)
          CALL JEEXIN(NOMOBJ,IRET)
          WRITE(IUNI,*) ' '
          IF (IRET.EQ.0) THEN
@@ -209,9 +210,9 @@ C
       ELSE IF ( NOMENT(1:14) .EQ. 'ENREGISTREMENT' ) THEN
 C
          NOMCLA = ' '
-         CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
-         CALL GETVIS(' ','NUMERO',0,1,1,NUMERG,NRG)
-         CALL GETVIS(' ','INFO',0,1,1,INFO,NIF)
+         CALL GETVTX(' ','CLASSE',0,IARG,1,NOMCLA,N)
+         CALL GETVIS(' ','NUMERO',0,IARG,1,NUMERG,NRG)
+         CALL GETVIS(' ','INFO',0,IARG,1,INFO,NIF)
          WRITE(IUNI,*) ' '
          CALL JEPREG(FICH,NOMCLA,NUMERG,TXT,INFO)
          WRITE(IUNI,*) ' '

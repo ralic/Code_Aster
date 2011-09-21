@@ -4,7 +4,7 @@
       CHARACTER*(*)       LISINS, LISARC, TYPE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
       REAL*8       EPSI
       CHARACTER*8  K8B, RELA
       CHARACTER*19 NUMARC
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -63,11 +64,11 @@ C
       IF ( NBOCC .NE. 0 ) THEN
 C
          
-         CALL GETVID ( 'ARCHIVAGE', 'LIST_INST', 1,1,1, NUMARC, N1 )
+         CALL GETVID ( 'ARCHIVAGE', 'LIST_INST', 1,IARG,1, NUMARC, N1 )
          IF ( N1 .NE. 0 ) THEN
             CALL JEVEUO ( LISINS, 'L', JINSC )
-            CALL GETVR8 ( 'ARCHIVAGE', 'PRECISION', 1,1,1, EPSI, N1 )
-            CALL GETVTX ( 'ARCHIVAGE', 'CRITERE'  , 1,1,1, RELA, N1 )
+            CALL GETVR8 ( 'ARCHIVAGE', 'PRECISION', 1,IARG,1, EPSI, N1 )
+            CALL GETVTX ( 'ARCHIVAGE', 'CRITERE'  , 1,IARG,1, RELA, N1 )
             CALL JEVEUO ( NUMARC//'.VALE', 'L', JNUM )
             CALL JELIRA ( NUMARC//'.VALE', 'LONUTI', LNUM, K8B )
             CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, ZI(JARCH),
@@ -76,14 +77,15 @@ C
             GOTO 100
          ENDIF
 C
-         CALL GETVR8 ( 'ARCHIVAGE', 'INST', 1,1,0, EPSI, N1 )
+         CALL GETVR8 ( 'ARCHIVAGE', 'INST', 1,IARG,0, EPSI, N1 )
          IF ( N1 .NE. 0 ) THEN
             CALL JEVEUO ( LISINS, 'L', JINSC )
             LNUM = -N1
-            CALL GETVR8 ( 'ARCHIVAGE', 'PRECISION', 1,1,1, EPSI, N1 )
-            CALL GETVTX ( 'ARCHIVAGE', 'CRITERE'  , 1,1,1, RELA, N1 )
+            CALL GETVR8 ( 'ARCHIVAGE', 'PRECISION', 1,IARG,1, EPSI, N1 )
+            CALL GETVTX ( 'ARCHIVAGE', 'CRITERE'  , 1,IARG,1, RELA, N1 )
             CALL WKVECT ( '&&DYARCH.VALE_INST', 'V V R', LNUM, JNUM )
-            CALL GETVR8 ( 'ARCHIVAGE', 'INST', 1,1,LNUM, ZR(JNUM), N1 )
+            CALL GETVR8 ('ARCHIVAGE','INST',1,IARG,LNUM,
+     &                   ZR(JNUM), N1 )
             CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, ZI(JARCH),
      +                    EPSI, RELA  )
             CALL JEDETR ( '&&DYARCH.VALE_INST' )
@@ -91,7 +93,7 @@ C
             GOTO 100
          ENDIF
 C
-         CALL GETVIS ( 'ARCHIVAGE', 'PAS_ARCH', 1,1,1, IPACH, N1 )
+         CALL GETVIS ( 'ARCHIVAGE', 'PAS_ARCH', 1,IARG,1, IPACH, N1 )
          IF ( N1 .EQ. 0 ) IPACH = 1
 C
          DO 10 K = IPACH , NBPAS , IPACH
@@ -104,10 +106,10 @@ C
          IF ( ICH .NE. 0 ) THEN
 C
 C        --- LES SORTIES ---
-         CALL GETVTX ( 'ARCHIVAGE', 'CHAM_EXCLU' , 1,1,0, K8B, N1 )
+         CALL GETVTX ( 'ARCHIVAGE', 'CHAM_EXCLU' , 1,IARG,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
             NBEXCL = -N1
-            CALL GETVTX('ARCHIVAGE','CHAM_EXCLU' ,1,1,NBEXCL,TYPE,N1)
+            CALL GETVTX('ARCHIVAGE','CHAM_EXCLU' ,1,IARG,NBEXCL,TYPE,N1)
          ENDIF
          ENDIF
 C

@@ -1,7 +1,7 @@
       SUBROUTINE OP0008()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 TYPE,OPER,SUROPT,TYPCO
       CHARACTER*19 VRESUL,MATEL,RESUEL
       CHARACTER*24 TIME2,CHAM,VFONO,VAFONO,VMATEL,CH24,MATE
+      INTEGER      IARG
       DATA NOMCMP/'INST    ','DELTAT  ','THETA   ','KHI     ',
      &     'R       ','RHO     '/
       DATA NCMPTH/'TEMP','TEMP_INF','TEMP_SUP'/
@@ -63,13 +64,13 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CALL GETRES(MATEZ,TYPE,OPER)
       MATEL=MATEZ
 
-      CALL GETVTX(' ','OPTION',0,1,1,SUROPT,N3)
+      CALL GETVTX(' ','OPTION',0,IARG,1,SUROPT,N3)
 
 C     - ON VERIFIE LE NOM DU MODELE:
 C     -------------------------------
       MODELE = ' '
-      CALL GETVID(' ','MODELE',0,1,1,MODELE,N1)
-      CALL GETVID(' ','CHARGE',0,1,0,CHA,NCHA)
+      CALL GETVID(' ','MODELE',0,IARG,1,MODELE,N1)
+      CALL GETVID(' ','CHARGE',0,IARG,0,CHA,NCHA)
 
 
       IF (NCHA.LT.0) THEN
@@ -78,7 +79,7 @@ C     -------------------------------
         N3=MAX(1,NCHA)
         CALL JEECRA(MATEL(1:8)//'.CHARGES','LONMAX',N3,' ')
         CALL JEVEUO(MATEL(1:8)//'.CHARGES','E',ICHA)
-        CALL GETVID(' ','CHARGE',0,1,NCHA,ZK8(ICHA),IBID)
+        CALL GETVID(' ','CHARGE',0,IARG,NCHA,ZK8(ICHA),IBID)
 
         CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,MO1,IED)
         IF ((N1.EQ.1) .AND. (MODELE.NE.MO1)) CALL U2MESS('F','CALCULEL3_
@@ -95,7 +96,7 @@ C     -------------------------------
       END IF
 
       IF (SUROPT.EQ.'FORC_NODA') THEN
-        CALL GETVID(' ','SIEF_ELGA',0,1,1,CHAM,N6)
+        CALL GETVID(' ','SIEF_ELGA',0,IARG,1,CHAM,N6)
         IF(N6.NE.0)THEN
           CALL CHPVER('F',CHAM(1:19),'ELGA','SIEF_R',IERD)
         ENDIF
@@ -110,18 +111,18 @@ C     -------------------------------
 
       CARA = ' '
       MATERI = ' '
-      CALL GETVID(' ','CARA_ELEM',0,1,1,CARA,N5)
-      CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N4)
+      CALL GETVID(' ','CARA_ELEM',0,IARG,1,CARA,N5)
+      CALL GETVID(' ','CHAM_MATER',0,IARG,1,MATERI,N4)
       IF (N4.NE.0) THEN
         CALL RCMFMC(MATERI,MATE)
       ELSE
         MATE = ' '
       END IF
 
-      CALL GETVR8(' ','INST',0,1,1,TIME,N7)
+      CALL GETVR8(' ','INST',0,IARG,1,TIME,N7)
       EXITIM = .FALSE.
       IF (N7.EQ.1) EXITIM = .TRUE.
-      CALL GETVIS(' ','MODE_FOURIER',0,1,1,NH,N9)
+      CALL GETVIS(' ','MODE_FOURIER',0,IARG,1,NH,N9)
       IF (N9.EQ.0) NH = 0
 
 C     -- VERIFICATION DES CHARGES:
@@ -193,7 +194,7 @@ C       - ON CHERCHE LE NOM DU MODELE A ATTACHER AU VECT_ELEM :
         IF (TYPCO(1:14).EQ.'MODELE_SDASTER') THEN
           MODELE = K8B
         ELSE
-          CALL GETVID(' ','MODELE',0,1,1,MODELE,N1)
+          CALL GETVID(' ','MODELE',0,IARG,1,MODELE,N1)
           IF (N1.EQ.0) CALL U2MESS('F','CALCULEL3_95')
         END IF
 

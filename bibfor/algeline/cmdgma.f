@@ -3,9 +3,9 @@
       CHARACTER*(*)       MAILLA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,6 +44,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER I,JVG,JGG,NBMA,II,ADETR,NGRMAN
       CHARACTER*1   K1B
       CHARACTER*8   MA,NOMG
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 
       CALL JEMARQ ( )
@@ -52,7 +53,7 @@ C     ------------------------------------------------------------------
       CALL JELIRA(MA//'.GROUPEMA','NMAXOC',NGRMA,K1B)
       CALL WKVECT ('&&CMDGMA.NUGRMA_A_DETR','V V I',NGRMA,IANUGR)
 
-      CALL GETVIS('DETR_GROUP_MA','NB_MAILLE',1,1,1,LIMIT,N1)
+      CALL GETVIS('DETR_GROUP_MA','NB_MAILLE',1,IARG,1,LIMIT,N1)
 C     --------------------------------------------------------
       IF (LIMIT.GT.0) THEN
         DO 1,IGMA=1,NGRMA
@@ -65,13 +66,13 @@ C     --------------------------------------------------------
       END IF
 
       CALL GETVEM(MA,'GROUP_MA','DETR_GROUP_MA','GROUP_MA',
-     &                1,1,0,ZK8(1),NDETR)
+     &                1,IARG,0,ZK8(1),NDETR)
 C     ----------------------------------------------------------
       IF (NDETR.LT.0) THEN
         NDETR=-NDETR
         CALL WKVECT ('&&CMDGMA.LIGRMA_A_DETR','V V K8',NDETR,IALIGR)
         CALL GETVEM(MA,'GROUP_MA','DETR_GROUP_MA','GROUP_MA',
-     &                  1,1,NDETR,ZK8(IALIGR),N1)
+     &                  1,IARG,NDETR,ZK8(IALIGR),N1)
         DO 2,IGMA=1,NDETR
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIGR-1+IGMA)),NUGR)
           IF (NUGR.GT.0)  ZI(IANUGR-1+NUGR)=1

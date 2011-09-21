@@ -2,7 +2,7 @@
      &                  INSDER,NUMARC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,6 +72,7 @@ C
       INTEGER      N1
       REAL*8       VALR(2),INST2
       CHARACTER*16 K16BID
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -84,7 +85,7 @@ C
 C
 C --- OPTION ARCHIVAGE
 C
-      CALL GETVTX(MOTFAC,'DETR_NUME_SUIV',1,1,1,K16BID,N1    )
+      CALL GETVTX(MOTFAC,'DETR_NUME_SUIV',1,IARG,1,K16BID,N1    )
 C      
       IF (LREUSE) THEN 
 C

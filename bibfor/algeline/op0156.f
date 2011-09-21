@@ -2,9 +2,9 @@
       IMPLICIT  NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19  PFCHN1, PFCHN2
       CHARACTER*16  TYPE, NOMCMD
       CHARACTER*19  MASSE, RESU, CHAMNO, CHAMN2, PRNO
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
       CALL INFMAJ()
@@ -60,7 +61,7 @@ C
 C
 C     --- MATRICE ---
 C
-      CALL GETVID(' ', 'MATR_ASSE', 0,1,1, MASSE, N1 )
+      CALL GETVID(' ', 'MATR_ASSE', 0,IARG,1, MASSE, N1 )
       CALL MTDSCR ( MASSE )
       CALL JEVEUO ( MASSE(1:19)//'.&INT', 'E', LMAT )
       IF ( ZI(LMAT+3) .EQ. 1 ) THEN
@@ -75,7 +76,7 @@ C
 C
 C     --- CHAM NO ---
 C
-      CALL GETVID (' ', 'CHAM_NO', 0,1,1, CHAMNO, N1 )
+      CALL GETVID (' ', 'CHAM_NO', 0,IARG,1, CHAMNO, N1 )
       CALL CHPVER('F',CHAMNO,'NOEU','*',IER)
       CALL JELIRA ( CHAMNO//'.VALE', 'TYPE', IBID, TYPRES )
       IF ( TYPMAT .NE. TYPRES ) THEN

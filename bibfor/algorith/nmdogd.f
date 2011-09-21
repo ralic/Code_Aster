@@ -6,10 +6,11 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*16 LCOMEL(5),DEFO,MOCLEF
       INTEGER N1
       INTEGER EXIST,GETEXM
+      INTEGER      IARG
       
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,7 +40,7 @@ C ----------------------------------------------------------------------
       EXIST = GETEXM(MOCLEF,'DEFORMATION')
       DEFO='PETIT'
       IF (EXIST .EQ. 1) THEN     
-          CALL GETVTX(MOCLEF,'DEFORMATION',K,1,1,DEFO,N1)
+          CALL GETVTX(MOCLEF,'DEFORMATION',K,IARG,1,DEFO,N1)
           IF(DEFO.EQ.'SIMO_MIEHE') THEN
              NCOMEL=NCOMEL+1
              LCOMEL(NCOMEL)=DEFO

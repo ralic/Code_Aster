@@ -4,7 +4,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,7 @@ C
       CHARACTER*24 VALK,NOMSST
       COMPLEX*16   CBID
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
@@ -153,11 +154,11 @@ C
 C
 C --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 C
-      CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,0, IBID, NNO )
+      CALL GETVIS ( ' ', 'NUME_ORDRE', 1,IARG,0, IBID, NNO )
       IF ( NNO .NE. 0 ) THEN
         NBMOD = -NNO
         CALL WKVECT ( '&&REGEGL.NUME', 'V V I', NBMOD, JBID )
-        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,NBMOD, ZI(JBID), NNO )
+        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,IARG,NBMOD, ZI(JBID), NNO )
       ELSE
         CALL WKVECT ( '&&REGEGL.NUME', 'V V I', NBMOD, JBID )
         DO 2 I = 1 , NBMOD

@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/11/2010   AUTEUR BODEL C.BODEL 
+C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 VALK
       CHARACTER*24  KVEC, KVALI, KVALR, KVALK, NOPARA(NBPARA)
       COMPLEX*16    C16B
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  REFD  / '                   .REFD' /
       DATA  KVEC  / '&&OP0168.VAL_PROPRE' /
@@ -88,7 +89,7 @@ C
          CALL JECREC(KMODE,'V V I','NU','DISPERSE','VARIABLE',NBFILT)
          DO 10 I = 1 , NBFILT
 C
-            CALL GETVID ( 'FILTRE_MODE', 'MODE', I,1,1, MODEIN, N1 )
+            CALL GETVID ( 'FILTRE_MODE', 'MODE', I,IARG,1, MODEIN, N1 )
 C
             CALL JELIRA ( MODEIN//'           .ORDR','LONUTI',IRET,K8B)
             IF ( IRET .EQ. 0 ) GOTO 10
@@ -125,7 +126,7 @@ C
             CALL JEECRA(JEXNUM(KMODE,NBMR),'LONMAX',NBMODT,' ')
             CALL JEVEUO(JEXNUM(KMODE,NBMR),'E',JORDR)
 C
-            CALL GETVTX('FILTRE_MODE','TOUT_ORDRE',I,1,1,OUINON,N1)
+            CALL GETVTX('FILTRE_MODE','TOUT_ORDRE',I,IARG,1,OUINON,N1)
             IF ( N1 .NE. 0  .AND.  OUINON .EQ. 'OUI' ) THEN
                NBMODE = NBMODT
                DO 12 J = 1 , NBMODE
@@ -137,11 +138,11 @@ C
                GOTO 10
             ENDIF
 C
-            CALL GETVIS('FILTRE_MODE','NUME_ORDRE',I,1,0,IBID,N2)
+            CALL GETVIS('FILTRE_MODE','NUME_ORDRE',I,IARG,0,IBID,N2)
             IF ( N2 .NE. 0 ) THEN
                NBMODU = -N2
                CALL WKVECT('&&OP0168.NUME_MODE','V V I',NBMODU,JME)
-               CALL GETVIS('FILTRE_MODE','NUME_ORDRE',I,1,
+               CALL GETVIS('FILTRE_MODE','NUME_ORDRE',I,IARG,
      &                                             NBMODU,ZI(JME),N2)
                NBMODE = 0
                DO 20 J = 1 , NBMODU
@@ -163,11 +164,11 @@ C
                GOTO 10
             ENDIF
 C
-            CALL GETVIS('FILTRE_MODE','NUME_MODE',I,1,0,IBID,N3)
+            CALL GETVIS('FILTRE_MODE','NUME_MODE',I,IARG,0,IBID,N3)
             IF ( N3 .NE. 0 ) THEN
                NBMODU = -N3
                CALL WKVECT('&&OP0168.NUME_MODE','V V I',NBMODU,JME)
-               CALL GETVIS('FILTRE_MODE','NUME_MODE',I,1,
+               CALL GETVIS('FILTRE_MODE','NUME_MODE',I,IARG,
      &                                             NBMODU,ZI(JME),N3)
                NBMODE = 0
                DO 30 J = 1 , NBMODT
@@ -188,11 +189,12 @@ C
                GOTO 10
             ENDIF
 C
-            CALL GETVIS('FILTRE_MODE','NUME_MODE_EXCLU',I,1,0,IBID,N4)
+            CALL GETVIS('FILTRE_MODE','NUME_MODE_EXCLU',I,IARG,0,
+     &                  IBID,N4)
             IF ( N4 .NE. 0 ) THEN
                NBME = -N4
                CALL WKVECT('&&OP0168.NUME_MODE','V V I',NBME,JME)
-               CALL GETVIS('FILTRE_MODE','NUME_MODE_EXCLU',I,1,
+               CALL GETVIS('FILTRE_MODE','NUME_MODE_EXCLU',I,IARG,
      &                                                NBME,ZI(JME),N4)
                NBMODE = 0
                DO 40 J = 1 , NBMODT
@@ -212,11 +214,11 @@ C
                GOTO 10
             ENDIF
 C
-            CALL GETVR8('FILTRE_MODE','FREQ_MIN',I,1,0,R8B,N5)
+            CALL GETVR8('FILTRE_MODE','FREQ_MIN',I,IARG,0,R8B,N5)
             IF ( N5 .NE. 0 ) THEN
-               CALL GETVR8('FILTRE_MODE','FREQ_MIN' ,I,1,1,FREMIN,N5)
-               CALL GETVR8('FILTRE_MODE','FREQ_MAX' ,I,1,1,FREMAX,N5)
-               CALL GETVR8('FILTRE_MODE','PRECISION',I,1,1,PREC  ,N5)
+               CALL GETVR8('FILTRE_MODE','FREQ_MIN' ,I,IARG,1,FREMIN,N5)
+               CALL GETVR8('FILTRE_MODE','FREQ_MAX' ,I,IARG,1,FREMAX,N5)
+               CALL GETVR8('FILTRE_MODE','PRECISION',I,IARG,1,PREC  ,N5)
                FREMIN = FREMIN - PREC
                FREMAX = FREMAX + PREC
                NBMODE = 0
@@ -235,13 +237,14 @@ C
                GOTO 10
             ENDIF
 C
-            CALL GETVTX('FILTRE_MODE','CRIT_EXTR',I,1,0,K8B,N6)
+            CALL GETVTX('FILTRE_MODE','CRIT_EXTR',I,IARG,0,K8B,N6)
             IF ( N6 .NE. 0 ) THEN
-               CALL GETVTX('FILTRE_MODE','CRIT_EXTR',I,1,1,CRITFI,N6)
-               CALL GETVR8('FILTRE_MODE','SEUIL'  ,I,1,1,SEUIL ,N7)
-               CALL GETVR8('FILTRE_MODE','SEUIL_X'  ,I,1,1,SEUIL ,N8)
-               CALL GETVR8('FILTRE_MODE','SEUIL_Y'  ,I,1,1,SEUIL ,N9)
-               CALL GETVR8('FILTRE_MODE','SEUIL_Z'  ,I,1,1,SEUIL ,N10)
+               CALL GETVTX('FILTRE_MODE','CRIT_EXTR',I,IARG,1,CRITFI,N6)
+               CALL GETVR8('FILTRE_MODE','SEUIL'  ,I,IARG,1,SEUIL ,N7)
+               CALL GETVR8('FILTRE_MODE','SEUIL_X'  ,I,IARG,1,SEUIL ,N8)
+               CALL GETVR8('FILTRE_MODE','SEUIL_Y'  ,I,IARG,1,SEUIL ,N9)
+               CALL GETVR8('FILTRE_MODE','SEUIL_Z',I,IARG,1,
+     &                     SEUIL ,N10)
                NBMODE = 0
                IF ( CRITFI .EQ. 'MASS_EFFE_UN'.AND.
      &             TYPCON(1:9).EQ.'MODE_MECA' ) THEN
@@ -380,8 +383,8 @@ C     --- LES IMPRESSIONS ---
 C
       CALL GETFAC ( 'IMPRESSION' , IMPR )
       IF ( IMPR .NE. 0 ) THEN
-         CALL GETVTX('IMPRESSION','CUMUL'  ,1,1,1,OUINON,N1)
-         CALL GETVTX('IMPRESSION','CRIT_EXTR',1,1,1,CRITFI,N2)
+         CALL GETVTX('IMPRESSION','CUMUL'  ,1,IARG,1,OUINON,N1)
+         CALL GETVTX('IMPRESSION','CRIT_EXTR',1,IARG,1,CRITFI,N2)
          IF ( CRITFI .EQ. 'MASS_EFFE_UN'.AND.
      &          TYPCON(1:9).EQ.'MODE_MECA' ) THEN
             IF ( OUINON .EQ. 'OUI' ) THEN

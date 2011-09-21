@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8   BLAN8
       CHARACTER*16 CONCEP, NOMCMD, PHENOM
       CHARACTER*19 EXCIT, KFON
+      INTEGER      IARG
 C
       CALL JEMARQ()
 C              12345678
@@ -100,14 +101,14 @@ C
         ENDIF
       ELSE
 C
-        CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
-        CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
+        CALL GETVID(' ','MODELE'    ,0,IARG,1,MODELE,N1)
+        CALL GETVID(' ','CARA_ELEM' ,0,IARG,1,CARA  ,N2)
         CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)
         IF ((N2.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
      &   CALL U2MESS('A','CALCULEL3_39')
 
 
-        CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N3)
+        CALL GETVID(' ','CHAM_MATER',0,IARG,1,MATERI,N3)
         CALL DISMOI('F','BESOIN_MATER',MODELE,'MODELE',IBID,K8B,IE)
         IF ((N3.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
      &      CALL U2MESS('A','CALCULEL3_40')
@@ -134,7 +135,7 @@ C
           IF(IRET.NE.0) CALL JEDETR(KCHA)
           CALL WKVECT( KCHA ,'V V K8',N5,ICHA)
           DO 20 IEXCIT = 1, N5
-            CALL GETVID('EXCIT','CHARGE',IEXCIT,1,1,
+            CALL GETVID('EXCIT','CHARGE',IEXCIT,IARG,1,
      &                  ZK8(ICHA+IEXCIT-1),N)
  20       CONTINUE
         ELSE

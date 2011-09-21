@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,7 @@ C
       LOGICAL FALS,TRUE,LBID
 
       COMPLEX*16 C16B
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -96,7 +97,7 @@ C               12   345678   9012345678901234
 C
       CALL GETRES ( RESUOU, TYPCON, NOMCMD )
 C
-      CALL GETVID ( ' ', 'RESULTAT', 1,1,1, RESUIN, IBID )
+      CALL GETVID ( ' ', 'RESULTAT', 1,IARG,1, RESUIN, IBID )
 C
 C     --- CHAMPS ---
 C

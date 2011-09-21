@@ -3,7 +3,7 @@
       CHARACTER*(*) MOINT,MATE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,13 +66,14 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*14  NUM
       CHARACTER*19  CHNUL,CN2,PCHNO2
       CHARACTER*24  PRCHNO
+      INTEGER      IARG
 C -----------------------------------------------------------------
        DATA EPSI    /1.D-2/
 C---------------------------------------------------------------------
 C
 C RECUPERATION DE LA TAILLE DE REFERENCE
 
-      CALL GETVR8(' ','DIST_REFE',0,1,1,TAILMI,NBID)
+      CALL GETVR8(' ','DIST_REFE',0,IARG,1,TAILMI,NBID)
       CALL DISMOI('F','NB_NO_MAILLA',MA2,'MAILLAGE',NBNO2,REPK,IERD)
       TAILM2=(EPSI*TAILMI)**2
 C ON CREE UN CHAMNO BIDON SUR L INTERFACE THERMIQUE

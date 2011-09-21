@@ -1,6 +1,6 @@
       SUBROUTINE PJEFTC(MA1,MA2,RESUOU,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,6 +42,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*1  KBID
       CHARACTER*16 NOMGMA, NOMGNO
       CHARACTER*16 CORRE1,CORRE2,CORRE3
+      INTEGER      IARG
 
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -72,8 +73,8 @@ C     ---------------------------------------------
 
 C         -- NOMS DES GROUPES DE MAILLES ET DE NOEUDS COUPLES :
 C         -----------------------------------------------------------
-          CALL GETVTX('VIS_A_VIS','GROUP_MA_1',IOCC,1,1,NOMGMA,NBVAL)
-          CALL GETVTX('VIS_A_VIS','GROUP_NO_2',IOCC,1,1,NOMGNO,NBVAL)
+          CALL GETVTX('VIS_A_VIS','GROUP_MA_1',IOCC,IARG,1,NOMGMA,NBVAL)
+          CALL GETVTX('VIS_A_VIS','GROUP_NO_2',IOCC,IARG,1,NOMGNO,NBVAL)
 
 C         -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
 C         ----------------------------------------------

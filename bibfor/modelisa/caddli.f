@@ -5,9 +5,9 @@
       CHARACTER*16 NOMCMD,MOTFAC
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,6 +81,7 @@ C--- Variables pour le mot-clef "LIAISON = ENCASTRE"
       LOGICAL      EXISDG
       CHARACTER*8  NOMG
       CHARACTER*72 VALLIA
+      INTEGER      IARG
       DATA         VALLIA  /'XXXXXXXX'/
 C-------------------------------------------------------------
 
@@ -250,18 +251,18 @@ C        3.2- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
 C        ---------------------------------------------------
         IF (FONREE.EQ.'REEL') THEN
           DO 40 J = 1,NDDLA
-            CALL GETVR8(MOTFAC,MOTCLE(J),I,1,1,VALIMR(J),DDLIMP(J))
+            CALL GETVR8(MOTFAC,MOTCLE(J),I,IARG,1,VALIMR(J),DDLIMP(J))
    40     CONTINUE
 
         ELSE IF (FONREE.EQ.'COMP') THEN
           DO 50 J = 1,NDDLA
-            CALL GETVC8(MOTFAC,MOTCLE(J),I,1,1,VALIMC(J),DDLIMP(J))
+            CALL GETVC8(MOTFAC,MOTCLE(J),I,IARG,1,VALIMC(J),DDLIMP(J))
    50     CONTINUE
 
 
         ELSE IF (FONREE.EQ.'FONC') THEN
           DO 60 J = 1,NDDLA
-            CALL GETVID(MOTFAC,MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
+            CALL GETVID(MOTFAC,MOTCLE(J),I,IARG,1,VALIMF(J),DDLIMP(J))
    60     CONTINUE
         END IF
 
@@ -276,7 +277,7 @@ C        ----------------------------------------------
 C---  GESTION DU MOT-CLEF "LIAISON"
           DO 80 J = 1,NDLIA
             VALLIA='XXXXXXXX'
-            CALL GETVTX(MOTFAC,'LIAISON',I,1,1,VALLIA,LIAIMP)
+            CALL GETVTX(MOTFAC,'LIAISON',I,IARG,1,VALLIA,LIAIMP)
             IF (VALLIA.EQ.'ENCASTRE') THEN
               IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP1)) THEN
                 VALIMR(1) = 0.D0

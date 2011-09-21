@@ -3,9 +3,9 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/99   AUTEUR AUBHHMB M.BONNAMY 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -53,14 +53,16 @@ C
       REAL*8        RM, AZIM, THETA, RHO, AZIMR, PI, R8PI, XP, YP, 
      +              LTCHAR, DEXT, EP
       CHARACTER*24  COORD, DIME 
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      CALL GETVR8 ( 'PLAQ_TUBE', 'DEXT'      , 1,1,1, DEXT     , N1 )
-      CALL GETVR8 ( 'PLAQ_TUBE', 'EPAIS'     , 1,1,1, EP       , N1 )
-      CALL GETVR8 ( 'PLAQ_TUBE', 'AZIMUT'    , 1,1,1, AZIM     , N1 )
-      CALL GETVR8 ( 'PLAQ_TUBE', 'L_TUBE_P1' , 1,1,1, LTCHAR   , N1 ) 
+      CALL GETVR8 ( 'PLAQ_TUBE', 'DEXT'      , 1,IARG,1, DEXT     , N1 )
+      CALL GETVR8 ( 'PLAQ_TUBE', 'EPAIS'     , 1,IARG,1, EP       , N1 )
+      CALL GETVR8 ( 'PLAQ_TUBE', 'AZIMUT'    , 1,IARG,1, AZIM     , N1 )
+      CALL GETVR8 ('PLAQ_TUBE','L_TUBE_P1',1,IARG,1,
+     &             LTCHAR   , N1 )
 C 
       RM = (DEXT-EP)/2.D0
 C

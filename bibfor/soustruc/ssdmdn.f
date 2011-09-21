@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDN ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -65,14 +66,14 @@ C     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
 C     -----------------------------------------
       CALL GETFAC('DEFI_NOEUD',NOCC)
       DO 1, IOCC=1,NOCC
-        CALL GETVTX('DEFI_NOEUD','TOUT',IOCC,1,1,KBID,N1)
+        CALL GETVTX('DEFI_NOEUD','TOUT',IOCC,IARG,1,KBID,N1)
         IF (N1.EQ.1) THEN
 C
 C       -- CAS : TOUT: 'OUI'
 C       --------------------
           LPREF=0
           CALL GETLTX('DEFI_NOEUD','PREFIXE',IOCC,1,1,LPREF,N2)
-          CALL GETVIS('DEFI_NOEUD','INDEX',IOCC,1,4,INDI,N3)
+          CALL GETVIS('DEFI_NOEUD','INDEX',IOCC,IARG,4,INDI,N3)
           LMAIL=INDI(2)-INDI(1)+1
           LNOEU=INDI(4)-INDI(3)+1
           LMAIL=MAX(LMAIL,0)
@@ -80,7 +81,7 @@ C       --------------------
           LONGT= LPREF+LMAIL+LNOEU
           IF (LONGT.GT.8) CALL U2MESS('F','SOUSTRUC_57')
           IF (LPREF.GT.0)
-     &    CALL GETVTX('DEFI_NOEUD','PREFIXE',IOCC,1,1,PREF,N2)
+     &    CALL GETVTX('DEFI_NOEUD','PREFIXE',IOCC,IARG,1,PREF,N2)
 C
           DO 2 , ISMA=1,NBSMA
             CALL JEVEUO(JEXNUM(MAG//'.SUPMAIL',ISMA),'L',IASUPM)
@@ -114,11 +115,11 @@ C
 C       -- CAS : MAILLE, NOEUD_FIN, NOEUD_INIT :
 C       ---------------------------------------
           CALL GETVTX('DEFI_NOEUD','SUPER_MAILLE',
-     &               IOCC,1,1,NOSMA,N1)
+     &               IOCC,IARG,1,NOSMA,N1)
           CALL GETVTX('DEFI_NOEUD','NOEUD_FIN',
-     &                  IOCC,1,1,NOMNOG,N2)
+     &                  IOCC,IARG,1,NOMNOG,N2)
           CALL GETVTX('DEFI_NOEUD','NOEUD_INIT',
-     &                   IOCC,1,1,NOMNOL,N3)
+     &                   IOCC,IARG,1,NOMNOL,N3)
           IF((N1*N2*N3).EQ.0) CALL U2MESS('F','SOUSTRUC_58')
 C
           CALL JENONU(JEXNOM(MAG//'.SUPMAIL',NOSMA),ISMA)

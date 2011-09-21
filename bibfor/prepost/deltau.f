@@ -2,7 +2,7 @@
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI,NOMFOR,
      &                  GRDVIE,FORVIE, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,6 +87,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  CHMAT1, NOMMAT
       CHARACTER*10 OPTIO
       CHARACTER*19 CHMAT, CESMAT
+      INTEGER      IARG
       
 C
 C-----------------------------------------------------------------------
@@ -129,7 +130,7 @@ C DESTINE A RECEVOIR LES RESULTATS : DTAUM, ....
 
 C RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 
-      CALL GETVID(' ','CHAM_MATER',1,1,1,CHMAT1,IRET)
+      CALL GETVID(' ','CHAM_MATER',1,IARG,1,CHMAT1,IRET)
       CHMAT = CHMAT1//'.CHAMP_MAT'
       CESMAT = '&&DELTAU.CESMAT'
       CALL CARCES(CHMAT,'ELEM',' ','V',CESMAT,IRET)

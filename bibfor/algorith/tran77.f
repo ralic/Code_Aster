@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, OBJVE1,K24BID,
      &              OBJVE2, OBJVE3, OBJVE4
       LOGICAL       TOUSNO, MULTAP, LEFFOR, PREMS
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
 C      DATA CHAMN2   /'&&TRAN77.CHAMN2'/
@@ -76,10 +77,10 @@ C     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
 C     ---                PORTE LA RESTITUTION                 ---
       TOUSNO = .TRUE.
       PREMS  = .TRUE.
-      CALL GETVTX ( ' ', 'GROUP_NO', 1,1,0, K8B, N1 )
-      CALL GETVTX ( ' ', 'NOEUD'   , 1,1,0, K8B, N2 )
-      CALL GETVTX ( ' ', 'GROUP_MA', 1,1,0, K8B, N3 )
-      CALL GETVTX ( ' ', 'MAILLE'  , 1,1,0, K8B, N4 )
+      CALL GETVTX ( ' ', 'GROUP_NO', 1,IARG,0, K8B, N1 )
+      CALL GETVTX ( ' ', 'NOEUD'   , 1,IARG,0, K8B, N2 )
+      CALL GETVTX ( ' ', 'GROUP_MA', 1,IARG,0, K8B, N3 )
+      CALL GETVTX ( ' ', 'MAILLE'  , 1,IARG,0, K8B, N4 )
       IF ( N1+N2+N3+N4 .NE. 0 ) TOUSNO = .FALSE.
 C
 C     --- RECUPERATION DE LA BASE MODALE ---
@@ -147,7 +148,7 @@ C
 
 C------ON VERIFIE QUE L'UTILISATEUR A RENSEIGNE LE MEME SUPPORT DE
 C------RESTITUTION DANS LE FICHIER DE COMMANDE
-         CALL GETVID(' ','SQUELETTE',1,1,1,NOMMA,ISK)
+         CALL GETVID(' ','SQUELETTE',1,IARG,1,NOMMA,ISK)
          IF (ISK.NE.0) THEN
            IF (NOMMA .NE. MAILLA) THEN
              VALK (1) = NOMMA
@@ -191,9 +192,9 @@ C
 
 C     --- RECUPERATION DES INSTANTS ---
 C
-      CALL GETVTX ( ' ', 'CRITERE'  , 0,1,1, CRIT   , N1)
-      CALL GETVR8 ( ' ', 'PRECISION', 0,1,1, EPSI   , N1)
-      CALL GETVTX ( ' ', 'INTERPOL' , 0,1,1, INTERP , N1)
+      CALL GETVTX ( ' ', 'CRITERE'  , 0,IARG,1, CRIT   , N1)
+      CALL GETVR8 ( ' ', 'PRECISION', 0,IARG,1, EPSI   , N1)
+      CALL GETVTX ( ' ', 'INTERPOL' , 0,IARG,1, INTERP , N1)
 C
       KNUME = '&&TRAN77.NUM_RANG'
       KINST = '&&TRAN77.INSTANT'
@@ -221,11 +222,11 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
        FOMI = 0
        FOMF = 0
        FOMO = 0
-       CALL GETVID(' ','LIST_INST',0,1,1,K8B,FOCI)
-       CALL GETVID(' ','LIST_FREQ',0,1,1,K8B,FOCF)
-       CALL GETVR8(' ','INST',0,1,1,R8B,FOMI)
-       CALL GETVR8(' ','FREQ',0,1,1,R8B,FOMF)
-       CALL GETVID(' ','MODE_MECA',0,1,1,K8B,FOMO)
+       CALL GETVID(' ','LIST_INST',0,IARG,1,K8B,FOCI)
+       CALL GETVID(' ','LIST_FREQ',0,IARG,1,K8B,FOCF)
+       CALL GETVR8(' ','INST',0,IARG,1,R8B,FOMI)
+       CALL GETVR8(' ','FREQ',0,IARG,1,R8B,FOMF)
+       CALL GETVID(' ','MODE_MECA',0,IARG,1,K8B,FOMO)
        IF ((INTERP(1:3).NE.'NON').AND.(FOCI.EQ.0 .AND. FOCF.EQ.0 .AND.
      &     FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 )) THEN
           CALL U2MESS('F','ALGORITH10_95')

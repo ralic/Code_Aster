@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,7 @@ C
       CHARACTER*19  CHANNO, FONCT, FACCE
       CHARACTER*19  CHAMNO, CHAMN2
       CHARACTER*24  DEEQ,TYPEBA
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
@@ -103,13 +104,13 @@ C ---    CALCUL TRANSITOIRE CLASSIQUE
 CC
       DO 10 I=1,NBEXCI
 
-        CALL GETVIS('EXCIT','NUME_ORDRE',I,1,1,INUM,NF)
-        CALL GETVID('EXCIT','VECT_ASSE' ,I,1,1,CHANNO,L1)
-        CALL GETVID('EXCIT','FONC_MULT' ,I,1,1,FONCT,N1)
-        CALL GETVR8('EXCIT','COEF_MULT' ,I,1,1,ALPHA,M1)
-        CALL GETVID('EXCIT','ACCE'      ,I,1,1,FACCE,NA)
-        CALL GETVTX('EXCIT','MULT_APPUI',I,1,1,MONMOT(1),N2)
-        CALL GETVTX('EXCIT','CORR_STAT' ,I,1,1,MONMOT(2),N3)
+        CALL GETVIS('EXCIT','NUME_ORDRE',I,IARG,1,INUM,NF)
+        CALL GETVID('EXCIT','VECT_ASSE' ,I,IARG,1,CHANNO,L1)
+        CALL GETVID('EXCIT','FONC_MULT' ,I,IARG,1,FONCT,N1)
+        CALL GETVR8('EXCIT','COEF_MULT' ,I,IARG,1,ALPHA,M1)
+        CALL GETVID('EXCIT','ACCE'      ,I,IARG,1,FACCE,NA)
+        CALL GETVTX('EXCIT','MULT_APPUI',I,IARG,1,MONMOT(1),N2)
+        CALL GETVTX('EXCIT','CORR_STAT' ,I,IARG,1,MONMOT(2),N3)
 
         IF (N1.NE.0) THEN
 C         CAS D'UNE FONC_MULT
@@ -163,18 +164,18 @@ C           CAS D'UN NUME_ORDRE
         IF (N2.NE.0) THEN
           IF (MONMOT(1).EQ.'OUI') THEN
             NOMMOT = 'OUI'
-            CALL GETVID('EXCIT','MODE_STAT',1,1,1,MODSTA,NBV)
+            CALL GETVID('EXCIT','MODE_STAT',1,IARG,1,MODSTA,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
                CALL U2MESG('E', 'ALGORITH13_46',0,' ',0,0,0,0.D0)
                GOTO 10
             ENDIF
             CALL TRMULT(MODSTA,I,MAILLA,NEQ,IDDEEQ,PSDEL(1,I))
-            CALL GETVID('EXCIT','VITE',I,1,1,FONVIT(I),N4)
+            CALL GETVID('EXCIT','VITE',I,IARG,1,FONVIT(I),N4)
             FONCT = FONVIT(I)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
             FONVIT(I+NBEXCI) = ZK24(LPROL)
-            CALL GETVID('EXCIT','DEPL',I,1,1,FONDEP(I),N5)
+            CALL GETVID('EXCIT','DEPL',I,IARG,1,FONDEP(I),N5)
             FONCT = FONDEP(I)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
             FONDEP(I+NBEXCI) = ZK24(LPROL)
@@ -185,17 +186,17 @@ C           CAS D'UN NUME_ORDRE
         IF (N3.NE.0) THEN
           IF (MONMOT(2).EQ.'OUI') THEN
             NOMMOT = 'OUI'
-            CALL GETVID('EXCIT','MODE_CORR',1,1,1,MODCOR,NBV)
+            CALL GETVID('EXCIT','MODE_CORR',1,IARG,1,MODCOR,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
                CALL U2MESG('E', 'ALGORITH13_47',0,' ',0,0,0,0.D0)
                GOTO 10
             ENDIF
-            CALL GETVID('EXCIT','D_FONC_DT',I,1,1,FONVIT(I),N4)
+            CALL GETVID('EXCIT','D_FONC_DT',I,IARG,1,FONVIT(I),N4)
             FONCT = FONVIT(I)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
             FONVIT(I+NBEXCI) = ZK24(LPROL)
-            CALL GETVID('EXCIT','D_FONC_DT2',I,1,1,FONACC(I),N5)
+            CALL GETVID('EXCIT','D_FONC_DT2',I,IARG,1,FONACC(I),N5)
             FONCT = FONACC(I)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
             FONACC(I+NBEXCI) = ZK24(LPROL)

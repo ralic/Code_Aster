@@ -4,9 +4,9 @@
       INTEGER                   NMMT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,6 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   MMT, TYPMCL(2)
       CHARACTER*16  MOTFAC, MOTCLS(2)
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -63,7 +64,7 @@ C
 C
       DO 10 IOCC = 1 , NBOCPO
 
-         CALL GETVTX ( MOTFAC, 'MODI_METRIQUE', IOCC,1,1, MMT, IBID )
+         CALL GETVTX ( MOTFAC, 'MODI_METRIQUE', IOCC,IARG,1, MMT, IBID )
          IF (MMT.EQ.'NON') THEN
             IMMT = 0
          ELSEIF (MMT.EQ.'OUI') THEN

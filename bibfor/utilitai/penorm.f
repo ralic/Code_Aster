@@ -3,22 +3,22 @@
       CHARACTER*8       MODELE
       CHARACTER*19      RESU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR :  POST_ELEM
@@ -58,6 +58,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 OPTIO2,NOMCHA,VALK,NOMPAR(NBPMAX),MOCLES(1),OPTION
       CHARACTER*24 MESMAI,MESMAF,VALR,VALI,LCHIN(3),LCHWPG(1),LCHOUT(1)
       CHARACTER*24  CHGEOM,COEFCA
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -71,16 +72,16 @@ C     ===================================================
 
 C --- 2- RECUPERATION DU RESULTAT ET DES NUMEROS D'ORDRE
 C     ==================================================
-      CALL GETVID( 'NORME', 'RESULTAT' , 1,1,1, RESUCO, NR)
-      CALL GETVID( 'NORME', 'CHAM_GD'   ,1,1,1, CHAMG,  ND)
+      CALL GETVID( 'NORME', 'RESULTAT' , 1,IARG,1, RESUCO, NR)
+      CALL GETVID( 'NORME', 'CHAM_GD'   ,1,IARG,1, CHAMG,  ND)
 
-      CALL GETVR8( 'NORME', 'PRECISION', 1,1,1, PREC, NP)
-      CALL GETVTX( 'NORME', 'CRITERE'  , 1,1,1, CRIT, NC)
-      CALL GETVR8( 'NORME', 'INST'      ,1,1,0, R8B, NI)
-      CALL GETVIS( 'NORME', 'NUME_ORDRE',1,1,0, IBID, NO)
-      CALL GETVID( 'NORME', 'LIST_INST' ,1,1,0, K8B, NLI)
-      CALL GETVID( 'NORME', 'LIST_ORDRE',1,1,0, K8B, NLO)
-      CALL GETVTX( 'NORME', 'TYPE_NORM', 1,1,1, TYNORM, IRET)
+      CALL GETVR8( 'NORME', 'PRECISION', 1,IARG,1, PREC, NP)
+      CALL GETVTX( 'NORME', 'CRITERE'  , 1,IARG,1, CRIT, NC)
+      CALL GETVR8( 'NORME', 'INST'      ,1,IARG,0, R8B, NI)
+      CALL GETVIS( 'NORME', 'NUME_ORDRE',1,IARG,0, IBID, NO)
+      CALL GETVID( 'NORME', 'LIST_INST' ,1,IARG,0, K8B, NLI)
+      CALL GETVID( 'NORME', 'LIST_ORDRE',1,IARG,0, K8B, NLO)
+      CALL GETVTX( 'NORME', 'TYPE_NORM', 1,IARG,1, TYNORM, IRET)
 
       VALR   = '&&PENORM.VALR'
       VALI   = '&&PENORM.VALI'
@@ -90,7 +91,7 @@ C     ==================================================
       MESMAI = '&&PENORM.MES_MAILLES'
       MESMAF = '&&PENORM.MAIL_FILTRE'
       CHAM1  = '&&PENORM.CHAM1'
-      CHAM2  = '&&PENORM.CHAM2' 
+      CHAM2  = '&&PENORM.CHAM2'
       CHAMTM = '&&PENORM.CHAMTM'
       LIGREL = '&&PENORM.LIGREL'
       COEFCA = '&&PENORM.CARTE_COEF'
@@ -112,13 +113,13 @@ C       -- NUME_ORDRE --
           EXIORD=.TRUE.
           NBORDR=-NO
           CALL WKVECT(KNUM,'V V I',NBORDR,JNO)
-          CALL GETVIS('NORME','NUME_ORDRE',1,1,NBORDR,ZI(JNO),IRET)
+          CALL GETVIS('NORME','NUME_ORDRE',1,IARG,NBORDR,ZI(JNO),IRET)
         ENDIF
 
 C       -- LIST_ORDRE --
         IF(NLO.NE.0)THEN
          EXIORD=.TRUE.
-         CALL GETVID('NORME', 'LIST_ORDRE',1,1,1,LISINS,IRET)
+         CALL GETVID('NORME', 'LIST_ORDRE',1,IARG,1,LISINS,IRET)
          CALL JEVEUO(LISINS // '.VALE', 'L', JNO)
          CALL JELIRA(LISINS // '.VALE', 'LONMAX', NBORDR, K8B)
         ENDIF
@@ -127,12 +128,12 @@ C       -- INST --
         IF(NI.NE.0)THEN
          NBORDR=-NI
          CALL WKVECT(KINS,'V V R',NBORDR,JIN)
-         CALL GETVR8('NORME','INST',1,1,NBORDR,ZR(JIN),IRET)
+         CALL GETVR8('NORME','INST',1,IARG,NBORDR,ZR(JIN),IRET)
         ENDIF
 
 C       -- LIST_INST --
         IF(NLI.NE.0)THEN
-         CALL GETVID('NORME', 'LIST_INST',1,1,1,LISINS,IRET)
+         CALL GETVID('NORME', 'LIST_INST',1,IARG,1,LISINS,IRET)
          CALL JEVEUO(LISINS // '.VALE', 'L', JIN)
          CALL JELIRA(LISINS // '.VALE', 'LONMAX', NBORDR, K8B)
         ENDIF
@@ -146,7 +147,6 @@ C       -- TOUT_ORDRE --
         ENDIF
 
       ENDIF
-
 C
 C --- 3- CREATION DE LA TABLE
 C     =======================
@@ -172,7 +172,7 @@ C     =======================
          TYPPAR(6) ='K8'
          TYPPAR(7) ='K8'
          TYPPAR(8) ='R'
-      ELSE 
+      ELSE
 
          NBPAR=5
 
@@ -183,14 +183,13 @@ C     =======================
          NOMPAR(5)='VALE_NORM'
 
          TYPPAR(1)='K8'
-         TYPPAR(2)='K8'         
+         TYPPAR(2)='K8'
          TYPPAR(3)='K8'
          TYPPAR(4)='K8'
          TYPPAR(5)='R'
 
       ENDIF
       CALL TBAJPA(RESU,NBPAR,NOMPAR,TYPPAR)
-C
 C
 C --- 4- REMPLISSAGE DE LA TABLE
 C     ==========================
@@ -205,13 +204,9 @@ C     DU CHAMP INITIAL
           CALL COPISD('CHAMP','V',CHAMG,TMPCHA)
       ENDIF
 
-
-
 C  --- BOUCLE SUR LES NUMEROS D'ORDRE:
 C     ----------------------------------
-
       DO 5 INUM=1,NBORDR
-
 
 C      -- 4.1 RECUPERATION DU CHAMP --
 
@@ -228,7 +223,7 @@ C           - INST -
               CALL RSORAC(RESUCO,'INST',0,ZR(JIN+INUM-1),K8B,
      &                    C16B,PREC,CRIT,NUMO,NBORDR,IRET)
             ENDIF
-            CALL GETVTX('NORME','NOM_CHAM',1,1,1,NOMCHA,IRET)
+            CALL GETVTX('NORME','NOM_CHAM',1,IARG,1,NOMCHA,IRET)
             IF (IRET.EQ.0) CALL U2MESS('F','POSTELEM_4')
             CALL RSEXCH(TMPRES,NOMCHA,NUMO,CHAM2,IRET)
 
@@ -259,10 +254,9 @@ C         CONTRAINTES, DEFORMATION, TEMPERATURE, FLUX ...
              EXITEN=.FALSE.
           ENDIF
 
-
 C      -- 4.2 RECUPERATION DES MAILLES --
 
-          CALL GETVTX('NORME','TOUT',1,1,1,TOUT,IRET)
+          CALL GETVTX('NORME','TOUT',1,IARG,1,TOUT,IRET)
 
           IF(IRET.NE.0)THEN
             MOCLES(1) = 'TOUT'
@@ -271,20 +265,20 @@ C      -- 4.2 RECUPERATION DES MAILLES --
           ELSE
             MOCLES(1) = 'GROUP_MA'
             TYPMCL(1) = 'GROUP_MA'
-            CALL GETVTX('NORME','GROUP_MA',1,1,1,GROUMA,IRET)
+            CALL GETVTX('NORME','GROUP_MA',1,IARG,1,GROUMA,IRET)
           ENDIF
 
-C       - MAILLES FOURNIES PAR L'UTILISATEUR -              
+C       - MAILLES FOURNIES PAR L'UTILISATEUR -
           CALL RELIEM(MODELE,MAILLA,'NU_MAILLE','NORME',1,
      &                1,MOCLES,TYPMCL,MESMAI,NBMA)
 
 C       - MAILLES EVENTUELLEMENT FILTREES EN FONCTION DE LA DIMENSION
-C         GEOMETRIQUE (2D OU 3D)              
-          CALL GETVTX('NORME','TYPE_MAILLE',1,1,1,INFOMA,IRET)
+C         GEOMETRIQUE (2D OU 3D)
+          CALL GETVTX('NORME','TYPE_MAILLE',1,IARG,1,INFOMA,IRET)
           IF(IRET.NE.0)THEN
-             IF (INFOMA(1:2).EQ.'2D') THEN 
+             IF (INFOMA(1:2).EQ.'2D') THEN
                IRESMA=2
-             ELSE IF (INFOMA(1:2).EQ.'3D') THEN 
+             ELSE IF (INFOMA(1:2).EQ.'3D') THEN
                IRESMA=3
              ELSE
                CALL ASSERT(.FALSE.)
@@ -301,12 +295,11 @@ C       - VERIFICATION SI ON VA TRAITER DES ELEMENTS DE STRUCTURE
           IF (EXIRDM.EQ.'OUI') THEN
              CALL U2MESS('F','UTILITAI8_60')
           ENDIF
-          
+
 C       - INFOS
           IF (NIV.GT.1) THEN
             WRITE(6,*) '<PENORM> NOMBRE DE MAILLES A TRAITER : ',NBMA
           ENDIF
-
 
 C      -- 4.3 CHANGEMENT DE LA GRANDEUR DU CHAMP (-> NEUT_R) --
 
@@ -327,7 +320,7 @@ C      -- 4.3 CHANGEMENT DE LA GRANDEUR DU CHAMP (-> NEUT_R) --
               CALL CODENT(I,'G',KI)
               ZK8(JLICM2+I-1)='X'//KI(1:LEN(KI))
               ZK8(JLICM1+I-1)=ZK8(JLICMP+I-1)
- 15       CONTINUE          
+ 15       CONTINUE
           LIGREL = MODELE//'.MODELE'
           CALL CHSUT1(CHAMTM,'NEUT_R',NCMPM,ZK8(JLICM1),ZK8(JLICM2),
      &                'V',CHAMTM)
@@ -337,7 +330,7 @@ C       - INFOS
             WRITE(6,*) '<PENORM> NOMBRE DE COMPOSANTES : ',NCMPM
           ENDIF
 
-C      -- 4.4 CREATION D'UNE CARTE DE COEFFICIENTS 
+C      -- 4.4 CREATION D'UNE CARTE DE COEFFICIENTS
 C             (UTILE POUR LES TENSEURS) --
 
           CALL JEDETR('&&PENORM.COEF')
@@ -383,7 +376,6 @@ C             (UTILE POUR LES TENSEURS) --
           ELSE
                GOTO 999
           ENDIF
-          
 
 C      -- 4.4 CHANGEMENT DE DISCRETISATION DU CHAMP --
 
@@ -397,7 +389,6 @@ C      -- 4.4 CHANGEMENT DE DISCRETISATION DU CHAMP --
              CALL DETRSD('CHAMP',CELMOD)
           ENDIF
 
-
 C      -- 4.5 REDUCTION DU CHAMP EN FONCTION DES MAILLES --
 
           CALL CELCES(CHAM1,'V',CHAMTM)
@@ -408,7 +399,6 @@ C      -- 4.5 REDUCTION DU CHAMP EN FONCTION DES MAILLES --
           CALL CESCEL(CHAMTM,LIGREL,OPTIO2,NOPAR,'OUI',NNCP,'V',
      &                     CHAM1,'F',IBID)
           CALL DETRSD('CHAM_ELEM_S',CHAMTM)
-
 
 C      -- 4.6 CALCUL DES COORD. ET DES POIDS DES POINTS DE GAUSS
 
@@ -421,7 +411,6 @@ C      -- 4.6 CALCUL DES COORD. ET DES POIDS DES POINTS DE GAUSS
 
           CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,
      &                 LCHWPG,LPAWPG,'V','OUI')
-
 
 C      -- 4.7 CALCUL DE LA NORME SUR CHAQUE ELEMENT --
 
@@ -438,11 +427,9 @@ C      -- 4.7 CALCUL DE LA NORME SUR CHAQUE ELEMENT --
           CALL CALCUL('S',OPTION,LIGREL,3,LCHIN,LPAIN,1,
      &                 LCHOUT,LPAOUT,'V','OUI')
 
-
 C      -- 4.8 SOMMATION DE LA NORME SUR LES ELEMENTS DESIRES --
 
           CALL MESOMM(LCHOUT(1),1,IBID,VNORM,C16B,0,IBID)
-
 
 C      -- 4.9 ON REMPLIT LA TABLE --
 
@@ -472,11 +459,10 @@ C      -- 4.9 ON REMPLIT LA TABLE --
      &                ZK16(JVALK),0)
           ENDIF
 
-
 C      -- 4.10 NETTOYAGE POUR L'OCCURRENCE SUIVANTE --
 
-          CALL DETRSD('CHAMP',CHAM1)       
-          CALL DETRSD('CHAMP',CHAM2)       
+          CALL DETRSD('CHAMP',CHAM1)
+          CALL DETRSD('CHAMP',CHAM2)
           CALL JEDETR(VALR)
           CALL JEDETR(VALI)
           CALL JEDETR(VALK)
@@ -489,7 +475,7 @@ C     ---------------------------------------------
 C     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE NORME
 C     ---------------------------------------------------------
  999  CONTINUE
-      
+
       IF (NR.NE.0) THEN
           CALL DETRSD('RESULTAT',TMPRES)
       ELSE

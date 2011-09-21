@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C     ------------------------------------------------------------------
       CHARACTER*32  DFNOM(MXDFCA)     , NOM (MXCATA)
       CHARACTER*24  VALK
       INTEGER       DFUNIT(MXDFCA)    , UNITE(MXCATA)
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C     OPTIONS PAR DEFAUT :
 C
@@ -70,9 +71,9 @@ C
 C
       IUN  = 1
       DO 10 IOCC = 1, NBOCC
-         CALL GETVTX(MOTFAC,'FICHIER' ,IOCC,IUN,IUN,NOM(IOCC),NBNOM)
+         CALL GETVTX(MOTFAC,'FICHIER',IOCC,IARG,IUN,NOM(IOCC),NBNOM)
          CALL LXCADR( NOM(IOCC) )
-         CALL GETVIS(MOTFAC,'UNITE',IOCC,IUN,IUN,UNITE(IOCC),NBUNIT)
+         CALL GETVIS(MOTFAC,'UNITE',IOCC,IARG,IUN,UNITE(IOCC),NBUNIT)
          IF ( NBUNIT .EQ. 0 ) THEN
             CALL UTREMT( NOM(IOCC) , DFNOM , MXDFCA , IPLACE )
             IF ( IPLACE .GT. 0 )  UNITE(IOCC) = DFUNIT(IPLACE)

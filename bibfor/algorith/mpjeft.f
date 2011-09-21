@@ -1,9 +1,9 @@
       SUBROUTINE MPJEFT(CORRES)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,6 +57,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER KK,NBNMES,NBNO1,IAGNO1,JXXK1,IACONB,IACONU,IACOCF,I,NBOLD
       INTEGER NDECAL, IT1, IT2, IT3, IFRES, IUNIFI
       REAL*8 COEF,RBID
+      INTEGER      IARG
 C----------------------------------------------------------------------
 C       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
 C       --------------------------------------------------------
@@ -96,8 +97,8 @@ C----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 
-      CALL GETVID('MODELE_CALCUL','MODELE',1,1,1,MODEL1,N1)
-      CALL GETVID('MODELE_MESURE','MODELE',1,1,1,MODEL2,N1)
+      CALL GETVID('MODELE_CALCUL','MODELE',1,IARG,1,MODEL1,N1)
+      CALL GETVID('MODELE_MESURE','MODELE',1,IARG,1,MODEL2,N1)
 
       CALL DISMOI('F','NOM_MAILLA',MODEL1,'MODELE',IBID,NOMA1,IE)
       CALL DISMOI('F','NOM_MAILLA',MODEL2,'MODELE',IBID,NOMA2,IE)

@@ -9,7 +9,7 @@
       INTEGER PRECIS,NBNOCH,MFICH,NBVARI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,6 +90,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*80 REC(20)
 
       PARAMETER (NBFIEL=40,VERSIO=5)
+      INTEGER      IARG
 C ---------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -371,7 +372,7 @@ C --- LECTURE DU CHAMP NOEUDS
           CALL JEVEUO(CHS//'.CNSV','E',JCNSV)
           CALL JEVEUO(CHS//'.CNSL','E',JCNSL)
 
-          CALL GETVTX(' ','PROL_ZERO',0,1,1,PROLO,IRET)
+          CALL GETVTX(' ','PROL_ZERO',0,IARG,1,PROLO,IRET)
           IF(PROLO(1:3).EQ.'OUI')THEN
              CALL U2MESK('I','PREPOST_13',1,NOMCH)
              CALL JELIRA(CHS//'.CNSV','LONMAX',NBVAL,K8BID)

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C -----------------
       PARAMETER    (NBPAR=13)
       CHARACTER*2   TYPPAR(NBPAR)
       CHARACTER*24  NOMPAR(NBPAR)
+      INTEGER      IARG
 C
       DATA          AIRE  /'A1      '/
       DATA          EFFNOR/'N       '/
@@ -100,11 +101,11 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
       CALL GETFAC('DEFI_CABLE',NBCABL)
       NBCABL = ABS(NBCABL)
-      CALL GETVR8(' ','TENSION_INIT',0,1,1,F0,IBID)
-      CALL GETVR8(' ','RECUL_ANCRAGE',0,1,1,DELTA,IBID)
+      CALL GETVR8(' ','TENSION_INIT',0,IARG,1,F0,IBID)
+      CALL GETVR8(' ','RECUL_ANCRAGE',0,IARG,1,DELTA,IBID)
       CALL GETFAC('RELAXATION',NRELAX)
       IF ( NRELAX.NE.0 ) THEN
-         CALL GETVR8('RELAXATION','R_J',1,1,1,RJ,IBID)
+         CALL GETVR8('RELAXATION','R_J',1,IARG,1,RJ,IBID)
          IF ( RJ.EQ.0.0D0 ) THEN
             RELAX = .FALSE.
          ELSE
@@ -121,8 +122,8 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
       DO 10 ICABL = 1, NBCABL
 C
-        CALL GETVTX('DEFI_CABLE','NOEUD_ANCRAGE'   ,ICABL,1,0,K8B,N1)
-        CALL GETVTX('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,1,0,K8B,N2)
+        CALL GETVTX('DEFI_CABLE','NOEUD_ANCRAGE'   ,ICABL,IARG,0,K8B,N1)
+        CALL GETVTX('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,IARG,0,K8B,N2)
         NBANCR = N1 + N2
         IF ( ABS(NBANCR).NE.2 ) THEN
            WRITE(K3B,'(I3)') ICABL
@@ -133,14 +134,14 @@ C
            ENDIF
         ELSE
            IF ( N1.NE.0 ) THEN
-              CALL GETVTX('DEFI_CABLE','NOEUD_ANCRAGE',ICABL,1,2,
+              CALL GETVTX('DEFI_CABLE','NOEUD_ANCRAGE',ICABL,IARG,2,
      &                    NOANCR(1),IBID)
               IF ( NOANCR(1).EQ.NOANCR(2) ) THEN
                  WRITE(K3B,'(I3)') ICABL
                  CALL U2MESK('F','MODELISA5_85',1,K3B)
               ENDIF
            ELSE
-              CALL GETVTX('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,1,2,
+              CALL GETVTX('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,IARG,2,
      &                    NOANCR(1),IBID)
               IF ( NOANCR(1).EQ.NOANCR(2) ) THEN
                  WRITE(K3B,'(I3)') ICABL
@@ -151,7 +152,7 @@ C
 C
 C TEST DU TYPE D'ANCRAGE
 C    LE CATALOGUE ASSURE QU'IL Y A DEUX OCCURENCES DE CE MOT-CLE
-        CALL GETVTX(' ','TYPE_ANCRAGE',ICABL,1,2,TYPANC(1),IBID)
+        CALL GETVTX(' ','TYPE_ANCRAGE',ICABL,IARG,2,TYPANC(1),IBID)
 
 C    SI TYPES D'ANCRAGE SONT TOUS LES DEUX PASSIFS
         IF ((TYPANC(1).EQ.'PASSIF').AND.(TYPANC(2).EQ.'PASSIF')) THEN
@@ -174,9 +175,9 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 3   SAISIE DES ARGUMENTS A L'EXECUTION
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-      CALL GETVID(' ','MODELE'        ,0,1,1,MODELE,IBID)
-      CALL GETVID(' ','CHAM_MATER'    ,0,1,1,CHMAT ,IBID)
-      CALL GETVID(' ','CARA_ELEM'     ,0,1,1,CAELEM,IBID)
+      CALL GETVID(' ','MODELE'        ,0,IARG,1,MODELE,IBID)
+      CALL GETVID(' ','CHAM_MATER'    ,0,IARG,1,CHMAT ,IBID)
+      CALL GETVID(' ','CARA_ELEM'     ,0,IARG,1,CAELEM,IBID)
       CALL TITRE
 
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

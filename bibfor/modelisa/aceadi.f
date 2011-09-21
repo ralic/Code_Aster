@@ -5,7 +5,7 @@
       CHARACTER*(*)  MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C --- --  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19   CART(3),LIGMO,K19B,CARTDI
       CHARACTER*24   TMPND(3),TMPVD(3),TMPDIS,MLGGNO,MLGNNO
       CHARACTER*24   TMCINF,TMVINF,MODNEM
+      INTEGER      IARG
 C
       DATA REPDIS /'GLOBAL          ','LOCAL           '/
       DATA SYMDIS /'OUI             ','NON             '/
@@ -161,25 +162,25 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
             VAL(I) = 0.0D0
 31       CONTINUE
          CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',
-     &                     IOC,1,LMAX,ZK8(JDLS),NG)
+     &                     IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE'  ,MCF,'MAILLE',
-     &                     IOC,1,LMAX,ZK8(JDLS),NM)
+     &                     IOC,IARG,LMAX,ZK8(JDLS),NM)
          CALL GETVEM(NOMA,'GROUP_NO',MCF,'GROUP_NO',
-     &                     IOC,1,LMAX,ZK8(JDLS),NJ)
+     &                     IOC,IARG,LMAX,ZK8(JDLS),NJ)
          CALL GETVEM(NOMA,'NOEUD'   ,MCF,'NOEUD',
-     &                     IOC,1,LMAX,ZK8(JDLS),NN)
-         CALL GETVR8(MCF,'VALE',IOC,1,NBVAL,VAL,NVAL)
+     &                     IOC,IARG,LMAX,ZK8(JDLS),NN)
+         CALL GETVR8(MCF,'VALE',IOC,IARG,NBVAL,VAL,NVAL)
          CALL ASSERT( NBVAL .GE. 1 )
-         CALL GETVTX(MCF,'CARA',IOC,1,NBCAR,CAR,NCAR)
+         CALL GETVTX(MCF,'CARA',IOC,IARG,NBCAR,CAR,NCAR)
          IF (NCAR .GT. 0) NCARAC = NCAR
          CALL ASSERT( NCARAC .EQ. 1 )
 
 C        POUR LES PARA_SENSI
-         CALL GETVID ( MCF, 'VALE_F',IOC,1,0, K8B , NVALF)
+         CALL GETVID ( MCF, 'VALE_F',IOC,IARG,0, K8B , NVALF)
          IF (NVALF .NE. 0) THEN
             CALL WKVECT('&&TMPVALEF','V V K8',NBVAL,JVALV)
             NVALF = -NVALF
-            CALL GETVID (MCF,'VALE_F',IOC,1,NVALF,ZK8(JVALV),NVALF)
+            CALL GETVID (MCF,'VALE_F',IOC,IARG,NVALF,ZK8(JVALV),NVALF)
             DO 50 I = 1,NVALF
                K19B = ZK8(JVALV-1+I)
                CALL JEVEUO(K19B//'.VALE','L',LVAL)
@@ -188,15 +189,15 @@ C        POUR LES PARA_SENSI
             CALL JEDETR('&&TMPVALEF')
          ENDIF
 
-         CALL GETVTX(MCF,'REPERE'   ,IOC,1,1,REP,NREP)
-         CALL GETVR8(MCF,'AMOR_HYST',IOC,1,1,ETA,NETA)
+         CALL GETVTX(MCF,'REPERE'   ,IOC,IARG,1,REP,NREP)
+         CALL GETVR8(MCF,'AMOR_HYST',IOC,IARG,1,ETA,NETA)
          IF (IOC.EQ.1 .AND. NREP.EQ.0) REP = REPDIS(1)
          DO 32 I = 1 , NRD
             IF (REP.EQ.REPDIS(I)) IREP = I
  32      CONTINUE
 
 C        MATRICE SYMETRIQUE OU NON-SYMETRIQUE : PAR DEFAUT SYMETRIQUE
-         CALL GETVTX(MCF,'SYME',IOC,1,1,SYM,NSYM)
+         CALL GETVTX(MCF,'SYME',IOC,IARG,1,SYM,NSYM)
          IF ( NSYM.EQ.0 ) SYM = SYMDIS(1)
          DO 33 I = 1 , NRD
             IF (SYM.EQ.SYMDIS(I)) ISYM = I

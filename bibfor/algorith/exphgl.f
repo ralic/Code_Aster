@@ -2,7 +2,7 @@
      &                  NBSEC,NUMDIA,NBMODE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C
      &              LTVECO,LDFREQ,LDKGE,LDMGE,
      &              LDOM2,LDOMO,NBNOT,NBCMP,LLCHAM,NBSEC,NEQ,
      &              IRES2,NUMDIA,LTVESI
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
 C
@@ -131,7 +132,7 @@ C
 C
 C***********************************************************************
 C
-      CALL GETVID('CYCLIQUE','RESULTAT2',1,1,1,MODCYS,IRES2)
+      CALL GETVID('CYCLIQUE','RESULTAT2',1,IARG,1,MODCYS,IRES2)
 
       ICOMP = 0
 C

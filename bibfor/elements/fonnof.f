@@ -4,7 +4,7 @@
       CHARACTER*6         TYPFON
       INTEGER             NBNOFF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,6 +65,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   K8B,CRITN
       CHARACTER*24  MSUP,MINF,FONNOE,NOMNOE,FONTOR,FONTEX
       LOGICAL       EXTGOR,EXTGEX
+      INTEGER      IARG
 
 C DEB-------------------------------------------------------------------
 
@@ -77,9 +78,9 @@ C     ------------------------------------------------------------------
 C                        LE MAILLAGE, LE FOND
 C     ------------------------------------------------------------------
 
-      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA , N1 )
+      CALL GETVID ( ' ', 'MAILLAGE', 1,IARG,1, NOMA , N1 )
 
-      CALL GETVR8 ( ' ', 'PREC_NORM', 1,1,1, PRECN, N1 )
+      CALL GETVR8 ( ' ', 'PREC_NORM', 1,IARG,1, PRECN, N1 )
 
       CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IDCOOR )
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOE,K8B,IRET)

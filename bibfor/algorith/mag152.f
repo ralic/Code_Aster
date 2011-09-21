@@ -3,9 +3,9 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +55,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*8 MODGEN
       CHARACTER*14 NUM14,NUGENE
       CHARACTER*19 NOMSTO
+      INTEGER      IARG
 C -----------------------------------------------------------------
 C
 C        CAS NUME_DDL_GENE  PRESENT
@@ -146,7 +147,7 @@ C---------------------ET DU .CONL ---------------------------
         ZK24(JREFA-1+1) = ' '
 
       ELSE IF (INDICE.EQ.1) THEN
-        CALL GETVID(' ','NUME_DDL_GENE',0,1,1,NUMMOD,NBID)
+        CALL GETVID(' ','NUME_DDL_GENE',0,IARG,1,NUMMOD,NBID)
         NUM14 = NUMMOD
         CALL JEVEUO(NUM14//'.NUME.REFN','L',IMODEG)
         ZK24(JREFA-1+1) = ZK24(IMODEG)

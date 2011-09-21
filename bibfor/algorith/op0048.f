@@ -1,7 +1,7 @@
       SUBROUTINE OP0048()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C
       CHARACTER*24 INFOCH, CRITER
 
       LOGICAL       LAMORT, LCREA, LPREM
+      INTEGER      IARG
 C     -----------------------------------------------------------------
       DATA MODELE   /'                        '/
 C                     123456789012345678901234
@@ -86,7 +87,7 @@ C====
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 C
-      CALL GETVIS (' ','INFO',0,1,1,NIV,IBID)
+      CALL GETVIS (' ','INFO',0,IARG,1,NIV,IBID)
       CALL INFMAJ
 C
       CALL INFNIV(IFM,NIV)
@@ -136,9 +137,9 @@ C
         CALL WKVECT(BASENO//'.COEF_RRE'    ,'V V R  ',NBEXRE,LCRRE)
         CALL WKVECT(BASENO//'.LISTRESU'    ,'V V K8 ',NBEXRE,LRESU)
         DO 252 IRESU = 1, NBEXRE
-          CALL GETVID('EXCIT_RESU','RESULTAT',IRESU,1,1,
+          CALL GETVID('EXCIT_RESU','RESULTAT',IRESU,IARG,1,
      &                ZK8(LRESU+IRESU-1),L)
-          CALL GETVR8('EXCIT_RESU','COEF_MULT',IRESU,1,1,
+          CALL GETVR8('EXCIT_RESU','COEF_MULT',IRESU,IARG,1,
      &                ZR(LCRRE+IRESU-1),L)
  252    CONTINUE
       ENDIF

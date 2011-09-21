@@ -6,9 +6,9 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,6 +57,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -98,12 +99,12 @@ C
       DO 10 IOCC = 1, NSOUR
 C
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 ( MOTCLF, 'SOUR', IOCC,1,1, ZR(JVALV) , N1)
+            CALL GETVR8 ( MOTCLF, 'SOUR', IOCC,IARG,1, ZR(JVALV) , N1)
          ELSE
-            CALL GETVID ( MOTCLF, 'SOUR', IOCC,1,1, ZK8(JVALV), N1)
+            CALL GETVID ( MOTCLF, 'SOUR', IOCC,IARG,1, ZK8(JVALV), N1)
          END IF
 C
-         CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+         CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, K8B, NBTOU )
          IF ( NBTOU .NE. 0 ) THEN
             CALL NOCART (CARTE,1,' ','NOM',0,' ', 0,LIGRMO,NCMP)
 C

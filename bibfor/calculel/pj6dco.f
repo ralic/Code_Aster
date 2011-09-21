@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*),INO2M
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,6 +89,7 @@ C
       PARAMETER (NBMAX=5)
       INTEGER    TINO2M(NBMAX),NBNOD,NBNODM,II
       REAL*8     TDMIN2(NBMAX),UMESSR(4)
+      INTEGER      IARG
 
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -269,7 +270,7 @@ C     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
          ALARME='OUI'
          CALL GETRES(K16BID,K16BID,NOMCMD)
          IF (NOMCMD.EQ.'PROJ_CHAMP') THEN
-            CALL GETVTX(' ','ALARME',1,0,1,ALARME,IBID)
+            CALL GETVTX(' ','ALARME',1,IARG,1,ALARME,IBID)
          ENDIF
 
          IF (ALARME.EQ.'OUI') THEN

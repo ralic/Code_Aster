@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1
       CHARACTER*24  OBJVE2,OBJVE3,OBJVE4,CHMOD
       LOGICAL       TOUSNO, MULTAP, LEFFOR, PREMS
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
@@ -84,12 +85,12 @@ C
 C     --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
       FONCT = ' '
       NFONCT = 0
-      CALL GETVID(' ','ACCE_MONO_APPUI',1,1,1,FONCT,NFONCT)
+      CALL GETVID(' ','ACCE_MONO_APPUI',1,IARG,1,FONCT,NFONCT)
       IF ( NFONCT .NE. 0 ) THEN
 C
-         CALL GETVR8 ( ' ', 'DIRECTION', 1,1,0, DEPL, NBD )
+         CALL GETVR8 ( ' ', 'DIRECTION', 1,IARG,0, DEPL, NBD )
          NBDIR = -NBD
-         CALL GETVR8 ( ' ', 'DIRECTION', 1,1,NBDIR, DEPL, NBD )
+         CALL GETVR8 ( ' ', 'DIRECTION', 1,IARG,NBDIR, DEPL, NBD )
          XNORM = 0.D0
          DO 10 ID = 1,NBDIR
             XNORM = XNORM + DEPL(ID) * DEPL(ID)
@@ -107,10 +108,10 @@ C
 C     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
 C     ---                PORTE LA RESTITUTION                 ---
       TOUSNO = .TRUE.
-      CALL GETVTX ( ' ', 'GROUP_NO', 1,1,0, K8B, N1 )
-      CALL GETVTX ( ' ', 'NOEUD'   , 1,1,0, K8B, N2 )
-      CALL GETVTX ( ' ', 'GROUP_MA', 1,1,0, K8B, N3 )
-      CALL GETVTX ( ' ', 'MAILLE'  , 1,1,0, K8B, N4 )
+      CALL GETVTX ( ' ', 'GROUP_NO', 1,IARG,0, K8B, N1 )
+      CALL GETVTX ( ' ', 'NOEUD'   , 1,IARG,0, K8B, N2 )
+      CALL GETVTX ( ' ', 'GROUP_MA', 1,IARG,0, K8B, N3 )
+      CALL GETVTX ( ' ', 'MAILLE'  , 1,IARG,0, K8B, N4 )
       IF ( N1+N2+N3+N4 .NE. 0 ) TOUSNO = .FALSE.
 C
 C     --- RECUPERATION DE LA BASE MODALE ---
@@ -187,8 +188,8 @@ C
       MULTAP = .FALSE.
       MONMOT(1)=BLANC
       MONMOT(2)=BLANC
-      CALL GETVTX ( ' ','MULT_APPUI',1,1,1, MONMOT(1), N1 )
-      CALL GETVTX ( ' ','CORR_STAT' ,1,1,1, MONMOT(2), N2 )
+      CALL GETVTX ( ' ','MULT_APPUI',1,IARG,1, MONMOT(1), N1 )
+      CALL GETVTX ( ' ','CORR_STAT' ,1,IARG,1, MONMOT(2), N2 )
 
       IF ( MONMOT(1).EQ.'OUI' .OR. MONMOT(2).EQ.'OUI' ) MULTAP = .TRUE.
 C
@@ -245,9 +246,9 @@ C
 C
 C     --- RECUPERATION DES INSTANTS ---
 C
-      CALL GETVTX ( ' ', 'CRITERE'  , 0,1,1, CRIT   , N1)
-      CALL GETVR8 ( ' ', 'PRECISION', 0,1,1, EPSI   , N1)
-      CALL GETVTX ( ' ', 'INTERPOL' , 0,1,1, INTERP , N1)
+      CALL GETVTX ( ' ', 'CRITERE'  , 0,IARG,1, CRIT   , N1)
+      CALL GETVR8 ( ' ', 'PRECISION', 0,IARG,1, EPSI   , N1)
+      CALL GETVTX ( ' ', 'INTERPOL' , 0,IARG,1, INTERP , N1)
 C
       KNUME = '&&TRAN75.NUM_RANG'
       KINST = '&&TRAN75.INSTANT'
@@ -275,11 +276,11 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
        FOMI = 0
        FOMF = 0
        FOMO = 0
-       CALL GETVID(' ','LIST_INST',0,1,1,K8B,FOCI)
-       CALL GETVID(' ','LIST_FREQ',0,1,1,K8B,FOCF)
-       CALL GETVR8(' ','INST',0,1,1,R8B,FOMI)
-       CALL GETVR8(' ','FREQ',0,1,1,R8B,FOMF)
-       CALL GETVID(' ','MODE_MECA',0,1,1,K8B,FOMO)
+       CALL GETVID(' ','LIST_INST',0,IARG,1,K8B,FOCI)
+       CALL GETVID(' ','LIST_FREQ',0,IARG,1,K8B,FOCF)
+       CALL GETVR8(' ','INST',0,IARG,1,R8B,FOMI)
+       CALL GETVR8(' ','FREQ',0,IARG,1,R8B,FOMF)
+       CALL GETVID(' ','MODE_MECA',0,IARG,1,K8B,FOMO)
        IF ((INTERP(1:3).NE.'NON').AND.(FOCI.EQ.0 .AND. FOCF.EQ.0 .AND.
      &     FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 )) THEN
           CALL U2MESS('F','ALGORITH10_95')

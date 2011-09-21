@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ C
       CHARACTER*24 CHAMOL,INDIRF,CREFE(2),NUMEDD,BASMO2
       CHARACTER*24 VALK
       LOGICAL      ZCMPLX
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
@@ -88,11 +89,11 @@ C
 C
 C --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 C
-      CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,0, IBID, NNO )
+      CALL GETVIS ( ' ', 'NUME_ORDRE', 1,IARG,0, IBID, NNO )
       IF ( NNO .NE. 0 ) THEN
         NBMOD = -NNO
         CALL WKVECT ( '&&REGENE.NUME', 'V V I', NBMOD, JBID )
-        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,1,NBMOD, ZI(JBID), NNO )
+        CALL GETVIS ( ' ', 'NUME_ORDRE', 1,IARG,NBMOD, ZI(JBID), NNO )
       ELSE
         CALL WKVECT ( '&&REGENE.NUME', 'V V I', NBMOD, JBID )
         DO 2 I = 1 , NBMOD
@@ -115,14 +116,12 @@ C
       CALL JEVEUO(KINT//'.VALE','L',ITRESU)
       CALL JEVEUO(KINT//'.REFE','L',IADREF)
       BASMOD = ZK24(IADREF)(1:8)
-C      CALL GETVID(' ','BASE_MODALE',1,1,1,K8B,IBID)
-C      IF (IBID.NE.0) CALL GETVID(' ','BASE_MODALE',1,1,1,BASMOD,IBID)
 C
       BASMO2 = BASMOD
       CALL GETTCO ( BASMO2, TYPREP )
 C
       IF ( TYPREP(1:9) .EQ. 'MODE_GENE' ) THEN
-         CALL GETVID(' ','SQUELETTE',1,1,1,MAILSK,IBID)
+         CALL GETVID(' ','SQUELETTE',1,IARG,1,MAILSK,IBID)
          PROFNO = NOMRES//'.PROFC.NUME'
          INDIRF = '&&REGEGL'//'.INDIR.SST'
 C
@@ -182,7 +181,7 @@ CCC ---- RESTITUTION PROPREMENT DITE
 CC
 C
          CALL JEVEUO (NUMGEN//'.NUEQ','L',LLNUEQ)
-         CALL GETVID ( ' ', 'MODE_MECA', 1,1,1, MODMEC, IBID )
+         CALL GETVID ( ' ', 'MODE_MECA', 1,IARG,1, MODMEC, IBID )
          IF (IBID.NE.0) BASMOD=MODMEC
          CALL RSORAC ( BASMOD, 'LONUTI', IBID, RBID, KBID, CBID, RBID,
      &              KBID, NBMO2, 1, IBID )
@@ -246,9 +245,9 @@ C-----------------------------------------------------------------------
 C         IF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
            NUMEDD = ZK24(IADRIF+3)
 C           WRITE(6,*) 'NUMEDD ',NUMEDD
-           CALL GETVID(' ','NUME_DDL',1,1,1,K8B,IBID)
+           CALL GETVID(' ','NUME_DDL',1,IARG,1,K8B,IBID)
            IF (IBID.NE.0) THEN
-             CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
+             CALL GETVID(' ','NUME_DDL',1,IARG,1,NUMEDD,IBID)
              NUMEDD = NUMEDD(1:14)//'.NUME'
            ENDIF
            NUMDDL = NUMEDD(1:14)

@@ -5,7 +5,7 @@
       CHARACTER*8         NOMMAT
       CHARACTER*16        TYPTAB, OPTION(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       CHARACTER*24 CINST, CSILI, CSIEX, CSNO, CSNE, CSNEO, CSNEE,
      +             CSPO, CSPE, CFAO, CFAE, CNOC, CRESU, CRESP, INTITU,
      +             CSPTO, CSPTE, CSPMO, CSPME, CSTEX, CSMEX
+      INTEGER      IARG
 C DEB ------------------------------------------------------------------
 C
 C --- VECTEUR DES INSTANTS DEMANDES
@@ -127,7 +128,7 @@ C
       ENDIF
 C
       KEMIXT = .FALSE.
-      CALL GETVTX (' ', 'TYPE_KE', 0,1,1, TYPEKE, N1 )
+      CALL GETVTX (' ', 'TYPE_KE', 0,IARG,1, TYPEKE, N1 )
       IF (TYPEKE.EQ.'KE_MIXTE')   KEMIXT = .TRUE.
 C
 C     ------------------------------------------------------------------

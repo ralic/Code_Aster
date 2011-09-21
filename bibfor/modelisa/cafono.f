@@ -6,9 +6,9 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,6 +63,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16  MOTCLE(NMOCL), MOTCLF, MOTCLS(2)
       CHARACTER*19  CARTE, LIGRMO, LIGRCH
       CHARACTER*24  LIEL, NOMNOE, NOMELE, MESNOE
+      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -166,10 +167,12 @@ C --------------------------------------------------------------
 
         IF (FONREE.EQ.'REEL') THEN
           DO 30 J = 1,6
-            CALL GETVR8( MOTCLF, MOTCLE(J), I,1,1, VALFOR(J), FORIMP(J))
+            CALL GETVR8(MOTCLF,MOTCLE(J),I,IARG,1,
+     &                  VALFOR(J), FORIMP(J))
    30     CONTINUE
 
-          CALL GETVR8 ( MOTCLF, 'ANGL_NAUT', I,1,3, VALFOR(8), NANGL )
+          CALL GETVR8 (MOTCLF,'ANGL_NAUT',I,IARG,3,
+     &                 VALFOR(8), NANGL )
           IF (NANGL.NE.0) THEN
 C              --- REPERE UTILISATEUR ---
             VALFOR(7) = -1.D0
@@ -188,10 +191,12 @@ C              --- REPERE GLOBAL ---
             VALFOF(II) = '&FOZERO'
    50     CONTINUE
           DO 60 J = 1,6
-            CALL GETVID ( MOTCLF, MOTCLE(J), I,1,1, VALFOF(J),FORIMP(J))
+            CALL GETVID (MOTCLF,MOTCLE(J),I,IARG,1,
+     &                   VALFOF(J),FORIMP(J))
    60     CONTINUE
 
-          CALL GETVID ( MOTCLF, 'ANGL_NAUT', I,1,3, VALFOF(8), NANGL )
+          CALL GETVID (MOTCLF,'ANGL_NAUT',I,IARG,3,
+     &                 VALFOF(8), NANGL )
           IF (NANGL.NE.0) THEN
 C              --- REPERE UTILISATEUR ---
             VALFOF(7) = 'UTILISAT'

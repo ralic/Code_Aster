@@ -1,6 +1,6 @@
       SUBROUTINE OP0111 ()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ECHANGE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,6 +72,7 @@ C     COUPLAGE =>
       INTEGER            ICOMPO,NUMPAS,IADR
       REAL*8             TF,DT
       CHARACTER*24       AYACS   
+      INTEGER      IARG
 C     COUPLAGE <=
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -91,10 +92,10 @@ C     ------------------------------------------------------------------
 C     ! ========================== !
 C     ! RECUPERATION DES MOTS-CLES !
 C     ! ========================== !
-      CALL GETVID(' ', 'MATR_PROJECTION',   1, 1, 1, CORRES, IBID)
-      CALL GETVR8(' ','INST',0,1,1,TF,IBID)
-      CALL GETVR8(' ','PAS',0,1,1,DT,IBID)
-      CALL GETVIS(' ','NUME_ORDRE_YACS',0,1,1,NUMPAS,IBID)
+      CALL GETVID(' ', 'MATR_PROJECTION',   1,IARG, 1, CORRES, IBID)
+      CALL GETVR8(' ','INST',0,IARG,1,TF,IBID)
+      CALL GETVR8(' ','PAS',0,IARG,1,DT,IBID)
+      CALL GETVIS(' ','NUME_ORDRE_YACS',0,IARG,1,NUMPAS,IBID)
       NUMPA4 = NUMPAS
       CALL GETFAC('VIS_A_VIS',NBOCC)
       CALL GETFAC('RESULTAT', IRESU)
@@ -105,8 +106,8 @@ C     ! ========================== !
       IVITE = 0
       IACCE = 0
       IF (IRESU.EQ.1) THEN
-        CALL GETVID('RESULTAT', 'RESU',       1, 1, 1, RESU,   IBID)
-        CALL GETVIS('RESULTAT', 'NUME_ORDRE', 1, 1, 1, NORDRE, IBID)
+        CALL GETVID('RESULTAT', 'RESU',       1,IARG, 1, RESU,   IBID)
+        CALL GETVIS('RESULTAT', 'NUME_ORDRE', 1,IARG, 1, NORDRE, IBID)
         IF (NIV.EQ.2) THEN
           VALK(1) = 'OP0111'
           VALK(2) = 'NUME_ORDRE'      
@@ -119,9 +120,9 @@ C     ! ========================== !
         IVITE = 1
         IACCE = 1
       ELSE IF(IETIN.EQ.1) THEN
-        CALL GETVID('ETAT_INIT', 'DEPL', 1, 1, 1, CHDEPL, IDEPL)
-        CALL GETVID('ETAT_INIT', 'VITE', 1, 1, 1, CHVITE, IVITE)
-        CALL GETVID('ETAT_INIT', 'ACCE', 1, 1, 1, CHACCE, IACCE)
+        CALL GETVID('ETAT_INIT', 'DEPL', 1,IARG, 1, CHDEPL, IDEPL)
+        CALL GETVID('ETAT_INIT', 'VITE', 1,IARG, 1, CHVITE, IVITE)
+        CALL GETVID('ETAT_INIT', 'ACCE', 1,IARG, 1, CHACCE, IACCE)
         IF (IDEPL.GT.1.OR.IVITE.GT.1.OR.IACCE.GT.1) THEN
           CALL U2MESS('F','COUPLAGEIFS_3')
         ENDIF
@@ -231,7 +232,7 @@ C     Condition if pour le cas ETAT_INIT == None
         ILENGT = 0
         GRPNO  = MA2//'.GROUPENO'
         DO 50 IOCC = 1, NBOCC
-          CALL GETVTX('VIS_A_VIS','GROUP_NO_2',IOCC,1,1,NOMGNO,IBID)
+          CALL GETVTX('VIS_A_VIS','GROUP_NO_2',IOCC,IARG,1,NOMGNO,IBID)
           CALL JELIRA(JEXNOM(GRPNO,NOMGNO),'LONMAX',NBNO2,KBID)
           CALL JEVEUO(JEXNOM(GRPNO,NOMGNO),'L',IALIN2)
           DO 60 JJ = 1, NBNO2

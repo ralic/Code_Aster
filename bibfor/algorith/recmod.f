@@ -7,7 +7,7 @@
       CHARACTER*16        GRDMOD
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,13 +59,14 @@ C
       COMPLEX*16    C16B
       CHARACTER*8   K8B
       CHARACTER*24  NOMCHA
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C-----MODES RETENUS
 C
-      CALL GETVID ( 'BASE_MODALE', 'MODE_MECA', 1,1,1, MODMEC, IBID )
+      CALL GETVID ( 'BASE_MODALE', 'MODE_MECA', 1,IARG,1, MODMEC, IBID )
 C
       CALL RSORAC ( MODMEC, 'LONUTI', IBID, RBID, K8B, C16B, 0.0D0,
      &                                      K8B, NBMOD1, 1, NBTROU )
@@ -73,10 +74,11 @@ C
       CALL RSORAC ( MODMEC, 'TOUT_ORDRE', IBID, RBID, K8B, C16B, 0.0D0,
      &                                K8B, ZI(LNUMOR), NBMOD1, NBTROU )
 C
-      CALL GETVIS ( 'BASE_MODALE', 'NUME_ORDRE', 1,1,0, IBID, NBMODE )
+      CALL GETVIS ('BASE_MODALE','NUME_ORDRE',1,IARG,0,
+     &             IBID, NBMODE )
       NBMODE = -NBMODE
       IF ( NBMODE .EQ. 0 ) THEN
-         CALL GETVR8 ( 'BASE_MODALE', 'BANDE', 1,1,2, BANDE, IBID )
+         CALL GETVR8 ( 'BASE_MODALE', 'BANDE', 1,IARG,2, BANDE, IBID )
          CALL WKVECT ( '&&OP0131.LISTEMODES', 'V V I', NBMOD1, ILMODE )
          DO 126 IM = 1 , NBMOD1
             IMOD1 = ZI(LNUMOR+IM-1)
@@ -92,7 +94,7 @@ C
          ENDIF
       ELSE
          CALL WKVECT ( '&&OP0131.LISTEMODES', 'V V I', NBMODE, ILMODE )
-         CALL GETVIS ( 'BASE_MODALE', 'NUME_ORDRE', 1,1,NBMODE,
+         CALL GETVIS ( 'BASE_MODALE', 'NUME_ORDRE', 1,IARG,NBMODE,
      &                                              ZI(ILMODE), IBID )
          DO 232 IM = 1 , NBMODE
             IF ( ZI(ILMODE-1+IM) .GT. NBMOD1 ) THEN
@@ -104,14 +106,16 @@ C
 C----AMORTISSEMENTS MODAUX RETENUS
 C
       CALL WKVECT ( '&&OP0131.LISTEAMOR','V V R8', NBMODE, ILAMOR )
-      CALL GETVR8 ( 'BASE_MODALE', 'AMOR_REDUIT', 1,1,0, RBID, NA1 )
+      CALL GETVR8 ( 'BASE_MODALE', 'AMOR_REDUIT', 1,IARG,0, RBID, NA1 )
       NBAMOR = - ( NA1 )
       IF ( NBAMOR .NE. 0 ) THEN
          IF ( NA1 .NE. 0 ) THEN
-      CALL GETVR8('BASE_MODALE','AMOR_REDUIT',1,1,NBMODE,ZR(ILAMOR),NA1)
+      CALL GETVR8('BASE_MODALE','AMOR_REDUIT',1,IARG,NBMODE,
+     &            ZR(ILAMOR),NA1)
          ENDIF
       ELSE
-         CALL GETVR8 ( 'BASE_MODALE', 'AMOR_UNIF',1,1,1, AMUNIF, IBID )
+         CALL GETVR8 ('BASE_MODALE','AMOR_UNIF',1,IARG,1,
+     &                AMUNIF, IBID )
          DO 127 IM = 1 , NBMODE
             ZR(ILAMOR-1+IM) = AMUNIF
  127     CONTINUE

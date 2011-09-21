@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,6 +48,7 @@ C
       CHARACTER*19 PROFNO
       INTEGER      I,J
       INTEGER      IR,JREFN,NBCHAM
+      INTEGER      IARG
 C
 C     -----------------------------------------------------------------
 
@@ -62,7 +63,7 @@ C
 C
 C --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
 C
-      CALL GETVTX(' ','NOM_CHAM',1,1,4,CHAMP,NBCHAM)
+      CALL GETVTX(' ','NOM_CHAM',1,IARG,4,CHAMP,NBCHAM)
       IF (NBCHAM.LT.0) THEN
         CALL U2MESS('E','ALGORITH9_44')
       ELSE
@@ -87,7 +88,7 @@ C     ---------------------------
       END IF 
       ZK24(JREFN+1)='DEPL_R'
 C
-      CALL GETVID(' ','RESULTAT',1,1,1,RESIN,IR)
+      CALL GETVID(' ','RESULTAT',1,IARG,1,RESIN,IR)
       CALL TRAN78(NOMRES,TYPRES,RESIN)
 C 
       CALL JEDEMA()

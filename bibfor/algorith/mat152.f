@@ -3,9 +3,9 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -71,6 +71,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*24  NOMCHA,NOCHAM
       CHARACTER*24  LIGRMO,MADE
       INTEGER       GETEXM
+      INTEGER      IARG
 C -----------------------------------------------------------------
 C--------------------------------------------------------------
 C CALCUL DES MATR_ELEM AX ET AY DANS L'OPTION FLUX_FLUI_X ET _Y
@@ -79,10 +80,10 @@ C---------------SUR LE MODELE INTERFACE(THERMIQUE)-------------
       CALL JEMARQ()
       N7=0
       IF (GETEXM(' ','CHAM_NO') .EQ. 1) THEN
-         CALL GETVID(' ','CHAM_NO',0,1,0,CHAMNO,N6)
+         CALL GETVID(' ','CHAM_NO',0,IARG,0,CHAMNO,N6)
          N7 =-N6
       ENDIF
-      CALL GETVID(' ','MODE_MECA',0,1,1,MODMEC,N5)
+      CALL GETVID(' ','MODE_MECA',0,IARG,1,MODMEC,N5)
 C------ RECUPERATION D'ARGUMENTS COMMUNS AUX CALCULS DES DEUX ---
 C-------------------------MATR_ELEM -----------------------------
 

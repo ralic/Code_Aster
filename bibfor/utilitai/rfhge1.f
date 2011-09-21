@@ -3,7 +3,7 @@
       CHARACTER*(*)       HARGEN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14 NUGENE
       CHARACTER*16 K16B, NOMCMD, TYPCON, NOMCHA
       CHARACTER*19 NOCH19, NOMFON, KNUME
+      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -57,13 +58,13 @@ C
       INTERP(1) = 'NON '
       INTERP(2) = 'NON '
 C
-      CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , N1 )
-      CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, EPSI  , N1 )
-      CALL GETVTX ( ' ', 'INTERPOL' , 1,1,2, INTERP, N1 )
+      CALL GETVTX ( ' ', 'CRITERE'  , 1,IARG,1, CRIT  , N1 )
+      CALL GETVR8 ( ' ', 'PRECISION', 1,IARG,1, EPSI  , N1 )
+      CALL GETVTX ( ' ', 'INTERPOL' , 1,IARG,2, INTERP, N1 )
       IF ( N1 .EQ. 1 ) INTERP(2) = INTERP(1)
 C
-      CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, NCMP  , N1 )
-      CALL GETVTX ( ' ', 'NOM_CHAM'     , 1,1,1, NOMCHA, N1 )
+      CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, NCMP  , N1 )
+      CALL GETVTX ( ' ', 'NOM_CHAM'     , 1,IARG,1, NOMCHA, N1 )
 C
       KNUME = '&&RFHGE1.NUME_ORDR'
       CALL RSUTNU ( HARGEN, ' ', 1, KNUME, NBORDR, EPSI, CRIT, IRET )

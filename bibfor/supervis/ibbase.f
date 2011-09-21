@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     --- VALEURS PAR DEFAUTS DES CAS ----------------------------------
       INTEGER      NBBLCA(MXBASE,MXCAS), LGBLCA(MXBASE,MXCAS)
       INTEGER      LGRECA(MXBASE,MXCAS)
       INTEGER      VALI(2),INFO
+      INTEGER      IARG
 C
       DATA      NOMBA  /'GLOBALE '   , 'VOLATILE'   /
       DATA      PRESBA /    0        ,     0        /
@@ -101,7 +102,7 @@ C
       DO 100 IBASE = 1, NBBASE
 C
 C        --- MOT CLE "FICHIER" ANCIENNEMENT "NOM" ---------------------
-         CALL GETVTX(MOTFAC,'FICHIER',IBASE,1,1,NOM,NB)
+         CALL GETVTX(MOTFAC,'FICHIER',IBASE,IARG,1,NOM,NB)
          CALL UTREMT( NOM, NOMBA, MXBASE, INDBAS )
          IF ( INDBAS .EQ. 0 ) THEN
             INDBAS = 1
@@ -122,7 +123,7 @@ C        --- MOT CLE "FICHIER" ANCIENNEMENT "NOM" ---------------------
 C
 C        --- MOT CLE "CAS" ---------------------------------------------
 C
-         CALL GETVTX(MOTFAC,'CAS',IBASE,1,1,CAS,NB)
+         CALL GETVTX(MOTFAC,'CAS',IBASE,IARG,1,CAS,NB)
          IF ( NB.GT.0 ) THEN
             CALL UTREMT( CAS , CASCA , MXCAS , INDCAS )
             IF ( INDCAS .EQ. 0 ) THEN
@@ -138,11 +139,11 @@ C
 C
 C        ---NOMBRE DE BLOC D'ENREGISTREMENT ----------------------------
          BANBBL(INDBAS) =  NBBLCA(INDBAS,INDCAS)
-         CALL GETVIS(MOTFAC,'NMAX_ENRE',IBASE,1,1,BANBBL(INDBAS),NB)
+         CALL GETVIS(MOTFAC,'NMAX_ENRE',IBASE,IARG,1,BANBBL(INDBAS),NB)
 C
 C        --- LONGUEUR D'UN BLOC D'ENREGISTREMENT -----------------------
          BALGBL(INDBAS) =  LGBLCA(INDBAS,INDCAS)
-         CALL GETVIS(MOTFAC,'LONG_ENRE',IBASE,1,1,BALGBL(INDBAS),NB)
+         CALL GETVIS(MOTFAC,'LONG_ENRE',IBASE,IARG,1,BALGBL(INDBAS),NB)
 C
          LTT = BANBBL(INDBAS)*BALGBL(INDBAS)*LOISEM()
          IF ( LTT .GT. MOFIEM() ) THEN
@@ -154,10 +155,10 @@ C
 
 C        --- MOT CLE "LONG_REPE" ---------------------------------------
          BALGRE(INDBAS) =  LGRECA(INDBAS,INDCAS)
-         CALL GETVIS(MOTFAC,'LONG_REPE',IBASE,1,1,BALGRE(INDBAS),NB)
+         CALL GETVIS(MOTFAC,'LONG_REPE',IBASE,IARG,1,BALGRE(INDBAS),NB)
 C
 C        --- MOT CLE "TITRE" -------------------------------------------
-         CALL GETVTX(MOTFAC,'TITRE',IBASE,1,1,TITRBA(INDBAS),NB)
+         CALL GETVTX(MOTFAC,'TITRE',IBASE,IARG,1,TITRBA(INDBAS),NB)
 C
   100 CONTINUE
 C

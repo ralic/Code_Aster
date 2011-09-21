@@ -1,6 +1,6 @@
       SUBROUTINE OP0137()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,13 +24,14 @@ C     OPERATEUR :     DEBUG
 C ----------------------------------------------------------------------
       CHARACTER*3 REPONS
       INTEGER L
+      INTEGER      IARG
 
 
 
 C     SDVERI=OUI/NON :
 C     ----------------
       REPONS=' '
-      CALL GETVTX(' ','SDVERI',1,1,1,REPONS,L)
+      CALL GETVTX(' ','SDVERI',1,IARG,1,REPONS,L)
       IF ( REPONS .EQ. 'OUI') THEN
          CALL JDCSET('sdveri', 1)
          CALL U2MESS('I','SUPERVIS_24')
@@ -43,7 +44,7 @@ C     ----------------
 C     JEVEUX=OUI/NON :
 C     ----------------
       REPONS=' '
-      CALL GETVTX(' ','JEVEUX',1,1,1,REPONS,L)
+      CALL GETVTX(' ','JEVEUX',1,IARG,1,REPONS,L)
       IF ( REPONS .EQ. 'OUI') THEN
          IDEBUG = 1
          CALL U2MESS('I','SUPERVIS_44')
@@ -58,7 +59,7 @@ C     ----------------
 C     JXVERI=OUI/NON :
 C     ----------------
       REPONS=' '
-      CALL GETVTX(' ','JXVERI',1,1,1,REPONS,L)
+      CALL GETVTX(' ','JXVERI',1,IARG,1,REPONS,L)
       IF ( REPONS .EQ. 'OUI') THEN
          CALL U2MESS('I','SUPERVIS_23')
          CALL JDCSET('jxveri', 1)
@@ -71,7 +72,7 @@ C     ----------------
 C     IMPR_MACRO=OUI/NON :
 C     ---------------------
       REPONS=' '
-      CALL GETVTX(' ','IMPR_MACRO',1,1,1,REPONS,L)
+      CALL GETVTX(' ','IMPR_MACRO',1,IARG,1,REPONS,L)
       IF ( REPONS .EQ. 'OUI') THEN
          CALL U2MESS('I','SUPERVIS_48')
          CALL JDCSET('impr_macro', 1)

@@ -2,7 +2,7 @@
      &                  INPSCO,RESULT,NUORD )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
       CHARACTER*16 NOMCMD,TYPESD
       CHARACTER*19 EXCIT
       CHARACTER*24 MATES
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
 C
@@ -94,7 +95,7 @@ C
 C ------ LE MODELE
 
         IF (MODELE.EQ.' ') THEN
-          CALL GETVID(' ','MODELE',1,1,1,NOMO  ,N1    )
+          CALL GETVID(' ','MODELE',1,IARG,1,NOMO  ,N1    )
           IF (N1.EQ.0) CALL U2MESS('F','CALCULEL3_50')
           MODELE = NOMO
         END IF
@@ -111,7 +112,7 @@ C ------ LE MODELE NE DOIT PAS CONTENIR DE MAILLES TARDIVES POUR OP0070:
 C ------ LE MATERIAU
 
         MATERI = ' '
-        CALL GETVID(' '   ,'CHAM_MATER',1,1,1,MATERI,N1    )
+        CALL GETVID(' '   ,'CHAM_MATER',1,IARG,1,MATERI,N1    )
         CALL DISMOI('F'   ,'BESOIN_MATER',MODELE,'MODELE',IBID  ,
      &              REPONS,IRET  )
         IF ((N1.EQ.0) .AND. (REPONS(1:3).EQ.'OUI'))
@@ -126,7 +127,7 @@ C ------ LES CARACTERISTIQUES ELEMENTAIRES
 
         CARA = ' '
 
-        CALL GETVID(' '   ,'CARA_ELEM',1,1,1,CARA  ,N1    )
+        CALL GETVID(' '   ,'CARA_ELEM',1,IARG,1,CARA  ,N1    )
         CALL DISMOI('F'   ,'EXI_RDM'  ,MODELE,'MODELE',IBID,
      &              REPONS,IRET)
         IF ((N1.EQ.0) .AND. (REPONS(1:3).EQ.'OUI')) THEN

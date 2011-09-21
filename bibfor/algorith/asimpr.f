@@ -3,7 +3,7 @@
       INTEGER          NBSUP,TCOSUP(NBSUP,*)
       CHARACTER*8      NOMSUP(NBSUP,*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 KNOEU,DIDI,LNORE,NBNOR,ORDR
       CHARACTER*80 NOMCAS,CHAINQ,CHAINL,CHAINA
       REAL*8       R8VIDE
+      INTEGER      IARG
 C
       EPSIMA = R8VIDE()
       CALL JEMARQ()
@@ -136,10 +137,11 @@ C
         DO 20 ICAS = 1,NCAS
           NUCAS = ZI(JCAS+ICAS-1)
           DO 30 IDEP = 1,NDEP
-           CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',IDEP,1,1,NUME,IBID)
+           CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',IDEP,IARG,1,
+     &                 NUME,IBID)
             IF (NUME.EQ.NUCAS) THEN
                CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',
-     +                IDEP,1,1,NOMCAS,IBID)
+     +                IDEP,IARG,1,NOMCAS,IBID)
                KNUM = 'N       '
                CALL CODENT(NUCAS, 'D0' , KNUM(2:8) )
                KDIR = 'D       '

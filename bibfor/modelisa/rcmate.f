@@ -3,7 +3,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C
       CHARACTER*8   K8B, NOMMAT, TYPMCL(2)
       CHARACTER*16  MOTCLE(2)
       CHARACTER*24  CHAMAT, MESMAI
+      INTEGER      IARG
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -73,11 +74,11 @@ C
       MESMAI = '&&RCMATE.MES_MAILLES'
 C
       DO 10 I = 1 , NOCC
-         CALL GETVID ( 'AFFE', 'MATER' , I,1,1,  NOMMAT, NM )
+         CALL GETVID ( 'AFFE', 'MATER' , I,IARG,1,  NOMMAT, NM )
          IF (NM .LT. -1) NM = -NM
          CALL ASSERT(NM.LE.NBCMP)
-         CALL GETVID ( 'AFFE', 'MATER' , I,1,NM, ZK8(JVALV), NM )
-         CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
+         CALL GETVID ( 'AFFE', 'MATER' , I,IARG,NM, ZK8(JVALV), NM )
+         CALL GETVTX ( 'AFFE', 'TOUT'  , I,IARG,1, OUI   , NT )
          IF ( NT .NE. 0 ) THEN
             CALL NOCART ( CHAMAT, 1, K8B, K8B, 0, K8B, IBID, ' ', NM )
          ELSE

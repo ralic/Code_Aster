@@ -9,7 +9,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C
       REAL*8        TRAN(3),ANGL(3),CENTR(3),COOR2(3),ZERO,UN,R8DGRD
       CHARACTER*24 VALK(2)
       CHARACTER*1   KB
+      INTEGER      IARG
 C
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -97,7 +98,7 @@ C
 
 C --- LECTURE DE L'ISOMETRIE DE TRANSFORMATION SI ELLE EXISTE :
 C     -------------------------------------------------------
-      CALL GETVR8(MOTFAC,'TRAN',IOCC,1,NDIM,TRAN,NTRAN)
+      CALL GETVR8(MOTFAC,'TRAN',IOCC,IARG,NDIM,TRAN,NTRAN)
       IF (NTRAN .LT. 0) THEN
         CALL CODENT(NDIM,'G',KB)
          VALK(1) = MOTFAC
@@ -110,7 +111,7 @@ C
       ELSE
         NANGMX = 1
       ENDIF
-      CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,NANGMX,ANGL,NANGL)
+      CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,IARG,NANGMX,ANGL,NANGL)
       IF (NANGL .LT. 0) THEN
         CALL CODENT(NANGMX,'G',KB)
          VALK(1) = MOTFAC
@@ -121,7 +122,7 @@ C
         ANGL(K) = ANGL(K)*R8DGRD()
  30   CONTINUE
 C
-      CALL GETVR8(MOTFAC,'CENTRE',IOCC,1,NDIM,CENTR,NCENTR)
+      CALL GETVR8(MOTFAC,'CENTRE',IOCC,IARG,NDIM,CENTR,NCENTR)
       IF (NCENTR .LT. 0) THEN
         CALL CODENT(NDIM,'G',KB)
          VALK(1) = MOTFAC

@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,6 +130,7 @@ C     --- VARIABLES LOCALES ---
 
       COMPLEX*16 CZERO
       PARAMETER(CZERO=(0.D0,0.D0))
+      INTEGER      IARG
 
       CALL JEMARQ()
       CALL GETRES(K8B,K16B,NOMCMD)
@@ -171,12 +172,12 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
       CARELE=' '
-      CALL GETVID(' ','CARA_ELEM',1,1,1,CARELE,N1)
+      CALL GETVID(' ','CARA_ELEM',1,IARG,1,CARELE,N1)
 
-      CALL GETVTX ( ' ', 'OPTION', 1,1,0, K8B, N2 )
+      CALL GETVTX ( ' ', 'OPTION', 1,IARG,0, K8B, N2 )
       NBOPT = -N2
       CALL WKVECT ( LESOPT, 'V V K16', NBOPT, JOPT )
-      CALL GETVTX (' ', 'OPTION'  , 1, 1, NBOPT, ZK16(JOPT), N2)
+      CALL GETVTX (' ', 'OPTION'  , 1,IARG, NBOPT, ZK16(JOPT), N2)
       CALL MODOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
 
@@ -242,12 +243,12 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
 
         ENDIF
         DO 10 III=1,NCHAR
-          CALL GETVID('EXCIT','FONC_MULT',III,1,1,K8B,L1)
-          CALL GETVID('EXCIT','FONC_MULT_C',III,1,1,K8B,L2)
-          CALL GETVR8('EXCIT','COEF_MULT',III,1,1,COEF,L3)
-          CALL GETVC8('EXCIT','COEF_MULT_C',III,1,1,CCOEF,L4)
-          CALL GETVR8('EXCIT','PHAS_DEG',III,1,1,PHASE,L5)
-          CALL GETVIS('EXCIT','PUIS_PULS',III,1,1,IPUIS,L6)
+          CALL GETVID('EXCIT','FONC_MULT',III,IARG,1,K8B,L1)
+          CALL GETVID('EXCIT','FONC_MULT_C',III,IARG,1,K8B,L2)
+          CALL GETVR8('EXCIT','COEF_MULT',III,IARG,1,COEF,L3)
+          CALL GETVC8('EXCIT','COEF_MULT_C',III,IARG,1,CCOEF,L4)
+          CALL GETVR8('EXCIT','PHAS_DEG',III,IARG,1,PHASE,L5)
+          CALL GETVIS('EXCIT','PUIS_PULS',III,IARG,1,IPUIS,L6)
           IF (L1.NE.0 .OR. L2.NE.0 .OR. L3.NE.0 .OR. L4.NE.0 .OR.
      &        L5.NE.0 .OR. L6.NE.0) THEN
             IF (NBCHRE.EQ.0) THEN
@@ -268,7 +269,7 @@ C=======================================================================
       CALL DISMOI('F','EXI_PLAQUE',MODELE,'MODELE',IBID,K8B,IERD)
       IF (K8B(1:3).EQ.'OUI')EXIPLA=.TRUE.
       IF (EXIPLA) THEN
-        CALL GETVID(' ','CARA_ELEM',1,1,1,K8B,N1)
+        CALL GETVID(' ','CARA_ELEM',1,IARG,1,K8B,N1)
         IF (N1.EQ.0 .AND. CARA.EQ.' ') THEN
           CALL U2MESS('A','CALCULEL2_94')
           GOTO 690
@@ -472,12 +473,12 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
               IF (NBCHRE.NE.0) THEN
                 PHASE=ZERO
                 IPUIS=0
-                CALL GETVID('EXCIT','FONC_MULT',IOCC,1,1,K8B,L1)
-                CALL GETVID('EXCIT','FONC_MULT_C',IOCC,1,1,K8B,L2)
-                CALL GETVR8('EXCIT','COEF_MULT',IOCC,1,1,COEF,L3)
-                CALL GETVC8('EXCIT','COEF_MULT_C',IOCC,1,1,CCOEF,L4)
-                CALL GETVR8('EXCIT','PHAS_DEG',IOCC,1,1,PHASE,L5)
-                CALL GETVIS('EXCIT','PUIS_PULS',IOCC,1,1,IPUIS,L6)
+                CALL GETVID('EXCIT','FONC_MULT',IOCC,IARG,1,K8B,L1)
+                CALL GETVID('EXCIT','FONC_MULT_C',IOCC,IARG,1,K8B,L2)
+                CALL GETVR8('EXCIT','COEF_MULT',IOCC,IARG,1,COEF,L3)
+                CALL GETVC8('EXCIT','COEF_MULT_C',IOCC,IARG,1,CCOEF,L4)
+                CALL GETVR8('EXCIT','PHAS_DEG',IOCC,IARG,1,PHASE,L5)
+                CALL GETVIS('EXCIT','PUIS_PULS',IOCC,IARG,1,IPUIS,L6)
                 IF (L1.NE.0 .OR. L2.NE.0 .OR. L3.NE.0 .OR. L4.NE.0 .OR.
      &              L5.NE.0 .OR. L6.NE.0) THEN
                   IF (TYSD.EQ.'DYNA_HARMO') THEN
@@ -536,7 +537,7 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                 ENDIF
               ENDIF
               IF (IOCC.GT.0) THEN
-                CALL GETVID('EXCIT','CHARGE',IOCC,1,1,CHAREP,N1)
+                CALL GETVID('EXCIT','CHARGE',IOCC,IARG,1,CHAREP,N1)
                 IF (N1.EQ.0)CHAREP=ZK8(JCHA-1+IOCC)
               ENDIF
             ENDIF
@@ -808,7 +809,7 @@ C    -- OPTION "SING_ELEM"
 C    ------------------------------------------------------------------
         ELSEIF (OPTION.EQ.'SING_ELEM') THEN
 
-          CALL GETVR8(' ','PREC_ERR',1,1,1,PREC,IRET1)
+          CALL GETVR8(' ','PREC_ERR',1,IARG,1,PREC,IRET1)
           IF (IRET1.NE.1) THEN
             CALL U2MESS('F','CALCULEL3_12')
           ELSE
@@ -818,7 +819,7 @@ C    ------------------------------------------------------------------
           ENDIF
 
           TYPES=' '
-          CALL GETVTX(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
+          CALL GETVTX(' ','TYPE_ESTI',1,IARG,1,TYPES,IRETER)
           IF (IRETER.GT.0) THEN
             CALL U2MESK('I','CALCULEL3_24',1,TYPES)
           ENDIF

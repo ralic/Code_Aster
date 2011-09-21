@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*8         RESU, NOMA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,6 +55,7 @@ C
       REAL*8        DDOT, VALR(6), PS1, PS2, ZERO, R8PREM
       CHARACTER*8   NOMGRP(2)
       CHARACTER*24  GRPNOE, COOVAL
+      INTEGER      IARG
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -64,39 +65,40 @@ C
       CALL JEVEUO ( COOVAL, 'L', JVALE )
 C
 C     --------------------------------------------------------------
-      CALL GETVR8 ('FOND_FISS','DTAN_ORIG',1,1,0,ZRBID,NDTAOR)
+      CALL GETVR8 ('FOND_FISS','DTAN_ORIG',1,IARG,0,ZRBID,NDTAOR)
       IF(NDTAOR.NE.0) THEN
         NDTAOR = -NDTAOR
         CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
-        CALL GETVR8 ('FOND_FISS','DTAN_ORIG',1,1,3,ZR(JORIG),NDTAOR)
+        CALL GETVR8 ('FOND_FISS','DTAN_ORIG',1,IARG,3,ZR(JORIG),NDTAOR)
       ENDIF
 C
 C     --------------------------------------------------------------
-      CALL GETVR8 ('FOND_FISS','DTAN_EXTR',1,1,0,ZRBID,NDTAEX)
+      CALL GETVR8 ('FOND_FISS','DTAN_EXTR',1,IARG,0,ZRBID,NDTAEX)
       IF(NDTAEX.NE.0) THEN
         NDTAEX = -NDTAEX
         CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
-        CALL GETVR8 ('FOND_FISS','DTAN_EXTR',1,1,3,ZR(JEXTR),NDTAEX)
+        CALL GETVR8 ('FOND_FISS','DTAN_EXTR',1,IARG,3,ZR(JEXTR),NDTAEX)
       ENDIF
 C
 C     --------------------------------------------------------------
-      CALL GETVR8 (' ','NORMALE',1,1,0,ZRBID,NVENOR)
+      CALL GETVR8 (' ','NORMALE',1,IARG,0,ZRBID,NVENOR)
       IF(NVENOR.NE.0) THEN
         NVENOR = -NVENOR
         CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
-        CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NVENOR)
+        CALL GETVR8 (' ','NORMALE',1,IARG,3,ZR(JNORM),NVENOR)
       ELSE
           CALL FONNOR(RESU, NOMA )
       ENDIF
 C
 C     --------------------------------------------------------------
       CALL GETVEM (NOMA,'GROUP_NO',
-     &                'FOND_FISS','VECT_GRNO_ORIG',1,1,0,NOMGRP,NVEOR)
+     &                'FOND_FISS','VECT_GRNO_ORIG',1,IARG,0,NOMGRP,
+     &                NVEOR)
       IF(NVEOR.NE.0) THEN
         NVEOR = -NVEOR
         CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
         CALL GETVEM (NOMA,'GROUP_NO',
-     &              'FOND_FISS','VECT_GRNO_ORIG',1,1,2,NOMGRP,NVEOR)
+     &              'FOND_FISS','VECT_GRNO_ORIG',1,IARG,2,NOMGRP,NVEOR)
 C
         CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
         NUMER = ZI(IAGRN)
@@ -117,12 +119,13 @@ C
 C
 C     --------------------------------------------------------------
       CALL GETVEM (NOMA,'GROUP_NO',
-     &                'FOND_FISS','VECT_GRNO_EXTR',1,1,0,NOMGRP,NVEEX)
+     &                'FOND_FISS','VECT_GRNO_EXTR',1,IARG,0,NOMGRP,
+     &                NVEEX)
       IF(NVEEX.NE.0) THEN
         NVEEX = -NVEEX
         CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
         CALL GETVEM (NOMA,'GROUP_NO',
-     &              'FOND_FISS','VECT_GRNO_EXTR',1,1,2,NOMGRP,NVEEX)
+     &              'FOND_FISS','VECT_GRNO_EXTR',1,IARG,2,NOMGRP,NVEEX)
 C
         CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
         NUMER = ZI(IAGRN)

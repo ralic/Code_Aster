@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,6 +87,7 @@ C
 C
       REAL*8 T1,T(3),X,Y,Z,XPI,YPI,ZPI,RX,RY,RZ,MX,MY,MZ,ZERO
       CHARACTER*1 K1BID
+      INTEGER      IARG
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
@@ -98,8 +99,8 @@ C
       NSOVA = SDMOYE(1:19)//'.VALE'
       NSOCP = SDMOYE(1:19)//'.NOCP'
 C
-      CALL GETVTX('ACTION','RESULTANTE',IOCC,1,0,ZK80,NRES)
-      CALL GETVTX('ACTION','MOMENT'    ,IOCC,1,0,ZK80,NMOM)
+      CALL GETVTX('ACTION','RESULTANTE',IOCC,IARG,0,ZK80,NRES)
+      CALL GETVTX('ACTION','MOMENT'    ,IOCC,IARG,0,ZK80,NMOM)
       NRES = -NRES
       NMOM = -NMOM
 C
@@ -282,9 +283,9 @@ C
             DO 140, I = 1, L1, 1
                ZR(AMOYE + I-1) = ZERO
 140         CONTINUE
-            CALL GETVR8('ACTION','POINT',IOCC,1,0,T,N)
+            CALL GETVR8('ACTION','POINT',IOCC,IARG,0,T,N)
             N = -N
-            CALL GETVR8('ACTION','POINT',IOCC,1,N,T,I)
+            CALL GETVR8('ACTION','POINT',IOCC,IARG,N,T,I)
             X =  T(1)
             Y =  T(2)
             IF ( N .EQ. 2 ) THEN
