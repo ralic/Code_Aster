@@ -1,10 +1,10 @@
       SUBROUTINE LCMMJA(COMP,TYPMOD,NMAT,MATERF,TIMED,TIMEF,
-     &                  ITMAX, TOLER,NBCOMM,CPMONO,PGL,
+     &                  ITMAX, TOLER,NBCOMM,CPMONO,PGL,NFS,NSG,
      &                  TOUTMS,HSR,NR,NVI,VIND,DF,YF,YD,DY,DRDY,IRET)
       IMPLICIT NONE
 C TOLE CRP_21
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,15 +53,15 @@ C           IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
       INTEGER NMAT,NR,NBFSYS,NDT,NDI,NSFA,NSFV,NBSYS,IS,IR
       INTEGER NBCOMM(NMAT,3),IFA,I,J,K,L,IRET,IFL,ITMAX,NUVR,NUVS
-      INTEGER NUECOU,IND(3,3),NVI
+      INTEGER NUECOU,IND(3,3),NVI,NFS,NSG
       REAL*8  VIND(*),YF(*),DY(*),DRDY(NR,NR),MATERF(NMAT*2)
-      REAL*8  PGL(3,3),TOUTMS(5,24,6),HSR(5,24,24),GAMSNS(3,3)
+      REAL*8  PGL(3,3),TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG),GAMSNS(3,3)
       REAL*8  TIMED, TIMEF, MSDGDT(6,6),DT,FKOOH(6,6),SIGF(6)
       REAL*8  TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,TAUS,TAUR,MSNS(3,3)
-      REAL*8  Q(3,3),MUS(6),NS(3),MS(3),MUR(6),DTODS(3,3),DFPDGA(3,3,24)
-      REAL*8  DFPDS(3,3,3,3),YD(*),MSNST(3,3,24),FP(3,3)
+      REAL*8  Q(3,3),MUS(6),NS(3),MS(3),MUR(6),DTODS(3,3),DFPDGA(3,3,30)
+      REAL*8  DFPDS(3,3,3,3),YD(*),MSNST(3,3,30),FP(3,3)
       REAL*8  MRNR(3,3),DF(3,3),FE(3,3)
-      REAL*8  DFPDBS(3,3,24)
+      REAL*8  DFPDBS(3,3,30)
       CHARACTER*16 NOMFAM,CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*8     TYPMOD
 C     ----------------------------------------------------------------
@@ -87,10 +87,10 @@ C     Inverse de la matrice de Hooke
 
       IF (COMP(3)(1:5).NE.'PETIT') THEN
          CALL R8INIR ( 81, 0.D0 , DFPDS, 1 )
-         CALL R8INIR ( 3*3*24, 0.D0 , DFPDBS, 1 )
+         CALL R8INIR ( 3*3*30, 0.D0 , DFPDBS, 1 )
 C        calcul de DFPDGA : dFp / dGamma_S pour tous les systemes S
          CALL LCMMJG(COMP,NMAT,NBCOMM,CPMONO,HSR,DT,NVI,VIND,YD,DY,
-     &               ITMAX,TOLER,MATERF,SIGF,FKOOH,TOUTMS,PGL,
+     &               ITMAX,TOLER,MATERF,SIGF,FKOOH,NFS,NSG,TOUTMS,PGL,
      &               MSNST,GAMSNS,DFPDGA,IRET)
       ENDIF
       
@@ -113,7 +113,8 @@ C     LE NUMERO GLOBAL DU SYSTEME IS DANS Y EST NUVS
          
 C           calcul de Tau_s HPP ou GDEF
 
-            CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,TOUTMS,TAUS,MUS,MSNS)
+            CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,NFS,NSG,TOUTMS,
+     &                  TAUS,MUS,MSNS)
             
             NUVS=NSFA+IS
             
@@ -163,7 +164,8 @@ C           calcul des ns termes dR1_i/dBeta_s
 C           et     des ns termes dR2_r/dBeta_s
 C------------------------
             DO 22 IR = 1, NBSYS
-               CALL CALTAU(COMP,IFA,IR,SIGF,FKOOH,TOUTMS,TAUR,MUR,MRNR)
+               CALL CALTAU(COMP,IFA,IR,SIGF,FKOOH,NFS,NSG,TOUTMS,
+     &                     TAUR,MUR,MRNR)
 
                NUVR=NSFA+IR
 

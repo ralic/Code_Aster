@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC AMORTISSEMENT (LMME)
 # sdll137d.para = tps_job 60 mem_job 256Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -578,7 +578,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODLCPL,
 
 # controle recuperation modele et super-maille par calcul de reponse harmonique
 
-DYH=DYNA_LINE_HARM( MODELE=MODLCPL,
+DYH=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', MODELE=MODLCPL,
                         MATR_MASS=MASCPL,MATR_RIGI=KASCPL,
                         MATR_AMOR=AASCPL,
                         LIST_FREQ=LIFREQ,
@@ -665,7 +665,7 @@ CHDIR=AFFE_CHAR_MECA(MODELE=MODLDIR,
                                    FY=1.0))
                                    );
 
-DYHDIR=DYNA_LINE_HARM( MODELE=MODLDIR,
+DYHDIR=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', MODELE=MODLDIR,
                         MATR_MASS=MASDIR,MATR_RIGI=KASDIR,MATR_AMOR=AASDIR,
                         LIST_FREQ=LIFREQ,
                         TOUT_CHAM='OUI',

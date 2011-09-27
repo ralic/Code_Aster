@@ -1,8 +1,8 @@
       SUBROUTINE LCMAFL (FAMI, KPG, KSP, POUM, NMATER,IMAT,NECOUL,
-     &                   NBVAL,VALRES,NMAT,HSR,NBHSR,NBSYS)
+     &                   NBVAL,VALRES,NMAT,ITBINT,HSR,NBHSR,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,9 +33,9 @@ C         NOMPAR :  NOM DES PARAMETRES
 C     OUT VALRES :  COEFFICIENTS MATERIAU A T
 C         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 C     ----------------------------------------------------------------
-      INTEGER         KPG,KSP,NMAT,I,IMAT,NBVAL,NBCOEF
+      INTEGER         KPG,KSP,NMAT,I,IMAT,NBVAL,NBCOEF,ITBINT
       INTEGER         IRET2,NBHSR,NBSYS,J
-      REAL*8          VALRES(NMAT),HSRI(24,24),H,HSR(5,24,24)
+      REAL*8          VALRES(NMAT),HSRI(30,30),H,HSR(5,30,30)
       REAL*8          TEMPF,VALH(6),VALLUE(NMAT)
       CHARACTER*8     NOMRES(NMAT)
       INTEGER ICODRE(NMAT)
@@ -70,24 +70,6 @@ C         PAR CONVENTION ECOU_VISC1 A LE NUMERO 1
 C         PAR CONVENTION ECOU_VISC2 A LE NUMERO 2
           VALRES(1)=2
 
-      ENDIF
-      IF (NECOUL.EQ.'MONO_VISC3') THEN
-          NBVAL=5
-          NOMRES(1)='K'
-          NOMRES(2)='TAUMU'
-          NOMRES(3)='GAMMA0'
-          NOMRES(4)='DELTAV'
-          NOMRES(5)='DELTAG0'
-          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-     &                 NBVAL,NOMRES, VALLUE,ICODRE,1)
-          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
-          NBVAL=NBVAL+1
-C         PAR CONVENTION ECOU_VISC3 A LE NUMERO 3
-          VALRES(1)=3
-
-          CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMPF,IRET2)
-          NBVAL=NBVAL+1
-          VALRES(NBVAL)=TEMPF
       ENDIF
       IF ((NECOUL.EQ.'MONO_DD_CFC').OR.
      &    (NECOUL.EQ.'MONO_DD_CC')) THEN
@@ -154,15 +136,17 @@ C         DEFINITION DE LA MATRICE D'INTERACTION POUR KOCKS-RAUCH
               ENDIF
 
           ENDIF
-          NECRIS=NECOUL
-          CALL LCMHSR (NECOUL,NECRIS,NBSYS, NBCOEF, VALH, HSRI)
-          NBHSR=NBHSR+1
-          IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
-          DO 5 I=1,NBSYS
-          DO 6 J=1,NBSYS
-              HSR(NBHSR,I,J)=HSRI(I,J)
-  6       CONTINUE
-  5       CONTINUE
+          IF (ITBINT.EQ.0) THEN
+             NECRIS=NECOUL
+             CALL LCMHSR (NECOUL,NECRIS,NBSYS, NBCOEF, VALH, HSRI)
+             NBHSR=NBHSR+1
+             IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
+             DO 5 I=1,NBSYS
+             DO 6 J=1,NBSYS
+                 HSR(NBHSR,I,J)=HSRI(I,J)
+  6          CONTINUE
+  5          CONTINUE
+          ENDIF
           NBVAL=NBVAL+1
           VALRES(NBVAL)=NBHSR
 

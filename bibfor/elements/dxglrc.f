@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -376,8 +376,8 @@ C     ENDOMMAGEMENT PLUS PLASTICITE
           ENDIF
 
           CALL NMCOUP('RIGI',IPG,1,3,K8BID,ZI(IMATE),COMPOR,LBID,
-     &                 CRIT,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
-     &                 SIG,ECRP,DSIDEP,CODRET)
+     &         CRIT,R8BID,R8BID,6,EPSM,DEPS,6,SIGM,ECR,OPT,1,R8BID,
+     &                 SIG,ECRP,36,DSIDEP,1,R8BID,CODRET)
         ELSE
           VALK = COMPOR(1)
           CALL U2MESG('F', 'ELEMENTS4_79',1,VALK,0,0,0,0.D0)

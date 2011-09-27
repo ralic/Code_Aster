@@ -2,7 +2,7 @@
      &                  NOMA,VECT1,VECT2,NOEUD,A,B,R,COTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 27/09/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,24 +64,25 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       INO,NBNO,JCOOR,IRET,I,J
+      INTEGER       INO,NBNO,JCOOR,IRET,I,J,IBID
       REAL*8        P2D(2),P3D(3),NORME,VECT3(3),MAT(3,3),PLOC(3)
       REAL*8        H
       REAL*8        NORI(3),NEXT(3),NMIL(3),VSEG(3),NSEG
-      CHARACTER*8   K8BID
-      CHARACTER*16  VALK(3)
+      CHARACTER*8   K8BID,FISS
+      CHARACTER*16  VALK(3),TYPDIS,K16BID
 C
       CALL JEMARQ()
+
+      CALL GETRES(FISS,K16BID,K16BID)
+      CALL DISMOI('F','TYPE_DISCONTINUITE',FISS,'FISS_XFEM',
+     &                                                 IBID,TYPDIS,IRET)
 
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IRET)
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
 
-
 C     VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
       IF (.NOT.CALLST) THEN
-        IF (GEOFIS.EQ.'ELLIPSE'.OR.
-     &      GEOFIS.EQ.'RECTANGLE'.OR.
-     &      GEOFIS.EQ.'CYLINDRE'.OR.
+        IF (GEOFIS.EQ.'CYLINDRE'.OR.
      &      GEOFIS.EQ.'DEMI_PLAN'.OR.
      &      GEOFIS.EQ.'SEGMENT'.OR.
      &      GEOFIS.EQ.'DEMI_DROITE') THEN
@@ -92,7 +93,7 @@ C     VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
         ENDIF
       ELSEIF (CALLST) THEN
         IF (GEOFIS.EQ.'DROITE'.OR.
-     &      GEOFIS.EQ.'INCLUSION') THEN
+     &      GEOFIS.EQ.'ENTAILLE') THEN
           VALK(1) = 'FISSURE'
           VALK(2) =  GEOFIS
           VALK(3) = 'INTERFACE'
@@ -100,16 +101,22 @@ C     VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
         ENDIF
       ENDIF
 
-
+C     CAS ENTAILLE : ON SE RAMENE AU CAS D'UN RECTANGLE A BORDS ARONDIS
+      IF (GEOFIS.EQ.'ENTAILLE') B=R
 
       IF (GEOFIS.EQ.'ELLIPSE'.OR.GEOFIS.EQ.'RECTANGLE'.OR.
-     &    GEOFIS.EQ.'CYLINDRE') THEN
+     &    GEOFIS.EQ.'CYLINDRE'.OR.GEOFIS.EQ.'ENTAILLE') THEN
 
-C       VECT1  = VECT DU DEMI-GRAND AXE
+C       ----------------------------------------------------------------
+C         TRAITEMENT DES CAS ELLIPSE, RECTANGLE, CYLINDRE ET ENTAILLE
+C       ----------------------------------------------------------------
+
+C       VECT1  = VECT DU DEMI-GRAND AXE 
 C       VECT2  = VECT DU DEMI-PETIT AXE
-C       NOEUD  = CENTRE DE L'ELLIPSE / RECTANGLE
-C       A      =  DEMI-GRAND AXE
+C       NOEUD  = CENTRE DE L'ELLIPSE / RECTANGLE /ENTAILLE
+C       A      =  DEMI-GRAND AXE (OU DEMI-LONGUEUR)
 C       B      =  DEMI-PETIT AXE
+C       SI FISSURE :
 C       COTE   =  COTE DE LA FISSURE ('IN' OU 'OUT')
 
         DO 20 INO=1,NBNO
@@ -142,45 +149,55 @@ C         PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
 C         DISTANCE DU POINT A L'ELLIPSE / RECTANGLE
           IF (GEOFIS.EQ.'ELLIPSE'.OR.GEOFIS.EQ.'CYLINDRE') THEN
             CALL DISELL(PLOC,A,B,H)
-          ELSEIF (GEOFIS.EQ.'RECTANGLE') THEN
+          ELSEIF (GEOFIS.EQ.'RECTANGLE'.OR.GEOFIS.EQ.'ENTAILLE') THEN
             CALL DISREC(PLOC,A,B,R,H)
           ENDIF
 
 C         STOCKAGE DES LEVEL SETS
-          IF (GEOFIS.EQ.'ELLIPSE'.OR.GEOFIS.EQ.'RECTANGLE') THEN
+          IF (TYPDIS.EQ.'FISSURE') THEN
 
-C           LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
-            ZR(JLNSV-1+(INO-1)+1)=PLOC(3)
             ZL(JLNSL-1+(INO-1)+1)=.TRUE.
-
-C           SI LA FISSURE EST A L'EXTERIEUR DE L'ELLIPSE, ON PREND
-C           L'OPPOSEE DE H (PAR DEFAUT, LA FISSURE EST A L'INTERIEUR)
-            IF (COTE.EQ.'OUT') H = -1.D0 * H
-
-C           LEVEL SET TANGENTE CORRESPOND A LA DISTANCE DU POINT
-C           A L'ELLIPSE / RECTANGLE DANS LE PLAN (VECT1,VECT2)
-            ZR(JLTSV-1+(INO-1)+1)=H
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
 
-          ELSEIF (GEOFIS.EQ.'CYLINDRE') THEN
+            IF (GEOFIS.EQ.'ELLIPSE'.OR.GEOFIS.EQ.'RECTANGLE') THEN
+            
+C             LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
+              ZR(JLNSV-1+(INO-1)+1)=PLOC(3)
 
-C           LEVEL SET TANGENTE CORRESPOND A LA 3EME COORDONNEE LOCALE
-            ZR(JLTSV-1+(INO-1)+1)= PLOC(3)
-            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+C             SI LA FISSURE EST A L'EXTERIEUR DE L'ELLIPSE, ON PREND
+C             L'OPPOSEE DE H (PAR DEFAUT, LA FISSURE EST A L'INTERIEUR)
+              IF (COTE.EQ.'OUT') H = -1.D0 * H
 
-C           LEVEL SET NORMALE CORRESPOND A LA DISTANCE DU POINT
-C           AU CYLINDRE
-            ZR(JLNSV-1+(INO-1)+1)=H
+C             LEVEL SET TANGENTE CORRESPOND A LA DISTANCE DU POINT
+C             A L'ELLIPSE / RECTANGLE DANS LE PLAN (VECT1,VECT2)
+              ZR(JLTSV-1+(INO-1)+1)=H
+
+            ELSEIF (GEOFIS.EQ.'CYLINDRE') THEN
+
+              ZR(JLTSV-1+(INO-1)+1) = PLOC(3)
+              ZR(JLNSV-1+(INO-1)+1) = H
+
+            ENDIF
+
+          ELSEIF (TYPDIS.EQ.'INTERFACE') THEN
+
+            ZR(JLNSV-1+(INO-1)+1)= H
             ZL(JLNSL-1+(INO-1)+1)=.TRUE.
+
+C           LEVEL SET TANGENTE PAS DEFINIE
+            CALL ASSERT(.NOT.CALLST)
+            ZR(JLTSV-1+(INO-1)+1)= -1.D0
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
 
           ENDIF
 
  20     CONTINUE
 
-
-
-
       ELSEIF (GEOFIS.EQ.'DEMI_PLAN') THEN
+
+C       ----------------------------------------------------------------
+C                  TRAITEMENT DU CAS DEMI-PLAN
+C       ----------------------------------------------------------------
 
 C       VECT1 = VECT NORMAL AU PLAN DE FISSURE
 C       VECT2 = VECT DANS LE PLAN DE FISSURE
@@ -225,6 +242,10 @@ C         LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
  29     CONTINUE
 
       ELSEIF (GEOFIS.EQ.'SEGMENT') THEN
+
+C       ----------------------------------------------------------------
+C                  TRAITEMENT DU CAS SEGMENT
+C       ----------------------------------------------------------------
 
 C       VECT1 = NOEUD DU FOND ORIGINE
 C       VECT2 = NOEUD DU FOND EXTREMITE
@@ -279,11 +300,21 @@ C         LEVEL SET TANGENTE EST DEFINIE PAR :
  50     CONTINUE
 
 
-      ELSEIF (GEOFIS.EQ.'DEMI_DROITE') THEN
+      ELSEIF (GEOFIS.EQ.'DEMI_DROITE'.OR.
+     &        GEOFIS.EQ.'DROITE') THEN
 
-C       VECT1 = VECTEUR DIRECTEUR DE LA DEMI DROITE
-C               DANS LA DIRECTION DE PROPA
-C       NOEUD = NOEUD DU FOND DE FISSURE
+C       ----------------------------------------------------------------
+C                   TRAITEMENT DES CAS DEMI_DROITE ET DROITE
+C       ----------------------------------------------------------------
+
+C       POUR LA DEMI-DROITE :
+C         VECT1 = VECTEUR DIRECTEUR DE LA DEMI-DROITE 
+C                 DANS LA DIRECTION DE PROPA 
+C         NOEUD = NOEUD DU FOND DE FISSURE
+
+C       POUR LA DROITE :
+C         VECT1 = VECTEUR DIRECTEUR DE LA  DROITE
+C         NOEUD = UN POINT DE LA DROITE
 
         DO 35 INO=1,NBNO
 
@@ -318,105 +349,22 @@ C         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
           ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
           ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
-C         LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
-          ZR(JLTSV-1+(INO-1)+1)= PLOC(1)
-          ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+          IF (GEOFIS.EQ.'DEMI_DROITE') THEN
+
+C           LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
+            ZR(JLTSV-1+(INO-1)+1)= PLOC(1)
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+
+          ELSEIF (GEOFIS.EQ.'DROITE') THEN
+
+C           LEVEL SET TANGENTE PAS DEFINIE
+            CALL ASSERT(.NOT.CALLST)
+            ZR(JLTSV-1+(INO-1)+1)= -1.D0
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+          
+          ENDIF
 
  35     CONTINUE
-
-
-      ELSEIF (GEOFIS.EQ.'DROITE') THEN
-
-C       VECT1 = VECTEUR DIRECTEUR DE LA  DROITE
-C       NOEUD = UN POINT DE LA DROITE
-
-        DO 40 INO=1,NBNO
-
-C         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
-          DO 41 I=1, NDIM
-            P2D(I)=ZR(JCOOR-1+3*(INO-1)+I)
- 41       CONTINUE
-
-          VECT3(1) = 0.D0
-          VECT3(2) = 0.D0
-          VECT3(3) = 1.D0
-
-C         BASE LOCALE : (VECT1,VECT2)
-          CALL NORMEV(VECT1,NORME)
-          CALL PROVEC(VECT3,VECT1,VECT2)
-
-C         MATRICE DE PASSAGE LOC-GLOB
-          DO 42 I=1,2
-            MAT(1,I)=VECT1(I)
-            MAT(2,I)=VECT2(I)
- 42       CONTINUE
-
-C         PROJECTION DU POINT 2D DANS LE REPERE LOCAL
-          DO 43 I=1,2
-            PLOC(I)=0.D0
-            DO 44 J=1,2
-              PLOC(I) = PLOC(I) + MAT(I,J) * (P2D(J)-NOEUD(J))
- 44         CONTINUE
- 43       CONTINUE
-
-
-C         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
-          ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
-          ZL(JLNSL-1+(INO-1)+1)=.TRUE.
-
-C         LEVEL SET TANGENTE PAS DEFINIE
-          CALL ASSERT(.NOT.CALLST)
-          ZR(JLTSV-1+(INO-1)+1)= -1.D0
-          ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-
- 40     CONTINUE
-
-      ELSEIF  (GEOFIS.EQ.'INCLUSION') THEN
-
-C       VECT1  = VECT DU DEMI-GRAND AXE
-C       VECT2  = VECT DU DEMI-PETIT AXE
-C       NOEUD  = CENTRE DE L'ELLIPSE
-C       A      =  DEMI-GRAND AXE
-C       B      =  DEMI-PETIT AXE
-
-        DO 45 INO=1,NBNO
-
-C         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
-          DO 46 I=1, NDIM
-            P2D(I)=ZR(JCOOR-1+3*(INO-1)+I)
- 46       CONTINUE
-
-C         BASE LOCALE : (VECT1,VECT2,VECT3)
-          CALL NORMEV(VECT1,NORME)
-          CALL NORMEV(VECT2,NORME)
-
-C         MATRICE DE PASSAGE LOC-GLOB
-          DO 47 I=1,2
-            MAT(1,I)=VECT1(I)
-            MAT(2,I)=VECT2(I)
- 47       CONTINUE
-
-C         PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
-          DO 48 I=1,2
-            PLOC(I)=0.D0
-            DO 49 J=1,2
-              PLOC(I) = PLOC(I) + MAT(I,J) * (P2D(J)-NOEUD(J))
- 49         CONTINUE
- 48       CONTINUE
-
-C         LEVEL SET NORMALE CORRESPOND A LA DISTANCE DU POINT
-C         AU CYLINDRE
-          CALL DISELL(PLOC,A,B,H)
-
-          ZR(JLNSV-1+(INO-1)+1)=H
-          ZL(JLNSL-1+(INO-1)+1)=.TRUE.
-
-C         LEVEL SET TANGENTE PAS DEFINIE
-          CALL ASSERT(.NOT.CALLST)
-          ZR(JLTSV-1+(INO-1)+1)= -1.D0
-          ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-
- 45     CONTINUE
 
       ENDIF
 

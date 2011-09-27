@@ -6,11 +6,11 @@
         IMPLICIT NONE
         INTEGER IFA,NMAT,NBCOMM(NMAT,3),IRET,NUMHSR
         REAL*8 TAUS,COEFT(NMAT),DGAMMA,DP,DT,TAUMU,TAUV
-        REAL*8 SGNS,HSR(5,24,24),DY(*)
+        REAL*8 SGNS,HSR(5,30,30),DY(*)
         REAL*8 VIND(*),DALPHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,6 @@ C           PARTIE POSITIVE DE ALPHA
            AUX= (1.D0-(TAUEF/TAUR)**P)
            IF (AUX.LE.0.D0) THEN
               IRET=1
-C              print *,'attention, lcmmkr,AUX=',AUX
               GOTO 9999
            ENDIF
 C          PROTECTION DE l'EXPONENTIELLE
@@ -122,7 +121,6 @@ C          PROTECTION DE l'EXPONENTIELLE
            TERME=-DELTGG/K/TABS
            IF (TERME.GT.10.D0) THEN
               IRET=1
-C              print *,'attention, lcmmkr,TERME=',TERME
               GOTO 9999
            ENDIF
            PETITG=GAMMA0*EXP(TERME)*DT

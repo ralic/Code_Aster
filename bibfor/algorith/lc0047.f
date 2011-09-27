@@ -1,13 +1,13 @@
       SUBROUTINE LC0047(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
      &              INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
-     &                  TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
+     &              WKIN,WKOUT,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
 
 C
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -51,7 +51,7 @@ C ----------------------------------------------------------------------
       INTEGER         ICOMP,NVI
       INTEGER         CODRET
       REAL*8          ANGMAS(*)
-      REAL*8          TAMPON(*)
+      REAL*8          WKOUT(6,6),WKIN(6,6)
       CHARACTER*16    COMPOR(*),OPTION
       CHARACTER*8     TYPMOD(*)
       CHARACTER*(*)   FAMI
@@ -63,9 +63,9 @@ C ----------------------------------------------------------------------
 C      
 C     FORMULATION NON-LOCALE AVEC REGULARISATION DES CONTRAINTES
       IF (TYPMOD(2).EQ.'GRADSIGM') THEN
-
+        WKOUT(1,1)=WKIN(1,1)
         CALL LCBRGM(NDIM,TYPMOD,IMATE,EPSM,DEPS,
-     &              VIM,OPTION,SIGP,VIP,DSIDEP,TAMPON,CODRET)
+     &              VIM,OPTION,SIGP,VIP,DSIDEP,WKOUT,CODRET)
 
       ELSE IF ((TYPMOD(2).EQ.'GRADVARI').OR.
      &         (TYPMOD(2).EQ.'GRADEPSI'))THEN

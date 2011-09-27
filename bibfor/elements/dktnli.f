@@ -6,7 +6,7 @@
       CHARACTER*16    NOMTE, OPT
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ CCC      PARAMETER (NNO=4)  POUR LES DKQ
       INTEGER    NNO
       PARAMETER (NNO=4)
 C            NNO:    NOMBRE DE NOEUDS DE L'ELEMENT
-      REAL*8   DISTN, ANGMAS(3)
+      REAL*8   DISTN, ANGMAS(3),WK
 C
 C --------- VARIABLES LOCALES :
 C  -- GENERALITES :
@@ -194,7 +194,7 @@ C     --------------------------------------------------------
 
       LEUL = ZK16(ICOMPO+2).EQ.'GROT_GDEP'
       IF(LEUL .AND. ZK16(ICOMPO)(1:4).NE.'ELAS') THEN
-       WRITE(MESS,'(A16) avec (A16)') ZK16(ICOMPO),ZK16(ICOMPO+2)
+       WRITE(MESS,'(A16) AVEC (A16)') ZK16(ICOMPO),ZK16(ICOMPO+2)
        CALL U2MESK('F','ELEMENTS2_73',1,MESS)
       ENDIF
 
@@ -369,12 +369,11 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
             CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
             CALL NMCOMP('RIGI',IPG,KSP,2,TYPMOD,ZI(IMATE),
      &                  ZK16(ICOMPO),ZR(ICARCR),INSTM,INSTP,
-     &                  EPS2D,DEPS2D,
-     &                  SIGM,ZR(IVARIM+IVPG),
-     &                  OPT,
-     &                  ANGMAS,
-     &                  LC,
-     &                  ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
+     &                  6,EPS2D,DEPS2D,
+     &                  6,SIGM,ZR(IVARIM+IVPG),
+     &                  OPT,ANGMAS,1,LC,
+     &                  ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),
+     &                  36,DSIDEP,1,WK,COD)
 
 C            DIVISION DE LA CONTRAINTE DE CISAILLEMENT PAR SQRT(2)
 C            POUR STOCKER LA VALEUR REELLE

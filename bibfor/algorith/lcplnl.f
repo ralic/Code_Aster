@@ -2,13 +2,13 @@
      &                    ITMAX,   MOD,  IMAT,  NMAT,MATERD,
      &                   MATERF,    NR,   NVI, TIMED, TIMEF,
      &                     DEPS,  EPSD,  SIGD,  VIND,  COMP,
-     &                   NBCOMM,CPMONO,   PGL,TOUTMS,   HSR,
+     &                   NBCOMM,CPMONO,   PGL,NFS,NSG,TOUTMS,   HSR,
      &                     SIGF,  VINF, ICOMP,IRTETI,  DRDY,
      &                   TAMPON,  CRIT                      )
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,9 +108,9 @@ C
 C
       INTEGER I, INTG, IRTET, IRTETI
 
-      INTEGER         NBCOMM(NMAT,3), VERJAC
+      INTEGER         NBCOMM(NMAT,3), VERJAC, NFS, NSG
       REAL*8          PGL(3,3),EPSTR(6)
-      REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
+      REAL*8          TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
       CHARACTER*4     CARGAU
       CHARACTER*16    CPMONO(5*NMAT+1),ALGO
 C
@@ -176,7 +176,7 @@ C     CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
       CALL LCINIT ( FAMI,KPG,KSP,LOI,TYPESS,ESSAI,MOD,NMAT,
      &              MATERF,TIMED,TIMEF,NR, NVI, YD,
      &              EPSD,  DEPS,   DY ,
-     &              COMP,NBCOMM, CPMONO, PGL,TOUTMS,
+     &              COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,
      &              VIND,SIGD, EPSTR)
 
       ITER = 0
@@ -195,7 +195,7 @@ C        INCREMENTATION DE  YF = YD + DY
 C
 C        CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
          CALL LCRESI(FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
-     &               COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &       COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
      &               ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,
      &               IRET)
          IF (IRET.NE.0) THEN
@@ -209,7 +209,7 @@ C
 C         CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
           CALL LCJACB(FAMI,KPG,KSP,LOI,MOD,NMAT, MATERF,
      &            TIMED,TIMEF,YF,DEPS,ITMAX,TOLER,NBCOMM,
-     &            CPMONO, PGL,TOUTMS,HSR,NR,COMP,NVI,VIND,
+     &            CPMONO, PGL,NFS,NSG,TOUTMS,HSR,NR,COMP,NVI,VIND,
      &            EPSD,  YD,DY,    DRDY, IRET )
           IF (IRET.NE.0)  THEN
              GOTO 3
@@ -220,7 +220,7 @@ C         CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
          CALL LCJACP(FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,
      &               NMAT,MATERD,MATERF,NR,NVI,
      &               TIMED,TIMEF, DEPS,EPSD,VIND,YD,YF,
-     &               COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,
+     &               COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,
      &               DY,R,DRDY,VERJAC,DRDYB, IRET)
           IF (IRET.NE.0)  GOTO 3
       ENDIF
@@ -240,7 +240,7 @@ C        REACTUALISATION DE DY = DY + DDY
       ELSEIF (LRELI) THEN
 C        RECHERCHE LINEAIRE : RENVOIE DY, YF ET R RE-ACTUALISES
          CALL LCRELI(FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
-     &               COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &      COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
      &               ITMAX,TOLER,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,
      &               DDY,IRET)
          IF (IRET.NE.0) GOTO 3
@@ -267,7 +267,7 @@ C
 C     POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
       CALL LCPLNF(LOI, VIND,NBCOMM,NMAT,CPMONO,
      &            MATERF,ITER,NVI,ITMAX,TOLER,
-     &            PGL,TOUTMS,HSR,DT,DY,YD,
+     &            PGL,NFS,NSG,TOUTMS,HSR,DT,DY,YD,
      &            YF,VINF,TAMPON,COMP,SIGF,DEPS,NR,MOD,IRET)
       IF (IRET.NE.0) THEN
          GOTO 3

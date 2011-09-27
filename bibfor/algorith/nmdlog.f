@@ -5,7 +5,7 @@
      &                   DEPLM,DEPLD,SIGM,VIM,
      &                   SIGP,VIP,FINT,MATUU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 MATUU(*), FINT(NDIM*NNO)
       REAL*8 GEOMM(3*27),GEOMP(3*27),FM(3,3),FP(3,3),DEPLT(3*27)
       REAL*8 R,POIDS,ELGEOM(10,27),TN(6),TP(6),DEPS(6),PES(6,6)
-      REAL*8 GN(3,3),FETA(4),XI(3,3),ME(3,3,3,3)
+      REAL*8 GN(3,3),FETA(4),XI(3,3),ME(3,3,3,3),RBID
 
 C-----------------------------TEST AVANT CALCUL---------------------
 
@@ -146,9 +146,9 @@ C---      CALCUL DE F_N, F_N+1 PAR RAPPORT A GEOMI GEOM INITIAL
          CALL R8INIR(6,0.D0,TP,1)
          CALL NMCOMP(FAMI,G,1,NDIM,TYPMOD,MATE,COMPOR,CRIT,
      &             INSTM,INSTP,
-     &             EPSML,DEPS,TN,VIM(1,G),OPTION,
-     &             ANGMAS,ELGEOM(1,G),
-     &             TP,VIP(1,G),DTDE,COD(G))
+     &             6,EPSML,DEPS,6,TN,VIM(1,G),OPTION,
+     &             ANGMAS,10,ELGEOM(1,G),
+     &             TP,VIP(1,G),36,DTDE,1,RBID,COD(G))
 
 C       TEST SUR LES CODES RETOUR DE LA LOI DE COMPORTEMENT
          IF(COD(G).NE.0) THEN

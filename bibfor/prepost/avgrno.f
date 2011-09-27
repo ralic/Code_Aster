@@ -2,7 +2,7 @@
      &                  NBNOP, NUMPAQ, TSPAQ, NOMCRI, NOMFOR,GRDVIE, 
      &                  FORVIE,FORDEF,NOMMAI,PROAXE, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C-----------------------------------------------------------------------
       INTEGER       NUNOE, IDEB, DIM, J, NGAM, TAB2(18), IFIN
       INTEGER       L, CNBNO, IBIDNO, KWORK, SOMNOW, INOP
       INTEGER       NBMA, ADRMA, JTYPMA
-      INTEGER       ICMP, JAD
+      INTEGER       ICMP, JAD, IARG
       INTEGER       VALI(2), NBVECM
 C
       REAL*8        FATSOC, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI0
@@ -93,7 +93,6 @@ C
       CHARACTER*10 OPTIO
       CHARACTER*19 CHMAT, CESMAT, NCNCIN
       CHARACTER*24 TYPMA
-      INTEGER      IARG
 C
 C
 C-----------------------------------------------------------------------
@@ -150,7 +149,9 @@ C LES INSTANTS ET TOUS LES PLANS
       ELSE
          CALL WKVECT( '&&AVGRNO.VECTNO', 'V V R', TNECES, JVECNO )
       ENDIF
-
+      
+      FATSOC = 1.0D0
+      
       IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR. 
      &    FORDEF )   THEN
          FATSOC = 1.0D4

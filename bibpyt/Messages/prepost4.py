@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost4 Messages  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,20 +107,12 @@ cata_msg = {
  vous avez probablement archive l etat initial dans la commande stat_non_line. cela correspond au numero d ordre 0. nous ne tenons pas compte du resultat a ce numero d ordre pour le calcul de de la fatigue.
 """),
 
-28 : _("""
- les champs de contraintes aux points de gauss SIGM_NOEU ou SIEF_NOEU sief_noeu_elga n'ont pas été calculés.
-"""),
-
 29 : _("""
  les champs de  contraintes aux points de gauss n'existent pas.
 """),
 
 30 : _("""
  le champ simple qui contient les valeurs des contraintes n existe pas.
-"""),
-
-31 : _("""
- le critere de fatemi et socie est prevu pour fonctionner apres un calcul elastoplastique, son utilisation apres meca_statique n'est pas prevue.
 """),
 
 32 : _("""
@@ -137,14 +129,6 @@ cata_msg = {
 
 35 : _("""
  le champ simple qui contient les valeurs des deformations n existe pas.
-"""),
-
-36 : _("""
- les champs de contraintes aux noeuds SIGM_NOEU ou SIEF_NOEU n'ont pas été calculés.
-"""),
-
-37 : _("""
- les champs de  contraintes aux noeuds n'existent pas.
 """),
 
 38 : _("""

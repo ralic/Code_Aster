@@ -8,7 +8,7 @@
      &                    PFF,DEF,SIGP,VIP,MATUU,IVECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,12 +243,12 @@ C 5.3.2 - INTEGRATION
 
         CALL NMCOMP(FAMI,KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
-     &            EPSM,DEPS,
-     &            SIGN,VIM(1,KPG),
+     &            6,EPSM,DEPS,
+     &            6,SIGN,VIM(1,KPG),
      &            OPTION,
      &            ANGMAS,
-     &            ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
+     &            10,ELGEOM(1,KPG),
+     &            SIGMA,VIP(1,KPG),36,DSIDEP,1,R8BID,COD(KPG))
 
 
         IF(COD(KPG).EQ.1) THEN

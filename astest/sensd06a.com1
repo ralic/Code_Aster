@@ -41,7 +41,8 @@ for i in range(n):
 
   MATASR[i]=ASSE_MATRICE(MATR_ELEM=MATELR[i],NUME_DDL=NUM)
 
-  DYTD[i]=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT[i],
+  DYTD[i]=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                      MODELE=MO,CHAM_MATER=CHMAT[i],
                       MATR_MASS=MATASSM,MATR_RIGI=MATASR[i],
                       INCREMENT=_F(LIST_INST=L_INST,),
                       EXCIT=(_F(FONC_MULT=FC,CHARGE=CHD[i]),),
@@ -173,7 +174,8 @@ for i in range(n):
 #
 # 6. Test_Resu en dur
 #
-DYTFX=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
+DYTFX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                    MODELE=MO,CHAM_MATER=CHMAT,
                     MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_2),),
@@ -187,7 +189,8 @@ DYTFX = CALC_ELEM(
                  OPTION = 'SIGM_ELNO',
                  );
 
-DYTFY=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
+DYTFY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                    MODELE=MO,CHAM_MATER=CHMAT,
                     MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_3),),

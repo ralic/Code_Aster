@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE D UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
 # sdlx100a.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,7 +135,8 @@ L_ARCH=DEFI_LIST_ENTI(    DEBUT=0,
 
 #
 #
-DYLINEWM=DYNA_LINE_TRAN(    MODELE=MODELE,
+DYLINEWM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                               MODELE=MODELE,
                                 CHAM_MATER=CHAMPMAT,
                                CARA_ELEM=ELEMNT,
                                MATR_MASS=MATRMASS,
@@ -204,7 +205,8 @@ CHARGTX=AFFE_CHAR_MECA(  MODELE=MODELE,
                             EVOL_CHAR=PRESSI
                         )
 
-DYLIN_R=DYNA_LINE_TRAN(      MODELE=MODELE,
+DYLIN_R=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                                MODELE=MODELE,
                                 CHAM_MATER=CHAMPMAT,
                                 CARA_ELEM=ELEMNT,
                                 MATR_MASS=MATRMASS,

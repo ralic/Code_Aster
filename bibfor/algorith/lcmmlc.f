@@ -3,7 +3,7 @@
      &                  DALPHA,DGAMMA,DP,CRIT,SGNS,RP,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,9 +57,9 @@ C     ----------------------------------------------------------------
       REAL*8 DT,VIND(NVI)
       REAL*8 MATERF(NMAT*2),DY(*),YD(*),TOLER
       REAL*8 TAUS,DGAMMA,DALPHA,DP,RP
-      REAL*8 HSR(5,24,24)
+      REAL*8 HSR(5,30,30)
       REAL*8 DGAMM1,ALPHAM
-      REAL*8 CRIT,ALPHAP,SGNS,GAMMAP,EXPBP(24)
+      REAL*8 CRIT,ALPHAP,SGNS,GAMMAP,EXPBP(30)
       CHARACTER*16 CPMONO(5*NMAT+1)
       CHARACTER*16 NECOUL,NECRIS,NECRCI
 C     ----------------------------------------------------------------

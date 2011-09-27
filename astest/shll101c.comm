@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  POUTRE ANALYSE HARMONIQUE MAILLAGE FIN POU_D_E
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,7 +128,8 @@ VECAS_F=ASSE_VECTEUR(  VECT_ELEM=V_F_ELE,  NUME_DDL=NUMEDDL )
 
 #
 
-DYNA_F=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+DYNA_F=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                            MATR_MASS=MASSE,
                             MATR_RIGI=RIGIDITE,
                             FREQ=10.,
                             EXCIT=_F( VECT_ASSE = VECAS_F, FONC_MULT = FONC)
@@ -177,7 +178,8 @@ VECAS_FL=ASSE_VECTEUR(  VECT_ELEM=V_FL_ELE,  NUME_DDL=NUMEDDL )
 
 #
 
-DYNA_FL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+DYNA_FL=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                             MATR_MASS=MASSE,
                              MATR_RIGI=RIGIDITE,
                              FREQ=10.,
                              EXCIT=_F( VECT_ASSE = VECAS_FL, FONC_MULT = FONC)
@@ -235,7 +237,8 @@ VECAS_AF=ASSE_VECTEUR(  VECT_ELEM=V_AF_ELE,  NUME_DDL=NUMEDDL )
 
 #
 
-DYNA_AF=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+DYNA_AF=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                             MATR_MASS=MASSE,
                              MATR_RIGI=RIGIDITE,
                              MATR_AMOR=AMORTIS,
                              FREQ=10.,
@@ -289,7 +292,8 @@ VEC_AFL=ASSE_VECTEUR(  VECT_ELEM=V_AFL_E,  NUME_DDL=NUMEDDL )
 
 #
 
-DYNA_AFL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+DYNA_AFL=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                              MATR_MASS=MASSE,
                               MATR_RIGI=RIGIDITE,
                               MATR_AMOR=AMORTIS,
                               FREQ=10.,

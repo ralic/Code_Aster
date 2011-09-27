@@ -1,6 +1,6 @@
       SUBROUTINE VDXNLR ( OPTION, NOMTE, XI, RIG, NB1, CODRET )
       IMPLICIT REAL*8 (A-H,O-Z)
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8 DEPLM(42),DEPLP(42)
       REAL*8 EPSI(5),DEPSI(5),EPS2D(4),DEPS2D(4)
       REAL*8 DTILD(5,5),SGMTD(5),EFFINT(42),VECL(48),VECLL(51)
-      REAL*8 SIGN(4),SIGMA(4),DSIDEP(6,6),ANGMAS(3)
+      REAL*8 SIGN(4),SIGMA(4),DSIDEP(6,6),ANGMAS(3),RBID
       REAL*8 LC
       LOGICAL VECTEU,MATRIC
       PARAMETER (NPGE=3)
@@ -240,12 +240,12 @@ C -    APPEL A LA LOI DE COMPORTEMENT
             KSP= (ICOU-1)*NPGE + INTE
             CALL NMCOMP('MASS',INTSN,KSP,2,TYPMOD,ZI(IMATE),
      &             ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &                  EPS2D,DEPS2D,
-     &                  SIGN,ZR(IVARIM+K2),
+     &                  4,EPS2D,DEPS2D,
+     &                  4,SIGN,ZR(IVARIM+K2),
      &                  OPTION,
      &                  ANGMAS,
-     &                  LC,
-     &                  SIGMA,ZR(IVARIP+K2),DSIDEP,COD)
+     &                  1,LC,
+     &                  SIGMA,ZR(IVARIP+K2),36,DSIDEP,1,RBID,COD)
 
             IF (PHENOM.EQ.'ELAS') THEN
               NBV = 2

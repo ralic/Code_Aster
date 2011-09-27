@@ -1,8 +1,8 @@
-# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -136,7 +136,8 @@ VECPROD=PROJ_VECT_BASE( BASE=MODESD,
 
 FD=100.
 
-DYNPROD=DYNA_LINE_HARM(  MATR_MASS=MASPROD,
+DYNPROD=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                            MATR_MASS=MASPROD,
                             MATR_RIGI=RIGPRCO,
                             SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=FD,
@@ -473,11 +474,12 @@ EFFO1 = ASSE_VECT_GENE(NUME_DDL_GENE= NUMEGE,
                       )
 
 
-DYNGEN=DYNA_LINE_HARM(  MATR_RIGI=RIGGEN,
+DYNGEN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                            MATR_RIGI=RIGGEN,
                             MATR_MASS=MASGEN,
                             SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=FD,
-                           TOUT_CHAM='OUI',
+                            TOUT_CHAM='OUI',
                             EXCIT=_F( VECT_ASSE = EFFO1,
                                    COEF_MULT = 1.))
 

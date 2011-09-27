@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ C
       REAL * 8 ETILDM  ( 5 )
       REAL * 8 EPS2D ( 4 ) , DEPS2D ( 4 )
       REAL * 8 SIGN ( 4 ) , SIGMA ( 4 ) , DSIDEP ( 6 , 6 )
-      REAL * 8 DETILD  ( 5 )
+      REAL * 8 DETILD  ( 5 ), RBID
       REAL * 8 GXZ, GYZ
       REAL * 8                STLIS ( 5 , 4 )
       REAL * 8 BARS ( 9 , 9 )
@@ -724,12 +724,12 @@ C -    APPEL A LA LOI DE COMPORTEMENT
 
               CALL NMCOMP('MASS',INTSN,KSP,2,TYPMOD,ZI(IMATE),
      &               ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &                    EPS2D,DEPS2D,
-     &                    SIGN,ZR(IVARIM+K2),
+     &                    4,EPS2D,DEPS2D,
+     &                    4,SIGN,ZR(IVARIM+K2),
      &                    OPTION,
      &                    ANGMAS,
-     &                    LC,
-     &                    SIGMA,ZR(IVARIP+K2),DSIDEP,COD)
+     &                    1,LC,
+     &                    SIGMA,ZR(IVARIP+K2),36,DSIDEP,1,RBID,COD)
 
             IF (PHENOM.EQ.'ELAS') THEN
               NBV = 2

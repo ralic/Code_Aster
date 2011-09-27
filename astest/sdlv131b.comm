@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,7 @@
 #---------------------------------------------------------------------
 #  - CALCUL DE MOYENNE DE LA DEFORMATION
 #    JAUGE VIRTUELLE 
-#  - RESULTATS ISSUS DE DYNA_LINE_HARM
+#  - RESULTATS ISSUS DE DYNA_VIBRA
 #---------------------------------------------------------------------
 #
 import numpy as NP
@@ -125,7 +125,8 @@ if dynaharmo:
   LIFREQ=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=_F( JUSQU_A = 1000., NOMBRE = 10))
 
-  DYNAHARM=DYNA_LINE_HARM( MATR_MASS=M_AS_MAS, MATR_RIGI=M_AS_RIG,
+  DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                           MATR_MASS=M_AS_MAS, MATR_RIGI=M_AS_RIG,
                            LIST_FREQ=LIFREQ,
                            TOUT_CHAM='OUI',
                         #   SOLVEUR=_F( METHODE='MUMPS', ),   # pas de mumps sur local new10

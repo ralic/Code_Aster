@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
+#& MODIF COMMANDE  DATE 27/09/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,15 +70,15 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
       GROUP_MA_FISS       =SIMP(statut='f',typ=grma,min=1,max=1),
       GROUP_MA_FOND       =SIMP(statut='f',typ=grma,min=1,max=1),
       FORM_FISS   =SIMP(statut='f',typ='TXM',into=("ELLIPSE","RECTANGLE","CYLINDRE","DEMI_PLAN",
-                                                   "SEGMENT","DEMI_DROITE","INCLUSION","DROITE") ),
-      b_ellipse           =BLOC(condition = "FORM_FISS == 'ELLIPSE' ",fr="Paramètres de la fissure elliptique",
+                                                   "SEGMENT","DEMI_DROITE","DROITE","ENTAILLE") ),
+      b_ellipse           =BLOC(condition = "FORM_FISS == 'ELLIPSE' ",fr="Paramètres de la fissure/interface elliptique",
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
            DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.),
            CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),
            COTE_FISS      =SIMP(statut='f',typ='TXM',defaut="IN",into=("IN","OUT",) ),    ),
-      b_rectangle         =BLOC(condition = "FORM_FISS == 'RECTANGLE' ",fr="Paramètres de la fissure rectangulaire",
+      b_rectangle         =BLOC(condition = "FORM_FISS == 'RECTANGLE' ",fr="Paramètres de la fissure/interface rectangulaire",
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
            DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.),
            RAYON_CONGE    =SIMP(statut='f',typ='R',val_min=0.,defaut=0.),
@@ -86,6 +86,12 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),
            COTE_FISS      =SIMP(statut='f',typ='TXM',defaut="IN",into=("IN","OUT",) ),    ),
+      b_entaille          =BLOC(condition = "FORM_FISS == 'ENTAILLE' ",fr="Paramètres de l'interface entaille",
+           DEMI_LONGUEUR  =SIMP(statut='o',typ='R',val_min=0.),
+           RAYON_CONGE    =SIMP(statut='o',typ='R',val_min=0.),
+           CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
+           VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),  
+           VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),  ),
       b_cylindre          =BLOC(condition = "FORM_FISS == 'CYLINDRE' ",fr="Paramètres de la fissure cylindrique",
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
            DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.),
@@ -105,12 +111,6 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
       b_droite            =BLOC(condition = "FORM_FISS == 'DROITE' ",fr="Paramètres de l'interface 2D (fissure traversante)",
            POINT          =SIMP(statut='o',typ='R',min=3,max=3),
            DTAN           =SIMP(statut='o',typ='R',min=3,max=3),),
-      b_inclusion         =BLOC(condition = "FORM_FISS == 'INCLUSION' ",fr="Paramètres de l'interface 2D (inclusion)",
-           DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
-           DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.),
-           CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
-           VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
-           VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),),
                             ),
 
 # ------------------------------------------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
      &                    MATSYM,DFDI,DEF,SIGP,VIP,MATUU,IVECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER KPG,KK,KKD,N,I,M,J,J1,KL
 
       REAL*8 DSIDEP(6,6),F(3,3),EPS(6),DEPS(6),R,SIGMA(6),SIGN(6)
-      REAL*8 POIDS,TMP,SIG(6)
+      REAL*8 POIDS,TMP,SIG(6),RBID
       REAL*8 ELGEOM(10,9),RAC2
 
 C - INITIALISATION
@@ -171,12 +171,12 @@ C
 C - LOI DE COMPORTEMENT
        CALL NMCOMP(FAMI,KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
      &             INSTAM,INSTAP,
-     &             EPS,DEPS,
-     &             SIGN,VIM(1,KPG),
+     &             6,EPS,DEPS,
+     &             6,SIGN,VIM(1,KPG),
      &             OPTION,
      &             ANGMAS,
-     &             ELGEOM(1,KPG),
-     &             SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
+     &             10,ELGEOM(1,KPG),
+     &             SIGMA,VIP(1,KPG),36,DSIDEP,1,RBID,COD(KPG))
 C
        IF(COD(KPG).EQ.1) THEN
          GOTO 1956

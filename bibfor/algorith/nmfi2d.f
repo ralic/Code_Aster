@@ -2,7 +2,7 @@
      &                   FINT,KTAN,VIM,VIP,TM,TP,CRIT,COMPOR,TYPMOD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,12 +112,12 @@ C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP)
 
         CALL NMCOMP('RIGI',KPG,1,2,TYPMOD,MATE,COMPOR,CRIT,
      &              TM,TP,
-     &              SUM,DSU,
-     &              RBID,VIM(1,KPG),
+     &              2,SUM,DSU,
+     &              1,RBID,VIM(1,KPG),
      &              OPTION,
      &              ANGMAS,
-     &              COOPG(1,KPG),
-     &              SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
+     &              3,COOPG(1,KPG),
+     &              SIGMA(1,KPG),VIP(1,KPG),36,DSIDEP,1,RBID,IBID)
 
 
 C CALCUL DES FINT (B_T SIGMA )

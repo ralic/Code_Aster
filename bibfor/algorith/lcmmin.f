@@ -1,10 +1,11 @@
       SUBROUTINE LCMMIN ( TYPESS, ESSAI, MOD, NMAT,
      &                      MATERF, NR, NVI, YD, DEPS, DY,
-     &                      COMP,NBCOMM, CPMONO, PGL,TOUTMS,
+     &                      COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,
      &                      TIMED,TIMEF,VIND,SIGD,EPSTR )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C TOLE CRP_21
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +50,7 @@ C                               3 = ESSAI
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
 C
-      INTEGER         NDT , NDI , TYPESS , NMAT,NR,NVI,TYPES0
+      INTEGER         NDT , NDI , TYPESS , NMAT,NR,NVI,TYPES0,NFS,NSG
 C
       REAL*8          YD(NR)     , DY(NR),  ESSAI
       REAL*8          HOOK(6,6)
@@ -58,7 +59,7 @@ C
       REAL*8          EPSTR(6),DKOOH(6,6),EPSED(6)
 C
       REAL*8          MATERF(NMAT,2)
-      REAL*8          TOUTMS(5,24,6)
+      REAL*8          TOUTMS(NFS,NSG,6)
 C
       CHARACTER*8     MOD
 C     ----------------------------------------------------------------

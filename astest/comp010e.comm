@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 26/09/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
 #====================================================================== 
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'LEMAITRE_IRRA' 
@@ -221,7 +221,7 @@ for i in range(NCAL):
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 
-          for j in range(Nbvari):
+          for j in range(Nbvari-1):
              nomvari='V'+str(j+1)
              if U[nomvari,i+2] > epsi :
                 TEST_TABLE(TABLE=RESU[i],

@@ -1,8 +1,8 @@
       SUBROUTINE LCMAEI (FAMI,KPG,KSP,POUM,NMATER,IMAT,NECRIS,NECOUL,
-     &            NBVAL,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
+     &            NBVAL,VALRES,NMAT,ITBINT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,11 +35,11 @@ C     OUT VALRES :  COEFFICIENTS MATERIAU
 C     OUT NBVAL  :  NB DE COEFFICIENTS MATERIAU
 C     OUT HSR    :  MATRICE D'INTERACTION
 C     ----------------------------------------------------------------
-      INTEGER         KPG,KSP
+      INTEGER         KPG,KSP,ITBINT
       INTEGER         NMAT,NBVAL,IMAT,I,NBSYS,IFA,J,NBHSR,NBCOEF
       REAL*8          VALH(6)
-      REAL*8          VALRES(NMAT),HSRI(24,24),H,E,NU,MU
-      REAL*8          HSR(5,24,24),VALLUE(NMAT)
+      REAL*8          VALRES(NMAT),HSRI(30,30),H,E,NU,MU
+      REAL*8          HSR(5,30,30),VALLUE(NMAT)
       CHARACTER*(*)   FAMI,POUM
       CHARACTER*8     NOMRES(NMAT)
       INTEGER ICODRE(NMAT)
@@ -106,50 +106,54 @@ C         PAR CONVENTION ECRO_DD_CFC A LE NUMERO 3
 
       ENDIF
 
-C     DEFINITION DE LA MATRICE D'INTERACTION
-C     SOIT UN SEUL COEF H, SOIT H1,...H4,H5,H6
-      NOMRES(1)='H'
+      IF (ITBINT.EQ.0) THEN
 
-      CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
-     &             1, NOMRES, H,ICODRE,0)
-      IF (ICODRE(1).EQ.0) THEN
-         NBCOEF=1
-         VALH(1)=H
-      ELSE
-         NOMRES(1)='H1'
-         NOMRES(2)='H2'
-         NOMRES(3)='H3'
-         NOMRES(4)='H4'
-         NOMRES(5)='H5'
-         NOMRES(6)='H6'
-         CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
-     &               6,NOMRES, VALH,ICODRE,0)
-C        IL FAUT AU MOINS H1 A H4
-         DO 1 I=1,4
-            IF (ICODRE(I).NE.0) THEN
-               CALL ASSERT(.FALSE.)
-            ENDIF
- 1       CONTINUE
+C        DEFINITION DE LA MATRICE D'INTERACTION
+C        SOIT UN SEUL COEF H, SOIT H1,...H4,H5,H6
+         NOMRES(1)='H'
 
-         IF (ICODRE(5).EQ.0) THEN
-            IF (ICODRE(6).EQ.0) THEN
-               NBCOEF=6
-            ELSE
-               NBCOEF=5
-            ENDIF
+         CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,
+     &                0,' ',0.D0,1, NOMRES, H,ICODRE,0)
+         IF (ICODRE(1).EQ.0) THEN
+            NBCOEF=1
+            VALH(1)=H
          ELSE
-            NBCOEF=4
-         ENDIF
-      ENDIF
+            NOMRES(1)='H1'
+            NOMRES(2)='H2'
+            NOMRES(3)='H3'
+            NOMRES(4)='H4'
+            NOMRES(5)='H5'
+            NOMRES(6)='H6'
+            CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,
+     &                   0,' ',0.D0,6,NOMRES, VALH,ICODRE,0)
+C           IL FAUT AU MOINS H1 A H4
+            DO 1 I=1,4
+               IF (ICODRE(I).NE.0) THEN
+                  CALL ASSERT(.FALSE.)
+               ENDIF
+ 1          CONTINUE
 
-      CALL LCMHSR (NECOUL,NECRIS,NBSYS, NBCOEF, VALH, HSRI)
-      NBHSR=NBHSR+1
-      IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
-      DO 7 I=1,NBSYS
-      DO 8 J=1,NBSYS
-          HSR(NBHSR,I,J)=HSRI(I,J)
-  8   CONTINUE
-  7   CONTINUE
+            IF (ICODRE(5).EQ.0) THEN
+               IF (ICODRE(6).EQ.0) THEN
+                  NBCOEF=6
+               ELSE
+                  NBCOEF=5
+               ENDIF
+            ELSE
+               NBCOEF=4
+            ENDIF
+         ENDIF
+
+         CALL LCMHSR (NECOUL,NECRIS,NBSYS, NBCOEF, VALH, HSRI)
+         NBHSR=NBHSR+1
+         IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
+         DO 7 I=1,NBSYS
+         DO 8 J=1,NBSYS
+             HSR(NBHSR,I,J)=HSRI(I,J)
+  8      CONTINUE
+  7      CONTINUE
+ 
+      ENDIF
       NBVAL=NBVAL+1
       VALRES(NBVAL)=NBHSR
  9999 CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 27/09/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,10 +26,10 @@
 #-------------------------------------------------------------------------------
 #                            PREALABLES
 #-------------------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='TPLL01J', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='TPLL01J', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON',), DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI',)
 # Concepts a chaque iteration
-nbcalc = 3
-M=[None]*(nbcalc+0)
+nbcalc = 2
+M=[None]*nbcalc
 MODE=[None]*nbcalc
 MATE=[None]*nbcalc
 CHA1=[None]*nbcalc
@@ -38,14 +38,14 @@ RESU=[None]*nbcalc
 MATERI=DEFI_MATERIAU( THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
 #
 MD1=LIRE_MAILLAGE( )
-M[1]=CREA_MAILLAGE(MAILLAGE=MD1,
+M[0]=CREA_MAILLAGE(MAILLAGE=MD1,
                    LINE_QUAD=_F(TOUT='OUI',),);
 
 #-------------------------------------------------------------------------------
 #                     BOUCLE CALCUL INDICATEUR/REMAILLAGE
 #-------------------------------------------------------------------------------
-# En fait on fait nbcalc-1 iterations
-for k in range(1,nbcalc):
+# On fait nbcalc iterations
+for k in range(nbcalc):
 
 # Affectation des materiaux/modele/chargement
    MATE[k]=AFFE_MATERIAU( MAILLAGE=M[k],
@@ -53,7 +53,7 @@ for k in range(1,nbcalc):
    MODE[k]=AFFE_MODELE( MAILLAGE=M[k],
                       AFFE=_F( TOUT = 'OUI', MODELISATION = '3D',
                                       PHENOMENE = 'THERMIQUE'))
-   if ( k==1 ) :
+   if ( k==0 ) :
      M[k]=MODI_MAILLAGE( reuse=M[k],
                  MAILLAGE=M[k],
                  ORIE_PEAU_3D=_F(  GROUP_MA = ( 'ECHA', 'F1INF', 'FLUX', 'Z_0', 'Z_0_05', 'FACE_A', 'FACE_B', ),  )
@@ -82,8 +82,8 @@ for k in range(1,nbcalc):
 #              INFO=2,
               OPTION=('ERTH_ELEM','ERTH_ELNO'),)
 
-   IMPR_RESU( FORMAT='MED', RESU=_F( RESULTAT = RESU[k]))
-###   IMPR_RESU( FORMAT='RESULTAT', RESU=_F( RESULTAT = RESU[k]))
+   #IMPR_RESU( FORMAT='MED', RESU=_F( RESULTAT = RESU[k]))
+   #IMPR_RESU( FORMAT='RESULTAT', RESU=_F( RESULTAT = RESU[k]))
 
    if ( k < nbcalc-1 ) :
 # Adaptation du maillage en se basant sur la composante ERTABS du champ
@@ -99,34 +99,42 @@ for k in range(1,nbcalc):
                      NOM_CHAM = 'ERTH_ELEM',
                      NUME_ORDRE = 0,
                      NOM_CMP = 'ERTABS',
-                     CRIT_RAFF_PE = 0.05,
+                     CRIT_RAFF_PE = 0.1,
                      NIVE_MAX = 5,
                      QUALITE='OUI' )
 
 # Tests de non-regression de ERTH_ELEM/ERTH_ELNO_TEMP et de la
 # connection ASTER/HOMARD
-# La maille MA1 est le triangle du groupe TEST_S
+# La maille MA1 est le tetraedre du groupe TEST_V dans MA[0]
 TEST_RESU(RESU=(
-            _F( RESULTAT = RESU[1],          NUME_ORDRE = 0,
-                NOM_CHAM = 'ERTH_ELEM', MAILLE = 'MA1',
+            _F( RESULTAT = RESU[0],          NUME_ORDRE = 0,
+                NOM_CHAM = 'ERTH_ELEM',      MAILLE = 'MA1',
                 POINT =1,                    PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 3.3606481315358E-05,
-                VERSION = '9.05.04',              CRITERE='RELATIF')))
+                VALE = 3.1952033260814E-05,
+                VERSION = '11.0.23',              CRITERE='RELATIF')))
+TEST_RESU(RESU=(
+            _F( RESULTAT = RESU[0],          NUME_ORDRE = 0,
+                NOM_CHAM = 'ERTH_ELNO',      MAILLE = 'MA1',
+                GROUP_NO = 'G',              PRECISION = 1.E-5,
+                NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
+                VALE = 3.1952033260814E-05,
+                VERSION = '11.0.23',              CRITERE='RELATIF')))
+
+
+# Pour trouver le numero de la maille a tester :
+# ----------------------------------------------
+#num=M[1].sdj.GROUPEMA.get()['TEST_V'.ljust(8)]
+#assert len(num)==1
+#print 'la maille de TEST_V est : '+M[1].sdj.NOMMAI.get()[num[0]-1]
+
+# La maille MA65 est le tetraedre du groupe TEST_V dans MA[1]
 TEST_RESU(RESU=(
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0,
-                NOM_CHAM = 'ERTH_ELNO', MAILLE = 'MA1',
-                NOEUD = 'NO4',               PRECISION = 1.E-5,
-                NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 3.3606481315358E-05,
-                VERSION = '9.05.04',              CRITERE='RELATIF')))
-
-# La maille MA65 est le tetraedre du groupe TEST_V
-TEST_RESU(RESU=(
-            _F( RESULTAT = RESU[2],          NUME_ORDRE = 0,
-                NOM_CHAM = 'ERTH_ELEM', MAILLE = 'M65',
+                NOM_CHAM = 'ERTH_ELEM',      MAILLE = 'M97',
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 3.2310167150848E-05,  PRECISION = 1.E-5,
-                VERSION = '9.05.04', CRITERE='RELATIF')))
+                VALE = 2.9540823381852E-05,  PRECISION = 1.E-5,
+                VERSION = '11.0.23', CRITERE='RELATIF')))
+
 FIN()

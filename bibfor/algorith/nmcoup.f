@@ -1,10 +1,11 @@
         SUBROUTINE NMCOUP(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
-     &                      TIMED,TIMEF, EPSDT, DEPST,
-     &                   SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
+     &                  TIMED,TIMEF,NEPS,EPSDT,DEPST,NSIG,SIGD,VIND,OPT,
+     &                  NWKIN,WKIN,
+     &                  SIGF,VINF,NDSDE,DSDE,NWKOUT,WKOUT,IRET)
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,10 +26,11 @@ C RESPONSABLE PROIX J.M.PROIX
 C TOLE CRP_21
 C       ----------------------------------------------------------------
         INTEGER         IMAT , NDIM,KPG,KSP,IRET
+        INTEGER         NEPS,NSIG,NWKIN,NWKOUT,NDSDE
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF
-        REAL*8          ELGEOM(*)
+        REAL*8          WKIN(*),WKOUT(*)
         REAL*8          EPSDT(*),  DEPST(*)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -73,7 +75,7 @@ C                                 REDECOUPAGE LOCAL DU PAS DES
 C                                 (ITER_INTE_PAS == ITEDEC)
 C                                 0 = PAS DE REDECOUPAGE
 C                                 N = NOMBRE DE PALIERS
-C               ELGEOM  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
+C               WKIN  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
 C               TIMED   INSTANT T
@@ -127,9 +129,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       CMP2(1:15).EQ. 'BETON_DOUBLE_DP') THEN
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     &                      TIMED,TIMEF,
-     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,
-     &                      SIGF,VINF,DSDE,IRET)
+     &                  TIMED,TIMEF,
+     &                  NEPS,EPSDT,DEPST,NSIG,SIGD,VIND,OPT,
+     &                  NWKIN,WKIN,
+     &                  SIGF,VINF,NDSDE,DSDE,NWKOUT,WKOUT,IRET)
            IF(IRET.EQ.1) GOTO 9999
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
      &            CMP2(1:6)  .EQ. 'MAZARS') THEN
@@ -162,7 +165,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
             CALL LCUMFE ( FAMI,KPG,KSP,NDIM, TYPMOD, IMAT,
      &                    TIMED,TIMEF,
      &                    EPSDT,DEPST,SIGD, VIND, OPTION,SIGF,
-     &                    VINF,DSDE,ELGEOM)
+     &                    VINF,DSDE,WKIN)
           ELSEIF (TYPMOD(2) .EQ. 'GRADVARI') THEN
             TEXTE(1)=CMP4
             TEXTE(2)=CMP2

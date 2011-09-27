@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 #
 # TITRE FATIGUE, AMPLITUDE CONSTANTE, TEST DU CRITERE EN FORMULE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,10 +171,6 @@ ACIER   = DEFI_MATERIAU   ( ELAS           =_F( E         = 200000.,
                                                 NU        = .3,
                                                 ALPHA     = 0. ),
                             FATIGUE        =_F( WOHLER    = WHOL, ),
-                            CISA_PLAN_CRIT =_F( CRITERE = 'DANG_VAN_MODI_AC',
-                                                D_VAN_A  = 1.0,
-                                                D_VAN_B  = 2.0,
-                                                COEF_CISA_TRAC = 1.5 )
                           )
 
 LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
@@ -218,7 +214,7 @@ TR_CS  = AFFE_CHAR_MECA (
 # -------------------------
 
 SOL_NL = STAT_NON_LINE ( TITRE      =
-                'TEST TRACTION-COMPRESSION ALTERNEE - DANG_VAN_MODI_AC',
+                'TEST TRACTION-COMPRESSION ALTERNEE - FORMULE CRITERE',
                         MODELE     =   TROISD,
                         CHAM_MATER =   MAT,
                         EXCIT      =_F ( CHARGE       = TR_CS,
@@ -231,48 +227,26 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         NEWTON     =_F ( MATRICE      = 'ELASTIQUE',
                                          REAC_INCR    = 0 ))
 
-FATI_NL=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
-                      OPTION        = 'DOMA_ELGA',
-                      TYPE_CHARGE   = 'PERIODIQUE',
-                      MAILLAGE      = CUBE,
-                      GROUP_MA      = ('CUBE'),
-                      RESULTAT      = SOL_NL,
-                      CHAM_MATER    = MAT,
-                      COEF_PREECROU = 1.0,
-                      CRITERE       = 'DANG_VAN_MODI_AC',
-                      METHODE       = 'CERCLE_EXACT'
-                    )
-
 SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
-                    OPTION   = 'SIEF_ELNO',
+                    OPTION   = (
+                                'EPSI_ELGA',
+                                'SIEF_ELNO',
+                                'EPSI_ELNO')
                   )
 
 SOL_NL = CALC_NO( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
                   TOUT = 'OUI',
-                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D'),
-                  OPTION   = 'SIEF_NOEU'
-                )
-
-FAT_NLNO=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
-                       OPTION        = 'DOMA_NOEUD',
-                       TYPE_CHARGE   = 'PERIODIQUE',
-                       RESULTAT      = SOL_NL,
-                       CHAM_MATER    = MAT,
-                       COEF_PREECROU = 1.0,
-                       GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
-                       MAILLAGE      = CUBE,
-                       CRITERE       = 'DANG_VAN_MODI_AC',
-                       METHODE       = 'CERCLE_EXACT'
-                     )
-
+                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D','CUBE'),
+                  OPTION   = ('SIEF_NOEU','EPSI_NOEU')
+                )                                      
 
 # CALCUL AVEC MECA_STATIQUE
 # -------------------------
 
 SOL_L = MECA_STATIQUE ( TITRE      =
-                'TEST TRACTION-COMPRESSION ALTERNEE - DANG_VAN_MODI_AC',
+                'TEST TRACTION-COMPRESSION ALTERNEE ',
                         MODELE     =   TROISD,
                         CHAM_MATER =   MAT,
                         EXCIT      =_F ( CHARGE       = TR_CS,
@@ -280,53 +254,19 @@ SOL_L = MECA_STATIQUE ( TITRE      =
                         LIST_INST  =   LINST,
                      )
 
-FATI_L=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
-                     OPTION        = 'DOMA_ELGA',
-                     TYPE_CHARGE   = 'PERIODIQUE',
-                     MAILLAGE      = CUBE,
-                     GROUP_MA      = ('CUBE'),
-                     RESULTAT      = SOL_L,
-                     CHAM_MATER    = MAT,
-                     COEF_PREECROU = 1.0,
-                     CRITERE       = 'DANG_VAN_MODI_AC',
-                     METHODE       = 'CERCLE_EXACT'
-                   )
-
 SOL_L = CALC_ELEM( reuse      = SOL_L,
                    RESULTAT   = SOL_L,
-                   OPTION     = 'SIGM_ELNO',
+                   OPTION     = ('EPSI_ELGA',
+                                 'SIGM_ELNO',
+                                 'EPSI_ELNO', 
+                                   )
                  )
 
 SOL_L = CALC_NO( reuse    = SOL_L,
                  RESULTAT = SOL_L,
-                 OPTION   = 'SIGM_NOEU'
+                 OPTION   = ('SIGM_NOEU','EPSI_NOEU')
                )
-
-FAT_LNO=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
-                      OPTION        = 'DOMA_NOEUD',
-                      TYPE_CHARGE   = 'PERIODIQUE',
-                      RESULTAT      = SOL_L,
-                      CHAM_MATER    = MAT,
-                      COEF_PREECROU = 1.0,
-                      GROUP_MA      = ('FACE4', 'FACE5', 'FACE6'),
-                      MAILLAGE      = CUBE,
-                      CRITERE       = 'DANG_VAN_MODI_AC',
-                      METHODE       = 'CERCLE_EXACT'
-                    )
-
-FAT_LNO2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
-                       OPTION        = 'DOMA_NOEUD',
-                       TYPE_CHARGE   = 'PERIODIQUE',
-                       RESULTAT      = SOL_L,
-                       CHAM_MATER    = MAT,
-                       COEF_PREECROU = 1.0,
-                       GROUP_NO      = ('FACE4', 'FACE5', 'FACE6'),
-                       MAILLAGE      = CUBE,
-                       CRITERE       = 'DANG_VAN_MODI_AC',
-                       METHODE       = 'CERCLE_EXACT'
-                    )
-
-
+               
 # TEST CRITERE FORMULE AVEC DOMA_NOEUD
 #########################################NOEUD
 FATNLNO0=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -334,7 +274,6 @@ FATNLNO0=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        TYPE_CHARGE   = 'PERIODIQUE',
                        RESULTAT      = SOL_NL,
                        CHAM_MATER    = MAT,
-                       COEF_PREECROU = 1.0,
                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
                        MAILLAGE      = CUBE,
                        CRITERE       = 'FORMULE_CRITERE',
@@ -347,7 +286,6 @@ FATNLNO1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        TYPE_CHARGE   = 'PERIODIQUE',
                        RESULTAT      = SOL_NL,
                        CHAM_MATER    = MAT,
-                       COEF_PREECROU = 1.0,
                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
                        MAILLAGE      = CUBE,
                        CRITERE       = 'FORMULE_CRITERE',
@@ -361,7 +299,6 @@ FATNLNO2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        TYPE_CHARGE   = 'PERIODIQUE',
                        RESULTAT      = SOL_NL,
                        CHAM_MATER    = MAT,
-                       COEF_PREECROU = 1.0,
                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
                        MAILLAGE      = CUBE,
                        CRITERE       = 'FORMULE_CRITERE',
@@ -871,7 +808,6 @@ FATI_L0=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                      GROUP_MA      = ('CUBE'),
                      RESULTAT      = SOL_L,
                      CHAM_MATER    = MAT,
-                     COEF_PREECROU = 1.0,
                      CRITERE       = 'FORMULE_CRITERE',
                      FORMULE_GRDEQ   = CRIT_FAT,
                      COURBE_GRD_VIE  = 'WOHLER'
@@ -884,7 +820,6 @@ FATI_L1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                      GROUP_MA      = ('CUBE'),
                      RESULTAT      = SOL_L,
                      CHAM_MATER    = MAT,
-                     COEF_PREECROU = 1.0,
                      CRITERE       = 'FORMULE_CRITERE',
                      FORMULE_GRDEQ   = CRIT_FAT,
                      COURBE_GRD_VIE  = 'FORM_VIE',
@@ -898,7 +833,6 @@ FATI_L2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                      GROUP_MA      = ('CUBE'),
                      RESULTAT      = SOL_L,
                      CHAM_MATER    = MAT,
-                     COEF_PREECROU = 1.0,
                      CRITERE       = 'FORMULE_CRITERE',
                      FORMULE_GRDEQ   = CRIT_FAT,
                      COURBE_GRD_VIE  = 'FORM_VIE',

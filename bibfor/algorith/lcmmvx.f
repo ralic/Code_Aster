@@ -1,10 +1,10 @@
       SUBROUTINE LCMMVX (SIGF,VIN,NMAT,MATERF,NBCOMM,
-     &                   CPMONO,PGL,NVI,HSR,TOUTMS,TIMED,
+     &                   CPMONO,PGL,NVI,HSR,NFS,NSG,TOUTMS,TIMED,
      &                   TIMEF,SEUIL)
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,14 +42,14 @@ C         HSR    :  MATRICE D'INTERACTION
 C         TOUTMS :  TENSEURS D'ORIENTATION
 C     OUT SEUIL  :  SEUIL  ELASTICITE
 C     ----------------------------------------------------------------
-      INTEGER         NMAT, NVI, NSFA, NSFV,IEXP
+      INTEGER         NMAT, NVI, NSFA, NSFV,IEXP, NFS, NSG
       INTEGER         NBFSYS,I,NUVI,IFA,NBSYS,IS
       INTEGER         NBCOMM(NMAT,3),IRET
-      REAL*8          SIGF(6),VIN(NVI),RP,HSR(5,24,24)
+      REAL*8          SIGF(6),VIN(NVI),RP,HSR(NFS,NSG,NSG)
       REAL*8          MATERF(NMAT*2),SEUIL,DT,DY(NVI),ALPHAM
       REAL*8          MS(6),NG(3),Q(3,3),TIMED,TIMEF,LG(3)
-      REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(24)
-      REAL*8          PGL(3,3),CRIT,SGNS,TOUTMS(5,24,6),GAMMAM
+      REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(30)
+      REAL*8          PGL(3,3),CRIT,SGNS,TOUTMS(NFS,NSG,6),GAMMAM
       CHARACTER*16    CPMONO(5*NMAT+1)
       CHARACTER*16    NOMFAM,NECOUL,NECRIS
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 # sdld04a.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,7 +141,8 @@ MACRO_PROJ_BASE(  BASE=MODE_MEC,
                )
 
 #
-TRAN_GEN=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                   MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                     EXCIT=_F(  VECT_ASSE = VECT_X, FONC_MULT = ACCELERO),
                  INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.06,  PAS = 0.001)
@@ -150,7 +151,8 @@ TRAN_GEN=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
 L_INC=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
                            _F(  JUSQU_A = 0.081,   PAS = 0.001),),)
 
-TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                     reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA=0.27,GAMMA=0.52),
                   ETAT_INIT=_F(  RESULTAT = TRAN_GEN,NUME_ORDRE = 60,),
 #                              INST_INIT = 0.06, PRECISION = 1.E-4),
@@ -160,7 +162,8 @@ TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_G
                                  INST_FIN= 0.08,)  )
 
 
-TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                     reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                   ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
                               INST_INIT = 0.07, PRECISION = 1.E-4),
@@ -195,7 +198,8 @@ F1 = FORMULE(NOM_PARA='INST',VALE='-1.65597E+00*2.E+05*INST**2')
 F2 = FORMULE(NOM_PARA='INST',VALE='-4.73952E-01*2.E+05*INST**2')
 F3 = FORMULE(NOM_PARA='INST',VALE='1.82018E-01*2.E+05*INST**2')
 
-TRAN_NUM=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+TRAN_NUM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                   EXCIT=(
                   _F(  NUME_ORDRE = 1,  FONC_MULT = F1),
@@ -222,10 +226,11 @@ TEST_FONCTION(VALEUR=(
                VALE_PARA = 0.10,   VALE_REFE = -1.658))
              )
 
-# ON TESTE ICI LE CUMUL OBTENU PAR LES VECT_GENE ET NUME_MODE DANS
-# DYNA_TRAN_MODAL
+# ON TESTE ICI LE CUMUL OBTENU PAR LES VECT_ASSE ET NUME_MODE DANS
+# DYNA_VIBRA
 
-TRAN_NUC=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+TRAN_NUC=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                 MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                  EXCIT=(
                  _F(  VECT_ASSE = VECT_X,  FONC_MULT = ACCELERO),
@@ -305,9 +310,10 @@ MACRO_PROJ_BASE(  BASE=MODE_CS,   NB_VECT=2,MATR_ASSE_GENE=(
        VECT_ASSE_GENE=_F(  VECTEUR = CO("VECT_GC2"),  VECT_ASSE = VECTEUR)
                 )
 
-TRA_GCS=DYNA_TRAN_MODAL(  MATR_MASS=MASG_CS2,   MATR_RIGI=RIGG_CS2,
+TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                 MATR_MASS=MASG_CS2,   MATR_RIGI=RIGG_CS2,
                  SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),                  
-                EXCIT=_F(  VECT_ASSE = VECT_GC2,  FONC_MULT = ACCELERO,
+                 EXCIT=_F(  VECT_ASSE = VECT_GC2,  FONC_MULT = ACCELERO,
                         CORR_STAT = 'OUI',MODE_CORR=MODCOR,
                         D_FONC_DT = DERI_PRE,  D_FONC_DT2 = DERI_SEC),
                 INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = 0.1,  PAS = 0.001)
@@ -339,8 +345,9 @@ TEST_FONCTION(VALEUR=(
 L_INS=DEFI_LIST_REEL(  DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 0.1,  PAS = 0.01))
                            
-TRAN_LI1=DYNA_LINE_TRAN(  MATR_MASS=MASSE,      MATR_RIGI=RIGIDITE,
-                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRAN_LI1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           MATR_MASS=MASSE,      MATR_RIGI=RIGIDITE,
+                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                            INCREMENT=_F( LIST_INST = L_INST),
 #                           ARCHIVAGE=_F(  LIST_ARCH = L_ARCH),
                            ARCHIVAGE=_F(  LIST_INST = L_INS,),
@@ -373,7 +380,8 @@ TEST_FONCTION(VALEUR=(
 L_INS11=DEFI_LIST_REEL(  DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 0.06,  PAS = 0.01))
 
-TRAN_LI2=DYNA_LINE_TRAN(   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
+TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              INCREMENT=_F( LIST_INST = L_INS1),
 #                             ARCHIVAGE=_F(  LIST_ARCH = L_ARCH,
@@ -384,8 +392,9 @@ TRAN_LI2=DYNA_LINE_TRAN(   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
 L_INS22=DEFI_LIST_REEL(  DEBUT=0.06,
                            INTERVALLE=_F(  JUSQU_A = 0.11,  PAS = 0.01))
                            
-TRAN_LI2=DYNA_LINE_TRAN(reuse=TRAN_LI2,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
-                               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             reuse=TRAN_LI2,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
+                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              INCREMENT=_F( LIST_INST = L_INS2),
 #                             ARCHIVAGE=_F(  LIST_ARCH = L_ARCH,
                              ARCHIVAGE=_F(  LIST_INST = L_INS22,
@@ -422,8 +431,9 @@ TEST_FONCTION(VALEUR=(
 LISTDIF=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
                            _F(  JUSQU_A = 0.06,   PAS = 0.001),),)
 
-TRAN_LI4=DYNA_LINE_TRAN(   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
-                              SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
+TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
                              INCREMENT=_F( LIST_INST=LISTDIF),
                              ARCHIVAGE=_F(  LIST_INST = LISTDIF,
                                     CHAM_EXCLU = ( 'VITE',  'ACCE', )),
@@ -433,11 +443,12 @@ LIST=DEFI_LIST_REEL(  DEBUT=0.06,
                         INTERVALLE=(_F(  JUSQU_A = 0.09,  PAS = 0.001),
                                     _F(  JUSQU_A = 0.11,  PAS = 0.001),),)
 
-TRAN_LI4=DYNA_LINE_TRAN(reuse=TRAN_LI4,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
+TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                          reuse=TRAN_LI4,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                                SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
 #                             INCREMENT=_F(  PAS = 0.001,
 #                                        INST_FIN = 0.11),
-                              INCREMENT=_F(LIST_INST=LIST,),
+                             INCREMENT=_F(LIST_INST=LIST,),
                              ARCHIVAGE=_F(  PAS_ARCH = 10,
                                     CHAM_EXCLU = ( 'VITE',  'ACCE', )),
                              ETAT_INIT=_F(  RESULTAT = TRAN_LI4,
@@ -477,7 +488,8 @@ DEPL_INI=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 VITE_INI=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI2, NOM_CHAM='VITE', INST=0.06  )
 
-TRAN_LI3=DYNA_LINE_TRAN(   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
+TRAN_LI3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              ETAT_INIT=_F( DEPL = DEPL_INI,
                                         VITE = VITE_INI),
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 

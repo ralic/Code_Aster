@@ -1,11 +1,13 @@
         SUBROUTINE NMCPLA(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     &                      TIMED,TIMEF,
-     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,SIGF,
-     &                      VINF,DSDE,IRET)
+     &                    TIMED,TIMEF,
+     &                    NEPS,EPSDT,DEPST,NSIG,SIGD,VIND,OPT,
+     &                    NWKIN,WKIN,
+     &                    SIGF,VINF,NDSDE,DSDE,NWKOUT,WKOUT,IRET)
         IMPLICIT NONE
+C TOLE CRP_21
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +65,7 @@ C                                 REDECOUPAGE LOCAL DU PAS DE TEMPS
 C                                 (ITER_INTE_PAS == ITEDEC)
 C                                 0 = PAS DE REDECOUPAGE
 C                                 N = NOMBRE DE PALIERS
-C               ELGEOM  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
+C               WKIN  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
 C               TIMED   INSTANT T
@@ -97,15 +99,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C       ----------------------------------------------------------------
         INTEGER         IMAT , NDIM, KPG,KSP,IRET
+        INTEGER         NEPS,NSIG,NWKIN,NWKOUT,NDSDE
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          ELGEOM(*)
+        REAL*8          WKIN(*),WKOUT(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
 C
-        REAL*8          DSDE(6,6)
+        REAL*8          DSDE(NDSDE)
 C
         CHARACTER*16    COMP(*),     OPT
         CHARACTER*(*)   FAMI
@@ -313,10 +316,11 @@ C
          CALL LCCREE(1, CMP2, COMCOD)
          CALL LCINFO(COMCOD, NUMLC2, NBVAR2)
          CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
-     &                 TIMED, TIMEF,CP,NUMLC2,R8BID,R8BID,R8BID,
-     &                 EPSDT, DEPS,SIGD, VIND(NN), OPT,
-     &                 ELGEOM,ANGMAS,
-     &                 SIGF, VINF(NN), DSDE,RETCOM)
+     &                 TIMED, TIMEF,
+     &                 NEPS,EPSDT,DEPS,NSIG,SIGD,VIND(NN),OPT,
+     &                 ANGMAS,NWKIN,WKIN,
+     &                 CP,NUMLC2,R8BID,R8BID,R8BID,
+     &                 SIGF,VINF(NN),NDSDE,DSDE,NWKOUT,WKOUT,RETCOM)
       ELSE
          CALL U2MESS('F','ALGORITH7_3')
       ENDIF

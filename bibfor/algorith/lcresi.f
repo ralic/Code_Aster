@@ -1,12 +1,12 @@
         SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, TYPMOD, IMAT, NMAT,
      3                     MATERD, MATERF, COMP, NBCOMM, CPMONO,
-     1                     PGL,TOUTMS,HSR, NR, NVI,VIND,ITMAX, TOLER,
+     1         PGL,NFS,NSG,TOUTMS,HSR, NR, NVI,VIND,ITMAX, TOLER,
      &   TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R, IRET )
         IMPLICIT   NONE
 C TOLE CRP_21
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,14 +44,14 @@ C           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
 C       OUT R      :  SYSTEME NL A T + DT
 C       ----------------------------------------------------------------
 C
-        INTEGER         IMAT, NMAT, NR, NVI, KPG, KSP, ITMAX, IRET
+        INTEGER  IMAT, NMAT, NR, NVI, KPG, KSP, ITMAX, IRET, NFS,NSG
         REAL*8          DEPS(6)  , EPSD(6), VIND(*), TOLER
         REAL*8          R(*) , YD(*) ,  YF(*), DY(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TIMED, TIMEF
         CHARACTER*8     TYPMOD
         CHARACTER*16    LOI
-        REAL*8 TOUTMS(5,24,6), HSR(5,24,24)
+        REAL*8 TOUTMS(NFS,NSG,6), HSR(NFS,NSG,NSG)
         CHARACTER*(*)   FAMI
 
         INTEGER         NBCOMM(NMAT,3)
@@ -67,7 +67,7 @@ C       ----------------------------------------------------------------
 C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMRE ( TYPMOD, NMAT, MATERD, MATERF,
-     3          COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,NR, NVI,VIND,
+     3  COMP,NBCOMM, CPMONO, PGL, NFS,NSG,TOUTMS,HSR,NR, NVI,VIND,
      1  ITMAX, TOLER, TIMED, TIMEF,  YD,   YF, DEPS, DY,  R, IRET)
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRRES ( FAMI, KPG, KSP, TYPMOD,   NMAT, MATERD,MATERF,

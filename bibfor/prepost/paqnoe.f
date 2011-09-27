@@ -1,7 +1,7 @@
       SUBROUTINE PAQNOE(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
      &                  GRDVIE, FORVIE,FORDEF, TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,13 +159,9 @@ C    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS
       TDISP = (TDISP * LOISEM()) / LOR8EM()
       TDISP = INT(0.6D0*TDISP)
       CALL WKVECT( '&&PAQNOE.RWORK', 'V V R', TDISP, JRWORK )
+
+      NBCMP = 12
       
-      IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR. 
-     &    FORDEF)   THEN
-         NBCMP = 12
-      ELSE
-         NBCMP = 6
-      ENDIF
       BORMAX = NBNO*NBORDR*NBCMP
       VAL1 = DBLE(TDISP)/DBLE(BORMAX)
 
@@ -238,7 +234,7 @@ C DE TRAVAIL (JRWORK).
             ENDIF
          ENDIF
 
- 100  CONTINUE
+ 100  CONTINUE 
 
       IF (NBPAQ .GT. NBPMAX) THEN
          VALI (1) = NBPMAX
@@ -257,69 +253,20 @@ C  <<REMPLISSAGE>> DU VECTEUR DE TRAVAIL
          NBNOP = ZI(JPAQNO + (NUMPAQ-1)*4 + 3)
          TSPAQ = TPAQ/NBORDR
 
-         IF (( NOMCRI(1:16) .NE. 'FATESOCI_MODI_AV' ) .AND.
-     &     ( .NOT. FORDEF )) THEN
-
-            DO 220 IORDR=1, NBORDR
-               IF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
-                  CALL RSEXCH(NOMSD, 'SIGM_NOEU', IORDR, CHSIG,
-     &                        IRET)
-               ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
-                  CALL RSEXCH(NOMSD, 'SIEF_NOEU', IORDR, CHSIG,
-     &                        IRET)
-               ENDIF
-               IF (IRET .NE. 0) THEN
-                  CALL U2MESS('F','PREPOST4_36')
-               ENDIF
-               CNS1 = '&&PAQNOE.SIG_S1'
-               CNS2 = '&&PAQNOE.SIG_ORDO'
-               CALL CNOCNS(CHSIG, 'V', CNS1)
-               CALL CNSRED(CNS1, 0, IBID, NBCMP, LSIG, 'V', CNS2)
-               CALL JEEXIN(CNS2(1:19)//'.CNSV', IRET)
-               IF (IRET .EQ. 0) THEN
-                  CALL U2MESS('F','PREPOST4_37')
-               ENDIF
-               CALL JEVEUO(CNS2(1:19)//'.CNSD', 'L', JSIGD)
-               CALL JEVEUO(CNS2(1:19)//'.CNSL', 'L', JSIGL)
-               CALL JEVEUO(CNS2(1:19)//'.CNSV', 'L', JSIGV)
-
-               KWORK = 0
-               SOMNOW = 0
-
-               DO 240 INOP=NNOINI, NNOINI+(NBNOP-1)
-                 IF ( INOP .GT. NNOINI ) THEN
-                    KWORK = 1
-                    SOMNOW = SOMNOW + 1
-                 ENDIF
-
-                 NUNOE = ZI(JNOEU + INOP-1)
-C BOUCLE SUR LES CONTRAINTES SEULES (6 COMPOSANTES)
-                 DO 280 ICMP=1, 6
-                   IF ( ZL(JSIGL + (ICMP-1) + (NUNOE-1)*6) ) THEN
-                     ZR( JRWORK + (ICMP-1) + KWORK*SOMNOW*6 +
-     &                            (IORDR-1)*TSPAQ ) =
-     &               ZR( JSIGV + (ICMP-1) + (NUNOE-1)*6 )
-                   ELSEIF (ICMP .EQ. 5) THEN
-                      CALL U2MESI('F', 'FATIGUE1_2', 1, ICMP)
-                   ELSE
-                     CALL U2MESS('F','PREPOST4_30')
-                   ENDIF
- 280             CONTINUE
- 240           CONTINUE
- 220        CONTINUE
-
-         ELSE 
-
             DO 300 IORDR=1, NBORDR
+            
                IF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
                   CALL RSEXCH(NOMSD, 'SIEF_NOEU', IORDR, CHSIG,
      &                        IRET)
-                  CALL RSEXCH(NOMSD, 'EPSI_NOEU', IORDR, CHEPS,
-     &                        IRET1)
-               ELSE
-                  CALL U2MESS('F','PREPOST4_31')
+   
+               ELSEIF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
+                  CALL RSEXCH(NOMSD, 'SIGM_NOEU', IORDR, CHSIG,
+     &                        IRET)
                ENDIF
-
+               
+               CALL RSEXCH(NOMSD, 'EPSI_NOEU', IORDR, CHEPS,
+     &                        IRET1)
+     
                IF (IRET .NE. 0) THEN
                   CALL U2MESS('F','PREPOST4_38')
                ELSEIF (IRET1 .NE. 0) THEN
@@ -390,7 +337,7 @@ C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
  320           CONTINUE
  300        CONTINUE
 
-         ENDIF
+C         ENDIF
 
          IF ( NOMCRI(1:11) .EQ. 'VMIS_TRESCA' ) THEN
             NOMOPT = 'DOMA_NOEUD'

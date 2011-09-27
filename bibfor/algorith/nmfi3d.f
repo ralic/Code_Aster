@@ -4,7 +4,7 @@
      &                  COMPOR,MATSYM,COOPG,TM,TP,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -62,7 +62,7 @@ C-----------------------------------------------------------------------
       LOGICAL RESI,RIGI
       INTEGER CODE(9),NI,MJ,KK,P,Q,KPG,IBID,N
       REAL*8  B(3,60),SIGMA(6,NPG),SUM(3),DSU(3),DSIDEP(6,6),POIDS
-      REAL*8  RBID,R8VIDE,DDOT
+      REAL*8  RBID,R8VIDE,DDOT,R6(6)
       REAL*8  ANGMAS(3)
 
       CHARACTER*8  TYPMOD(2)
@@ -117,10 +117,10 @@ C -   APPEL A LA LOI DE COMPORTEMENT
 
         CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,MATE,COMPOR,CRIT,
      &                TM,TP,
-     &                SUM,DSU,
-     &                RBID,VIM(1,KPG),
-     &                OPTION,ANGMAS,COOPG(1,KPG),
-     &                SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
+     &                3,SUM,DSU,
+     &                6,R6,VIM(1,KPG),
+     &                OPTION,ANGMAS,4,COOPG(1,KPG),
+     &                SIGMA(1,KPG),VIP(1,KPG),36,DSIDEP,1,RBID,IBID)
 
         IF (RESI) THEN
 

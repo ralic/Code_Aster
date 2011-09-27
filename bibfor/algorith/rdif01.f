@@ -1,6 +1,6 @@
         SUBROUTINE RDIF01( FAMI,KPG,KSP,
      &                     COMP,   MOD,   IMAT,   MATCST,NBCOMM,
-     &                     CPMONO,NBFSYM,TOUTMS, NVI,    NMAT, VINI,
+     &                     CPMONO ,NFS,NSG,TOUTMS, NVI,    NMAT, VINI,
      &                     COTHE, COEFF, DCOTHE, DCOEFF,PGL,NBPHAS, E,
      &                     NU,    ALPHA, COEL,X,   DTIME,  SIGI,
      &                     EPSD,  DETOT,
@@ -8,7 +8,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C           DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 C       ----------------------------------------------------------------
         INTEGER KPG,KSP,IMAT,NMAT,NVI,NBCOMM(NMAT,3),NCOE,
-     &          NBPHAS,NBFSYM,IRET,ITMAX
+     &          NBPHAS,NFS,IRET,ITMAX,NSG
         CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
         CHARACTER*8 MOD
         CHARACTER*(*) FAMI
@@ -68,9 +68,9 @@ C       ----------------------------------------------------------------
         REAL*8 SIGI(6),EPSD(6),DETOT(6)
         REAL*8 COEFT(NMAT)
         REAL*8 VINI(NVI)
-        REAL*8 DVIN(NVI),HSR(5,24,24)
+        REAL*8 DVIN(NVI),HSR(NFS,NSG,NSG)
 C       POUR GAGNER EN TEMPS CPU
-        REAL*8 TOUTMS(NBPHAS,NBFSYM,24,6)
+        REAL*8 TOUTMS(NBPHAS,NFS,NSG,6)
 C
         LOI=COMP(1)
         IF (LOI(1:8).EQ.'MONOCRIS') THEN
@@ -87,7 +87,7 @@ C
      &                E,NU,ALPHA,NMAT,COEL)
           CALL LCMMOP(FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,
      &     VINI,X,DTIME,E,NU,ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,
-     &     COEL,NBPHAS,NBFSYM,TOUTMS,DVIN,HSR,ITMAX,TOLER,IRET)
+     &     COEL,NBPHAS,NFS,NSG,TOUTMS,DVIN,HSR,ITMAX,TOLER,IRET)
 
         ELSEIF (LOI(1:9).EQ.'VISCOCHAB') THEN
           NCOE=25

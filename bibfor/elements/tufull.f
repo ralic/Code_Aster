@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 PASS(NBRDDL,NBRDDL)
       REAL*8 PGL(3,3),OMEGA,VTEMP(NBRDDL)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
-      REAL*8 LC,ANGMAS(3)
+      REAL*8 LC,ANGMAS(3),RBID
       INTEGER NNO,NPG,NBCOU,NBSEC,M,ICOMPO,NDIMV,IVARIX
       INTEGER IPOIDS,IVF,NBVARI,LGPG,JTAB(7)
       INTEGER IMATE,IMATUU,ICAGEP,IGEOM
@@ -301,11 +301,11 @@ C -    APPEL A LA LOI DE COMPORTEMENT
             CALL NMCOMP('RIGI',IGAU,KSP,2,TYPMOD,ZI(IMATE),
      &                  ZK16(ICOMPO),ZR(ICARCR),
      &                  INSTM,INSTP,
-     &                  EPS2D,DEPS2D,
-     &                  SIGN,ZR(IVARIM+K2),
+     &                  6,EPS2D,DEPS2D,
+     &                  6,SIGN,ZR(IVARIM+K2),
      &                  OPTION,
-     &                  ANGMAS,
-     &                  LC,SIGMA,ZR(IVARIP+K2),DSIDEP,COD)
+     &                  ANGMAS,1,LC,
+     &                  SIGMA,ZR(IVARIP+K2),36,DSIDEP,1,RBID,COD)
 
             IF (PHENOM.EQ.'ELAS') THEN
               NBV = 2

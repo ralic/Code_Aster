@@ -1,8 +1,8 @@
-      SUBROUTINE CALTAU(COMP,IFA,IS,SIGF,FKOOH,TOUTMS,
+      SUBROUTINE CALTAU(COMP,IFA,IS,SIGF,FKOOH,NFS,NSG,TOUTMS,
      &                  TAUS,MUS,MSNS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,10 +33,10 @@ C     OUT  TAUS  :  scission reduite sur le systeme IS
 C     OUT  MUS   :  sym(MS * NS)
 C     OUT  MSNS  :  MS * NS
 
+      INTEGER J, I,IS,IFA,NFS,NSG
       REAL*8 TAUS,MUS(6),MSNS(3,3),ID6(6),NS(3),MS(3),SIGF(6)
       REAL*8 FESIG(3,3),S(3,3),FETFE(3,3),FETFE6(6)
-      REAL*8 TOUTMS(5,24,6),FKOOH(6,6)
-      INTEGER J, I,IS,IFA
+      REAL*8 TOUTMS(NFS,NSG,6),FKOOH(6,6)
       CHARACTER*16 COMP(*)
 C     ----------------------------------------------------------------
       DATA ID6/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105d.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -378,7 +378,8 @@ for k in range(1,ns+1):
 ###### CALCULS TRANSITOIRES SUR BASE MODALE
 ###
 #
-   TRAN_GE1=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+   TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                              MATR_MASS=M_PROJ, 
                              MATR_RIGI=K_PROJ,
 #                             MATR_AMOR=A_PROJ, 

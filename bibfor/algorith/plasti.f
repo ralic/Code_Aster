@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,7 +208,6 @@ C       ----------------------------------------------------------------
 C
         PARAMETER       ( EPSI = 1.D-15 )
         PARAMETER       ( NMAT = 90     )
-        INTEGER         NBCOMM(NMAT,3)
 C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
@@ -224,13 +223,23 @@ C
         REAL*8          DSDE(6,*),  PGL(3,3), ANGMAS(3)
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
-C ON SUPPOSE ICI QUE LE NOMBRE DE FAMILLES DE SYSTEME DE GLISSEMENT EN
-C UN POINT DE GAUSS EST 5 AU MAXIMUM. 126=5*24+6
-        REAL*8          TOUTMS(5,24,6),HSR(5,24,24),DRDY(126*126)
         CHARACTER*7     ETATD  ,     ETATF
         CHARACTER*8     MOD    ,     TYPMA,   TYPMOD(*)
-        CHARACTER*16    COMP(*),     OPT,        LOI, CPMONO(5*NMAT+1)
+        CHARACTER*16    COMP(*),     OPT,        LOI
         CHARACTER*3     MATCST
+
+C     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
+C        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
+C        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
+C        LE SYSTEME LOCAL A RESOUDRE A POUR DIMENSION MAXIMUM NRMAX=
+      INTEGER       NBCOMM(NMAT,3),NSG,NFS,NRM
+      PARAMETER     ( NSG=30)
+      PARAMETER     ( NFS=5)
+      PARAMETER     ( NRM=NFS*NSG+6)
+      REAL*8        TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
+      REAL*8        DRDY(NRM*NRM)
+      CHARACTER*16  CPMONO(5*NMAT+1)
+      
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
@@ -264,7 +273,7 @@ C     NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
       CALL LCMATE( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,0,
      &             TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
-     &             ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
+     &     ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,NFS,NSG,TOUTMS)
       IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
          IF(MOD.NE.'3D') THEN
             SIGD(5)=0.D0
@@ -324,7 +333,7 @@ C --        INTEGRATION ELASTIQUE SUR DT
 C --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
             CALL LCCNVX(FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
      &               SIGF, VIND, NBCOMM, CPMONO, PGL, NVI,
-     &               VP,VECP, HSR, TOUTMS, TIMED,TIMEF, SEUIL)
+     &               VP,VECP, HSR,NFS,NSG, TOUTMS, TIMED,TIMEF, SEUIL)
          ENDIF
 C
          IF ( SEUIL .GE. 0.D0 ) THEN
@@ -334,7 +343,7 @@ C
             CALL LCPLAS(FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,NMAT,
      &                  MATERD,MATERF, NR, NVI,
      &                  TIMED,TIMEF, DEPS, EPSD, SIGD ,VIND, SIGF,
-     &                  VINF,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     &                 VINF,COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,HSR,
      &                  ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG,
      &                  DEVGII,DRDY,TAMPON,CRIT)
 C
@@ -374,7 +383,7 @@ C   ------>    VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> ELASTIQUE
                   IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
                      CALL LCJPLC(LOI,MOD,NMAT,MATERF,
      &                           TIMED,TIMEF,COMP,NBCOMM,CPMONO,
-     &                           PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
+     &                          PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
      &                           ITMAX,TOLER,SIGD,VIND,SIGD,VIND,
      &                           DSDE,DRDY,OPT,IRET)
                      IF (IRET.NE.0) GOTO 1
@@ -404,7 +413,7 @@ C   ------>    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                IF     ( TYPMA .EQ. 'COHERENT' ) THEN
                   CALL LCJPLC(LOI,MOD,NMAT,MATERF,
      &                        TIMED,TIMEF,COMP,NBCOMM,CPMONO,
-     &                        PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
+     &                        PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
      &                        ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
      &                        DSDE,DRDY,OPT,IRET)
                   IF (IRET.NE.0) GOTO 1

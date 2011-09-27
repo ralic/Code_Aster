@@ -1,21 +1,22 @@
       SUBROUTINE LC0001(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
-     &                 INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
-     &                 TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
+     &  INSTAP,NEPS,EPSM,DEPS,NSIG,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
+     &     NWKIN,WKIN,TYPMOD,ICOMP,NVI,NDSDE,DSIDEP,CODRET)
       IMPLICIT NONE
       INTEGER         IMATE,NDIM,KPG,KSP,CODRET
+      INTEGER         NEPS,NSIG,NWKIN,NDSDE
       REAL*8          CRIT(*),ANGMAS(3)
-      REAL*8          INSTAM,INSTAP,TAMPON(*)
+      REAL*8          INSTAM,INSTAP,WKIN(NWKIN)
       INTEGER         ICOMP,NVI
-      REAL*8          EPSM(6),DEPS(6)
-      REAL*8          SIGM(6),SIGP(6)
+      REAL*8          EPSM(NEPS),DEPS(NEPS)
+      REAL*8          SIGM(NSIG),SIGP(NSIG)
       REAL*8          VIM(*),VIP(*)
-      REAL*8          DSIDEP(6,6)
+      REAL*8          DSIDEP(NDSDE)
       CHARACTER*16    COMPOR(*),OPTION
       CHARACTER*8     TYPMOD(*)
       CHARACTER*(*)   FAMI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +84,7 @@ C                             'RIGI_MECA_TANG'> DSIDEP(T)
 C                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
 C                             'RAPH_MECA'     > SIG(T+DT)
 C                             'RIGI_MECA_IMPLEX' > DSIDEP(T), SIGEXTR
-C               TAMPON  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
+C               WKIN  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
 C               ANGMAS
@@ -118,7 +119,7 @@ C     MODELISATION NON-LOCALE A GRADIENT D'ENDOMMAGEMENT
       IF (TYPMOD(2).EQ.'GRADVARI') THEN
 
         CALL LCVMGV (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &               INSTAM,INSTAP,DEPS,SIGM,VIM,TAMPON,
+     &               INSTAM,INSTAP,DEPS,SIGM,VIM,WKIN,
      &               OPTION,SIGP,VIP,DSIDEP,R8BID,R8BID,CODRET)
 
 C     MODELISATION LOCALE
@@ -139,6 +140,7 @@ C       PETITES DEFORMATIONS
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,R8BID,R8BID,CODRET)
              ELSE
+C                 IMPL_EX
             CALL NMISEX(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
      &                  INSTAP,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
      &                  TYPMOD,DSIDEP,CODRET)

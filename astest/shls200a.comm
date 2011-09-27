@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 # shls200a.para = tps_job 310 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -401,7 +401,8 @@ for k in range(1,ns+1):
                   
 # CALCUL HARMONIQUE
 
-   HARM=DYNA_LINE_HARM(MATR_MASS=M_GENE,
+   HARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                            MATR_MASS=M_GENE,
                             MATR_RIGI=K_GENE,
                             MATR_AMOR=A_GENE,
                             SOLVEUR=_F( METHODE='LDLT', ),

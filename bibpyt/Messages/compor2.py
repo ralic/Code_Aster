@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,10 +83,42 @@ La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integrati
 12 : _("""
   LA LOI ENDO_HETEROGENE N'EST COMPATIBLE QU'AVEC LE MODELE NON LOCAL GRAD_SIGM.
 """),
+
 13 : _("""
   LA MODELISATION GRAD_SIGM N'EST COMPATIBLE QU'AVEC LA LOI ENDO_HETEROGENE.
 """),
+
 14: _("""
  ENDO_HETEROGENE : Les critères entre KI et SY ne sont pas respectés ; baissez KI ou augmentez SY
 """),
+
+15: _("""
+ MONOCRISTAL : la matrice d'interaction fournie n'est pas carrée : nb lignes = <%(r1)E>, nb colonnes = <%(r2)E>.
+"""),
+
+16: _("""
+ MONOCRISTAL : quand la matrice d'interaction est fournie par l'utilisateur, il faut une seule famille de systemes.
+ Ici,il y en a : <%(i1)i>.
+"""),
+
+16: _("""
+ MONOCRISTAL : quand la matrice d'interaction est fournie par l'utilisateur, il faut une seule famille de systemes.
+ Ici,il y en a : <%(i1)i>.
+"""),
+
+17: _("""
+ MONOCRISTAL : la matrice d'interaction fournie ne comporte pas le bon nombre de systemes.
+ il en faut : <%(i1)i>.
+"""),
+
+18: _("""
+ MONOCRISTAL : la matrice d'interaction fournie n'est pas symétrique.
+"""),
+
+19: _("""
+ MONOCRISTAL : le nombre de composantes de n et m n'est pas correct :  <%(r1)E> au lieu de 6.
+"""),
+
+
+
 }

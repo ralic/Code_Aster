@@ -9,7 +9,7 @@
       LOGICAL       FORDEF
       CHARACTER*16  NOMCRI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -101,12 +101,14 @@ C234567                                                              012
 
       N = 0
 
-      IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
-     &    FORDEF ) THEN
-         DECAL = 12
-      ELSE
-         DECAL = 6
-      ENDIF
+C       IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
+C      &    FORDEF ) THEN
+C          DECAL = 12
+C       ELSE
+C          DECAL = 6
+C       ENDIF
+      
+      DECAL = 12
 
       DO 10 IVECT=1, NBVEC
          NX = VECTN((IVECT-1)*3 + 1)
@@ -122,8 +124,16 @@ C234567                                                              012
          VZ = VECTV((IVECT-1)*3 + 3)
 
          DO 20 IORDR=1, NBORDR
-            ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
-     &                             + (I-1)*DECAL + (DECAL-6)
+C             ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
+C      &                             + (I-1)*DECAL + (DECAL-6)
+            IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
+     &         FORDEF ) THEN
+               ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
+     &                             + (I-1)*DECAL + 6
+            ELSE
+               ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
+     &                             + (I-1)*DECAL
+            ENDIF 
             CMPXX = VWORK(ADRS + 1)
             CMPYY = VWORK(ADRS + 2)
             CMPZZ = VWORK(ADRS + 3)

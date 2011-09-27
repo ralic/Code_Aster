@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 # sdll302b.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -293,7 +293,8 @@ L_INSTA=DEFI_LIST_REEL(         DEBUT=DEBUTR,
                           )
                           
 
-REPBASE1=DYNA_TRAN_MODAL(      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE'),
+REPBASE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='DEVOGE'),
                                MATR_RIGI=RIGIGEN1,
                                MATR_MASS=MASSGEN1,
                                ARCHIVAGE=_F( LIST_INST = L_INSTA),
@@ -612,9 +613,10 @@ L_INSTA2=DEFI_LIST_REEL(         DEBUT=DEBUTR,
                                           PAS = PAS*20)
                           )
 
-REP_LIN2=DYNA_LINE_TRAN(    MATR_RIGI=RIGIDITE,
+REP_LIN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                               MATR_RIGI=RIGIDITE,
                                MATR_MASS=MASSE,
-                                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA = 0.25,
+                               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA = 0.25,
                                           GAMMA = 0.50),
                              INCREMENT=_F(  LIST_INST = L_INST1),
                                ARCHIVAGE=_F( LIST_INST = L_INSTA2,

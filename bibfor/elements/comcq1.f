@@ -3,7 +3,7 @@
      &                  EPS,DEPS,TEMPM,TEMPP,SIGM,VIM,
      &                  OPTION,ANGMAS,SIGP,VIP,DSDE,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C  VARIABLE ENTREE/SORTIE
       INTEGER        CODRET,KPG,KSP,MOD,IMATE
       REAL*8         TEMPM,TEMPP,ANGMAS(3),SIGM(4),EPS(4),DEPS(4)
       REAL*8         VIM(*),VIP(*),SIGP(4),DSDE(6,6),CARCRI(*),LC(1)
-      REAL*8         INSTM,INSTP,EP,EM,DEPSTH,ETG,DEPSM
+      REAL*8         INSTM,INSTP,EP,EM,DEPSTH,ETG,DEPSM,WKOUT(1)
       CHARACTER*8    TYPMOD(2),NOMPAR
       INTEGER CODRES
 
@@ -53,8 +53,8 @@ C     DIRECTION Z : EPSZZ CONNU
          TYPMOD(2) = '        '
          CALL NMCOMP(FAMI,KPG,KSP,2,TYPMOD,IMATE,
      &               COMPOR,CARCRI,INSTM,INSTP,
-     &               EPS,DEPS,SIGM,VIM,OPTION,ANGMAS,LC,
-     &               SIGP,VIP,DSDE,CODRET)
+     &               4,EPS,DEPS,4,SIGM,VIM,OPTION,ANGMAS,1,LC,
+     &               SIGP,VIP,36,DSDE,1,WKOUT,CODRET)
       ELSE
 
 C         EN COQUE_C_PLAN : COMPORTEMENT 1D.
@@ -64,8 +64,8 @@ C         EN COQUE_C_PLAN : COMPORTEMENT 1D.
              TYPMOD(2) = '        '
              CALL NMCOMP(FAMI,KPG,KSP,2,TYPMOD,IMATE,
      &                   COMPOR,CARCRI,INSTM,INSTP,
-     &                   EPS,DEPS,SIGM,VIM,OPTION,ANGMAS,LC,
-     &                   SIGP,VIP,DSDE,CODRET)
+     &                   4,EPS,DEPS,4,SIGM,VIM,OPTION,ANGMAS,1,LC,
+     &                   SIGP,VIP,36,DSDE,1,WKOUT,CODRET)
 
          ELSE
 

@@ -3,7 +3,7 @@
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ C       ----------------------------------------------------------------
         INTEGER         NUVI,NBFSYS,IFA,IS,NBSYS
         REAL*8          VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
         REAL*8           EPSEQ,COTHE(NMAT),COEFF(NMAT),E,NU,FV
-        REAL*8          SIGG(6),MAXRP,ZE(12),RP,HSR(5,24,24)
+        REAL*8          SIGG(6),MAXRP,ZE(12),RP,HSR(5,30,30)
         CHARACTER*16    LOI,CPMONO(5*NMAT+1),LOCA
       CHARACTER*16 NOMFAM,NECRIS,NECOUL
 C V.I. 1 a 6 représente la deformation viscoplastique macro

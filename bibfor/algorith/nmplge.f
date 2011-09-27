@@ -4,7 +4,7 @@
      &  DFDI2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C ----------------------------------------------------------------------
       REAL*8  RAC2,LC,C,DEPLM(3*27),DEPLD(3*27),DFDI1(27,3)
       REAL*8  R,WG,EPSGM(6,2),EPSGD(6,2),GEPSM(6,3),GEPS(6,3),F(3,3)
       REAL*8  B(6,3,27),DE(6),SIGMA(6),DSIDEP(6,6,2),T1,T2
-      REAL*8  P(6,6),SIGMAM(6),PERT,Q(6,6)
+      REAL*8  P(6,6),SIGMAM(6),PERT,Q(6,6),RBID
 
       PARAMETER (PERT = 1.D-4)
 C ----------------------------------------------------------------------
@@ -166,10 +166,10 @@ C      LOI DE COMPORTEMENT
         CALL DSCAL(3,RAC2,SIGMAM(4),1)
 
         CALL NMCOMP('RIGI',G,1,NDIM,TYPMOD,MATE,COMPOR,CRIT,INSTAM,
-     &          INSTAP,EPSGM,EPSGD,SIGMAM,
+     &          INSTAP,12,EPSGM,EPSGD,6,SIGMAM,
      &          VIM(1,G),OPTION,
-     &          ANGMAS,P,
-     &          SIGMA,VIP(1,G),DSIDEP,COD(G))
+     &          ANGMAS,36,P,
+     &          SIGMA,VIP(1,G),72,DSIDEP,36,P,COD(G))
         IF(COD(G).EQ.1) GOTO 9000
 
 C      FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY

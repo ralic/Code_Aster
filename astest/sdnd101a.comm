@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE LACHER D'UN PATIN FROTTANT
 # sdnd101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,10 +133,11 @@ PLANZ=DEFI_OBSTACLE(   TYPE='PLAN_Z' )
 PLANY=DEFI_OBSTACLE(   TYPE='PLAN_Y' )
 
 #
-DYNAMODA=DYNA_TRAN_MODAL(       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                                MATR_MASS=MASSEGEN,
-                                MATR_RIGI=RIGIDGEN,
-                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                              MATR_MASS=MASSEGEN,
+                              MATR_RIGI=RIGIDGEN,
+                              AMOR_MODAL=_F(AMOR_REDUIT=0.,),
                               ETAT_INIT=_F(  VITE = VITINI),
                               INCREMENT=_F(  INST_INIT = 0.,
                                           INST_FIN = 0.5,

@@ -1,11 +1,11 @@
       SUBROUTINE LCMMJG(COMP,NMAT,NBCOMM,CPMONO,HSR,DT,NVI,VIND,YD,DY,
-     &               ITMAX,TOLER,MATERF,SIGF,FKOOH,TOUTMS,PGL,
+     &               ITMAX,TOLER,MATERF,SIGF,FKOOH,NFS,NSG,TOUTMS,PGL,
      &               MSNST,GAMSNS,DFPDGA,IRET)
       IMPLICIT NONE
 C TOLE CRP_21
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,13 +49,13 @@ C           GAMSNS :  Somme de GammaS*MS*NS
 C           DFPDGA :  derivee de Fp / dGamma_S pour tous les systemes S
 C       OUT IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
-      INTEGER NVI,NMAT,NBFSYS,NSFA,NSFV,NBSYS,IS
+      INTEGER NVI,NMAT,NBFSYS,NSFA,NSFV,NBSYS,IS,NFS,NSG
       INTEGER NBCOMM(NMAT,3),IFA,IRET,ITMAX
       REAL*8 VIND(*),DY(*),MATERF(NMAT*2)
-      REAL*8 PGL(3,3),TOUTMS(5,24,6),HSR(5,24,24),GAMSNS(3,3)
+      REAL*8 PGL(3,3),TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG),GAMSNS(3,3)
       REAL*8 DT,FKOOH(6,6),SIGF(6),TOLER,TAUS
-      REAL*8 Q(3,3),MUS(6),NS(3),MS(3),DFPDGA(3,3,24)
-      REAL*8 EXPBP(24),YD(*),MSNST(3,3,24),DALPHA,DGAMMA,DP,CRIT,SGNS,RP
+      REAL*8 Q(3,3),MUS(6),NS(3),MS(3),DFPDGA(3,3,30)
+      REAL*8 EXPBP(30),YD(*),MSNST(3,3,30),DALPHA,DGAMMA,DP,CRIT,SGNS,RP
       CHARACTER*16 NOMFAM,CPMONO(5*NMAT+1),COMP(*)
 C     ----------------------------------------------------------------
 
@@ -72,7 +72,7 @@ C        Calcul preliminaire de somme(dgamma*ms*ns)
          NOMFAM=CPMONO(5*(IFA-1)+1)
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NS,MS,0,Q)
          DO 17 IS=1,NBSYS
-           CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,TOUTMS,
+           CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,NFS,NSG,TOUTMS,
      &                 TAUS,MUS,MSNST(1,1,IS))
            CALL LCMMLC(NMAT,NBCOMM,CPMONO,HSR,NSFV,NSFA,IFA,NBSYS,IS,
      &               DT,NVI,VIND,YD,DY,ITMAX,TOLER,MATERF,EXPBP,TAUS,

@@ -1,5 +1,5 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
-# TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_LINE_TRAN
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,8 @@ bal_Zass=ASSE_VECTEUR(VECT_ELEM=bal_FZe,
                       NUME_DDL=NUMEDDL,);
 
 
-DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=AMOGYRO,
                     FREQ=FREQ,

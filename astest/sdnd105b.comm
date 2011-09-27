@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC DE DEUX MASSES AU COMPORTEMENT FLAMBAGE PLASTIQUE
 # sdnd105b.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,8 +137,9 @@ BI_PLANY=DEFI_OBSTACLE(TYPE='BI_PLAN_Y')
 #
 
 
-TRAN_GEN=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                               SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                      MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                      SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                       ETAT_INIT=_F(  VITE = VIT_GENE),
 
                       FLAMBAGE=_F(  NOEUD_1 = 'N02',
@@ -157,8 +158,9 @@ TRAN_GEN=DYNA_TRAN_MODAL(  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                                   PAS = 0.001)
                             )
 
-TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                               SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                      reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                      SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                       ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
                                   INST_INIT = 3.),
 

@@ -1,4 +1,4 @@
-#@ MODIF fatigue1 Messages  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+#@ MODIF fatigue1 Messages  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -395,6 +395,10 @@ cata_msg={
  Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-cle FORMULE_VIE est fournis 
  par la formule, la grandeur équivalente pour l'instant est plus grande que f(N_f =1 ). Vérifiez la formule
  de la courbe FORMULE_VIE.  
+"""),
+
+96: _("""
+Attention, le cycle de chargement appliqué entraine une courbe hysteresis non-ferme. Verifiez les chargements appliqués.  
 """),
 
 }

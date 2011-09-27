@@ -1,12 +1,12 @@
         SUBROUTINE LCINIT ( FAMI,KPG,KSP,LOI,TYPESS, ESSAI,MOD,
      1                      NMAT,MATERF,TIMED,TIMEF,
      2                      NR, NVI, YD,     EPSD,   DEPS, DY,
-     3                      COMP,NBCOMM, CPMONO, PGL,TOUTMS,
+     3                      COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,
      4                      VIND,SIGD, EPSTR)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
 C TOLE CRP_21
-        INTEGER         TYPESS ,  NMAT, NR,NVI, KPG, KSP
+        INTEGER         TYPESS ,  NMAT, NR,NVI, KPG, KSP, NFS, NSG
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          DEPS(6), EPSD(6), ESSAI
         REAL*8          YD(*) ,  DY(*)
@@ -53,7 +53,7 @@ C TOLE CRP_21
         REAL*8          TIMED, TIMEF
         REAL*8          PGL(3,3)
         REAL*8          VIND(*),SIGD(6),EPSTR(6)
-        REAL*8          TOUTMS(5,24,6)
+        REAL*8          TOUTMS(NFS,NSG,6)
         CHARACTER*(*)   FAMI
         CHARACTER*8     MOD
         CHARACTER*16    LOI
@@ -67,7 +67,7 @@ C
 C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMIN(TYPESS,ESSAI,MOD,NMAT,MATERF,NR, NVI,YD,DEPS,DY,
-     1                      COMP,NBCOMM, CPMONO, PGL,TOUTMS,
+     1                      COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,
      2                     TIMED,TIMEF,VIND,SIGD,EPSTR)
       ELSEIF     ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
          CALL IRRINI(FAMI,KPG,KSP,TYPESS,ESSAI,MOD,NMAT,MATERF,YD,

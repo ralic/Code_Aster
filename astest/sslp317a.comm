@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 27/09/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,77 +35,64 @@ FISS4 = [None]*(nb_raff+1)
 
 PRE_GIBI();
 
-def SIGN1(y) : 
-   if y<0. : return 0. 
-   if y>=0. : return 1.
-
-def SIGN2(y) : 
-   if y>=0. : return 0. 
-   if y<0. : return 1.
-
-
-r1 = 0.2       
-LN1=FORMULE(NOM_PARA=('X','Y'),VALE='sqrt(X**2+Y**2)-r1');
-LT1=FORMULE(NOM_PARA=('Y'),VALE='Y'); 
-
-
 r2 = 0.05
-LN2=FORMULE(NOM_PARA=('X','Y'),VALE='sqrt(X**2+Y**2)-r2');
-
-
-def FLT4(x) :
-     if ( x-0.3 ) >= 0. : return   x-0.3  -  0.1
-     else :  return   -x+0.3 -  0.1
-     
-LN3=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.25');
-LT3=FORMULE(NOM_PARA='X',VALE='FLT3(X)');
-
-
-def FLT3(x) :
-     if ( x+0.2 ) <= 0. : return   -x-0.2  -  0.1
-     else :  return   x+0.2  -  0.1
-
-LN4=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.25');
-LT4=FORMULE(NOM_PARA='X',VALE='FLT4(X)');
 
 num_calc=0   
 
 MA[num_calc]=LIRE_MAILLAGE();
-IMPR_RESU(FORMAT='GMSH',UNITE=89,RESU=_F(MAILLAGE=MA[num_calc]));
 
-for num_calc in range(0,nb_raff+1) :
+for num_calc in range(nb_raff+1) :
+
    MO[num_calc]=AFFE_MODELE(MAILLAGE=MA[num_calc],
                             AFFE=(_F(GROUP_MA=('SURF','LIG2','LIG3','LIG4'),
                                      PHENOMENE='MECANIQUE',
                                      MODELISATION='D_PLAN',),),);
 
+   # entaille
    FISS1[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1,),);
+                                  TYPE_DISCONTINUITE='INTERFACE', 
+                                  DEFI_FISS=_F(FORM_FISS     = 'ENTAILLE',
+                                               DEMI_LONGUEUR = 0.3,
+                                               RAYON_CONGE   = 0.05,
+                                               CENTRE        = (0., -0.3, 0.),
+                                               VECT_X        = (1., 0., 0.),
+                                               VECT_Y        = (0., 1., 0.),
+                                               ))
 
+   # inclusion circulaire
    FISS2[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LN=LN2,),
-                                  TYPE_DISCONTINUITE='INTERFACE',)
+                                  TYPE_DISCONTINUITE='INTERFACE',
+                                  DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                               DEMI_GRAND_AXE = r2,
+                                               DEMI_PETIT_AXE = r2,
+                                               CENTRE         = (0., 0., 0.),
+                                               VECT_X         = (1., 0., 0. ),
+                                               VECT_Y         = (0., 1., 0. ),
+                                               ),)
 
    FISS3[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LT=LT3,FONC_LN=LN3,),);
+                                  DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
+                                               PFON_ORIG  = (0.2, 0.25, 0.),
+                                               PFON_EXTR  = (0.4, 0.25, 0.),))
+
 
    FISS4[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LT=LT4,FONC_LN=LN4,),);
+                                  DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
+                                               PFON_ORIG  = (-0.3, 0.25, 0.),
+                                               PFON_EXTR  = (-0.1, 0.25, 0.),))
+
 
    # on ne raffine pas la derniere iteration
    if num_calc < nb_raff :
 
       CHERR[num_calc] = RAFF_XFEM(FISSURE=(FISS1[num_calc],FISS2[num_calc],FISS3[num_calc],FISS4[num_calc]),)
 
-      IMPR_RESU(FORMAT='GMSH',UNITE=85,RESU=_F(CHAM_GD = CHERR[num_calc]));
-      IMPR_RESU(RESU=_F(CHAM_GD = CHERR[num_calc]));
-
       # SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES  
       MA[num_calc+1]=CO('MA_%d' % (num_calc+1))
 
       MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
                   CHAM_GD = CHERR[num_calc],
-                  CRIT_RAFF_PE = 0.10,
+                  CRIT_RAFF_PE = 0.2,
                   USAGE_CMP = 'RELATIF',
                   MAILLAGE_N = MA[num_calc],
                   MAILLAGE_NP1 = MA[num_calc+1],
@@ -115,17 +102,30 @@ for num_calc in range(0,nb_raff+1) :
 # definition group de noeuds pour bloquer l'inclusion centrale
 MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
                         MAILLAGE=MA[nb_raff],
-                        CREA_GROUP_NO=_F(NOM='NC',OPTION='ENV_SPHERE',POINT=(0.,0.),PRECISION=1/200.,RAYON=1/200.),
-                        INFO=2 );
-                        
+                        CREA_GROUP_NO=_F(NOM='NC',OPTION='ENV_SPHERE',POINT=(0.,0.),PRECISION=1/50.,RAYON=1/50.),
+                        INFO=2 )
+       
+# definition group de noeuds pour bloquer l'entaille
+MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
+                        MAILLAGE=MA[nb_raff],
+                        CREA_GROUP_NO=_F(NOM='NE1',OPTION='ENV_SPHERE',POINT=(0.,-0.3),PRECISION=1/200.,RAYON=1/200.),
+                        INFO=2 )
+
+MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
+                        MAILLAGE=MA[nb_raff],
+                        CREA_GROUP_NO=_F(NOM='NE2',OPTION='ENV_SPHERE',POINT=(0.1,-0.3),PRECISION=1/200.,RAYON=1/200.),
+                        INFO=2 )
+
+                              
 # impression du dernier maillage
-IMPR_RESU(FORMAT='GMSH',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]));
-IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(CHAM_GD=CHERR[nb_raff-1]));
-#IMPR_RESU(RESU=_F(MAILLAGE=MA[nb_raff]));
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]));
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO[nb_raff],FISSURE=(FISS1[nb_raff],FISS2[nb_raff],FISS3[nb_raff],FISS4[nb_raff]),);
+#*********************************************************************
+#                          CALCUL                                    *
+#*********************************************************************
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO[nb_raff],
+                         FISSURE=(FISS1[nb_raff],FISS2[nb_raff],FISS3[nb_raff],FISS4[nb_raff]),);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             NU=0.3),);
@@ -135,51 +135,39 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
                        AFFE=_F(GROUP_MA='SURF',MATER=ACIER,),
                        );
 
-
-#*********************************************************************
-#                          CONDITIONS AUX LIMITES                    *
-#*********************************************************************
-
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=_F(GROUP_MA='LIG1',
                                    DX=0.0,
                                    DY=0.0,),
                        );
 
-# pour bloquer les modes rigides de l'inclusion centrale
+# pour bloquer les modes rigides de l'inclusion centrale et de l'entaille
 CHARINC=AFFE_CHAR_MECA(MODELE=MODELEK,
-                       DDL_IMPO=_F(GROUP_NO='NC',
+                       DDL_IMPO=_F(GROUP_NO=('NC','NE1','NE2'),
                                    DX=0.0,DY=10.0,),
                        );
 
-CHpres=AFFE_CHAR_MECA(MODELE=MODELEK,
+CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
                       PRES_REP=_F(GROUP_MA=('LIG2','LIG3','LIG4'),PRES=-1.e6,),);
 
-
-UTOT=MECA_STATIQUE(MODELE=MODELEK,
+RESU=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CHARBLO),
                           _F(CHARGE=CHARINC),
-                          _F(CHARGE=CHpres),
-                          _F(CHARGE=CHXFEM),
-                          ),
-                   INFO=1,
-                   ); 
+                          _F(CHARGE=CHPRES))
+                   )
+
 #---------------POST--------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(
-                       MODELE        = MODELEK,
-                       INFO          = 2)
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),) 
 
-RES_XFEM=POST_CHAM_XFEM(
-                        MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT,
-                        INFO          = 2)
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
+                        RESULTAT    = RESU)
 
 
 IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')),);
@@ -216,10 +204,8 @@ TAB=POST_RELEVE_T(TITRE='TAB',
                             CHAM_GD=CHUN,
                             OPERATION='EXTRACTION'),);
 
-#IMPR_TABLE(TABLE=TAB)
-
 # NOMBRE DE NOEUDS DU MAILLAGE FINAL
-nbno = 1271
+nbno = 3128
 
 TEST_TABLE(TABLE=TAB,
            TYPE_TEST='SOMM',
@@ -227,6 +213,7 @@ TEST_TABLE(TABLE=TAB,
            VALE=nbno,
            CRITERE='RELATIF',
            PRECISION=1.E-12,
-           REFERENCE='NON_REGRESSION')
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.00.24')
 
 FIN();

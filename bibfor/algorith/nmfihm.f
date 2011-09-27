@@ -4,7 +4,7 @@
      &                  COMPOR,TYPMOD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/08/2011   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,9 +72,9 @@ C OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 C-----------------------------------------------------------------------
 
       LOGICAL RESI,RIGI,AXI
-      INTEGER I,J,KK,M,N,OS,P,Q,IBID,KPG
+      INTEGER I,J,KK,M,N,OS,P,Q,IBID,KPG,NCOORO
       REAL*8 DSIDEP(6,6),B(2*NDIM-1,NDIM+1,2*NNO1+NNO2),SIGMA(6)
-      REAL*8 EPSM(6),DEPS(6),WG
+      REAL*8 EPSM(6),DEPS(6),WG,R6(6)
       REAL*8 COOPG(NDIM,NPG),ROT(NDIM*NDIM),COOROT(NDIM+NDIM*NDIM,NPG)
       REAL*8 CRIT,RBID,PRESGM,PRESGD,PRESG,TEMP
                   
@@ -143,16 +143,16 @@ C       (MATRICE UTILE POUR LES VI DE POST-TRAITEMENT DANS LA LDC)
         DO 166 J=1,NDIM*NDIM
           COOROT(NDIM+J,KPG)=ROT(J)
   166   CONTINUE
-     
+        NCOORO=NDIM+NDIM*NDIM
 C - APPEL A LA LOI DE COMPORTEMENT
         CALL NMCOMP('RIGI',KPG,1,NDIM,TYPMOD,MATE,COMPOR,CRIT,
      &              TM,TP,
-     &              EPSM,DEPS,
-     &              RBID,VIM(1,KPG),
+     &              6,EPSM,DEPS,
+     &              6,R6,VIM(1,KPG),
      &              OPTION,
      &              RBID,
-     &              COOROT(1,KPG),
-     &              SIGMA,VIP(1,KPG),DSIDEP,IBID)
+     &              NCOORO,COOROT(1,KPG),
+     &              SIGMA,VIP(1,KPG),36,DSIDEP,1,RBID,IBID)
 
 C - CONTRAINTE ET EFFORTS INTERIEURS
 

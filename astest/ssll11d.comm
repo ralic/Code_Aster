@@ -1,8 +1,8 @@
-# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -214,11 +214,12 @@ MATASSC=ASSE_MATRICE(  MATR_ELEM=MATELEC,    NUME_DDL=NUM  )
 
 VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELE,    NUME_DDL=NUM  )
 
-DYNHAR0=DYNA_LINE_HARM(  MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
+DYNHAR0=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                             MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                              MATR_AMOR=MATASSC,   FREQ=100.,
-                              TOUT_CHAM='OUI',
+                             TOUT_CHAM='OUI',
                              EXCIT=_F(  COEF_MULT = 1.,
-                                     VECT_ASSE = VECTASS)   )
+                                        VECT_ASSE = VECTASS)   )
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DX',
@@ -294,11 +295,12 @@ MATASCM=ASSE_MATRICE(  MATR_ELEM=MATELCM,    NUME_DDL=NUMC  )
 
 MATASCC=ASSE_MATRICE(  MATR_ELEM=MATELCC,    NUME_DDL=NUMC  )
 
-DYNHAC0=DYNA_LINE_HARM(  MATR_MASS=MATASCM, MATR_RIGI=MATASCR,
+DYNHAC0=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                             MATR_MASS=MATASCM, MATR_RIGI=MATASCR,
                              MATR_AMOR=MATASCC,   FREQ=100.,
-                              TOUT_CHAM='OUI',
-                              MODELE=MOD,
-                              CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             TOUT_CHAM='OUI',
+                             MODELE=MOD,
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
                              EXCIT=_F(  COEF_MULT_C = 1.+0.j,
                                      CHARGE = CHARGEC)   )
 

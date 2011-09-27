@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME 2 MASSES 2 RESSORTS  A 6 DDL (+ 2 AMORTISSEURS DISCRETS)
 # sdld325b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,7 +172,7 @@ L_RECUV=( 0.09, 0.28, 0.47, 0.66, 0.85, 1.08, 1.27, 1.46, 1.66,
 LRECUV=DEFI_LIST_REEL(   VALE=L_RECUV )
 
 #
-# 1- SCHEMA NEWMARK DYNA_LINE_TRAN
+# 1- SCHEMA NEWMARK DYNA_VIBRA (BASE PHYSIQUE)
 #
 L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                              INTERVALLE=_F(  JUSQU_A = 2.5,  PAS = 0.001))
@@ -181,9 +181,10 @@ L_ARCH=DEFI_LIST_ENTI(  DEBUT=0,
                              INTERVALLE=_F(  JUSQU_A = 2500,    PAS = 10)
                           )
 
-DYNLINEW=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,      MATR_RIGI=MATRRIGI,
-                            MATR_AMOR=MATRAMOR,
-                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),       
+DYNLINEW=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           MATR_MASS=MATRMASS,      MATR_RIGI=MATRRIGI,
+                           MATR_AMOR=MATRAMOR,
+                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),       
                            INCREMENT=_F(  LIST_INST = L_INST),
                            ARCHIVAGE=_F(  PAS_ARCH = 10),
                            EXCIT=_F(  VECT_ASSE = VECTASS,   
@@ -197,11 +198,12 @@ N3_X_VIT=RECU_FONCTION(  NOEUD='N3',   NOM_CMP='DX',   NOM_CHAM='VITE',
                              RESULTAT=DYNLINEW,  LIST_INST=LRECUV  )
 
 #
-# 2- SCHEMA EULER DYNA_TRAN_MODAL
+# 2- SCHEMA EULER DYNA_VIBRA (BASE MODALE)
 #
-DYNMODEU=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                              MATR_MASS=MASSEGEN,  MATR_RIGI=RIGIDGEN,
-                              MATR_AMOR=AMORTGEN,
+DYNMODEU=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                             MATR_MASS=MASSEGEN,  MATR_RIGI=RIGIDGEN,
+                             MATR_AMOR=AMORTGEN,
                              EXCIT=_F(  VECT_ASSE = EFFOGENE,
                                      FONC_MULT = FONCALPH),
                              INCREMENT=_F( 
@@ -221,11 +223,12 @@ DYTRAEUV=REST_GENE_PHYS(  RESU_GENE=DYNMODEU,    NOM_CHAM='VITE',
                             LIST_INST=LRECUV,   INTERPOL='LIN'    )
 
 #
-# 3- SCHEMA PAS ADAPTATIF DYNA_TRAN_MODAL
+# 3- SCHEMA PAS ADAPTATIF DYNA_VIBRA
 #
-DYNMODAD=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
-                              MATR_MASS=MASSEGEN,  MATR_RIGI=RIGIDGEN,
-                              MATR_AMOR=AMORTGEN,
+DYNMODAD=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                             MATR_MASS=MASSEGEN,  MATR_RIGI=RIGIDGEN,
+                             MATR_AMOR=AMORTGEN,
                              EXCIT=_F(  VECT_ASSE = EFFOGENE,
                                      FONC_MULT = FONCALPH),
                              INCREMENT=_F( 

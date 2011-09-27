@@ -1,6 +1,6 @@
       SUBROUTINE RK21CO( FAMI, KPG, KSP,
      &                   COMP,   MOD,     IMAT, MATCST,NBCOMM,CPMONO,
-     &                   NBFSYM, TOUTMS, NVI,    NMAT,    Y,
+     &                   NFS,NSG,TOUTMS, NVI,    NMAT,    Y,
      &                   KP,    EE,      A,       H, PGL,NBPHAS,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
      &                   ALPHA, COEL, X,       PAS,     SIGI,   EPSD,
@@ -8,9 +8,9 @@
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,8 +61,8 @@ C         EPSD    :  DEFORMATION TOTALE A T
 C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C     ----------------------------------------------------------------
 
-      INTEGER    KPG,KSP,NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I,NBFSYM,
-     &           NBPHAS,ITMAX,IRET
+      INTEGER KPG,KSP,NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I,NFS,NSG
+      INTEGER NBPHAS,ITMAX,IRET
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
       CHARACTER*(*)   FAMI
@@ -72,11 +72,11 @@ C     ----------------------------------------------------------------
       REAL*8 COTHE(NMAT),DCOTHE(NMAT)
       REAL*8 SIGI(6),EPSD(6),DETOT(6)
       REAL*8 Y(NVI)
-      REAL*8 F(NVI),HSR(5,24,24),TOLER
+      REAL*8 F(NVI),HSR(NFS,NSG,NSG),TOLER
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
       REAL*8 EE(NVI),A(NVI)
 C      POUR GAGNER EN TEMPS CPU
-      REAL*8 TOUTMS(NBPHAS,NBFSYM,24,6)
+      REAL*8 TOUTMS(NBPHAS,NFS,NSG,6)
 C
       DO 1 I=1,NVI
         EE(I)=0.D0
@@ -84,7 +84,7 @@ C
    1  CONTINUE
       IF (KP.EQ.1) THEN
         CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
-     &              CPMONO,NBFSYM,TOUTMS,
+     &              CPMONO,NFS,NSG,TOUTMS,
      &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
      &              HSR,ITMAX, TOLER, IRET)
@@ -99,7 +99,7 @@ C
       END IF
       X=X+H
       CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
-     &            CPMONO,NBFSYM,TOUTMS,
+     &            CPMONO,NFS,NSG,TOUTMS,
      &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
      &              HSR,ITMAX, TOLER, IRET)

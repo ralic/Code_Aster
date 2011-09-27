@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,6 +127,15 @@ C        RESUIN : NOM DE LA SD_RESULTAT A PROJETER (SI .NOT.ISOLE)
         CHAM1=' '
         RESUIN=' '
       ENDIF
+
+
+C     LIMITATION DE LA METHODE ECLA_PG :
+C      IL N'EST PAS POSSIBLE DE PROJETER UNE SD_RESULTAT
+
+      IF ((METHOD.EQ.'ECLA_PG') .AND. (.NOT.ISOLE)) THEN
+        CALL U2MESS('F','CALCULEL5_9')
+      ENDIF
+      
 
 
 

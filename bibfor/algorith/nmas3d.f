@@ -6,7 +6,7 @@
      &                  SIGM,VIM,
      &                  DFDI,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C
       INTEGER KPG,I,II,INO,IA,J,K,KL,PROJ,COD(9),NBPG2
       INTEGER NDIM,NNOS,JGANO,KP,IAA
       REAL*8 D(6,6),F(3,3),EPS(6),DEPS(6),R,S,SIGMA(6),SIGN(6)
-      REAL*8 POIDS,POIPG2(8)
+      REAL*8 POIDS,POIPG2(8),RBID
       REAL*8 ELGEOM(10,9)
       REAL*8 JAC,SIGAS(6,8),INVJA(3,3),BI(3,8),HX(3,4)
       REAL*8 GAM(4,8),COOPG2(24),H(8,4),DH(4,24)
@@ -216,12 +216,12 @@ C - LOI DE COMPORTEMENT
 
       CALL NMCOMP(FAMI,KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
-     &            EPS,DEPS,
-     &            SIGN,VIM(1,KPG),
+     &            6,EPS,DEPS,
+     &            6,SIGN,VIM(1,KPG),
      &            OPTIOS,
      &            ANGMAS,
-     &            ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),D,COD(KPG))
+     &            10,ELGEOM(1,KPG),
+     &            SIGMA,VIP(1,KPG),36,D,1,RBID,COD(KPG))
 
 C - ERREUR D'INTEGRATION
       IF (COD(KPG).EQ.1) THEN

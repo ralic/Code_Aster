@@ -1,6 +1,7 @@
-# MODIF  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+
+# MODIF  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
-# ssnd112c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# ssnd112c.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,9 +22,10 @@
 
 DEBUT(CODE=_F(NOM='SSND112C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
-import numpy as NP
+### essai TABLE contenant la matrice d'interaction
 
 import numpy as NP
+
 
 E=173000.
 
@@ -35,8 +37,6 @@ MU = E/(2*(1.+NU))
 TAU_F  = 20.
 RHO_0  = 1.E6    # en mm**-2
 RHOREF = 1.E6    # en mm**-2
-
-# N      = 200.
 
 N      = 50.
 
@@ -98,6 +98,8 @@ MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIERDD,),);
 
+
+                   
 # DD_CFC
 COMPORDD=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERDD,
                                      ELAS='ELAS',
@@ -106,6 +108,50 @@ COMPORDD=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERDD,
                                     ),
                                  ),
                      );
+
+IMPR_CO(CONCEPT=_F(NOM=COMPORDD))
+
+######### TEST MATRICE D'INTERACTION UTILISATEUR
+
+table=LIRE_TABLE( UNITE=39,
+                   FORMAT='ASTER',
+                   NUME_TABLE=1,
+                   SEPARATEUR=' ',)
+                   
+# DD_CFC
+COMPORDT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERDD,
+                                     ELAS='ELAS',
+                                     ECOULEMENT='MONO_DD_CFC',
+                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                     ),
+                                 ),
+                      MATR_INTER= table,
+                     );
+
+IMPR_CO(CONCEPT=_F(NOM=COMPORDT))
+
+
+######### TEST SYSTEMES DE GLISSEMENT UTILISATEUR
+
+table3=LIRE_TABLE( UNITE=49,
+                   FORMAT='ASTER',
+                   NUME_TABLE=1,
+                   SEPARATEUR=' ',)
+                   
+# DD_CFC
+COMPORD3=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERDD,
+                                     ELAS='ELAS',
+                                     ECOULEMENT='MONO_DD_CFC',
+                                   #  FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                     FAMI_SYST_GLIS='UTILISATEUR',
+                                    TABL_SYST_GLIS=table3),
+                                 ),
+                      MATR_INTER= table,
+                     );
+                     
+IMPR_CO(CONCEPT=_F(NOM=COMPORD3))
+
+
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                     DDL_IMPO=(
@@ -481,6 +527,399 @@ TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
                         );
 
 TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=1.04944E-03 ,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+
+
+
+######### TEST MATRICE D'INTERACTION UTILISATEUR
+                     
+SOLNL2=STAT_NON_LINE(MODELE = TROISD,
+                    CHAM_MATER = MAT,
+                    CARA_ELEM = ORIEN,
+                    ETAT_INIT = _F(VARI=VAIN11,),
+                    EXCIT=(_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,
+                              ),
+                          ),
+                    COMP_INCR=(
+                               _F(RELATION='MONOCRISTAL',
+                                  COMPOR=COMPORDT,
+                                  DEFORMATION='PETIT',
+                                  ITER_INTE_MAXI=100,
+                                  TOUT='OUI',),
+                               _F(RELATION='ELAS',
+                                  GROUP_MA=('PX1'),),
+                              ),
+                     INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=tmax),),
+                     
+                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
+                     
+                     ARCHIVAGE=_F(LIST_INST=LINSTDD),
+                     
+                     SUIVI_DDL=( _F(NOM_CMP    ='V7',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                _F(NOM_CMP    ='V31',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                _F(NOM_CMP    ='V40',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                _F(NOM_CMP    ='SIZZ',
+                                   NOM_CHAM   ='SIEF_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                 ),
+                    );
+                    
+SOLNL2 = CALC_ELEM(reuse= SOLNL2,
+                  RESULTAT = SOLNL2,
+                  TOUT_ORDRE = 'OUI',
+                  OPTION   =('EPSG_ELGA',),
+                  );
+
+
+
+numpg=5
+epsDIR2=RECU_FONCTION(RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSG_ELGA',
+                   NOM_CMP='EPZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+
+sigDIR2=RECU_FONCTION(RESULTAT=SOLNL2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+
+
+gamm2=[None]*13
+rho2=[None]*13
+
+system=['', 'B4', 'B2', 'B5', 'D4', 'D1', 'D6', 'A2', 'A6', 'A3', 'C5', 'C3', 'C1']
+
+for i in range(1,13):
+    
+    
+    gamm2[i]=RECU_FONCTION(RESULTAT=SOLNL2,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   NOM_CMP='V'+str(8+3*(i-1)),
+                           INTERPOL='LIN');
+    
+    rho2[i]=RECU_FONCTION(RESULTAT=SOLNL2,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   NOM_CMP='V'+str(7+3*(i-1)),
+                   INTERPOL='LIN');
+    
+             
+
+# NON REGRESSION
+
+TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR2,
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=2.24443E-01,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR2,
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=230.7133,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=0.35670,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=rho2[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=1.490252E-05,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=0.05493,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=rho2[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=6.30676E-06,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+tdep=0.02
+
+TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR2,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=2.02331E-02,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR2,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=1.14125E+02,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+TEST_FONCTION(VALEUR=_F(FONCTION=rho2[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=9.80852E-07,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=3.85454E-02,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=rho2[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=1.07407E-07,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=1.04944E-03 ,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+
+#########" TEST SYSTEMES DE GLISSEMENT UTILISATEUR
+
+                     
+SOLNL3=STAT_NON_LINE(MODELE = TROISD,
+                    CHAM_MATER = MAT,
+                    CARA_ELEM = ORIEN,
+                    ETAT_INIT = _F(VARI=VAIN11,),
+                    EXCIT=(_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,
+                              ),
+                          ),
+                    COMP_INCR=(
+                               _F(RELATION='MONOCRISTAL',
+                                  COMPOR=COMPORD3,
+                                  DEFORMATION='PETIT',
+                                  ITER_INTE_MAXI=100,
+                                  TOUT='OUI',),
+                               _F(RELATION='ELAS',
+                                  GROUP_MA=('PX1'),),
+                              ),
+                     INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=tmax),),
+                     
+                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
+                     
+                     ARCHIVAGE=_F(LIST_INST=LINSTDD),
+                     
+                     SUIVI_DDL=( _F(NOM_CMP    ='V7',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                _F(NOM_CMP    ='V31',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                _F(NOM_CMP    ='V40',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                _F(NOM_CMP    ='SIZZ',
+                                   NOM_CHAM   ='SIEF_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                                 ),
+                    );
+                    
+SOLNL3 = CALC_ELEM(reuse= SOLNL3,
+                  RESULTAT = SOLNL3,
+                  TOUT_ORDRE = 'OUI',
+                  OPTION   =('EPSG_ELGA',),
+                  );
+
+
+
+numpg=5
+epsDIR3=RECU_FONCTION(RESULTAT=SOLNL3,
+                   NOM_CHAM='EPSG_ELGA',
+                   NOM_CMP='EPZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+
+sigDIR3=RECU_FONCTION(RESULTAT=SOLNL3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+
+
+gamm3=[None]*13
+rho3=[None]*13
+
+system=['', 'B4', 'B2', 'B5', 'D4', 'D1', 'D6', 'A2', 'A6', 'A3', 'C5', 'C3', 'C1']
+
+for i in range(1,13):
+    
+    
+    gamm3[i]=RECU_FONCTION(RESULTAT=SOLNL3,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   NOM_CMP='V'+str(8+3*(i-1)),
+                           INTERPOL='LIN');
+    
+    rho3[i]=RECU_FONCTION(RESULTAT=SOLNL3,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   NOM_CMP='V'+str(7+3*(i-1)),
+                   INTERPOL='LIN');
+    
+             
+
+# NON REGRESSION
+
+TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR3,
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=2.24443E-01,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR3,
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=230.7133,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=0.35670,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=rho3[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=1.490252E-05,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=0.05493,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=rho3[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=6.30676E-06,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+tdep=0.02
+
+TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR3,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=2.02331E-02,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR3,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=1.14125E+02,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+TEST_FONCTION(VALEUR=_F(FONCTION=rho3[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=9.80852E-07,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[1],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=3.85454E-02,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=rho3[9],
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=1.07407E-07,
+                        PRECISION=0.001,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[9],
                         NOM_PARA='INST',
                         VALE_PARA=tdep,
                         VALE_REFE=1.04944E-03 ,

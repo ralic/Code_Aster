@@ -1,6 +1,6 @@
       SUBROUTINE TE0477(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C          ELEMENT SHB8PS
       REAL*8 R8VIDE,LC,G,ANGMAS(3),INSTM,INSTP,DSIDEP(6,6)
       REAL*8 DEPSLO(120),EPS2D(6),DEPS2D(6),EPSLOC(120)
       INTEGER IINSTM,IINSTP,IRET
-      REAL*8 NU,E,PARA(11)
+      REAL*8 NU,E,PARA(11),RBID
       REAL*8 XIDEPP(60),RE6(18,18),RE15(45,45),RE20(60,60)
       REAL*8 DUDDD(180)
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -232,13 +232,13 @@ C
              CALL R8INIR(36,0.D0,DSIDEP,1)
              CALL NMCOMP('RIGI',IPG,1,2,TYPMOD,ZI(IMATE),
      &            ZK16(ICOMPO),ZR(ICARCR),INSTM,INSTP,
-     &              EPS2D,DEPS2D,
-     &              SIGM,ZR(IVARIM+2*(IPG-1)),
+     &              6,EPS2D,DEPS2D,
+     &              6,SIGM,ZR(IVARIM+2*(IPG-1)),
      &              OPTION,
      &              ANGMAS,
-     &              LC,
+     &              1,LC,
      &              SIMP,
-     &              ZR(IVARIP+2*(IPG-1)),DSIDEP,IRET)
+     &              ZR(IVARIP+2*(IPG-1)),36,DSIDEP,1,RBID,IRET)
              G = D(1)/(2.D0*(1.D0+D(2)))
              SIGMA(6*(IPG-1)+1) = SIMP(1)
              SIGMA(6*(IPG-1)+2) = SIMP(2)

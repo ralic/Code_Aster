@@ -9,7 +9,7 @@
       REAL*8     VRESPC(24)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,7 +91,7 @@ C     ------------------------------------------------------------------
       INTEGER      I, J, K, N
       INTEGER      NBVEC, DIM ,MNMAX(2), JVPG1, JVPG2
       INTEGER      JVECN2, JVECU2, JVECV2, JVECN1, JVECU1, JVECV1
-      INTEGER      ADRS, ICODRE
+      INTEGER      ADRS, ICODRE, DECAL
 C
       REAL*8       EPSILO, GAMMA, PI, R8PI, DPHI
       REAL*8       GAMMAM, PHIM, DGAM2, DPHI2, PHI0, DTAUM(2)
@@ -353,27 +353,37 @@ C DE LRAINTE NORMALE MOYENNE SUR LE PLAN CRITIQUE,
 C DE LRMATION NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 C DE LRMATION NORMALE MOYENNE SUR LE PLAN CRITIQUE.
     
-         CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
-     &               VALE,ICODRE,0)
-         IF (ICODRE .EQ. 1) THEN
-            CALL U2MESS('F','PREPOST_11')
-         ENDIF
-         CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
-     &               VALNU,ICODRE,0)
-         IF (ICODRE .EQ. 1) THEN
-            CALL U2MESS('F','PREPOST_12')
-         ENDIF
-         C1 = (1+VALNU)/VALE
-         C2 = VALNU/VALE
+C          CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
+C      &               VALE,ICODRE,0)
+C          IF (ICODRE .EQ. 1) THEN
+C             CALL U2MESS('F','PREPOST_11')
+C          ENDIF
+C          CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
+C      &               VALNU,ICODRE,0)
+C          IF (ICODRE .EQ. 1) THEN
+C             CALL U2MESS('F','PREPOST_12')
+C          ENDIF
+C          C1 = (1+VALNU)/VALE
+C          C2 = VALNU/VALE
 
          DO 540 I=1, NBORDR
-            ADRS = (I-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
+            DECAL = 12
+C           ADR = (J-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
+            ADRS = (I-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
             SIXX = ZR(JRWORK + ADRS + 0)
             SIYY = ZR(JRWORK + ADRS + 1)
             SIZZ = ZR(JRWORK + ADRS + 2)
             SIXY = ZR(JRWORK + ADRS + 3)
             SIXZ = ZR(JRWORK + ADRS + 4)
             SIYZ = ZR(JRWORK + ADRS + 5)
+            
+            EPSXX = ZR(JRWORK + ADRS + 6)
+            EPSYY = ZR(JRWORK + ADRS + 7)
+            EPSZZ = ZR(JRWORK + ADRS + 8)
+            EPSXY = ZR(JRWORK + ADRS + 9)
+            EPSXZ = ZR(JRWORK + ADRS + 10)
+            EPSYZ = ZR(JRWORK + ADRS + 11)
+         
 
 C CALCLA PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
 
@@ -389,12 +399,12 @@ C EST ANTE PAR RAPPORT AU vect_n.
                ENDIF
             ENDIF
 
-            EPSXX = C1*SIXX - C2*(SIXX + SIYY + SIZZ)
-            EPSYY = C1*SIYY - C2*(SIXX + SIYY + SIZZ)
-            EPSZZ = C1*SIZZ - C2*(SIXX + SIYY + SIZZ)
-            EPSXY = C1*SIXY
-            EPSXZ = C1*SIXZ
-            EPSYZ = C1*SIYZ
+C             EPSXX = C1*SIXX - C2*(SIXX + SIYY + SIZZ)
+C             EPSYY = C1*SIYY - C2*(SIXX + SIYY + SIZZ)
+C             EPSZZ = C1*SIZZ - C2*(SIXX + SIYY + SIZZ)
+C             EPSXY = C1*SIXY
+C             EPSXZ = C1*SIXZ
+C             EPSYZ = C1*SIYZ
 
 C CALCvect_F = [SIG].vect_n
 

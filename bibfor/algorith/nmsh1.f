@@ -5,7 +5,7 @@
      &                   DEPLM,DEPLD,SIGM,VIM,
      &                   SIGP,VIP,FINT,MATUU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -222,9 +222,9 @@ C-----------------------TRANSFORMATION DE X : VARIABLE INTERNE---------
 C************************APPEL A LA LOI DE COMPORTEMENT**********
          CALL NMCOMP(FAMI,G,1,3,TYPMOD,MATE,COMPOR,CRIT,
      &             INSTM,INSTP,
-     &             EPSMM,ETDPNV,SIGMAM,VIM(1,G),OPTION,
-     &             ANGMAS,TAMPON,
-     &             TAUP,VIP(1,G),DSIDEP,COD(G))
+     &             6,EPSMM,ETDPNV,6,SIGMAM,VIM(1,G),OPTION,
+     &             ANGMAS,10,TAMPON,
+     &             TAUP,VIP(1,G),36,DSIDEP,1,RBID,COD(G))
 
 C       TEST SUR LES CODES RETOUR DE LA LOI DE COMPORTEMENT
          IF(COD(G).NE.0) THEN

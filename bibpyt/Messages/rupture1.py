@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture1 Messages  DATE 26/09/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,17 +231,9 @@ Vérifier le paramètre défini sous le mot clé NUME_FOND de POST_K1_K2_K3.
 """),
 
 39: _("""
-La récupération des contraintes à partir de la SD Résultat 
-en présence d'un état initial n'est pas permise.
+La récupération des contraintes à partir de la SD Résultat n'est permise que si les fissures sont maillées.
 -> Risque et Conseil :
-Veuillez demander le calcul des contraintes (CALCUL_CONTRAINTE='OUI')
-"""),
-
-40: _("""
-Seules les options CALC_G et CALC_G_GLOB sont autorisées pour ne pas
-à recalculer les contraintes.
--> Risque et Conseil :
-Veuillez demander le calcul des contraintes (CALCUL_CONTRAINTE='OUI')
+Veillez à ne pas vous servir de FISSURE avec le mot-clé CALCUL_CONTRAINTE.
 """),
 
 41: _("""
@@ -287,7 +279,7 @@ calculée avec l'opérateur POST_K1_K2_K3.
 
 
 46: _("""
-Le taux de restitution d'énergie G est négatif sur certains des noeuds du fond de fissure :
+Le taux de restitution d'énergie G est négatif ou nul sur certains des noeuds du fond de fissure :
 le calcul de propagation est impossible.
 -> Risque et Conseil :
 Vérifier les paramètres du calcul de G (rayons des couronnes ou abscisse curviligne 
@@ -372,7 +364,8 @@ Conseil : limiter le comptage des cycles à une seule quantité (K_EQ par exemple)
 Pour l'opération %(k1)s, la table doit être réentrante (reuse obligatoire).
 """),
 
-63:_("""
+63:_("""La récupération des contraintes à partir de la SD Résultat 
+en présence d'un état initial n'est pas permise.
 Pour l'opération %(k1)s, la table ne doit pas être réentrante (reuse interdit).
 """),
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE D UN SYSTEME MASSES-RESSORTS A UN SEISME AVEC CORRECTION STATIQUE
 # sdld105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,7 +139,8 @@ MACRO_PROJ_BASE(BASE=MODE_EXT,
                                   VECT_ASSE=MONO_X,),);
 
 
-TRAN_GEN=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                          MATR_MASS=MASS_GEN,
                          MATR_RIGI=RIGI_GEN,
                          AMOR_MODAL=_F(AMOR_REDUIT=0.05,),
@@ -183,7 +184,8 @@ DERI_PRE = FORMULE(VALE='2*pi*fex*cos(2*pi*fex*INST)',
 DERI_SEC = FORMULE(VALE='-(2*pi**fex)**2*sin(2*pi*fex*INST)',
                    NOM_PARA='INST',);
 
-TRA_GCS=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         MATR_MASS=MASS_GEN,
                         MATR_RIGI=RIGI_GEN,
                         AMOR_MODAL=_F(AMOR_REDUIT=0.05,),                        
@@ -223,7 +225,8 @@ MACRO_PROJ_BASE(BASE=MODE_MEC,
                                   VECT_ASSE=MONO_X,),);
 
 
-TRAN_COM=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRAN_COM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                          MATR_MASS=MASS_COM,
                          MATR_RIGI=RIGI_COM,
                          AMOR_MODAL=_F(AMOR_REDUIT=0.05,),

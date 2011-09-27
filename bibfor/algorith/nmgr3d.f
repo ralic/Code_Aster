@@ -7,7 +7,7 @@
      &                    DFDI,PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,12 +231,12 @@ C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
 C -    APPEL A LA LOI DE COMPORTEMENT
        CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
-     &            EPSM,DEPS,
-     &            SIGN,VIM(1,KPG),
+     &            6,EPSM,DEPS,
+     &            6,SIGN,VIM(1,KPG),
      &            OPTION,
      &            ANGMAS,
-     &            ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
+     &            10,ELGEOM(1,KPG),
+     &            SIGMA,VIP(1,KPG),36,DSIDEP,1,R8BID,COD(KPG))
 
        IF(COD(KPG).EQ.1) THEN
          GOTO 1956

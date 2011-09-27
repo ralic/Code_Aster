@@ -1,5 +1,5 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
-# TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_TRAN_MODAL
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,7 +163,8 @@ MACRO_PROJ_BASE(BASE=MODES,
                                 _F(VECTEUR=CO('BYGE'),
                                    VECT_ASSE=bal_Yass,),),);
 
-TRANSMO=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         MATR_MASS=MAGE,
                         MATR_RIGI=RIGE,
                         MATR_AMOR=AGGE,

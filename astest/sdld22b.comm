@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 # sdld22b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -201,7 +201,8 @@ MACRO_PROJ_BASE(  BASE=MODES,
                                    VECTEUR = CO("EFFOGENE"),
                                    VECT_ASSE = VECTASS) )
 
-DYNAMODA=DYNA_TRAN_MODAL( SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                            SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                             MATR_MASS=MASSEGEN,
                              MATR_RIGI=RIGIDGEN,
                              MATR_AMOR=AMORTGEN,
@@ -269,9 +270,10 @@ TEST_RESU(RESU=(
 #               TRANSITOIRE DIRECT PAS DE TEMPS ADAPTATIF
 #-----------------------------------------------------------------------
 #
-DYNAADAP=DYNA_LINE_TRAN(    MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
-                              MATR_AMOR=MATRAMOR,
-                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',), 
+DYNAADAP=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                            MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
+                            MATR_AMOR=MATRAMOR,
+                            SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',), 
                             EXCIT=_F(  VECT_ASSE = VECTASS,
                                     FONC_MULT = FONCTIO1),
                             INCREMENT=_F( INST_INIT = 0.,

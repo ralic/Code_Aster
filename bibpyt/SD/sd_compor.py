@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_compor SD  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,15 +61,15 @@ class sd_compor(AsBase):
         cprk=self.CPRK.get_stripped()
 
         # vérif existence et longueur
-        assert len(cpri)==7, cpri
+        assert len(cpri)==13, cpri
         assert len(cprk)==5*nboccm+1, (cpri,cprk)
-        assert not self.CPRR.get()
+#        assert not self.CPRR.get()
 
         # vérif CPRI :
         #-------------
         assert cpri[1] == 1   ,cpri
         assert cpri[2] == nvi ,cpri
-        assert cpri[3] == 1   ,cpri
+        assert cpri[3] >= 0   ,cpri
         assert cpri[4] > 0    ,cpri
         assert cpri[5] >= 0   ,cpri
         assert cpri[6] == nvi ,cpri
@@ -104,8 +104,8 @@ class sd_compor(AsBase):
 
         # vérif existence et longueur
         #------------------------------
-        assert len(cpri)==6+3*nbphases, (cpri,nbphases)
-        assert len(cprr)==2+4*nbphases, (cpri,cprr,nbphases)
+        assert len(cpri)==7+3*nbphases, (cpri,nbphases)
+        assert len(cprr)>=2+4*nbphases, (cpri,cprr,nbphases)
         assert len(cprk)==lgcprk, (cpri,cprk)
 
         # vérif CPRI :

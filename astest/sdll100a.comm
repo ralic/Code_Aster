@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE PAR INTEGRATION DIRECTE
 # sdll100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,27 +102,31 @@ TEMLI=DEFI_LIST_REEL(DEBUT=0.002, INTERVALLE=_F( JUSQU_A = .02, PAS = 0.002))
 #
 #-----------------------------------------------------------------------
 # 1 -ER NON AMORTI
-NEWNONA=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,    MATR_RIGI=MATRRIGI,
+NEWNONA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           MATR_MASS=MATRMASS,    MATR_RIGI=MATRRIGI,
                            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
                           INCREMENT=_F(  LIST_INST = TEMPLI),
                           ARCHIVAGE=_F(  LIST_INST = TEMLI),
                             EXCIT=_F( VECT_ASSE = VECAS, FONC_MULT = FONC))
 
-WILNONA=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
+WILNONA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                          MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
                            SCHEMA_TEMPS=_F(SCHEMA='WILSON',), 
                           INCREMENT=_F(  LIST_INST = TEMPLI),
                           ARCHIVAGE=_F(  LIST_INST = TEMLI),
                             EXCIT=_F( VECT_ASSE = VECAS, FONC_MULT = FONC))
 
 # 2 -ER AMORTI
-NEWAMOR=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,    MATR_RIGI=MATRRIGI,
+NEWAMOR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                          MATR_MASS=MATRMASS,    MATR_RIGI=MATRRIGI,
                            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
                           INCREMENT=_F(  LIST_INST = TEMPLI),
                           ARCHIVAGE=_F(  LIST_INST = TEMLI),
                            MATR_AMOR=MATRAMOR,
                             EXCIT=_F( VECT_ASSE = VECAS, FONC_MULT = FONC))
 
-WILAMOR=DYNA_LINE_TRAN(  MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
+WILAMOR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
                            SCHEMA_TEMPS=_F(SCHEMA='WILSON',), 
                           INCREMENT=_F(  LIST_INST = TEMPLI),
                           ARCHIVAGE=_F(  LIST_INST = TEMLI),

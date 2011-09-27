@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith4 Messages  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,21 +93,6 @@ cata_msg = {
   %(k1)s  impossible actuellement
 """),
 
-68 : _("""
- PYRAMIDAL1 pas encore disponible
-"""),
-
-69 : _("""
- PYRAMIDAL2 pas encore disponible
-"""),
-
-70 : _("""
- JOINT_GRAIN pas encore disponible
-"""),
-
-71 : _("""
- RL pas encore disponible
-"""),
 
 72 : _("""
   jacobien du systeme non lineaire à résoudre nul

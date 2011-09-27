@@ -1,9 +1,9 @@
-# MODIF  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE PLAQUE EXCENTREE ORTHOTROPE ET AMORTIE SOUMISE A DES VIBRATIONS
 # sdls117a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -162,7 +162,8 @@ lis_freq=DEFI_LIST_REEL(  DEBUT=0,
 ## avec la matrice de raideur hysteretique et la matrice d'amortissement
 ## fabriquee avec AMOR_ALPHA et AMOR_BETA
 
-DEP_DYN=DYNA_LINE_HARM(MATR_MASS=MATASM,
+DEP_DYN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                       MATR_MASS=MATASM,
                        MATR_RIGI=RIHYAS,
                        MATR_AMOR=MATAMS,
                        LIST_FREQ=lis_freq,

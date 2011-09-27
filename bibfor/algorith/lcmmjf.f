@@ -4,11 +4,11 @@
         IMPLICIT NONE
         INTEGER IFA,NMAT,NBCOMM(NMAT,3),NUMHSR
         REAL*8 TAUS,COEFT(NMAT),RP,DT,ALPHAP,DALPHA,GAMMAP,DGAMMA
-        REAL*8 DGDTAU,DGDAL,DFDR,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT)
+        REAL*8 DGDTAU,DGDAL,DFDR,HSR(5,30,30),DY(*),VIND(*),MATERF(NMAT)
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C       OUT IRET   :  CODE RETOUR
 C     ----------------------------------------------------------------
       REAL*8 C,P,Q,K,N,FTAU,CRIT,A,GAMMA0,D
       REAL*8 TPERD,TABS,ALPHA,TAUMU,TAUV
-      REAL*8 SGNR,DELTAV,DELTG0,SGNS,R8MIEM,AUX,ALPHAS
+      REAL*8 DELTG0,SGNS,R8MIEM,AUX,ALPHAS
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS
       REAL*8 SOM,CISA2,DELTGG,TERME,PETITG,CS
       REAL*8 DTEDTO,DGGDTO,DTEDAL,DGGDAL,DELTSR,DHDAL,PETITH
@@ -72,7 +72,7 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
       NUECOU=NINT(COEFT(IFL))
       IRET=0
 
-C      IF (NECOUL.EQ.'ECOU_VISC1') THEN
+C      IF (NECOUL.EQ.'MONO_VISC1') THEN
       IF (NUECOU.EQ.1) THEN
 
           N=COEFT(IFL+1)
@@ -101,7 +101,7 @@ C         DFDR
           ENDIF
           DFDR=-SGNS*DGDTAU
 
-C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+C      IF (NECOUL.EQ.'MONO_VISC2') THEN
       ELSEIF (NUECOU.EQ.2) THEN
 
           N=COEFT(IFL+1)
@@ -112,7 +112,7 @@ C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
 
           FTAU=TAUS-C*ALPHAP-A*GAMMAP
 
-          CRIT=ABS(FTAU)-RP + 0.5D0*C*D*(ALPHAP)**2
+          CRIT=ABS(FTAU)-RP + 0.5D0*C*D*ALPHAP**2
           IF (ABS(FTAU).LE.R8MIEM()) THEN
              SGNS=1.D0
           ELSE
@@ -130,38 +130,6 @@ C         DGDAL
 
 C         DFDR
           DFDR=-SGNS*DGDTAU
-
-
-C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
-      ELSEIF (NUECOU.EQ.3) THEN
-
-          K      =COEFT(IFL+1)
-          TAUMU  =COEFT(IFL+2)
-          GAMMA0 =COEFT(IFL+3)
-          DELTAV =COEFT(IFL+4)
-          DELTG0 =COEFT(IFL+5)
-          TPERD  =COEFT(IFL+6)
-          CRIT=ABS(TAUS)-TAUMU
-          IF (ABS(TAUS).LE.R8MIEM()) THEN
-             SGNS=1.D0
-          ELSE
-             SGNS=(TAUS)/ABS(TAUS)
-          ENDIF
-
-          IF (CRIT.LT.0.D0) THEN
-             DGDTAU=0.D0
-          ELSE
-               TABS=TPERD+273.15D0
-               DGDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTG0/K/TABS)
-     &                *EXP(DELTAV/K/TABS*CRIT-1.D0)*(DELTAV/K/TABS*CRIT)
-          ENDIF
-
-C         DGDAL
-          DGDAL=0.D0
-
-C         DFDR
-          DFDR=0.D0
-
 
       ELSEIF (NUECOU.EQ.4) THEN
 C             MATRICE JACOBIENNE DU SYSTEME :
@@ -200,7 +168,7 @@ C        DFDR=DHDAL
          IF (ABS(TAUS).LE.R8MIEM()) THEN
             SGNS=1.D0
          ELSE
-            SGNS=(TAUS)/ABS(TAUS)
+            SGNS=TAUS/ABS(TAUS)
          ENDIF
          IF (TAUV.GT.0.D0) THEN
             SOM    = 0.D0

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 # sdld102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,7 +26,7 @@
 #
 # LA BASE DE PROJECTION DES SOUS-STRUCTURES EST DE TYPE 'MNEAL'.
 #
-# 4 SCHEMAS D'INTEGRATION DE DYNA_TRAN_MODAL ('EULER', 'NEWMARK'
+# 4 SCHEMAS D'INTEGRATION DE DYNA_VIBRA ('EULER', 'NEWMARK'
 # ET 'ADAPT') SONT TESTES.
 #
 #
@@ -269,7 +269,8 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 #  CALCULS TRANSITOIRES
 #-----------------------------------------------------------------
 
-TRANGEN1=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                              MATR_MASS=MASPRO,
                              MATR_RIGI=RIGPRO,
                                 EXCIT=_F(VECT_ASSE = VECPRO,
@@ -281,7 +282,8 @@ TRANGEN1=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                             )
 
 #
-TRANGEN2=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              MATR_MASS=MASPRO,
                              MATR_RIGI=RIGPRO,
                                 EXCIT=_F(VECT_ASSE = VECPRO,
@@ -293,7 +295,8 @@ TRANGEN2=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                             )
 
 #
-TRANGEN3=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                              MATR_MASS=MASPRO,
                              MATR_RIGI=RIGPRO,
                                 EXCIT=_F(VECT_ASSE = VECPRO,
@@ -305,7 +308,8 @@ TRANGEN3=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                             )
 
 #
-TRANGEN4=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                              MATR_MASS=MASPRO,
                              MATR_RIGI=RIGPRO,
                                 EXCIT=_F(VECT_ASSE = VECPRO,

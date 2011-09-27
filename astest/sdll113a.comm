@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,15 +136,16 @@ MACRO_PROJ_BASE(  BASE=MODES,
 )
 
 #
-TRAN_GEN=DYNA_TRAN_MODAL( SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                             MATR_MASS=M_PROJ,
-                                  MATR_RIGI=K_PROJ,
-                                     EXCIT=_F(VECT_ASSE = F_PROJ,
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                            SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                            MATR_MASS=M_PROJ,
+                            MATR_RIGI=K_PROJ,
+                            EXCIT=_F(VECT_ASSE = F_PROJ,
                                             COEF_MULT = 1.),
-                                 INCREMENT=_F(  INST_INIT = 0.,
+                            INCREMENT=_F(  INST_INIT = 0.,
                                              INST_FIN = 0.0195,
                                              PAS = 1.E-6),
-                             ARCHIVAGE=_F(  PAS_ARCH = 5)
+                            ARCHIVAGE=_F(  PAS_ARCH = 5)
                             )
 
 #
@@ -371,7 +372,8 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###### CALCULS TRANSITOIRES :
 ###
 #
-TRANGENE=DYNA_TRAN_MODAL( MATR_MASS=M_GENE, MATR_RIGI=K_GENE,
+TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                          MATR_MASS=M_GENE, MATR_RIGI=K_GENE,
                           EXCIT=_F(VECT_ASSE = F_GENE, COEF_MULT = 1.),
                           SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
                           INCREMENT=_F(  INST_INIT = 0.,

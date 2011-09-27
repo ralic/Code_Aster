@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 # sdld313a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,12 +97,13 @@ L_REEL=( 0., 3.3687, 6.4848, 8.0006, 11.8746, 13.4747, 15.5802, 21.0543, )
 
 LISFREQ=DEFI_LIST_REEL(  VALE=L_REEL )
 
-REPHARM=DYNA_LINE_HARM(     MATR_MASS=MATRMASS,
+REPHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                            MATR_MASS=MATRMASS,
                             MATR_RIGI=MATRRIGI,
                             LIST_FREQ=LISFREQ,
-                                EXCIT=_F( VECT_ASSE = VECTASS,
-                                          COEF_MULT = 1.,
-                                          PHAS_DEG = 0.)
+                            EXCIT=_F( VECT_ASSE = VECTASS,
+                                      COEF_MULT = 1.,
+                                      PHAS_DEG = 0.)
                       )
 
 F1=RECU_FONCTION(  RESULTAT=REPHARM,    NOM_CHAM='DEPL',

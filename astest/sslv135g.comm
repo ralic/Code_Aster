@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 # RESPONSABLE ANGLES J.ANGLES
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
@@ -300,17 +300,21 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                                          REAC_INCR    = 0 ))
 
 
-SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
+                                         
+SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
-                     CONTRAINTE=('SIEF_ELNO'),
+                    OPTION   = (
+                                'EPSI_ELGA',
+                                'SIEF_ELNO',
+                                'EPSI_ELNO')
                   )
 
 SOL_NL = CALC_NO( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
                   TOUT = 'OUI',
-                  GROUP_MA = ('CUBE'),
-                  OPTION   = 'SIEF_NOEU'
-                )
+                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D','CUBE'),
+                  OPTION   = ('SIEF_NOEU','EPSI_NOEU')
+                ) 
 
 # CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX POINTS DE GAUSS
 # -----------------------------------------------------------------------

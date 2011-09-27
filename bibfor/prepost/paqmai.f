@@ -1,7 +1,7 @@
       SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
      &                  GRDVIE, FORVIE,FORDEF, TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,13 +210,13 @@ C    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS.
       TDISP = INT(0.6D0*TDISP)
       CALL WKVECT( '&&PAQMAI.RWORK', 'V V R', TDISP, JRWORK )
 
-      IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.  
-     &     FORDEF )THEN
-         NBCMP = 12
-      ELSE
-         NBCMP = 6
-      ENDIF
-
+C       IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.  
+C      &     FORDEF )THEN
+C          NBCMP = 12
+C       ELSE
+C          NBCMP = 6
+C       ENDIF
+      NBCMP = 12
 C     POUR CALCULER LE NB DE PAQUETS MAXI NOUS NE FAISONS PAS LA MEME
 C     CHOSE QUE DANS paqnoe.f PARCE QUE BORMAX EST NATURELLEMENT
 C     SURDIMENSIONNEE CAR NBMA TIENT COMPTE DES MAILLES NON VOLUMIQUES.
@@ -320,91 +320,6 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
             SOMPGI = SOMPGS
          ENDIF
 
-         IF (( NOMCRI(1:16) .NE. 'FATESOCI_MODI_AV' ) .AND.
-     &     ( .NOT. FORDEF )) THEN
-
-            DO 220 IORDR=1, NBORDR
-               IF ( (NUMPAQ .GT. 1) .AND. (IORDR .EQ. 1) ) THEN
-                  NINIT = NMEMO
-               ELSEIF ( (NUMPAQ .EQ. 1) .AND. (IORDR .EQ. 1) ) THEN
-                  NINIT = NMAINI
-               ENDIF
-               N = NINIT
-
-               CALL RSEXCH( NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET )
-               IF (IRET .NE. 0) THEN
-                  CALL U2MESS('F','PREPOST4_28')
-               ENDIF
-               CES1 = '&&PAQMAI.SIG_S1'
-               CES2 = '&&PAQMAI.SIG_ORDO'
-               CALL CELCES(CHSIG, 'V', CES1)
-               CALL CESRED(CES1, 0, IBID, 6, LSIG, 'V', CES2)
-               CALL JEEXIN(CES2(1:19)//'.CESV', IRET)
-               IF (IRET .EQ. 0) THEN
-                  CALL U2MESS('F','PREPOST4_29')
-               ENDIF
-               CALL JEVEUO(CES2(1:19)//'.CESD', 'L', JSIGD)
-               CALL JEVEUO(CES2(1:19)//'.CESL', 'L', JSIGL)
-               CALL JEVEUO(CES2(1:19)//'.CESV', 'L', JSIGV)
-
-               IF ( NUMPAQ .EQ. 1 ) THEN
-                  SOMPGS = 0
-               ELSEIF ( NUMPAQ .GT. 1 ) THEN
-                  SOMPGS = SOMPGI
-               ENDIF
-               SOMPGW = 0
-               KWORK = 0
-
-               DO 240 IMAP=NMAINI, NMAINI+(NBMAP-1)
-                  IF ( (IMAP .GT. NMAINI) .AND. (NUMPAQ .EQ. 1) ) THEN
-                     SOMPGS = SOMPGS + ZI(JNBPG + IMAP-2)
-                     KWORK = 1
-                     SOMPGW = SOMPGW + ZI(JNBPG + IMAP-2)
-                  ENDIF
-
-                  IF ( (IMAP .GT. NMAINI) .AND. (NUMPAQ .GT. 1) ) THEN
-                     KWORK = 1
-                     SOMPGW = SOMPGW + ZI(JNBPG + IMAP-2)
-                  ENDIF
-
-                  IF ( NUMPAQ .GT. 1 ) THEN
-                     SOMPGS = SOMPGS + ZI(JNBPG + IMAP-2)
-                  ENDIF
-                  NBPG = ZI(JNBPG + IMAP-1)
-
-                  IF ( (NOMMAI .NE. '        ') .AND.
-     &                 (IMAP .NE. ZI(JGRMA+N-1)) ) THEN
-                     N = N - 1
-                  ELSE
-                     DO 260 IPG=1, NBPG
-                        DO 280 ICMP=1, 6
-                           CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,
-     &                                 JAD)
-                           IF (JAD .LE. 0) THEN
-                             IF ( ICMP .EQ. 5 ) THEN
-                                CALL U2MESI('F', 'FATIGUE1_2',1,ICMP)
-                             ELSE
-                                CALL U2MESS('F','PREPOST4_30')
-                             ENDIF
-                           ELSE
-                             ZR( JRWORK + (ICMP-1) + (IPG-1)*6 +
-     &                             KWORK*SOMPGW*6 + (IORDR-1)*TSPAQ ) =
-     &                       ZR( JSIGV -1 +JAD )
-                           ENDIF
- 280                    CONTINUE
- 260                 CONTINUE
-                  ENDIF
-                  IF ( (NOMMAI .NE. '        ') .AND.
-     &                 (N .LT. NBMAGM) ) THEN
-                     N = N + 1
-                  ENDIF
-
- 240           CONTINUE
-               NMEMO = N
- 220        CONTINUE
-
-         ELSE
-
             DO 300 IORDR=1, NBORDR
                IF ( (NUMPAQ .GT. 1) .AND. (IORDR .EQ. 1) ) THEN
                   NINIT = NMEMO
@@ -412,15 +327,12 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                   NINIT = NMAINI
                ENDIF
                N = NINIT
-
-               IF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
-                  CALL RSEXCH(NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET)
-                  CALL RSEXCH(NOMSD, 'EPSI_ELGA', IORDR, CHEPS,
+               
+               CALL RSEXCH( NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET )
+               
+               CALL RSEXCH(NOMSD, 'EPSI_ELGA', IORDR, CHEPS,
      &                        IRET1)
-               ELSE
-                  CALL U2MESS('F','PREPOST4_31')
-               ENDIF
-
+     
                IF (IRET .NE. 0) THEN
                   CALL U2MESS('F','PREPOST4_32')
                ELSEIF (IRET1 .NE. 0) THEN
@@ -527,7 +439,7 @@ C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
                NMEMO = N
  300        CONTINUE
 
-         ENDIF
+C         ENDIF
 
          IF ( NOMCRI(1:11) .EQ. 'VMIS_TRESCA' ) THEN
             NOMOPT = 'DOMA_ELGA'

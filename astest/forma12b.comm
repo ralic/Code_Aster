@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE TP DYNAMIQUE TRANSITOIRE LINEAIRE
 # forma12b.para = tps_job 180 mem_job 180Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,8 @@ LIR=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.0,
                                  PAS=1E-3,),);
 
-DYNATRA=DYNA_LINE_TRAN(MATR_MASS=MASSE,
+DYNATRA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                       MATR_MASS=MASSE,
                        MATR_RIGI=RIGIDITE,
                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        EXCIT=_F(VECT_ASSE=FOAS,

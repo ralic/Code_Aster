@@ -7,7 +7,7 @@
      &                   SIGP,VIP,DSIDEP,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -237,6 +237,11 @@ C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE_IRRA',
      &                 0,' ',0.D0,
      &                 3,NOMGRD,COEFGR,CODGRA, 1)
+C
+C        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
+         IRRAP = IRRAP - IRRAM + VIM(2)
+         IRRAM = VIM(2)
+C
 C          FLUX NEUTRONIQUE
          FLUPHI = (IRRAP-IRRAM)/DELTAT
 
@@ -521,6 +526,12 @@ C
             ENDIF
 
          ENDIF
+C
+C        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
+         IF (COMPOR(1)(1:13).EQ.'LEMAITRE_IRRA') THEN
+           VIP(2) = IRRAP
+         ENDIF
+
       ENDIF
 C
       IF  ( OPTION(1:9) .EQ. 'FULL_MECA'.OR.

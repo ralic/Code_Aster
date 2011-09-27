@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TRIA6 QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,8 @@ MAS=ASSE_MATRICE(      MATR_ELEM=ME,
 VAS=ASSE_VECTEUR(      VECT_ELEM=VE,
                             NUME_DDL=NU                               )
 
-DYNA=DYNA_LINE_HARM(MODELE=MO,
+DYNA=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MODELE=MO,
                     CHAM_MATER=CM,
                     MATR_MASS=MAS,
                     MATR_RIGI=KAS,

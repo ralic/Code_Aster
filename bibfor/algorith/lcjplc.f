@@ -1,11 +1,11 @@
         SUBROUTINE LCJPLC (LOI,MOD,NMAT,MATER,TIMED,TIMEF,COMP,
-     &                     NBCOMM,CPMONO,PGL,TOUTMS,HSR,
+     &                     NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,
      &                     NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,
      &                     SIGD,VIND,DSDE,DRDY,OPTION,IRET)
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,10 +36,10 @@ C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         NMAT , NR, NVI, ITMAX, IRET
+        INTEGER         NMAT , NR, NVI, ITMAX, IRET, NFS, NSG
         REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TOLER
         REAL*8          MATER(NMAT,2)
-        REAL*8 TOUTMS(5,24,6),HSR(5,24,24)
+        REAL*8 TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
         CHARACTER*8     MOD
         CHARACTER*16    LOI,OPTION
 
@@ -54,7 +54,7 @@ C       ----------------------------------------------------------------
      &        TIMED, TIMEF,EPSD,DEPS,SIGF,VINF,SIGD,VIND,NVI,NR,DSDE)
          ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS'     ) THEN
             CALL  LCMMJP (MOD,NMAT,MATER,TIMED, TIMEF, COMP,
-     &                    NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     &                    NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,HSR,
      &                    NR,NVI,ITMAX,TOLER,VINF,VIND,
      &                    DSDE , DRDY, OPTION, IRET)
          ENDIF

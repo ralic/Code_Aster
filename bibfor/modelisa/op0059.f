@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,26 +21,33 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     COMMANDE:  DEFI_COMPOR
-
       CHARACTER*8 COMPOR, MATERI, TYPPAR(5),MONO
-      CHARACTER*16 OPER, TYPE, NOMPAR(5), ECOULE, ECROIS, ECROCI, ELASTI
-      CHARACTER*16 FASYGL, KBID, NOMS(6),COMDES,LOCA,ROTA
+      CHARACTER*16 OPER, TYPE, NOMPAR(5), ECOULE, ECROIS, ECROCI,ELASTI
+      CHARACTER*16 FASYGL, KBID, NOMS(6),COMDES,LOCA,ROTA,TBINTE,SYSTGL
+      CHARACTER*19 LISTR
       REAL*8  MS(6),NG(3),Q(3,3),LG(3)
       REAL*8 PGL(3,3),FVOL,ORIE(3),DL,DA,EULER(3)
       REAL*8 FVOLT
       COMPLEX*16 CBID
       INTEGER IOCC, NBMAT, NBECOU, NBECRO, NBCINE, NBELAS, NBFASY
-      INTEGER TABDES(7),NLOC,NBOCCP,NBOCCM,NDL,NDA
+      INTEGER TABDES(13),NLOC,NBOCCP,NBOCCM,NDL,NDA,ITBINT
       INTEGER I,J,NBELA1, NBSYS, NVI,NMONO,IMK,IMI,IPK,IPI,IPR,IORIE
       INTEGER NCPRI,NCPRK,NCPRR,JCPRK,JCPRR,JCPRI,NVIT,LMK,IFVOL,IPL
-      INTEGER IMONO,NBMONO,INDIK8,NVLOC,IR,IROTA,IDBOR
-
+      INTEGER IMONO,NBMONO,INDIK8,NVLOC,IR,IROTA,IDBOR,IADLR
+      INTEGER NBTBSY,NBFSYS,DECAL,IMR,IFA
       CHARACTER*1 K1BID
-      INTEGER NBOCCI,IBID,NBG,NBGMAX,IMG,IG,IG1,JNFG,IAFF
-      INTEGER NBVF,NBV,ICP,NBKIT,NBNVI(2),NCOMEL,NUMLC,NBROTA
+      INTEGER NBOCCI,IBID,NBG,NBGMAX,IMG,IG,IG1,JNFG,IAFF,ITAB,ITSG
+      INTEGER NBVF,NBV,ICP,NBKIT,NBNVI(2),NCOMEL,NUMLC,NBROTA,NBSYST
       CHARACTER*8 SDGF,K8BID,KGROUP,MATOR
       CHARACTER*16 NOMREL,ALGO1D,DEFO,NOMKIT(2),LCOMEL(5),COMCOD,MOCLEF
       CHARACTER*24 VNBFIG,RNOMGF
+C     POUR MONOCRISTAL) DIMENSIONS MAX
+C        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
+C        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
+      INTEGER       NSG,NFS
+      PARAMETER      ( NSG=30)
+      PARAMETER      ( NFS=5)
+      REAL*8        HSR(NFS,NSG,NSG)
 
 C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -58,12 +65,13 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM
-      INTEGER      IARG
+      INTEGER      IARG, INDTAB,IFM,NIV
 
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL JEMARQ()
-
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
       CALL GETRES(COMPOR,TYPE,OPER)
       CALL GETFAC('MONOCRISTAL',NBOCCM)
       CALL GETFAC('POLYCRISTAL',NBOCCP)
@@ -82,14 +90,20 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
          TYPPAR(3)='K16'
          TYPPAR(4)='K16'
          TYPPAR(5)='K16'
+         NBSYST=0
          NBELAS=0
          NVI=6
 C       DEFORMATION PLASTIQUE CUMULEE MACROSCOPIQUE EQUIVALENTE
          NVI=NVI+1
-C
          CALL TBAJPA(COMDES, 5,NOMPAR,TYPPAR)
          CALL GETFAC('MONOCRISTAL',NBOCCM)
          CALL WKVECT(COMPOR//'.CPRK', 'G V K16',5*NBOCCM+1,IMK)
+         NCPRR=1800
+         CALL WKVECT(COMPOR//'.CPRR', 'G V R',NCPRR,IPR)         
+         INDTAB=0
+         DO 101 I=1,13
+            TABDES(I)=0
+ 101     CONTINUE         
          DO 9 IOCC=1,NBOCCM
             CALL GETVID('MONOCRISTAL','MATER',IOCC,IARG,1,MATERI,NBMAT)
             CALL GETVTX('MONOCRISTAL','ECOULEMENT',IOCC,IARG,1,ECOULE,
@@ -118,21 +132,55 @@ C           CAS DES LOIS DD
             NOMS(3)=ECOULE
             NOMS(4)=ECROIS
             NOMS(5)=ECROCI
+            IF (FASYGL.EQ.'UTILISATEUR') THEN
+C              VERIF QU'IL Y SEULEMENT UNE FAMILLE DE SYSTEMES
+               IF (NBOCCM.NE.1) THEN
+                  CALL U2MESG('F','COMPOR2_16',0,' ',1,NBOCCM,0,0.D0)
+               ENDIF
+               CALL GETVID('MONOCRISTAL','TABL_SYST_GLIS',IOCC,IARG,1,
+     &                      SYSTGL,ITSG)
+               NOMS(1)='UTIL'
+               CALL CODENT(IOCC,'G',NOMS(1)(5:5))
+               NOMS(1)(6:8)='___'
+               NOMS(1)(9:16)=SYSTGL(1:8)
+               FASYGL=NOMS(1)
+               LISTR = '&&LCMMAT.TABL_SYSGL'
+               CALL TBEXLR ( SYSTGL, LISTR, 'V' )
+               CALL JEVEUO ( LISTR//'.VALE' , 'L', IADLR )
+               NBSYS=NINT(ZR(IADLR+2))
+C              VERIF QUE LA MATRICE EST CARREE
+               IF (6.NE.ZR(IADLR+1)) THEN
+                  CALL U2MESG('F','COMPOR2_19',0,' ',0,0,1,ZR(IADLR+1))
+               ENDIF
+               CALL DCOPY(6*NBSYS,ZR(IADLR+3),1,ZR(IPR+INDTAB),1)
+               TABDES(8+IOCC)=NBSYS
+               CALL JEDETC('V',LISTR,1 )
+               
+               WRITE(IFM,*) ' TABLE SYSTEMES DE GLISSEMENT FAMILLE',IOCC
+               WRITE(IFM,*) ' NX     NY     NZ     MX     MY     MZ '
+               DO 4 I=1,NBSYS
+                  WRITE(IFM,'(I2,6(1X,E11.4))') 
+     &                  I,(ZR(IPR-1+INDTAB+6*(I-1)+J),J=1,6)
+ 4             CONTINUE
+               INDTAB=INDTAB+6*NBSYS 
+            ELSE
+               IR=0
+               CALL LCMMSG(FASYGL,NBSYS,0,PGL,MS,NG,LG,IR,Q)
+            ENDIF
             CALL TBAJLI(COMDES,5, NOMPAR,0,0.D0,CBID,NOMS,0)
             DO 11 J=1,5
                ZK16(IMK-1+(IOCC-1)*5+J)=NOMS(J)
 11          CONTINUE
             IR=0
-            CALL LCMMSG(FASYGL,NBSYS,0,PGL,MS,NG,LG,IR,Q)
             NVI=NVI+3*NBSYS
+            NBSYST=NBSYST+NBSYS
 9        CONTINUE
 C        INDICATEUR PLASTIQUE
          NVI=NVI+1
 C        CONTRAINTE DE CLIVAGE MAX
          NVI = NVI+1
 C        ROTATION DE RESEAU
-         CALL GETVTX(' ','ROTA_RESEAU',0,IARG,1,
-     &                   ROTA,NBROTA)
+         CALL GETVTX(' ','ROTA_RESEAU',0,IARG,1,ROTA,NBROTA)
          IROTA=0
          IF (NBROTA.NE.0) THEN
              IF (ROTA.NE.'NON') THEN
@@ -142,13 +190,47 @@ C        ROTATION DE RESEAU
              ENDIF
          ENDIF
          ZK16(IMK+5*NBOCCM)=ELASTI
+         CALL GETVID(' ','MATR_INTER',0,IARG,1,TBINTE,ITAB)
+         IF (ITAB.NE.0) THEN
+            LISTR = '&&LCMMAT.TABL_INTER'
+            CALL TBEXLR ( TBINTE, LISTR, 'V' )
+            CALL JEVEUO ( LISTR//'.VALE' , 'L', IADLR )
+C           VERIF QUE LA MATRICE EST CARREE
+            IF (ZR(IADLR+1).NE.ZR(IADLR+2)) THEN
+               CALL U2MESG('F','COMPOR2_15',0,' ',0,0,2,ZR(IADLR+1))
+            ENDIF
+C           VERIF QU'IL Y SEULEMENT UNE FAMILLE DE SYSTEMES
+            IF (NBOCCM.NE.1) THEN
+               CALL U2MESG('F','COMPOR2_16',0,' ',1,NBOCCM,0,0.D0)
+            ENDIF
+C           VERIF QUE LE NB DE SYST EST OK
+            IF (ZR(IADLR+1).NE.NBSYST) THEN
+               CALL U2MESG('F','COMPOR2_17',0,' ',1,NBSYST,0,0.D0)
+            ENDIF
+            CALL DCOPY(NBSYST*NBSYST,ZR(IADLR+3),1,ZR(IPR+INDTAB),1)
+C           VERIF QUE LA MATRICE EST SYMETRIQUE
+            DO 5 I=1,NBSYST
+            DO 5 J=1,NBSYST
+               IF (ZR(IPR-1+INDTAB+NBSYS*(I-1)+J).NE.
+     &             ZR(IPR-1+INDTAB+NBSYS*(J-1)+I)) THEN
+                  CALL U2MESS('F','COMPOR2_18')
+               ENDIF
+ 5          CONTINUE
+            CALL JEDETC('V',LISTR,1 )
+            WRITE(IFM,*) ' MATRICE INTERACTION UTILISATEUR'
+            DO 6 I=1,NBSYS
+               WRITE(IFM,'(I2,12(1X,E11.4))') 
+     &               I,(ZR(IPR-1+INDTAB+NBSYS*(I-1)+J),J=1,NBSYS)
+ 6          CONTINUE
+         ENDIF
          TABDES(1)=1
          TABDES(2)=1
          TABDES(3)=NVI
-         TABDES(4)=1
+         TABDES(4)=ITAB
          TABDES(5)=NBOCCM
          TABDES(6)=IROTA
          TABDES(7)=NVI
+         TABDES(8)=NBSYST         
 C organisation de CPRI :
 C        1 : TYPE =1 pour MONOCRISTAL
 C        2 : NBPHAS=1 pour MONOCRISTAL
@@ -157,8 +239,9 @@ C        4 : NOMBRE DE MONOCRISTAUX différents  =1
 C        5 : NBFAMILLES DE SYS GLIS
 C        6 : 1 si ROTA=POST, 2 si CALC, 0 sinon
 C        7 : NVI
-         CALL WKVECT(COMPOR//'.CPRI', 'G V I',7,IMI)
-         DO 999 I=1,7
+C        8 : NOMBRE DE SYSTEMES DE GLISSEMENT TOTAL
+         CALL WKVECT(COMPOR//'.CPRI', 'G V I',13,IMI)
+         DO 999 I=1,13
             ZI(IMI+I-1)=TABDES(I)
 999      CONTINUE
          CALL JEDETC('V',COMDES,1)
@@ -187,29 +270,12 @@ C        8 : NBFAMILLES DE SYS GLIS pour Phase 2
 C        9 : Numero du MONO 2
 C        10 : NVI du Mono 2
 C         etc...
-C        final : dimension de CPRK
+C        avant dernier : dimension de CPRK
 C        nombre de paramètres de localisation
-
-         NCPRI=4+3*NBOCCP+1+1
+         NCPRI=4+3*NBOCCP+1+1 +1
          CALL WKVECT(COMPOR//'.CPRI', 'G V I',NCPRI,IPI)
          ZI(IPI)=2
          ZI(IPI+1)=NBOCCP
-
-C organisation de CPRR :
-C        1 : Fraction volumique Phase 1
-C        2 : angle d'Euler 1 phase 1
-C        3 : angle d'Euler 2 phase 1
-C        4 : angle d'Euler 3 phase 1
-C        5 : Fraction volumique Phase 2
-C        6 : angle d'Euler 1 phase 2
-C        7 : angle d'Euler 2 phase 2
-C        8 : angle d'Euler 3 phase 2
-C        .. : etc..
-C        n-1 : Variable localisation (ex : DA pour BETA)
-C        n  :  Variable localisation (ex : DL pour BETA)
-
-         NCPRR=4*NBOCCP+2
-         CALL WKVECT(COMPOR//'.CPRR', 'G V R',NCPRR,IPR)
 
          CALL WKVECT('&&OP0059.LISTEMONO','V V K8',NBOCCP,IPL)
          NBMONO=0
@@ -227,7 +293,6 @@ C  On ne stocke pas les doublons
             ELSE
                ZI(IPI-1+4+3*(IOCC-1)+2)=IMONO
             ENDIF
-
   13     CONTINUE
          NCPRK=NCPRK+1
          ZI(IPI-1+4)=NBMONO
@@ -237,9 +302,9 @@ C        1   : Nom méthode localisation
 C        2   : Nom Monocristal 1 + NBFAM + CPRK du monocristal 1
 C        n+2 : Nom Monocristal 2 + NBFAM + CPRK du monocristal 2
 C       ...: etc...
-
          CALL WKVECT(COMPOR//'.CPRK', 'G V K16',NCPRK,IPK)
          JCPRK=1
+         ITBINT=0
          DO 15 IMONO=1,NBMONO
             MONO=ZK8(IPL-1+IMONO)
             CALL JELIRA(MONO//'.CPRK','LONMAX',LMK,KBID)
@@ -252,8 +317,37 @@ C           RECOPIE DU VECTEUR K16 DU MONOCRISTAL DANS CELUI DU POLY
                ZK16(IPK-1+JCPRK+2+I)=ZK16(IMK-1+I)
  14         CONTINUE
             JCPRK=JCPRK+LMK+2
+            IF (ZI(IMI-1+4).NE.0) ITBINT=ITBINT+1
+            NBTBSY=0
+            NBFSYS=ZI(IMI-1+5)
+            DO 3 IFA=1,NBFSYS
+               NBTBSY=NBTBSY+ZI(IMI-1+8+IFA)
+ 3          CONTINUE
+            IF (ITBINT.GT.0) THEN
+               DECAL=6*NBTBSY
+               CALL JEVEUO(MONO//'.CPRR','L',IMR)
+               NBSYST=ZI(IMI-1+8)
+               CALL DCOPY(NBSYST*NBSYST,ZR(IMR+DECAL),1,HSR,1)
+            ELSE
+               NBSYST=0
+            ENDIF
  15      CONTINUE
-
+         CALL ASSERT(ITBINT.LE.1)
+C organisation de CPRR :
+C        1 : Fraction volumique Phase 1
+C        2 : angle d'Euler 1 phase 1
+C        3 : angle d'Euler 2 phase 1
+C        4 : angle d'Euler 3 phase 1
+C        5 : Fraction volumique Phase 2
+C        6 : angle d'Euler 1 phase 2
+C        7 : angle d'Euler 2 phase 2
+C        8 : angle d'Euler 3 phase 2
+C        .. : etc..
+C        n-1 : Variable localisation (ex : DA pour BETA)
+C        n  :  Variable localisation (ex : DL pour BETA)
+         NCPRR=4*NBOCCP+2
+         IF (ITBINT.EQ.1) NCPRR=NCPRR+NBSYST*NBSYST
+         CALL WKVECT(COMPOR//'.CPRR', 'G V R',NCPRR,IPR)
          JCPRR=0
          JCPRI=4
          NVIT=0
@@ -292,17 +386,21 @@ C           6+3*Ns+6 = (Evp + Ns(alphas, gammas, ps) +  Sig)
          ENDIF
          ZR(IPR-1+JCPRR+1)=DL
          ZR(IPR-1+JCPRR+2)=DA
+         IF (ITBINT.EQ.1) THEN
+            CALL DCOPY(NBSYST*NBSYST,HSR,1,ZR(IPR-1+JCPRR+3),1)
+         ENDIF         
 C         NOMBRE DE VAR INT TOTAL + 8 (TENSEUR B OU EVP + NORME+INDIC)
          ZI(IPI-1+3)=NVIT+8
-         ZI(IPI-1+NCPRI-1)=JCPRK
-         ZI(IPI-1+NCPRI)=NVLOC
+         ZI(IPI-1+NCPRI-2)=JCPRK
+         ZI(IPI-1+NCPRI-1)=NVLOC
+C        ON STOCKE EN DERNIER LE NOMBRE DE SYST POUR HSR DONNEE, 0 SINON
+         ZI(IPI-1+NCPRI)=NBSYST
          ZK16(IPK)=LOCA
 
 C  MULTIFIBRE
 C organisation de CPRK :
 C      On ne stocke les noms des groupes, materiau, relation, algo,
 C      defo et nb de fibre pour chaque groupe
-
       ELSEIF(NBOCCI.GT.0)THEN
 C on recupere les renseignements dans la SD_GROUP_FIBRE :
 C noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
@@ -390,7 +488,6 @@ C type 3 = multifibre
         ZI(IMI+1)=NBVF
         ZI(IMI+2)=NBGMAX
       ENDIF
-
 C FIN ------------------------------------------------------------------
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  POUTRE ANALYSE HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,7 +106,8 @@ AMORTI1=ASSE_MATRICE(  MATR_ELEM=AMOR_EL1,   NUME_DDL=NUME_DD1 )
 LIFREQ=DEFI_LIST_REEL(DEBUT=10., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 2))
 
 
-DYNA_F1=DYNA_LINE_HARM(  MATR_MASS=MASS1,
+DYNA_F1=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                            MATR_MASS=MASS1,
                             MATR_RIGI=RIGIDIT1,
                             LIST_FREQ=LIFREQ,
                              MODELE=MODELE,
@@ -186,7 +187,8 @@ FC=DEFI_FONCTION(    NOM_PARA='FREQ',
                          PROL_GAUCHE='CONSTANT',
                          VALE_C=(0., 1., 0., 1000., 1., 0.,) )
 
-DYNA_F2=DYNA_LINE_HARM(  MATR_MASS=MASS2,
+DYNA_F2=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                            MATR_MASS=MASS2,
                             MATR_RIGI=RIGIDIT2,
                             FREQ=10.,
                              MODELE=MODELE,
@@ -220,14 +222,15 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F2,            NUME_ORDRE = 1,
 #--------------------------------------------#
 #
 
-DYNA_AF1=DYNA_LINE_HARM( MATR_MASS=MASS1,
+DYNA_AF1=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                             MATR_MASS=MASS1,
                              MATR_RIGI=RIGIDIT1,
                              MATR_AMOR=AMORTI1,
                              FREQ=10.,
                               MODELE=MODELE,
                               CARA_ELEM=CARA_ELE,
                               CHAM_MATER=CHAMPMAT,
-                            EXCIT=_F( CHARGE = COND_LI1, COEF_MULT_C = 1.+0.j)
+                             EXCIT=_F( CHARGE = COND_LI1, COEF_MULT_C = 1.+0.j)
                           )
 
 #
@@ -262,7 +265,8 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF1,           NUME_ORDRE = 1,
 #--------------------------------------------#
 #
 
-DYNA_AF2=DYNA_LINE_HARM( MATR_MASS=MASS2,
+DYNA_AF2=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                            MATR_MASS=MASS2,
                             MATR_RIGI=RIGIDIT2,
                             MATR_AMOR=AMORTI2,
                             FREQ=10.,

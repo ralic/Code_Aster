@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SENSIBILITE ELEMENT DISCRET_2D (K_T_D_N, M_T_D_N)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                 ),);
 
-# test DYNA_LINE_TRAN / DYNA_LINE_HARM
+# test calcul transitoire/ calcul harmonique
 
 I_DEBUT = 0.
 I_FIN = 1.
@@ -137,25 +137,25 @@ L_FREQ=DEFI_LIST_REEL(DEBUT=F_DEBUT,
                       INTERVALLE=_F(JUSQU_A=F_FIN,NOMBRE=2))
 
 DYTRN=DYNA_VIBRA(TYPE_CALCUL='TRAN',
-                  BASE_CALCUL='PHYS',
-                  MODELE=MODELE,CARA_ELEM = CHAMPCAR,
-                    MATR_MASS=MATRMASS, MATR_RIGI=MATRRIGI,
-                    INCREMENT=_F(LIST_INST=L_TEMPS,),
-                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                    EXCIT=(
-                           _F(FONC_MULT=FC,CHARGE=CHF),
-                           ),
-                    SENSIBILITE=(PS[0],PS[2],),
+                 BASE_CALCUL='PHYS',
+                 MODELE=MODELE,CARA_ELEM = CHAMPCAR,
+                 MATR_MASS=MATRMASS, MATR_RIGI=MATRRIGI,
+                 INCREMENT=_F(LIST_INST=L_TEMPS,),
+                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                 EXCIT=(
+                        _F(FONC_MULT=FC,CHARGE=CHF),
+                       ),
+                 SENSIBILITE=(PS[0],PS[2],),
                     )
 
 DYHAN=DYNA_VIBRA(TYPE_CALCUL='HARM',
-                  BASE_CALCUL='PHYS',
-                    MODELE=MODELE,CARA_ELEM=CHAMPCAR,
-                           MATR_MASS=MATRMASS, MATR_RIGI=MATRRIGI,
-                           MATR_AMOR=MATRAMOR, LIST_FREQ=L_FREQ,
-                           TOUT_CHAM='OUI',
-                           SENSIBILITE=(PS[0],PS[2],),
-                           EXCIT=(_F(COEF_MULT_C=1.+0.j,CHARGE=CHF),)
+                 BASE_CALCUL='PHYS',
+                 MODELE=MODELE,CARA_ELEM=CHAMPCAR,
+                 MATR_MASS=MATRMASS, MATR_RIGI=MATRRIGI,
+                 MATR_AMOR=MATRAMOR, LIST_FREQ=L_FREQ,
+                 TOUT_CHAM='OUI',
+                 SENSIBILITE=(PS[0],PS[2],),
+                 EXCIT=(_F(COEF_MULT_C=1.+0.j,CHARGE=CHF),)
                      )
 
 omega2 = k1/m1

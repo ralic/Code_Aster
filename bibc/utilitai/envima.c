@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU */
+/* MODIF ENVIMA UTILITAI  DATE 26/09/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -179,8 +179,12 @@ DOUBLE STDCALL(R8RDDG,r8rddg)() { return (DOUBLE)((DOUBLE)180./(DOUBLE)R8_PI); }
 INTEGER STDCALL(LLBLOC,llbloc)() { return OPT_TAILLE_BLOC_MULT_FRONT; }
 
 /* ----------------------------------------  Pour tester un NaN */
-/* on fait un chapeau (iisnan) à la fonction C isnan  pour éviter le conflit avec la fonction intrinsèque (logique) isnan de fortran 95 */
-INTEGER DEFP(IISNAN, iisnan, DOUBLE *x) { return isnan(*x); }
+/* on fait un chapeau (iisnan) à la fonction C isnan  pour éviter le
+ * conflit avec la fonction intrinsèque (logique) isnan de fortran 95 */
+INTEGER DEFP(IISNAN, iisnan, DOUBLE *x) {
+    if ( isnan(*x) ) return (INTEGER)1;
+    return (INTEGER)0;
+}
 
 /* -------------------------------------- VALEUR MAXIMALE REELLE R4*/
 DOUBLE STDCALL(R4MAEM,r4maem)() { return R4MAX; }

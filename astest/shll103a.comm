@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE VALIDATION DE CALCUL HARMONIQUE POUR DISCRET NON SYMETRIQUE
 # shll103a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,7 +184,8 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
 i=0
 for i, RPM in enumerate(VIT):
   
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,
@@ -370,7 +371,8 @@ DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
 
 for i, RPM in enumerate(VIT):
   
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,
@@ -564,7 +566,8 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
 
 for i, RPM in enumerate(VIT):
   
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,
@@ -692,7 +695,8 @@ DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
 
 for i, RPM in enumerate(VIT):
 
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,
@@ -827,7 +831,8 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
 
 for i, RPM in enumerate(VIT):
   
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,
@@ -953,7 +958,8 @@ DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
 
 for i, RPM in enumerate(VIT):
   
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,
@@ -1087,7 +1093,8 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
 
 for i, RPM in enumerate(VIT):
   
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,
@@ -1274,7 +1281,8 @@ DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
 
 for i, RPM in enumerate(VIT):
   
-  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+  DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=GYOM2,
                     FREQ=RPM/60.,

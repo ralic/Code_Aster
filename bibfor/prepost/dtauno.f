@@ -2,7 +2,7 @@
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI,NOMFOR,GRDVIE, 
      &                  FORVIE, NOMMAI, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C     ------------------------------------------------------------------
       INTEGER      TAB2(18), INOP, NUNOE, JDTAUM, JRESUN
       INTEGER      LOR8EM, LOISEM, JTYPMA
       INTEGER      ICMP, KWORK, SOMNOW, CNBNO
-      INTEGER      VALI(2), JAD
+      INTEGER      VALI(2), JAD, IARG
 C
       REAL*8       DGAM, PI, R8PI, DPHI, TAB1(18)
       REAL*8       PHI0, COEPRE, VALA, VALB, GAMMA
@@ -93,7 +93,6 @@ C
       CHARACTER*10 OPTIO
       CHARACTER*19 CHMAT, CESMAT, NCNCIN
       CHARACTER*24 TYPMA
-      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
 C234567                                                              012

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE ABSORPTION D UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 # sdlv120a.para = tps_job 420 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,7 +148,8 @@ TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.8, NOMBRE = 3600))
 
 INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 3601, PAS = 1))
 
-DYN=DYNA_LINE_TRAN(      MATR_MASS=MASSE, 
+DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                         MATR_MASS=MASSE, 
                          MATR_RIGI=RIGID,
                          # MATR_AMOR=AMORT,
                          EXCIT=_F(  VECT_ASSE = VECTASS,
@@ -209,7 +210,8 @@ TEST_FONCTION(VALEUR=(   _F(
                    PRECISION = 1.E-3,
                    REFERENCE = 'ANALYTIQUE'))
                 )
-DYN2=DYNA_LINE_TRAN(     MATR_MASS=MASSE2, 
+DYN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                         MATR_MASS=MASSE2, 
                          MATR_RIGI=RIGID2,
                          MATR_AMOR=AMORT,
                          EXCIT=_F(  VECT_ASSE = VECTAS2,

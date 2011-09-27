@@ -3,10 +3,10 @@
      &                   SOMS2, SOMS3                      )
       IMPLICIT NONE
       INTEGER IFA,NMAT,NBCOMM(NMAT,3),IS,NBSYS
-      REAL*8 COEFT(*),ALPHAP(12),HS,HSR(5,24,24),SOMS1,SOMS2,SOMS3
+      REAL*8 COEFT(*),ALPHAP(12),HS,HSR(5,30,30),SOMS1,SOMS2,SOMS3
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

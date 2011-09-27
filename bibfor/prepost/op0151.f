@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,50 +73,41 @@ C       ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
 C       ---------------------------------------------------------------
         INTEGER         ICODRE,ICODWO,ICODBA,ICODHS,ICODMA
         INTEGER         NPARMA, ID, NP
-        CHARACTER*8     NOMU,NOMRES,NOMMAI,K8B,NOMMAT, NOMPF(8)
+        CHARACTER*8     NOMU,NOMRES,NOMMAI,K8B,NOMMAT
         CHARACTER*8     NOMFON,NOMNAP,CARA,NOMMOD,GRDVIE
-        CHARACTER*8     NOMPA1(3), NOMPA2(8)
         CHARACTER*16    CONCEP,CMD,PHENO,PHENOM,TYPCAL,NOMCRI,NOMMET
         CHARACTER*16    PROAXE,NOMSYM,TYPCHA,NOMOPT,NOMGDE, NOMFOR
         CHARACTER*16    FORVIE
         CHARACTER*16    MEXPIC,MCOMPT,MDOMAG,TYPEQ,TYPOI,TYPDG,OPTION
         CHARACTER*19    NOMSD,CHELEM,CHELRS,LIGREL,NOMSD2
-        CHARACTER*24    VALK(6), CHNOM, CBID
+        CHARACTER*24    VALK(6)
         LOGICAL         FORDEF,GRDEXI
-        REAL*8           RBID
+        REAL*8          RBID
 C
         INTEGER         NVAL,IMPR,IFM,JORDR,JCOEF,JCELK,JCELV
         INTEGER         NBPT,NBORD,NBCMP,NUMCMP(6),NTCMP,IBID,IUNIFI
         INTEGER         IVDMG,NUMSYM,NBPT2,NBORD2,IRET,IVCH
-        INTEGER VALI(2)
-      INTEGER      IARG
-
-C     ---------------------------------------------------------------
-        DATA  NOMPA1/  'DTAUMA', 'PHYDRM' , 'NORMAX'/
-C     ---------------------------------------------------------------
-C     ---------------------------------------------------------------
-        DATA  NOMPA2/  'TAUPR_1','TAUPR_2','SIGN_1','SIGN_2',
-     &                 'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2'  /
-C       -------------------------------------------------------------
+        INTEGER         VALI(2), PARACT(30), IARG
 C
-      CALL JEMARQ()
-      CALL INFMAJ()
+C ------------ 
+        CALL JEMARQ()
+        CALL INFMAJ()
 C
-      NOMFON = ' '
-      NOMNAP = ' '
+        NOMFON = ' '
+        NOMNAP = ' '
 C
 C ----- DONNEES UTILISATEUR
 C
-      CALL GETRES(NOMU,CONCEP,CMD)
+       CALL GETRES(NOMU,CONCEP,CMD)
 C
 C ---   TYPE DE CALCUL
-      CALL GETVTX(' ','TYPE_CALCUL',1,IARG,1,TYPCAL,NVAL)
+       CALL GETVTX(' ','TYPE_CALCUL',1,IARG,1,TYPCAL,NVAL)
 C
 C ---------------------------------------------------------------------
 C ---- FATIGUE MULTIAXIALE
 C ---------------------------------------------------------------------
 C
-      IF (TYPCAL(1:13) .EQ. 'FATIGUE_MULTI') THEN
+        IF (TYPCAL(1:13) .EQ. 'FATIGUE_MULTI') THEN
 C
 C ---   TYPE DU CHARGEMENT APPLIQUE (PERIODIQUE OU NON_PERIODIQUE)
 C
@@ -133,75 +124,12 @@ C       OU LES CHAM_NOS DE SIGMA
 C
 C ---   NOM DU CRITERE
         CALL GETVTX(' ','CRITERE',1,IARG,1,NOMCRI,NVAL)
-
+        
         CALL GETVID(' ','FORMULE_GRDEQ',1,IARG,1,NOMFOR,NVAL)
-
-C   FORDEF EST UNE BOOLEAN QUI INDIQUE S'IL EXISTE LE PARAMETRE
-C   DE DEFORMATION DAS LA FORMULE (COMME DANS FATEMISOCIE)
-
-         FORDEF =  .FALSE.
-         IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN
-C NOMBRE DE PARAMETRES DISPONIBLES
-            NPARMA = 8
-C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
-            CHNOM(20:24) = '.PROL'
-            CHNOM(1:19) = NOMFOR
-
-            CALL JEVEUO(CHNOM,'L',JPROF)
-            CALL FONBPA ( NOMFOR, ZK24(JPROF), CBID, NPARMA, NP, NOMPF )
-
-C VERIFIER QUE LE NOM DE GRANDEUR A CALCULER EST BON
-            IF (TYPCHA .EQ. 'NON_PERIODIQUE') THEN
-                DO 10 ID = 1, NP
-                   GRDEXI = .FALSE.
-                   DO 40 I = 1,NPARMA
-                      IF  ( NOMPF(ID) .EQ. NOMPA2(I) ) THEN
-                         GRDEXI = .TRUE.
-                      ENDIF
-40                 CONTINUE
-                   IF ( .NOT. GRDEXI) THEN
-                      CALL U2MESK('F','FATIGUE1_91',1, NOMPF(ID))
-                   ENDIF
-
-                   IF ( NOMPF(ID)(1:3) .EQ. 'EPS') THEN
-                      FORDEF =  .TRUE.
-                      DO 20 I = 1, NP
-                         IF ( NOMPF(I)(1:3) .EQ. 'TAU') THEN
-                            CALL U2MESS('F','FATIGUE1_92')
-                         ENDIF
-20                    CONTINUE
-                   ENDIF
-                   IF ( NOMPF(ID)(1:3) .EQ. 'TAU') THEN
-                      DO 30 I = 1, NP
-                         IF ( NOMPF(I)(1:3) .EQ. 'EPS') THEN
-                            CALL U2MESS('F','FATIGUE1_92')
-                         ENDIF
-30                    CONTINUE
-                   ENDIF
-10              CONTINUE
-
-            ELSE
-
-                DO 60 ID = 1, NP
-                   GRDEXI = .FALSE.
-                   DO 50 I = 1,NPARMA
-                      IF  ( NOMPF(ID) .EQ. NOMPA1(I) ) THEN
-                         GRDEXI = .TRUE.
-                      ENDIF
-50                 CONTINUE
-
-                   IF ( .NOT. GRDEXI) THEN
-                      CALL U2MESK('F','FATIGUE1_91',1, NOMPF(ID))
-                   ENDIF
-
-60              CONTINUE
-            ENDIF
-
-      ENDIF
-
-
+  
+        
         CALL GETVTX(' ','COURBE_GRD_VIE',1,IARG,1,GRDVIE,NVAL)
-
+        
         CALL GETVID(' ','FORMULE_VIE',1,IARG,1,FORVIE,NVAL)
 C
 C ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
@@ -222,7 +150,13 @@ C ---   NOM DU MAILLAGE
         IF (NVAL .EQ. 0) THEN
           NOMMAI = '        '
         ENDIF
-C
+        
+C---    ANALYSER LE CRITERE
+        CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'OUI', PARACT, FORDEF)
+C        
+C   FORDEF EST UNE BOOLEAN QUI INDIQUE S'IL EXISTE LE PARAMETRE
+C   DE DEFORMATION DAS LA FORMULE (COMME DANS FATEMISOCIE)
+    
         IF (NOMOPT .EQ. 'DOMA_ELGA') THEN
 C
 C ---   CONSTRUCTION DES PAQUETS DE MAILLES
@@ -235,7 +169,7 @@ C ---   CONSTRUCTION DES PAQUETS DE NOEUDS
           CALL PAQNOE(NOMRES, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
      &                GRDVIE, FORVIE, FORDEF, TYPCHA, PROAXE)
         ENDIF
-
+        
 C
         GOTO 7777
       ENDIF
@@ -333,6 +267,7 @@ C
         CALL RCPARE(NOMMAT,PHENO,CARA,ICODHS)
         IF(ICODWO.NE.0.AND.ICODBA.NE.0.AND.ICODHS.NE.0)
      &     CALL U2MESS('F','FATIGUE1_30')
+     
       ELSEIF(MDOMAG.EQ.'MANSON_COFFIN') THEN
         IF(NOMOPT(11:14).NE.'EPSI'.AND.NOMOPT(11:14).NE.'EPME') THEN
           CALL U2MESK('F','FATIGUE1_31',1,NOMOPT)
@@ -344,6 +279,7 @@ C
         CALL RCPARE(NOMMAT,PHENO,CARA,ICODMA)
         IF(ICODMA.NE.0)
      &    CALL U2MESS('F','FATIGUE1_32')
+     
       ELSEIF(MDOMAG.EQ.'TAHERI_MANSON') THEN
         IF(NOMOPT(11:14).NE.'EPSI'.AND.NOMOPT(11:14).NE.'EPME') THEN
           CALL U2MESK('F','FATIGUE1_25',1,NOMOPT)
@@ -363,6 +299,7 @@ C
           IF(NVAL.EQ.0) THEN
             CALL U2MESS('F','FATIGUE1_27')
           ENDIF
+          
       ELSEIF(MDOMAG.EQ.'TAHERI_MIXTE') THEN
         IF(NOMOPT(11:14).NE.'EPSI'.AND.NOMOPT(11:14).NE.'EPME') THEN
           CALL U2MESK('F','FATIGUE1_28',1,NOMOPT)

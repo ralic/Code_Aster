@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
@@ -97,7 +97,8 @@ INTLI=DEFI_LIST_ENTI(DEBUT=0,
                                    PAS=100,),);
 #-----------------------------------------------------------------------
 # 1 -ER NON AMORTI
-evol=DYNA_LINE_TRAN(   MODELE=MODELE,
+evol=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                       MODELE=MODELE,
                        CHAM_MATER=CHAMPMAT,
                        MATR_MASS=MASSE,
                        MATR_RIGI=RIGI,

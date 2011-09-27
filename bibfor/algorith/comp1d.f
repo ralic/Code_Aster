@@ -10,7 +10,7 @@
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
 C
       REAL*8         DSIDEP(6,6)
       REAL*8         ZERO
-      REAL*8         LC(10,27)
+      REAL*8         LC(10,27),WKOUT(1)
       REAL*8         SIGM(6),SIGP(6),EPS(6),DEPS(6)
 C
       CHARACTER*8    TYPMOD(2)
@@ -135,12 +135,12 @@ C -    APPEL A LA LOI DE COMPORTEMENT
          CALL NMCOMP(FAMI,KPG,KSP,2,TYPMOD,ZI(IMATE),
      &               ZK16(ICOMPO),ZR(ICARCR),
      &               ZR(IINSTM),ZR(IINSTP),
-     &               EPS,DEPS,
-     &               SIGM,VIM,
+     &               6,EPS,DEPS,
+     &               6,SIGM,VIM,
      &               OPTION,
      &               ANGMAS,
-     &               LC,
-     &               SIGP,VIP,DSIDEP,CODRET)
+     &               270,LC,
+     &               SIGP,VIP,36,DSIDEP,1,WKOUT,CODRET)
 C
          SIGXP=SIGP(1)
          ETAN=DSIDEP(1,1)

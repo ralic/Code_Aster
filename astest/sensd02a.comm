@@ -1,9 +1,9 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SENSIBILITE AUX MATERIAUX EN DYNAMIQUE HARMONIQUE ISOTROPE 3D
 # sensd02a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -144,13 +144,14 @@ LIFREQ=DEFI_LIST_REEL(DEBUT=10., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 2))
 # 4. Calcul
 #
 
-DYH=DYNA_LINE_HARM( MODELE=MO, CHAM_MATER=CHMAT,
+DYH=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                           MODELE=MO, CHAM_MATER=CHMAT,
                            MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                            MATR_AMOR=MATASSC,   LIST_FREQ=LIFREQ,
-                              TOUT_CHAM='OUI',
-                              SENSIBILITE=tuple(PS),
-                             EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = VECTASS)
-#                              EXCIT=(_F( COEF_MULT_C = 1.+0.j, CHARGE = CH),)
+                           TOUT_CHAM='OUI',
+                           SENSIBILITE=tuple(PS),
+                           EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = VECTASS)
+#                         EXCIT=(_F( COEF_MULT_C = 1.+0.j, CHARGE = CH),)
                      )
 
 T_REF_R=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',

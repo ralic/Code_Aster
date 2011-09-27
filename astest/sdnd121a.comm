@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE-RESSORT AVEC CHOCS SOUS EXCITATION FORCEE
 # sdnd121a.para = tps_job 600 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,7 +113,7 @@ pdt = 4.e-06
 pas_archi = 1
 
 # Schema d'Euler:
-DTMEULER=DYNA_TRAN_MODAL(
+DTMEULER=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          MATR_MASS=M_GENE,
                          MATR_RIGI=K_GENE,
@@ -137,7 +137,7 @@ DTMEULER=DYNA_TRAN_MODAL(
                         );
 
 # Schema des differences centrees ('ADAPT' a pas constant):
-DTMADAPT=DYNA_TRAN_MODAL(
+DTMADAPT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                          MATR_MASS=M_GENE,
                          MATR_RIGI=K_GENE,
@@ -168,7 +168,7 @@ DTMADAPT=DYNA_TRAN_MODAL(
                         );
 
 # Schema 'ADAPT' (ne sert que pour verifier les forces de contact) :
-DTMADAP2=DYNA_TRAN_MODAL(
+DTMADAP2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                          MATR_MASS=M_GENE,
                          MATR_RIGI=K_GENE,

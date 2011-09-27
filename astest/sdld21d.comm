@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,7 +68,8 @@ VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECT,   NUME_DDL=NUM  )
 
 LIFREQ=DEFI_LIST_REEL(DEBUT=5., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 70))
 
-DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
+DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                             MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                              MATR_AMOR=MATASSC,
                              LIST_FREQ=LIFREQ,
                              TOUT_CHAM='OUI',
@@ -465,13 +466,14 @@ LIFRE2=DEFI_LIST_REEL(  DEBUT=5.,INTERVALLE=(
                                       _F(  JUSQU_A = 35.,   NOMBRE = 5),
                                       _F(  JUSQU_A = 39.5,  NOMBRE = 1)) )
 
-DYNAHAR2=DYNA_LINE_HARM(  MATR_MASS=MATASSM,  MATR_RIGI=MATASSR,
+DYNAHAR2=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                              MATR_MASS=MATASSM,  MATR_RIGI=MATASSR,
                               MATR_AMOR=MATASSC,
                               LIST_FREQ=LIFRE2,
                               NOM_CHAM=( 'VITE',  'ACCE', ),
-                             SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10, ),
-                             EXCIT=_F(  FONC_MULT = FONCONST,
-                                     VECT_ASSE = VECTASS)  )
+                              SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10, ),
+                              EXCIT=_F(  FONC_MULT = FONCONST,
+                                         VECT_ASSE = VECTASS)  )
 
 # pour valider PROJ_CHAMP / DYNA_HARMO :
 # on projette DYANAHAR2 sur son propre maillage => DYNAHAR3 (identique a DYNAHAR2)

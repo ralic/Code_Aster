@@ -5,7 +5,7 @@
      &                   SIGP,VI,MATUU,VECTU,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C
       REAL*8   DSIDEP(6,6),SIGMA(6),FTF,DETF
       REAL*8   TMP1,TMP2,FE(4),BASLOG(9)
       REAL*8   XG(NDIM),XE(NDIM),FF(NNOP),JAC,SIG(6),LSNG,LSTG
-      REAL*8   RBID1(4),RBID2(4),RBID3(4)
+      REAL*8   RBID1(4),RBID2(4),RBID3(4),RBID
       REAL*8   DFDI(NNOP,NDIM),PFF(6,NNOP,NDIM),DGDGL(4,3)
       REAL*8   DEF(6,NNOP,NDIM*(1+NFH+NFE)),GRAD(3,3),ANGMAS(3)
       REAL*8   ELGEOM(10,27),DFDIB(27,3)
@@ -318,12 +318,12 @@ C
         CALL R8INIR(6,0.0D0,SIGMA,1)
         CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
      &              INSTAM,INSTAP,
-     &              EPSM,DEPS,
-     &              SIGN,VI(1,KPG),
+     &              6,EPSM,DEPS,
+     &              6,SIGN,VI(1,KPG),
      &              OPTION,
      &              ANGMAS,
-     &              ELGEOM(1,KPG),
-     &              SIGMA,VIP(1,KPG),DSIDEP,CODRET)
+     &              10,ELGEOM(1,KPG),
+     &              SIGMA,VIP(1,KPG),36,DSIDEP,1,RBID,CODRET)
 
 C - CALCUL DE LA MATRICE DE RIGIDITE
         IF (RIGI) THEN

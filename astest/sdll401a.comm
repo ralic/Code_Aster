@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,7 +139,8 @@ L_TEMPS=DEFI_LIST_REEL(         DEBUT=0.0,
 #
 fCOS = FORMULE(NOM_PARA='INST',VALE='cos(INST) ')
 #
-DYNFX=DYNA_LINE_TRAN(        MODELE=MO,
+DYNFX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           MODELE=MO,
                            CHAM_MATER=CHMAT,
                             CARA_ELEM=CAREL,
                             MATR_MASS=MMATR1,
@@ -270,7 +271,8 @@ PONM20=AFFE_CHAR_MECA_F(          MODELE=MO,
                           )
 
 #
-DYNPOF20=DYNA_LINE_TRAN(        MODELE=MO,
+DYNPOF20=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                              MODELE=MO,
                               CHAM_MATER=CHMAT,
                                CARA_ELEM=CAREL,
                                MATR_MASS=MMATR2,
@@ -324,7 +326,8 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNP_F20,
           )
 
 #
-DYNPOM20=DYNA_LINE_TRAN(        MODELE=MO,
+DYNPOM20=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                              MODELE=MO,
                               CHAM_MATER=CHMAT,
                                CARA_ELEM=CAREL,
                                MATR_MASS=MMATR2,

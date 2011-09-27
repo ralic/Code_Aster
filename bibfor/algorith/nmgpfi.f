@@ -6,7 +6,7 @@
      &                   SIGP,VIP,FINT,MATR,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER LIJ(3,3),VIJ(3,3),IA,JA,NA,IB,JB,NB,G,KK,OS,IJA,I
       INTEGER NDDL,NDU,VU(3,27)
       INTEGER COD(27)
-      REAL*8 TAMPON(10)
+      REAL*8 TAMPON(10),WKOUT
       REAL*8 GEOMM(3*27),GEOMP(3*27),R,W
       REAL*8 JM,JD,JP,FM(3,3),FD(3,3),COEF
       REAL*8 SIGMAM(6),TAUP(6),DSIDEP(6,3,3)
@@ -173,9 +173,9 @@ C      ET QUI ONT ENCORE BESOIN DES CONTRAINTES EN T-
         COD(G) = 0
         CALL NMCOMP(FAMI,G,1,3,TYPMOD,MATE,COMPOR,CRIT,
      &             INSTM,INSTP,
-     &             FM,FD,SIGMAM,VIM(1,G),OPTION,
-     &             ANGMAS,TAMPON,
-     &             TAUP,VIP(1,G),DSIDEP,COD(G))
+     &             9,FM,FD,6,SIGMAM,VIM(1,G),OPTION,
+     &             ANGMAS,10,TAMPON,
+     &             TAUP,VIP(1,G),54,DSIDEP,1,WKOUT,COD(G))
 
         IF(COD(G).EQ.1) THEN
           CODRET = 1

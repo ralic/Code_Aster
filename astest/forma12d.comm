@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE TP DYNAMIQUE LINEAIRE
 # forma12d.para = tps_job 180 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,7 +109,8 @@ dsin25 = FORMULE(VALE='2*pi*omega*cos(2*pi*omega*INST)',
 d2sin25 = FORMULE(VALE='-(2*pi*omega)**2*sin(2*pi*omega*INST)',
                   NOM_PARA='INST',);
 
-DYNACORR=DYNA_TRAN_MODAL(MATR_MASS=MAGENE,
+DYNACORR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                         MATR_MASS=MAGENE,
                          MATR_RIGI=GEGENE,
                          SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          INCREMENT=_F(INST_FIN=1.0,
@@ -121,7 +122,8 @@ DYNACORR=DYNA_TRAN_MODAL(MATR_MASS=MAGENE,
                                   D_FONC_DT2=d2sin25,
                                   MODE_CORR=MOSTRA,),);
 
-DYNASAN=DYNA_TRAN_MODAL(MATR_MASS=MAGENE,
+DYNASAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                        MATR_MASS=MAGENE,
                         MATR_RIGI=GEGENE,
 #                        MODE_CORR=MOSTRA,
                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),

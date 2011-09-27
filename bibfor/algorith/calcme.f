@@ -8,7 +8,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,9 +199,10 @@ C ======================================================================
         NUMLC=34
         CP=.FALSE.
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
-     &             INSTAP,CP,NUMLC,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
-     &             CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
-     &             CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
+     &          INSTAP,6,DEFGEM(ADDEME+NDIM),DEPS,
+     &          6,CONGEM(ADCOME),VINTM,OPTION,ANGMAS,1,R8BID,
+     &          CP,NUMLC,TINI,T,TREF,
+     &             CONGEP(ADCOME),VINTP,36,DSDEME,1,R8BID,RETCOM)
 
       ENDIF
 C --- End
@@ -214,9 +215,10 @@ C --- End
         NUMLC=33
         CP=.FALSE.
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
-     &          INSTAP,CP,NUMLC,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
-     &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMA1,
-     &              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
+     &          INSTAP,6,DEFGEM(ADDEME+NDIM),DEPS,
+     &          6,CONGEM(ADCOME),VINTM,OPTION,ANGMA1,1,R8BID,
+     &          CP,NUMLC,TINI,T,TREF,
+     &              CONGEP(ADCOME),VINTP,36,DSDEME,1,R8BID,RETCOM)
       ENDIF
       IF (MECA.EQ.'HOEK_BROWN_EFF') THEN
         COMPLG(1) = 'HOEK_BROWN_EFF'
@@ -226,9 +228,10 @@ C --- End
         NUMLC=33
         CP=.FALSE.
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
-     &          INSTAP,CP,NUMLC,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
-     &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMA1,
-     &              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
+     &          INSTAP,6,DEFGEM(ADDEME+NDIM),DEPS,
+     &          6,CONGEM(ADCOME),VINTM,OPTION,ANGMA1,1,R8BID,
+     &          CP,NUMLC,TINI,T,TREF,
+     &              CONGEP(ADCOME),VINTP,36,DSDEME,1,R8BID,RETCOM)
       ENDIF
       IF (MECA.EQ.'DRUCK_PRAGER' .OR. MECA.EQ.'DRUCK_PRAG_N_A' ) THEN
          MECTRU = .TRUE.

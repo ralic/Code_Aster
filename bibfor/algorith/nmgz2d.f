@@ -8,7 +8,7 @@
      &                    PFF,DEF,SIGP,VIP,MATUU,IVECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6)
       REAL*8 R,SIGMA(6),SIGN(6),SIG(6),SIGG(4)
-      REAL*8 POIDS,TMP1,TMP2
+      REAL*8 POIDS,TMP1,TMP2,RBID
       REAL*8  ELGEOM(10,9),FP(3,3)
       REAL*8  KRON(3,3),GEOMP(2,NNO),RAC2
       DATA KRON/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
@@ -211,12 +211,12 @@ C         CAUCHY
 C 5.3.2 - INTEGRATION
         CALL NMCOMP(FAMI,KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
-     &            FM,F,
-     &            SIGN,VIM(1,KPG),
+     &            9,FM,F,
+     &            6,SIGN,VIM(1,KPG),
      &            OPTION,
      &            ANGMAS,
-     &            ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
+     &            10,ELGEOM(1,KPG),
+     &            SIGMA,VIP(1,KPG),36,DSIDEP,1,RBID,COD(KPG))
 
         IF(COD(KPG).EQ.1) THEN
           GOTO 1956

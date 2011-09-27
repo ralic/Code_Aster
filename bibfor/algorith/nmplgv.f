@@ -4,7 +4,7 @@
      &  DDLM,DDLD,ANGMAS,SIGM,VIM,SIGP,VIP,MATR,VECT,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,7 +87,7 @@ C ----------------------------------------------------------------------
       REAL*8  AVM,AVD,AVP,MUM,MUD,MUP,AGM(3),AGD(3),AGP(3),BP
       REAL*8  R,WG,EPSM(6),EPSD(6),F(3,3),B(6,3,27)
       REAL*8  NONLOC(2),SIGMAM(6),SIGMA(6),DSIDEP(6,6,4),T1,T2,T3
-      REAL*8  PHI
+      REAL*8  PHI,RBID
 
       REAL*8  DFDI2(8*3)
 
@@ -217,12 +217,12 @@ C       4. LE COEFFICIENT DE PENALISATION RAUG EST PASSE DANS NONLOC(2)
 
         CALL NMCOMP(FAMI,G,1,NDIM,TYPMOD,MAT,COMPOR,CRIT,
      &             INSTAM,INSTAP,
-     &             EPSM,EPSD,
-     &             SIGMAM,VIM(1,G),
+     &             6,EPSM,EPSD,
+     &             6,SIGMAM,VIM(1,G),
      &             OPTION,
      &             ANGMAS,
-     &             NONLOC,
-     &             SIGMA,VIP(1,G),DSIDEP,COD(G))
+     &             2,NONLOC,
+     &             SIGMA,VIP(1,G),6*6*4,DSIDEP,1,RBID,COD(G))
 
         IF(COD(G).EQ.1) GOTO 9000
 

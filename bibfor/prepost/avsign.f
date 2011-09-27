@@ -1,7 +1,7 @@
       SUBROUTINE AVSIGN( NBVEC, NBORDR, VECTN, VWORK, TDISP, KWORK,
-     &                   SOMMW, TSPAQ, I, NOMCRI,FORDEF, VSIGN )
+     &                   SOMMW, TSPAQ, I, VSIGN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,8 +23,6 @@ C RESPONSABLE F1BHHAJ J.ANGLES
       INTEGER       NBVEC, NBORDR, TDISP, KWORK, SOMMW, TSPAQ, I
       REAL*8        VECTN(3*NBVEC)
       REAL*8        VWORK(TDISP), VSIGN(NBVEC*NBORDR)
-      LOGICAL    FORDEF
-      CHARACTER*16  NOMCRI
 C ----------------------------------------------------------------------
 C BUT: CALCULER LA CONTRAINTE NORMALE POUR TOUS LES VECTEURS NORMAUX
 C      A TOUS LES NUMEROS D'ORDRE.
@@ -81,13 +79,13 @@ C234567                                                              012
       CALL JEMARQ()
       
       N = 1
-      IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR. 
-     &  FORDEF ) THEN
-         DECAL = 12
-      ELSE
-         DECAL = 6
-      ENDIF
-
+C       IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR. 
+C      &  FORDEF ) THEN
+C          DECAL = 12
+C       ELSE
+C          DECAL = 6
+C       ENDIF
+      DECAL = 12
       DO 10 IVECT=1, NBVEC
          NX = VECTN((IVECT-1)*3 + 1)
          NY = VECTN((IVECT-1)*3 + 2)

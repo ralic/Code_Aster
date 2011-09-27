@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,7 +171,8 @@ VECTPROJ=PROJ_VECT_BASE(BASE         =MODE,
                         NUME_DDL_GENE=NDDLGEN,
                         TYPE_VECT    ='FORC');
 
-TRANGENE=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          MATR_MASS=MASSPROJ,
                          MATR_RIGI=RIGIPROJ,
                          MATR_AMOR=AMORPROJ,
@@ -293,7 +294,8 @@ VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
                         NUME_DDL_GENE=NDDLGEN2,
                         TYPE_VECT    ='FORC');
 
-TRANGEN2=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          MATR_MASS=MASSPRO2,
                          MATR_RIGI=RIGIPRO2,
                          MATR_AMOR=AMORPRO2,

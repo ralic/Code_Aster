@@ -9,7 +9,7 @@
      &                      FINTU, FINTA ,KUU , KUA , KAA , CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -216,12 +216,12 @@ C -    APPEL A LA LOI DE COMPORTEMENT
 C -    APPEL A LA LOI DE COMPORTEMENT
       CALL NMCOMP(FAMI,KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
-     &            EPSLDC,DEPLDC,
-     &            SIGMAM,VIM(1,KPG),
+     &            6,EPSLDC,DEPLDC,
+     &            6,SIGMAM,VIM(1,KPG),
      &            OPTION,
      &            ANGMAS,
-     &            RBID,
-     &            SIGMA,VIP(1,KPG),DSIDEP,CODRET)
+     &            1,RBID,
+     &            SIGMA,VIP(1,KPG),36,DSIDEP,1,RBID,CODRET)
        IF (.NOT.AXI)  TYPMOD(1) = 'C_PLAN  '
 
 

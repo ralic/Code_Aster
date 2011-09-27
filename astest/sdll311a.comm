@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE PAR INTEGRATION DIRECTE DEPLACEMENT IMPOSE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,7 +135,8 @@ LRECUA=DEFI_LIST_REEL(   VALE=L_RECUA )
 #-----------------------------------------------------------------------
 # METHODE NEWMARK AVEC AMORT
 
-NEWAMO=DYNA_LINE_TRAN(   MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
+NEWAMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
                            MATR_AMOR=MATRAMOR,
                           ETAT_INIT=_F( 
                           DEPL = DEPLIMPO),

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdlv124a.para = tps_job 660 mem_job 1000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,7 +152,8 @@ LISTARCH=DEFI_LIST_ENTI(DEBUT=archinit,
 # CALCUL DYNAMIQUE TEMPOREL SUR BASE PHYSIQUE
 #######################################################
 
-DYNATRAN=DYNA_LINE_TRAN(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+DYNATRAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        MATR_MASS=MASS,
                        MATR_RIGI=KASS,
                        MATR_AMOR=CASS,
@@ -216,7 +217,8 @@ FDIAG=PROJ_VECT_BASE(BASE=MODES,
 #######################################################
 # CALCUL HARMONIQUE SUR BASE PHYSIQUE
 #######################################################
-DYNHASS=DYNA_LINE_HARM(MATR_MASS=MASS,
+DYNHASS=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASS,
                     MATR_RIGI=KASS,
                     MATR_AMOR=CASS,
                     FREQ=freq,
@@ -247,7 +249,8 @@ DYNHASS=CALC_ELEM(reuse =DYNHASS,
 #######################################################
 # CALCUL HARMONIQUE SUR BASE MODALE
 #######################################################
-DYNHGEN=DYNA_LINE_HARM(MATR_MASS=MDIAG,
+DYNHGEN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                    MATR_MASS=MDIAG,
                     MATR_RIGI=KDIAG,
                     MATR_AMOR=CDIAG,
                     SOLVEUR=_F( METHODE='LDLT', ),
@@ -263,11 +266,11 @@ if plus:
 #######################################################
 # CALCUL DYNAMIQUE TEMPOREL SUR BASE MODALE
 #######################################################
-  DYNTGEN=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
+  DYNTGEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            MASS_GENE=MDIAG,  
                            RIGI_GENE=KDIAG,
                            AMOR_GENE=CDIAG,
-                           EXCIT=_F(VECT_GENE = FDIAG,
+                           EXCIT=_F(VECT_ASSE = FDIAG,
                                     FONC_MULT = SINOMEGT,
                                     ),
                              INCREMENT=

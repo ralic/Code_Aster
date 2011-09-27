@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C-----------------------------------------------------------------------
       CHARACTER*8        TYPMOD(*)
       CHARACTER*(*)      FAMI
       REAL*8             CRIT(*),INSTAM,INSTAP,TM,TP,TREF
-      REAL*8             EPSM(6),DEPS(6),HSR(5,24,24)
+      REAL*8             EPSM(6),DEPS(6)
       REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
@@ -99,6 +99,7 @@ C ----------------------------------------------------------------------
       INTEGER      NB, NP, NI, NR, NMAT, UN, NT, IRET1
       REAL*8       ZERO, DAMMAX, DET,EPSTHP,EPSTHM
       PARAMETER  (NB = 6, NP = 2, NI = 9, NR = 8, NT=3*NB)
+C     NOMBRE DE COEF MATERIAU MAXIMUM
       PARAMETER  (NMAT = 90)
       PARAMETER  ( UN   = 1   )
       PARAMETER  ( ZERO = 0.D0   )
@@ -107,10 +108,9 @@ C
       LOGICAL       CPLAN
 C
       INTEGER       ITMAX, I, IER, ITER,IRET2,IRET3, IRET4
-      INTEGER       NDT, NVI, NRV, NDI, K, L
-      INTEGER       NBCOMM(NMAT,3),ISIMP
+      INTEGER       NDT, NVI, NRV, NDI, K, L,ISIMP
 C
-      REAL*8        TOLER, DELTX, SUMX, DT, SE2
+      REAL*8        PGL(3,3),ANGMAS(3),TOLER, DELTX, SUMX, DT, SE2
       REAL*8        VIND(NI), MATM(NMAT,2), A(6,6), B(6)
       REAL*8        MATE(NMAT,2), HOOK(6,6), HOOKM(6,6)
       REAL*8        P(NP), BETA(NB), EP(NT), RM, DM,UNMD
@@ -119,10 +119,19 @@ C
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
       REAL*8        DRPDE(NP,NB), EPTHM(NB),DELTB,SUMB
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
-      REAL*8        PGL(3,3),ANGMAS(3),TOUTMS(5,24,6)
+      
+C     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
+C        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
+C        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
+      INTEGER       NBCOMM(NMAT,3)
+      INTEGER       NSG,NFS
+      PARAMETER      ( NSG=30)
+      PARAMETER      ( NFS=5)
+      REAL*8        TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
+      CHARACTER*16  CPMONO(5*NMAT+1)
 C
       CHARACTER*3   MATCST
-      CHARACTER*16  LOI, CPMONO(5*NMAT+1)
+      CHARACTER*16  LOI
       CHARACTER*11  METING
       CHARACTER*8   MOD, TYPMA
       CHARACTER*7   ETATF(3)
@@ -173,7 +182,7 @@ C-----------------------------------------------------------------------
       CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM,TP,0,
      &               TYPMA, HSR,MATM,
      &               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
-     &               TOLER, NDT, NDI, NRV, NVI, VIND ,TOUTMS)
+     &               TOLER, NDT, NDI, NRV, NVI, VIND ,NFS,NSG,TOUTMS)
       CALL ASSERT(NDT.EQ.NB.OR.NVI.EQ.NI.OR.NRV.EQ.NR)
       IF ((IRET2+IRET3).EQ.0) THEN
         EPSTHP = MATE(3,1)*(TP-TREF)

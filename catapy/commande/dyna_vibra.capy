@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -190,7 +190,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
 
 #parametres d'archivage
         ARCHIVAGE         =FACT(statut='f',
-            regles=( UN_PARMI('LIST_INST','PAS_ARCH'),),
+            regles=( EXCLUS('LIST_INST','PAS_ARCH'),),
                 LIST_INST       = SIMP(statut='f',typ=(listr8_sdaster) ),
                 PAS_ARCH        =SIMP(statut='f',typ='I' ),
                 b_cham_exclu  =BLOC(condition="BASE_CALCUL == 'PHYS'",

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdls113a.para = tps_job 150 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,7 +146,8 @@ LISTARCH=DEFI_LIST_ENTI(DEBUT=archinit,
 # CALCUL DYNAMIQUE TEMPOREL SUR BASE PHYSIQUE
 #######################################################
 
-DYNATRAN=DYNA_LINE_TRAN(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+DYNATRAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        MATR_MASS=MASS,
                        MATR_RIGI=KASS,
                        MATR_AMOR=CASS,
@@ -183,7 +184,8 @@ DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
 #######################################################
 # CALCUL HARMONIQUE SUR BASE PHYSIQUE
 #######################################################
-DYNHASS=DYNA_LINE_HARM(MATR_MASS=MASS,
+DYNHASS=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASS,
                     MATR_RIGI=KASS,
                     MATR_AMOR=CASS,
                     FREQ=freq,

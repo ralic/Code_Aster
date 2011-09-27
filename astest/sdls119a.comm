@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 # sdls119a.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -226,11 +226,12 @@ FFUN=CALC_FONCTION( FFT=_F( FONCTION = FUN, METHODE='COMPLET',) );
 FFACCE=CALC_FONCTION( FFT=_F( FONCTION = accel2, METHODE='COMPLET',) );
 
 #
-EVOL0=DYNA_LINE_TRAN( MATR_MASS=masse, MATR_RIGI=rigidite,
+EVOL0=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                      MATR_MASS=masse, MATR_RIGI=rigidite,
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA =1.0,GAMMA =1.5,), 
                       INCREMENT=_F( LIST_INST = L_INST),
                       ARCHIVAGE=_F( PAS_ARCH=10),
-                     EXCIT=_F( VECT_ASSE=FASSE, COEF_MULT = 1.0,),
+                      EXCIT=_F( VECT_ASSE=FASSE, COEF_MULT = 1.0,),
                     );
 
 DEP0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
@@ -249,7 +250,8 @@ for k in range(1,NF):
 
   if k==1:
 
-    EVOL=DYNA_LINE_TRAN( MATR_MASS=masse, MATR_RIGI=rigidite,
+    EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                      MATR_MASS=masse, MATR_RIGI=rigidite,
                       MATR_AMOR=amorto,
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                       ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0,),
@@ -262,13 +264,14 @@ for k in range(1,NF):
                     );
 
 
-    EVOLH = DYNA_LINE_HARM( MATR_MASS=masse, MATR_RIGI=rigidite,
+    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                         MATR_MASS=masse, MATR_RIGI=rigidite,
                          MATR_AMOR=amorto,
                          LIST_FREQ = listfreq,
-                     EXCIT=(
-                            _F( VECT_ASSE=FASSE, FONC_MULT_C= FFUN,),
-                            _F( VECT_ASSE=mono_x, FONC_MULT_C= FFACCE,),
-                            ),
+                         EXCIT=(
+                              _F( VECT_ASSE=FASSE, FONC_MULT_C= FFUN,),
+                              _F( VECT_ASSE=mono_x, FONC_MULT_C= FFACCE,),
+                               ),
                     );
 
     EVOLT = REST_SPEC_TEMP( RESULTAT = EVOLH ,
@@ -336,7 +339,8 @@ for k in range(1,NF):
     DETRUIRE(INFO=1,CONCEPT=_F(NOM=EVOL));
 
 
-    EVOL=DYNA_LINE_TRAN( MATR_MASS=masse, MATR_RIGI=rigidite,
+    EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                      MATR_MASS=masse, MATR_RIGI=rigidite,
                       MATR_AMOR=amorto,
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                       ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0,),
@@ -370,14 +374,15 @@ for k in range(1,NF):
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'DEPL' ,  );
 
-    EVOLH = DYNA_LINE_HARM( MATR_MASS=masse, MATR_RIGI=rigidite,
+    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                         MATR_MASS=masse, MATR_RIGI=rigidite,
                          MATR_AMOR=amorto,
                          LIST_FREQ = listfreq,
-                          EXCIT=(
+                         EXCIT=(
                             _F( VECT_ASSE=FASSE, FONC_MULT_C= FFUN,),
                             _F( VECT_ASSE=mono_x, FONC_MULT_C= FFACCE,),
                                 ),
-                          EXCIT_RESU=(
+                         EXCIT_RESU=(
                                  _F( RESULTAT = resunlf,
                                      COEF_MULT_C= -1.0 -0.0j,),
                                  ),

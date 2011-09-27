@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C       ----------------------------------------------------------------
 C TOLE CRP_21
         INTEGER         IMAT,   NDIM,   NDT, NDI, NR, NVI, KPG, KSP
 C
-        INTEGER         I, ICP, NBPHAS
+        INTEGER         I, J, ICP, NBPHAS
 C
         INTEGER         ITMAX
         INTEGER         NMAT,   IOPTIO, IDNR
@@ -126,10 +126,9 @@ C       POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
         PARAMETER       ( NMAT = 6000     )
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
-        INTEGER         NBCOMM(NMAT,3)
 C
         CHARACTER*8           MOD,      TYPMA,  TYPMOD(*)
-        CHARACTER*16    COMP(*),     OPT,      LOI,CPMONO(5*NMAT+1)
+        CHARACTER*16    COMP(*),     OPT,      LOI
 C
         CHARACTER*3     MATCST
 C
@@ -140,7 +139,16 @@ C
         REAL*8          SIGI(6),EPSD(6),DETOT(6)
         REAL*8          NU,DTIME,E,ALPHA,X
         REAL*8          RBID
-        REAL*8          HSR(5,24,24),TOUTMS(5,24,6)
+
+C     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
+C        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
+C        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
+      INTEGER       NBCOMM(NMAT,3)
+      INTEGER       NSG,NFS
+      PARAMETER      ( NSG=30)
+      PARAMETER      ( NFS=5)
+      REAL*8        TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
+      CHARACTER*16  CPMONO(5*NMAT+1)
 C
         COMMON /TDIM/   NDT,    NDI
         COMMON /OPTI/   IOPTIO, IDNR
@@ -185,8 +193,8 @@ C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
       CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,RBID,RBID,1,
-     &             TYPMA,HSR,MATERD,MATERF,MATCST,
-     &    NBCOMM,CPMONO,ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
+     &             TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
+     &    ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND,NFS,NSG,TOUTMS)
 C
       IF (OPT.EQ.'RIGI_MECA_TANG') THEN
           CALL LCINMA(0.D0,DSDE)
@@ -282,7 +290,8 @@ C      POUR POLYCRISTAL
      &              COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
      &              NVI,NMAT,VINF,DTIME,ITMAX,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,ANGMAS,
-     &              SIGI,EPSD,DETOT,X,HSR)
+     &              SIGI,EPSD,DETOT,X,NFS,NSG,HSR)
+      
       IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +3
 
 

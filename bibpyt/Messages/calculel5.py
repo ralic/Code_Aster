@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 18/03/2011   AUTEUR BERARD A.BERARD 
+#@ MODIF calculel5 Messages  DATE 26/09/2011   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,6 +98,13 @@ Alarme utilisateur :
 
 
 
+9 : _("""
+Erreur utilisateur :
+  Vous ne pouvez pas utiliser la méthode ECLA_PG avec le mot-clé RESULTAT.
+Conseil :
+  Extrayez le champ aux ELGA que contient votre résultat puis utilisez la méthode ECLA_PG avec le mot-clé CHAM_GD.
+"""),
+
 
 
 11 : _("""
@@ -158,6 +165,14 @@ Alarme utilisateur :
 
 
 
+
+
+
+30 : _("""
+Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
+ Votre modèle ne contient pas d'element de meme dimension que le maillage sous-jacent.
+ Verifiez la dimension de votre maillage.
+"""),
 
 
 

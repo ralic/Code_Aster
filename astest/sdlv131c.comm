@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,7 @@
 #---------------------------------------------------------------------
 #  - CALCUL DE MOYENNE DE LA DEFORMATION
 #    JAUGE VIRTUELLE 
-#  - RESULTATS ISSUS DE DYNA_LINE_TRAN
+#  - RESULTATS ISSUS DE DYNA_VIBRA
 #---------------------------------------------------------------------
 #
 import numpy as NP
@@ -129,7 +129,8 @@ if dynatrans:
   RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,tfin,tfin),
                           PROL_DROITE='LINEAIRE',);
 
-  DYNATRAN=DYNA_LINE_TRAN( MATR_MASS=M_AS_MAS, MATR_RIGI=M_AS_RIG,
+  DYNATRAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           MATR_MASS=M_AS_MAS, MATR_RIGI=M_AS_RIG,
                            INCREMENT=_F(LIST_INST=LINST,),
                            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                            MODELE = MODEL, CHAM_MATER = MAT, # modele obligatoire a cause de charge

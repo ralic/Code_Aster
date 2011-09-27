@@ -4,14 +4,14 @@
       IMPLICIT NONE
       INTEGER IFA,NMAT,NBCOMM(NMAT,3),IRET
       INTEGER IFL,IS,NBSYS,NUECOU
-      REAL*8 TAUS,COEFT(NMAT),ALPHAP,DGAMMA,DP,DT,TAUMU,TAUV
-      REAL*8 RP,SGNS,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT),DALPHA
-      REAL*8 C,K,N,FTAU,CRIT,A,GAMMA0,D
-      REAL*8 TEMPF,TABS,DELTAV,DELTAG,GAMMAP,R8MIEM,PTIT,CISA2
+      REAL*8 TAUS,COEFT(NMAT),ALPHAP,DGAMMA,DP,DT
+      REAL*8 RP,SGNS,HSR(5,30,30),DY(*),VIND(*),MATERF(NMAT),DALPHA
+      REAL*8 C,K,N,FTAU,CRIT,A,D
+      REAL*8 GAMMAP,R8MIEM,PTIT,CISA2
       CHARACTER*16 NECOUL
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ C-------------------------------------------------------------
 C     POUR UN NOUVEAU TYPE D'ECOULEMENT, CREER UN BLOC IF
 C------------------------------------------------------------
 
-C      IF (NECOUL.EQ.'ECOU_VISC1') THEN
+C      IF (NECOUL.EQ.'MONO_VISC1') THEN
       IF (NUECOU.EQ.1) THEN
           N=COEFT(IFL+1)
           K=COEFT(IFL+2)
@@ -85,7 +85,7 @@ C      IF (NECOUL.EQ.'ECOU_VISC1') THEN
              DGAMMA=0.D0
           ENDIF
 
-C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+C      IF (NECOUL.EQ.'MONO_VISC2') THEN
       ELSEIF (NUECOU.EQ.2) THEN
           N=COEFT(IFL+1)
           K=COEFT(IFL+2)
@@ -109,29 +109,6 @@ C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
              DGAMMA=0.D0
           ENDIF
 
-C      IF (NECOUL.EQ.'ECOU_VISC3') THEN
-      ELSEIF (NUECOU.EQ.3) THEN
-          K      =COEFT(IFL+1)
-          TAUMU  =COEFT(IFL+2)
-          GAMMA0 =COEFT(IFL+3)
-          DELTAV =COEFT(IFL+4)
-          DELTAG =COEFT(IFL+5)
-          TEMPF=COEFT(IFL+6)
-          TAUV=ABS(TAUS)-TAUMU
-          IF (ABS(TAUS).LE.PTIT) THEN
-             SGNS=1.D0
-          ELSE
-             SGNS=TAUS/ABS(TAUS)
-          ENDIF
-          IF (TAUV.GT.0.D0) THEN
-             TABS=TEMPF+273.15D0
-             DP=GAMMA0*EXP(-DELTAG/K/TABS)*EXP(DELTAV/K/TABS*TAUV)
-             DGAMMA=DP*TAUS/ABS(TAUS)
-          ELSE
-             DP=0.D0
-             DGAMMA=0.D0
-          ENDIF
-
 C      IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
       ELSEIF (NUECOU.EQ.4) THEN
          IF (MATERF(NMAT).EQ.0) THEN
@@ -145,7 +122,7 @@ C         CALCUL D'UN RP FICTIF POUR LCMMVX :
 C         CELA PERMET D'ESTIMER LE PREMIER POINT DE NON LINEARITE
          RP=COEFT(IFL+3)
 
-C      IF (NECOUL.EQ.'ECOU_DD_CFC') THEN
+C      IF (NECOUL.EQ.'MONO_DD_CFC') THEN
       ELSEIF (NUECOU.EQ.5) THEN
          CALL LCMMDD(TAUS,COEFT,IFA,NMAT,NBCOMM,IS,NBSYS,HSR,
      &      VIND,DY,DT,RP,DALPHA,DGAMMA,DP,IRET)

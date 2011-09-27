@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,10 +138,11 @@ PLANZ=DEFI_OBSTACLE(   TYPE='BI_PLAN_Z' )
 PLANY=DEFI_OBSTACLE(   TYPE='BI_PLAN_Y' )
 
 #
-DYNAMODA=DYNA_TRAN_MODAL(      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
-                               MATR_MASS=MASSEGEN,
-                               MATR_RIGI=RIGIDGEN,
-                              AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                             MATR_MASS=MASSEGEN,
+                             MATR_RIGI=RIGIDGEN,
+                             AMOR_MODAL=_F(AMOR_REDUIT=0.,),
                              ETAT_INIT=_F( DEPL = DEPINI),
                              INCREMENT=_F( INST_INIT = 0.,
                                         INST_FIN = 0.3,

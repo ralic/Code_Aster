@@ -17,7 +17,7 @@
       REAL*8        CUDOMX
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -114,50 +114,26 @@ C         DE CHAQUE VECTEUR NORMAL.
 C  DOMTOT VECTEUR CONTENANT LES DOMMAGES TOTAUX (CUMUL)
 C         DE CHAQUE VECTEUR NORMAL
 
-      REAL*8     VSIGN(NBVEC*NBORDR), VPHYDR(NBORDR),GDREQ(NBVEC*NBORDR)
+      REAL*8     GDREQ(NBVEC*NBORDR)
       REAL*8     NRUPT(NBVEC*NBORDR), DOMEL(NBVEC*NBORDR),DOMTOT(NBVEC)
 C  ------------------------------------------------------------------
 C  ---------------------
-
-C 1. CALCUL DE LA CONTRAINTE EQUIVALENTE AU SENS DES CRITERES
-
-         IF (( NOMCRI(1:14) .EQ. 'MATAKE_MODI_AV' ) .OR.
-     &       ( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' )) THEN
-
-C 1.1 CALCUL DE LA CONTRAINTE NORMALE
+C C ------------------------------------------------------------------
+C       DATA  NOMPAR/  'TAUPR_1','TAUPR_2','SIGN_1','SIGN_2',
+C      &               'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2'  /
+C C-------------------------------------------------------------------
 
 
-            CALL AVSIGN(NBVEC, NBORDR, VECTN,
-     &                  VWORK, TDISP, KWORK,
-     &                  SOMMW, TSPAQ, I, NOMCRI,FORDEF,VSIGN)
-
-         ELSEIF ( NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AV' ) THEN
-
-C 1.2 CALCUL DE LA PRESSION HYDROSTATIQUE
-
-
-            CALL AVPHYD(NBORDR, VWORK, TDISP, KWORK, SOMMW,
-     &                  TSPAQ, I, VPHYDR)
-     
-C 1.3 SI LE CRITERE EST LA FORMULE, ON CALCULE TOUS
-         ELSEIF  (NOMCRI(1:7) .EQ. 'FORMULE') THEN
-            
-            CALL AVSIGN(NBVEC, NBORDR, VECTN,
-     &                  VWORK, TDISP, KWORK,
-     &                  SOMMW, TSPAQ, I, NOMCRI, FORDEF, VSIGN)
-           
-            CALL AVPHYD(NBORDR, VWORK, TDISP, KWORK, SOMMW,
-     &                  TSPAQ, I, VPHYDR)
-
-
-         ENDIF
 
 C 1.3 CALCUL DE LA GRANDEUR EQUIVALENTE AU SENS DU CRITERE CHOISI :
 C     MATAKE_MODI_AV, FATEMI ET SOCIE (ELASTIQUE OU PLASTIQUE), DANG VAN
-       
-         CALL AVCRIT(NBVEC, NBORDR, VALA, COEFPA, NCYCL,
-     &               VMIN, VMAX, OMIN, OMAX,NOMCRI,NOMFOR,
-     &               VSIGN, VPHYDR, GDREQ)
+         CALL AVCRIT( NBVEC, NBORDR, VECTN, VWORK, TDISP, KWORK,
+     &                   SOMMW, TSPAQ,I,VALA, COEFPA, NCYCL, VMIN,
+     &               VMAX, OMIN, OMAX, NOMCRI, NOMMAT, NOMFOR,GDREQ)
+
+C          CALL AVCRIT(NBVEC, NBORDR, VALA, COEFPA, NCYCL,
+C      &               VMIN, VMAX, OMIN, OMAX,NOMCRI,NOMFOR,
+C      &               VSIGN, VPHYDR, GDREQ)
 
 C 2. CALCUL DU DOMMAGE ELEMENTAIRE DE WOHLER
 

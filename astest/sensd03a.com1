@@ -39,7 +39,8 @@ for i in range(nbps):
    MATASR[i]=ASSE_MATRICE(MATR_ELEM=MATELR[i],
                            NUME_DDL=NUM,)
 
-   DYHD[i]=DYNA_LINE_HARM(MODELE=MO,
+   DYHD[i]=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                          MODELE=MO,
                           CHAM_MATER=CHMATD[i],
                           MATR_MASS=MATASSM,
                           MATR_RIGI=MATASR[i],

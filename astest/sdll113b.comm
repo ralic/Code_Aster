@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,11 +166,12 @@ MACRO_PROJ_BASE(  BASE=MODES,
 )
 
 #
-TRAN_GEN=DYNA_TRAN_MODAL(       MATR_MASS=M_PROJ,
+TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                                  MATR_MASS=M_PROJ,
                                   MATR_RIGI=K_PROJ,
                                   MATR_AMOR=A_PROJ,
                                   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                                     EXCIT=_F(VECT_ASSE = F_PROJ,
+                                  EXCIT=_F(VECT_ASSE = F_PROJ,
                                             COEF_MULT = 1.),
                                  INCREMENT=_F(  INST_INIT = 0.,
                                              INST_FIN = 0.0195,
@@ -420,7 +421,8 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###### CALCULS TRANSITOIRES :
 ###
 #
-TRANGENE=DYNA_TRAN_MODAL(       MATR_MASS=M_GENE,
+TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                                MATR_MASS=M_GENE,
                                 MATR_RIGI=K_GENE,
                                 MATR_AMOR=A_GENE,
                                 SCHEMA_TEMPS=_F(SCHEMA='EULER',),

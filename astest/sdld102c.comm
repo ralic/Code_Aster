@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
 # sdld102c.para = tps_job 120 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,7 +29,7 @@
 #
 # LA BASE DE PROJECTION DES SOUS-STRUCTURES EST DE TYPE 'CRAIGB'.
 #
-# 3 SCHEMAS D'INTEGRATION DE DYNA_TRAN_MODAL ('EULER', 'NEWMARK'
+# 3 SCHEMAS D'INTEGRATION DE DYNA_VIBRA ('EULER', 'NEWMARK'
 # ET 'ADAPT') SONT TESTES (LE SCHEME 'DEVOGE' NE SUPPORTANT PAS LA
 # PRISE EN COMPTE DE L'AMORTISSEMENT).
 #
@@ -267,7 +267,8 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 #-----------------------------------------------------------------
 
 # CAS 1
-TRANGEN1=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                              MATR_MASS=MASPRO, 
                              MATR_RIGI=RIGPRO, 
                              MATR_AMOR=AMOPRO, 
@@ -278,7 +279,8 @@ TRANGEN1=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN2=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                             BETA=0.27,GAMMA=0.52),
                              MATR_MASS=MASPRO, 
                              MATR_RIGI=RIGPRO, 
@@ -290,7 +292,8 @@ TRANGEN2=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN3=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                              MATR_MASS=MASPRO, 
                              MATR_RIGI=RIGPRO, 
                              MATR_AMOR=AMOPRO, 
@@ -306,7 +309,8 @@ TRANGEN3=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
 # CAS 2
-TRANGEN4=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                              MATR_MASS=MASPRO2, 
                              MATR_RIGI=RIGPRO2, 
                              MATR_AMOR=AMOPRO2, 
@@ -317,7 +321,8 @@ TRANGEN4=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN5=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              MATR_MASS=MASPRO2, 
                              MATR_RIGI=RIGPRO2, 
                              MATR_AMOR=AMOPRO2, 
@@ -328,7 +333,8 @@ TRANGEN5=DYNA_TRAN_MODAL(   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN6=DYNA_TRAN_MODAL(  SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+TRANGEN6=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                              MATR_MASS=MASPRO2, 
                              MATR_RIGI=RIGPRO2, 
                              MATR_AMOR=AMOPRO2, 
