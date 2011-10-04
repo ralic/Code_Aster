@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,41 +49,40 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NDIM,NNO,NNOS,NPG,NBSP
       INTEGER IPOIDS,IVF,IDFDE,JGANO
-      INTEGER IRET,NBCMP,ITAB(7)
+      INTEGER IRET,NBCMP,ITABIN(7),ITABOU(7)
       INTEGER IINPG,IOUTNO
 
       CHARACTER*4 FAMI
 C
 C ----------------------------------------------------------------------
 C
-C    -------------------------------------------------------------------
-C    -- OPTION "DERA_ELNO"
-C    -------------------------------------------------------------------
-
-      IF (OPTION.EQ.'DERA_ELNO') THEN
+      IF (OPTION.EQ.'EFGE_ELNO') THEN
         FAMI = 'RIGI'
-        CALL TECACH('OOO','PDERAPG',7,ITAB,IRET)
-        CALL JEVECH ('PDERANO','E',IOUTNO)
-      ENDIF
-C
-C    -------------------------------------------------------------------
-C    -- OPTION "DISS_ELNO"
-C    -------------------------------------------------------------------
+        CALL TECACH('OOO','PEFGAR',7,ITABIN,IRET)
+        CALL TECACH('OOO','PEFFORR',7,ITABOU,IRET)
 
-      IF (OPTION.EQ.'DISS_ELNO') THEN
+      ELSEIF (OPTION.EQ.'DERA_ELNO') THEN
         FAMI = 'RIGI'
-        CALL TECACH('OOO','PDISSPG',7,ITAB,IRET)
-        CALL JEVECH ('PDISSNO','E',IOUTNO)
-      ENDIF
-C
-C    -------------------------------------------------------------------
-C    -- OPTION "ENDO_ELNO"
-C    -------------------------------------------------------------------
+        CALL TECACH('OOO','PDERAPG',7,ITABIN,IRET)
+        CALL TECACH('OOO','PDERANO',7,ITABOU,IRET)
 
-      IF (OPTION.EQ.'ENDO_ELNO') THEN
+      ELSEIF (OPTION.EQ.'DISS_ELNO') THEN
         FAMI = 'RIGI'
-        CALL TECACH('OOO','PTRIAPG',7,ITAB,IRET)
-        CALL JEVECH ('PTRIANO','E',IOUTNO)
+        CALL TECACH('OOO','PDISSPG',7,ITABIN,IRET)
+        CALL TECACH('OOO','PDISSNO',7,ITABOU,IRET)
+
+      ELSEIF (OPTION.EQ.'ENDO_ELNO') THEN
+        FAMI = 'RIGI'
+        CALL TECACH('OOO','PTRIAPG',7,ITABIN,IRET)
+        CALL TECACH('OOO','PTRIANO',7,ITABOU,IRET)
+
+      ELSEIF (OPTION.EQ.'SIGM_ELNO') THEN
+        FAMI = 'RIGI'
+        CALL TECACH('OOO','PCONTRR',7,ITABIN,IRET)
+        CALL TECACH('OOO','PSIEFNOR',7,ITABOU,IRET)
+
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C    -------------------------------------------------------------------
@@ -92,16 +91,23 @@ C    -------------------------------------------------------------------
 C
 C --- IL FAUDRAIT PENSER A RECUPERER FAMI DE MANIERE AUTOMATIQUE ET SURE
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      IINPG=ITAB(1)
-      NBCMP=ITAB(2)/ITAB(3)
-C
-      IF (ITAB(3).NE.NPG) CALL ASSERT(.FALSE.)
-C
-C --- ON INTERDIT LES ELEMENTS A SOUS-POINT POUR LE MOMENT
-      IF (ITAB(7).NE.1) CALL ASSERT(.FALSE.)
-C
-      NBSP=1
-C
+      IINPG=ITABIN(1)
+      NBCMP=ITABIN(2)/ITABIN(3)
+      CALL ASSERT(NBCMP.GT.0)
+
+      IOUTNO=ITABOU(1)
+      CALL ASSERT(NBCMP.EQ.ITABOU(2)/ITABOU(3))
+
+      IF (ITABIN(3).NE.NPG) THEN
+        FAMI='MASS'
+        CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      ENDIF
+
+      IF (ITABIN(3).NE.NPG) CALL ASSERT(.FALSE.)
+
+      NBSP=ITABIN(7)
+      CALL ASSERT(NBSP.EQ.ITABOU(7))
+
       CALL PPGAN2(JGANO,NBSP,NBCMP,ZR(IINPG),ZR(IOUTNO))
-C
+
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,10 +97,6 @@ RESU=CALC_ELEM( reuse=RESU,
                           RESULTAT=RESU,
               )
 
-#SIGMA =CREA_CHAMP(  OPERATION:'EXTR' TYPE_CHAM:'ELNO_SIEF_R'
-#NOM_CHAM:'SIEF_ELNO' RESULTAT:RESU
-#                     NUME_ORDRE:1);
-
 DEPLA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 NOM_CHAM='DEPL', RESULTAT=RESU,
                      NUME_ORDRE=1)
@@ -165,15 +161,12 @@ G4=CALC_G(        RESULTAT=RESU,
 G13=CALC_G(        RESULTAT=RESU,
                    NUME_ORDRE=1,
                    ETAT_INIT=_F( DEPL = DEPLA),
-#                               SIGM : SIGMA)
                    THETA=_F(THETA=THETA3 ))
 
 G14=CALC_G(        RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXCIT=_F(CHARGE=CH,),
-                            #FONC_MULT = F),
                    ETAT_INIT=_F( DEPL = DEPLA),
-#                              SIGM : SIGMA)
                    THETA=_F(THETA=THETA4 ))
 
 

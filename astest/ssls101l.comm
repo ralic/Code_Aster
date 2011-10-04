@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION
 # ssls101l.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,52 +43,6 @@ P = 1.0;
 MATER=DEFI_MATERIAU(ELAS=_F(E=1.0,
                             NU=0.3,
                             RHO=1.0,),);
-
-#
-#MAIL1=LIRE_MAILLAGE();
-#
-#MODKT=AFFE_MODELE(MAILLAGE=MAIL1,
-#                  AFFE=_F(GROUP_MA='QUAD',
-#                          PHENOMENE='MECANIQUE',
-#                          MODELISATION='DKT',),);
-#
-#MAIL1=MODI_MAILLAGE(reuse =MAIL1,
-#                    MAILLAGE=MAIL1,
-#                    ORIE_NORM_COQUE=_F(GROUP_MA='QUAD',
-#                                       VECT_NORM=(0.0,0.0,1.0,),
-#                                       NOEUD='O',),
-#                    );
-#
-#MAIL2=CREA_MAILLAGE(MAILLAGE=MAIL1,
-#                    COQU_VOLU=_F(NOM='VOLUH',
-#                                 GROUP_MA='QUAD',
-#                                 EPAIS=T,
-#                                 PREF_MAILLE='MH',
-#                                 PREF_NOEUD='NH',
-#                                 PLAN='INF',),
-#                    INFO=2,);
-#
-#MAILL=CREA_MAILLAGE(MAILLAGE=MAIL2,
-#                    COQU_VOLU=_F(NOM='VOLUB',
-#                                 GROUP_MA='QUAD',
-#                                 EPAIS=T,
-#                                 PREF_MAILLE='MB',
-#                                 PREF_NOEUD='NB',
-#                                 PLAN='SUP',),
-#                    INFO=2,);
-#
-#MAILL=DEFI_GROUP(reuse =MAILL,
-#                 MAILLAGE=MAILL,
-#                 CREA_GROUP_NO=(_F(OPTION='PLAN',
-#                                   NOM='PLANY0',
-#                                   NOEUD_CENTRE='O',
-#                                   VECT_NORMALE=(0.0,1.0,0.0,),
-#                                   PRECISION=0.001,),
-#                                _F(OPTION='PLAN',
-#                                   NOM='PLANX0',
-#                                   NOEUD_CENTRE='O',
-#                                   VECT_NORMALE=(1.0,0.0,0.0,),
-#                                   PRECISION=0.001,),),);
 
 PRE_GIBI();
 

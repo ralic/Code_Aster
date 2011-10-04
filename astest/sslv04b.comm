@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN C.P. (PENTA15 HEXA20)
 # sslv04b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -663,7 +663,7 @@ TEST_TABLE(    TABLE=SIG_AE,
                FILTRE=_F(  NOM_PARA = 'NOEUD',
                         VALE_K = 'NO155',       ),
                NOM_PARA='SIXX',
-              PRECISION=0.005,
+              PRECISION=0.0055,
                    VALE=-60.     )
 
 TEST_TABLE(    TABLE=SIG_AE,

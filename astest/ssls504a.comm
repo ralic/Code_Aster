@@ -1,8 +1,5 @@
-
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE JMBHH01 J.M.PROIX
-# DATE   : 13/11/2000
-# AUTEUR : F. LEBOUVIER (DELTACAD)
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE  : PLAQUE CARREE COMPOSITE A 3 COUCHES SIMPLEMENT SUPPORTEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,16 +138,19 @@ DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 #
 
 
-C2_M=CALC_ELEM(OPTION='SIGM_ELNO',
-               RESULTAT=RESU,
-               REPE_COQUE =_F( NUME_COUCHE=2,
-                               NIVE_COUCHE='MOY',),);
+RESU=CALC_ELEM(reuse =RESU,
+               OPTION='SIGM_ELNO',
+               RESULTAT=RESU,);
+
+C2_M=POST_CHAMP(RESULTAT=RESU,
+                TOUT='OUI',
+                EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=2,
+                                   NIVE_COUCHE='MOY',),);
 
 C2_M=CALC_NO(reuse =C2_M,
              RESULTAT=C2_M,
-             OPTION='SIGM_NOEU',
-
-             );
+             OPTION='SIGM_NOEU',);
 
 SIG_C2_M=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     OPERATION='EXTR',
@@ -159,49 +159,41 @@ SIG_C2_M=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     NUME_ORDRE=1,);
 
 
-C2_S=CALC_ELEM(OPTION='SIGM_ELNO',
-                RESULTAT=RESU,
-                REPE_COQUE =_F( NUME_COUCHE=2,
-                                NIVE_COUCHE='SUP',),);
+C2_S=POST_CHAMP(RESULTAT=RESU,
+                TOUT='OUI',
+                EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=2,
+                                   NIVE_COUCHE='SUP',),);
 
 C2_S=CALC_NO(reuse =C2_S,
-              RESULTAT=C2_S,
-              OPTION='SIGM_NOEU',
+             RESULTAT=C2_S,
+             OPTION='SIGM_NOEU',);
 
-              )
-
-SIG_C2_S=CREA_CHAMP(    RESULTAT=C2_S,
+SIG_C2_S=CREA_CHAMP(RESULTAT=C2_S,
                     OPERATION='EXTR',
-                     TYPE_CHAM='NOEU_SIEF_R',
-                      NOM_CHAM='SIGM_NOEU',
-                    NUME_ORDRE=1
-                  )
+                    TYPE_CHAM='NOEU_SIEF_R',
+                    NOM_CHAM='SIGM_NOEU',
+                    NUME_ORDRE=1);
 
 #COUCHE 3 : CALCUL DES CONTRAINTES
 #
 #
 
-
-C3_S=CALC_ELEM(OPTION='SIGM_ELNO',
-               RESULTAT=RESU,
-               REPE_COQUE =_F( NUME_COUCHE=3,
-                               NIVE_COUCHE='SUP',),);
+C3_S=POST_CHAMP(RESULTAT=RESU,
+                TOUT='OUI',
+                EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=3,
+                                   NIVE_COUCHE='SUP',),);
 
 C3_S=CALC_NO(reuse =C3_S,
              RESULTAT=C3_S,
-             OPTION='SIGM_NOEU',
-
-             );
+             OPTION='SIGM_NOEU',);
 
 SIG_C3_S=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     OPERATION='EXTR',
                     RESULTAT=C3_S,
                     NOM_CHAM='SIGM_NOEU',
                     NUME_ORDRE=1,);
-
-
-
-
 
 #---------------------------------------------------------------------
 #                         VERIFICATION DES RESULTATS

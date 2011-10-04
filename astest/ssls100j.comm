@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,18 +71,25 @@ RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
                OPTION=('SIGM_ELNO','EPSI_ELNO',),
                );
 
+RESC1SUP=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
+
+
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
                         OPTION=('EFGE_ELNO','DEGE_ELNO',),
                );
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO',
+                   RESULTAT = RESC1SUP,  NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'STU',  NOEUD = 'O',
                    NOM_CMP = 'SIXX',
                    NUME_ORDRE = 1,
                    VALE = -4.905E+01, PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO',
+                   RESULTAT = RESC1SUP,  NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'STU',  NOEUD = 'O',
                    NOM_CMP = 'SIYY',
                    NUME_ORDRE = 1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE STRUCTURE SYMETRIQUE DE POUTRES AVEC UN COUDE (POUTRE COURBE)
 # ssll100b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -108,7 +108,6 @@ FORCE_PO=RESOUDRE(reuse=FORCE_PO,  MATR=MATASSR,    CHAM_NO=FORCE_PO )
 
 ########################################################################
 
-
 ########################################################################
 #----------------------------------------------------------------------
 # CAS 2:         DEPLACEMENTS IMPOSES EN A ET G
@@ -138,11 +137,6 @@ DDL_IMPO=RESOUDRE(reuse=DDL_IMPO,  MATR=MATASS2,     CHAM_NO=DDL_IMPO )
 
 ########################################################################
 
-#### SUPPRESSION DE L'OPTION EFGE_ELNO    07/08/92
-########################################################################
-# EFFO_IMP  = CALC_CHAM_ELEM( MODELE: MOD, DEPL : DDL_IMPO
-#                             CARA_ELEM: CARLEM CHAM_MATER: CHMAT
-#                             OPTION:  'EFGE_ELNO');
 ########################################################################
 #----------------------------------------------------------------------
 # CAS 3:         DILATATION THERMIQUE A 100
@@ -172,15 +166,6 @@ POIDS_PR=ASSE_VECTEUR(  VECT_ELEM=VEL4,    NUME_DDL=NUM     )
 
 POIDS_PR=RESOUDRE(reuse=POIDS_PR,  MATR=MATASSR,    CHAM_NO=POIDS_PR )
 
-########################################################################
-
-#### SUPPRESSION DE L'OPTION EFGE_ELNO    07/08/92
-########################################################################
-# EFFO_PR   = CALC_CHAM_ELEM( MODELE: MOD, DEPL : POIDS_PR
-#                             CHARGE: CH4
-#                             CARA_ELEM: CARLEM CHAM_MATER: CHMAT
-#                             OPTION:  'EFGE_ELNO');
-########################################################################
 #--------------------------------------------------------------------
 TEST_RESU(CHAM_NO=(
          _F( CHAM_GD = FORCE_PO,  NOEUD = 'B',  NOM_CMP = 'DY',  VALE = -8.120E-3),

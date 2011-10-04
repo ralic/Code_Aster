@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (POSEE-POSEE)
 # sdll114a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -382,40 +382,22 @@ TEST_RESU(RESU=(
                      CRITERE = 'RELATIF',  PRECISION = 0.043,
                      NUME_MODE = 1,       VALE = 2.4883719438590E+01),
 # EN ATTENTE DES VALEURS A TESTER  DANS LE SENS X
-#                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
-#                     CRITERE: 'RELATIF' , PRECISION: 0.02
-#                     NUME_MODE : 2      , VALE:     )
                   _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.011,
                      NUME_MODE = 3,       VALE = 1.0117166656029E+02),
-#                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
-#                     CRITERE: 'RELATIF' , PRECISION: 0.02
-#                     NUME_MODE : 4      , VALE:  114.92   )
                   _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.016,
                      NUME_MODE = 5,       VALE = 2.2717436461294E+02),
-#                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
-#                     CRITERE: 'RELATIF' , PRECISION: 0.02
-#                     NUME_MODE : 6      , VALE:  258.63   )
 #A2Y
                   _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.043,
                      NUME_MODE = 1,       VALE = 2.4883721494878E+01),
-#                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
-#                     CRITERE: 'RELATIF' , PRECISION: 0.02
-#                     NUME_MODE : 2      , VALE:   28.57   )
                   _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.011,
                      NUME_MODE = 3,       VALE = 1.0117166656029E+02),
-#                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
-#                     CRITERE: 'RELATIF' , PRECISION: 0.02
-#                     NUME_MODE : 4      , VALE:  114.92   )
                   _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.016,
                      NUME_MODE = 5,       VALE = 2.2717436461294E+02))
-#                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
-#                     CRITERE: 'RELATIF' , PRECISION: 0.02
-#                     NUME_MODE : 6      , VALE:  258.63   )
          )
 
 #

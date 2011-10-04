@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE G8BHHXD X.DESROCHES
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE DESROCHE X.DESROCHES
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,56 +202,56 @@ TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIXX',
-                     VALE=-4.8784164077558E+06    )
+                     VALE=-4.998131662E+06    )
 
 TEST_TABLE(        TABLE=T1,
                    REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIYY',
-                     VALE=6.2148640368671E+05    )
+                     VALE=5.7570926620307E+05    )
 
 TEST_TABLE(        TABLE=T1,
                    REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIZZ',
-                     VALE=-5.6522960704417E+06 )
+                     VALE=-5.694654234E+06 )
 
 TEST_TABLE(        TABLE=T1,
                    REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIXY',
-                     VALE=-3.739500149E+06    )
+                     VALE=-3.753988751E+06    )
 
 TEST_TABLE(        TABLE=T1,
                    REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIXX',
-                     VALE=-5.3437906856338E+06    )
+                     VALE=-5.464903118E+06    )
 
 TEST_TABLE(        TABLE=T1,
                    REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIYY',
-                     VALE=-4.8306025991672E+05    )
+                     VALE=-5.302359307E+05    )
 
 TEST_TABLE(        TABLE=T1,
                    REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIZZ',
-                     VALE=-6.098981175471E+06 )
+                     VALE=-6.144603336E+06 )
 
 TEST_TABLE(        TABLE=T1,
                    REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIXY',
-                     VALE=1.495588057E+06    )
+                     VALE=1.510076007E+06    )
 
 FIN()
 #

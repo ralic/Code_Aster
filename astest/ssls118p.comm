@@ -1,4 +1,4 @@
-# MODIF  DATE 02/05/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 # ssls118p.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,24 +100,31 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CHA,),
                           _F(CHARGE=CHA_P,),),);
 
-SIG_C1_S=CALC_ELEM(RESULTAT=RESU,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=1,
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION='SIGM_ELNO',);
+
+SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
 
-SIG_C1_M=CALC_ELEM(RESULTAT=RESU,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=1,
+SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
 
-SIG_C1_I=CALC_ELEM(RESULTAT=RESU,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=1,
+SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
 
 EFF=CALC_ELEM(RESULTAT=RESU,
               OPTION='EFGE_ELNO',
-              REPE_COQUE =_F( PLAN='MOY',),);
+              );
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,

@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 21/06/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,7 @@ cata_msg = {
 """),
 
 8 : _("""
- les champs SIEF_ELGA, SICO_ELNO et SIGM_ELNO sont absents :
+ les champs SIEF_ELGA et SIGM_ELNO sont absents :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
 """),
 

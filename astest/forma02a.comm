@@ -1,11 +1,10 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
-# RESPONSABLE JMBHH01 J.M.PROIX
-
-# TITRE FORMATION THERMO-PLASTICITE TRAJET DE CHARGEMENT
-# forma02a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# -*- coding: iso-8859-1 -*-
+# TITRE TRAVAUX PRATIQUES FORMATION DE BASE
+# forma02a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,124 +19,234 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-# ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
-
-
-
+#
+#        TUYAUTERIE COMPORTANT UN COUDE
+#     MODELISATION PAR DES ELEMENTS POUTRES
+#     -------------------------------------
+#      CALCUL 1 : LECTURE MAILLAGE MED, SANS COEF FLEX
+#      CALCUL 2 : LECTURE MAILLAGE MED, POU_D_T + POU_C_T, AVEC COEF FLEX
 DEBUT(CODE=_F(NOM='FORMA02A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-Pilote = 'PNG';
+RC = 0.6;
 
+EPTUB = 0.02;
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
-                            NU=0.3,),
-                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
-                                 SY=181.,),);
+REXT = 0.2;
 
-Sig=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
-                        1.,151.2,
-                        2.,257.2,
-                        3.,259.3,
-                        4.,0.,
-                        ),);
+LG = 3.0;
 
-Tau=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
-                        1.,93.1,
-                        2.,33.1,
-                        3.,0.,
-                        4.,0.,
-                        ),);
+#
+# LECTURE DU MAILLAGE AU FORMAT MED
+#
 
-IMPR_FONCTION(FORMAT='XMGRACE',
-              PILOTE=Pilote,
-              UNITE=30,
-              COURBE=_F(FONC_X=Sig,
-                        FONC_Y=Tau,),
-              LEGENDE_X='Sig',
-              LEGENDE_Y='Tau',);
-Ninst = 5;
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+# DEFINITION DES ELEMENTS FINIS UTILISES
+#
 
+MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA=('TUY1','TUY2',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='POU_D_T',),
+                          _F(GROUP_MA='COUDE',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='POU_C_T',),),);
+#
+# DEFINITION DU MATERIAU UTILISE
+#
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=0.81,
-                                     NOMBRE=1,),
-                                  _F(JUSQU_A=1.0,
-                                     NOMBRE=Ninst,),
-                                  _F(JUSQU_A=2.0,
-                                     NOMBRE=Ninst,),
-                                  _F(JUSQU_A=3.0,
-                                     NOMBRE=Ninst,),),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
+                            NU=0.3,),);
 
-U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
-                 MATER=ACIER,
-                 INCREMENT=_F(LIST_INST=L_INST,),
-                 NEWTON=_F(#PREDICTION='ELASTIQUE',
-                           MATRICE='TANGENTE',
-                           REAC_ITER=1,),
-                 SIGM_IMPOSE=_F(SIXX=Sig,
-                                SIXY=Tau,
-                                ),
-                 INFO=1,);
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+#
+# DEFINITION DES CONDITIONS AUX LIMITES ET DU CHARGEMENT
+#   AU POINT A : ENCASTREMENT
+#   AU POINT B : FORCE IMPOSEE
+#                FY = 100000. N (FX,FZ,MX,MY,MZ NULLES)
+#
 
-IMPR_TABLE(TABLE=U,);
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
+                        DDL_IMPO=_F(GROUP_NO='PA',
+                                    LIAISON='ENCASTRE',),);
 
-# A
+CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      FORCE_NODALE=_F(GROUP_NO='PB',
+                                      FY=100000.0,),);
+#
+# CARACTERISTIQUES DES POUTRES : PAS DE COEFFICIENT
+# DE FLEXIBILITE
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,
-                     PRECISION=1e-05,),
-           NOM_PARA='EPXX',
-           VALE=0.014830,
-           REFERENCE='ANALYTIQUE',);
+CARA_POU=AFFE_CARA_ELEM(MODELE=MODMECA,
+                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE',),
+                                  SECTION='CERCLE',
+                                  CARA=('R','EP',),
+                                  VALE=(REXT,EPTUB,),),
+                        DEFI_ARC=_F(GROUP_MA='COUDE',
+                                    CENTRE=(RC,LG,0.0,),),);
+#
+# RESOLUTION DU PROBLEME ELASTIQUE
+#
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,
-                     PRECISION=1e-05,),
-           NOM_PARA='EPXY',
-           VALE=0.0136014,
-           REFERENCE='ANALYTIQUE',);
+RESU1=MECA_STATIQUE(MODELE=MODMECA,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARA_POU,
+                    EXCIT=(_F(CHARGE=BLOQUAGE,),
+                           _F(CHARGE=CHARGT,),),);
+#
+# CALCUL DES EFFORTS
 
-# B
+RESU1=CALC_CHAMP(reuse =RESU1,
+                RESULTAT=RESU1,
+                 CONTRAINTE=('SIEF_ELNO'),);
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.0,
-                     PRECISION=1e-05,),
-           NOM_PARA='EPXX',
-           VALE=0.035265,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE',);
+RESU1=CALC_NO(reuse =RESU1,
+              RESULTAT=RESU1,
+              OPTION='SIEF_NOEU',);
+# ECRITURE DES RESULTATS AU FORMAT RESULTAT
+#
+# VALEURS MIN ET MAX DES EFFORTS
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.0,
-                     PRECISION=1e-05,),
-           NOM_PARA='EPXY',
-           VALE=0.020471,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE',);
+IMPR_RESU(MODELE=MODMECA,
+          RESU=(_F(RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELNO',
+                   TOUT_CMP='OUI',
+                   TOUT='OUI',
+                   VALE_MAX='OUI',
+                   VALE_MIN='OUI',),
+                _F(RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELNO',
+                   TOUT_CMP='OUI',
+                   GROUP_NO='PB',),),);
 
-# C
+IMPR_RESU(MODELE=MODMECA,
+          RESU=_F(RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='PB',),);
+# ECRITURE DES RESULTATS AU FORMAT MED
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,
-                     PRECISION=1e-05,),
-           NOM_PARA='EPXX',
-           VALE=0.0352777,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+IMPR_RESU(MODELE=MODMECA,
+          FORMAT='MED',
+          RESU=_F(MAILLAGE=MAIL,
+                  RESULTAT=RESU1,
+                  NOM_CHAM=('DEPL','SIEF_ELNO',),),);
+# COEF DE FLEXIBILITE POUR
+# COMPARAISON AUX COQUES (MODELISATION B) ET TUYAU (MODELISATION D)
+# RAYON DE COURBURE DES COUDES
+#
+#
+RMOY = (REXT - (EPTUB / 2));
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,
-                     PRECISION=1e-05,),
-           NOM_PARA='EPXY',
-           VALE=0.0202462,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+RINT = (RMOY - (EPTUB / 2));
+
+SINT = (pi * (RINT * RINT));
+
+SEXT = (pi * (REXT * REXT));
+
+SURF = (SEXT - SINT);
+
+#CALCUL DU COEFFICIENT DE FLEXIBILITE COUDE SELON RCCM
+LAMBDA = ((EPTUB * RC) / (RMOY * RMOY));
+
+FRCCM = (1.65 / LAMBDA);
+
+#
+# CARACTERISTIQUES DES POUTRES AVEC COEF FLEXIBILITE
+
+CARAFLEX=AFFE_CARA_ELEM(MODELE=MODMECA,
+                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE',),
+                                  SECTION='CERCLE',
+                                  CARA=('R','EP',),
+                                  VALE=(REXT,EPTUB,),),
+                        DEFI_ARC=_F(GROUP_MA='COUDE',
+                                    CENTRE=(RC,LG,0.0,),
+                                    RAYON=RC,
+                                    COEF_FLEX=FRCCM,),);
+
+RESU2=MECA_STATIQUE(MODELE=MODMECA,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARAFLEX,
+                    EXCIT=(_F(CHARGE=BLOQUAGE,),
+                           _F(CHARGE=CHARGT,),),);
+
+RESU2=CALC_CHAMP(reuse =RESU2,
+                RESULTAT=RESU2,
+                 CONTRAINTE=('SIEF_ELNO'),);
+
+RESU2=CALC_NO(reuse =RESU2,
+              RESULTAT=RESU2,
+              OPTION='SIEF_NOEU',);
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='PB',),);
+# courbes MFZ et FY le long du tuyau
+# en interactif, courbe directement avec STANLEY
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                                 NOM='TUYAU',
+                                 GROUP_MA='TUYAU',),);
+
+EFGE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='EFFORTS',
+                             RESULTAT=RESU2,
+                             NOM_CHAM='SIEF_NOEU',
+                             GROUP_NO='TUYAU',
+                             TOUT_CMP='OUI',),);
+
+IMPR_TABLE(TABLE=EFGE,);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PB',
+                   VALE=-0.0265735393344,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='5.6.6',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='PB',
+                   VALE=0.0670161110121,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='5.6.6',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   GROUP_NO='PB',
+                   VALE=0.0209702889635,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='5.6.6',),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PB',
+                   VALE=-0.029830769731,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='5.6.6',),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='PB',
+                   VALE=0.11562748791,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='5.6.6',),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   GROUP_NO='PB',
+                   VALE=0.0353012450526,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='5.6.6',),),);
 
 FIN();
+#

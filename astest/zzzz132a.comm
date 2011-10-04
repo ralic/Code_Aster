@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,7 +26,7 @@
 #
 #********************************************************************
 #
-DEBUT(CODE=_F( NOM = 'ZZZZ132A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='ZZZZ132A',NIV_PUB_WEB='INTERNET'))
 #
 # -------------------------------------------------------------------
 #    LECTURE DES DONNEES MED (MAILLAGE ET CHAMPS)
@@ -161,7 +161,7 @@ TEST_RESU(RESU=(
           MAILLE = 'M16',
           NOEUD = 'N377',
           NOM_CMP = 'SIYY',
-          VALE = 2.56719E+05))
+          VALE = 2.562277E+05))
    )
 
 #----------------------------------------------------------

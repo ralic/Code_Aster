@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
 # rccm09b.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,7 +194,7 @@ TEST_TABLE(  TABLE=FAMOR,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 1.15196E-03      )
+             VALE= 1.1469028107853E-03      )
 
 TEST_TABLE(  TABLE=FAMOR,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -202,7 +202,7 @@ TEST_TABLE(  TABLE=FAMOR,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 5.8675414E-01     )
+             VALE= 0.59006700843506     )
 
 TEST_TABLE(  TABLE=FAMOR,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -233,7 +233,7 @@ TEST_TABLE(  TABLE=FAMOR2,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 1.616323E-03      )
+             VALE= 1.6092158631757E-03      )
 
 TEST_TABLE(  TABLE=FAMOR2,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -241,7 +241,7 @@ TEST_TABLE(  TABLE=FAMOR2,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 8.2327296E-01     )
+             VALE= 0.82792123393649     )
 
 TEST_TABLE(  TABLE=FAMOR2,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -273,7 +273,7 @@ TEST_TABLE(  TABLE=FAMOR3,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 2.4242877209583E-03     )
+             VALE= 2.4136273275056E-03     )
 
 TEST_TABLE(  TABLE=FAMOR3,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -281,7 +281,7 @@ TEST_TABLE(  TABLE=FAMOR3,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 1.2348089303143E+00     )
+             VALE= 1.2417807709817     )
 
 TEST_TABLE(  TABLE=FAMOR3,
              FILTRE=_F(  NOM_PARA = 'THETA',

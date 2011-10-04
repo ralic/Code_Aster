@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,7 @@ C     ------------------------------------------------------------------
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
-      INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN,IADZI,IAZK24,IREFCO
+      INTEGER  IELEM,IREPE,NDIM,IRET,IADZI,IAZK24,IREFCO
       INTEGER  NEQ1,IPLOUF,NPG,INFODI,ITYPE,IBID
       INTEGER  IGEOM,IDEPLM,IDEPLP,ICOMPO,NBT,JDC,IREP,IFONO,ILOGIC
       LOGICAL  AUNOEU
@@ -167,13 +167,6 @@ C --- ------------------------------------------------------------------
          DO 10 I = 1,NEQ
             ZR(IVECTU-1+I) = ZR(ICONTG-1+I)
 10       CONTINUE
-C --- ------------------------------------------------------------------
-      ELSE IF (OPTION.EQ.'SIEF_ELGA_ELNO') THEN
-         CALL JEVECH('PCONTRR','L',ICONTN)
-         CALL JEVECH('PSIEFGR','E',IVECTU)
-         DO 20 I = 1,NEQ
-            ZR(IVECTU-1+I) = ZR(ICONTN-1+I)
-20       CONTINUE
 C --- ------------------------------------------------------------------
       ELSE IF ((OPTION.EQ.'PMPB_ELNO') .OR.
      &         (OPTION.EQ.'PMPB_ELGA')) THEN

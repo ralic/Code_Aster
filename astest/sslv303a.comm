@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE G8BHHXD X.DESROCHES
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE DESROCHE X.DESROCHES
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 # sslv303a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -224,7 +224,7 @@ TEST_TABLE(       TABLE=T1,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIYY',
-               PRECISION=0.050,
+               PRECISION=0.042,
                     VALE=-2.496E5         )
 
 #
@@ -255,22 +255,22 @@ TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIXX',
-               PRECISION=0.135,
-                    VALE=1.63E6         )
+               PRECISION=0.185,
+                    VALE=1.73E6         )
 
 TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIYY',
-               PRECISION=0.027,
-                    VALE=5.51E6         )
+               PRECISION=0.018,
+                    VALE=5.56E6         )
 
 TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIZZ',
-               PRECISION=0.147,
-                    VALE=1.65E6         )
+               PRECISION=0.088,
+                    VALE=1.74E6         )
 
 #
 #
@@ -280,12 +280,12 @@ TEST_RESU(CHAM_NO=(
                       NOEUD = 'N249',
                       NOM_CMP = 'DX',
                       VALE = -7.46E-6,
-                      PRECISION = 0.015),
+                      PRECISION = 0.014),
             _F(  CHAM_GD = U,
                       NOEUD = 'N87',
                       NOM_CMP = 'DX',
                       VALE = -7.44E-6,
-                      PRECISION = 0.015))
+                      PRECISION = 0.013))
           )
 
 #
@@ -301,22 +301,22 @@ TEST_TABLE(       TABLE=T3,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIXX',
-               PRECISION=0.140,
-                    VALE=1.56E6         )
+               PRECISION=0.180,
+                    VALE=1.64E6         )
 
 TEST_TABLE(       TABLE=T3,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIYY',
-               PRECISION=0.030,
-                    VALE=5.25E6         )
+               PRECISION=0.019,
+                    VALE=5.30E6         )
 
 TEST_TABLE(       TABLE=T3,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIZZ',
-               PRECISION=0.150,
-                    VALE=1.57E6         )
+               PRECISION=0.088,
+                    VALE=1.66E6         )
 
 FIN()
 #

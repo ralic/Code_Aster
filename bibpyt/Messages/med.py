@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 20/06/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 03/10/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -373,13 +373,6 @@ cata_msg = {
 
 63 : _("""
   -> Le mot clé "INFO_MAILLAGE" est réservé au format med.
-"""),
-
-64 : _("""
-  -> Le modèle fourni à LIRE_CHAMP n'est pas cohérent avec le type du champ
-     que vous souaitez produire:
-     - phenomène du modèle: %(k1)s
-     - type du champ : %(k2)s 
 """),
 
 65 : _("""

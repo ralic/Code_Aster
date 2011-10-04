@@ -1,9 +1,4 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
-import os
-
-DEBUT(CODE=_F(NOM='DEMO006A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
-      PAR_LOT='NON')
-
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TUYAUTERIE COMPORTANT UN COUDE - ELEMENTS COQUES DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,6 +34,10 @@ DEBUT(CODE=_F(NOM='DEMO006A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(
 #  le concept MODE_k qui est connu dans la base. De plus, il faut etre
 #  vigilant a ne pas depasser les huit caracteres pour le nom du concept,
 #  underscore k compris.
+import os
+
+DEBUT(CODE=_F(NOM='DEMO006A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+      PAR_LOT='NON')
 
 MAIL=[None]*10
 MODE=[None]*10
@@ -46,6 +45,7 @@ CARA=[None]*10
 MATE=[None]*10
 CHAR=[None]*10
 RESU=[None]*10
+RESU2=[None]*10
 RELV=[None]*10
 
 # Execution interactive : 1=OUI, 0=NON
@@ -142,17 +142,25 @@ for k in range(1,10):
                        )
 
    RESU[k]=CALC_ELEM(reuse=RESU[k],RESULTAT=RESU[k],
-                       REPE_COQUE=_F(NIVE_COUCHE='SUP'),
-                       OPTION=('SIGM_ELNO','SIEQ_ELNO'),)
+                     OPTION=('SIGM_ELNO',),)
 
-   RESU[k]=CALC_NO(reuse=RESU[k],RESULTAT=RESU[k],
+   RESU2[k]=POST_CHAMP(RESULTAT=RESU[k],
+                       TOUT='OUI',
+                       EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                     NUME_COUCHE=1,
+                                     NIVE_COUCHE='SUP',),);
+   
+   RESU2[k]=CALC_ELEM(reuse=RESU2[k],RESULTAT=RESU2[k],
+                      OPTION=('SIEQ_ELNO'),);
+
+   RESU2[k]=CALC_NO(reuse=RESU2[k],RESULTAT=RESU2[k],
                        OPTION=('SIGM_NOEU','SIEQ_NOEU'),)
 
    # Impression des resultats au format GMSH
 
    unit=50+k
    IMPR_RESU(MODELE=MODE[k],UNITE=unit,FORMAT='GMSH',
-             RESU=(_F(MAILLAGE=MAIL[k],RESULTAT=RESU[k],
+             RESU=(_F(MAILLAGE=MAIL[k],RESULTAT=RESU2[k],
                       NOM_CHAM='SIEQ_NOEU',NOM_CMP='VMIS',),
                    _F(MAILLAGE=MAIL[k],RESULTAT=RESU[k],
                       NOM_CHAM='DEPL',),)
@@ -167,7 +175,7 @@ for k in range(1,10):
        os.system(cmd_gmsh + ' resu.pos')
 
    RELV[k]=POST_RELEVE_T(
-       ACTION=_F(  RESULTAT = RESU[k],INTITULE = 'CONTRAINTES',
+       ACTION=_F(  RESULTAT = RESU2[k],INTITULE = 'CONTRAINTES',
                    NOM_CHAM = 'SIEQ_NOEU',NUME_ORDRE = 1,
                    OPERATION = 'MOYENNE',GROUP_NO = 'GM30',
                    NOM_CMP = ( 'VMIS',),))

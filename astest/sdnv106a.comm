@@ -1,22 +1,22 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 # sdnv106a.para = tps_job 900 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # ON VERIFIE AUSSI L'INTER-OPERABILITE DU CALCUL MODAL DE MODE_VIBR
@@ -30,19 +30,19 @@ MA=LIRE_MAILLAGE()
 #
 MA=DEFI_GROUP( reuse=MA,
                MAILLAGE=MA,
-               CREA_GROUP_NO=_F( 
+               CREA_GROUP_NO=_F(
                TOUT_GROUP_MA = 'OUI'),);
 #
 MO=AFFE_MODELE( MAILLAGE=MA,
-                AFFE=_F( 
+                AFFE=_F(
                 GROUP_MA = ('BLOC', 'FIXE', 'TRAC',),
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = '3D'),);
 #
-#  Materiau "dur" dont le module elastique vaut 100 fois 
+#  Materiau "dur" dont le module elastique vaut 100 fois
 #  le module plastique
 #
-MATE_DUR=DEFI_MATERIAU(ELAS=_F( 
+MATE_DUR=DEFI_MATERIAU(ELAS=_F(
                 E = 20000.,
                 RHO=7900.0,
                 NU = 0.49999),
@@ -51,7 +51,7 @@ MATE_DUR=DEFI_MATERIAU(ELAS=_F(
 #  Materiau "mou" dont le module elastique vaut le module plastique
 #  du materiau precedant MATE_DUR
 #
-MATE_MOU=DEFI_MATERIAU(ELAS=_F( 
+MATE_MOU=DEFI_MATERIAU(ELAS=_F(
                 E = 200.,
                 RHO=7900.0,
                 NU = 0.49999),
@@ -71,7 +71,7 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                 _F(  JUSQU_A = 1.,     NOMBRE = 5),
                 _F(  JUSQU_A = 1.1,     NOMBRE = 100),
                 _F(  JUSQU_A = 2.,     NOMBRE = 90),),);
-# 
+#
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(
                 _F( GROUP_NO = 'A',  DX=0., DY=0., DZ=0.),
@@ -95,25 +95,25 @@ MACRO_MATR_ASSE ( MODELE = MO,
                   CHAM_MATER=CHMAT,
                   CHARGE     = (LIAISON,),
                   NUME_DDL   = CO('NUMSTA'),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),             
-                  MATR_ASSE=( 
+                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),
+                  MATR_ASSE=(
                    _F( MATRICE= CO('RIGSTA'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASSTA'), OPTION= 'MASS_MECA'),),);
-# 
+#
 MODED=MODE_ITER_SIMULT(MATR_A=RIGSTA,
                        MATR_B=MASSTA,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=95,),
                        VERI_MODE=_F(STOP_ERREUR='NON',),);
-# 
+#
 # Calcul des modes sur le modele souple
 #
 MACRO_MATR_ASSE ( MODELE = MO,
                   CHAM_MATER=CHMAT2,
                   CHARGE    = (LIAISON,),
                   NUME_DDL  = CO('NUMST2'),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),             
-                  MATR_ASSE=( 
+                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),
+                  MATR_ASSE=(
                    _F( MATRICE= CO('RIGST2'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASST2'), OPTION= 'MASS_MECA'),),);
 #
@@ -292,9 +292,9 @@ REPONSEM=DYNA_NON_LINE( reuse=REPONSEM,
 #
 freqel = 3.58128E-01
 #
-#  Frequence du premier mode pour le materiau elastique souple 
+#  Frequence du premier mode pour le materiau elastique souple
 #  ou pour le module tangente plastique.
-#  Comme le rapport des modules vaut 100 (cf. MATE_DUR et MATE_MOU), 
+#  Comme le rapport des modules vaut 100 (cf. MATE_DUR et MATE_MOU),
 #  le rapport des frequence sera de 10
 #
 freqpl = freqel / 10
@@ -519,12 +519,12 @@ TEST_RESU(RESU=(_F(RESULTAT=REPONSEM,
                    PRECISION=(1.E-3,1.E-5,),),),);
 #
 #
-#  Validation de l'option secante de MODE_VIBR : 
+#  Validation de l'option secante de MODE_VIBR :
 #  on definit un materiau endommageant.
 #  Pour le reste le calcul est tres proche de ce que l'on fait avant.
 #
 #
-MATE_BET=DEFI_MATERIAU(ELAS=_F( 
+MATE_BET=DEFI_MATERIAU(ELAS=_F(
                 E = 20000.,
                 RHO=7900.0,
                 NU = 0.49999),
@@ -550,7 +550,7 @@ TRACTIO2=AFFE_CHAR_MECA(MODELE=MO,
 RAMPE2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0., 0., 1., 1., 2., 1.1,),);
 #
-REPONSE2=DYNA_NON_LINE( 
+REPONSE2=DYNA_NON_LINE(
                 MODELE=MO,
                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                FORMULATION='DEPLACEMENT',),
@@ -581,6 +581,31 @@ REPONSE2=DYNA_NON_LINE( reuse=REPONSE2,
                 MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='SECANTE',),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH2,),
              );
+
+# Test sur le champs 'DEPL_VIBR'
+TEST_RESU(RESU=(
+                 _F(RESULTAT=REPONSE2,
+                   INST=1.2,
+                   NOM_CHAM='DEPL_VIBR',
+                   GROUP_NO = 'A',
+                   NOM_CMP ='DX',
+                   VALE=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-6,),
+                 _F(RESULTAT=REPONSE2,
+                   INST=1.2,
+                   NOM_CHAM='DEPL_VIBR',
+                   GROUP_NO = 'H',
+                   NOM_CMP ='DY',
+                   VALE=-0.49999288483407,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+             ),);
+
+
+
 #
 #  Tests avec option secante
 #

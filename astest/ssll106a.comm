@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 3 NOEUDS) MACRO_ELAS_MULT
 # ssll106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -21,8 +21,6 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSLL106A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
-
-#PRE_GIBI () ;
 
 MA=LIRE_MAILLAGE( )
 
@@ -788,6 +786,3 @@ TEST_RESU(RESU=(
               )
 
 FIN()
-#
-#
-#

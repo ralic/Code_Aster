@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF EN 3D VMIS ISOTROPE C.L. CPLAN
 # ssnd106c.para = tps_job 120 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
@@ -194,21 +194,6 @@ for icomp,comp in enumerate(compor) :
                          PRECISION=precision[icomp],
                          REFERENCE='AUTRE_ASTER',),
                          ),);
-
-
-
-#IMPR_RESU(RESU=(
-#_F(RESULTAT=resu[0],),
-#_F(RESULTAT=resu[1],),
-#),
-#FORMAT='MED');
-
-
-#IMPR_RESU(RESU=(
-#_F(RESULTAT=resu[0],),
-#_F(RESULTAT=resu[1],),
-#),
-#);
 
 DEFI_FICHIER( UNITE=38, FICHIER='./REPE_OUT/courbes_vmis_isotrope.agr')
 IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,

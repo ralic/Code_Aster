@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -691,12 +691,22 @@ GRANDEUR_SIMPLE__
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
 
 <<  DERA_R Type:R indicateur local de décharge et de perte de radialité
-       DCHA_V : indicateur local de décharge avec la norme de Von Mises
-       DCHA_T : indicateur local de décharge  avec la norme totale
-       RADI_V : indicateur de perte de radialité avec la norme de Von Mises
-       RADI_T : indicateur de perte de radialité avec la norme totale
+       DCHA_V   : indicateur local de décharge avec la norme de Von Mises
+       DCHA_T   : indicateur local de décharge  avec la norme totale
+       IND_DCHA : 
+       VAL_DCHA : 
+       X11      :
+       X22      :
+       X33      :
+       X12      :
+       X13       :
+       X23      :
+       RADI_V   : indicateur de perte de radialité avec la norme de Von Mises
+       RADI_T   : indicateur de perte de radialité avec la norme totale
 >>
-    DERA_R   = R    DCHA_V   DCHA_T   RADI_V   RADI_T
+    DERA_R   = R    DCHA_V   DCHA_T   IND_DCHA   VAL_DCHA   X11     X22     X33 
+                    X12     X13       X23        RADI_V     RADI_T  
+
 
 <<  DISS_R Type:R énergie dissipée
        TOTALE : dissipation cumulée (endommagement plus plasticité)

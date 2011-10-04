@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2011   AUTEUR ZENTNER I.ZENTNER 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE OSCILLATEUR SIMPLE SOUMIS A UNE EXCITATION ALEATOIRE
 # sdld101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -412,73 +412,9 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                NOM_PARA='LAMBDA_10',
                    VALE=2.468734E+26     , PRECISION=1.E-3   )
 
-#
-# STAIMP=POST_DYNA_ALEA(   INTE_SPEC=INTERRE1,
-#                          NOEUD_I='P2',
-#                          NOM_CMP_I='DX',
-#                          NOEUD_J='P2',
-#                          NOM_CMP_J='DX',
-#                          MOMENT=( 6,  7,  10, ),
-#                          INFO=2
-#              )
 
 # PAS DE TEST SUR LES FONCTIONS QUI SONT EXPLICITEMENT CALCULEES A
 # PARTIR DES VALEURS (MOMENT SPECTRAUX) CALCULEES ET VERIFIEES
-
-# INTBID1=DEFI_INTE_SPEC(    DIMENSION=1,
-#                CONSTANT=_F(  NUME_ORDRE_I = 1,
-#                           NUME_ORDRE_J = 1,
-#                           FREQ_MIN = 1.E-6,
-#                           FREQ_MAX = 10.,
-#                           PAS = 1.,
-#                           VALE_R = 1.,
-#                           PROL_GAUCHE = 'EXCLU',
-#                           PROL_DROITE = 'EXCLU',
-#                           INTERPOL = ('LOG','LIN'))
-#                          )
-# #
-# INTBID2=DEFI_INTE_SPEC(    DIMENSION=1,
-#                CONSTANT=_F(  NUME_ORDRE_I = 1,
-#                           NUME_ORDRE_J = 1,
-#                           FREQ_MIN = 0.,
-#                           FREQ_MAX = 10.,
-#                           PAS = 1.,
-#                           VALE_R = 1.,
-#                           PROL_GAUCHE = 'LINEAIRE',
-#                           PROL_DROITE = 'LINEAIRE',
-#                           INTERPOL = 'NON')
-#                          )
-# 
-# #
-# INTBID3=DEFI_INTE_SPEC(    DIMENSION=1,
-#                KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
-#                               NUME_ORDRE_J = 1,
-#                               FREQ_MIN = 1.E-6,
-#                               FREQ_MAX = 30.,
-#                               PAS = 5.,
-#                               VALE_R = 1.,
-#                               FREQ_MOY = 15.9155,
-#                               AMOR_REDUIT = 0.05,
-#                               PROL_GAUCHE = 'LINEAIRE',
-#                               PROL_DROITE = 'LINEAIRE',
-#                               INTERPOL = ('LOG','LIN'))
-#                          )
-# 
-# #
-# INTBID4=DEFI_INTE_SPEC(    DIMENSION=1,
-#                KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
-#                               NUME_ORDRE_J = 1,
-#                               FREQ_MIN = 0.,
-#                               FREQ_MAX = 30.,
-#                               PAS = 5.,
-#                               VALE_C = ('RI',1.,0.,),
-#                               FREQ_MOY = 15.9155,
-#                               AMOR_REDUIT = 0.05,
-#                               PROL_GAUCHE = 'EXCLU',
-#                               PROL_DROITE = 'EXCLU',
-#                               INTERPOL = 'NON')
-#                          )
-#  
 FIN( )
 #
 

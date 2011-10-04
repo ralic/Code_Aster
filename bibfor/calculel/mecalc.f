@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -246,10 +246,7 @@ CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
             LPAOUT(1) = 'PPJSIGM'
          ELSE
             LPAIN(1) = 'PDEPLAR'
-            IF (OPTIO2.EQ.'SICO_ELNO') THEN
-               LPAIN(1) = 'PVARINR'
-               LPAOUT(1) = 'PSIGNOD'
-            ELSE IF (OPTIO2.EQ.'SITU_ELNO') THEN
+            IF (OPTIO2.EQ.'SITU_ELNO') THEN
                LPAIN(1) = 'PVARINR'
                LPAOUT(1) = 'PSIGNOD'
             ELSE IF (OPTIO2.EQ.'SIEF_ELNO') THEN
@@ -318,19 +315,6 @@ CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
             ELSE IF (OPTIO2.EQ.'SIGM_ELNO_DPGE' .OR.
      &               OPTIO2.EQ.'SIEF_ELGA_DPGE') THEN
                LPAOUT(1) = 'PCONTRR'
-            ELSE IF (OPTIO2.EQ.'SPMX_ELGA') THEN
-               LPAIN(1) = 'PCONTRR'
-               LPAIN(2) = 'PDEFORR'
-               LPAIN(3) = 'PCONTEQ'
-               LPAIN(4) = 'PDEFOEQ'
-               LPAIN(5) = 'PNOMCMP'
-               LCHIN(1) = CHSIG
-               LCHIN(2) = CHEPS
-               LCHIN(3) = CH1
-               LCHIN(4) = CH2
-               LCHIN(5) = CHNUMC
-               NBIN = 5
-               LPAOUT(1) = 'PMINMAX'
             ELSE IF (OPTIO2.EQ.'VAEX_ELGA') THEN
                NOMA=CHGEOM(1:8)
                CALL GETVTX(' ','NOM_VARI',0,IARG,1,VARI,IBID)
@@ -445,9 +429,6 @@ C         DE DEPLACEMENT : 'NOMUTILI.C00.000000'
          CALL AJCHCA('PDEFORM',CHC,LPAIN,LCHIN,NBIN,MAXIN,'N')
          CALL AJCHCA('PDEFORR',CHEPS,LPAIN,LCHIN,NBIN,MAXIN,'N')
          CALL AJCHCA('PDEPPLU',CHDEP2,LPAIN,LCHIN,NBIN,MAXIN,'N')
-         IF (OPTIO2.EQ.'SICO_ELNO') CALL AJCHCA('PDEPLAR',CHEPS,
-     &                                    LPAIN,LCHIN,NBIN,MAXIN,'N')
-         CALL AJCHCA('PFREQR',CHFREQ,LPAIN,LCHIN,NBIN,MAXIN,'N')
          CALL AJCHCA('PGEOMER',CHGEOM,LPAIN,LCHIN,NBIN,MAXIN,'N')
          CALL AJCHCA('PHARMON',CHHARM,LPAIN,LCHIN,NBIN,MAXIN,'N')
          CALL AJCHCA('PMASDIA',CHMASS,LPAIN,LCHIN,NBIN,MAXIN,'N')
@@ -518,8 +499,8 @@ C           -- GLUTE MECALM.F : IL FAUT PERMUTER PDEPLAR ET PDEPSEN
 20          CONTINUE
          END IF
 
-         CALL MECEUC('C',POUX,OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,
-     &               LCHOUT,LPAOUT,BASE2)
+         CALL MECEUC('C',POUX,OPTIO2,CAREL,LIGREL,NBIN,LCHIN,LPAIN,
+     &               NBOUT,LCHOUT,LPAOUT,BASE2)
          CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
          IF (IRET.EQ.0) THEN
             CODRET = 1

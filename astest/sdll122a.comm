@@ -1,4 +1,4 @@
-# MODIF  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
 # sdll122a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,9 +206,5 @@ for numordre,maille,point,spoint,npara,lavale in PourTest:
       ),
       NOM_PARA=npara,VALE=lavale,REFERENCE='NON_REGRESSION',
    )
-
-#IMPR_TABLE(TABLE=TU1_1)
-#IMPR_RESU(RESU=_F(RESULTAT=U2))
-#IMPR_TABLE(TABLE=TU2_1)
 
 FIN();

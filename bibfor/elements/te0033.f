@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,6 @@ C     GENERALISES POUR LES ELEMENTS DKT, DKTG, DST, DKQ, DSQ ET Q4G
 C     POUR UN MATERIAU ISOTROPE OU MULTICOUCHE
 C         OPTIONS TRAITEES  ==>  SIEF_ELGA
 C                                EFGE_ELNO
-C                                SIGM_ELNO
 C                                EPSI_ELNO
 C                                DEGE_ELNO
 C     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
@@ -60,10 +59,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL       DKG
       INTEGER       ICODRE
       CHARACTER*2   VAL
+      CHARACTER*3   NUM
       CHARACTER*4   FAMI
       CHARACTER*8   NOMRES
       CHARACTER*16  PHENOM
-      CHARACTER*3   NUM
 C     ------------------------------------------------------------------
 C
       IF (OPTION(6:9).EQ.'ELNO') THEN
@@ -75,7 +74,6 @@ C
 C
       IF (OPTION.NE.'SIEF_ELGA' .AND.
      &    OPTION.NE.'EFGE_ELNO' .AND.
-     &    OPTION.NE.'SIGM_ELNO' .AND.
      &    OPTION.NE.'EPSI_ELNO' .AND.
      &    OPTION.NE.'DEGE_ELNO' .AND.
      &    OPTION.NE.'DEGE_ELGA') THEN
@@ -164,25 +162,7 @@ C     ----------------------------------
 C     ---------- CONTRAINTES ET DEFORMATIONS --------------------------
 
 C          ----------------------------
-      IF ( OPTION(1:9) .EQ. 'SIGM_ELNO' ) THEN
-C          ----------------------------
-        CALL JEVECH('PNUMCOR','L',JNUMCO)
-        IC = ZI(JNUMCO)
-        INIV = ZI(JNUMCO+1)
-        CALL JEVECH('PCONTRR','E',JSIGM)
-
-C ---   CALCUL DES CONTRAINTES VRAIES (I.E. SIG_MECA - SIG_THERM)
-C ---   AUX POINTS DE CALCUL
-C       --------------------
-        CALL DXSIGV(FAMI,NOMTE,XYZL,PGL,IC,INIV,DEPL,SIGTOT)
-
-C ---   PASSAGE DES CONTRAINTES DU REPERE INTRINSEQUE
-C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-C       ---------------------------------------
-        CALL DXSIRO(NP,T2VE,SIGTOT,ZR(JSIGM))
-
-C               ----------------------------
-      ELSE IF ( OPTION(1:9) .EQ. 'EPSI_ELNO' ) THEN
+      IF ( OPTION(1:9) .EQ. 'EPSI_ELNO' ) THEN
 C               ----------------------------
         CALL JEVECH('PDEFORR','E',JSIGM)
         CALL JEVECH('PNUMCOR','L',JNUMCO)
@@ -213,66 +193,36 @@ C
 C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'SIEF_ELGA' ) THEN
 C               ----------------------------
-
         CALL JEVECH('PCONTRR','E',JSIGM)
+C
+        IF (DKG) THEN
+          NBCOU = 1
+        ELSE
+          CALL JEVECH('PNBSP_I','L',JNBSPI)
+          NBCOU = ZI(JNBSPI)
+          IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
+        ENDIF
+
+        IF ( NOMTE.EQ.'MEDKTR3' .OR.
+     &       NOMTE.EQ.'MEDKTG3' ) THEN
+           CALL DKTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
+           CALL DSTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
+     &           NOMTE.EQ.'MEDKQG4' ) THEN
+           CALL DKQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
+           CALL DSQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
+           CALL Q4GSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        END IF
 C
         CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, ICODRE )
         IF ( PHENOM.EQ.'ELAS'      .OR.
      &       PHENOM.EQ.'ELAS_ORTH' .OR.
      &       PHENOM.EQ.'ELAS_ISTR' ) THEN
-           CALL DXSIEF ( NOMTE, XYZL, DEPL, ZI(JMATE), PGL, ZR(JSIGM) )
-
-        ELSEIF ( PHENOM.EQ.'ELAS_COQUE' ) THEN
-
-          IF (DKG) THEN
-            NBCOU = 1
-          ELSE
-            CALL JEVECH('PNBSP_I','L',JNBSPI)
-            NBCOU = ZI(JNBSPI)
-            IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
-          ENDIF
-
-          IF ( NOMTE.EQ.'MEDKTR3' .OR.
-     &         NOMTE.EQ.'MEDKTG3' ) THEN
-             CALL DKTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
-             CALL DSTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
-     &             NOMTE.EQ.'MEDKQG4' ) THEN
-             CALL DKQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
-             CALL DSQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
-             CALL Q4GSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          END IF
-C
-        ELSEIF ( PHENOM.EQ.'ELAS_COQMU' ) THEN
-
-          IF (DKG) THEN
-            NBCOU = 1
-          ELSE
-            CALL JEVECH('PNBSP_I','L',JNBSPI)
-            NBCOU = ZI(JNBSPI)
-            IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
-          ENDIF
-
-          IF ( NOMTE.EQ.'MEDKTR3' .OR.
-     &         NOMTE.EQ.'MEDKTG3' ) THEN
-             CALL DKTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
-             CALL DSTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
-     &             NOMTE.EQ.'MEDKQG4' ) THEN
-             CALL DKQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
-             CALL DSQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
-             CALL Q4GSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-          END IF
-
-        ELSE
-           CALL U2MESK('F','ELEMENTS2_76',1,PHENOM)
-        END IF
+           CALL DXSITH (NOMTE,ZI(JMATE),ZR(JSIGM))
+        ENDIF
 C
 C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'EFGE_ELNO' ) THEN
@@ -281,13 +231,6 @@ C ---     CALCUL DES EFFORTS GENERALISES VRAIS
 C ---     AUX POINTS DE CALCUL
 C         --------------------
         CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,EFFGT)
-C
-C ---    PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES
-C ---    EFFORTS GENERALISES SUR UN FEUILLET DE REFERENCE DIFFERENT
-C ---    DU FEUILLET DU MAILLAGE (I.E. EN PEAU SUP, INF OU MOY)
-C        ------------------------------------------------------
-C
-        CALL EXCENT(OPTION,NOMTE,NNO,EFFGT)
 
 C ---   PASSAGE DES EFFORTS GENERALISES DU REPERE INTRINSEQUE
 C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
@@ -317,12 +260,6 @@ C               ----------------------------
           CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
         END IF
 C
-C ---    PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES
-C ---    EFFORTS GENERALISES SUR UN FEUILLET DE REFERENCE DIFFERENT
-C ---    DU FEUILLET DU MAILLAGE (I.E. EN PEAU SUP, INF OU MOY)
-C        ------------------------------------------------------
-          CALL EXCENT(OPTION,NOMTE,NNO,EFFGT)
-C
 C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C         ---------------------------------------
@@ -336,7 +273,7 @@ C               ----------------------------
 
         CALL JEVECH('PDEFOPG','E',JEFFG)
 C
-        CALL DXDEGE ( NOMTE, XYZL, DEPL, PGL, EFFPG) 
+        CALL DXDEGE ( NOMTE, XYZL, DEPL, PGL, EFFPG)
 C
 C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE

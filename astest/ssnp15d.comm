@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,8 +142,18 @@ U=CALC_ELEM( reuse=U,   RESULTAT=U,
                      OPTION=('EPSI_ELNO',
                              'SIEF_ELNO',
                              'VARI_ELNO',
-                             'SICO_ELNO',
-                             'SIEQ_ELNO',),);
+                             'SIGM_ELNO',),);
+
+UPOS=POST_CHAMP(RESULTAT=U,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',),);
+
+U=CALC_ELEM( reuse=U,   RESULTAT=UPOS,
+                      TOUT_ORDRE='OUI',
+             REPE_COQUE =_F( NUME_COUCHE=1, NIVE_COUCHE='SUP'),
+                     OPTION=('SIEQ_ELNO',),);
 
 U1=CALC_ELEM(  RESULTAT=U,
                TOUT_ORDRE='OUI',
@@ -276,52 +286,52 @@ TEST_RESU(RESU=(_F(
             )
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = U,  NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,  NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO1',
                    INST = 1.,     NOM_CMP = 'SIXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',   NOEUD = 'NO1',
                    INST = 1.,      NOM_CMP = 'SIXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',   NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'SIXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'SIXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA2',   NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'SIXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA2',   NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'SIXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO2',
                    INST = 1.,      NOM_CMP = 'SIXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO2',
                    INST = 1.,      NOM_CMP = 'SIXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO4',
                    INST = 1.,      NOM_CMP = 'SIXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SICO_ELNO',
+                   RESULTAT = UPOS,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO4',
                    INST = 1.,      NOM_CMP = 'SIXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02))

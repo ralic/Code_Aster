@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE THERMOPLASTICITE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,7 +165,7 @@ CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
 
                   LIST_INST=LINST,
-                 OPTION='SIGM_ELNO'
+                 OPTION='EFGE_ELNO'
 
                )
 

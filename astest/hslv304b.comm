@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,49 +202,49 @@ TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIXX',
-                     VALE=5.872145666E+06    )
+                     VALE=5.756641058E+06    )
 
 TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIYY',
-                     VALE=1.137204848E+07    )
+                     VALE=1.133048198E+07    )
 
 TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIZZ',
-                     VALE=5.1024766510338E+06    )
+                     VALE=5.060118486E+06    )
 
 TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIXY',
-                     VALE=-3.739500149E+06    )
+                     VALE=-3.753988751E+06    )
 
 TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIXX',
-                     VALE=5.407372656E+06    )
+                     VALE=5.2898696029E+06    )
 
 TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIYY',
-                     VALE=1.026810308E+07    )
+                     VALE=1.0224536790757E+07    )
 
 TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIZZ',
-                     VALE=4.6557915460043E+06 )
+                     VALE=4.61016938494E+06 )
 
 TEST_TABLE(        TABLE=T1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIXY',
-                     VALE=1.495588057E+06    )
+                     VALE=1.510076007E+06    )
 
 FIN()
 #

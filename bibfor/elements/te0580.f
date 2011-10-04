@@ -1,7 +1,7 @@
       SUBROUTINE TE0580 ( OPTION, NOMTE )
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
-C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C     OPTION: SICO_ELNO ET VACO_ELNO
+C     OPTION: VACO_ELNO
 C     ------------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -39,11 +39,11 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER    NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
-      INTEGER    JNUMC,JSIGM,ICOU,JNBSPI,IRET
-      INTEGER    NBCOU,NBSP,JCONT,NUSP,IPG,ICMP,JGEOM
+      INTEGER    JNUMC,ICOU,JNBSPI,IRET
+      INTEGER    NBCOU,NBSP,NUSP,IPG,ICMP
       INTEGER    NORDO,JTAB(7)
       INTEGER    JVARN,JVARI,NCMP,INO
-      REAL*8     VPG(24),VNO(24),PGL(3,3),T2EV(4), T2VE(4)
+      REAL*8     VPG(24),VNO(24)
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
@@ -58,33 +58,7 @@ C
       NORDO = ZI(JNUMC+1)
       NUSP = 3*(ICOU-1) + NORDO +2
 C
-       IF (OPTION.EQ.'SICO_ELNO') THEN
-C                          --------------
-        CALL JEVECH('PSIGNOD','E',JSIGM)
-        CALL JEVECH('PGEOMER','L',JGEOM)
-        CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
-        NBSP  = JTAB(7)
-C ---   PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-        CALL COSIRO(NOMTE,'PCONTRR','UI','G',JCONT,'S')
-
-        IF ( NNO .EQ. 3 ) THEN
-          CALL DXTPGL ( ZR(JGEOM), PGL )
-        ELSE IF ( NNO .EQ. 4 ) THEN
-          CALL DXQPGL ( ZR(JGEOM), PGL )
-        END IF
-        CALL DXREPE ( PGL, T2EV, T2VE)
-        DO 10, IPG=1,NPG
-          DO 12,ICMP=1,6
-            VPG(6*(IPG-1)+ICMP)= ZR( JCONT-1+(IPG-1)*6*NBSP +
-     &                              (NUSP-1)*6+ICMP )
- 12       CONTINUE
- 10     CONTINUE
-C       -- PASSAGE GAUSS -> NOEUDS :
-        CALL PPGAN2 ( JGANO, 1, 6, VPG ,  VNO )
-C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
-        CALL DXSIRO ( NNO, T2VE, VNO, ZR(JSIGM) )
-C
-       ELSE IF (OPTION.EQ.'VACO_ELNO') THEN
+       IF (OPTION.EQ.'VACO_ELNO') THEN
 C                               --------------
         CALL JEVECH('PVARINR','E',JVARN)
         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)

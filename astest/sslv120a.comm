@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 # sslv120a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,7 +53,6 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 CH=AFFE_CHAR_MECA(  MODELE=MO,
        PESANTEUR=_F(GRAVITE=9.81,
                     DIRECTION=(0.,  0.,   -1., ),),
-#      PRES_REP:( GROUP_MA: FACESUP       PRES: -229553.   )
        FORCE_FACE=_F(  GROUP_MA = 'FACESUP',       FZ = 229553.),DDL_IMPO=(
        _F(  GROUP_NO = 'A',   DX = 0.,   DY = 0.,   DZ = 0.),
                 _F(  GROUP_NO = 'D',             DY = 0.),
@@ -582,19 +581,13 @@ RESUMI1=STAT_NON_LINE(MODELE=MO,
                                    ITER_INTE_MAXI=10,
                                    ITER_INTE_PAS=-10,
                                    ALGO_INTE='NEWTON',
-                                  # ALGO_INTE='RUNGE_KUTTA',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,),),
                      NEWTON=_F(
-                               # PREDICTION='EXTRAPOL',
                                MATRICE='ELASTIQUE',
-                               #REAC_ITER=1,
                                ),
                      ARCHIVAGE=_F(LIST_INST=LINST,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                  #ARRET='NON',
-                                  #ITER_GLOB_MAXI=0,
-                                  #   ITER_GLOB_MAXI=10,
                                      ),
                                      );
 

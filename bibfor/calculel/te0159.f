@@ -1,6 +1,6 @@
       SUBROUTINE TE0159(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,26 +87,6 @@ C     -----------------------------------------------
    10     CONTINUE
         END IF
 
-
-       ELSE IF (OPTION.EQ.'VARI_ELGA_ELNO') THEN
-C     -----------------------------------------------
-        CALL JEVECH('PCOMPOR','L',ICOMPO)
-        READ (ZK16(ICOMPO+1),'(I16)') NBVAR
-
-        CALL JEVECH('PVARINR','L',IVARNO)
-        CALL JEVECH('PVARIGR','E',IVARGA)
-
-        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
-        LGPG1= MAX(JTAB(6),1)*JTAB(7)
-        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-        LGPG2= MAX(JTAB(6),1)*JTAB(7)
-
-        CALL ASSERT(LGPG2.EQ.NBVAR)
-
-        DO 20 I = 1,NBVAR
-          ZR(IVARGA+I-1) = ZR(IVARNO+I-1)
-          ZR(IVARGA+LGPG2+I-1) = ZR(IVARNO+LGPG1+I-1)
-   20   CONTINUE
       END IF
    30 CONTINUE
 

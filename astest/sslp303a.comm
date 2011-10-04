@@ -1,6 +1,5 @@
-
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE PLAQUE EN PORTE-A-FAUX CHARGEE A SON EXTREMITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,15 +18,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
 
-
-DEBUT(CODE=_F(NOM='SSLP303A',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSLP303A',
+              NIV_PUB_WEB='INTERNET',),);
 
 MAIL=LIRE_MAILLAGE();
+
 #
 # DEFINITION DES GROUPES DE NOEUDS
-#
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -36,48 +34,55 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='SURF',),
                                _F(GROUP_MA='BORD_CH',),),);
 
-DEFI_GROUP(reuse=MAIL,       MAILLAGE=MAIL,
-            CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI',
-                              TYPE_APPUI='AU_MOINS_UN',
-                              GROUP_NO='SURF'))
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=_F(NOM='VOLUM',
+                                 OPTION='APPUI',
+                                 GROUP_NO='SURF',
+                                 TYPE_APPUI='AU_MOINS_UN',),);
 
 #
 # DEFINITION DU MODELE
-#
-
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='C_PLAN',),);
+
 #
 # DEFINITION DU MATERIAU
-#
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
                             NU=0.29999999999999999,
                             RHO=7950.0,
                             ALPHA=1.0000000000000001E-05,),);
+
 #
 # ATTRIBUTION DU MATERIAU
-#
-
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),);
+
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 #
 # CALCUL DE LA MAISSE TESTE DEFI_GROUP : APPUI
-MASTOT = POST_ELEM(MODELE = MODELE, CHAM_MATER = CHMAT,
-                   MASS_INER =_F(TOUT='OUI'))
 
-MASVOL = POST_ELEM(MODELE = MODELE, CHAM_MATER = CHMAT,
-                   MASS_INER =_F(GROUP_MA ='VOLUM'))
+MASTOT=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,);
+
+MASVOL=POST_ELEM(MASS_INER=_F(GROUP_MA='VOLUM',),
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,);
 
 # LA VALEUR DE LA MASSE EN VOLUM EST UN TIERS DE LA MASSE TOTALE
-TEST_TABLE(TABLE=MASVOL, NOM_PARA='MASSE', VALE =39.75, REFERENCE= 'AUTRE_ASTER')
+
+TEST_TABLE(TABLE=MASVOL,
+           NOM_PARA='MASSE',
+           VALE=39.75,
+           REFERENCE='AUTRE_ASTER',);
 
 CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=_F(GROUP_NO='ENCAST',
@@ -85,77 +90,71 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DY=0.0,),
                       FORCE_CONTOUR=_F(GROUP_MA='BORD_CH',
                                        FY=1.70000E5,),);
+
 #
 # RESOLUTION
-#
-
 
 DEF=MECA_STATIQUE(MODELE=MODELE,
                   CHAM_MATER=CHMAT,
                   EXCIT=_F(CHARGE=CHARGT,),);
+
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
-#
-
 
 U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              OPERATION='EXTR',
              RESULTAT=DEF,
              NOM_CHAM='DEPL',
              NUME_ORDRE=1,);
+
 #
 # CALCUL DES CONTRAINTES
-#
 
-DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
-
-
-                              OPTION=('SIGM_ELNO',),
-             )
+DEF=CALC_ELEM(reuse =DEF,
+              RESULTAT=DEF,
+              OPTION='SIGM_ELNO',);
 
 #
 # TEST_RESU DU DEPLACEMENT
 #
-#
-
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=U,
                       NOEUD='N455',
                       NOM_CMP='DY',
                       VALE=0.129,
-                      PRECISION=4.0000000000000001E-3,
+                      PRECISION=0.004,
                       REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=U,
                       NOEUD='N756',
                       NOM_CMP='DY',
                       VALE=0.129,
-                      PRECISION=4.0000000000000001E-3,
+                      PRECISION=0.004,
                       REFERENCE='ANALYTIQUE',),),);
+
 #
 # TEST_RESU DE LA CONTRAINTE
 #
-#
-
 
 TEST_RESU(RESU=(_F(RESULTAT=DEF,
-                        MAILLE='M1',
-                        NOEUD='N1',
-                        NUME_ORDRE=1,
-                        NOM_CHAM='SIGM_ELNO',
-                        NOM_CMP='SIXX',
-                        VALE=2.04000000E8,
-                        PRECISION=0.021000000000000001,
-                        REFERENCE='ANALYTIQUE',),
-                     _F(RESULTAT=DEF,
-                        MAILLE='M101',
-                        NOEUD='N201',
-                        NUME_ORDRE=1,
-                        NOM_CHAM='SIGM_ELNO',
-                        NOM_CMP='SIXX',
-                        VALE=1.02000000E8,
-                        PRECISION=5.0000000000000001E-3,
-                        REFERENCE='ANALYTIQUE',),),);
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=204000000.0,
+                   PRECISION=0.023,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M101',
+                   NOEUD='N201',
+                   VALE=102000000.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),),);
 
 FIN();
+
 #
-#
+

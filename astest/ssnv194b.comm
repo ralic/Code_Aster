@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, ACIER BAINITIQUE
 # ssnv194b.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,13 +105,20 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                                    DZ=1.0),
                                    ),)
 
+table=LIRE_TABLE( UNITE=40,
+                   FORMAT='ASTER',
+                   NUME_TABLE=1,
+                   SEPARATEUR=' ',)
+                   
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='BCC24',),),);
+                                    FAMI_SYST_GLIS='BCC24',),),
+                      MATR_INTER= table,
+                                    );
 
 
 

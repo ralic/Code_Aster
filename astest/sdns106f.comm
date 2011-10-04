@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 #  TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (GLRC_DAMAGE) 
 # sdns106f.para = tps_job 180 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -308,29 +308,6 @@ F_ACC2 = RECU_FONCTION(  RESULTAT = RESU2 ,INTERPOL = 'LIN',NOM_CHAM = 'ACCE' ,
                        NOM_CMP = 'DZ',GROUP_NO = 'P04' ,
                        LIST_INST = inst2,PRECISION=1.0E-7) ;
 
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_DEP ),
-#                  ),) ; 
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_VIT ),
-#                          ),) ; 
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_ACC ),
-#                            ),) ; 
-
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                 COURBE =(_F(  FONCTION = F_DEP2 ),
-#                          ),) ; 
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_VIT2 ),
-#                           ),) ; 
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_ACC2 ),
-#                           ),) ; 
 
 dep1 = -4.0923757711525E-04
 vit1 = -4.9849070537762E-01

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TRACTION ELASTIQUE COQUES 3D CALCUL DES CONTRAINTES DE CAUCHY
 # ssnv152a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,8 +174,14 @@ VT=STAT_NON_LINE( reuse=VT,
 
 VT=CALC_ELEM(reuse=VT,
                          RESULTAT=VT,
-                      OPTION=('VARI_ELNO', 'SICO_ELNO',)
+                      OPTION=('VARI_ELNO', 'SIGM_ELNO',)
                    )
+
+VTPOS=POST_CHAMP(RESULTAT=VT,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='MOY',),);
 
 TEST_RESU(RESU=(
               _F(
@@ -194,7 +200,7 @@ TEST_RESU(RESU=(
 #               PRECISION = ( 3.1E-2, 1.E-4, ),
                VALE = 2.1E4),
               _F(
-               RESULTAT = VT,     NOM_CHAM = 'SICO_ELNO', NUME_ORDRE = 21,
+               RESULTAT = VTPOS,     NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 21,
                MAILLE = 'M1',    POINT = 1,   NOM_CMP = 'SIXX',
 #               PRECISION = ( 1.5E-2, 1.E-4, ),
                VALE = 2.31E4))

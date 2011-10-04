@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  CONTACT MAILLE TRIA7, MODELISATION COQUE_3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,12 +153,17 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 
 RESU = CALC_ELEM( reuse = RESU,
                   RESULTAT=RESU,
-                  REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                  OPTION='SICO_ELNO');
+                  OPTION='SIGM_ELNO');
 
-RESU=CALC_NO(reuse =RESU,
-             RESULTAT=RESU,
-             OPTION='SICO_NOEU');
+RESUPOS=POST_CHAMP(RESULTAT=RESU,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='INF',),);
+
+RESUPOS=CALC_NO(reuse =RESUPOS,
+                RESULTAT=RESUPOS,
+                OPTION='SIGM_NOEU');
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=5,
@@ -169,9 +174,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    CRITERE='RELATIF',
                    PRECISION=0.08,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=5,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='CENTE1',
                    VALE=7.6481E9,
@@ -180,9 +185,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='ANALYTIQUE',),
                    ),);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
+TEST_RESU(RESU=(_F(RESULTAT=RESUPOS,
                    NUME_ORDRE=5,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='A1',
                    VALE=-2.7743547383481E+09,
@@ -190,9 +195,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.0002,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.1.22',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=5,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='A3',
                    VALE=2.7754336517444E+09,
@@ -200,9 +205,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.0002,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.1.22',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=5,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='B1',
                    VALE=-2.7748845673702E+09,
@@ -210,9 +215,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.0002,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.1.22',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=5,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='B3',
                    VALE=2.7759631599941E+09,

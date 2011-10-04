@@ -1,7 +1,7 @@
-# MODIF  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
-# ssnv194a.para = tps_job 560 mem_job 128Mo ncpus 1 liste_test R
+# ssnv194a.para = tps_job 560 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,11 +135,8 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                              TYPE_CHARGE='FIXE_CSTE',),
                     COMP_INCR=_F(RELATION='MONOCRISTAL',
                                  COMPOR=MONO1,
-                                 ALGO_INTE='NEWTON_RELI',
                                  DEFORMATION='PETIT',
                                  TOUT='OUI',
-                                 #RESI_INTE_RELA=1.0E-12,
-                                 #ITER_INTE_MAXI=50,
                                  ),
                     INCREMENT=_F(LIST_INST=LINST,
                                  ),
@@ -218,6 +215,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                    ),)
 
+
 # Avec des conditions aux limites AFFE_CHAR_CINE
 
 TRAC_CIN=AFFE_CHAR_CINE(MODELE=TROISD,
@@ -240,11 +238,9 @@ SOLNL_CI=STAT_NON_LINE(MODELE=TROISD,
                              TYPE_CHARGE='FIXE_CSTE',),
                     COMP_INCR=_F(RELATION='MONOCRISTAL',
                                  COMPOR=MONO1,
-                                 ALGO_INTE='NEWTON_RELI',
+                                 ALGO_INTE='NEWTON_PERT',
                                  DEFORMATION='PETIT',
                                  TOUT='OUI',
-                                 #RESI_INTE_RELA=1.0E-12,
-                                 #ITER_INTE_MAXI=50,
                                  ),
                     INCREMENT=_F(LIST_INST=LINST,
                                  ),
@@ -322,6 +318,7 @@ TEST_RESU(RESU=(
                    VALE=8.015907E-03,
                    REFERENCE='AUTRE_ASTER',),
                    ),)
+
 
 FIN()
 

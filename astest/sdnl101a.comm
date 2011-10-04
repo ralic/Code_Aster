@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 # sdnl101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,9 +180,6 @@ F2=DEFI_FONC_ELEC(SIGNAL='CONTINU',
                           INST_CC_INIT=0.0,
                           INST_CC_FIN=0.5,),);
 #
-# L_INSTA= DEFI_LIST_REEL ( DEBUT: -0.1
-#                           INTERVALLE : (JUSQU_A: 4.0 NOMBRE: 41)
-#                         ) ;
 
 L_INST1=DEFI_LIST_REEL(DEBUT=-0.1,
                        INTERVALLE=(_F(JUSQU_A=-0.05,

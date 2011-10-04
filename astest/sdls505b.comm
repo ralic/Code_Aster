@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/07/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -28,9 +28,6 @@
 #---------------------------------------------------------------------
 #
 DEBUT( CODE=_F( NOM = 'SDLS505B',NIV_PUB_WEB='INTERNET'))
-
-#
-#PRE_IDEAS ();
 #
 MA=LIRE_MAILLAGE( )
 
@@ -249,9 +246,6 @@ TEST_RESU(RESU=(
          _F(    CRITERE = 'RELATIF',   PRECISION = 2.E-1,
          RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 10,
          NOEUD = 'NO180',     NOM_CMP = 'DX',           VALE=-7.85987E-1,),
-#         _F(    CRITERE = 'RELATIF',   PRECISION = 2.E-1,
-#         RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 10,
-#         NOEUD = 'NO180',     NOM_CMP = 'DZ',           VALE=2.028837E-2,),
          _F(    CRITERE = 'RELATIF',   PRECISION = 2.5E-2,
          RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 10,
          NOEUD = 'NO221',     NOM_CMP = 'DX',           VALE=7.85987E-1,),

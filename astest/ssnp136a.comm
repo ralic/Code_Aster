@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -722,19 +722,5 @@ TEST_TABLE(TABLE    =T_FORCE,
                    _F(NOM_PARA ='QUANTITE',
                       VALE_K   ='MOMENT_0')));
 
-# IMPRESSION AU FORMAT GMSH
-# IMPR_RESU(MODELE=MODMEC1,
-#           FORMAT='GMSH',
-#           UNITE=37,
-#           RESU=(_F(RESULTAT=resu2,
-#                   NOM_CHAM='DEPL',
-#                   MAILLAGE=MAILLAGE,),
-#                 _F(RESULTAT=resu2,
-#                   NOM_CHAM='SIEF_ELNO',
-#                   MAILLAGE=MAILLAGE,
-#                   NOM_CMP=('SIXX','SIYY','SIZZ'),),
-#                 _F(RESULTAT=resu2,
-#                   NOM_CHAM='VARI_ELNO',
-#                   MAILLAGE=MAILLAGE)));
 
 FIN();

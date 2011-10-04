@@ -1,10 +1,10 @@
-      SUBROUTINE RADIPG(SIG1,SIG2,NPG,NBSIG,RADIA)
+      SUBROUTINE RADIPG(SIG1,SIG2,NPG,NBSIG,RADIA,COSANG)
       IMPLICIT NONE
       INTEGER NPG,NBSIG
-      REAL*8 SIG1(*),SIG2(*),RADIA(*)
+      REAL*8 SIG1(*),SIG2(*),RADIA(*),COSANG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,11 +94,14 @@ C ----       DANS LE CAS OU NORME(SIG1) = 0  OU NORME(DSIGMA) = 0 :
 C ----       ON MET L'INDICATEUR A 0 :
 C            -----------------------
           IF (NORM.LE.ZERNOR .OR. DNORM.LE.ZERNOR) THEN
-            RADIA(IGAU) = ZERO
+            RADIA(IGAU)  = ZERO
+            COSANG(IGAU) = ZERO
           ELSE IF (DNORM.LE.1.0D4*R8PREM()*NORM) THEN
-            RADIA(IGAU) = ZERO
+            RADIA(IGAU)  = ZERO
+            COSANG(IGAU) = ZERO
           ELSE
             RADIA(IGAU) = UN - ABS(S1DSIG)/NORM/DNORM
+            COSANG(IGAU) = S1DSIG/NORM/DNORM
           END IF
   50    CONTINUE
 C

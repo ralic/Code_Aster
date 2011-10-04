@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF elements4 Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,11 +205,6 @@ Le module d'Young est nul.
 
 76 : _("""
  la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine !
-"""),
-
-77 : _("""
- numero de couche  %(i1)d
- trop grand par rapport au nombre de couches autorisé pour la maille  %(k1)s
 """),
 
 78 : _("""

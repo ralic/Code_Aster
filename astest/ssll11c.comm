@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,18 +99,19 @@ VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELE,    NUME_DDL=NUM  )
 # --------------------------------------------------------------------
 
 
-DYNHARM=DYNA_LINE_HARM(  MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
-                             MATR_AMOR=MATASSC,   FREQ=100.,
-                              TOUT_CHAM='OUI',
-                             EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = VECTASS))
+DYNHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',
+                   BASE_CALCUL='PHYS',
+                   MATR_MASS=MATASSM,
+                   MATR_RIGI=MATASSR,
+                   MATR_AMOR=MATASSC,
+                   FREQ=100.,
+                   TOUT_CHAM='OUI',
+                   EXCIT=_F(COEF_MULT = 1.,
+                            VECT_ASSE = VECTASS),);
 
 DYNHARM=CALC_ELEM(reuse=DYNHARM,     RESULTAT=DYNHARM,
-                              OPTION=( 'SIGM_ELNO',
-                                       'EFGE_ELNO',  ),
+                              OPTION=( 'EFGE_ELNO',  ),
                        )
-DYNHARM=CALC_NO( reuse=DYNHARM,
-                         RESULTAT=DYNHARM,
-                          OPTION='SIGM_NOEU'    )
 TEST_RESU(RESU=(
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'DEPL',  NOEUD = 'C',   NOM_CMP = 'DX',
        FREQ = 100.,      VALE_C = 6.44819E-08-4.21925E-06j, REFERENCE = 'NON_REGRESSION', VERSION='3.5'),
@@ -138,14 +139,7 @@ TEST_RESU(RESU=(
        MAILLE = 'BD',   NOEUD = 'D',   NOM_CMP = 'N',
        FREQ = 100.,      VALE_C = -5.19928E+00+3.31122E+02j, REFERENCE = 'NON_REGRESSION', VERSION='3.5'),
 
-     _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIGM_ELNO',
-       MAILLE = 'BD',   NOEUD = 'B',   NOM_CMP = 'N',
-       FREQ = 100.,      VALE_C = -5.19928E+04+3.31122E+06j, REFERENCE = 'NON_REGRESSION', VERSION='3.5'),
-     _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIGM_ELNO',
-       MAILLE = 'BD',   NOEUD = 'D',   NOM_CMP = 'N',
-       FREQ = 100.,      VALE_C = -5.19928E+04+3.31122E+06j, REFERENCE = 'NON_REGRESSION', VERSION='3.5'))
-
-            )
+           ) )
 
 FIN( )
 #

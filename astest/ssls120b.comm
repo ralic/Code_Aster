@@ -1,5 +1,5 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 # ssls120b.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,8 +107,13 @@ ELAS1=MECA_STATIQUE(MODELE=MODMECA,
                     );
 
 CALC_ELEM( reuse= ELAS1 ,RESULTAT= ELAS1 ,
-           REPE_COQUE =_F( NUME_COUCHE=1,),
            OPTION='SIGM_ELNO',);
+
+ELAS1C1M=POST_CHAMP(RESULTAT=ELAS1,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
 
 R = 5.7;
 
@@ -164,7 +169,7 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS1,
                   VALE=DXMIN,
                   REFERENCE='ANALYTIQUE',),);
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
+TEST_RESU(RESU=_F(RESULTAT=ELAS1C1M,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',
@@ -186,9 +191,13 @@ ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=PH,),),);
 
 CALC_ELEM( reuse= ELAS2 ,RESULTAT= ELAS2 ,
-           REPE_COQUE =_F( NUME_COUCHE=1,),
            OPTION='SIGM_ELNO',);
 
+ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
 
 TEST_RESU(RESU=_F(RESULTAT=ELAS2,
                   NUME_ORDRE=1,
@@ -230,7 +239,7 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS2,
                   VALE=DXMIN,
                   REFERENCE='ANALYTIQUE',),);
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
+TEST_RESU(RESU=_F(RESULTAT=ELAS2C1M,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE DESROCHES X.DESROCHES
+# RESPONSABLE DESROCHE X.DESROCHES
 def calc_no_prod(RESULTAT,**args):
    if AsType(RESULTAT) != None : return AsType(RESULTAT)
    raise AsException("type de concept resultat non prevu")
@@ -65,7 +65,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "PMPB_NOEU",
                                      "PRAC_NOEU",
                                      "SIEF_NOEU",
-                                     "SICA_NOEU","SICO_NOEU","SIGM_NOEU",
+                                     "SICA_NOEU","SIGM_NOEU",
                                      "SIPO_NOEU",
                                      "VAEX_NOEU","VARI_NOEU","DISS_NOEU",) ),
 

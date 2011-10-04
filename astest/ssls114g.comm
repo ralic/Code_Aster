@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# TITRE NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -190,22 +190,22 @@ TEST_RESU(RESU=(
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PA_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PB_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PC_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PD_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
 
      # FEUILLET_SUP SIGMA THETA THETA
@@ -348,22 +348,22 @@ TEST_RESU(RESU=(
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PA_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PB_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PC_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
-              CRITERE = 'RELATIF',  PRECISION = 0.134,
+              CRITERE = 'RELATIF',  PRECISION = 0.135,
               GROUP_NO = 'PD_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
 
      # FEUILLET_SUP SIGMA THETA THETA

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128m.para = tps_job 210 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,8 +33,6 @@ DEBUT(CODE=_F(NOM = 'SSNV128M',NIV_PUB_WEB='INTERNET'));
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD4
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 #......................................................................
-
-#PRE_GIBI()
 #
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'));
 #
@@ -116,38 +114,6 @@ U4M=STAT_NON_LINE(MODELE=MO,
                                ITER_GLOB_MAXI = 20,
                                RESI_GLOB_RELA = 1.0E-5),
                 INFO=1);
-#
-# U4M=CALC_ELEM(reuse=U4M,
-#             OPTION=('SIEF_ELNO', 'VARI_ELNO'),
-#             RESULTAT=U4M,
-#             MODELE=MO,
-#             CHAM_MATER=CHMAT);
-#
-# DEPLA4M=CREA_CHAMP(OPERATION='EXTR',
-#                  TYPE_CHAM='NOEU_DEPL_R',
-#                  NOM_CHAM='DEPL',
-#                  RESULTAT=U4M,
-#                  INST=1.0);
-# 
-# TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONTACT',
-#                              NOEUD   = 'N32',
-#                              INST    = 1.0,
-#                              #GROUP_NO='LCONTA',
-#                              RESULTAT= U4M,
-#                              NOM_CHAM= 'VALE_CONT',
-#                              TOUT_CMP= 'OUI',
-#                              OPERATION='EXTRACTION'));
-# 
-# LAGS_C=POST_RELEVE_T(ACTION=_F(INTITULE='LAMBDA',
-#                              GROUP_NO='LCONTA',
-#                              RESULTAT=U4M,
-#                              NOM_CHAM='DEPL',
-#                              INST=0.4,
-#                              NOM_CMP='LAGS_C',
-#                              OPERATION='EXTRACTION'));
-#                              
-# IMPR_TABLE(TABLE=TAB_CONT);
-# IMPR_TABLE(TABLE=LAGS_C);
 
 TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    INST       = 1.0,
@@ -242,19 +208,6 @@ U4L=STAT_NON_LINE(MODELE=MO,
                                ITER_GLOB_MAXI = 20,
                                RESI_GLOB_RELA = 1.0E-5),
                 INFO=1);
-#
-# U4L=CALC_ELEM(reuse=U4L,
-#             OPTION=('SIEF_ELNO', 'VARI_ELNO',),
-#             RESULTAT=U4L,
-#             MODELE=MO,
-#             CHAM_MATER=CHMAT);
-#
-# DEPLA4L=CREA_CHAMP(OPERATION='EXTR',
-#                  TYPE_CHAM='NOEU_DEPL_R',
-#                  NOM_CHAM='DEPL',
-#                  RESULTAT=U4L,
-#                  INST=1.0);
-#
            
 TEST_RESU(RESU=(_F(RESULTAT   = U4L,
                    INST       = 1.0,

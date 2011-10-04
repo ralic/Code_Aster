@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 210 mem_job 64Mo ncpus 1 liste_test R
@@ -287,8 +287,6 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     );
 
-IMPR_CO(CONCEPT=_F(NOM=COMPORP))
-                    
 ORIENKR=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_EULER=(163.03, 47.67, 335.63),),);
@@ -296,135 +294,6 @@ ORIENKR=AFFE_CARA_ELEM(MODELE=TROISD,
 
 
 
-IMPLKR=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MATKR,
-                     CARA_ELEM=ORIENKR,
-                     EXCIT=(_F(CHARGE=TRAC3,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPORKR,
-                                   ITER_INTE_MAXI=100,
-                                  # ITER_INTE_PAS=10,
-                                   ALGO_INTE='NEWTON',
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST3,),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                REAC_ITER=1,),),
-                     ARCHIVAGE=_F(LIST_INST=LINST3,),
-                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                                     ITER_GLOB_MAXI=10,),),);
-
-IMPLKR=CALC_ELEM(reuse =IMPLKR,
-                 RESULTAT=IMPLKR,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
-
-TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
-                   INST=TFIN3,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=IMPLKR,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-8.1822E-04,PRECISION=(0.002,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                   ),)
-                   
-
-
-
-EXPLKR=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MATKR,
-                     CARA_ELEM=ORIENKR,
-                     EXCIT=(_F(CHARGE=TRAC3,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPORKR,
-                                   ALGO_INTE='RUNGE_KUTTA',
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST3C,),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                               MATRICE='ELASTIQUE'),),
-                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
-                                     ITER_GLOB_MAXI=10,),),
-                     ARCHIVAGE=_F(LIST_INST=LINST3,),
-                                     )
-
-EXPLKR=CALC_ELEM(reuse =EXPLKR,
-                 RESULTAT=EXPLKR,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
-
-
-TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
-                   INST=TFIN3,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=EXPLKR,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-8.1822E-04,PRECISION=(0.0005,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                   ),)
-                   
-
-
-EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MATKR,
-                     CARA_ELEM=ORIENKR,
-                     EXCIT=(_F(CHARGE=TRAC3,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='POLYCRISTAL',
-                                   COMPOR=COMPORP,
-                                   ALGO_INTE='RUNGE_KUTTA',
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST3C,),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                               MATRICE='ELASTIQUE'),),
-                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
-                                     ITER_GLOB_MAXI=10,),),
-                     ARCHIVAGE=_F(LIST_INST=LINST3,),
-                                     )
-#IMPR_RESU(RESU=_F(RESULTAT=EXPLKRP))
-
-EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
-                 RESULTAT=EXPLKRP,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
-
-
-TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
-                   INST=TFIN3,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=EXPLKRP,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-8.1822E-04,PRECISION=(0.0005,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                   ),)
-                   
 
 # SOLUTION DE REFERENCE                          
 # ATTENTION TRES SENSIBLE AU PAS DE TEMPS.
@@ -1006,6 +875,135 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLZ3,
                    REFERENCE='AUTRE_ASTER',),
                    ),);
 
+IMPLKR=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MATKR,
+                     CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC3,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPORKR,
+                                   ITER_INTE_MAXI=100,
+                                  # ITER_INTE_PAS=10,
+                                   ALGO_INTE='NEWTON',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST3,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                                REAC_ITER=1,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST3,),
+                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
+                                     ITER_GLOB_MAXI=10,),),);
+
+IMPLKR=CALC_ELEM(reuse =IMPLKR,
+                 RESULTAT=IMPLKR,
+                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
+
+TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=IMPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-8.1822E-04,PRECISION=(0.002,0.0001),
+                   REFERENCE='SOURCE_EXTERNE',),
+                   ),)
+                   
+
+
+
+EXPLKR=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MATKR,
+                     CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC3,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPORKR,
+                                   ALGO_INTE='RUNGE_KUTTA',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST3C,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                               MATRICE='ELASTIQUE'),),
+                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
+                                     ITER_GLOB_MAXI=10,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST3,),
+                                     )
+
+EXPLKR=CALC_ELEM(reuse =EXPLKR,
+                 RESULTAT=EXPLKR,
+                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=EXPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-8.1822E-04,PRECISION=(0.0005,0.0001),
+                   REFERENCE='SOURCE_EXTERNE',),
+                   ),)
+                   
+
+
+EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MATKR,
+                     CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC3,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                                   COMPOR=COMPORP,
+                                   ALGO_INTE='RUNGE_KUTTA',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST3C,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                               MATRICE='ELASTIQUE'),),
+                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
+                                     ITER_GLOB_MAXI=10,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST3,),
+                                     )
+#IMPR_RESU(RESU=_F(RESULTAT=EXPLKRP))
+
+EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
+                 RESULTAT=EXPLKRP,
+                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-8.1822E-04,PRECISION=(0.0005,0.0001),
+                   REFERENCE='SOURCE_EXTERNE',),
+                   ),)
+                   
 FIN();
 
                    

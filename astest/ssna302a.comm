@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION
 # ssna302a.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,11 +80,6 @@ evol_gg=CREA_RESU(OPERATION='AFFE',
 
 PRES=AFFE_CHAR_MECA( MODELE=MODEL,
                      EVOL_CHAR=evol_gg, );
-#
-#PRES=AFFE_CHAR_MECA_F(      MODELE=MODEL,
-#                             PRES_REP=_F(  GROUP_MA = 'FACE',
-#                                        PRES = PRES_FO)
-#                         )
 #
 CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
                               _F(  GROUP_NO = 'FIX_C1',

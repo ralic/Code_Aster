@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='HPLA100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='HPLA100A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 #......................................................................
 #
@@ -39,244 +41,305 @@ DEBUT(CODE=_F(NOM='HPLA100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # !-------------->   1.0 MM
 #                 <--------->
 #======================================================================
-
-
 #PRE_GIBI()
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE();
 
-DEFI_GROUP(reuse=MA,MAILLAGE=MA,
-                   CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI'))
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-MO=AFFE_MODELE(  MAILLAGE=MA,
-         AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
-                           MODELISATION = 'AXIS'))
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
 
-MOTHER=AFFE_MODELE(  MAILLAGE=MA,
-         AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
-                           MODELISATION = 'PLAN'))
+MOTHER=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='PLAN',),);
 
-MAT=DEFI_MATERIAU(ELAS=_F( E = 2.0E+5, NU = 0.3, RHO = 8.E-6, ALPHA = 1.E-5))
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.0E+5,
+                          NU=0.3,
+                          RHO=8.E-6,
+                          ALPHA=1.E-5,),);
 
-MATHER=DEFI_MATERIAU(THER=_F( LAMBDA = 1.0, RHO_CP = 0.0) )
+MATHER=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
+                             RHO_CP=0.0,),);
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MAT))
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
 
-CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
-
-# ------------------------------------------------------------------
-CHTHE=AFFE_CHAR_THER(
-            MODELE=MOTHER,TEMP_IMPO=(
-        _F( GROUP_NO = ('BC',),TEMP = 0.5),
-        _F( GROUP_NO = ('DA',),TEMP = -0.5))
-                       )
-
-CHTH2=AFFE_CHAR_THER(
-            MODELE=MOTHER,TEMP_IMPO=(
-        _F( GROUP_NO = ('BC',),TEMP = 0.1),
-        _F( GROUP_NO = ('DA',),TEMP = 0.1))
-                       )
-
-TEMPLIN=THER_LINEAIRE(
-                  MODELE=MOTHER,
-              CHAM_MATER=CHMATHE,
-                  EXCIT=_F( CHARGE = CHTHE)
-                         )
-
-TEMPLI2=THER_LINEAIRE(
-                  MODELE=MOTHER,
-              CHAM_MATER=CHMATHE,
-                  EXCIT=_F( CHARGE = CHTH2)
-                         )
+CHMATHE=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATHER,),);
 
 # ------------------------------------------------------------------
 
-CHPES=AFFE_CHAR_MECA(  MODELE=MO,
-          PESANTEUR=_F(GRAVITE=10.0,
-                     DIRECTION=(0.,-1.,0.,),),
-          PRES_REP=_F(  GROUP_MA = 'HAUT',        PRES = -8.E-4),
-           DDL_IMPO=_F(  GROUP_NO = 'F',    DY = 0.) )
+CHTHE=AFFE_CHAR_THER(MODELE=MOTHER,
+                     TEMP_IMPO=(_F(GROUP_NO='BC',
+                                   TEMP=0.5,),
+                                _F(GROUP_NO='DA',
+                                   TEMP=-0.5,),),);
 
-CHROT=AFFE_CHAR_MECA(  MODELE=MO,
-           ROTATION=(
-                     _F( VITESSE =  1.00,
-                        AXE = (0., 1., 0.,),
-                        GROUP_MA=('ZONE1'),
-                        MAILLE=('M17','M18','M19','M20','M21','M22','M23',
-                        'M24','M25','M26','M27','M28','M29','M30','M31','M32'),
-                        ),),
-           DDL_IMPO=(
-           _F(  GROUP_NO = 'BAS',    DY = 0.),
-                    _F(  GROUP_NO = 'HAUT',   DY = 0.)) )
+CHTH2=AFFE_CHAR_THER(MODELE=MOTHER,
+                     TEMP_IMPO=(_F(GROUP_NO='BC',
+                                   TEMP=0.1,),
+                                _F(GROUP_NO='DA',
+                                   TEMP=0.1,),),);
+
+TEMPLIN=THER_LINEAIRE(MODELE=MOTHER,
+                      CHAM_MATER=CHMATHE,
+                      EXCIT=_F(CHARGE=CHTHE,),);
+
+TEMPLI2=THER_LINEAIRE(MODELE=MOTHER,
+                      CHAM_MATER=CHMATHE,
+                      EXCIT=_F(CHARGE=CHTH2,),);
+
+# ------------------------------------------------------------------
+
+CHPES=AFFE_CHAR_MECA(MODELE=MO,
+                     PESANTEUR=_F(GRAVITE=10.0,
+                                  DIRECTION=(0.,-1.,0.,),),
+                     DDL_IMPO=_F(GROUP_NO='F',
+                                 DY=0.,),
+                     PRES_REP=_F(GROUP_MA='HAUT',
+                                 PRES=-8.E-4,),);
+
+CHROT=AFFE_CHAR_MECA(MODELE=MO,
+                     ROTATION=_F(GROUP_MA='ZONE1',
+                                 MAILLE=
+                                 ('M17','M18','M19','M20','M21','M22','M23','M24','M25',
+                                          'M26','M27','M28','M29','M30','M31','M32',),
+                                 VITESSE=1.,
+                                 AXE=(0.,1.,0.,),),
+                     DDL_IMPO=(_F(GROUP_NO='BAS',
+                                  DY=0.,),
+                               _F(GROUP_NO='HAUT',
+                                  DY=0.,),),);
 
 IMPR_CO(CONCEPT=_F(NOM=CHROT,),);
 
-CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
-           DDL_IMPO=_F(  GROUP_NO = 'TOUT',   DY = 0.) )
+CHDIL=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_NO='TOUT',
+                                 DY=0.,),);
 
-CHDI2=AFFE_CHAR_MECA(  MODELE=MO,
-           DDL_IMPO=(
-           _F(  GROUP_NO = 'BAS',    DY = 0.),
-                    _F(  GROUP_NO = 'HAUT',   DY = 0.)) )
+CHDI2=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=(_F(GROUP_NO='BAS',
+                                  DY=0.,),
+                               _F(GROUP_NO='HAUT',
+                                  DY=0.,),),);
 
-CHMTM=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MAT,),
-                        AFFE_VARC=_F( TOUT='OUI',
-                                       EVOL=TEMPLIN,
-                                       NOM_VARC='TEMP',
-                                       NOM_CHAM='TEMP',
-                                       VALE_REF = 0.0),
-                    )
+CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),
+                    AFFE_VARC=_F(TOUT='OUI',
+                                 NOM_VARC='TEMP',
+                                 EVOL=TEMPLIN,
+                                 NOM_CHAM='TEMP',
+                                 VALE_REF=0.0,),);
 
-CHMTM2=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MAT, ),
-                        AFFE_VARC=_F( TOUT='OUI',
-                                       EVOL=TEMPLI2,
-                                       NOM_VARC='TEMP',
-                                       NOM_CHAM='TEMP',
-                                       VALE_REF = 0.0),
-                     )
+CHMTM2=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MAT,),
+                     AFFE_VARC=_F(TOUT='OUI',
+                                  NOM_VARC='TEMP',
+                                  EVOL=TEMPLI2,
+                                  NOM_CHAM='TEMP',
+                                  VALE_REF=0.0,),);
 
 # ------------------------------------------------------------------
 
-DEPLPES=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CHPES),
-                         )
+DEPLPES=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHPES,),);
 
-CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
+DEPLPES=CALC_ELEM(reuse =DEPLPES,
+                  RESULTAT=DEPLPES,
+                  OPTION=('SIGM_ELNO','EPME_ELNO','EPSI_ELNO',),);
 
-                  OPTION=('SIGM_ELNO', 'EPME_ELNO',
-                                            'EPSI_ELNO',),
-             REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLROT=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHROT,),);
 
+DEPLROT=CALC_ELEM(reuse =DEPLROT,
+                  RESULTAT=DEPLROT,
+                  OPTION=('SIGM_ELNO','EPME_ELNO','EPSI_ELNO',),);
 
-DEPLROT=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CHROT),
-                         )
+DEPLDIL=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMTM,
+                      EXCIT=_F(CHARGE=CHDIL,),);
 
-CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
+DEPLDIL=CALC_ELEM(reuse =DEPLDIL,
+                  RESULTAT=DEPLDIL,
+                  OPTION=('SIGM_ELNO','EPME_ELNO','EPSI_ELNO',),);
 
-                  OPTION=('SIGM_ELNO', 'EPME_ELNO',
-                                            'EPSI_ELNO',),
-             REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLDI2=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMTM2,
+                      EXCIT=_F(CHARGE=CHDI2,),);
 
-
-DEPLDIL=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMTM,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
-
-CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-
-                  OPTION=('SIGM_ELNO', 'EPME_ELNO',
-                                            'EPSI_ELNO',),
-                   REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
-
-
-DEPLDI2=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMTM2,
-                   EXCIT=_F( CHARGE = CHDI2),
-                         )
-
-CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-
-                  OPTION=('SIGM_ELNO', 'EPME_ELNO',
-                                            'EPSI_ELNO',),
-                   REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLDI2=CALC_ELEM(reuse =DEPLDI2,
+                  RESULTAT=DEPLDI2,
+                  OPTION=('SIGM_ELNO','EPME_ELNO','EPSI_ELNO',),);
 
 #---------------------------------------------------------------------
 
-T_POT=POST_ELEM(
-                    RESULTAT=DEPLDIL,
-                      CHARGE=CHDIL,
-                    ENER_POT=_F( TOUT = 'OUI',)  )
+T_POT=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
+                CHARGE=CHDIL,
+                RESULTAT=DEPLDIL,);
 
-IMPR_TABLE ( TABLE=T_POT )
+IMPR_TABLE(TABLE=T_POT,);
 
 # VERSION=6.02.21 sans charge thermique :  7.73874E-04  (1/2U)
 # VERSION=6.02.21 avec charge thermique :  5.43077E-19  (1/2U - 1/2Th)
 # VERSION=6.02.22 avec charge thermique : -7.73874E-04  (1/2U - Th)
 
-TEST_TABLE ( TABLE=T_POT,
-             NOM_PARA='TOTALE',
-             REFERENCE='NON_REGRESSION', VERSION='6.03.20',
-             VALE= 4.7612599996081E-04  )
+TEST_TABLE(TABLE=T_POT,
+           NOM_PARA='TOTALE',
+           VALE=0.000476125999961,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.03.20',);
 
 #---------------------------------------------------------------------
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(RESULTAT=DEPLPES,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=-2.34e-08,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLPES,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A',
+                   VALE=-1.185e-09,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLPES,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=-2.34e-08,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLPES,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='B',
+                   VALE=1.215e-09,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLROT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=2.9424e-07,
+                   CRITERE='RELATIF',
+                   PRECISION=2e-05,),
+                _F(RESULTAT=DEPLROT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='B',
+                   VALE=2.8801e-07,
+                   CRITERE='RELATIF',
+                   PRECISION=2e-05,),
+                _F(RESULTAT=DEPLDIL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=1.056145e-06,
+                   CRITERE='RELATIF',
+                   PRECISION=0.0002,),
+                _F(RESULTAT=DEPLDIL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='B',
+                   VALE=1.110317e-06,
+                   CRITERE='RELATIF',
+                   PRECISION=0.0001,),
+                _F(RESULTAT=DEPLDI2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=2.535e-05,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLPES,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M13',
+                   GROUP_NO='D',
+                   VALE=0.0008,
+                   CRITERE='RELATIF',
+                   PRECISION=2e-05,),
+                _F(RESULTAT=DEPLROT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=0.00099488,
+                   CRITERE='RELATIF',
+                   PRECISION=2e-05,),
+                _F(RESULTAT=DEPLROT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M32',
+                   GROUP_NO='B',
+                   VALE=0.00092631,
+                   CRITERE='RELATIF',
+                   PRECISION=2e-05,),
+                _F(RESULTAT=DEPLDIL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=1.4321583,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLDI2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=-0.2,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLDIL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EPME_ELNO',
+                   NOM_CMP='EPYY',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=5e-06,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),
+                _F(RESULTAT=DEPLDI2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EPME_ELNO',
+                   NOM_CMP='EPYY',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=-1e-06,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,),),);
 
-      # DEPLACEMENTS
-             _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'D',   NOM_CMP = 'DX',     VALE = -2.34E-8),
-             _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'A',   NOM_CMP = 'DY',     VALE = -1.185E-9),
-             _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'D',   NOM_CMP = 'DX',     VALE = -2.34E-8),
-             _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'B',   NOM_CMP = 'DY',     VALE = 1.215E-9),
+FIN();
 
-             _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'A',    NOM_CMP = 'DX',     VALE = 2.94240E-7),
-             _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'B',    NOM_CMP = 'DX',     VALE = 2.88010E-7),
-
-             _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 2.E-4,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'A',    NOM_CMP = 'DX',     VALE = 1.056145E-6),
-             _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-4,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'B',    NOM_CMP = 'DX',     VALE = 1.110317E-6),
-
-             _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-               GROUP_NO = 'A',    NOM_CMP = 'DX',     VALE = 25.3500E-6),
-
-      # CONTRAINTES EN PEAU
-            _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
-            NUME_ORDRE = 1,     MAILLE = 'M13', NOM_CHAM = 'SIGM_ELNO',
-              GROUP_NO = 'D',   NOM_CMP = 'SIYY',  VALE = 8.00000E-4),
-
-            _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
-            NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
-              GROUP_NO = 'A',    NOM_CMP = 'SIYY',  VALE = 0.99488E-3),
-            _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
-            NUME_ORDRE = 1,     MAILLE = 'M32',  NOM_CHAM = 'SIGM_ELNO',
-              GROUP_NO = 'B',    NOM_CMP = 'SIYY',  VALE = 0.92631E-3),
-
-            _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
-              GROUP_NO = 'A',    NOM_CMP = 'SIYY',  VALE = 1.4321427E+0),
-            _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
-              GROUP_NO = 'A',    NOM_CMP = 'SIYY',  VALE = -0.20000E+0),
-
-      # DEFORMATIONS 'VRAIES' EN PEAU
-            _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'EPME_ELNO',
-              GROUP_NO = 'A',    NOM_CMP = 'EPYY',  VALE = 5.E-6),
-            _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'EPME_ELNO',
-              GROUP_NO = 'A',    NOM_CMP = 'EPYY',  VALE = -1.E-6))
-            )
-
-FIN()
 #
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128q.para = tps_job 130 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,7 +32,6 @@ DEBUT(CODE=_F(NOM='SSNV128Q',
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD4
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 #.......................................................
-#PRE_GIBI()
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 
@@ -112,35 +111,6 @@ U2M=STAT_NON_LINE(MODELE=MO,
                                  ITER_GLOB_MAXI=200,
                                  ARRET='OUI',),);
 
-# U2M=CALC_ELEM(reuse=U2M,
-#               OPTION=('SIEF_ELNO', 'VARI_ELNO'),
-#               RESULTAT=U2M);
-#
-# DEPL2M=CREA_CHAMP(OPERATION='EXTR',
-#                   TYPE_CHAM='NOEU_DEPL_R',
-#                   NOM_CHAM='DEPL',
-#                   RESULTAT=U2M,
-#                   INST=1.0);
-#
-# DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
-#                               GROUP_NO='RELEVE',
-#                               RESULTAT=U2M,
-#                               NOM_CHAM='DEPL',
-#                               INST=1.0,
-#                               TOUT_CMP='OUI',
-#                               OPERATION='EXTRACTION'));
-#
-# TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
-#                               GROUP_NO='RELEVE',
-#                               RESULTAT=U2M,
-#                               NOM_CHAM='VALE_CONT',
-#                               INST=1.0,
-#                               TOUT_CMP='OUI',
-#                               OPERATION='EXTRACTION'));
-#
-# IMPR_TABLE(TABLE=DEPLAC);
-# IMPR_TABLE(TABLE=TCONT);
-# ---- TEST ----
 
 TEST_RESU(RESU=(_F(RESULTAT=U2M,
                    INST=1.0,

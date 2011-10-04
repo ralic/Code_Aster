@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  PLAQUE CARREE COMPOSITE SOUS PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,59 +113,53 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHAM_MAT,
                    CARA_ELEM=CAR_ELE,
                    EXCIT=_F(CHARGE=CHA,),);
-#
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION='SIGM_ELNO',);
+
 #COUCHE 1 : CALCUL DES CONTRAINTES
 
-SIG_C1_S=CALC_ELEM(
-                   RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),
-                   );
-#
+SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C1_I=CALC_ELEM(
-                   RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),
-                   );
+SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
+
 #COUCHE 2 : CALCUL DES CONTRAINTES
 
-SIG_C2_S=CALC_ELEM(
-                   RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,
-                                   NIVE_COUCHE='SUP',),
-                   );
+SIG_C2_S=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=2,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C2_I=CALC_ELEM(
-                   RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,
-                                   NIVE_COUCHE='INF',),
-                   );
+SIG_C2_I=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=2,
+                                   NIVE_COUCHE='INF',),);
+
 #COUCHE 3 : CALCUL DES CONTRAINTES
 
-SIG_C3_S=CALC_ELEM(
-                   RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=3,
-                                   NIVE_COUCHE='SUP',),
-                   );
+SIG_C3_S=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=3,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C3_I=CALC_ELEM(
-                   RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=3,
-                                   NIVE_COUCHE='INF',),
-                   );
+SIG_C3_I=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=3,
+                                   NIVE_COUCHE='INF',),);
+
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,

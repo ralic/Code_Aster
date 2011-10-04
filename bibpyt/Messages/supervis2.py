@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,4 +49,12 @@ Il n'est pas possible d'avoir plusieurs occurrences pour le
 mot-clé facteur '%(k2)s'.
 """),
 
+
+8 : _("""
+
+L'opération de retassage de la base GLOBALE (mot clé RETASSAGE="OUI"
+dans la commande FIN) est inutile lorsque l'on sauvegarde cette 
+dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
+
+"""),
 }

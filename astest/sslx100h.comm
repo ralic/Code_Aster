@@ -1,0 +1,200 @@
+# MODIF  DATE 04/10/2011   AUTEUR REZETTE C.REZETTE 
+# TITRE MELANGE 2D-POUTRE
+# sslx100h.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLX100H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE();
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA='MAIL2D',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='C_PLAN',),
+                     _F(GROUP_MA='POUTRE',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='POU_D_E',),),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                          NU=0.,
+                          ALPHA=0.0,),);
+
+CHMA=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MAT,),);
+
+CARELEM=AFFE_CARA_ELEM(MODELE=MO,
+                       POUTRE=_F(GROUP_MA='POUTRE',SECTION='RECTANGLE',CARA= ( 'HZ',  'HY', ),
+                                     VALE=(1.0,1.0),),
+                       ORIENTATION=_F(CARA='VECT_Y',VALE=(0.,1.,0.),GROUP_MA='POUTRE',))
+
+# TRACTION
+# --------
+CHME=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_MA='GAUCHE',
+                                 DX=0.0,DY=0.0,),
+                              _F(GROUP_MA='POUTRE',
+                                 DZ=0.0,DRX=0.0,DRY=0.0,),),
+                    LIAISON_ELEM=_F(OPTION='2D_POU',
+                                    GROUP_MA_1='DROIT',
+                                    GROUP_NO_2='G',),
+                    FORCE_NODALE=_F(GROUP_NO='EXTREM',
+                                    FX=100000.0,),);
+ 
+RES=MECA_STATIQUE(MODELE=MO,
+                  CHAM_MATER=CHMA,
+                  CARA_ELEM  = CARELEM,
+                  EXCIT=_F(CHARGE=CHME,),);
+
+DEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RES,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
+
+TEST_RESU(CHAM_NO=(
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N12',
+                      NOM_CMP='DX',
+                      VALE=1.25,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N13',
+                      NOM_CMP='DX',
+                      VALE=2.5,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N14',
+                      NOM_CMP='DX',
+                      VALE=3.75,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N5',
+                      NOM_CMP='DX',
+                      VALE=5.0,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N25',
+                      NOM_CMP='DX',
+                      VALE=5.0,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N15',
+                      NOM_CMP='DX',
+                      VALE=5.0,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N66',
+                      NOM_CMP='DX',
+                      VALE=5.0,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='N67',
+                      NOM_CMP='DX',
+                      VALE=15.0,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-08,),),)
+
+# FLEXION
+# -------
+CHME2=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_MA='GAUCHE',
+                                 DX=0.0,DY=0.0,),
+                              _F(GROUP_MA='POUTRE',
+                                 DZ=0.0,DRX=0.0,DRY=0.0,),),
+                    LIAISON_ELEM=_F(OPTION='2D_POU',
+                                    GROUP_MA_1='DROIT',
+                                    GROUP_NO_2='G',),
+                    FORCE_NODALE=_F(GROUP_NO='EXTREM',
+                                    FY=-1.0,),);
+                                    
+
+RES2=MECA_STATIQUE(MODELE=MO,
+                  CHAM_MATER=CHMA,
+                  CARA_ELEM  = CARELEM,
+                  EXCIT=_F(CHARGE=CHME2,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=RES2,NOM_CHAM='DEPL'))
+
+DEP2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RES2,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
+
+TEST_RESU(CHAM_NO=(
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N12',
+                      NOM_CMP='DY',
+                      VALE=-0.00546875,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=3.E-04,),
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N13',
+                      NOM_CMP='DY',
+                      VALE=-0.02125,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-04,),
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N14',
+                      NOM_CMP='DY',
+                      VALE=-0.04640625,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-04,),
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N5',
+                      NOM_CMP='DY',
+                      VALE=-0.08,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-04,),
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N25',
+                      NOM_CMP='DY',
+                      VALE=-0.08,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-04,),
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N15',
+                      NOM_CMP='DY',
+                      VALE=-0.08,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-04,),
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N66',
+                      NOM_CMP='DY',
+                      VALE=-0.08,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-04,),
+                   _F(CHAM_GD=DEP2,
+                      NOEUD='N67',
+                      NOM_CMP='DY',
+                      VALE=-0.54,
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-05,),),)
+
+
+FIN();
+#

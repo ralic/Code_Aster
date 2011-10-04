@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,28 +78,48 @@ C
       INTEGER NBPGMX
       PARAMETER (NBPGMX=27)
 
-      INTEGER NBSIGM,JTAB(3)
-      INTEGER IRET,NPG1,IPOIDS,IVF,IDFDE,JGANO,ICOMPO,IDERA
+      INTEGER NBSIGM,JTAB(7)
+      INTEGER IRET,NPG1,IPOIDS,IVF,IDFDE,JGANO,ICOMPO
+      INTEGER IDERA1, IDERA2
+      INTEGER NBCMP, IMATE, IDECAL, ISIG
       INTEGER NNO,NBSIG,NNOS,ISIGTM,ISIGTP,IDVAR1
-      INTEGER IDVAR2,NBSIG2,NPG,I,K,NDIM,IGAU
+      INTEGER IDVAR2,NBSIG2,NPG,I,K,NDIM,IGAU,ICODRE
+      INTEGER NBVARI, JPROLP,JVALEP, NBVALP, IBID
 
-      REAL*8 SIGMA1(MXCMEL),SIGMA2(MXCMEL)
-      REAL*8 SIGT1(MXCMEL),SIGT2(MXCMEL)
-      REAL*8 DCHAV(NBPGMX),DCHAT(NBPGMX)
-      REAL*8 RADIV(NBPGMX),RADIT(NBPGMX)
+      REAL*8 SIGMA1(MXCMEL),  SIGMA2(MXCMEL)
+      REAL*8 SIGT1(MXCMEL),   SIGT2(MXCMEL)
+      REAL*8 DCHAV(NBPGMX),   DCHAT(NBPGMX)
+      REAL*8 DCHAX(NBPGMX),   DCHAY(NBPGMX)
+      REAL*8 RADIV(NBPGMX),   RADIT(NBPGMX)
+      REAL*8 COSANG(MXCMEL)
+      REAL*8 XRAPEL(NBPGMX*6), SIGMX(6)
+      REAL*8 PM, PP, DP, RP, RP0
       REAL*8 TRX1,TRX2
       REAL*8 X1(MXCMEL),X2(MXCMEL)
       REAL*8 TRSIG1,TRSIG2
-      REAL*8 ZERO,UNTIER
+      REAL*8 E, DSDE, SIGY, ALFAFA, COCO, UNSURN
+      REAL*8 ZERO,UNTIER,CST1,DUM,TP,RESU,RBID
+      REAL*8 ZERNOR, R8PREM, NORSIG, DCHAXM
+      REAL*8 VALRES(3)
 
+      REAL*8 TRACE, SQRT
+      REAL*8 SIGEQN 
+
+      CHARACTER*4  FAMI
+      CHARACTER*8  TYPE
+      CHARACTER*8  NOMRES(3)
       CHARACTER*16 COMPOR
 C
 C ----------------------------------------------------------------------
 C
 C ---- INITIALISATIONS :
 C      ---------------
-      ZERO = 0.0D0
+      ZERO   = 0.0D0
       UNTIER = 1.0D0/3.0D0
+      ZERNOR = 1000.0D0*R8PREM()
+      FAMI   = 'RIGI'
+      NBVALP = 0
+      IBID = 0
 
       DO 10 I = 1,MXCMEL
         SIGT1(I) = ZERO
@@ -108,19 +128,27 @@ C      ---------------
         SIGMA2(I) = ZERO
         X1(I) = ZERO
         X2(I) = ZERO
+        XRAPEL(I) = ZERO
    10 CONTINUE
-
+C
       DO 20 I = 1,NBPGMX
         DCHAV(I) = ZERO
         DCHAT(I) = ZERO
+        DCHAX(I) = ZERO
+        DCHAY(I) = ZERO
         RADIV(I) = ZERO
         RADIT(I) = ZERO
+        COSANG(I) = ZERO
    20 CONTINUE
-
 
 C ----     DIMENSION DE L'ELEMENT :
 C ----     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
       NBSIG = NBSIGM()
+
+C ---- RECUPERATION DU NOMBRE DE COMPOSANTES 
+        CALL TECACH('OON','PDERAMG',7,JTAB,IRET)
+        IDERA1 = JTAB(1)
+        NBCMP  = JTAB(2)/JTAB(3)
 
 C ---- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 C      -----------------------------------------------------
@@ -280,19 +308,192 @@ C      --------------------------------------------------
 C ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE RADI:
 C ----  I = 1- ABS(SIGMA1:DSIGMA)/(NORME(SIGMA1)*NORME(DSIGMA) :
 C      -------------------------------------------------------
-      CALL RADIPG(SIGT1 ,SIGT2 ,NPG,NBSIG,RADIT)
-      CALL RADIPG(SIGMA1,SIGMA2,NPG,NBSIG,RADIV)
+      CALL RADIPG(SIGT1 ,SIGT2 ,NPG,NBSIG,RADIT,COSANG)
+      CALL RADIPG(SIGMA1,SIGMA2,NPG,NBSIG,RADIV,COSANG)
+C
+C ---- CALCUL DE L'INDICATEUR LOCAL DCHA_X et DCHA_Y
+C ---- CALCUL DU TENSEUR DE RAPPEL X
+C      -------------------------------------------------------
+C
+C --- ON NE TRAITE QUE LES LOIS SUIVANTES
+C        - VMIS_ISOT_LINE
+C        - VMIS_ISOT_TRAC
+C        - VMIS_ISOT_PUIS
 
+      IF (COMPOR(1:9).EQ.'VMIS_ISOT') THEN
+
+C - ON RECUPERE 
+C      > LES INDICATEURS A L'INSTANT T-DT 
+C      > LES VARIABLES INTERNES AUX INSTANTS T et T+DT
+C      > LES PARAMETERS MATERIAUX A INSTANT T
+
+        READ(ZK16(ICOMPO-1+2),'(I16)')NBVARI
+        CALL JEVECH('PVARIMR','L',IDVAR1)
+        CALL JEVECH('PVARIPR','L',IDVAR2)
+        CALL JEVECH('PMATERC','L',IMATE)
+C
+C --- BOUCLE SUR LES POINTS DE GAUSS
+C
+        DO 200 IGAU = 1,NPG
+          IDECAL = (IGAU-1)*6        
+C --- DEFORMATION PLASTIQUE CUMULEE
+          PM = ZR(IDVAR1-1+(IGAU-1)*NBVARI+1)
+          PP = ZR(IDVAR2-1+(IGAU-1)*NBVARI+1)
+          DP = PP - PM
+          DCHAXM = ZR(IDERA1-1+(IGAU-1)*NBCMP+3)
+C
+          IF(PM.LE.ZERNOR) THEN
+            DCHAX(IGAU) = 1.D0
+          ELSE IF (ABS(DCHAXM+2.D0).GT.ZERNOR) THEN
+            IF(DP.GT.ZERNOR) THEN
+              IF(COSANG(IGAU).GT.ZERNOR) THEN
+                DCHAX(IGAU) =  2.D0 
+              ELSE
+                DCHAX(IGAU) = -2.D0
+              ENDIF
+            ELSE IF(DP.LE.ZERNOR) THEN
+              IF(ABS(DCHAXM+1.D0).GT.ZERNOR) THEN
+C --- RECUPERATION DES CARACTERISTIQUES DE LA LOI DE COMPORTEMENT     
+                IF (COMPOR.EQ.'VMIS_ISOT_LINE') THEN
+                  NOMRES(1) = 'D_SIGM_EPSI'
+                  NOMRES(2) = 'SY' 
+                  CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ','ECRO_LINE',
+     &                      IBID,' ',0.D0,2,NOMRES,VALRES,ICODRE, 2)
+                  DSDE  = VALRES(1)
+                  RP0   = VALRES(2)
+C
+                  NOMRES(1) = 'E'
+                  CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ','ELAS',
+     &                     IBID,' ',0.D0,1,NOMRES,VALRES,ICODRE, 2)
+                  E     = VALRES(1)
+                  RP    = DSDE*E/(E-DSDE)*PM+RP0
+
+                ELSEIF (COMPOR(10:14) .EQ. '_PUIS') THEN
+                  NOMRES(1) = 'E'
+                  CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ','ELAS',
+     &                      IBID,' ',0.D0,1,NOMRES,VALRES,ICODRE, 2)
+                  E     = VALRES(1)
+
+                  NOMRES(1)='SY'
+                  NOMRES(2)='A_PUIS'
+                  NOMRES(3)='N_PUIS'
+                  CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ','ECRO_PUIS',
+     &                         IBID,' ',0.D0,3,NOMRES,VALRES,ICODRE, 2)
+                  SIGY   = VALRES(1)
+                  ALFAFA = VALRES(2)
+                  COCO   = E/ALFAFA/SIGY
+                  UNSURN = 1.D0/VALRES(3)
+                  RP     = SIGY * (COCO*PP)**UNSURN + SIGY
+
+                ELSEIF (COMPOR(10:14) .EQ. '_TRAC') THEN
+                  CALL RCVARC(' ','TEMP','-',FAMI,IGAU,1,TP,IRET)
+                  CALL RCTYPE(ZI(IMATE),1,'TEMP',TP,RESU,TYPE)
+                  IF (TYPE.EQ.'TEMP') CALL U2MESS('F','CALCULEL_31')
+                  CALL RCTRAC(ZI(IMATE),1,'SIGM',RESU,JPROLP,JVALEP,
+     &                        NBVALP,E)
+                  CALL RCFONC('S',1,JPROLP,JVALEP,NBVALP,RP0,DUM,
+     &                        DUM,DUM,DUM,DUM,DUM,DUM,DUM)
+                  CALL RCFONC('V',1,JPROLP,JVALEP,NBVALP,RBID,RBID,
+     &                        RBID,PM,RP,RBID,RBID,RBID,RBID)
+                ELSE
+                  CALL U2MESS('F','ELEMENTS_32')
+                ENDIF
+C --- CALCUL DE X                                      
+                CST1 = (RP-RP0)/RP
+                DO 210 ISIG = 1, NBSIG
+                   XRAPEL(IDECAL+ISIG)=SIGT1(ISIG+(IGAU-1)*NBSIG)*CST1
+210             CONTINUE
+C
+                DO 220 ISIG = 1, NBSIG
+                  SIGMX(ISIG) = SIGT1(ISIG+(IGAU-1)*NBSIG)
+     &                          - XRAPEL(IDECAL+ISIG)
+220             CONTINUE
+C
+                TRACE=(SIGMX(1)+SIGMX(2)+SIGMX(3))/3.D0
+                SIGMX(1) = SIGMX(1)-TRACE
+                SIGMX(2) = SIGMX(2)-TRACE
+                SIGMX(3) = SIGMX(3)-TRACE
+                SIGEQN = SQRT(1.5D0)*NORSIG(SIGMX,NBSIG)
+C
+                IF(ABS(SIGEQN-RP0).LE.ZERNOR) THEN
+                  DCHAX(IGAU) =  -1.D0
+                ELSE
+                  DCHAX(IGAU) =  -2.D0
+                  DCHAY(IGAU) =  NORSIG(SIGMX,NBSIG)/RP0
+                ENDIF
+              ELSE IF(ABS(DCHAXM+1.D0).LE.ZERNOR) THEN                
+                DO 230 ISIG = 1, NBSIG
+                  SIGMX(ISIG) = SIGT1(ISIG)-
+     &                          ZR(IDERA1-1+(IGAU-1)*NBCMP+2+ISIG)
+230             CONTINUE
+                TRACE=(SIGMX(1)+SIGMX(2)+SIGMX(3))/3.D0
+                SIGMX(1) = SIGMX(1)-TRACE
+                SIGMX(2) = SIGMX(2)-TRACE
+                SIGMX(3) = SIGMX(3)-TRACE
+C
+                SIGEQN = SQRT(1.5D0)*NORSIG(SIGMX,NBSIG)
+                IF (COMPOR.EQ.'VMIS_ISOT_LINE') THEN
+                  NOMRES(1) = 'SY'
+                  CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ',
+     &            'ECRO_LINE',0,' ',0.D0,1,NOMRES,VALRES,ICODRE, 2)
+                  RP0   = VALRES(1)
+                ELSEIF (COMPOR(10:14) .EQ. '_PUIS') THEN
+                  NOMRES(1)='SY'
+                  CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ',
+     &            'ECRO_PUIS',0,' ',0.D0,1,NOMRES,VALRES,ICODRE, 2)
+                  RP0   = VALRES(1)
+                ELSEIF (COMPOR(10:14) .EQ. '_TRAC') THEN
+                  CALL RCVARC(' ','TEMP','-',FAMI,IGAU,1,TP,IRET)
+                  CALL RCTYPE(ZI(IMATE),1,'TEMP',TP,RESU,TYPE)
+                  IF (TYPE.EQ.'TEMP') CALL U2MESS('F','CALCULEL_31')
+                  CALL RCTRAC(ZI(IMATE),1,'SIGM',RESU,JPROLP,JVALEP,
+     &                        NBVALP,E)
+                  CALL RCFONC('S',1,JPROLP,JVALEP,NBVALP,RP0,DUM,
+     &                        DUM,DUM,DUM,DUM,DUM,DUM,DUM)
+                  CALL RCFONC('V',1,JPROLP,JVALEP,NBVALP,RBID,RBID,
+     &                        RBID,PM,RP,RBID,RBID,RBID,RBID)
+                ELSE
+                  CALL U2MESS('F','ELEMENTS_32')
+                ENDIF
+                IF(SIGEQN.LE.RP0) THEN 
+                  DCHAX(IGAU) = -1.D0
+                ELSE
+                  DCHAX(IGAU) = -2.D0
+                  DCHAY(IGAU) = NORSIG(SIGMX,NBSIG)/RP0
+                  DO 240 ISIG = 1, NBSIG
+                    XRAPEL((IGAU-1)*6+ISIG)=ZR(IDERA1+(IGAU-1)*NBCMP
+     &                                      +3+ISIG)
+240              CONTINUE
+                ENDIF
+              ENDIF
+            ENDIF
+          ELSE
+C  DCHA_X = -2 AU PAS PRECEDENT T-DT
+C        ON STOCKE DANS LE PAS COURANT T, LES VALEURS OBTENUES 
+C        AU PAS PRECEDENT (T-DT)
+            DCHAX(IGAU) = -2.D0
+            DCHAY(IGAU) = ZR(IDERA1+(IGAU-1)*NBCMP-1+4)
+            DO 250 ISIG = 1, NBSIG
+              XRAPEL((IGAU-1)*6+ISIG)=ZR(IDERA1+(IGAU-1)*NBCMP+3+ISIG)
+250         CONTINUE
+          ENDIF            
+200     CONTINUE
+        ENDIF         
+C
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 C ---- AVEC LE VECTEUR DES INDICATEURS LOCAUX :
 C      --------------------------------------
-      CALL JEVECH('PDERAPG','E',IDERA)
-
+      CALL JEVECH('PDERAPG','E',IDERA2)
       DO 170 IGAU = 1,NPG
-        ZR(IDERA+(IGAU-1)*4-1+1) = DCHAV(IGAU)
-        ZR(IDERA+(IGAU-1)*4-1+2) = DCHAT(IGAU)
-        ZR(IDERA+(IGAU-1)*4-1+3) = RADIV(IGAU)
-        ZR(IDERA+(IGAU-1)*4-1+4) = RADIT(IGAU)
+        ZR(IDERA2+(IGAU-1)*NBCMP-1+1)   = DCHAV(IGAU)
+        ZR(IDERA2+(IGAU-1)*NBCMP-1+2)   = DCHAT(IGAU)
+        ZR(IDERA2+(IGAU-1)*NBCMP-1+3)   = DCHAX(IGAU)
+        ZR(IDERA2+(IGAU-1)*NBCMP-1+4)   = DCHAY(IGAU)
+        DO 260 ISIG = 1, NBSIG
+           ZR(IDERA2+(IGAU-1)*NBCMP+3+ISIG)=XRAPEL((IGAU-1)*6+ISIG)
+260     CONTINUE
+        ZR(IDERA2+(IGAU-1)*NBCMP-1+11)  = RADIV(IGAU)
+        ZR(IDERA2+(IGAU-1)*NBCMP-1+12)  = RADIT(IGAU)
   170 CONTINUE
 C
       END

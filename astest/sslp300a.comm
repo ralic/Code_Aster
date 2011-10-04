@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE RECTANGULAIRE PORTE-A-FAUX EN FLEXION CISAILLEMENT
 # sslp300a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,7 +105,7 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
                           NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIXX',
                           VALE = 3.78E7,
-                          PRECISION = 0.013),
+                          PRECISION = 0.015),
               _F(  RESULTAT = DEF,
                           MAILLE = 'M40',
                           NOEUD = 'N95',

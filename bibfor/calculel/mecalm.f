@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -279,8 +279,7 @@ C=======================================================================
 C=======================================================================
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IERD)
       CHNUMC='&&'//NOMPRO//'.NUMC'
-      CHFREQ='&&'//NOMPRO//'.FREQ'
-      CALL MECHN2(NOMA,CHNUMC,CHFREQ)
+      CALL MECHN2(NOMA,CHNUMC)
 C=======================================================================
 C
 C -- GRANDEURS CARACTERISTIQUES DE L'ETUDE
@@ -344,19 +343,19 @@ C
 C    -- PASSAGE CALC_CHAMP
 C    -------------------------------------------------------------------
 C    -- OPTIONS "DEGE_ELNO","DERA_ELGA","DERA_ELNO"
-C               "DISS_ELGA","DISS_ELNO","ECIN_ELEM","ENDO_ELGA"
-C               "ENDO_ELNO","ENEL_ELGA","ENEL_ELNO","EPEQ_ELGA"
-C               "EPEQ_ELNO","EPFD_ELGA","EPFD_ELNO","EPFP_ELGA"
-C               "EPFP_ELNO","EPME_ELGA","EPME_ELNO","EPMG_ELGA"
-C               "EPMG_ELNO","EPMQ_ELGA","EPMQ_ELNO","EPOT_ELEM"
-C               "EPSG_ELGA","EPSG_ELNO","EPSI_ELGA","EPSI_ELNO"
-C               "EPSP_ELGA","EPSP_ELNO","EPTQ_ELNO","EPTU_ELNO"
-C               "EPVC_ELGA","EPVC_ELNO","FLHN_ELGA","INDL_ELGA"
-C               "PDIL_ELGA","PMPB_ELGA","PMPB_ELNO","PRME_ELNO"
-C               "SICA_ELNO","SICO_ELNO","SIEF_ELGA","SIEQ_ELGA"
-C               "SIPM_ELNO","SIPO_ELNO","SITQ_ELNO","SITU_ELNO"
-C               "SPMX_ELGA","VACO_ELNO","VAEX_ELGA","VAEX_ELNO"
-C               "VARC_ELGA","VARI_ELNO","VATU_ELNO"
+C               "DISS_ELGA","DISS_ELNO","ECIN_ELEM","ENDO_ELGA",
+C               "ENDO_ELNO","ENEL_ELGA","ENEL_ELNO","EPEQ_ELGA",
+C               "EPEQ_ELNO","EPFD_ELGA","EPFD_ELNO","EPFP_ELGA",
+C               "EPFP_ELNO","EPME_ELGA","EPME_ELNO","EPMG_ELGA",
+C               "EPMG_ELNO","EPMQ_ELGA","EPMQ_ELNO","EPOT_ELEM",
+C               "EPSG_ELGA","EPSG_ELNO","EPSI_ELGA","EPSI_ELNO",
+C               "EPSP_ELGA","EPSP_ELNO","EPTQ_ELNO","EPTU_ELNO",
+C               "EPVC_ELGA","EPVC_ELNO","FLHN_ELGA","INDL_ELGA",
+C               "PDIL_ELGA","PMPB_ELGA","PMPB_ELNO","PRME_ELNO",
+C               "SICA_ELNO","SIEF_ELGA","SIEQ_ELGA","SIPM_ELNO",
+C               "SIPO_ELNO","SITQ_ELNO","SITU_ELNO",
+C               "VACO_ELNO","VAEX_ELGA","VAEX_ELNO","VARC_ELGA",
+C               "VARI_ELNO","VATU_ELNO"
 C             + "SIEF_ELNO" SAUF CAS XFEM
 C    ------------------------------------------------------------------
 
@@ -377,8 +376,7 @@ C    ------------------------------------------------------------------
 C    -- OPTIONS "SIGM_ELNO",
 C               "EFGE_ELNO",
 C    ------------------------------------------------------------------
-        IF (OPTION.EQ.'SIGM_ELNO' .OR.
-     &      OPTION.EQ.'EFGE_ELNO' ) THEN
+        IF (OPTION.EQ.'EFGE_ELNO' ) THEN
 
 
 C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
@@ -681,11 +679,9 @@ C    ------------------------------------------------------------------
               IF (TYSD.EQ.'FOURIER_ELAS') CALL U2MESK('F',
      &            'CALCULEL6_83',1,OPTION)
               CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
-              CALL RSEXCH(RESUCO,'SICO_ELNO',IORDR,CHSIC,IRET3)
-              CALL RSEXCH(RESUCO,'SIGM_ELNO',IORDR,CHSIC,IRET4)
+              CALL RSEXCH(RESUCO,'SIGM_ELNO',IORDR,CHSIC,IRET3)
 C
-              IF (IRET1.GT.0 .AND. IRET3.GT.0 .AND.
-     &            IRET4.GT.0) THEN
+              IF (IRET1.GT.0 .AND. IRET3.GT.0) THEN
                 VALKM(1)=OPTION
                 VALKM(2)=TYSD
                 CALL U2MESK('A','CALCULEL3_8',2,VALKM)
@@ -706,7 +702,7 @@ C             -- POUR COMB_FOURIER, IL PEUT NE PAS EXISTER SIEF_ELGA:
 
 C          CHAMP D'ENTREE POUR COQUES
                 IF (EXIPLA) THEN
-                  IF (IRET4.GT.0) THEN
+                  IF (IRET3.GT.0) THEN
                     VALKM(1)=OPTION
                     VALKM(2)=TYSD
                     CALL U2MESK('A','CALCULEL3_9',2,VALKM)
@@ -730,7 +726,7 @@ C          CHAMP D'ENTREE POUR COQUES
                     GOTO 660
 
                   ELSE
-                    CALL RSEXCH(RESUCO,'SICO_ELNO',IORDR,CHSIC,K)
+                    CALL RSEXCH(RESUCO,'SIGM_ELNO',IORDR,CHSIC,K)
                   ENDIF
                 ENDIF
               ENDIF

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+%& MODIF TYPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,6 @@ MODE_LOCAL__
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
-    CFREQR   = FREQ_R   ELEM__         (FREQ     )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -153,9 +152,11 @@ OPTION__
                               OUT__  EENECNO  PENERCR
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER   EEFGEGC  PEFGEC
-    EFGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER
+    EFGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EEFGENOR PEFFORR  EEFGENOC PEFFORC
+    EFGE_ELNO_EXCENT    452   IN__   CCACOQU  PCACOQU  EEFGENOR PEFFONR  EEFGENOC PEFFONC
+                              OUT__  EEFGENOR PEFFOER  EEFGENOC PEFFOEC
     ENEL_ELGA           412   IN__   EEFGEGA  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR
                                      ZVARIPG  PVARIGR
@@ -247,7 +248,7 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR
                                      ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA           -1    IN__   XXXXXXX  XXXXXXX 
+    SIEF_ELGA           -1    IN__   XXXXXXX  XXXXXXX
                               OUT__  XXXXXXX  XXXXXXX
     SIEF_ELNO           409   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  EEFGEGA  PCONTRR  NGEOMER  PGEOMER
                               OUT__  EEFGENOR PSIEFNOR EEFGENOC PSIEFNOC

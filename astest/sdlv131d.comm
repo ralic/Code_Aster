@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,8 +41,6 @@ poisson = 0.3
 rho = 7800.
 longueur = 1.
 section = 0.3*0.2
-
-#PRE_GIBI();
 
 POUTRE=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), );
 
@@ -247,7 +245,6 @@ else:
 #                     VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
-#IMPR_CO(CONCEPT=_F(NOM=OBSJAU)),
 
 
 modes = 1

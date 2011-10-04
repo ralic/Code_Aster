@@ -1,4 +1,4 @@
-#@ MODIF crea_elem_ssd_ops Macro  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
+#@ MODIF crea_elem_ssd_ops Macro  DATE 03/10/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,6 +86,9 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
     if CALC_FREQ['OPTION'] == 'BANDE':
         nbande = len(CALC_FREQ['FREQ'])-1
     
+    if CALC_FREQ['OPTION'] == 'SANS':
+        nbande = 0
+
     motfilt = {}
     motfilt['FILTRE_MODE'] = []
     for i in range(nbande):
@@ -113,7 +116,8 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
         motfilt['FILTRE_MODE'].append(_F(MODE=__modes,
                                              TOUT_ORDRE='OUI',),)
 
-    _mode_meca = EXTR_MODE(**motfilt)
+    if nbande:
+        _mode_meca = EXTR_MODE(**motfilt)
 
     if BASE_MODALE[0]['TYPE'] == 'RITZ':
         mcfactc = []
@@ -122,7 +126,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
         arg_no = []
         arg_grno = []
         for i in range(len(INTERFACE)):
-            if BASE_MODALE[0]['NMAX_MODE_INTF']:
+            if BASE_MODALE[0]['TYPE_MODE'] == 'INTERFACE':
               if INTERFACE[i]['TYPE'] == 'CRAIGB':
                 if INTERFACE[i]['NOEUD'] :
                   if isinstance(INTERFACE[i]['NOEUD'],(list,tuple)):
@@ -163,7 +167,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
                                            SOLVEUR = mSolveur,
                                            **modstatm)
             lmodint.append(_mode_intf)
-        if BASE_MODALE[0]['NMAX_MODE_INTF']:
+        if BASE_MODALE[0]['TYPE_MODE'] == 'INTERFACE':
             arg_int = {}
             if arg_no:
                 arg_int['NOEUD'] = arg_no
@@ -223,17 +227,19 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
 
     if BASE_MODALE[0]['TYPE'] == 'RITZ':
         type_base = 'RITZ'
-        # il faut deux occurrences du mot cle facteur RITZ
         arg_base = {}
-        if CALC_FREQ[0]['OPTION'] == 'PLUS_PETITE' or \
-           CALC_FREQ[0]['OPTION'] == 'CENTRE':
-            arg_base['NMAX_MODE'] = CALC_FREQ[0]['NMAX_FREQ']
-        
-        mcfact.append(_F(MODE_MECA = _mode_meca,
+        if BASE_MODALE[0]['TYPE_MODE'] == 'STATIQUE':
+            mcfact.append(_F(MODE_MECA = _mode_intf,))
+        else:
+            if CALC_FREQ[0]['OPTION'] == 'PLUS_PETITE' or \
+               CALC_FREQ[0]['OPTION'] == 'CENTRE':
+                arg_base['NMAX_MODE'] = CALC_FREQ[0]['NMAX_FREQ']
+            mcfact.append(_F(MODE_MECA = _mode_meca,
                              **arg_base))
 
+        # il faut deux occurrences du mot cle facteur RITZ
         arg_base = {}
-        if len(lmodint) > 0: # MODE_INTF ou MODE_STATIQUE doit etre a la 2 occ
+        if BASE_MODALE[0]['TYPE_MODE'] == 'INTERFACE':
             if BASE_MODALE[0]['NMAX_MODE_INTF']:
                 arg_base['NMAX_MODE'] = BASE_MODALE[0]['NMAX_MODE_INTF']
             mcfact.append(_F(MODE_INTF = _mode_intf,

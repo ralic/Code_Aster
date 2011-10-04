@@ -1,4 +1,4 @@
-# MODIF  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE EPROUVETTE ENTAILLEE EN GRANDES DEFORMATIONS GDEF_LOG
 # ssna303b.para = tps_job 300 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
@@ -140,14 +140,6 @@ EFFORT_R=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  GROUP_NO='EFFO',
                                  RESULTANTE='DY',),);
 
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = EFFORT_R,
-#              NOM_PARA=('INST','DY'));
-# 
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = CONTR_R,
-#              NOM_PARA=('INST','DX'));
-
 TEST_TABLE(TABLE=EFFORT_R,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=5,),
@@ -209,14 +201,6 @@ EFFORT_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='REAC_NODA',
                                  GROUP_NO='EFFO',
                                  RESULTANTE='DY',),);
-
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = EFFORT_L,
-#              NOM_PARA=('INST','DY'));
-# 
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = CONTR_L,
-#              NOM_PARA=('INST','DX'));
 
 TEST_TABLE(TABLE=EFFORT_L,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',

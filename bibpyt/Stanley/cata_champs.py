@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 14/06/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF cata_champs Stanley  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,6 +131,7 @@ class CATA_CHAMPS :
     self('DEPL'     , 'NOEU',[],                            "Déplacements aux noeuds")
     self('TEMP'     , 'NOEU',[],                            "Température aux noeuds")
     self('SIEF_ELGA', 'ELGA',[],                            "Contraintes aux points de Gauss")
+    self('SIGM_ELGA', 'ELGA',['SIEF_ELGA'],                 "Contraintes aux points de Gauss")
     self('VARI_ELGA', 'ELGA',[],                            "Variables internes aux points de Gauss")
     self('SIEF_ELNO', 'ELNO',['SIEF_ELGA',],                "Contraintes aux noeuds par élément")
     self('SIEF_NOEU', 'NOEU',['SIEF_ELNO'],                 "Contraintes aux noeuds")
@@ -178,7 +179,7 @@ class CATA_CHAMPS :
 
 # lineaire
     # contraintes
-    self('SIGM_ELNO', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par élément en lineaire")
+    self('SIGM_ELNO', 'ELNO',['SIEF_ELGA'],                 "Contraintes aux noeuds par élément en lineaire")
     self('SIPO_ELNO', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par élément pour les éléments Poutres")
     self('SIPM_ELNO', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element pour les elements Poutres")
     self('SITU_ELNO', 'ELNO',[],                            "Etat de contrainte dans un élément de tuyau")
@@ -189,7 +190,7 @@ class CATA_CHAMPS :
 
 
 # non lineaire
-    self('SICO_ELNO', 'ELNO',['SIEF_ELGA', 'SIEF_ELGA'],    "Contraintes aux noeuds par élément pour les éléments Coques")
+    self('SIGM_ELNO', 'ELNO',['SIEF_ELGA'],                 "Contraintes aux noeuds par élément pour les éléments Coques")
     self('VACO_ELNO', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par élément pour les éléments Coques")
 
     self('EPSP_ELNO', 'ELNO',['SIEF_ELGA', 'DEPL'],         "Déformations plastiques aux noeuds par élément")

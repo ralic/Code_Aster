@@ -1,5 +1,5 @@
 
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127a.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,18 +163,6 @@ PdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CMP='V1',
                    MAILLE='SR1',
                    POINT=1,);
-
-#IMPR_FONCTION(FORMAT='TABLEAU',
-#              COURBE=_F(FONCTION=NdeU,),
-#              UNITE=8,);
-
-#IMPR_FONCTION(FORMAT='TABLEAU',
-#              COURBE=_F(FONCTION=PdeU,),
-#              UNITE=8,);
-
-#IMPR_FONCTION(FORMAT='TABLEAU',
-#              COURBE=_F(FONCTION=DdeU,),
-#              UNITE=8,);
 
 CHCOR2=CREA_CHAMP(TYPE_CHAM='CART_CORR_R',
                   OPERATION='AFFE',

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,8 +42,8 @@ C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=43)
-      PARAMETER (NCMEC2=50)
-      PARAMETER (NCMEC3=41)
+      PARAMETER (NCMEC2=48)
+      PARAMETER (NCMEC3=40)
       PARAMETER (NCMUTI=30)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3+NCMUTI)
       CHARACTER*16 CHMEC1(NCMEC1)
@@ -107,10 +107,10 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'VARI_NOEU',       'VARI_ELNO',
      & 'VATU_ELNO',       'EPSA_ELNO',       'EPSA_NOEU',
      & 'COMPORTEMENT',    'DERA_ELGA',       'DERA_ELNO',
-     & 'DERA_NOEU',       'PRME_ELNO',       'SICO_ELNO',
+     & 'DERA_NOEU',       'PRME_ELNO',
      & 'EPME_ELNO',       'EPME_ELGA',       'EPMG_ELNO',
      & 'EPMG_ELGA',       'ENEL_ELGA',       'ENEL_ELNO',
-     & 'ENEL_NOEU',       'SICO_NOEU',       'SITU_ELNO',
+     & 'ENEL_NOEU',       'SITU_ELNO',
      & 'EPMG_NOEU',       'SING_ELEM',       'SING_ELNO',
      & 'DISS_ELGA',       'DISS_ELNO',       'DISS_NOEU'/
 C
@@ -125,10 +125,10 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',
      & 'VACO_ELNO',
      & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',
-     & 'SPMX_ELGA',       'MODE_FLAMB',
+     & 'MODE_FLAMB',
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',
      & 'INDL_ELGA',       'VAEX_ELGA',       'VAEX_ELNO',
-     & 'VAEX_NOEU',       'MODE_MECA',       'SIEF_SENO_SEGA',
+     & 'VAEX_NOEU',       'DEPL_VIBR',       'SIEF_SENO_SEGA',
      & 'COHE_ELEM',       'INDC_ELEM',       'SECO_ELEM',
      & 'VARC_ELGA',       'FERRAILLAGE',     'EPVC_NOEU',
      & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA'/

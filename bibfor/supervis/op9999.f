@@ -3,7 +3,8 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +111,9 @@ C     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
       CALL GETVTX(' ','FORMAT_HDF',1,IARG,1,FHDF,NFHDF)
       IF (NFHDF .GT. 0) THEN
         IF ( FHDF .EQ. 'OUI' ) THEN
+          IF(OUINON .EQ. 'OUI')THEN
+            CALL U2MESS ('A','SUPERVIS2_8')
+          ENDIF
           FICH = 'bhdf.1'
           CALL JEIMHD(FICH,'G')
         ENDIF

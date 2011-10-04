@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,10 +70,6 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
           ANGLE        =SIMP(statut='f',typ='I',defaut= 0,
                              fr="angle de dépouillement pour les tuyaux, en degres à partir de la génératrice" ),
-
-          PLAN         =SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL"),
-                               fr="Plan de calcul pour les plaques excentrées" ),
-
                             ),
 
 #    options pour des resultats lineaires
@@ -90,7 +86,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  contraintes
                            into=( "SIEF_ELNO","SIGM_ELNO","SIEF_ELGA","EFGE_ELGA",
                                   "SIPO_ELNO","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
-                                  "SITU_ELNO","SIRO_ELEM","SIPM_ELNO",
+                                  "SITU_ELNO","SIRO_ELEM","SIPM_ELNO","SICO_ELNO",
                               # déformations
                                  "EPSI_ELNO","EPSI_ELGA","EPSG_ELGA","EPSG_ELNO",
                                  "EPME_ELNO","EPME_ELGA","DEGE_ELNO","EPTU_ELNO",
@@ -250,7 +246,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol noli",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO","SIRO_ELEM",
-                                  "SITU_ELNO","SICO_ELNO","EFGE_ELGA",
+                                  "SITU_ELNO","SICO_ELNO","EFGE_ELGA","SIGM_ELNO",
                                   "EFCA_ELNO","SIPO_ELNO","SIPM_ELNO",
                                   "FLHN_ELGA",
                                   # EPSI

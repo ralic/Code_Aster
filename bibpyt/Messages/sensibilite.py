@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sensibilite Messages  DATE 03/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,7 +154,9 @@ Conseil :
   Pour les nombres de ddls importants, il faut préférer le calcul de sensibilité
   par "différences finies".
 """),
-
+57 : _("""
+ Le calcul de derivée n'a pas été prévu pour les variables de commande de séchage ou d'hydratation.
+"""),
 
 
 

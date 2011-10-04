@@ -1,6 +1,6 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
-# RESPONSABLE VABHHTS J.PELLET
+# RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,6 +165,12 @@ MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
                  OPTION=('SIEF_ELGA','SIGM_ELNO','EPSI_ELNO','EFGE_ELNO',),);
 
+MESTAT2=POST_CHAMP(RESULTAT=MESTAT,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='MOY',),);
+
 MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
                  MAILLE=('Q1','T1','Q2','Q3','T3',),
@@ -172,7 +178,11 @@ MESTAT=CALC_ELEM(reuse =MESTAT,
 
 MESTAT=CALC_NO(reuse =MESTAT,
                RESULTAT=MESTAT,
-               OPTION=('EPSI_NOEU','SIGM_NOEU',),);
+               OPTION=('EPSI_NOEU',),);
+
+MESTAT2=CALC_NO(reuse =MESTAT2,
+               RESULTAT=MESTAT2,
+               OPTION=('SIGM_NOEU',),);
 
 ENGENDRE_TEST(CO=MESTAT,);
 
@@ -208,17 +218,17 @@ TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=1.024764313294E+06,
+                   VALE=1.2938618571158E+06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='11.0.7',),
-                _F(RESULTAT=MESTAT,
+                _F(RESULTAT=MESTAT2,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    TYPE_TEST='SOMM_ABS',
                    VALE=225807.085034,
                    PRECISION=0.0006,
                    REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MESTAT,
+                _F(RESULTAT=MESTAT2,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_NOEU',
                    TYPE_TEST='SOMM_ABS',

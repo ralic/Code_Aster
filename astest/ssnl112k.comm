@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE ESSAI DE DEPLACEMENT IMPOSE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,6 @@ CL=AFFE_CHAR_MECA(
                              DDL_IMPO=(
                                _F(  NOEUD = 'N1',
                                         DX = 0.,
-#                                        DY : 0.
                                   ),
                                _F(  NOEUD = 'N2',
                                         DX = 0.,

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -588,7 +588,7 @@ TEST_TABLE(    TABLE=TB11,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 0.,),
                NOM_PARA='SIXX',
-               VALE= -2.23248E-02,
+               VALE= -1.824260E-02,
                REFERENCE = 'NON_REGRESSION',
           )
 TEST_TABLE(    TABLE=TB11,
@@ -611,7 +611,7 @@ TEST_TABLE(    TABLE=TB12,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 0.,),
                NOM_PARA='SIXX',
-               VALE= -2.35742E-02,
+               VALE= -2.34612E-02,
                REFERENCE = 'NON_REGRESSION',
           )
 TEST_TABLE(    TABLE=TB12,
@@ -640,14 +640,14 @@ TEST_TABLE(    TABLE=TBCH,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 1.66667E-01,),
                NOM_PARA='SIXX',
-               VALE= -1.57382E-02,
+               VALE= -1.81700E-02,
                REFERENCE = 'NON_REGRESSION',
           )
 TEST_TABLE(    TABLE=TBCH,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 1.66667E-01,),
                NOM_PARA='SIYY',
-               VALE= 1.36784E-03,
+               VALE= 2.72318E-03,
                REFERENCE = 'NON_REGRESSION',
           )
 TEST_TABLE(    TABLE=TBCH,

@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# TITRE NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -167,14 +167,19 @@ RESP=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,
+RESP=CALC_ELEM(reuse= RESP,
+               RESULTAT= RESP ,
+               OPTION='SIGM_ELNO',);
 
-                             OPTION='SIGM_ELNO'
-                        )
+RESPMOY=POST_CHAMP(RESULTAT=RESP,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+RESPMOY=CALC_NO(reuse=RESPMOY,
+                RESULTAT=RESPMOY,
+                OPTION='SIGM_NOEU',);
 
-CALC_NO( reuse=RESP,   RESULTAT=RESP,
-                      OPTION='SIGM_NOEU'
-                 )
 
 TEST_RESU(RESU=(
 
@@ -193,12 +198,12 @@ TEST_RESU(RESU=(
 
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
-            _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
+            _F(  RESULTAT = RESPMOY,       NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.102,
               GROUP_NO = 'PA',         NOM_CMP = 'SIYY',     VALE = 194.93754),
      # B
-            _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
+            _F(  RESULTAT = RESPMOY,      NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.102,
               GROUP_NO = 'PB',         NOM_CMP = 'SIYY',     VALE = 194.93754))
@@ -220,33 +225,40 @@ RESF=MECA_STATIQUE(    MODELE=MO,           CHAM_MATER=CM,EXCIT=(
 
                         )
 
-CALC_ELEM( reuse= RESF ,RESULTAT= RESF ,
-                               OPTION='SIGM_ELNO'
-                        )
+RESF=CALC_ELEM(reuse= RESF,
+               RESULTAT= RESF ,
+               OPTION='SIGM_ELNO',);
 
-CALC_NO( reuse=RESF,   RESULTAT=RESF,
-                      OPTION='SIGM_NOEU'
-                  )
+RESFMOY=POST_CHAMP(RESULTAT=RESF,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
 
-RESFINF=CALC_ELEM(
-                          RESULTAT=RESF,
-                           OPTION='SIGM_ELNO',
-                          REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                      )
+RESFMOY=CALC_NO(reuse=RESFMOY,
+                RESULTAT=RESFMOY,
+                OPTION='SIGM_NOEU',);
 
-CALC_NO(   reuse=RESFINF,   RESULTAT=RESFINF,
-                           OPTION='SIGM_NOEU'
-                      )
+RESFINF=POST_CHAMP(RESULTAT=RESF,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
 
-RESFSUP=CALC_ELEM(
-                          RESULTAT=RESF,
-                           OPTION='SIGM_ELNO',
-                          REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-                      )
+RESFINF=CALC_NO(reuse=RESFINF,
+                RESULTAT=RESFINF,
+                OPTION='SIGM_NOEU',);
 
-CALC_NO(   reuse=RESFSUP,   RESULTAT=RESFSUP,
-                           OPTION='SIGM_NOEU'
-                      )
+RESFSUP=POST_CHAMP(RESULTAT=RESF,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
+
+RESFSUP=CALC_NO(reuse=RESFSUP,
+                RESULTAT=RESFSUP,
+                OPTION='SIGM_NOEU',);
+
 
 TEST_RESU(RESU=(
 
@@ -266,12 +278,12 @@ TEST_RESU(RESU=(
      # CONTRAINTES
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
-            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,
+            _F(  RESULTAT = RESFMOY,             NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.028,
               GROUP_NO = 'PA',         NOM_CMP = 'SIYY',  VALE = 194.93754),
      # B
-            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,
+            _F(  RESULTAT = RESFMOY,             NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.028,
               GROUP_NO = 'PB',         NOM_CMP = 'SIYY',  VALE = 194.93754),
@@ -317,34 +329,39 @@ RESG=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESG ,RESULTAT= RESG ,
+RESG=CALC_ELEM(reuse= RESG,
+               RESULTAT= RESG ,
+               OPTION='SIGM_ELNO',);
 
-                             OPTION='SIGM_ELNO'
-                        )
+RESGMOY=POST_CHAMP(RESULTAT=RESG,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
 
-CALC_NO( reuse=RESG,   RESULTAT=RESG,
-                      OPTION='SIGM_NOEU'
-                  )
+RESGMOY=CALC_NO(reuse=RESGMOY,
+                RESULTAT=RESGMOY,
+                OPTION='SIGM_NOEU',);
 
-RESGINF=CALC_ELEM(
-                          RESULTAT=RESG,
-                           OPTION='SIGM_ELNO',
-                          REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                      )
+RESGINF=POST_CHAMP(RESULTAT=RESG,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
 
-CALC_NO(   reuse=RESGINF,   RESULTAT=RESGINF,
-                           OPTION='SIGM_NOEU'
-                      )
+RESGINF=CALC_NO(reuse=RESGINF,
+                RESULTAT=RESGINF,
+                OPTION='SIGM_NOEU',);
 
-RESGSUP=CALC_ELEM(
-                          RESULTAT=RESG,
-                           OPTION='SIGM_ELNO',
-                          REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-                      )
+RESGSUP=POST_CHAMP(RESULTAT=RESG,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
 
-CALC_NO(   reuse=RESGSUP,   RESULTAT=RESGSUP,
-                           OPTION='SIGM_NOEU'
-                      )
+RESGSUP=CALC_NO(reuse=RESGSUP,
+                RESULTAT=RESGSUP,
+                OPTION='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
 
@@ -364,12 +381,12 @@ TEST_RESU(RESU=(
      # CONTRAINTES
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
-            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,
+            _F(  RESULTAT = RESGMOY,             NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.028,
               GROUP_NO = 'PA',         NOM_CMP = 'SIYY',  VALE = 194.93754),
      # B
-            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,
+            _F(  RESULTAT = RESGMOY,             NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.028,
               GROUP_NO = 'PB',         NOM_CMP = 'SIYY',  VALE = 194.93754),
@@ -415,34 +432,39 @@ RESM=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESM ,RESULTAT= RESM ,
+RESM=CALC_ELEM(reuse= RESM,
+               RESULTAT= RESM ,
+               OPTION='SIGM_ELNO',);
 
-                             OPTION='SIGM_ELNO'
-                        )
+RESMMOY=POST_CHAMP(RESULTAT=RESM,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
 
-CALC_NO( reuse=RESM,   RESULTAT=RESM,
-                      OPTION='SIGM_NOEU'
-                  )
+RESMMOY=CALC_NO(reuse=RESMMOY,
+                RESULTAT=RESMMOY,
+                OPTION='SIGM_NOEU',);
 
-RESMINF=CALC_ELEM(
-                          RESULTAT=RESM,
-                           OPTION='SIGM_ELNO',
-                          REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                      )
+RESMINF=POST_CHAMP(RESULTAT=RESM,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
 
-CALC_NO(   reuse=RESMINF,   RESULTAT=RESMINF,
-                           OPTION='SIGM_NOEU'
-                      )
+RESMINF=CALC_NO(reuse=RESMINF,
+                RESULTAT=RESMINF,
+                OPTION='SIGM_NOEU',);
 
-RESMSUP=CALC_ELEM(
-                          RESULTAT=RESM,
-                           OPTION='SIGM_ELNO',
-                          REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-                      )
+RESMSUP=POST_CHAMP(RESULTAT=RESM,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
 
-CALC_NO(   reuse=RESMSUP,   RESULTAT=RESMSUP,
-                           OPTION='SIGM_NOEU'
-                      )
+RESMSUP=CALC_NO(reuse=RESMSUP,
+                RESULTAT=RESMSUP,
+                OPTION='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
 
@@ -462,12 +484,12 @@ TEST_RESU(RESU=(
      # CONTRAINTES
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
-            _F(  RESULTAT = RESM,             NUME_ORDRE = 1,
+            _F(  RESULTAT = RESMMOY,             NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.028,
               GROUP_NO = 'PA',         NOM_CMP = 'SIYY',  VALE = 194.93754),
      # B
-            _F(  RESULTAT = RESM,             NUME_ORDRE = 1,
+            _F(  RESULTAT = RESMMOY,             NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.028,
               GROUP_NO = 'PB',         NOM_CMP = 'SIYY',  VALE = 194.93754),
@@ -510,7 +532,7 @@ TEST_RESU(RESU=(
      # CONTRAINTES
      # FEUILLET_MOYEN SIGMA THETA THETA
      # N1
-            _F(  RESULTAT = RESM,             NUME_ORDRE = 1,
+            _F(  RESULTAT = RESMMOY,             NUME_ORDRE = 1,
               NOM_CHAM = 'SIGM_NOEU', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.028,
               NOEUD = 'N1',         NOM_CMP = 'SIYY',  VALE = 194.93754),

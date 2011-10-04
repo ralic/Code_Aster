@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION
 # wtnv126c.para = tps_job 230 mem_job 400Mo mem_aster 40 ncpus 1 liste_test S
@@ -65,8 +65,6 @@ DSATU=CALC_FONC_INTERP(FONCTION=DSL,
                        INFO=2,);
 
 # MAILLAGE + MODELE
-
-#PRE_GIBI();
 
 MAILLAGE=LIRE_MAILLAGE( );
 

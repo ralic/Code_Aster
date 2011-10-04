@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( IMODE , LMIN , LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -182,7 +182,7 @@ C     LE SEGMENT DE VALEURS EST MARQUE X D, IL FAUT D'ABORD L'ECRIRE
 C
                       IADDI(1) = ISZON(JISZON + IBIADD -1 + 2*K-1)
                       IADDI(2) = ISZON(JISZON + IBIADD -1 + 2*K  )
-                      CALL JXECRO ( IC, IADMOC, IADDI, LSV, 0, K)
+                      CALL JXECRO ( IC, IADMOC, IADDI, LSV, J, K)
                       ISZON(JISZON + IBIADD -1 + 2*K-1) = IADDI(1)
                       ISZON(JISZON + IBIADD -1 + 2*K  ) = IADDI(2)
                     ENDIF

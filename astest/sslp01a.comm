@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,7 +107,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = DEF,
                           NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIXX',
                           VALE = 8.0E+7,
-                          PRECISION = 0.015)
+                          PRECISION = 0.018)
           )
 
 #----------------------------------------------------------
@@ -170,7 +170,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = DEF_R,
                           NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIXX',
                           VALE = 8.0E+7,
-                          PRECISION = 0.015,
+                          PRECISION = 0.018,
                           REFERENCE = 'AUTRE_ASTER'),
                           )
 

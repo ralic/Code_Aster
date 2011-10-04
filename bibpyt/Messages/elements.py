@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF elements Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -241,21 +241,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 50 : _("""
  comportement élastique inexistant
-"""),
-
-51 : _("""
-  -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
-     SIGM_ELNO. Les seuls comportements autorisés sont :
-     ELAS, ELAS_COQUE, ou ELAS_ORTH
-  -> Risque & Conseil :
-     Pour les autres comportements, utiliser SIEF_ELNO (efforts)
-     ou SICO_ELNO (contraintes en un point de l'épaisseur).
-"""),
-
-52 : _("""
-  -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
-     SIGM_ELNO avec chargement thermique. Les seuls comportements autorisés sont :
-     ELAS, ou ELAS_ORTH
 """),
 
 53 : _("""

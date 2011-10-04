@@ -3,7 +3,7 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 03/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,22 +68,24 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      KPG,KSP,NDIM,IMATE,IRET
+      INTEGER      KPG,KSP,NDIM,IMATE,IRET,ISEC,IHYD
       CHARACTER*(*) FAMI,POUM
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 COMPOR(*),OPTION
       REAL*8      CRIT(3),TEMP,DLAGTG,DEPS(6),DSIG(6)
+      REAL*8      HYDR, SECH, SECREF
       REAL*8      EPS(6),SIG(6),VI,DSIDEP(6,6),ENERGI(2),DENERG(2)
       LOGICAL     DERIVL
 
 C DECLARATION VARIABLES LOCALES
       LOGICAL     CPLAN,ELAS,VMIS,LINE,NONLIN,INCO,PUIS
-      INTEGER ICODRE(3)
-      CHARACTER*8 NOMRES(3)
+      INTEGER ICODRE(5)
+      CHARACTER*8 NOMRES(5)
       INTEGER     JPROL, JVALE, NBVALE
       INTEGER     NDIMSI, NITER, K, L, IBID
 
-      REAL*8 VALRES(3), E, NU, TROISK, DEUXMU, ALPHA, SIGY, DSDE
+      REAL*8 VALRES(5), E, NU, TROISK, DEUXMU, ALPHA, SIGY, DSDE
+      REAL*8 KDESS,BENDO
       REAL*8 THER, EPSTH(6), EPSMO, EPSDV(6), EPSEQ, SIELEQ
       REAL*8 P, RP, RPRIM, G, COEF, EPSI
       REAL*8 AIRERP,DTHER
@@ -96,7 +98,6 @@ C DECLARATION VARIABLES LOCALES
 C====================================================================
 C---COMMONS NECESSAIRES A HENCKY C_PLAN (NMCRI1)
 C====================================================================
-
       INTEGER  IMATE2, JPROL2, JVALE2, NBVAL2
       REAL*8   PM, SIGEL(6), LIN, EPSTHE
       COMMON /RCONM1/ DEUXMU, NU, E, SIGY, RPRIM, PM, SIGEL, LIN
@@ -106,16 +107,13 @@ C====================================================================
 C====================================================================
 C---COMMONS NECESSAIRES A ELAS_VMIS_PUIS
 C====================================================================
-
       COMMON /RCONM2/ALFAFA,UNSURN,SIELEQ
       REAL*8         ALFAFA,UNSURN
       REAL*8   NMCRI2
       EXTERNAL NMCRI2
-
 C====================================================================
 C - INITIALISATIONS
 C====================================================================
-
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       CPLAN = TYPMOD(1) .EQ. 'C_PLAN'
       INCO  = TYPMOD(2) .EQ. 'INCO'
@@ -147,11 +145,9 @@ C====================================================================
       IF (.NOT.(ELAS .OR. VMIS))
      &   CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       NDIMSI = 2*NDIM
-
 C====================================================================
 C - LECTURE DES CARACTERISTIQUES ELASTIQUES
 C====================================================================
-
       NOMRES(1)='E'
       NOMRES(2)='NU'
       NOMRES(3)='ALPHA'
@@ -161,7 +157,19 @@ C TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
 
 
       CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
-
+      CALL RCVARC(' ','HYDR',POUM,FAMI,KPG,KSP,HYDR,IHYD)
+      IF (IHYD.NE.0) HYDR=0.D0
+      CALL RCVARC(' ','SECH',POUM,FAMI,KPG,KSP,SECH,ISEC)
+      IF (ISEC.NE.0) SECH=0.D0
+      CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SECREF,IRET)
+      IF (IRET.NE.0) SECREF=0.D0
+C SI CALCUL DE LA DERIVEE LAGRANGIENNE DERIVL=TRUE 
+C ET SECHAGE ou HYDRATATION EN VARIABLE DE COMMANDE
+C => ERREUR CAS NON PRÉVU
+      IF ((DERIVL) .AND. (IHYD .EQ.0)) 
+     &   CALL U2MESS('F','SENSIBILITE_57') 
+      IF ((DERIVL) .AND. (ISEC .EQ.0)) 
+     &   CALL U2MESS('F','SENSIBILITE_57')
       IF (ELAS .OR. LINE .OR. PUIS) THEN
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,2,
      &                 NOMRES,VALRES,ICODRE, 2)
@@ -189,7 +197,21 @@ C TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
       ELSE
         TROISK = DEUXMU
       ENDIF
-
+C
+C --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
+C
+      NOMRES(4)='B_ENDOGE'
+      NOMRES(5)='K_DESSIC'
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
+     &            NOMRES(4),VALRES(4),ICODRE(4), 0)
+      IF ( ICODRE(4) .NE.0    ) VALRES(4) = 0.D0
+      BENDO = VALRES(4)
+C
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
+     &            NOMRES(5),VALRES(5),ICODRE(5), 0)
+      IF ( ICODRE(5) .NE.0    ) VALRES(5) = 0.D0
+      KDESS = VALRES(5)
+C
 C====================================================================
 C - LECTURE DES CARACTERISTIQUES DE NON LINEARITE DU MATERIAU
 C====================================================================
@@ -223,7 +245,7 @@ C CALCULS DIVERS
 C====================================================================
 
 C - CALCUL DE EPSMO ET EPSDV
-      THER = EPSTHE
+      THER = EPSTHE - KDESS*(SECREF-SECH)- BENDO*HYDR
 
 C CALCUL DE LA DERIVEE LAGRANGIENNE DE THER (DTHER) CAR DL(ALPHA)=0
 C ET DL(TREF) = 0 PAR ELEMENT
@@ -294,17 +316,13 @@ C CALCUL DE LA DERIVEE LAGRANGIENNE DU EPS EQUIVALENT (PART II)
 C====================================================================
 C CAS NON LINEAIRE
 C====================================================================
-
 C - CALCUL DE P, RP, RPRIM ET AIRERP
       IF (NONLIN) THEN
          IRET=0
-
 C===========================================
 C      CAS DES CONTRAINTES PLANES
 C===========================================
-
         IF (CPLAN) THEN
-
 C        REMPLISSAGE DU COMMON
           PM = 0.D0
           DO 40 K=1,4
@@ -324,7 +342,6 @@ C        REMPLISSAGE DU COMMON
      &                  0.D0,RP,RPRIM,AIRERP,DUM,DUM)
             LIN = 0.D0
           ENDIF
-
 C        CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
           F0=NMCRI1(0.D0)
           APPROX = 2.D0*EPSEQ/3.D0 - SIGY/1.5D0/DEUXMU
@@ -356,7 +373,6 @@ C      CAS 2D OU 3D
 C===========================================
 C NON CONTRAINTE PLANE
 C===========================================
-
           PM=0.D0
           IF (LINE) THEN
             RPRIM = E*DSDE/(E-DSDE)
@@ -381,19 +397,15 @@ C           AMELIORATION DE LA PREDICTION EN ESTIMANT RPRIM(PM+DP0)
           ENDIF
           G = RP/EPSEQ
         ENDIF
-
 C====================================================================
 C CAS LINEAIRE
 C====================================================================
-
       ELSE
         G = DEUXMU
       ENDIF
-
 C====================================================================
 C - CALCUL DES CONTRAINTES ET DES PSEUDO VARIABLES INTERNES
 C====================================================================
-
       IF (INCO) THEN
         DO 50 K = 1,NDIMSI
           SIG(K) =  G*EPSDV(K)
@@ -402,7 +414,6 @@ C====================================================================
         DO 55 K = 1,NDIMSI
           SIG(K) = TROISK*EPSMO*KRON(K) + G*EPSDV(K)
  55     CONTINUE
-
 C CALCUL DE LA DERIVEE LAGRANGIENNE DU TENSEUR DES CONTRAINTES
 C  (DSIG) CAR DL(TROISK)=0 ET DL(G)=0 PAR ELEMENT
         IF (DERIVL) THEN
@@ -411,11 +422,9 @@ C  (DSIG) CAR DL(TROISK)=0 ET DL(G)=0 PAR ELEMENT
  56       CONTINUE
         ENDIF
       ENDIF
-
 C====================================================================
 C TRAITEMENTS PARTICULIERS
 C====================================================================
-
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA' .OR.
      &     OPTION(1:7) .EQ. 'RUPTURE'  ) THEN
@@ -426,7 +435,6 @@ C====================================================================
           VI = 0.D0
         ENDIF
       ENDIF
-
 C - CALCUL DE LA MATRICE DE RIGIDITE TANGENTE
       IF ( OPTION(1:10) .EQ. 'RIGI_MECA_' .OR.
      &     OPTION       .EQ. 'RIGI_MECA' .OR.
@@ -447,7 +455,6 @@ C      TERME LINEAIRE
         DO 100 K=1,NDIMSI
           DSIDEP(K,K) = DSIDEP(K,K) + G
  100    CONTINUE
-
 C      TERME NON LINEAIRE
         IF (NONLIN.AND.(OPTION(11:14).NE.'ELAS')) THEN
           COEF = DEUXMU*RPRIM/(1.5D0*DEUXMU+RPRIM) - G
@@ -458,7 +465,6 @@ C      TERME NON LINEAIRE
 120         CONTINUE
 110       CONTINUE
         ENDIF
-
 C      CORRECTION POUR LES CONTRAINTES PLANES
         IF (CPLAN) THEN
           DO 130 K=1,NDIMSI
@@ -474,16 +480,12 @@ C      CORRECTION POUR LES CONTRAINTES PLANES
 C====================================================================
 C CALCUL DE L'ENERGIE LIBRE
 C====================================================================
-
 C CALCUL DE L'ENERGIE LIBRE (ENERGI(1)) ET DE SA DERIVEE / T
 C (ENERGI(2)) ET DE LEURS DERIVEES LAGRANGIENNES (DENER)
       IF (OPTION(1:7) .EQ. 'RUPTURE') THEN
         DIVU   = 3.D0*EPSMO
-
 C CALCUL INTERMEDIAIRE POUR LA DERIVEE LAGRANGIENNE
         IF (DERIVL) DDIVU = 3.D0*DEPSMO
-
-
         CALL NMELRU(FAMI,KPG,KSP,POUM,IMATE,COMPOR,EPSEQ,P,DIVU,
      &              NONLIN,ENERGI,
      &              DERIVL,DDIVU,DEPSEQ,DENERG,DLAGTG)

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE CYLINDRE CREUX THERMOELASTICITE LINEAIRE - TEST UMAT AXIS
 # umat001a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -42,7 +42,6 @@ else:
 
 DEBUT(CODE=_F(NOM='UMAT001A',NIV_PUB_WEB='INTERNET'))
 
-PRE_GIBI()
 
 L_INST =DEFI_LIST_REEL(  DEBUT=0.0,
                         INTERVALLE=(
@@ -51,7 +50,7 @@ L_INST =DEFI_LIST_REEL(  DEBUT=0.0,
                         _F( PAS = 0.01,        JUSQU_A = 0.24),
 )
                       )
-MA = LIRE_MAILLAGE();
+MA = LIRE_MAILLAGE(FORMAT='MED');
 
 MA = DEFI_GROUP(reuse =MA,
                 MAILLAGE=MA,

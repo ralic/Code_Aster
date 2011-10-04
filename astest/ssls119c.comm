@@ -1,7 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE ADBHHPM P.MASSIN
-# DATE   : 18/07/2001
-# AUTEUR : P. MASSIN
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE MASSIN P.MASSIN
 # TITRE  : TEST DU RAASCH HOOK 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,6 +73,12 @@ RESU=CALC_ELEM(reuse =RESU,
                OPTION='SIGM_ELNO',
                TOUT_ORDRE='OUI',);
 
+RESUPOS=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+
 DEP_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='TAB_NORM',
                               NOM_CMP='DZ',
@@ -86,7 +90,7 @@ SIGMA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='TAB_SIGM ',
                               TOUT_CMP='OUI',
                               GROUP_NO='C',
-                              RESULTAT=RESU,
+                              RESULTAT=RESUPOS,
                               NOM_CHAM='SIGM_ELNO',),);
 
 TEST_RESU(RESU=(

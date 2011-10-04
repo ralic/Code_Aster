@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
 # ssls09b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,7 +141,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    NOEUD='N1',
                    VALE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=18.0,
+                   PRECISION=20.2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEF,
                    NUME_ORDRE=1,
@@ -151,7 +151,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    NOEUD='N101',
                    VALE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=36.0,
+                   PRECISION=38.0,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEF,
                    NUME_ORDRE=1,
@@ -161,7 +161,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    NOEUD='N51',
                    VALE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=27.0,
+                   PRECISION=29.1,
                    REFERENCE='ANALYTIQUE',),),);
 
 #--------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,6 +108,12 @@ RESU2=CALC_ELEM( reuse=RESU2,
                            OPTION='SIGM_ELNO'
                      )
 
+RESUPOS=POST_CHAMP(RESULTAT=RESU2,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='MOY',),);
+
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
 # LE FICHIER DE DONNEES DE LIRE_PLEXUS
@@ -129,7 +135,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = RESU2,
                    REFERENCE = 'AUTRE_ASTER',
                    VALE = -5.E-11,
                    PRECISION = 0.04),
-            _F(  RESULTAT = RESU2,
+            _F(  RESULTAT = RESUPOS,
                    INST = 1.,
                    NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'M1',
@@ -160,8 +166,19 @@ RESU_NL=CALC_ELEM( reuse=RESU_NL,
 RESU_NL=CALC_ELEM( reuse=RESU_NL,
                            RESULTAT=RESU_NL,
                                INST=1.,
-                             OPTION='SICO_ELNO'
+                             OPTION=('SIGM_ELNO')
                      )
+
+RESNLPOS=POST_CHAMP(RESULTAT=RESU_NL,
+                    INST=1.,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='MOY',),);
+
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=_F(RESULTAT=RESNLPOS,
+                  NOM_CHAM='SIGM_ELNO'))
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
@@ -183,15 +200,15 @@ TEST_RESU(RESU=( _F(  RESULTAT = RESU_NL,
                    REFERENCE = 'AUTRE_ASTER',
                    VALE = -5.E-11,
                    PRECISION = 0.04),
-            _F(  RESULTAT = RESU_NL,
+            _F(  RESULTAT = RESNLPOS,
                    INST = 1.,
-                   NOM_CHAM = 'SICO_ELNO',
+                   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'M1',
                    NOEUD = 'N1',
                    NOM_CMP = 'SIYY',
                    REFERENCE = 'AUTRE_ASTER',
                    VALE = 100.,
-                   PRECISION = 0.03))
+                   PRECISION = 0.03),)
           )
 
 FIN()

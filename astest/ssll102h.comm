@@ -1,7 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE ADBHHPM P.MASSIN
-# DATE   : 26/04/2000
-# AUTEUR : F. LEBOUVIER (DELTACAD)
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE MASSIN P.MASSIN
 # TITRE  : POUTRE ENCASTREE SOUMISE A DES EFFORTS UNITAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,12 +128,15 @@ RESU=MACRO_ELAS_MULT(MODELE=POUTMODE,
 #
 
 RESU=CALC_ELEM(reuse =RESU,
-
-
-
                RESULTAT=RESU,
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+
+RESUPOS=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
 
 #IMPR_RESU(RESU=_F(RESULTAT=RESU,),);
 #
@@ -151,7 +152,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=5e-10,
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NOM_CAS='CHARGE NUMERO 1',
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
@@ -176,7 +177,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=1.5e-07,
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NOM_CAS='CHARGE NUMERO 2',
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
@@ -201,7 +202,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=1.5e-07,
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NOM_CAS='CHARGE NUMERO 3',
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
@@ -217,7 +218,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='B',
                    VALE=0.0104,
                    REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NOM_CAS='CHARGE NUMERO 4',
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
@@ -249,12 +250,16 @@ RESU5=MACRO_ELAS_MULT(MODELE=POUTMODE,
 #
 
 RESU5=CALC_ELEM(reuse =RESU5,
-
-
-
                RESULTAT=RESU5,
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+
+RESU5POS=POST_CHAMP(RESULTAT=RESU5,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
+
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=RESU5,
@@ -264,7 +269,7 @@ TEST_RESU(RESU=(
                    GROUP_NO='B',
                    VALE=0.0104,
                    REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESU5,
+                _F(RESULTAT=RESU5POS,
                    NOM_CAS='CHARGE NUMERO 5',
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',

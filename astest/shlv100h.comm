@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TRIA3 QUAD4) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,7 +160,7 @@ MAILLE = 'M1',      GROUP_NO = 'B',        NOM_CMP = 'SIXX',        VALE = 0.),
             CRITERE = 'RELATIF',  PRECISION = 4.E-2,
 MAILLE = 'M1',      GROUP_NO = 'B',        NOM_CMP = 'SIYY',        VALE = 0.20021),
             _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
-            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            CRITERE = 'RELATIF',  PRECISION = 1.3E-2,
 MAILLE = 'M1',      GROUP_NO = 'B',        NOM_CMP = 'SIZZ',        VALE = 0.66738),
             _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,

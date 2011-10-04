@@ -1,16 +1,16 @@
-      SUBROUTINE MECEUC(STOP,POUX,OPTION,LIGREL,NIN,LCHIN,LPAIN,NOU,
-     &                  LCHOU,LPAOU,BASE)
+      SUBROUTINE MECEUC(STOP,POUX,OPTION,CARAEZ,LIGREL,NIN,LCHIN,LPAIN,
+     &                  NOU,LCHOU,LPAOU,BASE)
 
       IMPLICIT NONE
 
       INTEGER NIN,NOU
       CHARACTER*1 STOP
-      CHARACTER*8 POUX
+      CHARACTER*8 POUX,CARAEL
       CHARACTER*(*) BASE,OPTION
-      CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL
+      CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL,CARAEZ
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      CHARACTER*19 CH1,CH2,CHDYNR,CHDYNI,REEL,IMAG
+      CHARACTER*19 CH1,CH2,CHDYNR,CHDYNI,CHREEL,CHIMAG
       CHARACTER*19 CHACCR,CHACCI,CHDEPR,CHDEPI
       CHARACTER*16 OPTIO2
       CHARACTER*14 VALK(1)
@@ -80,8 +80,8 @@ C
       CALL JEMARQ()
 
       OPTIO2=OPTION
-      IMAG='&&MECEUC.IMAG'
-      REEL='&&MECEUC.REEL'
+      CHIMAG='&&MECEUC.CHIMAG'
+      CHREEL='&&MECEUC.CHREEL'
       CH1='&&MECEUC.CH1'
       CH2='&&MECEUC.CH2'
       CHDYNR='&&MECEUC.CHDYNR'
@@ -94,11 +94,11 @@ C
       INDIC2=0
       INDIC3=0
       INDIC4=0
+      CARAEL=CARAEZ
 
 C     1. CHAMP COMPLEXE = DEPL
 C     -----------------------------------------------
       IF ((OPTIO2.EQ.'SIEF_ELGA') .OR.
-     &    (OPTIO2.EQ.'SIGM_ELNO') .OR.
      &    (OPTIO2.EQ.'EPSI_ELNO') .OR.
      &    (OPTIO2.EQ.'EPSI_ELGA') .OR.
      &    (OPTIO2.EQ.'EFGE_ELNO') .OR.
@@ -133,15 +133,15 @@ C           LE CHAMP EST COMPLEXE, ON LE DIVISE EN PARTIE REELLE ET
 C           PARTIE IMAGINAIRE PUIS ON APPELLE CALCUL SUR CHACUN
 C           DES CHAMPS
             CALL ASSERT(NOU.EQ.1)
-            CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
-            LCHIN(INDIC1)=REEL
+            CALL SEPACH(CARAEL,LCHIN(INDIC1),'V',CHREEL,CHIMAG)
+            LCHIN(INDIC1)=CHREEL
 
             IF (POUX.EQ.'OUI') THEN
                DO 20 I=1,NIN
                   IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
    20          CONTINUE
                CALL ASSERT(INDIC2.GT.0)
-               CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
+               CALL SEPACH(CARAEL,LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
                LCHIN(INDIC2)=CHDYNR
             ENDIF
 
@@ -150,14 +150,14 @@ C           DES CHAMPS
                   IF (LPAIN(I).EQ.'PACCSEN')INDIC3=I
    30          CONTINUE
                CALL ASSERT(INDIC3.GT.0)
-               CALL SEPACH(LCHIN(INDIC3),'V',CHACCR,CHACCI)
+               CALL SEPACH(CARAEL,LCHIN(INDIC3),'V',CHACCR,CHACCI)
                LCHIN(INDIC3)=CHACCR
 
                DO 40 I=1,NIN
                   IF (LPAIN(I).EQ.'PDEPSEN')INDIC4=I
    40          CONTINUE
                CALL ASSERT(INDIC4.GT.0)
-               CALL SEPACH(LCHIN(INDIC4),'V',CHDEPR,CHDEPI)
+               CALL SEPACH(CARAEL,LCHIN(INDIC4),'V',CHDEPR,CHDEPI)
                LCHIN(INDIC4)=CHDEPR
             ENDIF
 
@@ -167,7 +167,7 @@ C           -- CALCUL 1ERE PARTIE (R):
      &                  LPAOU,'V','OUI')
 
 C           -- CALCUL 2EME PARTIE (I):
-            LCHIN(INDIC1)=IMAG
+            LCHIN(INDIC1)=CHIMAG
             IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
             IF (OPTIO2(11:14).EQ.'SENS') THEN
                LCHIN(INDIC3)=CHACCI
@@ -182,7 +182,7 @@ C           -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
      &            (OPTIO2.EQ.'ECIN_ELEM')) THEN
                CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
             ELSE
-               CALL ASSACH(CH1,CH2,'G',LCHOU(1))
+               CALL ASSACH(CH1,CH2,BASE,LCHOU(1))
             ENDIF
 
          ELSE
@@ -193,10 +193,22 @@ C     2. CHAMP COMPLEXE = SIEF
 C     -----------------------------------------------
       ELSEIF ((OPTIO2.EQ.'ENEL_ELGA') .OR.
      &        (OPTIO2.EQ.'ENEL_ELNO') .OR.
+     &        (OPTIO2.EQ.'EFGE_ELGA') .OR.
+     &        (OPTIO2.EQ.'SIGM_ELGA') .OR.
+     &        (OPTIO2.EQ.'SIGM_ELNO') .OR.
      &        (OPTIO2.EQ.'SIEF_ELNO')) THEN
+C     &        (OPTIO2.EQ.'EFGE_ELNO') .OR.
 
          DO 50 I=1,NIN
-            IF (LPAIN(I).EQ.'PCONTRR')INDIC1=I
+            IF (OPTIO2.EQ.'EFGE_ELGA') THEN
+              IF (LPAIN(I).EQ.'PSIEFR')INDIC1=I
+            ELSEIF (OPTIO2.EQ.'EFGE_ELNO') THEN
+              IF (LPAIN(I).EQ.'PEFGAR')INDIC1=I
+            ELSEIF (OPTIO2.EQ.'SIGM_ELGA') THEN
+              IF (LPAIN(I).EQ.'PSIEFR')INDIC1=I
+            ELSE
+              IF (LPAIN(I).EQ.'PCONTRR')INDIC1=I
+            ENDIF
    50    CONTINUE
          CALL ASSERT(INDIC1.GT.0)
          CALL DISMOI('F','NOM_GD',LCHIN(INDIC1)(1:19),'CHAMP',IBID,
@@ -211,15 +223,15 @@ C        -------------------------------
          ELSEIF (NOMGD.EQ.'SIEF_C') THEN
 C        -------------------------------
             CALL ASSERT(NOU.EQ.1)
-            CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
-            LCHIN(INDIC1)=REEL
+            CALL SEPACH(CARAEL,LCHIN(INDIC1),'V',CHREEL,CHIMAG)
+            LCHIN(INDIC1)=CHREEL
 
             IF (POUX.EQ.'OUI') THEN
                DO 60 I=1,NIN
                   IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
    60          CONTINUE
                CALL ASSERT(INDIC2.GT.0)
-               CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
+               CALL SEPACH(CARAEL,LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
                LCHIN(INDIC2)=CHDYNR
             ENDIF
 
@@ -229,7 +241,7 @@ C           -- CALCUL 1ERE PARTIE (R):
      &                  LPAOU,'V','OUI')
 
 C           -- CALCUL 2EME PARTIE (I):
-            LCHIN(INDIC1)=IMAG
+            LCHIN(INDIC1)=CHIMAG
             IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
             CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH2)
             CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH2,
@@ -237,8 +249,13 @@ C           -- CALCUL 2EME PARTIE (I):
 
 
 C           -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
-            IF (OPTIO2.EQ.'SIEF_ELNO') THEN
-               CALL ASSACH(CH1,CH2,'G',LCHOU(1))
+            IF ((OPTIO2.EQ.'SIEF_ELNO').OR.
+     &          (OPTIO2.EQ.'SIGM_ELGA').OR.
+     &          (OPTIO2.EQ.'SIGM_ELNO').OR.
+     &          (OPTIO2.EQ.'EFGE_ELGA').OR.
+     &          (OPTIO2.EQ.'EFGE_ELNO').OR.
+     &          (OPTIO2.EQ.'SIEF_ELGA')) THEN
+               CALL ASSACH(CH1,CH2,BASE,LCHOU(1))
             ELSE
                CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
             ENDIF
@@ -258,8 +275,8 @@ C        ENCORE AUTORISE ET ON FAIT DONC UN APPEL A CALCUL
    70 CONTINUE
       CALL DETRSD('CHAMP',CH1)
       CALL DETRSD('CHAMP',CH2)
-      CALL DETRSD('CHAMP',IMAG)
-      CALL DETRSD('CHAMP',REEL)
+      CALL DETRSD('CHAMP',CHIMAG)
+      CALL DETRSD('CHAMP',CHREEL)
       CALL DETRSD('CHAMP',CHDYNR)
       CALL DETRSD('CHAMP',CHDYNI)
       CALL DETRSD('CHAMP',CHACCR)

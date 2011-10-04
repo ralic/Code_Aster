@@ -1,5 +1,5 @@
-# MODIF  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,25 +170,31 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='DEGE_ELNO',NOM_CMP='KXX',RESULTAT=RESU
 # CALCUL DES CONTRANTES DE RUPTURE A PARTIR DES LIMITES DE RUPTURE
 # DEFINIES DANS DEFI_MATERIAU
 #
-CALC_ELEM(   reuse = RESU1,  RESULTAT=RESU1,
-             OPTION='SIGM_ELNO',
-             REPE_COQUE =_F( NUME_COUCHE=1,
-                             NIVE_COUCHE='INF',),  )
+CALC_ELEM(reuse = RESU1,  RESULTAT=RESU1,
+          OPTION='SIGM_ELNO',)
+
+R1S1INF=POST_CHAMP(RESULTAT=RESU1,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
 
 
 #
-R1S1INF = CALC_ELEM( RESULTAT=RESU1,
+R1S1INF = CALC_ELEM(reuse=R1S1INF,
+                     RESULTAT=RESU1,
                      OPTION=  'EPSI_ELNO' ,
                      REPE_COQUE =_F( NUME_COUCHE=1,
                                      NIVE_COUCHE='INF',),  )
 
-TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO',NOM_CMP='SIXX',RESULTAT=RESU1,
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO',NOM_CMP='SIXX',RESULTAT=R1S1INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-6.82,PRECISION=0.001,),);
 
-R1S2INF=CALC_ELEM( RESULTAT=RESU1,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,
-                                   NIVE_COUCHE='INF',),  )
+R1S2INF=POST_CHAMP(RESULTAT=RESU1,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='INF',),);
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO',NOM_CMP='SIXX',RESULTAT=R1S2INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-0.135,PRECISION=0.011,),);
@@ -249,7 +255,7 @@ RESU2=MECA_STATIQUE( MODELE=MO,
                        )
 
 CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,
-                      OPTION=( 'EFGE_ELNO'),
+                      OPTION=( 'EFGE_ELNO','SIGM_ELNO'),
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
@@ -259,16 +265,17 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='MYY',RESULTAT=RESU
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='MYY',RESULTAT=RESU2,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
 
-R2S1INF=CALC_ELEM(  RESULTAT=RESU2,
-                    OPTION='SIGM_ELNO',
-                    REPE_COQUE =_F( NUME_COUCHE=1,
-                                    NIVE_COUCHE='INF',),  )
+R2S1INF=POST_CHAMP(RESULTAT=RESU2,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
 
-R2S2INF=CALC_ELEM( RESULTAT=RESU2,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,
-                                   NIVE_COUCHE='INF',),  )
-
+R2S2INF=POST_CHAMP(RESULTAT=RESU2,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='INF',),);
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO',NOM_CMP='SIYY',RESULTAT=R2S1INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-1.5,PRECISION=0.001,),);
@@ -327,7 +334,7 @@ RESU3=MECA_STATIQUE(       MODELE=MO,
                           )
 
 CALC_ELEM( reuse= RESU3 ,RESULTAT= RESU3 ,
-                         OPTION=('EFGE_ELNO',)
+                         OPTION=('EFGE_ELNO','SIGM_ELNO')
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
@@ -337,13 +344,17 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='QY',RESULTAT=RESU3
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='QY',RESULTAT=RESU3,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
 
-R3S2INF=CALC_ELEM( RESULTAT=RESU3,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,NIVE_COUCHE='INF',),  )
+R3S2INF=POST_CHAMP(RESULTAT=RESU3,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='INF',),);
 
-R3S2MOY=CALC_ELEM( RESULTAT=RESU3,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,NIVE_COUCHE='MOY',),  )
+R3S2MOY=POST_CHAMP(RESULTAT=RESU3,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='MOY',),);
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO',NOM_CMP='SIYZ',RESULTAT=R3S2INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=0.281,PRECISION=0.001,),);
@@ -401,7 +412,7 @@ RESU4=MECA_STATIQUE(       MODELE=MO,
                          )
 
 CALC_ELEM( reuse= RESU4 ,RESULTAT= RESU4 ,
-                         OPTION=('EFGE_ELNO',)
+                         OPTION=('EFGE_ELNO','SIGM_ELNO')
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
@@ -411,14 +422,17 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='QX',RESULTAT=RESU4
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='QX',RESULTAT=RESU4,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
 
-R4S2INF=CALC_ELEM( RESULTAT=RESU4,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,NIVE_COUCHE='INF',),  )
+R4S2INF=POST_CHAMP(RESULTAT=RESU4,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='INF',),);
 
-R4S2MOY=CALC_ELEM( RESULTAT=RESU4,
-                   OPTION='SIGM_ELNO',
-                   REPE_COQUE =_F( NUME_COUCHE=2,NIVE_COUCHE='MOY',),  )
-
+R4S2MOY=POST_CHAMP(RESULTAT=RESU4,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='MOY',),);
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO',NOM_CMP='SIXZ',RESULTAT=R4S2INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=1.279,PRECISION=0.001,),);

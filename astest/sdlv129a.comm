@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
 # sdlv129a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,7 @@ MODE=MODE_ITER_SIMULT(    MATR_A=A,     MATR_B=B,
              VERI_MODE=_F( SEUIL=1E-05),)
 
 MODE=CALC_ELEM( reuse=MODE,
-                       OPTION=( 'SIGM_ELNO', 'SIEF_ELGA', 
+                       OPTION=( 'SIEF_ELGA', 'SIGM_ELNO', 
                                 'SIEQ_ELGA','SIEQ_ELNO',   ),
                      RESULTAT=MODE )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 # ssnv158a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -490,27 +490,6 @@ U3=CALC_NO(  reuse      = U3,
 #    TEST_RESU AU POINT 4
 #-------------------------
 
-#RODEPX=RECU_FONCTION(RESULTAT=U3,
-#                     NOM_CHAM='DEPL',
-#                     NOM_CMP='DX',
-#                     NOEUD='N4',
-#                     TITRE='DEP X',);
-#RODEPY=RECU_FONCTION(RESULTAT=U3,
-#                     NOM_CHAM='DEPL',
-#                     NOM_CMP='DY',
-#                     NOEUD='N4',
-#                     TITRE='DEP Y',);
-#ROSIGX=RECU_FONCTION(RESULTAT=U3,
-#                     NOM_CHAM='SIEF_NOEU',
-#                     NOM_CMP='SIXX',
-#                     NOEUD='N4',
-#                     TITRE='SIG X',);
-#ROSIGY=RECU_FONCTION(RESULTAT=U3,
-#                     NOM_CHAM='SIEF_NOEU',
-#                     NOM_CMP='SIYY',
-#                     NOEUD='N4',
-#                     TITRE='SIG Y',);
-
 TEST_RESU(RESU=(
 
 # CONTRAINTE SIXX
@@ -661,27 +640,6 @@ U4=CALC_NO(  reuse      = U4,
 #-------------------------
 #    TEST_RESU AU POINT 4
 #-------------------------
-
-#RODEPX=RECU_FONCTION(RESULTAT=U4,
-#                     NOM_CHAM='DEPL',
-#                     NOM_CMP='DX',
-#                     NOEUD='N4',
-#                     TITRE='DEP X',);
-#RODEPY=RECU_FONCTION(RESULTAT=U4,
-#                     NOM_CHAM='DEPL',
-#                     NOM_CMP='DY',
-#                     NOEUD='N4',
-#                     TITRE='DEP Y',);
-#ROSIGX=RECU_FONCTION(RESULTAT=U4,
-#                     NOM_CHAM='SIEF_NOEU',
-#                     NOM_CMP='SIXX',
-#                     NOEUD='N4',
-#                     TITRE='SIG X',);
-#ROSIGY=RECU_FONCTION(RESULTAT=U4,
-#                     NOM_CHAM='SIEF_NOEU',
-#                     NOM_CMP='SIYY',
-#                     NOEUD='N4',
-#                     TITRE='SIG Y',);
 
 TEST_RESU(RESU=(
 

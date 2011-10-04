@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103h.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -214,34 +214,7 @@ VITE_B1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DZ',
-                                OPERATION='EXTRACTION',),);
-
-# DEPLACEMENT ET VITESSE VERTICAL AU POINT D'IMPACT
-                     
-#F_VITE = RECU_FONCTION(TABLE=VITE_B1,
-#              PARA_X='INST',
-#              PARA_Y='DZ');
-              
-              
-#F_DEPL = RECU_FONCTION(TABLE=DEPL_B1,
-#              PARA_X='INST',
-#              PARA_Y='DZ');
-              
-                        
-#IMPR_FONCTION(FORMAT='XMGRACE',
-#              PILOTE='PNG',
-#              UNITE=81,
-#              COURBE=_F(FONCTION=F_DEPL,
-#                       ),
-#              );
-                           
-#IMPR_FONCTION(FORMAT='XMGRACE',
-#              PILOTE='PNG',
-#              UNITE=82,
-#              COURBE=_F(FONCTION=F_VITE,
-#                       ),
-#              );
- 
+                                OPERATION='EXTRACTION',),); 
  
 #
 # TESTS DE DEPLACEMENTS ET VITESSES 

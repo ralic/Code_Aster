@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ECMI.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,403 +17,387 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
 
-DEBUT(CODE=_F(NOM='SSNL112M',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
-#
-
-MAIL=LIRE_MAILLAGE( )
-
-DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
-                 CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+DEBUT(CODE=_F(NOM='SSNL112M',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 #
 
-MOD=AFFE_MODELE(
-                        MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI',
-                               PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'BARRE')
-                     )
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=_F(NOM='TOUT',
+                                 TOUT='OUI',),);
 
 #
 
-MATER=DEFI_MATERIAU(         ELAS=_F(  E = 2.E11,
-                                          NU = 0.3,
-                                          ALPHA = 1.E-5,
-                                           RHO=1.),
-                              ECRO_LINE=_F(  D_SIGM_EPSI = 2.E9,
-                                          SY = 2.E8),
-                              PRAGER=_F(C=0.)
-                          )
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='BARRE',),);
 
 #
 
-CHMAT=AFFE_MATERIAU(
-                            MAILLAGE=MAIL,
-                            AFFE=_F(  TOUT = 'OUI',
-                                   MATER = MATER,
-                                   )
-
-                         )
-
-#
-
-CARBA=AFFE_CARA_ELEM(    MODELE=MOD,
-                         BARRE=_F(  GROUP_MA = 'TOUT',
-                                    SECTION = 'GENERALE',
-                                    CARA = ( 'A', ),
-                                    VALE = ( 5.E-4,))
-                          )
+MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=1.,
+                            ALPHA=1.E-5,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=2.E9,
+                                 SY=2.E8,),
+                    PRAGER=_F(C=0.,),);
 
 #
 
-F1_T=DEFI_FONCTION(
-
-                   NOM_PARA='INST',
-                PROL_DROITE='EXCLU',
-                PROL_GAUCHE='EXCLU',
-
-                VALE=(
-                0.0,        50.0,
-                1.0,       -50.0,
-                2.0,       -300.0,
-                3.0,       -100.0,
-                4.0,         50.0,
-                5.0,       -150.0,
-                6.0,       -350.0,
-                7.0,       -200.0,
-                )
-              )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
 
 #
 
-LINST=DEFI_LIST_REEL(
-                           DEBUT=0.,INTERVALLE=(
-
-                           _F(  JUSQU_A = 1.,     NOMBRE = 1),
-                           _F(  JUSQU_A = 2.,     NOMBRE = 1),
-                           _F(  JUSQU_A = 3.,     NOMBRE = 1),
-                           _F(  JUSQU_A = 4.,     NOMBRE = 1),
-                           _F(  JUSQU_A = 5.,     NOMBRE = 1),
-                           _F(  JUSQU_A = 6.,     NOMBRE = 1),
-                           _F(  JUSQU_A = 7.,     NOMBRE = 1))
-                        )
-
-#
-TEMPIMPO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
-                     MAILLAGE=MAIL,
-
-                AFFE=_F(
-                NOM_CMP = 'TEMP',
-                GROUP_NO = 'BARRE',
-                VALE_F = F1_T)
-               )
+CARBA=AFFE_CARA_ELEM(MODELE=MOD,
+                     BARRE=_F(GROUP_MA='TOUT',
+                              SECTION='GENERALE',
+                              CARA='A',
+                              VALE=5.E-4,),);
 
 #
 
-TEMPRESU=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',
-                    AFFE=_F(  LIST_INST = LINST,
-                              NUME_INIT = 1,
-                              NUME_FIN = 4,
-                              CHAM_GD = TEMPIMPO )
-                  )
-
-TEMPRESU=CREA_RESU( reuse=TEMPRESU,
-                    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',
-                    AFFE=_F(  LIST_INST = LINST,
-                              NUME_INIT = 5,
-                              NUME_FIN = 8,
-                              CHAM_GD = TEMPIMPO )
-                  )
-
-LIAISON=AFFE_CHAR_MECA(
-                             MODELE=MOD,
-                             DDL_IMPO=_F(  TOUT = 'OUI',
-                                        DX = 0., DZ = 0., DY = 0.)
-
-                            )
-
-#
-CHMTM=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                         AFFE=_F(  TOUT = 'OUI',
-                                   MATER = MATER,),
-                         AFFE_VARC=_F( TOUT='OUI',
-                                       EVOL=TEMPRESU,
-                                       NOM_VARC='TEMP',
-                                       NOM_CHAM='TEMP',
-                                       VALE_REF = 50.0),
-                         )
+F1_T=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,50.0,
+                         1.0,-50.0,
+                         2.0,-300.0,
+                         3.0,-100.0,
+                         4.0,50.0,
+                         5.0,-150.0,
+                         6.0,-350.0,
+                         7.0,-200.0,
+                         ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
 #
 
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(_F(JUSQU_A=1.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=2.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=3.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=4.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=5.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=6.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=7.,
+                                    NOMBRE=1,),),);
 
-UELAS=MECA_STATIQUE(
+#
 
-                     MODELE=MOD,
-                 CHAM_MATER=CHMTM,
-                 CARA_ELEM=CARBA,EXCIT=(
-                _F(  CHARGE = LIAISON),),
-                  LIST_INST=LINST,
+TEMPIMPO=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                    OPERATION='AFFE',
+                    MAILLAGE=MAIL,
+                    AFFE=_F(GROUP_NO='BARRE',
+                            NOM_CMP='TEMP',
+                            VALE_F=F1_T,),);
 
+#
 
-               )
+TEMPRESU=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=_F(CHAM_GD=TEMPIMPO,
+                           LIST_INST=LINST,
+                           NUME_INIT=1,
+                           NUME_FIN=4,),);
 
-CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
+TEMPRESU=CREA_RESU(reuse =TEMPRESU,
+                   OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=_F(CHAM_GD=TEMPIMPO,
+                           LIST_INST=LINST,
+                           NUME_INIT=5,
+                           NUME_FIN=8,),);
 
+LIAISON=AFFE_CHAR_MECA(MODELE=MOD,
+                       DDL_IMPO=_F(TOUT='OUI',
+                                   DX=0.,
+                                   DY=0.,
+                                   DZ=0.,),);
 
-                  LIST_INST=LINST,
-                 OPTION='SIGM_ELNO'
+#
 
-               )
+CHMTM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),
+                    AFFE_VARC=_F(TOUT='OUI',
+                                 NOM_VARC='TEMP',
+                                 EVOL=TEMPRESU,
+                                 NOM_CHAM='TEMP',
+                                 VALE_REF=50.0,),);
 
-U=STAT_NON_LINE(
-                            MODELE=MOD,
-                        CHAM_MATER=CHMTM,
-                         CARA_ELEM=CARBA,EXCIT=(
-                             _F(
-                CHARGE = LIAISON),),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ECMI_LINE',ALGO_1D='DEBORST',
-                ),
-                         INCREMENT=_F(
-                LIST_INST = LINST,
-                NUME_INST_INIT = 0,
-                NUME_INST_FIN = 7),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE',
-                REAC_INCR = 1,
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.0E-04,
-                ITER_GLOB_MAXI = 40),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 8)
-              )
+#
 
-CALC_ELEM( reuse=U,
-                            OPTION='SIEF_ELNO',
-                          RESULTAT=U,
-              )
+UELAS=MECA_STATIQUE(MODELE=MOD,
+                    CHAM_MATER=CHMTM,
+                    CARA_ELEM=CARBA,
+                    EXCIT=_F(CHARGE=LIAISON,),
+                    LIST_INST=LINST,);
 
-CALC_NO(reuse=U,  OPTION='FORC_NODA',
-                        RESULTAT=U)
+U=STAT_NON_LINE(MODELE=MOD,
+                CHAM_MATER=CHMTM,
+                CARA_ELEM=CARBA,
+                EXCIT=_F(CHARGE=LIAISON,),
+                COMP_INCR=_F(RELATION='VMIS_ECMI_LINE',
+                             ALGO_1D='DEBORST',),
+                INCREMENT=_F(LIST_INST=LINST,
+                             NUME_INST_INIT=0,
+                             NUME_INST_FIN=7,),
+                NEWTON=_F(REAC_INCR=1,
+                          MATRICE='ELASTIQUE',
+                          REAC_ITER=1,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=8,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-04,
+                               ITER_GLOB_MAXI=40,),);
 
-MASS = POST_ELEM(MODELE=MOD,
-                 CARA_ELEM=CARBA,
-                 CHAM_MATER=CHMTM,
-                 MASS_INER=_F(TOUT='OUI'),)
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION='SIEF_ELNO',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'MASSE',
-           VALE = 5.00000E-04)
+U=CALC_NO(reuse =U,
+          RESULTAT=U,
+          OPTION='FORC_NODA',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'CDG_X',
+MASS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+               MODELE=MOD,
+               CHAM_MATER=CHMTM,
+               CARA_ELEM=CARBA,);
+
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='MASSE',
+           VALE=0.0005,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='CDG_X',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'CDG_Y',
-           VALE = 0.5)
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='CDG_Y',
+           VALE=0.5,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'CDG_Z',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='CDG_Z',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IX_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IX_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IY_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IY_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IZ_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IZ_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IXY_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IXY_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IXZ_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IXZ_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IYZ_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IYZ_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IX_PRIN_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IX_PRIN_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IY_PRIN_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IY_PRIN_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'IZ_PRIN_G',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='IZ_PRIN_G',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'ALPHA',
+TEST_TABLE(TABLE=MASS,
+           NOM_PARA='ALPHA',
+           VALE=0.0,
            CRITERE='ABSOLU',
-           VALE = 0.)
+           REFERENCE='ANALYTIQUE',);
 
+SIGY_T=RECU_FONCTION(RESULTAT=U,
+                     TOUT_INST='OUI',
+                     NOM_CHAM='SIEF_ELNO',
+                     NOM_CMP='N',
+                     MAILLE='M1',
+                     NOEUD='N1',
+                     NOM_PARA='INST',
+                     NOM_RESU='SIGY_T',
+                     INTERPOL='LIN',
+                     PROL_GAUCHE='LINEAIRE',);
 
-SIGY_T=RECU_FONCTION(
-                 RESULTAT=U,
-                TOUT_INST='OUI',
-                NOM_CHAM='SIEF_ELNO',
-                 NOM_CMP='N',
+#
+
+TEMP_T=RECU_FONCTION(RESULTAT=TEMPRESU,
+                     TOUT_INST='OUI',
+                     NOM_CHAM='TEMP',
+                     NOM_CMP='TEMP',
+                     MAILLE='M1',
+                     NOEUD='N1',
+                     NOM_PARA='INST',
+                     NOM_RESU='TEMP_T',
+                     INTERPOL='LIN',);
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='N',
                    MAILLE='M1',
-                    NOEUD='N1',
-                 NOM_PARA='INST',
-                 NOM_RESU='SIGY_T',
-                 INTERPOL='LIN',
-               PROL_GAUCHE='LINEAIRE'
-                          )
-
-#
-TEMP_T=RECU_FONCTION(
-                 RESULTAT=TEMPRESU,
-                TOUT_INST='OUI',
-                NOM_CHAM='TEMP',
-                 NOM_CMP='TEMP',
+                   NOEUD='N1',
+                   VALE=100000.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='N',
                    MAILLE='M1',
-                    NOEUD='N1',
-                 NOM_PARA='INST',
-                 NOM_RESU='TEMP_T',
-                 INTERPOL='LIN'
-                          )
+                   NOEUD='N1',
+                   VALE=102500.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=3.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=-97500.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=4.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=-103950.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=5.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=96050.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=6.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=105871.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=7.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=-44129.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=100000.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=102500.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=3.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=-97500.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=4.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=-103950.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=5.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=96050.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=6.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=105871.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   INST=7.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=-44129.0,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
-TEST_RESU(RESU=(
-
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
-             NOM_CMP = 'N',
-             MAILLE = 'M1',
-             NOEUD = 'N1',
-             VALE = 100.E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 2.,
-             NOM_CHAM = 'SIEF_ELNO',
-             NOM_CMP = 'N',
-             MAILLE = 'M1',
-             NOEUD = 'N1',
-             VALE = 102.5E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 3.,
-             NOM_CHAM = 'SIEF_ELNO',
-             NOM_CMP = 'N',
-             MAILLE = 'M1',
-             NOEUD = 'N1',
-             VALE = -97.5E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 4.,
-             NOM_CHAM = 'SIEF_ELNO',
-             NOM_CMP = 'N',
-             MAILLE = 'M1',
-             NOEUD = 'N1',
-             VALE = -103.95E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 5.,
-             NOM_CHAM = 'SIEF_ELNO',
-             NOM_CMP = 'N',
-             MAILLE = 'M1',
-             NOEUD = 'N1',
-             VALE = 96.05E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 6.,
-             NOM_CHAM = 'SIEF_ELNO',
-             NOM_CMP = 'N',
-             MAILLE = 'M1',
-             NOEUD = 'N1',
-             VALE = 105.871E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 7.,
-             NOM_CHAM = 'SIEF_ELNO',
-             NOM_CMP = 'N',
-             MAILLE = 'M1',
-             NOEUD = 'N1',
-             VALE = -44.129E3,
-             PRECISION = 0.001))
-        )
-
-TEST_RESU(RESU=(
-
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 1.,
-             NOM_CHAM = 'FORC_NODA',
-             NOM_CMP = 'DY',
-             NOEUD = 'N1',
-             VALE = 100.E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 2.,
-             NOM_CHAM = 'FORC_NODA',
-             NOM_CMP = 'DY',
-             NOEUD = 'N1',
-             VALE = 102.5E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 3.,
-             NOM_CHAM = 'FORC_NODA',
-             NOM_CMP = 'DY',
-             NOEUD = 'N1',
-             VALE = -97.5E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 4.,
-             NOM_CHAM = 'FORC_NODA',
-             NOM_CMP = 'DY',
-             NOEUD = 'N1',
-             VALE = -103.95E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 5.,
-             NOM_CHAM = 'FORC_NODA',
-             NOM_CMP = 'DY',
-             NOEUD = 'N1',
-             VALE = 96.05E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 6.,
-             NOM_CHAM = 'FORC_NODA',
-             NOM_CMP = 'DY',
-             NOEUD = 'N1',
-             VALE = 105.871E3,
-             PRECISION = 0.001),
-            _F( RESULTAT = U, REFERENCE='ANALYTIQUE',
-             INST = 7.,
-             NOM_CHAM = 'FORC_NODA',
-             NOM_CMP = 'DY',
-             NOEUD = 'N1',
-             VALE = -44.129E3,
-             PRECISION = 0.001))
-        )
-
-FIN()
+FIN();

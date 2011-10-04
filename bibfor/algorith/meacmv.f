@@ -5,7 +5,7 @@
      &                    TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
      &                    BASE, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,38 +180,63 @@ C          SIMPLIFIER LA PROGRAMMATION.
         CALPHA = (0.D0 , 0.D0)
         CALL DISMOI('F','NOM_MAILLA',NOMODE,'MODELE',IAUX,NOMA,IRET)
 
-        DO 13 , IAUX = 1 , 2
+C        DO 13 , IAUX = 1 , 2
+C
+C          IF ( IAUX.EQ.1 ) THEN
+C            NOSY = 'SIEF_ELGA  '
+C            CHAMEL = CONTEG
+C          ELSE
+C            NOSY = 'SIGM_ELNO  '
+C            CHAMEL = CONTEN
+C          ENDIF
+C
+C          CALL MECHAM ( NOSY, NOMODE, 0, ' ', CARELE(1:8), NH,
+C     &                  CHGEOM, CHCARA, CHHARM, IRET )
+C
+C          CALL MECHTI ( CHGEOM(1:8), TIME, RUNDF, RUNDF, CHTIME )
+C          JAUX = 0
+C          CALL MECALC ( NOSY, NOMODE, VAPRIN, CHGEOM, MATE, CHCARA,
+C     &                  K24BID, K24BID,CHTIME, BLAN24, CHHARM,
+C     &                  CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
+C     &                  TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
+C     &                  CHAMEL, K24BID, LIGRMO, BASE, CHVARC, CHVREF,
+C     &                  K24BID, K24BID,
+C     &                  K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
+C
+C  13    CONTINUE
 
-          IF ( IAUX.EQ.1 ) THEN
-            NOSY = 'SIEF_ELGA  '
-            CHAMEL = CONTEG
-          ELSE
-            NOSY = 'SIGM_ELNO  '
-            CHAMEL = CONTEN
-          ENDIF
+        NOSY = 'SIEF_ELGA  '
+        CHAMEL = CONTEG
 
-          CALL MECHAM ( NOSY, NOMODE, 0, ' ', CARELE(1:8), NH,
-     &                  CHGEOM, CHCARA, CHHARM, IRET )
+        CALL MECHAM ( NOSY, NOMODE, 0, ' ', CARELE(1:8), NH,
+     &                CHGEOM, CHCARA, CHHARM, IRET )
 
-          CALL MECHTI ( CHGEOM(1:8), TIME, RUNDF, RUNDF, CHTIME )
-          JAUX = 0
-          CALL MECALC ( NOSY, NOMODE, VAPRIN, CHGEOM, MATE, CHCARA,
-     &                  K24BID, K24BID,CHTIME, BLAN24, CHHARM,
-     &                  CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
-     &                  TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
-     &                  CHAMEL, K24BID, LIGRMO, BASE, CHVARC, CHVREF,
-     &                  K24BID, K24BID,
-     &                  K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
+        CALL MECHTI ( CHGEOM(1:8), TIME, RUNDF, RUNDF, CHTIME )
+        JAUX = 0
+        CALL MSCALC ( NOSY, NOMODE, VAPRIN, CHGEOM, MATE, CHCARA,
+     &                K24BID, K24BID,CHTIME, BLAN24, CHHARM,
+     &                CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
+     &                TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
+     &                CHAMEL, K24BID, LIGRMO, BASE, CHVARC, CHVREF,
+     &                K24BID, K24BID,
+     &                K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
 
-          CALL MECALC ( NOSY, NOMODE, VAPRIN, CHGEOM, MATE, CHCARA,
-     &                  K24BID, K24BID,CHTIME, BLAN24, CHHARM,
-     &                  CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
-     &                  TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
-     &                  CHAMEL, K24BID, LIGRMO, BASE, CHVARC, CHVREF,
-     &                  K24BID, K24BID,
-     &                  K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
+        NOSY = 'SIGM_ELNO  '
+        CHAMEL = CONTEN
+        CHSIG = CONTEG
 
-  13    CONTINUE
+        CALL MECHAM ( NOSY, NOMODE, 0, ' ', CARELE(1:8), NH,
+     &                CHGEOM, CHCARA, CHHARM, IRET )
+
+        CALL MECHTI ( CHGEOM(1:8), TIME, RUNDF, RUNDF, CHTIME )
+        JAUX = 0
+        CALL MSCALC ( NOSY, NOMODE, VAPRIN, CHGEOM, MATE, CHCARA,
+     &                K24BID, K24BID,CHTIME, BLAN24, CHHARM,
+     &                CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
+     &                TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
+     &                CHAMEL, K24BID, LIGRMO, BASE, CHVARC, CHVREF,
+     &                K24BID, K24BID,
+     &                K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
 
 C    RECOPIE DE "SIGM_ELNO" CAR ON EN A BESOIN POUR LES DERIVEES
 

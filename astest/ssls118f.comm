@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,20 +102,29 @@ RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
 
 
 
-SIG_C1_S=CALC_ELEM(RESULTAT=RESU,
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),
-                   OPTION='SIGM_ELNO',);
-SIG_C1_M=CALC_ELEM(RESULTAT=RESU,
-                    REPE_COQUE =_F( NUME_COUCHE=1,
-                                    NIVE_COUCHE='MOY',),
-                    OPTION='SIGM_ELNO',);
-SIG_C1_I=CALC_ELEM(RESULTAT=RESU,
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),
-                   OPTION='SIGM_ELNO',);
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION='SIGM_ELNO',);
+
+SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
+
+SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+
+SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
+
 EFF=CALC_ELEM(RESULTAT=RESU,
-              REPE_COQUE =_F( PLAN='MOY',),
               OPTION='EFGE_ELNO',);
 
 SIGG=CALC_ELEM(RESULTAT=RESU,

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D ,
 # wtnp113c.para = tps_job 3200 mem_job 128Mo ncpus 1 liste_test L
@@ -426,15 +426,6 @@ TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);
 
-#IMPR_TABLE(TABLE=TRB,
-#           FORMAT='AGRAF',
-#           PAGINATION='INST',
-#           NOM_PARA=('INST','COOR_X','COOR_Y','PRE1'),);
-#IMPR_TABLE(TABLE=TRV,
-#           FORMAT='AGRAF',
-#           PAGINATION='INST',
-#           NOM_PARA=('INST','COOR_X','COOR_Y','V3'),);
-
 
 VERT=INTE_MAIL_2D(MAILLAGE=MAILIN,
                   PRECISION=1.E-4,
@@ -459,14 +450,6 @@ TRVV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                       NUME_ORDRE=(1,2,5,7,9,14,24,34),
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);
-#IMPR_TABLE(TABLE=TRVB,
-#           FORMAT='AGRAF',
-#           PAGINATION='INST',
-#           NOM_PARA=('INST','COOR_X','COOR_Y','PRE1'),);
-#IMPR_TABLE(TABLE=TRVV,
-#           FORMAT='AGRAF',
-#          PAGINATION='INST',
-#           NOM_PARA=('INST','COOR_X','COOR_Y','V3'),);
 
 #
 #  NO1496 (5.014; -450.) et NO1059 (+7 ; -450)

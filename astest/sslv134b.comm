@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,21 +97,21 @@ TEST_TABLE(  TABLE=TB2,
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIXX',
-             VALE=-2.4471209706301E+05,
+             VALE=-2.4400243795057E+05,
              PRECISION=0.00001)
 TEST_TABLE(  TABLE=TB2,
              FILTRE=_F( NOM_PARA = 'ANGLE',
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIYY',
-             VALE= 3.6534668877556E+04,
+             VALE= 3.6792169373522E+04,
              PRECISION=0.00001)
 TEST_TABLE(  TABLE=TB2,
              FILTRE=_F( NOM_PARA = 'ANGLE',
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIZZ',
-             VALE= 3.5420343989978E+05,
+             VALE= 3.5717492414376E+05,
              PRECISION=0.00001)
 
 TB2L=MACR_LIGN_COUPE( RESULTAT= CHAMDEPL,
@@ -131,7 +131,7 @@ TEST_TABLE(  TABLE=TB2L,
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIXX',
-             VALE= 6.8308472910625E+05,
+             VALE= 6.8464992024073E+05,
              PRECISION=0.00001)
 
 TEST_TABLE(  TABLE=TB2L,
@@ -139,7 +139,7 @@ TEST_TABLE(  TABLE=TB2L,
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIYY',
-             VALE=-2.4471209706301E+05,
+             VALE=-2.4400243795057E+05,
              PRECISION=0.00001)
 
 TEST_TABLE(  TABLE=TB2L,
@@ -147,7 +147,7 @@ TEST_TABLE(  TABLE=TB2L,
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIZZ',
-             VALE=-2.9234662032891E+05,
+             VALE=-2.9068282672345E+05,
              PRECISION=0.00001)
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MA,

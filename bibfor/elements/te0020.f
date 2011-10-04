@@ -1,6 +1,6 @@
       SUBROUTINE TE0020(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,6 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
 C     VALEURS AUX POINTS DE GAUSS (SIEF_ELNO VARI_ELNO)
-C                         CALCUL DES CHAMELEM AUX POINTS DE GAUSS A
-C     PARTIR DES VALEURS AUX NOEUDS ( SIEF_ELGA_ELNO VARI_ELGA_ELNO )
 C     ELEMENTS 3D
 
 C IN  OPTION : OPTION DE CALCUL
@@ -49,10 +47,9 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
 
-      REAL*8 S
       INTEGER JGANO,NPG,NNOS,NNO,NDIM
-      INTEGER I,IC,ICHG,ICHN,NCMP,NCMP2,IRET,IDFDE
-      INTEGER IPOIDS,IVF,LGPG1,LGPG2,KP,K,JTAB(7)
+      INTEGER I,ICHG,ICHN,NCMP,NCMP2,IRET,IDFDE
+      INTEGER IPOIDS,IVF,LGPG1,JTAB(7)
       LOGICAL LTEATT
 C DEB ------------------------------------------------------------------
 
@@ -63,9 +60,6 @@ C DEB ------------------------------------------------------------------
       DO 10 I = 1,1
    10 CONTINUE
 
-
-
-
       IF (OPTION.EQ.'SIEF_ELNO  ') THEN
 C     ---------------------------------------------
 C       NCMP2 LE NOMBRE DE COMPOSANTES SUPPLEMENTAIRES DES CONTRAINTES
@@ -73,16 +67,6 @@ C       EN PARTICULIER EN THM
         NCMP = 6 + NCMP2
         CALL JEVECH('PCONTRR','L',ICHG)
         CALL JEVECH('PSIEFNOR','E',ICHN)
-
-
-      ELSE IF (OPTION.EQ.'SIEF_ELGA_ELNO  ') THEN
-C     ---------------------------------------------
-        NCMP = 6 + NCMP2
-        CALL JEVECH('PCONTRR','L',ICHN)
-        CALL JEVECH('PSIEFGR','E',ICHG)
-        LGPG1 = NCMP
-        LGPG2 = NCMP
-
 
       ELSE IF (OPTION.EQ.'VARI_ELNO  ') THEN
 C     ---------------------------------------------
@@ -93,49 +77,11 @@ C     ---------------------------------------------
         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
         LGPG1 = MAX(JTAB(6),1)*JTAB(7)
         CALL TECACH('OON','PVARINR',7,JTAB,IRET)
-        LGPG2 = MAX(JTAB(6),1)*JTAB(7)
 
         NCMP = LGPG1
-      ELSE IF (OPTION.EQ.'VARI_ELGA_ELNO  ') THEN
-C     ---------------------------------------------
-
-        CALL JEVECH('PVARINR','L',ICHN)
-        CALL JEVECH('PVARIGR','E',ICHG)
-
-        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
-        LGPG1 = MAX(JTAB(6),1)*JTAB(7)
-        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-        LGPG2 = MAX(JTAB(6),1)*JTAB(7)
-
-C       -- POUR VARI_ELNO : LGPG1 PEUT ETRE TROP
-C          GRAND DU FAIT DE LIRE_RESU.
-C          LGPG2 EST EN REVANCHE FORCEMENT COHERENT
-C          AVEC LA LOI DE COMPORTEMENT.
-        NCMP = LGPG2
-      END IF
-
-
-      IF (OPTION(6:9).EQ.'ELNO') THEN
-C     ---------------------------------------------
-
-        CALL PPGAN2(JGANO,1,NCMP,ZR(ICHG),ZR(ICHN))
-
-      ELSE
-C     PASSAGE AUX POINTS DE GAUSS :
-C     ---------------------------------------------
-
-        DO 40 IC = 1,NCMP
-          DO 30 KP = 1,NPG
-            K = (KP-1)*NNO
-            S = 0.D0
-            DO 20 I = 1,NNO
-              S = S + ZR(ICHN+LGPG1* (I-1)+IC-1)*ZR(IVF+K+I-1)
-   20       CONTINUE
-            ZR(ICHG+LGPG2* (KP-1)+IC-1) = S
-   30     CONTINUE
-   40   CONTINUE
 
       END IF
 
-C FIN ------------------------------------------------------------------
+      CALL PPGAN2(JGANO,1,NCMP,ZR(ICHG),ZR(ICHN))
+
       END

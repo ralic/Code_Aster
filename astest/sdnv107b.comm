@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
 # sdnv107b.para = tps_job 300 mem_job 900Mo mem_aster 90 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,24 +167,6 @@ CHARGE1B=AFFE_CHAR_MECA(  MODELE=MODELE1,DDL_IMPO=(
                LIAISON_UNIF=(_F(GROUP_NO = 'SURF2',DDL=('DX')),),
                );
                
-##  MACRO_MATR_ASSE(MODELE=MODELE,
-##                  CHAM_MATER=CHAMAT,
-##                  CARA_ELEM=PARAM,
-##                  CHARGE=(CHARGE),
-##                  NUME_DDL=CO('NUME'),
-##                  MATR_ASSE=(_F(MATRICE=CO('MATR'),
-##                                OPTION='RIGI_MECA',),
-##                             _F(MATRICE=CO('MATM'),
-##                                OPTION='MASS_MECA',),
-##                             ),
-##                  ); 
-##                                
-##  MODE=MODE_ITER_SIMULT(  MATR_A=MATR,   MATR_B=MATM,
-##                             CALC_FREQ=_F(
-##                                          NMAX_FREQ=18,  
-##                                         ),
-##                             VERI_MODE=_F(  STOP_ERREUR='NON')
-##                           );
 
 MACRO_MATR_ASSE(MODELE=MODELE1,
                 CHAM_MATER=CHAMAT,

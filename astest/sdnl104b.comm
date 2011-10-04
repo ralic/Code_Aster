@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -458,7 +458,6 @@ t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 LIST_INST=LIST_R2,
                 );
 
-# IMPR_TABLE(TABLE=t_cin1,)
 
 TEST_TABLE(      TABLE=t_cin1,
                  FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
@@ -488,7 +487,6 @@ t_cin2=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 LIST_INST=LIST_R2,
                 );
 
-# IMPR_TABLE(TABLE=t_cin2,)
 
 TEST_TABLE(      TABLE=t_cin2,
                  FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),

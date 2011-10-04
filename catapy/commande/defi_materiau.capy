@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2906,14 +2906,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              C               =SIMP(statut='o',typ='R'),
              D               =SIMP(statut='o',typ='R'),
              A               =SIMP(statut='o',typ='R'),
-           ),
-           MONO_VISC3      =FACT(statut='f',
-             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
-             K               =SIMP(statut='o',typ='R',fr="Constante de Boltzmann, en eV/K"),
-             TAUMU           =SIMP(statut='o',typ='R',fr="Seuil d ecoulement, en unite de contraintes"),
-             GAMMA0          =SIMP(statut='o',typ='R',fr="Vitesse d ecoulement initiale"),
-             DELTAV          =SIMP(statut='o',typ='R',fr="Volume d activation"),
-             DELTAG0         =SIMP(statut='o',typ='R',fr="Gain d energie lie au franchissement d obstacle"),
            ),
            MONO_ISOT1      =FACT(statut='f',
               regles=(UN_PARMI('H','H1'),

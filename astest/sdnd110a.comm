@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE LACHER D'UNE MASSE AVEC FORCE LAME FLUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,11 +52,6 @@ CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
              _F( TOUT = 'OUI',  DZ = 0.0),
              _F( NOEUD = 'NO2',   DX = 0.0, DY = 0.0),
              _F( NOEUD = 'NO1',   DY = 0.0))
-#          LIAISON_DDL:(NOEUD: (NO1,NO1)
-#                       DDL  : ('DX','DY')
-#                       COEF_MULT:(0.7071067,-0.7071067)
-#                       COEF_IMPO:0.
-#                       )
                       )
 
 #

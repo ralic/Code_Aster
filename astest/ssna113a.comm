@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,14 +206,6 @@ EFFORT_R =  POST_RELEVE_T (
                           RESULTANTE = ('DY'),
                           OPERATION= 'EXTRACTION',),);
                           
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = EFFORT_R,
-#              NOM_PARA=('INST','DY'));
-# 
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = CONTR_R,
-#              NOM_PARA=('INST','DX'));
-
 TEST_TABLE( TABLE=EFFORT_R,
             NOM_PARA='DY',
             FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
@@ -273,14 +265,6 @@ EFFORT_L =  POST_RELEVE_T (
                           RESULTANTE = ('DY'),
                           OPERATION= 'EXTRACTION',),);
                           
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = EFFORT_L,
-#              NOM_PARA=('INST','DY'));
-# 
-# IMPR_TABLE ( FORMAT = 'TABLEAU',
-#              TABLE = CONTR_L,
-#              NOM_PARA=('INST','DX'));
-
 TEST_TABLE( TABLE=EFFORT_L,
             NOM_PARA='DY',
             FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),

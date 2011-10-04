@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 7/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -28,10 +28,6 @@
 #---------------------------------------------------------------------
 #
 DEBUT( CODE=_F( NOM = 'SDLS504A',NIV_PUB_WEB='INTERNET'))
-
-#
-#PRE_IDEAS ();
-#
 MA=LIRE_MAILLAGE( )
 
 #

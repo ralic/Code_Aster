@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,7 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
        elif dime ==3 :
           LCMP=['DX','DY','DZ']
           TYPE_CHAM='VECT_3D'
-  elif NOM_CHAM in ('SIGM_NOEU','SIEF_ELNO','SIGM_NOEU_ELGA','SICO_NOEU','SIGM_ELNO'):
+  elif NOM_CHAM in ('SIGM_NOEU','SIEF_ELNO','SIGM_ELNO'):
        if dime == 2:
           LCMP=['SIXX','SIYY','SIZZ','SIXY']
           TYPE_CHAM='TENS_2D'
@@ -831,7 +831,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
 
-   if  NOM_CHAM in ('DEPL','SIEF_ELNO','SIGM_NOEU','SIGM_NOEU_ELGA','SICO_NOEU','SIGM_ELNO'):icham=1
+   if  NOM_CHAM in ('DEPL','SIEF_ELNO','SIGM_NOEU','SIGM_ELNO'):icham=1
    iocc=0
    for m in LIGN_COUPE :
 

@@ -5,7 +5,7 @@
       CHARACTER*24        LESOPT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,10 +54,8 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER       N1, JOPT, JOPT2, IEPSI, IERZ1, IERZ2, INOZ1, INOZ2,
-     &              I, J, NBOPT2, INDK16,IEPEQ,ISIEQ, IRET, IDERA,
-     &              IERME, IERTH
-      CHARACTER*8   K8B
+      INTEGER        JOPT, JOPT2, IEPSI, IERZ1, IERZ2, INOZ1, INOZ2,
+     &              I, J, NBOPT2, INDK16,IEPEQ,ISIEQ, IRET, IDERA
       CHARACTER*16  TYSD
       CHARACTER*24  LESOP2
 C DEB ------------------------------------------------------------------
@@ -95,7 +93,7 @@ C
       LESOP2 = '&&OP0058.NEW_OPTION'
       CALL JEDUPO ( LESOPT , 'V', LESOP2 , .FALSE. )
       CALL JEDETR ( LESOPT )
-      CALL WKVECT ( LESOPT , 'V V K16' , NBOPT+3 , JOPT )
+      CALL WKVECT ( LESOPT , 'V V K16' , NBOPT+20 , JOPT )
       CALL JEVEUO ( LESOP2 , 'L', JOPT2 )
 C
       NBOPT2 = 1
@@ -127,7 +125,6 @@ C
          ZK16(JOPT+NBOPT2-1) = 'SITQ_ELNO'
          NBOPT2 = NBOPT2 + 1
       ENDIF
-         NBOPT2 = NBOPT2 - 1
 
 C
       IF( ( IERZ1 .NE. 0 ).OR.
@@ -138,24 +135,24 @@ C
            CALL RSCHEX ( RESUCO, 'SIEF_ELGA', IRET )
            IF ( IRET .EQ. 0 ) THEN
               CALL U2MESS('A','UTILITAI2_52')
-              NBOPT2 = NBOPT2 + 1
               ZK16(JOPT+NBOPT2-1) = 'SIEF_ELGA'
+              NBOPT2 = NBOPT2 + 1
            ENDIF
         ENDIF
       ENDIF
 C
       IF ( IERZ1 .NE. 0 ) THEN
-         NBOPT2 = NBOPT2 + 1
          ZK16(JOPT+NBOPT2-1) = 'SIZ1_NOEU'
          NBOPT2 = NBOPT2 + 1
          ZK16(JOPT+NBOPT2-1) = 'ERZ1_ELEM'
+         NBOPT2 = NBOPT2 + 1
       ENDIF
 C
       IF ( IERZ2 .NE. 0 ) THEN
-         NBOPT2 = NBOPT2 + 1
          ZK16(JOPT+NBOPT2-1) = 'SIZ2_NOEU'
          NBOPT2 = NBOPT2 + 1
          ZK16(JOPT+NBOPT2-1) = 'ERZ2_ELEM'
+         NBOPT2 = NBOPT2 + 1
       ENDIF
 C
 C      IF ( IERTH .NE. 0 ) THEN
@@ -176,6 +173,8 @@ C          NBOPT2 = NBOPT2 + 1
 C          ZK16(JOPT+NBOPT2-1) = 'SIGM_ELNO'
 C        ENDIF
 C      ENDIF
+C
+      NBOPT2 = NBOPT2 - 1
 C
       DO 10 I = 1 , NBOPT
          DO 12 J = 1 , NBOPT2

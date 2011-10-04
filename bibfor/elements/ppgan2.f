@@ -4,7 +4,7 @@
       REAL*8 VNO(*),VPG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,15 +78,15 @@ C          ELEMENTS LINEAIRES
       ENDIF
 
 C --- PASSAGE DES POINTS DE GAUSS AUX NOEUDS SOMMETS PAR MATRICE
-C     V(GAUSS) = P * V(NOEUD)
+C     V(NOEUD) = P * V(GAUSS)
 
       JMAT = JGANO + 2
       DO 40 ICMP = 1,NCMP
         DO 30 INO = 1,NNO
-          S = 0.D0
           DO 20 ISP = 1,NBSP
+            S = 0.D0
             DO 10 IPG = 1,NPG
-              S = S + ZR(JMAT-1+(INO-1)*NPG+IPG) * 
+              S = S + ZR(JMAT-1+(INO-1)*NPG+IPG) *
      &                      VPG((IPG-1)*NCMP*NBSP+(ISP-1)*NCMP+ICMP)
    10       CONTINUE
             VNO((INO-1)*NCMP*NBSP+(ISP-1)*NCMP+ICMP) = S

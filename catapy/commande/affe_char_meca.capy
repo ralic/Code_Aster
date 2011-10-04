@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 04/10/2011   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -407,7 +407,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
             fr="Modélise le raccord : d'une partie massive 3D avec une poutre ou avec un tuyau, d'une coque"
                +" avec une poutre ou avec un tuyau, d'une plaque avec une poutre",
             regles      =(UN_PARMI('GROUP_MA_1','MAILLE_1'), UN_PARMI('GROUP_NO_2','NOEUD_2'),),
-            OPTION      =SIMP(statut='o',typ='TXM',into=("3D_TUYAU","3D_POU","COQ_POU","COQ_TUYAU","PLAQ_POUT_ORTH") ),
+            OPTION      =SIMP(statut='o',typ='TXM',into=("3D_TUYAU","3D_POU","2D_POU","COQ_POU","COQ_TUYAU","PLAQ_POUT_ORTH") ),
             GROUP_MA_1  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
             MAILLE_1    =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
             GROUP_NO_2  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),

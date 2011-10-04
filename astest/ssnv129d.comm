@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129d.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,8 +89,7 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
 
 CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
-                    REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 3,
+                    REAC_GEOM      = 'SANS',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'Q1',
@@ -127,20 +126,25 @@ RESU=STAT_NON_LINE(MODELE=MO,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION='SICO_ELNO',
-               REPE_COQUE=_F(NIVE_COUCHE='INF'),);
+               OPTION='SIGM_ELNO',);
 
-RESU=CALC_NO(reuse =RESU,
-             RESULTAT=RESU,
-             OPTION='SICO_NOEU',);
+RESUPOS=POST_CHAMP(RESULTAT=RESU,
+                   TOUT='OUI',
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='INF',),);
+
+RESUPOS=CALC_NO(reuse =RESUPOS,
+                RESULTAT=RESUPOS,
+                OPTION='SIGM_NOEU',);
 
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',
           UNITE=37,
           RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',),
-                _F(RESULTAT=RESU,
-                   NOM_CHAM='SICO_NOEU',
+                _F(RESULTAT=RESUPOS,
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP=('SIXX','SIYY','SIXY',),)
                 ));
 
@@ -153,9 +157,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='CENTE1',
                    VALE=7648100000.0,
@@ -163,9 +167,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.012,
                    REFERENCE='ANALYTIQUE',),),);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
+TEST_RESU(RESU=(_F(RESULTAT=RESUPOS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='A1',
                    VALE=-3.2908316392694E+09,
@@ -173,9 +177,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=4e-04,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.0.11',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='A3',
                    VALE=-3.2926195900234E+09,
@@ -183,9 +187,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=4e-04,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.0.11',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='B1',
                    VALE=3.2908712114235E+09,
@@ -193,9 +197,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=4e-03,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.0.11',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESUPOS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SICO_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='B3',
                    VALE=3.2926268685777E+09,
@@ -209,12 +213,12 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 #----------------------------------------------------------------------
 CALC_CHAMP(reuse=RESU, RESULTAT= RESU, CONTRAINTE=('EFGE_ELGA',), )
 #IMPR_RESU(RESU=_F(RESULTAT=RESU, INST=1.))
+TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-8, CRITERE='ABSOLU',
+           MAILLE = 'M2', POINT = 4, NOM_CMP = 'NXX', VALE =  0.0  , REFERENCE = 'NON_REGRESSION'))
 TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
-           MAILLE = 'M2', POINT = 4, NOM_CMP = 'NXX', VALE =  -5.7343032321921E+06  , REFERENCE = 'NON_REGRESSION'))
+           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MYY', VALE =  -4.9744425883916E+07  , REFERENCE = 'NON_REGRESSION'))
 TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
-           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MYY', VALE =  -4.9713045228821E+07  , REFERENCE = 'NON_REGRESSION'))
-TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
-           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MXY', VALE =  1.0563244829814E+08   , REFERENCE = 'NON_REGRESSION'))
+           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MXY', VALE =  1.0563751966343E+08   , REFERENCE = 'NON_REGRESSION'))
 #----------------------------------------------------------------------------
 
 FIN();

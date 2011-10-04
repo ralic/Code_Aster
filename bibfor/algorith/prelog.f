@@ -2,7 +2,7 @@
      &                  DEPLM,DEPLT,SIGM,LGPG,VIM,GN,FETA,XI,ME,
      &                  R,W,DFF,FM,FP,EPSML,DEPS,TN,RESI,PES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,6 +92,7 @@ C     CALCUL DES CONTRINTES TN INSTANT PRECEDENT
 C     pour gagner tu temps : on stocke TN comme variable interne
 C     --------------------------------
       IVTN=LGPG-6+1
+      CALL R8INIR(6,0.D0,TN,1)
       CALL DCOPY(2*NDIM,VIM(IVTN),1,TN,1)
       
 C     --------------------------------

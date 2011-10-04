@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE TUYAUTERIE COUDEE EN FLEXION MODELISATION COQUE_3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,7 +109,6 @@ CHAR2=AFFE_CHAR_MECA(  MODELE=MO, INFO=1,
 RESU2=MECA_STATIQUE(  MODELE=MO,   INFO=1,
                           CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
                          EXCIT=_F(  CHARGE = CHAR2)
-                        # OPTION:'EFGE_ELNO'
                         )
 
 TEST_RESU(

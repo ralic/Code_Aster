@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE FLAMBEMENT D'UNE CORNIERE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,10 +63,8 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
       )
 
 BLOQ=AFFE_CHAR_MECA(   MODELE=MO,
-#         DDL_IMPO:(NOEUD:A1    DX:0. DY:0. DZ:0. DRX:0.       )
-#          DDL_IMPO:(NOEUD:A2          DY:0. DZ:0. DRX:0.       ) );
-################################################################
-          DDL_IMPO=_F( NOEUD = 'A1',    DX = 0., DY = 0., DZ = 0., ),LIAISON_DDL=(
+          DDL_IMPO=_F( NOEUD = 'A1',    DX = 0., DY = 0., DZ = 0., ),
+          LIAISON_DDL=(
        _F(     NOEUD = ( 'A1',    'A1',    'A1',  ),
                           DDL = ('DRX', 'DRY', 'DRZ',),
                     COEF_MULT = (  1.,    1.,    1., ),
@@ -102,7 +100,6 @@ RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
 # ------------------------------
 
 CHFORC_1=AFFE_CHAR_MECA(MODELE=MO,
-#                  FORCE_NODALE:(NOEUD: A2  FX:-1.      ));
                    FORCE_NODALE=_F( NOEUD = 'A2',   FX = -5.7735026919E-01,
                                             FY = -5.7735026919E-01,
                                             FZ = -5.7735026919E-01,  ))
@@ -147,9 +144,6 @@ TEST_RESU(RESU=(
 # ------------------------------
 
 CHFORC_2=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-##             FORCE_NODALE:(NOEUD: A1         MZ:+41.012 )
-##             FORCE_NODALE:(NOEUD: A2  FX:-1. MZ:-41.012 ));
-###############################################################
                _F( NOEUD = 'A1',     MX = -1.6743078889E+01,
                                           MY = -1.6743078889E+01,
                                           MZ = 3.3486157777E+01,  ),
@@ -200,9 +194,6 @@ TEST_RESU(RESU=(
 # ------------------------------
 
 CHFORC_3=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-##                       FORCE_NODALE:(NOEUD: A1         MY:-41.012 )
-##                       FORCE_NODALE:(NOEUD: A2  FX:-1. MY:+41.012 ));
-###############################################################
                _F( NOEUD = 'A1',     MX = 2.8999863310E+01,
                                           MY = -2.8999863310E+01, ),
 #
@@ -252,9 +243,6 @@ TEST_RESU(RESU=(
 # -------------------------------------
 
 CHFORC_4=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-##                       FORCE_NODALE:(NOEUD: A1  MY:-1.      )
-##                       FORCE_NODALE:(NOEUD: A2  MY:+1.      ));
-###############################################################
                _F( NOEUD = 'A1',     MX = 7.0710678119E-01,
                                           MY = -7.0710678119E-01, ),
 #

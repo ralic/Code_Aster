@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2011   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,7 +25,6 @@ DEBUT(CODE=_F(NOM='HSNS102B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #-----------------------------------------------------------------------
 # VALIDATION DU CHARGEMENT THERMIQUE SUR DES GRILLES MEMBRANE (EX BETON ARME)
 #-----------------------------------------------------------------------
-#PRE_GIBI()
 
 MA=LIRE_MAILLAGE()
 
@@ -259,10 +258,5 @@ TEST_RESU(
              REFERENCE='ANALYTIQUE',
             ),
          ))
-
-#DETRUIRE(CONCEPT=(_F(NOM=TEMPERA),_F(NOM=TA)))
-#DETRUIRE(CONCEPT=_F(NOM=TB))
-#STANLEY()
-
 
 FIN()

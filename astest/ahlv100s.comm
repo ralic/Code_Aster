@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 # ahlv100s.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,45 +78,12 @@ MACRO_MATR_ASSE(
                 _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU'))
                 )
 
-#MK = CALC_MATR_ELEM(
-#        OPTION: 'RIGI_ACOU'
-#        MODELE: MO
-#        CHAM_MATER: CHM
-#        CHARGE: IMPE
-#        );
-#MM = CALC_MATR_ELEM(
-#        OPTION: 'MASS_ACOU'
-#        MODELE: MO
-#        CHAM_MATER: CHM
-#        CHARGE: IMPE
-#        );
-#MI = CALC_MATR_ELEM(
-#        OPTION: 'AMOR_ACOU'
-#        MODELE: MO
-#        CHAM_MATER: CHM
-#        CHARGE: IMPE
-#        );
 VECEL=CALC_VECT_ELEM(
          OPTION='CHAR_ACOU',
          CHAM_MATER=CHM,
          CHARGE=VELO
         )
 
-#NDDL = NUME_DDL(
-#        MATR_RIGI: MK
-#        );
-#MATK = ASSE_MATRICE(
-#        MATR_ELEM: MK
-#        NUME_DDL: NDDL
-#        );
-#MATM = ASSE_MATRICE(
-#        MATR_ELEM: MM
-#        NUME_DDL: NDDL
-#        );
-#MATA = ASSE_MATRICE(
-#        MATR_ELEM: MI
-#        NUME_DDL: NDDL
-#        );
 VECAS=ASSE_VECTEUR(
          VECT_ELEM=VECEL,
          NUME_DDL=NDDL

@@ -1,6 +1,6 @@
       SUBROUTINE TE0410 ( OPTIOZ , NOMTZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C ======================================================================
 C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
 C                EPSI_ELNO
-C                SIGM_ELNO
 C                SIEF_ELGA
 C                EFGE_ELNO
 C
@@ -69,15 +68,9 @@ C --- AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
 C --- AU REPERE UTILISATEUR :
 C     ---------------------
       CALL VDREPE(NOMTE, MATEVN, MATEVG)
-
 C
-      IF ( OPTION(1:9) .EQ. 'EPSI_ELNO'.OR.
-     &     OPTION(1:9) .EQ. 'SIGM_ELNO') THEN
-           IF ( OPTION(1:9) .EQ. 'EPSI_ELNO') THEN
-              CALL JEVECH('PDEFORR','L',JSIGM)
-           ELSE IF ( OPTION(1:9) .EQ. 'SIGM_ELNO') THEN
-              CALL JEVECH('PCONTRR','E',JSIGM)
-           ENDIF
+      IF (OPTION(1:9) .EQ. 'EPSI_ELNO') THEN
+        CALL JEVECH('PDEFORR','L',JSIGM)
 C
 C --- PASSAGE DU VECTEUR DES CONTRAINTES OU DU VECTEUR DES DEFORMATIONS
 C --- DEFINI AUX NOEUDS DE L'ELEMENT DU REPERE INTRINSEQUE AU

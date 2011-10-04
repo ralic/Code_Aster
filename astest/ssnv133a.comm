@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE TRACTION-COMPRESSION UNIAXIALE ECROUISSAGE MIXTE
 # ssnv133a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,40 +101,3 @@ TEST_RESU(RESU=(
            )
 
 FIN()
-#
-#
-#
-## COURBE FORCE_DEPLACEMENT
-#
-#&U = CALC_NO  (  CHAM_MATER : CM
-#                    OPTION     : ( 'FORC_NODA')
-#                    RESULTAT : U
-#                        );
-#
-#HAUT = INTE_MAIL_2D (MAILLAGE : MAIL
-#                     DEFI_CHEMIN :( MAILLE : HAUT ) );
-#
-#FHAUT = POST_RELEVE_T ( ACTION : (INTITULE : 'F_HAUT'
-#                        CHEMIN : HAUT RESULTAT : U
-#                        NOM_CHAM : 'FORC_NODA'
-# RESULTANTE : ('DX' 'DY' 'DZ')  OPERATION : 'EXTRACTION' ));
-#
-# DGY = RECU_FONCTION ( RESULTAT : U NOM_CHAM : 'DEPL'
-#                  NOM_CMP : 'DY' NOEUD : N3  TOUT_ORDRE : 'OUI') ;
-#
-# FHY = RECU_FONCTION ( TABLE : FHAUT
-#                        INTITULE : 'F_HAUT'
-#                        PARA_X : 'INST'
-#                        PARA_Y : 'DY'
-#                      ) ;
-#
-# #MPR_COURBE(FORMAT    : 'AGRAF'
-#             FICHIER   : 'AGRAF'
-#          TITRE_GRAPHIQUE : 'COURBE FORCE DEPLACEMENT'
-#          LEGENDE_X       : 'UY EN HAUT'
-#          LEGENDE_Y       : 'REACTION EN HAUT'
-#             COURBE    : (FONC_X : DGY
-#                          FONC_Y : FHY
-#                 LEGENDE   : 'COURBE F=F(U)')
-#            );
-#

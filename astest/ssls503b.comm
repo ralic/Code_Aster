@@ -1,7 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE JMBHH01 J.M.PROIX
-# DATE   : 22/05/2000
-# AUTEUR : F. LEBOUVIER (DELTACAD)
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE EN FLEXION EMPILEMENT ANTISYMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,48 +112,54 @@ CHA=AFFE_CHAR_MECA(        MODELE=MO,DDL_IMPO=(
 #                         RESOLUTION
 #---------------------------------------------------------------------
 #
-RESU=MECA_STATIQUE(       MODELE=MO,
-                        CHAM_MATER=CHAM_MAT,
-                         CARA_ELEM=CAR_ELE,
-                             EXCIT=_F( CHARGE = CHA)
-                      )
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHAM_MAT,
+                   CARA_ELEM=CAR_ELE,
+                   EXCIT=_F( CHARGE = CHA));
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               NUME_ORDRE=1,
+               OPTION='SIGM_ELNO',);
 
 #
 #COUCHE 2 : CALCUL DES CONTRAINTES
 ##################################
-SIG_C2_S=CALC_ELEM(       RESULTAT=RESU,
+SIG_C2_S=POST_CHAMP(RESULTAT=RESU,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='SUP',),);
 
-                          NUME_ORDRE=1,
-                          OPTION=('SIGM_ELNO','EPSI_ELNO',),
-
-
-                          REPE_COQUE =_F( NUME_COUCHE=2,
-                                          NIVE_COUCHE='SUP',),
-                          )
+SIG_C2_S=CALC_ELEM(reuse =SIG_C2_S,
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION=('EPSI_ELNO',),
+                   REPE_COQUE =_F(NUME_COUCHE=2,
+                                  NIVE_COUCHE='SUP',),);
 
 #
-SIG_C2_M=CALC_ELEM(       RESULTAT=RESU,
-
-
-
-                          NUME_ORDRE=1,
-                          OPTION='SIGM_ELNO',
-                          REPE_COQUE =_F( NUME_COUCHE=2,
-                                          NIVE_COUCHE='MOY',),
-                          )
+SIG_C2_M=POST_CHAMP(RESULTAT=RESU,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=2,
+                                  NIVE_COUCHE='MOY',),);
 
 #
 #COUCHE 3 : CALCUL DES CONTRAINTES
 ##################################
-SIG_C3_S=CALC_ELEM(       RESULTAT=RESU,
+SIG_C3_S=POST_CHAMP(RESULTAT=RESU,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=3,
+                                  NIVE_COUCHE='SUP',),);
 
-
-
-                          NUME_ORDRE=1,
-                         OPTION=('SIGM_ELNO','EPSI_ELNO',),
-                          REPE_COQUE =_F( NUME_COUCHE=3,
-                                          NIVE_COUCHE='SUP',),
-                          )
+SIG_C3_S=CALC_ELEM(reuse =SIG_C3_S,
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION=('EPSI_ELNO',),
+                   REPE_COQUE =_F(NUME_COUCHE=3,
+                                  NIVE_COUCHE='SUP',),);
 
 #
 #

@@ -1,7 +1,7 @@
       SUBROUTINE JEPREG ( CUNIT , CLAS , NUMERG , CMESS , INFO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF DEBUG  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF DEBUG  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -142,10 +142,10 @@ C
             WRITE(JULIST,*)'ENREGISTREMENT AFFECTE A UN UNIQUE OBJET'
             IF ( IDCO .EQ. 0 ) THEN
               WRITE(JULIST,*) 'OBJET SIMPLE DE NOM :  ',
-     +                        RNOM(JRNOM(IC)+IDOS)
+     +                        RNOM(JRNOM(IC)+IDOS),IDOS
             ELSE
               WRITE(JULIST,*) 'OBJET DE COLLECTION DE NOM : ',
-     +                        RNOM(JRNOM(IC)+IDCO),' NUMERO ',IDOS
+     +                        RNOM(JRNOM(IC)+IDCO),IDCO,' NUMERO ',IDOS
             ENDIF
           ELSE IF ( IDCO .LT. 0 .OR. IDOS .LT. 0 ) THEN
 C
@@ -181,7 +181,7 @@ C
               WRITE(JULIST,1002) ICOMP,IDCOL,IDOSL,LGL,
      +                   ' OBJET SIMPLE DE NOM : ',RNOM(JRNOM(IC)+IDOSL)
             ELSE
-              WRITE(JULIST,1002) ICOMP,IDCOL,IDOSL,LGL,
+              WRITE(JULIST,1003) ICOMP,IDCOL,IDOSL,LGL,
      +                    ' OBJET DE COLLECTION DE NOM : ',
      +                   RNOM(JRNOM(IC)+IDCOL),' ET DE NUMERO : ',IDOSL
             ENDIF
@@ -205,7 +205,9 @@ C
  9999 CONTINUE
 C
  1001 FORMAT((I7,' - ',10(I12,1X)))
- 1002 FORMAT(I6,1X,'ID COLLECTION:',I6,' ID OBJET:',I6,' LONGUEUR:',I6,
-     +       A,A,I6)
+ 1002 FORMAT(I8,1X,'ID COLLECTION:',I8,' ID OBJET:',I8,' LONGUEUR:',
+     +       I8,A,A,I6)
+ 1003 FORMAT(I8,1X,'ID COLLECTION:',I8,' ID OBJET:',I8,' LONGUEUR:',
+     +       I8,A,A,A,I8)
 C FIN -----------------------------------------------------------------
       END

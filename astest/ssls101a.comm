@@ -1,4 +1,4 @@
-# MODIF  DATE 18/04/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 # ssls101a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,18 +83,23 @@ CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
 #
 # TEST DE L'OPTION SIEQ_ELNO EN ELASTICITE
 #
-CALC_ELEM( reuse=RESU, RESULTAT=RESU,
-           OPTION='SIGM_ELNO',
-           REPE_COQUE=_F( NIVE_COUCHE='INF',),)
+RESU=CALC_ELEM( reuse=RESU, RESULTAT=RESU,
+           OPTION='SIGM_ELNO',)
+
+RESU2=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
 
 #
-CALC_ELEM( reuse=RESU, RESULTAT=RESU,
+RESU2=CALC_ELEM( reuse=RESU2, RESULTAT=RESU2,
            OPTION='SIEQ_ELNO',    )
 
 #
 SVM=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                                   INTITULE = 'SIGM_VM',
-                                  RESULTAT = RESU,
+                                  RESULTAT = RESU2,
                                   NOM_CHAM = 'SIEQ_ELNO',
                                   NOM_CMP = 'VMIS',
                                   OPERATION = 'EXTRACTION')      )
@@ -464,13 +469,18 @@ CALC_ELEM( reuse=U3, RESULTAT=U3,
 
 CALC_ELEM( reuse=U3,  RESULTAT=U3,
            NUME_ORDRE=4,
-           OPTION='SICO_ELNO',
-           REPE_COQUE =_F( NUME_COUCHE=1,
-                           NIVE_COUCHE='INF',),        )
+           OPTION='SIGM_ELNO',)
 
-CALC_ELEM( reuse=U3, RESULTAT=U3,
-           NUME_ORDRE=4,
-           OPTION='SIEQ_ELNO'  )
+U3POS=POST_CHAMP(RESULTAT=U3,
+                 NUME_ORDRE=4,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='INF',),);
+
+U3=CALC_ELEM( reuse=U3, RESULTAT=U3POS,
+             NUME_ORDRE=4,
+             OPTION='SIEQ_ELNO'  )
 #
 SVMP=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                                   INTITULE = 'SIG_VM_P',

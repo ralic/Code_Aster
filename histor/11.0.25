@@ -1,0 +1,2188 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR andriam      ANDRIAMBOLOLONA Hari   DATE 10/03/2011 - 03:40:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017049 DU 2011-06-01 12:59:26
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    CREA_ELEM_SSD : fabrication de macro-elements sans modes dynamiques
+FONCTIONNALITE
+   La macro-commande CREA_ELEM_SSD a été adaptée afin de pouvoir créer des macro-éléments
+   dynamiques sans modes normaux.
+   Cette fiche est jointe à la fiche 17150 qui se sert de ce type de macro-élément dynamique
+   pour le calcul de modification structurale.
+   On modifie le catalogue de CREA_ELEM_SSD en conséquence :
+   - Pour le mot clé facteur CALC_FREQ : on utilise OPTION ='SANS' si on ne souhaite pas
+   appeler MODE_ITER_SIMULT qui calcule les modes normaux.
+   - En complément, pour le mot-clé facteur BASE_MODALE/RITZ, si on veut utiliser des modes
+   statiques on choisit TYPE_MODE = 'STATIQUE'; si on veut utiliser des modes d'interface on
+   choisit TYPE_MODE = 'INTERFACE', dans ce cas le nombre de modes d'interface doit être
+   strictement positif.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.65.11
+VALIDATION
+    passage des tests qui font appel xc3xa0 CREA_ELEM_SSD
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 10/03/2011 - 05:59:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017600 DU 2011-09-26 13:02:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 - Chantier CALC_CHAMP : etendre le calcul de SIGM_ELNO
+FONCTIONNALITE
+   Demande :
+   =======
+   Comme maintenant le calcul de SIGM_ELNO se fait à partir de SIGM_ELGA, on souhaite étendre
+   le calcul de SIGM_ELNO à tous les éléments qui calculent SIGM_ELGA.
+   
+   Évolution :
+   =========
+   On ajoute l'option et les modes locaux nécessaires aux catalogues proposant SIGM_ELGA.
+   Pour les éléments XFEM on met -1 devant l'option.
+   
+   La validation exhaustive sera faite lorsqu'on aura basculer dans les tests SIEF_ELNO en
+   SIGM_ELNO (lorsque SIEF_ELNO contient des contraintes).
+   
+   Impacts :
+   =======
+   gener_me2db1.cata    gener_me_xt.cata        gener_mecpl2_xhtc.cata  gener_medpl2_xtc.cata
+   gener_me2dg_1.cata   gener_me_xtc.cata       gener_mecpl2_xt.cata    gener_megrc2.cata
+   gener_me2dg_2.cata   gener_meaa22.cata       gener_mecpl2_xtc.cata   gener_megrm2.cata
+   gener_me2dsi_2.cata  gener_meaa32.cata       gener_mecq32.cata       gener_mepgi2.cata
+   gener_me3a13.cata    gener_meafo2.cata       gener_mecqd1.cata       gener_mepli2.cata
+   gener_me3a43.cata    gener_meagi2.cata       gener_meda22.cata       gener_meplu2.cata
+   gener_me3d_3.cata    gener_meah12.cata       gener_meda32.cata       gener_mepmf1.cata
+   gener_me3dg_1.cata   gener_meah22.cata       gener_medgn_2.cata      gener_mepmf2.cata
+   gener_me3dg_3.cata   gener_meah42.cata       gener_medh12.cata       gener_meshb3.cata
+   gener_me3di3.cata    gener_meah52.cata       gener_medh22.cata       gener_mv2d_2.cata
+   gener_me3du3.cata    gener_meax_2.cata       gener_medh42.cata       gener_mv3d_3.cata
+   gener_me3gi3.cata    gener_meax_2_xh.cata    gener_medh52.cata       gener_mv3dn_3.cata
+   gener_me3h13.cata    gener_meax_2_xht.cata   gener_medhb2.cata       meca_hexs8.cata
+   gener_me3h23.cata    gener_meax_2_xt.cata    gener_medkt2.cata       mecpqs4.cata
+   gener_me3h43.cata    gener_meaxs2.cata       gener_medpl2.cata       medpqs4.cata
+   gener_me3h53.cata    gener_mebar1.cata       gener_medpl2_xh.cata    met3seg3.cata
+   gener_me_xh.cata     gener_mecpl2.cata       gener_medpl2_xhc.cata   met3seg4.cata
+   gener_me_xhc.cata    gener_mecpl2_xh.cata    gener_medpl2_xhh.cata   met6seg3.cata
+   gener_me_xhh.cata    gener_mecpl2_xhc.cata   gener_medpl2_xhhc.cata
+   gener_me_xhhc.cata   gener_mecpl2_xhh.cata   gener_medpl2_xht.cata
+   gener_me_xht.cata    gener_mecpl2_xhhc.cata  gener_medpl2_xhtc.cata
+   gener_me_xhtc.cata   gener_mecpl2_xht.cata   gener_medpl2_xt.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste complete
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015156 DU 2010-06-04 12:53:26
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Reorganisation des tests FORMA
+FONCTIONNALITE
+   Demande :
+   =======
+   Suite à la dernière formation, on s'est aperçu que les tests FORMA n'étaient pas le reflet
+   de ce qui est fait en formation.
+   
+   Évolution :
+   =========
+   Dans cette fiche, on se propose de réorganiser les tests FORMA (et supprimer ce qui est
+   obsolescent).
+   
+   Ce qui donne :
+   forma01 -> forma02
+   forma02 -> forma10 
+   forma04 -> forma20
+   forma05 -> forma21
+   forma06 -> suppr
+   forma08 -> suppr
+   forma09 -> forma30
+   
+   Finalement lorsque chaque responsable de TP de la formation aura restitué son TP on aura :
+   forma01 -> plaque trouée en élasticité + adaptation
+   forma02 -> tuyau en thermoméca et dynamique
+   forma03 -> plaque trouée en plasticité
+   forma04 -> contact
+   forma05 -> rupture 1
+   forma06 -> rupture 2
+   forma07 -> rupture 3
+   forma10 -> trajet de chargement (support au cours)
+   
+   Bien qu'évolution, cette fiche est à faire en 10 car la formation se fait avec cette
+   version (qui est la version d'exploitation) et il nous reste au moins 3 sessions de
+   formation avant de passer à la V11.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v6.03.119 v6.03.120 v6.03.112 v7.20.101 v7.20.100
+VALIDATION
+    passage des tests
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017592 DU 2011-09-23 14:22:48
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    AR01 - Chantier CALC_CHAMP : calcul de SIGM_ELNO a partir des contraintes
+FONCTIONNALITE
+   Demande :
+   =======
+   Dans le cadre du chantier CALC_CHAMP, on souhaite effectuer le passage Gauss -> Noeud de
+   manière unique via la routine PPGAN2 et simplifier le calcul des contraintes.
+   
+   Évolution : 
+   =========
+   Le calcul des contraintes par élément aux noeuds s'effectue maintenant via le TE0004 à
+   partir des contraintes aux points de Gauss. Le calcul des contraintes aux noeuds à partir
+   des déplacements n'est plus possible.
+   
+   Le champ SIGM_ELNO est donc maintenant calculé (comme SIEF_ELGA et SIGM_ELGA) sur tout les
+   sous-points. Il est donc nécessaire de faire un POST_CHAMP pour poursuivre si SIGM_ELNO
+   est un champ d'entrée (pour SIGM_NOEU ou SIEQ_ELNO par exemple) en attendant la suite du
+   chantier.
+   
+   129 tests ont été modifiées :
+   - pour les modélisations "milieux continus" certaines valeurs de non régression ont été
+   modifiés car le calcul était moins précis sur des maillages particulièrement grossier ;
+   - pour les plaques et coques, il a été nécessaire d'ajouter des POST_CHAMP pour extraire
+   sur un sous-point.
+   
+   On note que pour les coques, SICO_ELNO faisait déjà ce calcul. On résorbe donc cette option.
+   Par contre pour les COQUE_3D, le calcul est plus subtile que le simple passage par PPGAN2.
+   On conserve donc le calcul qui était fait pour SICO_ELNO.
+   
+   Pour POST_CHAMP, il a fallu autorisé en plus de evol_elas et evol_noli, les dyna_harm et
+   mult_elas. La conséquence est que SDLS01B est en SDVERI=NON car il y a un problème avec
+   POST_CHAMP. Une fiche doit être émise car c'est un problème plus général sur les SD en
+   sorti de POST_CHAMP.
+   
+   La sensibilité a posé des problèmes. Pour ne plus les rencontrer à l'avenir, on crée des
+   copies de mecalc.f et modopt.f (mscalc.f et msdopt.f).
+   
+   Les tests hpla100g et hpla100h restent NOOK (DKT + multi-couche + chargement thermique)
+   car le calcul de SIEF_ELGA est inexact (on ne retranche pas la contrainte thermique).
+   Avant cela ne se voyait pas car on partait de DEPL. Une fiche sera émise.
+   
+   Pour le DKT + chargement thermique le travail a été fait en intégrant la correction de la
+   fiche issue16729 et créant une routine pour retrancher les contraintes thermiques (dxsith.f).
+   
+   Le calcul de SIGM_ELNO pour les barres est supprimé car SIEF_ELGA calcule des efforts et
+   SIGM_ELGA n'est pas calculé sur les barres.
+   
+   Impacts :
+   =======
+   demo006a.comm  sslp01a.comm   ssls115b.comm  ssls119f.comm  sslv113d.comm
+   epicu01a.comm  sslp200a.comm  ssls115c.comm  ssls120b.comm  sslv134b.comm
+   epicu01b.comm  sslp200b.comm  ssls115d.comm  ssls120c.comm  sslv134d.comm
+   forma01b.comm  sslp201a.comm  ssls115e.comm  ssls120d.comm  sslv200a.comm
+   hpla100a.comm  sslp201b.comm  ssls115f.comm  ssls121a.comm  sslv200b.comm
+   hpla100c.comm  sslp300a.comm  ssls115g.comm  ssls128a.comm  sslv303a.comm
+   hpla100e.comm  sslp303a.comm  ssls115h.comm  ssls128a.para  sslv303b.comm
+   hpla100f.comm  sslp304d.comm  ssls118a.comm  ssls130a.comm  sslv303c.comm
+   hsls01b.comm   ssls09a.comm   ssls118b.comm  ssls130b.comm  sslv303d.comm
+   hslv304a.comm  ssls09b.comm   ssls118c.comm  ssls200a.comm  sslv306a.comm
+   hslv304b.comm  ssls100i.comm  ssls118d.comm  ssls502a.comm  sslx100c.comm
+   hsnv121e.comm  ssls100j.comm  ssls118e.comm  ssls502b.comm  ssnl106f.comm
+   rccm05a.comm   ssls101a.comm  ssls118f.comm  ssls502c.comm  ssnl111b.comm
+   rccm06a.comm   ssls112a.comm  ssls118g.comm  ssls502d.comm  ssnp15c.comm
+   rccm09b.comm   ssls114a.comm  ssls118h.comm  ssls503a.comm  ssnp15d.comm
+   sdls01b.comm   ssls114b.comm  ssls118i.comm  ssls503b.comm  ssnp15e.comm
+   sdlv122a.comm  ssls114c.comm  ssls118j.comm  ssls503c.comm  ssnv129a.comm
+   sdlv122b.comm  ssls114d.comm  ssls118k.comm  ssls503d.comm  ssnv129b.comm
+   sensm04a.com1  ssls114e.comm  ssls118l.comm  ssls504a.comm  ssnv129c.comm
+   sensm04a.comm  ssls114f.comm  ssls118m.comm  ssls504b.comm  ssnv129d.comm
+   shlv100d.comm  ssls114g.comm  ssls118n.comm  sslv04b.comm   ssnv129e.comm
+   shlv100h.comm  ssls114h.comm  ssls118o.comm  sslv04h.comm   ssnv152a.comm
+   ssla200a.comm  ssls114i.comm  ssls118p.comm  sslv04i.comm   zzzz112b.comm
+   ssla200b.comm  ssls114j.comm  ssls118q.comm  sslv07a.comm   zzzz132a.comm
+   ssll102h.comm  ssls114k.comm  ssls118r.comm  sslv109e.comm
+   ssll11c.comm   ssls115a.comm  ssls119c.comm  sslv113c.comm
+   
+   assach.f  ccchel.f  meacmv.f  meceuc.f  mscalm.f  rscrsd.f  te0033.f  te0410.f  te0580.f
+   calcop.f  chrpel.f  mecalc.f  modopt.f  msdopt.f  sepach.f  te0040.f  te0415.f
+   ccaccl.f  dxsith.f  mecalm.f  mscalc.f  ppgan2.f  te0004.f  te0154.f  te0431.f
+   
+   gener_me2db1.cata  gener_mebar1.cata  gener_medpl2.cata  medpqs4.cata
+   gener_me3d_3.cata  gener_mecpl2.cata  gener_megrc2.cata  met3seg3.cata
+   gener_meafo2.cata  gener_mecq32.cata  gener_megrm2.cata  sief_elga.cata
+   gener_meax_2.cata  gener_mecqd1.cata  meca_hexs8.cata    sigm_elno.cata
+   gener_meaxs2.cata  gener_medkt2.cata  mecpqs4.cata
+   
+   calc_elem.capy  post_champ.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v3.03.131 v7.14.100 v7.15.100 v7.01.100 v7.11.001 v7.14.304 v7.22.121 v3.04.137 v3.04.138 v3.04.147 v2.03.001 v2.04.122 v1.01.155 v2.07.100 v3.06.200 v3.01.102 v3.01.011 v3.01.110 v3.01.111 v3.01.112 v3.01.116 v3.01.117 v3.01.118 v3.02.001 v3.02.200 v3.02
+VALIDATION
+    tests SIGM_ELNO
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017587 DU 2011-09-23 12:36:44
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    AR01 - Chantier CALC_CHAMP : suppression de l'option SICO_ELNO
+FONCTIONNALITE
+   Demande :
+   =======
+   L'option SICO_ELNO calcule, en non-linéaire, les contraintes par éléments aux noeuds à
+   partir des contraintes par éléments aux points de Gauss. Ce calcul n'est possible que pour
+   les coques.
+   
+   Dans le cadre de la fiche issue17592, le calcul de SIGM_ELNO sera TOUJOURS fait de cette
+   manière. L'option SICO_ELNO devient donc redondante et inutile. C'est pourquoi on souhaite
+   la supprimer.
+   
+   Évolution :
+   =========
+   On supprime donc cette option.
+   Pour les coques (DKT, DKQ, Q4G), on faisait un simple passage Gauss -> Noeud via PPGAN2.
+   Cela ne pose pas de problème, on passe par le te dédié : TE0004.
+   Pour les COQUE_3D, le traitement est particulier car on gère les grandes rotations et les
+   grands déplacements. On créée un nouveau TE (TE0040) qui fait la même chose que ce que
+   faisait l'option SICO_ELNO mais on généralise le calcul à tous les sous-points et toutes
+   les couches.
+   
+   Pour valider, on s'est assuré qu'aucun test ne se sont cassé en remplaçant SIGM_ELNO par
+   SICO_ELNO dans les tests linéaires.
+   
+   Dans les tests, on a remplacé par SICO_ELNO par SIGM_ELNO (on fait le même calcul, il n'y
+   a que le nom qui change !).
+   
+   Impacts :
+   =======
+   hsls01b   hsnv121e  sslp304d  ssls101a
+   ssnl106f  ssnp15c   ssnp15d   ssnp15e
+   ssnv129a  ssnv129b  ssnv129c  ssnv129d
+   ssnv129e  ssnv152a  zzzz112b
+   
+   cata_champs.py
+   
+   gener_mecq32.cata
+   gener_mecqd1.cata
+   gener_medkt2.cata
+   gener_megrc2.cata
+   gener_megrm2.cata
+   
+   chrpel.f
+   mecalc.f
+   mecalm.f
+   mscalm.f
+   te0415.f
+   te0580.f
+   rscrsd.f
+   te0040.f
+   
+   sico_elno.cata
+   sigm_elno.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : d0.04.04 r3.07.03 r3.07.04 u2.02.01 u2.06.10 u3.12.04 u4.81.01 u4.81.02 u4.81.04 v6.03.015 v6.04.152
+VALIDATION
+    Tests SICO_ELNO
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017491 DU 2011-09-06 14:28:42
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Couverture de code: POST_CHAMP/EXTR_COQUE
+FONCTIONNALITE
+   Problème :
+   ========
+   Le mot-clé 'EXTR_COQUE', NIVE_COUCHE ='MOY' de la commande POST_CHAMP n'est pas testé.
+   
+   Correction :
+   ==========
+   Dans le cadre la fiche issue17592, on ajoute 304 POST_CHAMP comportant les mots-clés :
+   - 'EXTR_COQUE', NIVE_COUCHE ='SUP' ;
+   - 'EXTR_COQUE', NIVE_COUCHE ='MOY' ;
+   - 'EXTR_COQUE', NIVE_COUCHE ='INF'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    *
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017300 DU 2011-07-18 12:45:24
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 - Gestion du nombre de sous-point par rapport au champ in
+FONCTIONNALITE
+   Problème :
+   ========
+   Actuellement dans CALC_ELEM et CALC_CHAMP, le nombre de sous-point du champ a calculer est
+   lu dans le cara_elem.
+   
+   Or CALC_CHAMP doit écrire des champs complets dont on peut extraire des couches via
+   POST_CHAMP et on peut rentrer de nouveau dans CALC_CHAMP avec un champ avec un seul
+   sous-point. Dans ce cas, il ne faut plus lire le nombre de sous-point du nouveau champ
+   dans le cara_elem mais dans le champ in.
+   
+   Il faut donc modifier la lecture du nombre de sous-point.
+   
+   Correction :
+   ==========
+   On modifie la routine ccaccl.f, pour vérifier pour certains champs, le nombre de
+   sous-point du champ dont ils dépendent. Pour le moment on ne fait cette vérification que
+   sur SIEF_ELGA et SIGM_ELNO.
+   
+   Impact :
+   ======
+   ccaccl.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste POST_CHAMP + CALC_CHAMP
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 10/03/2011 - 05:59:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016729 DU 2011-04-04 17:15:47
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Plaques - Calcul du cisaillement transverse en ELAS
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Dans TE0033, lorsque le matériau est ELAS, on calcule les contraintes en passant par la
+   matrice de Hooke des contraintes planes.
+   Cette façon de faire ne permet pas de calculer correctement le cisaillement transverse :
+   - il est alors nul pour les DKT : c'est faux
+   - il est constant dans l'épaisseur pour les DST/Q4G : c'est aussi faux
+   
+   Il faut en fait calculer les contraintes de la même façon que pour ELAS_COQUE (et ELAS_COQMU).
+   Pour le matériau 'ELAS', on retire de ces contraintes la partie thermique avec la matrice
+   de Hooke.
+   
+   Correction
+   ==========
+   
+   Impact : te0033.f, dxsith.f (ajout)
+   
+   Remarque
+   ========
+   
+   Pour les matériaux 'ELAS_COQUE' et 'ELAS_COQMU', les contraintes SIEF_ELGA ainsi calculées
+   incluent les contraintes dues à la dilatation thermique (c'est déjà comme ça
+   actuellement). Une fiche est émise.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    astout plaque
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 10/03/2011 - 05:59:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017225 DU 2011-07-01 07:56:31
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : Necs
+TITRE
+    MODE_MECA manquant dans c_nom_cham_into.capy
+FONCTIONNALITE
+   Dans DYNA_NON_LINE avec le mot-clé MODE_VIBR on calcule des modes vibratoire qui sont des 
+   champs cinématiques stocké dans l'evol_noli (à chaque pas demandé).
+   Ces champs sont déclarés comme étant des MODE_MECA par analogie avec les mêmes champs de 
+   MODE_ITER_SIMULT, mais c'est incorrect (je plaide coupable).
+   Au niveau des tests existants on ne regardait que la fréquence et pas les modes associés, 
+   on ne pouvait donc voir le problème.
+   Pour CRIT_FLAMB on n'a pas ce problème car le mode généré est appelé MODE_FLAMB et non 
+   MODE_MECA.
+   
+   Le but de cette fiche est donc de :
+   - Renommer le champs MODE_MECA en DEPL_VIBR 
+   - Ajouter DEPL_VIBR dans c_nom_cham_into.capy
+   
+   
+   Sources modifiées:
+   - sdnv106a.comm
+   - c_nom_cham_into.capy
+   - nmetc0.f
+   - nmetcc.f
+   - nmetcr.f
+   - rscrsd.f
+   
+   Impact documentaire: 
+   - v5.03.106 (doc du cas test sdnv106a)
+   - Changement du champ MODE_MECA par DEPL_VIBR dans u4.53.01
+   
+   Ce développement est testé par deux TEST_RESU du champ DEPL_VIBR dans sdnv106a comme
+   demandé par Nicolas Greffet.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V5.03.106, U4.53.01
+VALIDATION
+    sdnv106a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 10/03/2011 - 05:59:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017544 DU 2011-09-15 12:31:34
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.21, le cas-test ssnv129d s'arrete en NOOK_TEST_RESU sur Rocks.
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le test ssnv129d est NOOK sur Rocks (et calibre 7) depuis la version 11.0.21
+                                                                             
+   Analyse (par Jacques) :
+   -----------------------
+   Les 3 NOOK correspondent à 3 tests de l'option EFGE_ELGA ajoutés en 11.0.21
+                                                                             
+   Pour autant, je ne crois pas que cela cache un bug.
+                                                                          
+   J'ai fait passer le test sur calibre 5 et clpaster en imprimant le résultat "brut" du
+   STAT_NON_LINE.
+   On observe que le déplacement est sensiblement différent.
+   Par exemple pour le noeud N231 :
+                                                                             
+   clpaster :
+    N231     -1.72950E-05 -1.08418E-04 -2.05812E-01  1.75229E-01 -4.26995E-07  0.00000E+00
+                                                                              
+   calibre 5 :
+    N231      7.36947E-06 -1.08435E-04 -2.05812E-01  1.75229E-01 -1.09590E-06  0.00000E+00
+                                                                              
+   Pour le champ SIEF_ELGA, il y a aussi des différences sensibles.
+   Par exemple pour la maille M2 / POINT=4 :
+                                                                            
+   clpaster :
+   |    M2      |           4|           1| 7.793763076E+08| 1.175709436E+09|
+   3.818422556E-08|-2.537562481E+09| 0.000000000E+00| 0.000000000E+00
+   |    M2      |           4|           2|-1.040891549E+07|-1.739416430E+07|
+   9.731593309E-11|-2.399183475E+06| 0.000000000E+00| 0.000000000E+00
+   |    M2      |           4|          
+   3|-8.001941386E+08|-1.210497765E+09|-6.402842700E-08| 2.532764114E+09| 0.000000000E+00|
+   0.000000000E+00
+                                                                            
+   calibre 5 :
+   |    M2      |           4|           1| 7.783224522E+08|
+   1.175464093E+09|-1.192092896E-07|-2.537566719E+09| 0.000000000E+00| 0.000000000E+00
+   |    M2      |           4|          
+   2|-1.146860646E+07|-1.764899215E+07|-1.862645149E-09|-2.387959836E+06| 0.000000000E+00|
+   0.000000000E+00
+   |    M2      |           4|          
+   3|-8.012596651E+08|-1.210762078E+09|-1.192092896E-07| 2.532790799E+09| 0.000000000E+00|
+   0.000000000E+00
+                                                                                            
+                                                            
+   Le NOOK le plus fort (9%) correspond au test de NXX pour la maille M2 / POINT=4
+   Il s'explique par le fait que l'état de contrainte est de type "flexion" comme on peut le
+   voir ci-dessus.
+   Quand on calcule la moyenne de SIXX, on trouve quelque chose de faible pour lequel la
+   précision est mauvaise.
+                                                                             
+   Correction :
+   ------------
+   
+   Jacques a bien expliqué la faible précision que l'on peut attendre sur le calcul de NXX.
+   
+   Ce qu'il reste à expliquer c'est pourquoi Rocks donnent des résultats différents des
+   autres plateformes : en regardant en INFO=2 le calcul on se rend compte que c'est parce
+   qu'il existe quelques petites différences à l'appariement (un noeud apparié avec une autre
+   maille sans que cela fausse les résultats car les maillages sont compatibles).
+   
+   Ces petites différences expliquent les différences sur les déplacements : on pourrait
+   croire qu'elles sont importantes sur le noeud N231 en DX comme le montre Jacques mais en
+   fait non ! Si on regarde leur amplitude elle est 1000 fois moins grande que celle en DY ou
+   DZ. Cependant cette différence en relatif sur DX suffit à trouver un gros écart en
+   intégrant SIXX.
+   
+   La solution toute simple ici pour retrouver des résultats cohérents entres machines est de
+   résoudre le problème en géométrie initiale (comme le font les modélisations A,B,C,E du
+   test) et non en géométrie actualisée.
+   Le déplacement suivant DX sera alors nul (0.D0) : c'est l'hypothèse des petits
+   déplacements pour une plaque en flexion.
+   
+   Impact : ssnv129d.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv129d
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 10/03/2011 - 05:59:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017285 DU 2011-07-12 17:44:53
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    Modification de l'indicateur de décharge DERA_ELGA
+FONCTIONNALITE
+   1- Objectif
+   ===========
+   
+   Développement d'un nouvel indicateur de décharge, suivant le CR-AMA-11.035 (projet 
+   LOCO), destiné à avertir l'utilisateur si, lorsqu'il a utilisé des lois de Von Mises 
+   à écrouissage isotrope pur, il risque d'obtenir des résultats faux quand la décharge 
+   devient trop importante (ne reste donc pas dans le domaine d'élasticité initial). 
+   Cela lui indique alors qu'il faut utiliser des lois de comportement avec écrouissage 
+   cinématique (VMIS_CINE_LINE, VMIS_ECMI*, VMIS_CIN1_CHAB, etc..). Cette solution 
+   fonctionne et fournit un bon critère aidant l'utilisateur à voir si le choix d'un 
+   écrouissage isotrope seul était pertinent a posteriori. Le seul inconvénient : il 
+   faut penser à utiliser CALC_ELEM / DERA_ELGA.
+   
+   
+   On ajoute donc au champ DERA_ELGA les composantes suivantes :
+     - IND_DCHA
+         =  0 : valeur initiale sans contrainte
+         =  1 : si charge élastique
+         =  2 : si charge plastique
+         = -1 : si décharge élastique licite(quelque soit le type d'écrouissage)
+         = -2 : si décharge élastique abusive (on aurai plastifié avec un écrouissage
+   cinématique).
+     - VAL_DCHA indique la proportion de sortie du critère
+     - Xij => tenseur de rappel (centre du domaine élastique si on était en cinématique)
+   
+   2 - Lois de comportement 
+   ========================
+   Les lois de comportement concernées par le calcul de ces nouvelles composantes sont :
+       - VMIS_ISOT_LINE
+       - VMIS_ISOT_TRAC
+       - VMIS_ISOT_PUIS
+   
+   2 - Modifications
+   =================
+   2.1 - Catalogues
+   ----------------
+   => grandeur_simple__: ajout des composantes DCHAR_X DCHAR_Y X11 X22 X33 X12 X13 X23 
+   a la grandeur simple DERA_R. On garde les composantes DCHA_V   DCHA_T actuellement 
+   disponibles (variation relative de la norme des contraintes, déviatoriques ou 
+   totales)
+   
+   => catalogue d'option DERA_ELGA: 
+     - ajout des paramètres PDERAMG, PMATERC, PVARCPR
+   => catalogue d'éléments 
+     - Ajout pour le mode local "EDERAPG" des composantes DCHAR_X DCHAR_Y  X11 X22 X33 
+   X12     X13 X23 
+       pour les 8 catalogues d'éléments suivants, 
+              medpqs4 (C_PLAN_SI)
+              mecpqs4 (D_PLAN_SI)
+              meca_hexs8 (3D_SI)
+              gener_medpl2 (D_PLAN)
+              gener_mecpl2 (C_PLAN)
+              gener_meaxs2 -AXIS_SI)
+              gener_meax_2 (AXIS)
+              gener_me3d_3 (3D)
+     - Pour les modélisations GRAD_VARI, GRAD_SIGM, 3D_GVNO, SHB, GRAD_EPSI on met 
+   DERA_ELGA on ne fait rien (IND_DCHA=VAL_DCHA=0)
+   2.2 - Fortran
+   -------------
+   => Le Calcul de  DCHAR_X et DCHAR_Y et de Xij est effectué dans la routine TE0489.
+   => On supprime la routine INDRAD qui n'est plus appelée dans le code. .
+   
+   4 - Validation
+   ==============
+     - SSNP15A (écrouissage isotrope)
+        o ajout de TEST_RESU sur DCHAR_X et DCHAR_Y
+        o comparaison des résultats avec le cas-test ssnp14a, uniquement pour la 
+   solution en charge
+     - FORMA03B : 
+        o ajout de TEST_RESU de non-régression sur DCHAR_X, DCHAR_Y et sur Xij
+     - Passage de la liste restreinte
+   
+   5 - Documentation
+   =================
+     - Ajout dans la doc V de ssnp15 des valeurs DCHAR_X et DCHAR_Y
+     - ajout dans la doc U de CALC_ELEM de la description des valeurs calculées par 
+   DERA_ELGA
+     - ajout dans la doc R4.20.01 du calcul effectué
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01, V6.03.15, R4.20.01
+VALIDATION
+    ssnp15a, forma03b
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 10/03/2011 - 05:59:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016928 DU 2011-05-16 11:06:24
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 POST_CHAMP / COQU_EXCENT / MODI_PLAN
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le mot clé CALC_ELEM / REPE_COQUE / PLAN='INF'/'SUP'/'MOY'/'MAIL' qui permet de modifier
+   le calcul de EFGE_ELNO pour les plaques excentrées doit etre résorbé.
+                                                                                            
+                         
+                                                                                            
+                         
+   Evolution proposée :
+   --------------------
+   1) le calcul de EFGE_ELNO est maintenant toujours calculé avec PLAN='MAIL'.
+   2) Quand l'utilisateur souhaite EFGE_ELNO dans un autre "plan", il ne peut plus le faire
+   que dans le plan "moyen".
+      Il doit alors écrire :
+      RESU=CALC_ELEM(reuse=RESU, RESULTAT=RESU, OPTION='EFGE_ELNO')
+      RESU2=POST_CHAMP(RESULTAT=RESU, GROUP_MA='PLAQ_P1I',
+                       COQU_EXCENT=_F(NOM_CHAM='EFGE_ELNO', MODI_PLAN='OUI',))
+                                                                                            
+                         
+   Validation :
+   ------------
+   * Les 12 tests qui utilisaient REPE_COQUE / PLAN='MOY' sont modifiés pour supprimer
+   REPE_COQUE / PLAN='MOY'.
+     En effet, aucun de ces tests ne contenaient des coques excentrées !
+       ssls118a ssls118b ssls118c ssls118d ssls118e ssls118f
+       ssls118g ssls118h ssls118i ssls118j ssls118o ssls118p
+   * J'ajoute un POST_CHAMP / COQU_EXCENT dans 1 test utilisant des coques excentrées (DKT) :
+   ssls122a
+     Je vérifie que la prise en compte de l'excentrement modifie la valeur des efforts, mais
+   la réelle validation de ce développement sera faite dans le cadre de la fiche 17604.
+                                                                                            
+                         
+     Remarque : 2 familles d'éléments peuvent théoriquement bénéficier de POST_CHAMP /
+   COQU_EXCENT : DKT/DST/Q4G et DKTG. Mais je n'ai pas trouvé de test utilisant des DKTG avec
+   excentrement (=> fiche 17605).
+                                                                                            
+                         
+                                                                                            
+                         
+   Impact documentaire :
+   ---------------------
+   U4.81.05 : POST_CHAMP
+   U4.81.01 : CALC_ELEM
+   U2.08.04 : on parle encore de MECA_STATIQUE + PLAN='MOY' (supprimé en 8.0.5)
+                                                                                            
+                         
+                                                                                            
+                         
+                                                                                            
+                         
+   Liste des fichiers impactés par la correction de la fiche:  16928
+     bsthpl.f  mecalc.f  mecalm.f  mechn2.f  mscalm.f  op0155.f
+     te0033.f  te0452.f  thaclm.f  tsaclm.f  w155ce.f
+     efge_elno.cata         efge_elno_excent.cata  gener_medkg1.cata      gener_medkt2.cata
+     calc_elem.capy   post_champ.capy
+     ssls118a.comm  ssls118b.comm  ssls118c.comm  ssls118d.comm  ssls118e.comm
+     ssls118f.comm  ssls118g.comm  ssls118h.comm  ssls118i.comm  ssls118j.comm
+     ssls118o.comm  ssls118p.comm  ssls122a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01 U2.08.04 U4.81.05
+VALIDATION
+    ssls122a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017554 DU 2011-09-19 13:03:06
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Routine RCVALE tres imprudente. Resultats faux ?
+FONCTIONNALITE
+   Problème :
+   ----------
+   Si un utilisateur définit un paramètre matériau comme une fonction de certains paramètres
+   et si ces paramètres ne sont pas tous fournis lors de l'évaluation de la fonction, la
+   routine RCVALE peut parfois rendre une valeur fantaisiste (non initialisée) sans alerter
+   le programmeur.
+                                                                                            
+                                                                                 
+                                                                                            
+                                                                                 
+   Analyse :
+   ---------
+   Dans la routine RCVALE, on appelle la routine FOINTE pour évaluer les paramètres matériaux
+   qui sont des fonctions.
+   La routine FOINTE est "exemplaire" : selon la valeur du paramètre CODMES='F'/'A', soit
+   elle s'arrete en émettant un message d'erreur clair (paramètre non fourni par exemple),
+   soit elle rend un code retour non nul pour signaler un problème.
+                                                                                            
+                                                                                 
+   Le problème est que RCVALE ne vérifie pas le code retour de FOINTE
+                                                                                            
+                                                                                 
+   Quand on regarde la programmation des routines RCVALA/C (pour les matériaux codés), on
+   voit qu'elles appellent FOINTA pour évaluer les fonctions.
+   La routine FOINTA n'a pas d'argument de type CODMES : si l'évaluation échoue, le code
+   s'arrete.
+                                                                                            
+                                                                                 
+   Ce comportement me semble plus prudent que celui de RCVALE qui transmet l'argument IARRET
+   de RCVALE comme CODMES pour FOINTE.
+   En effet, l'argument IARRET de RCVALE doit plutot etre compris comme :
+      Si le paramètre (réel, complexe ou fonction) n'a pas été fourni par l'utilisateur :
+        si IARRET > 0  => erreur fatale
+        si IARRET = 0  => code retour > 0
+      Si le paramètre est une fonction fournie par l'utilisateur mais que son évaluation échoue :
+        => erreur fatale dans tous les cas
+                                                                                            
+                                                                                 
+                                                                                            
+                                                                                 
+   Correction :
+   ------------
+   On modifie RCVALE pour appeler systématiquement FOINTE avec CODMES='F'.
+   Il n'y a donc plus lieu de tenir compte de son code retour qui doit etre 0.
+                                                                                            
+                                                                                 
+                                                                                            
+                                                                                 
+   Résultats faux ?
+   ----------------
+   Heureusement, la plupart des routines qui appellent RCVALE le font avec un argument IARRET
+   > 0.
+   Dans ce cas, s'il y a un problème lors de l'évaluation de la fonction, le code s'arrete en
+   erreur fatale.
+                                                                                            
+                                                                                 
+   Il existe 8 routines qui appellent RCVALE avec KSTOP=0 avec l'intention de tester le
+   code-retour.
+   Ces 8 routines sont utilisées dans les 4 commandes :
+     CALC_FATIGUE
+     DEFI_GLRC
+     POST_RCCM
+     DEFI_COQU_MULT
+                                                                                            
+                                                                                 
+   Dans ces commandes, il n'y a pas de paramètres possibles pour évaluer les fonctions :
+   INST, TEMP, X, Y, Z  (i.e. rien ne "bouge" !) et c'est pour cela que ces 8 routines
+   appellent RCVALE avec NBPAR=0.
+   Il n'y a donc aucune raison d'utiliser des fonctions et il n'est pas grave d'oublier
+   d'utiliser le code retour de FOINTE puisqu'on ne doit pas y passer !
+                                                                                            
+                                                                                 
+   En résumé, le problème peut se résumer à :
+   Si un utilisateur utilise par erreur des paramètres matériau qui sont de vraies
+   "fonctions" dans les commandes CALC_FATIGUE, DEFI_GLRC, POST_RCCM, DEFI_COQU_MULT, le code
+   ne l'arrete pas en erreur alors qu'il le devrait.
+   Il s'agit donc d'un manque de blindage.
+                                                                                            
+                                                                                 
+   Remarque :
+   ----------
+   J'ai également regardé l'usage de RCVALE dans les macros python : il n'y a pas de
+   problèmes, car tous les appels se font avec KSTOP > 0.
+                                                                                            
+                                                                                 
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  17554
+     rcvale.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.8
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017556 DU 2011-09-19 15:41:40
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    fin resorption SPMX_ELGA
+FONCTIONNALITE
+   Problème :
+   ----------
+   Suite à un conflit de restitution, je ne peux pas résorber complètement du fortran ce qui
+   concerne l'option SPMX_ELGA.
+   Il faudra finir ce ménage plus tard
+                                                                                            
+                           
+   Correction :
+   ------------
+   On modifie les 2 routines suivantes pour en retirer SPMX_ELGA.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  17556
+      mecalc.f  rscrsd.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017557 DU 2011-09-19 17:00:31
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Prevenir erreur blocage affe_char_cine
+FONCTIONNALITE
+   Problème :
+    ----------
+    Si on se trompe dans le nom des composantes bloquées par AFFE_CHAR_CINE et que cela
+   conduit à créer une charge cinématique "vide", la commande AFFE_CHAR_CINE émet une simple
+   alarme (CALCULEL_9) mais si on utilise ensuite STAT_NON_LINE,le plantage est obscur
+   (assert dans nmpcin.f)
+                                                                                            
+                           
+    Analyse :
+    ---------
+    J'ai modifié il y a quelques temps AFFE_CHAR_CINE pour que cette commande puisse produire
+   une structure de donnée vide : l'erreur CALCULEL_9 a été transformée en alarme.
+    Cette évolution est nécessaire pour pouvoir utiliser CAAY.
+                                                                                            
+                           
+    Mais, si cette évolution est suffisante pour utiliser MECA_STATIQUE, elle ne n'est pas
+   pour STAT_NON_LINE.
+    Du coup, pour CAAY, je suis obligé de surcharger la routine liscad.f si je ne veux pas
+   etre arreté.
+                                                                                            
+                           
+    Correction :
+    ------------
+    Je propose de revenir en arrière :
+    CALCULEL_9 : <A> -> <F>  Ce qui facilitera la vie des utilisateurs étourdis d'Aster.
+                                                                                            
+                           
+    En ce qui concerne CAAY, ce n'est pas bien grave car actuellement, CAAY est une surcharge
+   de la STA10.
+                                                                                            
+                           
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  17557
+     chcsur.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    fichiers joints
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 10/03/2011 - 02:10:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017631 DU 2011-09-29 14:58:08
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    ménage cas tests : suppression mgib inutilisés + syntaxe commentarisée
+FONCTIONNALITE
+   Je supprime via UNIGEST/TESSUPPR 70 fichiers mgib et datg non utilisés (pas de PRE_GIBI
+   dans le test).
+   
+   Il en demeurera pour 2 tests avec mgib/datg que je ne peux toucher pour raison de conflit
+   de notation :
+   FORMA03B
+   SENSM04A
+   
+   Je fais aussi un ménage dans une centaine de fichiers de commandes :
+   - suppression de vieille syntaxe v5 commentarisée
+   - suppression d'IMPR_* et de PRE_GIBI commentarisés
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    néant
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 10/03/2011 - 02:51:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017591 DU 2011-09-23 14:13:44
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Probleme INDIIS et CALC_G
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   A la ligne 194 d'OP0100, il y a une mauvaise utilisation de la routine INDIIS. Il y a tr?s
+   probablement une inversion d'arguments. On appelle INDISS :
+   
+   INDIIS(ZI(IVEC),NUTROU,LONVEC,1)
+   
+   Je pense que LONVEC et 1 devraient ?tre invers?s. Sinon, on cherche la LONVECi?me
+   occurence de NUTROU dans une liste de longueur 1 qui commence ? ZI(IVEC).
+   
+   
+   Solution :
+   ----------
+   
+   Cette recherche est effectut?e dans CALC_G, dans le cas ou le chargement provient de
+   MACRO_ELAS_MULT.
+   Le seul test CALC_G + MACRO_ELAS_MULT est le sslp310a, pour lequel LONVEC = 1.
+   
+   On corrige l'appel ? INDISS :     
+              IIND=INDIIS(ZI(IVEC),NUTROU,1,LONVEC)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslp310a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017624 DU 2011-09-29 11:18:44
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.24, le cas-test sslp317a est NOOK sur Rocks.
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   En NEW11.0.24, le cas-test sslp317a est NOOK sur Rocks.
+   Le cas-test porte sur la validation de la commande RAFF_XFEM.
+   
+   On teste actuellement sur le nombre de noeuds du maillage apr?s 3 raffinements Homard.
+   
+   Suivant les plates-formes, Hormard ne raffine pas exactement les m?mes mailles, ce qui
+   g?n?re des maillages diff?rents.
+   Ce qui provoque le NOOK.
+   
+   
+   Solution :
+   ----------
+   
+   Le champ d'erreur en entr?e de Homard (1ere it?ration) est exactement le m?me sur Aster4
+   et Rocks jusqu'? la 14?me d?cimale.
+   Malgr? de nombreux essais (changement du % de mailles raffin?es, passage ? un crit?re en
+   valeur absolue), je n'ai pas r?ussi ? obtenir les m?mes maillages raffin?s sur les 2
+   plates-formes.
+   La solution mise en place consiste ? ne plus tester le nombre de noeuds du dernier
+   maillage raffin?, mais ? tester certains valeurs du champ d'erreur en sortie de RAFF_XFEM.
+   
+   Impact : sslp317a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v3.02.317
+VALIDATION
+    sslp317a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR haelewyn     HAELEWYN Jessica       DATE 10/03/2011 - 02:47:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017517 DU 2011-09-12 11:04:30
+TYPE anomalie concernant Code_Aster (VERSION 11.2)
+TITRE
+    Retrait de séchage et d'hydratation non pris en compte avec COMP_ELAS
+FONCTIONNALITE
+   Problème :
+   Lors d'un calcul de retrait de dessiccation, on utilise STAT_NON_LINE avec COMP_ELAS. L'unique chargement 
+   est un champ de concentration en eau (AFFE_VARC). Là où on devrait observer des déformations dues au 
+   retrait, les déformations calculées sont nulles.
+   Avec COMP_INCR, le retrait de dessiccation est bien calculé.
+   
+   Dans la routine NMELNL, seule la déformation due à la dilatation thermique est prise en compte. On observe 
+   très bien le problème en remplaçant COMP_INCR par COMP_ELAS dans le cas-test ssla103a.
+   
+   Solution:
+   Les retraits de dessiccation (SECH) et endogène (HYDR) sont ajouté dans COMP_ELAS comme c'est fait pour la 
+   température.
+   Modification de nmelnl.f
+   Le calcul des retraits n'est pas possibles pour le cas de la sensibilité donc un message d'erreur est 
+   ajouté dans sensibilite.py
+   Le castest existant ssla103 pour le retrait de dessication est utilisé pour valider sur COMP_ELAS.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.06.103
+VALIDATION
+    ssla103a et b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR idoux        IDOUX Ludovic          DATE 10/03/2011 - 01:49:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017324 DU 2011-07-25 16:17:43
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    bug dans schéma adaptif ADAPT_ORDRE2 de DYNA_LINE_TRAN
+FONCTIONNALITE
+   Le schéma en question permet de réduire ou d'augmenter la taille du pas de temps utilisé
+   dans un schéma des différences centrées selon un indicateur d'erreur.
+   Lors d'une boucle de type DO WHILE, on peut itérer pour réduire le pas de temps tant que
+   l'erreur n'est pas acceptable, ce qui donne la série P(1),..,P(n) des pas de temps "tentés".
+   
+   --------------------------------------------
+   
+   Problème :
+   
+   Il existe un nombre maximum d'itération qui fait sortir de la boucle par sécurité. Lorsque
+   ce cas arrive, on réduit le pas de temps par le coefficient de correction, SANS REPASSER
+   dans la boucle d'intégration temporelle et on sauvegarde les résultats calculés pour un
+   pas de temps P(n-1) à un pas de temps P(n)...
+   
+   ---------------------------------------------
+   
+   Solution :
+   
+   Une petite correction est nécessaire pour récupérer le pas de temps précédemment tenté
+   P(n-1) et qui a effectivement été utilisé, uniquement dans le cas où on a atteint le
+   nombre maximum de réduction du pas de temps.
+   
+   ELSE IF (ERR .GT. 1.D0 .AND. NR .GE. NRMAX) THEN
+   DT2 = DT2 * CDP
+   
+   Il suffit de remultiplier par le coefficient de réduction pour récupérer le vrai pas de
+   temps utilisé.
+   
+   -------------------------------------------
+   
+   Impact sur les calculs :
+   
+   Ce bug introduit une erreur uniquement si on utilise DYNA_LINE_TRAN avec le schéma adaptif
+   sur le pas de temps ADAPT_ORDRE2, et uniquement si on atteint la limite de redécoupage.
+   Cette erreur consiste en calculer des grandeurs à T1, et à dire que ces grandeurs sont en
+   fait calculées à T1BIS < T1. Mais comme on est en présence d'un schéma explicite, et que
+   les pas de temps sont déjà extrêmement petits, cette erreur est extrêmement faible. Le
+   cas-test sdld22b (le seul de la base de cas-tests à être dans ce cas) est quasiment
+   inchangé (une erreur passe de 6% à 6,2%, la plupart restant en fait inchangées).
+   On peut reporter ça dans la version précédente du code.
+   
+   
+   Sources :
+   dladap.f
+   
+   Jours travaillés :
+   0.2
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.0.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdld22b
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016773 DU 2011-04-13 08:02:14
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    couverture de code et ssns106 i
+FONCTIONNALITE
+   Le cas-test SSNS106I avec l'exécutable de couverture de code en NEW11 débouche sur des
+   résultats NOOK.
+   Ces NOOK sont également obtenus sur avec l'exécutable standard sur ROCKS et Calibre7, et
+   font l'objet d'une analyse dans la fiche 17509.
+   
+   Le problème qui a motivé l'ouverture de cette fiche, à savoir un arrêt en erreur avec
+   l'exécutable de couverture de code, n'est plus d'actualité. Je clos donc la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssns106i avec l'exxc3xa9cutable de couverture de code
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 10/03/2011 - 01:17:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017507 DU 2011-09-08 15:55:15
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Plantage dans FIN(retassage et format_hdf)
+FONCTIONNALITE
+   L'étude, passée en parallèle MPI, s'arrête brutalement dans la commande FIN avec des
+   messages d'erreur émis par le solveur PETSC.
+   
+   Analyse du problème :
+   ===================
+   
+   Après avoir désactivé la détection des signaux par la librairie PETSC, en introduisant un
+   fichier .petscrc contenant la ligne : "-no_signal_handler" sous le compte de lancement de
+   l'étude, on a constaté que l'erreur se produisait dans la routine effectuant un retassage
+   des enregistrements sur la base GLOBALE.
+   Lors de la manipulation des enregistrements du fichier d'accès direct, les objets système
+   caractéristiques de la base ($$CARA) et adresses disque ($$IADD) changeaient d'adresse
+   disque et de longueur, ce qui entrainait un arrêt brutal lors des requêtes sur les objets
+   JEVEUX.
+   Après instrumentation du code, en faisant appel à la routine JEPREG pour suivre le contenu
+   d'un enregistrement particulier (en imprimant le chainage des objets JEVEUX :
+   identificateur de collection, identificateur d'objet simple et longueur du segment de
+   valeurs), la routine de libération de la mémoire dynamique JJLDYN a été identifiée comme
+   étant la source du problème (en faisant appel à la fonction TRACBK systématiquement après
+   chaque impression du chainage des enregistrements). 
+   La routine JJLDYN était appelée lors de l'agrandissement du répertoire de noms de la base
+   GLOBALE (l'exécution génére l'appel de 3172 commandes), lors de cet appel on provoque la
+   libération de tous les segments de valeurs en mémoire marqués X A (accès en lecture seule)
+   ou X D (accès en lecture/écriture). L'écriture sur disque des objets de collection étaient
+   incorrecte, l'identificateur de collection valait 0, d'où la confusion avec les objets
+   systémes. 
+   
+   
+   Corrections effectuées :
+   ========================
+   
+   On corrige l'appel à JXECRO dans JJLDYN :
+   
+   185c185
+   <                       CALL JXECRO ( IC, IADMOC, IADDI, LSV, J, K)
+   ---
+   >                       CALL JXECRO ( IC, IADMOC, IADDI, LSV, 0, K)
+   
+   On ajoute un format d'impression dans la fonction d'impression du contenu des enregistrements.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude fournie avec l'anomalie
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017318 DU 2011-07-22 10:13:49
+TYPE anomalie concernant Europlexus (VERSION )
+TITRE
+    Arrxc3xaat du calcul avant le temps prescrit par la batch
+FONCTIONNALITE
+   Relancer le calcul à l'identique n'ayant pas permis de reproduire l'erreur, je propose de
+   mettre sans suite cette fiche. 
+   
+   Voici mon point de vue pour les deux interrogations dans le dernier post. 
+   Un manque de place sous le $HOME du serveur aster4 ne devrait pas provoquer l'arrêt d'une
+   exécution en batch, le répertoire de travail n'étant pas soumis aux quotas.
+   Si le calcul avait été interrompu par une tierce personne, la commande bjobs, dont j'ai
+   fourni la sortie ci-dessous, l'aurait signalé. 
+   
+   Merci dans l'avenir de transmettre systématiquement les fichiers error et output associés
+   aux jobs en cas de problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016758 DU 2011-04-08 13:50:38
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Comment fonctionnent les classes ?
+FONCTIONNALITE
+   Sur aster4, c'est le gestionnaire de batch LSF qui détermine la classe d'affectation d'une
+   exécution en fonction des deux critères de ressource sur le temps CPU et la mémoire. 
+   En batch sur aster4, la ressource mémoire est systématiquement augmentée de 400 Mo pour
+   que le calcul se déroule correctement (cette valeur est nécessaire au chargement de
+   l'exécutable et des différentes librairies systèmes embarquées). C'est pourquoi, lorsqu'on
+   soumet une exécution avec 7900 Mo, astk positionne la mémoire à 8300 Mo, l'exécution se
+   retrouve alors dans la classe de batch permettant de satisfaire à cette requête, c'est à
+   dire la classe q12G_100h et non q8G_4h.
+   La limite mémoire est positionnée à la limite de la classe dans laquelle l'exécution se
+   déroule, la limite de temps cpu est conservée à la valeur spécifiée par l'utilisateur.
+   
+   Les tentatives d'allocation mémoire au-delà de la limite sont interrompues par LSF avec un
+   message du type : 
+   TERM_MEMLIMIT: job killed after reaching LSF memory usage limit.
+   Exited with exit code 130.
+   
+   Une nouvelle classe q9G_6h pour aller au-delà de 8Go.
+   
+   La page http://www.code-aster.org/V2/spip.php?article330 aété mise à jour.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017053 DU 2011-06-01 15:35:23
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    [FORUM] Plantage EXTR_RESU en sdveri='oui'
+FONCTIONNALITE
+   Plantage avec SD_VERI="OUI" avec EXTR_RESU.
+   
+   Analyse du problème :
+   =====================
+   La structure de données engendrée par EXTR_RESU est vide quand le mot clé ARCHIVAGE est
+   absent. La vérification de la SD échoue.
+   
+   Correction apportée :
+   =====================
+   On rend obligatoire le mot clé ARCHIVAGE pour obliger l'utilisateur à désigner les champs
+   à extraire et obtenir une structure de données non vide.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.71.04
+VALIDATION
+    etude fournie avec la fiche
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 10/03/2011 - 02:01:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017215 DU 2011-06-28 13:48:20
+TYPE aide utilisation concernant Code_Aster (VERSION 9.1)
+TITRE
+    Calcul sur donnxc3xa9e d'une dxc3xa9formation xc3xa9volutive
+FONCTIONNALITE
+   Demande :
+   ========
+   
+   L'utilisation d'agrégat périodique entraîne que toutes les faces sont reliées entre elles
+   par des liaisons et ne permettent pas d'y appliquer des chargements. Habituellement, on
+   applique le chargement par une déformation "globale" moyenne ou une contrainte "globale"
+   moyenne sur tout l'agrégat. Le code réalise une "adaptation des déformations et
+   contraintes en respectant cette donnée "globale". L'objectif est de réaliser des calculs
+   de cyclages en déformation totale.
+   
+   ZEBULON résout la question en posant :
+    U = E.x + v
+   où U : champ de déplacement total, E :déformation moyenne ; v : champ de déplacement
+   correspondant aux perturbations locales dues à l'hétérogénéité du milieu.
+   
+   Comment faire avec Aster ?
+   
+   Réponse : 
+   ========
+   Aster sait résoudre ça (depuis 92) :
+   
+   Somme_D (eps(v).A.eps(w) = Somme_D (-E.A.eps(w), qq.soit w CA
+   
+   avec des conditions de périodicité sur D, on obtient ainsi le correcteur v pour constituer
+   la réponse totale 
+   U = E.x + v
+   avec E tenseur de déformation moyen sur le domaine D (v.e.r.).
+   
+   EPSI_INIT sert à fournir la valeur du tenseur -E, cf. le test HPLV101. (PS. Il est vrai
+   que le mot EPSI_INIT est mal choisi : ce ne sont pas des déformations initiales mais des
+   déformations globales imposées, en tant que chargement).
+   
+   En P.J., un petit résumé sur l'homogénéisation, extrait du ch.3 du livre "Mécanique des
+   structures" de F. Voldoire et Y.Bamberger, (Presses de l'ENPC).
+   
+   On pourrait compléter le §4.32.1 de la doc U4.44.01 (AFFE_CHAR_MECA) en ce sens, le §
+   4.13.1 sur LIAISON_GROUP, ainsi que § 3.12.1 de la U4.81.22 (POST_ELEM) pour avoir
+   l'énergie des correcteurs d'où les coeff homogénéisés.
+   
+   LIAISON_MAIL laissant la souplesse sur la répartition des noeuds sur les bords donne des
+   résultats moins précis : préférer une discrétisation où le maillage des bords est
+   périodique aussi.
+   
+   On pourrait aussi décider de faire une petite doc U2.
+   
+   C'est donc possible a priori. En attendant, on clôt cette fiche AOM, en attendant un
+   exemple précis, et pourquoi pas une comparaison avec Zebulon.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017628 DU 2011-09-29 11:45:02
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.24, le cas-test umat001b s’arrête en erreur fatale sur ROCKS.
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   En NEW11.0.24, le cas-test umat001b s’arrête en erreur fatale sur ROCKS.
+   Ce problème est "probablement" causé par la fiche 17561 
+   
+   Correction :
+   ============
+   le problème était plus ancien que la 11.0.24, et a été révélé (je pense) par l'ajout 
+   des arguments de NMCOMP (c'est donc un "effet de bord" ) :
+   
+   Dans l'appelant de LC0050 (UMAT), avec GDEF_LOG, les termes 5 et 6 du tenseur des
+   contraintes en 2D n'étaient pas initialisés. Jusque là rien de grave, si on ne s'en 
+   sert pas. Le problème est que dans LC0050, on fait :
+   
+            CALL DSCAL(3,USRAC2,STRESS(4),1)
+   
+   donc on utilise ces termes.
+   
+   Je corrige en initialisant les 6 composantes des contraintes dans PRELOG.
+   
+   Au passage, j'enlève un appel inutile dans LC0050 : CALL INFMAJ qui utilse des 
+   routines du superviseur.  Dans un TE c'est cher !
+   
+   De plus je remplace les maillages gibi de umat001a et uma001b par des maillages med
+   équivalents.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    umat001b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017626 DU 2011-09-29 11:39:27
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.24, le cas-test ssnv172a ne converge pas sur ROCKS.
+FONCTIONNALITE
+   Probleme :
+   =========
+   
+   En NEW11.0.24, le cas-test ssnv172a ne converge pas sur ROCKS.
+   
+   La semaine dernière, lors du traitement de la fiche 17531, on ajouté la possibilité de
+   donner sa propre matrice d'interaction via une table. Pour tester cela, on  ajouté un
+   STAT_NON_LINE / POLYCRISTAL à la fin de ssnv172a.
+   C'est ce dernier STAT_NON_LINE qui converge plus lentement sur ROCKS uniquement.
+   
+   Correction :
+   ============
+   Cela ne vient pas de la table, mais de l'augmentation du nombre de systèmes de glissement
+   maximum (on est passé de 24 pour BCC24 à 30 pour ZIRCONIUM). Du coup il restait une
+   intialisation dans LCMMOP qui était limitée à 24.
+   => 6 valeurs non initialisées.
+   
+   En initialisant  ce vecteur complétement, sur les 30 valeurs, tout rentre dans l'ordre.
+   
+   D'autre part, pour tester plus avant la possibilité d'introduire sa propre matrice
+   d'interaction via une table, dans le cas du POLYCRISTAL, j'ajoute cela à SSNV194B (10
+   phases, au lieu d'une seule dans SSNV172A).
+   
+   Enfin, j'ajoute NEWTON_PERT à l'un des deux STAT_NON_LINE de SSNV194A, pour tester plus
+   complètement cet algorithme, et avoir une estimation du temps CPU supplémentaire sur un 
+   cas non trivial (non réduit à un point matériel).
+   
+   Le tests SSNV194A verra donc son CPU augmenter :
+   
+   1er STAT_NON_LINE : 47s 2ème STAT_NON_LINE (avec NEWTON_PERT) : 90s (au lieu de 47s 
+   avant)
+   
+   C'est le prix à payer pour avoir une matrice jacobienne "sans frais" (par perturbation)
+   
+   Au passage, je supprime du catalogue de DEFI_MATERIAU MONO_VISC3, résorbé la semaine
+   dernière.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv172a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 10/04/2011 - 04:25:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014648 DU 2010-02-17 10:11:42
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    affe_char_meca  /  liaison_elem   /  option#2D_POU
+FONCTIONNALITE
+   Objectif
+   =======
+   L'objectif est de pouvoir relier un noeud de poutre_2D (ou de discret_2D) avec le bord
+   d'un maillage 2D pour transmettre en "moyenne" les 2 transations (DX,DY) et la rotation
+   (DRZ) du noeud de poutre.
+   
+   C'est l'équivalent du raccord 3D_POU en 2D
+   
+   Developpement
+   =============
+   
+   1)bibfor
+   - on a ajoute un cas specifique a ce raccord dans "caliel.f" via la nouvelle routine
+   "rapo2d.f" dediee a cette fonctionnalite. La routine "rapo2d.f" est similaire a "rapo3d.f"
+   pour le 2D. 
+   - on a introduit l'appel a "rapo2d.f" dans "caliel.f"
+   - on a cree un nouveau te, specifique au elements 2D pour les options CARA_SECT_POUT3 et
+   CARA_SECT_POUT4. 
+   
+   2) catapy
+   Ajout de l'option 2D_POU dans LIAISON_ELEM de l'operateur AFFE_CHAR_MECA (catalogue
+   affe_char_meca.capy).
+   
+   3) catalo
+   Ajout des options CARA_SECT_POUT3 et CARA_SECT_POUT4 dans gener_medpl1.cata.
+   
+   
+   Validation
+   ==========
+   Ajout de 3 modelisations au cas-test SSLX100 :
+   - SSLX100F : on teste le raccord entre le bord d'une structure 2D (modelisation C_PLAN)
+   avec un discret (2D_DIS_TR).
+   - SSLX100G : idem modelisation F + rotation de 30 degres entre l'axe OX du repere global
+   avec l'axe de la "poutre"
+   - SSLX100F : on teste le raccord entre le bord d'une structure 2D (modelisation C_PLAN)
+   avec une poutre (POU_D_E).
+   
+   
+   Documentation
+   =============
+   - Mise a jour de la doc V3.5.100 (cas-test SSLX100) : on a presente les modelisations
+   F,G,H ainsi que les resultats obtenus.
+   - Mise a jour de la doc U4.44.01 (operateur AFFE_CHAR_MECA) : on a enrichi la syntaxe de
+   cet operateur par l'option 2D_POU pour le mot-cle LIAISON_ELEM
+   - Mise a jour de la doc R3.03.03 (raccord 3D_POU, 2D_POU) : on a ajoute un paragraphe
+   decrivant le raccord 2D_POU
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.03.03, V3.05.100, U4.44.01
+VALIDATION
+    sslx100e /f
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 10/03/2011 - 01:12:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017618 DU 2011-09-28 07:23:00
+TYPE aide utilisation concernant Code_Aster (VERSION 10.3)
+TITRE
+    Absence de localisation de points de Gauss dans fichier MED / incohérence TE4 FPG1/TE4 FPG4
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Pour réaliser un calcul thermique linéaire sous aster nous utilisons un 
+   champ de pertes aux 4 points de Gauss de tétraèdres linéaires.
+   La version de aster 9.8 (saloméméca 2011.1) permet de réaliser le calcul 
+   mais pas la NEW11.
+   """
+   
+   
+   Analyse :
+   ---------
+   Le plantage en NEW11 était le suivant dans THER_LINEAIRE :
+   """
+   incohérence des familles de points de Gauss pour la maille M11633 !
+   ( TE4 FPG1 / TE4 FPG4 )
+   """
+   
+   Ce message est un message de CALCUL. Il est à mettre en parallèle avec un message de
+   LIRE_CHAMP (qui est utilisé pour relire le champ de pertes aux 4 points de Gauss de
+   TETRA4) qui prévenait l'utilisateur que la famille de point de Gauss utilisée pour définir
+   ce champ côté Aster serait FPG1.
+   
+   Donc premier problème, le champ de pertes défini sur FPG4 dans le fichier MED se retrouve
+   sur FPG1 dans Aster.
+   
+   Ce problème est dû au fait que le modèle donné à LIRE_CHAMP est un modèle mécanique 3D
+   (alors que le calcul est thermique) et qu'on demande la relecture d'un ELGA_SIEF_R. On n'a
+   donc pas le choix, c'est FPG1 qui est utilisé.
+   
+   Ce qu'aurait dû faire l'utilisateur, c'est donné un modèle thermique 3D à LIRE_CHAMP et
+   demandé la relecture de ELGA_SOUR_R. Malheureusement, LIRE_CHAMP ne le permet pas.
+   L'utilisateur était donc condamné à provoquer une erreur !
+   
+   
+   Solution :
+   ----------
+   Il est donc nécessaire de modifier LIRE_CHAMP pour qu'il offre la possibilité de relire
+   des champs de type ELGA_SOUR_R. J'impacte donc OP0192 et LRVEMO. Avec ces modifs, le
+   calcul THER_LINEAIRE se déroule correctement.
+   
+   Un détail : les fichiers MED utilisé par le demandeur sont produits par un code fortran90
+   maison. Aujourd'hui, le nom de la localisation des points de Gauss dans le fichier MED est
+   '4points'. Cela provoque l'émission de l'alarme MED_1 :
+   """
+   Absence de localisation de points de Gauss dans le fichier MED
+   pour l'élément de référence TE4.
+   On suppose que l'ordre des points de Gauss est celui d'Aster.
+   """
+   
+   En effet Aster s'attend à trouver la localisation sous le nom 'TE4_____FPG4'. En faisant
+   en sorte que la localisation ait ce nom, l'alarme MED_1 disparait.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    calcul de la fiche
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017588 DU 2011-09-23 12:41:05
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Temps trop long pour POST_ELEM
+FONCTIONNALITE
+   Problème :
+   """
+   L'utilisation de POST_ELEM pour calcler la masse d'un objet 3D necessite beaucoup de temps
+   (voir tableau ci_joint) :
+   * POST_ELEM : 1688.38 : 0.03 : 1688.41 : 1688.42 *
+   """
+   
+   
+   Analyse :
+   ---------
+   J'ai refait tourner le calcul en NEW11, en STA10, sur aster4 et sur Calibre5 et je trouve
+   au pire 174 secondes pour réaliser le POST_ELEM.
+   
+   La situation s'est améliorée depuis, il est donc préférable d'utiliser une version plus
+   récente d'Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017387 DU 2011-08-10 09:17:19
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    IMPR_RESU format MED - plante quand on imprime beaucoup de modes
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Petit souci rencontre plusieurs fois, sur des etudes diferentes. Quand on cherche a
+   imprimer un "grand" nombre de modes (une centaine), l'impression au format MED plante avec
+   ce message d'erreur :
+   Erreur signalée dans la bibliothèque MED
+   nom de l'utilitaire : MFCHRE
+   code retour : -118
+   
+   Si je relance le meme calcul, en demandant l'impression de moins de modes, ca passe sans
+   probleme.
+   """
+   
+   
+   Analyse :
+   ---------
+   Le problème vient de HDF1.8.5 et pas d'Aster, l'équipe MED se penche sur le problème pour
+   corriger.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT forma02c                       delmas J.DELMAS           333    333      0
+ CASTEST AJOUT forma02d                       delmas J.DELMAS           322    322      0
+ CASTEST AJOUT forma10a                       delmas J.DELMAS           140    140      0
+ CASTEST AJOUT forma10b                       delmas J.DELMAS           165    165      0
+ CASTEST AJOUT forma20a                       delmas J.DELMAS           384    384      0
+ CASTEST AJOUT forma20b                       delmas J.DELMAS           369    369      0
+ CASTEST AJOUT forma20c                       delmas J.DELMAS           330    330      0
+ CASTEST AJOUT forma21a                       delmas J.DELMAS           336    336      0
+ CASTEST AJOUT forma21b                       delmas J.DELMAS           373    373      0
+ CASTEST AJOUT forma30a                       delmas J.DELMAS           161    161      0
+ CASTEST AJOUT forma30b                       delmas J.DELMAS           371    371      0
+ CASTEST AJOUT sslx100f                      rezette C.REZETTE          200    200      0
+ CASTEST AJOUT sslx100g                      rezette C.REZETTE          220    220      0
+ CASTEST AJOUT sslx100h                      rezette C.REZETTE          200    200      0
+ CASTEST MODIF ahlv100q                       durand C.DURAND           121      1     34
+ CASTEST MODIF ahlv100r                       durand C.DURAND           121      1     34
+ CASTEST MODIF ahlv100s                       durand C.DURAND           122      1     34
+ CASTEST MODIF ahlv101a                       durand C.DURAND           101      1      9
+ CASTEST MODIF ahlv302d                       durand C.DURAND           141      1     10
+ CASTEST MODIF ahlv302e                       durand C.DURAND           142      1     10
+ CASTEST MODIF ahlv302f                       durand C.DURAND           142      1     10
+ CASTEST MODIF ascou01a                       durand C.DURAND           309      1     25
+ CASTEST MODIF ascou02a                       durand C.DURAND            56      1     32
+ CASTEST MODIF ascou03a                       durand C.DURAND            58      1     33
+ CASTEST MODIF ascou04a                       durand C.DURAND           339      1     40
+ CASTEST MODIF ascou10a                       durand C.DURAND           301      1     65
+ CASTEST MODIF ascou17a                       durand C.DURAND            76      1     10
+ CASTEST MODIF aspic01b                       delmas J.DELMAS           526      2      3
+ CASTEST MODIF aspic02a                       durand C.DURAND           199      1     20
+ CASTEST MODIF aspic03a                       durand C.DURAND           258      1     10
+ CASTEST MODIF aspic04a                       durand C.DURAND           133      1     16
+ CASTEST MODIF demo006a                       delmas J.DELMAS           233     19     11
+ CASTEST MODIF epicu01a                       delmas J.DELMAS          1011      5      5
+ CASTEST MODIF epicu01b                       delmas J.DELMAS           874      6      6
+ CASTEST MODIF forma02a                       delmas J.DELMAS           252    227    118
+ CASTEST MODIF forma02b                       delmas J.DELMAS           287    264    143
+ CASTEST MODIF forma03b                       delmas J.DELMAS           358     19      3
+ CASTEST MODIF hpla100a                       delmas J.DELMAS           345    253    190
+ CASTEST MODIF hpla100c                       delmas J.DELMAS           635     57     33
+ CASTEST MODIF hpla100e                       delmas J.DELMAS           464     42     11
+ CASTEST MODIF hpla100f                       delmas J.DELMAS           459     37     12
+ CASTEST MODIF hpla100g                       delmas J.DELMAS           315     30      9
+ CASTEST MODIF hpla100h                       delmas J.DELMAS           309     29      9
+ CASTEST MODIF hpla100i                       durand C.DURAND           442      1      4
+ CASTEST MODIF hpla100j                       durand C.DURAND           421      1      4
+ CASTEST MODIF hsls01b                        delmas J.DELMAS           180     15      4
+ CASTEST MODIF hslv304a                       delmas J.DELMAS           257     10     10
+ CASTEST MODIF hslv304b                       delmas J.DELMAS           250      9      9
+ CASTEST MODIF hsns102b                       durand C.DURAND           262      1      7
+ CASTEST MODIF hsnv121e                       delmas J.DELMAS           210      9      3
+ CASTEST MODIF hsnv124e                       durand C.DURAND           390      1     17
+ CASTEST MODIF hsnv125g                       durand C.DURAND           466      1     38
+ CASTEST MODIF rccm05a                        delmas J.DELMAS          2028     40     47
+ CASTEST MODIF rccm06a                        delmas J.DELMAS          1493      3      3
+ CASTEST MODIF rccm09b                        delmas J.DELMAS           293      7      7
+ CASTEST MODIF sdld02b                        durand C.DURAND           593      1     52
+ CASTEST MODIF sdld101a                       durand C.DURAND           420      1     65
+ CASTEST MODIF sdld21b                        durand C.DURAND           589      3    109
+ CASTEST MODIF sdld31a                        durand C.DURAND           820      2    132
+ CASTEST MODIF sdll01a                        delmas J.DELMAS           205      3     18
+ CASTEST MODIF sdll02a                        durand C.DURAND           206      2     21
+ CASTEST MODIF sdll02b                        durand C.DURAND           228      2     25
+ CASTEST MODIF sdll02c                        durand C.DURAND           253      2      8
+ CASTEST MODIF sdll114a                       durand C.DURAND           405      1     19
+ CASTEST MODIF sdll122a                       durand C.DURAND           210      1      5
+ CASTEST MODIF sdls01b                        delmas J.DELMAS           312     24     23
+ CASTEST MODIF sdls118b                       durand C.DURAND           568      1     29
+ CASTEST MODIF sdls119a                       durand C.DURAND           518      1      3
+ CASTEST MODIF sdls300a                       durand C.DURAND           155      2      6
+ CASTEST MODIF sdls501a                       durand C.DURAND           230      1     15
+ CASTEST MODIF sdls501b                       durand C.DURAND           123      2      5
+ CASTEST MODIF sdls503b                       durand C.DURAND           179      2     11
+ CASTEST MODIF sdls503c                       durand C.DURAND           172      2      5
+ CASTEST MODIF sdls503d                       durand C.DURAND           169      2      8
+ CASTEST MODIF sdls504a                       durand C.DURAND           172      1      5
+ CASTEST MODIF sdls504b                       durand C.DURAND           171      1      4
+ CASTEST MODIF sdls505a                       durand C.DURAND           289      1      7
+ CASTEST MODIF sdls505b                       durand C.DURAND           260      1      7
+ CASTEST MODIF sdlv122a                       delmas J.DELMAS           515      2      1
+ CASTEST MODIF sdlv122b                       delmas J.DELMAS           259      4      2
+ CASTEST MODIF sdlv129a                       delmas J.DELMAS           316      2      2
+ CASTEST MODIF sdlv131a                       durand C.DURAND           315      1      3
+ CASTEST MODIF sdlv131b                       durand C.DURAND           333      1      5
+ CASTEST MODIF sdlv131c                       durand C.DURAND           322      1      4
+ CASTEST MODIF sdlv131d                       durand C.DURAND           290      1      4
+ CASTEST MODIF sdlv302c                       durand C.DURAND           279      2     11
+ CASTEST MODIF sdlx02d                        durand C.DURAND           155      2      7
+ CASTEST MODIF sdlx02e                        durand C.DURAND           162      2      5
+ CASTEST MODIF sdlx02f                        durand C.DURAND           161      2      5
+ CASTEST MODIF sdlx03b                        durand C.DURAND           219      2      5
+ CASTEST MODIF sdlx302a                       delmas J.DELMAS           397      2      2
+ CASTEST MODIF sdnd110a                       durand C.DURAND           324      1      6
+ CASTEST MODIF sdnd111a                       durand C.DURAND           379      1      6
+ CASTEST MODIF sdnl100a                       durand C.DURAND           142      2      3
+ CASTEST MODIF sdnl101a                       durand C.DURAND           677      1      4
+ CASTEST MODIF sdnl104b                       durand C.DURAND           500      1      3
+ CASTEST MODIF sdnl105c                       durand C.DURAND           623      1      7
+ CASTEST MODIF sdnl105d                       durand C.DURAND           563      1     13
+ CASTEST MODIF sdns105a                       durand C.DURAND           302      1      3
+ CASTEST MODIF sdns106e                       durand C.DURAND           310      1     24
+ CASTEST MODIF sdns106f                       durand C.DURAND           390      1     24
+ CASTEST MODIF sdnv100a                       durand C.DURAND           389      2      4
+ CASTEST MODIF sdnv100b                       durand C.DURAND           281      2      4
+ CASTEST MODIF sdnv100c                       durand C.DURAND           276      2      4
+ CASTEST MODIF sdnv100d                       durand C.DURAND           367      2      4
+ CASTEST MODIF sdnv100g                       durand C.DURAND           254      2      3
+ CASTEST MODIF sdnv100h                       durand C.DURAND           254      2      4
+ CASTEST MODIF sdnv100i                       durand C.DURAND           371      2      4
+ CASTEST MODIF sdnv102a                       durand C.DURAND           562      1    109
+ CASTEST MODIF sdnv103h                       durand C.DURAND           294      1     28
+ CASTEST MODIF sdnv103i                       durand C.DURAND           290      1     27
+ CASTEST MODIF sdnv106a                       delmas J.DELMAS           649     26      1
+ CASTEST MODIF sdnv107b                       durand C.DURAND           469      1     19
+ CASTEST MODIF sensd09b                       durand C.DURAND           256      2     12
+ CASTEST MODIF sensm04a                       delmas J.DELMAS           185      2      2
+ CASTEST MODIF shlv100d                       delmas J.DELMAS           434    237    301
+ CASTEST MODIF shlv100h                       delmas J.DELMAS           225      2      2
+ CASTEST MODIF ssla103a                     haelewyn J.HAELEWYN         253     44      1
+ CASTEST MODIF ssla103b                     haelewyn J.HAELEWYN         261     47      1
+ CASTEST MODIF ssla200a                       delmas J.DELMAS          1329     10     10
+ CASTEST MODIF ssla200b                       delmas J.DELMAS          1359     10     10
+ CASTEST MODIF ssll100b                       durand C.DURAND           225      1     16
+ CASTEST MODIF ssll102h                       delmas J.DELMAS           284     20     15
+ CASTEST MODIF ssll102i                       durand C.DURAND           367      1      5
+ CASTEST MODIF ssll103a                       durand C.DURAND           308      3     15
+ CASTEST MODIF ssll106a                       durand C.DURAND           788      1      6
+ CASTEST MODIF ssll107c                       durand C.DURAND           308      2     12
+ CASTEST MODIF ssll11c                        delmas J.DELMAS           145     11     17
+ CASTEST MODIF sslp01a                        delmas J.DELMAS           178      3      3
+ CASTEST MODIF sslp102a                       durand C.DURAND           222      1      8
+ CASTEST MODIF sslp200a                       delmas J.DELMAS          1473     10     10
+ CASTEST MODIF sslp200b                       delmas J.DELMAS          1526     10     10
+ CASTEST MODIF sslp201a                       delmas J.DELMAS          1217     10     10
+ CASTEST MODIF sslp201b                       delmas J.DELMAS          1464     10     10
+ CASTEST MODIF sslp300a                       delmas J.DELMAS           129      2      2
+ CASTEST MODIF sslp303a                       delmas J.DELMAS           160     45     46
+ CASTEST MODIF sslp304d                       delmas J.DELMAS           245     19     12
+ CASTEST MODIF sslp317a                      geniaut S.GENIAUT          243     71     47
+ CASTEST MODIF ssls09a                        delmas J.DELMAS           163      5      5
+ CASTEST MODIF ssls09b                        delmas J.DELMAS           327      4      4
+ CASTEST MODIF ssls100i                       delmas J.DELMAS           201     10      3
+ CASTEST MODIF ssls100j                       delmas J.DELMAS           177     10      3
+ CASTEST MODIF ssls101a                       delmas J.DELMAS           628     20     10
+ CASTEST MODIF ssls101d                       durand C.DURAND           346      1     47
+ CASTEST MODIF ssls101k                       durand C.DURAND           313      1     47
+ CASTEST MODIF ssls101l                       durand C.DURAND           373      1     47
+ CASTEST MODIF ssls111c                       delmas J.DELMAS           675      3      3
+ CASTEST MODIF ssls112a                       delmas J.DELMAS           484     48     20
+ CASTEST MODIF ssls114a                       delmas J.DELMAS           509    137    118
+ CASTEST MODIF ssls114b                       delmas J.DELMAS           508    143    127
+ CASTEST MODIF ssls114c                       delmas J.DELMAS           509    137    121
+ CASTEST MODIF ssls114d                       delmas J.DELMAS           506    137    121
+ CASTEST MODIF ssls114e                       delmas J.DELMAS           393      2      2
+ CASTEST MODIF ssls114f                       delmas J.DELMAS           393      2      2
+ CASTEST MODIF ssls114g                       delmas J.DELMAS           393     10     10
+ CASTEST MODIF ssls114h                       delmas J.DELMAS           393      2      2
+ CASTEST MODIF ssls114i                       delmas J.DELMAS           559    122    100
+ CASTEST MODIF ssls114j                       delmas J.DELMAS           562    496    434
+ CASTEST MODIF ssls114k                       delmas J.DELMAS           564    497    433
+ CASTEST MODIF ssls115a                       delmas J.DELMAS           261     39     47
+ CASTEST MODIF ssls115b                       delmas J.DELMAS           263     39     45
+ CASTEST MODIF ssls115c                       delmas J.DELMAS           241     39     45
+ CASTEST MODIF ssls115d                       delmas J.DELMAS           243     39     45
+ CASTEST MODIF ssls115e                       delmas J.DELMAS           264     39     45
+ CASTEST MODIF ssls115f                       delmas J.DELMAS           243     39     45
+ CASTEST MODIF ssls115g                       delmas J.DELMAS           243     39     45
+ CASTEST MODIF ssls115h                       delmas J.DELMAS           242     39     46
+ CASTEST MODIF ssls117c                       delmas J.DELMAS           663      4      4
+ CASTEST MODIF ssls117d                       delmas J.DELMAS           628      4      7
+ CASTEST MODIF ssls118a                       delmas J.DELMAS          1048     24     18
+ CASTEST MODIF ssls118b                       delmas J.DELMAS          1164     20     15
+ CASTEST MODIF ssls118c                       delmas J.DELMAS          1140     20     13
+ CASTEST MODIF ssls118d                       delmas J.DELMAS          1147     18     13
+ CASTEST MODIF ssls118e                       delmas J.DELMAS          1107     19     13
+ CASTEST MODIF ssls118f                       delmas J.DELMAS          1124     22     13
+ CASTEST MODIF ssls118g                       delmas J.DELMAS          1179     23     13
+ CASTEST MODIF ssls118h                       delmas J.DELMAS          1324    708    551
+ CASTEST MODIF ssls118i                       delmas J.DELMAS          1142     18     11
+ CASTEST MODIF ssls118j                       delmas J.DELMAS          1142     18     11
+ CASTEST MODIF ssls118k                       delmas J.DELMAS           515     54     34
+ CASTEST MODIF ssls118l                       delmas J.DELMAS           545     54     34
+ CASTEST MODIF ssls118m                       delmas J.DELMAS           515     55     37
+ CASTEST MODIF ssls118n                       delmas J.DELMAS           545     55     36
+ CASTEST MODIF ssls118o                       delmas J.DELMAS          1165     18     11
+ CASTEST MODIF ssls118p                       delmas J.DELMAS          1143     18     11
+ CASTEST MODIF ssls118q                       delmas J.DELMAS           518     54     36
+ CASTEST MODIF ssls118r                       delmas J.DELMAS           548     54     35
+ CASTEST MODIF ssls119c                       delmas J.DELMAS           104      9      5
+ CASTEST MODIF ssls119f                       delmas J.DELMAS           103      9      7
+ CASTEST MODIF ssls120b                       delmas J.DELMAS           252     15      6
+ CASTEST MODIF ssls120c                       delmas J.DELMAS           251     15      7
+ CASTEST MODIF ssls120d                       delmas J.DELMAS           251     16      6
+ CASTEST MODIF ssls121a                       delmas J.DELMAS           446     54     40
+ CASTEST MODIF ssls122a                       delmas J.DELMAS           294     18     11
+ CASTEST MODIF ssls128a                       delmas J.DELMAS           206     14     10
+ CASTEST MODIF ssls130a                       delmas J.DELMAS           102     18     13
+ CASTEST MODIF ssls130b                       delmas J.DELMAS           163     18     12
+ CASTEST MODIF ssls200a                       delmas J.DELMAS           411     16      6
+ CASTEST MODIF ssls502a                       delmas J.DELMAS           282     13     14
+ CASTEST MODIF ssls502b                       delmas J.DELMAS           277     13     14
+ CASTEST MODIF ssls502c                       delmas J.DELMAS           258     13     11
+ CASTEST MODIF ssls502d                       delmas J.DELMAS           277     19     14
+ CASTEST MODIF ssls503a                       delmas J.DELMAS           189     25     35
+ CASTEST MODIF ssls503b                       delmas J.DELMAS           217     34     30
+ CASTEST MODIF ssls503c                       delmas J.DELMAS           188     24     38
+ CASTEST MODIF ssls503d                       delmas J.DELMAS           182     25     37
+ CASTEST MODIF ssls504a                       delmas J.DELMAS           233     23     31
+ CASTEST MODIF ssls504b                       delmas J.DELMAS           235     30     34
+ CASTEST MODIF sslv04b                        delmas J.DELMAS           871      2      2
+ CASTEST MODIF sslv04h                        delmas J.DELMAS           280      4      4
+ CASTEST MODIF sslv04i                        delmas J.DELMAS           551    375    194
+ CASTEST MODIF sslv07a                        delmas J.DELMAS           917      5      5
+ CASTEST MODIF sslv104a                       durand C.DURAND            95      1      5
+ CASTEST MODIF sslv109a                       delmas J.DELMAS           535      2      2
+ CASTEST MODIF sslv109e                       delmas J.DELMAS           141      3      3
+ CASTEST MODIF sslv113c                       delmas J.DELMAS           187      9     13
+ CASTEST MODIF sslv113d                       delmas J.DELMAS           187      9     13
+ CASTEST MODIF sslv120a                       durand C.DURAND           840      1      8
+ CASTEST MODIF sslv134b                       delmas J.DELMAS           610      7      7
+ CASTEST MODIF sslv134d                       delmas J.DELMAS           795      2      2
+ CASTEST MODIF sslv153a                       durand C.DURAND           413      1     81
+ CASTEST MODIF sslv200a                       delmas J.DELMAS          1101     12     12
+ CASTEST MODIF sslv200b                       delmas J.DELMAS          1061      9      9
+ CASTEST MODIF sslv303a                       delmas J.DELMAS           322     17     17
+ CASTEST MODIF sslv303b                       delmas J.DELMAS           318     13     13
+ CASTEST MODIF sslv303c                       delmas J.DELMAS           242      7      7
+ CASTEST MODIF sslv303d                       delmas J.DELMAS           263      7      7
+ CASTEST MODIF sslv306a                       delmas J.DELMAS           193      5      5
+ CASTEST MODIF sslx100c                       delmas J.DELMAS           342     17      3
+ CASTEST MODIF sslx102a                       durand C.DURAND           173      2    174
+ CASTEST MODIF sslx102b                       durand C.DURAND           191      1     86
+ CASTEST MODIF sslx102c                       durand C.DURAND           107      1    114
+ CASTEST MODIF sslx102d                       durand C.DURAND           126      1      2
+ CASTEST MODIF sslx102e                       durand C.DURAND           235      1     95
+ CASTEST MODIF ssna113a                       durand C.DURAND           311      1     17
+ CASTEST MODIF ssna302a                       durand C.DURAND           603      1      6
+ CASTEST MODIF ssna303a                       durand C.DURAND           256      1     17
+ CASTEST MODIF ssna303b                       durand C.DURAND           257      1     17
+ CASTEST MODIF ssnd106c                       durand C.DURAND           221      1     16
+ CASTEST MODIF ssnd109a                       durand C.DURAND           243      1     19
+ CASTEST MODIF ssnl106f                       delmas J.DELMAS           389     19      5
+ CASTEST MODIF ssnl111b                       delmas J.DELMAS           569     20     20
+ CASTEST MODIF ssnl112a                       delmas J.DELMAS           383    270    265
+ CASTEST MODIF ssnl112b                       delmas J.DELMAS           325    244    272
+ CASTEST MODIF ssnl112c                       delmas J.DELMAS           336      1      9
+ CASTEST MODIF ssnl112d                       delmas J.DELMAS           314    230    258
+ CASTEST MODIF ssnl112g                       delmas J.DELMAS           399      2      2
+ CASTEST MODIF ssnl112h                       delmas J.DELMAS           350      2      3
+ CASTEST MODIF ssnl112i                       delmas J.DELMAS           344      2      2
+ CASTEST MODIF ssnl112j                       delmas J.DELMAS           354      2      2
+ CASTEST MODIF ssnl112k                       durand C.DURAND           827      1      2
+ CASTEST MODIF ssnl112m                       delmas J.DELMAS           403    291    307
+ CASTEST MODIF ssnl116a                       durand C.DURAND           197      1     39
+ CASTEST MODIF ssnl117a                       durand C.DURAND           209      1     90
+ CASTEST MODIF ssnl127a                       durand C.DURAND           439      1     13
+ CASTEST MODIF ssnl502b                       durand C.DURAND           359      1     13
+ CASTEST MODIF ssnl502d                       durand C.DURAND           518      1     21
+ CASTEST MODIF ssnl503a                       durand C.DURAND           282      2      5
+ CASTEST MODIF ssnl503b                       durand C.DURAND           285      2      5
+ CASTEST MODIF ssnp110d                       durand C.DURAND           309      1      5
+ CASTEST MODIF ssnp133b                       durand C.DURAND           299      1      3
+ CASTEST MODIF ssnp133c                       durand C.DURAND           317      1      3
+ CASTEST MODIF ssnp136a                       durand C.DURAND           726      1     15
+ CASTEST MODIF ssnp15a                        delmas J.DELMAS           896     85      2
+ CASTEST MODIF ssnp15c                        delmas J.DELMAS           631     28     22
+ CASTEST MODIF ssnp15d                        delmas J.DELMAS           464     23     13
+ CASTEST MODIF ssnp15e                        delmas J.DELMAS           217     14      8
+ CASTEST MODIF ssnp311a                       durand C.DURAND           482      1     10
+ CASTEST MODIF ssnv128m                       durand C.DURAND           259      1     48
+ CASTEST MODIF ssnv128q                       durand C.DURAND           194      1     31
+ CASTEST MODIF ssnv129a                       delmas J.DELMAS           211     23     18
+ CASTEST MODIF ssnv129b                       delmas J.DELMAS           224     25     19
+ CASTEST MODIF ssnv129c                       delmas J.DELMAS           230     21     16
+ CASTEST MODIF ssnv129d                       delmas J.DELMAS           224     28     24
+ CASTEST MODIF ssnv129e                       delmas J.DELMAS           223     23     18
+ CASTEST MODIF ssnv133a                       durand C.DURAND           103      1     38
+ CASTEST MODIF ssnv133b                       durand C.DURAND           107      1     38
+ CASTEST MODIF ssnv133c                       durand C.DURAND           103      1     38
+ CASTEST MODIF ssnv140a                       durand C.DURAND           162      2     21
+ CASTEST MODIF ssnv152a                       delmas J.DELMAS           210      9      3
+ CASTEST MODIF ssnv158a                       durand C.DURAND           744      1     43
+ CASTEST MODIF ssnv172a                        proix J-M.PROIX         1009    130    132
+ CASTEST MODIF ssnv194a                        proix J-M.PROIX          324      5      8
+ CASTEST MODIF ssnv194b                        proix J-M.PROIX          208      9      2
+ CASTEST MODIF tplv100d                       durand C.DURAND           260      1      3
+ CASTEST MODIF umat001a                        proix J-M.PROIX          215      2      3
+ CASTEST MODIF umat001b                        proix J-M.PROIX          242      2      3
+ CASTEST MODIF wtnp113c                       durand C.DURAND           517      1     18
+ CASTEST MODIF wtnp113d                       durand C.DURAND           528      1     17
+ CASTEST MODIF wtnv126b                       durand C.DURAND           823      1      3
+ CASTEST MODIF wtnv126c                       durand C.DURAND           827      1      3
+ CASTEST MODIF zzzz112b                       delmas J.DELMAS           216     23      6
+ CASTEST MODIF zzzz121b                       durand C.DURAND           734      1     23
+ CASTEST MODIF zzzz132a                       delmas J.DELMAS           203      3      3
+ CASTEST MODIF zzzz223a                       delmas J.DELMAS           174      2      2
+ CASTEST MODIF zzzz254a                       durand C.DURAND           102      1     43
+ CASTEST MODIF zzzz264a                       durand C.DURAND           116      1     11
+ CASTEST MODIF zzzz292a                       durand C.DURAND           167      1     19
+ CASTEST MODIF zzzz296a                       durand C.DURAND           196      1     19
+ CASTEST SUPPR forma01a.comm                  delmas J.DELMAS           253      0    253
+ CASTEST SUPPR forma01b.comm                  delmas J.DELMAS           273      0    273
+ CASTEST SUPPR forma01c.comm                  delmas J.DELMAS           334      0    334
+ CASTEST SUPPR forma01d.comm                  delmas J.DELMAS           323      0    323
+ CASTEST SUPPR forma04a.comm                  delmas J.DELMAS           367      0    367
+ CASTEST SUPPR forma04b.comm                  delmas J.DELMAS           368      0    368
+ CASTEST SUPPR forma04c.comm                  delmas J.DELMAS           329      0    329
+ CASTEST SUPPR forma05a.comm                  delmas J.DELMAS           336      0    336
+ CASTEST SUPPR forma05b.comm                  delmas J.DELMAS           373      0    373
+ CASTEST SUPPR forma06a.comm                  delmas J.DELMAS            94      0     94
+ CASTEST SUPPR forma06b.comm                  delmas J.DELMAS           189      0    189
+ CASTEST SUPPR forma08a.comm                  delmas J.DELMAS           119      0    119
+ CASTEST SUPPR forma08b.comm                  delmas J.DELMAS           520      0    520
+ CASTEST SUPPR forma09a.comm                  delmas J.DELMAS           163      0    163
+ CASTEST SUPPR forma09b.comm                  delmas J.DELMAS           375      0    375
+CATALOGU AJOUT options/efge_elno_excent       delmas J.DELMAS            36     36      0
+CATALOGU MODIF compelem/grandeur_simple__     delmas J.DELMAS          2152     12      2
+CATALOGU MODIF options/dera_elga              delmas J.DELMAS            54     10      2
+CATALOGU MODIF options/efge_elno              delmas J.DELMAS            87      1      4
+CATALOGU MODIF options/sief_elga              delmas J.DELMAS            96      4      4
+CATALOGU MODIF options/sieq_elno              delmas J.DELMAS            30      2      2
+CATALOGU MODIF options/sigm_elno              delmas J.DELMAS            53     26     31
+CATALOGU MODIF typelem/gener_me2db1           delmas J.DELMAS           235     61     36
+CATALOGU MODIF typelem/gener_me2dg_1          delmas J.DELMAS           312     18     27
+CATALOGU MODIF typelem/gener_me2dg_2          delmas J.DELMAS           331     20     28
+CATALOGU MODIF typelem/gener_me2dsi_2         delmas J.DELMAS           313     18     28
+CATALOGU MODIF typelem/gener_me2dt0           delmas J.DELMAS           185      1      3
+CATALOGU MODIF typelem/gener_me2dt1           delmas J.DELMAS           190      1      3
+CATALOGU MODIF typelem/gener_me2tr0           delmas J.DELMAS           184      1      3
+CATALOGU MODIF typelem/gener_me2tr1           delmas J.DELMAS           189      1      3
+CATALOGU MODIF typelem/gener_me3a13           delmas J.DELMAS           247     20     16
+CATALOGU MODIF typelem/gener_me3a43           delmas J.DELMAS           252     17     12
+CATALOGU MODIF typelem/gener_me3d_3           delmas J.DELMAS           645     32     32
+CATALOGU MODIF typelem/gener_me3dg_1          delmas J.DELMAS           291      6     15
+CATALOGU MODIF typelem/gener_me3dg_3          delmas J.DELMAS           330     18     27
+CATALOGU MODIF typelem/gener_me3di3           delmas J.DELMAS           241     11      9
+CATALOGU MODIF typelem/gener_me3du3           delmas J.DELMAS           246     17     15
+CATALOGU MODIF typelem/gener_me3gi3           delmas J.DELMAS           198     15     14
+CATALOGU MODIF typelem/gener_me3h13           delmas J.DELMAS           248     18     13
+CATALOGU MODIF typelem/gener_me3h23           delmas J.DELMAS           242     19     14
+CATALOGU MODIF typelem/gener_me3h43           delmas J.DELMAS           251     19     14
+CATALOGU MODIF typelem/gener_me3h53           delmas J.DELMAS           245     17     12
+CATALOGU MODIF typelem/gener_me_xh            delmas J.DELMAS           349      6      4
+CATALOGU MODIF typelem/gener_me_xhc           delmas J.DELMAS           352     17     14
+CATALOGU MODIF typelem/gener_me_xhh           delmas J.DELMAS           340      9     31
+CATALOGU MODIF typelem/gener_me_xhhc          delmas J.DELMAS           352     43     65
+CATALOGU MODIF typelem/gener_me_xht           delmas J.DELMAS           348     12     10
+CATALOGU MODIF typelem/gener_me_xhtc          delmas J.DELMAS           342     10      7
+CATALOGU MODIF typelem/gener_me_xt            delmas J.DELMAS           350      9      5
+CATALOGU MODIF typelem/gener_me_xtc           delmas J.DELMAS           341     10      8
+CATALOGU MODIF typelem/gener_meaa22           delmas J.DELMAS           213     23     18
+CATALOGU MODIF typelem/gener_meaa32           delmas J.DELMAS           213     19     14
+CATALOGU MODIF typelem/gener_meafo2           delmas J.DELMAS           188     19     18
+CATALOGU MODIF typelem/gener_meagi2           delmas J.DELMAS           187     21     20
+CATALOGU MODIF typelem/gener_meah12           delmas J.DELMAS           223     19     14
+CATALOGU MODIF typelem/gener_meah22           delmas J.DELMAS           220     17     12
+CATALOGU MODIF typelem/gener_meah42           delmas J.DELMAS           216     19     15
+CATALOGU MODIF typelem/gener_meah52           delmas J.DELMAS           223     19     14
+CATALOGU MODIF typelem/gener_meax_2           delmas J.DELMAS           557     28     32
+CATALOGU MODIF typelem/gener_meax_2_xh        delmas J.DELMAS           314      6      4
+CATALOGU MODIF typelem/gener_meax_2_xht       delmas J.DELMAS           298      9      8
+CATALOGU MODIF typelem/gener_meax_2_xt        delmas J.DELMAS           294      6      4
+CATALOGU MODIF typelem/gener_meaxs2           delmas J.DELMAS           480     22     26
+CATALOGU MODIF typelem/gener_mebar1           delmas J.DELMAS           239     50     34
+CATALOGU MODIF typelem/gener_mecpl2           delmas J.DELMAS           588     26     28
+CATALOGU MODIF typelem/gener_mecpl2_xh        delmas J.DELMAS           334      8      5
+CATALOGU MODIF typelem/gener_mecpl2_xhc       delmas J.DELMAS           332     24     20
+CATALOGU MODIF typelem/gener_mecpl2_xhh       delmas J.DELMAS           299      5     29
+CATALOGU MODIF typelem/gener_mecpl2_xhhc      delmas J.DELMAS           325     39     63
+CATALOGU MODIF typelem/gener_mecpl2_xht       delmas J.DELMAS           315      8      5
+CATALOGU MODIF typelem/gener_mecpl2_xhtc      delmas J.DELMAS           295     24     20
+CATALOGU MODIF typelem/gener_mecpl2_xt        delmas J.DELMAS           310      8      5
+CATALOGU MODIF typelem/gener_mecpl2_xtc       delmas J.DELMAS           290     18     14
+CATALOGU MODIF typelem/gener_mecq32           delmas J.DELMAS           321     12     16
+CATALOGU MODIF typelem/gener_mecqd1           delmas J.DELMAS           199      7      8
+CATALOGU MODIF typelem/gener_meda22           delmas J.DELMAS           216     16     11
+CATALOGU MODIF typelem/gener_meda32           delmas J.DELMAS           216     19     14
+CATALOGU MODIF typelem/gener_medgn_2          delmas J.DELMAS           279     15     13
+CATALOGU MODIF typelem/gener_medh12           delmas J.DELMAS           226     21     16
+CATALOGU MODIF typelem/gener_medh22           delmas J.DELMAS           253     21     16
+CATALOGU MODIF typelem/gener_medh42           delmas J.DELMAS           218     21     15
+CATALOGU MODIF typelem/gener_medh52           delmas J.DELMAS           227     20     14
+CATALOGU MODIF typelem/gener_medhb2           delmas J.DELMAS           217     16     11
+CATALOGU MODIF typelem/gener_medit0           delmas J.DELMAS           194      1      3
+CATALOGU MODIF typelem/gener_medit1           delmas J.DELMAS           191      1      5
+CATALOGU MODIF typelem/gener_medkg1           delmas J.DELMAS           266      4      3
+CATALOGU MODIF typelem/gener_medkt2           delmas J.DELMAS           412     10     14
+CATALOGU MODIF typelem/gener_medpl1          rezette C.REZETTE          158      7      2
+CATALOGU MODIF typelem/gener_medpl2           delmas J.DELMAS           597     25     27
+CATALOGU MODIF typelem/gener_medpl2_xh        delmas J.DELMAS           326      6      4
+CATALOGU MODIF typelem/gener_medpl2_xhc       delmas J.DELMAS           330     30     26
+CATALOGU MODIF typelem/gener_medpl2_xhh       delmas J.DELMAS           300      5     29
+CATALOGU MODIF typelem/gener_medpl2_xhhc      delmas J.DELMAS           325     33     57
+CATALOGU MODIF typelem/gener_medpl2_xht       delmas J.DELMAS           308      6      4
+CATALOGU MODIF typelem/gener_medpl2_xhtc      delmas J.DELMAS           292     24     20
+CATALOGU MODIF typelem/gener_medpl2_xt        delmas J.DELMAS           305      6      4
+CATALOGU MODIF typelem/gener_medpl2_xtc       delmas J.DELMAS           289     27     23
+CATALOGU MODIF typelem/gener_medtr0           delmas J.DELMAS           200      1      3
+CATALOGU MODIF typelem/gener_medtr1           delmas J.DELMAS           205      1      3
+CATALOGU MODIF typelem/gener_megrc2           delmas J.DELMAS           195     14     15
+CATALOGU MODIF typelem/gener_megrm2           delmas J.DELMAS           200     14     14
+CATALOGU MODIF typelem/gener_mepgi2           delmas J.DELMAS           187      9      8
+CATALOGU MODIF typelem/gener_mepli2           delmas J.DELMAS           229     11      9
+CATALOGU MODIF typelem/gener_meplu2           delmas J.DELMAS           239     12     10
+CATALOGU MODIF typelem/gener_mepmf1           delmas J.DELMAS           282     10      7
+CATALOGU MODIF typelem/gener_mepmf2           delmas J.DELMAS           284      9      7
+CATALOGU MODIF typelem/gener_meshb3           delmas J.DELMAS           268     11     11
+CATALOGU MODIF typelem/gener_mv2d_2           delmas J.DELMAS           279     11      9
+CATALOGU MODIF typelem/gener_mv3d_3           delmas J.DELMAS           320      7      9
+CATALOGU MODIF typelem/gener_mv3dn_3          delmas J.DELMAS           320      7      9
+CATALOGU MODIF typelem/meca_hexs8             delmas J.DELMAS           521     14     15
+CATALOGU MODIF typelem/mecpqs4                delmas J.DELMAS           473     15     19
+CATALOGU MODIF typelem/medpqs4                delmas J.DELMAS           483     16     19
+CATALOGU MODIF typelem/met3seg3               delmas J.DELMAS           272      5      2
+CATALOGU MODIF typelem/met3seg4               delmas J.DELMAS           272      5      2
+CATALOGU MODIF typelem/met6seg3               delmas J.DELMAS           278      7      4
+CATALOGU SUPPR options/sico_elno              delmas J.DELMAS            47      0     47
+CATALOGU SUPPR options/sief_elga_elno         delmas J.DELMAS            27      0     27
+CATALOGU SUPPR options/vari_elga_elno         delmas J.DELMAS            27      0     27
+CATALOPY MODIF commande/affe_char_meca       rezette C.REZETTE          771      2      2
+CATALOPY MODIF commande/calc_champ            delmas J.DELMAS           250      8      6
+CATALOPY MODIF commande/calc_elem             delmas J.DELMAS           439      3      7
+CATALOPY MODIF commande/calc_no               delmas J.DELMAS            87      3      3
+CATALOPY MODIF commande/crea_elem_ssd        andriam H.ANDRIAMBOLOLONA     95      7      5
+CATALOPY MODIF commande/defi_materiau          proix J-M.PROIX         3442      1      9
+CATALOPY MODIF commande/extr_resu           lefebvre J-P.LEFEBVRE        76      3      3
+CATALOPY MODIF commande/lire_resu             delmas J.DELMAS           292      1      3
+CATALOPY MODIF commande/post_champ            delmas J.DELMAS           122     13      4
+CATALOPY MODIF commun/c_nom_cham_into         delmas J.DELMAS           203      3      4
+ FORTRAN AJOUT calculel/mscalc                delmas J.DELMAS           535    535      0
+ FORTRAN AJOUT calculel/w155ce                delmas J.DELMAS           133    133      0
+ FORTRAN AJOUT elements/dxsith                delmas J.DELMAS           141    141      0
+ FORTRAN AJOUT elements/te0040                delmas J.DELMAS           224    224      0
+ FORTRAN AJOUT elements/te0452                delmas J.DELMAS           107    107      0
+ FORTRAN AJOUT elements/te0564               rezette C.REZETTE          243    243      0
+ FORTRAN AJOUT modelisa/rapo2d               rezette C.REZETTE          500    500      0
+ FORTRAN AJOUT utilitai/msdopt                delmas J.DELMAS            96     96      0
+ FORTRAN MODIF algorith/bamo78                delmas J.DELMAS           396      1      7
+ FORTRAN MODIF algorith/chrpel                delmas J.DELMAS          1044      5      6
+ FORTRAN MODIF algorith/dladap                 idoux L.IDOUX            554      2      1
+ FORTRAN MODIF algorith/lc0050                 proix J-M.PROIX          333      1      3
+ FORTRAN MODIF algorith/lcmmon                 proix J-M.PROIX          169      2      2
+ FORTRAN MODIF algorith/lcmmop                 proix J-M.PROIX          341      2      2
+ FORTRAN MODIF algorith/meacmv                delmas J.DELMAS           489     36     11
+ FORTRAN MODIF algorith/nmelnl              haelewyn J.HAELEWYN         493     36     34
+ FORTRAN MODIF algorith/nmetc0                delmas J.DELMAS           163      2      2
+ FORTRAN MODIF algorith/nmetcc                delmas J.DELMAS           150      2      2
+ FORTRAN MODIF algorith/nmetcr                delmas J.DELMAS           284      2      2
+ FORTRAN MODIF algorith/prelog                 proix J-M.PROIX          128      2      1
+ FORTRAN MODIF calculel/assach                delmas J.DELMAS           169     50    149
+ FORTRAN MODIF calculel/calcop                delmas J.DELMAS           244      6      6
+ FORTRAN MODIF calculel/ccaccl                delmas J.DELMAS           236    102     64
+ FORTRAN MODIF calculel/ccchel                delmas J.DELMAS           134      2      2
+ FORTRAN MODIF calculel/mecalc                delmas J.DELMAS           526      4     23
+ FORTRAN MODIF calculel/mecalm                delmas J.DELMAS          1142     20     24
+ FORTRAN MODIF calculel/meceuc                delmas J.DELMAS           288     41     24
+ FORTRAN MODIF calculel/mechn2                delmas J.DELMAS           137      5     43
+ FORTRAN MODIF calculel/mscalm                delmas J.DELMAS          2084     37     76
+ FORTRAN MODIF calculel/op0100               geniaut S.GENIAUT          993      2      2
+ FORTRAN MODIF calculel/op0155                delmas J.DELMAS           144      7      2
+ FORTRAN MODIF calculel/sepach                delmas J.DELMAS           223     64     30
+ FORTRAN MODIF calculel/te0159                delmas J.DELMAS            93      1     21
+ FORTRAN MODIF calculel/thaclm                delmas J.DELMAS           488      3      5
+ FORTRAN MODIF calculel/tsaclm                delmas J.DELMAS           684      2      3
+ FORTRAN MODIF debug/jepreg                 lefebvre J-P.LEFEBVRE       213      8      6
+ FORTRAN MODIF elements/bsthpl                delmas J.DELMAS           101      2      9
+ FORTRAN MODIF elements/ppgan2                delmas J.DELMAS            97      3      3
+ FORTRAN MODIF elements/radipg                delmas J.DELMAS           108      6      3
+ FORTRAN MODIF elements/te0004                delmas J.DELMAS           113     41     35
+ FORTRAN MODIF elements/te0020                delmas J.DELMAS            87      3     57
+ FORTRAN MODIF elements/te0033                delmas J.DELMAS           291      8     71
+ FORTRAN MODIF elements/te0039                delmas J.DELMAS           624      2      9
+ FORTRAN MODIF elements/te0098                delmas J.DELMAS            87      3     42
+ FORTRAN MODIF elements/te0154                delmas J.DELMAS           224      2     13
+ FORTRAN MODIF elements/te0410                delmas J.DELMAS           123      2      9
+ FORTRAN MODIF elements/te0415                delmas J.DELMAS           519      1      1
+ FORTRAN MODIF elements/te0431                delmas J.DELMAS           487      2      8
+ FORTRAN MODIF elements/te0489                delmas J.DELMAS           499    221     20
+ FORTRAN MODIF elements/te0580                delmas J.DELMAS            81      6     32
+ FORTRAN MODIF jeveux/jjldyn                lefebvre J-P.LEFEBVRE       269      2      2
+ FORTRAN MODIF modelisa/caliel               rezette C.REZETTE          131      3      1
+ FORTRAN MODIF modelisa/chcsur                delmas J.DELMAS           150      2      2
+ FORTRAN MODIF modelisa/rcvale                delmas J.DELMAS           200     43     19
+ FORTRAN MODIF prepost/lrvemo               sellenet N.SELLENET         234      1      6
+ FORTRAN MODIF supervis/op9999              lefebvre J-P.LEFEBVRE       166      5      1
+ FORTRAN MODIF utilitai/modopt                delmas J.DELMAS           192      9     10
+ FORTRAN MODIF utilitai/op0192              sellenet N.SELLENET         339      4      1
+ FORTRAN MODIF utilitai/rscrsd                delmas J.DELMAS           452      7      7
+ FORTRAN SUPPR algorith/cfadh                 delmas J.DELMAS            85      0     85
+ FORTRAN SUPPR algorith/cfadu                 delmas J.DELMAS            80      0     80
+ FORTRAN SUPPR algorith/cfiter                delmas J.DELMAS            83      0     83
+ FORTRAN SUPPR algorith/cfmaju                delmas J.DELMAS            77      0     77
+ FORTRAN SUPPR algorith/dideco                delmas J.DELMAS            68      0     68
+ FORTRAN SUPPR algorith/nmdcex                delmas J.DELMAS            70      0     70
+ FORTRAN SUPPR algorith/pmdeco                delmas J.DELMAS           170      0    170
+ FORTRAN SUPPR calculel/menoga                delmas J.DELMAS            94      0     94
+ FORTRAN SUPPR elements/dxsigm                delmas J.DELMAS            86      0     86
+ FORTRAN SUPPR elements/dxsigt                delmas J.DELMAS           164      0    164
+ FORTRAN SUPPR elements/dxsigv                delmas J.DELMAS            81      0     81
+ FORTRAN SUPPR elements/excent                delmas J.DELMAS            83      0     83
+ FORTRAN SUPPR elements/te0023                delmas J.DELMAS           148      0    148
+ FORTRAN SUPPR elements/te0116                delmas J.DELMAS           128      0    128
+ FORTRAN SUPPR elements/te0230                delmas J.DELMAS           186      0    186
+  PYTHON MODIF Macro/crea_elem_ssd_ops       andriam H.ANDRIAMBOLOLONA    266     12      6
+  PYTHON MODIF Macro/macr_lign_coupe_ops      delmas J.DELMAS           982      3      3
+  PYTHON MODIF Messages/calculel              delmas J.DELMAS           409      1     11
+  PYTHON MODIF Messages/calculel3             delmas J.DELMAS           492      2      2
+  PYTHON MODIF Messages/elements              delmas J.DELMAS           341      1     16
+  PYTHON MODIF Messages/elements2             delmas J.DELMAS           213      1      5
+  PYTHON MODIF Messages/elements4             delmas J.DELMAS           257      1      6
+  PYTHON MODIF Messages/med                 sellenet N.SELLENET         549      1      8
+  PYTHON MODIF Messages/sensibilite         haelewyn J.HAELEWYN         203      4      2
+  PYTHON MODIF Messages/supervis2           lefebvre J-P.LEFEBVRE        60      9      1
+  PYTHON MODIF Stanley/cata_champs            delmas J.DELMAS           244      4      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   23        5919      5919             +5919
+ MODIF :  457      174718     10066   11492     -1426
+ SUPPR :   33        6120              6120     -6120
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  513      186757     15985   17612     -1627 

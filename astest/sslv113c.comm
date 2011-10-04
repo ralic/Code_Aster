@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 # sslv113c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,11 +149,10 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=0.01577288,
+                  VALE=0.01585434,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.2.20',),);
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
@@ -161,11 +160,10 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=-0.01069049,
+                  VALE=-0.01064853,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.2.20',),);
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
@@ -173,19 +171,17 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M4',
                   NOEUD='N1',
-                  VALE=-2.560908e-04,
+                  VALE=-2.56060398e-04,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.2.20',),);
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=0.01212604,
+                  VALE=0.012093681,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.2.20',),);
+                  REFERENCE='NON_REGRESSION',),);
 
 FIN();

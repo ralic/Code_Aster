@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,10 +193,6 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         RESULTAT      = UTOT1,
                         )
 
-
-#IMPR_RESU(FORMAT='GMSH',UNITE=33,RESU=_F(RESULTAT=RES_XFEM,
-#                                         NOM_CHAM=('DEPL','SIEF_ELGA','VARI_ELGA'),
-#             ));
 
 DEPL_1 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     NUME_ORDRE=npas,

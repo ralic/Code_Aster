@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -29,7 +29,6 @@ C     POUR LES ELEMENTS DE BARRE
 C ----------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C        'EFGE_ELNO'   : CALCUL DU VECTEUR EFFORT GENERALISE
-C        'SIGM_ELNO'   : CALCUL DU VECTEUR CONTRAINTE
 C        'SIEF_ELGA'   : CALCUL DU VECTEUR EFFORT GENERALISE
 C        'EPSI_ELNO'   : CALCUL DU VECTEUR DEFORMATION
 C        'EPOT_ELEM'   : CALCUL DE L'ENERGIE DE DEFORMATION
@@ -207,17 +206,7 @@ C              --- CALCUL DES FORCES INDUITES ---
                FLR(4) = FLR(4) - XFL4
          ENDIF
 C
-         IF ( OPTION .EQ. 'EFFO_ELNO_DEPL' ) THEN
-            CALL JEVECH('PEFFORR','E',JEFFO)
-C           --- VECTEUR EFFORT GLOBAL  FG = MLG * FLR
-            CALL UTPVLG ( NNO, NC, PGL, FLR, ZR(JEFFO) )
-C
-         ELSEIF ( OPTION .EQ. 'SIGM_ELNO' ) THEN
-            CALL JEVECH('PCONTRR','E',JEFFO)
-            ZR(JEFFO  ) = -FLR(1) / A
-            ZR(JEFFO+1) = FLR(4) / A
-C
-         ELSEIF ( OPTION .EQ. 'SIEF_ELGA' ) THEN
+         IF ( OPTION .EQ. 'SIEF_ELGA' ) THEN
             CALL JEVECH('PCONTRR','E',JEFFO)
             ZR(JEFFO  ) = -FLR(1)
 C

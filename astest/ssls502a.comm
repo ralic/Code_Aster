@@ -1,7 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE ADBHHPM P.MASSIN
-# DATE   : 08/06/2000
-# AUTEUR : F. LEBOUVIER (DELTACAD)
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE MASSIN P.MASSIN
 # TITRE  : CYLINDRE ORTHOTROPE COURT SOUMIS A UNE LIGNE DE CHARGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,14 +86,15 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHA,),);
 
 RESU=CALC_ELEM(reuse =RESU,
-
-
-
                RESULTAT=RESU,
                TOUT_ORDRE='OUI',
-               REPE_COQUE=_F(NUME_COUCHE=1,
-                             NIVE_COUCHE='SUP',),
                OPTION='SIGM_ELNO',);
+
+RESU2=POST_CHAMP(RESULTAT=RESU,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',),);
 
 DEP_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='TAB_DZ ',
@@ -116,7 +115,7 @@ DEP_NORM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 SIGMA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='TAB_SIGM ',
-                              RESULTAT=RESU,
+                              RESULTAT=RESU2,
                               NOM_CHAM='SIGM_ELNO',
                               GROUP_NO='CD',
                               TOUT_CMP='OUI',),);
@@ -186,7 +185,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.65,
                    REFERENCE='SOURCE_EXTERNE',),),);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
@@ -195,7 +194,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=-325000.0,
                    PRECISION=0.5,
                    REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESU2,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
@@ -261,7 +260,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 #                  TEST SIGMA
 #---------------------------------------------------------------------
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
@@ -270,7 +269,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=-350000.0,
                    PRECISION=0.4,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESU2,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',

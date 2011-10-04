@@ -9,7 +9,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -69,7 +69,7 @@ C
         EVI(ITENS) = VINI(ITENS)
         DEVI(ITENS) = 0.D0
     5 CONTINUE
-      DO 15 I=1,24
+      DO 15 I=1,30
          DY(I)=0.D0
  15   CONTINUE
 

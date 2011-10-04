@@ -1,6 +1,6 @@
-# MODIF  DATE 30/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  : CALCUL STATIQUE D'UNE PLAQUE COMPOSEE DE COUCHES
-# ssls128a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+# ssls128a.para = tps_job 200 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,14 +136,17 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MOD,
 RESU=MECA_STATIQUE(MODELE=MOD,
                    CHAM_MATER=CHAMPMAT,
                    CARA_ELEM=CARA,
-                   OPTION='SANS',
                    EXCIT=_F(CHARGE=CONDLIM,),);
 
-RESU1=CALC_ELEM( RESULTAT=RESU,
-                 OPTION='SIGM_ELNO',
-                 REPE_COQUE =_F( NUME_COUCHE=1,
-                                 NIVE_COUCHE='INF',),);
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION='SIGM_ELNO',);
 
+RESU1=POST_CHAMP(RESULTAT=RESU,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='INF',),);
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -170,10 +173,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER')
                )
 
-RESU2=CALC_ELEM( RESULTAT=RESU,
-                 OPTION='SIGM_ELNO',
-                 REPE_COQUE =_F( NUME_COUCHE=2,
-                                 NIVE_COUCHE='INF',),);
+RESU2=POST_CHAMP(RESULTAT=RESU,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=2,
+                               NIVE_COUCHE='INF',),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2,

@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+#@ MODIF elements2 Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,10 +172,6 @@ cata_msg = {
 
 74 : _("""
   %(k1)s  non implante.
-"""),
-
-76 : _("""
- la nature du materiau  %(k1)s  n'est pas traitee.
 """),
 
 77 : _("""

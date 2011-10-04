@@ -1,6 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# DATE   : 14/03/2001
-# AUTEUR : P. MASSIN
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,21 +108,29 @@ RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
                    EXCIT=(_F(CHARGE=CHA,),
                           _F(CHARGE=CHA_P,),),);
 
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION='SIGM_ELNO',);
 
-SIG_C1_S=CALC_ELEM(RESULTAT=RESU,
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),
-                        OPTION='SIGM_ELNO',);
-SIG_C1_M=CALC_ELEM(RESULTAT=RESU,
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),
-                        OPTION='SIGM_ELNO',);
-SIG_C1_I=CALC_ELEM(RESULTAT=RESU,
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),
-                        OPTION='SIGM_ELNO',);
+SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
+
+SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+
+SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
+                     TOUT='OUI',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
+
 EFF=CALC_ELEM(RESULTAT=RESU,
-                   REPE_COQUE =_F( PLAN='MOY', ),
                    OPTION='EFGE_ELNO',);
 
 TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
@@ -289,7 +295,7 @@ TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                         NOM_CHAM='SIGM_ELNO',
                         MAILLE='M6',
                         VALE=0.0,
-                        PRECISION=0.74,
+                        PRECISION=0.75,
                         GROUP_NO='B1',
                         NOM_CMP='SIXY',
                         CRITERE='ABSOLU',),
@@ -378,7 +384,7 @@ TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                         NOM_CHAM='SIGM_ELNO',
                         MAILLE='M6',
                         VALE=0.0,
-                        PRECISION=0.74,
+                        PRECISION=0.75,
                         GROUP_NO='B1',
                         NOM_CMP='SIXY',
                         CRITERE='ABSOLU',),

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/08/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DU CALCUL DE LA MATRICE DE MASSE AVEC UNE MODELISATION A GRADIENT
 # zzzz254a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,47 +98,5 @@ MATASS=ASSE_MATRICE(MATR_ELEM=MAT,
 TEST_RESU(OBJET=_F(NOM='MAT            .M01.RESL',
                    S_R=7.9541777777777e+03,
                    REFERENCE='NON_REGRESSION',),);
-
-#RESU=CALC_ELEM(reuse =RESU,
-#               RESULTAT=RESU,
-#               OPTION=('VARI_ELNO','SIEF_ELNO',),);
-#IMPR_RESU(FORMAT='MED',
-#          RESU=_F(MAILLAGE=MAILLAGE,
-#                  RESULTAT=RESU,
-#                  NOM_CHAM=('VARI_ELNO','SIEF_ELNO','DEPL',),),);
-#MATER2=DEFI_MATERIAU(ELAS=_F(E=30000.0,
-#                             NU=0.2,
-#                             RHO=2764.0,),
-#                     ECRO_LINE=_F(D_SIGM_EPSI=-1950.0,
-#                                  SY=3.0,),);
-#CHMAT2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-#                     AFFE=_F(TOUT='OUI',
-#                             MATER=MATER2,),);
-#MODELE2=AFFE_MODELE(MAILLAGE=MAILLAGE,
-#                    AFFE=_F(TOUT='OUI',
-#                            PHENOMENE='MECANIQUE',
-#                            MODELISATION='3D',),);
-#CL2=AFFE_CHAR_MECA(MODELE=MODELE2,
-#                   DDL_IMPO=(_F(GROUP_NO='CENTER',
-#                                LIAISON='ENCASTRE',),
-#                             _F(GROUP_MA='BAS',
-#                                DZ=0.0,),),);
-#TRACTIO2=AFFE_CHAR_MECA(MODELE=MODELE2,
-#                        FORCE_FACE=_F(GROUP_MA='HAUT',
-#                                      FZ=100.0,),);
-#RESU2=DYNA_NON_LINE(MODELE=MODELE2,
-#                    CHAM_MATER=CHMAT2,
-#                    EXCIT=(_F(CHARGE=CL2,),
-#                           _F(CHARGE=TRACTIO2,
-#                              FONC_MULT=FONCMULT,),),
-#                    COMP_INCR=_F(RELATION='ENDO_FRAGILE',),
-#                    INCREMENT=_F(LIST_INST=INSTANT,
-#                                 SUBD_METHODE='UNIFORME',
-#                                 SUBD_PAS_MINI=1e-06,),
-#                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-#                                    FORMULATION='DEPLACEMENT',),);
-#RESU2=CALC_ELEM(reuse =RESU2,
-#                RESULTAT=RESU2,
-#                OPTION=('VARI_ELNO','SIEF_ELNO',),);
 
 FIN();

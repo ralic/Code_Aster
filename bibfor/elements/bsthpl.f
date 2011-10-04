@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       I, JGEOM, NNO
       REAL*8        PGL(3,3), XYZL(3,4),
      &              SIGTH(32), ZERO
-      CHARACTER*16  TYPELE, OPTION
+      CHARACTER*16  TYPELE
 C     ------------------------------------------------------------------
 C
 C --- INITIALISATIONS :
@@ -59,7 +59,6 @@ C     ---------------
       ZERO = 0.0D0
       INDITH = .FALSE.
       TYPELE = NOMTE
-      OPTION = 'INCONNU_INCONNU_'
 C
       DO 10 I = 1, 24
         BSIGTH(I) = ZERO
@@ -93,12 +92,6 @@ C --- CALCUL DES EFFORTS GENERALISES D'ORIGNIE THERMIQUE AUX POINTS
 C --- D'INTEGRATION :
 C     -------------
       CALL DXEFGT(PGL,SIGTH)
-C
-C --- PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES EFFORTS
-C --- GENERALISES THERMIQUES SUR UN FEUILLET DE REFERENCE DIFFERENT
-C --- DU FEUILLET DU MAILLAGE :
-C     -----------------------
-      CALL EXCENT(OPTION,TYPELE,NNO,SIGTH)
 C
 C --- CALCUL DE BT*SIGTH :
 C     ------------------

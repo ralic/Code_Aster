@@ -6,7 +6,7 @@
      &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/10/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -415,6 +415,7 @@ C       --- REDUCTION DU PAS DE TEMPS ---
 C       LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
           GOTO 101
         ELSE IF (ERR .GT. 1.D0 .AND. NR .GE. NRMAX) THEN
+          DT2 = DT2 * CDP
           VALR(1) = TEMPS+DT2
           VALR(2) = ERR
           VALR(3) = DT2

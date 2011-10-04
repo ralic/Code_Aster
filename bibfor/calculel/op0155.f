@@ -1,7 +1,7 @@
       SUBROUTINE OP0155()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/09/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,12 @@ C     ----------------------------
       CALL W155MX(NOMRES,RESU,NBORDR,ZI(JORDR))
 
 
-C     -- 4. RECOPIE DES PARAMETRES DE RESU VERS NOMRES :
+C     -- 4. MOT CLE COQU_EXCENT :
+C     ----------------------------
+      CALL W155CE(NOMRES,RESU,NBORDR,ZI(JORDR))
+
+
+C     -- 5. RECOPIE DES PARAMETRES DE RESU VERS NOMRES :
 C     --------------------------------------------------
       NOMPAR='&&OP0155'//'.NOMS_PARA'
       CALL RSNOPA(RESU,2,NOMPAR,NBAC,NBPA)

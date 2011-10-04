@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105c.para = tps_job 140 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -42,7 +42,6 @@ MATERIO1=DEFI_MATERIAU(  ELAS=_F( RHO = 1.E08,  NU = 0.3,  E = 1.E10))
 MATERIO2=DEFI_MATERIAU(  ELAS=_F( RHO = 0.,  NU = 0.,   E = 1.E15))
 #
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=( 
-                              #_F( TOUT = 'OUI',      MATER = MATERIO1),
                               _F( GROUP_MA = 'SS1',   MATER = MATERIO1),
                               _F( GROUP_MA = 'SS2',   MATER = MATERIO1),
                               _F( GROUP_MA = 'SS3',   MATER = MATERIO1),
@@ -276,7 +275,6 @@ for k in range(1,5):
                   RESULTAT= MODESTA4, NUME_ORDRE=k, NOM_CHAM = 'DEPL');
   CHS1[k] = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                   MAILLAGE=MAYA,  
-          #       NUME_DDL = NUM,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS1[k], ),
                       _F (TOUT='OUI', CHAM_GD=DS2[k], ),
@@ -285,7 +283,6 @@ for k in range(1,5):
 
   CHS2[k] = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                   MAILLAGE=MAYA,  
-          #       NUME_DDL = NUM,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS3[k], ),
                       _F (TOUT='OUI', CHAM_GD=DS4[k], ),
@@ -413,7 +410,6 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=MATRRIGI,
                                   )
                                   
 
-#MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN, 
 MODGLO=REST_GENE_PHYS(   RESU_GENE=RESGEN, 
                          NOM_CHAM='DEPL',
                          TOUT_ORDRE='OUI'),
@@ -493,7 +489,6 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
                                        NOMBRE = 10))
 
 #
-#TRAN1=REST_SOUS_STRUC(   RESU_GENE=TRAN_GE1,
 TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
@@ -534,7 +529,6 @@ TRANGE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                         RIGI_NOR = 1.E+8)) 
                              )
                              
-#TRAN2=REST_SOUS_STRUC(   RESU_GENE=TRANGE2,
 TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGE2,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,

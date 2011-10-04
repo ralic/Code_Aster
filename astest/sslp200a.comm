@@ -1,6 +1,6 @@
-# MODIF  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
-# RESPONSABLE VABHHTS J.PELLET
+# RESPONSABLE PELLET J.PELLET
 # sslp200a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -518,17 +518,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIGM_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 5.32378947706322E+08      ),
+                                                 VALE= 5.4061380614063E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'SIGM_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 5.39821512492927E+08      ),
+                                                 VALE= 5.4816938571623E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIGM_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 5.47260118136498E+08      ),
+                                                 VALE= 5.5572499566517E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPME_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
@@ -739,17 +739,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIGM_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 2.07636813488687E+04      ),
+                                                 VALE= 20870.148036206      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'SIGM_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 2.08492662214839E+04      ),
+                                                 VALE= 20971.214466595      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIGM_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 2.09894412419536E+04      ),
+                                                 VALE= 21131.493921876      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPME_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
@@ -936,7 +936,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    INST = 11.5,
                      NOM_CHAM = 'SIGM_NOEU',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 5.71257371464142E+03      ))
+                                                 VALE= 5828.1909999462      ))
             )
 
 # --------------------------------------------------------------------
@@ -1020,7 +1020,7 @@ TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL2,
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL3,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                                                 VALE= 2.0790286148645E+04       ))
+                                                 VALE= 20903.549866889       ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL4,
                           TYPE_TEST = 'SOMM_ABS',

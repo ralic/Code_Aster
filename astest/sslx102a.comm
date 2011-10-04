@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 # sslx102a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,9 +56,6 @@ FYMAXN=- FYMAX;
 PRE_GIBI();
 
 MA=LIRE_MAILLAGE();
-#MA = CREA_MAILLAGE (MAILLAGE : MAINI
-#                   MODI_MAILLE : (OPTION : 'QUAD8_9'
-#                                  TOUT : 'OUI'  )  );
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -174,172 +171,3 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   PRECISION=0.005,),);
 
 FIN();
-#
-#
-#
-#
-#
-#
-#
-#
-#             RESU : (RESULTAT : RESU
-#                      GROUP_NO : (A B C D)
-#                     )
-#             RESU : (MAILLAGE : MA
-#                       RESULTAT : RESU
-#                       FORMAT :'CASTEM'
-#                     )
-#            );
-#EVOL1= POST_RELEVE_T ( ACTION : (INTITULE : 'DEPL1'
-#  GROUP_NO:CERCLE1  RESULTAT : RESU NOM_CHAM : 'DEPL'
-#  TOUT_CMP :'OUI'  OPERATION : 'EXTRACTION'
-#  REPERE:'CYLINDRIQUE' ORIGINE:(0. 0.305 0.) AXE_Z:(0. 1. 0.)));
-#
-# #MPR_COURBE(FORMAT    : 'AGRAF'
-#             FICHIER   : 'AGRAF'
-#          TITRE_GRAPHIQUE : TITRE
-#          COMMENTAIRE     : COMMENT
-#          LEGENDE_X       : 'ABSCISSE CURV'
-#          LEGENDE_Y       : 'DX, DY, DZ'
-#        COURBE    : (TABLE:EVOL1
-#                          PARA_X : 'ABSC_CURV'
-#                          PARA_Y : 'DX'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'ROUGE'
-#                 MARQUEUR  : 'ETOILE'
-#                 FREQ_MARQUEUR : 1
-#                 LEGENDE   : 'UR=F(S)')
-#        COURBE    : (TABLE:EVOL1
-#                          PARA_X : 'ABSC_CURV'
-#                          PARA_Y : 'DY'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'BLEU'
-#                 MARQUEUR  : 'LOSANGE'
-#                 FREQ_MARQUEUR : 1
-#                 LEGENDE   : 'UPHI=F(S)')
-#        COURBE    : (TABLE:EVOL1
-#                          PARA_X : 'ABSC_CURV'
-#                          PARA_Y : 'DZ'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'VERT'
-#                 MARQUEUR  : 'CARRE'
-#                 FREQ_MARQUEUR : 1
-#                 LEGENDE   : 'UX=F(S)')
-#            );
-#EVOL2= POST_RELEVE_T ( ACTION : (INTITULE : 'DEPL2'
-#  GROUP_NO:CERCLE2  RESULTAT : RESU NOM_CHAM : 'DEPL'
-#  TOUT_CMP :'OUI'  OPERATION : 'EXTRACTION'
-#  REPERE:'CYLINDRIQUE' ORIGINE:(0.305 0. 0.) AXE_Z:(1. 0. 0.)));
-#
-# #MPR_COURBE(FORMAT    : 'AGRAF'
-#             FICHIER   : 'AGRAF'
-#          TITRE_GRAPHIQUE : TITRE
-#          COMMENTAIRE     : COMMENT
-#          LEGENDE_X       : 'ABSCISSE CURV'
-#          LEGENDE_Y       : 'DX, DY, DZ'
-#        COURBE    : (TABLE:EVOL2
-#                          PARA_X : 'ABSC_CURV'
-#                          PARA_Y : 'DX'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'ROUGE'
-#                 MARQUEUR  : 'ETOILE'
-#                 FREQ_MARQUEUR : 1
-#                 LEGENDE   : 'UR=F(S)')
-#        COURBE    : (TABLE:EVOL2
-#                          PARA_X : 'ABSC_CURV'
-#                          PARA_Y : 'DY'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'BLEU'
-#                 MARQUEUR  : 'LOSANGE'
-#                 FREQ_MARQUEUR : 1
-#                 LEGENDE   : 'UPHI=F(S)')
-#        COURBE    : (TABLE:EVOL2
-#                          PARA_X : 'ABSC_CURV'
-#                          PARA_Y : 'DZ'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'VERT'
-#                 MARQUEUR  : 'CARRE'
-#                 FREQ_MARQUEUR : 1
-#                 LEGENDE   : 'UX=F(S)')
-#            );
-#
-#
-# MPR_RESU (MODELE : MO
-#             RESU : (MAILLAGE : MA
-#                       RESULTAT : RESU
-#                       FORMAT :'CASTEM'
-#                     )
-#            );
-#
-#DEPAB = POST_RELEVE_T(ACTION :
-#                           (RESULTAT : RESU
-#                            NOM_CHAM : 'DEPL'
-#                            INTITULE : 'WI2'
-#                            REPERE :'GLOBAL'
-#                            OPERATION : 'EXTRACTION'
-#                            GROUP_NO : AB
-#                            TOUT_CMP : 'OUI'
-#                         ));
-#
-#MPR_TABLE ( TABLE : DEPAB
-#             TRI:(NOM_PARA:'COOR_Y')
-#);
-#DEPCD = POST_RELEVE_T(ACTION :
-#                           (RESULTAT : RESU
-#                            NOM_CHAM : 'DEPL'
-#                            INTITULE : 'WI2'
-#                            REPERE :'GLOBAL'
-#                            OPERATION : 'EXTRACTION'
-#                            GROUP_NO : CD
-#                           TOUT_CMP : 'OUI'
-#                         ));
-#
-#MPR_TABLE ( TABLE : DEPCD
-#             TRI:(NOM_PARA:'COOR_X')
-#
-#);
-#
-#
-#WI2AB = RECU_FONCTION ( TABLE : DEPAB
-#                     PARA_X : 'COOR_Y'
-#                     PARA_Y : 'WI2'
-#
-#                        );
-#
-#WI2CD = RECU_FONCTION ( TABLE : DEPAB
-#                     PARA_X : 'COOR_X'
-#                     PARA_Y : 'WI2'
-#
-#                        );
-#
-#
-# MPR_COURBE(FORMAT    : 'AGRAF'
-#             FICHIER   : 'AGRAF'
-#          TITRE_GRAPHIQUE : TITRE
-#          COMMENTAIRE     : COMMENT
-#         LEGENDE_X       : 'AB'
-#         LEGENDE_Y       : 'WI2'
-#             COURBE    : (FONCTION : WI2AB
-#                 LEGENDE   : 'DKT-TUYAU : OVALISATION'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'VERT_FONCE'
-#                 MARQUEUR  : 'FUSEE_F'
-#                 FREQ_MARQUEUR : 1
-#                           )
-#            );
-#
-# MPR_COURBE(FORMAT    : 'AGRAF'
-#             FICHIER   : 'AGRAF'
-#          TITRE_GRAPHIQUE : TITRE
-#          COMMENTAIRE     : COMMENT
-#         LEGENDE_X       : 'CD'
-#         LEGENDE_Y       : 'WI2'
-#             COURBE    : (FONCTION : WI2CD
-#                 LEGENDE   : 'DKT-TUYAU : OVALISATION'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'VERT_FONCE'
-#                 MARQUEUR  : 'FUSEE_F'
-#                 FREQ_MARQUEUR : 1
-#                           )
-#            );
-#

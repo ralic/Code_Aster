@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,8 +41,6 @@ poisson = 0.3
 rho = 7800.
 longueur = 1.
 section = 0.3*0.2
-
-#PRE_GIBI();
 
 POUTRE=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), );
 
@@ -129,7 +127,6 @@ if dynaharmo:
                            MATR_MASS=M_AS_MAS, MATR_RIGI=M_AS_RIG,
                            LIST_FREQ=LIFREQ,
                            TOUT_CHAM='OUI',
-                        #   SOLVEUR=_F( METHODE='MUMPS', ),   # pas de mumps sur local new10
                            MODELE = MODEL, CHAM_MATER = MAT, # modele obligatoire a cause de charge
                            EXCIT=(_F(COEF_MULT_C=ftrac,CHARGE=CHF,PHAS_DEG = 0.,),),
                        )
@@ -281,7 +278,6 @@ else:
 #                     VERIFICATION DES RESULTATS 
 #---------------------------------------------------------------------
 #
-#IMPR_CO(CONCEPT=_F(NOM=OBSJAU)),
 
 if dynaharmo:
   omega = 2*NP.pi*freq

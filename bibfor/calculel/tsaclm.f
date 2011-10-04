@@ -5,7 +5,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -331,8 +331,7 @@ C
             IF (IRET.NE.0)GOTO 220
             NOMA=CHGEOM(1:8)
             CHNUMC='&&'//NOMPRO//'.NUMC'
-            CHFREQ='&&'//NOMPRO//'.FREQ'
-            CALL MECHN2(NOMA,CHNUMC,CHFREQ)
+            CALL MECHN2(NOMA,CHNUMC)
 
 C    ------------------------------------------------------------------
 C    -- OPTIONS "FLUX_ELNO","FLUX_ELGA","SOUR_ELGA"

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 #  TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (MODELE GLRC) 
 # sdns106e.para = tps_job 180 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -230,29 +230,6 @@ F_ACC2 = RECU_FONCTION(RESULTAT = RESU2 ,INTERPOL = 'LIN',NOM_CHAM = 'ACCE' ,
                        NOM_CMP = 'DZ',GROUP_NO = 'P04' ,
                        LIST_INST = inst2,PRECISION=1.0E-7) ;
 
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_DEP ),
-#                  ),) ;
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_VIT ),
-#                          ),) ; 
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_ACC ),
-#                            ),) ; 
-
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                 COURBE =(_F(  FONCTION = F_DEP2 ),
-#                          ),) ; 
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_VIT2 ),
-#                           ),) ; 
-#
-#IMPR_FONCTION(    FORMAT = 'TABLEAU' ,UNITE = 8 ,
-#                  COURBE =(_F(  FONCTION = F_ACC2 ),
-#                           ),) ; 
 
 dep1 = -3.710312E-04
 vit1 = -4.496707E-01

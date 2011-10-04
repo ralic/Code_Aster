@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/10/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,6 +139,9 @@ C
 C       ELSE IF (TYCH(1:9).EQ.'ELGA_EQUI_R') THEN
 C          OPTION = 'SIEQ_ELGA'
 C          PARAM  = 'PCONTEQ'
+      ELSE IF (TYCH(1:11).EQ.'ELGA_SOUR_R') THEN
+         OPTION = 'SOUR_ELGA'
+         PARAM  = 'PSOUR_R'
       ELSE IF (TYCH(1:4).EQ.'ELGA') THEN
 C        AUTRES CHAMPS ELGA : NON PREVU
          CALL U2MESK('F','UTILITAI2_94',1,TYCH)

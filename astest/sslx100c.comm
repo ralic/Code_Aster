@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE MELANGE 3D-PLAQUE-POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -238,6 +238,13 @@ DEPF=CALC_ELEM(reuse =DEPF,
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
+DEPFPOS=POST_CHAMP(RESULTAT=DEPF,
+                   GROUP_MA='GRMA2',
+                   NUME_ORDRE=1,
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='SUP',),);
+
 DEPF=CALC_ELEM(reuse =DEPF,
                RESULTAT=DEPF,
                NUME_ORDRE=1,
@@ -261,6 +268,13 @@ DEPC=CALC_ELEM(reuse =DEPC,
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
+DEPCPOS=POST_CHAMP(RESULTAT=DEPC,
+                   GROUP_MA='GRMA2',
+                   NUME_ORDRE=1,
+                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='SUP',),);
+
 DEPC=CALC_ELEM(reuse =DEPC,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
@@ -278,7 +292,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    VALE=-5.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.005,),
-                _F(RESULTAT=DEPF,
+                _F(RESULTAT=DEPFPOS,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
@@ -305,7 +319,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    VALE=1.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.005,),
-                _F(RESULTAT=DEPC,
+                _F(RESULTAT=DEPCPOS,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',

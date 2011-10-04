@@ -1,4 +1,4 @@
-# MODIF  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION ELEMENTAIRE DE SANS_GROUP_NO_FR
 # zzzz292a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,24 +54,6 @@ DEPL=AFFE_CHAR_CINE(MODELE=MO,
                                   DZ=-1,),
                                _F(GROUP_MA='F_BAS',
                                   DZ=1,),),);
-##BLOQ_D=AFFE_CHAR_MECA(
-##MODELE=MO,
-##
-##DDL_IMPO=(_F(GROUP_MA='SYMETRIE',
-##DY=0,),
-##_F(GROUP_NO=('A','C',),
-##DX=0,
-##DY=0,),),
-##);
-##DEPL_D=AFFE_CHAR_MECA(
-##MODELE=MO,
-##
-##DDL_IMPO=(_F(GROUP_MA='F_HAUT',
-##DZ=-1,),
-##_F(GROUP_MA='F_BAS',
-##DZ=1,),),
-##);
-
 
 CONT=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',

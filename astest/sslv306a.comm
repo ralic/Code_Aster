@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE 3D EN DEPLACEMENTS IMPOSES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,28 +165,28 @@ TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N3'),
                 NOM_PARA='SIXX',
-               PRECISION=0.096,
+               PRECISION=0.104,
                     VALE=1.5E5            )
 
 TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N4'),
                 NOM_PARA='SIXX',
-               PRECISION=0.096,
+               PRECISION=0.104,
                     VALE=1.5E5            )
 
 TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N5'),
                 NOM_PARA='SIXX',
-               PRECISION=0.096,
+               PRECISION=0.104,
                     VALE=-1.5E5            )
 
 TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N6'),
                 NOM_PARA='SIXX',
-               PRECISION=0.096,
+               PRECISION=0.104,
                     VALE=-1.5E5            )
 
 FIN()

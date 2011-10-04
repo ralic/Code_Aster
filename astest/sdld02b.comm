@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 # sdld02b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,57 +173,6 @@ TEST_RESU(RESU=(
             GROUP_NO = 'GRP8',        VALE = 0.260472,
             CRITERE = 'RELATIF',    PRECISION = 1.E-4)),
     )
-#CHAM_GD=(
-#
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P1',             VALE = 0.3473),
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P2',             VALE = 0.6527),
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P3',             VALE = 0.8794),
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P4',             VALE = 1.),
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P5',             VALE = 1.),
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P6',             VALE = 0.8794),
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P7',             VALE = 0.6527),
-# _F(   AFFE = MODE1,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P8',             VALE = 0.3473),
-#
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P1',             VALE = -0.3473),
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P2',             VALE = 0.6527),
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P3',             VALE = -0.8794),
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P4',             VALE = 1.),
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P5',             VALE = -1.),
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P6',             VALE = 0.8794),
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P7',             VALE = -0.6527),
-# _F(   AFFE = MODE8,        NOM_CMP = CMP,
-#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-#            NOEUD = 'P8',             VALE = 0.3473))
 
 #
 

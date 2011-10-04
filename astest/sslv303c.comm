@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 # sslv303c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,21 +158,21 @@ TEST_TABLE(TABLE=T1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
            NOM_PARA='SIXX',
-           VALE=1630000.0,
+           VALE=1730000.0,
            PRECISION=0.01,);
 
 TEST_TABLE(TABLE=T1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
            NOM_PARA='SIYY',
-           VALE=1650000.0,
+           VALE=1740000.0,
            PRECISION=0.01,);
 
 TEST_TABLE(TABLE=T1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
            NOM_PARA='SIZZ',
-           VALE=5510000.0,
+           VALE=5560000.0,
            PRECISION=0.01,);
 #
 
@@ -221,21 +221,21 @@ TEST_TABLE(TABLE=T2,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
            NOM_PARA='SIXX',
-           VALE=1560000.0,
+           VALE=1640000.0,
            PRECISION=0.01,);
 
 TEST_TABLE(TABLE=T2,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
            NOM_PARA='SIYY',
-           VALE=1570000.0,
+           VALE=1660000.0,
            PRECISION=0.01,);
 
 TEST_TABLE(TABLE=T2,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
            NOM_PARA='SIZZ',
-           VALE=5250000.0,
+           VALE=5300000.0,
            PRECISION=0.01,);
 
 FIN();

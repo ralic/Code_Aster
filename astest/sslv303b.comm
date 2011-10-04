@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -251,22 +251,22 @@ TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIXX',
-               PRECISION=0.135,
-                    VALE=1.63E6           )
+               PRECISION=0.185,
+                    VALE=1.73E6           )
 
 TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIYY',
-               PRECISION=0.027,
-                    VALE=5.51E6           )
+               PRECISION=0.018,
+                    VALE=5.56E6           )
 
 TEST_TABLE(       TABLE=T2,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIZZ',
-               PRECISION=0.147,
-                    VALE=1.65E6           )
+               PRECISION=0.088,
+                    VALE=1.74E6           )
 
 #
 #
@@ -297,22 +297,22 @@ TEST_TABLE(       TABLE=T3,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIXX',
-               PRECISION=0.138,
-                    VALE=1.56E6           )
+               PRECISION=0.18,
+                    VALE=1.64E6           )
 
 TEST_TABLE(       TABLE=T3,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIYY',
-               PRECISION=0.03,
-                    VALE=5.25E6           )
+               PRECISION=0.019,
+                    VALE=5.30E6           )
 
 TEST_TABLE(       TABLE=T3,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'N2'),
                 NOM_PARA='SIZZ',
-               PRECISION=0.15,
-                    VALE=1.57E6           )
+               PRECISION=0.088,
+                    VALE=1.66E6           )
 
 FIN()
 #

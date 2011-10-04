@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD (ROTATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@
 #======================================================================
 
 
-DEBUT(CODE=_F(NOM='SDLS01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SDLS01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 MA=LIRE_MAILLAGE( )
 
@@ -187,22 +187,29 @@ VECTASS3=ASSE_VECTEUR(  VECT_ELEM=VEL3,    NUME_DDL=NUM3  )
 #
 # POUR TESTER COEF_MULT
 
-DYNHAR0=DYNA_LINE_HARM( MATR_MASS=MATASSM3,   MATR_RIGI=MATASSR3,
+DYNHAR0=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                            MATR_MASS=MATASSM3,   MATR_RIGI=MATASSR3,
                             MATR_AMOR=MATASSC3,     FREQ=50.,
                             EXCIT=_F(  COEF_MULT = 3., VECT_ASSE = VECTASS3),
                              TOUT_CHAM='OUI'     )
 
-DYNHARM=DYNA_LINE_HARM( MATR_MASS=MATASSM3,   MATR_RIGI=MATASSR3,
+DYNHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', 
+                            MATR_MASS=MATASSM3,   MATR_RIGI=MATASSR3,
                             MATR_AMOR=MATASSC3,     FREQ=50.,
                             EXCIT=_F(  COEF_MULT = 1., VECT_ASSE = VECTASS3),
                              TOUT_CHAM='OUI'     )
 
-DYNHARM=CALC_ELEM(reuse=DYNHARM,     RESULTAT=DYNHARM,
+DYNHARM=CALC_ELEM(reuse=DYNHARM,RESULTAT=DYNHARM,
+                  OPTION=('SIEF_ELGA',
+                          'SIGM_ELNO',
+                          'EFGE_ELNO',),);
 
-                              OPTION=( 'SIEF_ELGA',
-                                       'SIGM_ELNO',
-                                       'EFGE_ELNO',  ),
-                       )
+DHPOS=POST_CHAMP(RESULTAT=DYNHARM,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='MOY',),);
+
 DYNHARM=CALC_NO(reuse =DYNHARM,
               RESULTAT=DYNHARM,
               OPTION='EFGE_NOEU',);
@@ -244,10 +251,10 @@ TEST_RESU(RESU=(
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'QY',
        FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = -3.14676E+02+2.06813E+03j),
 
-     _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIGM_ELNO',
+     _F(  RESULTAT = DHPOS,   NOM_CHAM = 'SIGM_ELNO',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'SIXZ',
        FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = 5.49245E+04-5.65997E+05j),
-     _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIGM_ELNO',
+     _F(  RESULTAT = DHPOS,   NOM_CHAM = 'SIGM_ELNO',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'SIYZ',
        FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = -4.72014E+04+3.10219E+05j),
 
@@ -260,15 +267,12 @@ TEST_RESU(RESU=(
 #  TESTS MODI_REPERE SUR TORSEURS D'EFFORTS (ELNO ET NOEU)
 #
 RESU1=MODI_REPERE(RESULTAT=DYNHARM,
-                  MODI_CHAM=_F(
-                               TYPE_CHAM='TORS_3D',
+                  MODI_CHAM=_F(TYPE_CHAM='TORS_3D',
                                NOM_CHAM='EFGE_ELNO',
                                NOM_CMP=('NXX','MXX','MYY','MXY','QX','QY',),),
                       REPERE='UTILISATEUR',
-                      AFFE=_F(
-                                MAILLE=('M251','M252','M255',),
-                                 ANGL_NAUT=(0.,),),
-                              );
+                      AFFE=_F(MAILLE=('M251','M252','M255',),
+                              ANGL_NAUT=(0.,),),);
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'EFGE_ELNO',
@@ -289,15 +293,12 @@ TEST_RESU(RESU=(
       ),)
 
 RESU2=MODI_REPERE(RESULTAT=DYNHARM,
-                  MODI_CHAM=_F(
-                               TYPE_CHAM='TORS_3D',
+                  MODI_CHAM=_F(TYPE_CHAM='TORS_3D',
                                NOM_CHAM='EFGE_NOEU',
                                NOM_CMP=('NXX','MXX','MYY','MXY','QX','QY',),),
                   REPERE='UTILISATEUR',
-                  AFFE=_F(
-                                MAILLE=('M251','M252','M255',),
-                                 ANGL_NAUT=(0.,),),
-                                );
+                  AFFE=_F(MAILLE=('M251','M252','M255',),
+                          ANGL_NAUT=(0.,),),);
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = RESU2,   NOM_CHAM = 'EFGE_NOEU',

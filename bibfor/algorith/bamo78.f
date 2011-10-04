@@ -4,7 +4,7 @@
       CHARACTER*16  TYPRES
       CHARACTER*19  TRANGE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,6 @@ C --- INITIALISATIONS
 C
       BASEMO = ' '
       CTYPE  = 'K24'
-      WRITE(6,*) 'TYPRES ',TYPRES
       SDNOLI = TRANGE
       KREFE  = NOMRES
 C
@@ -182,8 +181,6 @@ C
          CALL JEVEUO(KNUME ,'L',JNUME )
       END IF
       CALL JEVEUO(TRANGE//'.ORDR','L',JORDR)
-C      WRITE(6,*) 'KINST ',(ZR(JINST+I-1),I=1,NBINST)
-C      WRITE(6,*) 'KNUME ',(ZI(JNUME+I-1),I=1,NBINST)
       CALL GETVR8(' ','PRECISION',1,IARG,1,EPSI,N)
       CALL GETVTX(' ','CRITERE',1,IARG,1,CRIT,N)
 C
@@ -322,7 +319,6 @@ C     --- ON CREE UN CHAMP D'HARMONIQUE DE FOURIER (CARTE CSTE) ---
          VALCMP(I) = ' '
  350  CONTINUE
       DO 400 IARCH = 1, NBINST
-C         WRITE(6,*) 'IARCH',IARCH
          NUM0 = ZI(JNUME+IARCH-1)
          NUME = ZI(JORDR+NUM0-1)
          TIME = ZR(JINST+IARCH-1)
@@ -333,7 +329,6 @@ C         WRITE(6,*) 'IARCH',IARCH
 
 C         --- RECUP POINTEUR SUR CHAMP PHYSIQUE DANS SD RESULTAT
          DO 401 IOPT = 1, 2
-C         WRITE(6,*) 'IOPT',IOPT
 
             OPTION = OPTI(IOPT)
 
@@ -359,7 +354,6 @@ C
               CHS(2) = CHES1
             ENDIF
             IF (IOPT.EQ.2) THEN
-C              NOSY='VARI_ELGA_ELNO'
               NOSY= ' '
               NC = 1
               CHS(1) = CHES1

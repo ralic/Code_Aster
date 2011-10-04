@@ -1,10 +1,10 @@
-      SUBROUTINE MECHN2 ( NOMA, CHNUMC, CHPLAN )
+      SUBROUTINE MECHN2 ( NOMA, CHNUMC)
       IMPLICIT  NONE
       CHARACTER*8         NOMA
-      CHARACTER*24              CHNUMC, CHPLAN
+      CHARACTER*24              CHNUMC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,28 +95,8 @@ C
       ZI(JDVC+1) = 0
       ZI(JDVC+2) = 0
       CALL NOCART ( CHNUMC,1,K8B,K8B,0,K8B,IBID,K8B,3 )
-C
-      CALL JEEXIN(CHPLAN(1:19)//'.NOMA',IRET)
-      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.NOMA')
-      CALL JEEXIN(CHPLAN(1:19)//'.NOLI',IRET)
-      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.NOLI')
-      CALL JEEXIN(CHPLAN(1:19)//'.DESC',IRET)
-      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.DESC')
-      CALL JEEXIN(CHPLAN(1:19)//'.LIMA',IRET)
-      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.LIMA')
-      CALL JEEXIN(CHPLAN(1:19)//'.VALE',IRET)
-      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.VALE')
-      CALL JEEXIN(CHPLAN(1:19)//'.NCMP',IRET)
-      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.NCMP')
-      CALL JEEXIN(CHPLAN(1:19)//'.VALV',IRET)
-      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.VALV')
-      CALL ALCART ( 'V', CHPLAN, NOMA, 'FREQ_R' )
-      CALL JEVEUO ( CHPLAN(1:19)//'.NCMP', 'E', JDCP )
-      CALL JEVEUO ( CHPLAN(1:19)//'.VALV', 'E', JDVP )
-      ZK8(JDCP)   = 'FREQ'
-      ZR(JDVP) = DBLE(0)
-      CALL NOCART ( CHPLAN,1,K8B,K8B,0,K8B,IBID,K8B,1 )
-C
+
+
       IF ( NREP .NE. 0 ) THEN
 C
 C ------ AFFECTATION PAR LISTE DE MAILLES
@@ -145,24 +125,6 @@ C
                CALL NOCART ( CHNUMC,1,K8B,K8B,IBID,K8B,IBID,K8B,3 )
             ELSE
             CALL NOCART (CHNUMC,3,K8B,'NOM',NBMA,ZK8(JMAIL),IBID,K8B,3)
-            ENDIF
-C
-            CALL GETVTX ( MOTCLE, 'PLAN', IOC,IARG,1, PLAN, N1 )
-            IF (PLAN(1:4).EQ.'MAIL') THEN
-               RPLAN = DBLE(0)
-            ELSE IF (PLAN(1:3).EQ.'SUP') THEN
-               RPLAN = DBLE(1)
-            ELSE IF (PLAN(1:3).EQ.'INF') THEN
-               RPLAN = DBLE(-1)
-            ELSE IF (PLAN(1:3).EQ.'MOY') THEN
-               RPLAN = DBLE(2)
-            END IF
-            ZR(JDVP) = RPLAN
-C
-            IF ( NBMA .EQ. 0 ) THEN
-               CALL NOCART ( CHPLAN,1,K8B,K8B,IBID,K8B,IBID,K8B,1 )
-            ELSE
-            CALL NOCART (CHPLAN,3,K8B,'NOM',NBMA,ZK8(JMAIL),IBID,K8B,1)
             ENDIF
 C
             IF ( NBMA.NE.0 )  CALL JEDETR ( MESMAI )

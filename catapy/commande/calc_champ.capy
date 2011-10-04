@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,9 +78,9 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de contraintes et efforts generalises",
                              into=(
-                                    "SIEF_ELNO","SIEF_NOEU",
-                                    #"SIGM_ELNO","SIGM_NOEU",
-                                    "SIEF_ELGA","SIGM_ELGA","EFGE_ELGA",
+                                    "SIEF_ELGA","SIEF_ELNO","SIEF_NOEU",
+                                    "SIGM_ELGA","SIGM_ELNO","SIGM_NOEU",
+                                    "EFGE_ELGA",
                                     "SIPO_ELNO","SIPO_NOEU",
                                     #"EFGE_ELNO","EFGE_NOEU",
                                     #"EFCA_ELNO",
@@ -131,9 +131,11 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de contraintes et efforts generalises",
                              into=(
-                                    "SIEF_ELNO","SIEF_NOEU","SIGM_ELGA","EFGE_ELGA",
+                                                "SIEF_ELNO","SIEF_NOEU",
+                                    "SIGM_ELGA","SIGM_ELNO","SIGM_NOEU",
+                                    "EFGE_ELGA",
                                     #"EFCA_ELNO","EFCA_NOEU"
-                                    "SITU_ELNO","SICO_ELNO","SICO_NOEU","SIPO_ELNO","SIPO_NOEU",
+                                    "SITU_ELNO","SIPO_ELNO","SIPO_NOEU",
                                   ),
                             ),
 

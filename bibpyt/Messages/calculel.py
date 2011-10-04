@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 30/08/2011   AUTEUR BERARD A.BERARD 
+#@ MODIF calculel Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,11 +131,6 @@ Conseil :
  type de champ inconnu
 """),
 
-18 : _("""
- les parties réelle et imaginaire du champ à assembler ne sont pas du même type
- l'un est un CHAM_NO et l'autre un CHAM_ELEM
-"""),
-
 19 : _("""
 Erreur :
  Le cham_elem %(k1)s est incohérent :
@@ -165,11 +160,6 @@ Risques & Conseils :
  problème dans le catalogue des grandeurs simples
  la grandeur  %(k1)s  ne possède pas les mêmes champs que son homologue complexe  %(k2)s
 """),
-
-24 : _("""
- les champs à assembler n'ont pas la même longueur
-"""),
-
 
 25 : _("""
 Erreur utilisateur dans PROJ_SPEC_BASE :

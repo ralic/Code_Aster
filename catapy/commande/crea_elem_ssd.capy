@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,9 +52,11 @@ CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
 
 # pour DEFI_BASE_MODALE
          BASE_MODALE = FACT(statut='o',max = 1,
-           TYPE   =SIMP(statut='o',typ='TXM',max=1,into=('CLASSIQUE','RITZ',)),
-           b_ritz = BLOC(condition = "TYPE == 'RITZ' ",
-             NMAX_MODE_INTF  =SIMP(statut='f',typ='I',defaut=10),
+           TYPE   =SIMP(statut='o',typ='TXM',max=1,into=('CLASSIQUE','RITZ',),),
+           b_ritz = BLOC(condition = "TYPE == 'RITZ' ",fr="Base de type Ritz",
+             TYPE_MODE  = SIMP(statut='f',typ='TXM',into=('STATIQUE','INTERFACE',),defaut='INTERFACE',),
+             b_intf = BLOC(condition = "TYPE_MODE == 'INTERFACE' ",
+                      NMAX_MODE_INTF  =SIMP(statut='f',typ='I',defaut=10,val_min=1),),
            ),
          ),
 
@@ -67,7 +69,7 @@ CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
 
 # pour le calcul modal
          CALC_FREQ       =FACT(statut='d',min=0,
-             OPTION      =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE"),
+             OPTION      =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE","SANS"),
                                    fr="Choix de l option et par consequent du shift du probleme modal" ),
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
                NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),

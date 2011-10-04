@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,13 +75,6 @@ G_00=MODI_MAILLAGE(reuse =G_00,
                    MAILLAGE=G_00,
                    ORIE_PEAU_3D=_F(GROUP_MA=('MURHEXA','MURPENT','CHARTETR','CHARPYRA','CHARPENT','CHARHEXA','LIBRE','LIBRE2',),),
                    INFO=2,);
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(MAILLAGE=G_00,),
-##);
-##IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=G_00,),);
-
 
 # A.5. Mise en place des materiaux
 
@@ -120,25 +113,6 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODE,
 SOLUPR=MECA_STATIQUE(MODELE=MODE,
                      CHAM_MATER=MATE,
                      EXCIT=_F(CHARGE=CHAR,),);
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(RESULTAT=SOLUPR,),
-##);
-##DEPL_M=POST_RELEVE_T(
-##
-##ACTION=_F(OPERATION='EXTRACTION',
-##INTITULE='DZ en M - 1',
-##RESULTAT=SOLUPR,
-##NOM_CHAM='DEPL',
-##GROUP_NO='MESURE',
-##TOUT_CMP='OUI',),
-##);
-##IMPR_TABLE(
-##TABLE=DEPL_M,
-##NOM_PARA=('INTITULE','NOM_CHAM','NOEUD','DX','DY','DZ',),
-##);
-
 
 # B.2. Calcul d'erreur
 # B.2.1. Erreur en residu
@@ -147,13 +121,6 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
                  TYPE_OPTION='SIGM_MASSIF',
                  OPTION='SIEF_ELNO',);
-##IMPR_RESU(
-##FORMAT='RESULTAT',
-##
-##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM='SIEF_ELNO',),
-##);
-
 
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
@@ -165,21 +132,6 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
                OPTION='ERME_NOEU',);
-##IMPR_RESU(
-##FORMAT='RESULTAT',
-##
-##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM='ERME_ELEM',
-##NOM_CMP=('ERREST','TERMRE','TERMNO','TERMSA',),),
-##);
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM='ERME_ELEM',
-##NOM_CMP='ERREST',),
-##);
-
 
 # B.2.2. Erreur en quantite d'interet
 # B.2.2.1. Chargement dual
@@ -228,17 +180,6 @@ SOLUDU=CALC_ELEM(reuse =SOLUDU,
 SOLUDU=CALC_NO(reuse =SOLUDU,
                RESULTAT=SOLUDU,
                OPTION='ERME_NOEU',);
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(RESULTAT=SOLUDU,),
-##);
-##IMPR_RESU(
-##FORMAT='RESULTAT',
-##
-##RESU=_F(RESULTAT=SOLUDU,),
-##);
-
 
 # B.3. Calcul de l'estimateur d'erreur en quantite d'interet
 
@@ -250,14 +191,6 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
                OPTION='QIRE_NOEU',);
-##IMPR_RESU(
-##FORMAT='RESULTAT',
-##
-##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM=('QIRE_ELEM','QIRE_ELNO','QIRE_NOEU',),
-##NOM_CMP='ERREST',),
-##);
-
 
 # B.4. Test de non regression
 
@@ -332,13 +265,6 @@ F_PENT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_prespent,
 
 F_HEXA=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_preshexa,
                            ),);
-##IMPR_FONCTION(
-##FORMAT='TABLEAU',
-##
-##COURBE=_F(FONCTION=F_HEXA,),
-##UNITE=8,
-##);
-
 
 # C.1. Calcul primal
 # C.1.1. Chargement
@@ -364,12 +290,6 @@ CHAR=AFFE_CHAR_MECA_F(MODELE=MODE,
 SOLUPR=MECA_STATIQUE(MODELE=MODE,
                      CHAM_MATER=MATE,
                      EXCIT=_F(CHARGE=CHAR,),);
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(RESULTAT=SOLUPR,),
-##);
-
 
 # C.2. Calcul d'erreur
 # C.2.1. Erreur en residu
