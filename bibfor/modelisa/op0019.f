@@ -1,6 +1,6 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,38 +41,38 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C     NBEPO  : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
-C     NBEDI  : NOMBRE D'ELEMENTS DE TYPE "DISCRET"
-C     NBECO  : NOMBRE D'ELEMENTS DE TYPE "COQUE"
-C     NBECA  : NOMBRE D'ELEMENTS DE TYPE "CABLE"
-C     NBEBA  : NOMBRE D'ELEMENTS DE TYPE "BARRE"
-C     NBEMA  : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
-C     NBEGB  : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
-C     NBMCF  : NOMBRE DE MOTS CLES FACTEUR DE L'OPERATEUR
+C     NBEPO  13 : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
+C     NBEDI   8 : NOMBRE D'ELEMENTS DE TYPE "DISCRET"
+C     NBECO  26 : NOMBRE D'ELEMENTS DE TYPE "COQUE"
+C     NBECA   2 : NOMBRE D'ELEMENTS DE TYPE "CABLE"
+C     NBEBA   2 : NOMBRE D'ELEMENTS DE TYPE "BARRE"
+C     NBEMA  53 : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
+C     NBEGB   6 : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
       INTEGER     NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBTEL,NBMCF
       INTEGER     NBEL1,NBEL2
-      PARAMETER  (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
-      PARAMETER  (NBEBA=2,NBEMA=53,NBEGB=6)
-      PARAMETER  (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGB)
-      PARAMETER  (NBMCF=13,NBEL1=51,NBEL2=59)
+      PARAMETER  (      NBEPO=13,NBEDI=8,NBECO=26,NBECA=2,NBEBA=2)
+      PARAMETER  (NBEL1=NBEPO   +NBEDI  +NBECO   +NBECA  +NBEBA)
+      PARAMETER  (      NBEMA=53,NBEGB=6)
+      PARAMETER  (NBEL2=NBEMA   +NBEGB)
+      PARAMETER  (NBTEL=NBEL1+NBEL2)
+C     NBMCF  : NOMBRE DE MOTS CLES FACTEUR DE L'OPERATEUR
+      PARAMETER  (NBMCF=13)
 C ----------------------------------------------------------------------
-
       INTEGER        NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3),NBCART,IRET,I
       INTEGER        NTYELE(NBTEL),NBVER,NLM,NLG,LXC,LXO,NLN,NLJ,LXA
       INTEGER        LXK,LXB,LXM,LXPF,LXGB,LMAX,IFM,NIV,LXP,NBVM,LXD
       INTEGER        NBOCCD,LXRP,NOEMAF,LXRM,NOEMF2,NBMAIL,NBMTRD
       INTEGER        NPOUTR,NDISCR,NCOQUE,NCABLE,NBARRE,NMASSI,NGRILL
-      INTEGER        NGRIBT,ICLF,IOC,ICLE,NG,NOCACO,NOCAGB
+      INTEGER        NGRIBT,ICLF,IOC,ICLE,NG,NOCACO,NOCAGB,IARG,DEPART
       INTEGER        JDNM,IXNW,JDLN,JDLM,JDLS
 
       CHARACTER*1    K1BID
       CHARACTER*6    KIOC
-      CHARACTER*8    VER(3),NOMU,NOMO,NOMA
+      CHARACTER*8    VER(3),NOMU,NOMO,NOMA,LPAIN(3),LPAOUT(1)
       CHARACTER*16   CONCEP,CMD,MCLF(NBMCF),MCLE(4),K16BID
       CHARACTER*16   NOMELE(NBTEL),NOMEL1(NBEL1),NOMEL2(NBEL2)
-      CHARACTER*19   CARTCF
+      CHARACTER*19   CARTCF,LIGRMO,LCHIN(3),LCHOUT(1)
       CHARACTER*24   MLGNMA,MODNOM,MODNEM,TMPLST,TMPLMA,TMPLNO,TMPNCF
-      INTEGER      IARG
 
       DATA MCLE   /  'GROUP_MA        ','MAILLE          ',
      &               'GROUP_NO        ','NOEUD           '/
@@ -84,7 +84,9 @@ C ----------------------------------------------------------------------
      &               'POUTRE_FLUI     ','RIGI_PARASOL    ',
      &               'GRILLE          ','RIGI_MISS_3D    ',
      &               'DISCRET_2D      '/
-
+C     !!!! A L'ORDRE DE STOCKAGE
+C        NOMEL1 : POUTRE(13) DISCRET(8) COQUE(26) CABLE(2) BARRE(2)
+C        NOMEL2 : MASSIF(53) GRILLE(6)
       DATA NOMEL1 /         'MECA_POU_D_T    ','MECA_POU_D_E    ',
      &   'MECA_POU_D_T_GD ','MECA_POU_C_T    ','MEFS_POU_D_T    ',
      &   'MECA_POU_D_TG   ','MECA_POHO_HEXA8 ','MECA_POHO_HEXA20',
@@ -124,8 +126,9 @@ C ----------------------------------------------------------------------
      &   'HM_AXIS_QU8S    ','HM_DPTR6S       ','HM_AXIS_TR6S    ',
      &   'MEGCQU4         ','MEGMTR3         ','MEGMQU4         ',
      &   'MEGMTR6         ','MEGMQU8         ','MEGCTR3         '/
+
       DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4/
-C     ------------------------------------------------------------------
+C --- ------------------------------------------------------------------
       CALL JEMARQ()
       IRET=0
 C --- ------------------------------------------------------------------
@@ -378,8 +381,10 @@ C     BARRES ET AFFECTATION DE LA CARTE ORIENTATION
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS POUTRES
       IF (NBOCC(1).NE.0) THEN
-         CALL ACEAPO(NOMA,NOMO,LMAX,NPOUTR,NBOCC(1),NBEPO,NTYELE,
-     &               IVR,IFM,JDLM)
+C        NBEPO + NBEDI + NBECO + NBECA + NBEBA + NBEMA + NBEGB
+         DEPART = 1
+         CALL ACEAPO(NOMA,NOMO,LMAX,NPOUTR,NBOCC(1),MCLF(1),
+     &               NBEPO,NTYELE(DEPART),IVR,IFM,JDLM)
       END IF
 
 C --- ------------------------------------------------------------------
@@ -412,8 +417,10 @@ C --- AFFECTATION DES SECTIONS AUX ELEMENTS CABLE :
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS BARRE
       IF (NBOCC(7).NE.0) THEN
-         CALL ACEABA(NOMA,NOMO,LMAX,NBARRE,NBOCC(7),NBTEL,NTYELE,
-     &               IVR,IFM,JDLM)
+C        NBEPO + NBEDI + NBECO + NBECA + NBEBA + NBEMA + NBEGB
+         DEPART = NBEPO + NBEDI + NBECO + NBECA + 1
+         CALL ACEABA(NOMA,NOMO,LMAX,NBARRE,NBOCC(7),MCLF(7),
+     &               NBEBA,NTYELE(DEPART),IVR,IFM,JDLM)
       END IF
 
 C --- ------------------------------------------------------------------
@@ -468,6 +475,18 @@ C           POUTRE      /  TUYAU_NCOU
 C           POUTRE      /  TUYAU_NSEC
 C     ----------------------------------------------------------
       CALL PMFD00()
+
+
+C     -- APPEL DE L'OPTION DE VERIFICATION VERI_CARA_ELEM :
+C     -------------------------------------------------------
+      LPAIN(1)='PCACOQU'
+      LCHIN(1)=NOMU//'.CARCOQUE'
+      LPAOUT(1)='PBIDON'
+      LCHOUT(1)='&&OP0019.BIDON'
+      LIGRMO=NOMO//'.MODELE'
+      CALL CALCUL('C','VERI_CARA_ELEM',LIGRMO,1,LCHIN,LPAIN,1,
+     &            LCHOUT,LPAOUT,'V','OUI')
+
 
       CALL JEDEMA()
       END

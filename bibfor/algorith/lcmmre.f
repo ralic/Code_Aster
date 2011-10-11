@@ -3,7 +3,7 @@
      &       ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,DY,R,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
-C TOLE CRP_21
+C TOLE CRP_21 CRS_1404
 C       ----------------------------------------------------------------
 C     MONOCRISTAL  : CALCUL DES RESIDUS DU SYSTEME NL A RESOUDRE = R(DY)
 C                    CF. R5.03.11
@@ -66,9 +66,9 @@ C
       REAL*8 MATERD(NMAT*2) ,MATERF(NMAT*2),EPSEF(6)
       REAL*8 MUS(6),NG(3),TAUS,DGAMMA,DALPHA,DP,RP
       REAL*8 R(NR),DY(NR),YD(NR),YF(NR),TOLER,FE(3,3)
-      REAL*8 TOUTMS(NFS,NSG,6), HSR(NFS,NSG,NSG),Q(3,3),LG(3)
+      REAL*8 TOUTMS(NFS,NSG,6), HSR(NSG,NSG),Q(3,3),LG(3)
       REAL*8 GAMSNS(3,3),FP(3,3)
-      REAL*8 CRIT,SGNS,EXPBP(30)
+      REAL*8 CRIT,SGNS,EXPBP(NSG)
       CHARACTER*8  TYPMOD
       CHARACTER*16 CPMONO(5*NMAT+1),COMP(*),NOMFAM
 C     ----------------------------------------------------------------
@@ -111,15 +111,15 @@ C           CALCUL DE LA SCISSION REDUITE
             CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,NFS,NSG,TOUTMS,
      &                  TAUS,MUS,MSNS)
 C           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT            
-            CALL LCMMLC(NMAT,NBCOMM,CPMONO,HSR,NSFV,NSFA,IFA,NBSYS,IS,
-     &                  DT,NVI,VIND,YD,DY,ITMAX,TOLER,MATERF,EXPBP,TAUS,
+            CALL LCMMLC(NMAT,NBCOMM,CPMONO,NFS,NSG,HSR,NSFV,NSFA,IFA,
+     &      NBSYS,IS,DT,NVI,VIND,YD,DY,ITMAX,TOLER,MATERF,EXPBP,TAUS,
      &                  DALPHA,DGAMMA,DP,CRIT,SGNS,RP,IRET)
 
             IF (IRET.GT.0) THEN
                GOTO 9999
             ENDIF
 
-            IF ((NUECOU.EQ.4).OR.(NUECOU.EQ.5)) THEN
+            IF ((NUECOU.EQ.4).OR.(NUECOU.EQ.5).OR.(NUECOU.EQ.6)) THEN
 C           POUR LES LOIS DD_* ALPHA représente la variable principale
                R(NSFA+IS)=-(DY(NSFA+IS)-DALPHA)
             ELSE

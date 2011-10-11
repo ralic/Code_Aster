@@ -3,9 +3,9 @@
      &     SUPND,NNZ,QSIZE,LLIST,SUIV,P,Q,
      &     INVP,PERM,LGIND,DDLMOY,NBSN,OPTNUM,LGADJN,
      &     NRL,DEB,VOIS,SUIT,IER,NEC,PRNO,DEEQ,
-     &     NOEUD,DDL,INVPND,PERMND,SPNDND,XADJD)
+     &     NOEUD,DDL,INVPND,PERMND,SPNDND,XADJD,MATGEN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     TOLE CRP_21 CRS_602
+C     TOLE CRP_21 CRS_602 CRS_505
       IMPLICIT NONE
 
       INTEGER NEQ,DIAG(0:NEQ),LGIND,LGADJN
@@ -43,11 +43,11 @@ C     VARIABLES LOCALES
       CHARACTER*256 TXT256(4)
       CHARACTER*128 REP,LOGIEL
       INTEGER NEC,PRNO(*),DEEQ(*),INO,NBCMP,ULNUME,IULM1,IULM2
-      LOGICAL LFETI
+      LOGICAL LFETI,MATGEN,LIAISO
 C--------------------------------------------------------------
 C
 C     VERSION RENUMEROTATION PAR NOEUD
-      INTEGER NBND,ND,NBND1, DDLMOY
+      INTEGER NBND,ND,NBND1, DDLMOY,RENUM
 C     PARAMETER(MAXND=300, MAXDDL=300)
 C     INTEGER NOEUD(1:MAXDDL), DDL(1:MAXND), INVPND(1:MAXND)
 C     INTEGER PERMND(1:MAXND), SPNDND(1:MAXND)
@@ -94,33 +94,67 @@ C     1) ON CALCULE   NOEUD ET DDL A PARTIR DE PRNO ET DEEQ
 C     NOEUD(1:NEQ) SURJECTION VERS (1:NBND) OU NBND EST LE NOMBRE
 C     DE NOEUDS AU SENS DE LA DISCRETISATION
 C     LA FONCTION INVERSE EST DDL(1:NBND)
-      DO 1 I=1,NEQ
-         NOEUD(I) = 0
- 1    CONTINUE
-      NBND=0
-      I = 1
-      DDL(I)= 1
- 101  CONTINUE
-C      DO WHILE(I.LE.NEQ)
-       IF(I.LE.NEQ) THEN
-         IF(DEEQ(2*I).GT.0) THEN
-            INO = DEEQ(2*I-1)
-            NBND = NBND +1
-            NBCMP =  PRNO( (INO-1)*(2+NEC) + 2)
-            DO 2 J=I, I+NBCMP-1
-               NOEUD(J)= NBND
- 2          CONTINUE
-            DDL(NBND+1) = DDL(NBND) + NBCMP
-            PAS = NBCMP
-         ELSE
-            PAS = 1
+C     EN CAS DE MATRICE GENERALISEE PRNO ET DEEQ N ONT PAS LE MEME SENS
+C     ON NE LES UTILISE PAS MAIS ON SAIT QUE NOEUDS ET DDL SONT 
+C     IDENTIQUES, LES TABLEAUX DDL ET NOEUD SONT ALORS IMMEDIATS
+C     SI ON N'AVAIT PLUS UN DDL PAR NOEUD EN MATRICE GENERALISEE
+C     CECI NE SERAIT PLUS VALABLE
+      RENUM=OPTNUM
+      IF(MATGEN) THEN
+         NBND=NEQ
+C        DANS LE CAS MATGEN, ON ASSIMILE LES NOEUDS AUX DDL
+C        ON SUPPOSE AUSSI QUE NEQ == N2 IE PAS DE LAGRANGE
+C        SI ON AVAIT N2< NEQ ( CERTAINS DELG NON NULS)
+C        IL FAUDRAIT P.E DEPLACER LA BOUCLE 3 APRES LA 350
+C        AVEC N2 EN PLACE DE NEQ 
+         DO 3 I=1,NEQ+1
+            DDL(I)=I
+            NOEUD(I)=I
+ 3       CONTINUE
+C     RECHERCHE DE PRESENCE DE LIAISON NON DETECTEE PAR PREML0(NRL=0)
+C     (NON SIGNALEE PAR DES VALEURS DE DELG NEGATIVES)
+         LIAISO=.FALSE.
+         DO 4 I=1,NEQ
+            IF(DEEQ(2*I).LT.0) THEN
+               LIAISO=.TRUE.
+            ENDIF
+ 4       CONTINUE
+         IF(LIAISO) THEN
+C          EN CAS DE LIAISON DANS UNE MATRICE GENERALISEE
+C          LES DDL SONT CORRECTEMENT ORDONNES A PRIORI
+C          ON NE FAIT PAS DE RENUMEROTATION
+            CALL U2MESS('I','ALGELINE3_35')
+            RENUM=3
          ENDIF
-         I = I+PAS
-         GOTO 101
+      ELSE
+         DO 1 I=1,NEQ
+            NOEUD(I) = 0
+ 1       CONTINUE
+         NBND=0
+         I = 1
+         DDL(I)= 1
+ 101     CONTINUE
+C     DO WHILE(I.LE.NEQ)
+         IF(I.LE.NEQ) THEN
+            IF(DEEQ(2*I).GT.0) THEN
+               INO = DEEQ(2*I-1)
+               NBND = NBND +1
+               NBCMP =  PRNO( (INO-1)*(2+NEC) + 2)
+               DO 2 J=I, I+NBCMP-1
+                  NOEUD(J)= NBND
+ 2             CONTINUE
+               DDL(NBND+1) = DDL(NBND) + NBCMP
+               PAS = NBCMP
+            ELSE
+               PAS = 1
+            ENDIF
+            I = I+PAS
+            GOTO 101
+         ENDIF
       ENDIF
       DDLMOY = ( DDL(NBND+1) - 1 )/NBND
 C--------------------------------------------------------------------
-C     2) CALCUL DE (ADJNCY, XADJ) EN DDL DANS LA NUMEROTATION DE 1 à N2
+C     2) CALCUL DE (ADJNCY, XADJ) EN DDL DANS LA NUMEROTATION DE 1 À N2
 C     COMME DANS LA VERSION INITIALE
 C     INITIALISATION DE NNZ : NBRE DE TERMES A AJOUTER
 C     POUR CHAQUE LIGNE
@@ -216,7 +250,7 @@ C-----------------------------------------------------------
       NBND1 = NBND + 1
       LIBRE = XADJD(NBND1)
       NADJ = LIBRE - 1
-      IF(OPTNUM.EQ.0) THEN
+      IF(RENUM.EQ.0) THEN
 C----------------------------------MINIMUM DEGRE : GENMMD
          IDELTA = 0
          MAXINT = 2*NBND
@@ -224,7 +258,7 @@ C----------------------------------MINIMUM DEGRE : GENMMD
          CALL GENMMD(NBND,NBND1,NADJ,XADJD,ADJNCY,MAXINT,IDELTA,INVPND,
      &        PERMND,NBSN,SPNDND,ADRESS,PARENT,LGIND,FCTNZS,NBOPS,NNZ,
      &        QSIZE,LLIST,SUIV)
-      ELSE IF(OPTNUM.EQ.1) THEN
+      ELSE IF(RENUM.EQ.1) THEN
 C----------------------------------MINIMUM DEGRE : APPROXIMATE MIN DEG
          IOVFLO = ISMAEM()
          DO 250 I=1,N2
@@ -235,7 +269,7 @@ C----------------------------------MINIMUM DEGRE : APPROXIMATE MIN DEG
          CALL AMDAPT(NEQ,NBND,NBSN,XADJD,SUIV,INVPND,
      &        PARENT,SPNDND,ADRESS,LGIND,FCTNZS,NBOPS,
      &        LLIST,QSIZE)
-      ELSE IF(OPTNUM.EQ.2) THEN
+      ELSE IF(RENUM.EQ.2) THEN
 C----------------------------------METIS 4 : METHODE DE BISSECTION
          IULM1 = ULNUME ()
          IF ( IULM1 .EQ. -1 ) THEN
@@ -285,6 +319,21 @@ C     TRAITEMENT D'ERREUR
 C     FERMETURE DU FICHIER
          CALL ULOPEN (-IULM2,' ',' ',' ',' ')
 C     CLOSE(UNIT=85)
+      ELSE IF(RENUM.EQ.3) THEN
+C-----------------MATRICE GENERALISEE PAS DE RENUMEROTATION
+C     ON L'EMULE EN CREANT UN SEUL SUPER NOEUD 
+
+         NBSN=1
+         DO 399 I=1,NBND
+            INVPND(I)=I
+            PERMND(I)=I
+ 399     CONTINUE
+         PARENT(NBSN)=0
+         SPNDND(1)=1
+         SPNDND(NBSN+1)=NBND+1
+         LGIND=10
+         NBOPS=0.D0
+         FCTNZS=NBND*(NBND+1)/2
       ENDIF
 C****************************************************************
 C****************************************************************
@@ -335,7 +384,7 @@ C     *  ' + TEMPS CPU SYSTEME ',TEMPS(6)
          WRITE(IFM,*)'   --- NOMBRE DE NOEUDS ',NBND
          WRITE(IFM,*)'   --- LONGUEUR DE LA MATRICE INITIALE ',DIAG(NEQ)
          WRITE(IFM,*)'   --- NOMBRE DE SUPERNOEUDS ',NBSN
-         IF(OPTNUM.EQ.2) THEN
+         IF(RENUM.EQ.2) THEN
             WRITE(IFM,*)'   --- NOMBRE D''OP. FLOTTANTES ',NBOPS
          ENDIF
 

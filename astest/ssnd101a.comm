@@ -1,4 +1,4 @@
-# MODIF  DATE 06/09/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE DISCRETS AVEC COMPORTEMENT VISQUEUX 3D : T ET TR SUR NOEUD ET SEG2
 # ssnd101a.para = tps_job 200 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -512,6 +512,14 @@ TEST_RESU(RESU=(_F(RESULTAT=D_N_L1,
                    PRECISION=1.E-5,
                    VALE=4.91083E-02,
                    REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=D_N_L1,
+                   NOEUD='N7',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP='DX',
+                   INST=1,
+                   PRECISION=(6.E-3,1.E-5),
+                   VALE=4.8853406E-02,
+                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=D_N_L2,
                    NOEUD='N7',
                    NOM_CHAM = 'DEPL',
@@ -519,6 +527,14 @@ TEST_RESU(RESU=(_F(RESULTAT=D_N_L1,
                    INST=1,
                    PRECISION=1.E-5,
                    VALE=4.88534E-02,
-                   REFERENCE='NON_REGRESSION',),),);
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=D_N_L2,
+                   NOEUD='N7',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP='DX',
+                   INST=1,
+                   PRECISION=1.E-5,
+                   VALE=4.8853406E-02,
+                   REFERENCE='ANALYTIQUE',),),);
 
 FIN()

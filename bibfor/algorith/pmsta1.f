@@ -1,7 +1,8 @@
-      SUBROUTINE PMSTA1(SIGM,SIGP,DEPS,VIM,VIP,NBVARI,NBVITA,
-     &                  NBPAR,NOMPAR,TABINC,VR,IGRAD)
+      SUBROUTINE PMSTA1(SIGM,SIGP,DEPS,VIM,VIP,NBVARI,NBVITA,IFORTA,
+     &                  NBPAR,NOMPAR,VR,IGRAD,TYPPAR,NOMVI,
+     &                  SDDISC, LICCVG,ITEMAX,CONVER,ACTITE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,14 +24,42 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT
 C-----------------------------------------------------------------------
-      INTEGER      NBPAR,I,NBVARI,IGRAD,NCMP,NBVITA
-      CHARACTER*8  K8B
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      NBPAR,I,NBVARI,IGRAD,NCMP,NBVITA,IFORTA,LICCVG(5)
+      INTEGER      ACTITE,JVARI
+      LOGICAL      ITEMAX,CONVER
+      CHARACTER*4  NOMEPS(6),NOMSIG(6),NOMGRD(9)
+      CHARACTER*8  K8B,TYPPAR(*),NOMVI(*),VK8(2)
       CHARACTER*16 NOMPAR(*)
-      CHARACTER*19 TABINC
+      CHARACTER*19 TABINC,SDDISC
       COMPLEX*16 CBID
       REAL*8 DEPS(9),SIGM(6),SIGP(6),VIM(*),VIP(*),VR(*),RAC2,DSIG(6)
-      REAL*8 DEPST(9)
-
+      REAL*8 DEPST(9),EQUI(17)
+      DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
+      DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
+      DATA NOMGRD/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
+C-----------------------------------------------------------------------
+      
+      CALL JEMARQ()
+      
       RAC2=SQRT(2.D0)
       IF (IGRAD.NE.0) THEN
          NCMP=9
@@ -38,24 +67,91 @@ C-----------------------------------------------------------------------
          NCMP=6
       ENDIF
       
+C     CALCUL DES INCREMENTS POUR NMEVDR
+
       CALL DAXPY(NCMP,1.D0,DEPS,1,DEPST,1)
       IF (IGRAD.EQ.0) CALL DSCAL(3,1.D0/RAC2,DEPST(4),1)
       
       CALL DCOPY(6,SIGP,1,DSIG,1)
       CALL DAXPY(6,-1.D0,SIGM,1,DSIG,1)
       CALL DSCAL(3,1.D0/RAC2,DSIG,1)
+      CALL FGEQUI (DSIG, 'SIGM_DIR', 3, EQUI)
 
-C     a ce niveau, VR contient l'accroissement de variables internes
-      CALL DCOPY(NBVITA,VIP,1,VR(1+NCMP+6+3),1)
-      CALL DAXPY(NBVITA,-1.D0,VIM,1,VR(1+NCMP+6+3),1)
 
-C     STOCKAGE DES INCREMENTS POUR NMEVDR
+      IF (IFORTA.EQ.0) THEN
+      
+         TABINC='&&OP0033.TABINC'
+         CALL DETRSD('TABLE',TABINC)
+         CALL TBCRSD(TABINC,'V')
+         CALL TBAJPA(TABINC,NBPAR,NOMPAR,TYPPAR)
+         
+C        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
+C        ATTENTION, VR EST LIMITE A  9999 VALEURS
+         CALL DCOPY(NBVITA,VIP,1,VR(1+NCMP+6+3),1)
+         CALL DAXPY(NBVITA,-1.D0,VIM,1,VR(1+NCMP+6+3),1)
 
-         CALL DCOPY(NCMP,DEPST,1,VR(2),1)
- 
+         CALL DCOPY(NCMP,DEPST,1,VR(2),1) 
          CALL DCOPY(6,DSIG,1,VR(NCMP+2),1)
+         VR(NCMP+8)=EQUI(16)
+         VR(NCMP+9)=EQUI(1) 
 
-         CALL TBAJLI(TABINC,NBPAR,NOMPAR,I,VR,CBID,K8B,0)
+         CALL TBAJLI(TABINC,NBPAR,NOMPAR,0,VR,CBID,K8B,0)
+ 
+      ELSE
+      
+         TABINC='&&OPB033.TABINC'
+         CALL DETRSD('TABLE',TABINC)
+         CALL TBCRSD(TABINC,'V')
+         CALL TBAJPA(TABINC,NBPAR,NOMPAR,TYPPAR)
+         
+         CALL WKVECT('&&OP0033.VARI','V V R8',NBVITA,JVARI)
+            
+C        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
+         CALL DCOPY(NBVITA,VIP,1,ZR(JVARI),1)
+         CALL DAXPY(NBVITA,-1.D0,VIM,1,ZR(JVARI),1)
 
+         VR(1)=0.D0
+         VK8(1)='EPSI'
+         DO 551 I=1,NCMP
+            VR(2)=DEPST(I)
+            IF (IGRAD.EQ.0) THEN
+               VK8(2)=NOMEPS(I)
+            ELSE
+               VK8(2)=NOMGRD(I)
+            ENDIF
+            CALL TBAJLI(TABINC,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+            
+ 551     CONTINUE
+         VK8(1)='SIGM'
+         DO 552 I=1,6
+            VR(2)=DSIG(I)
+            VK8(2)=NOMSIG(I)
+            CALL TBAJLI(TABINC,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+            
+ 552     CONTINUE
+         VK8(1)='SIEQ'
+         VR(2)=EQUI(1)
+         VK8(2)='VMIS'
+         CALL TBAJLI(TABINC,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+         
+         VR(2)=EQUI(16)
+         VK8(2)='TRACE'
+         CALL TBAJLI(TABINC,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+         
+         VK8(1)='VARI'
+         DO 553 I=1,NBVITA
+            VR(2)=ZR(JVARI-1+I)
+            VK8(2)=NOMVI(I)
+            CALL TBAJLI(TABINC,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
+ 553     CONTINUE
+         
+      ENDIF
+      
+C     VERIFICATION DES EVENT-DRIVEN
 
+      CALL PMEVDR(SDDISC,TABINC,LICCVG,ITEMAX,CONVER,ACTITE)
+      
+      CALL JEDETC('V','&&OP0033.VARI',1)
+      
+      CALL JEDEMA()
       END

@@ -4,7 +4,7 @@
       CHARACTER*6         TYPFON
       INTEGER             NBNOFF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,14 +85,14 @@ C     ------------------------------------------------------------------
       CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IDCOOR )
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOE,K8B,IRET)
       NOMNOE = NOMA//'.NOMNOE'
-      FONNOE = RESU//'.FOND      .NOEU'
+      FONNOE = RESU//'.FOND.NOEU'
       CALL JEEXIN(FONNOE,IRLEV)
       IF (IRLEV.NE.0) THEN        
         CALL JEVEUO ( FONNOE, 'L', JNOFO )
       ELSE
-        FONNOE =RESU//'.FOND_INF  .NOEU'
+        FONNOE =RESU//'.FOND_INF.NOEU'
         CALL JEVEUO ( FONNOE, 'L', JNOFO )
-        FONNOE =RESU//'.FOND_SUP  .NOEU'
+        FONNOE =RESU//'.FOND_SUP.NOEU'
         CALL JEVEUO ( FONNOE, 'L', JNOFOS )
       ENDIF
 
@@ -100,11 +100,11 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                  VECTEUR RESULTAT
 C     ------------------------------------------------------------------
-      CALL WKVECT(RESU//'.SUPNORM   .NOEU','G V K8',NBNOFF*20,INOLS)
+      CALL WKVECT(RESU//'.SUPNORM.NOEU','G V K8',NBNOFF*20,INOLS)
 
-      CALL JEEXIN(RESU//'.LEVREINF  .MAIL',ISYM)
+      CALL JEEXIN(RESU//'.LEVREINF.MAIL',ISYM)
       IF(ISYM.NE.0) THEN
-        CALL WKVECT(RESU//'.INFNORM   .NOEU','G V K8',NBNOFF*20,INOLI)
+        CALL WKVECT(RESU//'.INFNORM.NOEU','G V K8',NBNOFF*20,INOLI)
       ENDIF
 
 C     ------------------------------------------------------------------
@@ -145,7 +145,7 @@ C                           IDENTIQUES
 C     ------------------------------------------------------------------
 C         GROUP_MA LEVRE_SUP --> GROUP_NO LEVRE_SUP
 C     ------------------------------------------------------------------
-      MSUP = RESU//'.LEVRESUP  .MAIL'
+      MSUP = RESU//'.LEVRESUP.MAIL'
       CALL JEVEUO ( MSUP, 'L', JSUP )
       CALL JELIRA ( MSUP, 'LONMAX', NBMA, K8B )
 
@@ -175,7 +175,7 @@ C     ------------------------------------------------------------------
 C         GROUP_MA LEVRE_INF --> GROUP_NO LEVRE_INF
 C     ------------------------------------------------------------------
       IF(ISYM.NE.0) THEN
-        MINF = RESU//'.LEVREINF  .MAIL'
+        MINF = RESU//'.LEVREINF.MAIL'
         CALL JEVEUO ( MINF, 'L',JINF )
         CALL JELIRA ( MINF, 'LONMAX', NBMA, K8B )
 

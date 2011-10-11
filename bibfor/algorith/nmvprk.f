@@ -1,11 +1,11 @@
-         SUBROUTINE NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     &                       TIMED, TIMEF,
-     &                       EPSDT, DEPST, SIGD,  VIND,  OPT,
-     &                       ANGMAS, SIGF,  VINF,  DSDE)
-        IMPLICIT NONE
+      SUBROUTINE NMVPRK(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
+     &                  TIMED, TIMEF,EPSDT, DEPST,SIGD,VIND, OPT,ANGMAS,
+     &                  SIGF,VINF,DSDE)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,137 +23,107 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J.M.PROIX
-C       ================================================================
-C       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
-C       PAR UNE METHODE DE RUNGE KUTTA
-C               AVEC    .N VARIABLES INTERNES
+C     ================================================================
+C     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
+C     PAR UNE METHODE DE RUNGE KUTTA
+C             AVEC    .N VARIABLES INTERNES
 C
-C       INTEGRATION DES CONTRAINTES           = SIG(T+DT)
-C       INTEGRATION DES VARIABLES INTERNES    = VIN(T+DT)
+C     INTEGRATION DES CONTRAINTES           = SIG(T+DT)
+C     INTEGRATION DES VARIABLES INTERNES    = VIN(T+DT)
 C
-C       CETTE METHODE NE FOURNIT PAS DE MATRICE TANGENTE POUR LA
-C       RESOLUTION GLOBALE.
-C       ON FOURNIT DONC LA MATRICE DSDE OBTENUE EN ELASTICITE
-C       ================================================================
-C     ---------------------------ATTENTION----------------------------
-C     IMPLANTATION D UNE LOI DE COMPORTEMENT VISCOPLASTIQUE COUPLEE
-C     A DE L ENDOMMAGEMENT ISOTROPE (MODELE DE CHABOCHE) VENDOCHAB
-C     ---------------------------ATTENTION----------------------------
+C     CETTE METHODE NE FOURNIT PAS DE MATRICE TANGENTE POUR LA
+C     RESOLUTION GLOBALE.
+C     ON FOURNIT DONC LA MATRICE DSDE OBTENUE EN ELASTICITE
+C     ================================================================
 C
-C       ARGUMENTS
+C     ARGUMENTS
 C
-C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
-C               KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
-C               NDIM   DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
-C               TYPMOD TYPE DE MODELISATION
-C               IMAT   ADRESSE DU MATERIAU CODE
-C               COMP   COMPORTEMENT DE L ELEMENT
-C                      COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
-C                      COMP(2) = NB DE VARIABLES INTERNES
-C                      COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
-C               OPT    OPTION DE CALCUL A FAIRE
-C                              'RIGI_MECA_TANG'> DSDE(T)
-C               CRIT   CRITERES  LOCAUX
-C                      CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
-C                                (ITER_INTE_MAXI == ITECREL)
-C                      CRIT(3) = CRITERE DE PRECISION POUR L INTEGRATION
-C                                PAR LA METHODE DE RUNGE KUTTA
-C                      CRIT(6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE
-C                                COMPORTEMENT (ALGO_INTE)
-C               TIMED   INSTANT T
-C               TIMEF   INSTANT T+DT
-C               EPSDT   DEFORMATION TOTALE A T
-C               DEPST   INCREMENT DE DEFORMATION TOTALE
-C               SIGD    CONTRAINTE A T
-C               VIND    VARIABLES INTERNES A T    + INDICATEUR ETAT T
-C      ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-C       OUT     SIGF    CONTRAINTE A T+DT
-C               VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
-C               DSDE    MATRICE DE COMPORTEMENT TANGENT ELASTIQUE
-C       ----------------------------------------------------------------
-C       INFO    MATERD        (*,1) = CARACTERISTIQUES ELASTIQUES A T
-C                             (*,2) = CARACTERISTIQUES PLASTIQUES A T
-C               MATERF        (*,1) = CARACTERISTIQUES ELASTIQUES A T+DT
-C                             (*,2) = CARACTERISTIQUES PLASTIQUES A T+DT
-C               MATCST        'OUI' SI MATERIAU CST ENTRE T ET T+DT
-C                             'NAP' SI LE PARAMETRE K_D EST UNE NAPPE
-C                             'NON' SINON
-C               NDT            NB DE COMPOSANTES TOTALES DES TENSEURS
-C                                      = 6  3D
-C                                      = 4  AXIS  C_PLAN  D_PLAN
-C               NDI            NB DE COMPOSANTES DIRECTES DES TENSEURS
-C               NVI            NB DE VARIABLES INTERNES
-C               NR             NB EQUATIONS SYSTEME INTEGRE A RESOUDRE
-C       ----------------------------------------------------------------
-C       ROUTINE LC....UTILITAIRES POUR INTEGRATION LOI DE COMPORTEMENT
-C       ----------------------------------------------------------------
-C       ORDRE DES TENSEURS      3D      XX YY ZZ XY XZ YZ
-C                               DP      XX YY ZZ XY
-C                               AX      RR ZZ TT RZ
-C       ----------------------------------------------------------------
-C       ATTENTION
-C       SI OPT = 'RIGI_MECA_TANG' NE PAS TOUCHER AUX VARIABLES SIGF,VINF
-C       QUI N ONT PAS DE PLACE MEMOIRE ALLOUEE
+C     IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C           KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
+C           NDIM   DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
+C           TYPMOD TYPE DE MODELISATION
+C           IMAT   ADRESSE DU MATERIAU CODE
+C           COMP   COMPORTEMENT DE L ELEMENT
+C                  COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
+C                  COMP(2) = NB DE VARIABLES INTERNES
+C                  COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
+C           OPT    OPTION DE CALCUL A FAIRE
+C                          'RIGI_MECA_TANG'> DSDE(T)
+C           CRIT   CRITERES  LOCAUX
+C                  CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
+C                            (ITER_INTE_MAXI == ITECREL)
+C                  CRIT(3) = CRITERE DE PRECISION POUR L INTEGRATION
+C                            PAR LA METHODE DE RUNGE KUTTA
+C                  CRIT(6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE
+C                            COMPORTEMENT (ALGO_INTE)
+C           TIMED   INSTANT T
+C           TIMEF   INSTANT T+DT
+C           EPSDT   DEFORMATION TOTALE A T
+C           DEPST   INCREMENT DE DEFORMATION TOTALE
+C           SIGD    CONTRAINTE A T
+C           VIND    VARIABLES INTERNES A T    + INDICATEUR ETAT T
+C           ANGMAS  3 ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C     OUT   SIGF    CONTRAINTE A T+DT
+C           VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
+C           DSDE    MATRICE DE COMPORTEMENT TANGENT ELASTIQUE
+C     ----------------------------------------------------------------
+C     INFO  MATERD        (*,1) = CARACTERISTIQUES ELASTIQUES A T
+C                         (*,2) = CARACTERISTIQUES PLASTIQUES A T
+C           MATERF        (*,1) = CARACTERISTIQUES ELASTIQUES A T+DT
+C                         (*,2) = CARACTERISTIQUES PLASTIQUES A T+DT
+C           MATCST        'OUI' SI MATERIAU CST ENTRE T ET T+DT
+C                         'NAP' SI LE PARAMETRE K_D EST UNE NAPPE
+C                         'NON' SINON
+C           NDT            NB DE COMPOSANTES TOTALES DES TENSEURS
+C                                  = 6  3D
+C                                  = 4  AXIS  C_PLAN  D_PLAN
+C           NDI            NB DE COMPOSANTES DIRECTES DES TENSEURS
+C           NVI            NB DE VARIABLES INTERNES
+C           NR             NB EQUATIONS SYSTEME INTEGRE A RESOUDRE
+C     ----------------------------------------------------------------
+C     ROUTINE LC....UTILITAIRES POUR INTEGRATION LOI DE COMPORTEMENT
+C     ----------------------------------------------------------------
+C     ORDRE DES TENSEURS  3D XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
+C                         DP XX YY ZZ SQRT(2)*XY
+C                         AX RR ZZ TT SQRT(2)*RZ
+C     ----------------------------------------------------------------
+C     ATTENTION
+C     SI OPT = 'RIGI_MECA_TANG' NE PAS TOUCHER AUX VARIABLES SIGF,VINF
+C     QUI N ONT PAS DE PLACE MEMOIRE ALLOUEE
 C
-C       SIG EPS DEPS  ONT DEJA LEURS COMPOSANTES DE CISAILLEMENT
-C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
-C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
+C     SIG EPS DEPS  ONT DEJA LEURS COMPOSANTES DE CISAILLEMENT
+C     MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
+C     PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
-C       ----------------------------------------------------------------
-C TOLE CRP_21
-        INTEGER         IMAT,   NDIM,   NDT, NDI, NR, NVI, KPG, KSP
-C
-        INTEGER         I, J, ICP, NBPHAS
-C
-        INTEGER         ITMAX
-        INTEGER         NMAT,   IOPTIO, IDNR
-        REAL*8          TOLER,  YMFS
-        REAL*8          CRIT(*)
-        REAL*8          VIND(*),     VINF(*)
-        REAL*8          TIMED,       TIMEF
-        REAL*8          EPSDT(6),    DEPST(6)
-        CHARACTER*(*)   FAMI
-C
-        REAL*8            ENDOC, MAXDOM
-C
-        REAL*8          SIGD(6),     SIGF(6)
-C
-        REAL*8          DSDE(6,6), ANGMAS(*)
-C
-        PARAMETER     ( MAXDOM = 0.99D0 )
-C
-C       POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
-        PARAMETER       ( NMAT = 6000     )
-C
-        REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
-C
-        CHARACTER*8           MOD,      TYPMA,  TYPMOD(*)
-        CHARACTER*16    COMP(*),     OPT,      LOI
-C
-        CHARACTER*3     MATCST
-C
-        CHARACTER*11    METING
-C
-        REAL*8          COTHE(NMAT),DCOTHE(NMAT),PGL(3,3)
-        REAL*8          COEFF(NMAT),DCOEFF(NMAT),COEL(NMAT)
-        REAL*8          SIGI(6),EPSD(6),DETOT(6)
-        REAL*8          NU,DTIME,E,ALPHA,X
-        REAL*8          RBID
+C     ----------------------------------------------------------------
 
+      CHARACTER*(*)   FAMI
+      INTEGER IMAT,NDIM,NDT,NDI,NR,NVI,KPG,KSP,I,J,ICP,NBPHAS,ITMAX
+      INTEGER NMAT,IOPTIO,IDNR,NSG,NFS,NHSR
+C     POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
+      PARAMETER (NMAT =6000)
 C     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
 C        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
 C        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
-      INTEGER       NBCOMM(NMAT,3)
-      INTEGER       NSG,NFS
-      PARAMETER      ( NSG=30)
-      PARAMETER      ( NFS=5)
-      REAL*8        TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
-      CHARACTER*16  CPMONO(5*NMAT+1)
-C
-        COMMON /TDIM/   NDT,    NDI
-        COMMON /OPTI/   IOPTIO, IDNR
-        COMMON /METI/   METING
-C
+      PARAMETER (NSG=30)
+      PARAMETER (NFS=5)
+      PARAMETER (NHSR=5)
+      INTEGER   NBCOMM(NMAT,3),NUMHSR(NMAT)
+      REAL*8 MATERD(NMAT,2),MATERF(NMAT,2),EPSDT(6),DEPST(6),RBID
+      REAL*8 TOLER,YMFS,CRIT(*),VIND(*),VINF(*),TIMED,TIMEF
+      REAL*8 ENDOC,MAXDOM,SIGD(6),SIGF(6),DSDE(6,6),ANGMAS(*)
+      REAL*8 COTHE(NMAT),DCOTHE(NMAT),PGL(3,3),SIGI(6),EPSD(6),DETOT(6)
+      REAL*8 COEFF(NMAT),DCOEFF(NMAT),COEL(NMAT),NU,DTIME,E,ALPHA,X
+      PARAMETER (MAXDOM=0.99D0)
+C     POUR POLYCRISTAL, 5 MATRICE HSR MAXI. POUR MONOCRISTAL, 1 MAXI
+      REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG,NHSR)
+      CHARACTER*3  MATCST
+      CHARACTER*8  MOD,TYPMA,TYPMOD(*)
+      CHARACTER*11 METING
+      CHARACTER*16 CPMONO(5*NMAT+1),COMP(*),OPT,LOI
+      COMMON /TDIM/   NDT,    NDI
+      COMMON /OPTI/   IOPTIO, IDNR
+      COMMON /METI/   METING
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -169,7 +139,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
@@ -189,12 +158,13 @@ C     INITIALISATION DE NBPHAS SI LCMATE NE LE FAIT PAS
       NBCOMM(1,1)=1
 C
 C
-C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
+C --  RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,RBID,RBID,1,
-     &             TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
-     &    ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND,NFS,NSG,TOUTMS)
+      CALL LCMATE(FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,RBID,RBID,1,
+     &            TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
+     &            ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND,NFS,NSG,TOUTMS,
+     &            NHSR,NUMHSR)
 C
       IF (OPT.EQ.'RIGI_MECA_TANG') THEN
           CALL LCINMA(0.D0,DSDE)
@@ -290,7 +260,7 @@ C      POUR POLYCRISTAL
      &              COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
      &              NVI,NMAT,VINF,DTIME,ITMAX,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,ANGMAS,
-     &              SIGI,EPSD,DETOT,X,NFS,NSG,HSR)
+     &              SIGI,EPSD,DETOT,X,NFS,NSG,NHSR,NUMHSR,HSR)
       
       IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +3
 
@@ -314,7 +284,7 @@ C
 
       IF ((LOI(1:8).EQ.'MONOCRIS').OR.(LOI(1:8).EQ.'POLYCRIS')) THEN
          CALL LCDPEQ (VIND, VINF,LOI,NBCOMM,CPMONO,NMAT,NVI,SIGI,
-     &  COTHE,COEFF,HSR)
+     &  COTHE,COEFF,NFS,NSG,HSR)
       ENDIF
 
       IF (LOI(1:9).EQ.'VENDOCHAB') THEN

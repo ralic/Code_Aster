@@ -1,8 +1,8 @@
       SUBROUTINE DBGMPI(ICO)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF DBGMPI DEBUG DATE 26/05/2010 AUTEUR PELLET J.PELLET
+!& MODIF DBGMPI DEBUG  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -25,53 +25,36 @@
 ! exemple d'utilisation :
 !     dans le superviseur (execop.f), on peut verifier le compteur
 !     de commandes.
-!     S'il n'est pas OK, c'est que le mpicm3 du superviseur s'apparie
-!     a un autre MPI_ALL_REDUCE('INTEGER','MPI_SUM'/'MPI_MAX')
+!     S'il n'est pas OK, c'est que les processeurs ne sont plus
+!     synchrones
 !
 ! ARGUMENTS D'APPELS
 !   IN ico   : I8  : compteur entier
 !
-! s'arrete en erreur fatale si ico n'est pas le meme sur tous
+! s'arrete en erreur fatale si ICO n'est pas le meme sur tous
 ! les processeurs.
 !----------------------------------------------------------------------
 ! RESPONSABLE PELLET J.PELLET
 ! CORPS DU PROGRAMME
       IMPLICIT NONE
-C DECLARATION PARAMETRES D'APPELS
+! DECLARATION PARAMETRES D'APPELS
       INTEGER ICO
-
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER*4          ZI4
-      COMMON  / I4VAJE / ZI4(1)
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNUM
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
 #ifdef _USE_MPI
       INCLUDE 'mpif.h'
 
-C DECLARATION VARIABLES LOCALES
-      INTEGER      NBPROC,RANG,LOISEM,ICO2,ICO3
-      INTEGER*4    RANG4,IERMPI,LR8,LINT,NBPRO4,N4,LC8
+! DECLARATION VARIABLES LOCALES
+      INTEGER      RANG,NBPROC,LOISEM,ICOIN,ICOUT
+      INTEGER*4    IERMPI,LR8,LINT,LC8
       LOGICAL      FIRST
-      SAVE         LR8,LINT,FIRST,LC8
+      SAVE         FIRST,LR8,LINT,LC8
       DATA         FIRST /.TRUE./
 
-C ---------------------------------------------------------------------
+! ---------------------------------------------------------------------
 
       IF (FIRST) THEN
+!       -- POUR LA GESTION DES ERREURS :
         CALL MPI_ERRHANDLER_SET(MPI_COMM_WORLD,MPI_ERRORS_RETURN,IERMPI)
-        CALL FETMER(IERMPI)
+        CALL MPIERR(IERMPI)
         IF (LOISEM().EQ.8) THEN
           LINT=MPI_INTEGER8
         ELSE
@@ -82,34 +65,25 @@ C ---------------------------------------------------------------------
         FIRST= .FALSE.
       ENDIF
 
-C     --  FILTRE POUR EVITER DU TRAVAIL SUPPLEMENTAIRE SI NBPROC=1
-      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
-      CALL FETMER(IERMPI)
-      IF (NBPRO4.EQ.1) GOTO 999
+!     --  FILTRE POUR EVITER DU TRAVAIL SUPPLEMENTAIRE SI NBPROC=1
+      CALL MPICM0(RANG  ,NBPROC)
+      IF (NBPROC.EQ.1) GOTO 999
 
+      ICOIN=ICO
 
-      ICO2=ICO
-      N4=1
+!     -- POUR CAPTER LES ALL_REDUCE / MPI_SUM :
+      CALL MPI_ALLREDUCE(ICOIN,ICOUT,1,LINT,MPI_SUM,
+     &                                      MPI_COMM_WORLD,IERMPI)
+      CALL MPIERR(IERMPI)
+      ICOUT=ICOUT/NBPROC
+      CALL ASSERT(ICOUT.EQ.ICOIN)
 
-C     -- POUR CAPTER LES ALL_REDUCE / MPI_SUM :
-      CALL MPI_ALLREDUCE(ICO2,ICO3,N4,LINT,MPI_SUM,
-     &                      MPI_COMM_WORLD,IERMPI)
-      ICO3=ICO3/NBPRO4
-      CALL ASSERT(ICO3.EQ.ICO2)
-      CALL FETMER(IERMPI)
-
-C     -- POUR CAPTER LES ALL_REDUCE / MPI_MAX :
-      CALL MPI_ALLREDUCE(ICO2,ICO3,N4,LINT,MPI_MAX,
-     &                      MPI_COMM_WORLD,IERMPI)
-      CALL ASSERT(ICO3.EQ.ICO2)
-      CALL FETMER(IERMPI)
-
+!     -- POUR CAPTER LES ALL_REDUCE / MPI_MAX :
+      CALL MPI_ALLREDUCE(ICOIN,ICOUT,1,LINT,MPI_MAX,
+     &                                      MPI_COMM_WORLD,IERMPI)
+      CALL MPIERR(IERMPI)
+      CALL ASSERT(ICOUT.EQ.ICOIN)
 
   999 CONTINUE
-
-
-#else
-C======================================================================
-C     -- RIEN A FAIRE !
 #endif
       END

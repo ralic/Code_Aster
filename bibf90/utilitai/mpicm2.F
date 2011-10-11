@@ -1,6 +1,6 @@
       SUBROUTINE MPICM2(OPTMPI,NOMJEV)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF MPICM2 UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPICM2 UTILITAI  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -18,26 +18,28 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ==================================================================
 !-----------------------------------------------------------------------
-!    - FONCTION REALISEE:  SUR-COUCHE MPI
-!      FAIRE UN BCAST/REDUCE/ALL_REDUCE SUR 1 OBJET JEVEUX
+!    - FONCTION REALISEE : SUR-COUCHE MPI
+!
+!      FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN OBJET JEVEUX
 !
 ! ARGUMENTS D'APPELS
-! IN OPTMPI   : IN  : OPTION DE LA ROUTINE
-!    ='BCAST'    DIFFUSION DU VECTEUR NOMJEV DE PROC 0 A TOUS
-!                LES PROCS (BCAST)
-!    ='REDUCE'    REDUCTION DU VECTEUR NOMJEV AU PROC 0 (REDUCE+SUM)
-!    ='MPI_SUM'   REDUCTION+DIFFUSION DE NOMJEV (ALL_REDUCE+SUM)
+! IN OPTMPI :
+!      /'MPI_SUM' == 'ALLREDUCE + SUM'
+!      /'REDUCE'  == 'REDUCE + SUM' : TOUS -> 0
+!      /'BCAST'   == 'BCAST'        : 0    -> TOUS
 !
-! IN    NOMJEV : K24 : NOM JEVEUX DU VECTEUR A COMMUNIQUER
+! IN NOMJEV : K24 : NOM JEVEUX DU VECTEUR A COMMUNIQUER
 !----------------------------------------------------------------------
 ! RESPONSABLE PELLET J.PELLET
 ! CORPS DU PROGRAMME
       IMPLICIT NONE
-C DECLARATION PARAMETRES D'APPELS
-      CHARACTER*(*)      OPTMPI
-      CHARACTER*24 NOMJEV
+! DECLARATION PARAMETRES D'APPELS
+      CHARACTER*(*) OPTMPI
+      CHARACTER*24  NOMJEV
 
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+#ifdef _USE_MPI
+      INCLUDE 'mpif.h'
+! --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER*4          ZI4
       COMMON  / I4VAJE / ZI4(1)
       INTEGER ZI
@@ -52,31 +54,29 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32 ZK32,JEXNUM
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-#ifdef _USE_MPI
-      INCLUDE 'mpif.h'
-
-C DECLARATION VARIABLES LOCALES
-      INTEGER      VALI(2),JNOMJV,IEXI,ILIST,NBPROC,RANG,NBSDP0,IAUX1
-      INTEGER      IBID,NBSD,NBSD1,IAUX4,IPROC2,IDD,NBPRO1,IPROC
-      INTEGER      IPROC1,IAUX2,IAUX3,DECAL,JTRAV,LOISEM,K
+! --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+! DECLARATION VARIABLES LOCALES
+      INTEGER      JNOMJV,IEXI
+      INTEGER      IBID
+      INTEGER      JTRAV,LOISEM,K
       INTEGER      IOBJ,NBOBJ,NLONG
-      INTEGER*4    RANG4,IERMPI,LR8,LINT,NBPRO4,N4,LC8,LINT4
+      INTEGER*4    IERMPI,LINT,LINT4,LR8,LC8,NBPRO4,N4
       CHARACTER*1  TYPSCA,XOUS
       CHARACTER*8  KBID
       CHARACTER*24 NOTRAV
       LOGICAL      FIRST
-      SAVE         LR8,LINT,FIRST,LC8,LINT4
+      SAVE         FIRST,LINT,LINT4,LR8,LC8
       DATA         FIRST /.TRUE./
-
-C ---------------------------------------------------------------------
+! ---------------------------------------------------------------------
       CALL JEMARQ()
-      NOTRAV='&&MPICM2.TRAV'
+! --- COMPTEUR
+      CALL UTTCPU('CPU.CMPI.1','DEBUT',' ')
 
+!     -- INITIALISATIONS :
+!     --------------------
       IF (FIRST) THEN
         CALL MPI_ERRHANDLER_SET(MPI_COMM_WORLD,MPI_ERRORS_RETURN,IERMPI)
-        CALL FETMER(IERMPI)
+        CALL MPIERR(IERMPI)
         IF (LOISEM().EQ.8) THEN
           LINT=MPI_INTEGER8
         ELSE
@@ -87,43 +87,45 @@ C ---------------------------------------------------------------------
         LC8 = MPI_DOUBLE_COMPLEX
         FIRST= .FALSE.
       ENDIF
+!
+      NOTRAV='&&MPICM2.TRAV'
 
-C     --  FILTRE POUR EVITER DU TRAVAIL SUPPLEMENTAIRE SI NBPROC=1
+!     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
-      CALL FETMER(IERMPI)
+      CALL MPIERR(IERMPI)
       IF (NBPRO4.EQ.1) GOTO 999
-
-
-
+!
       IF (OPTMPI.EQ.'BCAST') THEN
-C     ---------------------------------
+!     ---------------------------------
         CALL JELIRA(NOMJEV,'XOUS',IBID,XOUS)
         CALL ASSERT(XOUS.EQ.'S')
         CALL JELIRA(NOMJEV,'TYPE',IBID,TYPSCA)
         CALL JELIRA(NOMJEV,'LONMAX',NLONG,KBID)
-    
+!
         N4=NLONG
         CALL JEVEUO(NOMJEV,'E',JNOMJV)
+!
         IF (TYPSCA.EQ.'R') THEN
           CALL MPI_BCAST(ZR(JNOMJV),N4,LR8,0,MPI_COMM_WORLD,IERMPI)
         ELSE IF(TYPSCA.EQ.'I') THEN
-          CALL MPI_BCAST(ZI(JNOMJV),N4,LINT,0,MPI_COMM_WORLD,IERMPI)      
+          CALL MPI_BCAST(ZI(JNOMJV),N4,LINT,0,MPI_COMM_WORLD,IERMPI)
         ELSE IF(TYPSCA.EQ.'S') THEN
           CALL MPI_BCAST(ZI4(JNOMJV),N4,LINT4,0,MPI_COMM_WORLD,IERMPI)
+        ELSE
+          CALL ASSERT(.FALSE.)
         ENDIF
-        CALL FETMER(IERMPI)
-
-
+        CALL MPIERR(IERMPI)
 
       ELSE IF (OPTMPI.EQ.'REDUCE') THEN
-C     ---------------------------------
+!     ---------------------------------
         CALL JELIRA(NOMJEV,'XOUS',IBID,XOUS)
         CALL ASSERT(XOUS.EQ.'S')
         CALL JELIRA(NOMJEV,'TYPE',IBID,TYPSCA)
         CALL JELIRA(NOMJEV,'LONMAX',NLONG,KBID)
+!
         N4=NLONG
         CALL JEVEUO(NOMJEV,'E',JNOMJV)
-
+!
         IF (TYPSCA.EQ.'R') THEN
           CALL WKVECT(NOTRAV,'V V R',NLONG,JTRAV)
           CALL DCOPY(N4,ZR(JNOMJV),1,ZR(JTRAV),1)
@@ -147,19 +149,17 @@ C     ---------------------------------
             ZI4(JTRAV-1+K)=ZI4(JNOMJV-1+K)
  2        CONTINUE
           CALL MPI_REDUCE(ZI4(JTRAV),ZI4(JNOMJV),N4,LINT4,MPI_SUM,0,
-     &                    MPI_COMM_WORLD,IERMPI)     
+     &                    MPI_COMM_WORLD,IERMPI)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-        CALL FETMER(IERMPI)
+        CALL MPIERR(IERMPI)
         CALL JEDETR(NOTRAV)
 
-
-
       ELSE IF (OPTMPI.EQ.'MPI_SUM') THEN
-C     -----------------------------------
-C       REDUCTION + DIFFUSION DE L'OBJET JEVEURX NOMJEV
-C       REMARQUE : NOMJEV PEUT ETRE UNE COLLECTION
+!     -----------------------------------
+!       REDUCTION + DIFFUSION DE L'OBJET JEVEUX NOMJEV
+!       REMARQUE : NOMJEV PEUT ETRE UNE COLLECTION
         CALL JELIRA(NOMJEV,'TYPE',IBID,TYPSCA)
         CALL JELIRA(NOMJEV,'XOUS',IBID,XOUS)
         IF (XOUS.EQ.'X') THEN
@@ -167,8 +167,8 @@ C       REMARQUE : NOMJEV PEUT ETRE UNE COLLECTION
         ELSE
           NBOBJ=1
         ENDIF
-
-        DO 10, IOBJ=1,NBOBJ
+!
+        DO 10, IOBJ = 1,NBOBJ
           IF (XOUS.EQ.'S') THEN
             CALL JEVEUO(NOMJEV,'E',JNOMJV)
             CALL JELIRA(NOMJEV,'LONMAX',NLONG,KBID)
@@ -178,53 +178,47 @@ C       REMARQUE : NOMJEV PEUT ETRE UNE COLLECTION
             CALL JEVEUO(JEXNUM(NOMJEV,IOBJ),'E',JNOMJV)
             CALL JELIRA(JEXNUM(NOMJEV,IOBJ),'LONMAX',NLONG,KBID)
           ENDIF
-
+!
           N4=NLONG
-
+!
           IF (TYPSCA.EQ.'R') THEN
             CALL WKVECT(NOTRAV,'V V R',NLONG,JTRAV)
             CALL DCOPY(N4,ZR(JNOMJV),1,ZR(JTRAV),1)
             CALL MPI_ALLREDUCE(ZR(JTRAV),ZR(JNOMJV),N4,LR8,MPI_SUM,
-     &                      MPI_COMM_WORLD,IERMPI)
+     &                         MPI_COMM_WORLD,IERMPI)
           ELSEIF (TYPSCA.EQ.'C') THEN
             CALL WKVECT(NOTRAV,'V V C',NLONG,JTRAV)
             CALL ZCOPY(N4,ZC(JNOMJV),1,ZC(JTRAV),1)
             CALL MPI_ALLREDUCE(ZC(JTRAV),ZC(JNOMJV),N4,LC8,MPI_SUM,
-     &                      MPI_COMM_WORLD,IERMPI)
+     &                         MPI_COMM_WORLD,IERMPI)
           ELSE IF (TYPSCA.EQ.'I') THEN
             CALL WKVECT(NOTRAV,'V V I',NLONG,JTRAV)
             DO 3, K=1,N4
               ZI(JTRAV-1+K)=ZI(JNOMJV-1+K)
  3          CONTINUE
             CALL MPI_ALLREDUCE(ZI(JTRAV),ZI(JNOMJV),N4,LINT,MPI_SUM,
-     &                      MPI_COMM_WORLD,IERMPI)
+     &                         MPI_COMM_WORLD,IERMPI)
           ELSE IF (TYPSCA.EQ.'S') THEN
             CALL WKVECT(NOTRAV,'V V S',NLONG,JTRAV)
             DO 4, K=1,N4
               ZI4(JTRAV-1+K)=ZI4(JNOMJV-1+K)
  4          CONTINUE
             CALL MPI_ALLREDUCE(ZI4(JTRAV),ZI4(JNOMJV),N4,LINT4,MPI_SUM,
-     &                      MPI_COMM_WORLD,IERMPI)     
+     &                         MPI_COMM_WORLD,IERMPI)
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
           CALL JEDETR(NOTRAV)
  10     CONTINUE
-        CALL FETMER(IERMPI)
-
-
+        CALL MPIERR(IERMPI)
 
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
 
-
   999 CONTINUE
+! --- COMPTEUR
+      CALL UTTCPU('CPU.CMPI.1','FIN',' ')
       CALL JEDEMA()
-
-
-#else
-C======================================================================
-C     -- RIEN A FAIRE !
 #endif
       END

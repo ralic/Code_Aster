@@ -2,7 +2,7 @@
      &                  LPAOU,BASE,MPIC)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,6 +127,7 @@ C DEB-------------------------------------------------------------------
       BASE2=BASE
       OPTION=OPTIO
       CALL ASSERT(MPIC.EQ.'OUI'.OR.MPIC.EQ.'NON')
+      CALL ASSERT(STOP.EQ.'S'.OR.STOP.EQ.'C')
 
       DBG=.FALSE.
       LFETMO=.FALSE.

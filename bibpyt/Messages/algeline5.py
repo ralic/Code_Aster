@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algeline5 Messages  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,9 +124,7 @@ cata_msg={
   est en dehors de l'intervalle de recherche : %(r2)f
   ,  %(r3)f
 """),
-
 22: _("""
-
 """),
 
 23: _("""
@@ -253,7 +251,6 @@ cata_msg={
  cmp   :  %(k3)s
 
 """),
-
 48: _("""
  incohérence de certains paramètres modaux propres à ARPACK
   numéro d'erreur  %(i1)d
@@ -393,17 +390,6 @@ cata_msg={
     Conseil:
     ========
     Changer de solveur linéaire (mot-clé SOLVEUR), utiliser MULT_FRONT ou MUMPS.
-"""),
-72: _("""
-    Les matrices utilisées ne s'appuient pas sur des données issues d'un maillage.
-    Dans ce cas on doit utiliser, soit le solveur linéaire LDLT, soit celui MUMPS.
-    On a donc changé le paramétrage pour vous et selectionné, suivant la taille du
-    problème, l'un des deux solveurs préconisés.
-    Conseil:
-    ========
-    La prochaine fois, dans une telle situation (NUME_DDL_GENE...), paramétrer
-    explicitement SOLVEUR/METHODE='MUMPS' (problème de taille >100) ou 'LDLT'
-    (problèmes de taille =<100).
 """),
 73: _("""
     On a besoin d'effectuer un calcul de déterminant. Pour l'instant seuls les

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,7 +143,7 @@ DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                               PHAS_DEG=0.0,),
                            _F(VECT_ASSE=bal_Zass,
                               FONC_MULT=FUN,
-                              PHAS_DEG=90.0,),
+                              PHAS_DEG=-90.0,),
                            ),
                               );
 
@@ -188,7 +188,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=PHA_Y_D2,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=PHA_Z_D2,
                         VALE_PARA=FREQ,
-                        VALE_REFE=-83.91,
+                        VALE_REFE=96.09,
                         REFERENCE='AUTRE_ASTER',),);
 
 FIN();

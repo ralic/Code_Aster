@@ -9,7 +9,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,6 +97,7 @@ C VARIABLES IN / OUT
 C ======================================================================
       IMPLICIT NONE
 
+      LOGICAL       YACHAI
       REAL*8        VALCEN(14,6)
       INTEGER       MAXFA
       PARAMETER     (MAXFA=6)
@@ -156,7 +157,8 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
 C ======================================================================
-      CALL KITDEC(YAMEC, YATE, YAP1, YAP2, MECA, THMC, THER, HYDR,
+      CALL KITDEC(KPI,YACHAI,YAMEC, YATE, YAP1, YAP2,
+     &            MECA, THMC, THER, HYDR,
      +            IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1, ADDEP2,
      +            ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +            DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
@@ -168,7 +170,7 @@ C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
 
-      CALL CALCCO(OPTION,PERMAN,MECA,THMC,THER,HYDR,IMATE,
+      CALL CALCCO(OPTION,YACHAI,PERMAN,MECA,THMC,THER,HYDR,IMATE,
      +            NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,
      +            YATE,ADDEME,ADCOME,ADVIHY,
      +            ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,

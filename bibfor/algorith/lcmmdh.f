@@ -1,12 +1,12 @@
-      SUBROUTINE LCMMDH( COEFT,   IFA,  NMAT,NBCOMM,ALPHAP,
-     &                     HSR, NBSYS,    IS,    HS, SOMS1,
-     &                   SOMS2, SOMS3                      )
+      SUBROUTINE LCMMDH( COEFT,IFA,NMAT,NBCOMM,ALPHAP,
+     &                   NFS,NSG,HSR, NBSYS,IS,NUECOU,HS,SOMS1,
+     &                   SOMS2,SOMS3 )
       IMPLICIT NONE
-      INTEGER IFA,NMAT,NBCOMM(NMAT,3),IS,NBSYS
-      REAL*8 COEFT(*),ALPHAP(12),HS,HSR(5,30,30),SOMS1,SOMS2,SOMS3
+      INTEGER IFA,NMAT,NBCOMM(NMAT,3),IS,NBSYS,NFS,NSG
+      REAL*8 COEFT(*),ALPHAP(12),HS,HSR(NSG,NSG),SOMS1,SOMS2,SOMS3
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,79 +38,118 @@ C           SOMS2    :  SOMME(j=forest(s))(SQRT(a_sj) omega_j)
 C           SOMS3    :  SOMME(j=copla(s))(SQRT(a_sj omega_j))
 C     ----------------------------------------------------------------
       REAL*8 A,B,Y,TERMEA,TERMEB,TERMEY,DENOM,CEFF,RMIN,BETA,NUMER
-      REAL*8 ALPHAS,R8MIEM,DCDALS
-      INTEGER IEI,NUMHSR,IU,IV,IFL,IS3,IV3
+      REAL*8 ALPHAS,R8MIEM,DCDALS,UNSURD,GC0,K
+      INTEGER IEI,IU,IV,IFL,IS3,IV3,NUECOU
 C     ----------------------------------------------------------------
+
 
       RMIN=R8MIEM()
       IFL=NBCOMM(IFA,1)
-      A     =COEFT(IFL+3)
-      B     =COEFT(IFL+4)
-      Y     =COEFT(IFL+6)
       IEI=NBCOMM(IFA,3)
-      BETA  =COEFT(IEI+2)
-      NUMHSR=NINT(COEFT(IEI+5))
 
-C     EVOLUTION DE LA DENSITE DE DISLO
-      TERMEA=0.D0
-      DENOM=0.D0
-      NUMER=0.D0
-      DO 50 IU=1,12
-C         PARTIE POSITIVE DE ALPHA
-          IF (ALPHAP(IU).GT.0.D0) THEN
-             DENOM=DENOM+SQRT(HSR(NUMHSR,IS,IU)*ALPHAP(IU))
-          ENDIF
- 50   CONTINUE
-C     SOMME SUR FOREST(S)
-      IF (DENOM.GT.RMIN) THEN
-C        TERME AU NUMERATEUR SUR FOREST(S)
+C     LOI D'ECOULEMENT DD-CFC
+
+      IF (NUECOU.EQ.5) THEN
+         A     =COEFT(IFL+3)
+         B     =COEFT(IFL+4)
+         Y     =COEFT(IFL+6)
+ 
+         BETA  =COEFT(IEI+2)
+C         NUMHSR=NINT(COEFT(IEI+5))
+         
+C        EVOLUTION DE LA DENSITE DE DISLO
          TERMEA=0.D0
-         DO 51 IV=1,12
+         DENOM=0.D0
+         NUMER=0.D0
+         DO 50 IU=1,12
+C            PARTIE POSITIVE DE ALPHA
+             IF (ALPHAP(IU).GT.0.D0) THEN
+                DENOM=DENOM+SQRT(HSR(IS,IU)*ALPHAP(IU))
+             ENDIF
+ 50      CONTINUE
+C        SOMME SUR FOREST(S)
+         IF (DENOM.GT.RMIN) THEN
+C           TERME AU NUMERATEUR SUR FOREST(S)
+            TERMEA=0.D0
+            DO 51 IV=1,12
+               IS3=(IS-1)/3
+               IV3=(IV-1)/3
+               IF (IS3.NE.IV3) THEN
+C                 PARTIE POSITIVE DE ALPHA
+                  IF (ALPHAP(IV).GT.0.D0) THEN
+                     NUMER=NUMER+SQRT(HSR(IS,IV))*ALPHAP(IV)
+                  ENDIF
+               ENDIF
+ 51         CONTINUE
+            TERMEA=A*NUMER/DENOM
+         ENDIF
+
+C        SOMME SUR COPLA(S)
+         TERMEB=0.D0
+         IF (NBSYS.EQ.12) THEN
+         DO 52 IV=1,12
             IS3=(IS-1)/3
             IV3=(IV-1)/3
-            IF (IS3.NE.IV3) THEN
-C              PARTIE POSITIVE DE ALPHA
-               IF (ALPHAP(IV).GT.0.D0) THEN
-                  NUMER=NUMER+SQRT(HSR(NUMHSR,IS,IV))*ALPHAP(IV)
-               ENDIF
+C           PARTIE POSITIVE DE ALPHA
+            IF (IS3.EQ.IV3) THEN
+            IF (ALPHAP(IV).GT.0.D0) THEN
+               TERMEB=TERMEB+SQRT(HSR(IS,IV)*ALPHAP(IV))
             ENDIF
- 51      CONTINUE
-         TERMEA=A*NUMER/DENOM
+            ENDIF
+ 52      CONTINUE
+         ELSEIF (NBSYS.EQ.1) THEN
+            ALPHAS=ALPHAP(IS)
+C           PARTIE POSITIVE DE ALPHA
+            IF (ALPHAS.GT.0.D0) THEN
+               TERMEB=TERMEB+SQRT(HSR(IS,IS)*ALPHAS)
+            ENDIF
+         ELSE
+            CALL ASSERT(.FALSE.)
+         ENDIF
+
+         CALL LCMMDC(COEFT,IFA,NMAT,NBCOMM,ALPHAP,IS,CEFF,DCDALS)
+
+C        TERME -Y*RHO_S
+         IF (ALPHAP(IS).GT.0.D0) THEN
+            TERMEY=-Y*ALPHAP(IS)/BETA
+         ELSE
+            TERMEY=0.D0
+         ENDIF
+         HS=(TERMEA+TERMEB*B*CEFF+TERMEY)
+         SOMS1 = DENOM
+         SOMS2 = NUMER
+         SOMS3 = TERMEB
       ENDIF
 
-C     SOMME SUR COPLA(S)
-      TERMEB=0.D0
-      IF (NBSYS.EQ.12) THEN
-      DO 52 IV=1,12
-         IS3=(IS-1)/3
-         IV3=(IV-1)/3
-C        PARTIE POSITIVE DE ALPHA
-         IF (IS3.EQ.IV3) THEN
-         IF (ALPHAP(IV).GT.0.D0) THEN
-            TERMEB=TERMEB+SQRT(HSR(NUMHSR,IS,IV)*ALPHAP(IV))
-         ENDIF
-         ENDIF
- 52   CONTINUE
-      ELSEIF (NBSYS.EQ.1) THEN
-         ALPHAS=ALPHAP(IS)
-C        PARTIE POSITIVE DE ALPHA
-         IF (ALPHAS.GT.0.D0) THEN
-            TERMEB=TERMEB+SQRT(HSR(NUMHSR,IS,IS)*ALPHAS)
-         ENDIF
-      ELSE
-         CALL ASSERT(.FALSE.)
-      ENDIF
+C     LOI D'ECOULEMENT ECP-CFC
 
-      CALL LCMMDC(COEFT,IFA,NMAT,NBCOMM,ALPHAP,IS,CEFF,DCDALS)
+      IF (NUECOU.EQ.6) THEN
+        BETA  =COEFT(IFL+3)
+        UNSURD=COEFT(IFL+4)
+        GC0   =COEFT(IFL+6)
+        K     =COEFT(IFL+7)
+C
+C        NUMHSR=NINT(COEFT(IEI+2))
+C
+C       EVOLUTION DE LA DENSITE DE DISLO
+C
+        DENOM = 0.D0
+        DO 60 IU = 1,12
+          IF ((IU.NE.IS).AND.(ALPHAP(IU).GT.0.D0)) THEN
+            DENOM = DENOM + ALPHAP(IU)
+          ENDIF
+ 60     CONTINUE
+        DENOM = SQRT(DENOM)
 
-C     TERME -Y*RHO_S
-      IF (ALPHAP(IS).GT.0.D0) THEN
-         TERMEY=-Y*ALPHAP(IS)/BETA
-      ELSE
-         TERMEY=0.D0
+        HS = BETA*UNSURD + DENOM/K
+
+        IF (ALPHAP(IS).GT.0.D0) THEN
+          HS=HS-GC0*ALPHAP(IS)/BETA
+        ENDIF
+
+        SOMS1=0.D0
+        SOMS2=0.D0
+        SOMS3=0.D0
       ENDIF
-      HS=(TERMEA+TERMEB*B*CEFF+TERMEY)
-      SOMS1 = DENOM
-      SOMS2 = NUMER
-      SOMS3 = TERMEB
+        
       END

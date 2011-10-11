@@ -1,4 +1,4 @@
-#@ MODIF impr_diag_campbell_utils Macro  DATE 05/07/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_diag_campbell_utils Macro  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
             jj = num - 1
             Ntot[jj] = sqrt(sum(twi.NTOT.values()))
             if  Ntot[jj] > 0:
-                Nflex[jj] = sqrt(sum(twi.NTOT.values()))/ Ntot[jj]
+                Nflex[jj] = sqrt(sum(twi.NFLEX.values()))/ Ntot[jj]
                 Ntors[jj] = sqrt(sum(twi.NTORS.values()))/ Ntot[jj]
                 Nlong[jj] = sqrt(sum(twi.NLONG.values()))/ Ntot[jj]
 
@@ -371,7 +371,7 @@ def TRI_MODE_MACl(self, MACl,NFREQ_l, NVT_l, IV) :
     DETRUIRE          =self.get_cmd('DETRUIRE')
 
     # base mode 1
-    tmacf = tabMAC2array(MACl, NFREQ_l)
+    tmacl = tabMAC2array(MACl, NFREQ_l)
 
     chaine='MAC Modes en traction/compression'
     aster.affiche('RESULTAT', chaine)
@@ -470,7 +470,7 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
         def fsens(dy_r, dz_r, dy_i, dz_i, dy_m, dz_m):
             # on prendra la somme
             #Sens parcours pour un noeud
-            preces  = dy_r * dz_i - dy_i * dz_r
+            preces  = -(dy_r * dz_i - dy_i * dz_r)
             #Sens de precession dominant dans une mode
             res = 0.
             if preces > 0:
@@ -483,7 +483,7 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
             # on prendra le max
             #Sens de precession associe au plus grand orbite
             modul1 = sqrt(dy_m * dy_m + dz_m * dz_m)
-            preces  = dy_r * dz_i - dy_i * dz_r
+            preces  = -(dy_r * dz_i - dy_i * dz_r)
             res = 0.
             if preces > 0:
                 res = modul1
@@ -524,7 +524,7 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
                                 NOM_CMP=('DX','DY','DZ'),
                                 FORMAT_C='MODULE',
                                 OPERATION='EXTRACTION',),);
-        lpara_extr = lpara + ['NOEUD', 'NUME_MODE']
+        lpara_extr = lpara + ['NOEUD','NUME_ORDRE']
         twR = tabmoR_f.EXTR_TABLE(lpara_extr)
         twR.Renomme('DY', 'DY_R')
         twR.Renomme('DZ', 'DZ_R')
@@ -534,15 +534,12 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
         twM = tabmoN_f.EXTR_TABLE(lpara_extr)
         twM.Renomme('DY', 'DY_M')
         twM.Renomme('DZ', 'DZ_M')
-        tw = merge(twR, twI, ('NOEUD', 'NUME_MODE'), restrict=True)
-        tw = merge(tw, twM, ('NOEUD', 'NUME_MODE'), restrict=True)
+        tw = merge(twR, twI, ('NOEUD','NUME_ORDRE'), restrict=True)
+        tw = merge(tw, twM, ('NOEUD','NUME_ORDRE'), restrict=True)
         lpara_form = ['DY_R', 'DZ_R', 'DY_I', 'DZ_I', 'DY_M', 'DZ_M']
         tw.fromfunction('SENS', fsens, lpara_form)
-        nume_mode = set(tw.NUME_MODE.values())
-        for num in nume_mode:
-            twi = tw.NUME_MODE == num
-            if num > NFREQ_f:
-                break
+        for num in range(NFREQ_f):
+            twi = tw.NUME_ORDRE == num
             jj = num - 1
             if typ_prec == 1:
                 sens1 = sum(twi.SENS.values())

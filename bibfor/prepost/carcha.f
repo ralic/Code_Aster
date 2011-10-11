@@ -5,7 +5,7 @@
       CHARACTER*24 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF PREPOST  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,6 +57,9 @@ C     CHAMP DE GRANDEUR "DEPL_R"
       ELSE IF (NOCH.EQ.'DEPL') THEN
          NOMGD  = 'DEPL_R  '
          TYPCHA = 'NOEU'
+      ELSE IF (NOCH.EQ.'PTOT') THEN
+         NOMGD  = 'DEPL_R  '
+         TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'VITE') THEN
          NOMGD  = 'DEPL_R  '
          TYPCHA = 'NOEU'
@@ -99,6 +102,7 @@ C     CHAMP DE GRANDEUR "SIEF_R"
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
          OPTION = 'SIEQ_NOEU'
+
 C
 C     CHAMP DE GRANDEUR "EPSI_R"
       ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
@@ -142,6 +146,9 @@ C     CHAMP DE GRANDEUR "EPSI_R"
          OPTION = 'EPSP_ELNO'
          PARAM  = 'PDEFOPL'
       ELSE IF (NOCH.EQ.'EPSI_NOEU') THEN
+         NOMGD  = 'EPSI_R'
+         TYPCHA = 'NOEU'
+      ELSE IF (NOCH.EQ.'DIVU') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'EPSA_NOEU') THEN

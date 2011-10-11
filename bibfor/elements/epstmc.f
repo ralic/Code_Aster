@@ -1,7 +1,7 @@
       SUBROUTINE  EPSTMC(FAMI,NDIM, INSTAN, POUM, IGAU,ISGAU,
      &                   XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +53,9 @@ C
            CHARACTER*16 PHENOM
 C
            REAL*8 VALRES(NBRES),VALPAR,BENDOG,KDESSI,ANGL(3)
-           REAL*8 DIRE(3),ORIG(3),P(3,3),EPSTHL(6)
-           REAL*8 VEPST1(6),VEPST2(6),HYDR,SECH,SREF
-           INTEGER I,K,IRET
+           REAL*8 DIRE(3),ORIG(3),P(3,3),EPSTHL(6),TROISK
+           REAL*8 VEPST1(6),VEPST2(6),HYDR,SECH,SREF,PTOT,NU
+           INTEGER I,K,IRET,IREPTO
       CHARACTER*6       EPSA(6)
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
@@ -77,6 +77,7 @@ C
 
       CALL RCVARC(' ','SECH',POUM,FAMI,IGAU,ISGAU,SECH,IRET)
       IF (IRET.EQ.1) SECH=0.D0
+      CALL RCVARC(' ','PTOT',POUM,FAMI,IGAU,ISGAU,PTOT,IREPTO)
       CALL RCVARC(' ','SECH','REF',FAMI,1,1,SREF,IRET)
       IF (IRET.EQ.1) SREF=0.D0
 
@@ -101,9 +102,9 @@ C
 C
                 BENDOG = VALRES(1)
 C
-                EPSTH(1) = - BENDOG*(HYDR)
-                EPSTH(2) = - BENDOG*(HYDR)
-                EPSTH(3) = - BENDOG*(HYDR)
+                EPSTH(1) = - BENDOG*HYDR
+                EPSTH(2) = - BENDOG*HYDR
+                EPSTH(3) = - BENDOG*HYDR
 C
             ELSE
 C
@@ -111,6 +112,48 @@ C
 C
             ENDIF
          ENDIF
+C
+C ---- ---------------------------------------------------------------
+C ---- CALCUL DES DEFORMATIONS DUES A LA PRESSION DE FLUIDE
+C ---  (OPTION CHAR_MECA_PTOT_R)
+C ---- ---------------------------------------------------------------
+      ELSEIF (OPTION(11:14).EQ.'PTOT' ) THEN
+C
+        IF (IREPTO.EQ.0) THEN
+C
+C ----      RECUPERATION DU COEFFICIENT DE BIOT
+C           ----------------------------------------------------------
+
+            PHENOM = 'THM_DIFFU'
+            NOMRES(1) = 'BIOT_COE'
+            NBV = 1
+
+            CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                  VALPAR,NBV,NOMRES,VALRES, ICODRE, 0)
+C
+            IF (ICODRE(1).NE.0) VALRES(1)=0.D0
+
+            BIOT = VALRES(1)
+C
+C ----      RECUPERATION DU COEFFICIENT 3K
+C           ----------------------------------------------------------
+
+            PHENOM = 'ELAS'
+            NOMRES(1)='E'
+            NOMRES(2)='NU'
+            NBV = 2
+
+            CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                  VALPAR,NBV,NOMRES,VALRES, ICODRE, 0)
+            E  = VALRES(1)
+            NU = VALRES(2)
+            TROISK = E/(1.D0-2.D0*NU)
+C
+            EPSTH(1) = BIOT/TROISK*PTOT
+            EPSTH(2) = EPSTH(1)
+            EPSTH(3) = EPSTH(1)
+C
+        ENDIF
 C
 C ---- ---------------------------------------------------------------
 C ---- CALCUL DES DEFORMATIONS DU AU SECHAGE (OPTION CHAR_MECA_SECH_R)

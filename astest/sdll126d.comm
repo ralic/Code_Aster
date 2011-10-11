@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
 # TITRE HARMONIQUE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                    GROUP_MA='DISQUE3',
                                    REPERE='LOCAL',
                                    VALE=(55.134951,1.1716177,0.6023493,0.6023493,0.,0.,0.,0.,0.,0.,),),),
-                      ORIENTATION=_F(GROUP_MA=('DISQUE1','DISQUE2','DISQUE3','PALIER_A','PALIER_E','ROTOR'),
+                      ORIENTATION=_F(GROUP_MA=('DISQUE1','DISQUE2','DISQUE3','PALIER_A','PALIER_E'),
                                       CARA='ANGL_NAUT',
                                       VALE=(0.,-90.,0.,),),);
 
@@ -167,10 +167,10 @@ DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_RIGI=RIGIDITE,
                     MATR_AMOR=AMOGYRO,
                     FREQ=FREQ,
-                    EXCIT=(_F(VECT_ASSE=bal_Yass,
+                    EXCIT=(_F(VECT_ASSE=bal_Xass,
                               FONC_MULT=FUN,
                               PHAS_DEG=0.0,),
-                           _F(VECT_ASSE=bal_Xass,
+                           _F(VECT_ASSE=bal_Yass,
                               FONC_MULT=FUN,
                               PHAS_DEG=-90.0,),
                            ),
@@ -210,12 +210,12 @@ TEST_FONCTION(VALEUR=_F(FONCTION=MOD_X_D2,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=PHA_Y_D2,
                         VALE_PARA=FREQ,
-                        VALE_REFE=-172.08,
+                        VALE_REFE=97.92,
                         REFERENCE='AUTRE_ASTER',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=PHA_X_D2,
                         VALE_PARA=FREQ,
-                        VALE_REFE=96.09,
+                        VALE_REFE=-173.91,
                         REFERENCE='AUTRE_ASTER',),);
 
 FIN();

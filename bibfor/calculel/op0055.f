@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,7 +199,7 @@ C     ---------------------------------------------------------------
 C     EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
 C     ---------------------------------------------------------------
 C
-      CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRETS)
+      CALL JEEXIN(RESU//'.LEVRESUP.MAIL',IRETS)
       IF(IRETS.NE.0) THEN
         CALL  FONNOF ( RESU,NOMA,TYPFON,NBNOFF )
       ENDIF

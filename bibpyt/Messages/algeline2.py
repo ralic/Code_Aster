@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline2 Messages  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,6 +121,13 @@ cata_msg = {
 
 21 : _("""
  L'argument de "BLOC_FIN" doit etre strictement positif
+"""),
+
+
+22 : _("""
+ Assemblage de la matrice initiale le bloc %(i1)s a une longueur   %(i2)s   superieure au plus grand bloc disponible %(i3)s  
+       
+       
 """),
 
 28 : _("""

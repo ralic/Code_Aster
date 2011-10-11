@@ -1,7 +1,7 @@
       SUBROUTINE TE0530 ( OPTION , NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,IPG,IRET
       INTEGER JPVARC,IVRC
       INTEGER      NBVARC
-      PARAMETER  ( NBVARC = 7)
+      PARAMETER  ( NBVARC = 9)
       CHARACTER*8   NOMVRC(NBVARC)
 C
 C ---------------------------------------------------------------------
@@ -57,14 +57,16 @@ C ---------------------------------------------------------------------
       CALL JEVECH('PVARC_R','E',JPVARC)
       RVID=R8VIDE()
 
-C     VARC_R   = R    TEMP HYDR SECH IRRA CORR NEUT1 NEUT2
+C     VARC_R   = R    TEMP HYDR SECH IRRA CORR PTOT DIVU NEUT1 NEUT2
       NOMVRC(1) = 'TEMP'
       NOMVRC(2) = 'HYDR'
       NOMVRC(3) = 'SECH'
       NOMVRC(4) = 'IRRA'
       NOMVRC(5) = 'CORR'
-      NOMVRC(6) = 'NEUT1'
-      NOMVRC(7) = 'NEUT2'
+      NOMVRC(6) = 'PTOT'
+      NOMVRC(7) = 'DIVU'
+      NOMVRC(8) = 'NEUT1'
+      NOMVRC(9) = 'NEUT2'
 
       DO 1, IPG = 1, NPG
 

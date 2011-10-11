@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,13 +55,13 @@ C       ----------------------------------------------------------------
       INTEGER NBCOMM(NMAT,3),IFA,I,J,K,L,IRET,IFL,ITMAX,NUVR,NUVS
       INTEGER NUECOU,IND(3,3),NVI,NFS,NSG
       REAL*8  VIND(*),YF(*),DY(*),DRDY(NR,NR),MATERF(NMAT*2)
-      REAL*8  PGL(3,3),TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG),GAMSNS(3,3)
+      REAL*8  PGL(3,3),TOUTMS(NFS,NSG,6),HSR(NSG,NSG),GAMSNS(3,3)
       REAL*8  TIMED, TIMEF, MSDGDT(6,6),DT,FKOOH(6,6),SIGF(6)
       REAL*8  TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,TAUS,TAUR,MSNS(3,3)
-      REAL*8  Q(3,3),MUS(6),NS(3),MS(3),MUR(6),DTODS(3,3),DFPDGA(3,3,30)
-      REAL*8  DFPDS(3,3,3,3),YD(*),MSNST(3,3,30),FP(3,3)
+      REAL*8  Q(3,3),MUS(6),NS(3),MS(3),MUR(6),DTODS(3,3)
+      REAL*8  DFPDS(3,3,3,3),YD(*),MSNST(3,3,NSG),FP(3,3)
       REAL*8  MRNR(3,3),DF(3,3),FE(3,3)
-      REAL*8  DFPDBS(3,3,30)
+      REAL*8  DFPDBS(3,3,NSG),DFPDGA(3,3,NSG)
       CHARACTER*16 NOMFAM,CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*8     TYPMOD
 C     ----------------------------------------------------------------
@@ -87,7 +87,7 @@ C     Inverse de la matrice de Hooke
 
       IF (COMP(3)(1:5).NE.'PETIT') THEN
          CALL R8INIR ( 81, 0.D0 , DFPDS, 1 )
-         CALL R8INIR ( 3*3*30, 0.D0 , DFPDBS, 1 )
+         CALL R8INIR ( 3*3*NSG, 0.D0 , DFPDBS, 1 )
 C        calcul de DFPDGA : dFp / dGamma_S pour tous les systemes S
          CALL LCMMJG(COMP,NMAT,NBCOMM,CPMONO,HSR,DT,NVI,VIND,YD,DY,
      &               ITMAX,TOLER,MATERF,SIGF,FKOOH,NFS,NSG,TOUTMS,PGL,
@@ -123,8 +123,8 @@ C           DGSDTS=dGamma_S/dTau_S,  DKSDTS=dK_s/dTau_S,
 C           DGRDBS=dGamma_R/dBeta_S, DKRDBS=dK_S/dBeta_R
 
             CALL LCMMJB( TAUS,TAUS,MATERF,CPMONO,IFA,NMAT,NBCOMM,DT,
-     &            NUECOU,NSFV,NSFA,IS,IS,NBSYS,HSR,VIND,DY,ITMAX,TOLER,
-     &                   DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
+     &       NUECOU,NSFV,NSFA,IS,IS,NBSYS,NFS,NSG,HSR,VIND,DY,ITMAX,
+     &            TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
 C           ici  DGRDBS,DKRDBS sont inutiles    
             IF (IRET.GT.0)  GOTO 9999
 
@@ -170,8 +170,8 @@ C------------------------
                NUVR=NSFA+IR
 
                CALL LCMMJB(TAUR,TAUS,MATERF,CPMONO,IFA,NMAT,NBCOMM,DT,
-     &             NUECOU,NSFV,NSFA,IR,IS,NBSYS,HSR,VIND,DY,ITMAX,TOLER,
-     &                     DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
+     &             NUECOU,NSFV,NSFA,IR,IS,NBSYS,NFS,NSG,HSR,VIND,DY,
+     &             ITMAX,TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
 C              ici DGSDTS,DKSDTS sont inutiles    
                IF (IRET.GT.0)  GOTO 9999
                

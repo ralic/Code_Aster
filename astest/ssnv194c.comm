@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ssnv194c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,13 +80,23 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                     );
 
 
+IMPR_CO(CONCEPT=_F(NOM=COMPORP))
+
+
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
-                        ECHEC=_F(EVENEMENT     = 'ERREUR',
+                        ECHEC=(
+                              _F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS      = 10,
-                                 SUBD_NIVEAU   = 10),)
-
+                                 SUBD_NIVEAU   = 10),
+                              _F(EVENEMENT='DELTA_GRANDEUR',
+                                 VALE_REF=2.e-5,
+                                 NOM_CHAM='VARI_ELGA',
+                                 NOM_CMP ='V3',  
+                                 SUBD_NIVEAU=10),
+                         ))
+                         
 SOLNL=SIMU_POINT_MAT(INFO=1,
                    COMP_INCR=_F(
                                 RELATION='POLYCRISTAL',
@@ -187,6 +197,36 @@ TEST_TABLE(TABLE=SOLNL2, FILTRE=(
                                 ),
            NOM_PARA='VALEUR', VALE=2.926067E-03 , REFERENCE='NON_REGRESSION',)
            
+TBEPZZ=CALC_TABLE(TABLE = SOLNL2,
+               ACTION =_F(OPERATION='FILTRE',
+                          NOM_PARA='CMP',CRIT_COMP='EQ',VALE_K='EPZZ'))
+
+IMPR_TABLE(TABLE=TBEPZZ)
+
+FEPZZ=RECU_FONCTION(TABLE=TBEPZZ,
+                   PARA_X='INST',
+                   PARA_Y='VALEUR',
+                   INTERPOL='LIN');
+
+TBSIZZ=CALC_TABLE(TABLE = SOLNL2,
+               ACTION =_F(OPERATION='FILTRE',
+                          NOM_PARA='CMP',CRIT_COMP='EQ',VALE_K='SIZZ'))
+
+IMPR_TABLE(TABLE=TBSIZZ)
+
+FSIZZ=RECU_FONCTION(TABLE=TBSIZZ,
+                   PARA_X='INST',
+                   PARA_Y='VALEUR',
+                   INTERPOL='LIN');
+
+
+IMPR_FONCTION(
+            COURBE=(
+                    _F( FONC_X=FEPZZ,
+                        FONC_Y=FSIZZ),
+                        ),
+            );
+            
 FIN()
            
 

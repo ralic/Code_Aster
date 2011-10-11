@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE : Table de Neubert
 # sdll108b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,7 +44,7 @@ MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                           MODELISATION = 'DIS_T'))                 )
 
 CARLEM=AFFE_CARA_ELEM(   MODELE=MOD,
-                 POUTRE=_F(  GROUP_MA = 'TOUT',
+                 POUTRE=_F(  GROUP_MA = 'POU_D_T',
                           SECTION = 'GENERALE',
                           CARA = ('A',  'IZ', 'IY', 'AY', 'AZ', 'JX',
                                  'EZ', 'EY', 'RY', 'RZ', 'RT', ),

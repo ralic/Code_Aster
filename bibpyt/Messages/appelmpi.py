@@ -1,8 +1,8 @@
-#@ MODIF appelmpi Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF appelmpi Messages  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,25 +23,12 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- l'option est non prévue en non compilation MPI
-"""),
-
 3: _("""
- En parallèle, il faut au moins un sous-domaine par processeur
-"""),
-
-4: _("""
- Processeur %(i1)d :
- l'option FETAM %(i2)d est non prévue en compilation MPI
+ En parallèle, il faut au moins un sous-domaine par processeur.
 """),
 
 5: _("""
  Erreur MPI: %(k1)s
-"""),
-
-6: _("""
- Processeur %(i1)d : option MUMMPI %(i2)d non prevue avec MUMPS !
 """),
 
 }

@@ -4,7 +4,7 @@
       CHARACTER*6         TYPFON
       CHARACTER*8         RESU, NOMAIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -163,11 +163,11 @@ C     ------------------------------------------------------------------
       MESNOE = '&&'//NOMPRO//'.NOEUD'
       CALL ORNOFD ( RESU, NOMAIL, NBMA, MESNOE, NDORIG, NDEXTR, 'V')
       IF(TYPFON.EQ.'INF') THEN
-         NOEORD = RESU//'.FOND_INF  .NOEU'
+         NOEORD = RESU//'.FOND_INF.NOEU'
       ELSEIF(TYPFON.EQ.'SUP') THEN
-         NOEORD = RESU//'.FOND_SUP  .NOEU'
+         NOEORD = RESU//'.FOND_SUP.NOEU'
       ELSE
-         NOEORD = RESU//'.FOND      .NOEU'
+         NOEORD = RESU//'.FOND.NOEU'
       ENDIF
       CALL JELIRA(MESNOE,'LONMAX',NBNOFF,K8B)
       CALL JEVEUO(MESNOE,'L',IDNONO)
@@ -184,12 +184,12 @@ C     ------------------------------------------------------------------
 C     --- ON STOCKE LE TYPE DE MAILLES DEFINISSANT LE FOND DE FISSURE
 C     ------------------------------------------------------------------
 C
-      CALL JEEXIN ( RESU//'.FOND      .TYPE', IRET )
+      CALL JEEXIN ( RESU//'.FOND.TYPE', IRET )
       IF (IRET.EQ.0) THEN
-        CALL WKVECT(RESU//'.FOND      .TYPE','G V K8',1,JTYPM)
+        CALL WKVECT(RESU//'.FOND.TYPE','G V K8',1,JTYPM)
         ZK8(JTYPM) = TYPM
       ELSE
-        CALL JEVEUO( RESU//'.FOND      .TYPE','L',JTYP)
+        CALL JEVEUO( RESU//'.FOND.TYPE','L',JTYP)
         IF (TYPM.EQ.ZK8(JTYP)) THEN
           VALK(1) = TYPM
           VALK(2) = ZK8(JTYP)

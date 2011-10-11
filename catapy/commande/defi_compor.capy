@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,11 +28,11 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
           MONOCRISTAL    =FACT(statut='f', max=5,
              MATER           =SIMP(statut='o', typ=mater_sdaster, max=1),
              ECOULEMENT      =SIMP(statut='o', typ='TXM', max=1,
-                                into=('MONO_VISC1', 'MONO_VISC2', 'MONO_VISC3', 'MONO_DD_KR', 'MONO_DD_CFC', 'MONO_DD_CC',),
+                                into=('MONO_VISC1', 'MONO_VISC2', 'MONO_DD_KR', 'MONO_DD_CFC', 'MONO_DD_CC', 'MONO_DD_FAT',),
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le type d'écoulement viscoplastique"),
              ELAS            =SIMP(statut='f', typ='TXM', max=1,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le comportement élastique (un et un seul)"),
-             b_non_dd =BLOC(condition="ECOULEMENT=='MONO_VISC1' or ECOULEMENT=='MONO_VISC2' or ECOULEMENT=='MONO_VISC3'",
+             b_non_dd =BLOC(condition="ECOULEMENT=='MONO_VISC1' or ECOULEMENT=='MONO_VISC2'",
                    ECRO_ISOT       =SIMP(statut='f', typ='TXM', max=1,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le type d'écrouissage isotrope"),
                    ECRO_CINE       =SIMP(statut='f', typ='TXM', max=1,
@@ -50,6 +50,10 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                    b_util =BLOC(condition="FAMI_SYST_GLIS=='UTILISATEUR' ",
                           TABL_SYST_GLIS =SIMP(statut='f', typ=table_sdaster, max=1,),
                            ),
+                                ),
+             b_ecp_cfc =BLOC(condition="ECOULEMENT=='MONO_DD_FAT' ",
+                   FAMI_SYST_GLIS  =SIMP(statut='f',typ='TXM', max=1,
+                                into=('OCTAEDRIQUE','UTILISATEUR',),defaut=('OCTAEDRIQUE',),),
                                 ),
              b_dd_cfc =BLOC(condition="ECOULEMENT=='MONO_DD_CFC' ",
                    FAMI_SYST_GLIS  =SIMP(statut='f',typ='TXM', max=1,

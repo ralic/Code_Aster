@@ -1,11 +1,12 @@
-      SUBROUTINE INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
+      SUBROUTINE INITHM(IMATE,YACHAI,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      &                                    EPSV,DEPSV,EPSVM)
       IMPLICIT      NONE
+      LOGICAL       YACHAI
       INTEGER       IMATE,YAMEC
       REAL*8        PHI0,EM,ALPHA0,K0,CS,BIOT,EPSVM,EPSV,DEPSV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +42,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF (YAMEC.EQ.1) THEN
+      IF ((YAMEC.EQ.1).OR.YACHAI) THEN
           CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
      &                                 NCRA1(1),ELAS(1),ICODRE,1)
           YOUNG  = ELAS(1)

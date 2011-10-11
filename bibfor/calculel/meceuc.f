@@ -10,7 +10,7 @@
       CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL,CARAEZ
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -211,8 +211,11 @@ C     &        (OPTIO2.EQ.'EFGE_ELNO') .OR.
             ENDIF
    50    CONTINUE
          CALL ASSERT(INDIC1.GT.0)
-         CALL DISMOI('F','NOM_GD',LCHIN(INDIC1)(1:19),'CHAMP',IBID,
-     &               NOMGD,IBID)
+         NOMGD=' '
+         IF ( LCHIN(INDIC1).NE.' ' ) THEN
+           CALL DISMOI('F','NOM_GD',LCHIN(INDIC1)(1:19),'CHAMP',IBID,
+     &                 NOMGD,IBID)
+         ENDIF
 
          IF (NOMGD.EQ.'SIEF_R') THEN
 C        -------------------------------
@@ -259,6 +262,10 @@ C           -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
             ELSE
                CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
             ENDIF
+
+         ELSEIF (NOMGD.EQ.' '.AND.LCHIN(INDIC1).EQ.' ') THEN
+
+           GOTO 70
 
          ELSE
             CALL U2MESS('F','CALCULEL3_28')

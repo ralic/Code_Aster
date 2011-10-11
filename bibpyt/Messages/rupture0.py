@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -329,6 +329,17 @@ et %(k1)s : on prend le minimum des deux %(i1)d.
 51: _("""
 Le numéro d'ordre %(i1)d n'appartient pas au résultat %(k1)s.
 """),
+
+52: _("""
+Vous avez utilisé des paramètres matériaux dépendant de la température.
+Cependant, 'TEMP_DEF_ALPHA' dans DEFI_MATERIAU n'est pas renseigné.
+-> Conseil : 
+Renseignez une température pour 'TEMP_DEF_ALPHA', 
+ou utilisez l'otion 'EVOL_THER' de POST_K1_K2_K3.
+"""),
+
+53: _("""
+Vous avez utilisé un module d'Young nul. Le post-traitement ne peut pas se poursuivre."""),
 
 54: _("""
 Aucun instant ou numéro d'ordre trouvé.

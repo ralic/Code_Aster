@@ -1,9 +1,9 @@
         SUBROUTINE LCDPEQ(VIND, VINF,LOI,NBCOMM,CPMONO,NMAT,NVI,SIG,
-     &  COTHE,COEFF,HSR)
+     &  COTHE,COEFF,NFS,NSG,HSR)
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,11 +26,11 @@ C       POUR LE MONOCRISTAL
 C       IN  VIND   :  VARIABLES INTERNES A T
 C       IN  VINF   :  VARIABLES INTERNES A T+DT
 C       ----------------------------------------------------------------
-        INTEGER         NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV
-        INTEGER         NUVI,NBFSYS,IFA,IS,NBSYS
-        REAL*8          VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
-        REAL*8           EPSEQ,COTHE(NMAT),COEFF(NMAT),E,NU,FV
-        REAL*8          SIGG(6),MAXRP,ZE(12),RP,HSR(5,30,30)
+        INTEGER  NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV
+        INTEGER  NUVI,NBFSYS,IFA,IS,NBSYS,NFS,NSG
+        REAL*8   VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
+        REAL*8   EPSEQ,COTHE(NMAT),COEFF(NMAT),E,NU,FV,EXPBP(NSG)
+        REAL*8   SIGG(6),MAXRP,ZE(12),RP,HSR(NFS,NSG,NSG)
         CHARACTER*16    LOI,CPMONO(5*NMAT+1),LOCA
       CHARACTER*16 NOMFAM,NECRIS,NECOUL
 C V.I. 1 a 6 représente la deformation viscoplastique macro
@@ -55,7 +55,7 @@ C V.I. 1 a 6 représente la deformation viscoplastique macro
                   CALL LCMMSG(NOMFAM,NBSYS,0,ZE,ZE,ZE,ZE,0,ZE)
                   DO 7 IS=1,NBSYS
                      CALL LCMMFI(COEFF,IFA,NMAT,NBCOMM,NECRIS,
-     &              IS,NBSYS,VINF(7),ZE,HSR,1,ZE,RP)
+     &              IS,NBSYS,VINF(7),ZE,NFS,NSG,HSR,1,EXPBP,RP)
                      MAXRP=MAX(RP,MAXRP)
   7               CONTINUE
                   VINF(NVI-2)=MAXRP

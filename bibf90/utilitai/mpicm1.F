@@ -1,6 +1,6 @@
       SUBROUTINE MPICM1(OPTMPI,TYPSCA,NBV,VI,VR)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF MPICM1 UTILITAI  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF MPICM1 UTILITAI  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -18,11 +18,12 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ==================================================================
 !----------------------------------------------------------------------
-! BUT : SUR-COUCHE POUR MPI :
-! FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN VECTEUR FORTRAN
+!    - FONCTION REALISEE : SUR-COUCHE MPI
+!
+!      FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN VECTEUR FORTRAN
 !
 ! ARGUMENTS D'APPELS
-! IN OPTMPI   :
+! IN OPTMPI :
 !      /'MPI_MAX'  == 'ALLREDUCE + MAX'
 !      /'MPI_MIN'  == 'ALLREDUCE + MIN'
 !      /'MPI_SUM'  == 'ALLREDUCE + SUM'
@@ -30,22 +31,26 @@
 !      /'REDUCE'   == 'REDUCE + SUM' : TOUS -> 0
 !      /'BCAST'    == 'BCAST'        : 0    -> TOUS
 !
-! IN   TYPSCA: /'I' /'R'
-! IN   NBV   : LONGUEUR DU VECTEUR VI, VR
-! IN   VI(*) : VECTEUR D'ENTIERS A ECHANGER (SI TYPSC1='I')
-! IN   VR(*) : VECTEUR DE REELS A ECHANGER (SI TYPSC1='R')
+! IN   TYPSCA : /'I' /'R'
+! IN   NBV    : LONGUEUR DU VECTEUR VI, VR
+! IN   VI(*)  : VECTEUR D'ENTIERS A ECHANGER (SI TYPSCA='I')
+! IN   VR(*)  : VECTEUR DE REELS A ECHANGER  (SI TYPSCA='R')
 !----------------------------------------------------------------------
 ! RESPONSABLE PELLET J.PELLET
-
       IMPLICIT NONE
+! DECLARATION PARAMETRES D'APPELS
+      CHARACTER*(*) OPTMPI,TYPSCA
+      INTEGER       NBV,VI(*)
+      REAL*8            VR(*)
 
-
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+#ifdef _USE_MPI
+      INCLUDE 'mpif.h'
+! --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC,CBID
+      COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -53,40 +58,27 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
-
-      CHARACTER*(*) OPTMPI,TYPSCA
-      CHARACTER*1 TYPSC1
-      INTEGER      NBV,VI(*),VI2(1000)
-      REAL*8   VR(*),VR2(1000)
-      INTEGER      IBID ,LOISEM,K,JTRAV
-      INTEGER*4    IERMPI,LR8,LINT,LMPI,NBV4,LC8,LOPMPI,NBPRO4
+! --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+! DECLARATION VARIABLES LOCALES
+      CHARACTER*1  TYPSC1
+      INTEGER      VI2(1000)
+      REAL*8       VR2(1000)
+      INTEGER      LOISEM,K,JTRAV
+      INTEGER*4    IERMPI,LR8,LINT,NBV4,LOPMPI,NBPRO4
       LOGICAL      FIRST
-      SAVE         LR8,LINT,FIRST
+      SAVE         FIRST,LR8,LINT
       DATA         FIRST /.TRUE./
+! ---------------------------------------------------------------------
+      CALL JEMARQ()
+! --- COMPTEUR
+      CALL UTTCPU('CPU.CMPI.1','DEBUT',' ')
 
-#ifdef _USE_MPI
-      INCLUDE 'mpif.h'
-
-C ---------------------------------------------------------------------
-
-C     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
-      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
-      IF (NBPRO4.EQ.1) GOTO 9999
-
-
-
-      TYPSC1=TYPSCA
-      CALL ASSERT(TYPSC1.EQ.'R'.OR.TYPSC1.EQ.'I')
-      NBV4=NBV
-
-
-C     -- INITIALISATIONS :
-C     --------------------
+!     -- INITIALISATIONS :
+!     --------------------
       IF (FIRST) THEN
-C       -- POUR LA GESTION DES ERREURS :
+!       -- POUR LA GESTION DES ERREURS :
         CALL MPI_ERRHANDLER_SET(MPI_COMM_WORLD,MPI_ERRORS_RETURN,IERMPI)
+        CALL MPIERR(IERMPI)
         IF (LOISEM().EQ.8) THEN
           LINT=MPI_INTEGER8
         ELSE
@@ -96,10 +88,19 @@ C       -- POUR LA GESTION DES ERREURS :
         FIRST= .FALSE.
       ENDIF
 
+!     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
+      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
+      CALL MPIERR(IERMPI)
+      IF (NBPRO4.EQ.1) GOTO 999
 
+!     -- SCALAIRE :
+!     -------------
+      TYPSC1=TYPSCA
+      CALL ASSERT(TYPSC1.EQ.'R'.OR.TYPSC1.EQ.'I')
+      NBV4=NBV
 
-C     -- CHOIX OPERATION MPI  :
-C     ---------------------------
+!     -- CHOIX OPERATION MPI  :
+!     ---------------------------
       IF (OPTMPI.EQ.'MPI_MAX') THEN
         LOPMPI=MPI_MAX
       ELSE IF (OPTMPI.EQ.'MPI_MIN') THEN
@@ -108,12 +109,10 @@ C     ---------------------------
         LOPMPI=MPI_SUM
       ENDIF
 
-
-
-C     -- SI REDUCE OU ALLREDUCE, IL FAUT UN 2EME BUFFER
-C        - SI NBV <= 1000 : ON UTILISE UN TABLEAU STATIQUE
-C        - SINON ON ALLOUE UN TABLEAU JEVEUX
-C     ------------------------------------------------------
+!     -- SI REDUCE OU ALLREDUCE, IL FAUT UN 2EME BUFFER
+!        - SI NBV <= 1000 : ON UTILISE UN TABLEAU STATIQUE
+!        - SINON ON ALLOUE UN TABLEAU JEVEUX
+!     ------------------------------------------------------
       IF (OPTMPI.NE.'BCAST') THEN
         CALL ASSERT(NBV.GT.0)
 
@@ -127,7 +126,6 @@ C     ------------------------------------------------------
               VI2(K)=VI(K)
  2          CONTINUE
           ENDIF
-
         ELSE
           IF (TYPSC1.EQ.'R') THEN
             CALL WKVECT('&&MPICM1.TRAV','V V R',NBV,JTRAV)
@@ -144,77 +142,75 @@ C     ------------------------------------------------------
       ENDIF
 
 
-
       IF (OPTMPI.EQ.'BCAST') THEN
-C     ---------------------------------
+!     ---------------------------------
         IF (TYPSC1.EQ.'R') THEN
-          CALL MPI_BCAST(VR,NBV4,LR8,0,MPI_COMM_WORLD,IERMPI)
+          CALL MPI_BCAST(VR,NBV4,LR8 ,0,MPI_COMM_WORLD,IERMPI)
         ELSE IF(TYPSC1.EQ.'I') THEN
           CALL MPI_BCAST(VI,NBV4,LINT,0,MPI_COMM_WORLD,IERMPI)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-
+        CALL MPIERR(IERMPI)
 
       ELSE IF (OPTMPI.EQ.'REDUCE') THEN
-C     ---------------------------------
+!     ---------------------------------
         IF (TYPSC1.EQ.'R') THEN
           IF (NBV.LE.1000) THEN
-            CALL MPI_REDUCE(VR2,VR,NBV4,LR8,LOPMPI,
-     &                    0,MPI_COMM_WORLD,IERMPI)
+            CALL MPI_REDUCE(VR2,      VR,NBV4,LR8,LOPMPI,
+     &                      0,MPI_COMM_WORLD,IERMPI)
           ELSE
             CALL MPI_REDUCE(ZR(JTRAV),VR,NBV4,LR8,LOPMPI,
-     &                    0,MPI_COMM_WORLD,IERMPI)
+     &                      0,MPI_COMM_WORLD,IERMPI)
           ENDIF
 
         ELSE IF(TYPSC1.EQ.'I') THEN
           IF (NBV.LE.1000) THEN
-            CALL MPI_REDUCE(VI2,VI,NBV4,LINT,LOPMPI,
-     &                    0,MPI_COMM_WORLD,IERMPI)
+            CALL MPI_REDUCE(VI2      ,VI,NBV4,LINT,LOPMPI,
+     &                      0,MPI_COMM_WORLD,IERMPI)
           ELSE
             CALL MPI_REDUCE(ZI(JTRAV),VI,NBV4,LINT,LOPMPI,
-     &                    0,MPI_COMM_WORLD,IERMPI)
+     &                      0,MPI_COMM_WORLD,IERMPI)
           ENDIF
-
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-
+        CALL MPIERR(IERMPI)
 
       ELSE IF (OPTMPI(1:4).EQ.'MPI_') THEN
-C     ---------------------------------
+!     ---------------------------------
         IF (TYPSC1.EQ.'R') THEN
           IF (NBV.LE.1000) THEN
-            CALL MPI_ALLREDUCE(VR2,VR,NBV4,LR8,LOPMPI,
-     &                      MPI_COMM_WORLD,IERMPI)
+            CALL MPI_ALLREDUCE(VR2,      VR,NBV4,LR8,LOPMPI,
+     &                         MPI_COMM_WORLD,IERMPI)
           ELSE
             CALL MPI_ALLREDUCE(ZR(JTRAV),VR,NBV4,LR8,LOPMPI,
-     &                      MPI_COMM_WORLD,IERMPI)
+     &                         MPI_COMM_WORLD,IERMPI)
           ENDIF
-
         ELSEIF (TYPSC1.EQ.'I') THEN
           IF (NBV.LE.1000) THEN
-            CALL MPI_ALLREDUCE(VI2,VI,NBV4,LINT,LOPMPI,
-     &                      MPI_COMM_WORLD,IERMPI)
+            CALL MPI_ALLREDUCE(VI2,      VI,NBV4,LINT,LOPMPI,
+     &                         MPI_COMM_WORLD,IERMPI)
           ELSE
             CALL MPI_ALLREDUCE(ZI(JTRAV),VI,NBV4,LINT,LOPMPI,
-     &                      MPI_COMM_WORLD,IERMPI)
-
+     &                         MPI_COMM_WORLD,IERMPI)
           ENDIF
-
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-
+        CALL MPIERR(IERMPI)
 
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
 
-      IF (OPTMPI.NE.'BCAST'.AND.NBV.GT.1000)
-     &     CALL JEDETR('&&MPICM1.TRAV')
+      IF (OPTMPI.NE.'BCAST'.AND.NBV.GT.1000) THEN
+        CALL JEDETR('&&MPICM1.TRAV')
+      ENDIF
 
-
- 9999 CONTINUE
+  999 CONTINUE
+! --- COMPTEUR
+      CALL UTTCPU('CPU.CMPI.1','FIN',' ')
+      CALL JEDEMA()
 #endif
       END

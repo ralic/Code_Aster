@@ -1,7 +1,7 @@
       SUBROUTINE OP0106()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -483,7 +483,7 @@ C       ================================================================
               CALL U2MESK('A','PREPOST5_2',2,VALK)
               GOTO 280
             ENDIF
-            CALL DISMOI('F','EXI_PMF',MODELE,'MODELE',IBID,KSTR,IERD)
+            CALL DISMOI('F','EXI_STRX',MODELE,'MODELE',IBID,KSTR,IERD)
             IF(KSTR(1:3).EQ.'OUI')THEN
               CALL RSEXCH(RESUCO,'STRX_ELGA',IORDR,STRX,IRET)
               IF (IRET.NE.0) THEN

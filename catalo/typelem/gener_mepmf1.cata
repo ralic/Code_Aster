@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -268,6 +268,10 @@ OPTION__
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIPO_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    STRX_ELGA           537   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCRR  CCOMPOR  PCOMPOR
+                              OUT__  ESTRAUX  PSTRXRR
     MINMAX_SP           99    IN__   NGEOMER  PGEOMER
                               OUT__  EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER

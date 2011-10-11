@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF utilitai Messages  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,6 +43,19 @@ cata_msg = {
    que vous souhaitez récupérer des valeurs sur les mailles ayant des
    sous-points, veuillez d'abord utiliser la commande POST_CHAMP pour
    extraire des sous-points.
+"""),
+
+4 : _("""
+ Vous avez demandé le calcul d'un champ aux noeuds sur des éléments
+ de structure. Mais les repères locaux de certaines mailles entourant
+ des noeuds sur lesquels vous avez demandés le calcul ne sont pas
+ compatibles (Au maximum, on a %(r1)g degrés d'écart entre les angles
+ nautiques définissant ces repères).
+
+ Risque & Conseil :
+   Il se peut que vous obteniez des résultats incohérents.
+   Il est donc recommandé de passer en repère global les champs
+   utiles au calcul du champ aux noeuds.
 """),
 
 5 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE FLEJOU
 # TITRE STRUCTURE SYMETRIQUE DE POUTRES AVEC UN COUDE
 # ssll100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -61,7 +61,7 @@ MOD=AFFE_MODELE(MAILLAGE=MA,
                          MODELISATION='DIS_T',),),);
 
 CARLEM=AFFE_CARA_ELEM(MODELE=MOD,
-                      POUTRE=_F(GROUP_MA='TOUT',
+                      POUTRE=_F(GROUP_MA=('POU_D_T','POU_C_T'),
                                 SECTION='GENERALE',
                                 CARA=('A','IY','IZ','AY','AZ','JX',),
                                 VALE=(0.11780973E-2,0.125172834E-6,0.125172834E-6,1.3096094,1.3096094,0.250345668E-6,),),

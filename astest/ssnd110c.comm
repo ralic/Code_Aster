@@ -1,0 +1,277 @@
+# MODIF  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+# TITRE VALIDATION MONOCRISTAL LOI ECP_CFC SUR POLYCRISTAL 
+# ssnd110c.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSND110C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+
+
+from numpy.linalg import norm
+from numpy import *
+
+# MATERIAU DEFINI POUR LE COMPORTEMENT  ECP_CFC. Unites : MPa, mm, N
+
+MU=125000. # MPa
+NU=0.3
+E=MU*2*(1.+NU)
+
+TAU_F  = 44.9
+RHO_0  = 1.77E6    # en mm**-2
+N      = 73.5
+GAMMA0 = 4.E-11
+BETA   = 2.54E-7     # 2.5 Angstrom
+UNSURD = 0.
+GC0    = 1.33E-6
+K      = 37.14
+
+# variable adimensionnee, voir R5.03.11
+
+RHO_0=RHO_0*BETA*BETA
+
+ALPHA=0.0
+
+C11=244000.
+C12=96000.
+C44=74000.
+
+y1111=C11
+y1122=C12
+y1212=C44
+
+# Correspondance avec ELAS_ORTH : la matrice d'elasticite vaut 
+# pour une elasticite orthotrope cubique
+#H11=H22=H33=E*(1-Nu**2)/(1-3*Nu**2-2*Nu**3)
+#H44=H55=H66=y1212=G_LT
+# donc NU_LT=1/(1+y1111/y1122)
+
+Nu=1.0/(1.0+y1111/y1122)
+
+E_L=y1111*(1.0-3.0*Nu**2-2.0*Nu**3)/(1.0-Nu**2)
+
+a_copl=0.1236
+a_colineaire=0.633
+a_glissile=0.1388
+a_Lomer=0.1236
+a_Hirth=0.0709
+
+
+ACIERECP=DEFI_MATERIAU(
+                      ELAS_ORTH =_F(E_L  =E_L,
+                                    E_T  =E_L,
+                                    E_N  =E_L,
+                                    NU_LT=Nu,
+                                    NU_LN=Nu,
+                                    NU_TN=Nu,
+                                    G_LT =y1212,
+                                    G_LN =y1212,
+                                    G_TN =y1212,
+                                 ),
+
+                      MONO_DD_FAT=_F(TAU_F  = TAU_F,  # MPa
+                                     GAMMA0 = GAMMA0,
+                                     BETA=BETA,          # 2.5 Angstrom
+                                     N      = N,
+                                     UN_SUR_D   =   UNSURD,
+                                     GC0 =  GC0,
+                                     K   =   K,
+                                     H1      = a_copl,
+                                     H2      = a_colineaire,
+                                     H3      = a_glissile,
+                                     H4      = a_Lomer,
+                                     H5      = a_Hirth,
+                                   ),
+                      );
+
+
+# ECP_CFC
+CMP_MONO=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERECP,
+                                    ECOULEMENT='MONO_DD_FAT',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                    ),);
+
+NBGR=40.
+
+FVOL=1/NBGR                                   
+
+CMP_POLY=DEFI_COMPOR(POLYCRISTAL=(
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-149.676,15.61819,154.676,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-150.646,33.86400,155.646,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-137.138,41.59170,142.138,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-166.271,35.46958,171.271,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-77.676,15.61819,154.676,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-78.6463,33.86400,155.646,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-65.1378,41.59170,142.138,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-94.2711,35.46958,171.271,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-5.67599,15.61819,154.676,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-6.64634,33.86400,155.646,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(6.86224,41.59170,142.138,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-22.2711,35.46958,171.271,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(66.324,15.61819,154.676,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(65.3537,33.86400,155.646,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(78.8622,41.59170,142.138,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(49.7289,35.46958,171.271,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(138.324,15.61819,154.676,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(137.354,33.86400,155.646,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(150.862,41.59170,142.138,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(121.729,35.46958,171.271,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-210.324,15.61819,205.324,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-209.354,33.86400,204.354,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-222.862,41.59170,217.862,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-193.729,35.46958,188.729,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-282.324,15.61819,205.324,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-281.354,33.86400,204.354,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-294.862,41.59170,217.862,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-265.729,35.46958,188.729,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-354.324,15.61819,205.324,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-353.354,33.86400,204.354,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-366.862,41.59170,217.862,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-337.729,35.46958,188.729,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-426.324,15.61819,205.324,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-425.354,33.86400,204.354,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-438.862,41.59170,217.862,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-409.729,35.46958,188.729,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-498.324,15.61819,205.324,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-497.354,33.86400,204.354,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-510.862,41.59170,217.862,),),
+  _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-481.729,35.46958,188.729,),),
+  ),
+  LOCALISATION='BETA',DL=100.0,DA=0.,
+);
+
+# essai  eps-point=1.E-3 /s
+tmax=150.
+
+tfin=45.
+
+EPSIMPO=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,tmax,0.15),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',
+                   );
+
+# LOI DE COMPORTEMENT ECP_CFC en Explicite
+LISTARCH=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                                   _F(JUSQU_A=tmax,
+                                      NOMBRE=200,),
+                                  ),
+                      );
+
+LINSTECP=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                                   _F(JUSQU_A=tmax,
+                                      NOMBRE=400,),
+                                  ),
+                      );
+
+LIS2ECP=DEFI_LIST_INST(INFO=1,
+                        DEFI_LIST=_F(LIST_INST=LINSTECP),
+                        ECHEC=_F(SUBD_NIVEAU=20,
+                                 SUBD_PAS=4),
+                        );
+
+
+
+angles=[0.,0.,0.]
+
+
+# densites de dislocation initiales : variables internes 
+
+nbvari=7+NBGR*(6+3*12+6)+1
+avari = zeros(nbvari)
+for p in range(NBGR):
+   for i in range(12):
+      avari[7+48*p+(6+i*3)]=RHO_0
+
+lvari=list(avari)
+
+
+POLYECP=SIMU_POINT_MAT(INFO=1,
+                      MATER=ACIERECP,
+                      MASSIF=_F(ANGL_EULER=angles),
+                      COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                                    COMPOR=CMP_POLY,
+                                    ALGO_INTE='RUNGE_KUTTA',
+                                    RESI_INTE_RELA=1.E-4,
+                                    TOUT='OUI',),),
+                      INCREMENT=(_F(LIST_INST=LIS2ECP,INST_FIN=tfin),),
+                      NEWTON=(_F(MATRICE='ELASTIQUE'
+                                 ),),
+                      CONVERGENCE=(_F(ITER_GLOB_MAXI=100,RESI_GLOB_RELA=1.E-4),),
+                      VARI_INIT=_F(VALE=lvari,
+                                  ),
+                      EPSI_IMPOSE=(
+                                   _F(EPZZ=EPSIMPO),
+                                  ),
+                      NB_VARI_TABLE=6,
+                      ARCHIVAGE=_F(LIST_INST=LISTARCH),
+                       );
+
+
+sigeps=RECU_FONCTION(TABLE=POLYECP,
+                   PARA_X='EPZZ',
+                   PARA_Y='SIZZ',
+                   INTERPOL='LIN');
+
+
+sigtps=RECU_FONCTION(TABLE=POLYECP,
+                   PARA_X='INST',
+                   PARA_Y='SIZZ',
+                   INTERPOL='LIN');
+
+#Valeur de non-regression
+TEST_FONCTION(VALEUR=_F(FONCTION=sigtps,
+                        NOM_PARA='INST',
+                        VALE_PARA=45.0,
+                        PRECISION=0.001,
+                        VALE_REFE=424.935305,
+                        REFERENCE='NON_REGRESSION',),);
+         
+#Valeur experimentale
+TEST_FONCTION(VALEUR=_F(FONCTION=sigtps,
+                        NOM_PARA='INST',
+                        VALE_PARA=45.0,
+                        PRECISION=0.1,
+                        VALE_REFE=387.8,
+                        REFERENCE='SOURCE_EXTERNE',),);
+
+ecpb4 = LIRE_FONCTION(UNITE=21,
+                      NOM_PARA='EPSI',
+                      PROL_DROITE='CONSTANT',)
+
+IMPR_FONCTION(
+            FORMAT='XMGRACE',
+            COURBE=(
+                    _F( FONCTION=sigeps,
+                        COULEUR= 0,
+                        LEGENDE= 'Aster',),
+                    _F( FONCTION=ecpb4,
+                        COULEUR= 0,
+                        LEGENDE= 'ECP',),
+                   ),
+            UNITE=29,
+            TITRE='SIG = f(EPS) pour '+str(NBGR)+' phases');
+
+IMPR_TABLE(TABLE=POLYECP)
+
+FIN()
+
+
+

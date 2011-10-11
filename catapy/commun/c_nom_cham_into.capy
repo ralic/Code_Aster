@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,7 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "DISS_ELGA",
                         "DISS_ELNO",
                         "DISS_NOEU",
+                        "DIVU",
                         "DURT_ELNO",
                         "DURT_NOEU",
                         "ECIN_ELEM",
@@ -140,6 +141,7 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "PRAC_NOEU",
                         "PRES",
                         "PRME_ELNO",
+                        "PTOT",
                         "QIRE_ELEM",
                         "QIRE_ELNO",
                         "QIRE_NOEU",

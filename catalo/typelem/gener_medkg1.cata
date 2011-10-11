@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -155,8 +155,6 @@ OPTION__
     EFGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EEFGENOR PEFFORR  EEFGENOC PEFFORC
-    EFGE_ELNO_EXCENT    452   IN__   CCACOQU  PCACOQU  EEFGENOR PEFFONR  EEFGENOC PEFFONC
-                              OUT__  EEFGENOR PEFFOER  EEFGENOC PEFFOEC
     ENEL_ELGA           412   IN__   EEFGEGA  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR
                                      ZVARIPG  PVARIGR
@@ -262,5 +260,7 @@ OPTION__
                               OUT__  EPRESNO  PPRES_R
     VARI_ELNO           409   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
+    VERI_CARA_ELEM     119    IN__   CCACOQU  PCACOQU
+                              OUT__  ECOURAN  PBIDON
     WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
 # forma03c.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
@@ -71,17 +71,13 @@ F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 # DISCRETISATION EN TEMPS
 TFIN = 4.0;
 
+# GESTION AUTOMATIQUE DU PAS DE TEMPS : SOUS-DECOUPAGE ET ADAPTATION PAR DEFAUT
 # EN GESTION MANUELLE, ON FAISAIT 160 PAS DE TEMPS POUR 4S -> PAS DE TEMPS DE 0,025 S
 # EN GESTION AUTOMATIQUE, ON IMPOSE SEULEMENT LE 1ER PAS DE TEMPS
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=0.025,NOMBRE=1),
-                                  _F(JUSQU_A= TFIN,NOMBRE=1))
-                      )
-
-# GESTION AUTOMATIQUE DU PAS DE TEMPS : SOUS-DECOUPAGE ET ADAPTATION PAR DEFAUT
 DEF_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
-                                     LIST_INST=L_INST,
-                                     PAS_MINI=1.e-6)
+                                     VALE=(0., 0.025, TFIN),
+                                     PAS_MINI=1.e-6,
+                                     PAS_MAXI=0.5)
                       )
 
 #PILOTAGE                            

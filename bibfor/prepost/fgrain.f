@@ -1,7 +1,7 @@
         SUBROUTINE FGRAIN (PIC,NPIC,ITRV,NCYC,SIGMIN,SIGMAX)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/10/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,18 +32,39 @@ C       ----------------------------------------------------------------
         REAL*8          PIC(*), X, Y,E1,E2,E3,SIGMAX(*),SIGMIN(*)
         REAL*8          R1,R2,RD,RAD
         INTEGER         NPIC,  NCYC,   ITRV(*) ,NPICB
-        LOGICAL         LRESI
+        LOGICAL         LRESI, CYCZER
 C       ----------------------------------------------------------------
         LRESI = .FALSE.
         NPICB = NPIC
+        CYCZER = .TRUE.
+        
         DO 20 I=1,NPICB
          ITRV(I) = I
  20     CONTINUE
         NCYC  = 0
+        
+        DO 21 I=2,NPICB
+           IF ((PIC(I) .GT. PIC(1)) .OR.
+     &       (PIC(I) .LT. PIC(1)))  THEN
+              CYCZER = .FALSE.
+           END IF
+ 21     CONTINUE
+ 
+        IF (CYCZER) THEN 
+           SIGMAX(1) = PIC(1)
+           SIGMIN(1) = PIC(1)
+           NCYC = 1
+           
+           CALL U2MESS('A','FATIGUE1_39')
+           
+           GOTO 999
+        ENDIF         
+        
+        
  1      CONTINUE
-        I     = 1
-        J     = 1
-C
+         I     = 1
+         J     = 1
+C       
   2     CONTINUE
         IF(I+3.GT.NPICB) THEN
           GOTO 100
@@ -114,4 +135,5 @@ C -- ON ELIMINE RN
           GOTO 1
         ENDIF
 C
+999     CONTINUE
          END

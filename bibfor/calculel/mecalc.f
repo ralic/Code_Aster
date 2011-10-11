@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -155,7 +155,8 @@ C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
             CALL DETRSD('CHAM_ELEM_S',CANBVA)
 
          ELSE IF ((OPTIO2.EQ.'EPSI_ELGA') .OR.
-     &            (OPTIO2.EQ.'SIEF_ELGA')) THEN
+     &            (OPTIO2.EQ.'SIEF_ELGA').OR.
+     &            (OPTIO2.EQ.'STRX_ELGA')) THEN
             CANBSP = '&&'//NOMPRO//'.NBSP'
             CALL EXISD('CHAM_ELEM_S',CANBSP,IRET1)
             IF (IRET1.NE.1) CALL CESVAR(CAREL,' ',LIGREL,CANBSP)
@@ -345,7 +346,8 @@ C ----------------------------------------------------------------------
                IF (  OPTIO2.EQ.'SIGM_ELNO' .OR.
      &               OPTIO2.EQ.'SIPO_ELNO' .OR.
      &               OPTIO2.EQ.'SIPM_ELNO' .OR.
-     &               OPTIO2.EQ.'SIEF_ELGA') THEN
+     &               OPTIO2.EQ.'SIEF_ELGA' .OR.
+     &               OPTIO2.EQ.'STRX_ELGA') THEN
                   LPAOUT(1) = 'PCONTRR'
                   IF (POUX.EQ.'OUI') THEN
                      CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
@@ -356,6 +358,9 @@ C ----------------------------------------------------------------------
                         LPAOUT(1) = 'PCONTPO'
                      END IF
                   END IF
+                  IF (OPTIO2.EQ.'STRX_ELGA') THEN
+                        LPAOUT(1) = 'PSTRXRR'
+                  ENDIF
                ELSE IF (OPTIO2.EQ.'EFGE_ELNO') THEN
                LPAOUT(1) = 'PEFFORR'
                   IF (POUX.EQ.'OUI') THEN

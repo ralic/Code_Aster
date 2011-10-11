@@ -1,0 +1,241 @@
+# MODIF  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+# TITRE HYDRO-MECANIQUE PERMANENT ET VALIDATION DU CHAINAGE (SENS HYDRO-MECA)
+# wtnp116c.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# tps_job 60 mem_job 200Mo ncpus 1 liste_test R
+DEBUT(CODE=_F(NOM='WTNP116C', NIV_PUB_WEB='INTERNET'),IMPR_MACRO='OUI',);
+
+#########
+# Resolution par chainage du probleme quasi-decouple
+# wtnp116
+#########
+
+##############################
+# lecture du maillage lineaire
+##############################
+
+MAIL_INI=LIRE_MAILLAGE(FORMAT='MED',);
+
+#################################################
+# Creation des maillages hydraulique et mecanique
+#################################################
+
+MAIL_HY=CREA_MAILLAGE(MAILLAGE=MAIL_INI,
+                      LINE_QUAD=_F(TOUT='OUI',),);
+
+MAIL_ME=CREA_MAILLAGE(MAILLAGE=MAIL_INI,
+                      LINE_QUAD=_F(TOUT='OUI',),);
+
+MAIL_ME=MODI_MAILLAGE(reuse =MAIL_ME,
+                      MAILLAGE=MAIL_ME,
+                      ORIE_PEAU_2D=_F(GROUP_MA=('GM3','GM2','GM1','GM4',),),);
+
+########################################
+# Precision pour l'erreur en hydraulique
+# critere : resi_glob_maxi
+########################################
+
+p_prec = 1e-10;
+
+#####################
+# Parametres materiau
+#####################
+
+p_e = 2.25E8;
+p_nu = 0.4;
+p_rhos = 2000.0;
+p_atm = 100000.0;
+p_rhom = 1600.0;
+p_biot = 1.;
+p_g = 10.0;
+
+p_viscoliq = 0.001;
+p_permint = 1e-15;
+p_rhol = 1000.0;
+p_long = 5.0;
+
+p_lambda = ((p_e * p_nu) / ((1 + p_nu) * (1 - (2 * p_nu))));
+
+p_mu = (p_e / (2 * (1 + p_nu)));
+
+p_3k = p_e/(1.-2.*p_nu);
+
+PERMINT=DEFI_CONSTANTE(VALE=p_permint,);
+
+P_E=DEFI_CONSTANTE(VALE=p_e,);
+
+P_NU=DEFI_CONSTANTE(VALE=p_nu,);
+
+P_RHOM=DEFI_CONSTANTE(VALE=p_rhom,);
+
+VISCOLIQ=DEFI_CONSTANTE(VALE=p_viscoliq,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+######################
+# Parametres temporels (bidons !)
+######################
+
+p_inst_fin = 1000;
+
+p_npas = 1;
+
+LINS_MEC=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=p_inst_fin,
+                                      NOMBRE=p_npas,),);
+
+################################
+# Creation du modele hydraulique
+################################
+
+MODEHY=AFFE_MODELE(MAILLAGE=MAIL_HY,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN_HS',),);
+
+################################
+# Creation du modele mecanique
+################################
+
+MODE1=AFFE_MODELE(MAILLAGE=MAIL_ME,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN',),);
+
+############################################
+# Modele 2 (uniquement pour endo_heterogene)
+############################################
+
+MODE2=AFFE_MODELE(MAILLAGE=MAIL_ME,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN_GRAD_SIGM',),);
+
+###############
+# On teste differents materiaux, mais on reste toujours dans
+# le domaine d'elasticite
+#
+# 1. elastique
+# 2. Drucker-Prager (ecrouissage lineaire)
+# 3. Drucker-Prager (ecrouissage parabolique)
+# 4. endo_heterogene
+###############################
+
+MATE1=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
+                     ELAS=_F(E=p_e,
+                             NU=p_nu,
+                             RHO=p_rhom,),
+                     THM_INIT=_F(PRE1=p_atm,
+                                 PORO=0.4,),
+                     THM_DIFFU=_F(RHO=p_rhom,
+                                  BIOT_COEF=p_biot,
+                                  PESA_X=-(p_g),
+                                  PESA_Y=0.0,
+                                  PESA_Z=0.0,
+                                  PERM_IN=PERMINT,),
+                     THM_LIQU=_F(RHO=p_rhol,
+                                 UN_SUR_K=0.0,
+                                 VISC=VISCOLIQ,
+                                 D_VISC_TEMP=ZERO,),);
+
+MATE2=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
+                     ELAS=_F(E=p_e,
+                             NU=p_nu,
+                             RHO=p_rhom,),
+                     DRUCK_PRAGER=_F(ALPHA=0.01,
+                                     SY=1.E10,
+                                     P_ULTM=1.E10,
+                                     ECROUISSAGE='LINEAIRE',
+                                     H=0.),
+                     THM_INIT=_F(PRE1=p_atm,
+                                 PORO=0.4,),
+                     THM_DIFFU=_F(RHO=p_rhom,
+                                  BIOT_COEF=p_biot,
+                                  PESA_X=-(p_g),
+                                  PESA_Y=0.0,
+                                  PESA_Z=0.0,
+                                  PERM_IN=PERMINT,),
+                     THM_LIQU=_F(RHO=p_rhol,
+                                 UN_SUR_K=0.0,
+                                 VISC=VISCOLIQ,
+                                 D_VISC_TEMP=ZERO,),);
+
+MATE3=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
+                     ELAS=_F(E=p_e,
+                             NU=p_nu,
+                             RHO=p_rhom,),
+                     DRUCK_PRAGER=_F(ALPHA=0.01,
+                                     SY=1.E10,
+                                     P_ULTM=1.E10,
+                                     ECROUISSAGE='PARABOLIQUE',
+                                     SY_ULTM=1.E10,),
+                     THM_INIT=_F(PRE1=p_atm,
+                                 PORO=0.4,),
+                     THM_DIFFU=_F(RHO=p_rhom,
+                                  BIOT_COEF=p_biot,
+                                  PESA_X=-(p_g),
+                                  PESA_Y=0.0,
+                                  PESA_Z=0.0,
+                                  PERM_IN=PERMINT,),
+                     THM_LIQU=_F(RHO=p_rhol,
+                                 UN_SUR_K=0.0,
+                                 VISC=VISCOLIQ,
+                                 D_VISC_TEMP=ZERO,),);
+
+MATE4=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
+                     ELAS=_F(E=p_e,
+                             NU=p_nu,
+                             RHO=p_rhom,),
+                ENDO_HETEROGENE=_F(   #PARAMETRES ENDO-FRAGILE
+                SY = 1.0E10,
+                WEIBULL = 6.0,
+                KI = 1.0E6,
+                EPAI = 1.0,
+                ),
+
+               NON_LOCAL=_F(
+               LONG_CARA = 0.2),
+
+                     THM_INIT=_F(PRE1=p_atm,
+                                 PORO=0.4,),
+                     THM_DIFFU=_F(RHO=p_rhom,
+                                  BIOT_COEF=p_biot,
+                                  PESA_X=-(p_g),
+                                  PESA_Y=0.0,
+                                  PESA_Z=0.0,
+                                  PERM_IN=PERMINT,),
+                     THM_LIQU=_F(RHO=p_rhol,
+                                 UN_SUR_K=0.0,
+                                 VISC=VISCOLIQ,
+                                 D_VISC_TEMP=ZERO,),);
+
+
+####################################
+# Resolution du probleme hydraulique
+####################################
+
+INCLUDE(UNITE=22,);
+
+##################################
+# Resolution du probleme mecanique
+##################################
+
+INCLUDE(UNITE=23,);
+
+FIN();

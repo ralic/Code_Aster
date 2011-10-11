@@ -1,7 +1,7 @@
       SUBROUTINE ACANCY(NBORDR, KWORK, SOMPGW, JRWORK, TSPAQ, IPG, C1,
      &                   C2, ORDINI, ORDFIN, NBCYAD, CYFERM, EPSPAC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 10/10/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C TOLE CRS_512 CRS_1404
       INTEGER      NBORDR, KWORK, SOMPGW, JRWORK, TSPAQ, IPG 
       INTEGER      ORDINI, ORDFIN, NBCYAD
       LOGICAL      CYFERM
-      REAL*8       C1, C2, EPSPAC(NBORDR)
+      REAL*8       C1, C2, EPSPAC(NBORDR+1)
 
 
 C ---------------------------------------------------------------------
@@ -93,8 +93,9 @@ C
          EPSE(I)= 0.0D0
          EPSP(I)= 0.0D0
 35    CONTINUE 
-      DO 45 I = 1, NBORDR
+      DO 45 I = 1, NBORDR+1
          EPSPAC(I) = 0.D0
+         SIGPR1(I) = 0.D0
 45    CONTINUE 
 
       CYFERM = .TRUE.

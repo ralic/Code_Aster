@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
          #  --------------------------------------------------
          # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
          LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
-                                                           "M_ACIER","M_ZIRC","NEUT1","NEUT2")),
+                                                           "M_ACIER","M_ZIRC","NEUT1","NEUT2","PTOT","DIVU",)),
 
          AFFE_VARC    =FACT(statut='f',max='**',
           regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
@@ -62,9 +62,10 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
-          NOM_VARC        =SIMP(statut='o',typ='TXM', 
+          NOM_VARC        =SIMP(statut='o',typ='TXM',
 #                                     champ dans la doc   into=("TEMP","CORR","IRRA","HYDR_ELNO","META_ELNO","NEUT")
-#                                     champ dans rscrsd   into=("IRRA","TEMP","HYDR_ELNO","HYDR_NOEU","EPSA_ELNO","META_ELNO")
+#                                     champ dans rscrsd   into=("IRRA","TEMP","HYDR_ELNO","HYDR_NOEU","EPSA_ELNO","META_ELNO",
+#                                                               "PTOT","DIVU")
                                                             ),
           CHAMP_GD        =SIMP(statut='f',typ=cham_gd_sdaster,),
           EVOL            =SIMP(statut='f',typ=evol_sdaster,),
@@ -73,7 +74,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
               NOM_CHAM      =SIMP(statut='f',typ='TXM',into=("TEMP","CORR","IRRA","NEUT"
                                                              "HYDR_ELNO","HYDR_NOEU",
                                                              "META_ELNO","META_NOEU",
-                                                             "EPSA_ELNO","EPSA_NOEU",)),
+                                                             "EPSA_ELNO","EPSA_NOEU","PTOT","DIVU",)),
               PROL_DROITE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
               PROL_GAUCHE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
               FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
@@ -104,6 +105,15 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_GD          =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
            VALE_DEF        =SIMP(statut='c',typ='R',max=1,min=1,defaut=(0.,)),
+         ),
+
+         #  mots clés cachés pour variable de commande PTOT :
+         #  -------------------------------------------------
+         VARC_PTOT    =FACT(statut='d',
+           NOM_VARC         =SIMP(statut='c',typ='TXM',defaut="PTOT"),
+           GRANDEUR         =SIMP(statut='c',typ='TXM',defaut="DEPL_R"),
+           CMP_GD           =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("PTOT",)),
+           CMP_VARC         =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("PTOT",)),
          ),
 
          #  mots clés cachés pour variable de commande SECH :
@@ -140,6 +150,15 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="IRRA_R"),
            CMP_GD          =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("IRRA",)),
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("IRRA",)),
+         ),
+
+         #  mots clés cachés pour variable de commande DIVU :
+         #  --------------------------------------------------
+         VARC_DIVU    =FACT(statut='d',
+           NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="DIVU"),
+           GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="EPSI_R"),
+           CMP_GD          =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("DIVU",)),
+           CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("DIVU",)),
          ),
 
          #  mots clés cachés pour variable de commande EPSA :

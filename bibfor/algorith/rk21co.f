@@ -4,11 +4,11 @@
      &                   KP,    EE,      A,       H, PGL,NBPHAS,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
      &                   ALPHA, COEL, X,       PAS,     SIGI,   EPSD,
-     &                   DETOT,HSR,ITMAX,TOLER,IRET)
+     &                   DETOT,NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET)
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C     ----------------------------------------------------------------
 
       INTEGER KPG,KSP,NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I,NFS,NSG
-      INTEGER NBPHAS,ITMAX,IRET
+      INTEGER NBPHAS,ITMAX,IRET,NHSR,NUMHSR(*)
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
       CHARACTER*(*)   FAMI
@@ -72,11 +72,11 @@ C     ----------------------------------------------------------------
       REAL*8 COTHE(NMAT),DCOTHE(NMAT)
       REAL*8 SIGI(6),EPSD(6),DETOT(6)
       REAL*8 Y(NVI)
-      REAL*8 F(NVI),HSR(NFS,NSG,NSG),TOLER
+      REAL*8 F(NVI),HSR(NSG,NSG,NHSR),TOLER
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
       REAL*8 EE(NVI),A(NVI)
 C      POUR GAGNER EN TEMPS CPU
-      REAL*8 TOUTMS(NBPHAS,NFS,NSG,6)
+      REAL*8 TOUTMS(NBPHAS,NFS,NSG,7)
 C
       DO 1 I=1,NVI
         EE(I)=0.D0
@@ -87,7 +87,7 @@ C
      &              CPMONO,NFS,NSG,TOUTMS,
      &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
-     &              HSR,ITMAX, TOLER, IRET)
+     &              NHSR,NUMHSR,HSR,ITMAX, TOLER, IRET)
         DO 10 I=1,NVI
           A(I)=F(I)
           Y(I)=Y(I)+A(I)*H
@@ -102,7 +102,7 @@ C
      &            CPMONO,NFS,NSG,TOUTMS,
      &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
-     &              HSR,ITMAX, TOLER, IRET)
+     &            NHSR,NUMHSR,HSR,ITMAX, TOLER, IRET)
       HS2=0.5D0*H
       DO 12 I=1,NVI
         EE(I)=(F(I)-A(I))*HS2

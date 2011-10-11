@@ -1,4 +1,5 @@
-      SUBROUTINE HMLVAG(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+      SUBROUTINE HMLVAG(YACHAI,OPTION,MECA,THER,HYDR,
+     &                  IMATE,NDIM,DIMDEF,DIMCON,
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,ADCP11,
      +                  ADCP12,ADDEP2,ADCP21,ADDETE,ADCOTE,CONGEM,
@@ -7,7 +8,7 @@
      +                  PVP0,SAT,RETCOM,THMC,CRIT,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +49,7 @@ C ======================================================================
       REAL*8        P1,DP1,P2,DP2,T,DT,PHI,PVP,H11,H12,RHO11,PHI0
       REAL*8        RINSTP
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
+      LOGICAL       YACHAI
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
@@ -128,7 +130,7 @@ C =====================================================================
       IF((EM.GT.EPS).AND.(YAMEC.EQ.0))THEN
         EMMAG = .TRUE.
       ENDIF
-      CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
+      CALL INITHM(IMATE,YACHAI,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                           EPSV,DEPSV,EPSVM)
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************

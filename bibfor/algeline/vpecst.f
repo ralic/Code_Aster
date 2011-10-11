@@ -1,12 +1,15 @@
       SUBROUTINE VPECST (IFM,TYPRES,OMGMIN,OMGMAX,NBFRE1,NBFRE2,
-     &                   NBFREQ,NBLAGR)
+     &                   NBFREQ,NBLAGR,TYPEP,TYPCON,DIMC1,ZIMC1)
       IMPLICIT NONE
       INTEGER             IFM,NBFRE1,NBFRE2,NBFREQ,NBLAGR
-      REAL*8              OMGMIN, OMGMAX
-      CHARACTER *16   TYPRES
+      REAL*8              OMGMIN,OMGMAX,DIMC1
+      COMPLEX*16          ZIMC1
+      CHARACTER*1         TYPEP
+      CHARACTER*8         TYPCON
+      CHARACTER*16        TYPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +26,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     ECRITURE DU NOMBRE DE FREQUENCE DANS UNE BANDE DONNEE
+C   PRINTING OF THE NUMBER OF THE EIGENVALUES THAT BELONG TO A CHOOSEN
+C   PATTERN
 C     ------------------------------------------------------------------
-C IN  IUNIT  : IS : UNITE LOGIQUE D'ECRITURE
 C IN  OMGMIN : R8 : PULSATION MIN
 C IN  OMGMAX : R8 : PULSATION MAX
 C IN  NBFRE1 : IS : NB DE PULSATION INFERIEURE A OMGMIN
@@ -33,74 +36,101 @@ C IN  NBFRE2 : IS : NB DE PULSATION INFERIEURE A OMGMAX
 C OUT NBFREQ : IS : NB DE PULSATION DANS LA BANDE OMGMIN OMGMAX
 C IN  NBLAGR : IS : NB DE DDLS DE LAGARNGE
 C IN  TYPRES : TX : TYPE DE CALCUL (DYNAMIQUE OU FLAMBEMENT)
+C IN  TYPEP  : K1 : TYPE D EIGENVALUE-PROBLEM
+C IN  TYPCON : K8 : TYPE DE CONTOUR (LICITE SI TYPEP='C')
+C IN  DIMC1  : R8 : DIMENSION CHARACTERISTIQUE REEL N 1 DU CONTOUR 
+C                   (LICITE SI TYPEP='C')
+C IN  ZIMC1  : C16: DIMENSION CHARACTERISTIQUE COMPLEXE N 1 DU CONTOUR 
+C                   (LICITE SI TYPEP='C')
 C     ------------------------------------------------------------------
 C     REMARQUE:  NBFRE1 ET NBFRE2  SONT CALCULES PAR VPSTUR
 C     ------------------------------------------------------------------
-      REAL*8      FREQOM,   FMIN,   FMAX
+      REAL*8  FREQOM,FMIN,FMAX
 C     ------------------------------------------------------------------
 C
 
-C
-C        --- NOMBRE DE FREQUENCE DANS LA BORNE ---
-         IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-           NBFREQ = ABS( NBFRE2 - NBFRE1 )
-         ELSE
-           IF ((OMGMIN *OMGMAX) .GE.0.D0) THEN
-             NBFREQ = ABS( NBFRE2 - NBFRE1 )
-           ELSE
-             NBFREQ = ABS( NBFRE2 + NBFRE1 - 2 * NBLAGR )
-           ENDIF
-         ENDIF
+C   --- WE ARE ON THE REEL PLANE (STURM TEST)
+      IF (TYPEP.EQ.'R') THEN
+        IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+          NBFREQ = ABS( NBFRE2 - NBFRE1 )
+        ELSE
+          IF ((OMGMIN *OMGMAX) .GE.0.D0) THEN
+            NBFREQ = ABS( NBFRE2 - NBFRE1 )
+          ELSE
+            NBFREQ = ABS( NBFRE2 + NBFRE1 - 2 * NBLAGR )
+          ENDIF
+        ENDIF
+        IF (NBFREQ .GT. 9999) THEN
+          CALL U2MESS('A','ALGELINE3_64')
+          WRITE(IFM,*)' NOMBRE DE VALEURS PROPRES : ',NBFREQ
+        ENDIF
+        IF (TYPRES.EQ.'DYNAMIQUE') THEN
+          FMIN=FREQOM(OMGMIN)
+          FMAX=FREQOM(OMGMAX)
+          WRITE(IFM,900)
+          IF ( NBFREQ .EQ. 0 )  THEN
+            WRITE (IFM,901)FMIN,FMAX
+          ELSE IF (FMIN.EQ.0.D0)  THEN
+            WRITE(IFM,902)NBFREQ,FMAX
+          ELSE
+            WRITE(IFM,903)FMIN,FMAX,NBFREQ
+          ENDIF
+        ELSE
+          WRITE (IFM,800)
+          IF (NBFREQ.EQ.0)  THEN
+            WRITE(IFM,801) OMGMIN, OMGMAX
+          ELSE IF (OMGMIN .EQ. 0.D0 )  THEN
+            WRITE(IFM,802)NBFREQ,OMGMAX
+          ELSE
+            WRITE(IFM,803)OMGMIN,OMGMAX,NBFREQ
+          ENDIF
+        ENDIF
 
-         IF (NBFREQ .GT. 9999) THEN
-             CALL U2MESS('A','ALGELINE3_64')
-             WRITE(IFM,*)' NOMBRE DE VALEURS PROPRES : ',NBFREQ
-         ENDIF
-
-         IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-
-           FMIN   = FREQOM(OMGMIN)
-           FMAX   = FREQOM(OMGMAX)
-C
-C        --- IMPRESSION ---
-           WRITE (IFM,900)
-           IF ( NBFREQ .EQ. 0 )  THEN
-             WRITE (IFM,901) FMIN, FMAX
-           ELSEIF ( FMIN .EQ. 0.D0 )  THEN
-             WRITE (IFM,902) NBFREQ, FMAX
-           ELSE
-             WRITE (IFM,903) FMIN,FMAX,NBFREQ
-           ENDIF
-
-         ELSE
-
-           WRITE (IFM,800)
-           IF ( NBFREQ .EQ. 0 )  THEN
-             WRITE (IFM,801) OMGMIN, OMGMAX
-           ELSEIF ( OMGMIN .EQ. 0.D0 )  THEN
-             WRITE (IFM,802) NBFREQ, OMGMAX
-           ELSE
-             WRITE (IFM,803) OMGMIN,OMGMAX,NBFREQ
-           ENDIF
-
-         ENDIF
-         WRITE (IFM,904)
+C   --- WE ARE ON THE COMPLEX PLANE (APM TEST)
+      ELSE IF (TYPEP.EQ.'C') THEN
+        NBFREQ=NBFRE2
+        IF (NBFREQ .GT. 9999) THEN
+          CALL U2MESS('A','ALGELINE3_64')
+          WRITE(IFM,*)' NOMBRE DE VALEURS PROPRES : ',NBFREQ
+        ENDIF
+        WRITE(IFM,910)
+        IF (NBFREQ.EQ.0)  THEN
+          IF (TYPCON(1:6).EQ.'CERCLE')
+     &      WRITE(IFM,911)DBLE(ZIMC1),DIMAG(ZIMC1),DIMC1
+        ELSE
+          IF (TYPCON(1:6).EQ.'CERCLE')
+     &      WRITE(IFM,912)DBLE(ZIMC1),DIMAG(ZIMC1),DIMC1,NBFREQ
+        ENDIF      
+C   --- ILLEGAL OPTION
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+    
+      WRITE (IFM,950)
 C     ------------------------------------------------------------------
   800 FORMAT(//,72('-'),/,'   VERIFICATION DU SPECTRE DE CHARGES ',
-     &'CRITIQUES (SUITE DE STURM)',/)
-  801 FORMAT(1X,'PAS DE CHARGES CRITIQUES DANS LA BANDE (',1PE12.5,',',
-     &                                                 1PE12.5,') ')
-  802 FORMAT(1X,I4,' CHARGES CRITIQUES INFERIEURES A ',1PE12.5,' HZ')
+     &'CRITIQUES (METHODE DE STURM)',/)
+  801 FORMAT(1X,'PAS DE CHARGE CRITIQUE DANS LA BANDE (',1PE10.3,',',
+     &                                                 1PE10.3,') ')
+  802 FORMAT(1X,I4,' CHARGES CRITIQUES INFERIEURES A ',1PE10.3,' HZ')
   803 FORMAT(1X,'LE NOMBRE DE CHARGES CRITIQUES DANS LA BANDE (',
-     &                               1PE12.5,',',1PE12.5,') EST ',I4)
-
+     &                               1PE10.3,',',1PE10.3,') EST ',I4)
+C
   900 FORMAT(//,72('-'),/,'   VERIFICATION DU SPECTRE DE FREQUENCES ',
-     &'(SUITE DE STURM)',/)
-  901 FORMAT(1X,'PAS DE FREQUENCES DANS LA BANDE (',1PE12.5,',',
-     &                                                 1PE12.5,') ')
-  902 FORMAT(1X,I4,' FREQUENCES PROPRES INFERIEURES A ',1PE12.5,' HZ')
-  903 FORMAT(1X,'LE NOMBRE DE FREQUENCES DANS LA BANDE (',1PE12.5,
-     &                                         ',',1PE12.5,') EST ',I4)
-  904 FORMAT(72('-'),/)
+     &'(METHODE DE STURM)',/)
+  901 FORMAT(1X,'PAS DE FREQUENCE DANS LA BANDE (',1PE10.3,',',
+     &                                                 1PE10.3,') ')
+  902 FORMAT(1X,I4,' FREQUENCES PROPRES INFERIEURES A ',1PE10.3,' HZ')
+  903 FORMAT(1X,'LE NOMBRE DE FREQUENCES DANS LA BANDE (',1PE10.3,
+     &                                         ',',1PE10.3,') EST ',I4)
+C
+  910 FORMAT(//,72('-'),/,'   VERIFICATION DU SPECTRE EN FREQUENCE ',
+     &  '(METHODE DE L''ARGUMENT PRINCIPAL)',/)
+  911 FORMAT(1X,'PAS DE FREQUENCE DANS LE DISQUE CENTRE EN (',1PE10.3,
+     &  ',',1PE10.3')',/,' ET DE RAYON ',1PE10.3)
+  912 FORMAT(1X,'LE NOMBRE DE FREQUENCES DANS LE DISQUE CENTRE EN (',
+     &  1PE10.3,',',1PE10.3')',/,' ET DE RAYON ',1PE10.3,' EST ',I4)
+C
+  950 FORMAT(72('-'),/)
 C     ------------------------------------------------------------------
       END

@@ -1,4 +1,4 @@
-#@ MODIF adaptation Messages  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF adaptation Messages  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,8 +54,10 @@ cata_msg={
 """),
 
 12 : _("""
-    La valeur du pas de temps retenu (%(r1)s) est supérieure à PAS_MAXI.
+    La valeur du pas de temps (%(r1)E) est supérieure à PAS_MAXI (%(r2)E).
+    On limite le pas de temps à PAS_MAXI (%(r2)E).
 """),
+
 
 13 : _("""
  On a depassé le nombre maximal de pas de temps autorisé.

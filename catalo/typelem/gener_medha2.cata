@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/08/2011   AUTEUR GRANET S.GRANET 
+%& MODIF TYPELEM  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,10 +49,13 @@ MODE_LOCAL__
                                  EN1   (PRE1     )
                                  EN2   (         )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
+    ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     ENORME   = NEUT_R   ELEM__         (X1       )
     EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
+    ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
@@ -61,7 +64,9 @@ MODE_LOCAL__
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (M11      FH11X    FH11Y    )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (M11      FH11X    FH11Y    )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30])
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30])
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
 
@@ -139,7 +144,11 @@ OPTION__
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
+                              OUT__  ECONTPG  PSIEF_R  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  
+                                     ZVARIPG  PVARI_R
+    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
+                              OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
+                                     ECONTNO  PSIEF_R
     VARI_ELNO      600   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -1    IN__   XXXXXX   XXXXXX

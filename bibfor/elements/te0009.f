@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C     I : LIGNE ; J : COLONNE
       I = 5
       J = 6
       IPOINT = INT(J*(J-1)/2)+I
-      KLV(IPOINT) = VXX
+      KLV(IPOINT) = -VXX
 C
       CALL JEVECH('PCAORIE','L',LORIEN)
       CALL MATROT(ZR(LORIEN),PGL)

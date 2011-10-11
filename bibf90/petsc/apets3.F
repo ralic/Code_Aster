@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETS3 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS3 PETSC  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -56,11 +56,12 @@
       PARAMETER   (NMXINS=5)
 !
 !     VARIABLES LOCALES
-      INTEGER JSLVK,JSLVR,JSLVI
+      INTEGER RANG  ,NBPROC
+      INTEGER JSLVK ,JSLVR ,JSLVI
       INTEGER NIREMP,NSMDI
 !
       CHARACTER*24 PRECON
-      CHARACTER*19 NOMAT,NOSOLV
+      CHARACTER*19 NOMAT ,NOSOLV
       CHARACTER*14 NONU
       CHARACTER*4  KBID
 !
@@ -85,7 +86,6 @@
       COMMON /LDLTSP/xlocal,xscatt,xglobal,SPSOMU,SPMAT,SPSOLV
 !----------------------------------------------------------------
 !     Variables PETSc
-      PetscMPIInt rang,size,ier
       PetscInt fill,ierr,neq
       PetscReal fillp
       Mat A
@@ -100,20 +100,19 @@
       NONU   =  NONUS(KPTSC)
       A      =     Ap(KPTSC)
       ksp    =     Kp(KPTSC)
-
+!
       CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
       CALL JEVEUO(NOSOLV//'.SLVR','L',JSLVR)
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
       PRECON = ZK24(JSLVK-1+2)
       FILLIN =   ZR(JSLVR-1+3)
       NIREMP =   ZI(JSLVI-1+4)
-
+!
       fill  = NIREMP
       fillp = FILLIN
 
-!     ----- RECUPERE LE RANG DU PROCESSUS
-      CALL MPI_COMM_RANK(PETSC_COMM_WORLD, rang, ier)
-      CALL MPI_COMM_SIZE(PETSC_COMM_WORLD, size, ier)
+!     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
+      CALL MPICM0(RANG  ,NBPROC)
 
 !     -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
 !     -----------------------------------------------------
@@ -165,9 +164,9 @@
 
 !     -- TRAITEMENT DES AUTRES PRECONDITIONNEURS
 !     ------------------------------------------
-      IF (size.GT.1) THEN
+      IF (NBPROC.GT.1) THEN
          IF (ACTION.NE.'RESOUD') GOTO 999
-! EN PARALLELE, ON NE PREPARE PAS LE PRECONDITIONNEUR TT DE SUITE
+! EN PARALLELE, ON NE PREPARE PAS LE PRECONDITIONNEUR TOUT DE SUITE
 ! CAR ON NE VEUT PAS ETRE OBLIGE D'APPELER KSPSetUp
          kspp=ksp
          call KSPGetPC(kspp,pcp,ierr)
@@ -180,7 +179,7 @@
      &                               PETSC_NULL_INTEGER,ksp,ierr)
          CALL ASSERT(ierr.EQ.0)
       ELSE
-! size.LE.1 i.e. SEQUENTIEL
+! NBPROC.LE.1 DONC SEQUENTIEL
          IF (ACTION.NE.'PRERES') GOTO 999
       END IF
 

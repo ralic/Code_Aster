@@ -7,7 +7,7 @@
       LOGICAL PILMEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE ROSE C.ROSE
 C     TOLE CRP_4
 C ======================================================================
@@ -98,7 +98,7 @@ C     -------------------------------------------------- VARIABLES
       INTEGER NPROC,IFM,NIV,LPMAX,IADIGS,MLNBPR
 C     NB : ORDRE DES MATRICES CL ET CU (LES PRODUITS MATRICE*MATRICE)
 C     96 EST OPTIMUM POUR EV68, 32 EST OPTIMUM POUR PENTIUM 4
-      INTEGER CL,CU,LLBLOC,JREFA
+      INTEGER CL,CU,LLBLOC,JREFA,LM,ISMAEM,LR,NI,VALI(2)
 C     ------------------------------------------------------------------
       DATA NOMPR1/'&&MULFR8.PROVISOI.REELS1'/
       DATA NOMPR2/'&&MULFR8.PROVISOI.REELS2'/
@@ -125,6 +125,7 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C----------------------------------------------------------------------
       NB=LLBLOC()
+      LM=ISMAEM()
       NOMA19 = NOMMAT
       NPIVOT = 0
 
@@ -150,7 +151,15 @@ C     -- ON FAIT LA FACTORISATION SYMBOLIQUE SI NECESSAIRE :
       NBSN = ZI(DESC+1)
       NBLOC = ZI(DESC+2)
       LGPILE = ZI(DESC+3)
-      IF (TYPSYM.EQ.0) LGPILE = 2*LGPILE
+      IF (TYPSYM.EQ.0) LGPILE = 2*LGPILE 
+      LR=LOR8EM()
+      IF(LGPILE.GT.LM/LR) THEN
+         NI=2
+         VALI(1)=LGPILE
+         VALI(2)=LM
+         CALL U2MESI('A','ALGELINE3_43',NI,VALI)
+      ENDIF
+
       LONMAT = ZI(DESC+4)
       CALL JELIBE(NOMP01)
       CALL WKVECT(NOMADJ,' V V I ',LONMAT,ADJNIT)

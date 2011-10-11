@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,7 +132,7 @@ C     -----------------------------------------------------------------
      &        (QUESTI.EQ.'EXI_TUYAU')  .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
      &        (QUESTI.EQ.'EXI_COQ1D')  .OR. (QUESTI.EQ.'EXI_GRILLE').OR.
      &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE') .OR.
-     &        (QUESTI.EQ.'CALC_RIGI')  .OR. (QUESTI.EQ.'EXI_PMF')
+     &        (QUESTI.EQ.'CALC_RIGI')  .OR. (QUESTI.EQ.'EXI_STRX')
      &        ) THEN
 
 C     -----------------------------------------------------------------
@@ -217,7 +217,7 @@ C     -----------------------------------------------------------------
                 GO TO 40
               END IF
 
-            ELSE IF (QUESTI.EQ.'EXI_PMF') THEN
+            ELSE IF (QUESTI.EQ.'EXI_STRX') THEN
               IF ((NOMTE.EQ.'MECA_POU_D_EM') .OR.
      &            (NOMTE.EQ.'MECA_POU_D_TGM')) THEN
                 REPK = 'OUI'

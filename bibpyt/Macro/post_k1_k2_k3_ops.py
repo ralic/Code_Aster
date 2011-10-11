@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
 def verif_type_fond_fiss(ndim,FOND_FISS) :
    from Utilitai.Utmess     import  UTMESS
    if ndim == 3 :
-      Typ = FOND_FISS.sdj.FOND_______TYPE.get()
+      Typ = FOND_FISS.sdj.FOND_TYPE.get()
 #     attention : Typ est un tuple contenant une seule valeur
       if Typ[0].rstrip() != 'SEG2' and Typ[0].rstrip() != 'SEG3' :
          UTMESS('F','RUPTURE0_12')
@@ -134,10 +134,10 @@ def get_noeud_fond_fiss(FOND_FISS) :
    """ retourne la liste des noeuds de FOND_FISS"""
    import string as S
    from Utilitai.Utmess     import  UTMESS
-   Lnoff = FOND_FISS.sdj.FOND_______NOEU.get()
+   Lnoff = FOND_FISS.sdj.FOND_NOEU.get()
    if Lnoff == None :
 #     Cas double fond de fissure : par convention les noeuds sont ceux de fond_inf
-      Lnoff = FOND_FISS.sdj.FONDINF____NOEU.get()
+      Lnoff = FOND_FISS.sdj.FONDINF_NOEU.get()
       if Lnoff == None : UTMESS('F','RUPTURE0_11')
    Lnoff = map(S.rstrip,Lnoff)
    return Lnoff
@@ -163,7 +163,7 @@ def get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args) :
       elif ndim == 3 :
 
 #        determination du pas de parcours des noeuds : 1 (tous les noeuds) ou 2 (un noeud sur 2)
-         Typ = FOND_FISS.sdj.FOND_______TYPE.get()
+         Typ = FOND_FISS.sdj.FOND_TYPE.get()
          Typ = Typ[0].rstrip()
          if (Typ == 'SEG2') or (Typ =='SEG3' and TOUT == 'OUI') :
             pas = 1
@@ -405,11 +405,11 @@ def get_dico_levres(lev,FOND_FISS,ndim,Lnoff,Nnoff):
       import string as S
       from Utilitai.Utmess     import  UTMESS
       if lev == 'sup' :
-         Nnorm = FOND_FISS.sdj.SUPNORM____NOEU.get()
+         Nnorm = FOND_FISS.sdj.SUPNORM_NOEU.get()
          if not Nnorm :
             UTMESS('F','RUPTURE0_19')
       elif lev == 'inf' :
-         Nnorm = FOND_FISS.sdj.INFNORM____NOEU.get()
+         Nnorm = FOND_FISS.sdj.INFNORM_NOEU.get()
          if not Nnorm :
             UTMESS('F','RUPTURE0_20')
       Nnorm = map(S.rstrip,Nnorm)
@@ -1730,28 +1730,33 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])
       nom_fonc_e_prol  = nom_fonc_e.sdj.PROL.get()[0].strip()
       nom_fonc_nu_prol = nom_fonc_nu.sdj.PROL.get()[0].strip()
-                         
-      if (nom_fonc_e_prol=='CONSTANT' and nom_fonc_nu_prol=='CONSTANT'):
-         e  = nom_fonc_e.Ordo()[0]
-         nu = nom_fonc_nu.Ordo()[0]
-         try:
-            del dicmat['TEMP_DEF']
-         except: 
-            KeyError    
-      else:
+
 #        on verifie que les fonctions dependent bien que de la temperature    
-         if ((nom_fonc_e.Parametres()  ['NOM_PARA']!='TEMP' and nom_fonc_e_prol!='CONSTANT') or
-             (nom_fonc_nu.Parametres() ['NOM_PARA']!='TEMP' and nom_fonc_nu_prol!='CONSTANT')):
-            UTMESS('F','RUPTURE1_67')
-     
+      if ((nom_fonc_e.Parametres()  ['NOM_PARA']!='TEMP' and nom_fonc_e_prol!='CONSTANT') or
+          (nom_fonc_nu.Parametres() ['NOM_PARA']!='TEMP' and nom_fonc_nu_prol!='CONSTANT')):
+         UTMESS('F','RUPTURE1_67')
+
       if dicmat.has_key('TEMP_DEF') and not args['EVOL_THER'] :
          nompar = ('TEMP',)
          valpar = (dicmat['TEMP_DEF'],)
          UTMESS('A','RUPTURE0_6',valr=valpar)
          nomres=['E','NU']
          valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,2)
-         e = valres[0]
-         nu = valres[1]        
+         
+         if (nom_fonc_e_prol=='CONSTANT'):
+            e  = nom_fonc_e.Ordo()[0]
+         else:
+            e = valres[0]
+
+         if (nom_fonc_nu_prol=='CONSTANT'):
+            nu  = nom_fonc_nu.Ordo()[0]
+         else:
+            nu = valres[1]
+
+
+      if not dicmat.has_key('TEMP_DEF') and not args['EVOL_THER'] :
+         UTMESS('F','RUPTURE0_52')
+     
 
    if FOND_FISS and args['EVOL_THER'] :
 #      on recupere juste le nom du resultat thermique (la température est variable de commande)
@@ -1760,6 +1765,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        resuth=S.ljust(args['EVOL_THER'].nom,8).rstrip()
 
    if not Tempe3D :
+
+      if e==0.0: 
+         UTMESS('F','RUPTURE0_53')
+
       coefd3 = 0.
       coefd  = e * NP.sqrt(2.*pi)
       unmnu2 = 1. - nu**2
@@ -1845,13 +1854,13 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          if not RESULTAT :
             UTMESS('F','RUPTURE0_16')
 
-         ListmaS = FOND_FISS.sdj.LEVRESUP___MAIL.get()
+         ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
 
          if not ListmaS :
             UTMESS('F','RUPTURE0_19')
 
          if SYME_CHAR == 'SANS':
-            ListmaI = FOND_FISS.sdj.LEVREINF___MAIL.get()
+            ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
 
 #        Dictionnaire des coordonnees des noeuds du fond
          d_coorf = get_coor_libre(self,Lnoff,RESULTAT,ndim)

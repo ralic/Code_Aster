@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C
 
         INTEGER         NBCOMM(NMAT,3),NFS,NSG
         REAL*8          PGL(3,3)
-        REAL*8          TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
+        REAL*8          TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
         CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------

@@ -1,368 +1,182 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE GNICOLAS G.NICOLAS
-# TITRE Maillage adaptatif mecanique sur une poutre en flexion
+# MODIF  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
+# TITRE FORMATION AVANCEE CONTACT DE HERTZ
+# forma04b.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#-------------------------------------------------------------------
-#                  CORRIGE TP INDICATEUR-REMAILLAGE N 1 (NEW6)
-#                          POUTRE EN FLEXION
-#                  QUESTION 2: RAFFINEMENT UNIFORME EN TRIA6
-#
-# RQ PROPRE AU CAS-TEST OFFICIEL: La plupart des appels PYTHON ont
-# ete commentarises. Ils n'ont lieu d'etre que pour un fonctionne
-# ment en interactif.
-#
-# INSTRUCTIONS LIEES AU TP EN INTERACTIF:
-# EN RUN_ASTER_NEW6 ('run_aster config.txt' ou via l'outil 'meg')
-# PARAMETRE D'EXECUTION DE CETTE ETUDE: 128Mo
-# MODE D'EMPLOI:
-# MEG;'FICHIER/OUVRIR' AVEC TP12_LOCAL.PRET; BOUTON 'GO'
-# POUR TRAITER 1A: DECOMMENTARISER LE PREMIER FIN() ET COMMENTARISER
-#                  LE SECOND.
-# POUR TRAITER 1B: FAITES L'inv
-#-------------------------------------------------------------------
 
-#-------------------------------------------------------------------
-#                       PRE-TRAITEMENTS PYTHON
-#-------------------------------------------------------------------
-# IMPORT PYTHON
-import numpy as NP
+DEBUT(CODE=_F(NOM='FORMA04B',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT3_16',);
+# On ignore l'alarme concernant VALE_CONT qui n'est pas cree
 
-# VALEURS DE REFERENCE (APPROCHEES) APRES 4 REMAILLAGES UNIFORMES TRIA6
-ener_ref =  0.102242
-flec_ref = -0.0614777
+# -- Parametres du calcul
 
-# INITIALISATION DES LISTES PYTHON ET CREATION DES VECTEURS ASSOCIES
-energie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-fleche_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-erenergie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-erfleche_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-ZZ1_vs_raff = [3.619, 1.332 , 0.626 , 0.346 , 0.202 , 0., 0.0, 0.0]
-BR_vs_raff = [2.868, 1.305 , 0.742 , 0.458 , 0.282 , 0., 0.0, 0.0]
-nbddl_vs_raff = [156, 555 , 2085 , 8073 , 31761, 0.0, 0.0, 0.0]
-energie_vs_raff_NUM = NP.zeros((len(energie_vs_raff),2))
-fleche_vs_raff_NUM  = NP.zeros((len(fleche_vs_raff),2))
-erenergie_vs_raff_NUM = NP.zeros((len(erenergie_vs_raff),2))
-erfleche_vs_raff_NUM  = NP.zeros((len(erfleche_vs_raff),2))
-ZZ1_vs_raff_NUM     = NP.zeros((len(ZZ1_vs_raff),2))
-BR_vs_raff_NUM      = NP.zeros((len(BR_vs_raff),2))
-nbddl_vs_raff_NUM   = NP.zeros((len(nbddl_vs_raff),2))
+E  =  20000.
+nu =  0.3
+h  =  2.
+R  =  50.
 
-for i in range(len(energie_vs_raff)) :
-    energie_vs_raff_NUM[i][1] = 0.0
-    fleche_vs_raff_NUM[i][1]  = 0.0
-    erenergie_vs_raff_NUM[i][1] = 0.0
-    erfleche_vs_raff_NUM[i][1]  = 0.0
-    ZZ1_vs_raff_NUM[i][1]     = 0.0
-    BR_vs_raff_NUM[i][1]      = 0.0
-    nbddl_vs_raff_NUM[i][1]   = 0.0
-    energie_vs_raff_NUM[i][0] = i
-    fleche_vs_raff_NUM[i][0]  = i
-    erenergie_vs_raff_NUM[i][0] = i
-    erfleche_vs_raff_NUM[i][0]  = i
-    ZZ1_vs_raff_NUM[i][0]     = i
-    BR_vs_raff_NUM[i][0]      = i
-    nbddl_vs_raff_NUM[i][0]   = i
+# -- Lecture du maillage et affectation du modele, des chargements
 
-# NOMBRE DE REMAILLAGE (MAILLAGE INITIAL = MAILLAGE 0)
-nb_calc = 4
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
-# INIT. TABLEAU
-nb_calc1 = nb_calc + 1
-nb_calc2 = nb_calc1 + 1
-MA      = [None]*nb_calc1
-MO      = [None]*nb_calc1
-CHMAT   = [None]*nb_calc1
-CLIM    = [None]*nb_calc1
-CH      = [None]*nb_calc1
-DEPLA   = [None]*nb_calc1
-RESV    = [None]*nb_calc1
-ENER    = [None]*nb_calc1
-FLEC    = [None]*nb_calc1
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_2D=_F(GROUP_MA=('CONT1','CONT2',),),);
 
-#-------------------------------------------------------------------
-#                       CALCUL ASTER
-#-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM = 'FORMA04B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',
-      MEMOIRE =_F( TYPE_ALLOCATION=3, TAILLE = 8000,)
-      );
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,
+                          NU=nu,),);
 
-# DEFINITION DU MATERIAU
-ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,
-                            NU=0.2,),);
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
+                            MATER=MAT,),);
 
-# DEFINITION DES INSTANTS POUR STAT_NON_LINE
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,
-                                NOMBRE=1,),);
-F_INST=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,1.,1.),);
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
 
-# LECTURE ET INFO MAILLAGE
-num_calc=0
-MA[num_calc]=LIRE_MAILLAGE(INFO=2, VERI_MAIL=_F());
-MA[num_calc]=DEFI_GROUP(reuse =MA[num_calc],
-                 MAILLAGE=MA[num_calc],
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
-MACR_INFO_MAIL(MAILLAGE=MA[num_calc],
-        QUALITE='OUI',
-        CONNEXITE='OUI',
-        TAILLE='OUI')
-#FIN();
+CL=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_MA='A1A2',
+                               DX=0,),
+                            _F(GROUP_MA='A2B2',
+                               DY=-h,),
+                            _F(GROUP_MA='A1B1',
+                               DY=h,),),);
 
-# BOUCLE PYTHON INDICATEUR D'ERREUR/REMAILLAGE
-for num_calc in range(0,nb_calc1) :
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
+                          1,1,
+                          ),);
 
-# PREPARATION DU CALCUL SUR LE NOUVEAU MAILLAGE MA[num_calc]
-   MO[num_calc]=AFFE_MODELE(MAILLAGE=MA[num_calc],
-                  AFFE=(_F(TOUT = 'OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),),);
-   CHMAT[num_calc]=AFFE_MATERIAU(MAILLAGE=MA[num_calc],
-                       AFFE=_F(GROUP_MA='GM14',
-                                MATER=ACIER,),);
+# -- Definition du contact
 
-# CL D'ENCASTREMENT + PRESSION REPARTIE POUR FLEXION
-   CLIM[num_calc]=AFFE_CHAR_MECA(
-             MODELE=MO[num_calc],
-             DDL_IMPO=_F(GROUP_MA='GM13',
-                       DX=0.0,
-                       DY=0.0),);
-   CH[num_calc]=AFFE_CHAR_MECA(MODELE=MO[num_calc],
-                 PRES_REP=(_F(GROUP_MA='GM12',
-                              PRES=1.E-1,),),);
+CONT=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='CONTINUE',
+                  ZONE=_F(GROUP_MA_MAIT='CONT2',
+                          GROUP_MA_ESCL='CONT1',
+                          INTEGRATION='GAUSS',
+                          CONTACT_INIT='OUI',
+                          ),);
 
-# CALCUL ELASTIQUE VIA STAT_NON_LINE OU MECA_STATIQUE
-#   DEPLA[num_calc]=MECA_STATIQUE(MODELE=MO[num_calc],
-#                     CHAM_MATER=CHMAT[num_calc],
-#                     EXCIT=(
-#                         _F(CHARGE = CLIM[num_calc]),
-#                         _F(CHARGE = CH[num_calc]))
-#                        )
+TPS=DEFI_LIST_REEL(DEBUT=0,
+                   INTERVALLE=_F(JUSQU_A=1,
+                                 NOMBRE=20,),);
 
-   RESV[num_calc]=STAT_NON_LINE(MODELE=MO[num_calc],
-                       CHAM_MATER=CHMAT[num_calc],
-                       EXCIT=(_F(CHARGE=CLIM[num_calc],),
-                              _F(CHARGE=CH[num_calc],
-                                 FONC_MULT=F_INST,),),
-                       COMP_INCR=(_F(RELATION='ELAS',
-                                     TOUT='OUI',), ),
-                       INCREMENT=_F(LIST_INST=L_INST),);
-                       
-   DEPLA[num_calc]=EXTR_RESU(RESULTAT=RESV[num_calc],ARCHIVAGE=_F(NUME_ORDRE=1,),);
-                       
+STNL=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CL,
+                            FONC_MULT=RAMPE,),
+                   CONTACT=CONT,
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   NEWTON=_F(REAC_ITER=1,MATRICE='ELASTIQUE'),
+                   INCREMENT=_F(LIST_INST=TPS,),
+                   );
+
+# -- Post-traitement
+
+STNL=CALC_ELEM(reuse =STNL,
+               RESULTAT=STNL,
+               OPTION=('SIEQ_ELGA','SIEQ_ELNO','SIEF_ELNO',),);
+
+STNL=CALC_NO(reuse =STNL,
+             RESULTAT=STNL,
+             OPTION=('SIEF_NOEU','SIEQ_NOEU',),);
+
+# -- Groupe de noeuds oriente depuis le centre de la zone de contact esclave
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                               NOM='CONT_ord',
+                               GROUP_MA='CONT1',
+                               GROUP_NO_ORIG='C1',),);
+
+# -- Pression de contact extraite sur le bord oriente
+
+LAGS_abs=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='LAGS_C en fonction de ABSC_CURV',
+                                 RESULTAT=STNL,
+                                 NOM_CHAM='DEPL',
+                                 INST=1.0,
+                                 GROUP_NO='CONT_ord',
+                                 NOM_CMP='LAGS_C',),);
+
+IMPR_TABLE(TABLE=LAGS_abs,);
+
+# -- Trace de la pression et de la solution analytique
+
+LAGS_f=RECU_FONCTION(TABLE=LAGS_abs,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='LAGS_C',);
+
+V_ABSC=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=_F(JUSQU_A=10,
+                                    NOMBRE=100,),);
 
 
-# POST_TRAITEMENT POUR OBTENIR LES CONTRAINTES AUX NOEUDS ET LES
-# DEUX TYPES D'INDICATEURS D'ERREUR EN MECANIQUE (ZZ1 ET RESIDU).
-   DEPLA[num_calc]=CALC_ELEM(reuse=DEPLA[num_calc],
-                  RESULTAT=DEPLA[num_calc],
-                  TOUT='OUI',
-                  NUME_ORDRE=1,
-                  OPTION=(
-# LISSAGE DES CONTRAINTES SI MECA_STATIQUE
-#                       'SIGM_ELNO',
-# LISSAGE DES CONTRAINTES SI STAT_NON_LINE
-                       'SIEF_ELNO',),);
+# -- Pression de hertz et demi-largeur de contact
 
-   DEPLA[num_calc]=CALC_ERREUR(reuse=DEPLA[num_calc],
-                  RESULTAT=DEPLA[num_calc],
-                  TOUT='OUI',
-                  NUME_ORDRE=1,
-                  OPTION=(
-# CALCUL DE L'INDICATEUR ZZ1 PAR ELEM
-                       'ERZ1_ELEM',
-# CALCUL DE L'INDICATEUR EN RESIDU PAR ELEM ET AUX NOEUDS PAR ELEM
-                       'ERME_ELEM',
-                       'ERME_ELNO',),);
+p0 = -E/(pi*(1.0-nu*nu))*sqrt(2.0*2.0*h/R)
+a  = sqrt(R*h)
 
-# IMPRESSION FORMAT CASTEM I
-   DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
-   IMPR_RESU(MODELE=MO[num_calc], FORMAT='CASTEM', UNITE=55,
-            RESU=_F(MAILLAGE=MA[num_calc],
-                    RESULTAT=DEPLA[num_calc],
-                    NOM_CHAM=('DEPL','SIEF_ELNO',
-                              'ERME_ELNO')
-                     ),);
-   DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
+PRES = FORMULE(VALE='p0*sqrt(1.0-(x/a)*(x/a))',
+               NOM_PARA='x',);
 
-# AFFICHAGE GIBI INTERACTIF DEPL + CONTRAINTE + INDICATEURS EN RESIDU
-#   os.system('sed s/numcalc/'+str(num_calc)+'/g /home/boiteau/ASTER/TP_INDIC/TP12/post1.dgibi > post1.dgibi')
-#   os.system('/logiciels/aster/outils/gibi2000.x post1.dgibi')
+PRES_sol=CALC_FONC_INTERP(FONCTION=PRES,
+                          LIST_PARA=V_ABSC,
+                          NOM_PARA='x',);
 
-# CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
-   ENER[num_calc]=POST_ELEM(
-                     RESULTAT=DEPLA[num_calc],
-                     ENER_POT=_F(TOUT='OUI',),);
+# -- Validation des resultats
 
-# CALCUL DE LA FLECHE
-   FLEC[num_calc] = POST_RELEVE_T(
-          ACTION=(_F(INTITULE='FLECHE',
-                 GROUP_NO='GM10',
-                 RESULTAT=DEPLA[num_calc],
-                 TOUT_ORDRE='OUI',
-                 NOM_CHAM='DEPL',
-                 RESULTANTE=('DY'),
-                 OPERATION='EXTRACTION',),
-                 ),)                
+TEST_RESU(RESU=_F(RESULTAT=STNL,
+                  INST=1.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  GROUP_NO='C1',
+                  VALE=p0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.03,
+                  REFERENCE='ANALYTIQUE',),);
 
-# IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
-   IMPR_TABLE(TABLE=ENER[num_calc],FORMAT_R='1PE24.12')
-#   IMPR_TABLE(TABLE=ENER[num_calc])
-   IMPR_TABLE(TABLE=FLEC[num_calc],FORMAT_R='1PE24.12')
-#   IMPR_TABLE(TABLE=FLEC[num_calc])
+TEST_RESU(RESU=_F(RESULTAT=STNL,
+                  INST=1.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  GROUP_NO='C1',
+                  VALE=-2866.7425041924,
+                  CRITERE='RELATIF',
+                  VERSION='11.0.25',
+                  REFERENCE='NON_REGRESSION',),);
 
-# PASSAGE VARIABLE ASTER --> VARIABLE PYTHON VIA DES TABLES
-   energie_vs_raff_NUM[num_calc][1] = ENER[num_calc]['TOTALE',1]
-   erenergie_vs_raff_NUM[num_calc][1] = abs((energie_vs_raff_NUM[num_calc][1]-ener_ref)/ener_ref)*100
-   fleche_vs_raff_NUM[num_calc][1]  = FLEC[num_calc]['DY',1]
-   erfleche_vs_raff_NUM[num_calc][1]  = abs((fleche_vs_raff_NUM[num_calc][1]-flec_ref)/flec_ref)*100
+# -- Impressions des resultats
 
-# SPECIAL CAS-TEST OFFICIEL POUR TEST_FONCTION
-   if num_calc == 0 :
-      erfl0 = abs((fleche_vs_raff_NUM[num_calc][1]-flec_ref)/flec_ref)*100.
-      eren0 = abs((energie_vs_raff_NUM[num_calc][1]-ener_ref)/ener_ref)*100.
-   if num_calc == 4 :
-      erfl4 = abs((fleche_vs_raff_NUM[num_calc][1]-flec_ref)/flec_ref)*100.
-      eren4 = abs((energie_vs_raff_NUM[num_calc][1]-ener_ref)/ener_ref)*100.
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE='',
+              UNITE=29,
+              COURBE=(_F(FONCTION=LAGS_f,),
+                      _F(FONCTION=PRES_sol,),),
+              TITRE='Pression de Hertz',
+              BORNE_X=(0,20,),
+              BORNE_Y=(-3000,0,),
+              GRILLE_X=1,
+              GRILLE_Y=500,
+              LEGENDE_X='Abscisse curviligne (mm)',
+              LEGENDE_Y='Pression (Mpa)',);
 
-# INIT. POUR AFFICHAGE
-   ZZ1_vs_raff_NUM[num_calc][1]     = ZZ1_vs_raff[num_calc]
-   BR_vs_raff_NUM[num_calc][1]      = BR_vs_raff[num_calc]
-   nbddl_vs_raff_NUM[num_calc][1]   = nbddl_vs_raff[num_calc]
-
-
-# AFFICHAGES GNUPLOT INTERACTIF (APRES LE PREMIER REMAILLAGE)
-   num_calc1 = num_calc + 1
-#   if num_calc > 0 :
-#     graphe = Gnuplot.Gnuplot()
-#     Gnuplot.GnuplotOpts.prefer_inline_data=1
-#     graphe('set data style lines')
-#     graphe('set grid')
-#     graphe.xlabel('Numero iteration de raffinement uniforme')
-#     graphe.ylabel('Fleche ou energie')
-#     graphe.plot(Gnuplot.Data(fleche_vs_raff_NUM[:num_calc1],\
-#                 title='Convergence de la fleche'),
-#                 Gnuplot.Data(energie_vs_raff_NUM[:num_calc1],\
-#                 title='Convergence de l energie de deformation'),)
-#     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
-#     del graphe
-#     graphe = Gnuplot.Gnuplot()
-#     Gnuplot.GnuplotOpts.prefer_inline_data=1
-#     graphe('set data style lines')
-#     graphe('set grid')
-#     graphe.xlabel('Numero iteration de raffinement uniforme')
-#     graphe.ylabel('Nombre de DDL')
-#     graphe.plot(Gnuplot.Data(nbddl_vs_raff_NUM[:num_calc1],title='NB_DDL'),)
-#     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
-#     del graphe
-#     graphe = Gnuplot.Gnuplot()
-#     Gnuplot.GnuplotOpts.prefer_inline_data=1
-#     graphe('set data style lines')
-#     graphe('set grid')
-#     graphe.xlabel('Numero iteration de raffinement uniforme')
-#     graphe.ylabel('Erreur relative en %')
-#     graphe.plot(Gnuplot.Data(erenergie_vs_raff_NUM[:num_calc1],\
-#                 title='Energie de deformation'),
-#            Gnuplot.Data(erfleche_vs_raff_NUM[:num_calc1],title='Fleche'),
-#            Gnuplot.Data(ZZ1_vs_raff_NUM[:num_calc1],title='ZZ1'),
-#            Gnuplot.Data(BR_vs_raff_NUM[:num_calc1],title='Residu'),)
-#     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
-#     del graphe
-
-# IMPRESSION DANS LE FICHIER MESSAGE DES RESULATS
-   print '**************'
-   print 'CONVERGENCE DE L ENERGIE = ',energie_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'CONVERGENCE DE LA FLECHE = ',fleche_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'NB_DDL = ',nbddl_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'ERREUR EN ENERGIE = ',erenergie_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'ERREUR EN FLECHE = ',erfleche_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'ERREUR ZZ1 = ',ZZ1_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'ERREUR RESIDU = ',BR_vs_raff_NUM[:num_calc1]
-
-# POUR NE PAS REMAILLER A LA DERNIERE ITERATION
-   if num_calc == nb_calc :
-     break
-
-# SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES
-   MA[num_calc1]=CO('MA_%d' % (num_calc1))
-
-# RAFFINEMENT UNIFORME VIA HOMARD
-# MAILLAGE DE DEPART: MA[num_calc]
-# MAILLAGE D'ARRIVE: MA[num_calc1]
-   MACR_ADAP_MAIL(
-              ADAPTATION='RAFFINEMENT_UNIFORME',
-              MAILLAGE_N = MA[num_calc],
-              MAILLAGE_NP1 = MA[num_calc1],
-              QUALITE='OUI',
-              TAILLE='OUI',
-              CONNEXITE='OUI')
-
-#-------------------------------------------------------------------
-#             TEST_FONCTION SPECIAL CAS-TEST OFFICIEL
-# On teste des variables PYTHON (erreur en energie et en fleche)
-#-------------------------------------------------------------------
-ERREFL0=FORMULE(VALE='erfl0*1.',NOM_PARA='BIDON')
-ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
-ERREFL4=FORMULE(VALE='erfl4*1.',NOM_PARA='BIDON')
-ERREEN4=FORMULE(VALE='eren4*1.',NOM_PARA='BIDON')
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=ERREFL0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-4,CRITERE='RELATIF',
-       VALE_REFE=1.06929296E-01,REFERENCE='NON_REGRESSION',VERSION = '7.02.01'),
-    _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-4,CRITERE='RELATIF',
-       VALE_REFE=1.25637002E-01,REFERENCE='NON_REGRESSION',VERSION = '7.02.01'),
-    _F(FONCTION=ERREFL4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-3,CRITERE='ABSOLU',
-       VALE_REFE=0.,REFERENCE='ANALYTIQUE',),
-    _F(FONCTION=ERREEN4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-3,CRITERE='ABSOLU',
-       VALE_REFE=0.,REFERENCE='ANALYTIQUE',)))
-
-#-------------------------------------------------------------------
-#                       POST-TRAITEMENTS PYTHON
-#-------------------------------------------------------------------
-
-# AFFICHAGES GNUPLOT POSTSCRIPT
-#f1 = open("fort.60","w")
-#f2 = open("fort.61","w")
-#f3 = open("fort.62","w")
-#f4 = open("fort.63","w")
-#f5 = open("fort.64","w")
-#f6 = open("fort.65","w")
-#f7 = open("fort.66","w")
-
-#for num_calc in range(0,nb_calc1) :
-#  f1.write("%i %f \n" %( num_calc, fleche_vs_raff_NUM[num_calc][1]))
-#  f2.write("%i %f \n" %( num_calc, energie_vs_raff_NUM[num_calc][1]))
-#  f3.write("%i %f \n" %( num_calc, nbddl_vs_raff_NUM[num_calc][1]))
-#  f4.write("%i %f \n" %( num_calc, erfleche_vs_raff_NUM[num_calc][1]))
-#  f5.write("%i %f \n" %( num_calc, erenergie_vs_raff_NUM[num_calc][1]))
-#  f6.write("%i %f \n" %( num_calc, ZZ1_vs_raff_NUM[num_calc][1]))
-#  f7.write("%i %f \n" %( num_calc, BR_vs_raff_NUM[num_calc][1]))
-#f1.close()
-#f2.close()
-#f3.close()
-#f4.close()
-#f5.close()
-#f6.close()
-#f7.close()
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=STNL,),);
 
 FIN();

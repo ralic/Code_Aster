@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC TROIS DISQUES
 # shll102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -185,7 +185,7 @@ for NTRIM in tours:
 
   malou = balou * OM**2
   F[25]= malou
-  F[26]= malou*1j
+  F[26]= -malou*1j
 
 
   AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
@@ -233,7 +233,7 @@ for NTRIM in tours:
                               PHAS_DEG=0.0,),
                            _F(VECT_ASSE=bal_Zass,
                               FONC_MULT=FUN,
-                              PHAS_DEG=90.0,),
+                              PHAS_DEG=-90.0,),
                            ),
                               );
 

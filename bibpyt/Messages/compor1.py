@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF compor1 Messages  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,10 +128,6 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
 21 : _("""
   MONOCRISTAL :: écrouissage isotrope non trouvé.
-"""),
-
-22 : _("""
-  MONOCRISTAL :: nombre de matrice d'interaction trop grand.
 """),
 
 23 : _("""

@@ -3,7 +3,7 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,26 +72,23 @@ C DECLARATION PARAMETRES D'APPELS
       CHARACTER*(*) FAMI,POUM
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 COMPOR(*),OPTION
-      REAL*8      CRIT(3),TEMP,DLAGTG,DEPS(6),DSIG(6)
-      REAL*8      HYDR, SECH, SECREF
+      REAL*8      CRIT(3),TEMP,PTOT,DLAGTG,DEPS(6),DSIG(6),HYDR, SECH
+      REAL*8      SECREF
       REAL*8      EPS(6),SIG(6),VI,DSIDEP(6,6),ENERGI(2),DENERG(2)
+
       LOGICAL     DERIVL
 
 C DECLARATION VARIABLES LOCALES
       LOGICAL     CPLAN,ELAS,VMIS,LINE,NONLIN,INCO,PUIS
       INTEGER ICODRE(5)
       CHARACTER*8 NOMRES(5)
-      INTEGER     JPROL, JVALE, NBVALE
-      INTEGER     NDIMSI, NITER, K, L, IBID
+      CHARACTER*16 PHENOM
+      INTEGER     JPROL, JVALE, NBVALE, NDIMSI, NITER, K, L, IBID
 
       REAL*8 VALRES(5), E, NU, TROISK, DEUXMU, ALPHA, SIGY, DSDE
-      REAL*8 KDESS,BENDO
-      REAL*8 THER, EPSTH(6), EPSMO, EPSDV(6), EPSEQ, SIELEQ
-      REAL*8 P, RP, RPRIM, G, COEF, EPSI
-      REAL*8 AIRERP,DTHER
-      REAL*8 F0,APPROX,PREC,X
-      REAL*8 KRON(6)
-      REAL*8 DUM,DIVU,R8PREM
+      REAL*8 KDESS,BENDO, THER, EPSTH(6), EPSMO, EPSDV(6), EPSEQ, SIELEQ
+      REAL*8 P, RP, RPRIM, G, COEF, EPSI, AIRERP,DTHER
+      REAL*8 F0,APPROX,PREC,X,KRON(6), DUM,DIVU,R8PREM,BIOT
       REAL*8 DEPSTH(6),DEPSDV(6),DEPSEQ,DEPSMO,DDIVU,R8MIEM,EPSTES
       REAL*8 COCO,DP0,RPRIM0,XAP,VAL0,PRECR
 
@@ -99,7 +96,7 @@ C====================================================================
 C---COMMONS NECESSAIRES A HENCKY C_PLAN (NMCRI1)
 C====================================================================
       INTEGER  IMATE2, JPROL2, JVALE2, NBVAL2
-      REAL*8   PM, SIGEL(6), LIN, EPSTHE
+      REAL*8   PM, SIGEL(6), LIN, EPSTHE,EPSPTO
       COMMON /RCONM1/ DEUXMU, NU, E, SIGY, RPRIM, PM, SIGEL, LIN
       COMMON /KCONM1/ IMATE2, JPROL2, JVALE2, NBVAL2
       REAL*8   NMCRI1
@@ -122,12 +119,9 @@ C====================================================================
       LINE  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_LINE')
       PUIS  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_PUIS')
       EPSI  = R8PREM()
-
-
 C====================================================================
 C INITIALISATIONS LIEES AU CALCUL DE DERIVEES LAGRANGIENNE
 C====================================================================
-
       IF (DERIVL) THEN
         IF (.NOT.ELAS)
      &    CALL U2MESS('F','RUPTURE1_21')
@@ -155,7 +149,6 @@ C====================================================================
 C TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
       CALL VERIFT(FAMI,KPG,KSP,POUM,IMATE,'ELAS',1,EPSTHE,IRET)
 
-
       CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
       CALL RCVARC(' ','HYDR',POUM,FAMI,KPG,KSP,HYDR,IHYD)
       IF (IHYD.NE.0) HYDR=0.D0
@@ -166,9 +159,9 @@ C TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
 C SI CALCUL DE LA DERIVEE LAGRANGIENNE DERIVL=TRUE 
 C ET SECHAGE ou HYDRATATION EN VARIABLE DE COMMANDE
 C => ERREUR CAS NON PRÉVU
-      IF ((DERIVL) .AND. (IHYD .EQ.0)) 
+      IF (DERIVL .AND. (IHYD .EQ.0)) 
      &   CALL U2MESS('F','SENSIBILITE_57') 
-      IF ((DERIVL) .AND. (ISEC .EQ.0)) 
+      IF (DERIVL .AND. (ISEC .EQ.0)) 
      &   CALL U2MESS('F','SENSIBILITE_57')
       IF (ELAS .OR. LINE .OR. PUIS) THEN
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,2,
@@ -215,7 +208,6 @@ C
 C====================================================================
 C - LECTURE DES CARACTERISTIQUES DE NON LINEARITE DU MATERIAU
 C====================================================================
-
       IF (LINE) THEN
         NOMRES(1)='D_SIGM_EPSI'
         NOMRES(2)='SY'
@@ -239,11 +231,9 @@ C====================================================================
         CALL RCFONC('S',1,JPROL,JVALE,NBVALE,SIGY,DUM,DUM,
      &               DUM,DUM,DUM,DUM,DUM,DUM)
       ENDIF
-
 C====================================================================
 C CALCULS DIVERS
 C====================================================================
-
 C - CALCUL DE EPSMO ET EPSDV
       THER = EPSTHE - KDESS*(SECREF-SECH)- BENDO*HYDR
 
@@ -261,10 +251,33 @@ C PAR ELEMENT
         IF (DERIVL) DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
      &                +(1.D0+NU)/(1.D0-NU)*DTHER
       ENDIF
-
       EPSMO = 0.D0
+C
+C SI ON EST SUR UNE LOI ELASTIQUE, SI ON EST EN D_PLAN OU EN 3D,
+C ON REGARDE LA VARIABLE DE COMMANDE PRESSION POUR LE CHAINAGE HM
+C
+      IF (ELAS.AND.(.NOT.CPLAN)) THEN
+        CALL RCVARC(' ','PTOT',POUM,FAMI,KPG,KSP,PTOT,IRET)
+
+        IF (IRET.EQ.0) THEN
+          PHENOM = 'THM_DIFFU'
+          NOMRES(1) = 'BIOT_COE'
+
+          CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ',PHENOM,0,' ',
+     &                    0.D0,1,NOMRES,VALRES, ICODRE,1 )
+C
+          BIOT = VALRES(1)
+C
+          EPSPTO = BIOT/TROISK*PTOT
+C
+        ENDIF
+C
+      ELSE
+        EPSPTO = 0.D0
+      ENDIF
+C
       DO 10 K=1,3
-        EPSTH(K)   = EPS(K) - THER
+        EPSTH(K)   = EPS(K) - THER - EPSPTO
         EPSTH(K+3) = EPS(K+3)
         EPSMO      = EPSMO + EPSTH(K)
 10    CONTINUE
@@ -283,22 +296,18 @@ C CALCUL DES DERIVEES LAGRANGIENNES: EPSTH (DEPSTH), EPSMO (DEPSMO)
 
       DO 20 K=1,NDIMSI
         EPSDV(K) = EPSTH(K) - EPSMO * KRON(K)
-
 C CALCUL DE LA DERIVEE LAGRANGIENNE DU TENSEUR DEVIATORIQUE (DEPSDV)
         IF (DERIVL) DEPSDV(K) = DEPSTH(K) - DEPSMO * KRON(K)
 20    CONTINUE
-
 C - CALCUL DE LA CONTRAINTE ELASTIQUE EQUIVALENTE
       EPSEQ = 0.D0
       DEPSEQ = 0.D0
       DO 30 K=1,NDIMSI
         EPSEQ = EPSEQ + EPSDV(K)*EPSDV(K)
-
 C CALCUL DE SA DERIVEE LAGRANGIENNE (PART I)
         IF (DERIVL) DEPSEQ = DEPSEQ + 2.D0*EPSDV(K)*DEPSDV(K)
 30    CONTINUE
       EPSEQ = SQRT(1.5D0*EPSEQ)
-
 C CALCUL DE LA DERIVEE LAGRANGIENNE DU EPS EQUIVALENT (PART II)
       IF (DERIVL) THEN
         IF (EPSEQ.GT.EPSTES) THEN
@@ -308,11 +317,9 @@ C CALCUL DE LA DERIVEE LAGRANGIENNE DU EPS EQUIVALENT (PART II)
           DEPSEQ = 0.75D0 * DEPSEQ/EPSTES
         ENDIF
       ENDIF
-
       SIELEQ = DEUXMU * EPSEQ
       NONLIN = .FALSE.
       IF (VMIS) NONLIN = (SIELEQ.GE.SIGY)
-
 C====================================================================
 C CAS NON LINEAIRE
 C====================================================================
@@ -367,7 +374,6 @@ C
           EPSDV(1)= EPSDV(1)-X/3.D0
           EPSDV(2)= EPSDV(2)-X/3.D0
           EPSDV(3)= EPSDV(3)+X*2.D0/3.D0
-
 C      CAS 2D OU 3D
         ELSE
 C===========================================
@@ -428,7 +434,6 @@ C====================================================================
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA' .OR.
      &     OPTION(1:7) .EQ. 'RUPTURE'  ) THEN
-
         IF (NONLIN) THEN
           VI = P
         ELSE IF (VMIS) THEN
@@ -445,7 +450,6 @@ C - CALCUL DE LA MATRICE DE RIGIDITE TANGENTE
             DSIDEP(K,L) =  0.D0
  70       CONTINUE
  60     CONTINUE
-
 C      TERME LINEAIRE
         DO 80 K=1,3
           DO 90 L=1,3

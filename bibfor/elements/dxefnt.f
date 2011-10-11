@@ -3,7 +3,7 @@
       REAL*8 PGL(3,3),SIGT(1)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*10 PHENOM
       REAL*8 DF(3,3),DM(3,3),DMF(3,3)
       REAL*8 T2EV(4),T2VE(4),T1VE(9)
-      REAL*8 TSUP(4),TINF(4),TMOY(4)
+      REAL*8 TSUP(4),TINF(4),TMOY(4),rbid
       INTEGER MULTIC,NBCOU,JCOU,IMOY
 C     ------------------------------------------------------------------
 
@@ -70,6 +70,13 @@ C     -----------------
       DO 10 I = 1,32
         SIGT(I) = ZERO
    10 CONTINUE
+
+C     -- S'IL N'Y A PAS DE TEMPERATURE, IL N'Y A RIEN A CALCULER :
+      CALL RCVARC(' ','TEMP','+','NOEU',1,1,RBID,IRET4)
+      IF (IRET4.NE.0) GOTO 30
+
+
+
       CALL JEVECH('PNBSP_I','L',JCOU)
       NBCOU=ZI(JCOU)
       CALL RCVARC(' ','TEMP','REF','NOEU',1,1,TREF,IRET1)

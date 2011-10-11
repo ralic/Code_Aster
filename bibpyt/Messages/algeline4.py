@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline4 Messages  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,21 +89,111 @@ cata_msg = {
 9 : _("""
  Erreur données GROUP_MA déjà existant :  %(k1)s
 """),
-
+10 : _("""
+ Votre problème modal n'est pas un problème géneralisé à matrices réelles symétriques.
+ Il comporte des matrices non symétriques et/ou complexes, ou bien il s'agit d'un problème
+ quadratique. Son spectre n'est pas uniquement restreint à l'axe reel. Il représente une
+ zone du plan complexe. 
+ Il en résulte des incompatibilités avec votre paramétrage car vous avez sélectionné votre
+ zone de vérification de spectre sous forme de bande (TYPE_RESU='DYNAMIQUE'/'FLAMBEMENT'),
+ il faut relancer votre calcul en spécifiant votre zone de vérification via les paramètres
+ du mot-clé TYPE_RESU='MODE_COMPLEXE'.
+"""),
 11 : _("""
  erreur données GROUP_NO déjà existant :  %(k1)s
+"""),
+12 : _("""
+
+ Réduction sous forme de Hessenberg supérieure: erreur LAPACK %(i1)d !
+"""),
+13 : _("""
+ L'algorithme APM a atteint le nombre maximal de discrétisations du contour, 
+ c'est à dire %(i1)d, sans convergence du procédé.
+
+ Conseils:
+ ========
+ Vous pouvez:
+  - Changer les dimensions du contour de manière à réduire son perimètre,
+  - Changer sa localisation. Il passe peut-etre trés près de valeurs propres
+    ce qui peut induire des perturbations numériques.
+"""),
+14 : _("""
+ L'algorithme APM a atteint son nombre maximal d'itérations, c'est à dire %(i1)d,
+ sans convergence du procédé.
+
+ Conseils:
+ ========
+  Vous pouvez:
+  - Augmenter ce nombre maximal d'itérations via le paramètre NMAX_ITER_CONTOUR,
+  - Augmenter la discrétisation initiale du contour via NBPOINT_CONTOUR,
+  - Changer les dimensions du contour de manière à réduire son perimètre,
+  - Changer sa localisation. Il passe peut-etre trés près de valeurs propres
+    ce qui peut induire des perturbations numériques.
+"""),
+15 : _("""
+ L'algorithme APM avec le calcul du polynome caractéristique via une factori
+ sation LDLT a un probleme numérique: le point de vérification (%(r1)f,%(r2)f)
+ est très proche d'une valeur propre ou le solveur linéaire a eu un problème.
+
+ Conseils:
+ ========
+  Vous pouvez:
+  - Augmenter les dimensions du contour pour englober cette valeur propre,
+  - Changer la discrétisation du contour (plus risqué).
+  - Changer le paramétrage du solveur linéaire ou de solveur linéaire (expert).
+"""),
+16: _("""
+ L'algorithme choisit a besoin de calculer un determinant de matrice. Cette fonc
+ tionnalite de MUMPS n'a pas encore ete branchee dans Code_Aster.
+ Dans ce cas on doit utiliser, soit le solveur linéaire LDLT, soit MULT_FRONT
+ suivant que la matrice soit assemblée ou generalisée.
+ On a donc changé le paramétrage pour vous et selectionné l'un des deux solveurs
+ préconisés.
+ 
+ Conseil:
+ ========
+ La prochaine fois, dans une telle situation paramétrer explicitement
+ SOLVEUR/METHODE='MULT_FRONT' (matrice assemblée) ou 'LDLT'(matrice géneralisée).
+"""),
+17: _("""
+ La variante 'ROMBOUT' de la méthode de comptage 'APM' est en cours de fiabilisation.
+ Elle n'a pas encore portée pour:
+   - les matrices complexes et/ou non symétriques,
+   - les problemes quadratiques,
+   - les matrices generalisées.
+ 
+ Conseil:
+ ========
+ Vous pouvez utiliser l'autre variante de la methode 'APM' via le paramétrage
+ COMPTAGE/POLYNOME_CHARAC='LDLT'.
 """),
 
 19 : _("""
  Matrice masse non définie, il faudrait essayer l'autre algorithme de résolution.
 """),
-
+20: _("""
+ Pour l'instant, on est obligé de choisir pour un résultat de type 'DYNAMIQUE' ou
+ 'FLAMBEMENT', la méthode de comptage 'STURM', et pour 'MODE_COMPLEXE', la méthode
+ 'APM'.
+ Si vos choix ne respectent pas cette règle, on fait le changement pour vous, en
+ se réferrant au type de problème que vous avez choisi.
+"""),
 21 : _("""
  manque de place memoire longueur de bloc insuffisante:  %(i1)d
  le super-noeud  %(i2)d
   neccessite un bloc de  %(i3)d
 """),
+22 : _("""
+ L'algorithme APM a convergé sur un nombre de fréquences aberrant !
 
+ Conseils:
+ ========
+  Vous pouvez:
+  - Augmenter la discrétisation initiale du contour via NBPOINT_CONTOUR,
+  - Changer les dimensions du contour de manière à réduire son perimètre,
+  - Changer sa localisation. Il passe peut-etre trés près de valeurs propres
+    ce qui peut induire des perturbations numériques.
+"""),
 24 : _("""
  %(k1)s   pour le mot cle :  %(k2)s    noeud :  %(k3)s composante :  %(k4)s
 """),

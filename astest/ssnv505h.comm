@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -246,10 +246,10 @@ TEST_TABLE(TABLE=T_REA_LA,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.),
-           VALE=2.442544E3,
+           VALE=2352.5696275202,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='10.1.4',);
+           VERSION='11.0.25',);
 
 #
 # ---- METHODE CONTINUE ----

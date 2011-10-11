@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------
-      PARAMETER (NCVARC=6)
+      PARAMETER (NCVARC=8)
       CHARACTER*16 CHVARC(NCVARC)
 C     ------------------------------------------------------------------
 C                      C H A M P _ A C O U S T I Q U E
@@ -164,7 +164,8 @@ C     ------------------------------------------------------------------
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHVARC/
      & 'IRRA',            'TEMP',            'HYDR_ELNO',
-     & 'HYDR_NOEU',       'EPSA_ELNO',       'META_ELNO'/
+     & 'HYDR_NOEU',       'EPSA_ELNO',       'META_ELNO',
+     & 'PTOT',             'DIVU'         /
 C     ------------------------------------------------------------------
 C                      C H A M P _ A C O U S T I Q U E
 C     ------------------------------------------------------------------
@@ -205,6 +206,7 @@ C     --- CREATION DE .DESC  ET  .ORDR ---
       DO 35 I=1,NCMUTI
         CHMECA(I+NCMEC1+NCMEC2+NCMEC3)=CHMUTI(I)
    35 CONTINUE
+
 C     -- DECLARATION ET INITIALISATION DES PARAMETRES ET VAR. D'ACCES :
 C     ------------------------------------------------------------------
       CALL UTPARA(BAS1,NOMSD,TYPES2,NBORDR)

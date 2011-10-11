@@ -1,6 +1,7 @@
-      SUBROUTINE VDREP2 ( NOMTEZ ,ALPHA, BETA, MATEVN , MATEVG )
+      SUBROUTINE VDREP2 ( ALPHA, BETA, ZILZI, ZRLZR,
+     &                    MATEVN, MATEVG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +29,6 @@ C                  DE L'ELEMENT AU REPERE UTILISATEUR (MATRICE MATEVG)
 C                  POUR LES ELEMENTS DE COQUE EPAISSE 3D .
 C
 C   ARGUMENT        E/S   TYPE         ROLE
-C    NOMTE          IN     K*       NOM DU TYPE D'ELEMENT
 C    ALPHA, BETA    IN     R    ANGLES DETERMINANT LE REPERE UTILISATEUR
 C    MATEVN(2,2,10) OUT    R        MATRICES DE PASSAGE DES REPERES
 C                                   INTRINSEQUES AUX NOEUDS  DE
@@ -40,46 +40,19 @@ C                                   REPERE UTILISATEUR
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           CHARACTER*(*)     NOMTEZ
            REAL*8            MATEVN(2,2,1), MATEVG(2,2,1)
 C -----  VARIABLES LOCALES
-           CHARACTER*16      NOMTE
-           REAL*8            PGL(3,3), NORM
-C.========================= DEBUT DECLARATIONS NORMALISEES  JEVEUX ====
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C.========================= FIN DECLARATIONS NORMALISEES  JEVEUX ====
+           REAL*8            PGL(3,3), NORM, ZRLZR(*)
+           INTEGER           ZILZI(*)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
-C
-C --- INITIALISATIONS :
-C     ---------------
-      NOMTE  = NOMTEZ
-C
-C --- RECUPERATION DES OBJETS DESCRIPTEURS DES ELEMENTS :
-C     =================================================
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
 C
 C --- NOMBRE DE NOEUDS DE L'ELEMENT  :
 C     -----------------------------
-      NB2  = ZI(LZI-1+2)
+      NB2  = ZILZI(2)
 C
 C --- NOMBRE DE POINTS D'INTEGRATION DE L'ELEMENT (SOUS-INTEGRE) :
 C     ----------------------------------------------------------
-      NPGSN= ZI(LZI-1+4)
-C
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ', LZR )
+      NPGSN= ZILZI(4)
 C
 C --- RECUPERATION DES ANGLES DETERMINANT LE REPERE UTILISATEUR
 C --- PAR RAPPORT AU REPERE GLOBAL :
@@ -114,7 +87,7 @@ C       ------------------------------------------------------
         DO 20 J = 1, 3
           DO 30 I = 1, 3
             K  = K + 1
-            PGL(I,J) = ZR(LZR+IDEC+(INO-1)*9+K-1)
+            PGL(I,J) = ZRLZR(IDEC+(INO-1)*9+K)
   30      CONTINUE
   20    CONTINUE
 C
@@ -166,7 +139,7 @@ C       -------
         DO 50 J = 1, 3
           DO 60 I = 1, 3
             K  = K + 1
-            PGL(I,J) = ZR(LZR+IDEC+(IGAU-1)*9+K-1)
+            PGL(I,J) = ZRLZR(IDEC+(IGAU-1)*9+K)
   60      CONTINUE
   50    CONTINUE
 C

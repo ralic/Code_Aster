@@ -1,4 +1,5 @@
-       SUBROUTINE CALCCO (OPTION,PERMAN,MECA,THMC,THER,HYDR,IMATE,
+       SUBROUTINE CALCCO (OPTION,YACHAI,PERMAN,MECA,THMC,THER,HYDR,
+     &                    IMATE,
      +                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,
      +                    YATE,ADDEME,ADCOME,ADVIHY,
      +                    ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,
@@ -10,7 +11,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +55,7 @@ C ======================================================================
       REAL*8        PHI,PVP,PAD,H11,H12,KH,RHO11,PHI0
       REAL*8        PVP0,SAT,RINSTP
       CHARACTER*16  OPTION,MECA,THMC,THER,HYDR
-      LOGICAL PERMAN
+      LOGICAL PERMAN,YACHAI
 C ======================================================================
 C --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 C ======================================================================
@@ -70,7 +71,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_SATU ----------------------
 C ======================================================================
       IF (THMC.EQ.'LIQU_SATU') THEN
-           CALL HMLISA(PERMAN,OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,
+           CALL HMLISA(PERMAN,YACHAI,OPTION,MECA,THMC,THER,HYDR,
+     &                 IMATE,NDIM,
      &                DIMDEF,DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      &                ADVIHY,ADVICO,VIHRHO,VICPHI,ADDEP1,BDCP11,ADDETE,
      &                ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,
@@ -80,7 +82,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE GAZ ----------------------------
 C ======================================================================
       ELSE IF (THMC.EQ.'GAZ') THEN
-          CALL HMGAZP(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
+          CALL HMGAZP(YACHAI,OPTION,MECA,THMC,THER,HYDR,
+     &                IMATE,NDIM,DIMDEF,
      +                  DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      +                  ADVICO,VICPHI,ADDEP1,BDCP11,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
@@ -90,7 +93,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE ----------------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_VAPE') THEN
-          CALL HMLIVA(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+          CALL HMLIVA(YACHAI,OPTION,MECA,THER,HYDR,
+     &                IMATE,NDIM,DIMDEF,DIMCON,
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,BDCP11,
      +                  ADCP12,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
@@ -100,7 +104,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ------------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
-          CALL HMLVAG(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+          CALL HMLVAG(YACHAI,OPTION,MECA,THER,HYDR,
+     &                IMATE,NDIM,DIMDEF,DIMCON,
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,BDCP11,
      +                  ADCP12,ADDEP2,ADCP21,ADDETE,ADCOTE,CONGEM,
@@ -111,7 +116,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ -----------------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_GAZ') THEN
-          CALL HMLIGA(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+          CALL HMLIGA(YACHAI,OPTION,MECA,THER,HYDR,
+     &                IMATE,NDIM,DIMDEF,DIMCON,
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICSAT,ADDEP1,BDCP11,ADDEP2,
      +                  ADCP21,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
@@ -121,7 +127,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM -------------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
-          CALL HMLGAT(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+          CALL HMLGAT(YACHAI,OPTION,MECA,THER,HYDR,
+     &                IMATE,NDIM,DIMDEF,DIMCON,
      +                NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                VIHRHO,VICPHI,VICSAT,ADDEP1,BDCP11,ADDETE,
      +                ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
@@ -131,7 +138,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE ---------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
-          CALL HMLVGA(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+          CALL HMLVGA(YACHAI,OPTION,MECA,THER,HYDR,
+     &                IMATE,NDIM,DIMDEF,DIMCON,
      +                NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,BDCP11,
      +                ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
@@ -142,7 +150,8 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE ---------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_AD_GAZ') THEN
-          CALL HMLADG(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+          CALL HMLADG(YACHAI,OPTION,MECA,THER,HYDR,
+     &                IMATE,NDIM,DIMDEF,DIMCON,
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,BDCP11,
      +                  ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,

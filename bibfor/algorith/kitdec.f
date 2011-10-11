@@ -1,4 +1,5 @@
-       SUBROUTINE KITDEC(YAMEC, YATE, YAP1, YAP2, MECA, THMC, THER,
+       SUBROUTINE KITDEC(KPI,YACHAI,YAMEC, YATE, YAP1, YAP2,
+     &                   MECA, THMC, THER,
      +                   HYDR, IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1,
      +                   ADDEP2, ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
@@ -6,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,11 +28,12 @@ C ======================================================================
 C TOLE CRP_21
 C ======================================================================
       IMPLICIT NONE
-      INTEGER       YAMEC, YATE, YAP1, YAP2, IMATE
+      INTEGER       KPI,YAMEC, YATE, YAP1, YAP2, IMATE
+      LOGICAL       YACHAI
       INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM, RETCOM
       REAL*8        T0, P10, P20, PHI0, PVP0, DEPSV, EPSV, DEPS(6), T
       REAL*8        P1, P2, GRAT(3), GRAP1(3), GRAP2(3), DP1, DP2, DT
-      REAL*8        DEFGEM(*), DEFGEP(*) ,RINSTP
+      REAL*8        DEFGEM(*), DEFGEP(*), RINSTP
       CHARACTER*16  MECA, THMC, THER, HYDR
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
@@ -63,7 +65,8 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES VARIABLES ---------------------------------------------
 C ======================================================================
-      CALL CALCVA(  YAMEC, YATE, YAP1, YAP2, DEFGEM, DEFGEP,
+      CALL CALCVA(  KPI,YACHAI,YAMEC, YATE, YAP1, YAP2,
+     &              DEFGEM, DEFGEP,
      +              ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM,
      +              T0, P10, P20, DEPSV, EPSV, DEPS, T, P1, P2,
      +              GRAT, GRAP1, GRAP2, DP1, DP2, DT, RETCOM )

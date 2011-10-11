@@ -1,7 +1,6 @@
-      SUBROUTINE FETMER(IERMPI)
-!-----------------------------------------------------------------------
+      SUBROUTINE MPIERR(IERMPI)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF FETMER UTILITAI  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF MPIERR UTILITAI  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -18,23 +17,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
-
-!-----------------------------------------------------------------------
-!    - FONCTION REALISEE:  GESTION DES ERREURS DU MPI DE FETAM
-!     ------------------------------------------------------------------
-!     IN  IERMPI : IN2  : CODE DE RETOUR D'ERREUR DE ROUTINE MPI
-!     IN  TEMPS  : R8	: VECTEUR DE TIMING POUR UTTCPU
-!     IN  INFOFE : CH19 : CHAINE DE CHARACTERES POUR MONITORING FETI
-!     IN  RANG   : IN	: RANG DU PROCESSEUR
-!     IN  IFM	 : IN	: UNITE LOGIQUE D'IMPRESSION STANDARD
-!----------------------------------------------------------------------
-! RESPONSABLE ABBAS M.ABBAS
-C CORPS DU PROGRAMME
+C RESPONSABLE DESOZA T.DESOZA
+! CORPS DU PROGRAMME
       IMPLICIT NONE
-C DECLARATION PARAMETRES D'APPELS
+! DECLARATION PARAMETRES D'APPELS
       INTEGER*4     IERMPI
 
 #ifdef _USE_MPI
+
       INCLUDE 'mpif.h'
 
 C VARIABLES LOCALES
@@ -42,13 +32,14 @@ C VARIABLES LOCALES
       INTEGER*4     LENSER,IERMP2
       INTEGER       IAUX1,IAUX2
       
-      IAUX1=IERMPI
-      IAUX2=MPI_SUCCESS
+      IAUX1 = IERMPI
+      IAUX2 = MPI_SUCCESS
       IF (IAUX1.NE.IAUX2) THEN
         CALL MPI_ERROR_STRING(IERMPI,SERR,LENSER,IERMP2)
-        IAUX1=LENSER
+        IAUX1 = LENSER
         CALL U2MESK('F','APPELMPI_5',1,SERR(1:IAUX1))
       ENDIF
       
 #endif
+
       END

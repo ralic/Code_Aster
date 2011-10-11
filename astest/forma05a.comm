@@ -1,336 +1,172 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE GNICOLAS G.NICOLAS
-# TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
-# forma05a.para = tps_job 160 mem_job 128Mo ncpus 1 liste_test R
+# MODIF  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
+# TITRE TP RUPTURE : PLAQUE EN TRACTION 
+# forma05a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#-------------------------------------------------------------------
-# REMARQUE GENERALE : IL FAUDRA FAIRE EVOLUER CE CAS-TEST POUR QU'IL
-#                     PRENNE EN COMPTE LE SUIVI DES FRONTIERES COURBES
-#                     AU COURS DE L'ADAPTATION (CF ZZZZ175A)
-#-------------------------------------------------------------------
-#                 CORRIGE TP INDICATEUR-REMAILLAGE N 2 (FORMAT NEW6)
-#                         CULASSE FISSUREE EN THERMO-MECANIQUE
-#           QUESTION 1: RAFFINEMENT UNIFORME/LIBRE EN TRIA3 LUMPE
-#                         VIA L'INDICATEUR THERMIQUE
-#
-# RQ PROPRE AU CAS-TEST OFFICIEL: La plupart des appels PYTHON ont
-# ete commentarises. Ils n'ont lieu d'etre que pour un fonctionne
-# ment en interactif.
-#
-# INSTRUCTIONS LIEES AU TP EN INTERACTIF:
-# EN RUN_ASTER_NEW6 ('run_aster config.txt' ou via l'outil 'meg')
-# PARAMETRE D'EXECUTION DE CETTE ETUDE: 96Mo
-# MODE D'EMPLOI:
-# MEG;'FICHIER/OUVRIR' AVEC TP21_LOCAL.PRET; BOUTON 'GO'
-# POUR TRAITER 1A: DECOMMENTARISER LE PREMIER FIN() ET COMMENTARISER
-#                  LE SECOND.
-# POUR TRAITER 1B: FAITES L'inv
-# POUR TRAITER 1C: COMMENTARISER ET MODIFIER MACR_ADAP_MAIL
-#-------------------------------------------------------------------
 
-#-------------------------------------------------------------------
-#                       PRE-TRAITEMENTS PYTHON
-#-------------------------------------------------------------------
-# IMPORT PYTHON
-import numpy as NP
+DEBUT(CODE=_F(NOM='FORMA05A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-# VALEURS DE REFERENCE (APPROCHEES) APRES 3 REMAIL. UNIF. TRIA3 LUMPE
-ener_ref  =  -2016.80291
-tmoy_ref  = 4080.00
+# MODELIDATION A : FEM 2D
 
-# INITIALISATION DES LISTES PYTHON ET CREATION DES VECTEURS ASSOCIES
-energie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-erenergie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-tmoyen_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-ertmoyen_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-BR_vs_raff = [22.301, 13.573 , 7.915 , 0.0 , 0.0 , 0.0, 0.0, 0.0]
-nbddl_vs_raff = [911, 3443 , 13364 , 0.0, 0.0 , 0.0, 0.0, 0.0]
-energie_vs_raff_NUM = NP.zeros((len(energie_vs_raff),2))
-erenergie_vs_raff_NUM = NP.zeros((len(erenergie_vs_raff),2))
-BR_vs_raff_NUM      = NP.zeros((len(BR_vs_raff),2))
-nbddl_vs_raff_NUM   = NP.zeros((len(nbddl_vs_raff),2))
-tmoyen_vs_raff_NUM = NP.zeros((len(tmoyen_vs_raff),2))
-ertmoyen_vs_raff_NUM = NP.zeros((len(ertmoyen_vs_raff),2))
+# CE FICHIER EST LA VERSION CORRIGEE DU 1ER EXERCICE DES TPS
+# POUR LA PREPARATION DES TPS, FOURNIR EGALEMENT UNE VERSION A TROUS DE CE FICHIER :
+# - COMMENTER LA PRISE EN COMPTE DES ELEMENTS DE BARSOUM
+# - REMPLACER LES PARAMETRES RSUP ET RSUP PAR UNE VALEUR BIDON (EX. : 999)
+# - SUPPRIMER LES TEST_TABLE
 
-for i in range(len(energie_vs_raff)) :
-    energie_vs_raff_NUM[i][1] = 0.0
-    erenergie_vs_raff_NUM[i][1] = 0.0
-    tmoyen_vs_raff_NUM[i][1] = 0.0
-    ertmoyen_vs_raff_NUM[i][1] = 0.0
-    BR_vs_raff_NUM[i][1]      = 0.0
-    nbddl_vs_raff_NUM[i][1]   = 0.0
-    energie_vs_raff_NUM[i][0] = i
-    erenergie_vs_raff_NUM[i][0] = i
-    tmoyen_vs_raff_NUM[i][0] = i
-    ertmoyen_vs_raff_NUM[i][0] = i
-    BR_vs_raff_NUM[i][0]      = i
-    nbddl_vs_raff_NUM[i][0]   = i
+MA=DEFI_MATERIAU(ELAS=_F(E=210000e6, 
+                         NU=0.3))
 
-# NOMBRE DE REMAILLAGES (MAILLAGE INITIAL = MAILLAGE 0)
-nb_calc = 4
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
-# INIT. TABLEAU
-nb_calc1 = nb_calc + 1
-nb_calc2 = nb_calc1 + 1
-MAT      = [None]*nb_calc1
-MOT      = [None]*nb_calc1
-CHMATT   = [None]*nb_calc1
-CLIMT    = [None]*nb_calc1
-CHT      = [None]*nb_calc1
-TEMP     = [None]*nb_calc1
-ENERT    = [None]*nb_calc1
-TMOYEN   = [None]*nb_calc1
+MODE=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION= 'D_PLAN'))
 
-#-------------------------------------------------------------------
-#                       CALCUL ASTER
-#-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM = 'FORMA05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_2D=_F(GROUP_MA='CD'))
 
-# DEFINITION DU MATERIAU (ACIER 16MND5)
-ACIER_M=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,),);
-ACIER_T=DEFI_MATERIAU(THER=_F(LAMBDA = 33.5,RHO_CP=526.E4))
+# Barsoum
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                  GROUP_NO_FOND='O'))
 
-# LECTURE ET INFO MAILLAGE THERMIQUE
-num_calc=0
-MAT[num_calc]=LIRE_MAILLAGE(INFO=2, );
-MACR_INFO_MAIL(MAILLAGE=MAT[num_calc],
-        QUALITE='OUI',
-        CONNEXITE='OUI',
-        TAILLE='OUI')
+MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MA))
 
-#FIN();
+CHAR=AFFE_CHAR_MECA(MODELE=MODE,
+                    DDL_IMPO=(_F(GROUP_MA='OE',DY=0.),
+                              _F(GROUP_NO='E', DX=0.)),
+                    FORCE_CONTOUR=_F(GROUP_MA='CD',FY=10e6))
 
-# BOUCLE PYTHON INDICATEUR D'ERREUR/REMAILLAGE
-for num_calc in range(0,nb_calc1) :
+RESU=MECA_STATIQUE(MODELE=MODE,
+                   CHAM_MATER=MATE,
+                   EXCIT=_F(CHARGE=CHAR))
 
-# PREPARATION DU CALCUL SUR LE NOUVEAU MAILLAGE MA[num_calc]
-   MOT[num_calc]=AFFE_MODELE(MAILLAGE=MAT[num_calc],
-                  AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN_DIAG',
-                           PHENOMENE = 'THERMIQUE',),);
-   CHMATT[num_calc]=AFFE_MATERIAU(MAILLAGE=MAT[num_calc],
-                       AFFE=_F(GROUP_MA='GM38',
-                                MATER=ACIER_T,),);
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIGM_ELNO','SIEQ_ELNO'))
 
-# CL FLUX SORTANT  SUR BORD GAUCHE + ECHANGE DANS LES CYLINDRES
-   CLIMT[num_calc]=AFFE_CHAR_THER(
-             MODELE=MOT[num_calc],
-             FLUX_REP=(_F(GROUP_MA='GM33',FLUN=-400,),));
-   CHT[num_calc]=AFFE_CHAR_THER(MODELE=MOT[num_calc],
-           ECHANGE=(_F(GROUP_MA='GM36',COEF_H=1000,TEMP_EXT=350,),
-                    _F(GROUP_MA='GM37',COEF_H=5000,TEMP_EXT=150)));
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION=('SIGM_NOEU','SIEQ_NOEU'))
 
-# CALCUL THERMIQUE LINEAIRE TRANSITOIRE
-   TEMP[num_calc]=THER_LINEAIRE(
-                     MODELE=MOT[num_calc],
-                     CHAM_MATER=CHMATT[num_calc],
-                     EXCIT=(
-                         _F(CHARGE = CHT[num_calc]),
-                         _F(CHARGE = CLIMT[num_calc],),)
-                      );
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(MAILLAGE=MAIL,
+                  RESULTAT=RESU,
+                  NOM_CHAM=('SIGM_NOEU','SIEQ_NOEU','DEPL')))
 
-# POST_TRAITEMENT POUR OBTENIR LES FLUX AUX NOEUDS ET
-# L'INDICATEUR D'ERREUR EN RESIDU.
-   TEMP[num_calc]=CALC_ELEM(reuse=TEMP[num_calc],
-                  RESULTAT=TEMP[num_calc],
-                  TOUT='OUI',
-                  TOUT_ORDRE='OUI',
-                  OPTION=(
-# LISSAGE DES FLUX
-                       'FLUX_ELNO',),);
+#----------------------------------------------------------------------------------
+#                        fin du calcul mecanique
+#----------------------------------------------------------------------------------
 
-   TEMP[num_calc]=CALC_ERREUR(reuse=TEMP[num_calc],
-                  RESULTAT=TEMP[num_calc],
-                  TOUT='OUI',
-                  TOUT_ORDRE='OUI',
-                  OPTION=(
-# CALCUL DE L'INDICATEUR PAR ELEMENTS ET AUX NOEUDS PAR ELEM
-                       'ERTH_ELEM',
-                       'ERTH_ELNO',),);
+# post-traitements a completer
+FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
+                    SYME='OUI',
+                    FOND_FISS=_F(GROUP_NO='O'),
+                    LEVRE_SUP=_F(GROUP_MA='GO'))
 
-# IMPRESSION FORMAT CASTEM I
-   DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
-   IMPR_RESU(MODELE=MOT[num_calc],FORMAT='CASTEM',UNITE=55,
-            RESU=_F(MAILLAGE=MAT[num_calc],
-                    RESULTAT=TEMP[num_calc],
-                    NOM_CHAM=('TEMP','FLUX_ELNO',
-                              'ERTH_ELNO',)
-                     ),);
-   DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
-# IMPRESSION FORMAT MED POUR SALOME
-###   IMPR_RESU(MODELE=MOT[num_calc],FORMAT='MED',
-###            RESU=_F(MAILLAGE=MAT[num_calc],
-###                    RESULTAT=TEMP[num_calc],
-###                    NOM_CHAM=('TEMP','FLUX_ELNO',
-###                              'ERTH_ELNO',)
-###                     ),);
+RSUP=0.005 * 5
+RINF=0.005 * 2
 
-# AFFICHAGE GIBI INTERACTIF TEMP + FLUX + INDICATEURS EN RESIDU
-#   os.system('sed s/numcalc/'+str(num_calc)+'/g /home/boiteau/ASTER/TP_INDIC/TP21/post1.dgibi > post1.dgibi')
-#   os.system('/logiciels/aster/outils/gibi2000.x post1.dgibi')
 
-# CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
-   ENERT[num_calc]=POST_ELEM(
-                     RESULTAT=TEMP[num_calc],
-                     ENER_POT=_F(TOUT='OUI',),);
+# CALC_G
+G=CALC_G(OPTION='CALC_G',
+         RESULTAT=RESU,
+         THETA=_F(FOND_FISS=FISS, 
+                  R_INF=RINF,
+                  R_SUP=RSUP,
+                  DIRECTION=(1,0,0)
+                  ),
+         SYME_CHAR='SYME'
+         )
 
-# CALCUL DE LA TEMPERATURE MOYENNE SUR LE CARRE INTERNE
-# ATTENTION : TANT QUE LA FICHE 11865 N'EST PAS RESOLUE, ON NE PEUT PAS PRENDRE
-#             LA MOYENNE SUR LE BORD DU CARRE, IDENTIFIE PAR LE GROUP_MA GM35.
-#             IL FAUT DONC PASSER PAR LE GROUPE DES NOEUDS ASSOCIES. MAIS SI ON CREAIT
-#             CE GROUPE AU TOUT DEBUT, COMME IL RESTERA INVARIANT AU FIL DES ADAPTATIONS,
-#             ON FERAIT LA MOYENNE SUR LES NOEUDS DU MAILLAGE ZERO ET NON PAS SUR LE
-#             VERITABLE BORD. IL FAUT DONC CREER LE GROUPE ICI ET LE DETRUIRE APRES USAGE.
-   MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
-                    MAILLAGE=MAT[num_calc],
-                    CREA_GROUP_NO=_F(GROUP_MA='GM35',),);
+IMPR_TABLE(TABLE=G)
 
-   TMOYEN[num_calc] = POST_RELEVE_T(
-          ACTION=_F(INTITULE='TMOYEN',
-                 GROUP_NO='GM35',
-                 RESULTAT=TEMP[num_calc],
-                 TOUT_ORDRE='OUI',
-                 NOM_CHAM='TEMP',
-                 RESULTANTE=('TEMP'),
-                 OPERATION='MOYENNE',),)
+GK=CALC_G(OPTION='CALC_K_G',
+          RESULTAT=RESU,
+          THETA=_F(FOND_FISS=FISS, 
+                   R_INF=RINF,
+                   R_SUP=RSUP,
+                   DIRECTION=(1,0,0)
+                   ),
+          SYME_CHAR='SYME'
+          )
 
-   MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
-                    MAILLAGE=MAT[num_calc],
-                    DETR_GROUP_NO=_F(NOM='GM35',),);
+IMPR_TABLE(TABLE=GK),
 
-# IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
-   IMPR_TABLE(TABLE=ENERT[num_calc])
-   IMPR_TABLE(TABLE=TMOYEN[num_calc])
 
-# PASSAGE VARIABLE ASTER --> VARIABLE PYTHON VIA DES TABLES
-   energie_vs_raff_NUM[num_calc][1] = ENERT[num_calc]['TOTALE',1]/1000.
-   erenergie_vs_raff_NUM[num_calc][1] = abs((energie_vs_raff_NUM[num_calc][1]-ener_ref)/ener_ref)*100
-   tmoyen_vs_raff_NUM[num_calc][1] = TMOYEN[num_calc]['TEMP',1]
-   ertmoyen_vs_raff_NUM[num_calc][1] = abs((tmoyen_vs_raff_NUM[num_calc][1]-tmoy_ref)/tmoy_ref)*100
+# POST_K1_K2_K3
+K=POST_K1_K2_K3(MODELISATION='D_PLAN',
+                RESULTAT=RESU,
+                FOND_FISS=FISS,
+                VECT_K1=(0,1,0),
+                MATER=MA,
+                ABSC_CURV_MAXI=RSUP,
+                SYME_CHAR='SYME')
 
-# SPECIAL CAS-TEST OFFICIEL POUR TEST_FONCTION
-   if num_calc == 0 :
-      ertm0 = abs((tmoyen_vs_raff_NUM[num_calc][1]-tmoy_ref)/tmoy_ref)*100
-      eren0 = abs((energie_vs_raff_NUM[num_calc][1]-ener_ref)/ener_ref)*100
-   if num_calc == 4 :
-      ertm4 = abs((tmoyen_vs_raff_NUM[num_calc][1]-tmoy_ref)/tmoy_ref)*100
-      eren4 = abs((energie_vs_raff_NUM[num_calc][1]-ener_ref)/ener_ref)*100
+IMPR_TABLE(TABLE=K )
 
-# INIT. POUR AFFICHAGE
-#   BR_vs_raff_NUM[num_calc][1]      = BR_vs_raff[num_calc]
-#   nbddl_vs_raff_NUM[num_calc][1]   = nbddl_vs_raff[num_calc]
+# tests sur G
+Gref = 192
 
-# AFFICHAGES GNUPLOT INTERACTIF (APRES LE PREMIER REMAILLAGE)
-   num_calc1 = num_calc + 1
-#   if num_calc > 0 :
-#     graphe = Gnuplot.Gnuplot()
-#     Gnuplot.GnuplotOpts.prefer_inline_data=1
-#     graphe('set data style lines')
-#     graphe('set grid')
-#     graphe.xlabel('Numero iteration de raffinement uniforme ou libre')
-#     graphe.ylabel('Energie ou temperature moyenne')
-#     graphe.plot(Gnuplot.Data(energie_vs_raff_NUM[:num_calc1],\
-#                 title='Convergence de l energie de deformation (en KJ)'),
-#                 Gnuplot.Data(tmoyen_vs_raff_NUM[:num_calc1],\
-#                 title='Convergence de la temperature moyenne (en  C)'),)
-#     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
-#     del graphe
-#     graphe = Gnuplot.Gnuplot()
-#     Gnuplot.GnuplotOpts.prefer_inline_data=1
-#     graphe('set data style lines')
-#     graphe('set grid')
-#     graphe.xlabel('Numero iteration de raffinement uniforme ou libre')
-#     graphe.ylabel('Nombre de DDL')
-#     graphe.plot(Gnuplot.Data(nbddl_vs_raff_NUM[:num_calc1],title='NB_DDL'),)
-#     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
-#     del graphe
-#     graphe = Gnuplot.Gnuplot()
-#     Gnuplot.GnuplotOpts.prefer_inline_data=1
-#     graphe('set data style lines')
-#     graphe('set grid')
-#     graphe.xlabel('Numero iteration de raffinement uniforme ou libre')
-#     graphe.ylabel('Erreur relative en %')
-#     graphe.plot(Gnuplot.Data(erenergie_vs_raff_NUM[:num_calc1],\
-#                 title='Energie de deformation'),
-#            Gnuplot.Data(ertmoyen_vs_raff_NUM[:num_calc1],\
-#                title='Temperature moyenne'),
-#            Gnuplot.Data(BR_vs_raff_NUM[:num_calc1],title='Residu'),
-#                   )
-#     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
-#     del graphe
+TEST_TABLE(TABLE=G,
+           NOM_PARA='G',
+           VALE=Gref,
+           PRECISION=0.003,
+           REFERENCE='ANALYTIQUE' )
 
-# IMPRESSION DANS LE FICHIER MESSAGE DES RESULATS
-   print '**************'
-   print 'CONVERGENCE DE L ENERGIE = ',energie_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'CONVERGENCE DE LA TEMPERATURE MOYENNE = ',tmoyen_vs_raff_NUM[:num_calc1]
-#   print '**************'
-#   print 'NB_DDL = ',nbddl_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'ERREUR EN ENERGIE = ',erenergie_vs_raff_NUM[:num_calc1]
-   print '**************'
-   print 'ERREUR EN TEMPERATURE MOYENNE = ',ertmoyen_vs_raff_NUM[:num_calc1]
-#   print '**************'
-#   print 'ERREUR RESIDU = ',BR_vs_raff_NUM[:num_calc1]
+TEST_TABLE(TABLE=GK,
+           NOM_PARA='G',
+           VALE=Gref,
+           PRECISION=0.003,
+           REFERENCE='ANALYTIQUE' )
 
-# POUR NE PAS REMAILLER A LA DERNIERE ITERATION
-   if num_calc == nb_calc :
-     break
+TEST_TABLE(TABLE=GK,
+           NOM_PARA='G_IRWIN',
+           VALE=Gref,
+           PRECISION=0.003,
+           REFERENCE='ANALYTIQUE' )
 
-# SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES
-   MAT[num_calc1]=CO('MAT_%d' % (num_calc1))
+TEST_TABLE(TABLE=K,
+           NOM_PARA='G',
+           VALE=Gref,
+           PRECISION=0.012,
+           REFERENCE='ANALYTIQUE' )
 
-# RAFFINEMENT UNIFORME OU LIBRE VIA HOMARD
-# MAILLAGE DE DEPART: MAT[num_calc]
-# MAILLAGE D'ARRIVE: MAT[num_calc1]
-   MACR_ADAP_MAIL(
-              ADAPTATION='RAFF_DERA',
-#              ADAPTATION=LIBRE = 'RAFFINEMENT_UNIFORME',
+# tests sur K1
+K1ref = 6.65e6
 
-              MAILLAGE_N = MAT[num_calc],
-              MAILLAGE_NP1 = MAT[num_calc1],
-# POUR ADAPTATION LIBRE
-              RESULTAT_N=TEMP[num_calc],
-              NOM_CHAM='ERTH_ELEM',
-              NOM_CMP='ERTREL',
-              CRIT_RAFF_PE=0.2,
-              CRIT_DERA_PE=0.1,
-              QUALITE='OUI',
-              TAILLE='OUI',
-              CONNEXITE='OUI')
+TEST_TABLE(TABLE=GK,
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.003,
+           REFERENCE='ANALYTIQUE' )
 
-#-------------------------------------------------------------------
-#             TEST_FONCTION SPECIAL CAS-TEST OFFICIEL
-# On teste des variables PYTHON (erreur en energie et en temp moy)
-#-------------------------------------------------------------------
+TEST_TABLE(TABLE=K,
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.005,
+           REFERENCE='ANALYTIQUE' )
 
-ERRETM0=FORMULE(VALE='ertm0*1.',NOM_PARA='BIDON')
-ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
-ERRETM4=FORMULE(VALE='ertm4*1.',NOM_PARA='BIDON')
-ERREEN4=FORMULE(VALE='eren4*1.',NOM_PARA='BIDON')
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=ERRETM0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=9.2181911966178E-01,REFERENCE='NON_REGRESSION'),
-    _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=4.9181945496292E-01,REFERENCE='NON_REGRESSION'),
-    _F(FONCTION=ERRETM4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=4.34881059E+02,REFERENCE='NON_REGRESSION',VERSION = '9.2.15'),
-    _F(FONCTION=ERREEN4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=3.25886535E-02,REFERENCE='NON_REGRESSION',VERSION = '9.2.15')))
-
-FIN();
+FIN()

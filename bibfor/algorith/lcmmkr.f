@@ -1,16 +1,16 @@
         SUBROUTINE LCMMKR(  TAUS, COEFT, CISA2,   IFA,  NMAT,
-     &                    NBCOMM,    IS, NBSYS,   HSR,  VIND,
+     &                    NBCOMM,    IS, NBSYS, NFS,NSG,HSR,  VIND,
      &                        DY,    DT,DALPHA,DGAMMA,    DP,
      &                      CRIT,  SGNS,  IRET               )
 
         IMPLICIT NONE
-        INTEGER IFA,NMAT,NBCOMM(NMAT,3),IRET,NUMHSR
+        INTEGER IFA,NMAT,NBCOMM(NMAT,3),IRET,NUMHSR,NFS,NSG
         REAL*8 TAUS,COEFT(NMAT),DGAMMA,DP,DT,TAUMU,TAUV
-        REAL*8 SGNS,HSR(5,30,30),DY(*)
+        REAL*8 SGNS,HSR(NSG,NSG),DY(*)
         REAL*8 VIND(*),DALPHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,6 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
       P         =COEFT(IFL+9)
       Q         =COEFT(IFL+10)
       TEMPF     =COEFT(IFL+11)
-      NUMHSR    =NINT(COEFT(IFL+12))
       TAUV=ABS(TAUS)-TAU0
       CRIT=TAUV
 
@@ -100,7 +99,7 @@ C      VARIABLE INTERNE PRINCIPALE : ALPHA
             ALPHAR=VIND(3*(IU-1)+1)+DY(IU)
 C           PARTIE POSITIVE DE ALPHA
             IF (ALPHAR.GT.0.D0) THEN
-               TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*ALPHAR
+               TAUMU = TAUMU +  HSR(IS,IU)*ALPHAR
                IF (IU.NE.IS) SOM = SOM+ALPHAR
             ENDIF
   1      CONTINUE

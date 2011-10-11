@@ -15,7 +15,7 @@
       LOGICAL EXTIM,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,7 +247,7 @@ C
 C     OBJET CONTENANT LES NOEUDS DU FOND DE FISSURE
       IF (IXFEM.EQ.0) THEN
         FOND = FONDF(1:8)
-        OBJ2 = FOND//'.FOND      .NOEU'
+        OBJ2 = FOND//'.FOND.NOEU'
         CALL JELIRA(OBJ2,'LONMAX',LOBJ2,K1BID)
         IF (LOBJ2.NE.1) THEN
           CALL U2MESS('F','RUPTURE1_10')

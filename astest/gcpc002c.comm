@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE DSR3 SANS RENUM/AFFE_CHAR_MECA/MECA_STAT(GCPC)
 # gcpc002c.para = tps_job 250 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,6 +52,7 @@ CHA2=AFFE_CHAR_CINE(MODELE=MO,
 # ----------------------------------------------------------------------
 
 VECAS=MECA_STATIQUE(MODELE=MO,
+                    INFO=2,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,),),
@@ -348,7 +349,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    PARA='ITER_GCPC',
                    VALE_I=0,
                    CRITERE='ABSOLU',
-                   PRECISION=520.0,
+                   PRECISION=560.0,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=VECAS,
                    NUME_ORDRE=1,

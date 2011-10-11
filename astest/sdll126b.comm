@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,7 +145,7 @@ bal_Zass=ASSE_VECTEUR(VECT_ELEM=bal_FZe,
 fory = FORMULE(VALE='cos(OM*INST)',
                NOM_PARA='INST',);
 
-forz = FORMULE(VALE='-sin(OM*INST)',
+forz = FORMULE(VALE='sin(OM*INST)',
                NOM_PARA='INST',);
 
 MACRO_PROJ_BASE(BASE=MODES,
@@ -190,13 +190,23 @@ DY_GED2=RECU_FONCTION(RESU_GENE=TRANSMO,
 
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DY_GED2,
-                        VALE_PARA=4.997913,
+                        VALE_PARA=4.99791,
                         VALE_REFE=0.0005721,
                         REFERENCE='AUTRE_ASTER',),);
 
+TEST_FONCTION(VALEUR=_F(FONCTION=DY_GED2,
+                        VALE_PARA=4.99791,
+                        VALE_REFE=0.0005722,
+                        REFERENCE='NON_REGRESSION',),);
+
 TEST_FONCTION(VALEUR=_F(FONCTION=DZ_GED2,
-                        VALE_PARA=4.996937,
+                        VALE_PARA=4.99893,
                         VALE_REFE=0.0007023,
                         REFERENCE='AUTRE_ASTER',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DZ_GED2,
+                        VALE_PARA=4.99893,
+                        VALE_REFE=0.0007017,
+                        REFERENCE='NON_REGRESSION',),);
 
 FIN();

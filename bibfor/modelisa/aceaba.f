@@ -1,12 +1,13 @@
-      SUBROUTINE ACEABA(NOMA,NOMO,LMAX,NBARRE,NBOCC,NBTEL,NTYELE,
-     &                                              IVR,IFM,JDLM)
+      SUBROUTINE ACEABA(NOMA,NOMO,LMAX,NBARRE,NBOCC,MCLF,
+     &                  NBTEL,NTYELE,IVR,IFM,JDLM)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           LMAX,NBARRE,NBOCC,NBTEL,IFM,JDLM
       INTEGER           NTYELE(*),IVR(*)
       CHARACTER*8       NOMA,NOMO
+      CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,15 +56,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
+      CHARACTER*1  K1BID
       CHARACTER*6  KIOC
-      CHARACTER*8  K8B, NOMU, NOMMAI
+      CHARACTER*8  K8B, NOMU, NOMMAI, FCX
       CHARACTER*16 K16B, SEC, CONCEP, CMD
       CHARACTER*19 CARTBA, CARTBG, CARTBF
       CHARACTER*24 TMPNBA, TMPVBA, TMPNBG, TMPVBG, TMPGEN
-      CHARACTER*24 TMPNBF ,TMPVBF, TMPGEF
-      CHARACTER*24 MODMAI, MLGGMA, MLGNMA
-      CHARACTER*8  FCX
-      CHARACTER*1  K1BID
+      CHARACTER*24 TMPNBF ,TMPVBF, TMPGEF, MODMAI, MLGGMA, MLGNMA
+      CHARACTER*16 VMESSK(2)
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
@@ -76,7 +76,7 @@ C
       NBO    = ZI(JPARA+2)
       NBCAR  = ZI(JPARA+3)
       NBVAL  = ZI(JPARA+4)
-      NDIM = ZI(JPARA+6) * NTYPSE
+      NDIM   = ZI(JPARA+6) * NTYPSE
       CALL WKVECT('&&ACEABA.TYP_SECT','V V K16',NTYPSE,JSECT)
       CALL WKVECT('&&ACEABA.EXPBAR'  ,'V V K8 ',NBO   ,JEXP )
       CALL WKVECT('&&ACEABA.TABBAR'  ,'V V K8 ',NBO   ,JTAB )
@@ -154,6 +154,9 @@ C                                                    GROUPES DE MAILLES
                         GOTO 42
                      ENDIF
  44               CONTINUE
+                  VMESSK(1) = MCLF
+                  VMESSK(2) = NOMMAI
+                  CALL U2MESK('F','MODELISA_8',2,VMESSK)
  42            CONTINUE
  40         CONTINUE
          ENDIF
@@ -172,6 +175,9 @@ C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
                      GOTO 50
                   ENDIF
  52            CONTINUE
+               VMESSK(1) = MCLF
+               VMESSK(2) = NOMMAI
+               CALL U2MESK('F','MODELISA_8',2,VMESSK)
  50         CONTINUE
          ENDIF
 C

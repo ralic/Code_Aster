@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,10 +45,10 @@ C     ----------------------------------------------------------------
       INTEGER         NMAT, NVI, NSFA, NSFV,IEXP, NFS, NSG
       INTEGER         NBFSYS,I,NUVI,IFA,NBSYS,IS
       INTEGER         NBCOMM(NMAT,3),IRET
-      REAL*8          SIGF(6),VIN(NVI),RP,HSR(NFS,NSG,NSG)
+      REAL*8          SIGF(6),VIN(NVI),RP,HSR(NSG,NSG)
       REAL*8          MATERF(NMAT*2),SEUIL,DT,DY(NVI),ALPHAM
       REAL*8          MS(6),NG(3),Q(3,3),TIMED,TIMEF,LG(3)
-      REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(30)
+      REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(NSG)
       REAL*8          PGL(3,3),CRIT,SGNS,TOUTMS(NFS,NSG,6),GAMMAM
       CHARACTER*16    CPMONO(5*NMAT+1)
       CHARACTER*16    NOMFAM,NECOUL,NECRIS
@@ -96,14 +96,15 @@ C
                IEXP=0
                IF (IS.EQ.1) IEXP=1
                CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &           IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
+     &   IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),NFS,NSG,HSR,IEXP,EXPBP,RP)
             ENDIF
 C
 C           ECOULEMENT VISCOPLASTIQUE
 C
             CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF,IFA,
      &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),
-     &      RP,ALPHAM,GAMMAM,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+     &      RP,ALPHAM,GAMMAM,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,NFS,NSG,
+     &      HSR,IRET)
 
             IF (IRET.GT.0) THEN
                DP=1.D0

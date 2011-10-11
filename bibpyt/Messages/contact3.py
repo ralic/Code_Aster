@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,60 +185,56 @@ La maille %(k1)s est de type 'POI1', elle ne peut pas être une maille maître.
 81 : _("""
 Contact.
   -> Il y a trop de réactualisations géométriques.
-  -> Risque & Conseil :
-     Le paramètre ITER_GEOM_MAXI est trop faible.
-     Votre maillage est incorrect ou le glissement relatif des deux
-     surfaces est trop important.
-     Tentez de découper plus finement en temps votre problème ou augmenter ITER_GEOM_MAXI.
+  -> Conseils :
+     - Augmentez le mot-clé ITER_GEOM_MAXI dans la commande DEFI_CONTACT.
+     - Vérifiez votre maillage (orientation des surfaces, définition des zones de contact).
+     - Découpez plus finement le pas de temps.
 """),
 
 85 : _("""
 Contact méthode continue. 
-  -> Il y a échec de la boucle des contraintes actives lors du traitement
-     du contact
-  -> Risque & Conseil :
-     Vérifier votre modèle ou augmenter ITER_CONT_MAXI/ITER_CONT_MULT.
+  -> Il y a échec de la boucle des contraintes actives lors du traitement du contact.
+  -> Conseil :
+     - Augmentez le mot-clé ITER_CONT_MAXI (ou ITER_CONT_MULT) dans la commande DEFI_CONTACT.
 """),
 
 86 : _("""
 Contact méthode continue. 
-  -> Il y a convergence forcée sur la boucle des contraintes actives lors du traitement
-     du contact.
-  -> Risque & Conseil :
+  -> Il y a convergence forcée sur la boucle des contraintes actives lors du traitement du contact.
+  -> Risque & conseil :
      La convergence forcée sur les statuts de contact se déclenche lorsque le problème a du mal à converger.
      Il y a des risques que le problème soit un peu moins bien traité.
-     Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
-     S'il y a des interpénétrations intempestives, tentez de découper plus finement en temps votre problème."""),
+     Vérifiez bien que vous n'avez pas d'interpénétration au niveau des zones de contact.
+     S'il y a des interpénétrations intempestives, découpez plus finement le pas de temps."""),
 
 87 : _("""
 Contact méthode continue. 
   -> Il y a trop de réactualisations pour le seuil de frottement.
-  -> Risque & Conseil :
-     Le paramètre ITER_FROT_MAXI est trop faible.
-     La condition de frottement de Coulomb est peut être mal prise en compte, il y a donc un risque de 
-     résultats faux sur les forces d'adhérence.
-     Essayez de découper plus finement en temps votre problème."""),
+  -> Conseils :
+     - Augmentez le mot-clé ITER_FROT_MAXI dans la commande DEFI_CONTACT.
+     - Découpez plus finement le pas de temps."""),
 
 
 96 : _("""
 Contact.
     -> Les surfaces en contact ont bougé de plus de 1%% depuis la dernière réactualisation.
-       Or vous n'avez pas activé la réactualisation géométrique (REAC_GEOM) automatique ou
-       vous utilisez le mode 'CONTROLE'
-    -> Risque & Conseil : Vos résultats risquent d'etre faux, les mailles ne
-       seront peut-etre pas correctement appariées et donc la condition de contact sera peut
-       etre fausse.
+       Or vous n'avez pas activé la réactualisation géométrique automatique dans la commande DEFI_CONTACT
+       (REAC_GEOM='AUTOMATIQUE') ou bien vous utilisez le mode 'CONTROLE'
+    -> Risque & conseil : 
+       Vos résultats risquent d'être faux, les mailles ne seront peut-être pas correctement appariées
+       et des interpénétrations pourraient apparaître.
        Si vous avez volontairement négligé la non-linéarité géométrique de contact (pour des raisons
        de performance), nous vous invitons à vérifier visuellement qu'il n'y a effectivement
-       pas interpénétration.
+       pas d'interpénétrations.
 """),
 
 97 : _("""
 Contact formulation continue.
     -> Le seuil de frottement a bougé de plus de 1%% depuis la dernière réactualisation.
-       Or vous utilisez la réactualisation contrôlée (REAC_FROT='CONTROLE').
-    -> Risque & Conseil : Vos résultats risquent d'etre faux, le seuil de Coulomb ne sera peut être pas
-       atteint et le frottement pas bien pris en compte.
+       Or vous utilisez la réactualisation contrôlée (REAC_FROT='CONTROLE') dans la commande DEFI_CONTACT.
+    -> Risque & Conseil :
+       Vos résultats risquent d'etre faux, le seuil de Coulomb ne sera peut être pas le bon
+       et le frottement pas bien pris en compte.
        Si vous avez volontairement négligé la non-linéarité de frottement (pour des raisons
        de performance), nous vous invitons à vérifier la validité de vos résultats.
 """),

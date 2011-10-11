@@ -1,7 +1,7 @@
-        SUBROUTINE LCMMJS(NBSYS,TBSYS)
+        SUBROUTINE LCMMJS(NOMFAM,NBSYS,TBSYS)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,19 +22,20 @@ C RESPONSABLE PROIX J-M.PROIX
 C      ----------------------------------------------------------------
 C     MONOCRISTAL : RECUPERATION DES SYSTEMES DE GLISSEMENT UTILISATEUR
 C       ----------------------------------------------------------------
-      INTEGER ITBSYS,I,J,NBSYS
+      INTEGER ITBSYS,I,J,NBSYS,NUMFAM,DECAL
+      CHARACTER*16 NOMFAM
       REAL*8 TBSYS(30,6),TBSYSG
-      COMMON/TBSYSG/TBSYSG(182)
+      COMMON/TBSYSG/TBSYSG(900)
 C     ----------------------------------------------------------------
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
 C
-      ITBSYS=NINT(TBSYSG(1))
-      CALL ASSERT(ITBSYS.EQ.1)
-      NBSYS=NINT(TBSYSG(2))
+      READ (NOMFAM(5:5),'(I1)') NUMFAM
+      NBSYS=NINT(TBSYSG(2*NUMFAM+1))
+      DECAL=NINT(TBSYSG(2*NUMFAM+2))
       DO 2 I=1,NBSYS
       DO 2 J=1,6
-         TBSYS(I,J)=TBSYSG(2+6*(I-1)+J)
+         TBSYS(I,J)=TBSYSG(DECAL-1+6*(I-1)+J)
  2    CONTINUE 
- 
+      
       END

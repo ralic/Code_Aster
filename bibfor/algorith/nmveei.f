@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,25 +119,21 @@ C
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
       REAL*8        DRPDE(NP,NB), EPTHM(NB),DELTB,SUMB
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
-      
-C     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
-C        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
-C        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
-      INTEGER       NBCOMM(NMAT,3)
-      INTEGER       NSG,NFS
-      PARAMETER      ( NSG=30)
-      PARAMETER      ( NFS=5)
-      REAL*8        TOUTMS(NFS,NSG,6),HSR(NFS,NSG,NSG)
-      CHARACTER*16  CPMONO(5*NMAT+1)
 C
       CHARACTER*3   MATCST
       CHARACTER*16  LOI
       CHARACTER*11  METING
       CHARACTER*8   MOD, TYPMA
       CHARACTER*7   ETATF(3)
+      
+C     POUR LCMATE (MONOCRISTAL) 
+      INTEGER       NBCOMM(1),NFS,NSG
+      INTEGER       NUMHSR(1)
+      REAL*8        TOUTMS(1),HSR(1)
+      CHARACTER*16  CPMONO(1)
 C
-        COMMON /TDIM/   NDT  , NDI
-        COMMON /METI/   METING
+      COMMON /TDIM/   NDT  , NDI
+      COMMON /METI/   METING
 C ----------------------------------------------------------------------
 C
 C
@@ -179,10 +175,10 @@ C-----------------------------------------------------------------------
           CALL U2MESS('F','CALCULEL_31')
       ENDIF
 
-      CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM,TP,0,
-     &               TYPMA, HSR,MATM,
-     &               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
-     &               TOLER, NDT, NDI, NRV, NVI, VIND ,NFS,NSG,TOUTMS)
+      CALL LCMATE(FAMI,KPG,KSP,COMPOR,MOD,IMATE,NMAT,TM,TP,
+     &            0,TYPMA,HSR,MATM,MATE,MATCST,NBCOMM, 
+     &            CPMONO, ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NRV,
+     &            NVI,VIND,NFS,NSG,TOUTMS,1,NUMHSR)
       CALL ASSERT(NDT.EQ.NB.OR.NVI.EQ.NI.OR.NRV.EQ.NR)
       IF ((IRET2+IRET3).EQ.0) THEN
         EPSTHP = MATE(3,1)*(TP-TREF)

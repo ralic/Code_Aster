@@ -1,0 +1,251 @@
+
+MATEM1A=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATE1,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    CHAMP_GD=REPTO1A,
+                                    NOM_VARC='PTOT',),);
+
+MATEM1B=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATE1,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    EVOL=REPTO1B,
+                                    NOM_VARC='PTOT',),);
+
+MATEM2=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATE2,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    EVOL=REPTO2,
+                                    NOM_VARC='PTOT',),);
+
+MATEM3=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATE3,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    EVOL=REPTO3,
+                                    NOM_VARC='PTOT',),);
+
+MATEM4=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATE4,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    EVOL=REPTO4,
+                                    NOM_VARC='PTOT',),);
+
+##################################
+# On va maintenant résoudre le
+# problème mécanique
+##################################
+
+LISTINST=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=p_inst_fin,
+                                      NOMBRE=p_npas,),);
+
+PRES_IMP=DEFI_CONSTANTE(VALE=0.,);
+
+DEPLX = FORMULE(VALE=
+                       '0.5*p_g*(p_rhom-p_biot*p_rhol)/(p_lambda+2.*p_mu)*COOR_X*(COOR_X-2.*p_long)+1./(p_lambda+2.*p_mu)*p_biot*p_atm*COOR_X',
+                NOM_PARA='COOR_X',);
+
+#####################################################
+# Affectation des chargements sur le maillage
+# Deplacement : impose en dx et dy sur le bord GM1
+#               impose en dy sur les bords GM2 et GM3
+#####################################################
+
+
+DEPLIM1=AFFE_CHAR_CINE(MODELE=MODE1,
+                       MECA_IMPO=(_F(GROUP_MA='GM1',
+                                      DX=0.,
+                                      DY=0.,),
+                                   _F(GROUP_MA=('GM3','GM2',),
+                                      DY=0.,),),);
+
+DEPLIM2=AFFE_CHAR_CINE(MODELE=MODE2,
+                       MECA_IMPO=(_F(GROUP_MA='GM1',
+                                      DX=0.,
+                                      DY=0.,),
+                                   _F(GROUP_MA=('GM3','GM2',),
+                                      DY=0.,),),);
+
+####################
+# Gravite : selon -x
+####################
+
+PESANT1=AFFE_CHAR_MECA(MODELE=MODE1,
+                      PESANTEUR=_F(GRAVITE=p_g,
+                                   DIRECTION=(-1.,0.,0.,),),);
+
+PESANT2=AFFE_CHAR_MECA(MODELE=MODE2,
+                      PESANTEUR=_F(GRAVITE=p_g,
+                                   DIRECTION=(-1.,0.,0.,),),);
+
+#####################################################
+# On va affecter la condition de Neumann en mécanique
+#####################################################
+
+FORMI1=AFFE_CHAR_MECA_F(MODELE=MODE1,
+                          PRES_REP=_F(GROUP_MA='GM4',
+                                      PRES=PRES_IMP,),);
+
+FORMI2=AFFE_CHAR_MECA_F(MODELE=MODE2,
+                          PRES_REP=_F(GROUP_MA='GM4',
+                                      PRES=PRES_IMP,),);
+
+#######################
+# Résolution du système
+#######################
+
+###
+# 1. Par meca_statique
+###
+#
+# 3 possibilités pour la résolution :
+# 1. MECA_STATIQUE                  => MS
+# 2. STAT_NON_LINE(COMP_INCR(ELAS)) => SNLCI
+# 3. STAT_NON_LINE(COMP_ELAS(ELAS)) => SNLCE
+#
+
+MATRICE='TANGENTE'
+
+RESUM1A=MECA_STATIQUE(MODELE=MODE1,
+                        CHAM_MATER=MATEM1A,INST=p_inst_fin,
+                        EXCIT=(_F(CHARGE=DEPLIM1,),
+                               _F(CHARGE=PESANT1,),
+                               _F(CHARGE=FORMI1,),),);
+
+RESUM1B=STAT_NON_LINE(MODELE=MODE1,
+                        CHAM_MATER=MATEM1B,
+                        EXCIT=(_F(CHARGE=DEPLIM1,),
+                               _F(CHARGE=PESANT1,),
+                               _F(CHARGE=FORMI1,),),
+                        NEWTON=_F(MATRICE=MATRICE,),
+                        COMP_INCR=_F(RELATION='ELAS',),
+                        INCREMENT=_F(LIST_INST=LISTINST,),
+                        CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
+                        INFO=1,);
+
+RESUM1C=STAT_NON_LINE(MODELE=MODE1,
+                        CHAM_MATER=MATEM1B,
+                        EXCIT=(_F(CHARGE=DEPLIM1,),
+                               _F(CHARGE=PESANT1,),
+                               _F(CHARGE=FORMI1,),),
+                        NEWTON=_F(MATRICE='ELASTIQUE',),
+                        COMP_ELAS=_F(RELATION='ELAS',),
+                        INCREMENT=_F(LIST_INST=LISTINST,),
+                        CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
+                        INFO=1,);
+###
+# 2. Par stat_non_line
+###
+
+RESUM2=STAT_NON_LINE(MODELE=MODE1,
+                        CHAM_MATER=MATEM2,
+                        EXCIT=(_F(CHARGE=DEPLIM1,),
+                               _F(CHARGE=PESANT1,),
+                               _F(CHARGE=FORMI1,),),
+                        NEWTON=_F(MATRICE=MATRICE,),
+                        COMP_INCR=_F(RELATION='DRUCK_PRAGER',),
+                        INCREMENT=_F(LIST_INST=LISTINST,),
+                        CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
+                        INFO=1,);
+
+RESUM3=STAT_NON_LINE(MODELE=MODE1,
+                        CHAM_MATER=MATEM3,
+                        EXCIT=(_F(CHARGE=DEPLIM1,),
+                               _F(CHARGE=PESANT1,),
+                               _F(CHARGE=FORMI1,),),
+                        NEWTON=_F(MATRICE=MATRICE,),
+                        COMP_INCR=_F(RELATION='DRUCK_PRAGER',),
+                        INCREMENT=_F(LIST_INST=LISTINST,),
+                        CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
+                        INFO=1,);
+
+RESUM4=STAT_NON_LINE(MODELE=MODE2,
+                        CHAM_MATER=MATEM4,
+                        EXCIT=(_F(CHARGE=DEPLIM1,),
+                               _F(CHARGE=PESANT1,),
+                               _F(CHARGE=FORMI1,),),
+                        NEWTON=_F(MATRICE=MATRICE,),
+                        COMP_INCR=_F(RELATION='ENDO_HETEROGENE',),
+                        INCREMENT=_F(LIST_INST=LISTINST,),
+                        CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
+                        INFO=1,);
+
+MAIL_ME=DEFI_GROUP(reuse =MAIL_ME,
+                   MAILLAGE=MAIL_ME,
+                   CREA_GROUP_NO=(_F(NOEUD='N14',
+                                     NOM='POURTEST',),
+                                  _F(GROUP_MA='GM3',),),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUM1A,
+                  NUME_ORDRE=p_npas,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='POURTEST',
+                  VALE=0.0002941,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUM1B,
+                  NUME_ORDRE=p_npas,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='POURTEST',
+                  VALE=0.0002941,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUM1C,
+                  NUME_ORDRE=p_npas,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='POURTEST',
+                  VALE=0.0002941,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUM2,
+                  NUME_ORDRE=p_npas,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='POURTEST',
+                  VALE=0.0002941,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUM3,
+                  NUME_ORDRE=p_npas,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='POURTEST',
+                  VALE=0.0002941,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUM4,
+                  NUME_ORDRE=p_npas,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='POURTEST',
+                  VALE=0.0002941,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,
+                  REFERENCE='ANALYTIQUE',),);
+
+RESUM1A=CALC_ELEM(reuse=RESUM1A,
+            RESULTAT=RESUM1A,
+            OPTION=('EPVC_ELGA','VARC_ELGA','EPVC_ELNO',),)
+
+RESUM1A=CALC_NO(reuse=RESUM1A,
+          RESULTAT=RESUM1A,
+          OPTION=('EPVC_NOEU'),)
+
+FIN();

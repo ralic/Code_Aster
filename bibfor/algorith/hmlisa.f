@@ -1,4 +1,5 @@
-      SUBROUTINE HMLISA(PERMAN,OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,
+      SUBROUTINE HMLISA(PERMAN,YACHAI,OPTION,MECA,THMC,THER,HYDR,
+     &                  IMATE,NDIM,
      &                  DIMDEF,DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      &                  ADVIHY,ADVICO,VIHRHO,VICPHI,ADDEP1,ADCP11,
      &                  ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,
@@ -8,7 +9,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +50,7 @@ C ======================================================================
       REAL*8        PHI,RHO11,PHI0
       REAL*8        RINSTP
       CHARACTER*16  OPTION,MECA,THER,THMC,HYDR
-      LOGICAL       PERMAN
+      LOGICAL       PERMAN,YACHAI
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
@@ -120,11 +121,13 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF((EM.GT.EPS).AND.(YAMEC.EQ.0))THEN
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
 
-      CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
+      IF (EMMAG.AND.YACHAI) CALL U2MESS('F','CHAINAGE_5')
+
+      CALL INITHM(IMATE,YACHAI,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                       EPSV,DEPSV,EPSVM)
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
@@ -135,13 +138,12 @@ C *********************************************************************
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF (YAMEC.EQ.1)THEN
+         IF ((YAMEC.EQ.1).OR.YACHAI)THEN
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
          ELSE IF (YAMEC .EQ. 2) THEN
              PHI    =  VINTP(ADVICO+VICPHI)
          ENDIF
-
          IF (EMMAG )THEN
             CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DP1,DP2,SIGNE,SAT,EM,PHI,PHIM,RETCOM)

@@ -4,9 +4,9 @@
       INTEGER           NBEXTR,    NCYC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/10/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,13 +48,34 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----------------------------------------------------------------
 C
-      REAL*8 MOYEXT,A
+      REAL*8   MOYEXT,A
+      LOGICAL  CYCZER
 C
 C ------------------------------------------------------------
 C
 C --- CALCUL DE LA VALEUR MOYENNE DES CONTRAINTES ---
 C
       MOYEXT = 0.D0
+      
+      CYCZER = .TRUE.
+
+      DO 21 I=2,NBEXTR
+         IF ((EXT(I) .GT. EXT(1)) .OR.
+     &     (EXT(I) .LT. EXT(1)))  THEN
+            CYCZER = .FALSE.
+         END IF
+ 21   CONTINUE
+ 
+      IF (CYCZER) THEN 
+         SIGMAX(1) = EXT(1)
+         SIGMIN(1) = EXT(1)
+         NCYC = 1
+         
+         CALL U2MESS('A','FATIGUE1_39')
+         
+         GOTO 999
+      ENDIF 
+           
       DO 1 I=1,NBEXTR
         MOYEXT = MOYEXT + EXT(I)
   1   CONTINUE
@@ -79,4 +100,6 @@ C
         ENDIF
       ENDIF
 C
+999   CONTINUE
+
       END

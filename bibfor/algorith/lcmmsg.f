@@ -2,7 +2,7 @@
      &                  PGL2,MUS,NG,MG,IR,Q)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ C     ----------------------------------------------------------------
 C TOLE CRP_20
 
       IF (NOMFAM(1:4).EQ.'UTIL')   THEN
-         CALL LCMMJS(NBSYS,TBSYS)
+         CALL LCMMJS(NOMFAM,NBSYS,TBSYS)
       ENDIF
       
       IF (NUSYS.EQ.0) THEN

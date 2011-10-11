@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -318,4 +318,6 @@ OPTION__
                               OUT__  ZVARINO  PVARINR
     VARI_ELNO           415   IN__   CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
+    VERI_CARA_ELEM     119    IN__   CCACOQU  PCACOQU
+                              OUT__  ECOURAN  PBIDON
     WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX

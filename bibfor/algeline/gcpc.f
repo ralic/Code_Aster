@@ -2,7 +2,7 @@
      &                NITER,EPSI,CRITER,
      &                SOLVEU,MATAS,SMBR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 10/10/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,6 +81,9 @@ C DECLARATION VARIABLES LOCALES
       INTEGER      JSLVK,JSLVI,JSMBR
       CHARACTER*24 PRECON,SOLVBD
       COMPLEX*16   CBID
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
 
       CALL MATFPE(-1)
 C
@@ -110,28 +113,23 @@ C-----CALCULS PRELIMINAIRES
 C      ---- CALCUL DE NORME DE BF
       BNORM = DNRM2(M,BF,1)
       IF (BNORM.EQ.ZERO) THEN
-        DO 10 I = 1,M
-          XP(I) = ZERO
-   10   CONTINUE
+        CALL R8INIR(M,ZERO,XP,1)
 C        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
         GO TO 80
       END IF
 
       IF (IREP.EQ.0) THEN
 C       ---- INITIALISATION X1 = 0    ===>   CALCUL DE R1 = A*X0 - B
-        DO 20 I = 1,M
-          XP(I) = ZERO
-          R(I) = -BF(I)
-   20   CONTINUE
+        CALL R8INIR(M,ZERO,XP,1)
+        CALL DCOPY(M,BF,1,R,1)
+        CALL DSCAL(M,-1.D0,R,1)
         ANORM = BNORM
         EPSIX = EPSI*ANORM
         IF (NIV.EQ.2) WRITE (IFM,1010) ANORM,EPSIX,EPSI
       ELSE
 C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
         CALL GCAX(M,IN,IP,AC,XP,R)
-        DO 30 I = 1,M
-          R(I) = R(I) - BF(I)
-   30   CONTINUE
+        CALL DAXPY(M, -1.D0, BF, 1, R, 1)
         ANORM = DNRM2(M,R,1)
         EPSIX = EPSI*ANORM
         IF (NIV.EQ.2) WRITE (IFM,1020) ANORM,EPSIX,EPSI
@@ -166,16 +164,12 @@ C                                                  ZK <--- RR()
           CALL GCLDM1(M,INPC,IPPC,ACPC,R,RR)
         ELSE IF (PRECON.EQ.'LDLT_SP') THEN
           CALL JEVEUO(SMBR//'.VALE','E',JSMBR)
-          DO 1 I=1,M
-            ZR(JSMBR-1+I)=R(I)
-    1     CONTINUE
+          CALL DCOPY(M,R,1,ZR(JSMBR),1)
 C         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
           CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,' ',1,IRET,
      &                .TRUE.)
           CALL JEVEUO(SMBR//'.VALE','L',JSMBR)
-          DO 2 I=1,M
-            RR(I)=ZR(JSMBR-1+I)
-    2     CONTINUE
+          CALL DCOPY(M,ZR(JSMBR),1,RR,1)
          ELSE
            CALL ASSERT(.FALSE.)
 C        ELSE IF (PRECON.EQ.'DIAG') THEN
@@ -193,13 +187,10 @@ C                                        PK = BETAK * PK-1 + ZK
 C                                                   PK <--- P()
         IF (ITER.GT.1) THEN
           GAMA = RRRI/RRRIM1
-          DO 50 I = 1,M
-            P(I) = RR(I) + GAMA*P(I)
-   50     CONTINUE
+          CALL DSCAL(M,GAMA,P,1)
+          CALL DAXPY(M,1.D0,RR,1,P,1)
         ELSE
-          DO 60 I = 1,M
-            P(I) = RR(I)
-   60     CONTINUE
+          CALL DCOPY(M,RR,1,P,1)
         END IF
         RRRIM1 = RRRI
 
@@ -270,5 +261,7 @@ C       ON STOCKE LE NOMBRE D'ITERATIONS DU GCPC
       ENDIF
 
       CALL MATFPE(1)
+C
+      CALL JEDEMA()
 C
       END

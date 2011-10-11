@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_gp_ops Macro  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -174,7 +174,7 @@ def post_gp_ops(self, **args):
       l_noeuds_fissure, pas = getFondFissInfo(self['FOND_FISS'])
       nb_noeuds_fissure = len(l_noeuds_fissure)
       FOND_FISS =  self['FOND_FISS']
-      lnormale = aster.getvectjev(FOND_FISS.nom.ljust(8)+'.NORMALE              ')
+      lnormale = aster.getvectjev(FOND_FISS.nom.ljust(8)+'.NORMALE')
       if (lnormale==None):UTMESS('F','POST0_39')
 
       for occ in self['THETA_3D']:
@@ -1041,8 +1041,8 @@ def getFondFissInfo(fondfiss):
    # >FONFISS .FOND      .NOEU        <
    # >FONFISS .FOND      .TYPE        <
    import aster
-   l_noeuds_fissure = aster.getvectjev(fondfiss.nom.ljust(8)+'.FOND      .NOEU        ')
-   type_mailles = aster.getvectjev(fondfiss.nom.ljust(8)+'.FOND      .TYPE        ')
+   l_noeuds_fissure = aster.getvectjev(fondfiss.nom.ljust(8)+'.FOND.NOEU')
+   type_mailles = aster.getvectjev(fondfiss.nom.ljust(8)+'.FOND.TYPE')
    if (type_mailles[0].strip() == 'SEG3' ):
       pas = 2
    else:

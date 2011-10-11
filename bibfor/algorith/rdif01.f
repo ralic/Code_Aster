@@ -4,11 +4,11 @@
      &                     COTHE, COEFF, DCOTHE, DCOEFF,PGL,NBPHAS, E,
      &                     NU,    ALPHA, COEL,X,   DTIME,  SIGI,
      &                     EPSD,  DETOT,
-     &                     DVIN, HSR, ITMAX, TOLER, IRET )
+     &                     DVIN, NHSR,NUMHSR,HSR, ITMAX, TOLER, IRET )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C           DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 C       ----------------------------------------------------------------
         INTEGER KPG,KSP,IMAT,NMAT,NVI,NBCOMM(NMAT,3),NCOE,
-     &          NBPHAS,NFS,IRET,ITMAX,NSG
+     &          NBPHAS,NFS,IRET,ITMAX,NSG,NHSR,NUMHSR(*)
         CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
         CHARACTER*8 MOD
         CHARACTER*(*) FAMI
@@ -68,36 +68,42 @@ C       ----------------------------------------------------------------
         REAL*8 SIGI(6),EPSD(6),DETOT(6)
         REAL*8 COEFT(NMAT)
         REAL*8 VINI(NVI)
-        REAL*8 DVIN(NVI),HSR(NFS,NSG,NSG)
+        REAL*8 DVIN(NVI),HSR(NSG,NSG,NHSR)
 C       POUR GAGNER EN TEMPS CPU
-        REAL*8 TOUTMS(NBPHAS,NFS,NSG,6)
+        REAL*8 TOUTMS(NBPHAS,NFS,NSG,7)
 C
         LOI=COMP(1)
         IF (LOI(1:8).EQ.'MONOCRIS') THEN
-           NCOE=NBCOMM(NMAT,3)
+        
+          NCOE=NBCOMM(NMAT,3)
           CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
      &                E,NU,ALPHA,NMAT,COEL)
           CALL LCMMON(FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,VINI,
-     &     X,DTIME,E,NU,ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,
-     &     COEL,DVIN,HSR,ITMAX,TOLER,IRET)
+     &                X,DTIME,E,NU,ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,
+     &                COEL,DVIN,NFS,NSG,HSR(1,1,1),ITMAX,TOLER,IRET)
 
         ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
-           NCOE=NBCOMM(NMAT,3)
+        
+          NCOE=NBCOMM(NMAT,3)
           CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
      &                E,NU,ALPHA,NMAT,COEL)
           CALL LCMMOP(FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,
-     &     VINI,X,DTIME,E,NU,ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,
-     &     COEL,NBPHAS,NFS,NSG,TOUTMS,DVIN,HSR,ITMAX,TOLER,IRET)
+     &                VINI,X,DTIME,E,NU,ALPHA,PGL,MOD,COEFT,SIGI,EPSD,
+     &                DETOT,COEL,NBPHAS,NFS,NSG,TOUTMS,DVIN,
+     &                NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET)
 
         ELSEIF (LOI(1:9).EQ.'VISCOCHAB') THEN
+        
           NCOE=25
-            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
+          CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
      &                E,NU,ALPHA,NMAT,COEL)
           CALL RKDCHA(FAMI,KPG,KSP,MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,
      &                DTIME,NMAT,COEL,SIGI,EPSD,DETOT,DVIN)
+     
         ELSE  IF (LOI(1:9).EQ.'VENDOCHAB') THEN
+        
           NCOE=9
-            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
+          CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
      &                E,NU,ALPHA,NMAT,COEL)
           CALL RKDVEC(FAMI,KPG,KSP,MOD,IMAT,MATCST,NVI,VINI,COEFT,E,NU,
      &                ALPHA,X,DTIME,NMAT,COEL,SIGI,EPSD,DETOT,

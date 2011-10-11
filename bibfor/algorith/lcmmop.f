@@ -1,19 +1,19 @@
-        SUBROUTINE LCMMOP( FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,
-     &                     VINI,X,  DTIME, E,NU,ALPHA,PGL2,MOD,COEFT,
-     &                     SIGI,EPSD, DETOT,
-     &    COEL,NBPHAS,NFS,NSG,TOUTMS,DVIN,HSR,ITMAX,TOLER,IRET )
-        IMPLICIT NONE
-        INTEGER KPG,KSP,NMAT,NBCOMM(NMAT,3),NVI,NBPHAS,ITMAX,IRET
-        INTEGER NFS,NSG
-        REAL*8 VINI(*),DVIN(*),NU,E,ALPHA,X,DTIME,COEFT(NMAT),COEL(NMAT)
-        REAL*8 SIGI(6),EPSD(6),DETOT(6)
-C       POUR GAGNER EN TEMPS CPU
-        REAL*8 TOUTMS(NBPHAS,NFS,NSG,6)
-        REAL*8 TOLER,HSR(NFS,NSG,NSG)
-        CHARACTER*(*)  FAMI
-        CHARACTER*16 COMP(*)
+      SUBROUTINE LCMMOP( FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,
+     &                   VINI,X,  DTIME, E,NU,ALPHA,PGL2,MOD,COEFT,
+     &                   SIGI,EPSD, DETOT,COEL,NBPHAS,NFS,NSG,TOUTMS,
+     &                   DVIN,NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET )
+      IMPLICIT NONE
+      INTEGER KPG,KSP,NMAT,NBCOMM(NMAT,3),NVI,NBPHAS,ITMAX,IRET
+      INTEGER NFS,NSG,NHSR,NUMHSR(*)
+      REAL*8 VINI(*),DVIN(*),NU,E,ALPHA,X,DTIME,COEFT(NMAT),COEL(NMAT)
+      REAL*8 SIGI(6),EPSD(6),DETOT(6)
+C     POUR GAGNER EN TEMPS CPU
+      REAL*8 TOUTMS(NBPHAS,NFS,NSG,7)
+      REAL*8 TOLER,HSR(NSG,NSG,NHSR),HSRI(NSG,NSG)
+      CHARACTER*(*)  FAMI
+      CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,21 +32,21 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
-C TOLE CRP_21
+C TOLE CRP_21 CRS_1404
 C ======================================================================
 C       IN   FAMI   : FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 C            KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 C           COMP    :  NOM DU MODELE DE COMPORTEMENT
 C           MOD     :  TYPE DE MODELISATION
-C           IMAT    :  ADRESSE DU COEFTIAU CODE
-C         NBCOMM :  NOMBRE DE COEF COEFTIAU PAR FAMILLE
-C         CPMONO :  NOMS DES LOIS COEFTIAU PAR FAMILLE
+C           IMAT    :  ADRESSE DU MATERIAU CODE
+C         NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
+C         CPMONO :  NOMS DES LOIS MATERIAU PAR FAMILLE
 C           PGL   : MATRICE DE PASSAGE GLOBAL LOCAL
 C           NVI     :  NOMBRE DE VARIABLES INTERNES
 C           VINI    :  VARIABLES INTERNES A T
 C           X       :  INTERVALE DE TEMPS ADAPTATIF
 C           DTIME   :  INTERVALE DE TEMPS
-C           COEFT   :  COEFFICIENTS COEFTIAU INELASTIQUE A T
+C           COEFT   :  COEFFICIENTS MATERIAU INELASTIQUE A T
 C           SIGI    :  CONTRAINTES A L'INSTANT COURANT
 C           EPSD    :  DEFORMATION TOTALE A T
 C           DETOT   :  INCREMENT DE DEFORMATION TOTALE
@@ -128,10 +128,10 @@ C     ----------------------------------------------------------------
       REAL*8 EVI(6),SIGG(6),RP,DEVG(6),FV
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP
       REAL*8 DEVGEQ,LCNRTS,DBETA,BETA,DVINEQ,GRANB(6)
-      REAL*8 CRIT, SGNS, EXPBP(30),DY(30)
+      REAL*8 CRIT, SGNS, EXPBP(NSG),DY(NSG)
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,IV,NUMS
       INTEGER INDPHA,INDFV,DECAL,IPHAS,INDCP,INDFA,IEXP
-      INTEGER IFL,NUECOU
+      INTEGER IFL,NUECOU,IHSR
 C     ----------------------------------------------------------------
 C --  VARIABLES INTERNES
 C
@@ -139,7 +139,7 @@ C
         EVI(ITENS) = VINI(ITENS)
         DEVI(ITENS) = 0.D0
     5 CONTINUE
-      DO 55 I=1,30
+      DO 55 I=1,NSG
          DY(I)=0.D0
  55   CONTINUE
       IRET=0
@@ -188,16 +188,15 @@ C         NVIG=NBCOMM(INDPHA,3)
             DEVG(ITENS) = 0.D0
             EVG(ITENS) = 0.D0
   51     CONTINUE
+         IHSR=NUMHSR(IPHAS)
 
          DO 6 IFA=1,NBFSYS
 
-C            NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
             NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
             NECRIS=CPMONO(INDCP+5*(IFA-1)+4)
             NECRCI=CPMONO(INDCP+5*(IFA-1)+5)
 
-C            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
-            NBSYS=NINT(TOUTMS(IPHAS,5,IFA,1))
+            NBSYS=NINT(TOUTMS(IPHAS,IFA,1,7))
 
 C           indice de la famille IFA
             INDFA=INDPHA+IFA
@@ -241,7 +240,8 @@ C               IF (NECOUL.NE.'KOCKS_RAUCH') THEN
                   IEXP=0
                   IF (IS.EQ.1) IEXP=1
                   CALL LCMMFI(COEFT,INDFA,NMAT,NBCOMM,NECRIS,
-     &              IS,NBSYS,VINI(DECAL+1),DY(1),HSR,IEXP,EXPBP,RP)
+     &                        IS,NBSYS,VINI(DECAL+1),DY(1),NFS,NSG,
+     &                        HSR(1,1,IHSR),IEXP,EXPBP,RP)
 
                ENDIF
 C
@@ -253,15 +253,15 @@ C              CAS EXPLICITE : IL NE LE FAUT PAS (VITESSES)
 C              D'OU :
                DT=1.D0
 C
-            CALL LCMMFE( TAUS,COEFT,COEL,INDFA,
-     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VINI(DECAL+1),DY(1),
-     &      RP,VIS(1),VIS(2),DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+               CALL LCMMFE( TAUS,COEFT,COEL,INDFA,
+     &              NMAT,NBCOMM,NECOUL,IS,NBSYS,VINI(DECAL+1),DY(1),
+     &              RP,VIS(1),VIS(2),DT,DALPHA,DGAMMA,DP,CRIT,SGNS,
+     &              NFS,NSG,HSR(1,1,IHSR),IRET)
                IF (DP.GT.0.D0) THEN
 C
 C                 ECROUISSAGE CINEMATIQUE
 C
-C                  IF (NECOUL.NE.'KOCKS_RAUCH') THEN
-                  IF ((NUECOU.NE.4).AND.(NUECOU.NE.5)) THEN
+                  IF ((NUECOU.LT.4).OR.(NUECOU.GT.6)) THEN
                       CALL LCMMEC( COEFT,INDFA,NMAT,NBCOMM,NECRCI,
      &                     ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
                       IF (IRET.NE.0) GOTO 9999
@@ -330,12 +330,5 @@ C     Norme de DEVP cumulée
          DVIN(NUVI+I)=0.D0
  66   CONTINUE
       DVIN(NVI) = 0
-C
-C       IF (DVIN(7).EQ.0.D0) THEN
-C          DVIN(NVI)=0
-C       ELSE
-C          DVIN(NVI)=1
-C       ENDIF
-C
  9999 CONTINUE
       END

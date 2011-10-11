@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 04/05/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline3 Messages  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -174,8 +174,21 @@ Conseils & solution :
 """),
 
 34: _("""
- Le CHAM_NO :  %(k1)s  n'existe pas
-"""),
+ Le CHAM_NO :  %(k1)s  n existe pas
+ """),
+
+
+35: _("""
+      
+ MULT_FRONT factorise une Matrice Generalisee
+On a detecte l" existence d'au moins une liaison entre  ddls
+on ne renumerote pas car les DDL sont a priori
+compris entre  Lagrange1et Lagrange2 .
+ Conseil
+ ------
+  en cas d arret ultérieur avec MATRICE SINGULIERE, il faudra changer de SOLVEUR (MUMPS par exemple)
+ """),
+
 
 37: _("""
   GCPC n"est pas prevu pour une matrice complexe
@@ -196,6 +209,16 @@ La matrice possède des ddls imposés éliminés: il faut un VCINE
 42: _("""
 La matrice et le vecteur cinématique ne contiennent pas des valeurs de meme type
 """),
+
+43: _("""
+
+Attention :
+  La pile des matrices fontales  a un longueur  %(i1)s qui, en octets, sera superieure a l entier maximum pour cete machine %(i2)s
+  Vous aurez un problème dans une allocation ultérieure
+Conseil :
+  Utilisez une machine 64 bits si vous y êtes déjà  votre étude est vraiment trop volumineuse
+"""),
+
 
 44: _("""
 La methode de resolution:  %(k1)s  est inconnue. on attend ldlt,gcpc, mult_fro ou feti
@@ -234,6 +257,17 @@ Attention  %(k1)s .VALF existe déjà
 Le tableau B est insuffisamment dimensionné pour l'opération *
 """),
 
+
+52: _("""
+
+Attention :
+  Le bloc %(i1)s a un longueur  %(i2)s qui, en octets, sera superieure a l entier maximum pour cete machine %(i3)s
+  Vous aurez un problème dans une allocation ultérieure
+Conseil :
+  Utilisez une machine 64 bits si vous y êtes déjà  votre étude est vraiment trop volumineuse
+"""),
+
+
 53: _("""
 Toutes les fréquences sont des fréquences de corps rigide
 """),
@@ -258,15 +292,6 @@ Méthode QR : problème de convergence
 Il y a des valeurs propres très proches
 """),
 
-59: _("""
-Erreur d'utilisation :
-  Le solveur MULT_FRONT est interdit ici car les ddls de la matrice ne sont pas
-  portés par les noeuds d'un maillage.
-  Peut-etre s'agit-il d'une matrice généralisée ?
-
-Conseil :
-  Il faut changer de solveur
-"""),
 
 60: _("""
 La matrice : %(k1)s a une numérotation incohérente avec le NUME_DDL.

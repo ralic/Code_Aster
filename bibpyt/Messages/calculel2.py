@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,10 +131,16 @@ Erreur utilisateur dans la commande POST_CHAMP / MIN_MAX_SP :
  La composante demandée %(k1)s n'est pas trouvée dans le champ %(k2)s
 """),
 
+19: _("""
+Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
+ Pour l'occurrence %(i1)d du mot clé COQUE_EXCENT,
+ et pour le numéro d'ordre %(i2)d le champ calculé est vide.
+"""),
 
-
-
-
+20: _("""
+Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
+ La structure de donnée produite est vide.
+"""),
 
 21: _("""
  grandeur :  %(k1)s  inexistante au catalogue
@@ -179,6 +185,17 @@ Erreur utilisateur dans la commande POST_CHAMP / MIN_MAX_SP :
 30: _("""
   on n'arrive pas a etendre la carte:  %(k1)s
 """),
+
+30: _("""
+Erreur utilisateur dans la commande AFFE_CARA_ELEM :
+  On a affecté un excentrement non nul (mot clé COQUE / EXCENTREMENT)
+  sur un élément qui ne sait pas traiter l'excentrement (maille %(k1)s).
+"""),
+
+
+
+
+
 
 33: _("""
 Erreur Utilisateur :

@@ -3,7 +3,7 @@
      &   HSR,NFS,NSG,TOUTMS,VIND,IMPEXP)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21 CRS_1404
 C ======================================================================
@@ -82,7 +82,7 @@ C     ----------------------------------------------------------------
       REAL*8          REPERE(7),XYZ(3),KOOH(6,6),Q(3,3)
       REAL*8          EPSI,R8PREM,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
       REAL*8          VALRES(NMAT),MS(6),NG(3), LG(3),VIND(*)
-      REAL*8          HSR(NFS,NSG,NSG),TOUTMS(NFS,NSG,6)
+      REAL*8          HSR(NSG,NSG),TOUTMS(NFS,NSG,6)
       CHARACTER*8     MOD, NOMC(14)
       INTEGER CERR(14)
       CHARACTER*3     MATCST
@@ -115,7 +115,7 @@ C
 
       READ (COMP(2),'(I16)') NVI
 
-      CALL LCMMJV(COMP,NMAT,CPMONO,NBFSYS,IROTA,ITBINT,HSR)
+      CALL LCMMJV(COMP,NMAT,CPMONO,NBFSYS,IROTA,ITBINT,NFS,NSG,HSR)
 
       IF (IMPEXP.EQ.1) THEN
          IF (IROTA.NE.0) THEN
@@ -133,9 +133,6 @@ C
  111  CONTINUE
       NBCOMM(1,1)=1
 
-      NBHSR=0
-      IF (ITBINT.EQ.1) NBHSR=1
-
       DO 6 IFA=1,NBFSYS
          NOMFAM=CPMONO(5*(IFA-1)+1)
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
@@ -147,8 +144,13 @@ C
 
 C        COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
          CALL LCMAFL(FAMI,KPG,KSP,'-',NMATER,IMAT,NECOUL,NBVAL,VALRES,
-     &            NMAT,ITBINT,HSR,NBHSR,NBSYS)
+     &            NMAT,ITBINT,NFS,NSG,HSR,NBSYS)
          NVINI=NBCOMM(IFA,1)
+         IF (NECOUL.EQ.'MONO_DD_KR') THEN
+            NBVAL=NBVAL+1
+C           une seule matrice d'interaction pour le monocristal         
+            VALRES(NBVAL)=1
+         ENDIF
          DO 501 I=1,NBVAL
             MATERD(NVINI-1+I,2)=VALRES(I)
  501     CONTINUE
@@ -165,7 +167,10 @@ C        COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE CINEMATIQUE
 
 C        COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
          CALL LCMAEI(FAMI,KPG,KSP,'-',NMATER,IMAT,NECRIS,NECOUL,NBVAL,
-     &            VALRES,NMAT,ITBINT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
+     &            VALRES,NMAT,ITBINT,NFS,NSG,HSR,IFA,NOMFAM,NBSYS)
+         NBVAL=NBVAL+1
+C        une seule matrice d'interaction pour le monocristal         
+         VALRES(NBVAL)=1
          NVINI=NBCOMM(IFA,3)
          DO 503 I=1,NBVAL
             MATERD(NVINI-1+I,2)=VALRES(I)
@@ -180,8 +185,6 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
       NBCOMM(1,1)=1
 
       NBSYST=0
-      NBHSR=0
-      IF (ITBINT.EQ.1) NBHSR=1
 
       DO 61 IFA=1,NBFSYS
 
@@ -195,8 +198,13 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
          NBSYST=NBSYST+NBSYS
 
          CALL LCMAFL(FAMI,KPG,KSP,'+',NMATER,IMAT,NECOUL,NBVAL,
-     &            VALRES,NMAT,ITBINT,HSR,NBHSR,NBSYS)
+     &            VALRES,NMAT,ITBINT,NFS,NSG,HSR,NBSYS)
          NVINI=NBCOMM(IFA,1)
+         IF (NECOUL.EQ.'MONO_DD_KR') THEN
+            NBVAL=NBVAL+1
+C           une seule matrice d'interaction pour le monocristal         
+            VALRES(NBVAL)=1
+         ENDIF
          DO 504 I=1,NBVAL
             MATERF(NVINI-1+I,2)=VALRES(I)
  504     CONTINUE
@@ -211,8 +219,11 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
          NBCOMM(IFA,3)=NVINI+NBVAL
 
          CALL LCMAEI(FAMI,KPG,KSP,'+',NMATER,IMAT,NECRIS,NECOUL,NBVAL,
-     &       VALRES,NMAT,ITBINT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
+     &       VALRES,NMAT,ITBINT,NFS,NSG,HSR,IFA,NOMFAM,NBSYS)
          NVINI=NBCOMM(IFA,3)
+         NBVAL=NBVAL+1
+C        une seule matrice d'interaction pour le monocristal         
+         VALRES(NBVAL)=1
          DO 506 I=1,NBVAL
             MATERF(NVINI-1+I,2)=VALRES(I)
  506     CONTINUE

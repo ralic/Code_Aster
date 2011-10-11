@@ -1,11 +1,11 @@
       SUBROUTINE LCMATE( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
      &                   IMPEXP,TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,
      &                   CPMONO,ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,
-     &                   NVI,VIND,NFS,NSG,TOUTMS)
+     &                   NVI,VIND,NFS,NSG,TOUTMS,NHSR,NUMHSR)
       IMPLICIT   NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,15 +55,18 @@ C           HSR    : MATRICE D'INTERACTION POUR L'ECROUISSAGE ISOTROPE
 C                    UTILISEE SEULEMENT POUR LE MONOCRISTAL IMPLICITE
 C       ----------------------------------------------------------------
       INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I, ITMAX, J
-      INTEGER         NBCOMM(NMAT,3),KPG,KSP, IMPEXP, NFS, NSG
+      INTEGER         KPG,KSP, IMPEXP, NFS, NSG, NHSR
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
       REAL*8          VIND(*), PGL(3,3), ANGMAS(3)
       REAL*8          TOLER
-      REAL*8          HSR(*),TOUTMS(*)
-      CHARACTER*16    LOI, COMP(*), CPMONO(*)
+      CHARACTER*16    LOI, COMP(*)
       CHARACTER*8     MOD,    TYPMA
       CHARACTER*3     MATCST
       CHARACTER*(*)   FAMI
+C     SPECIFIQUE MONOCRISTAL
+      INTEGER         NUMHSR(*),NBCOMM(*)
+      REAL*8          HSR(*),TOUTMS(*)
+      CHARACTER*16    CPMONO(*)
 C       ----------------------------------------------------------------
 C
 C -     INITIALISATION DE MATERD ET MATERF A 0.
@@ -73,9 +76,6 @@ C
          MATERD(I,2) = 0.D0
          MATERF(I,1) = 0.D0
          MATERF(I,2) = 0.D0
-         DO 11 J = 1 , 3
-            NBCOMM(I,J) = 0
- 11      CONTINUE
  10   CONTINUE
 C
       LOI = COMP(1)
@@ -113,7 +113,7 @@ C
       ELSEIF ( LOI(1:8) .EQ. 'POLYCRIS' ) THEN
          CALL LCMMAP (FAMI,KPG,KSP, COMP, MOD, IMAT, NMAT,ANGMAS,PGL,
      &     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI,
-     &     NFS,NSG,HSR)
+     &     NFS,NSG,NHSR,NUMHSR,HSR)
          TYPMA='COHERENT'
 C
       ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN

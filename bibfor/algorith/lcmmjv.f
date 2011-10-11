@@ -1,7 +1,8 @@
-      SUBROUTINE LCMMJV(COMP,NMAT,CPMONO,NBFSYS,IROTA,ITBINT,HSR)
+      SUBROUTINE LCMMJV(COMP,NMAT,CPMONO,NBFSYS,IROTA,ITBINT,
+     &                  NFS,NSG,HSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,11 +51,11 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ----------------------------------------------------------------
-      INTEGER NMAT,ICOMPI,IROTA,ITBINT,ICOMPO,NBFSYS,I,J
+      INTEGER NMAT,ICOMPI,IROTA,ITBINT,ICOMPO,NBFSYS,I,J,NFS,NSG
       INTEGER ICOMPR,NBSYST,NBTBSY,IFA,NBSYSI,IDECAL
-      REAL*8 HSR(5,30,30),TBSYSG
+      REAL*8 HSR(NSG,NSG),TBSYSG
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1),COMPK,COMPI,COMPR
-      COMMON/TBSYSG/TBSYSG(182)
+      COMMON/TBSYSG/TBSYSG(900)
 C     ----------------------------------------------------------------
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -85,34 +86,25 @@ C     5 FAMILLES DE SYSTEMES MAXI
          NBSYSI=ZI(ICOMPI-1+8+IFA)
          NBTBSY=NBTBSY+NBSYSI
  3    CONTINUE
- 
-      CALL R8INIR(182, 0.D0, TBSYSG, 1)
-      
+       
       IF (NBTBSY.NE.0) THEN
-C        1 FAMILLE DE SYSTEMES MAXI ICI 
-         CALL ASSERT(NBFSYS.EQ.1)    
-         TBSYSG(1)=1.D0
+         CALL R8INIR(900, 0.D0, TBSYSG, 1)
          CALL JEVEUO(COMPR,'L',ICOMPR)
-         NBSYSI=ZI(ICOMPI-1+8+1)
-         TBSYSG(2)=NBSYSI
-         
-C        table contenant les systemes
-         CALL DCOPY(6*NBSYSI,ZR(ICOMPR),1,TBSYSG(3),1)
+C           TABLE CONTENANT LES SYSTEMES
+         CALL DCOPY(6*NBTBSY+12,ZR(ICOMPR),1,TBSYSG,1)
       ELSE
          TBSYSG(1)=0.D0
       ENDIF       
-      
-C     table contenant la matrice d'interaction        
+C     TABLE CONTENANT LA MATRICE D'INTERACTION        
       IF (ITBINT.EQ.1) THEN
          IDECAL=0
          IF (NBTBSY.EQ.0) THEN
             CALL JEVEUO(COMPR,'L',ICOMPR)
-         ELSE
-            IDECAL=6*NBSYSI
          ENDIF
+         IDECAL=NINT(ZR(ICOMPR+1))
          DO 2 I=1,NBSYST
          DO 2 J=1,NBSYST
-            HSR(1,I,J)=ZR(ICOMPR-1+IDECAL+NBSYST*(I-1)+J)
+            HSR(I,J)=ZR(ICOMPR-2+IDECAL+NBSYST*(I-1)+J)
  2       CONTINUE 
       ENDIF
       CALL JEDEMA()

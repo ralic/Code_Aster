@@ -1,4 +1,4 @@
-#@ MODIF fatigue1 Messages  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+#@ MODIF fatigue1 Messages  DATE 10/10/2011   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,6 +192,11 @@ cata_msg={
 
 38: _("""
  la valeur du moment spectral d'ordre 4 (lambda_4) est nulle
+"""),
+
+39: _("""
+Le chargement à compter est un chargement constant. On considère tous les chargements comme un cycle avec valeur_max 
+= valeur_min = valeur du chargement, i.e., amplitude = 0. 
 """),
 
 63: _("""

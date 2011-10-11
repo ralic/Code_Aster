@@ -1,7 +1,7 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C          LA MATRICE (K) EST REELLE OU COMPLEXE SYMETRIQUE
 C          LES VALEURS PROPRES ET DES VECTEURS PROPRES SONT REELS OU
 C          COMPLEXES CONJUGUEES OU NON
 C-----------------------------------------------------------------------
-C
+C RESPONSABLE BOITEAU O.BOITEAU
       IMPLICIT NONE
 
 C PARAMETRES D'APPELS
@@ -399,11 +399,6 @@ C        CMDE ECLATEE NUME_DDL LORS DE LA CONSTITUTION DES MATRICES.
       IF ((METRES(1:4).NE.'LDLT').AND.(METRES(1:8).NE.'MULT_FRO').AND.
      &    (METRES(1:5).NE.'MUMPS')) CALL U2MESS('F','ALGELINE5_71')
 
-C     -- CAS PARTICULIER 1: NUME_DDL_GENE, ON IMPOSE METRES=MUMPS
-      IF ((ZK24(JREFA+9)(1:4).EQ.'GENE').AND.
-     &  (METRES(1:8).EQ.'MULT_FRO')) THEN
-        CALL CRSVL2(SOLVEU,NPREC,RAIDE)
-      ENDIF
       NPREC=ZI(ISLVI)
       METRES=ZK24(ISLVK)
 C     ------------------------------------------------------------------

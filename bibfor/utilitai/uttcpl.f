@@ -5,9 +5,9 @@
       CHARACTER*24 NOMC(DIM)
       CHARACTER*80 NOML(DIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF UTILITAI  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,13 +68,13 @@ C     -----------------------------------------------------
       D1(10)='CPU.ASSE.2|S|#2.2.1 Assemblage matrices'
       D1(11)='CPU.ASSE.3|S|#2.2.2 Assemblage seconds membres'
 
-      D1(12)='CPU.COFR.1|P|#3 Contact, frottement'
-
 C     -- LES 2 MESURES SUIVANTES SONT SPECIALES : ON S'INTERDIT DE
 C        FAIRE APPEL A JEVEUX. VOIR UTTCPU.F, UTTCPR.F
 C        C'EST LEUR NOM QUI EST CONNU DE TOUS : 'CPU.MEMD.1/2'
-      D1(13)='CPU.MEMD.1|P|#4 Dechargement de la memoire sur disque'
-      D1(14)='CPU.MEMD.2|P|#4 ??? libre pour mesure interne jeveux'
+      D1(12)='CPU.MEMD.1|P|#3 Dechargement de la memoire sur disque'
+      D1(13)='CPU.MEMD.2|P|#3 ??? libre pour mesure interne jeveux'
+
+      D1(14)='CPU.CMPI.1|P|#4 Communications MPI'
 
 C     D1(15) ='CPU.CALC.4|S|#2.1.1.1 Routine extrai'
 C     D1(16) ='CPU.CALC.5|S|#2.1.1.2 ...'

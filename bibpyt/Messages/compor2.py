@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,7 @@ cata_msg={
 Les déformations deviennent trop grandes : <%(r1)E>
 => GROT_GDEP sous COMP_INCR n'est plus valide.
 
-Pour un calcul en grandes déforamtion sous COMP_INCR
+Pour un calcul en grandes déformation sous COMP_INCR
 il faut utiliser GDEF_HYPO_ELAS ou SIMO_MIEHE.
 
 Pour un calcul hyperelastique, utiliser COMP_ELAS.
@@ -97,13 +97,7 @@ La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integrati
 """),
 
 16: _("""
- MONOCRISTAL : quand la matrice d'interaction est fournie par l'utilisateur, il faut une seule famille de systemes.
- Ici,il y en a : <%(i1)i>.
-"""),
-
-16: _("""
- MONOCRISTAL : quand la matrice d'interaction est fournie par l'utilisateur, il faut une seule famille de systemes.
- Ici,il y en a : <%(i1)i>.
+ POLYCRISTAL : Il faut au maximum 5 monocristaux différents sur l'ensemble des phases.  Ici,il y en a : <%(i1)i>.
 """),
 
 17: _("""
@@ -117,6 +111,16 @@ La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integrati
 
 19: _("""
  MONOCRISTAL : le nombre de composantes de n et m n'est pas correct :  <%(r1)E> au lieu de 6.
+"""),
+
+20: _("""
+ MONOCRISTAL : commme il y a  plusieurs familles de systemes de glissement, 
+ il faut fournir une matrice d'interaction entre tous ces systemes, de dimension  <%(i1)i>
+"""),
+
+21: _("""
+ MONOCRISTAL : pas de matrice jacobienne programmée actuellement pour  MONO_DD_FAT.
+ Utiliser ALGO_INTE='NEWTON_PERT'
 """),
 
 

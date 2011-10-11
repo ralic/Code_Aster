@@ -1,4 +1,4 @@
-#@ MODIF sd_fond_fiss SD  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF sd_fond_fiss SD  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,17 +22,17 @@ from SD import *
 
 class sd_fond_fiss(AsBase):
     nomj = SDNom(fin=8)
-    LEVREINF___MAIL = Facultatif(AsVK8(SDNom(nomj='.LEVREINF  .MAIL'), ))
+    LEVREINF_MAIL = Facultatif(AsVK8(SDNom(nomj='.LEVREINF.MAIL'), ))
     NORMALE = Facultatif(AsVR(lonmax=3, ))
     BASEFOND= Facultatif(AsVR())
-    FOND_______TYPE = AsVK8(SDNom(nomj='.FOND      .TYPE'), lonmax=1, )
-    FOND_______NOEU = AsVK8(SDNom(nomj='.FOND      .NOEU'), )
-    FONDSUP____NOEU = Facultatif(AsVK8(SDNom(nomj='.FOND_SUP  .NOEU'), ))
-    FONDINF____NOEU = Facultatif(AsVK8(SDNom(nomj='.FOND_INF  .NOEU'), ))
+    FOND_TYPE = AsVK8(SDNom(nomj='.FOND.TYPE'), lonmax=1, )
+    FOND_NOEU = AsVK8(SDNom(nomj='.FOND.NOEU'), )
+    FONDSUP_NOEU = Facultatif(AsVK8(SDNom(nomj='.FOND_SUP.NOEU'), ))
+    FONDINF_NOEU = Facultatif(AsVK8(SDNom(nomj='.FOND_INF.NOEU'), ))
     DTAN_EXTREMITE = Facultatif(AsVR(lonmax=3, ))
-    INFNORM____NOEU = Facultatif(AsVK8(SDNom(nomj='.INFNORM   .NOEU'), ))
+    INFNORM_NOEU = Facultatif(AsVK8(SDNom(nomj='.INFNORM.NOEU'), ))
     DTAN_ORIGINE = Facultatif(AsVR(lonmax=3, ))
-    SUPNORM____NOEU = Facultatif(AsVK8(SDNom(nomj='.SUPNORM   .NOEU'), ))
-    LEVRESUP___MAIL = Facultatif(AsVK8(SDNom(nomj='.LEVRESUP  .MAIL'), ))
+    SUPNORM_NOEU = Facultatif(AsVK8(SDNom(nomj='.SUPNORM.NOEU'), ))
+    LEVRESUP_MAIL = Facultatif(AsVK8(SDNom(nomj='.LEVRESUP.MAIL'), ))
 
 

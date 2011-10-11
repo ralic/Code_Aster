@@ -1,0 +1,298 @@
+
+PRESSION = FORMULE(VALE='p_atm+p_rhol*p_g*(p_long-COOR_X)',
+                   NOM_PARA='COOR_X',);
+
+PRESRE = FORMULE(VALE='(PREF-PRE1)/PREF',
+                 NOM_PARA=('PREF','PRE1',),);
+
+PATM=DEFI_CONSTANTE(VALE=100000.,);
+
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL_HY,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATE1,),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL_HY,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATE2,),);
+
+CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL_HY,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATE3,),);
+
+CHMAT4=AFFE_MATERIAU(MAILLAGE=MAIL_HY,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATE4,),);
+
+PRE1_IMP=AFFE_CHAR_CINE_F(MODELE=MODEHY,
+                          MECA_IMPO=_F(GROUP_MA='GM4',
+                                      PRE1=PATM,),);
+
+FLUH_IMP=AFFE_CHAR_MECA_F(MODELE=MODEHY,
+                          FLUX_THM_REP=_F(GROUP_MA=('GM1','GM2','GM3',),
+                                          FLUN_HYDR1=ZERO,),);
+
+############
+# Résolution
+############
+
+METHODE='MUMPS';
+
+RESUPRE1=STAT_NON_LINE(MODELE=MODEHY,
+                       CHAM_MATER=CHMAT1,
+                       EXCIT=(_F(CHARGE=PRE1_IMP,),
+                              _F(CHARGE=FLUH_IMP,),),
+                       COMP_INCR=_F(RELATION='KIT_H',
+                                    RELATION_KIT=('LIQU_SATU','HYDR_UTIL',),
+                                    PARM_THETA=1.,),
+                       INCREMENT=_F(LIST_INST=LINS_MEC,),
+                       SOLVEUR=_F(METHODE=METHODE,),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=1,),
+                       CONVERGENCE=_F(RESI_GLOB_MAXI=p_prec,),);
+
+RESUPRE2=STAT_NON_LINE(MODELE=MODEHY,
+                       CHAM_MATER=CHMAT2,
+                       EXCIT=(_F(CHARGE=PRE1_IMP,),
+                              _F(CHARGE=FLUH_IMP,),),
+                       COMP_INCR=_F(RELATION='KIT_H',
+                                    RELATION_KIT=('LIQU_SATU','HYDR_UTIL',),
+                                    PARM_THETA=1.,),
+                       INCREMENT=_F(LIST_INST=LINS_MEC,),
+                       SOLVEUR=_F(METHODE=METHODE,),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=1,),
+                       CONVERGENCE=_F(RESI_GLOB_MAXI=p_prec,),);
+
+RESUPRE3=STAT_NON_LINE(MODELE=MODEHY,
+                       CHAM_MATER=CHMAT3,
+                       EXCIT=(_F(CHARGE=PRE1_IMP,),
+                              _F(CHARGE=FLUH_IMP,),),
+                       COMP_INCR=_F(RELATION='KIT_H',
+                                    RELATION_KIT=('LIQU_SATU','HYDR_UTIL',),
+                                    PARM_THETA=1.,),
+                       INCREMENT=_F(LIST_INST=LINS_MEC,),
+                       SOLVEUR=_F(METHODE=METHODE,),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=1,),
+                       CONVERGENCE=_F(RESI_GLOB_MAXI=p_prec,),);
+
+RESUPRE4=STAT_NON_LINE(MODELE=MODEHY,
+                       CHAM_MATER=CHMAT4,
+                       EXCIT=(_F(CHARGE=PRE1_IMP,),
+                              _F(CHARGE=FLUH_IMP,),),
+                       COMP_INCR=_F(RELATION='KIT_H',
+                                    RELATION_KIT=('LIQU_SATU','HYDR_UTIL',),
+                                    PARM_THETA=1.,),
+                       INCREMENT=_F(LIST_INST=LINS_MEC,),
+                       SOLVEUR=_F(METHODE=METHODE,),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=1,),
+                       CONVERGENCE=_F(RESI_GLOB_MAXI=p_prec,),);
+
+MAIL_HY=DEFI_GROUP(reuse =MAIL_HY,
+                   MAILLAGE=MAIL_HY,
+                   CREA_GROUP_MA=_F(NOM='MA_00',
+                                    TOUT='OUI',),
+                   CREA_GROUP_NO=_F(GROUP_MA='MA_00',
+                                    NOM='NO_00',),);
+
+EXTRPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='MAIL_HY',
+                                 RESULTAT=RESUPRE1,
+                                 NOM_CHAM='DEPL',
+                                 NUME_ORDRE=1,
+                                 GROUP_NO='NO_00',
+                                 NOM_CMP='PRE1',),);
+
+EXTRPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='MAIL_HY',
+                                 RESULTAT=RESUPRE2,
+                                 NOM_CHAM='DEPL',
+                                 NUME_ORDRE=1,
+                                 GROUP_NO='NO_00',
+                                 NOM_CMP='PRE1',),);
+
+EXTRPRE3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='MAIL_HY',
+                                 RESULTAT=RESUPRE3,
+                                 NOM_CHAM='DEPL',
+                                 NUME_ORDRE=1,
+                                 GROUP_NO='NO_00',
+                                 NOM_CMP='PRE1',),);
+
+EXTRPRE4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='MAIL_HY',
+                                 RESULTAT=RESUPRE4,
+                                 NOM_CHAM='DEPL',
+                                 NUME_ORDRE=1,
+                                 GROUP_NO='NO_00',
+                                 NOM_CMP='PRE1',),);
+
+COMPPRE1=CALC_TABLE(TABLE=EXTRPRE1,
+                     ACTION=_F(OPERATION='OPER',
+                               FORMULE=PRESSION,
+                               NOM_PARA='PREF',),);
+
+COMPPRE1=CALC_TABLE(reuse =COMPPRE1,
+                     TABLE=COMPPRE1,
+                     ACTION=_F(OPERATION='FILTRE',
+                               NOM_PARA='PREF',
+                               CRIT_COMP='GT',
+                               VALE=0.0,),);
+
+COMPPRE1=CALC_TABLE(reuse =COMPPRE1,
+                    TABLE=COMPPRE1,
+                    ACTION=_F(OPERATION='OPER',
+                              FORMULE=PRESRE,
+                              NOM_PARA='ERRE_P',),);
+
+IMPR_TABLE(TABLE=COMPPRE1,
+           FORMAT='TABLEAU',
+           UNITE=8,
+           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','PRE1','PREF','ERRE_P',),);
+
+COMPPRE2=CALC_TABLE(TABLE=EXTRPRE2,
+                     ACTION=_F(OPERATION='OPER',
+                               FORMULE=PRESSION,
+                               NOM_PARA='PREF',),);
+
+COMPPRE2=CALC_TABLE(reuse =COMPPRE2,
+                     TABLE=COMPPRE2,
+                     ACTION=_F(OPERATION='FILTRE',
+                               NOM_PARA='PREF',
+                               CRIT_COMP='GT',
+                               VALE=0.0,),);
+
+COMPPRE2=CALC_TABLE(reuse =COMPPRE2,
+                    TABLE=COMPPRE2,
+                    ACTION=_F(OPERATION='OPER',
+                              FORMULE=PRESRE,
+                              NOM_PARA='ERRE_P',),);
+
+IMPR_TABLE(TABLE=COMPPRE2,
+           FORMAT='TABLEAU',
+           UNITE=8,
+           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','PRE1','PREF','ERRE_P',),);
+
+COMPPRE3=CALC_TABLE(TABLE=EXTRPRE3,
+                     ACTION=_F(OPERATION='OPER',
+                               FORMULE=PRESSION,
+                               NOM_PARA='PREF',),);
+
+COMPPRE3=CALC_TABLE(reuse =COMPPRE3,
+                     TABLE=COMPPRE3,
+                     ACTION=_F(OPERATION='FILTRE',
+                               NOM_PARA='PREF',
+                               CRIT_COMP='GT',
+                               VALE=0.0,),);
+
+COMPPRE3=CALC_TABLE(reuse =COMPPRE3,
+                    TABLE=COMPPRE3,
+                    ACTION=_F(OPERATION='OPER',
+                              FORMULE=PRESRE,
+                              NOM_PARA='ERRE_P',),);
+
+IMPR_TABLE(TABLE=COMPPRE3,
+           FORMAT='TABLEAU',
+           UNITE=8,
+           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','PRE1','PREF','ERRE_P',),);
+
+COMPPRE4=CALC_TABLE(TABLE=EXTRPRE4,
+                     ACTION=_F(OPERATION='OPER',
+                               FORMULE=PRESSION,
+                               NOM_PARA='PREF',),);
+
+COMPPRE4=CALC_TABLE(reuse =COMPPRE4,
+                     TABLE=COMPPRE4,
+                     ACTION=_F(OPERATION='FILTRE',
+                               NOM_PARA='PREF',
+                               CRIT_COMP='GT',
+                               VALE=0.0,),);
+
+COMPPRE4=CALC_TABLE(reuse =COMPPRE4,
+                    TABLE=COMPPRE4,
+                    ACTION=_F(OPERATION='OPER',
+                              FORMULE=PRESRE,
+                              NOM_PARA='ERRE_P',),);
+
+IMPR_TABLE(TABLE=COMPPRE4,
+           FORMAT='TABLEAU',
+           UNITE=8,
+           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','PRE1','PREF','ERRE_P',),);
+
+TEST_TABLE( TABLE     = COMPPRE1 ,
+            TYPE_TEST = 'MAX',
+            VALE      = 1.E-9,
+            PRECISION = 1.E-9,
+            NOM_PARA  = 'ERRE_P',CRITERE='ABSOLU',REFERENCE='ANALYTIQUE')
+
+TEST_TABLE( TABLE     = COMPPRE2 ,
+            TYPE_TEST = 'MAX',
+            VALE      = 1.E-9,
+            PRECISION = 1.E-9,
+            NOM_PARA  = 'ERRE_P',CRITERE='ABSOLU',REFERENCE='ANALYTIQUE')
+
+TEST_TABLE( TABLE     = COMPPRE3 ,
+            TYPE_TEST = 'MAX',
+            VALE      = 1.E-9,
+            PRECISION = 1.E-9,
+            NOM_PARA  = 'ERRE_P',CRITERE='ABSOLU',REFERENCE='ANALYTIQUE')
+
+TEST_TABLE( TABLE     = COMPPRE4 ,
+            TYPE_TEST = 'MAX',
+            VALE      = 1.E-9,
+            PRECISION = 1.E-9,
+            NOM_PARA  = 'ERRE_P',CRITERE='ABSOLU',REFERENCE='ANALYTIQUE')
+
+CHAINAGE_THM(
+             TYPE_CHAINAGE = 'INIT',
+             MODELE_MECA   = MODE1,
+             MODELE_HYDR   = MODEHY,
+             MATR_MH       = CO('MATMHA',),
+             MATR_HM1      = CO('MATHM1A',),
+             MATR_HM2      = CO('MATHM2A',),
+);
+
+CHAINAGE_THM(
+             TYPE_CHAINAGE = 'INIT',
+             MODELE_MECA   = MODE2,
+             MODELE_HYDR   = MODEHY,
+             MATR_MH       = CO('MATMHB',),
+             MATR_HM1      = CO('MATHM1B',),
+             MATR_HM2      = CO('MATHM2B',),
+);
+
+REPTO1A=CHAINAGE_THM(RESU_HYDR=RESUPRE1,
+                     MODELE_MECA=MODE1,
+                     MATR_HM1 = MATHM1A,
+                     MATR_HM2 = MATHM2A,
+                     TYPE_CHAINAGE='HYDR_MECA',
+                     TYPE_RESU='CHAM_NO',);
+
+REPTO1B=CHAINAGE_THM(RESU_HYDR=RESUPRE1,
+                     MODELE_MECA=MODE1,
+                     TYPE_CHAINAGE='HYDR_MECA',
+                     MATR_HM1 = MATHM1A,
+                     MATR_HM2 = MATHM2A,
+                     INST=p_inst_fin,);
+
+REPTO2=CHAINAGE_THM(RESU_HYDR=RESUPRE2,
+                    MODELE_MECA=MODE1,
+                    TYPE_CHAINAGE='HYDR_MECA',
+                    MATR_HM1 = MATHM1A,
+                    MATR_HM2 = MATHM2A,
+                    INST=p_inst_fin,);
+
+REPTO3=CHAINAGE_THM(RESU_HYDR=RESUPRE3,
+                    MODELE_MECA=MODE1,
+                    MATR_HM1 = MATHM1A,
+                    MATR_HM2 = MATHM2A,
+                    TYPE_CHAINAGE='HYDR_MECA',
+                    INST=p_inst_fin,);
+
+REPTO4=CHAINAGE_THM(RESU_HYDR=RESUPRE4,
+                    MODELE_MECA=MODE2,
+                    TYPE_CHAINAGE='HYDR_MECA',
+                    MATR_HM1 = MATHM1B,
+                    MATR_HM2 = MATHM2B,
+                    INST=p_inst_fin,);

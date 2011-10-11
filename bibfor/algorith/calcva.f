@@ -1,10 +1,11 @@
-        SUBROUTINE CALCVA(  YAMEC, YATE, YAP1, YAP2, DEFGEM, DEFGEP,
+        SUBROUTINE CALCVA(  KPI,YACHAI,YAMEC, YATE, YAP1, YAP2,
+     &                      DEFGEM, DEFGEP,
      +                      ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM,
      +                      T0, P10, P20, DEPSV, EPSV, DEPS, T, P1, P2,
      +                      GRAT, GRAP1, GRAP2, DP1, DP2, DT, RETCOM )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,14 +29,16 @@ C ======================================================================
 C --- CALCUL DE VARIABLES (MECANIQUES, HYDRAULIQUES, THERMIQUES) -------
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       YAMEC, YATE, YAP1, YAP2
+      INTEGER       KPI,YAMEC, YATE, YAP1, YAP2
+      LOGICAL       YACHAI
       INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM, RETCOM
       REAL*8        DEFGEM(*), DEFGEP(*), T0, P10, P20
       REAL*8        DEPSV, EPSV, DEPS(6), T, P1, P2, DT, DP1, DP2
       REAL*8        GRAT(NDIM), GRAP1(NDIM), GRAP2(NDIM)
 C ======================================================================
-      INTEGER       I,IADZI,IAZK24
+      INTEGER       I,IADZI,IAZK24,IRET1,IRET2
       CHARACTER*8   NOMAIL
+      REAL*8        EPSVP,EPSVM
 C ======================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -60,6 +63,21 @@ C --- VARIABLES MECANIQUES ---------------------------------------------
 C ======================================================================
       DEPSV = 0.0D0
       EPSV  = 0.0D0
+      CALL RCVARC(' ','DIVU','-','RIGI',KPI,1,EPSVM,IRET1)
+      CALL RCVARC(' ','DIVU','+','RIGI',KPI,1,EPSVP,IRET2)
+C
+      YACHAI = (IRET1.EQ.0).AND.(IRET2.EQ.0)
+
+C REMARQUE : YAMEC PEUT ETRE EGAL A 2
+C            (ELEMENTS DE JOINTS HM)
+      IF ((YAMEC.NE.0).AND.YACHAI) THEN
+        CALL U2MESS('F','CHAINAGE_1')
+      ELSEIF (IRET1.NE.IRET2) THEN
+        CALL U2MESS('F','CHAINAGE_2')
+      ENDIF
+C
+C 1ER CAS : ON A DE LA MECANIQUE ET ON EST EN TOTALEMENT COUPLE
+C
       IF (YAMEC.EQ.1) THEN
          DO 100 I=1,6
             DEPS(I)=DEFGEP(ADDEME+NDIM-1+I)-DEFGEM(ADDEME+NDIM-1+I)
@@ -70,6 +88,11 @@ C ======================================================================
          DO 102 I=1,3
             EPSV=EPSV+DEFGEP(ADDEME+NDIM-1+I)
  102     CONTINUE
+      ENDIF
+C
+      IF (YACHAI) THEN
+          DEPSV = EPSVP - EPSVM
+          EPSV  = EPSVP
       ENDIF
 C ======================================================================
 C --- VARIABLES HYDRAULIQUES -------------------------------------------

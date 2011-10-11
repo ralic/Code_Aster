@@ -3,7 +3,7 @@
       CHARACTER*6         TYPFON, NOMOBJ
       CHARACTER*8         RESU, NOMA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,13 +75,13 @@ C      -----------------------------------
 C      
       LFON = .FALSE.
       IF(TYPFON.EQ.'INF') THEN
-         NOEORD = RESU//'.FOND_INF  .NOEU'
+         NOEORD = RESU//'.FOND_INF.NOEU'
          LFON = .TRUE.
       ELSEIF(TYPFON.EQ.'SUP') THEN
-         NOEORD = RESU//'.FOND_SUP  .NOEU'
+         NOEORD = RESU//'.FOND_SUP.NOEU'
          LFON = .TRUE.
       ELSE
-         NOEORD = RESU//'.FOND      .NOEU'
+         NOEORD = RESU//'.FOND.NOEU'
       ENDIF
 C
 C ---  RECUPERATIONS RELATIVES AU MAILLAGE
@@ -203,12 +203,12 @@ C     CONSTRUCTION DU TYPE DE MAILLES DES NOEUDS DU FOND DE FISSURE
 C     -------------------------------------------------------------
 C
       IF (NBNOFF.EQ.1) TYPMP = '        '
-      CALL JEEXIN ( RESU//'.FOND      .TYPE', IRET )
+      CALL JEEXIN ( RESU//'.FOND.TYPE', IRET )
       IF (IRET.EQ.0) THEN
-        CALL WKVECT(RESU//'.FOND      .TYPE','G V K8',1,JNOE2)
+        CALL WKVECT(RESU//'.FOND.TYPE','G V K8',1,JNOE2)
         ZK8(JNOE2) = TYPMP
       ELSE
-        CALL JEVEUO( RESU//'.FOND      .TYPE','L',JTYP)
+        CALL JEVEUO( RESU//'.FOND.TYPE','L',JTYP)
         TYPM=ZK8(JTYP)
         IF (TYPMP.NE.TYPM) THEN
           VALK(1) = TYPMP

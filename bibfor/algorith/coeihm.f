@@ -12,9 +12,9 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,7 @@ C - VARIABLES LOCALES
       PARAMETER (MAXFA=6)
       REAL*8 VALFAC(MAXFA,14,6)
       CHARACTER*16 MECA,THMC,THER,HYDR
-      LOGICAL VF
+      LOGICAL VF,YACHAI
 
 C
 C =====================================================================
@@ -206,7 +206,8 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
 C ======================================================================
-      CALL KITDEC(0, YATE, YAP1, YAP2, MECA, THMC, THER, HYDR,
+      CALL KITDEC(KPI,YACHAI,0, YATE, YAP1, YAP2,
+     +            MECA, THMC, THER, HYDR,
      +                   IMATE,DEFGEM,DEFGEP, ADDEME, ADDEP1, ADDEP2,
      +                   ADDETE, NDIM-1, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
@@ -220,7 +221,7 @@ C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
 
-      CALL CALCCO(OPTION,PERMAN,MECA,THMC,THER,HYDR,IMATE,
+      CALL CALCCO(OPTION,YACHAI,PERMAN,MECA,THMC,THER,HYDR,IMATE,
      +                    NDIM-1,DIMDEF,DIMCON,NBVARI,2,
      +                    YATE,ADDEME,ADCOME,ADVIHY,
      +                    ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,

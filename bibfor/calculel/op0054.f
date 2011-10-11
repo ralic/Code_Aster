@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,7 +147,7 @@ C
 C
 C        --- OBJET CONTENANT LES NOEUDS DU FOND DE FISSURE ---
 C
-         OBJ2  = FOND//'.FOND      .NOEU'
+         OBJ2  = FOND//'.FOND.NOEU'
          CALL JELIRA ( OBJ2, 'LONMAX', NBNO, K8B )
          CALL JEVEUO ( OBJ2, 'L', IADRNO )
 C

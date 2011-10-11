@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC ,RSOLU ,VCINE )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSR PETSC  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETSR PETSC  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -69,7 +69,7 @@
 !
 !     VARIABLES LOCALES
       INTEGER      IFM,NIV,NSMDI,IERD,IBID,NMAXIT,PTSERR
-      INTEGER      LMAT,IDVALC,JSLVK,JSLVI
+      INTEGER      LMAT,IDVALC,JSLVK,JSLVI,JSLVR
 !
       CHARACTER*24 PRECON
       CHARACTER*19 NOMAT,NOSOLV
@@ -77,7 +77,7 @@
       CHARACTER*4  KBID
       CHARACTER*1  ROUC
 !
-      REAL*8       DIVTOL
+      REAL*8       DIVTOL,RESIPC
       COMPLEX*16   CBID
 !
 !     COMMUN DE SAUVEGARDE DES INSTANCES
@@ -95,7 +95,6 @@
 !----------------------------------------------------------------
 !     Variables PETSc
 !
-      PetscMPIInt        rang,size,ier
       PetscInt           ierr,neq,low,high,i
       PetscInt           maxits
       PetscReal          rtol,atol,dtol
@@ -126,22 +125,17 @@
       IF (ACTION.EQ.'PRERES') THEN
 !     ----------------------------
 
-!        1.1 RECUPERE LE RANG DU PROCESSUS :
-!        -----------------------------------
-         CALL MPI_COMM_RANK(PETSC_COMM_WORLD, rang, ier)
-         CALL MPI_COMM_SIZE(PETSC_COMM_WORLD, size, ier)
-
-!        1.2 CREATION ET PREALLOCATION DE LA MATRICE PETSc :
+!        1.1 CREATION ET PREALLOCATION DE LA MATRICE PETSc :
 !        ---------------------------------------------------
 
          CALL APETS1(KPTSC)
 
-!        1.3 COPIE DE LA MATRICE ASTER VERS LA MATRICE PETSc :
+!        1.2 COPIE DE LA MATRICE ASTER VERS LA MATRICE PETSc :
 !        -----------------------------------------------------
 
          CALL APETS2(KPTSC)
 
-!        1.4 ASSEMBLAGE DE LA MATRICE PETSc :
+!        1.3 ASSEMBLAGE DE LA MATRICE PETSc :
 !        ------------------------------------
 
          call MatAssemblyBegin(Ap(KPTSC),MAT_FINAL_ASSEMBLY,ierr)
@@ -149,7 +143,7 @@
          call MatAssemblyEnd  (Ap(KPTSC),MAT_FINAL_ASSEMBLY,ierr)
          CALL ASSERT(ierr.EQ.0)
 
-!        1.5 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
+!        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
 
          call KSPCreate(PETSC_COMM_WORLD,Kp(KPTSC),ierr)
@@ -262,26 +256,35 @@
 !        2.4b VERIFICATION DE LA SOLUTION :
 !        ----------------------------------
 
-         call VecDuplicate(x,r,ierr)
-         CALL ASSERT(ierr.EQ.0)
-!        r = Ax
-         call MatMult(A,x,r,ierr)
-         CALL ASSERT(ierr.EQ.0)
-!        r = b - Ax
-         call VecAYPX(r,-1.D0,b,ierr)
-         CALL ASSERT(ierr.EQ.0)
-!        fres = ||r||_2
-         call VecNorm(r,NORM_2,fres,ierr)
-         CALL ASSERT(ierr.EQ.0)
-!        ires = ||b||_2
-         call VecNorm(b,NORM_2,ires,ierr)
-         CALL ASSERT(ierr.EQ.0)
+!        -- DOIT-ON VERIFIER LE CRITERE EN NORME NON PRECONDITIONNEE ?
+         CALL JEVEUO(NOSOLV//'.SLVR','L',JSLVR)
+         RESIPC = ZR(JSLVR-1+4)
+
+         IF (RESIPC.GE.0.D0) THEN
+            call VecDuplicate(x,r,ierr)
+            CALL ASSERT(ierr.EQ.0)
+!           r = Ax
+            call MatMult(A,x,r,ierr)
+            CALL ASSERT(ierr.EQ.0)
+!           r = b - Ax
+            call VecAYPX(r,-1.D0,b,ierr)
+            CALL ASSERT(ierr.EQ.0)
+!           fres = ||r||_2
+            call VecNorm(r,NORM_2,fres,ierr)
+            CALL ASSERT(ierr.EQ.0)
+!           ires = ||b||_2
+            call VecNorm(b,NORM_2,ires,ierr)
+            CALL ASSERT(ierr.EQ.0)
 !
-         call KSPGetTolerances(ksp,rtol,atol,dtol,maxits,ierr)
-         CALL ASSERT(ierr.EQ.0)
-!        
-         IF (fres.GT.SQRT(rtol)*ires) THEN
-            CALL U2MESS('F','PETSC_16')
+            call VecDestroy(r,ierr)
+            CALL ASSERT(ierr.EQ.0)
+!
+            call KSPGetTolerances(ksp,rtol,atol,dtol,maxits,ierr)
+            CALL ASSERT(ierr.EQ.0)
+!
+            IF (fres.GT.SQRT(rtol)*ires) THEN
+               CALL U2MESS('F','PETSC_16')
+            ENDIF
          ENDIF
 
 !        2.5 RECOPIE DE LA SOLUTION :
@@ -323,8 +326,6 @@
          call VecDestroy(b,ierr)
          CALL ASSERT(ierr.EQ.0)
          call VecDestroy(x,ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecDestroy(r,ierr)
          CALL ASSERT(ierr.EQ.0)
 
 !        -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
@@ -397,9 +398,4 @@
 #endif
 
       END
-
-
-
-
-
 

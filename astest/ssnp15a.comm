@@ -1,6 +1,6 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
-# ssnp15a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
+# ssnp15a.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

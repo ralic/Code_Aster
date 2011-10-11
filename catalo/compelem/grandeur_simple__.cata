@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF COMPELEM  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -526,6 +526,8 @@ GRANDEUR_SIMPLE__
        LH1     : multiplicateur de Lagrange pression a travers fissure HM
        SIXX,SIYY,SIXY    : contraintes regularisees pour modele GRAD_SIGM
        DAMG :
+       PTOT    : pression totale utilisée pour le chainage vers la mécanique
+                 en HM
 >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
@@ -544,6 +546,7 @@ GRANDEUR_SIMPLE__
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
+                    PTOT
 
 <<  DEPL_F Type:K8 Déplacement (fonction)
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -598,6 +601,8 @@ GRANDEUR_SIMPLE__
        SITY    : effort de contact tangent direction 2
        LH1     : multiplicateur de Lagrange pression a travers fissure HM
        DAMG :
+       PTOT    : pression totale utilisée pour le chainage vers la mécanique
+                 en HM
 >>
 
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
@@ -617,6 +622,7 @@ GRANDEUR_SIMPLE__
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
+                    PTOT
 
 <<  DEPL_R Type:R Déplacement réel aux noeuds
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -671,6 +677,8 @@ GRANDEUR_SIMPLE__
        SITY    : effort de contact tangent direction 2
        LH1     : multiplicateur de Lagrange pression a travers fissure HM
        DAMG :
+       PTOT    : pression totale utilisée pour le chainage vers la mécanique
+                 en HM
 >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
@@ -689,6 +697,7 @@ GRANDEUR_SIMPLE__
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
+                    PTOT
 
 <<  DERA_R Type:R indicateur local de décharge et de perte de radialité
        DCHA_V   : indicateur local de décharge avec la norme de Von Mises
@@ -765,8 +774,9 @@ GRANDEUR_SIMPLE__
        EPXY : epsilon_xy déformation d'un milieu continu
        EPXZ : epsilon_xz déformation d'un milieu continu
        EPYZ : epsilon_yz déformation d'un milieu continu
+       DIVU    : dilatation volumique (chainage HM)
 >>
-    EPSI_F   = K8   EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ
+    EPSI_F   = K8   EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     DIVU
 
 <<  EPSI_R Type:R Déformation
        EPXX : epsilon_xx déformation d'un milieu continu
@@ -850,6 +860,8 @@ GRANDEUR_SIMPLE__
        PRES31 :
        PRES32 :
        PRES33 :
+       EPPTOT : déformation liée a la variable de commande ptot en chainage HM
+       DIVU   : dilatation volumique (chainage HM mécanique vers hydraulique)
 >>
     EPSI_R   = R    EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     EXX      EYY
                     EXY      KXX      KYY      KXY      EPX      GAXY     GAXZ     GAT
@@ -864,6 +876,7 @@ GRANDEUR_SIMPLE__
                     DV22X2   DV22X3   DV23X1   DV23X2   DV23X3   DV31X1   DV31X2   DV31X3
                     DV32X1   DV32X2   DV32X3   DV33X1   DV33X2   DV33X3   PRES     PRES11
                     PRES12   PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33
+                    EPPTOT   DIVU
 
 << EPSI_C Type:C
 >>
@@ -881,6 +894,7 @@ GRANDEUR_SIMPLE__
                     DV22X2   DV22X3   DV23X1   DV23X2   DV23X3   DV31X1   DV31X2   DV31X3
                     DV32X1   DV32X2   DV32X3   DV33X1   DV33X2   DV33X3   PRES     PRES11
                     PRES12   PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33
+                    EPPTOT   DIVU
 
 <<  EERREUR Type:R Calcul de l'erreur avec la méthode des résidus
        ERREST : erreur absolue estimée sur l'élément
@@ -2061,10 +2075,12 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SECH : séchage
        IRRA : irradiation
        CORR : corrosion
+       PTOT : pression totale de fluide (chainage HM)
+       DIVU : dilatation volumique (chainage HM)
        NEUT1 : "neutre 1" (définie par l'utilisateur)
        NEUT2 : "neutre 2" (définie par l'utilisateur)
 >>
-    VARC_R   = R    TEMP HYDR SECH IRRA CORR NEUT1 NEUT2
+    VARC_R   = R    TEMP HYDR SECH IRRA CORR PTOT DIVU NEUT1 NEUT2
 
 <<  VARI_R Type:R Variables internes pour les lois de comportement
     non-linéaires

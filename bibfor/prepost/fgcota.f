@@ -1,7 +1,7 @@
         SUBROUTINE FGCOTA (NPIC,PIC,NCYC,SIGMIN,SIGMAX)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/10/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,31 @@ C          SIGMIN  CONTRAINTES MINIMALES DES CYCLES
 C       ----------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8          PIC(*),E1,E2,SIGMAX(*),SIGMIN(*)
-      INTEGER         NPIC,  NCYC
+      INTEGER         NPIC,  NCYC, K
+      LOGICAL         CYCZER
 C       ----------------------------------------------------------------
       NCYC  = 0
       I     = 1
+      CYCZER = .TRUE.
 C
+
+      DO 21 K=2,NPIC
+         IF ((PIC(K) .GT. PIC(1)) .OR.
+     &     (PIC(K) .LT. PIC(1)))  THEN
+            CYCZER = .FALSE.
+         END IF
+ 21   CONTINUE
+ 
+      IF (CYCZER) THEN 
+         SIGMAX(1) = PIC(1)
+         SIGMIN(1) = PIC(1)
+         NCYC = 1
+         
+         CALL U2MESS('A','FATIGUE1_39')
+         
+         GOTO 999
+      ENDIF 
+        
   2   CONTINUE
       IF(I+2.GT.NPIC) THEN
         GOTO 100
@@ -77,4 +97,6 @@ C
         ENDIF
       ENDIF
 C
+999   CONTINUE
+
       END

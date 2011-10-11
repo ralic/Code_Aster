@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,8 +115,8 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
 # Calcul des efforts des coques "excentrées" sur le feuillet moyen de la coque :
 #====
-         COQU_EXCENT  =FACT(statut='f', max=1, fr="Calcul des efforts d'une coque 'excentrée' sur le feuillet moyen de la coque",
-           NOM_CHAM       =SIMP(statut='o',typ='TXM',into=("EFGE_ELNO",),),
+         COQU_EXCENT  =FACT(statut='f', max=2, fr="Calcul des efforts d'une coque 'excentrée' sur le feuillet moyen de la coque",
+           NOM_CHAM       =SIMP(statut='o',typ='TXM',into=("EFGE_ELNO","EFGE_ELGA",),),
            MODI_PLAN      =SIMP(statut='o',typ='TXM',into=("OUI",),),
            ),
       )

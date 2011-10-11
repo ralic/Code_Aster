@@ -1,22 +1,22 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105c.para = tps_job 140 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # sdnl105c.para = tps_job 140 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@ MATERIO1=DEFI_MATERIAU(  ELAS=_F( RHO = 1.E08,  NU = 0.3,  E = 1.E10))
 
 MATERIO2=DEFI_MATERIAU(  ELAS=_F( RHO = 0.,  NU = 0.,   E = 1.E15))
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=( 
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
                               _F( GROUP_MA = 'SS1',   MATER = MATERIO1),
                               _F( GROUP_MA = 'SS2',   MATER = MATERIO1),
                               _F( GROUP_MA = 'SS3',   MATER = MATERIO1),
@@ -49,15 +49,15 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
                               ))
 
 BARRE=AFFE_MODELE(  MAILLAGE=MAYA,
-                            AFFE=_F( TOUT = 'OUI', 
-                                  MODELISATION = 'POU_D_E', 
+                            AFFE=_F( TOUT = 'OUI',
+                                  MODELISATION = 'POU_D_E',
                                   PHENOMENE = 'MECANIQUE'))
 
 #
-CARA=AFFE_CARA_ELEM(  MODELE=BARRE, 
-                           POUTRE=_F( 
+CARA=AFFE_CARA_ELEM(  MODELE=BARRE,
+                           POUTRE=_F(
        GROUP_MA = 'TOUT',
-    SECTION = 'CERCLE', 
+    SECTION = 'CERCLE',
                                    CARA = ('R', 'EP',),  VALE = (0.1, 0.01,)))
 
 #
@@ -65,21 +65,21 @@ CHARTRAN=AFFE_CHAR_MECA(        MODELE=BARRE,
                            FORCE_NODALE=_F( NOEUD = 'N8',  FY = 1000.))
 
 #
-K_ELEM=CALC_MATR_ELEM(      MODELE=BARRE, 
-                             CARA_ELEM=CARA, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
-                                )
-
-#
-M_ELEM=CALC_MATR_ELEM(      MODELE=BARRE, 
-                             CARA_ELEM=CARA, 
+K_ELEM=CALC_MATR_ELEM(      MODELE=BARRE,
+                             CARA_ELEM=CARA,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
+                               OPTION='RIGI_MECA',
                                 )
 
 #
-V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
+M_ELEM=CALC_MATR_ELEM(      MODELE=BARRE,
+                             CARA_ELEM=CARA,
+                            CHAM_MATER=CHMAT,
+                               OPTION='MASS_MECA',
+                                )
+
+#
+V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA',
                             CHARGE=CHARTRAN)
 
 #
@@ -96,90 +96,90 @@ V_ASSE=ASSE_VECTEUR( VECT_ELEM=V_ELEM,    NUME_DDL=NUM)
 #############SOUS STRUCTURATION###########
 #
 BARRE1=AFFE_MODELE(  MAILLAGE=MAYA,
-                            AFFE=_F( GROUP_MA='SS1', 
-                                  MODELISATION = 'POU_D_E', 
+                            AFFE=_F( GROUP_MA='SS1',
+                                  MODELISATION = 'POU_D_E',
                                   PHENOMENE = 'MECANIQUE'))
 BARRE2=AFFE_MODELE(  MAILLAGE=MAYA,
-                            AFFE=_F( GROUP_MA='SS2', 
-                                  MODELISATION = 'POU_D_E', 
+                            AFFE=_F( GROUP_MA='SS2',
+                                  MODELISATION = 'POU_D_E',
                                   PHENOMENE = 'MECANIQUE'))
 BARRE3=AFFE_MODELE(  MAILLAGE=MAYA,
-                            AFFE=_F( GROUP_MA='SS3', 
-                                  MODELISATION = 'POU_D_E', 
+                            AFFE=_F( GROUP_MA='SS3',
+                                  MODELISATION = 'POU_D_E',
                                   PHENOMENE = 'MECANIQUE'))
 
 #
-CARA1=AFFE_CARA_ELEM(  MODELE=BARRE1, 
-                           POUTRE=_F( 
-       GROUP_MA = 'TOUT',
-    SECTION = 'CERCLE', 
+CARA1=AFFE_CARA_ELEM(  MODELE=BARRE1,
+                           POUTRE=_F(
+       GROUP_MA = 'SS1',
+    SECTION = 'CERCLE',
                                    CARA = ('R', 'EP',),  VALE = (0.1, 0.01,)))
-CARA2=AFFE_CARA_ELEM(  MODELE=BARRE2, 
-                           POUTRE=_F( 
-       GROUP_MA = 'TOUT',
-    SECTION = 'CERCLE', 
+CARA2=AFFE_CARA_ELEM(  MODELE=BARRE2,
+                           POUTRE=_F(
+       GROUP_MA = 'SS2',
+    SECTION = 'CERCLE',
                                    CARA = ('R', 'EP',),  VALE = (0.1, 0.01,)))
-CARA3=AFFE_CARA_ELEM(  MODELE=BARRE3, 
-                           POUTRE=_F( 
-       GROUP_MA = 'TOUT',
-    SECTION = 'CERCLE', 
+CARA3=AFFE_CARA_ELEM(  MODELE=BARRE3,
+                           POUTRE=_F(
+       GROUP_MA = 'SS3',
+    SECTION = 'CERCLE',
                                    CARA = ('R', 'EP',),  VALE = (0.1, 0.01,)))
 
 GUIDAGE1=AFFE_CHAR_MECA(    MODELE=BARRE1,DDL_IMPO=(
-                           _F( GROUP_MA='SS1', 
-                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.), 
+                           _F( GROUP_MA='SS1',
+                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.),
                            _F( GROUP_NO = 'L1',  DY = 0., DRZ = 0.),
                            ))
 GUIDAGE2=AFFE_CHAR_MECA(    MODELE=BARRE2,DDL_IMPO=(
-                           _F( GROUP_MA='SS2', 
-                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.), 
+                           _F( GROUP_MA='SS2',
+                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.),
                            _F( GROUP_NO = ('L2',),  DY = 0., DRZ = 0.),
                            ))
 GUIDAGE3=AFFE_CHAR_MECA(    MODELE=BARRE3,DDL_IMPO=(
-                           _F( GROUP_MA='SS3', 
-                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.), 
+                           _F( GROUP_MA='SS3',
+                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.),
                            _F( GROUP_NO = 'L3',  DY = 0., DRZ = 0.),
                            ))
 
 
 #
-K_ELEM1=CALC_MATR_ELEM(      MODELE=BARRE1, 
-                             CARA_ELEM=CARA1, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
+K_ELEM1=CALC_MATR_ELEM(      MODELE=BARRE1,
+                             CARA_ELEM=CARA1,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA',
                                CHARGE=GUIDAGE1)
 
 #
-M_ELEM1=CALC_MATR_ELEM(      MODELE=BARRE1, 
-                             CARA_ELEM=CARA1, 
+M_ELEM1=CALC_MATR_ELEM(      MODELE=BARRE1,
+                             CARA_ELEM=CARA1,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
+                               OPTION='MASS_MECA',
                                CHARGE=GUIDAGE1)
 #
-K_ELEM2=CALC_MATR_ELEM(      MODELE=BARRE2, 
-                             CARA_ELEM=CARA2, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
+K_ELEM2=CALC_MATR_ELEM(      MODELE=BARRE2,
+                             CARA_ELEM=CARA2,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA',
                                CHARGE=GUIDAGE2)
 
 #
-M_ELEM2=CALC_MATR_ELEM(      MODELE=BARRE2, 
-                             CARA_ELEM=CARA2, 
+M_ELEM2=CALC_MATR_ELEM(      MODELE=BARRE2,
+                             CARA_ELEM=CARA2,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
+                               OPTION='MASS_MECA',
                                CHARGE=GUIDAGE2)
 #
-K_ELEM3=CALC_MATR_ELEM(      MODELE=BARRE3, 
-                             CARA_ELEM=CARA3, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
+K_ELEM3=CALC_MATR_ELEM(      MODELE=BARRE3,
+                             CARA_ELEM=CARA3,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA',
                                CHARGE=GUIDAGE3)
 
 #
-M_ELEM3=CALC_MATR_ELEM(      MODELE=BARRE3, 
-                             CARA_ELEM=CARA3, 
+M_ELEM3=CALC_MATR_ELEM(      MODELE=BARRE3,
+                             CARA_ELEM=CARA3,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
+                               OPTION='MASS_MECA',
                                CHARGE=GUIDAGE3)
 
 
@@ -189,42 +189,42 @@ NUM2=NUME_DDL(  MATR_RIGI=K_ELEM2)
 NUM3=NUME_DDL(  MATR_RIGI=K_ELEM3)
 
 #
-K_ASSE1=ASSE_MATRICE(  MATR_ELEM=K_ELEM1, 
+K_ASSE1=ASSE_MATRICE(  MATR_ELEM=K_ELEM1,
                            NUME_DDL=NUM1)
 
 #
-M_ASSE1=ASSE_MATRICE(  MATR_ELEM=M_ELEM1, 
+M_ASSE1=ASSE_MATRICE(  MATR_ELEM=M_ELEM1,
                            NUME_DDL=NUM1)
 
-K_ASSE2=ASSE_MATRICE(  MATR_ELEM=K_ELEM2, 
+K_ASSE2=ASSE_MATRICE(  MATR_ELEM=K_ELEM2,
                            NUME_DDL=NUM2)
 
 #
-M_ASSE2=ASSE_MATRICE(  MATR_ELEM=M_ELEM2, 
+M_ASSE2=ASSE_MATRICE(  MATR_ELEM=M_ELEM2,
                            NUME_DDL=NUM2)
 
-K_ASSE3=ASSE_MATRICE(  MATR_ELEM=K_ELEM3, 
+K_ASSE3=ASSE_MATRICE(  MATR_ELEM=K_ELEM3,
                            NUME_DDL=NUM3)
 
 #
-M_ASSE3=ASSE_MATRICE(  MATR_ELEM=M_ELEM3, 
+M_ASSE3=ASSE_MATRICE(  MATR_ELEM=M_ELEM3,
                            NUME_DDL=NUM3)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1, 
-                                 MATR_B=M_ASSE1, 
+MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
+                                 MATR_B=M_ASSE1,
                              CALC_FREQ=_F( NMAX_FREQ = 6),
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-3,),
                               )
-MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2, 
-                                 MATR_B=M_ASSE2, 
+MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
+                                 MATR_B=M_ASSE2,
                              CALC_FREQ=_F( NMAX_FREQ = 6),
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-3,),
                              )
-MODES3=MODE_ITER_SIMULT(     MATR_A=K_ASSE3, 
-                                 MATR_B=M_ASSE3, 
+MODES3=MODE_ITER_SIMULT(     MATR_A=K_ASSE3,
+                                 MATR_B=M_ASSE3,
                              CALC_FREQ=_F( NMAX_FREQ = 6),
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-3,),
@@ -233,24 +233,24 @@ MODES3=MODE_ITER_SIMULT(     MATR_A=K_ASSE3,
 
 MODESTA1=MODE_STATIQUE(  MATR_RIGI=K_ASSE1,
                      MODE_STAT=_F(
-                     GROUP_NO=('L12'), 
+                     GROUP_NO=('L12'),
                      AVEC_CMP = ('DY','DRZ'),
                                  ))
-                                   
+
 MODESTA2=MODE_STATIQUE(  MATR_RIGI=K_ASSE2,
                      MODE_STAT=_F(
-                     GROUP_NO=('L12'), 
+                     GROUP_NO=('L12'),
                      AVEC_CMP = ('DY','DRZ'),
                                  ))
 MODESTA3=MODE_STATIQUE(  MATR_RIGI=K_ASSE2,
                      MODE_STAT=_F(
-                     GROUP_NO=('L23'), 
+                     GROUP_NO=('L23'),
                      AVEC_CMP = ('DY','DRZ'),
                                  ))
-                                   
+
 MODESTA4=MODE_STATIQUE(  MATR_RIGI=K_ASSE3,
                      MODE_STAT=_F(
-                     GROUP_NO=('L23'), 
+                     GROUP_NO=('L23'),
                      AVEC_CMP = ('DY','DRZ'),
                                  ))
 
@@ -260,7 +260,7 @@ DS3=[None]*5
 DS4=[None]*5
 CHS1=[None]*5
 CHS2=[None]*5
-                                 
+
 
 
 for k in range(1,5):
@@ -274,7 +274,7 @@ for k in range(1,5):
   DS4[k] = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                   RESULTAT= MODESTA4, NUME_ORDRE=k, NOM_CHAM = 'DEPL');
   CHS1[k] = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
-                  MAILLAGE=MAYA,  
+                  MAILLAGE=MAYA,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS1[k], ),
                       _F (TOUT='OUI', CHAM_GD=DS2[k], ),
@@ -282,7 +282,7 @@ for k in range(1,5):
                   );
 
   CHS2[k] = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
-                  MAILLAGE=MAYA,  
+                  MAILLAGE=MAYA,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS3[k], ),
                       _F (TOUT='OUI', CHAM_GD=DS4[k], ),
@@ -303,7 +303,7 @@ for k in range(1,5):
               _F( CHAM_GD= CHS2[k], NOM_CAS= 'CAS1'),
               ),
                      );
-  else:                 
+  else:
     MODESTAA = CREA_RESU (reuse = MODESTAA,
                          OPERATION='AFFE',
                          TYPE_RESU= 'MULT_ELAS', NOM_CHAM='DEPL',
@@ -324,22 +324,22 @@ BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES1),
                                 _F( MODE_INTF = MODES2,
                                     NMAX_MODE = 999)),
                         NUME_REF=NUM)
-                                                
-BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA,
                    RITZ=( _F( BASE_MODALE=BAMODA),
 #                          _F( MODE_MECA = MODES3,
                           _F( MODE_INTF = MODES3,
                                     NMAX_MODE = 999)),
                         NUME_REF=NUM)
-                        
 
-BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA,
                     RITZ=( _F( BASE_MODALE=BAMODA),
                            _F( MODE_INTF = MODESTAA,
                                      NMAX_MODE = 999)),
                          NUME_REF=NUM)
- 
-BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA,
                     RITZ=( _F( BASE_MODALE=BAMODA),
                            _F( MODE_INTF = MODESTAB,
                                      NMAX_MODE = 999)),
@@ -355,18 +355,18 @@ RIGIPRO1=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
 
 MASSPRO1=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=M_ASSE1 )
-                                                                                        
+
 RIGIPRO2=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=K_ASSE2 )
 
 MASSPRO2=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=M_ASSE2 )
-                            
+
 RIGIPRO3=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=K_ASSE3 )
 
 MASSPRO3=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
-                            MATR_ASSE=M_ASSE3 )                            
+                            MATR_ASSE=M_ASSE3 )
 
 MATRRIGI=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGIPRO1,
                                  COEF_R=1.0,),
@@ -376,8 +376,8 @@ MATRRIGI=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGIPRO1,
                                  COEF_R=1.0,),
                                  ),
                                  SANS_CMP='LAGR',
-                                 ); 
-                                 
+                                 );
+
 MATRMASS=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
                                 _F(MATR_ASSE=MASSPRO2,
@@ -394,26 +394,26 @@ AMO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATRMASS,
                            )
 
 F_GENE=PROJ_VECT_BASE(    BASE=BAMODA,
-                           NUME_DDL_GENE = NDDLGENE, 
+                           NUME_DDL_GENE = NDDLGENE,
                           VECT_ASSE = V_ASSE)
-                          
-                          
-RESGEN=MODE_ITER_SIMULT(     MATR_A=MATRRIGI, 
+
+
+RESGEN=MODE_ITER_SIMULT(     MATR_A=MATRRIGI,
                                  MATR_B=MATRMASS,
                              CALC_FREQ=_F(
                              #OPTION='BANDE',
                                #FREQ=(1.0,35.0,),
-                             NMAX_FREQ=30  
-                               ), 
+                             NMAX_FREQ=30
+                               ),
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-2),
                                   )
-                                  
 
-MODGLO=REST_GENE_PHYS(   RESU_GENE=RESGEN, 
+
+MODGLO=REST_GENE_PHYS(   RESU_GENE=RESGEN,
                          NOM_CHAM='DEPL',
                          TOUT_ORDRE='OUI'),
-                         
+
 MODGL2=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODGLO,
                                     NMAX_MODE=15),
                                 _F( MODE_INTF = MODGLO,
@@ -426,18 +426,18 @@ NUMEMODE=NUME_DDL_GENE(       BASE=MODGL2,
                            )
 
 K_PROJ=PROJ_MATR_BASE(            BASE=MODGL2,
-                             NUME_DDL_GENE=NUMEMODE, 
+                             NUME_DDL_GENE=NUMEMODE,
                             MATR_ASSE=K_ASSE)
 
 
 M_PROJ=PROJ_MATR_BASE(            BASE=MODGL2,
-                             NUME_DDL_GENE=NUMEMODE, 
+                             NUME_DDL_GENE=NUMEMODE,
                             MATR_ASSE=M_ASSE)
-                        
+
 #
 #
 F_PROJ=PROJ_VECT_BASE(            BASE=MODGL2,
-                             NUME_DDL_GENE=NUMEMODE, 
+                             NUME_DDL_GENE=NUMEMODE,
                             VECT_ASSE=V_ASSE)
 
 #
@@ -447,14 +447,14 @@ OBSTACLE=DEFI_OBSTACLE( TYPE='BI_PLAN_Y')
 
 #
 ###
-###### CALCULS TRANSITOIRES SUR BASE MODALE 
+###### CALCULS TRANSITOIRES SUR BASE MODALE
 ###
 #
-TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',   
+TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              #METHODE='ADAPT',
                              #METHODE='DEVOGE',
                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                             MATR_MASS=M_PROJ, 
+                             MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
                              AMOR_MODAL=_F(AMOR_REDUIT=(0.,),),
                                 EXCIT=_F( VECT_ASSE = F_PROJ,
@@ -479,7 +479,7 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                         NORM_OBST = (1., 0., 0.,),
                                         DIST_1 = 0.0995,
                                         DIST_2 = 0.0995,
-                                        RIGI_NOR = 1.E+8)) 
+                                        RIGI_NOR = 1.E+8))
                              )
 
 
@@ -494,16 +494,16 @@ TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                              LIST_INST=LIST_R,
                              INTERPOL='LIN')
 
-                                     
+
 ###
 ###### CALCULS TRANSITOIRES SUR BASE MODALE DE RITZ
 ###
 #
 TRANGE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                             MATR_MASS=MATRMASS, 
+                             MATR_MASS=MATRMASS,
                              MATR_RIGI=MATRRIGI,
-                             MATR_AMOR=AMO, 
+                             MATR_AMOR=AMO,
                                 EXCIT=_F( VECT_ASSE = F_GENE,
                                        COEF_MULT = 1000.),
                              INCREMENT=_F(  INST_INIT = 0.,
@@ -526,9 +526,9 @@ TRANGE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                         NORM_OBST = (1., 0., 0.,),
                                         DIST_1 = 0.0995,
                                         DIST_2 = 0.0995,
-                                        RIGI_NOR = 1.E+8)) 
+                                        RIGI_NOR = 1.E+8))
                              )
-                             
+
 TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGE2,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
@@ -537,86 +537,86 @@ TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGE2,
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N8',             NOM_CMP = 'DY', 
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N8',             NOM_CMP = 'DY',
                   VALE = 1.64295E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N8',             NOM_CMP = 'DY',
                   VALE = 2.54158E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'M8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'M8',             NOM_CMP = 'DY',
                   VALE = 1.11677E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'M8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'M8',             NOM_CMP = 'DY',
                   VALE = 4.42640E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'O8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'O8',             NOM_CMP = 'DY',
                   VALE = 5.89757E-03))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'O8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'O8',             NOM_CMP = 'DY',
                   VALE = 1.04583E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N8',             NOM_CMP = 'DY',
                   VALE = 1.64264E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N8',             NOM_CMP = 'DY',
                   VALE = 2.54155E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'M8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'M8',             NOM_CMP = 'DY',
                   VALE = 1.11627E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'M8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'M8',             NOM_CMP = 'DY',
                   VALE = 4.41197E-02))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'O8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'O8',             NOM_CMP = 'DY',
                   VALE = 5.88736E-03))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'O8',             NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'O8',             NOM_CMP = 'DY',
                   VALE = 1.04550E-01))
 
 #

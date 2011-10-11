@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,13 +149,21 @@ DEFI_LIST   =FACT(fr                = "Definition a priori de la liste d'instant
                                            ),
                   b_manuel          = BLOC(fr                = "Liste d'instants donnée par l'utilisateur",
                                            condition         = "METHODE == 'MANUEL' ",
-                                           LIST_INST         = SIMP(statut          = 'o',
+                                           regles=(UN_PARMI('LIST_INST','VALE',),),
+                                           VALE              = SIMP(statut          = 'f',
+                                                                    typ             = 'R',
+                                                                    max             = '**'),
+                                           LIST_INST         = SIMP(statut          = 'f',
                                                                     typ             = listr8_sdaster,
                                                                     ),
                                            ),
                   b_auto            = BLOC(fr                = "Gestion automatique de la liste d'instants",
                                            condition         = "(METHODE == 'AUTO') ",
-                                           LIST_INST         = SIMP(statut          = 'o',
+                                           regles=(UN_PARMI('LIST_INST','VALE',),),
+                                           VALE              = SIMP(statut          = 'f',
+                                                                    typ             = 'R',
+                                                                    max             = '**'),
+                                           LIST_INST         = SIMP(statut          = 'f',
                                                                     typ             = listr8_sdaster,
                                                                     ),
                                            PAS_MINI          = SIMP(statut          = 'f',

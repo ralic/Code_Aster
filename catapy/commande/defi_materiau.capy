@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -3001,6 +3001,26 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              H5              =SIMP(statut='f',typ='R',defaut=0.07,fr="matrice d'interaction, terme a_Hirth",),
            ),
 
+           MONO_DD_FAT      =FACT(statut='f',
+             regles=(UN_PARMI('H','H1'),
+                     PRESENT_PRESENT('H1','H2','H3','H4','H5'),
+                     PRESENT_ABSENT('H','H1','H2','H3','H4','H5'),
+                     ),
+             #TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
+             GAMMA0          =SIMP(statut='o',typ='R',fr="Vitesse d ecoulement initiale en s**-1"),
+             TAU_F           =SIMP(statut='o',typ='R',fr="Contraintes , en unite de contraintes ex 20 MPa"),
+             BETA            =SIMP(statut='o',typ='R',fr="ecrouissage, paramètre b, en unite de longueur"),
+             N               =SIMP(statut='o',typ='R',fr="paramètre n, sans unite"),
+             UN_SUR_D        =SIMP(statut='o',typ='R',fr="paramètre 1/D, en unite de 1/longueur"),
+             GC0             =SIMP(statut='o',typ='R',fr="paramètre GC0, en unite de longueur"),
+             K               =SIMP(statut='o',typ='R',fr="paramètre K, sans unite"),
+             H               =SIMP(statut='f',typ='R'),
+             H1              =SIMP(statut='f',typ='R',defaut=0.124,fr="matrice d'interaction, terme a*",),
+             H2              =SIMP(statut='f',typ='R',defaut=0.625,fr="matrice d'interaction, terme a_colineaire",),
+             H3              =SIMP(statut='f',typ='R',defaut=0.137,fr="matrice d'interaction, terme a_glissile",),
+             H4              =SIMP(statut='f',typ='R',defaut=0.122,fr="matrice d'interaction, terme a_Lomer",),
+             H5              =SIMP(statut='f',typ='R',defaut=0.07,fr="matrice d'interaction, terme a_Hirth",),
+           ),
 
            MONO_DD_CC      =FACT(statut='f',
               regles=(UN_PARMI('H','H1'),

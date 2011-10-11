@@ -3,7 +3,7 @@
      &                   PRECDC, NBRSSA, NBLAGR, SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C VARIABLES LOCALES
+      CHARACTER*8  K8BID
       CHARACTER*16 CH16
       INTEGER      IDET
       REAL*8       DET
@@ -208,9 +209,9 @@ C     ------------------------------------------------------------------
             ENDIF
          ENDIF
          OMEMAX = OMGMAX
-
-           CALL VPECST(IFM,TYPRES,OMGMIN,OMGMAX,NBFMIN,NBFMAX,
-     &                 NBFREQ,NBLAGR)
+         K8BID=' '         
+         CALL VPECST(IFM,TYPRES,OMGMIN,OMGMAX,NBFMIN,NBFMAX,
+     &               NBFREQ,NBLAGR,'R',K8BID,0.D0,DCMPLX(0.D0,0.D0))
 
 C        --- CENTRAGE DE L INTERVALLE ---
 

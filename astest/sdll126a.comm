@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126a.para = tps_job 600 mem_job 900Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ bal_Zass=ASSE_VECTEUR(VECT_ELEM=bal_FZe,
 fory = FORMULE(VALE='cos(OM*INST)',
                NOM_PARA='INST',);
 
-forz = FORMULE(VALE='-sin(OM*INST)',
+forz = FORMULE(VALE='sin(OM*INST)',
                NOM_PARA='INST',);
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -172,24 +172,24 @@ DY_DIS2=RECU_FONCTION(RESULTAT=TRANSI,
                       INTERPOL='LIN',);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DY_DIS2,
-                        VALE_PARA=4.997913,
+                        VALE_PARA=4.99791,
                         VALE_REFE=0.0005721,
                         PRECISION=.02,
                         REFERENCE='AUTRE_ASTER',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DY_DIS2,
-                        VALE_PARA=4.997913,
+                        VALE_PARA=4.99791,
                         VALE_REFE=0.0005668,
                         REFERENCE='NON_REGRESSION',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DZ_DIS2,
-                        VALE_PARA=4.996937,
+                        VALE_PARA=4.99893,
                         VALE_REFE=0.0007023,
                         PRECISION=.02,
                         REFERENCE='AUTRE_ASTER',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DZ_DIS2,
-                        VALE_PARA=4.996937,
+                        VALE_PARA=4.99893,
                         VALE_REFE=0.0006945,
                         REFERENCE='NON_REGRESSION',),);
 
