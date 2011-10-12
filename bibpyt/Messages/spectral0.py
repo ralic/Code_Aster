@@ -1,8 +1,8 @@
-#@ MODIF spectral0 Messages  DATE 22/11/2010   AUTEUR GREFFET N.GREFFET 
+#@ MODIF spectral0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,50 +19,48 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
 Nombre de fonctions erroné pour une matrice hermitienne.
 """),
 
-2: _("""
+2: _(u"""
 %(k1)s: FREQ_MAX < FREQ_MIN
 """),
 
-3: _("""
+3: _(u"""
 Erreur dans les indices.
 """),
 
-4: _("""
+4: _(u"""
 Le fichier %(k1)s est introuvable.
 """),
 
-5: _("""
+5: _(u"""
 La dimension DIM n est pas précisée dans le fichier lu.
 """),
 
-6: _("""
+6: _(u"""
 Nombre de fonctions incorrect.
 """),
 
-7: _("""
+7: _(u"""
 Erreur dans les données de fonctions.
 """),
 
-9: _("""
+9: _(u"""
 Le fichier IDEAS est vide ou ne contient pas le data set demande
 """),
 
-10: _("""
+10: _(u"""
 Un des data sets 58 contient une donnee qui n'est pas un inter-spectre
 """),
 
-11: _("""
+11: _(u"""
 On ne traite pas les cas ou les abscisses frequentielles ne sont pas reglierement espacees
 """),
 
-12: _("""
+12: _(u"""
 Le mot-cle format correspond au format du fichier source, qui peut etre 'ASTER' ou 'IDEAS' (pour lire les DS58)
 """),
 

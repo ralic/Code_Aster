@@ -1,4 +1,4 @@
-#@ MODIF mecanonline7 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline7 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,52 +21,50 @@
 
 # Attention a ne pas faire de retour à la ligne !
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
   Temps CPU consommé dans ce pas de temps: %(k1)s.
 """),
 
-2 : _("""    * Temps moyen par itération de Newton : %(k1)s ( %(i1)d itérations     )"""),
+2 : _(u"""    * Temps moyen par itération de Newton : %(k1)s ( %(i1)d itérations     )"""),
 
-3 : _("""    * Temps total factorisation matrice   : %(k1)s ( %(i1)d factorisations )"""),
+3 : _(u"""    * Temps total factorisation matrice   : %(k1)s ( %(i1)d factorisations )"""),
 
-4 : _("""    * Temps total intégration LDC         : %(k1)s ( %(i1)d intégrations   )"""),
+4 : _(u"""    * Temps total intégration LDC         : %(k1)s ( %(i1)d intégrations   )"""),
 
-5 : _("""    * Temps total résolution K.U=F        : %(k1)s ( %(i1)d résolutions    )"""),
+5 : _(u"""    * Temps total résolution K.U=F        : %(k1)s ( %(i1)d résolutions    )"""),
 
-6 : _("""    * Temps autres opérations             : %(k1)s"""),
+6 : _(u"""    * Temps autres opérations             : %(k1)s"""),
 
-7 : _("""    * Temps post-traitement (flambement)  : %(k1)s"""),
+7 : _(u"""    * Temps post-traitement (flambement)  : %(k1)s"""),
 
-8 : _("""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
+8 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
 
-9 : _("""    * Nombre d'itérations du solveur FETI         : %(i1)d"""),
+9 : _(u"""    * Nombre d'itérations du solveur FETI         : %(i1)d"""),
 
-10 : _("""    * Temps résolution contact            : %(k1)s ( %(i1)d itérations     )"""),
+10 : _(u"""    * Temps résolution contact            : %(k1)s ( %(i1)d itérations     )"""),
 
-11 : _("""    * Temps appariement contact           : %(k1)s ( %(i1)d appariements   )"""),
+11 : _(u"""    * Temps appariement contact           : %(k1)s ( %(i1)d appariements   )"""),
 
-12 : _("""    * Temps construction second membre    : %(k1)s"""),
+12 : _(u"""    * Temps construction second membre    : %(k1)s"""),
 
-13 : _("""    * Temps assemblage matrice            : %(k1)s"""),
+13 : _(u"""    * Temps assemblage matrice            : %(k1)s"""),
 
-20 : _("""    * Temps construction matrices contact : %(k1)s ( %(i1)d constructions  )"""),
+20 : _(u"""    * Temps construction matrices contact : %(k1)s ( %(i1)d constructions  )"""),
 
-22 : _("""    * Temps frottement                    : %(k1)s ( %(i1)d boucles        )"""),
+22 : _(u"""    * Temps frottement                    : %(k1)s ( %(i1)d boucles        )"""),
 
-23 : _("""    * Temps contact                       : %(k1)s ( %(i1)d boucles        )"""),
+23 : _(u"""    * Temps contact                       : %(k1)s ( %(i1)d boucles        )"""),
 
-24 : _("""    * Temps préparation données contact   : %(k1)s ( %(i1)d préparations   )"""),
+24 : _(u"""    * Temps préparation données contact   : %(k1)s ( %(i1)d préparations   )"""),
 
-30 :_("""
+30 :_(u"""
   Statistiques du contact dans ce pas de temps.
 """),
 
-31 : _("""    * Nombre de liaisons de contact       : %(i1)d"""),
+31 : _(u"""    * Nombre de liaisons de contact       : %(i1)d"""),
 
-32 : _("""    * Nombre de liaisons de frottement    : %(i1)d"""),
+32 : _(u"""    * Nombre de liaisons de frottement    : %(i1)d"""),
 
 }

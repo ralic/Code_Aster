@@ -1,4 +1,4 @@
-#@ MODIF appariement Messages  DATE 03/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF appariement Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,67 +18,65 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def _(x) : return x
-
 cata_msg = {
 
 
-13 : _("""
+13 : _(u"""
 L'algorithme de Newton a échoué lors de la projection du point de coordonnées
   (%(r1)s,%(r2)s,%(r3)s)
 sur la maille %(k1)s.
 Erreur de définition de la maille ou projection difficile.
 """),
 
-14 : _("""
+14 : _(u"""
 Les vecteurs tangents sont nuls au niveau du projeté du noeud %(k2)s sur la maille %(k1)s.
 Erreur de définition de la maille ou projection difficile.
 """),
 
-15 : _("""
+15 : _(u"""
 Le vecteur normal est nul au niveau du noeud %(k2)s sur la maille %(k1)s.
 Erreur de définition de la maille ou projection difficile.
 """),
 
-16 : _("""
+16 : _(u"""
 Le vecteur normal résultant est nul au niveau du noeud %(k1)s.
 Erreur de définition de la maille ou projection difficile.
 """),
 
-17 : _("""
+17 : _(u"""
 Les vecteurs tangents résultants sont nuls au niveau du noeud %(k1)s.
 Erreur de définition de la maille ou projection difficile.
 """),
 
-34 : _("""
+34 : _(u"""
 Echec de l'orthogonalisation du repère tangent construit au niveau du projeté du point de coordonnées
   (%(r1)s,%(r2)s,%(r3)s) 
 sur la maille %(k1)s, 
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
-36 : _("""
+36 : _(u"""
 La maille %(k1)s est de type 'POI1', ce n'est pas autorisé sur une maille maitre dans le cas d'un appariement MAIT_ESCL. 
 """),
 
-38 : _("""
+38 : _(u"""
 La maille %(k1)s est de type poutre et sa tangente est nulle.
 Vérifiez votre maillage.
 """),
 
-61 : _("""
+61 : _(u"""
 La maille %(k1)s est de type poutre, elle nécessite la définition d'une base locale.
 """),
 
-62 : _("""
+62 : _(u"""
 La maille %(k1)s est de type 'POI1', elle nécessite la définition explicite de sa normale.
 """),
 
-63 : _("""
+63 : _(u"""
 La maille %(k1)s est de type 'POI1', elle nécessite la définition explicite d'une normale non nulle.
 """),
 
-75 : _("""
+75 : _(u"""
 Un élément de type POI1 ne peut pas être une maille maître.
 """),
 

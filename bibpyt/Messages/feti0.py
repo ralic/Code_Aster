@@ -1,8 +1,8 @@
-#@ MODIF feti0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF feti0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,19 +19,17 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
 Afin de pouvoir générer les GROUP_MA, réduisez le nombre 
 de caractères de NOM_GROUP_MA à un maximum de : %(i1)d 
 """),
 
-2: _("""
+2: _(u"""
 Il existe déjà un GROUP_MA nommé : %(k1)s
 """),
 
-3: _("""
+3: _(u"""
 Le modèle contient des noeuds (AFFE_MODELE/AFFE/GROUP_NO). On ne peut pas partitionner.
 
 Conseil : il faut créer des mailles POI1 avec l'opérateur CREA_MAILLAGE/CREA_POI1

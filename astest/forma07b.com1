@@ -1,0 +1,99 @@
+# AJOUT
+# TITRE TP RUPTURE : FISSURE CIRCULAIRE DANS UN MILIEU INFINI
+
+POURSUITE(CODE=_F(NOM='FORMA07B'),IGNORE_ALARM='CALCULEL2_63')
+
+# MODELIDATION A : X-FEM 3D
+
+# PARTIE 2 : CALCUL MECANIQUE
+
+# CE FICHIER EST LA VERSION CORRIGEE DU 4EME EXERCICE DES TPS
+# POUR LA PREPARATION DES TPS, FOURNIR EGALEMENT UNE VERSION A TROUS DE CE FICHIER :
+# - REMPLACER LE CONTENU DU MOT-CLE FACTEUR DEFI_FISS PAR ...
+
+# lecture du maillage raffine
+MAIL=LIRE_MAILLAGE(FORMAT='MED',UNITE=41)
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('FACE_SUP','FACE_INF')))
+
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(GROUP_MA = ('CUBE','FACE_SUP','FACE_INF','FACE_LAT','FACE_AV'),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D') )
+
+# fissure X-FEM
+FISSX=DEFI_FISS_XFEM(MODELE=MOD,  
+                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                  DEMI_GRAND_AXE = 2.,
+                                  DEMI_PETIT_AXE = 2.,
+                                  CENTRE         = (0.,0.,0.),
+                                  VECT_X         = (1.,0.,0.), 
+                                  VECT_Y         = (0.,1.,0.),
+                                  ),
+                     )
+
+# elements X-FEM
+MOX=MODI_MODELE_XFEM(MODELE_IN=MOD,FISSURE=FISSX)
+
+# charge X-FEM specifique
+CHXFEM=AFFE_CHAR_MECA(MODELE=MOX,LIAISON_XFEM='OUI',);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
+                          NU = 0.3,
+                          ALPHA = 0.) )
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT = 'OUI',
+                            MATER = MAT) )
+
+SYMETR=AFFE_CHAR_MECA(MODELE=MOX,
+                      DDL_IMPO= (_F(GROUP_MA='FACE_AV', DY=0.0),
+                                 _F(GROUP_MA='FACE_LAT',DX=0.0),
+                                 _F(GROUP_NO='D',DZ=0.0,),)
+                      )           
+
+PRESSION=AFFE_CHAR_MECA(MODELE=MOX,
+                        PRES_REP=_F(GROUP_MA = ('FACE_SUP','FACE_INF'),
+                                    PRES = -1.E6), )
+
+RESU=MECA_STATIQUE(MODELE=MOX,
+                   CHAM_MATER=CHMAT,              
+                   EXCIT=(_F(CHARGE=SYMETR,),
+                          _F(CHARGE=PRESSION,),
+                          _F(CHARGE=CHXFEM,),),              
+                   )
+
+#----------------------------------------------------------------------
+#                       POST-TRAITEMENT VISU
+#----------------------------------------------------------------------
+
+# uniquement pour la visu !
+MA_VISU=POST_MAIL_XFEM(MODELE=MOX)
+
+# uniquement pour la visu !
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),)
+
+# uniquement pour la visu !
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU= MOD_VISU,
+                        RESULTAT=RESU)
+
+RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
+                   RESULTAT=RES_XFEM,
+                   OPTION=('SIEQ_ELGA','SIEQ_ELNO'));
+
+RES_XFEM=CALC_NO(reuse =RES_XFEM,
+                 RESULTAT=RES_XFEM,
+                 OPTION=('SIEQ_NOEU'));
+
+IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RES_XFEM))
+
+FIN()
+
+
+                    
+

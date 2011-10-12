@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dvp Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,6 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 """
    Messages à l'attention des développeurs, type "assert"
    Lorsque l'utilisateur tombe sur un tel message, tout ce qu'il a à faire,
@@ -34,24 +32,24 @@ def _(x) : return x
 
 cata_msg={
 
-1 : _("""
+1 : _(u"""
    Erreur de programmation : condition non respectée.
 """),
 
-2 : _("""
+2 : _(u"""
    Erreur numérique (floating point exception).
 """),
 
-3 : _("""
+3 : _(u"""
    Erreur de programmation : Nom de grandeur inattendu : %(k1)s
    Routine : %(k2)s
 """),
 
-4 : _("""
+4 : _(u"""
    On ne sait pas traiter ce type d'élément : %(k1)s
 """),
 
-5 : _("""
+5 : _(u"""
  Erreur de programmation :
   On ne trouve pas le triplet ( %(k1)s )
   correspondant à (nomte elrefe famille).
@@ -60,14 +58,14 @@ cata_msg={
   L'elrefe ou la famille de points de Gauss ne sont pas définis.
 """),
 
-9 : _("""
+9 : _(u"""
    Erreur de programmation dans un module Python. 
    Condition non respectée : %(k2)s
 
       %(k1)s
 """),
 
-97 : _("""
+97 : _(u"""
    Erreur signalée dans la bibliothèque MED
      nom de l'utilitaire : %(k1)s
              code retour : %(i1)d

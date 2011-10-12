@@ -1,8 +1,8 @@
-#@ MODIF algorith8 Messages  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF algorith8 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,155 +19,153 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  contraintes planes en grandes déformations non implantées
 """),
 
-2 : _("""
+2 : _(u"""
  caractéristique fluage incomplet
 """),
 
-12 : _("""
+12 : _(u"""
  F reste toujours négative
 """),
 
-13 : _("""
+13 : _(u"""
  F  reste toujours positive
 """),
 
-14 : _("""
+14 : _(u"""
  signe de SIGMA indeterminé
 """),
 
-15 : _("""
+15 : _(u"""
  changement de signe de SIGMA
 """),
 
-16 : _("""
+16 : _(u"""
  F=0 : pas converge
 """),
 
 
-20 : _("""
+20 : _(u"""
  La définition du repère d'orthotropie a été mal faite.
  Utilisez soit ANGL_REP  soit ANGL_AXE de la commande AFFE_CARA_ELEM mot clé facteur MASSIF
 """),
 
-22 : _("""
+22 : _(u"""
  type d'élément incompatible avec une loi élastique anisotrope
 """),
 
-24 : _("""
+24 : _(u"""
  cisaillement suiveur non implanté
 """),
 
-25 : _("""
+25 : _(u"""
  pression imposée sur l'axe des coordonnées cylindriques
 """),
 
-26 : _("""
+26 : _(u"""
  mode non defini
 """),
 
-28 : _("""
+28 : _(u"""
  prédiction par extrapolation impossible : pas de temps nul
 """),
 
-31 : _("""
+31 : _(u"""
  borne superieure PMAX incorrecte
 """),
 
-32 : _("""
+32 : _(u"""
  la viscosité N doit être différente de zéro
 """),
 
-33 : _("""
+33 : _(u"""
  la viscosité UN_SUR_K doit être différente de zéro
 """),
 
-35 : _("""
+35 : _(u"""
  incompatibilité entre la loi de couplage  %(k1)s  et la modélisation choisie  %(k2)s
 """),
 
-36 : _("""
+36 : _(u"""
  il y a deja une loi de couplage
 """),
 
-37 : _("""
+37 : _(u"""
  il y a deja une loi hydraulique
 """),
 
-38 : _("""
+38 : _(u"""
  il y a deja une loi de mécanique
 """),
 
-39 : _("""
+39 : _(u"""
  il n y a pas de loi de couplage
 """),
 
-40 : _("""
+40 : _(u"""
  il n y a pas de loi hydraulique
 """),
 
-41 : _("""
+41 : _(u"""
  il n y a pas de loi de mécanique
 """),
 
-42 : _("""
+42 : _(u"""
  la loi de couplage est incorrecte pour une modélisation %(k1)s
 """),
 
-43 : _("""
+43 : _(u"""
  incompatibilite des comportements mécanique et hydraulique
 """),
 
-44 : _("""
+44 : _(u"""
  loi de mécanique incompatible avec une modélisation %(k1)s
 """),
 
-46 : _("""
+46 : _(u"""
  il y a une loi de mécanique dans la relation %(k1)s
 """),
 
-59 : _("""
+59 : _(u"""
  la loi de couplage doit être LIQU_SATU ou GAZ pour une modélisation H
 """),
 
-61 : _("""
+61 : _(u"""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
 """),
 
-65 : _("""
+65 : _(u"""
 Arret suite à l'échec de l'intégration de la loi de comportement.
    Verifiez vos paramètres, la cohérence des unités.
    Essayez d'augmenter ITER_INTE_MAXI.
 """),
 
-66 : _("""
+66 : _(u"""
   convergence atteinte sur approximation linéaire tangente de l'évolution plastique
   risque d'imprecision
 """),
 
-67 : _("""
+67 : _(u"""
   endommagement maximal atteint au cours des resolutions internes
 """),
 
-77 : _("""
+77 : _(u"""
  le nombre de composantes dans le champ de vent est incorrect. on doit avoir : DX, DY, DZ
 """),
 
-80 : _("""
+80 : _(u"""
 Pour le comportement %(k3)s, matériau %(k4)s. Incohérence dans les données matériau.
    %(k1)s est >= %(k2)s cela n'est pas possible.
    valeur de %(k1)s : %(r1)E
    valeur de %(k2)s : %(r2)E
 """),
 
-81 : _("""
+81 : _(u"""
 L'association comportement vs matériau est incorrecte.
 Les combinaisons possibles sont :
    comportement %(k1)s et matériau %(k2)s et %(k5)s
@@ -175,52 +173,52 @@ Les combinaisons possibles sont :
 """),
 
 
-86 : _("""
+86 : _(u"""
  porosité strictement nulle( cas non traité)
 """),
 
-87 : _("""
+87 : _(u"""
  l'incrément de temps vaut zéro, vérifiez votre découpage
 """),
 
-88 : _("""
+88 : _(u"""
  fluence décroissante (flux<0)
 """),
 
-89 : _("""
+89 : _(u"""
  le parametre A doit etre >=0
 """),
 
-90 : _("""
+90 : _(u"""
  la loi LMARC_IRRA n'est compatible qu'avec une modélisation poutre
 """),
 
-91 : _("""
+91 : _(u"""
  stop, RIGI_MECA_TANG non disponible
 """),
 
-92 : _("""
+92 : _(u"""
  la maille doit etre de type TETRA10,PENTA15,HEXA20,QUAD8 ou TRIA6.
  or la maille est de type :  %(k1)s .
 """),
 
-94 : _("""
+94 : _(u"""
  le champ issu du concept %(k1)s n'est pas calculé à l'instant %(i3)i
 """),
 
-96 : _("""
+96 : _(u"""
  le séchage ne peut pas etre mélangé à un autre comportement
 """),
 
-97 : _("""
+97 : _(u"""
  EVOL_THER_SECH est un mot-clé obligatoire pour le séchage de type SECH_GRANGER et SECH_NAPPE
 """),
 
-98 : _("""
+98 : _(u"""
   le concept :  %(k1)s  n'est pas un champ de température
 """),
 
-99 : _("""
+99 : _(u"""
   le concept EVOL_THER :  %(k1)s  ne contient aucun champ de température
 """),
 

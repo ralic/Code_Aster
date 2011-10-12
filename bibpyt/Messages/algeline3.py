@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,36 +19,34 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1: _("""
+1: _(u"""
  Le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_MAILLE.
 """),
 
-2: _("""
+2: _(u"""
  Le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_GROUP_MA.
 """),
 
-3: _("""
+3: _(u"""
  Le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_POI1.
 """),
 
-4: _("""
+4: _(u"""
  Le mot-clé MAILLAGE est obligatoire avec le mot-cle REPERE.
 """),
 
-5: _("""
+5: _(u"""
  Sous le mot-cle "NOM_ORIG" du mot-clé facteur "REPERE",
  on ne peut donner que les mots "CDG" ou "TORSION".
 """),
 
-6: _("""
+6: _(u"""
  Maille non créée  %(k1)s
 """),
 
-7: _("""
+7: _(u"""
  Le groupe de mailles '%(k1)s' existe déjà.
 
  Conseil :
@@ -56,188 +54,184 @@ cata_msg={
     de le détruire avec DEFI_GROUP / DETR_GROUP_MA.
 """),
 
-8: _("""
+8: _(u"""
  Le mot-cle MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA.
 """),
 
-9: _("""
+9: _(u"""
  Mode non compatible.
 """),
 
-10: _("""
+10: _(u"""
  Masses effectives unitaires non calculées par NORM_MODE
 """),
 
-11: _("""
+11: _(u"""
  L'extraction des modes a échoué.
  La structure de données mode_meca est vide ou aucun mode ne remplit le critère d'extraction.
  Conseils & solution :
    Vérifiez le résultat de votre calcul modal et/ou modifiez votre filtre d'extraction"
 """),
 
-12: _("""
+12: _(u"""
  Le nombre de noeuds sur le contour est insuffisant pour déterminer correctement
  les ordres de coque.
 """),
 
-13: _("""
+13: _(u"""
  L'azimut n'est pas défini pour un des noeuds de la coque.
 """),
 
-14: _("""
+14: _(u"""
  ordre de coque nul pour l'un des modes pris en compte pour le couplage.
  Le modèle de résolution ne supporte pas une telle valeur.
 """),
 
-15: _("""
+15: _(u"""
  détermination du DRMAX et du déphasage pour le mode  %(k1)s  :
  le déterminant du système issu du moindre carré est nul
 """),
 
-16: _("""
+16: _(u"""
  détermination du déphasage pour le mode  %(k1)s  :
  THETA0 indéfini
 """),
 
-17: _("""
+17: _(u"""
  Pivot nul dans la résolution du système complexe
 """),
 
-18: _("""
+18: _(u"""
  Annulation du numérateur dans l'expression d un coefficient donnant
  la solution du problème fluide instationnaire pour UMOY = 0
 """),
 
-19: _("""
+19: _(u"""
  Détermination des valeurs propres de l'opérateur différentiel :
  existence d'une racine double
 """),
 
-20: _("""
+20: _(u"""
  La %(k1)s ème valeur propre est trop petite.
 """),
 
-21: _("""
+21: _(u"""
  La MATR_ASSE  %(k1)s  n'est pas stockée "morse" :
  le GCPC est donc impossible.
 """),
 
-22: _("""
+22: _(u"""
  Conflit : une matrice stockée morse ne peut avoir qu'un bloc
 """),
 
-23: _("""
+23: _(u"""
 Problème :
   Le préconditionnement LDLT_INC d'une matrice complexe n'est pas implémenté
 Conseils & solution :
   Il faut choisir un autre solveur que GCPC
 """),
 
-24: _("""
+24: _(u"""
  Résolution LDLT : erreur de programmation.
 """),
 
-25: _("""
+25: _(u"""
  Erreur à l'appel de METIS
 """),
 
-26: _("""
+26: _(u"""
  Problème d'affichage FETI dans PREML1
 """),
 
-27: _("""
+27: _(u"""
  Solveur interne LDLT interdit pour l'instant avec FETI
 """),
 
-28: _("""
+28: _(u"""
  Solveur interne MUMPS interdit pour l'instant avec FETI
 """),
 
-29: _("""
+29: _(u"""
  Solveur interne gcpc pour l'instant proscrit  avec feti
 """),
 
-30: _("""
+30: _(u"""
  Matrices A et B incompatibles pour l'opération *
 """),
 
-31: _("""
+31: _(u"""
  La section de la poutre doit etre constante.
 """),
 
-32: _("""
+32: _(u"""
  Structure non tubulaire
 """),
 
-33: _("""
+33: _(u"""
  On ne traite pas ce type de CHAM_ELEM, ICOEF différent de 1
 """),
 
-34: _("""
- Le CHAM_NO :  %(k1)s  n existe pas
+34: _(u"""
+ Le CHAM_NO :  %(k1)s  n'existe pas
+"""),
+
+35: _(u"""
+MULT_FRONT factorise une Matrice Généralisée.
+On a détecté l'existence d'au moins une liaison entre degré de liberté.
+On ne renumérote pas car les degrés de liberté sont a priori compris entre  Lagrange1 et Lagrange2 .
+
+Conseil
+-------
+  En cas d'arrêt ultérieur avec MATRICE SINGULIERE, il faudra changer de SOLVEUR (MUMPS par exemple).
  """),
 
-
-35: _("""
-      
- MULT_FRONT factorise une Matrice Generalisee
-On a detecte l" existence d'au moins une liaison entre  ddls
-on ne renumerote pas car les DDL sont a priori
-compris entre  Lagrange1et Lagrange2 .
- Conseil
- ------
-  en cas d arret ultérieur avec MATRICE SINGULIERE, il faudra changer de SOLVEUR (MUMPS par exemple)
- """),
-
-
-37: _("""
+37: _(u"""
   GCPC n"est pas prevu pour une matrice complexe
 """),
 
-38: _("""
+38: _(u"""
  Pas de matrice de préconditionnement : on s'arrete
 """),
 
-40: _("""
+40: _(u"""
  Erreur : LMAT est nul
 """),
 
-41: _("""
+41: _(u"""
 La matrice possède des ddls imposés éliminés: il faut un VCINE
 """),
 
-42: _("""
+42: _(u"""
 La matrice et le vecteur cinématique ne contiennent pas des valeurs de meme type
 """),
 
-43: _("""
-
+43: _(u"""
 Attention :
-  La pile des matrices fontales  a un longueur  %(i1)s qui, en octets, sera superieure a l entier maximum pour cete machine %(i2)s
-  Vous aurez un problème dans une allocation ultérieure
+  La pile des matrices frontales a une longueur (%(i1)d) qui, en octets, sera supérieure à l'entier maximum pour cette machine (%(i2)d).
+  Vous aurez un problème dans une allocation ultérieure.
 Conseil :
-  Utilisez une machine 64 bits si vous y êtes déjà  votre étude est vraiment trop volumineuse
+  Utilisez une machine 64 bits. Si vous y êtes déjà votre étude est vraiment trop volumineuse !
 """),
 
 
-44: _("""
+44: _(u"""
 La methode de resolution:  %(k1)s  est inconnue. on attend ldlt,gcpc, mult_fro ou feti
 """),
 
-45: _("""
+45: _(u"""
  methode de bathe et wilson : convergence non atteinte
 """),
 
-46: _("""
+46: _(u"""
 Recherche de corps rigide : pour l'instant proscrite avec matrice non-symetrique
 """),
 
-47: _("""
+47: _(u"""
 Recherche de corps rigide : pour l'instant proscrite avec matrice complexe
 """),
 
 
-48: _("""
+48: _(u"""
 Cet operateur a besoin du "procédé de Sturm" pour tester la validité de modes propres ou
 pour nourrir un algorithme de recherche de modes propres (dichotomie...). Or celui-ci
 ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
@@ -245,59 +239,55 @@ ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
 """),
 
 
-49: _("""
+49: _(u"""
 Attention : plus de six modes de corps rigides detectés
 """),
 
-50: _("""
+50: _(u"""
 Attention  %(k1)s .VALF existe déjà
 """),
 
-51: _("""
+51: _(u"""
 Le tableau B est insuffisamment dimensionné pour l'opération *
 """),
 
-
-52: _("""
-
+52: _(u"""
 Attention :
-  Le bloc %(i1)s a un longueur  %(i2)s qui, en octets, sera superieure a l entier maximum pour cete machine %(i3)s
-  Vous aurez un problème dans une allocation ultérieure
+  Le bloc %(i1)d a une longueur (%(i2)d) qui, en octets, sera supérieure à l'entier maximum pour cette machine (%(i3)d).
+  Vous aurez un problème dans une allocation ultérieure.
 Conseil :
-  Utilisez une machine 64 bits si vous y êtes déjà  votre étude est vraiment trop volumineuse
+  Utilisez une machine 64 bits. Si vous y êtes déjà votre étude est vraiment trop volumineuse.
 """),
 
-
-53: _("""
+53: _(u"""
 Toutes les fréquences sont des fréquences de corps rigide
 """),
 
-54: _("""
+54: _(u"""
 Calcul des NUME_MODE : matrice non inversible pour la fréquence considérée
 """),
 
-55: _("""
+55: _(u"""
 Problème à la résolution du système réduit.
 """),
 
-56: _("""
+56: _(u"""
 Valeur propre infinie trouvée
 """),
 
-57: _("""
+57: _(u"""
 Méthode QR : problème de convergence
 """),
 
-58: _("""
+58: _(u"""
 Il y a des valeurs propres très proches
 """),
 
-
-60: _("""
+60: _(u"""
 La matrice : %(k1)s a une numérotation incohérente avec le NUME_DDL.
 """),
 
-61: _("""
+61: _(u"""
 Le concept MODE "%(k1)s" a été créé avec les matrices
  MATR_A:  %(k2)s
  MATR_B:  %(k3)s
@@ -305,22 +295,22 @@ Le concept MODE "%(k1)s" a été créé avec les matrices
  et non avec celles passées en arguments.
 """),
 
-62: _("""
+62: _(u"""
 Le concept MODE "%(k1)s" a été créé avec les matrices
  MATR_A:  %(k2)s
  MATR_B:  %(k3)s
  et non avec celles passées en arguments.
 """),
 
-63: _("""
+63: _(u"""
 Le système à résoudre n'a pas de DDL actif.
 """),
 
-64: _("""
+64: _(u"""
 On trouve plus de 9999 valeurs propres dans la bande demandée
 """),
 
-66: _("""
+66: _(u"""
   -> La borne minimale de la bande de fréquences est une valeur propre !
      Malgré la stratégie de décalage, la matrice de raideur est numériquement
      singulière (modes de corps rigide).
@@ -329,13 +319,13 @@ On trouve plus de 9999 valeurs propres dans la bande demandée
      flambement) qui définit la borne minimale de la bande de fréquence.
 """),
 
-67: _("""
+67: _(u"""
 La matrice de raideur est numeriquement singulière (malgré la stratégie de decalage) :
 la borne maximale de la bande est une valeur propre.
 On poursuit tout de meme.
 """),
 
-68: _("""
+68: _(u"""
   -> La matrice de raideur est singulière malgre la strategie de décalage
 (structure avec des modes de corps rigide).
 
@@ -348,130 +338,130 @@ On poursuit tout de meme.
   TRI_DIAG avec OPTION='MODE_RIGIDE'.
 """),
 
-69: _("""
+69: _(u"""
 Option  %(k1)s non reconnue.
 """),
 
-70: _("""
+70: _(u"""
 Le type des valeurs varie d'un mode à l'autre, récupération impossible.
 """),
 
-71: _("""
+71: _(u"""
 Le nombre d'équations est variable d'un mode à l'autre, récupération impossible.
 """),
 
-72: _("""
+72: _(u"""
 Probleme interne ARPACK
 """),
 
-73: _("""
+73: _(u"""
 Problème taille WORKD/L -> augmenter DIM_SOUS_ESPACE
 """),
 
-74: _("""
+74: _(u"""
 Problème interne LAPACK
 """),
 
-75: _("""
+75: _(u"""
 Probleme construction vecteur initial --> si possible diminuer nmax_freq
 """),
 
-76: _("""
+76: _(u"""
 Probleme interne LAPACK, routine FLAHQR (forme de SCHUR)
 """),
 
-77: _("""
+77: _(u"""
 Probleme interne LAPACK, routine FTREVC (vecteurs propres)
 """),
 
-78: _("""
+78: _(u"""
 Aucune valeur propre à la précision requise
  --> augmenter PREC_SOREN ou NMAX_ITER_SOREN ou augmenter DIM_SOUS_ESPACE
 """),
 
-79: _("""
+79: _(u"""
 La position modale d'une des fréquences est négative ou nulle
 votre système matriciel est surement fortement singulier
 (ceci correspond généralement à un problème dans la modélisation).
 """),
 
-80: _("""
+80: _(u"""
 MODE à créer avant appel à VPSTOR
 """),
 
-81: _("""
+81: _(u"""
 "%(k1)s" argument du mot cle "OPTION" pour le calcul des fréquences est invalide.
 """),
 
-82: _("""
+82: _(u"""
 Pour l'option "BANDE" il faut exactement 2 fréquences.
 """),
 
-83: _("""
+83: _(u"""
 Fréquence min. supérieure ou égale à la fréquence max.
 """),
 
-84: _("""
+84: _(u"""
 Pour l'option "CENTRE" il faut exactement une fréquence.
 """),
 
-85: _("""
+85: _(u"""
 Pour les options  "PLUS_PETITE" et "TOUT" les frequences de "FREQ" sont ignorées.
 """),
 
-86: _("""
+86: _(u"""
 Pour l'option  "BANDE" il faut exactement 2 charges critiques.
 """),
 
-87: _("""
+87: _(u"""
 Charge crit. min. plus  grande ou egale a la charge crit. max.
 """),
 
-88: _("""
+88: _(u"""
 Pour l'option  "CENTRE" il faut exactement une charge critique.
 """),
 
-89: _("""
+89: _(u"""
 Pour l'option  "PLUS_PETITE" et "TOUT" les charges critiques de "CHAR_CRIT" sont ignorées.
 """),
 
-90: _("""
+90: _(u"""
 Objet .REFE/.REFA/.CELK inexistant.
 """),
 
-91: _("""
+91: _(u"""
 CHAM_NO non FETI
 """),
 
-92: _("""
+92: _(u"""
 Liste de CHAM_NO à concaténer hétérogène
 """),
 
-93: _("""
+93: _(u"""
 Les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s
 """),
 
-94: _("""
+94: _(u"""
 Le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut etre copié dans le CHAM_NO  %(k3)s  de type  %(k4)s
 """),
 
-95: _("""
+95: _(u"""
 Champ à représentation constante : cas non traité.
 """),
 
-96: _("""
+96: _(u"""
 CHOUT non feti
 """),
 
-97: _("""
+97: _(u"""
 Type de tri inconnu
 """),
 
-98: _("""
+98: _(u"""
 Problème interne LAPACK, routine DLAHQR (forme de SCHUR)
 """),
 
-99: _("""
+99: _(u"""
 Problème interne LAPACK, routine DTREVC (vecteurs propres)
 """),
 }

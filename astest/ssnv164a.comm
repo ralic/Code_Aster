@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 # ssnv164a.para = tps_job 140 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,8 +21,10 @@
 
 #---------------------------------------------------------------------
 
-DEBUT( CODE=_F(  NOM = 'SSNV164A',NIV_PUB_WEB='INTERNET'),)
+DEBUT( CODE=_F(  NOM = 'SSNV164A',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('CALCULEL3_47'))
 
+# <CALCULEL3_47> AVEC CALC_PRECONT, ON PASSE CONSCIEMMENT DE LA LDC 'SANS'
+# A UNE AUTRE LOI DE COMPORTEMENT
 PRE_GIBI();
 
 MA=LIRE_MAILLAGE();
@@ -376,10 +378,7 @@ RES2 = STAT_NON_LINE(MODELE=MO,
                                _F(CHARGE = CMCAB_3),
                                _F(CHARGE = CMCAB_4),
                                _F(CHARGE = CMCAB_5),),
-                     METHODE = 'IMPL_EX',
-                     IMPL_EX=_F(REAC_INCR=1,
-                    #           PREDICTION='SECANTE'
-                      ),  
+                     METHODE = 'IMPLEX', 
                      INCREMENT=_F(LIST_INST = LINST2,
                                                        INST_FIN = 150.),);
 
@@ -397,8 +396,7 @@ RES2 =  CALC_PRECONT( reuse=RES2,
                             EXCIT   =(_F(CHARGE = CLIM,),),
                             CABLE_BP   =(CABBP1,CABBP2),
                             CABLE_BP_INACTIF = (CABBP3,CABBP4,CABBP5,),
-                            METHODE = 'IMPL_EX',
-                            IMPL_EX=_F(),
+                            METHODE = 'IMPLEX',
                             INCREMENT=_F(LIST_INST = LINST2,
                                            INST_FIN  = 300., ),) 
 
@@ -418,8 +416,7 @@ RES2 =  CALC_PRECONT( reuse=RES2,
                                        _F(CHARGE = CMCAB_2,),),
                             CABLE_BP   =( CABBP3 , CABBP4 ),
                             CABLE_BP_INACTIF = ( CABBP5 ,),
-                            METHODE = 'IMPL_EX',
-                            IMPL_EX=_F(),
+                            METHODE = 'IMPLEX',
                             INCREMENT=_F(LIST_INST = LINST2,
                                          INST_FIN  = 450., ),)
 
@@ -440,8 +437,7 @@ RES2 =  CALC_PRECONT(  reuse=RES2,
                                        _F(CHARGE = CMCAB_3,),
                                        _F(CHARGE = CMCAB_4,),),
                              CABLE_BP   =( CABBP5 ,),
-                             METHODE = 'IMPL_EX',
-                             IMPL_EX=_F(),
+                             METHODE = 'IMPLEX',
                              INCREMENT=_F(LIST_INST = LINST2,
                                           INST_FIN = 600.,),) 
 

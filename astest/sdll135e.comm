@@ -1,0 +1,474 @@
+# MODIF  DATE 12/10/2011   AUTEUR LABBE M.LABBE 
+
+# TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
+# sdll135e.para = tps_job 400 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# MODELISATION BARRE
+
+DEBUT(CODE=_F(NOM='SDLL135E',
+              NIV_PUB_WEB='INTERNET',),);
+
+MAIL=LIRE_MAILLAGE();
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='BARRE',),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000E6,
+                            NU=0.29,
+                            RHO=7830.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+
+CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
+                     BARRE=_F(GROUP_MA='TOUT',
+                               SECTION='CERCLE',
+                               CARA=('R','EP',),
+                               VALE=(0.16,0.01,),),);
+
+
+# DEFINITION DES LISTES D INSTANTS
+# DANS LES DEUX CAS L ONDE NE FAIT QU UN ALLER POUR
+# UN MINIMUM DE TEMPS CPU CONSOMME
+# LA PREMIERE CORRESPOND A L ONDRE DE TRACTION-COMPRESSION
+
+
+LISTE=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=2.E-4,
+                                   PAS=1e-07,),);
+
+# ENCASTREMENT SUR UNE EXTREMITE
+
+CL=AFFE_CHAR_MECA(MODELE=MODELE,
+                  DDL_IMPO=_F(GROUP_NO='A',
+                              DX=0.0,
+                              DY=0.0,
+                              DZ=0.0,
+                              ),);
+
+# CHARGEMENT SOUS LA FORME D UNE FORCE ( OU D UN MOMENT ) DE TYPE HEAVYSIDE
+
+CHARFX=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='B',
+                                      FX=0.70710678118654746,
+                                      FY=0.70710678118654746),);
+
+
+
+MACRO_MATR_ASSE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARAC,
+                CHARGE=CL,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('RIGID'),
+                              OPTION='RIGI_MECA',),),);
+
+# LISTE DISCRETISE TRES FINEMENT POUR RESPECTER
+# LE RAPPORT TAILLE DE MAILLE VITESSE DE L ONDE DE COMPRESSION
+
+DYNATRAF=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHMAT,
+                        CARA_ELEM=CARAC,
+                        MATR_MASS=MASSE,
+                        MATR_RIGI=RIGID,
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                        EXCIT=(_F(CHARGE=CHARFX,),
+                               _F(CHARGE=CL,),),
+                        INCREMENT=_F(LIST_INST=LISTE,),
+                        ARCHIVAGE=_F(PAS_ARCH=100,),);
+
+DYNATRAF=CALC_ELEM(reuse =DYNATRAF,
+
+
+
+                   RESULTAT=DYNATRAF,
+                   OPTION=('SIEF_ELGA','SIEF_ELNO',),);
+
+DYNATRAF=CALC_NO(reuse =DYNATRAF,
+                 RESULTAT=DYNATRAF,
+                 OPTION='REAC_NODA',
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CARAC,
+                 EXCIT=(_F(CHARGE=CHARFX,),
+                        _F(CHARGE=CL,),),);
+
+
+DYNANOLI=DYNA_NON_LINE(
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MODELE,
+                CARA_ELEM = CARAC,
+                CHAM_MATER=CHMAT,
+                EXCIT=(_F(CHARGE=CHARFX,),
+                               _F(CHARGE=CL,),),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST=LISTE,),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(
+                                RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 20),
+                ARCHIVAGE=_F(PAS_ARCH=100,),
+            );
+
+DYNANOLI=CALC_ELEM(reuse =DYNANOLI,
+
+                   RESULTAT=DYNANOLI,
+                   OPTION=('SIEF_ELNO',),);
+DYNANOLI=CALC_NO(reuse =DYNANOLI,
+                 RESULTAT=DYNANOLI,
+                 OPTION='REAC_NODA',
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CARAC,
+                 EXCIT=(_F(CHARGE=CHARFX,),
+                        _F(CHARGE=CL,),),
+                        );
+
+
+
+# TEST DU CHAMP DE DEPLACEMENT SUR LE NOEUD EXTREMITE
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=1.83475279002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=1.83475279002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=2.75212918502e-10,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=2.75212918502e-10,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=3.66950558002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=3.66950558002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+# TEST SUR LES REACTIONS NODALES
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=-1.41421228294,
+                  PRECISION=0.05,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=-1.41421228294,
+                  PRECISION=0.05,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+# RECHERCHE DES MODES PROPRES DE TRACTIONS/COMPRESSIONS
+
+MODE_DX=MODE_ITER_INV(MATR_A=RIGID,
+                      MATR_B=MASSE,
+                      CALC_FREQ=_F(
+                      OPTION='PROCHE',
+                      FREQ=(1263.497,3790.49,6317.484,8844.4477,11371.473,),),);
+
+TEST_RESU(RESU=_F(RESULTAT=MODE_DX,
+                  NUME_ORDRE=1,
+                  PARA='FREQ',
+                  VALE=1263.497,
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MODE_DX,
+                  NUME_ORDRE=2,
+                  PARA='FREQ',
+                  VALE=3790.49,
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MODE_DX,
+                  NUME_ORDRE=3,
+                  PARA='FREQ',
+                  VALE=6317.484,
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MODE_DX,
+                  NUME_ORDRE=4,
+                  PARA='FREQ',
+                  VALE=8844.4477,
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MODE_DX,
+                  NUME_ORDRE=5,
+                  PARA='FREQ',
+                  VALE=11371.473,
+                  CRITERE='RELATIF',
+                  REFERENCE='ANALYTIQUE',),);
+
+
+# COMPARAISON DYNA_VIBRA DYNA_NON_LINE
+
+# TEST DU CHAMP DE DEPLACEMENT SUR LE NOEUD EXTREMITE
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=1.83475279002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=1.83475279002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=2.75212918502e-10,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=2.75212918502e-10,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=3.66950558002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=3.66950558002e-10,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+# TEST SUR LES REACTIONS NODALES
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=-1.41421228294,
+                  PRECISION=0.05,
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=-1.41421228294,
+                  PRECISION=0.05,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(RESULTAT=DYNANOLI,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+
+FIN();

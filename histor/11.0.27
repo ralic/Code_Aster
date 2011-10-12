@@ -1,0 +1,726 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bargelli     BARGELLINI Renaud      DATE 12/10/2011 - 17:00:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016768 DU 2011-04-12 13:05:37
+TYPE anomalie concernant Code_Aster (VERSION 11.2)
+TITRE
+    Evolution d'IMPL_EX : mots clxc3xa9s inutiles
+FONCTIONNALITE
+   PROBLEME
+   ****************
+   Gr�ce � la fiche 16636, on remarque que les mots-cl�s PREDICTION et REAC_INCR sont 
+   inutiles dans le 
+   mot cl� IMPL_EX de STAT_NON_LINE. Du coup, c'est le mot cl� IMPL_EX lui m�me qui 
+   devient inutile !
+   De plus, ne pourrait-on pas enlever ce "_" irritant et tout appeler IMPLEX ? On devra 
+   alors modifier 
+   le code partout o� le mot cl� IMPL_EX appara�t.
+   
+   SOLUTION
+   ****************
+   On supprime le mot cl� facteur IMPL_EX dans STAT_NON_LINE et CALC_PRECONT.
+   On fixe alors PREDICTION = TANGENTE et REAC_INCR =1 directement dans le fortran.
+   
+   De plus, METHODE = IMPL_EX devient METHODE = IMPLEX pour plus de conformit� avec 
+   DEFI_LIST_INST.
+   
+   IMPACT
+   ****************
+   FORTRAN
+   exfonc.f  lc0001.f  nmchap.f  nmchoi.f  nmcrsu.f  nmdocr.f  nmdopo.f
+   isfonc.f  merimo.f  nmchar.f  nmconv.f  nmdata.f  nmdomt.f  nmfonc.f
+   PYTHON
+   calc_precont_ops.py  elements5.py  mecanonline5.py  mecanonline6.py
+   CATAPY
+   calc_precont.capy  stat_non_line.capy (suprression de c_impl_ex.capy)
+   DOCUMENTAIRE
+   r5.03.81, u4.42.05,u4.51.03,v6.02.137,v6.03.140,v6.04.164,v3.06.103
+   
+   VALIDATION
+   ****************
+   Tous les cas tests utilisant la m�thode IMPL_EX (euh, pardon, IMPLEX !!!)
+   ssnl137a, ssla103e, ssnp140abcde,ssnv164a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : r5.03.81, u4.42.05,u4.51.03,v6.02.137,v6.03.140,v6.04.164,v3.06.103
+VALIDATION
+    ssnl137a, ssla103e, ssnp140abcde,ssnv164a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 10/12/2011 - 11:47:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017483 DU 2011-09-06 08:32:38
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Degradation des temps de certains cas-tests en 11.0.17 dans CALC_FATIGUE
+FONCTIONNALITE
+   Analyse
+   =======
+   
+   C'est bien à cause de issue17223 que les temps de CALC_FATIGUE se sont dégradés.
+   Sur sslv135l, le dernier CALC_FATIGUE (le plus long) passe de 100 à 166 secondes.
+   
+   C'est évidemment plus long de recalculer le contexte que d'un prendre un tout prêt 
+   (sauf que celui qu'on a sous la main n'est pas bon d'où issue17223 !).
+   
+   
+   Correction
+   ==========
+   
+   On retrouve les mêmes temps qu'auparavant en mettant en cache le "contexte avant la 
+   commande courante". Il ne sera donc calculé qu'une fois.
+   On prend soin de supprimer ce type d'attributs dans la méthode 'supprime' pour ne pas 
+   conserver de références superflues.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv135l
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017639 DU 2011-10-03 16:40:48
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    bug sslp317a en poursuite
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Impossible de faire une POURSUITE du test sslp317a.
+   On cherche à relire des concepts qui sont censés être 
+   temporaires et internes à la macro.
+   
+   
+   Correction
+   ==========
+   
+   En fait, RAFF_XFEM n'est potentiellement pas la seule macro à 
+   la suite de laquelle on ne peut pas faire de POURSUITE.
+   Toutes les macros qui utilisent get_concept APRES avoir créé 
+   des concepts temporaires (préfixés par '__') sont dans le 
+   même cas.
+   
+   L'erreur est dans la méthode get_contexte_courant des macro-
+   commandes :
+   - on récupère le contexte avant la macro courante (en 
+   général, on demande au JDC)
+   - on y ajoute le contexte interne à la macro.
+   
+   Or dans cette opération, on utilisait directement le résultat 
+   qui vient du JDC, qui est stocké dans un attribut du jdc (un 
+   peu mis en "cache" pour éviter de le recalculer entièrement) 
+   et donc on le modifie en y ajoutant les concepts internes à 
+   la macro.
+   Quand vient le moment de créer le pick.1, on y met donc les 
+   concepts temporaires (bien que leur sd fortran aient été 
+   détruites).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslp317a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017664 DU 2011-10-06 10:47:09
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    TEST_COMPOR ne produit pas toujours une table
+FONCTIONNALITE
+   Si on fait une POURSUITE de comp001i, on est arrêté en erreur 
+   car on ne trouve pas dans la base les tables issues de 
+   TEST_COMPOR.
+   
+   Effectivement, si COMP_INCR est absent de TEST_COMPOR, la table 
+   n'est pas produite. En revanche, elle est déclaré en tant que 
+   concept (car dans sd_prod).
+   => ajout d'une fonction pour sd_prod pour dire qu'on ne produit 
+   pas de concept si COMP_INCR est absent.
+   + une règle UN_PARMI(COMP_INCR, COMP_ELAS)
+   
+   De plus, on voit qu'à la fin il y a 692 concepts dans la table 
+   globale... alors qu'on devrait en avoir une douzaine (définis 
+   par l'utilisateur).
+   Il faut utiliser des concepts temporaires automatiquement 
+   détruits en fin de macro !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    compXXX
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013151 DU 2009-02-19 17:52:01
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Pouvoir utiliser des catalogues de messages en anglais
+FONCTIONNALITE
+   L'objectif de cette fiche est de préparer le code afin de permettre de la gestion des 
+   messages d'informations, d'alarmes et d'erreurs dans d'autres langues (en priorité en 
+   anglais).
+   C'est la suite du chantier commencé en version 8 pour rationnaliser la gestion et 
+   l'affichage des messages.
+   
+   Détails :
+   
+   - Les chaines doivent être en unicode (pour la bonne gestion des accents par gettext).
+   
+   - Tous les fichiers de messages sont encodés en iso-8859-1.
+   
+   - Les fichiers pot (contenant les messages extraits du code source) sont eux-aussi encodés 
+   en iso-8859-1.
+   
+   - Une traduction automatique des 5600 messages (conversion pot2xml, traduction par systran, 
+   conversion xml2pot), la conversion est nécessaire pour retrouver les "variables" des 
+   messages (ex. "%(k1)s") et les fins de lignes. Il y a pas mal d'erreurs de traduction (mots 
+   non traduits...), on compte sur la communauté pour nous aider à améliorer les messages 
+   (anglais dans un premier temps).
+   
+   - On a choisi d'installer une fonction "_" triviale dans __builtin__ dans l'init de Noyau 
+   (pour que cela soit transparent pour les catalogues eficas qui utilisent le Noyau),
+   
+   - "L'installation" de la fonction "_" de gettext est faite par le code exécuté dans 
+   E_SUPERV.py (module dédiée Execution/i18n.py).
+   
+   - Au niveau le plus haut du superviseur (au démarrage de Code_Aster), on définit la 
+   fonction de traduction par la langue 'default' (dictionnaire dans i18n.py). Celle-ci est 
+   déterminée par la première des variables d'environnement : LANGUAGE, LC_ALL, LC_MESSAGES, 
+   LANG. Voir la documentation de gettext pour plus de détails. Par exemple : LANG=fr_FR.utf8
+   Ensuite, dans DEBUT et POURSUITE, on peut choisir la langue utilisée avec le mot-clé 
+   LANG='FR' ou LANG='EN'.
+   
+   - Si les accents sont remplacés par des '?' dans l'output/fichier .mess, c'est l'encodage 
+   qui n'est pas bon (variable LANG ou LANGUAGE).
+   
+   - Les chaines manipulées en interne doivent rester le plus longtemps possible en unicode.
+   
+   - L'encodage est fait au dernier moment (en utilisant l'encodage courant) dans la fonction 
+   d'impression de Utmess.py.
+   
+   - Les messages des catalogues peuvent être définis sous forme d'un dictionnaire composé 
+   d'une entrée "message" (le message comme à l'ordinaire) et d'attributs supplémentaires 
+   ("flags"). Les "flags" disponibles sont : CENTER, DECORATED, ALL_UNIT. Ils ne doivent être 
+   utilisés que dans de rares cas et devraient être utilisés uniquement par le superviseur. 
+   ALL_UNIT indique que le message doit être imprimé sur les fichiers MESSAGE, ERREUR et 
+   RESULTAT. DECORATED est utilisé par les messages qui doivent mis en relief, sans pour 
+   autant en faire des alarmes. CENTER centre le texte du message sur 80 colonnes.
+   IL NE FAUT PAS FAIRE DE MISE EN FORME DANS LES MESSAGES (car ce sera difficile de la 
+   maintenir dans les traductions) ! SE LIMITER AUX RETOURS A LA LIGNE ET AUX INDENTATIONS.
+   
+   - Aucun message accentué hors des UTMESS sinon cela risque d'introduire des caractères dans 
+   des encodages différents et non compatibles entre eux (ex. utf-8 et iso-8859-1), et de 
+   rendre le fichier en partie illisible même dans des éditeurs supportant l'encodage 8bits 
+   des chaines.
+   
+   - Il reste des messages affichés par le superviseur qui ne sont pas "marqués" comme à 
+   traduire. D'autres chaines de caractères dont l'intitulé est aujourd'hui recherché pour 
+   faire des vérifications.
+   
+   - Le message indiquant dès le 'main' si la version est séquentielle ou parallèle a dû être 
+   repoussé dans DEBUT (Utmess non accessible avant). Si bien qu'on en a profité pour revoir 
+   l'affichage de l'entête dans des messages et en y ajoutant des informations sur la version 
+   (bibliothèques utilisées, parallélisme actif ou non...). Ce qui solde issue16862.
+   
+   
+   L'entête devient (en anglais) :
+   
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . -- CODE_ASTER -- VERSION DEVELOPMENT (unstable) -- . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . .Version 11.0.25 from 05/10/2011 . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . Copyright EDF-R&D 1991 - 2011 . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . Execution from : Sun Oct .9 22:42:48 2011 . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . Name of the machine : cli70cx . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . .Architecture : 32bit . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . .Type of processor : i686 . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . Operating system : Linux 2.6.32-34-generic . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . MPI parallelism : inactive . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . .Version of the HDF5 library : .1.8.4 . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . .Version of the MED library : .3.0.3 . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . MUMPS library : installed . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . .Version of the SCOTCH library : .5.1.10 . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+     .
+    . !-----------------------------------------------------------------------------!
+    . ! <A> <SUPERVIS_40> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! .You use a version whose following routines were overloaded: . . . . . . . .!
+    . ! .astermodule.c, debut.f, entete.F, libinfos.c, mlnump.c, python.c, xcrvol.f !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! This is an alarm. If you do not understand this alarm, . . . . . . . . . . .!
+    . ! you may obtain unexpected results ! . . . . . . . . . . . . . . . . . . . . !
+    . !-----------------------------------------------------------------------------!
+    .
+    .
+    . !---------------------------------------------------------------------------------------
+   ---!
+    . ! <A> <SUPERVIS_1> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . .!
+    . ! .The use of the keyword PAR_LOT='NON' allows to read and write . . . . . . . . . . . . 
+   . !
+    . ! .the contents of the Aster data structures. So your study is excluded from the 
+   qualified !
+    . ! .perimeter of Code_Aster since all its stages cannot be certified. . . . . . . . . . . 
+   . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . .!
+    . ! .Advices: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . .!
+    . ! .- There is no particularly risk of false result... except if your . . . . . . . . . . 
+   . !
+    . ! .programming introduces it. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . .!
+    . ! .- Distinguish computation itself (which must undoubtedly pass in PAR_LOT='OUI') . . . 
+   . !
+    . ! .postprocessings (which would require mode PAR_LOT='NON') which can . . . . . . . . . 
+   . .!
+    . ! .be realized in POURSUITE. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . .!
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . .!
+    . ! This is an alarm. If you do not understand this alarm, . . . . . . . . . . . . . . . . 
+   . !
+    . ! you may obtain unexpected results ! . . . . . . . . . . . . . . . . . . . . . . . . . 
+   . .!
+    . !---------------------------------------------------------------------------------------
+   ---!
+   
+   
+   en français :
+   
+    . . . . . .-- CODE_ASTER -- VERSION DE DÉVELOPPEMENT (unstable) -- . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . Version 11.0.25 du 05/10/2011 . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . Copyright EDF-R&D 1991 - 2011 . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . .Exécution du : Sun Oct .9 22:42:48 2011 . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . .Nom de la machine : cli70cx . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . .Architecture : 32bit . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . Type de processeur : i686 . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . .Système d'exploitation : Linux 2.6.32-34-generic . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . Parallélisme MPI : inactif . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . .Version de la librairie HDF5 : 1.8.4 . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . .Version de la librairie MED : 3.0.3 . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . .Librairie MUMPS : installée . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . .Version de la librairie SCOTCH : 5.1.10 . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    .
+    . !-------------------------------------------------------------------------------!
+    . ! <A> <SUPERVIS_40> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! .Vous utilisez une version dont les routines suivantes ont été surchargées : .!
+    . ! . .astermodule.c, debut.f, entete.F, libinfos.c, mlnump.c, python.c, xcrvol.f !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette . . . . . . . .!
+    . ! alarme, vous pouvez obtenir des résultats inattendus ! . . . . . . . . . . . .!
+    . !-------------------------------------------------------------------------------!
+    .
+    .
+    . !------------------------------------------------------------------------------------!
+    . ! <A> <SUPERVIS_1> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .!
+    . ! .L'utilisation du mot-clé PAR_LOT='NON' permet d'accéder en lecture et en écriture !
+    . ! .au contenu des concepts Aster. De ce fait, votre étude est exclue du périmètre . .!
+    . ! .qualifié de Code_Aster puisque toutes ses étapes ne peuvent être certifiées. . . .!
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .!
+    . ! .Conseils : . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .!
+    . ! . .- Il n'y a pas particulièrement de risque de résultat faux... sauf si votre . . !
+    . ! . . .programmation l'introduit. . . . . . . . . . . . . . . . . . . . . . . . . . .!
+    . ! . .- Distinguez le calcul lui-même (qui doit sans doute passer en PAR_LOT='OUI') . !
+    . ! . . .des post-traitements (qui nécessiteraient le mode PAR_LOT='NON') qui peuvent .!
+    . ! . . .être réalisés en POURSUITE. . . . . . . . . . . . . . . . . . . . . . . . . . !
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .!
+    . ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .!
+    . ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette . . . . . . . . . . !
+    . ! alarme, vous pouvez obtenir des résultats inattendus ! . . . . . . . . . . . . . . !
+    . !------------------------------------------------------------------------------------!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tout
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016862 DU 2011-05-02 14:48:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR08 Connaître la disponibilité de librairies externes
+FONCTIONNALITE
+   On enrichit la fonction haslib (fortran90) qui retourne 1 (ou 0) en 
+   fonction de la présence (ou non) d'une bibliothèque (et donc des 
+   fonctionnalités associés).
+   
+   Dans le cadre de issue13151, on a été amené à modifier l'impression de 
+   l'entête. On en a profité pour ajouter des infos sur les versions des 
+   bibliothèques externes utilisées.
+   A terme, on pourra aller plus loin (chemin vers les blas utilisées par 
+   exemple) en allant chercher des infos dans un include construit au moment 
+   de la construction.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 12/10/2011 - 11:13:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016924 DU 2011-05-13 16:33:25
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    matrice de masse tridirectionnelle pour l'xc3xa9lxc3xa9ment BARRE
+FONCTIONNALITE
+   Le but de cette fiche est de corriger le calcul de matrice de masse des �l�ments barre
+   pour que dans les calculs dynamiques, la masse soit prise en compte en X, Y et Z et pas
+   seulement en X.
+   On profite �galement de cela pour d�velopper l'option M_GAMMA pour les �l�ments BARRES.
+   
+   Cas-tests
+   =========
+   * Cas test existants :
+   Le cas test ssll11c fait un calcul de dynamique harmonique.
+   On a changer les valeurs de r�f�rences de certains test de non r�gression.
+   
+   * Nouveaux cas tests :
+   1)Le cas test donn� dans la fiche 16848, que l'on compl�te avec :
+   - calcul et test des FORC_NODA et REAC_NODA
+   - les m�mes calculs avec la matrice de masse diagonale
+   - calcul de l'�nergie cin�tique pour trois modes de vitesse diff�rents (// � X , Y et Z)
+   ATTENTION : nous n'avons pas de nom de cas test, la PRE_EDA sera faite avec le nom SDLL999a.
+   
+   2)Le cas test sdll135e reprend le cas test sdll135a mais avec la mod�lisation BARRE et une
+   orientation de 45 degr�s. On a reproduit le calcul fait par DYNA_VIBR avec DYNA_NON_LINE
+   pour valider l'option M_GAMMA, comme demand� par Fran�ois Voldoire. On retrouve bien les
+   m�mes r�sultats.
+   
+   D�veloppements
+   =============
+   Nous avons modifi� les routines te0153 et te0154 en ajoutant d'autres composantes non nuls
+   � la matrice de masse �l�mentaire.
+   Nous avons int�gr� l'option M_GAMMA au te0153.
+   On a aussi modifi� les fichiers gener_mebar1.cata, gener_me2db1.cata et m_gamma.cata
+   
+   Documentation
+   =============
+   modification de R3-08-01
+   cr�ation de la doc du nouveau cas test
+   ajout TEST_RESU de non r�gression du cas test ssll11c sui y sont absents.
+   modification de la doc V2.02.135 pour prendre en compte le mod�lisation E
+   
+   Chiffrage
+   =========
+   On a ajout� un jour de travail pour de d�veloppement et la validation de l'option M_GAMMA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.08.01, V3.01.01, V2.02.135
+VALIDATION
+    nouveaux cas tests
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT supervis/libinfos            courtois M.COURTOIS          76     76      0
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3930     20      6
+       C MODIF supervis/python              courtois M.COURTOIS          77      2     15
+       C MODIF utilitai/mlnump              courtois M.COURTOIS          34      2      2
+ CASTEST AJOUT forma07b                     courtois M.COURTOIS          87     87      0
+ CASTEST AJOUT sdll135e                        labbe M.LABBE            474    474      0
+ CASTEST AJOUT sdll146a                        labbe M.LABBE            478    478      0
+ CASTEST MODIF comp001i                     courtois M.COURTOIS         126      3      8
+ CASTEST MODIF ssla103e                     bargelli R.BARGELLINI       233      2      2
+ CASTEST MODIF ssll11c                         labbe M.LABBE            144     11     12
+ CASTEST MODIF ssnl137a                     bargelli R.BARGELLINI       126      2      2
+ CASTEST MODIF ssnp140a                     bargelli R.BARGELLINI       176      2      2
+ CASTEST MODIF ssnp140b                     bargelli R.BARGELLINI       177      2      3
+ CASTEST MODIF ssnp140c                     bargelli R.BARGELLINI       179      2      3
+ CASTEST MODIF ssnp140d                     bargelli R.BARGELLINI       200      2      3
+ CASTEST MODIF ssnp140e                     bargelli R.BARGELLINI       185      2      2
+ CASTEST MODIF ssnv164a                     bargelli R.BARGELLINI      1084      8     12
+CATALOGU MODIF options/m_gamma                 labbe M.LABBE             41      2      1
+CATALOGU MODIF typelem/gener_me2db1            labbe M.LABBE            236      4      3
+CATALOGU MODIF typelem/gener_mebar1            labbe M.LABBE            240      4      3
+CATALOGU SUPPR commun/c_impl_ex             bargelli R.BARGELLINI        24      0     24
+CATALOPY MODIF commande/calc_champ          courtois M.COURTOIS         251      2      2
+CATALOPY MODIF commande/calc_precont        bargelli R.BARGELLINI        72      2      5
+CATALOPY MODIF commande/debut               courtois M.COURTOIS         107      5      6
+CATALOPY MODIF commande/poursuite           courtois M.COURTOIS         112      5      6
+CATALOPY MODIF commande/stat_non_line       bargelli R.BARGELLINI       160      2      5
+CATALOPY MODIF commande/test_compor         courtois M.COURTOIS          95      9      2
+ FORTRAN MODIF algeline/mdconf              courtois M.COURTOIS         479     10      4
+ FORTRAN MODIF algeline/vpcntl              courtois M.COURTOIS         210      5      5
+ FORTRAN MODIF algorith/exfonc              bargelli R.BARGELLINI       278      2      2
+ FORTRAN MODIF algorith/isfonc              bargelli R.BARGELLINI       204      3      3
+ FORTRAN MODIF algorith/lc0001              bargelli R.BARGELLINI       160      2      2
+ FORTRAN MODIF algorith/merimo              bargelli R.BARGELLINI       296      2      2
+ FORTRAN MODIF algorith/nmchap              bargelli R.BARGELLINI       355      2      2
+ FORTRAN MODIF algorith/nmchar              bargelli R.BARGELLINI       387      3      3
+ FORTRAN MODIF algorith/nmchoi              bargelli R.BARGELLINI       159      3      3
+ FORTRAN MODIF algorith/nmconv              bargelli R.BARGELLINI       398      2      2
+ FORTRAN MODIF algorith/nmcrsu              bargelli R.BARGELLINI       242      2      2
+ FORTRAN MODIF algorith/nmdata              bargelli R.BARGELLINI       166      2      2
+ FORTRAN MODIF algorith/nmdocr              bargelli R.BARGELLINI       272      2      6
+ FORTRAN MODIF algorith/nmdomt              bargelli R.BARGELLINI       189      7     18
+ FORTRAN MODIF algorith/nmdopo              bargelli R.BARGELLINI       297      2      2
+ FORTRAN MODIF algorith/nmfonc              bargelli R.BARGELLINI       599      7      7
+ FORTRAN MODIF algorith/xcrvol              courtois M.COURTOIS         120      3      5
+ FORTRAN MODIF calculel/ccfnrn              courtois M.COURTOIS         500      2      2
+ FORTRAN MODIF elements/te0119              courtois M.COURTOIS          75      2      2
+ FORTRAN MODIF elements/te0153                 labbe M.LABBE            200     61      4
+ FORTRAN MODIF elements/te0154                 labbe M.LABBE            232     10      2
+ FORTRAN MODIF jeveux/jedebu                courtois M.COURTOIS         283      1      3
+ FORTRAN MODIF supervis/debut               courtois M.COURTOIS         101      2      5
+ FORTRAN MODIF supervis/ib0mai              courtois M.COURTOIS         111     25     29
+ FORTRAN MODIF supervis/ibimpr              courtois M.COURTOIS          48      8     53
+ FORTRAN MODIF supervis/op9999              courtois M.COURTOIS         167      2      1
+FORTRAN90 AJOUT utilitai/entete              courtois M.COURTOIS          78     78      0
+FORTRAN90 MODIF utilitai/haslib              courtois M.COURTOIS          61     12      1
+  PYTHON AJOUT Execution/i18n               courtois M.COURTOIS          54     54      0
+  PYTHON AJOUT Execution/strfunc            courtois M.COURTOIS         100    100      0
+  PYTHON MODIF Build/B_ETAPE                courtois M.COURTOIS         827      8      2
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         479     12      7
+  PYTHON MODIF Execution/E_ETAPE            courtois M.COURTOIS         308     16     30
+  PYTHON MODIF Execution/E_Exception        courtois M.COURTOIS         145      5      4
+  PYTHON MODIF Execution/E_Global           courtois M.COURTOIS         138     70      9
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         387     15     13
+  PYTHON MODIF Execution/E_SUPERV           courtois M.COURTOIS         419     15      7
+  PYTHON MODIF Macro/calc_precont_ops       bargelli R.BARGELLINI       425      3      6
+  PYTHON MODIF Macro/test_compor_ops        courtois M.COURTOIS         796    150    151
+  PYTHON MODIF Messages/adaptation          courtois M.COURTOIS          62     10     13
+  PYTHON MODIF Messages/affecharmeca        courtois M.COURTOIS          38      5      7
+  PYTHON MODIF Messages/algeline            courtois M.COURTOIS         427     93     95
+  PYTHON MODIF Messages/algeline2           courtois M.COURTOIS         428     94     99
+  PYTHON MODIF Messages/algeline3           courtois M.COURTOIS         467    111    121
+  PYTHON MODIF Messages/algeline4           courtois M.COURTOIS         411     73     64
+  PYTHON MODIF Messages/algeline5           courtois M.COURTOIS         421     83     95
+  PYTHON MODIF Messages/algorith            courtois M.COURTOIS         220     43     45
+  PYTHON MODIF Messages/algorith10          courtois M.COURTOIS         281     63     65
+  PYTHON MODIF Messages/algorith11          courtois M.COURTOIS         251     51     53
+  PYTHON MODIF Messages/algorith12          courtois M.COURTOIS         363     62     64
+  PYTHON MODIF Messages/algorith13          courtois M.COURTOIS         266     47     49
+  PYTHON MODIF Messages/algorith14          courtois M.COURTOIS         343     58     60
+  PYTHON MODIF Messages/algorith15          courtois M.COURTOIS         420     68     70
+  PYTHON MODIF Messages/algorith16          courtois M.COURTOIS         469     77     79
+  PYTHON MODIF Messages/algorith17          courtois M.COURTOIS          94     18     20
+  PYTHON MODIF Messages/algorith2           courtois M.COURTOIS         271     55     57
+  PYTHON MODIF Messages/algorith3           courtois M.COURTOIS         257     53     55
+  PYTHON MODIF Messages/algorith4           courtois M.COURTOIS         211     40     42
+  PYTHON MODIF Messages/algorith5           courtois M.COURTOIS         347     72     74
+  PYTHON MODIF Messages/algorith6           courtois M.COURTOIS         288     57     59
+  PYTHON MODIF Messages/algorith7           courtois M.COURTOIS         192     38     40
+  PYTHON MODIF Messages/algorith8           courtois M.COURTOIS         225     49     51
+  PYTHON MODIF Messages/algorith9           courtois M.COURTOIS         258     53     55
+  PYTHON MODIF Messages/appariement         courtois M.COURTOIS          84     13     15
+  PYTHON MODIF Messages/appelmpi            courtois M.COURTOIS          32      3      5
+  PYTHON MODIF Messages/archivage           courtois M.COURTOIS          51      8     10
+  PYTHON MODIF Messages/ascouf0             courtois M.COURTOIS         336     57     59
+  PYTHON MODIF Messages/aspic0              courtois M.COURTOIS         138     25     27
+  PYTHON MODIF Messages/assembla            courtois M.COURTOIS         292     51     53
+  PYTHON MODIF Messages/cable0              courtois M.COURTOIS          31      5     10
+  PYTHON MODIF Messages/calcessai0          courtois M.COURTOIS          71     12     14
+  PYTHON MODIF Messages/calculel            courtois M.COURTOIS         407     57     59
+  PYTHON MODIF Messages/calculel2           courtois M.COURTOIS         470     74     81
+  PYTHON MODIF Messages/calculel3           courtois M.COURTOIS         490     87     89
+  PYTHON MODIF Messages/calculel4           courtois M.COURTOIS         383     62     64
+  PYTHON MODIF Messages/calculel5           courtois M.COURTOIS         403     58     60
+  PYTHON MODIF Messages/calculel6           courtois M.COURTOIS         458     70     72
+  PYTHON MODIF Messages/calculel7           courtois M.COURTOIS          40      5      7
+  PYTHON MODIF Messages/cataelem            courtois M.COURTOIS          73     11     13
+  PYTHON MODIF Messages/catamess            courtois M.COURTOIS          73     22     26
+  PYTHON MODIF Messages/champs              courtois M.COURTOIS          67     11     13
+  PYTHON MODIF Messages/charges             courtois M.COURTOIS          75     12     14
+  PYTHON MODIF Messages/compor1             courtois M.COURTOIS         370     65     67
+  PYTHON MODIF Messages/compor2             courtois M.COURTOIS         124     22     26
+  PYTHON MODIF Messages/contact             courtois M.COURTOIS         159     24     26
+  PYTHON MODIF Messages/contact2            courtois M.COURTOIS          71      8     10
+  PYTHON MODIF Messages/contact3            courtois M.COURTOIS         240     44     46
+  PYTHON MODIF Messages/contactdebg         courtois M.COURTOIS          41      5      7
+  PYTHON MODIF Messages/couplageifs         courtois M.COURTOIS          79     13     15
+  PYTHON MODIF Messages/debug               courtois M.COURTOIS          31      3      5
+  PYTHON MODIF Messages/discretisation      courtois M.COURTOIS         109     17     19
+  PYTHON MODIF Messages/discretisation2     courtois M.COURTOIS          40      3      5
+  PYTHON MODIF Messages/discrets            courtois M.COURTOIS         177     25     27
+  PYTHON MODIF Messages/dvp                 courtois M.COURTOIS          74      8     10
+  PYTHON MODIF Messages/dynamique           courtois M.COURTOIS         141     19     21
+  PYTHON MODIF Messages/ecrevisse0          courtois M.COURTOIS         202     37     39
+  PYTHON MODIF Messages/edyos               courtois M.COURTOIS         252     49     51
+  PYTHON MODIF Messages/elashyper           courtois M.COURTOIS          37      4      6
+  PYTHON MODIF Messages/elasmult0           courtois M.COURTOIS          27      3      5
+  PYTHON MODIF Messages/elements            courtois M.COURTOIS         339     64     66
+  PYTHON MODIF Messages/elements2           courtois M.COURTOIS         211     45     47
+  PYTHON MODIF Messages/elements3           courtois M.COURTOIS         279     55     57
+  PYTHON MODIF Messages/elements4           courtois M.COURTOIS         251     53     59
+  PYTHON MODIF Messages/elements5           courtois M.COURTOIS         244     43     45
+  PYTHON MODIF Messages/etatinit            courtois M.COURTOIS          74     16     18
+  PYTHON MODIF Messages/execlogiciel0       courtois M.COURTOIS         186     24     26
+  PYTHON MODIF Messages/extraction          courtois M.COURTOIS          81     12     14
+  PYTHON MODIF Messages/extrapolation       courtois M.COURTOIS          49      6      8
+  PYTHON MODIF Messages/factor              courtois M.COURTOIS         478     50    100
+  PYTHON MODIF Messages/fatigue1            courtois M.COURTOIS         407     77     79
+  PYTHON MODIF Messages/fermetur            courtois M.COURTOIS         109     15     17
+  PYTHON MODIF Messages/feti0               courtois M.COURTOIS          39      5      7
+  PYTHON MODIF Messages/fiabilite0          courtois M.COURTOIS          27      3      5
+  PYTHON MODIF Messages/fichier             courtois M.COURTOIS          28      2      4
+  PYTHON MODIF Messages/fonct0              courtois M.COURTOIS         397     60     62
+  PYTHON MODIF Messages/generic             courtois M.COURTOIS          26      3      5
+  PYTHON MODIF Messages/graph0              courtois M.COURTOIS          59     12     14
+  PYTHON MODIF Messages/homard0             courtois M.COURTOIS          74     10     12
+  PYTHON MODIF Messages/indicateur          courtois M.COURTOIS         151     28     30
+  PYTHON MODIF Messages/intemail            courtois M.COURTOIS         170     35     37
+  PYTHON MODIF Messages/itersupp            courtois M.COURTOIS          57      8     10
+  PYTHON MODIF Messages/jeveux              courtois M.COURTOIS         543     93     95
+  PYTHON MODIF Messages/jeveux1             courtois M.COURTOIS         428     67     69
+  PYTHON MODIF Messages/listinst            courtois M.COURTOIS          41      4      6
+  PYTHON MODIF Messages/mail0               courtois M.COURTOIS          44      6      8
+  PYTHON MODIF Messages/matrice0            courtois M.COURTOIS          51      9     11
+  PYTHON MODIF Messages/mecanonline         courtois M.COURTOIS         106     14     16
+  PYTHON MODIF Messages/mecanonline2        courtois M.COURTOIS         118     13     15
+  PYTHON MODIF Messages/mecanonline3        courtois M.COURTOIS         111     17     19
+  PYTHON MODIF Messages/mecanonline4        courtois M.COURTOIS          56      7      9
+  PYTHON MODIF Messages/mecanonline5        courtois M.COURTOIS         223     37     39
+  PYTHON MODIF Messages/mecanonline6        courtois M.COURTOIS         111     24     26
+  PYTHON MODIF Messages/mecanonline7        courtois M.COURTOIS          70     21     23
+  PYTHON MODIF Messages/mecanonline8        courtois M.COURTOIS          87     25     27
+  PYTHON MODIF Messages/mecastatique        courtois M.COURTOIS          29      3      5
+  PYTHON MODIF Messages/med                 courtois M.COURTOIS         547     98    100
+  PYTHON MODIF Messages/med2                courtois M.COURTOIS          67      7      9
+  PYTHON MODIF Messages/miss0               courtois M.COURTOIS         120     17     19
+  PYTHON MODIF Messages/modal               courtois M.COURTOIS          28      3      5
+  PYTHON MODIF Messages/modal0              courtois M.COURTOIS          28      3      5
+  PYTHON MODIF Messages/modelisa            courtois M.COURTOIS         523     95     99
+  PYTHON MODIF Messages/modelisa10          courtois M.COURTOIS          54      6      8
+  PYTHON MODIF Messages/modelisa2           courtois M.COURTOIS         346     70     72
+  PYTHON MODIF Messages/modelisa3           courtois M.COURTOIS         347     78     80
+  PYTHON MODIF Messages/modelisa4           courtois M.COURTOIS         413     70     72
+  PYTHON MODIF Messages/modelisa5           courtois M.COURTOIS         357     78     80
+  PYTHON MODIF Messages/modelisa6           courtois M.COURTOIS         376     85     87
+  PYTHON MODIF Messages/modelisa7           courtois M.COURTOIS         411     93     95
+  PYTHON MODIF Messages/modelisa8           courtois M.COURTOIS         354     54     56
+  PYTHON MODIF Messages/modelisa9           courtois M.COURTOIS         368     64     66
+  PYTHON MODIF Messages/oar0                courtois M.COURTOIS          51      9     11
+  PYTHON MODIF Messages/observation         courtois M.COURTOIS          61      8     10
+  PYTHON MODIF Messages/petsc               courtois M.COURTOIS         131     17     19
+  PYTHON MODIF Messages/pilotage            courtois M.COURTOIS         136     26     28
+  PYTHON MODIF Messages/plexus              courtois M.COURTOIS          64      6      8
+  PYTHON MODIF Messages/post0               courtois M.COURTOIS         174     32     34
+  PYTHON MODIF Messages/postelem            courtois M.COURTOIS          55      8     10
+  PYTHON MODIF Messages/postrccm            courtois M.COURTOIS         255     43     45
+  PYTHON MODIF Messages/postrele            courtois M.COURTOIS         404     67     69
+  PYTHON MODIF Messages/poutre0             courtois M.COURTOIS          35      5      7
+  PYTHON MODIF Messages/precalcul           courtois M.COURTOIS          42      5      7
+  PYTHON MODIF Messages/prepost             courtois M.COURTOIS         233     47     49
+  PYTHON MODIF Messages/prepost2            courtois M.COURTOIS         320     73     75
+  PYTHON MODIF Messages/prepost3            courtois M.COURTOIS         201     44     46
+  PYTHON MODIF Messages/prepost4            courtois M.COURTOIS         248     54     56
+  PYTHON MODIF Messages/prepost5            courtois M.COURTOIS         223     39     41
+  PYTHON MODIF Messages/prepost6            courtois M.COURTOIS         162     28     30
+  PYTHON MODIF Messages/proba0              courtois M.COURTOIS          77     13     15
+  PYTHON MODIF Messages/recal0              courtois M.COURTOIS         422     99    103
+  PYTHON MODIF Messages/rupture0            courtois M.COURTOIS         578     85     87
+  PYTHON MODIF Messages/rupture1            courtois M.COURTOIS         394     60     62
+  PYTHON MODIF Messages/sdveri              courtois M.COURTOIS          64     10     12
+  PYTHON MODIF Messages/seisme              courtois M.COURTOIS         181     32     34
+  PYTHON MODIF Messages/sensibilite         courtois M.COURTOIS         198     41     46
+  PYTHON MODIF Messages/soustruc            courtois M.COURTOIS         442    100    102
+  PYTHON MODIF Messages/soustruc2           courtois M.COURTOIS          95     13     15
+  PYTHON MODIF Messages/spectral0           courtois M.COURTOIS          68     13     15
+  PYTHON MODIF Messages/stanley             courtois M.COURTOIS         212     40     42
+  PYTHON MODIF Messages/stbtrias            courtois M.COURTOIS          70     13     15
+  PYTHON MODIF Messages/subdivise           courtois M.COURTOIS          79     11     13
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         419     91    115
+  PYTHON MODIF Messages/supervis2           courtois M.COURTOIS         154    106     12
+  PYTHON MODIF Messages/table0              courtois M.COURTOIS         173     37     39
+  PYTHON MODIF Messages/test0               courtois M.COURTOIS          82     11     13
+  PYTHON MODIF Messages/thernonline4        courtois M.COURTOIS          25      1      3
+  PYTHON MODIF Messages/unilater            courtois M.COURTOIS          65      7      9
+  PYTHON MODIF Messages/utilitai            courtois M.COURTOIS         399     85     87
+  PYTHON MODIF Messages/utilitai2           courtois M.COURTOIS         276     56     58
+  PYTHON MODIF Messages/utilitai3           courtois M.COURTOIS         363     84     86
+  PYTHON MODIF Messages/utilitai4           courtois M.COURTOIS         334     72     74
+  PYTHON MODIF Messages/utilitai5           courtois M.COURTOIS         295     66     68
+  PYTHON MODIF Messages/utilitai6           courtois M.COURTOIS         284     46     48
+  PYTHON MODIF Messages/utilitai7           courtois M.COURTOIS          90     11     13
+  PYTHON MODIF Messages/utilitai8           courtois M.COURTOIS         285     53     55
+  PYTHON MODIF Messages/vide                courtois M.COURTOIS          25      3      5
+  PYTHON MODIF Messages/volufini            courtois M.COURTOIS          83     16     18
+  PYTHON MODIF Messages/xfem                courtois M.COURTOIS         453     60     62
+  PYTHON MODIF Messages/xfem2               courtois M.COURTOIS         568     57     59
+  PYTHON MODIF Noyau/N_ETAPE                courtois M.COURTOIS         439      6      3
+  PYTHON MODIF Noyau/N_MACRO_ETAPE          courtois M.COURTOIS         734      5      3
+  PYTHON MODIF Noyau/__init__               courtois M.COURTOIS          53      8      2
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         700     56     39
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    7        1347      1347             +1347
+ MODIF :  221       53723      6703    6934      -231
+ SUPPR :    1          24                24       -24
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  229       55094      8050    6958     +1092 

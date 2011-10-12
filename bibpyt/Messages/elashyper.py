@@ -1,8 +1,8 @@
-#@ MODIF elashyper Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elashyper Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,16 +19,14 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-97 : _("""
+97 : _(u"""
  La loi de comportement ELAS_HYPER ne peut pas etre utilisée avec le modèle %(k1)s.
  Modèles disponibles: 3D, 3D_SI, C_PLAN, D_PLAN
 """),
 
-98 : _("""
+98 : _(u"""
  Le coefficient de Poisson ne permet pas de calculer le module de compressibilité car il provoquerait une division par zéro.
  Si vous voulez un matériau quasi-incompressible:
   - Renseignez directement le module de compressibilité (paramètre K dans DEFI_MATERIAU/ELAS_HYPER)

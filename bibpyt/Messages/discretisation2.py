@@ -1,4 +1,4 @@
-#@ MODIF discretisation2 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF discretisation2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-79 : _("""
+79 : _(u"""
    Arrêt par manque de temps CPU pendant les itérations de Newton, au numéro d'instant < %(i1)d >
       - Temps moyen par itération de Newton : %(r1)f
       - Temps CPU restant                   : %(r2)f
@@ -31,7 +29,7 @@ cata_msg = {
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-80 : _("""
+80 : _(u"""
    Arrêt par manque de temps CPU au numéro d'instant < %(i1)d >
       - Temps moyen par pas de temps        : %(r1)f
       - Temps CPU restant                   : %(r2)f

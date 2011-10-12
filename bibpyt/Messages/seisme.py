@@ -1,4 +1,4 @@
-#@ MODIF seisme Messages  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF seisme Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,71 +19,69 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
- 1: _("""
+ 1: _(u"""
  le noeud %(k1)s n'appartient pas au maillage: %(k2)s
 """),
 
- 2: _("""
+ 2: _(u"""
  le groupe de noeuds %(k1)s n'appartient pas au maillage: %(k2)s
 """),
 
- 3: _("""
+ 3: _(u"""
  le noeud %(k1)s n'est pas un noeud support.
 """),
 
- 4: _("""
+ 4: _(u"""
  le vecteur directeur du spectre est nul.
 """),
 
- 5: _("""
+ 5: _(u"""
  cas du MONO_APPUI: vous avez déjà donné un spectre pour cette direction.
 """),
 
- 6: _("""
+ 6: _(u"""
  erreur(s) rencontrée(s) lors de la lecture des supports.
 """),
 
- 7: _("""
+ 7: _(u"""
  vous avez déjà donné un spectre pour le support %(k1)s
 """),
 
- 8: _("""
+ 8: _(u"""
  on ne peut pas traiter du MONO_APPUI et du MULTI_APPUI simultanément.
 """),
 
- 9: _("""
+ 9: _(u"""
  on n'a pas pu extraire le premier champ des modes mécaniques.
 """),
 
-10: _("""
+10: _(u"""
  correction statique non prise en compte pour l'option: %(k1)s
 """),
 
-11: _("""
+11: _(u"""
  trop d'amortissements modaux
    nombre d'amortissement: %(i1)d
    nombre de mode        : %(i2)d
 """),
 
-12: _("""
+12: _(u"""
  amortissement non diagonal, on ne sait pas traiter.
 """),
 
-13: _("""
+13: _(u"""
  il manque des amortissements modaux
    nombre d'amortissements: %(i1)d
    nombre de modes        : %(i2)d
 """),
 
-14: _("""
+14: _(u"""
  on ne peut pas demander de réponse secondaire sans la réponse primaire
 """),
 
-15: _("""
+15: _(u"""
  analyse spectrale :
    la base modale utilisée est               : %(k1)s
    le nombre de vecteurs de base est         : %(i1)d
@@ -91,89 +89,89 @@ cata_msg={
    les options de calcul demandées sont      : %(k3)s """
    ),
 
-16: _("""
+16: _(u"""
                                                %(k1)s """
    ),
 
-17: _("""
+17: _(u"""
    la nature de l'excitation est             : %(k1)s """
    ),
 
-18: _("""
+18: _(u"""
    la règle de combinaison des réponses
    directionnelles est                       : %(k1)s """
    ),
 
-19: _("""
+19: _(u"""
    la règle de combinaison des contributions
    de chaque mouvement d'appui est           : %(k1)s """
    ),
 
-20: _("""
+20: _(u"""
  erreur dans les données
    la masse de la structure n'existe pas dans la table: %(k1)s
 """),
 
-21: _("""
+21: _(u"""
  il faut au moins 2 occurences de DEPL_MULT_APPUI pour la combinaison des appuis.
 """),
 
-22: _("""
+22: _(u"""
  COMB_DEPL_APPUI: il faut au moins définir 2 cas derrière le mot clé LIST_CAS.
 """),
 
-23: _("""
+23: _(u"""
  données incompatibles
    pour la direction   : %(k1)s
    nombre de blocage   : %(i1)d
    nombre d'excitations: %(i2)d
 """),
 
-24: _("""
+24: _(u"""
  données incompatibles
    pour les modes mécaniques : %(k1)s
    il manque l'option        : %(k2)s
 """),
 
-25: _("""
+25: _(u"""
   problème stockage
     option de calcul: %(k1)s
     occurence       : %(i1)d
     nom du champ    : %(k3)s
 """),
 
-26: _("""
+26: _(u"""
   problème stockage
     option de calcul: %(k1)s
     direction       : %(k2)s
     nom du champ    : %(k3)s
 """),
 
-27: _("""
+27: _(u"""
   La base modale utilisé %(k1)s ne contient pas tous les paramètres modaux 
   nécessaires au calcul.
   Il faut que le concept soit issu d'un calcul sur coordonnées physiques et
   non pas généralisées.
 """),
 
-28: _("""
+28: _(u"""
   Dans le cas d'excitations décorrelées, 
   le mot-clé COMB_MULT_APPUI n'est pas pris en compte.
 """),
 
-29: _("""
+29: _(u"""
   La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé:
   au moins une excitation appartient à plusieurs groupes d'appuis. 
   Les groupes d'appuis doivent être disjoints.
 """),
 
-30: _("""
+30: _(u"""
   La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé.
   Un seul groupe d'appuis a été constitué contenant tous les appuis. 
   Relancez le calcul avec le mot-clé MULTI_APPUI=CORRELE.
 """),
 
-31: _("""
+31: _(u"""
  Attention, 
  il n'y a pas de déplacements différentiels pris en compte dans votre calcul 
  spectral multi-appui.

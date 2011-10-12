@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -291,6 +291,7 @@ Causes possibles :
         if e.isactif():
            e.update_context(d)
       self.index_etape_courante=index_etape
+      message.debug(SUPERV, "returns %s", d.keys())
       return d
 
    def supprime(self):
@@ -520,7 +521,6 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       #XXX attention inconsistence : gcncon n'est pas
       # défini dans le package Noyau. La methode NommerSdprod pour
       # les macros devrait peut etre etre déplacée dans Build ???
-
       if self.Outputs.has_key(sdnom):
         # Il s'agit d'un concept de sortie de la macro produit par une sous commande
         sdnom=self.Outputs[sdnom].nom
@@ -643,7 +643,9 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
          Retourne le contexte tel qu'il est au moment de l'exécution de
          l'étape courante.
       """
-      ctx = self.parent.get_contexte_courant(self)
+      ctx = {}
+      # update car par ricochet on modifierait jdc.current_context
+      ctx.update( self.parent.get_contexte_courant(self) )
       # on peut mettre None car toujours en PAR_LOT='NON', donc la dernière
       ctx.update( self.get_contexte_avant(None) )
       return ctx

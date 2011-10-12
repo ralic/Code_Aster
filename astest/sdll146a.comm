@@ -1,0 +1,478 @@
+# MODIF  DATE 12/10/2011   AUTEUR LABBE M.LABBE 
+
+# TITRE  :  VALIDATION DES ELEMENTS BARRES EN DYNAMIQUE
+# sdll146a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SDLL146A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON');
+
+MAIL=LIRE_MAILLAGE();
+
+MODEL=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                PHENOMENE='MECANIQUE',
+                MODELISATION='BARRE',),);
+
+BETON=DEFI_MATERIAU(ELAS=_F(E=3.7E10,
+                            NU=0.2,
+                            RHO=100,),);
+
+ELEM=AFFE_CARA_ELEM(MODELE=MODEL,
+                    BARRE=_F(MAILLE='SEG2001',
+                             SECTION='GENERALE',
+                             CARA='A',
+                             VALE=1.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=BETON,),);
+
+BLOCAGE=AFFE_CHAR_MECA(MODELE=MODEL,
+                       DDL_IMPO=(_F(NOEUD='N001',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                 _F(NOEUD='N002',
+                                    DY=0.0,
+                                    DZ=0.0,),),);
+
+
+#***********************************************************************
+# CALCUL DES MATRICES DE MASSE ET DE RIGIDITE
+#***********************************************************************
+
+MELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                            CHARGE=BLOCAGE,
+                            CARA_ELEM=ELEM,
+                            MODELE=MODEL,
+                            CHAM_MATER=CHMAT,
+                            );
+
+MELE_DIA=CALC_MATR_ELEM(OPTION='MASS_MECA_DIAG',
+                            CHARGE=BLOCAGE,
+                            CARA_ELEM=ELEM,
+                            MODELE=MODEL,
+                            CHAM_MATER=CHMAT,
+                            );
+
+KELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                            CHARGE=BLOCAGE,
+                            CARA_ELEM=ELEM,
+                            MODELE=MODEL,
+                            CHAM_MATER=CHMAT,
+                            );
+
+NUM=NUME_DDL(RENUM='METIS',
+                     MATR_RIGI=KELE,
+                     METHODE='MULT_FRONT',
+                     );
+
+MASS=ASSE_MATRICE(NUME_DDL=NUM,
+                      MATR_ELEM=MELE,
+                  );
+
+MASS_DIA=ASSE_MATRICE(NUME_DDL=NUM,
+                      MATR_ELEM=MELE_DIA,
+                  );
+
+KASS=ASSE_MATRICE(NUME_DDL=NUM,
+                      MATR_ELEM=KELE,
+                  );
+
+#***********************************************************************
+# FORCE PARALLELE A LA BARRE (// X)
+#***********************************************************************
+
+# MATRICE COMPLETE
+DEP_X = CALC_CHAR_SEISME(MATR_MASS=MASS,
+                               MONO_APPUI='OUI',
+                               DIRECTION=(-1,0,0,)
+                            );
+
+PESANT_X = AFFE_CHAR_MECA (MODELE = MODEL,VECT_ASSE = DEP_X);
+
+# LA FORCE PESANT_X EST DANS LA DIRECTION DE X (1,0,0) CAR CALC_CHAR_SEISME
+# CALCULE -MATR_MASS*DIRECTION
+
+U_X=MECA_STATIQUE(MODELE=MODEL,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=ELEM,
+                EXCIT=(_F(CHARGE=BLOCAGE,),
+                       _F(CHARGE=PESANT_X,),
+                       ),);
+
+U_X=CALC_NO(reuse=U_X,RESULTAT=U_X,
+               OPTION=('REAC_NODA','FORC_NODA'),
+               );
+
+IMPR_RESU(RESU=_F(RESULTAT=U_X,
+                  TOUT_CHAM='OUI',),);
+
+#MATRICE DIAGONALE
+DEP_X_DI = CALC_CHAR_SEISME(MATR_MASS=MASS_DIA,
+                               MONO_APPUI='OUI',
+                               DIRECTION=(-1,0,0,)
+                            );
+
+PES_X_DI = AFFE_CHAR_MECA (MODELE = MODEL,VECT_ASSE = DEP_X_DI);
+
+U_X_DIAG=MECA_STATIQUE(MODELE=MODEL,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=ELEM,
+                EXCIT=(_F(CHARGE=BLOCAGE,),
+                       _F(CHARGE=PES_X_DI,),
+                       ),);
+
+U_X_DIAG=CALC_NO(reuse=U_X_DIAG,RESULTAT=U_X_DIAG,
+               OPTION=('REAC_NODA','FORC_NODA'),
+               );
+
+IMPR_RESU(RESU=_F(RESULTAT=U_X_DIAG,
+                  TOUT_CHAM='OUI',),);
+
+#***********************************************************************
+# FORCE PERPENDIDULAIRE A LA BARRE (// Y)
+#***********************************************************************
+
+# MATRICE COMPLETE
+DEP_Y = CALC_CHAR_SEISME(MATR_MASS=MASS,
+                               MONO_APPUI='OUI',
+                               DIRECTION=(0,-1,0,)
+                            );
+
+PESANT_Y = AFFE_CHAR_MECA (MODELE = MODEL,VECT_ASSE = DEP_Y);
+
+U_Y=MECA_STATIQUE(MODELE=MODEL,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=ELEM,
+                EXCIT=(_F(CHARGE=BLOCAGE,),
+                       _F(CHARGE=PESANT_Y,),
+                       ),);
+
+U_Y=CALC_NO(reuse=U_Y,RESULTAT=U_Y,
+               OPTION=('REAC_NODA','FORC_NODA'),
+               );
+
+IMPR_RESU(RESU=_F(RESULTAT=U_Y,
+                  TOUT_CHAM='OUI',),);
+
+#MATRICE DIAGONALE
+DEP_Y_DI = CALC_CHAR_SEISME(MATR_MASS=MASS_DIA,
+                               MONO_APPUI='OUI',
+                               DIRECTION=(0,-1,0,)
+                            );
+
+PES_Y_DI = AFFE_CHAR_MECA (MODELE = MODEL,VECT_ASSE = DEP_Y_DI);
+
+U_Y_DIAG=MECA_STATIQUE(MODELE=MODEL,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=ELEM,
+                EXCIT=(_F(CHARGE=BLOCAGE,),
+                       _F(CHARGE=PES_Y_DI,),
+                       ),);
+
+U_Y_DIAG=CALC_NO(reuse=U_Y_DIAG,RESULTAT=U_Y_DIAG,
+               OPTION=('REAC_NODA','FORC_NODA'),
+               );
+
+IMPR_RESU(RESU=_F(RESULTAT=U_Y_DIAG,
+                  TOUT_CHAM='OUI',),);
+
+#***********************************************************************
+# FORCE PERPENDIDULAIRE A LA BARRE (// Z)
+#***********************************************************************
+# MATRICE COMPLETE
+DEP_Z = CALC_CHAR_SEISME(MATR_MASS=MASS,
+                               MONO_APPUI='OUI',
+                               DIRECTION=(0,0,-1,)
+                            );
+
+PESANT_Z = AFFE_CHAR_MECA (MODELE = MODEL,VECT_ASSE = DEP_Z);
+
+U_Z=MECA_STATIQUE(MODELE=MODEL,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=ELEM,
+                EXCIT=(_F(CHARGE=BLOCAGE,),
+                       _F(CHARGE=PESANT_Z,),
+                       ),);
+
+U_Z=CALC_NO(reuse=U_Z,RESULTAT=U_Z,
+               OPTION=('REAC_NODA','FORC_NODA'),
+               );
+
+IMPR_RESU(RESU=_F(RESULTAT=U_Z,
+                  TOUT_CHAM='OUI',),);
+
+#MATRICE DIAGONALE
+DEP_Z_DI = CALC_CHAR_SEISME(MATR_MASS=MASS_DIA,
+                               MONO_APPUI='OUI',
+                               DIRECTION=(0,0,-1,)
+                            );
+
+PES_Z_DI = AFFE_CHAR_MECA (MODELE = MODEL,VECT_ASSE = DEP_Z_DI);
+
+U_Z_DIAG=MECA_STATIQUE(MODELE=MODEL,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=ELEM,
+                EXCIT=(_F(CHARGE=BLOCAGE,),
+                       _F(CHARGE=PES_Z_DI,),
+                       ),);
+
+U_Z_DIAG=CALC_NO(reuse=U_Z_DIAG,RESULTAT=U_Z_DIAG,
+               OPTION=('REAC_NODA','FORC_NODA'),
+               );
+
+IMPR_RESU(RESU=_F(RESULTAT=U_Z_DIAG,
+                  TOUT_CHAM='OUI',),);
+#***********************************************************************
+# Construction des modes // X, Y et Z et projection de la matrice de masse
+#***********************************************************************
+
+__DX = CREA_CHAMP(OPERATION = 'AFFE',
+                 MODELE = MODEL,
+                 TYPE_CHAM = 'NOEU_DEPL_R',
+                 AFFE = (_F(TOUT = 'OUI' , NOM_CMP = ('DX','DY','DZ',)    , VALE = (1.,0.,0.) ),
+                        )
+                 )
+
+__DY = CREA_CHAMP(OPERATION = 'AFFE',
+                  MODELE = MODEL,
+                 TYPE_CHAM = 'NOEU_DEPL_R',
+                 AFFE = (_F(TOUT = 'OUI'  , NOM_CMP = ('DX','DY','DZ',)    , VALE = (0.,1.,0.) ),
+                        )
+                 )
+
+__DZ = CREA_CHAMP(OPERATION = 'AFFE',
+                MODELE = MODEL,
+                 TYPE_CHAM = 'NOEU_DEPL_R',
+                 AFFE = (_F(TOUT = 'OUI' , NOM_CMP = ('DX','DY','DZ',)    , VALE = (0.,0.,1.) ),
+                        )
+                 )
+
+#MATRICE COMPLETE
+MODES_RG = CREA_RESU(OPERATION ='AFFE',
+                    TYPE_RESU  = 'MODE_MECA',
+                    NOM_CHAM   = 'DEPL',
+        MATR_A  = KASS,
+        MATR_B  = MASS,
+        AFFE = (_F(CHAM_GD = __DX,
+                  MODELE = MODEL,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = ELEM,
+                  FREQ = 1,
+                  NUME_MODE = 1,
+                              ),
+               _F(CHAM_GD = __DY,
+                  MODELE = MODEL,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = ELEM,
+                  FREQ = 1,
+                  NUME_MODE = 2,
+                  ),
+               _F(CHAM_GD = __DZ,
+                  MODELE = MODEL,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = ELEM,
+                  FREQ = 1,
+                  NUME_MODE = 3,
+                              ),
+                           )
+                    )
+
+__BAMO = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA = MODES_RG ),),
+                                    # NUME_REF = NUM,
+                          )
+
+__NUMG = NUME_DDL_GENE(BASE=__BAMO,STOCKAGE='PLEIN',);
+
+__MR = PROJ_MATR_BASE(BASE=__BAMO,
+                      NUME_DDL_GENE=__NUMG,
+                      MATR_ASSE=MASS)
+
+mr_py = __MR.EXTR_MATR_GENE()
+
+#MATRICE DIAGONALE
+
+MOD_RG_D = CREA_RESU(OPERATION ='AFFE',
+                    TYPE_RESU  = 'MODE_MECA',
+                    NOM_CHAM   = 'DEPL',
+        MATR_A  = KASS,
+        MATR_B  = MASS_DIA,
+        AFFE = (_F(CHAM_GD = __DX,
+                  MODELE = MODEL,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = ELEM,
+                  FREQ = 1,
+                  NUME_MODE = 1,
+                              ),
+               _F(CHAM_GD = __DY,
+                  MODELE = MODEL,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = ELEM,
+                  FREQ = 1,
+                  NUME_MODE = 2,
+                  ),
+               _F(CHAM_GD = __DZ,
+                  MODELE = MODEL,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = ELEM,
+                  FREQ = 1,
+                  NUME_MODE = 3,
+                              ),
+                           )
+                    )
+
+__BAMO_D = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA = MODES_RG ),),
+                                    # NUME_REF = NUM,
+                          )
+
+__NUMG_D = NUME_DDL_GENE(BASE=__BAMO_D,STOCKAGE='PLEIN',);
+
+__MR_D = PROJ_MATR_BASE(BASE=__BAMO_D,
+                      NUME_DDL_GENE=__NUMG_D,
+                      MATR_ASSE=MASS_DIA)
+
+mr_py_d = __MR_D.EXTR_MATR_GENE()
+
+#***********************************************************************
+# ENERGIE CINETIQUE
+#***********************************************************************
+
+
+ENER_X=POST_ELEM(CHAM_GD=__DX,MODELE=MODEL,CARA_ELEM=ELEM,CHAM_MATER=CHMAT, ENER_CIN=_F(TOUT='OUI') )
+ENER_Y=POST_ELEM(CHAM_GD=__DY,MODELE=MODEL,CARA_ELEM=ELEM,CHAM_MATER=CHMAT, ENER_CIN=_F(TOUT='OUI') )
+ENER_Z=POST_ELEM(CHAM_GD=__DZ,MODELE=MODEL,CARA_ELEM=ELEM,CHAM_MATER=CHMAT, ENER_CIN=_F(TOUT='OUI') )
+
+IMPR_TABLE(TABLE=ENER_X)
+IMPR_TABLE(TABLE=ENER_Y)
+IMPR_TABLE(TABLE=ENER_Z)
+
+#***********************************************************************
+# TESTS
+#***********************************************************************
+TEST_RESU(RESU=(
+                _F(RESULTAT=U_X,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N001',VALE=-100,PRECISION=1E-6,),
+                _F(RESULTAT=U_X,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N002',VALE=0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N001',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N002',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N001',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N002',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_X,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N001',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_X,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N002',VALE=50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N001',VALE=-0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N002',VALE=0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N001',VALE=0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N002',VALE=0,PRECISION=1E-6,),
+            ), )
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=U_X_DIAG,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N001',VALE=-100,PRECISION=1E-6,),
+                _F(RESULTAT=U_X_DIAG,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N002',VALE=0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y_DIAG,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N001',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y_DIAG,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N002',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z_DIAG,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N001',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z_DIAG,
+                  NUME_ORDRE=1,NOM_CHAM='REAC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N002',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_X,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N001',VALE=-50,PRECISION=1E-6,),
+                _F(RESULTAT=U_X,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DX',NOEUD='N002',VALE=50,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N001',VALE=-0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Y,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DY',NOEUD='N002',VALE=0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N001',VALE=0,PRECISION=1E-6,),
+                _F(RESULTAT=U_Z,
+                  NUME_ORDRE=1,NOM_CHAM='FORC_NODA',REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+                  NOM_CMP = 'DZ',NOEUD='N002',VALE=0,PRECISION=1E-6,),
+            ), )
+# Il faut avoir MXX = MYY = MZZ = 100 (kg)
+MXX = mr_py[0,0]
+MYY = mr_py[1,1]
+MZZ = mr_py[2,2]
+
+TABX=CREA_TABLE(LISTE=(_F(PARA='TEST',LISTE_R=[MXX],),),)
+TABY=CREA_TABLE(LISTE=(_F(PARA='TEST',LISTE_R=[MYY],),),)
+TABZ=CREA_TABLE(LISTE=(_F(PARA='TEST',LISTE_R=[MZZ],),),)
+
+TEST_TABLE(TABLE=TABX, NOM_PARA='TEST', VALE=100.0, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(TABLE=TABY, NOM_PARA='TEST', VALE=100.0, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(TABLE=TABZ, NOM_PARA='TEST', VALE=100.0, REFERENCE='ANALYTIQUE',)
+# Il faut avoir MXX = MYY = MZZ = 100 (kg)
+MXX_D = mr_py_d[0,0]
+MYY_D = mr_py_d[1,1]
+MZZ_D = mr_py_d[2,2]
+
+TABX_D=CREA_TABLE(LISTE=(_F(PARA='TEST',LISTE_R=[MXX_D],),),)
+TABY_D=CREA_TABLE(LISTE=(_F(PARA='TEST',LISTE_R=[MYY_D],),),)
+TABZ_D=CREA_TABLE(LISTE=(_F(PARA='TEST',LISTE_R=[MZZ_D],),),)
+
+
+TEST_TABLE(TABLE=TABX_D, NOM_PARA='TEST', VALE=100.0, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(TABLE=TABY_D, NOM_PARA='TEST', VALE=100.0, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(TABLE=TABZ_D, NOM_PARA='TEST', VALE=100.0, REFERENCE='ANALYTIQUE',)
+
+#ENERGIE CINETIQUE
+TEST_TABLE(TABLE=ENER_X,NOM_PARA='TOTALE', VALE=50.0, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(TABLE=ENER_Y,NOM_PARA='TOTALE', VALE=50.0, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(TABLE=ENER_Z,NOM_PARA='TOTALE', VALE=50.0, REFERENCE='ANALYTIQUE',)
+
+
+FIN();

@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,408 +19,406 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 
  L'attribut %(k1)s est non modifiable ou déjà défini.
 
 """),
 
-2 : _("""
+2 : _(u"""
 
  L'attribut %(k1)s est non modifiable ou déjà défini pour un objet simple.
 
 """),
 
-3 : _("""
+3 : _(u"""
 
  L'attribut %(k1)s n'est pas compatible avec la valeur de LONT.
 
 """),
 
-4 : _("""
+4 : _(u"""
 
  L'attribut %(k1)s n'est pas accessible ou non modifiable.
 
 """),
 
-5 : _("""
+5 : _(u"""
 
  Pour une collection contigüe, il faut définit %(k1)s dans l'ordre de création des objets.
 
 """),
 
-6 : _("""
+6 : _(u"""
 
  L'attribut %(k1)s n'est pas modifiable ou déjà défini (attribut LONO non nul).
 
 """),
 
-7 : _("""
+7 : _(u"""
 
  L'attribut %(k1)s est incompatible avec la valeur initiale de LONT.
 
 """),
 
-8 : _("""
+8 : _(u"""
 
  Le premier argument %(k1)s n'est pas du bon type (différent de CHARACTER).
 
 """),
 
-9 : _("""
+9 : _(u"""
 
  L'appel est invalide pour l'objet simple "%(k1)s".
 
 """),
 
-10 : _("""
+10 : _(u"""
 
  Le nom de l'attribut est incompatible avec le genre %(k1)s.
 
 """),
 
-11 : _("""
+11 : _(u"""
 
  La longueur ou la position de la sous-chaîne %(k1)s est invalide.
 
 """),
 
-12 : _("""
+12 : _(u"""
 
  L'objet %(k1)s n'est pas de genre "N" répertoire de noms, la requête JENUNO est invalide.
 
 """),
 
-13 : _("""
+13 : _(u"""
 
  Le répertoire de noms %(k1)s contient %(i1)d points d'entrée, la requête JENUNO
  sur le numéro %(i2)d est invalide.
 
 """),
 
-14 : _("""
+14 : _(u"""
 
  La collection %(k1)s ne possède pas de pointeur de noms, la requête JENUNO est invalide.
 
 """),
 
-15 : _("""
+15 : _(u"""
 
  Nom de classe %(k1)s invalide.
 
 """),
 
-16 : _("""
+16 : _(u"""
 
  Nom d'objet attribut %(k1)s invalide.
 
 """),
 
-17 : _("""
+17 : _(u"""
 
  Nom d'attribut %(k1)s invalide.
 
 """),
 
-18 : _("""
+18 : _(u"""
 
  L'impression de l'attribut %(k1)s est invalide. L'objet %(k2)s n'est pas une collection.
 
 """),
 
-19 : _("""
+19 : _(u"""
 
  Le segment de valeurs associé à l'attribut %(k1)s n'est pas accessible en mémoire (adresse nulle).
 
 """),
 
-20 : _("""
+20 : _(u"""
 
  L'accès au répertoire de noms %(k1)s est invalide.
 
 """),
 
-21 : _("""
+21 : _(u"""
 
  L'accès à la collection dispersée %(k1)s n'est pas valide en bloc, il faut y accèder avec un nom ou un 
  numéro d'objet de collection.
 
 """),
 
-22 : _("""
+22 : _(u"""
 
  L'objet de la collection %(k1)s contigue est de longueur nulle.
 
 """),
 
-23 : _("""
+23 : _(u"""
 
  Le type de recherche %(k1)s invalide.
  
 """),
 
-24 : _("""
+24 : _(u"""
 
  La taille des segments de valeurs %(i1)d invalide.
  
 """),
 
-25 : _("""
+25 : _(u"""
 
  La taille de la partition %(r1)f invalide.
  
 """),
 
-26 : _("""
+26 : _(u"""
 
  Le type de parcours de la segmentation mémoire %(r1)f est invalide, les valeurs possibles sont 1, 2, 3 ou 4.
  
 """),
 
-27 : _("""
+27 : _(u"""
 
  Le paramètre d'accès %(r1)f est invalide, la valeur doit être E ou L.
  
 """),
 
-28 : _("""
+28 : _(u"""
 
  La valeur de l'attribut %(k1)s est invalide, la valeur doit être LONCUM.
  
 """),
 
-29 : _("""
+29 : _(u"""
 
  Cette requête n'est valide que sur une collection contigue.
  
 """),
 
-30 : _("""
+30 : _(u"""
 
  L'attribut LONCUM n'est valide que sur une collection contigue.
  
 """),
 
-31 : _("""
+31 : _(u"""
 
  La liste de paramètres de création d'objet est incomplète.
  
 """),
 
-32 : _("""
+32 : _(u"""
 
  La liste de paramètres de création d'objet contient des champs superflus.
  
 """),
 
-33 : _("""
+33 : _(u"""
 
  Le répertoire de noms %(k1)s est saturé, il faut le redimensionner.
  
 """),
 
-34 : _("""
+34 : _(u"""
 
  Le nom %(k1)s est introuvable dans le répertoire de noms %(k2)s.
  
 """),
 
-35 : _("""
+35 : _(u"""
 
  Le nom %(k1)s existe déjà dans le répertoire de noms %(k2)s.
  
 """),
 
-36 : _("""
+36 : _(u"""
 
  Impossible d'insérer le nom %(k1)s dans le répertoire de noms %(k2)s, il y trop de collisions avec
  la fonction de hcoding.
  
 """),
 
-37 : _("""
+37 : _(u"""
 
  La valeur du rapport entre les partitions est invalide, (%r1)f n'est pas comprise entre 0.0 et 1.0.
  
 """),
 
-38 : _("""
+38 : _(u"""
 
  Un objet de genre N (répertoire de noms) doit être de type K (caractère).
  
 """),
 
-39 : _("""
+39 : _(u"""
 
  Il faut définir la longueur du type caractère, par exemple K8 ou K32.
  
 """),
 
-40 : _("""
+40 : _(u"""
 
  La longueur du type caractère vaut %(i1)d, elle doit être comprise entre 1 et 512 .
  
 """),
 
-41 : _("""
+41 : _(u"""
 
  Pour un objet de genre N (répertoire de noms), la longueur du type caractère
  vaut %(i1)d, elle n'est pas un multiple de 8.
  
 """),
 
-42 : _("""
+42 : _(u"""
 
  Pour un objet de genre N (répertoire de noms), la longueur du type caractère
  vaut %(i1)d, elle ne peut être supérieure à 24.
  
 """),
 
-43 : _("""
+43 : _(u"""
 
  Le type de l'objet %(k1)s est invalide, il peut valoir K, S, I, R, C ou L.
  
 """),
 
-44 : _("""
+44 : _(u"""
 
  Pour une collection nommée, la création d'objet est uniquement autorisée par nom.
  
 """),
 
-45 : _("""
+45 : _(u"""
 
  L'objet de collection %(i1)d existe déjà.
  
 """),
 
-46 : _("""
+46 : _(u"""
 
  Il est impossible de créer l'objet de collection, le répertoire est saturé.
  
 """),
 
-47 : _("""
+47 : _(u"""
 
  L'accès par nom à une collection numérotée est impossible.
  
 """),
 
-48 : _("""
+48 : _(u"""
 
  Une erreur d'écriture de l'attribut %(k1)s au format HDF s'est produite, l'exécution continue.
  
 """),
 
-49 : _("""
+49 : _(u"""
 
  Un écrasement de l'identificateur de l'objet est détecté, sa valeur ne peut pas être nulle. 
  
 """),
 
-50 : _("""
+50 : _(u"""
 
  Un écrasement de la classe de l'objet est détecté, sa valeur %(i1)d est invalide. 
  
 """),
 
-51 : _("""
+51 : _(u"""
 
  Un écrasement de la classe de l'objet est détecté, sa valeur %(k1)s est invalide. 
  
 """),
 
-52 : _("""
+52 : _(u"""
 
   Il est impossible d'accèder au dataset hdf associé à %(k1)s. 
  
 """),
 
-53 : _("""
+53 : _(u"""
 
   La zone mémoire à libérer est déjà marquée libre. 
  
 """),
 
-54 : _("""
+54 : _(u"""
 
   Un écrasement amont est détecté, la zone mémoire (adresse %(i1)d) a été utilisée devant l'adresse autorisée %(i1)d. 
  
 """),
 
-55 : _("""
+55 : _(u"""
 
   Un écrasement aval est détecté, la zone mémoire (adresse %(i1)d) a été utilisée au-delà de la longueur autorisée. 
  
 """),
 
-56 : _("""
+56 : _(u"""
 
   La structure du nom de l'objet est invalide au-delà des 24 premiers caractères, elle vaut %(k1)s. 
  
 """),
 
-57 : _("""
+57 : _(u"""
 
   La structure du nom de l'objet est invalide, elle vaut %(k1)s. 
  
 """),
 
-58 : _("""
+58 : _(u"""
 
   La structure du nom de l'objet est invalide, le caractère %(k1)s est illicite. 
  
 """),
 
-59 : _("""
+59 : _(u"""
 
   L'objet ne possède pas d'image disque (adresse disque nulle). 
  
 """),
 
-60 : _("""
+60 : _(u"""
 
   L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas possible de le déplacer sans l'avoir aupravant libéré. 
  
 """),
 
-61 : _("""
+61 : _(u"""
 
   L'objet n'est pas en mémoire et ne possède pas d'image disque (adresse disque nulle). 
  
 """),
 
-62 : _("""
+62 : _(u"""
 
   La longueur des objets de collection constante n'a pas été définie. 
  
 """),
 
-63 : _("""
+63 : _(u"""
 
  L'attribut LONCUM n'est pas accessible pour cette collection.
  
 """),
 
-64 : _("""
+64 : _(u"""
 
  Le volume des données temporaires (objets de la base Volatile) écrites sur disque (%(r3).2f Mo)  
  est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo). 
   
 """),
 
-65 : _("""
+65 : _(u"""
 
  Le segment de valeurs associé à l'objet %(i1)d de la collection %(k1)s ne possède ni adresse mémoire, ni adresse disque. 
   
 """),
 
 
-66 : _("""
+66 : _(u"""
 
  Le segment de valeurs associé à l'objet simple %(k1)s ne possède ni adresse mémoire, ni adresse disque. 
   

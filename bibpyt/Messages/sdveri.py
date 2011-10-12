@@ -1,8 +1,8 @@
-#@ MODIF sdveri Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF sdveri Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,29 +19,27 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  Impossible d'importer le catalogue de la structure de données '%(k1)s'
 """),
 
-2 : _("""
+2 : _(u"""
  Objet %(k1)s inexistant.
 """),
 
-4 : _("""
+4 : _(u"""
  Arguments incohérents :
       Nom des paramètres : %(k1)s
    Valeur des paramètres : %(k2)s
 """),
 
-5 : _("""
+5 : _(u"""
  Arguments invalide : 'nomres' vide !
 """),
 
-30 : _("""
+30 : _(u"""
  Erreur de programmation (catalogue des SD) :
    Vérification de la structure de donnée %(k1)s
    produite (ou modifiée) par la commande %(k2)s
@@ -49,17 +47,17 @@ cata_msg = {
    Certains objets JEVEUX sont incorrects :
 """),
 
-31 : _("""
+31 : _(u"""
       Objet : '%(k1)s'    Message : %(k2)s
 """),
 
-40 : _("""
+40 : _(u"""
  Erreur de programmation (catalogue des SD) :
    Vérification d'une structure de donnée :
    Les objets suivants sont interdits dans les SD de type : %(k1)s
 """),
 
-41 : _("""
+41 : _(u"""
    Objet '%(k1)s'   INTERDIT
 """),
 

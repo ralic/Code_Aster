@@ -1,8 +1,8 @@
-#@ MODIF stbtrias Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF stbtrias Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,52 +19,50 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1: _("""
+1: _(u"""
  le fichier IDEAS est vide
  ou ne contient pas de DATASET traite par l'interface
 """),
 
-2: _("""
+2: _(u"""
  couleur inconnue
 """),
 
-3: _("""
+3: _(u"""
   attention le DATASET 2420 apparait plusieurs fois.
 """),
 
-4: _("""
+4: _(u"""
   attention le DATASET 18 apparait plusieurs fois.
 """),
 
-5: _("""
+5: _(u"""
  groupe  %(k1)s  de longueur supérieure à 8 (troncature du nom)
 """),
 
-6: _("""
+6: _(u"""
  le nom du groupe est invalide:  %(k1)s  : non traité
 """),
 
-7: _("""
+7: _(u"""
  le nom du groupe  %(k1)s  est tronqué :  %(k2)s 
 """),
 
-8: _("""
+8: _(u"""
  le nom du groupe ne peut commencer par COUL_ : non traité
 """),
 
-9: _("""
+9: _(u"""
   aucun système de coordonnés n'est défini
 """),
 
-10: _("""
+10: _(u"""
   attention système de coordonnées autre que cartésien non relu dans ASTER.
 """),
 
-11: _("""
+11: _(u"""
   attention votre maillage utilise plusieurs systèmes de coordonnées
   vérifiez qu'ils sont tous identiques
   ASTER ne gère qu'un système de coordonnéez cartesien unique.

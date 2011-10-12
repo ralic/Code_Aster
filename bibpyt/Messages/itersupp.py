@@ -1,4 +1,4 @@
-#@ MODIF itersupp Messages  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF itersupp Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,39 +19,37 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 # Pour la méthode ITER_SUPPL de DEFI_LIST_INST
 
 cata_msg={
 
-1: _("""
+1: _(u"""
   On tente d'autoriser des itérations de Newton supplémentaires.
 """),
 
-2: _("""
+2: _(u"""
   On ne peux pas tenter d'autoriser des itérations de Newton supplémentaires car on dépasse déjà le nombre d'itérations maximum autorisé <%(i1)d>.
 """),
 
-3: _("""
+3: _(u"""
     On estime qu'on va pouvoir converger en <%(i1)d> itérations de Newton.
 """),
 
-4: _("""
+4: _(u"""
     L'extrapolation des résidus donne un nombre d'itérations inférieur à ITER_GLOB_ELAS et ITER_GLOB_MAXI.
     Cela peut se produire si vous avez donné ITER_GLOB_ELAS inférieur à ITER_GLOB_MAXI et que l'extrapolation du nombre d'itérations 
     est faite en régime élastique.
 """),
 
-5: _("""
+5: _(u"""
     L'extrapolation des résidus donne un nombre d'itérations <%(i1)d> supérieur au maximum autorisé <%(i2)d>
 """),
 
-6: _("""
+6: _(u"""
     Echec dans la tentative d'autoriser des itérations de Newton supplémentaires.
 """),
 
-7: _("""
+7: _(u"""
     On peut autoriser des itérations de Newton supplémentaires.
 """),
 

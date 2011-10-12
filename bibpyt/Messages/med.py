@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 03/10/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
   -> Absence de localisation de points de Gauss dans le fichier MED
      pour l'élément de référence %(k1)s.
      On suppose que l'ordre des points de Gauss est celui d'Aster.
@@ -31,7 +29,7 @@ cata_msg = {
      Risque de résultats faux.
 """),
 
-2 : _("""
+2 : _(u"""
   -> Le nombre de points de Gauss est différent entre le fichier med et Aster:
       - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
       - nombre de points de Gauss défini dans Aster           : %(i1)d
@@ -47,33 +45,33 @@ cata_msg = {
       - Choisissez des éléments finis compatibles entre Aster et le code tiers
 """),
 
-3 : _("""
+3 : _(u"""
   -> Les point de Gauss Med/Aster ne correspondent pas géométriquement.
   -> Risque & Conseil:
      Risque de résultats faux à cause cette incompatibilité.
 """),
 
-4 : _("""
+4 : _(u"""
 
      Point De Gauss : %(i1)d              MED               ASTER
 """),
 
-5 : _("""
+5 : _(u"""
         %(k1)s                          %(r1)f          %(r2)f
 """),
 
-6 : _("""
+6 : _(u"""
   -> Une ou plusieurs permutations ont été effectuées sur l'ordre des points
      de Gauss pour que la localisation Med corresponde à celle d'Aster.
 """),
 
-7 : _("""
+7 : _(u"""
   -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
      est trop long. Il sera tronqué à 8 caractères.
      Le groupe "%(k2)s" est renommé en "%(k3)s".
 """),
 
-8 : _("""
+8 : _(u"""
   -> Famille %(k1)s :
        Incohérence sur les nombres de %(k2)s, il y en a %(i1)d alors
        que la fonction MED en annonce %(i2)d.
@@ -83,23 +81,23 @@ cata_msg = {
        vient du fichier MED ou de la lecture dans Code_Aster.
 """),
 
-9 : _("""
+9 : _(u"""
   -> Vous ne pouvez pas renommer le groupe "%(k1)s" en "%(k2)s"
      car "%(k2)s" existe déjà dans le fichier MED.
 """),
 
-10 : _("""
+10 : _(u"""
   -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
      est contient des caractères interdits.
      Le groupe "%(k2)s" est renommé en "%(k3)s".
 """),
 
-11 : _("""
+11 : _(u"""
   -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
      est vide.
 """),
 
-12 : _("""
+12 : _(u"""
   -> Erreur lors de l'appel à EFNEMA, code retour = %(k1)s
   -> Risque & Conseil :
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
@@ -110,90 +108,90 @@ cata_msg = {
      invalides.
 """),
 
-13 : _("""
+13 : _(u"""
   -> La famille %(k1)s n'a ni groupe, ni attribut.
 """),
 
-14 : _("""
+14 : _(u"""
   -> Lecture de la famille numéro %(i1)4d de nom %(k1)s.
 """),
 
-15 : _("""
+15 : _(u"""
       Groupe numéro %(i1)6d : %(k1)s
 """),
 
-16 : _("""
+16 : _(u"""
       Groupe numéro %(i1)6d : %(k1)s
                 renommé en : %(k2)s
 """),
 
-17 : _("""
+17 : _(u"""
   -> Aucune famille n'est présente dans ce fichier med.
   -> Risque & Conseil :
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
 """),
 
-18 : _("""
+18 : _(u"""
   -> Arret en raison des conflits sur les noms de groupe.
 """),
 
-19 : _("""
+19 : _(u"""
   -> Les mailles  %(k1)s ne sont pas nommées dans le fichier med.
 """),
 
-20 : _("""
+20 : _(u"""
   -> Impossible de retrouver l'adresse associée au groupe  %(k1)s 
 """),
 
-21 : _("""
+21 : _(u"""
   -> Il manque les coordonnées !
 """),
 
-22 : _("""
+22 : _(u"""
   Le nom de groupe numéro  %(i1)d  est en double. %(k1)s
   - premier nom med  :  %(k2)s
   - second nom med   :  %(k3)s
   - nom aster retenu :  %(k4)s
 """),
 
-23 : _("""
+23 : _(u"""
   -> Mailles  %(k1)s 
 """),
 
-24 : _("""
+24 : _(u"""
   -> Le fichier n'a pas été construit avec la meme version de med.
   -> Risque & Conseil :
      La lecture du fichier peut échouer !
 
 """),
 
-25 : _("""
+25 : _(u"""
    Version de la bibliothèque med utilisee par Code_Aster:  %(i1)d %(i2)d %(i3)d
 """),
 
-26 : _("""
+26 : _(u"""
    Version de la bibliothèque med qui a créé le fichier  : < 2.1.5
 """),
 
-27 : _("""
+27 : _(u"""
    Version de la bibliothèque med pour créer le fichier  :  %(i1)d %(i2)d %(i3)d 
 """),
 
-28 : _("""
+28 : _(u"""
 
    Un utilitaire vous permet peut-etre de convertir votre fichier (medimport)
 """),
 
-29 : _("""
+29 : _(u"""
   -> Il manque les mailles !
 """),
 
-30: _("""
+30: _(u"""
   -> Votre modèle semble etre composé de plusieurs modélisations, les composantes
      qui n'existent pas pour une partie du modèle ont été mises à zéro.
 """),
 
-31 : _("""
+31 : _(u"""
   -> Ce champ existe déjà dans le fichier MED avec un nombre de composantes
      différent à un instant précédent. On ne peut pas le créer de nouveau.
 
@@ -213,93 +211,93 @@ cata_msg = {
      sélectionner la composante dans Scalar Range/Scalar Mode.
 """),
 
-32 : _("""
+32 : _(u"""
      Le champ est inconnu.
 """),
 
-33 : _("""
+33 : _(u"""
      Il manque des composantes.
 """),
 
-34 : _("""
+34 : _(u"""
      Aucune valeur n'est présente à cet instant.
 """),
 
-35 : _("""
+35 : _(u"""
      Aucune valeur n'est présente à ce numéro d'ordre.
 """),
 
-36 : _("""
+36 : _(u"""
      Le nombre de valeurs n'est pas correct.
 """),
 
-37 : _("""
+37 : _(u"""
   -> La lecture est donc impossible.
   -> Risque & Conseil :
      Veuillez vérifier l'intégrité du fichier MED avec medconforme/mdump.
 """),
 
-38 : _("""
+38 : _(u"""
   -> Incohérence catalogue - fortran (nbtyp fortran différent de nbtyp catalogue)
 """),
 
-39 : _("""
+39 : _(u"""
   -> Incohérence catalogue - fortran (nomtyp fortran différent de nomtyp catalogue)
 """),
 
-40 : _("""
+40 : _(u"""
   -> Ouverture du fichier med en mode  %(k1)s  %(k2)s 
 """),
 
-41 : _("""
+41 : _(u"""
   -> Incohérence de version détectée.
 """),
 
-42 : _("""
+42 : _(u"""
   -> Le type d'entité  %(k1)s  est inconnu.
 """),
 
-43 : _("""
+43 : _(u"""
   -> Le maillage est introuvable !
 """),
 
-44 : _("""
+44 : _(u"""
   -> Pas d'écriture pour  %(k1)s 
 """),
 
-45 : _("""
+45 : _(u"""
      Issu de  %(k1)s 
 """),
 
-46 : _("""
+46 : _(u"""
   -> Le type de champ est inconnu :  %(k1)s 
 """),
 
-47 : _("""
+47 : _(u"""
   -> Création des tableaux de valeurs à écrire avec :
 """),
 
-48 : _("""
+48 : _(u"""
   -> Renumérotation impossible avec plus d'un sous-point.
 """),
 
-49 : _("""
+49 : _(u"""
   -> Veritable écriture des tableaux de valeurs
 """),
 
-50 : _("""
+50 : _(u"""
   -> Pas de maillage dans  %(k1)s 
 """),
 
-51 : _("""
+51 : _(u"""
   -> Maillage  %(k1)s  inconnu dans  %(k2)s 
 """),
 
-52 : _("""
+52 : _(u"""
   ->  Instant inconnu pour ce champ et ces supports dans le fichier.
 """),
 
-53 : _("""
+53 : _(u"""
   ->  La version de la lib med utilisée par Code-Aster est plus récente que 
       celle qui a produit votre fichier med.
   ->  Conséquence:  On considère les champs aux noeuds par élément 
@@ -309,24 +307,24 @@ cata_msg = {
        de MED_NOEUD_MAILLE).
 """),
 
-54 : _("""
+54 : _(u"""
   -> Le modèle fourni à LIRE_RESU n'est pas cohérent avec le type de structure
      de données résultat que vous souaitez produire.
 """),
 
 
-55 : _("""
+55 : _(u"""
   -> Lecture impossible pour  %(k1)s  au format MED
 """),
 
-56 : _("""
+56 : _(u"""
      En effet, le phénomène %(k1)s de votre modèle n'est pas compatible avec une 
      SD Résultat de type %(k2)s.
   -> Risque & Conseil :
      Veuillez fournir à LIRE_RESU un autre modèle ou changer de TYPE_RESU.
 """),
 
-57 : _("""
+57 : _(u"""
   -> Le champ  %(k1)s n'existe pas dans le fichier med.
   -> Conseils :
      Vérifier la présence du champ demandé dans le fichier.
@@ -335,7 +333,7 @@ cata_msg = {
   Remarque : Les champs disponibles dans ce fichier sont listés ci-dessous :
 """),
 
-58 : _("""
+58 : _(u"""
   -> Le nombre de type de maille présent dans le fichier MED est 
       différent du nombre de type de maille présent dans le maillage fourni.
   -> Risque & Conseil :
@@ -343,7 +341,7 @@ cata_msg = {
       que le modèle fourni.
      Vérifiez le maillage de votre modèle !
 """),
-59 : _("""
+59 : _(u"""
      Les éléments du modèle fourni ont pour support géométrique des 
      mailles ne figurant pas dans le fichier med.
      Par exemple, il y %(i1)s mailles de types %(k1)s dans le fichier med,
@@ -353,11 +351,11 @@ cata_msg = {
      dans le fichier med.
 """),
 
-60 : _("""
+60 : _(u"""
   -> On ne traite pas les maillages distants.
 """),
 
-61 : _("""
+61 : _(u"""
      Le maillage contenu dans le fichier med contient plus de mailles
      que celui associé au maillage fourni par le modèle.
      Par exemple, on dénombre %(i1)s mailles de types %(k1)s dans le maillage
@@ -367,64 +365,64 @@ cata_msg = {
      ou que l'un des maillages est quadratique et l'autre linéaire.
 """),
 
-62 : _("""
+62 : _(u"""
   -> Impossible de déterminer un nom de maillage MED.
 """),
 
-63 : _("""
+63 : _(u"""
   -> Le mot clé "INFO_MAILLAGE" est réservé au format med.
 """),
 
-65 : _("""
+65 : _(u"""
   -> Grandeur inconnue.
 """),
 
-66 : _("""
+66 : _(u"""
   -> Composante inconnue pour la grandeur.
 """),
 
-67 : _("""
+67 : _(u"""
   -> Le maillage %(k2)s est déjà présent dans le fichier med %(k1)s.
 """),
 
-68 : _("""
+68 : _(u"""
   -> Instant voulu :  %(r1)f
 """),
 
-69 : _("""
+69 : _(u"""
   -> Numéro d'ordre :  %(i1)d numéro de pas de temps :  %(i2)d 
 
 """),
 
-70 : _("""
+70 : _(u"""
   -> Trop de composantes pour la grandeur.
 """),
 
-71 : _("""
+71 : _(u"""
   -> le mot-clé MODELE est obligatoire pour lire un CHAM_ELEM
 """),
 
-72 : _("""
+72 : _(u"""
   -> Nom de composante tronqué à 8 caractères ( %(k1)s  >>>  %(k2)s )
 """),
 
-73 : _("""
+73 : _(u"""
   -> Impossible de trouver la composante ASTER associée a  %(k1)s 
 """),
 
-74 : _("""
+74 : _(u"""
   -> Ecriture des localisations des points de gauss.
 """),
 
-75 : _("""
+75 : _(u"""
   -> Problème dans la lecture du nom du champ et de ses composantes.
 """),
 
-76 : _("""
+76 : _(u"""
   -> Problème dans le diagnostic.
 """),
 
-77: _("""
+77: _(u"""
   -> On ne peut lire aucune valeur du champ %(k1)s dans le fichier d'unité %(i1)s.
   -> Risques et conseils:
      Ce problème est peut-être lié à une incohérence entre le champ à lire dans 
@@ -432,44 +430,44 @@ cata_msg = {
      (mot clé TYPE_CHAM).
 """),
 
-78: _("""
+78: _(u"""
   Problème à l'ouverture du fichier MED sur l'unité %(k1)s
   -> Conseil :
      Vérifier la présence de ce fichier dans le répertoire de lancement de l'étude.
 """),
 
-79 : _("""
+79 : _(u"""
   -> Attention le maillage n'est pas de type non structuré
 """),
 
-80 : _("""
+80 : _(u"""
   -> Le maillage ' %(k1)s ' est inconnu dans le fichier.
 """),
 
-81 : _("""
+81 : _(u"""
   -> Attention, il s'agit d'un maillage structuré
 """),
 
-82 : _("""
+82 : _(u"""
   -> Le champ %(k1)s n'est associé à aucun modèle.
   -> Conseil :
      Veuillez renseigner le modèle.
 """),
 
-83 : _("""
+83 : _(u"""
   -  valeurs lues dans le fichier        : %(i1)d 
   -  valeurs non affectees dans le champ : %(i2)d 
 """),
 
-84 : _("""
+84 : _(u"""
   -> Type incorrect  %(i1)d 
 """),
 
-85 : _("""
+85 : _(u"""
   -> Maillage présent :  %(k1)s 
 """),
 
-86 : _("""
+86 : _(u"""
   -> champ à lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d 
      instant voulu :  %(r1)f 
      --> numéro d'ordre :  %(i3)d 
@@ -477,7 +475,7 @@ cata_msg = {
  
 """),
 
-87 : _("""
+87 : _(u"""
   Le numéro d'ordre %(i1)d que vous avez renseigné ne figure pas
   dans la liste des numéros d'ordre du résultat med. 
   Conséquence: le champ correspondant ne figurera pas dans la 
@@ -485,35 +483,35 @@ cata_msg = {
 """),
 
 
-88 : _("""
+88 : _(u"""
   -> Fichier med :  %(k1)s, nombre de maillages présents : %(i1)d 
 """),
 
-89 : _("""
+89 : _(u"""
   -> Ecriture impossible pour  %(k1)s  au format MED.
 """),
 
-90 : _("""
+90 : _(u"""
      Début de l'écriture MED de  %(k1)s 
 """),
 
-91 : _("""
+91 : _(u"""
   -> Impossible de déterminer un nom de champ MED.
   -> Risque & Conseil:  
 """),
 
-92 : _("""
+92 : _(u"""
   -> Le type de champ  %(k1)s  est inconnu pour med.
   -> Risque & Conseil:
      Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
      (LIRE_RESU) ou NOM_MED (LIRE_CHAMP).
 """),
 
-93 : _("""
+93 : _(u"""
      Fin de l'écriture MED de  %(k1)s 
 """),
 
-94 : _("""
+94 : _(u"""
   Vous imprimez un champ dont le maillage change au cours du temps.
   Ce type de champ n'est pas autorisé.
   -> Conseil :
@@ -522,27 +520,27 @@ cata_msg = {
      reposent sur un seul et même maillage.
 """),
 
-95 : _("""
+95 : _(u"""
   -> Le champ med %(k1)s est introuvable.
   -> Risque & Conseil:
      Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
      ainsi que le fichier med fourni à l'opérateur.
 """),
 
-96 : _("""
+96 : _(u"""
   -> NOM_MED absent !
   -> Risque & Conseil:
      Veuillez renseigner le mot-cle NOM_MED de l'opérateur LIRE_CHAMP.
 """),
 
-97 : _("""
+97 : _(u"""
   -> Fichier med :  %(k1)s, Champ :  %(k2)s, Instant voulu :  %(r1)f 
      - typent :  %(i1)d 
      - typgeo :  %(i2)d 
  
 """),
 
-98 : _("""
+98 : _(u"""
   -> Fichier med :  %(k1)s champ :  %(k2)s 
 """),
 

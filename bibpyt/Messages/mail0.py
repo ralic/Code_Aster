@@ -1,8 +1,8 @@
-#@ MODIF mail0 Messages  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+#@ MODIF mail0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-11 : _("""
+11 : _(u"""
 Plus de %(i1)d faces touchent le noeud %(k1)s.
 
 Risque & conseils :
@@ -31,15 +29,15 @@ Risque & conseils :
    Dans une grille, un noeud est commun à 12 faces.
 """),
 
-12 : _("""
+12 : _(u"""
  L'option %(k1)s ne traite pas les macros mailles
 """),
 
-13 : _("""
+13 : _(u"""
  L'option %(k1)s ne traite pas les absc_curv
 """),
 
-14 : _("""
+14 : _(u"""
  Le mot-cle MAILLAGE est obligatoire avec le mot-cle %(k1)s.
 """),
 

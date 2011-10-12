@@ -1,0 +1,78 @@
+      SUBROUTINE ENTETE()
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF ENTETE UTILITAI  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+!RESPONSABLE
+      IMPLICIT NONE
+! ----------------------------------------------------------------------
+!     ECRITURE DE L'ENTETE
+! ----------------------------------------------------------------------
+      INTEGER    VALI(3)
+!
+#ifdef _USE_MPI
+      INCLUDE 'mpif.h'
+      INTEGER*4  NBPRO4, RANG4, IERMPI
+#endif
+#ifdef _USE_OPENMP
+      INTEGER    MLNUMP, NBTH
+#endif
+! ----------------------------------------------------------------------
+! --- INFORMATIONS GLOBALES
+      CALL PRHEAD()
+! --- CONFIGURATION MPI
+#ifdef _USE_MPI
+      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
+      CALL MPI_COMM_RANK(MPI_COMM_WORLD,RANG4,IERMPI)
+      VALI(1) = RANG4
+      VALI(2) = NBPRO4
+      CALL U2MESI('I', 'SUPERVIS2_11', 2, VALI)
+#else
+      CALL U2MESS('I', 'SUPERVIS2_12')
+#endif
+! --- CONFIGURATION MPI
+#ifdef _USE_OPENMP
+      NBTH = MLNUMP()
+      CALL U2MESI('I', 'SUPERVIS2_13', 1, NBTH)
+#endif
+! --- LIBRARIES HDF5 ET MED
+#ifndef _DISABLE_HDF5
+      CALL LIHDFV(VALI(1), VALI(2), VALI(3))
+      CALL U2MESI('I', 'SUPERVIS2_14', 3, VALI)
+#else
+      CALL U2MESS('I', 'SUPERVIS2_15')
+#endif
+#ifndef _DISABLE_MED
+      CALL LIMEDV(VALI(1), VALI(2), VALI(3))
+      CALL U2MESI('I', 'SUPERVIS2_16', 3, VALI)
+#else
+      CALL U2MESS('I', 'SUPERVIS2_17')
+#endif
+! --- LIBRARIES SOLVEURS
+#ifdef _HAVE_MUMPS
+!     STOCKER A L'INSTALLATION MUMPS_VERSION DE smumps_c.h
+      CALL U2MESS('I', 'SUPERVIS2_18')
+#else
+      CALL U2MESS('I', 'SUPERVIS2_19')
+#endif
+#ifndef _DISABLE_SCOTCH
+      CALL LISCOV(VALI(1), VALI(2), VALI(3))
+      CALL U2MESI('I', 'SUPERVIS2_20', 3, VALI)
+#else
+      CALL U2MESS('I', 'SUPERVIS2_21')
+#endif
+      END

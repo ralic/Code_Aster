@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,39 +19,37 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-27 : _("""
+27 : _(u"""
  pas d'intersection trouvé
 """),
 
-29 : _("""
+29 : _(u"""
  element faisceau homogeneise non prevu
 """),
 
-31 : _("""
+31 : _(u"""
   elrefe non prevu
 """),
 
-32 : _("""
+32 : _(u"""
  comportement non trouve: %(k1)s
 """),
 
-33 : _("""
+33 : _(u"""
  pas de dilatation thermique orthotrope pour coque_3d
 """),
 
-34 : _("""
+34 : _(u"""
  les vecteurs sont au nombre de 1 ou 2
 """),
 
-37 : _("""
+37 : _(u"""
  pas de zero, convergence impossible
 """),
 
-38 : _("""
+38 : _(u"""
   ->  L'option ANGL_AXE n'est pas prise en compte en 2D mais seulement
       en 3D.
   -> Risque & Conseil :
@@ -61,103 +59,103 @@ cata_msg = {
      un repère d'orthotropie via ANGL_REP.
 """),
 
-39 : _("""
+39 : _(u"""
  loi lema_seuil non implemente avec les poutres multi fibres
 """),
 
-40 : _("""
+40 : _(u"""
  on ne sait pas integrer avec  %(k1)s  caracteristiques par fibre
 """),
 
-41 : _("""
+41 : _(u"""
  cas avec inerties des fibres non programme
 """),
 
-42 : _("""
+42 : _(u"""
  " %(k1)s "    nom d'element inconnu.
 """),
 
-43 : _("""
+43 : _(u"""
  noeuds confondus pour la maille:  %(k1)s
 """),
 
-44 : _("""
+44 : _(u"""
   option de matrice de masse  %(k1)s  inconnue
 """),
 
-45 : _("""
+45 : _(u"""
  on n'a pas trouvé de variable interne correspondante a la déformation plastique équivalente cumulée
 """),
 
-46 : _("""
+46 : _(u"""
  on ne traite pas les moments
 """),
 
-47 : _("""
+47 : _(u"""
  l'option " %(k1)s " est inconnue
 """),
 
-48 : _("""
+48 : _(u"""
  type de poutre inconnu
 """),
 
-49 : _("""
+49 : _(u"""
  charge répartie variable non admise sur un élément courbe.
 """),
 
-50 : _("""
+50 : _(u"""
  charge répartie variable non admise sur un élément variable.
 """),
 
-51 : _("""
+51 : _(u"""
  on ne peut pas imposer de charges réparties suiveuses de type vitesse de vent sur les poutres courbes.
 """),
 
-52 : _("""
+52 : _(u"""
  on ne peut pas imposer de charges réparties suiveuses sur les poutres courbes.
 """),
 
-53 : _("""
+53 : _(u"""
  un champ de vitesse de vent est imposé sans donner un cx dépendant de la vitesse sur une des poutres.
 """),
 
-54 : _("""
+54 : _(u"""
  le module de cisaillement G est nul mais pas le module d'Young E
 """),
 
-55 : _("""
+55 : _(u"""
  section circulaire uniquement
 """),
 
-56 : _("""
+56 : _(u"""
  pour l'instant on ne fait pas le calcul de la  matrice de masse d'un element de plaque q4g excentre.
 """),
 
-57 : _("""
+57 : _(u"""
  pour l'instant on ne peut pas excentrer les elements q4g .
 """),
 
-58 : _("""
+58 : _(u"""
  echec de convergence dans l'inversion du systeme par newton-raphson.
 """),
 
-61 : _("""
+61 : _(u"""
  " %(k1)s "   nom d'option non reconnue
 """),
 
-62 : _("""
+62 : _(u"""
  ! pb rcvala rhocp !
 """),
 
-63 : _("""
+63 : _(u"""
  ! comportement non trouve !
 """),
 
-71 : _("""
+71 : _(u"""
  comp_elas non programme pour les modelisations dkt. il faut utiliser comp_incr.
 """),
 
-72 : _("""
+72 : _(u"""
   -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
      le mot clé COMP_INCR) est déconseillée pour les éléments de type plaque. Les
      grandes rotations ne sont pas modélisées correctement.
@@ -166,47 +164,47 @@ cata_msg = {
      d'utiliser la modélisation COQUE_3D, avec DEFORMATION='GROT_GDEP'
 """),
 
-73 : _("""
+73 : _(u"""
  comportement non traite:  %(k1)s
 """),
 
-74 : _("""
+74 : _(u"""
   %(k1)s  non implante.
 """),
 
-77 : _("""
+77 : _(u"""
  option :  %(k1)s  interdite
 """),
 
-80 : _("""
+80 : _(u"""
  éléments de poutre noeuds confondus pour un élément:  %(k1)s
 """),
 
-81 : _("""
+81 : _(u"""
  éléments de poutre section variable affine :seul une section rectangle plein est disponible.
 """),
 
-82 : _("""
+82 : _(u"""
  éléments de poutre section variable homothétique : l'aire initiale est nulle.
 """),
 
-83 : _("""
+83 : _(u"""
  poutre section variable/constante  passage par section homothetique avec a1 = a2
 """),
 
-84 : _("""
+84 : _(u"""
  elements de poutre l'option " %(k1)s " est inconnue
 """),
 
-85 : _("""
+85 : _(u"""
  non prevu pour les sections rectangulaires
 """),
 
-86 : _("""
+86 : _(u"""
  non prevu pour les sections generales
 """),
 
-90 : _("""
+90 : _(u"""
  COMP_ELAS non valide
 """),
 

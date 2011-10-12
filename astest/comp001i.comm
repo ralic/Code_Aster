@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST EN 3D VMIS_ISOT_PUIS UTILISANT SIMU_POINT_MAT
 # comp001i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,7 +100,7 @@ ACIER2[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
 compor1='ELAS_VMIS_PUIS'
 compor2='ELAS_VMIS_TRAC'
 
-tabresu=TEST_COMPOR(OPTION='MECA',
+TEST_COMPOR(OPTION='MECA',
 
               COMP_ELAS=_F(RELATION=compor1,),
               NEWTON=_F(REAC_ITER=1),
@@ -111,9 +111,7 @@ tabresu=TEST_COMPOR(OPTION='MECA',
               YOUNG=YOUNG,POISSON=POISSON,
               )
 
-IMPR_TABLE(TABLE=tabresu)
-
-tabres2=TEST_COMPOR(OPTION='MECA',
+TEST_COMPOR(OPTION='MECA',
 
               COMP_ELAS=_F(RELATION=compor2,),
               NEWTON=_F(REAC_ITER=1),
@@ -123,9 +121,6 @@ tabres2=TEST_COMPOR(OPTION='MECA',
               #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]  
               YOUNG=YOUNG,POISSON=POISSON,
               )
-
-IMPR_TABLE(TABLE=tabres2)
-
 
 FIN()
 

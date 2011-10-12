@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,7 +28,8 @@ import sys
 import os
 import traceback
 import re
-from E_utils import *
+from E_utils import copierBase, lierRepertoire, supprimerRepertoire
+from strfunc import convert
 
 class SUPERV:
    usage="""
@@ -149,6 +150,11 @@ class SUPERV:
       sys.path.insert(0, self.CHEMIN)
       sys.path.append(os.path.join(self.CHEMIN,'Cata'))
 
+   def set_i18n(self):
+       """Met en place les fonctions d'internationalisation."""
+       import i18n
+       i18n.get_translation().install()
+
    def init_timer(self):
       """Initialise le timer au plus tot
       """
@@ -193,11 +199,12 @@ class SUPERV:
       """
       f=open(self.nomFichierCommandes,'r')
       text=f.read()
-      print '=========================================='
-      print '=========================================='
+      print "# ------------------------------------------------------------------------------------------"
+      print convert(_(u"""# Impression du contenu du fichier de commandes à exécuter :"""))
+      print "# ------------------------------------------------------------------------------------------"
       print text
-      print '=========================================='
-      print '=========================================='
+      print "# ------------------------------------------------------------------------------------------"
+      print "# ------------------------------------------------------------------------------------------"
       f.close()
       args={}
       if self.tempsMax:args['tempsMax']=self.tempsMax
@@ -240,7 +247,7 @@ class SUPERV:
          j.interact()
 
       if j.par_lot == 'NON':
-         print "FIN EXECUTION"
+         print convert(_(u"""--- Fin de l'exécution - %s"""))
          return ier
 
       # Verification de la validite du jeu de commande
@@ -383,6 +390,7 @@ class SUPERV:
          os.chdir(pathDestination)
 
       self.set_path()
+      self.set_i18n()
 
       ier = self.init_timer()
       if ier:return ier

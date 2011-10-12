@@ -1,4 +1,4 @@
-#@ MODIF listinst Messages  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF listinst Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,21 +19,19 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
   Sélection d'instants.
   Quand le critère de sélection est absolu, il faut obligatoirement donner une précision.
 """),
 
-2 : _("""
+2 : _(u"""
   Sélection d'instants.
   Vous n'avez pas donné de précision pour votre critère de sélection. On a pris la valeur %(r1)19.12e par défaut.
 """),
 
-3 : _("""
+3 : _(u"""
   Sélection d'instants.
   La précision donnée pour votre critère de sélection est négative ou inférieure à la précision machine.
 """),

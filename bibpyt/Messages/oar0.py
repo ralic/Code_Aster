@@ -1,8 +1,8 @@
-#@ MODIF oar0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF oar0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,34 +19,32 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
 Les coupes mécanique et thermique doivent partager les memes abscisses.
 """),
 
-2: _("""
+2: _(u"""
 Erreur d'interpolation: %(k1)s
 """),
 
-3: _("""
+3: _(u"""
 Les coupes du revetement et de la structure doivent partager une abscisse commune.
 """),
 
-4: _("""
+4: _(u"""
 Erreur d'accès aux données.
 """),
 
-5: _("""
+5: _(u"""
 Fonction non implantée.
 """),
 
-6: _("""
+6: _(u"""
 Mot clé facteur inconnu.
 """),
 
-7: _("""
+7: _(u"""
 Erreur à l'ouverture du fichier.
 """),
 

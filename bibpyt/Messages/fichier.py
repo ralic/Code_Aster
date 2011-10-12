@@ -1,4 +1,4 @@
-#@ MODIF fichier Messages  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fichier Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 Fichier inexistant : '%(k1)s'
 """),
 

@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -243,8 +243,11 @@ Causes possibles :
          etre correctement détruit par le garbage collector
       """
       N_MCCOMPO.MCCOMPO.supprime(self)
-      self.jdc=None
-      self.appel=None
+      self.jdc = None
+      self.appel = None
+      for name in dir(self):
+         if name.startswith( '_cache_' ):
+             setattr(self, name, None)
       if self.sd:
          self.sd.supprime()
 

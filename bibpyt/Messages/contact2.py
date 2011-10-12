@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,24 +19,22 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1 : _("""
+1 : _(u"""
    Echec lors du traitement du contact.
 """),
 
-2 : _("""
+2 : _(u"""
    Echec : la matrice de contact est singulière.
 """),
 
-3 : _("""
+3 : _(u"""
   Toutes vos zones de contact sont en mode RESOLUTION='NON'.
   Le mode REAC_GEOM = 'SANS' est forcé. 
 """),
 
-11 : _("""
+11 : _(u"""
 Au moins une des mailles de contact que vous avez définies est de dimension %(i1)i, or la dimension de votre problème est : %(i2)i.
 Cette maille n'est donc pas une maille de bord. Il doit y avoir une erreur dans votre mise en données.
 
@@ -44,7 +42,7 @@ Conseil :
 Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact. 
 """),
 
-12 : _("""
+12 : _(u"""
 Contact avec formulation continue. 
 Votre modèle contient des surfaces de contact qui s'appuient sur un mélange d'éléments axisymétriques et non axisymétriques.
 Cela n'a pas de sens. Toute la modélisation doit être axisymétrique.
@@ -53,13 +51,13 @@ Conseil :
 Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact. 
 """),
 
-13 : _("""
+13 : _(u"""
 Contact méthodes maillées.
 La zone de contact numéro %(i1)i contient %(i2)i noeuds communs aux surfaces maîtres et esclaves.
 Vérifiez la définition de vos surfaces de contact ou bien renseignez un des mot-clés SANS_NOEUD/SANS_GROUP_NO/SANS_MAILLE/SANS_GROUP_MA.
 """),
 
-14 : _("""
+14 : _(u"""
 Contact méthode continue. 
   -> Une zone de contact est définie sur une modélisation axisymétrique. Le Jacobien
      est nul car un noeud de la surface de contact esclave appartient à l'axe.

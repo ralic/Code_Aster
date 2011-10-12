@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_precont_ops Macro  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,10 +143,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   motscle4={}
   motscle5={}
 
-  if METHODE=='IMPL_EX':
-     motscle4['IMPL_EX']=args['IMPL_EX'].List_F()
-     motscle5['IMPL_EX']=args['IMPL_EX'].List_F()
-  else:
+  if METHODE == 'NEWTON':
      motscle4['NEWTON']=args['NEWTON'].List_F()
      motscle5['NEWTON']=args['NEWTON'].List_F()
 #     for j in dNewton.keys():
@@ -411,7 +408,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                   PRECISION = __prec),
                      METHODE=METHODE,
 #                     NEWTON =dNewton,
-#                     IMPL_EX=dImplex,
+#                     IMPLEX=dImplex,
 
                      RECH_LINEAIRE = dRech_lin,
                      CONVERGENCE=dConvergence,

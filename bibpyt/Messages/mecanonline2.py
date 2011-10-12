@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  L'erreur précédente est fatale.
  Conseils:
    - S'il s'agit d'un manque de temps CPU, augmentez-le.
@@ -33,7 +31,7 @@ cata_msg = {
  La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-3 : _("""
+3 : _(u"""
 
  Le résidu global converge plus vite que la condition des contraintes planes. 
  La convergence de la condition des contraintes planes peut être améliorée en 
@@ -41,12 +39,12 @@ cata_msg = {
 
 """),
 
-4 : _("""
+4 : _(u"""
  La charge definie dans STAT_NON_LINE en tant que une charge de type suiveuse, 
  sous le mot-clé TYPE_CHARGE = 'SUIV' n'est pas une Charge SUIVEUSE.
 """),
 
-27 : _("""
+27 : _(u"""
  La prédiction par DEPL_CALCULE à l'instant de calcul %(r1)f à partir du concept %(k1)s n'a pas pu être construite.
  Explications possibles :
   - le concept ne contient pas de champs de déplacement
@@ -56,19 +54,19 @@ cata_msg = {
  - vérifiez que le concept fourni sous le mot-clé EVOL_NOLI contient suffisamment d'instants pour interpoler le champ souhaité
 """),
 
-36 : _("""
+36 : _(u"""
  Erreur dans la découpe initiale des pas.
 """),
 
-37 : _("""
+37 : _(u"""
  Attention, ARRET=NON donc poursuite du calcul sans avoir eu convergence.
 """),
 
-67 : _("""
+67 : _(u"""
  Le code %(i1)d retourné lors de l'intégration de la loi de comportement n'est pas traité.  
 """),
 
-93 : _("""
+93 : _(u"""
   -> Risque & Conseil :  dans le cas d'une résolution incrémentale, 
      on ne considère que la variation des variables de commande entre
      l'instant précédent et l'instant actuel.
@@ -82,14 +80,14 @@ cata_msg = {
      (U4.51.03) mot-clé EXCIT, et le test FORMA09 (V7.20.101).
 """),
 
-94 : _("""
+94 : _(u"""
   -> Indications supplémentaires : pour la variable de commande :  %(k1)s
      et la composante :  %(k2)s
      Valeur maximum : %(r1)f sur la maille : %(k3)s
      Valeur minimum : %(r2)f sur la maille : %(k4)s
 """),
 
-95 : _("""
+95 : _(u"""
   -> Indications supplémentaires : pour la variable de commande :  %(k1)s 
      et la composante :  %(k2)s
      Valeur maximum de abs( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
@@ -98,7 +96,7 @@ cata_msg = {
 
 
 
-97 : _("""
+97 : _(u"""
   -> Les variables de commandes initiales induisent des contraintes 
      incompatibles : 
      l'état initial (avant le premier instant de calcul) est tel que 
@@ -106,7 +104,7 @@ cata_msg = {
      conduisent à des contraintes non équilibrées. 
 """),
 
-98 : _("""
+98 : _(u"""
   -> Les forces extérieures (chargement imposé et réactions d'appui) sont détectées comme quasiment nulles (%(r1)g).
      Or vous avez demandé une convergence avec le critère relatif (RESI_GLOB_RELA). 
      Pour éviter une division par zéro, le code est passé automatiquement en mode de convergence

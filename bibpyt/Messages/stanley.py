@@ -1,4 +1,4 @@
-#@ MODIF stanley Messages  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,19 +19,17 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 Redéfinition du DISPLAY vers %(k1)s.
 """),
 
-2 : _("""
+2 : _(u"""
 Stanley fonctionne en mode validation de non-regression.
 """),
 
-3 : _("""
+3 : _(u"""
 Aucune variable d'environnement DISPLAY définie !
 %(k1)s ne pourra pas fonctionner. On l'ignore.
 
@@ -44,73 +42,73 @@ de la commande STANLEY :
 STANLEY(DISPLAY='adresse_ip:0.0');
 """),
 
-4 : _("""
+4 : _(u"""
 Une erreur est intervenue. Raison : %(k1)s
 """),
 
-5 : _("""
+5 : _(u"""
 Cette action n'est pas réalisable: %(k1)s
 """),
 
-6 : _("""
+6 : _(u"""
 En mode DISTANT, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
-7 : _("""
+7 : _(u"""
 Le parametre 'machine_gmsh_exe' ou 'machine_visu' n'est pas renseigné, 
 il faut ouvrir le fichier manuellement.
 """),
 
-8 : _("""
+8 : _(u"""
 Lancement terminé.
 """),
 
-9 : _("""
+9 : _(u"""
 Exécution de %(k1)s
 """),
 
-10 : _("""
+10 : _(u"""
 Erreur de lancement de la commande!
 """),
 
-11 : _("""
+11 : _(u"""
 Dans le mode WINDOWS, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
-12 : _("""
+12 : _(u"""
 Les fichiers de post-traitement sont copiés.
 Veuillez maintenant ouvrir manuellement skin.pos avec GMSH.
 """),
 
-13 : _("""
+13 : _(u"""
 Le fichier de post-traitement est copie.
 Veuillez maintenant ouvrir manuellement fort.33.pos avec GMSH.
 """),
 
-14 : _("""
+14 : _(u"""
 Impossible de contacter le serveur SALOME! Vérifier qu'il est bien lancé.
 """),
 
-15 : _("""
+15 : _(u"""
 Impossible de récupérer le nom de la machine locale! 
 Solution alternative : utiliser le mode DISTANT en indiquant l'adresse IP
 ou le nom de la machine dans la case 'machine de salome'.
 """),
 
-16 : _("""
+16 : _(u"""
 Pour visualisation dans Salome, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
-17 : _("""
+17 : _(u"""
 Pour visualisation dans Salome, la variable machine_salome_port est obligatoire. 
 On abandonne.
 """),
 
-18 : _("""
+18 : _(u"""
 Erreur : mode WINDOWS non implémenté
 """),
 
-19 : _("""
+19 : _(u"""
 Erreur: il est possible que Stanley ne puisse pas contacter Salome :
 
  - machine Salome definie   : %(k1)s
@@ -123,82 +121,82 @@ Si Stanley est bien lancé, vous pouvez essayer d'activer le module VISU.
 
 """),
 
-20 : _("""
+20 : _(u"""
 Execution terminée.
 """),
 
-#21 : _(""" """),
+#21 : _(u""" """),
 
-22 : _("""
+22 : _(u"""
 Impossible d'affecter la variable [%(k1)s / %(k2)s].
 """),
 
-23 : _("""
+23 : _(u"""
 Lecture du fichier d'environnement : %(k1)s
 """),
 
-24 : _("""
+24 : _(u"""
 Il n'y a pas de fichier d'environnement. 
 On démarre avec une configuration par défaut.
 """),
 
-25 : _("""
+25 : _(u"""
 Le fichier d'environnement n'a pas la version attendue. 
 On continue mais en cas de problème, effacer le repertoire ~/%(k1)s et relancer.
 """),
 
-26 : _("""
+26 : _(u"""
 Le fichier d'environnement n'est pas exploitable (par exemple c'est une ancienne version).
 On démarre avec une configuration par défaut.
 """),
 
-27 : _("""
+27 : _(u"""
 On initialise une configuration par défaut.
 """),
 
-28 : _("""
+28 : _(u"""
 Nouveaux paramètres sauvegardés dans : %(k1)s
 """),
 
-29 : _("""
+29 : _(u"""
 Impossible de sauvegarder les paramètres dans : %(k1)s
 """),
 
-30 : _("""
+30 : _(u"""
 La visualisation aux points de Gauss n'est pas permise avec la sensibilité.
 """),
 
-31 : _("""
+31 : _(u"""
 Problème : %(k1)s
 """),
 
-32 : _("""
+32 : _(u"""
 Impossible d'ouvrir en écriture le fichier %(k1)s
 """),
 
-33 : _("""
+33 : _(u"""
 Attention : on ne peut pas tracer un champ aux points de Gauss sur la déformée...
 """),
 
-34 : _("""
+34 : _(u"""
 Le champ est tracé avec la déformée.
 """),
 
-35 : _("""
+35 : _(u"""
 Concept ignoré : %(k1)s
 """),
 
-36 : _("""
+36 : _(u"""
 On ne peut pas tracer une courbe avec une seule abscisse.
 """),
 
-37 : _("""
+37 : _(u"""
 Tous les concepts Aster nécessaires à Stanley n'ont pas été calculés. 
 Il manque :
 %(k1)s
 """),
 
-38 : _("""
+38 : _(u"""
 Stanley - Erreur lors de l'appel à la commande Aster:
 
 %(k1)s
@@ -206,7 +204,7 @@ Raison:
 %(k2)s
 """),
 
-40 : _("""
+40 : _(u"""
 Stanley - Projection aux points de Gauss: type de résultat non développé
 %(k1)s
 """),

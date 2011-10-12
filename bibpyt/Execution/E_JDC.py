@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,6 +28,7 @@
 import sys, types,os, string, fpformat
 from os import times
 import cPickle as pickle
+PICKLE_PROTOCOL = 0
 
 # Modules Eficas
 from Noyau.N_Exception import AsException
@@ -36,6 +37,7 @@ from Noyau.N_ENTITE import ENTITE
 from Noyau.N_JDC    import MemoryErrorMsg
 from Noyau.N_info import message, SUPERV
 import aster
+from strfunc import convert
 
 from Noyau import basetype
 
@@ -161,7 +163,7 @@ class JDC:
        # affiche le récapitulatif du timer
        cpu_total_user, cpu_total_syst, elapsed_total = self.timer.StopAndGetTotal()
 
-       aster.affiche('RESULTAT', repr(self.timer))
+       aster.affiche('RESULTAT', convert(repr(self.timer)))
        aster.fclose(8)
 
        tempsMax = self.args.get("tempsMax")
@@ -170,18 +172,18 @@ class JDC:
        else:
           cpu_restant = 0.
 
-       texte_final = """
+       texte_final = _(u"""
 
-  <I> <INFORMATION TEMPS D'EXECUTION> (EN SECONDE)
-      TEMPS CPU TOTAL ..............    %10.2f
-      TEMPS CPU USER TOTAL .........    %10.2f
-      TEMPS CPU SYSTEME TOTAL ......    %10.2f
-      TEMPS CPU RESTANT ............    %10.2f
-""" % (cpu_total_user+cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
+  <I> Informations sur les temps d'exécution
+      Temps cpu total ..............    %10.2f s
+      Temps cpu user total .........    %10.2f s
+      Temps cpu systeme total ......    %10.2f s
+      Temps cpu restant ............    %10.2f s
+""") % (cpu_total_user+cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
 
-       aster.affiche('MESSAGE', texte_final)
+       aster.affiche('MESSAGE', convert(texte_final))
        if self.fico is None:
-           aster.affiche('MESSAGE', repr(self.timer))
+           aster.affiche('MESSAGE', convert(repr(self.timer)))
        aster.fclose(6)
        # fichier d'info
        txt = "%10.2f %10.2f %10.2f %10.2f\n" \
@@ -244,7 +246,7 @@ class JDC:
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
 
        file=open('pick.1','w')
-       pickle.dump(context, file, protocol=-1)
+       pickle.dump(context, file, protocol=PICKLE_PROTOCOL)
        if self.info_level > 1:
           self.timer_fin.Stop("pickle")
 
@@ -271,7 +273,7 @@ class JDC:
               # pour accélérer, on supprime le catalogue de SD devenu inutile.
               if isinstance(value, ASSD):
                   value.supprime_sd()
-              pickle.dumps(value, protocol=-1)
+              pickle.dumps(value, protocol=PICKLE_PROTOCOL)
               d[key]=value
            except:
               # Si on ne peut pas pickler value on ne le met pas dans le contexte filtré

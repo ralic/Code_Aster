@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF E_Exception Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 Elles sont enregistrées avec un numéro qui permet de les lever
 depuis le fortran.
 """
-
+from strfunc import convert
 
 class error(Exception):
     """Exception levée par toutes les erreurs.
@@ -54,9 +54,10 @@ class error(Exception):
         as `code` says."""
         try:
             from Utilitai.Utmess import message_exception
-            return message_exception(code, self)
+            txt = message_exception(code, self)
         except:
-            return self.basic_format()
+            txt = self.basic_format()
+        return convert(txt)
 
 
 class FatalError(error):

@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,190 +19,188 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  L'option %(k1)s est deja calculee pour le numero d'ordre %(k2)s.
  On la recalcule car les donnees peuvent etre differentes.
 """),
 
-2 : _("""
+2 : _(u"""
 Champ inexistant SIEF_ELGA ou SIEF_ELGA numero d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
-3 : _("""
+3 : _(u"""
 Champ inexistant DEPL numero d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
-4 : _("""
+4 : _(u"""
 Champ inexistant %(k1)s numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
 """),
 
-5 : _("""
+5 : _(u"""
 Option illicite pour le resultat %(k1)s numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
 """),
 
-6 : _("""
+6 : _(u"""
 Numero d'ordre trop grand %(k1)s pour le calcul de l'option %(k2)s
 """),
 
-7 : _("""
+7 : _(u"""
 Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le calcul de l'option %(k3)s
 """),
 
-8 : _("""
+8 : _(u"""
 
  la taille memoire   necessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur tau est trop importante   par rapport a la place disponible.
  taille disponible :  %(i1)d
  taille necessaire :  %(i2)d
 """),
 
-9 : _("""
+9 : _(u"""
  Champ inexistant STRX_ELGA ou STRX_ELGA numero d'ordre %(k1)s pour le calcul de l'option %(k2)s,
  il manque certainement le champ STRX_ELGA en argument de CALC_NO.
 """),
 
-10 : _("""
+10 : _(u"""
  le noeud traite  n'est associe a aucune maille volumique.
  numero du noeud =  %(i1)d
  nombre de mailles attachees au noeud =  %(i2)d
 """),
 
-16 : _("""
+16 : _(u"""
  appel errone numero d'ordre %(i1)d code retour de rsexch : %(i2)d
  pb cham_no %(k1)s
 """),
 
-19 : _("""
+19 : _(u"""
  nombre de noeud(s) elimine(s) du maillage  %(i1)d
 """),
 
-20 : _("""
+20 : _(u"""
  nombre de maille(s) eliminee(s) du maillage  %(i1)d
 """),
 
-21 : _("""
+21 : _(u"""
  le numero du groupe de mailles est trop grand:  %(i1)d
   le numero du groupe doit etre inferieur a  %(i2)d
 """),
 
-25 : _("""
+25 : _(u"""
   on ne trouve pas la composante  %(k1)s  dans la grandeur  %(k2)s
 """),
 
-30 : _("""
+30 : _(u"""
   on ne trouve pas la maille  %(k1)s
 """),
 
-31 : _("""
+31 : _(u"""
   on ne trouve pas le groupe  %(k1)s
 """),
 
-32 : _("""
+32 : _(u"""
   le groupe  %(k1)s  ne contient aucune maille  %(k2)s
 """),
 
-38 : _("""
+38 : _(u"""
   on ne trouve pas le noeud : %(k1)s
 """),
 
-40 : _("""
+40 : _(u"""
   le groupe  %(k1)s ne contient aucun noeud  %(k2)s
 """),
 
-41 : _("""
+41 : _(u"""
   le parametre  %(k1)s n'existe pas %(k2)s
 """),
 
-45 : _("""
+45 : _(u"""
  noeud inconnu dans le fichier  ideas  noeud numero :  %(i1)d
 """),
 
-46 : _("""
+46 : _(u"""
  element inconnu dans le fichier ideas element numero :  %(i1)d
 """),
 
-54 : _("""
+54 : _(u"""
  probleme dans  nomta traitement de l'instant  %(r1)f
   recuperation de  %(k1)s
   pour le secteur  %(i1)d
 """),
 
-57 : _("""
+57 : _(u"""
  probleme dans  nomta traitement de l'instant  %(r1)f
   recuperation de  %(k1)s
 """),
 
-58 : _("""
+58 : _(u"""
  probleme dans  nomta traitement de l'instant  %(r1)f
   recuperation "numeli" pour  %(k1)s
 """),
 
-59 : _("""
+59 : _(u"""
  probleme dans  nomta traitement de l'instant  %(r1)f
   recuperation "numeli" pour le secteur  %(i1)d
 """),
 
-61 : _("""
+61 : _(u"""
  la composante  %(k1)s  n'existe dans aucun des champs %(k2)s
 """),
 
-64 : _("""
+64 : _(u"""
  la valeur d'amortissement reduit est trop grande
  la valeur d'amortissement :  %(r1)f
   du mode propre  %(i1)d
   est tronquee au seuil :  %(r2)f
 """),
 
-67 : _("""
+67 : _(u"""
 
  la taille memoire   necessaire au vecteur de travail   est trop importante   par rapport a la place disponible.
  taille disponible :  %(i1)d
  taille necessaire :  %(i2)d
 """),
 
-68 : _("""
+68 : _(u"""
 
  la taille du vecteur  contenant les caracteristiques des   paquets de mailles est trop petite.
  nb de paquets maxi :  %(i1)d
  nb de paquets reels:  %(i2)d
 """),
 
-70 : _("""
+70 : _(u"""
 
  la taille du vecteur  contenant les caracteristiques des   paquets de noeuds est trop petite.
  nb de paquets maxi :  %(i1)d
  nb de paquets reels:  %(i2)d
 """),
 
-73 : _("""
+73 : _(u"""
  appel errone  resultat :  %(k1)s   archivage numero :  %(i1)d
    code retour de rsexch :  %(i2)d
    probleme champ :  %(k2)s
 """),
 
-74 : _("""
+74 : _(u"""
  on ne trouve pas l'instant  %(r1)f  dans la table  %(k1)s
 """),
 
-75 : _("""
+75 : _(u"""
  on trouve   plusieurs instants  %(r1)f  dans la table  %(k1)s
 """),
 
-76 : _("""
+76 : _(u"""
  noeud non contenu dans une  maille sachant calculer l" option
  noeud numero :  %(i1)d
 """),
 
-77 : _("""
+77 : _(u"""
  *** banque de donnees *** pour le type de geometrie  %(k1)s
   le couple de materiaux  %(k2)s
   ne se trouve pas dans la banque. %(k3)s
 """),
 
-78 : _("""
+78 : _(u"""
  le calcul du rayon n'est pas assez precis.cupn0 =  %(r1)f
   cvpn0 =  %(r2)f
  cupn1 =  %(r3)f

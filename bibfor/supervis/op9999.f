@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ C
       CALL JEMARQ()
       IFIN = 1
       INFO = 1
-      
+
 C     LIBERE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
       CALL DLLCLS()
 
@@ -144,6 +144,7 @@ C     --- RETASSAGE EFFECTIF ----
 C
 C     --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX ) ---
       IF ( IER .EQ. 0 ) THEN
+         CALL U2MESS('I', 'SUPERVIS2_97')
          IF (IUNERR.GT.0) WRITE(IUNERR,*)
      +        '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
          IF (IUNRES.GT.0) WRITE(IUNRES,*)

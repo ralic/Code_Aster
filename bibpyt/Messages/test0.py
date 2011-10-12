@@ -1,8 +1,8 @@
-#@ MODIF test0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF test0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,25 +19,23 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1 : _("""
+1 : _(u"""
 Expression régulière invalide : %(k2)s
 
 Exception retournée :
    %(k1)s
 """),
 
-2 : _("""
+2 : _(u"""
 Le fichier n'a pas été fermé : %(k1)s
 """),
 
-3 : _("""
+3 : _(u"""
 TEST_FICHIER impossible, fichier inexistant : %(k1)s
 """),
 
-4 : _("""
+4 : _(u"""
 
      Nom du fichier   : %(k3)s
 
@@ -51,7 +49,7 @@ TEST_FICHIER impossible, fichier inexistant : %(k1)s
 
 """),
 
-5 : _("""
+5 : _(u"""
 
    -------------------------------------------------------------------------------------------
       Fichier de configuration                    : %(k1)s
@@ -60,21 +58,21 @@ TEST_FICHIER impossible, fichier inexistant : %(k1)s
 
 """),
 
-7 : _("""
+7 : _(u"""
 La commande '%(k1)s' n'a pas été exécutée %(i1)d fois.
 """),
 
-8 : _("""
+8 : _(u"""
 - soit PRECISION contient une seule valeur, et alors, celle-ci sera utilisée
   pour toutes les machines,
 - soit PRECISION contient autant de valeurs qu'il y a de MACHINEs.
 """),
 
-9 : _("""Les temps de référence ne sont pas connus pour l'identifiant '%(k1)s'.
+9 : _(u"""Les temps de référence ne sont pas connus pour l'identifiant '%(k1)s'.
 On utilise les valeurs de '%(k2)s'.
 """),
 
-10 : _("""
+10 : _(u"""
 Les listes fournies aux mots-clefs MACHINE et VALE doivent avoir le meme cardinal.
 """),
 

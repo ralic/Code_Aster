@@ -1,9 +1,8 @@
-      SUBROUTINE IBIMPR ( IER )
+      SUBROUTINE IBIMPR()
       IMPLICIT NONE
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,72 +21,28 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     DEFINITION DES UNITES LOGIQUES DES IMPRESSIONS
 C     ------------------------------------------------------------------
-C OUT IER     : IS  : CODE RETOUR D'EXECUTION
-C       = 0 ==> PAS DE PROBLEME
-C      /= 0 ==> PROBLEME A LA DEFINITION  DES UNITES LOGIQUES
-C     ------------------------------------------------------------------
 C
-C     CONSERVER LA COHERENCE AVEC IBIMPR
+C     CONSERVER LA COHERENCE AVEC IUNIFI ET ULOPEN
       INTEGER       MXIMPR
       PARAMETER   ( MXIMPR = 3)
       CHARACTER*16  NOMPR (MXIMPR)
       INTEGER       UNITPR (MXIMPR)
       CHARACTER*1   AUTPR(MXIMPR)
-      CHARACTER*24  VALK(2)
-      INTEGER VALI, IMPR, INOM, IOCC, IUN, NBNOM, NBOCC, NBUNIT
-      CHARACTER*16    MOTFAC, NOMRES, CONCEP, NOMCMD
-      CHARACTER*16    PRNOM (MXIMPR)
-      INTEGER         PRUNIT, PLACE, PASSE
-      SAVE                           PASSE
-      INTEGER      IARG
+      INTEGER       I, PASSE
+      SAVE          PASSE
       DATA          PASSE  /    0     /
       DATA          NOMPR  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
       DATA          UNITPR /    6      ,     8     ,      9  /
       DATA          AUTPR /    'N'    ,     'O'     ,    'N' /
 C     ------------------------------------------------------------------
-      IER = 0
-C
-C     --- RECUPERATION DU NOM DE LA COMMANDE UTILISATEUR ---
-      CALL GETRES( NOMRES , CONCEP , NOMCMD )
-C
       PASSE = PASSE + 1
 C
-C     --- DEFINITION EVENTUELLE DES OPTIONS PAR DEFAUTS ---
+C --- DEFINITION DES UNITES STANDARDS
       IF ( PASSE .EQ. 1) THEN
-        DO 5 IMPR = 1, MXIMPR
-           CALL ULDEFI(UNITPR(IMPR),' ',NOMPR(IMPR),'A','N',AUTPR(IMPR))
+        DO 5 I = 1, MXIMPR
+           CALL ULDEFI(UNITPR(I),' ',NOMPR(I),'A','N',AUTPR(I))
    5    CONTINUE
       ENDIF
-C
-C     --- NOMBRE DE CATALOGUES SPECIFIES PAR L'UTILISATEUR ---
-      MOTFAC = 'IMPRESSION'
-      CALL GETFAC(MOTFAC,NBOCC)
-C
-      IUN = 1
-      DO 20 IOCC = 1, NBOCC
-         CALL GETVTX(MOTFAC,'FICHIER' ,IOCC,IARG,MXIMPR,PRNOM,NBNOM)
-         IF ( NBNOM.LT.0 ) THEN
-            IER = IER + 1
-          CALL U2MESS('F','SUPERVIS_29')
-         ENDIF
-         DO 15 INOM = 1, NBNOM
-            CALL LXCAPS( PRNOM(INOM) )
-            CALL LXCADR( PRNOM(INOM) )
-            CALL UTREMT( PRNOM(INOM), NOMPR , MXIMPR, PLACE )
-            IF (PLACE.EQ.0) THEN
-               IER = IER + 1
-               VALI =     MXIMPR
-               VALK (1) = PRNOM(1)
-               VALK (2) = PRNOM(2)
-               CALL U2MESG('E','SUPERVIS_84',2,VALK,1,VALI,0,0.D0)
-            ENDIF
-  15     CONTINUE
-         CALL GETVIS(MOTFAC,'UNITE',IOCC,IARG,IUN,PRUNIT,NBUNIT)
-C
-C        --- DEFINITION DES UNITES LOGIQUES DES IMPRESSIONS ---
-         DO 10 IMPR = 1, NBNOM
-            CALL ULDEFI( PRUNIT , ' ', PRNOM(IMPR) , 'A' , 'N' , 'O')
-  10     CONTINUE
-  20  CONTINUE
+      CALL ULDEFI(15,' ','CODE' ,'A','N','O')
 C
       END

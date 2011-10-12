@@ -1,4 +1,4 @@
-#@ MODIF miss0 Messages  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,37 +19,35 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
 Longueur de LFREQ_LISTE incorrecte.
 """),
 
-2: _("""
+2: _(u"""
 Longueur de CONTR_LISTE incorrecte.
 """),
 
-3 : _("""
+3 : _(u"""
 Il faut une et une seule couche avec SUBSTRATUM="OUI".
 """),
 
-4 : _("""
+4 : _(u"""
 La définition de la couche numéro %(i1)d est incorrecte :
 Il y a %(i2)d matériaux, or NUME_MATE=%(i3)d.
 """),
 
-5 : _("""
+5 : _(u"""
 La numérotation des couches est incorrectes.
 """),
 
-6 : _("""
+6 : _(u"""
 Erreur lors de la copie de fichier pour MISS :
   source      : %(k1)s
   destination : %(k2)s
 """),
 
-7 : _("""
+7 : _(u"""
 Erreur lors de la lecture du fichier de résultat Aster
 à la ligne numéro %(i1)d.
 
@@ -57,7 +55,7 @@ Message d'erreur :
 %(k1)s
 """),
 
-8 : _("""
+8 : _(u"""
 Les données lues dans le fichier de résultat Aster ne sont pas cohérentes.
 La trace ci-dessous doit montrer l'incohérence relevée.
 
@@ -65,7 +63,7 @@ Message d'erreur :
 %(k1)s
 """),
 
-9 : _("""
+9 : _(u"""
 Les abscisses de l'accélérogramme '%(k1)s' doivent être à pas constant.
 """),
 
@@ -74,27 +72,27 @@ Interpolation des accélérogrammes sur l'intervalle : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f, soit %(i1)d instants.
 """),
 
-11 : _("""
+11 : _(u"""
 Les %(i1)d fréquences du calcul harmonique sont :
     %(k1)s
 """),
 
-12 : _("""
+12 : _(u"""
 Plage de fréquence du calcul harmonique : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f Hz, soit %(i1)d fréquences.
 """),
 
-13 : _("""
+13 : _(u"""
 Plage de fréquence du calcul Miss : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f Hz, soit %(i1)d fréquences.
 """),
 
-14 : _("""
+14 : _(u"""
 Les %(i1)d fréquences du calcul Miss sont :
     %(k1)s
 """),
 
-15 : _("""
+15 : _(u"""
 L'utilisation de MACRO_MISS_3D est déconseillée et maintenant exclue du périmètre
 qualifié de Code_Aster.
 
@@ -106,12 +104,12 @@ Pour celles-ci, il faut encore utiliser MACRO_MISS_3D. Il s'agit :
     - de l'interaction sol-fluide-structure.
 """),
 
-16 : _("""
+16 : _(u"""
 Dans le cas présent (MODULE='MISS_IMPE' et ISSF='NON'), CALC_MISS répond à votre besoin.
 Nous vous conseillons d'utiliser dorénavant CALC_MISS.
 """),
 
-17 : _("""
+17 : _(u"""
 Fournir une plage de fréquence (mot-clé LIST_FREQ) n'est possible que si
 TYPE_RESU = 'FICHIER' ou 'HARM_GENE'.
 Dans les autres cas, il est nécessaire d'avoir un pas de fréquences constant

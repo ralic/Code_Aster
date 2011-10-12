@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -489,6 +489,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """
         nom_param = tuple([p.strip() for p in nom_param])
         self._cache_func = getattr(self, '_cache_func', {})
+        self._cache_ctxt = getattr(self, '_cache_ctxt', (None, {}))
 
         if self._cache_func.get(nom_fonction):
             objet_sd = self._cache_func[nom_fonction]['fonction']
@@ -529,7 +530,12 @@ Paramètres répétés : %s""" % args
         try:
             context = {}
             # mettre le contexte du parent de l'étape courante (INCLUDE par exemple)
-            context.update(self.parent.get_contexte_avant(self))
+            last_etape, last_ctxt = self._cache_ctxt
+            if last_etape != id(self):
+                last_ctxt = {}
+                last_ctxt.update( self.parent.get_contexte_avant(self) )
+                self._cache_ctxt = id(self), last_ctxt
+            context = last_ctxt
             # récupération des constantes locales en cas de MACRO
             context.update(getattr(self.parent, 'macro_const_context', {}))
             # on reduit le dict au seul parametre de la formule

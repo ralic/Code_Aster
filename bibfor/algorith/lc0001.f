@@ -16,7 +16,7 @@
       CHARACTER*(*)   FAMI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,7 +140,7 @@ C       PETITES DEFORMATIONS
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,R8BID,R8BID,CODRET)
              ELSE
-C                 IMPL_EX
+C                 IMPLEX
             CALL NMISEX(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
      &                  INSTAP,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
      &                  TYPMOD,DSIDEP,CODRET)

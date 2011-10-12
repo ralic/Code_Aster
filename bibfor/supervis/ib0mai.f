@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,20 +19,20 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     MAIN  D'ANALYSE DE LA COMMANDE DE DEMARRAGE
+C     MAIN D'ANALYSE DE LA COMMANDE DE DEMARRAGE
 C     ------------------------------------------------------------------
-C OUT IER  CODE RETOUR
-C      1   PROCEDURE "DEBUT" ET "POURSUITE" NON TROUVEES
-C      2   ERREUR(S) DANS LA COMMANDE  "DEBUT" OU "POURSUITE"
-C      0   SINON
-C     ------------------------------------------------------------------
+C     UTILISATION DU COMMON POUR L'AFFICHAGE
+      INTEGER          LFIC,MFIC
+      COMMON /FENVJE/  LFIC,MFIC
+C
       CHARACTER*8  NOMF
       INTEGER      UNMEGA, IADZON, IDEBUG, IMEMO, INTDBG, LMO, LOIS
-      INTEGER      MEMDEM, MXDYN
+      INTEGER      MEMDEM, MXDYN, IBID
       LOGICAL      LERMEM
-      REAL*8       FNTMEM, VDY
+      REAL*8       FNTMEM, VDY, VALR(3)
       INTEGER      LOISEM, ISDBGJ, MEMDIS, MEJVST,MEMJVX,MJVXMO,MJVSMO
 C
+      IBID = 0
 C     --- MEMOIRE POUR LE GESTIONNAIRE D'OBJET ---
       UNMEGA = 1 024 * 1 024
       IADZON = 0
@@ -41,11 +41,12 @@ C     RESTRICTION POUR UNE TAILLE MEMOIRE JEVEUX EXACTE
       LOIS = LOISEM()
       LERMEM = .FALSE.
       FNTMEM = -1.0D0
+C --- UNITES LOGIQUES
+      CALL IBIMPR()
 C
-C     Bloc a remplacer quand astk sera modifie pour
-C                                 passer les valeurs en Mo par
+C     BLOC A REMPLACER QUAND ASTK SERA MODIFIE POUR
+C     PASSER LES VALEURS EN MO PAR :
 C     MEMDEM = MJVSMO ( FNTMEM ) * UNMEGA
-C
 C
       IF (  MJVSMO (FNTMEM) .EQ. 1 ) THEN
          MEMDEM = MEJVST ( FNTMEM )
@@ -53,15 +54,12 @@ C
          MEMDEM = MJVSMO ( FNTMEM ) * UNMEGA
       ENDIF
 C
-      WRITE(6,'(/,1X,A)') 'PARAMETRES DE LA GESTION MEMOIRE JEVEUX  '
-      WRITE(6,'(1X,A)')   '======================================='
+      VALR(1) = 0.D0
+      VALR(2) = 0.D0
       IF ( MEMDEM .GT. 0 ) THEN
          FNTMEM = MEMDEM * 1.0D0 / UNMEGA
-         WRITE(6,'(1X,A,F12.3,A)')
-     &           'LIMITE MEMOIRE STATIQUE       : ',FNTMEM,' Mo'
          IMEMO  = MEMDIS (MEMDEM/LOIS, IADZON, LMO, 0)
-         WRITE(6,'(1X,A,F12.3,A)') 'MEMOIRE DISPONIBLE            : ',
-     &             (IMEMO*1.0D0/UNMEGA)*LOIS,' Mo'
+         VALR(1) = FNTMEM
          IF ( MEMDEM .LE. IMEMO*LOIS ) THEN
             IMEMO = MEMDEM/LOIS
          ELSE
@@ -71,8 +69,6 @@ C
          IMEMO = UNMEGA
       ENDIF
       FNTMEM = IMEMO * 1.0D0 / UNMEGA
-      WRITE(6,'(1X,A,F12.3,A)')  'MEMOIRE PRISE                 : ',
-     &         IMEMO*LOIS* 1.0D0 / UNMEGA,' Mo'
 C
 C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       INTDBG = -1
@@ -83,10 +79,9 @@ C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       ENDIF
       VDY = -1.0D0
 C
-C     Bloc a remplacer quand astk sera modifie par
-C                                 passer les valeurs en Mo par
+C     BLOC A REMPLACER QUAND ASTK SERA MODIFIE POUR
+C     PASSER LES VALEURS EN MO PAR :
 C     MXDYN =  MAX(0, MJVXMO (VDY) * UNMEGA - IMEMO*LOIS)
-C
 C
       IF ( MJVXMO (VDY) . EQ. 0 ) THEN
         MXDYN =  MAX(0, MEMJVX (VDY) - IMEMO) * LOIS
@@ -94,22 +89,23 @@ C
         MXDYN =  MAX(0, MJVXMO (VDY) * UNMEGA - IMEMO*LOIS)
       ENDIF
 C
-      WRITE(6,'(1X,A,F12.3,A)')
-     &  'LIMITE MEMOIRE DYNAMIQUE      : ',MXDYN*1.0D0/UNMEGA,' Mo'
+      VALR(2) = MXDYN * 1.0D0 / UNMEGA
+C
       CALL JEDEBU(4,IMEMO,MXDYN/LOIS,IADZON,LMO,IDEBUG )
-      WRITE(6,'(1X,A)')   '======================================='
 C
 C     --- ALLOCATION D'UNE BASE DE DONNEES TEMPORAIRE VOLATILE---
       NOMF = 'VOLATILE'
       CALL JEINIF( 'DEBUT','DETRUIT',NOMF,'V', 250 , 100, 1 )
+C --- IMPRESSION DE L'ENTETE
+      CALL ENTETE()
+      VALR(3) = MFIC/(1024*1024.0D0)
+      CALL U2MESR('I', 'SUPERVIS2_22', 3, VALR)
 C
-      CALL ULDEFI(6,' ','MESSAGE','A','N','N')
-      CALL ULDEFI(9,' ','ERREUR' ,'A','N','N')
-      CALL ULDEFI(15,' ','CODE' ,'A','N','O')
-
       IF ( LERMEM ) CALL U2MESI('F','SUPERVIS_11',1,INT(FNTMEM*LOIS))
 
       IF (IDEBUG .EQ. 1) THEN
          CALL U2MESS('I','SUPERVIS_12')
       ENDIF
+C --- VERSION SURCHARGEE OU NON ?
+      CALL SURCHG(IBID)
       END

@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1 : _("""
+1 : _(u"""
  L'utilisation du mot-clé PAR_LOT='NON' permet d'accéder en lecture et en écriture
  au contenu des concepts Aster. De ce fait, votre étude est exclue du périmètre
  qualifié de Code_Aster puisque toutes ses étapes ne peuvent être certifiées.
@@ -36,40 +34,40 @@ cata_msg={
      être réalisés en POURSUITE.
 """),
 
-2: _("""
+2: _(u"""
  Arret sur erreur(s) utilisateur
 """),
 
-3: _("""
+3: _(u"""
  Erreur programmeur : JEMARQ/JEDEMA non appariés.
 """),
 
-4: _("""
+4: _(u"""
  Commande n  %(k1)s  :  "%(k2)s"  :   %(k3)s  erreur(s) détectée(s)
 """),
 
-5: _("""
+5: _(u"""
  Erreur(s) à l'exécution de "%(k1)s" : arret immédiat du programme.
 """),
 
-7: _("""
+7: _(u"""
  Le concept " %(k1)s " est inconnu.
  Il n'est ni parmi les créés, ni parmi ceux à créer.
 """),
 
-8: _("""
+8: _(u"""
  Un nom de concept intermédiaire doit commencer par '.' ou '_' et non :  %(k1)s
 """),
 
-9: _("""
+9: _(u"""
  Longueur nulle
 """),
 
-10: _("""
+10: _(u"""
    - le concept  "%(k1)s" est détruit des bases de données.
 """),
 
-11: _("""
+11: _(u"""
  Impossible d'allouer la mémoire JEVEUX demandée : %(i1)d Moctets.
 
  En général, cette erreur se produit car la mémoire utilisée hors du fortran
@@ -89,264 +87,256 @@ cata_msg={
      disponible pour les allocations dynamiques.
 """),
 
-12: _("""
+12: _(u"""
  Exécution de JEVEUX en mode DEBUG
 """),
 
-13: _("""
+13: _(u"""
   %(k1)s  nom de base déjà définie
 """),
 
-14: _("""
+14: _(u"""
   %(k1)s  statut impossible pour la base globale
 """),
 
-15: _("""
+15: _(u"""
  Problème d'allocation des bases de données
 """),
 
-16: _("""
+16: _(u"""
   Ecriture des catalogues dans ELEMBASE faite.
 """),
 
-17: _("""
+17: _(u"""
  Relecture des catalogues dans ELEMBASE faite.
 """),
 
-18: _("""
+18: _(u"""
   Trop de catalogues (maximum = 10)
 """),
 
-19: _("""
+19: _(u"""
  Debut de lecture
 """),
 
-20: _("""
+20: _(u"""
   "%(k1)s" argument invalide du mot clé "FICHIER" du mot clé facteur "CATALOGUE"
 """),
 
-21: _("""
+21: _(u"""
   Erreur(s) fatale(s) lors de la lecture des catalogues
 """),
 
-# on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !
-22 : _("""
-   !---------------------------------------------------------------------------------------!
-   !                                                                                       !
-   ! Les mot-clés facteurs CODE et DEBUG dans DEBUT/POURSUITE sont réservés aux cas-tests. !
-   ! Il ne faut pas les utiliser dans les études car ils modifient certaines valeurs par   !
-   ! défaut des commandes DEBUT/POURSUITE qui ont des conséquences sur le comportement     !
-   ! en cas d'erreur ou sur les performances.                                              !
-   !                                                                                       !
-   !---------------------------------------------------------------------------------------!
-"""),
+22 : { 'message' : _(u"""
+   Les mot-clés facteurs CODE et DEBUG dans DEBUT/POURSUITE sont réservés aux cas-tests.
+   Il ne faut pas les utiliser dans les études car ils modifient certaines valeurs par
+   défaut des commandes DEBUT/POURSUITE qui ont des conséquences sur le comportement
+   en cas d'erreur ou sur les performances.
+"""), 'flags' : 'DECORATED',
+},
 
-23: _("""
+23: _(u"""
  Debug JXVERI demandé
 """),
 
-24: _("""
+24: _(u"""
  Debug SDVERI demandé
 """),
 
-25: _("""
+25: _(u"""
  Mémoire gestion : "COMPACTE"
  Ce mode de gestion peut augmenter sensiblement le temps système de certaines commandes,
  les lectures/écritures sur les bases Jeveux étant beaucoup plus fréquentes
 """),
 
-26: _("""
+26: _(u"""
  Type allocation memoire 2
 """),
 
-27: _("""
+27: _(u"""
  Type allocation memoire 3
 """),
 
-28: _("""
+28: _(u"""
  Type allocation memoire 4
 """),
 
-29: _("""
- Trop de noms définis dans la liste argument de "FICHIER"
-"""),
-
-31: _("""
+31: _(u"""
  Valeur invalide pour le mot clé RESERVE_CPU
 """),
 
-32: _("""
+32: _(u"""
  La procédure "%(k1)s" ne peut etre appelée en cours d'exécution des commandes
 """),
 
-33: _("""
+33: _(u"""
  Erreur fatale  **** appel à commande "superviseur".
 """),
 
-34: _("""
+34: _(u"""
  Arret de la lecture des commandes.
 """),
 
-36: _("""
+36: _(u"""
  Le concept de nom '%(k1)s' n'existe pas
 """),
 
-38: _("""
+38: _(u"""
  Il n'y a plus de temps pour continuer
 """),
 
-39: _("""
+39: _(u"""
 Arrêt de l'exécution suite à la réception du signal utilisateur USR1.
 Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
-40: _("""
+40: _(u"""
  Vous utilisez une version dont les routines suivantes ont été surchargées :
    %(ktout)s
 """),
 
-43: _("""
+43: _(u"""
  Debug SDVERI suspendu
 """),
 
-44: _("""
+44: _(u"""
  Debug JEVEUX demandé
 """),
 
-45: _("""
+45: _(u"""
  Debug JEVEUX suspendu
 """),
 
-47: _("""
+47: _(u"""
  Debug JXVERI suspendu
 """),
 
-48: _("""
+48: _(u"""
  Debug IMPR_MACRO demandé
 """),
 
-49: _("""
+49: _(u"""
  Debug IMPR_MACRO suspendu
 """),
 
-50: _("""
+50: _(u"""
  la commande a un numéro non appelable dans cette version.
  le numero erroné est  %(i1)d
 """),
 
-52: _("""
+52: _(u"""
  fin de lecture (durée  %(r1)f  s.) %(k1)s
 """),
 
-53: _("""
+53: _(u"""
  vous ne pouvez utiliser plus de  %(i1)d
  niveaux de profondeur pour des appels par la procédure %(k1)s
 """),
 
-56: _("""
+56: _(u"""
  Incohérence entre le catalogue et le corps de la macro.
 """),
 
-60: _("""
+60: _(u"""
  la procédure a un numéro non appelable dans cette version.
  le numero errone est  %(i1)d
 """),
 
-61: _("""
+61: _(u"""
   La commande a un numéro non appelable dans cette version
   Le numéro erroné est : %(i1)d
 """),
 
-62: _("""
+62: _(u"""
   Les messages d'erreurs précédent concerne la commande :
 """),
 
-63: _("""
+63: _(u"""
      ARRET PAR MANQUE DE TEMPS CPU
      Les commandes suivantes sont ignorées, on passe directement dans FIN
      La base globale est sauvegardée
      Temps consommé de la réserve CPU        :  %(r1).2f s\n
 """),
 
-64: _("""
+64: _(u"""
   Valeur initiale du temps CPU maximum =   %(i1)d secondes
   Valeur du temps CPU maximum passé aux commandes =   %(i2)d secondes
   Réserve CPU prévue = %(i3)d secondes
 """),
 
-65: _("""
+65: _(u"""
    %(k1)s   %(k2)s   %(k3)s   %(k4)s
 """),
 
-66: _("""
+66: _(u"""
    %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
 """),
 
-67: _("""
+67: _(u"""
  Passage numéro %(i1)d
 """),
 
-68: _("""
+68: _(u"""
  information sur les concepts devant etre créés.
 """),
 
-71: _("""
+71: _(u"""
  rappel sur les exécutions précédentes
    - il a été executé %(i1)d procédures et opérateurs.
 """),
 
-72: _("""
+72: _(u"""
    - l'exécution précédente s'est terminée correctement.
 """),
 
-73: _("""
+73: _(u"""
 
    - l'exécution précédente s'est terminée en erreur dans la procédure %(k1)s.
 """),
 
-74: _("""
+74: _(u"""
 
    - l'exécution précédente s'est terminée en erreur dans l'opérateur %(k1)s.
 """),
 
-75: _("""
+75: _(u"""
      le concept %(k1)s de type %(k2)s  est peut-être erroné.
 """),
 
-76: _("""
+76: _(u"""
    - l'exécution précédente s'est terminée prématurément dans l'opérateur %(k1)s.
 """),
 
-77: _("""
+77: _(u"""
      le concept %(k1)s de type %(k2)s  a été néanmoims validé par l'opérateur
 """),
 
-78: _("""
+78: _(u"""
      Message attaché au concept  %(k1)s
 """),
 
-79: _("""
+79: _(u"""
      Pas de message attaché au concept %(k1)s
 """),
 
-80: _("""
+80: _(u"""
 
 """),
 
-81: _("""
+81: _(u"""
  %(k1)s nom symbolique inconnu
   - nombre de valeurs attendues %(i1)d
   - valeurs attendues : %(k1)s, %(k2)s,...
 """),
 
-82: _("""
+82: _(u"""
  L'argument du mot cle "CAS" est erroné.
  Valeur lue %(k1)s
  nombre de valeurs attendues %(i1)d
  valeurs attendues : %(k1)s,%(k2)s, ...
 """),
 
-83: _("""
+83: _(u"""
 
  Le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent à un
  fichier dont la taille maximale en Moctets (%(i1)d) est supérieure à limite autorisée :  %(i2)d
@@ -356,31 +346,23 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 
 """),
 
-84: _("""
- Nom symbolique erroné pour un fichier de sortie
- Valeur lue %(k1)s
- - nombre de valeurs attendues %(i2)d
- - valeurs attendues           %(k2)s, %(k3)s
-
-"""),
-
-85: _("""
+85: _(u"""
  information sur les concepts existants.
 """),
 
-86: _("""
+86: _(u"""
  Erreur à la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré.
 """),
 
-87: _("""
+87: _(u"""
 Types incompatibles entre glob.1 et pick.1 pour le concept de nom %(k1)s.
 """),
 
-88: _("""
+88: _(u"""
 Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
 """),
 
-89: _("""
+89: _(u"""
  Il n'y a pas de fichier glob.1 ou bhdf.1 dans le répertoire courant.
 
 Conseils:
@@ -388,7 +370,7 @@ Conseils:
    - Vérifiez si elle doit être décompressée ou pas.
 """),
 
-93 : _("""
+93 : _(u"""
 La variable python "%(k1)s" fait référence au concept "%(k2)s".
 Cela se produit avec ce type d'enchainement :
    %(k2)s = COMMANDE(...)
@@ -402,7 +384,7 @@ On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
       del %(k1)s
 """),
 
-94 : _("""
+94 : _(u"""
 Le temps CPU system (%(r1).1f) atteint une valeur supérieure à %(i1)d%%
 du temps CPU (%(r2).1f).
 Ce comportement est peut-être anormal.
@@ -414,30 +396,24 @@ calcul est de %(i2)d.
 
 """),
 
-95 : _("""
+95 : _(u"""
 Le temps CPU system (%(r1)f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2)f).
 Ce comportement est peut-être anormal.
 
 """),
 
-# on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !
-96 : _("""
+96 : { 'message' : _(u"""
 
-   !--------------------------------------------------------------!
-   !                                                              !
-   ! Réception du signal USR1. Interruption du calcul demandée... !
-   !                                                              !
-   !--------------------------------------------------------------!
+    Réception du signal USR1. Interruption du calcul demandée...
 
-"""),
+"""), 'flags' : 'DECORATED',
+},
 
-97 : _("""
-   !---------------------------------------------------------------!
-   !                                                               !
-   ! Interruption du calcul suite à la réception d'un <Control-C>. !
-   !                                                               !
-   !---------------------------------------------------------------!
+97 : { 'message' : _(u"""
 
-"""),
+    Interruption du calcul suite à la réception d'un <Control-C>.
+
+"""), 'flags' : 'DECORATED',
+},
 
 }

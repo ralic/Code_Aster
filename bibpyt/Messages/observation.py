@@ -1,4 +1,4 @@
-#@ MODIF observation Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF observation Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,26 +20,24 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 
-def _(x) : return x
-
 cata_msg = {
 
-3 : _("""
+3 : _(u"""
  Observations: il y aura, au maximum, %(i1)d observations à chaque instant sélectionné pour cela.
 """),
 
-5 : _("""
+5 : _(u"""
 On ne peut faire plus de %(i1)d SUIVI_DDL.
 Le nombre de SUIVI_DDL permis dépend de l'affichage du tableau de convergence et donc des fonctionnalités activées.
 """),
 
-6 : _("""
+6 : _(u"""
  Erreur dans les données d'observation
  pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s 
 """),
 
 
-8 : _("""
+8 : _(u"""
  Variation de la déformation supérieure au seuil fixé :
     seuil en valeur relative : %(r1)f
     entite : %(k1)s
@@ -47,15 +45,15 @@ Le nombre de SUIVI_DDL permis dépend de l'affichage du tableau de convergence et
     numéro ordre : %(i1)d
 """),
 
-37 : _("""
+37 : _(u"""
   Observations: %(i1)d réalisations pour ce pas de temps
 """),
 
-38 : _("""
+38 : _(u"""
   Observations: une réalisation pour ce pas de temps
 """),
 
-39 : _("""
+39 : _(u"""
   Observations: pas de réalisation pour ce pas de temps
 """),
 

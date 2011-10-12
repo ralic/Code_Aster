@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,22 +31,24 @@ try:
     aster_exists = True
     from Messages.context_info import message_context_concept
     from Utilitai.string_utils import cut_long_lines, copy_text_to, clean_string
+    from Execution.strfunc import convert, ufmt, to_unicode
 except:
     aster_exists = False
     class error(Exception):
         pass
 
-def _(s):
-    return s
-
 from Noyau.N_types import force_list
 
+CENTER = 1
+DECORATED = 2
+ALL_UNIT = 4
 
 MAXLENGTH = 132
+LINE_WITH = 80
 
-contacter_assistance = """
+contacter_assistance = _(u"""
 Il y a probablement une erreur dans la programmation.
-Veuillez contacter votre assistance technique."""
+Veuillez contacter votre assistance technique.""")
 
 # voir en fin de fin les faux appels à UTMESS pour la vérification des messages
 
@@ -94,7 +96,7 @@ class MESSAGE_LOGGER:
         for i in range(1, 11):
             self.default_args['i%d' % i] = 99999999
             self.default_args['r%d' % i] = 9.9999E99
-            self.default_args['k%d' % i] = 'xxxxxx'
+            self.default_args['k%d' % i] = u'xxxxxx'
 
 
     def __call__(self, *args, **kwargs):
@@ -148,7 +150,7 @@ class MESSAGE_LOGGER:
         # variables passées au message
         dicarg = self.default_args.copy()
         for i in range(1, len(valk)+1):
-            dicarg['k%d' % i] = valk[i-1]
+            dicarg['k%d' % i] = to_unicode(valk[i-1])
         for i in range(1, len(vali)+1):
             dicarg['i%d' % i] = vali[i-1]
         for i in range(1, len(valr)+1):
@@ -187,25 +189,31 @@ class MESSAGE_LOGGER:
             dicarg = self.build_dict_args(valk, vali, valr)
 
             # cata_msg[num] = 'format'
-            #              ou {'message' : 'format', 'context' : 'éléments de contexte'}
+            #              ou { 'message' : 'format',
+            #                   'flags' : 'DECORATED | CENTER',
+            #                   'context' : 'éléments de contexte' }
             if type(cata_msg[numess]) == dict:
                 fmt_msg  = cata_msg[numess]['message']
-                ctxt_msg = cata_msg[numess]['context']
+                flags = eval( cata_msg[numess].get('flags', 0) )
+                ctxt_msg = cata_msg[numess].get('context', None)
             else:
                 fmt_msg  = cata_msg[numess]
+                flags = 0
                 ctxt_msg = None
 
             dictmess = {
                 'code'          : code,
+                'flags'         : flags,
                 'id_message'    : idmess,
-                'corps_message' : fmt_msg % dicarg,
+                'corps_message' : ufmt(fmt_msg, dicarg),
                 'context_info'  : self.get_context(ctxt_msg, idmess, dicarg),
             }
         except Exception, msg:
             dictmess = {
                 'code'          : code,
+                'flags'         : 0,
                 'id_message'    : '',
-                'corps_message' : """Erreur de programmation.
+                'corps_message' : _(u"""Erreur de programmation.
 Le message %s n'a pas pu etre formaté correctement.
 Arguments :
     entiers : %s
@@ -216,8 +224,9 @@ Arguments :
 Exception : %s
 --------------------------------------------------------------------------
 
-%s""" \
-        % (idmess, vali, valr, valk, ''.join(traceback.format_tb(sys.exc_traceback)), msg, contacter_assistance),
+%s""") %
+            (idmess, vali, valr, valk, ''.join(traceback.format_tb(sys.exc_traceback)),
+            msg, contacter_assistance),
                 'context_info'  : '',
             }
         # limite la longueur des ligness
@@ -258,12 +267,14 @@ Exception : %s
 
         return current
 
+    def get_current_flags(self):
+        """Retourne les flags du message du buffer = flags du premier."""
+        return self._buffer[0]['flags']
 
     def get_current_id(self):
         """Retourne l'id du message du buffer = id du premier message
         """
         return self._buffer[0]['id_message']
-
 
     def print_buffer_content(self, print_as=None, cc=None):
         """Extrait l'ensemble des messages du buffer dans un dictionnaire unique,
@@ -281,6 +292,7 @@ Exception : %s
         # construction du dictionnaire du message global
         dglob = {
             'code'          : self.get_current_code(),
+            'flags'         : self.get_current_flags(),
             'id_message'    : self.get_current_id(),
             'liste_message' : [],
             'liste_context' : [],
@@ -292,6 +304,8 @@ Exception : %s
         dglob['context_info'] = ''.join(dglob['liste_context'])
 
         # liste des unités d'impression en fonction du type de message
+        if dglob['flags'] & ALL_UNIT:
+            print_as = 'E'
         l_unit = list_unit(print_as or dglob['code'])
 
         # texte final et impression
@@ -300,7 +314,7 @@ Exception : %s
             self.affiche(unite, txt)
         # "cc"
         if cc:
-            copy_text_to(txt, cc)
+            copy_text_to(convert(txt), cc)
 
         self.init_buffer()
 
@@ -308,6 +322,7 @@ Exception : %s
     def disable_alarm(self, idmess, hide=False):
         """Ignore l'alarme "idmess".
         """
+        idmess = idmess.strip()
         if hide:
             self._hidden_alarm[idmess] = self._hidden_alarm.get(idmess, 0) + 1
         else:
@@ -316,6 +331,7 @@ Exception : %s
     def reset_alarm(self, idmess, hide=False):
         """Réactive l'alarme "idmess".
         """
+        idmess = idmess.strip()
         if hide:
             self._hidden_alarm[idmess] = min(self._hidden_alarm.get(idmess, 0) - 1, 0)
         else:
@@ -352,10 +368,7 @@ Exception : %s
         if ieff == 0:
             dictmess = self.get_message('I', 'CATAMESS_92')
             self.add_to_buffer(dictmess)
-        # fermeture
-        dictmess = self.get_message('I', 'CATAMESS_91')
-        self.add_to_buffer(dictmess)
-        self.print_buffer_content(print_as='A')
+        self.print_buffer_content()
 
 
     def update_counter(self):
@@ -368,7 +381,7 @@ Exception : %s
         elif code == 'F':
             self.erreur_E = False
         elif code == 'A':
-            idmess = self.get_current_id()
+            idmess = self.get_current_id().strip()
             # nombre d'occurrence de cette alarme (sauf si cachee)
             if self._hidden_alarm.get(idmess, 0) == 0:
                 self.count_alarm[idmess]     = self.count_alarm.get(idmess, 0) + 1
@@ -423,27 +436,27 @@ Exception : %s
         charv = '!'    # vertical
         charc = '!'    # coin
         dcomm = {
-            'A' : _("""Ceci est une alarme. Si vous ne comprenez pas le sens de cette
+            'A' : _(u"""Ceci est une alarme. Si vous ne comprenez pas le sens de cette
 alarme, vous pouvez obtenir des résultats inattendus !"""),
-            'E' : _("""Cette erreur sera suivie d'une erreur fatale."""),
-            'S' : _("""Cette erreur est fatale. Le code s'arrete. Toutes les étapes
+            'E' : _(u"""Cette erreur sera suivie d'une erreur fatale."""),
+            'S' : _(u"""Cette erreur est fatale. Le code s'arrete. Toutes les étapes
 du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
-            'F' : _("""Cette erreur est fatale. Le code s'arrete."""),
+            'F' : _(u"""Cette erreur est fatale. Le code s'arrete."""),
         }
 
         # format complet
         format_general = {
-            'decal'  : '   ',
-            'header' : """<%(type_message)s> %(str_id_message)s""",
-            'ligne'  : '%(charv)s %%-%(maxlen)ds %(charv)s',
-            'corps'  : """%(header)s
+            'decal'  : u'   ',
+            'header' : u"""<%(type_message)s> %(str_id_message)s""",
+            'ligne'  : u'%(charv)s %%-%(maxlen)ds %(charv)s',
+            'corps'  : u"""%(header)s
 
 %(corps_message)s
 %(context_info)s
 
 %(commentaire)s
 """,
-            'final'  : """
+            'final'  : u"""
 %(separateur)s
 %(corps)s
 %(separateur)s
@@ -452,12 +465,12 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         }
         # format light pour les infos
         format_light = {
-            'decal'  : '',
-            'header' : """<%(type_message)s> """,
-            'ligne'  : '%%s',
-            'corps'  : """%(corps_message)s
+            'decal'  : u'',
+            'header' : u"""<%(type_message)s> """,
+            'ligne'  : u'%%s',
+            'corps'  : u"""%(corps_message)s
 %(context_info)s""",
-            'final'  : """%(corps)s""",
+            'final'  : u"""%(corps)s""",
         }
         dmsg = dictmess.copy()
         dmsg['type_message'] = self.get_type_message(dictmess['code'])
@@ -470,18 +483,20 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         format = format_general
         if dmsg['type_message'] == 'I':
             format = format_light
+        if dmsg['flags'] & DECORATED:
+            format = format_general
         if format is format_general:
             lines = dmsg['corps_message'].splitlines()
             while len(lines) > 1 and lines[0].strip() == '':
                 del lines[0]
             dmsg['corps_message'] = os.linesep.join(lines).rstrip()
 
-        dmsg['header']      = format['header'] % dmsg
+        dmsg['header'] = ufmt(format['header'], dmsg)
         dmsg['commentaire'] = dcomm.get(dmsg['type_message'], '')
         if re.search('^DVP', dmsg['id_message']) != None:
             dmsg['commentaire'] += contacter_assistance
 
-        dmsg['corps']       = format['corps'] % dmsg
+        dmsg['corps'] = ufmt(format['corps'], dmsg)
         if format is format_general:
             dmsg['corps'] = dmsg['corps'].strip()
 
@@ -497,9 +512,11 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             'charc'  : charc,
             'maxlen' : maxlen
         }
-        fmt_line = format['ligne'] % dlin
+        fmt_line = ufmt(format['ligne'], dlin)
 
         # on formate toutes les lignes
+        if dmsg['flags'] & CENTER:
+            l_line = [line.strip().center(LINE_WITH) for line in l_line]
         txt = [fmt_line % line for line in l_line]
         dmsg['corps'] = os.linesep.join(txt)
         dmsg['separateur'] = charc + charh * (maxlen + 2) + charc
@@ -550,6 +567,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
     # définitions pour fonctionner sans le module aster
     def affiche(self, unite, txt):
         """Affichage du message"""
+        txt = convert(txt)
         if aster_exists:
             aster.affiche(unite, txt)
         else:
@@ -661,7 +679,6 @@ def __fake__():
     UTMESS('I', 'CATAMESS_57')
     UTMESS('I', 'CATAMESS_89')
     UTMESS('I', 'CATAMESS_90')
-    UTMESS('I', 'CATAMESS_91')
     UTMESS('I', 'CATAMESS_92')
     # appelé par levé d'exception
     # dans Miss/*.py

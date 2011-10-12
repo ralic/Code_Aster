@@ -1,4 +1,4 @@
-#@ MODIF charges Messages  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF charges Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,28 +19,26 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 La charge <%(k1)s> a été utilisée plus d'une fois dans EXCIT: il faut la supprimer.
 """),
 
-2 : _("""
+2 : _(u"""
 Il n'y a aucune charge dans le mot-clef facteur EXCIT. Ce n'est pas possible avec STAT_NON_LINE.
 """),
 
-22 : _("""
+22 : _(u"""
 La charge <%(k1)s> n'est pas mécanique.
 """),
 
-23 : _("""
+23 : _(u"""
 La charge <%(k1)s> est de type Dirichlet :
  elle ne peut pas etre suiveuse.
 """),
 
-24 : _("""
+24 : _(u"""
 La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
  elle ne peut pas etre différentielle.
 """),
@@ -49,29 +47,29 @@ La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
 
 
 
-27 : _("""
+27 : _(u"""
 La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
  elle ne peut pas etre pilotée.
 """),
 
-28 : _("""
+28 : _(u"""
 On ne peut piloter la charge <%(k1)s> car c'est une charge fonction du temps
 """),
 
-34 : _("""
+34 : _(u"""
 La charge de type EVOL_CHAR <%(k1)s>  ne peut pas etre pilotée.
 """),
 
-38 : _("""
+38 : _(u"""
 La charge <%(k1)s> ne peut pas utiliser de fonction multiplicative FONC_MULT
  car elle est pilotée.
 """),
 
-39 : _("""
+39 : _(u"""
 On ne peut pas piloter en l'absence de forces de type "FIXE_PILO"
 """),
 
-40 : _("""
+40 : _(u"""
 On ne peut piloter plus d'une charge.
 """),
 }

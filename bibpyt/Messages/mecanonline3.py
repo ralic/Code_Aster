@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  Il y a trop de colonnes à afficher dans le tableau de convergence.
  La largeur maximale affichable est de 256 caractères, donc 14 colonnes au maximum.
  Or vous avez <%(i1)d> colonnes !
@@ -31,7 +29,7 @@ cata_msg = {
  VOos pouvez éventuellement désactiver INFO_RESIDU ou INFO_TEMPS.
 """),
 
-2 : _("""
+2 : _(u"""
  Votre modèle contient des variables de commandes (température, irradiation, etc.)
  or on utilise une matrice élastique constante au cours du temps.
  Si vous faites de l'amortissement de Rayleigh, il y a un risque de résultats faux
@@ -39,35 +37,35 @@ cata_msg = {
 
  """),
 
-70 : _("""
+70 : _(u"""
  macro_element statique et FETI incompatibles
 """),
 
-71 : _("""
+71 : _(u"""
  chargement onde plane et FETI incompatibles
 """),
 
-73 : _("""
+73 : _(u"""
  forces d'inertie et FETI incompatibles
 """),
 
-75 : _("""
+75 : _(u"""
  forces d'inertie derivées et FETI incompatibles
 """),
 
-78 : _("""
+78 : _(u"""
  FETI et contact discret incompatibles !
 """),
 
-79 : _("""
+79 : _(u"""
  FETI et contact continu incompatibles !
 """),
 
-89 : _("""
+89 : _(u"""
  contact et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
-90 : _("""
+90 : _(u"""
   -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linéaire '%(k1)s'.
      Le solveur '%(k1)s' n'est actuellement autorisé qu'avec les algorithmes de contact 'VERIF' et 'PENALISATION'.
 
@@ -76,15 +74,15 @@ cata_msg = {
      en utilisant le mot-clé METHODE de SOLVEUR.
 """),
 
-91 : _("""
+91 : _(u"""
 Contact méthode continue et recherche linéaire sont incompatibles
 """),
 
-92 : _("""
+92 : _(u"""
 Contact méthode continue et pilotage sont incompatibles
 """),
 
-93 : _("""
+93 : _(u"""
   -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linéaire '%(k1)s' et le renuméroteur 'RCMK'.
      Le renuméroteur 'RCMK' n'est actuellement pas autorisé avec la formulation 'CONTINUE'.
 
@@ -92,15 +90,15 @@ Contact méthode continue et pilotage sont incompatibles
      Il ne faut pas utiliser de renuméroteur (renseignez RENUM='SANS' sous le mot-clé facteur SOLVEUR).
 """),
 
-94 : _("""
+94 : _(u"""
  LIAISON_UNILATER et PILOTAGE sont des fonctionnalités incompatibles
 """),
 
-95 : _("""
+95 : _(u"""
  LIAISON_UNILATER et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
-96 : _("""
+96 : _(u"""
   -> Vous utilisez la formulation 'LIAISON_UNIL' conjointement avec le solveur linéaire '%(k1)s'.
      Ce dernier n'est pas compatible avec le traitement de conditions unilatérales.
 

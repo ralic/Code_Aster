@@ -1,4 +1,4 @@
-#@ MODIF mecanonline8 Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline8 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,12 +20,10 @@
 
 # Attention a ne pas faire de retour à la ligne !
 
-def _(x) : return x
-
 cata_msg = {
 
 
-1 : _("""
+1 : _(u"""
   Statistiques sur tout le transitoire.
     * Nombre de pas de temps                      : %(i1)d 
     * Nombre d'itérations de Newton               : %(i2)d 
@@ -34,55 +32,55 @@ cata_msg = {
     * Nombre de résolutions K.U=F                 : %(i5)d
 """),
 
-2 : _("""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
+2 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
 
-3 : _("""    * Nombre d'itérations du solveur FETI         : %(i1)d"""),
+3 : _(u"""    * Nombre d'itérations du solveur FETI         : %(i1)d"""),
 
-10 : _("""    * Nombre d'itérations de résolution contact   : %(i1)d"""),
+10 : _(u"""    * Nombre d'itérations de résolution contact   : %(i1)d"""),
 
-11 : _("""    * Nombre d'appariements contact               : %(i1)d"""),
+11 : _(u"""    * Nombre d'appariements contact               : %(i1)d"""),
 
-22 : _("""    * Nombre de boucles de frottement             : %(i1)d"""),
+22 : _(u"""    * Nombre de boucles de frottement             : %(i1)d"""),
 
-23 : _("""    * Nombre de boucles de contact                : %(i1)d"""),
+23 : _(u"""    * Nombre de boucles de contact                : %(i1)d"""),
 
-30 :_("""
+30 :_(u"""
   Statistiques du contact sur tout le transitoire.
 """),
 
-31 : _("""    * Nombre de liaisons de contact               : %(i1)d"""),
+31 : _(u"""    * Nombre de liaisons de contact               : %(i1)d"""),
 
-32 : _("""    * Nombre de liaisons de frottement            : %(i1)d"""),
+32 : _(u"""    * Nombre de liaisons de frottement            : %(i1)d"""),
 
-50 : _("""
+50 : _(u"""
   Temps CPU consommé dans le transitoire          : %(k1)s
 """),
 
-51 : _("""    * Temps assemblage matrice                    : %(k1)s"""),
+51 : _(u"""    * Temps assemblage matrice                    : %(k1)s"""),
 
-52 : _("""    * Temps construction second membre            : %(k1)s"""),
+52 : _(u"""    * Temps construction second membre            : %(k1)s"""),
 
-53 : _("""    * Temps total factorisation matrice           : %(k1)s"""),
+53 : _(u"""    * Temps total factorisation matrice           : %(k1)s"""),
 
-54 : _("""    * Temps total intégration LDC                 : %(k1)s"""),
+54 : _(u"""    * Temps total intégration LDC                 : %(k1)s"""),
 
-55 : _("""    * Temps total résolution K.U=F                : %(k1)s"""),
+55 : _(u"""    * Temps total résolution K.U=F                : %(k1)s"""),
 
-56 : _("""    * Temps résolution contact                    : %(k1)s"""),
+56 : _(u"""    * Temps résolution contact                    : %(k1)s"""),
 
-57 : _("""    * Temps construction matrices contact         : %(k1)s"""),
+57 : _(u"""    * Temps construction matrices contact         : %(k1)s"""),
 
-58 : _("""    * Temps préparation données contact           : %(k1)s"""),
+58 : _(u"""    * Temps préparation données contact           : %(k1)s"""),
 
-59 : _("""    * Temps frottement                            : %(k1)s"""),
+59 : _(u"""    * Temps frottement                            : %(k1)s"""),
 
-60 : _("""    * Temps contact                               : %(k1)s"""),
+60 : _(u"""    * Temps contact                               : %(k1)s"""),
 
-61 : _("""    * Temps appariement contact                   : %(k1)s"""),
+61 : _(u"""    * Temps appariement contact                   : %(k1)s"""),
 
-62 : _("""    * Temps post-traitement (flambement)          : %(k1)s"""),
+62 : _(u"""    * Temps post-traitement (flambement)          : %(k1)s"""),
 
-63 : _("""    * Temps autres opérations                     : %(k1)s"""),
+63 : _(u"""    * Temps autres opérations                     : %(k1)s"""),
 
 }
 

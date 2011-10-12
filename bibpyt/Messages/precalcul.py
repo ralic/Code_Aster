@@ -1,4 +1,4 @@
-#@ MODIF precalcul Messages  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF precalcul Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,25 +19,23 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-60 : _("""
+60 : _(u"""
 Appel à CALCUL
 Le nom du paramètre de champ d'entree numéro %(i1)d est vide.
 """),
 
-61 : _("""
+61 : _(u"""
 Appel à CALCUL
 Le champ d'entrée numéro %(i1)d est vide.
 """),
 
-62 : _("""
+62 : _(u"""
 Appel à CALCUL. Le nom du paramètre de champ de sortie numéro %(i1)d est vide.
 """),
 
-63 : _("""
+63 : _(u"""
 Appel à CALCUL. Le champ de sortie numéro %(i1)d est vide.
 """),
 

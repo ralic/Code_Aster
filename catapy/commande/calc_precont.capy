@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,12 +53,9 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",
             NUME_DIDI       =SIMP(statut='f',typ='I'),
             INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
           ),
-         METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPL_EX")),
+         METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPLEX")),
          b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
                            NEWTON = C_NEWTON(),
-                        ),
-         b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
-                           IMPL_EX = C_IMPL_EX(),
                         ),
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR

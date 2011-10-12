@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,55 +19,53 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 Le fichier %(k1)s existe déjà, on écrit à la suite.
 """),
 
-2 : _("""
+2 : _(u"""
 Il n'y a pas de règles d'interpolation pour LIST_PARA/LIST_RESU,
 LIST_PARA/LIST_RESU ne peut donc apparaitre qu'une seule fois
 et à la première occurence de COURBE.
 """),
 
-3 : _("""
+3 : _(u"""
 LIST_PARA et LIST_RESU n'ont pas la meme taille.
 """),
 
-4 : _("""
+4 : _(u"""
 FONC_X/FONC_Y ne peuvent pas etre des nappes !
 """),
 
-5 : _("""
+5 : _(u"""
 Au format 'TABLEAU', FONC_X/FONC_Y ne peut apparaitre qu'une seule fois
 et à la première occurence de COURBE
 """),
 
-6 : _("""
+6 : _(u"""
 Il n'y a pas de règles d'interpolation pour ABSCISSE/ORDONNEE,
 ABSCISSE/ORDONNEE ne peut donc apparaitre qu'une seule fois
 et à la première occurence de COURBE.
 """),
 
-7 : _("""
+7 : _(u"""
 ABSCISSE et ORDONNEE n'ont pas la meme taille.
 """),
 
-8 : _("""
+8 : _(u"""
 Format inconnu : %(k1)s
 """),
 
-9 : _("""
+9 : _(u"""
 Erreur lors de l'interpolation de la fonction '%(k1)s'.
 """),
 
-10 : _("""sur la maille '%(k1)s'
+10 : _(u"""sur la maille '%(k1)s'
 """),
 
-11 : _("""
+11 : _(u"""
 L'interpolation de la fonction '%(k1)s' n'est pas autorisée.
 Le type d'interpolation de la fonction vaut 'NON'
 
@@ -75,7 +73,7 @@ Le type d'interpolation de la fonction vaut 'NON'
     Voir le mot-clé INTERPOL des commandes qui créent des fonctions.
 """),
 
-12 : _("""
+12 : _(u"""
 Une erreur s'est produite dans la recherche de l'intervalle des abscisses contenant la valeur %(r1)s.
 
   -> Risque & Conseil :
@@ -83,7 +81,7 @@ Une erreur s'est produite dans la recherche de l'intervalle des abscisses conten
     (mot-clé INTERPOL des commandes qui créent des fonctions).
 """),
 
-13 : _("""
+13 : _(u"""
 Le type de la fonction '%(k1)s' est inconnu.
 Seules les fonctions, nappes, fonctions constantes peuvent etre traitées par FOINTE.
 
@@ -91,31 +89,31 @@ Seules les fonctions, nappes, fonctions constantes peuvent etre traitées par FOI
       le type est '%(k2)s'
 """),
 
-14 : _("""
+14 : _(u"""
 Il n'y a pas assez de paramètres pour évaluer la fonction.
 Seulement %(i1)d paramètre(s) sont fourni(s) alors que la fonction en réclame %(i2)d.
 """),
 
-15 : _("""
+15 : _(u"""
 Il y a des doublons dans la liste des paramètres fournis :
    %(ktout)s
 """),
 
-16 : _("""
+16 : _(u"""
 Les paramètres nécessaires sont :
    %(ktout)s
 """),
 
-17 : _("""
+17 : _(u"""
 Les paramètres fournis sont :
    %(ktout)s
 """),
 
-18 : _("""
+18 : _(u"""
 La fonction n'a meme pas un point !
 """),
 
-19 : _("""
+19 : _(u"""
 On est hors du domaine de définition de la fonction.
 On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à gauche est exclus.
    abscisse demandée              : %(r1)f
@@ -125,7 +123,7 @@ On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à 
     Voir le mot-clé PROL_GAUCHE des commandes qui créent des fonctions.
 """),
 
-20 : _("""
+20 : _(u"""
 On est hors du domaine de définition de la fonction.
 On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à droite est exclus.
    abscisse demandée              : %(r1)f
@@ -135,14 +133,14 @@ On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à 
     Voir le mot-clé PROL_DROITE des commandes qui créent des fonctions.
 """),
 
-21 : _("""
+21 : _(u"""
 Erreur de programmation : type d'extrapolation inconnu.
 
   -> Debug :
       le type d'extrapolation est '%(k1)s'
 """),
 
-22 : _("""
+22 : _(u"""
 La fonction n'est définie qu'en un point. On ne peut pas l'interpoler en
 plus d'un point si le prolongement n'est pas constant des deux cotés.
 
@@ -150,7 +148,7 @@ plus d'un point si le prolongement n'est pas constant des deux cotés.
     Voir les mot-clés PROL_GAUCHE/PROL_DROITE des commandes qui créent des fonctions.
 """),
 
-23 : _("""
+23 : _(u"""
 La fonction n'est définie qu'en un point. On ne peut pas l'interpoler ailleurs
 qu'en ce point si le prolongement n'est pas constant des deux cotés.
 
@@ -158,12 +156,12 @@ qu'en ce point si le prolongement n'est pas constant des deux cotés.
     Voir les mot-clés PROL_GAUCHE/PROL_DROITE des commandes qui créent des fonctions.
 """),
 
-24 : _("""
+24 : _(u"""
 On attend une fonction d'un seul paramètre.
 La fonction '%(k1)s' est une fonction de %(i1)d paramètres.
 """),
 
-25 : _("""
+25 : _(u"""
 Le type de la fonction '%(k1)s' est inconnu.
 Seules les fonctions, nappes, fonctions constantes et formules sont
 traitées par FOINTR.
@@ -172,12 +170,12 @@ traitées par FOINTR.
       le type est '%(k2)s'
 """),
 
-26 : _("""
+26 : _(u"""
    abscisse demandée : %(r1)f
    intervalle trouvé : [%(r2)f, %(r3)f]
 """),
 
-27 : _("""
+27 : _(u"""
 Un problème d'interpolation a été rencontré.
 %(k1)s
 
@@ -189,7 +187,7 @@ Un problème d'interpolation a été rencontré.
       %(k2)s
 """),
 
-28 : _("""
+28 : _(u"""
 Un problème concernant le nom des abscisses ou ordonnées a été rencontré.
 Vous ne pouvez pas faire la transformée de fourier d'une fonction dont les abscisses sont des fréquences,
    ou si la fonction est a valeurs complexes
@@ -205,7 +203,7 @@ Vous ne pouvez pas faire la transformée de fourier inverse d'une fonction dont l
       %(k2)s
 """),
 
-29 : _("""
+29 : _(u"""
 Un problème concernant le prolongement de la (des) fonction(s) a été rencontré.
 %(k1)s
 
@@ -217,7 +215,7 @@ Un problème concernant le prolongement de la (des) fonction(s) a été rencontré.
       %(k2)s
 """),
 
-30 : _("""
+30 : _(u"""
 Une erreur s'est produite lors de l'opération.
 %(k1)s
 
@@ -230,83 +228,83 @@ Remontée d'erreur (pour aider à l'analyse) :
 
 """),
 
-31 : _("""
+31 : _(u"""
    Génération par défaut de 3 amortissements :[%(r1)f,%(r2)f,%(r3)f]
 """),
 
-32 : _("""
+32 : _(u"""
    Génération par défaut de 150 fréquences :
    %(k1)s
 """),
 
-33 : _("""
+33 : _(u"""
    SPEC_OSCI, la norme ne peut etre nulle.
 """),
 
-34 : _("""
+34 : _(u"""
    SPEC_OSCI, le type de la fonction doit etre ACCE.
 """),
 
-35 : _("""
+35 : _(u"""
    SPEC_OSCI, seule la méthode NIGAM est codée.
 """),
 
-36 : _("""
+36 : _(u"""
    SPEC_OSCI, la méthode choisie suppose des amortissements sous-critiques,
    amor<1.
 """),
 
-37 : _("""
+37 : _(u"""
  calcul du MAX, la liste de fonctions n'est pas
  homogène en type (fonctions et nappes)
 """),
 
-38 : _("""
+38 : _(u"""
  Calcul du MAX, la liste de fonctions n'est pas homogène
  en label NOM_PARA :%(k1)s
 """),
 
-39 : _("""
+39 : _(u"""
  Calcul du MAX, la liste de fonctions n'est pas homogène
  en label NOM_RESU :%(k1)s
 """),
 
-40 : _("""
+40 : _(u"""
  Intensite spectrale, avant de calculer l'intensite spectrale,
  il est prudent de verifier la norme de la nappe sur laquelle
  porte le calcul, ceci peut etre une source d erreurs.
 """),
 
-41 : _("""
+41 : _(u"""
  Le fichier %(k1)s est introuvable.
 """),
 
-42 : _("""
+42 : _(u"""
 Erreur lors de la lecture des blocs de valeurs :
    %(k1)s
 """),
 
-43 : _("""
+43 : _(u"""
 Les fréquences doivent etre strictement positives.
 """),
 
-44 : _("""
+44 : _(u"""
 Les abscisses de la fonction %(k1)s ne sont pas strictement croissantes.
 """),
 
-45 : _("""
+45 : _(u"""
 Les abscisses de la fonction %(k1)s ne sont pas croissantes.
 """),
 
-46 : _("""
+46 : _(u"""
 Les abscisses de la fonction %(k1)s ne sont pas décroissantes.
 """),
 
-47 : _("""
+47 : _(u"""
 Les abscisses de la fonction %(k1)s ne sont pas strictement décroissantes.
 """),
 
-48 : _("""
+48 : _(u"""
 La fonction ou formule ne doit avoir qu'une ou deux variables.
 """),
 
@@ -315,7 +313,7 @@ La nappe ou formule a deux paramètres. Il faut renseigner le mot-clé NOM_PARA_FO
 et soit VALE_PARA_FONC, soit LIST_PARA_FONC.
 """),
 
-50 : _("""
+50 : _(u"""
 Seules les formules à une variable peuvent être traitées directement par IMPR_FONCTION.
 
 La formule '%(k1)s' dépend de %(i1)d paramètres.
@@ -328,11 +326,11 @@ La formule '%(k1)s' dépend de %(i1)d paramètres.
         et passer par CALC_FONC_INTERP puis IMPR_FONCTION.
 """),
 
-51 : _("""
+51 : _(u"""
 Erreur lors de l'interprétation de la formule '%(k1)s'.
 """),
 
-52 : _("""
+52 : _(u"""
 %(k1)s
 
 Conseils :
@@ -341,7 +339,7 @@ Conseils :
   la formule (mot clé FORMULE / NOM_PARA).
 """),
 
-53 : _("""sur le noeud '%(k1)s'
+53 : _(u"""sur le noeud '%(k1)s'
 """),
 
 54 : ("""
@@ -349,17 +347,17 @@ Nombre de paramètres fournis : %(i1)d
 Noms des paramètres fournis  : %(ktout)s
 """),
 
-55 : _("""
+55 : _(u"""
   La liste des bornes de l'intervalle n'est pas cohérente.
   Elle doit comporter un nombre pair de valeurs.
 """),
 
-56 : _("""
+56 : _(u"""
   La borne inf doit etre inférieure à la borne sup.
   Veuillez revoir la saisie du mot-clé INTERVALLE.
 """),
 
-57 : _("""
+57 : _(u"""
 Le polynome est de la forme :
     a[0] x^N + a[1] x^(N-1) + a[2] x^(N-2) + ... + a[N]
 
@@ -368,28 +366,28 @@ avec :
 
 """),
 
-58 :_("""
+58 :_(u"""
 Erreur lors de la vérification des noms des paramètres.
 Le nom du premier paramètre de la formule en entrée (%(k1)s) est '%(k2)s'.
 
 Or vous avez demandé à créer une nappe avec NOM_PARA='%(k3)s'.
 """),
 
-59 :_("""
+59 :_(u"""
 Erreur lors de la vérification des noms des paramètres.
 Le nom du paramètre de la nappe en entrée (%(k1)s) est '%(k2)s'.
 
 Or vous avez demandé à créer une nappe avec NOM_PARA='%(k3)s'.
 """),
 
-60 :_("""
+60 :_(u"""
 Erreur lors de la vérification des noms des paramètres.
 Le nom du deuxième paramètre de la formule en entrée (%(k1)s) est '%(k2)s'.
 
 Or vous avez demandé à créer une nappe avec NOM_PARA_FONC='%(k3)s'
 """),
 
-61 :_("""
+61 :_(u"""
 Erreur lors de la vérification des noms des paramètres.
 Le nom du paramètre des fonctions de la nappe en entrée (%(k1)s) est '%(k2)s'.
 

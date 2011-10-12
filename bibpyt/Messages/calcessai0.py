@@ -1,4 +1,4 @@
-#@ MODIF calcessai0 Messages  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calcessai0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,49 +20,47 @@
 
 # RESPONSABLE BODEL C.BODEL
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
 Le modèle mesuré doit etre un concept de type DYNA_HARMO ou MODE_MECA.
 """),
-3: _("""
+3: _(u"""
 Calcul de MAC impossible : bases incompatibles.
 """),
-4: _("""
+4: _(u"""
 Problème inverse impossible : problème de cohérence entre les données.
 """),
-5: _("""
+5: _(u"""
 Problème de NUME_DDL dans MACRO_EXPANS : il est possible de le preciser
 a l'appel de la macro. Conséquence : erreur fatale possible dans les
 operations ulterieures (notamment l'operateur MAC_MODE)
 """),
-6: _("""
+6: _(u"""
 Si vous n'avez pas selectionne de NUME_ORDRE ou de NUME_MODE dans %(k1)s.
 Il ne faut pas declarer de concept en sortie de type %(k2)s.
 Cela risque de causer une erreur fatale par la suite.
 """),
-7: _("""
+7: _(u"""
 Erreur dans MACRO_EXPANS
 """),
-8: _("""
+8: _(u"""
 Impossible de trouver le modele associe a la base de modes %(k1)s.
 Cela peut empecher certains calculs de se derouler normalement.
 """),
-9: _("""
+9: _(u"""
 Les mots-clés MATR_A et MATR_B n'ont pas été renseignés dans OBSERVATION.
 Cela peut s'avérer indispensable pour la suite des calculs (les calculs
 d'expansion et de MAC ne seront pas possibles).
 """),
-10: _("""
+10: _(u"""
 Le modèle associé aux matrices MATR_A et MATR_B doit être le même que MODELE_2.
 """),
-13: _("""
+13: _(u"""
 Le résultat expérimental est un dyna_harmo : il n'est pas possible d'en extraire
 des numéros d'ordre avec MACRO_EXPANS. Le mots-clés NMUE_MODE et NUME_ORDRE
 sont ignorés.
 """),
-14: _("""
+14: _(u"""
 Erreur dans le calcul de MAC : le nume_ddl associé à la base %(k1)s
 n'existe pas. Si cette base a été créée avec PROJ_CHAMP, ne pas oublier
 de mentionner explicitement le nume_ddl de la sd résultat avec le mot-clé

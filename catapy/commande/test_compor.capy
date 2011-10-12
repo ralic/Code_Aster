@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,19 @@
 
 #              MACRO "TEST_THERMOPLASTIQUE"
 #           ----------------------------
+def test_compor_sdprod(self, COMP_INCR, **kwargs):
+    """Ne produit une table qu'en présence de COMP_INCR."""
+    if COMP_INCR:
+        return table_sdaster
+    return None
+
 
 TEST_COMPOR =MACRO(nom="TEST_COMPOR",
                    op=OPS('Macro.test_compor_ops.test_compor_ops'),
-                   sd_prod=table_sdaster,
+                   sd_prod=test_compor_sdprod,
                    docu="",reentrant='n',
                    fr="macro de test des comportements incrementaux dependant de la temperature",
+         regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS'),),
 
          OPTION         =SIMP(statut='f',typ='TXM',into=("THER","MECA"),defaut="THER"),
 

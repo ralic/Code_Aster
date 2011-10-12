@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,8 @@ except:
    aster_exists = False
 
 
-def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO):
+
+def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO):
    """Fonction sdprod partie commune à DEBUT et POURSUITE.
    (on stocke un entier au lieu du logique)
    """
@@ -60,6 +61,10 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    jdc.info_level = INFO
    if CODE != None:
       jdc.fico = CODE['NOM']
+   if LANG:
+       from Execution.i18n import get_translation
+       lang = get_translation(LANG)
+       lang.install()
    if aster_exists:
       # pb en cas d'erreur dans FIN : appeler reset_print_function dans traiter_fin_exec ?
       #from functools import partial
@@ -84,14 +89,14 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
       jdc.msg_init = True
 
 
-def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args):
+def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, **args):
    """
        Fonction sdprod de la macro DEBUT
    """
    # La commande DEBUT ne peut exister qu'au niveau jdc
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
-   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO)
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO)
 
 
 def build_debut(self,**args):
@@ -114,7 +119,7 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args):
+def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, **args):
    """
        Fonction sdprod de la macro POURSUITE
    """
@@ -122,7 +127,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
-   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO)
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO)
 
    if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
      # Le module d'execution est accessible et glob.1 est present
@@ -170,7 +175,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args
      # variables qui ne sont pas des concepts.
      # On supprime du pickle_context les concepts valant None, ca peut
      # etre le cas des concepts non executés, placés après FIN.
-     message.info(SUPERV, 'SUPERVIS2_1', utmess=True)
+     UTMESS('I', 'SUPERVIS2_1')
      pickle_context = get_pickled_context()
      if pickle_context == None:
         UTMESS('F', 'SUPERVIS_86')

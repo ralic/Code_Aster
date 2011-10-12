@@ -1,4 +1,4 @@
-#@ MODIF execlogiciel0 Messages  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF execlogiciel0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,67 +19,65 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1 : _("""
+1 : _(u"""
 Format Salome, l'argument 1 doit etre 
 le nom du fichier med produit par le script python.
 """),
 
-2 : _("""
+2 : _(u"""
 On ne sait pas traiter le format %(k1)s
 """),
 
-3 : _("""
+3 : _(u"""
 Code retour incorrect (MAXI %(i1)d) : %(i2)d
 
 """),
 
-4 : _("""
+4 : _(u"""
 Le mot-cle logiciel n'est pas utilise avec ce format.
 """),
 
-5 : _("""
+5 : _(u"""
 Erreurs lors de l'execution du fichier ci-dessous :
 <<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
 %(k1)s
 <<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
 """),
 
-6 : _("""
+6 : _(u"""
 Le fichier %(k1)s n'existe pas.
 """),
 
-7 : _("""
+7 : _(u"""
 Mode de lancement inconnu : %(k1)s
 """),
 
-8 : _("""
+8 : _(u"""
 ----------------------------------------------------------------------------------
  Commande :
    %(k1)s
 """),
 
-9 : _("""
+9 : _(u"""
 ----- Sortie standard (stdout) ---------------------------------------------------
 %(k1)s
 ----- fin stdout -----------------------------------------------------------------
 """),
 
-10 : _("""
+10 : _(u"""
 ----- Sortie erreur standard (stderr) --------------------------------------------
 %(k1)s
 ----- fin stderr -----------------------------------------------------------------
 """),
 
-11 : _("""
+11 : _(u"""
  Code retour = %(i1)d      (maximum toléré : %(i2)d)
 """),
 
-#12 : _(""" """),
+#12 : _(u""" """),
 
-13 : _("""
+13 : _(u"""
  -> Le maillage n'a pas été produit par le logiciel externe (format "%(k1)s")
  
  -> Conseil :
@@ -90,7 +88,7 @@ Mode de lancement inconnu : %(k1)s
 
 
 
-14 : _("""
+14 : _(u"""
  -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
     . Il est probable que les clés SSH ne soient pas configurées correctement.
 
@@ -101,7 +99,7 @@ Mode de lancement inconnu : %(k1)s
 """),
 
 
-15 : _("""
+15 : _(u"""
  -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
     . La machine distante n'a pas pus être contactée.
 
@@ -112,7 +110,7 @@ Mode de lancement inconnu : %(k1)s
 """),
 
 
-16 : _("""
+16 : _(u"""
  -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
     . Le serveur SSH de la machine distante n'a pas pus être contacté.
 
@@ -122,7 +120,7 @@ Mode de lancement inconnu : %(k1)s
 %(k1)s
 """),
 
-17 : _("""
+17 : _(u"""
  -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
     . Il est probable que le logiciel defini par le mot clé LOGICIEL ne soit pas présent
       sur la machine distante.
@@ -133,7 +131,7 @@ Mode de lancement inconnu : %(k1)s
 %(k1)s
 """),
 
-18 : _("""
+18 : _(u"""
  -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
     . Soit l'adresse (ou le port SSH) de la machine n'est pas correcte.
     . Soit les clés SSH ne sont pas configurées correctement.
@@ -146,9 +144,9 @@ Mode de lancement inconnu : %(k1)s
 %(k1)s
 """),
 
-19 : _("""Info : le champs "%(k1)s" n'a pas été trouvé dans le script Salome, mais il n'est peut être pas nécessaire."""),
+19 : _(u"""Info : le champs "%(k1)s" n'a pas été trouvé dans le script Salome, mais il n'est peut être pas nécessaire."""),
 
-20 : _("""
+20 : _(u"""
 
 
 ----------------------------------------------------------------------------------
@@ -162,7 +160,7 @@ Mode de lancement inconnu : %(k1)s
 
 """),
 
-21 : _("""
+21 : _(u"""
 
 ----------------------------------------------------------------------------------
 ----- Commandes à exécuter -------------------------------------------------------
@@ -174,12 +172,12 @@ Mode de lancement inconnu : %(k1)s
 
 """),
 
-22 : _("""
+22 : _(u"""
 Les mots-clés SALOME_HOST et SSH_ADRESSE ont été définis simultanément et sont différents.
 C'est SALOME_HOST qui définira l'adresse de la machine distante.
 """),
 
-23 : _("""
+23 : _(u"""
 Les listes de paramètres (mot-clé NOM_PARA) et de valeurs (mot-clé VALE) doivent être de même longueur !
 """),
 

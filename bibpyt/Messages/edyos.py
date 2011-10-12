@@ -1,4 +1,4 @@
-#@ MODIF edyos Messages  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+#@ MODIF edyos Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,211 +39,209 @@
 #    reference bibliographique 
  
 
-def _(x) : return x
-
 cata_msg={
 
-1 : _("""
+1 : _(u"""
       YACS : Emetteur inconnu
 """),
 
-2 : _("""
+2 : _(u"""
       YACS : Nom de variable inconnu
 """),
 
-3 : _("""
+3 : _(u"""
       YACS : Variable ne devant pas être lue mais écrite
 """),
 
 
-4 : _("""
+4 : _(u"""
       YACS : Type de variable inconnu
 """),
 
-5 : _("""
+5 : _(u"""
       YACS : Type de variable différent de celui déclaré
 """),
 
-6 : _("""
+6 : _(u"""
       YACS : Mode de dépendance inconnu
 """),
 
-7 : _("""
+7 : _(u"""
       YACS : Mode de dépendance différent de celui déclaré
 """),
 
-8 : _("""
+8 : _(u"""
       YACS : Requête non autorisée
 """),
 
-9 : _("""
+9 : _(u"""
       YACS : Type de déconnection incorrect
 """),
 
-10 : _("""
+10 : _(u"""
        YACS : Directive de déconnection incorrecte
 """),
 
-11 : _("""
+11 : _(u"""
        YACS : Nom de code inconnu
 """),
 
-12 : _("""
+12 : _(u"""
        YACS : Nom d'instance inconnue
 """),
 
-13 : _("""
+13 : _(u"""
       YACS : Requête en attente
 """),
 
-14 : _("""
+14 : _(u"""
       YACS : Message de service
 """),
 
-15 : _("""
+15 : _(u"""
       YACS : Nombre de valeurs transmises nul
 """),
 
-16 : _("""
+16 : _(u"""
        YACS : Dimension de tableau récepteur insuffisante
 """),
 
-17 : _("""
+17 : _(u"""
       YACS : Blocage
 """),
 
-18 : _("""
+18 : _(u"""
       YACS : Arrêt anormal d'une instance
 """),
 
-19 : _("""
+19 : _(u"""
       YACS : Coupleur absent...
 """),
 
-20 : _("""
+20 : _(u"""
       YACS : Variable ne figurant dans aucun lien
 """),
 
-21 : _("""
+21 : _(u"""
       YACS : Nombre de pas de calcul égal à zéro
 """),
 
-22 : _("""
+22 : _(u"""
       YACS : Machine non déclarée
 """),
 
-23 : _("""
+23 : _(u"""
       YACS : Erreur variable d'environnement COUPLAGE_GROUPE non positionnée
 """),
 
-24 : _("""
+24 : _(u"""
 =      YACS : Variable d'environnement COUPLAGE_GROUPE inconnue
 """),
 
-25 : _("""
+25 : _(u"""
       YACS : Valeur d'info non utilisée
 """),  
 
-26 : _("""
+26 : _(u"""
       YACS : Erreur de format dans le fichier de couplage
 """),
 
-27 : _("""
+27 : _(u"""
       YACS : Requête annulée à cause du passage en mode normal
 """),
 
-28 : _("""
+28 : _(u"""
       YACS : Coupleur en mode d'exécution normal
 """),
 
-29 : _("""
+29 : _(u"""
       YACS : Option inconnue
 """),
 
-30 : _("""
+30 : _(u"""
       YACS : Valeur d'option incorrecte
 """),
 
-31 : _("""
+31 : _(u"""
       YACS : Ecriture d'une variable dont l'effacement est demandé
 """),
 
-32 : _("""
+32 : _(u"""
       YACS : Lecture d'une variable incorrectement connectée
 """),
 
-33 : _("""
+33 : _(u"""
       YACS : Valeur d'info non utilisée
 """),  
 
-34 : _("""
+34 : _(u"""
       YACS : Valeur d'info non utilisée
 """),  
 
-35 : _("""
+35 : _(u"""
       YACS : Erreur dans la chaine de déclaration
 """),
 
-36 : _("""
+36 : _(u"""
       YACS : Erreur dans le lancement dynamique d'une instance
 """),
 
-37 : _("""
+37 : _(u"""
       YACS : Erreur de communication 
 """),
 
-38 : _("""
+38 : _(u"""
       YACS : Valeur d'info non utilisée
 """),
 
-39 : _("""
+39 : _(u"""
       YACS : Mode d'exécution non défini
 """),    
 
-40 : _("""   
+40 : _(u"""   
       YACS : Instance déconnectée
 """),
 
 
-41 : _("""
+41 : _(u"""
  Avertissement YACS (gravité faible) :
        Dans le SSP %(k1)s la variable %(k2)s a une valeur différente
        de celle envoyée
 """),
 
-42 : _("""
+42 : _(u"""
  Erreur YACS :
        Problème dans le SSP  : %(k1)s
        Pour la variable      : %(k2)s
        A l'itération numéro  : %(i1)d
 """),
 
-43 : _("""   
+43 : _(u"""   
       Attention, le nombre maximal de palier est 20 
 """),
 
-45 : _("""   
+45 : _(u"""   
       Non convergence du code EDYOS
 """),
 
-46 : _("""   
+46 : _(u"""   
       Le code EDYOS n'a pas convergé
       Avec le schéma en temps d'Euler, on ne sous-divise pas le pas de temps
       Le calcul s'arrête donc
       Conseil : tester le schéma en temps adaptatif
 """),
 
-47 : _("""   
+47 : _(u"""   
       Le code EDYOS n'a pas convergé
       Avec le schéma en temps adaptatif, on va tenter de diminuer le pas de temps
 """),
 
-48 : _("""   
+48 : _(u"""   
       Erreur de syntaxe pour le couplage avec EDYOS :
       Il faut obligatoirement renseigner COUPLAGE_EDYOS et PALIERS_EDYOS
 """),
 
-49 : _("""   
+49 : _(u"""   
       Erreur de syntaxe pour le couplage avec EDYOS :
       Pour le mot-clé PALIERS_EDYOS dans le cas où l'on utilise TYPE_EDYOS, 
       il faut donner à chaque occurrence soit le GROUP_NO du palier, soit son NOEUD.

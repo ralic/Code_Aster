@@ -1,4 +1,4 @@
-#@ MODIF couplageifs Messages  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+#@ MODIF couplageifs Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,41 +17,39 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-def _(x) : return x
-
 cata_msg={
 
-1 : _("""
+1 : _(u"""
  Erreur dans ENV_CINE_YACS : 
  il faut donner RESULTAT ou ETAT_INIT, pas les deux en même temps
 """),
 
-2 : _("""
+2 : _(u"""
  Erreur dans ENV_CINE_YACS : problème avec VIS_A_VIS
 """),
 
-3 : _("""
+3 : _(u"""
  Erreur dans ENV_CINE_YACS : problème avec ETAT_INIT :
  il faut donner DEPL, VITE et ACCE
 """),
 
-4 : _("""
+4 : _(u"""
  Erreur dans ENV_CINE_YACS : incohérence entre maillage et champs
 """),
 
-5 : _("""
+5 : _(u"""
  Erreur dans MODI_CHAR_YACS : problème avec VIS_A_VIS
 """),
 
-6 : _("""
+6 : _(u"""
  Erreur dans MODI_CHAR_YACS : incohérence entre maillage et champs
 """),
 
-7 : _("""
+7 : _(u"""
  Erreur dans MODI_CHAR_YACS : erreur lecture NUTIOC
 """),
 
-8 : _("""
+8 : _(u"""
  Erreur dans PROJ_CHAMP option COUPLAGE      
      Nombre d'interfaces définies dans Code_Saturne : %(i1)i
      Nombre d'interfaces définies dans Code_Aster   : %(i2)i
@@ -60,20 +58,20 @@ cata_msg={
        Code_Saturne : La définition des structures dans USASTE.F
 """),
 
-9 : _("""
+9 : _(u"""
  Erreur dans PROJ_CHAMP option COUPLAGE : type de maille non reconnue : %(k1)s
 """),
 
 
-10 : _("""
+10 : _(u"""
  Routine %(k1)s : argument %(k2)s : %(i1)d
 """),
 
-11 : _("""
+11 : _(u"""
  Routine %(k1)s : argument %(k2)s : %(k3)s
 """),
 
-12 : _("""
+12 : _(u"""
  Erreur dans PROJ_CHAMP option COUPLAGE :
      le nombre de noeuds à l'interface : %(i1)i est supérieur à la limite autorisée : %(i2)i
 """),

@@ -1,4 +1,4 @@
-#@ MODIF fatigue1 Messages  DATE 10/10/2011   AUTEUR TRAN V-X.TRAN 
+#@ MODIF fatigue1 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,10 +19,8 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
  Aucun élément du modèle ne sait calculer l'option
  de fatigue multiaxiale, ('PFACY_R').
  Il se peut que la modélisation affectée au groupe de mailles
@@ -32,7 +30,7 @@ cata_msg={
 
 """),
 
-2: _("""
+2: _(u"""
  La modélisation affectée au groupe de mailles sur lequel vous
  faites un calcul de fatigue n'est problament pas "3D".
  La composante %(i1)d du tenseur des contraintes n'existe pas.
@@ -41,7 +39,7 @@ cata_msg={
 
 """),
 
-3: _("""
+3: _(u"""
  La modélisation affectée au groupe de mailles sur lequel vous
  faites un calcul de fatigue n'est problament pas "3D".
  La composante %(i1)d du tenseur des déformations n'existe pas.
@@ -50,233 +48,233 @@ cata_msg={
 
 """),
 
-4: _("""
+4: _(u"""
  le coefficient de Goodman n'est pas calculable
 """),
 
-5: _("""
+5: _(u"""
  le coefficient de Gerber n'est pas calculable
 """),
 
-6: _("""
+6: _(u"""
  pour calculer le dommage de Lemaitre-Sermage,
  il faut définir le comportement DOMMA_LEMAITRE dans DEFI_MATERIAU
 """),
 
-7: _("""
+7: _(u"""
  pour calculer le dommage de Lemaitre_Sermage,
  il faut définir le comportement ELAS_FO dans DEFI_MATERIAU
 """),
 
-8: _("""
+8: _(u"""
  le matériau est obligatoire pour le calcul du dommage par TAHERI_MANSON
 """),
 
-9: _("""
+9: _(u"""
  une fonction doit être introduite sous le mot clé TAHERI_FONC
 """),
 
-10: _("""
+10: _(u"""
  une nappe doit être introduite sous le mot clé TAHERI_NAPPE
 """),
 
-11: _("""
+11: _(u"""
  la courbe de MANSON_COFFIN est nécessaire pour le calcul du dommage TAHERI_MANSON_COFFIN
 """),
 
-12: _("""
+12: _(u"""
  le matériau est obligatoire pour le calcul du dommage par TAHERI_MIXTE
 """),
 
-13: _("""
+13: _(u"""
  la courbe de MANSON_COFFIN est nécessaire pour le calcul du dommage TAHERI_MIXTE
 """),
 
-14: _("""
+14: _(u"""
  la courbe de WOHLER est nécessaire pour le calcul du dommage TAHERI_MIXTE
 """),
 
-15: _("""
+15: _(u"""
  méthode de comptage inconnue
 """),
 
-16: _("""
+16: _(u"""
  nombre de cycles nul
 """),
 
-17: _("""
+17: _(u"""
  l'utilisation de MANSON_COFFIN est réservé à des histoires de chargements en déformations
 """),
 
-18: _("""
+18: _(u"""
  la courbe de MANSON_COFFIN doit être donnée dans DEFI_MATERIAU
 """),
 
-19: _("""
+19: _(u"""
  les lois de TAHERI sont réservées pour des chargements en déformations
 """),
 
-20: _("""
+20: _(u"""
  loi de dommage non compatible
 """),
 
-21: _("""
+21: _(u"""
  l'histoire de chargement doit avoir même discrétisation pour toutes les composantes
 """),
 
-22: _("""
+22: _(u"""
  l'histoire de la déformation plastique cumulée doit avoir même discrétisation que l'histoire des contraintes
 """),
 
-23: _("""
+23: _(u"""
  l'histoire de la température doit avoir même discrétisation que l'histoire des contraintes
 """),
 
-24: _("""
+24: _(u"""
  pour calculer le dommage, il faut définir le comportement "FATIGUE" dans DEFI_MATERIAU
 """),
 
-25: _("""
+25: _(u"""
  la méthode 'TAHERI_MANSON' ne peut pas etre utilisée avec l'option %(k1)s
 """),
 
-26: _("""
+26: _(u"""
  le nom de la fonction  nappe DSIGM(DEPSI,DEPSIMAX)
  doit être présent sous le mot cle 'TAHERI_NAPPE'
 """),
 
-27: _("""
+27: _(u"""
  le nom de la fonction DSIGM(DEPSI)
  doit être présent sous le mot cle 'TAHERI_FONC'
 """),
 
-28: _("""
+28: _(u"""
  la méthode 'TAHERI_MIXTE' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
-29: _("""
+29: _(u"""
  la methode 'WOHLER' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
-30: _("""
+30: _(u"""
  une courbe de WOHLER doit être définie dans DEFI_MATERIAU
 """),
 
-31: _("""
+31: _(u"""
  la methode 'MANSON_COFFIN' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
-32: _("""
+32: _(u"""
  une courbe de MANSON_COFFIN doit être définie dans DEFI_MATERIAU
 """),
 
-33: _("""
+33: _(u"""
  les mailles attachées au noeud traité ne sont pas affectées du même matériau.
 """),
 
-34: _("""
+34: _(u"""
  la donnée d'une courbe de WOHLER est obligatoire
 """),
 
-35: _("""
+35: _(u"""
  la donnée du moment spectral d'ordre 4 est obligatoire pour le comptage des pics de contraintes
 """),
 
-36: _("""
+36: _(u"""
  la valeur du moment spectral d'ordre 0 (lambda_0) est certainement nulle
 """),
 
-37: _("""
+37: _(u"""
  la valeur du moment spectral d'ordre 2 (lambda_2) est nulle
 """),
 
-38: _("""
+38: _(u"""
  la valeur du moment spectral d'ordre 4 (lambda_4) est nulle
 """),
 
-39: _("""
-Le chargement à compter est un chargement constant. On considère tous les chargements comme un cycle avec valeur_max 
-= valeur_min = valeur du chargement, i.e., amplitude = 0. 
+39: _(u"""
+Le chargement à compter est un chargement constant. On considère tous les chargements comme un cycle
+avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0. 
 """),
 
-63: _("""
+63: _(u"""
  pour calculer le dommage max,
  il faut renseigner CISA_PLAN_CRIT dans la commande DEFI_MATERIAU
 """),
 
-64: _("""
+64: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre A du critère de MATAKE
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-65: _("""
+65: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre B du critère de MATAKE
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-66: _("""
+66: _(u"""
  nous ne pouvons pas récupérer la valeur du coefficient de passage flexion-torsion
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-67: _("""
+67: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre A du critère de DANG_VAN_MODI_AC
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-68: _("""
+68: _(u"""
  nous ne pouvons  pas récupérer la valeur du paramètre B du critère de DANG_VAN_MODI_AC
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-69: _("""
+69: _(u"""
  nous ne pouvons  pas récupérer la valeur du coefficient de passage cisaillement-traction
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-70: _("""
+70: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre A du critère DOMM_MAXI
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-71: _("""
+71: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre B du critère DOMM_MAXI
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-72: _("""
+72: _(u"""
  nous ne pouvons pas récupérer la valeur du coefficient de passage cisaillement-traction
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-73: _("""
+73: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre A du critère DANG_VAN_MODI_AV
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-74: _("""
+74: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre B du critère DANG_VAN_MODI_AV
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-75: _("""
+75: _(u"""
  nous ne pouvons pas récupérer la valeur du paramètre A du critère FATEMI_SOCIE
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
-76: _("""
+76: _(u"""
  Le nombre d'instants calculés est égal à %(i1)d.
 
  Il faut que l'histoire du chargement comporte au moins 2 instants
@@ -284,7 +282,7 @@ Le chargement à compter est un chargement constant. On considère tous les charge
 
 """),
 
-77: _("""
+77: _(u"""
  Le nombre de cycles extraits est égal à %(i1)d.
 
  Votre chargement est constant.
@@ -292,7 +290,7 @@ Le chargement à compter est un chargement constant. On considère tous les charge
 
 """),
 
-78: _("""
+78: _(u"""
  Le nombre de points à traiter n'est pas correcte.
 
  Soit les mailles comportent des sous-points, or ce cas n'est pas prévu.
@@ -301,63 +299,63 @@ Le chargement à compter est un chargement constant. On considère tous les charge
 
 """),
 
-79 : _("""
+79 : _(u"""
    *** Point  %(i1)d
    Contrainte statique        =  %(r1)f
    Contrainte dynamique       =  %(r2)f
    Amplitude maximale admissible en ce point  =  %(r3)f
 """),
 
-80 : _("""
+80 : _(u"""
    Attention, la contrainte statique en ce point est supérieure à la contrainte
    à la rupture du matériau.
 """),
 
-81 : _("""
+81 : _(u"""
  Calcul du dommage en %(k1)s (composante grandeur equivalente %(k3)s)
  Points de calcul du dommage : %(k2)s
  Nombre de points de calcul : %(i1)d
  Nombre de modes considérés : %(i2)d
 """),
 
-82 : _("""
- -------------------------------------------------------------------
+82 : _(u"""
+
  Amplitude de vibration maximale admissible par la structure :  %(r1)f
- -------------------------------------------------------------------
+
 """),
 
-83 : _("""
+83 : _(u"""
    Attention, la contrainte statique en un ou plusieurs points est supérieure à
    la contrainte à la rupture du matériau.
    Contrainte statique maximale = %(r1)f
    Contrainte à la rupture      = %(r2)f
 """),
 
-84 : _("""
+84 : _(u"""
    Le résultat correspondant à la contrainte statique (mot clé
    RESULTAT_STATIQUE) comporte %(i1)d instants.
    Le calcul en fatigue vibratoire n'est possible que si le résultat statique
    comporte un et un seul instant. Vérifiez les données.
 """),
 
-85 : _("""
+85 : _(u"""
    Le nombre de points de calcul est différent entre la contrainte statique
    ( %(i1)d points) et la contrainte modale (%(i2)d points).
    Vérifiez la cohérence des données.
 """),
 
-86 : _("""
+86 : _(u"""
    La longueur de la liste des coefficients modaux COEF_MODE est différente
    du nombre de modes retenus pour le calcul NUME_MODE.
    Vérifiez la cohérence des données.
 """),
 
-87 : _("""
+87 : _(u"""
  Contrainte à la rupture : %(r1)f
  Limite d'endurance : %(r2)f
 """),
 
-88 : _("""
+88 : _(u"""
  Le paramètre %(k1)s est absent dans la définition du matériau. Le calcul est impossible.
  Risques et conseils : pour l'option FATIGUE_VIBR de CALC_FATIGUE, il est obligatoire de
  définir les propriétés matériaux suivantes (dans DEFI_MATERIAU) :
@@ -367,43 +365,43 @@ Le chargement à compter est un chargement constant. On considère tous les charge
 
 """),
 
-89: _("""
+89: _(u"""
  Dans la commande DEFI_MATERIAU, l'opérande WOHLER du mot clé facteur
  FATIGUE est incompatible avec le critère %(k1)s requis dans le mot
  clé facteur CISA_PLAN_CRIT.
 
 """),
 
-90: _("""
+90: _(u"""
  Dans la commande DEFI_MATERIAU, l'opérande MANSON_COFFIN du mot clé
  facteur FATIGUE est incompatible avec le critère %(k1)s requis dans
  le mot clé facteur CISA_PLAN_CRIT.
 
 """),
 
-91: _("""
- Dans CALC_FATIGUE  pour le critère d'amorçage fournis par la formule, le calcul de la grandeur %(k1)s 
- n'est pas disponible. Merci de forunir les noms des grandeurs disponibles ou contacter le développeur. 
+91: _(u"""
+ Dans CALC_FATIGUE  pour le critère d'amorçage fournis par la formule, le calcul de la grandeur %(k1)s
+ n'est pas disponible. Merci de forunir les noms des grandeurs disponibles ou contacter le développeur.
 """),
 
-92: _("""
+92: _(u"""
  Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, pour déterminer le plan de dommage maximal,
- il n'est pas possible de projeter simultanément la contrainte et la déformation. Les grandeurs sont incompatibles avec le critère requis. 
+ il n'est pas possible de projeter simultanément la contrainte et la déformation. Les grandeurs sont incompatibles avec le critère requis.
 """),
 
-93: _("""
+93: _(u"""
  Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, le mot-cle FORMULE_VIE est fournis par une formule
  le seule paramètre accepté est NBRUP, c-à-d, N_f, car le critère formule est pour GRDEQ = f(N_f). Changez le nom et vérifiez bien que la fonction est de type: GRDEQ = f(N_f).
 """),
 
-94: _("""
- Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-cle FORMULE_VIE est fournis 
+94: _(u"""
+ Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-cle FORMULE_VIE est fournis
  par la formule, la grandeur équivalente pour l'instant est plus grande que f(N_f =1 ). Vérifiez la formule
- de la courbe FORMULE_VIE.  
+ de la courbe FORMULE_VIE.
 """),
 
-96: _("""
-Attention, le cycle de chargement appliqué entraine une courbe hysteresis non-ferme. Verifiez les chargements appliqués.  
+96: _(u"""
+Attention, le cycle de chargement appliqué entraine une courbe hysteresis non-ferme. Verifiez les chargements appliqués.
 """),
 
 }

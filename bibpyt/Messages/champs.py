@@ -1,4 +1,4 @@
-#@ MODIF champs Messages  DATE 13/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF champs Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,49 +19,47 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1 : _("""
+1 : _(u"""
  On ne trouve pas de valeurs dans le champ.
 """),
 
-2: _("""
+2: _(u"""
  Impossible de récupérer le nom du champ.
 """),
 
-3: _("""
+3: _(u"""
  La composante %(k1)s du champ  n'existe pas.
 """),
 
-4 : _("""
+4 : _(u"""
  On ne trouve pas de mailles dans les groupes fournis.
 """),
 
-5 : _("""
+5 : _(u"""
  On ne trouve pas de noeuds dans les groupes fournis.
 """),
 
-6 : _("""
+6 : _(u"""
  Le champ %(k1)s n'existe pas au numéro d'ordre %(i1)d dans
  le concept résultat %(k2)s.
 """),
 
-7 : _("""
+7 : _(u"""
  On ne sait pas calculer le critère %(k1)s pour les champs de la grandeur %(k2)s.
 """),
 
-8 : _("""
+8 : _(u"""
     Numéro d'ordre %(i1)4d : %(i2)d mailles ont été affectées (%(i3)d mailles dans le maillage).
 """),
 
-9 : _("""
+9 : _(u"""
  Le champ %(k1)s n'existe ni dans le concept résultat %(k2)s, ni dans %(k3)s
  au numéro d'ordre %(i1)d.
 """),
 
-10 : _("""
+10 : _(u"""
     Numéro d'ordre %(i1)4d : %(i2)d noeuds ont été affectés (%(i3)d noeuds dans le maillage).
 """),
 

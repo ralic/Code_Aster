@@ -1,4 +1,4 @@
-#@ MODIF etatinit Messages  DATE 22/08/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF etatinit Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,56 +20,54 @@
 
 # Attention a ne pas faire de retour à la ligne !
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  On utilise l'opérateur en enrichissant les résultats (REUSE).
  Mais on ne définit pas d'état initial: on prend un état initial nul.
 """),
 
-2 : _("""
+2 : _(u"""
  On ne trouve aucun numéro d'ordre dans la structure de données résultat de nom <%(k1)s> 
 """),
 
-3 : _("""
+3 : _(u"""
  L'instant spécifié sous ETAT_INIT/INST n'est pas trouvé dans la structure de données résultat de nom <%(k1)s>.
 """),
 
-4 : _("""
+4 : _(u"""
  Il y a plusieurs instants dans la structure de données résultat de nom <%(k1)s> qui correspondent à celui spécifié sous ETAT_INIT/INIT.
 """),
 
-10 : _("""
+10 : _(u"""
  Lecture de l'état initial
 """),
 
-20 : _("""
+20 : _(u"""
  Il n'y a pas d'état initial défini. On prend un état initial nul.
 """),
 
-30 : _("""
+30 : _(u"""
   Le champ <%(k1)s> (ou sa dérivée pour la sensibilité) n'est pas trouvé dans l'ETAT_INIT et on ne sait pas l'initialiser à zéro.
 """),
 
-31 : _("""  Le champ <%(k1)s> est initialisé a zéro"""),
+31 : _(u"""  Le champ <%(k1)s> est initialisé a zéro"""),
 
-32 : _("""  Le champ <%(k1)s> est lu dans l'ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""),
+32 : _(u"""  Le champ <%(k1)s> est lu dans l'ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""),
 
-33 : _("""  Le champ <%(k1)s> est lu dans l'ETAT_INIT, par un champ donné explicitement"""),
+33 : _(u"""  Le champ <%(k1)s> est lu dans l'ETAT_INIT, par un champ donné explicitement"""),
 
-34 : _("""  Le champ de température initiale est calculé par un état stationnaire"""),
+34 : _(u"""  Le champ de température initiale est calculé par un état stationnaire"""),
 
-35 : _("""  Le champ de température initiale est donné par une valeur qui vaut %(r1)19.12e"""),
+35 : _(u"""  Le champ de température initiale est donné par une valeur qui vaut %(r1)19.12e"""),
 
-50 : _("""
+50 : _(u"""
   Le champ <%(k1)s> est d'un type inconnu.
 """),
 
-51 : _("""  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On le convertit automatiquement"""),
+51 : _(u"""  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On le convertit automatiquement"""),
 
-52 : _("""
+52 : _(u"""
   Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On ne sait pas le convertir automatiquement
 """),
 

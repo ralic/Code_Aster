@@ -1,4 +1,4 @@
-#@ MODIF fermetur Messages  DATE 16/08/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF fermetur Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,26 +19,24 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1: _("""
+1: _(u"""
 Le solveur "MUMPS" n'est pas installé dans cette version de Code_Aster.
 
 Conseil : Vérifiez que vous avez sélectionné la bonne version de Code_Aster.
           Attention, certains solveurs ne sont disponibles que dans les versions parallèles de Code_Aster.
 """),
 
-2: _("""
+2: _(u"""
 La bibliothèque "MED" n'est pas installée dans cette version de Code_Aster.
 """),
 
-3: _("""
+3: _(u"""
 La bibliothèque "HDF5" n'est pas installée dans cette version de Code_Aster.
 """),
 
-4: _("""
+4: _(u"""
 La bibliothèque "ZMAT" n'est pas installée dans cette version de Code_Aster ou bien elle
 n'a pas été trouvée.
 
@@ -46,50 +44,50 @@ Conseil : Vérifiez que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
-5: _("""
+5: _(u"""
 Erreur de programmation :
     On essaie d'utiliser un opérateur (op0xxx) qui n'est pas encore programmé.
 """),
 
-6: _("""
+6: _(u"""
 Erreur de programmation :
     On essaie d'utiliser un opérateur (ops0xx) qui n'est pas encore programmé.
 """),
 
-7: _("""
+7: _(u"""
 Le renuméroteur "SCOTCH" n'est pas installé dans cette version de Code_Aster.
 """),
 
-8: _("""
+8: _(u"""
 Erreur de programmation :
     On essaie d'utiliser une routine de calcul élémentaire (te0xxx)
     qui n'est pas encore programmée.
 """),
 
-9: _("""
+9: _(u"""
 Erreur de programmation :
     On essaie d'utiliser une routine d'initialisation élémentaire (ini0xx)
     qui n'est pas encore programmée.
 """),
 
-10: _("""
+10: _(u"""
 Le solveur "PETSc" n'est pas installé dans cette version de Code_Aster.
 
 Conseil : Vérifiez que vous avez sélectionné la bonne version de Code_Aster.
           Attention, certains solveurs ne sont disponibles que dans les versions parallèles de Code_Aster.
 """),
 
-11: _("""
+11: _(u"""
 Erreur de programmation :
     On essaie d'utiliser une routine de comportement (lc00xx)
     qui n'est pas encore programmée.
 """),
 
-12: _("""
+12: _(u"""
 La bibliothèque "YACS" n'est pas installée dans cette version de Code_Aster.
 """),
 
-13 : _("""
+13 : _(u"""
 La bibliothèque %(k1)s n'a pas pu être chargée.
 
 Nom de la bibliothèque : %(k2)s
@@ -98,7 +96,7 @@ Conseil : Vérifiez que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
-14 : _("""
+14 : _(u"""
 Le symbole demandé n'a pas été trouvé dans la bibliothèque %(k1)s.
 
 Nom de la bibliothèque : %(k2)s

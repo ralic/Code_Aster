@@ -1,4 +1,4 @@
-#@ MODIF appelmpi Messages  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF appelmpi Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,15 +19,13 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-3: _("""
+3: _(u"""
  En parallèle, il faut au moins un sous-domaine par processeur.
 """),
 
-5: _("""
+5: _(u"""
  Erreur MPI: %(k1)s
 """),
 

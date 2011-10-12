@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, LZON, MXZON, IADZON, LMO, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -105,7 +105,7 @@ C ----------------------------------------------------------------------
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
-      INTEGER          LFIC,MFIC  
+      INTEGER          LFIC,MFIC
       COMMON /FENVJE/  LFIC,MFIC
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
@@ -113,10 +113,10 @@ C ----------------------------------------------------------------------
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2) 
-      REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
+      REAL *8          SVUSE,SMXUSE
+      COMMON /STATJE/  SVUSE,SMXUSE
       COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C --------------------------------- ------------------------------------
@@ -138,8 +138,6 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       ELSE
          MFIC = NINT(VAL)*1024
       ENDIF
-      WRITE(6,'(/,1X,A,F12.2,A)') 'LIMITE TAILLE DES BASES       : '    
-     &      ,MFIC/(1024*1024.0D0),'   Go '
       LBIS = LBISEM()
       LOR8 = LOR8EM()
       LOC8 = LOC8EM()
@@ -184,7 +182,7 @@ C -----------------  ZONE MEMOIRE  -------------------------------------
       VMXDYN = MXZON*LOIS
       IF ( MXZON .EQ. 0 ) THEN
         VMXDYN = 1024
-      ENDIF     
+      ENDIF
       CALL JXALLM ( IADZON, ISZON , LISZON , JISZON )
       LK1ZON = LISZON * LOIS
       JK1ZON = JISZON * LOIS

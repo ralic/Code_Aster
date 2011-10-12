@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -147,9 +147,9 @@ static PyObject *except_module = NULL;
 static char *NomCas          = "        ";
 
 /* ------------------------------------------------------------------ */
-#define CALL_ISJVUP() STDCALL(ISJVUP, isjvup)()
+#define CALL_ISJVUP() F_FUNC(ISJVUP, isjvup)()
 
-INTEGER STDCALL(ISJVUP, isjvup)()
+INTEGER F_FUNC(ISJVUP, isjvup)()
 {
    /* "is jeveux up ?" : retourne 1 si jeveux est démarré/initialisé, sinon 0. */
    return (INTEGER)jeveux_status;
@@ -157,7 +157,7 @@ INTEGER STDCALL(ISJVUP, isjvup)()
 
 
 /* ------------------------------------------------------------------ */
-void STDCALL(XFINI,xfini)(_IN INTEGER *code)
+void F_FUNC(XFINI,xfini)(_IN INTEGER *code)
 {
    /* XFINI est n'appelé que par JEFINI avec code=19 (=CodeFinAster) */
    /* jeveux est fermé */
@@ -558,7 +558,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE
 
 
 /* ------------------------------------------------------------------ */
-void STDCALL(GETRAN,getran)(_OUT DOUBLE *rval)
+void F_FUNC(GETRAN,getran)(_OUT DOUBLE *rval)
 {
     /*
       Procedure GETRAN pour le FORTRAN : recupere un réel aleatoire (loi uniforme 0-1) du module python Random
@@ -1631,7 +1631,7 @@ PyObject * MakeListFloat(long nbval,DOUBLE * kval)
 
 
 /* ------------------------------------------------------------------ */
-void STDCALL(PUTVIR,putvir) (_IN INTEGER *ival)
+void F_FUNC(PUTVIR,putvir) (_IN INTEGER *ival)
 {
    /*
       Entrees:
@@ -3258,6 +3258,20 @@ PyObject *args;
 return PyInt_FromLong((long)ier);
 }
 
+/* ------------------------------------------------------------------ */
+void F_FUNC(PRHEAD,prhead)()
+{
+   /*
+      Interface Fortran/Python pour l'affichage des informations systèmes
+      en début d'exécution
+   */
+   PyObject *res;
+   res = PyObject_CallMethod(static_module, "print_header", NULL);
+   if (!res) {
+      MYABORT("erreur lors de l'appel a la fonction E_Global.print_header");
+   }
+   Py_DECREF(res);
+}
 
 /* ------------------------------------------------------------------ */
 static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)

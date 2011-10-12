@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,21 +19,19 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1: _("""
+1: _(u"""
  HUJPLA :: nombre de variables internes incorrect:
            NVI > NVIMAX
 """),
 
-2: _("""
+2: _(u"""
  HUJDDD :: on ne calcule pas DPSIDS pour K=4.
            - vérifiez la programmation -
 """),
 
-3: _("""
+3: _(u"""
  CAM_CLAY :: le coefficient de poisson et ou le module d'Young ne sont pas corrects
              dans la maille %(k1)s
              
@@ -51,161 +49,161 @@ cata_msg={
  ***
 """),
 
-4: _("""
+4: _(u"""
  HUJEUX :: les modélisations autorisées sont 3D D_PLAN ou AXIS
 """),
 
-5: _("""
+5: _(u"""
  HUJEUX :: K différent de NBMECA pour le mécanisme isotrope
            - vérifiez la programmation -
 """),
 
-6: _("""
+6: _(u"""
  HUJEUX :: erreur inversion par pivot de Gauss
 """),
 
-7: _("""
+7: _(u"""
  HUJCRI :: EPSI_VP est trop grand:
            l'exponentielle explose
 """),
 
-8: _("""
+8: _(u"""
  HUJEUX :: mécanisme indéterminé
            - vérifiez la programmation -
 """),
 
-9 : _("""
+9 : _(u"""
 Arrêt suite à l'échec de l'intégration de la loi de comportement.
 Vérifiez vos paramètres, la cohérence des unités.
 Essayez d'augmenter ITER_INTE_MAXI, ou de subdiviser le pas de temps 
 localement via ITER_INTE_PAS.
 """),
 
-10: _("""
+10: _(u"""
  HUJKSI :: mot-clé inconnu
 """),
 
-11: _("""
+11: _(u"""
  HUJNVI :: modélisation inconnue
 """),
 
-12: _("""
+12: _(u"""
  HUJCI1 :: l'incrément de déformation est nul:
            on ne peut pas trouver le zéro de la fonction.
 """),
 
-14: _("""
+14: _(u"""
  HUJTID :: erreur dans le calcul de la matrice tangente
 """),
 
-15: _("""
+15: _(u"""
   Pour les poutres multifibres, l'utilisation de lois de comportement via 
   ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
  """),
 
-16 : _("""
+16 : _(u"""
 Arrêt suite à l'échec de l'intégration de la loi de comportement.
 
 Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
-17 : _("""
+17 : _(u"""
   HUJCI1 :: Soit le zéro n'existe pas, soit il se trouve hors des
             bornes admissibles.
 """),
 
-18 : _("""
+18 : _(u"""
   HUJCI1 :: Cas de traction à l'instant moins.
 """),
 
-19 : _("""
+19 : _(u"""
   MONOCRISTAL :: écrouissage cinématique non trouvé.
 """),
 
-20 : _("""
+20 : _(u"""
   MONOCRISTAL :: écoulement non trouvé.
 """),
 
-21 : _("""
+21 : _(u"""
   MONOCRISTAL :: écrouissage isotrope non trouvé.
 """),
 
-23 : _("""
+23 : _(u"""
   MONOCRISTAL :: la matrice d'interaction est définie avec 
   4 coefficients. Ceci n'est applicable qu'avec 24 systèmes de
   glissement (famille BCC24).
 """),
 
-24 : _("""
+24 : _(u"""
   MONOCRISTAL :: la matrice d'interaction est définie avec 
   6 coefficients. Ceci n'est applicable qu'avec 12 systèmes de
   glissement.
 """),
 
-25 : _("""
+25 : _(u"""
   MONOCRISTAL :: la matrice d'interaction est définie avec 
   un nombre de coefficients incorrect :: il en faut 1, ou 4, ou 6.
 """),
 
 
-26: _("""
+26: _(u"""
  LETK - lklmat :: paramètres de la loi LETK non cohérents 
 """),
 
-29: _("""
+29: _(u"""
  LETK - lkdhds :: division par zéro - entrée en plasticité avec un déviateur  nul. 
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
-30: _("""
+30: _(u"""
  LETK - lkds2h :: division par zéro - entrée en plasticité avec un déviateur nul. 
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
-31: _("""
+31: _(u"""
  LETK - lkcaln :: division par zéro - entrée en plasticité avec un déviateur nul. 
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
-32: _("""
+32: _(u"""
  VISC_CINx_CHAB :: pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU. 
  Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
 """),
 
-33: _("""
+33: _(u"""
  NMHUJ :: ELAS/ELAS_ORTH :: erreur de lecture des propriétés matériaux.
 """),
 
-34: _("""
+34: _(u"""
  HUJTID :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
 
-35: _("""
+35: _(u"""
  HUJDP :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
 
-36: _("""
+36: _(u"""
  HUJTEL :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
 
-37: _("""
+37: _(u"""
  HUJPOT :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
 
-38: _("""
+38: _(u"""
  HUJJID :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
 
-39: _("""
+39: _(u"""
  HUJIID :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
 
-40: _("""
+40: _(u"""
  HUJELA :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
 
 
-41: _("""
+41: _(u"""
  CAM_CLAY :: 
  Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
  La subdivision du pas de temps au niveau global est déclenchée.
@@ -216,73 +214,73 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
    borne correspondant à <%(k3)s> : <%(r3)E>
 """),
 
-42: _("""
+42: _(u"""
  CAM_CLAY ::  Kcam et Ptrac doivent vérifier la relation suivante :
  
               KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/kapa * PTRAC
 """),
 
 
-43: _("""
+43: _(u"""
  Le numero de loi de comportement choisi <%(i1)i> est hors des bornes 1-100
 """),
 
 
-44: _("""
+44: _(u"""
  Le type de déformation choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
-45: _("""
+45: _(u"""
  Le type d'algorithme d'intégration choisi : <%(k1)s> (sous COMP_INCR/%(k2)s) est incompatible avec le comportement <%(k3)s>.
 
 Conseil :
 Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme par défaut.
 """),
 
-46: _("""
+46: _(u"""
  Le type de matrice tangente choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
-47: _("""
+47: _(u"""
  La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
  des contraintes planes (ou des coques) avec ce comportement, on utilise ALGO_C_PLAN='DEBORST'
 """),
 
-48: _("""
+48: _(u"""
  La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
  des contraintes 1D (barres, poutres) avec ce comportement, on utilise ALGO_1D='DEBORST'
 """),
 
-49: _("""
+49: _(u"""
  La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
-50: _("""
+50: _(u"""
  Aucun comportement n'est défini sur la maille <%(k1)s>. Code_Aster a défini par défaut
   COMP_INCR='ELAS', DEFORMATION='PETIT'.
 """),
 
-51: _("""
+51: _(u"""
  La commande <%(k1)s> n'est pas prévue dans le traitement des mot-clé COMP_INCR / COMP_ELAS.
 """),
 
-52: _("""
+52: _(u"""
  La modélisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modéliser
  des contraintes planes (ou des coques) avec ce comportement, il est inutile d'utiliser ALGO_C_PLAN='DEBORST'
 """),
 
-53: _("""
+53: _(u"""
  La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modéliser
  des contraintes 1D (barres, poutres) avec ce comportement, il est inutile d'utiliser ALGO_1D='DEBORST'
 """),
 
-54: _("""
+54: _(u"""
  ECRO_LINE : la pente d'écrouissage H et/ou le module d'Young E ne sont pas compatibles :
              H doit être strictement inférieur à E. Ici H=<%(r1)E>, et E=<%(r2)E>.
              Pour modéliser l'elasticité linéaire, il suffit de choisir SY grand, et H < E.
 """),
 
-55: _("""
+55: _(u"""
 La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvé de solution pour
 le nombre d'itération donné <%(i1)d>.\n
 Info pour le debug
@@ -301,20 +299,20 @@ Valeurs initiales
    Borne E                 : <%(r12).15E>
 """),
 
-56: _("""
+56: _(u"""
 L'irradiation diminue au cours du temps. C'EST PHYSIQUEMENT IMPOSSIBLE.
 Grandeurs au point de Gauss :
    Irradiation a t- : <%(r1).15E>
    Irradiation a t+ : <%(r2).15E>
 """),
 
-57: _("""
+57: _(u"""
 Pour info
    Température a t- : <%(r1)E>
    Température a t+ : <%(r2)E>
 """),
 
-58: _("""
+58: _(u"""
 Le franchissement du seuil de fluage ne se fait pas dans la tolérence donnée dans DEFI_MATERIAU
 pour la loi IRRAD3M, par le mot clef TOLER_ET.
    Tolérence sur le franchissement du seuil : <%(r1)E>
@@ -323,49 +321,49 @@ La subdivision du pas de temps au niveau global est déclenchée.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
 """),
 
-59: _("""
+59: _(u"""
  Attention: pas de couplage avec le coefficient de couplage CHI = 0, on retrouve la loi UMLV
 """),
 
-60: _("""
+60: _(u"""
 Couplage: on ne fait pas dépendre E, MU et ALPHA de la température T, on prend T=0 comme pour ENDO_ISOT_BETON
 """),
 
-61: _("""
+61: _(u"""
 Couplage: on fait dépendre E, MU et ALPHA de la température maximale Tmax, comme pour MAZARS
 """),
 
-63 : _("""
+63 : _(u"""
    ATTENTION SR > 1    SR = %(r1)f
    SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
 """),
 
-64 : _("""
+64 : _(u"""
    ATTENTION SR < 0    SR = %(r1)f
    SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
 """),
 
-65 : _("""
+65 : _(u"""
    Attention dans la routine majpad la pression d'air dissous devient 
    négative à la maille %(k1)s.
 """),
 
-66 : _("""
+66 : _(u"""
 La loi de comportement ENDO_SCALAIRE n'est disponible que pour la formulation 
 non locale GRAD_VARI, assurez vous que votre modelisation soit l'une des trois 
 suivantes : - D_PLAN_GRAD_VARI
             - AXIS_GRAD_VARI
             - 3D_GRAD_VARI
 """),
-67 : _("""
+67 : _(u"""
 Dans la définition du materiau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS 
 """),
 
-68 : _("""
+68 : _(u"""
 Le comportement MONOCRISTAL en grandes déformations SIMO_MIEHE n'est pas compatible avec RUNGE_KUTTA. Utiliser NEWTON. 
 """),
 
-69 : _("""
+69 : _(u"""
 Le type de déformations %(k1)s n'est pas compatible avec les modélisations SHB. Utilisez PETIT ou GROT_GDEP. 
 """),
 

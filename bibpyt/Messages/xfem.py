@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,11 +20,9 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 
-def _(x) : return x
-
 cata_msg={
 
-2: _("""
+2: _(u"""
   -> Le calcul de la distance d'un noeud à l'ellipse n'a pas convergé 
      avec le nombre d'itérations maximal fixé (10). Cela est dû à une
      ellipse très allongée.
@@ -34,13 +32,13 @@ cata_msg={
 """),
 
 
-3: _("""
+3: _(u"""
   -> Le modèle %(k1)s est incompatible avec la méthode X-FEM.
   -> Risque & Conseil:
      Vérifier qu'il a bien été créé par l'opérateur MODI_MODELE_XFEM. 
 """),
 
-4: _("""
+4: _(u"""
   -> Il est interdit de mélanger dans un modèle les fissures X-FEM 
      avec et sans contact. 
   -> Risque & Conseil:
@@ -48,7 +46,7 @@ cata_msg={
      dans DEFI_FISS_XFEM.
 """),
 
-5: _("""
+5: _(u"""
   -> Attention, vous avez défini un enrichissement géométrique sur %(i1)d
      couches d'éléments autour du fond de fissure. 
   -> Risque :
@@ -63,27 +61,27 @@ cata_msg={
      ou FETI.
 """),
 
-6: _("""
+6: _(u"""
   -> Le rayon d'enrichissement RAYON_ENRI doit être un réel strictement 
      supérieur à 0.
 """),
 
-7: _("""
+7: _(u"""
      Il y a %(i1)s mailles %(k1)s 
 """),
 
-8: _("""
+8: _(u"""
      Le nombre de %(k1)s X-FEM est limité à 10E6. 
      Risque & Conseil:
      Veuillez réduire la taille du maillage.
 """),
 
-10: _("""
+10: _(u"""
      La direction du champ theta n'a pas été donnée. La direction automatique
      est une direction variable, basée sur le grandient de la level set tangente.
 """),
 
-11: _("""
+11: _(u"""
   -> On a trouvé plus de 2 points de fond de fissure, ce qui est impossible en 2D.
   -> Risque & Conseil:
      Cela est normalement causé par une mauvaise définition des level sets.
@@ -103,7 +101,7 @@ cata_msg={
      METHODE_PROPA).
 """),
 
-12: _("""
+12: _(u"""
   Le gradient de la level set tangente est nul au noeud %(k1)s.
   Ceci est certainement du à un point singulier dans la définition de la levet set.
   Il vaut veuiller à ce que ce point singulier ne soit pas inclus dans la couronne
@@ -111,7 +109,7 @@ cata_msg={
   Conseil : réduisez la taille de la couronne du champ theta : (mot-clés RSUP et RINF).
 """),
 
-13: _("""
+13: _(u"""
      Dans le modèle, des mailles SEG2 ou SEG3 possèdent des noeuds enrichis par X-FEM.
      Ceci n'est pas encore possible en 3D.
      Conseils : si ces mailles sont importantes pour le calcul (charge linéique...), il faut
@@ -120,18 +118,18 @@ cata_msg={
      ou bien les supprimer du maillage.
 """),
 
-14: _("""
+14: _(u"""
      On ne peut pas appliquer un cisaillement 2d sur les lèvres d'une fissure X-FEM.
 """),
 
-15: _("""
+15: _(u"""
   -> Cette option n'a pas encore été programmée.
   -> Risque & Conseil:
      Veuillez utiliser un autre chargement (en pression) ou contacter votre
      correspondant.
 """),
 
-16: _("""
+16: _(u"""
   -> Il n'y a aucun élément enrichi.
   -> Risque & Conseil:
      - Si vous souhaitez définir du contact sur les lèvres de la fissure, il est préférable
@@ -145,34 +143,34 @@ cata_msg={
      - Vous pouvez utilisez l'opérateur LINE_QUAD pour rendre le maillage quadratique.
 """),
 
-17: _("""
+17: _(u"""
      il ne faut qu'un mot-clé parmi RAYON_ENRI et NB_COUCHES.
 """),
 
-18: _("""
+18: _(u"""
      Dimension de l'espace incorrecte. 
      Le modèle doit etre 2D ou 3D et ne pas comporter de sous-structures.
 """),
 
-19: _("""
+19: _(u"""
      Il y a %(i1)s mailles dans la zone fissure. 
 """),
 
-20: _("""
+20: _(u"""
    Le mot-clef ORIE_FOND est indispensable en 3D si vous n'utilisez pas 
    le catalogue des formes de fissure prédéfinies : FORM_FISS pour définir
    les level-sets.
 """),
 
-21: _("""
+21: _(u"""
      Le mot-clef ORIE_FOND n'est pas nécessaire en 2D.
 """),
 
-22: _("""
+22: _(u"""
      Plus d'une occurrence du mot-clef ORIE_FOND.
 """),
 
-23: _("""
+23: _(u"""
      Erreur dans le choix de la méthode de calcul des level-sets.
      Vous souhaitez définir une %(k1)s.
      Or la forme que vous avez sélectionnée < %(k2)s >
@@ -181,7 +179,7 @@ cata_msg={
      Sélectionnez une forme de %(k1)s.
 """),
 
-24: _("""
+24: _(u"""
      Erreur dans le choix de la méthode de calcul des level-sets.
      Vous souhaitez définir une fissure.
      Pour cela il est nécessaire de définir 2 level sets : LT et LN.
@@ -189,7 +187,7 @@ cata_msg={
      Veuillez renseignez %(k1)s.
 """),
 
-25: _("""
+25: _(u"""
      Erreur dans le choix de la méthode de calcul des level-sets.
      Vous souhaitez définir une interface.
      Pour cela il ne faut est pas définir la level set normale LT.
@@ -198,60 +196,60 @@ cata_msg={
      Pour ne plus obtenir ce message, ne renseignez pas %(k1)s.
 """),
 
-26: _("""
+26: _(u"""
      Numeros des mailles de la zone fissure. 
 """),
 
-27: _("""
+27: _(u"""
      Si vous êtes en 3D pour l'approche de contact <<Grands glissements avec XFEM>>,
      seule la formulation aux noeuds sommets est possible.
      Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
      soient de type HEXA8, PENTA6, PYRAM5 ou TETRA4.
 """),
 
-28: _("""
+28: _(u"""
      Pour un modèle XFEM avec contact utilisant l'approche Lagranges aux noeuds,
      il est indispensable d'utiliser ALGO_LAG='VERSION1' ou 'VERSION2'. On
      passe outre ALGO_LAG='NON' dans ce cas, et on utilise la version 2.
 """),
 
-29: _("""
+29: _(u"""
      Nombre de mailles contenant le fond de fissure : %(i1)s  
 """),
 
-30: _("""
+30: _(u"""
      Nombre de mailles de type Heaviside : %(i1)s  
 """),
 
-31: _("""
+31: _(u"""
      Nombre de mailles de type Crack-tip : %(i1)s  
 """),
 
-32: _("""
+32: _(u"""
      Nombre de mailles de type Heaviside Crack-tip : %(i1)s  
 """),
 
-33: _("""
+33: _(u"""
      Nombre de points du fond de fissure : %(i1)s  
 """),
 
-34: _("""
+34: _(u"""
      Nombre de fonds de fissure : %(i1)s  
 """),
 
-35: _("""
+35: _(u"""
      Coordonnées des points des fonds de fissure
 """),
 
-36: _("""
+36: _(u"""
      fond de fissure : %(i1)s  
 """),
 
-37: _("""
+37: _(u"""
      Nombre de level-sets réajustées : %(i1)s  
 """),
 
-38: _("""
+38: _(u"""
      Si vous êtes en 2D pour l'approche de contact <<Grands glissements avec XFEM>>,
      seule la formulation aux noeuds sommets est possible si la fissure possède un fond. 
      Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
@@ -259,7 +257,7 @@ cata_msg={
      
 """),
 
-39: _("""
+39: _(u"""
      Erreur utilisateur : incohérence entre les mot-clés FISSURE et MODELE_IN.
      Il faut que les (ou la) fissure sous le mot-clé FISSURE soient toutes définies à 
      partir du même modèle.
@@ -270,7 +268,7 @@ cata_msg={
      Veuillez revoir la définition de la fissure %(k1)s ou bien changer MODELE_IN.
 """),
 
-40: _("""
+40: _(u"""
       La maille %(k1)s doit être enrichie avec plus de 4 fonctions heavisides,
       le multi-Heaviside est limité à 4 fonctions heaviside, un noeud du maillage
       ne doit pas être connécté à plus de 4 fissures.
@@ -278,7 +276,7 @@ cata_msg={
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
 """),
 
-41: _("""
+41: _(u"""
       La maille %(k1)s est quadratique et elle est connectée à 2 fissures,
       le multi-Heaviside n'a été généralisé en quadratique.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
@@ -286,14 +284,14 @@ cata_msg={
 """),
 
 
-43: _("""
+43: _(u"""
       Le contact autre que P1P1 est actif et la maille %(k1)s est connectée à 2 fissures,
       le multi-Heaviside ne peut pas être pris en compte si le contact autre que P1P1 est utilisé.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
 """),
 
-44: _("""
+44: _(u"""
       La maille %(k1)s est connectée à 2 fissures, or il s'agit d'une maille possédant des
       enrichissements de fond de fissure.
       Le multi-Heaviside ne peut pas être pris en compte en fond de fissure.
@@ -301,21 +299,21 @@ cata_msg={
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
 """),
 
-45: _("""
+45: _(u"""
       Jonction X-FEM et contact
 
       Une facette de contact XFEM doit être redécoupé. Ceci n'est pas implémenté pour l'instant.
       Les efforts de contact ne seront pas prise en compte sur cette facette.
 """),
 
-46: _("""
+46: _(u"""
       Les fissures sont mal ordonnées dans le mot clé FISSURE de MODI_MODEL_XFEM
       
       L'ordre dans lequel sont définis les fissures avec l'utilisation du mot clé JONCTION impose que %(k1)s doit
       être donné après %(k2)s. Veiller permuter %(k1)s et %(k2)s dans le mot clé FISSURE de MODI_MODEL_XFEM.
 """),
 
-47: _("""
+47: _(u"""
       La fissure %(k1)s est déja attaché à la fissure %(k2)s, on ne peut pas l'attacher à %(k3)s.
       
       Il est possible d'attacher globalement %(k1)s à la fois à %(k2)s et %(k3)s,
@@ -326,25 +324,25 @@ cata_msg={
       JONCTION=_F(FISSURE=%(k2)s,POINT=...) lorsqu'on appelle DEFI_FISS_XFEM pour définir %(k3)s.
 """),
 
-48: _("""
+48: _(u"""
      Le calcul de G avec X-FEM est impossible avec COMP_INCR. 
 """),
 
-49: _("""
+49: _(u"""
      Le calcul de G avec X-FEM est impossible en grandes deformations. 
 """),
 
-50: _("""
+50: _(u"""
      La méthode X-FEM n'est pas disponible avec 'PETIT_REAC'. 
 """),
 
-57: _("""
+57: _(u"""
   -> Aucune maille de fissure n'a été trouvée. 
   -> Risque & Conseil :
      Suite des calculs risquée.
 """),
 
-58: _("""
+58: _(u"""
   -> Aucun point du fond de fissure n'a été trouvé !
      Cela signifie que le fond de fissure se trouve en dehors de la structure.
 
@@ -355,19 +353,19 @@ cata_msg={
         de la level set tangente Vérifier la définition des level sets.
 """),
 
-59: _("""
+59: _(u"""
      Ne pas utiliser le mot-clef RAYON_ENRI lorsque le fond de fissure
      est en dehors de la structure.
 """),
 
-60: _("""
+60: _(u"""
   -> Le point initial de fissure n'est pas un point de bord de fissure,
      bien que la fissure soit débouchante
   -> Risque & Conseil:
      Assurez-vous de la bonne définition de PFON_INI.
 """),
 
-61: _("""
+61: _(u"""
   -> Une face contient au moins 3 points d'intersection avec l'iso-zéro du champ
      de level-set car la valeur des level-sets aux noeuds de la maille a probablement été
      mal reactualisée lors de la phase de réinitialisation ou à la propagation précédente.
@@ -385,14 +383,14 @@ cata_msg={
      par CALC_G a sens physique pour le problème à résoudre.
 """),
 
-63: _("""
+63: _(u"""
   -> ---Eléments XFEM quadratiques 2D---
        Un sous élément est intersecté par l'iso-zéro de la level set normale en deux endroits
        sur une arête.
        Cette configuration est proscrite.
 """),
 
-64: _("""
+64: _(u"""
   -> ---Eléments XFEM quadratiques 2D---
      Le calcul ne peut aboutir pour l'une des raisons suivante :
      - les calculs des coordonnées des points d'intersection entre un élément et la fissure
@@ -400,13 +398,13 @@ cata_msg={
      - l'élément ne peut être découpé selon la configuration de fissure qui le traverse
 """),
 
-65: _("""
+65: _(u"""
   -> ---Eléments XFEM quadratiques 2D---
      On recherche un point de l'iso-zéro de la level set normale intersectant l'arête
      d'un sous élément qui n'existe pas.
 """),
 
-66: _("""
+66: _(u"""
   -> ---Eléments XFEM quadratiques 2D---
      Le calcul d'abscisse curviligne sur une arête quadratique ne peut aboutir pour l'une des
      raisons suivante :
@@ -414,12 +412,12 @@ cata_msg={
      - l'arête est "trop" arrondie
 """),
 
-67: _("""
+67: _(u"""
   -> ---Eléments XFEM quadratiques 2D---
      Newton : nombre d'itérations maximal atteint
 """),
 
-68: _("""
+68: _(u"""
   -> Aucune grille n'est associée à la fissure donnée par FISS_GRILLE.
 
   -> Risque & Conseil:
@@ -427,7 +425,7 @@ cata_msg={
      
 """),
 
-69: _("""
+69: _(u"""
   -> La fissure à propager a été définie par DEFI_FISS_XFEM en donnant directement les deux
      champs level sets (mots-clé CHAMP_NO_LSN et CHAMP_NO_LST).
      Aucune grille auxiliaire n'a été associée à cette fissure.

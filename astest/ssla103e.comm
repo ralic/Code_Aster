@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 # ssla103e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,7 +139,7 @@ U=STAT_NON_LINE( MODELE=MO,
                 COMP_INCR=_F(RELATION='ENDO_ISOT_BETON',
                              ITER_INTE_MAXI=100,),
                 INCREMENT=_F(LIST_INST=L_INST,),
-                METHODE='IMPL_EX',
+                METHODE='IMPLEX',
                 CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
                                ITER_GLOB_MAXI=25),);
 U=CALC_ELEM(reuse =U,

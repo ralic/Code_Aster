@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 23/05/2011   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
   -> Les groupes '%(k1)s' et '%(k2)s'
      ont les mêmes huit premiers caractères, leur nom court est
      donc '%(k3)s'.
@@ -36,15 +34,15 @@ cata_msg = {
      les 8 caractères.
 """),
 
-2 : _("""
+2 : _(u"""
      '%(k1)s'
 """),
 
-3 : _("""
+3 : _(u"""
      Fichier MED introuvable.
 """),
 
-4 : _("""
+4 : _(u"""
 Le champ '%(k1)s' est déjà présent
 dans le fichier med pour l'instant %(r1)G.
   -> Conseil :
@@ -52,7 +50,7 @@ dans le fichier med pour l'instant %(r1)G.
      nommer le champ différemment.
 """),
 
-5 : _("""
+5 : _(u"""
 Le champ '%(k1)s' dont vous avez demandé l'impression au format MED
 est défini sur des éléments utilisant la famille de points de Gauss
 '%(k2)s'. Or l'impression de cette famille n'est pas possible au
@@ -62,7 +60,7 @@ format MED.
      la famille de point de Gauss incriminée.
 """),
 
-6 : _("""
+6 : _(u"""
     Les mots-clés %(k1)s et %(k2)s sont incompatibles.
 """),
 

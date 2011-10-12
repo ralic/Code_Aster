@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -206,13 +206,10 @@ C GLUTE POUR IMPLEX
              IF (NOMCMD(1:13).EQ.'STAT_NON_LINE') THEN
                 CALL GETVTX(' ','METHODE',0,IARG,1,METHOD,IRET)
                 IF (IRET.NE.0) THEN
-                   IF (METHOD.EQ.'IMPL_EX') THEN
-                      WRITE (6,*) 'COMCOD=',COMCOD
-                      WRITE (6,*) 'COMP=',COMP
+                   IF (METHOD.EQ.'IMPLEX') THEN
                       IF ((TYPTGT.NE.0).AND.(COMP.NE.'SANS')) THEN
                          TEXTE(1)=TYMATG
                          TEXTE(2)='IMPLEX'
-                         WRITE(6,*) 'ON EST DANS IF 1'
                         CALL U2MESG('F','COMPOR1_46',2,TEXTE,0,0,0,0.D0)
                       ELSE
                          TYPTGT=9
@@ -220,7 +217,6 @@ C GLUTE POUR IMPLEX
 C                     VERIF QUE TYMATG EST POSSIBLE POUR COMP
                      CALL LCTEST(COMCOD,'TYPE_MATR_TANG','IMPLEX',IRETT)
                       IF ((IRETT.EQ.0).AND.(COMP.NE.'SANS')) THEN
-                         WRITE(6,*) 'ON EST DANS IF 2'
                          TEXTE(1)='IMPLEX'
                          TEXTE(2)=COMP
                         CALL U2MESG('F','COMPOR1_46',2,TEXTE,0,0,0,0.D0)

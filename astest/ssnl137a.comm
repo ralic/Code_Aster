@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE BARRE ELASTOPLASTIQUE EN TRACTION AVEC IMPLEX
 # ssnl137a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,7 +93,7 @@ STATIQU1=STAT_NON_LINE(MODELE=MODELE,
                      INCREMENT = _F(LIST_INST=DFLIST1,
                                   INST_FIN=TFIN,),
                      SOLVEUR=_F(METHODE='MUMPS',),
-                     METHODE='IMPL_EX',
+                     METHODE='IMPLEX',
                      ARCHIVAGE=_F(LIST_INST=L_ARCH,),
                      )
                      

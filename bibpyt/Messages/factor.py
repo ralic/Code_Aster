@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 30/05/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF factor Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,20 +19,16 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-#-----------------------------------------------------------------------------------------------
-1: _("""
+1: _(u"""
 Le système linéaire à résoudre contient %(i1)d noeuds dont:
    - %(i2)d noeuds portant des degrés de liberté physiques
    - %(i3)d noeuds portant des degrés de liberté de Lagrange
 Pour un total de %(i4)d équations.
 """),
 
-#-----------------------------------------------------------------------------------------------
-2: _("""
+2: _(u"""
 La matrice est de taille %(i1)d équations.
 Mais elle contient:
    -  %(i2)d termes non nuls si elle est symétrique (soit un taux de remplissage de  %(r1)9.2e %%)
@@ -41,51 +37,44 @@ Le nombre de termes non nuls est susceptible de varier si l'on utilise le contac
 ou la méthode XFEM avec contact.
 """),
 
-
-
-#-----------------------------------------------------------------------------------------------
-10: _("""
+10: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - pivot presque nul à la ligne : %(i1)d,
    - nombre de décimales perdues  : %(i2)d.
 
   -> Conseil & Risque :
-     Verifiez votre mise en donneés (absence ou surabondance de conditions limites, 
+     Verifiez votre mise en donneés (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
      Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
      solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
-#-----------------------------------------------------------------------------------------------
-11: _("""
+11: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - pivot vraiment nul à la ligne : %(i1)d.
 
   -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites, 
+     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
      Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').    
+     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
-#-----------------------------------------------------------------------------------------------
-13: _("""
+13: _(u"""
 Solveur FETI :
   Le solveur FETI est impossible dans ce contexte.
 Solution :
   Il faut changer de solveur.
 """),
 
-
-#-----------------------------------------------------------------------------------------------
-20: _("""
+20: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
      la composante %(k2)s,
-   - nombre de décimales perdues : %(i2)d. 
+   - nombre de décimales perdues : %(i2)d.
 
   -> Conseil & Risque :
      Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
@@ -93,28 +82,26 @@ Solution :
      Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
 """),
 
-#-----------------------------------------------------------------------------------------------
-21: _("""
+21: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
      la composante %(k2)s.
 
   -> Conseil & Risque :
-     Verifiez votre mise en données (absence ou surabondance de conditions limites, 
+     Verifiez votre mise en données (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
      Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-cle SOLVEUR/METHODE='MUMPS').    
+     solveur linéaire MUMPS (mot-cle SOLVEUR/METHODE='MUMPS').
 """),
 
-#-----------------------------------------------------------------------------------------------
-22: _("""
+22: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - le pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
      la composante %(k2)s,
    - nombre de décimales perdues : %(i2)d.
-     
+
   -> Conseil & Risque :
      Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
      Vérifiez les conditions aux limites.
@@ -128,8 +115,7 @@ Solution :
 
 """),
 
-#-----------------------------------------------------------------------------------------------
-30: _("""
+30: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - pivot presque nul à la ligne : %(i1)d,
@@ -144,8 +130,7 @@ Solution :
      (mots clés SANS_NOEUD et SANS_GROUP_NO).
 """),
 
-#-----------------------------------------------------------------------------------------------
-31: _("""
+31: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - pivot vraiment nul à la ligne : %(i1)d.
@@ -161,9 +146,7 @@ Solution :
      solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
-
-#-----------------------------------------------------------------------------------------------
-40: _("""
+40: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
    - pivot presque nul à la ligne : %(i1)d,
@@ -174,8 +157,7 @@ Solution :
      Blocage concerné : %(k4)s.
 """),
 
-#-----------------------------------------------------------------------------------------------
-41: _("""
+41: _(u"""
 (Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
   On sait en plus que:
   - pivot vraiment nul à la ligne : %(i1)d.
@@ -185,11 +167,10 @@ Solution :
      blocage concerné : %(k4)s.
      Sinon, verifiez votre mise en données (conditions limites, caractéristiques matériaux...).
      Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').  
+     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
-#-----------------------------------------------------------------------------------------------
-42: _("""
+42: _(u"""
 Matrice non factorisable :
   Le solveur MUMPS considère la matrice comme singulière (en structure ou numériquement).
 
@@ -197,8 +178,7 @@ Conseil :
   Il peut s'agir d'une erreur de programmation ou d'un problème de mise en données (blocage
   absent ou surabondant).
 """),
-#-----------------------------------------------------------------------------------------------
-50: _("""
+50: _(u"""
  Solveur MUMPS :
    -> Vous avez demandé comme renuméroteur RENUM = '%(k1)s', or MUMPS en a
       utilisé un autre.
@@ -208,8 +188,7 @@ Conseil :
       de laisser MUMPS faire le meilleur choix.
  """),
 
-#-----------------------------------------------------------------------------------------------
-52: _("""
+52: _(u"""
   -> Vous avez demandé une analyse de stabilité et vous utilisez le solveur linéaire '%(k1)s'.
      Ces deux fonctionnalités ne sont pas compatibles.
 
@@ -217,8 +196,7 @@ Conseil :
      Changez de solveur linéaire en utilisant le mot-clé METHODE de SOLVEUR.
 """),
 
-#-----------------------------------------------------------------------------------------------
-53: _("""
+53: _(u"""
 Solveur MUMPS :
   Mumps manque de mémoire lors de la factorisation de la matrice.
 Solution :
@@ -226,8 +204,7 @@ Solution :
 Remarque : on a le droit de dépasser la valeur 100.
 """),
 
-#-----------------------------------------------------------------------------------------------
-54: _("""
+54: _(u"""
 Solveur MUMPS :
   Le solveur Mumps manque de mémoire lors de la factorisation de la matrice.
 
@@ -237,8 +214,7 @@ Solution :
   augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
 """),
 
-#-----------------------------------------------------------------------------------------------
-55: _("""
+55: _(u"""
 Solveur MUMPS :
   Problème ou alarme dans le solveur MUMPS.
   Le code retour de mumps (INFOG(1)) est : %(i1)d
@@ -247,8 +223,7 @@ Solution :
   Prévenir l'équipe de développement de Code_Aster.
 """),
 
-#-----------------------------------------------------------------------------------------------
-56: _("""
+56: _(u"""
 Solveur MUMPS :
   Il ne faut pas utiliser TYPE_RESOL = '%(k1)s'
   Pour une matrice non-symétrique.
@@ -256,8 +231,7 @@ Solution :
   Il faut utiliser TYPE_RESOL = 'NONSYM' (ou 'AUTO').
 """),
 
-#-----------------------------------------------------------------------------------------------
-57: _("""
+57: _(u"""
 Solveur MUMPS :
   La solution du système linéaire est trop imprécise :
   Erreur calculée   : %(r1)g
@@ -266,8 +240,7 @@ Solution :
   On peut augmenter la valeur du mot clé SOLVEUR/RESI_RELA.
 """),
 
-#-----------------------------------------------------------------------------------------------
-59: _("""
+59: _(u"""
 Solveur MUMPS :
   La matrice est déjà factorisée. On ne fait rien.
 Solution :
@@ -275,16 +248,14 @@ Solution :
   Contactez l'assistance.
 """),
 
-#-----------------------------------------------------------------------------------------------
-60: _("""
+60: _(u"""
 Solveur MUMPS :
   Limite atteinte : le solveur Mumps est utilisé par plus de 5 matrices simultanément.
 Solution :
   Contactez l'assistance.
 """),
 
-#-----------------------------------------------------------------------------------------------
-61: _("""
+61: _(u"""
 Erreur Programmeur lors de la résolution d'un système linéaire :
  La numérotation des inconnues est incohérente entre la matrice et le second membre.
  Matrice       : %(k1)s
@@ -293,8 +264,7 @@ Erreur Programmeur lors de la résolution d'un système linéaire :
  Si solveur : 'Feti' : numéro du sous-domaine (ou domaine global) : %(i1)d
 """),
 
-#-----------------------------------------------------------------------------------------------
-62: _("""
+62: _(u"""
 Alarme Solveur MUMPS :
   La procédure de raffinement itératif aurait besoin de plus que les %(i1)d d'itérations
   imposées en dur dans l'appel MUMPS par Code_Aster.
@@ -302,9 +272,7 @@ Solution :
   On peut essayer la valeur du mot-clé POSTTRAITEMENTS='FORCE'.
 """),
 
-#-----------------------------------------------------------------------------------------------
-
-64: _("""
+64: _(u"""
 Solveur MUMPS :
   Le solveur Mumps manque de mémoire lors de la phase d'analyse de la matrice.
 
@@ -314,9 +282,7 @@ Solution :
   augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
 """),
 
-#-----------------------------------------------------------------------------------------------
-
-65: _("""
+65: _(u"""
 Solveur MUMPS :
   Mumps ne peut pas factoriser la matrice à cause d'un dépassement d'entiers.
 
@@ -326,34 +292,28 @@ Solution :
   alloués au calcul.
 """),
 
-#-----------------------------------------------------------------------------------------------
-
-66: _("""
+66: _(u"""
 Solveur MUMPS :
   Echec de la factorisation OUT-OF-CORE de MUMPS.
   Consulter les  messages délivrés  par MUMPS.
 Conseil: Augmenter  le nombre de processeurs utilisés.
 """),
-#-----------------------------------------------------------------------------------------------
 
-67: _("""
+67: _(u"""
 Erreur d'utilisation (commande RESOUDRE) :
   La matrice et le second membre fournis à la commande RESOUDRE
   ne sont pas de meme dimension (nombre de ddls).
 Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
-#-----------------------------------------------------------------------------------------------
 
-68: _("""
+68: _(u"""
 Erreur d'utilisation (commande RESOUDRE) :
   La matrice et le second membre fournis à la commande RESOUDRE
   ne sont pas du meme type (réel/complex).
 Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
 
-#-----------------------------------------------------------------------------------------------
-
-70: _("""
+70: _(u"""
 Solveur MUMPS :
   Vous avez activé l'option IMPR='OUI_SOLVE' en surchargeant AMUMPS.F. La résolu
   tion du système linéaire en cours va donc s'effectuer normalement mais en plus
@@ -361,9 +321,7 @@ Solveur MUMPS :
   %(i1)d. Vous pouvez le récupérer (sur le proc 0) via ASTK.
 """),
 
-#-----------------------------------------------------------------------------------------------
-
-71: _("""
+71: _(u"""
 Solveur MUMPS :
   Vous avez activé l'option IMPR='OUI_NOSOLVE' en surchargeant AMUMPS.F. La résolu
   tion du système linéaire en cours ne va donc pas s'effectuer mais sa matrice et
@@ -372,20 +330,18 @@ Solveur MUMPS :
   permettre de récuperer plus rapidement votre fichier.
   Vous pouvez le récupérer (sur le proc 0) via ASTK.
 """),
-#-----------------------------------------------------------------------------------------------
 
-72: _("""
+72: _(u"""
 Solveur MUMPS :
   Vous utilisez une version de MUMPS antérieure à la 4.7.3: la %(k1)s.
   Celle-ci n'est plus supportée pour le couplage Code_Aster/MUMPS.
 Solution:
   Télécharger et installer une version de MUMPS plus récente.
 """),
-#-----------------------------------------------------------------------------------------------
 
-73: _("""
+73: _(u"""
 Solveur MUMPS :
-  Lors de la factorisation numérique, le pourcentage de pivots, %(r1)d %%, a dépassé le 
+  Lors de la factorisation numérique, le pourcentage de pivots, %(r1)d %%, a dépassé le
   pourcentage prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2)d %%.
   Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
   en fin de résolution via la mot-clé RESI_RELA.
@@ -397,8 +353,7 @@ Solution:
   Sinon, contactez l'équipe de développement.
 """),
 
-#-----------------------------------------------------------------------------------------------
-74: _("""
+74: _(u"""
 Solveur MUMPS :
   Vous utilisez une version de MUMPS antérieure à la 4.8.4: la %(k1)s.
   Celle-ci ne permet pas la détection de singularité. On désactive cette fonctionnalité avec
@@ -407,28 +362,25 @@ Attention:
   Cette désactivation peut nuire à certains type de calculs (modal, option CRIT_FLAMB...).
 """),
 
-#-----------------------------------------------------------------------------------------------
-75: _("""
+75: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
   On sait en plus que:
     - pivot presque nul à la ligne : %(i1)d.
 
   -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites, 
+     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
 """),
 
-#-----------------------------------------------------------------------------------------------
-76: _("""
+76: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
 
   -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites, 
+     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
 """),
 
-#-----------------------------------------------------------------------------------------------
-77: _("""
+77: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
   On sait en plus que:
    - pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
@@ -440,8 +392,7 @@ Attention:
      Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
 """),
 
-#-----------------------------------------------------------------------------------------------
-78: _("""
+78: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
   On sait en plus que:
    - pivot presque nul à la ligne : %(i1)d.
@@ -459,8 +410,7 @@ Attention:
      mot-clé NPREC dans  le bloc SOLVEUR. Sinon, contactez l'équipe de développement.
 """),
 
-#-----------------------------------------------------------------------------------------------
-79: _("""
+79: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
   On sait en plus que:
    - pivot presque nul à la ligne : %(i1)d.
@@ -469,8 +419,8 @@ Attention:
      Il s'agit sans doute d'une relation de blocage surabondante.
      Blocage concerné : %(k4)s.
 """),
-#-----------------------------------------------------------------------------------------------
-80: _("""
+
+80: _(u"""
 (solveur linéaire MUMPS) Probleme de paramétrage du solveur !
 
   Attention, vous avez paramètré le solveur lineaire MUMPS de manière a résoudre un système
@@ -480,8 +430,8 @@ Attention:
     -> Conseil & Risque :
       Utilisez le solveur lineaire MUMPS avec TYPE_RESOL='AUTO'.
 """),
-#-----------------------------------------------------------------------------------------------
-81: _("""
+
+81: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
   On sait en plus que:
    - pivot presque nul à la ligne : %(i1)d.
@@ -494,8 +444,8 @@ Attention:
      Peut-être devriez vous exclure certains noeuds des conditions de contact
      (mots clés SANS_NOEUD et SANS_GROUP_NO).
 """),
-#-----------------------------------------------------------------------------------------------
-82: _("""
+
+82: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
 
   -> Conseil & Risque :
@@ -504,17 +454,17 @@ Attention:
      Verifiez votre mise en donnees (conditions limites, caracteristiques materiaux...),
      En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
      Peut-être devriez vous exclure certains noeuds des conditions de contact
-     (mots clés SANS_NOEUD et SANS_GROUP_NO).  
+     (mots clés SANS_NOEUD et SANS_GROUP_NO).
 """),
-#-----------------------------------------------------------------------------------------------
-83: _("""
+
+83: _(u"""
 (solveur linéaire MUMPS) Matrice non factorisable !
 
   -> Conseil & Risque :
      Vérifiez votre mise en données (conditions limites, caractéristiques materiaux...).
 """),
-#-----------------------------------------------------------------------------------------------
-84: _("""
+
+84: _(u"""
 (solveur linéaire MUMPS) Probleme de paramétrage du solveur !
 
 Attention, vous avez paramètre le solveur lineaire MUMPS de manière a résoudre un système

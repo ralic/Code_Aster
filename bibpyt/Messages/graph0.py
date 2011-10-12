@@ -1,8 +1,8 @@
-#@ MODIF graph0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF graph0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,39 +19,37 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
- 1 : _(""""Val" doit etre une liste de 2 ou 3 listes de rééls de meme longueur.
+ 1 : _(u""""Val" doit etre une liste de 2 ou 3 listes de rééls de meme longueur.
 """),
 
- 2 : _(""""Lab" doit etre une liste de 2 ou 3 chaines.
+ 2 : _(u""""Lab" doit etre une liste de 2 ou 3 chaines.
 """),
 
- 3 : _("""Le format est inconnu : %(k1)s.
+ 3 : _(u"""Le format est inconnu : %(k1)s.
 """),
 
- 4 : _("""On limite la fenetre aux abscisses positives.
+ 4 : _(u"""On limite la fenetre aux abscisses positives.
 """),
 
- 5 : _("""On limite la fenetre aux ordonnées positives.
+ 5 : _(u"""On limite la fenetre aux ordonnées positives.
 """),
 
- 6 : _("""Des erreurs se sont produites :
+ 6 : _(u"""Des erreurs se sont produites :
    %(k1)s
 """),
 
- 7 : _("""La variable DISPLAY n'est pas définie.
+ 7 : _(u"""La variable DISPLAY n'est pas définie.
 """),
 
- 8 : _("""On fixe la variable DISPLAY à %(k1)s.
+ 8 : _(u"""On fixe la variable DISPLAY à %(k1)s.
 """),
 
- 9 : _("""Erreur lors de l'utilisation du filtre '%(k1)s'.
+ 9 : _(u"""Erreur lors de l'utilisation du filtre '%(k1)s'.
 Le fichier retourné est le fichier '.agr'.
 """),
 
-10 : _("""
+10 : _(u"""
    <I> Informations sur le fichier '%(k1)s' :
       Nombre de courbes    : %(i1)3d
       Bornes des abscisses : [ %(r1)13.6G , %(r2)13.6G ]

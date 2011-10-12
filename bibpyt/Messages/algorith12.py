@@ -1,8 +1,8 @@
-#@ MODIF algorith12 Messages  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algorith12 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-2 : _("""
+2 : _(u"""
  interface inexistante
  numéro liaison            : %(i1)d
  nom sous-structure        : %(k1)s
@@ -32,181 +30,181 @@ cata_msg = {
 """),
 
 
-7 : _("""
+7 : _(u"""
  données incompatibles :
  pour les modes mecaniques :  %(k1)s
  il manque l'option        :  %(k2)s
 """),
 
-12 : _("""
+12 : _(u"""
  données incompatibles :
  pour les MODE_CORR :  %(k1)s
  il manque le champ :  %(k2)s
 """),
 
-13 : _("""
+13 : _(u"""
  données incompatibles :
  pour les mode_corr :  %(k1)s
  pour le champ      :  %(k2)s
  le type n'est pas  %(k3)s
 """),
 
-14 : _("""
+14 : _(u"""
  donnees incompatibles :
  pour les statiques :  %(k1)s
  il manque le champ :  %(k2)s
 """),
 
-15 : _("""
+15 : _(u"""
  données incompatibles :
  pour les statiques :  %(k1)s
  pour le champ      :  %(k2)s
  le type n'est pas  %(k3)s
 """),
 
-16 : _("""
+16 : _(u"""
  La base modale %(k1)s contient des modes complexes.
  On ne peut pas projeter de matrice sur cette base.
  Conseil : calculez si possible une base modale avec vecteurs propres réels.
 """),
 
-18 : _("""
+18 : _(u"""
  on ne sait pas bien traiter l'option de calcul demandée :  %(k1)s
 """),
 
-20 : _("""
+20 : _(u"""
  données incompatibles :
  pour les modes mécaniques :  %(k1)s
  pour l'option             :  %(k2)s
  il manque le champ d'ordre  %(i1)d
 """),
 
-21 : _("""
+21 : _(u"""
  données incompatibles :
  pour les mode_corr :  %(k1)s
  il manque l'option :  %(k2)s
 """),
 
-22 : _("""
+22 : _(u"""
  données incompatibles :
  pour les modes statiques :  %(k1)s
  il manque l'option       :  %(k2)s
 """),
 
 
-26 : _("""
+26 : _(u"""
  arret sur manque argument
  base modale donnée -->  %(k1)s
  interf_dyna donnée -->  %(k2)s
 """),
 
-27 : _("""
+27 : _(u"""
  arret sur type de base incorrecte
  base modale donnée -->  %(k1)s
  type  base modale  -->  %(k2)s
  type attendu       -->  %(k3)s
 """),
 
-28 : _("""
+28 : _(u"""
  arret sur incohérence données
  base modale donnée         -->  %(k1)s
  INTERF_DYNA correspondante -->  %(k2)s
  INTERF_DYNA donnée         -->  %(k3)s
 """),
 
-29 : _("""
+29 : _(u"""
  problème arguments de définition interface
  nom interface donné    %(k1)s
  numero interface donné %(i1)d
 """),
 
-30 : _("""
+30 : _(u"""
  arret sur base modale sans INTERF_DYNA
  base modale donnée -->  %(k1)s
 """),
 
-31 : _("""
+31 : _(u"""
  arret sur manque arguments
  base modale donnée -->  %(k1)s
  INTERF_DYNA donnée -->  %(k2)s
 """),
 
-38 : _("""
+38 : _(u"""
  arret sur problème cohérence interface
 """),
 
-39 : _("""
+39 : _(u"""
  arret sur matrice inexistante
  matrice %(k1)s
 """),
 
-40 : _("""
+40 : _(u"""
   arret problème de factorisation:
   présence probable de modes de corps rigide
   la methode de Mac-Neal ne fonctionne pas en présence de modes de corps rigide
 """),
 
-41 : _("""
+41 : _(u"""
   la taille bloc  : %(i1)d est < HAUTEUR_MAX : %(i2)d
   changez la taille_bloc des profils: %(k1)s
   prenez au moins : %(i3)d
 """),
 
-42 : _("""
+42 : _(u"""
  le mot-clé  %(k1)s est incompatible avec le champ %(k2)s
  utilisez 'GROUP_MA' ou 'MAILLE'  pour restreindre le changement de repere
  à certaines mailles. %(k3)s
 """),
 
-43 : _("""
+43 : _(u"""
  étude 2D
  angle nautique unique :  %(r1)f
 """),
 
-44 : _("""
+44 : _(u"""
  noeud sur l'AXE_Z noeud :  %(k1)s
 """),
 
-49 : _("""
+49 : _(u"""
  problème: sous-structure inconnue
  sous-structure -->  %(k1)s
 """),
 
-50 : _("""
+50 : _(u"""
  pas de sous-structure dans le squelette
 """),
 
-51 : _("""
+51 : _(u"""
  nom de sous-structure non trouvé 
  la sous-structure :  %(k1)s n existe pas  %(k2)s
 """),
 
-53 : _("""
+53 : _(u"""
  arret sur pivot nul
  ligne -->  %(i1)d
 """),
 
-55 : _("""
+55 : _(u"""
  le MAILLAGE : %(k1)s ne contient pas de GROUP_MA
 """),
 
-56 : _("""
+56 : _(u"""
  le GROUP_MA : %(k2)s n'existe pas dans le MAILLAGE : %(k1)s
 """),
 
-57 : _("""
+57 : _(u"""
  le MAILLAGE : %(k1)s ne contient pas de GROUP_NO  
 """),
 
-58 : _("""
+58 : _(u"""
  le GROUP_NO : %(k2)s n'existe pas dans le MAILLAGE : %(k1)s
 """),
 
-59 : _("""
+59 : _(u"""
  nombre de noeuds communs NBNOCO =  %(i1)d
 """),
 
-62 : _("""
+62 : _(u"""
  les deux numérotations n'ont pas meme maillage d'origine
   numérotation 1: %(k1)s
   maillage     1: %(k2)s
@@ -214,96 +212,96 @@ cata_msg = {
   maillage     2: %(k4)s
 """),
 
-63 : _("""
+63 : _(u"""
  perte d'information sur DDL physique à la conversion de numérotation
  noeud numéro    :  %(i1)d
  type DDL numéro :  %(i2)d
 """),
 
-64 : _("""
+64 : _(u"""
  arret sur perte d'information DDL physique
 """),
 
-66 : _("""
+66 : _(u"""
  champ inexistant
  CHAMP      :  %(k1)s
  NUME_ORDRE :  %(i1)d
  MODE_MECA  :  %(k2)s
 """),
 
-67 : _("""
+67 : _(u"""
  arret sur problème de conditions d'interface
 """),
 
-68 : _("""
+68 : _(u"""
  le maillage final n'est pas 3D
  maillage : %(k1)s
 """),
 
-69 : _("""
+69 : _(u"""
  l'origine du maillage 1D n'est pas 0
 """),
 
-70 : _("""
+70 : _(u"""
  les noeuds du maillage sont confondus
 """),
 
-71 : _("""
+71 : _(u"""
 
  le noeud se trouve en dehors du domaine de définition avec un profil gauche de type EXCLU
  noeud :  %(k1)s
 """),
 
-72 : _("""
+72 : _(u"""
 
  le noeud se trouve en dehors du domaine de definition avec un profil droit de type EXCLU
  noeud :  %(k1)s
 """),
 
-73 : _("""
+73 : _(u"""
  problème pour stocker le champ dans le résultat :  %(k1)s
  pour le NUME_ORDRE :  %(i1)d
 """),
 
-74 : _("""
+74 : _(u"""
  champ déjà existant
  il sera remplacé par le champ %(k1)s
  pour le NUME_ORDRE  %(i1)d
 """),
 
-76 : _("""
+76 : _(u"""
   problème de récuperation CHAMNO
   concept résultat:  %(k1)s
   numéro d'ordre  :  %(i1)d
 """),
 
-77 : _("""
+77 : _(u"""
  pas d'interface définie
 """),
 
-78 : _("""
+78 : _(u"""
  arret sur interface déjà définie
  mot-clé interface numero  -->  %(i1)d
  interface                 -->  %(k1)s
 """),
 
-79 : _("""
+79 : _(u"""
  les deux interfaces n'ont pas le meme nombre de noeuds
  nombre noeuds interface droite -->  %(i1)d
  nombre noeuds interface gauche -->  %(i2)d
 """),
 
-80 : _("""
+80 : _(u"""
  les deux interfaces n'ont pas le meme nombre de degrés de liberté
  nombre ddl interface droite -->  %(i1)d
  nombre ddl interface gauche -->  %(i2)d
 """),
 
-81 : _("""
+81 : _(u"""
  arret sur base modale ne comportant pas de modes propres
 """),
 
-82 : _("""
+82 : _(u"""
 
  nombre de modes propres demandé supérieur au nombre de modes dynamiques de la base
  nombre de modes demandés       --> %(i1)d
@@ -311,26 +309,26 @@ cata_msg = {
  nombre de fréquences douteuses --> %(i3)d
 """),
 
-83 : _("""
+83 : _(u"""
  plusieurs champs correspondant à l'acces demandé
  resultat     : %(k1)s
  acces "INST" : %(r1)f
  nombre       : %(i1)d
 """),
 
-84 : _("""
+84 : _(u"""
  pas de champ correspondant à un accès demandé
  résultat     :  %(k1)s
  acces "INST" :  %(r1)f
 """),
 
-89 : _("""
+89 : _(u"""
  instant de reprise supérieur à la liste des instants
  instant de reprise :  %(r1)f
  instant max        :  %(r2)f
 """),
 
-90 : _("""
+90 : _(u"""
  on n'a pas trouvé l'instant
  instant de reprise:  %(r1)f
  pas de temps      :  %(r2)f
@@ -338,13 +336,13 @@ cata_msg = {
  borne max         :  %(r4)f
 """),
 
-91 : _("""
+91 : _(u"""
  instant final inférieur à la liste des instants
  instant final:  %(r1)f
  instant min  :  %(r2)f
 """),
 
-92 : _("""
+92 : _(u"""
  on n'a pas trouvé l'instant
  instant final:  %(r1)f
  pas de temps :  %(r2)f
@@ -352,12 +350,12 @@ cata_msg = {
  borne max    :  %(r4)f
 """),
 
-97 : _("""
+97 : _(u"""
  données erronées
  pas d'instant de calcul pour l'instant d'archivage :  %(r1)f
 """),
 
-98 : _("""
+98 : _(u"""
  données erronées
  plusieurs instants de calcul pour l'instant d'archivage:  %(r1)f
 """),

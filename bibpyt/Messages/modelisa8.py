@@ -1,8 +1,8 @@
-#@ MODIF modelisa8 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa8 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,23 +19,21 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  la section de la poutre est nulle
 """),
 
-2 : _("""
+2 : _(u"""
  l'inertie de la poutre suivant OY est nulle
 """),
 
-3 : _("""
+3 : _(u"""
  l'inertie de la poutre suivant OZ est nulle
 """),
 
-4 : _("""
+4 : _(u"""
  La somme des aires des fibres est differente de l'aire de la section de la poutre.
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_AIRE :
@@ -49,7 +47,7 @@ cata_msg = {
    - erreur relative        : %(r4)12.5E
 """),
 
-5 : _("""
+5 : _(u"""
  La somme des moments d'inertie des fibres par rapport a l'axe 0Y est differente du moment de la poutre.
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
@@ -63,7 +61,7 @@ cata_msg = {
    - erreur relative               : %(r4)12.5E
 """),
 
-6 : _("""
+6 : _(u"""
  La somme des moments d'inertie des fibres par rapport a l'axe 0Z est differente du moment de la poutre.
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
@@ -77,63 +75,63 @@ cata_msg = {
    - erreur relative               : %(r4)12.5E
 """),
 
-7 : _("""
+7 : _(u"""
  actuellemnt on ne peut mettre que %(k1)s groupes de fibres sur un element
 """),
 
-8 : _("""
+8 : _(u"""
  Le groupe de fibre %(k1)s n'a pas ete defini dans DEFI_GEOM_FIBRE
 """),
 
-9 : _("""
+9 : _(u"""
  mot cle facteur  "defi_arc", occurence  %(i1)d , group_ma :  %(k1)s
  le centre n'est pas vraiment  le centre du cercle %(k2)s
 """),
 
-10 : _("""
+10 : _(u"""
  mot cle facteur  "defi_arc", occurence  %(i1)d , group_ma :  %(k1)s
  le point de tangence n est pas equidistant des points extremites %(k2)s
 """),
 
-11 : _("""
+11 : _(u"""
  mot cle facteur  "defi_arc", occurence  %(i1)d , maille :  %(k1)s
  le centre n'est pas vraiment  le centre du cercle %(k2)s
 """),
 
-13 : _("""
+13 : _(u"""
   , maille :  %(i1)d la maille n'est pas situee  sur le cercle %(k1)s
 """),
 
-14 : _("""
+14 : _(u"""
   , maille :  %(i1)d
  la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s
 """),
 
-16 : _("""
+16 : _(u"""
   , maille :  %(i1)d pb produit scalaire %(k1)s
 """),
 
-25 : _("""
+25 : _(u"""
    l'ensemble des mailles comporte plus de 2 extremites %(k1)s
 """),
 
-26 : _("""
+26 : _(u"""
  defi_arcl'ensemble des mailles  forme un cercle : a subdiviser  %(k1)s
 """),
 
-27 : _("""
+27 : _(u"""
  le ddl  %(k1)s est interdit pour le noeud %(k2)s
 """),
 
-28 : _("""
+28 : _(u"""
  affectation déjà effectuée du ddl  %(k1)s du noeud %(k2)s : on applique la règle de surcharge
 """),
 
-29 : _("""
+29 : _(u"""
  nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d
 """),
 
-30 : _("""
+30 : _(u"""
  Erreur utilisateur:
     On cherche à imposer une condition aux limites sur le ddl %(k1)s
     du noeud %(k2)s.
@@ -145,68 +143,68 @@ cata_msg = {
         - le noeud porte-t-il le ddl que l'on cherche à contraindre ?
 """),
 
-31 : _("""
+31 : _(u"""
  nombre de motcles superieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d
 """),
 
-34 : _("""
+34 : _(u"""
  erreur dans les donneesle parametre  %(k1)s n existe pas dans la table  %(k2)s
 """),
 
-35 : _("""
+35 : _(u"""
  erreur dans les donneespas de valeur pour le parametre  %(k1)s
 """),
 
-36 : _("""
+36 : _(u"""
  erreur dans les donneesplusieurs valeurs pour le group_ma  %(k1)s
 """),
 
-40 : _("""
+40 : _(u"""
  la maille de nom :  %(k1)s n'est pas de type  %(k2)s  ou  %(k3)s
  elle ne sera pas affectee par  %(k4)s
 """),
 
-43 : _("""
+43 : _(u"""
 
  le nombre de ddl_1 figurant dans  la liaison n'est pas egal au nombre de coef_mult_1 :
    %(i1)d
    %(i2)d
 """),
 
-44 : _("""
+44 : _(u"""
 
  le nombre de ddl_2 figurant dans  la liaison n'est pas egal au nombre de coef_mult_2 :
    %(i1)d
    %(i2)d
 """),
 
-46 : _("""
+46 : _(u"""
 
  le nombre de ddls figurant dans  la liaison n'est pas egal au nombre de  coef_mult/coef_mult_fonc :
    %(i1)d
    %(i2)d
 """),
 
-47 : _("""
+47 : _(u"""
 
  le nombre de ddls figurant dans  la liaison n'est pas egal au nombre de noeuds :
    %(i1)d
    %(i2)d
 """),
 
-49 : _("""
+49 : _(u"""
 
  la direction normale est calculee sur la face esclave. il faut donner des mailles
   de facettes, mots cles :  %(k1)s %(k2)s
 """),
 
-52 : _("""
+52 : _(u"""
  les noeuds n1 et n2 sont confondus coor(n1): %(r1)f   %(r2)f coor(n2): %(r3)f
    %(r4)f
  norme   : %(r5)f
 """),
 
-53 : _("""
+53 : _(u"""
  n3 colineaires coor(n1): %(r1)f   %(r2)f   %(r3)f coor(n2): %(r4)f   %(r5)f
    %(r6)f
  coor(n3): %(r7)f
@@ -215,21 +213,21 @@ cata_msg = {
  norme   : %(r10)f
 """),
 
-55 : _("""
+55 : _(u"""
 Interpolation interdite pour un résultat de type :  %(k1)s
 Seule l'extraction est possible : OPERATION='EXTR'
 """),
 
-56 : _("""
+56 : _(u"""
 Dans le groupe de mailles %(k1)s, il y a %(i1)d mailles mal orientées. Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.
 """),
 
-57 : _("""
+57 : _(u"""
 La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.
 """),
 
 
-68 : _("""
+68 : _(u"""
  Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas 
  des mailles surfaciques.
  Risques & Conseils :
@@ -237,11 +235,11 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
  mot-cle GROUP_MA_ESCL.
 """),
 
-69 : _("""
+69 : _(u"""
  le code:  %(i1)d   %(k1)s
 """),
 
-70 : _("""
+70 : _(u"""
  Possible erreur utilisateur dans la commande AFFE_MODELE :
    Un problème a été détecté lors de l'affectation des éléments finis.
    Pour l'occurrence AFFE de numéro %(i1)d, certaines mailles de meme dimension topologique
@@ -271,19 +269,19 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 
 """),
 
-71 : _("""
+71 : _(u"""
  materiau non valide materiau :  %(k1)s
 """),
 
-72 : _("""
+72 : _(u"""
  materiaux non valideson ne peut avoir a la fois  %(k1)s  et  %(k2)s
 """),
 
-75 : _("""
+75 : _(u"""
  erreur donneesle group_no n'existe pas  %(k1)s
 """),
 
-77 : _("""
+77 : _(u"""
  Il y a un conflit dans les vis-à-vis des noeuds. Le noeud  %(k1)s est
  à la fois le vis-à-vis du noeud %(k2)s et du noeud %(k3)s.
 
@@ -293,20 +291,20 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
    ordre de grandeur que la longueur caractéristique du maillage (distance entre deux noeuds).
 """),
 
-79 : _("""
+79 : _(u"""
  conflit dans les vis-a-vis  generes successivement le noeud  %(k1)s
   a pour vis-a-vis le noeud %(k2)s
   et le noeud %(k3)s
 """),
 
-80 : _("""
+80 : _(u"""
  conflit dans les vis-a-vis  generes successivement
  le noeud de la premiere liste %(k1)s
   n"est l"image d"aucun  %(k2)s
  noeud par la correspondance inverse %(k3)s
 """),
 
-87 : _("""
+87 : _(u"""
  conflit dans les vis-a-vis  generes successivement a partir des listes  %(k1)s
  et  %(k2)s
  le noeud  %(k3)s
@@ -314,7 +312,7 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
   et le noeud %(k5)s
 """),
 
-88 : _("""
+88 : _(u"""
  conflit dans les vis-a-vis  generes successivement a partir des listes  %(k1)s
  et  %(k2)s
  le noeud de la premiere liste %(k3)s
@@ -322,33 +320,33 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
  noeud par la correspondance inverse %(k5)s
 """),
 
-89 : _("""
+89 : _(u"""
  on ne trouve pas dans la paroi 2 de maille de type :  %(i1)d
 """),
 
-90 : _("""
+90 : _(u"""
  conflit dans les vis_a_vis les mailles  %(k1)s  et  %(k2)s
   ont toutes les 2 comme vis_a_vis la maille %(k3)s
 """),
 
-93 : _("""
+93 : _(u"""
 
  evaluation impossible  d une fonction materiau - on deborde a gauche  pour la temperature
  temp : %(r1)f
 """),
 
-94 : _("""
+94 : _(u"""
 
  evaluation impossible  d une fonction materiau - on deborde a droite  pour la temperature
  temp : %(r1)f
 """),
 
-98 : _("""
+98 : _(u"""
  il manque le parametre  %(k1)s dans la table %(k2)s
  .sa presence est indispensable a la  creation du champ nodal. %(k3)s
 """),
 
-99 : _("""
+99 : _(u"""
  le parametre  %(k1)s ne doit pas apparaitre dans la  table %(k2)s
  pour la creation d'un champ nodal. %(k3)s
 """),

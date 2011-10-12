@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,169 +19,167 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  manque les accélérations
 """),
 
-2 : _("""
+2 : _(u"""
  pour une SD RESULTAT de type DYNA_TRANS,
  seuls les mots-clés FONC_MULT et COEF_MULT sont autorisés
 """),
 
-3 : _("""
+3 : _(u"""
  pour une SD RESULTAT de type  EVOL_ELAS,
  seul le mot-clé fonc_mult est autorisé
 """),
 
-4 : _("""
+4 : _(u"""
  l'utilisation du mot-clé FONC_MULT n'est licite que pour
  les SD RESULTATS :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
 """),
 
-5 : _("""
+5 : _(u"""
   pour calculer  %(k1)s  il faut SIEF_ELNO ou EFGE_ELNO
 """),
 
-6 : _("""
+6 : _(u"""
   option  %(k1)s  non traitée pour un résultat de type  %(k2)s
 """),
 
-7 : _("""
+7 : _(u"""
  Calcul de  %(k1)s  impossible.
 """),
 
-8 : _("""
+8 : _(u"""
  les champs SIEF_ELGA et SIGM_ELNO sont absents :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
 """),
 
-9 : _("""
+9 : _(u"""
  Le champ  SIGM_ELNO est absent :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
-10 : _("""
+10 : _(u"""
  Le champ  SICO_ELNO est absent :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
-11 : _("""
+11 : _(u"""
  le résultat  %(k1)s  doit comporter un champ de déplacement au numéro d'ordre  %(k2)s  .
 """),
 
-12 : _("""
+12 : _(u"""
  Le mot clé PREC_ERR est OBLIGATOIRE avec l'option SING_ELEM.
  Il faut renseigner le mot clé PREC_ERR avec une valeur comprise entre 0 et 1.
 """),
 
-13 : _("""
+13 : _(u"""
  Le mot clé PREC_ERR doit etre strictement positif.
 """),
 
-14 : _("""
+14 : _(u"""
  Il n'y a pas de champ d'estimateur d'erreur dans la structure de donnée résultat.
  On ne calcule pas l'option SING_ELEM.
  Le calcul préalable d'un estimateur d'erreur est OBLIGATOIRE pour le calcul de cette option.
 """),
 
-15: _("""
+15: _(u"""
  Par défaut on utilise l'estimateur en résidu ERME_ELEM.
 """),
 
-16 : _("""
+16 : _(u"""
  Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM.
 """),
 
-17 : _("""
+17 : _(u"""
  le résultat  %(k1)s  doit comporter un champ de contraintes au numéro d'ordre  %(k2)s  .
 """),
 
-18 : _("""
+18 : _(u"""
  pas de champ de contraintes pour calculer  %(k1)s
 """),
 
-19 : _("""
+19 : _(u"""
  probleme à l'appel de ALCHML pour  %(k1)s
 """),
 
-20 : _("""
+20 : _(u"""
  pas de champ d'endommagement pour calculer  %(k1)s
 """),
 
-21 : _("""
+21 : _(u"""
  le calcul avec l'option ENDO_ELNO nécessite au préalable un calcul avec l'option ENDO_ELGA
 """),
 
-22 : _("""
+22 : _(u"""
   L'option %(k1)s est inexistante.
 """),
 
-23 : _("""
+23 : _(u"""
  option :  %(k1)s
 """),
 
-24: _("""
+24: _(u"""
  <I> L'estimateur que vous avez choisi pour le calcul de l'option SING_ELEM est %(k1)s.
 """),
 
-25 : _("""
+25 : _(u"""
  calcul non disponible
 """),
 
-26: _("""
+26: _(u"""
  L'estimateur %(k1)s que vous avez choisi pour le calcul de l'option SING_ELEM
  n'existe pas dans la structure de donnée résultat %(k2)s.
  L'option SING_ELEM n'est pas calculée.
 """),
 
-27 : _("""
+27 : _(u"""
  type :  %(k1)s  incompatible avec l'option :  %(k2)s
 """),
 
-28 : _("""
+28 : _(u"""
  type de champ inconnu
 """),
 
-29 : _("""
+29 : _(u"""
  Il n'y a pas de champ d'énergie dans la structure de donnée résultat.
  On ne calcule pas l'option SING_ELEM.
  Le calcul préalable de l'option  EPOT_ELEM ou ETOT_ELEM est OBLIGATOIRE
  pour le calcul de cette option.
 """),
 
-30 : _("""
+30 : _(u"""
  il faut un modèle ou des charges.
 """),
 
-31 : _("""
+31 : _(u"""
  la masse du MACR_ELEM : %(k1)s  n'a pas encore ete calculée.
 """),
 
-32 : _("""
+32 : _(u"""
  il manque des masses.
 """),
 
-33 : _("""
+33 : _(u"""
  la rigidité du MACR_ELEM : %(k1)s  n'a pas encore été calculée.
 """),
 
-34 : _("""
+34 : _(u"""
  il manque des rigidités.
 """),
 
-35 : _("""
+35 : _(u"""
  le modèle doit contenir des éléments finis ou des sous-structures.
 """),
 
-36 : _("""
+36 : _(u"""
  A cause des alarmes précédentes, l'option SING_ELEM n'est pas calculée.
 """),
 
-37 : _("""
+37 : _(u"""
  Attention : Certains ddls sont "imposés" plusieurs fois par AFFE_CHAR_CINE.
  Pour ces ddls, la valeur imposée sera la SOMME des différentes valeurs imposées.
  Ce n'est peut-etre pas ce qui est voulu.
@@ -191,16 +189,16 @@ cata_msg = {
 
 """),
 
-38 : _("""
+38 : _(u"""
  on ne traite pas le type_scalaire: %(k1)s
 """),
 
-39 : _("""
+39 : _(u"""
  le modèle contient des éléments de structure
  il faut probablement utiliser le mot-clé CARA_ELEM.
 """),
 
-40 : _("""
+40 : _(u"""
   -> Le modèle a probablement besoin d'un champ de matériau (mot-clé CHAM_MATER).
 
   -> Risque & Conseil :
@@ -209,23 +207,23 @@ cata_msg = {
      Vérifiez si votre modélisation nécessite un CHAM_MATER.
 """),
 
-41 : _("""
+41 : _(u"""
  les charges ne s'appuient pas toutes sur le meme modèle.
 """),
 
-42 : _("""
+42 : _(u"""
  les charges ne s'appuient pas sur le modèle donné en argument.
 """),
 
-43 : _("""
+43 : _(u"""
  les charges sont de type différent.
 """),
 
-44 : _("""
+44 : _(u"""
  les charges ne s'appuient pas toutes sur le meme modèle
 """),
 
-45 : _("""
+45 : _(u"""
  données incorrectes.
 """),
 
@@ -233,7 +231,7 @@ cata_msg = {
 
 
 
-47 : _("""
+47 : _(u"""
 Possible erreur d'utilisation :
   Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
   Pour cela, vous précisez un état initial (mot clé ETAT_INIT / EVOL_NOLI).
@@ -246,7 +244,7 @@ Risques & conseils :
   Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
 """),
 
-48 : _("""
+48 : _(u"""
 Possible erreur d'utilisation :
   Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
   Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
@@ -268,7 +266,7 @@ Risques & conseils :
   Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
 """),
 
-49 : _("""
+49 : _(u"""
 Erreur d'utilisation :
   Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
   Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
@@ -287,11 +285,11 @@ Risques & conseils :
   Vérifiez le comportement affecté sur cette maille.
 """),
 
-50 : _("""
+50 : _(u"""
  La commande a besoin d'un nom de modèle.
 """),
 
-51 : _("""
+51 : _(u"""
   Erreur Utilisateur :
     On essaie d'utiliser dans la commande %(k1)s
     un modèle pour lequel des éléments finis ont été affectés directement
@@ -304,19 +302,19 @@ Risques & conseils :
     C'est possible avec la commande CREA_MAILLAGE / CREA_POI1.
 """),
 
-52 : _("""
+52 : _(u"""
  le champ doit être un CHAM_ELEM.
 """),
 
-53 : _("""
+53 : _(u"""
  ne traite qu'un CHAM_ELEM réel
 """),
 
-54 : _("""
+54 : _(u"""
  longueurs des modes locaux imcompatibles entre eux.
 """),
 
-55 : _("""
+55 : _(u"""
 Erreur utilisateur dans CALC_ELEM:
   Pour pouvoir calculer SIEQ_ELNO sur un concept de type comb_fourier,
   il faut avoir calculé au préalable l'option 'SIEF_ELGA'
@@ -326,63 +324,63 @@ Erreur utilisateur dans CALC_ELEM:
 
 
 
-57 : _("""
+57 : _(u"""
  on ne sait pas moyenner cette composante negative
 """),
 
-58 : _("""
+58 : _(u"""
  champs sur modeles differents
 """),
 
-59 : _("""
+59 : _(u"""
   %(k1)s  doit etre un cham_elem.
 """),
 
-60 : _("""
+60 : _(u"""
  longueurs des modes locaux champ1 imcompatibles entre eux.
 """),
 
-61 : _("""
+61 : _(u"""
  longueurs des modes locaux champ2 imcompatibles entre eux.
 """),
 
-62 : _("""
+62 : _(u"""
  composante non definie
 """),
 
-63 : _("""
+63 : _(u"""
  champ de geometrie non trouve
 """),
 
-64 : _("""
+64 : _(u"""
  l'instant du calcul est pris  arbitrairement a 0.0
 """),
 
-65 : _("""
+65 : _(u"""
   on n'accepte un instant arbitraire que si le concept deformations anelastiques n'a qu'1 champ.
 """),
 
-66 : _("""
+66 : _(u"""
   le concept evol_noli :  %(k1)s  ne contient aucun champ de déformations anélastiques.
 """),
 
-71 : _("""
+71 : _(u"""
  il faut 1 chargement de rotation et un seul.
 """),
 
-72 : _("""
+72 : _(u"""
   il ne faut pas definir plus d"un champ de vitesse
 """),
 
-73 : _("""
+73 : _(u"""
  le champ:  %(k1)s  n'est ni un cham_elem ni un resuelem
 """),
 
-74 : _("""
+74 : _(u"""
  type scalaire interdit : %(k1)s
 """),
 
-78 : _("""
+78 : _(u"""
 Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurence %(i1)d :
 Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
 le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
@@ -395,11 +393,11 @@ supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
    Rayon    : %(r8)g
 """),
 
-79 : _("""
+79 : _(u"""
  la matrice A est singulière
 """),
 
-80 : _("""
+80 : _(u"""
  Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurence %(i1)d :
 Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
 le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
@@ -417,58 +415,58 @@ Risque et conseils :
    une section 3D qui ne serait que partiellement maillée (symétrie du maillage).
 """),
 
-81 : _("""
+81 : _(u"""
  cette fonction ne marche que pour des modes locaux de type chno, vect, ou mat
 """),
 
-82 : _("""
+82 : _(u"""
  le mode local est de type matrice non_carree
 """),
 
-84 : _("""
+84 : _(u"""
  il n y a pas de parametre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
-85 : _("""
+85 : _(u"""
  il y a plusieurs parametres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
-88: _("""
+88: _(u"""
  Les charges ne s'appuie pas sur le MODELE fourni.
 """),
 
-89 : _("""
+89 : _(u"""
  les charges ne s'appuient pas toutes sur le même modèle.
 """),
 
-91 : _("""
+91 : _(u"""
  une des charges n'est pas mécanique
 """),
 
-92 : _("""
+92 : _(u"""
  erreur: une des charges n'est pas thermique
 """),
 
-93 : _("""
+93 : _(u"""
  une des charges n'est pas acoustique
 """),
 
-94 : _("""
+94 : _(u"""
  le champ doit être un CHAM_ELEM aux points de gauss
 """),
 
-95 : _("""
+95 : _(u"""
  avec un CHAM_ELEM calcule sur une liste de maille,
  il faut utiliser le mot cle "MODELE"
 """),
 
-96 : _("""
+96 : _(u"""
   pour prendre en compte les termes d'inertie,
   il est préférable d'utiliser la commande "CALC_ELEM".
   le mot cle "ACCE" n'est pas traité et les résultats risquent d'être faux.
 """),
 
-97 : _("""
+97 : _(u"""
   Erreur d'utilisation :
     Fonctionnalité : projection de maillage
     On cherche à projeter des mailles sur certains noeuds.
@@ -479,12 +477,12 @@ Risque et conseils :
     PROJ_CHAMP/DISTANCE_MAX
 """),
 
-98 : _("""
+98 : _(u"""
  Le calcul de carte de taille et de détection de singularité n'est pas
  programmé en 3D pour les éléments de type HEXA, PENTA et PYRAM.
 """),
 
-99 : _("""
+99 : _(u"""
  Problème de convergence pour calculer la nouvelle carte de taille.
 """),
 

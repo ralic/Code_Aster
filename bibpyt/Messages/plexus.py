@@ -1,4 +1,4 @@
-#@ MODIF plexus Messages  DATE 15/02/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF plexus Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,6 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
 1 : _("La macro-commande MACR_EUROPLEXUS ne fonctionne pas encore en poursuite"), 
@@ -35,30 +33,30 @@ cata_msg = {
 
 9 : _("Il faut avoir au moins un des mots-cles DDL_IMPO et PRES_REP dans AFFE_CHAR_MECA"),
 
-10: _("""
+10: _(u"""
 Les vecteurs y_local des group_ma %(k1)s
 calculés à partir des anhgles nautiques ne sont pas identiques.
 Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous 
 etes sur de l'orientation
 """),
 
-11: _("""
+11: _(u"""
 Les vecteurs y_local des mailles du group_ma %(k1)s
 calculés à partir des anhgles nautiques ne sont pas identiques.
 Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous 
 etes sur de l'orientation
 """),
 
-12: _("""
+12: _(u"""
 Le mot-cle facteur FONC_PARASOL est obligatoire quand le mot-cle RIGI_PARASOL e
 est renseigné dans AFFE_CARA_ELEM
 """),
 
-13: _("""
+13: _(u"""
 Les deplacements imposés non nuls dans DDL_IMPO ne sont pas autorisés
 """),
 
-14 : _("""
+14 : _(u"""
 Le fichier MED contenant les résultats d'Europlexus est introuvable.
 L'exécution d'Europlexus s'est probablement mal déroulée
 """), 

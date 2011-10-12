@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,14 +19,12 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
 
 
 
-2 : _("""
+2 : _(u"""
 Erreur Utilisateur :
  Quand on utilise AFFE_CHAR_CINE/EVOL_IMPO, c'est le champ de l'evol_xxx correspondant
  au 1er instant qui impose sa "loi" : tous les ddls de ce champ seront imposés pour tous
@@ -39,22 +37,22 @@ Risques & conseils :
  Assurez-vous que l'évolution imposée %(k1)s concerne les memes ddls pour tous les instants.
 """),
 
-3 : _("""
+3 : _(u"""
  la grandeur :  %(k1)s  n existe pas dans le catalogue des grandeurs.
 """),
 
-4 : _("""
+4 : _(u"""
  incoherence des maillages : %(k1)s  et  %(k2)s
 """),
 
-5 : _("""
+5 : _(u"""
  Erreur de programmation (ou d'utilisation ?) :
    Le changement de discrétisation : %(k1)s n'est pas encore programmé.
  Risques et conseils :
    Il y a peut-etre une demande d'évolution à émettre ...
 """),
 
-6 : _("""
+6 : _(u"""
  Erreur d'utilisation :
    On n'arrive pas à construire correctement le champ contenant le nombre de sous-points
    des éléments finis (coques multi-couches, tuyaux, poutre multi-fibres, ...)  du modèle %(k1)s.
@@ -65,7 +63,7 @@ Risques & conseils :
    Pour les commandes de calcul, il ne faut qu'un seul MODELE et qu'un seul CARA_ELEM.
 """),
 
-7 : _("""
+7 : _(u"""
  Erreur de maillage :
    La maille %(k1)s de type %(k2)s est trop distordue.
    Le jacobien de la transformation géométrique n'a pas le meme signe sur tous les
@@ -76,12 +74,12 @@ Risques & conseils :
    La connectivité respecte-elle bien la convention Aster ?
 """),
 
-8 : _("""
+8 : _(u"""
  sur la maille %(k1)s le calcul est thermo mécanique. Or il manque la température de référence.
  On ne peut donc pas calculer de déformation thermique.
 """),
 
-9 : _("""
+9 : _(u"""
  Erreur d'utilisation dans AFFE_CHAR_CINE :
    Aucun des ddls que l'on souhaite bloquer n'appartient au modèle.
    La charge cinématique produite est donc vide.
@@ -90,21 +88,21 @@ Risques & conseils :
    Vérifier le nom des ddls portés par les noeuds des éléments de votre modèle.
 """),
 
-10 : _("""
+10 : _(u"""
 Erreur de programmation lors de l'assemblage :
    Les quantités que l'on cherche à assembler (matr_elem ou vect_elem) ont été calculées avec au
    moins 2 partitions différentes :  %(k1)s et %(k2)s
 """),
 
-11 : _("""
+11 : _(u"""
  le mode_local:  %(k1)s  ne doit pas etre vecteur ou matrice.
 """),
 
-12 : _("""
+12 : _(u"""
  le mode_local:  %(k1)s  ne doit pas etre "DIFF__".
 """),
 
-13 : _("""
+13 : _(u"""
 Erreur utilisateur concernant le parallélisme des calculs élémentaires :
   La partition des éléments du modèle a été faite sur %(i1)d processeurs.
   Mais maintenant, le nombre de processeurs disponibles est de %(i2)d.
@@ -114,11 +112,11 @@ Conseil :
   afin qu'elle soit cohérente avec le nombre de processeurs disponibles pour les calculs.
 """),
 
-14 : _("""
+14 : _(u"""
   incompatibilite des type_champ ("elga"/"elno")  pour l option :  %(k1)s  entre les 2 type_elem :  %(k2)s  et  %(k3)s
 """),
 
-15 : _("""
+15 : _(u"""
  Erreur Utilisateur :
  On cherche à calculer une déformation thermique mais on ne trouve pas toutes les
  quantités nécessaires :
@@ -127,11 +125,11 @@ Conseil :
     - coefficient de dilatation
 """),
 
-17 : _("""
+17 : _(u"""
  type de champ inconnu
 """),
 
-19 : _("""
+19 : _(u"""
 Erreur :
  Le cham_elem %(k1)s est incohérent :
    Il possède %(i1)d GREL.
@@ -143,25 +141,25 @@ Risques & Conseils :
  a été entre temps détruit et recréé sous le meme nom.
 """),
 
-20 : _("""
+20 : _(u"""
  le champ de grandeur  %(k1)s  ne respecte pas le format xxxx_r
 """),
 
-21 : _("""
+21 : _(u"""
  les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
 """),
 
-22 : _("""
+22 : _(u"""
  problème dans le catalogue des grandeurs simples
  la grandeur %(k1)s  ne possède pas le même nombre de champs que son homologue complexe %(k2)s
 """),
 
-23 : _("""
+23 : _(u"""
  problème dans le catalogue des grandeurs simples
  la grandeur  %(k1)s  ne possède pas les mêmes champs que son homologue complexe  %(k2)s
 """),
 
-25 : _("""
+25 : _(u"""
 Erreur utilisateur dans PROJ_SPEC_BASE :
  La commande n'accepte que le parallélisme de type PARTITION='CENTRALISE'.
  Modèle impliqué : %(k1)s
@@ -170,7 +168,7 @@ Conseil :
  Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
 """),
 
-26 : _("""
+26 : _(u"""
 Les commandes CALC_ELEM et CALC_NO ne doivent pas etre utilisées en "reuse" lorsque
 l'on utilise l'un des mots clés suivants :
   * MODELE
@@ -185,11 +183,11 @@ Risques & conseils :
   alors que le champ d'énergie cinétique ECIN_ELEM_DEPL est calculé avec un autre champ de matériau.
 """),
 
-27 : _("""
+27 : _(u"""
  CHAM_ELEM à combiner incompatible
 """),
 
-28 : _("""
+28 : _(u"""
  Problème lors de l'utilisation de la structure de données %(k1)s.
  Cette structure de donnéees est de type "évolution temporelle" et l'on n'a pas le droit
  de l'utiliser en dehors de l'intervalle [tmin, tmax].
@@ -198,12 +196,12 @@ Risques & conseils :
  pour toute valeur du temps.
 """),
 
-29 : _("""
+29 : _(u"""
 Erreur de programmation :
  Option de calcul élémentaire inconnue au catalogue :  %(k1)s
 """),
 
-30 : _("""
+30 : _(u"""
 Erreur utilisateur :
   -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'OPTION:  %(k2)s.
 
@@ -217,11 +215,11 @@ Erreur utilisateur :
      S'il n'y en a pas, il faut faire une demande d'évolution.
 """),
 
-31 : _("""
+31 : _(u"""
   La température n'est pas correctement renseignée
 """),
 
-32 : _("""
+32 : _(u"""
 Erreur utilisateur :
   Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau
   %(k2)s . On ne peut donc pas calculer la déformation thermique.
@@ -235,34 +233,34 @@ Conseils :
 
 
 
-34 : _("""
+34 : _(u"""
  le calcul de l'option :  %(k1)s
  n'est possible pour aucun des types d'éléments du LIGREL.
 """),
 
-35 : _("""
+35 : _(u"""
  Erreur utilisateur :
   On essaye de fusionner 2 cham_elem mais ils n'ont pas le meme nombre
   "points" (noeuds ou points de Gauss) pour la maille numéro : %(i1)d.
   Nombres de points :  %(i2)d et %(i3)d
 """),
 
-36 : _("""
+36 : _(u"""
  Erreur utilisateur :
   On essaye de fusionner 2 cham_elem mais ils n'ont pas le meme nombre
   de "sous-points" (fibres, couches, ...) pour la maille numéro : %(i1)d.
   Nombres de sous-points :  %(i2)d et %(i3)d
 """),
 
-37 : _("""
+37 : _(u"""
  Erreur dans la lecture des CHAR_CINE ou dans les CHAR_CINE
 """),
 
-38 : _("""
+38 : _(u"""
  la carte concerne aussi des mailles tardives qui sont oubliées
 """),
 
-42 : _("""
+42 : _(u"""
  Erreur Programmeur:
  Incohérence fortran/catalogue
  TYPE_ELEMENT :  %(k1)s
@@ -272,20 +270,20 @@ Conseils :
 
 """),
 
-47 : _("""
+47 : _(u"""
   le CHAM_ELEM:  %(k1)s  n'existe pas.
 """),
 
-48 : _("""
+48 : _(u"""
  le CHAM_ELEM: %(k1)s  n'a pas le même nombre de composantes dynamiques sur tous ses éléments.
 """),
 
-49 : _("""
+49 : _(u"""
  le CHAM_ELEM : %(k1)s a des sous-points.
 """),
 
 
-50 : _("""
+50 : _(u"""
  Vous cherchez à projeter un champ inhabituel sur le modèle final.
  Vérifiez que les modélisations que vous utilisez sont compatibles.
 
@@ -294,22 +292,22 @@ Conseils :
  Champ : %(k4)s
 """),
 
-52 : _("""
+52 : _(u"""
  La composante: %(k1)s  n'appartient pas à la grandeur: %(k2)s
  Champ : %(k4)s
 """),
 
-53 : _("""
+53 : _(u"""
  Option : %(k1)s  inexistante dans les catalogues.
  Champ : %(k4)s
 """),
 
-54 : _("""
+54 : _(u"""
  Le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
  Champ : %(k4)s
 """),
 
-55 : _("""
+55 : _(u"""
  Erreur utilisateur :
    On cherche à créer un CHAM_ELEM mais sur certains points, on ne trouve pas la composante : %(k1)s
    Champ : %(k4)s
@@ -317,12 +315,12 @@ Conseils :
    Si la commande que vous exécutez comporte le mot clé PROL_ZERO='OUI', vous devriez peut-etre l'utiliser.
 """),
 
-56 : _("""
+56 : _(u"""
  Le LIGREL contient des mailles tardives
  Champ : %(k4)s
 """),
 
-57 : _("""
+57 : _(u"""
  Erreur Utilisateur :
    On cherche à transformer un champ simple en cham_elem.
    Le nombre de "points" (points de Gauss ou noeuds) du champ simple (%(i2)d) est
@@ -333,38 +331,38 @@ Conseils :
 
 """),
 
-58 : _("""
+58 : _(u"""
  Il manque la composante : %(k1)s  sur la maille : %(k2)s
  Champ : %(k4)s
 """),
 
-67 : _("""
+67 : _(u"""
  grandeur:  %(k1)s  inconnue au catalogue.
 """),
 
-68 : _("""
+68 : _(u"""
  numéro de maille invalide     :  %(k1)s  (<1 ou >nbma)
 """),
 
-69 : _("""
+69 : _(u"""
  numéro de point invalide      :  %(k1)s  (<1 ou >nbpt)
  pour la maille                :  %(k2)s
 """),
 
-70 : _("""
+70 : _(u"""
  numéro de sous_point invalide :  %(k1)s  (<1 ou >nbspt)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
 """),
 
-71 : _("""
+71 : _(u"""
  numéro de composante invalide :  %(k1)s  (<1 ou >nbcmp)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
  pour le sous-point            :  %(k4)s
 """),
 
-72 : _("""
+72 : _(u"""
  Erreur commande CALC_FERRAILLAGE :
    On n'a pas réussi à calculer la carte de ferraillage sur un élément.
    Code_retour de la routine clcplq.f : %(i1)d
@@ -376,7 +374,7 @@ Conseils :
    1050 : Dépassement contrainte béton;
 """),
 
-73 : _("""
+73 : _(u"""
  Erreur utilisateur commande CALC_FERRAILLAGE :
    Certains mots clés de CALC_FERRAILLAGE / AFFE sont obligatoires :
      pour TYPE_COMB='ELU' :
@@ -389,20 +387,20 @@ Conseils :
 
 
 
-91 : _("""
+91 : _(u"""
  incohérence des familles de points de Gauss pour la maille  %(k1)s
  ( %(k2)s / %(k3)s )
 """),
 
-92 : _("""
+92 : _(u"""
  type scalaire du CHAM_NO :  %(k1)s  non réel.
 """),
 
-93 : _("""
+93 : _(u"""
  type scalaire du NUME_DDL :  %(k1)s  non réel.
 """),
 
-99 : _("""
+99 : _(u"""
  melange de CHAM_ELEM_S et CHAM_NO_S
 """),
 

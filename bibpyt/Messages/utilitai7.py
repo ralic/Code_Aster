@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 22/08/2011   AUTEUR DURAND C.DURAND 
+#@ MODIF utilitai7 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,31 +19,29 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1: _("""
+1: _(u"""
   Erreur dans les données
   le paramètre %(k1)s n'existe pas dans la table %(k2)s
 """),
 
-2: _("""
+2: _(u"""
   Erreur dans les données
   pas de tri sur les complexes
   paramètre:  %(k1)s
 """),
 
-3: _("""
+3: _(u"""
   Erreur dans les données
   on n'a pas trouvé de ligne dans la table %(k1)s pour le paramètre %(k2)s
 """),
 
-4: _("""
+4: _(u"""
   Le numéro d'occurrence est invalide %(i1)d pour le mot clé facteur %(k1)s
 """),
 
-5: _("""
+5: _(u"""
   Le numéro de la composante (pour VARI_R) est trop grand.
     MAILLE           : %(k1)s
     NUME_MAXI        : %(i1)d
@@ -51,12 +49,12 @@ cata_msg={
 """),
 
 
-9: _("""
+9: _(u"""
  Si on utilise l'option normale pour les changements de repère, il faut donner
  une équation supplémentaire avec le mot-clé VECT_X ou VECT_Y
  """),
 
-11: _("""
+11: _(u"""
   Erreur dans les données, problème lors du traitement du mot clé facteur FILTRE
 
   -> Risque & Conseil :
@@ -64,7 +62,7 @@ cata_msg={
    soit aucune ligne ne correspond au paramètre donné
 """),
 
-12: _("""
+12: _(u"""
   Erreur utilisateur dans la commande POST_ELEM/INTEGRALE :
     Pour le champ %(k1)s,
     Sur les mailles sélectionnées %(k2)s,
@@ -76,13 +74,13 @@ cata_msg={
     IMPR_RESU pour imprimer les valeurs du champ %(k1)s sur les mailles sélectionnées.
 """),
 
-13: _("""
+13: _(u"""
   Erreur utilisateur dans la commande POST_ELEM/INTEGRALE :
     Le champ %(k1)s est un cham_elem ELEM,
     Il faut renseigner le mot clé INTEGRALE / DEJA_INTEGRE= 'OUI' / 'NON'
 """),
 
-14 : _("""
+14 : _(u"""
   POST_ELEM VOLUMOGRAMME
   Numéro d'occurence du mot-clé VOLUMOGRAMME = %(i1)d
   Numéro d'ordre                             = %(i2)d

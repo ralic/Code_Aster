@@ -1,8 +1,8 @@
-#@ MODIF volufini Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF volufini Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,36 +19,34 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-2 : _("""
+2 : _(u"""
   -> le sommet de numero global %(i1)i n appartient pas
   -> a la maille %(i2)i
 """),
 
-3 : _("""
+3 : _(u"""
   -> Nombre de voisins %(i1)i trop grand
 """),
 
-4 : _("""
+4 : _(u"""
   -> Nombre de sommets communs %(i1)i trop grand
 """),
 
-5 : _("""
+5 : _(u"""
   -> Le nombre de mailles %(i1)i est inferieur a 1
 """),
-6 : _("""
+6 : _(u"""
   -> Le type de voisinage %(k1)s est inconnu
 """),
-7 : _("""
+7 : _(u"""
   -> Le type de voisinage %(k1)s a une longueur %(i1)i trop grande
 """),
-8 : _("""
+8 : _(u"""
   -> La loi de comportement  %(k1)s est inconnu
 """),
-9 : _("""
+9 : _(u"""
   -> Le type de modelisation volumes finis (TYPVF)  %(i1)i   est inconnu.
      Vous avez le choix entre :
                           TYPVF=1  => Schema VF a deux points
@@ -57,26 +55,26 @@ cata_msg = {
                           TYPVF=4  => Schema SUC
                                                                           
 """),
-10 : _("""
+10 : _(u"""
   -> Le nom de la modelisation  %(k1)s  est inconnu
 """),
-11 : _("""
+11 : _(u"""
   -> L'option  %(k1)s est inconnue
 """),
-12 : _("""
+12 : _(u"""
   -> ELREFE  %(k1)s   inconnue : En 3D et en VF on peut utiliser uniquement des hexaedres
     a 27 DDL et des tetraedres a 27 DDL.
 """),
-13 : _("""
+13 : _(u"""
   -> l'element %(k1)s et la face  %(i1)i est non plane 
 """),
-14 : _("""
+14 : _(u"""
   -> Il est possible d'utiliser comme inconnue dans la maille le centre du cercle
      circonscrit (a la place du centre de gravite) ce qui nous permet de retrouver
      un schema volumes finis a deux points. Cependant cette possibilité n'est programme
      que pour des maillages 2D composés de triangles.
 """),
-15 : _("""
+15 : _(u"""
   -> Le nombre de noeuds de l'element est inconnu en VF. 
      Nous pouvons uttiliser uniquement des mailles quadratiques. Il est donc 
      possible d'avoir 7 noeuds on a alors une maille TRIA7,

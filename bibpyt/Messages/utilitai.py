@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF utilitai Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,20 +19,18 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
 # a traduire en francais par JP
-1 : _("""
+1 : _(u"""
  le nombre de grels du ligrel du modele est nul.
 """),
 
-2 : _("""
+2 : _(u"""
  il ne faut pas demander 'TR' derrière cara si le type d'élément discret ne prend pas en compte la rotation
 """),
 
-3 : _("""
+3 : _(u"""
  Il a été demandé de convertir un champ par éléments aux noeuds en un
  champ aux noeuds. Or le champ par éléments aux noeuds contient des
  sous-points alors que un champ aux noeuds ne peut pas en contenir.
@@ -45,7 +43,7 @@ cata_msg = {
    extraire des sous-points.
 """),
 
-4 : _("""
+4 : _(u"""
  Vous avez demandé le calcul d'un champ aux noeuds sur des éléments
  de structure. Mais les repères locaux de certaines mailles entourant
  des noeuds sur lesquels vous avez demandés le calcul ne sont pas
@@ -58,186 +56,186 @@ cata_msg = {
    utiles au calcul du champ aux noeuds.
 """),
 
-5 : _("""
+5 : _(u"""
  vecteur axe de norme nulle
 """),
 
-6 : _("""
+6 : _(u"""
  axe non colineaire à v1v2
 """),
 
-7 : _("""
+7 : _(u"""
  pb norme de axe
 """),
 
-9 : _("""
+9 : _(u"""
  dimension  %(k1)s  inconnue.
 """),
 
-10 : _("""
+10 : _(u"""
  maillage obligatoire.
 """),
 
-11 : _("""
+11 : _(u"""
  on ne peut pas créer un champ de VARI_R avec le mot cle facteur AFFE
  (voir u2.01.09)
 """),
 
-12 : _("""
+12 : _(u"""
  mot clé AFFE/NOEUD interdit ici.
 """),
 
-13 : _("""
+13 : _(u"""
  mot clé AFFE/GROUP_NO interdit ici.
 """),
 
-14 : _("""
+14 : _(u"""
  type scalaire non traité :  %(k1)s
 """),
 
-15 : _("""
+15 : _(u"""
  incohérence entre nombre de composantes et nombre de valeurs
 """),
 
-16 : _("""
+16 : _(u"""
  il faut donner un champ de fonctions
 """),
 
-17 : _("""
+17 : _(u"""
  les parametres doivent être réels
 """),
 
-18 : _("""
+18 : _(u"""
  maillages différents
 """),
 
-20 : _("""
+20 : _(u"""
  le champ  %(k1)s n'est pas de type réel
 """),
 
-21 : _("""
+21 : _(u"""
  on ne traite que des "CHAM_NO" ou des "CHAM_ELEM".
 """),
 
-22: _("""
+22: _(u"""
  la programmation prévoit que les entiers sont codés sur plus de 32 bits
  ce qui n'est pas le cas sur votre machine
 """),
 
-23 : _("""
+23 : _(u"""
  on ne trouve aucun champ.
 """),
 
-24 : _("""
+24 : _(u"""
  le nom symbolique:  %(k1)s  est illicite pour ce résultat
 """),
 
-25 : _("""
+25 : _(u"""
  le champ cherché n'a pas encore été calculé.
 """),
 
-26 : _("""
+26 : _(u"""
  pas la meme numerotation sur les CHAM_NO.
 """),
 
-27 : _("""
+27 : _(u"""
  il faut donner un maillage.
 """),
 
-28 : _("""
+28 : _(u"""
  champ non-assemblable en CHAM_NO :  %(k1)s
 """),
 
-29 : _("""
+29 : _(u"""
  champ non-assemblable en CHAM_ELEM (ELGA) :  %(k1)s
 """),
 
-31 : _("""
+31 : _(u"""
  nom_cmp2 et nom_cmp de longueur differentes.
 """),
 
-32: _("""
+32: _(u"""
  Grandeur incorrecte pour le champ : %(k1)s
  grandeur proposée :  %(k2)s
  grandeur attendue :  %(k3)s
 """),
 
-33 : _("""
+33 : _(u"""
  le mot-cle 'coef_c' n'est applicable que pour un champ de type complexe
 """),
 
-34 : _("""
+34 : _(u"""
  developpement non realise pour les champs aux elements. vraiment desole !
 """),
 
-35 : _("""
+35 : _(u"""
  le champ  %(k1)s n'est pas de type complexe
 """),
 
-36 : _("""
+36 : _(u"""
  on ne traite que des cham_no reels ou complexes. vraiment desole !
 """),
 
-40 : _("""
+40 : _(u"""
  structure de donnees inexistante : %(k1)s
 """),
 
-41 : _("""
+41 : _(u"""
  duplication "maillage" du .ltnt, objet inconnu:  %(k1)s
 """),
 
-42 : _("""
+42 : _(u"""
  type de sd. inconnu :  %(k1)s
 """),
 
-43 : _("""
+43 : _(u"""
  numerotation absente  probleme dans la matrice  %(k1)s
 """),
 
-44 : _("""
+44 : _(u"""
   erreur dans la recuperation du nombre de noeuds !
 """),
 
-45 : _("""
+45 : _(u"""
  type non connu.
 """),
 
-46 : _("""
+46 : _(u"""
  la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a ete definie.
 """),
 
-47 : _("""
+47 : _(u"""
   le mot cle : %(k1)s n est pas autorise.
 """),
 
-49 : _("""
+49 : _(u"""
   DISMOI :
   la question : " %(k1)s " est inconnue
 """),
 
-50 : _("""
+50 : _(u"""
  CHAM_ELEM inexistant:  %(k1)s
 """),
 
-51 : _("""
+51 : _(u"""
  il n y a pas de NUME_DDL pour ce CHAM_NO
 """),
 
-52 : _("""
+52 : _(u"""
  type de charge inconnu
 """),
 
 
-54 : _("""
+54 : _(u"""
  trop d objets
 """),
 
-55 : _("""
+55 : _(u"""
  champ inexistant: %(k1)s
 """),
 
 
-56 : _("""
+56 : _(u"""
  Le partitionneur SCOTCH a fait remonter l'erreur %(i1)s. SVP contacter l'équipe de
  développement.
  Pour contourner ce problème, vous pouvez néanmoins: 
@@ -250,151 +248,151 @@ cata_msg = {
 """),
 
 
-57 : _("""
+57 : _(u"""
   DISMOI :
   la question n'a pas de réponse sur une grandeur de type matrice gd_1 x gd_2
 """),
 
-59 : _("""
+59 : _(u"""
   DISMOI :
   la question n'a pas de sens sur une grandeur de type matrice gd_1 x gd_2
 """),
 
-60 : _("""
+60 : _(u"""
   DISMOI :
   la question n'a pas de sens sur une grandeur de type composée
 """),
 
-63 : _("""
+63 : _(u"""
  phenomene inconnu :  %(k1)s
 """),
 
-65 : _("""
+65 : _(u"""
  le type de concept : " %(k1)s " est inconnu
 """),
 
-66 : _("""
+66 : _(u"""
  le phénomène :  %(k1)s  est inconnu.
 """),
 
-68 : _("""
+68 : _(u"""
  type de resultat inconnu :  %(k1)s  pour l'objet :  %(k2)s
 """),
 
-69 : _("""
+69 : _(u"""
  le resultat composé ne contient aucun champ
 """),
 
-70 : _("""
+70 : _(u"""
  TYPE_MAILLE inconnu.
 """),
 
-71 : _("""
+71 : _(u"""
  mauvaise recuperation de NEMA
 """),
 
-72 : _("""
+72 : _(u"""
  on ne traite pas les noeuds tardifs
 """),
 
-73 : _("""
+73 : _(u"""
  grandeur inexistante
 """),
 
-74 : _("""
+74 : _(u"""
  composante de grandeur inexistante
 """),
 
-75 : _("""
+75 : _(u"""
  probleme avec la reponse  %(k1)s
 """),
 
-76 : _("""
+76 : _(u"""
  les conditions aux limites autres que des ddls bloques ne sont pas admises
 """),
 
-77 : _("""
+77 : _(u"""
  unite logique  %(k1)s , probleme lors du close
 """),
 
-78 : _("""
+78 : _(u"""
   erreur dans la recuperation du maillage
 """),
 
-79 : _("""
+79 : _(u"""
   erreur dans la récuperation du nombre de mailles
 """),
 
-80 : _("""
+80 : _(u"""
   groupe_ma non présent
 """),
 
-81 : _("""
+81 : _(u"""
   erreur à l'appel de METIS
   plus aucune unité logique libre
 """),
 
-82 : _("""
+82 : _(u"""
  methode d'integration inexistante.
 """),
 
-83 : _("""
+83 : _(u"""
  interpolation par defaut "lineaire"
 """),
 
-84 : _("""
+84 : _(u"""
  interpolation  %(k1)s  non implantee
 """),
 
-85 : _("""
+85 : _(u"""
  recherche " %(k1)s " inconnue
 """),
 
-86 : _("""
+86 : _(u"""
  l'intitule " %(k1)s " n'est pas correct.
 """),
 
-87 : _("""
+87 : _(u"""
  le noeud " %(k1)s " n'est pas un noeud de choc.
 """),
 
-88 : _("""
+88 : _(u"""
  nom de sous-structure et d'intitule incompatible
 """),
 
-89 : _("""
+89 : _(u"""
  le noeud " %(k1)s " n'est pas un noeud de choc de l'intitule.
 """),
 
-90 : _("""
+90 : _(u"""
  le noeud " %(k1)s " n'est pas compatible avec le nom de la sous-structure.
 """),
 
-91 : _("""
+91 : _(u"""
  le parametre " %(k1)s " n'est pas un parametre de choc.
 """),
 
-92 : _("""
+92 : _(u"""
  le noeud " %(k1)s " n'existe pas.
 """),
 
-93 : _("""
+93 : _(u"""
  la composante " %(k1)s " du noeud " %(k2)s " n'existe pas.
 """),
 
-94 : _("""
+94 : _(u"""
  type de champ inconnu  %(k1)s
 """),
 
-95 : _("""
+95 : _(u"""
  "INTERP_NUME" et ("INST" ou "LIST_INST") non compatibles
 """),
 
-96 : _("""
+96 : _(u"""
  "INTERP_NUME" et ("FREQ" ou "LIST_FREQ") non compatibles
 """),
 
-99 : _("""
+99 : _(u"""
  objet %(k1)s inexistant
 """),
 

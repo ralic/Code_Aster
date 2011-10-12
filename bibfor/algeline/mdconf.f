@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,6 +184,8 @@ C
             PVITE = PVITE(1:19)//'.VALE'
             CALL JEVEUO(PVITE,'L',IPV)
 C ---       RECHERCHE DES EXTREMITES DE LA ZONE 'NUZO'
+            N1 = -1
+            N2 = -1
             DO 20 IK = 1,LNOE
                IF(ZR(IPV+LNOE+IK-1).NE.0.D0) THEN
                   N1 = IK
@@ -251,7 +253,7 @@ C
 C ---       DEFORMEES MODALES
 C
             CALL JEVEUO ( BASE//'           .REFD' , 'L', KREF )
-            MASSE = ZK24(KREF+1)
+            MASSE = ZK24(KREF+1)(1:19)
             CALL MTDSCR ( MASSE )
             CALL JEVEUO ( MASSE//'.&INT' , 'L' , LMASSE )
             CALL DISMOI('F','NOM_NUME_DDL',MASSE,
@@ -269,19 +271,19 @@ C
 C ---   2.6.IMPRESSION  ---
 C
         IF(IIMPR.EQ.1) THEN
-      IPAS = ZI(IFSVI)
-      VALI (1) = LNOE
-      VALI (2) = IPAS
-      VALK (1) = BASE
-      VALK (2) = CAELEM(1:8)
-      VALR (1) = PHIE
-      CALL U2MESG('I','ALGELINE5_10',2,VALK,2,VALI,1,VALR)
-      DO 170 NUZO = 1,NZEX
-      VALK (1) = ZK8(IFSVK+NUZO+3)
-      VALI (1) = ZI(IFSVI+NUZO+1)
-      CALL U2MESG('I','ALGELINE5_11',1,VALK,1,VALI,0,0.D0)
- 170  CONTINUE
-      CALL U2MESG('I','ALGELINE5_12',0,' ',0,0,0,0.D0)
+          IPAS = ZI(IFSVI)
+          VALI (1) = LNOE
+          VALI (2) = IPAS
+          VALK (1) = BASE
+          VALK (2) = CAELEM(1:8)
+          VALR (1) = PHIE
+          CALL U2MESG('I','ALGELINE5_10',2,VALK,2,VALI,1,VALR)
+          DO 170 NUZO = 1,NZEX
+            VALK (1) = ZK8(IFSVK+NUZO+3)
+            VALI (1) = ZI(IFSVI+NUZO+1)
+            CALL U2MESG('I','ALGELINE5_11',1,VALK,1,VALI,0,0.D0)
+ 170      CONTINUE
+          CALL U2MESS('I','VIDE_1')
         ENDIF
 C
 C --- 3.CONFIGURATION DE TYPE "GRAPPE DE COMMANDE"  ---
@@ -383,7 +385,7 @@ C                                                --> VECTEUR VECR3  ---
 C            MASSES MODALES EN EAU               --> VECTEUR VECR1  ---
 C
          CALL JEVEUO ( BASE//'           .REFD' , 'L', KREF )
-         MASSE = ZK24(KREF+1)
+         MASSE = ZK24(KREF+1)(1:19)
          CALL MTDSCR ( MASSE )
          CALL JEVEUO ( MASSE//'.&INT' , 'L' , LMASSE )
          CALL DISMOI('F','NOM_NUME_DDL',MASSE,
@@ -405,6 +407,10 @@ C
             NOMCHA = NOMCHA(1:19)//'.VALE'
             CALL JEVEUO(NOMCHA,'L',IVALE)
             IPM = 0
+            DYI = 0.D0
+            DZI = 0.D0
+            DRYI = 0.D0
+            DRZI = 0.D0
             DO 130 J = 1,NEQ
                IF (ZI(IDEEQ+(2*J)-1) .EQ. 1) THEN
                   IPM = IPM + 1

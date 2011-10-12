@@ -1,4 +1,4 @@
-#@ MODIF postelem Messages  DATE 29/03/2011   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF postelem Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,36 +20,34 @@
 # RESPONSABLE DELMAS 
 
 
-def _(x) : return x
-
 cata_msg={
 
-1: _("""
+1: _(u"""
  Un instant demandé dans POST_ELEM, option CHAR_LIMITE n'est pas présent dans le résultat <%(k1)s>.
 """),
 
-2: _("""
+2: _(u"""
  Impossible de trouver les déplacements de numéro d'ordre <%(i1)s> dans POST_ELEM, option CHAR_LIMITE.
 """),
 
-3: _("""
+3: _(u"""
  Le résultat <%(k1)s> utilisé dans POST_ELEM, option CHAR_LIMITE n'a pas été produit par un STAT_NON_LINE avec pilotage.
  Vérifiez que vous utilisez le bon résultat.
 """),
 
-4: _("""
+4: _(u"""
  Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
 """),
 
-11: _("""
+11: _(u"""
  Un instant demandé dans POST_ELEM, option TRAV_EXT n'est pas présent dans le résultat <%(k1)s>.
 """),
 
-12: _("""
+12: _(u"""
  Impossible de trouver les déplacements <DEPL> de numéro d'ordre <%(i1)s> dans POST_ELEM, option TRAV_EXT.
 """),
 
-13: _("""
+13: _(u"""
  Impossible de trouver les forces nodales <FORC_NODA> de numéro d'ordre <%(i1)s> dans POST_ELEM, option TRAV_EXT.
 """),
 

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 12/10/2011   AUTEUR LABBE M.LABBE 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -172,9 +172,17 @@ C
          CALL JEVECH ('POMEGA2' , 'L', JFREQ)
          XMAS = RHO * A * XL / 6.D0
          KLC(1,1) =  XMAS * 2.D0
+         KLC(2,2) =  XMAS * 2.D0
+         KLC(3,3) =  XMAS * 2.D0
+         KLC(4,4) =  XMAS * 2.D0
+         KLC(5,5) =  XMAS * 2.D0
+         KLC(6,6) =  XMAS * 2.D0
          KLC(1,4) =  XMAS
          KLC(4,1) =  XMAS
-         KLC(4,4) =  XMAS * 2.D0
+         KLC(2,5) =  XMAS
+         KLC(5,2) =  XMAS
+         KLC(3,6) =  XMAS
+         KLC(6,3) =  XMAS
          IF = 0
          ITYPE = 50
          KANL = 1

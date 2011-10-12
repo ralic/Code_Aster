@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algorith3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,17 +19,15 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
 
-8 : _("""
+8 : _(u"""
  élément non traité
 """),
 
 
-10 : _("""
+10 : _(u"""
   -> Contact avec DYNA_TRAN_MODAL : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).
   -> Risque & Conseil :
      DIST_MAIT et DIST_ESCL permettent de tenir compte d'une épaisseur de matériau non représentée dans le maillage
@@ -39,213 +37,213 @@ cata_msg = {
      générer des erreurs dans l'orientation des forces de contact.
 """),
 
-11 : _("""
+11 : _(u"""
  méthode à pas adaptatif : la donnée du pas est obligatoire 
 """),
 
-12 : _("""
+12 : _(u"""
  le pas de temps ne peut pas etre nul  
 """),
 
-13 : _("""
+13 : _(u"""
  les matrices de masse élémentaires doivent obligatoirement avoir été calculées
  avec l'option MASS_MECA_DIAG
 """),
 
-14 : _("""
+14 : _(u"""
  on archive au moins un champ.
 """),
 
-15 : _("""
+15 : _(u"""
  La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
  transitoires sur base modale
 """),
 
-16 : _("""
+16 : _(u"""
 A l'instant %(r1)f, l'erreur vaut %(r2)f
 Cette erreur est supérieure à 1.
 Le pas de temps vaut %(r3)f
 On arrete de le réduire, car le nombre de réductions a atteint %(i1)d, qui est le maximum possible.
 """),
 
-17 : _("""
+17 : _(u"""
  méthode à pas adaptatif : pas de temps minimal atteint
 """),
 
-18 : _("""
+18 : _(u"""
  La liste des instants de calcul ne doit contenir qu'un seul pas 
 """),
 
-19 : _("""
+19 : _(u"""
  La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
  transitoires sur base physique
 """),
 
-20 : _("""
+20 : _(u"""
  le chargement de type dirichlet nécessite la résolution par le schema de NEWMARK
 """),
 
-21 : _("""
+21 : _(u"""
 Nombre de pas de calcul : %(i1)d
 Nombre d'itérations     : %(i2)d
 """),
 
-23 : _("""
+23 : _(u"""
  vous calculez une impédance absorbante
 """),
 
-24 : _("""
+24 : _(u"""
  on n'a pas pu trouver le dernier instant sauvé.
 """),
 
-25 : _("""
+25 : _(u"""
  le champ "DEPL" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s 
 """),
 
-26 : _("""
+26 : _(u"""
  le champ "VITE" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s 
 """),
 
-27 : _("""
+27 : _(u"""
  le champ "acce" n'est pas trouve dans le concept dyna_trans  %(k1)s 
 """),
 
-28 : _("""
+28 : _(u"""
  déplacements initiaux nuls.
 """),
 
-29 : _("""
+29 : _(u"""
  vitesses initiales nulles.
 """),
 
-36 : _("""
+36 : _(u"""
  NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s 
 """),
 
-37 : _("""
+37 : _(u"""
  incohérence sur H, ALPHA, ELAS
 """),
 
-40 : _("""
+40 : _(u"""
  le nom_cham  %(k1)s n'appartient pas à la sd
 """),
 
-41 : _("""
+41 : _(u"""
  erreur(s) dans les données
 """),
 
-42 : _("""
+42 : _(u"""
  critère inconnu :  %(k1)s 
 """),
 
-43 :_("""
+43 :_(u"""
  <DPMAT2> PLAS=2
 """),
 
-55 : _("""
+55 : _(u"""
  ITER_INTE_MAXI insuffisant
 """),
 
-56 : _("""
+56 : _(u"""
  la durée du transitoire est limitée par les possibilités de la transformée de Fourier rapide 
 """),
 
-57 : _("""
+57 : _(u"""
  la durée de la simulation temporelle est insuffisante pour le passage du transitoire
 """),
 
-58 : _("""
+58 : _(u"""
  changement de signe de la vitesse --> on prend VITG0(I)
 """),
 
-60 : _("""
+60 : _(u"""
  la matrice interspectrale possède un pivot nul.
 """),
 
-61 : _("""
+61 : _(u"""
  option non prévue !
 """),
 
-62 : _("""
+62 : _(u"""
  pb 1 test spectre fi par ARPACK
 """),
 
-63 : _("""
+63 : _(u"""
  pb 2 test spectre fi par ARPACK
 """),
 
-64 : _("""
+64 : _(u"""
  valeur de STOGI incoherente
 """),
 
-65 : _("""
+65 : _(u"""
  en parallèle STOGI=OUI obligatoire pour l'instant
 """),
 
-66 : _("""
+66 : _(u"""
  option de calcul incohérente
 """),
 
-67 : _("""
+67 : _(u"""
  pb division par zéro dans la construction du BETA
 """),
 
-72 : _("""
+72 : _(u"""
  donnée erronnée, multiplicité nulle
 """),
 
-76 : _("""
+76 : _(u"""
  le type de concept: TABLE_SDASTER doit etre associé au mot clé NUME_VITE_FLUI
 """),
 
-78 : _("""
+78 : _(u"""
  pas de discrétisation de l'interspectre non constant.
 """),
 
-79 : _("""
+79 : _(u"""
  discrétisations differentes selon les fonctions de l'interspectre
 """),
 
-80 : _("""
+80 : _(u"""
  "NB_POIN" n est pas une puissance de 2
  on prend la puissance de 2 supérieure
 """),
 
-81 : _("""
+81 : _(u"""
  coefficient de dispersion trop grand
  consulter la documentation d'utilisation
 """),
 
-82 : _("""
+82 : _(u"""
  matrice moyenne non définie positive
 """),
 
-83 : _("""
+83 : _(u"""
  le pas tend vers 0 ...
 """),
 
-86 : _("""
+86 : _(u"""
  pas d'interpolation possible pour les fréquences.
 """),
 
-87 : _("""
+87 : _(u"""
  derivée de F nulle
 """),
 
-88 : _("""
+88 : _(u"""
  GM négatif
 """),
 
-89 : _("""
+89 : _(u"""
  valeurs propres non ordonnées :
  %(k1)s  %(k2)s  %(k3)s 
 """),
 
-90 : _("""
+90 : _(u"""
  coefficients paraboliques pas compatibles
 """),
 
-92 : _("""
+92 : _(u"""
  modelisations C_PLAN et 1D pas autorisées
 """),
 

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,39 +19,37 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  Echec dans le calcul des matrices elastiques pour l'amortissement.
 """),
 
-23 : _("""
+23 : _(u"""
  Le calcul de l'accélération initiale a ignoré les chargements de type:
  - ONDE_PLANE
  - LAPLACE
  - GRAPPE_FLUIDE
 """),
 
-24 : _("""
+24 : _(u"""
  L'etat initial n'a pas d'accéleration donnée.
  On la calcule.
  """),
 
-43 : _("""
+43 : _(u"""
  Contact et pilotage sont des fonctionnalités incompatibles
 """),
 
-59 : _("""
+59 : _(u"""
  Cette loi de comportement n'est pas disponible pour le pilotage de type PRED_ELAS
 """),
 
-60 : _("""
+60 : _(u"""
  Le pilotage de type PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX pour la loi ENDO_ISOT_BETON
 """),
 
-69 : _("""
+69 : _(u"""
  Problème rencontré :
    la matrice de masse est non inversible.
    On ne peut donc pas s'en servir pour calculer l'accélération initiale.
@@ -66,7 +64,7 @@ cata_msg = {
 
 
 
-78 : _("""
+78 : _(u"""
  Problème rencontré :
    la matrice de masse est quasi-singulière.
    On se sert de cette matrice pour calculer l'accélération initiale.
@@ -85,24 +83,24 @@ cata_msg = {
 
 
 
-82 : _("""
+82 : _(u"""
    Arrêt pour cause de matrice non inversible.
 """),
 
-83 : _("""
+83 : _(u"""
    Arrêt : absence de convergence avec le nombre d'itérations requis.
 """),
 
-84 : _("""
+84 : _(u"""
    Arrêt par échec dans le pilotage.
 """),
 
-85 : _("""
+85 : _(u"""
    Arrêt : absence de convergence au numéro d'instant : %(i1)d
                                   lors de l'itération : %(i2)d
 """),
 
-86 : _("""
+86 : _(u"""
    Arrêt par échec du traitement de la collision.
 """),
 }

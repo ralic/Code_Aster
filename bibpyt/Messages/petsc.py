@@ -1,4 +1,4 @@
-#@ MODIF petsc Messages  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF petsc Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,21 +19,19 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 Solveur PETSc :
  Erreur à l'initialisation de PETSc. Il y a certainement un problème dans l'installation.
 """),
 
-2 : _("""
+2 : _(u"""
 Solveur PETSc :
  On ne traite que des matrices réelles avec PETSc.
 """),
 
-3 : _("""
+3 : _(u"""
 Solveur PETSc :
   Limite atteinte : le solveur PETSc est utilisé par plus de 5 matrices simultanément.
 Solution :
@@ -41,73 +39,73 @@ Solution :
   Contactez l'assistance.
 """),
 
-4 : _("""
+4 : _(u"""
 Solveur PETSc :
   Le préconditionneur a déjà été calculé, on ne le recalcule pas.
 """),
 
-5 : _("""
+5 : _(u"""
 Solveur PETSc :
   Le nombre maximum d'itérations de l'algorithme (%(i1)d) a été atteint.
   Vous pouvez soit augmenter ce chiffre à l'aide du mot-clé NMAX_ITER, soit augmenter RESI_RELA,
   ou bien utiliser un préconditionneur plus précis, voire changer d'algorithme.
 """),
 
-6 : _("""
+6 : _(u"""
 Solveur PETSc :
   Le résidu a été multiplié par plus de %(i1)d par rapport au résidu initial : on diverge
   Vous pouvez utiliser un préconditionneur plus précis, voire changer d'algorithme.
 """),
 
-7 : _("""
+7 : _(u"""
 Solveur PETSc :
   On a rencontré un 'breakdown', on ne peut plus agrandir l'espace de Krylov, or on n'a pas encore
   convergé.
   Il faut changer de préconditionneur ou d'algorithme.
 """),
 
-8 : _("""
+8 : _(u"""
 Solveur PETSc :
   On a rencontré un 'breakdown' dans l'algorithme BiCG, le résidu initial est orthogonal au résidu
   initial préconditionné.
   Il faut changer de préconditionneur ou d'algorithme.
 """),
 
-9 : _("""
+9 : _(u"""
 Solveur PETSc :
   La matrice du système est non symétrique, or l'algorithme que vous utilisez requiert
   la symétrie.
   Changez d'algorithme ou bien utilisez le mot-clé SYME='OUI' pour symétriser la matrice.
 """),
 
-10 : _("""
+10 : _(u"""
 Solveur PETSc :
   Le préconditionneur construit à partir de la matrice du système n'est défini positif, or l'algorithme
   que vous utilisez requiert la définie-positivité.
   Changez d'algorithme.
 """),
 
-11 : _("""
+11 : _(u"""
 Solveur PETSc :
   La matrice du système n'est pas définie positive, or l'algorithme que vous utilisez requiert
   la définie-positivité.
   Changez d'algorithme.
 """),
 
-12 : _("""
+12 : _(u"""
 Solveur PETSc :
   L'algorithme itératif a rencontré un erreur dont le code retourné par PETSC est : %(i1)d.
   Consulter le manuel de PETSc pour plus d'informations et prévenez l'assistance.
 """),
 
-13 : _("""
+13 : _(u"""
 Solveur PETSc :
   La résolution a échoué ; consultez le message ci-dessus.
   Cela peut être dû à une propriété particulière de la matrice du système non supportée par l'algorithme choisi.
   Par exemple, une matrice avec des zéros sur la diagonale et l'algorithme SOR, qui utilise ces entrées pour réaliser des divisions.
 """),
 
-14 : _("""
+14 : _(u"""
 Solveur PETSc :
   La création du préconditionneur a échoué ; consultez le message ci-dessus.
   Cela peut être dû à une propriété particulière de la matrice du système non supportée par le préconditionneur choisi.
@@ -116,14 +114,14 @@ Solveur PETSc :
   Conseil : changez de préconditionneur.
 """),
 
-15 : _("""
+15 : _(u"""
 Solveur PETSc :
   La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
 
   Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.
 """),
 
-16 : _("""
+16 : _(u"""
 Solveur PETSc :
   La résolution du système linéaire a abouti mais la solution obtenue ne vérifie pas le critère de convergence.
   Cela peut arriver lorsque la matrice du système linéaire est mal conditionnée.

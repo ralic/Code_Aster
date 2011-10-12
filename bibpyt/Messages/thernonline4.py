@@ -1,4 +1,4 @@
-#@ MODIF thernonline4 Messages  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF thernonline4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,8 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
-
-def _(x) : return x
 
 cata_msg = {
 

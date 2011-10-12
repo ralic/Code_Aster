@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,6 +31,7 @@ from Noyau.N_utils import prbanner
 from Noyau.N_Exception import AsException
 from Noyau.N_MACRO_ETAPE import MACRO_ETAPE
 from Noyau.N_info import message, SUPERV
+from strfunc import convert
 
 import genpy
 import aster
@@ -62,7 +63,7 @@ class ETAPE:
         - icmd  : numéro d'ordre de la commande
       Retour : iertot = nombre d erreurs
       """
-      from E_Global import MessageLog
+      from Utilitai.Utmess import UTMESS, MessageLog
       if CONTEXT.debug :
            prbanner(" appel de l operateur %s numero %s " % (self.definition.nom,self.definition.op))
 
@@ -78,7 +79,6 @@ class ETAPE:
       # Pour les affichages et calculs de cpu, on exclut les commandes
       # tout de suite executees (op_init) de type FORMULE. Sinon, ca
       # produit un affichage en double.
-      echo_mess=[]
       if self.icmd is not None:
           # appel de la methode oper dans le module codex
           if (self.modexec == 2) and (self.definition.op_init==None):
@@ -132,6 +132,7 @@ class ETAPE:
       Intention : afficher sur la sortie standard (par defaut) le cartouche de
                       la commande avant son execution.
       """
+      from Utilitai.Utmess import UTMESS
       # top départ du chrono de la commande
       etiq = self.nom
       if (isinstance(self.parent,MACRO_ETAPE)) or \
@@ -163,11 +164,6 @@ class ETAPE:
       if (not isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'             ) or \
          (self.jdc.impr_macro==1                 ) :
-         echo_mess=[]
-         decalage="  "  # blancs au debut de chaque ligne affichee
-         echo_mess.append( '\n' )
-         echo_mess.append(decalage + ' #  ' + '-'*90)
-         echo_mess.append( '\n' )
 
          # Affichage numero de la commande (4 digits)
          if self.sd != None:
@@ -175,23 +171,21 @@ class ETAPE:
          else:
             type_concept = ''
 
+         UTMESS('I', 'VIDE_1')
+         UTMESS('I', 'SUPERVIS2_70')
          if self.icmd != None:
-            echo_mess.append("""   #  COMMANDE NO :  %04d            CONCEPT DE TYPE : %s
-    #  -------------                  -----------------""" % (self.icmd, type_concept))
+            UTMESS('I', 'SUPERVIS2_71', vali=self.icmd, valk=type_concept)
+            UTMESS('I', 'SUPERVIS2_70')
          else:
             # commande non comptabilisée (INCLUDE)
-            echo_mess.append("""   #  COMMANDE :
-    #  ----------""")
+            UTMESS('I', 'SUPERVIS2_72', valk=type_concept)
 
          # recuperation du texte de la commande courante dans la chaine
          # commande_formatee
          v=genpy.genpy(defaut='avec')
          self.accept(v)
-         echo_mess.append( '\n' )
-         commande_formatee=v.formate_etape()
-         echo_mess.append(commande_formatee)
-         texte_final = ' '.join(echo_mess)
-         aster.affiche('MESSAGE',texte_final)
+         commande_formatee = v.formate_etape()
+         aster.affiche('MESSAGE', convert(commande_formatee))
 
       return
 
@@ -208,24 +202,16 @@ class ETAPE:
       # stop pour la commande
       cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(id(self), hide=not voir)
       if voir :
-         decalage="  "  # blancs au debut de chaque ligne affichee
-         echo_mess=[decalage]
          if avec_temps:
             rval = aster.jeinfo()
             if (rval[5] > 0. and rval[8] > 0.) :
-              echo_mem = """%s  #  STATISTIQUES MEMOIRE (Mo) : %9.2f / %9.2f / %9.2f (VmPeak / Optimum / Minimum)"""% (decalage, rval[8]/1024, rval[4], rval[1])
+              UTMESS('I', 'SUPERVIS2_73', valr=(rval[8]/1024, rval[4], rval[1]))
             else :
-              echo_mem = """%s  #  STATISTIQUES MEMOIRE (Mo) : %9.2f / %9.2f (Optimum / Minimum)"""% (decalage, rval[4], rval[1])
-
-            echo_fin = "%s  #  FIN COMMANDE NO : %04d   USER+SYST:%12.2fs (SYST:%12.2fs, ELAPS:%12.2fs)" \
-               % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst, elapsed)
-            echo_mess.append(echo_mem)
+              UTMESS('I', 'SUPERVIS2_74', valr=(rval[4], rval[1]))
+            UTMESS('I', 'SUPERVIS2_75', vali=self.icmd, valr=(cpu_syst+cpu_user, cpu_syst, elapsed))
          else :
-            echo_fin = "%s  #  FIN COMMANDE : %s" % (decalage, self.nom)
-         echo_mess.append(echo_fin)
-         echo_mess.append(decalage + '  #  ' + '-'*90)
-         texte_final=os.linesep.join(echo_mess)
-         aster.affiche('MESSAGE', texte_final)
+            UTMESS('I', 'SUPERVIS2_76', valk=self.nom)
+         UTMESS('I', 'SUPERVIS2_70')
 
          if cpu_user > 60. and cpu_syst > 0.5*cpu_user :
             if int(rval[7]) > 0 :

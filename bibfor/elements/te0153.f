@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 12/10/2011   AUTEUR LABBE M.LABBE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       REAL*8       E, RHO, PGL(3,3), MAT(21),MATR(21)
-      REAL*8       A, XL, XRIG, XMAS
+      REAL*8       A, XL, XRIG, XMAS,MATP(6,6),MAT2DM(4,4),MAT2DV(10)
       INTEGER      IADZI,IAZK24
 C     ------------------------------------------------------------------
 C
@@ -80,9 +80,15 @@ C
 C     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
       CALL JEVECH ('PCAORIE', 'L',LORIEN)
 C
-      CALL JEVECH ('PMATUUR', 'E', LMAT)
+      IF (OPTION.EQ.'M_GAMMA')THEN
+        CALL JEVECH ('PVECTUR', 'E', LVEC)
+        CALL JEVECH('PDEPLAR','L',IACCE)
+      ELSE
+        CALL JEVECH ('PMATUUR', 'E', LMAT)
+      ENDIF
+
       DO 20 I = 1,21
-         MAT(I) = 0.D0
+        MAT(I) = 0.D0
  20   CONTINUE
 C
 C     --- CALCUL DES MATRICES ELEMENTAIRES ----
@@ -95,13 +101,25 @@ C     --- CALCUL DES MATRICES ELEMENTAIRES ----
          MAT( 7) = -XRIG
          MAT(10) =  XRIG
 C
-      ELSE IF ( OPTION.EQ.'MASS_MECA'  ) THEN
+      ELSE IF ( OPTION.EQ.'MASS_MECA' .OR.
+     &          OPTION.EQ.'M_GAMMA') THEN
          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'RHO',RHO,
      &               CODRES,1)
+         DO 40 I=1,21
+             MATR(I) = 0.D0
+ 40      CONTINUE
+
          XMAS = RHO * A * XL / 6.D0
          MAT( 1) = XMAS * 2.D0
-         MAT( 7) = XMAS
-         MAT(10) = XMAS * 2.D0
+         MAT( 3) = XMAS * 2.D0
+         MAT( 6) = XMAS * 2.D0
+         MAT( 10) = XMAS * 2.D0
+         MAT( 15) = XMAS * 2.D0
+         MAT( 21) = XMAS * 2.D0
+
+         MAT( 7)  = XMAS
+         MAT( 12) = XMAS
+         MAT( 18) = XMAS
 C
       ELSE IF ( (OPTION.EQ.'MASS_MECA_DIAG') .OR.
      &          (OPTION.EQ.'MASS_MECA_EXPLI')) THEN
@@ -109,7 +127,11 @@ C
      &               CODRES,1)
          XMAS = RHO * A * XL / 2.D0
          MAT( 1) = XMAS
+         MAT( 3) = XMAS
+         MAT( 6) = XMAS
          MAT(10) = XMAS
+         MAT(15) = XMAS
+         MAT(21) = XMAS
 C
       ELSE
          CH16 = OPTION
@@ -120,24 +142,59 @@ C     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
 C
       CALL MATROT ( ZR(LORIEN) , PGL )
       CALL UTPSLG ( NNO, NC, PGL, MAT, MATR )
+
+      IF (OPTION.EQ.'M_GAMMA')THEN
+       IF (NOMTE.EQ.'MECA_BARRE')THEN
+         DO 45 I=1,6
+           DO 46 J=1,6
+            MATP(I,J)=0.D+0
+  46       CONTINUE
+  45     CONTINUE
+         CALL VECMA(MATR,21,MATP,6)
+         CALL PMAVEC('ZERO',6,MATP,ZR(IACCE),ZR(LVEC))
+       ELSE
+         MAT2DV(1)   = MATR(1)
+         MAT2DV(2)   = MATR(2)
+         MAT2DV(3)   = MATR(3)
+         MAT2DV(4)   = MATR(7)
+         MAT2DV(5)   = MATR(8)
+         MAT2DV(6)   = MATR(10)
+         MAT2DV(7)   = MATR(11)
+         MAT2DV(8)   = MATR(12)
+         MAT2DV(9)   = MATR(14)
+         MAT2DV(10)  = MATR(15)
+         DO 47 I=1,4
+           DO 48 J=1,4
+            MAT2DM(I,J)=0.D+0
+  48       CONTINUE
+  47     CONTINUE
+         CALL VECMA(MAT2DV,10,MAT2DM,4)
+         CALL PMAVEC('ZERO',4,MAT2DM,ZR(IACCE),ZR(LVEC))
+       ENDIF
+      ELSE
 C
 C ECRITURE DANS LE VECTEUR PMATTUR SUIVANT L'ELEMENT
 C
-      IF (NOMTE.EQ.'MECA_BARRE') THEN
-        DO 30 I=1,21
-          ZR(LMAT+I-1) = MATR(I)
- 30     CONTINUE
-      ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-        ZR(LMAT)     = MATR(1)
-        ZR(LMAT+1)   = MATR(2)
-        ZR(LMAT+2)   = MATR(3)
-        ZR(LMAT+3)   = MATR(7)
-        ZR(LMAT+4)   = MATR(8)
-        ZR(LMAT+5)   = MATR(10)
-        ZR(LMAT+6)   = MATR(11)
-        ZR(LMAT+7)   = MATR(12)
-        ZR(LMAT+8)   = MATR(14)
-        ZR(LMAT+9)   = MATR(15)
+        IF (NOMTE.EQ.'MECA_BARRE') THEN
+            DO 30 I=1,21
+              ZR(LMAT+I-1) = MATR(I)
+ 30         CONTINUE
+        ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
+            ZR(LMAT)     = MATR(1)
+            ZR(LMAT+1)   = MATR(2)
+            ZR(LMAT+2)   = MATR(3)
+            ZR(LMAT+3)   = MATR(7)
+            ZR(LMAT+4)   = MATR(8)
+            ZR(LMAT+5)   = MATR(10)
+            ZR(LMAT+6)   = MATR(11)
+            ZR(LMAT+7)   = MATR(12)
+            ZR(LMAT+8)   = MATR(14)
+            ZR(LMAT+9)   = MATR(15)
+        ENDIF
       ENDIF
+
+
+
+
 C
       END

@@ -1,8 +1,8 @@
-#@ MODIF matrice0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF matrice0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,34 +19,32 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
  Cas fluides multiples : précisez le GROUP_MA dans lequel vous affectez la masse volumique RHO.
 """),
 
-2: _("""
+2: _(u"""
  PRES_FLUIDE obligatoire une fois.
 """),
 
-3: _("""
+3: _(u"""
  Amortissement ajouté sur modèle generalisé non encore implanté.
 """),
 
-4: _("""
+4: _(u"""
  Rigidité ajouté sur modele généralisé non encore implanté.
 """),
 
-9: _("""
+9: _(u"""
  Une des options doit etre RIGI_MECA ou RIGI_THER ou RIGI_ACOU ou RIGI_MECA_LAGR.
 """),
 
-10: _("""
+10: _(u"""
  Pour calculer RIGI_MECA_HYST, il faut avoir calculé RIGI_MECA auparavant (dans le meme appel).
 """),
 
-11: _("""
+11: _(u"""
  Pour calculer AMOR_MECA, il faut avoir calculé RIGI_MECA et MASS_MECA auparavant (dans le meme appel).
 """),
 

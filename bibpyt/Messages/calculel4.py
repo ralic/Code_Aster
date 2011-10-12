@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
  Erreur utilisateur :
    Le cham_elem %(k1)s a des valeurs indéfinies.
  Conseils :
@@ -33,19 +31,19 @@ cata_msg = {
 
 """),
 
-2 : _("""
+2 : _(u"""
 Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
   Les sd_resultat que l'on veut imprimer : %(k1)s, %(k2)s
   sont associées à des maillages différents : %(k3)s, %(k4)s
   C'est interdit.
 """),
 
-3 : _("""
+3 : _(u"""
 Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
   Seul FORMAT='MED' est autorisé
 """),
 
-4 : _("""
+4 : _(u"""
 Erreur :
   On cherche à modifier le "type" (réel(R), complexe(C), entier(I), fonction(K8)) d'un champ.
   C'est impossible.
@@ -56,7 +54,7 @@ Conseils :
 
 """),
 
-5 : _("""
+5 : _(u"""
 Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
   Quand on utilise le mot clé RESTREINT, le mot clé RESULTAT est obligatoire
   pour chaque occurence du mot clé facteur RESU
@@ -67,7 +65,7 @@ Conseil :
   Il faut donc au préalable créer une sd_resultat avec CREA_RESU
 """),
 
-6 : _("""
+6 : _(u"""
 Erreur utilisateur (ou programmeur) :
  On veut imposer la numérotation des ddls du cham_no %(k1)s
  avec le nume_ddl %(k2)s.
@@ -78,11 +76,11 @@ Erreur utilisateur (ou programmeur) :
 """),
 
 
-8 : _("""
+8 : _(u"""
  le resultat  %(k1)s  n'existe pas
 """),
 
-10 : _("""
+10 : _(u"""
  Erreur d'utilisation :
    On ne trouve pas de variables de commandes ('TEMP', 'HYDR', ...) :
    Option: %(k2)s  type_element: %(k3)s )
@@ -93,20 +91,20 @@ Erreur utilisateur (ou programmeur) :
    (Ou de n'avoir renseigné que AFFE_VARC/VALE_REF sans avoir renseigné EVOL ou CHAMP_GD)
 """),
 
-11 : _("""
+11 : _(u"""
  Erreur d'utilisation lors de l'affectation des variables de commande (AFFE_MATERIAU/AFFE_VARC):
    Pour la variable de commande %(k1)s,
    Vous avez oublié d'utiliser l'un des 2 mots clés CHAMP_GD ou EVOL.
    L'abscence de ces 2 mots clés n'est permise que pour NOM_VARC='TEMP' (modélisations THM)
 """),
 
-12 : _("""
+12 : _(u"""
  Erreur de programmation (catalogue des éléments finis) :
  Les éléments finis ayant l'attribut VF_AVEC_VOISIN='OUI' ne peuvent créer que des
  matrices élémentaires non-symétriques.
 """),
 
-13 : _("""
+13 : _(u"""
  Erreur d'utilisation (AFFE_MATERIAU/AFFE_VARC) :
   Le maillage associé au calcul (%(k1)s) est différent de celui associé
   aux champs (ou evol_xxxx) affectés dans AFFE_MATERIAU/AFFE_VARC (%(k2)s).
@@ -115,7 +113,7 @@ Erreur utilisateur (ou programmeur) :
   Il faut corriger AFFE_MATERIAU.
 """),
 
-14 : _("""
+14 : _(u"""
  Erreur d'utilisation (CREA_RESU/PREP_VRC.) :
   Le CARA_ELEM (%(k1)s) ne contient pas de "couches"
 
@@ -124,7 +122,7 @@ Erreur utilisateur (ou programmeur) :
   celui associé au modèle "mécanique".
 """),
 
-15 : _("""
+15 : _(u"""
  Erreur d'utilisation (CREA_RESU/PREP_VRC.) :
    Le modèle associé au CARA_ELEM (%(k1)s) est différent de celui fourni à la commande.
 """),
@@ -132,101 +130,101 @@ Erreur utilisateur (ou programmeur) :
 
 
 
-41 : _("""
+41 : _(u"""
  erreur_01
 """),
 
-42 : _("""
+42 : _(u"""
  erreur_02
 """),
 
-43 : _("""
+43 : _(u"""
  le nom_para n'existe pas
 """),
 
-44 : _("""
+44 : _(u"""
  0 ligne trouvee pour le nom_para
 """),
 
-45 : _("""
+45 : _(u"""
  plusieurs lignes trouvees
 """),
 
-46 : _("""
+46 : _(u"""
  code retour de "tbliva" inconnu
 """),
 
-47 : _("""
+47 : _(u"""
  type_resu inconnu:  %(k1)s
 """),
 
-53 : _("""
+53 : _(u"""
  longueurs des modes locaux incompatibles entre eux.
 """),
 
-54 : _("""
+54 : _(u"""
  aucuns noeuds sur lesquels projeter.
 """),
 
-55 : _("""
+55 : _(u"""
  pas de mailles a projeter.
 """),
 
-56 : _("""
+56 : _(u"""
   %(k1)s  pas trouve.
 """),
 
-57 : _("""
+57 : _(u"""
  il n'y a pas de mailles a projeter.
 """),
 
-58 : _("""
+58 : _(u"""
  les maillages a projeter sont ponctuels.
 """),
 
-59 : _("""
+59 : _(u"""
 Erreur utilisateur :
  Les maillages associés aux concepts %(k1)s et %(k2)s sont différents : %(k3)s et %(k4)s.
 """),
 
-60 : _("""
+60 : _(u"""
  maillages 2 differents.
 """),
 
-61 : _("""
+61 : _(u"""
  probleme dans l'examen de  %(k1)s
 """),
 
-62 : _("""
+62 : _(u"""
  aucun numero d'ordre dans  %(k1)s
 """),
 
-63 : _("""
+63 : _(u"""
  On n'a pas pu projeter le champ %(k1)s de la sd_resultat %(k2)s
  vers la sd_resultat %(k3)s pour le numéro d'ordre %(i1)d
 """),
 
-64 : _("""
+64 : _(u"""
  Aucun champ projete.
 """),
 
-65 : _("""
+65 : _(u"""
   maillages non identiques :  %(k1)s  et  %(k2)s
 """),
 
-66 : _("""
+66 : _(u"""
  pas de chmate
 """),
 
-67 : _("""
+67 : _(u"""
  erreur dans etanca pour le probleme primal
 """),
 
-68 : _("""
+68 : _(u"""
  erreur dans etenca pour le probleme dual
 """),
 
-69 : _("""
+69 : _(u"""
  Erreur utilisateur :
     On ne trouve pas la variable de commande :  %(k1)s
     pour la maille                : %(k2)s
@@ -254,7 +252,7 @@ Erreur utilisateur :
     à utiliser éventuellement les mots clés PROL_GAUCHE et PROL_DROIT.
 """),
 
-70 : _("""
+70 : _(u"""
 Erreur utilisateur dans CREA_CHAMP :
   Vous avez demandé la création d'un champ '%(k1)s' (mot clé TYPE_CHAM)
   Mais le code a créé un champ '%(k2)s'.
@@ -262,7 +260,7 @@ Conseil :
   Il faut sans doute modifier la valeur de TYPE_CHAM
 """),
 
-71 : _("""
+71 : _(u"""
 Erreur utilisateur dans CREA_CHAMP :
   Vous avez demandé la création d'un champ de %(k1)s (mot clé TYPE_CHAM)
   Mais le code a créé un champ de %(k2)s.
@@ -270,13 +268,13 @@ Conseil :
   Il faut sans doute modifier la valeur de TYPE_CHAM
 """),
 
-72 : _("""
+72 : _(u"""
 Erreur utilisateur dans la commande PROJ_CHAMP :
  Le mot clé MODELE_2 a été utilisé. Le maillage associé à ce modèle (%(k1)s)
  est différent du maillage "2" (%(k1)s)  qui a servi à fabriquer la matrice de projection.
 """),
 
-73 : _("""
+73 : _(u"""
 Erreur utilisateur dans la commande PROJ_CHAMP :
    On veut projeter des champs aux éléments (cham_elem), le mot clé MODELE_2
    est alors obligatoire.
@@ -286,7 +284,7 @@ Erreur utilisateur dans la commande PROJ_CHAMP :
 
 
 
-78 : _("""
+78 : _(u"""
 Erreur utilisateur dans CREA_CHAMP :
   Le maillage associé au champ créé par la commande (%(k1)s) est différent
   de celui qui est fourni par l'utilisateur via les mots clés MAILLAGE ou MODELE (%(k2)s).
@@ -295,89 +293,89 @@ Conseil :
   Remarque : ces mots clés sont peut etre inutiles pour cette utilisation de CREA_CHAMP.
 """),
 
-79 : _("""
+79 : _(u"""
  La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.
 """),
 
-80 : _("""
+80 : _(u"""
  le nom de la grandeur  %(k1)s  ne respecte pas le format xxxx_c
 """),
 
-81 : _("""
+81 : _(u"""
  probleme dans le catalogue des grandeurs simples, la grandeur complexe %(k1)s
  ne possede pas le meme nombre de composantes que son homologue réelle %(k2)s
 """),
 
-82 : _("""
+82 : _(u"""
  Probleme dans le catalogue des grandeurs simples, la grandeur %(k1)s
  ne possede pas les memes champs que son homologue reelle %(k2)s
 """),
 
-83 : _("""
+83 : _(u"""
  erreur: le calcul des contraintes ne fonctionne que pour le phenomene mecanique
 """),
 
-84 : _("""
+84 : _(u"""
  erreur numeros des noeuds bords
 """),
 
-85 : _("""
+85 : _(u"""
  erreur: les elements supportes sont tria3 ou tria6
 """),
 
-86 : _("""
+86 : _(u"""
  erreur: les elements supportes sont quad4 ou quad8 ou quad9
 """),
 
-87 : _("""
+87 : _(u"""
  maillage mixte tria-quad non supporte pour l estimateur zz2
 """),
 
-88 : _("""
+88 : _(u"""
  erreur: les mailles supportees sont tria ou quad
 """),
 
-89 : _("""
+89 : _(u"""
  Erreur: un element du maillage possede tous ses sommets sur une frontiere.
  Il faut au moins un sommet interne.
  Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que
  tous les trg aient au moins un sommet interieur.
 """),
 
-91 : _("""
+91 : _(u"""
  On ne trouve pas de routine te0npq.
  npq doit etre compris entre 1 et 600 ici : npq = %(k1)s
 """),
 
-92 : _("""
+92 : _(u"""
   relation :  %(k1)s  non implantee sur les poulies
 """),
 
-93 : _("""
+93 : _(u"""
   deformation :  %(k1)s  non implantee sur les poulies
 """),
 
-94 : _("""
+94 : _(u"""
  l'attribut:  %(k1)s  n'existe pas pour le type:  %(k2)s
 """),
 
-95 : _("""
+95 : _(u"""
  Erreur de programmation ou d'utilisation :
    On ne trouve pas dans les arguments de la routine calcul de champ a associer
    au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
 """),
 
-96 : _("""
+96 : _(u"""
  Erreur de programmation :
  on n'a pas pu extraire toutes les cmps voulues du champ global associe
  au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
 """),
 
-97 : _("""
+97 : _(u"""
  TOUT = OUI obligatoire avec  %(k1)s
 """),
 
-98 : _("""
+98 : _(u"""
  on n'a pas pu récupérer le paramètre THETA dans le résultat  %(k1)s
  valeur prise pour THETA: 0.57
 """),

@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith11 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,224 +19,222 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 La valeur supérieure de KMOD0 est nulle.
 On prend la valeur supérieure KMOD.
 """),
 
-2 : _("""
+2 : _(u"""
 La valeur supérieure de KMOD est nulle.
 """),
 
-3 : _("""
+3 : _(u"""
 La variable AMOR est nulle.
 """),
 
-5 : _("""
+5 : _(u"""
 La force normale est nulle.
 """),
 
-6 : _("""
+6 : _(u"""
 La somme des impacts écrouissage est inférieure à la somme des glissements.
 """),
 
-7 : _("""
+7 : _(u"""
 NOM_CAS n'est pas une variable d'accès d'un résultat de type EVOL_THER.
 """),
 
-8 : _("""
+8 : _(u"""
 NUME_MODE n'est pas une variable d'accès d'un résultat de type EVOL_THER.
 """),
 
-9 : _("""
+9 : _(u"""
 NUME_MODE n'est pas une variable d'accès d'un résultat de type MULT_ELAS.
 """),
 
-10 : _("""
+10 : _(u"""
 INST n'est pas une variable d'accès d'un resultat de type MULT_ELAS.
 """),
 
-11 : _("""
+11 : _(u"""
 NOM_CAS n'est pas une variable d'accès d'un resultat de type FOURIER_ELAS.
 """),
 
-12 : _("""
+12 : _(u"""
 INST n'est pas une variable d'accès d'un resultat de type FOURIER_ELAS.
 """),
 
-13 : _("""
+13 : _(u"""
 NOM_CAS n'est pas une variable d'accès d'un resultat de type FOURIER_THER.
 """),
 
-14 : _("""
+14 : _(u"""
 INST n'est pas une variable d'accès d'un resultat de type FOURIER_THER.
 """),
 
-15 : _("""
+15 : _(u"""
 Le mot-clef RESU_INIT est obligatoire.
 """),
 
-16 : _("""
+16 : _(u"""
 Le mot-clef MAILLAGE_INIT est obligatoire.
 """),
 
-17 : _("""
+17 : _(u"""
 Le mot-clef RESU_FINAL est obligatoire.
 """),
 
-18 : _("""
+18 : _(u"""
 Le mot-clef MAILLAGE_FINAL est obligatoire.
 """),
 
-24 : _("""
+24 : _(u"""
 Absence de potentiel permanent.
 """),
 
-25 : _("""
+25 : _(u"""
 Le modèle fluide n'est pas thermique.
 """),
 
-26 : _("""
+26 : _(u"""
 Le modèle interface n'est pas thermique.
 """),
 
-27 : _("""
+27 : _(u"""
 Le modèle fluide est incompatible avec le calcul de masse ajoutée.
 Utilisez les modélisations PLAN ou 3D ou AXIS.
 """),
 
-29 : _("""
+29 : _(u"""
 Le nombre d'amortissement modaux est différent du nombre de modes dynamiques.
 """),
 
-30 : _("""
+30 : _(u"""
 Il n y a pas le même nombre de modes retenus  dans l'excitation modale et 
 dans la base modale
 """),
 
-31 : _("""
+31 : _(u"""
 Il faut autant d'indices en i et j.
 """),
 
-32 : _("""
+32 : _(u"""
 Avec SOUR_PRESS et SOUR_FORCE, il faut deux points par degré de liberté d'application
 """),
 
-33 : _("""
+33 : _(u"""
 Mauvais accord entre le nombre d'appuis et le nombre de valeur dans le mot-clé NUME_ORDRE_I
 """),
 
-34 : _("""
+34 : _(u"""
 Il faut autant de noms de composantes que de noms de noeuds.
 """),
 
-35 : _("""
+35 : _(u"""
 Précisez le mode statique.
 """),
 
-36 : _("""
+36 : _(u"""
 Le mode statique n'est pas nécessaire.
 """),
 
-37 : _("""
+37 : _(u"""
 La fréquence minimale doit être plus petite que la fréquence maximale.
 """),
 
-73 : _("""
+73 : _(u"""
 Le paramètre matériau taille limite D10 n'est pas défini.
 """),
 
-74 : _("""
+74 : _(u"""
 Echec de la recherche de zéro (nombre maximum d'itérations atteint).
 """),
 
-75 : _("""
+75 : _(u"""
 Echec de la recherche de zéro (bornes atteintes).
 """),
 
-76 : _("""
+76 : _(u"""
 La valeur de F(XMIN) doit être négative.
 """),
 
-77 : _("""
+77 : _(u"""
 Augmentez ITER_INTE_MAXI.
 """),
 
-79 : _("""
+79 : _(u"""
 Pas d'interpolation possible.
 """),
 
-82 : _("""
+82 : _(u"""
 Erreur de la direction de glissmeent dans NMVPIR.
  Angle ALPHA: %(k1)s
  Angle BETA : %(k2)s
 """),
 
-83 : _("""
+83 : _(u"""
 Arrêt par manque de temps CPU.
 """),
 
-86 : _("""
+86 : _(u"""
 La perturbation est trop petite, calcul impossible.
 """),
 
-87 : _("""
+87 : _(u"""
 Champ déjà existant
 Le champ %(k1)s à l'instant %(r1)g est remplacé par le champ %(k2)s à l'instant %(r2)g avec la précision %(r3)g.
 """),
 
-88 : _("""
+88 : _(u"""
 Arrêt débordement assemblage : ligne. 
 """),
 
-90 : _("""
+90 : _(u"""
 Arrêt débordement assemblage : colonne. 
 """),
 
-92 : _("""
+92 : _(u"""
 Arrêt pour nombre de sous-structures invalide : 
  Il en faut au minimum : %(i1)d 
  Vous en avez défini   : %(i2)d 
 """),
 
-93 : _("""
+93 : _(u"""
 Arrêt pour nombre de noms de sous-structures invalide :
  Il en faut exactement : %(i1)d 
  Vous en avez défini   : %(i2)d 
 """),
 
-94 : _("""
+94 : _(u"""
 Arrêt pour nombre de MACR_ELEM invalide :
  Sous-structure %(k1)s
  Il en faut exactement : %(i2)d 
  Vous en avez défini   : %(i1)d 
 """),
 
-95 : _("""
+95 : _(u"""
 Arrêt pour nombre d'angles nautiques invalide :
  Sous-structure %(k1)s 
  Il en faut exactement : %(i2)d 
  Vous en avez défini   : %(i1)d 
 """),
 
-96 : _("""
+96 : _(u"""
 Arrêt pour nombre de translations invalide :
  Sous-structure %(k1)s 
  Il en faut exactement : %(i2)d 
  Vous en avez défini   : %(i1)d  
 """),
 
-97 : _("""
+97 : _(u"""
 Arrêt pour nombre de liaisons définies invalide :
  Il en faut exactement : %(i2)d 
  Vous en avez défini   : %(i1)d 
 """),
 
-98 : _("""
+98 : _(u"""
 Arrêt pour nombre de mot-clés invalide :
  Numéro liaison : %(i1)d
  Mot-clé        : %(k1)s 
@@ -244,7 +242,7 @@ Arrêt pour nombre de mot-clés invalide :
  Vous en avez défini   : %(i2)d
 """),
 
-99 : _("""
+99 : _(u"""
 Arrêt pour sous-structure indéfinie :
  Numéro liaison    : %(i1)d
  Nom sous-structure: %(k1)s 

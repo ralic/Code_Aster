@@ -4,7 +4,7 @@
      &                  OPTIOZ,TABRET,CODERE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,7 +201,7 @@ C
         ENDIF
         IF (CONEXT) THEN
           WRITE (IFMDBG,*) '<CALCUL> ... CALCUL DES CONTRAINTES '//
-     &                  ' EXTRAPOLEES POUR IMPL_EX '
+     &                  ' EXTRAPOLEES POUR IMPLEX '
         ENDIF
       ENDIF
 C

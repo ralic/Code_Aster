@@ -4,9 +4,9 @@
      &   TYPRES, STURM, NBLAGR,SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -132,14 +132,14 @@ C     ------------------------------------------------------------------
                  VALR (1) = FREQ(IFREQ)
                  VALR (2) = FREQOM(OMEMIN)
                  VALR (3) = FREQOM(OMEMAX)
-                 CALL U2MESG(CTY//'+','ALGELINE5_20',0,' ',0,0,3,VALR)
+                 CALL U2MESR(CTY//'+','ALGELINE5_20',3,VALR)
                ELSE
                  VALR (1) = CHARGE(IFREQ)
                  VALR (2) = OMEMIN
                  VALR (3) = OMEMAX
-                 CALL U2MESG(CTY//'+','ALGELINE5_21',0,' ',0,0,3,VALR)
+                 CALL U2MESR(CTY//'+','ALGELINE5_21',3,VALR)
                ENDIF
-               CALL U2MESG(CTY,'ALGELINE5_22',0,' ',0,0,0,0.D0)
+               CALL U2MESS(CTY,'VIDE_1')
             ENDIF
  210     CONTINUE
       ENDIF

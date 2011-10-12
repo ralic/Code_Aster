@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel6 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1: _("""
+1: _(u"""
 Erreur utilisateur (dans la commande AFFE_MATERIAU) :
   Dans le CHAM_MATER %(k1)s, vous avez affecté le matériau %(k2)s.
   Dans ce matériau, il existe un coefficient de dilatation (ELAS/ALPHA)
@@ -38,27 +36,27 @@ Solution :
   (mot clé AFFE_VARC/NOM_VARC='TEMP',VALE_REF=...).
 """),
 
-2: _("""
+2: _(u"""
   Problème d'extraction : Résultat généralisé %(k1)s
 """),
 
-3: _("""
+3: _(u"""
   Le paramètre n'existe pas.
 """),
 
-4: _("""
+4: _(u"""
   0 ligne trouvée pour les NOM_PARA.
 """),
 
-5: _("""
+5: _(u"""
   Plusieurs lignes trouvées.
 """),
 
-6: _("""
+6: _(u"""
   Erreur de Programmation: code retour de 'TBLIVA' inconnu.
 """),
 
-7: _("""
+7: _(u"""
 Erreur utilisateur dans la commande TEST_TABLE :
   On n'a pas pu trouver dans la table la valeur à tester.
 
@@ -75,38 +73,38 @@ Conseils :
 
 """),
 
-8: _("""
+8: _(u"""
   Les types ne correspondent pas.
 """),
 
 
-10: _("""
+10: _(u"""
   L'option %(k1)s est inconnue.
 """),
 
-11: _("""
+11: _(u"""
   Erreur d'utilisation :
     Vous avez dépassé une des limites de la programmation concernant les champs de matériaux :
     On ne pas utiliser plus de 9999 matériaux différents
 """),
 
-13: _("""
+13: _(u"""
  interpolation déformations anélastiques :
  evol_noli: %(k1)s
  instant  : %(r1)f
  icoret   : %(i1)d
 """),
 
-15: _("""
+15: _(u"""
   L'élément diagonal u( %(i1)d , %(i2)d ) de la factorisation est nul. %(k1)s
   la solution et les estimations d'erreurs ne peuvent etre calculées. %(k2)s
 """),
 
-17: _("""
+17: _(u"""
  recherche nbre de cmp: erreur:  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
 """),
 
-20: _("""
+20: _(u"""
  recherche nbre de cmp: erreur: grandeur ligne numero  %(i1)d  de nom  %(k1)s
  grandeur colonne numero  %(i2)d
   de nom  %(k2)s
@@ -114,44 +112,44 @@ Conseils :
   de nom  %(k3)s
 """),
 
-21: _("""
+21: _(u"""
  recherche nbre de cmp: erreur: grandeur %(i1)d a un code inconnu:  %(i2)d
 """),
 
-22: _("""
+22: _(u"""
  recherche nbre d entiers codes  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
 """),
 
-25: _("""
+25: _(u"""
  recherche nbre d entiers codes grandeur ligne numero  %(i1)d  de nom  %(k1)s
  grandeur colonne numero  %(i2)d de nom  %(k2)s
  grandeur mere numero  %(i3)d de nom  %(k3)s
 """),
 
-26: _("""
+26: _(u"""
  recherche nbre d entiers codes grandeur %(i1)d a un code inconnu:  %(i2)d
 """),
 
 
-42: _("""
+42: _(u"""
  La prise en compte de l'erreur sur une condition aux limites
  de type ECHANGE_PAROI n'a pas été encore implantée
 """),
 
-43: _("""
+43: _(u"""
  le mot cle EXCIT contient plusieurs occurences de type %(k1)s
  seule la dernière sera prise en compte
 """),
 
-46: _("""
+46: _(u"""
  champ de température vide pour le numéro d'ordre : %(i1)d
 """),
 
-47: _("""
+47: _(u"""
  champ FLUX_ELNO vide pour numéro d'ordre :  %(i1)d
 """),
 
-49: _("""
+49: _(u"""
  erreurs données composante inconnue  %(k1)s  pour la grandeur  %(k2)s
 """),
 
@@ -162,7 +160,7 @@ Conseils :
 
 
 
-52: _("""
+52: _(u"""
  Erreur Utilisateur :
 
  Variables internes initiales non cohérentes (nb sous-points) avec le comportement choisi.
@@ -172,7 +170,7 @@ Conseils :
 """),
 
 
-54: _("""
+54: _(u"""
  Problème d'utilisation du parallélisme :
    Les fonctionnalités de parallélisme utilisées ici (calculs distribués) conduisent à créer
    des structures de données "incomplètes" (i.e. partiellement calculées sur chaque processeur).
@@ -190,7 +188,7 @@ Conseils :
           MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='NON'))
 """),
 
-55: _("""
+55: _(u"""
  Problème d'utilisation du parallélisme :
    On cherche à faire la combinaison linéaire de plusieurs matrices. Certaines de ces matrices
    ne sont pas calculées complètement et d'autres le sont. On ne peut donc pas les combiner.
@@ -207,7 +205,7 @@ Conseils :
 """),
 
 
-56: _("""
+56: _(u"""
  Erreur d'utilisation (rcmaco/alfint) :
  Un des matériaux du CHAM_MATER %(k1)s contient un coefficient de dilation ALPHA=f(TEMP).
  Mais la température de référence n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC/VALE_REF
@@ -216,7 +214,7 @@ Conseils :
  Renseignez la température de référence à l'aide de AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP' + VALE_REF
 """),
 
-57: _("""
+57: _(u"""
  Erreur d'utilisation (préparation des variables de commande) :
  Pour la variable de commande %(k1)s, il y a une incohérence du
  nombre de "sous-points" entre le CARA_ELEM %(k2)s
@@ -227,7 +225,7 @@ Conseils :
  "sous-points" différents (COQUE_NCOU, TUYAU_NCOU, ...) ?
 """),
 
-58: _("""
+58: _(u"""
  Erreur de programmation :
  Pour la variable de commande %(k1)s, on cherche à utiliser la famille
  de points de Gauss '%(k2)s'.
@@ -241,7 +239,7 @@ Conseils :
  Emettez une fiche d'anomalie
 """),
 
-59: _("""
+59: _(u"""
  Erreur d'utilisation (préparation des variables de commande) :
  Dans le CHAM_MATER %(k1)s et pour la variable de commande %(k2)s,
  on a trouvé la composante 'TEMP_INF'.
@@ -249,37 +247,37 @@ Conseils :
  la variable de commande 'TEMP' avec   CREA_RESU / OPERATION='PREP_VRC2'
 """),
 
-60: _("""
+60: _(u"""
  Erreur d'utilisation (préparation des variables de commande) :
  Dans le CHAM_MATER %(k1)s et pour la variable de commande %(k2)s,
  la liste donnée pour le mot clé VALE_REF n'a pas la bonne longueur.
 """),
 
 
-61:_("""
+61:_(u"""
  Erreur de programmation (fointa) :
     Le type de la fonction est invalide : %(k1)s
 """),
 
-62: _("""
+62: _(u"""
  Erreur de programmation (fointa) :
     Pour l'interpolation de la fonction %(k1)s sur la maille %(k3)s,
     il manque le paramètre %(k2)s
 """),
 
 
-63: _("""
+63: _(u"""
  Erreur lors de l'interpolation (fointa) de la fonction %(k1)s :
  Code retour: %(i1)d
 """),
 
-64: _("""
+64: _(u"""
  Variables internes en nombre différent aux instants '+' et '-' pour la maille %(k1)s
  Instant '-' : %(i1)d
  Instant '+' : %(i2)d
 """),
 
-65: _("""
+65: _(u"""
  Vous avez fourni %(i1)d charges alors qu'il n'y a %(i2)d dans la SD résultat.
 
  Risque & Conseil :
@@ -287,7 +285,7 @@ Conseils :
    Vérifiez que vous n'avez pas oublié de charge ou que vous n'en avez pas ajouté.
 """),
 
-66: _("""
+66: _(u"""
  Le couple (charge-fonction) fourni par l'utilisateur n'est pas présent dans la SD_resultat.
  On poursuit le calcul avec le chargement fourni par l'utilisateur.
    Charge   (utilisateur) : %(k1)s
@@ -297,7 +295,7 @@ Conseils :
 
 """),
 
-67: _("""
+67: _(u"""
  Erreur utilisateur :
    Un calcul élémentaire nécessite une ou plusieurs variables de commande (CVRC).
    Sur la maille : %(k1)s, on ne trouve pas le bon nombre de "CVRC" :
@@ -307,38 +305,38 @@ Conseils :
    Vérifier les occurences de AFFE_MATERIAU/AFFE_VARC pour la maille concernée.
 """),
 
-68: _("""
+68: _(u"""
  la liste des composantes fournies à NOCART est incorrecte.
  composantes dans catalogue:
 """),
 
-69: _("""
+69: _(u"""
    %(k1)s
 """),
 
-70: _("""
+70: _(u"""
  composantes dans EDITGD:
 """),
 
-71: _("""
+71: _(u"""
    %(k1)s
 """),
 
-72: _("""
+72: _(u"""
 
 """),
 
-73: _("""
+73: _(u"""
   Le jacobien est négatif.
 """),
 
-74: _("""
+74: _(u"""
  élément  :  %(i1)d
  jacobien :  %(r1)f
  Attention, le calcul d'erreur est faux si la maille n'est pas correctement orientée.
 """),
 
-75: _("""
+75: _(u"""
   Problème de parallélisation des calculs élémentaires avec FETI.
   Incompatiblité entre LIGRELs dans la routine CALCUL.
 
@@ -346,7 +344,7 @@ Conseils :
   Essayez de passer en séquentiel ou de changer de solveur linéaire.
 """),
 
-76: _("""
+76: _(u"""
   Problème de parallélisation des calculs élémentaires avec FETI.
   Incompatiblité LIGREL/numéro de maille dans la routine CALCUL.
 
@@ -354,7 +352,7 @@ Conseils :
   Essayez de passer en séquentiel ou de changer de solveur linéaire.
 """),
 
-77: _("""
+77: _(u"""
   Problème lors de l'affectation du champ %(k1)s.
   Des valeurs n'ont pas été recopiées dans le CHAM_ELEM final.
   Ce problème peut être dû à l'utilisation du mot-clé TOUT='OUI'.
@@ -362,7 +360,7 @@ Conseils :
 
 """),
 
-79: _("""
+79: _(u"""
   Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM :
   le champ produit est incomplet sur les éléments X-FEM.
 
@@ -372,88 +370,88 @@ Conseils :
   POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM.
 """),
 
-80 : _("""
+80 : _(u"""
   L'amortissement du MACR_ELEM %(k1)s n'a pas encore été calculé.
  """),
 
-81 : _("""
+81 : _(u"""
   Il manque des amortissements.
   """),
 
-82: _("""
+82: _(u"""
   Le groupe de noeuds %(k1)s n'appartient pas au maillage %(k2)s.
 """),
 
-83 : _("""
+83 : _(u"""
   L'option %(k1)s n'est pas traitée pour un résultat de type fourier_elas
 (produit par MACRO_ELAS_MULT). Il faut faire après MACRO_ELAS_MULT une
  recombinaison de Fourier par l'opérateur COMB_FOURIER.
 """),
 
-84: _("""
+84: _(u"""
   Le mot-clé MODELE est obligatoire quand RESULTAT est absent
 """),
 
-85: _("""
+85: _(u"""
   Parametre %(k1)s inexistant dans la table.
 """),
 
-86: _("""
+86: _(u"""
   Objet %(k1)s inexistant.
 """),
 
-87: _("""
+87: _(u"""
   Objet %(k1)s non testable.
 """),
 
-88: _("""
+88: _(u"""
   La composante %(k1)s n'existe pas pour ce champ.
 """),
 
-89: _("""
+89: _(u"""
   Le champ %(k1)s est à valeurs de type %(k2)s et la valeur de réference de
   type %(k3)s.
 """),
 
-90: _("""
+90: _(u"""
   Le champ de type %(k1)s sont interdits.
 """),
 
-91: _("""
+91: _(u"""
   Le ddl %(k1)s n'existe pas dans la grandeur %(k2)s.
 """),
 
-92: _("""
+92: _(u"""
   On ne trouve pas le noeud %(k1)s.
 """),
 
-93: _("""
+93: _(u"""
   On ne trouve pas le ddl.
 """),
 
-94: _("""
+94: _(u"""
   Pas d'accès au résultat.
 """),
 
-95: _("""
+95: _(u"""
   Type de la valeur de réference incompatible avec le type des valeurs du champ.
 """),
 
-96: _("""
+96: _(u"""
   Champ absent au numéro d'ordre %(i1)s dans le résultat %(k1)s:
     -> champ : %(k2)s %(k3)s
 """),
 
-97: _("""
+97: _(u"""
   Mot-clé POINT interdit pour le champ au noeud issu de %(k1)s à l'ordre %(i1)s:
     -> champ : %(k2)s %(k3)s
 """),
 
-98: _("""
+98: _(u"""
   Composante généralisée non trouvée.
 """),
 
-99: _("""
+99: _(u"""
   Pas d'accès au résultat généralisé %(k1)s
 """),
 

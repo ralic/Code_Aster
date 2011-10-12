@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,59 +19,57 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-4 : _("""
+4 : _(u"""
  Il y a un problème pour récupérer les variables d'accès.
 """),
 
-5 : _("""
+5 : _(u"""
  Seules les variables d'accès réelles sont traitées.
 """),
 
-6 : _("""
+6 : _(u"""
  Seuls les paramètres réels sont traités.
 """),
 
-7 : _("""
+7 : _(u"""
  L'unité logique est inexistante.
 """),
 
-8 : _("""
+8 : _(u"""
   Les fonctions à une seule variable sont admises.
 """),
 
-10 : _("""
+10 : _(u"""
   Les fonctions de type " %(k1)s " ne sont pas encore imprimées.
 """),
 
-11 : _("""
+11 : _(u"""
   Les fonctions de type " %(k1)s " ne sont pas imprimées.
 """),
 
-12 : _("""
+12 : _(u"""
  interpolation sur paramètres non permise
 """),
 
-13 : _("""
+13 : _(u"""
  interpolation " %(k1)s " inconnue
 """),
 
-14 : _("""
+14 : _(u"""
  " %(k1)s " type de fonction inconnu
 """),
 
-16 : _("""
+16 : _(u"""
  interpolation non permise
 """),
 
-17 : _("""
+17 : _(u"""
  on ne connait pas ce type d'interpolation:  %(k1)s
 """),
 
-31 : _("""
+31 : _(u"""
  on ne trouve pas l'equation  %(k1)s  dans le "prof_chno"
 """),
 
@@ -79,19 +77,19 @@ cata_msg = {
 
 
 
-36 : _("""
+36 : _(u"""
  group_ma_interf: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
-37 : _("""
+37 : _(u"""
  group_ma_flu_str: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
-38 : _("""
+38 : _(u"""
  group_ma_flu_sol: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
-39 : _("""
+39 : _(u"""
  group_ma_sol_sol: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
@@ -99,82 +97,82 @@ cata_msg = {
 
 
 
-47 : _("""
+47 : _(u"""
   Le fichier " %(k1)s " n'est relié a aucune unité logique.
 """),
 
 
 
 
-52 : _("""
+52 : _(u"""
  ajout de l'option "SIEF_ELGA", les charges sont-elles correctes ?
 """),
 
-53 : _("""
+53 : _(u"""
  Le nombre maximum d'iterations est atteint.
 """),
 
-54 : _("""
+54 : _(u"""
   La dimension de l'espace doit être inférieur ou égal à 3.
 """),
 
-55 : _("""
+55 : _(u"""
  les points du nuage de depart sont tous en (0.,0.,0.).
 """),
 
-56 : _("""
+56 : _(u"""
  le nuage de depart est vide.
 """),
 
-57 : _("""
+57 : _(u"""
  les points du nuage de depart sont tous confondus.
 """),
 
-58 : _("""
+58 : _(u"""
  les points du nuage de depart sont tous alignes.
 """),
 
-59 : _("""
+59 : _(u"""
  les points du nuage de depart sont tous coplanaires.
 """),
 
-60 : _("""
+60 : _(u"""
  methode inconnue :  %(k1)s
 """),
 
-61 : _("""
+61 : _(u"""
  le descripteur_grandeur de compor ne tient pas sur un seul entier_code
 """),
 
-62 : _("""
+62 : _(u"""
  erreur dans etenca
 """),
 
-63 : _("""
+63 : _(u"""
  la composante relcom n'a pas ete affectee pour la grandeur compor
 """),
 
-66 : _("""
+66 : _(u"""
  pas assez de valeurs dans la liste.
 """),
 
-67 : _("""
+67 : _(u"""
  il faut des triplets de valeurs.
 """),
 
-68 : _("""
+68 : _(u"""
  il n'y a pas un nombre pair de valeurs.
 """),
 
-69 : _("""
+69 : _(u"""
  nombre de valeurs different  pour "noeud_para" et "vale_y"
 """),
 
-70 : _("""
+70 : _(u"""
  il manque des valeurs dans  %(k1)s  ,liste plus petite que  %(k2)s
 """),
 
-71 : _("""
+71 : _(u"""
 La fonction a des valeurs négatives. Ce n'est pas compatible avec une
 interpolation "LOG".
 
@@ -183,56 +181,56 @@ Conseil :
     avec le mot-clé INTERPOL (ou INTERPOL_FONC quand il s'agit de nappe).
 """),
 
-72 : _("""
+72 : _(u"""
 Les paramètres de la nappe ne sont pas croissants !
 """),
 
-73 : _("""
+73 : _(u"""
 On ne peut pas définir une nappe avec deux fonctions différentes pour la même
 valeur du paramètre.
 """),
 
-75 : _("""
+75 : _(u"""
 Les listes NUME_LIGN et LISTE_R/LISTE_K/LISTE_I doivent contenir le même nombre de termes.
 """),
 
-76 : _("""
+76 : _(u"""
 Les noms de paramètres doivent être différents
 """),
 
-77 : _("""
+77 : _(u"""
  les listes d'abscisses et d'ordonnées doivent être de mêmes longueurs
 """),
 
-78 : _("""
+78 : _(u"""
  fonction incompatible avec  %(k1)s
 """),
 
-79 : _("""
+79 : _(u"""
  les noms de chaque paramêtre doivent être differents
 """),
 
-80 : _("""
+80 : _(u"""
  un seul nume_ordre !!!
 """),
 
-83 : _("""
+83 : _(u"""
  les noeuds debut et fin n appartiennent pas au maillage.
 """),
 
-84 : _("""
+84 : _(u"""
  la fonction doit s appuyee sur un maillage pour lequel une abscisse curviligne est definie.
 """),
 
-85 : _("""
+85 : _(u"""
  mauvaise definition des noeuds debut et fin
 """),
 
-86 : _("""
+86 : _(u"""
  le nombre de champs à lire est supérieur a 100
 """),
 
-87 : _("""
+87 : _(u"""
   -> Le maillage doit être issu d'IDEAS pour garantir la cohérence entre
      le maillage et les résultats lus.
 
@@ -243,28 +241,28 @@ Les noms de paramètres doivent être différents
      que celui lu par aster (LIRE_MAILLAGE).
 """),
 
-88 : _("""
+88 : _(u"""
   Pour le format ENSIGHT, le mot-clé MODELE est obligatoire.
 """),
 
-89 : _("""
+89 : _(u"""
   Le format ENSIGHT n'accepte que le champ de type PRES.
 """),
 
-91 : _("""
+91 : _(u"""
   Le type d'élément %(k1)s n'est pas prevu.
 """),
 
-94 : _("""
+94 : _(u"""
   Le champ %(k1)s n'est pas prévu.
   Vous pouvez demander l'évolution.
 """),
 
-95 : _("""
+95 : _(u"""
   %(k1)s  et  %(k2)s  : nombre de composantes incompatible.
 """),
 
-97 : _("""
+97 : _(u"""
 Erreur Utilisateur :
   On n'a pu lire aucun champ dans le fichier.
   La structure de données créée est vide.

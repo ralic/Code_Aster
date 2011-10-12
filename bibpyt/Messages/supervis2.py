@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,16 +19,14 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
 
-1 : _("""
+1 : _(u"""
 Lecture du fichier pick.1..."""),
 
-3 : _("""%(k1)-8s %(k2)-16s ignoré"""),
+3 : _(u"""%(k1)-8s %(k2)-16s ignoré"""),
 
-5 : _("""
+5 : _(u"""
 Erreur inattendue lors de l'exécution de la commande '%(k1)s'.
 Merci de signaler cette anomalie.
 
@@ -38,23 +36,119 @@ Traceback :
 %(k3)s
 """),
 
-6 : _("""
+6 : _(u"""
 Erreur lors du chargement du catalogue du matériau '%(k1)s'.
 """),
 
-7 : _("""
+7 : _(u"""
 Erreur dans le catalogue du matériau '%(k1)s'.
 
 Il n'est pas possible d'avoir plusieurs occurrences pour le
 mot-clé facteur '%(k2)s'.
 """),
 
-
-8 : _("""
-
+8 : _(u"""
 L'opération de retassage de la base GLOBALE (mot clé RETASSAGE="OUI"
-dans la commande FIN) est inutile lorsque l'on sauvegarde cette 
+dans la commande FIN) est inutile lorsque l'on sauvegarde cette
 dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
-
 """),
+
+# Lignes d'entete
+10 : {  'message' : _(u"""
+
+                -- CODE_ASTER -- VERSION : %(k1)s --
+
+                Version %(k2)s du %(k3)s
+
+                Copyright EDF-R&D %(k4)s - %(k5)s
+
+                Exécution du : %(k6)s
+
+                Nom de la machine : %(k7)s
+
+                Architecture : %(k8)s
+
+                Type de processeur : %(k9)s
+
+                Système d'exploitation : %(k10)s
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+11 : {  'message' : _(u"""Parallélisme MPI : actif
+                Rang du processeur courant : %(i1)d
+                Nombre de processeurs utilisés : %(i2)d
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+12 : {  'message' : _(u"""Parallélisme MPI : inactif
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+13 : {  'message' : _(u"""Parallélisme OpenMP : actif
+                Nombre de threads utilisés : %(i1)d
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+14 : {  'message' : _(u"""Version de la librairie HDF5 : %(i1)d.%(i2)d.%(i3)d
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+15 : {  'message' : _(u"""Librairie HDF5 : non disponible
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+16 : {  'message' : _(u"""Version de la librairie MED : %(i1)d.%(i2)d.%(i3)d
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+17 : {  'message' : _(u"""Librairie MED : non disponible
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+18 : {  'message' : _(u"""Librairie MUMPS : installée
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+19 : {  'message' : _(u"""Librairie MUMPS : non disponible
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+20 : {  'message' : _(u"""Version de la librairie SCOTCH : %(i1)d.%(i2)d.%(i3)d
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+21 : {  'message' : _(u"""Librairie SCOTCH : non disponible
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+22 : {  'message' : _(u"""Limite de la mémoire statique : %(r1).3f Mo
+
+Limite de la mémoire dynamique : %(r2).3f Mo
+
+Taille limite des fichiers d'échange : %(r3).3f Go
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
+# Affichage des commandes
+70 : u"""  # ------------------------------------------------------------------------------------------""",
+
+71 : _(u"""  # Commande No :  %(i1)04d            Concept de type : %(k1)s"""),
+
+72 : _(u"""  # Commande :
+  # ----------"""),
+
+73 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f (VmPeak / Optimum / Minimum)"""),
+
+74 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f (Optimum / Minimum)"""),
+
+75 : _(u"""  # Fin commande No : %(i1)04d   user+syst:%(r1)12.2fs (syst:%(r2)12.2fs, elaps:%(r3)12.2fs)"""),
+
+76 : _(u"""  # Fin commande : %(k1)s"""),
+
+
+97 : {  'message' : _(u"""
+ <FIN> Arrêt normal dans "FIN".
+"""), 'flags' : 'ALL_UNIT',
+},
+
 }

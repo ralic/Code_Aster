@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith14 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,76 +19,74 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-3 : _("""
+3 : _(u"""
  type d'interface non supportée en cyclique
  type interface -->  %(k1)s 
 """),
 
-4 : _("""
+4 : _(u"""
  arrêt sur type de résultat non supporté
  type donné      -->  %(k1)s 
  types supportés -->  %(k2)s %(k3)s
 """),
 
-8 : _("""
+8 : _(u"""
  il manque la déformée modale pour le mode  %(i1)d 
 """),
 
-10 : _("""
+10 : _(u"""
  la maille %(k2)s n'existe pas dans le maillage %(k1)s 
 """),
 
-11 : _("""
+11 : _(u"""
  le noeud %(k2)s n'existe pas dans le maillage %(k1)s
 """),
 
-13 : _("""
+13 : _(u"""
  arrêt sur base modale de type illicite
  base modale  -->  %(k1)s
  type         -->  %(k2)s 
  type attendu -->  %(k3)s 
 """),
 
-14 : _("""
+14 : _(u"""
  arrêt sur matrice de raideur non unique
 """),
 
-15 : _("""
+15 : _(u"""
  arrêt sur matrice de masse non unique
 """),
 
-16 : _("""
+16 : _(u"""
  arrêt sur matrice d'amortissement non unique en argument
 """),
 
-17 : _("""
+17 : _(u"""
  Le type de matrice %(k1)s est inconnu. Erreur développeur
 """),
 
-21 : _("""
+21 : _(u"""
  les matrices assemblées n'ont pas la même numérotation
  masse   = %(k1)s 
  raideur = %(k2)s 
 """),
 
-22 : _("""
+22 : _(u"""
  les matrices assemblées n'ont pas la même numérotation
  amortissement = %(k1)s 
  raideur       = %(k2)s 
 """),
 
-23 : _("""
+23 : _(u"""
  
  les matrices assemblées et la base modale n'ont pas le même maillage initial
  maillage matrice     : %(k1)s 
  maillage base modale : %(k2)s 
 """),
 
-24 : _("""
+24 : _(u"""
  arrêt sur problème de cohérence
  MODE_MECA donné       -->  %(k1)s 
  numerotation associée -->  %(k2)s 
@@ -96,35 +94,35 @@ cata_msg = {
  numérotation associée -->  %(k4)s 
 """),
 
-25 : _("""
+25 : _(u"""
  sous-structure inexistante dans le modele généralisé
  modèle generalisé : %(k1)s 
  sous-structure    : %(k2)s 
 """),
 
-26 : _("""
+26 : _(u"""
  problème de cohérence du nombre de champs de la base modale
  base modale                  : %(k1)s 
  nombre de champs de la base  : %(i1)d 
  nombre de degrés généralisés : %(i2)d 
 """),
 
-27 : _("""
+27 : _(u"""
  le maillage %(k1)s n'est pas un maillage SQUELETTE 
 """),
 
-28 : _("""
+28 : _(u"""
   aucun type d'interface défini pour la sous-structure :  %(i1)d 
   pas de mode rigide d'interface
   le calcul de masses effectives risque d'être imprécis %(i2)d 
 """),
 
-30 : _("""
+30 : _(u"""
  incoherence détectée dans le squelette
  objet non trouvé :  %(k1)s 
 """),
 
-31 : _("""
+31 : _(u"""
  problème de cohérence entre le nombre de concepts mode_meca et 
  la liste des NMAX_MODE:
  nombre de concepts mode_meca dans la liste MODE_MECA     : %(i1)d 
@@ -133,43 +131,43 @@ cata_msg = {
   Les deux listes doivent avoir la même taille.
 """),
 
-32 : _("""
+32 : _(u"""
  sd resultat  %(k1)s, le champ %(k2)s n'existe pas   
  pour le nume_ordre  %(i1)d 
 """),
 
-33 : _("""
+33 : _(u"""
  sd resultat  %(k1)s, le champ %(k2)s n'a pas ete duplique   
  pour le nume_ordre  %(i1)d 
 """),
 
-35 : _("""
+35 : _(u"""
  aucun champ n'est calculé dans la structure de donnees  %(k1)s 
 """),
 
-36 : _("""
+36 : _(u"""
  les numerotations des champs ne coincident pas celui de  %(k1)s  est :  %(k2)s 
  et celui de  %(k3)s 
   est :  %(k4)s 
 """),
 
-50 : _("""
+50 : _(u"""
  il faut au moins 1 mode !
 """),
 
-51 : _("""
+51 : _(u"""
  il faut au moins un mode_meca a la 1ere occurence de ritz
 """),
 
-55 : _("""
+55 : _(u"""
  le champ de "TEMP" n'existe pas pour le numéro d'ordre  %(i1)d 
 """),
 
-59 : _("""
+59 : _(u"""
  le champ de "META_ELNO"  n'existe pas pour le numéro d'ordre  %(i1)d 
 """),
 
-61 : _("""
+61 : _(u"""
  le pas de temps du calcul métallurgique ne correspond pas
  au pas de temps du calcul thermique
  - numero d'ordre              : %(i1)d 
@@ -177,32 +175,32 @@ cata_msg = {
  - pas de temps métallurgique  : %(r2)f 
 """),
 
-62 : _("""
+62 : _(u"""
  il manque la déformée modale nom_cham  %(k1)s  pour le mode  %(i1)d 
 """),
 
-63 : _("""
+63 : _(u"""
  données incompatibles :
  pour le mode_stat  :  %(k1)s 
  il manque le champ :  %(k2)s 
 """),
 
-64 : _("""
+64 : _(u"""
  il manque le mode statique nom_cham  %(k1)s  pour le mode  %(i1)d 
 """),
 
-66 : _("""
+66 : _(u"""
  Taille de bloc insuffisante
  taille de bloc demandée (kr8): %(r1)f 
  taille de bloc utilisée (kr8): %(r2)f 
 """),
 
-68 : _("""
+68 : _(u"""
   Estimation de la durée du régime transitoire :
   valeur minimale conseillée :  %(r1)f 
 """),
 
-69 : _("""
+69 : _(u"""
  non-linearité incompatible avec la définition du modèle généralisé
  noeud_1      :  %(k1)s 
  sous_struc_1 :  %(k2)s 
@@ -210,7 +208,7 @@ cata_msg = {
  sous_struc_2 :  %(k4)s 
 """),
 
-70 : _("""
+70 : _(u"""
  problème de cohérence du nombre de noeuds d'interface
  sous-structure1            : %(k1)s 
  interface1                 : %(k2)s 
@@ -220,7 +218,7 @@ cata_msg = {
  nombre de noeuds interface2: %(i2)d 
 """),
 
-71 : _("""
+71 : _(u"""
  problème de cohérence des interfaces orientées
  sous-structure1           : %(k1)s 
  interface1                : %(k2)s 
@@ -230,7 +228,7 @@ cata_msg = {
  composante inexistante sur 2 %(k6)s 
 """),
 
-72 : _("""
+72 : _(u"""
  problème de cohérence des interfaces orientées
  sous-structure2           : %(k1)s 
  interface2                : %(k2)s 
@@ -240,7 +238,7 @@ cata_msg = {
  composante inexistante sur 1 %(k6)s 
 """),
 
-73 : _("""
+73 : _(u"""
  Sous-structures incompatibles
  sous-structure 1             : %(k1)s
  MACR_ELEM associé            : %(k2)s 
@@ -250,93 +248,93 @@ cata_msg = {
  numéro grandeur sous-jacente : %(i2)d 
 """),
 
-74 : _("""
+74 : _(u"""
  arret sur incompatibilité de sous-structures
 """),
 
-75 : _("""
+75 : _(u"""
   Erreur développement : code retour 1 dans nmcomp en calculant la matrice tangente
  """),
 
-77 : _("""
+77 : _(u"""
  les types des deux matrices sont différents
  type de la matrice de raideur :  %(k1)s 
  type de la matrice de masse   :  %(k2)s 
 """),
 
-78 : _("""
+78 : _(u"""
  les numérotations des deux matrices sont différentes
  numérotation matrice de raideur :  %(k1)s 
  numérotation matrice de masse   :  %(k2)s 
 """),
 
-79 : _("""
+79 : _(u"""
  coefficient de conditionnement des lagranges :  %(r1)f 
 """),
 
-80 : _("""
+80 : _(u"""
  affichage des coefficients d'amortissement :
  premier coefficient d'amortissement : %(r1)f 
  second  coefficient d'amortissement : %(r2)f 
 """),
 
-82 : _("""
+82 : _(u"""
  calcul du nombre de diamètres modaux demandé impossible
  nombre de diamètres demandé --> %(i1)d 
 """),
 
-83 : _("""
+83 : _(u"""
  calcul des modes propres limité au nombre de diamètres maximum --> %(i1)d 
 """),
 
-84 : _("""
+84 : _(u"""
  calcul cyclique :
  aucun nombre de diamètres nodaux licite
 """),
 
-85 : _("""
+85 : _(u"""
  liste de fréquences incompatible avec l'option
  nombre de fréquences --> %(i1)d 
  option               --> %(k1)s 
 """),
 
-87 : _("""
+87 : _(u"""
   résolution du problème généralisé complexe
   nombre de modes dynamiques:  %(i1)d 
   nombre de ddl droite      :  %(i2)d 
 """),
 
-88 : _("""
+88 : _(u"""
   nombre de ddl axe         :  %(i1)d
          dont cycliques     :  %(i2)d 
          dont non cycliques :  %(i3)d 
 """),
 
-89 : _("""
+89 : _(u"""
   dimension max du problème :  %(i1)d 
 """),
 
-91 : _("""
+91 : _(u"""
  noeud sur l'axe_z
  noeud :  %(k1)s 
 """),
 
-93 : _("""
+93 : _(u"""
  arrêt sur dimension matrice TETA incorrecte
  dimension effective   :  %(i1)d 
  dimension en argument :  %(i2)d 
 """),
 
-94: _("""
+94: _(u"""
  erreur  de repetitivite cyclique
 """),
 
-95: _("""
+95: _(u"""
  il manque un ddl sur un noeud  axe type du ddl -->  %(k1)s 
  nom du noeud -->  %(k2)s 
 """),
 
-99 : _("""
+99 : _(u"""
  arrêt sur nombres de noeuds interface non identiques 
  nombre de noeuds interface droite:  %(i1)d 
  nombre de noeuds interface gauche:  %(i2)d 

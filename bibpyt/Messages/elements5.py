@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,84 +19,82 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-2 : _("""
+2 : _(u"""
  tuyau : le nombre de couches est limite a  %(i1)d
 """),
 
-3 : _("""
+3 : _(u"""
  tuyau : le nombre de secteurs est limite a  %(i1)d
 """),
 
-8 : _("""
+8 : _(u"""
  Vous voulez utiliser l'indicateur de convergence RESI_REFE_RELA mais vous n'avez pas
  renseigné le mot-clé %(k1)s .
 """),
 
-9 : _("""
+9 : _(u"""
  Employez la modélisation spécifique aux grandes déformations XX_INCO_GD
 """),
 
-15 : _("""
+15 : _(u"""
 A l'occurrence %(i1)s, les objets précédemment évoqués sont inexistants ou de type incompatible.
 """),
 
-16 : _("""
+16 : _(u"""
 Les mailles fournies sont non consécutives dans la numérotation des noeuds.
 En effet, les mailles segment doivent être ordonnées de telle sorte que pour deux segments consécutifs, le 2ème noeud sommet du 1er segment soit le même que le 1er noeud sommet du 2ème segment.
 
-Conseil : Pour ordonner les mailles du fond de fissure, veuillez 
+Conseil : Pour ordonner les mailles du fond de fissure, veuillez
 utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR).
 """),
 
-17 : _("""
+17 : _(u"""
 Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le noeud %(k2)s.
 """),
 
-19 : _("""
+19 : _(u"""
  A l'occurrence %(i1)s, la maille %(k1)s est inexistante.
 """),
 
-20 : _("""
+20 : _(u"""
  A l'occurrence %(i1)s, la maille %(k1)s n'est pas linéique.
 """),
 
-21 : _("""
+21 : _(u"""
  A l'occurrence %(i1)s, le mélange de SEG2 et de SEG3 (maille %(k1)s) n'est possible.
 """),
 
-22 : _("""
+22 : _(u"""
    Erreur, le nombre de noeuds d'un element de joint 3D n'est pas correct
 """),
 
-23 : _("""
+23 : _(u"""
    Erreur, le nombre de points de Gauss d'un element de joint 3D n'est pas correct
 """),
 
-24 : _("""
+24 : _(u"""
   le nombre de mailles du modele %(i1)d est différent de la somme des mailles des sous-domaines %(i2)d
 """),
 
-25 : _("""
+25 : _(u"""
   le sous-domaine n %(i1)d n'est pas renseigné ou vide dans DEFI_PART_OPS
 """),
 
-28 : _("""
+28 : _(u"""
   le modele comporte %(i1)d mailles de plus que l'ensemble des sous-domaines
 """),
 
-29 : _("""
+29 : _(u"""
   le modele comporte %(i1)d mailles de moins que l'ensemble des sous-domaines
 """),
 
-30 : _("""
+30 : _(u"""
  jacobien negatif ou nul : jacobien =  %(r1)f
 """),
 
-32 : _("""
+32 : _(u"""
   Toute méthode de contact autre que la méthode continue est proscrite avec
   FETI! En effet cette dernière méthode est basée sur un vision maille/calcul
   élémentaire et non pas sur une approche globale discrète dont le flot de
@@ -104,13 +102,13 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
   Merci, d'activer donc toutes les zones de contact avec ladite méthode.
 """),
 
-33 : _("""
+33 : _(u"""
   Avec FETI, on ne peut mélanger dans une seul AFFE_CHAR_MECA, du contact
   avec des chargements à LIGREL tardif (Dirichlet, Force Nodale...).
   Merci, de dissocier les types de chargement par AFFE_CHAR_MECA.
 """),
 
-34 : _("""
+34 : _(u"""
   Contact méthode continue avec FETI: la maille %(i1)d de la zone %(i2)d
   du chargement %(i3)d , semble etre à cheval entre les sous-domaines
   %(i4)d et %(i5)d !
@@ -118,32 +116,32 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
   cette zone de contact ou essayer de la dédoubler en deux zones.
 """),
 
-35 : _("""
+35 : _(u"""
   Contact méthode continue avec FETI: la surface %(i1)d de la zone %(i2)d
   du chargement %(i3)d n'est portée par aucun sous-domaine !
 """),
 
-36 : _("""
+36 : _(u"""
   Contact méthode continue avec FETI: le noeud %(i1)d est présent plusieurs
   fois dans la zone de contact %(i2)d . Cela ne devrait pas etre un problème
   pour l'algorithme, mais ce n'est pas une modélisation du contact très
   orthodoxe !
 """),
 
-37 : _("""
+37 : _(u"""
   Contact méthode continue avec FETI: le noeud %(i1)d est a l'intersection de
   plusieurs zones de contact. Cela va probablement générer un problème dans
   l'algorithme de contact (pivot nul) !
 """),
 
-38 : _("""
+38 : _(u"""
   Contact méthode continue avec FETI: le noeud %(i1)d de la zone de contact
   %(i2)d est aussi sur l'interface FETI ! Pour l'instant ce cas de figure
   est proscrit. Essayer de l'enlevez de la zone de contact ou de reconfigurer
   vos sous-domaines.
 """),
 
-39 : _("""
+39 : _(u"""
  echec de la recherche de zero a l'iteration :  %(i1)d
   fonction decroissante - pour x=a:  %(r1)f
   / fonction(a):  %(r2)f
@@ -158,7 +156,7 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 
 """),
 
-40 : _("""
+40 : _(u"""
  echec de la recherche de zero a l'iteration :  %(i1)d
   fonction constante    - pour x=a:  %(r1)f
   / fonction(a):  %(r2)f
@@ -173,22 +171,22 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 
 """),
 
-41 : _("""
+41 : _(u"""
      Température négative à la maille :  %(k1)s
 """),
 
-42 : _("""
+42 : _(u"""
  L'épaisseur definie dans DEFI_GLRC et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
  Epaisseur dans DEFI_GLRC: %(r1)f
  Epaisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
-43 : _("""
+43 : _(u"""
 Avec l'opérateur STAT_NON_LINE et l'élément de poutre POU_C_T, vous ne pouvez utiliser
 que les mots clés RELATION='ELAS' et  DEFORMATION='PETIT' avec COMP_INCR et COMP_ELAS.
 """),
 
-44 : _("""
+44 : _(u"""
 Erreur utilisateur :
   L'état métallurgique initial produit par CREA_CHAMP est incomplet.
 Conseil :
@@ -196,49 +194,49 @@ Conseil :
   Pour l'acier, il faut renseigner V1, V2, ..., V5
 """),
 
-45 : _("""
+45 : _(u"""
 OPTION MASS_INER : la masse volumique RHO doit être non nulle
 """),
 
-46 : _("""
-  reletion :  %(k1)s  non implantée pour les éléments COQUE_3D 
-  reletion : ELAS obligatoirement 
+46 : _(u"""
+  reletion :  %(k1)s  non implantée pour les éléments COQUE_3D
+  reletion : ELAS obligatoirement
 """),
 
-47 : _("""
+47 : _(u"""
     Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modélisations xxx_INTERFACE
 """),
 
-48 : _("""
+48 : _(u"""
     Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modélisations xxx_JHMS
 """),
-49 : _("""
-   La méthode IMPL_EX ne peut pas être utilisée avec la loi de comportement que vous
+49 : _(u"""
+   La méthode IMPLEX ne peut pas être utilisée avec la loi de comportement que vous
    avez choisi ; sur les éléments BARRE elle n'est utilisable qu'avec VMIS_ISOT_LINE et ELAS
 """),
 
-50 : _("""
-   La méthode IMPL_EX ne peut pas être utilisée avec la loi de comportement que vous
+50 : _(u"""
+   La méthode IMPLEX ne peut pas être utilisée avec la loi de comportement que vous
    avez choisi ; sur les éléments 2D et 3D elle n'est utilisable qu'avec VMIS_ISOT_LINE,
    ENDO_FRAGILE et ENDO_ISOT_BETON
 """),
 
-51 : _("""
+51 : _(u"""
   CHAMP :  %(k1)s  non traité sous le type COQUE_GENE. Les champs traités sont
-  EFGE et DEGE (ELGA ou ELNO) 
+  EFGE et DEGE (ELGA ou ELNO)
 """),
 
-52 : _("""
+52 : _(u"""
   CHAMP :  %(k1)s  non traité sous le type TENS_3D. Les champs traités sont
-  SIGM et EPSI (ELGA ou ELNO) 
+  SIGM et EPSI (ELGA ou ELNO)
 """),
 
-53 : _("""
+53 : _(u"""
   TYPE :  %(k1)s  non traité pour les coques. Les types traités sont
-  TENS_3D et COQUE_GENE. 
+  TENS_3D et COQUE_GENE.
 """),
 
-54 : _("""
+54 : _(u"""
   Le nbre de sous-points est :%(i1)s. Il doit soit valoir 1 (si on a déja extrait le champ) soit un
   multiple de 3 (si le champ est complet).
 """),

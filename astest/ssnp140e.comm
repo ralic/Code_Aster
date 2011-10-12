@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE ESSAI DE TRACTION D UNE PLAQUE TROUEE AVEC LA METHODE IMPLEX
 # ssnp140e.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,7 +144,7 @@ RESUIE=STAT_NON_LINE(MODELE=MODE,
                      COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                      INCREMENT=_F(LIST_INST=DEFLIST1,
                                   INST_FIN=TFIN,),
-                     METHODE = 'IMPL_EX',
+                     METHODE = 'IMPLEX',
                      ARCHIVAGE = _F(
                                     LIST_INST= L_ARCH),
 );

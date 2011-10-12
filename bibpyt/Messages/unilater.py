@@ -1,4 +1,4 @@
-#@ MODIF unilater Messages  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF unilater Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,11 +19,9 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg = {
 
-1 : _("""
+1 : _(u"""
 Définition d'une liaison unilatérale.
  -> Cette fonctionnalité suppose la symétrie de la matrice obtenue après assemblage.
     Si votre modélisation produit une matrice non-symétrique, on force donc sa symétrie pour résoudre
@@ -37,29 +35,29 @@ Définition d'une liaison unilatérale.
     sous le mot-clé facteur SOLVEUR.
 """),
 
-42: _("""
+42: _(u"""
 Définition d'une LIAISON_UNILATERALE.
 Le nombre de COEF_MULT n'est pas égal au nombre de grandeurs contenus dans
 le vecteur NOM_CMP
 """),
 
-43: _("""
+43: _(u"""
 Définition d'une LIAISON_UNILATERALE.
 Il y a trop de grandeurs dans le vecteur NOM_CMP (limité à 30)
 """),
 
-48 : _("""
+48 : _(u"""
 Définition d'une LIAISON_UNILATERALE.
 Aucun noeud n'est affecté par une liaison unilatérale.
 """),
 
-58: _("""
+58: _(u"""
 Définition d'une LIAISON_UNILATERALE.
 La composante %(k2)s existe sur le noeud %(k1)s
 """),
 
 
-75: _("""
+75: _(u"""
 Définition d'une LIAISON_UNILATERALE.
 La composante %(k2)s est inexistante sur le noeud %(k1)s
 """),

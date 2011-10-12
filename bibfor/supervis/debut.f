@@ -3,7 +3,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,12 +27,12 @@ C     ROUTINE(S) UTILISEE(S) :
 C        IBBASE  IBCATA
 C     ------------------------------------------------------------------
 C
-      INTEGER    MXCMD
-      PARAMETER (MXCMD = 500 )
-      CHARACTER*8 K8B, REPONS
+      INTEGER      MXCMD
+      PARAMETER   (MXCMD = 500 )
+      CHARACTER*8  K8B, REPONS
       CHARACTER*16 NOMCMD, K16B, CMPDEF, CMPUT, CMPOUT
       CHARACTER*80 FICHDF
-      INTEGER IERIMP, ICMD, LOUT, N, NCODE
+      INTEGER      ICMD, LOUT, N, NCODE
       INTEGER      IARG
 C
       FICHDF=' '
@@ -55,9 +55,6 @@ C        FERMETURE DU .CODE (OUVERT PAR IB0MAI)
 C
       IER    = 0
       IF(IPASS .NE. 1) GOTO 9999
-         CALL IBIMPR( IERIMP )
-         CALL PRINIT()
-         CALL PRENTE()
 C --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
       CALL IBDBGS()
 C

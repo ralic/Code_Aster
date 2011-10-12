@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF algorith17 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,10 +19,8 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
-def _(x) : return x
-
 cata_msg={
-1: _("""
+1: _(u"""
  Il y a moins de sous-domaines (%(i1)d) que de processeurs participant au calcul (%(i2)d).
  
  Conseils :
@@ -30,64 +28,64 @@ cata_msg={
    - diminuez le nombre de processeurs du calcul
 """),
 
-2: _("""
+2: _(u"""
          Comportement %(k1)s non implanté pour l'élément d'interface
 """),
-3: _("""
+3: _(u"""
         il manque le déplacement de référence DEPL_REFE  
 """), 
-4: _("""
+4: _(u"""
         La formulation n'est ni en contrainte nette ni en bishop  
 """), 
-5 : _("""
+5 : _(u"""
   Le champ posttraité est un cham_elem, le calcul de moyenne ne fonctionne que
  sur les cham_no. Pour les cham_elem utiliser POST_ELEM mot-clé INTEGRALE.
 """), 
-6 : _("""
+6 : _(u"""
   Le calcul de la racine numero %(i1)d par la méthode de la matrice compagnon a échoué.
 """), 
-7 : _("""
+7 : _(u"""
   Il n'y a qu'un seul mode_meca en entree de DEFI_BASE_MODALE. La numerotation
   de reference prise est celle associee a celui-ci. Le mot-cle NUME_REF
   n'est pas pris en compte
 """), 
-8 : _("""
+8 : _(u"""
   Il manque le nume_ddl pour le resultat. Le mot-cle NUME_REF doit etre
   renseigne.
 """), 
-9 : _("""L'équation d'évolution de l'endommagement n'admet pas de solution réelle  """),
-10 : _("""
+9 : _(u"""L'équation d'évolution de l'endommagement n'admet pas de solution réelle  """),
+10 : _(u"""
   La loi de comportement mécanique %(k1)s n'est pas compatible avec les 
   éléments de joint avec couplage hydro-mécanique.
 """),
-11 : _("""
+11 : _(u"""
   La fermeture du joint sort des bornes [0,fermeture maximale] sur la maille %(k1)s.
   fermeture du joint CLO = %(r1)f
   fermeture maximale UMC = %(r2)f
   Vérifier la cohérence chargement mécanique, fermeture asymptotique et ouverture 
   initiale.
 """),
-12 : _("""
+12 : _(u"""
   La température de référence (exprimée en Kelvin) doit toujours être strictement supérieure à zéro.
 """),
-13 : _("""
+13 : _(u"""
   La pression de gaz de référence doit toujours être différente de zéro.
 """),
 
-14 : _("""
+14 : _(u"""
   Les mots clés PRES_FLU et PRES_CLAV sont incompatibles avec les modélisations xxx_JOINT_HYME
 """),
 
-15 : _("""
+15 : _(u"""
   Les données matériau RHO_F, VISC_F et OUV_MIN sont obligatoires avec les modélisations xxx_JOINT_HYME
 """),
 
 
-16 : _("""
+16 : _(u"""
   Les données matériau RHO_F, VISC_F et OUV_MIN sont incompatibles avec les modélisations xxx_JOINT
 """),
 
-17 : _("""
+17 : _(u"""
   La partition %(k1)s que vous utilisez pour partitionner le modèle %(k2)s en sous-domaines a été construite sur un autre modèle (%(k3)s).
   
   Conseil : vérifiez la cohérence des modèles.
