@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 # sslp101c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,7 +60,7 @@ RESU=STAT_NON_LINE(
 
 RESU=CALC_ELEM( reuse=RESU,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU,
               )
 

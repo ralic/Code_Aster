@@ -1,5 +1,5 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE F6BHHBO P.DEBONNIERES
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE CYLINDRE CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 # ssna104a.para = tps_job 130 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,10 +101,10 @@ RESU = STAT_NON_LINE (MODELE = MO,
 
 RESU = CALC_CHAMP( reuse= RESU,
                   RESULTAT = RESU,
-                   CONTRAINTE=('SIEF_ELNO'),)
+                   CONTRAINTE=('SIGM_ELNO'),)
 RESU = CALC_NO ( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_NOEU',)
+                  OPTION = 'SIGM_NOEU',)
 
 
 TEST_RESU(
@@ -117,7 +117,7 @@ TEST_RESU(
                    REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT = RESU,
                    NUME_ORDRE =115,
-                   NOM_CHAM ='SIEF_NOEU',
+                   NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIXX',
                    VALE= 0.,
@@ -125,7 +125,7 @@ TEST_RESU(
                    REFERENCE='ANALYTIQUE'),
                  _F(RESULTAT = RESU,
                    NUME_ORDRE =115,
-                   NOM_CHAM ='SIEF_NOEU',
+                   NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIYY',
                    VALE= 2.7912E-4,
@@ -133,7 +133,7 @@ TEST_RESU(
                    REFERENCE='ANALYTIQUE'),
                  _F(RESULTAT = RESU,
                    NUME_ORDRE =115,
-                   NOM_CHAM ='SIEF_NOEU',
+                   NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIZZ',
                    VALE= 6.666E-4,

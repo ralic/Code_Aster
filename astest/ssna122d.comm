@@ -1,0 +1,307 @@
+# MODIF  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
+# TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 2 PUNCH (ROUNDED EDGES)
+# ssna122d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNA122D',NIV_PUB_WEB='INTERNET',),);
+
+MESH1=LIRE_MAILLAGE(FORMAT='MED',);
+
+MESH=CREA_MAILLAGE(MAILLAGE=MESH1,
+                   CREA_POI1=(_F(GROUP_NO='P',NOM_GROUP_MA='Kp',),),);
+
+MESH=MODI_MAILLAGE(reuse =MESH,
+                   MAILLAGE=MESH,
+                   ORIE_PEAU_2D=(_F(GROUP_MA='P_cont',),
+                                 _F(GROUP_MA='M_cont',),),);
+
+MAT_pu=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                             NU=0.3,),);
+
+MAT_fo=DEFI_MATERIAU(ELAS=_F(E=70000.0,
+                             NU=0.3,),);
+
+FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                         1.0,1.0,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=10,),);
+
+MO=AFFE_MODELE(MAILLAGE=MESH,
+               AFFE=(_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),
+                     _F(GROUP_MA=('Kp',),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='2D_DIS_T',),),
+                     );
+
+# On penalise le blocage suivant DX du point P (Axi)
+# On ajoute un ressort de faible raideur dans l'autre direction pour
+# bloquer le mouvement de corps rigide suivant DY
+CELEM=AFFE_CARA_ELEM(MODELE=MO,
+                     DISCRET_2D=(_F(GROUP_MA='Kp',
+                                   CARA='K_T_D_N',
+                                   VALE=(1.0E+14,1.0,),),),
+                                 );
+
+MA=AFFE_MATERIAU(MAILLAGE=MESH,
+                 AFFE=(_F(GROUP_MA='Massif',
+                          MATER=MAT_fo,),
+                       _F(GROUP_MA='Poincon',
+                          MATER=MAT_pu,),),);
+
+CL=AFFE_CHAR_CINE(MODELE=MO,
+                  MECA_IMPO=(_F(GROUP_MA='Axe_fr',
+                                DX=0.0,),
+                             _F(GROUP_MA='Encast',
+                                DX=0.0,
+                                DY=0.0,),),);
+
+Force=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_CONTOUR=_F(GROUP_MA='Force',
+                                      FY=-100.0,),);
+
+Cont=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='DISCRETE',
+                  RESI_ABSO=100*1E-6,
+                  ZONE=_F(GROUP_MA_MAIT='M_cont',
+                          GROUP_MA_ESCL='P_cont',
+                          ALGO_CONT='GCP'
+                          ),);
+
+ContFr=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='DISCRETE',
+                  FROTTEMENT='COULOMB',
+                  ZONE=_F(GROUP_MA_MAIT='M_cont',
+                          GROUP_MA_ESCL='P_cont',
+                          COULOMB=0.1,
+                          ALGO_CONT='LAGRANGIEN',
+                          ALGO_FROT='LAGRANGIEN',
+                          #ALGO_FROT='PENALISATION',
+                          #E_T=100000*100*1.0E+3,
+                          ),);
+
+MESH=DEFI_GROUP(reuse =MESH,
+                  MAILLAGE=MESH,
+                  CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
+                                   NOM='Bottom_n',
+                                   GROUP_MA='M_cont',
+                                   GROUP_NO_ORIG='M',),
+                                 _F(OPTION='NOEUD_ORDO',
+                                   NOM='Top_n',
+                                   GROUP_MA='P_cont',
+                                   GROUP_NO_ORIG='P',),),);
+# Calcul sans frottement
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MA,
+                   CARA_ELEM=CELEM,
+                   EXCIT=(_F(CHARGE=Force,
+                             FONC_MULT=FONC,),
+                          _F(CHARGE=CL,),
+                         ),
+                   CONTACT=Cont,
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                DEFORMATION='GROT_GDEP',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(SYME='OUI',),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),);
+
+RESU=CALC_ELEM(reuse =RESU,
+                 RESULTAT=RESU,
+                 OPTION=('SIEF_ELNO',),);
+
+RESU=CALC_NO(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEF_NOEU','FORC_NODA','REAC_NODA',));
+
+# Calcul avec frottement
+
+RESUFr=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MA,
+                   CARA_ELEM=CELEM,
+                   EXCIT=(_F(CHARGE=Force,
+                             FONC_MULT=FONC,),
+                          _F(CHARGE=CL,),
+                         ),
+                   CONTACT=ContFr,
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                DEFORMATION='GROT_GDEP',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(SYME='OUI',),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),);
+
+RESUFr=CALC_ELEM(reuse =RESUFr,
+                 RESULTAT=RESUFr,
+                 OPTION=('SIEF_ELNO',),);
+
+RESUFr=CALC_NO(reuse =RESUFr,
+               RESULTAT=RESUFr,
+               OPTION=('SIEF_NOEU','FORC_NODA','REAC_NODA',));
+
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='MED',
+          UNITE=80,
+          RESU=(_F(RESULTAT=RESU,
+                  NOM_CHAM=('DEPL','FORC_NODA',),),
+                _F(RESULTAT=RESUFr,
+                  NOM_CHAM=('DEPL','FORC_NODA',),),),
+                );
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='MED',
+          UNITE=81,
+          RESU=(_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP=('DX','DY',),),
+                _F(RESULTAT=RESUFr,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP=('DX','DY',),),),
+                );
+
+RELE=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                              INTITULE='Depl. axial',
+                              RESULTAT=RESU,
+                              NOM_CHAM='DEPL',
+                              INST=1,
+                              GROUP_NO='Bottom_n',
+                              NOM_CMP='DY',),
+                           _F(OPERATION='EXTRACTION',
+                              INTITULE='Depl. radial',
+                              RESULTAT=RESU,
+                              NOM_CHAM='DEPL',
+                              INST=1,
+                              GROUP_NO='Bottom_n',
+                              NOM_CMP='DX',),
+                           ),);
+
+RELEFr=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                              INTITULE='Depl. axial avec frott.',
+                              RESULTAT=RESUFr,
+                              NOM_CHAM='DEPL',
+                              INST=1,
+                              GROUP_NO='Bottom_n',
+                              NOM_CMP='DY',),
+                           _F(OPERATION='EXTRACTION',
+                              INTITULE='Depl. radial avec frott.',
+                              RESULTAT=RESUFr,
+                              NOM_CHAM='DEPL',
+                              INST=1,
+                              GROUP_NO='Bottom_n',
+                              NOM_CMP='DX',),
+                           ),);
+
+DEPLax=RECU_FONCTION(TABLE=RELE,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='DY',);
+
+DEPLra=RECU_FONCTION(TABLE=RELE,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='DX',);
+
+DEPLaxFr=RECU_FONCTION(TABLE=RELEFr,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='DY',);
+
+DEPLraFr=RECU_FONCTION(TABLE=RELEFr,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='DX',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(_F(FONCTION=DEPLax,LEGENDE='Sans frottement',MARQUEUR=0,),
+                      _F(FONCTION=DEPLaxFr,LEGENDE='Frottement 0.1',MARQUEUR=0,),),
+              TITRE='Deplacement axial en fonction du rayon',
+              BORNE_X=(0.0,100.0,),
+              BORNE_Y=(-0.14,0.0,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=10,
+              GRILLE_Y=0.02,
+              LEGENDE_X='Rayon (mm)',
+              LEGENDE_Y='Deplacement axial (mm)',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=(_F(FONCTION=DEPLra,LEGENDE='Sans frottement',MARQUEUR=0,),
+                      _F(FONCTION=DEPLraFr,LEGENDE='Frottement 0.1',MARQUEUR=0,),),
+              TITRE='Deplacement radial en fonction du rayon',
+              BORNE_X=(0.0,100.0,),
+              BORNE_Y=(-0.018,0.002,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=10,
+              GRILLE_Y=0.002,
+              LEGENDE_X='Rayon (mm)',
+              LEGENDE_Y='Deplacement radial (mm)',);
+
+# ===========================================
+# Tests
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'M',
+                   NOM_CMP    = 'DY',
+                   VALE       = -0.13289744810653,
+                   REFERENCE  = 'SOURCE_EXTERNE',
+                   VERSION    = '11.0.27',
+                   ),
+                _F(RESULTAT   = RESU,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'SIEF_NOEU',
+                   GROUP_NO   = 'M',
+                   NOM_CMP    = 'SIYY',
+                   VALE       = -94.159435993922,
+                   REFERENCE  = 'SOURCE_EXTERNE',
+#                  Valeur differente sur chaque plateforme due a GCP
+                   PRECISION  = 0.02,
+                   VERSION    = '11.0.27',
+                   ),
+                ),);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESUFr,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'M',
+                   NOM_CMP    = 'DY',
+                   VALE       = -0.13077495250840,
+                   REFERENCE  = 'SOURCE_EXTERNE',
+                   VERSION    = '11.0.27',
+                   ),
+                _F(RESULTAT   = RESUFr,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'SIEF_NOEU',
+                   GROUP_NO   = 'M',
+                   NOM_CMP    = 'SIYY',
+                   VALE       = -95.191895551335,
+                   REFERENCE  = 'SOURCE_EXTERNE',
+                   VERSION    = '11.0.27',
+                   ),
+                ),);
+
+FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE VRILLEE
 # ssls108g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,7 +64,7 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
                     );
 
 RESU1=CALC_CHAMP(reuse =RESU1,
-                 CONTRAINTE=('SIEF_ELNO'),
+                 CONTRAINTE=('SIGM_ELNO'),
                 RESULTAT=RESU1,);
 
 CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA,
@@ -85,7 +85,7 @@ RESU2=MECA_STATIQUE(MODELE=MODMECA,
                     );
 
 RESU2=CALC_CHAMP(reuse =RESU2,
-                 CONTRAINTE=('SIEF_ELNO'),
+                 CONTRAINTE=('SIGM_ELNO'),
                 RESULTAT=RESU2,);
 
 

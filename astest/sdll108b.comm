@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE : Table de Neubert
 # sdll108b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,8 +88,7 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                              PSEUDO_MODE=_F(  AXE = ( 'X',  'Y',  'Z', ))  )
 
 MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                         OPTION=( 'EFGE_ELNO', 'SIEF_ELGA',
-                                  'EFCA_ELNO',   ), )
+                         OPTION=('SIEF_ELGA','EFGE_ELNO', 'EFCA_ELNO',   ), )
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
                    OPTION='REAC_NODA',)
@@ -108,8 +107,7 @@ IMPR_RESU(RESU=_F(RESULTAT=MODE_MEC))
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                         OPTION=( 'EFGE_ELNO', 'SIEF_ELGA',
-                                  'EFCA_ELNO',   ),)
+                         OPTION=('SIEF_ELGA','EFGE_ELNO', 'EFCA_ELNO',   ),)
 
 MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
                    OPTION='REAC_NODA',)

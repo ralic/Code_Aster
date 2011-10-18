@@ -1,6 +1,6 @@
       SUBROUTINE TE0159(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,10 +49,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 
-       IF (OPTION.EQ.'SIEF_ELNO') THEN
-C     -----------------------------------------------
+      IF (OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO') THEN
+C     -------------------------------------------------------------
+         IF (OPTION.EQ.'EFGE_ELNO') THEN
+            CALL JEVECH('PEFFORR','E',ISIGNO)
+         ELSE
+            CALL JEVECH('PSIEFNOR','E',ISIGNO)
+         ENDIF
         CALL JEVECH('PCONTRR','L',ISIGGA)
-        CALL JEVECH('PSIEFNOR','E',ISIGNO)
 
         IF (NOMTE.EQ.'MEPOULI') THEN
           ZR(ISIGNO) = ZR(ISIGGA)

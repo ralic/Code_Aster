@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF propa_fiss_ops Macro  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from math import atan, atan2, cos, sin, log
+from math import atan, atan2, cos, sin, log, sqrt, acos
 
 import numpy as NP
 from Accas import _F
@@ -71,25 +71,126 @@ def InterpolFondFiss(s0, Coorfo) :
    xyz[2] = (s0-Coorfo[4*(i-1)+3]) * (Coorfo[4*i+2]-Coorfo[4*(i-1)+2]) / (Coorfo[4*i+3]-Coorfo[4*(i-1)+3]) + Coorfo[4*(i-1)+2]
    return xyz
 
+def NORMEV(v0) :
+  NormeV = 0.
+  for i in range(len(v0)) : 
+    NormeV = NormeV + v0[i]**2
+  NormeV = sqrt(NormeV)
+  v1 = [0.]*len(v0)
+  for i in range(len(v0)) :
+    v1[i] = v0[i]/NormeV
+  return v1
+
+def DDOT(u,v) :
+  PS = 0
+  for i in range(max(len(u),len(v))) :
+    PS = PS + u[i]*v[i]
+  return PS
+  
+def PROVEC3D(u,v) :
+  w=[ u[1]*v[2] - u[2]*v[1] , \
+      u[2]*v[0] - u[0]*v[2] , \
+      u[0]*v[1] - u[1]*v[0] ]
+  return w
+  
 def InterpolBaseFiss(s0, Basefo, Coorfo) :
 # Interpolation de la base locale en fond de fissure
 # s0     = abscisse curviligne du point considere
 # Basefo = base locale du fond (VNx,VNy,VNz,VPx,VPy,VPz)
 # Coorfo = Coordonnees et abscisses du fond (extrait de la sd fiss_xfem)
 # en sortie : VPVNi = base locale au point considere (6 coordonnes)
-   n = len(Coorfo) / 4
-   if ( s0 < Coorfo[3] )  :
-     VPVNi =  Basefo[0:6]
-     return VPVNi
-   if ( s0 > Coorfo[-1]  ) :
-     VPVNi = [Basefo[i] for i in range(-6,0)]
-     return VPVNi
-   i = 1
-   while s0 > Coorfo[4*i+3]:
-      i = i+1
+   # Cas Particuliers
+   if ( s0 < Coorfo[3] )  : 
+     np = [0.]*3
+     tp = [0.]*3
+     for k in range(3) :
+       np[k] = Basefo[k]
+       tp[k] = Basefo[k+3]
+   elif ( s0 > Coorfo[-1]  ) : 
+     np = [0.]*3
+     tp = [0.]*3
+     for k in range(-3,0) :
+       np[k] = Basefo[k-3]
+       tp[k] = Basefo[k]
+   else :
+     # Cas General
+     # on incremente jusqua arriver au bon intervalle
+     i = 1
+     while s0 > Coorfo[4*i+3] :
+       i = i+1
+     # Recherche de tous les elements pour reconstruire la rotation entre les deux bases
+     # 1 - Calcul des reperes associes aux extremites du segment
+     base1 = [[0.]*3 for j in range(3)]
+     base2 = [[0.]*3 for j in range(3)]
+     for k in range(3) : 
+       base1[1][k] = Basefo[6*(i-1)+k]
+       base2[1][k] = Basefo[6*i+k]
+       base1[0][k] = Basefo[6*(i-1)+k+3]
+       base2[0][k] = Basefo[6* i+k+3]
+     base1[0] = NORMEV(base1[0])
+     base2[0] = NORMEV(base2[0])
+     b11b10 = DDOT(base1[1],base1[0])
+     b21b20 = DDOT(base2[1],base2[0])
+     for k in range(3) :
+       base1[1][k] =  base1[1][k] - b11b10*base1[0][k]
+       base2[1][k] =  base2[1][k] - b21b20*base2[0][k]
+     base1[1] = NORMEV(base1[1])
+     base2[1] = NORMEV(base2[1])   
+     base1[2] = PROVEC3D(base1[0],base1[1])
+     base2[2] = PROVEC3D(base2[0],base2[1])
+     # 2 - Calcul de la matrice de rotation
+     R = [[0.]*3 for j in range(3)]
+     for k in range(3) :
+       for l in range(3) :
+         R[k][l] = DDOT(base1[k],base2[l])
+     # 3 - Calcul de langle de rotation
+     TraceR = 0.
+     for k in range(3) : 
+       TraceR = TraceR + R[k][k]
+     if TraceR >= 3. : 
+       VPVNi = [0.]*6
+       for k in range(3) :
+         VPVNi[k] = base1[1][k]
+         VPVNi[k+3] = base1[0][k]
+       return VPVNi
+     if TraceR < -1 :
+       TraceR = -1
+     theta = acos( (TraceR-1)/2 )
+     # 4 - Calcul de l'axe de rotation (d euler)
+     sintheta = sin(theta)
+     e = [ (R[1][2]-R[2][1])/(2*sintheta) , \
+           (R[2][0]-R[0][2])/(2*sintheta) , \
+           (R[0][1]-R[1][0])/(2*sintheta) ]
+     #print'Axe de rotation = ',e
+     # Construction de la nouvelle base en P
+     # 1 - Interpolation lineaire de langle dans lintervalle considere
+     s = ( s0 - Coorfo[4*(i-1)+3] ) / ( Coorfo[4*i+3] - Coorfo[4*(i-1)+3] )
+     thetaP = s*theta
+     # 2 - Calcul des coordonnees dans tp et np dans la base1
+     costhetaP = cos(thetaP)
+     sinthetaP = sin(thetaP)
+     t = [ costhetaP + (1-costhetaP)*e[0]**2        , \
+           (1-costhetaP)*e[0]*e[1] - sinthetaP*e[2] , \
+           (1-costhetaP)*e[0]*e[2] + sinthetaP*e[1]   ]       
+     n = [ (1-costhetaP)*e[0]*e[1] + sinthetaP*e[2] , \
+           costhetaP + (1-costhetaP)*e[1]**2        , \
+           (1-costhetaP)*e[1]*e[2] - sinthetaP*e[0]   ] 
+     # 3 - Calcul de la base locale dans le repere de reference
+     tp = [0.]*3
+     np = [0.]*3
+     for k in range(3) :
+       tp[k] = t[0]*base1[0][k] + t[1]*base1[1][k] + t[2]*base1[2][k]
+       np[k] = n[0]*base1[0][k] + n[1]*base1[1][k] + n[2]*base1[2][k]
+   # orthogonalisation et normalisation au cas ou
+   tp = NORMEV(tp)
+   tpnp = DDOT(np,tp)
+   for k in range(3) :
+     np[k] =  np[k] - tpnp*tp[k]   
+   np = NORMEV(np)
    VPVNi = [0.]*6
-   for k in range(6) :
-      VPVNi[k] = (s0-Coorfo[4*(i-1)+3]) * (Basefo[6*i+k]-Basefo[6*(i-1)+k]) / (Coorfo[4*i+3]-Coorfo[4*(i-1)+3]) + Basefo[6*(i-1)+k]
+   for k in range(3) :
+      VPVNi[k] = np[k]
+      VPVNi[k+3] = tp[k]
    return VPVNi
 
 
@@ -189,6 +290,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   MODI_MODELE_XFEM = self.get_cmd('MODI_MODELE_XFEM'  )
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
+
 
 #------------------------------------------------------------------
 # CAS 1 : METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE'
@@ -361,8 +463,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 #    Verification qu on a bien un fond unique
       Fissmult = fiss0.sdj.FONDMULT.get()
       Nbfiss = len(Fissmult)/2
-      if Nbfiss >1 :
-         UTMESS('F','RUPTURE1_48',vali=Nbfiss)
 
 # Recuperation des K et calcul de DeltaK
       SIF = Fiss['TABLE']
@@ -487,45 +587,130 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         nbma = mm[numfis].dime_maillage[2]
         collgrma = mm[numfis].gma
         gmafon = MFOND+str('_')+str(it-1)
+        groupma = mm[numfis].gma
+        Fondmult = fiss0.sdj.FONDMULT.get()
+        Nbfond = len(Fondmult)/2
+        Coorfo = fiss0.sdj.FONDFISS.get()
 
+        
 # Recuperation de la liste des noeuds du fond
         connex = mm[numfis].co
         linomma  = list(mm[numfis].correspondance_mailles)
-        groupma = mm[numfis].gma
-        lmafo = groupma[gmafon]
         lisnofo = []
-        for i in range(len(lmafo)) :
+        # recuperation des noeud du fond de fissure
+        inofo = 1
+        FmPrec = []
+        lmafo = groupma[MFOND+'_'+str(it-1)]
+        for i in range(len(lmafo)) : 
           ma_i = linomma[lmafo[i]]
           no_i = connex[lmafo[i]]
           if i == 0 :
+            FmPrec.append(no_i[0])
             lisnofo.append(no_i[0])
             lisnofo.append(no_i[1])
-          else :
-            if lisnofo[i] != no_i[0] :
-              UTMESS('F','RUPTURE1_51')
+          # si on reste sur le meme fond 
+          elif lisnofo[inofo] == no_i[0] : 
             lisnofo.append(no_i[1])
-
+            inofo += 1
+          # si on change de fond
+          elif lisnofo[inofo] == no_i[0] - 1 : 
+            FmPrec.append(no_i[0] - 1)
+            FmPrec.append(no_i[0])
+            lisnofo.append(no_i[0])
+            lisnofo.append(no_i[1])
+            inofo += 2
+          # le maillage en entree n'est pas bien ordonne
+          else :
+            UTMESS('F','RUPTURE1_51')
+        FmPrec.append(lisnofo[-1])
         nbnofo = len(lisnofo)
+        
+# Dans le cas de la separation d'un front en deux
+# on cherche les points du front les plus proches des nouvelles extremites des fronts de fissures
+        FmAct = [-1]*2*Nbfond
+        distFm = [-1]*2*Nbfond   
+        for j in range(2*Nbfond):
+          xyz = Coorfo[4*(Fondmult[j]-1):4*Fondmult[j]-1]
+          xyzk = mm[numfis].cn[nbno-nbnofo+0]
+          dist0 = -1
+          k0=0
+          for k in range(nbnofo):
+            xyzk=mm[numfis].cn[nbno-nbnofo+k]
+            if (xyz[0]-xyzk[0])**2+(xyz[1]-xyzk[1])**2+(xyz[2]-xyzk[2])**2<=dist0 or dist0==-1:
+              dist0 = (xyz[0]-xyzk[0])**2 + (xyz[1]-xyzk[1])**2 + (xyz[2]-xyzk[2])**2
+              k0 = k
+          if FmAct[j] == -1 :
+            FmAct[j] = nbno - nbnofo + k0
+            distFm[j]=dist0 
+          elif dist0 < distFm[j] : 
+            FmAct[j]=nbno-nbnofo+k0
+            dist[j]=dist0
+          
+#  Correction de la position des noeuds les plus proches des bords libres
+        for j in range(2*Nbfond):
+          mm[numfis].cn[FmAct[j]][0] = Coorfo[4*(Fondmult[j]-1) + 0]
+          mm[numfis].cn[FmAct[j]][1] = Coorfo[4*(Fondmult[j]-1) + 1]
+          mm[numfis].cn[FmAct[j]][2] = Coorfo[4*(Fondmult[j]-1) + 2]
 
-# Correction de la position des noeuds (equirepartition)
-        Coorfo = fiss0.sdj.FONDFISS.get()
-        absmax = Coorfo[-1]
-        abscf = [0.]*nbnofo
-        for i in range(nbnofo) :
-          abscf[i] = i * absmax / (nbnofo-1)
-          xyzi = InterpolFondFiss(abscf[i], Coorfo)
-          mm[numfis].cn[nbno-nbnofo+i][0] = xyzi[0]
-          mm[numfis].cn[nbno-nbnofo+i][1] = xyzi[1]
-          mm[numfis].cn[nbno-nbnofo+i][2] = xyzi[2]
+# Critere pour calculer le nombre de noeuds total et par fond
+        # nombre total de noeuds constant
+        # repartition par fonds en fonction de leurs distance curviligne
+        abstot = 0.
+        nbnofobis = 0
+        nbptfo = [0]*Nbfond
+        for j in range(Nbfond) : 
+          abstot += Coorfo[4*Fondmult[2*j+1]-1]
+        for j in range(Nbfond) : 
+          absmax = Coorfo[4*Fondmult[2*j+1]-1]
+          nbptfo[j] = int(nbnofo*absmax/abstot)
+          nbnofobis += nbptfo[j]
+        # pour eviter les cas comme 10.2 (10) + 10.4 (10) + 10.4 (10) = 31 (30)
+        if nbnofobis < nbnofo : 
+          liste = []
+          for j in range(Nbfond) :
+            absmax = Coorfo[4*Fondmult[2*j+1]-1]
+            liste.append([nbnofo*absmax/abstot - nbptfo[j],j])
+          # on ordonne les fonds en fonction de la longueur curviligne
+          for i in range(Nbfond-1) :
+            j0=i
+            for j in range(i,Nbfond) :
+              if liste[j][0] >= liste[j0][0] :
+                j0 = j
+            temp = liste[i]
+            liste[i] = liste[j0]
+            liste[j0] = temp
+          for i in range(nbnofo - nbnofobis) :
+            nbptfo[liste[i][1]] += 1
+            nbnofobis += 1
+        nbnofo = nbnofobis
 
-# Maillage apres correction
-        coord    = mm[numfis].cn
-        linomno  = list(mm[numfis].correspondance_noeuds)
-        linomno = map(string.rstrip,linomno)
-        l_coorf =  [[linomno[i],coord[i]] for i in range(0,nbno)]
-        d_coorf = dict(l_coorf)
+# Creation des points a partir desquels nous allons calculer le nouveau fond        
 
-# Boucle sur le fond : coordonnees du point propage
+        numptfo = [[0]*nbptfo[i] for i in range(Nbfond)]
+        abscf=[[0.]*nbptfo[i] for i in range(Nbfond)]
+        ALPHABET = nom_points_fonds(nbnofo)
+        inofo = 0
+        for j in range(Nbfond): 
+          absmax = Coorfo[4*Fondmult[2*j+1]-1]
+          Coorfoj= Coorfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]]
+          abscf[j][0] = 0
+          abscf[j][-1] = absmax
+          numptfo[j][0] = FmAct[2*j]
+          numptfo[j][-1] = FmAct[2*j+1]
+          for i in range(1,nbptfo[j]-1): 
+            abscf[j][i] = i * absmax / (nbptfo[j]-1)
+            xyz = InterpolFondFiss(abscf[j][i], Coorfoj)
+            numptfo[j][i] = nbno 
+            LesNoeudsEnPlus = NP.array([[xyz[0],xyz[1],xyz[2]]])
+            mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
+            NomNoeudsEnPlus =     ['PS%s%i' %(ALPHABET[inofo],it)]
+            mm[numfis].correspondance_noeuds = tuple( list(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus )
+            inofo += 1
+            nbno += 1
+        nbmafo = nbnofo - Nbfond
+        nbno += nbnofo
+        
+# Recuperation des informations importantes pour la propagation
         Basefo = fiss0.sdj.BASEFOND.get()
         Listfo = fiss0.sdj.FONDFISS.get()
         Vorig = Fiss['DTAN_ORIG']
@@ -534,87 +719,148 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            DKmax = 1
         if (coef_C ==None) :
            coef_C = Damax
-        ALPHABET = nom_points_fonds(nbnofo)
-        for ifond in range(nbnofo) :
-           Xf =  d_coorf['NX%s%i' %(ALPHABET[ifond],it)][0]
-           Yf =  d_coorf['NX%s%i' %(ALPHABET[ifond],it)][1]
-           Zf =  d_coorf['NX%s%i' %(ALPHABET[ifond],it)][2]
-
-           VPVNi = InterpolBaseFiss(abscf[ifond],Basefo, Listfo)
-           DKeqloc = InterpolationLineaire(abscf[ifond], DKeq[numfis])
-           Rloc  = InterpolationLineaire(abscf[ifond], RmM[numfis])
-           if DKeqloc<=0 :
-             UTMESS('F','RUPTURE1_49')
-
-# Tangentes aux extremites
-           if (ifond == 0) and (Vorig != None) :
-             VPVNi[3] = Vorig[0]
-             VPVNi[4] = Vorig[1]
-             VPVNi[5] = Vorig[2]
-           if (ifond == nbnofo-1) and (Vextr != None) :
-             VPVNi[3] = Vextr[0]
-             VPVNi[4] = Vextr[1]
-             VPVNi[5] = Vextr[2]
-
-           beta = InterpolationLineaire(abscf[ifond], BETA[numfis])
-           Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)
-           Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
-           Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
-           Zf2 = Zf + (VPVNi[5]*cos(beta)+VPVNi[2]*sin(beta))*Vloc
-
-           LesNoeudsEnPlus = NP.array([[Xf2,Yf2,Zf2]])
-           if ifond ==0 :
-              Pini = (Xf2,Yf2,Zf2)
-              vectorie = (VPVNi[0],VPVNi[1],VPVNi[2],)
-           NomNoeudsEnPlus =     ['NX%s%i' %(ALPHABET[ifond],it+1)]
-           mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
-           mm[numfis].correspondance_noeuds = tuple( list(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus )
-
-  # Ajout Maille levre (quad4)
-        nbnotot = len(mm[numfis].correspondance_noeuds)
-        NomMaillesEnPlus = []
-        num_maille = []
-        NoeudsMailles = []
-        for ifond in range(nbnofo-1) :
-           NomMaillesEnPlus.append( 'MX%s%i' %(ALPHABET[ifond], it+1) )
-           num_maille.append( [ nbma + ifond +1 ] )
-           num_maille.append( nbma +ifond + 1 )
-           i1 = nbnotot - 2*nbnofo  + ifond
-           i2 = nbnotot - 2*nbnofo  + ifond +1
-           i3 = nbnotot - nbnofo  + ifond +1
-           i4 = nbnotot - nbnofo  + ifond
-           NoeudsMailles.append( NP.array([i1,i2,i3,i4]))
-
-        typ_maille = mm[numfis].dic['QUAD4']
-        NbMailleAjoute = nbnofo-1
-        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*NbMailleAjoute)))
-        mm[numfis].correspondance_mailles += tuple(NomMaillesEnPlus)
-        mm[numfis].co += NoeudsMailles
-        #XXX utilise resize/arange... (MC)
+           
+# Boucle sur le fond : calcul des coordonnees des points propages
+        inofo = 0
+        A = [0,0,0]
+        B = [0,0,0]
+        Damaxbis = Damax
+        for j in range(Nbfond) : 
+          for i in range(len(numptfo[j])) : 
+             Xf =  mm[numfis].cn[numptfo[j][i]][0]
+             Yf =  mm[numfis].cn[numptfo[j][i]][1]
+             Zf =  mm[numfis].cn[numptfo[j][i]][2]
+             C = [Xf,Yf,Zf]
+             VPVNi = InterpolBaseFiss(abscf[j][i],Basefo[6*(Fondmult[2*j]-1):6*Fondmult[2*j+1]], Listfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]])
+             DKeqloc = InterpolationLineaire(abscf[j][i], DKeq[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
+             Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
+             if DKeqloc<=0 :
+               UTMESS('F','RUPTURE1_49')
+             # Tangentes aux extremites
+             if (inofo == 0) and (Vorig != None) :
+               VPVNi[3] = Vorig[0]
+               VPVNi[4] = Vorig[1]
+               VPVNi[5] = Vorig[2]
+             if (j == Nbfond-1) and (i == FmAct[2*j+1]-FmAct[2*j]) and (Vextr != None) :
+               VPVNi[3] = Vextr[0]
+               VPVNi[4] = Vextr[1]
+               VPVNi[5] = Vextr[2]
+             # Calcul des points propages
+             beta = InterpolationLineaire(abscf[j][i], BETA[numfis])
+             Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)
+             Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
+             Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
+             Zf2 = Zf + (VPVNi[5]*cos(beta)+VPVNi[2]*sin(beta))*Vloc
+             D = [Xf2,Yf2,Zf2]
+             # Verification de la convexite du fond
+             if i > 0 :
+               AB = [B[0]-A[0],B[1]-A[1],B[2]-A[2]]
+               AC = [C[0]-A[0],C[1]-A[1],C[2]-A[2]]
+               AD = [D[0]-A[0],D[1]-A[1],D[2]-A[2]]
+               CD = [D[0]-C[0],D[1]-C[1],D[2]-C[2]]
+               # Calcul de produits scalaires pour savoir si cest un cas problematique
+               # Calcul de E1 et E2 base orthonorme dans le plan ABC
+               E1 = NORMEV(AB)
+               ACE1 = DDOT(AC,E1)
+               E2=[0.]*3
+               for i in range(3) :
+                 E2[i] = AC[i]-ACE1*E1[i]
+               E2 = NORMEV(E2) 
+               # produit scalaire entre E2 (normal a AB) et CD pour savoir si convexe
+               PS = DDOT(E2,CD)
+               # Si fissure non convexe, verification de la grandeur du pas Damax
+               # (en effet les mailles peuvent avoir leurs arretes qui se croisent
+               #  ce qui risque de poser des problemes lors de lusage de DEFI_FISS)
+               if PS < 0 : 
+                 # Recherche du point dintersection M, AM=xE1
+                 x = (DDOT(AD,E2)*DDOT(AC,E1) - DDOT(AC,E2)*DDOT(AD,E1))/DDOT(CD,E2) 
+                 alpha = 1.2
+                 Crit1 = x / (alpha * DDOT(AB,E1))
+                 Crit2 = sqrt(((x - DDOT(AC,E1))**2 + DDOT(AC,E2)**2)/(DDOT(CD,E1)**2 + DDOT(CD,E2)**2))
+                 if Crit1 < 1 : 
+                   Damaxbis = min(Damaxbis,Damax * Crit1)
+                 if Crit2 < 1 :
+                   Damaxbis = min(Damaxbis,Damax * Crit2)
+             A=C
+             B=D
+             LesNoeudsEnPlus = NP.array([[Xf2,Yf2,Zf2]])
+             if i == 0 and j == 0 :
+                Pini = (Xf2,Yf2,Zf2)
+                vectorie = (VPVNi[0],VPVNi[1],VPVNi[2],)
+             NomNoeudsEnPlus =     ['NX%s%i' %(ALPHABET[inofo],it+1)]
+             mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
+             mm[numfis].correspondance_noeuds = tuple( list(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus )
+             inofo+=1
+             
+# 2eme Calcul des points avec le nouveau DAMAX si fissure probematique       
+        if Damaxbis < Damax : 
+          NBCYCL = Damaxbis / VMAX
+          UTMESS('A','XFEM_70',valr = [Damax,Damaxbis,NBCYCL])
+          inofo = 0
+          for j in range(Nbfond) :
+             for i in range(len(numptfo[j])) :
+                Xf =  mm[numfis].cn[numptfo[j][i]][0]
+                Yf =  mm[numfis].cn[numptfo[j][i]][1]
+                Zf =  mm[numfis].cn[numptfo[j][i]][2]
+                VPVNi = InterpolBaseFiss(abscf[j][i],Basefo[6*(Fondmult[2*j]-1):6*Fondmult[2*j+1]], Listfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]])
+                DKeqloc = InterpolationLineaire(abscf[j][i], DKeq[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
+                Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
+                if DKeqloc <= 0 :
+                  UTMESS('F','RUPTURE1_49')
+                # Tangentes aux extremites
+                if (inofo == 0) and (Vorig != None) :
+                  VPVNi[3] = Vorig[0]
+                  VPVNi[4] = Vorig[1]
+                  VPVNi[5] = Vorig[2]
+                if (j == Nbfond-1) and (i == FmAct[2*j+1]-FmAct[2*j]) and (Vextr != None) :
+                  VPVNi[3] = Vextr[0]
+                  VPVNi[4] = Vextr[1]
+                  VPVNi[5] = Vextr[2]
+                # Calcul des points propages
+                beta = InterpolationLineaire(abscf[j][i], BETA[numfis])
+                Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)
+                Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
+                Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
+                Zf2 = Zf + (VPVNi[5]*cos(beta)+VPVNi[2]*sin(beta))*Vloc
+                if i == 0 and j == 0 :
+                   Pini = (Xf2,Yf2,Zf2)
+                vectorie = (VPVNi[0],VPVNi[1],VPVNi[2],)
+                mm[numfis].cn[nbno - nbnofo + inofo][0] = Xf2
+                mm[numfis].cn[nbno - nbnofo + inofo][1] = Yf2
+                mm[numfis].cn[nbno - nbnofo + inofo][2] = Zf2
+                inofo+=1
+        
+# Ajouts Maille levre (quad4 ou tria3)
+        imafo = 0
+        nbma += 2*nbmafo
         fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
-        for ifond in range(nbnofo-1) :
-          fsi = NP.concatenate((fsi,NP.array([nbma+ifond])))
-        mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi.astype(int)
-
+        for j in range(Nbfond) : 
+          for i in range(len(numptfo[j])-1) :
+             i1 = numptfo[j][i]
+             i2 = numptfo[j][i+1]
+             i3 = nbno - nbnofo + imafo + j + 1
+             i4 = nbno - nbnofo + imafo + j 
+             mm[numfis].co.append(NP.array([i1,i2,i3,i4]))
+             typ_maille = mm[numfis].dic['QUAD4']
+             mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))    
+             mm[numfis].correspondance_mailles += tuple(['MX%s%i' %(ALPHABET[imafo], it+1)])
+             mm[numfis].gma['%s_%i' %(MFISS,it)] = NP.concatenate((fsi,NP.array([nbma - 2*nbmafo + imafo])))
+             fsi = mm[numfis].gma['%s_%i' %(MFISS,it)] 
+             imafo += 1
+               
 # Ajout Maille fond (SEG2)
-        NomMaillesEnPlus = []
-        num_maille = []
-        NoeudsMailles = []
-        for ifond in range(nbnofo-1) :
-           NomMaillesEnPlus.append( 'MF%s%i' %(ALPHABET[ifond], it+1) )
-           num_maille.append( [ nbma + ifond +nbnofo ] )
-           num_maille.append( nbma + ifond + nbnofo )
-           i3 = nbnotot - nbnofo  + ifond
-           i4 = nbnotot - nbnofo  + ifond +1
-           NoeudsMailles.append( NP.array([i3,i4]))
-
-        typ_maille = mm[numfis].dic['SEG2']
-        NbMailleAjoute = nbnofo-1
-        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*NbMailleAjoute)))
-        mm[numfis].correspondance_mailles += tuple(NomMaillesEnPlus)
-        mm[numfis].co += NoeudsMailles
-        mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.arange(nbma+nbnofo-1, nbma+2*(nbnofo-1))
-
+        imafo=0
+        for j in range(Nbfond) :
+          for i in range(len(numptfo[j])-1) : 
+            i3 = nbno - nbnofo + imafo + j 
+            i4 = nbno - nbnofo + imafo + j + 1
+            mm[numfis].co.append(NP.array([i3,i4]))
+            typ_maille = mm[numfis].dic['SEG2']
+            mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))  
+            mm[numfis].correspondance_mailles += tuple(['MF%s%i' %(ALPHABET[imafo], it+1)])
+            imafo += 1
+        mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.arange(nbma - nbmafo,nbma)
+        
 #------------------------------------------------------------------
 # CAS 2b : MODELE 2D
 #

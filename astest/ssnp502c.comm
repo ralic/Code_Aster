@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 # ssnp502c.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,16 +95,12 @@ CON  = DEFI_CONTACT(MODELE         = MO,
                     FROTTEMENT     = 'COULOMB',
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 2,
+                    ALGO_RESO_CONT = 'NEWTON',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'LESC',
                              GROUP_MA_MAIT = 'LMAI',
-                             INTEGRATION   = 'NOEUD',
                              SEUIL_INIT    = 0.1,
-                             ALGO_CONT     = 'STANDARD',
-                             COEF_CONT     = 100.,
-                             ALGO_FROT     = 'STANDARD',
-                             COEF_FROT     = 100.,
                              COULOMB       = 0.4,
                              SANS_GROUP_NO = ('A','P1'),
                              ),
@@ -147,7 +143,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 RESU=CALC_CHAMP(reuse =RESU,
 
 
-                CONTRAINTE=('SIEF_ELNO'),
+                CONTRAINTE=('SIGM_ELNO'),
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,
@@ -159,7 +155,7 @@ RESU=CALC_NO(reuse =RESU,
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIEF_NOEU',
+             OPTION='SIGM_NOEU',
                        );
 
 
@@ -173,7 +169,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 TAB_PRES=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',
                                  RESULTAT=RESU,
-                                 NOM_CHAM='SIEF_NOEU',
+                                 NOM_CHAM='SIGM_NOEU',
                                  INST=4.0,
                                  NOM_CMP=('SIYY','SIXY'),
                                  OPERATION='EXTRACTION',),);
@@ -238,7 +234,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   GROUP_NO='A',
                   INST=2.,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   VALE=-1.5321643718937E+01,
                   PRECISION=1.E-5,
@@ -248,7 +244,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   GROUP_NO='A',
                   INST=4.,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   VALE=-1.2002526606057E+01,
                   PRECISION=3.E-5,

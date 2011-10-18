@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE VISC_DRUC_PRAG
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC VISC_DRUC_PRAG 
@@ -136,14 +136,14 @@ IMPR_RESU(MODELE=MODELE,
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
 U1=CALC_NO(  reuse      = U1,
              RESULTAT   = U1,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU','VARI_NOEU'),
+             OPTION     = ('SIGM_NOEU','VARI_NOEU'),
                )
 
 #***********************************************************************
@@ -220,14 +220,14 @@ U2=STAT_NON_LINE(
 
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO','VARI_ELNO'),
+              OPTION     = ('SIGM_ELNO','VARI_ELNO'),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU','VARI_NOEU'),
+             OPTION     = ('SIGM_NOEU','VARI_NOEU'),
                )
 
 
@@ -264,7 +264,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '10.0.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = TFIN1,
                       PRECISION  = 1.E-3,
@@ -273,7 +273,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '10.0.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),

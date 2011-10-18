@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,82 +37,6 @@ MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  MODI_MAILLE=_F(OPTION='NOEUD_QUART',
                                 GROUP_NO_FOND='LFF1',),);
-
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA=('LEVINF1','LEVINFS',),),
-                             _F(OPTION='PLAN',
-                                NOM='N1',
-                                POINT=(0.0,0.0,0.0,),
-                                VECT_NORMALE=(0.0,1.0,0.0,),
-                                PRECISION=0.0001,),
-                             _F(INTERSEC=('LEVINF1','N1',),
-                                NOM='L1INF1',),
-                             _F(INTERSEC=('LEVINFS','N1',),
-                                NOM='L1SUP1',),
-                             _F(OPTION='PLAN',
-                                NOM='N2',
-                                POINT=(0.0,0.0,0.0,),
-                                VECT_NORMALE=(1.0,0.0,0.0,),
-                                PRECISION=0.0001,),
-                             _F(INTERSEC=('LEVINF1','N2',),
-                                NOM='L2INF1',),
-                             _F(INTERSEC=('LEVINFS','N2',),
-                                NOM='L2SUP1',),
-                             _F(OPTION='PLAN',
-                                NOM='N3',
-                                POINT=(0.0,0.0,0.0,),
-                                VECT_NORMALE=(-1.0,1.0,0.0,),
-                                PRECISION=0.0001,),
-                             _F(INTERSEC=('LEVINF1','N3',),
-                                NOM='L3INF1',),
-                             _F(INTERSEC=('LEVINFS','N3',),
-                                NOM='L3SUP1',),),);
-
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(OPTION='SEGM_DROI_ORDO',
-                                NOM='L1INF',
-                                GROUP_NO='L1INF1',
-                                NOEUD_ORIG='N49',
-                                NOEUD_EXTR='N3751',
-                                PRECISION=1.E-3,
-                                CRITERE='ABSOLU',),
-                             _F(OPTION='SEGM_DROI_ORDO',
-                                NOM='L1SUP',
-                                GROUP_NO='L1SUP1',
-                                NOEUD_ORIG='N49',
-                                NOEUD_EXTR='N3791',
-                                PRECISION=1.E-3,
-                                CRITERE='ABSOLU',),
-                             _F(OPTION='SEGM_DROI_ORDO',
-                                NOM='L2INF',
-                                GROUP_NO='L2INF1',
-                                NOEUD_ORIG='N1710',
-                                NOEUD_EXTR='N3751',
-                                PRECISION=1.E-3,
-                                CRITERE='ABSOLU',),
-                             _F(OPTION='SEGM_DROI_ORDO',
-                                NOM='L2SUP',
-                                GROUP_NO='L2SUP1',
-                                NOEUD_ORIG='N1710',
-                                NOEUD_EXTR='N3791',
-                                PRECISION=1.E-3,
-                                CRITERE='ABSOLU',),
-                             _F(OPTION='SEGM_DROI_ORDO',
-                                NOM='L3INF',
-                                GROUP_NO='L3INF1',
-                                NOEUD_ORIG='N77',
-                                NOEUD_EXTR='N3751',
-                                PRECISION=1.E-3,
-                                CRITERE='ABSOLU',),
-                             _F(OPTION='SEGM_DROI_ORDO',
-                                NOM='L3SUP',
-                                GROUP_NO='L3SUP1',
-                                NOEUD_ORIG='N77',
-                                NOEUD_EXTR='N3791',
-                                PRECISION=1.E-3,
-                                CRITERE='ABSOLU',),),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
@@ -262,108 +186,64 @@ TEST_TABLE(TABLE=GGLOB1,
            VALE=36.4,
            PRECISION=0.012,);
 
-DEP1B1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-      # NOEUD : (N49 N245 N609 N2559 N3034 N3384 N617 N876 N618  )
-                               INTITULE='TAB1',
-                               RESULTAT=RESU1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L1INF',
-                               NOM_CMP=('DX','DY','DZ',),),);
 
-DEP1H1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-      # NOEUD : (N49 N449 N728 N2867 N3112 N3675 N736 N1064 N737 )
-                               INTITULE='TAB2',
-                               RESULTAT=RESU1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L1SUP',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-TABK1A1=POST_K1_K2_K3(MODELISATION='3D',
+TABK1A=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
-                      TABL_DEPL_SUP=DEP1H1,
-                      TABL_DEPL_INF=DEP1B1,
+                      RESULTAT=RESU1,
+                      FOND_FISS=FISS,
                       ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
 
-DEP1B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB3',
-                               RESULTAT=RESU1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L2INF',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-DEP1H2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB4',
-                               RESULTAT=RESU1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L2SUP',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-TABK1A2=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      TABL_DEPL_SUP=DEP1H2,
-                      TABL_DEPL_INF=DEP1B2,
-                      ABSC_CURV_MAXI=0.35,
-                      VECT_K1=(0.,0.,1.,),);
-
-DEP1B3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB5',
-                               RESULTAT=RESU1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L3INF',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-DEP1H3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB6',
-                               RESULTAT=RESU1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L3SUP',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-TABK1A3=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      TABL_DEPL_SUP=DEP1H3,
-                      TABL_DEPL_INF=DEP1B3,
-                      ABSC_CURV_MAXI=0.35,
-                      VECT_K1=(0.,0.,1.,),);
 
 # ---------------
-TEST_TABLE(TABLE=TABK1A1,
+TEST_TABLE(TABLE=TABK1A,
            NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N49'),
            VALE=K1ref,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(TABLE=TABK1A1,
+TEST_TABLE(TABLE=TABK1A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N49'),
            VALE=Gref1,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK1A2,
+TEST_TABLE(TABLE=TABK1A,
            NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N1710'),
            VALE=K1ref,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(TABLE=TABK1A2,
+TEST_TABLE(TABLE=TABK1A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N1710'),
            VALE=Gref1,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK1A3,
+TEST_TABLE(TABLE=TABK1A,
            NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N77'),
            VALE=K1ref,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(TABLE=TABK1A3,
+TEST_TABLE(TABLE=TABK1A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N77'),
            VALE=Gref1,
            PRECISION=0.05,
            REFERENCE='ANALYTIQUE')
@@ -468,79 +348,27 @@ TEST_TABLE(TABLE=GGLOB3,
 
 # POST_K1_K2_K3
 
-DEP3B1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB1',
-                               RESULTAT=RESU3,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L1INF',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-DEP3H1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB2',
-                               RESULTAT=RESU3,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L1SUP',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-TABK3A1=POST_K1_K2_K3(MODELISATION='3D',
+TABK3A=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
-                      TABL_DEPL_SUP=DEP3H1,
-                      TABL_DEPL_INF=DEP3B1,
-                      ABSC_CURV_MAXI=0.35,
-                      VECT_K1=(0.,0.,1.,),);
-
-DEP3B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB3',
-                               RESULTAT=RESU3,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L2INF',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-DEP3H2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB4',
-                               RESULTAT=RESU3,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L2SUP',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-TABK3A2=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      TABL_DEPL_SUP=DEP3H2,
-                      TABL_DEPL_INF=DEP3B2,
-                      ABSC_CURV_MAXI=0.35,
-                      VECT_K1=(0.,0.,1.,),);
-
-DEP3B3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB5',
-                               RESULTAT=RESU3,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L3INF',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-DEP3H3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB6',
-                               RESULTAT=RESU3,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='L3SUP',
-                               NOM_CMP=('DX','DY','DZ',),),);
-
-TABK3A3=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      TABL_DEPL_SUP=DEP3H3,
-                      TABL_DEPL_INF=DEP3B3,
+                      RESULTAT=RESU3,
+                      FOND_FISS=FISS,
                       ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK3A1,
+TEST_TABLE(TABLE=TABK3A,
            NOM_PARA='K3',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N49'),
            VALE=K3ref,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(TABLE=TABK3A1,
+TEST_TABLE(TABLE=TABK3A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N49'),
            VALE=Gref3,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
@@ -548,14 +376,18 @@ TEST_TABLE(TABLE=TABK3A1,
 # ---------------
 
 
-TEST_TABLE(TABLE=TABK3A2,
+TEST_TABLE(TABLE=TABK3A,
            NOM_PARA='K3',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N1710'),
            VALE=K3ref,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(TABLE=TABK3A2,
+TEST_TABLE(TABLE=TABK3A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N1710'),
            VALE=Gref3,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
@@ -563,14 +395,18 @@ TEST_TABLE(TABLE=TABK3A2,
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK3A3,
+TEST_TABLE(TABLE=TABK3A,
            NOM_PARA='K3',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N77'),
            VALE=K3ref,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(TABLE=TABK3A3,
+TEST_TABLE(TABLE=TABK3A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N77'),
            VALE=Gref3,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
@@ -650,85 +486,40 @@ TEST_TABLE(TABLE=GGLOB13,
 
 # POST_K1_K2_K3
 
-DEP13B1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='TAB1',
-                                CHAM_GD=DEP13,
-                                GROUP_NO='L1INF',
-                                NOM_CMP=('DX','DY','DZ',),),);
-
-DEP13H1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='TAB2',
-                                CHAM_GD=DEP13,
-                                GROUP_NO='L1SUP',
-                                NOM_CMP=('DX','DY','DZ',),),);
-
-TABK13A1=POST_K1_K2_K3(MODELISATION='3D',
+TABK13A=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
-                       TABL_DEPL_SUP=DEP13H1,
-                       TABL_DEPL_INF=DEP13B1,
+                       RESULTAT=RESU13,
+                       FOND_FISS=FISS,
                        ABSC_CURV_MAXI=0.35,
                        VECT_K1=(0.,0.,1.,),);
-
-DEP13B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='TAB3',
-                                CHAM_GD=DEP13,
-                                GROUP_NO='L2INF',
-                                NOM_CMP=('DX','DY','DZ',),),);
-
-DEP13H2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='TAB4',
-                                CHAM_GD=DEP13,
-                                GROUP_NO='L2SUP',
-                                NOM_CMP=('DX','DY','DZ',),),);
-
-TABK13A2=POST_K1_K2_K3(MODELISATION='3D',
-                       MATER=MAT,
-                       TABL_DEPL_SUP=DEP13H2,
-                       TABL_DEPL_INF=DEP13B2,
-                       ABSC_CURV_MAXI=0.35,
-                       VECT_K1=(0.,0.,1.,),);
-
-DEP13B3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='TAB5',
-                                CHAM_GD=DEP13,
-                                GROUP_NO='L3INF',
-                                NOM_CMP=('DX','DY','DZ',),),);
-
-DEP13H3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='TAB6',
-                                CHAM_GD=DEP13,
-                                GROUP_NO='L3SUP',
-                                NOM_CMP=('DX','DY','DZ',),),);
-
-TABK13A3=POST_K1_K2_K3(MODELISATION='3D',
-                       MATER=MAT,
-                       TABL_DEPL_SUP=DEP13H3,
-                       TABL_DEPL_INF=DEP13B3,
-                       ABSC_CURV_MAXI=0.35,
-                       VECT_K1=(0.,0.,1.,),);
-
-# ---------------
-
-TEST_TABLE(TABLE=TABK13A1,
-           NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.01,
-           REFERENCE='ANALYTIQUE',);
 
 # TEST DE K1
-
 # ---------------
 
-TEST_TABLE(TABLE=TABK13A2,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N49'),
            VALE=K1ref,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE',);
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK13A3,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N1710'),
+           VALE=K1ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',);
+
+# ---------------
+
+TEST_TABLE(TABLE=TABK13A,
+           NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N77'),
            VALE=K1ref,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
@@ -737,14 +528,18 @@ TEST_TABLE(TABLE=TABK13A3,
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK13A1,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='K3',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N49'),
            VALE=K3ref,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=TABK13A1,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N49'),
            VALE=Gref13,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
@@ -752,28 +547,36 @@ TEST_TABLE(TABLE=TABK13A1,
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK13A2,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='K3',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N1710'),
            VALE=K3ref,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=TABK13A2,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N1710'),
            VALE=Gref13,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
 
 # ---------------
 
-TEST_TABLE(TABLE=TABK13A3,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='K3',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N77'),
            VALE=K3ref,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=TABK13A3,
+TEST_TABLE(TABLE=TABK13A,
            NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                      VALE_K = 'N77'),
            VALE=Gref13,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);

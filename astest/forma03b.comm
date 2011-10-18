@@ -1,5 +1,5 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE ENONCE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTION
 # forma03b.para = tps_job 110 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,7 +142,7 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
 
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
-                 OPTION=('SIEF_ELNO','VARI_ELNO','SIEQ_ELGA','DERA_ELGA'),);
+                 OPTION=('SIGM_ELNO','VARI_ELNO','SIEQ_ELGA','DERA_ELGA'),);
 
 # DEPOUILLEMENTS DES RESULTATS
 # VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
@@ -160,7 +160,7 @@ IMPR_RESU(FORMAT='MED',
 
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
-               OPTION='SIEF_NOEU',);
+               OPTION='SIGM_NOEU',);
 
 #
 # COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
@@ -173,7 +173,7 @@ DYG=RECU_FONCTION(RESULTAT=RESUNL,
                   GROUP_NO='G',);
 
 SYG=RECU_FONCTION(RESULTAT=RESUNL,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',);
 
@@ -188,7 +188,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_Y='Contraine SIGMAYY',);
 
 SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
-                       NOM_CHAM='SIEF_ELNO',
+                       NOM_CHAM='SIGM_ELNO',
                        LIGN_COUPE=_F(NB_POINTS=30,
                                      COOR_ORIG=(10,0,),
                                      COOR_EXTR=(100,0,),),);
@@ -200,7 +200,7 @@ IMPR_TABLE(TABLE=SIGBAS,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
                    INST=TELAS,
-                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='B',
                    VALE=(3.0 * TELAS),
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESUNL,
                    INST=TELAS,
-                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='A',
                    VALE=(-1.0 * TELAS),
@@ -216,7 +216,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESUNL,
                    INST=TFIN,
-                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='G',
                    VALE=TFIN,
@@ -285,7 +285,7 @@ RESUNL2=STAT_NON_LINE(MODELE=MO,
 
 RESUNL2=CALC_ELEM(reuse =RESUNL2,
                   RESULTAT=RESUNL2,
-                  OPTION=('SIEF_ELNO','VARI_ELNO','SIEQ_ELGA',),);
+                  OPTION=('SIGM_ELNO','VARI_ELNO','SIEQ_ELGA',),);
 
 # DEPOUILLEMENTS DES RESULTATS
 # VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
@@ -303,7 +303,7 @@ IMPR_RESU(FORMAT='MED',
 
 RESUNL2=CALC_NO(reuse =RESUNL2,
                 RESULTAT=RESUNL2,
-                OPTION='SIEF_NOEU',);
+                OPTION='SIGM_NOEU',);
 
 #
 # COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
@@ -316,7 +316,7 @@ DYG2=RECU_FONCTION(RESULTAT=RESUNL2,
                    GROUP_NO='G',);
 
 SYG2=RECU_FONCTION(RESULTAT=RESUNL2,
-                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='G',);
 
@@ -335,7 +335,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_Y='Contraine SIGMAYY',);
 
 SIGBAS2=MACR_LIGN_COUPE(RESULTAT=RESUNL2,
-                        NOM_CHAM='SIEF_ELNO',
+                        NOM_CHAM='SIGM_ELNO',
                         LIGN_COUPE=_F(NB_POINTS=30,
                                       COOR_ORIG=(10,0,),
                                       COOR_EXTR=(100,0,),),);
@@ -347,7 +347,7 @@ IMPR_TABLE(TABLE=SIGBAS2,
 
 TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
                   INST=TFIN2,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',
                   VALE=0.0,

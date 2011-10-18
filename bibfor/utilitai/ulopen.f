@@ -4,9 +4,9 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,7 +137,7 @@ C
             IF ( DDNAME(I) .EQ. NAME16 )  DDNAME(I) = ' '
  11       CONTINUE
         ENDIF
-        IF (K1ACCE.NE.'N') THEN 
+        IF (K1ACCE.NE.'N') THEN
           INQUIRE ( FILE=NAMELL, EXIST=V11, IOSTAT=IER1)
           IF (.NOT.V11) THEN
             VALK(1)=NAMELL(1:80)
@@ -147,9 +147,8 @@ C
         ENDIF
         INQUIRE ( UNIT=UNIT, OPENED=V11, IOSTAT=IER1)
         IF ( IER1 .EQ. 0 ) THEN
-          IF ( .NOT. V11 ) THEN
+          IF ( .NOT. V11 .AND. UNIT.NE.6 ) THEN
             OPEN ( UNIT=UNIT, FILE=NAMELL, IOSTAT=IER2 )
-
             IF ( IER2 .NE. 0 ) THEN
                VALK(1) = K4B
                VALK(2) = NAMELL(1:80)

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL ELASTIQUE D'UN DIABOLO PLEIN SOUMIS A UN CHARGEMENT THERMIQUE
 # perf008b.para = tps_job 5000 mem_job 6500Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,7 +118,7 @@ if 0 :   # pour faire une belle image :
 
   RESU=CALC_ELEM(reuse =RESU,
                  RESULTAT=RESU,
-                 OPTION=('SIEF_ELGA','SIEF_ELNO','SIEQ_ELNO',),);
+                 OPTION=('SIEF_ELGA','SIGM_ELNO','SIEQ_ELNO',),);
 
   RESU=CALC_NO(reuse =RESU,
                RESULTAT=RESU,

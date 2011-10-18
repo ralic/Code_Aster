@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 # ssnv183a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,7 +187,7 @@ SOLNL2=CALC_ELEM(reuse =SOLNL2,
 
 
                  RESULTAT=SOLNL2,
-                 OPTION=('SIEF_ELNO','VARI_ELNO',),);
+                 OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=SOLNL2,
                    NUME_ORDRE=82,
@@ -293,7 +293,7 @@ SOLNL=CALC_ELEM(reuse =SOLNL,
 
 
                 RESULTAT=SOLNL,
-                OPTION=('SIEF_ELNO','VARI_ELNO',),);
+                OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NUME_ORDRE=82,
@@ -507,13 +507,13 @@ SNL_CHAM=CALC_ELEM(reuse =SNL_CHAM,
 
 
                  RESULTAT=SNL_CHAM,
-                 OPTION=('SIEF_ELNO','VARI_ELNO',),);
+                 OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 SNL_CART=CALC_ELEM(reuse =SNL_CART,
 
 
                  RESULTAT=SNL_CART,
-                 OPTION=('SIEF_ELNO','VARI_ELNO',),);
+                 OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 TEST_RESU(RESU=_F(RESULTAT=MS_PRES,
                    NOM_CHAM='DEPL',

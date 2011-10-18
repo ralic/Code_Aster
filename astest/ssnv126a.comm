@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 # ssnv126a.para = tps_job 80 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -294,11 +294,11 @@ SOLNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),MODELE=EPD3,
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
                 RESULTAT=SOLNL,
-                OPTION=('SIEF_ELNO','VARI_ELNO',),);
+                OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NUME_ORDRE=20,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -330,7 +330,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.005,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=30,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -362,7 +362,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.005,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=40,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -394,7 +394,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.005,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=50,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -426,7 +426,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.01,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=60,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 # ssnv127h.para = tps_job 110 mem_job 1500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,6 +121,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     NB_ITER_GEOM   = 3,
                     ITER_CONT_MAXI = 25, 
                     ITER_FROT_MAXI = 6,
+                    ALGO_RESO_FROT = 'POINT_FIXE',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'BCC2',
@@ -170,14 +171,14 @@ U=STAT_NON_LINE(MODELE=MO,
                 );
 
 U=CALC_ELEM(reuse =U,
-            OPTION=('SIEF_ELNO'),
+            OPTION=('SIGM_ELNO'),
             RESULTAT=U,);
 
 TPRESS=POST_RELEVE_T(ACTION=_F(INTITULE='PRESS',
                               GROUP_NO='RELEVE',
                               RESULTAT=U,
                               INST=1.,
-                              NOM_CHAM='SIEF_ELNO',
+                              NOM_CHAM='SIGM_ELNO',
                               NOM_CMP='SIXX',
                               REPERE='POLAIRE',
                               OPERATION='EXTRACTION',),);
@@ -267,7 +268,7 @@ TEST_TABLE(TABLE=TPRESS,
                       VALE_K='N383',),),
            NOM_PARA='SIXX',
            VALE=-178.13E5,
-           PRECISION=0.05674,
+           PRECISION=0.059,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TPRESS,
@@ -277,7 +278,7 @@ TEST_TABLE(TABLE=TPRESS,
                       VALE_K='N379',),),
            NOM_PARA='SIXX',
            VALE=-178.13E5,
-           PRECISION=0.05197,
+           PRECISION=0.053,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TPRESS,
@@ -437,7 +438,7 @@ TEST_TABLE(TABLE=TPRESS,
                       VALE_K='N189',),),
            NOM_PARA='SIXX',
            VALE=-105.93E5,
-           PRECISION=0.09,
+           PRECISION=0.091,
            REFERENCE='ANALYTIQUE',);
            
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102f.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,7 +145,7 @@ CONT = DEFI_CONTACT(MODELE         = MOD,
                     FROTTEMENT     = 'COULOMB',
                     ITER_GEOM_MAXI = 5,
                     RESI_GEOM      = 0.01,
-                    ITER_FROT_MAXI = 3,
+                    ALGO_RESO_CONT = 'NEWTON',
                     ZONE = (
                              _F(
                                  GROUP_MA_MAIT = 'LAB1S',
@@ -216,11 +216,11 @@ RESU=STAT_NON_LINE(
 
 RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
 
-                        CONTRAINTE=('SIEF_ELNO'),
+                        CONTRAINTE=('SIGM_ELNO'),
                   )
 
 RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
-                     OPTION='SIEF_NOEU'
+                     OPTION='SIGM_NOEU'
                   )
 
 #
@@ -234,12 +234,8 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
                      OPTION='REAC_NODA'
                   )
 
-#
 # --------------------------------------------------------------------
-#             IMPRESSIONS AU FORMAT CASTEM ET ENSIGHT
-#       IMPRESSION AU FORMAT LISTING DU DEPLACEMENT DU POINT PA4
-# --------------------------------------------------------------------
-#                COMPARAISON SOURCE EXTRENE
+#                COMPARAISON SOURCE EXTERNE
 # --------------------------------------------------------------------
 
 TEST_RESU(

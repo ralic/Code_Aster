@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C TOLE CRP_20
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
-C     OPTIONS : SIEF_ELNO , VARI_ELNO
+C     OPTIONS : EFGE_ELNO , VARI_ELNO
 C          -----------------------------------------------------------
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -68,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
         NSO = 3
       END IF
-      IF (OPTION(1:9).EQ.'SIEF_ELNO' .OR.
+      IF (OPTION.EQ.'EFGE_ELNO' .OR.
      &    OPTION.EQ.'SICO_ELNO') THEN
 
         CALL JEVECH('PGEOMER','L',JGEOM)
@@ -213,7 +213,7 @@ C
             CALL VDSIRO(NB2,1,MATEVN,'IU','N',SIGGN,ZR(JCONN))
           ENDIF
 
-        ELSE IF (OPTION(1:9).EQ.'SIEF_ELNO') THEN
+        ELSE IF (OPTION.EQ.'EFGE_ELNO') THEN
           DO 170 I = 1,NB2
             DO 160 J = 1,8
               EFFGT(J,I) = 0.D0
@@ -234,7 +234,7 @@ C
 C --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES DEFINI AUX NOEUDS
 C --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
 C     --------------------------------------------------------
-          CALL JEVECH('PSIEFNOR','L',JEFFG)
+          CALL JEVECH('PEFFORR','L',JEFFG)
           CALL VDEFRO(NB2,MATEVN,EFFGT,ZR(JEFFG))
         END IF
 

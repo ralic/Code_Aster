@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -240,7 +240,7 @@ DEPLD3=STAT_NON_LINE(MODELE=MO,
 
 DEPLD2 = CALC_ELEM (reuse=DEPLD2,
               RESULTAT= DEPLD2,
-              OPTION= ( 'SIEF_ELNO',
+              OPTION= ( 'SIGM_ELNO',
                         ),
             ) ;
 
@@ -527,7 +527,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M10',
                    NOEUD='N77',
@@ -537,7 +537,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M6',
                    NOEUD='N96',
@@ -555,7 +555,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
 # pour tester MACR_LIGN_COUPE sur des CHAM_ELEM :
 #-------------------------------------------------
 TB1=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
-                     NOM_CHAM= 'SIEF_ELNO',
+                     NOM_CHAM= 'SIGM_ELNO',
                      LIGN_COUPE = _F( NB_POINTS= 4,
                                       TYPE='SEGMENT',
                                       COOR_ORIG= (0., 0.0, 1.5),
@@ -807,7 +807,7 @@ TEST_TABLE(    TABLE=TAB3,
 # --------------------------------------------------------------
 
 TB4=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
-                     NOM_CHAM= 'SIEF_ELNO',
+                     NOM_CHAM= 'SIGM_ELNO',
                      LIGN_COUPE = _F( NB_POINTS= 4,
                                       TYPE='SEGMENT',
                                       COOR_ORIG= (0., 0., 1.5),
@@ -819,7 +819,7 @@ IMPR_TABLE ( TABLE = TB4,
              )
 
 TB6=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
-                     NOM_CHAM= 'SIEF_ELNO',
+                     NOM_CHAM= 'SIGM_ELNO',
                      LIGN_COUPE = _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
                                       TYPE='SEGMENT',REPERE='LOCAL',
                                       COOR_ORIG= (0., 0., 1.5),

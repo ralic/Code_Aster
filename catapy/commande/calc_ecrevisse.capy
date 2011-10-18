@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,8 +58,8 @@ CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",
            MECANIQUE           =SIMP(statut='o',typ=resultat_sdaster),
            THERMIQUE           =SIMP(statut='o',typ=resultat_sdaster),
            regles=(EXCLUS('NUME_ORDRE','INST'),),
-           NUME_ORDRE          =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-           INST                =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+           NUME_ORDRE          =SIMP(statut='f',typ='I',validators=NoRepeat(),),
+           INST                =SIMP(statut='f',typ='R',validators=NoRepeat(),),
          ),
 
 #      DONNEES GEOMETRIQUES RELATIVES A LA FISSURE

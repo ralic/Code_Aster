@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post0 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,11 +107,6 @@ La SD RESULTAT ne contient aucun champ pour le numéro d'ordre %(i1)d.
 On ne peut pas calculer les efforts.
 """),
 
-20: _(u"""
-La SD RESULTAT ne contient aucun champ à l instant %(r1)f.
-On ne peut pas calculer les efforts.
-"""),
-
 21: _(u"""
 Le point à l occurence %(i1)d a une côte h= %(r1)f, donc non nulle.
 Les efforts étant intégrés sur la section, on n en tient pas compte.
@@ -122,11 +117,6 @@ Le point à l occurence %(i1)d n a que 3 coordonnées. Pour le calcul
 des déformations on doit rentrer une position dans l'épaisseur.
 """),
 
-23: _(u"""
-La position dans l'épaisseur du point à l occurence %(i1)d est %(r1)f.
-Elle doit être comprise entre -1. et 1. (on divise par la demi-épaisseur)
-"""),
-
 
 24: _(u"""
 Attention la ligne de coupe %(i1)d traverse des zones sans matière :
@@ -134,6 +124,14 @@ Attention la ligne de coupe %(i1)d traverse des zones sans matière :
             %(k1)s
  - Le nombre de points éliminés (car hors de la matière) est:
             %(i2)d
+"""),
+
+25: _(u"""
+La SD RESULTAT ne contient aucun champ au numéro d ordre %(i1)d.
+"""),
+
+26: _(u"""
+La SD RESULTAT ne contient aucun champ à l instant %(r1)f.
 """),
 
 33: _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE LA COMMANDE  CREA_CHAMP/ASSE ET CREA_CHAMP/EXTR/TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ SOLPL=STAT_NON_LINE(     MODELE=MO,
 
 CALC_ELEM( reuse=SOLPL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLPL,
               )
 
@@ -399,7 +399,7 @@ T2=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=2,SEPARATEUR=' ');
 
 CH2=CREA_CHAMP(OPERATION='EXTR', PROL_ZERO='OUI', INFO=2,
               TYPE_CHAM='ELNO_SIEF_R',TABLE=T2,
-              MODELE=MO,OPTION='SIEF_ELNO')
+              MODELE=MO,OPTION='SIGM_ELNO')
 
 TEST_RESU( CHAM_ELEM=_F( CHAM_GD = CH2,  MAILLE = 'M1',  POINT=2, NOM_CMP = 'SIXX',
    PRECISION = 1.E-6, VALE = 777., REFERENCE = 'ANALYTIQUE'),)

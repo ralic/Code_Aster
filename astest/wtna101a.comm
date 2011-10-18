@@ -1,7 +1,28 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE ROMEO R.FERNANDES
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
+# wtna101a.para = tps_job 340 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#                DRUCKER-PRAGER A ECROUISSAGE NEGATIF
+#                LINEAIRE POUR UN CONFINEMENT DE 2 MPA  (3D_HM)
+# ======================================================================
 DEBUT(   CODE=_F( NOM = 'WTNA101A',NIV_PUB_WEB='INTERNET'),) 
                                
 VISCOLIQ = DEFI_CONSTANTE( VALE=1.E-3)
@@ -125,7 +146,7 @@ U1       = STAT_NON_LINE( SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50.),
                         )
 
 U1       = CALC_ELEM( reuse      = U1,
-                      OPTION     = ( 'SIEF_ELNO', 'VARI_ELNO',),
+                      OPTION     = ( 'SIGM_ELNO', 'VARI_ELNO',),
                       RESULTAT   = U1,
                     )
 
@@ -170,13 +191,13 @@ U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50.),
                         )
 
 U2       = CALC_ELEM( reuse      = U2,
-                      OPTION     = ('SIEF_ELNO','VARI_ELNO'),
+                      OPTION     = ('SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U2,
                     );
 
 U2       = CALC_NO( reuse    = U2,
                     RESULTAT = U2,
-                    OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU')
+                    OPTION   = ( 'SIGM_NOEU', 'VARI_NOEU')
                   )
 
 #
@@ -190,7 +211,7 @@ TEST_RESU(RESU=(
 ###########################
                 _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 1.004000,
                        PRECISION  = 1.E-4,
@@ -200,7 +221,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 1.160000,
                        PRECISION  = 1.E-4,
@@ -210,7 +231,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 1.340000,
                        PRECISION  = 1.E-4,
@@ -220,7 +241,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 1.600000,
                        PRECISION  = 1.E-4,
@@ -233,7 +254,7 @@ TEST_RESU(RESU=(
 ###########################
                 _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 1.0040000,
                        PRECISION  = 1.E-4,
@@ -243,7 +264,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 1.160000,
                        PRECISION  = 1.E-4,
@@ -253,7 +274,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 1.340000,
                        PRECISION  = 1.E-4,
@@ -263,7 +284,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 1.600000,
                        PRECISION  = 1.E-4,
@@ -321,7 +342,7 @@ TEST_RESU(RESU=(
 #SIGMA  = POST_RELEVE_T( ACTION = _F( INTITULE  = 'SIGMA',
 #           RESULTAT  =  U2,
 #           NOEUD  = 'NO8',
-#           NOM_CHAM  = 'SIEF_NOEU',
+#           NOM_CHAM  = 'SIGM_NOEU',
 #           TOUT_CMP  = 'OUI',
 #           OPERATION = 'EXTRACTION',),);
 #

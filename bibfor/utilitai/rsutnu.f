@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/09/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 18/10/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -441,7 +441,7 @@ C     ------------------------------------------------------------
          VERIFI=.FALSE.
          CALL JEVEUO(KNUM,'L',JORDR2)
          DO 779,I=1,NBORDR-1
-           IF ( ZI(JORDR2-1+I).GT.ZI(JORDR2-I) ) THEN
+           IF ( ZI(JORDR2-1+I).GT.ZI(JORDR2+I) ) THEN
              VERIFI=.TRUE.
            ENDIF
 779      CONTINUE

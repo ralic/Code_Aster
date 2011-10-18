@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,42 +171,12 @@ GLMO1=CALC_G(OPTION='K_G_MODA',
             );
 
 #IMPR_TABLE(TABLE = GLMO1);
-D_SUP = [None]*n_mode
-D_INF = [None]*n_mode
-T1_K = [None]*n_mode
-Kmodu = [None]*n_mode
 
-for i in range(0,n_mode) :
-   
-   imode = i + 1
-   
-   D_SUP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='lev sup',
-                                    GROUP_NO='LEVSUP',
-                                    RESULTAT=MODE,
-                                    NUME_MODE=imode,
-                                    NOM_CHAM='DEPL',
-                                    NOM_CMP=('DX','DY','DZ',),
-                                    OPERATION='EXTRACTION',),);
-   
-   
-   D_INF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='lev inf',
-                                    GROUP_NO='LEVINF',
-                                    RESULTAT=MODE,
-                                    NUME_MODE=imode,
-                                    NOM_CHAM='DEPL',
-                                    NOM_CMP=('DX','DY','DZ',),
-                                    OPERATION='EXTRACTION',
-                                   ),
-                         );
-   
-   
-   T1_K[i] = POST_K1_K2_K3(MODELISATION='3D',
+
+T1_K = POST_K1_K2_K3(MODELISATION='3D',
                            MATER=MA,
-                           MAILLAGE=M,
                            FOND_FISS=FF1,
-                           #INFO = 2,
-                           TABL_DEPL_SUP=D_SUP[i],
-                           TABL_DEPL_INF=D_INF[i],
+                           RESULTAT=MODE,
                            VECT_K1 = (0., 1., 0.),
                            ABSC_CURV_MAXI=2.E-4,
                            TOUT_ORDRE='OUI',
@@ -231,10 +201,12 @@ for i in range(0,5) :
               REFERENCE = 'NON_REGRESSION',
              );
              
-   TEST_TABLE(TABLE=T1_K[i],
+   TEST_TABLE(TABLE=T1_K,
               NOM_PARA='K1',
               FILTRE=(_F(NOM_PARA = 'ABSC_CURV',
-                         VALE = 2.00000E-03),),
+                         VALE = 2.00000E-03),
+                      _F(NOM_PARA = 'NUME_ORDRE',
+                         VALE_I = imode),  ),
               VALE=Ku_ref[i],
               PRECISION=1.E-5,
               REFERENCE = 'NON_REGRESSION',
@@ -272,7 +244,7 @@ RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          IMPRESSION = _F(TOUT='OUI',),);
 
 
-                        
+
 
 
 

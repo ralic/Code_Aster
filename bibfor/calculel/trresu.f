@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,7 +208,7 @@ C                    123456789012345678901234567890123
           END IF
 
           CALL GETVTX('RESU','NOM_CHAM',IOCC,IARG,1,NOPARA,N1)
-
+          
           IF (N1.NE.0) THEN
 
             CALL RSEXCH(LERESU,NOPARA,NUMORD,CHAM19,IRET)
@@ -401,26 +401,22 @@ C              RIEN A FAIRE.
                 LIGN1(NL1+17:NL1+17)='.'
                 LIGN2(NL2+17:NL2+17)='.'
 
-                IF(TYPCH(1:4).EQ.'ELGA') THEN
+                NL1 = LXLGUT(LIGN1)
+                NL2 = LXLGUT(LIGN2)
+                LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' POINT'
+                CALL CODENT(NUPO,'G',CHPT)
+                LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CHPT
+                LIGN1(NL1+17:NL1+17)='.'
+                LIGN2(NL2+17:NL2+17)='.'
 
-                   NL1 = LXLGUT(LIGN1)
-                   NL2 = LXLGUT(LIGN2)
-                   LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' POINT'
-                   CALL CODENT(NUPO,'G',CHPT)
-                   LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CHPT
-                   LIGN1(NL1+17:NL1+17)='.'
-                   LIGN2(NL2+17:NL2+17)='.'
-
-                   IF(NUSP.NE.0)THEN
-                     NL1 = LXLGUT(LIGN1)
-                     NL2 = LXLGUT(LIGN2)
-                     LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' SOUS_POINT'
-                     CALL CODENT(NUSP,'G',CHPT)
-                     LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CHPT
-                     LIGN1(NL1+17:NL1+17)='.'
-                     LIGN2(NL2+17:NL2+17)='.'
-                   ENDIF
-
+                IF(NUSP.NE.0)THEN
+                  NL1 = LXLGUT(LIGN1)
+                  NL2 = LXLGUT(LIGN2)
+                  LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' SOUS_POINT'
+                  CALL CODENT(NUSP,'G',CHPT)
+                  LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CHPT
+                  LIGN1(NL1+17:NL1+17)='.'
+                  LIGN2(NL2+17:NL2+17)='.'
                 ENDIF
 
                 IF(NOPASE.NE.' ')THEN

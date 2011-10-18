@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 # ssnl107b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,24 +93,24 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
 CONT = DEFI_CONTACT   (MODELE      = MO,
                        FORMULATION = 'DISCRETE',
                        ZONE = (
-                                _F( 
+                                _F(
                                    APPARIEMENT   = 'NODAL',
                                    GROUP_MA_MAIT = 'COQU1',
                                    GROUP_MA_ESCL = 'POUT1',
                                    NORMALE       = 'ESCL',
                                    VECT_ESCL     = 'FIXE',
                                    ESCL_FIXE     = (0.0,0.0,-1.0,),
-                                   DIST_ESCL     = F_DIST_E,   
+                                   DIST_ESCL     = F_DIST_E,
                                   ),
-                                _F( 
+                                _F(
                                    APPARIEMENT   = 'NODAL',
                                    GROUP_MA_MAIT = 'COQU2',
                                    GROUP_MA_ESCL = 'POUT2',
                                    NORMALE       = 'ESCL',
                                    VECT_ESCL     = 'FIXE',
-                                   ESCL_FIXE     = (0.0,0.0,-1.0,), 
-                                  ),                               
-                              ), 
+                                   ESCL_FIXE     = (0.0,0.0,-1.0,),
+                                  ),
+                              ),
                       );
 
 
@@ -130,7 +130,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    CARA_ELEM=CARA,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=FONCM,),
-                   CONTACT  = CONT,         
+                   CONTACT  = CONT,
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 NUME_INST_FIN=2,),
@@ -138,7 +138,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,),);
 
 RESU=CALC_ELEM(reuse =RESU,
-               OPTION=('SIEF_ELNO','VARI_ELNO',),
+               OPTION=('EFGE_ELNO','VARI_ELNO',),
                RESULTAT=RESU,);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
@@ -159,7 +159,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.001,),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=2,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='M21',
                    NOEUD='N3',
@@ -168,7 +168,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.01,),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=2,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='M22',
                    NOEUD='N1',

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,6 +70,12 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     FOND_FISS=_F( GROUP_NO = ('P0',)),
                    )
 
+FISS2=DEFI_FOND_FISS(MAILLAGE=MA,
+                    FOND_FISS=_F( GROUP_NO = ('P0',)),
+                    LEVRE_SUP=_F(  GROUP_MA = 'LP0P8'),
+                    LEVRE_INF=_F(  GROUP_MA = 'LP0P8S'),
+                   )
+
 RSUP=0.25
 RINF=0.05
 
@@ -97,44 +103,9 @@ IMPR_TABLE(TABLE=GK0,),
 
 # POST_K1_K2_K3
 
-
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
-                   _F(  NOM = 'L1INF',
-                                   OPTION = 'SEGM_DROI_ORDO',
-                                   PRECISION = 1.E-3,
-                                   CRITERE = 'ABSOLU',
-                                   GROUP_NO = 'LP0P8S',
-                                   GROUP_NO_ORIG = 'P0',
-                                   GROUP_NO_EXTR = 'P8'),
-                   _F(  NOM = 'L1SUP',
-                                   OPTION = 'SEGM_DROI_ORDO',
-                                   PRECISION = 1.E-3,
-                                   CRITERE = 'ABSOLU',
-                                   GROUP_NO = 'LP0P8',
-                                   GROUP_NO_ORIG = 'P0',
-                                   GROUP_NO_EXTR = 'P8'))
-                 )
-
-DEPH1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
-                                GROUP_NO = 'L1SUP',
-                                RESULTAT = CHAMDEPL,
-                                NOM_CHAM = 'DEPL',
-                                NOM_CMP = ('DX', 'DY',),
-                                OPERATION = 'EXTRACTION')
-                      )
-
-
-DEPB1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB1',
-                                GROUP_NO = 'L1INF',
-                                RESULTAT = CHAMDEPL,
-                                NOM_CHAM = 'DEPL',
-                                NOM_CMP = ('DX', 'DY',),
-                                OPERATION = 'EXTRACTION')
-                      )
-
 TABL_K1=POST_K1_K2_K3(  MODELISATION='AXIS',
-                        TABL_DEPL_SUP=DEPH1,
-                        TABL_DEPL_INF=DEPB1,
+                        RESULTAT=CHAMDEPL,
+                        FOND_FISS=FISS2,
                         INFO=2,
                         MATER=MAT,
                         ABSC_CURV_MAXI=RSUP,
@@ -249,26 +220,9 @@ IMPR_TABLE(TABLE=GK1,),
 
 # POST_K1_K2_K3
 
-DEPH2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
-                                GROUP_NO = 'L1SUP',
-                                RESULTAT = DEPL_ROT,
-                                NOM_CHAM = 'DEPL',
-                                NOM_CMP = ('DX', 'DY',),
-                                OPERATION = 'EXTRACTION')
-                      )
-
-
-DEPB2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB1',
-                                GROUP_NO = 'L1INF',
-                                RESULTAT = DEPL_ROT,
-                                NOM_CHAM = 'DEPL',
-                                NOM_CMP = ('DX', 'DY',),
-                                OPERATION = 'EXTRACTION')
-                      )
-
 TABL_K2=POST_K1_K2_K3(  MODELISATION='AXIS',
-                        TABL_DEPL_SUP=DEPH2,
-                        TABL_DEPL_INF=DEPB2,
+                        RESULTAT=DEPL_ROT,
+                        FOND_FISS=FISS2,
                         INFO=2,
                         MATER=MAT,
                         ABSC_CURV_MAXI=RSUP,

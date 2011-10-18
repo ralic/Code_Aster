@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -247,7 +247,7 @@ class SUPERV:
          j.interact()
 
       if j.par_lot == 'NON':
-         print convert(_(u"""--- Fin de l'exécution - %s"""))
+         print convert(_(u"""--- Fin de l'exécution"""))
          return ier
 
       # Verification de la validite du jeu de commande

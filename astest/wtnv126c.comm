@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION
 # wtnv126c.para = tps_job 230 mem_job 400Mo mem_aster 40 ncpus 1 liste_test S
@@ -443,13 +443,13 @@ U1=CALC_ELEM(reuse =U1,
                PRECISION = 1.E-10,
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO'),);
+               OPTION=('SIGM_ELNO','VARI_ELNO'),);
 
 U1=CALC_NO(reuse =U1,
                RESULTAT=U1,
                PRECISION = 1.E-10,
 
-               OPTION=('SIEF_NOEU','VARI_NOEU'),);
+               OPTION=('SIGM_NOEU','VARI_NOEU'),);
 
 
 
@@ -559,13 +559,13 @@ U3=CALC_ELEM(reuse =U3,
                PRECISION = 1.E-10,
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO'),);
+               OPTION=('SIGM_ELNO','VARI_ELNO'),);
 
 U3=CALC_NO(reuse =U3,
                RESULTAT=U3,
                PRECISION = 1.E-10,
 
-               OPTION=('SIEF_NOEU','VARI_NOEU'),);
+               OPTION=('SIGM_NOEU','VARI_NOEU'),);
 
 # PREMIER TEST AU PREMIER POINT D ARRIVEE
 
@@ -716,13 +716,13 @@ U4=CALC_ELEM(reuse =U4,
                PRECISION = 1.E-10,
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO'),);
+               OPTION=('SIGM_ELNO','VARI_ELNO'),);
 
 U4=CALC_NO(reuse =U4,
                RESULTAT=U4,
                PRECISION = 1.E-10,
 
-               OPTION=('SIEF_NOEU','VARI_NOEU'),);
+               OPTION=('SIGM_NOEU','VARI_NOEU'),);
 
 # PREMIER TEST AU DEUXIEME POINT D ARRIVEE
 

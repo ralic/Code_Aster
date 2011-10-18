@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,11 +46,12 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=("MODE_MECA","MULT_ELAS","EVOL_ELAS","EVOL_NOLI",
                               "DYNA_HARMO","DYNA_TRANS","FOURIER_ELAS","EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER") ),
            b_type_resu    =BLOC(condition = "TYPE_RESU == 'EVOL_CHAR'",
-             NOM_CHAM     =SIMP(statut='o',typ='TXM',into=("PRES","FSUR_2D","FSUR_3D","FVOL_2D","FVOL_3D","VITE_VENT")),
+             NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("PRES",
+                                    "FSUR_2D","FSUR_3D","FVOL_2D","FVOL_3D","VITE_VENT")),
            ),
 
            b_evol_char    =BLOC(condition = "TYPE_RESU != 'EVOL_CHAR'",
-             NOM_CHAM     =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
+             NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
            ),
 
            b_mode       =BLOC(condition = "TYPE_RESU == 'MODE_MECA'",

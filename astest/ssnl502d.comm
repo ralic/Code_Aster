@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE EN FLAMBEMENT
 # ssnl502d.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,7 +196,7 @@ RESO=STAT_NON_LINE(reuse =RESO,
 
 RESO=CALC_CHAMP(reuse =RESO,
                RESULTAT=RESO,
-                CONTRAINTE=('SIEF_ELNO'),);
+                CONTRAINTE=('EFGE_ELNO'),);
 
 ETA=RECU_FONCTION(RESULTAT=RESO,
                   TOUT_ORDRE='OUI',
@@ -219,7 +219,7 @@ MDEPY=CALC_FONCTION(COMB=_F(FONCTION=DEPY,
 
 MZZ=RECU_FONCTION(RESULTAT=RESO,
                   TOUT_ORDRE='OUI',
-                  NOM_CHAM='SIEF_ELNO',
+                  NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='MFZ',
                   MAILLE='M1',
                   GROUP_NO='PA',);

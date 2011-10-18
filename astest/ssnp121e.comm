@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,15 +116,15 @@ RESU=STAT_NON_LINE (MODELE     = MO,
 
 RESU=CALC_ELEM( reuse=RESU,
              RESULTAT=RESU,
-               OPTION=('SIEF_ELNO','SIEQ_ELNO'));
+               OPTION=('SIGM_ELNO','SIEQ_ELNO'));
 
 RESU=CALC_NO( reuse=RESU,
            RESULTAT=RESU,
-             OPTION=('SIEF_NOEU','SIEQ_NOEU'));
+             OPTION=('SIGM_NOEU','SIEQ_NOEU'));
 
 SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                     TYPE_CHAM='ELNO_SIEF_R',
-                     NOM_CHAM='SIEF_ELNO',
+                     NOM_CHAM='SIGM_ELNO',
                      RESULTAT=RESU,
                    NUME_ORDRE=1);
                    

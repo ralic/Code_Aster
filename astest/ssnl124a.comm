@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE F6BHHBO P.DEBONNIERES
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE FLUAGE AXIAL D'UN ELEMENT HEXA8 AVEC COMPORTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,7 +344,7 @@ REST=STAT_NON_LINE(
 
 REST=CALC_ELEM( reuse=REST,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=REST,
               )
 

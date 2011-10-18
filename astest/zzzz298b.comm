@@ -1,0 +1,161 @@
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+# TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
+# zzzz298b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM='ZZZZ298B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46','RUPTURE0_6',),);
+
+#----------------------------------------------
+#                   MAILLAGE
+#----------------------------------------------
+
+MAILLAGE=LIRE_MAILLAGE(UNITE=20, 
+                       FORMAT='MED',);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(GROUP_MA='SURFINF',),),);
+
+#----------------------------------------------
+#                   MODELE 
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                     AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFINF','SURFSUP',),),);
+
+#----------------------------------------------
+#                   FISSURE 
+#----------------------------------------------
+
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-0.5');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y-X/2.+1.');
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    DEFI_FISS=_F(FONC_LT=LT,
+                                 FONC_LN=LN,),
+                    ORIE_FOND=_F(PFON_INI=(0. ,1. ,0.5 ),
+                                 VECT_ORIE=(0. ,0. ,1. ),
+                                 POINT_ORIG=(0. ,2. ,0.5 ),),);
+                                 
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,);
+
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',);                                 
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=205000.E6
+nu=0.
+
+FONC1=DEFI_FONCTION(    NOM_PARA='TEMP',
+                           VALE=(  -1000.,          0.3,
+                                   +1000.,           0.3, ))
+FONC2=DEFI_CONSTANTE(VALE=205000.E6)                                                             
+                                                    
+MAT=DEFI_MATERIAU(ELAS_FO=_F( E = FONC2, NU = FONC1, TEMP_DEF_ALPHA=20.),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,),);
+
+CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      MODELE=MODELEK,
+                      AFFE=(_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
+                               MATER=ACIER,),),);
+
+#----------------------------------------------
+#                   CHARGEMENTS 
+#----------------------------------------------
+
+CHA1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                    DDL_IMPO=(_F(GROUP_NO='SURFINF',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),),);
+                                
+CHA2=AFFE_CHAR_MECA(MODELE=MODELEK,
+                    PRES_REP=_F(GROUP_MA='SURFSUP',
+                                PRES=-1.E6 ,),)
+                                    
+#----------------------------------------------
+#                   RESOLUTIONS
+#----------------------------------------------
+
+UTOT1x=MECA_STATIQUE(MODELE=MODELEK,
+                     CHAM_MATER=CHAMPMA,
+                     EXCIT=(_F(CHARGE=CHXFEM),
+                            _F(CHARGE=CHA1),
+                            _F(CHARGE=CHA2),),); 
+                   
+#----------------------------------------------
+#                   POST-TRAITEMENT
+#----------------------------------------------
+
+TABK = POST_K1_K2_K3(MODELISATION='3D',
+                     FISSURE=FISS,
+                     MATER=MAT,
+                     RESULTAT=UTOT1x,
+                     ABSC_CURV_MAXI = 0.065,
+                     VECT_K1 = ( 0., 0. , 1. ),)
+IMPR_TABLE(TABLE=TABK)
+#----------------------------------------------
+#                   TEST
+#----------------------------------------------
+
+TEST_TABLE(TABLE=TABK,
+           FILTRE=(_F(NOM_PARA='NUM_PT', 
+                      VALE_I=1 ),),
+           NOM_PARA='K1',
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.28',
+           VALE=2.2307120796315E+06,);
+
+TEST_TABLE(TABLE=TABK,
+           FILTRE=(_F(NOM_PARA='NUM_PT', 
+                      VALE_I=2 ),),
+           NOM_PARA='K1',
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.28',
+           VALE=2.2307120796315E+06,);
+           
+TEST_TABLE(TABLE=TABK,
+           FILTRE=(_F(NOM_PARA='NUM_PT', 
+                      VALE_I=23 ),),
+           NOM_PARA='K1',
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.28',
+           VALE=1.9024566892537E+06,);
+           
+TEST_TABLE(TABLE=TABK,
+           FILTRE=(_F(NOM_PARA='NUM_PT', 
+                      VALE_I=24 ),),
+           NOM_PARA='K1',
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.28',
+           VALE=1.9024566892537E+06,);           
+             
+FIN();
+

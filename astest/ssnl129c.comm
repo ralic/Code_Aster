@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE : VALIDATION DE LA LOI VISC_ISOT_TRAC SUR ESSAI DE TRACTION
 # ssnl129c.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,7 +137,7 @@ UL=STAT_NON_LINE(MODELE=MO,
 
 UL=CALC_CHAMP(reuse =UL,
              RESULTAT=UL,
-              CONTRAINTE=('SIEF_ELNO'),);
+              CONTRAINTE=('SIGM_ELNO'),);
 
 UL=CALC_NO(reuse =UL,
            RESULTAT=UL,
@@ -182,7 +182,7 @@ UM=STAT_NON_LINE(MODELE=MO,
 
 UM=CALC_CHAMP(reuse =UM,
              RESULTAT=UM,
-              CONTRAINTE=('SIEF_ELNO'),);
+              CONTRAINTE=('SIGM_ELNO'),);
 
 UM=CALC_NO(reuse =UM,
            RESULTAT=UM,
@@ -228,7 +228,7 @@ UR=STAT_NON_LINE(MODELE=MO,
 
 UR=CALC_CHAMP(reuse =UR,
              RESULTAT=UR,
-              CONTRAINTE=('SIEF_ELNO'),);
+              CONTRAINTE=('SIGM_ELNO'),);
 
 UR=CALC_NO(reuse =UR,
            RESULTAT=UR,
@@ -252,7 +252,7 @@ FORCE_L=POST_RELEVE_T(ACTION=_F(INTITULE='force',
 PLAS_L=POST_RELEVE_T(ACTION=_F(INTITULE='plasticite',
                                GROUP_NO='P3',
                                RESULTAT=UL,
-                               NOM_CHAM='SIEF_ELNO',
+                               NOM_CHAM='SIGM_ELNO',
                                NOM_CMP='SIYY',
                                OPERATION='EXTRACTION',),);
 FORCE_M=POST_RELEVE_T(ACTION=_F(INTITULE='force',
@@ -264,7 +264,7 @@ FORCE_M=POST_RELEVE_T(ACTION=_F(INTITULE='force',
 PLAS_M=POST_RELEVE_T(ACTION=_F(INTITULE='plasticite',
                                GROUP_NO='P3',
                                RESULTAT=UM,
-                               NOM_CHAM='SIEF_ELNO',
+                               NOM_CHAM='SIGM_ELNO',
                                NOM_CMP='SIYY',
                                OPERATION='EXTRACTION',),);
 FORCE_R=POST_RELEVE_T(ACTION=_F(INTITULE='force',
@@ -276,7 +276,7 @@ FORCE_R=POST_RELEVE_T(ACTION=_F(INTITULE='force',
 PLAS_R=POST_RELEVE_T(ACTION=_F(INTITULE='plasticite',
                                GROUP_NO='P3',
                                RESULTAT=UR,
-                               NOM_CHAM='SIEF_ELNO',
+                               NOM_CHAM='SIGM_ELNO',
                                NOM_CMP='SIYY',
                                OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=DEPL,NOM_PARA='DY')

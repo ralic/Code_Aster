@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,12 +133,12 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 RESU=CALC_CHAMP(reuse =RESU,
 
 
-                CONTRAINTE=('SIEF_ELNO'),
+                CONTRAINTE=('SIGM_ELNO'),
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION=('REAC_NODA','SIEF_NOEU'),
+             OPTION=('REAC_NODA','SIGM_NOEU'),
 
 
              );
@@ -155,7 +155,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 TAB_PRES=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',
                                  RESULTAT=RESU,
-                                 NOM_CHAM='SIEF_NOEU',
+                                 NOM_CHAM='SIGM_NOEU',
                                  INST=4.0,
                                  NOM_CMP=('SIYY','SIXY'),
                                  OPERATION='EXTRACTION',),);
@@ -231,7 +231,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   GROUP_NO='A',
                   INST=2.,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   VALE=-1.9084000936849E+01,
                   PRECISION=1.E-5,
@@ -241,7 +241,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   GROUP_NO='A',
                   INST=4.,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   VALE=-1.3732421997128E+01,
                   PRECISION=1.E-5,

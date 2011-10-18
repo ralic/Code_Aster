@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE ETUDE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,7 +139,7 @@ U1=STAT_NON_LINE(
                 )
 
 U1=CALC_ELEM( reuse      =U1,
-              OPTION     =( 'SIEF_ELNO', 'VARI_ELNO',),
+              OPTION     =( 'SIGM_ELNO', 'VARI_ELNO',),
               RESULTAT   = U1,
             )
 
@@ -207,13 +207,13 @@ U2 = STAT_NON_LINE(
 
 
 U2       = CALC_ELEM( reuse      = U2,
-                      OPTION     = ('SIEF_ELNO','VARI_ELNO'),
+                      OPTION     = ('SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U2,
                     );
       
 U2       = CALC_NO( reuse    = U2,     
                     RESULTAT = U2,
-                    OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU')
+                    OPTION   = ( 'SIGM_NOEU', 'VARI_NOEU')
                   )
 
 #-------------------------------------
@@ -228,7 +228,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 16,
                       PRECISION  = 1.E-3,
@@ -237,7 +237,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 50,
                       PRECISION  = 1.E-3,
@@ -248,7 +248,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 16,
                       PRECISION  = 1.E-3,
@@ -257,7 +257,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 50,
                       PRECISION  = 1.E-3,
@@ -268,7 +268,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 16,
                       PRECISION  = 1.E-3,
@@ -277,7 +277,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 20,
                       PRECISION  = 1.E-3,
@@ -286,7 +286,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 40,
                       PRECISION  = 1.E-3,
@@ -295,7 +295,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 51,
                       PRECISION  = 1.E-3,
@@ -304,7 +304,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 55,
                       PRECISION  = 1.E-3,
@@ -313,7 +313,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 60,
                       PRECISION  = 1.E-3,
@@ -322,7 +322,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 70,
                       PRECISION  = 1.E-3,
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
                       NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 80,
                       PRECISION  = 1.E-3,

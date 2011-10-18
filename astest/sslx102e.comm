@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 # sslx102e.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,7 @@ RESU1=STAT_NON_LINE(
 
 RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU1,
               )
 
@@ -133,7 +133,7 @@ RESU2=STAT_NON_LINE(
 
 RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU2,
               )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (CHABOCHE_FO)
 # ssnv101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,13 +109,13 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
                             RESULTAT=SOLNL,
                               OPTION=( 'VARI_ELNO',
                                        'EPSI_ELNO',
-                                       'SIEF_ELNO',
+                                       'SIGM_ELNO',
                                        'EPSP_ELGA',)
                       )
 
 TEST_RESU(RESU=(
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
 
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE RELAXATION EN AXIS VENDOCHAB
 # ssnv126b.para = tps_job 100 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -282,12 +282,12 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
 TEST_RESU(RESU=(
-   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 50,
+   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 7.59785E1,
          PRECISION = 5.0E-3),
 
@@ -306,7 +306,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 1.10134E-1,
          PRECISION = 1.0E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 5.55421E1,
          PRECISION = 1.0E-1),
 

@@ -1,6 +1,6 @@
       SUBROUTINE TE0156 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,14 +21,14 @@ C ======================================================================
       CHARACTER*16        OPTION , NOMTE
 C-----------------------------------------------------------------------
 C REALISE LES OPTIONS :
-C     SIEF_ELNO : PASSAGE DU POINT DE GAUSS AUX NOEUD
-C                      POUR  LES CONTRAINTES DE L'ELEMENT MECA_BARRE
+C     EFGE_ELNO (OU SIEF_ELNO): PASSAGE DU POINT DE GAUSS AUX NOEUD
+C                POUR  LES CONTRAINTES DE L'ELEMENT MECA_BARRE
 C     FORC_NODA      : FORCES NODALE DE L'ELEMENT MECA_BARRE
 C
 C ----------------------------------------------------------------------
 C IN OPTION    : K16 :  OPTION DE CALCUL
-C                       'SIEF_ELNO' OU 'FORC_NODA' OU
-C                       'REFE_FORC_NODA'
+C                       'EFGE_ELNO' OU 'FORC_NODA' OU  'SIEF_ELNO'
+C                       OU 'REFE_FORC_NODA'
 C IN NOMTE     : K16 : NOM DU TYPE ELEMENT
 C                      'MECA_BARRE'
 C                      'MECA_2D_BARRE'
@@ -71,15 +71,17 @@ C
 102         CONTINUE
 101      CONTINUE
 
-      ELSEIF ( OPTION .EQ. 'SIEF_ELNO' ) THEN
+      ELSEIF (OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO') THEN
+         IF (OPTION.EQ.'EFGE_ELNO') THEN
+            CALL JEVECH('PEFFORR','E',IVECTU)
+         ELSE
+            CALL JEVECH('PSIEFNOR','E',IVECTU)
+         ENDIF
          CALL JEVECH('PCONTRR', 'L',ICONTG)
-C        PARAMETRES EN SORTIE
-         CALL JEVECH('PSIEFNOR','E',IVECTU)
          ZR(IVECTU)   = ZR(ICONTG)
          ZR(IVECTU+1) = ZR(ICONTG)
 C
       ELSEIF ( OPTION .EQ. 'FORC_NODA' ) THEN
-C
          CALL JEVECH ( 'PCONTMR', 'L', ICONTG )
          CALL JEVECH ( 'PCAORIE', 'L', LORIEN )
 C        PARAMETRES EN SORTIE

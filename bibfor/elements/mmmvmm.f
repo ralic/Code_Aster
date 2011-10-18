@@ -1,11 +1,11 @@
       SUBROUTINE MMMVMM(PHASEZ,NDIM  ,NNM   ,NORM  ,TAU1  ,
      &                  TAU2  ,MPROJT,WPG   ,FFM   ,JACOBI,
-     &                  JEU   ,COEFCP,COEFFP,LAMBDA,COEFFF,
+     &                  JEU   ,COEFAC,COEFAF,LAMBDA,COEFFF,
      &                  DLAGRC,DLAGRF,DVITE ,RESE  ,NRESE ,
      &                  VECTMM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C
       REAL*8        RESE(3),NRESE
       REAL*8        NORM(3)
       REAL*8        TAU1(3),TAU2(3),MPROJT(3,3)
-      REAL*8        COEFCP,COEFFP,JEU
+      REAL*8        COEFAC,COEFAF,JEU
       REAL*8        LAMBDA,COEFFF
       REAL*8        VECTMM(27)
 C
@@ -60,15 +60,15 @@ C IN  FFM    : FONCTIONS DE FORMES DEPL_MAIT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  JEU    : VALEUR DU JEU
 C IN  NORM   : NORMALE
-C IN  COEFCP : COEF_PENA_CONT
-C IN  COEFFP : COEF_PENA_FROT
+C IN  COEFAC : COEF_AUGM_CONT
+C IN  COEFAF : COEF_AUGM_FROT
 C IN  LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL DE TRESCA)
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 C IN  DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
 C IN  DLAGRC : INCREMENT DEPDEL DU LAGRANGIEN DE CONTACT
 C IN  DVITE  : SAUT DE "VITESSE" [[DELTA X]]
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
-C               GTK = LAMBDAF + COEFFR*VITESSE
+C               GTK = LAMBDAF + COEFAF*VITESSE
 C IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
@@ -135,14 +135,16 @@ C
 C
 C --- CALCUL DES TERMES
 C
-      IF (PHASEP(1:4).EQ.'CONT') THEN
+      IF (PHASEP(1:4).EQ.'SANS') THEN
+C --- PAS DE CONTRIBUTION 
+      ELSEIF (PHASEP(1:4).EQ.'CONT') THEN
         IF (PHASEP(6:9).EQ.'PENA') THEN
           DO 75 INOM = 1,NNM
             DO 65 IDIM = 1,NDIM
               II = NDIM*(INOM-1)+IDIM
               VECTMM(II) = VECTMM(II)-
      &                     WPG*FFM(INOM)*JACOBI*NORM(IDIM)*
-     &                     JEU*COEFCP
+     &                     JEU*COEFAC
    65       CONTINUE
    75     CONTINUE      
         ELSE
@@ -151,7 +153,7 @@ C
               II = NDIM*(INOM-1)+IDIM
               VECTMM(II) = VECTMM(II)+
      &                     WPG*FFM(INOM)*JACOBI*NORM(IDIM)*
-     &                     (DLAGRC-JEU*COEFCP)
+     &                     (DLAGRC-JEU*COEFAC)
    60       CONTINUE
    70     CONTINUE
         ENDIF        
@@ -173,7 +175,7 @@ C
               II = NDIM*(INOM-1)+IDIM
               VECTMM(II) = VECTMM(II)+
      &                     WPG*FFM(INOM)*JACOBI*PDVITT(IDIM)*
-     &                     LAMBDA*COEFFF*COEFFP
+     &                     LAMBDA*COEFFF*COEFAF
    67       CONTINUE
    77     CONTINUE
         ELSE
@@ -182,7 +184,7 @@ C
               II = NDIM*(INOM-1)+IDIM
               VECTMM(II) = VECTMM(II)+
      &                     WPG*FFM(INOM)*JACOBI*LAMBDA*COEFFF*
-     &                     (PLAGFT(IDIM)+PDVITT(IDIM)*COEFFP) 
+     &                     (PLAGFT(IDIM)+PDVITT(IDIM)*COEFAF) 
    63       CONTINUE
    73     CONTINUE
         ENDIF

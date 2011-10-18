@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,7 +109,7 @@ REST=STAT_NON_LINE(
               )
 
 REST=CALC_CHAMP( reuse=REST,
-                             CONTRAINTE=('SIEF_ELNO'),
+                             CONTRAINTE=('EFGE_ELNO'),
                           RESULTAT=REST,
               )
 
@@ -128,7 +128,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 1,
-                 NOM_CHAM = 'SIEF_ELNO',REFERENCE='ANALYTIQUE',
+                 NOM_CHAM = 'EFGE_ELNO',REFERENCE='ANALYTIQUE',
                  MAILLE = 'M2',
                  GROUP_NO = 'B',
                  NOM_CMP = 'N',
@@ -189,7 +189,7 @@ RESM=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL,
                 MATRICE='ELASTIQUE'),
               )
 RESM=CALC_CHAMP( reuse=RESM,
-                             CONTRAINTE=('SIEF_ELNO'),
+                             CONTRAINTE=('EFGE_ELNO'),
                           RESULTAT=RESM,
               )
 

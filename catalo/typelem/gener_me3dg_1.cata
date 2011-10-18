@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,10 +67,8 @@ MODE_LOCAL__
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
@@ -92,6 +90,9 @@ MODE_LOCAL__
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
     CITERAT  = NEUT_R   ELEM__         (X1       )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -135,7 +136,7 @@ OPTION__
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           12    IN__   NDEPLAR  PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCPR  NDEPLAR  PVITESR
                               OUT__  EENECNO  PENERCR
     ENEL_ELGA           576   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR

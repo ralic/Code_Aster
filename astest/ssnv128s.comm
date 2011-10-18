@@ -1,9 +1,9 @@
-# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128s.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -88,7 +88,7 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1.0,
                              ALGO_FROT     = 'STANDARD',
-                             COEF_FROT     = 1.0,                        
+                             COEF_FROT     = 1.E5,                        
                              USURE         = 'ARCHARD',
                              K             = 1.0E-12,
                              H             = 1.0,                                                             
@@ -101,8 +101,16 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='LINEAIRE',
                     VALE=(0.0,0.0,1.0,1.0));
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.,
+LINST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 100));
+                      
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=LINST,),
+                     ECHEC=_F(EVENEMENT='ERREUR',
+                              ACTION='DECOUPE',
+                              SUBD_METHODE = 'MANUEL',
+                              SUBD_PAS=5,
+                              SUBD_NIVEAU=5,),);
 
 F2=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,  0.0,
@@ -137,7 +145,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N2',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -9.358E+05,
+                   VALE       =  -9.3096502691553E+05 ,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.1.3'),
@@ -146,7 +154,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N4',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.745E+06,
+                   VALE       = -1.7470670526768E+06,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.0.25'),
@@ -164,7 +172,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N30',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -2.303E+06,
+                   VALE       =  -2.3055127156365E+06,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.0.25'),

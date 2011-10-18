@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE F6BHHBO P.DEBONNIERES
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (VISCOELASTICITE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -310,7 +310,7 @@ U=STAT_NON_LINE( reuse=U,
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U,
               )
 

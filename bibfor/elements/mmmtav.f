@@ -1,12 +1,12 @@
       SUBROUTINE MMMTAV(PHASEP,LUSURE,NDIM  ,NNE   ,NNM   ,
      &                  NNL   ,NBDM  ,FFE   ,FFM   ,FFL   ,
-     &                  WPG   ,JACOBI,COEFCR,NORM  ,MPROJT,
+     &                  WPG   ,JACOBI,COEFAC,NORM  ,MPROJT,
      &                  CWEAR ,PRFUSU,MATRCC,MATRCE,MATRCM,
      &                  MATREC,MATRMC,MATREE,MATRMM,MATREM,
      &                  MATRME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,7 +32,7 @@ C
       INTEGER      NDIM,NNE,NNL,NNM,NBDM
       REAL*8       FFE(9),FFL(9),FFM(9)
       REAL*8       WPG,JACOBI
-      REAL*8       COEFCR
+      REAL*8       COEFAC
       REAL*8       NORM(3)
       REAL*8       MPROJT(3,3)
       REAL*8       CWEAR,PRFUSU        
@@ -62,7 +62,7 @@ C IN  FFL    : FONCTIONS DE FORMES LAGR.
 C IN  NORM   : NORMALE AU POINT DE CONTACT
 C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  COEFCR : COEF_REGU_CONT
+C IN  COEFAC : COEF_AUGM_CONT
 C IN  CWEAR  : COEFFICIENT D'USURE (KWEAR/HWEAR)
 C OUT MATRCC : MATRICE ELEMENTAIRE LAGR_C/LAGR_C
 C OUT MATRCE : MATRICE ELEMENTAIRE LAGR_C/DEPL_E
@@ -121,7 +121,7 @@ C
               DO 23 L = 1,NDIM
                 II = NDIM*(I-1)+L
                 JJ = NDIM*(J-1)+K
-                MATRME(II,JJ) = MATRME(II,JJ) + COEFCR*
+                MATRME(II,JJ) = MATRME(II,JJ) + COEFAC*
      &                          (WPG*FFM(I)*FFE(J)*JACOBI*NORM(K))*
      &                          (CWEAR/DISSIP)*DELUSU(L)*DLAGRC
   23          CONTINUE
@@ -135,7 +135,7 @@ C
               DO 33 L = 1,NDIM
                 II = NDIM*(I-1)+L
                 JJ = NDIM*(J-1)+K
-                MATREM(II,JJ) = MATREM(II,JJ) + COEFCR*
+                MATREM(II,JJ) = MATREM(II,JJ) + COEFAC*
      &                         (WPG*FFE(I)*FFM(J)*JACOBI*NORM(K))*
      &                         (CWEAR/DISSIP)*DELUSU(L)*DLAGRC
   33          CONTINUE
@@ -149,7 +149,7 @@ C
               DO 43 L = 1,NDIM
                 II = NDIM*(I-1)+L
                 JJ = NDIM*(J-1)+K
-                MATRMM(II,JJ) = MATRMM(II,JJ) - COEFCR*
+                MATRMM(II,JJ) = MATRMM(II,JJ) - COEFAC*
      &                          (WPG*FFM(I)*FFM(J)*JACOBI*NORM(K))*
      &                          (CWEAR/DISSIP)*DELUSU(L)*DLAGRC
   43          CONTINUE
@@ -164,7 +164,7 @@ C
                 II = NDIM*(INOE1-1)+IDIM1
                 JJ = NDIM*(INOE2-1)+IDIM2
                 MATREE(II,JJ) = MATREE(II,JJ) -
-     &            COEFCR*
+     &            COEFAC*
      &            WPG*JACOBI*
      &            FFE(INOE1)*FFE(INOE2)*NORM(IDIM2)*
      &            (CWEAR/DISSIP)*DELUSU(IDIM1)*DLAGRC
@@ -201,7 +201,7 @@ C
               JJ = NDIM*(INOM-1)+IDIM            
               MATRCM(INOC,JJ) = MATRCM(INOC,JJ) +
      &                       WPG*FFL(INOC)*FFM(INOM)*JACOBI*NORM(IDIM)* 
-     &                       ((CWEAR*DISSIP*COEFCR))
+     &                       ((CWEAR*DISSIP*COEFAC))
   82        CONTINUE
   81      CONTINUE
   80    CONTINUE
@@ -212,7 +212,7 @@ C
               JJ = NDIM*(INOE-1)+IDIM           
               MATRCE(INOC,JJ) = MATRCE(INOC,JJ) -
      &                       WPG*FFL(INOC)*FFE(INOE)*JACOBI*NORM(IDIM)* 
-     &                       ((CWEAR*DISSIP*COEFCR))
+     &                       ((CWEAR*DISSIP*COEFAC))
   92        CONTINUE
   91      CONTINUE
   90    CONTINUE   

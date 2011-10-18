@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,14 +300,14 @@ U=STAT_NON_LINE(
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO', 'EPSI_ELNO'),
+                  'SIGM_ELNO',  'VARI_ELNO', 'EPSI_ELNO'),
                           RESULTAT=U,
               )
 
 CHVAR47=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
                     RESULTAT=U, NOM_CHAM='VARI_ELNO',
                        INST=47. )
-CHSIG47=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
+CHSIG47=CREA_CHAMP(NOM_CHAM='SIGM_ELNO',
                    INST=47.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -322,7 +322,7 @@ CHVAR48=CREA_CHAMP(NOM_CHAM='VARI_ELNO',
                    TYPE_CHAM='ELNO_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=U,)
-CHSIG48=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
+CHSIG48=CREA_CHAMP(NOM_CHAM='SIGM_ELNO',
                    INST=48.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -342,7 +342,7 @@ CHVAR64=CREA_CHAMP(NOM_CHAM='VARI_ELNO',
                    TYPE_CHAM='ELNO_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=U,)
-CHSIG64=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
+CHSIG64=CREA_CHAMP(NOM_CHAM='SIGM_ELNO',
                    INST=64.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -357,7 +357,7 @@ CHVA114=CREA_CHAMP(NOM_CHAM='VARI_ELNO',
                    TYPE_CHAM='ELNO_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=U,)
-CHSI114=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
+CHSI114=CREA_CHAMP(NOM_CHAM='SIGM_ELNO',
                    INST=114.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -373,7 +373,7 @@ CHVA206=CREA_CHAMP(NOM_CHAM='VARI_ELNO',
                    OPERATION='EXTR',
                    INST=206.0,
                    RESULTAT=U,)
-CHSI206=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
+CHSI206=CREA_CHAMP(NOM_CHAM='SIGM_ELNO',
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    INST=206.,
@@ -388,7 +388,7 @@ CHEP251=CREA_CHAMP(NOM_CHAM='EPSI_ELNO',
                    OPERATION='EXTR',
                    INST=251.,
                    RESULTAT=U,)
-CHSI251=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
+CHSI251=CREA_CHAMP(NOM_CHAM='SIGM_ELNO',
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    INST=251.,
@@ -403,7 +403,7 @@ CHVA296=CREA_CHAMP(NOM_CHAM='VARI_ELNO',
                    OPERATION='EXTR',
                    INST=296.,
                    RESULTAT=U,)
-CHSI296=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
+CHSI296=CREA_CHAMP(NOM_CHAM='SIGM_ELNO',
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    INST=296.,

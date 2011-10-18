@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,12 +149,15 @@ DEFI_LIST   =FACT(fr                = "Definition a priori de la liste d'instant
                                            ),
                   b_manuel          = BLOC(fr                = "Liste d'instants donnée par l'utilisateur",
                                            condition         = "METHODE == 'MANUEL' ",
-                                           regles=(UN_PARMI('LIST_INST','VALE',),),
+                                           regles=(UN_PARMI('LIST_INST','VALE','RESULTAT'),),
                                            VALE              = SIMP(statut          = 'f',
                                                                     typ             = 'R',
                                                                     max             = '**'),
                                            LIST_INST         = SIMP(statut          = 'f',
                                                                     typ             = listr8_sdaster,
+                                                                    ),
+                                           RESULTAT          = SIMP(statut          = 'f',
+                                                                    typ             = resultat_sdaster,
                                                                     ),
                                            ),
                   b_auto            = BLOC(fr                = "Gestion automatique de la liste d'instants",

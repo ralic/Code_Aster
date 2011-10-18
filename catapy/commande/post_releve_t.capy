@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
            b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des résultats",
                                  regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','NUME_MODE','LIST_MODE',
                                                 'INST','LIST_INST','FREQ','LIST_FREQ','NOEUD_CMP','NOM_CAS'), ),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,6 +95,7 @@ MODE_LOCAL__
     EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EENEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+    ENONLIN  = NEUT_I   ELEM__         (X1)
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -168,11 +169,11 @@ OPTION__
     ECIN_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     EFCA_ELNO           39    IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
                               OUT__  EEFFONO  PEFFORR
-    EFGE_ELNO           344   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFORCEF  PFF1D1D
+    EFGE_ELNO           185   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFORCEF  PFF1D1D
+                                     EEFGEGA  PCONTRR  ENONLIN  PNONLIN  CCOMPOR  PCOMPOR
                                      CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                              OUT__  EEFGENO  PEFFORR
-                                     EEFGENC  PEFFORC
+                              OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
@@ -209,7 +210,7 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS
     MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__     OUT__  XXXXXX   XXXXXX
-    M_GAMMA             141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    M_GAMMA             141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
@@ -255,8 +256,7 @@ OPTION__
                                      EEFGEGC  PCONTRC
     SIEF_ELNO           347   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTRR
                                      DDL_MECA PDEPPLU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
-                              OUT__  EEFGENO  PSIEFNOR
-                                     EEFGENC  PSIEFNOC
+                              OUT__  EEFGENO  PSIEFNOR  EEFGENC  PSIEFNOC
     SICA_ELNO           39    IN__   CCAORIE  PCAORIE  ECONTNO  PCONTRR
                               OUT__  ECONTNO  PCONTGL
     SIPM_ELNO           344   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFORCEF  PFF1D1D

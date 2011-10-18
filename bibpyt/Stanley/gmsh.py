@@ -1,21 +1,21 @@
-#@ MODIF gmsh Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF gmsh Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 import os, signal
 import aster
@@ -26,22 +26,10 @@ try:
 except:
   pass
 
-# Multi-langues
-try:
-   import gettext
-   _ = gettext.gettext
-except:
-   def _(mesg):
-      return mesg
-
-
 
 # =========================================================================
 #                       TERMINAL GRAPHIQUE GMSH
 # =========================================================================
-
-
-
 
 def GMSH(mode, fichier, param, options=[]) :
 
@@ -50,19 +38,19 @@ def GMSH(mode, fichier, param, options=[]) :
       fichier  : nom du fichier d'echange
       param    : parametres d'environnement
     """
-    
+
     if not options.has_key('animation_mode'): options['animation_mode'] = None
 
     if   param['mode'] == 'LOCAL' :
-      return GMSH_LOCAL(mode, fichier, param, options) 
+      return GMSH_LOCAL(mode, fichier, param, options)
     elif param['mode'] == 'DISTANT' :
       return GMSH_DISTANT(mode, fichier, param, options)
     elif param['mode'] == 'WINDOWS' :
       return GMSH_WINDOWS(mode, fichier, param, options)
     else :
       raise _("Mode d'environnement incorrect")
-    
-    
+
+
 # =========================================================================
 
 class GMSH_DISTANT :
@@ -148,16 +136,16 @@ class GMSH_DISTANT :
       UTMESS('I','STANLEY_8')
 
     if mode == 'MAIL' :
-      raise  'NON DVP' 
+      raise  'NON DVP'
 
 
   def Terminal_ouvert(self):
      # Retourne 1 si le terminal est ouvert, 0 sinon
      return 0
-  
+
 
   def Fermer(self):
-     # Ferme le terminal (si necessaire)  
+     # Ferme le terminal (si necessaire)
      # Fais le menage dans l'objet
      pass
 
@@ -181,13 +169,13 @@ class GMSH_DISTANT :
 class GMSH_LOCAL :
 
   def __init__(self, mode, fichier, param, options) :
-        
+
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
       fichier  : nom du fichier d'echange
       param    : parametres d'environnement
     """
-  
+
 #  Mode post-traitement
     if mode == 'POST' :
       try: os.remove(fichier + '.pos')
@@ -224,11 +212,11 @@ View[der-1].Visible = 1;
 View[der-1].ShowScale = 0; // Show value scale?
 View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2=value always, 3=step if multiple, 4=step always)
 """
-        # Plugin(Annotate).Text = "bla" ; 
-        # Plugin(Annotate).Font = "Helvetica" ; 
-        # Plugin(Annotate).FontSize = 14 ; 
-        # Plugin(Annotate).Align = "Center" ; 
-        # Plugin(Annotate).Run ; 
+        # Plugin(Annotate).Text = "bla" ;
+        # Plugin(Annotate).Font = "Helvetica" ;
+        # Plugin(Annotate).FontSize = 14 ;
+        # Plugin(Annotate).Align = "Center" ;
+        # Plugin(Annotate).Run ;
 
         fw.write( txt +'\n' )
         fw.close()
@@ -243,15 +231,15 @@ View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2
         res = os.system(shell)
         if res!=0: UTMESS('A','STANLEY_10')
       else:
-        self.controle = Popen3(shell)  
+        self.controle = Popen3(shell)
 
       UTMESS('I','STANLEY_8')
 
     if mode == 'MAIL' :
-      raise  'NON DVP' 
+      raise  'NON DVP'
 
   def Terminal_ouvert(self) :
-  
+
     # Retourne 1 si le terminal est ouvert, 0 sinon
 
     etat = self.controle.poll()
@@ -263,14 +251,14 @@ View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2
 
   def Fermer(self) :
 
-    # Ferme le terminal (si necessaire)  
+    # Ferme le terminal (si necessaire)
     # Fais le menage dans l'objet
 
     if self.Terminal_ouvert() :
       os.kill(self.controle.pid, signal.SIGTERM)
-    
+
   def Attendre(self) :
-  
+
     # Attend que l'on quitte gmsh
 
     self.controle.wait()
@@ -282,7 +270,7 @@ View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2
 class GMSH_WINDOWS :
 
   def __init__(self, mode, fichier, param, options) :
-        
+
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
       fichier  : nom du fichier d'echange
@@ -317,7 +305,7 @@ class GMSH_WINDOWS :
       # Syntaxe generale de smbclient : smbclient '\\cli70xx\temp' -N -c 'rm fic; put fic'
       # Copie du fort.33.pos
       if partage_win_login == '':
-        txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos'" 
+        txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos'"
         UTMESS('I','STANLEY_9',valk=[txt])
         os.system(txt)
       else:
@@ -348,15 +336,15 @@ class GMSH_WINDOWS :
         UTMESS('I','STANLEY_13')
 
     if mode == 'MAIL' :
-      raise  'NON DVP' 
+      raise  'NON DVP'
 
   def Terminal_ouvert(self) : return 0
      # Retourne 1 si le terminal est ouvert, 0 sinon
 
   def Fermer(self) : pass
-     # Ferme le terminal (si necessaire)  
+     # Ferme le terminal (si necessaire)
      # Fais le menage dans l'objet
-    
+
   def Attendre(self) : pass
 
 
@@ -368,7 +356,7 @@ class SCRIPTS :
      """
         Produit le script pour Gmsh
      """
-     
+
      texte = ''
 
      if script == 'SKIN':

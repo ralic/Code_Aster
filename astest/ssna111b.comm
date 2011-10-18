@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 # ssna111b.para = tps_job 880 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,10 +79,10 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                               );
 
 
-CONT = DEFI_CONTACT(MODELE      = MO,
-                    FORMULATION = 'CONTINUE',
+CONT = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    ALGO_RESO_CONT = 'NEWTON',
                     ZONE=_F(
-                             APPARIEMENT   = 'MAIT_ESCL',
                              TYPE_APPA     = 'FIXE',
                              DIRE_APPA     = (0.,-1.,0.),
                              NORMALE       = 'MAIT_ESCL',
@@ -90,7 +90,6 @@ CONT = DEFI_CONTACT(MODELE      = MO,
                              GROUP_MA_ESCL ='GM12',
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1000.,
-                             INTEGRATION = 'NOEUD',
                          ),
                    )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN C.P. (PENTA15 HEXA20)
 # sslv04b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,9 +98,6 @@ RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
 
 #----------------------------------------------------------------
 #
-
-CALC_ELEM(reuse= RESU , RESULTAT= RESU,
-                        OPTION=('SIEF_ELNO'));
 
 CALC_ELEM(reuse= RESU ,
           RESULTAT= RESU ,

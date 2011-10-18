@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TYPRES,NOMCH,NOMGD,TYPSD
 
-C MODIF PREPOST  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -54,6 +54,9 @@ C----------------------------------------------------------------------
         NOMGD = 'EPSI_R'
         TYPSD = 'ELNO'
       ELSE IF (NOMCH.EQ.'SIEF_ELNO') THEN
+        NOMGD = 'SIEF_R'
+        TYPSD = 'ELNO'
+      ELSE IF (NOMCH.EQ.'SIGM_ELNO') THEN
         NOMGD = 'SIEF_R'
         TYPSD = 'ELNO'
       ELSE IF (NOMCH.EQ.'PRES') THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,7 +116,7 @@ SOLVEUR=_F(SYME='OUI',),
 
 RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU2,
               )
 
@@ -129,7 +129,7 @@ NOM_CHAM='SIEF_ELGA',
 
 #
 SIELNO2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU2,
                         NUME_ORDRE=10
                        )
@@ -243,7 +243,7 @@ SOLVEUR=_F(SYME='OUI',),
 
 RESU3=CALC_ELEM( reuse=RESU3,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU3,
               )
 #
@@ -255,7 +255,7 @@ NOM_CHAM='SIEF_ELGA',
 
 #
 SIELNO3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU3,
                         NUME_ORDRE=10
                        )
@@ -366,7 +366,7 @@ SOLVEUR=_F(SYME='OUI',),
 
 RESU4=CALC_ELEM( reuse=RESU4,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU4,
               )
 #
@@ -378,7 +378,7 @@ NOM_CHAM='SIEF_ELGA',
 
 #
 SIELNO4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU4,
                         NUME_ORDRE=10
                        )

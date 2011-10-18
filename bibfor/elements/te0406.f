@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*16    OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,9 +83,9 @@ C
 C
       INTEGER       IMATUU,IACCE,IVECT
 C
-      INTEGER       JENER , JFREQ , IU
+      INTEGER       JENER , JFREQ , IU, IV
 C
-      REAL * 8      MAS ( 2601 ) , MASU ( 51 )
+      REAL * 8      MAS ( 2601 ) , MASU ( 51 ), MASV ( 51 )
       REAL * 8    MANTN ( 2601 )
 C
       REAL * 8 BID33 ( 3 , 3 )
@@ -102,6 +102,8 @@ C
       INTEGER IN , ICOMPO
 C
       INTEGER II , JJ
+C
+      CHARACTER*1 STOPZ(3)
 C
 C---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 C
@@ -359,7 +361,7 @@ C======= CALCUL ET STOCKAGE DE LA FORCE NODALE D INERTIE
 C
 C------- ADRESSE DE L'ACCELERATION NODALE
 C
-         CALL JEVECH ( 'PDEPLAR' , 'L' , IACCE )
+         CALL JEVECH ( 'PACCELR' , 'L' , IACCE )
 C
 C------- ADRESSE DE LA FORCE NODALE D INERTIE
 C
@@ -379,26 +381,40 @@ C
 C
 C------- ADRESSE DU MODE
 C
-         CALL JEVECH ( 'PDEPLAR' , 'L' , IU    )
+         STOPZ(1)='O'
+         STOPZ(2)='N'
+         STOPZ(3)='O'
+         CALL TECACH(STOPZ,'PVITESR',1,IV,IRET)
+C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
+         IF (IRET.EQ.0) THEN
 C
-C------- ADRESSE DE LA FREQUENCE
+           CALL R8INIR ( 51 , 0.D0 , MASV , 1 )
 C
-         CALL JEVECH ( 'POMEGA2'  , 'L' , JFREQ   )
+           CALL PMAVEC('ZERO', 6 * NB1 + 3 , MAS ,ZR ( IV ), MASV )
 C
-         CALL R8INIR ( 51 , 0.D0 , MASU , 1 )
+           ZR (JENER)=5.D-1*DDOT(6 * NB1 + 3,ZR (IV ),1,MASV,1)
 C
-         CALL PMAVEC('ZERO', 6 * NB1 + 3 , MAS ,ZR ( IU ), MASU )
+         ELSE
 C
-         ZR (JENER)=DDOT(6 * NB1 + 3,ZR (IU ),1,MASU,1)
+           CALL TECACH(STOPZ,'PDEPLAR',1,IU,IRET)
+           IF (IRET.EQ.0) THEN
+             CALL JEVECH ( 'POMEGA2'  , 'L' , JFREQ   )
+             CALL R8INIR ( 51 , 0.D0 , MASU , 1 )
+             CALL PMAVEC('ZERO', 6 * NB1 + 3 , MAS ,ZR ( IU ), MASU )
+             ZR (JENER)=DDOT(6 * NB1 + 3,ZR (IU ),1,MASU,1)
 C
-C------- VITESSE = OMEGA * MODE
+C--------- VITESSE = OMEGA * MODE
 C
-         ZR ( JENER ) = 0.5D0 * ZR ( JFREQ ) * ZR ( JENER )
+             ZR ( JENER ) = 0.5D0 * ZR ( JFREQ ) * ZR ( JENER )
+           ELSE
+             CALL U2MESK('F','ELEMENTS2_1',1,OPTION) 
+           ENDIF
+         ENDIF  
 C
 C------- ENERGIE DE MEMBRANE = ENERGIE TOTALE
 C        ENERGIE DE FLEXION  = ENERGIE TOTALE
 C
-         CALL R8INIR ( 2 , ZR ( JENER ) , ZR ( JENER + 1 ) , 1 )
+           CALL R8INIR ( 2 , ZR ( JENER ) , ZR ( JENER + 1 ) , 1 )
 C
 C
 C---------------------------------------------

@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE LA COMMANDE INTE_MAIL_3D ET POST_RELEVE_T
 # zzzz136c.para = tps_job 60 mem_job 100Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,7 @@ MO=AFFE_MODELE( MAILLAGE=MA,
 RESU = LIRE_RESU( FORMAT='IDEAS', UNITE=38,
                   MODELE=MO,
                   TYPE_RESU='EVOL_NOLI',
-                  NOM_CHAM= ('DEPL','SIEF_ELNO',),
+                  NOM_CHAM= ('DEPL','SIGM_ELNO',),
                   TOUT_ORDRE='OUI',
                   FORMAT_IDEAS= (_F( NOM_CHAM='DEPL',
                                      NUME_DATASET=55,
@@ -41,7 +41,7 @@ RESU = LIRE_RESU( FORMAT='IDEAS', UNITE=38,
                                      NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),
                                      POSI_INST=(8,1),
                                      RECORD_6=(1,4,3,8,2,6) ,),
-                                 _F( NOM_CHAM='SIEF_ELNO',
+                                 _F( NOM_CHAM='SIGM_ELNO',
                                      NUME_DATASET=57,
                                      POSI_ORDRE=(7,3),
                                      NOM_CMP=('SIXX','SIXY','SIYY','SIXZ','SIYZ','SIZZ'),
@@ -55,7 +55,7 @@ CHNO = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                    INST=0. )
 
 CHEL = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                   RESULTAT=RESU, NOM_CHAM='SIEF_ELNO',
+                   RESULTAT=RESU, NOM_CHAM='SIGM_ELNO',
                    INST=0. )
 
 #

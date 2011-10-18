@@ -1,8 +1,8 @@
       SUBROUTINE MMMTCC(PHASEP,NNL   ,WPG   ,FFL   ,JACOBI,
-     &                  COEFCP,COEFCS,MATRCC)
+     &                  COEFAC,MATRCC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
       CHARACTER*9  PHASEP
       INTEGER      NNL
       REAL*8       WPG,FFL(9),JACOBI
-      REAL*8       COEFCP,COEFCS
+      REAL*8       COEFAC
       REAL*8       MATRCC(9,9)
 C      
 C ----------------------------------------------------------------------
@@ -46,8 +46,7 @@ C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE
 C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFL    : FONCTIONS DE FORMES LAGR.
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  COEFCP : COEF_PENA_CONT
-C IN  COEFCS : COEF_STAB_CONT
+C IN  COEFAC : COEF_AUGM_CONT
 C OUT MATRCC : MATRICE ELEMENTAIRE LAGR_C/LAGR_C
 C
 C ----------------------------------------------------------------------
@@ -61,7 +60,7 @@ C
         DO 61 INOC1 = 1,NNL
           DO 51 INOC2 = 1,NNL
             MATRCC(INOC1,INOC2) = MATRCC(INOC1,INOC2)-
-     &                    WPG*JACOBI/COEFCS*
+     &                    WPG*JACOBI/COEFAC*
      &                    FFL(INOC2)*FFL(INOC1)
  51       CONTINUE
  61     CONTINUE
@@ -69,7 +68,7 @@ C
         DO 62 INOC1 = 1,NNL
           DO 52 INOC2 = 1,NNL
             MATRCC(INOC1,INOC2) = MATRCC(INOC1,INOC2)-
-     &                    WPG*JACOBI/COEFCP*
+     &                    WPG*JACOBI/COEFAC*
      &                    FFL(INOC2)*FFL(INOC1)
  52       CONTINUE
  62     CONTINUE      
@@ -77,7 +76,7 @@ C
         DO 63 INOC1 = 1,NNL
           DO 53 INOC2 = 1,NNL
             MATRCC(INOC1,INOC2) = MATRCC(INOC1,INOC2)-
-     &                    WPG*JACOBI/COEFCP*
+     &                    WPG*JACOBI/COEFAC*
      &                    FFL(INOC2)*FFL(INOC1)
  53       CONTINUE
  63     CONTINUE

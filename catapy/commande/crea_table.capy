@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,7 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=36,sd_prod=crea_table_prod,
                         b_resultat   =BLOC(condition = "RESULTAT != None",
                                regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',
                                               'MODE','LIST_MODE','FREQ','LIST_FREQ'),),
-                               NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
+                               NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
                                TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
                                NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
                                LIST_ORDRE      =SIMP(statut='f',typ=(listis_sdaster) ),

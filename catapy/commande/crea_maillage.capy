@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma  ,validators=NoRepeat(),max='**'),
-           OPTION          =SIMP(statut='o',typ='TXM',into=("TRIA6_7","QUAD8_9","SEG3_4","QUAD_TRIA3"),
+           OPTION          =SIMP(statut='o',typ='TXM',into=("TRIA6_7","QUAD8_9","SEG3_4","QUAD_TRIA3"),validators=NoRepeat(),
                                  fr="Choix de la transformation" ),
            b_NOS =BLOC(condition = "OPTION == 'TRIA6_7'  or  OPTION == 'QUAD8_9'  or  OPTION == 'SEG3_4'",
              PREF_NOEUD      =SIMP(statut='f',typ='TXM',defaut="NS"),

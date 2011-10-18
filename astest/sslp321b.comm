@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321b.para = tps_job 350 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,7 +152,7 @@ for i in range(1,NPAS+1) :
                TYPE_TEST='MAX',
                VALE=K2REF[i-1],
                CRITERE='ABSOLU',
-               PRECISION=5.e-2,
+               PRECISION=1.e-1,
                REFERENCE='AUTRE_ASTER',);    
 
     FISS[i] = CO('FISS_%d'%(i))
@@ -175,6 +175,25 @@ for i in range(1,NPAS+1) :
                 COMP_LINE =_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),                                                               
                 INFO=1,);
+
+        LSN[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                        OPERATION='EXTR',
+                        FISSURE=FISS[i],
+                        NOM_CHAM='LNNO',);
+        LST[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                        OPERATION='EXTR',
+                        FISSURE=FISS[i],
+                        NOM_CHAM='LTNO',);
+
+        DEFI_FICHIER(FICHIER='./REPE_OUT/levelset.'+str(i+1)+'.med',
+                   UNITE=101+i,)
+
+        IMPR_RESU(FORMAT='MED',
+                UNITE=101+i,
+                RESU=_F(CHAM_GD=LSN[i],),);
+        IMPR_RESU(FORMAT='MED',
+                UNITE=101+i,
+                RESU=_F(CHAM_GD=LST[i],),);
 
 
 #----------------------------------------------

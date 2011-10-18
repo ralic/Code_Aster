@@ -1,9 +1,9 @@
       SUBROUTINE MMIMP3(IFM   ,NOMA  ,IPTC  ,JVALV ,JTABF )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -64,12 +64,10 @@ C
       INTEGER      CFMMVD,ZTABF  
       INTEGER      NUMMAE,NUMMAM
       CHARACTER*8  NOMESC,NOMMAI     
-      REAL*8       LAMBDA,COEFFF
-      REAL*8       COEFCR,COEFCS,COEFCP
-      REAL*8       COEFFR,COEFFS,COEFFP
+      REAL*8       LAMBDA
+      REAL*8       COEFAC,COEFAF
       REAL*8       DELTAT,BETA,GAMMA,THETA
       REAL*8       ASPERI,COEASP,CN,JEUSUP
-      INTEGER      IFROTT
       INTEGER      IFORM,ICOMPL    
 C
 C ----------------------------------------------------------------------
@@ -78,25 +76,19 @@ C
 C
       ZTABF  = CFMMVD('ZTABF')          
 C                
-      LAMBDA = ZR(JVALV-1+12)
-      COEFCR = ZR(JVALV-1+17)
-      COEFCS = ZR(JVALV-1+18)
-      COEFCP = ZR(JVALV-1+19)            
-      COEFFR = ZR(JVALV-1+22)
-      COEFFS = ZR(JVALV-1+23)
-      COEFFP = ZR(JVALV-1+24)    
-      COEFFF = ZR(JVALV-1+21)
-      IFROTT = NINT(ZR(JVALV-1+20))
-      IFORM  = NINT(ZR(JVALV-1+16))
-      ICOMPL = NINT(ZR(JVALV-1+25))  
-      ASPERI = ZR(JVALV-1+26) 
-      COEASP = ZR(JVALV-1+27)   
-      CN     = ZR(JVALV-1+28)
+      LAMBDA = ZR(JVALV-1+13)
+      COEFAC = ZR(JVALV-1+16)
+      COEFAF = ZR(JVALV-1+19)
+      IFORM  = NINT(ZR(JVALV-1+32))
+      ICOMPL = NINT(ZR(JVALV-1+21))  
+      ASPERI = ZR(JVALV-1+22) 
+      COEASP = ZR(JVALV-1+24)   
+      CN     = ZR(JVALV-1+23)
       DELTAT = ZR(JVALV-1+33)         
       BETA   = ZR(JVALV-1+34)
       GAMMA  = ZR(JVALV-1+35)
       THETA  = ZR(JVALV-1+36)      
-      JEUSUP = ZR(JVALV-1+32)                     
+      JEUSUP = ZR(JVALV-1+14)                     
 C
 C --- ACCES A L'ELEMENT EN COURS            
 C 
@@ -109,7 +101,7 @@ C
 C --- POINT DE CONTACT EN COURS
 C             
       WRITE(IFM,1001)   
-      WRITE(IFM,1002) LAMBDA,COEFCR,COEFCS,COEFCP,JEUSUP
+      WRITE(IFM,1002) LAMBDA,COEFAC,COEFAF,JEUSUP
       IF (IFORM.EQ.2) THEN
         WRITE(IFM,1003) DELTAT,THETA  
       ELSE
@@ -117,10 +109,7 @@ C
       ENDIF    
       IF (ICOMPL.EQ.1) THEN
         WRITE(IFM,1005) ASPERI,COEASP,CN              
-      ENDIF  
-      IF (IFROTT.EQ.3) THEN
-        WRITE(IFM,1006) COEFFF,COEFFR,COEFFS,COEFFP              
-      ENDIF            
+      ENDIF           
 C
 C --- FORMATS AFFICHAGE
 C
@@ -129,9 +118,8 @@ C
  1001 FORMAT (' <CONTACT>        A POUR PROPRIETES') 
   
  1002 FORMAT (' <CONTACT>          - LAMBDA         : ',E10.3,
-     &        ' - COEF_REGU_CONT :  ',E10.3,
-     &        ' - COEF_STAB_CONT :  ',E10.3,
-     &        ' - COEF_PENA_CONT :  ',E10.3,          
+     &        ' - COEF_AUGM_CONT :  ',E10.3,
+     &        ' - COEF_AUGM_FROT :  ',E10.3,          
      &        ' - JEU SUPP.      :  ',E10.3) 
      
  1003 FORMAT (' <CONTACT>          AVEC FORMULATION EN VITESSE  ',
@@ -145,12 +133,7 @@ C
      &        'COMPLIANCE',
      &        ' - ASPERITE       :  ',E10.3,
      &        ' - E_N            :  ',E10.3,
-     &        ' - E_V            :  ',E10.3)      
- 1006 FORMAT (' <CONTACT>          AVEC FROTTEMENT DE COULOMB',
-     &        ' - COEFFICIENT    :  ',E10.3,
-     &        ' - COEF_REGU_FROT :  ',E10.3,
-     &        ' - COEF_STAB_FROT :  ',E10.3,
-     &        ' - COEF_PENA_FROT :  ',E10.3)      
+     &        ' - E_V            :  ',E10.3)           
 C    
       CALL JEDEMA()
 C

@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Intranet  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calc_eolienne Intranet  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1396,7 +1396,6 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
     fich1b = './REPE_OUT/'+fich1
     fich2b = './REPE_OUT/'+fich2
-    fich3b = './REPE_OUT/'+fich3
     fich4b = './REPE_OUT/'+fich4
 
     if IMPRESSION != None :
@@ -1410,9 +1409,6 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
         if impr['FORMAT']=='CASTEM':
           UNIT_2B=DEFI_FICHIER(FICHIER=fich2b)
           unitr = UNIT_2B
-        if impr['FORMAT']=='ENSIGHT':
-          UNIT_3B=DEFI_FICHIER(FICHIER=fich3b)
-          unitr = UNIT_3B
         if impr['FORMAT']=='IDEAS':
           UNIT_4B=DEFI_FICHIER(FICHIER=fich4b)
           unitr = UNIT_4B
@@ -1436,9 +1432,6 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
         if impr['FORMAT']=='CASTEM':
           DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich2b)
           DETRUIRE(CONCEPT=_F( NOM = UNIT_2B))
-        if impr['FORMAT']=='ENSIGHT':
-          DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich3b)
-          DETRUIRE(CONCEPT=_F( NOM = UNIT_3B))
         if impr['FORMAT']=='IDEAS':
           DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich4b)
           DETRUIRE(CONCEPT=_F( NOM = UNIT_4B))
@@ -1703,7 +1696,7 @@ MACR_CALC_EOLIENNE=MACRO(nom="MACR_CALC_EOLIENNE",op=macr_calc_eolienne_ops,
 
          IMPRESSION      =FACT(statut='f',
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
-                                 into=("RESULTAT","CASTEM","IDEAS","ENSIGHT")),
+                                 into=("RESULTAT","CASTEM","IDEAS")),
 
            b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="version Ideas",
              VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),

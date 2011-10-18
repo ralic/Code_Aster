@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa2 Messages  DATE 17/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -220,10 +220,6 @@ Risque & Conseil:
 
 54: _(u"""
  récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s  : absence de relation de comportement de type <BPEL_ACIER>
-"""),
-
-55: _(u"""
- récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <BPEL_ACIER> : au moins un paramètre indéfini
 """),
 
 56: _(u"""

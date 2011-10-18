@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ C TOLE CRP_20
       CHARACTER*16   OPTION,NOMTE
 C ----------------------------------------------------------------------
 C IN OPTION    : K16 :  OPTION DE CALCUL
-C     'SIEF_ELNO'  'SIEQ_ELNO'       'SIEQ_ELGA'  'EFCA_ELNO'
+C     'EFGE_ELNO'  'SIEQ_ELNO'       'SIEQ_ELGA'  'EFCA_ELNO'
 C     'FORC_NODA'  'REFE_FORC_NODA'  'SICA_ELNO'  'CHAR_MECA_EPSI_R'
 C     'PMPB_ELGA'  'FONL_NOEU'
 C IN NOMTE     : K16 : NOM DU TYPE ELEMENT
@@ -161,9 +161,13 @@ C --- ------------------------------------------------------------------
             CALL U2MESK('F','DISCRETS_15',2,KMESS)
          ENDIF
 C --- ------------------------------------------------------------------
-      ELSE IF (OPTION.EQ.'SIEF_ELNO') THEN
+      ELSEIF (OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO') THEN
+         IF (OPTION.EQ.'EFGE_ELNO') THEN
+            CALL JEVECH('PEFFORR','E',IVECTU)
+         ELSE
+            CALL JEVECH('PSIEFNOR','E',IVECTU)
+         ENDIF
          CALL JEVECH('PCONTRR','L',ICONTG)
-         CALL JEVECH('PSIEFNOR','E',IVECTU)
          DO 10 I = 1,NEQ
             ZR(IVECTU-1+I) = ZR(ICONTG-1+I)
 10       CONTINUE

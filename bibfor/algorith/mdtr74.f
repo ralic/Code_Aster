@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -500,6 +500,8 @@ C Lecture des donnees paliers
             CALL LECDON(.FALSE.,0,PRDEFF)
           ENDIF
           CALL GETVR8('COUPLAGE_EDYOS','VITE_ROTA',1,IARG,1,VROTAT,N1)
+          CALL GETVR8('COUPLAGE_EDYOS','PAS_TPS_EDYOS',1,IARG,1,
+     &                 DTSTO,N1)
         ELSE
           CALL U2MESS('F','EDYOS_48')
         ENDIF
@@ -615,7 +617,6 @@ C
 C     --- COUPLAGE EDYOS ---
 C =>
       IF ( NBEDYO .NE. 0 ) THEN
-        DTSTO = DT
         CALL INICOU(NBPAS,TINIT,TFIN,DT,DTSTO,VROTAT)
         TCF = TINIT
       ENDIF

@@ -3,7 +3,7 @@
       REAL*8         XYZL(3,*), PGL(*), MAS(*), ENER(*)
       CHARACTER*16   OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,11 +60,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  I, J, K, INT, JCOQU, JDEPG, II(8),JJ(8),LL(16)
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  JVITG, IRET
       REAL*8   FLEX(12,12),BC(2,12)
       REAL*8   MEMB(8,8), AMEMB(64), MEFL(8,12)
-      REAL*8   WQ4(12), DEPL(24), MASLOC(300), MASGLO(300)
+      REAL*8   WQ4(12), DEPL(24), MASLOC(300), MASGLO(300), VITE(24)
       REAL*8   RHO,EPAIS,ROE,CTOR,EXCENT,DETJ,WGT,ZERO,COEFM
       REAL*8   CARAQ4(25), JACOB(5), QSI, ETA
+      CHARACTER*1 STOPZ(3)
 C     ------------------------------------------------------------------
       DATA (II(K),K=1,8)/1,10,19,28,37,46,55,64/
       DATA (JJ(K),K=1,8)/5,14,23,32,33,42,51,60/
@@ -147,9 +149,25 @@ C
         CALL DIALUM(4,6,24,WGT,MASGLO,MAS)
 C
       ELSE IF (OPTION.EQ.'ECIN_ELEM') THEN
-        CALL JEVECH('PDEPLAR','L',JDEPG)
-        CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
-        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,.FALSE.,DEPL,ENER)
+        STOPZ(1)='O'
+        STOPZ(2)='N'
+        STOPZ(3)='O'
+C IRET NE PEUT VALOIR QUE 0 (TOUT VA BIEN) OU 2 (CHAMP NON FOURNI)
+        CALL TECACH(STOPZ,'PDEPLAR',1,JDEPG,IRET)
+        IF (IRET.EQ.0) THEN
+          CALL UTPVGL ( 4 , 6 , PGL , ZR(JDEPG) , DEPL )
+          CALL DXQLOE ( FLEX   , MEMB   , MEFL  , CTOR ,
+     &                .FALSE. , DEPL , ENER )
+        ELSE
+          CALL TECACH(STOPZ,'PVITESR',1,JVITG,IRET)
+          IF (IRET.EQ.0) THEN
+            CALL UTPVGL ( 4 , 6 , PGL , ZR(JVITG) , VITE )
+            CALL DXQLOE ( FLEX   , MEMB   , MEFL  , CTOR ,
+     &                  .FALSE. , VITE , ENER )
+          ELSE
+            CALL U2MESK('F','ELEMENTS2_1',1,OPTION)
+          ENDIF
+        ENDIF
       END IF
 C
       END

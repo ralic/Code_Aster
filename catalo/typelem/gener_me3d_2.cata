@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,6 +102,9 @@ MODE_LOCAL__
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]      )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]      )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -211,7 +214,7 @@ OPTION__
     RIGI_MECA_PRSU_R    424   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MMATUUR  PMATUUR
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EPRESNO  PPRES_R
+                              OUT__  EPRESNO  PPRES_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

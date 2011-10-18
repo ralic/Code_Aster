@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/10/2011   AUTEUR LABBE M.LABBE 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
 C
       IF (OPTION.EQ.'M_GAMMA')THEN
         CALL JEVECH ('PVECTUR', 'E', LVEC)
-        CALL JEVECH('PDEPLAR','L',IACCE)
+        CALL JEVECH('PACCELR','L',IACCE)
       ELSE
         CALL JEVECH ('PMATUUR', 'E', LMAT)
       ENDIF

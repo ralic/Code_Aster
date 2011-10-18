@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 # sslv115c.para = tps_job 300 mem_job 400Mo mem_aster 20 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,9 +53,7 @@ BETON=DEFI_MATERIAU(BPEL_BETON=_F(),
                             RHO=3.0,
                             E=3.E10,),);
 
-ACIER=DEFI_MATERIAU(BPEL_ACIER=_F(FROT_LINE=0.0,
-                                  F_PRG=1.770000000E9,
-                                  FROT_COURB=0.0,),
+ACIER=DEFI_MATERIAU(BPEL_ACIER=_F(),
                     ELAS=_F(NU=0.0,
                             RHO=2.E4,
                             ALPHA=1.E-05,

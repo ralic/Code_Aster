@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,7 +165,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELNO','SIEF_ELNO','VARI_ELNO',),);
+            OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
 
 DEFI_FICHIER(UNITE=71,
              FICHIER='MED_71',
@@ -182,15 +182,15 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               FORMAT_MED=(
               _F(NOM_CHAM='DEPL',
                  NOM_CHAM_MED='U_______DEPL',),
-              _F(NOM_CHAM='SIEF_ELNO',
-                 NOM_CHAM_MED='U_______SIEF_ELNO',),),
+              _F(NOM_CHAM='SIGM_ELNO',
+                 NOM_CHAM_MED='U_______SIGM_ELNO',),),
               TOUT_ORDRE='OUI',);
 
 #
 
 TEST_RESU(RESU=(_F(RESULTAT=UUU,
                    NUME_ORDRE=4,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    POINT=1,
@@ -218,7 +218,7 @@ MOMECA2=AFFE_MODELE(MAILLAGE=MAIL2,
 SIGMRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                     FORMAT='MED',
                     UNITE=71,
-                    NOM_MED='U_______SIEF_ELNO',
+                    NOM_MED='U_______SIGM_ELNO',
                     NOM_CMP_IDEM='OUI',
                     NUME_PT=1,
                     NUME_ORDRE=1,

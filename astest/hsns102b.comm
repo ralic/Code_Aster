@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,13 +195,13 @@ DEP=STAT_NON_LINE(  MODELE=LEMOD,
                                    ITER_GLOB_MAXI = 30,),
                                    )
 DEPB=CALC_ELEM(
-                OPTION     = ('SIEF_ELNO',),
+                OPTION     = ('SIGM_ELNO',),
                 RESULTAT   = DEP,
                 GROUP_MA='GEOB'
                  )
 DEPB=CALC_NO(reuse = DEPB,
              RESULTAT=DEPB,
-             OPTION='SIEF_NOEU',)
+             OPTION='SIGM_NOEU',)
 
 
 # -------------------------------------------------
@@ -229,7 +229,7 @@ TEST_RESU(
             ),
             _F( RESULTAT = DEPB,
              INST = 1.,
-             NOM_CHAM = 'SIEF_NOEU',
+             NOM_CHAM = 'SIGM_NOEU',
              NOM_CMP = 'SIXX',
              GROUP_NO = 'PMB',
              VALE = 8.571429E+05/0.2,
@@ -238,19 +238,19 @@ TEST_RESU(
             ),
          ))
 DEPA=CALC_ELEM(
-                OPTION     = ('SIEF_ELNO',),
+                OPTION     = ('SIGM_ELNO',),
                 RESULTAT   = DEP,
                 GROUP_MA='GEOA')
 
 DEPA=CALC_NO(reuse=DEPA,
              RESULTAT=DEPA,
-            OPTION='SIEF_NOEU',)
+            OPTION='SIGM_NOEU',)
 
 TEST_RESU(
           RESU=(
             _F( RESULTAT = DEPA,
              INST = 1.,
-             NOM_CHAM = 'SIEF_NOEU',
+             NOM_CHAM = 'SIGM_NOEU',
              NOM_CMP = 'SIXX',
              GROUP_NO = 'PMA',
              VALE = -8.571429E+07,

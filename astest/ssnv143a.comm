@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,7 +228,7 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
@@ -237,11 +237,11 @@ SOLNL=CALC_ELEM(     reuse=SOLNL,
                                  RESULTAT=SOLNL )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 10,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 10,
          NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 1.1017175654454),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 10,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 10,
          NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 2.4215600071372),
@@ -256,11 +256,11 @@ TEST_RESU(RESU=(
          )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 20,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 20,
          NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 0.63024380766789),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 20,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 20,
          NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 1.3893554155076),
@@ -275,11 +275,11 @@ TEST_RESU(RESU=(
          )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 30,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 30,
          NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 0.16128064804949),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 30,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 30,
          NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 0.35589090916157),
@@ -294,12 +294,12 @@ TEST_RESU(RESU=(
          )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 40,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 40,
          NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
          VERSION = '5.4.12',
          VALE = -3.8228627223458E+01),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 40,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 40,
          NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
          VERSION = '5.4.12',

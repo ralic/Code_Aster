@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -528,7 +528,7 @@ U=STAT_NON_LINE(            MODELE=MO,
               )
 
 CALC_ELEM( reuse=U, RESULTAT=U,
-           OPTION=('SIEF_ELNO',  'VARI_ELNO',),  )
+           OPTION=('EFGE_ELNO',  'VARI_ELNO',),  )
 
 
 V=STAT_NON_LINE(            MODELE=MO,
@@ -546,7 +546,7 @@ V=STAT_NON_LINE(            MODELE=MO,
               )
 
 CALC_ELEM( reuse=V, RESULTAT=V,
-           OPTION=( 'SIEF_ELNO',  'VARI_ELNO',), )
+           OPTION=( 'EFGE_ELNO',  'VARI_ELNO',), )
 
 W=STAT_NON_LINE(           MODELE=MO,
                         CHAM_MATER=CHMAT3,
@@ -563,7 +563,7 @@ W=STAT_NON_LINE(           MODELE=MO,
               )
 
 CALC_ELEM( reuse=W, RESULTAT=W,
-           OPTION=('SIEF_ELNO',  'VARI_ELNO',), )
+           OPTION=('EFGE_ELNO',  'VARI_ELNO',), )
 
 # ------------------------------------------------------------------
 
@@ -593,24 +593,24 @@ TEST_RESU(RESU=(
 #
     # EFFORTS GENERALISES
              _F(  RESULTAT = U,        CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 2,     MAILLE = 'MA000001', NOM_CHAM = 'SIEF_ELNO',
+        NUME_ORDRE = 2,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = U,        CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 2,     MAILLE = 'MA000029', NOM_CHAM = 'SIEF_ELNO',
+        NUME_ORDRE = 2,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
 #
              _F(  RESULTAT = V,        CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 2,     MAILLE = 'MA000001', NOM_CHAM = 'SIEF_ELNO',
+        NUME_ORDRE = 2,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = V,        CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 2,     MAILLE = 'MA000029', NOM_CHAM = 'SIEF_ELNO',
+        NUME_ORDRE = 2,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
 #
              _F(  RESULTAT = W,        CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 2,     MAILLE = 'MA000001', NOM_CHAM = 'SIEF_ELNO',
+        NUME_ORDRE = 2,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = W,        CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 2,     MAILLE = 'MA000029', NOM_CHAM = 'SIEF_ELNO',
+        NUME_ORDRE = 2,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),),
             )
 

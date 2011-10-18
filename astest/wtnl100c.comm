@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+# MODIF  DATE 17/10/2011   AUTEUR MEUNIER S.MEUNIER 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
@@ -21,7 +21,7 @@
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNL100C',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='WTNL100C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),);
 
 MAIL=LIRE_MAILLAGE();
 
@@ -123,6 +123,9 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     PRES_REP=_F(GROUP_MA='FACESUP',
                                 PRES=1.0,),);
 
+linst = [0,0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0];
+nbinst = len(linst);
+
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
@@ -133,9 +136,12 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                    SOLVEUR=_F(METHODE='LDLT',),
-                    ARCHIVAGE=_F(INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               PCENT_PIVOT=100,),
+                    ARCHIVAGE=_F(INST=linst,
                                  PRECISION=0.001,),);
+
+
 
 #############################################
 
@@ -153,6 +159,10 @@ RESU1= CALC_NO( reuse    = RESU1,
 ##########################################################
 # EXEMPLE DE POST-TRAITEMENT D ISOVALEURS POUR MODELISATION SELECTIVE #
 ##########################################################
+
+########
+# 1ere methode de projection par proj_champ
+########
 
 MAILLIN = CREA_MAILLAGE(
                          MAILLAGE  = MAIL,
@@ -176,6 +186,114 @@ RESULIN = PROJ_CHAMP(
                NOM_CHAM ='DEPL',
                TOUT_ORDRE='OUI')
 
+########
+# 2eme methode de projection par macr_adap_mail
+########
+
+PRE  = [None]*nbinst;
+PREB = [None]*nbinst;
+
+for k in range(nbinst) :
+  
+  PRE[k]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESU1,
+                    NOM_CHAM='DEPL',
+                    INST=linst[k],);
+
+motcle1={}
+motcle2={}
+
+motcle1['MAJ_CHAM']=[]
+motcle2['AFFE']=[]
+
+for k in range(nbinst) :
+
+  PREB[k] =CO('PREB_%d' % (k))
+ 
+  motcle1['MAJ_CHAM'].append(
+  _F(TYPE_CHAM='NOEU_DEPL_R',CHAM_GD  = PRE[k],
+                                  CHAM_MAJ = PREB[k],),);
+
+  motcle2['AFFE'].append(
+  _F(CHAM_GD=PREB[k],INST=linst[k],),);
+
+MACR_ADAP_MAIL( ADAPTATION='MODIFICATION',DEGRE='OUI',
+                MAILLAGE_N   = MAIL,
+                MAILLAGE_NP1 = CO('MAILLIN2'),
+                **motcle1);
+
+RESULINB=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_NOLI',NOM_CHAM='DEPL',**motcle2);
+
+#####
+# On verifie que les 2 methodes de projection donnent le meme resultat
+#####
+
+RESULINC = PROJ_CHAMP(
+               METHODE='COLLOCATION',
+               RESULTAT=RESULINB,
+               MAILLAGE_1=MAILLIN2,
+               MAILLAGE_2=MAILLIN,
+               NOM_CHAM ='DEPL',)
+
+EXTR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='MAIL',
+                              RESULTAT=RESULIN,
+                              NOM_CHAM='DEPL',
+                              GROUP_NO='COUL_7',
+                              TOUT_ORDRE='OUI',
+                              NOM_CMP='PRE1',),);
+
+INCNUM = FORMULE(VALE='NUMAUX+1',
+                 NOM_PARA='NUMAUX',);
+
+EXTR1=CALC_TABLE(   reuse=EXTR1,
+                    TABLE=EXTR1,
+                    ACTION=(
+                           _F(OPERATION='RENOMME',
+                              NOM_PARA=('NUME_ORDRE','NUMAUX',),),
+                           _F(OPERATION='OPER',
+                              FORMULE=INCNUM,
+                              NOM_PARA='NUME_ORDRE',),
+
+                 ),);
+
+EXTR2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='MAIL',
+                              RESULTAT=RESULINC,
+                              NOM_CHAM='DEPL',
+                              GROUP_NO='COUL_7',
+                              TOUT_ORDRE='OUI',
+                              NOM_CMP='PRE1',),);
+
+EXTR2=CALC_TABLE(reuse=EXTR2,TABLE=EXTR2,
+                 ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('PRE1','PREPROJ')),
+                         )
+                  )
+
+EXTR1=CALC_TABLE(reuse=EXTR1,TABLE=EXTR1,
+                 ACTION=(_F(OPERATION='COMB',TABLE=EXTR2,NOM_PARA=('NUME_ORDRE','NOEUD',)),
+                         )
+                  )
+
+DIFF = FORMULE(VALE='abs(PREPROJ-PRE1)',
+                 NOM_PARA=('PREPROJ','PRE1',),);
+
+TBDIF=CALC_TABLE(   TABLE=EXTR1,
+                    ACTION=_F(OPERATION='OPER',
+                              FORMULE=DIFF,
+                              NOM_PARA='DIFF',),);
+
+TEST_TABLE( TABLE     = TBDIF ,
+            TYPE_TEST = 'MAX',
+            VALE      = 1.E-9,
+            PRECISION = 1.E-9,
+            NOM_PARA  = 'DIFF',CRITERE='ABSOLU')
+
+########
+# Fin de la verification
+########
+
 IMPR_RESU(RESU=_F( RESULTAT = RESULIN,
                    INST     = 250.0,
                    NOM_CHAM ='DEPL',
@@ -195,14 +313,14 @@ RESULINS = PROJ_CHAMP(
                MODELE_1=MODELE,
                MODELE_2=MODELIN,
                NOM_CHAM ='SIEF_NOEU',
-               NUME_ORDRE = (10,),)
+               INST = 250.,)
 
 IMPR_RESU(FORMAT = 'GMSH', UNITE = 37,
           RESU=_F( RESULTAT = RESULINS,
                    MAILLAGE=MAILLIN,
                    NOM_CHAM ='SIEF_NOEU',
                    NOM_CMP  ='SIYY',
-                   NUME_ORDRE = (10,), ), )
+                   INST=250., ),);
 
 
 #############
@@ -235,7 +353,7 @@ IMPR_TABLE(TABLE=VARIN2,);
 IMPR_TABLE(TABLE=DEPLA2,);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
+                   INST=0.0001,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO29',
@@ -243,7 +361,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
+                   INST=0.0001,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO31',
@@ -251,7 +369,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO1',
@@ -259,7 +377,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO3',
@@ -267,7 +385,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO5',
@@ -275,7 +393,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO7',
@@ -283,7 +401,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO9',
@@ -291,7 +409,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO11',
@@ -299,7 +417,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO13',
@@ -307,7 +425,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO15',
@@ -315,7 +433,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO17',
@@ -323,7 +441,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO19',
@@ -331,7 +449,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO21',
@@ -339,7 +457,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO23',
@@ -347,7 +465,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO25',
@@ -355,7 +473,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO27',
@@ -363,7 +481,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO29',
@@ -371,7 +489,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO31',
@@ -379,7 +497,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO33',
@@ -389,7 +507,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    REFERENCE='ANALYTIQUE',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
+                   INST=0.0001,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA15',
@@ -399,7 +517,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=1e-08,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA1',
@@ -408,7 +526,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA2',
@@ -417,7 +535,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA3',
@@ -426,7 +544,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA4',
@@ -435,7 +553,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA5',
@@ -444,7 +562,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA6',
@@ -453,7 +571,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA7',
@@ -462,7 +580,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA8',
@@ -471,7 +589,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA9',
@@ -480,7 +598,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.002,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA10',
@@ -489,7 +607,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA11',
@@ -498,7 +616,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA12',
@@ -507,7 +625,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA13',
@@ -516,7 +634,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA14',
@@ -525,7 +643,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA15',
@@ -534,7 +652,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA16',
@@ -543,7 +661,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA16',
@@ -555,7 +673,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='VMIS',
                    MAILLE='MA16',
@@ -566,7 +684,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
 
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='VMIS_SG',
                    MAILLE='MA16',
@@ -577,7 +695,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
 
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_1',
                    MAILLE='MA16',
@@ -588,7 +706,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
 
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_2',
                    MAILLE='MA16',
@@ -600,7 +718,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
 
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_3',
                    MAILLE='MA16',
@@ -612,7 +730,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
 
                 _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
+                   INST=250.,
                    NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='TRESCA',
                    MAILLE='MA16',

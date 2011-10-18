@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,6 +86,9 @@ MODE_LOCAL__
     FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     FISCO_I  = NEUT_I   ELEM__         (X[2]     )
 
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
 
@@ -114,7 +117,7 @@ OPTION__
                               OUT__  E48NEUTR PPINTTO  E54NEUI  PCNSETO  E18NEUI  PHEAVTO  E10NEUTI  PLONCHA
                                      E10NEUTR PAINTER
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EPRESNO  PPRES_R
+                              OUT__  EPRESNO  PPRES_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
     FULL_MECA           99    IN__   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   FISNO_I  PFISNO

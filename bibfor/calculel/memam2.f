@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C ----------------------------------------------------------------------
       LCHIN(12) = CHCARA(11)
       LPAIN(13) = 'PCAPOUF'
       LCHIN(13) = CHCARA(13)
-      LPAIN(14) = 'PDEPLAR'
+      LPAIN(14) = 'PACCELR'
       LCHIN(14) = CHACCE
       LPAIN(15) = 'PNBSP_I'
       LCHIN(15) = CHCARA(16)

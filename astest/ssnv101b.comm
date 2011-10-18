@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (CHABOCHE)
 # ssnv101b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,16 +127,16 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                       OPTION=( 'EPSI_ELNO',
-                               'SIEF_ELNO',  'VARI_ELNO',),
+                               'SIGM_ELNO',  'VARI_ELNO',),
                     RESULTAT=SOLNL,
                           INST=1.435,
               )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  INST=1.435,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  INST=1.435,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  INST=1.435,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  INST=1.435,
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
 
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  INST=1.435,PRECISION=0.02,

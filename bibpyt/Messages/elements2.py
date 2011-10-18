@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements2 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,11 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
+
+1  : _(u"""
+   Aucun champ de déplacement ni de vitesse n'est fourni 
+   pour le calcul de l'option %(k1)s.
+"""),
 
 27 : _(u"""
  pas d'intersection trouvé

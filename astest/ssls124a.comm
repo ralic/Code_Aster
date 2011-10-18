@@ -1,5 +1,5 @@
-# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB8 MAILLAGE REGULIER
 # ssls124a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,7 +82,7 @@ RESU31=MECA_STATIQUE(MODELE=MODMEC31,
 
 RESU31=CALC_ELEM(reuse =RESU31,
                  RESULTAT=RESU31,
-                 OPTION=('SIEF_ELNO','SIEQ_ELGA','SIEQ_ELNO',),);
+                 OPTION=('SIGM_ELNO','SIEQ_ELGA','SIEQ_ELNO',),);
 Iy = ((((b * h) * h) * h) / 12.0);
 
 Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
@@ -182,7 +182,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    NOEUD='N43',
@@ -191,7 +191,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    NOEUD='N39',

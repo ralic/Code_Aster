@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,36 +167,10 @@ TEST_TABLE( TABLE=KGLOC2,
 # Calcul avec POST_K1_K2_K3 : la fissure est non-plane, 
 # on ne peut pas calculer automatiquement pour tous les noeuds du fond de fissure
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-                     CREA_GROUP_NO=
-             (_F(INTERSEC = ('LEV_SUP', 'FACE1'),NOM='LSUP1'),
-              _F(INTERSEC = ('LEV_INF', 'FACE1'),NOM='LINF1'),
-              _F(OPTION='SEGM_DROI_ORDO', GROUP_NO='LSUP1',NOEUD_ORIG='N565',NOEUD_EXTR='N7879',
-                  NOM='LSUP11',PRECISION=0.1,CRITERE='RELATIF'),
-              _F(OPTION='SEGM_DROI_ORDO', GROUP_NO='LINF1',NOEUD_ORIG='N565',NOEUD_EXTR='N14802',
-                  NOM='LINF11',PRECISION=0.1,CRITERE='RELATIF'),
-              _F(INTERSEC = ('LEV_SUP', 'FACE2'),NOM='LSUP2'),
-              _F(INTERSEC = ('LEV_INF', 'FACE2'),NOM='LINF2'),
-              _F(OPTION='SEGM_DROI_ORDO', GROUP_NO='LSUP2',NOEUD_ORIG='N11220',NOEUD_EXTR='N12606',
-                  NOM='LSUP22',PRECISION=0.1,CRITERE='RELATIF'),
-              _F(OPTION='SEGM_DROI_ORDO', GROUP_NO='LINF2',NOEUD_ORIG='N11220',NOEUD_EXTR='N12951',
-                  NOM='LINF22',PRECISION=0.1,CRITERE='RELATIF'),
-              ),);
-                 
-TSUP1=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LSUP11',
-                                    INTITULE='depl sup',
-                                    NOM_CHAM='DEPL',TOUT_CMP='OUI',
-                                    RESULTAT=CHAMDEPL,
-                                    OPERATION='EXTRACTION',) ,) ;
-TINF1=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LINF11',
-                                    INTITULE='depl inf',
-                                    NOM_CHAM='DEPL',TOUT_CMP='OUI',
-                                    RESULTAT=CHAMDEPL,
-                                    OPERATION='EXTRACTION',) ,) ;
 TABL_KA=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
-                      TABL_DEPL_SUP = TSUP1,
-                      TABL_DEPL_INF = TINF1,
+                      RESULTAT=CHAMDEPL,
+                      FOND_FISS=FISS,
                       ABSC_CURV_MAXI = RSUP,
                       VECT_K1        = ( 1., 0., 0., ),
                       )
@@ -205,62 +179,30 @@ IMPR_TABLE(TABLE=TABL_KA)
 
 TEST_TABLE(TABLE=TABL_KA,
            NOM_PARA='K1',
+          FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                            VALE_K = 'N565',  ),
            REFERENCE='NON_REGRESSION',
            VALE=1.1539117200315E+06,
            PRECISION=0.001      )
                 
-TSUP2=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LSUP22',
-                                    INTITULE='depl sup',
-                                    NOM_CHAM='DEPL',TOUT_CMP='OUI',
-                                    RESULTAT=CHAMDEPL,
-                                    OPERATION='EXTRACTION',) ,) ;
-TINF2=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LINF22',
-                                    INTITULE='depl inf',
-                                    NOM_CHAM='DEPL',TOUT_CMP='OUI',
-                                    RESULTAT=CHAMDEPL,
-                                    OPERATION='EXTRACTION',) ,) ;
 K1x = cos(10.*3.14159/180.)                                    
 K1z = sin(10.*3.14159/180.)
 TABL_KB=POST_K1_K2_K3(  MODELISATION='3D',
               MATER=MAT,
-              TABL_DEPL_SUP = TSUP2,
-              TABL_DEPL_INF = TINF2,
+              RESULTAT=CHAMDEPL,
+              FOND_FISS=FISS,
               ABSC_CURV_MAXI = RSUP,
               VECT_K1        = ( K1x, 0., K1z, ),
            )
 IMPR_TABLE(TABLE=TABL_KB)
 TEST_TABLE( TABLE=TABL_KB,
             NOM_PARA='K1',
+            FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                            VALE_K = 'N11220',  ),
             REFERENCE='NON_REGRESSION',
             VALE= 1.0844343992327E+06,
             PRECISION=0.001      )
 
-TABL_KA2=POST_K1_K2_K3(  MODELISATION='3D',
-              MATER=MAT,
-              TABL_DEPL_SUP = TSUP1,
-              TABL_DEPL_INF = TINF1,
-              ABSC_CURV_MAXI = RSUP2,
-              VECT_K1        = ( 1., 0., 0., ),
-           )
-IMPR_TABLE(TABLE=TABL_KA2)
-TEST_TABLE( TABLE=TABL_KA2,
-            NOM_PARA='K1',
-            REFERENCE='NON_REGRESSION',
-            VALE=  1.1686361094376E+06,
-            PRECISION=0.001      )
-TABL_KB2=POST_K1_K2_K3(  MODELISATION='3D',
-              MATER=MAT,
-              TABL_DEPL_SUP = TSUP2,
-              TABL_DEPL_INF = TINF2,
-              ABSC_CURV_MAXI = RSUP2,
-              VECT_K1        = ( K1x, 0., K1z, ),
-           )
-IMPR_TABLE(TABLE=TABL_KB2)
-TEST_TABLE( TABLE=TABL_KB2,
-            NOM_PARA='K1',
-            REFERENCE='NON_REGRESSION',
-            VALE=1.0982590529559E+06,
-            PRECISION=0.001      )            
 
 FIN()
 

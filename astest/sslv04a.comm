@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN 3D (PENTA6 HEXA8)
 # sslv04a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,7 +102,7 @@ RESU=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CM,
 #
 
 CALC_ELEM(reuse= RESU , RESULTAT= RESU,
-                        OPTION=('SIEF_ELNO'));
+                        OPTION=('SIGM_ELNO'));
 
 CALC_ELEM(reuse= RESU ,
           RESULTAT= RESU ,
@@ -448,7 +448,7 @@ IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M,RESULTAT=RESU,));
 #-----------------------------------------------------------------
 
 CALC_ELEM(reuse= RESU , RESULTAT= RESU,
-                        OPTION=('EPSI_ELNO', 'SIGM_ELNO'));
+                        OPTION=('EPSI_ELNO',));
 
 CALC_NO(reuse=RESU, RESULTAT=RESU,
                     OPTION=('EPSI_NOEU', 'SIGM_NOEU'));
@@ -1183,7 +1183,7 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
 #
 
 CALC_ELEM(reuse= RESUNL , RESULTAT= RESUNL,
-                        OPTION=('SIEF_ELNO'));
+                        OPTION=('SIGM_ELNO'));
 
 CALC_ELEM(reuse= RESUNL ,
           RESULTAT= RESUNL ,

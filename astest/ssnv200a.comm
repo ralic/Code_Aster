@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 # ssnv200a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,7 +156,7 @@ SOLNL1=STAT_NON_LINE(
               )
 
 SOLNL1=CALC_ELEM( reuse=SOLNL1,     RESULTAT=SOLNL1,
-                               OPTION=( 'SIEF_ELNO',
+                               OPTION=( 'SIGM_ELNO',
                                         'VARI_ELNO',
                                         'EPSI_ELNO',
                                         'EPSP_ELGA',

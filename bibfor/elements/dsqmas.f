@@ -3,7 +3,7 @@
       REAL*8         XYZL(3,*), PGL(*), MAS(*), ENER(*)
       CHARACTER*16   OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,17 +47,18 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER   NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER    I, J, K, I1, I2, INT, II(8), JJ(8), LL(16)
-      INTEGER    MULTIC, P, JDEPG, JCOQU, J1, J2
+      INTEGER    MULTIC, P, JDEPG, JCOQU, J1, J2, JVITG, IRET
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8     HFT2(2,6), HMFT2(2,6), FLEX(12,12)
       REAL*8     BCB(2,12),BCA(2,4),AN(4,12),AM(4,8),BCM(2,8)
       REAL*8     NFX(12), NFY(12), NMX(8), NMY(8), NMI(4)
       REAL*8     MEMB(8,8), MEFL(8,12), AMEMB(64)
-      REAL*8     WSQ(12), WMESQ(8), DEPL(24)
+      REAL*8     WSQ(12), WMESQ(8), DEPL(24), VITE(24)
       REAL*8     MASLOC(300), MASGLO(300), ROF, WGTMF
       REAL*8     ZERO, UNQUAR, UNDEMI, UN, NEUF, DOUZE, EXCENT, XINERT
       REAL*8     R8GAEM, COEFM, WGTF, WGTM, DETJ, WGT, ROE,RHO,EPAIS
       REAL*8     QSI,ETA,JACOB(5),CARAQ4(25),T2EV(4),T2VE(4),T1VE(9)
+      CHARACTER*1  STOPZ(3)
       LOGICAL    COUPMF, EXCE, INER
 C     ------------------------------------------------------------------
       REAL*8 CTOR
@@ -322,9 +323,25 @@ C
         CALL DIALUM(4,6,24,WGT,MASGLO,MAS)
 C
       ELSE IF (OPTION.EQ.'ECIN_ELEM') THEN
-        CALL JEVECH('PDEPLAR','L',JDEPG)
-        CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
-        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,.FALSE.,DEPL,ENER)
+        STOPZ(1)='O'
+        STOPZ(2)='N'
+        STOPZ(3)='O'
+C IRET NE PEUT VALOIR QUE 0 (TOUT VA BIEN) OU 2 (CHAMP NON FOURNI)
+        CALL TECACH(STOPZ,'PVITESR',1,JVITG,IRET)
+        IF (IRET.EQ.0) THEN
+          CALL UTPVGL ( 4 , 6 , PGL , ZR(JVITG) , VITE )
+          CALL DXQLOE ( FLEX   , MEMB   , MEFL  , CTOR ,
+     &                .FALSE. , VITE , ENER )
+        ELSE
+          CALL TECACH(STOPZ,'PDEPLAR',1,JDEPG,IRET)
+          IF (IRET.EQ.0) THEN
+            CALL UTPVGL ( 4 , 6 , PGL , ZR(JDEPG) , DEPL )
+            CALL DXQLOE ( FLEX   , MEMB   , MEFL  , CTOR ,
+     &                  .FALSE. , DEPL , ENER )
+          ELSE
+            CALL U2MESK('F','ELEMENTS2_1',1,OPTION)
+          ENDIF
+        ENDIF
       END IF
 C
       END

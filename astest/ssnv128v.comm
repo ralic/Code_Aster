@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CONTACT AVEC USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128v.para = tps_job 160 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,7 +121,7 @@ U2M=STAT_NON_LINE(MODELE    = MO,
                )
 #
 U2M=CALC_ELEM(reuse=U2M,
-              OPTION=('SIEF_ELNO', 'VARI_ELNO',),
+              OPTION=('SIGM_ELNO', 'VARI_ELNO',),
               RESULTAT=U2M,
              )
 #

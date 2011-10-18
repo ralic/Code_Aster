@@ -1,4 +1,4 @@
-# MODIF  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,42 +161,22 @@ GLMO1=CALC_G(OPTION='K_G_MODA',
 
 IMPR_TABLE(TABLE =GLMO1);
 
+FISS=DEFI_FOND_FISS(MAILLAGE=M,
+                   FOND_FISS=_F(GROUP_NO = 'PF',),
+                   LEVRE_SUP=_F(  GROUP_MA = 'LEVSUP'),
+                   LEVRE_INF=_F(  GROUP_MA = 'LEVINF'),                  
+                  );
+                                 
 
-D_SUP = [None]*n_mode
-D_INF = [None]*n_mode
-T1_K = [None]*n_mode
-Kmodu = [None]*n_mode
-
-for i in range(0,n_mode) :
-
-   imode = i + 1
-
-   D_SUP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='Lev sup',
-                                    GROUP_NO='LEVSUP',
-                                    RESULTAT=MODE,
-                                    NUME_MODE=imode,
-                                    NOM_CHAM='DEPL',
-                                    NOM_CMP=('DX','DY',),
-                                    OPERATION='EXTRACTION',),);
-
-
-   D_INF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='lev inf',
-                                    GROUP_NO='LEVINF',
-                                    RESULTAT=MODE,
-                                    NUME_MODE=imode,
-                                    NOM_CHAM='DEPL',
-                                    NOM_CMP=('DX','DY',),
-                                    OPERATION='EXTRACTION',),);
-
-
-   T1_K[i] = POST_K1_K2_K3(MODELISATION='C_PLAN',
+T1_K = POST_K1_K2_K3(MODELISATION='C_PLAN',
                            MATER=MA,
                            INFO = 2,
-                           TABL_DEPL_SUP=D_SUP[i],
-                           TABL_DEPL_INF=D_INF[i],
+                           RESULTAT=MODE,
+                           FOND_FISS=FISS,
                            VECT_K1 = (0., 1., 0.),
                            ABSC_CURV_MAXI=7.E-5,
-                           TOUT_ORDRE='OUI',);
+                           NUME_ORDRE=(1,2,3,4,5),);
+IMPR_TABLE(TABLE=T1_K)
 
 
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
@@ -204,6 +184,7 @@ Kg_ref =[-1.92107E+10, -1.16602E+11, 8.03919E+10, -1.18804E+11, 1.72295E+11]
 Ku_ref =[-1.90387E+10, -1.15558E+11, 7.96724E+10, -1.17741E+11, 1.70753E+11]
 
 for i in range(0,5) :
+   iord = i + 1
    imode = i + 1
    TEST_TABLE(TABLE=GLMO1,
               NOM_PARA='K1',
@@ -214,9 +195,11 @@ for i in range(0,5) :
               REFERENCE = 'NON_REGRESSION',
               VERSION='11.00.04'
              )
-
-   TEST_TABLE(TABLE=T1_K[i],
+             
+   TEST_TABLE(TABLE=T1_K,
               NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                         VALE_I = iord),
               VALE=Ku_ref[i],
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',

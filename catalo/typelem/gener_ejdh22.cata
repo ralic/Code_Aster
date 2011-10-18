@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,10 +68,8 @@ MODE_LOCAL__
                                         IZZ      IXY      IXZ      IYZ      IXR2     IYR2     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CREFERI  = NEUT_I   ELEM__         (X[12])
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
@@ -94,6 +92,9 @@ MODE_LOCAL__
                                  EN4   ()
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

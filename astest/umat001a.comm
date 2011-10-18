@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE CYLINDRE CREUX THERMOELASTICITE LINEAIRE - TEST UMAT AXIS
 # umat001a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -114,11 +114,11 @@ IMPR_RESU(RESU=_F(RESULTAT=RESU,VALE_MAX='OUI',VALE_MIN='OUI',NUME_ORDRE=38))
 
 RESU = CALC_CHAMP( reuse= RESU,
                   RESULTAT = RESU,
-                   CONTRAINTE=('SIEF_ELNO'),
+                   CONTRAINTE=('SIGM_ELNO'),
                   )
 RESU = CALC_NO ( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_NOEU',
+                  OPTION = 'SIGM_NOEU',
                   )
 
 TEST_RESU(
@@ -134,7 +134,7 @@ TEST_RESU(
 TEST_RESU(
           RESU= _F(RESULTAT = RESU,
                    INST=0.24,
-                   NOM_CHAM ='SIEF_NOEU',
+                   NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIZZ',
                    VALE= -0.3658085,
@@ -182,11 +182,11 @@ RESUMAT = STAT_NON_LINE (MODELE = MO,
 
 RESUMAT = CALC_CHAMP( reuse= RESUMAT,
                   RESULTAT = RESUMAT,
-                   CONTRAINTE=('SIEF_ELNO'),
+                   CONTRAINTE=('SIGM_ELNO'),
                   )
 RESUMAT = CALC_NO ( reuse= RESUMAT,
                   RESULTAT = RESUMAT,
-                  OPTION = 'SIEF_NOEU',
+                  OPTION = 'SIGM_NOEU',
                   )
 
 IMPR_RESU(RESU=_F(RESULTAT=RESUMAT,VALE_MAX='OUI',VALE_MIN='OUI',NUME_ORDRE=38))
@@ -204,7 +204,7 @@ TEST_RESU(
 TEST_RESU(
           RESU= _F(RESULTAT = RESUMAT,
                    INST=0.24,
-                   NOM_CHAM ='SIEF_NOEU',
+                   NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIZZ',
                    VALE= -0.3658085 ,

@@ -1,4 +1,4 @@
-#@ MODIF chainage_meca_hydr Macro  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF chainage_meca_hydr Macro  DATE 17/10/2011   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 
 import aster
 from Accas import _F
+from Utilitai.Utmess import UTMESS
 import numpy
 prec = numpy.finfo(float).eps
 

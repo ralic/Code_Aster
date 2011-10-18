@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
 # ssnv506f.para = tps_job 780 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,6 +139,7 @@ DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
 
 CONT = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
+                    ALGO_RESO_CONT = 'NEWTON',
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT='SMAI',

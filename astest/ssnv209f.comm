@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209f.para = tps_job 320 mem_job 1000Mo mem_aster 100 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,7 +175,7 @@ U2M=STAT_NON_LINE(MODELE    = MO,
 #----------------------------------------------
 
 U2M=CALC_ELEM(reuse=U2M,
-              OPTION=('SIEF_ELNO', 'VARI_ELNO',),
+              OPTION=('SIGM_ELNO', 'VARI_ELNO',),
               RESULTAT=U2M,)
 
 DEPL2M=CREA_CHAMP(OPERATION='EXTR',
@@ -252,7 +252,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'PPD',
                    NOM_CMP    = 'DX',
-                   VALE       = 2.1587163322359E-05,
+                   VALE       = 2.1587122445096E-05,
                    PRECISION  = 1.E-6,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '7.1.11',
@@ -262,7 +262,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'PPE',
                    NOM_CMP    = 'DX',
-                   VALE       = 1.7004584232197E-05,
+                   VALE       =  1.7004520074141E-05  ,
                    PRECISION  = 1.E-6,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '7.1.11',),),)

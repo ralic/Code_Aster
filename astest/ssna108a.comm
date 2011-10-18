@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
 # ssna108a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,7 +108,7 @@ U=EXTR_RESU(RESULTAT=T,ARCHIVAGE=_F(NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),))
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U,
               )
 

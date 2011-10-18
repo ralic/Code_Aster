@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE RELAXATION EN AXIS VENDOCHAB
 # ssnv126d.para = tps_job 80 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -268,12 +268,12 @@ SOLNK=STAT_NON_LINE(
 
 SOLNK=CALC_ELEM( reuse=SOLNK,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNK,
               )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 50,
+  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 7.99229E+01,
          PRECISION = 5.0E-3),
 
@@ -292,7 +292,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 6.626658E-02,
          PRECISION = 1.0E-2),
 
-  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 7.09022E+01,
          PRECISION = 1.0E-2),
 
@@ -345,12 +345,12 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 50,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 7.99229E+01,
          PRECISION = 4.0E-2),
 
@@ -369,7 +369,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 6.626658E-02,
          PRECISION = 4.0E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 7.09022E+01,
          PRECISION = 4.0E-2),
 

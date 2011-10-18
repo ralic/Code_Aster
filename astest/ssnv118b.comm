@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB)
 # ssnv118b.para = tps_job 60 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -320,17 +320,17 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                        OPTION=( 'EPSI_ELNO',
-                                'SIEF_ELNO',  'VARI_ELNO',),
+                                'SIGM_ELNO',  'VARI_ELNO',),
                      RESULTAT=SOLNL,
                            INST=10.,
               )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 11,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIXX',  VALE = 1.50000E+2,
                                                    PRECISION = 1.5E-3),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 11,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIXY',  VALE = 6.00000E+1,
                  PRECISION = 1.5E-3),
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CUBE PLEIN RENFORCE PAR DES ARMATURES SOUS CHARGEMENT TRIAXIAL TRIA3 GRILLE_MEMBRANE
 # sslv146b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,7 +154,7 @@ LEDEP=STAT_NON_LINE(
 
 
 LEDEP=CALC_ELEM( reuse = LEDEP,
-                 OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIEF_ELNO', 'VARI_ELNO',),
+                 OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIGM_ELNO', 'VARI_ELNO',),
                  RESULTAT   = LEDEP,
                )
 
@@ -445,7 +445,7 @@ TEST_RESU(RESU=(
 #
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD  = 'NO1',
@@ -454,7 +454,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA3',
              NOEUD  = 'NO1',
@@ -463,7 +463,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA5',
              NOEUD  = 'NO1',
@@ -472,7 +472,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA11',
              NOEUD  = 'NO1',
@@ -481,7 +481,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA31',
              NOEUD  = 'NO1',
@@ -490,7 +490,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA51',
              NOEUD  = 'NO1',

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127b.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,10 +143,10 @@ REST=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT1, CARA_ELEM=CAREL,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=10),);
 
-CALC_CHAMP(reuse=REST,RESULTAT=REST,  CONTRAINTE=('SIEF_ELNO'))
+CALC_CHAMP(reuse=REST,RESULTAT=REST,  CONTRAINTE=('EFGE_ELNO'))
 
 NdeU=RECU_FONCTION(RESULTAT=REST,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='SR1',
                    NOEUD='R3');
@@ -216,10 +216,10 @@ REST2=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL,
                                    ITER_GLOB_ELAS=10),
                     );
 
-CALC_CHAMP(reuse=REST2,RESULTAT=REST2,  CONTRAINTE=('SIEF_ELNO'),);
+CALC_CHAMP(reuse=REST2,RESULTAT=REST2,  CONTRAINTE=('EFGE_ELNO'),);
 
 NdeU2=RECU_FONCTION(RESULTAT=REST2,
-                    NOM_CHAM='SIEF_ELNO',
+                    NOM_CHAM='EFGE_ELNO',
                     NOM_CMP='N',
                     MAILLE='SR1',
                     NOEUD='R3');
@@ -289,10 +289,10 @@ REST3=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT3, CARA_ELEM=CAREL,
                                    ITER_GLOB_ELAS=10),
                     );
 
-CALC_CHAMP(reuse=REST3,RESULTAT=REST3,  CONTRAINTE=('SIEF_ELNO'))
+CALC_CHAMP(reuse=REST3,RESULTAT=REST3,  CONTRAINTE=('EFGE_ELNO'))
 
 NdeU3=RECU_FONCTION(RESULTAT=REST3,
-                    NOM_CHAM='SIEF_ELNO',
+                    NOM_CHAM='EFGE_ELNO',
                     NOM_CMP='N',
                     MAILLE='SR1',
                     NOEUD='R3',);
@@ -323,7 +323,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 
 TEST_RESU(RESU=(_F(RESULTAT=REST,
                    INST=0.019,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='SR1',
                    NOEUD='R3',
@@ -332,7 +332,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST,
                    INST=0.02,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='SR1',
                    NOEUD='R3',
@@ -363,7 +363,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    INST=0.0164,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='SR1',
                    NOEUD='R3',
@@ -372,7 +372,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST2,
                    INST=0.018,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='SR1',
                    NOEUD='R3',
@@ -404,7 +404,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    INST=7.50000E-03,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='SR1',
                    NOEUD='R3',
@@ -413,7 +413,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST3,
                    INST=8.00000E-03,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    MAILLE='SR1',
                    NOEUD='R3',

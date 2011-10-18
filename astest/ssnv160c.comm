@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE JOUMANA J. EL GHARIB
 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D
@@ -181,7 +181,7 @@ TDEP=(5000.,6500.,7000.,7500.,8000.,8500.,9000.,9500.)
 RESU1=CALC_ELEM(  reuse=RESU1,
 
 
-                  OPTION=('SIEF_ELNO',
+                  OPTION=('SIGM_ELNO',
                           'VARI_ELNO',
                           'EPSI_ELNO',
                           'EPSP_ELNO'),
@@ -189,7 +189,7 @@ RESU1=CALC_ELEM(  reuse=RESU1,
                         )
 RESU1=CALC_NO(  reuse=RESU1,
 
-                OPTION=('SIEF_NOEU','VARI_NOEU',
+                OPTION=('SIGM_NOEU','VARI_NOEU',
                         'EPSI_NOEU'),
                 RESULTAT=RESU1
                         )

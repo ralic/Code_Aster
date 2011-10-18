@@ -1,10 +1,10 @@
       SUBROUTINE MMMVFF(PHASEP,NDIM  ,NNL   ,NBCPS ,WPG   ,
-     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,COEFFS,
-     &                  COEFFP,DLAGRF,RESE  ,LAMBDA,COEFFF,
-     &                  DVITE ,MPROJT,VECTFF)
+     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,COEFAF,
+     &                  DLAGRF,RESE  ,LAMBDA,COEFFF,DVITE ,
+     &                  MPROJT,VECTFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C
       INTEGER      NDIM,NNL,NBCPS
       REAL*8       WPG,FFL(9),JACOBI,DLAGRF(2)
       REAL*8       TAU1(3),TAU2(3),RESE(3)
-      REAL*8       COEFFS,COEFFP
+      REAL*8       COEFAF
       REAL*8       LAMBDA,COEFFF
       REAL*8       VECTFF(18)
       REAL*8       DVITE(3),MPROJT(3,3)
@@ -57,11 +57,10 @@ C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  NBCPS  : NOMBRE DE COMPOSANTES/NOEUD DES LAGR_C+LAGR_F
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
-C IN  COEFFS : COEF_STAB_FROT
-C IN  COEFFP : COEF_PENA_CONT
+C IN  COEFAF : COEF_AUGM_FROT
 C IN  DLAGRF : INCREMENT DEPDEL DU LAGRANGIEN DE FROTTEMENT
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
-C               GTK = LAMBDAF + COEFFR*VITESSE
+C               GTK = LAMBDAF + COEFAF*VITESSE
 C IN  LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL DE TRESCA)
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 C IN  DVITE  : SAUT D'INCREMENT DES DEPLACEMENTS A L'INTERFACE 
@@ -173,7 +172,7 @@ C
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)-
      &                   WPG*FFL(I)*JACOBI*
-     &                   TT(L)/COEFFP
+     &                   TT(L)/COEFAF
   202     CONTINUE
   201   CONTINUE
       ELSEIF (PHASEP.EQ.'ADHE') THEN
@@ -191,7 +190,7 @@ C
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)+
      &                   WPG*FFL(I)*JACOBI*
-     &                   COEFFF*LAMBDA*INTER(L)/COEFFS
+     &                   COEFFF*LAMBDA*INTER(L)/COEFAF
  64       CONTINUE
  63     CONTINUE
       ELSEIF (PHASEP.EQ.'ADHE_PENA') THEN
@@ -200,7 +199,7 @@ C
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II) +
      &                   WPG*FFL(I)*JACOBI*COEFFF*
-     &                   LAMBDA*((TT(L)/COEFFP)-INTER(L))
+     &                   LAMBDA*((TT(L)/COEFAF)-INTER(L))
  74       CONTINUE
  73     CONTINUE
       ELSEIF (PHASEP.EQ.'GLIS_PENA') THEN
@@ -209,7 +208,7 @@ C
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)+
      &                   WPG*FFL(I)*JACOBI*
-     &                   COEFFF*LAMBDA*INTER(L)/COEFFP
+     &                   COEFFF*LAMBDA*INTER(L)/COEFAF
  84       CONTINUE
  83     CONTINUE
       ELSE

@@ -1,7 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -666,10 +666,6 @@ C              (OPERANDE DE SELECTION SUR DES ENTITES TOPOLOGIQUES)
            CALL GETVTX('RESU','MAILLE'  ,IOCC,IARG,0,K8B,N3)
            CALL GETVTX('RESU','GROUP_MA',IOCC,IARG,0,K8B,N4)
            IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
-     &          .AND. (FORM(1:7).EQ.'ENSIGHT')) THEN
-             CALL U2MESS('A','PREPOST3_72')
-           ENDIF
-           IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
      &          .AND. (FORM(1:6).EQ.'CASTEM')) THEN
              CALL U2MESS('A','PREPOST3_73')
            ENDIF
@@ -677,7 +673,7 @@ C              (OPERANDE DE SELECTION SUR DES ENTITES TOPOLOGIQUES)
 C          *** ON S'ALLOUE UN TABLEAU DE 8 ENTIERS POUR LA TOPOLOGIE
            CALL WKVECT('&&OP0039.LIST_TOPO','V V I',8,JTOPO)
 C
-           IF(FORM(1:7).NE.'ENSIGHT'.AND.FORM(1:6).NE.'CASTEM') THEN
+           IF(FORM(1:6).NE.'CASTEM') THEN
 C            *** CAS D'UNE LISTE DE GROUPES DE NOEUDS
              IF(N2.LT.0) THEN
                NBGRN = -N2
@@ -947,13 +943,12 @@ C        ---- IMPRESSION VALEUR MAX, VALEUR MIN----
 C
 C        ********************************************
 C        ---- CHOIX DES COMPOSANTES AUX FORMATS ----
-C        ---- RESULTAT, ENSIGHT, CASTEM, MED ET GMSH  ----
+C        ---- RESULTAT, CASTEM, MED ET GMSH  ----
 C        ********************************************
          IF((NC.NE.0.OR.NR.NE.0).AND.
      &        ( FORM.EQ.'RESULTAT'     .OR.
      &          FORM(1:4).EQ.'GMSH'    .OR.
      &          FORM(1:3).EQ.'MED'     .OR.
-     &          FORM(1:7).EQ.'ENSIGHT' .OR.
      &          FORM(1:5).EQ.'IDEAS'   .OR.
      &          FORM(1:6).EQ.'CASTEM' ) ) THEN
            CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,0,K8B,N)

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -200,7 +200,7 @@ U=STAT_NON_LINE(MODELE=MO,
 U=CALC_ELEM(reuse =U,
 
 
-            OPTION=('SIEF_ELNO'),
+            OPTION=('SIGM_ELNO'),
             RESULTAT=U,);
 #
 #
@@ -209,7 +209,7 @@ TPRESS=POST_RELEVE_T(ACTION=_F(INTITULE='PRESS',
                               GROUP_NO='RELEVE',
                               RESULTAT=U,
                               INST=1.,
-                              NOM_CHAM='SIEF_ELNO',
+                              NOM_CHAM='SIGM_ELNO',
                               NOM_CMP='SIXX',
                               REPERE='POLAIRE',
                               OPERATION='EXTRACTION',),);

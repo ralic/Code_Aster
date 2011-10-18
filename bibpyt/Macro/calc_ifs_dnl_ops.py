@@ -1,4 +1,4 @@
-#@ MODIF calc_ifs_dnl_ops Macro  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+#@ MODIF calc_ifs_dnl_ops Macro  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -281,12 +281,12 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
 #   _timeStep    = _timeValues[1]
 #   _tInitial    = _timeValues[2]
 #   _nbSsIterMax = int(_timeValues[3])
-#   _impEnsight  = int(_timeValues[4])
+#   _impMed  = int(_timeValues[4])
 #   _PeriodImp   = int(_timeValues[5])
 #   _StartImp    = int(_timeValues[6])
   _nbSsIterMax  = int(_timeValues[1])
   _Epsilo       = _timeValues[2]
-  _impEnsight   = int(_timeValues[3])
+  _impMed   = int(_timeValues[3])
   _PeriodImp    = int(_timeValues[4])
   _tInitial     = _timeValues[5]
   _timeStep     = _timeValues[6]
@@ -295,7 +295,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
   print '_timeStep    = ',_timeStep
   print '_tInitial    = ',_tInitial
   print '_nbSsIterMax = ',_nbSsIterMax
-  print '_impEnsight  = ',_impEnsight
+  print '_impMed  = ',_impMed
   print '_PeriodImp   = ',_PeriodImp
   print '_StartImp   = ',_StartImp
   if (_nbSsIterMax == 0):
@@ -527,11 +527,11 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
 
 
   #========================================================================#
-  # Impression Ensight si demandee                                         #
+  # Impression Med si demandee                                             #
   # (premier et dernier pas d'impression pour coherence avec Code_Saturne) #
   # ---------------------------------------------------------------------- #
-  print "impression ensight : ",_impEnsight
-  if (_impEnsight == 1):
+  print "impression med : ",_impMed
+  if (_impMed == 1):
 
     impEnsiMocle               = {}
     impEnsiMocle['INTERVALLE'] = []
@@ -571,7 +571,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
     _listImp=DEFI_LIST_ENTI(DEBUT      = _StartImp,
                             **impEnsiMocle);
     print "Liste impression=", _listImp
-    IMPR_RESU(FORMAT='ENSIGHT',
+    IMPR_RESU(FORMAT='MED',
               RESU=_F(MAILLAGE=_strucMesh,
                       RESULTAT=resdnl,
                       LIST_ORDRE=_listImp,),);

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,7 +141,7 @@ RESU1=STAT_NON_LINE(
 
 RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
-                  'SIEF_ELNO',),
+                  'EFGE_ELNO',),
                           RESULTAT=RESU1,
               )
 
@@ -157,7 +157,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N3',
                  MAILLE = 'M14',
                  NOM_CMP = 'N',
@@ -182,7 +182,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N6',
                  MAILLE = 'M17',
                  NOM_CMP = 'N',
@@ -209,7 +209,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N20',
                  MAILLE = 'M10',
                  NOM_CMP = 'N',
@@ -236,7 +236,7 @@ TEST_RESU(RESU=(
 
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N25',
                  MAILLE = 'M46',
                  NOM_CMP = 'N',
@@ -387,7 +387,7 @@ RESU2=CREA_RESU( reuse=RESU2,   OPERATION='PERM_CHAM', TYPE_RESU='EVOL_NOLI',
 
 RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
-                  'SIEF_ELNO',),
+                  'EFGE_ELNO',),
                           RESULTAT=RESU2,
               )
 
@@ -405,7 +405,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N33',
                  MAILLE = 'M57',
                  NOM_CMP = 'N',
@@ -432,7 +432,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N26',
                  MAILLE = 'M9',
                  NOM_CMP = 'N',
@@ -459,7 +459,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N37',
                  MAILLE = 'M31',
                  NOM_CMP = 'N',
@@ -488,7 +488,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
            _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N21',
                  MAILLE = 'M24',
                  NOM_CMP = 'N',
@@ -515,7 +515,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N9',
                  MAILLE = 'M16',
                  NOM_CMP = 'N',
@@ -543,7 +543,7 @@ TEST_RESU(RESU=(
 
            _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N15',
                  MAILLE = 'M20',
                  NOM_CMP = 'N',
@@ -590,14 +590,14 @@ DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU12),)
 DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU1),)
 
 CALC_NO( reuse=RESU11,RESULTAT=RESU11,
-           OPTION=('SIEF_NOEU'),
+           OPTION=('EFGE_NOEU'),
                   )
 
 TEST_RESU(RESU=(
 
           _F( RESULTAT = RESU11,
                  NUME_ORDRE = 8,
-                 NOM_CHAM = 'SIEF_NOEU',
+                 NOM_CHAM = 'EFGE_NOEU',
                  NOEUD = 'N9',
                  NOM_CMP = 'N',
                  VALE = -4.00553E+06, REFERENCE = 'ANALYTIQUE',

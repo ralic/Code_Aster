@@ -1,273 +1,194 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE PROIX J-M.PROIX
-
-DEBUT(CODE=_F(NOM='FORMA01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-# TITRE TRAVAUX PRATIQUES FORMATION DE BASE
-# forma01b.para = tps_job 60 mem_job 255Mo ncpus 1 liste_test R
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE DELMAS J.DELMAS
+# TITRE PLAQUE TROUEE EN TRACTION EN ELASTICITE - ADAPTATION DE MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#        GEOMETRIE COMPORTANT UN COUDE
-#     MODELISATION PAR DES ELEMENTS COQUES DKT
-#            PRODUIT PAR SALOME
-#     ----------------------------------------
-# -*- coding: iso-8859-1 -*-
+# forma01b.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+DEBUT(CODE=_F(NOM='FORMA01B',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),);
 
-# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
-#
+MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                         NU=0.3,),);
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+
+MODE=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='C_PLAN',),);
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
-                                      VECT_NORM=(1.0,0.0,0.0,),
-                                      GROUP_NO='A1',),);
-# DEFINITION DES ELEMENTS FINIS UTILISES
+                   ORIE_PEAU_2D=_F(GROUP_MA='haut',),);
 
-MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA=('TUYAU','EFOND',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),);
-# DEFINITION DU MATERIAU UTILISE
+MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MA,),);
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=204.E9,
-                            NU=0.3,),);
+CHAR=AFFE_CHAR_MECA(MODELE=MODE,
+                    DDL_IMPO=(_F(GROUP_MA='bas',
+                                 DY=0.0,),
+                              _F(GROUP_MA='gauche',
+                                 DX=0.0,),),
+                    PRES_REP=_F(GROUP_MA='haut',
+                                PRES=-100.0,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+RESU=MECA_STATIQUE(MODELE=MODE,
+                   CHAM_MATER=MATE,
+                   EXCIT=_F(CHARGE=CHAR,),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIGM_ELNO','SIEQ_ELNO','SIEQ_ELGA',),);
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION=('SIGM_NOEU','SIEQ_NOEU',),);
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(MAILLAGE=MAIL,
+                  RESULTAT=RESU,
+                  NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION='ERME_ELEM',);
+
+MACR_ADAP_MAIL(MAILLAGE_N=MAIL,
+               MAILLAGE_NP1=CO('MAIL2'),
+               ADAPTATION='RAFFINEMENT',
+               RESULTAT_N=RESU,
+               NOM_CHAM='ERME_ELEM',
+               NOM_CMP='ERREST',
+               CRIT_RAFF_PE=0.1,);
+
+MODE2=AFFE_MODELE(MAILLAGE=MAIL2,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='C_PLAN',),);
+
+MATE2=AFFE_MATERIAU(MAILLAGE=MAIL2,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
-#
-# CARACTERISTIQUES DES COQUES
+                            MATER=MA,),);
 
-CARA_COQ=AFFE_CARA_ELEM(MODELE=MODMECA,
-                        COQUE=_F(GROUP_MA=('TUYAU','EFOND',), EPAIS=0.02, ANGL_REP=(90.,0.)),);
-#
-# DEFINITION DES CONDITIONS AUX LIMITES
-#    ENCASTREMENT SUR LA SECTION ENCAST
-#
-#
+CHAR2=AFFE_CHAR_MECA(MODELE=MODE2,
+                     DDL_IMPO=(_F(GROUP_MA='bas',
+                                  DY=0.0,),
+                               _F(GROUP_MA='gauche',
+                                  DX=0.0,),),
+                     PRES_REP=_F(GROUP_MA='haut',
+                                 PRES=-100.0,),);
 
-BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
-                        DDL_IMPO=(_F(GROUP_MA='ENCAST',
-                                     LIAISON='ENCASTRE',),
-                                  _F(GROUP_MA='SYMETRIE',
-                                     DZ=0.0,
-                                     DRX=0.0,
-                                     DRY=0.0,),),);
-#
-# DEFINITION DES CHARGEMENTS
-#    CHARGEMENT 1 : FY=100KN (FX,FZ,MX,MY,MZ NULS)
-#    CHARGEMENT 2 : PRESSION INTERNE DE 15 MPA
-#
-#
-FYTOT = 100000.0;
+RESU2=MECA_STATIQUE(MODELE=MODE2,
+                    CHAM_MATER=MATE2,
+                    EXCIT=_F(CHARGE=CHAR2,),);
 
-EPTUB = 0.02;
+RESU2=CALC_ELEM(reuse =RESU2,
+                RESULTAT=RESU2,
+                OPTION=('SIGM_ELNO','SIEQ_ELNO','SIEQ_ELGA',),);
 
-REXT = 0.2;
+RESU2=CALC_NO(reuse =RESU2,
+              RESULTAT=RESU2,
+              OPTION=('SIGM_NOEU','SIEQ_NOEU',),);
 
-RMOY = (REXT - (EPTUB / 2));
+IMPR_RESU(FORMAT='MED',
+          UNITE=81,
+          RESU=_F(MAILLAGE=MAIL2,
+                  RESULTAT=RESU2,
+                  NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),);
 
-FYREP = (((FYTOT / 2.0) / pi) / RMOY);
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=303.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.05,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=289.521225,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-7,
+                   REFERENCE='NON_REGRESSION',),),);
 
-RINT = (RMOY - (EPTUB / 2));
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=-100.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.15,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=-85.8814145,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-7,
+                   REFERENCE='NON_REGRESSION',),),);
 
-SINT = (pi * (RINT * RINT));
-
-#
-# 2*PI*R*FY = 100 KN
-#
-#
-
-CHARG1=AFFE_CHAR_MECA(MODELE=MODMECA,
-                      FORCE_ARETE=_F(GROUP_MA='EFOND',
-                                     FY=FYREP,),);
-#
-# 2*PI*R*FX = PINT * SINT ;
-#
-PINT = 15000000.0;
-
-PRES = ((PINT * RINT) / RMOY);
-
-
-CHARG2=AFFE_CHAR_MECA(MODELE=MODMECA,
-                      FORCE_COQUE=_F(GROUP_MA='TUYAU',
-                                     PRES=PRES,),);
-
-RESU1=MECA_STATIQUE(MODELE=MODMECA,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA_COQ,
-                    EXCIT=(_F(CHARGE=BLOQUAGE,),
-                           _F(CHARGE=CHARG1,),),);
-
-RESU2=MECA_STATIQUE(MODELE=MODMECA,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA_COQ,
-                    EXCIT=(_F(CHARGE=BLOQUAGE,),
-                           _F(CHARGE=CHARG2,),),);
-
-RESU1=CALC_ELEM(reuse =RESU1,
-                RESULTAT=RESU1,
-                REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                OPTION=('SIGM_ELNO','SIEQ_ELNO',),);
-
-
-IMPR_RESU(MODELE=MODMECA,
-          FORMAT='MED',
-          RESU=(_F(RESULTAT=RESU1,
-                   NOM_CHAM='DEPL',),
-                _F(RESULTAT=RESU1,
-                   NOM_CHAM='SIEQ_ELNO',),
-                   ),);
-
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(RESULTAT=RESU1,
-                   NOM_CHAM='DEPL',
-                   GROUP_MA='EFOND',),
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=303.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU2,
-                   NOM_CHAM='DEPL',
-                   GROUP_MA='EFOND',),),);
-
-
-
-
-
-
-# TESTS DE NON REGRESSION
-
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=(
-                _F(GROUP_MA='ENCAST',),
-                _F(GROUP_MA='EFOND',),
-                _F(OPTION='PLAN',
-                   NOM='PEXT',
-                   POINT=(3.6,3.6,0.0,),
-                   VECT_NORMALE=(0.0,1.0,0.0,),
-                   PRECISION=0.001,),
-                _F(INTERSEC=('EFOND','PEXT',),
-                   NOM='PB',),),);
-
-TABDEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB1',
-                                GROUP_NO='PB',
-                                RESULTAT=RESU1,
-                                NOM_CHAM='DEPL',
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
-
-TABDEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB2',
-                                GROUP_NO='PB',
-                                RESULTAT=RESU2,
-                                NOM_CHAM='DEPL',
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
-
-
-TEST_TABLE(TABLE=TABDEP1,
-           NOM_PARA='DX',
-           VALE=-0.028983,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.20',);
-
-TEST_TABLE(TABLE=TABDEP1,
-           NOM_PARA='DY',
-           VALE=0.106334,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.20',);
-
-TEST_TABLE(TABLE=TABDEP1,
-           NOM_PARA='DRZ',
-           VALE=0.032731,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.20',);
-
-TEST_TABLE(TABLE=TABDEP2,
-           NOM_PARA='DX',
-           VALE=-0.28903,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.20',);
-
-TEST_TABLE(TABLE=TABDEP2,
-           NOM_PARA='DY',
-           VALE=0.46659,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.20',);
-
-TEST_TABLE(TABLE=TABDEP2,
-           NOM_PARA='DRZ',
-           VALE=0.12999,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.20',);
-
-
-# Creation de groupe de mailles en parties courantes du tubes
-# Horizontal  et Vertical
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_MA=(_F(NOM='TUBEH5',
-                                  OPTION='BANDE',
-                                  POINT=(2.5,0,0),
-                                  DIST=0.1,
-                                  VECT_NORMALE=(1,0,0,),),
-                               _F(NOM='TUBEH',
-                                  INTERSEC=('TUBEH5','TUYAU',), ),
-                                 ),);
-
-
-
-RESU4=CALC_ELEM(OPTION='SIGM_ELNO',
-                 RESULTAT=RESU2,
-                 GROUP_MA='TUBEH',
-                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY'),
-                 ),)
-
-RESU3=CALC_ELEM(OPTION='SIGM_ELNO',
-                 RESULTAT=RESU2,
-                 GROUP_MA='TUBEH',
-                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY'),
-                 ),)
-
-
-# TEST_RESU
-
-# solution analytique tube droit et libre sous pression
-
-Sxx=PRES*RMOY/EPTUB
-
-TEST_RESU(RESU=_F(RESULTAT=RESU4,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',TYPE_TEST='MAX',
-                   VALE=Sxx,PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE'),)
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=299.235781,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-7,
+                   REFERENCE='NON_REGRESSION',),),);
 
-TEST_RESU(RESU=_F(RESULTAT=RESU3,
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',TYPE_TEST='MAX',
-                   VALE=Sxx,PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE'),)
-
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=-100.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.03,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=-97.4283849,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-7,
+                   REFERENCE='NON_REGRESSION',),),);
 
 FIN();

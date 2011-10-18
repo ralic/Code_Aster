@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture1 Messages  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -282,14 +282,6 @@ le calcul de propagation est impossible.
 -> Risque et Conseil :
 Vérifier les paramètres du calcul de G (rayons des couronnes ou abscisse curviligne 
 maximale, type de lissage, ...). 
-"""),
-
-48: _(u"""
-Le calcul de la propagation d'une fissure avec la méthode 'MAILLAGE' n'est possible que
-si la fissure ne comporte qu'un seul fond. La fissure fournie en entrée de PROPA_FISS
-en comporte ici %(i1)s.
--> Risque et Conseil :
-Vérifier la fissure produite en sortie de DEFI_FISS_XFEM.
 """),
 
 49: _(u"""

@@ -5,7 +5,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/09/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 18/10/2011   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,7 +76,7 @@ C
       INTEGER JNUME,NIS,NPAS,FID,MAJOR,MINOR,REL
       INTEGER IRET,IFIMED
       INTEGER I,IER
-      INTEGER IPAS
+      INTEGER IPAS,IAUX2
       INTEGER INDIIS
       INTEGER IBID,J
       INTEGER MFICH,JINST,ITPS
@@ -127,7 +127,7 @@ C
 
       CHARACTER*64 K64B
 
-      LOGICAL EXISTM,IDENSD
+      LOGICAL EXISTM,IDENSD,LOGAUX
 C
 C ----------------------------------------------------------------------
 C
@@ -268,6 +268,24 @@ C
           NUMPT  = ZI(INUM+2*ITPS-2)
         ELSEIF(NIS.NE.0)THEN
           INST = ZR(JLIST+ITPS-1)
+          LOGAUX = .FALSE.
+          DO 222 , IAUX2 = 1 , NPAS0
+            IF( CRIT(1:4).EQ.'RELA' ) THEN
+              IF(ABS(ZR(IPAS-1+IAUX2)-INST).LE.ABS(EPSI*INST)) THEN
+                LOGAUX = .TRUE.
+              ENDIF
+            ELSE IF( CRIT(1:4).EQ.'ABSO' ) THEN
+              IF(ABS(ZR(IPAS-1+IAUX2)-INST).LE.ABS(EPSI)) THEN
+                LOGAUX = .TRUE.
+              ENDIF
+            ENDIF
+            IF ( LOGAUX ) THEN
+              NUMPT = ZI(INUM+2*IAUX2-2)
+              NUMORD = ZI(INUM+2*IAUX2-1)
+              GOTO 2221
+            ENDIF
+ 222      CONTINUE
+ 2221     CONTINUE
         ENDIF
 
         CALL LRCHME(CHANOM,NOCHMD,K64B,NOMA,TYPCHA,NOMGD,TYPENT,

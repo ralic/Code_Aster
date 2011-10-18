@@ -1,6 +1,6 @@
       SUBROUTINE TE0517(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,11 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C     CALCUL DES OPTIONS POUR L'ELEMENT POU_D_TGM (MULTI-FIBRES)
 C        VARI_ELNO
-C        SIEF_ELNO
+C        EFGE_ELNO
 C        FORC_NODA
 C
 C     CALCUL DES OPTIONS POUR L'ELEMENT POU_D_EM (MULTI-FIBRES)
-C        SIEF_ELNO
+C        EFGE_ELNO
 C        FORC_NODA
 C
 C IN  OPTION : OPTION DE CALCUL
@@ -128,12 +128,12 @@ C  A QUOI SERT-ELLE, POUR CET ELEMENT ?
          CALL U2MESS('F','ELEMENTS4_16')
 
 C     --------------------------------------
-      ELSEIF ( OPTION .EQ. 'SIEF_ELNO'.AND.
+      ELSEIF ( OPTION .EQ. 'EFGE_ELNO'.AND.
      &         NOMTE(1:13).EQ.'MECA_POU_D_TG') THEN
 
          CALL JEVECH('PCONTRR','L',ICGP)
          CALL JEVECH('PSTRXRR','L',ISTRXR)
-         CALL JEVECH('PSIEFNOR','E',ICONTN)
+         CALL JEVECH('PEFFORR','E',ICONTN)
 
 
 C --- CALCUL DES FORCES INTEGREES
@@ -193,7 +193,7 @@ C          CALCUL DES EFFORTS GENERALISES A PARTIR DES CONTRAINTES
          ZR(ICONTN+2*(NC+1)+2-1) = TMIN(2)
 C     --------------------------------------
       ELSEIF ( OPTION .EQ. 'FORC_NODA'.OR.
-     &         OPTION .EQ. 'SIEF_ELNO' ) THEN
+     &         OPTION .EQ. 'EFGE_ELNO' ) THEN
 
          CALL JEVECH('PCAORIE','L',IORIEN)
 
@@ -243,7 +243,7 @@ C           --- FORC_NODA : PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
                CALL JEVECH('PVECTUR','E',IVECTU)
                CALL UTPVLG(NNO,NC,PGL,FL,ZR(IVECTU))
             ELSE
-               CALL JEVECH('PSIEFNOR','E',ICONTN)
+               CALL JEVECH('PEFFORR','E',ICONTN)
                DO 20 I = 1,12
                   ZR(ICONTN+I-1) = FL(I)
 20             CONTINUE

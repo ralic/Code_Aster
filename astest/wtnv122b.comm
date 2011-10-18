@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
 # wtnv122b.para = tps_job 100 mem_job 300Mo mem_aster 50 ncpus 1 liste_test S
@@ -307,14 +307,14 @@ U1=STAT_NON_LINE(reuse=U1,
               )
 
 U1=CALC_ELEM(  reuse=U1,
-                  OPTION=('SIEF_ELNO',
+                  OPTION=('SIGM_ELNO',
                           'VARI_ELNO',
                           ),
                   RESULTAT=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                       OPTION=( 'SIEF_NOEU',
+                       OPTION=( 'SIGM_NOEU',
                        'VARI_NOEU',
                            ),
                 )
@@ -328,7 +328,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIXX
                 _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 3.,
                        REFERENCE='NON_REGRESSION',
@@ -337,7 +337,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 6.,
                        REFERENCE='NON_REGRESSION',
@@ -346,7 +346,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
@@ -355,7 +355,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
@@ -366,7 +366,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIYY
                 _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 3.,
                        REFERENCE='NON_REGRESSION',
@@ -375,7 +375,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 6.,
                        REFERENCE='NON_REGRESSION',
@@ -384,7 +384,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
@@ -393,7 +393,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
@@ -404,7 +404,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                 _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 3.,
                        REFERENCE='NON_REGRESSION',
@@ -413,7 +413,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 6.,
                        REFERENCE='NON_REGRESSION',
@@ -422,7 +422,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
@@ -431,7 +431,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',

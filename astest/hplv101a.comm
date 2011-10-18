@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - CONT. PLANES - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,15 +117,6 @@ CALC_ELEM( reuse= DEPLDM ,RESULTAT= DEPLDM ,
 
                   OPTION='SIGM_ELNO'
                       )
-#
-# CALC_ELEM SERT A TESTER QUE SIEF_ELNO PEUT ETRE FAIT APRES
-# MECA_STATIQUE QUI CALCULE PAR DEFAUT SIEF_ELGA
-#
-CALC_ELEM( reuse = DEPLDM,
-                   OPTION =(
-                         'SIEF_ELNO'),
-                          RESULTAT=DEPLDM,
-                 )
 # ------------------------------------------------------------------
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
               INTERVALLE=_F( JUSQU_A = 1.0,      NOMBRE = 10)

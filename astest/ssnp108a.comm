@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,10 +126,10 @@ EVOLNOLI=STAT_NON_LINE(
                 INFO=2
               )
 
-EVOLNOLI=CALC_CHAMP( reuse=EVOLNOLI,
-                             CONTRAINTE=('SIEF_ELNO'),
-                          RESULTAT=EVOLNOLI,
-              )
+EVOLNOLI=CALC_CHAMP( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI, CONTRAINTE=('EFGE_ELNO'))
+EVOLNOLI=CALC_CHAMP( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI, CONTRAINTE=('SIEF_ELNO'))
+
+
 
 #
 ########################################################################
@@ -144,7 +144,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       NOEUD = 'NB001001',
                       MAILLE = 'QD001001',
-                      NOM_CHAM = 'SIEF_ELNO',
+                      NOM_CHAM = 'EFGE_ELNO',
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
@@ -157,7 +157,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       NOEUD = 'NB001002',
                       MAILLE = 'QD001001',
-                      NOM_CHAM = 'SIEF_ELNO',
+                      NOM_CHAM = 'EFGE_ELNO',
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
@@ -170,7 +170,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       NOEUD = 'NB002001',
                       MAILLE = 'QD001001',
-                      NOM_CHAM = 'SIEF_ELNO',
+                      NOM_CHAM = 'EFGE_ELNO',
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
@@ -183,7 +183,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       NOEUD = 'NB002002',
                       MAILLE = 'QD001001',
-                      NOM_CHAM = 'SIEF_ELNO',
+                      NOM_CHAM = 'EFGE_ELNO',
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,

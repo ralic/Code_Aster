@@ -19,7 +19,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 23/05/2011   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ C IN  NOSIMP : K8  : NOM SIMPLE ASSOCIE AU CONCEPT NOMCON SI SENSIBILITE
 C IN  NOPASE : K8  : NOM DU PARAMETRE SENSIBLE
 C IN  FORM   : K8  : FORMAT D'ECRITURE
 C IN  IFI    : IS  : UNITE LOGIQUE D'ECRITURE
-C IN  TITRE  : K80 : TITRE POUR ALI_BABA, SUPERTAB ET ENSIGHT
+C IN  TITRE  : K80 : TITRE POUR ALI_BABA ET SUPERTAB
 C IN  NBCHAM : I   : NOMBRE DE CHAMP DANS LE TABLEAU CHAM
 C IN  CHAM   : K16 : NOM DES CHAMPS A IMPRIMER ( EX 'DEPL', ....
 C IN  NBCMDU : I   : NOMBRE DE CHAMP DANS LE TABLEAU NCHMDU
@@ -110,9 +110,9 @@ C     ------------------------------------------------------------------
       CHARACTER*24 NOMST
       CHARACTER*24 VALK(2)
       CHARACTER*64 NOMMED
-      LOGICAL      LORDR,LCHABS,LCHAM1
-      INTEGER      NBCHCA,NBACC,NBCARA,NORDEN,IORDEN,IORDR1,NUORD1
-      INTEGER      LGCONC,NBCHEN,LGCH16
+      LOGICAL      LORDR
+      INTEGER      NBCHCA,NBACC,NBCARA,NORDEN
+      INTEGER      LGCONC,LGCH16
       INTEGER      NBRK16,NBK16,IERD,IBID
       INTEGER I, IBIB, ICHA, ICPRES, IFI,ISY, ITYPE
       INTEGER IUN, IDEU
@@ -165,139 +165,6 @@ C         (UNIQUEMENT FORMAT 'CASTEM')
         NBOBJ = NBCHCA + NBACC + 1
       ENDIF
 C
-C***********************************************************************
-C     POUR UN RESULTAT COMPOSE AU FORMAT 'ENSIGHT', L'ECRITURE DU
-C     FICHIER "RESULTS" ENSIGHT ET DES FICHIERS DE VALEURS ASSOCIES
-C     NECESSITE DE CREER TROIS OBJETS JEVEUX DE TYPE VECTEUR D'ENTIERS.
-C     CES OBJETS, DE TAILLE NBCHAM*NBORDR INDIQUENT, POUR UN CHAMP
-C     CHAM(ISY) ET UN NUMERO D'ORDRE ORDR(IORDR) :
-C     - POUR L'OBJET '&&IRECRI.CHPRES',
-C        * SI LE CHAMP EST PRESENT:  0 (1ERE FOIS), 1 SINON
-C        * SI LE CHAMP EST ABSENT : -1
-C     - POUR L'OBJET '&&IRECRI.FVIDAV', LE NOMBRE DE FICHIERS VIDES DE
-C       VALEURS A ECRIRE AVANT LES FICHIERS DE VALEURS DU CHAMP
-C     - POUR L'OBJET '&&IRECRI.FVIDAP', LE NOMBRE DE FICHIERS VIDES DE
-C       VALEURS A ECRIRE APRES LES FICHIERS DE VALEURS DU CHAMP
-C***********************************************************************
-      LCHABS=.FALSE.
-      IORDR1=1
-      IF(FORM(1:7).EQ.'ENSIGHT'.AND.LRESU) THEN
-        CALL JEEXIN('&&IRECRI.CHPRES',IRET)
-        IF(IRET.NE.0) CALL JEDETR('&&IRECRI.CHPRES')
-        CALL WKVECT('&&IRECRI.CHPRES','V V I',NBCHAM*NBORDR,JCPRES)
-        CALL JEVEUO('&&IRECRI.CHPRES','E',JCPRES)
-        CALL JEEXIN('&&IRECRI.FVIDAV',IRET)
-        IF(IRET.NE.0) CALL JEDETR('&&IRECRI.FVIDAV')
-        CALL WKVECT('&&IRECRI.FVIDAV','V V I',NBCHAM*NBORDR,JVIDAV)
-        CALL JEVEUO('&&IRECRI.FVIDAV','E',JVIDAV)
-        CALL JEEXIN('&&IRECRI.FVIDAV',IRET)
-        IF(IRET.NE.0) CALL JEDETR('&&IRECRI.FVIDAP')
-        CALL WKVECT('&&IRECRI.FVIDAP','V V I',NBCHAM*NBORDR,JVIDAP)
-        CALL JEVEUO('&&IRECRI.FVIDAP','E',JVIDAP)
-        IORDEN=0
-        NORDEN=0
-        DO 10 IORDR=1,NBORDR
-C       - VERIFICATION CORRESPONDANCE ENTRE NUMERO D'ORDRE
-C         UTILISATEUR ORDR(IORDR) ET NUMERO DE RANGEMENT IRET
-          CALL RSUTRG(NOMCON,ORDR(IORDR),IRET)
-          IF(IRET.EQ.0) THEN
-            CALL CODENT(ORDR(IORDR),'G',CHNUMO)
-            CALL U2MESK('A','PREPOST2_46',1,CHNUMO)
-            IF(IORDR.EQ.IORDR1) THEN
-              IORDR1=IORDR1+1
-              CALL U2MESS('A','PREPOST2_47')
-            ENDIF
-            GOTO 10
-          ENDIF
-          IORDEN=IORDEN+1
-          NORDEN=NORDEN+1
-          DO 11 ISY=1,NBCHAM
-C           - VERIFICATION EXISTENCE DANS LA SD RESULTAT NOMCON
-C             DU CHAMP CHAM(ISY) POUR LE NO. D'ORDRE ORDR(IORDR)
-            CALL RSEXCH(NOMCON,CHAM(ISY),ORDR(IORDR),NOCH19,IRET)
-            ICPRES=JCPRES-1+(IORDEN-1)*NBCHAM+ISY
-            IF(IRET.NE.0) THEN
-              ZI(ICPRES)=-1
-            ELSE
-              IF(IORDEN.EQ.1) THEN
-                ZI(ICPRES)=0
-              ELSE
-                IF(ZI(ICPRES-NBCHAM).GE.0) THEN
-                  ZI(ICPRES)=1
-                ELSE
-                  ZI(ICPRES)=0
-                ENDIF
-              ENDIF
-            ENDIF
-  11      CONTINUE
-  10    CONTINUE
-        CALL JEVEUO('&&IRECRI.CHPRES','L',JCPRES)
-        DO 12 ISY=1,NBCHAM
-          LCHABS=.FALSE.
-          DO 13 IORDEN=1,NORDEN
-            ICPRES=JCPRES-1+(IORDEN-1)*NBCHAM+ISY
-            IVIDAV=JVIDAV-1+(IORDEN-1)*NBCHAM+ISY
-            IF(ZI(ICPRES).EQ.-1) THEN
-              IF(IORDEN.EQ.1) THEN
-                ZI(IVIDAV)=1
-              ELSE
-                IF(ZI(ICPRES-NBCHAM).EQ.-1) THEN
-                  ZI(IVIDAV)=ZI(IVIDAV-NBCHAM)+1
-                ELSE
-                  IF(.NOT.LCHABS) LCHABS=.TRUE.
-                  ZI(IVIDAV)=1
-                ENDIF
-              ENDIF
-            ELSE
-              IF(IORDEN.EQ.1) THEN
-                ZI(IVIDAV)=0
-              ELSE
-                ZI(IVIDAV)=ZI(IVIDAV-NBCHAM)
-              ENDIF
-            ENDIF
-  13      CONTINUE
-          IF(LCHABS) THEN
-            CH16=CHAM(ISY)
-            LGCH16=LXLGUT(CH16)
-            LGCONC=LXLGUT(NOMCO)
-             VALK(1) = CH16(1:LGCH16)
-             VALK(2) = NOMCO(1:LGCONC)
-             CALL U2MESK('A','PREPOST2_48', 2 ,VALK)
-          ENDIF
-  12    CONTINUE
-        DO 14 ISY=1,NBCHAM
-          LCHABS=.FALSE.
-          DO 15 IORDEN=NORDEN,1,-1
-            ICPRES=JCPRES-1+(IORDEN-1)*NBCHAM+ISY
-            IVIDAP=JVIDAP-1+(IORDEN-1)*NBCHAM+ISY
-            IF(ZI(ICPRES).EQ.-1) THEN
-              IF(IORDEN.EQ.NORDEN) THEN
-                ZI(IVIDAP)=1
-              ELSE
-                IF(ZI(ICPRES+NBCHAM).EQ.-1) THEN
-                  IF(ZI(IVIDAP+NBCHAM).GT.0) THEN
-                    ZI(IVIDAP)=ZI(IVIDAP+NBCHAM)+1
-                  ELSE
-                    ZI(IVIDAP)=0
-                  ENDIF
-                ELSE
-                  ZI(IVIDAP)=0
-                ENDIF
-              ENDIF
-            ELSE
-              IF(IORDEN.EQ.NORDEN) THEN
-                ZI(IVIDAP)=0
-              ELSE
-                IF(ZI(ICPRES+NBCHAM).EQ.-1) THEN
-                  ZI(IVIDAP)=ZI(IVIDAP+NBCHAM)
-                ELSE
-                  ZI(IVIDAP)=0
-                ENDIF
-              ENDIF
-            ENDIF
-  15      CONTINUE
-  14    CONTINUE
-      ENDIF
 C
 C     --------------------------
 C     TRAITEMENT DU FORMAT GMSH
@@ -319,8 +186,6 @@ C
 C     *******************************************
 C     --- BOUCLE SUR LA LISTE DES NUMEROS D'ORDRE
 C     *******************************************
-      IORDEN=0
-      NUORD1=ORDR(IORDR1)
       NBRK16 = 0
 C
       DO 21 IORDR = 1,NBORDR
@@ -336,10 +201,9 @@ C
 C       --- SI VARIABLE DE TYPE RESULTAT = RESULTAT COMPOSE :
 C           VERIFICATION CORRESPONDANCE ENTRE NUMERO D'ORDRE
 C           UTILISATEUR ORDR(IORDR) ET NUMERO DE RANGEMENT IRET
-C           (SAUF AU FORMAT 'ENSIGHT' CAR VERIFICATION DEJA FAITE)
 C AU CAS OU ON NE PASSE PAS EN DESSOUS ON INITIALISE LORDR A FALSE
         LORDR=.FALSE.
-        IF(LRESU.AND.(FORM(1:7).NE.'ENSIGHT')) THEN
+        IF(LRESU) THEN
           CALL RSUTRG(NOMCON,ORDR(IORDR),IRET)
           IF(IRET.EQ.0) THEN
 C           - MESSAGE NUMERO D'ORDRE NON LICITE
@@ -351,9 +215,6 @@ C           - MESSAGE NUMERO D'ORDRE NON LICITE
         ENDIF
 C
 C       --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
-        IORDEN=IORDEN+1
-        NBCHEN=0
-        LCHAM1=.FALSE.
         IF(NBCHAM.NE.0) THEN
           DO 20 ISY = 1,NBCHAM
             IF( LRESU ) THEN
@@ -362,13 +223,7 @@ C             - VERIFICATION EXISTENCE DANS LA SD RESULTAT NOMCON
 C               DU CHAMP CHAM(ISY) POUR LE NO. D'ORDRE ORDR(IORDR)
 C               ET RECUPERATION DANS NOCH19 DU NOM SE LE CHAM_GD EXISTE
               CALL RSEXCH(NOMCON,CHAM(ISY),ORDR(IORDR),NOCH19,IRET)
-              IF(IRET.NE.0) THEN
-C               - ON PASSE AU CHAMP SUIVANT
-                GOTO 20
-              ENDIF
-              IF((FORM(1:7).EQ.'ENSIGHT').AND.
-     &                                   (NBCHEN.EQ.0)) LCHAM1=.TRUE.
-              NBCHEN=NBCHEN+1
+              IF(IRET.NE.0) GOTO 20
             ELSE
 C           * CHAM_GD
               NOCH19 = NOMCON
@@ -398,7 +253,7 @@ C              ---- SEPARATION DES DIVERS CHAMPS -----
 C
 C           ********************************************************
 C           * IMPRESSION DU CHAMP (CHAM_NO OU CHAM_ELEM) AU FORMAT
-C             'RESULTAT' , 'SUPERTAB' OU 'ENSIGHT'
+C             'RESULTAT' OU 'SUPERTAB'
 C                LE CHAMP EST UN CHAM_GD SIMPLE SI LRESU=.FALSE. OU
 C                LE CHAMP EST LE CHAM_GD CHAM(ISY) DE NUMERO D'ORDRE
 C                ORDR(IORDR) ISSU DE LA SD_RESULTAT NOMCON
@@ -409,11 +264,10 @@ C                ORDR(IORDR) ISSU DE LA SD_RESULTAT NOMCON
             ENDIF
             CALL IRCH19(NOCH19,PARTIE,FORM,IFI,TITRE,MODELE,
      &        NOMCON,NOSIMP,NOPASE,CHAM(ISY),NBCMDU,NOMMED,
-     &        ORDR(IORDR),NUORD1,NORDEN,IORDEN,NBCHAM,ISY,
-     &        LCHAM1,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
+     &        ORDR(IORDR),
+     &        LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
      &        LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,
      &        NIVE )
-            IF(LCHAM1) LCHAM1=.FALSE.
    20     CONTINUE
         ENDIF
 C

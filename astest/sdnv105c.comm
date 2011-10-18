@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105c.para = tps_job 2020 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -223,15 +223,14 @@ CHA_conp=DEFI_CONTACT(MODELE       = MO,
                       ),
          )
 
-CHA_cont=DEFI_CONTACT(MODELE       = MO,
-                      FORMULATION  = 'CONTINUE',
-                      FROTTEMENT   = 'COULOMB',
+CHA_cont=DEFI_CONTACT(MODELE         = MO,
+                      FORMULATION    = 'CONTINUE',
+                      FROTTEMENT     = 'COULOMB',
+                      ALGO_RESO_FROT = 'POINT_FIXE',
                       ITER_FROT_MAXI = 20,
                       ZONE = _F(
                               ALGO_CONT     = 'STANDARD',
                               COEF_CONT     = 1.0E-3,
-                              APPARIEMENT   = 'MAIT_ESCL',
-                              NORMALE       = 'MAIT',
                               GROUP_MA_MAIT = 'CONBAS',
                               GROUP_MA_ESCL = 'CONHAUT',
                               COULOMB       = mu_frot,
@@ -317,7 +316,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,
                                      ALPHA = -0.6),
                        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
                        SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA',SYME='OUI',),
-                       CONVERGENCE=_F(ARRET='NON',
+                       CONVERGENCE=_F(ARRET='OUI',
                                       RESI_GLOB_MAXI=0.0001,
                                       RESI_GLOB_RELA=1e-05,
                                       ITER_GLOB_MAXI=20));
@@ -418,7 +417,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=10,
-                                      ARRET='NON'));
+                                      ARRET='OUI'));
 
 # ---- second vol libre: hht(alpha=0.)
 # RC sdnvxxxc.base --->
@@ -478,7 +477,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON'));
+                                      ARRET='OUI'));
 
 
 # # # # # # # # # # # #
@@ -490,7 +489,7 @@ u_lacher=CALC_CHAMP(reuse =u_lacher,
 
                    RESULTAT=u_lacher,
                    TOUT_ORDRE='OUI',
-                    CONTRAINTE=('SIEF_ELNO'));
+                    CONTRAINTE=('SIGM_ELNO'));
 
 u_lacher=CALC_NO(reuse =u_lacher,
                  RESULTAT=u_lacher,

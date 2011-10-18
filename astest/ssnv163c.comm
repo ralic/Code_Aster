@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 # ssnv163c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -173,7 +173,7 @@ U=STAT_NON_LINE( MODELE=MO,
               )
 
 U=CALC_ELEM( reuse=U,
-             OPTION=('SIEF_ELNO','VARI_ELNO','EPSI_ELNO',),
+             OPTION=('SIGM_ELNO','VARI_ELNO','EPSI_ELNO',),
              RESULTAT=U,
            )
 

@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 17/10/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,11 +126,19 @@ C ---   NOM DU CRITERE
         CALL GETVTX(' ','CRITERE',1,IARG,1,NOMCRI,NVAL)
         
         CALL GETVID(' ','FORMULE_GRDEQ',1,IARG,1,NOMFOR,NVAL)
-  
+        IF (NVAL .EQ. 0) THEN
+            NOMFOR = '        '
+        ENDIF
         
         CALL GETVTX(' ','COURBE_GRD_VIE',1,IARG,1,GRDVIE,NVAL)
+        IF (NVAL .EQ. 0) THEN
+            GRDVIE = '        '
+        ENDIF
         
         CALL GETVID(' ','FORMULE_VIE',1,IARG,1,FORVIE,NVAL)
+        IF (NVAL .EQ. 0) THEN
+            FORVIE = '        '
+        ENDIF
 C
 C ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
         CALL GETVTX(' ','METHODE',1,IARG,1,NOMMET,NVAL)

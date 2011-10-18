@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CARREE EN TRACTION SOUMIS A UN CHAMP DE TEMPERATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,7 +124,7 @@ CALCNL=STAT_NON_LINE(   MODELE=MODEL,
 
 CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=CALCNL,
               )
 
@@ -135,7 +135,7 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
 
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 1,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -144,7 +144,7 @@ TEST_RESU(RESU=(
             VALE = 200.),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 1,
             MAILLE = 'MA1',
             NOEUD = 'NO4',
@@ -153,7 +153,7 @@ TEST_RESU(RESU=(
             VALE = 200.),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 1,
             MAILLE = 'MA1',
             NOEUD = 'NO2',
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(
             VALE = 0.),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 1,
             MAILLE = 'MA1',
             NOEUD = 'NO3',

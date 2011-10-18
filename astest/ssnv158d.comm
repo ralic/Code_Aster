@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,7 +124,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -202,14 +202,14 @@ U2=STAT_NON_LINE(
               )
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO','VARI_ELNO',),
+              OPTION     = ('SIGM_ELNO','VARI_ELNO',),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU',),
+             OPTION     = ('SIGM_NOEU',),
                )
 
 #-------------------------
@@ -227,12 +227,12 @@ RODEPY=RECU_FONCTION(RESULTAT=U2,
                      NOEUD='N4',
                      TITRE='DEP Y',);
 ROSIGX=RECU_FONCTION(RESULTAT=U2,
-                     NOM_CHAM='SIEF_NOEU',
+                     NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIXX',
                      NOEUD='N4',
                      TITRE='SIG X',);
 ROSIGY=RECU_FONCTION(RESULTAT=U2,
-                     NOM_CHAM='SIEF_NOEU',
+                     NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIYY',
                      NOEUD='N4',
                      TITRE='SIG Y',);
@@ -242,7 +242,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIXX
                 _F(   RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 296,
                       REFERENCE  = 'NON_REGRESSION',
@@ -251,7 +251,7 @@ TEST_RESU(RESU=(
                       VALE       = -1.0),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 596,
                       PRECISION  = 1.E-3,
@@ -262,7 +262,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 296,
                       PRECISION  = 1.E-3,
@@ -271,7 +271,7 @@ TEST_RESU(RESU=(
                       VALE       = -1.0),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 596,
                       PRECISION  = 1.E-3,
@@ -282,7 +282,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIYY
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 196,
                       PRECISION  = 1.E-3,
@@ -291,7 +291,7 @@ TEST_RESU(RESU=(
                       VALE       = -4.7247544565613E+00),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 296,
                       REFERENCE  = 'NON_REGRESSION',
@@ -300,7 +300,7 @@ TEST_RESU(RESU=(
                       VALE       = -4.1666775832582E+00),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 312,
                       REFERENCE  = 'NON_REGRESSION',
@@ -309,7 +309,7 @@ TEST_RESU(RESU=(
                       VALE       = -4.0928094501579E+00),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 496,
                       REFERENCE  = 'NON_REGRESSION',
@@ -318,7 +318,7 @@ TEST_RESU(RESU=(
                       VALE       = -3.4030827654087E+00),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 596,
                       PRECISION  = 1.E-3,

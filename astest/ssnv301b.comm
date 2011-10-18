@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE SOUMIS A CHOC THERMIQUE ET CHARGEMENT MECANIQUE
 # ssnv301b.para = tps_job 90 mem_job 64Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -503,7 +503,7 @@ CALCNL=STAT_NON_LINE(
 
 CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=CALCNL,
 
 
@@ -515,7 +515,7 @@ CALCNL=CALC_NO( reuse=CALCNL,   RESULTAT=CALCNL,
 
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 3,
             MAILLE = 'MA000090',
             NOEUD = 'NO000222',
@@ -525,7 +525,7 @@ TEST_RESU(RESU=(
             VALE = 1.20472E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 3,
             MAILLE = 'MA000101',
             NOEUD = 'NO000164',
@@ -535,7 +535,7 @@ TEST_RESU(RESU=(
             VALE = 1.65934E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 4,
             MAILLE = 'MA000090',
             NOEUD = 'NO000222',
@@ -545,7 +545,7 @@ TEST_RESU(RESU=(
             VALE = 1.39164E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 4,
             MAILLE = 'MA000101',
             NOEUD = 'NO000164',
@@ -555,7 +555,7 @@ TEST_RESU(RESU=(
             VALE = 1.64031E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 5,
             MAILLE = 'MA000090',
             NOEUD = 'NO000222',
@@ -565,7 +565,7 @@ TEST_RESU(RESU=(
             VALE = 1.28421E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             NUME_ORDRE = 5,
             MAILLE = 'MA000101',
             NOEUD = 'NO000164',

@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost3 Messages  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,10 +129,6 @@ cata_msg = {
 70 : _(u"""
  Vous avez demandé une impression au format ASTER sans préciser de MAILLAGE.
  Aucune impression ne sera réalisée car IMPR_RESU au format ASTER n'imprime qu'un MAILLAGE.
-"""),
-
-72 : _(u"""
- l'impression avec selection sur des entites topologiques n'a pas de sens au format ensight : les valeurs de tous les noeuds du maillage seront donc imprimees.
 """),
 
 73 : _(u"""

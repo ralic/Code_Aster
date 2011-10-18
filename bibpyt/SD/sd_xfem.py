@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 05/07/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF sd_xfem SD  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,6 +78,7 @@ class sd_fiss_xfem(AsBase):
 #   objets relatifs a la localisation du domaine de calcul
     PRO_RAYON_TORE  = Facultatif(AsVR(SDNom(nomj='.PRO.RAYON_TORE'),lonmax=1,))
     PRO_NOEUD_TORE  = Facultatif(AsVL(SDNom(nomj='.PRO.NOEUD_TORE')))
+    PRO_NOEUD_PROJ  = Facultatif(AsVL(SDNom(nomj='.PRO.NOEUD_PROJ')))
 
 # I.4) objets relatifs au contact
 
@@ -90,7 +91,7 @@ class sd_fiss_xfem(AsBase):
     
 
 # I.4) objets relatifs au contact
-    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractéristiques de l'étude :
+    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caracteristiques de l'etude :
     lt = Facultatif(sd_l_table(SDNom(nomj='')))
 
 # 1.5) verifications d'existence :

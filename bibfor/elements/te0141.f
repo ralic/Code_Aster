@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -221,7 +221,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
       END IF
 
       IF (OPTION.EQ.'M_GAMMA') THEN
-         CALL JEVECH('PDEPLAR','L',IACCE)
+         CALL JEVECH('PACCELR','L',IACCE)
          CALL JEVECH('PVECTUR','E',IVECT)
          IF (NOMTE(1:12).EQ.'MECA_POU_D_E' .OR.
      &       NOMTE(1:12).EQ.'MECA_POU_D_T') THEN

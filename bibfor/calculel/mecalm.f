@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,7 @@ C     --- VARIABLES LOCALES ---
 
       CHARACTER*1 BASE,TYPCOE
       CHARACTER*4 TYPE
-      CHARACTER*8 K8B,NOMA,CHAREP
+      CHARACTER*8 K8B,NOMA
       CHARACTER*8 CARELE,KIORD,KIORDM
       CHARACTER*8 LERES0,BLAN8
       CHARACTER*19 PFCHNO
@@ -104,8 +104,8 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3,CHERR4
       CHARACTER*24 CHAMGD,CHSIG,CHSIGN
       CHARACTER*24 CHEPS,CHDEPL,CHACSE
-      CHARACTER*24 CHGEOM,CHCARA(18),CHTEMP,CHTIME,CHMETA
-      CHARACTER*24 CHNUMC,CHHARM,CHFREQ,CHMASS,CHELEM,SOP
+      CHARACTER*24 CHGEOM,CHCARA(18)
+      CHARACTER*24 CHNUMC,CHHARM,CHELEM,SOP
       CHARACTER*24 LIGREL,K24B
       CHARACTER*24 NOMPAR
       CHARACTER*24 LESOPT
@@ -119,7 +119,7 @@ C     --- VARIABLES LOCALES ---
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME
       REAL*8 ALPHA,PREC,PHASE,FREQ,OMEGA
-      REAL*8 R8DEPI,R8DGRD,RUNDF,R8VIDE
+      REAL*8 R8DEPI,R8DGRD,R8VIDE
       REAL*8 TBGRCA(3)
 
       COMPLEX*16 CALPHA,CCOEF
@@ -143,28 +143,22 @@ C               123456789012345678901234
       NH=0
       CHAMGD=BLAN24
       CHGEOM=BLAN24
-      CHTEMP=BLAN24
-      CHTIME=BLAN24
       CHNUMC=BLAN24
       CHHARM=BLAN24
       CHSIG=BLAN24
       CHSIC=BLAN24
       CHEPS=BLAN24
-      CHFREQ=BLAN24
-      CHMASS=BLAN24
-      CHMETA=BLAN24
-      CHAREP=' '
-      CHDYNR=' '
+      CHDYNR=BLAN24
       CHDEPL=BLAN24
       CHELEM=BLAN24
       CHELEX=BLAN24
+      COMPOR=BLAN24
       SOP=BLAN24
       K24B=BLAN24
       CHVARC='&&'//NOMPRO//'.CHVARC'
       CHVREF='&&'//NOMPRO//'.CHVREF'
       BASE='G'
       COEF=UN
-      RUNDF=R8VIDE()
 
 C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       NPASS=0
@@ -372,211 +366,12 @@ C
      &              CHHARM,IRET)
         IF (IRET.NE.0)GOTO 690
 
-C    ------------------------------------------------------------------
-C    -- OPTIONS "SIGM_ELNO",
-C               "EFGE_ELNO",
-C    ------------------------------------------------------------------
-        IF (OPTION.EQ.'EFGE_ELNO' ) THEN
 
-
-C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
-          IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-            CALL U2MESS('A','CALCULEL2_98')
-            GOTO 660
-
-          ENDIF
-
-          IF (CONCEP.EQ.'DYNA_HARMO') THEN
-            IF ((OPTION.EQ.'SIGM_ELNO') .OR.
-     &          (OPTION.EQ.'EFGE_ELNO')) THEN
-            ELSE
-              GOTO 680
-
-            ENDIF
-
-          ELSEIF (CONCEP.EQ.'EVOL_NOLI') THEN
-            IF (OPTION.EQ.'SIGM_ELNO' .OR.
-     &          OPTION.EQ.'EFGE_ELNO') THEN
-              CALL U2MESK('A','CALCULEL2_99',1,OPTION)
-              GOTO 660
-
-            ENDIF
-          ENDIF
-
-          OPTIO2=OPTION
-
-
-          DO 100,IAUX=1,NBORDR
-            CALL JEMARQ()
-            CALL JERECU('V')
-            IORDR=ZI(JORDR+IAUX-1)
-            CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
-            CALL JEVEUO(KCHA,'L',JCHA)
-            CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
-            IF (IRET.GT.0)GOTO 90
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-C=======================================================================
-C                   SPECIAL POUTRE A LA POUX (2)
-C=======================================================================
-            CHAREP=' '
-            TYPCOE=' '
-            ALPHA=ZERO
-            CALPHA=CZERO
-            IF (EXIPOU) THEN
-C                IF (TYSD.EQ.'MODE_MECA' .OR. TYSD.EQ.'MODE_ACOU') THEN
-              IF ((TYSD.EQ.'MODE_MECA'.AND.TYPEMO(1:
-     &            8).EQ.'MODE_DYN') .OR. TYSD.EQ.'MODE_ACOU') THEN
-                CALL JEVEUO(CHAMGD(1:19)//'.VALE','L',LDEPL)
-                CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORDR,0,LFREQ,K8B)
-                DO 40 II=0,NEQ-1
-                  ZR(LVALE+II)=-ZR(LFREQ)*ZR(LDEPL+II)
-   40           CONTINUE
-                CALL JELIBE(CHAMGD(1:19)//'.VALE')
-              ELSEIF (TYSD.EQ.'DYNA_TRANS') THEN
-                CALL RSEXCH(RESUCO,'ACCE',IORDR,CHACCE,IRET)
-                IF (IRET.EQ.0) THEN
-                  CALL JEVEUO(CHACCE//'.VALE','L',LACCE)
-                  DO 50 II=0,NEQ-1
-                    ZR(LVALE+II)=ZR(LACCE+II)
-   50             CONTINUE
-                  CALL JELIBE(CHACCE//'.VALE')
-                ELSE
-                  CALL U2MESS('A','CALCULEL3_1')
-                  DO 60 II=0,NEQ-1
-                    ZR(LVALE+II)=ZERO
-   60             CONTINUE
-                ENDIF
-              ELSEIF (TYSD.EQ.'DYNA_HARMO') THEN
-                CALL RSEXCH(RESUCO,'ACCE',IORDR,CHACCE,IRET)
-                IF (IRET.EQ.0) THEN
-                  CALL JEVEUO(CHACCE//'.VALE','L',LACCE)
-                  DO 70 II=0,NEQ-1
-                    ZC(LVALE+II)=ZC(LACCE+II)
-   70             CONTINUE
-                  CALL JELIBE(CHACCE//'.VALE')
-                ELSE
-                  CALL U2MESS('A','CALCULEL3_1')
-                  DO 80 II=0,NEQ-1
-                    ZC(LVALE+II)=CZERO
-   80             CONTINUE
-                ENDIF
-              ENDIF
-C --- CALCUL DU COEFFICIENT MULTIPLICATIF DE LA CHARGE
-C     CE CALCUL N'EST EFFECTIF QUE POUR LES CONDITIONS SUIVANTES
-C          * MODELISATION POUTRE
-C          * PRESENCE D'UNE (ET D'UNE SEULE) CHARGE REPARTIE
-C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
-              IF (NBCHRE.NE.0) THEN
-                PHASE=ZERO
-                IPUIS=0
-                CALL GETVID('EXCIT','FONC_MULT',IOCC,IARG,1,K8B,L1)
-                CALL GETVID('EXCIT','FONC_MULT_C',IOCC,IARG,1,K8B,L2)
-                CALL GETVR8('EXCIT','COEF_MULT',IOCC,IARG,1,COEF,L3)
-                CALL GETVC8('EXCIT','COEF_MULT_C',IOCC,IARG,1,CCOEF,L4)
-                CALL GETVR8('EXCIT','PHAS_DEG',IOCC,IARG,1,PHASE,L5)
-                CALL GETVIS('EXCIT','PUIS_PULS',IOCC,IARG,1,IPUIS,L6)
-                IF (L1.NE.0 .OR. L2.NE.0 .OR. L3.NE.0 .OR. L4.NE.0 .OR.
-     &              L5.NE.0 .OR. L6.NE.0) THEN
-                  IF (TYSD.EQ.'DYNA_HARMO') THEN
-                    TYPCOE='C'
-                    CALL RSADPA(RESUCO,'L',1,'FREQ',IORDR,0,LFREQ,K8B)
-                    FREQ=ZR(LFREQ)
-                    OMEGA=R8DEPI()*FREQ
-                    IF (L1.NE.0) THEN
-                      CALL FOINTE('F ',K8B,1,'FREQ',FREQ,VALRES,IER)
-                      CALPHA=DCMPLX(VALRES,ZERO)
-                    ELSEIF (L2.NE.0) THEN
-                      CALL FOINTC('F',K8B,1,'FREQ',FREQ,VALRES,VALIM,
-     &                            IER)
-                      CALPHA=DCMPLX(VALRES,VALIM)
-                    ELSEIF (L3.NE.0) THEN
-                      CALPHA=DCMPLX(COEF,UN)
-                    ELSEIF (L4.NE.0) THEN
-                      CALPHA=CCOEF
-                    ENDIF
-                    IF (L5.NE.0) THEN
-                      CALPHA=CALPHA*EXP(DCMPLX(ZERO,PHASE*R8DGRD()))
-                    ENDIF
-                    IF (L6.NE.0) THEN
-                      CALPHA=CALPHA*OMEGA**IPUIS
-                    ENDIF
-                  ELSEIF (TYSD.EQ.'DYNA_TRANS') THEN
-                    TYPCOE='R'
-                    CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,LINST,K8B)
-                    INST=ZR(LINST)
-                    IF (L1.NE.0) THEN
-                      CALL FOINTE('F ',K8B,1,'INST',INST,ALPHA,IER)
-                    ELSEIF (L3.NE.0) THEN
-                      ALPHA=COEF
-                    ELSE
-                      CALL U2MESS('A','CALCULEL3_2')
-                      CALL JEDEMA
-                      GOTO 660
-
-                    ENDIF
-                  ELSEIF (TYSD.EQ.'EVOL_ELAS') THEN
-                    TYPCOE='R'
-                    IF (L1.NE.0) THEN
-                      CALL FOINTE('F ',K8B,1,'INST',INST,ALPHA,IER)
-                    ELSE
-                      CALL U2MESS('A','CALCULEL3_3')
-                      CALL JEDEMA
-                      GOTO 660
-
-                    ENDIF
-                  ELSE
-                    CALL U2MESS('A','CALCULEL3_4')
-                    CALL JEDEMA
-                    GOTO 660
-
-                  ENDIF
-                ENDIF
-              ENDIF
-              IF (IOCC.GT.0) THEN
-                CALL GETVID('EXCIT','CHARGE',IOCC,IARG,1,CHAREP,N1)
-                IF (N1.EQ.0)CHAREP=ZK8(JCHA-1+IOCC)
-              ENDIF
-            ENDIF
-C=======================================================================
-            IF (TYSD.EQ.'FOURIER_ELAS' .OR. TYSD.EQ.'COMB_FOURIER') THEN
-              CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
-              CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
-            ENDIF
-            IF (EXITIM) THEN
-              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-              TIME=ZR(IAINST)
-              CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
-            ELSE
-              CHTIME=' '
-              TIME=ZERO
-            ENDIF
-
-            CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
-            CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
-            CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-C -- POUR LES POUTRES MULTIFIBRES ON A BESOIN DE COMPOR ISSU DE MATERIAU
-C     POUR LE CALCUL DE L'OPTION EFGE_ELNO
-            IF (OPTIO2.EQ.'EFGE_ELNO') THEN
-              COMPOR=MATE(1:8)//'.COMPOR'
-            ENDIF
-            CHTESE=' '
-            CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
-     &                  K24B,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
-     &                  CHMASS,CHMETA,CHAREP,TYPCOE,ALPHA,CALPHA,CHDYNR,
-     &                  SOP,CHELEM,K24B,LIGREL,BASE,CHVARC,CHVREF,K24B,
-     &                  COMPOR,CHTESE,CHDESE,BLAN8,0,CHACSE,IRET)
-            IF (IRET.GT.0)GOTO 90
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-   90       CONTINUE
-            CALL JEDEMA()
-  100     CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTION "SIEF_ELNO"
 C       DANS LE CAS XFEM UNIQUEMENT A CAUSE DE SIEF_SENO_SEGA !
 C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'SIEF_ELNO') THEN
+        IF (OPTION.EQ.'SIEF_ELNO') THEN
           DO 120,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -608,9 +403,7 @@ C
 
             CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 
-            IF (IRET1.NE.0) THEN
-              COMPOR = ' '
-            ENDIF
+            IF (IRET1.NE.0)  COMPOR = ' '
 
             CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
      &                  K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,K24B,K24B,

@@ -1,6 +1,6 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ C ......................................................................
 
 C    - FONCTION REALISEE:  CALC_CHAMP POUR LES TUYAUX :
 C        - VARI_ELNO
-C        - SIEF_ELNO
+C        - EFGE_ELNO
 C        - EFGE_ELGA
 C        - EPEQ_ELGA
 C        - SIEQ_ELGA
@@ -218,14 +218,14 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 C  FIN STOCKAGE
 
 
-      ELSEIF ((OPTION.EQ.'SIEF_ELNO') .OR. (OPTION.EQ.'EFGE_ELGA')) THEN
+      ELSEIF ((OPTION.EQ.'EFGE_ELNO') .OR. (OPTION.EQ.'EFGE_ELGA')) THEN
 C     ------------------------------------------------------------------
 
         CALL JEVECH('PCAGEPO','L',ICAGEP)
         CALL JEVECH('PCAORIE','L',LORIEN)
-        IF (OPTION.EQ.'SIEF_ELNO') THEN
+        IF (OPTION.EQ.'EFGE_ELNO') THEN
           CALL JEVECH('PCONTRR','L',JIN)
-          CALL JEVECH('PSIEFNOR','E',JOUT)
+          CALL JEVECH('PEFFORR','E',JOUT)
         ELSE
           CALL JEVECH('PSIEFR','L',JIN)
           CALL JEVECH('PEFGER','E',JOUT)

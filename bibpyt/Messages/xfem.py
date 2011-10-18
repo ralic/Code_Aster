@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem Messages  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -448,6 +448,15 @@ cata_msg={
      une grille auxiliaire à la fissure à propager, grille héritée de la fissure de laquelle
      les deux level sets ont été extraites (mot-clé FISS_GRILLE de DEFI_FISS_XFEM).
      
+"""),
+
+70: _(u"""
+  -> Un élément convexe a été détecté. Cela peut-être dû à l'imposition de DTAN sur les bords.
+     Ceci pourrait être une source d'erreur lors du calcul des level sets avec DEFI_FISS_XFEM.
+  
+  -> Pour éviter ce problème, DAMAX a été diminué de %(r1)f à %(r2)f. Le nombre de cycles a donc 
+     été modifié : NBCYCL = %(r3)f
+  
 """),
 
 }

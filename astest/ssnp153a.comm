@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE SHALLOW IRONING
 # ssnp153a.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,10 +108,10 @@ CONT=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
                   REAC_GEOM='CONTROLE',
                   FROTTEMENT='COULOMB',
-                  NB_ITER_GEOM=3,
+                  NB_ITER_GEOM=4,
                   LISSAGE='OUI',
-                  ZONE=_F(APPARIEMENT='MAIT_ESCL',
-                          GROUP_MA_MAIT='Master',
+                  ALGO_RESO_CONT = 'NEWTON',
+                  ZONE=_F(GROUP_MA_MAIT='Master',
                           GROUP_MA_ESCL='Slave',
                           COULOMB=0.3,
                           ),);
@@ -132,18 +132,18 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E1,
-                                  ITER_GLOB_MAXI=100,),
+                                  ITER_GLOB_MAXI=20,),
                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=30,),
                    ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
 
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO','SIEQ_ELGA',),);
+               OPTION=('SIGM_ELNO','SIEQ_ELGA',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION=('SIEF_NOEU','FORC_NODA','REAC_NODA',),);
+             OPTION=('SIGM_NOEU','FORC_NODA','REAC_NODA',),);
 
 IMPR_RESU(MODELE=MO,
           FORMAT='MED',
@@ -197,77 +197,77 @@ TEST_TABLE(TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST', VALE=5.00000E-01),
            NOM_PARA='DY', 
            PRECISION=2.E-7,
-           VALE=-9.45388E+07)
+           VALE=-9.4538788774073E+07 )
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=6.00000E-01),
            NOM_PARA='DY', 
            PRECISION=2.E-6,
-           VALE=-1.34557E+08)
+           VALE=-1.3455680794825E+08)
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=7.00000E-01),
            NOM_PARA='DY', 
            PRECISION=6.E-7,
-           VALE=-1.78403E+08)
+           VALE=-1.7840289731859E+08)
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=8.00000E-01),
            NOM_PARA='DY', 
            PRECISION=2.E-6,
-           VALE=-2.25571E+08)
+           VALE=-2.2557093066911E+08 )
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=9.00000E-01),
            NOM_PARA='DY', 
            PRECISION=2.E-6,
-           VALE=-2.75554E+08)
+           VALE=-2.7555462366577E+08  )
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00000E+00),
            NOM_PARA='DY', 
            PRECISION=3.E-7,
-           VALE=-3.29898E+08)
+           VALE=-3.2989819957773E+08)
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00200E+00),
            NOM_PARA='DY', 
            PRECISION=3.E-7,
-           VALE=-3.32405E+08)
+           VALE=-3.3240504079293E+08)
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00400E+00),
            NOM_PARA='DY', 
            PRECISION=5.E-7,
-           VALE=-3.34898E+08)
+           VALE= -3.3489814486807E+08 )
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00600E+00),
            NOM_PARA='DY', 
            PRECISION=2.E-6,
-           VALE=-3.37378E+08)
+           VALE= -3.373778969659E+08 )
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00800E+00),
            NOM_PARA='DY', 
            PRECISION=2.E-6,
-           VALE=-3.39843E+08)
+           VALE= -3.39843812443E+08)
 
 TEST_TABLE(TABLE=TAB_N,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.01000E+00),
            NOM_PARA='DY', 
            PRECISION=2.E-6,
-           VALE=-3.42296E+08)
+           VALE=-3.4229629032247E+08 )
 
 # Tests de la force tangentielle
 TEST_TABLE(TABLE=TAB_T,
@@ -275,77 +275,77 @@ TEST_TABLE(TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST', VALE=5.00000E-01),
            NOM_PARA='DX', 
            PRECISION=3.E-7,
-           VALE=1.83593E+07)
+           VALE=1.835921442763E+07 )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=6.00000E-01),
            NOM_PARA='DX', 
            PRECISION=2.E-6,
-           VALE=2.66801E+07)
+           VALE=2.6679965918672E+07 )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=7.00000E-01),
            NOM_PARA='DX', 
            PRECISION=5.E-7,
-           VALE=3.59896E+07)
+           VALE= 3.5989489762679E+07 )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=8.00000E-01),
            NOM_PARA='DX', 
            PRECISION=5.E-7,
-           VALE=4.60820E+07)
+           VALE= 4.6081911837606E+07 )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=9.00000E-01),
            NOM_PARA='DX', 
            PRECISION=5.5E-7,
-           VALE=5.68856E+07)
+           VALE= 5.6885485994705E+07 )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00000E+00),
            NOM_PARA='DX', 
            PRECISION=6.E-7,
-           VALE=6.90205E+07)
+           VALE= 6.9020437502779E+07)
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00200E+00),
            NOM_PARA='DX', 
            PRECISION=4.E-7,
-           VALE=7.26935E+07)
+           VALE= 7.2693308036518E+07  )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00400E+00),
            NOM_PARA='DX', 
            PRECISION=1.E-7,
-           VALE=7.63719E+07)
+           VALE=7.6371724095308E+07)
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00600E+00),
            NOM_PARA='DX', 
            PRECISION=1.E-7,
-           VALE=8.00561E+07)
+           VALE=8.0055924147361E+07 )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.00800E+00),
            NOM_PARA='DX', 
            PRECISION=3.E-7,
-           VALE=8.37463E+07)
+           VALE=8.3746142673921E+07)
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',
            FILTRE=_F(NOM_PARA='INST', VALE=1.01000E+00),
            NOM_PARA='DX', 
            PRECISION=3.E-7,
-           VALE=8.74428E+07)
+           VALE=8.7442596937308E+07)
 
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE FATIGUE, AMPLITUDE CONSTANTE, TEST  DES GRANDEURS
 # sslv135p.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -234,7 +234,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
 SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
                     OPTION   = ('EPSI_ELGA',
-                                'SIEF_ELNO',
+                                'SIGM_ELNO',
                                 'EPSI_ELNO',
                                 'EPSP_ELGA',
                                 'EPSP_ELNO')
@@ -244,7 +244,7 @@ SOL_NL = CALC_NO( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
                   TOUT = 'OUI',
                   GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D'),
-                  OPTION   = ('SIEF_NOEU','EPSI_NOEU', 'EPSP_NOEU',)
+                  OPTION   = ('SIGM_NOEU','EPSI_NOEU', 'EPSP_NOEU',)
                 )
                 
 TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX', 
@@ -252,7 +252,7 @@ TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
                                 RESULTAT=SOL_NL, 
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
-                                NOM_CHAM = 'SIEF_NOEU',
+                                NOM_CHAM = 'SIGM_NOEU',
                                 OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=TABSIGM);
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI
 # wtnv134a.para = tps_job 250 mem_job 391Mo ncpus 1 liste_test S
@@ -298,19 +298,19 @@ U1=STAT_NON_LINE(MODELE=MODELE,
 U1=CALC_ELEM(reuse      = U1,
 
 
-             OPTION     = ('SIEF_ELNO','EPSI_ELNO','VARI_ELNO'),
+             OPTION     = ('SIGM_ELNO','EPSI_ELNO','VARI_ELNO'),
              RESULTAT   = U1);
 
 U1=CALC_NO(reuse      = U1,
 
-           OPTION     = ('SIEF_NOEU','EPSI_NOEU','VARI_NOEU'),
+           OPTION     = ('SIGM_NOEU','EPSI_NOEU','VARI_NOEU'),
            RESULTAT   = U1);
 
 
-TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU',
+TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIGM_NOEU',
                                 GROUP_NO = 'C',
                                 RESULTAT = U1,
-                                NOM_CHAM = 'SIEF_NOEU',
+                                NOM_CHAM = 'SIGM_NOEU',
                                 INVARIANT = 'OUI',
                                 OPERATION= 'EXTRACTION'));
 
@@ -629,18 +629,18 @@ U2=STAT_NON_LINE(MODELE=MODELE,
 U2=CALC_ELEM(reuse      = U2,
 
 
-             OPTION     = ('SIEF_ELNO','EPSI_ELNO','VARI_ELNO'),
+             OPTION     = ('SIGM_ELNO','EPSI_ELNO','VARI_ELNO'),
              RESULTAT   = U2);
 
 U2=CALC_NO(reuse      = U2,
 
-           OPTION     = ('SIEF_NOEU','EPSI_NOEU','VARI_NOEU'),
+           OPTION     = ('SIGM_NOEU','EPSI_NOEU','VARI_NOEU'),
            RESULTAT   = U2);
 
-TAB_SIG2=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU',
+TAB_SIG2=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIGM_NOEU',
                                  GROUP_NO = 'C',
                                  RESULTAT = U2,
-                                 NOM_CHAM = 'SIEF_NOEU',
+                                 NOM_CHAM = 'SIGM_NOEU',
                                  TOUT_CMP = 'OUI',
                                  OPERATION= 'EXTRACTION'));
 

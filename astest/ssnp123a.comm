@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 RESU=CALC_ELEM(reuse =RESU,
 
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO',
+               OPTION=('SIGM_ELNO',
                       ),
                );
 
@@ -100,7 +100,7 @@ RESU=CALC_ERREUR(reuse =RESU,
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIEF_NOEU',);
+             OPTION='SIGM_NOEU',);
 
 ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
                    DEFI_SEGMENT=_F(ORIGINE=(0.0,1.0,),
@@ -111,7 +111,7 @@ ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
 S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
                             CHEMIN=ECHAN,
                             RESULTAT=RESU,
-                            NOM_CHAM='SIEF_NOEU',
+                            NOM_CHAM='SIGM_NOEU',
                             INST=1.0,
                             CRITERE='RELATIF',
                             NOM_CMP='SIYY',
@@ -206,7 +206,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                INST = 1.,
-               NOM_CHAM = 'SIEF_ELNO',
+               NOM_CHAM = 'SIGM_ELNO',
                CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',
@@ -220,7 +220,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                INST = 1.,
-               NOM_CHAM = 'SIEF_ELNO',
+               NOM_CHAM = 'SIGM_ELNO',
                CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',

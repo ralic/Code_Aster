@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE SOUS PRESSION A TEMPERATURE CONSTANTE 
 # hsnv134b.para = tps_job 900 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,20 +181,20 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse=U,
             RESULTAT=U,
-            OPTION=('SIEF_ELNO',
+            OPTION=('SIGM_ELNO',
                     'EPSI_ELGA',
                     'EPSI_ELNO'),)
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,
-          OPTION=('EPSI_NOEU','SIEF_NOEU',),);                    
+          OPTION=('EPSI_NOEU','SIGM_NOEU',),);                    
 
 
 U_C=MODI_REPERE(RESULTAT=U,
                 INST=100.,
                 MODI_CHAM=(_F(
                               TYPE_CHAM='TENS_3D',
-                              NOM_CHAM='SIEF_NOEU',
+                              NOM_CHAM='SIGM_NOEU',
                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
                            _F(
                               TYPE_CHAM='TENS_3D',
@@ -211,17 +211,17 @@ U_C=MODI_REPERE(RESULTAT=U,
 # COMPARAISON AVEC LA SOLUTION ZMAT
 
 TEST_RESU(RESU=( 
-            _F(RESULTAT = U_C,  NOM_CHAM = 'SIEF_NOEU',
+            _F(RESULTAT = U_C,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 0.5,
                REFERENCE = 'SOURCE_EXTERNE',
                GROUP_NO = 'NA',  
                NOM_CMP = 'SIXX', VALE = -9.442),
-            _F(RESULTAT = U_C,  NOM_CHAM = 'SIEF_NOEU',
+            _F(RESULTAT = U_C,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 0.5,
                REFERENCE = 'SOURCE_EXTERNE',
                GROUP_NO = 'NA',  
                NOM_CMP = 'SIZZ', VALE = 60.226),
-            _F(RESULTAT = U_C,  NOM_CHAM = 'SIEF_NOEU',
+            _F(RESULTAT = U_C,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 0.5,
                REFERENCE = 'SOURCE_EXTERNE',
                GROUP_NO = 'NA',  
@@ -247,17 +247,17 @@ TEST_RESU(RESU=(
 # COMPARAISON AVEC LA SOLUTION ZMAT
 
 TEST_RESU(RESU=( 
-            _F(RESULTAT = U_C,  NOM_CHAM = 'SIEF_NOEU',
+            _F(RESULTAT = U_C,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 0.5,
                REFERENCE = 'SOURCE_EXTERNE',
                GROUP_NO = 'NB',  
                NOM_CMP = 'SIXX', VALE = 3.28215E-02 ),
-            _F(RESULTAT = U_C,  NOM_CHAM = 'SIEF_NOEU',
+            _F(RESULTAT = U_C,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 0.5,
                REFERENCE = 'SOURCE_EXTERNE',
                GROUP_NO = 'NB',  
                NOM_CMP = 'SIZZ', VALE = 64.199),
-            _F(RESULTAT = U_C,  NOM_CHAM = 'SIEF_NOEU',
+            _F(RESULTAT = U_C,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 0.5,
                REFERENCE = 'SOURCE_EXTERNE',
                GROUP_NO = 'NB',  

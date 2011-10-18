@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost Messages  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,23 +74,6 @@ cata_msg = {
 
 31 : _(u"""
  structure de données RESULTAT inconnue  %(k1)s 
-"""),
-
-32 : _(u"""
-  l'impression de la SD_RESULTAT  %(k1)s  a déjà été effectuée
-  avec une liste de numéros d'ordre dont le premier numéro etait
-  le meme que celui de la liste actuelle.
-  on arrete l'impression afin d'éviter l'écrasement des fichiers écrits.
-"""),
-
-33 : _(u"""
- problème à l'ouverture du fichier résultat ENSIGHT  %(k1)s
- pour l'impression du CHAM_GD  %(k2)s 
-"""),
-
-34 : _(u"""
- probleme à l'ouverture du fichier résultat ENSIGHT  %(k1)s
- pour l'impression du CONCEPT  %(k2)s 
 """),
 
 36 : _(u"""
@@ -204,12 +187,6 @@ cata_msg = {
 87 : _(u"""
  on ne sait pas imprimer le champ de type:  %(k1)s 
  champ :  %(k2)s 
-"""),
-
-88 : _(u"""
-  on ne sait pas imprimer au format ENSIGHT le champ  %(k1)s
-  correspondant à la grandeur : %(k2)s
-  il faut imprimer des champs aux noeuds à ce format.
 """),
 
 90 : _(u"""

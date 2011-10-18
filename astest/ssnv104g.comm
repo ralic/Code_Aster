@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CONTACT DE DEUX SPHERES
 # ssnv104g.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,37 +137,37 @@ RESU=STAT_NON_LINE(
 
 RESU=CALC_ELEM( reuse=RESU,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU,
               )
 
 #
 SIELNO1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU,
                         NUME_ORDRE=1
                        )
 
 SIELNO2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU,
                         NUME_ORDRE=2
                        )
 
 SIELNO3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU,
                         NUME_ORDRE=3
                        )
 
 SIELNO4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU,
                         NUME_ORDRE=4
                        )
 
 SIELNO5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESU,
                         NUME_ORDRE=5
                        )
@@ -328,37 +328,37 @@ RESUF=STAT_NON_LINE(
 
 RESUF=CALC_ELEM( reuse=RESUF,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESUF,
               )
 
 #
 SIELNO11=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESUF,
                         NUME_ORDRE=1
                        )
 
 SIELNO21=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESUF,
                         NUME_ORDRE=2
                        )
 
 SIELNO31=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESUF,
                         NUME_ORDRE=3
                        )
 
 SIELNO41=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESUF,
                         NUME_ORDRE=4
                        )
 
 SIELNO51=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIEF_ELNO',
+NOM_CHAM='SIGM_ELNO',
                         RESULTAT=RESUF,
                         NUME_ORDRE=5
                        )

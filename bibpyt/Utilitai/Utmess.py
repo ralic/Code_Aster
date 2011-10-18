@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -209,6 +209,8 @@ class MESSAGE_LOGGER:
                 'context_info'  : self.get_context(ctxt_msg, idmess, dicarg),
             }
         except Exception, msg:
+            if code == 'I':
+                code = 'A'
             dictmess = {
                 'code'          : code,
                 'flags'         : 0,
@@ -224,12 +226,17 @@ Arguments :
 Exception : %s
 --------------------------------------------------------------------------
 
-%s""") %
-            (idmess, vali, valr, valk, ''.join(traceback.format_tb(sys.exc_traceback)),
-            msg, contacter_assistance),
+%s"""),
                 'context_info'  : '',
             }
-        # limite la longueur des ligness
+            args = (idmess, vali, valr, valk, ''.join(traceback.format_tb(sys.exc_traceback)),
+                    msg, contacter_assistance)
+            # cette étape ne doit jamais faire planter !
+            try:
+                dictmess['corps_message'] = dictmess['corps_message'] % args
+            except Exception, exc:
+                dictmess['corps_message'] = repr(args)
+        # limite la longueur des lignes
         dictmess['corps_message'] = cut_long_lines(dictmess['corps_message'], MAXLENGTH)
         return dictmess
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (ROUSSELIER_FO)
 # ssnv103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -400,7 +400,7 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
@@ -420,7 +420,7 @@ SOLNL=CALC_ELEM(  reuse=SOLNL,
                                    OPTION='EPSI_ELNO'  )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 8,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 8,
          MAILLE = 'MA1',    NOEUD = 'NO1',               NOM_CMP = 'SIXX',
          PRECISION = 5.E-4,  VALE = 409.707),
 

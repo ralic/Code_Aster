@@ -4,7 +4,7 @@
       CHARACTER*6   TYPMOD
       INTEGER       NDIM, NCEQ ,NCMP, NBVA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -254,7 +254,7 @@ C
          TYPMOD = 'COQUE'
          NDIM  = 3
          NCEQ  = 7
-         NCMP  = 7
+         NCMP  = 17
 C
 C --- ELEMENTS THM
 C

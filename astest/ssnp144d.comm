@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 18/10/2011   AUTEUR FERTE G.FERTE 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -233,7 +233,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 SELECTION='ANGL_INCR_DEPL',
                                 COEF_MULT=1.83335E6,
                                 FISSURE=FISS,
-                                ETA_PILO_R_MIN=0.0,
+                                ETA_PILO_R_MIN=0.,
                                 DIRE_PILO='DY',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
@@ -262,7 +262,7 @@ for i in range(1,nbc) :
                                 SELECTION='ANGL_INCR_DEPL',
                                 COEF_MULT=LCOEF[i],
                                 FISSURE=FISS,
-                                ETA_PILO_R_MIN=0.0,
+                                ETA_PILO_R_MIN=0.,
                                 DIRE_PILO='DY',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
@@ -293,6 +293,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                                 COEF_MULT=1.83335E6,
                                 SELECTION='ANGL_INCR_DEPL',
                                 FISSURE=FISS,
+                                ETA_PILO_R_MIN=0.,
                                 DIRE_PILO='DX',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,

@@ -3,7 +3,7 @@
      &                  SDDYNA,MATE  ,COMPOZ,RESULT,FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,16 +78,17 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      NOCC,IRET,NBSS,NBSST,IBID
       INTEGER      NBFONC,CFDISI,IFORM,JSLVK
-      LOGICAL      CFDISL,LBORS,LCTCG,LFROT,LCHOC,LTFCM,LALLV
+      LOGICAL      CFDISL,LBORS,LFROT,LCHOC,LALLV
+      LOGICAL      LBOUCG,LBOUCF,LBOUCC
       INTEGER      JSOLVE,IXFEM,ICHAR,IFLAMB,IMVIBR
       LOGICAL      ISCHAR,ISDIRI
       LOGICAL      LSUIV,LLAPL,LCINE,LDIDI   
       REAL*8       R8VIDE       
       CHARACTER*8  K8BID,REPK
-      CHARACTER*16 NOMCMD,K16BID,CHAINE
+      CHARACTER*16 NOMCMD,K16BID,CHAINE,METHOD
       CHARACTER*19 COMPOR
       INTEGER      NBPASE 
-      CHARACTER*24 SENSNB,METRES,PRECON,METHOD
+      CHARACTER*24 SENSNB,METRES,PRECON
       INTEGER      JSENSN  
       LOGICAL      ISFONC,LSTAT,LDYNA,LGROT,LENDO
       INTEGER      IFM,NIV 
@@ -218,41 +219,45 @@ C
 C
 C ----- BOUCLE SUR GEOMETRIE
 C
-        LCTCG  = CFDISL(DEFICO,'GEOM_BOUCLE')
-        IF (LCTCG) THEN
-          FONACT(31) = 1
-        ENDIF
+        LBOUCG = CFDISL(DEFICO,'GEOM_BOUCLE')   
 C
 C ----- BOUCLE SUR FROTTEMENT
 C
-        IF ((IFORM.EQ.2).OR.(IFORM.EQ.3)) THEN
-          LTFCM  = CFDISL(DEFICO,'CONT_XFEM_GG')
-          IF (LFROT) THEN
-            IF (LTFCM) THEN
-              FONACT(32) = 0
-            ELSE
-              FONACT(32) = 1
-            ENDIF  
-          ENDIF
+        LBOUCF = CFDISL(DEFICO,'FROT_BOUCLE')
+        IF (LFROT.AND.(.NOT.LBOUCF)) THEN
+          FONACT(47) = 1
         ENDIF
 C
 C ----- BOUCLE SUR CONTACT
 C
-        IF ((IFORM.EQ.2).OR.(IFORM.EQ.3)) THEN
-          FONACT(33) = 1
+        LBOUCC = CFDISL(DEFICO,'CONT_BOUCLE')  
+        IF (IFORM.EQ.1) THEN
+          LBOUCC = .FALSE.
+          LBOUCF = .FALSE.
         ENDIF
 C
 C ----- TOUTES LES ZONES EN VERIF -> PAS DE BOUCLES       
 C        
         LALLV  = CFDISL(DEFICO,'ALL_VERIF')
         IF (LALLV) THEN
-          FONACT(31) = 0
-          FONACT(32) = 0
-          FONACT(33) = 0
+          LBOUCC = .FALSE.
+          LBOUCG = .FALSE.
+          LBOUCF = .FALSE.
         ENDIF
+        IF (.NOT.LFROT) LBOUCF = .FALSE.
 C
 C ----- BOUCLES EXTERNES
-C            
+C
+        IF (LBOUCG) THEN
+          FONACT(31) = 1
+        ENDIF
+        IF (LBOUCF) THEN
+          FONACT(32) = 1
+        ENDIF
+        IF (LBOUCC) THEN
+          FONACT(33) = 1
+        ENDIF
+C
         IF ((FONACT(31).EQ.1).OR.
      &      (FONACT(32).EQ.1).OR.
      &      (FONACT(33).EQ.1)) THEN
@@ -369,7 +374,7 @@ C
         CALL GETVTX(' ','METHODE',1,IARG,1,METHOD,IBID)
         IF (METHOD.EQ.'IMPLEX') THEN
           FONACT(28) = 1
-        ELSE 
+        ELSE
           FONACT(28) = 0
         ENDIF
       ENDIF
@@ -487,6 +492,27 @@ C
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT XFEM'
           NBFONC = NBFONC + 1
         ENDIF
+        IF (ISFONC(FONACT,'BOUCLE_EXT_GEOM')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONTACT BOUCLE GEOM'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'BOUCLE_EXT_CONT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONTACT BOUCLE CONTACT'
+          NBFONC = NBFONC + 1
+        ENDIF        
+        IF (ISFONC(FONACT,'BOUCLE_EXT_FROT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONTACT BOUCLE FROT'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'BOUCLE_EXTERNE')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... BOUCLE EXTERNE'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'FROT_NEWTON')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... FROTTEMENT AVEC '//
+     &                  'NEWTON GENERALISE'
+          NBFONC = NBFONC + 1
+        ENDIF        
         IF (ISFONC(FONACT,'DIS_CHOC')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '
           NBFONC = NBFONC + 1

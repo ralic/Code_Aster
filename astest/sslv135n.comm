@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -350,7 +350,7 @@ SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
                     OPTION   = (
                                 'EPSI_ELGA',
-                                'SIEF_ELNO',
+                                'SIGM_ELNO',
                                 'EPSI_ELNO')
                   )
 
@@ -358,7 +358,7 @@ SOL_NL = CALC_NO( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
                   TOUT = 'OUI',
                   GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D','CUBE'),
-                  OPTION   = ('SIEF_NOEU','EPSI_NOEU')
+                  OPTION   = ('SIGM_NOEU','EPSI_NOEU')
                 ) 
 
 # CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX NOUEDS

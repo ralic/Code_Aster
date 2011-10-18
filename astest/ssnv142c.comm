@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
 # ssnv142c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,11 +180,11 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_CHAMP(reuse =U,
             RESULTAT=U,
-             CONTRAINTE=('SIEF_ELNO'),);
+             CONTRAINTE=('EFGE_ELNO'),);
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,
-          OPTION='SIEF_NOEU',);
+          OPTION='EFGE_NOEU',);
 # S=0.02
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=74,
-                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CHAM='EFGE_NOEU',
                    NOM_CMP='N',
                    GROUP_NO='B',
                    VALE=-0.4,

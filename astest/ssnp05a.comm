@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE F6BHHBO P.DEBONNIERES
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,7 @@ INIT0=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                 MODELE=MO,
                 NB_VARI=2,
                 UNITE=19,
-                NOM_CHAM=('VARI_ELNO','SIEF_ELNO',),
+                NOM_CHAM=('VARI_ELNO','SIGM_ELNO',),
                 INST=15.,);
 
 # POUR TESTER LIRE_RESU /IDEAS/NUME_DATASET:2414 :
@@ -106,7 +106,7 @@ INIT=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                MODELE=MO,
                NB_VARI=2,
                UNITE=35,
-               NOM_CHAM=('VARI_ELNO','SIEF_ELNO',),
+               NOM_CHAM=('VARI_ELNO','SIGM_ELNO',),
                FORMAT_IDEAS=(
                _F(NOM_CHAM='VARI_ELNO',
                   NUME_DATASET=2414,
@@ -115,7 +115,7 @@ INIT=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                   POSI_ORDRE=(10,3,),
                   POSI_INST=(12,1,),
                   NOM_CMP=('V1','V2',),),
-               _F(NOM_CHAM='SIEF_ELNO',
+               _F(NOM_CHAM='SIGM_ELNO',
                   NUME_DATASET=2414,
                   RECORD_3=3,
                   RECORD_9=(1,4,4,2,2,6,),
@@ -127,7 +127,7 @@ INIT=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
 CHSIG0=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=INIT,
-                  NOM_CHAM='SIEF_ELNO',
+                  NOM_CHAM='SIGM_ELNO',
                   NUME_ORDRE=1,);
 
 CHVAR0=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
@@ -211,7 +211,7 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('SIEF_ELNO','VARI_ELNO',),);
+            OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
@@ -410,7 +410,7 @@ U2=STAT_NON_LINE(MODELE=MO,
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,
-             OPTION=('SIEF_ELNO','VARI_ELNO',),);
+             OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,

@@ -1,7 +1,7 @@
       SUBROUTINE OP0010()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
       CHARACTER*16   K16BID,TYPDIS
       CHARACTER*19   CNSVT,CNSVN,GRLT,GRLN,CNSLT,CNSLN,CNSEN,
      &               CNSENR,NOESOM,ISOZRO,NORESI,CNXINV,CNSBL,CNSDIS,
-     &               CNSLJ,VPOINT
+     &               CNSLJ,VPOINT,DELTA
       CHARACTER*24   LISMAE,LISNOE,VCN,GRLR,VCNT,GRLRT
       REAL*8         MESERR(3)
       CHARACTER*8    TEST
@@ -406,6 +406,12 @@ C-----------------------------------------------------------------------
 C     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
 C-----------------------------------------------------------------------
 
+         IF (LOCDOM) THEN
+                IF (RADIMP.LE.0.D0) THEN
+                   RADTOR=(RAYON+DAMAX)**2
+                ENDIF
+         ENDIF
+
       IF (NIV.GE.0) THEN
          WRITE(IFM,*)
          WRITE(IFM,*)'OP0010-1) CALCUL DU CHAMP DE VITESSE AUX NOEUDS'
@@ -420,9 +426,11 @@ C-----------------------------------------------------------------------
       DISFR='&&OP0010.DISFR'
       CNSBL='&&OP0010.CNSBL'
       CNSDIS='&&OP0010.CNSDIS'
+      DELTA='&&OP0010.DELTA'
 
       CALL XPRVIT(DNOMA,FISPRE,NDIM,VVIT,VBETA,LCMIN,CNSVT,CNSVN,VPOINT,
-     &            CNSBL,CNSDIS,DISFR,CNSBET,LISTP)
+     &            CNSBL,CNSDIS,DISFR,CNSBET,LISTP,DAMAX,
+     &            LOCDOM,RADIMP,RADTOR,DELTA,UCNSLT,UCNSLN)
 
 C-----------------------------------------------------------------------
 C     DOMAINS USED FOR THE RESTRICTION AND FOR THE PROJECTION
@@ -576,7 +584,7 @@ C        WRITE SOME INFORMATIONS
       ENDIF
 
       CALL XPRLS(DNOMA,DCNSLN,DCNSLT,DGRLN,DGRLT,CNSVN,CNSVT,
-     &           CNSBL,DTTOT,NODTOR,ELETOR,LIGGRD)
+     &           CNSBL,DTTOT,NODTOR,ELETOR,LIGGRD,DELTA)
 
       CALL JEDETR(CNSVT)
       CALL JEDETR(CNSVN)
@@ -596,7 +604,7 @@ C-----------------------------------------------------------------------
       ISOZRO = '&&OP0010.ISOZRO'
 
       IF (METHOD.EQ.'SIMPLEXE') THEN
-         CALL XPRREI(DNOMA,FISS,NOESOM,NORESI,DCNSLN,DCNSLT,
+         CALL XPRREI(DNOMA,FISS,FISPRE,NOESOM,NORESI,DCNSLN,DCNSLT,
      &               DGRLN,DELTAT,LCMIN,'LN',ISOZRO,DCNXIN,NODTOR,
      &               ELETOR,LIGGRD)
       ENDIF
@@ -642,7 +650,7 @@ C-----------------------------------------------------------------------
       ENDIF
 
       IF (METHOD.EQ.'SIMPLEXE') THEN
-         CALL XPRREI(DNOMA,FISS,NOESOM,NORESI,DCNSLN,DCNSLT,
+         CALL XPRREI(DNOMA,FISS,FISPRE,NOESOM,NORESI,DCNSLN,DCNSLT,
      &               DGRLT,DELTAT,LCMIN,'LT',ISOZRO,DCNXIN,NODTOR,
      &               ELETOR,LIGGRD)
       ENDIF
@@ -696,6 +704,18 @@ C       DESTROYED BY THE SUBROUTINE "CNSCNO"
 C       PROJECT THE LEVEL SETS
         CALL XPRPLS(DNOMO,DCNSLN,DCNSLT,NOMO,NOMA,
      &              CNSLN,CNSLT,GRLN,GRLT,CORRES,NDIM,NDOMP,EDOMG)
+
+C       STORE THE LIST OF THE NODES OF THE STRUCTURAL MESH WHERE THE
+C       PROJECTION HAS BEEN CARRIED OUT
+        CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',J,K8BID,IRET)
+        CALL WKVECT(FISS//'.PRO.NOEUD_PROJ','G V L',J,IRET)
+
+        CALL JEVEUO(NDOMP,'L',IBID)
+        CALL JELIRA(NDOMP,'LONMAX',J,K1BID)
+
+        DO 1001 I=1,J
+           ZL(IRET-1+ZI(IBID-1+I)) = .TRUE.
+1001    CONTINUE
 
       ENDIF
 
@@ -800,6 +820,7 @@ C        VALUE OF THE RADIUS USED IN THE ACTUAL PROPAGATION
          ZR(IBID) = RADTOR
       ENDIF
 
+      CALL JEDETR(DELTA)
 C----------------------------------------------------------------------+
 C                 FIN DE LA PARTIE PROPAGATION :                       |
 C                 ----------------------------                         |

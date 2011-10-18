@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB20  
 # ssns101e.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,7 +194,7 @@ _F(FONCTION=FETA,REFERENCE='ANALYTIQUE', PRECISION = 0.06,
             ),)
 
 NONLIN=CALC_ELEM(reuse=NONLIN, RESULTAT=NONLIN,
-                    OPTION=('SIEF_ELNO','VARI_ELNO'),
+                    OPTION=('SIGM_ELNO','VARI_ELNO'),
                     );
 
  # solution de reference HEXA20

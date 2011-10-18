@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -227,7 +227,7 @@ for num_calc in range(0,nb_calc1) :
                   TOUT_ORDRE='OUI',
                   OPTION=(
 # LISSAGE DES CONTRAINTES SI STAT_NON_LINE
-                       'SIEF_ELNO',),);
+                       'SIGM_ELNO',),);
 
    DEPLA[num_calc]=CALC_ERREUR(reuse=DEPLA[num_calc],
                   RESULTAT=DEPLA[num_calc],
@@ -243,7 +243,7 @@ for num_calc in range(0,nb_calc1) :
    IMPR_RESU(MODELE=MOM[num_calc],FORMAT='CASTEM',UNITE=56,
             RESU=_F(MAILLAGE=MAM[num_calc],
                     RESULTAT=DEPLA[num_calc],
-                    NOM_CHAM=('DEPL','SIEF_ELNO',
+                    NOM_CHAM=('DEPL','SIGM_ELNO',
                               'ERME_ELNO')
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=56)

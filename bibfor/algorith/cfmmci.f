@@ -1,7 +1,7 @@
       SUBROUTINE CFMMCI(DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,8 +55,9 @@ C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C 
       INTEGER      CFDISI,NZOCO,IZONE
       LOGICAL      CFDISL,LCTCD,LCTCC,LXFCM
-      REAL*8       MMINFR,COEFCR,COEFFR,COEFCP,COEFFP,COEFCS,COEFFS
+      REAL*8       MMINFR,COEFAC,COEFAF
       REAL*8       COEFPN,COEFPT
+      REAL*8       COEFCR,COEFFR,COEFCP,COEFFP,COEFCS,COEFFS
 C
 C ----------------------------------------------------------------------
 C
@@ -75,7 +76,7 @@ C
 C --- REMPLISSAGE INITIAL
 C
       DO 10 IZONE = 1,NZOCO
-        IF (LCTCC.OR.LXFCM) THEN
+        IF (LXFCM) THEN
           COEFCR = MMINFR(DEFICO,'COEF_REGU_CONT'   ,IZONE )
           COEFFR = MMINFR(DEFICO,'COEF_REGU_FROT'   ,IZONE )
           COEFCP = MMINFR(DEFICO,'COEF_PENA_CONT'   ,IZONE )
@@ -93,7 +94,15 @@ C
           CALL CFMMCO(DEFICO,RESOCO,IZONE,'COEF_STAB_CONT','E',
      &                COEFCS)
           CALL CFMMCO(DEFICO,RESOCO,IZONE,'COEF_STAB_FROT','E',
-     &                COEFFS)      
+     &                COEFFS)        
+        
+        ELSEIF (LCTCC) THEN
+          COEFAC = MMINFR(DEFICO,'COEF_AUGM_CONT'   ,IZONE )
+          COEFAF = MMINFR(DEFICO,'COEF_AUGM_FROT'   ,IZONE )
+          CALL CFMMCO(DEFICO,RESOCO,IZONE,'COEF_AUGM_CONT','E',
+     &                COEFAC)
+          CALL CFMMCO(DEFICO,RESOCO,IZONE,'COEF_AUGM_FROT','E',
+     &                COEFAF)         
         ELSEIF (LCTCD) THEN
           COEFPN = MMINFR(DEFICO,'E_N'              ,IZONE )
           COEFPT = MMINFR(DEFICO,'E_T'              ,IZONE )

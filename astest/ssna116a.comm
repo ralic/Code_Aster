@@ -1,4 +1,4 @@
-# MODIF  DATE 02/05/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE HOEK_BROWN
 # ssna116a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,7 +127,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -208,14 +208,14 @@ U2=STAT_NON_LINE(
 
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO',),
+              OPTION     = ('SIGM_ELNO',),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU',),
+             OPTION     = ('SIGM_NOEU',),
                )
 
 #---------------------------------------
@@ -230,7 +230,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 12,
                       PRECISION  = 1.E-3,
@@ -239,7 +239,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 70,
                       PRECISION  = 1.E-3,
@@ -250,7 +250,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 12,
                       PRECISION  = 1.E-3,
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 70,
                       PRECISION  = 1.E-3,
@@ -270,7 +270,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 12,
                       PRECISION  = 1.E-3,
@@ -279,7 +279,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 16,
                       PRECISION  = 1.E-3,
@@ -288,7 +288,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 32,
                       PRECISION  = 1.E-3,
@@ -297,7 +297,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 41,
                       PRECISION  = 1.E-3,
@@ -306,7 +306,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 42,
                       PRECISION  = 1.E-3,
@@ -315,7 +315,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 46,
                       PRECISION  = 1.E-3,
@@ -324,7 +324,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 52,
                       PRECISION  = 1.E-3,
@@ -333,7 +333,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 70,
                       PRECISION  = 1.E-3,

@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai8 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,10 +61,10 @@ cata_msg = {
    Numéro d'ordre :  %(i1)d             inst :  %(r1)g
 """),
 
-10 : _(u"""
-   Le champ 'DEPL' n'est pas présent dans la structure de données résultat.
-   Le calcul de l'option %(k1)s n'est pas possible.
-"""),
+
+
+
+
 
 13 : _(u"""
   Dans la structure de données resultat %(k1)s,

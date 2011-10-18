@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE GRANET S.GRANET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -109,10 +109,8 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
@@ -131,6 +129,9 @@ MODE_LOCAL__
                                         SIP      M11      FH11X    FH11Y    FH11Z    )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -189,7 +190,7 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__    OUT__    XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__    OUT__    XXXXXX   XXXXXX
-    M_GAMMA             12    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+    M_GAMMA             12    IN__   DDL_MECA PACCELR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     NORME_L2            -1    IN__    OUT__    XXXXXX   XXXXXX
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR

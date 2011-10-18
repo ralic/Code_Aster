@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,62 +155,6 @@ TEST_TABLE(TABLE=TABL_K,
            NOM_PARA='K2',
            VALE=2.6179089643527E+06)
 
-# ---------------
-# ON EXTRAIT PREALABLEMENT LES DEPLACEMENTS DES LEVRES
-# LES RESULTATS DOIVENT ETRE IDENTIQUES
-# ---------------
-LEVH=INTE_MAIL_2D(  MAILLAGE=MA,
-                    DEFI_CHEMIN=_F(  GROUP_MA = 'LPOP8'),
-                    GROUP_NO_ORIG='P0'
-                       )
 
-LEVB=INTE_MAIL_2D(  MAILLAGE=MA,
-                    DEFI_CHEMIN=_F(  GROUP_MA = 'LPOP8B'),
-                    GROUP_NO_ORIG='P0'
-                       )
-
-DEPH=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'DEPL_DH',
-                                  CHEMIN = LEVH,
-                                  RESULTAT = CHAMDEPL,
-                                  NOM_CHAM = 'DEPL',
-                                  NOM_CMP = ( 'DX',  'DY', ),
-                                  OPERATION = 'EXTRACTION')
-                       )
-
-DEPB=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'DEPL_DB',
-                                  CHEMIN = LEVB,
-                                  RESULTAT = CHAMDEPL,
-                                  NOM_CHAM = 'DEPL',
-                                  NOM_CMP = ( 'DX',  'DY', ),
-                                  OPERATION = 'EXTRACTION')
-                       )
-
-# ---------------
-TABL_K1=POST_K1_K2_K3( MODELISATION='C_PLAN',
-                       INST = 0.,
-                       MATER=MAT,
-                       TABL_DEPL_SUP  = DEPH,
-                       TABL_DEPL_INF  = DEPB,
-                       ABSC_CURV_MAXI = 7.51000E-05,
-                       VECT_K1        = ( 0., 1., 0., )
-                       )
-# ---------------
-# les valeurs doivent etre identiques a celles obtenues 
-# en exploitant directement le concept resultat
-
-TEST_TABLE(TABLE=TABL_K,
-           REFERENCE='AUTRE_ASTER',
-           NOM_PARA='G',
-           VALE=96.852005483479)
-
-TEST_TABLE(TABLE=TABL_K,
-           REFERENCE='AUTRE_ASTER',
-           NOM_PARA='K1',
-           VALE=3.5379307159775E+06)
-
-TEST_TABLE(TABLE=TABL_K,
-           REFERENCE='AUTRE_ASTER',
-           NOM_PARA='K2',
-           VALE=2.6179089643527E+06)
 FIN()
 #

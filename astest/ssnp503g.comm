@@ -1,8 +1,8 @@
-# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -48,18 +48,11 @@ CONT = DEFI_CONTACT(MODELE         = MODELE,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
                     ITER_GEOM_MAXI = 10,
-                    ITER_CONT_MAXI = 4,
-                    ITER_FROT_MAXI = 10,
+                    ALGO_RESO_CONT = 'NEWTON',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'S21',
                              GROUP_MA_ESCL = 'S13',
-                             INTEGRATION   = 'NOEUD',
-                             SEUIL_INIT    = 0.0,
-                             ALGO_CONT     = 'STANDARD',
-                             COEF_CONT     = 100.,
-                             ALGO_FROT     = 'STANDARD',
-                             COEF_FROT     = 100., 
                              COULOMB       = 0.5, 
                              TOLE_PROJ_EXT = 0.1,  
                              CONTACT_INIT  = 'INTERPENETRE',                         
@@ -67,12 +60,6 @@ CONT = DEFI_CONTACT(MODELE         = MODELE,
                            _F(
                              GROUP_MA_MAIT = 'S23',
                              GROUP_MA_ESCL = 'S31',
-                             INTEGRATION   = 'NOEUD',
-                             SEUIL_INIT    = 0.0,
-                             ALGO_CONT     = 'STANDARD',
-                             COEF_CONT     = 100.,
-                             ALGO_FROT     = 'STANDARD',
-                             COEF_FROT     = 100., 
                              COULOMB       = 0.5, 
                              TOLE_PROJ_EXT = 0.1,  
                              CONTACT_INIT  = 'INTERPENETRE',                         

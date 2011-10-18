@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact3 Messages  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,7 +71,7 @@ Avec un FOND_FISSURE, il est impossible d'utiliser les options suivantes:
 
 18 : _(u"""
 Contact méthode continue.
-La direction d'exclusion du frottement fournie pour la zone de contact numéro %(i1)s (%(r1)s,%(r2)s,%(r3)s) est perpendiculaire au plan de contact sur la maille %(k1)s.
+La direction d'exclusion du frottement fournie pour la zone de contact numéro %(i1)d (%(r1)d,%(r2)d,%(r3)d) est perpendiculaire au plan de contact sur la maille %(k1)s.
 
 Conseil :
    - Vérifiez le vecteur DIRE_EXCL_FROT. Sa projection sur le plan tangent de contact doit exister
@@ -79,9 +79,18 @@ Conseil :
 
 """),
 
-23 : _(u"""
+19 : _(u"""
+La surface maître est fortement facettisée sur %(i1)d noeuds.
+A cause des variations brusques de normale d'un noeud à l'autre, vous risquez d'avoir des problèmes de convergence du contact, surtout dans le cas de grands glissements relatifs des deux surfaces,.
+Vous pouvez raffiner le maillage, utiliser un maillage quadratique (si c'est possible) ou activer le lissage (LISSAGE='OUI' dans DEFI_CONTACT).
+
+Pour information, voici la liste des noeuds avec l'angle (en degré) mesuré entre la normale nodale et les normales aux éléments:
+Noeud      Angle
+"""),
+
+23 : _("""
 Le vecteur normal est nul au niveau du projeté du point de contact de coordonnées
-  (%(r1)s,%(r2)s,%(r3)s) 
+  (%(r1)d,%(r2)d,%(r3)d) 
 sur la maille %(k1)s, 
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
@@ -216,14 +225,14 @@ Contact méthode continue.
 96 : _(u"""
 Contact.
     -> Les surfaces en contact ont bougé de plus de 1%% depuis la dernière réactualisation.
-       Or vous n'avez pas activé la réactualisation géométrique (REAC_GEOM) automatique ou
-       vous utilisez le mode 'CONTROLE'
-    -> Risque & Conseil : Vos résultats risquent d'etre faux, les mailles ne
-       seront peut-etre pas correctement appariées et donc la condition de contact sera peut
-       etre fausse.
+       Or vous n'avez pas activé la réactualisation géométrique automatique dans la commande DEFI_CONTACT
+       (REAC_GEOM='AUTOMATIQUE') ou bien vous utilisez le mode 'CONTROLE'
+    -> Risque & conseil : 
+       Vos résultats risquent d'être faux, les mailles ne seront peut-être pas correctement appariées
+       et des interpénétrations pourraient apparaître.
        Si vous avez volontairement négligé la non-linéarité géométrique de contact (pour des raisons
        de performance), nous vous invitons à vérifier visuellement qu'il n'y a effectivement
-       pas interpénétrations.
+       pas d'interpénétrations.
 """),
 
 97 : _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 # forma20b.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
@@ -178,7 +178,7 @@ for num_calc in range(0,nb_calc1) :
 # LISSAGE DES CONTRAINTES SI MECA_STATIQUE
 #                       'SIGM_ELNO',
 # LISSAGE DES CONTRAINTES SI STAT_NON_LINE
-                       'SIEF_ELNO',),);
+                       'SIGM_ELNO',),);
 
    DEPLA[num_calc]=CALC_ERREUR(reuse=DEPLA[num_calc],
                   RESULTAT=DEPLA[num_calc],
@@ -196,7 +196,7 @@ for num_calc in range(0,nb_calc1) :
    IMPR_RESU(MODELE=MO[num_calc], FORMAT='CASTEM', UNITE=55,
             RESU=_F(MAILLAGE=MA[num_calc],
                     RESULTAT=DEPLA[num_calc],
-                    NOM_CHAM=('DEPL','SIEF_ELNO',
+                    NOM_CHAM=('DEPL','SIGM_ELNO',
                               'ERME_ELNO')
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)

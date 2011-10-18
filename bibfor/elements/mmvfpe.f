@@ -1,11 +1,11 @@
       SUBROUTINE MMVFPE(PHASEP,NDIM  ,NNE   ,NNM   ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
-     &                  FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                  FFM   ,JACOBI,JEU   ,COEFAC,COEFAF,
      &                  LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
      &                  RESE  ,NRESE ,VECTEE,VECTMM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C
       REAL*8       RESE(3),NRESE  
       REAL*8       NORM(3)
       REAL*8       TAU1(3),TAU2(3),MPROJT(3,3)       
-      REAL*8       COEFCP,COEFFP,JEU
+      REAL*8       COEFAC,COEFAF,JEU
       REAL*8       LAMBDA,COEFFF
       REAL*8       VECTEE(27),VECTMM(27)
 C
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - CALCUL)
 C
-C CALCUL DES VECTEURS - FORME FORTE - CAS POIN_ELEM
+C CALCUL DES VECTEURS - EQUATION EQUILIBRE - CAS POIN_ELEM
 C
 C ----------------------------------------------------------------------
 C
@@ -63,15 +63,15 @@ C IN  FFM    : FONCTIONS DE FORMES DEPL_MAIT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  JEU    : VALEUR DU JEU
 C IN  NORM   : NORMALE
-C IN  COEFCP : COEF_PENA_CONT
-C IN  COEFFP : COEF_PENA_FROT
+C IN  COEFAC : COEF_AUGM_CONT
+C IN  COEFAF : COEF_AUGM_FROT
 C IN  LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL DE TRESCA)
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 C IN  DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
 C IN  DLAGRC : INCREMENT DEPDEL DU LAGRANGIEN DE CONTACT
 C IN  DVITE  : SAUT DE "VITESSE" [[DELTA X]]
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT 
-C               GTK = LAMBDAF + COEFFR*VITESSE
+C               GTK = LAMBDAF + COEFAF*VITESSE
 C IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
@@ -81,48 +81,10 @@ C OUT VECTMM : VECTEUR ELEMENTAIRE DEPL_MAIT
 C
 C ----------------------------------------------------------------------
 C
-      IF (PHASEP(1:4).EQ.'CONT') THEN
-        IF (PHASEP(6:9).EQ.'PENA') THEN
-          CALL MMMVUU('CONT_PENA',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
-     &                LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
-     &                RESE  ,NRESE ,VECTEE,VECTMM)
-        ELSE
-          CALL MMMVUU('CONT',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
-     &                LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
-     &                RESE  ,NRESE ,VECTEE,VECTMM)
-        ENDIF
-      ELSEIF (PHASEP(1:4).EQ.'ADHE') THEN
-        IF (PHASEP(6:9).EQ.'PENA') THEN
-          CALL MMMVUU('ADHE_PENA',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
-     &                LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
-     &                RESE  ,NRESE ,VECTEE,VECTMM)
-        ELSE
-          CALL MMMVUU('ADHE',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
-     &                LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
-     &                RESE  ,NRESE ,VECTEE,VECTMM)
-        ENDIF
-      ELSEIF (PHASEP(1:4).EQ.'GLIS') THEN
-        IF (PHASEP(6:9).EQ.'PENA') THEN
-          CALL MMMVUU('GLIS_PENA',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
-     &                LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
-     &                RESE  ,NRESE ,VECTEE,VECTMM)
-        ELSE
-          CALL MMMVUU('GLIS' ,NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
-     &                LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
-     &                RESE  ,NRESE ,VECTEE,VECTMM)
-        ENDIF
-      ENDIF
+      CALL MMMVUU(PHASEP,NDIM  ,NNE   ,NNM   ,NORM  ,
+     &            TAU1  ,TAU2  ,MPROJT,WPG   ,FFE   ,
+     &            FFM   ,JACOBI,JEU   ,COEFAC,COEFAF,
+     &            LAMBDA,COEFFF,DLAGRC,DLAGRF,DVITE ,
+     &            RESE  ,NRESE ,VECTEE,VECTMM)
 C
       END

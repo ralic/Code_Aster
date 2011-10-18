@@ -3,7 +3,7 @@
       INTEGER IOCC,NBNO
       CHARACTER*(*) MOFAZ,NOMAZ,LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,11 +62,15 @@ C --------- VARIABLES LOCALES ---------------------------
       INTEGER        IBID,   IRET
       INTEGER        N1,     IFISS,  NFISS
       INTEGER        INO,    VALENO, NBNOT
-      INTEGER        IDLIST, JNOEU,  JFISS,  JSTNO
-      CHARACTER*8    NOMA,   K8BID,  NOMNOE, FISS
+      INTEGER        IDLIST, JNOEU,  JFISS,  JSTNO,JLST,JLSN
+      CHARACTER*8    NOMA,   K8BID,  NOMNOE, FISS, NOMOFI, NOMAFI,
+     &               NOMOGR, NOMAGR, VALK(2), MA
       CHARACTER*16   MOTFAC, TYPGRP
-      CHARACTER*19   STNO
+      CHARACTER*19   STNO,CNSLT,CNSLN
+      CHARACTER*24   STNOT
       CHARACTER*24   LISNOE
+      LOGICAL        GRILLE
+      REAL*8         RAYON,DIST
       INTEGER      IARG
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -160,6 +164,147 @@ C     ============================
  113     CONTINUE
           CALL JEDETR(STNO)
  13     CONTINUE
+
+C
+C --- TYPE DE NOEUD = 'TORE'
+C     ============================
+      ELSEIF ((TYPGRP.EQ.'TORE').OR.(TYPGRP.EQ.'ZONE_MAJ')) THEN
+
+         CNSLT = '&&CGNOXF.CNSLT'
+         CNSLN = '&&CGNOXF.CNSLN'
+
+         DO 15 IFISS=1,NFISS
+            FISS =   ZK8(JFISS-1+IFISS)
+
+C           CHECK IF THE LOCALISATION HAS BEEN USED
+            STNOT = FISS//'.PRO.RAYON_TORE'
+            CALL JEEXIN(STNOT,IBID)
+            IF ((IBID.GT.0).AND.(TYPGRP.EQ.'TORE')) THEN
+               TYPGRP='ZONE_MAJ'
+               CALL U2MESK('A','XFEM2_92',1,FISS)
+            ENDIF
+
+            IF (TYPGRP.EQ.'TORE') THEN
+
+C              GET THE CRACK MESH
+               CALL DISMOI('F','NOM_MODELE',FISS,'FISS_XFEM',IBID,
+     &                     NOMOFI,IRET)
+               STNOT = NOMOFI//'.MODELE    .LGRF'
+               CALL JEVEUO(STNOT,'L',IBID)
+               NOMAFI = ZK8(IBID)
+
+               CALL GETVR8(MOTFAC,'RAYON_TORE',1,IARG,1,RAYON,IBID)
+               RAYON = RAYON**2
+
+C              RETREIVE THE TWO LEVEL SETS
+               CALL GETVID(' ','MAILLAGE',1,IARG,1,MA,IBID)
+               IF (IBID.EQ.0) THEN
+                   CALL GETVID(' ','GRILLE',1,IARG,1,MA,IBID)
+C                  CHECK FOR THE PRESENCE OF THE GRID
+                   STNOT = FISS//'.GRI.MODELE'
+                   CALL JEEXIN(STNOT,IBID)
+                   IF (IBID.GT.0) THEN
+                     CALL JEVEUO(STNOT,'L',IBID)
+C                    GRID MODEL NAME
+                     NOMOGR = ZK8(IBID)
+C                    GRID NAME
+                     STNOT = NOMOGR//'.MODELE    .LGRF'
+                     CALL JEVEUO(STNOT,'L',IBID)
+                     NOMAGR = ZK8(IBID)
+                     IF (NOMAGR.NE.MA) CALL U2MESS('F','XFEM2_86')
+                  ELSE
+                     CALL U2MESS('F','XFEM2_86')  
+                  ENDIF
+                  CALL CNOCNS(FISS//'.GRI.LTNO','V',CNSLT)
+                  CALL CNOCNS(FISS//'.GRI.LNNO','V',CNSLN)
+               ELSE
+                  IF (NOMAFI.NE.MA) CALL U2MESS('F','XFEM2_86')
+                  CALL CNOCNS(FISS//'.LTNO','V',CNSLT)
+                  CALL CNOCNS(FISS//'.LNNO','V',CNSLN)
+               ENDIF
+               CALL JEVEUO(CNSLT//'.CNSV','L',JLST)
+               CALL JEVEUO(CNSLN//'.CNSV','L',JLSN)
+
+               DO 116 INO=1,NBNOT
+                  DIST=ZR(JLST-1+INO)**2+ZR(JLSN-1+INO)**2
+                  IF (DIST.LE.RAYON) THEN
+                     NBNO = NBNO + 1
+                     ZI(JNOEU+NBNO-1) = INO
+                  ENDIF
+ 116           CONTINUE
+
+               CALL JEDETR(CNSLT)
+               CALL JEDETR(CNSLN)
+
+            ENDIF
+
+C
+C --- TYPE DE NOEUD = 'ZONE_MAJ'
+C     ============================
+            IF (TYPGRP.EQ.'ZONE_MAJ') THEN
+
+C             GET THE CRACK MESH
+              CALL DISMOI('F','NOM_MODELE',FISS,'FISS_XFEM',IBID,NOMOFI,
+     &                    IRET)
+              STNOT = NOMOFI//'.MODELE    .LGRF'
+              CALL JEVEUO(STNOT,'L',IBID)
+              NOMAFI = ZK8(IBID)
+
+C             CHECK FOR THE PRESENCE OF THE GRID
+              STNOT = FISS//'.GRI.MODELE'
+              CALL JEEXIN(STNOT,IBID)
+              IF (IBID.GT.0) THEN
+                 GRILLE = .TRUE.
+                 CALL JEVEUO(STNOT,'L',IBID)
+C                GRID MODEL NAME
+                 NOMOGR = ZK8(IBID)
+C                GRID NAME
+                 STNOT = NOMOGR//'.MODELE    .LGRF'
+                 CALL JEVEUO(STNOT,'L',IBID)
+                 NOMAGR = ZK8(IBID)
+              ELSE
+                 GRILLE = .FALSE.
+              ENDIF
+
+              IF (NOMA.EQ.NOMAFI) THEN
+                IF (GRILLE) THEN
+                   STNOT = FISS//'.PRO.NOEUD_PROJ'
+                ELSE
+                   STNOT = FISS//'.PRO.NOEUD_TORE'
+                ENDIF
+              ELSE IF (GRILLE.AND.(NOMA.EQ.NOMAGR)) THEN
+                STNOT = FISS//'.PRO.NOEUD_TORE'
+              ELSE
+                VALK(1) = NOMAFI
+                IF (GRILLE) THEN
+                   VALK(2) = NOMAGR
+                ELSE
+                   VALK(2) = 'AUCUN'
+                ENDIF
+                CALL U2MESK('F','XFEM2_96',2,VALK)
+              ENDIF
+
+              CALL JEEXIN(STNOT,IBID)
+              IF (IBID.GT.0) THEN
+                 CALL JEVEUO(STNOT,'L',JSTNO)
+                 DO 114 INO=1,NBNOT
+                    IF (ZL(JSTNO+INO-1)) THEN
+                       NBNO = NBNO + 1
+                       ZI(JNOEU+NBNO-1) = INO
+                    ENDIF
+ 114             CONTINUE
+              ELSE
+C                THE LOCALISATION HAS NOT BEEN USED. ZONE_MAJ IS
+C                COINCIDENT WITH THE WHOLE MODEL.
+                 DO 115 INO=1,NBNOT
+                    NBNO = NBNO + 1
+                    ZI(JNOEU+NBNO-1) = INO
+ 115             CONTINUE
+              ENDIF
+            ENDIF
+
+15       CONTINUE
+      
       ELSE
          CALL ASSERT(.FALSE.)
       ENDIF
@@ -179,6 +324,7 @@ C     ===
 C
 C --- MENAGE
 C
+
       CALL JEDETR('&&CGNOXF.FISS')
       CALL JEDETR('&&CGNOXF.NOEU')
 C

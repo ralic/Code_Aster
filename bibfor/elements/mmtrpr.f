@@ -1,9 +1,8 @@
-      SUBROUTINE MMTRPR(NDIM  ,LPENAF,DVITE ,DLAGRF,COEFFR,
-     &                  COEFFP,TAU1  ,TAU2  ,MPROJT,LADHE ,
-     &                  RESE  ,NRESE )
+      SUBROUTINE MMTRPR(NDIM  ,LPENAF,DJEUT ,DLAGRF,COEFAF,
+     &                  TAU1  ,TAU2  ,LADHE ,RESE  ,NRESE )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,11 +23,12 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       INTEGER      NDIM
-      REAL*8       DLAGRF(2),DVITE(3)
-      REAL*8       COEFFR,COEFFP
-      REAL*8       TAU1(3),TAU2(3),MPROJT(3,3)
+      REAL*8       DLAGRF(2)
+      REAL*8       COEFAF
+      REAL*8       DJEUT(3)
+      REAL*8       TAU1(3),TAU2(3)
       REAL*8       RESE(3),NRESE    
-      LOGICAL      LPENAF,LADHE   
+      LOGICAL      LPENAF,LADHE
 C      
 C ----------------------------------------------------------------------
 C
@@ -44,56 +44,42 @@ C
 C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  LPENAF : .TRUE. SI FROTTEMENT PENALISE
 C IN  DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
-C IN  DVITE  : SAUT DE "VITESSE" [[DELTA X]]
-C IN  COEFFR : COEF_REGU_FROT
-C IN  COEFFP : COEF_PENA_FROT
+C IN  DJEUT  : INCREMENT DEPDEL DU JEU TANGENT
+C IN  COEFAF : COEF_AUGM_FROT
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
-C IN  MPROJT : MATRICE DE PROJECTION TANGENTE
 C OUT LADHE  : .TRUE. SI ADHERENCE
 C OUT RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT 
-C               GTK = LAMBDAF + COEFFR*VITESSE
+C               GTK = LAMBDAF + COEFAF*VITESSE
 C OUT NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER I,K
-      REAL*8  DVITET(3)
+      INTEGER IDIM
 C
 C ----------------------------------------------------------------------
 C
-C --- INITIALISATIONS
-C
       NRESE = 0.D0
-      DO 10 I = 1,3
-        RESE(I)   = 0.D0
-        DVITET(I) = 0.D0
+      DO 10 IDIM = 1,3
+        RESE(IDIM) = 0.D0
    10 CONTINUE
-C
-C --- PROJECTION DU SAUT SUR LE PLAN TANGENT
-C     
-      DO 21 I=1,NDIM
-        DO 22  K=1,NDIM
-          DVITET(I) = MPROJT(I,K)*DVITE(K)+DVITET(I)
-22      CONTINUE
-21    CONTINUE
 C
 C --- SEMI-MULTIPLICATEUR DE FROTTEMENT RESE
 C
       IF (LPENAF) THEN
-        DO 32 I = 1,3
-          RESE(I) = COEFFP*DVITET(I)
+        DO 32 IDIM = 1,3
+          RESE(IDIM) = COEFAF*DJEUT(IDIM)
    32   CONTINUE        
       ELSE
         IF (NDIM.EQ.2) THEN
-          DO 30 I = 1,2
-            RESE(I) = DLAGRF(1)*TAU1(I)+COEFFR*DVITET(I)
+          DO 30 IDIM = 1,2
+            RESE(IDIM) = DLAGRF(1)*TAU1(IDIM)+COEFAF*DJEUT(IDIM)
    30     CONTINUE
         ELSE IF (NDIM.EQ.3) THEN
-          DO 31 I = 1,3
-            RESE(I) = DLAGRF(1)*TAU1(I)+
-     &                DLAGRF(2)*TAU2(I)+
-     &                COEFFR*DVITET(I)
+          DO 31 IDIM = 1,3
+            RESE(IDIM) = DLAGRF(1)*TAU1(IDIM)+
+     &                   DLAGRF(2)*TAU2(IDIM)+
+     &                   COEFAF*DJEUT(IDIM)
    31     CONTINUE
         ELSE
           CALL ASSERT(.FALSE.)
@@ -102,13 +88,12 @@ C
 C
 C --- CALCUL DU COEF D'ADHERENCE
 C
-      DO 40 I = 1,3
-        NRESE = RESE(I)*RESE(I) + NRESE
+      DO 40 IDIM = 1,3
+        NRESE = RESE(IDIM)*RESE(IDIM) + NRESE
  40   CONTINUE
       NRESE = SQRT(NRESE)
 C
-C --- ON TESTE SI    NRESE < 1 OU NON
-C --- SI OUI ADHERENCE
+C --- ADHERENCE OU GLISSEMENT ?
 C
       IF (NRESE.LE.1.D0) THEN
         LADHE = .TRUE.

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE LA MODELISATION AXIS_GRAD_VARI
 # comp005c.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,7 +206,7 @@ for j in range(0,len(comportement)):
 
 
                   RESULTAT  =U[i],
-                  OPTION    =('SIEF_ELNO','VARI_ELNO'),
+                  OPTION    =('SIGM_ELNO','VARI_ELNO'),
                    );
 
 
@@ -215,7 +215,7 @@ for j in range(0,len(comportement)):
                 reuse = U[i],
 
                 RESULTAT  =U[i],
-                OPTION    =('SIEF_NOEU','VARI_NOEU','FORC_NODA'),
+                OPTION    =('SIGM_NOEU','VARI_NOEU','FORC_NODA'),
                 );
 
 
@@ -242,7 +242,7 @@ for j in range(0,len(comportement)):
                   _F(INTITULE='DEFO',
                    GROUP_NO='NO_POST',
                    RESULTAT=U[i],
-                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP=('SIXX'),
                    OPERATION='EXTRACTION',),);
 
@@ -393,7 +393,7 @@ for i in range(0,len(modelisation)):
 
 
                 RESULTAT  =U[i],
-                OPTION    =('SIEF_ELNO','VARI_ELNO'),
+                OPTION    =('SIGM_ELNO','VARI_ELNO'),
                  );
 
 
@@ -402,7 +402,7 @@ for i in range(0,len(modelisation)):
               reuse = U[i],
 
               RESULTAT  =U[i],
-              OPTION    =('SIEF_NOEU','VARI_NOEU','FORC_NODA'),
+              OPTION    =('SIGM_NOEU','VARI_NOEU','FORC_NODA'),
               );
 
 
@@ -429,7 +429,7 @@ for i in range(0,len(modelisation)):
                 _F(INTITULE='DEFO',
                  GROUP_NO='NO_POST',
                  RESULTAT=U[i],
-                 NOM_CHAM='SIEF_NOEU',
+                 NOM_CHAM='SIGM_NOEU',
                  NOM_CMP=('SIXX'),
                  OPERATION='EXTRACTION',),);
 

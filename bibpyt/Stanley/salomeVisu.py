@@ -1,21 +1,21 @@
-#@ MODIF salomeVisu Stanley  DATE 31/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 debug = True
@@ -30,21 +30,12 @@ cata = cata_champs.CATA_CHAMPS()
 from Cata.cata import *
 from Accas import _F
 
-# Multi-langues
-try:
-   import gettext
-   _ = gettext.gettext
-except:
-   def _(mesg):
-      return mesg
-
-
 # Type de visualisation
-DeformedShape        = 'DEPL' 
+DeformedShape        = 'DEPL'
 DeformedShapeOnField = 'ON_DEFORMED'
 GaussPoints          = 'GAUSS'
 GaussPointsOnField   = 'ON_DEFORMED'
-ScalarMap            = 'ISO'          
+ScalarMap            = 'ISO'
 
 # =========================================================================
 
@@ -54,11 +45,11 @@ class VISU:
         param : dictionnaire pouvant contenir( optionnel ):
         machine_salome      : nom de la machine Salome dans laquelle on souhaite faire la VISU
         machine_salome_port : port du NS Salome
-        
-        remarque : 
+
+        remarque :
         le service NS Salome est deduit des 2 paramètres ci-dessus.
         le service NS Salome peut egalement etre specifie dans les arguments de la ligne de commande ( ORBInitRef )
-        
+
         """
         self.param         = param              # parametres Stanley
         self.studyName     = None               # nom de l'etude SALOME dans laquelle on fait la visualisation
@@ -71,7 +62,7 @@ class VISU:
         self.salome_runscript      = param['machine_salome_runscript']
         self.machine_salome_login  = param['machine_salome_login']
         self.mode                  = param['mode']
-        
+
         if debug: print "AA1/", self.salome_host, self.salome_port, self.salome_runscript, self.machine_salome_login, self.mode
 
         if self.mode == 'LOCAL' :
@@ -83,7 +74,7 @@ class VISU:
             studyList = self.__studyList( param )
         except:
             UTMESS('A','STANLEY_14')
-            return 
+            return
 
         if studyList:
             if len( studyList ) == 1:           # une seule etude -> on publie dans celle-ci
@@ -99,7 +90,7 @@ class VISU:
     # --------------------------------------------------------------------------
     def __studyList( self, param ):
         """
-        Retourne la liste des études         
+        Retourne la liste des études
         """
 
         result = []
@@ -118,7 +109,7 @@ class VISU:
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
-                          );               
+                          );
         else:
             dMACHINE_DISTANTE = {
                     'SSH_ADRESSE'      : self.salome_host,
@@ -129,7 +120,7 @@ class VISU:
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          );               
+                          );
 
         try:
            f=open('./fort.%s' % unite, 'r')
@@ -156,7 +147,7 @@ class VISU:
     # --------------------------------------------------------------------------
     def Fermer(self) :
         """
-            Ferme le terminal (si necessaire)  
+            Ferme le terminal (si necessaire)
             Fais le menage dans l'objet
         """
         pass
@@ -173,7 +164,7 @@ class VISU:
 # =========================================================================
 
 class ISOVALEURS( VISU ):
-    def __init__( self, fichier, param,  selection, options ) :        
+    def __init__( self, fichier, param,  selection, options ) :
         if not os.path.exists( fichier ):
             raise _("Fichier MED résultat de Stanley non accessible par SALOME : ") + fichier
 
@@ -183,7 +174,7 @@ class ISOVALEURS( VISU ):
         if not self.studyName: return
         if self.studyName=="New": self.studyName=''
 
-        self.fichier       = os.path.abspath( fichier )         # chemin absolu du fichier MED fourni par Stanley        
+        self.fichier       = os.path.abspath( fichier )         # chemin absolu du fichier MED fourni par Stanley
         self.visuType      = None                               # type de visualisation
         self.selection     = selection
         self.options       = options
@@ -192,7 +183,7 @@ class ISOVALEURS( VISU ):
         self.medInfo = MEDInfo( selection )
 
         # selection d'un type de visualisation ( parmi celles possibles )
-        self.visuType = self.__visuType( self.selection )        
+        self.visuType = self.__visuType( self.selection )
 
         if debug: print "AA3/", self.fichier, self.visuType, self.selection
 
@@ -203,8 +194,8 @@ class ISOVALEURS( VISU ):
     # --------------------------------------------------------------------------
     def __visuType(self, selection):
         """
-        selection du type de visualisation selon le nom du champ de la selection donnée en paramètre 
-        ScalarMap           
+        selection du type de visualisation selon le nom du champ de la selection donnée en paramètre
+        ScalarMap
         DeformedShapeOnField
         GaussPointsOnField
         """
@@ -213,9 +204,9 @@ class ISOVALEURS( VISU ):
         options   = self.options
 
         if nom_champ == 'DEPL':
-            if selection.nom_cmp[0] == 'TOUT_CMP': 
+            if selection.nom_cmp[0] == 'TOUT_CMP':
                 result = DeformedShape
-            else: 
+            else:
                 result = ScalarMap
         elif nom_type == 'ELGA':
             result = GaussPoints
@@ -257,7 +248,7 @@ class ISOVALEURS( VISU ):
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
-                          );               
+                          );
         else:
             dMACHINE_DISTANTE = {
                     'SSH_ADRESSE'      : self.salome_host,
@@ -268,7 +259,7 @@ class ISOVALEURS( VISU ):
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          );               
+                          );
 
 
         if not debug:
@@ -299,45 +290,45 @@ class COURBES( VISU ):
 
         self.Show(self.datafile)
 
-        
+
 #     # --------------------------------------------------------------------------
 #     def __writeSalomeTables( self, l_courbes, selection ):
-#         """                
+#         """
 #         """
 #         result =   {}
-#         tabList = {}        
-# 
-#         try:       
-#            
-#             for courbe in l_courbes: 
+#         tabList = {}
+#
+#         try:
+#
+#             for courbe in l_courbes:
 #                 composantName   = courbe[1].split('---')[0].strip()
 #                 if selection.geom[0] == 'POINT' :
 #                     ordre = 1
-#                 elif selection.geom[0] == 'CHEMIN' :                    
+#                 elif selection.geom[0] == 'CHEMIN' :
 #                     ordre = courbe[1].split('=')[1].strip()
-# 
+#
 #                 if not tabList.has_key(  composantName ):
 #                     tabList[ composantName ] = []  # un tableau par composante
 #                 tabList[ composantName ].insert( int(float(ordre)), str( courbe[0] ))
-# 
-#             for composantName, liste  in tabList.items():                
+#
+#             for composantName, liste  in tabList.items():
 #                 data            = ""
-#                 theTableName    = "table Stanley"                
-#                 
+#                 theTableName    = "table Stanley"
+#
 #                 newListe =map( string.split, liste )
-#                 
+#
 #                 m = [[newListe[0][i]] + [newListe[j][i+1] for j in range(len(newListe))] for i in range(0, len(newListe[0]), 2)]
-#                 
+#
 #                 if selection.geom[0] == 'POINT' :
 #                     theTableName +='_%s_%s_sur_%s'%( selection.nom_cham,  composantName , selection.nom_va )
-#                 elif selection.geom[0] == 'CHEMIN' :                    
+#                 elif selection.geom[0] == 'CHEMIN' :
 #                     theTableName +='_%s_%s_sur_%s'%( selection.nom_cham,  composantName, 'ABSC_CURV ' + selection.geom[1][0])
-# 
+#
 #                 theTableName += ' '+selection.nom_va+' : ' + str( selection.vale_va )
-# 
+#
 #                 prefix  = '#TITLE: ' + theTableName + os.linesep
-#                 data += prefix  
-# 
+#                 data += prefix
+#
 #                 for a in m :
 #                     for b in a :
 #                         data+=b+" "
@@ -346,15 +337,15 @@ class COURBES( VISU ):
 #                 if os.path.exists( theTxtFilePathName):
 #                     os.remove( theTxtFilePathName )
 #                 f = open( theTxtFilePathName,'w')
-#                 f.write( data )                
+#                 f.write( data )
 #                 f.close()
 #                 result [ theTableName ]  = theTxtFilePathName
-# 
-#         except: 
+#
+#         except:
 #             msg = str(sys.exc_info()[0]) +  str(sys.exc_info()[1]) + str(sys.exc_info()[2])
 #             raise _("Erreur construction table de valeur pour visualisation 2D SALOME") + msg
-# 
-# 
+#
+#
 #         return result
 
 
@@ -363,7 +354,7 @@ class COURBES( VISU ):
     def Show(self, datafile) :
         """
         Lecture d'un fichier MED par le composant VISU de SALOME.
-        """        
+        """
 
         dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeScript.py',
                     'SALOME_HOST'      : self.salome_host,
@@ -378,7 +369,7 @@ class COURBES( VISU ):
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
-                          );               
+                          );
         else:
             dMACHINE_DISTANTE = {
                     'SSH_ADRESSE'      : self.salome_host,
@@ -389,7 +380,7 @@ class COURBES( VISU ):
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          );               
+                          );
 
         if not debug:
             try:
@@ -414,8 +405,8 @@ class MEDInfo:
         if tailSize > 0:
             self.fieldName += tailSize * '_'
         self.fieldName     += selection.nom_cham
-        
-        tailSize            = 32 - len( self.fieldName )        
+
+        tailSize            = 32 - len( self.fieldName )
         if tailSize > 0:
             self.fieldName += tailSize * '_'
-        
+

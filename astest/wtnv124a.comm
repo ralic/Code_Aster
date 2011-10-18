@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE DESATURATION -CONSOLIDATION AVEC LE MODELE DE BARCELONE
 # wtnv124a.para = tps_job 110 mem_job 128Mo ncpus 1 liste_test R
@@ -320,14 +320,14 @@ U1=STAT_NON_LINE(reuse=U1,
               )
 
 U1=CALC_ELEM(  reuse=U1, 
-                  OPTION=('SIEF_ELNO',
+                  OPTION=('SIGM_ELNO',
                           'VARI_ELNO',
                           ),
                   RESULTAT=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                       OPTION=( 'SIEF_NOEU',
+                       OPTION=( 'SIGM_NOEU',
                        'VARI_NOEU',
                            ),
                 )

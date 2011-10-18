@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,7 +162,7 @@ U1=STAT_NON_LINE( reuse=U1,
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -232,7 +232,7 @@ U2=STAT_NON_LINE(
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U2,
               )
 
@@ -247,7 +247,7 @@ U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
 
 U2=CALC_NO(  reuse=U2,     RESULTAT=U2,
                     NUME_ORDRE=(10, 50, 100,),
-                       OPTION=('EPSI_NOEU', 'SIEF_NOEU', )
+                       OPTION=('EPSI_NOEU', 'SIGM_NOEU', )
                )
 
 #-------------------------
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIXX
                 _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        NUME_ORDRE = 10,
                        REFERENCE='AUTRE_ASTER',
@@ -267,7 +267,7 @@ TEST_RESU(RESU=(
                        VALE = -400.),
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        NUME_ORDRE = 50,
                        REFERENCE='AUTRE_ASTER',
@@ -276,7 +276,7 @@ TEST_RESU(RESU=(
 
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIXX',
                        NUME_ORDRE = 100,
                        REFERENCE='AUTRE_ASTER',
@@ -286,7 +286,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIYY
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        NUME_ORDRE = 10,
                        REFERENCE='AUTRE_ASTER',
@@ -294,7 +294,7 @@ TEST_RESU(RESU=(
                        VALE = -821.839),
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        NUME_ORDRE = 50,
                        REFERENCE='AUTRE_ASTER',
@@ -303,7 +303,7 @@ TEST_RESU(RESU=(
 
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        NUME_ORDRE = 100,
                        REFERENCE='AUTRE_ASTER',
@@ -313,7 +313,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYY',
                        NUME_ORDRE = 10,
                        REFERENCE='AUTRE_ASTER',
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(
                        VALE = -540.613),
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYY',
                        NUME_ORDRE = 50,
                        REFERENCE='AUTRE_ASTER',
@@ -329,7 +329,7 @@ TEST_RESU(RESU=(
                        VALE = -635.278),
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYY',
                        NUME_ORDRE = 100,
                        REFERENCE='AUTRE_ASTER',
@@ -340,7 +340,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIYZ
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYZ',
                        NUME_ORDRE = 10,
                        REFERENCE='AUTRE_ASTER',
@@ -348,7 +348,7 @@ TEST_RESU(RESU=(
                        VALE = -243.549),
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYZ',
                        NUME_ORDRE = 50,
                        REFERENCE='AUTRE_ASTER',
@@ -356,7 +356,7 @@ TEST_RESU(RESU=(
                        VALE = -407.513),
                  _F(  RESULTAT = U2,
                        GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIYZ',
                        NUME_ORDRE = 100,
                        REFERENCE='AUTRE_ASTER',

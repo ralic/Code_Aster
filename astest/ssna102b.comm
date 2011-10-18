@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -204,11 +204,11 @@ SOLVEUR=_F(SYME='OUI',),
 #
 
 RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
-                        CONTRAINTE=('SIEF_ELNO'),
+                        CONTRAINTE=('SIGM_ELNO'),
                   )
 
 RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
-                     OPTION='SIEF_NOEU'
+                     OPTION='SIGM_NOEU'
                   )
 
 #
@@ -223,9 +223,6 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
                   )
 
 #
-# --------------------------------------------------------------------
-#             IMPRESSIONS AU FORMAT CASTEM ET ENSIGHT
-#       IMPRESSION AU FORMAT LISTING DU DEPLACEMENT DU POINT PA4
 # --------------------------------------------------------------------
 #                COMPARAISON SOURCE EXTRENE
 # --------------------------------------------------------------------

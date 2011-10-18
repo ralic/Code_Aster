@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -204,7 +204,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          ),
          b_dataset_58_b = BLOC(condition="(FORMAT=='IDEAS_DS58') and ((TYPE_RESU=='DYNA_TRANS') or\
                                         (TYPE_RESU=='DYNA_HARMO') or (TYPE_RESU=='HARM_GENE'))",
-           NOM_CHAM=SIMP(statut='o',typ='TXM',into=("DEPL","VITE","ACCE","EPSI_NOEU","SIEF_NOEU",),max='**' ),
+           NOM_CHAM=SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("DEPL","VITE","ACCE","EPSI_NOEU","SIEF_NOEU",),max='**'),
            REDEFI_ORIENT=FACT(statut='f',max='**',
                               regles=(PRESENT_PRESENT('CODE_DIR','DIRECTION','NOEUD',),),
                               CODE_DIR =SIMP(statut='f',typ='I',into=(1,2,3,) ),
@@ -222,7 +222,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
              fr="Affecte des valeurs nulles la ou le champ n'est pas defini"),
            FORMAT_IDEAS    =FACT(statut='f',max='**',
              regles=(UN_PARMI('POSI_INST','POSI_FREQ'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=l_nom_cham_pas_elga()),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=l_nom_cham_pas_elga()),
              NUME_DATASET    =SIMP(statut='f',typ='I',into=(55,57,2414) ),
              RECORD_3        =SIMP(statut='f',typ='I',max=10),
              RECORD_6        =SIMP(statut='f',typ='I',max=10),
@@ -249,7 +249,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
            UNITE           =SIMP(statut='f',typ='I',defaut= 81, fr="Le fichier est : fort.n.",),
            FORMAT_MED      =FACT(statut='o',max='**',
              regles=(ENSEMBLE('NOM_CMP','NOM_CMP_MED'),UN_PARMI('NOM_CHAM_MED','NOM_RESU'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),),
              NOM_CHAM_MED    =SIMP(statut='f',typ='TXM',               fr="Nom du champ dans le fichier MED.",  ),
              NOM_RESU        =SIMP(statut='f',typ='TXM',               fr="Prefixe du nom de champ dans le fichier MED.",  ),
              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans ASTER.", ),

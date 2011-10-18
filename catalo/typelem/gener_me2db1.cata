@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/10/2011   AUTEUR LABBE M.LABBE 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +60,7 @@ MODE_LOCAL__
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
     EREFCO   = PREC     ELEM__         (EFFORT   )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
+    ENONLIN  = NEUT_I   ELEM__         (X1)
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
 
 
@@ -118,16 +119,16 @@ OPTION__
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  COMEG2R  POMEGA2
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  DDL_MECA PVITESR
                               OUT__  EENECNO  PENERCR
     EFCA_ELNO           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
-    EFGE_ELNO           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    EFGE_ELNO           185   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+                                     EEFGEGA  PCONTRR  ENONLIN  PNONLIN
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EEFGENO  PEFFORR
-                                     EEFGENC  PEFFORC
+                              OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
@@ -177,7 +178,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    M_GAMMA             153   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    M_GAMMA             153   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
@@ -219,14 +220,11 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EEFGEGA  PCONTRR
-                                     EEFGEGC  PCONTRC
+                              OUT__  EEFGEGA  PCONTRR EEFGEGC  PCONTRC
     SIEF_ELNO           156   IN__   EEFGEGA  PCONTRR
-                              OUT__  EEFGENO  PSIEFNOR
-                                     EEFGENC  PSIEFNOC
+                              OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     SIGM_ELNO           4     IN__   EEFGEGA  PCONTRR
-                              OUT__  EEFGENO  PSIEFNOR
-                                     EEFGENC  PSIEFNOC
+                              OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     VARI_ELNO           -1    IN__   XXXXXX   XXXXXX

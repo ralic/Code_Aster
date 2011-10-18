@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF discretisation Messages  DATE 17/10/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,12 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
 2 : _(u"""
  L'instant initial de la liste est plus grand que le deuxième instant.
  Si vous faites une reprise de calcul (REUSE), vous pouvez utiliser le mot-clef ETAT_INIT/INST_ETAT_INIT pour corriger celà.
+"""),
+
+3 : _(u"""
+ Problème lors de la récupération de la table contenant les paramètres calculés du résultat <%(k1)s>.
+Conseils :
+   Vérifiez que le résultat <%(k1)s> provient bien de la commande STAT_NON_LINE ou DYNA_NON_LINE.
 """),
 
 5 : _(u"""

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -184,7 +184,6 @@ MODE_LOCAL__
     EHYDRNO  = HYDR_R   ELNO__ IDEN__  (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     CDECENT  = NEUT_K24 ELEM__         (Z1       )
     CREFERK  = NEUT_K24 ELEM__         (Z[19])
@@ -192,7 +191,6 @@ MODE_LOCAL__
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
     EMNEUT_R = NEUT_R   ELEM__         (X[30])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     CSOURCR  = SOUR_R   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
@@ -204,6 +202,9 @@ MODE_LOCAL__
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTTR = VTEM_R DDL_THER

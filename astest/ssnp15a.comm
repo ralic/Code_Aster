@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 # ssnp15a.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,11 +127,11 @@ U2=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELGA','SIEF_ELNO','VARI_ELNO',),);
+            OPTION=('EPSI_ELGA','SIGM_ELNO','VARI_ELNO',),);
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,
-             OPTION=('EPSI_ELGA','SIEF_ELNO','VARI_ELNO',),);
+             OPTION=('EPSI_ELGA','SIGM_ELNO','VARI_ELNO',),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
@@ -158,14 +158,14 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                        VALE=0.0205473,),
           RESU=(_F(RESULTAT=U,
                    INST=1.0,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=151.2,),
                 _F(RESULTAT=U,
                    INST=1.0,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXY',
                    MAILLE='CUBE',
                    NOEUD='NO2',

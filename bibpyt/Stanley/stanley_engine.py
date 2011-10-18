@@ -1,28 +1,28 @@
-#@ MODIF stanley_engine Stanley  DATE 14/06/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 """
   INTERFACE ASTER -> POST-TRAITEMENT GRAPHIQUE
 
   Classes :
 
-    CONTEXTE     ensemble des concepts Aster necessaires au post-traitement    
+    CONTEXTE     ensemble des concepts Aster necessaires au post-traitement
     ETAT_GEOM    ensemble des donnees geometriques pouvant supporter un trace
     ETAT_RESU    Descripteur de la SD resultat (champs, parametres, ...)
     SELECTION    Selection realisee par l'utilisateur via l'interface graphique
@@ -32,14 +32,12 @@
     INTERFACE
     DRIVER
     DRIVER_GMSH
-    DRIVER_GRACE 
+    DRIVER_GRACE
 
 """
 
 info = """
 INTERFACE DE POST-TRAITEMENT GRAPHIQUE POUR CODE_ASTER
-
-E. LORENTZ, P. BADEL, A. ASSIRE
 
 STANLEY
 """
@@ -67,14 +65,6 @@ import gmsh
 import cata_champs
 import aster
 from Utilitai.Table import Table, merge
-
-# Multi-langues
-try:
-   import gettext
-   _ = gettext.gettext
-except:
-   def _(mesg):
-      return mesg
 
 import Utilitai
 from Utilitai import sup_gmsh
@@ -122,7 +112,7 @@ def DETR(lnom):
 
 # ==============================================================================
 
-# Definition d'une table de concept maillage, d'une variable d'increment et de 
+# Definition d'une table de concept maillage, d'une variable d'increment et de
 # deux unités logiques disponibles pour les operations du superviseur GMSH
 global _MA, _NUM, _UL
 _MA=[None]*1000
@@ -160,14 +150,14 @@ class ERREUR:
     UTMESS('A','STANLEY_38',valk=[texte,str(err)])
 
     if l_detr: self.DETRUIRE(tuple(l_detr))
-    
+
     if l_return==0: return
     if l_return==1: return False
     if l_return==2: return False, False
 
 
   def DETRUIRE(self, l_detr=[]):
-    if len(l_detr)>0: 
+    if len(l_detr)>0:
        DETR( tuple(l_detr) )
 #        try:     DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
 #        except:
@@ -182,10 +172,10 @@ class PARAMETRES :
 
   """
     GESTION DES PARAMETRES DE L'OUTIL
-    
+
     Methodes publiques
       __getitem__ : retourne la valeur d'un parametre (s'il existe)
-      
+
   """
 
   def __init__(self) :
@@ -369,7 +359,7 @@ répertoire partagé.
 Ceci permet de fixer la taille minimale d'un cote d'un element. Si cette taille n'est pas atteinte, on
 procede à une transformation geometrique (affinite le long du cote trop petit). L'interet est de
 pouvoir visualiser des resultats sur des elements tres etires (comme les elements de joint).
-Par defaut, tm vaut 0. : on ne modifie pas la geometrie des elements. 
+Par defaut, tm vaut 0. : on ne modifie pas la geometrie des elements.
 """)
 
 
@@ -384,7 +374,7 @@ Il n'y a qu'une seule machine : le serveur de calcul Aster est sur le poste de t
 Gmsh est executé sur la machine locale.
 
 Il n'y a donc aucune adresse de machine à fournir.
-""", 
+""",
 
 'DISTANT': """
 Mode DISTANT:
@@ -399,7 +389,7 @@ Gmsh sera executé à distance et son display sera renvoyé vers "Machine de visual
 
 . Si le paramètre "Machine de visualisation" est vide, le fichier .pos sera déposé dans le répertoire temporaire sur la "Machine de Gmsh", mais Gmsh ne sera pas lancé.
 On pourra donc récupérer manuellement le fichier .pos par réseau et le visualiser (cette configuration permet d'utiliser Stanley via Exceed sous Windows et de récupérer manuellement le fichier sous Windows, par exemple en ftp).
-""", 
+""",
 
 'WINDOWS': """
 Mode WINDOWS:
@@ -427,7 +417,7 @@ Il n'y a qu'une seule machine : le serveur de calcul Aster est sur le poste de t
 Salome est executé sur la machine locale et doit etre lancé indépendament de Stanley.
 
 Il n'y a donc aucune adresse de machine à fournir.
-""", 
+""",
 
 'DISTANT': """
 Mode DISTANT:
@@ -435,13 +425,13 @@ Mode DISTANT:
 - La "Machine de Salome" est la machine sur laquelle sera executé Salome. C'est une machine distante du serveur de calcul Aster.
 
 Salome doit etre lancé indépendament de Stanley.
-""", 
+""",
 
 'WINDOWS': """
 Mode WINDOWS:
 
 Ce mode est indisponible car Salome n'existe pas encore sous Windows.
-""", 
+""",
 }
 
     return dparam, dliste_section, aide
@@ -467,7 +457,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
        txt = f.read()
        f.close()
        fichier=txt.split('\n')[0]
-       if not os.path.isfile(fichier): 
+       if not os.path.isfile(fichier):
           ok_env=False # Le dernier fichier d'environnement n'existe plus
     except:
        ok_env=False    # Le dernier fichier d'environnement n'existe pas (premiere utilisation)
@@ -530,7 +520,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
        fw.write(fichier)
        fw.close()
 
-       return res 
+       return res
     else: return False
 
 
@@ -547,7 +537,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     if 'HOSTNAME' in os.environ.keys(): hostname = os.environ['HOSTNAME']
     else:                               hostname = socket.gethostname()
 
-    if 'DISPLAY' in os.environ.keys():  
+    if 'DISPLAY' in os.environ.keys():
         display  = os.environ['DISPLAY']
         mdisplay = os.environ['DISPLAY'].split(':')[0]
     else: raise "Erreur! Pas de DISPLAY defini!"   # Ce cas est normalement impossible car Stanley doit avoir un DISPLAY pour pouvoir s'ouvrir
@@ -674,7 +664,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     except: pass
     fp=tkFileDialog.asksaveasfile(filetypes=[("Fichiers Stanley", "*.stn"),("Tous", "*")],parent=interface.rootTk,title="Sélectionner le fichier contenant la configuration Stanley",initialdir='~/%s' % __rcstanley__)
     if (fp != None):
-       if fp.name[-4:]!='.stn': 
+       if fp.name[-4:]!='.stn':
           fichier=fp.name+'.stn'
        else:
           fichier=fp.name
@@ -714,11 +704,11 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
     if res:
        self.Saved = True
-       txt = _("Nouveaux parametres sauvegardés dans : " + fichier)
+       txt = _("Nouveaux parametres sauvegardés dans : %s") % fichier
        UTMESS('I','STANLEY_28',valk=[fichier])
        interface.ligne_etat.Affecter( txt )
     else:
-       txt =  _("Impossible de sauvegarder les parametres dans : " + fichier)
+       txt =  _("Impossible de sauvegarder les parametres dans : %s") % fichier
        UTMESS('A','STANLEY_29',valk=[fichier])
        interface.ligne_etat.Affecter( txt )
 
@@ -768,7 +758,7 @@ class CONTEXTE:
     self.maillage   = maillage
     self.modele     = modele
     self.cham_mater = cham_mater
-    self.cara_elem  = cara_elem 
+    self.cara_elem  = cara_elem
     self.para_sensi = para_sensi
     self.resultat_sensible = None
 
@@ -787,7 +777,7 @@ class ETAT_GEOM:
 
   """
     ENSEMBLE DES DONNEES GEOMETRIQUES POUVANT SUPPORTER UN TRACE
-    
+
     Attributs publics
      volu     : liste des group_ma de dimension 3
      surf     : liste des group_ma de dimension 2
@@ -795,20 +785,20 @@ class ETAT_GEOM:
      poin     : liste des group_no a un seul noeud
      mail     : dico qui indique pour chaque groupe precedent le nom
                  du maillage qui le porte
-     
+
     Methodes publiques
      Oriente  : fournit le group_no oriente correspondant a un group_ma ligne
      Fusion   : fusionne un objet de classe ETAT_GEOM dans self
      Nombre   : fournit le nombre d'entites geometriques disponibles
      Type     : fournit le type d'une entite geometrique
-     
+
     attributs prives :
       orie    : dictionnaire des group_no orientes
                  (cle = nom du group_ma, resu = numero)
   """
 
 
-  
+
   def __init__(self, maillage) :
 
     # Gestion des erreurs
@@ -826,28 +816,28 @@ class ETAT_GEOM:
 
     info_gma = maillage.LIST_GROUP_MA()
     info_gno = maillage.LIST_GROUP_NO()
-    
+
    # les group_ma de dimension 3
     for gma in info_gma :
-      if gma[2] == 3 and gma[0][0]<>'_' : 
+      if gma[2] == 3 and gma[0][0]<>'_' :
         self.volu.append(gma[0])
     self.volu.sort()
-      
+
    # les group_ma de dimension 2
     for gma in info_gma :
-      if gma[2] == 2 and gma[0][0]<>'_' : 
+      if gma[2] == 2 and gma[0][0]<>'_' :
         self.surf.append(gma[0])
     self.surf.sort()
-      
+
    # les group_ma de dimension 1
     for gma in info_gma :
-      if gma[2] == 1 and gma[0][0]<>'_' : 
+      if gma[2] == 1 and gma[0][0]<>'_' :
         self.lign.append(gma[0])
     self.lign.sort()
-      
+
    # Les points (group_no a un seul noeud)
     for gno in info_gno :
-      if gno[1] == 1 and gno[0][0]<>'_' : 
+      if gno[1] == 1 and gno[0][0]<>'_' :
         self.poin.append(gno[0])
     self.poin.sort()
 
@@ -859,27 +849,27 @@ class ETAT_GEOM:
 
 
   def Nombre(self) :
-  
+
     """
       Nombre   : fournit le nombre d'entites geometriques disponibles
     """
-    
+
     return len(self.mail.keys())
-    
-    
-  
+
+
+
   def Type(self, geom) :
-  
+
     """
-      Fournit le type d'une entite geometrique 
-      
+      Fournit le type d'une entite geometrique
+
       IN
         geom : nom de l'entite
-        
-      RETURN 
-        'VOLUME', 'SURFACE', 'CHEMIN' ou 'POINT' 
+
+      RETURN
+        'VOLUME', 'SURFACE', 'CHEMIN' ou 'POINT'
     """
-    
+
     if geom in self.volu :
       return 'VOLUME'
     elif geom in self.surf :
@@ -890,20 +880,20 @@ class ETAT_GEOM:
       return 'POINT'
     else :
       raise geom + " n'appartient pas a la SD ETAT_GEOM"
-    
-    
+
+
   def Oriente(self, ligne) :
 
     """
      Retourne le nom du group_no oriente correspondant au group_ma ligne
      Le cree le cas echeant
-    
+
      IN  ligne    : nom du group_ma de type ligne qu'on cherche a orienter
     """
-    
+
     if ligne not in self.lign :
       raise "ce n'est pas un chemin (mailles 1D)"
-      
+
     if ligne in self.orie.keys() :
       num = self.orie[ligne]
       return '_OR'+repr(num)
@@ -934,7 +924,7 @@ class ETAT_GEOM:
 
     """
       Fusionne un objet de classe ETAT_GEOM dans self
-      
+
       IN ma   nom de l'objet a fusionner dans self
     """
 
@@ -958,17 +948,17 @@ class ETAT_GEOM:
 
 # ==============================================================================
 
-    
+
 
 class ETAT_RESU:
 
   """
     DESCRIPTEUR DE LA SD RESULTAT (CHAMPS, PARAMETRES, ...)
-    
-    
+
+
     Attributs publics
     -----------------
-    
+
       contexte
         Historique de creation de la SD resultat (CONTEXTE)
 
@@ -980,43 +970,43 @@ class ETAT_RESU:
         Dico des composantes des champs calcules
         cle = nom du champ, resu = liste des composantes
 
-                        
+
     Methodes publiques
     ------------------
-    
+
       Refresh
         Remet a jour le descripteur par analyse du concept resultat Aster
 
       Statut_champ
-        Retourne le statut d'un champ pour une liste de numeros d'ordre : 
+        Retourne le statut d'un champ pour une liste de numeros d'ordre :
         'INACCESSIBLE', 'A_CALCULER' ou 'DEJA_CALCULE'
-        
+
       Liste_champs_accessibles
         Pour une liste de numeros d'ordre, fournit la liste des champs accessibles
         (deja calcules et calculables)
-        
+
       Calcul
         Realise le calcul d'un champ pour une liste de numeros d'ordre
 
 
     Attributs prives
-    ----------------    
+    ----------------
 
       ch
         Dico des champs accessibles a la SD resultat et decrits dans cata_champs
         cle = nom du champ, resu = liste des nume_ordre calcules
-    
+
 
     Methodes privees
     ----------------
 
-      Deja_calcule 
-        Teste si un champ est deja calcule pour une liste de numeros d'ordre 
-        
-      Etapes_calcul 
-        Retourne les differents champs intermediaires a calculer pour 
+      Deja_calcule
+        Teste si un champ est deja calcule pour une liste de numeros d'ordre
+
+      Etapes_calcul
+        Retourne les differents champs intermediaires a calculer pour
         determiner un champ sur une liste de numeros d'ordre
-    
+
   """
 
   def __init__(self, contexte) :
@@ -1038,20 +1028,20 @@ class ETAT_RESU:
 
     # Si on n'est pas en sensibilite...
     if not self.contexte.para_sensi:
-       self.va  = self.contexte.resultat.LIST_PARA() 
-#       self.va  = self.contexte.resultat.LIST_VARI_ACCES() 
-       self.cmp = self.contexte.resultat.LIST_NOM_CMP()       
-       self.ch  = self.contexte.resultat.LIST_CHAMPS()        
+       self.va  = self.contexte.resultat.LIST_PARA()
+#       self.va  = self.contexte.resultat.LIST_VARI_ACCES()
+       self.cmp = self.contexte.resultat.LIST_NOM_CMP()
+       self.ch  = self.contexte.resultat.LIST_CHAMPS()
 
     # Si on est en sensibilite...
     else:
        nom_resu_sensible = self.contexte.jdc.memo_sensi.get_nocomp(self.contexte.resultat.nom, self.contexte.para_sensi.nom)
        resu_sensible = resultat_jeveux(nom_resu_sensible)
 
-       self.va  = resu_sensible.LIST_PARA() 
-#       self.va  = resu_sensible.LIST_VARI_ACCES() 
-       self.cmp = resu_sensible.LIST_NOM_CMP()       
-       self.ch  = resu_sensible.LIST_CHAMPS()        
+       self.va  = resu_sensible.LIST_PARA()
+#       self.va  = resu_sensible.LIST_VARI_ACCES()
+       self.cmp = resu_sensible.LIST_NOM_CMP()
+       self.ch  = resu_sensible.LIST_CHAMPS()
 
     for nom_cham in self.ch.keys() :
       if nom_cham not in cata.Champs_presents() :
@@ -1063,12 +1053,12 @@ class ETAT_RESU:
   def Deja_calcule(self, nom_cham, numeros) :
 
     """
-      Teste si un champ est deja calcule pour une liste de numeros d'ordre 
+      Teste si un champ est deja calcule pour une liste de numeros d'ordre
       IN :
         nom_cham : nom du champ
         numeros  : liste des numeros d'ordre
     """
-    
+
     resu = 0
     if nom_cham in self.ch.keys() :
       nume_calc = self.ch[nom_cham]
@@ -1080,7 +1070,7 @@ class ETAT_RESU:
 
 
   def Etapes_calcul(self, nom_cham, numeros) :
-  
+
     """
       Retourne les differents champs intermediaires a calculer pour determiner
       le champ nom_cham sur une liste de numeros d'ordre
@@ -1092,7 +1082,7 @@ class ETAT_RESU:
           si vide -> le champ n'est pas calculable
           sinon   -> champs a calculer successivement (attention, le premier est deja calcule)
           Si la longueur de la liste vaut 1, le champ est deja calcule
-    """ 
+    """
 
     if self.Deja_calcule(nom_cham, numeros) :
       return [nom_cham]
@@ -1101,19 +1091,19 @@ class ETAT_RESU:
         etapes = self.Etapes_calcul(ch, numeros)
         if etapes : return (etapes + [nom_cham])
       return []
-  
-    
+
+
   def Statut_champ(self, nom_cham, numeros) :
-  
+
     """
      Retourne le statu d'un champ pour une liste de numeros d'ordre :
      'INACCESSIBLE', 'A_CALCULER' ou 'DEJA_CALCULE'
-     
+
       IN :
         nom_cham : nom du champ
         numeros  : liste des numeros d'ordre
     """
-    
+
     if not nom_cham or not numeros : return 'INACCESSIBLE'
     etapes = self.Etapes_calcul(nom_cham, numeros)
     if len(etapes) == 0 :
@@ -1121,12 +1111,12 @@ class ETAT_RESU:
     elif len(etapes) == 1 :
       return 'DEJA_CALCULE'
     else :
-      return 'A_CALCULER'      
+      return 'A_CALCULER'
 
 
   def Liste_champs_accessibles(self, numeros) :
-  
-    """ 
+
+    """
       Pour une liste de numeros d'ordre, fournit la liste des champs accessibles
       IN :
         numeros : liste des numeros d'ordre
@@ -1138,12 +1128,12 @@ class ETAT_RESU:
     for nom_cham in self.ch.keys() :
       if self.Etapes_calcul(nom_cham, numeros) : liste_ch.append(nom_cham)
     return liste_ch
-        
-    
+
+
   def Calcul(self, nom_cham, numeros, options=None) :
     """
       Realise le calcul d'un champ pour une liste de numeros d'ordre
-      
+
       IN :
         nom_cham: nom du champ a calculer
         numeros : liste des numeros d'ordre
@@ -1174,10 +1164,10 @@ class SELECTION:
 
     Attributs publics
     -----------------
-    
+
       nom_cham (L)
         Nom du champ selectionne
-      
+
       nom_cmp (L)
         Liste des noms des composantes selectionnees
 
@@ -1188,11 +1178,11 @@ class SELECTION:
         Nom de la variable d'acces selectionnee
 
       vale_va (L)
-        Valeurs de la variable d'acces correspondants aux numeros d'ordre selectionnes 
+        Valeurs de la variable d'acces correspondants aux numeros d'ordre selectionnes
 
       mode (L)
         Mode de trace : 'Isovaleurs' ou 'Courbes'
-        
+
       geom (L)
         Entites geometriques selectionnees : (type, [entite 1, entite 2, ...])
         type in 'MAILLAGE','GROUP_MA','CHEMIN','POINT'
@@ -1205,7 +1195,7 @@ class SELECTION:
         Compatibilite du champ actif et des entites geometriques actives
           0 -> On ne sait pas tracer
           1 -> On sait tracer
-      
+
       tracable (L)
         Tracabilite du champ
           0 -> impossible a tracer
@@ -1214,24 +1204,24 @@ class SELECTION:
 
     Methodes publiques
     ------------------
-    
+
       Interface
         Affecte une interface graphique a l'objet selection
-      
+
       Refresh
-        Scan l'interface graphique, la SD resultat et etat_geom pour 
+        Scan l'interface graphique, la SD resultat et etat_geom pour
         mettre a jour la selection et l'interface graphique
-        
+
 
     Attributs prives
     -----------------
-    
+
       contexte
         Historique de creation de la SD resultat (CONTEXTE)
 
       etat_geom
         Etat de la geometrie (ETAT_GEOM)
-      
+
       etat_resu
         Etat du resultat (ETAT_RESU)
 
@@ -1240,27 +1230,27 @@ class SELECTION:
 
       interface
         Interface graphique Tk (INTERFACE)
-        
+
       nbr_geom
         Nombre d'entites geometriques (pour detecter un eventuel ajout)
-        
-        
+
+
     Methodes privees
     -----------------
-    
+
       Examen
-        Met a jour les attributs statut et tracable compte-tenu de la selection        
-    
+        Met a jour les attributs statut et tracable compte-tenu de la selection
+
       Change_va
         Reaction a un changement de variables d'acces
-        
+
       Change_cmp
-        Mise a jour des composantes d'un champ (si nouvelle selection du champ 
+        Mise a jour des composantes d'un champ (si nouvelle selection du champ
         ou calcul du champ)
-        
+
       Change_mode
         Reaction a un changement de mode de trace (isovaleurs ou courbes)
-                
+
   """
 
 
@@ -1277,7 +1267,7 @@ class SELECTION:
     ('ELNO','MAILLAGE')   : 'GMSH',
     ('ELNO','VOLUME')     : 'GMSH',
     ('ELNO','SURFACE')    : 'GMSH',
-    
+
     ('ELGA','MAILLAGE')   : 'GMSH',
     ('ELGA','VOLUME')     : 'GMSH',
     ('ELGA','SURFACE')    : 'GMSH',
@@ -1290,7 +1280,7 @@ class SELECTION:
     ('ELEM','CHEMIN')     : 'GRACE',
     ('ELEM','POINT')      : 'GRACE',
     }
- 
+
   def __init__(self, contexte, etat_geom, etat_resu) :
 
     # Gestion des erreurs
@@ -1300,42 +1290,42 @@ class SELECTION:
     self.etat_geom = etat_geom
     self.etat_resu = etat_resu
     self.nbr_geom  = etat_geom.Nombre()
-    
-    self.nom_va   = 'NUME_ORDRE'
-    self.mode     = 'Isovaleurs'      
-    self.nom_cham = ''    
-    self.nom_cmp  = []    
-    self.numeros  = []    
-    self.vale_va  = []    
-    self.geom     = None  
 
-    self.liste_cmp = []                   
+    self.nom_va   = 'NUME_ORDRE'
+    self.mode     = 'Isovaleurs'
+    self.nom_cham = ''
+    self.nom_cmp  = []
+    self.numeros  = []
+    self.vale_va  = []
+    self.geom     = None
+
+    self.liste_cmp = []
     self.Examen()
 
 
   def Interface(self, interface) :
-  
+
     """
       Affecte une interface graphique a l'objet selection
-      
+
       IN
         interface : interface Tk (INTERFACE)
     """
-    
+
     self.interface = interface
     self.Refresh()
-    
+
 
   def Examen(self) :
 
     """
       Mise a jour des variables d'etat : statut, compatible, tracable
     """
-    
-   # Nature du champs (INACCESSIBLE, A_CALCULER ou DEJA_CALCULE) 
+
+   # Nature du champs (INACCESSIBLE, A_CALCULER ou DEJA_CALCULE)
     self.statut = self.etat_resu.Statut_champ(self.nom_cham, self.numeros)
-            
-   # le champ est-il compatible avec les choix geometriques ?  
+
+   # le champ est-il compatible avec les choix geometriques ?
     self.compatible = 0
     if self.geom and self.statut <> 'INACCESSIBLE' :
       type_champ = cata[self.nom_cham].type
@@ -1344,27 +1334,27 @@ class SELECTION:
       if self.geom[0] == 'CHEMIN' and len(self.geom[1])>1 :
         self.compatible = 0
 
-    
+
    # le champ est-il tracable
     if self.compatible == 0 or self.statut == 'INACCESSIBLE' or not self.nom_cmp  :
       self.tracable = 0
     else :
       self.tracable = 1
-   
+
 
   def Change_va(self, nom_va):
     """
       Reaction a un changement de variables d'acces
-      
+
       IN
         nom_va : nom de la nouvelle variable d'acces
     """
-        
+
     if self.nom_va == nom_va : return
     self.nom_va = nom_va
-    self.interface.ordre.Change(['TOUT_ORDRE'] + self.etat_resu.va[nom_va], 'TOUT_ORDRE')   
+    self.interface.ordre.Change(['TOUT_ORDRE'] + self.etat_resu.va[nom_va], 'TOUT_ORDRE')
     self.Refresh()
-    
+
 
 
   def Change_mode(self, mode, force = 0):
@@ -1374,12 +1364,12 @@ class SELECTION:
       IN
         mode : nouveau mode de trace
         force: force le changement du mode meme en l'absence de changement
-               (pour recrire les group_**)    
+               (pour recrire les group_**)
     """
-    
+
     if self.mode == mode and not force :
       return
-      
+
     self.mode = mode
 
     if self.mode in ['Isovaleurs', 'SalomeIsovaleurs']:
@@ -1388,7 +1378,7 @@ class SELECTION:
         t_geom.append(string.ljust(nom_group,8) + " (3D)")
       for nom_group in self.etat_geom.surf :
         t_geom.append(string.ljust(nom_group,8) + " (2D)")
-      self.interface.geom.Change(t_geom,'TOUT_MAILLAGE')   
+      self.interface.geom.Change(t_geom,'TOUT_MAILLAGE')
 
     elif self.mode in ['Courbes', 'SalomeCourbes']:
       t_geom = []
@@ -1396,30 +1386,30 @@ class SELECTION:
         t_geom.append(string.ljust(nom_group,8) + " (1D)")
       for nom_group in self.etat_geom.poin :
         t_geom.append(string.ljust(nom_group,8) + " (0D)")
-      self.interface.geom.Change(t_geom)   
+      self.interface.geom.Change(t_geom)
 
     else : raise 'ERREUR_DVP'
     self.Refresh()
 
 
-  def Change_cmp(self) :    
+  def Change_cmp(self) :
     """
-      Mise a jour des composantes d'un champ (si nouvelle selection du champ 
+      Mise a jour des composantes d'un champ (si nouvelle selection du champ
       ou calcul du champ)
     """
-          
+
     if self.nom_cham :
       liste_cmp = self.etat_resu.cmp[self.nom_cham]
     else :
       liste_cmp = []
     if liste_cmp <> self.liste_cmp :
       self.liste_cmp = liste_cmp
-      self.interface.cmp.Change(['TOUT_CMP'] + liste_cmp, 'TOUT_CMP')      
+      self.interface.cmp.Change(['TOUT_CMP'] + liste_cmp, 'TOUT_CMP')
 
-    
-    
+
+
   def Refresh(self) :
-    """ 
+    """
       Scan l'interface graphique et la SD resultat pour mettre a jour
       la selection et l'interface graphique
     """
@@ -1430,10 +1420,10 @@ class SELECTION:
       help = cata[self.nom_cham].comment
       self.interface.ligne_etat.Affecter(help)
 
-    
+
   # Mise a jour des composantes selectionnables et selectionnees
     self.Change_cmp()
-    self.nom_cmp = self.interface.cmp.courant    
+    self.nom_cmp = self.interface.cmp.courant
 
 
   # Mise a jour de la liste des entites geometriques
@@ -1441,8 +1431,8 @@ class SELECTION:
     if nombre <> self.nbr_geom :
       self.nbr_geom = nombre
       self.Change_mode(self.mode, force = 1)
-    
-    
+
+
    # Mise a jour des noms d'entites geometriques
     if 'TOUT_MAILLAGE' in self.interface.geom.courant :
       self.geom = ('MAILLAGE',None)
@@ -1450,8 +1440,8 @@ class SELECTION:
       type_actu = ''
       liste_actu = []
       for nom in self.interface.geom.courant :
-        nom_group  = string.strip(nom[:8]) 
-        type_group = self.etat_geom.Type(nom_group)    
+        nom_group  = string.strip(nom[:8])
+        type_group = self.etat_geom.Type(nom_group)
         liste_actu.append(nom_group)
         if not type_actu :
           type_actu = type_group
@@ -1460,7 +1450,7 @@ class SELECTION:
           break
       else :
         self.geom = (type_actu,liste_actu)
-  
+
    # Mise a jour des numeros d'ordre
     tout_no = self.etat_resu.va['NUME_ORDRE']
     tout_va = self.etat_resu.va[self.nom_va]
@@ -1480,7 +1470,7 @@ class SELECTION:
 
    # Mise a jour de la nouvelle selection
     self.Examen()
-    
+
    # Determination de la couleur du feu
 
     if not self.tracable  :
@@ -1498,9 +1488,9 @@ class STANLEY:
 
   """
     OUTIL DE POST-TRAITEMENT GRAPHIQUE
-    
+
   """
- 
+
   def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi, FICHIER_VALID=None) :
 
     # Gestion des erreurs
@@ -1511,7 +1501,7 @@ class STANLEY:
     self.etat_geom  = ETAT_GEOM(maillage)
     self.etat_resu  = ETAT_RESU(self.contexte)
     self.selection  = SELECTION(self.contexte,self.etat_geom,self.etat_resu)
-    self.parametres = PARAMETRES()    
+    self.parametres = PARAMETRES()
     self.FICHIER_VALID = FICHIER_VALID
 
     self.interface  = INTERFACE(self)
@@ -1521,12 +1511,12 @@ class STANLEY:
    # Drivers d'outils de post-traitement
     self.driver = {
       'Isovaleurs'      : DRIVER_GMSH(self),
-      'Courbes'         : DRIVER_GRACE(self),          
+      'Courbes'         : DRIVER_GRACE(self),
       'SalomeCourbes'   : DRIVER_SALOME_COURBES(self),
       'SalomeIsovaleurs': DRIVER_SALOME_ISOVALEURS(self)
       }
 
-   # Lancement de l'interface graphique (jusqu'a ce qu'on quitte) 
+   # Lancement de l'interface graphique (jusqu'a ce qu'on quitte)
     self.interface.Go()
 
    # Menage
@@ -1562,7 +1552,7 @@ class STANLEY:
     """
 
    # Precondition
-    if not self.selection.tracable : 
+    if not self.selection.tracable :
       self.interface.Bip()
       return
 
@@ -1593,22 +1583,22 @@ class STANLEY:
                 options['animation_mode'] = SAISIE_MODE( liste, _("Animation") )
 
     # Trace
-    self.driver[self.selection.mode].Tracer(self.selection, options )    
+    self.driver[self.selection.mode].Tracer(self.selection, options )
 
 
 
   def Information(self) :
-  
+
     self.selection.interface.Information()
-    
+
 
   def Ajout_point(self) :
-  
+
     """
       Creation interactive d'un point de post-traitement
     """
 
-    # Lecture des caracteristiques du chemin    
+    # Lecture des caracteristiques du chemin
     (nom,x0,y0,z0) = self.interface.Requete_point()
     if not nom: return
 
@@ -1618,7 +1608,7 @@ class STANLEY:
       geom = driver.Importer_point(nom,x0,y0,z0)
       if not geom: return
 
-      # Incorporation du nouveau point 
+      # Incorporation du nouveau point
       self.etat_geom.Fusion(geom)
     except Exception, e:
       print e
@@ -1631,7 +1621,7 @@ class STANLEY:
       Creation interactive d'un chemin de post-traitement
     """
 
-    # Lecture des caracteristiques du chemin    
+    # Lecture des caracteristiques du chemin
     (nom,x0,y0,z0,x1,y1,z1,nbr) = self.interface.Requete_chemin()
     if not nom: return
 
@@ -1641,12 +1631,12 @@ class STANLEY:
       geom = driver.Importer_chemin (nom,x0,y0,z0,x1,y1,z1,nbr)
       if not geom: return
 
-      # Incorporation du nouveau chemin 
+      # Incorporation du nouveau chemin
       self.etat_geom.Fusion(geom)
     except: pass
     self.selection.Refresh()
 
-  def Editer_Parametres(self) : 
+  def Editer_Parametres(self) :
     self.parametres.Afficher_Config(self.interface)
 
     if self.parametres.change_fonte:
@@ -1661,16 +1651,16 @@ class STANLEY:
           STANLEY(self.contexte.resultat, self.contexte.maillage, self.contexte.modele, self.contexte.cham_mater, self.contexte.cara_elem, self.FICHIER_VALID)
 #          self.Select()
 
-  def Voir(self) : 
+  def Voir(self) :
     self.parametres.Voir(self.interface)
 
-  def Open_config(self): 
+  def Open_config(self):
     self.parametres.Ouvrir_Sous(self.interface)
 
-  def Save_config(self): 
+  def Save_config(self):
     self.parametres.Sauvegarder_Sous(self.interface)
 
-  def Save_rapide(self): 
+  def Save_rapide(self):
     self.parametres.Sauvegarder_Rapide(self.interface)
 
   def Quitter(self):
@@ -1695,7 +1685,7 @@ class STANLEY:
         Fermeture de Stanley : cloture les drivers, efface les concepts temporaires
      """
      for driver in self.driver.keys() :
-        try :   
+        try :
            self.driver[driver].Fermer()
         except AttributeError :
            pass
@@ -1715,7 +1705,7 @@ class STANLEY:
     if touche == 'c' : self.Calculer()
     if touche == 't' : self.Tracer()
 #     if touche == 'v' : self.Voir()
-# 
+#
 #   def Voir(self):
 #     import pprint
 #     print 20*'/\__'
@@ -1735,34 +1725,34 @@ class INTERFACE :
 
   """
     INTERFACE GRAPHIQUE TK
-    
+
     Attributs publics
       champ      : LIST_BOX champ selectionne
       cmp        : LIST_BOX composantes selectionnees
       geom       : LIST_BOX entites geometriques selectionnees
-      ordre      : LIST_BOX numeros d'ordre selectionnes 
+      ordre      : LIST_BOX numeros d'ordre selectionnes
       feu        : FEU_TRICOLORE etat de la selection
-      ligne_etat : LIGNE_ETAT ligne d'etat 
-      
-      
+      ligne_etat : LIGNE_ETAT ligne d'etat
+
+
     Methodes publiques
-    ------------------ 
-    
-      Go       
+    ------------------
+
+      Go
         Lancement du scan des evenements
-      
+
       Kill
         Supprime l'interface
-      
+
       Bip
         Emet un bip
-        
+
       Requete_point
         Boite de dialogue pour la creation d'un point
-        
+
       Requete_chemin
         Boite de dialogue pour la creation d'un chemin
-        
+
       Requete_para
         para       : objet PARAMETRES
         nom_classe : nom de la classe de parametres
@@ -1771,15 +1761,15 @@ class INTERFACE :
     Attributs prives
       stan       : reference vers l'objet maitre stanley (pour Refresh, Calculer, Tracer)
       rootTk     : racine des objets Tk
-      
+
     Methodes privees
       Action_evenement : actions consecutives au scan des evenements
-      Dessin     : creation des objets graphiques Tk de l'interface  
+      Dessin     : creation des objets graphiques Tk de l'interface
   """
 
 
-  def __init__(self, stan) :   
-  
+  def __init__(self, stan) :
+
     """
       IN stan    : Reference vers stanley pour acces aux methodes Refresh,
                    Tracer et Calculer en lien avec les boutons et un
@@ -1793,15 +1783,15 @@ class INTERFACE :
     etat_geom = stan.etat_geom
     etat_resu = stan.etat_resu
     numeros   = stan.etat_resu.va['NUME_ORDRE']
-        
+
    # Liste des champs
     t_champ = etat_resu.Liste_champs_accessibles(numeros)
-    t_champ.sort()  
+    t_champ.sort()
 
    # Liste des composantes
     t_cmp = ['TOUT_CMP']
-        
-   # Liste des entites geometriques     
+
+   # Liste des entites geometriques
     t_geom = ['TOUT_MAILLAGE']
     for nom_group in etat_geom.volu :
       t_geom.append(string.ljust(nom_group,8) + " (3D)")
@@ -1812,27 +1802,27 @@ class INTERFACE :
     t_no = ['TOUT_ORDRE'] + numeros
 
    # Liste des variables d'acces
-    l_va = etat_resu.va.keys()    
+    l_va = etat_resu.va.keys()
 
     self.stan = stan
-    self.rootTk    = Tk.Tk()       
+    self.rootTk    = Tk.Tk()
     self.rootTk.wm_title('STANLEY')
     self.Dessin(t_champ, t_cmp, t_geom, t_no, l_va)
-    self.Scan_selection()               
+    self.Scan_selection()
 
 
 
   def Go(self) :
 
-    """ 
+    """
       Demarre le scan des evenements
     """
-    
+
     self.rootTk.mainloop()
 
 
   def Kill(self) :
-  
+
     """
       Supprime l'interface
     """
@@ -1850,19 +1840,19 @@ class INTERFACE :
         Scan les objets selectionnes
         Definit la frequence de scan
     """
-  
-    different = ( self.champ.Scan() or 
+
+    different = ( self.champ.Scan() or
                   self.cmp.Scan()   or
-                  self.geom.Scan()  or 
+                  self.geom.Scan()  or
                   self.ordre.Scan()
                 )
 
     if different :
-      self.stan.selection.Refresh()   
+      self.stan.selection.Refresh()
 
     self.after_id = self.rootTk.after(30, self.Scan_selection)
 
-    
+
   def Dessin(self, t_champ, t_cmp, t_geom, t_no, l_va) :
 
     """
@@ -1889,8 +1879,8 @@ class INTERFACE :
     frame_bas.grid(row=2,column=0,columnspan =3,pady=3)
     frame_espace = Tk.Frame(self.rootTk)
     frame_espace.grid(row=0,column=1,pady=20)
-    
-    
+
+
    # Menu deroulant
 #    titres = ['Fichier','Geometrie','Parametres','Actions']
     titres = ['Fichier','Geometrie','Parametres']
@@ -1910,7 +1900,7 @@ class INTERFACE :
                             ('Sauvegarder sous',self.stan.Save_config),
                           ]
 
-    menu = MENU(frame_menu,titres,choix,fonte=fonte)     
+    menu = MENU(frame_menu,titres,choix,fonte=fonte)
 
    # boite de saisie des champs
     frame_champs = Tk.Frame(frame_selection)
@@ -1951,22 +1941,22 @@ class INTERFACE :
     self.ligne_etat.Affecter('Bienvenue dans STANLEY !')
 
    # Raccourcis clavier
-    self.rootTk.bind_all("<Control-KeyPress>",self.stan.Clavier)    
-        
+    self.rootTk.bind_all("<Control-KeyPress>",self.stan.Clavier)
+
 
   def Information(self) :
-  
+
     global info
-    
+
     tk = Tk.Tk()
     tk.title = _("A propos de Stanley")
 
     l = Tk.Label(tk,padx=15,pady=15,text=info)
     l.grid()
-    
+
 
   def Bip(self) :
-  
+
     """
       Emet un bip
     """
@@ -1978,7 +1968,7 @@ class INTERFACE :
     """
       Boite de dialogue pour definir les caracteristiques
       du point a creer
-      
+
       RETURN
         nom         nom du chemin
         x0,y0,z0    coordonnees du point origine
@@ -1989,9 +1979,9 @@ class INTERFACE :
       ['Nom du point',1],
       ['Coordonnees',3]]
     defaut = [[''],[0.,0.,0.]]
-    
+
     reponse = SAISIE(infos, _("Creation d'un point"), defaut, fonte=fonte)
-    
+
     nom = reponse[0][0]
     nom = nom[0:8]            # pas plus de 8 caracteres dans un GROUP_MA
     nom = string.strip(nom)   # pas de blancs
@@ -2002,14 +1992,14 @@ class INTERFACE :
     if reponse[1][2] : z0  = string.atof(reponse[1][2])
 
     return nom,x0,y0,z0
-    
+
 
   def Requete_chemin(self) :
 
     """
       Boite de dialogue pour definir les caracteristiques
       du chemin a creer
-      
+
       RETURN
         nom         nom du chemin
         x0,y0,z0    coordonnees du point origine
@@ -2025,7 +2015,7 @@ class INTERFACE :
       ['Nombre de points',1]]
     defaut = [[''],[0.,0.,0.],[1.,0.,0.],[2]]
     reponse = SAISIE(infos, _("Creation d'un chemin") , defaut, fonte=fonte)
-    
+
     nom = reponse[0][0]
     nom = nom[0:8]            # pas plus de 8 caracteres dans un GROUP_MA
     nom = string.strip(nom)   # pas de blancs
@@ -2072,7 +2062,7 @@ class DRIVER :
 
   # ----------------------------------------------------------------------------
   def Fermer(self) :
-    self.terminal.Fermer()    
+    self.terminal.Fermer()
 
 
   # ----------------------------------------------------------------------------
@@ -2086,16 +2076,16 @@ class DRIVER :
       Projection d'un champ au noeud sur l'entite geometrique de nom geom.
       Pour l'instant, l'entite geometrique se reduit a un chemin sur lequel
       on affecte des elements barres ou a un discret.
-      
+
       selection : selection courante de type SELECTION
       contexte  : CONTEXTE pour la projection
       geom      : nom du groupe de mailles sur lequel on projette
-      
+
       retourne le CONTEXTE lie au nouveau resultat produit ainsi que la
       liste des concepts Aster a detruire.
     """
 
-    # Pas de projection si meme maillage 
+    # Pas de projection si meme maillage
     __MA = selection.etat_geom.mail[geom]
     if __MA == contexte.maillage :
       return contexte, []
@@ -2177,7 +2167,7 @@ class DRIVER :
       UTMESS('A','STANLEY_40',valk=[SELECTION.NondeveloppeRS])
       return False, []
 
-    para = _F(  
+    para = _F(
       MODELE     = contexte.modele,
       NOM_CHAM   = selection.nom_cham,
       SHRINK     = float(self.stan.parametres['SHRINK']),
@@ -2316,7 +2306,7 @@ class DRIVER_ISOVALEURS(DRIVER):
     # Options de base
     para = _F(RESULTAT   = contexte.resultat,
               NOM_CHAM   = selection.nom_cham,
-              NUME_ORDRE = selection.numeros, 
+              NUME_ORDRE = selection.numeros,
              )
 
     if type_champ in ['NOEU','ELNO'] and selection.geom[0] in ['VOLUME','SURFACE'] :
@@ -2416,7 +2406,7 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
     # Tracé au format GMSH
     DEFI_FICHIER(UNITE = 33, INFO=1)
     try:
-      IMPR_RESU( UNITE   = ul, 
+      IMPR_RESU( UNITE   = ul,
                  FORMAT  = 'GMSH',
                  VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
                  RESU    = para,
@@ -2439,7 +2429,7 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
     if self.stan.FICHIER_VALID:
        self.Test_fichier_resu(driver=selection.mode, FICHIER='fort.'+str(ul), FICHIER_VALID=self.stan.FICHIER_VALID, selection=selection)
 
-    if l_detr : 
+    if l_detr :
        DETR( tuple(l_detr) )
 
 
@@ -2459,7 +2449,7 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
       Tracer : genere le fichier de post-traitement (IMPR_RESU) et lance GMSH
   """
 
-##    def __init__( self, stan ):    
+##    def __init__( self, stan ):
 ##          DRIVER.__init__( self, stan )
 
   def Tracer( self, selection, options={} ) :
@@ -2475,13 +2465,13 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
 
     contexte   = self.stan.contexte
     type_champ = cata[selection.nom_cham].type
-        
+
     # On efface le fichier si il existe deja
     if os.path.isfile(medFileName):
       try:    os.remove(medFileName)
       except: pass
 
-    DEFI_FICHIER(UNITE = ul, 
+    DEFI_FICHIER(UNITE = ul,
                  TYPE  = 'LIBRE',);
 
     # Parametres de la commande IMPR_RESU
@@ -2530,7 +2520,7 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
     try:
         IMPR_RESU(  FORMAT = 'MED',
                     UNITE  = ul,
-                    RESU   = para )                        
+                    RESU   = para )
     except aster.error,err:
         self.erreur.Remonte_Erreur(err, [], 0)
         DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
@@ -2557,7 +2547,7 @@ class DRIVER_COURBES(DRIVER) :
     Driver d'outils de post-traitement
     Specialisation a chaque outil par heritage de cette classe
     Specialisation pour les drivers de tracer de courbes
-    
+
     Methodes publiques
       Extract : extrait la table contenant les valeurs a tracer
   """
@@ -2572,7 +2562,7 @@ class DRIVER_COURBES(DRIVER) :
 
     """
       Execute les commandes aster de creation de la table pour GRACE
-    """  
+    """
 
     l_courbes = []
     l_detr    = []
@@ -2584,7 +2574,7 @@ class DRIVER_COURBES(DRIVER) :
         contexte, l_detr = self.Ecla_Gauss(selection, contexte)
         if not contexte: return False
 
-    # Parametres communs a toutes les tables a calculer 
+    # Parametres communs a toutes les tables a calculer
     para = _F(INTITULE   = 'TB_GRACE',
               NOM_CHAM   = selection.nom_cham,
               OPERATION  = 'EXTRACTION'
@@ -2610,7 +2600,7 @@ class DRIVER_COURBES(DRIVER) :
 
         para['NUME_ORDRE'] = selection.numeros
         for point in selection.geom[1] :
-            contexte, detr = self.Projeter(selection, contexte, point) 
+            contexte, detr = self.Projeter(selection, contexte, point)
             if not contexte: return False
 
             l_detr.extend(detr)
@@ -2631,7 +2621,7 @@ class DRIVER_COURBES(DRIVER) :
                 try:
                     vale_x = selection.vale_va
                     courbe = as_courbes.Courbe(vale_x,vale_x)
-    
+
                     # Sensibilite
                     if contexte.para_sensi:
                         table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
@@ -2646,7 +2636,7 @@ class DRIVER_COURBES(DRIVER) :
                     print e
                 else:
                     l_courbes.append( (courbe, nom) )
-    
+
             DETR( 'STNTBLGR' )
             if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
             if l_detr: DETR( tuple(l_detr) )
@@ -2655,11 +2645,11 @@ class DRIVER_COURBES(DRIVER) :
     elif selection.geom[0] == 'CHEMIN' :
 
         chemin = selection.geom[1][0]
-  
+
         # Projection si necessaire
         contexte, detr = self.Projeter(selection, contexte, chemin)
         if not contexte: return False
-        l_detr += detr    
+        l_detr += detr
 
         para['RESULTAT'] = contexte.resultat
         para['GROUP_NO'] = self.stan.etat_geom.Oriente(chemin)
@@ -2678,7 +2668,7 @@ class DRIVER_COURBES(DRIVER) :
 
             for comp in l_nom_cmp :
                 courbe = as_courbes.Courbe()
-      
+
                 try:
                     # Sensibilite
                     if contexte.para_sensi:
@@ -2717,7 +2707,7 @@ class DRIVER_COURBES(DRIVER) :
 
     """
        Ecrire dans un fichier les courbes
-    """  
+    """
 
     _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
     unite=_UL['UNITE_LIBRE',1]
@@ -2835,7 +2825,7 @@ class DRIVER_GRACE(DRIVER_COURBES) :
           acourbe.append( float(l) )
         lx = acourbe[0:len(acourbe):2]
         ly = acourbe[1:len(acourbe):2]
-      
+
         txt = { 'ABSCISSE': lx, 'ORDONNEE': ly, 'COULEUR': 2 }
         _tmp.append( txt )
 
@@ -2856,15 +2846,15 @@ class DRIVER_GRACE(DRIVER_COURBES) :
       # Ouverture ou rafraichissement du terminal si necessaire
       xmgrace_exe=self.stan.parametres['grace']
       if not xmgrace_exe.strip(): xmgrace_exe = aster.repout() + '/xmgrace'
-  
-      if not self.terminal : 
+
+      if not self.terminal :
          self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)
       else :
          if not self.terminal.Terminal_ouvert() :
             self.terminal.Fermer()
             self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)
 
-      # Trace proprement dit 
+      # Trace proprement dit
       self.terminal.Nouveau_graphe()
 
       for courbe in l_courbes :
@@ -2918,20 +2908,20 @@ class DRIVER_SUP_GMSH(DRIVER) :
     Interface avec le langage superviseur de GMSH
   """
 
-  
-  # ----------------------------------------------------------------------------
-  def Importer_point (self,nom,x0,y0,z0) : 
 
-    """ 
+  # ----------------------------------------------------------------------------
+  def Importer_point (self,nom,x0,y0,z0) :
+
+    """
       Importe un point
-      
+
       RETURN
         geom : nouvelle entite geometrique (ETAT_GEOM)
     """
 
     global _MA, _NUM
 
-   # Creation du maillage du point et de la ligne (pour proj_champ)    
+   # Creation du maillage du point et de la ligne (pour proj_champ)
     nom_bid = '_'+nom
     nom_bid = nom_bid[:8]
     eps = 1.E-2
@@ -2970,24 +2960,24 @@ class DRIVER_SUP_GMSH(DRIVER) :
 
 
   # ----------------------------------------------------------------------------
-  def Importer_chemin (self,nom,x0,y0,z0,x1,y1,z1,nbr) : 
+  def Importer_chemin (self,nom,x0,y0,z0,x1,y1,z1,nbr) :
 
-    """ 
+    """
       Importe un chemin
-      
+
       RETURN
         geom : nouvelle entite geometrique (ETAT_GEOM)
     """
 
     global _MA, _NUM
 
-   # Creation du maillage de la ligne    
+   # Creation du maillage de la ligne
     P0  = sup_gmsh.Point(x0,y0,z0)
     P1  = sup_gmsh.Point(x1,y1,z1)
     L01 = sup_gmsh.Line(P0,P1)
     L01.Transfinite(nbr-1)
     mesh = sup_gmsh.Mesh(gmsh=self.stan.parametres['gmsh'])
-    mesh.Physical(nom,L01)    
+    mesh.Physical(nom,L01)
     try:
       ma = mesh.LIRE_GMSH(UNITE_GMSH=_UL[0],UNITE_MAILLAGE=_UL[1])
     except aster.error,err:
@@ -3028,7 +3018,7 @@ class PRE_STANLEY :
 
   """
     INTERFACE GRAPHIQUE TK DE SELECTION DES CONCEPTS ASTER
-    
+
      Attributs publics
       frame_maillage      : LIST_BOX champ selection des concepts Aster de type "maillage"
       frame_modele        : LIST_BOX champ selection des concepts Aster de type "modele"
@@ -3037,25 +3027,25 @@ class PRE_STANLEY :
       frame_cara_elem     : LIST_BOX champ selection des concepts Aster de type "cara_elem"
       frame_para_sensi    : LIST_BOX champ selection des concepts Aster de type "para_sensi"
 
-     Methode publique 
+     Methode publique
       Exec       : lancement du scan des evenements
-      
+
      Attributs prives
       rootTk     : racine des objets Tk
-      
+
      Methodes privees
       Action_evenement : actions consecutives au scan des evenements
-      Dessin     : creation des objets graphiques Tk de l'interface  
+      Dessin     : creation des objets graphiques Tk de l'interface
   """
 
 
-  def __init__(self, FICHIER_VALID=None) :   
+  def __init__(self, FICHIER_VALID=None) :
 
 
     self.FICHIER_VALID = FICHIER_VALID
     self.para = PARAMETRES()
 
-    self.rootTk    = Tk.Tk()       
+    self.rootTk    = Tk.Tk()
     self.rootTk.wm_title( _("PRE_STANLEY : choix des concepts") )
 
     # Récupération des concepts Aster présents dans la base
@@ -3079,7 +3069,7 @@ class PRE_STANLEY :
 
       else:
 
-         concept_exists_and_intypes(i, self.macro, 
+         concept_exists_and_intypes(i, self.macro,
                                     types='maillage_sdaster', append_to=t_maillage)
          concept_exists_and_intypes(i, self.macro,
                                     types='modele_sdaster', append_to=t_modele)
@@ -3131,7 +3121,7 @@ class PRE_STANLEY :
 
       # Sinon on continue
       self.Dessin()
-      self.Scan_selection()               
+      self.Scan_selection()
 
       # Preselectionne le dernier resultat de la liste et ses concepts correspondants
       self.Change_selections()
@@ -3141,7 +3131,7 @@ class PRE_STANLEY :
 
 
   def Autodetecte_Concepts(self, t_evol) :
-    """ 
+    """
        Detecte les concepts associés à un resultat
     """
 
@@ -3178,7 +3168,7 @@ class PRE_STANLEY :
 
 
   def Autodetecte_Para_Sensi(self, t_evol, t_para_sensi) :
-    """ 
+    """
        Detecte les parametres sensibles d'un resultat
     """
 
@@ -3198,10 +3188,10 @@ class PRE_STANLEY :
 
 
   def Exec(self) :
-    """ 
+    """
       Demarre le scan des evenements
     """
-    
+
     self.rootTk.mainloop()
 
 
@@ -3241,7 +3231,7 @@ class PRE_STANLEY :
 
     # Si le resultat a changé on reselectionne les autres concepts
     if self.evol.Scan():
-       try: 
+       try:
           self.Change_selections()
        except Exception, e:
           print e
@@ -3320,7 +3310,7 @@ class PRE_STANLEY :
     """
 
     fonte = self.para['fonte']
-        
+
    # Frames generales
     frame_selection  = Tk.Frame(self.rootTk,relief=Tk.RAISED,bd=3)
     frame_selection.pack(padx=2,pady=2)
@@ -3334,7 +3324,7 @@ class PRE_STANLEY :
     frame_evol.pack(side=Tk.LEFT,padx=5)
     MENU_RADIO_BOX(frame_evol, "evol",fonte=fonte)
     self.evol = LIST_BOX(frame_evol,self.t_evol,Tk.SINGLE,self.t_evol[-1],fonte=fonte)
-      
+
    # boite de saisie des champs
     frame_modele = Tk.Frame(frame_selection)
     frame_modele.pack(side=Tk.LEFT,padx=5)
@@ -3346,7 +3336,7 @@ class PRE_STANLEY :
     frame_cham_mater.pack(side=Tk.LEFT,padx=5)
     MENU_RADIO_BOX(frame_cham_mater, "cham_mater",fonte=fonte)
     self.cham_mater = LIST_BOX(frame_cham_mater,self.t_cham_mater,Tk.SINGLE,self.t_cham_mater[-1],fonte=fonte)
-      
+
    # boite de saisie des champs
     if self.t_cara_elem != []:
       frame_cara_elem = Tk.Frame(frame_selection)
@@ -3365,4 +3355,4 @@ class PRE_STANLEY :
     BOUTON(frame_boutons,'PaleGreen1','STANLEY',self.Lancer,fonte=fonte)
     BOUTON(frame_boutons,'IndianRed1','SORTIR',self.Sortir,fonte=fonte)
 
-   
+

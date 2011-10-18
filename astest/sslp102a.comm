@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,7 +93,7 @@ RESU=STAT_NON_LINE(
 
 RESU=CALC_ELEM( reuse=RESU,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU,
               )
 

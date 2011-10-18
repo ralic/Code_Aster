@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE EPROUVETTE ENTAILLEE EN GRANDES DEFORMATIONS GDEF_LOG
 # ssna303b.para = tps_job 300 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
@@ -91,7 +91,7 @@ UL=STAT_NON_LINE(MODELE=MO,
 
 UL=CALC_ELEM(reuse =UL,
              RESULTAT=UL,
-             OPTION=('SIEF_ELNO','VARI_ELNO',),);
+             OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 UL=CALC_NO(reuse =UL,
            RESULTAT=UL,
@@ -117,7 +117,7 @@ UR=STAT_NON_LINE(MODELE=MO,
 
 UR=CALC_ELEM(reuse =UR,
              RESULTAT=UR,
-             OPTION=('SIEF_ELNO','VARI_ELNO',),);
+             OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 UR=CALC_NO(reuse =UR,
            RESULTAT=UR,

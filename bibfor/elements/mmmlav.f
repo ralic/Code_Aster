@@ -1,10 +1,10 @@
-      SUBROUTINE MMMLAV(LCOMPL,LFROTT,LUSURE,LDYNA ,LFOVIT,
-     &                  ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
-     &                  GAMMA ,THETA ,PRFUSU,CWEAR ,JEUSUP,
-     &                  NDEXFR,TYPBAR,TYPRAC)
+      SUBROUTINE MMMLAV(LCOMPL,LUSURE,LDYNA ,LFOVIT,ASPERI,
+     &                  KAPPAN,KAPPAV,DELTAT,BETA  ,GAMMA ,
+     &                  THETA ,PRFUSU,CWEAR ,JEUSUP,NDEXFR,
+     &                  TYPBAR,TYPRAC,COEFAC,COEFAF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,12 +24,13 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      LOGICAL LCOMPL,LFROTT,LUSURE,LFOVIT,LDYNA
+      LOGICAL LCOMPL,LUSURE,LFOVIT,LDYNA
       REAL*8  DELTAT,BETA,GAMMA,THETA
       REAL*8  JEUSUP
       REAL*8  PRFUSU,CWEAR
       REAL*8  ASPERI,KAPPAN,KAPPAV
       INTEGER NDEXFR,TYPBAR,TYPRAC
+      REAL*8  COEFAC,COEFAF
 C
 C ----------------------------------------------------------------------
 C
@@ -41,7 +42,6 @@ C ----------------------------------------------------------------------
 C
 C
 C OUT LCOMPL : .TRUE. SI COMPLIANCE ACTIVEE
-C OUT LFROTT : .TRUE. SI FROTTTEMENT
 C OUT LUSURE : .TRUE. SI USURE ACTIVEE
 C OUT LDYNA  : .TRUE. SI DYNAMIQUE
 C OUT LFOVIT : .TRUE. SI FORMULATION EN VITESSE
@@ -58,6 +58,8 @@ C OUT JEUSUP : JEU SUPPLEMENTAIRE PAR DIST_ESCL/DIST_MAIT
 C OUT TYPRAC : ARETE SUR LAQUELLE UN NOEUD MILIEU EST A LINEARISER
 C OUT NDEXFR : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
 C OUT TYPBAR : ARETE OU POINT EN FOND DE FISSURE
+C I/O COEFAC : COEF_AUGM_CONT
+C I/O COEFAF : COEF_AUGM_FROT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
@@ -79,7 +81,7 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER      JPCF,JUSUP
-      INTEGER      ICOMPL,IFROTT,IUSURE,IFORM
+      INTEGER      ICOMPL,IUSURE,IFORM
       REAL*8       KW,HW
 C
 C ----------------------------------------------------------------------
@@ -89,28 +91,26 @@ C
 C --- RECUPERATION DES DONNEES DU CHAM_ELEM DU CONTACT
 C
       CALL JEVECH('PCONFR','L',JPCF )
-      NDEXFR   = NINT(ZR(JPCF-1+13))
-      TYPBAR   = NINT(ZR(JPCF-1+14))
-      TYPRAC   = NINT(ZR(JPCF-1+15))
-      IFORM    = NINT(ZR(JPCF-1+16))
-      IFROTT   = NINT(ZR(JPCF-1+20))
-      ICOMPL   = NINT(ZR(JPCF-1+25))
-      ASPERI   =      ZR(JPCF-1+26)
-      KAPPAN   =      ZR(JPCF-1+27)
-      KAPPAV   =      ZR(JPCF-1+28)
-      IUSURE   = NINT(ZR(JPCF-1+29))
-      KW       =      ZR(JPCF-1+30)
-      HW       =      ZR(JPCF-1+31)      
-      JEUSUP   =      ZR(JPCF-1+32)
+      JEUSUP   =      ZR(JPCF-1+14)
+      NDEXFR   = NINT(ZR(JPCF-1+29))
+      TYPBAR   = NINT(ZR(JPCF-1+30))
+      TYPRAC   = NINT(ZR(JPCF-1+31))
+      IFORM    = NINT(ZR(JPCF-1+32))
       DELTAT   =      ZR(JPCF-1+33)
       BETA     =      ZR(JPCF-1+34)
       GAMMA    =      ZR(JPCF-1+35)
       THETA    =      ZR(JPCF-1+36)
+      ICOMPL   = NINT(ZR(JPCF-1+21))
+      ASPERI   =      ZR(JPCF-1+22)
+      KAPPAN   =      ZR(JPCF-1+23)
+      KAPPAV   =      ZR(JPCF-1+24)
+      IUSURE   = NINT(ZR(JPCF-1+26))
+      KW       =      ZR(JPCF-1+27)
+      HW       =      ZR(JPCF-1+28)   
 C
 C --- FONCTIONNALITES ACTIVEES
 C
       LCOMPL   = ICOMPL.EQ.1
-      LFROTT   = IFROTT.EQ.3
       LUSURE   = IUSURE.EQ.1
       LFOVIT   = IFORM.EQ.2
       LDYNA    = IFORM.NE.0
@@ -128,7 +128,14 @@ C
         CWEAR = KW/HW
       ELSE
         CWEAR = 0.D0
-      ENDIF       
+      ENDIF 
+C
+C --- COEFFICIENTS MODIFIES POUR FORMULATION EN THETA-VITESSE
+C
+      IF (LFOVIT) THEN
+        COEFAF = COEFAF/DELTAT/THETA
+        COEFAC = COEFAC/DELTAT/THETA
+      ENDIF      
 C
       CALL JEDEMA()
       END

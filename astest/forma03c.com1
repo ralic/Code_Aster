@@ -37,7 +37,7 @@ DYG=RECU_FONCTION(RESULTAT=RESUNL,
                   GROUP_NO='G',);
 
 SYG=RECU_FONCTION(RESULTAT=RESUNL,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',);
 

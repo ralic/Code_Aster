@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 # wtnv121b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -328,13 +328,13 @@ REPONSE=STAT_NON_LINE(
 REPONSE=CALC_ELEM(reuse =REPONSE,
                RESULTAT=REPONSE,
                PRECISION = 1.E-10,
-               OPTION=('SIEF_ELNO','VARI_ELNO'),
+               OPTION=('SIGM_ELNO','VARI_ELNO'),
                TOUT='OUI');
 
 REPONSE=CALC_NO(reuse =REPONSE,
                RESULTAT=REPONSE,
                PRECISION = 1.E-10,
-               OPTION=('SIEF_NOEU','VARI_NOEU'),
+               OPTION=('SIGM_NOEU','VARI_NOEU'),
                TOUT='OUI');
 
 TEST_RESU(RESU=(
@@ -342,7 +342,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                 _F(  RESULTAT = REPONSE,
                        GROUP_NO = 'E',
-                       NOM_CHAM = 'SIEF_NOEU',
+                       NOM_CHAM = 'SIGM_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 1.,
                        REFERENCE='NON_REGRESSION',

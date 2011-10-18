@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 # hsnv100e.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,7 +215,7 @@ U=STAT_NON_LINE(
 U=CALC_ELEM( reuse=U,
                             RESULTAT=U,
                               OPTION=( 'EPSI_ELNO',
-                                       'SIEF_ELNO', )
+                                       'SIGM_ELNO', )
                       )
 
 #
@@ -223,19 +223,19 @@ TEST_RESU(RESU=(
           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',VALE = 8.6666E-4,
             REFERENCE = 'NON_REGRESSION'),
-          _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,
+          _F(  RESULTAT = U,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = -133.333,
             REFERENCE = 'NON_REGRESSION'),
           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPZZ',VALE = 1.1120E-3,
             REFERENCE = 'NON_REGRESSION'),
-          _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 3,
+          _F(  RESULTAT = U,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',VALE = -88.75,
             REFERENCE = 'NON_REGRESSION'),
           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPZZ',VALE = 1.3030E-3,
             REFERENCE = 'NON_REGRESSION'),
-          _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 5,
+          _F(  RESULTAT = U,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',VALE = -47.000,
             REFERENCE = 'NON_REGRESSION'))
           )
@@ -268,7 +268,7 @@ V=STAT_NON_LINE(
 V=CALC_ELEM( reuse=V,
                             RESULTAT=V,
                               OPTION=( 'EPSI_ELNO',
-                                       'SIEF_ELNO', )
+                                       'SIGM_ELNO', )
                       )
 
 #
@@ -276,19 +276,19 @@ TEST_RESU(RESU=(
           _F(  RESULTAT = V,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',VALE = 8.6666E-4,
             REFERENCE = 'AUTRE_ASTER'),
-          _F(  RESULTAT = V,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,
+          _F(  RESULTAT = V,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = -133.333,
             REFERENCE = 'AUTRE_ASTER'),
           _F(  RESULTAT = V,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPZZ',VALE = 1.1120E-3,
             REFERENCE = 'AUTRE_ASTER'),
-          _F(  RESULTAT = V,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 3,
+          _F(  RESULTAT = V,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',VALE = -88.,
             REFERENCE = 'AUTRE_ASTER'),
           _F(  RESULTAT = V,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPZZ',VALE = 1.3030E-3,
             REFERENCE = 'AUTRE_ASTER'),
-          _F(  RESULTAT = V,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 5,
+          _F(  RESULTAT = V,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',VALE = -47.000,
             REFERENCE = 'AUTRE_ASTER'))
           )

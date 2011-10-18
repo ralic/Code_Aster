@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline2 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,9 +121,9 @@ cata_msg = {
  L'argument de "BLOC_FIN" doit etre strictement positif
 """),
 
-22 : _(u"""
- Assemblage de la matrice initiale le bloc %(i1)s a une longueur   %(i2)s   superieure au plus grand bloc disponible %(i3)s
-"""),
+
+
+
 
 28 : _(u"""
  les "MATR_ASSE" %(k1)s "  et  " %(k2)s "  ne sont pas combinables.

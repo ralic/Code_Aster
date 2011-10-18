@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135b.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -667,7 +667,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
 #                  RESULTAT=MEKEFOR,
 #                  TOUT_ORDRE='OUI',
 #                  GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),
-#                   CONTRAINTE=('SIEF_ELNO'),);
+#                   CONTRAINTE=('SIGM_ELNO'),);
 # ----------------------------------------------------
 
 #MEKEFOR=CALC_NO(reuse =MEKEFOR,
@@ -682,7 +682,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
 #          FORMAT='CASTEM',
 #          RESU=_F(MAILLAGE=MA,
 #                  RESULTAT=MEKEFOR,
-#                  NOM_CHAM=('DEPL','SIEF_ELNO',),),);
+#                  NOM_CHAM=('DEPL','SIGM_ELNO',),),);
 # ----------------------------------------------------
 
 #IMPR_RESU(FORMAT='RESULTAT',

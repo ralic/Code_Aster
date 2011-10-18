@@ -1,0 +1,220 @@
+# MODIF  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
+# TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 3 SHEET METAL FORMING
+# ssnp155a.para = tps_job 1200 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP155A',NIV_PUB_WEB='INTERNET',),IGNORE_ALARM='CALCULEL2_63',);
+
+MESH1=LIRE_MAILLAGE(FORMAT='MED',);
+
+MESH2=CREA_MAILLAGE(MAILLAGE=MESH1,
+                   LINE_QUAD=_F(GROUP_MA=('Sheet','Top_sh','Bot_sh','Axe',),),);
+
+MESH=CREA_MAILLAGE(MAILLAGE=MESH2,
+                   QUAD_LINE=(_F(GROUP_MA=('Punch','Die','Arc','Top_di',),),),);
+
+MESH=MODI_MAILLAGE(reuse =MESH,
+                   MAILLAGE=MESH,
+                   ORIE_PEAU_2D=(_F(GROUP_MA='Arc',),
+                                 _F(GROUP_MA='Top_sh',),
+                                 _F(GROUP_MA='Bot_sh',),
+                                 _F(GROUP_MA='Top_di',),),);
+
+MESH=DEFI_GROUP(reuse =MESH,
+                MAILLAGE=MESH,
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+TRAC=LIRE_FONCTION(UNITE=38,
+                   NOM_PARA='EPSI',
+                   PROL_DROITE='LINEAIRE',);
+
+rho=2.7E-3
+MAT1=DEFI_MATERIAU(ELAS=_F(E=70500.0,
+                           NU=0.342,
+                           RHO=rho,),
+                   TRACTION=_F(SIGM=TRAC,),);
+
+MAT=AFFE_MATERIAU(MAILLAGE=MESH,
+                  AFFE=_F(GROUP_MA='Sheet',
+                          MATER=MAT1,),);
+
+Tmax=1000
+FONC=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,         0.0,
+                    Tmax*0.9,         1.0,
+                    Tmax*1.0,         0.9,
+                         ),
+                   PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+
+Npas1=900
+Npas2=200
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=0.9*Tmax,
+                                     NOMBRE=Npas1,),
+                                  _F(JUSQU_A=1.0*Tmax,
+                                     NOMBRE=Npas2,),),);
+
+LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=L_INST,),
+                     ECHEC=_F(SUBD_PAS=4,
+                              SUBD_NIVEAU=10,),);
+
+MO=AFFE_MODELE(MAILLAGE=MESH,
+               AFFE=(_F(GROUP_MA='Sheet',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION=('D_PLAN_SI',),),
+                     _F(GROUP_MA=('Arc','Top_di',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION=('D_PLAN',),),),);
+
+CL=AFFE_CHAR_CINE(MODELE=MO,
+                  MECA_IMPO=(_F(GROUP_MA='Axe',
+                                DX=0.0,),
+                             _F(GROUP_MA='Arc',
+                                DX=0.0,),
+                             _F(GROUP_MA='Top_di',
+                                DX=0.0,
+                                DY=0.0,),
+                                ),);
+
+CH=AFFE_CHAR_CINE(MODELE=MO,
+                  MECA_IMPO=_F(GROUP_MA='Arc',
+                               DY=-28.5,),);
+
+algo='LAGRANGIEN'
+COND=DEFI_CONTACT(MODELE=MO,
+                FORMULATION='DISCRETE',
+                ITER_GEOM_MAXI=50,
+                ZONE=(
+                _F(GROUP_MA_MAIT='Arc',
+                   GROUP_MA_ESCL='Top_sh',
+                   ALGO_CONT=algo,
+),
+                _F(GROUP_MA_MAIT='Top_di',
+                   GROUP_MA_ESCL='Bot_sh',
+                   ALGO_CONT=algo,
+),),);
+
+RESU=DYNA_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MAT,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=CH,
+                             FONC_MULT=FONC,),),
+                   CONTACT=COND,
+                   COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
+                                DEFORMATION='PETIT_REAC',
+                                GROUP_MA='Sheet',),
+                              ),
+                   INCREMENT=_F(LIST_INST=LINST,),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                   FORMULATION='DEPLACEMENT',),
+                   NEWTON=_F(PREDICTION='TANGENTE',
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   SOLVEUR=_F(SYME='OUI',
+                              ),
+                   ARCHIVAGE=_F(LIST_INST=L_INST,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,
+                   ),
+                   );
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEQ_ELGA','SIEQ_ELNO',),);
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION=('FORC_NODA','REAC_NODA','SIEQ_NOEU',),);
+
+T_RELEV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='Forces nodales sur la plaque',
+                                RESULTAT=RESU,
+                                NOM_CHAM='REAC_NODA',
+                                GROUP_NO='Bot_sh',
+                                RESULTANTE='DY',
+                                ),);
+
+F_RELEV=RECU_FONCTION(TABLE=T_RELEV,
+                      PARA_X='INST',
+                      PARA_Y='DY',);
+
+DEPLA=RECU_FONCTION(RESULTAT=RESU,
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DY',
+                    NOEUD='N3216',
+                    );
+
+DEPL=CALC_FONCTION(COMB=_F(FONCTION=DEPLA,
+                           COEF=-1.0,),);
+
+FORC=CALC_FONCTION(COMB=_F(FONCTION=F_RELEV,
+                           COEF=60.0,),);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=_F(FONC_X=DEPL,FONC_Y=FORC,LEGENDE='--',MARQUEUR=0,),
+              TITRE='Reponse force - deplacement',
+              BORNE_X=(0.0,30.0,),
+              BORNE_Y=(0,250.0,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=5,
+              GRILLE_Y=50,
+              LEGENDE_X='Deplacement (mm)',
+              LEGENDE_Y='Force (N)',);
+
+L_IMPR=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=900.0,
+                                     NOMBRE=225,),
+                                  _F(JUSQU_A=1000.0,
+                                     NOMBRE=20,),),);
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=RESU,
+                  #NOM_CHAM=('DEPL','SIEQ_ELGA','SIEQ_ELNO','VALE_CONT','FORC_NODA',),
+                  NOM_CHAM=('DEPL','VARI_ELGA','SIEQ_ELGA','VALE_CONT','FORC_NODA',),
+                  LIST_INST=L_IMPR,
+                  #NOM_CMP=('DX','DY',),
+                  ),);
+
+# ===========================================
+# Tests
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU,
+                   INST       = 0.9*Tmax,
+                   NOM_CHAM   = 'DEPL',
+                   NOEUD      = 'N3216',
+                   NOM_CMP    = 'DY',
+                   VALE       = -28.5,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '11.0.27',
+                   ),
+                _F(RESULTAT   = RESU,
+                   INST       = 1.0*Tmax,
+                   NOM_CHAM   = 'DEPL',
+                   NOEUD      = 'N3216',
+                   NOM_CMP    = 'DY',
+                   VALE       = -25.65,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '11.0.27',
+                   ),
+                ),);
+FIN()

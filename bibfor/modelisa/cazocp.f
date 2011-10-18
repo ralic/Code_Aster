@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCP(CHAR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C
       INTEGER      NBREAC,LGBLOC
       INTEGER      REACCA,REACBS,REACBG
       CHARACTER*16 RECH,PREC,REAC,TYPCON,ISTO
+      CHARACTER*16 ALGOCO,ALGOFR
       INTEGER      NOC,GCPREA
       REAL*8       PRECIS,RELA
       REAL*8       RESIGE,RESIFR
@@ -76,6 +77,8 @@ C --- INITIALISATIONS
 C
       DEFICO = CHAR(1:8)//'.CONTACT'
       REAC   = 'AUTOMATIQUE'
+      ALGOCO = ' '
+      ALGOFR = ' '      
       NBREAC = 2
       LGBLOC = 10
       RESIGE = 1.D-2
@@ -138,6 +141,16 @@ C
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
+        IF (LCTCC) THEN
+          CALL GETVTX(' ','ALGO_RESO_CONT',1 ,IARG,1,ALGOCO,NOC)
+          IF (ALGOCO.EQ.'POINT_FIXE') THEN
+            ZI(JPARCI+27-1) = 0
+          ELSEIF (ALGOCO.EQ.'NEWTON') THEN
+            ZI(JPARCI+27-1) = 1
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -159,6 +172,25 @@ C
             ZR(JPARCR+2-1) = RESIFR
           ELSE
             CALL ASSERT(.FALSE.)
+          ENDIF
+          IF (LCTCC) THEN
+            CALL GETVTX(' ','ALGO_RESO_FROT',1 ,IARG,1,ALGOFR,NOC)
+            IF (ALGOFR.EQ.'POINT_FIXE') THEN
+              ZI(JPARCI+28-1) = 0
+            ELSEIF (ALGOFR.EQ.'NEWTON') THEN
+              ZI(JPARCI+28-1) = 1
+            ELSEIF (ALGOFR.EQ.'NEWTON_PARTIEL') THEN
+              ZI(JPARCI+28-1) = 2  
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+          IF (LXFCM) THEN
+            IF (ZI(JPARCI+1-1).EQ.0) THEN
+              ZI(JPARCI+28-1) = 0
+            ELSE
+              ZI(JPARCI+28-1) = 1
+            ENDIF
           ENDIF
         ENDIF
       ELSE

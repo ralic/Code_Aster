@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 # ssnv115a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -81,7 +81,7 @@ U2=STAT_NON_LINE(
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U2,
               )
 
@@ -189,14 +189,14 @@ U2=STAT_NON_LINE( reuse=U2,
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U2,
                         NUME_ORDRE=( 6, 7, 8, 9, 10, ),
               )
 
 TEST_RESU(RESU=(
 
-    _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'SIEF_ELNO',
+    _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'SIGM_ELNO',
     MAILLE = 'M1', NOEUD = 'N249',    NOM_CMP = 'SIXX',   VALE = 98.453),
     _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'VARI_ELNO',
     MAILLE = 'M13', NOEUD = 'N226',    NOM_CMP = 'V1',    VALE = 0.17870))
@@ -223,7 +223,7 @@ V=STAT_NON_LINE(MODELE      = MO,
 
 V=CALC_ELEM( reuse=V,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=V,
               )
 
@@ -234,7 +234,7 @@ TEST_RESU(RESU=(
     _F(  RESULTAT = V,  NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
     PRECISION = 1.E-2, GROUP_NO = 'X',    NOM_CMP = 'DY',   VALE = -0.2804),
 
-    _F(  RESULTAT = V,  NUME_ORDRE = 10,  NOM_CHAM = 'SIEF_ELNO',
+    _F(  RESULTAT = V,  NUME_ORDRE = 10,  NOM_CHAM = 'SIGM_ELNO',
     MAILLE = 'M1', NOEUD = 'N249',    NOM_CMP = 'SIXX',   VALE = 98.453),
     _F(  RESULTAT = V,  NUME_ORDRE = 10,  NOM_CHAM = 'VARI_ELNO',
     MAILLE = 'M13', NOEUD = 'N226',    NOM_CMP = 'V1',    VALE = 0.17870))

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127d.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,10 +148,10 @@ REST=STAT_NON_LINE(MODELE=MODELE,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=10),);
 
-CALC_CHAMP(reuse=REST,RESULTAT=REST,  CONTRAINTE=('SIEF_ELNO'))
+CALC_CHAMP(reuse=REST,RESULTAT=REST,  CONTRAINTE=('SIGM_ELNO'))
 
 NdeU=RECU_FONCTION(RESULTAT=REST,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1');
@@ -220,10 +220,10 @@ REST2=STAT_NON_LINE(MODELE=MODELE,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10),);
 
-CALC_CHAMP(reuse=REST2,RESULTAT=REST2,  CONTRAINTE=('SIEF_ELNO'))
+CALC_CHAMP(reuse=REST2,RESULTAT=REST2,  CONTRAINTE=('SIGM_ELNO'))
 
 NdeU2=RECU_FONCTION(RESULTAT=REST2,
-                    NOM_CHAM='SIEF_ELNO',
+                    NOM_CHAM='SIGM_ELNO',
                     NOM_CMP='SIZZ',
                     MAILLE='M1',
                     NOEUD='N1');
@@ -292,10 +292,10 @@ REST3=STAT_NON_LINE(MODELE=MODELE,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10),);
 
-CALC_CHAMP(reuse=REST3,RESULTAT=REST3,  CONTRAINTE=('SIEF_ELNO'))
+CALC_CHAMP(reuse=REST3,RESULTAT=REST3,  CONTRAINTE=('SIGM_ELNO'))
 
 NdeU3=RECU_FONCTION(RESULTAT=REST3,
-                    NOM_CHAM='SIEF_ELNO',
+                    NOM_CHAM='SIGM_ELNO',
                     NOM_CMP='SIZZ',
                     MAILLE='M1',
                     NOEUD='N1',);
@@ -328,7 +328,7 @@ S=2.8274333882308137e-05
 
 TEST_RESU(RESU=(_F(RESULTAT=REST,
                    INST=0.019,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -337,7 +337,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST,
                    INST=0.02,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -368,7 +368,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    INST=0.0164,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -377,7 +377,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST2,
                    INST=0.018,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -409,7 +409,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    INST=7.50000E-03,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -418,7 +418,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST3,
                    INST=8.00000E-03,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',

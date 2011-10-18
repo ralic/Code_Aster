@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN C.P. (TET10)
 # sslv04d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -264,9 +264,6 @@ TEST_RESU(RESU=(
 
 #----------------------------------------------------------------
 #
-
-CALC_ELEM(reuse= RESU , RESULTAT= RESU,
-                        OPTION=('SIEF_ELNO'));
 
 CALC_ELEM(reuse= RESU ,
           RESULTAT= RESU ,

@@ -1,0 +1,363 @@
+
+# TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 4 LOADED PIN
+
+POURSUITE(CODE=_F(NOM='SSNP156A',),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEF_ELNO','SIEQ_ELGA',),);
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION=('SIEF_NOEU','FORC_NODA','REAC_NODA',),);
+
+CONV_DEG=FORMULE(NOM_PARA='ABSC_CURV',VALE='ABSC_CURV*180/(50*pi)',);
+MOINS_UN=FORMULE(NOM_PARA='LAGS_C',VALE='-1.0*LAGS_C',);
+PRESTANG=FORMULE(NOM_PARA=('LAGS_C','LAGS_F1'),VALE='-0.1*LAGS_C*abs(LAGS_F1)',);
+
+MESH=DEFI_GROUP(reuse =MESH,
+                MAILLAGE=MESH,
+                CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
+                                  NOM='Cont_M',
+                                  GROUP_MA='Master',
+                                  GROUP_NO_ORIG='Si',),
+                               _F(OPTION='NOEUD_ORDO',
+                                  NOM='Cont_S',
+                                  GROUP_MA='Slave',
+                                  GROUP_NO_ORIG='Pi',),),);
+
+RELE_M=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                INTITULE='DeplX_M',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_M',
+                                NOM_CMP='DX',),
+                             _F(OPERATION='EXTRACTION',
+                                INTITULE='DeplY_M',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_M',
+                                NOM_CMP='DY',),),);
+
+IMPR_TABLE(TABLE=RELE_M);
+
+RELE_S=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                INTITULE='DeplX_S',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_S',
+                                NOM_CMP='DX',),
+                             _F(OPERATION='EXTRACTION',
+                                INTITULE='DeplY_S',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_S',
+                                NOM_CMP='DY',),),);
+
+RELE_PS=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                INTITULE='Pres_S',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_S',
+                                NOM_CMP=('LAGS_C','LAGS_F1',),),
+                                ),);
+
+IMPR_TABLE(TABLE=RELE_PS);
+
+RELE_M=CALC_TABLE(reuse=RELE_M,
+                  TABLE=RELE_M,
+                  ACTION=_F(OPERATION='OPER',
+                            NOM_PARA='ANGLE',
+                            FORMULE=CONV_DEG,),);
+
+RELE_S=CALC_TABLE(reuse=RELE_S,
+                  TABLE=RELE_S,
+                  ACTION=_F(OPERATION='OPER',
+                            NOM_PARA='ANGLE',
+                            FORMULE=CONV_DEG,),);
+
+RELE_PS=CALC_TABLE(reuse=RELE_PS,
+                   TABLE=RELE_PS,
+                   ACTION=(_F(OPERATION='OPER',
+                              NOM_PARA='ANGLE',
+                              FORMULE=CONV_DEG,),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='MLAGS_C',
+                              FORMULE=MOINS_UN,),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='MLAGS_F1',
+                              FORMULE=PRESTANG,),),);
+
+DeplX_M=RECU_FONCTION(TABLE=RELE_M,
+                      PARA_X='ANGLE',
+                      PARA_Y='DX',);
+
+DeplY_M=RECU_FONCTION(TABLE=RELE_M,
+                      PARA_X='ANGLE',
+                      PARA_Y='DY',);
+
+DeplX_S=RECU_FONCTION(TABLE=RELE_S,
+                      PARA_X='ANGLE',
+                      PARA_Y='DX',);
+
+DeplY_S=RECU_FONCTION(TABLE=RELE_S,
+                      PARA_X='ANGLE',
+                      PARA_Y='DY',);
+
+Pres_S=RECU_FONCTION(TABLE=RELE_PS,
+                     PARA_X='ANGLE',
+                     PARA_Y='MLAGS_C',);
+
+PresT_S=RECU_FONCTION(TABLE=RELE_PS,
+                     PARA_X='ANGLE',
+                     PARA_Y='MLAGS_F1',);
+
+# ===========================================
+
+# champ de contraintes de Cauchy aux noeuds
+sigm=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=RESU,
+                NOM_CHAM='SIEF_NOEU',
+                INST=1.0,
+                );
+
+depl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESU,
+                NOM_CHAM='DEPL',
+                INST=1.0,
+                );
+mdepl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='COMB',
+                COMB=_F(CHAM_GD=depl,
+                        COEF_R=-1.0,),
+                );
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=depl,),);
+
+
+# normale sur la configuration finale
+NormaleF=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
+                   OPERATION='NORMALE',
+                   MODELE=MO,
+                   GROUP_MA=('Slave','Master',),
+                   );
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=mdepl,),);
+
+# pression de contact
+Pression = FORMULE(VALE='SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y',
+                   NOM_PARA=('SIXX','SIYY','SIXY','X','Y',),);
+# pression de contact tangentielle
+PresTang = FORMULE(VALE='(X*Y*(SIYY-SIXX)+(X*X-Y*Y)*SIXY)',
+                   NOM_PARA=('SIXX','SIYY','SIXY','X','Y',),);
+
+Pres=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
+                OPERATION='AFFE',
+                MAILLAGE=MESH,
+                AFFE=(_F(GROUP_MA=('Slave','Master',),
+                        NOM_CMP='X1',
+                        VALE_F=Pression,),
+                      _F(GROUP_MA=('Slave','Master',),
+                        NOM_CMP='X2',
+                        VALE_F=PresTang,),),
+                        );
+
+pF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+              OPERATION='EVAL',
+              CHAM_F=Pres,
+              CHAM_PARA=(NormaleF,sigm,),);
+
+# champ de pression de contact
+p_appr_F=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='ASSE',
+                    MODELE=MO,
+                    ASSE=(_F(GROUP_MA=('Slave','Master',),
+                            CHAM_GD=pF,
+                            NOM_CMP='X1',
+                            NOM_CMP_RESU='LAGS_C',),
+                          _F(GROUP_MA=('Slave','Master',),
+                            CHAM_GD=pF,
+                            NOM_CMP='X2',
+                            NOM_CMP_RESU='LAGS_F1',),),
+                          );
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=depl,),);
+
+# abscisse curviligne sur la deformee
+CALC_PSF=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='P_Sfin',
+                                CHAM_GD=p_appr_F,
+                                GROUP_NO='Cont_S',
+                                TOUT_CMP='OUI',),);
+
+# abscisse curviligne sur la deformee
+CALC_PMF=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='P_Mfin',
+                                CHAM_GD=p_appr_F,
+                                GROUP_NO='Cont_M',
+                                TOUT_CMP='OUI',),);
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=mdepl,),);
+
+CALC_PSF=CALC_TABLE(reuse=CALC_PSF,
+                   TABLE=CALC_PSF,
+                   ACTION=(_F(OPERATION='OPER',
+                              NOM_PARA='ANGLE',
+                              FORMULE=CONV_DEG,),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='MLAGS_C',
+                              FORMULE=MOINS_UN,),),);
+
+CALC_PMF=CALC_TABLE(reuse=CALC_PMF,
+                   TABLE=CALC_PMF,
+                   ACTION=(_F(OPERATION='OPER',
+                              NOM_PARA='ANGLE',
+                              FORMULE=CONV_DEG,),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='MLAGS_C',
+                              FORMULE=MOINS_UN,),),);
+
+PS_FONCF=RECU_FONCTION(TABLE=CALC_PSF,
+                      PARA_X='ANGLE',
+                      PARA_Y='MLAGS_C',);
+
+PM_FONCF=RECU_FONCTION(TABLE=CALC_PMF,
+                      PARA_X='ANGLE',
+                      PARA_Y='MLAGS_C',);
+
+PST_FONC=RECU_FONCTION(TABLE=CALC_PSF,
+                      PARA_X='ANGLE',
+                      PARA_Y='LAGS_F1',);
+
+PMT_FONC=RECU_FONCTION(TABLE=CALC_PMF,
+                      PARA_X='ANGLE',
+                      PARA_Y='LAGS_F1',);
+
+# ===========================================
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(_F(FONCTION=DeplX_M,LEGENDE='Maitre - X',MARQUEUR=0,),
+                      _F(FONCTION=DeplY_M,LEGENDE='Maitre - Y',MARQUEUR=0,),),
+              TITRE='Deplacements du maitre',
+              BORNE_X=(0.0,180.0,),
+              BORNE_Y=(-0.1,0.8,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=30,
+              GRILLE_Y=0.1,
+              LEGENDE_X='Angle (degre)',
+              LEGENDE_Y='Deplacement (mm)',
+              );
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=_F(FONCTION=DeplX_S,LEGENDE='Esclave - X',MARQUEUR=0,),
+              TITRE='Deplacements de esclave suivant X',
+              BORNE_X=(0.0,180.0,),
+              BORNE_Y=(0.7,0.8,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=30,
+              GRILLE_Y=0.02,
+              LEGENDE_X='Angle (degre)',
+              LEGENDE_Y='Deplacement (mm)',
+              );
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=31,
+              COURBE=_F(FONCTION=DeplY_S,LEGENDE='Esclave - Y',MARQUEUR=0,),
+              TITRE='Deplacements de esclave suivant Y',
+              BORNE_X=(0.0,180.0,),
+              BORNE_Y=(-0.01,0.004,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=30,
+              GRILLE_Y=0.002,
+              LEGENDE_X='Angle (degre)',
+              LEGENDE_Y='Deplacement (mm)',
+              );
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=32,
+              COURBE=(_F(FONCTION=Pres_S,LEGENDE='Esclave - LAGS_C',MARQUEUR=0,),
+                      _F(FONCTION=PS_FONCF,LEGENDE='Esclave',MARQUEUR=0,),
+                      _F(FONCTION=PM_FONCF,LEGENDE='Maitre',MARQUEUR=0,),
+                      ),
+              TITRE='Pression de contact',
+              BORNE_X=(0.0,180.0,),
+              BORNE_Y=(0.0,300.0,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=30,
+              GRILLE_Y=50,
+              LEGENDE_X='Angle (degre)',
+              LEGENDE_Y='Pression (N/mm2)',
+              );
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=33,
+              COURBE=(_F(FONCTION=PresT_S,LEGENDE='Esclave - LAGS_F1',MARQUEUR=0,),
+                      _F(FONCTION=PST_FONC,LEGENDE='Esclave',MARQUEUR=0,),
+                      _F(FONCTION=PMT_FONC,LEGENDE='Maitre',MARQUEUR=0,),
+                      ),
+              TITRE='Contrainte tangentielle',
+              BORNE_X=(0.0,180.0,),
+              BORNE_Y=(0.0, 40.0,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=30,
+              GRILLE_Y=5,
+              LEGENDE_X='Angle (degre)',
+              LEGENDE_Y='Contrainte (N/mm2)',
+              );
+# ===========================================
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','FORC_NODA','SIEQ_ELGA',),),);
+
+# ===========================================
+# Tests
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'Sf',
+                   NOM_CMP    = 'DX',
+                   VALE       = 0.71798956398122,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '11.0.27',
+                   ),
+                _F(RESULTAT   = RESU,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'SIEF_NOEU',
+                   GROUP_NO   = 'Sf',
+                   NOM_CMP    = 'SIXX',
+                   VALE       = -136.67272217658,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '11.0.27',
+                   ),
+                ),);
+
+FIN();

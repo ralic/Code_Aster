@@ -1,5 +1,5 @@
       SUBROUTINE  PK2CAU(NOMTE,NCMP,PK2,SIGMA)
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,11 @@ C
 C --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 C     ---------------------------------------------------------
       IF (LGREEN) THEN
-        CALL TECACH('OON','PDEPLAR',1,IDEPL,IRET)
+        CALL TECACH('NNN','PDEPLAR',1,IDEPL,IRET)
+        IF (IRET.NE.0) THEN
+          CALL TECACH('NNN','PDEPPLU',1,IDEPL,IRET)
+          CALL ASSERT(IRET.EQ.0)
+        ENDIF
       ELSE
         DO 10 I = 1, 6
           DO 10 J = 1, 270

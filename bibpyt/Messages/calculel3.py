@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel3 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,9 +140,9 @@ cata_msg = {
  type :  %(k1)s  incompatible avec l'option :  %(k2)s
 """),
 
-28 : _(u"""
- type de champ inconnu
-"""),
+
+
+
 
 29 : _(u"""
  Il n'y a pas de champ d'énergie dans la structure de donnée résultat.

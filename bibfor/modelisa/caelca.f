@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 17/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -277,11 +277,6 @@ C
   40  CONTINUE
 C
   41  CONTINUE
-      IF ( .NOT. ( TROUV1 .AND. TROUV2 .AND. TROUV3 .AND. TROUV4 .AND.
-     &             TROUV5 ) ) THEN
-         WRITE(K3CAB,'(I3)') ICABL
-         CALL U2MESK('F','MODELISA2_55',1,K3CAB)
-      ENDIF
       IF ( ( RH1000.LT.0.0D0 ) .OR. ( MU0 .LT.0.0D0 ) .OR.
      &     ( FPRG .LE.0.0D0 ) .OR. ( FRCO.LT.0.0D0 ) .OR.
      &     ( FRLI  .LT.0.0D0 ) ) THEN

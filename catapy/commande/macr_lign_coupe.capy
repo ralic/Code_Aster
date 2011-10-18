@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,10 +46,10 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
 
 # extraction des résultats
          b_meca        =BLOC(condition = "AsType(RESULTAT) in (evol_elas,evol_noli)",fr="résultat mécanique",
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut='SIGM_NOEU',into=C_NOM_CHAM_INTO(),),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),defaut='SIGM_NOEU',into=C_NOM_CHAM_INTO(),),
          ),
          b_ther        =BLOC(condition = "AsType(RESULTAT) in (evol_ther,)",fr="résultat thermique",
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut='TEMP',into=("TEMP",
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),defaut='TEMP',into=("TEMP",
                                  "FLUX_ELGA","FLUX_ELNO","FLUX_NOEU",
                                  "META_ELNO","META_NOEU",
                                  "DURT_ELNO","DURT_NOEU",
@@ -58,7 +58,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
                                  "SOUR_ELGA","COMPORTHER",
                                  "ERTH_ELEM","ERTH_ELNO","ERTH_NOEU",),),),
          b_cham       =BLOC(condition = "CHAM_GD!=None",
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO(),),),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),),),
 
          UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25),
          MODELE          =SIMP(statut='f',typ=modele_sdaster ),

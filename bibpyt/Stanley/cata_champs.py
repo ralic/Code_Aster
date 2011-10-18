@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF cata_champs Stanley  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,7 +141,7 @@ class CATA_CHAMPS :
     self('VARI_ELNO', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par élément")
     self('VARI_NOEU', 'NOEU',['VARI_ELNO'],                 "Variables internes aux noeuds")
     self('SIEQ_ELGA', 'ELGA',['SIEF_ELGA',],                "Invariants des contraintes aux points de Gauss")
-    self('SIEQ_ELNO', 'ELNO',['SIEF_ELNO', 'SICO_ELNO'],    "Invariants des contraintes aux noeuds par élément")
+    self('SIEQ_ELNO', 'ELNO',['SIEF_ELNO', 'SIGM_ELNO'],    "Invariants des contraintes aux noeuds par élément")
     self('SIEQ_NOEU', 'NOEU',['SIEQ_ELNO'],                 "Invariants des contraintes aux noeuds")
     self('EPSI_ELGA', 'ELGA',['DEPL'],                      "Déformations aux points de Gauss")
     self('EPSI_ELNO', 'ELNO',['DEPL'],                      "Déformations aux noeuds par éléments")

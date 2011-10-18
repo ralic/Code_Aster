@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102i.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,13 +106,13 @@ MEST1=STAT_NON_LINE(MODELE=MO,
 #
 MEST1=CALC_ELEM( reuse=MEST1,
                          RESULTAT=MEST1,
-                           OPTION=('SIEF_ELNO',
+                           OPTION=('EFGE_ELNO',
                                    )
                    )
 MEST1=CALC_NO( reuse=MEST1,
                          RESULTAT=MEST1,
                            OPTION=('FORC_NODA','REAC_NODA',
-                                   'SIEF_NOEU',
+                                   'EFGE_NOEU',
                                    )
                    )
 #
@@ -127,7 +127,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
           )
 
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIEF_NOEU',
+                    NOM_CHAM = 'EFGE_NOEU',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'VY',
                     GROUP_NO = 'P1',
@@ -146,7 +146,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIEF_NOEU',
+                    NOM_CHAM = 'EFGE_NOEU',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'VY',
                     GROUP_NO='P11',
@@ -165,7 +165,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIEF_NOEU',
+                    NOM_CHAM = 'EFGE_NOEU',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'MFZ',
                     GROUP_NO='P8',
@@ -249,9 +249,9 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
                     PRECISION = 0.002,
                     CRITERE = 'RELATIF')
           )
-          
-          
-          
+
+
+
 # test de ANGLE
 
 IY=2.70098E-05

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -394,12 +394,12 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('SIEF_ELNO','VARI_ELNO',),);
+            OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
 
 U=CALC_NO(reuse =U,
             RESULTAT=U,
-            OPTION=('SIEF_NOEU','VARI_NOEU',),);
+            OPTION=('SIGM_NOEU','VARI_NOEU',),);
 
 
 IMPR_RESU(FORMAT='MED', UNITE=71, RESU=_F(RESULTAT=U,),);
@@ -410,7 +410,7 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               FORMAT_MED=(_F( NOM_RESU='U',
                               NOM_CHAM    ='DEPL' ),
                           _F( NOM_RESU='U',
-                              NOM_CHAM    ='SIEF_ELNO'),
+                              NOM_CHAM    ='SIGM_ELNO'),
                           _F( NOM_RESU='U',
                               NOM_CHAM    ='VARI_ELNO'),
                           _F( NOM_RESU='U',
@@ -418,7 +418,7 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                           _F( NOM_RESU='U',
                               NOM_CHAM    ='VARI_ELGA'),
                           _F( NOM_RESU='U',
-                              NOM_CHAM    ='SIEF_NOEU'),
+                              NOM_CHAM    ='SIGM_NOEU'),
                           _F( NOM_RESU='U',
                               NOM_CHAM    ='VARI_NOEU'),
                          ) ,
@@ -473,7 +473,7 @@ TEST_RESU ( RESU=(
 # IMPR_RESU AU FORMAT 'MED' (2/2)
 
 IMPR_RESU(FORMAT='MED', UNITE=83,
-          RESU=(_F(RESULTAT=U,NOM_CHAM=('SIEF_ELNO','VARI_ELNO'),NUME_ORDRE=1,MAILLE='M1',),
+          RESU=(_F(RESULTAT=U,NOM_CHAM=('SIGM_ELNO','VARI_ELNO'),NUME_ORDRE=1,MAILLE='M1',),
                 _F(RESULTAT=U,NOM_CHAM='DEPL',NUME_ORDRE=1,GROUP_NO='GRNO3'),
                    ),);
 
@@ -483,8 +483,8 @@ UUU2=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               FORMAT_MED=(
                           _F( NOM_CHAM_MED='U_______DEPL',
                               NOM_CHAM    ='DEPL' ),
-                          _F( NOM_CHAM_MED='U_______SIEF_ELNO',
-                              NOM_CHAM    ='SIEF_ELNO'),
+                          _F( NOM_CHAM_MED='U_______SIGM_ELNO',
+                              NOM_CHAM    ='SIGM_ELNO'),
                           _F( NOM_CHAM_MED='U_______VARI_ELNO',
                              NOM_CMP=('V1','V2',),
                               NOM_CMP_MED=('V1','V2',),
@@ -497,7 +497,7 @@ IMPR_RESU(UNITE=84, FORMAT='GMSH',
           RESU=(_F(RESULTAT=UUU2,
                    NOM_CHAM='DEPL',NOM_CMP=('DX','DY'),),
                 _F(RESULTAT=UUU2,
-                   NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),),
+                   NOM_CHAM='SIGM_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),),
                 _F(RESULTAT=UUU2,
                    NOM_CHAM='VARI_ELNO',NOM_CMP=('V1','V2'),),),)
 
@@ -545,7 +545,7 @@ TEST_RESU ( RESU=(
 # VALIDATION DE CREA_TABLE/RESU (2/2) : CHAM_ELEM
 
 TB11=CREA_TABLE(
-   RESU=_F(RESULTAT=UUU, NOM_CHAM='SIEF_ELNO', NOM_CMP=('SIYY','SIZZ'),MAILLE='M1',),
+   RESU=_F(RESULTAT=UUU, NOM_CHAM='SIGM_ELNO', NOM_CMP=('SIYY','SIZZ'),MAILLE='M1',),
 )
 
 PourTest = [
@@ -657,7 +657,7 @@ DETRUIRE(CONCEPT=_F(NOM=UUU0))
 
 
 TEST_RESU ( RESU=(  _F(  RESULTAT   = UUU,
-                         NOM_CHAM   = 'SIEF_ELNO',
+                         NOM_CHAM   = 'SIGM_ELNO',
                          NUME_ORDRE = 4,
                          REFERENCE  = 'AUTRE_ASTER',
                          MAILLE     = 'M1',
@@ -686,7 +686,7 @@ SIGMRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                 MODELE=MOMECA2,
                 FORMAT='MED',
                 UNITE=71,
-                NOM_MED='U_______SIEF_ELNO',
+                NOM_MED='U_______SIGM_ELNO',
                 NUME_ORDRE=2,NUME_PT=2,
                 TYPE_CHAM='ELNO_SIEF_R',
                 NOM_CMP_IDEM='OUI',
@@ -733,8 +733,8 @@ UUU3=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               FORMAT_MED=(
                           _F( NOM_CHAM_MED='U_M1____DEPL',
                               NOM_CHAM    ='DEPL' ),
-                          _F( NOM_CHAM_MED='U_M1____SIEF_ELNO',
-                              NOM_CHAM    ='SIEF_ELNO'),
+                          _F( NOM_CHAM_MED='U_M1____SIGM_ELNO',
+                              NOM_CHAM    ='SIGM_ELNO'),
                           _F( NOM_CHAM_MED='U_GRNO3_VARI_ELNO',
                               NOM_CMP     =('V1','V2',),
                               NOM_CMP_MED =('V1','V2',),
@@ -753,7 +753,7 @@ IMPR_RESU(RESU=_F(RESULTAT=UUU3),)
 
 TEST_RESU(
    RESU=(
-      _F(RESULTAT=UUU3,NOM_CHAM='SIEF_ELNO',NUME_ORDRE=1,NOM_CMP='SIYY',
+      _F(RESULTAT=UUU3,NOM_CHAM='SIGM_ELNO',NUME_ORDRE=1,NOM_CMP='SIYY',
          MAILLE='M1',REFERENCE='NON_REGRESSION',NOEUD='N1',VALE=-133.332),
       _F(RESULTAT=UUU3,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=2,NOM_CMP='SIYY',
          MAILLE='M1',REFERENCE='NON_REGRESSION',POINT=1,VALE=-116.668),

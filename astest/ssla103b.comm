@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # -----------------------------------------------------------------
 # TITRE CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION
 #       SUR UN CYLINDRE - LOI ELASTIQUE - 3D
@@ -145,11 +145,11 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELNO','EPSP_ELNO','SIEF_ELNO'),);
+            OPTION=('EPSI_ELNO','EPSP_ELNO','SIGM_ELNO'),);
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,
-          OPTION=('EPSI_NOEU','EPSP_NOEU','SIEF_NOEU'),);
+          OPTION=('EPSI_NOEU','EPSP_NOEU','SIGM_NOEU'),);
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU', INST = 3600.,
@@ -160,11 +160,11 @@ TEST_RESU(RESU=(
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 6.53E-4),
-  _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU', INST = 3600.,
+  _F(  RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU', INST = 3600.,
          NOM_CMP = 'SIXX',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0.,CRITERE = 'ABSOLU'),
-  _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU', INST = 3600.,
+  _F(  RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU', INST = 3600.,
          NOM_CMP = 'SIYY',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0., CRITERE = 'ABSOLU'),
@@ -191,11 +191,11 @@ U3=STAT_NON_LINE(MODELE=MO,
 
 U3=CALC_ELEM(reuse =U3,
             RESULTAT=U3,
-            OPTION=('EPSI_ELNO','EPSP_ELNO','SIEF_ELNO'),);
+            OPTION=('EPSI_ELNO','EPSP_ELNO','SIGM_ELNO'),);
 
 U3=CALC_NO(reuse =U3,
           RESULTAT=U3,
-          OPTION=('EPSI_NOEU','EPSP_NOEU','SIEF_NOEU'),);
+          OPTION=('EPSI_NOEU','EPSP_NOEU','SIGM_NOEU'),);
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = U3,  NOM_CHAM = 'EPSI_NOEU', INST = 3600.,
@@ -206,11 +206,11 @@ TEST_RESU(RESU=(
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 6.53E-4),
-  _F(  RESULTAT = U3,  NOM_CHAM = 'SIEF_NOEU', INST = 3600.,
+  _F(  RESULTAT = U3,  NOM_CHAM = 'SIGM_NOEU', INST = 3600.,
          NOM_CMP = 'SIXX',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0.,CRITERE = 'ABSOLU'),
-  _F(  RESULTAT = U3,  NOM_CHAM = 'SIEF_NOEU', INST = 3600.,
+  _F(  RESULTAT = U3,  NOM_CHAM = 'SIGM_NOEU', INST = 3600.,
          NOM_CMP = 'SIYY',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0., CRITERE = 'ABSOLU'),

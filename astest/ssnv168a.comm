@@ -1,5 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE ROMEO R.FERNANDES
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE TYPE (AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,7 +112,7 @@ U1=STAT_NON_LINE(
                 )
 
 U1=CALC_ELEM( reuse      =U1,
-              OPTION     =( 'SIEF_ELNO', 'VARI_ELNO',),
+              OPTION     =( 'SIGM_ELNO', 'VARI_ELNO',),
               RESULTAT   = U1,
             )
 
@@ -171,13 +171,13 @@ U2 = STAT_NON_LINE(
                   )
 
 U2       = CALC_ELEM( reuse      = U2,
-                      OPTION     = ('SIEF_ELNO','VARI_ELNO'),
+                      OPTION     = ('SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U2,
                     );
 
 U2       = CALC_NO( reuse    = U2,
                     RESULTAT = U2,
-                    OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU')
+                    OPTION   = ( 'SIGM_NOEU', 'VARI_NOEU')
                   )
 
 TEST_RESU( RESU = (
@@ -187,7 +187,7 @@ TEST_RESU( RESU = (
                 _F(   RESULTAT   = U2,
                       REFERENCE  = 'ANALYTIQUE',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       INST       = 2.0,
                       PRECISION  = 1.E-3,
@@ -198,7 +198,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'ANALYTIQUE',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.07000,
                       PRECISION  = 1.E-3,
@@ -206,7 +206,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'ANALYTIQUE',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.1600,
                       PRECISION  = 1.E-3,
@@ -214,7 +214,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'ANALYTIQUE',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.3400,
                       PRECISION  = 1.E-3,
@@ -222,7 +222,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'ANALYTIQUE',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.5300,
                       PRECISION  = 1.E-3,
@@ -307,7 +307,7 @@ TEST_RESU( RESU = (
 #SIGMA    = POST_RELEVE_T( ACTION = _F( INTITULE  = 'SIGMA',
 #                                       RESULTAT  =  U2,
 #                                       NOEUD     = 'N4',
-#                                       NOM_CHAM  = 'SIEF_ELNO',
+#                                       NOM_CHAM  = 'SIGM_ELNO',
 #                                       TOUT_CMP  = 'OUI',
 #                                       OPERATION = 'EXTRACTION',),);
 #

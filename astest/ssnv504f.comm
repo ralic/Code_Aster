@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE EXTRUSION D'UN LOPIN
 # ssnv504f.para = tps_job 240 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,11 +174,11 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 U=CALC_CHAMP(reuse =U,
 
 
-                CONTRAINTE=('SIEF_ELNO'),
+                CONTRAINTE=('SIGM_ELNO'),
                RESULTAT=U,);
 
 U=CALC_NO(reuse =U,
-               OPTION='SIEF_NOEU',
+               OPTION='SIGM_NOEU',
                RESULTAT=U,);
 
 IMPR_RESU(MODELE=MO,

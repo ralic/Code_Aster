@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,7 +104,7 @@ POURSUITE=MACRO(nom="POURSUITE",
 
          IGNORE_ALARM = SIMP(statut='f', typ='TXM', max='**', fr="Alarmes que l'utilisateur souhaite délibérément ignorer"),
 
-         LANG = SIMP(statut='f', typ='TXM', into=('FR', 'EN',),
+         LANG = SIMP(statut='f', typ='TXM',
                      fr="Permet de choisir la langue utilisée pour les messages (si disponible)",
                      ang="Allows to choose the language used for messages (if available)"),
 

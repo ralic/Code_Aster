@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C
       CHARACTER*100  CHAZP4,CHAZV4,CHAZP5,CHAZV5,CHAZP6,CHAZV6
       CHARACTER*100  CHAZP7,CHAZV7,CHAV40,CHAZ40
       CHARACTER*255  CTRAV1,CTRAV2,CTRAV3
-      LOGICAL        LBID,LCOR,LSUP,LINF,LMIN,LMAX,LRESU,CALCUL(2)
+      LOGICAL        LCOR,LSUP,LINF,LMIN,LMAX,LRESU,CALCUL(2)
 C
       DATA           NOMCMP /'DX      ','DY      ','DZ      ',
      &                     'DRX     ','DRY     ','DRZ     '/
@@ -108,7 +108,6 @@ C
       NPASV = NPV
       NBNO  = 0
 C
-      LBID  = .FALSE.
       LCOR  = .FALSE.
       LSUP  = .FALSE.
       LINF  = .FALSE.
@@ -567,7 +566,7 @@ C
             WRITE(IFR,*)
             WRITE(CHAM19(17:19),'(I3.3)') IV
             CALL IRDEPL(CHAM19,' ',IFR,'RESULTAT',K8BID,K8BID,NOMSYM,
-     &             IBID,IBID,IBID,IBID,IBID,IBID,LBID,LCOR,NBNO,IBID,6,
+     &             IBID,LCOR,NBNO,IBID,6,
      &             NOMCMP,LSUP,RBID,LINF,RBID,LMAX,LMIN,LRESU,FORMAR,
      &             NIVE)
             WRITE(IFR,*)

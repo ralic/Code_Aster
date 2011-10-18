@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,7 +181,7 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 

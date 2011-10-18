@@ -36,7 +36,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,8 +119,8 @@ C
 C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      REAL*8        TPS1(4)
-      REAL*8        VALR(3), CONV,RINT1,RINT2, VALR2(2)
+      REAL*8        TPS1(4), CONV
+      REAL*8        VALR(3), RINT1, RINT2, VALR2(2)
       INTEGER       VALI(2)
       CHARACTER*8   TRAN
       CHARACTER*19  MAMASS,SOLVEU,MATPRE
@@ -135,10 +135,11 @@ C
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*8   CNPAL(PALMAX)
       CHARACTER*24  CPAL
-      INTEGER      IARG
+      INTEGER       IARG
+      REAL*8        FSAUV(PALMAX,3)
 C
       CALL JEMARQ()
-C            
+      
       ZERO = 0.D0
       DEUX = 2.D0
       JCHOR = 1
@@ -162,6 +163,7 @@ C
         FINPAL(IAPP)='   '
         CNPAL(IAPP)=' '
  111  CONTINUE
+      PRDEFF = .FALSE.
 C
       IF ( LAMOR ) THEN
         DO 100 IM = 1,NEQGEN
@@ -297,6 +299,9 @@ C     RECUPERATION DES DONNEES SUR LES PALIERS
 C     -------------------------------------------------     
         CALL JEVEUO(CPAL,'L',IADRK)
         DO 21 IAPP=1,NBPAL
+          FSAUV(IAPP,1)= 0.D0
+          FSAUV(IAPP,2)= 0.D0
+          FSAUV(IAPP,3)= 0.D0
           TYPAL(IAPP)=ZK8(IADRK+(IAPP-1))(1:6)
           FINPAL(IAPP)=ZK8(IADRK+(IAPP-1)+PALMAX)(1:3)
           CNPAL(IAPP)=ZK8(IADRK+(IAPP-1)+2*PALMAX)(1:DIMNAS)
@@ -319,7 +324,7 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            1,0,DT,DTSTO,TCF,VROTAT,
-     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
 C
 C     --- ACCELERATIONS GENERALISEES INITIALES ---
@@ -339,7 +344,7 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            1,NBPAL,DT2,DTSTO,TCF,VROTAT,
-     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
     
 C
@@ -453,7 +458,7 @@ C
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
      &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &                  II,NBPAL,DT2,DTSTO,TCF,
-     &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
               IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
      
 C
@@ -500,7 +505,7 @@ C
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
      &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &                  II,NBPAL,DT2,DTSTO,TCF,
-     &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
               IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
      
 C
@@ -519,10 +524,19 @@ C
              CALL FRQAPP(DT2,NEQGEN,ZR(JDEPL),ZR(JDEP2),
      &              ZR(JACCE),ZR(JACC2),ZR(JVMIN),FREQ)
              ERR = NPER * FREQ * DT2
+
+             IF (METHOD.EQ.'ADAPT_ORDRE1'.AND.TEMPS.LT.(TINIT+5.D0*DT2))
+     &           ERR = 0.D0
+
 C
 C           --- REDUCTION DU PAS DE TEMPS ---
 C
-            IF((ERR .GT. 1.D0).OR.(CONV .LE. 0.D0)) DT2 = DT2/CDP
+            IF((ERR .GT. 1.D0).OR.(CONV .LE. 0.D0)) THEN
+              DT2 = DT2/CDP
+              PRDEFF = .FALSE.
+            ELSE
+              PRDEFF = .TRUE.
+            ENDIF
             IF (DT2.LE.DTMIN .AND. ABS(TFIN-(TEMPS+DT2)).GT.EPSI) THEN
               CALL U2MESS('F','ALGORITH5_23')
             ENDIF

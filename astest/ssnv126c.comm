@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 # ssnv126c.para = tps_job 130 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -264,12 +264,12 @@ SOLNK=STAT_NON_LINE(
 
 SOLNK=CALC_ELEM( reuse=SOLNK,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNK,
               )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 20,
+  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 20,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 2.5302E+02,
          PRECISION = 5.0E-3),
 
@@ -288,7 +288,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 2.32E-04,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 30,
+  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 30,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 1.6436E+02,
          PRECISION = 5.0E-3),
 
@@ -307,7 +307,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 2.7399E-03,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 40,
+  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 40,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 1.0216E+02,
          PRECISION = 5.0E-3),
 
@@ -326,7 +326,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 2.7561E-02,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 50,
+  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 7.992E+01,
          PRECISION = 5.0E-3),
 
@@ -345,7 +345,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 6.62665E-02,
          PRECISION = 1.0E-2),
 
-  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNK,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 7.090E+01,
          PRECISION = 1.0E-2),
 
@@ -397,12 +397,12 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 20,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 20,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 2.5302E+02,
          PRECISION = 4.0E-2),
 
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 2.32E-04,
          PRECISION = 4.0E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 30,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 30,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 1.6436E+02,
          PRECISION = 4.0E-2),
 
@@ -440,7 +440,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 2.7399E-03,
          PRECISION = 4.0E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 40,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 40,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 1.0216E+02,
          PRECISION = 4.0E-2),
 
@@ -459,7 +459,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 2.7561E-02,
          PRECISION = 4.0E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 50,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 7.992E+01,
          PRECISION = 4.0E-2),
 
@@ -478,7 +478,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 6.62665E-02,
          PRECISION = 4.0E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 7.090E+01,
          PRECISION = 4.0E-2),
 

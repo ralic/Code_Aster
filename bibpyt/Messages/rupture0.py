@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture0 Messages  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,6 @@ il n'est donc pas possible d'identifier le Gp critique dans cette étude.
 Augmentez le chargement.
 """),
 
-2: _(u"""
-Le label %(k1)s doit etre présent dans la table %(k2)s.
-"""),
 
 3: _(u"""
 Création de la table  %(k1)s.
@@ -116,10 +113,6 @@ Veuillez vérifier les données fournies au mot-clé SANS_GROUP_NO.
 Le noeud %(k1)s n'appartient pas au fond de fissure.
 -> Risque et Conseil :
 Veuillez vérifier les données fournies au mot-clé GROUP_NO ou NOEUD.
-"""),
-
-16: _(u"""
-Le mot clé RESULTAT est obligatoire pour TYPE_MAILLAGE = LIBRE.
 """),
 
 18: _(u"""
@@ -271,10 +264,6 @@ Pas d'instant trouvé dans la table pour l'instant %(r1)f.
 Plusieurs instants trouvés dans la table pour l'instant %(r1)f.
 """),
 
-40: _(u"""
-ABSC_CURV non croissants pour %(k1)s.
-"""),
-
 41 : _(u"""
 Le groupe de mailles %(k1)s défini sous le mot-clé GROUP_MA n'existe pas.
 """),
@@ -298,10 +287,9 @@ Une seule maille doit constitué le groupe de mailles GROUP_MA_ORIG. La maille ut
 
 46: _(u"""
 Il faut au moins trois noeuds dans le plan défini par les lèvres et perpendiculaire 
-au fond de fissure. Le calcul est impossible : on met la ligne correspondant au noeud
-considéré à zéro et on poursuit le calcul pour le noeud du fond suivant.
--> Risque et Conseil :
+au fond de fissure. Le calcul est impossible. On extrapole les valeurs du point le plus proche.
 """),
+
 
 47: _(u"""
 Noeud %(k1)s 
@@ -449,7 +437,9 @@ surfacique en commun. Maille en commun : %(k1)s
 Revoir les données.
 """),
 
- 
+74: _(u"""
+Le mode %(i1)d n'a pas été trouvé dans la table.
+"""),  
 
 75 : _(u"""
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la
@@ -517,6 +507,15 @@ Veuillez redéfinir le mot-clé LISSAGE_G.
 Si la méthode LAGRANGE_REGU est utilisée pour le lissage, 
 alors le lissage de G et de theta doivent etre de type LAGRANGE_REGU.
 """),
+
+88: _(u"""
+Aucune fréquence trouvée dans la table pour la fréquence %(r1)f.
+"""),
+
+89: _(u"""
+Plusieurs fréquences trouvées dans la table pour la fréquence %(r1)f.
+"""),
+
 
 
 90: _(u"""

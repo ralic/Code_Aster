@@ -1,16 +1,19 @@
       SUBROUTINE XPRVIT(NOMA,FISS,NDIM,NVIT,NBETA,LCMIN,CNSVT,CNSVN,
-     &                  VPOINT,CNSBL,CNSDIS,DISFR,CNSBET,LISTP)
+     &                  VPOINT,CNSBL,CNSDIS,DISFR,CNSBET,LISTP,DAMAX,
+     &                  LOCDOM,RDIMP,RDTOR,DELTA,UCNSLT,UCNSLN)
 
       IMPLICIT NONE
       CHARACTER*8    NOMA,FISS
 
-      CHARACTER*19   CNSVT,CNSVN,VPOINT,DISFR,CNSBL,CNSDIS,CNSBET,LISTP
+      CHARACTER*19   CNSVT,CNSVN,VPOINT,DISFR,CNSBL,CNSDIS,CNSBET,LISTP,
+     &               DELTA,UCNSLT,UCNSLN
       CHARACTER*24   NVIT,NBETA
       INTEGER        NDIM
-      REAL*8         LCMIN
+      REAL*8         LCMIN,DAMAX,RDIMP,RDTOR
+      LOGICAL        LOCDOM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +48,9 @@ C                  DU FOND DE LA FISSURE (NOM DU CONCEPT)
 C        NBETA   : VECTEUR DES ANGLES DE PROPAGATION POUR CHAQUE POINT
 C                  DU FOND DE LA FISSURE (NOM DU CONCEPT)
 C        LCMIN   : LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE
+C        DAMAX   : AVANCEMEMT MAXIMAL DE LA FISSURE
+C        RADIMP  : RAYON DE LOCALISATION DES LEVEL SETS
+C        LOCDOM  : LOCALISATION DES LEVELS SETS ACTIVEe
 C
 C    SORTIE
 C        CNSVT   : CHAM_NO_S VITESSE TANGENTIELLE DE PROPAGATION
@@ -64,9 +70,16 @@ C                  PROJETE SUR LE FOND DE LA FISSURE)
 C        LISTP   : VECTEUR (A 3 COMPOSANTES) OU LES CORDONNEES DU
 C                  PROJETE DE CHAQUE POINT DU DOMAINE DE CALCUL SUR LE
 C                  FOND DE LA FISSURE SONT STOCKEES
+C       RADIMP   : RAYON DE LA ZONE DE REACTUALISATION DES LEVELS SETS
+C       RADTOR   : RAYON DE LA ZONE DE REPROJECTION DES LEVELS SETS
+C       DAMAX    : AVANCEMENT MAXIMUM DU FRONT DE FISSURE
+C       DELTA    : VECTEUR CONTENANT LES CORRECTION DES LEVELS SETS 
+C                 TANGENTES ET NORMALES
+C       UCNLSN   : CHAM_NO_S  LEVEL SET NORMALE AU NOEUDS
+C       UCNLSN   : CHAM_NO_S  LEVEL SET TANGENTE AU NOEUDS
 C
 C     ------------------------------------------------------------------
-C TOLE CRP_20 CRP_6
+C TOLE CRP_20 CRP_6 CRP_21
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -85,17 +98,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER        I,J,JCOOR,IRET,NBNO,JMIN,NBPTFF,IBID,
-     &               JFONF,JVTFF,JVNFF,JVTL,JVTV,JVNL,JVNV,IFM,NIV,
-     &               JVIT,JBETA,JDISFR
+      INTEGER        I,J,JCOOR,IRET,NBNO,JMIN,NBPTFF,IBID,JDELTA,LSN,
+     &               LST,JFONF,JVTFF,JVNFF,JVTL,JVTV,JVNL,JVNV,IFM,
+     &               NIV,JVIT,JBETA,JDISFR,CFV,BFV,VFV,AFV,NFV
       REAL*8         EPS,XM,YM,ZM,R8MAEM,DMIN,SMIN,
      &               XI1,YI1,ZI1,XJ1,YJ1,ZJ1,XIJ,YIJ,ZIJ,XIM,YIM,ZIM,S,
-     &               NORM2,XN,YN,ZN,D,R8PREM
+     &               NORM2,XN,YN,ZN,D,R8PREM,RADIMP,RADTOR   
       CHARACTER*8    K8B,TYPCMP(6),METHOD
-      INTEGER        JVFF,JBASEF,JBL,JDIS
+      INTEGER        JVFF,JBASEF,JBL,JDIS,K
 
-      REAL*8         BAST(3),TAST(3),N(3),T(3),B(3),MTAST,
-     &               MODNOR,MODTAN
+      REAL*8         BAST(3),TAST(3),N(3),T(3),B(3),MTAST,PI(3),
+     &               NORMIJ,LSNTH(2),LSTTH(2),NORMKL,MODNOR,MODTAN
+      LOGICAL        GRILLE,FONVIR,FVIRTU
+
+      CHARACTER*19   COVIR,BAVIR,VITVIR,ANGVIR,NUMVIR              
 
 C     EULER AXIS AND EULER ANGLE CALCULATIONS
       INTEGER        JEULER,JCNSB,JLISTP,JVP
@@ -117,9 +133,16 @@ C     BISECTION METHOD AND VELOCITY INTERPOLATION
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
+     
+C     Recuperation des points des caracteristique du maillage et du
+C     fond de fissure
+
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
+
+      RADTOR = RDTOR
+      RADIMP = RDIMP
 
 C     RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
       CALL GETVTX(' ','METHODE',1,IARG,1,METHOD,IBID)
@@ -139,10 +162,85 @@ C     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
 C     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE ON THE FRONT
       CALL JEVEUO(FISS//'.BASEFOND','E',JBASEF)
 
-C     CREATE THE CHAMP_NO_S WHERE THE LOCAL REFERENCE SYSTEM IS STORED
-C     FOR EACH NODE IN THE MESH.
-C     CREATE ALSO THE CHAMP_NO_S WHERE THE DISTANCE BETWEEN EACH NODE
-C     AND ITS PROJECTION ON THE CRACK FRONT IS STORED.
+C     RETRIEVE THE CRACK'S SPEED AND PROPAGATION ANGLE FOR EACH NODE ON
+C     THE FRONT
+      CALL JEVEUO(NVIT,'E',JVIT)
+      CALL JEVEUO(NBETA,'E',JBETA)
+
+      FVIRTU = .FALSE.
+
+C     CHECK if an auxilliary grid is used 
+
+      CALL JEEXIN(FISS//'.GRI.MODELE',IBID)
+      IF (IBID.EQ.0) THEN
+C        NO AUXILIARY GRID USED
+         GRILLE=.FALSE.
+      ELSE
+         GRILLE=.TRUE.
+      ENDIF
+      
+C      On utilise un fond virtuel si une grille auxilliaire 
+C      est utilisee et que l on travaille sur un modele 3D
+
+      IF ((GRILLE).AND.(NDIM.EQ.3).AND.(METHOD.NE.'GEOMETRI')) THEN
+
+        FVIRTU = .TRUE.
+
+C     EXTRACTION des valeurs des levels sets au noeud
+        CALL JEVEUO(UCNSLN//'.CNSV','L',LSN)
+        CALL JEVEUO(UCNSLT//'.CNSV','L',LST)   
+
+C     Creation de vecteur ou sont stocke les coordonnes et les
+C     bases associees du font de fissure virtuel
+        COVIR='&&XPRVIT.COVIR'
+        BAVIR='&&XPRVIT.BAVIR'
+        VITVIR='&&XPRVIT.VITVIR'
+        ANGVIR='&&XPRVIT.ANGVIR'
+        NUMVIR='&&XPRVIT.NUMVIR'
+
+         CALL WKVECT(COVIR,'V V R8',
+     &                4*(NBPTFF+2*NUMFON),CFV)
+         CALL WKVECT(BAVIR,'V V R8',
+     &             6*(NBPTFF+2*NUMFON),BFV)
+         CALL WKVECT(VITVIR,'V V R8',
+     &               (NBPTFF+2*NUMFON),VFV)
+         CALL WKVECT(ANGVIR,'V V R8',
+     &                   (NBPTFF+2*NUMFON),AFV)
+         CALL WKVECT(NUMVIR,'V V I',
+     &                   (2*NUMFON),NFV)
+
+C      OPERATION SUR RADIMP ET RADTOR
+         IF (RADIMP.GT.0.D0) THEN
+               RADIMP=SQRT(RADIMP)
+         ENDIF
+         IF (RADTOR.GT.0.D0) THEN
+               RADTOR=SQRT(RADTOR)
+         ENDIF
+
+            
+         IF (NUMFON.GT.1) THEN
+C        ON VERIFIE QUE LE FOND DE FISSURE EST BIEN ORIENTE
+C        SINON ON MODIFIE LA NUMEROTATION DU FOND DE FISSURE 
+           CALL  XPRFON(NOMA,FISS,NUMFON,NVIT,NBETA)
+         ENDIF 
+
+C       DEFINITION DU FOND VIRTUEL                 
+         CALL  XPRVIR(FISS,COVIR,BAVIR,VITVIR,ANGVIR,NUMVIR,NUMFON,
+     &          NVIT,NBETA,NBPTFF,RADIMP,RADTOR,DAMAX,NOMA,LOCDOM)  
+
+C       ON POINTE LES ROUTINES DESTINEES AU FRONT PHYSIQUE
+C       SUR LE FRONT VIRTUEL
+            JFONF=CFV
+            JBASEF=BFV
+            JVIT=VFV
+            JBETA=AFV
+            JFMULT=NFV 
+      ENDIF
+
+C     CREATE THE CHAMP_NO_S WHERE THE LOCAL REFERENCE SYSTEM IS
+C     STORED FOR EACH NODE IN THE MESH.
+C     CREATE ALSO THE CHAMP_NO_S WHERE THE DISTANCE BETWEEN EACH
+C     NODE AND ITS PROJECTION ON THE CRACK FRONT IS STORED.
       TYPCMP(1)='X1'
       TYPCMP(2)='X2'
       TYPCMP(3)='X3'
@@ -171,9 +269,9 @@ C     CREATE THE VECTOR WHERE THE MODULE OF THE PROPAGATION SPEED IS
 C     STORED FOR EACH POINT (=SQRT(CNSVT**2+CNSVN**2))
       CALL WKVECT(VPOINT,'V V R8',NBNO,JVP)
 
-C     CREATION DES VECTEURS DE VITESSE DE PROPAGATION EN FOND DE FISSURE
-      CALL JEVEUO(NVIT,'E',JVIT)
-      CALL JEVEUO(NBETA,'E',JBETA)
+C     CREATION DES VECTEURS DE VITESSE DE PROPAGATION EN FOND
+C     DE FISSURE
+
       CALL WKVECT('&&XPRVIT.V_PROPA_FF','V V R8',NDIM*NBPTFF,JVFF)
       CALL WKVECT('&&XPRVIT.VT_PROPA_FF','V V R8',NBPTFF,JVTFF)
       CALL WKVECT('&&XPRVIT.VN_PROPA_FF','V V R8',NBPTFF,JVNFF)
@@ -186,8 +284,8 @@ C     CREATE THE VECTOR WHERE THE PROPAGATION ANGLE IS STORED FOR EACH
 C     POINT
       CALL WKVECT(CNSBET,'V V R8',NBNO,JCNSB)
 
-C     CREATE THE VECTOR WHERE THE COORDINATES OF THE PROJECTED POINT ARE
-C     STORED FOR EACH POINT
+C     CREATE THE VECTOR WHERE THE COORDINATES OF THE PROJECTED POINT
+C     ARE STORED FOR EACH POINT
       CALL WKVECT(LISTP,'V V R8',3*NBNO,JLISTP)
 
       CALL JEVEUO(CNSVT//'.CNSV','E',JVTV)
@@ -213,6 +311,15 @@ C                THE CRACK FRONT
 C     THIS BLOCK IS REPEATED FOR ALL THE POINTS ON THE CRACK FRONT WITH
 C     THE EXCEPTION OF THE LAST ONE.
       CALL WKVECT('&&XPRVIT.EULER','V V R8',7*NBPTFF,JEULER)
+
+C     creation du vecteur contenant les modifications a apporter au
+C     level set avant application du fond virtuel
+       CALL WKVECT(DELTA,'V V R8',2*NBNO,JDELTA)
+
+C    Initialisation du vecteur delta
+        DO 742 I=1,2*NBNO
+           ZR(JDELTA+I-1)=0.D0     
+ 742   CONTINUE
 
 C ***************************************************************
 C ELABORATE EACH POINT ON THE CRACK FRONT IN ORDER TO CALCULATE
@@ -444,12 +551,14 @@ C          INITIALISATION
 C          BOUCLE SUR PT DE FONFIS
            DO 210 J=1,NBPTFF-1
 
-C            CHECK IF THE CURRENT SEGMENT ON THE FRONT IS OUTSIDE THE
-C            MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE FORMING THE
-C            FRONT)
-             DO 213 FON=1,NUMFON
-                IF (J.EQ.ZI(JFMULT-1+2*FON)) GOTO 210
-213          CONTINUE
+             IF (.NOT.FVIRTU) THEN
+C               CHECK IF THE CURRENT SEGMENT ON THE FRONT IS OUTSIDE
+C               THE MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE
+C               FORMING THE FRONT)
+                DO 213 FON=1,NUMFON
+                   IF (J.EQ.ZI(JFMULT-1+2*FON)) GOTO 210
+213             CONTINUE
+             ENDIF
 
 C            COORD PT I, ET J
              XI1 = ZR(JFONF-1+4*(J-1)+1)
@@ -539,16 +648,21 @@ C           POINT PROJECTED ON ONE END OF THE FRONT FLAG
             ENDPNT = .FALSE.
 
 C           CALCULATE THE LIMITS FOR JMIN ON THE ACTUAL CRACK FRONT
-            JLIMSX = 0
-            JLIMDX = 0
-            DO 205 FON=1,NUMFON
-               IF ((JMIN.GE.ZI(JFMULT-1+2*FON-1)).AND.
-     &             (JMIN.LE.ZI(JFMULT-1+2*FON))) THEN
-                  JLIMSX = ZI(JFMULT-1+2*FON-1)
-                  JLIMDX = ZI(JFMULT-1+2*FON)-1
-                  GOTO 204
-               ENDIF
-205         CONTINUE
+            IF (.NOT.FVIRTU) THEN
+               JLIMSX = 0
+               JLIMDX = 0
+               DO 205 FON=1,NUMFON
+                  IF ((JMIN.GE.ZI(JFMULT-1+2*FON-1)).AND.
+     &                (JMIN.LE.ZI(JFMULT-1+2*FON))) THEN
+                     JLIMSX = ZI(JFMULT-1+2*FON-1)
+                     JLIMDX = ZI(JFMULT-1+2*FON)-1
+                     GOTO 204
+                  ENDIF
+205            CONTINUE
+            ELSE
+               JLIMSX = 1
+               JLIMDX = ZI(JFMULT-1+2*NUMFON)-1
+            ENDIF
 
             CALL ASSERT(2.GT.1)
 
@@ -709,6 +823,108 @@ C           STORE THE DISTANCE VECTOR
             ZR(JDIS-1+3*(I-1)+3) = ZM-ZN
             ZR(JDISFR+I-1) = DMIN
 
+C          SI ON UTILISE LA METHODE UPWIND AVEC UNE GRILLE ET QU'IL
+C          Y A PLUSIEURS FOND DE FISSURE, ON REACALCULE LES
+C          LEVELS SETS
+           IF (FVIRTU.AND.(NUMFON.GT.1)) THEN          
+            FONVIR=.FALSE.
+
+C        1: ON DETERMINE SI LE NOEUDS EST PROJETE SUR UN SEGMENT DU
+C            FRONT VIRTUEL A L'INTERIEUR D'UN TROU (SEGMENT DU FRONT
+C            VIRTUEL DE TYPES 2 ET 3)            
+  
+             DO 861  K=1,(NUMFON-1)
+               IF ((JMIN.EQ.(ZI(NFV+2*K-1)-1))
+     &            .OR.(JMIN.EQ.(ZI(NFV+2*K)))) THEN
+                 FONVIR=.TRUE.
+                ELSE
+                  GOTO 861
+               ENDIF
+861          CONTINUE
+           
+C         2: SI OUI, ON CALCULE LA CORRECTION A APPORTER
+    
+              IF (FONVIR) THEN
+C          CALCUL DE LA VALEUR DE LA LEVEL SET NORMALE RECHERCHEE     
+             LSNTH(1)= ZR(JDIS-1+3*(I-1)+1)*ZR(JBASEF+6*(JMIN-1)-1+1)
+     &     +ZR(JDIS-1+3*(I-1)+2)*ZR(JBASEF+6*(JMIN-1)-1+2)
+     &     +ZR(JDIS-1+3*(I-1)+3)*ZR(JBASEF+6*(JMIN-1)-1+3)
+
+C          CALCUL DE LA VALEUR DE LA LEVEL SET TANGENTEE RECHERCHEE    
+             LSTTH(1)= ZR(JDIS-1+3*(I-1)+1)*ZR(JBASEF+6*
+     &     (JMIN-1)-1+4)+ZR(JDIS-1+3*(I-1)+2)*ZR(JBASEF+6*(JMIN-1)-1+5)
+     &      +ZR(JDIS-1+3*(I-1)+3)*ZR(JBASEF+6*(JMIN-1)-1+6)
+
+C          CALCUL DE LA CORRECTION A APPORTER
+               ZR(JDELTA+2*(I-1))= LSNTH(1)-ZR(LSN+I-1)
+               ZR(JDELTA+2*(I-1)+1)= LSTTH(1)-ZR(LST+I-1)
+             ENDIF
+
+           ENDIF
+
+C           STORE THE DISTANCE VECTOR
+
+C           attention: la distance du point au fond de fissure doit
+C           etre calcule depuis le front de fissure reel et non le
+C           front de fissure virtuel 
+         IF ((GRILLE).AND.(NDIM.EQ.3)) THEN             
+
+            IF (JMIN.EQ.1) THEN
+C           Le projete est sur un segment virtuel du fond de
+C           fissure (segment1)
+               PI(1)= XM-ZR(CFV+4-1+1)
+               PI(2) = YM-ZR(CFV+4-1+2)
+               PI(3) = ZM-ZR(CFV+4-1+3)
+               ZR(JDISFR+I-1) = PI(1)**2+PI(2)**2+PI(3)**2
+            ELSE IF (JMIN.EQ.(NBPTFF-1)) THEN
+              PI(1) = XM-ZR(CFV+4*(NBPTFF-2)-1+1)
+              PI(2) = YM-ZR(CFV+4*(NBPTFF-2)-1+2)
+              PI(3) = ZM-ZR(CFV+4*(NBPTFF-2)-1+3)
+               ZR(JDISFR+I-1) = PI(1)**2+PI(2)**2+PI(3)**2
+            ELSE
+               DO 61 K=1,(NUMFON-1)
+C            Le point est projete sur un segment virtuel de type 1
+                   IF ((JMIN).EQ.(ZI(NFV+2*K-1)-1)) THEN
+                    PI(1) = XM-ZR(CFV-1+4*(JMIN-1)+1)
+                    PI(2) = YM-ZR(CFV-1+4*(JMIN-1)+2)
+                    PI(3) = ZM-ZR(CFV-1+4*(JMIN-1)+3)
+                    ZR(JDISFR+I-1) = PI(1)**2+PI(2)**2+PI(3)**2   
+                    GOTO 61
+                   ELSE IF ((JMIN).EQ.(ZI(NFV+2*K))) THEN
+C              Le point est projete sur un segment virtuel de type 3
+                    PI(1) = XM-ZR(CFV-1+4*(JMIN-0)+1)
+                    PI(2) = YM-ZR(CFV-1+4*(JMIN-0)+2)
+                    PI(3) = ZM-ZR(CFV-1+4*(JMIN-0)+3)
+                    ZR(JDISFR+I-1) = PI(1)**2+PI(2)**2+PI(3)**2   
+                   ELSE IF ((JMIN).EQ.(ZI(NFV+2*K-1))) THEN
+C              Le point est projete sur un segment virtuel de type 2
+                    NORMKL=(XM-ZR(CFV-1+4*(JMIN+1)+1))**2
+     &              +(YM-ZR(CFV-1+4*(JMIN+1)+2))**2
+     &              +(ZM-ZR(CFV-1+4*(JMIN+1)+3))**2
+
+                    NORMIJ=(XM-ZR(CFV-1+4*(JMIN-2)+1))**2
+     &              +(YM-ZR(CFV-1+4*(JMIN-2)+2))**2
+     &              +(ZM-ZR(CFV-1+4*(JMIN-2)+3))**2
+                    
+                    IF (NORMKL.GE.NORMIJ) THEN 
+C                   On est plus proche du fond de fissure a gauche
+                     PI(1) = XM-ZR(CFV-1+4*(JMIN-2)+1)
+                     PI(2) = YM-ZR(CFV-1+4*(JMIN-2)+2)
+                     PI(3) = ZM-ZR(CFV-1+4*(JMIN-2)+3)
+                     ZR(JDISFR+I-1) = PI(1)**2+PI(2)**2+PI(3)**2 
+                     ELSE  
+C                   On est plus proche du fond de fissure a droite
+                     PI(1) = XM-ZR(CFV-1+4*(JMIN+1)+1)
+                     PI(2) = YM-ZR(CFV-1+4*(JMIN+1)+2)
+                     PI(3) = ZM-ZR(CFV-1+4*(JMIN+1)+3)
+                     ZR(JDISFR+I-1) = PI(1)**2+PI(2)**2+PI(3)**2 
+                    ENDIF                
+                    GOTO 61
+                    ENDIF             
+61             CONTINUE      
+              ENDIF   
+            ENDIF
+
          ENDIF
 
 C        ***************************************************************
@@ -853,6 +1069,27 @@ C              BY THE SIGN OF MODVEC)
 
             ENDIF
 
+            IF (FVIRTU.AND.(NUMFON.GT.1)) THEN 
+C           Calcul de la correction a apporter au level set pour les
+C           vecteurs projetes sur le front virtuel( SEGMENT DE TYPE 2)
+
+             DO 864 K=1,(NUMFON-1)
+              IF ((JMIN).EQ.(ZI(NFV+2*K-1))) THEN
+
+              LSNTH(1)= ZR(JDIS-1+3*(I-1)+1)*ZR(JBL-1+2*NDIM*(I-1)+1)
+     &                 +ZR(JDIS-1+3*(I-1)+2)*ZR(JBL-1+2*NDIM*(I-1)+2)
+     &                 +ZR(JDIS-1+3*(I-1)+3)*ZR(JBL-1+2*NDIM*(I-1)+3)
+
+              LSTTH(1)= ZR(JDIS-1+3*(I-1)+1)*ZR(JBL-1+2*NDIM*(I-1)+4)
+     &                 +ZR(JDIS-1+3*(I-1)+2)*ZR(JBL-1+2*NDIM*(I-1)+5)
+     &                 +ZR(JDIS-1+3*(I-1)+3)*ZR(JBL-1+2*NDIM*(I-1)+6)
+
+                ZR(JDELTA+2*(I-1))= LSNTH(1)-ZR(LSN+I-1)
+                ZR(JDELTA+2*(I-1)+1)= LSTTH(1)-ZR(LST+I-1)
+        
+              ENDIF
+864          CONTINUE
+            ENDIF
          ENDIF
 
 C        ***************************************************************
@@ -901,7 +1138,7 @@ C  IMPRESSION DES VITESSES DE PROPAGATION EN INFO=2
                   WRITE(IFM,*)  ' NUM_PT    VITESSE         '
      &               //'BETA          VT            VN'
                ENDIF
-
+          
  312        CONTINUE
 
             WRITE(IFM,311) I,ZR(JVIT-1+I),ZR(JBETA-1+I),ZR(JVTFF+I-1),
@@ -912,6 +1149,16 @@ C  IMPRESSION DES VITESSES DE PROPAGATION EN INFO=2
  311      FORMAT(4X,I2,4X,4(D11.5,3X))
  313      FORMAT(1X,' FOND DE FISSURE ',I2)
 
+      ENDIF
+
+
+      IF (FVIRTU) THEN 
+         NBPTFF=NBPTFF-2*NUMFON
+         CALL JEDETR(COVIR)
+         CALL JEDETR(BAVIR)
+         CALL JEDETR(VITVIR)
+         CALL JEDETR(ANGVIR)
+         CALL JEDETR(NUMVIR)
       ENDIF
 
       CALL JEDETR('&&XPRVIT.V_PROPA_FF')

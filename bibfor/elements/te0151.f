@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -54,6 +54,7 @@ C
       PARAMETER    (             NBRES = 3 )
       REAL*8              VALRES(NBRES)
       INTEGER CODRES(NBRES)
+      CHARACTER*1  STOPZ(3)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL
       CHARACTER*16 CH16
@@ -179,13 +180,35 @@ C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
          CALL U2MESK('F','ELEMENTS2_42',1,CH16)
       ENDIF
 C
-      CALL JEVECH ('PDEPLAR', 'L', JDEPL)
-      DO 20 I = 1,12
-         UG(I) = ZR(JDEPL+I-1)
- 20   CONTINUE
+      IF (OPTION.NE.'ECIN_ELEM') THEN
+        CALL JEVECH ('PDEPLAR', 'L', JDEPL)
+        DO 20 I = 1,12
+          UG(I) = ZR(JDEPL+I-1)
+ 20     CONTINUE
+      ELSE
+        STOPZ(1)='O'
+        STOPZ(2)='N'
+        STOPZ(3)='O'
+        CALL TECACH(STOPZ,'PVITESR',1,JVITE,IRET)
+C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
+        IF (IRET.EQ.0) THEN
+          DO 21 I = 1,12
+            UG(I) = ZR(JVITE+I-1)
+ 21       CONTINUE
+        ELSE
+          CALL TECACH(STOPZ,'PDEPLAR',1,JDEPL,IRET)
+          IF (IRET.EQ.0) THEN
+            DO 22 I = 1,12
+              UG(I) = ZR(JDEPL+I-1)
+ 22         CONTINUE
+          ELSE
+            CALL U2MESK('F','ELEMENTS2_1',1,OPTION)
+          ENDIF
+        ENDIF
+      ENDIF
 C
 C     --- MATRICE DE ROTATION PGL
-C     --- VECTEUR DEPLACEMENT LOCAL  UL = PGL * UG
+C     --- VECTEUR DEPLACEMENT OU VITESSE LOCAL  UL = PGL * UG
       IF ( ITYPE .EQ. 10 ) THEN
          CALL UTPVGL ( NNO, NC, PGL1, UG, UL )
          CALL UTPVGL ( NNO, NC, PGL2, UG(7), UL(7) )

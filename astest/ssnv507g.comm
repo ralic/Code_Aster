@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ROTATION D'UNE INCLUSION RIGIDE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,5 +219,78 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='RELATIF',
                  PRECISION=0.22,);
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM121',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DX',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = 9.99126E-04,),),); 
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM121',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DY',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = 6.85279E-02,),),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM1385',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DX',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = 6.85040E-02,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM1385',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DY',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = -2.29075E-03,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM1400',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DX',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = -6.85040E-02,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM1400',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DY',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = 2.29075E-03,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM2663',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DX',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = -9.99126E-04,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
+                   NOEUD = 'NM2663',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DY',
+                   INST = 1.,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION = 1.E-5,
+                   VALE = -6.85279E-02,),),);
 
 FIN();

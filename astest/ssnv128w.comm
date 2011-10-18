@@ -1,9 +1,9 @@
-# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 # ssnv128w.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -73,18 +73,16 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER = MATPLA));
 
 CHA1=DEFI_CONTACT(MODELE=MO,
-                 INFO=1,
-                 FORMULATION = 'CONTINUE',
-                 ITER_CONT_MAXI=10,
-                 ITER_GEOM_MAXI=2,
-                 ITER_FROT_MAXI = 12,
+                 ALGO_RESO_CONT = 'NEWTON',
+                 FORMULATION    = 'CONTINUE',
+                 ITER_GEOM_MAXI = 2,
                  FROTTEMENT     = 'COULOMB',
+                 ALGO_RESO_FROT = 'POINT_FIXE',
                  ZONE=_F(
                          GROUP_MA_MAIT = 'SBATI',
                          GROUP_MA_ESCL = 'SCONTA',
                          CONTACT_INIT = 'INTERPENETRE',
                          COULOMB        = 1.0,
-                         SEUIL_INIT     = 0.,
                          SANS_GROUP_NO_FR= 'PP',
 
                          ALGO_CONT='PENALISATION',
@@ -105,8 +103,16 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='LINEAIRE',
                     VALE=(0.0,0.0,1.0,1.0));
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.,
+LINST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
+                      
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=LINST,),
+                     ECHEC=_F(EVENEMENT='ERREUR',
+                              ACTION='DECOUPE',
+                              SUBD_METHODE = 'MANUEL',
+                              SUBD_PAS=5,
+                              SUBD_NIVEAU=5,),);
 
 #-----------------------------------------------------------
 
@@ -118,7 +124,7 @@ U2M=STAT_NON_LINE(MODELE   = MO,
                 NEWTON     = _F(REAC_ITER = 1),
                 INCREMENT  = _F(LIST_INST = L_INST),
                 CONVERGENCE= _F(ARRET = 'OUI',
-                               ITER_GLOB_MAXI = 15,),);
+                               ITER_GLOB_MAXI = 30,),);
 
 TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    INST       = 1.0,

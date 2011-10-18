@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel Messages  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,11 @@
 
 cata_msg = {
 
-
-
+1 : _(u"""
+ Le champ à tester comporte %(i1)d sous-points.
+ Or vous n'avez pas donné de numéro de sous-point à tester.
+ Il faut renseigner POINT et SOUS_POINT.
+"""),
 
 2 : _(u"""
 Erreur Utilisateur :
@@ -125,7 +128,16 @@ Conseil :
     - coefficient de dilatation
 """),
 
-17 : _(u"""
+16 : _(u"""
+Erreur Utilisateur :
+  Le modèle n'a pas pu être trouvé.
+
+Conseils :
+  Il faut soit l'indiquer par le mot-clé MODELE soit qu'il soit présent dans la 
+  structure de données %(k1)s.
+"""),
+
+17 : _("""
  type de champ inconnu
 """),
 

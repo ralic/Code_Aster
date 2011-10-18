@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C     FONCTION REALISEE:  CALCUL DES OPTIONS :
-C     SIEF_ELNO, FORC_NODA ET VARI_ELNO
+C     EFGE_ELNO (OU SIEF_ELNO) FORC_NODA ET VARI_ELNO
 C     ELEMENT  POU_D_TG POU_D_T POU_D_E
 C     POUR LES VARIABLES INTERNES :
 C       - COMPORTEMENT VMIS_POU*
@@ -73,6 +73,8 @@ C
       INTEGER LSECT,LORIEN,NBPAR,ICGP,IDEPLP,ICONTN,IDEPLM
       INTEGER KK,ICONTG,IVECTU,IN,IREFCO
       REAL*8  VALPAR,DDOT,TET1,TET2
+      LOGICAL LEFGNO
+      CHARACTER*8 PEFFOR,PDEPLA
 C
       DATA NOMRES/'E','NU'/
 C ----------------------------------------------------------------------
@@ -94,7 +96,18 @@ C
          NC = 6
       ENDIF
       NEQ = 2*NC
-C
+
+      LEFGNO=(OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO')
+      IF (LEFGNO) THEN
+         IF (OPTION.EQ.'EFGE_ELNO') THEN
+            PEFFOR='PEFFORR'
+            PDEPLA='PDEPLAR'
+         ELSE
+            PEFFOR='PSIEFNOR'
+            PDEPLA='PDEPPLU'
+         ENDIF
+      ENDIF
+
 C
       IF ( OPTION .EQ. 'REFE_FORC_NODA  ' ) THEN
          CALL JEVECH('PREFCO', 'L',IREFCO)
@@ -143,9 +156,8 @@ C        POUR LE POINT 2
 
 C
 C
-      ELSEIF ( OPTION .EQ. 'SIEF_ELNO' .OR.
-     &         OPTION .EQ. 'FORC_NODA'      ) THEN
-C        --------------------------------------
+      ELSEIF ( LEFGNO .OR.OPTION .EQ. 'FORC_NODA'      ) THEN
+C     ----------------------------------------------------
 C        POUR LES CONTRAINTES ET LES FORC_NODA
 C           - COMPORTEMENT VMIS_POU*
 C                 ==> ON CALCULE BT*SIGMA AU 2 NOEUDS
@@ -192,10 +204,10 @@ C
                REAGEO = ZK16(ICOMPO+2)(6:10) .EQ. '_REAC'
             ENDIF
 C
-            IF (OPTION.EQ.'SIEF_ELNO') THEN
+            IF (LEFGNO) THEN
                CALL JEVECH ( 'PCONTRR' , 'L', ICGP   )
-               CALL JEVECH ( 'PDEPPLU' , 'L', IDEPLP )
-               CALL JEVECH ( 'PSIEFNOR', 'E', ICONTN )
+               CALL JEVECH ( PDEPLA, 'L', IDEPLP )
+               CALL JEVECH ( PEFFOR, 'E', ICONTN )
                DO 20 I = 1,NEQ
                   UTG(I) = ZR(IDEPLP-1+I)
 20             CONTINUE
@@ -294,14 +306,14 @@ C
 C             --- ON CALCULE LE RESIDU DANS LE REPERE GLOBAL :
 C            ---------------------------------------------------
 C
-C             POUR LES SIEF_ELNO
+C             POUR LES EFGE_ELNO
 C
 C             ---  ON CHANGE LE SIGNE DU NOEUD 1 :
 C             ------------------------------------
 C
             IF ( OPTION .EQ. 'FORC_NODA' ) THEN
                CALL UTPVLG ( NNO,NC,PGL,RESIDU(1),ZR(ICONTN))
-            ELSEIF ( OPTION .EQ. 'SIEF_ELNO' ) THEN
+            ELSEIF (LEFGNO) THEN
                DO 70 I = 1,NC
                   ZR(ICONTN-1+I) = -RESIDU(I)
 70             CONTINUE
@@ -313,9 +325,9 @@ C
 C       - COMPORTEMENT ELAS : NPG=2 : RECOPIE DES POINTS 1 ET 2
 C                             NPG=3 : RECOPIE DES POINTS 1 ET 3
 C        QUI CONTIENNENT DEJA LES EFFORTS AUX NOEUDS
-            IF ( OPTION .EQ. 'SIEF_ELNO' ) THEN
+            IF (LEFGNO) THEN
                CALL JEVECH('PCONTRR' , 'L', ICGP   )
-               CALL JEVECH('PSIEFNOR', 'E', ICONTN )
+               CALL JEVECH(PEFFOR, 'E', ICONTN )
                IF ( NPG .EQ. 2 ) THEN
                   DO 100 I = 1 , NC
                      ZR(ICONTN-1+I)    = ZR(ICGP-1+I)

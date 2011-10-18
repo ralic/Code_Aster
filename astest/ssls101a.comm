@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 # ssls101a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -460,7 +460,7 @@ STAT_NON_LINE( reuse=U3,
               )
 
 CALC_ELEM( reuse=U3, RESULTAT=U3,
-           OPTION=('SIEF_ELNO',  'VARI_ELNO',),
+           OPTION=('EFGE_ELNO',  'VARI_ELNO',),
               )
 
 #--------------------------------------------------------

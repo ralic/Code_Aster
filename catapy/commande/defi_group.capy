@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/03/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,17 +17,22 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
-def defi_group_prod(MAILLAGE,**args):
-  if AsType(MAILLAGE) == maillage_sdaster : return maillage_sdaster
-  if AsType(MAILLAGE) == squelette : return squelette
+def defi_group_prod(MAILLAGE,GRILLE,**args):
+  if ( MAILLAGE != None ) :
+     if AsType(MAILLAGE) == maillage_sdaster : return maillage_sdaster
+     if AsType(MAILLAGE) == squelette : return squelette
+  if ( GRILLE != None ) :
+     return grille_sdaster
   raise AsException("type de concept resultat non prevu")
 
 DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                 fr="Définition de nouveaux groupes de noeuds et/ou de mailles dans un concept maillage",
                 reentrant='o',
             UIinfo={"groupes":("Maillage",)},
-         regles=(AU_MOINS_UN('CREA_GROUP_MA','CREA_GROUP_NO','DETR_GROUP_NO','DETR_GROUP_MA'),),
-         MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster,squelette) ),
+         regles=(AU_MOINS_UN('CREA_GROUP_MA','CREA_GROUP_NO','DETR_GROUP_NO','DETR_GROUP_MA'),
+                 UN_PARMI('MAILLAGE','GRILLE'),),
+         MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,squelette) ),
+         GRILLE          =SIMP(statut='f',typ=(grille_sdaster) ),
          DETR_GROUP_MA   =FACT(statut='f',max='**',
            NOM             =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),),
          DETR_GROUP_NO   =FACT(statut='f',max='**',
@@ -230,8 +235,11 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
            ),
            b_fiss_xfem            =BLOC(condition = "OPTION == 'FISS_XFEM'",
                   NOM             =SIMP(statut='o',typ=geom),
-                  TYPE_GROUP      =SIMP(statut='o',typ='TXM',max=1,into=('HEAVISIDE','CRACKTIP','MIXTE','XFEM',)),
+                  TYPE_GROUP      =SIMP(statut='o',typ='TXM',max=1,into=('HEAVISIDE','CRACKTIP','MIXTE','XFEM','ZONE_MAJ','TORE')),
                   FISSURE         =SIMP(statut='o',typ=fiss_xfem,min=1,max='**'),
+                  b_rayon         =BLOC(condition = "TYPE_GROUP == 'TORE'",
+                        RAYON_TORE     =SIMP(statut='o',typ='R',max=1,val_min=0.0),
+                  ),
            ),
           ),
          ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

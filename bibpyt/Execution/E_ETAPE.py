@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -169,7 +169,7 @@ class ETAPE:
          if self.sd != None:
             type_concept = self.sd.__class__.__name__
          else:
-            type_concept = ''
+            type_concept = '-'
 
          UTMESS('I', 'VIDE_1')
          UTMESS('I', 'SUPERVIS2_70')

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,7 +143,8 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
                     REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 3,                    
+                    NB_ITER_GEOM   = 3,
+                    ALGO_RESO_CONT = 'NEWTON',                   
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'BCC2',
@@ -190,16 +191,15 @@ U=STAT_NON_LINE(MODELE=MO,
                 );
 
 U=CALC_ELEM(reuse =U,
-            OPTION=('SIEF_ELNO'),
+            OPTION=('SIGM_ELNO'),
             RESULTAT=U,);
-#                                                       
-#
+
 
 TPRESS=POST_RELEVE_T(ACTION=_F(INTITULE='PRESS',
                               GROUP_NO='RELEVE',
                               RESULTAT=U,
                               INST=1.,
-                              NOM_CHAM='SIEF_ELNO',
+                              NOM_CHAM='SIGM_ELNO',
                               NOM_CMP='SIXX',
                               REPERE='POLAIRE',
                               OPERATION='EXTRACTION',),);
@@ -317,7 +317,7 @@ TEST_TABLE(TABLE=TPRESS,
                       VALE_K='N788',),),
            NOM_PARA='SIXX',
            VALE=-169.06E5,
-           PRECISION=0.0106,
+           PRECISION=0.0107,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TPRESS,

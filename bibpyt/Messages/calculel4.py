@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel4 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,9 +76,16 @@ Erreur utilisateur (ou programmeur) :
 """),
 
 
+
+
+
+
 8 : _(u"""
  le resultat  %(k1)s  n'existe pas
 """),
+
+
+
 
 10 : _(u"""
  Erreur d'utilisation :

@@ -1,0 +1,324 @@
+# MODIF  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
+# TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 1 CYLINDER ROLLER CONTACT
+# ssnp154d.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP154D',NIV_PUB_WEB='INTERNET',),IGNORE_ALARM='CONTACT3_16',);
+
+MESH=LIRE_MAILLAGE(FORMAT='MED',);
+
+MESH=MODI_MAILLAGE(reuse =MESH,
+                   MAILLAGE=MESH,
+                   ORIE_PEAU_2D=(_F(GROUP_MA='Top_B',),
+                                 _F(GROUP_MA='Bottom_C',),),);
+
+MESH=DEFI_GROUP(reuse=MESH,
+                  MAILLAGE=MESH,
+                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),);
+
+MAT_cy=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                             NU=0.3,),);
+
+MAT_bl=DEFI_MATERIAU(ELAS=_F(E=70000.0,
+                             NU=0.3,),);
+
+FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                         1.0,1.0,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                     NOMBRE=2,),);
+
+MO=AFFE_MODELE(MAILLAGE=MESH,
+                 AFFE=(_F(GROUP_MA=('Block',),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION=('D_PLAN',),),
+                       _F(GROUP_MA=('Cylinder',),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION=('D_PLAN',),),
+                         ),
+                         );
+
+MA=AFFE_MATERIAU(MAILLAGE=MESH,
+                   AFFE=(_F(GROUP_MA='Block',
+                            MATER=MAT_bl,),
+                         _F(GROUP_MA='Cylinder',
+                            MATER=MAT_cy,),),);
+
+CH_LIM=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=(_F(GROUP_NO='Axe',
+                                 DX=0.0,),
+                              _F(GROUP_NO='Encast',
+                                 DX=0.0,
+                                 DY=0.0,),),);
+
+FORCE=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_NODALE=_F(GROUP_NO='Force',
+                                    FY=-17500.0,),);
+
+CONT=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='CONTINUE',
+                  FROTTEMENT='COULOMB',
+                  ZONE=_F(
+                          GROUP_MA_MAIT='Top_B',
+                          GROUP_MA_ESCL='Bottom_C',
+                          CONTACT_INIT='INTERPENETRE',
+                          COULOMB=0.1,
+                          INTEGRATION='SIMPSON',
+                          SANS_GROUP_NO_FR='C',
+                          ),);
+
+MESH=DEFI_GROUP(reuse =MESH,
+                  MAILLAGE=MESH,
+                  CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
+                                   NOM='Bottom_n',
+                                   GROUP_MA='Bottom_C',
+                                   GROUP_NO_ORIG='C',),
+                                 _F(OPTION='NOEUD_ORDO',
+                                   NOM='Top_n',
+                                   GROUP_MA='Top_B',
+                                   GROUP_NO_ORIG='B',),),);
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=MA,
+                     EXCIT=(_F(CHARGE=CH_LIM,),
+                            _F(CHARGE=FORCE,
+                               FONC_MULT=FONC,),),
+                     CONTACT=CONT,
+                     COMP_INCR=_F(RELATION='ELAS',
+                                  DEFORMATION='GROT_GDEP',),
+                     INCREMENT=_F(LIST_INST=L_INST,),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                     SOLVEUR=_F(),
+                     NEWTON=_F(REAC_ITER=1,),);
+
+RESU=CALC_ELEM(reuse =RESU,
+                 RESULTAT=RESU,
+                 OPTION=('SIEF_ELNO',),);
+
+RESU=CALC_NO(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEF_NOEU','FORC_NODA','REAC_NODA',));
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM=('DEPL','FORC_NODA',),),);
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='MED',
+          UNITE=81,
+          RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP=('DX','DY',),),);
+
+MOINS_UN=FORMULE(NOM_PARA='LAGS_C',VALE='-1.0*LAGS_C',);
+PRESTANG=FORMULE(NOM_PARA=('LAGS_C','LAGS_F1'),VALE='-0.1*LAGS_C*abs(LAGS_F1)',);
+
+RELE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='Pression',
+                               RESULTAT=RESU,
+                               NOM_CHAM='DEPL',
+                               INST=1.0,
+                               GROUP_NO='Bottom_n',
+                               NOM_CMP=('LAGS_C','LAGS_F1'),),);
+
+RELE=CALC_TABLE(reuse=RELE,
+                TABLE=RELE,
+                ACTION=(_F(OPERATION='OPER',
+                           NOM_PARA='MLAGS_C',
+                           FORMULE=MOINS_UN,),
+                        _F(OPERATION='OPER',
+                           NOM_PARA='MLAGS_F1',
+                           FORMULE=PRESTANG,),
+                        ),);
+
+PRES=RECU_FONCTION(TABLE=RELE,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='MLAGS_C',);
+
+PRES_T=RECU_FONCTION(TABLE=RELE,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='MLAGS_F1',);
+
+# ===========================================
+
+# champ de contraintes de Cauchy aux noeuds
+sigm=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=RESU,
+                NOM_CHAM='SIEF_NOEU',
+                INST=1.0,
+                );
+
+depl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESU,
+                NOM_CHAM='DEPL',
+                INST=1.0,
+                );
+mdepl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='COMB',
+                COMB=_F(CHAM_GD=depl,
+                        COEF_R=-1.0,),
+                );
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=depl,),);
+
+
+# normale sur la configuration finale
+NormaleF=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
+                   OPERATION='NORMALE',
+                   MODELE=MO,
+                   GROUP_MA=('Top_B','Bottom_C',),
+                   );
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=mdepl,),);
+
+# pression de contact
+Pression = FORMULE(VALE='-(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y)',
+                   NOM_PARA=('SIXX','SIYY','SIXY','X','Y',),);
+# pression de contact tangentielle
+PresTang = FORMULE(VALE='-(X*Y*(SIYY-SIXX)+(X*X-Y*Y)*SIXY)',
+                   NOM_PARA=('SIXX','SIYY','SIXY','X','Y',),);
+
+Pres=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
+                OPERATION='AFFE',
+                MAILLAGE=MESH,
+                AFFE=(_F(GROUP_MA=('Top_B','Bottom_C',),
+                        NOM_CMP='X1',
+                        VALE_F=Pression,),
+                      _F(GROUP_MA=('Top_B','Bottom_C',),
+                        NOM_CMP='X2',
+                        VALE_F=PresTang,),),
+                      );
+
+pF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+             OPERATION='EVAL',
+             CHAM_F=Pres,
+             CHAM_PARA=(NormaleF,sigm,),);
+
+# champ de pression de contact
+p_appr_F=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='ASSE',
+                    MODELE=MO,
+                    ASSE=(_F(GROUP_MA=('Top_B','Bottom_C',),
+                            CHAM_GD=pF,
+                            NOM_CMP='X1',
+                            NOM_CMP_RESU='LAGS_C',),
+                          _F(GROUP_MA=('Top_B','Bottom_C',),
+                            CHAM_GD=pF,
+                            NOM_CMP='X2',
+                            NOM_CMP_RESU='LAGS_F1',),),
+                          );
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=depl,),);
+
+# abscisse curviligne sur la deformee
+CALC_PSF=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='P_S',
+                                CHAM_GD=p_appr_F,
+                                GROUP_NO='Bottom_n',
+                                TOUT_CMP='OUI',),);
+
+# abscisse curviligne sur la deformee
+CALC_PMF=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='P_M',
+                                CHAM_GD=p_appr_F,
+                                GROUP_NO='Top_n',
+                                TOUT_CMP='OUI',),);
+
+MESH=MODI_MAILLAGE(reuse=MESH,
+                   MAILLAGE=MESH,
+                   DEFORME=_F(OPTION='TRAN',
+                              DEPL=mdepl,),);
+
+PS_FONCF=RECU_FONCTION(TABLE=CALC_PSF,
+                      PARA_X='ABSC_CURV',
+                      PARA_Y='LAGS_C',);
+
+PS_TANG=RECU_FONCTION(TABLE=CALC_PSF,
+                      PARA_X='ABSC_CURV',
+                      PARA_Y='LAGS_F1',);
+
+PM_FONCF=RECU_FONCTION(TABLE=CALC_PMF,
+                      PARA_X='ABSC_CURV',
+                      PARA_Y='LAGS_C',);
+
+PM_TANG=RECU_FONCTION(TABLE=CALC_PMF,
+                      PARA_X='ABSC_CURV',
+                      PARA_Y='LAGS_F1',);
+
+# ===========================================
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(_F(FONCTION=PRES,LEGENDE='Pression de contact',MARQUEUR=0,),
+                      _F(FONCTION=PRES_T,LEGENDE='Contrainte tangentielle',MARQUEUR=0,),
+                      _F(FONCTION=PS_FONCF,LEGENDE='Pression extrapolee esclave',MARQUEUR=0,),
+                      _F(FONCTION=PM_FONCF,LEGENDE='Pression extrapolee maitre',MARQUEUR=0,),
+                      _F(FONCTION=PS_TANG,LEGENDE='Contrainte tang. extr. esclave',MARQUEUR=0,),
+                      _F(FONCTION=PM_TANG,LEGENDE='Contrainte tang. extr. maitre',MARQUEUR=0,),
+                      ),
+              TITRE='Lineaire sans frottement',
+              BORNE_X=(0.0,8.0,),
+              BORNE_Y=(0.0,5000.0,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=1,
+              GRILLE_Y=500,
+              LEGENDE_X='Densite surfacique (N/mm2)',
+              LEGENDE_Y='Abscisse curviligne (mm)',);
+
+
+# ===========================================
+# Tests
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'B',
+                   NOM_CMP    = 'DY',
+                   VALE       = -1.3026356448389,
+                   REFERENCE  = 'SOURCE_EXTERNE',
+                   VERSION    = '11.0.27',
+                   ),
+                _F(RESULTAT   = RESU,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'SIEF_NOEU',
+                   GROUP_NO   = 'B',
+                   NOM_CMP    = 'SIYY',
+                   VALE       = -3542.6878770218,
+                   REFERENCE  = 'SOURCE_EXTERNE',
+                   VERSION    = '11.0.27',
+                   ),
+                ),);
+
+FIN();

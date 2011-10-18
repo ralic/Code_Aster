@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C
 C
       ELSEIF ( OPTION .EQ. 'M_GAMMA' ) THEN
 C
-         CALL JEVECH('PDEPLAR','L',IACCE)
+         CALL JEVECH('PACCELR','L',IACCE)
          CALL JEVECH('PVECTUR','E',IVECT)
          DO 210 K = 1,NVEC
             MATV(K) = 0.0D0

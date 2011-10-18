@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 
 #  TITRE : CONTACT DE DEUX SPHERES
 # ssnv104j.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test S
@@ -179,7 +179,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                             );
 
 RESU=CALC_ELEM(reuse =RESU,
-               OPTION=('SIEF_ELNO','VARI_ELNO'),
+               OPTION=('SIGM_ELNO','VARI_ELNO'),
                RESULTAT=RESU,);
 
 SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -191,7 +191,7 @@ SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 SIELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
-                  NOM_CHAM='SIEF_ELNO',
+                  NOM_CHAM='SIGM_ELNO',
                   INST=1.,);
 #_____________________________________________________________________
 #

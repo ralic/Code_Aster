@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
 C
       CALL GETRES ( MA2, TYPCON, NOMCMD )
       CALL GETVID(' ','MAILLAGE',1,IARG,1,MA,N1)
+      IF (N1.EQ.0) CALL GETVID(' ','GRILLE',1,IARG,1,MA,N1)
       IF ( MA .NE. MA2 ) THEN
        CALL U2MESS('F','SOUSTRUC_15')
       ENDIF

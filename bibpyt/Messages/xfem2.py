@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem2 Messages  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -408,6 +408,15 @@ cata_msg = {
    de fissure n'étant pas connue, le calcul se poursuit en prenant la température
    de référence du matériau (TEMP = %(r1)f).
 """),
+
+86 : _(u"""
+ -> Le maillage/la grille sur lequel/laquelle vous voulez créer le group
+    n'est pas associé/associée à la fissure donnée.
+
+ -> Risque & Conseil:
+    Veuillez vérifier d'avoir spécifié le bon maillage/grille et/ou
+    la bonne fissure.
+"""),
   
 87 : _(u"""
   -> L'opérande TEST_MAIL a été utilisé dans l'opérateur PROPA_FISS.
@@ -475,6 +484,22 @@ cata_msg = {
      auxiliaire testés. Veuillez utiliser un maillage ou une grille
      auxiliaire plus raffinés.
   """),
+
+92 : _(u"""
+  -> Vous avez demandé la création d'un group de noeuds dans un tore
+     construit autour du fond de la fissure suivante:
+
+     FISSURE = %(k1)s
+
+     Toutefois cette fissure a été calculée par PROPA_FISS en utilisant
+     la localisation du domaine (ZONE_MAJ='TORE', par défaut).
+     Dans ce cas le group de noeuds doit être forcement défini en
+     utilisant le tore déjà utilisé par PROPA_FISS.
+
+  -> Le group de noeuds sera crée en utilisant le domaine de
+     localisation de la fissure (option TYPE_GROUP='ZONE_MAJ').
+     
+  """),
   
   
 93 : _(u"""
@@ -517,6 +542,18 @@ cata_msg = {
      Veuillez donner un modèle grille défini sur une grille. Cette
      grille doit être définie par DEFI_GRILLE à partir d'un maillage.
   """),
+
+96 : _(u"""
+ -> Le maillage sur lequel vous voulez créer le group n'est pas associé à
+    la fissure donnée.
+
+ -> Les maillages suivants sont associés à cette fissure:
+      maillage physique = %(k1)s
+      maillage grille   = %(k2)s
+
+ -> Risque & Conseil:
+    Veuillez vérifier d'avoir spécifié le bon maillage et/ou la bonne fissure.
+"""),
   
 97 : _(u"""
   -> La localisation de la zone de mise à jour a été utilisé pour la

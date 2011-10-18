@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,8 +50,6 @@ MODE_LOCAL__
     CHARMON  = HARMON   ELEM__         (NH       )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
     EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
@@ -60,6 +58,9 @@ MODE_LOCAL__
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
     CPHASIN_ = VAR2_R   ELEM__         (V1       V2       V3       V4       V5       )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTTR = VTEM_R DDL_THER

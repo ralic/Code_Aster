@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,15 +55,16 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*16 NOMTE,OPTION,PHENOM
       CHARACTER*8 ELREFE
       CHARACTER*4 FAMI
+      CHARACTER*1 STOPZ(3)
       REAL*8 A(3,3,27,27),MATP(81,81),MATV(3321)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,RHO
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JGANO,NNO,KP,I,J,K,IMATUU,IACCE,IVECT
       INTEGER IJKL,IK,L,NDIM,NPG,NDDL,NVEC
       INTEGER N1,N2,I2,J2,K2
-      INTEGER IDIAG,NNOS
-      INTEGER IVITE,IECIN,IFREQ
-      REAL*8 TRACE,ALFA,WGT,MASVIT(81),DDOT
+      INTEGER IDIAG,NNOS,IRET
+      INTEGER IDEPL,IVITE,IECIN,IFREQ
+      REAL*8 TRACE,ALFA,WGT,MASVIT(81),MASDEP(81),DDOT
       REAL*8 VECT1(81), VECT2(81)
       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),IBI,IDEC
 C.......................................................................
@@ -219,7 +220,7 @@ C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 
       ELSE IF (OPTION.EQ.'M_GAMMA') THEN
 
-        CALL JEVECH('PDEPLAR','L',IACCE)
+        CALL JEVECH('PACCELR','L',IACCE)
         CALL JEVECH('PVECTUR','E',IVECT)
         DO 210 K = 1,NVEC
           MATV(K) = 0.0D0
@@ -271,30 +272,57 @@ C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 C OPTION ECIN_ELEM : CALCUL DE L'ENERGIE CINETIQUE
 
       ELSE IF (OPTION.EQ.'ECIN_ELEM') THEN
-
-        CALL JEVECH('PDEPLAR','L',IVITE)
-        CALL JEVECH('PENERCR','E',IECIN)
-        CALL JEVECH('POMEGA2','E',IFREQ)
-
-        DO 260 K = 1,NVEC
-          MATV(K) = 0.0D0
-  260   CONTINUE
-        DO 300 K = 1,3
-          DO 290 L = 1,3
-            DO 280 I = 1,NNO
-              IK = ((3*I+K-4)* (3*I+K-3))/2
-              DO 270 J = 1,I
-                IJKL = IK + 3* (J-1) + L
-                MATV(IJKL) = A(K,L,I,J)
-  270         CONTINUE
-  280       CONTINUE
-  290     CONTINUE
-  300   CONTINUE
-        CALL VECMA(MATV,NVEC,MATP,NDDL)
-        CALL PMAVEC('ZERO',NDDL,MATP,ZR(IVITE),MASVIT)
-
-        ZR(IECIN) = .5D0*DDOT(NDDL,ZR(IVITE),1,MASVIT,1)*ZR(IFREQ)
-
+        STOPZ(1)='O'
+        STOPZ(2)='N'
+        STOPZ(3)='O'
+        CALL TECACH(STOPZ,'PVITESR',1,IVITE,IRET)
+C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
+        IF (IRET.EQ.0) THEN
+          CALL JEVECH('PENERCR','E',IECIN)
+          DO 260 K = 1,NVEC
+            MATV(K) = 0.0D0
+  260     CONTINUE
+          DO 300 K = 1,3
+            DO 290 L = 1,3
+              DO 280 I = 1,NNO
+                IK = ((3*I+K-4)* (3*I+K-3))/2
+                DO 270 J = 1,I
+                  IJKL = IK + 3* (J-1) + L
+                  MATV(IJKL) = A(K,L,I,J)
+  270           CONTINUE
+  280         CONTINUE
+  290       CONTINUE
+  300     CONTINUE
+          CALL VECMA(MATV,NVEC,MATP,NDDL)
+          CALL PMAVEC('ZERO',NDDL,MATP,ZR(IVITE),MASVIT)
+          ZR(IECIN) = .5D0*DDOT(NDDL,ZR(IVITE),1,MASVIT,1)
+        ELSE
+          CALL TECACH(STOPZ,'PDEPLAR',1,IDEPL,IRET)
+          IF (IRET.EQ.0) THEN
+            CALL JEVECH('POMEGA2','E',IFREQ)
+            CALL JEVECH('PENERCR','E',IECIN)
+            DO 261 K = 1,NVEC
+              MATV(K) = 0.0D0
+  261       CONTINUE
+            DO 301 K = 1,3
+              DO 291 L = 1,3
+                DO 281 I = 1,NNO
+                  IK = ((3*I+K-4)* (3*I+K-3))/2
+                  DO 271 J = 1,I
+                    IJKL = IK + 3* (J-1) + L
+                    MATV(IJKL) = A(K,L,I,J)
+  271             CONTINUE
+  281           CONTINUE
+  291         CONTINUE
+  301       CONTINUE
+            CALL VECMA(MATV,NVEC,MATP,NDDL)
+            CALL PMAVEC('ZERO',NDDL,MATP,ZR(IDEPL),MASDEP)
+            ZR(IECIN) = .5D0*DDOT(NDDL,ZR(IDEPL),1,MASDEP,1)*ZR(IFREQ)
+          ELSE
+            CALL U2MESK('F','ELEMENTS2_1',1,OPTION) 
+          ENDIF
+        ENDIF
+C 
       ELSE
 CC OPTION DE CALCUL INVALIDE
         CALL ASSERT(.FALSE.)

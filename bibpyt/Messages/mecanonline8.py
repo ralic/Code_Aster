@@ -1,4 +1,4 @@
-#@ MODIF mecanonline8 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline8 Messages  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,6 +81,8 @@ cata_msg = {
 62 : _(u"""    * Temps post-traitement (flambement)          : %(k1)s"""),
 
 63 : _(u"""    * Temps autres opérations                     : %(k1)s"""),
+
+70 : _(u"""     dont temps "perdu" dans les découpes   : %(k1)s -> la liste d'instant est efficace à %(r1)d %%"""),
 
 }
 

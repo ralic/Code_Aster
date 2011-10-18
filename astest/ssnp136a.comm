@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -261,7 +261,7 @@ VARINI=CREA_CHAMP(INFO=1,
 # 
 # resu0=CALC_ELEM(reuse =resu0,
 #                 RESULTAT=resu0,
-#                 OPTION='SIEF_ELNO');
+#                 OPTION='SIGM_ELNO');
 # 
 # DETRUIRE(CONCEPT=_F(NOM=('PCRY','PCR1','PCR2','SIEF1',
 #                          'SIEF2','CHXN','CHXG')));
@@ -305,7 +305,7 @@ VARINI=CREA_CHAMP(INFO=1,
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                              CHEMIN=coupe3,
 #                              RESULTAT=resu0,
-#                              NOM_CHAM='SIEF_ELNO',
+#                              NOM_CHAM='SIGM_ELNO',
 #                              NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                              OPERATION='EXTRACTION'));
 #                              
@@ -353,7 +353,7 @@ resu1=STAT_NON_LINE(MODELE    =MODMEC1,
                     
 resu1=CALC_ELEM(reuse   =resu1,
                 RESULTAT=resu1,
-                OPTION  =('SIEF_ELNO','VARI_ELNO'));
+                OPTION  =('SIGM_ELNO','VARI_ELNO'));
 
 # DETRUIRE(CONCEPT=_F(NOM=('coupe1','coupe2','coupe3','TAB_DEP1',
 #                          'TAB_DEP2','TAB_DEP3','TAB_SIEF',
@@ -379,7 +379,7 @@ resu1=CALC_ELEM(reuse   =resu1,
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                                  CHEMIN=coupe1,
 #                                  RESULTAT=resu1,
-#                                  NOM_CHAM='SIEF_ELNO',
+#                                  NOM_CHAM='SIGM_ELNO',
 #                                  TOUT_CMP='OUI',
 #                                  #NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                                  OPERATION='EXTRACTION'));
@@ -412,7 +412,7 @@ resu1=CALC_ELEM(reuse   =resu1,
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                                  CHEMIN=coupe2,
 #                                  RESULTAT=resu1,
-#                                  NOM_CHAM='SIEF_ELNO',
+#                                  NOM_CHAM='SIGM_ELNO',
 #                                  TOUT_CMP='OUI',
 #                                  #NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                                  OPERATION='EXTRACTION'));
@@ -462,7 +462,7 @@ resu2=STAT_NON_LINE(MODELE    =MODMEC1,
 #--------------------------------------------------------------------
 
 resu2=CALC_ELEM(reuse   =resu2,
-                OPTION  =('SIEF_ELNO','VARI_ELNO'),
+                OPTION  =('SIGM_ELNO','VARI_ELNO'),
                 RESULTAT=resu2);
 
 resu2=CALC_NO(reuse   =resu2,
@@ -639,7 +639,7 @@ b_fonda=INTE_MAIL_2D(MAILLAGE=MAILLAGE,
 T_FORCE=POST_RELEVE_T(INFO=1,
                       ACTION=_F(INTITULE ='RESULTANTE',
                                 RESULTAT =resu2,
-                                NOM_CHAM ='SIEF_ELNO',
+                                NOM_CHAM ='SIGM_ELNO',
                                 CHEMIN   =b_fonda,
                                 NOM_CMP  ='SIYY',
                                 OPERATION='MOYENNE'));

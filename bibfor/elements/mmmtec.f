@@ -1,8 +1,10 @@
       SUBROUTINE MMMTEC(PHASEP,NDIM  ,NNL   ,NNE   ,NORM  ,
-     &                  WPG   ,FFL   ,FFE   ,JACOBI,MATREC)
+     &                  TAU1  ,TAU2  ,MPROJT,WPG   ,FFL   ,
+     &                  FFE   ,JACOBI,COEFFF,COEFAF,DLAGRF,
+     &                  DJEUT ,RESE  ,NRESE ,MATREC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +28,12 @@ C
       INTEGER      NDIM,NNE,NNL
       REAL*8       FFE(9),FFL(9)
       REAL*8       WPG,JACOBI
-      REAL*8       NORM(3)      
+      REAL*8       NORM(3),TAU1(3),TAU2(3)
+      REAL*8       MPROJT(3,3)
+      REAL*8       DLAGRF(2)
+      REAL*8       DJEUT(3)
+      REAL*8       RESE(3),NRESE
+      REAL*8       COEFFF,COEFAF
       REAL*8       MATREC(27,9)        
 C      
 C ----------------------------------------------------------------------
@@ -49,35 +56,126 @@ C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  NNL    : NOMBRE DE NOEUDS DE LAGRANGE 
 C IN  NORM   : NORMALE AU POINT DE CONTACT
+C IN  TAU1   : PREMIER VECTEUR TANGENT
+C IN  TAU2   : SECOND VECTEUR TANGENT
+C IN  MPROJT : MATRICE DE PROJECTION TANGENTE [Pt]
 C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFE    : FONCTIONS DE FORMES DEPL. ESCL.
 C IN  FFC    : FONCTIONS DE FORMES LAGR. 
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
+C IN  DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
+C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
+C I/O COEFAF : COEF_AUGM_FROT
+C IN  DJEUT  : INCREMENT DEPDEL DU JEU TANGENT
+C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
+C               GTK = LAMBDAF + COEFAF*VITESSE
+C IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C OUT MATREC : MATRICE ELEMENTAIRE DEPL_E/LAGR_C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER   INOC,INOE,IDIM,JJ
+      INTEGER   INOC,INOE,IDIM,JJ,I,J
+      REAL*8    DLAGFT(3),PDLAFT(3),PDJEUT(3),PRESE(3)
 C
 C ----------------------------------------------------------------------
 C
+      CALL VECINI(3,0.D0,DLAGFT)
+      CALL VECINI(3,0.D0,PDLAFT)
+      CALL VECINI(3,0.D0,PDJEUT)
+      CALL VECINI(3,0.D0,PRESE )      
+C
+C --- PROJECTION DU LAGRANGE DE FROTTEMENT SUR LE PLAN TANGENT
+C
+      IF (PHASEP(1:4).EQ.'ADHE') THEN
+        DO 10 IDIM = 1,NDIM
+          DLAGFT(IDIM)  = DLAGRF(1)*TAU1(IDIM)+DLAGRF(2)*TAU2(IDIM)
+ 10     CONTINUE
+      ENDIF
+C
+C --- PRODUIT LAGR. FROTTEMENT PAR MATRICE [Pt] 
+C
+      IF (PHASEP(1:4).EQ.'ADHE') THEN
+        DO 20 I=1,NDIM
+          DO 25 J=1,NDIM
+            PDLAFT(I) = MPROJT(I,J)*DLAGFT(J)+PDLAFT(I)
+ 25       CONTINUE
+ 20     CONTINUE
+      ENDIF
+C      
+C --- PRODUIT INCREMENT DEPDEL DU JEU TANGENT PAR MATRICE [Pt] 
+C
+      IF (PHASEP(1:4).EQ.'ADHE') THEN
+        DO 30 I=1,NDIM
+          DO 35 J=1,NDIM
+            PDJEUT(I) = MPROJT(I,J)*DJEUT(J)+PDJEUT(I)
+ 35       CONTINUE
+ 30     CONTINUE
+      ENDIF
+C
+C --- PRODUIT SEMI MULT. LAGR. FROTTEMENT. PAR MATRICE P
+C
+      IF (PHASEP(1:4).EQ.'GLIS') THEN
+        DO 40 I=1,NDIM
+          DO 45 J=1,NDIM
+            PRESE(I) = MPROJT(I,J)*(RESE(J)/NRESE)+PRESE(I)
+ 45       CONTINUE
+ 40     CONTINUE
+      ENDIF
+C
+C --- CALCUL DES TERMES
+C
       IF (PHASEP(1:4).EQ.'CONT') THEN
         IF (PHASEP(6:9).EQ.'PENA') THEN
-C       ON NE FAIT RIEN / LA MATRICE EST NULLE
-C          
+C
+C ----- ON NE FAIT RIEN / LA MATRICE EST NULLE
+C
         ELSE
           DO 200 INOC = 1,NNL
             DO 190 INOE = 1,NNE
               DO 180 IDIM = 1,NDIM
                 JJ = NDIM*(INOE-1)+IDIM            
                 MATREC(JJ,INOC) = MATREC(JJ,INOC) -
-     &                        WPG*FFL(INOC)*FFE(INOE)*JACOBI*NORM(IDIM) 
+     &           WPG*FFL(INOC)*FFE(INOE)*JACOBI*NORM(IDIM) 
   180         CONTINUE
   190       CONTINUE
   200     CONTINUE
         ENDIF
+      ELSEIF (PHASEP(1:4).EQ.'ADHE') THEN
+        IF (PHASEP(6:9).EQ.'PENA') THEN
+C
+C ----- ON NE FAIT RIEN / LA MATRICE EST NULLE
+C
+        ELSE
+          DO 209 INOC = 1,NNL
+            DO 199 INOE = 1,NNE
+              DO 189 IDIM = 1,NDIM
+                JJ = NDIM*(INOE-1)+IDIM            
+                MATREC(JJ,INOC) = MATREC(JJ,INOC) - 
+     &           COEFFF*WPG*FFL(INOC)*FFE(INOE)*JACOBI*
+     &           (PDLAFT(IDIM)+COEFAF*PDJEUT(IDIM))
+  189         CONTINUE
+  199       CONTINUE
+  209     CONTINUE
+        ENDIF     
+      ELSEIF (PHASEP(1:4).EQ.'GLIS') THEN
+        IF (PHASEP(6:9).EQ.'PENA') THEN
+C
+C ----- ON NE FAIT RIEN / LA MATRICE EST NULLE
+C
+        ELSE
+          DO 205 INOC = 1,NNL
+            DO 195 INOE = 1,NNE
+              DO 185 IDIM = 1,NDIM
+                JJ = NDIM*(INOE-1)+IDIM            
+                MATREC(JJ,INOC) = MATREC(JJ,INOC) - 
+     &           COEFFF*WPG*FFL(INOC)*FFE(INOE)*JACOBI*
+     &           PRESE(IDIM) 
+  185         CONTINUE
+  195       CONTINUE
+  205     CONTINUE
+        ENDIF 
       ELSE
-        CALL ASSERT(.FALSE.)     
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 # ssnp14a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,7 +116,7 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('VARI_ELNO','SIEF_ELNO','EPSI_ELNO',),);
+            OPTION=('VARI_ELNO','SIGM_ELNO','EPSI_ELNO',),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
@@ -167,7 +167,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
                    INST=1.0,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='CUBE',
                    NOEUD='NO2',
@@ -175,7 +175,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
                    INST=1.0,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXY',
                    MAILLE='CUBE',
                    NOEUD='NO2',

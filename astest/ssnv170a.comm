@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TRACTION SIMPLE LEMAITRE (VITESSE DE DEFORMATION CONSTANTE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ U=STAT_NON_LINE(        MODELE=MOMECA,
 
 U=CALC_ELEM(            reuse=U,
                         OPTION=(
-                                'SIEF_ELNO',
+                                'SIGM_ELNO',
                                 'EPSI_ELNO',
                                 'EPSP_ELNO'
                                 ),
@@ -97,7 +97,7 @@ U=CALC_ELEM(            reuse=U,
 TEST_RESU(RESU=(
                 _F(
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'M1',
                 NOEUD = 'N6',
                 INST = 40.,
@@ -106,7 +106,7 @@ TEST_RESU(RESU=(
                 REFERENCE = 'AUTRE_ASTER'),
                 _F(
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'M1',
                 NOEUD = 'N6',
                 INST = 240.,

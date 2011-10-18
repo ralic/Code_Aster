@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 # ssnv504e.para = tps_job 150 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,11 +172,11 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 U=CALC_CHAMP(reuse =U,
 
 
-                CONTRAINTE=('SIEF_ELNO'),
+                CONTRAINTE=('SIGM_ELNO'),
                RESULTAT=U,);
 
 U=CALC_NO(reuse =U,
-               OPTION='SIEF_NOEU',
+               OPTION='SIGM_NOEU',
                RESULTAT=U,);
 
 DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
@@ -214,7 +214,7 @@ IMPR_RESU(MODELE=MO,
                   MAILLAGE=MAILL1,
                   NOM_CHAM=('DEPL',
                             'VALE_CONT',
-                            'SIEF_NOEU',
+                            'SIGM_NOEU',
                             ),
                   TOUT_ORDRE='OUI',
                   ),);

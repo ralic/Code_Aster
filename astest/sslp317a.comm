@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/10/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,27 +133,22 @@ for num_calc in range(nb_raff+1) :
       TEST_TABLE(TABLE=DEP1[num_calc],
                  NOM_PARA='X1',
                  VALE=REF1,
-                 REFERENCE='NON_REGRESSION',
-                 VERSION='11.00.25')
+                 REFERENCE='ANALYTIQUE')
 
       TEST_TABLE(TABLE=DEP2[num_calc],
                  NOM_PARA='X1',
                  VALE=REF2,
-                 REFERENCE='NON_REGRESSION',
-                 VERSION='11.00.25')
+                 REFERENCE='ANALYTIQUE')
 
       TEST_TABLE(TABLE=DEP3[num_calc],
                  NOM_PARA='X1',
                  VALE=REF3,
-                 REFERENCE='NON_REGRESSION',
-                 VERSION='11.00.25')
+                 REFERENCE='ANALYTIQUE')
 
       TEST_TABLE(TABLE=DEP4[num_calc],
                  NOM_PARA='X1',
                  VALE=REF4,
-                 REFERENCE='NON_REGRESSION',
-                 VERSION='11.00.25')
-
+                 REFERENCE='ANALYTIQUE')
 
       # SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES  
       MA[num_calc+1]=CO('MA_%d' % (num_calc+1))

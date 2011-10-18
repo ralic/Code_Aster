@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE COLONNE PLASTIQUE A GRADIENT SOUS CHARGE VOLUMIQUE (3D)
 # ssnv156a.para = tps_job 280 mem_job 256Mo memjeveux_stat 256 ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,7 +171,7 @@ EVOL = CALC_ELEM (reuse = EVOL,
   RESULTAT   = EVOL,
 
 
-  OPTION     = ('SIEF_ELNO',
+  OPTION     = ('SIGM_ELNO',
 #                'EPSI_ELNO',
 #                'SIEQ_ELNO',
                 'VARI_ELNO')
@@ -180,7 +180,7 @@ EVOL = CALC_ELEM (reuse = EVOL,
 EVOL = CALC_NO (reuse = EVOL,
   RESULTAT = EVOL,
   OPTION   = ('VARI_NOEU',
-              'SIEF_NOEU',
+              'SIGM_NOEU',
 #              'SIEQ_NOEU',
 #              'EPSI_NOEU'
               )
@@ -217,7 +217,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 2,
-    NOM_CHAM   = 'SIEF_NOEU',
+    NOM_CHAM   = 'SIGM_NOEU',
     NOM_CMP    = 'SIXX',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',
@@ -255,7 +255,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 3,
-    NOM_CHAM   = 'SIEF_NOEU',
+    NOM_CHAM   = 'SIGM_NOEU',
     NOM_CMP    = 'SIXX',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',
@@ -295,7 +295,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 4,
-    NOM_CHAM   = 'SIEF_NOEU',
+    NOM_CHAM   = 'SIGM_NOEU',
     NOM_CMP    = 'SIXX',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',
@@ -334,7 +334,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 5,
-    NOM_CHAM   = 'SIEF_NOEU',
+    NOM_CHAM   = 'SIGM_NOEU',
     NOM_CMP    = 'SIXX',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',

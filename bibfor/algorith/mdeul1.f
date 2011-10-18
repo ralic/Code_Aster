@@ -22,7 +22,7 @@ C
      &             TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),DREDST(*),
      &             PREC,RBID,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLRED(*),DPLREV(*)
-      REAL*8       DT,DTSTO,TCF,VROTAT,CONV
+      REAL*8       DT,DTSTO,TCF,VROTAT
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*)
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS
@@ -35,7 +35,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,11 +119,11 @@ C
 C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      REAL*8      TPS1(4), RINT1, RINT2
-      REAL*8 VALR(3)
-      INTEGER VALI(2)
-      CHARACTER*8 TRAN
-      CHARACTER*19 MATPRE,MATASM
+      REAL*8       TPS1(4), RINT1, RINT2, CONV
+      REAL*8       VALR(3)
+      INTEGER      VALI(2), NBCONV, NBMXCV
+      CHARACTER*8  TRAN
+      CHARACTER*19 MATPRE, MATASM
 C     ------------------------------------------------------------------
       INTEGER       ETAUSR
 C
@@ -136,7 +136,8 @@ C
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*8   CNPAL(PALMAX)
       CHARACTER*24  CPAL
-      INTEGER      IARG
+      INTEGER       IARG
+      REAL*8        FSAUV(PALMAX,3)      
 C
 C
       CALL JEMARQ()
@@ -153,6 +154,12 @@ C
       LPSTO = .FALSE.
       NBMOD1 = NEQGEN - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
+C  COUPLAGE EDYOS : CONVERGENCE EDYOS :
+      CONV = 1.D0
+      NBCONV = 0
+C  COUPLAGE EDYOS : NOMBRE MAXIMAL DE TENTATIVES DE REPRISE DES DONNEES
+C  PRECEDENTES EN CAS DE NON-CONVERGENCE EDYOS :
+      NBMXCV = 10
       
       DO 111 IAPP = 1,PALMAX
         TYPAL(IAPP)='      '
@@ -274,8 +281,12 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            1,0,DT,DTSTO,TCF,VROTAT,
-     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
-        IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
+     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
+        IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
+          CALL U2MESS('F','EDYOS_46')
+        ELSEIF ((CONV.LE.0.D0) .AND. (NBCONV.LE.NBMXCV)) THEN
+          NBCONV = NBCONV + 1
+        ENDIF
 
 C
 C     --- ACCELERATIONS GENERALISEES INITIALES ---
@@ -293,6 +304,9 @@ C     RECUPERATION DES DONNEES SUR LES PALIERS
 C     -------------------------------------------------     
           CALL JEVEUO(CPAL,'L',IADRK)
           DO 21 IAPP=1,NBPAL
+            FSAUV(IAPP,1)= 0.D0
+            FSAUV(IAPP,2)= 0.D0
+            FSAUV(IAPP,3)= 0.D0
             TYPAL(IAPP)=ZK8(IADRK+(IAPP-1))(1:6)
             FINPAL(IAPP)=ZK8(IADRK+(IAPP-1)+PALMAX)(1:3)
             CNPAL(IAPP)=ZK8(IADRK+(IAPP-1)+2*PALMAX)(1:DIMNAS)
@@ -311,8 +325,12 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            1,NBPAL,DT,DTSTO,TCF,VROTAT,
-     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
-        IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
+     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
+        IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
+          CALL U2MESS('F','EDYOS_46')
+        ELSEIF ((CONV.LE.0.D0) .AND. (NBCONV.LE.NBMXCV)) THEN
+          NBCONV = NBCONV + 1
+        ENDIF
 
 C
 C     --- ACCELERATIONS GENERALISEES INITIALES ---
@@ -388,8 +406,12 @@ C
      &                  ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &                  TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &                  (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
-     &                  TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
-            IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
+     &                  TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
+            IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
+              CALL U2MESS('F','EDYOS_46')
+            ELSEIF ((CONV.LE.0.D0) .AND. (NBCONV.LE.NBMXCV)) THEN
+              NBCONV = NBCONV + 1
+            ENDIF
 C
 C           --- ACCELERATIONS GENERALISEES ---
 C
@@ -429,8 +451,12 @@ C
      &               ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &               (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
-     &               TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
-         IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
+     &               TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
+         IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
+           CALL U2MESS('F','EDYOS_46')
+         ELSEIF ((CONV.LE.0.D0) .AND. (NBCONV.LE.NBMXCV)) THEN
+           NBCONV = NBCONV + 1
+         ENDIF
 C
 C        --- ACCELERATIONS GENERALISEES ---
 C

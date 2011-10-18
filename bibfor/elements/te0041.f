@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,7 +231,7 @@ C           DISCRET DE TYPE MASSE
             ENDIF
             CALL JEVECH('PCADISM','L',JDC)
             CALL INFDIS('REPM',IREP,R8BID,K8BID)
-            CALL JEVECH('PDEPLAR','L',IACCE)
+            CALL JEVECH('PACCELR','L',IACCE)
             CALL JEVECH('PVECTUR','E',IVECT)
          ELSEIF (OPTION.EQ.'RIGI_MECA_SENSI') THEN
             CALL JEVECH('PSEDISK','L',JDC)

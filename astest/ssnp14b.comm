@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ CALCNL=STAT_NON_LINE( reuse=CALCNL,
 CALCNL=CALC_ELEM( reuse=CALCNL,
                            RESULTAT=CALCNL,
 
-                             OPTION=( 'SIEF_ELNO',
+                             OPTION=( 'SIGM_ELNO',
                                       'VARI_ELNO',
                                       'EPSI_ELNO', )
                       )
@@ -162,7 +162,7 @@ NOM_CHAM='VARI_ELNO', RESULTAT=CALCNL,
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
             REFERENCE='NON_REGRESSION',
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             INST = 1.,
             MAILLE = 'PENT1',
             NOEUD = 'NO2',
@@ -170,7 +170,7 @@ TEST_RESU(RESU=(
             VALE = 151.2),
           _F(  RESULTAT = CALCNL,
             REFERENCE='NON_REGRESSION',
-            NOM_CHAM = 'SIEF_ELNO',
+            NOM_CHAM = 'SIGM_ELNO',
             INST = 1.,
             MAILLE = 'PENT1',
             NOEUD = 'NO2',

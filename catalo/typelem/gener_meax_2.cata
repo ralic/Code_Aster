@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,14 +99,12 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6]     )
     CREFERI  = NEUT_I   ELEM__         (X[12]    )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     CCONSTR  = NEUT_R   ELEM__         (X1       )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )
     ENORME   = NEUT_R   ELEM__         (X1       )
     EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
@@ -150,6 +148,9 @@ MODE_LOCAL__
     CITERAT  = NEUT_R   ELEM__         (X1       )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -280,7 +281,7 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  DDL_MECA PVECTTH
                               OUT__  ECONTPG  PDLAGSG
     ECIN_ELEM           82    IN__   DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCPR  DDL_MECA PVITESR
                               OUT__  EENECNO  PENERCR
     ENDO_ELGA           512   IN__   ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCMR  ETRIAPG  PTRIAGM  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR
@@ -443,7 +444,7 @@ OPTION__
                                      DDL_MECA PDEPLPR  DDL_MECA PDEPLPS  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CMATERC  PMATSEN  ZVARIPG  PVARIMR  ZVARIPG  PVARIMS  ZVARIPG  PVARIPR
                               OUT__  ECONTPG  PCONTPS  ZVARIPG  PVARIPS
-    M_GAMMA             82    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+    M_GAMMA             82    IN__   DDL_MECA PACCELR  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     NORME_L2            563   IN__   EGGEOP_R PCOORPG  EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR
                               OUT__  ENORME   PNORME

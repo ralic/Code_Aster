@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,7 +124,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -210,14 +210,14 @@ U2=STAT_NON_LINE(
               )
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO',),
+              OPTION     = ('SIGM_ELNO',),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU',),
+             OPTION     = ('SIGM_NOEU',),
                )
 
 ############################################################################
@@ -237,10 +237,10 @@ IMPR_TABLE ( TABLE = DEP ,
              NOM_PARA=('INST','DY','DX',),
             );
 
-SIG     = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'SIEF_NOEU'  ,
+SIG     = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'SIGM_NOEU'  ,
                                          RESULTAT   =  U2   ,
                                          NOEUD   = ('N4',)  ,
-                                         NOM_CHAM   = 'SIEF_NOEU'  ,
+                                         NOM_CHAM   = 'SIGM_NOEU'  ,
                                          NOM_CMP    = ( 'SIXX','SIYY',) ,
                                          OPERATION  = 'EXTRACTION',),);
 
@@ -268,13 +268,13 @@ RODEPY=RECU_FONCTION(RESULTAT=U2,
                      NOEUD='N4',
                      TITRE='DEP Y',);
 ROSIGX=RECU_FONCTION(RESULTAT=U2,
-                     NOM_CHAM='SIEF_NOEU',
+                     NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIXX',
                      INST = 4.5,
                      NOEUD='N4',
                      TITRE='SIG X',);
 ROSIGY=RECU_FONCTION(RESULTAT=U2,
-                     NOM_CHAM='SIEF_NOEU',
+                     NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIYY',
                      INST = 4.5,
                      NOEUD='N4',
@@ -285,7 +285,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIXX
                 _F(   RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIXX',
                       INST       = 4.5,
                       PRECISION  = 1.E-3,
@@ -296,7 +296,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIZZ',
                       INST       = 4.5,
                       REFERENCE  = 'NON_REGRESSION',
@@ -307,7 +307,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIYY
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU',
+                      NOM_CHAM   = 'SIGM_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 4.5,
                       REFERENCE  = 'NON_REGRESSION',

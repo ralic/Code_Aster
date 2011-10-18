@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE : TESTS DE FONCTIONNALITE DE POST_RELEVE_T
 # zzzz136d.para = tps_job 60 mem_job 100Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,13 +51,13 @@ RESU=MECA_STATIQUE(EXCIT=_F(CHARGE=CH),
                    MODELE=MO,
                    CHAM_MATER=CHMAT)
 
-CALC_ELEM(reuse=RESU,RESULTAT=RESU,OPTION=('SIEF_ELNO','SIEQ_ELNO'),)
+CALC_ELEM(reuse=RESU,RESULTAT=RESU,OPTION=('SIGM_ELNO','SIEQ_ELNO'),)
 
 
 TB1=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTES AB',
                             OPERATION='EXTRACTION',
                             RESULTAT=RESU,
-                            NOM_CHAM='SIEF_ELNO',
+                            NOM_CHAM='SIGM_ELNO',
                             NOM_CMP='SIXX',
                             GROUP_NO='GAB'),)
 

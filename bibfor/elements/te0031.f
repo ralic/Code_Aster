@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -254,7 +254,7 @@ C     ------------------------------------------
             ZR(JENER-1+I) = ZR(JFREQ)*ENER(I)
    20     CONTINUE
         ELSE IF (OPTION.EQ.'M_GAMMA') THEN
-          CALL JEVECH('PDEPLAR','L',IACCE)
+          CALL JEVECH('PACCELR','L',IACCE)
           CALL JEVECH('PVECTUR','E',IVECT)
           NDDL = 6*NNO
           NVEC = NDDL* (NDDL+1)/2
@@ -356,16 +356,16 @@ C
         END IF
 C
 C
-      ELSEIF ( OPTION.EQ.'SIEF_ELNO' ) THEN
+      ELSEIF ( OPTION.EQ.'EFGE_ELNO' ) THEN
 C     ------------------------------------------
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
           CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
-          IND=6
+          IND=8
           CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP), IND, EFFINT )
           CALL DXREPE ( PGL, T2EV, T2VE)
-          CALL DXEFR2 ( NPG, T2VE, EFFINT, EFFGT )
-          CALL JEVECH ( 'PSIEFNOR', 'E', ICHN   )
-          CALL PPGAN2 ( JGANO, 1, 6, EFFGT, ZR(ICHN) )
+          CALL DXEFRO ( NPG, T2VE, EFFINT, EFFGT )
+          CALL JEVECH ( 'PEFFORR', 'E', ICHN   )
+          CALL PPGAN2 ( JGANO, 1, IND, EFFGT, ZR(ICHN) )
 C
 C
       ELSEIF ( OPTION.EQ.'VARI_ELNO' ) THEN

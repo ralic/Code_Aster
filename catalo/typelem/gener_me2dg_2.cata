@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,11 +90,9 @@ MODE_LOCAL__
     ECARAGE  = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      IXR2     IYR2     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
@@ -116,6 +114,9 @@ MODE_LOCAL__
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
     CITERAT  = NEUT_R   ELEM__         (X1       )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

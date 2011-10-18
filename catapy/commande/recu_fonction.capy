@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -116,7 +116,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
 # ======= RESULTAT =================================================
          b_resu = BLOC ( condition = "RESULTAT != None", fr="Opérandes en cas de RESULTAT",
                          regles=(UN_PARMI('NOM_CHAM','NOM_PARA_RESU'),),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
            NOM_PARA_RESU   =SIMP(statut='f',typ='TXM' ),
            b_cham = BLOC ( condition = "NOM_CHAM != None",
                            regles=(AU_MOINS_UN('MAILLE','GROUP_MA','GROUP_NO','NOEUD'),
@@ -138,7 +138,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
          b_tran_gene = BLOC ( condition = "AsType(RESU_GENE) == tran_gene",
                               fr="Récupération d'une fonction à partir d un concept TRAN_GENE",
                               regles=(UN_PARMI('NOM_CHAM','NOEUD_CHOC','GROUP_NO_CHOC'),),
-             NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE","PTEM") ),
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=("DEPL","VITE","ACCE","PTEM") ),
              NOEUD_CHOC      =SIMP(statut='f',typ=no),
              GROUP_NO_CHOC   =SIMP(statut='f',typ=grno),
            b_cham = BLOC ( condition = "(NOM_CHAM=='DEPL') or (NOM_CHAM=='VITE') or (NOM_CHAM=='ACCE')",
@@ -167,7 +167,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
          b_harm_gene = BLOC ( condition = "AsType(RESU_GENE)==harm_gene",
                               fr="Récupération d'une fonction à partir d un concept HARM_GENE",
                               regles=(UN_PARMI('NOM_CHAM','NOM_PARA_RESU'),),
-             NOM_CHAM        =SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
              NOM_PARA_RESU   =SIMP(statut='f',typ='TXM' ),
            b_cham = BLOC ( condition = "NOM_CHAM != None",
                            regles=(UN_PARMI('NUME_CMP_GENE','NOM_CMP'),),
@@ -183,7 +183,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
          b_mode_gene = BLOC ( condition = "AsType(RESU_GENE)==mode_gene",
                               fr="Récupération d'une fonction à partir d un concept MODE_GENE",
                               regles=(UN_PARMI('NOM_CHAM','NOM_PARA_RESU'),),
-             NOM_CHAM        =SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
              NOM_PARA_RESU   =SIMP(statut='f',typ='TXM' ),
            b_cham = BLOC ( condition = "NOM_CHAM != None",
                            regles=(UN_PARMI('NUME_CMP_GENE','NOM_CMP'),),

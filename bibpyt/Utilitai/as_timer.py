@@ -1,33 +1,27 @@
-#@ MODIF as_timer Utilitai  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF as_timer Utilitai  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
 """
    Definition of ASTER_TIMER class.
 """
-
-__revision__ = "$Id: as_timer.py 3312 2008-06-06 12:42:58Z courtois $"
-
-# ----- differ messages translation
-def _(mesg):
-   return mesg
 
 import os
 import time
@@ -87,10 +81,10 @@ class ASTER_TIMER:
       # ----- initialisation
       self.timers = {}
       self.add_total = add_total
-      
+
       if not format in ('as_run', 'aster'):
          format = 'as_run'
-      
+
       if format == 'as_run':
          self.fmtlig = '   %(name)-33s  %(cpu_dt)9.2f  %(sys_dt)9.2f  %(cpu_sys)9.2f  %(tot_dt)9.2f'
          self.fmtstr = '   %(title)-33s  %(cpu)9s  %(sys)9s  %(cpu+sys)9s  %(elapsed)9s'
@@ -114,8 +108,8 @@ class ASTER_TIMER:
             'sys'     : 'SYSTEM',
             'cpu+sys' : 'USER+SYS',
             'elapsed' : 'ELAPSED',
-         }      
-      
+         }
+
       self.total_key = id(self)
       if self.add_total:
          self.Start(self.total_key, name=self.TotalKey, num=self.MaxNumTimer)
@@ -161,7 +155,7 @@ class ASTER_TIMER:
          self.timers[timer]['sys_dt'] += sys_dt
       if to_total and timer != self.total_key:
          self.Add(self.total_key, cpu_dt, sys_dt)
-      
+
 #-------------------------------------------------------------------------------
    def Stop(self, timer, hide=None):
       """Stop a timer
@@ -238,7 +232,7 @@ class ASTER_TIMER:
       self.StopAll()
       if self.add_total:
          self.Stop(self.total_key)
-      
+
       labels = self.fmtstr % self.d_labels
       out = ['']
       # get timers list and sort by 'num'

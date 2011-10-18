@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact Messages  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,14 +35,8 @@ Contact méthodes discrètes.
     sous le mot-clé facteur SOLVEUR.
 """),
 
-2 : _(u"""
-Contact methode GCP. Nombre d'itérations maximal (%(i1)s) dépassé pour le GCP.
-Vous pouvez essayer d'augmenter ITER_GCP_MAXI.
-La liste des noeuds présentant une interpénétration est donnée ci-dessous.
-"""),
-
 3 : _(u"""
-Contact methode GCP. Nombre d'itérations maximal (%(i1)s) dépassé pour le préconditionneur.
+Contact methode GCP. Nombre d'itérations maximal (%(i1)d) dépassé pour le préconditionneur.
 Vous pouvez essayer d'augmenter ITER_PRE_MAXI
 """),
 

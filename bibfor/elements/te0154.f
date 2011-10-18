@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 12/10/2011   AUTEUR LABBE M.LABBE 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -57,6 +57,7 @@ C
       REAL*8       PGL(3,3), KLC(6,6), ENERTH
       REAL*8       UGR(6),ULR(6),FLR(6)
       INTEGER CODRES
+      CHARACTER*1  STOPZ(3)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
@@ -64,6 +65,7 @@ C
       REAL*8       A,EPSTH,E,R8BID,RHO,XFL1,XFL4,XL,XMAS,XRIG
       INTEGER      I,IF,ITYPE,J,JDEPL,JEFFO,JENDE,JFREQ,JDEFO,KANL
       INTEGER      LMATER,LORIEN,LSECT,IRET,LX,NC,NNO,IADZI,IAZK24
+      INTEGER      JVITE
 C     ------------------------------------------------------------------
 
       LTEIMP = .FALSE.
@@ -117,27 +119,74 @@ C     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
 C     --- MATRICE DE ROTATION PGL
       CALL MATROT ( ZR(LORIEN) , PGL )
 C
-C     --- RECUPERATION DES DEPLACEMENTS ----
+C     --- RECUPERATION DES DEPLACEMENTS OU DES VITESSES ----
       DO 19 I=1,6
            UGR(I) =  0.D0
  19   CONTINUE
 C
-      CALL JEVECH ('PDEPLAR', 'L', JDEPL)
+      IF ( OPTION .NE. 'ECIN_ELEM' ) THEN
 C
-      IF (NOMTE.EQ.'MECA_BARRE') THEN
-        DO 22 I = 1,6
-           UGR(I) = ZR(JDEPL+I-1)
- 22     CONTINUE
-      ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-         UGR(1) =  ZR(JDEPL+1-1)
-         UGR(2) =  ZR(JDEPL+2-1)
-         UGR(4) =  ZR(JDEPL+3-1)
-         UGR(5) =  ZR(JDEPL+4-1)
+C ON RECUPERE DES DEPLACEMENTS
+C
+        CALL JEVECH ('PDEPLAR', 'L', JDEPL)
+        IF (NOMTE.EQ.'MECA_BARRE') THEN
+          DO 21 I = 1,6
+            UGR(I) = ZR(JDEPL+I-1)
+ 21       CONTINUE
+        ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
+          UGR(1) =  ZR(JDEPL+1-1)
+          UGR(2) =  ZR(JDEPL+2-1)
+          UGR(4) =  ZR(JDEPL+3-1)
+          UGR(5) =  ZR(JDEPL+4-1)
+        ENDIF
+C
+      ELSE
+C
+        STOPZ(1)='O'
+        STOPZ(2)='N'
+        STOPZ(3)='O'
+        CALL TECACH(STOPZ,'PVITESR',1,JVITE,IRET)
+C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
+        IF (IRET.EQ.0) THEN
+C
+C ON RECUPERE DES VITESSES
+C
+          IF (NOMTE.EQ.'MECA_BARRE') THEN
+            DO 22 I = 1,6
+              UGR(I) = ZR(JVITE+I-1)
+ 22         CONTINUE
+          ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
+            UGR(1) =  ZR(JVITE+1-1)
+            UGR(2) =  ZR(JVITE+2-1)
+            UGR(4) =  ZR(JVITE+3-1)
+            UGR(5) =  ZR(JVITE+4-1)
+          ENDIF
+C
+        ELSE
+C
+C ON RECUPERE DES DEPLACEMENTS
+C
+          CALL TECACH(STOPZ,'PDEPLAR',1,JDEPL,IRET)
+          IF (IRET.EQ.0) THEN
+            IF (NOMTE.EQ.'MECA_BARRE') THEN
+              DO 23 I = 1,6
+                UGR(I) = ZR(JDEPL+I-1)
+ 23           CONTINUE
+            ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
+              UGR(1) =  ZR(JDEPL+1-1)
+              UGR(2) =  ZR(JDEPL+2-1)
+              UGR(4) =  ZR(JDEPL+3-1)
+              UGR(5) =  ZR(JDEPL+4-1)
+            ENDIF
+          ELSE
+            CALL U2MESK('F','ELEMENTS2_1',1,OPTION)
+          ENDIF
+C
+        ENDIF
+C
       ENDIF
-
 C
-
-C     --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UGR
+C     --- VECTEUR DANS REPERE LOCAL  ULR = PGL * UGR
 C
       CALL UTPVGL ( NNO, NC, PGL, UGR, ULR )
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 120 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,13 +62,14 @@ CH=AFFE_CHAR_MECA(
              ),
                );
 
-CH2 = DEFI_CONTACT(MODELE      = MODE,
-                   FORMULATION = 'CONTINUE',
-                   FROTTEMENT  = 'COULOMB',
-                   REAC_GEOM   = 'CONTROLE',
-                   NB_ITER_GEOM = 2,                   
+CH2 = DEFI_CONTACT(MODELE         = MODE,
+                   FORMULATION    = 'CONTINUE',
+                   FROTTEMENT     = 'COULOMB',
+                   REAC_GEOM      = 'CONTROLE',
+                   ALGO_RESO_CONT = 'NEWTON',
+                   NB_ITER_GEOM   = 2,  
+                                   
                    ZONE        =_F(
-                              APPARIEMENT  = 'MAIT_ESCL',
                               GROUP_MA_MAIT='RIGID',
                               GROUP_MA_ESCL='SZZ',
                               COULOMB = 0.25,
@@ -91,11 +92,19 @@ VIT_0=CREA_CHAMP( OPERATION='AFFE',
                         VALE = (  0.0,  0.0, )),
                     ));
 
-L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,INTERVALLE=(
+LINST=DEFI_LIST_REEL(DEBUT=-1.E-5,INTERVALLE=(
                          _F( JUSQU_A = -1.E-7, NOMBRE = 1),
                          _F( JUSQU_A =  1.E-6, NOMBRE = 4),
                          _F( JUSQU_A = 80.E-6, NOMBRE = 158))
                          )
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=LINST,),
+                     ECHEC=_F(EVENEMENT='ERREUR',
+                              ACTION='DECOUPE',
+                              SUBD_METHODE = 'MANUEL',
+                              SUBD_PAS=5,
+                              SUBD_NIVEAU=5,),);
 
 L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,INTERVALLE=(
                          _F( JUSQU_A = 1.E-6, NOMBRE = 2),
@@ -124,7 +133,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 MATRICE='TANGENTE',
                                 REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
-                                  ITER_GLOB_MAXI=20,
+                                  ITER_GLOB_MAXI=30,
                                   ARRET='OUI',),
                    SOLVEUR=_F(METHODE='LDLT',RENUM='SANS',
                               ),
@@ -163,23 +172,23 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   INST = 2.E-5,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'B1',
           CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE =1.7282363393497E+00, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DX',    VALE =1.6932981528699, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.28' ),
      _F(  RESULTAT = RESU,   INST = 2.E-5,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'A2',
           CRITERE = 'RELATIF', PRECISION = (7.E-3, 1.E-10),
-          NOM_CMP = 'DY',    VALE = -6.7628604429711E+00, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DY',    VALE = -6.708400431849, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.22' ),
      _F(  RESULTAT = RESU,   INST = 2.E-5,
           NOM_CHAM = 'VITE',   GROUP_NO = 'B1',
           CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE = 7.9803474679114E+04, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DX',    VALE = 76332.85147468, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.22' ),
      _F(  RESULTAT = RESU,   INST = 2.E-5,
           NOM_CHAM = 'VITE',   GROUP_NO = 'A2',
           CRITERE = 'RELATIF', PRECISION = (4.E-2, 1.E-10),
-          NOM_CMP = 'DY',    VALE = -2.1571395366450E+05, REFERENCE = 'NON_REGRESSION',
-          VERSION='6.3.20' ),
+          NOM_CMP = 'DY',    VALE = -2.0385434072951E+05, REFERENCE = 'NON_REGRESSION',
+          VERSION='11.0.22' ),
         ),);
 
 #####################################################
@@ -228,9 +237,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='JEU',
            CRITERE  = 'RELATIF',
            PRECISION=5.E-3,
-           VALE     =3.1210570326500E-02,
+           VALE     =0.031358043010572,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '8.3.1' )
+           VERSION  = '11.0.28' )
 
 TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -238,9 +247,9 @@ TEST_TABLE(TABLE=TABJEU,
            NOM_PARA ='JEU',
            CRITERE  = 'RELATIF',
            PRECISION=7.E-2,
-           VALE     =7.9651437713652E-02,
+           VALE     =0.075094007479338,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '8.3.1' )
+           VERSION  = '11.0.28' )
 
 # RT
 #######

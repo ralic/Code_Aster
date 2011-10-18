@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105b.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -300,7 +300,7 @@ u_pesa=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
 #
 #                   RESULTAT=u_pesa,
 #                   TOUT_ORDRE='OUI',
-#                    CONTRAINTE=('SIEF_ELNO'),);
+#                    CONTRAINTE=('SIGM_ELNO'),);
 
 #IMPR_RESU(FORMAT='RESULTAT', RESU=(_F(RESULTAT=u_pesa)));
 
@@ -406,7 +406,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
 #
 #                   RESULTAT=u_ini_la,
 #                   TOUT_ORDRE='OUI',
-#                    CONTRAINTE=('SIEF_ELNO'),);
+#                    CONTRAINTE=('SIGM_ELNO'),);
 
 #IMPR_RESU(FORMAT='RESULTAT', RESU=(_F(RESULTAT=u_ini_la)));
 
@@ -831,7 +831,7 @@ u_lacher=CALC_CHAMP(reuse =u_lacher,
 
 
                    RESULTAT=u_lacher, TOUT_ORDRE='OUI',
-                    CONTRAINTE=('SIEF_ELNO'),);
+                    CONTRAINTE=('SIGM_ELNO'),);
 
 u_lacher=CALC_NO(reuse =u_lacher,
 

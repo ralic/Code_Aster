@@ -1,5 +1,5 @@
-# MODIF  DATE 13/09/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN ELASTICITE
 # forma03a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,23 +58,23 @@ RESU=CALC_ELEM(reuse =RESU,
 
 
                RESULTAT=RESU,
-               OPTION=('SIGM_ELNO','SIEQ_ELNO','SIEQ_ELGA','SIEF_ELNO',),
+               OPTION=('SIGM_ELNO','SIEQ_ELNO','SIEQ_ELGA',),
 
 );
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION=('SIGM_NOEU','SIEQ_NOEU','SIEF_NOEU',),);
+             OPTION=('SIGM_NOEU','SIEQ_NOEU',),);
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RESU,
-                  NOM_CHAM=('SIGM_NOEU','SIEQ_NOEU','DEPL','SIEQ_ELGA','SIEF_NOEU',),),);
+                  NOM_CHAM=('SIGM_NOEU','SIEQ_NOEU','DEPL','SIEQ_ELGA',),),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   GROUP_NO='B',
                   VALE=300.0,

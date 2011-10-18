@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 # sslv120a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,7 +164,7 @@ RESUNL0=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUNL0=CALC_ELEM( reuse= RESUNL0 ,RESULTAT= RESUNL0 ,
-               OPTION=('SIEF_ELNO',),
+               OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -223,15 +223,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 1.91295E-9),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESUNL0, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUNL0, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
               NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='ANALYTIQUE', VALE = 2.29554E5),
 
-            _F(  RESULTAT = RESUNL0, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUNL0, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
               NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 1.14777E5),
 
-            _F(  RESULTAT = RESUNL0, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUNL0, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
               NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 2.29554E5))
               )
@@ -318,7 +318,7 @@ RESUMM0=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUMM0=CALC_ELEM( reuse= RESUMM0 ,RESULTAT= RESUMM0 ,
-               OPTION=('SIEF_ELNO',),
+               OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -377,15 +377,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 1.91295E-9),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESUMM0, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMM0, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
               NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='ANALYTIQUE', VALE = 2.29554E5),
 
-            _F(  RESULTAT = RESUMM0, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMM0, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
               NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 1.14777E5),
 
-            _F(  RESULTAT = RESUMM0, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMM0, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
               NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 2.29554E5))
               )
@@ -416,7 +416,7 @@ RESUEL1=MECA_STATIQUE(MODELE=MO,
                    );
 
 RESUEL1=CALC_ELEM( reuse= RESUEL1 ,RESULTAT= RESUEL1 ,
-               OPTION=('SIEF_ELNO',),
+               OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -466,15 +466,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='NON_REGRESSION', VALE = 2.45141314E-08),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESUEL1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUEL1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
               NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='NON_REGRESSION', VALE = 2.3189837738E+05),
 
-            _F(  RESULTAT = RESUEL1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUEL1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
               NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='NON_REGRESSION', VALE = 1.143306879E+05),
 
-            _F(  RESULTAT = RESUEL1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUEL1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
               NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='NON_REGRESSION', VALE = 2.2569820E+05))
               )
@@ -498,7 +498,7 @@ RESUNL1=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUNL1=CALC_ELEM( reuse= RESUNL1 ,RESULTAT= RESUNL1 ,
-               OPTION=('SIEF_ELNO',),
+               OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -548,15 +548,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='AUTRE_ASTER', VALE = 2.45141314E-08),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESUNL1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUNL1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
               NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='AUTRE_ASTER', VALE = 2.3189837738E+05),
 
-            _F(  RESULTAT = RESUNL1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUNL1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
               NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 1.143306879E+05),
 
-            _F(  RESULTAT = RESUNL1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUNL1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
               NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 2.2569820E+05))
               )
@@ -592,7 +592,7 @@ RESUMI1=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUMI1=CALC_ELEM( reuse= RESUMI1 ,RESULTAT= RESUMI1 ,
-               OPTION=('SIEF_ELNO',),
+               OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -642,15 +642,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='AUTRE_ASTER', VALE = 2.45141314E-08),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESUMI1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMI1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
               NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='AUTRE_ASTER', VALE = 2.3189837738E+05),
 
-            _F(  RESULTAT = RESUMI1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMI1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
               NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 1.143306879E+05),
 
-            _F(  RESULTAT = RESUMI1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMI1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
               NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 2.2569820E+05))
               )
@@ -680,7 +680,7 @@ RESUMM1=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUMM1=CALC_ELEM( reuse= RESUMM1 ,RESULTAT= RESUMM1 ,
-               OPTION=('SIEF_ELNO',),
+               OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -730,15 +730,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='AUTRE_ASTER', VALE = 2.45141314E-08),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESUMM1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMM1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
               NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='AUTRE_ASTER', VALE = 2.3189837738E+05),
 
-            _F(  RESULTAT = RESUMM1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMM1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
               NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 1.143306879E+05),
 
-            _F(  RESULTAT = RESUMM1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMM1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
               NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 2.2569820E+05))
               )
@@ -771,7 +771,7 @@ RESUMP1=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUMP1=CALC_ELEM( reuse= RESUMP1 ,RESULTAT= RESUMP1 ,
-               OPTION=('SIEF_ELNO',),
+               OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -821,15 +821,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='AUTRE_ASTER', VALE = 2.45141314E-08),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESUMP1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMP1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
               NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='AUTRE_ASTER', VALE = 2.3189837738E+05),
 
-            _F(  RESULTAT = RESUMP1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMP1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
               NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 1.143306879E+05),
 
-            _F(  RESULTAT = RESUMP1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO',
+            _F(  RESULTAT = RESUMP1, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
               NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='AUTRE_ASTER', VALE = 2.2569820E+05))
               )

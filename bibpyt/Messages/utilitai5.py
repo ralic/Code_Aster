@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai5 Messages  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,11 +154,11 @@ cata_msg = {
 """),
 
 36 : _(u"""
- num. de sous-point > max
+ Le numéro de sous-point demandé est supérieur au numéro maximum de sous-point.
 """),
 
 37 : _(u"""
- num. de point > max
+ Le numéro de point demandé est supérieur au numéro maximum de point.
 """),
 
 38 : _(u"""

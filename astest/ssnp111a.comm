@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE EN COMPRESSION SOUMISE A UNE PRESSION VARIANT
 # ssnp111a.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,7 @@ CALCNL=STAT_NON_LINE(MODELE=MODEL,
 
 CALCNL=CALC_ELEM(reuse =CALCNL,
                  RESULTAT=CALCNL,
-                 OPTION=('SIEF_ELNO','VARI_ELNO','DERA_ELGA','DERA_ELNO','EPSP_ELGA','EPSP_ELNO',),);
+                 OPTION=('SIGM_ELNO','VARI_ELNO','DERA_ELGA','DERA_ELNO','EPSP_ELGA','EPSP_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    NUME_ORDRE=7,
@@ -129,7 +129,7 @@ TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=CALCNL,
                    NUME_ORDRE=10,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M400',
                    NOEUD='N2',
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    VALE=1.0,),
                 _F(RESULTAT=CALCNL,
                    NUME_ORDRE=10,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M20',
                    NOEUD='N51',

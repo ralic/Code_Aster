@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost2 Messages  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,85 +37,12 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
  erreur programmation
 """),
 
-19 : _(u"""
- Le nombre de cmps de la grandeur du champ d?passe 500.
- Augmenter la dimension de 4 tableaux statiques
-"""),
-
-20 : _(u"""
-  impr_resu format ensight : la composante  %(k1)s  du cham_gd  %(k2)s  n'est portee par aucun noeud du maillage et ne sera pas imprimee
-"""),
-
-21 : _(u"""
-  impr_resu format ensight : la composante  %(k1)s  du champ  %(k2)s  du concept  %(k3)s  n'est portee par aucun noeud du maillage et ne sera pas imprimee
-"""),
-
-22 : _(u"""
-  impr_resu format ensight : les trois composantes  %(k1)s   %(k2)s   %(k3)s  du cham_gd  %(k4)s  ne sont portees par aucun noeud du maillage et le vecteur ensight correspondant ne sera pas imprime
-"""),
-
-23 : _(u"""
-  impr_resu format ensight : les trois composantes  %(k1)s   %(k2)s   %(k3)s  du champ  %(k4)s  du concept  %(k5)s  ne sont portees par aucun noeud du maillage et le vecteur ensight correspondant ne sera pas imprime
-"""),
-
-24 : _(u"""
- impression de la composante  %(k1)s  du champ  %(k2)s  sous forme d'une variable scalaire ensight  %(k3)s . la composante  %(k4)s  n'est pas portee par certains noeuds du maillage et des valeurs nulles sont affectees a ces noeuds dans les fichiers  %(k5)s 
-"""),
-
-25 : _(u"""
- impression des 3 composantes  %(k1)s   %(k2)s  et  %(k3)s  du champ  %(k4)s  sous forme d'une variable vectorielle ensight  %(k5)s . une ou plusieurs de ces composantes ne sont pas portees par certains noeuds du maillage et des valeurs nulles sont affectees a ces noeuds pour ces composantes dans les fichiers  %(k6)s 
-"""),
-
-26 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  pour l'impression de la partie reelle du cham_gd  %(k2)s 
-"""),
-
-27 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  pour l'impression de la partie relle du champ  %(k2)s  du concept %(k3)s 
-"""),
-
-28 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  pour l'impression de la partie imaginaire du cham_gd  %(k2)s 
-"""),
-
-29 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  pour l'impression de la partie imaginaire du champ  %(k2)s  du concept %(k3)s 
-"""),
-
-30 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s .r : ce fichier existe deja !! l'impression du meme champ ouconcept resultat est demandee deux fois ou une meme composante est selectionnee 2 fois sous le mot-cle nom_cmp
-"""),
-
-31 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  pour l'impression du cham_gd  %(k2)s 
-"""),
-
-32 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  pour l'impression du champ  %(k2)s  du concept  %(k3)s 
-"""),
-
-33 : _(u"""
- probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  : ce fichier existe deja !! l'impression du meme champ ouconcept resultat est demandee deux fois ou une meme composante est selectionnee 2 fois sous le mot-cle nom_cmp
-"""),
-
 35 : _(u"""
    desole on ne sait pas ecrire les champs aux noeuds de representation constante et a valeurs complexes au format  %(k1)s 
 """),
 
 36 : _(u"""
    desole on ne sait pas ecrire le champ aux noeuds  %(k1)s  au format  %(k2)s 
-"""),
-
-37 : _(u"""
- le maillage  %(k1)s  associe au cham_gd  %(k2)s  est different du maillage  %(k3)s  en operande de la commande !!!! attention !!!!
-"""),
-
-38 : _(u"""
- le maillage  %(k1)s  associe au champ  %(k2)s  du concept  %(k3)s  est different du maillage  %(k4)s  en operande de la commande !!!! attention !!!!
-"""),
-
-39 : _(u"""
- probleme a l'ouverture du fichier d'avertissement  %(k1)s 
 """),
 
 40 : _(u"""
@@ -126,40 +53,8 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
  aucune des composantes demandees sous le mot-cle nom_cmp pour l'impression du champ  %(k1)s  du concept  %(k2)s  n'est presente dans la grandeur  %(k3)s 
 """),
 
-42 : _(u"""
-  impr_resu format ensight : la composante  %(k1)s  du cham_gd  %(k2)s  n'est pas portee par les noeuds du maillage et ne sera pas imprimee
-"""),
-
-43 : _(u"""
-  impr_resu format ensight : la composante  %(k1)s  du champ  %(k2)s  du concept  %(k3)s  n'est pas portee par les noeuds du maillage et ne sera pas imprimee
-"""),
-
-44 : _(u"""
-  impr_resu format ensight : aucune des trois composantes  %(k1)s   %(k2)s   %(k3)s  du cham_gd  %(k4)s  n'est portee par les noeuds du maillage et le vecteur ensight correspondant ne sera pas imprime
-"""),
-
-45 : _(u"""
-  impr_resu format ensight : aucune des trois composantes  %(k1)s   %(k2)s   %(k3)s  du champ  %(k4)s  du concept  %(k5)s  n'est portee par les noeuds du maillage et le vecteur ensight correspondant ne sera pas imprime
-"""),
-
 46 : _(u"""
   numero d'ordre  %(k1)s  non licite 
-"""),
-
-47 : _(u"""
-  le numero d'ordre suivant est desormais considere comme le premier numero d'ordre demande
-"""),
-
-48 : _(u"""
-  pour certains numeros d'ordre le champ  %(k1)s  n'est pas present dans la sd_resultat  %(k2)s ==> des fichiers de valeurs vides seront generes afin de respecter le format ensight.
-"""),
-
-49 : _(u"""
- le nombre de cmps de la grandeur du champ depasse 500 augmenter la dimension du tableau ivari
-"""),
-
-50 : _(u"""
- une meme composante est donnee 2 fois sous le mot-cle nom_cmp lors de l'impression au format ensight par impr_resu
 """),
 
 51 : _(u"""

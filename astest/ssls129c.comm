@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  :  MODELISATION D UNE COQUE DOUBLEMENT SINUSOIDALE
 # ssls129c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,12 +96,12 @@ SNL1=STAT_NON_LINE(MODELE=MODELE,
 
 SNL1=CALC_CHAMP(reuse =SNL1,
              RESULTAT=SNL1,
-              CONTRAINTE=('SIEF_ELNO'),
+              CONTRAINTE=('SIGM_ELNO'),
              );
 
 SNL1=CALC_NO(reuse =SNL1,
              RESULTAT=SNL1,
-             OPTION=('FORC_NODA','SIEF_NOEU'),
+             OPTION=('FORC_NODA','SIGM_NOEU'),
              );
 SNL2=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
@@ -113,12 +113,12 @@ SNL2=STAT_NON_LINE(MODELE=MODELE,
 
 SNL2=CALC_CHAMP(reuse =SNL2,
              RESULTAT=SNL2,
-              CONTRAINTE=('SIEF_ELNO'),
+              CONTRAINTE=('SIGM_ELNO'),
              );
 
 SNL2=CALC_NO(reuse =SNL2,
              RESULTAT=SNL2,
-             OPTION=('FORC_NODA','SIEF_NOEU'),
+             OPTION=('FORC_NODA','SIGM_NOEU'),
              );
 
 SNL3=STAT_NON_LINE(MODELE=MODELE,
@@ -131,12 +131,12 @@ SNL3=STAT_NON_LINE(MODELE=MODELE,
 
 SNL3=CALC_CHAMP(reuse =SNL3,
              RESULTAT=SNL3,
-              CONTRAINTE=('SIEF_ELNO'),
+              CONTRAINTE=('SIGM_ELNO'),
              );
 
 SNL3=CALC_NO(reuse =SNL3,
              RESULTAT=SNL3,
-             OPTION=('FORC_NODA','SIEF_NOEU'),
+             OPTION=('FORC_NODA','SIGM_NOEU'),
              );
 
 
@@ -407,12 +407,12 @@ RESU1=MECA_STATIQUE(MODELE=MODELE,
 
 RESU1=CALC_CHAMP(reuse =RESU1,
              RESULTAT=RESU1,
-              CONTRAINTE=('SIEF_ELNO'),
+              CONTRAINTE=('SIGM_ELNO'),
              );
 
 RESU1=CALC_NO(reuse =RESU1,
              RESULTAT=RESU1,
-             OPTION=('FORC_NODA','SIEF_NOEU'),
+             OPTION=('FORC_NODA','SIGM_NOEU'),
              );
 
 RESU2=MECA_STATIQUE(MODELE=MODELE,
@@ -422,12 +422,12 @@ RESU2=MECA_STATIQUE(MODELE=MODELE,
 
 RESU2=CALC_CHAMP(reuse =RESU2,
              RESULTAT=RESU2,
-              CONTRAINTE=('SIEF_ELNO'),
+              CONTRAINTE=('SIGM_ELNO'),
              );
 
 RESU2=CALC_NO(reuse =RESU2,
              RESULTAT=RESU2,
-             OPTION=('FORC_NODA','SIEF_NOEU'),
+             OPTION=('FORC_NODA','SIGM_NOEU'),
              );
 
 RESU3=MECA_STATIQUE(MODELE=MODELE,
@@ -438,12 +438,12 @@ RESU3=MECA_STATIQUE(MODELE=MODELE,
 
 RESU3=CALC_CHAMP(reuse =RESU3,
              RESULTAT=RESU3,
-              CONTRAINTE=('SIEF_ELNO'),
+              CONTRAINTE=('SIGM_ELNO'),
              );
 
 RESU3=CALC_NO(reuse =RESU3,
              RESULTAT=RESU3,
-             OPTION=('FORC_NODA','SIEF_NOEU'),
+             OPTION=('FORC_NODA','SIGM_NOEU'),
              );
 
 PSL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL1_GAUCHE',

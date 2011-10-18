@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,13 +49,14 @@ MODE_LOCAL__
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CNUMCOR  = NUMC_I   ELEM__         (NUMC     ORDO     )
     CT_EXTF  = TEMP_F   ELEM__         (TEMP     TEMP_INF TEMP_SUP )
     CT_EXTR  = TEMP_R   ELEM__         (TEMP     TEMP_INF TEMP_SUP )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTTR = VTEM_R DDL_THER

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdls113a.para = tps_job 150 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,15 +168,14 @@ DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
                PRECISION=1.E-6,
                CRITERE='ABSOLU',
                OPTION=(
-                        'SIEF_ELGA',
-                        'SIEF_ELNO',
-                        'SIGM_ELNO',
-                         'EPSI_ELNO',
-                         'EPSI_ELGA',
-                         'EPOT_ELEM',
-                         'ECIN_ELEM',
-                         'ENEL_ELGA',
-                         'ENEL_ELNO',
+                       'SIEF_ELGA',
+                       'SIGM_ELNO',
+                       'EPSI_ELNO',
+                       'EPSI_ELGA',
+                       'EPOT_ELEM',
+                       'ECIN_ELEM',
+                       'ENEL_ELGA',
+                       'ENEL_ELNO',
                        ),
                );
 
@@ -202,15 +201,14 @@ DYNHASS=CALC_ELEM(reuse =DYNHASS,
                CRITERE='ABSOLU',
                PRECISION=1.E-3,
                OPTION=(
-                        'SIEF_ELGA',
-                        'SIEF_ELNO',
-                        'SIGM_ELNO',
-                         'EPSI_ELNO',
-                         'EPSI_ELGA',
-                         'EPOT_ELEM',
-                         'ECIN_ELEM',
-                         'ENEL_ELGA',
-                         'ENEL_ELNO',
+                       'SIEF_ELGA',
+                       'SIGM_ELNO',
+                       'EPSI_ELNO',
+                       'EPSI_ELGA',
+                       'EPOT_ELEM',
+                       'ECIN_ELEM',
+                       'ENEL_ELGA',
+                       'ENEL_ELNO',
                        ),
           );
 
@@ -315,7 +313,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=SIH11,
 
 SET1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
-                    NOM_CHAM = 'SIEF_ELNO',
+                    NOM_CHAM = 'SIGM_ELNO',
                     MAILLE = 'M194',
                     NOEUD='N1328',
                     NUME_ORDRE=range(1,archsize),
@@ -325,7 +323,7 @@ SEH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'M194',
                     NOEUD='N1328',
-                    NOM_CHAM = 'SIEF_ELNO',
+                    NOM_CHAM = 'SIGM_ELNO',
                     NUME_ORDRE=1,
                       );
 

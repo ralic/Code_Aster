@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE BIBLIO_131 FISSURE EN MODE 2 D'UNE EPROUVETTE ELASTOPLASTIQUE
 # ssnp311a.para = tps_job 190 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,7 +168,7 @@ CHAMDEPL=STAT_NON_LINE(
 
 CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=CHAMDEPL,
               )
 

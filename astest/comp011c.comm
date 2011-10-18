@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #====================================================================== 
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'BETON_UMLV_FP' 
@@ -314,7 +314,7 @@ for i in range(NCAL):
 
           RESU[i]=CALC_ELEM(reuse =RESU[i],
                             RESULTAT=RESU[i],
-                            OPTION=('SIEF_ELNO','SIEQ_ELNO'
+                            OPTION=('SIGM_ELNO','SIEQ_ELNO'
                             ),);
 
           #IMPR_RESU(RESU=_F(RESULTAT=RESU[i],NOM_CHAM='SIEQ_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP=('VMIS','TRSIG')))

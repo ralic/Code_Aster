@@ -1,9 +1,9 @@
-# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128t.para = tps_job 380 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -80,6 +80,7 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                     NB_ITER_FROT   = 4,
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 2,
+                    ALGO_RESO_FROT = 'POINT_FIXE',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'LBATIR',
@@ -91,7 +92,7 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1.0,
                              ALGO_FROT     = 'STANDARD',
-                             COEF_FROT     = 1.0,                             
+                             COEF_FROT     = 1.E5,                             
                              COULOMB       = 1.0,
                              CONTACT_INIT  = 'INTERPENETRE',
                              SEUIL_INIT    = 0.0,
@@ -108,8 +109,17 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='LINEAIRE',
                     VALE=(0.0,0.0,1.0,1.0));
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.,
+LINST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 100));
+
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=LINST,),
+                     ECHEC=_F(EVENEMENT='ERREUR',
+                              ACTION='DECOUPE',
+                              SUBD_METHODE = 'MANUEL',
+                              SUBD_PAS=5,
+                              SUBD_NIVEAU=5,),);
 
 F2=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,  0.0,

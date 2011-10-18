@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 #        SI CREATION D'UN CHAM_ELEM, POUR aider a l'allocation du champ :
 #        (PAR DEFAUT : TOU_INI_ELNO/_ELGA/_ELEM)
 #        ------------------------------------------------------------------
-         OPTION         =SIMP(statut='f',typ='TXM'),
+         OPTION         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),),
 
          OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE","R2C","C2R","COMB") ),
 
@@ -140,12 +140,12 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
              RESULTAT        =SIMP(statut='f',typ=(resultat_sdaster) ),
              TABLE           =SIMP(statut='f',typ=(table_sdaster),min=1,max=1),
              b_extr_maillage =BLOC(condition = "MAILLAGE != None and TABLE == None",
-                 NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("GEOMETRIE",)),
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("GEOMETRIE",)),
              ),
 
              b_extr_fissure  = BLOC(condition = "FISSURE != None",
-                 NOM_CHAM=SIMP(statut='o',typ='TXM',into=("LTNO","LNNO","GRLTNO","GRLNNO","STNO","STNOR","BASLOC",
-                                                                  "GRI.LNNO","GRI.LTNO","GRI.GRLNNO","GRI.GRLTNO")),
+                 NOM_CHAM=SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("LTNO","LNNO",
+                               "GRLTNO","GRLNNO","STNO","STNOR","BASLOC","GRI.LNNO","GRI.LTNO","GRI.GRLNNO","GRI.GRLTNO")),
 
              ),
 
@@ -158,7 +158,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                  SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                    fr="Paramètre de sensibilité.",
                                    ang="Sensitivity parameter"),
-                 NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
                  TYPE_MAXI       =SIMP(statut='f',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS","NORM_TRAN",) ),
 
                  # si TYPE_MAXI, on spécifie en général plusieurs numéros d'ordre :

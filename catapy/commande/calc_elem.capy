@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -246,7 +246,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol noli",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO","SIRO_ELEM",
-                                  "SITU_ELNO","SICO_ELNO","EFGE_ELGA","SIGM_ELNO",
+                                  "SITU_ELNO","SICO_ELNO","EFGE_ELGA","EFGE_ELNO","SIGM_ELNO",
                                   "EFCA_ELNO","SIPO_ELNO","SIPM_ELNO",
                                   "FLHN_ELGA",
                                   # EPSI
@@ -321,7 +321,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                                        fr="options de contraintes non lin poutres, coques",
                OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                               #  contraintes
-                           into=( "SIEF_ELNO","EFCA_ELNO","SITU_ELNO","SICO_ELNO","EFGE_ELGA",
+                           into=( "SIEF_ELNO","EFCA_ELNO","SITU_ELNO","SICO_ELNO","EFGE_ELGA","EFGE_ELNO",
                            ),),
                              ),
 

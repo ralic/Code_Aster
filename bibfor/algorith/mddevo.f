@@ -28,7 +28,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,6 +99,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
 C
+      LOGICAL PRDEFF
       INTEGER VALI(2)
       REAL*8 R8BID2,R8BID3,R8BID4,R8BID5,R8B,R8B2,TPS1(4),VALR(3)
       REAL*8 RINT1, RINT2
@@ -108,7 +109,8 @@ C
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*3   FINPAL(PALMAX)
       CHARACTER*8   CNPAL(PALMAX)
-      INTEGER      IARG
+      INTEGER       IARG
+      REAL*8        FSAUV(PALMAX,3)       
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -137,6 +139,7 @@ C
       LPSTO = .FALSE.
       NBMOD1 = NBMODE - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
+      PRDEFF = .FALSE.
 C
 C     --- VECTEURS DE TRAVAIL ---
       CALL WKVECT('&&MDDEVO.DEPL','V V R8',4*NBMODE,JDEPL)
@@ -191,7 +194,7 @@ C     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            0,0,0.D0,0.D0,0.D0,0.D0,
-     &            TYPAL,FINPAL,CNPAL,.FALSE.,R8B2)
+     &            TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
 C     --- INITIALISATION DE L'ALGORITHME ---
       DO 100 IM = 0,NBMOD1
@@ -257,7 +260,7 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &               0,0,0.D0,0.D0,0.D0,0.D0,
-     &               TYPAL,FINPAL,CNPAL,.FALSE.,R8B2)
+     &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
          DO 34 IM = 0,NBMOD1
             IM1 = IM + 1
@@ -293,7 +296,7 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &               0,0,0.D0,0.D0,0.D0,0.D0,
-     &               TYPAL,FINPAL,CNPAL,.FALSE.,R8B2)
+     &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 
 C
          DO 36 IM = 0,NBMOD1

@@ -1,15 +1,15 @@
       SUBROUTINE MDFEDY (NBPAL,NBMODE,NUMPAS,DT,DTSTO,TCF,VROTAT,
      &                   DPLMOD,DEPGEN,VITGEN, FEXGEN,
-     &                   TYPAL,FINPAL,CNPAL,PRDEFF,CONV)
+     &                   TYPAL,FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
       IMPLICIT  REAL*8  (A-H,O-Z)
       REAL*8             DEPGEN(*),VITGEN(*),FEXGEN(*)
       REAL*8             DPLMOD(NBPAL,NBMODE,*),DT,DTSTO,TCF
       REAL*8             VROTAT,CONV
       INTEGER            NUMPAS
       LOGICAL            PRDEFF
-C ----------------------------------------------------------------------
+      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GREFFET N.GREFFET
-C TOLE CRS_1404
 C ======================================================================
+C TOLE CRS_1404
 C
 C              RECUPERATION DES FORCES VENANT D'EDYOS
 C                 ET ENVOI DES CHAMPS CINEMATIQUES
@@ -56,6 +56,7 @@ C
       CHARACTER*3   FINPAL(PALMAX)
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*8   CNPAL(PALMAX)
+      REAL*8        FSAUV(PALMAX,3)      
 C
       DO 30 J = 1,NBPAL
         DO 5 L=1,6
@@ -69,6 +70,7 @@ C
 15        CONTINUE
 20      CONTINUE
 30    CONTINUE
+      PRDEFF = .TRUE.
 C   ENVOI DES CHAMPS CINEMTATIQUES A EDYOS
       CALL ENVDEP(NUMPAS,NBPAL,DT,DTSTO,TCF,
      &            DEP,VIT,VROTAT,FINPAL,PRDEFF)
@@ -76,12 +78,29 @@ C   RECEPTION DES EFFORTS VENANT D'EDYOS
       CALL RECFOR(NUMPAS,NBPAL,FORCE,
      &              TYPAL,FINPAL,CNPAL,PRDEFF,CONV)
 C   COMBINAISON DES EFFORTS GENERALISES
-      DO 200 J = 1,NBPAL
-        DO 100 I=1,NBMODE
-          FEXGEN(I)=FEXGEN(I)+DPLMOD(J,I,1)*FORCE(J,1)
+      IF (CONV.GT.0.0D0) THEN
+        DO 200 J = 1,NBPAL
+          FSAUV(J,1)=FORCE(J,1)
+          FSAUV(J,2)=FORCE(J,2)
+          FSAUV(J,2)=FORCE(J,3)
+          DO 100 I=1,NBMODE
+            FEXGEN(I)=FEXGEN(I)+DPLMOD(J,I,1)*FORCE(J,1)
      &                     +DPLMOD(J,I,2)*FORCE(J,2)
      &                     +DPLMOD(J,I,3)*FORCE(J,3)
-100     CONTINUE
-200   CONTINUE
+100       CONTINUE
+200     CONTINUE
+      ELSE
+C      NON CONVERGENCE EDYOS : ON UTILISE FSAUV
+        DO 210 J = 1,NBPAL
+          FSAUV(J,1)=FORCE(J,1)
+          FSAUV(J,2)=FORCE(J,2)
+          FSAUV(J,2)=FORCE(J,3)
+          DO 110 I=1,NBMODE
+            FEXGEN(I)=FEXGEN(I)+DPLMOD(J,I,1)*FSAUV(J,1)
+     &                     +DPLMOD(J,I,2)*FSAUV(J,2)
+     &                     +DPLMOD(J,I,3)*FSAUV(J,3)
+110       CONTINUE
+210     CONTINUE
+      ENDIF
 C
       END

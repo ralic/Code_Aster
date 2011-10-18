@@ -1,21 +1,21 @@
-#@ MODIF ihm_parametres Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF ihm_parametres Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 #  OBJETS GRAPHIQUES TK DE L'IHM DES PARAMETRES
@@ -39,14 +39,6 @@ except:
 import types, tkMessageBox
 import ihm_parametres as objets
 
-# Multi-langues
-try:
-   import gettext
-   _ = gettext.gettext
-except:
-   def _(mesg):
-      return mesg
-
 
 # ==============================================================================
 
@@ -69,7 +61,7 @@ class AFFICHAGE_PARAMETRES :
     # Objet Fenetre Tk
     self.fenetre2 = Tk.Toplevel(self.master)
     self.fenetre2.title(titre)
-    self.fenetre2.geometry(str(largeur)+"x"+str(hauteur)+"+50+50")    
+    self.fenetre2.geometry(str(largeur)+"x"+str(hauteur)+"+50+50")
     self.fenetre2.resizable(width='no', height='no')
 
     # Objet bulle d'aide
@@ -113,13 +105,13 @@ class AFFICHAGE_PARAMETRES :
 #     frame.place(in_=self.fenetre2,x=0,y=0,anchor='nw',width=largeur, height=hauteur)
 
     #     ----------
-    #    |    1    | 
+    #    |    1    |
     #    ----------
-    #   | 2  | 3  | 
+    #   | 2  | 3  |
     #   ----------
-    #  | 4  | 5  | 
+    #  | 4  | 5  |
     #  ----------
- 
+
     x_1 = largeur*0.25
     y_1 = 0
     largeur_1 = largeur*0.5
@@ -394,7 +386,7 @@ class LABEL:
      self.enabled = True
 
      # Bulle d'aide
-     if bulle and self.dparam[cle].has_key('bulle'): 
+     if bulle and self.dparam[cle].has_key('bulle'):
        bullemsg = self.dparam[cle]['bulle']
        self.bulle = bulle
        self.bulle.bind_widget(self.label, balloonmsg=bullemsg)
@@ -446,7 +438,7 @@ class ENTRY:
 
 
      # Bulle d'aide
-     if bulle and self.dparam[cle].has_key('bulle'): 
+     if bulle and self.dparam[cle].has_key('bulle'):
        bullemsg = self.dparam[cle]['bulle']
        self.bulle = bulle
        self.bulle.bind_widget(self.valeur, balloonmsg=bullemsg)
@@ -491,10 +483,10 @@ class LISTE:
         self.liste.configure(background="wheat")
         self.liste.configure(highlightbackground="#d9d9d9")
         self.liste.configure(highlightcolor="Black")
-  
+
         for l in self.dparam[cle]['val_possible']:
            self.liste.add_command(l, label=l, underline=0, font=fonte)
-   
+
         self.liste.configure(variable=self.dvar[section][cle])
         if commande: self.liste.configure(command=commande)
 
@@ -511,14 +503,14 @@ class LISTE:
 
 
      # Bulle d'aide
-     if bulle and self.dparam[cle].has_key('bulle'): 
+     if bulle and self.dparam[cle].has_key('bulle'):
        bullemsg = self.dparam[cle]['bulle']
        self.bulle = bulle
        self.bulle.bind_widget(self.liste, balloonmsg=bullemsg)
 
 
   def Change(self, event):
-    obj = str(event)    
+    obj = str(event)
     return True
 
   def Active(self):
@@ -567,7 +559,7 @@ class BUTTON:
    self.button.destroy()
 
  def Change_Color(self,color) :
-   self.button.configure(background=color)  
+   self.button.configure(background=color)
 
 
 # ==============================================================================
@@ -575,7 +567,7 @@ class BUTTON:
 class CASE_TEXTE:
 
   def __init__(self, frame, x, y, h, l, params=None, fonte="helvetica 10 bold"):
-  
+
      self.frame  = frame
      self.params = params
      self.x      = int(x)
@@ -633,7 +625,7 @@ class CASE_TEXTE:
 class CANVAS:
 
   def __init__(self, frame, x, y, h, l, image=None, params=None, anchor='center'):
-  
+
     self.frame  = frame
     self.params = params
     self.xcanv = x
@@ -686,7 +678,7 @@ class CANVAS:
 class BULLE_PMW:
 
   def __init__(self, frame):
-  
+
     self.frame  = frame
     self.bulle = Pmw.Balloon(self.frame)
 
@@ -700,7 +692,7 @@ class BULLE_PMW:
 class BULLE_TIX:
 
   def __init__(self, frame):
-  
+
     self.frame  = frame
     self.bulle = Tix.Balloon(self.frame)
 

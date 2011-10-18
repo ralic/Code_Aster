@@ -1,7 +1,7 @@
       SUBROUTINE PAQNOE(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
      &                  GRDVIE, FORVIE,FORDEF, TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
       INTEGER       IBID, IERD, LORDR, JORDR, NBORDR, NDIM, IRET, IRET1
-      INTEGER       NBNO, INO, TDISP, JRWORK, TPAQ
+      INTEGER       NBNO, INO, TDISP, JRWORK, TPAQ, IRET2, IRET3
       INTEGER       NBPAQ, NUMPAQ, NNOPAQ, BORMAX, NBPMAX, NBP0, BOR0
       INTEGER       NBCMP, JPAQNO
       INTEGER       NNOINI, NBNOP, TSPAQ, IORDR, LOR8EM, LOISEM
@@ -73,7 +73,7 @@ C
       CHARACTER*8   K8B, LRESU(24), MOTCLE(4), TYMOCL(4)
       CHARACTER*16  TYPRES, NOMOPT
       CHARACTER*19  CNSR, LISNOE
-      CHARACTER*19  CHSIG, CHEPS, CNS1, CNS2, CNS3, CNS4
+      CHARACTER*19  CHSIG, CHEPS, CNS1, CNS2, CNS3, CNS4,CHSIG1,CHSIG2
 
 
 C
@@ -92,6 +92,11 @@ C
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
+
+C               1234567890123456789
+      CHSIG  = '                   '
+      CHSIG1 = '                   '
+      CHSIG2 = '                   '
 
 C RECUPERATION DU TYPE DE CALCUL MECANIQUE EFFECTUE
 
@@ -255,21 +260,20 @@ C  <<REMPLISSAGE>> DU VECTEUR DE TRAVAIL
 
             DO 300 IORDR=1, NBORDR
             
-               IF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
-                  CALL RSEXCH(NOMSD, 'SIEF_NOEU', IORDR, CHSIG,
-     &                        IRET)
-   
-               ELSEIF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
-                  CALL RSEXCH(NOMSD, 'SIGM_NOEU', IORDR, CHSIG,
-     &                        IRET)
+               CALL RSEXCH(NOMSD,'SIGM_NOEU',IORDR,CHSIG1,IRET1)
+               CALL RSEXCH(NOMSD,'SIEF_NOEU',IORDR,CHSIG2,IRET2)
+               
+               IF (IRET1.EQ.0) THEN
+                 CHSIG = CHSIG1
+               ELSE IF (IRET2.EQ.0) THEN
+                 CHSIG = CHSIG2
                ENDIF
                
-               CALL RSEXCH(NOMSD, 'EPSI_NOEU', IORDR, CHEPS,
-     &                        IRET1)
+               CALL RSEXCH(NOMSD,'EPSI_NOEU',IORDR,CHEPS,IRET3)
      
-               IF (IRET .NE. 0) THEN
+               IF ((IRET1.NE.0).AND.(IRET2.NE.0)) THEN
                   CALL U2MESS('F','PREPOST4_38')
-               ELSEIF (IRET1 .NE. 0) THEN
+               ELSEIF (IRET3 .NE. 0) THEN
                   CALL U2MESS('F','PREPOST4_39')
                ENDIF
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2011   AUTEUR NICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                       ang="The Code_Aster result with the field" ),
 #
     b_champ_adaptation = BLOC(condition="(RESULTAT_N != None)",
-      NOM_CHAM = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),
+      NOM_CHAM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),
                         fr="Champ dans le résultat",
                         ang="The field in the result structure" ),
     ),
@@ -591,7 +591,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                           fr="Choix éventuel du nom du champ à interpoler",
                           ang="Selection for the name of the field (option)",
 #
-      NOM_CHAM = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),
+      NOM_CHAM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),
                       fr="Nom du champ à mettre à jour",
                       ang="Name of the field to be updated" ),
 #

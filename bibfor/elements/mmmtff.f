@@ -1,10 +1,9 @@
-      SUBROUTINE MMMTFF(PHASEP,NDIM  ,NBCPS ,NNL   ,HPG   ,
+      SUBROUTINE MMMTFF(PHASEP,NDIM  ,NBCPS ,NNL   ,WPG   ,
      &                  FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
-     &                  NRESE ,LAMBDA,COEFFS,COEFFF,COEFFP,
-     &                  MATRFF)
+     &                  NRESE ,LAMBDA,COEFAF,COEFFF,MATRFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,11 +25,11 @@ C
       IMPLICIT NONE
       CHARACTER*9  PHASEP
       INTEGER      NDIM,NNL,NBCPS
-      REAL*8       HPG,FFL(9),JACOBI
+      REAL*8       WPG,FFL(9),JACOBI
       REAL*8       TAU1(3),TAU2(3)
       REAL*8       RESE(3),NRESE
       REAL*8       LAMBDA
-      REAL*8       COEFFS,COEFFF,COEFFP
+      REAL*8       COEFAF,COEFFF
       REAL*8       MATRFF(18,18)
 C
 C ----------------------------------------------------------------------
@@ -52,24 +51,24 @@ C              'GLIS_PENA' - PENALISATION - CONTACT GLISSANT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE
 C IN  NBCPS  : NB DE DDL DE LAGRANGE
-C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFL    : FONCTIONS DE FORMES LAGR.
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
-C               GTK = LAMBDAF + COEFFR*VITESSE
+C               GTK = LAMBDAF + COEFAF*VITESSE
 C IN  NRESE  : RACINE DE LA NORME DE RESE
-C IN  LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL DE TRESCA)
+C IN  LAMBDA : LAGRANGIEN DE CONTACT
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
-C IN  COEFFS : COEF_STAB_FROT
+C IN  COEFAF : COEF_AUGM_FROT
 C OUT MATRFF : MATRICE ELEMENTAIRE LAGR_F/LAGR_F
 C
 C ----------------------------------------------------------------------
 C
       INTEGER   I, J, K , L,II,JJ,IDIM,NBCPF
       REAL*8    TT(3,3)
-      REAL*8    H1(3),H2(3)
+      REAL*8    H1(3),H2(3),MATPRB(3,3)
       REAL*8    R(2,2)
 C
 C ----------------------------------------------------------------------
@@ -83,7 +82,7 @@ C
       CALL VECINI(3,0.D0,H2)
       NBCPF = NBCPS - 1
 C
-C --- MATRICE DE CHANGEMENT DE REPERE [T]. [TT] = [T]t*[T]
+C --- MATRICE DE CHANGEMENT DE REPERE [TT] = [T]t*[T]
 C
       DO 301 K = 1,NDIM
         TT(1,1) = TAU1(K)*TAU1(K) + TT(1,1)
@@ -91,6 +90,14 @@ C
         TT(2,1) = TAU2(K)*TAU1(K) + TT(2,1)
         TT(2,2) = TAU2(K)*TAU2(K) + TT(2,2)
  301  CONTINUE
+C
+C --- MATRICE DE PROJECTION SUR LA BOULE UNITE
+C  
+      IF (PHASEP(1:4).EQ.'GLIS') THEN
+        CALL MMMMPB(RESE  ,NRESE ,NDIM  ,MATPRB)
+      ENDIF      
+C
+C --- CALCUL DES TERMES
 C
       IF (PHASEP(1:4).EQ.'SANS') THEN
         DO 284 I = 1,NNL
@@ -100,16 +107,14 @@ C
                 II = (NDIM-1)*(I-1)+L
                 JJ = (NDIM-1)*(J-1)+K
                 MATRFF(II,JJ) = MATRFF(II,JJ)+
-     &                          HPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
+     &                          WPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
  281          CONTINUE
  282        CONTINUE
  283      CONTINUE
  284    CONTINUE
       ELSEIF (PHASEP.EQ.'GLIS') THEN
-C       --- VECTEUR PROJ. BOULE SUR TGT1: {H1} = [K].{T1}
-        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU1  ,H1    )
-C       --- VECTEUR PROJ. BOULE SUR TGT1: {H2} = [K].{T2}
-        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU2  ,H2    )
+        CALL PMAVEC('ZERO',3,MATPRB,TAU1,H1)
+        CALL PMAVEC('ZERO',3,MATPRB,TAU2,H2)
 C      --- MATRICE [R] = [T]t*[T]-[T]t*[H]
         DO 857 IDIM = 1,NDIM
           R(1,1) = (TAU1(IDIM)-H1(IDIM))*TAU1(IDIM) + R(1,1)
@@ -125,8 +130,8 @@ C
                 II = (NDIM-1)*(I-1)+L
                 JJ = (NDIM-1)*(J-1)+K
                 MATRFF(II,JJ) = MATRFF(II,JJ)+
-     &                          HPG*FFL(I)*FFL(J)*JACOBI*
-     &                          COEFFF*LAMBDA*R(L,K) / COEFFS
+     &                          WPG*FFL(I)*FFL(J)*JACOBI*
+     &                          COEFFF*LAMBDA*R(L,K) / COEFAF
  21           CONTINUE
  22         CONTINUE
  23       CONTINUE
@@ -139,8 +144,8 @@ C
                 II = (NDIM-1)*(I-1)+L
                 JJ = (NDIM-1)*(J-1)+K
                 MATRFF(II,JJ) = MATRFF(II,JJ)+
-     &                          HPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
-     &                          *COEFFF*LAMBDA/COEFFP
+     &                          WPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
+     &                          *COEFFF*LAMBDA/COEFAF
  381          CONTINUE
  382        CONTINUE
  383      CONTINUE
@@ -154,8 +159,8 @@ C
                 II = (NDIM-1)*(I-1)+L
                 JJ = (NDIM-1)*(J-1)+K
                 MATRFF(II,JJ) = MATRFF(II,JJ)+
-     &                          HPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
-     &                          *COEFFF*LAMBDA/COEFFP
+     &                          WPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
+     &                          *COEFFF*LAMBDA/COEFAF
  481          CONTINUE
  482        CONTINUE
  483      CONTINUE

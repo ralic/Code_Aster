@@ -1,21 +1,21 @@
-#@ MODIF graphiqueTk Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF graphiqueTk Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #  OBJETS GRAPHIQUES TK DE HAUT NIVEAU
 
@@ -25,14 +25,6 @@ import Tkinter as Tk
 
 import types
 import graphiqueTk as objets
-
-# Multi-langues
-try:
-   import gettext
-   _ = gettext.gettext
-except:
-   def _(mesg):
-      return mesg
 
 __fontes__ = 'arial 10 normal'
 
@@ -47,22 +39,22 @@ class LIGNE_ETAT :
     self.label = Tk.Label(frame_ligne_etat, text='', font=fonte)
     self.label.pack()
 #    self.Affecter("")
-  
+
   def Affecter(self, chaine) :
     self.label.configure(text = chaine)
 
-  
+
 # ==============================================================================
 
 class MENU :
 
   """
     MENU DEROULANT SIMPLE
-    
+
   """
 
   def __init__ (self, frame_parent, colonnes, items, defaut='', expand = 1, fonte=__fontes__) :
-  
+
     """
        IN  frame_parent : objet Tk parent du menu
        IN  colonnes     : liste des titres de colonnes
@@ -77,25 +69,25 @@ class MENU :
       titre = Tk.Menubutton(frame_parent, text=col, relief=Tk.FLAT, anchor = Tk.NW, font=fonte)
       titre.pack(padx = 3, pady = 1, side = Tk.LEFT)
       self.acces[col] = titre
-        
+
       if col not in items.keys() :
         titre['state'] = Tk.DISABLED
-        
+
       else :
         choix = Tk.Menu(titre,tearoff=0, font=fonte)
         titre['menu'] = choix
-        
+
         for item,action in items[col] :
           choix.add_command(label = item, command = action)
 
 
 # ==============================================================================
-      
+
 class MENU_RADIO_BOX :
 
   """
     MENU DEROULANT AVEC CHOIX EXCLUSIF
-    
+
       Attribut prive
         select   : objet Tk permettant la lecture du choix actuel
 
@@ -139,18 +131,18 @@ class MENU_RADIO_BOX :
 class FEU_TRICOLORE :
 
   """
-    Feu tricolore d'etat : 
-       vert   : OK pas de calcul, 
+    Feu tricolore d'etat :
+       vert   : OK pas de calcul,
        orange : OK avec calcul,
        rouge  : NOOK
   """
-  
+
   liste_couleurs = {
     'red'    : 0,
     'orange' : 1,
     'green'  : 2
     }
-    
+
   def __init__(self, frame_parent, defaut ='red') :
 
     self.couleur = defaut   # couleur actuelle (par defaut) du feu
@@ -169,20 +161,20 @@ class FEU_TRICOLORE :
                    ]
 
 
-  def Changer_couleur(self,nouvelle_couleur) :    
+  def Changer_couleur(self,nouvelle_couleur) :
 
     '''On change la couleur du feu tricolore et on le redessine'''
 
-    if nouvelle_couleur <> self.couleur : 
-        
-      # On met a blanc l'ancienne couleur 
+    if nouvelle_couleur <> self.couleur :
+
+      # On met a blanc l'ancienne couleur
       position = FEU_TRICOLORE.liste_couleurs[self.couleur]
       self.etatfeutot.itemconfigure(self.etatfeu[position],fill='white')
 
       # On affecte la nouvelle couleur
       self.couleur = nouvelle_couleur
-    
-      # On colorie la nouvelle couleur 
+
+      # On colorie la nouvelle couleur
       position = FEU_TRICOLORE.liste_couleurs[self.couleur]
       self.etatfeutot.itemconfigure(self.etatfeu[position],fill=self.couleur)
 
@@ -193,39 +185,39 @@ class LIST_BOX :
 
   """
     FENETRE DE SELECTION
-    
+
      Attributs publics
       courant    : liste des noms selectionnes
       noms       : liste des noms selectionnables
       indice     : liste des indices des noms selectionnes par rapport a noms
-      
-     Methode publique 
+
+     Methode publique
       Scan       : Rafraichit la selection, retourne vrai si elle a change
       Change     : Affecte une nouvelle liste de noms selectionnables
-      
+
      Attributs prives
       listbox    : objet Tk de type listbox
-      
+
   """
-  
+
   def __init__(self, frame_parent, liste, type_selec, defaut = '', hbar = 0, fonte = __fontes__):
 
 
     self.noms    = liste    # liste des noms selectionnables (chaine ou tt objet)
     self.courant = []       # selection courante
     self.indice  = []       # indices de la selection courante
-  
+
     # Barre d'ascenceur
     scrollbar = Tk.Scrollbar(frame_parent)
-    scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y) 
+    scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
     if hbar:
       hscrollbar = Tk.Scrollbar(frame_parent)
-      hscrollbar.pack(side=Tk.BOTTOM, fill=Tk.X) 
+      hscrollbar.pack(side=Tk.BOTTOM, fill=Tk.X)
 
- 
-    # Creation de la fenetre de selection 
+
+    # Creation de la fenetre de selection
     if hbar:
-      self.listbox = Tk.Listbox( frame_parent, 
+      self.listbox = Tk.Listbox( frame_parent,
                                  xscrollcommand  = hscrollbar.set,
                                  yscrollcommand  = scrollbar.set,
                                  selectmode      = type_selec,
@@ -233,17 +225,17 @@ class LIST_BOX :
                                  font = fonte,
                                     )
     else :
-      self.listbox = Tk.Listbox( frame_parent, 
+      self.listbox = Tk.Listbox( frame_parent,
                                  yscrollcommand  = scrollbar.set,
                                  selectmode      = type_selec,
                                  exportselection = 0,
                                  font = fonte,
                                     )
-      
+
     # Remplissage
     for chaine in liste :
       self.listbox.insert(Tk.END, chaine)
-        
+
     # Affichage
     self.listbox.pack(side=Tk.LEFT, expand = 1, fill=Tk.BOTH)
     scrollbar.config(command=self.listbox.yview)
@@ -274,7 +266,7 @@ class LIST_BOX :
     for chaine in liste :
       self.listbox.insert(Tk.END,chaine)
     self.noms = liste
-    self.courant = [] 
+    self.courant = []
 
    # Pre-selection du defaut
     try :
@@ -285,7 +277,7 @@ class LIST_BOX :
     except ValueError :
       pass
 
-    
+
   def Scan(self) :
 
     positions = map(int, self.listbox.curselection())
@@ -300,8 +292,8 @@ class LIST_BOX :
       self.indice  = positions
 
     else :
-      different = 0    
-      
+      different = 0
+
     return different
 
 
@@ -312,12 +304,12 @@ class BOUTON :
   def __init__(self, frame, couleur, nom, methode, x=10, y=10, fonte=__fontes__) :
 
     bouton = Tk.Button(frame, bg=couleur,text=nom, command=methode, font=fonte)
-    bouton.pack(side=Tk.LEFT,padx=x,pady=y)  
+    bouton.pack(side=Tk.LEFT,padx=x,pady=y)
 
 
 # ==============================================================================
 
-class DIALOGUE : 
+class DIALOGUE :
 
   def __init__(self, *texte) :
 
@@ -338,7 +330,7 @@ class DIALOGUE :
 
     BOUTON(frame_bas,'IndianRed1',"OK",self.rootTk.destroy)
 
-    self.Action_evenement() 
+    self.Action_evenement()
     self.rootTk.mainloop()
 
   def Action_evenement(self) :
@@ -377,16 +369,16 @@ class C_SAISIE_MODE :
     frame.grid(padx = 20, pady = 3)
 
     bouton = Tk.Button(self.root, bg='blue',text='OK', command=self.Lire_Mode)
-    bouton.grid(row= 1, column=0, pady = 3)  
+    bouton.grid(row= 1, column=0, pady = 3)
 
     # Barre d'ascenceur
     if vbar:
       scrollbar = Tk.Scrollbar(frame)
-      scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y) 
- 
-    # Creation de la fenetre de selection 
+      scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
+
+    # Creation de la fenetre de selection
     if vbar:
-      self.listbox = Tk.Listbox( frame, 
+      self.listbox = Tk.Listbox( frame,
                                  height=3,
                                  exportselection = 0,
                                  selectmode      = type_selec,
@@ -394,7 +386,7 @@ class C_SAISIE_MODE :
                                  font = fonte,
                                     )
     else :
-      self.listbox = Tk.Listbox( frame, 
+      self.listbox = Tk.Listbox( frame,
                                  height=3,
                                  exportselection = 0,
                                  selectmode      = type_selec,
@@ -415,7 +407,7 @@ class C_SAISIE_MODE :
     self.root.destroy()
 
 
-  def Lire_Mode(self) : 
+  def Lire_Mode(self) :
 
     items = int(self.listbox.curselection()[0])
     self.reponse = self.l_infos[items]
@@ -435,7 +427,7 @@ def SAISIE(l_infos,titre = "", defaut = None, fonte=__fontes__) :
     procede a la saisie d'un certain nombre de chaines
     voir classe C_SAISIE
   """
-  
+
   saisie = C_SAISIE(l_infos,titre,defaut,fonte)
   return saisie.reponse
 
@@ -465,7 +457,7 @@ class C_SAISIE :
     frame.grid(padx = 10, pady = 10)
 
     bouton = Tk.Button(self.root, bg='blue',text='OK', command=self.Lire)
-    bouton.grid(row = 1, column=0,pady = 10)  
+    bouton.grid(row = 1, column=0,pady = 10)
 
     row = 0
     self.var = []
@@ -497,7 +489,7 @@ class C_SAISIE :
 
 
 
-  def Lire(self) : 
+  def Lire(self) :
 
     self.reponse = []
     for ligne in self.var :
@@ -523,7 +515,7 @@ class CASE_A_COCHER :
     self.var.set(0)
 
     self.check = Tk.Checkbutton(frame, variable=self.var, command=self.Check_Commande)
-    self.check.pack(side=Tk.LEFT,padx=x,pady=y)  
+    self.check.pack(side=Tk.LEFT,padx=x,pady=y)
     self.check.configure(text=txt, font=fonte)
 
   def Check_Commande(self):
@@ -559,7 +551,7 @@ class BARRE :
     else :
       frame.pack(side=Tk.LEFT)
 
-    self.barre = Tk.Canvas(frame, width = x, height = y,  
+    self.barre = Tk.Canvas(frame, width = x, height = y,
                   background = 'white',border = 0)
     self.barre.pack(fill=Tk.NONE)
     self.rec = None
@@ -573,7 +565,7 @@ class BARRE :
 
     self.niveau = v
     if self.rec :
-      self.barre.delete(self.rec)      
+      self.barre.delete(self.rec)
     self.rec = self.barre.create_rectangle(0,0,v*self.x,self.y, fill = 'blue')
 
 

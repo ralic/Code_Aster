@@ -3,7 +3,7 @@
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), EDGL(*)
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,7 @@ C           ------ VT = DC.BC.DEPF -------------------------------------
             BCDF(2) = BCDF(2) + BC(2,J)*DEPF(J)
   100     CONTINUE
           VT(1) = DC(1,1)*BCDF(1) + DC(1,2)*BCDF(2)
-          VT(2) = DC(2,1)*BCDF(2) + DC(2,2)*BCDF(2)
+          VT(2) = DC(2,1)*BCDF(1) + DC(2,2)*BCDF(2)
           DO 110 K = 1,3
             BDF(K) = 0.D0
             BDM(K) = 0.D0

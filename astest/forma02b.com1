@@ -1,0 +1,123 @@
+
+# TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
+#
+#        TUYAUTERIE COMPORTANT UN COUDE
+#     MODELISATION PAR DES ELEMENTS HEXAEDRES
+#     ---------------------------------------
+
+POURSUITE(CODE=_F(NOM='FORMA02B',),);
+
+FYC=AFFE_CHAR_MECA(MODELE=MODELE,
+                   FORCE_FACE=_F(GROUP_MA='EFOND',
+                                 FY=1.0,),);
+
+FYE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                   CHARGE=FYC,);
+
+FY=ASSE_VECTEUR(VECT_ELEM=FYE,
+                NUME_DDL=NUMEDDL,);
+
+MACRO_PROJ_BASE(BASE=MODES,
+                MATR_ASSE_GENE=(_F(MATRICE=CO('MASPRO'),
+                                   MATR_ASSE=MASSE,),
+                                _F(MATRICE=CO('RIPRO'),
+                                   MATR_ASSE=RIGIDITE,),),
+                VECT_ASSE_GENE=_F(VECTEUR=CO('FYPRO'),
+                                  VECT_ASSE=FY,),);
+tfi = 2.0;
+
+pas = 0.0001;
+
+fex = 20.0;
+
+amF = 10000000.0;
+
+
+fs = FORMULE(VALE='amF*sin(2*pi*fex*INST)',
+             NOM_PARA='INST',);
+
+LINS=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=tfi,
+                                  PAS=pas,),);
+
+FSI=CALC_FONC_INTERP(FONCTION=fs,
+                     LIST_PARA=LINS,
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
+
+DTM=DYNA_TRAN_MODAL(MATR_MASS=MASPRO,
+                    MATR_RIGI=RIPRO,
+                    AMOR_MODAL=_F(AMOR_REDUIT=.05,),
+                    INCREMENT=_F(INST_FIN=tfi,
+                                 PAS=pas,),
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER'),
+                    EXCIT=_F(VECT_ASSE=FYPRO,
+                             FONC_MULT=FSI,),);
+
+DEPY_B=RECU_FONCTION(RESU_GENE=DTM,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DY',
+                     GROUP_NO='P_EFOND',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=_F(FONCTION=DEPY_B,
+                        MARQUEUR=0,),);
+pavi = 0.01;
+
+LIVI=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=tfi,
+                                  PAS=pavi,),);
+
+TRAN=REST_GENE_PHYS(RESU_GENE=DTM,
+                    LIST_INST=LIVI,
+                    NOM_CHAM='DEPL',);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=TRAN,),);
+
+LFR=DEFI_LIST_REEL(DEBUT=0,
+                   INTERVALLE=_F(JUSQU_A=60,
+                                 PAS=.1,),);
+
+DLH=DYNA_LINE_HARM(MATR_MASS=MASPRO,
+                   MATR_RIGI=RIPRO,
+                   AMOR_MODAL=_F(AMOR_REDUIT=.05,),
+                   LIST_FREQ=LFR,
+                   EXCIT=_F(VECT_ASSE=FYPRO,
+                            COEF_MULT=amF,),);
+
+DHB=REST_GENE_PHYS(RESU_GENE=DLH,
+                   NOM_CHAM=('DEPL','ACCE',),
+                   GROUP_NO='P_EFOND',);
+
+DHY_B=RECU_FONCTION(RESULTAT=DHB,
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DY',
+                    GROUP_NO='P_EFOND',);
+
+MDHY_B=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHY_B,
+                                   PARTIE='MODULE',),);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=39,
+              COURBE=_F(FONCTION=MDHY_B,
+                        MARQUEUR=0,),
+                        ECHELLE_Y='LOG',);
+
+TEST_RESU(RESU=_F(RESULTAT=TRAN,
+                  INST=1.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='P_EFOND',
+                  VALE=-0.132956,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.5.5',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=MDHY_B,
+                        VALE_PARA=10.0,
+                        VALE_REFE=0.934,
+                        REFERENCE='NON_REGRESSION',
+                        VERSION='10.5.5',),);
+
+FIN();

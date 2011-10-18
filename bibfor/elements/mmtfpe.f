@@ -1,13 +1,13 @@
-      SUBROUTINE MMTFPE(PHASEP,NDIM  ,NBCPS ,NNE   ,NNM   ,
-     &                  NNL   ,COEFCP,COEFFP,COEFFS,COEFFF,
-     &                  LAMBDA,RESE  ,NRESE ,MPROJN,MPROJT,
-     &                  NORM  ,TAU1  ,TAU2  ,FFE   ,FFM   ,
-     &                  FFL   ,WPG   ,JACOBI,MATREE,MATRMM,
-     &                  MATREM,MATRME,MATREC,MATRMC,MATREF,
-     &                  MATRMF)
+      SUBROUTINE MMTFPE(PHASEP,NDIM  ,NNE   ,NNM   ,NNL   ,
+     &                  NBCPS ,WPG   ,JACOBI,FFL   ,FFE   ,
+     &                  FFM   ,NORM  ,TAU1  ,TAU2  ,MPROJN,
+     &                  MPROJT,RESE  ,NRESE ,LAMBDA,IRESOF,
+     &                  COEFFF,COEFAF,COEFAC,DLAGRF,DJEUT , 
+     &                  MATREE,MATRMM,MATREM,MATRME,MATREC,
+     &                  MATRMC,MATREF,MATRMF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,14 +30,16 @@ C
       IMPLICIT NONE
       CHARACTER*9  PHASEP
       INTEGER      NDIM,NNE,NNM,NNL,NBCPS
+      INTEGER      IRESOF
       REAL*8       NORM(3),TAU1(3),TAU2(3)
       REAL*8       MPROJN(3,3),MPROJT(3,3)
       REAL*8       FFE(9),FFM(9),FFL(9)
       REAL*8       WPG,JACOBI
       REAL*8       RESE(3),NRESE
-      REAL*8       COEFCP
-      REAL*8       COEFFP,COEFFS
+      REAL*8       COEFAC,COEFAF
       REAL*8       LAMBDA,COEFFF
+      REAL*8       DLAGRF(2)
+      REAL*8       DJEUT(3)
       REAL*8       MATREM(27,27),MATRME(27,27)
       REAL*8       MATREE(27,27),MATRMM(27,27)
       REAL*8       MATREC(27,9) ,MATRMC(27,9)
@@ -47,7 +49,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - CALCUL)
 C
-C CALCUL DES MATRICES - FORME FORTE - CAS POIN_ELEM
+C CALCUL DES MATRICES - EQUATION EQUILIBRE - CAS POIN_ELEM
 C
 C ----------------------------------------------------------------------
 C
@@ -68,19 +70,25 @@ C IN  NNL    : NOMBRE DE NOEUDS DE LAGRANGE
 C IN  NORM   : NORMALE AU POINT DE CONTACT
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
-C IN  MPROJT : MATRICE DE PROJECTION TANGENTE
-C IN  MPROJN : MATRICE DE PROJECTION NORMALE
+C IN  MPROJN : MATRICE DE PROJECTION NORMALE [Pn]
+C IN  MPROJT : MATRICE DE PROJECTION TANGENTE [Pt]
 C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFE    : FONCTIONS DE FORMES DEPL. ESCL.
 C IN  FFL    : FONCTIONS DE FORMES LAGR.
 C IN  FFM    : FONCTIONS DE FORMES DEPL. MAIT.
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
-C IN  COEFCP : COEF_PENA_CONT
-C IN  COEFFS : COEF_STAB_FROT
-C IN  LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL DE TRESCA)
+C IN  COEFAC : COEF_AUGM_CONT
+C IN  COEFAF : COEF_AUGM_FROT
+C IN  DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
+C IN  DJEUT  : INCREMENT DEPDEL DU JEU TANGENT
+C IN  LAMBDA : LAGRANGIEN DE CONTACT
+C IN  IRESOF : ALGO. DE RESOLUTION POUR LE FROTTEMENT
+C              0 - POINT FIXE
+C              1 - NEWTON PARTIEL
+C              2 - NEWTON COMPLET
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
-C               GTK = LAMBDAF + COEFFR*VITESSE
+C               GTK = LAMBDAF + COEFAF*VITESSE
 C IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C OUT MATREC : MATRICE ELEMENTAIRE DEPL_E/LAGR_C
 C OUT MATRMC : MATRICE ELEMENTAIRE DEPL_M/LAGR_C
@@ -95,50 +103,46 @@ C ----------------------------------------------------------------------
 C
       IF (PHASEP(1:4).EQ.'CONT') THEN
         CALL MMMTUC(PHASEP,NDIM  ,NNL   ,NNE   ,NNM   ,
-     &              NORM  ,WPG   ,FFL   ,FFE   ,FFM   ,
-     &              JACOBI,MATREC,MATRMC)
-        IF (PHASEP(6:9).EQ.'PENA') THEN
-          CALL MMMTUU(PHASEP,NDIM  ,NNE   ,NNM   ,MPROJN,
-     &                MPROJT,WPG   ,FFE   ,FFM   ,JACOBI,
-     &                COEFCP,COEFFP,COEFFF,RESE  ,NRESE ,
-     &                LAMBDA,COEFFS,MATREE,MATRMM,MATREM,
-     &                MATRME)
-        ELSE
-          CALL MMMTUU('CONT_STAB',NDIM  ,NNE   ,NNM   ,MPROJN,
-     &                MPROJT,WPG   ,FFE   ,FFM   ,JACOBI,
-     &                COEFCP,COEFFP,COEFFF,RESE  ,NRESE ,
-     &                LAMBDA,COEFFS,MATREE,MATRMM,MATREM,
-     &                MATRME)
-        ENDIF
+     &              NORM  ,TAU1  ,TAU2  ,MPROJT,WPG   ,
+     &              FFL   ,FFE   ,FFM   ,JACOBI,COEFFF,
+     &              COEFAF,DLAGRF,DJEUT ,RESE  ,NRESE ,
+     &              MATREC,MATRMC)
+        CALL MMMTUU(PHASEP,NDIM  ,NNE   ,NNM   ,MPROJN,
+     &              MPROJT,WPG   ,FFE   ,FFM   ,JACOBI,
+     &              COEFAC,COEFAF,COEFFF,RESE  ,NRESE ,
+     &              LAMBDA,MATREE,MATRMM,MATREM,MATRME)
       ELSEIF (PHASEP(1:4).EQ.'ADHE') THEN
         CALL MMMTUF(PHASEP,NDIM  ,NNL   ,NNE   ,NNM   ,
      &              NBCPS ,WPG   ,JACOBI,FFL   ,FFE   ,
      &              FFM   ,TAU1  ,TAU2  ,MPROJT,RESE  ,
      &              NRESE ,LAMBDA,COEFFF,MATREF,MATRMF)
-        IF (PHASEP(6:9).EQ.'PENA') THEN
-          CALL MMMTUU(PHASEP,NDIM  ,NNE   ,NNM   ,MPROJN,
-     &                MPROJT,WPG   ,FFE   ,FFM   ,JACOBI,
-     &                COEFCP,COEFFP,COEFFF,RESE  ,NRESE ,
-     &                LAMBDA,COEFFS,MATREE,MATRMM,MATREM,
-     &                MATRME)        
-
-        ELSE
-          CALL MMMTUU('ADHE_STAB',NDIM  ,NNE   ,NNM   ,MPROJN,
-     &                MPROJT,WPG   ,FFE   ,FFM   ,JACOBI,
-     &                COEFCP,COEFFP,COEFFF,RESE  ,NRESE ,
-     &                LAMBDA,COEFFS,MATREE,MATRMM,MATREM,
-     &                MATRME)
+        CALL MMMTUU(PHASEP,NDIM  ,NNE   ,NNM   ,MPROJN,
+     &              MPROJT,WPG   ,FFE   ,FFM   ,JACOBI,
+     &              COEFAC,COEFAF,COEFFF,RESE  ,NRESE ,
+     &              LAMBDA,MATREE,MATRMM,MATREM,MATRME)
+        IF (IRESOF.GE.1) THEN
+          CALL MMMTUC(PHASEP,NDIM  ,NNL   ,NNE   ,NNM   ,
+     &                NORM  ,TAU1  ,TAU2  ,MPROJT,WPG   ,
+     &                FFL   ,FFE   ,FFM   ,JACOBI,COEFFF,
+     &                COEFAF,DLAGRF,DJEUT ,RESE  ,NRESE ,
+     &                MATREC,MATRMC)
         ENDIF
       ELSEIF (PHASEP(1:4).EQ.'GLIS') THEN
         CALL MMMTUU(PHASEP,NDIM  ,NNE   ,NNM   ,MPROJN,
      &              MPROJT,WPG   ,FFE   ,FFM   ,JACOBI,
-     &              COEFCP,COEFFP,COEFFF,RESE  ,NRESE ,
-     &              LAMBDA,COEFFS,MATREE,MATRMM,MATREM,
-     &              MATRME)        
+     &              COEFAC,COEFAF,COEFFF,RESE  ,NRESE ,
+     &              LAMBDA,MATREE,MATRMM,MATREM,MATRME)
         CALL MMMTUF(PHASEP,NDIM  ,NNL   ,NNE   ,NNM   ,
      &              NBCPS ,WPG   ,JACOBI,FFL   ,FFE   ,
      &              FFM   ,TAU1  ,TAU2  ,MPROJT,RESE  ,
      &              NRESE ,LAMBDA,COEFFF,MATREF,MATRMF)
+        IF (IRESOF.GE.1) THEN
+          CALL MMMTUC(PHASEP,NDIM  ,NNL   ,NNE   ,NNM   ,
+     &                NORM  ,TAU1  ,TAU2  ,MPROJT,WPG   ,
+     &                FFL   ,FFE   ,FFM   ,JACOBI,COEFFF,
+     &                COEFAF,DLAGRF,DJEUT ,RESE  ,NRESE ,
+     &                MATREC,MATRMC)
+        ENDIF
       ENDIF
 C
       END

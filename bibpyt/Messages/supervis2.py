@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,72 +59,64 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
                 -- CODE_ASTER -- VERSION : %(k1)s --
 
                 Version %(k2)s du %(k3)s
-
                 Copyright EDF-R&D %(k4)s - %(k5)s
-
                 Exécution du : %(k6)s
-
                 Nom de la machine : %(k7)s
-
                 Architecture : %(k8)s
-
                 Type de processeur : %(k9)s
-
                 Système d'exploitation : %(k10)s
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
 
 11 : {  'message' : _(u"""Parallélisme MPI : actif
                 Rang du processeur courant : %(i1)d
-                Nombre de processeurs utilisés : %(i2)d
-"""), 'flags' : 'CENTER | ALL_UNIT',
+                Nombre de processeurs utilisés : %(i2)d"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-12 : {  'message' : _(u"""Parallélisme MPI : inactif
-"""), 'flags' : 'CENTER | ALL_UNIT',
+12 : {  'message' : _(u"""Parallélisme MPI : inactif"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
 13 : {  'message' : _(u"""Parallélisme OpenMP : actif
-                Nombre de threads utilisés : %(i1)d
-"""), 'flags' : 'CENTER | ALL_UNIT',
+                Nombre de threads utilisés : %(i1)d"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-14 : {  'message' : _(u"""Version de la librairie HDF5 : %(i1)d.%(i2)d.%(i3)d
-"""), 'flags' : 'CENTER | ALL_UNIT',
+14 : {  'message' : _(u"""Version de la librairie HDF5 : %(i1)d.%(i2)d.%(i3)d"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-15 : {  'message' : _(u"""Librairie HDF5 : non disponible
-"""), 'flags' : 'CENTER | ALL_UNIT',
+15 : {  'message' : _(u"""Librairie HDF5 : non disponible"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-16 : {  'message' : _(u"""Version de la librairie MED : %(i1)d.%(i2)d.%(i3)d
-"""), 'flags' : 'CENTER | ALL_UNIT',
+16 : {  'message' : _(u"""Version de la librairie MED : %(i1)d.%(i2)d.%(i3)d"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-17 : {  'message' : _(u"""Librairie MED : non disponible
-"""), 'flags' : 'CENTER | ALL_UNIT',
+17 : {  'message' : _(u"""Librairie MED : non disponible"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-18 : {  'message' : _(u"""Librairie MUMPS : installée
-"""), 'flags' : 'CENTER | ALL_UNIT',
+18 : {  'message' : _(u"""Librairie MUMPS : installée"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-19 : {  'message' : _(u"""Librairie MUMPS : non disponible
-"""), 'flags' : 'CENTER | ALL_UNIT',
+19 : {  'message' : _(u"""Librairie MUMPS : non disponible"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-20 : {  'message' : _(u"""Version de la librairie SCOTCH : %(i1)d.%(i2)d.%(i3)d
-"""), 'flags' : 'CENTER | ALL_UNIT',
+20 : {  'message' : _(u"""Version de la librairie SCOTCH : %(i1)d.%(i2)d.%(i3)d"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
-21 : {  'message' : _(u"""Librairie SCOTCH : non disponible
-"""), 'flags' : 'CENTER | ALL_UNIT',
+21 : {  'message' : _(u"""Librairie SCOTCH : non disponible"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
 22 : {  'message' : _(u"""Limite de la mémoire statique : %(r1).3f Mo
-
 Limite de la mémoire dynamique : %(r2).3f Mo
-
 Taille limite des fichiers d'échange : %(r3).3f Go
 """), 'flags' : 'CENTER | ALL_UNIT',
 },

@@ -6,7 +6,7 @@
      &                  OPTION, NOMVI, NBVITA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 17/10/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -438,7 +438,7 @@ C     CREATION SD DISCRETISATION
 C     ----------------------------------------
       CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LISINS,N1)
       INSTIN = 0.D0
-      CALL NMCRLI(INSTIN,LISINS,SDDISC)
+      CALL NMCRLI(FONACT,INSTIN,LISINS,SDDISC)
 
 C     ----------------------------------------
 C     NEWTON

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,10 +80,8 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              into=(
                                     "SIEF_ELGA","SIEF_ELNO","SIEF_NOEU",
                                     "SIGM_ELGA","SIGM_ELNO","SIGM_NOEU",
-                                    "EFGE_ELGA",
+                                    "EFGE_ELGA","EFGE_ELNO","EFGE_NOEU",
                                     "SIPO_ELNO","SIPO_NOEU",
-                                    #"EFGE_ELNO",
-                                    "EFGE_NOEU",
                                     #"EFCA_ELNO",
                                     #"EFCA_NOEU"
                                     "SICA_ELNO","SICA_NOEU",
@@ -134,7 +132,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              into=(
                                                 "SIEF_ELNO","SIEF_NOEU",
                                     "SIGM_ELGA","SIGM_ELNO","SIGM_NOEU",
-                                    "EFGE_ELGA",
+                                    "EFGE_ELGA","EFGE_ELNO","EFGE_NOEU",
                                     #"EFCA_ELNO","EFCA_NOEU"
                                     "SITU_ELNO","SIPO_ELNO","SIPO_NOEU",
                                   ),

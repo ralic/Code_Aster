@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE FERNANDES R.FERNANDES
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -66,10 +66,8 @@ MODE_LOCAL__
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     ENORME   = NEUT_R   ELEM__         (X1       )
     EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6]     )
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
@@ -78,6 +76,9 @@ MODE_LOCAL__
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (PRES     SIG1     SIG2     DEPV     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

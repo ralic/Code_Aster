@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE cas test de validation de la loi de comportement JOINT_BA
 # ssnp126a.para = tps_job 130 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ U=STAT_NON_LINE(
 U=CALC_ELEM(reuse =U,
 
 
-             OPTION=('SIEF_ELNO',
+             OPTION=('SIGM_ELNO',
                      'EPSI_ELGA',),
              RESULTAT=U,);
 
@@ -150,7 +150,7 @@ L_CAST=DEFI_LIST_REEL(VALE =( 2., 4., 6., 8.,10.,
 # ---------------- Resultats ----------------------
 
 IMPR_RESU(RESU=_F(RESULTAT=U,
-                  NOM_CHAM='SIEF_ELNO',
+                  NOM_CHAM='SIGM_ELNO',
                   LIST_INST=L_CAST,
                   FORM_TABL='OUI',
                   MAILLE = 'CUBEDEG',

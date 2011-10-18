@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION (AXISYMETRIQUE)
 # ssna302c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,14 +114,14 @@ CALCNL=CALC_CHAMP(
               reuse=CALCNL,
                TOUT_ORDRE='OUI',
                  RESULTAT=CALCNL,
-                    CONTRAINTE=('SIEF_ELNO')
+                    CONTRAINTE=('SIGM_ELNO')
               )
 
 CALCNL=CALC_NO(
               reuse=CALCNL,
                TOUT_ORDRE='OUI',
                  RESULTAT=CALCNL,
-                   OPTION='SIEF_NOEU'
+                   OPTION='SIGM_NOEU'
               )
 
 TEST_RESU(RESU=(
@@ -136,7 +136,7 @@ TEST_RESU(RESU=(
             VALE = -1.43041E-3),
             _F(
             RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_NOEU',
+            NOM_CHAM = 'SIGM_NOEU',
             NUME_ORDRE = 6,
             NOEUD = 'N1',
             NOM_CMP = 'SIXX',
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(
             VALE = 3.89988E9),
             _F(
             RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_NOEU',
+            NOM_CHAM = 'SIGM_NOEU',
             NUME_ORDRE = 6,
             NOEUD = 'N1',
             NOM_CMP = 'SIZZ',

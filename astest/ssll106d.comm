@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_6M STAT_ NON_LINE)
 # ssll106d.para = tps_job 140 mem_job 300Mo ncpus 1 liste_test S
@@ -7,17 +7,17 @@
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(  NOM = 'SSLL106D',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
@@ -140,7 +140,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -169,7 +169,7 @@ U2=STAT_NON_LINE(
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U2,
               )
 
@@ -198,7 +198,7 @@ U3=STAT_NON_LINE(
 
 U3=CALC_ELEM( reuse=U3,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U3,
               )
 
@@ -227,7 +227,7 @@ U4=STAT_NON_LINE(
 
 U4=CALC_ELEM( reuse=U4,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U4,
               )
 
@@ -256,7 +256,7 @@ U5=STAT_NON_LINE(
 
 U5=CALC_ELEM( reuse=U5,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U5,
               )
 
@@ -285,7 +285,7 @@ U6=STAT_NON_LINE(
 
 U6=CALC_ELEM( reuse=U6,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U6,
               )
 
@@ -314,7 +314,7 @@ U7=STAT_NON_LINE(
 
 U7=CALC_ELEM( reuse=U7,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'EFGE_ELNO',  'VARI_ELNO',),
                           RESULTAT=U7,
               )
 
@@ -331,7 +331,7 @@ _F( RESULTAT = U1, NUME_ORDRE = 2,
       NOM_CMP = 'DY', VALE = 4.14466E-6, PRECISION = 0.01),
 
 _F( RESULTAT = U1, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELNO', MAILLE = 'M18', POINT = 1,
+      NOM_CHAM = 'EFGE_ELNO', MAILLE = 'M18', POINT = 1,
                  REFERENCE = 'ANALYTIQUE',
       NOM_CMP = 'N', VALE = 500., PRECISION = 0.01),
 
@@ -393,7 +393,7 @@ _F( RESULTAT = U4,  NUME_ORDRE = 2,
       NOM_CMP = 'DRY', VALE = 8.21350E-3, PRECISION = 0.01),
 
 _F( RESULTAT = U4, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELNO', MAILLE = 'M18', POINT = 1,
+      NOM_CHAM = 'EFGE_ELNO', MAILLE = 'M18', POINT = 1,
                  REFERENCE = 'ANALYTIQUE',
       NOM_CMP = 'MT', VALE = 500., PRECISION = 0.01),
 
@@ -428,7 +428,7 @@ _F( RESULTAT = U5,  NUME_ORDRE = 2,
 
 _F( RESULTAT = U5,  NUME_ORDRE = 2,
                  REFERENCE = 'ANALYTIQUE',
-      NOM_CHAM = 'SIEF_ELNO', MAILLE = 'M18', POINT = 1,
+      NOM_CHAM = 'EFGE_ELNO', MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'MFY', VALE = 500., PRECISION = 0.01),
 
 _F( RESULTAT = U5, NUME_ORDRE = 2,
@@ -457,7 +457,7 @@ _F( RESULTAT = U6,  NUME_ORDRE = 2,
 
 _F( RESULTAT = U6,  NUME_ORDRE = 2,
                  REFERENCE = 'ANALYTIQUE',
-      NOM_CHAM = 'SIEF_ELNO',
+      NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'MFZ', VALE = 500., PRECISION = 0.01),
 
@@ -487,8 +487,8 @@ _F( RESULTAT = U7, NUME_ORDRE = 2,
 
             )
 
-      
-                   
+
+
 # Solutions analytiques pour les deformations generalisees de poutre DEGE_ELNO
 L=5.0
 E=2.E11
@@ -584,9 +584,9 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    REFERENCE='ANALYTIQUE',),),);
 
 
-                   
-      
-      
+
+
+
 
 FIN()
 #

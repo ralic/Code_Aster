@@ -1,23 +1,5 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
-# wtna102e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
-# ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
-# ======================================================================
 # wtna102e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -279,7 +261,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
 
 U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO'),
+             OPTION=('SIGM_ELNO','VARI_ELNO'),
              RESULTAT=U0,);
 
 U0   = CALC_NO    (  reuse =U0,

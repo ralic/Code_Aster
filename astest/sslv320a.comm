@@ -1,0 +1,417 @@
+# MODIF  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+# TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
+# sslv320a.para = tps_job 350 mem_job 2000Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE COLOMBO D.COLOMBO
+
+DEBUT(CODE=_F(NOM='SSLV320A', NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('XFEM_69'),
+      DEBUG=_F(SDVERI='OUI'),)
+
+# XFEM_69 EST IGNORE PARCE QUE CETTE ALARME NE S'APPLIQUE PAS A CE CAS TEST
+# COMME DECRIT DANS LE MESSAGE D'ALARME LUI-MEME
+      
+# METHODE GEOMETRIQUE
+
+#  MAILLAGE 10X10
+SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
+                        _F(LISTE_R=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),PARA='BETA'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_FOND'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
+                        _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
+
+#  MAILLAGE 20X20
+SIF20=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
+                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
+                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
+                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
+                        _F(LISTE_R=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+                                    0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),PARA='BETA'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2),PARA='NUME_FOND'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
+                        _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
+
+#----------------------------------------------
+#                 MAILLAGE
+#----------------------------------------------
+
+nbcalc = 3
+
+MeshSEB=LIRE_MAILLAGE(INFO=1,FORMAT='MED', UNITE=20,);
+
+#----------------------------------------------
+#                   MODELE
+#----------------------------------------------
+
+ModSEB=AFFE_MODELE(MAILLAGE=MeshSEB,
+                   AFFE=(_F(TOUT='OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='3D',),),);
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=70656
+nu=0.34
+Alu=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+
+ChAlu=AFFE_MATERIAU(MAILLAGE=MeshSEB,
+                       MODELE=ModSEB,
+                       AFFE=_F(TOUT = 'OUI',
+                                MATER=Alu,
+                                ),
+                             );
+
+#----------------------------------------------
+#              FISSURE INITIALE
+#----------------------------------------------
+
+a0 = 4.0
+
+FISS = [None]*nbcalc
+
+FISS[0]=DEFI_FISS_XFEM(MODELE=ModSEB,
+                        GROUP_MA_ENRI='All',
+                        DEFI_FISS=_F(
+                                  FORM_FISS='DEMI_PLAN',
+                                  PFON=(30.,4.,5.),
+                                  NORMALE=(0.,0.,1.),
+                                  DTAN=(0.,1.,0.),
+                       ),);
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+Force=1.0
+ChFV=AFFE_CHAR_MECA(MODELE=ModSEB,
+                   PRES_REP=_F(GROUP_MA='Face_2',PRES=-Force),
+                   DDL_IMPO=(_F(GROUP_NO='Face_1',DZ=0.0,),
+                             _F(GROUP_NO='Edge_1',DY=0.0,),
+                              _F(GROUP_NO='Node_1',DX=0.0,DY=0.0,), 
+                           ),);  
+
+
+#----------------------------------------------
+#                  PROPAGATION
+#----------------------------------------------
+
+# Nombre refinement Homard
+infit=2
+
+MODX = [None]*nbcalc
+CHXFM = [None]*nbcalc
+RESU = [None]*nbcalc
+SIF=[None]*(nbcalc*5)
+
+LSN = [None]*nbcalc
+LST = [None]*nbcalc
+GLSN = [None]*nbcalc
+GLST = [None]*nbcalc
+GRGLSN = [None]*nbcalc
+GRGLST = [None]*nbcalc
+MAXFEM =[None]*nbcalc
+MOVISU = [None]*nbcalc
+DEPL = [None]*nbcalc
+SIF_MO=[None]*nbcalc
+
+Mesh = [None]*nbcalc
+Mod = [None]*nbcalc
+
+LSNGR = [None]*nbcalc
+LSTGR = [None]*nbcalc
+
+
+CHERR=[None]*infit
+MeshH = [None]*nbcalc
+ModH = [None]*nbcalc
+FISSH = [None]*nbcalc
+LSNH = [None]*nbcalc
+LSTH = [None]*nbcalc
+
+FiH = [None]*infit
+MeH = [None]*infit
+MoH = [None]*infit
+LSNHT = [None]*infit
+LSTHT = [None]*infit
+LSTGR=[None]*infit
+LSNGR=[None]*infit
+LSNGR=[None]*infit
+
+# AVANCE IMPOSEE
+da=12.0
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+RI = 0.2
+RS = 1.0
+
+Mesh[0]=MeshSEB
+Mod[0]=ModSEB
+
+rayon_raff = 2.0*RS
+rayon_deraff = rayon_raff+1.0*da
+rayon_calcG_fitt = rayon_raff+da
+
+# Levelset au debut de la propagation
+LSN[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  FISSURE=FISS[0],
+                  NOM_CHAM='LNNO',);
+LST[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  FISSURE=FISS[0],
+                  NOM_CHAM='LTNO',);
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(CHAM_GD=LSN[0],),);
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(CHAM_GD=LST[0],),);
+
+
+for i in range(nbcalc) :
+
+
+   CHERR[0] = RAFF_XFEM(FISSURE=FISS[i])
+   MoH[0] = Mod[i]
+   LSNHT[0] = LSN[i]
+   LSTHT[0] = LST[i]
+
+   for j in range(infit) :
+
+      if (j == 0) :
+         FiH[0] = FISS[i]
+         if ( i == 0 ):
+            MeH[0] = Mesh[0]
+         else:
+            MeH[0] = MeshH[i-1]
+
+      if ( j < infit-1 ):
+
+         MeH[j+1]=CO('MeH_%d'%(j+1))
+         LSNHT[j+1]=CO('LSNHT_%d'%(j+1))
+         LSTHT[j+1]=CO('LSTHT_%d'%(j+1))
+         CHERR[j+1]=CO('CHERR_%d' % (j+1))
+
+         MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA',
+                        MAILLAGE_N=MeH[j],
+                        MAILLAGE_NP1=MeH[j+1],
+                        CHAM_GD=CHERR[j],
+                        USAGE_CMP='RELATIF',
+                        CRIT_RAFF_ABS=-1*rayon_raff,
+                        CRIT_DERA_ABS=-1*rayon_deraff,
+                        NIVE_MAX=infit,
+                        ELEMENTS_NON_HOMARD='IGNORER',
+                     MAJ_CHAM=(_F(TYPE_CHAM='NOEU_NEUT_R',
+                                  CHAM_GD  = LSNHT[j],
+                                  CHAM_MAJ = LSNHT[j+1]),
+                               _F(TYPE_CHAM='NOEU_NEUT_R',
+                                  CHAM_GD  = LSTHT[j],
+                                  CHAM_MAJ = LSTHT[j+1]),
+                               _F(TYPE_CHAM='NOEU_NEUT_R',
+                                  CHAM_GD  = CHERR[j],
+                                  CHAM_MAJ = CHERR[j+1]),), 
+                        VERSION_HOMARD='V10_2',);     
+
+      else:
+
+         MeshH[i]=CO('MeshH_%d'%(i))
+         LSNH[i]=CO('LSNH_%d'%(i))
+         LSTH[i]=CO('LSTH_%d'%(i))
+
+         MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA',
+                        MAILLAGE_N=MeH[j],
+                        MAILLAGE_NP1=MeshH[i],
+                        CHAM_GD=CHERR[infit-1],
+                        USAGE_CMP='RELATIF',
+                        CRIT_RAFF_ABS=-1*rayon_raff,
+                        CRIT_DERA_ABS=-1*rayon_deraff,
+                        NIVE_MAX=infit,
+                        ELEMENTS_NON_HOMARD='IGNORER',
+                        MAJ_CHAM=(_F(CHAM_GD=LSNHT[j],
+                                     TYPE_CHAM='NOEU_NEUT_R',
+                                     CHAM_MAJ=LSNH[i],),
+                                  _F(CHAM_GD=LSTHT[j],
+                                     TYPE_CHAM='NOEU_NEUT_R',
+                                     CHAM_MAJ=LSTH[i],),),
+                        VERSION_HOMARD='V10_2',);   
+
+         ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
+                               AFFE=(_F(TOUT='OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='3D',),),);
+
+         FISSH[i] = DEFI_FISS_XFEM(MODELE=ModH[i],
+                                   DEFI_FISS=_F(CHAM_NO_LSN=LSNH[i],
+                                                CHAM_NO_LST=LSTH[i],),
+                                   GROUP_MA_ENRI='All',
+                                   ORIE_FOND=_F(PFON_INI   = (30.0,4.0+(i+1)*da,5.0),
+                                                VECT_ORIE  = (0.0,0.0,1.0),
+                                                POINT_ORIG = (15.0,0.0,5.0),),);
+
+   DETRUIRE(CONCEPT=_F(NOM=CHERR[0],))          
+
+   for j in range(1,infit) :
+      DETRUIRE(CONCEPT=_F(NOM=MeH[j],))
+      DETRUIRE(CONCEPT=_F(NOM=LSNHT[j],))
+      DETRUIRE(CONCEPT=_F(NOM=LSTHT[j],))
+      DETRUIRE(CONCEPT=_F(NOM=CHERR[j],))
+
+#  STEP 2: RESOLUTION OF THE REFINED MODEL
+
+   MatRaf=AFFE_MATERIAU(MAILLAGE=MeshH[i],
+                        MODELE=ModH[i],
+                        AFFE=_F(TOUT = 'OUI',
+                                MATER=Alu,),);
+
+   ChRaf=AFFE_CHAR_MECA(MODELE=ModH[i],
+                   PRES_REP=_F(GROUP_MA='Face_2',PRES=-Force),
+                   DDL_IMPO=(_F(GROUP_NO='Face_1',DZ=0.0,),
+                             _F(GROUP_NO='Edge_1',DY=0.0,),
+                              _F(GROUP_NO='Node_1',DX=0.0,DY=0.0,), 
+                           ),);  
+
+
+   MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
+
+   CHXFM[i]=AFFE_CHAR_MECA(MODELE=MODX[i],LIAISON_XFEM='OUI',INFO=1,);
+
+   DETRUIRE(CONCEPT=_F(NOM=MatRaf,),INFO=1,)
+   DETRUIRE(CONCEPT=_F(NOM=ChRaf,),INFO=1,)
+
+# STEP 3: CRACK PROPAGATION ON THE REFINED MODEL
+
+   if ( i != (nbcalc-1) ) :
+
+      FISS[i+1] = CO('FISS_%d'%(i+1))
+
+      if ( i == 1 ) :
+         PROPA_FISS(MODELE=MODX[i],
+                 FISSURE=_F(FISS_ACTUELLE=FISSH[i],
+                            FISS_PROPAGEE=FISS[i+1],
+                            NB_POINT_FOND=(10,10),
+                            TABLE=SIF20,
+                           ),
+                 METHODE_PROPA='GEOMETRIQUE',
+                 DA_MAX=da,
+                 ZONE_MAJ='TOUT',
+                 LOI_PROPA=_F(LOI='PARIS',
+                              C=1.,
+                              M=3.,
+                              N=0.,
+                              MATER=Alu),
+                  RAYON=4.5,
+                  COMP_LINE=_F(COEF_MULT_MINI=0.,
+                               COEF_MULT_MAXI=1.,),
+               );
+
+      else:
+
+         PROPA_FISS(MODELE=MODX[i],
+                 FISSURE=_F(FISS_ACTUELLE=FISSH[i],
+                            FISS_PROPAGEE=FISS[i+1],
+                            NB_POINT_FOND=10,
+                            TABLE=SIF10,
+                           ),
+                 METHODE_PROPA='GEOMETRIQUE',
+                 DA_MAX=da,
+                 ZONE_MAJ='TOUT',
+                 LOI_PROPA=_F(LOI='PARIS',
+                              C=1.,
+                              M=3.,
+                              N=0.,
+                              MATER=Alu),
+                  RAYON=4.5,
+                  COMP_LINE=_F(COEF_MULT_MINI=0.,
+                               COEF_MULT_MAXI=1.,),
+               );
+
+      LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                        OPERATION='EXTR',
+                        FISSURE=FISS[i+1],
+                        NOM_CHAM='LNNO',);
+      LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                        OPERATION='EXTR',
+                        FISSURE=FISS[i+1],
+                        NOM_CHAM='LTNO',);
+ 
+      DETRUIRE(CONCEPT=_F(NOM=MODX[i],))
+      DETRUIRE(CONCEPT=_F(NOM=CHXFM[i],))
+      DETRUIRE(CONCEPT=_F(NOM=ModH[i],))
+
+#----------------------------------------------
+#         POST TRAITEMENT
+#----------------------------------------------
+
+# FISS[1]
+
+# RECUPERATION DE LA TABLE CONTENANT LE NOMBRE DE FONDS DE FISSURE
+NB_FOND1=RECU_TABLE(CO=FISS[1],NOM_TABLE='NB_FOND_FISS')
+
+# RECUPERATION DE LA TABLE DES COORDONNEES DES FONDS DE FISSURE
+TB_FOND1=RECU_TABLE(CO=FISS[1],NOM_TABLE='FOND_FISS')
+
+TEST_TABLE(TABLE=NB_FOND1,
+               NOM_PARA='NOMBRE',
+               TYPE_TEST='MAX',
+               VALE_I=2,
+               REFERENCE='ANALYTIQUE',);    
+
+TEST_TABLE(TABLE=TB_FOND1,
+               NOM_PARA='COOR_Y',
+               TYPE_TEST='MAX',
+               VALE=16.0,
+               CRITERE='ABSOLU',
+               PRECISION=0.01,
+               REFERENCE='ANALYTIQUE',);    
+
+# FISS[2]
+
+# RECUPERATION DE LA TABLE CONTENANT LE NOMBRE DE FONDS DE FISSURE
+NB_FOND2=RECU_TABLE(CO=FISS[2],NOM_TABLE='NB_FOND_FISS')
+
+# RECUPERATION DE LA TABLE DES COORDONNEES DES FONDS DE FISSURE
+TB_FOND2=RECU_TABLE(CO=FISS[2],NOM_TABLE='FOND_FISS')
+
+TEST_TABLE(TABLE=NB_FOND2,
+               NOM_PARA='NOMBRE',
+               TYPE_TEST='MAX',
+               VALE_I=1,
+               REFERENCE='ANALYTIQUE',);    
+
+TEST_TABLE(TABLE=TB_FOND2,
+               NOM_PARA='COOR_Y',
+               TYPE_TEST='MAX',
+               VALE=28.0,
+               CRITERE='ABSOLU',
+               PRECISION=0.01,
+               REFERENCE='ANALYTIQUE',);    
+
+FIN();

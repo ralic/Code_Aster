@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D ,
 # wtnp112h.para = tps_job 130 mem_job 128Mo ncpus 1 liste_test S
@@ -241,7 +241,7 @@ RESU0=CALC_ELEM(reuse =RESU0,
 
 
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO'),
+             OPTION=('SIGM_ELNO','VARI_ELNO'),
              RESULTAT=RESU0,);
 
 TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',

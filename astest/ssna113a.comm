@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,7 @@ UR = STAT_NON_LINE (
                     REAC_ITER=1,),);
 
 UR = CALC_ELEM ( reuse = UR,
-                 OPTION = ('SIEF_ELNO',
+                 OPTION = ('SIGM_ELNO',
                            'VARI_ELNO',),
                  RESULTAT = UR,);
                  
@@ -176,7 +176,7 @@ UL = STAT_NON_LINE (
                     REAC_ITER=1,),);
 
 UL = CALC_ELEM ( reuse = UL,
-                 OPTION = ('SIEF_ELNO',
+                 OPTION = ('SIGM_ELNO',
                            'VARI_ELNO',),
                  RESULTAT = UL,);
                  

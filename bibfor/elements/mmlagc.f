@@ -1,0 +1,52 @@
+      SUBROUTINE MMLAGC(LAMBDS,DLAGRC,IRESOF,LAMBDA)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      INTEGER  IRESOF
+      REAL*8   LAMBDS,LAMBDA,DLAGRC
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE - CALCUL)
+C
+C CHOIX DU SEUIL DE FROTTEMENT (PRESSION DE CONTACT)
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  IRESOF : ALGO. DE RESOLUTION POUR LE FROTTEMENT
+C              0 - POINT FIXE
+C              1 - NEWTON PARTIEL
+C              2 - NEWTON COMPLET
+C IN  LAMBDS : VALEUR DU MULT. DE CONTACT (SEUIL FIXE)
+C IN  DLAGRC : INCREMENT DEPDEL DU LAGRANGIEN DE CONTACT
+C OUT LAMBDA : LAGRANGIEN DE CONTACT
+C
+C ----------------------------------------------------------------------
+C
+      LAMBDA = LAMBDS
+C
+      IF ((IRESOF.EQ.2).OR.(IRESOF.EQ.1)) THEN
+        IF (DLAGRC.NE.0) LAMBDA = DLAGRC
+      ENDIF
+C
+      END

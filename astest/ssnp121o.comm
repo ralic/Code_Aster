@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121o.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,8 +88,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     ITER_GEOM_MAXI = 4,
-                    ITER_CONT_MAXI = 30,
-                    INFO           = 2,
+                    ALGO_RESO_CONT = 'NEWTON',
 
                     ZONE =(
                            _F(
@@ -134,16 +133,16 @@ RESU=CALC_ELEM( reuse=RESU,
              RESULTAT=RESU,
 
 
-               OPTION=('SIEF_ELNO','SIEQ_ELNO'));
+               OPTION=('SIGM_ELNO','SIEQ_ELNO'));
 
 RESU=CALC_NO( reuse=RESU,
            RESULTAT=RESU,
 
-             OPTION=('SIEF_NOEU','SIEQ_NOEU'));
+             OPTION=('SIGM_NOEU','SIEQ_NOEU'));
 
 SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                     TYPE_CHAM='ELNO_SIEF_R',
-                     NOM_CHAM='SIEF_ELNO',
+                     NOM_CHAM='SIGM_ELNO',
                      RESULTAT=RESU,
                    NUME_ORDRE=1);
 

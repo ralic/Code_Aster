@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,6 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
-    ECOURAN  = NEUT_R   ELEM__         (X1       )
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
     EDEFGPG  = EPSI_R   ELGA__ RIGI    (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
@@ -70,7 +69,6 @@ MODE_LOCAL__
                                         IZZ      IXY      IXZ      IYZ      )
     ENBSP_I  = NBSP_I   ELEM__         (NBFIBR   NBGRFI   NUG1     NUG2     NUG3     NUG4
                                         NUG5     NUG6     NUG7     NUG8     NUG9     NUG10    )
-    CSUROPT  = NEUT_K24 ELEM__         (Z1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
@@ -85,11 +83,15 @@ MODE_LOCAL__
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EREFCO   = PREC     ELEM__         (EFFORT    MOMENT)
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
+    ECOURAN  = NEUT_R   ELEM__         (X1       )
+    ENONLIN  = NEUT_I   ELEM__         (X1)
+    CSUROPT  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
-    EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EENEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+
+    EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ESTRAUX  = STRX_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ
                                         BX       EPXX     GAXY     GAXZ     GAT      KY
                                         KZ        GAX     DXINT)
@@ -168,13 +170,13 @@ OPTION__
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EFCA_ELNO           39    IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
                               OUT__  EEFFONO  PEFFORR
-    EFGE_ELNO           142   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC
+    EFGE_ELNO          185    IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC
                                      CCOEFR   PCOEFFR  DDL_MECA PDEPLAR  CFORCEF  PFF1D1D  ECAFIEL  PFIBRES
                                      CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                                     ZVARCPG  PVARCRR  CCOMPOR  PCOMPOR
-                              OUT__  EEFGENO  PEFFORR
-                                     EEFGENC  PEFFORC
+                                     ZVARCPG  PVARCRR  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  ESTRAUX  PSTRXRR
+                                     ENONLIN  PNONLIN
+                              OUT__  EEFGENO  PEFFORR EEFGENC  PEFFORC
     ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -212,7 +214,7 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS
     MECA_SENS_MATE      -1    IN__    OUT__    XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__    OUT__    XXXXXX   XXXXXX
-    M_GAMMA             141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES
+    M_GAMMA             141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PACCELR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                                      CCOMPOR  PCOMPOR
                               OUT__  MVECTUR  PVECTUR
@@ -257,11 +259,8 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      CCOMPOR  PCOMPOR
                               OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
-    SIEF_ELNO           517   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
-                                     DDL_MECA PDEPPLU  ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ESTRAUX  PSTRXRR
-                              OUT__  EEFGENO  PSIEFNOR
-                                     EEFGENC  PSIEFNOC
+    SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SICA_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC

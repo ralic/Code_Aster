@@ -3,7 +3,7 @@
      &                  VTMP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,7 @@ C --- DEPL_ESCL
         DO 60 IDIM = 1,NDIM
           II = NBDM*(INOE-1)+IDIM
           JJ = NDIM*(INOE-1)+IDIM
-          VTMP(II) = VTMP(II)+VECTEE(JJ)  
+          VTMP(II) = VTMP(II)+VECTEE(JJ)
    60   CONTINUE
    70 CONTINUE
 
@@ -85,7 +85,7 @@ C --- LAGR_C
       DO 72 INOC = 1,NNL
         II = NBDM*(INOC-1)+NDIM+1
         JJ = INOC
-        VTMP(II) = VTMP(II)+VECTCC(JJ)   
+        VTMP(II) = VTMP(II)+VECTCC(JJ)  
   72  CONTINUE
   
 C --- LAGR_F1/F2

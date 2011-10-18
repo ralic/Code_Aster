@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,7 +116,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                  ),
 
            b_bouc_cont_cont=BLOC(condition = "FORMULATION == 'CONTINUE' ",
-                                 ITER_CONT_TYPE= SIMP(statut='f',typ='TXM',defaut="MAXI",
+                                 ITER_CONT_TYPE = SIMP(statut='f',typ='TXM',defaut="MAXI",
                                                       into=("MULT","MAXI")),
                                  b_bouc_cont_mult = BLOC(condition = "ITER_CONT_TYPE=='MULT'",
                                    ITER_CONT_MULT = SIMP(statut='f',typ='I',defaut = 4),
@@ -124,6 +124,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                  b_bouc_cont_maxi = BLOC(condition = "ITER_CONT_TYPE=='MAXI'",
                                    ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut = 30),
                                    ),
+                                 ALGO_RESO_CONT = SIMP(statut='f',typ='TXM',defaut="POINT_FIXE",
+                                                      into=("POINT_FIXE","NEWTON")),
                                  ),
 
            b_bouc_cont_xfem=BLOC(condition = "FORMULATION == 'XFEM' ",
@@ -139,7 +141,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
 # PARAMETRE GENERAL : BOUCLE DE FROTTEMENT
 
-           b_bouc_frot     = BLOC(condition = "FROTTEMENT=='COULOMB' and ((FORMULATION == 'CONTINUE') or (FORMULATION == 'XFEM')) ",
+           b_bouc_frot_cont= BLOC(condition = "FROTTEMENT=='COULOMB' and FORMULATION == 'CONTINUE' ",
                                   REAC_FROT =SIMP(statut='f',
                                                   typ='TXM',
                                                   defaut="AUTOMATIQUE",
@@ -152,9 +154,28 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                   b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
                                                        NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
                                     ),
+                                  ALGO_RESO_FROT = SIMP(statut='f',typ='TXM',defaut="NEWTON",
+                                                      into=("POINT_FIXE","NEWTON",)),  
+                                    
                                   ),
+                                  
+                                  
+           b_bouc_frot_xfem= BLOC(condition = "FROTTEMENT=='COULOMB' and FORMULATION == 'XFEM' ",
+                                  REAC_FROT =SIMP(statut='f',
+                                                  typ='TXM',
+                                                  defaut="AUTOMATIQUE",
+                                                  into=("AUTOMATIQUE","CONTROLE",),
+                                                  ),
+                                  b_automatique = BLOC(condition = "REAC_FROT == 'AUTOMATIQUE' ",
+                                                       ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                                       RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
+                                    ),
+                                  b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
+                                                       NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
+                                    ),
+                                  ),                       
 
-# PARAMETREs GENERAUX : METHODES DISCRETES
+# PARAMETRES GENERAUX : METHODES DISCRETES
 
            b_para_discret  = BLOC(condition = "FORMULATION == 'DISCRETE' ",
 #                                 ## METHODES DE DUALISATION ##
@@ -198,7 +219,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        defaut="ADMISSIBLE",
                                                        into=("ADMISSIBLE","NON_ADMISSIBLE"),),
                                   ),
-           ), #fin bloc b_contact
+           ),
 
 ## AFFECTATIONS (ZONES PAR ZONES)
 
@@ -223,7 +244,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
 
                                           ),
-                                ), #fin bloc b_affe_unil
+                                ),
 
 # AFFECTATION - CAS DISCRET
 
@@ -419,11 +440,11 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",
                                           into=("NOEUD","GAUSS","SIMPSON","NCOTES","SIMPSON1","SIMPSON2","NCOTES1","NCOTES2"),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
-                                                          fr="Dégré du polynôme de Legendre donnant les points de Gauss",
+                                                          fr="Degré du polynôme de Legendre donnant les points de Gauss",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=1,max=10),
                                             ),
                                           b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
-                                                          fr="Dégré du polynôme interpolateur",
+                                                          fr="Degré du polynôme interpolateur",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=3,max=10),
                                             ),
                                           b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
@@ -437,17 +458,11 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
 #
                                           ALGO_CONT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                into=("STANDARD","AVANCE","PENALISATION"),),
+                                                                into=("STANDARD","PENALISATION"),),
 
                                           b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
                                                           fr="Paramètres de la formulation Lagrangienne",
                                                           COEF_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                          ),
-                                          b_cont_avc=BLOC(condition = "ALGO_CONT == 'AVANCE' ",
-                                                          fr="Paramètres du Lagrangien augmenté",
-                                                          COEF_REGU_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                          COEF_STAB_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                          COEF_PENA_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
                                                           ),
                                           b_cont_pena=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
                                                             fr="Paramètres de la méthode pénalisée",
@@ -477,17 +492,12 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                             ),
 
                                             ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                  into=("STANDARD","AVANCE","PENALISATION"),),
+                                                                  into=("STANDARD","PENALISATION"),),
                                             b_frot_std      =BLOC(condition = "ALGO_FROT == 'STANDARD' ",
                                                                   fr="Paramètres de la formulation Lagrangienne",
                                                                   COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                                                                   ),
-                                            b_frot_avc      =BLOC(condition = "ALGO_FROT == 'AVANCE' ",
-                                                                  fr="Paramètres du Lagrangien augmenté",
-                                                                  COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                                  COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                                  COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                                  ),
+
                                             b_frot_pena     =BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
                                                                   fr="Paramètres de la méthode pénalisée",
                                                                   COEF_PENA_FROT  =SIMP(statut='o',typ='R'),

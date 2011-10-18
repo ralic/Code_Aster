@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,15 +159,10 @@ RESU_NL=STAT_NON_LINE(        MODELE=MODAST,
 
 RESU_NL=CALC_ELEM( reuse=RESU_NL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU_NL,
               )
 
-RESU_NL=CALC_ELEM( reuse=RESU_NL,
-                           RESULTAT=RESU_NL,
-                               INST=1.,
-                             OPTION=('SIGM_ELNO')
-                     )
 
 RESNLPOS=POST_CHAMP(RESULTAT=RESU_NL,
                     INST=1.,

@@ -5,7 +5,7 @@
       CHARACTER*24 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF PREPOST  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -95,6 +95,9 @@ C     CHAMP DE GRANDEUR "SIEF_R"
       ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
+      ELSE IF (NOCH.EQ.'SIGM_ELNO') THEN
+         NOMGD  = 'SIEF_R'
+         TYPCHA = 'ELNO'
       ELSE IF (NOCH.EQ.'SIGM_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'

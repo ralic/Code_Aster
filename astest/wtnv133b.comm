@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX
 # wtnv133b.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test S
@@ -273,21 +273,21 @@ U1=STAT_NON_LINE(MODELE=MODELE,
 U1=CALC_ELEM(reuse      = U1,
 
 
-             OPTION     = ('SIEF_ELNO',
+             OPTION     = ('SIGM_ELNO',
                            'VARI_ELNO','EPSI_ELNO'),
              RESULTAT   = U1);
 
 U1=CALC_NO(reuse      = U1,
 
-           OPTION     = ('SIEF_NOEU',
+           OPTION     = ('SIGM_NOEU',
                          'VARI_NOEU','EPSI_NOEU'),
            RESULTAT   = U1);
 
 
-TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU',
+TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIGM_NOEU',
                                 GROUP_NO = 'C',
                                 RESULTAT = U1,
-                                NOM_CHAM = 'SIEF_NOEU',
+                                NOM_CHAM = 'SIGM_NOEU',
                                 INVARIANT = 'OUI',
                                 OPERATION= 'EXTRACTION'));
 

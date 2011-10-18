@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 # ssnp108b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,7 +117,7 @@ EVOLNOLI=STAT_NON_LINE(
               )
 
 EVOLNOLI=CALC_CHAMP( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
-                             CONTRAINTE=('SIEF_ELNO'),
+                             CONTRAINTE=('EFGE_ELNO','SIEF_ELNO',),
               )
 
 EVOLNOLI=CALC_NO( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
@@ -149,7 +149,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'B1',
                       MAILLE = 'M1',
-                      NOM_CHAM = 'SIEF_ELNO',
+                      NOM_CHAM = 'EFGE_ELNO',
                       NOM_CMP = 'NXX',
                       PRECISION = 0.020,
                       REFERENCE = 'ANALYTIQUE',
@@ -160,7 +160,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'B3',
                       MAILLE = 'M6',
-                      NOM_CHAM = 'SIEF_ELNO',
+                      NOM_CHAM = 'EFGE_ELNO',
                       NOM_CMP = 'NXX',
                       PRECISION = 0.020,
                       REFERENCE = 'ANALYTIQUE',

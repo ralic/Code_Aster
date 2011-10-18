@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,7 +196,7 @@ LEDEP=CALC_NO( reuse = LEDEP,
                )
 
 LEDEP=CALC_ELEM( reuse = LEDEP,
-                 OPTION     = ('SIEF_ELNO','VARI_ELNO'),
+                 OPTION     = ('SIGM_ELNO','VARI_ELNO'),
                  RESULTAT   = LEDEP,
                )
 
@@ -261,7 +261,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              POINT = 1,
@@ -366,7 +366,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 2.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              POINT = 1,
@@ -490,7 +490,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 10.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              POINT = 1,

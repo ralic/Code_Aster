@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -340,7 +340,7 @@ STA1=MECA_STATIQUE(MODELE=MO,
 STA1=CALC_ELEM(reuse =STA1,
                RESULTAT=STA1,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('SIEF_ELNO','EFGE_ELNO',),
+               OPTION=('EFGE_ELNO',),
                );
 # ______________________________________________________________________
 
@@ -353,7 +353,7 @@ STA2=MECA_STATIQUE(MODELE=MO,
 STA2=CALC_ELEM(reuse =STA2,
                RESULTAT=STA2,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('SIEF_ELNO','EFGE_ELNO',),
+               OPTION=('EFGE_ELNO',),
                );
 
 # ______________________________________________________________________

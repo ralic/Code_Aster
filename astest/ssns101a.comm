@@ -1,5 +1,5 @@
-# MODIF  DATE 05/09/2011   AUTEUR TARDIEU N.TARDIEU 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB  
 # ssns101a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                                     ITER_GLOB_MAXI=25,),);
 
 NONLIN=CALC_ELEM(reuse=NONLIN, RESULTAT=NONLIN,
-                    OPTION=('SIEF_ELNO','SIEQ_ELGA','SIEQ_ELNO'),
+                    OPTION=('SIGM_ELNO','SIEQ_ELGA','SIEQ_ELNO'),
                     );
                     
                     

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -317,7 +317,7 @@ U=STAT_NON_LINE(
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=U,
                )
 
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
               
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 10.,
@@ -339,7 +339,7 @@ TEST_RESU(RESU=(
                 VALE = 151.2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 10.,
@@ -373,7 +373,7 @@ TEST_RESU(RESU=(
 
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 30.,
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(
                 VALE = 151.2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 30.,
@@ -413,7 +413,7 @@ TEST_RESU(RESU=(
                 VALE = 4.80271E-2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 60.,
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(
                 VALE = 151.2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
+                NOM_CHAM = 'SIGM_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 60.,

@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR BERARD A.BERARD 
+C MODIF ALGORITH  DATE 17/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,7 +192,7 @@ C
             VALK(2)=NOMA3
             VALK(3)=NOMA2
             CALL U2MESK('F','CALCULEL2_6',3,VALK)
-          endif
+          ENDIF
         ELSE
           CNREF=' '
         ENDIF
@@ -229,6 +229,7 @@ C     4.1 : SI TYPCAL='2', IL FAUT SURCHARGER LCORR(1) ET
 C           EVENTUELLEMENT RECUPERER MODELE_2
       IF (TYPCAL.EQ.'2') THEN
          LCORRE(1)=CORRU
+         LCORRE(2)=' '
          CALL JEVEUO(CORRU//'.PJXX_K1','L',JPJK1)
 C        -- LES MOA1 ET MOA2 STOCKES SONT LES MAILLAGES
          MOA1=ZK24(JPJK1-1+1)(1:8)
@@ -396,9 +397,20 @@ C     ============= FIN DE LA BOUCLE SENSIBILITE
       IF (TYPCAL.NE.'2') THEN
         CALL DETRSD('CORRESP_2_MAILLA',LCORRE(1))
       ENDIF
-      CALL DETRSD('CORRESP_2_MAILLA',LCORRE(2))
-      CALL JEDETR(LCORRE(2)//'.PJEF_MP')
-      CALL JEDETR(LCORRE(2)//'.PJEF_EL')
-      CALL JEDETC(' ','&&PJELC2',1)
+
+      IF (LELGA) THEN
+        CALL DETRSD('CORRESP_2_MAILLA',LCORRE(2))
+        CALL JEDETR(LCORRE(2)//'.PJEF_MP')
+        CALL JEDETR(LCORRE(2)//'.PJEF_EL')
+        CALL JEDETR('&&PJELC2.DIME')
+        CALL JEDETR('&&PJELC2.NOMNOE')
+        CALL JEDETR('&&PJELC2.NOMMAI')
+        CALL JEDETR('&&PJELC2.CONNEX')
+        CALL JEDETR('&&PJELC2.TYPMAIL')
+        CALL JEDETR('&&PJELC2.COORDO    .REFE')
+        CALL JEDETR('&&PJELC2.COORDO    .VALE')
+        CALL JEDETR('&&PJELC2.COORDO    .DESC')
+      ENDIF
+
       CALL JEDEMA()
       END

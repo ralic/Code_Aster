@@ -2,10 +2,10 @@
      &                  NBCPS ,MATRCC,MATREE,MATRMM,MATREM,
      &                  MATRME,MATRCE,MATRCM,MATRMC,MATREC,
      &                  MATRFF,MATRFE,MATRFM,MATRMF,MATREF,
-     &                  MMAT  )
+     &                  MATRFC,MMAT  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,7 +32,7 @@ C
       REAL*8       MATREM(27,27),MATRME(27,27)
       REAL*8       MATRCE(9,27) ,MATRCM(9,27)
       REAL*8       MATREC(27,9) ,MATRMC(27,9)
-      REAL*8       MATRFF(18,18)   
+      REAL*8       MATRFF(18,18),MATRFC(18,9)  
       REAL*8       MATRFE(18,27),MATRFM(18,27)  
       REAL*8       MATRMF(27,18),MATREF(27,18)
       REAL*8       MMAT(81,81)
@@ -208,6 +208,20 @@ C
  70   CONTINUE 
  
       IF (NBCPF.EQ.0) GOTO 999
+C
+C --- FROTTEMENT/CONTACT
+C
+        DO 917 INOF = 1,NNL
+          DO 927 INOC = 1,NNL
+            DO 937 ICMP = 1,NBCPF
+              KK = NBCPF*(INOF-1)+ICMP 
+              LL = INOC
+              II = NBDM*(INOF-1)+NDIM+1+ICMP            
+              JJ = NBDM*(INOC-1)+NDIM+1
+              MMAT(II,JJ) = MMAT(II,JJ)+MATRFC(KK,LL)
+ 937        CONTINUE
+ 927      CONTINUE
+ 917    CONTINUE
 C
 C --- FROTTEMENT/FROTTEMENT
 C

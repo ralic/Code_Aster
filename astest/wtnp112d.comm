@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D , MODELISATION THMC=LIQU_GAZ_ATM
 #       TEST31 ALLIANCES
@@ -221,7 +221,7 @@ RESU0=CALC_ELEM(reuse =RESU0,
 
 
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO'),
+             OPTION=('SIGM_ELNO','VARI_ELNO'),
              RESULTAT=RESU0,);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,

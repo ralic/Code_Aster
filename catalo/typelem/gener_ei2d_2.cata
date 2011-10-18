@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/06/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,9 +70,7 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     EREFCO   = PREC     ELEM__         (SIGM     DEPL)
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
@@ -82,6 +80,9 @@ MODE_LOCAL__
                                  EN1   ()
                                  EN2   ()
                                  EN3   (VARI)
+
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

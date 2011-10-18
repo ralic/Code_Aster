@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SOUS CHARGEMENT THERMIQUE. GRILLE_PINTO_MEN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -243,7 +243,7 @@ LEDEP=STAT_NON_LINE(
 
 LEDEP=CALC_ELEM( reuse=LEDEP,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=LEDEP,
               )
 
@@ -263,7 +263,7 @@ TEST_RESU(RESU=(
 
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -272,7 +272,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -281,7 +281,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 2.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -290,7 +290,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 2.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 3.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -308,7 +308,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 3.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -317,7 +317,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 4.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -326,7 +326,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 4.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -335,7 +335,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 5.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -344,7 +344,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 5.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -353,7 +353,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 6.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -362,7 +362,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 6.,
-             NOM_CHAM = 'SIEF_ELNO',
+             NOM_CHAM = 'SIGM_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',

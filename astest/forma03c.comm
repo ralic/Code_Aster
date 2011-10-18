@@ -1,5 +1,5 @@
-# MODIF  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
 # forma03c.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,7 +114,7 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
 
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
-                 OPTION=('SIEF_ELNO','VARI_ELNO','SIEQ_ELGA',),);
+                 OPTION=('SIGM_ELNO','VARI_ELNO','SIEQ_ELGA',),);
 
 # DEPOUILLEMENTS DES RESULTATS
 # VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
@@ -132,10 +132,10 @@ IMPR_RESU(FORMAT='MED',
 
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
-               OPTION='SIEF_NOEU',);
+               OPTION='SIGM_NOEU',);
 
 SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
-                       NOM_CHAM='SIEF_ELNO',
+                       NOM_CHAM='SIGM_ELNO',
                        LIGN_COUPE=_F(NB_POINTS=30,
                                      COOR_ORIG=(10,0,),
                                      COOR_EXTR=(100,0,),),);
@@ -147,7 +147,7 @@ IMPR_TABLE(TABLE=SIGBAS,
 
 TEST_RESU(RESU=_F(RESULTAT=RESUNL,
                   INST=TFIN,
-                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',
                   VALE=243.0,

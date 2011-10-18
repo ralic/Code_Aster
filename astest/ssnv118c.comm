@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION GENEE EN 3D (VISCOCHAB)
 # ssnv118c.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,7 +139,7 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'SIGM_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
@@ -149,13 +149,13 @@ SOLNL=CALC_ELEM(       reuse=SOLNL,
                                  RESULTAT=SOLNL )
 
 TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 15,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 15,
            MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIXX',  VALE = 0.11478E+04),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 15,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 15,
            MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 0.11478E+04),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 15,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 15,
            MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ',  VALE = 0.13294E+04),
 
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 15,
