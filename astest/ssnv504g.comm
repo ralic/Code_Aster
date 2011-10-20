@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,9 +31,7 @@ DEBUT(CODE=_F(NOM='SSNV504G',NIV_PUB_WEB='INTERNET'),);
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES
 #......................................................................
 
-PRE_GIBI();
-
-MAILL1=LIRE_MAILLAGE();
+MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,

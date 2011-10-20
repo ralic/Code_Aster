@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 # wtnv125a.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
@@ -24,9 +24,7 @@
 
 DEBUT(CODE=_F(NOM='WTNV125A',NIV_PUB_WEB='INTERNET'),);
 
-PRE_GIBI();
-
-MAIL=LIRE_MAILLAGE();
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
 #
 #  LISTE DES INSTANTS DE CALCUL

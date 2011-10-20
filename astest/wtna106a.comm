@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE MODELISATION AXIS_THHD EN QUAD8
 # wtna106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -23,7 +23,6 @@
 
 DEBUT(CODE=_F(NOM='WTNA106A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
-PRE_GIBI();
 ####################################
 ##### PERMEABILITE RELATIVE AU LIQ.ET SA DERIVEE (BO)
 ##### PERMEABILITE RELATIVE AU GAZ ET SA DERIRVEE (BO )
@@ -35,7 +34,7 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                       JUSQU_A=1000.,NOMBRE=1,),);
 
 
-MAIL=LIRE_MAILLAGE();
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

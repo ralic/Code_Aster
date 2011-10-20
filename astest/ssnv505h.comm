@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,11 +32,9 @@ DEBUT(CODE=_F( NOM = 'SSNV505H',NIV_PUB_WEB='INTERNET'));
 
 # ---------------------  MAILLAGE ----------------
 
-PRE_GIBI();
-
 #Acquisition du maillage des poutres encastrees
 
-MAILL1=LIRE_MAILLAGE();
+MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAILL1=MODI_MAILLAGE(reuse=MAILL1,
                      MAILLAGE=MAILL1,
@@ -58,9 +56,7 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
 
 #Acquisition du maillage de la section en fibres
 
-PRE_GIBI(UNITE_GIBI=21,UNITE_MAILLAGE=31);
-
-MA_SECT=LIRE_MAILLAGE(UNITE=31);
+MA_SECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
 
 
 # ---- MODELE : POUTRE DROITE D'EULER ----

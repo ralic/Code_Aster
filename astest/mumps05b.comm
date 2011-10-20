@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05b.para = tps_job 8660 mem_job 17900Mo mem_aster 5.33333333333 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 1 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,8 +57,6 @@ DEBUT(CODE=_F( NOM = 'MUMPS05B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       MEMOIRE=_F( DYNAMIQUE=100,),
       )
 
-PRE_GIBI();
-
 # pour obtenir un maillage quadratique :
 #----------------------------------------
 # MA1=LIRE_MAILLAGE( )
@@ -66,7 +64,7 @@ PRE_GIBI();
 
 # pour obtenir un maillage lineaire :
 #----------------------------------------
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.E+05,
                           NU=0.3,),);

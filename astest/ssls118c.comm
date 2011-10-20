@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 # ssls118c.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,8 +23,7 @@
 #---------------------------------------------------------------------
 #
 DEBUT(CODE=_F(NOM='SSLS118C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-PRE_GIBI();
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
 MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_MA=_F(TOUT='OUI',
                                NOM='TOUT',),

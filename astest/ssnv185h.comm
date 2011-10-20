@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 # ssnv185h.para = tps_job 130 mem_job 1024Mo mem_aster 70 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,9 +74,7 @@ PRES=-1.E6
 #                 ( nombre impair delements selon z )
 #---------------------------------------------------------
 
-PRE_GIBI();
-
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
 LARX = B/NX;
 LARZ = 2*L/NZ;

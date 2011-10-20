@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,13 +31,18 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
                         fr="Chainage Code_Aster-Europlexus",
 
         LOGICIEL = SIMP(statut='f', typ='TXM', defaut='/home/europlex/EPXD/bin/europlexus'),
+        LANCEMENT = SIMP(statut='f', typ='TXM', defaut='OUI',into=('OUI','NON')),
 
         MODELE     = SIMP(statut='o',typ=modele_sdaster),
         CARA_ELEM  = SIMP(statut='o',typ=cara_elem),
 
         FONC_PARASOL = FACT(statut='f',
+           regles=(PRESENT_PRESENT('NFKT','NFKR'),
+                   PRESENT_PRESENT( 'NFAT','NFAR'),),
            NFKT       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFKR       = SIMP(statut='f',typ=(fonction_sdaster,)),
+           NFAT       = SIMP(statut='f',typ=(fonction_sdaster,)),
+           NFAR       = SIMP(statut='f',typ=(fonction_sdaster,)),
            GROUP_MA   = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            ),
 

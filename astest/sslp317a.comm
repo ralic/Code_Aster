@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,13 +37,11 @@ FISS2 = [None]*(nb_raff+1)
 FISS3 = [None]*(nb_raff+1)
 FISS4 = [None]*(nb_raff+1)
 
-PRE_GIBI();
-
 r2 = 0.05
 
 num_calc=0   
 
-MA[num_calc]=LIRE_MAILLAGE();
+MA[num_calc]=LIRE_MAILLAGE(FORMAT='MED',);
 
 for num_calc in range(nb_raff+1) :
 

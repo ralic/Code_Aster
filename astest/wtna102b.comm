@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtna102b.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test R
@@ -24,15 +24,13 @@
 
 DEBUT(CODE=_F(NOM='WTNA102B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-PRE_GIBI();
-
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                        _F(JUSQU_A=20000000000.,NOMBRE=100,),
                                  ),);
 
 
-MAIL=LIRE_MAILLAGE();
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 # hsnv132d.para = tps_job 100 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,10 +20,9 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='HSNV132D', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-              
-PRE_GIBI();
+
 n = 51
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,

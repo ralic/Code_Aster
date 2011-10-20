@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE  - COUPLE TH ANALYTIQUE
 # wtnl102b.para = tps_job 170 mem_job 128Mo ncpus 1 liste_test S
@@ -23,11 +23,9 @@
 
 DEBUT(CODE=_F(NOM='WTNL102B',NIV_PUB_WEB='INTERNET'),);
 
-PRE_GIBI();
-
 LAMBDA=DEFI_CONSTANTE(VALE=10.0,);
 
-MAIL=LIRE_MAILLAGE();
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

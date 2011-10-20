@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,8 +30,6 @@
 DEBUT(CODE=_F(NOM='SSNV127E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 
-
-PRE_GIBI();
 #_____________________________________________________________________
 #
 #                    LECTURE DE SSNV127E.MGIB
@@ -40,7 +38,7 @@ PRE_GIBI();
 
 
 
-SSNV127E=LIRE_MAILLAGE();
+SSNV127E=LIRE_MAILLAGE(FORMAT='MED',);
 #
 #
 

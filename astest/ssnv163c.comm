@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 # ssnv163c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -24,8 +24,6 @@
 # -----------------------------------------------------
 
 DEBUT(CODE=_F(NOM='SSNV163C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
-PRE_GIBI()
 
 M=LIRE_MAILLAGE( )
 

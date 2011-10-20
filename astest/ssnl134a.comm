@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl134a.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,20 +23,14 @@ DEBUT(CODE=_F( NOM = 'SSNL134A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
 
 #Acquisition du maillage du  portique bi-encastre
 
-PRE_GIBI(UNITE_GIBI=17,
-         UNITE_MAILLAGE=20,);
-
-MAILLAGE=LIRE_MAILLAGE(UNITE=20,);
+MAILLAGE=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 #Acquisition du maillage de la section en fibres
 
-PRE_GIBI(UNITE_GIBI=18,
-         UNITE_MAILLAGE=21,);
-
-M_SECT=LIRE_MAILLAGE(UNITE=21,);
+M_SECT=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',);
 #Corps du fichier de commandes : modele, materiau, caracteristiques de la poutre.
 
 MOD_TGM=AFFE_MODELE(MAILLAGE=MAILLAGE,

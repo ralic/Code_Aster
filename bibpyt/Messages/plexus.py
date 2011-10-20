@@ -1,4 +1,4 @@
-#@ MODIF plexus Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF plexus Messages  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,6 +59,15 @@ Les deplacements imposés non nuls dans DDL_IMPO ne sont pas autorisés
 14 : _(u"""
 Le fichier MED contenant les résultats d'Europlexus est introuvable.
 L'exécution d'Europlexus s'est probablement mal déroulée
+"""), 
+
+15 : _(u"""En presence du mot-cle %(k1)s dans AFFE_CARA_ELEM
+le mot-cle %(k2)s devrait etre present dans CALC_EUROPLEXUS
+
+"""), 
+
+16 : _(u"""En presence du mot-cle %(k1)s dans CALC_EUROPLEXUS
+le mot-cle %(k2)s est obligatoire dans AFFE_CARA_ELEM
 """), 
 
 }

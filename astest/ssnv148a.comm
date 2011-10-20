@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 # ssnv148a.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,8 +22,6 @@
 DEBUT(CODE=_F(NOM='SSNV148A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #.....................................................................
-
-PRE_GIBI();
 
 M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),INFO=2);
 

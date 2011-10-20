@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 # ssnv198a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,12 +24,10 @@ DEBUT(CODE=_F(NOM='SSNV198A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #----------------------------------------------
 #             MAILLAGE 
 #----------------------------------------------
-
-PRE_GIBI();
 lx=1.
 lz=1.
 ly=1.
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,

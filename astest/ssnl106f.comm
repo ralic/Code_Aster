@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106f.para = tps_job 140 mem_job 300Mo ncpus 1 liste_test S
@@ -30,11 +30,8 @@ EP = 0.001;
 
 REXT = 0.1;
 
-
-PRE_GIBI();
-
-
-M1=LIRE_MAILLAGE()
+  
+M1=LIRE_MAILLAGE(FORMAT='MED',)
 
 # TRANSFORMATION DES MAILLES QUAD8 EN QUAD9
 #
@@ -147,7 +144,6 @@ REST=STAT_NON_LINE(MODELE=MO,
                                 NUME_INST_FIN=11,),
                    NEWTON=_F(REAC_ITER=3,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
-
                                   RESI_REFE_RELA=1.,
                                   SIGM_REFE=1.E3
                                   ),);
@@ -293,10 +289,8 @@ RESM=STAT_NON_LINE(MODELE=MO,
                                 INST_FIN=2.7999999999999998,),
                    NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
-
                                   RESI_REFE_RELA=1.E-3,
                                   SIGM_REFE=1.E6
-
                    ),);
 
 # LES CONTRAINTES LOCALES SONT EXTREMES SUR LA PEAU EXTERNE

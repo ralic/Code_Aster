@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,9 +62,7 @@ KINT     = DEFI_CONSTANTE(VALE=1.E-12);
 # KINT correspond a une conductivite lambda =1E-9
 #      soit a une permeabilite de K = 9.81E-6 m/s
 
-PRE_GIBI();
-
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,

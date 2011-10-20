@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE calcul non lineaire mecanique avec changement de maillage
 # zzzz253a.para = tps_job 60 mem_job 32Mo mem_aster 90 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -47,8 +47,7 @@ inst1=0.8
 #===============================================================================================================
 from math import *
 
-PRE_GIBI()
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MO1=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='BARR1',  PHENOMENE='MECANIQUE', MODELISATION='D_PLAN',),);
 MO2=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='BARR2',  PHENOMENE='MECANIQUE', MODELISATION='D_PLAN',),);

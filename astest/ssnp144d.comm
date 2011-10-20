@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2011   AUTEUR FERTE G.FERTE 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,13 +20,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNP144D',NIV_PUB_WEB='INTERNET',),);
-#----------------------------------------------
-#                MAILLAGE : ssnp144d.mgib
-#----------------------------------------------
 
-PRE_GIBI();
-
-MAILLAG1=LIRE_MAILLAGE();
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F(),
                        );

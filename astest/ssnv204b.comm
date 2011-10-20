@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION MONOTONE DRAINE (MECA PUR)
 # ssnv204b.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,7 +26,6 @@
 
 
 DEBUT(CODE=_F(NOM='SSNV204B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
-PRE_GIBI();
 
 # modules mecaniques [kPa]
 K=516.2E6
@@ -44,7 +43,7 @@ P0=100000.
 #***********************************************************************
 #    MAILLAGE + MODELE
 #***********************************************************************
-MAILLAGE=LIRE_MAILLAGE( );
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',

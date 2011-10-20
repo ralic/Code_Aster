@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE : VALIDATION DE LA LOI VISC_ISOT_TRAC SUR ESSAI DE TRACTION
 # ssnl129f.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,8 +20,6 @@
 # ======================================================================
 #        CAS AXISYMETRIQUE
 DEBUT(CODE=_F( NOM = 'SSNL129F',NIV_PUB_WEB='INTERNET'));
-
-PRE_GIBI();
 
 MAIL=LIRE_MAILLAGE();
 

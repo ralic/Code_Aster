@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE A.FOUCAULT
 # TITRE ETUDE: TUBE BETON SOUS PRESSION INTERNE AVEC LE MODELE UMLV
 # ssna121a.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test S
@@ -33,8 +33,7 @@ PRES_INT=1E6;
 # 1- LLECTURE MAILLAGE  
 #------------------------------------------------------------------
 
-PRE_GIBI(UNITE_GIBI = 19,UNITE_MAILLAGE=20); 
-MAILME=LIRE_MAILLAGE(INFO=2,UNITE=20);
+MAILME=LIRE_MAILLAGE(INFO=2,FORMAT='MED');
 
 
 #------------------------------------------------------------------

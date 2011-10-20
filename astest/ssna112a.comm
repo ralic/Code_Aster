@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
 # ssna112a.para = tps_job 160 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,9 +23,7 @@
 
 DEBUT(CODE=_F(NOM='ssna112a', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-PRE_GIBI();
-
-MALLA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),
+MALLA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),FORMAT='MED',
                     INFO = 2,);
 
 MALLA=DEFI_GROUP(reuse =MALLA,

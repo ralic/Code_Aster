@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 15/02/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,19 +23,20 @@
 #----------------------------- Importation des modules  ----------------
 #-----------------------------------------------------------------------   
 
-# unite associe au fichier ou le pos-traitement CASTE2000 est fait en commandes epx
+# unite associe au fichier ou le post-traitement CASTEM2000 est fait en commandes epx
 # unite_cast2000 = 0 # il ne fait pas le pos-traitement
 # __temp
 unite_cast2000 = 95
 
 debug = False
-dryrun = False
 
 import types,string
 import os
 import numpy
 import math 
 import copy
+import tempfile
+from pprint import pprint
 
 # Protection pour Eficas
 try:
@@ -48,6 +49,11 @@ except:
       
 #----------------------------- Precision ------------------------------- 
 tst = 1.0E-10
+
+def float2str(f):
+    """ Imprime un float avec 6 chiffres significatifs dans le fichier EPX """
+    return "%.6e" % f
+
 
 #-----------------------------------------------------------------------   
 #----------------------------- Fonctions de calcul vectoriel -----------
@@ -73,9 +79,6 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
                              DIME=None,OBSERVATION=None,ARCHIVAGE=None,COURBE=None,
                              CALCUL=None,DOMAINES=None,INTERFACES=None,INFO=1,**args):
         
-#   import aster
-#   from Accas import _F
-
   ier=0
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
@@ -116,6 +119,11 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   MasquerAlarme('MED_77')
   MasquerAlarme('MED_37')
 
+  MasquerAlarme('MED_98')
+  MasquerAlarme('ALGELINE4_43')
+  MasquerAlarme('JEVEUX_57')
+
+
 
   # Ligne de commande d'Europlexus
   if args.has_key('LOGICIEL'): EXEC = args['LOGICIEL']
@@ -128,17 +136,24 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
+  # Chemin du repertoire REPE_OUT de l'execution courante d'Aster
+  REPE_OUT = os.path.join(os.getcwd(), 'REPE_OUT')
+
+  # Chemin du repertoire temporaire pour l'execution d'EPX (un lien vers REPE_OUT)
+  REPE_epx    = tempfile.mkdtemp(suffix='_epx')
+  os.rmdir(REPE_epx)
+  os.symlink(REPE_OUT, REPE_epx)
+
   # classs Europlexus permettant de faire le chainage avec le Code_Aster
   EPX = EUROPLEXUS(MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,
-# AA                   ECRITURE,CALCUL,REPE='REPE_OUT',EXEC=EXEC)
                    OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,
-                   REPE='REPE_OUT',EXEC=EXEC, INFO=INFO, args=args)
+                   REPE='REPE_OUT',EXEC=EXEC, INFO=INFO, REPE_epx=REPE_epx, args=args)
 
   # Eriture du fichier de commande Europlexus
   EPX.ecrire_fichier()
 
-  # Si dryrun alors on ne lance pas le calcul Europlexus
-  if dryrun: return ier
+  # On ne lance pas le calcul Europlexus...
+  if args.has_key('LANCEMENT') and args['LANCEMENT']=='NON': return ier
 
   # Lancement du calcul Europlexus
   EPX.lancer_calcul()
@@ -146,23 +161,16 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   # Recuperer le resulat Europlexus a l'aide d'un concept aster de type evol_noli
   fichier_med = 'auto'
   fichier_pun = 'auto'
-#  if debug  : 
-#    fichier_med='fort.81'
-#    fichier_pun ='fort.85'
 
   self.DeclareOut('resu',self.sd) # Le concept sortant (de type evol_noli) est nomme 'resu'   
   global resu # pour que le nom du concept prenne celui defini par l'utilisateur
   EPX.get_resu(fichier_med=fichier_med)
 
-  #Recuperer les concepts table
+  # Recuperer les concepts table
   if COURBE is not None:
     global table
-    # icourbe = 0
-    # for fonc in COURBE['TABLE'] :
-      # icourbe += 1
     self.DeclareOut('table',args['TABLE_COURBE'])
     EPX.get_table()
-      # EPX.get_table(icourbe=icourbe,fichier=fichier_pun)
 
 
   # Pour la gestion des Exceptions
@@ -174,6 +182,13 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   RetablirAlarme('MED_77')
   RetablirAlarme('MED_37')
 
+  RetablirAlarme('MED_98')
+  RetablirAlarme('ALGELINE4_43')
+  RetablirAlarme('JEVEUX_57')
+
+  # Suppression du lien symbolique
+  os.remove(REPE_epx)
+
   return ier
 
 #-----------------------------------------------------------------------   
@@ -181,8 +196,7 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
 #-----------------------------------------------------------------------   
 
 class EUROPLEXUS:
-# AA  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,ECRITURE,CALCUL,REPE,EXEC,**args):
-  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,REPE,EXEC,INFO,args):
+  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,REPE,EXEC,INFO,REPE_epx,args):
 
     if debug: print 'args_key %s'%args.keys()
     # Mettre toutes les entrees en attributs
@@ -192,7 +206,6 @@ class EUROPLEXUS:
     self.CHAM_MATER = CHAM_MATER
     self.FONC_PARASOL = FONC_PARASOL
     self.EXCIT = EXCIT
-#    self.ECRITURE = ECRITURE
     self.OBSERVATION = OBSERVATION
     self.ARCHIVAGE = ARCHIVAGE
     self.COURBE = COURBE
@@ -201,8 +214,9 @@ class EUROPLEXUS:
     self.INTERFACES = INTERFACES
     self.INFO = INFO
 
-    # Repertoire de calcul Europlexus 
-    self.REPE   = REPE 
+    self.REPE_epx = REPE_epx
+    self.pwd = os.getcwd()
+
     # Commande d'execution de Europlexus
     self.EXEC   = EXEC
     
@@ -219,26 +233,24 @@ class EUROPLEXUS:
     else:                            self.TABLE_COURBE = None
     # Dictionnaire contenant le texte associé au fichier de commande Europlexus
     self.epx = {}
-    
+
     if debug: print 'pas nbre courbe = %s'%self.PAS_NBRE_COURBE
     
     # Concept pour un nouveau maillage si on utilise RIGI_PARASOL ou 
     # si on regroupe separement les mailles tria3 et quad4
     self.NEW_MA = None
-    
+
     # Nom des fichiers de Europlexus (commande et sorties)
     self.nom_fichiers = {'COMMANDE' : 'commandes.epx',
-                         'MAILLAGE' : 'maillage_epx',
+                         #'MAILLAGE' : 'maillage_epx',
+                         'MAILLAGE' : 'commandes',
                          'ALIT'     : 'champ.alit',
                          'MED'      : 'champ.e2m',
                          'PUN'      : 'courbes.pun',
                         }
     
-    # Chemin du repertoire courant ou le calcul Aster est lance
-    self.pwd = os.getcwd() + os.sep                     
     
 
-  
 #-----------------------------------------------------------------------       
   def get_unite_libre(self,):
 
@@ -249,7 +261,7 @@ class EUROPLEXUS:
     
      
 #-----------------------------------------------------------------------   
-  def reupere_structure(self,concept,mot_cle=None):
+  def recupere_structure(self,concept,mot_cle=None):
 
     try : structure = concept.etape.valeur
     except : UTMESS('F','PLEXUS_1') 
@@ -265,6 +277,7 @@ class EUROPLEXUS:
     except : 
       out = None
     if not out is None : return out    
+    if debug: print "get_motcle/%s=%s" % (mot_cle, str(out))
     if not code_mess is None and code_mess: UTMESS(code_mess,'PLEXUS_2',valk=mot_cle)
     return None
 
@@ -367,9 +380,10 @@ class EUROPLEXUS:
     # __temp
     fichier_cast2000 = 'fort.%i' %unite_cast2000
     if unite_cast2000 and os.path.isfile(fichier_cast2000) :
-      sorite_cast2000 = self.pwd + 'REPE_OUT/post.k2000'
+      sortie_cast2000 = os.path.join(self.REPE_epx, 'post.k2000')
+
       epx[MODULE].append('OPNF 12') 
-      epx[MODULE].append(2*' ' + "'%s'" %sorite_cast2000)
+      epx[MODULE].append(2*' ' + "'%s'" %sortie_cast2000)
       epx[MODULE].append('\n')
 
 #-----------------------------------------------------------------------   
@@ -383,9 +397,9 @@ class EUROPLEXUS:
     # Entete de la commande Europlexus courante
     epx[MODULE] = ['*--LECTURE MAILLAGE']
 
-    # Recuperer la concept maillage modifie ou initial 
+    # Recuperer le concept maillage modifie ou initial 
     if self.NEW_MA is None :
-      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+      concept_maillage = self.recupere_structure(self.MODELE,'MAILLAGE')
     else :
       concept_maillage = copy.copy(self.NEW_MA) 
 
@@ -393,24 +407,24 @@ class EUROPLEXUS:
     unite = self.get_unite_libre()
 
     # Extensions des formats de maillage 
-    extension = {'CASTEM' : '.mgib', 'MED':'.med'}
+    extension = {'CASTEM' : '.msh', 'MED':'.med'}
 
     # donner un nom au fichier de maillage parce que le fort.unite peut etre ecrase par d'autre operation d'ecriture
-    nom_fichier = self.REPE + os.sep + self.nom_fichiers['MAILLAGE'] + extension[format]
-    DEFI_FICHIER(UNITE=unite,FICHIER=nom_fichier,ACTION='ASSOCIER')
-    IMPR_RESU(UNITE=unite,
-              FORMAT=format,
-              RESU = _F(MAILLAGE=concept_maillage)
+    nom_fichier = self.nom_fichiers['MAILLAGE'] + extension[format]
+    fichier_maillage = self.REPE_epx + os.sep + nom_fichier
+
+    DEFI_FICHIER(UNITE=unite, FICHIER=fichier_maillage, ACTION='ASSOCIER')
+    IMPR_RESU(UNITE  = unite,
+              FORMAT = format,
+              RESU   = _F(MAILLAGE=concept_maillage)
              )
     DEFI_FICHIER(UNITE=unite,ACTION='LIBERER');    
 
-    # Ecriture de la commande Europlexus associee
-    fichier_maillage = self.pwd + nom_fichier
+    epx[MODULE].append('%s TOUT' % format)
 
-    #epx[MODULE].append('OPNF FORMAT 9')
-    epx[MODULE].append('%s '%format)
-    epx[MODULE].append("'%s' TOUT" %fichier_maillage)    
-    #epx[MODULE].append('CASTEM 9 TOUT')
+#    epx[MODULE].append('%s '%format)
+#    epx[MODULE].append("'%s' TOUT" % fichier_maillage)    
+#    epx[MODULE].append("NTMPMA TOUT")    
 
     epx[MODULE].append('\n')    
 
@@ -475,7 +489,7 @@ class EUROPLEXUS:
     epx[MODULE].append('GEOMETRIE')
     
     # Recuperer la structure sous le mot_cle facteur AFFE de AFFE_MODELE 
-    affe_modele = self.reupere_structure(self.MODELE,'AFFE')
+    affe_modele = self.recupere_structure(self.MODELE,'AFFE')
     affe_modele = self.setlist(affe_modele)
     
  
@@ -511,7 +525,7 @@ class EUROPLEXUS:
     nom_groups= {'TRIA3':[],'QUAD4':[]}
     
     if len(dic_gma['DKT3']) > 0:
-      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+      concept_maillage = self.recupere_structure(self.MODELE,'MAILLAGE')
       class_dkt = DKT(MAILLAGE=concept_maillage,)
       nom_groups = class_dkt.aster2epx(groups=dic_gma['DKT3'])
       if debug: print 'nom_groups = %s'%nom_groups
@@ -570,7 +584,7 @@ class EUROPLEXUS:
     MODULE = 'CARA_ELEM'
 
     # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
-    cara_elem_struc = self.reupere_structure(self.CARA_ELEM)
+    cara_elem_struc = self.recupere_structure(self.CARA_ELEM)
 
     epx[MODULE] = ['*--CARACTERISTIQUES DES ELEMENTS DE STRUCTURE']
 
@@ -580,98 +594,107 @@ class EUROPLEXUS:
     # Dictionnaire conteant les donnees associees aux differents elements de structure
     dic_elem = {}
     for cle in ['DISCRET','COQUE','POUTRE','RIGI_PARASOL']:
-      if cara_elem_struc.has_key(cle):
-        fact = cara_elem_struc[cle]
-        if fact :
-          dic_elem[cle] = self.setlist(fact)
-     
+        if cara_elem_struc.has_key(cle):
+            fact = cara_elem_struc[cle]
+            if fact :
+                dic_elem[cle] = self.setlist(fact)
+
+    if debug:
+       print "AA/dic_elem="
+       pprint(dic_elem)
+
     # traduire les masses concentrees si elles existent
     cle = 'DISCRET'
     self.discretParasol = {}
+    self.discretParasolAmor = {}
     if dic_elem.has_key(cle):
-      epx[MODULE].append('\n') 
-      epx[MODULE].append('*--MASSES AJOUTEES')
-      for elem in dic_elem[cle]:
-        if elem['CARA'] == 'M_T_D_N' :
-          group_ma = self.get_group_ma(elem)
-          vale = elem['VALE']
-          epx[MODULE].append('MASSE  123456 %s' %vale)
-          epx[MODULE].append(7*' ' + 'LECT')
-          for group in group_ma:
-            epx[MODULE].append(11*' '+group)
-          epx[MODULE].append(7*' ' + 'TERM')
-        if elem['CARA'] == 'K_TR_D_N' :
-          group_ma = self.get_group_ma(elem)
-          vale     = elem['VALE']
-          for gma in group_ma :
-            self.discretParasol[gma] = vale
-           
+        epx[MODULE].append('\n') 
+        epx[MODULE].append('*--MASSES AJOUTEES')
+        for elem in dic_elem[cle]:
+            if debug: print "AA/elem="
+            if elem['CARA'] == 'M_T_D_N' :
+                group_ma = self.get_group_ma(elem)
+                vale = elem['VALE']
+                epx[MODULE].append('MASSE  123456 %s' %vale)
+                epx[MODULE].append(7*' ' + 'LECT')
+                for group in group_ma:
+                    epx[MODULE].append(11*' '+group)
+                epx[MODULE].append(7*' ' + 'TERM')
+            if elem['CARA'] == 'K_TR_D_N' :
+                group_ma = self.get_group_ma(elem)
+                vale     = elem['VALE']
+                for gma in group_ma :
+                    self.discretParasol[gma] = vale
+            if elem['CARA'] == 'A_TR_D_N' :
+                group_ma = self.get_group_ma(elem)
+                vale     = elem['VALE']
+                for gma in group_ma :
+                    self.discretParasolAmor[gma] = vale
+
     # traduire les elements coques s'ils existent
     cle = 'COQUE'
     self.dicOrthotropie={}
     self.listEpais=[]
     self.listEpais2=[]
     if dic_elem.has_key(cle):
-      epx[MODULE].append('\n') 
-      epx[MODULE].append('*--ELEMENTS COQUES')
-      for elem in dic_elem[cle]:
-#        print elem     
-        group_ma = self.get_group_ma(elem)
-        epais = elem['EPAIS']
-        if self.ARCHIVAGE['CONT_GENER'] == 'OUI' :
-            self.listEpais.append({'VALE' : epais, 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X21'})
-            self.listEpais2.append({'VALE' : epais**2/6., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X22'})
-        else :
-            self.listEpais.append({'VALE' : 1., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X21'})
-            self.listEpais2.append({'VALE' : 1., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X22'})
-        st = 'EPAIS  %s  ' %epais
-        #ajouter les group_ma qui ont ete affecte par ces caracteristiques
-        epx[MODULE].append(st+'LECT')
-        for group in group_ma:
-          epx[MODULE].append((len(st)+4)*' '+group)
-        epx[MODULE].append((len(st))*' '+'TERM')
-        if elem.has_key('VECTEUR'):
-# AA       if elem['VECTEUR'] :
-            for group in group_ma :
-                self.dicOrthotropie[group] = elem['VECTEUR']
-         
+        epx[MODULE].append('\n') 
+        epx[MODULE].append('*--ELEMENTS COQUES')
+        for elem in dic_elem[cle]:
+            group_ma = self.get_group_ma(elem)
+            epais = elem['EPAIS']
+            if self.ARCHIVAGE['CONT_GENER'] == 'OUI' :
+                self.listEpais.append({'VALE' : epais, 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X21'})
+                self.listEpais2.append({'VALE' : epais**2/6., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X22'})
+            else :
+                self.listEpais.append({'VALE' : 1., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X21'})
+                self.listEpais2.append({'VALE' : 1., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X22'})
+            st = 'EPAIS  %s  ' %epais
+            #ajouter les group_ma qui ont ete affecte par ces caracteristiques
+            epx[MODULE].append(st+'LECT')
+            for group in group_ma:
+                epx[MODULE].append((len(st)+4)*' '+group)
+            epx[MODULE].append((len(st))*' '+'TERM')
+            if elem.has_key('VECTEUR'):
+                for group in group_ma :
+                    self.dicOrthotropie[group] = elem['VECTEUR']
+
     # traduire les elements poutres s'ils existent
     cle = 'POUTRE'
     if dic_elem.has_key(cle):
-      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
-      #class permettant de calculer et verifier les vecteurs de poutre dans Europlexus
-      class_poutre = POUTRE(MAILLAGE=concept_maillage,CARA_ELEM=self.CARA_ELEM)
-      epx[MODULE].append('\n') 
-      epx[MODULE].append('*--ELEMENTS POUTRES')
-      for elem in dic_elem[cle]:       
-        group_ma = self.get_group_ma(elem)
-        vecteurs = class_poutre.getvecteurs(group_ma,verif='non')
-        vect_y = vecteurs[group_ma[0]]
-        type_section = elem['SECTION']
-        st = 'GEOP %s ' %type_section
-        if type_section == 'RECTANGLE' :
-          # Correspondance de caracteristique de poutre aster/europlexus
-          dic_corresp = {'HY':'AY','HZ':'AZ'}
-          epx[MODULE].append(st)
-          # ajouter le vecteur definisant l'orientation de la section
-          epx[MODULE].append(len(st)*' ' + 'VX %s' %vect_y[0])
-          epx[MODULE].append(len(st)*' ' + 'VY %s' %vect_y[1])
-          epx[MODULE].append(len(st)*' ' + 'VZ %s' %vect_y[2])
-          # ajouter les caracteristiques de la poutre
-          cara = elem['CARA']
-          vale = elem['VALE']
-          for icar in range(len(cara)):
-            car = cara[icar]
-            val = vale[icar]
-            car_epx = dic_corresp[car]
-            epx[MODULE].append(len(st)*' ' + '%s %s' %(car_epx,val))
-          # ajouter les group_ma qui ont ete affecte par ces caracteristiques
-          epx[MODULE].append(5*' '+'LECT')
-          for group in group_ma:
-            epx[MODULE].append(len(st)*' '+group)
-          epx[MODULE].append(5*' '+'TERM')     
-        else : 
-          UTMESS('A','PLEXUS_4',valk=type_section) 
+        concept_maillage = self.recupere_structure(self.MODELE,'MAILLAGE')
+        # classe permettant de calculer et verifier les vecteurs de poutre dans Europlexus
+        class_poutre = POUTRE(MAILLAGE=concept_maillage,CARA_ELEM=self.CARA_ELEM)
+        epx[MODULE].append('\n') 
+        epx[MODULE].append('*--ELEMENTS POUTRES')
+        for elem in dic_elem[cle]:       
+            group_ma = self.get_group_ma(elem)
+            vecteurs = class_poutre.getvecteurs(group_ma,verif='non')
+            vect_y = vecteurs[group_ma[0]]
+            type_section = elem['SECTION']
+            st = 'GEOP %s ' %type_section
+            if type_section == 'RECTANGLE' :
+                # Correspondance de caracteristique de poutre aster/europlexus
+                dic_corresp = {'HY':'AY','HZ':'AZ'}
+                epx[MODULE].append(st)
+                # ajouter le vecteur definisant l'orientation de la section
+                epx[MODULE].append(len(st)*' ' + 'VX %s' %vect_y[0])
+                epx[MODULE].append(len(st)*' ' + 'VY %s' %vect_y[1])
+                epx[MODULE].append(len(st)*' ' + 'VZ %s' %vect_y[2])
+                # ajouter les caracteristiques de la poutre
+                cara = elem['CARA']
+                vale = elem['VALE']
+                for icar in range(len(cara)):
+                  car = cara[icar]
+                  val = vale[icar]
+                  car_epx = dic_corresp[car]
+                  epx[MODULE].append(len(st)*' ' + '%s %s' %(car_epx,val))
+                # ajouter les group_ma qui ont ete affecte par ces caracteristiques
+                epx[MODULE].append(5*' '+'LECT')
+                for group in group_ma:
+                  epx[MODULE].append(len(st)*' '+group)
+                epx[MODULE].append(5*' '+'TERM')     
+            else : 
+                UTMESS('A','PLEXUS_4',valk=type_section) 
       
     epx[MODULE].append('\n') 
 
@@ -682,157 +705,165 @@ class EUROPLEXUS:
     
     # Cle identifiant 
     MODULE = 'RIGI_PARASOL'
-    concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+    concept_maillage = self.recupere_structure(self.MODELE,'MAILLAGE')
     self.MApyt = MAIL_PY()
     self.MApyt.FromAster(concept_maillage)
 
     # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
-    cara_elem_struc = self.reupere_structure(self.CARA_ELEM)
-    
+    cara_elem_struc = self.recupere_structure(self.CARA_ELEM)
+
     # Recuperer la structure RIGI_PARASOL si elles existe
     list_rigi_parasol = None
     if cara_elem_struc.has_key('RIGI_PARASOL'):
-      fact = cara_elem_struc['RIGI_PARASOL']
-      if fact :list_rigi_parasol = self.setlist(fact)
-   
+        fact = cara_elem_struc['RIGI_PARASOL']
+        if fact: list_rigi_parasol = self.setlist(fact)
+
     # Traduction des fonctions definies dans FONC_PARASOL    
     #dic_fonc_parasol = self.get_FONC_PARASOL(list_rigi_parasol)
     dic_fonc_parasol = self.get_FONC_PARASOL()
 #    if not dic_fonc_parasol: return
 
+    # Verifications croisees : AFFE_CARA_ELEM / RIGI_PARASOL versus CALC_EUROPLEXUS / FONC_PARASOL
+    if list_rigi_parasol:
+        list_cara_rigi_parasol = list_rigi_parasol[0]['CARA']
+        if 'K_TR_D_N' in list_cara_rigi_parasol:
+            for f in ['NFKT', 'NFKR']:
+                if not f in dic_fonc_parasol.keys():
+                    UTMESS('A','PLEXUS_15',valk=('K_TR_D_N', f) )
+        if 'A_TR_D_N' in list_cara_rigi_parasol:
+            for f in ['NFAT', 'NFAR']:
+                if not f in dic_fonc_parasol.keys():
+                    UTMESS('A','PLEXUS_15',valk=('A_TR_D_N', f) )
+    
+        for f in ['NFKT', 'NFKR']:
+            if f in dic_fonc_parasol.keys() and not 'K_TR_D_N' in list_cara_rigi_parasol:
+                UTMESS('F','PLEXUS_16',valk=('K_TR_D_N', f) )
+        for f in ['NFAT', 'NFAR']:
+            if f in dic_fonc_parasol.keys() and not 'A_TR_D_N' in list_cara_rigi_parasol:
+                UTMESS('F','PLEXUS_16',valk=('K_TR_D_N', f) )
+
+
+
     epx[MODULE] = ['*--SUPPORT ELASTIQUE']
-   
+
     # si l'utilisateur a lui meme fourni des GROUP_MA de discrets : on commence par la
     gmaParasol=self.get_group_ma_f(self.FONC_PARASOL)
     group_union = ''
+
+    if debug:
+        print 'AA2=', dic_fonc_parasol.keys(), dic_fonc_parasol
+        print 'AA3=', gmaParasol
+
     for gma in gmaParasol :
         if gma not in self.discretParasol :
-            if debug: print gma
-            if debug: print self.discretParasol.keys()
+            if debug: print 'export_RIGI_PARASOL/gma=', gma
+            if debug: print 'export_RIGI_PARASOL/self.discretParasol.keys()=', self.discretParasol.keys()
             raise 'Discret non defini'
-        vale = self.discretParasol[gma]
         epx[MODULE].append('SUPPORT')
-        epx[MODULE].append(6*' '+'KX %s  KY %s  KZ %s'%(vale[0],vale[1],vale[2]))
-        epx[MODULE].append(6*' '+'KRX %s KRY %s KRZ %s'%(vale[3],vale[4],vale[5]))       
-        for cle_fonc_parasol in dic_fonc_parasol.keys() :
-          epx[MODULE].append(6*' ' + '%s %i' %(cle_fonc_parasol,dic_fonc_parasol[cle_fonc_parasol]) )
+        if 'NFKT' in dic_fonc_parasol.keys() and 'NFKR' in dic_fonc_parasol.keys():
+            vale = [ float2str(x) for x in self.discretParasol[gma] ]
+            epx[MODULE].append(6*' '+'KX  %s KY  %s KZ  %s NFKT %s' % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFKT'] ) )
+            epx[MODULE].append(6*' '+'KRX %s KRY %s KRZ %s NFKR %s' % ( vale[3], vale[4], vale[5], dic_fonc_parasol['NFKR'] ) )
+        if 'NFAT' in dic_fonc_parasol.keys() and 'NFAR' in dic_fonc_parasol.keys():
+            vale = [ float2str(x) for x in self.discretParasolAmor[gma] ]
+            epx[MODULE].append(6*' '+'AX  %s AY  %s AZ  %s NFAT %s' % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFAT'] ) )
+            epx[MODULE].append(6*' '+'ARX %s ARY %s ARZ %s NFAR %s' % ( vale[3], vale[4], vale[5], dic_fonc_parasol['NFAR'] ) )
+
         epx[MODULE].append(6*' '+'LECT %s TERM'% gma)
         group_union += '%s '% gma
     if len(gmaParasol) > 0 :
         epx['MODELE'].append(5*' ' + 'APPU  ' + group_union)
 
-    # concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
-    # DEFI_GROUP(reuse         = concept_maillage,
-                 # MAILLAGE      = concept_maillage,
-                 # CREA_GROUP_NO = _F(GROUP_MA = gmaParasol),
-                # );
-        
-   
-   
-    # traduire les rigi_parasol
-# AA    if list_rigi_parasol :   
-    if list_rigi_parasol and dic_fonc_parasol:   
-      # changement de module parce que les supports issus de RIGI_PARASOL  doivent etre imprimes apres les materiaux
-      # fichiers_parasol = []
-      # cles_oblig = ['UNITE_EUROPLEXUS','GROUP_MA_POI1']
-      # for elem in list_rigi_parasol:
-        # elem_cara = elem['CARA']
-        # if elem_cara == 'K_TR_D_N':
-          # for cle_test in cles_oblig:
-            # if not elem.has_key(cle_test):
-              # pass
-          # unite = elem['UNITE_EUROPLEXUS']
-          # fichier = 'fort.%i' %unite
-          # if fichier not in fichiers_parasol : fichiers_parasol.append(fichier)
-        # else :
-        #   pass
-      # Lecture des valeurs de rigidites generees par aster a partir des rigidites globales definis dans PARA_RIGISOL
-      # ressorts = []        
-      # for fichier in fichiers_parasol :
-        # ressorts.extend(self.lire_fichier(fichier))
-      ressorts = self.CARA_ELEM.toEPX()
-      # Creer un maillage qui, pour chaque noeud de l'interface utilisee dans rigi_parsol, asscocie un group_ma asscie
-      # parce que on n'a pas les memes numeros des noeuds dans Europlexus
-      crea_poi1 = []
-      dic_gma = {}
-      igr = -1
-      # Liste des group_ma associes au noeuds ou le RIGI_PARSOL a ete applique 
-      groups_parasol = []
-      
-      for noeud in ressorts.keys() :
-        # noeud = ressor[0]
-        if not dic_gma.has_key(noeud):
-          igr += 1
-          group_ma = 'SUP%i' %igr
-          dic_gma[noeud] = group_ma
-          groups_parasol.append(group_ma)
-          crea_poi1.append(_F(NOEUD=noeud,NOM_GROUP_MA=group_ma)) 
-      
-      # ATTENTION : a deplacer
-      # crea_maillage a faire de facon centraliser pour RIGI_PARASOL et le POST-TRAITEMENT ailleurs
-      courbe_fact = self.COURBE
-      if courbe_fact is None: courbe_fact = []
-      lnoeuds=set()
-      lmailles=set()
-      dicma=[]
-      for courbe in courbe_fact :
-        if courbe['GROUP_NO'] != None :
-            noeuds = courbe['GROUP_NO']
-            if type(noeuds) == tuple :
-                for el in noeuds :
-                    lnoeuds.add(el)
-            else :
-                lnoeuds.add(noeuds)
-        if courbe['GROUP_MA'] != None :
-            mailles = courbe['GROUP_MA']
-            if type(mailles) == tuple :
-                for el in mailles :
-                    lmailles.add(el)
-            else :
-                lmailles.add(mailles)
-      for maille in lmailles :
-        dicma.append({'NOM' : maille, 'MAILLE' : maille})
 
-      for no in lnoeuds :
-        if not self.MApyt.gno.has_key(no) :
-            crea_poi1.append(_F(NOEUD=no,NOM_GROUP_MA=no)) 
-      
-      __NEW = CREA_MAILLAGE(MAILLAGE=concept_maillage,
-                             CREA_POI1 = crea_poi1,
-                            );
-      self.NEW_MA = copy.copy(__NEW)
- 
-      # Ecriture sous format europlexus
-      # Indices des composantes
-      indices_comps = {'KX':1,'KY':2,'KZ':3,'KRX':4,'KRY':5,'KRZ':6}
-      for noeud in ressorts :
-        valeurs = ressorts[noeud]
-        epx[MODULE].append('SUPPORT')
-        # ecriture des composantes et de leurs valeurs associees
-        for comp in indices_comps.keys():
-          if debug: print len(valeurs),indices_comps[comp]-1          
-          vale = valeurs[indices_comps[comp]-1]
-          epx[MODULE].append(3*' ' + '%s %s' %(comp,vale))
-        # caracteristiques des translations et des rotations  
-        for cle_fonc_parasol in dic_fonc_parasol.keys() :
-          epx[MODULE].append(3*' ' + '%s %i' %(cle_fonc_parasol,dic_fonc_parasol[cle_fonc_parasol]) )
-        
-        # ecriture du group_ma associe
-        # noeud = ressor[0]
-        group_ma = dic_gma[noeud]
-        epx[MODULE].append(3*' ' + 'LECT %s TERM' % group_ma) 
-    
-      epx[MODULE].append('\n')
-      
-      group_union = 'PARASOL'
-      dicma.append({'NOM' : group_union, 'UNION' : groups_parasol})
-      __NEW = DEFI_GROUP(reuse = __NEW, 
-                MAILLAGE = __NEW,
-                CREA_GROUP_MA = dicma
-                )     
-      
-      # Mettre a jour le module modele qd les ressorts existent
-      epx['MODELE'].append(5*' ' + 'APPU  ' + group_union)
+    # traduire les rigi_parasol
+    if list_rigi_parasol and dic_fonc_parasol:
+        ressorts, amorts = self.CARA_ELEM.toEPX()
+        if debug:
+           print "AA2:ressorts", ressorts
+           print "AA2:amorts", amorts
+
+        # Creer un maillage qui, pour chaque noeud de l'interface utilisee dans rigi_parasol, associe un group_ma associe
+        # parce que on n'a pas les memes numeros des noeuds dans Europlexus
+        crea_poi1 = []
+        dic_gma = {}
+        igr = -1
+        # Liste des group_ma associes au noeuds ou le RIGI_PARSOL a ete applique 
+        groups_parasol = []
+
+        for noeud in ressorts.keys() :
+            # noeud = ressor[0]
+            if not dic_gma.has_key(noeud):
+              igr += 1
+              group_ma = 'SUP%i' %igr
+              dic_gma[noeud] = group_ma
+              groups_parasol.append(group_ma)
+              crea_poi1.append(_F(NOEUD=noeud,NOM_GROUP_MA=group_ma)) 
+
+        # ATTENTION : a deplacer
+        # crea_maillage a faire de facon centraliser pour RIGI_PARASOL et le POST-TRAITEMENT ailleurs
+        courbe_fact = self.COURBE
+        if courbe_fact is None: courbe_fact = []
+        lnoeuds=set()
+        lmailles=set()
+        dicma=[]
+        for courbe in courbe_fact :
+            if courbe['GROUP_NO'] != None :
+                noeuds = courbe['GROUP_NO']
+                if type(noeuds) == tuple :
+                    for el in noeuds :
+                        lnoeuds.add(el)
+                else :
+                    lnoeuds.add(noeuds)
+            if courbe['GROUP_MA'] != None :
+                mailles = courbe['GROUP_MA']
+                if type(mailles) == tuple :
+                    for el in mailles :
+                        lmailles.add(el)
+                else :
+                    lmailles.add(mailles)
+        for maille in lmailles :
+            dicma.append({'NOM' : maille, 'MAILLE' : maille})
+
+        for no in lnoeuds :
+            if not self.MApyt.gno.has_key(no) :
+                crea_poi1.append(_F(NOEUD=no,NOM_GROUP_MA=no)) 
+
+        __NEW = CREA_MAILLAGE(MAILLAGE=concept_maillage,
+                              CREA_POI1 = crea_poi1,
+                              );
+        self.NEW_MA = copy.copy(__NEW)
+
+
+        # Ecriture sous format europlexus
+        for noeud in ressorts :
+            epx[MODULE].append('SUPPORT')
+
+            # ecriture des composantes et de leurs valeurs associees
+            if 'NFKT' in dic_fonc_parasol.keys() and 'NFKR' in dic_fonc_parasol.keys():
+                vale = [ float2str(x) for x in ressorts[noeud] ]
+                epx[MODULE].append(6*' '+'KX  %s KY  %s KZ  %s NFKT %s' % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFKT'] ) )
+                epx[MODULE].append(6*' '+'KRX %s KRY %s KRZ %s NFKR %s' % ( vale[3], vale[4], vale[5], dic_fonc_parasol['NFKR'] ) )
+
+            if 'NFAT' in dic_fonc_parasol.keys() and 'NFAR' in dic_fonc_parasol.keys():
+                vale = [ float2str(x) for x in amorts[noeud] ]
+                epx[MODULE].append(6*' '+'AX  %s AY %s  AZ  %s NFAT %s'  % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFAT'] ) )
+                epx[MODULE].append(6*' '+'ARX %s ARY %s ARZ %s NFAR %s' % ( vale[3], vale[4], vale[5], dic_fonc_parasol['NFAR'] ) )
+
+            # ecriture du group_ma associe
+            group_ma = dic_gma[noeud]
+            epx[MODULE].append(3*' ' + 'LECT %s TERM' % group_ma) 
+
+        epx[MODULE].append('\n')
+
+        group_union = 'PARASOL'
+        dicma.append({'NOM' : group_union, 'UNION' : groups_parasol})
+        __NEW = DEFI_GROUP(reuse = __NEW, 
+                  MAILLAGE = __NEW,
+                  CREA_GROUP_MA = dicma
+                  )     
+
+        # Mettre a jour le module modele qd les ressorts existent
+        epx['MODELE'].append(5*' ' + 'APPU  ' + group_union)
 
     # Fermer le module modele dans tous les cas 
     self.multidomaine = 0
@@ -881,7 +912,7 @@ class EUROPLEXUS:
   def get_FONC_PARASOL(self,list_rigi_parasol=None) :
     
     epx = self.epx
-    
+
     MODULE = 'FONC_PARASOL'
     if list_rigi_parasol is not None :
       if self.FONC_PARASOL is None : UTMESS('F','PLEXUS_12')
@@ -893,7 +924,8 @@ class EUROPLEXUS:
     epx[MODULE].append('FONC')
     
     # Cles de FONC_PARASOL dans l'ordre
-    cles = ['NFKT','NFKR']
+    cles = ['NFKT','NFKR','NFAT','NFAR']
+#    cles = ['NFKT','NFKR']
     # Dictionnaire faisant la correspondance entre la fonction et son numero europlexus
     dic_fonc = {}
     try : 
@@ -906,16 +938,17 @@ class EUROPLEXUS:
     if epx.has_key('FONC_MATER') :
         epx[MODULE].extend(epx['FONC_MATER'])
     for cle in cles:
-      ifonc += 1
-      dic_fonc[cle] = ifonc
-      fonction = self.get_motcle(self.FONC_PARASOL,cle,code_mess=None)
-      if not fonction: return {}    # Si les mots-cles sont manquants on passe
-      (temps,valeurs) = fonction.Valeurs()
-      # imprimer les valeurs de la table
-      epx[MODULE].append(5*' ' +'NOPA %i TABLE %i' %(ifonc,len(temps)) )
-      for ival in range(len(temps)):
-#         epx[MODULE].append(17*' ' +'%s %s' %(temps[ival],valeurs[ival]))   
-         epx[MODULE].append(17*' ' +'%s %s' %(temps[ival],valeurs[ival]))   
+        fonction = self.get_motcle(self.FONC_PARASOL,cle,code_mess=None)
+        if debug: print "AA5/fonction=", fonction
+        if fonction:
+            ifonc += 1
+            dic_fonc[cle] = ifonc
+            #if not fonction: return {}    # Si les mots-cles sont manquants on passe
+            (temps,valeurs) = fonction.Valeurs()
+            # imprimer les valeurs de la table
+            epx[MODULE].append(5*' ' +'NOPA %i TABLE %i' %(ifonc,len(temps)) )
+            for ival in range(len(temps)):
+                epx[MODULE].append(17*' ' +'%s %s' %(temps[ival],valeurs[ival]))
     self.ifonc = ifonc
     self.dic_fonc = dic_fonc
     epx[MODULE].append('\n')
@@ -935,7 +968,7 @@ class EUROPLEXUS:
     epx[MODULE].append('MATERIAUX')
 
     # Recuperer la structure sous le mot_cle facteur AFFE de AFFE_MATER 
-    affe_mater = self.reupere_structure(self.CHAM_MATER,'AFFE')
+    affe_mater = self.recupere_structure(self.CHAM_MATER,'AFFE')
     affe_mater = self.setlist(affe_mater)
 
     # Dictionnaire stoquant les caracteristiques mecaniques et les group_ma associe a chaque materiau
@@ -956,7 +989,7 @@ class EUROPLEXUS:
       if not dic_mater.has_key(nom_mater):
          dic_mater[nom_mater] = {'GROUP_MA':[]}
          # Recuperer les caracteristiques elastiques du materiau
-         elas = self.reupere_structure(concept_mater,'ELAS')
+         elas = self.recupere_structure(concept_mater,'ELAS')
          if elas :
             typMat[nom_mater] = 'ELAS'
             for car in ['E','RHO','NU']:
@@ -966,20 +999,20 @@ class EUROPLEXUS:
                 dic_mater[nom_mater][car] = elas[car]
               else :
                 dic_mater[nom_mater][car] = None                 
-         beton = self.reupere_structure(concept_mater,'BETON')
+         beton = self.recupere_structure(concept_mater,'BETON')
          if beton  :
             typMat[nom_mater] = 'GLRC'
             self.gmaGLRC.extend(group_ma)
             dic_mater[nom_mater]['LINER']=[]
             dic_mater[nom_mater]['NAPPE']=[]
             materBeton = beton['MATER']
-            elasBeton = self.reupere_structure(materBeton,'ELAS')
+            elasBeton = self.recupere_structure(materBeton,'ELAS')
             dic_mater[nom_mater]['BETON']={}
             for car in ['E','RHO','NU']:
               dic_mater[nom_mater]['BETON'][car] = self.get_motcle(elasBeton,car)
             for car in ['AMOR_ALPHA','AMOR_BETA']:
               dic_mater[nom_mater]['BETON'][car] = self.get_motcle(elasBeton,car,None)
-            ecroBeton = self.reupere_structure(materBeton,'BETON_ECRO_LINE')
+            ecroBeton = self.recupere_structure(materBeton,'BETON_ECRO_LINE')
             for car in ['SYT','SYC']:
               dic_mater[nom_mater]['BETON'][car] = self.get_motcle(ecroBeton,car,None)
             for car in ['EPAIS','GAMMA','QP1','QP2','C1N1','C1N2','C1N3','C2N1','C2N2','C2N3','C1M1','C1M2','C1M3','C2M1','C2M2','C2M3'] :
@@ -1007,17 +1040,16 @@ class EUROPLEXUS:
                     # imprimer les valeurs de la table
                     epx['FONC_MATER'].append(5*' ' +'%i LSQU 2 TABLE %i' %(ifonc,len(x)) )
                     for ival in range(len(x)):
-#                       epx['FONC_MATER'].append(17*' ' +'%s %s' %(x[ival],y[ival]))   
                        epx['FONC_MATER'].append(17*' ' +'%s %s' %(x[ival],y[ival]))   
                     dic_mater[nom_mater]['BETON'][car] = 'FONC %i'%ifonc
                     self.ifonc=ifonc
 
 
-         cable = self.reupere_structure(concept_mater,'CABLE_PREC')
+         cable = self.recupere_structure(concept_mater,'CABLE_PREC')
          if cable  :
             materCable = cable['MATER']
-            elasCable = self.reupere_structure(materCable,'ELAS')
-            ecroCable = self.reupere_structure(materCable,'ECRO_LINE')
+            elasCable = self.recupere_structure(materCable,'ELAS')
+            ecroCable = self.recupere_structure(materCable,'ECRO_LINE')
             dic_mater[nom_mater]['CABLE']={}
             for car in ['E','NU']:
               dic_mater[nom_mater]['CABLE'][car] = elasCable[car]           
@@ -1025,13 +1057,13 @@ class EUROPLEXUS:
               dic_mater[nom_mater]['CABLE'][car] = ecroCable[car]
             for car in ['OMX','OMY','RX','RY','PREX','PREY'] :
               dic_mater[nom_mater]['CABLE'][car] = cable[car]
-         Lnappes = self.setlist(self.reupere_structure(concept_mater,'NAPPE'))
+         Lnappes = self.setlist(self.recupere_structure(concept_mater,'NAPPE'))
          if Lnappes  :
             for nappe in Lnappes :
                 dic_tmp = {}
                 materNappe = nappe['MATER']
-                elasNappe = self.reupere_structure(materNappe,'ELAS')
-                ecroNappe = self.reupere_structure(materNappe,'ECRO_LINE')
+                elasNappe = self.recupere_structure(materNappe,'ELAS')
+                ecroNappe = self.recupere_structure(materNappe,'ECRO_LINE')
                 for car in ['E','NU']:
                   dic_tmp[car] = elasNappe[car]           
                 for car in ['SY']:
@@ -1047,13 +1079,13 @@ class EUROPLEXUS:
                   else :
                     dic_tmp[car] = None
                 dic_mater[nom_mater]['NAPPE'].append(dic_tmp)
-         Lliners = self.setlist(self.reupere_structure(concept_mater,'LINER'))
+         Lliners = self.setlist(self.recupere_structure(concept_mater,'LINER'))
          if Lliners :
             for liner in Lliners :
                 dic_tmp = {}
                 materLiner = liner['MATER']
-                elasLiner = self.reupere_structure(materLiner,'ELAS')
-                ecroLiner = self.reupere_structure(materLiner,'ECRO_LINE')
+                elasLiner = self.recupere_structure(materLiner,'ELAS')
+                ecroLiner = self.recupere_structure(materLiner,'ECRO_LINE')
                 for car in ['E','NU']:
                   dic_tmp[car] = elasLiner[car]           
                 for car in ['SY']:
@@ -1067,7 +1099,7 @@ class EUROPLEXUS:
       dic_mater[nom_mater]['GROUP_MA'].extend(group_ma)
       
       # if gmaGLRC :
-          # concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+          # concept_maillage = self.recupere_structure(self.MODELE,'MAILLAGE')
           # if debug: print 'ETAPES MAILLAGES'
           # if debug: print dir(concept_maillage)
           # if debug: print concept_maillage.executed
@@ -1206,8 +1238,8 @@ class EUROPLEXUS:
     
     for excit in excit_list:
       concept_charge = excit['CHARGE']
-      pres_rep_list = self.reupere_structure(concept_charge,'PRES_REP')
-      ddl_impo_list = self.reupere_structure(concept_charge,'DDL_IMPO')
+      pres_rep_list = self.recupere_structure(concept_charge,'PRES_REP')
+      ddl_impo_list = self.recupere_structure(concept_charge,'DDL_IMPO')
       pres_rep_list = self.setlist(pres_rep_list)
       ddl_impo_list = self.setlist(ddl_impo_list)
       # PRES_REP
@@ -1359,9 +1391,6 @@ class EUROPLEXUS:
     st += ' NOPO NOEL'
     epx[MODULE].append(st)
     for cle in cles_entite:
-# AA    for cle in cles_entite :
-# AA      entite_geo = self.get_motcle(listing_fact ,cle, code_mess=None)
-# AA       entite_geo = string2list(entite_geo)
 
        entite_geo = string2list(listing_fact[dcles_entite[cle]])
        # if listing_fact['TOUT_%s' % dcles_entite[cle]] == 'OUI': epx[MODULE].append(2*' ' +'%s TOUS ' % cle)
@@ -1397,7 +1426,8 @@ class EUROPLEXUS:
       # if debug: print 'dcourbe=', dcourbe
 
       cle_freq, vale_freq = get_freq2()
-      fichier_alit = self.pwd + self.REPE + os.sep + self.nom_fichiers['ALIT']
+      fichier_alit = os.path.join(self.REPE_epx, self.nom_fichiers['ALIT'])
+
       epx[MODULE].append(2*' ' + "FICH ALIT 11  %s %s" %(cle_freq,vale_freq))
 
       # Liste les noeuds a postraiter
@@ -1424,15 +1454,7 @@ class EUROPLEXUS:
                 lmailles.add(mailles)           
         else :
             raise 'Erreur ni noeud ni maille'
-      # sys.exit()
-      # tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
-      # tables = self.setlist(tables)
 
-      # icourbe = 0
-      # for table in tables:
-        # icourbe += 1
-        # noeud = table['NOEUD']
-        # list_noeuds.append(noeud)
       # Ecriture la liste des noeuds sous format epx
       if lnoeuds :
           epx[MODULE].append(4*' ' +'POINTS')
@@ -1460,7 +1482,8 @@ class EUROPLEXUS:
       cle_freq_champ,vale_freq_champ = get_freq(champ_fact)
       epx[MODULE].append(2*' ' + 'FICHIER MED')
       # chemin complet du fichier med
-      fichier_med = self.pwd + self.REPE + os.sep + self.nom_fichiers['MED']
+      fichier_med = os.path.join(self.REPE_epx, self.nom_fichiers['MED'])
+
       epx[MODULE].append(2*' ' + "'%s'" %fichier_med)
       cle_freq,vale_freq = get_freq(champ_fact)
       epx[MODULE].append(2*' ' + ' %s %s' %(cle_freq_champ,vale_freq_champ))
@@ -1506,7 +1529,6 @@ class EUROPLEXUS:
     # des grandeurs demandees
     
     # Tester si le mot_cle facteur COURBE a ete renseigne
-# AA   courbe_fact = self.ECRITURE['COURBE']
     courbe_fact = self.COURBE
     if courbe_fact is None : return
 
@@ -1518,20 +1540,17 @@ class EUROPLEXUS:
     # Ecriture fort Europlexus
     # Entete de la commande courante
     epx[MODULE] = ['SUITE\n']
-    # epx[MODULE].append("'TITRE'")
-#    unite_alit = self.get_motcle(courbe_fact,'UNITE_ALIT',code_mess=None)
-#    if debug: print 'unite_alit=', unite_alit
-    if self.UNITE_COURBE: fichier_courbes = os.path.join(self.pwd, 'fort.%s' % str(self.UNITE_COURBE))
-    else:                 fichier_courbes = self.pwd + self.REPE + os.sep + self.nom_fichiers['PUN']
-    fichier_alit = self.pwd + self.REPE + os.sep + self.nom_fichiers['ALIT']
+
+    if self.UNITE_COURBE: fichier_courbes = os.path.join( self.REPE_epx, 'fort.%s' % str(self.UNITE_COURBE) )
+    else:                 fichier_courbes = os.path.join( self.REPE_epx, self.nom_fichiers['PUN'] )
+    fichier_alit = os.path.join( self.REPE_epx, self.nom_fichiers['ALIT'] )
+
     epx[MODULE].append("RESULTAT ALICE TEMPS 11")
     epx[MODULE].append("OPNF FORMAT 17 '%s'" %fichier_courbes)    
     epx[MODULE].append("SORTIES GRAPHIQUES")
-    # epx[MODULE].append("PERFO '%s'"%fichier_courbes)
     epx[MODULE].append("AXTEMPS 1. 'TEMPS(s)'")
 
     # recuperer le mot-cle facteur COURBE
-# AA    courbe_fact = self.ECRITURE['COURBE']
     courbe_fact = self.COURBE
     # recuperer les mot_cle TABLE
     # tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
@@ -1656,7 +1675,6 @@ class EUROPLEXUS:
     epx[MODULE].append('*--LANCEMENT DE CALCUL')
     epx[MODULE].append('')
     calcul = 'CALCUL'
-# AAA    cles = ['INST_INIT','PASFIX','INST_FIN','DTMAX']
     cles = ['INST_INIT','PASFIX','INST_FIN']
     dcles = {'INST_INIT':'TINI', 'PASFIX':'PASFIX', 'INST_FIN':'TFIN'}
     for cle in dcles.keys():
@@ -1673,11 +1691,12 @@ class EUROPLEXUS:
 #-----------------------------------------------------------------------   
   def ecrire_fichier(self,):
     
-    fichier = self.REPE + os.sep + self.nom_fichiers['COMMANDE']
+# AA    fichier = self.REPE + os.sep + self.nom_fichiers['COMMANDE']
+    fichier = os.path.join(self.REPE_epx, self.nom_fichiers['COMMANDE'])
 
     # ordre des modules de definition du modele EPX
     modules = ['DEBUT','MAILLAGE','DIME','MODELE','CARA_ELEM','FONC_PARASOL','CHAM_MATER','RIGI_PARASOL','EXCIT','ECRITURE','CALCUL','POST_COURBE']
-    
+
     #les modules MODELE et RIGI_PARASOL doivent etre executes avant MAILLAGE 
     # car le maillage peut etre modifie dans ces modules
     modules_exe = []
@@ -1689,9 +1708,9 @@ class EUROPLEXUS:
     for module in modules_exe:
       fct = 'export_%s' %module
       if hasattr(self,fct) : 
-        eval('self.'+fct+'()')  
-      else :  
-        print 'module %s pas encore developpe' %fct
+          eval('self.'+fct+'()')  
+#       else :  
+#           print 'module %s pas encore developpe' % fct
     
     # Ecriture du fichier texte contenant toutes les commandes Europlexus
     fd = open(fichier,'w')
@@ -1710,7 +1729,8 @@ class EUROPLEXUS:
     global table
     
     if not hasattr(self,'courbes'): 
-      if fichier == 'auto' : fichier = self.pwd + self.REPE + os.sep + self.nom_fichiers['PUN']
+#      if fichier == 'auto' : fichier = self.pwd + self.REPE + os.sep + self.nom_fichiers['PUN']
+      if fichier == 'auto' : fichier = os.path.join(self.REPE_epx, self.nom_fichiers['PUN'] )
       if not os.path.isfile(fichier) : return
       self.courbes = self.lire_pun(fichier=fichier)
     
@@ -1768,8 +1788,8 @@ class EUROPLEXUS:
     # Rendre global le resu pour qu'il soit accepte dans self.DeclareOut 
     global resu
     
-    if fichier_med == 'auto' : fichier_med = self.REPE + os.sep + self.nom_fichiers['MED'] 
-    
+    if fichier_med == 'auto' : fichier_med = os.path.join(self.REPE_epx, self.nom_fichiers['MED'])
+
     if debug: print fichier_med
     if not os.path.isfile(fichier_med) :
        print "Pas de fichier MED !"
@@ -1819,7 +1839,6 @@ class EUROPLEXUS:
     tupVar = ('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12','X13','X14','X15','X16','X17','X18','X19')                                
     
     # Dictionnaire permettant de traduire le champ epx en med au nom asscie dans aster
-# AA    epx2aster = {'CONTRAINTE':'SIEF_ELGA','ECROUISSAGE':'VARI_ELGA'}
     epx2aster = {'CONTRAINTE':'SIEF_ELGA','DEFORMATION':'EPSI_ELGA','ECROUISSAGE':'VARI_ELGA'}
 
 # AA : desactive pour le moment
@@ -1990,7 +2009,7 @@ class EUROPLEXUS:
                     UNITE       = 99,
                     NUME_PT     = 0,
                     MODELE      = self.NEW_MODELE,
-                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
                     NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(i+1),
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
@@ -2008,7 +2027,7 @@ class EUROPLEXUS:
                     UNITE       = 99,
                     NUME_PT     = 0,
                     MODELE      = self.NEW_MODELE,
-                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
                     NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(i+1),
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
@@ -2030,7 +2049,7 @@ class EUROPLEXUS:
                     # UNITE       = 99,
                     # NUME_PT     = i*pas,
                     # MODELE      = self.NEW_MODELE,
-                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    # MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                     # PROL_ZERO   = 'OUI',
                     # NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%index,
                     # NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
@@ -2062,7 +2081,7 @@ class EUROPLEXUS:
                        UNITE       = 99,
                        NUME_PT     = 0,
                        MODELE      = self.NEW_MODELE,
-                       MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                       MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                        PROL_ZERO   = 'OUI',
                        NOM_MED     = 'CHAMP___ECROUISSAGE__00%d'%(i+1),
                        NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
@@ -2080,7 +2099,7 @@ class EUROPLEXUS:
                        UNITE       = 99,
                        NUME_PT     = 0,
                        MODELE      = self.NEW_MODELE,
-                       MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                       MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                        PROL_ZERO   = 'OUI',
                        NOM_MED     = 'CHAMP___ECROUISSAGE__00%d'%(i+1),
                        NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['DKT3']['NOM_CMP'],
@@ -2123,7 +2142,7 @@ class EUROPLEXUS:
                     UNITE       = 99,
                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
                     MODELE      = self.NEW_MODELE,
-                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
                     NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(j+1),
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
@@ -2138,7 +2157,7 @@ class EUROPLEXUS:
                     # UNITE       = 99,
                     # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
                     # MODELE      = self.NEW_MODELE,
-                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    # MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                     # PROL_ZERO   = 'OUI',
                     # NOM_MED     = 'CHAMP___DEFORM_TOT___001',
                     # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP'],
@@ -2150,7 +2169,7 @@ class EUROPLEXUS:
                         UNITE    = 99,
                         NUME_PT  = resu.LIST_PARA()['NUME_ORDRE'][i],
                         MODELE   = self.NEW_MODELE,
-                        MAILLAGE         = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                        MAILLAGE         = self.recupere_structure(self.MODELE,'MAILLAGE'),
                         PROL_ZERO   = 'OUI',
                         NOM_MED  = 'CHAMP___ECROUISSAGE__00%d'%(j+1),
                         NOM_CMP  = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
@@ -2167,7 +2186,7 @@ class EUROPLEXUS:
                     UNITE       = 99,
                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
                     MODELE      = self.NEW_MODELE,
-                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
                     NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(j+1),
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
@@ -2182,7 +2201,7 @@ class EUROPLEXUS:
                     # UNITE       = 99,
                     # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
                     # MODELE      = self.NEW_MODELE,
-                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    # MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
                     # PROL_ZERO   = 'OUI',
                     # NOM_MED     = 'CHAMP___DEFORM_TOT___00%d'%index,
                     # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP'],
@@ -2195,7 +2214,7 @@ class EUROPLEXUS:
                        UNITE     = 99,
                        NUME_PT   = resu.LIST_PARA()['NUME_ORDRE'][i],
                        MODELE    = self.NEW_MODELE,
-                       MAILLAGE  = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                       MAILLAGE  = self.recupere_structure(self.MODELE,'MAILLAGE'),
                        PROL_ZERO   = 'OUI',
                        NOM_MED   = 'CHAMP___ECROUISSAGE__00%d'%(j+1),
                        NOM_CMP   = dic_cmp_gauss['ECROUISSAGE']['DKT3']['NOM_CMP'],
@@ -2328,7 +2347,7 @@ class EUROPLEXUS:
 #                   CODE_RETOUR_MAXI=-1,
 #                   INFO=2)
 
-     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; unset PMI_RANK ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
+     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; unset PMI_RANK ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.REPE_epx, self.EXEC, fichier_epx, self.pwd),
                    CODE_RETOUR_MAXI=-1,
                    INFO=2)
 

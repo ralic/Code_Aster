@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE POUTRE EN FLAMBEMENT
 # ssnl502d.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,18 +25,12 @@ DEBUT(CODE=_F( NOM = 'SSNL502D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
 #
 #Poutre verticale encastree en pied (point PA) et libre en tete (point PB)
 
-PRE_GIBI(UNITE_GIBI=17,
-         UNITE_MAILLAGE=20,);
-
-MA=LIRE_MAILLAGE(UNITE=20,);
+MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=17,);
 #Acquisition du maillage de la section transverse (Poutre multi-fibres)
 #
 #Section divisee en 100 fibres (10 par cote)
 
-PRE_GIBI(UNITE_GIBI=18,
-         UNITE_MAILLAGE=21,);
-
-MA_SECT=LIRE_MAILLAGE(UNITE=21,);
+MA_SECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=18,);
 #Definition d'un groupe de noeuds qui contient tous les noeuds de la poutre : AB
 #Idem pour AB_  mais sans le noeud en pied (pt A)
 

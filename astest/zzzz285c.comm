@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION PROJ_CHAMP / COLLOCATION (HEXA, PENTA)  LIN/QUAD
 # zzzz285c.para = tps_job 80 mem_job 128Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,11 +22,6 @@
 
 DEBUT(CODE=_F( NOM = 'ZZZZ285C',NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM=('MODELISA8_70','CALCULEL2_63','CALCULEL2_64'))
-
-
-# On lit les maillages 1 et 2 (lineaires a bords droits):
-PRE_GIBI(UNITE_GIBI=19, UNITE_MAILLAGE=20)
-PRE_GIBI(UNITE_GIBI=21, UNITE_MAILLAGE=22)
 
 # F2 : formule utilisee pour calculer l'erreur relative :
 F2 = FORMULE(NOM_PARA=('X1','X3',),VALE='abs(X3/X1)')
@@ -64,17 +59,17 @@ for bord in ('BDRO', 'BCOU',) :
 
        # 1. On fabrique les maillages MA1 et MA2 :
        if typmail=='LIN' :
-          MA1=LIRE_MAILLAGE(UNITE=20)
-          MA2=LIRE_MAILLAGE(UNITE=22)
+          MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=19)
+          MA2=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
        elif typmail=='QUA' :
-          MA1_1=LIRE_MAILLAGE(UNITE=20)
-          MA2_1=LIRE_MAILLAGE(UNITE=22)
+          MA1_1=LIRE_MAILLAGE(FORMAT='MED',UNITE=19)
+          MA2_1=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
           MA1 = CREA_MAILLAGE( MAILLAGE  = MA1_1,  LINE_QUAD = _F(TOUT = 'OUI', PREF_NOEUD='NS' ))
           MA2 = CREA_MAILLAGE( MAILLAGE  = MA2_1,  LINE_QUAD = _F(TOUT = 'OUI', PREF_NOEUD='NS' ))
           DETRUIRE(CONCEPT=_F(NOM=(MA1_1,MA2_1,),),)
        elif typmail=='QUP' :
-          MA1_1=LIRE_MAILLAGE(UNITE=20)
-          MA2_1=LIRE_MAILLAGE(UNITE=22)
+          MA1_1=LIRE_MAILLAGE(FORMAT='MED',UNITE=19)
+          MA2_1=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
           MA1_2 = CREA_MAILLAGE( MAILLAGE  = MA1_1,  LINE_QUAD = _F(TOUT = 'OUI'), )
           MA2_2 = CREA_MAILLAGE( MAILLAGE  = MA2_1,  LINE_QUAD = _F(TOUT = 'OUI'), )
           MA1_3 = CREA_MAILLAGE(MAILLAGE=MA1_2, HEXA20_27=_F(TOUT = 'OUI',PREF_NOEUD='NX'))

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 # wtnv121a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -42,9 +42,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=10,),
                                 ),
                                  );
-PRE_GIBI()
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(
                 MAILLAGE=MA,

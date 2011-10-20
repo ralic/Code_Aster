@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105a.para = tps_job 3000 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,9 +174,7 @@ L_INST_A=DEFI_LIST_REEL(DEBUT=T000,
 #
 ########################################################
 
-PRE_GIBI();
-
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,

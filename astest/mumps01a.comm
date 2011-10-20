@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE validation du solveur MUMPS
 # mumps01a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,8 +34,7 @@
 #########################################################################
 
 DEBUT(  CODE=_F(NOM='MUMPS01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-PRE_GIBI()
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE(FORMAT='MED', )
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
 
 MO=AFFE_MODELE(   MAILLAGE=MA,

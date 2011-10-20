@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05a.para = tps_job 3000 mem_job 15800Mo mem_aster 52 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,8 +64,6 @@ niv_info = 2
 DEBUT(CODE=_F( NOM = 'MUMPS05A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
             MESURE_TEMPS=_F(NIVE_DETAIL=2))
 
-PRE_GIBI();
-
 # pour obtenir un maillage quadratique :
 #----------------------------------------
 # MA1=LIRE_MAILLAGE( )
@@ -73,7 +71,7 @@ PRE_GIBI();
 
 # pour obtenir un maillage lineaire :
 #----------------------------------------
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.E+05,
                           NU=0.3,),);

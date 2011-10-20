@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,8 +35,7 @@ r = 1.02
 
 
 #---------------------------------------------
-PRE_GIBI();
-MAILLAGE=LIRE_MAILLAGE();
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
 
 
 MAILLAGE=DEFI_GROUP( reuse =MAILLAGE,

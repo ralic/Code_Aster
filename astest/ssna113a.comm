@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,10 +21,8 @@
 #====================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNA113A',NIV_PUB_WEB='INTERNET'));
- 
-PRE_GIBI();
 
-MAIL = LIRE_MAILLAGE();
+MAIL = LIRE_MAILLAGE(FORMAT='MED',);
 
 
 MAIL = DEFI_GROUP ( reuse = MAIL,

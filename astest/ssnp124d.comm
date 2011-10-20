@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE NON LOCAL
@@ -24,8 +24,6 @@
 #               NEGATIF PARABOLIQUE POUR UN CONFINEMENT DE 2 MPA
 # ======================================================================
 DEBUT(CODE=_F(NOM='SSNP124D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
-
-PRE_GIBI();
 
 MAILLAGE = LIRE_MAILLAGE( );
 

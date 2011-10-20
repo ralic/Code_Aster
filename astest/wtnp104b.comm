@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtnp104b.para = tps_job 80 mem_job 128Mo ncpus 1 liste_test R
@@ -25,14 +25,12 @@
 
 DEBUT(CODE=_F(NOM='WTNP104B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-PRE_GIBI();
-
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                        _F(JUSQU_A=5000000000.,NOMBRE=100,),
                                  ),);
 
-MAIL=LIRE_MAILLAGE();
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

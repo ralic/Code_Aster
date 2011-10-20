@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102d.para = tps_job 70 mem_job 100Mo ncpus 1 liste_test S
@@ -31,10 +31,7 @@ DEBUT(  CODE=_F( NOM = 'SSNA102D',NIV_PUB_WEB='INTERNET'),)
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
 # --------------------------------------------------------------------
 
-
-PRE_GIBI()
-
-MAIL=LIRE_MAILLAGE( )
+MAIL=LIRE_MAILLAGE(FORMAT='MED', )
 
 #
 

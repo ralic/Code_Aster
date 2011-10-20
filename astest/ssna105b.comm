@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,9 +33,8 @@ L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,
                         _F( PAS = 1.E-2,       JUSQU_A = 0.9),
                                      )
                       )
-PRE_GIBI()
 
-MA = LIRE_MAILLAGE();
+MA = LIRE_MAILLAGE(FORMAT='MED',);
 
 MA = DEFI_GROUP(reuse =MA,
                 MAILLAGE=MA,

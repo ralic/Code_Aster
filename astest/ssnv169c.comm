@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
 # ssnv169c.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,8 +23,6 @@
 # ---------------------------------------------------------------------
 
 DEBUT(CODE=_F( NOM = 'SSNV169C',NIV_PUB_WEB='INTERNET'))
-
-PRE_GIBI()
 
 M=LIRE_MAILLAGE( )
 

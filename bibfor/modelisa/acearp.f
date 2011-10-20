@@ -4,7 +4,8 @@
       CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,21 +52,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBCAR,NBVAL,NRD
       PARAMETER    ( NBCAR = 100 , NBVAL = 12 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3), IBID,NIV,IR,IUNITE
+      INTEGER      JDC(3), JDV(3), IBID,NIV,IR,IA,IUNITE
       INTEGER      JDCINF,  JDVINF
-      INTEGER      I,IAMTO,IER,II,IN,INBN,INO,INOE,IOC,IREP,IREPN,IREPV
+      INTEGER      I,IAMTO,IER,II,IN,INBN,INO,INOE,IOC,IREP
       INTEGER      IRGNO,IRGTO,ISYM,ITBMP,ITBNO,ITROU,IUNIFI,IV
+      INTEGER      IREPN,IREPV,IAEPN,IAEPV
       INTEGER      IXCI,IXCKMA,IXNW,J,JD,JDDI,JDLS,JDNW,JJ,JN,K,KK
       INTEGER      L,LDGM,LDNM,LOKM,LOREP,NBMTRD,NBNMA
       INTEGER      NBNO,NBNOEU,NBORM,NC,NCAR,NCARAC,NCMP
       INTEGER      NDIM,NG,NGP,NMA,NREP,NUMNOE,NVAL,DIMCAR
 
-      REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3),R8BID
+      REAL*8       VAL(NBVAL), ETA, VALE(NBVAL),RIROT(3),R8BID
       CHARACTER*1  KMA(3), K1BID
       CHARACTER*8  NOMNOE,NOGP,NOMMAI,K8BID,NOMU,CAR(NBCAR),LAMASS
       CHARACTER*16 REP,REPDIS(NRD),CONCEP,CMD
       CHARACTER*19 CART(3),LIGMO,CARTDI
-      CHARACTER*19 VREPXV,VREPXN
+      CHARACTER*19 VREPXV,VREPXN,VAEPXV,VAEPXN
       CHARACTER*24 TMPND(3),TMPVD(3)
       CHARACTER*24 TMPDIS, MLGNNO, MLGNMA, TMCINF, TMVINF, MODNEM
 
@@ -106,11 +108,16 @@ C     PUIS DANS LA BOUCLE SUR LES OCCURRENCES QUE L'OPTION NE CHANGE PAS
          EURPLX = ( K8BID(1:3) .EQ. 'OUI' )
       ENDIF
       IF ( EURPLX ) THEN
+C         NUMCAR = 12
          VREPXV = NOMU//'.CARRIGXV'
          VREPXN = NOMU//'.CARRIGXN'
+         VAEPXV = NOMU//'.CARAMOXV'
+         VAEPXN = NOMU//'.CARAMOXN'
 C        LES STRUCTURES SONT UTILISEES SEULEMENT EN PYTHON
          CALL WKVECT(VREPXV,'G V R', 6*LMAX,IREPV)
          CALL WKVECT(VREPXN,'G V K8',  LMAX,IREPN)
+         CALL WKVECT(VAEPXV,'G V R', 6*LMAX,IAEPV)
+         CALL WKVECT(VAEPXN,'G V K8',  LMAX,IAEPN)
       ENDIF
 C
       IFM = IUNIFI('MESSAGE')
@@ -170,7 +177,10 @@ C        SI LES CARTES N'EXISTENT PAS ON LES CREES
 C
 C     RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IBID,NIV)
+C  I RAIDEUR (POUR EPX)
       IR = 0
+C I AMOR (POUR EPX)
+      IA = 0  
 C --- BOUCLE SUR LES OCCURRENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          ETA = 0.0D0
@@ -368,6 +378,8 @@ C
 C                 POUR EUROPLEXUS PREPARATION DE L'ATTRIBUT PYTHON
                   IF ( EURPLX ) THEN
                      IF ( NBNOEU .EQ. 1 ) THEN
+
+                      IF ( CAR(NC)(1:3) .EQ. 'K_T') THEN
                         IF (TRANSL) THEN
                            DO 666 JJ=0,2
                               ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
@@ -380,6 +392,21 @@ C                 POUR EUROPLEXUS PREPARATION DE L'ATTRIBUT PYTHON
                         ENDIF
                         ZK8(IREPN+IR) = ZK8(JN)
                         IR = IR + 1
+                      ELSEIF ( CAR(NC)(1:3) .EQ. 'A_T') THEN
+                        IF (TRANSL) THEN
+                           DO 668 JJ=0,2
+                              ZR(IAEPV+6*IA+JJ)=ZR(IRGNO+6*I-6+JJ)
+                              ZR(IAEPV+6*IA+3+JJ)=0.D0
+668                        CONTINUE
+                        ELSE
+                           DO 669 JJ=0,5
+                              ZR(IAEPV+6*IA+JJ)=ZR(IRGNO+6*I-6+JJ)
+669                        CONTINUE
+                        ENDIF
+                        ZK8(IAEPN+IA) = ZK8(JN)
+                        IA = IA + 1
+                      ENDIF
+C
                      ELSE
                         CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
                      ENDIF
@@ -394,8 +421,9 @@ C                 AFFECTATION DES VALEURS REPARTIES
      &                        NCMP)
 C                 AFFECTATION DE MATRICE MASSE NULLE
                   IV = 1
-                  CALL R8INIR(NBVAL,0.0D0,VAL,1)
-                  CALL AFFDIS(NDIM,IREP,ETA,LAMASS,VAL,
+
+                  CALL R8INIR(NBVAL,0.0D0,VALE,1)
+                  CALL AFFDIS(NDIM,IREP,ETA,LAMASS,VALE,
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
      &                        JDCINF,JDVINF,ISYM,IFM)
                   CALL NOCART(CARTDI, 3,' ','NOM',1,ZK8(JD),0,' ',
@@ -446,8 +474,8 @@ C                 AFFECTATION DE MATRICE MASSE NULLE
      &                        LIGMO,NCMP)
 C                 AFFECTATION DE MATRICE MASSE NULLE
                   IV = 1
-                  CALL R8INIR(NBVAL,0.0D0,VAL,1)
-                  CALL AFFDIS(NDIM,IREP,ETA,LAMASS,VAL,
+                  CALL R8INIR(NBVAL,0.0D0,VALE,1)
+                  CALL AFFDIS(NDIM,IREP,ETA,LAMASS,VALE,
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
      &                        JDCINF,JDVINF,ISYM,IFM)
                   CALL NOCART(CARTDI, -3,' ','NUM',KK,' ',ZI(JDDI),
@@ -484,7 +512,7 @@ C
      &    '(REPERE ',A6,'), OCCURRENCE ',I4)
  1005 FORMAT(/,' PAS DE REPARTITION EN ROTATION POUR DES ',A,/)
  1006 FORMAT(/,' RAIDEURS DE ROTATION A REPARTIR POUR DES ',A,/
-     &        ,'  KRX: ',1PE12.5,' KRY: ',1PE12.5,' KRZ: ',1PE12.5,/)
+     &        ,'  RX: ',1PE12.5,' RY: ',1PE12.5,' RZ: ',1PE12.5,/)
  1010 FORMAT(' _F(',A,'=''',A8,''', CARA=''',A,''',',/,
      &       '    VALE=(',3(1X,1PE12.5,','),'),',/,
      &       '    REPERE=''',A,'''),')

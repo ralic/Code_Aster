@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF ENTETE  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,28 +20,53 @@
 
 
 class cara_elem(ASSD):
-   cata_sdj = "SD.sd_cara_elem.sd_cara_elem"
+    cata_sdj = "SD.sd_cara_elem.sd_cara_elem"
 
-   def toEPX(self):
-      # s'il y a un problème sur la structure de données ==> <F>
-      try:
-         EPXnoeud = self.sdj.CARRIGXN.get()
-         EPXval   = self.sdj.CARRIGXV.get()
-         lenEPXval   = len(EPXval)
-         lenEPXnoeud = len(EPXnoeud)*6
-      except:
-         from Utilitai.Utmess import UTMESS
-         UTMESS('F','MODELISA9_98')
-      # Vérification de la déclaration qui est faite dans 'acearp'
-      if ( lenEPXval != lenEPXnoeud ):
-         from Utilitai.Utmess import UTMESS
-         UTMESS('F','MODELISA9_97')
-      # Tout est OK
-      ressorts = {}
-      i=0
-      for no in EPXnoeud :
-         ressorts[no] = EPXval[i:i+6]
-         i+=6
-      return ressorts
+    def toEPX(self):
+
+        # Raideurs 
+        ressorts = {}
+
+        try:
+           EPXnoeud = self.sdj.CARRIGXN.get()
+           EPXval   = self.sdj.CARRIGXV.get()
+           lenEPXval   = len(EPXval)
+           lenEPXnoeud = len(EPXnoeud)*6
+        except:
+           # s'il y a un problème sur la structure de données ==> <F>
+           from Utilitai.Utmess import UTMESS
+           UTMESS('F','MODELISA9_98')
+        # Vérification de la déclaration qui est faite dans 'acearp'
+        if ( lenEPXval != lenEPXnoeud ):
+           from Utilitai.Utmess import UTMESS
+           UTMESS('F','MODELISA9_97')
+        # Tout est OK
+        i=0
+        for no in EPXnoeud :
+           ressorts[no] = EPXval[i:i+6]
+           i+=6
+
+        # Amortissements
+        amorts = {}
+        try:
+           EPXnoeud = self.sdj.CARAMOXN.get()
+           EPXval   = self.sdj.CARAMOXV.get()
+           lenEPXval   = len(EPXval)
+           lenEPXnoeud = len(EPXnoeud)*6
+        except:
+           # s'il y a un problème sur la structure de données ==> <F>
+           from Utilitai.Utmess import UTMESS
+           UTMESS('F','MODELISA9_98')
+        # Vérification de la déclaration qui est faite dans 'acearp'
+        if ( lenEPXval != lenEPXnoeud ):
+           from Utilitai.Utmess import UTMESS
+           UTMESS('F','MODELISA9_97')
+        # Tout est OK
+        i=0
+        for no in EPXnoeud :
+           amorts[no] = EPXval[i:i+6]
+           i+=6
+
+        return ressorts, amorts
 
 

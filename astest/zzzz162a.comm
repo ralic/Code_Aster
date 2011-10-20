@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -424,6 +424,14 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                          ) ,
               UNITE=71,
               TOUT_ORDRE='OUI',);
+
+MONU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+               FORMAT='MED',
+               MODELE=MOMECA,
+               FORMAT_MED=(_F( NOM_RESU='U',
+                               NOM_CHAM    ='VARI_ELGA'),) ,
+               UNITE=71,
+               LIST_INST=L_INST,);
 
 IMPR_RESU(UNITE=74,RESU=_F(RESULTAT=UUU),);
 

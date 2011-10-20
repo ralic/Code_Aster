@@ -1,4 +1,4 @@
-# MODIF  DATE 18/04/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE PLAQUE CIRCULAIRE POSEE  SOUS PRESSION
 # ssls101n.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,8 +36,7 @@ R=1.
 P=1.
 
 
-PRE_GIBI()
-MAILL=LIRE_MAILLAGE()
+MAILL=LIRE_MAILLAGE(FORMAT='MED',)
 
 # remarque importante :
 # Le point D existe en double dans le maillage (D1 dans ABC et D2 dans DBCE).

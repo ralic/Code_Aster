@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DSQ - B/A = 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,9 +84,7 @@ MATISO=DEFI_MATERIAU(ELAS=_F(E=E,
 #                         2 PLAQUES EXCENTREES
 # ______________________________________________________________________
 
-PRE_GIBI();
-
-MA0=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+MA0=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
 
 
 # creation de plaq2 : meme noeuds que plaq1 mais mailles distinctes
