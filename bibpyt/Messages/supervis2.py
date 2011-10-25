@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,6 +65,7 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
                 Architecture : %(k8)s
                 Type de processeur : %(k9)s
                 Système d'exploitation : %(k10)s
+                Langue des messages : %(k11)s
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
 

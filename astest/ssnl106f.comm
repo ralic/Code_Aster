@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106f.para = tps_job 140 mem_job 300Mo ncpus 1 liste_test S
@@ -197,6 +197,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
                    NOM_CMP='SIXX',
                    MAILLE='M2',
                    POINT=1,
+                   SOUS_POINT=1,
                    VALE=1.50000000E8,
                    PRECISION=1.E-3,),
                 _F(RESULTAT=REST,

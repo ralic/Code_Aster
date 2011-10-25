@@ -1,4 +1,4 @@
-#@ MODIF vide Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF vide Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,9 +17,15 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE DELMAS J.DELMAS
+# RESPONSABLE COURTOIS M.COURTOIS
 
 cata_msg = {
+# message vide (pour fermeture de message avec suite, ex: 'A+')
 1 : "",
+
+# message vide pour saut de ligne (ne pas en abuser !)
+2 : """
+
+""",
 }
 

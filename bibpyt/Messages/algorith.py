@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,12 +130,12 @@ cata_msg = {
 """),
 
 53 : _(u"""
-  Le nombre de modes dynamiques est %(i1)s, 
+  Le nombre de modes dynamiques est %(i1)d,
   ce n'est pas un multiple du nombre de composante.
 """),
 
 54 : _(u"""
-  Le nombre de modes statiques est %(i1)s, 
+  Le nombre de modes statiques est %(i1)d,
   ce n'est pas un multiple du nombre de composante.
 """),
 

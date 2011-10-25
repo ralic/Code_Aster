@@ -1,6 +1,6 @@
       SUBROUTINE TAXIS(NOMA,INDIC,NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,18 +69,17 @@ C
                CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNO+1),K8B)
                CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA    ),K8A)
                IF ( IER .EQ. 0 ) THEN
-                  CALL U2MESG('A+','SOUSTRUC_88',0,' ',0,0,0,0.D0)
+                  CALL U2MESS('F+','SOUSTRUC_88')
                ENDIF
                VALK (1) = K8B
                VALK (2) = K8A
-               CALL U2MESG('A+','SOUSTRUC_89',2,VALK,0,0,0,0.D0)
+               CALL U2MESK('F+','SOUSTRUC_89',2,VALK)
                IER  = IER + 1
             ENDIF
  3       CONTINUE
       ENDIF
  2    CONTINUE
       IF ( IER .NE. 0 ) THEN
-         CALL U2MESG('A','SOUSTRUC_90',0,' ',0,0,0,0.D0)
          CALL U2MESS('F','SOUSTRUC_78')
       ENDIF
 C

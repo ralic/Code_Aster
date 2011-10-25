@@ -1,4 +1,4 @@
-#@ MODIF E_Global Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Global Execution  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,6 +117,7 @@ def print_header():
     """Appelé par entete.F pour afficher des informations sur
     la machine."""
     from Accas import properties
+    from i18n import localization
     names = {
         LABEL.STABLE : _(u"""EXPLOITATION (stable)"""),
         LABEL.STABLE_UPDATES : _(u"""CORRECTIVE AVANT STABILISATION (stable-updates)"""),
@@ -124,6 +125,7 @@ def print_header():
         LABEL.UNSTABLE : _(u"""DÉVELOPPEMENT (unstable)"""),
     }
     typvers = names[version_label()]
+    lang_settings = '%s (%s)' % localization.get_current_settings()
 
     UTMESS('I', 'SUPERVIS2_10',
         valk=(typvers,
@@ -134,5 +136,6 @@ def print_header():
               platform.architecture()[0],
               platform.machine(),
               platform.system() + ' ' + platform.release(),
+              lang_settings,
             ),
     )

@@ -1,7 +1,7 @@
       SUBROUTINE PMCONV(R,RINI,R1,INST,SIGP,COEF,ITER,INDIMP,
      &                  PARCRI,CONVER,ITEMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,9 +35,7 @@ C OUT  CONVER : .TRUE. SI CONVERGENCE REALISEE
 
 C-----------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER      NIV,IFM,IND,INDIMP(6)
-      INTEGER      I
-      INTEGER      ITMAX,ITER,IRELA
+      INTEGER      IND,INDIMP(6),I,ITMAX,ITER,IRELA
       REAL*8       R8PREM,INST,PARCRI(12)
       REAL*8       R(12),RINI(12),R1(12),SIGP(6),COEF,R8B(12)
       REAL*8       EE,E1,E2,TOLER,E1INI,E2INI,ER1,EINI,R8VIDE
@@ -45,9 +43,6 @@ C-----------------------------------------------------------------------
       CHARACTER*8  FONIMP(6)
 C-----------------------------------------------------------------------
 
-      CALL INFMAJ
-      CALL INFNIV(IFM,NIV)
-      
 C-----------------------------------------------------------------------
 C     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 C-----------------------------------------------------------------------
@@ -123,8 +118,6 @@ C -      NB ITERATION MAXIMUM ATTEINT SANS CONVERGENCE
       ENDIF
  9999 CONTINUE
 C
-      IF (NIV.EQ.2) THEN
-         CALL PMIMPR(IND,INST,INDIMP,FONIMP,R8B,ITER,
+      CALL PMIMPR(IND,INST,INDIMP,FONIMP,R8B,ITER,
      &               R8B,R8B,R8B,1,R8B,EE,EINI)
-      ENDIF
       END

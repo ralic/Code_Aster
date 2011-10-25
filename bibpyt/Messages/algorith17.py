@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith17 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,9 +31,7 @@ cata_msg={
 2: _(u"""
          Comportement %(k1)s non implanté pour l'élément d'interface
 """),
-3: _(u"""
-        il manque le déplacement de référence DEPL_REFE  
-"""), 
+
 4: _(u"""
         La formulation n'est ni en contrainte nette ni en bishop  
 """), 

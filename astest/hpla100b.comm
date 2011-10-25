@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100b.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,6 +171,12 @@ CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
+DEPLPES2=POST_CHAMP(RESULTAT=DEPLPES,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
+
 # ------------------------------------------------------------------
 
 DEPLROT=MECA_STATIQUE(
@@ -184,6 +190,12 @@ CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
            OPTION=('EFGE_ELNO','SIGM_ELNO',),
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
+
+DEPLROT2=POST_CHAMP(RESULTAT=DEPLROT,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
 
 # ------------------------------------------------------------------
 
@@ -212,6 +224,12 @@ CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
          )
 
 
+DEPLDIL2=POST_CHAMP(RESULTAT=DEPLDIL,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
+
 STATNL2=STAT_NON_LINE(
                   MODELE=MO,
               CHAM_MATER=CHMATH1,
@@ -234,6 +252,11 @@ CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
+DDILT2=POST_CHAMP(RESULTAT=DEPLDILT,
+                    TOUT='OUI',
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
 
 DEPLDI2=MECA_STATIQUE(
                   MODELE=MO,
@@ -246,6 +269,11 @@ CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
            OPTION=('EFGE_ELNO','SIGM_ELNO',),
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
+DDI2=POST_CHAMP(RESULTAT=DEPLDI2,
+                TOUT='OUI',
+                EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                              NUME_COUCHE=1,
+                              NIVE_COUCHE='INF',),);
 
 
 DEPLDI2T=MECA_STATIQUE(
@@ -259,6 +287,12 @@ CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
            OPTION=('EFGE_ELNO','SIGM_ELNO',),
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
+
+DDI2T=POST_CHAMP(RESULTAT=DEPLDI2T,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='INF',),);
 
 RELEVE_1=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GRNO14',
                                      INTITULE = 'EXT_TEMP',
@@ -327,22 +361,22 @@ TEST_RESU(RESU=(
                GROUP_NO = 'GRNO6',    NOM_CMP = 'NXX',   VALE = -0.20000E+0),
 
      # CONTRAINTES EN PEAU EXTERNE
-            _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
+            _F(  RESULTAT = DEPLPES2,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
             NUME_ORDRE = 1,     MAILLE = 'M10', NOM_CHAM = 'SIGM_ELNO',
               GROUP_NO = 'GRNO13',   NOM_CMP = 'SIXX',  VALE = 8.00000E-4),
-            _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
+            _F(  RESULTAT = DEPLROT2,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
               GROUP_NO = 'GRNO6',    NOM_CMP = 'SIXX',  VALE = 0.96000E-3),
-            _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
+            _F(  RESULTAT = DEPLDIL2,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
               GROUP_NO = 'GRNO6',    NOM_CMP = 'SIXX',  VALE = 1.428571E+0),
-            _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
+            _F(  RESULTAT = DDI2,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
              NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
               GROUP_NO = 'GRNO6',    NOM_CMP = 'SIXX',  VALE = -0.20000E+0),
-            _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
+            _F(  RESULTAT = DDILT2,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
              NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
               GROUP_NO = 'GRNO6',    NOM_CMP = 'SIXX',  VALE = 1.428571E+0),
-            _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
+            _F(  RESULTAT = DDI2T,  CRITERE = 'RELATIF',   PRECISION = 2.E-5,
              NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'SIGM_ELNO',
               GROUP_NO = 'GRNO6',    NOM_CMP = 'SIXX',  VALE = -0.20000E+0))
             )

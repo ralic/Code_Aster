@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 24/10/2011   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,7 +163,7 @@ C --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 C =====================================================================
 C --- 2. OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA -------------
 C =====================================================================
-      IF ((OPTION(1:9).EQ.'RIGI_MECA' ) .OR.
+      IF ((OPTION(1:14).EQ.'RIGI_MECA_TANG' ) .OR.
      +    (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA' )) THEN
 C =====================================================================
@@ -183,7 +183,7 @@ C =====================================================================
 C =====================================================================
 C --- PARAMETRES EN SORTIE ISMAEM? ------------------------------------
 C =====================================================================
-         IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
+         IF ((OPTION(1:14).EQ.'RIGI_MECA_TANG' ) .OR.
      +       OPTION(1:9).EQ.'FULL_MECA') THEN
             CALL JEVECH('PMATUNS','E',IMATUU)
          ELSE
@@ -202,7 +202,7 @@ C =====================================================================
             IVARIP = ISMAEM()
          END IF
          RETLOI = 0
-         IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
+         IF (OPTION(1:14).EQ.'RIGI_MECA_TANG' ) THEN
             CALL ASSVSU(NNO,NNOS,NFACE,
      +                ZR(IGEOM),ZR(ICARCR),
      +                ZR(IDEPLM),ZR(IDEPLM),ZR(ICONTM),

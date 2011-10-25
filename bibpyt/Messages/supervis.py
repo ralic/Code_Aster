@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -317,10 +317,6 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 
 79: _(u"""
      Pas de message attaché au concept %(k1)s
-"""),
-
-80: _(u"""
-
 """),
 
 81: _(u"""

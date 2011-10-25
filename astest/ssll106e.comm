@@ -1,8 +1,6 @@
-
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS - ELEMENT TUYAU 4 NOEUDS AVEC MECA_STATIQUE
-#
 # ssll106e.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -249,6 +247,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='SIXX',
                    MAILLE='M1',
                    POINT=1,
+                   SOUS_POINT=1,
                    VALE=2.76311E5,
                    PRECISION=0.02,
                    REFERENCE='ANALYTIQUE',),
@@ -258,6 +257,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='EPXX',
                    MAILLE='M1',
                    POINT=1,
+                   SOUS_POINT=1,
                    VALE=1.3815499999999999E-06,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
@@ -343,6 +343,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='SIXY',
                    MAILLE='M1',
                    POINT=1,
+                   SOUS_POINT=1,
                    VALE=-6.750000E6,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
@@ -352,6 +353,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='EPXY',
                    MAILLE='M1',
                    POINT=1,
+                   SOUS_POINT=1,
                    VALE=-8.7700000000000004E-05,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
@@ -505,6 +507,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    POINT=1,
+                   SOUS_POINT=1,
                    VALE=4.5555600E7,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
@@ -514,6 +517,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='EPYY',
                    MAILLE='M1',
                    POINT=1,
+                   SOUS_POINT=1,
                    VALE=2.2777799999999999E-4,
                    PRECISION=0.02,
                    REFERENCE='ANALYTIQUE',),

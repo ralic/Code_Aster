@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,7 @@ Le type d'interpolation de la fonction vaut 'NON'
 """),
 
 12 : _(u"""
-Une erreur s'est produite dans la recherche de l'intervalle des abscisses contenant la valeur %(r1)s.
+Une erreur s'est produite dans la recherche de l'intervalle des abscisses contenant la valeur %(r1)f.
 
   -> Risque & Conseil :
     Vérifiez que le type d'interpolation de la fonction ne vaut pas 'NON'
@@ -308,7 +308,7 @@ Les abscisses de la fonction %(k1)s ne sont pas strictement décroissantes.
 La fonction ou formule ne doit avoir qu'une ou deux variables.
 """),
 
-49 : ("""
+49 : (u"""
 La nappe ou formule a deux paramètres. Il faut renseigner le mot-clé NOM_PARA_FONC
 et soit VALE_PARA_FONC, soit LIST_PARA_FONC.
 """),
@@ -342,7 +342,7 @@ Conseils :
 53 : _(u"""sur le noeud '%(k1)s'
 """),
 
-54 : ("""
+54 : (u"""
 Nombre de paramètres fournis : %(i1)d
 Noms des paramètres fournis  : %(ktout)s
 """),

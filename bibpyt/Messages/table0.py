@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,11 +61,11 @@ On attend %(i1)d paramètres.
 On a lu %(i1)d champs dans le fichier.
 """),
 
-14 : ("""
+14 : (u"""
 Les listes %(k1)s et %(k2)s doivent avoir le meme cardinal.
 """),
 
-15 : ("""
+15 : (u"""
 Les listes DEFA et PARA_NOCI doivent avoir le meme cardinal.
 """),
 

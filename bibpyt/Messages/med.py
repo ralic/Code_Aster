@@ -1,21 +1,21 @@
-#@ MODIF med Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF med Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -25,7 +25,7 @@ cata_msg = {
   -> Absence de localisation de points de Gauss dans le fichier MED
      pour l'élément de référence %(k1)s.
      On suppose que l'ordre des points de Gauss est celui d'Aster.
-  -> Risque & Conseil :     
+  -> Risque & Conseil :
      Risque de résultats faux.
 """),
 
@@ -75,8 +75,8 @@ cata_msg = {
   -> Famille %(k1)s :
        Incohérence sur les nombres de %(k2)s, il y en a %(i1)d alors
        que la fonction MED en annonce %(i2)d.
-  -> Risque & Conseil: 
-       Impossible de lire ce fichier. 
+  -> Risque & Conseil:
+       Impossible de lire ce fichier.
        On peut utiliser mdump (utilitaire med) pour voir si le problème
        vient du fichier MED ou de la lecture dans Code_Aster.
 """),
@@ -140,7 +140,7 @@ cata_msg = {
 """),
 
 20 : _(u"""
-  -> Impossible de retrouver l'adresse associée au groupe  %(k1)s 
+  -> Impossible de retrouver l'adresse associée au groupe  %(k1)s
 """),
 
 21 : _(u"""
@@ -155,7 +155,7 @@ cata_msg = {
 """),
 
 23 : _(u"""
-  -> Mailles  %(k1)s 
+  -> Mailles  %(k1)s
 """),
 
 24 : _(u"""
@@ -174,7 +174,7 @@ cata_msg = {
 """),
 
 27 : _(u"""
-   Version de la bibliothèque med pour créer le fichier  :  %(i1)d %(i2)d %(i3)d 
+   Version de la bibliothèque med pour créer le fichier  :  %(i1)d %(i2)d %(i3)d
 """),
 
 28 : _(u"""
@@ -201,12 +201,12 @@ cata_msg = {
      On ne peut pas imprimer un champ dont le nombre de composantes varie en
      fonction du temps. Plusieurs possibilités s'offrent à vous:
      - si vous souhaitez disposer d'un champ disposant des memes composantes
-     à chaque instant, il faut renseigner derrière le mot-clé NOM_CMP le nom 
+     à chaque instant, il faut renseigner derrière le mot-clé NOM_CMP le nom
      des composantes commun aux différents instants.
      - si vous souhaitez imprimer un champ avec l'ensemble des composantes
-     Aster qu'il contient, il suffit de faire plusieurs IMPR_RESU et de 
+     Aster qu'il contient, il suffit de faire plusieurs IMPR_RESU et de
      renseigner pour chaque impression une liste d'instants adoc.
-     
+
      Pour la visualisation dans Salomé (Scalar Map par exemple),
      sélectionner la composante dans Scalar Range/Scalar Mode.
 """),
@@ -246,7 +246,7 @@ cata_msg = {
 """),
 
 40 : _(u"""
-  -> Ouverture du fichier med en mode  %(k1)s  %(k2)s 
+  -> Ouverture du fichier med en mode  %(k1)s  %(k2)s
 """),
 
 41 : _(u"""
@@ -262,15 +262,15 @@ cata_msg = {
 """),
 
 44 : _(u"""
-  -> Pas d'écriture pour  %(k1)s 
+  -> Pas d'écriture pour  %(k1)s
 """),
 
 45 : _(u"""
-     Issu de  %(k1)s 
+     Issu de  %(k1)s
 """),
 
 46 : _(u"""
-  -> Le type de champ est inconnu :  %(k1)s 
+  -> Le type de champ est inconnu :  %(k1)s
 """),
 
 47 : _(u"""
@@ -286,11 +286,11 @@ cata_msg = {
 """),
 
 50 : _(u"""
-  -> Pas de maillage dans  %(k1)s 
+  -> Pas de maillage dans  %(k1)s
 """),
 
 51 : _(u"""
-  -> Maillage  %(k1)s  inconnu dans  %(k2)s 
+  -> Maillage  %(k1)s  inconnu dans  %(k2)s
 """),
 
 52 : _(u"""
@@ -298,11 +298,11 @@ cata_msg = {
 """),
 
 53 : _(u"""
-  ->  La version de la lib med utilisée par Code-Aster est plus récente que 
+  ->  La version de la lib med utilisée par Code-Aster est plus récente que
       celle qui a produit votre fichier med.
-  ->  Conséquence:  On considère les champs aux noeuds par élément 
-      comme des pseudo champs aux points de Gauss. 
-      (On utilise pour la lecture du champ %(k1)s 
+  ->  Conséquence:  On considère les champs aux noeuds par élément
+      comme des pseudo champs aux points de Gauss.
+      (On utilise pour la lecture du champ %(k1)s
        contenu dans votre fichier med, le type d'entité MED_MAILLE au lieu
        de MED_NOEUD_MAILLE).
 """),
@@ -318,7 +318,7 @@ cata_msg = {
 """),
 
 56 : _(u"""
-     En effet, le phénomène %(k1)s de votre modèle n'est pas compatible avec une 
+     En effet, le phénomène %(k1)s de votre modèle n'est pas compatible avec une
      SD Résultat de type %(k2)s.
   -> Risque & Conseil :
      Veuillez fournir à LIRE_RESU un autre modèle ou changer de TYPE_RESU.
@@ -334,7 +334,7 @@ cata_msg = {
 """),
 
 58 : _(u"""
-  -> Le nombre de type de maille présent dans le fichier MED est 
+  -> Le nombre de type de maille présent dans le fichier MED est
       différent du nombre de type de maille présent dans le maillage fourni.
   -> Risque & Conseil :
      Le modèle sur lequel le résultat a été créé n'est pas le même
@@ -342,10 +342,10 @@ cata_msg = {
      Vérifiez le maillage de votre modèle !
 """),
 59 : _(u"""
-     Les éléments du modèle fourni ont pour support géométrique des 
+     Les éléments du modèle fourni ont pour support géométrique des
      mailles ne figurant pas dans le fichier med.
-     Par exemple, il y %(i1)s mailles de types %(k1)s dans le fichier med,
-     alors que le modèle en contient %(i2)s.
+     Par exemple, il y %(i1)d mailles de types %(k1)s dans le fichier med,
+     alors que le modèle en contient %(i2)d.
   -> Risque & Conseil :
      Veuillez fournir un modèle dont le maillage correspond à celui présent
      dans le fichier med.
@@ -358,8 +358,8 @@ cata_msg = {
 61 : _(u"""
      Le maillage contenu dans le fichier med contient plus de mailles
      que celui associé au maillage fourni par le modèle.
-     Par exemple, on dénombre %(i1)s mailles de types %(k1)s dans le maillage
-     med, alors que le modèle n'en contient que %(i2)s !
+     Par exemple, on dénombre %(i1)d mailles de types %(k1)s dans le maillage
+     med, alors que le modèle n'en contient que %(i2)d !
   -> Risque & Conseil :
      Veuillez vérifier que le modèle fourni ne résulte pas d'une restriction,
      ou que l'un des maillages est quadratique et l'autre linéaire.
@@ -390,7 +390,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
-  -> Numéro d'ordre :  %(i1)d numéro de pas de temps :  %(i2)d 
+  -> Numéro d'ordre :  %(i1)d numéro de pas de temps :  %(i2)d
 
 """),
 
@@ -407,7 +407,7 @@ cata_msg = {
 """),
 
 73 : _(u"""
-  -> Impossible de trouver la composante ASTER associée a  %(k1)s 
+  -> Impossible de trouver la composante ASTER associée a  %(k1)s
 """),
 
 74 : _(u"""
@@ -423,10 +423,10 @@ cata_msg = {
 """),
 
 77: _(u"""
-  -> On ne peut lire aucune valeur du champ %(k1)s dans le fichier d'unité %(i1)s.
+  -> On ne peut lire aucune valeur du champ %(k1)s dans le fichier d'unité %(i1)d.
   -> Risques et conseils:
-     Ce problème est peut-être lié à une incohérence entre le champ à lire dans 
-     le fichier MED (NOEU/ELGA/ELNO/...) et le type du champ que vous avez demandé 
+     Ce problème est peut-être lié à une incohérence entre le champ à lire dans
+     le fichier MED (NOEU/ELGA/ELNO/...) et le type du champ que vous avez demandé
      (mot clé TYPE_CHAM).
 """),
 
@@ -455,36 +455,36 @@ cata_msg = {
 """),
 
 83 : _(u"""
-  -  valeurs lues dans le fichier        : %(i1)d 
-  -  valeurs non affectees dans le champ : %(i2)d 
+  -  valeurs lues dans le fichier        : %(i1)d
+  -  valeurs non affectees dans le champ : %(i2)d
 """),
 
 84 : _(u"""
-  -> Type incorrect  %(i1)d 
+  -> Type incorrect  %(i1)d
 """),
 
 85 : _(u"""
-  -> Maillage présent :  %(k1)s 
+  -> Maillage présent :  %(k1)s
 """),
 
 86 : _(u"""
-  -> champ à lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d 
-     instant voulu :  %(r1)f 
-     --> numéro d'ordre :  %(i3)d 
-     --> numéro de pas de temps :  %(i4)d 
- 
+  -> champ à lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d
+     instant voulu :  %(r1)f
+     --> numéro d'ordre :  %(i3)d
+     --> numéro de pas de temps :  %(i4)d
+
 """),
 
 87 : _(u"""
   Le numéro d'ordre %(i1)d que vous avez renseigné ne figure pas
-  dans la liste des numéros d'ordre du résultat med. 
-  Conséquence: le champ correspondant ne figurera pas dans la 
+  dans la liste des numéros d'ordre du résultat med.
+  Conséquence: le champ correspondant ne figurera pas dans la
   SD Résultat %(k1)s
 """),
 
 
 88 : _(u"""
-  -> Fichier med :  %(k1)s, nombre de maillages présents : %(i1)d 
+  -> Fichier med :  %(k1)s, nombre de maillages présents : %(i1)d
 """),
 
 89 : _(u"""
@@ -492,12 +492,12 @@ cata_msg = {
 """),
 
 90 : _(u"""
-     Début de l'écriture MED de  %(k1)s 
+     Début de l'écriture MED de  %(k1)s
 """),
 
 91 : _(u"""
   -> Impossible de déterminer un nom de champ MED.
-  -> Risque & Conseil:  
+  -> Risque & Conseil:
 """),
 
 92 : _(u"""
@@ -508,7 +508,7 @@ cata_msg = {
 """),
 
 93 : _(u"""
-     Fin de l'écriture MED de  %(k1)s 
+     Fin de l'écriture MED de  %(k1)s
 """),
 
 94 : _(u"""
@@ -534,14 +534,14 @@ cata_msg = {
 """),
 
 97 : _(u"""
-  -> Fichier med :  %(k1)s, Champ :  %(k2)s, Instant voulu :  %(r1)f 
-     - typent :  %(i1)d 
-     - typgeo :  %(i2)d 
- 
+  -> Fichier med :  %(k1)s, Champ :  %(k2)s, Instant voulu :  %(r1)f
+     - typent :  %(i1)d
+     - typgeo :  %(i2)d
+
 """),
 
 98 : _(u"""
-  -> Fichier med :  %(k1)s champ :  %(k2)s 
+  -> Fichier med :  %(k1)s champ :  %(k2)s
 """),
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS)
 # ssls09c.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,7 +103,7 @@ DEF=STAT_NON_LINE(MODELE=MODELE,
 
 DEF=CALC_ELEM(reuse =DEF,
               RESULTAT=DEF,
-              OPTION='SIEF_ELNO',);
+              OPTION='SIGM_ELNO',);
 
 DEF=CALC_ERREUR(reuse =DEF,
                 RESULTAT=DEF,
@@ -153,7 +153,7 @@ TEST_RESU(RESU=_F(RESULTAT=DEF,
 
 TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M4',
                    NOEUD='N51',
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEF,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M4',
                    NOEUD='N1',
@@ -172,7 +172,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEF,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M4',
                    NOEUD='N51',

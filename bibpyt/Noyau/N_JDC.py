@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -491,7 +491,15 @@ Causes possibles :
       return d
 
    def get_global_contexte(self):
-      return self.g_context.copy()
+      """Retourne "un" contexte global ;-)"""
+      # N'est utilisé que par INCLUDE (sauf erreur).
+      # g_context est remis à {} en PAR_LOT='OUI'. const_context permet
+      # de retrouver ce qui y a été mis par exec_compile.
+      # Les concepts n'y sont pas en PAR_LOT='OUI'. Ils sont ajoutés
+      # par get_global_contexte de la MACRO.
+      d = self.const_context.copy()
+      d.update(self.g_context)
+      return d
 
 
    def get_contexte_courant(self, etape_courante=None):

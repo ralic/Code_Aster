@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,7 +109,7 @@ MODE_LOCAL__
     ERICTRA  = RICE_TRA ELEM__         (TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ   )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
+    ESIGMNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
@@ -141,7 +141,7 @@ MODE_LOCAL__
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ESIGMNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  TRSIG )
     EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33 
                                         X12      X13      X23      RADI_V   RADI_T   ) 
@@ -179,63 +179,63 @@ OPTION__
     CALC_DGG_E          205   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL  EDEFOPG  PDEFOSE
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  CEPSINR  PEPSINR
                                      NFORCER  PFRVOLU  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
-                                     CROTATR  PROTATR  ECONTNO  PSIGINR  ECONTPG  PSIGMSE  ZVARCPG  PVARCPR
+                                     CROTATR  PROTATR  ESIGMNO  PSIGINR  ECONTPG  PSIGMSE  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  DDL_MECA PTHETAR  ZVARINO  PVARIPR
                               OUT__  EGTHETA  PGTHETA
     CALC_DGG_E_F        205   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL  EDEFOPG  PDEFOSE
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  CEPSINF  PEPSINF
                                      CFORCEF  PFFVOLU  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
-                                     CROTATR  PROTATR  ECONTNO  PSIGINR  ECONTPG  PSIGMSE  ZVARCPG  PVARCPR
+                                     CROTATR  PROTATR  ESIGMNO  PSIGINR  ECONTPG  PSIGMSE  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR  ZVARINO  PVARIPR
                               OUT__  EGTHETA  PGTHETA
     CALC_DGG_FORC       205   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL  EDEFOPG  PDEFOSE
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  CEPSINR  PEPSINR
                                      CEPSINR  PEPSISSR NFORCER  PFRVOLU  NFORCER  PFRVOSS  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ECONTNO  PSIGINR
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ESIGMNO  PSIGINR
                                      ECONTPG  PSIGMSE  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR
                                      ZVARINO  PVARIPR
                               OUT__  EGTHETA  PGTHETA
     CALC_DGG_FORC_F     205   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL  EDEFOPG  PDEFOSE
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  CEPSINF  PEPSINF
                                      CEPSINF  PEPSISSF CFORCEF  PFFVOLU  CFORCEF  PFFVOSS  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ECONTNO  PSIGINR
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ESIGMNO  PSIGINR
                                      ECONTPG  PSIGMSE  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                                      DDL_MECA PTHETAR  ZVARINO  PVARIPR
                               OUT__  EGTHETA  PGTHETA
     CALC_G              27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
-                                     ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR
+                                     ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR
                                      ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
-                                     ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                                     ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                                      DDL_MECA PTHETAR  ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
     CALC_G_GLOB         27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
-                                     ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR
+                                     ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR
                                      ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
     CALC_G_GLOB_F       27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
-                                     ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                                     ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                                      DDL_MECA PTHETAR  ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPINR
                                      DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
-                                     CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                     CROTATR  PROTATR  ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      DDL_MECA PTHETAR
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPINR
                                      DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
-                                     CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
+                                     CROTATR  PROTATR  ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCRR  DDL_MECA PTHETAR
                               OUT__  EKTHETA  PGTHETA
     CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
@@ -366,7 +366,7 @@ OPTION__
                               OUT__  ECOEQNO  PCONTEQ
     ERME_ELEM           375   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
-                                     EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO
+                                     EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ESIGMNO  PCONTNO
                               OUT__  EERREUR  PERREUR
     ERME_ELNO           379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
@@ -483,15 +483,15 @@ OPTION__
                                      CMATERC  PMATERC  CMATERC  PMATSEN  ZVARCPG  PVARCPR  ZVARCPG  PVARCPR
                               OUT__  ECONTPG  PCONTRR
     SIEF_ELNO           20    IN__   ECONTPG  PCONTRR
-                              OUT__  ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
-                                     ECONTNC  PSIEFNOC
+                              OUT__  ESIGMNC  PSIEFNOC ESIGMNO  PSIEFNOR
+                                     ESIGMNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR
                               OUT__  ESIGMPG  PSIGMR   ESIGMPC  PSIGMC
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR
-                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+                              OUT__  ESIGMNO  PSIEFNOR ESIGMNC  PSIEFNOC
     SIGM_ELNO_SENS      23    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  DDL_MECA PDEPSEN  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CMATERC  PMATSEN  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  ECONTNO  PCONTRR
+                              OUT__  ESIGMNO  PCONTRR
     SING_ELEM           99    IN__   NGEOMER  PGEOMER
                               OUT__  ESINGUL  PSING_R
     SING_ELNO           99    IN__   ESINGUL  PSING_R
@@ -506,7 +506,7 @@ OPTION__
                                      EDEPLPG  PDEPL_R
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
-                                     ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
+                                     ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ESIGMNO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELNO           20    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER

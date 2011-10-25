@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE SOUMISE A UN CHAMP DE VITESSE DE VENT
 # sdnl102a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,13 +133,11 @@ RDYNA1=DYNA_NON_LINE(
             _F(CHARGE = FVENTCX, TYPE_CHARGE='SUIV' )
             ),
     INCREMENT  =_F(LIST_INST = RLINST01),
-###CDURAND    ARCHIVAGE  =_F(LIST_ARCH     = RLARCH01,),
     COMP_INCR  =_F( GROUP_MA    = ('BARRE'),
                     RELATION    =  'ELAS',
                     DEFORMATION =  'PETIT_REAC' ),
     CONVERGENCE=_F( ITER_GLOB_MAXI = 20,
-                    RESI_GLOB_RELA = 1.E-05,
-                    ARRET          = 'NON' ),
+                    RESI_GLOB_RELA = 1.E-05, ),
     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
     NEWTON =_F(MATRICE   = 'TANGENTE', REAC_ITER=1,
                PREDICTION= 'TANGENTE'),

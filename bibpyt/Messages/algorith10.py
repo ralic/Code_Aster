@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith10 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,22 +85,6 @@ cata_msg = {
  redécoupage excessif du pas de temps interne
  réduisez votre pas de temps ou augmenter abs(ITER_INTE_PAS)
  redecoupage global.
-"""),
-
-36 : _(u"""
- il manque SIGM_REFE
-"""),
-
-37 : _(u"""
- il manque RESI_HYD1_REFE
-"""),
-
-38 : _(u"""
- il manque RESI_HYD2_REFE
-"""),
-
-39 : _(u"""
- il manque RESI_THER_REFE
 """),
 
 40 : _(u"""

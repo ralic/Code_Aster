@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2011   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION GVNO + LOI ENDO_CARRE EN D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,6 +104,7 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
                                            REAC_ITER      = 1,),
                         CONVERGENCE=   _F( RESI_REFE_RELA = 1.E-6,
                                            SIGM_REFE      = 0.01,
+                                           VARI_REFE      = 1.,
                                            ITER_GLOB_MAXI = 50,),
                         INCREMENT  =   _F( LIST_INST      = TEMPS1,),
                         AFFICHAGE  =   _F( INFO_RESIDU = 'OUI',)

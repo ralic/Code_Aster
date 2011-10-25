@@ -1,4 +1,4 @@
-#@ MODIF discrets Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF discrets Messages  DATE 25/10/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,6 +172,11 @@ Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
    Nom et coordonnées des noeuds :
 """),
 31 :_(u"""      %(k1)8s   %(r1)12.5E   %(r2)12.5E   %(r3)12.5E
+"""),
+
+
+40 :_(u"""
+L'utilisation des discrets non-symétriques n'est actuellement pas possible pour des calculs non-linéaires.
 """),
 
 }

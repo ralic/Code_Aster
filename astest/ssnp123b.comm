@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 # ssnp123b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,7 +80,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO',),);
+               OPTION=('SIGM_ELNO',),);
 
 RESU=CALC_ERREUR(reuse =RESU,
                RESULTAT=RESU,
@@ -88,7 +88,7 @@ RESU=CALC_ERREUR(reuse =RESU,
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIEF_NOEU',);
+             OPTION='SIGM_NOEU',);
 
 ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
                    DEFI_SEGMENT=_F(ORIGINE=(0.0,1.0,),
@@ -99,7 +99,7 @@ ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
 S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
                             CHEMIN=ECHAN,
                             RESULTAT=RESU,
-                            NOM_CHAM='SIEF_NOEU',
+                            NOM_CHAM='SIGM_NOEU',
                             INST=1.0,
                             CRITERE='RELATIF',
                             NOM_CMP='SIYY',
@@ -185,7 +185,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   INST=1.0,
-                  NOM_CHAM='SIEF_ELNO',
+                  NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',
                   MAILLE='M20',
                   NOEUD='N20',
@@ -197,7 +197,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   INST=1.0,
-                  NOM_CHAM='SIEF_ELNO',
+                  NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIXX',
                   MAILLE='M20',
                   NOEUD='N20',

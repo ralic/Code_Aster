@@ -1,4 +1,4 @@
-#@ MODIF macro_bascule_schema_cata Intranet  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macro_bascule_schema_cata Contrib  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

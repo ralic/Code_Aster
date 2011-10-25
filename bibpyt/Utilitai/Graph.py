@@ -1,8 +1,8 @@
-#@ MODIF Graph Utilitai  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -1192,9 +1192,8 @@ def IniGrace(fich):
             fnew.write(line)
       fpre.close()
       fnew.close()
-      try:
+      if None not in (x0, x1, y0, y1):
          UTMESS('I', 'GRAPH0_10', valk=fich, vali=ns, valr=(x0, x1, y0, y1))
-      except TypeError:
-         # pas un format xmgrace
-         pass
+      else:
+         UTMESS('A', 'GRAPH0_11', valk=fich)
    return ns, x0, x1, y0, y1

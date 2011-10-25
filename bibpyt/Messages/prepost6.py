@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost6 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,7 @@ cata_msg = {
 """),
 
 40 : _(u"""
- <I> Le ficher de maillage GMSH est au format version %(i1)s.
+ <I> Le ficher de maillage GMSH est au format version %(i1)d.
 """),
 
 41 : _(u"""
@@ -156,7 +156,7 @@ cata_msg = {
 43 : _(u"""
  -> le nombre de mailles de votre maillage (%(i1)d) est supérieur
     à la limite de 9 999 999.
- -> Risque & Conseil : générez un fichier MED directement depuis GMSH. 
+ -> Risque & Conseil : générez un fichier MED directement depuis GMSH.
 """),
 
 }

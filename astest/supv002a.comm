@@ -1,0 +1,59 @@
+# MODIF  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+# TITRE TEST DES MESSAGES - INTERNATIONALISATION
+# supv002a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
+
+DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
+      PAR_LOT='OUI')
+
+import os.path as osp
+from glob import glob
+
+from Utilitai.Utmess import UTMESS
+import Messages
+MSGDIR = osp.dirname(Messages.__file__)
+
+# this replaces 'import supv002a.33'
+execfile('fort.33', globals())
+
+checker = Checker()
+
+LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, '*.py'))]
+
+# check default/native messages
+check_catamess(checker, 'fr', LCATA)
+# check translated messages in english
+check_catamess(checker, 'en', LCATA)
+
+nberr = checker.count_errors()
+errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
+
+if nberr > 0:
+    UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", errors, ""))
+#mods = checker.get_modules()
+
+tab = CREA_TABLE(LISTE=_F(PARA='NBERR', LISTE_I=nberr))
+
+TEST_TABLE(TABLE=tab,
+           NOM_PARA='NBERR',
+           VALE_I=0,
+           REFERENCE='ANALYTIQUE',)
+
+FIN()

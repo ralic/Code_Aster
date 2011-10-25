@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline5 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,14 +88,20 @@ cata_msg={
 """),
 
 18: _(u"""
-  a une norme d'erreur de  %(r1)f  supérieure au seuil admis  %(r2)f
+  A une norme d'erreur de  %(r1)f  supérieure au seuil admis  %(r2)f
 
-  Conseil: Si vous utiliser la méthode 'TRI_DIAG' ou 'SORENSEN' vous
-  pouvez améliorer cette norme en:
-    - augmentant la valeur de COEF_DIM_ESPACE (par défaut valeur 4 pour TRI_DIAG
+  Conseil:
+  Si vous utilisez l'opérateur MODE_ITER_SIMULT + METHODE= 'TRI_DIAG' ou 'SORENSEN' vous
+  pouvez améliorer cette norme :
+    - en augmentant la valeur de COEF_DIM_ESPACE (par défaut valeur 4 pour TRI_DIAG
       et 2 pour SORENSEN),
-    - réduire le nombre de valeurs propres recherchées (NMAX_FREQ ou taille de
-     la BANDE).
+    - en réduire le nombre de valeurs propres recherchées (NMAX_FREQ ou taille de
+      la BANDE).
+  Si vous utilisez l'opérateur MODE_ITER_INV vous pouvez améliorer cette norme :
+    - en augmentant les nombres d'itérations des algorithmes (CALC_FREQ +
+      NMAX_ITER_SEPARE/AJUSTE et/ou CALC_MODE + NMAX_ITER),
+    - en augmentant la précision requise (CALC_FREQ + PREC_SEPARE/AJUSTE et/ou CALC_MODE + PREC),
+    - en changeant d'algorithme (CALC_FREQ + OPTION et/ou CALC_MODE + OPTION).
 """),
 
 19: _(u"""
@@ -128,10 +134,6 @@ cata_msg={
   dans l'intervalle  ( %(r1)f  ,  %(r2)f )
   il y a théoriquement  %(i1)d charge(s) critique(s)
   et on en a calculé  %(i2)d
-"""),
-
-26: _(u"""
-
 """),
 
 27: _(u"""

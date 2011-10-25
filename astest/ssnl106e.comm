@@ -1,5 +1,5 @@
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,6 +111,20 @@ REST=CALC_ELEM( reuse=REST, RESULTAT=REST,
                                      ANGLE=90,),
                    )
 
+RESTPOS1=POST_CHAMP(RESULTAT=REST,
+                    TOUT='OUI',
+                    EXTR_TUYAU=_F(NOM_CHAM='SIEF_ELGA',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',
+                                  ANGLE=90,),);
+
+RESTPOS2=POST_CHAMP(RESULTAT=REST,
+                    TOUT='OUI',
+                    EXTR_TUYAU=_F(NOM_CHAM='VARI_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',
+                                  ANGLE=90,),);
+
 # TEST PAR RAPPORT A LA SOLUTION ANALYTIQUE
 
 TEST_RESU(RESU=(
@@ -141,7 +155,7 @@ TEST_RESU(RESU=(
                  VALE=0.0,
                  PRECISION=1.0E-03,
                  REFERENCE='NON_REGRESSION',),
-           _F( RESULTAT = REST,REFERENCE='ANALYTIQUE',
+           _F( RESULTAT = RESTPOS1,REFERENCE='ANALYTIQUE',
                  NUME_ORDRE = 1,
                  NOM_CHAM = 'SIEF_ELGA',
                  MAILLE = 'M2',
@@ -173,7 +187,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V1',
                  VALE = 7.425E-4,
                  PRECISION = 1.E-3),
-            _F( RESULTAT = REST,REFERENCE='ANALYTIQUE',
+            _F( RESULTAT = RESTPOS2,REFERENCE='ANALYTIQUE',
                  NUME_ORDRE = 11,
                  NOM_CHAM = 'VARI_ELNO',
                  MAILLE = 'M2',

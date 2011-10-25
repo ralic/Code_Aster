@@ -3,7 +3,7 @@
      &                  EPS,DEPS,TEMPM,TEMPP,SIGM,VIM,
      &                  OPTION,ANGMAS,SIGP,VIP,DSDE,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 25/10/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,6 @@ C ---        CARACTERISTIQUES ELASTIQUES A TPLUS
              IF (COMPOR(1).EQ.'ELAS') THEN
                 CALL VERIFG('RIGI',KPG,3,'T',IMATE,'ELAS',1,DEPSTH,IRET)
                 SIGP(1) = EP* (SIGM(1)/EM+DEPS(1)-DEPSTH)
-                VIP(1) = 0.D0
                 DSDE(1,1) = EP
                 DSDE(2,2) = EP
              ELSE IF ((COMPOR(1).EQ.'VMIS_ISOT_LINE') .OR.

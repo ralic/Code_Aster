@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,6 +205,8 @@ C     ------------------------
       END IF
       IF ((NUSP.EQ.0).AND.(NBSPT.GT.1)) THEN
           CALL U2MESI(AOF,'CALCULEL_1',1,NBSPT)
+          IDDL=0
+          GOTO 9999
       END IF
 
 

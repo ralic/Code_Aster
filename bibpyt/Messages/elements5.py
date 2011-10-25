@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements5 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,7 @@ cata_msg = {
 """),
 
 15 : _(u"""
-A l'occurrence %(i1)s, les objets précédemment évoqués sont inexistants ou de type incompatible.
+A l'occurrence %(i1)d, les objets précédemment évoqués sont inexistants ou de type incompatible.
 """),
 
 16 : _(u"""
@@ -55,15 +55,15 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 """),
 
 19 : _(u"""
- A l'occurrence %(i1)s, la maille %(k1)s est inexistante.
+ A l'occurrence %(i1)d, la maille %(k1)s est inexistante.
 """),
 
 20 : _(u"""
- A l'occurrence %(i1)s, la maille %(k1)s n'est pas linéique.
+ A l'occurrence %(i1)d, la maille %(k1)s n'est pas linéique.
 """),
 
 21 : _(u"""
- A l'occurrence %(i1)s, le mélange de SEG2 et de SEG3 (maille %(k1)s) n'est possible.
+ A l'occurrence %(i1)d, le mélange de SEG2 et de SEG3 (maille %(k1)s) n'est possible.
 """),
 
 22 : _(u"""
@@ -237,7 +237,7 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
 """),
 
 54 : _(u"""
-  Le nbre de sous-points est :%(i1)s. Il doit soit valoir 1 (si on a déja extrait le champ) soit un
+  Le nbre de sous-points est : %(i1)d. Il doit soit valoir 1 (si on a déja extrait le champ) soit un
   multiple de 3 (si le champ est complet).
 """),
 

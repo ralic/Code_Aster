@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline5 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,6 +168,15 @@ La recherche linéaire est incompatible avec le pilotage de type DDL_IMPO.
 La recherche linéaire de type PILOTAGE nécessite de faire du pilotage (présence du mot-clef facteur PILOTAGE).
 """),
 
+36 : _(u"""
+La prédiction de type EXTRAPOL ou DEPL_CALCULE est incompatible avec le pilotage.
+"""),
+
+37 : _(u"""
+L'usage de ARRET='NON' dans CONVERGENCE est dangereux et doit être utilisé avec précaution car il permet à un calcul de converger
+même lorsque l'équilibre n'est pas vérifié.
+"""),
+
 43 : _(u"""
   -> Les paramètres RHO_MIN et RHO_MAX sont identiques.
 """),
@@ -197,27 +206,19 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
 
 """),
 
-
-
 50 : _(u"""
  Pilotage.
  La composante <%(k1)s> n'a pas été trouvée dans la numérotation.
  Vérifier NOM_CMP dans le mot-clef PILOTAGE.
 """),
-51: _(u"""
-        Probleme programmation, dans rescmp : NBCMPU > nbddlmax
-"""),
-52: _(u"""
-        Probleme programmation, dans rescmp : REEL DEMANDE
-"""),
+
 53: _(u"""
-        Critere RESI_COMP_RELA interdit en dynamique. Utiliser un autre critere de convergence
-"""),
-
-54 : _(u"""
-  Vous voulez utiliser l'indicateur de convergence RESI_REFE_RELA et une modélisation
-  GRAD_VARI mais vous n'avez pas renseigné le mot-clé %(k1)s .
+   Le critère RESI_COMP_RELA est interdit en dynamique. Utilisez un autre critère de convergence
 """),
 
 
+55 : _(u"""
+  Vous utilisez l'indicateur de convergence RESI_REFE_RELA et une modélisation %(k1)s.
+  Vous devez renseigner la valeur de référence %(k2)s dans CONVERGENCE.
+"""),
 }

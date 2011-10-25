@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF factor Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -341,8 +341,8 @@ Solution:
 
 73: _(u"""
 Solveur MUMPS :
-  Lors de la factorisation numérique, le pourcentage de pivots, %(r1)d %%, a dépassé le
-  pourcentage prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2)d %%.
+  Lors de la factorisation numérique, le pourcentage de pivots, %(r1).0f %%, a dépassé le
+  pourcentage prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2).0f %%.
   Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
   en fin de résolution via la mot-clé RESI_RELA.
 Solution:

@@ -1,21 +1,21 @@
-#@ MODIF soustruc Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF soustruc Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -42,16 +42,16 @@ cata_msg={
 """),
 
 6: _(u"""
- le noeud: %(k1)s  n'a pas les memes coordonnées dans les maillages:  %(k2)s  et  %(k3)s 
+ le noeud: %(k1)s  n'a pas les memes coordonnées dans les maillages:  %(k2)s  et  %(k3)s
 """),
 
 7: _(u"""
- matrice de rigidité non inversible (modes rigides ???) 
+ matrice de rigidité non inversible (modes rigides ???)
  - attention : critères de choc non calculés
 """),
 
 8: _(u"""
- matrice de rigidité : pivot quasi-nul (modes rigides ???) 
+ matrice de rigidité : pivot quasi-nul (modes rigides ???)
  - attention : critères de choc non calculés
 """),
 
@@ -139,7 +139,7 @@ cata_msg={
 """),
 
 26: _(u"""
- la maille :  %(k1)s  n existe pas dans le maillage :  %(k2)s 
+ la maille :  %(k1)s  n existe pas dans le maillage :  %(k2)s
 """),
 
 27: _(u"""
@@ -147,7 +147,7 @@ cata_msg={
 """),
 
 28: _(u"""
- la maille :  %(k1)s  ne connait pas le chargement :  %(k2)s 
+ la maille :  %(k1)s  ne connait pas le chargement :  %(k2)s
 """),
 
 29: _(u"""
@@ -163,15 +163,15 @@ cata_msg={
 """),
 
 32: _(u"""
- maille en double :  %(k1)s  dans le group_ma:  %(k2)s 
+ maille en double :  %(k1)s  dans le group_ma:  %(k2)s
 """),
 
 33: _(u"""
- l'indice final est inferieur a l'indice initial 
+ l'indice final est inferieur a l'indice initial
 """),
 
 34: _(u"""
- l'indice final est superieur a la taille du groupe 
+ l'indice final est superieur a la taille du groupe
 """),
 
 35: _(u"""
@@ -184,7 +184,7 @@ cata_msg={
 
 37: _(u"""
  Le groupe de noeuds '%(k1)s' existe déjà.
- 
+
  Conseil :
     Si vous souhaitez utiliser un nom de groupe existant, il suffit
     de le détruire avec DEFI_GROUP / DETR_GROUP_NO.
@@ -196,7 +196,7 @@ cata_msg={
 """),
 
 39: _(u"""
- noeud en double :  %(k1)s  dans le group_no:  %(k2)s 
+ noeud en double :  %(k1)s  dans le group_no:  %(k2)s
 """),
 
 40: _(u"""
@@ -224,7 +224,7 @@ cata_msg={
 """),
 
 46: _(u"""
- cas de charge :  %(k1)s  inexistant sur le macr_elem_stat :  %(k2)s 
+ cas de charge :  %(k1)s  inexistant sur le macr_elem_stat :  %(k2)s
 """),
 
 47: _(u"""
@@ -232,11 +232,11 @@ cata_msg={
 """),
 
 48: _(u"""
- noeud :  %(k1)s  inexistant dans le maillage :  %(k2)s 
+ noeud :  %(k1)s  inexistant dans le maillage :  %(k2)s
 """),
 
 49: _(u"""
- group_no :  %(k1)s  inexistant dans le maillage :  %(k2)s 
+ group_no :  %(k1)s  inexistant dans le maillage :  %(k2)s
 """),
 
 50: _(u"""
@@ -248,15 +248,15 @@ cata_msg={
 """),
 
 52: _(u"""
- trop de reels pour le mot clef "tran" 
+ trop de reels pour le mot clef "tran"
 """),
 
 53: _(u"""
- trop de reels pour le mot clef "angl_naut" 
+ trop de reels pour le mot clef "angl_naut"
 """),
 
 54: _(u"""
- trop de reels pour le mot clef "centre" 
+ trop de reels pour le mot clef "centre"
 """),
 
 55: _(u"""
@@ -276,7 +276,7 @@ cata_msg={
 """),
 
 59: _(u"""
-  le noeud :  %(k1)s  n'appartient pas a la maille : %(k2)s 
+  le noeud :  %(k1)s  n'appartient pas a la maille : %(k2)s
 """),
 
 60: _(u"""
@@ -336,11 +336,11 @@ cata_msg={
 """),
 
 75: _(u"""
- autorise : "lg" ou "gl" pas: %(k1)s 
+ autorise : "lg" ou "gl" pas: %(k1)s
 """),
 
 76: _(u"""
- ddl non prevu. on attend: dx 
+ ddl non prevu. on attend: dx
 """),
 
 77: _(u"""
@@ -372,71 +372,55 @@ cata_msg={
 """),
 
 84: _(u"""
-  champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
+  champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d
 """),
 
 85: _(u"""
-  au noeud de choc:  %(k1)s 
+  au noeud de choc:  %(k1)s
 """),
 
 86: _(u"""
- noeud   %(k1)s   en dehors du segment %(k2)s   abscisse curviligne %(r1)f 
+ noeud   %(k1)s   en dehors du segment %(k2)s   abscisse curviligne %(r1)f
 """),
 
 87: _(u"""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
+ trop de noeuds dans le group_no  noeud utilise:  %(k1)s
 """),
 
 88: _(u"""
-  verifier votre maillage 
+  Vérifiez votre maillage.
 """),
 
 89: _(u"""
-  coordonnee x < 0 pour le noeud  %(k1)s  maille  %(k2)s 
-"""),
-
-90: _(u"""
- 
-"""),
-
-91: _(u"""
-   
-"""),
-
-92: _(u"""
- 
+  coordonnee x < 0 pour le noeud  %(k1)s  maille  %(k2)s
 """),
 
 93: _(u"""
-    pour le mode no : %(i1)d taux de flexibilite locale   :  %(r1)f 
- souplesse locale             :  %(r2)f 
- taux effort tranchant local  :  %(r3)f 
- 
+    pour le mode no : %(i1)d taux de flexibilite locale   :  %(r1)f
+ souplesse locale             :  %(r2)f
+ taux effort tranchant local  :  %(r3)f
+
 """),
 
 94: _(u"""
-   -- bilan noeud de choc : %(k1)s  taux de restit flexibilite      :  %(r1)f 
-  taux de restit effort tranchant :  %(r2)f 
+   -- bilan noeud de choc : %(k1)s  taux de restit flexibilite      :  %(r1)f
+  taux de restit effort tranchant :  %(r2)f
 """),
 
 95: _(u"""
-  ( souplesse statique - souplesse locale )/ souplesse choc :  %(r1)f 
+  ( souplesse statique - souplesse locale )/ souplesse choc :  %(r1)f
 """),
 
 96: _(u"""
-  souplesse locale / souplesse choc :  %(r1)f 
-"""),
-
-97: _(u"""
-   
+  souplesse locale / souplesse choc :  %(r1)f
 """),
 
 98: _(u"""
- !! attentionplus petite val sing def stat :  %(r1)f !! nous la forcons a :  %(r2)f 
+ !! attentionplus petite val sing def stat :  %(r1)f !! nous la forcons a :  %(r2)f
 """),
 
 99: _(u"""
- ---- conditionnement def stat :  %(r1)f 
+ ---- conditionnement def stat :  %(r1)f
 """),
 
 }

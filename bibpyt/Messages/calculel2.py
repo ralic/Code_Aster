@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel2 Messages  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -426,7 +426,9 @@ Conseils :
 """),
 
 86: _(u"""
- il faut fournir COMPOR
+ La carte de COMPORTEMENT est absente.
+ Votre résultat a peut-être été produit par LIRE_RESU ou CREA_RESU.
+ Si votre résultat a été produit par LIRE_RESU, il faut renseigner le mot-clé COMP_INCR.
 """),
 
 87: _(u"""

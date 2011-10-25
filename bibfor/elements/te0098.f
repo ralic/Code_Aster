@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER ICHG,ICHN,IPOIDS,IVF,JTAB(7),LGPG1,NDIM,IRET
-      INTEGER NNO,NPG,NCMP,NNOS,IDFDE,JGANO
+      INTEGER ICHG,ICHN,IPOIDS,IVF,JTAB(7),JTAB1(7),JTAB2(7),LGPG1,LGPG2
+      INTEGER NNO,NPG,NCMP,NNOS,IDFDE,JGANO,NDIM,IRET
 C     ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -73,10 +73,14 @@ C     ---------------------------------------
         CALL JEVECH('PVARIGR','L',ICHG)
         CALL JEVECH('PVARINR','E',ICHN)
 
-        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
-        LGPG1= MAX(JTAB(6),1)*JTAB(7)
+        CALL TECACH('OON','PVARIGR',7,JTAB1,IRET)
+        CALL TECACH('OON','PVARINR',7,JTAB2,IRET)
+        LGPG1= MAX(JTAB1(6),1)*JTAB1(7)
+        LGPG2= MAX(JTAB2(6),1)*JTAB2(7)
 
-        NCMP = LGPG1
+        CALL ASSERT(LGPG1.EQ.LGPG2)
+
+        NCMP = LGPG2
 
       END IF
 C

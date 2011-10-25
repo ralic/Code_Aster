@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 24/10/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,31 +96,37 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'RHO'
-      NOMRES(4) = 'AMOR_ALP'
-      NOMRES(5) = 'AMOR_BET'
+
       K8B = ' '
-      CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,5,
-     &            NOMRES,VALRES,ICODR2,0)
+      CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,3,
+     &            NOMRES,VALRES,ICODR2,1)
+
       EB  = VALRES(1)
       NUB = VALRES(2)
       RHO = VALRES(3)
 
-      IF(ICODR2(4) .NE. 0) THEN
+      NOMRES(1) = 'AMOR_ALP'
+      NOMRES(2) = 'AMOR_BET'
+
+      CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,2,
+     &            NOMRES,VALRES,ICODR2,0)
+
+      IF(ICODR2(1) .NE. 0) THEN
         AMORA = 0.0D0
       ELSE
-        AMORA = VALRES(4)
+        AMORA = VALRES(1)
       ENDIF
 
-      IF(ICODR2(5) .NE. 0) THEN
+      IF(ICODR2(2) .NE. 0) THEN
         AMORB = 0.0D0
       ELSE
-        AMORB = VALRES(5)
+        AMORB = VALRES(2)
       ENDIF
 
       NOMRES(1) = 'SYT'
       NOMRES(2) = 'SYC'
       CALL RCVALE(MATER,'BETON_ECRO_LINE ',0,K8B,R8B,2,
-     &            NOMRES,VALRES,ICODR2,0)
+     &            NOMRES,VALRES,ICODR2,1)
       FT = VALRES(1)
       FC = VALRES(2)
 
@@ -151,11 +157,11 @@ C      CALL GETVR8('BETON','BT2',1,1,1,BT2,IBID)
           CALL GETVID('NAPPE','MATER',ILIT,IARG,1,MATER,IBID)
           NOMRES(1) = 'E'
           CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,ICODR2,0)
+     &            NOMRES,VALRES,ICODR2,1)
           EA(ILIT) = VALRES(1)
           NOMRES(1) = 'SY'
           CALL RCVALE(MATER,'ECRO_LINE       ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,ICODR2,0)
+     &            NOMRES,VALRES,ICODR2,1)
           SY(ILIT) = VALRES(1)
           CALL GETVR8('NAPPE','OMX',ILIT,IARG,1,OMX(ILIT),IBID)
           CALL GETVR8('NAPPE','OMY',ILIT,IARG,1,OMY(ILIT),IBID)
@@ -173,11 +179,11 @@ C      CALL GETVR8('BETON','BT2',1,1,1,BT2,IBID)
           CALL GETVID('CABLE_PREC','MATER',II,IARG,1,MATER,IBID)
           NOMRES(1) = 'E'
           CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,ICODR2,0)
+     &            NOMRES,VALRES,ICODR2,1)
           EA(ILIT) = VALRES(1)
           NOMRES(1) = 'SY'
           CALL RCVALE(MATER,'ECRO_LINE       ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,ICODR2,0)
+     &            NOMRES,VALRES,ICODR2,1)
           SY(ILIT) = VALRES(1)
           CALL GETVR8('CABLE_PREC','OMX',II,IARG,1,OMX(ILIT),IBID)
           CALL GETVR8('CABLE_PREC','OMY',II,IARG,1,OMY(ILIT),IBID)
@@ -200,12 +206,12 @@ C      CALL GETVR8('BETON','BT2',1,1,1,BT2,IBID)
           NOMRES(1) = 'E'
           NOMRES(2) = 'NU'
           CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,2,
-     &            NOMRES,VALRES,ICODR2,0)
+     &            NOMRES,VALRES,ICODR2,1)
           EA(ILIT)  = VALRES(1)
           NUA(ILIT) = VALRES(2)
           NOMRES(1) = 'SY'
           CALL RCVALE(MATER,'ECRO_LINE       ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,ICODR2,0)
+     &            NOMRES,VALRES,ICODR2,1)
           SY(ILIT) = VALRES(1)
           CALL GETVR8('LINER','OML',II,IARG,1,OML(II),IBID)
           CALL GETVR8('LINER','RLR',II,IARG,1,RLR(II),IBID)

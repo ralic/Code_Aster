@@ -1,7 +1,8 @@
       SUBROUTINE PJCORR(NOMO2,CHBID,CNS1Z,CES2Z,
      &     LIGREL,CORRES,OPTION,NOMPAR,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2011   AUTEUR BERARD A.BERARD 
+C MODIF CALCULEL  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +54,6 @@ C     ------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*1 KBID
-      CHARACTER*3 TSCA
       CHARACTER*8 NOMGD,MA,LICMP(2)
       CHARACTER*19 CNS1,CES2,CEL2
       CHARACTER*19 CHAM1S,DCEL
@@ -64,9 +64,9 @@ C     ------------------
       INTEGER JCESK,JCESD,JCESV,JCESL
 
       INTEGER JCNS1C,JCNS1L,JCNS1V,JCNS1K,JCNS1D
-      INTEGER NBNO1,NCMP,IBID,NBMAX
-      INTEGER NCMPMX,IAD2,IER
-      INTEGER ICMP,IAD,NBPT,NBSP
+      INTEGER NBNO1,NBMAX,NCMP1
+      INTEGER IAD2,IER
+      INTEGER ICMP,IAD,NBPT,NBSP,ICMP1
 
       INTEGER IMA,IPT, ISP,JCESC,JLGRF
 
@@ -86,6 +86,7 @@ C     ------------------------------------------
       CALL JEVEUO(CNS1//'.CNSC','L',JCNS1C)
       CALL JEVEUO(CNS1//'.CNSV','L',JCNS1V)
       CALL JEVEUO(CNS1//'.CNSL','L',JCNS1L)
+      CALL JELIRA(CNS1//'.CNSC','LONMAX',NCMP1,KBID)
 
       NOMGD = ZK8(JCNS1K-1+2)
       NBNO1 = ZI(JCNS1D-1+1)
@@ -171,7 +172,7 @@ C     -----------------------------
         ENDIF
 
       ENDIF
-      
+
       CALL CELCES(CEL2,'V',CES2)
       CALL DETRSD('CHAM_ELEM',CEL2)
 
@@ -180,6 +181,7 @@ C     -----------------------------
       CALL JEVEUO(CES2//'.CESV','E',JCE2V)
       CALL JEVEUO(CES2//'.CESL','E',JCE2L)
       CALL JEVEUO(CES2//'.CESK','L',JCE2K)
+
 
 
 C------------------------------------------------------------------
@@ -191,27 +193,20 @@ C     -------------------------------
 
 C NBNO1 EST LE NOMBRE DE PSEUDO-NOEUDS DU MAILLAGE 2
 
-      DO 98 IPO=1,NBNO1
-        IMA=ZI(JPO-1+2*IPO-1)
-        IPT= ZI(JPO-1+2*IPO)
-        ISP=1
-        NCMP = ZI(JCE2D-1+5+4* (IMA-1)+3)
-
-        DO 92 ICMP=1,NCMP
+      DO 92 ICMP1=1,NCMP1
+        ICMP=ICMP1
+        CALL ASSERT(ZK8(JCE2C-1+ICMP).EQ.ZK8(JCNS1C-1+ICMP1))
+        DO 98 IPO=1,NBNO1
+          IMA=ZI(JPO-1+2*IPO-1)
+          IPT= ZI(JPO-1+2*IPO)
+          ISP=1
           CALL CESEXI('C',JCE2D,JCE2L,IMA,IPT,ISP,ICMP,IAD2)
+          CALL ASSERT(IAD2.GT.0)
 
-          IF (IAD2.LT.0) THEN
-            IAD2=-IAD2
-          ENDIF
-
-          ZR(JCE2V-1+IAD2)=
-     &             ZR(JCNS1V+(IPO-1)*NCMP+ICMP-1)
-          ZL(JCE2L-1+IAD2)=.TRUE.
-
-   92   CONTINUE
-   98 CONTINUE
+          ZR(JCE2V-1+IAD2)=ZR(JCNS1V+(IPO-1)*NCMP1+ICMP-1)
+   98   CONTINUE
+   92 CONTINUE
 
 
       CALL JEDEMA()
-
       END

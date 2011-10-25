@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai5 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,11 +94,11 @@ cata_msg = {
 """),
 
 20 : _(u"""
- unite logique  %(k1)s , probleme lors de l'inquire
+ Problème lors de la récupération d'informations sur l'unité logique %(k1)s.
 """),
 
 21 : _(u"""
- nombre d'unités logiques ouvertes superieur a %(i1)f
+ Le nombre d'unités logiques ouvertes est supérieur à %(i1)d.
 """),
 
 22 : _(u"""

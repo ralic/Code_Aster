@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa7 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ cata_msg={
 
 7: _(u"""
  l'intégrale double pour le calcul de la longueur de corrélation ne converge pas.
- JM,IM  = %(i1)s , %(i2)s
+ JM,IM  = %(i1)d , %(i2)d
  valeur finale = %(r1)f
  valeur au pas précédent = %(r2)f
  erreur relative = %(r3)f

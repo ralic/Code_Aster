@@ -1,8 +1,8 @@
-#@ MODIF vmis_pou_flejou Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF vmis_pou_flejou Comportement  DATE 24/10/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -30,7 +30,7 @@ loi = LoiComportement(
    modelisation   = ('POU_D_E','POU_D_T'),
    deformation    = ('PETIT','PETIT_REAC'),
    nom_varc       = ('TEMP'),
-   algo_inte      = ('RUNGE_KUTTA','NEWTON'),
+   algo_inte      = ('NEWTON','RUNGE_KUTTA'),
    type_matr_tang = None,
    proprietes     = None,
 )

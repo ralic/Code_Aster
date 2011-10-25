@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith6 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,8 +26,8 @@ cata_msg = {
 """),
 
 2 : _(u"""
- -> La valeur de SYC %(r1)s ne permet pas de respecter GAMMA_C < 1.
- -> Conseil : Choisissez une valeur de SYC inférieure à %(r2)s
+ -> La valeur de SYC %(r1)f ne permet pas de respecter GAMMA_C < 1.
+ -> Conseil : Choisissez une valeur de SYC inférieure à %(r2)f
 """),
 
 3 : _(u"""
@@ -40,7 +40,7 @@ cata_msg = {
 """),
 
 5 : _(u"""
- -> La valeur de déformation maximale %(r1)s est inférieur au seuil d'endommagement %(r2)s.
+ -> La valeur de déformation maximale %(r1)f est inférieur au seuil d'endommagement %(r2)f.
  -> Le modele GLRC_DM risque de donner des résultats inattendus.
  -> Conseil : Utilisez une loi élastique ou vérifiez les paramètres d'homogénéisation.
 """),

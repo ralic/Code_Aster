@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
 # sdnv107b.para = tps_job 300 mem_job 900Mo mem_aster 90 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -363,7 +363,7 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELB,
                                ),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                     ITER_GLOB_MAXI=20,
-                                    ARRET='NON',), 
+                                    ARRET='OUI',), 
                      );
                      
 DYTREX0=DYNA_NON_LINE(MODELE=MODELE,
@@ -399,7 +399,7 @@ DYTREX0=DYNA_NON_LINE(MODELE=MODELE,
                                ),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                     ITER_GLOB_MAXI=20,
-                                    ARRET='NON',),
+                                    ARRET='OUI',),
                      # SOLVEUR = _F(METHODE='LDLT',)
                      );
                      

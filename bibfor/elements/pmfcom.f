@@ -10,7 +10,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/07/2011   AUTEUR LABBE M.LABBE 
+C MODIF ELEMENTS  DATE 25/10/2011   AUTEUR FERNANDES R.FERNANDES 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -254,7 +254,7 @@ C           (VERIFIE DANS RCTRAC)
      &                   OPTION,
      &                   DEFAM(1),DEFAP(1),
      &                   ANGMAS,
-     &                   SIGF(I),VARIP(IVARI),MODF(I),CODRET)
+     &                   SIGF(I),VARIP(IVARI),MODF(I),CODRET,COMPO)
             IF (CODRET.NE.0) GOTO 900
 56          CONTINUE
 

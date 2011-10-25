@@ -3,7 +3,7 @@
      &                  IVF,IVF2,IDFDE,IDFDE2,GEOM,
      &                  B,DFDI,DFDI2,R,VECTU,IMATE,MECANI,PRESS1,PRESS2,
      &                  TEMPE,DIMDEF,DIMCON,DIMUEL,NDDLS,NDDLM,
-     &                  NMEC,NP1,NP2,NDIM,AXI,CONTM)
+     &                  NMEC,NP1,NP2,NDIM,AXI)
 
       IMPLICIT  NONE
       LOGICAL   FNOEVO,PERMAN,AXI
@@ -14,12 +14,12 @@
       INTEGER   NMEC,NP1,NP2,NDIM
       REAL*8    GEOM(NDIM,NNO),B(DIMDEF,DIMUEL),DFDI(NNO,3)
       REAL*8    DFDI2(NNOS,3)
-      REAL*8    R(1:DIMDEF+1),VECTU(DIMUEL),DT,CONTM(4)
+      REAL*8    R(1:DIMDEF+1),VECTU(DIMUEL),DT
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +40,7 @@ C =====================================================================
       PARAMETER (PARSIG = 837 ,PARTMP = 162 ,PARBSI = 162 )
       REAL*8    SIGTM(PARSIG),FTEMP(PARTMP),BSIGM(PARBSI)
       REAL*8    R8VIDE,R8MIEM
+      REAL*8    SIGREF,FH1REF,FH2REF,FTHREF,CONTM(4)
 C =====================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -66,28 +67,24 @@ C --- CES VERIFICATIONS ONT POUR OBJECTIF DE CONTROLER LA PRESENCE -----
 C --- DES DIFFERENTS PARAMETRES DE REFERENCE ---------------------------
 C ======================================================================
        IF ( MECANI(1).NE.0 ) THEN
-          INDICE = 1
-          IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL U2MESS('F','ALGORITH10_36')
-          ENDIF
+         CALL TEREFE('SIGM_REFE','THM',SIGREF)
+         INDICE = 1 
+         CONTM(INDICE) = SIGREF
        ENDIF
        IF ( PRESS1(1).NE.0 ) THEN
-          INDICE = 2
-          IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL U2MESS('F','ALGORITH10_37')
-          ENDIF
+         CALL TEREFE('FLUX_HYD1_REFE','THM',FH1REF)
+         INDICE = 2
+         CONTM(INDICE) = FH1REF
        ENDIF
        IF ( PRESS2(1).NE.0 ) THEN
-          INDICE = 3
-          IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL U2MESS('F','ALGORITH10_38')
-          ENDIF
+         CALL TEREFE('FLUX_HYD2_REFE','THM',FH2REF)
+         INDICE = 3
+         CONTM(INDICE) = FH2REF
        ENDIF
        IF ( TEMPE(1).NE.0 ) THEN
-          INDICE = 4
-          IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL U2MESS('F','ALGORITH10_39')
-          ENDIF
+         CALL TEREFE('FLUX_THER_REFE','THM',FTHREF)
+         INDICE = 4
+         CONTM(INDICE) = FTHREF
        ENDIF
 C ======================================================================
 C --- TESTS DE COHERENCE -----------------------------------------------

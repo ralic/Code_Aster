@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209p.para = tps_job 500 mem_job 800Mo mem_aster 20 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -220,7 +220,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                  GROUP_MA='CYLROD',),
                     INCREMENT=_F(LIST_INST=L_INS1,
                                  INST_FIN=1.0,),
-                    CONVERGENCE=_F(ARRET='NON',
+                    CONVERGENCE=_F(
                                    ITER_GLOB_MAXI=50,
                                    RESI_GLOB_RELA=1.E-8),
                     SOLVEUR=_F(METHODE='MUMPS',

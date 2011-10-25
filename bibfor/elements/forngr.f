@@ -1,5 +1,5 @@
       SUBROUTINE FORNGR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,6 +92,8 @@ C
       INTEGER ICOMPO, NBCOU
       INTEGER ICOU
       REAL * 8 ZIC  , ZMIN , EPAIS , COEF
+C --- CONTRAINTE DE REFERENCE POUR REFE_FORC_NODA
+      REAL * 8 SIGREF
 C
 C---- DECLARATIONS COQUE NON LINEAIRE
 C
@@ -168,7 +170,7 @@ C
 
          ELSEIF (OPTION.EQ.'REFE_FORC_NODA') THEN
 
-            CALL JEVECH('PREFCO','L',ICONTM)
+            CALL TEREFE('SIGM_REFE','MECA_COQUE3D',SIGREF)
 
          ENDIF
 C
@@ -476,7 +478,7 @@ C            POUR CHAQUE POINT D'INTEGRATION
 
                   DO 155 I=1,5
 
-                    SIGTMP(I)=ZR(ICONTM)
+                    SIGTMP(I)=SIGREF
 
                     CALL BTSIG ( 6 * NB1 + 3 , 5 ,
      &                   ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * COEF ,

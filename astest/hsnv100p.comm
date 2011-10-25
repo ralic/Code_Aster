@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:3D_INCO_UP)
 # hsnv100p.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,7 +149,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELNO','SIEF_ELNO','VARI_ELNO',),);
+            OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
 
 #
 
@@ -170,7 +170,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M30',
                    NOEUD='N3',
@@ -194,7 +194,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=3,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M30',
                    NOEUD='N3',
@@ -218,7 +218,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=5,
-                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M30',
                    NOEUD='N3',

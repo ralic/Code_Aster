@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/10/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,6 +147,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
         IF (CMP2(1:15) .EQ. 'ENDO_ISOT_BETON' .OR.
      &      CMP2(1:6)  .EQ. 'MAZARS') THEN
+
+          CALL U2MESS('A','ALGORITH7_83')
 
           CMP4(1:16) = TYPMOD(2)
           OPTION(2)(1:16) = CMP2(1:16)

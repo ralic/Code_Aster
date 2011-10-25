@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS COQUES DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,8 +228,8 @@ TEST_RESU(RESU=(
                PRECISION = ( 1.E-2, 1.E-4, ), REFERENCE = 'ANALYTIQUE',
                VALE = 6.108087E-01 ),
               _F(
-               RESULTAT = VT,     NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',    POINT = 1,   NOM_CMP = 'V1',
+               RESULTAT = VT,   NOM_CHAM = 'VARI_ELGA',  INST = 2.,
+               MAILLE = 'MA1',  POINT = 1, SOUS_POINT=1, NOM_CMP = 'V1',
                PRECISION = ( 1.5E-2, 1.E-4, ), REFERENCE = 'ANALYTIQUE',
                VALE = 0.2475))
              )

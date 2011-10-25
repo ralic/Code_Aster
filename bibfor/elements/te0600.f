@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GRANET S.GRANET
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -368,7 +368,6 @@ C --- PARAMETRES EN ENTREE ---------------------------------------------
 C ======================================================================
         CALL JEVECH('PGEOMER','L',IGEOM)
         CALL JEVECH('PMATERC','L',IMATE)
-        CALL JEVECH('PREFCO','L',ICONTM)
 C ======================================================================
 C --- PARAMETRES EN SORTIE ---------------------------------------------
 C ======================================================================
@@ -380,8 +379,7 @@ C ======================================================================
      &              IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,ZR(IGEOM),
      &              B,DFDI,DFDI2,R,ZR(IVECTU),ZI(IMATE),MECANI,
      &              PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
-     &              NDDLS,NDDLM,NMEC,NP1,NP2,NDIM,AXI,
-     &              ZR(ICONTM))
+     &              NDDLS,NDDLM,NMEC,NP1,NP2,NDIM,AXI)
       END IF
 C ======================================================================
 C --- 7. OPTION : SIEF_ELNO --------------------------------------------

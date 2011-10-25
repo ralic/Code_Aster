@@ -1,6 +1,6 @@
       SUBROUTINE TE0156 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +51,8 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER IVECTU,ICONTG,LORIEN,NNO,NC,IREFCO,INO,I
-      REAL*8  FS(6),PGL(3,3),VECT(6)
+      INTEGER IVECTU,ICONTG,LORIEN,NNO,NC,INO,I
+      REAL*8  FS(6),PGL(3,3),VECT(6),FORREF
 C
 C     ------------------------------------------------------------------
 C
@@ -63,11 +63,11 @@ C
          ELSEIF(NOMTE .EQ. 'MECA_BARRE' )THEN
             NC = 3
          ENDIF
-         CALL JEVECH('PREFCO', 'L',IREFCO)
          CALL JEVECH('PVECTUR','E',IVECTU)
+         CALL TEREFE('EFFORT_REFE','MECA_BARRE',FORREF)
          DO 101 INO=1,NNO
             DO 102  I=1,NC
-               ZR(IVECTU+(INO-1)*NC+I-1)=ZR(IREFCO)
+               ZR(IVECTU+(INO-1)*NC+I-1)=FORREF
 102         CONTINUE
 101      CONTINUE
 

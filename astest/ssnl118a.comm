@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE BARRE SOUMISE A UN CHAMP DE VITESSE DE VENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,8 +125,7 @@ RSTAT1=STAT_NON_LINE(
                   RELATION    =  'ELAS',
                   DEFORMATION =  'PETIT_REAC' ),
     CONVERGENCE=_F( ITER_GLOB_MAXI = 20,
-                    RESI_GLOB_RELA = 1.E-08,
-                    ARRET          = 'NON' ),
+                    RESI_GLOB_RELA = 1.E-08,),
     NEWTON =_F(REAC_ITER=1),
     SOLVEUR=_F(STOP_SINGULIER='NON')
 )

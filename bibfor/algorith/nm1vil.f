@@ -6,9 +6,9 @@
      &                  OPTION,
      &                  DEFAM,DEFAP,
      &                  ANGMAS,
-     &                  SIGP,VIP,DSIDEP,IRET)
+     &                  SIGP,VIP,DSIDEP,IRET,COMPO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 25/10/2011   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C
       REAL*8             IRRAM,IRRAP
       REAL*8             DEPS
       REAL*8             SIGM,VIM(2)
-      CHARACTER*16       OPTION
+      CHARACTER*16       OPTION,COMPO
       CHARACTER*(*) FAMI
       REAL*8             DEFAM,DEFAP
       REAL*8             ANGMAS(3)
@@ -119,7 +119,7 @@ C GRANDISSEMENT
       REAL*8            COEF1,COEFB,EXPQT
       REAL*8            ALPHA
       DATA NOMGIL / 'A', 'B', 'CSTE_TPS', 'ENER_ACT', 'FLUX_PHI'/
-      DATA        NOMGRD / 'GRAN_A' , 'GRAN_B' , 'GRAN_S' /
+      DATA NOMGRD / 'GRAN_A', 'GRAN_B', 'GRAN_S'/
 
 C     PARAMETRE THETA D'INTEGRATION
 
@@ -154,12 +154,8 @@ C     FLUX NEUTRONIQUE
       IRRAM = VIM(2)
 
       FLUPHI = (IRRAP-IRRAM)/DELTAT
-C     RECUPERATION DES CARACTERISTIQUES DE GRANDISSEMENT
-      CALL RCVALB(FAMI,KPG,KSP,'+',ICDMAT,MATERI,'GRAN_IRRA_',
-     &              0,' ',0.D0,
-     &              3,NOMGRD(1),COEFGR(1),CODGIL(1), 0)
 C     RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
-      CALL RCVALB(FAMI,KPG,KSP,'+',ICDMAT,MATERI,'GRAN_IRRA_',
+      CALL RCVALB(FAMI,KPG,KSP,'+',ICDMAT,MATERI,COMPO,
      &              0,' ',0.D0,
      &              NBCGIL,NOMGIL(1),COEGIL(1),CODGIL(1), 0)
 C     TRAITEMENT DES PARAMETRES DE LA LOI DE FLUAGE
@@ -183,28 +179,33 @@ C         PARAMETRES DE LA LOI DE FLUAGE
       ENDIF
 
 C     INCREMENT DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL
+      DEPSGR=0.0D0
+      IF (COMPO.EQ.'GRAN_IRRA_LOG') THEN
 
-
+C     RECUPERATION DES CARACTERISTIQUES DE GRANDISSEMENT
+         CALL RCVALB(FAMI,KPG,KSP,'+',ICDMAT,MATERI,'GRAN_IRRA_',
+     &              0,' ',0.D0,
+     &              3,NOMGRD(1),COEFGR(1),CODGIL(1), 0)
 C     on ajoute ce test pour eviter le cas 0**0
-      IF (COEFGR(3).EQ.0.D0) THEN
-        IF (IRRAP.EQ.0.D0) THEN
-          MULP=0.D0
-        ELSE
-          MULP=(IRRAP**COEFGR(3))
-        ENDIF
-        IF (IRRAM.EQ.0.D0) THEN
-          MULM=0.D0
-        ELSE
-          MULM=(IRRAM**COEFGR(3))
-        ENDIF
-      ELSE
-        MULP=(IRRAP**COEFGR(3))
-        MULM=(IRRAM**COEFGR(3))
+         IF (COEFGR(3).EQ.0.D0) THEN
+            IF (IRRAP.EQ.0.D0) THEN
+               MULP=0.D0
+            ELSE
+               MULP=(IRRAP**COEFGR(3))
+            ENDIF
+            IF (IRRAM.EQ.0.D0) THEN
+               MULM=0.D0
+            ELSE
+               MULM=(IRRAM**COEFGR(3))
+            ENDIF
+         ELSE
+            MULP=(IRRAP**COEFGR(3))
+            MULM=(IRRAM**COEFGR(3))
+         ENDIF
+
+         DEPSGR = (COEFGR(1)*TP+COEFGR(2))*MULP-
+     &            (COEFGR(1)*TM+COEFGR(2))*MULM
       ENDIF
-
-      DEPSGR = (COEFGR(1)*TP+COEFGR(2))*MULP-
-     &         (COEFGR(1)*TM+COEFGR(2))*MULM
-
 C     RECUPERATION DU REPERE POUR LE GRANDISSEMENT
       ALPHA = ANGMAS(1)
       IF ( ANGMAS(2) .NE. 0.D0 ) THEN

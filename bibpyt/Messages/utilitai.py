@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,15 +236,15 @@ cata_msg = {
 
 
 56 : _(u"""
- Le partitionneur SCOTCH a fait remonter l'erreur %(i1)s. SVP contacter l'équipe de
+ Le partitionneur SCOTCH a fait remonter l'erreur %(i1)d. Veuillez contacter l'équipe de
  développement.
- Pour contourner ce problème, vous pouvez néanmoins: 
+ Pour contourner ce problème, vous pouvez néanmoins:
    - changer de partitionneur (METHODE=KMETIS ou PMETIS),
    - modifier les paramètres numériques du partitionnement (mot-clés TRAITER_BORDS,
-           POIDS_MAILLES, GROUPAGE...),
-   - générer votre partionnement manuellement (autant de groupes de mailles et de 
-      groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
-     dédié: DEFI_PART_FETI_OPS.    
+     POIDS_MAILLES, GROUPAGE...),
+   - générer votre partionnement manuellement (autant de groupes de mailles et de
+     groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
+     dédié: DEFI_PART_FETI_OPS.
 """),
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 # sslp100d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -249,8 +249,7 @@ U=STAT_NON_LINE(
                         REAC_ITER=1
                         ),
             CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
-                         ITER_GLOB_MAXI = 10,
-                         ARRET = 'NON'),
+                         ITER_GLOB_MAXI = 10,),
                SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON', )
                    )
 
@@ -367,8 +366,7 @@ U=DYNA_NON_LINE( reuse=U,
                         REAC_ITER=1
                         ),
             CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
-                         ITER_GLOB_MAXI = 10,
-                         ARRET = 'NON'),
+                         ITER_GLOB_MAXI = 10,),
                SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON', )
                    )
 

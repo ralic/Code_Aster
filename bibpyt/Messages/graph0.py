@@ -1,4 +1,4 @@
-#@ MODIF graph0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF graph0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,6 +54,17 @@ Le fichier retourné est le fichier '.agr'.
       Nombre de courbes    : %(i1)3d
       Bornes des abscisses : [ %(r1)13.6G , %(r2)13.6G ]
       Bornes des ordonnées : [ %(r3)13.6G , %(r4)13.6G ]
+"""),
+
+11 : _(u"""
+   Le fichier '%(k1)s' ne semble pas être au format texte de xmgrace.
+   On ne peut donc pas recalculer les valeurs extrêmes.
+   Le pilote ne permet probablement pas d'imprimer plusieurs
+   graphiques dans le même fichier.
+
+Conseil :
+   N'utilisez pas le mot-clé PILOTE et produisez l'image en
+   utilisant xmgrace.
 """),
 
 }

@@ -1,5 +1,5 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,6 +121,7 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'SIEF_ELGA',REFERENCE='ANALYTIQUE',
                  MAILLE = 'M2',
                  POINT = 1,
+                 SOUS_POINT = 1,
                  NOM_CMP = 'SIXX',
                  VALE = 1.5E+08,
                  PRECISION = 1.E-3),

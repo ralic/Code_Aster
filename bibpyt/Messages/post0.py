@@ -1,21 +1,21 @@
-#@ MODIF post0 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF post0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -135,7 +135,8 @@ La SD RESULTAT ne contient aucun champ à l instant %(r1)f.
 """),
 
 33: _(u"""
-Attention : le modèle n'est pas une entrée de la macro-commande et n'appartient pas a la structure données résultat
+Attention : le modèle n'est pas une entrée de la macro-commande et n'appartient pas
+à la structure données résultat.
 """),
 
 34: _(u"""
@@ -146,10 +147,10 @@ Attention : donner un maillage 2D en entrée
 Attention : le type de champ en entrée ne fait pas partie des champs que la macro peut traiter
 """),
 
-36 : _(u""" 
-L'instant où le "Kj critique" OU "Gp critique" est atteint a été obtenu par interpolation linéaire 
-entre les instants %(r1)s et %(r2)s ; ce type de grandeur étant non linéaire, le résultat est d'autant plus 
-imprécis que l'intervalle d'interpolation est grand. 
+36 : _(u"""
+L'instant où le "Kj critique" OU "Gp critique" est atteint a été obtenu par interpolation linéaire
+entre les instants %(r1)f et %(r2)f ; ce type de grandeur étant non linéaire, le résultat est d'autant plus
+imprécis que l'intervalle d'interpolation est grand.
 
 Conseil : raffinez votre discrétisation en temps pour votre post_traitement, et si besoin pour votre calcul.
 """),
@@ -161,7 +162,7 @@ Le numéro d'ordre 0 ne peut pas être traité par la commande POST_GP.
 38 : _(u"""
 Assurez vous que :
 - Votre fond d'entaille est dans un plan.
-- La direction de propagation correspond bien au produit vectoriel de la direction du fond d'entaille 
+- La direction de propagation correspond bien au produit vectoriel de la direction du fond d'entaille
   et de la normale définis tous deux dans la commande DEFI_FOND_FISS.
 """),
 

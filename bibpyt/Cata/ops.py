@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,9 +62,8 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    if CODE != None:
       jdc.fico = CODE['NOM']
    if LANG:
-       from Execution.i18n import get_translation
-       lang = get_translation(LANG)
-       lang.install()
+       from Execution.i18n import localization
+       localization.install(LANG)
    if aster_exists:
       # pb en cas d'erreur dans FIN : appeler reset_print_function dans traiter_fin_exec ?
       #from functools import partial
@@ -146,7 +145,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      self.definition.op=None
      # On demande la numerotation de la commande POURSUITE avec l'incrément
      # lonuti pour qu'elle soit numérotée à la suite des commandes existantes.
-####CD     self.set_icmd(lonuti)    Non : on repart à zéro
+     # self.set_icmd(lonuti)    Non : on repart à zéro
      pos=0
      d={}
      while pos+80 < len(concepts)+1:
@@ -297,8 +296,8 @@ def INCLUDE_context(self,d):
    """
        Fonction op_init pour macro INCLUDE
    """
-   for k,v in self.g_context.items():
-      d[k]=v
+   ctxt = self.g_context
+   d.update(ctxt)
 
 def build_include(self,**args):
    """

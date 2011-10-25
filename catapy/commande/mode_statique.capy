@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 24/10/2011   AUTEUR CORUS M.CORUS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +80,7 @@ MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
            AVEC_CMP        =SIMP(statut='f',typ='TXM',max='**'),
            SANS_CMP        =SIMP(statut='f',typ='TXM',max='**'),
            NBMOD           =SIMP(statut='o',typ='I',defaut= 1),
-           FREQ            =SIMP(statut='o',typ='R',defaut= 1.0),
+           SHIFT           =SIMP(statut='o',typ='R',defaut= 1.0),
 
          ),
 

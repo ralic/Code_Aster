@@ -1,21 +1,21 @@
-#@ MODIF contact3 Messages  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -28,21 +28,21 @@ portent un coefficient de frottement nul.
 
 Le frottement est donc désactivé.
 
-Conseil : vérifiez que vous avez correctement défini le coefficient de frottement (mot-clé COULOMB) dans chaque zone. 
+Conseil : vérifiez que vous avez correctement défini le coefficient de frottement (mot-clé COULOMB) dans chaque zone.
 """),
 
 2 : _(u"""
   La maille de fond de fissure de type POI1, introduite par le mot-clef MAILLE_FOND ou GROUP_MA_FOND,
-ne correspond pas à une extrémité du segment toucahnt le fond de fisssure. 
-  
+ne correspond pas à une extrémité du segment toucahnt le fond de fisssure.
+
 """),
 
 3 : _(u"""
   Pour la formulation de contact < %(k1)s > le couple :
   ALGO_CONT : < %(k2)s >
-  ALGO_FROT : < %(k3)s >  
+  ALGO_FROT : < %(k3)s >
   n'est pas permis.
-  
+
   Conseil : consultez la documentation pour connaître les couples autorisés.
 """),
 
@@ -71,7 +71,7 @@ Avec un FOND_FISSURE, il est impossible d'utiliser les options suivantes:
 
 18 : _(u"""
 Contact méthode continue.
-La direction d'exclusion du frottement fournie pour la zone de contact numéro %(i1)d (%(r1)d,%(r2)d,%(r3)d) est perpendiculaire au plan de contact sur la maille %(k1)s.
+La direction d'exclusion du frottement fournie pour la zone de contact numéro %(i1)d (%(r1)f,%(r2)f,%(r3)f) est perpendiculaire au plan de contact sur la maille %(k1)s.
 
 Conseil :
    - Vérifiez le vecteur DIRE_EXCL_FROT. Sa projection sur le plan tangent de contact doit exister
@@ -88,15 +88,15 @@ Pour information, voici la liste des noeuds avec l'angle (en degré) mesuré entre
 Noeud      Angle
 """),
 
-23 : _("""
+23 : _(u"""
 Le vecteur normal est nul au niveau du projeté du point de contact de coordonnées
-  (%(r1)d,%(r2)d,%(r3)d) 
-sur la maille %(k1)s, 
+  (%(r1)f,%(r2)f,%(r3)f)
+sur la maille %(k1)s,
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
 24 : _(u"""
-Le vecteur normal est nul sur la maille %(k1)s, 
+Le vecteur normal est nul sur la maille %(k1)s,
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
@@ -110,7 +110,7 @@ Le vecteur normal est nul au niveau de la maille %(k1)s.
 
 28 : _(u"""
 Le statut du contact a changé %(i1)d fois au point de contact numéro %(i2)d sur la maille esclave %(k1)s
-Présence de flip-flop. 
+Présence de flip-flop.
 """),
 
 31 : _(u"""
@@ -177,7 +177,7 @@ Le LISSAGE n'est possible qu'avec des normales automatiques VECT_ESCL='AUTO' et/
 
 60 : _(u"""
 La maille %(k1)s est de type 'POI1', elle nécessite l'utilisation de l'option
-NORMALE='FIXE' avec une normale non-nulle. 
+NORMALE='FIXE' avec une normale non-nulle.
 """),
 
 61 : _(u"""
@@ -199,14 +199,14 @@ Contact.
 """),
 
 85 : _(u"""
-Contact méthode continue. 
+Contact méthode continue.
  Il y a échec de la boucle des contraintes actives lors du traitement du contact.
   -> Conseil :
      - Augmentez le mot-clé ITER_CONT_MAXI (ou ITER_CONT_MULT) dans la commande DEFI_CONTACT.
 """),
 
 86 : _(u"""
-Contact méthode continue. 
+Contact méthode continue.
   -> Il y a convergence forcée sur la boucle des contraintes actives lors du traitement du contact.
   -> Risque & conseil :
      La convergence forcée sur les statuts de contact se déclenche lorsque le problème a du mal à converger.
@@ -215,7 +215,7 @@ Contact méthode continue.
      S'il y a des interpénétrations intempestives, découpez plus finement le pas de temps."""),
 
 87 : _(u"""
-Contact méthode continue. 
+Contact méthode continue.
   -> Il y a trop de réactualisations pour le seuil de frottement.
   -> Conseils :
      - Augmentez le mot-clé ITER_FROT_MAXI dans la commande DEFI_CONTACT.
@@ -227,7 +227,7 @@ Contact.
     -> Les surfaces en contact ont bougé de plus de 1%% depuis la dernière réactualisation.
        Or vous n'avez pas activé la réactualisation géométrique automatique dans la commande DEFI_CONTACT
        (REAC_GEOM='AUTOMATIQUE') ou bien vous utilisez le mode 'CONTROLE'
-    -> Risque & conseil : 
+    -> Risque & conseil :
        Vos résultats risquent d'être faux, les mailles ne seront peut-être pas correctement appariées
        et des interpénétrations pourraient apparaître.
        Si vous avez volontairement négligé la non-linéarité géométrique de contact (pour des raisons

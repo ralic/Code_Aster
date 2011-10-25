@@ -1,6 +1,6 @@
       SUBROUTINE TE0169 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,20 +44,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      REAL*8   W(9),L1(3),L2(3)
+      REAL*8   W(9),L1(3),L2(3),FORREF
       REAL*8   NORML1,NORML2,DDOT,COEF1,COEF2
-      INTEGER  JEFINT,LSIGMA,IGEOM,IDEPLA,IDEPLP,IREFCO,IVECTU,NNO,NC
+      INTEGER  JEFINT,LSIGMA,IGEOM,IDEPLA,IDEPLP,IVECTU,NNO,NC
       INTEGER  INO,I,KC,IRET
 C ----------------------------------------------------------------------
 C
       IF(OPTION.EQ.'REFE_FORC_NODA')THEN
          NNO = 3
          NC  = 3
-         CALL JEVECH('PREFCO', 'L',IREFCO)
+         CALL TEREFE('EFFORT_REFE','MECA_POULIE',FORREF)
          CALL JEVECH('PVECTUR','E',IVECTU)
          DO 101 INO=1,NNO
             DO 102  I=1,NC
-               ZR(IVECTU+(INO-1)*NC+I-1)=ZR(IREFCO)
+               ZR(IVECTU+(INO-1)*NC+I-1)=FORREF
 102         CONTINUE
 101      CONTINUE
 

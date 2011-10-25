@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -659,8 +659,8 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     nomresu=RESULTAT.nom
     iret,ibid,n_modele = aster.dismoi('F','MODELE',nomresu,'RESULTAT')
     n_modele=n_modele.strip()
-    if n_modele=='' :
-      if MODELE==None:
+    if n_modele in ('', '#AUCUN'):
+      if MODELE == None:
         UTMESS('F','POST0_9',valk=nomresu)
       else : n_modele=MODELE.nom
 

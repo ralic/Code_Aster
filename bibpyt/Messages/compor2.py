@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor2 Messages  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,5 +120,11 @@ La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integrati
  MONOCRISTAL : pas de matrice jacobienne programmée actuellement pour  MONO_DD_FAT.
  Utiliser ALGO_INTE='NEWTON_PERT'
 """),
+
+22: _(u"""
+   SIMU_POINT_MAT : Le type de DEFORMATION choisi,  <%(k1)s>, est incompatible avec GRAD_IMPOSE.
+   GRAD_IMPOSE n'est utilisable qu'avec DEFORMATION='SIMO_MIEHE'.
+"""),
+
 
 }

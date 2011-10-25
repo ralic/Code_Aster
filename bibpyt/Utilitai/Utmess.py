@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,8 +92,8 @@ class MESSAGE_LOGGER:
 
         # on prépare le dictionnaire des valeurs par défaut des arguments (dicarg) :
         self.default_args = {}
-        # initialisation des 10 premiers
-        for i in range(1, 11):
+        # initialisation des 50 premiers
+        for i in range(1, 51):
             self.default_args['i%d' % i] = 99999999
             self.default_args['r%d' % i] = 9.9999E99
             self.default_args['k%d' % i] = u'xxxxxx'
@@ -185,6 +185,7 @@ class MESSAGE_LOGGER:
             cata_msg = {}
 
         # corps du message
+        fmt_msg = '?'
         try:
             dicarg = self.build_dict_args(valk, vali, valr)
 
@@ -214,13 +215,15 @@ class MESSAGE_LOGGER:
             dictmess = {
                 'code'          : code,
                 'flags'         : 0,
-                'id_message'    : '',
+                'id_message'    : idmess,
                 'corps_message' : _(u"""Erreur de programmation.
 Le message %s n'a pas pu etre formaté correctement.
 Arguments :
     entiers : %s
     réels   : %s
     chaines : %s
+
+    format  : %s
 --------------------------------------------------------------------------
 %s
 Exception : %s
@@ -229,7 +232,8 @@ Exception : %s
 %s"""),
                 'context_info'  : '',
             }
-            args = (idmess, vali, valr, valk, ''.join(traceback.format_tb(sys.exc_traceback)),
+            args = (idmess, vali, valr, valk, fmt_msg,
+                    ''.join(traceback.format_tb(sys.exc_traceback)),
                     msg, contacter_assistance)
             # cette étape ne doit jamais faire planter !
             try:

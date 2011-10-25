@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sensibilite Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,7 +157,7 @@ Conseil :
  Le calcul de derivée n'a pas été prévu pour les variables de commande de séchage ou d'hydratation.
 """),
 
-71 : _("""
+71 : _(u"""
  Dérivation par rapport au paramètre sensible : %(k1)s
 """),
 

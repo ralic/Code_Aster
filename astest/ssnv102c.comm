@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,59 +234,6 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 6,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V2', VALE = 1.760E+2))
          )
-
-#
-#----------------------------------------------------------------------
-# --- VALIDATION IMPR_RESU FORMAT ENSIGHT
-#
-IMPR_RESU ( MODELE=TROISD,
-            FORMAT='ENSIGHT',
-            RESU=_F( MAILLAGE=CUBE, RESULTAT = SOLNL,
-                     NOM_CHAM = 'DEPL', INST= 3.500E-01  )   ) ;
-#
-TEST_FICHIER(FICHIER='./RESU_ENSIGHT/CUBE.geo',
-            NB_VALE=45,
-            VALE=1.03e+02,
-            # date a ignorer : ...-2004 15:00:10
-            EXPR_IGNORE='\-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}',
-            VALE_K='355603a7953e585d5d3bdec8eb0aad84',
-            REFERENCE='NON_REGRESSION',
-            )
-
-TEST_FICHIER(FICHIER='./RESU_ENSIGHT/SOLNL.DEPL.1',
-             NB_VALE=25,
-             VALE=3.477824e-01,
-             VALE_K='8a90687100893d52a9ca7bf2dd547a60',
-             REFERENCE='NON_REGRESSION',
-             )
-
-TEST_FICHIER(FICHIER='./RESU_ENSIGHT/SOLNL.DEPL.1.DX',
-             NB_VALE=9,
-             VALE=3.49384e-01,
-             VALE_K='363ff50266ae69778261bad4aa7e8df5',
-             REFERENCE='NON_REGRESSION',
-             )
-
-TEST_FICHIER(FICHIER='./RESU_ENSIGHT/SOLNL.DEPL.1.DY',
-             NB_VALE=9,
-             VALE=3.482136e-01,
-             VALE_K='dd88b171982ad5db3b13f9fdcab74b1b',
-             REFERENCE='NON_REGRESSION',
-             )
-
-TEST_FICHIER(FICHIER='./RESU_ENSIGHT/SOLNL.DEPL.1.DZ',
-             NB_VALE=9,
-             VALE=3.501848e-01,
-             VALE_K='e237cf1c1155db14dc48fdefa56055e5',
-             REFERENCE='NON_REGRESSION',
-             )
-
-TEST_FICHIER(FICHIER='./RESU_ENSIGHT/SOLNL.res1',
-             NB_VALE=9,
-             VALE=9.35,
-             VALE_K='f631e346c9ea62dc208f6be2ec04dfa9',
-             REFERENCE='NON_REGRESSION',
-             )
 
 #
 FIN()

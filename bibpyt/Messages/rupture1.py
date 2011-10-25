@@ -1,21 +1,21 @@
-#@ MODIF rupture1 Messages  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF rupture1 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -31,7 +31,7 @@ Veuillez utiliser une autre option de lissage
 
 5: _(u"""
 La commande POST_RUPTURE / OPERATION = '%(k1)s' traite uniquement
-un seul fond de fissure. Or la table %(k2)s contient %(i1)s fonds de fissure
+un seul fond de fissure. Or la table %(k2)s contient %(i1)d fonds de fissure
 (colonne 'NUME_FOND').
 """),
 
@@ -45,7 +45,7 @@ Veuillez revoir votre mise en données.
 7: _(u"""
 Problème dans RINF et RSUP.
 -> Risque et Conseil :
-Veuillez revoir les valeurs fournies aux mots-clés R_INF ou R_INF_FO 
+Veuillez revoir les valeurs fournies aux mots-clés R_INF ou R_INF_FO
 ou R_SUP ou R_SUP_FO.
 """),
 
@@ -103,7 +103,7 @@ association satisfaisante.
 
 
 20: _(u"""
-Une déformation initiale est présente dans la charge. Ceci est incompatible 
+Une déformation initiale est présente dans la charge. Ceci est incompatible
 avec la contrainte initiale sigma_init.
 -> Risque et Conseil :
 On ne peut pas faire de calcul en introduisant simultanément une contrainte
@@ -120,13 +120,13 @@ Le calcul de DG n'a pas été étendu à la plasticité !
 """),
 
 23: _(u"""
-CALC_G - option CALC_G : détection de chargements non nuls sur l'axe, 
+CALC_G - option CALC_G : détection de chargements non nuls sur l'axe,
 le calcul est impossible.
 -> Risque et Conseil :
 En 2D-axi, le calcul de G n'est pas possible pour les éléments de l'axe de
 symétrie si un chargement est imposé sur ceux-ci.
 Modifier les couronnes R_INF et R_SUP pour qu'elles soient toutes les deux
-plus petites que le rayon du fond de fissure. 
+plus petites que le rayon du fond de fissure.
 """),
 
 24: _(u"""
@@ -183,7 +183,7 @@ le mot clé THETA_BANDE .
 La tangente à l'origine n'est pas orthogonale à la normale au plan de la fissure.
 Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
 -> Risque et Conseil :
-La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure, 
+La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
 (level set) qui définissent la fissure. Vérifier les données.
 """),
@@ -192,33 +192,33 @@ donc orthogonale à la normale au plan, calculée à partir des fonctions de niveau
 La tangente à l'extrémité n'est pas orthogonale à la normale au plan de la fissure.
 Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
 -> Risque et Conseil :
-La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure, 
+La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
 (level set) qui définissent la fissure. Vérifier les données.
 """),
 
 35: _(u"""
-Les directions normales au plan de la fissure entre les points %(i1)d et %(i2)d successifs du fond forment un angle 
+Les directions normales au plan de la fissure entre les points %(i1)d et %(i2)d successifs du fond forment un angle
 supérieur à 10 degrés.
 -> Risque et Conseils
-L'interpolation des sauts de déplacements est basée sur les champs singuliers 
-correspondants à une fissure plane. La fissure utilisée ici est trop irrégulière et 
+L'interpolation des sauts de déplacements est basée sur les champs singuliers
+correspondants à une fissure plane. La fissure utilisée ici est trop irrégulière et
 il y a donc un risque d'obtenir des résultats imprécis.
 """),
 
 36: _(u"""
-La tangente à l'origine n'est pas orthogonale à la normale au plan de la fissure 
+La tangente à l'origine n'est pas orthogonale à la normale au plan de la fissure
 défini par VECT_K1.
 -> Risque et Conseil :
-La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure, 
+La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure,
 donc orthogonale au VECT_K1 fourni. Vérifier les données.
 """),
 
 37: _(u"""
-La tangente à l'extrémité n'est pas orthogonale à la normale au plan de la fissure 
+La tangente à l'extrémité n'est pas orthogonale à la normale au plan de la fissure
 défini par VECT_K1.
 -> Risque et Conseil :
-La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure, 
+La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure,
 donc orthogonale au VECT_K1 fourni. Vérifier les données.
 """),
 
@@ -254,7 +254,7 @@ Dans ce cas, ce message d'alarme est quand meme émis mais le résultat est bien c
 Un post-traitement élastique non-linéaire d'un calcul élastoplastique est
 admissible, si le chargement est radial et monotone. La comparaison du G calculé
 à partir des contraintes issues de STAT_NON_LINE (option CALC_CONTRAINTE='NON')
-ou à partir des contraintes recalculées avec la loi de comportement 
+ou à partir des contraintes recalculées avec la loi de comportement
 (CALC_CONTRAINTES='OUI') peut fournir une indication sur le respect de ces
 hypothèses.
 """),
@@ -271,8 +271,8 @@ Remplacer si possible le comportement élastoplastique (COMP_INCR) par un comport
 Les paramètres K1 et/ou G sont absents du tableau des facteurs d'intensité des
 contraintes fourni.
 -> Risque et Conseil :
-Le mot clé METHODE_POSTK doit être fourni si et seulement si la table TABLE a été 
-calculée avec l'opérateur POST_K1_K2_K3. 
+Le mot clé METHODE_POSTK doit être fourni si et seulement si la table TABLE a été
+calculée avec l'opérateur POST_K1_K2_K3.
 """),
 
 
@@ -280,16 +280,16 @@ calculée avec l'opérateur POST_K1_K2_K3.
 Le taux de restitution d'énergie G est négatif ou nul sur certains des noeuds du fond de fissure :
 le calcul de propagation est impossible.
 -> Risque et Conseil :
-Vérifier les paramètres du calcul de G (rayons des couronnes ou abscisse curviligne 
-maximale, type de lissage, ...). 
+Vérifier les paramètres du calcul de G (rayons des couronnes ou abscisse curviligne
+maximale, type de lissage, ...).
 """),
 
 49: _(u"""
-Le facteur d'intensité des contraintes K1 est négatif sur certains des noeuds du fond 
+Le facteur d'intensité des contraintes K1 est négatif sur certains des noeuds du fond
 de fissure : le calcul de propagation est impossible.
 -> Risque et Conseil :
-Vérifier les paramètres du calcul de K1 (rayons des couronnes ou abscisse curviligne 
-maximale, type de lissage, ...). 
+Vérifier les paramètres du calcul de K1 (rayons des couronnes ou abscisse curviligne
+maximale, type de lissage, ...).
 """),
 
 50: _(u"""
@@ -303,13 +303,13 @@ pas ordonnés. Vérifiez le maillage donné en entrée (MAIL_ACTUEL).
 """),
 
 52: _(u"""
-PROPA_FISS / METHODE = 'INITIALISATION' : les deux vecteurs VECT_X et VECT_Y 
-définissant la fissure initiale, de forme elliptique, ne sont pas orthogonaux. Vérifiez 
+PROPA_FISS / METHODE = 'INITIALISATION' : les deux vecteurs VECT_X et VECT_Y
+définissant la fissure initiale, de forme elliptique, ne sont pas orthogonaux. Vérifiez
 les données d'entrée.
 """),
 
 53: _(u"""
-L'instant %(r1)d n'appartient pas au résultat %(k1)s.
+L'instant %(r1)f n'appartient pas au résultat %(k1)s.
 """),
 
 54:_(u"""
@@ -322,7 +322,7 @@ Problème dans la liste d'instants du résultats: 2 instants consécutifs sont égau
 """),
 
 56:_(u"""
-La contrainte de référence est nulle à l'instant %(r1)d.
+La contrainte de référence est nulle à l'instant %(r1)f.
 """),
 
 57:_(u"""
@@ -345,7 +345,7 @@ Conseil : utiliser le critère par défaut.
 """),
 
 61:_(u"""
-Impossible de réaliser le comptage sur les quantités demandées car 
+Impossible de réaliser le comptage sur les quantités demandées car
 le nombre de cycles pour chaqune d'elles est différent.
 Conseil : limiter le comptage des cycles à une seule quantité (K_EQ par exemple).
 """),
@@ -354,14 +354,14 @@ Conseil : limiter le comptage des cycles à une seule quantité (K_EQ par exemple)
 Pour l'opération %(k1)s, la table doit être réentrante (reuse obligatoire).
 """),
 
-63:_(u"""La récupération des contraintes à partir de la SD Résultat 
+63:_(u"""La récupération des contraintes à partir de la SD Résultat
 en présence d'un état initial n'est pas permise.
 Pour l'opération %(k1)s, la table ne doit pas être réentrante (reuse interdit).
 """),
 
 64:_(u"""
 Pour le comptage %(k1)s, la table doit comporter uniquement 1 instant/nume_ordre (ou aucun).
-Or la table %(k2)s contient %(i1)s instants/nume_ordre.
+Or la table %(k2)s contient %(i1)d instants/nume_ordre.
 Conseil : Vérifier la table en entrée ou utiliser un autre type de comptage des cycles.
 """),
 
@@ -370,7 +370,7 @@ La table %(k1)s ne doit pas contenir le paramètre %(k2)s.
 """),
 
 66:_(u"""
-L'opération %(k1)s nécessite une seule table sous le mot-clé TABLE, or il y en a %(i1)s.
+L'opération %(k1)s nécessite une seule table sous le mot-clé TABLE, or il y en a %(i1)d.
 """),
 
 67:_(u"""

@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,10 +75,11 @@ C     ------------------------------------------------------------------
       REAL*8   UGP(12),DUG(12),KLV(78),DULY,FORCE(3),PLOUF
       REAL*8   ULP(12),DUL(12),DVL(12),DPE(12),DVE(12)
       REAL*8   SIM(12),SIP(12),FONO(12),VARMO(8),VARPL(8)
+      REAL*8   FORREF,MOMREF
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
-      INTEGER  IELEM,IREPE,NDIM,IRET,IADZI,IAZK24,IREFCO
+      INTEGER  IELEM,IREPE,NDIM,IRET,IADZI,IAZK24
       INTEGER  NEQ1,IPLOUF,NPG,INFODI,ITYPE,IBID
       INTEGER  IGEOM,IDEPLM,IDEPLP,ICOMPO,NBT,JDC,IREP,IFONO,ILOGIC
       LOGICAL  AUNOEU
@@ -125,34 +126,40 @@ C     NOMBRE DE POINTS DE GAUSS DE L'ELEMENT
 C
 C --- ------------------------------------------------------------------
       IF ( OPTION(1:14) .EQ. 'REFE_FORC_NODA' ) THEN
-         CALL JEVECH('PREFCO', 'L',IREFCO)
          CALL JEVECH('PVECTUR','E',IVECTU)
          IF(      NOMTE.EQ.'MECA_POU_C_T' .OR.
      &      NOMTE(1:11).EQ.'MECA_DIS_TR')THEN
+            CALL TEREFE('EFFORT_REFE','MECA_DISCRET',FORREF)
+            CALL TEREFE('MOMENT_REFE','MECA_DISCRET',MOMREF)
+            
             DO 200 IN=1,NNO
                DO 203  I=1,3
-                  ZR(IVECTU+(IN-1)*NC+I-1)=ZR(IREFCO)
+                  ZR(IVECTU+(IN-1)*NC+I-1)=FORREF
 203            CONTINUE
                DO 202 I=4,NC
-                  ZR(IVECTU+(IN-1)*NC+I-1)=ZR(IREFCO+1)
+                  ZR(IVECTU+(IN-1)*NC+I-1)=MOMREF
 202            CONTINUE
 200         CONTINUE
          ELSEIF(NOMTE(1:14).EQ.'MECA_2D_DIS_T_')THEN
+            CALL TEREFE('EFFORT_REFE','MECA_DISCRET',FORREF)
             DO 204 IN=1,NNO
-               ZR(IVECTU+(IN-1)*NC)=ZR(IREFCO)
-               ZR(IVECTU+(IN-1)*NC+1)=ZR(IREFCO)
+               ZR(IVECTU+(IN-1)*NC)=FORREF
+               ZR(IVECTU+(IN-1)*NC+1)=FORREF
 204         CONTINUE
          ELSEIF(NOMTE(1:14).EQ.'MECA_2D_DIS_TR')THEN
+            CALL TEREFE('EFFORT_REFE','MECA_DISCRET',FORREF)
+            CALL TEREFE('MOMENT_REFE','MECA_DISCRET',MOMREF)
             DO 205 IN=1,NNO
-               ZR(IVECTU+(IN-1)*NC)=ZR(IREFCO)
-               ZR(IVECTU+(IN-1)*NC+1)=ZR(IREFCO)
-               ZR(IVECTU+(IN-1)*NC+2)=ZR(IREFCO+1)
+               ZR(IVECTU+(IN-1)*NC)=FORREF
+               ZR(IVECTU+(IN-1)*NC+1)=FORREF
+               ZR(IVECTU+(IN-1)*NC+2)=MOMREF
 205         CONTINUE
          ELSEIF(NOMTE(1:11).EQ.'MECA_DIS_T_')THEN
+           CALL TEREFE('EFFORT_REFE','MECA_DISCRET',FORREF)
             DO 206 IN=1,NNO
-               ZR(IVECTU+(IN-1)*NC)=ZR(IREFCO)
-               ZR(IVECTU+(IN-1)*NC+1)=ZR(IREFCO)
-               ZR(IVECTU+(IN-1)*NC+2)=ZR(IREFCO)
+               ZR(IVECTU+(IN-1)*NC)=FORREF
+               ZR(IVECTU+(IN-1)*NC+1)=FORREF
+               ZR(IVECTU+(IN-1)*NC+2)=FORREF
 206         CONTINUE
          ELSE
             KMESS(1) = OPTION
@@ -181,7 +188,7 @@ C        N1 N2 N3   : EFFORT NORMAUX GAUSS 1 , 2 ET 3
 C        MX, MY, MZ : MOMENTS DE TORSION ET FLEXION
          AUNOEU = .TRUE.
          IF (OPTION.EQ.'PMPB_ELNO') THEN
-            CALL JEVECH('PSIEFNOR','L',ICONTG)
+            CALL JEVECH('PEFGENO','L',ICONTG)
             NORM(1) = ZR(ICONTG)
             NORM(2) = ZR(ICONTG+6)
             MY(1)   = ZR(ICONTG+4)
@@ -189,7 +196,7 @@ C        MX, MY, MZ : MOMENTS DE TORSION ET FLEXION
             MZ(1)   = ZR(ICONTG+5)
             MZ(2)   = ZR(ICONTG+11)
          ELSE
-            CALL JEVECH('PCONTRR','L',ICONTG)
+            CALL JEVECH('PEFGEGA','L',ICONTG)
             NORM(1) = ZR(ICONTG)
             NORM(2) = ZR(ICONTG+6)
             MY(1)   = ZR(ICONTG+4)

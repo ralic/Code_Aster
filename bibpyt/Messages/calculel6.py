@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel6 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -322,10 +322,6 @@ Conseils :
    %(k1)s
 """),
 
-72: _(u"""
-
-"""),
-
 73: _(u"""
   Le jacobien est négatif.
 """),
@@ -438,12 +434,12 @@ Conseils :
 """),
 
 96: _(u"""
-  Champ absent au numéro d'ordre %(i1)s dans le résultat %(k1)s:
+  Champ absent au numéro d'ordre %(i1)d dans le résultat %(k1)s:
     -> champ : %(k2)s %(k3)s
 """),
 
 97: _(u"""
-  Mot-clé POINT interdit pour le champ au noeud issu de %(k1)s à l'ordre %(i1)s:
+  Mot-clé POINT interdit pour le champ au noeud issu de %(k1)s à l'ordre %(i1)d:
     -> champ : %(k2)s %(k3)s
 """),
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2011   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 24/10/2011   AUTEUR CORUS M.CORUS 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,14 +196,14 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                         MODE_INTERF=_F(GROUP_NO = 'GAUCHE',
                                      TOUT_CMP='OUI',
                                      NBMOD=20,
-                                     FREQ=1.,),);
+                                     SHIFT=1.,),);
  
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
                         MATR_MASS=MASS_2,
                         MODE_INTERF=_F(GROUP_NO = 'BLOQUE',
                                      TOUT_CMP='OUI',
                                      NBMOD=20,
-                                     FREQ=1.,),);
+                                     SHIFT=1.,),);
 #
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),

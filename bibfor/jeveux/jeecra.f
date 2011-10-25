@@ -1,7 +1,7 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,8 @@ C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C DEB ------------------------------------------------------------------
+      REAL*8         R8BID
+C      
       CATRLU = CATR
       NOML32 = NOMLU
       IRT = 0
@@ -145,6 +147,9 @@ C
           IF ( CATRLU.EQ.'LONMAX  ' .OR. CATRLU.EQ.'NOMMAX  ' ) THEN
             LONGI = LONG ( JLONG(IC) + ID )
             LONGJ = IVAL
+            IF ( IVAL .LE. 0 ) THEN
+              CALL U2MESG('F','JEVEUX1_67',1,CATRLU,1,IVAL,0,R8BID)
+            ENDIF
           ENDIF
           IF ( LONGI .NE. 0 ) THEN
             CALL U2MESK('F','JEVEUX1_01',1,CATRLU)

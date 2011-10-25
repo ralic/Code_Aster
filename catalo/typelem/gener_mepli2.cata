@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -106,7 +106,6 @@ MODE_LOCAL__
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
-
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
@@ -154,7 +153,7 @@ OPTION__
                               OUT__  ECOEQNO  PCONTEQ
     ERME_ELEM           377   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
-                                     EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO
+                                     EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ESIGMNO  PCONTNO
                               OUT__  EERREUR  PERREUR
     ERME_ELNO           379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO

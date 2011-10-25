@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,7 +150,7 @@ RESU2=CALC_ELEM( reuse=RESU2,           RESULTAT=RESU2,
 TEST_RESU(RESU=(
     _F(  RESULTAT = RESU2,  NOM_CHAM = 'SIGM_ELNO',  INST = 1.,
       MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100.,
-      PRECISION = 0.03,
+      PRECISION = 0.03, SOUS_POINT = 1,
       REFERENCE = 'AUTRE_ASTER'),
     _F(  RESULTAT = RESU2,   NOM_CHAM = 'DEPL',   INST = 1.,
       NOEUD = 'N1',  NOM_CMP = 'DY',                VALE = -5.E-11,
@@ -223,7 +223,7 @@ RESU3=CALC_ELEM( reuse=RESU3,           RESULTAT=RESU3,
 TEST_RESU(RESU=(
     _F(  RESULTAT = RESU3,  NOM_CHAM = 'SIGM_ELNO',  INST = 1.,
       MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100.,
-      PRECISION = 0.03,
+      PRECISION = 0.03, SOUS_POINT = 1,
       REFERENCE = 'AUTRE_ASTER'),
     _F(  RESULTAT = RESU3,   NOM_CHAM = 'DEPL',   INST = 1.,
       NOEUD = 'N1',  NOM_CMP = 'DY',                VALE = -5.E-11,

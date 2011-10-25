@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 24/10/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 5 STEEL ROLLER ON RUBBER
 # ssnp157a.para = tps_job 1500 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,6 +133,7 @@ CON=DEFI_CONTACT(MODELE=MO,
                  FROTTEMENT='COULOMB',
                  ITER_GEOM_MAXI=50,
                  ITER_FROT_MAXI=50,
+                 ALGO_RESO_FROT='POINT_FIXE',
                  ZONE=_F(GROUP_MA_MAIT='Master',
                          GROUP_MA_ESCL='Slave',
                          # This removes any rigid-body motion :
@@ -246,15 +247,15 @@ IMPR_RESU(MODELE=MO,
 # ===========================================
 # Tests
 
-# On utilise NUME_ORDRE car la PRECISION empeche d'utiliser INST
+# On utilise un couple pour PRECISION pour bien selectionner l'instant
 
 TEST_RESU(RESU=(_F(RESULTAT   = RESU,
-                   NUME_ORDRE = 103,
+                   INST       = Tfin,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N281',
                    NOM_CMP    = 'DX',
                    VALE       = -175.4,
-                   PRECISION  = 0.03,
+                   PRECISION  = (0.03,0.001),
                    REFERENCE  = 'SOURCE_EXTERNE',
                    ),
                 ),);

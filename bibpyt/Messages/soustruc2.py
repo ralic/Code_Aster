@@ -1,37 +1,33 @@
-#@ MODIF soustruc2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF soustruc2 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg={
 1: _(u"""
-  !!! mode no : %(i1)d 
-    lineairement dependant a def. statiqueval sing min :  %(r1)f 
-    !! nous la forcons a :  %(r2)f 
+  !!! mode no : %(i1)d
+    lineairement dependant a def. statiqueval sing min :  %(r1)f
+    !! nous la forcons a :  %(r2)f
 """),
 
 2: _(u"""
-  pour le mode no : %(i1)d participation :  %(r1)f 
-"""),
-
-3: _(u"""
- 
+  pour le mode no : %(i1)d participation :  %(r1)f
 """),
 
 4: _(u"""
@@ -59,9 +55,9 @@ cata_msg={
 """),
 
 8 : _(u"""
-  Aucun DDL actif n'a ete trouve pour les interfaces donnees 
+  Aucun DDL actif n'a ete trouve pour les interfaces donnees
    => Les modes d'attaches, de contrainte ou de couplage ne peuvent pas etre calcules.
-   
+
   CONSEIL : Verifiez la coherence de la definition des interfaces (conditions limites)
             avec la methode retenue :
              - CRAIGB   : le modele doit etre defini avec des interfaces encastrees,
@@ -77,8 +73,8 @@ cata_msg={
 """),
 
 10 : _(u"""
- Lors de la copie du groupe de mailles %(k1)s appartenant à la sous-structure %(k2)s, 
- le nom qui lui sera affecté dans squelette depasse 8 caracteres. La troncature peut 
+ Lors de la copie du groupe de mailles %(k1)s appartenant à la sous-structure %(k2)s,
+ le nom qui lui sera affecté dans squelette depasse 8 caracteres. La troncature peut
  générer un conflit plus tard avec les noms des autres groupes de mailles.
 """),
 

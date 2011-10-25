@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/10/2011   AUTEUR GREFFET N.GREFFET 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_NON_LINE
 # sdld31a.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,6 +124,68 @@ REPACC=DYNA_NON_LINE(
                                 ITER_GLOB_MAXI = 10),
                 
             );            
+
+#
+#  Solution obtenue avec schema NEWMARK - ACCELERATION et plusieurs poursuites
+#
+tpsr1 = 0.21 * tfin
+REPACCP=DYNA_NON_LINE( 
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='ACCELERATION',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tpsr1,),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+                
+            );            
+#
+tpsr2 = 0.61 * tfin
+REPACCP=DYNA_NON_LINE( reuse=REPACCP,
+                       ETAT_INIT=_F(EVOL_NOLI=REPACCP,
+                                    INST=tpsr1,
+                                    PRECISION=1e-07),
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='ACCELERATION',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tpsr2,),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 1),
+                
+             );
+#
+REPACCP=DYNA_NON_LINE( reuse=REPACCP,
+                       ETAT_INIT=_F(EVOL_NOLI=REPACCP,
+                                    INST=tpsr2,
+                                    PRECISION=1e-07),
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='ACCELERATION',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 1),
+                
+            );
 
 #
 #  Solution obtenue avec schema THETA-VITESSE
@@ -364,6 +426,62 @@ TEST_RESU(RESU=(
                    PRECISION=(1.E-3,1.E-7,),
                    ),
                 _F(RESULTAT=REPACC,
+                   INST=tpst3,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=5.579336777301602,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ), ),);
+
+TEST_RESU(RESU=(            
+                _F(RESULTAT=REPACCP,
+                   INST=tpst1,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=0.010804500210685,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACCP,
+                   INST=tpst2,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.004067177949539,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACCP,
+                   INST=tpst3,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.013026189840935,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACCP,
+                   INST=tpst1,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=-4.647918136289064,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACCP,
+                   INST=tpst2,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=2.374868231956595,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACCP,
                    INST=tpst3,
                    GROUP_NO = 'B',
                    NOM_CHAM = 'ACCE',

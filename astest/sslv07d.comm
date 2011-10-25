@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,20 +143,13 @@ DEPLD2=STAT_NON_LINE(MODELE=MO,
 #            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
 #            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 
-DEPLD2 = CALC_ELEM (reuse=DEPLD2,
-              RESULTAT= DEPLD2,
+DEPLD2=CALC_ELEM(reuse=DEPLD2,
+                 RESULTAT= DEPLD2,
+                 OPTION= ( 'SIGM_ELNO', ),) ;
 
-              OPTION= (
-               'SIEF_ELNO',
-           ),   ) ;
-
-DEPLD2 = CALC_ERREUR (reuse=DEPLD2,
-              RESULTAT= DEPLD2,
-
-              OPTION= (
-               'ERME_ELEM',
-               'ERME_ELNO',
-           ),   ) ;
+DEPLD2=CALC_ERREUR (reuse=DEPLD2,
+                    RESULTAT= DEPLD2,
+                    OPTION= ('ERME_ELEM','ERME_ELNO',),) ;
 
 #---------------------------------------------------------------------
 #    ESTIMATEUR D'ERREUR EN RESIDU
@@ -297,7 +290,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM = 'SIEF_ELNO',
+                   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE='M10',
                    NOEUD='N77',
                    NOM_CMP='SIZZ',
@@ -307,7 +300,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM = 'SIEF_ELNO',
+                   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE='M6',
                    NOEUD='N96',
                    NOM_CMP='SIZZ',

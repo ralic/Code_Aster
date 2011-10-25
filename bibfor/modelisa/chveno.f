@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 24/10/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -365,10 +365,10 @@ C
                 VALK(1) = NOMAIL
                 CALL U2MESG('E', 'MODELISA8_57',1,VALK,0,0,0,0.D0)
               ENDIF
-              CALL JEDETR('&&CHVENO.NUME_MAILLE')
             ENDIF
  211        CONTINUE
-            CALL JEDETR ('&&CHVENO.OBJET')
+            CALL JEDETR('&&CHVENO.NUME_MAILLE')
+            CALL JEDETR('&&CHVENO.OBJET')
  210      CONTINUE
  200    CONTINUE
  100  CONTINUE

@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,13 +110,13 @@ C
             CT=0.D0
             CEF=0.D0
             IC=4*JJ-3
-            CALL U2MESG('I','SOUSTRUC_91',0,' ',0,0,0,0.D0)
+            CALL U2MESS('I','VIDE_1')
             IF (INFO.GE.2) THEN
                VALK = NOECHO(I,IC)
-               CALL U2MESG('I','SOUSTRUC_85',1,VALK,0,0,0,0.D0)
+               CALL U2MESK('I','SOUSTRUC_85',1,VALK)
             ENDIF
 C     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
-            CALL U2MESG('I','SOUSTRUC_92',0,' ',0,0,0,0.D0)
+            CALL U2MESS('I','VIDE_1')
             DO 11 K=1,NEQ
               FIMPO(K)=0.D0
    11       CONTINUE
@@ -229,17 +229,17 @@ C      ON ORDONNE SELON LES SOUPLESSES DECROISSANTES
             CALL U2MESG('I','SOUSTRUC_94',1,VALK,0,0,2,VALR)
             TX = SOUP*PARCHO(I,2)*(1.D0-CT)
             VALR (1) = TX
-            CALL U2MESG('I','SOUSTRUC_95',0,' ',0,0,1,VALR)
+            CALL U2MESR('I','SOUSTRUC_95',1,VALR)
             SEUIL=MAX(SEUIL,TX)
             TX = SOUP*CT*PARCHO(I,2)
             VALR (1) = TX
-            CALL U2MESG('I','SOUSTRUC_96',0,' ',0,0,1,VALR)
+            CALL U2MESR('I','SOUSTRUC_96',1,VALR)
  21       CONTINUE
 C
  20     CONTINUE
 
         IF (INFO.GE.2) THEN
-          CALL U2MESG('I','SOUSTRUC_97',0,' ',0,0,0,0.D0)
+          CALL U2MESS('I','VIDE_1')
           MATUV = .FALSE.
           NM = NBLIG
           M = NEQ
@@ -271,13 +271,13 @@ C CONDITIONNEMENT
           IF ( MMIN .LE. EPS ) THEN
             VALR (1) = MMIN
             VALR (2) = EPS
-            CALL U2MESG('I','SOUSTRUC_98',0,' ',0,0,2,VALR)
+            CALL U2MESR('I','SOUSTRUC_98',2,VALR)
             MMIN = EPS
           ENDIF
           SCOND = MMAX/MMIN
 C
           VALR (1) = SCOND
-          CALL U2MESG('I','SOUSTRUC_99',0,' ',0,0,1,VALR)
+          CALL U2MESR('I','SOUSTRUC_99',1,VALR)
           DO 51 JJ = 1,NBMODE
             ZR(JNORMY-1+JJ)=DDOT(NEQ,BMODAL(1,JJ),1,BMODAL(1,JJ),1)
 51        CONTINUE
@@ -332,7 +332,7 @@ C      ON ORDONNE SELON LA PARTICIPATION DECROISSANTE
             CALL U2MESG('I','SOUSTRUC2_2',0,' ',1,VALI,1,VALR)
  72       CONTINUE
 C
-          CALL U2MESG('I','SOUSTRUC2_3',0,' ',0,0,0,0.D0)
+          CALL U2MESS('I','VIDE_1')
         ENDIF
 
 C

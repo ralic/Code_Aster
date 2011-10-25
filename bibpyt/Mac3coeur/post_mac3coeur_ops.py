@@ -1,4 +1,4 @@
-#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 26/07/2011   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 25/10/2011   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -298,8 +298,6 @@ def post_mac3coeur_ops(self, **args):
     _coeur = coeur_factory.get(_typ_coeur)('post', _typ_coeur, self, datg)
 
     if (POST_LAME != None) :
-       _CONT   = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',OPERATION='EXTR',RESULTAT=_RESU,NOM_CHAM='VARI_ELGA',INST=_inst)
-
        valjeuac={}
        valjeucu={}
        post_table=0
@@ -313,7 +311,7 @@ def post_mac3coeur_ops(self, **args):
        k=0
        dim=len(_coeur.nomContactAssLame)
        for name in _coeur.nomContactAssLame:
-          _TAB1 = CREA_TABLE(RESU=_F(CHAM_GD=_CONT,NOM_CMP='V8',GROUP_MA=name))
+          _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='VARI_ELGA',NOM_CMP='V8',GROUP_MA=name,INST=_inst))
           _TAB1 = CALC_TABLE(reuse=_TAB1,TABLE=_TAB1,
                             ACTION = (_F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE_I=1),
                                       _F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
@@ -337,7 +335,7 @@ def post_mac3coeur_ops(self, **args):
        k=0
        dim=len(_coeur.nomContactCuve)
        for name in _coeur.nomContactCuve:
-          _TAB2 = CREA_TABLE(RESU=_F(CHAM_GD=_CONT,NOM_CMP='V8',GROUP_MA=name))
+          _TAB2 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='VARI_ELGA',NOM_CMP='V8',GROUP_MA=name,INST=_inst))
           _TAB2 = CALC_TABLE(reuse=_TAB2,TABLE=_TAB2,
                             ACTION = (_F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE_I=1),
                                       _F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
@@ -378,8 +376,6 @@ def post_mac3coeur_ops(self, **args):
              IMPR_TABLE(UNITE=_unit,TABLE=_TAB3)
        
     if (POST_DEF != None) :
-       _CONT   = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='EXTR',RESULTAT=_RESU,NOM_CHAM='DEPL',INST=_inst)
-
        valdefac={}
        valdirYac={}
        valdirZac={}
@@ -400,7 +396,7 @@ def post_mac3coeur_ops(self, **args):
        dim=len(POSITION)
        for name in POSITION:
           real_name = name[0]+'_'+name[1]
-          _TAB1 = CREA_TABLE(RESU=_F(CHAM_GD=_CONT,NOM_CMP=('DY','DZ'),GROUP_MA='GR_'+real_name))
+          _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='DEPL',INST=_inst,NOM_CMP=('DY','DZ'),GROUP_MA='GR_'+real_name))
           _TAB1 = CALC_TABLE(reuse=_TAB1,TABLE=_TAB1,
                              ACTION = (_F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
                                        _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA='DEF_'+real_name),

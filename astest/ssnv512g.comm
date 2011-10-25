@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE BLOC DECOUPE PAR UNE FISSURE VERTICALE SE BRANCHANT ENTRE 2 FISSURES HORIZONTALES AVEC X-FEM
 # ssnv512g.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,7 +143,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    NEWTON=_F(REAC_INCR=1,REAC_ITER=1),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
-                                  RESI_GLOB_MAXI=1E-6,ARRET='NON')),
+                                  RESI_GLOB_MAXI=1E-6,)),
                    SOLVEUR=_F(METHODE='MUMPS',
                               PCENT_PIVOT=250,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),

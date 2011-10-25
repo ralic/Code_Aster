@@ -1,4 +1,4 @@
-#@ MODIF adaptation Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF adaptation Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ cata_msg={
 """),
 
 11 : _(u"""
-    La valeur du pas de temps retenu (%(r1)s) est inférieure à PAS_MINI.
+    La valeur du pas de temps retenu (%(r1)f) est inférieure à PAS_MINI.
 """),
 
 12 : _(u"""

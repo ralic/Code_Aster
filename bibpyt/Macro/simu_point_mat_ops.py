@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,10 +74,12 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
         if lcomp['DEFORMATION'] != 'PETIT' :
            if args.has_key('GRAD_IMPOSE'):
               if args['GRAD_IMPOSE'] != None:  
+                 if lcomp['DEFORMATION'] != 'SIMO_MIEHE' :
+                    UTMESS('F','COMPOR2_22',valk=lcomp['DEFORMATION'] )
                  itetra=0
-           else :
-              itetra=1
-              UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
+              else :
+                 itetra=1
+                 UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
      elif COMP_ELAS != None :
         lcomp = COMP_ELAS.List_F()[0]
         if lcomp['DEFORMATION'] != 'PETIT' :

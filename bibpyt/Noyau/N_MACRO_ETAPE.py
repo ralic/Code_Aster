@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -623,7 +623,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       d={}
       self.g_context = d
       self.contexte_fichier_init = d
-      globs=self.parent.get_global_contexte()
+      globs=self.get_global_contexte()
       exec code in globs,d
 
    def get_global_contexte(self):
@@ -636,6 +636,9 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       # du parent de self et de celui de l'etape elle meme (self)
       d=self.parent.get_global_contexte()
       d.update(self.g_context)
+      # en PAR_LOT='OUI', les concepts n'étant pas dans jdc.g_context,
+      # on demande au parent le contexte courant.
+      d.update(self.parent.get_contexte_avant(self))
       return d
 
    def get_contexte_courant(self, etape_fille_du_jdc=None):

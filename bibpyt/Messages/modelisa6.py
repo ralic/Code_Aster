@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa6 Messages  DATE 25/10/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -342,7 +342,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 92 : _(u"""
- materiau : %(k1)s  non trouvé
+ matériau : %(k1)s  non affecté par la commande AFFE_MATERIAU.
 """),
 
 93 : _(u"""

@@ -1,21 +1,21 @@
-#@ MODIF modelisa3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa3 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -68,16 +68,16 @@ cata_msg={
 """),
 
 12: _(u"""
-  Mot clé LIAISON_GROUP : les mots clés %(k1)s et %(k2)s à mettre 
+  Mot clé LIAISON_GROUP : les mots clés %(k1)s et %(k2)s à mettre
   en vis-à-vis n'ont pas le meme nombre de noeuds.
-  
+
    - Nombre de noeuds présent sous le mot clé %(k1)s: %(i1)d
    - Nombre de noeuds présent sous le mot clé %(k2)s: %(i2)d
 
 """),
 
 13: _(u"""
- il n'y a aucun groupe de noeuds ni aucun noeud defini apres le mot facteur  %(k1)s 
+ il n'y a aucun groupe de noeuds ni aucun noeud defini apres le mot facteur  %(k1)s
 """),
 
 14: _(u"""
@@ -159,9 +159,10 @@ Suggestion :
 """),
 
 32: _(u"""
- Erreur utilisateur dans CREA_MAILLAGE/MODI_MAILLE :
+ Alarme utilisateur dans CREA_MAILLAGE/MODI_MAILLE :
+  Occurrence du mot clé facteur MODI_MAILLE : %(i1)d.
   Vous avez demandé la transformation de type %(k1)s.
-  Mais il n'y a aucune maille quadratique à transformer.
+  Mais il n'y a aucune maille à transformer.
 """),
 
 35: _(u"""
@@ -173,7 +174,7 @@ Suggestion :
 """),
 
 37: _(u"""
- erreur a l appel de la routine etenca pour extension de la carte  %(k1)s 
+ erreur a l appel de la routine etenca pour extension de la carte  %(k1)s
 """),
 
 40: _(u"""
@@ -214,15 +215,15 @@ Suggestion :
 """),
 
 67: _(u"""
- on doit utiliser obligatoirement le mot-cle dist pour definir la demi-largeur de bande. 
+ on doit utiliser obligatoirement le mot-cle dist pour definir la demi-largeur de bande.
 """),
 
 68: _(u"""
- on doit donner une distance strictement positive pour definir la bande. 
+ on doit donner une distance strictement positive pour definir la bande.
 """),
 
 69: _(u"""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option bande de crea_group_ma. ce mot-cle permet de definir la direction perpendiculaire au plan milieu de la bande. 
+ on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option bande de crea_group_ma. ce mot-cle permet de definir la direction perpendiculaire au plan milieu de la bande.
 """),
 
 70: _(u"""
@@ -242,11 +243,11 @@ Suggestion :
 """),
 
 74: _(u"""
- on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon du cylindre. 
+ on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon du cylindre.
 """),
 
 75: _(u"""
- on doit donner un rayon strictement positif pour definir la cylindre. 
+ on doit donner un rayon strictement positif pour definir la cylindre.
 """),
 
 76: _(u"""
@@ -274,11 +275,11 @@ Suggestion :
 """),
 
 82: _(u"""
- on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon de la sphere. 
+ on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon de la sphere.
 """),
 
 83: _(u"""
- on doit donner un rayon strictement positif pour definir la sphere. 
+ on doit donner un rayon strictement positif pour definir la sphere.
 """),
 
 84: _(u"""
@@ -302,7 +303,7 @@ Suggestion :
 """),
 
 89: _(u"""
- on doit donner une demi-epaisseur strictement positive definir l'enveloppe du cylindre. 
+ on doit donner une demi-epaisseur strictement positive definir l'enveloppe du cylindre.
 """),
 
 90: _(u"""
@@ -310,7 +311,7 @@ Suggestion :
 """),
 
 91: _(u"""
- on doit donner une demi-epaisseur strictement positive definir l'enveloppe de la sphere. 
+ on doit donner une demi-epaisseur strictement positive definir l'enveloppe de la sphere.
 """),
 
 92: _(u"""
@@ -318,7 +319,7 @@ Suggestion :
 """),
 
 93: _(u"""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option plan de crea_group_no. ce mot-cle permet de definir la direction  perpendiculaire au plan ou a la droite. 
+ on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option plan de crea_group_no. ce mot-cle permet de definir la direction  perpendiculaire au plan ou a la droite.
 """),
 
 94: _(u"""
@@ -338,7 +339,7 @@ Suggestion :
 """),
 
 98: _(u"""
- on doit donner une tolerance strictement positive pour verifier l'appartenance d'un noeud au plan ou a la droite. 
+ on doit donner une tolerance strictement positive pour verifier l'appartenance d'un noeud au plan ou a la droite.
 """),
 
 99: _(u"""

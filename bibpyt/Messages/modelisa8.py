@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa8 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,13 +38,13 @@ cata_msg = {
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_AIRE :
 
-   - occurence de multifire : %(r1)d
+   - occurence de multifibre : %(r1).0f
 
-   - aire de la poutre      : %(r2)12.5E
+   - aire de la poutre       : %(r2)12.5E
 
-   - aire des fibres        : %(r3)12.5E
+   - aire des fibres         : %(r3)12.5E
 
-   - erreur relative        : %(r4)12.5E
+   - erreur relative         : %(r4)12.5E
 """),
 
 5 : _(u"""
@@ -52,7 +52,7 @@ cata_msg = {
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
 
-   - occurence de multifire : %(r1)d
+   - occurence de multifibre       : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -66,7 +66,7 @@ cata_msg = {
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
 
-   - occurence de multifire : %(r1)d
+   - occurence de multifibre       : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -228,10 +228,10 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 
 
 68 : _(u"""
- Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas 
+ Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas
  des mailles surfaciques.
  Risques & Conseils :
- Verifiez la constitution des groupes de mailles renseignees sous le 
+ Verifiez la constitution des groupes de mailles renseignees sous le
  mot-cle GROUP_MA_ESCL.
 """),
 

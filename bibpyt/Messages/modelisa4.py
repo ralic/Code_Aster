@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa4 Messages  DATE 24/10/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,16 +21,12 @@
 
 cata_msg = {
 
-
-
-
-
-
-
-
-
-
-
+3: _(u"""
+ Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
+  Vous avez demandé de transformer des mailles quadratiques en mailles linéaires.
+  Mais il n'y a aucun noeud qu'il est possible de supprimer car ils appartiennent
+  tous à d'autres mailles quadratiques.
+"""),
 
 4 : _(u"""
   -> Le modèle contient un mélange d'éléments finis 2D (plan XOY) et 3D

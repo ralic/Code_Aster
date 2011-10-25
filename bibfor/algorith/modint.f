@@ -1,7 +1,7 @@
       SUBROUTINE MODINT(SSAMI,RAIINT,NDDLIN,NBMOD,SHIFT,MATMOD,
      &                  MASSE,RAIDE,NEQ,COINT,NODDLI,NNOINT,
      &                  VEFREQ,SWITCH)
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/10/2011   AUTEUR CORUS M.CORUS 
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -117,7 +117,7 @@ C------------------------------------------------------------C
       LISMAT(1)=RAIINT
       LISMAT(2)=SSAMI
       IF (SWITCH .EQ. 1) THEN
-        CALL GETVR8('MODE_INTERF','FREQ',1,IARG,1,RBID,IBID)
+        CALL GETVR8('MODE_INTERF','SHIFT',1,IARG,1,RBID,IBID)
         SHIFT=-(RBID*2.D0*PI)**2
       ENDIF  
       

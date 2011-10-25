@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TRACTION ELASTIQUE COQUES 3D CALCUL DES CONTRAINTES DE CAUCHY
 # ssnv152a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,7 +194,7 @@ TEST_RESU(RESU=(
                VALE = 50.),
               _F(
                RESULTAT = VT,   NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 21,
-               MAILLE = 'M1',  POINT = 1,               NOM_CMP = 'SIXX',
+               MAILLE = 'M1',  POINT = 1, SOUS_POINT = 1,  NOM_CMP = 'SIXX',
 #               PRECISION = ( 3.1E-2, 1.E-4, ),
                VALE = 2.1E4),
               _F(

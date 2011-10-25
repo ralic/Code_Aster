@@ -12,7 +12,7 @@
      &                 ISOT,DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 24/10/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -899,8 +899,6 @@ C =====================================================================
             CPL     = VAL36(4)
             MAMOLG  = VAL37(1)
             CPG     = VAL37(2)
-            MAMOLV  = VAL38(1)
-            CPVG    = VAL38(2)
             CPAD    = VAL39(1)
             KH      = VAL39(2)
             IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
@@ -1966,7 +1964,6 @@ C
             MAMOLG  = VAL42( 1)
             VISCG   = VAL42( 2)
             DVISCG  = VAL42( 3)
-            MAMOLV  = VAL43( 1)
             ISOT(1) = VAL40(32)
             ISOT(2) = VAL40(33)
             ISOT(3) = VAL40(34)

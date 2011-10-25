@@ -1,21 +1,21 @@
-#@ MODIF rupture0 Messages  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 cata_msg={
@@ -37,7 +37,7 @@ Incohérence entre le mot-clé FISSURE et le modèle associé au mot-clé RESULTAT.
 - Pour utiliser une fissure maillée, renseignez sous le mot-clé FOND_FISS
 une fissure provenant de la commande DEFI_FOND_FISS.
 - Pour utiliser une fissure non-maillée (calcul X-FEM), renseignez sous le mot-clé FISSURE
-une fissure provenant de la commande DEFI_FISS_XFEM. Le modèle associé au mot-clé RESULTAT 
+une fissure provenant de la commande DEFI_FISS_XFEM. Le modèle associé au mot-clé RESULTAT
 doit être un modèle X-FEM provenant de la commande MODI_MODELE_XFEM.
 """),
 
@@ -52,8 +52,8 @@ matériaux et donc des facteurs d'intensité des contraintes, n'est pas connue.
 Le calcul se poursuite en prenant la température de réference du materiau
 (TEMP = %(r1)f).
 -> Risque et Conseil :
-Quand les propriétés matériau dépendent de la température, il faut fournir 
-en entrée de POST_K1_K2_K3 le champ de température utilisé pour le calcul 
+Quand les propriétés matériau dépendent de la température, il faut fournir
+en entrée de POST_K1_K2_K3 le champ de température utilisé pour le calcul
 mécanique, sous le mot clé EVOL_THER.
 """),
 
@@ -66,7 +66,7 @@ Veuillez vérifier les données fournies au mot-clé %(k2)s.
 8: _(u"""
 Problème dans la création de la base locale au fond de fissure.
 Il est impossible de déterminer le sens de la direction de propagation (vecteur tangent aux lèvres).
-Dans le cas symétrique (SYME='OUI') il faut : 
+Dans le cas symétrique (SYME='OUI') il faut :
 - soit donner les lèvres de la fissure (LEVRE_SUP),
 - soit indiquer le vecteut tangent au point origine du fond de fissure (DTAN_ORIG).
 """),
@@ -84,7 +84,7 @@ Modélisation non implantée.
 11: _(u"""
 Problème à la récupération des noeuds du fond de fissure.
 -> Risque et Conseil :
-Vérifier que le concept %(k1)s indiqué sous le mot clé FOND_FISS a été 
+Vérifier que le concept %(k1)s indiqué sous le mot clé FOND_FISS a été
 correctement crée par l'opérateur DEFI_FOND_FISS.
 """),
 
@@ -93,8 +93,8 @@ Type de mailles du fond de fissure non défini.
 -> Risque et Conseil :
 Pour une modélisation 3D, les mailles de votre fond de fissure
 doivent etre de type SEG2 ou SEG3.
-Veuillez revoir la création de votre fond de fissure 
-(opérateur DEFI_FOND_FISS). 
+Veuillez revoir la création de votre fond de fissure
+(opérateur DEFI_FOND_FISS).
 """),
 
 13: _(u"""
@@ -123,21 +123,21 @@ au résultat à considérer.
 """),
 
 19: _(u"""
-Problème à la récupération des noeuds de la lèvre sup : 
+Problème à la récupération des noeuds de la lèvre sup :
 -> Risque et Conseil :
-Pour un calcul avec POST_K1_K2_K3, la lèvre supérieure de la fissure doit 
+Pour un calcul avec POST_K1_K2_K3, la lèvre supérieure de la fissure doit
 être obligatoirement définie dans DEFI_FOND_FISS à l'aide du mot-clé
 LEVRE_SUP. Vérifier la définition du fond de fissure.
 """),
 
 20: _(u"""
-Problème à la récupération des noeuds de la lèvre inf : 
+Problème à la récupération des noeuds de la lèvre inf :
 -> Risque et Conseil :
 Pour un calcul avec POST_K1_K2_K3, la lèvre inférieure de la fissure doit
 être obligatoirement définie dans DEFI_FOND_FISS à l'aide du mot-clé
-LEVRE_INF. 
+LEVRE_INF.
 Si seule la lèvre supérieure est maillée, ne pas oublier de spécifier
-SYME_CHAR = 'SYME' dans POST_K1_K2_K3. 
+SYME_CHAR = 'SYME' dans POST_K1_K2_K3.
 """),
 
 21: _(u"""
@@ -204,12 +204,12 @@ Il n'y a pas de mailles de bord connectées au noeud %(k1)s.
 """),
 
 32: _(u"""
-Différence entre la normale au plan déduite de VECT_K1 et la normale 
+Différence entre la normale au plan déduite de VECT_K1 et la normale
 au plan de la fissure calculée pour le noeud %(i1)d :
   VECT_K1 : (%(r4)f,%(r5)f,%(r6)f)
   Vecteur normal calculé à partir de la définition de la fissure : (%(r1)f,%(r2)f,%(r3)f)
 -> Risque et Conseil :
-On poursuit le calcul mais si l'écart entre les deux vecteurs est trop important, 
+On poursuit le calcul mais si l'écart entre les deux vecteurs est trop important,
 le calcul risque d'échouer ou de conduire à des résultats peu précis.
 Vérifier absolument le VECT_K1 fourni ou supprimer ce mot clé pour que la normale
 au plan soit calculée automatiquement.
@@ -223,7 +223,7 @@ Il y a plusieurs causes possibles :
 - si le calcul correspond à un calcul X-FEM avec contact sur les lèvres de la
   fissure,vérifiez que le maillage fourni est bien le maillage linéaire initial;
 - vérifiez que le paramètre ABSC_CURV_MAXI est cohérent avec la taille de la
-  fissure : les segments pour l'interpolation du déplacement des lèvres, 
+  fissure : les segments pour l'interpolation du déplacement des lèvres,
   perpendiculaires au fond de fissure et de longueur ABSC_CURV_MAXI, ne doivent
   pas "sortir" de la matière.
 """),
@@ -273,7 +273,7 @@ Dans le cas où le fond est une courbe fermée, les mot-clés MAILLE_ORIG ou GROUP_
 """),
 
 43 : _(u"""
-Le noeud défini le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG n'appartient pas à la maille définie 
+Le noeud défini le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG n'appartient pas à la maille définie
 sous le mot-clé MAILLE_ORIG ou GROUP_MA_ORIG.
 """),
 
@@ -286,13 +286,13 @@ Une seule maille doit constitué le groupe de mailles GROUP_MA_ORIG. La maille ut
 """),
 
 46: _(u"""
-Il faut au moins trois noeuds dans le plan défini par les lèvres et perpendiculaire 
+Il faut au moins trois noeuds dans le plan défini par les lèvres et perpendiculaire
 au fond de fissure. Le calcul est impossible. On extrapole les valeurs du point le plus proche.
 """),
 
 
 47: _(u"""
-Noeud %(k1)s 
+Noeud %(k1)s
 """),
 
 48: _(u"""
@@ -319,8 +319,8 @@ Le numéro d'ordre %(i1)d n'appartient pas au résultat %(k1)s.
 52: _(u"""
 Vous avez utilisé des paramètres matériaux dépendant de la température.
 Cependant, 'TEMP_DEF_ALPHA' dans DEFI_MATERIAU n'est pas renseigné.
--> Conseil : 
-Renseignez une température pour 'TEMP_DEF_ALPHA', 
+-> Conseil :
+Renseignez une température pour 'TEMP_DEF_ALPHA',
 ou utilisez l'otion 'EVOL_THER' de POST_K1_K2_K3.
 """),
 
@@ -353,7 +353,7 @@ le rayon du fond de fissure.
 Pour cette option en 3D, le champ THETA doit être calculé directement
 dans l'opérateur CALC_G.
 -> Risque et Conseil :
-Dans le mot-clé facteur THETA, supprimez le mot-clé THETA et renseignez les 
+Dans le mot-clé facteur THETA, supprimez le mot-clé THETA et renseignez les
 mots-clés FOND_FISS, R_SUP, R_INF, MODULE, et DIRECTION pour la détermination
 automatique du champ theta.
 """),
@@ -368,7 +368,7 @@ Veuillez revoir la création du champ theta (opérateur CALC_THETA).
 60 : _(u"""
 Mélange de mailles de type SEG2 et SEG3 dans la définition du fond de fissure.
 -> Risque et Conseil :
-Les mailles du fond de fissure doivent toutes être du meme type. 
+Les mailles du fond de fissure doivent toutes être du meme type.
 Modifiez le maillage ou définissez plusieurs fonds de fissure consécutifs.
 """),
 
@@ -388,7 +388,7 @@ Les mailles du fond de fissure doivent être du type segment (SEG2 ou SEG3).
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la
 fissure (%(k2)s).
 -> Risque et Conseil :
-Les mailles des lèvres doivent être du type quadrangle ou triangle. 
+Les mailles des lèvres doivent être du type quadrangle ou triangle.
 Vérifiez que les mailles définies correspondent bien aux faces des éléments
 3D qui s'appuient sur la lèvre.
 """),
@@ -396,8 +396,8 @@ Vérifiez que les mailles définies correspondent bien aux faces des éléments
 66 : _(u"""
 Le groupe de noeuds ou la liste de noeuds définissant le fond de fissure n'est pas ordonné.
 -> Risque et Conseil :
-Il faut ordonner les noeuds du fond de fissure. 
-Les options SEGM_DROI_ORDO et NOEUD_ORDO de l'opérateur 
+Il faut ordonner les noeuds du fond de fissure.
+Les options SEGM_DROI_ORDO et NOEUD_ORDO de l'opérateur
 DEFI_GROUP/CREA_GROUP_NO peuvent etre utilisées.
 ."""),
 
@@ -409,15 +409,15 @@ Les mailles de FOND_INF et de FOND_SUP sont de type différent.
 """),
 
 69: _(u"""
-Les noeuds %(k1)s de FOND_INF et %(k2)s de FOND_SUP ne sont pas en vis à vis. 
+Les noeuds %(k1)s de FOND_INF et %(k2)s de FOND_SUP ne sont pas en vis à vis.
 -> Risque et Conseil :
 Vérifiez que les deux groupes correspondent bien à des noeuds coincidents
-géométriquement et que les groupes de noeuds sont ordonnés dans le meme sens. 
-"""), 
+géométriquement et que les groupes de noeuds sont ordonnés dans le meme sens.
+"""),
 
 70 : _(u"""
-Erreur utilisateur : la lèvre définie sous %(k1)s possède une maille répétée 2 fois : 
-maille %(k2)s. 
+Erreur utilisateur : la lèvre définie sous %(k1)s possède une maille répétée 2 fois :
+maille %(k2)s.
 -> Risque et Conseil :
 Veuillez revoir les données.
 """),
@@ -428,7 +428,7 @@ Le noeud %(k1)s du fond de fissure n'est rattaché à aucune maille surfacique
 de la lèvre définie sous %(k2)s.
 -> Risque et Conseil :
 Veuillez vérifier les groupes de mailles.
-"""), 
+"""),
 
 73 : _(u"""
 Erreur utilisateur : la lèvre inférieure et la lèvre supérieure ont une maille
@@ -439,13 +439,13 @@ Revoir les données.
 
 74: _(u"""
 Le mode %(i1)d n'a pas été trouvé dans la table.
-"""),  
+"""),
 
 75 : _(u"""
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la
 fissure (%(k2)s).
 -> Risque et Conseil :
-Les mailles des lèvres doivent etre linéiques. Vérifiez que les mailles 
+Les mailles des lèvres doivent etre linéiques. Vérifiez que les mailles
 définies correspondent bien aux faces des éléments 2D qui s'appuient
 sur la lèvre.
 """),
@@ -455,25 +455,25 @@ La tangente à l'origine n'est pas orthogonale à la normale :
    Normale aux lèvres de la fissure : %(r1)f %(r2)f %(r3)f
    Tangente à l'origine (= direction de propagation) :  %(r4)f %(r5)f %(r6)f
 -> Risque et Conseil :
-La tangente à l'origine est nécessairement dans le plan de la fissure, 
+La tangente à l'origine est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale fournie. Vérifier les données.
-"""), 
+"""),
 
 79: _(u"""
 La tangente à l'extrémité n'est pas orthogonale à la normale :
    Normale aux lèvres de la fissure : %(r1)f %(r2)f %(r3)f
    Tangente à l'origine (= direction de propagation) :  %(r4)f %(r5)f %(r6)f
 -> Risque et Conseil :
-La tangente à l'extrémité est nécessairement dans le plan de la fissure, 
+La tangente à l'extrémité est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale fournie. Vérifier les données.
-"""), 
+"""),
 
 80: _(u"""
 Il ne faut donner la direction de propagation si le champ thêta est donné.
 
 -> Conseil :
 Veuillez supprimer le mot-clé DIRECTION sous CALC_G/THETA.
-"""), 
+"""),
 
 
 81: _(u"""
@@ -481,30 +481,30 @@ Il faut donner la direction de propagation en 2D
 La direction par défaut n'existe plus.
 -> Risque et Conseil :
 Veuillez renseigner le mot-clé DIRECTION.
-"""), 
+"""),
 
 83: _(u"""
 Cette combinaison de lissage n'est pas programmée pour l'option : %(k1)s.
 -> Risque et Conseil :
 Veuillez consulter la doc U4.82.03 pour déterminer une combinaison de lissage
 licite avec l'option désirée.
-"""), 
+"""),
 
 84: _(u"""
 Le degré des polynomes de Legendre doit etre inférieur au nombre de noeuds
 du fond de fissure (ici égal à %(i1)i) lorsque le lissage de G est de type
 LEGENDRE et le lissage de THETA de type LAGRANGE.
-"""), 
+"""),
 
 85: _(u"""
 Le lissage de G doit etre de type LEGENDRE si le lissage de THETA
 est de type LEGENDRE.
 -> Risque et Conseil :
 Veuillez redéfinir le mot-clé LISSAGE_G.
-"""), 
+"""),
 
 87: _(u"""
-Si la méthode LAGRANGE_REGU est utilisée pour le lissage, 
+Si la méthode LAGRANGE_REGU est utilisée pour le lissage,
 alors le lissage de G et de theta doivent etre de type LAGRANGE_REGU.
 """),
 
@@ -523,7 +523,7 @@ L'usage des polynomes de Legendre dans le cas d'un fond de fissure clos
 est interdit.
 -> Risque et Conseil :
 Veuillez redéfinir le mot-clé LISSAGE_THETA.
-"""), 
+"""),
 
 91: _(u"""
 Aucune direction de propagation n'est fournie par l'utilisateur, la direction est
@@ -534,20 +534,20 @@ calculée à partir de la normale au fond de fissure (donnée dans DEFI_FOND_FISS).
     aucun moyen de vérifier que la direction de propagation est dans le bon sens,
     cela peut inverser le signe du G calculé.
 
--> Conseils pour ne plus avoir cette alarme :  
-  - On peut préciser la direction de propagation sous le mot clé DIRECTION. 
+-> Conseils pour ne plus avoir cette alarme :
+  - On peut préciser la direction de propagation sous le mot clé DIRECTION.
     Cette solution n'est applicable que si le fond de fissure est rectiligne.
-  - La solution la plus générale (donc préférable) est de définir le fond de 
+  - La solution la plus générale (donc préférable) est de définir le fond de
     fissure à partir des mailles de lèvres (DEFI_FOND_FISS/LEVRE_SUP et LEVRE_INF).
-"""), 
+"""),
 
 92: _(u"""
 Le mot-clef BORNES est obligatoire avec l'option  %(k1)s  !
-"""), 
+"""),
 
 93: _(u"""
 Accès impossible au champ : %(k1)s pour le numéro d'ordre : %(i1)d
-"""), 
+"""),
 
 94: _(u"""
 La direction de propagation de la fissure et la normale au fond de fissure
@@ -558,20 +558,20 @@ nécessairement orthogonales, sinon les résultats sont faux: vérifier la
 mise en données dans DEFI_FOND_FISS et CALC_G.
 Si la fissure n'est pas plane, on ne peut pas utiliser le mot-clé NORMALE
 dans DEFI_FOND_FISS: définissez la fissure à partir des mailles de ses lèvres.
-"""), 
+"""),
 
 95: _(u"""
 Accès impossible au mode propre champ : %(k1)s pour le numéro d'ordre : %(i1)d.
-"""), 
+"""),
 
 96: _(u"""
 Option non disponible actuellement.
-"""), 
+"""),
 
 99: _(u"""
-Point du fond numéro : %(i1)s.
-Augmenter NB_NOEUD_COUPE. S'il s'agit d'un noeud extrémité, vérifier les tangentes 
+Point du fond numéro : %(i1)d.
+Augmenter NB_NOEUD_COUPE. S'il s'agit d'un noeud extrémité, vérifier les tangentes
 (DTAN_ORIG et DTAN_EXTR).
-"""), 
+"""),
 
 }

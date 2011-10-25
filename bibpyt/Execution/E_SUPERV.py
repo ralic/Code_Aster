@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,7 +153,6 @@ class SUPERV:
    def set_i18n(self):
        """Met en place les fonctions d'internationalisation."""
        import i18n
-       i18n.get_translation().install()
 
    def init_timer(self):
       """Initialise le timer au plus tot
@@ -202,7 +201,7 @@ class SUPERV:
       print "# ------------------------------------------------------------------------------------------"
       print convert(_(u"""# Impression du contenu du fichier de commandes à exécuter :"""))
       print "# ------------------------------------------------------------------------------------------"
-      print text
+      print convert(text)
       print "# ------------------------------------------------------------------------------------------"
       print "# ------------------------------------------------------------------------------------------"
       f.close()

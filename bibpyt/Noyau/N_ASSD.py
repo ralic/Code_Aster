@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,14 +168,16 @@ class ASSD(object):
 
 
    def par_lot(self):
-      """Conserver uniquement pour la compatibilite avec le catalogue v9 dans eficas.
-      """
+      """Conserver uniquement pour la compatibilite avec le catalogue v9 dans eficas."""
       #XXX eficas
       if not hasattr(self, 'jdc') or self.jdc == None:
          val = None
       else:
          val = self.jdc.par_lot
       return val == 'OUI'
+
+   def rebuild_sd(self):
+      """Conserver uniquement pour la compatibilite avec le catalogue v10 dans eficas."""
 
 
 class assd(ASSD):

@@ -1,24 +1,24 @@
-#@ MODIF nommage Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF nommage Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -26,7 +26,7 @@
    Ce module sert à nommer les concepts produits par les commandes.
    Le nom du concept est obtenu en appelant la fonction GetNomConceptResultat
    du module avec le nom de la commande en argument.
-   
+
    Cette fonction parcourt le source dans lequel la commande se trouve, parse le
    fichier et retrouve le nom du concept qui se trouve à gauche du signe = précédant
    le nom de la commande.
@@ -40,6 +40,7 @@
 # Modules Python
 import re,string
 import linecache
+from functools import partial
 
 # Modules EFICAS
 import N_utils
@@ -48,7 +49,7 @@ regex1='=?\s*%s\s*\('
 #commentaire standard precede d'un nombre quelconque de blancs (pas multiligne)
 pattern_comment   = re.compile(r"^\s*#.*")
 
-def GetNomConceptResultat(ope):
+def _GetNomConceptResultat(ope, level=2):
   """
      Cette fonction recherche dans la pile des appels, l'appel à la commande
      qui doit etre situé à 2 niveaux au-dessus (cur_frame(2)).
@@ -58,14 +59,14 @@ def GetNomConceptResultat(ope):
      et on vérifie que cette ligne correspond véritablement à l'appel.
 
      En effet, lorsque les commandes tiennent sur plusieurs lignes, on retrouve
-     la dernière ligne. Il faut donc remonter dans le source jusqu'à la première 
+     la dernière ligne. Il faut donc remonter dans le source jusqu'à la première
      ligne.
 
      Enfin la fonction evalnom forme un nom acceptable lorsque le concept est un
      élément d'une liste, par exemple.
 
   """
-  f=N_utils.cur_frame(2)
+  f=N_utils.cur_frame(level)
   lineno = f.f_lineno     # XXX Too bad if -O is used
   #lineno = f_lineno(f)  # Ne marche pas toujours
   co = f.f_code
@@ -148,3 +149,24 @@ def f_lineno(f):
        line = line + ord(tab[i+1])
    return line
 
+
+class NamingSystem:
+    """Cette classe définit un système de nommage dynamique des concepts."""
+    def __init__(self):
+        """Initialisation"""
+        self.native = _GetNomConceptResultat
+        self.use_global_naming()
+
+    def use_naming_function(self, function):
+        """Utilise une fonction particulière de nommage."""
+        self.naming_func = function
+
+    def use_global_naming(self):
+        """Utilise la fonction native de nommage."""
+        self.naming_func = partial(self.native, level=3)
+
+    def __call__(self, *args):
+        """Appel à la fonction de nommage."""
+        return self.naming_func(*args)
+
+GetNomConceptResultat = NamingSystem()

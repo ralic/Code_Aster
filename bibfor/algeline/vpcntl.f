@@ -4,7 +4,7 @@
      &   TYPRES, STURM, NBLAGR,SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,7 +183,7 @@ C REGLES DE STURM ETENDUE
              VALI (2) = NFREQ
              CALL U2MESG(CTY//'+','ALGELINE5_25',0,' ',2,VALI,2,VALR)
            ENDIF
-           CALL U2MESG(CTY,'ALGELINE5_26',0,' ',0,0,0,0.D0)
+           CALL U2MESS(CTY,'VIDE_1')
          ELSE
            IF (NIV.GE.1) THEN
              IF (TYPRES .EQ. 'DYNAMIQUE') THEN

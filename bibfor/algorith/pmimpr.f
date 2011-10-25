@@ -1,9 +1,9 @@
       SUBROUTINE PMIMPR(IND,INST,INDIMP,FONIMP,VALIMP,ITER,EPS,SIG,
      &                  VI,NBVARI,R,EE,EINI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -47,7 +47,7 @@ C-----------------------------------------------------------------------
       DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
       DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
 C-----------------------------------------------------------------------
-      CALL INFMAJ
+
       CALL INFNIV(IFM,NIV)
       IDBG=0
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,6 +147,12 @@ U=CALC_ELEM( reuse=U,   RESULTAT=U,
 UPOS=POST_CHAMP(RESULTAT=U,
                  TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',),);
+
+UPOS2=POST_CHAMP(RESULTAT=U,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
 
@@ -390,19 +396,19 @@ TEST_RESU(RESU=(_F(
             )
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
+                   RESULTAT = UPOS2,  NOM_CHAM = 'VARI_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO14',
                    INST = 1.,
                    NOM_CMP = 'V1',
                    VALE = 2.055E-02,      PRECISION = 1.E-02),
                  _F(
-                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
+                   RESULTAT = UPOS2,  NOM_CHAM = 'VARI_ELNO',
                    MAILLE = 'MA2',  NOEUD = 'NO13',
                    INST = 1.,
                    NOM_CMP = 'V1',
                    VALE = 2.055E-02,      PRECISION = 1.E-02),
                  _F(
-                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
+                   RESULTAT = UPOS2,  NOM_CHAM = 'VARI_ELNO',
                    MAILLE = 'MA3',  NOEUD = 'NO17',
                    INST = 1.,
                    NOM_CMP = 'V1',

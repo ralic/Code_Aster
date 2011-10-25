@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel5 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,22 +79,9 @@ Alarme utilisateur :
   (D>10%% de la taille de la maille la plus proche (%(k3)s) du maillage (%(k4)s)).
 """),
 
-
-
-
-
-
-
-
-
-
-
-
 8 : _(u"""
  il faut renseigner le mot clé MAILLE
 """),
-
-
 
 9 : _(u"""
 Erreur utilisateur :
@@ -104,6 +91,10 @@ Conseil :
 """),
 
 
+10: _(u"""
+Erreur d'utilisation dans la commande CREA_MAILLAGE :
+  Le mot clé MAILLAGE est ici obligatoire.
+"""),
 
 11 : _(u"""
  le parametre est a valeurs de type  " %(k1)s "  et la valeur de reference de type  " %(k2)s ".

@@ -9,7 +9,7 @@ C IN  MXCMDU : IS : NOMBRE DE COMMANDES UTILISATEURS MAXIMUM
 C IN  BASE   : CH : TYPE DE LA BASE 'L' 'G' 'V' ....
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,14 +135,14 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
             IF ( IRET. NE. 0 )  THEN
                CALL JEVEUO(SPVR,'L',LSPVR)
                CALL JELIRA(SPVR,'LONMAX',LONMAX,CBID)
-               VALK (1) = ZK80(LSPVR)
+               VALK (1) = ZK80(LSPVR)(1:24)
                CALL U2MESK('I','SUPERVIS_78',1,VALK)
             ELSE
                CALL U2MESS('I','SUPERVIS_79')
             ENDIF
             NOMUSR = '   '
          ENDIF
-        CALL U2MESS('I','SUPERVIS_80')
+        CALL U2MESS('I','VIDE_2')
 C
 C     --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
       CALL JEDETC('G','.',1)

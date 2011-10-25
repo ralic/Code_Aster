@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,12 +84,6 @@ On desactive l'affichage des courbes par Gnuplot.
 19 : _(u"""Erreur dans le test de convergence de MACR_RECAL.
 """),
 
-#20 : _(u""" """),
-
-#21 : _(u""" """),
-
-#22 : _(u""" """),
-
 23 : _(u"""Impossible d'importer le module de lecture des tables !
 """),
 
@@ -138,22 +132,22 @@ Informations de convergence :
 
 """),
 
-33 : _(u"""=> Fonctionnelle                        = %(r1)s
+33 : _(u"""=> Fonctionnelle                        = %(r1)f
 """),
 
-34 : _(u"""=> Residu                               = %(r1)s
+34 : _(u"""=> Residu                               = %(r1)f
 """),
 
-35 : _(u"""=> Norme de l'erreur                    = %(r1)s
+35 : _(u"""=> Norme de l'erreur                    = %(r1)f
 """),
 
-36 : _(u"""=> Erreur                               = %(r1)s
+36 : _(u"""=> Erreur                               = %(r1)f
 """),
 
-37 : _(u"""=> Variation des parametres (norme L2)  = %(r1)s
+37 : _(u"""=> Variation des parametres (norme L2)  = %(r1)f
 """),
 
-38 : _(u"""=> Variation de la fonctionnelle        = %(r1)s
+38 : _(u"""=> Variation de la fonctionnelle        = %(r1)f
 """),
 
 39 : _(u"""=> Nombre d'evaluation de la fonction   = %(k1)s
@@ -192,18 +186,16 @@ Valeur à interpoler              :  %(k1)s
 Domaine couvert par l'experience : [%(k2)s : %(k3)s]
 """),
 
-#49 : _(u""" """),
-
 50 : _(u"""
---> Critere d'arret sur le residu atteint, la valeur du residu est : %(r1)s <--
+--> Critere d'arret sur le residu atteint, la valeur du residu est : %(r1)f <--
 """),
 
 51 : _(u"""
---> Critere d'arret TOLE_PARA atteint, la variation des parametres est : %(r1)s <--
+--> Critere d'arret TOLE_PARA atteint, la variation des parametres est : %(r1)f <--
 """),
 
 52 : _(u"""
---> Critere d'arret TOLE_FONC atteint, la variation de la fonctionnelle est : %(r1)s <--
+--> Critere d'arret TOLE_FONC atteint, la variation de la fonctionnelle est : %(r1)f <--
 """),
 
 53 : _(u"""
@@ -291,10 +283,6 @@ Information : les calculs esclaves seront lancés en BATCH avec les paramètres su
      Classe         : %(k4)s
 
 """),
-
-#70 : _(u""" """),
-
-#71 : _(u""" """),
 
 72 : _(u"""
 Fonctionnelle au point X0:

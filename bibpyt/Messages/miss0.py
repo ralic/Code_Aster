@@ -1,4 +1,4 @@
-#@ MODIF miss0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,7 @@ Message d'erreur :
 Les abscisses de l'accélérogramme '%(k1)s' doivent être à pas constant.
 """),
 
-10 : ("""
+10 : (u"""
 Interpolation des accélérogrammes sur l'intervalle : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f, soit %(i1)d instants.
 """),

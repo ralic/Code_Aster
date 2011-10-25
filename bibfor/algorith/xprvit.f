@@ -13,7 +13,7 @@
       LOGICAL        LOCDOM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 24/10/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -578,7 +578,6 @@ C            VECTEUR IJ ET IM
 C            PARAM S (PRODUIT SCALAIRE...)
              S   = XIJ*XIM + YIJ*YIM + ZIJ*ZIM
              NORM2 = XIJ*XIJ + YIJ*YIJ + ZIJ*ZIJ
-             CALL ASSERT(NORM2.GT.R8PREM())
              S     = S/NORM2
 C            SI N=P(M) SORT DU SEGMENT
              IF((S-1).GE.EPS) S = 1.D0

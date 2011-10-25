@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105a.para = tps_job 3000 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,7 +173,6 @@ L_INST_A=DEFI_LIST_REEL(DEBUT=T000,
 #                       PROL_GAUCHE='LINEAIRE',);
 #
 ########################################################
-
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MA=DEFI_GROUP(reuse =MA,
@@ -431,7 +430,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT,
                        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                        SOLVEUR=_F(SYME='OUI',
                                   METHODE='LDLT',),
-                       CONVERGENCE=_F(ARRET='NON',
+                       CONVERGENCE=_F(
                                       RESI_GLOB_MAXI=0.0001,
                                       RESI_GLOB_RELA=1.e-05,
                                       ITER_GLOB_MAXI=20,),);
@@ -549,8 +548,7 @@ u_lacher=DYNA_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT,
                                   METHODE='LDLT',),
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
-                                      ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ITER_GLOB_MAXI=n_iter_max,),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -575,8 +573,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                                   METHODE='LDLT',),
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
-                                      ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ITER_GLOB_MAXI=n_iter_max,),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -607,7 +604,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -633,7 +630,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -659,7 +656,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -685,7 +682,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -711,7 +708,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -737,7 +734,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -763,7 +760,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -789,7 +786,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -815,7 +812,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ARRET='OUI',),);
 
 u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        MODELE=MO, CHAM_MATER=CHMAT,
@@ -841,7 +838,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
-                                      ARRET='NON',),);
+                                      ARRET='OUI',),);
 
 # # # # # # # # # # # #
 # POST-TREATMENT

@@ -21,7 +21,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
 C
 C     SAISIE ET VERIFICATION DES MOTS CLES COMP_INCR / COMP_ELAS
 C
@@ -106,7 +106,7 @@ C     MECA=COMMANDES MECANIQUE
 C ======================================================================
 C     CARTE COMPOR
       CALL NMDOCC(COMPOR,MODELE,NBMO1,MOCLEF,
-     &            NOMCMP,NCMPMA,MECA)
+     &            NOMCMP,NCMPMA,MECA,NOMCMD)
       COMPOZ = COMPOR
 
 C ======================================================================
