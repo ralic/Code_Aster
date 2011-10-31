@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,11 +22,11 @@
 cata_msg={
 
 1 : _(u"""
-   Echec lors du traitement du contact.
+   Échec lors du traitement du contact.
 """),
 
 2 : _(u"""
-   Echec : la matrice de contact est singulière.
+   Échec : la matrice de contact est singulière.
 """),
 
 3 : _(u"""
@@ -54,7 +54,7 @@ Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surf
 13 : _(u"""
 Contact méthodes maillées.
 La zone de contact numéro %(i1)i contient %(i2)i noeuds communs aux surfaces maîtres et esclaves.
-Vérifiez la définition de vos surfaces de contact ou bien renseignez un des mot-clés SANS_NOEUD/SANS_GROUP_NO/SANS_MAILLE/SANS_GROUP_MA.
+Vérifiez la définition de vos surfaces de contact ou bien renseignez un des mots-clés SANS_NOEUD/SANS_GROUP_NO/SANS_MAILLE/SANS_GROUP_MA.
 """),
 
 14 : _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF contactdebg Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contactdebg Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,8 +24,8 @@ cata_msg={
 
 
 11: _(u"""
- <CONTACT_2> Le noeud <%(k1)s> n'est pas apparié car il aurait été projeté hors de la zone de tolérance de la maille <%(k2)s> qui etait la plus proche. 
- <CONTACT_2> Vous pouvez éventuellement modifier TOLE_PROJ_EXT ou revoir la définition de vos zones esclaves et maitres. 
+ <CONTACT_2> Le noeud <%(k1)s> n'est pas apparié car il aurait été projeté hors de la zone de tolérance de la maille <%(k2)s> qui était la plus proche. 
+ <CONTACT_2> Vous pouvez éventuellement modifier TOLE_PROJ_EXT ou revoir la définition de vos zones esclaves et maîtres. 
 """),
 
 12: _(u"""

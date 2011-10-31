@@ -1,4 +1,4 @@
-#@ MODIF aspic0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF aspic0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,11 +21,11 @@
 
 cata_msg={
 1: _(u"""
-Vous affectez plus d'un materiau contenant l'option rccm.
+Vous affectez plus d'un matériau contenant l'option RCCM.
 """),
 
 2: _(u"""
-Pour les piquages sains, TUBULURE doit etre renseigné.
+Pour les piquages sains, TUBULURE doit être renseigné.
 """),
 
 3: _(u"""
@@ -65,14 +65,14 @@ Impression de résultats demandée sans préciser le nom des champs cf. la document
 """),
 
 12: _(u"""
-Les piquages pénetrants sont autorisés uniquement avec les soudures de type 1.
+Les piquages pénétrants sont autorisés uniquement avec les soudures de type 1.
 """),
 
 13: _(u"""
  La valeur de Z_MAX (cote maximale de la tubulure) est inférieure à la longueur 
  d'amortissement calculée :
  Z_MAX fournie   : %(r1)f
- Z_MAX calculee  : %(r2)f
+ Z_MAX calculée  : %(r2)f
 -> Risque et Conseil :
  La longueur d'amortissement est liée à l'onde de flexion se propageant depuis le piquage.
  Si la longueur de la tubulure est inférieure à cette longueur, le calcul des contraintes 
@@ -80,13 +80,13 @@ Les piquages pénetrants sont autorisés uniquement avec les soudures de type 1.
 """),
 
 14: _(u"""
- Erreur donnees
- Dans le cas de fissures inclinees debouchant en peau interne avec
- piquage penetrant, le jeu doit etre nul.
+ Erreur données
+ Dans le cas de fissures inclinées débouchant en peau interne avec
+ piquage pénétrant, le jeu doit être nul.
 """),
 
 15: _(u"""
- Erreur donnees
+ Erreur données
  Dans le cas de fissures internes (NON_DEB) le ligament inférieur est obligatoire.
 """),
 
@@ -107,11 +107,11 @@ Dans le cas de la fissure longue il faut préciser la longueur ou axis=oui.
 """),
 
 20: _(u"""
-Fissure axisymetrique : le mot clef <LONGUEUR> ne doit pas etre renseigné.
+Fissure axisymétrique : le mot clef <LONGUEUR> ne doit pas être renseigné.
 """),
 
 21: _(u"""
-Seuls gibi98 et gibi2000 sont appelables.
+Seuls GIBI98 et GIBI2000 sont appelables.
 """),
 
 22: _(u"""
@@ -121,17 +121,17 @@ Une interpénétration des lèvres est détectée pour le numéro d'ordre %(i1)d : sur
 Le contact n'est pas pris en compte dans le calcul. Le taux de restitution de l'énergie G
 est donc positif y compris là où la fissure tend à se refermer, ce qui peut conduire à
 des résultats trop pénalisants.
-Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro.
+Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro-commande.
 """),
 
 23: _(u"""
  La valeur de X_MAX (cote maximale du corps) est inférieure à la longueur d'amortissement 
  calculée :
  X_MAX fournie   : %(r1)f
- X_MAX calculee  : %(r2)f
+ X_MAX calculée  : %(r2)f
 -> Risque et Conseil :
  La longueur d'amortissement est liée à l'onde de flexion se propageant depuis le piquage.
- Si la longueur ddu corps est inférieure à cette longueur, le calcul des contraintes 
+ Si la longueur du corps est inférieure à cette longueur, le calcul des contraintes 
  dans le piquage ne sera pas indépendant du mode d'application des conditions aux limites.
 """),
 

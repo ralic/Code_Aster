@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,8 +25,8 @@ cata_msg = {
  Il y a trop de colonnes à afficher dans le tableau de convergence.
  La largeur maximale affichable est de 256 caractères, donc 14 colonnes au maximum.
  Or vous avez <%(i1)d> colonnes !
- Si vous avez des colonnes SUIVI_DDL, supprimez-en.
- VOos pouvez éventuellement désactiver INFO_RESIDU ou INFO_TEMPS.
+ Si vous avez des colonnes SUIVI_DDL, supprimez en.
+ Vous pouvez éventuellement désactiver INFO_RESIDU ou INFO_TEMPS.
 """),
 
 2 : _(u"""
@@ -38,7 +38,7 @@ cata_msg = {
  """),
 
 70 : _(u"""
- macro_element statique et FETI incompatibles
+ macro_élément statique et FETI incompatibles
 """),
 
 71 : _(u"""
@@ -50,7 +50,7 @@ cata_msg = {
 """),
 
 75 : _(u"""
- forces d'inertie derivées et FETI incompatibles
+ forces d'inertie dérivées et FETI incompatibles
 """),
 
 78 : _(u"""

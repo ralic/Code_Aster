@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,23 +22,23 @@
 cata_msg={
 
 1: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_MAILLE.
+ Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_MAILLE.
 """),
 
 2: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_GROUP_MA.
+ Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_GROUP_MA.
 """),
 
 3: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_POI1.
+ Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_POI1.
 """),
 
 4: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-cle REPERE.
+ Le mot-clé MAILLAGE est obligatoire avec le mot-clé REPERE.
 """),
 
 5: _(u"""
- Sous le mot-cle "NOM_ORIG" du mot-clé facteur "REPERE",
+ Sous le mot-clé "NOM_ORIG" du mot-clé facteur "REPERE",
  on ne peut donner que les mots "CDG" ou "TORSION".
 """),
 
@@ -55,7 +55,7 @@ cata_msg={
 """),
 
 8: _(u"""
- Le mot-cle MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA.
+ Le mot-clé MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA.
 """),
 
 9: _(u"""
@@ -68,7 +68,7 @@ cata_msg={
 
 11: _(u"""
  L'extraction des modes a échoué.
- La structure de données mode_meca est vide ou aucun mode ne remplit le critère d'extraction.
+ La structure de données MODE_MECA est vide ou aucun mode ne remplit le critère d'extraction.
  Conseils & solution :
    Vérifiez le résultat de votre calcul modal et/ou modifiez votre filtre d'extraction"
 """),
@@ -152,7 +152,7 @@ Conseils & solution :
 """),
 
 29: _(u"""
- Solveur interne gcpc pour l'instant proscrit  avec feti
+ Solveur interne GCPC pour l'instant proscrit  avec FETI
 """),
 
 30: _(u"""
@@ -160,7 +160,7 @@ Conseils & solution :
 """),
 
 31: _(u"""
- La section de la poutre doit etre constante.
+ La section de la poutre doit être constante.
 """),
 
 32: _(u"""
@@ -182,15 +182,15 @@ On ne renumérote pas car les degrés de liberté sont a priori compris entre  Lagr
 
 Conseil
 -------
-  En cas d'arrêt ultérieur avec MATRICE SINGULIERE, il faudra changer de SOLVEUR (MUMPS par exemple).
+  En cas d'arrêt ultérieur avec MATRICE singulière, il faudra changer de SOLVEUR (MUMPS par exemple).
  """),
 
 37: _(u"""
-  GCPC n"est pas prevu pour une matrice complexe
+  GCPC n"est pas prévu pour une matrice complexe
 """),
 
 38: _(u"""
- Pas de matrice de préconditionnement : on s'arrete
+ Pas de matrice de préconditionnement : on s'arrête
 """),
 
 40: _(u"""
@@ -202,7 +202,7 @@ La matrice possède des ddls imposés éliminés: il faut un VCINE
 """),
 
 42: _(u"""
-La matrice et le vecteur cinématique ne contiennent pas des valeurs de meme type
+La matrice et le vecteur cinématique ne contiennent pas des valeurs de même type
 """),
 
 43: _(u"""
@@ -215,15 +215,15 @@ Conseil :
 
 
 44: _(u"""
-La methode de resolution:  %(k1)s  est inconnue. on attend ldlt,gcpc, mult_fro ou feti
+La méthode de résolution:  %(k1)s  est inconnue. on attend LDLT,GCPC, MULT_FRONT ou FETI
 """),
 
 45: _(u"""
- methode de bathe et wilson : convergence non atteinte
+ méthode de BATHE et WILSON : convergence non atteinte
 """),
 
 46: _(u"""
-Recherche de corps rigide : pour l'instant proscrite avec matrice non-symetrique
+Recherche de corps rigide : pour l'instant proscrite avec matrice non-symétrique
 """),
 
 47: _(u"""
@@ -232,7 +232,7 @@ Recherche de corps rigide : pour l'instant proscrite avec matrice complexe
 
 
 48: _(u"""
-Cet operateur a besoin du "procédé de Sturm" pour tester la validité de modes propres ou
+Cet opérateur a besoin du "procédé de STURM" pour tester la validité de modes propres ou
 pour nourrir un algorithme de recherche de modes propres (dichotomie...). Or celui-ci
 ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
   --> La matrice utilisée ici, %(k1)s ne répond pas a ces critères !
@@ -240,7 +240,7 @@ ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
 
 
 49: _(u"""
-Attention : plus de six modes de corps rigides detectés
+Attention : plus de six modes de corps rigides détectés
 """),
 
 50: _(u"""
@@ -320,21 +320,21 @@ On trouve plus de 9999 valeurs propres dans la bande demandée
 """),
 
 67: _(u"""
-La matrice de raideur est numeriquement singulière (malgré la stratégie de decalage) :
+La matrice de raideur est numériquement singulière (malgré la stratégie de décalage) :
 la borne maximale de la bande est une valeur propre.
-On poursuit tout de meme.
+On poursuit tout de même.
 """),
 
 68: _(u"""
-  -> La matrice de raideur est singulière malgre la strategie de décalage
+  -> La matrice de raideur est singulière malgré la stratégie de décalage
 (structure avec des modes de corps rigide).
 
   -> Risque & Conseil :
   Pour passer avec l'option 'PLUS_PETITE', augmenter la valeur de SEUIL_FREQ
-  (0.1 par exemple) ou de PREC_SHIFT (0.5 par exemple). 
-  En fait, il est plutot conseille d'utiliser l'option 'BANDE'. Ici avec une borne minimale
+  (0.1 par exemple) ou de PREC_SHIFT (0.5 par exemple).
+  En fait, il est plutôt conseille d'utiliser l'option 'BANDE'. Ici avec une borne minimale
   de la bande de fréquence légèrement négative (ou positive).
-  A defaut, si vous n'arrivez pas a capter tous les modes rigides, essayer la methode
+  A défaut, si vous n'arrivez pas a capter tous les modes rigides, essayer la méthode
   TRI_DIAG avec OPTION='MODE_RIGIDE'.
 """),
 
@@ -351,7 +351,7 @@ Le nombre d'équations est variable d'un mode à l'autre, récupération impossible.
 """),
 
 72: _(u"""
-Probleme interne ARPACK
+Problème interne ARPACK
 """),
 
 73: _(u"""
@@ -363,15 +363,15 @@ Problème interne LAPACK
 """),
 
 75: _(u"""
-Probleme construction vecteur initial --> si possible diminuer nmax_freq
+Problème construction vecteur initial --> si possible diminuer NMAX_FREQ
 """),
 
 76: _(u"""
-Probleme interne LAPACK, routine FLAHQR (forme de SCHUR)
+Problème interne LAPACK, routine FLAHQR (forme de SCHUR)
 """),
 
 77: _(u"""
-Probleme interne LAPACK, routine FTREVC (vecteurs propres)
+Problème interne LAPACK, routine FTREVC (vecteurs propres)
 """),
 
 78: _(u"""
@@ -381,7 +381,7 @@ Aucune valeur propre à la précision requise
 
 79: _(u"""
 La position modale d'une des fréquences est négative ou nulle
-votre système matriciel est surement fortement singulier
+votre système matriciel est sûrement fortement singulier
 (ceci correspond généralement à un problème dans la modélisation).
 """),
 
@@ -390,7 +390,7 @@ MODE à créer avant appel à VPSTOR
 """),
 
 81: _(u"""
-"%(k1)s" argument du mot cle "OPTION" pour le calcul des fréquences est invalide.
+"%(k1)s" argument du mot clé "OPTION" pour le calcul des fréquences est invalide.
 """),
 
 82: _(u"""
@@ -406,7 +406,7 @@ Pour l'option "CENTRE" il faut exactement une fréquence.
 """),
 
 85: _(u"""
-Pour les options  "PLUS_PETITE" et "TOUT" les frequences de "FREQ" sont ignorées.
+Pour les options  "PLUS_PETITE" et "TOUT" les fréquences de "FREQ" sont ignorées.
 """),
 
 86: _(u"""
@@ -414,7 +414,7 @@ Pour l'option  "BANDE" il faut exactement 2 charges critiques.
 """),
 
 87: _(u"""
-Charge crit. min. plus  grande ou egale a la charge crit. max.
+Charge critique min. plus  grande ou égale a la charge critique max.
 """),
 
 88: _(u"""
@@ -442,7 +442,7 @@ Les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s
 """),
 
 94: _(u"""
-Le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut etre copié dans le CHAM_NO  %(k3)s  de type  %(k4)s
+Le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut être copié dans le CHAM_NO  %(k3)s  de type  %(k4)s
 """),
 
 95: _(u"""
@@ -450,7 +450,7 @@ Champ à représentation constante : cas non traité.
 """),
 
 96: _(u"""
-CHOUT non feti
+CHOUT non FETI
 """),
 
 97: _(u"""

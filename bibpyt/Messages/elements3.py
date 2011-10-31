@@ -1,32 +1,32 @@
-#@ MODIF elements3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
 
 10 : _(u"""
- on ne peut pas affecter la modelisation "axis_diag" aux elements de l'axe
+ on ne peut pas affecter la modélisation "AXIS_DIAG" aux éléments de l'axe
 """),
 
 11 : _(u"""
-  -> Attention vous avez une loi de comportement inélastique et vous etes
+  -> Attention vous avez une loi de comportement inélastique et vous êtes
      en contraintes planes, la composante du tenseur de déformations EPZZ que
      vous allez calculer n'est valable que tant que vous restez dans le
      domaine élastique. Les autres composantes EPXX, EPYY, EPXY sont correctes.
@@ -37,7 +37,7 @@ cata_msg = {
 
 12 : _(u"""
  Calcul de G bilinéaire
- E, NU, ALPHA dépendent de la temperature
+ E, NU, ALPHA dépendent de la température
  Les champs de température (TGU et TGV) sont différents
 """),
 
@@ -52,7 +52,7 @@ cata_msg = {
 
 18 : _(u"""
  Le matériau  %(k1)s  n'est pas connu
- Seuls sont admis les materiaux  'THER' et 'THER_COQUE' pour le calcul des flux pour les coques thermiques
+ Seuls sont admis les matériaux  'THER' et 'THER_COQUE' pour le calcul des flux pour les coques thermiques
 """),
 
 19 : _(u"""
@@ -62,7 +62,7 @@ cata_msg = {
 """),
 
 20 : _(u"""
- La maille  %(k1)s  ne répond pas au critère géometrique sur les mailles HEXA :
+ La maille  %(k1)s  ne répond pas au critère géométrique sur les mailles HEXA :
  Les cotés opposés doivent être parallèles
 """),
 
@@ -92,43 +92,43 @@ cata_msg = {
 """),
 
 34 : _(u"""
- Seules les forces suiveuses de type vent définies par un evol_char sont autorisées
+ Seules les forces suiveuses de type vent définies par un EVOL_char sont autorisées
 """),
 
 35 : _(u"""
- Un champ de vitesse de vent est imposé sans donner un CX dépendant de la vitesse sur une des barres
+ Un champ de vitesse de vent est imposé sans donner un Cx dépendant de la vitesse sur une des barres
 """),
 
 36 : _(u"""
- comp_incr non valide
+ COMP_INCR non valide
 """),
 
 37 : _(u"""
-  Relation :  %(k1)s  non implantée sur les cables
+  Relation :  %(k1)s  non implantée sur les câbles
 """),
 
 38 : _(u"""
-  Déformation :  %(k1)s  non implantée sur les cables
+  Déformation :  %(k1)s  non implantée sur les câbles
 """),
 
 39 : _(u"""
- un champ de vitesse de vent est impose sans donner un cx dependant de la vitesse sur un des cables.
+ un champ de vitesse de vent est impose sans donner un Cx dépendant de la vitesse sur un des câbles.
 """),
 
 46 : _(u"""
- le parametre "pnosym" n'existe pas dans le catalogue de l'element  %(k1)s  .
+ le paramètre "pnosym" n'existe pas dans le catalogue de l'élément  %(k1)s  .
 """),
 
 47 : _(u"""
- la taille de la matrice non-symetrique en entree est fausse.
+ la taille de la matrice non-symétrique en entrée est fausse.
 """),
 
 48 : _(u"""
- la taille de la matrice symetrique en sortie est fausse.
+ la taille de la matrice symétrique en sortie est fausse.
 """),
 
 49 : _(u"""
- anisotropie non prevue pour coque1d
+ anisotropie non prévue pour coque1d
 """),
 
 50 : _(u"""
@@ -142,13 +142,13 @@ cata_msg = {
 """),
 
 52 : _(u"""
- L'épaisseur totale des couches definie dans DEFI_COQU_MULT et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
- Epaisseur totale des couches dans DEFI_COQU_MULT: %(r1)f
- Epaisseur dans AFFE_CARA_ELEM: %(r2)f
+ L'épaisseur totale des couches définie dans DEFI_COQU_MULT et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
+ Épaisseur totale des couches dans DEFI_COQU_MULT: %(r1)f
+ Épaisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
 54 : _(u"""
-  la reactualisation de la geometrie (deformation : petit_reac sous le mot cle comp_incr) est deconseillee pour les elements de coque_1d.
+  la réactualisation de la géométrie (déformation : PETIT_REAC sous le mot clé COMP_INCR) est déconseillée pour les éléments de coque_1d.
 """),
 
 55 : _(u"""
@@ -156,7 +156,7 @@ cata_msg = {
 """),
 
 56 : _(u"""
- valeurs utilisateurs de rho ou de rof nulles
+ valeurs utilisateurs de RHO ou de rof nulles
 """),
 
 58 : _(u"""
@@ -187,11 +187,11 @@ cata_msg = {
 """),
 
 63 : _(u"""
- ne pas utiliser THER_LINEAIRE avec des éléments de fourier mais les cmdes developpees
+ ne pas utiliser THER_LINEAIRE avec des éléments de Fourier mais les commandes développées
 """),
 
 67 : _(u"""
- Elément dégénéré : 
+ Élément dégénéré :
  revoir le maillage
 """),
 
@@ -200,19 +200,19 @@ cata_msg = {
 """),
 
 75 : _(u"""
- le matériau %(k1)s  n'est pas autorisé pour calculer les deformations plastiques :
+ le matériau %(k1)s  n'est pas autorisé pour calculer les déformations plastiques :
  seuls les matériaux isotropes sont traités en plasticité
 """),
 
 76 : _(u"""
  couplage fluage/fissuration :
- la loi BETON_DOUBLE_DP ne peut etre couplée qu'avec une loi de fluage de GRANGER
+ la loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANGER
 """),
 
 77 : _(u"""
-  -> Attention vous etes en contraintes planes, et vous utilisez la loi
+  -> Attention vous êtes en contraintes planes, et vous utilisez la loi
      de comportement %(k1)s. La composante du tenseur des déformations
-     plastiques EPZZ est calculée en supposant l'incompressibilité des
+     plastiques EPZZ est calculée en supposant l'incompréhensibilité des
      déformations plastiques : EPZZ = -(EPXX + EPYY).
   -> Risque & Conseil :
      Vérifiez que cette expression est valide avec votre loi de comportement.
@@ -220,7 +220,7 @@ cata_msg = {
 """),
 
 78 : _(u"""
-  la réactualisation de la géometrie (déformation : PETIT_REAC sous le mot cle COMP_INCR) est deconseillée pour les éléments POU_D_TG
+  la réactualisation de la géométrie (déformation : PETIT_REAC sous le mot clé COMP_INCR) est déconseillée pour les éléments POU_D_TG
 """),
 
 80 : _(u"""
@@ -228,11 +228,11 @@ cata_msg = {
 """),
 
 85 : _(u"""
-  relation :  %(k1)s  non implantee sur les elements "pou_d_t_gd"
+  relation :  %(k1)s  non implantée sur les éléments "pou_d_t_gd"
 """),
 
 86 : _(u"""
-  deformation :  %(k1)s  non implantee sur les elements "pou_d_t_gd"
+  déformation :  %(k1)s  non implantée sur les éléments "pou_d_t_gd"
 """),
 
 87 : _(u"""
@@ -240,16 +240,16 @@ cata_msg = {
 """),
 
 91 : _(u"""
-  calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, deformation : GROT_GDEP
+  calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, déformation : GROT_GDEP
 """),
 
 92 : _(u"""
- les comportements elastiques de type comp_elas ne sont pas disponibles pour la modelisation dktg.
+ les comportements élastiques de type COMP_ELAS ne sont pas disponibles pour la modélisation DKTG.
 """),
 
 93 : _(u"""
   déformation :  %(k1)s  non implantée sur les éléments COQUE_3D en grandes rotations
-  déformation : GROT_GDEP obligatoirement 
+  déformation : GROT_GDEP obligatoirement
 """),
 
 94 : _(u"""
@@ -265,7 +265,7 @@ cata_msg = {
 """),
 
 95 : _(u"""
-  nume_couche incorrect
+  Numéro de couche incorrect
 """),
 
 98 : _(u"""

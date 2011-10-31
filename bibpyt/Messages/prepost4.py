@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ cata_msg = {
 """),
 
 13 : _(u"""
- la table usure en sortie est differente de celle en entree
+ la table usure en sortie est différente de celle en entree
 """),
 
 14 : _(u"""
@@ -70,7 +70,7 @@ cata_msg = {
 """),
 
 18 : _(u"""
- y a un bug: recup frequences
+ y a un bug: recup fréquences
 """),
 
 19 : _(u"""
@@ -86,15 +86,15 @@ cata_msg = {
 """),
 
 22 : _(u"""
- nombres de composantes raideurs et mode differents
+ nombres de composantes raideurs et mode différents
 """),
 
 23 : _(u"""
- nombres de group_ma et amor_interne differents
+ nombres de group_ma et amor_interne différents
 """),
 
 24 : _(u"""
- nombres de composantes amortissements et mode differents
+ nombres de composantes amortissements et mode différents
 """),
 
 26 : _(u"""
@@ -102,7 +102,7 @@ cata_msg = {
 """),
 
 27 : _(u"""
- vous avez probablement archive l etat initial dans la commande stat_non_line. cela correspond au numero d ordre 0. nous ne tenons pas compte du resultat a ce numero d ordre pour le calcul de de la fatigue.
+ vous avez probablement archive l etat initial dans la commande stat_non_line. cela correspond au numéro d ordre 0. nous ne tenons pas compte du resultat a ce numéro d ordre pour le calcul de de la fatigue.
 """),
 
 29 : _(u"""
@@ -150,7 +150,7 @@ cata_msg = {
 """),
 
 57 : _(u"""
-  erreur donnees.
+  erreur données.
 """),
 
 58 : _(u"""

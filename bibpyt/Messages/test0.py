@@ -1,4 +1,4 @@
-#@ MODIF test0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ On utilise les valeurs de '%(k2)s'.
 """),
 
 10 : _(u"""
-Les listes fournies aux mots-clefs MACHINE et VALE doivent avoir le meme cardinal.
+Les listes fournies aux mots-clefs MACHINE et VALE doivent avoir le même cardinal.
 """),
 
 }

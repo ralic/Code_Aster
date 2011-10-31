@@ -1,4 +1,4 @@
-#@ MODIF cataelem Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF cataelem Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg={
 """),
 
 2: _(u"""
- l option :  %(k1)s  a plusieurs paramètres de memes noms.
+ l option :  %(k1)s  a plusieurs paramètres de mêmes noms.
 """),
 
 3: _(u"""
@@ -57,11 +57,11 @@ cata_msg={
 """),
 
 8: _(u"""
- les grandeurs : %(k1)s  et  %(k2)s  doivent avoir exactement les memes cmps.
+ les grandeurs : %(k1)s  et  %(k2)s  doivent avoir exactement les mêmes composantes.
 """),
 
 9: _(u"""
- erreurs de cohérence dans les catalogues d'élements finis.
+ erreurs de cohérence dans les catalogues d'éléments finis.
 """),
 
 20: _(u"""

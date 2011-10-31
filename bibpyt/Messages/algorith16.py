@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith16 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ cata_msg = {
 """),
 
 2 : _(u"""
-  infos noeuds de choc
+  Informations sur les noeuds de choc
   lieu de choc   :  %(i1)d
   noeud de choc  :  %(k1)s
 """),
@@ -55,12 +55,12 @@ cata_msg = {
               y : %(r3)f
               z : %(r4)f
 
- norm_obst sin(alpha) : %(r5)f
+ NORM_OBST sin(alpha) : %(r5)f
            cos(alpha) : %(r6)f
-           sin(beta)  : %(r7)f
-           cos(beta)  : %(r8)f
+           sin(bêta)  : %(r7)f
+           cos(bêta)  : %(r8)f
 
- angl_vrille : sin(gamma) : %(r9)f
+ ANGL_VRILLE : sin(gamma) : %(r9)f
                cos(gamma) : %(r10)f
 """),
 
@@ -75,7 +75,7 @@ cata_msg = {
 """),
 
 11 : _(u"""
- le nb max d'iterations  %(i1)d  est atteint sans converger
+ le nombre max d'itérations  %(i1)d  est atteint sans converger
  le résidu relatif final est  : %(r1)f
 
 """),
@@ -99,32 +99,32 @@ cata_msg = {
 
 14 : _(u"""
  pas de temps utilisateur trop grand :   %(r1)f
- pas de temps necessaire pour le calcul: %(r2)f
- risques de problemes de precision
+ pas de temps nécessaire pour le calcul: %(r2)f
+ risques de problèmes de précision
 
 """),
 
 15 : _(u"""
  pas de temps utilisateur trop grand :   %(r1)f
- pas de temps necessaire pour le calcul: %(r2)f
- parametres de calcul dans ce cas
- nb de pas de calcul :  %(i1)d
+ pas de temps nécessaire pour le calcul: %(r2)f
+ paramètres de calcul dans ce cas
+ nombre de pas de calcul :  %(i1)d
 
 """),
 
 16 : _(u"""
  pas de temps utilisateur trop grand   : %(r1)f
- pas de temps necessaire pour le calcul: %(r2)f
+ pas de temps nécessaire pour le calcul: %(r2)f
 """),
 
 17 : _(u"""
- parametres de calcul dans ce cas
- nb de pas de calcul :  %(i1)d
+ paramètres de calcul dans ce cas
+ nombre de pas de calcul :  %(i1)d
 
 """),
 
 18 : _(u"""
- le nombre d'amortissements reduits est trop grand
+ le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d
  et le nombre de coefficients :  %(i2)d
  on ne garde donc que les  %(i3)d
@@ -133,7 +133,7 @@ cata_msg = {
 """),
 
 19 : _(u"""
- le nombre d'amortissements reduits est insuffisantil en manque :  %(i1)d
+ le nombre d'amortissements réduits est insuffisant il en manque :  %(i1)d
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d
  amortissements réduits avec la valeur du dernier mode propre
@@ -144,63 +144,63 @@ cata_msg = {
  mode dynamique           :  %(i1)d
  amortissement trop grand :  %(r1)f
  amortissement critique   :  %(r2)f
- problemes de convergence possibles %(k1)s
+ problèmes de convergence possibles %(k1)s
 
 """),
 
 21 : _(u"""
- taux de souplesse negligée : %(r1)f
+ taux de souplesse négligée : %(r1)f
 """),
 
 22 : _(u"""
  calcul par superposition modale :
  la base de projection est un %(k1)s
- le nb d'équations est          : %(i1)d
- la methode utilisée est        : %(k2)s
+ le nombre d'équations est          : %(i1)d
+ la méthode utilisée est        : %(k2)s
  la base utilisée est           : %(k3)s
- le nb de vecteurs de base est  :  %(i2)d
+ le nombre de vecteurs de base est  :  %(i2)d
 """),
 
 23 : _(u"""
  le pas de temps initial est  : %(r1)f
- le nb de pas d'archive est     :  %(i1)d
+ le nombre de pas d'archive est     :  %(i1)d
 """),
 
 24 : _(u"""
  NUME_VITE_FLUI                 :  %(i1)d
  vitesse gap                    :  %(r1)f
- le nb de modes de BASE_FLUI    :  %(i2)d
- le nb total de modes de la base:  %(i3)d
+ le nombre de modes de BASE_FLUI    :  %(i2)d
+ le nombre total de modes de la base:  %(i3)d
  le pas de temps initial est    :  %(r2)f
  durée de l'excitation          :  %(r3)f
 """),
 
 25 : _(u"""
- le nb de pas d'archive est     :  %(i1)d
+ le nombre de pas d'archive est     :  %(i1)d
 """),
 
 26 : _(u"""
  le pas de temps du calcul est  : %(r1)f
- le nb de pas de calcul est     :  %(i1)d
- le nb de pas d'archive est     :  %(i2)d
+ le nombre de pas de calcul est     :  %(i1)d
+ le nombre de pas d'archive est     :  %(i2)d
 """),
 
 38 : _(u"""
  mode dynamique           :  %(i1)d
  amortissement trop grand :  %(r1)f
  amortissement critique   :  %(r2)f
- probleme de convergence possible %(k1)s
+ problème de convergence possible %(k1)s
 """),
 
 39 : _(u"""
  sous-structuration dynamique
  calcul par superposition modale
 
- la numerotation utilisee est   :  %(k1)s
- le nb d'equations est          :  %(i1)d
- la methode utilisee est        :  %(k2)s
-    - nb de vecteurs dynamiques :  %(i2)d
-    - nb de deformees statiques :  %(i3)d
+ la numérotation utilisée est   :  %(k1)s
+ le nombre d'équations est          :  %(i1)d
+ la méthode utilisée est        :  %(k2)s
+    - nombre de vecteurs dynamiques :  %(i2)d
+    - nombre de déformées statiques :  %(i3)d
 """),
 
 40 : _(u"""
@@ -209,15 +209,15 @@ cata_msg = {
 
 41 : _(u"""
  le pas de temps du calcul est  : %(r1)f
- le nb de pas de calcul est     :  %(i1)d
+ le nombre de pas de calcul est     :  %(i1)d
 """),
 
 42 : _(u"""
- le nb de pas d'archive est     :  %(i1)d
+ le nombre de pas d'archive est     :  %(i1)d
 """),
 
 44 : _(u"""
- les interfaces de la liaison n'ont pas la meme longueur
+ les interfaces de la liaison n'ont pas la même longueur
   sous-structure 1 -->  %(k1)s
   interface 1      -->  %(k2)s
   sous-structure 2 -->  %(k3)s
@@ -226,15 +226,15 @@ cata_msg = {
 """),
 
 45 : _(u"""
- conflit dans les vis_a_vis des noeudsle noeud  %(k1)s
- est le vis-a-vis des noeuds  %(k2)s
+ conflit dans les vis_a_vis des noeuds le noeud  %(k1)s
+ est le vis-à-vis des noeuds  %(k2)s
  et  %(k3)s
 
 """),
 
 46 : _(u"""
- Le critère de vérification ne peut etre relatif dans votre cas,
- la longueur caracteristique de l'interface de la sous-structure etant nulle.
+ Le critère de vérification ne peut être relatif dans votre cas,
+ la longueur caractéristique de l'interface de la sous-structure étant nulle.
   sous-structure 1 -->  %(k1)s
   interface 1      -->  %(k2)s
   sous-structure 2 -->  %(k3)s
@@ -260,7 +260,7 @@ cata_msg = {
 
 
 50 : _(u"""
- les deux interfaces ont pas meme nombre de noeuds
+ les deux interfaces ont pas même nombre de noeuds
  nombre noeuds interface droite -->  %(i1)d
  nombre noeuds interface gauche -->  %(i2)d
 
@@ -269,7 +269,7 @@ cata_msg = {
 51 : _(u"""
  conflit dans les vis_a_vis des noeuds
  le noeud  %(k1)s
- est le vis-a-vis des noeuds  %(k2)s et  %(k3)s
+ est le vis-à-vis des noeuds  %(k2)s et  %(k3)s
 
 """),
 
@@ -282,24 +282,24 @@ cata_msg = {
 """),
 
 53 : _(u"""
-  probleme de rayon droite-gauche differents
-  numero du couple de noeuds :  %(i1)d
+  problème de rayon droite gauche différents
+  numéro du couple de noeuds :  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
 """),
 
 54 : _(u"""
- probleme signe angle entre droite et gauche
- numero du couple de noeuds:  %(i1)d
+ problème signe angle entre droite et gauche
+ numéro du couple de noeuds:  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
 """),
 
 55 : _(u"""
- probleme valeur angle répétitivité cyclique
- numero du couple de noeuds:  %(i1)d
+ problème valeur angle répétitivité cyclique
+ numéro du couple de noeuds:  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
@@ -310,18 +310,18 @@ cata_msg = {
 """),
 
 57 : _(u"""
- les noeuds des interfaces ne sont pas alignés en vis-a-vis
- les noeuds ont ete réordonnés
+ les noeuds des interfaces ne sont pas alignés en vis-à-vis
+ les noeuds ont été réordonnés
 
 """),
 
 58 : _(u"""
-  arret sur probleme répétitivité cyclique
+  arrêt sur problème répétitivité cyclique
   tentative de diagnostic:  %(k1)s
 """),
 
 60 : _(u"""
- VISCOCHABOCHE : erreur d'intégration
+ VISCOCHAB : erreur d'intégration
   - Essai d'intégration numéro :  %(i1)d
   - Convergence vers une solution non conforme,
   - Incrément de déformation cumulée négative = %(r1)f,
@@ -329,12 +329,12 @@ cata_msg = {
 """),
 
 68 : _(u"""
- Arret par manque de temps CPU au numéro d'ordre %(i1)d
+ Arrêt par manque de temps CPU au numéro d'ordre %(i1)d
 
    - Temps moyen par incrément de temps : %(r1)f
    - Temps CPU restant :                  %(r2)f
 
- La base globale est sauvegardée, elle contient les pas archivés avant l'arret
+ La base globale est sauvegardée, elle contient les pas archivés avant l'arrêt
 
  """),
 
@@ -348,7 +348,7 @@ Erreur utilisateur :
 Risques & conseils :
   * Avez-vous vérifié que le maillage est "quadratique" ?
   * Si votre maillage est linéaire et que vous souhaitez une solution précise
-    grace aux éléments de Barsoum, vous devez au préalable utiliser la commande :
+    grâce aux éléments de Barsoum, vous devez au préalable utiliser la commande :
       CREA_MAILLAGE / LINE_QUAD  pour rendre le maillage quadratique.
  """),
 
@@ -356,7 +356,7 @@ Risques & conseils :
 
 
 77 : _(u"""
-   Arret par manque de temps CPU au numéro d'ordre : %(i1)d
+   Arrêt par manque de temps CPU au numéro d'ordre : %(i1)d
      - Dernier instant archivé :      %(r1)f
      - Numéro d'ordre correspondant : %(i2)d
      - Temps moyen par pas de temps : %(r2)f
@@ -392,7 +392,7 @@ Risques & conseils :
   """),
 
 87 : _(u"""
-   Arret par manque de temps CPU
+   Arrêt par manque de temps CPU
      - Instant courant :              %(r1)f
      - Nombre d'appels à ALITMI :     %(i1)d
      - Temps moyen par pas de temps : %(r2)f
@@ -400,7 +400,7 @@ Risques & conseils :
   """),
 
 88 : _(u"""
-   Arret par manque de temps CPU au pas de temps : %(i1)d
+   Arrêt par manque de temps CPU au pas de temps : %(i1)d
      - A l'instant  :                %(r1)f
      - Temps moyen par pas :         %(r2)f
      - Temps CPU restant :           %(r3)f
@@ -430,11 +430,11 @@ Risques & conseils :
 """),
 
 94 : _(u"""
-  il manque les paramètres de Van_Genuchten
+  il manque les paramètres de Van Genuchten
  """),
 
 95 : _(u"""
-  Van_Genuchten non autorisé pour ce modèle de couplage
+  Van Genuchten non autorisé pour ce modèle de couplage
  """),
 
 96 : _(u"""
@@ -444,7 +444,7 @@ Risques & conseils :
 97 : _(u"""
 Erreur d'utilisation pour le parallélisme :
  Le mode de répartition des éléments entre les différents processeurs (PARTITION / PARALLELISME='GROUP_ELEM')
- ne peut pas etre utilisé ici car il y a moins de groupes d'éléments (%(i1)d) que de processeurs (%(i2)d).
+ ne peut pas être utilisé ici car il y a moins de groupes d'éléments (%(i1)d) que de processeurs (%(i2)d).
  En d'autres termes, il n'y a pas assez d'éléments à répartir (le modèle est trop petit).
 
  Conseils :

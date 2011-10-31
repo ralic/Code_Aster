@@ -1,21 +1,21 @@
-#@ MODIF algeline Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -26,7 +26,7 @@ cata_msg={
 """),
 
 2: _(u"""
- Résolution FETI : probleme objet  %(k1)s .fetg . il est de longueur impaire
+ Résolution FETI : problème objet  %(k1)s .FETG . il est de longueur impaire
 """),
 
 3: _(u"""
@@ -43,7 +43,7 @@ cata_msg={
 """),
 
 7: _(u"""
- tbliva : impossible de récupérer les valeurs dans la table
+ TBLIVA : impossible de récupérer les valeurs dans la table
 """),
 
 9: _(u"""
@@ -52,7 +52,7 @@ cata_msg={
 """),
 
 10: _(u"""
- l'origine de l'obstacle est mal positionnee par rapport au noeud de choc
+ l'origine de l'obstacle est mal positionnée par rapport au noeud de choc
  de numéro  %(k1)s , de nom  %(k2)s , dans le plan normal au choc.
 """),
 
@@ -62,22 +62,22 @@ cata_msg={
 """),
 
 12: _(u"""
- la normale à l'obstacle fait un angle inferieur à 10 degrés au noeud de choc
+ la normale à l'obstacle fait un angle inférieur à 10 degrés au noeud de choc
  de numéro  %(k1)s , avec l'axe du tube.
 """),
 
 13: _(u"""
- la normale à l'obstacle fait un angle inferieur à 45 degrés au noeud de choc
+ la normale à l'obstacle fait un angle inférieur à 45 degrés au noeud de choc
  de numéro  %(k1)s , avec l'axe du tube.
 """),
 
 14: _(u"""
- les mailles doivent etre de type QUAD4 ou TRI3 et non de type  %(k1)s 
+ les mailles doivent être de type QUAD4 ou TRI3 et non de type  %(k1)s
 """),
 
 15: _(u"""
  l'angle au noeud  %(k1)s  formé par :
-    - le vecteur normal de la maille  %(k2)s 
+    - le vecteur normal de la maille  %(k2)s
  et - le vecteur normal de la maille  %(k3)s
  est supérieur à 90 degrés et vaut  %(k4)s  degrés.
 """),
@@ -99,7 +99,7 @@ cata_msg={
 """),
 
 20: _(u"""
- le nombre de noeuds n'est pas le meme pour les deux GROUP_NO
+ le nombre de noeuds n'est pas le même pour les deux GROUP_NO
 """),
 
 21: _(u"""
@@ -107,12 +107,12 @@ cata_msg={
 """),
 
 22: _(u"""
- creation QUAD4 dégénéré
+ création QUAD4 dégénéré
 """),
 
 23: _(u"""
- le noeud  %(k1)s  n'est pas équidistant des noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s 
- Améliorez le  maillage. Le code s'arrete pour éviter des résultats faux.
+ le noeud  %(k1)s  n'est pas équidistant des noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s
+ Améliorez le  maillage. Le code s'arrête pour éviter des résultats faux.
  - distance n1-n3 = %(r1)g
  - distance n2-n3 = %(r2)g
  - tolérance      = %(r3)g
@@ -138,18 +138,18 @@ cata_msg={
   -> Il y a au moins un point d'une zone dont la vitesse réduite locale est
      extérieure à la zone des vitesses réduites explorées expérimentalement.
   -> Risque & Conseil :
-     Les valeurs sont extrapolees en dehors des donnees d'essais.
-     Les resultats du calcul seront a prendre avec circonspection.
+     Les valeurs sont extrapolées en dehors des données d'essais.
+     Les résultats du calcul seront a prendre avec circonspection.
 """),
 
 28: _(u"""
- Détermination des coefficients de la deformée axiale,
+ Détermination des coefficients de la déformée axiale,
  erreur relative sur la norme des déplacements radiaux : %(r1)g
 """),
 
 29: _(u"""
- L'ordre de coque est peut-etre mal identifié.
- La base modale est trop riche ou le nombre de noeuds du maillage sur une circonference
+ L'ordre de coque est peut-être mal identifié.
+ La base modale est trop riche ou le nombre de noeuds du maillage sur une circonférence
  est trop faible
 """),
 
@@ -160,7 +160,7 @@ cata_msg={
 
 31: _(u"""
  somme des carrés des termes diagonaux négligeable
- => critere indéfini
+ => critère indéfini
 """),
 
 32: _(u"""
@@ -168,11 +168,11 @@ cata_msg={
 """),
 
 33: _(u"""
- la carte des caractéristiques géometriques des éléments de poutre n'existe pas
+ la carte des caractéristiques géométriques des éléments de poutre n'existe pas
 """),
 
 34: _(u"""
- caractéristiques géométriques élémentaires de poutre non définies pour la maille  %(k1)s 
+ caractéristiques géométriques élémentaires de poutre non définies pour la maille  %(k1)s
 """),
 
 35: _(u"""
@@ -196,8 +196,8 @@ cata_msg={
 """),
 
 43: _(u"""
- les vitesses etudiees doivent être strictement positives
- le sens de l'écoulement est défini par le choix de la configuration experimentale GRAPPE2 de référence
+ les vitesses étudiées doivent être strictement positives
+ le sens de l'écoulement est défini par le choix de la configuration expérimentale GRAPPE2 de référence
 """),
 
 44: _(u"""
@@ -205,7 +205,7 @@ cata_msg={
 """),
 
 45: _(u"""
- le nombre total de tubes ne correspond pas à la somme des tubes des groupes d'équivalence 
+ le nombre total de tubes ne correspond pas à la somme des tubes des groupes d'équivalence
 """),
 
 46: _(u"""
@@ -213,12 +213,12 @@ cata_msg={
 """),
 
 47: _(u"""
- la direction des tubes n'est la meme que celle de l'axe directeur.
+ la direction des tubes n'est la même que celle de l'axe directeur.
 """),
 
 48: _(u"""
- les vitesses étudiées doivent toutes être du meme signe
- sinon il y a ambiguité sur les positions d entrée/sortie
+ les vitesses étudiées doivent toutes être du même signe
+ sinon il y a ambiguïté sur les positions d entrée/sortie
 """),
 
 49: _(u"""
@@ -242,7 +242,7 @@ cata_msg={
 """),
 
 54: _(u"""
- la carte des caractéristiques géometriques des éléments de coque n'existe pas. il faut prealablement affecter ces caracteristiques aux groupes de mailles correspondant aux coques interne et externe, par l operateur <affe_cara_elem>
+ la carte des caractéristiques géométriques des éléments de coque n'existe pas. il faut préalablement affecter ces caractéristiques aux groupes de mailles correspondant aux coques interne et externe, par l opérateur <AFFE_CARA_ELEM>
 """),
 
 56: _(u"""
@@ -264,7 +264,7 @@ cata_msg={
 """),
 
 60: _(u"""
- pas d'epaisseur affectée aux éléments de la coque externe
+ pas d'épaisseur affectée aux éléments de la coque externe
 """),
 
 61: _(u"""
@@ -272,7 +272,7 @@ cata_msg={
 """),
 
 62: _(u"""
- incoherence dans la definition de la configuration : le rayon d une des coques est nul
+ incohérence dans la définition de la configuration : le rayon d une des coques est nul
 """),
 
 63: _(u"""
@@ -281,11 +281,11 @@ cata_msg={
 """),
 
 64: _(u"""
- element  %(k1)s  non traite
+ élément  %(k1)s  non traite
 """),
 
 65: _(u"""
- on ne peut depasser  %(k1)s  mailles
+ on ne peut dépasser  %(k1)s  mailles
 """),
 
 66: _(u"""
@@ -294,7 +294,7 @@ cata_msg={
 
 
 68: _(u"""
- la zone d excitation du fluide, de nom  %(k1)s , est reduite a un point.
+ la zone d excitation du fluide, de nom  %(k1)s , est réduite a un point.
 """),
 
 69: _(u"""
@@ -309,11 +309,11 @@ cata_msg={
 71: _(u"""
  le noeud d'application de l excitation est situe à la jonction
  de deux éléments de diamètres extérieurs différents
- => ambiguité pour le dimensionnement de l'excitation
+ => ambiguïté pour le dimensionnement de l'excitation
 """),
 
 72: _(u"""
- autres configurations non traitees
+ autres configurations non traitées
 """),
 
 73: _(u"""
@@ -335,11 +335,11 @@ cata_msg={
 
 78: _(u"""
  erreur dans la recherche des valeurs propres
- pas de convergence de l algorithme QR 
+ pas de convergence de l algorithme QR
 """),
 
 79: _(u"""
- le nombre de modes résultats:  %(k1)s  n'est pas correct 
+ le nombre de modes résultats:  %(k1)s  n'est pas correct
 """),
 
 80: _(u"""
@@ -351,27 +351,27 @@ cata_msg={
 """),
 
 82: _(u"""
- pas de groupes de noeuds à créer 
+ pas de groupes de noeuds à créer
 """),
 
 83: _(u"""
- la grille numero  %(k1)s  deborde du domaine de definition du faisceau
+ la grille numéro  %(k1)s  déborde du domaine de définition du faisceau
 """),
 
 84: _(u"""
- les grilles numero  %(k1)s  et numero  %(k2)s  se recouvrent
+ les grilles numéro  %(k1)s  et numéro  %(k2)s  se recouvrent
 """),
 
 85: _(u"""
- cas d enceintes circulaire etet rectangulaire seulement 
+ cas d enceintes circulaire et rectangulaire seulement
 """),
 
 86: _(u"""
- pas de groupe de mailles sous la racine commune  %(k1)s 
+ pas de groupe de mailles sous la racine commune  %(k1)s
 """),
 
 87: _(u"""
- pas de groupes de mailles sous la racine commune 
+ pas de groupes de mailles sous la racine commune
 """),
 
 88: _(u"""
@@ -379,7 +379,7 @@ cata_msg={
 """),
 
 89: _(u"""
- les quatres sommets de l'enceinte ne forment pas un rectangle
+ les quatre sommets de l'enceinte ne forment pas un rectangle
 """),
 
 90: _(u"""
@@ -387,11 +387,11 @@ cata_msg={
 """),
 
 91: _(u"""
-  la renumérotation  %(k1)s est incompatible avec le solveur multi_frontal.
+  la renumérotation  %(k1)s est incompatible avec le solveur MULT_FRONT.
 """),
 
 92: _(u"""
- absence de relation de comportement de type <ELAS> pour le matéiau constitutif de la coque interne
+ absence de relation de comportement de type <ELAS> pour le matériau constitutif de la coque interne
 """),
 
 93: _(u"""
@@ -400,25 +400,25 @@ cata_msg={
 """),
 
 94: _(u"""
- La valeur du module d'Young est nulle pour le matériau constitutif de la coque interne
+ La valeur du module de YOUNG est nulle pour le matériau constitutif de la coque interne
 """),
 
 95: _(u"""
  absence de relation de comportement de type <ELAS>
- pour le materiau constitutif de la coque externe
+ pour le matériau constitutif de la coque externe
 """),
 
 96: _(u"""
- absence d'un ou de plusieurs parametres de la relation de comportement <ELAS>
+ absence d'un ou de plusieurs paramètres de la relation de comportement <ELAS>
  pour le matériau constitutif de la coque externe
 """),
 
 97: _(u"""
- La valeur du module d'Young est nulle pour le matériau constitutif de la coque externe
+ La valeur du module de YOUNG est nulle pour le matériau constitutif de la coque externe
 """),
 
 98: _(u"""
- Les deux coques (interne et externe) sont en mouvement pour le  %(k1)s ième mode.
+ Les deux coques (interne et externe) sont en mouvement pour le  %(k1)s ème mode.
 """),
 
 99: _(u"""

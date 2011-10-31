@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF soustruc Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg={
 
 1: _(u"""
- les 2 maillages ne sont pas du meme type : 2D (ou 3D).
+ les 2 maillages ne sont pas du même type : 2D (ou 3D).
 """),
 
 2: _(u"""
@@ -42,7 +42,7 @@ cata_msg={
 """),
 
 6: _(u"""
- le noeud: %(k1)s  n'a pas les memes coordonnées dans les maillages:  %(k2)s  et  %(k3)s
+ le noeud: %(k1)s  n'a pas les mêmes coordonnées dans les maillages:  %(k2)s  et  %(k3)s
 """),
 
 7: _(u"""
@@ -87,7 +87,7 @@ cata_msg={
 
 15: _(u"""
  cet opérateur modifie un maillage existant
- le resultat doit etre identique au concept donné dans l'argument MAILLAGE.
+ le resultat doit être identique au concept donné dans l'argument MAILLAGE.
 """),
 
 16: _(u"""
@@ -123,7 +123,7 @@ cata_msg={
 23: _(u"""
   On cherche à classer une liste de noeuds par abscisses croissantes
   de leur projection sur un segment de droite.
-  2 noeuds ont la meme projection sur la droite.
+  2 noeuds ont la même projection sur la droite.
   Le classement est donc arbitraire.
 
   -> Risque & Conseil :
@@ -300,15 +300,15 @@ cata_msg={
 """),
 
 65: _(u"""
- la liste de mailles  n'a pas la meme longueur que la liste de group_no.
+ la liste de mailles  n'a pas la même longueur que la liste de group_no.
 """),
 
 66: _(u"""
- la liste de mailles  doit etre de dimension au moins 2 pour le recollement
+ la liste de mailles  doit être de dimension au moins 2 pour le recollement
 """),
 
 67: _(u"""
- les group_no a recoller :  %(k1)s  et  %(k2)s  n'ont pas le meme nombre de noeuds.
+ les group_no a recoller :  %(k1)s  et  %(k2)s  n'ont pas le même nombre de noeuds.
 """),
 
 68: _(u"""

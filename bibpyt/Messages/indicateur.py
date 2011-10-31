@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF indicateur Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ cata_msg = {
 1 : _(u"""
 Le choix TOUT = 'OUI' est obligatoire avec l'option %(k1)s.
 On ne peut pas faire de calcul de champ d'indicateur d'erreur sur des mailles
-ou des groupes de mailles car on doit connaitre tous les voisins.
+ou des groupes de mailles car on doit connaître tous les voisins.
 """),
 
 2 : _(u"""
@@ -39,13 +39,13 @@ Conseil : Faites-la démarrer au premier instant suivant l'instant initial.
 """),
 
 4: _(u"""
-Attention : on n'a pas pu récupérer le parametre theta dans le resultat %(k1)s.
-La valeur prise par défaut pour theta est 0.57
+Attention : on n'a pas pu récupérer le paramètre thêta dans le résultat %(k1)s.
+La valeur prise par défaut pour thêta est 0.57
 """),
 
 5: _(u"""
-Attention : récupération d'une valeur de theta illicite dans le resultat %(k1)s.
-theta doit être compris entre 0 et 1.
+Attention : récupération d'une valeur de thêta illicite dans le résultat %(k1)s.
+thêta doit être compris entre 0 et 1.
 """),
 
 6 : _(u"""
@@ -53,11 +53,11 @@ Le calcul de l'indicateur d erreur ne sait pas traiter les charges du type de %(
 """),
 
 7 : _(u"""
-Le choix %(k1)s apparait au moins dans 2 charges.
+Le choix %(k1)s apparaît au moins dans 2 charges.
 """),
 
 8 : _(u"""
-Probleme sur les charges. Consulter la documentation
+Problème sur les charges. Consulter la documentation
 """),
 
 9 : _(u"""
@@ -79,7 +79,7 @@ Impossible de récupérer les paramètres temporels.
 """),
 
 20 : _(u"""
-perm_in: division par zéro
+PERM_in: division par zéro
 """),
 
 21 : _(u"""
@@ -87,11 +87,11 @@ La %(k1)s caractéristique est nulle. On risque la division par zéro.
 """),
 
 22: _(u"""
-rho liquide: div par zero
+RHO liquide: div par zéro
 """),
 
 23: _(u"""
-Vous n'utilisez pas une modélisation hm saturée élastique.
+Vous n'utilisez pas une modélisation HM saturée élastique.
 """),
 
 24 : _(u"""
@@ -101,14 +101,14 @@ Vous n'utilisez pas une modélisation hm saturée élastique.
 
 
 25: _(u"""
-Il faut renseigner le mot-clef comp_incr avec elas et liqu_satu pour calculer l'
+Il faut renseigner le mot-clef COMP_INCR avec ELAS et LIQU_SATU pour calculer l'
 indicateur d'erreur temporelle.
 """),
 
 28 : _(u"""
 Pour le calcul de l'indicateur d'erreur en HM, il faut fournir
 les longueur et pression caractéristiques.
-Ces valeurs doivent etre strictement positives.
+Ces valeurs doivent être strictement positives.
 
 -> Conseil :
      N'oubliez pas de renseigner les valeurs sous le mot-clef GRANDEUR_CARA dans AFFE_MODELE.

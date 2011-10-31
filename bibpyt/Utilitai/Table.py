@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -395,12 +395,12 @@ class Table(TableBase):
       """
       # vérif préalables
       if not hasattr(funct, '__call__'):
-         UTMESS('F', 'TABLE0_25', valk=funct.__name__)
+         UTMESS('F', 'TABLE0_25', valk=(funct.__name__, '__call__'))
       if nom_para in self.para :
          UTMESS('F','TABLE0_24', valk=nom_para)
       if l_para == None:
          if not hasattr(funct, 'nompar'):
-            UTMESS('F', 'TABLE0_26', valk=funct.__name__)
+            UTMESS('F', 'TABLE0_25', valk=(funct.__name__, 'nompar'))
          l_para = funct.nompar
       if not is_enum(l_para):
          l_para = [l_para]
@@ -410,7 +410,7 @@ class Table(TableBase):
       if const == None:
          const = {}
       if type(const) is not dict:
-         UTMESS('F', 'TABLE0_28')
+         UTMESS('F', 'TABLE0_28', valk=('const', 'dict'))
       # liste des valeurs des paramètres
       tabpar = []
       for para in l_para:
@@ -555,7 +555,7 @@ class Table(TableBase):
       """
       dico={ 'TITRE' : ['%-80s' % lig for lig in self.titr.split('\n')],
              'LISTE' : [], }
-      # remplissage de chaque occurence (pour chaque paramètre) du mot-clé facteur LISTE
+      # remplissage de chaque occurrence (pour chaque paramètre) du mot-clé facteur LISTE
       for i in range(len(self.para)):
          # nom du paramètre et type si K*
          d={ 'PARA' : self.para[i], }

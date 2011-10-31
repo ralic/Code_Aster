@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF factor Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,9 @@ ou la méthode XFEM avec contact.
    - nombre de décimales perdues  : %(i2)d.
 
   -> Conseil & Risque :
-     Verifiez votre mise en donneés (absence ou surabondance de conditions limites,
+     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
-     Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
+     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
      solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
@@ -58,7 +58,7 @@ ou la méthode XFEM avec contact.
   -> Conseil & Risque :
      Vérifiez votre mise en données (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
-     Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
+     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
      solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
@@ -89,10 +89,10 @@ Solution :
      la composante %(k2)s.
 
   -> Conseil & Risque :
-     Verifiez votre mise en données (absence ou surabondance de conditions limites,
+     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
      caractéristiques matériaux licites...).
-     Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-cle SOLVEUR/METHODE='MUMPS').
+     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
+     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
 22: _(u"""
@@ -103,13 +103,13 @@ Solution :
    - nombre de décimales perdues : %(i2)d.
 
   -> Conseil & Risque :
-     Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
+     Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
      Vérifiez les conditions aux limites.
      Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
 
      Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
      très près d'un noeud.
-     Si le nombre de décimales n'est pas trop grand (maxi 10 décimales)
+     Si le nombre de décimales n'est pas trop grand (max 10 décimales)
      vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
      mot-clé NPREC dans le bloc SOLVEUR. Sinon, contactez l'équipe de développement.
 
@@ -138,11 +138,11 @@ Solution :
   -> Conseil & Risque :
      Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
      La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
-     Verifiez votre mise en donnees (conditions limites, caracteristiques materiaux...),
+     Vérifiez votre mise en données (conditions limites, caractéristiques matériaux...),
      En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
-     Peut-etre devriez vous exclure certains noeuds des conditions de contact
+     Peut-être devriez vous exclure certains noeuds des conditions de contact
      (mots clés SANS_NOEUD et SANS_GROUP_NO).
-     Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
+     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
      solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
@@ -165,8 +165,8 @@ Solution :
   -> Conseil & Risque :
      Il s'agit sans doute d'une relation de blocage surabondante.
      blocage concerné : %(k4)s.
-     Sinon, verifiez votre mise en données (conditions limites, caractéristiques matériaux...).
-     Si vous avez deja validé cette mise en données, vous pouvez essayer a la place le
+     Sinon, vérifiez votre mise en données (conditions limites, caractéristiques matériaux...).
+     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
      solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
 """),
 
@@ -180,11 +180,11 @@ Conseil :
 """),
 50: _(u"""
  Solveur MUMPS :
-   -> Vous avez demandé comme renuméroteur RENUM = '%(k1)s', or MUMPS en a
+   -> Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a
       utilisé un autre.
    -> Risque & Conseil :
       Il se peut que votre version de MUMPS n'ait pas été compilée avec
-      le support de ce renuméroteur. Dans le doute, RENUM='AUTO' permet
+      le support de ce numéroteur. Dans le doute, RENUM='AUTO' permet
       de laisser MUMPS faire le meilleur choix.
  """),
 
@@ -198,7 +198,7 @@ Conseil :
 
 53: _(u"""
 Solveur MUMPS :
-  Mumps manque de mémoire lors de la factorisation de la matrice.
+  MUMPS manque de mémoire lors de la factorisation de la matrice.
 Solution :
   Il faut augmenter la valeur du mot clé  SOLVEUR/PCENT_PIVOT.
 Remarque : on a le droit de dépasser la valeur 100.
@@ -206,10 +206,10 @@ Remarque : on a le droit de dépasser la valeur 100.
 
 54: _(u"""
 Solveur MUMPS :
-  Le solveur Mumps manque de mémoire lors de la factorisation de la matrice.
+  Le solveur MUMPS manque de mémoire lors de la factorisation de la matrice.
 
 Solution :
-  Il faut augmenter la mémoire accessible à Mumps (et autres programmes hors fortran d'Aster).
+  Il faut augmenter la mémoire accessible à MUMPS (et autres programmes hors fortran de Code_Aster).
   Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)") ou bien
   augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
 """),
@@ -217,9 +217,9 @@ Solution :
 55: _(u"""
 Solveur MUMPS :
   Problème ou alarme dans le solveur MUMPS.
-  Le code retour de mumps (INFOG(1)) est : %(i1)d
+  Le code retour de MUMPS (INFOG(1)) est : %(i1)d
 Solution :
-  Consulter le manuel d'utilisation de Mumps.
+  Consulter le manuel d'utilisation de MUMPS.
   Prévenir l'équipe de développement de Code_Aster.
 """),
 
@@ -250,7 +250,7 @@ Solution :
 
 60: _(u"""
 Solveur MUMPS :
-  Limite atteinte : le solveur Mumps est utilisé par plus de 5 matrices simultanément.
+  Limite atteinte : le solveur MUMPS est utilisé par plus de 5 matrices simultanément.
 Solution :
   Contactez l'assistance.
 """),
@@ -261,7 +261,7 @@ Erreur Programmeur lors de la résolution d'un système linéaire :
  Matrice       : %(k1)s
  Second membre : %(k2)s
 
- Si solveur : 'Feti' : numéro du sous-domaine (ou domaine global) : %(i1)d
+ Si solveur : 'FETI' : numéro du sous-domaine (ou domaine global) : %(i1)d
 """),
 
 62: _(u"""
@@ -274,17 +274,17 @@ Solution :
 
 64: _(u"""
 Solveur MUMPS :
-  Le solveur Mumps manque de mémoire lors de la phase d'analyse de la matrice.
+  Le solveur MUMPS manque de mémoire lors de la phase d'analyse de la matrice.
 
 Solution :
-  Il faut augmenter la mémoire accessible à Mumps (et autres programmes hors fortran d'Aster).
+  Il faut augmenter la mémoire accessible à MUMPS (et autres programmes hors fortran de Code_Aster).
   Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)") ou bien
   augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
 """),
 
 65: _(u"""
 Solveur MUMPS :
-  Mumps ne peut pas factoriser la matrice à cause d'un dépassement d'entiers.
+  MUMPS ne peut pas factoriser la matrice à cause d'un dépassement d'entiers.
 
 Solution :
   Si vous utilisez la version séquentielle, alors il vous faut passer à la version parallèle.
@@ -294,7 +294,7 @@ Solution :
 
 66: _(u"""
 Solveur MUMPS :
-  Echec de la factorisation OUT-OF-CORE de MUMPS.
+  Échec de la factorisation OUT-OF-CORE de MUMPS.
   Consulter les  messages délivrés  par MUMPS.
 Conseil: Augmenter  le nombre de processeurs utilisés.
 """),
@@ -302,33 +302,33 @@ Conseil: Augmenter  le nombre de processeurs utilisés.
 67: _(u"""
 Erreur d'utilisation (commande RESOUDRE) :
   La matrice et le second membre fournis à la commande RESOUDRE
-  ne sont pas de meme dimension (nombre de ddls).
+  ne sont pas de même dimension (nombre de ddls).
 Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
 
 68: _(u"""
 Erreur d'utilisation (commande RESOUDRE) :
   La matrice et le second membre fournis à la commande RESOUDRE
-  ne sont pas du meme type (réel/complex).
+  ne sont pas du même type (réel/complexe).
 Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
 
 70: _(u"""
 Solveur MUMPS :
-  Vous avez activé l'option IMPR='OUI_SOLVE' en surchargeant AMUMPS.F. La résolu
-  tion du système linéaire en cours va donc s'effectuer normalement mais en plus
+  Vous avez activé l'option IMPR='OUI_SOLVE' en surchargeant AMUMPS.F. La résolution
+  du système linéaire en cours va donc s'effectuer normalement mais en plus
   sa matrice et son second membre vont être écrits dans le fichier d'unité logique
-  %(i1)d. Vous pouvez le récupérer (sur le proc 0) via ASTK.
+  %(i1)d. Vous pouvez le récupérer (sur le processeur 0) via ASTK.
 """),
 
 71: _(u"""
 Solveur MUMPS :
-  Vous avez activé l'option IMPR='OUI_NOSOLVE' en surchargeant AMUMPS.F. La résolu
-  tion du système linéaire en cours ne va donc pas s'effectuer mais sa matrice et
+  Vous avez activé l'option IMPR='OUI_NOSOLVE' en surchargeant AMUMPS.F. La résolution
+  du système linéaire en cours ne va donc pas s'effectuer mais sa matrice et
   son second membre vont être écrits dans le fichier d'unité logique %(i1)d.
-  Après cette écriture, l'execution Aster s'arrête en ERREUR_FATALE pour vous
-  permettre de récuperer plus rapidement votre fichier.
-  Vous pouvez le récupérer (sur le proc 0) via ASTK.
+  Après cette écriture, l'exécution Aster s'arrête en ERREUR_FATALE pour vous
+  permettre de récupérer plus rapidement votre fichier.
+  Vous pouvez le récupérer (sur le processeur 0) via ASTK.
 """),
 
 72: _(u"""
@@ -346,9 +346,9 @@ Solveur MUMPS :
   Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
   en fin de résolution via la mot-clé RESI_RELA.
 Solution:
-  Pour améliorer la qualité de la solution vous pouvez activez les options de pré et post-
-  traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
-  de qualité RESI_RELA ou, si vous avez beaucoup de Lagranges (>10%% de la taille du pb),
+  Pour améliorer la qualité de la solution vous pouvez activez les options de pré et
+  post-traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
+  de qualité RESI_RELA ou, si vous avez beaucoup de Lagrange (>10%% de la taille du problème),
   désactivez l'option ELIM_LAGR2 (ELIM_LAGR2='NON').
   Sinon, contactez l'équipe de développement.
 """),
@@ -387,7 +387,7 @@ Attention:
      la composante %(k2)s.
 
   -> Conseil & Risque :
-     Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
+     Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
      Vérifiez les conditions aux limites.
      Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
 """),
@@ -399,13 +399,13 @@ Attention:
 
 
   -> Conseil & Risque :
-     Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
+     Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
      Vérifiez les conditions aux limites.
      Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
 
      Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
      très près d'un noeud.
-     Si le nombre de décimal n'est pas trop grand (maxi 10 décimales)
+     Si le nombre de décimal n'est pas trop grand (max 10 décimales)
      vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
      mot-clé NPREC dans  le bloc SOLVEUR. Sinon, contactez l'équipe de développement.
 """),
@@ -421,14 +421,14 @@ Attention:
 """),
 
 80: _(u"""
-(solveur linéaire MUMPS) Probleme de paramétrage du solveur !
+(solveur linéaire MUMPS) Problème de paramétrage du solveur !
 
-  Attention, vous avez paramètré le solveur lineaire MUMPS de manière a résoudre un système
-  linéaire SPD (reel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
+  Attention, vous avez paramétré le solveur linéaire MUMPS de manière a résoudre un système
+  linéaire SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
   matrice est a valeur complexe. Ceci est contradictoire.
 
     -> Conseil & Risque :
-      Utilisez le solveur lineaire MUMPS avec TYPE_RESOL='AUTO'.
+      Utilisez le solveur linéaire MUMPS avec TYPE_RESOL='AUTO'.
 """),
 
 81: _(u"""
@@ -451,7 +451,7 @@ Attention:
   -> Conseil & Risque :
      Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
      La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
-     Verifiez votre mise en donnees (conditions limites, caracteristiques materiaux...),
+     Vérifiez votre mise en données (conditions limites, caractéristiques matériaux...),
      En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
      Peut-être devriez vous exclure certains noeuds des conditions de contact
      (mots clés SANS_NOEUD et SANS_GROUP_NO).
@@ -461,18 +461,18 @@ Attention:
 (solveur linéaire MUMPS) Matrice non factorisable !
 
   -> Conseil & Risque :
-     Vérifiez votre mise en données (conditions limites, caractéristiques materiaux...).
+     Vérifiez votre mise en données (conditions limites, caractéristiques matériaux...).
 """),
 
 84: _(u"""
-(solveur linéaire MUMPS) Probleme de paramétrage du solveur !
+(solveur linéaire MUMPS) Problème de paramétrage du solveur !
 
-Attention, vous avez paramètre le solveur lineaire MUMPS de manière a résoudre un système
-linéaire SPD (reel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
+Attention, vous avez paramètre le solveur linéaire MUMPS de manière a résoudre un système
+linéaire SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
 matrice comporte des termes négatifs ou nuls sur sa diagonale. Ceci est contradictoire.
 
     -> Conseil & Risque :
-      Si il s'agit d'un test vous voila averti, sinon utilisez le solveur lineaire MUMPS
+      Si il s'agit d'un test vous voila averti, sinon utilisez le solveur linéaire MUMPS
       avec TYPE_RESOL='AUTO'.
 """),
 }

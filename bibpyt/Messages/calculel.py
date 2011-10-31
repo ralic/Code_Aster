@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,15 +29,15 @@ cata_msg = {
 
 2 : _(u"""
 Erreur Utilisateur :
- Quand on utilise AFFE_CHAR_CINE/EVOL_IMPO, c'est le champ de l'evol_xxx correspondant
+ Quand on utilise AFFE_CHAR_CINE/EVOL_IMPO, c'est le champ de l'EVOL_XXX correspondant
  au 1er instant qui impose sa "loi" : tous les ddls de ce champ seront imposés pour tous
  les instants du calcul.
 
- Malheureusement, on ne trouve pas un ddl dans l'evol_xxx %(k1)s :
-   instant : %(r1)f  noeud : %(i1)d  cmp : %(k2)s
+ Malheureusement, on ne trouve pas un ddl dans l'EVOL_XXX %(k1)s :
+   instant : %(r1)f  noeud : %(i1)d  composante : %(k2)s
 
 Risques & conseils :
- Assurez-vous que l'évolution imposée %(k1)s concerne les memes ddls pour tous les instants.
+ Assurez-vous que l'évolution imposée %(k1)s concerne les mêmes ddls pour tous les instants.
 """),
 
 3 : _(u"""
@@ -45,14 +45,14 @@ Risques & conseils :
 """),
 
 4 : _(u"""
- incoherence des maillages : %(k1)s  et  %(k2)s
+ incohérence des maillages : %(k1)s  et  %(k2)s
 """),
 
 5 : _(u"""
  Erreur de programmation (ou d'utilisation ?) :
    Le changement de discrétisation : %(k1)s n'est pas encore programmé.
  Risques et conseils :
-   Il y a peut-etre une demande d'évolution à émettre ...
+   Il y a peut-être une demande d'évolution à émettre ...
 """),
 
 6 : _(u"""
@@ -62,19 +62,19 @@ Risques & conseils :
 
  Risques & conseils :
    Cette erreur intervient lorsque l'on ne définit pas TOUTES les caractéristiques élémentaires
-   dans le meme AFFE_CARA_ELEM.
+   dans le même AFFE_CARA_ELEM.
    Pour les commandes de calcul, il ne faut qu'un seul MODELE et qu'un seul CARA_ELEM.
 """),
 
 7 : _(u"""
  Erreur de maillage :
    La maille %(k1)s de type %(k2)s est trop distordue.
-   Le jacobien de la transformation géométrique n'a pas le meme signe sur tous les
+   Le jacobien de la transformation géométrique n'a pas le même signe sur tous les
    points de Gauss.
 
  Risques & conseils :
    Le maillage a-t-il été produit par un mailleur ?
-   La connectivité respecte-elle bien la convention Aster ?
+   La connectivité respecte-t'elle bien la convention Aster ?
 """),
 
 8 : _(u"""
@@ -93,16 +93,16 @@ Risques & conseils :
 
 10 : _(u"""
 Erreur de programmation lors de l'assemblage :
-   Les quantités que l'on cherche à assembler (matr_elem ou vect_elem) ont été calculées avec au
+   Les quantités que l'on cherche à assembler (MATR_ELEM ou VECT_ELEM) ont été calculées avec au
    moins 2 partitions différentes :  %(k1)s et %(k2)s
 """),
 
 11 : _(u"""
- le mode_local:  %(k1)s  ne doit pas etre vecteur ou matrice.
+ le mode_local:  %(k1)s  ne doit pas être vecteur ou matrice.
 """),
 
 12 : _(u"""
- le mode_local:  %(k1)s  ne doit pas etre "DIFF__".
+ le mode_local:  %(k1)s  ne doit pas être "DIFF__".
 """),
 
 13 : _(u"""
@@ -116,7 +116,7 @@ Conseil :
 """),
 
 14 : _(u"""
-  incompatibilite des type_champ ("elga"/"elno")  pour l option :  %(k1)s  entre les 2 type_elem :  %(k2)s  et  %(k3)s
+  incompatibilité des type_champ ("ELGA"/"ELNO")  pour l option :  %(k1)s  entre les 2 type_elem :  %(k2)s  et  %(k3)s
 """),
 
 15 : _(u"""
@@ -143,18 +143,18 @@ Conseils :
 
 19 : _(u"""
 Erreur :
- Le cham_elem %(k1)s est incohérent :
+ Le CHAM_ELEM %(k1)s est incohérent :
    Il possède %(i1)d GREL.
    Il a été calculé avec le LIGREL %(k2)s qui possède %(i2)d GREL.
 
 Risques & Conseils :
  Il peut s'agir d'une erreur de programmation.
  Mais ce problème peut aussi se produire si le LIGREL (ou le MODELE)
- a été entre temps détruit et recréé sous le meme nom.
+ a été entre temps détruit et recréé sous le même nom.
 """),
 
 20 : _(u"""
- le champ de grandeur  %(k1)s  ne respecte pas le format xxxx_r
+ le champ de grandeur  %(k1)s  ne respecte pas le format XXXX_r
 """),
 
 21 : _(u"""
@@ -181,7 +181,7 @@ Conseil :
 """),
 
 26 : _(u"""
-Les commandes CALC_ELEM et CALC_NO ne doivent pas etre utilisées en "reuse" lorsque
+Les commandes CALC_ELEM et CALC_NO ne doivent pas être utilisées en "reuse" lorsque
 l'on utilise l'un des mots clés suivants :
   * MODELE
   * CHAM_MATER
@@ -191,7 +191,7 @@ l'on utilise l'un des mots clés suivants :
 
 Risques & conseils :
   Si on utilise de tels mots clés, la structure de données enrichie manque de cohérence.
-  Par exemple, le champ de déplacement DEPL a pu etre calculé avec un champ de matériau,
+  Par exemple, le champ de déplacement DEPL a pu être calculé avec un champ de matériau,
   alors que le champ d'énergie cinétique ECIN_ELEM_DEPL est calculé avec un autre champ de matériau.
 """),
 
@@ -201,7 +201,7 @@ Risques & conseils :
 
 28 : _(u"""
  Problème lors de l'utilisation de la structure de données %(k1)s.
- Cette structure de donnéees est de type "évolution temporelle" et l'on n'a pas le droit
+ Cette structure de données est de type "évolution temporelle" et l'on n'a pas le droit
  de l'utiliser en dehors de l'intervalle [tmin, tmax].
  Mais ici, il n'y a qu'un seul instant dans la structure de donnée (tmin=tmax).
  Dans ce cas, on suppose alors que ce transitoire est "permanent" et que l'on peut l'utiliser
@@ -215,11 +215,11 @@ Erreur de programmation :
 
 30 : _(u"""
 Erreur utilisateur :
-  -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'OPTION:  %(k2)s.
+  -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'option:  %(k2)s.
 
   -> Risques & Conseils :
    * Si vous utilisez une commande de "calcul" (THER_LINEAIRE, STAT_NON_LINE, ...), il n'y a pas
-     moyen de contourner ce problème.Il faut changer de modélisation ou  émettre une demande d'évolution.
+     moyen de contourner ce problème. Il faut changer de modélisation ou  émettre une demande d'évolution.
 
    * Si c'est un calcul de post-traitement, vous pouvez sans doute "éviter" le problème
      en ne faisant le post-traitement que sur les mailles qui savent le faire.
@@ -252,14 +252,14 @@ Conseils :
 
 35 : _(u"""
  Erreur utilisateur :
-  On essaye de fusionner 2 cham_elem mais ils n'ont pas le meme nombre
+  On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le même nombre
   "points" (noeuds ou points de Gauss) pour la maille numéro : %(i1)d.
   Nombres de points :  %(i2)d et %(i3)d
 """),
 
 36 : _(u"""
  Erreur utilisateur :
-  On essaye de fusionner 2 cham_elem mais ils n'ont pas le meme nombre
+  On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le même nombre
   de "sous-points" (fibres, couches, ...) pour la maille numéro : %(i1)d.
   Nombres de sous-points :  %(i2)d et %(i3)d
 """),
@@ -277,7 +277,7 @@ Conseils :
  Incohérence fortran/catalogue
  TYPE_ELEMENT :  %(k1)s
  OPTION       :  %(k2)s
- La routine texxxx.f correspondant au calcul élémentaire ci-dessus est bugguée
+ La routine texxxx.f correspondant au calcul élémentaire ci-dessus est erronée
  Elle écrit en dehors de la zone allouée au paramètre (OUT) %(k3)s.
 
 """),
@@ -324,7 +324,7 @@ Conseils :
    On cherche à créer un CHAM_ELEM mais sur certains points, on ne trouve pas la composante : %(k1)s
    Champ : %(k4)s
  Risques & conseils :
-   Si la commande que vous exécutez comporte le mot clé PROL_ZERO='OUI', vous devriez peut-etre l'utiliser.
+   Si la commande que vous exécutez comporte le mot clé PROL_ZERO='OUI', vous devriez peut-être l'utiliser.
 """),
 
 56 : _(u"""
@@ -334,11 +334,11 @@ Conseils :
 
 57 : _(u"""
  Erreur Utilisateur :
-   On cherche à transformer un champ simple en cham_elem.
+   On cherche à transformer un champ simple en CHAM_ELEM.
    Le nombre de "points" (points de Gauss ou noeuds) du champ simple (%(i2)d) est
-   différent du nombre de points attendu pour le cham_elem (%(i1)d) :
+   différent du nombre de points attendu pour le CHAM_ELEM (%(i1)d) :
      - maille              :  %(k1)s
-     - nom du cham_elem    :  %(k4)s
+     - nom du CHAM_ELEM    :  %(k4)s
      - nom du champ simple :  %(k5)s
 
 """),
@@ -380,7 +380,7 @@ Conseils :
    Code_retour de la routine clcplq.f : %(i1)d
 
  Signification du code d'erreur :
-   1000 : Levier negatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)
+   1000 : Levier négatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)
    1010 : Dépassement déformation béton
    1020 : Erreur calcul ELU
    1050 : Dépassement contrainte béton;
@@ -413,7 +413,7 @@ Conseils :
 """),
 
 99 : _(u"""
- melange de CHAM_ELEM_S et CHAM_NO_S
+ mélange de CHAM_ELEM_S et CHAM_NO_S
 """),
 
 }

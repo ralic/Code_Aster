@@ -1,4 +1,4 @@
-#@ MODIF chainage Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF chainage Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 cata_msg = {
 
 1 : _(u"""
-Vous cherchez à faire du chaînage HM avec une modélisation Thermo-Hydro-Mécanique comportant de la mécanique.
+Vous cherchez à faire du chaînage HM avec une modélisation Thermo-hydro-mécanique comportant de la mécanique.
 Le chaînage est donc inutile !
 """),
 

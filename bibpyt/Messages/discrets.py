@@ -1,4 +1,4 @@
-#@ MODIF discrets Messages  DATE 25/10/2011   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF discrets Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ Il n'y a pas de rotation non-linéaire possible.
 
 2: _(u"""
 Pour l'élément discret %(k1)s .
-Il n'y a pas de comportement non-lineaire possible suivant Z
+Il n'y a pas de comportement non-linéaire possible suivant Z
 ou en rotation autour de X,Y en 2D.
 """),
 
@@ -48,18 +48,18 @@ Le pas de temps est devenu trop petit : %(r1)12.5E .
 Pour l'élément discret %(k5)s .
 Les caractéristiques sont obligatoirement données dans le repère local du discret.
 
-Pour Info :
+Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>
-   Comport. : <%(k3)s>, Relation : <%(k4)s>
+   Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 6: _(u"""
 Pour les éléments discrets il faut définir un repère dans AFFE_CARA_ELEM
 
-Pour Info :
+Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>
-   Comport. : <%(k3)s>, Relation : <%(k4)s>
+   Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
@@ -72,36 +72,36 @@ Les comportements valides sont :
                DIS_BILI_ELAS  ASSE_CORN   ARME      DIS_CHOC
                DIS_GOUJ2E
 
-Pour Info :
+Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>
-   Comport. : <%(k3)s>, Relation : <%(k4)s>
+   Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 8 : _(u"""
 Pour les discrets, avec COMP_ELAS le seul comportement valide est ELAS.
 
-Pour Info :
+Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>
-   Comport. : <%(k3)s>, Relation : <%(k4)s>
+   Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 10 : _(u"""
 Pour l'élément DISCRET de modèle <%(k1)s> la matrice de décharge est non développée.
 
-Pour Info :
+Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>
-   Comport. : <%(k3)s>, Relation : <%(k4)s>
+   Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 11 : _(u"""
-La loi <%(k4)s> doit etre utilisée avec des éléments du type DIS_TR_L : élément SEG2 + modélisation DIS_TR
+La loi <%(k4)s> doit être utilisée avec des éléments du type DIS_TR_L : élément SEG2 + modélisation DIS_TR
 
-Pour Info :
+Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>
-   Comport. : <%(k3)s>, Relation : <%(k4)s>
+   Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
@@ -162,7 +162,7 @@ Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
 
 28 :_(u"""
-Vous utilisez la matrice d'AMORTISSEMENT pour un discrets %(k1)s alors que vous n'avez pas affecté
+Vous utilisez la matrice d'amortissement pour un discrets %(k1)s alors que vous n'avez pas affecté
 les caractéristiques d'amortissements. Par défaut l'amortissement est nul.
 Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),

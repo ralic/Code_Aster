@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF elements2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg = {
 
 1  : _(u"""
-   Aucun champ de déplacement ni de vitesse n'est fourni 
+   Aucun champ de déplacement ni de vitesse n'est fourni
    pour le calcul de l'option %(k1)s.
 """),
 
@@ -31,11 +31,11 @@ cata_msg = {
 """),
 
 29 : _(u"""
- element faisceau homogeneise non prevu
+ élément faisceau homogénéisé non prévu
 """),
 
 31 : _(u"""
-  elrefe non prevu
+  ELREFE non prévu
 """),
 
 32 : _(u"""
@@ -51,7 +51,7 @@ cata_msg = {
 """),
 
 37 : _(u"""
- pas de zero, convergence impossible
+ pas de zéro, convergence impossible
 """),
 
 38 : _(u"""
@@ -65,11 +65,11 @@ cata_msg = {
 """),
 
 39 : _(u"""
- loi lema_seuil non implemente avec les poutres multi fibres
+ loi LEMA_SEUIL non implémentée avec les poutres multi-fibres
 """),
 
 40 : _(u"""
- on ne sait pas integrer avec  %(k1)s  caracteristiques par fibre
+ on ne sait pas intégrer avec  %(k1)s  caractéristiques par fibre
 """),
 
 41 : _(u"""
@@ -77,7 +77,7 @@ cata_msg = {
 """),
 
 42 : _(u"""
- " %(k1)s "    nom d'element inconnu.
+ " %(k1)s "    nom d'élément inconnu.
 """),
 
 43 : _(u"""
@@ -121,11 +121,11 @@ cata_msg = {
 """),
 
 53 : _(u"""
- un champ de vitesse de vent est imposé sans donner un cx dépendant de la vitesse sur une des poutres.
+ un champ de vitesse de vent est imposé sans donner un Cx dépendant de la vitesse sur une des poutres.
 """),
 
 54 : _(u"""
- le module de cisaillement G est nul mais pas le module d'Young E
+ le module de cisaillement G est nul mais pas le module de Young E
 """),
 
 55 : _(u"""
@@ -133,15 +133,15 @@ cata_msg = {
 """),
 
 56 : _(u"""
- pour l'instant on ne fait pas le calcul de la  matrice de masse d'un element de plaque q4g excentre.
+ pour l'instant on ne fait pas le calcul de la  matrice de masse d'un élément de plaque q4g excentre.
 """),
 
 57 : _(u"""
- pour l'instant on ne peut pas excentrer les elements q4g .
+ pour l'instant on ne peut pas excentrer les éléments q4g .
 """),
 
 58 : _(u"""
- echec de convergence dans l'inversion du systeme par newton-raphson.
+ Échec de convergence dans l'inversion du système par Newton-Raphson.
 """),
 
 61 : _(u"""
@@ -149,7 +149,7 @@ cata_msg = {
 """),
 
 62 : _(u"""
- ! pb rcvala rhocp !
+ ! Problème RCVALA rhocp !
 """),
 
 63 : _(u"""
@@ -157,7 +157,7 @@ cata_msg = {
 """),
 
 71 : _(u"""
- comp_elas non programme pour les modelisations dkt. il faut utiliser comp_incr.
+ COMP_ELAS non programme pour les modélisations DKT. il faut utiliser COMP_INCR.
 """),
 
 72 : _(u"""
@@ -194,19 +194,19 @@ cata_msg = {
 """),
 
 83 : _(u"""
- poutre section variable/constante  passage par section homothetique avec a1 = a2
+ poutre section variable/constante  passage par section homothétique avec a1 = a2
 """),
 
 84 : _(u"""
- elements de poutre l'option " %(k1)s " est inconnue
+ éléments de poutre l'option " %(k1)s " est inconnue
 """),
 
 85 : _(u"""
- non prevu pour les sections rectangulaires
+ non prévu pour les sections rectangulaires
 """),
 
 86 : _(u"""
- non prevu pour les sections generales
+ non prévu pour les sections générales
 """),
 
 90 : _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,7 +144,7 @@ Informations de convergence :
 36 : _(u"""=> Erreur                               = %(r1)f
 """),
 
-37 : _(u"""=> Variation des parametres (norme L2)  = %(r1)f
+37 : _(u"""=> Variation des paramètres (norme L2)  = %(r1)f
 """),
 
 38 : _(u"""=> Variation de la fonctionnelle        = %(r1)f
@@ -172,13 +172,13 @@ Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précis
 """),
 
 45 : _(u"""Probleme de division par zéro dans le calcul de la matrice de sensiblité.
-Le parametre %(k1)s est nul ou plus petit que la précision machine.
+Le paramètre %(k1)s est nul ou plus petit que la précision machine.
 """),
 
-46 : _(u"""Le parametre %(k1)s est en butée sur un bord du domaine admissible.
+46 : _(u"""Le paramètre %(k1)s est en butée sur un bord du domaine admissible.
 """),
 
-47 : _(u"""Les parametres %(k1)s sont en butée sur un bord du domaine admissible.
+47 : _(u"""Les paramètres %(k1)s sont en butée sur un bord du domaine admissible.
 """),
 
 48 : _(u"""Problème lors de l'interpolation du calcul dérivé sur les données expérimentale !
@@ -191,7 +191,7 @@ Domaine couvert par l'experience : [%(k2)s : %(k3)s]
 """),
 
 51 : _(u"""
---> Critere d'arret TOLE_PARA atteint, la variation des parametres est : %(r1)f <--
+--> Critere d'arret TOLE_PARA atteint, la variation des paramètres est : %(r1)f <--
 """),
 
 52 : _(u"""
@@ -265,12 +265,12 @@ Les combinaisons suivantes de paramètres sont insensibles pour votre calcul :
 """),
 
 67 : _(u"""
-Calcul avec les parametres suivants (point courant) :
+Calcul avec les paramètres suivants (point courant) :
      %(k1)s
 """),
 
 68 : _(u"""
-Calcul avec les parametres suivants (pertubation du parametre %(k2)s pour le gradient) :
+Calcul avec les paramètres suivants (pertubation du paramètre %(k2)s pour le gradient) :
      %(k1)s
 """),
 
@@ -294,7 +294,7 @@ Gradient au point X0:
 """),
 
 74 : _(u"""
-Calcul numero:  %(k1)s - Diagnostic: %(k2)s
+Calcul numéro:  %(k1)s - Diagnostic: %(k2)s
 """),
 
 75 : _(u"""

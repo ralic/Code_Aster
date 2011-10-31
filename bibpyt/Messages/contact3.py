@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ Conseil : vérifiez que vous avez correctement défini le coefficient de frottemen
 
 2 : _(u"""
   La maille de fond de fissure de type POI1, introduite par le mot-clef MAILLE_FOND ou GROUP_MA_FOND,
-ne correspond pas à une extrémité du segment toucahnt le fond de fisssure.
+ne correspond pas à une extrémité du segment touchant le fond de fissure.
 
 """),
 
@@ -47,7 +47,7 @@ ne correspond pas à une extrémité du segment toucahnt le fond de fisssure.
 """),
 
 4 : _(u"""
-  Le mot-clef < %(k1)s > doit avoir la meme valeur sur toutes les zones
+  Le mot-clef < %(k1)s > doit avoir la même valeur sur toutes les zones
   de contact
 """),
 
@@ -124,7 +124,7 @@ Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
 
 35 : _(u"""
 Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
-%(k1)s sur la noeud maitre %(k2)s
+%(k1)s sur la noeud maître %(k2)s
 """),
 
 
@@ -138,7 +138,7 @@ Problème pour récupérer l'épaisseur de la coque pour la maille  %(k1)s
 """),
 
 40: _(u"""
-L'excentricité de la coque pour la maille %(k1)s ne peut pas etre traitée
+L'excentricité de la coque pour la maille %(k1)s ne peut pas être traitée
 """),
 
 41: _(u"""
@@ -177,7 +177,7 @@ Le LISSAGE n'est possible qu'avec des normales automatiques VECT_ESCL='AUTO' et/
 
 60 : _(u"""
 La maille %(k1)s est de type 'POI1', elle nécessite l'utilisation de l'option
-NORMALE='FIXE' avec une normale non-nulle.
+NORMALE='FIXE' avec une normale non nulle.
 """),
 
 61 : _(u"""
@@ -240,7 +240,7 @@ Contact formulation continue.
     -> Le seuil de frottement a bougé de plus de 1%% depuis la dernière réactualisation.
        Or vous utilisez la réactualisation contrôlée (REAC_FROT='CONTROLE') dans la commande DEFI_CONTACT.
     -> Risque & Conseil :
-       Vos résultats risquent d'etre faux, le seuil de Coulomb ne sera peut être pas le bon
+       Vos résultats risquent d'être faux, le seuil de Coulomb ne sera peut être pas le bon
        et le frottement pas bien pris en compte.
        Si vous avez volontairement négligé la non-linéarité de frottement (pour des raisons
        de performance), nous vous invitons à vérifier la validité de vos résultats.

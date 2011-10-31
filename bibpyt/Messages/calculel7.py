@@ -1,4 +1,4 @@
-#@ MODIF calculel7 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel7 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,14 +27,14 @@ cata_msg = {
 """),
 
 2 : _(u"""
-  option %(k1)s : pour l element  %(k2)s  il faut ajouter dans le %(k3)s
- le nbre de cmp calculees du flux
+  option %(k1)s : pour l élément  %(k2)s  il faut ajouter dans le %(k3)s
+ le nombre de composante calculées du flux
 """),
 
 3: _(u"""
-  Le MODELE doit etre le meme pour tous les numeros d'ordre du RESULTAT.
-  Faire le post_traitement en rentrant le numero d'ordre ou explicitement
-  le nom du modele.
+  Le MODELE doit être le même pour tous les numéros d'ordre du RESULTAT.
+  Faire le post-traitement en rentrant le numéro d'ordre ou explicitement
+  le nom du modèle.
 """),
 
 }

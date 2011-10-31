@@ -1,28 +1,28 @@
-#@ MODIF algorith10 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith10 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
 
 1 : _(u"""
- la variable  %(k1)s  n'existe pas dans la loi  %(k2)s 
+ la variable  %(k1)s  n'existe pas dans la loi  %(k2)s
 """),
 
 2 : _(u"""
@@ -30,7 +30,7 @@ cata_msg = {
 """),
 
 10 : _(u"""
- taille produit matrice-vecteur incompatible
+ taille produit matrice vecteur incompatible
 """),
 
 11 : _(u"""
@@ -42,7 +42,7 @@ cata_msg = {
 """),
 
 13 : _(u"""
- le champ d'accélération n'a pas ete calcule.
+ le champ d'accélération n'a pas été calcule.
 """),
 
 14 : _(u"""
@@ -54,7 +54,7 @@ cata_msg = {
 """),
 
 16 : _(u"""
- le champ  %(k1)s  n'a pas été calculé dans le MODE_MECA  %(k2)s 
+ le champ  %(k1)s  n'a pas été calculé dans le MODE_MECA  %(k2)s
 """),
 
 17 : _(u"""
@@ -62,11 +62,11 @@ cata_msg = {
 """),
 
 20 : _(u"""
-  le comportement :  %(k1)s  n'a pas etet defini
+  le comportement :  %(k1)s  n'a pas été défini
 """),
 
 21 : _(u"""
- DIST_REFE est obligatoire à la première occurence de RECO_GLOBAL
+ DIST_REFE est obligatoire à la première occurrence de RECO_GLOBAL
 """),
 
 31 : _(u"""
@@ -78,17 +78,17 @@ cata_msg = {
 """),
 
 33 : _(u"""
- il n y a pas de mode statique calculé pour le couple noeud-cmp ci dessus
+ il n y a pas de mode statique calculé pour le couple (noeud, composante) ci dessus
 """),
 
 35 : _(u"""
  redécoupage excessif du pas de temps interne
- réduisez votre pas de temps ou augmenter abs(ITER_INTE_PAS)
- redecoupage global.
+ réduisez votre pas de temps ou augmenter ABS(ITER_INTE_PAS)
+ redécoupage global.
 """),
 
 40 : _(u"""
- vecteur nul entrainant une division par zéro dans NMCONV
+ vecteur nul entraînant une division par zéro dans NMCONV
 """),
 
 41 : _(u"""
@@ -124,23 +124,23 @@ cata_msg = {
 """),
 
 49 : _(u"""
- la porosité initiale F0 ne peut etre nulle ou négative
+ la porosité initiale F0 ne peut être nulle ou négative
 """),
 
 50 : _(u"""
- la porosité initiale F0 ne peut etre supérieure ou égale à 1.
+ la porosité initiale F0 ne peut être supérieure ou égale à 1.
 """),
 
 51 : _(u"""
- comportement de Rousselier version PETIT_REAC non implanté en contraintes planes
+ comportement de ROUSSELIER version PETIT_REAC non implanté en contraintes planes
 """),
 
 52 : _(u"""
- la porosité initiale F0 ne peut etre négative
+ la porosité initiale F0 ne peut être négative
 """),
 
 53 : _(u"""
- pb2, variables de pilotages
+ Problème2, variables de pilotages
 """),
 
 54 : _(u"""
@@ -149,11 +149,11 @@ cata_msg = {
 """),
 
 55 : _(u"""
- erreur d integration dans Runge-Kutta
+ erreur d intégration dans Runge-Kutta
 """),
 
 56 : _(u"""
- on ne sait pas post-traiter le champ de type:  %(k1)s 
+ on ne sait pas post-traiter le champ de type:  %(k1)s
 """),
 
 60 : _(u"""
@@ -161,11 +161,11 @@ cata_msg = {
 """),
 
 61 : _(u"""
- il faut definir une BANDE ou un NUME_ORDRE
+ il faut définir une BANDE ou un NUME_ORDRE
 """),
 
 62 : _(u"""
- il faut definir une "BANDE" ou une liste de "NUME_ORDRE"
+ il faut définir une "BANDE" ou une liste de "NUME_ORDRE"
 """),
 
 63 : _(u"""
@@ -209,7 +209,7 @@ cata_msg = {
 """),
 
 76 : _(u"""
- mot-clé nb_bloc inopérant on prend 1 bloc
+ mot-clé NB_BLOC inopérant on prend un bloc
 """),
 
 77 : _(u"""
@@ -226,7 +226,7 @@ cata_msg = {
 
 90 : _(u"""
  la définition de la température est obligatoire
- pour une loi de couplage de type  %(k1)s 
+ pour une loi de couplage de type  %(k1)s
 """),
 
 91 : _(u"""

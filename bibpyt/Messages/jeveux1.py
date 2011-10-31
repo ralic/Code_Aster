@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ cata_msg = {
 
 5 : _(u"""
 
- Pour une collection contigüe, il faut définit %(k1)s dans l'ordre de création des objets.
+ Pour une collection contiguë, il faut définit %(k1)s dans l'ordre de création des objets.
 
 """),
 
@@ -83,7 +83,7 @@ cata_msg = {
 
 11 : _(u"""
 
- La longueur ou la position de la sous-chaîne %(k1)s est invalide.
+ La longueur ou la position de la sous chaîne %(k1)s est invalide.
 
 """),
 
@@ -144,14 +144,14 @@ cata_msg = {
 
 21 : _(u"""
 
- L'accès à la collection dispersée %(k1)s n'est pas valide en bloc, il faut y accèder avec un nom ou un 
+ L'accès à la collection dispersée %(k1)s n'est pas valide en bloc, il faut y accéder avec un nom ou un 
  numéro d'objet de collection.
 
 """),
 
 22 : _(u"""
 
- L'objet de la collection %(k1)s contigue est de longueur nulle.
+ L'objet de la collection %(k1)s contiguë est de longueur nulle.
 
 """),
 
@@ -193,13 +193,13 @@ cata_msg = {
 
 29 : _(u"""
 
- Cette requête n'est valide que sur une collection contigue.
+ Cette requête n'est valide que sur une collection contiguë.
  
 """),
 
 30 : _(u"""
 
- L'attribut LONCUM n'est valide que sur une collection contigue.
+ L'attribut LONCUM n'est valide que sur une collection contiguë.
  
 """),
 
@@ -236,7 +236,7 @@ cata_msg = {
 36 : _(u"""
 
  Impossible d'insérer le nom %(k1)s dans le répertoire de noms %(k2)s, il y trop de collisions avec
- la fonction de hcoding.
+ la fonction de hashage.
  
 """),
 
@@ -334,7 +334,7 @@ cata_msg = {
 
 52 : _(u"""
 
-  Il est impossible d'accèder au dataset hdf associé à %(k1)s. 
+  Il est impossible d'accéder au DATASET HDF associé à %(k1)s. 
  
 """),
 
@@ -382,7 +382,7 @@ cata_msg = {
 
 60 : _(u"""
 
-  L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas possible de le déplacer sans l'avoir aupravant libéré. 
+  L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas possible de le déplacer sans l'avoir auparavant libéré. 
  
 """),
 

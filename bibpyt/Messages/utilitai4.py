@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg={
 """),
 
 9: _(u"""
- les numeros d'ordre des vitesses donnes sous le mot-cle "nume_ordre" ne sont pas valides.
+ les numéros d'ordre des vitesses donnes sous le mot-cle "nume_ordre" ne sont pas valides.
 """),
 
 10: _(u"""
@@ -51,7 +51,7 @@ cata_msg={
 """),
 
 15: _(u"""
- probleme(s) rencontre(s) lors de la lecture des frequences.
+ probleme(s) rencontre(s) lors de la lecture des fréquences.
 """),
 
 16: _(u"""
@@ -71,7 +71,7 @@ cata_msg={
 """),
 
 21: _(u"""
- "INTERP_NUME" interdit pour recuperer un parametre en fonction d'une variable d'accès
+ "INTERP_NUME" interdit pour recuperer un paramètre en fonction d'une variable d'accès
 """),
 
 22: _(u"""
@@ -95,7 +95,7 @@ cata_msg={
 """),
 
 27: _(u"""
- manque la definition d'un mot cle
+ manque la définition d'un mot cle
 """),
 
 29: _(u"""
@@ -119,7 +119,7 @@ cata_msg={
 """),
 
 35: _(u"""
- pas de numero d'ordre pour  %(k1)s
+ pas de numéro d'ordre pour  %(k1)s
 """),
 
 36: _(u"""
@@ -177,7 +177,7 @@ cata_msg={
 """),
 
 42: _(u"""
- numero d'ordre trop grand.
+ numéro d'ordre trop grand.
 """),
 
 43: _(u"""
@@ -189,7 +189,7 @@ cata_msg={
 """),
 
 45: _(u"""
-  pas de parametres
+  pas de paramètres
 """),
 
 46: _(u"""
@@ -201,23 +201,23 @@ cata_msg={
 """),
 
 49: _(u"""
- probleme pour recuperer les numeros d'ordre dans la structure "resultat"  %(k1)s
+ probleme pour recuperer les numéros d'ordre dans la structure "resultat"  %(k1)s
 """),
 
 50: _(u"""
- probleme pour recuperer les parametres
+ probleme pour recuperer les paramètres
 """),
 
 51: _(u"""
- aucun numero d'ordre ne correspond au parametre demande  %(k1)s
+ aucun numéro d'ordre ne correspond au paramètre demande  %(k1)s
 """),
 
 52: _(u"""
- aucun numero d'ordre ne correspond au champ demande  %(k1)s
+ aucun numéro d'ordre ne correspond au champ demande  %(k1)s
 """),
 
 53: _(u"""
- aucun numero d'ordre trouve. stop.
+ aucun numéro d'ordre trouve. stop.
 """),
 
 63: _(u"""
@@ -229,15 +229,15 @@ cata_msg={
 """),
 
 65: _(u"""
- pas de parametres definis
+ pas de paramètres définis
 """),
 
 66: _(u"""
- pas de lignes definis
+ pas de lignes définis
 """),
 
 67: _(u"""
- mauvais numero de ligne
+ mauvais numéro de ligne
 """),
 
 68: _(u"""
@@ -249,23 +249,23 @@ cata_msg={
 """),
 
 70: _(u"""
- numero de ligne negatif
+ numéro de ligne negatif
 """),
 
 71: _(u"""
- numero de ligne superieur aunombre de ligne de la table
+ numéro de ligne superieur aunombre de ligne de la table
 """),
 
 72: _(u"""
- le parametre n existe pas
+ le paramètre n existe pas
 """),
 
 73: _(u"""
- les types du parametre ne correspondent pas entre eux.
+ les types du paramètre ne correspondent pas entre eux.
 """),
 
 74: _(u"""
- numero de ligne trop grand
+ numéro de ligne trop grand
 """),
 
 75: _(u"""
@@ -273,15 +273,15 @@ cata_msg={
 """),
 
 76: _(u"""
- pas de lignes definies
+ pas de lignes définies
 """),
 
 77: _(u"""
- types de parametres differents
+ types de paramètres différents
 """),
 
 78: _(u"""
- on n a pas trouve de ligne contenant les deux parametres.
+ on n a pas trouve de ligne contenant les deux paramètres.
 """),
 
 79: _(u"""
@@ -289,11 +289,11 @@ cata_msg={
 """),
 
 80: _(u"""
- table  %(k1)s  : aucun parametre n'est defini
+ table  %(k1)s  : aucun paramètre n'est défini
 """),
 
 81: _(u"""
- pas de parametres de type i et r
+ pas de paramètres de type i et r
 """),
 
 82: _(u"""
@@ -305,7 +305,7 @@ cata_msg={
 """),
 
 84: _(u"""
- impression de la table superieure a 2000 colonnes, selectionnez vos parametres.
+ impression de la table superieure a 2000 colonnes, selectionnez vos paramètres.
 """),
 
 85: _(u"""
@@ -313,11 +313,11 @@ cata_msg={
 """),
 
 86: _(u"""
- il faut 3 parametres pour une impression au format "tableau"
+ il faut 3 paramètres pour une impression au format "tableau"
 """),
 
 87: _(u"""
- on ne trie que 1 ou 2 parametres
+ on ne trie que 1 ou 2 paramètres
 """),
 
 88: _(u"""

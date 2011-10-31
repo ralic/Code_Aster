@@ -1,21 +1,21 @@
-#@ MODIF Graph Utilitai  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE COURTOIS M.COURTOIS
@@ -46,16 +46,16 @@ if not sys.modules.has_key('Table'):
       from Utilitai import Table
    except ImportError:
       import Table
-   
+
 
 # ------------------------------------------------------------------------------
 class Graph:
    """Cette classe définit l'objet Graph pour Code_Aster.
-   
+
    Important :  Utiliser les méthodes dédiées à la manipulation des données
       (AjoutCourbe, ...) car elles tiennent à jour les attributs "privés"
       relatifs aux données : NbCourbe, les extrema...
-   
+
    Attributs :
    - Données de chaque courbe :
       .Valeurs   : liste des valeurs de chaque courbe, pour chaque courbe :
@@ -184,7 +184,7 @@ class Graph:
          X1 = self.BBXmax
          Y0 = self.BBYmin
          Y1 = self.BBYmax
-      
+
       for i in range(debut,self.NbCourbe):
          X0 = min([X0,]+list(self.Valeurs[i][0]))
          X1 = max([X1,]+list(self.Valeurs[i][0]))
@@ -214,18 +214,18 @@ class Graph:
       Met à jour les attributs : NbCourbe, BBXmin/Xmax/Ymin/Ymax
       """
       nbc = len(Val)   # nombre de colonnes : 2 ou 3
-      
+
       # verifications : "if not (conditions requises)"
       if not ( 2 <= nbc <= 3 and \
          type(Val[0]) in (types.ListType, types.TupleType) and \
          type(Val[1]) in (types.ListType, types.TupleType) and \
          (nbc==2 or type(Val[2]) in (types.ListType, types.TupleType)) and \
          len(Val[0]) == len(Val[1]) and (nbc==2 or len(Val[0]) == len(Val[2])) ):
-            UTMESS('F','GRAPH0_1')
-      
+            UTMESS('F','GRAPH0_1', valk='Val')
+
       if len(Lab) <> nbc:
-            UTMESS('S','GRAPH0_2')
-            
+            UTMESS('S', 'GRAPH0_2', valk='Lab')
+
       # ajout dans les données
       self.Legendes.append(str(Leg))
       self.Labels.append([str(L) for L in Lab])
@@ -312,7 +312,7 @@ class Graph:
 class TraceGraph:
    """
    Cette classe définit le tracé d'un objet Graph dans un fichier.
-   
+
    Attributs :
       .NomFich : liste de noms de fichier de sortie
 
@@ -320,7 +320,7 @@ class TraceGraph:
       .Fich    : liste des objets 'fichier'
       .Graph   : objet Graph que l'on veut tracer
       .DicForm : dictionnaire des formats de base (séparateur, format des réels...)
-   
+
    Les méthodes Entete, DescrCourbe, Trace (définition de l'entete, partie descriptive
    d'une courbe, méthode de tracé/impression) sont définies dans une classe dérivée.
    """
@@ -351,7 +351,7 @@ class TraceGraph:
             self.Fich.append(open(ff,fmod))
          else:
             self.Fich.append(sys.stdout)
-      
+
       # objet Graph sous-jacent
       self.Graph=graph
       # si Min/Max incohérents
@@ -373,7 +373,7 @@ class TraceGraph:
             if graph.BBYmin < 0.:
                UTMESS('A', 'GRAPH0_5')
             graph.Min_Y=graph.MinP_Y
-      
+
       # formats de base (identiques à ceux du module Table)
       self.DicForm={
          'csep'   : ' ',       # séparateur
@@ -388,7 +388,7 @@ class TraceGraph:
       }
       if dform<>None and type(dform)==types.DictType:
          self.DicForm.update(dform)
-      
+
       # let's go
       self.Trace()
 
@@ -407,7 +407,7 @@ class TraceGraph:
    def _OuvrFich(self):
       """Les fichiers sont ouverts par le constructeur. S'ils ont été fermés,
       par un appel au Tracé, _OuvrFich ouvre de nouveau les fichiers dans le
-      meme mode"""
+      même mode"""
       n=len(self.NomFich)
       for i in range(n):
          if self.Fich[i].closed:
@@ -416,19 +416,19 @@ class TraceGraph:
 # ------------------------------------------------------------------------------
    def Entete(self):
       """Retourne l'entete"""
-      raise NotImplementedError, "Cette méthode doit etre définie par la classe fille."
+      raise NotImplementedError, "Cette méthode doit être définie par la classe fille."
 # ------------------------------------------------------------------------------
    def DescrCourbe(self,**args):
       """Retourne la chaine de caractères décrivant les paramètres de la courbe.
       """
-      raise NotImplementedError, "Cette méthode doit etre définie par la classe fille."
+      raise NotImplementedError, "Cette méthode doit être définie par la classe fille."
 # ------------------------------------------------------------------------------
    def Trace(self):
       """Méthode pour 'tracer' l'objet Graph dans un fichier.
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
       """
-      raise NotImplementedError, "Cette méthode doit etre définie par la classe fille."
+      raise NotImplementedError, "Cette méthode doit être définie par la classe fille."
 
 
 # ------------------------------------------------------------------------------
@@ -437,7 +437,7 @@ class TraceGraph:
 class TraceTableau(TraceGraph):
    """
    Impression d'un objet Graph sous forme d'un tableau de colonnes,
-   on suppose que les courbes partagent la meme liste d'abscisse à 'EPSILON'
+   on suppose que les courbes partagent la même liste d'abscisse à 'EPSILON'
    près, sinon on alarme.
    """
    EPSILON=1.e-4
@@ -456,7 +456,7 @@ class TraceTableau(TraceGraph):
          max0=max(abs(t0))
          for i in range(1,g.NbCourbe):
             if g.Courbe(i)['NbPts']<>g.Courbe(0)['NbPts']:
-               msg.append("La courbe %d n'a pas le meme " \
+               msg.append("La courbe %d n'a pas le même " \
                      "nombre de points que la 1ère." % i)
             else:
                ti=numpy.array(g.Courbe(i)['Abs'])
@@ -855,7 +855,7 @@ class TraceXmgrace(TraceGraph):
             if g.BBYmin < 0.:
                UTMESS('A', 'GRAPH0_5')
             g.Min_Y=g.MinP_Y
-      
+
       if g.NbCourbe < 1:
          self._FermFich()
          return
@@ -901,7 +901,7 @@ class TraceXmgrace(TraceGraph):
                   ' ' + self.DicForm['formR'] % listY[j])
             content.append('&')
       content.append('')
-      
+
       # Production du fichier postscript, jpeg ou lancement interactif
       pilo=self.PILOTE
       if pilo == '':

@@ -1,4 +1,4 @@
-#@ MODIF etatinit Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF etatinit Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,14 +48,14 @@ cata_msg = {
 """),
 
 30 : _(u"""
-  Le champ <%(k1)s> (ou sa dérivée pour la sensibilité) n'est pas trouvé dans l'ETAT_INIT et on ne sait pas l'initialiser à zéro.
+  Le champ <%(k1)s> (ou sa dérivée pour la sensibilité) n'est pas trouvé dans ETAT_INIT et on ne sait pas l'initialiser à zéro.
 """),
 
 31 : _(u"""  Le champ <%(k1)s> est initialisé a zéro"""),
 
-32 : _(u"""  Le champ <%(k1)s> est lu dans l'ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""),
+32 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""),
 
-33 : _(u"""  Le champ <%(k1)s> est lu dans l'ETAT_INIT, par un champ donné explicitement"""),
+33 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT, par un champ donné explicitement"""),
 
 34 : _(u"""  Le champ de température initiale est calculé par un état stationnaire"""),
 

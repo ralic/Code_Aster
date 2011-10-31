@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,7 +63,7 @@ cata_msg = {
 """),
 
 13 : _(u"""
- Erreur de lecture du 1er bloc de  %(k1)s
+ Erreur de lecture du premier bloc de  %(k1)s
 """),
 
 14 : _(u"""
@@ -71,14 +71,14 @@ cata_msg = {
 """),
 
 15 : _(u"""
- Ecrasement amont, l'objet :< %(k1)s > est peut être écrasé"""),
+ Écrasement amont, l'objet :< %(k1)s > est peut être écrasé"""),
 
 16 : _(u"""
- Ecrasement aval, l'objet :< %(k1)s > est peut être écrasé
+ Écrasement aval, l'objet :< %(k1)s > est peut être écrasé
 """),
 
 17 : _(u"""
- Chainage cassé après l'objet :  %(k1)s
+ Chaînage cassé après l'objet :  %(k1)s
 """),
 
 18 : _(u"""
@@ -92,33 +92,33 @@ cata_msg = {
 
 21 : _(u"""
 
-     RE-OUVERTURE DE LA BASE
+     Réouverture de la base
 
-     NOM DE LA BASE                          :  %(k1)s
-     CREEE AVEC LA VERSION                   :  %(k2)s
-     NOMBRE D'ENREGISTREMENTS UTILISES       :  %(i1)d
-     NOMBRE D'ENREGISTREMENTS MAXIMUM        :  %(i2)d
-     LONGUEUR D'ENREGISTREMENT (OCTETS)      :  %(i3)d
-     NOMBRE D'IDENTIFICATEURS UTILISES       :  %(i4)d
-     TAILLE MAXIMUM DU REPERTOIRE            :  %(i5)d
-     POURCENTAGE D'UTILISATION DU REPERTOIRE :  %(i6)d %%
+     Nom de la base                          :  %(k1)s
+     Créée avec la version                   :  %(k2)s
+     Nombre d'enregistrements utilisés       :  %(i1)d
+     Nombre d'enregistrements maximum        :  %(i2)d
+     Longueur d'enregistrement (octets)      :  %(i3)d
+     Nombre d'identificateurs utilisés       :  %(i4)d
+     Taille maximum du répertoire            :  %(i5)d
+     Pourcentage d'utilisation du répertoire :  %(i6)d %%
 """),
 
 22 : _(u"""
 
-     FERMETURE DE LA BASE
+     Fermeture de la base
 
-     NOM DE LA BASE                          :  %(k1)s
-     NOMBRE D'ENREGISTREMENTS UTILISES       :  %(i1)d
-     NOMBRE D'ENREGISTREMENTS MAXIMUM        :  %(i2)d
-     LONGUEUR D'ENREGISTREMENT (OCTETS)      :  %(i3)d
-     NOMBRE TOTAL D'ACCES EN LECTURE         :  %(i4)d
-     VOLUME DES ACCES EN LECTURE             :  %(r1)12.2f Mo.
-     NOMBRE TOTAL D'ACCES EN ECRITURE        :  %(i5)d
-     VOLUME DES ACCES EN ECRITURE            :  %(r2)12.2f Mo.
-     NOMBRE D'IDENTIFICATEURS UTILISES       :  %(i6)d
-     TAILLE MAXIMUM DU REPERTOIRE            :  %(i7)d
-     POURCENTAGE D'UTILISATION DU REPERTOIRE :  %(i8)d %%
+     Nom de la base                          :  %(k1)s
+     Nombre d'enregistrements utilisés       :  %(i1)d
+     Nombre d'enregistrements maximum        :  %(i2)d
+     Longueur d'enregistrement (octets)      :  %(i3)d
+     Nombre total d'accès en lecture         :  %(i4)d
+     Volume des accès en lecture             :  %(r1)12.2f Mo.
+     Nombre total d'accès en écriture        :  %(i5)d
+     Volume des accès en écriture            :  %(r2)12.2f Mo.
+     Nombre d'identificateurs utilisés       :  %(i6)d
+     Taille maximum du répertoire            :  %(i7)d
+     Pourcentage d'utilisation du répertoire :  %(i8)d %%
 """),
 
 23 : _(u"""
@@ -160,7 +160,7 @@ cata_msg = {
 
 31 : _(u"""
      Erreur programmeur :
-     La routine JUVECA n'a pas prévu de re-dimensionner l'objet :%(k1)s
+     La routine JUVECA n'a pas prévu de redimensionner l'objet :%(k1)s
      de type :%(k2)s
 """),
 
@@ -189,18 +189,18 @@ cata_msg = {
 
 37 : _(u"""
      La valeur du rapport entre partitions ne convient pas,
-     la longueur de la partition 1 doit etre au minimum de %(i1)d mots
+     la longueur de la partition 1 doit être au minimum de %(i1)d mots
      soit environ %(i2)d %%
 """),
 
 38 : _(u"""
-     Numero d'objet invalide %(i1)d
+     Numéro d'objet invalide %(i1)d
 """),
 
 39 : _(u"""
-     Taille de repertoire demandé trop grande.
-     Le maximun est de %(i1)d
-     La valeur reclamé est de %(i2)d
+     Taille de répertoire demandé trop grande.
+     Le maximum est de %(i1)d
+     La valeur réclamée est de %(i2)d
 
 """),
 
@@ -254,7 +254,7 @@ cata_msg = {
 """),
 
 52 : _(u"""
- Erreur de relecture des paramètres du dataset HDF.
+ Erreur de relecture des paramètres du DATASET HDF.
 """),
 
 53 : _(u"""
@@ -357,7 +357,7 @@ cata_msg = {
 
 69 : _(u"""
 
- Le nom %(k1)s est deja utilise pour un objet simple.
+ Le nom %(k1)s est déjà utilise pour un objet simple.
 
 """),
 
@@ -452,7 +452,7 @@ cata_msg = {
 
 85 : _(u"""
 
- Le nom %(k1)s est deja utilise pour une collection.
+ Le nom %(k1)s est déjà utilise pour une collection.
 
 """),
 
@@ -494,19 +494,19 @@ cata_msg = {
 
 92 : _(u"""
 
- La longueur ou la position de la sous-chaîne %(k1)s est invalide.
+ La longueur ou la position de la sous chaîne %(k1)s est invalide.
 
 """),
 
 93 : _(u"""
 
- Les longueurs des sous-chaînes %(k1)s sont différentes.
+ Les longueurs des sous chaînes %(k1)s sont différentes.
 
 """),
 
 94 : _(u"""
 
- Les sous-chaînes %(k1)s sont identiques.
+ Les sous chaînes %(k1)s sont identiques.
 
 """),
 
@@ -530,7 +530,7 @@ cata_msg = {
 
 98 : _(u"""
 
- L'attribut %(k1)s. est uniquement destiné aux collections contigues.
+ L'attribut %(k1)s. est uniquement destiné aux collections contiguës.
 
 """),
 

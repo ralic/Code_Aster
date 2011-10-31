@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith9 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ cata_msg = {
 
 2 : _(u"""
  la méthode de Newmark est programmée sous sa forme implicite:
- le paramètre BETA ne doit pas etre nul.
+ le paramètre BETA ne doit pas être nul.
  """),
 
 4 : _(u"""
@@ -72,11 +72,11 @@ cata_msg = {
 """),
 
 27 : _(u"""
- impossible de combiner les mots cles CHARGE et VECT_ASSE en dehors des ondes planes
+ impossible de combiner les mots clés CHARGE et VECT_ASSE en dehors des ondes planes
 """),
 
 28 : _(u"""
- concept réentrant : "RESULTAT" doit porter le meme nom que la sortie
+ concept réentrant : "RESULTAT" doit porter le même nom que la sortie
 """),
 
 29 : _(u"""
@@ -88,7 +88,7 @@ cata_msg = {
 """),
 
 34 : _(u"""
- les matrices ne possèdent pas toutes la meme numérotation
+ les matrices ne possèdent pas toutes la même numérotation
 """),
 
 35 : _(u"""
@@ -112,7 +112,7 @@ cata_msg = {
 """),
 
 43 : _(u"""
- le nombre de valeurs doit etre pair.
+ le nombre de valeurs doit être pair.
 """),
 
 44 : _(u"""
@@ -128,15 +128,15 @@ cata_msg = {
 """),
 
 47 : _(u"""
- mots-cles'SOUS_STRUC' et'SQUELETTE'interdits
+ mots-clés 'SOUS_STRUC' et 'SQUELETTE' interdits
 """),
 
 48 : _(u"""
- le mot-clé 'MODE_MECA' doit etre présent
+ le mot-clé 'MODE_MECA' doit être présent
 """),
 
 49 : _(u"""
- l'instant de récuperation est en dehors du domaine de calcul.
+ l'instant de récupération est en dehors du domaine de calcul.
 """),
 
 55 : _(u"""
@@ -144,16 +144,16 @@ cata_msg = {
 """),
 
 56 : _(u"""
- le "NOMB_PTS" doit etre une puissance de 2.
+ le "NOMB_PTS" doit être une puissance de 2.
 """),
 
 57 : _(u"""
- si les mots-cles NUME_ORDRE et AMOR_REDUIT sont utilisés,
+ si les mots-clés NUME_ORDRE et AMOR_REDUIT sont utilisés,
  il faut autant d'arguments pour l'un et l'autre
 """),
 
 58 : _(u"""
- le concept MODE_MECA d'entrée doit etre celui correspondant à la base modale initiale
+ le concept MODE_MECA d'entrée doit être celui correspondant à la base modale initiale
  pour le calcul de couplage fluide-structure
 """),
 
@@ -169,7 +169,7 @@ cata_msg = {
 """),
 
 62 : _(u"""
- option symétrie : la dimension de POINT et AXE_1 doit etre identique.
+ option symétrie : la dimension de POINT et AXE_1 doit être identique.
 """),
 
 63 : _(u"""
@@ -177,7 +177,7 @@ cata_msg = {
 """),
 
 64 : _(u"""
- option symétrie : la dimension de POINT et AXE_2 doit etre identique.
+ option symétrie : la dimension de POINT et AXE_2 doit être identique.
 """),
 
 
@@ -189,7 +189,7 @@ cata_msg = {
 """),
 
 74 : _(u"""
- attention, mode sur-amorti
+ attention, mode sur amorti
 """),
 
 75 : _(u"""
@@ -198,7 +198,7 @@ cata_msg = {
 
 80 : _(u"""
  pour utiliser le comportement "HYDR", il faut surcharger le code
- en "mode devéloppement" avec les routines "PERMEA" et "SATURA".
+ en "mode développement" avec les routines "PERMEA" et "SATURA".
 """),
 
 81 : _(u"""
@@ -206,7 +206,7 @@ cata_msg = {
 """),
 
 84 : _(u"""
- précision machine depassée
+ précision machine dépassée
 """),
 
 
@@ -220,7 +220,7 @@ cata_msg = {
 
 
 91 : _(u"""
- le nombre de noeuds mesuré doit etre inférieur au nombre de noeuds du modèle
+ le nombre de noeuds mesuré doit être inférieur au nombre de noeuds du modèle
 """),
 
 92 : _(u"""
@@ -229,13 +229,13 @@ cata_msg = {
 
 93 : _(u"""
  intégration élastoplastique de loi BETON_DOUBLE_DP :
- pas de convergence lors de la projection au sommet des cones de traction et de compression
+ pas de convergence lors de la projection au sommet des cônes de traction et de compression
  --> utiliser le redécoupage automatique du pas de temps.
 """),
 
 94 : _(u"""
  intégration élastoplastique de loi BETON_DOUBLE_DP :
- pas de convergence lors de la resolution pour NSEUIL =  %(k1)s
+ pas de convergence lors de la résolution pour NSEUIL =  %(k1)s
  --> utiliser le redécoupage automatique du pas de temps.
 """),
 

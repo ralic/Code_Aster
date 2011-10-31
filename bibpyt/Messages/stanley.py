@@ -1,4 +1,4 @@
-#@ MODIF stanley Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,7 @@ En mode DISTANT, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
 7 : _(u"""
-Le parametre 'machine_gmsh_exe' ou 'machine_visu' n'est pas renseigné, 
+Le paramètre 'machine_gmsh_exe' ou 'machine_visu' n'est pas renseigné, 
 il faut ouvrir le fichier manuellement.
 """),
 
@@ -111,11 +111,11 @@ Erreur : mode WINDOWS non implémenté
 19 : _(u"""
 Erreur: il est possible que Stanley ne puisse pas contacter Salome :
 
- - machine Salome definie   : %(k1)s
+ - machine Salome définie   : %(k1)s
  - port de Salome           : %(k2)s
  - lanceur runSalomeScript  : %(k3)s
 
-Vous pouvez modifier ces valeurs dans les parametres dans Stanley. 
+Vous pouvez modifier ces valeurs dans les paramètres dans Stanley. 
 
 Si Stanley est bien lancé, vous pouvez essayer d'activer le module VISU.
 

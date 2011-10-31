@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ cata_msg = {
 """),
 
 14 : _(u"""
- signe de SIGMA indeterminé
+ signe de SIGMA indéterminé
 """),
 
 15 : _(u"""
@@ -68,7 +68,7 @@ cata_msg = {
 """),
 
 26 : _(u"""
- mode non defini
+ mode non défini
 """),
 
 28 : _(u"""
@@ -76,7 +76,7 @@ cata_msg = {
 """),
 
 31 : _(u"""
- borne superieure PMAX incorrecte
+ borne supérieure PMAX incorrecte
 """),
 
 32 : _(u"""
@@ -92,15 +92,15 @@ cata_msg = {
 """),
 
 36 : _(u"""
- il y a deja une loi de couplage
+ il y a déjà une loi de couplage
 """),
 
 37 : _(u"""
- il y a deja une loi hydraulique
+ il y a déjà une loi hydraulique
 """),
 
 38 : _(u"""
- il y a deja une loi de mécanique
+ il y a déjà une loi de mécanique
 """),
 
 39 : _(u"""
@@ -120,7 +120,7 @@ cata_msg = {
 """),
 
 43 : _(u"""
- incompatibilite des comportements mécanique et hydraulique
+ incompatibilité des comportements mécanique et hydraulique
 """),
 
 44 : _(u"""
@@ -140,18 +140,18 @@ cata_msg = {
 """),
 
 65 : _(u"""
-Arret suite à l'échec de l'intégration de la loi de comportement.
-   Verifiez vos paramètres, la cohérence des unités.
+Arrêt suite à l'échec de l'intégration de la loi de comportement.
+   Vérifiez vos paramètres, la cohérence des unités.
    Essayez d'augmenter ITER_INTE_MAXI.
 """),
 
 66 : _(u"""
   convergence atteinte sur approximation linéaire tangente de l'évolution plastique
-  risque d'imprecision
+  risque d'imprécision
 """),
 
 67 : _(u"""
-  endommagement maximal atteint au cours des resolutions internes
+  endommagement maximal atteint au cours des résolutions internes
 """),
 
 77 : _(u"""
@@ -186,7 +186,7 @@ Les combinaisons possibles sont :
 """),
 
 89 : _(u"""
- le parametre A doit etre >=0
+ le paramètre A doit être >=0
 """),
 
 90 : _(u"""
@@ -198,7 +198,7 @@ Les combinaisons possibles sont :
 """),
 
 92 : _(u"""
- la maille doit etre de type TETRA10,PENTA15,HEXA20,QUAD8 ou TRIA6.
+ la maille doit être de type TETRA10,PENTA15,HEXA20,QUAD8 ou TRIA6.
  or la maille est de type :  %(k1)s .
 """),
 
@@ -207,7 +207,7 @@ Les combinaisons possibles sont :
 """),
 
 96 : _(u"""
- le séchage ne peut pas etre mélangé à un autre comportement
+ le séchage ne peut pas être mélangé à un autre comportement
 """),
 
 97 : _(u"""

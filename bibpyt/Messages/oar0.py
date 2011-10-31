@@ -1,4 +1,4 @@
-#@ MODIF oar0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF oar0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 cata_msg={
 1: _(u"""
-Les coupes mécanique et thermique doivent partager les memes abscisses.
+Les coupes mécanique et thermique doivent partager les mêmes abscisses.
 """),
 
 2: _(u"""

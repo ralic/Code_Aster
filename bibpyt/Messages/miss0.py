@@ -1,4 +1,4 @@
-#@ MODIF miss0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,7 +101,7 @@ Pour celles-ci, il faut encore utiliser MACRO_MISS_3D. Il s'agit :
     - des points de contrôle,
     - des ondes inclinées,
     - des sources ponctuelles,
-    - de l'interaction sol-fluide-structure.
+    - de l'interaction sol, fluide, structure.
 """),
 
 16 : _(u"""

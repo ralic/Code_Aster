@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,11 +37,11 @@ cata_msg = {
 """),
 
 4 : _(u"""
- Erreur sur la recherche des lagranges
+ Erreur sur la recherche des multiplicateurs de Lagrange
 """),
 
 5 : _(u"""
- mot cle facteur incorrect
+ mot-clé facteur incorrect
 """),
 
 6 : _(u"""
@@ -58,12 +58,12 @@ cata_msg = {
 """),
 
 9 : _(u"""
- Les matrices à combiner ne sont pas construites sur le meme maillage.
+ Les matrices à combiner ne sont pas construites sur le même maillage.
 """),
 
 10 : _(u"""
  Erreur de programmation :
- On cherche à combiner 2 matrices qui n'ont pas les memes charges cinématiques.
+ On cherche à combiner 2 matrices qui n'ont pas les mêmes charges cinématiques.
  Noms des 2 matrices :
     %(k1)s
     %(k2)s
@@ -75,21 +75,21 @@ cata_msg = {
 """),
 
 11 : _(u"""
- Les matrices "%(k1)s"  et  "%(k2)s"  n'ont pas la meme structure.
+ Les matrices "%(k1)s"  et  "%(k2)s"  n'ont pas la même structure.
 """),
 
 12 : _(u"""
- Résolution système linéaire méthode de CROUT
+ Résolution système linéaire méthode de Crout.
  Attention: une dimension nulle ou nmax.lt.dmax(1,n)
 """),
 
 13 : _(u"""
- Résolution système linéaire méthode de CROUT
- Attention: une dimension negative ou nulle
+ Résolution système linéaire méthode de Crout.
+ Attention: une dimension négative ou nulle
 """),
 
 14 : _(u"""
- Résolution système linéaire méthode de CROUT
+ Résolution système linéaire méthode de Crout.
  Attention: les dimensions des tableaux ne sont pas correctes
 """),
 
@@ -106,7 +106,7 @@ cata_msg = {
 """),
 
 18 : _(u"""
- Les matrices " %(k1)s " et " %(k2)s " n'ont pas le meme domaine de définition
+ Les matrices " %(k1)s " et " %(k2)s " n'ont pas le même domaine de définition
 """),
 
 19 : _(u"""
@@ -118,7 +118,7 @@ cata_msg = {
 """),
 
 21 : _(u"""
- L'argument de "BLOC_FIN" doit etre strictement positif
+ L'argument de "BLOC_FIN" doit être strictement positif
 """),
 
 
@@ -130,19 +130,19 @@ cata_msg = {
 """),
 
 29 : _(u"""
- la valeur d'entrée 'min' est supérieure ou égale à la valeur d'entrée 'sup'
+ la valeur d'entrée 'min' est supérieure ou égale à la valeur d'entrée 'SUP'
 """),
 
 30 : _(u"""
- les matrices  " %(k1)s "  et  " %(k2)s "  n'ont pas le meme domaine de définition.
+ les matrices  " %(k1)s "  et  " %(k2)s "  n'ont pas le même domaine de définition.
 """),
 
 31 : _(u"""
- trop de ré-ajustement de la borne minimale.
+ trop de réajustement de la borne minimale.
 """),
 
 32 : _(u"""
- trop de ré-ajustement de la borne maximale.
+ trop de réajustements de la borne maximale.
 """),
 
 33 : _(u"""
@@ -158,7 +158,7 @@ cata_msg = {
 """),
 
 36 : _(u"""
- normalisation impossible, le point n'est pas present dans le modèle.
+ normalisation impossible, le point n'est pas présent dans le modèle.
 """),
 
 37 : _(u"""
@@ -174,7 +174,7 @@ cata_msg = {
 """),
 
 40 : _(u"""
- manque des parametres caracteres
+ manque des paramètres caractères
 """),
 
 41 : _(u"""
@@ -186,7 +186,7 @@ cata_msg = {
 """),
 
 43 : _(u"""
- on ne tient pas compte du mot cle facteur "MODE_SIGNE" pour des "MODE_MECA_C"
+ on ne tient pas compte du mot-clé facteur "MODE_SIGNE" pour des "MODE_MECA_C"
 """),
 
 44 : _(u"""
@@ -194,7 +194,7 @@ cata_msg = {
 """),
 
 45 : _(u"""
- calcul de flambement et absence du mot cle char_crit ne sont pas compatibles
+ calcul de flambement et absence du mot-clé CHAR_CRIT ne sont pas compatibles
 """),
 
 46 : _(u"""
@@ -202,47 +202,47 @@ cata_msg = {
 """),
 
 47 : _(u"""
- le nombre de frequences demandees est incorrect.
+ le nombre de fréquences demandées est incorrect.
 """),
 
 48 : _(u"""
- nmax_iter_ ajuste ou separe est negatif
+ NMAX_ITER_AJUSTE ou NMAX_ITER_SEPARE est négatif
 """),
 
 49 : _(u"""
- nmax_iter est negatif
+ NMAX_ITER est négatif
 """),
 
 50 : _(u"""
- prec_ ajuste ou separe est irrealiste
+ PREC_AJUSTE ou PREC_SEPARE est irréaliste
 """),
 
 51 : _(u"""
- prec est irrealiste (inferieure a 1.e-70)
+ PREC est irréaliste (inférieure a 1.e-70)
 """),
 
 52 : _(u"""
- pas de valeur donnee, separation impossible
+ pas de valeur donnée, séparation impossible
 """),
 
 53 : _(u"""
- une seule valeur donnee, separation impossible
+ une seule valeur donnée, séparation impossible
 """),
 
 54 : _(u"""
- la suite des valeurs donnees n'est pas croissante
+ la suite des valeurs données n'est pas croissante
 """),
 
 55 : _(u"""
- mot cle AMOR_REDUIT impossible pour cas generalise
+ mot-clé AMOR_REDUIT impossible pour cas généralisé.
 """),
 
 56 : _(u"""
- mot cle AMOR_REDUIT impossible si option differente de PROCHE
+ mot-clé AMOR_REDUIT impossible si option différente de PROCHE
 """),
 
 57 : _(u"""
- nombre different d'arguments entre les mots cles amor_reduit et freq
+ nombre différent d'arguments entre les mots-clés AMOR_REDUIT et FREQ
 """),
 
 58 : _(u"""
@@ -250,19 +250,19 @@ cata_msg = {
 """),
 
 59 : _(u"""
- presence de frequences negatives dans les donnees.
+ présence de fréquences négatives dans les données.
 """),
 
 60 : _(u"""
-  trop de reajustement d'une borne de l'intervalle de recherche.
+  trop de réajustement d'une borne de l'intervalle de recherche.
 """),
 
 61 : _(u"""
- erreur trop de reajustement d'une borne de l'intervalle de recherche.
+ erreur trop de réajustement d'une borne de l'intervalle de recherche.
 """),
 
 62 : _(u"""
- pas de valeurs propres dans la bande de calcul,  le concept ne peut etre cree dans ces conditions.
+ pas de valeurs propres dans la bande de calcul,  le concept ne peut être créé dans ces conditions.
 """),
 
 63 : _(u"""
@@ -274,45 +274,45 @@ cata_msg = {
 """),
 
 65 : _(u"""
- detection des modes de corps rigide n'est utilisee qu'avec tri_diag
+ détection des modes de corps rigide n'est utilisée qu'avec TRI_DIAG
 """),
 
 66 : _(u"""
- option bande non autorisee pour un probleme avec amortissement
+ option bande non autorisée pour un problème avec amortissement
 """),
 
 67 : _(u"""
- approche imaginaire ou complexe et frequence nulle incompatible
+ approche imaginaire ou complexe et fréquence nulle incompatible
 """),
 
 68 : _(u"""
-  option modes de corps rigide non utilisee avec amortissement
+  option modes de corps rigide non utilisée avec amortissement
 """),
 
 69 : _(u"""
- pour le probleme generalise ou quadratique complexe on utilise seulement
+ pour le problème généralisé ou quadratique complexe on utilise seulement
  METHODE='SORENSEN' ou 'QZ'
 """),
 
 70 : _(u"""
- probleme complexe et frequence nulle incompatible
+ problème complexe et fréquence nulle incompatible
 """),
 
 71 : _(u"""
- calcul quadratique par la methode de sorensen et frequence nulle incompatible
+ calcul quadratique par la méthode de SORENSEN et fréquence nulle incompatible
 """),
 
 72 : _(u"""
- la dimension du sous espace de travail est inferieure au nombre de modes rigides
+ la dimension du sous espace de travail est inférieure au nombre de modes rigides
 """),
 
 73 : _(u"""
- !! ATTENTION !!, POUR L''INSTANT, PAS DE POST-VERIFICATION DE TYPE STURM
- (COMPTAGE DU BON NOMBRE DES VALEURS PROPRES CALCULEES) LORSQU'ON EST
- DANS LE PLAN COMPLEXE:
-            MODAL GENERALISE AVEC K COMPLEXE,
-            MODAL GENERALISE AVEC K ET/OU M NON SYMETRIQUE(S),
-            MODAL QUADRATIQUE.
+ Attention : pour l'instant, il n'y a pas de vérification de type STURM
+ (comptage du bon nombre des valeurs propres calculées) lorsqu'on est
+ dans le plan complexe :
+            modal généralisé avec K complexe,
+            modal généralisé avec K et/ou M non symétrique(s),
+            modal quadratique.
 """),
 
 74 : _(u"""
@@ -324,11 +324,11 @@ cata_msg = {
 """),
 
 76 : _(u"""
- 3 ou 6 valeurs pour le mot cle "DIRECTION"
+ 3 ou 6 valeurs pour le mot-clé "DIRECTION"
 """),
 
 77 : _(u"""
- pour le mot cle facteur  "PSEUDO_MODE", il faut donner la matrice de masse.
+ pour le mot-clé facteur  "PSEUDO_MODE", il faut donner la matrice de masse.
 """),
 
 78 : _(u"""
@@ -340,23 +340,23 @@ cata_msg = {
 """),
 
 80 : _(u"""
- bases modales BASE_1 et BASE_2 avec numerotations incompatibles
+ bases modales BASE_1 et BASE_2 avec numérotations incompatibles
 """),
 
 81 : _(u"""
- bases modales et matrice MATR_ASSE avec numerotations incompatibles
+ bases modales et matrice MATR_ASSE avec numérotations incompatibles
 """),
 
 82 : _(u"""
- nombre de modes et d amortissements differents
+ nombre de modes et d amortissements différents
 """),
 
 83 : _(u"""
- nombre de modes et d amortissements de connors differents
+ nombre de modes et d amortissements de CONNORS différents
 """),
 
 85 : _(u"""
- inversion vmin <=> vmax
+ inversion valeur min <=> valeur max
 """),
 
 86 : _(u"""
@@ -364,33 +364,33 @@ cata_msg = {
 """),
 
 87 : _(u"""
-  pas de produit car le cham_no  %(k1)s  existe deja.
+  pas de produit car le champ aux noeuds  %(k1)s  existe déjà.
 """),
 
 88 : _(u"""
   Problème de programmation :
     La matrice globale %(k1)s n'existe pas.
-    Elle est nécessaire pour déterminer les ddls bloqués par AFFE_CHAR_CINE.
+    Elle est nécessaire pour déterminer les degrés de liberté bloqués par AFFE_CHAR_CINE.
 
   Solution (pour l'utilisateur) :
     1) Ne pas utiliser de charges cinématiques (AFFE_CHAR_CINE)
-    2) Emettre une fiche d'anomalie.
+    2) Émettre une fiche d'anomalie.
 
   Solution (pour le programmeur) :
     La matrice globale a été détruite abusivement.
-    Instrumenter la routine jedetr.f pour déterminer la routine coupable.
+    Instrumenter la routine de destruction pour déterminer la routine coupable.
 """),
 
 89 : _(u"""
- le mot-cle MAILLAGE est obligatoire avec le mot-cle CREA_FISS.
+ le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_FISS.
 """),
 
 90 : _(u"""
- le mot-cle MAILLAGE est obligatoire avec le mot-cle LINE_QUAD.
+ le mot-clé MAILLAGE est obligatoire avec le mot-clé LINE_QUAD.
 """),
 
 91 : _(u"""
- CREA_MAILLAGE : l'option line_quad ne traite pas les macros mailles
+ CREA_MAILLAGE : l'option LINE_QUAD ne traite pas les macro-commandes mailles
 """),
 
 92 : _(u"""
@@ -398,11 +398,11 @@ cata_msg = {
 """),
 
 93 : _(u"""
- le mot-cle MAILLAGE est obligatoire avec le mot-cle QUAD_LINE.
+ le mot-clé MAILLAGE est obligatoire avec le mot-clé QUAD_LINE.
 """),
 
 94 : _(u"""
- CREA_MAILLAGE : l'option QUAD_LINE ne traite pas les macros mailles
+ CREA_MAILLAGE : l'option QUAD_LINE ne traite pas les macro-commandes mailles
 """),
 
 95 : _(u"""
@@ -410,7 +410,7 @@ cata_msg = {
 """),
 
 96 : _(u"""
- le mot-cle MAILLAGE est obligatoire avec le mot-cle MODI_MAILLE.
+ le mot-clé MAILLAGE est obligatoire avec le mot-clé MODI_MAILLE.
 """),
 
 97 : _(u"""
@@ -418,7 +418,7 @@ cata_msg = {
 """),
 
 98 : _(u"""
- le mot-cle MAILLAGE est obligatoire avec le mot-cle COQU_VOLU.
+ le mot-clé MAILLAGE est obligatoire avec le mot-clé COQU_VOLU.
 """),
 
 99 : _(u"""

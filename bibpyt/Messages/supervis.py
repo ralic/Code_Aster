@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,11 +35,11 @@ cata_msg={
 """),
 
 2: _(u"""
- Arret sur erreur(s) utilisateur
+ Arrêt sur erreur(s) utilisateur
 """),
 
 3: _(u"""
- Erreur programmeur : JEMARQ/JEDEMA non appariés.
+ Erreur programmeur : %(k1)s non appariés.
 """),
 
 4: _(u"""
@@ -47,7 +47,7 @@ cata_msg={
 """),
 
 5: _(u"""
- Erreur(s) à l'exécution de "%(k1)s" : arret immédiat du programme.
+ Erreur(s) à l'exécution de "%(k1)s" : arrêt immédiat du programme.
 """),
 
 7: _(u"""
@@ -68,7 +68,7 @@ cata_msg={
 """),
 
 11: _(u"""
- Impossible d'allouer la mémoire JEVEUX demandée : %(i1)d Moctets.
+ Impossible d'allouer la mémoire JEVEUX demandée : %(i1)d Mo.
 
  En général, cette erreur se produit car la mémoire utilisée hors du fortran
  (jeveux) est importante.
@@ -104,11 +104,11 @@ cata_msg={
 """),
 
 16: _(u"""
-  Ecriture des catalogues dans ELEMBASE faite.
+  Écriture des catalogues des éléments faite.
 """),
 
 17: _(u"""
- Relecture des catalogues dans ELEMBASE faite.
+ Relecture des catalogues des éléments faite.
 """),
 
 18: _(u"""
@@ -116,7 +116,7 @@ cata_msg={
 """),
 
 19: _(u"""
- Debut de lecture
+ Début de lecture
 """),
 
 20: _(u"""
@@ -128,7 +128,7 @@ cata_msg={
 """),
 
 22 : { 'message' : _(u"""
-   Les mot-clés facteurs CODE et DEBUG dans DEBUT/POURSUITE sont réservés aux cas-tests.
+   Les mots-clés facteurs CODE et DEBUG dans DEBUT/POURSUITE sont réservés aux cas-tests.
    Il ne faut pas les utiliser dans les études car ils modifient certaines valeurs par
    défaut des commandes DEBUT/POURSUITE qui ont des conséquences sur le comportement
    en cas d'erreur ou sur les performances.
@@ -150,15 +150,15 @@ cata_msg={
 """),
 
 26: _(u"""
- Type allocation memoire 2
+ Type allocation mémoire 2
 """),
 
 27: _(u"""
- Type allocation memoire 3
+ Type allocation mémoire 3
 """),
 
 28: _(u"""
- Type allocation memoire 4
+ Type allocation mémoire 4
 """),
 
 31: _(u"""
@@ -166,7 +166,7 @@ cata_msg={
 """),
 
 32: _(u"""
- La procédure "%(k1)s" ne peut etre appelée en cours d'exécution des commandes
+ La procédure "%(k1)s" ne peut être appelée en cours d'exécution des commandes
 """),
 
 33: _(u"""
@@ -174,7 +174,7 @@ cata_msg={
 """),
 
 34: _(u"""
- Arret de la lecture des commandes.
+ Arrêt de la lecture des commandes.
 """),
 
 36: _(u"""
@@ -186,7 +186,7 @@ cata_msg={
 """),
 
 39: _(u"""
-Arrêt de l'exécution suite à la réception du signal utilisateur USR1.
+Arrêt de l'exécution suite à la réception du signal utilisateur %(k1)s.
 Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
@@ -196,32 +196,16 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 43: _(u"""
- Debug SDVERI suspendu
+ Debug %(k1)s suspendu
 """),
 
 44: _(u"""
- Debug JEVEUX demandé
-"""),
-
-45: _(u"""
- Debug JEVEUX suspendu
-"""),
-
-47: _(u"""
- Debug JXVERI suspendu
-"""),
-
-48: _(u"""
- Debug IMPR_MACRO demandé
-"""),
-
-49: _(u"""
- Debug IMPR_MACRO suspendu
+ Debug %(k1)s demandé
 """),
 
 50: _(u"""
  la commande a un numéro non appelable dans cette version.
- le numero erroné est  %(i1)d
+ le numéro erroné est  %(i1)d
 """),
 
 52: _(u"""
@@ -234,12 +218,12 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 56: _(u"""
- Incohérence entre le catalogue et le corps de la macro.
+ Incohérence entre le catalogue et le corps de la macro-commande.
 """),
 
 60: _(u"""
- la procédure a un numéro non appelable dans cette version.
- le numero errone est  %(i1)d
+ La procédure a un numéro non appelable dans cette version.
+ le numéro erroné est %(i1)d.
 """),
 
 61: _(u"""
@@ -277,12 +261,12 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 68: _(u"""
- information sur les concepts devant etre créés.
+ information sur les concepts devant être créés.
 """),
 
 71: _(u"""
  rappel sur les exécutions précédentes
-   - il a été executé %(i1)d procédures et opérateurs.
+   - il a été exécuté %(i1)d procédures et opérateurs.
 """),
 
 72: _(u"""
@@ -308,7 +292,7 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 77: _(u"""
-     le concept %(k1)s de type %(k2)s  a été néanmoims validé par l'opérateur
+     le concept %(k1)s de type %(k2)s a été néanmoins validé par l'opérateur
 """),
 
 78: _(u"""
@@ -326,7 +310,7 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 82: _(u"""
- L'argument du mot cle "CAS" est erroné.
+ L'argument du mot clé "CAS" est erroné.
  Valeur lue %(k1)s
  nombre de valeurs attendues %(i1)d
  valeurs attendues : %(k1)s,%(k2)s, ...
@@ -334,11 +318,11 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 
 83: _(u"""
 
- Le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent à un
- fichier dont la taille maximale en Moctets (%(i1)d) est supérieure à limite autorisée :  %(i2)d
+ Le nombre d'enregistrements (NMAX_ENRE) et leurs longueurs (LONG_ENRE) conduisent à un
+ fichier dont la taille maximale en Mo (%(i1)d) est supérieure à limite autorisée :  %(i2)d
 
  Vous pouvez augmenter cette limite en utilisant l'argument "-max_base" sur la ligne
- de commande suivi d'une valeur en Moctets.
+ de commande suivi d'une valeur en Mo.
 
 """),
 
@@ -368,21 +352,20 @@ Conseils:
 
 93 : _(u"""
 La variable python "%(k1)s" fait référence au concept "%(k2)s".
-Cela se produit avec ce type d'enchainement :
+Cela se produit avec ce type d'enchaînement :
    %(k2)s = COMMANDE(...)
    %(k1)s = %(k2)s
 
 On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
 
 -> Conseil :
-   Pour éviter cette alarme, supprimer l'alias dans le jeu de commandes
+   Pour éviter cette alarme, supprimer la référence dans le jeu de commandes
    qui produit la base :
-      del %(k1)s
+      %(k1)s
 """),
 
 94 : _(u"""
-Le temps CPU system (%(r1).1f) atteint une valeur supérieure à %(i1)d%%
-du temps CPU (%(r2).1f).
+Le temps CPU système (%(r1).1f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2).1f).
 Ce comportement est peut-être anormal.
 Le nombre d'appel au mécanisme de déchargement de la mémoire depuis le début du
 calcul est de %(i2)d.
@@ -393,7 +376,7 @@ calcul est de %(i2)d.
 """),
 
 95 : _(u"""
-Le temps CPU system (%(r1)f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2)f).
+Le temps CPU système (%(r1).1f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2).1f).
 Ce comportement est peut-être anormal.
 
 """),

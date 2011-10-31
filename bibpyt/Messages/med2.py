@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF med2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ cata_msg = {
 
 4 : _(u"""
 Le champ '%(k1)s' est déjà présent
-dans le fichier med pour l'instant %(r1)G.
+dans le fichier MED pour l'instant %(r1)G.
   -> Conseil :
      Vous pouvez soit imprimer le champ dans un autre fichier, soit
      nommer le champ différemment.

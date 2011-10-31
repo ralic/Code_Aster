@@ -5,9 +5,9 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,7 +84,7 @@ C
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
       REAL*8       RVAR, RPAR, TAB(4), EPSI, R8PREM, R8VIDE
 C     ------------------------------------------------------------------
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(3)
       INTEGER      VALI(2)
       CHARACTER*512 MSGERR
 C     ------------------------------------------------------------------
@@ -322,7 +322,8 @@ C
       ELSE
          VALK(1)=NOMFON
          VALK(2)=SVTYPF(ISAVE)
-         CALL U2MESK('A','FONCT0_13', 2,VALK)
+         VALK(3)='FOINTE'
+         CALL U2MESK('A','FONCT0_13', 3,VALK)
          IER = 150
          GOTO 9998
       ENDIF

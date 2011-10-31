@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg={
 
 1 : _(u"""
-Lecture du fichier pick.1..."""),
+Lecture du fichier %(k1)s..."""),
 
 3 : _(u"""%(k1)-8s %(k2)-16s ignoré"""),
 
@@ -30,7 +30,7 @@ Lecture du fichier pick.1..."""),
 Erreur inattendue lors de l'exécution de la commande '%(k1)s'.
 Merci de signaler cette anomalie.
 
-Traceback :
+Erreur :
 
 %(k2)s
 %(k3)s
@@ -59,7 +59,7 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
                 -- CODE_ASTER -- VERSION : %(k1)s --
 
                 Version %(k2)s du %(k3)s
-                Copyright EDF-R&D %(k4)s - %(k5)s
+                Copyright EDF R&D %(k4)s - %(k5)s
                 Exécution du : %(k6)s
                 Nom de la machine : %(k7)s
                 Architecture : %(k8)s
@@ -80,7 +80,7 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 },
 
 13 : {  'message' : _(u"""Parallélisme OpenMP : actif
-                Nombre de threads utilisés : %(i1)d"""),
+                Nombre de processus utilisés : %(i1)d"""),
         'flags' : 'CENTER | ALL_UNIT',
 },
 

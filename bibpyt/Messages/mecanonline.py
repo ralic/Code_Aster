@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg = {
 
 1 : _(u"""
- Echec dans le calcul des matrices elastiques pour l'amortissement.
+ Échec dans le calcul des matrices élastiques pour l'amortissement.
 """),
 
 23 : _(u"""
@@ -33,7 +33,7 @@ cata_msg = {
 """),
 
 24 : _(u"""
- L'etat initial n'a pas d'accéleration donnée.
+ L'état initial n'a pas d'accélération donnée.
  On la calcule.
  """),
 
@@ -66,16 +66,16 @@ cata_msg = {
 
 78 : _(u"""
  Problème rencontré :
-   la matrice de masse est quasi-singulière.
+   la matrice de masse est quasi singulière.
    On se sert de cette matrice pour calculer l'accélération initiale.
-   => l'accélération initiale calculée est peut etre excessive en quelques noeuds.
+   => l'accélération initiale calculée est peut être excessive en quelques noeuds.
 
  Conseils :
    Ces éventuelles perturbations initiales sont en général sans influence sur
    la suite du calcul car elles sont localisées.
-   Néanmoins, il peut etre bénéfique de laisser ces perturbations s'amortir au
+   Néanmoins, il peut être bénéfique de laisser ces perturbations s'amortir au
    début du calcul en faisant plusieurs pas avec chargement transitoire nul,
-   avec, eventuellement, un schéma d'integration choisi volontairement très
+   avec, éventuellement, un schéma d'intégration choisi volontairement très
    dissipatif (par exemple HHT avec alpha=-0.3).
    On peut ensuite reprendre en poursuite avec un schéma moins dissipatif si besoin est.
 """),

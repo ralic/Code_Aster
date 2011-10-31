@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ cata_msg = {
 """),
 
 6 : _(u"""
- seuls les parametres de types reel, entier ou complexe sont traites
+ seuls les paramètres de types reel, entier ou complexe sont traites
 """),
 
 7 : _(u"""
@@ -55,11 +55,11 @@ cata_msg = {
 """),
 
 11 : _(u"""
- le format doit etre ideas
+ le format doit être ideas
 """),
 
 12 : _(u"""
- le maillage doit etre issu d'ideas
+ le maillage doit être issu d'ideas
 """),
 
 13 : _(u"""
@@ -99,7 +99,7 @@ cata_msg = {
 """),
 
 23 : _(u"""
- option:  %(k1)s non prevue pour les elements du modele.
+ option:  %(k1)s non prevue pour les éléments du modele.
 """),
 
 24 : _(u"""
@@ -115,7 +115,7 @@ cata_msg = {
 """),
 
 27 : _(u"""
- grandeurs differentes pour : %(k1)s et : %(k2)s
+ grandeurs différentes pour : %(k1)s et : %(k2)s
 """),
 
 28 : _(u"""
@@ -131,19 +131,19 @@ cata_msg = {
 """),
 
 31 : _(u"""
- le parametre m de weibull doit etre le meme pour toutes les bases resultats !
+ le paramètre m de weibull doit être le même pour toutes les bases resultats !
 """),
 
 32 : _(u"""
- le parametre sigm_refe de weibull doit etre le meme pour toutes les bases resultats !
+ le paramètre sigm_refe de weibull doit être le même pour toutes les bases resultats !
 """),
 
 33 : _(u"""
- aucun numero d'unite logique n'est associe a  %(k1)s
+ aucun numéro d'unite logique n'est associe a  %(k1)s
 """),
 
 34 : _(u"""
- aucun numero d'unite logique n'est disponible
+ aucun numéro d'unite logique n'est disponible
 """),
 
 35 : _(u"""
@@ -151,11 +151,11 @@ cata_msg = {
 """),
 
 36 : _(u"""
- arret de la procedure de recalage : le parametre m est devenu trop petit (m<1) , verifiez vos listes d'instants de rupture
+ arret de la procedure de recalage : le paramètre m est devenu trop petit (m<1) , verifiez vos listes d'instants de rupture
 """),
 
 37 : _(u"""
- les parametres de la nappe ont ete reordonnees.
+ les paramètres de la nappe ont ete reordonnées.
 """),
 
 38 : _(u"""
@@ -167,7 +167,7 @@ cata_msg = {
 """),
 
 40 : _(u"""
- impossibilité : la maille  %(k1)s  doit etre de type "SEG2" ou "SEG3"
+ impossibilité : la maille  %(k1)s  doit être de type "SEG2" ou "SEG3"
  et elle est de type :  %(k2)s
 """),
 
@@ -200,7 +200,7 @@ cata_msg = {
 """),
 
 51 : _(u"""
- le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer la constante de torsion doit etre egal a 1.
+ le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer la constante de torsion doit être egal a 1.
 """),
 
 52 : _(u"""
@@ -212,15 +212,15 @@ cata_msg = {
 """),
 
 54 : _(u"""
- on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi_y"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer les coefficients de cisaillement et les coordonnees du centre de torsion.
+ on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi_y"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
 """),
 
 55 : _(u"""
- on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi_z"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer les coefficients de cisaillement et les coordonnees du centre de torsion.
+ on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi_z"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
 """),
 
 56 : _(u"""
- le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer les coefficients de cisaillement et les coordonnees du centre de torsion doit etre egal a 1.
+ le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion doit être egal a 1.
 """),
 
 57 : _(u"""
@@ -228,7 +228,7 @@ cata_msg = {
 """),
 
 58 : _(u"""
- le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer la constante de gauchissement doit etre egal a 1.
+ le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer la constante de gauchissement doit être egal a 1.
 """),
 
 59 : _(u"""
@@ -236,7 +236,7 @@ cata_msg = {
 """),
 
 60 : _(u"""
- il faut obligatoirement definir l'option de calcul des caracteristiques de poutre apres le mot-cle "option" du mot-facteur "cara_poutre" de la commande post_elem.
+ il faut obligatoirement définir l'option de calcul des caracteristiques de poutre apres le mot-cle "option" du mot-facteur "cara_poutre" de la commande post_elem.
 """),
 
 61 : _(u"""
@@ -295,11 +295,11 @@ cata_msg = {
 """),
 
 78 : _(u"""
- le resultat  %(k1)s  doit comporter la relation de comportement au numero d'ordre  %(k2)s  .
+ le resultat  %(k1)s  doit comporter la relation de comportement au numéro d'ordre  %(k2)s  .
 """),
 
 79 : _(u"""
- le resultat  %(k1)s  doit comporter un champ de variables internes au numero d'ordre  %(k2)s  .
+ le resultat  %(k1)s  doit comporter un champ de variables internes au numéro d'ordre  %(k2)s  .
 """),
 
 80 : _(u"""
@@ -315,7 +315,7 @@ cata_msg = {
 """),
 
 83 : _(u"""
- erreur: les options de calcul doivent etre identiques pour toutes les occurrences du mot clef facteur
+ erreur: les options de calcul doivent être identiques pour toutes les occurrences du mot clef facteur
 """),
 
 84 : _(u"""
@@ -339,11 +339,11 @@ cata_msg = {
 """),
 
 89 : _(u"""
- les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir le meme nombre de coordonnees.
+ les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir le même nombre de coordonnées.
 """),
 
 90 : _(u"""
- les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir la meme grandeur associee.
+ les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir la même grandeur associee.
 """),
 
 91 : _(u"""

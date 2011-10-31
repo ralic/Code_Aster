@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postrccm Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,13 +22,13 @@
 cata_msg={
 
 1: _(u"""
- le parametre %(k2)s n'existe pas dans la table %(k1)s
+ le paramètre %(k2)s n'existe pas dans la table %(k1)s
 """),
 
 2: _(u"""
- probleme pour récupérer dans la table %(k1)s la valeur du parametre %(k2)s
-   pour le parametre %(k3)s de valeur %(r1)12.5E et
-   pour le parametre %(k4)s de valeur %(r2)12.5E
+ probleme pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
+   pour le paramètre %(k3)s de valeur %(r1)12.5E et
+   pour le paramètre %(k4)s de valeur %(r2)12.5E
 """),
 
 3: _(u"""
@@ -74,7 +74,7 @@ cata_msg={
 """),
 
 12: _(u"""
- "NUME_GROUPE" doit etre strictement positif
+ "NUME_GROUPE" doit être strictement positif
 """),
 
 13: _(u"""
@@ -93,14 +93,14 @@ cata_msg={
 """),
 
 16: _(u"""
- probleme pour récupérer dans la table %(k1)s la valeur du parametre %(k2)s
-   pour le parametre %(k3)s de valeur %(k5)s et
-   pour le parametre %(k4)s de valeur %(r1)12.5E
+ probleme pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
+   pour le paramètre %(k3)s de valeur %(k5)s et
+   pour le paramètre %(k4)s de valeur %(r1)12.5E
 """),
 
 17: _(u"""
- probleme pour récupérer dans la table  %(k1)s les valeurs du parametre %(k4)s
-   pour le parametre %(k2)s de valeur %(k3)s
+ probleme pour récupérer dans la table  %(k1)s les valeurs du paramètre %(k4)s
+   pour le paramètre %(k2)s de valeur %(k3)s
 """),
 
 18: _(u"""
@@ -115,23 +115,23 @@ cata_msg={
 
 20: _(u"""
  champ de nom symbolique %(k1)s inexistant pour le RESULTAT %(k2)s
- défini sous l'occurence numéro %(i1)d
+ défini sous l'occurrence numéro %(i1)d
 """),
 
 21: _(u"""
  il ne faut qu'un seul champ de nom symbolique %(k1)s pour le RESULTAT %(k2)s
- défini sous l'occurence numéro %(i1)d
+ défini sous l'occurrence numéro %(i1)d
 """),
 
 22: _(u"""
  probleme pour récupérer le champ de nom symbolique %(k1)s pour le RESULTAT %(k2)s
- défini sous l'occurence numéro %(i1)d
+ défini sous l'occurrence numéro %(i1)d
 """),
 
 23: _(u"""
- on n'a pas pu récupérer le résultat thermique correspondant au numero %(i2)d 
+ on n'a pas pu récupérer le résultat thermique correspondant au numéro %(i2)d 
  défini par le mot clé "NUME_RESU_THER" sous le mot clé facteur "RESU_THER"
- occurence numéro %(i1)d
+ occurrence numéro %(i1)d
 """),
 
 24: _(u"""
@@ -147,16 +147,16 @@ cata_msg={
 26: _(u"""
  il faut définir qu'un seul séisme dans un groupe
    groupe numéro %(i1)d 
-   occurence situation %(i2)d et %(i3)d 
+   occurrence situation %(i2)d et %(i3)d 
 """),
 
 28: _(u"""
- erreur données, pour la situation numero %(i1)d 
+ erreur données, pour la situation numéro %(i1)d 
  on n'a pas pu récupérer le "RESU_MECA" correspondant au numéro du cas de charge %(i2)d 
 """),
 
 29: _(u"""
- erreur données, pour la situation numero %(i1)d 
+ erreur données, pour la situation numéro %(i1)d 
  on ne peut pas avoir des charges de type "seisme" et "autre".
 """),
 
@@ -193,7 +193,7 @@ cata_msg={
 
 37: _(u"""
  -> L'ordre des noeuds de la table %(k1)s n'est pas respecté.
-    Les noeuds doivent etre rangés d'une des peaux vers l'autre.
+    Les noeuds doivent être rangés d'une des peaux vers l'autre.
  -> Risque & Conseil:
     Veuillez consulter la documentation U2.09.03.
 """),
@@ -239,7 +239,7 @@ cata_msg={
 
 43: _(u"""
  -> Les tables %(k1)s et %(k2)s ne sont pas cohérentes en terme d'instant:
-    Une différence a été observée entre les valeurs d'instant d'un meme point
+    Une différence a été observée entre les valeurs d'instant d'un même point
     - table %(k1)s : INST = %(r1)f
     - table %(k2)s : INST = %(r2)f
  -> Risque & Conseil:
@@ -248,8 +248,8 @@ cata_msg={
 """),
 
 44: _(u"""
- probleme pour récupérer dans la table %(k1)s la valeur du parametre %(k2)s
- pour le parametre %(k3)s de valeur %(r1)12.5E.
+ probleme pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
+ pour le paramètre %(k3)s de valeur %(r1)12.5E.
 """),
 
 }

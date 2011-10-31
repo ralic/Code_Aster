@@ -6,9 +6,9 @@
       REAL*8                         VAR(*),FON(*),VARRES(*),FONRES(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -266,7 +266,8 @@ C     ------------------------------------------------------------------
       ELSE
          VALK(1)=NOMF
          VALK(2)=CHPROL(1)
-         CALL U2MESK('F','FONCT0_25',2,VALK)
+         VALK(3)='FOINTR'
+         CALL U2MESK('F','FONCT0_25',3,VALK)
       ENDIF
  9999 CONTINUE
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 5 : _(u"""
- les CHAM_NO n'ont pas tous la meme longueur
+ les CHAM_NO n'ont pas tous la même longueur
 """),
 
 6 : _(u"""
@@ -50,7 +50,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 8 : _(u"""
- l'origine doit etre définie par 3 coordonnées.
+ l'origine doit être définie par 3 coordonnées.
 """),
 
 9 : _(u"""
@@ -67,7 +67,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 
 12 : _(u"""
  le noeud se trouve sur l'axe du repère cylindrique.
- on prend le noeud moyen des centres géometriques.
+ on prend le noeud moyen des centres géométriques.
 """),
 
 13 : _(u"""
@@ -76,7 +76,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
      l'élément pour le calcul de la matrice de passage en repère cylindrique.
   -> Risque & Conseil :
      Si ce centre de gravité se trouve également sur l'axe du repère, le calcul
-     s'arrete en erreur fatale.
+     s'arrête en erreur fatale.
 """),
 
 14 : _(u"""
@@ -108,12 +108,12 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 23 : _(u"""
- la maille doit etre de type TETRA4, TETRA10, PYRAM5, PYRAM10, PENTA6, PENTA15, HEXA8 ou HEXA20.
+ la maille doit être de type TETRA4, TETRA10, PYRAM5, PYRAM10, PENTA6, PENTA15, HEXA8 ou HEXA20.
  or la maille est de type :  %(k1)s .
 """),
 
 24 : _(u"""
- la maille doit etre de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
+ la maille doit être de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
  ou TRIA3-6 ou QUAD4-8
  or la maille est de type :  %(k1)s .
 """),
@@ -139,7 +139,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 31 : _(u"""
- deux éléments sur la meme face
+ deux éléments sur la même face
 """),
 
 33 : _(u"""
@@ -179,7 +179,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 48 : _(u"""
- plusieurs instants correspondent à celui specifié sous AFFE
+ plusieurs instants correspondent à celui spécifié sous AFFE
 """),
 
 49 : _(u"""
@@ -191,12 +191,12 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 54 : _(u"""
-  increment de déformation cumulée (dp) = - %(k1)s
+  incrément de déformation cumulée (DP) = - %(k1)s
 """),
 
 55 : _(u"""
  erreur d'intégration
- - essai d(integration  numero  %(k1)s
+ - essai d(intégration  numéro  %(k1)s
  - convergence vers une solution non conforme
  - incrément de déformation cumulée négative = - %(k2)s
  - redécoupage du pas de temps
@@ -204,7 +204,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 
 56 : _(u"""
   erreur
-  - non convergence à l'itération maxi  %(k1)s
+  - non convergence à l'itération max  %(k1)s
   - convergence régulière mais trop lente
   - erreur >  %(k2)s
   - redécoupage du pas de temps
@@ -212,14 +212,14 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 
 57 : _(u"""
   erreur
-  - non convergence à l'itération maxi  %(k1)s
+  - non convergence à l'itération max  %(k1)s
   - convergence irrégulière & erreur >  %(k2)s
   - redécoupage du pas de temps
 """),
 
 58 : _(u"""
   erreur
-  - non convergence à l'itération maxi  %(k1)s
+  - non convergence à l'itération max  %(k1)s
   - erreur >  %(k2)s
   - redécoupage du pas de temps
 """),
@@ -234,11 +234,11 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 61 : _(u"""
- les listes des groupes de noeuds à fournir doivent contenir le meme nombre de groupes de noeuds
+ les listes des groupes de noeuds à fournir doivent contenir le même nombre de groupes de noeuds
 """),
 
 62 : _(u"""
-  les listes des groupes de noeuds doivent contenir le meme nombre de noeuds
+  les listes des groupes de noeuds doivent contenir le même nombre de noeuds
 """),
 
 63 : _(u"""
@@ -246,7 +246,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 64 : _(u"""
-  %(k1)s cham_no déjà existant
+  %(k1)s CHAM_NO déjà existant
 """),
 
 65 : _(u"""

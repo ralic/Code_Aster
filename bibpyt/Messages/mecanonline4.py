@@ -1,4 +1,4 @@
-#@ MODIF mecanonline4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ cata_msg = {
 
 15 : _(u"""
  Vous utilisez la méthode CONTINUE pour le traitement du contact et définissez un état initial via le mot-clé ETAT_INIT. L'état initial de contact
- sera non-contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
+ sera non contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
 """),
 
 22 : _(u"""
@@ -50,7 +50,7 @@ cata_msg = {
 47 : _(u"""
  Vous faites une reprise de calcul avec PILOTAGE en longueur d'arc et avec l'option ANGL_INCR_DEPL mais il n'y pas assez d'informations dans
  la structure de données résultat. Il vous faut en effet au moins les deux derniers champs déplacements solutions.
- Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la structure de données résultat (modifiez vos options d'ARCHIVAGE).
+ Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la structure de données résultat (modifiez vos options du mot-clé ARCHIVAGE).
 """),
 
 }

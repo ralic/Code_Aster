@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,7 +102,7 @@ cata_msg = {
 """),
 
 17 : _(u"""
- les parametres doivent être réels
+ les paramètres doivent être réels
 """),
 
 18 : _(u"""
@@ -135,7 +135,7 @@ cata_msg = {
 """),
 
 26 : _(u"""
- pas la meme numerotation sur les CHAM_NO.
+ pas la même numérotation sur les CHAM_NO.
 """),
 
 27 : _(u"""
@@ -151,7 +151,7 @@ cata_msg = {
 """),
 
 31 : _(u"""
- nom_cmp2 et nom_cmp de longueur differentes.
+ nom_cmp2 et nom_cmp de longueur différentes.
 """),
 
 32: _(u"""
@@ -165,7 +165,7 @@ cata_msg = {
 """),
 
 34 : _(u"""
- developpement non realise pour les champs aux elements. vraiment desole !
+ developpement non realise pour les champs aux éléments. vraiment desole !
 """),
 
 35 : _(u"""
@@ -177,7 +177,7 @@ cata_msg = {
 """),
 
 40 : _(u"""
- structure de donnees inexistante : %(k1)s
+ structure de données inexistante : %(k1)s
 """),
 
 41 : _(u"""
@@ -189,7 +189,7 @@ cata_msg = {
 """),
 
 43 : _(u"""
- numerotation absente  probleme dans la matrice  %(k1)s
+ numérotation absente  probleme dans la matrice  %(k1)s
 """),
 
 44 : _(u"""
@@ -201,7 +201,7 @@ cata_msg = {
 """),
 
 46 : _(u"""
- la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a ete definie.
+ la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a ete définie.
 """),
 
 47 : _(u"""
@@ -369,7 +369,7 @@ cata_msg = {
 """),
 
 91 : _(u"""
- le parametre " %(k1)s " n'est pas un parametre de choc.
+ le paramètre " %(k1)s " n'est pas un paramètre de choc.
 """),
 
 92 : _(u"""

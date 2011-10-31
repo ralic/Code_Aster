@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,11 +29,6 @@ cata_msg = {
  tuyau : le nombre de secteurs est limite a  %(i1)d
 """),
 
-8 : _(u"""
- Vous voulez utiliser l'indicateur de convergence RESI_REFE_RELA mais vous n'avez pas
- renseigné le mot-clé %(k1)s .
-"""),
-
 9 : _(u"""
  Employez la modélisation spécifique aux grandes déformations XX_INCO_GD
 """),
@@ -44,7 +39,9 @@ A l'occurrence %(i1)d, les objets précédemment évoqués sont inexistants ou de ty
 
 16 : _(u"""
 Les mailles fournies sont non consécutives dans la numérotation des noeuds.
-En effet, les mailles segment doivent être ordonnées de telle sorte que pour deux segments consécutifs, le 2ème noeud sommet du 1er segment soit le même que le 1er noeud sommet du 2ème segment.
+En effet, les mailles segment doivent être ordonnées de telle sorte que pour deux segments
+consécutifs, le deuxième noeud sommet du premier segment soit le même que le premier noeud
+sommet du deuxième segment.
 
 Conseil : Pour ordonner les mailles du fond de fissure, veuillez
 utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR).
@@ -67,15 +64,16 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 """),
 
 22 : _(u"""
-   Erreur, le nombre de noeuds d'un element de joint 3D n'est pas correct
+   Erreur, le nombre de noeuds d'un élément de joint 3D n'est pas correct
 """),
 
 23 : _(u"""
-   Erreur, le nombre de points de Gauss d'un element de joint 3D n'est pas correct
+   Erreur, le nombre de points de Gauss d'un élément de joint 3D n'est pas correct
 """),
 
 24 : _(u"""
-  le nombre de mailles du modele %(i1)d est différent de la somme des mailles des sous-domaines %(i2)d
+  le nombre de mailles du modèle %(i1)d est différent de la somme des mailles des
+  sous-domaines %(i2)d
 """),
 
 25 : _(u"""
@@ -83,15 +81,15 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 """),
 
 28 : _(u"""
-  le modele comporte %(i1)d mailles de plus que l'ensemble des sous-domaines
+  le modèle comporte %(i1)d mailles de plus que l'ensemble des sous-domaines
 """),
 
 29 : _(u"""
-  le modele comporte %(i1)d mailles de moins que l'ensemble des sous-domaines
+  le modèle comporte %(i1)d mailles de moins que l'ensemble des sous-domaines
 """),
 
 30 : _(u"""
- jacobien negatif ou nul : jacobien =  %(r1)f
+ jacobien négatif ou nul : jacobien =  %(r1)f
 """),
 
 32 : _(u"""
@@ -110,9 +108,9 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 
 34 : _(u"""
   Contact méthode continue avec FETI: la maille %(i1)d de la zone %(i2)d
-  du chargement %(i3)d , semble etre à cheval entre les sous-domaines
+  du chargement %(i3)d , semble être à cheval entre les sous-domaines
   %(i4)d et %(i5)d !
-  Solution paliative: il faut forcer le partitionnement à ne pas couper
+  Solution palliative: il faut forcer le partitionnement à ne pas couper
   cette zone de contact ou essayer de la dédoubler en deux zones.
 """),
 
@@ -123,7 +121,7 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 
 36 : _(u"""
   Contact méthode continue avec FETI: le noeud %(i1)d est présent plusieurs
-  fois dans la zone de contact %(i2)d . Cela ne devrait pas etre un problème
+  fois dans la zone de contact %(i2)d . Cela ne devrait pas être un problème
   pour l'algorithme, mais ce n'est pas une modélisation du contact très
   orthodoxe !
 """),
@@ -142,8 +140,8 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 """),
 
 39 : _(u"""
- echec de la recherche de zero a l'iteration :  %(i1)d
-  fonction decroissante - pour x=a:  %(r1)f
+ Échec de la recherche de zéro a l'itération :  %(i1)d
+  fonction décroissante - pour x=a:  %(r1)f
   / fonction(a):  %(r2)f
                           et   x=b:  %(r3)f
   / fonction(b):  %(r4)f
@@ -157,7 +155,7 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 """),
 
 40 : _(u"""
- echec de la recherche de zero a l'iteration :  %(i1)d
+ Échec de la recherche de zéro a l'itération :  %(i1)d
   fonction constante    - pour x=a:  %(r1)f
   / fonction(a):  %(r2)f
                           et   x=b:  %(r3)f
@@ -176,9 +174,9 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
 """),
 
 42 : _(u"""
- L'épaisseur definie dans DEFI_GLRC et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
- Epaisseur dans DEFI_GLRC: %(r1)f
- Epaisseur dans AFFE_CARA_ELEM: %(r2)f
+ L'épaisseur définie dans DEFI_GLRC et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
+ Épaisseur dans DEFI_GLRC: %(r1)f
+ Épaisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
 43 : _(u"""
@@ -199,16 +197,16 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
 """),
 
 46 : _(u"""
-  reletion :  %(k1)s  non implantée pour les éléments COQUE_3D
-  reletion : ELAS obligatoirement
+  relation :  %(k1)s  non implantée pour les éléments COQUE_3D
+  relation : ELAS obligatoirement
 """),
 
 47 : _(u"""
-    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modélisations xxx_INTERFACE
+    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE de AFFE_CARA_ELEM pour les modélisations XXX_INTERFACE
 """),
 
 48 : _(u"""
-    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modélisations xxx_JHMS
+    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE de AFFE_CARA_ELEM pour les modélisations XXX_JHMS
 """),
 49 : _(u"""
    La méthode IMPLEX ne peut pas être utilisée avec la loi de comportement que vous
@@ -237,7 +235,7 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
 """),
 
 54 : _(u"""
-  Le nbre de sous-points est : %(i1)d. Il doit soit valoir 1 (si on a déja extrait le champ) soit un
+  Le nombre de sous-points est : %(i1)d. Il doit soit valoir 1 (si on a déjà extrait le champ) soit un
   multiple de 3 (si le champ est complet).
 """),
 

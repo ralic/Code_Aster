@@ -1,4 +1,4 @@
-#@ MODIF appariement Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF appariement Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,14 +49,14 @@ Erreur de définition de la maille ou projection difficile.
 """),
 
 34 : _(u"""
-Echec de l'orthogonalisation du repère tangent construit au niveau du projeté du point de coordonnées
+Échec de l'orthogonalisation du repère tangent construit au niveau du projeté du point de coordonnées
   (%(r1)f,%(r2)f,%(r3)f)
 sur la maille %(k1)s,
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
 36 : _(u"""
-La maille %(k1)s est de type 'POI1', ce n'est pas autorisé sur une maille maitre dans le cas d'un appariement MAIT_ESCL.
+La maille %(k1)s est de type 'POI1', ce n'est pas autorisé sur une maille maître dans le cas d'un appariement MAIT_ESCL.
 """),
 
 38 : _(u"""

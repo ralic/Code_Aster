@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,9 +124,9 @@ cata_msg = {
 """),
 
 59 : _(u"""
- le maillage GIBI est peut etre erroné :
+ le maillage GIBI est peut être erroné :
  il est écrit : "NIVEAU RREUR N_ERR"  avec N_ERR est >0 .
- on continue quand meme, mais si vous avez des problèmes plus loin ...
+ on continue quand même, mais si vous avez des problèmes plus loin ...
 """),
 
 60 : _(u"""
@@ -152,7 +152,7 @@ cata_msg = {
 76 : _(u"""
   -> Il y a des groupes de noeuds dans le maillage %(k1)s.
      Ils  n'apparaitront pas dans le fichier géométrie ENSIGHT.
-     Seuls des groupes de mailles peuvent y etre intégrés.
+     Seuls des groupes de mailles peuvent y être intégrés.
 """),
 
 77 : _(u"""

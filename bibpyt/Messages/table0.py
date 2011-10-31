@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,11 +62,7 @@ On a lu %(i1)d champs dans le fichier.
 """),
 
 14 : (u"""
-Les listes %(k1)s et %(k2)s doivent avoir le meme cardinal.
-"""),
-
-15 : (u"""
-Les listes DEFA et PARA_NOCI doivent avoir le meme cardinal.
+Les listes %(k1)s et %(k2)s doivent avoir le même cardinal.
 """),
 
 16:_(u"""
@@ -86,19 +82,16 @@ On l'écrase pour le remplacer par le nouveau.
 23 : _(u"""Le paramètre %(k1)s est en double.
 """),
 
-24 : _(u"""Le parametre %(k1)s existe déjà.
+24 : _(u"""Le paramètre %(k1)s existe déjà.
 """),
 
-25 : _(u"""(fromfunction) '%(k1)s' n'a pas d'attribut '__call__'.
+25 : _(u"""'%(k1)s' n'a pas d'attribut '%(k2)s'.
 """),
 
-26 : _(u"""(fromfunction) '%(k1)s' n'a pas d'attribut 'nompar'.
+27 : _(u"""Les paramètres n'existent pas dans la table : %(k1)s
 """),
 
-27 : _(u"""Le (ou les) paramètre(s) n'existe(nt) pas dans la table : %(k1)s
-"""),
-
-28 : _(u"""(fromfunction) L'argument 'const' doit etre de type 'dict'.
+28 : _(u"""L'argument '%(k1)s' doit être de type '%(k2)s'.
 """),
 
 29 : _(u"""Valeur incorrecte pour ORDRE : %(k1)s
@@ -135,17 +128,17 @@ faire l'intersection  ou l'union (opérateurs &, |).
 """),
 
 39 : _(u"""
-Aucun numéro d'ordre associé à l'acces %(k1)s de valeur %(i1)d
+Aucun numéro d'ordre associé à l'accès %(k1)s de valeur %(i1)d
 Veuillez vérifier vos données.
 """),
 
 40 : _(u"""
-Aucun numéro d'ordre associé à l'acces %(k1)s de valeur %(r1)f
+Aucun numéro d'ordre associé à l'accès %(k1)s de valeur %(r1)f
 Veuillez vérifier vos données.
 """),
 
 41 : _(u"""
-Les mot-clés 'NOEUD' et 'GROUP_NO' ne sont pas autorisés pour
+Les mots-clés 'NOEUD' et 'GROUP_NO' ne sont pas autorisés pour
 les champs élémentaires (ELNO/ELGA).
 """),
 

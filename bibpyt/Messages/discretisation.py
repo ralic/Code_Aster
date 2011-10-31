@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 17/10/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF discretisation Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
 
 2 : _(u"""
  L'instant initial de la liste est plus grand que le deuxième instant.
- Si vous faites une reprise de calcul (REUSE), vous pouvez utiliser le mot-clef ETAT_INIT/INST_ETAT_INIT pour corriger celà.
+ Si vous faites une reprise de calcul (REUSE), vous pouvez utiliser le mot-clef ETAT_INIT/INST_ETAT_INIT pour corriger cela.
 """),
 
 3 : _(u"""
@@ -39,7 +39,7 @@ Conseils :
 
 5 : _(u"""
  L'adaptation du pas de temps a été désactivée. Seuls les instants définis par LIST_INST seront calculés
- (hormis les sous-découpages éventuels).
+ (hormis les sous découpages éventuels).
 """),
 
 8 : _(u"""
@@ -52,7 +52,7 @@ Conseils :
 
 9 : _(u"""
  Attention, en cas d'erreur (contact, loi de comportement, pilotage, ...), le pas de temps
- ne sera pas re-découpé.
+ ne sera pas redécoupé.
 """),
 
 

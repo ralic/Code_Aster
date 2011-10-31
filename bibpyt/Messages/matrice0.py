@@ -1,4 +1,4 @@
-#@ MODIF matrice0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF matrice0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,23 +29,23 @@ cata_msg={
 """),
 
 3: _(u"""
- Amortissement ajouté sur modèle generalisé non encore implanté.
+ Amortissement ajouté sur modèle généralisé non encore implanté.
 """),
 
 4: _(u"""
- Rigidité ajouté sur modele généralisé non encore implanté.
+ Rigidité ajouté sur modèle généralisé non encore implanté.
 """),
 
 9: _(u"""
- Une des options doit etre RIGI_MECA ou RIGI_THER ou RIGI_ACOU ou RIGI_MECA_LAGR.
+ Une des options doit être RIGI_MECA ou RIGI_THER ou RIGI_ACOU ou RIGI_MECA_LAGR.
 """),
 
 10: _(u"""
- Pour calculer RIGI_MECA_HYST, il faut avoir calculé RIGI_MECA auparavant (dans le meme appel).
+ Pour calculer RIGI_MECA_HYST, il faut avoir calculé RIGI_MECA auparavant (dans le même appel).
 """),
 
 11: _(u"""
- Pour calculer AMOR_MECA, il faut avoir calculé RIGI_MECA et MASS_MECA auparavant (dans le meme appel).
+ Pour calculer AMOR_MECA, il faut avoir calculé RIGI_MECA et MASS_MECA auparavant (dans le même appel).
 """),
 
 }

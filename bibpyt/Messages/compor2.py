@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF compor2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ cata_msg={
 """),
 
 5 : _(u"""
-   SIMU_POINT_MAT : nombre d'iterations maximum atteint.
+   SIMU_POINT_MAT : nombre d'itérations maximum atteint.
    On tente de subdiviser le pas de temps
 """),
 
@@ -66,7 +66,7 @@ Les déformations deviennent trop grandes : <%(r1)E>
 Pour un calcul en grandes déformation sous COMP_INCR
 il faut utiliser GDEF_HYPO_ELAS ou SIMO_MIEHE.
 
-Pour un calcul hyperelastique, utiliser COMP_ELAS.
+Pour un calcul hyper-élastique, utiliser COMP_ELAS.
 """),
 
 
@@ -75,7 +75,7 @@ Le redécoupage local du pas de temps n'est pas compatible avec <%(k1)s>
 """),
 
 11 : _(u"""
-La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integration IMPLICITE.
+La rotation de réseau n'est pas compatible avec RUNGE_KUTTA. Utiliser l'intégration IMPLICITE.
 """),
 
 12 : _(u"""
@@ -91,15 +91,15 @@ La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integrati
 """),
 
 15: _(u"""
- MONOCRISTAL : la matrice d'interaction fournie n'est pas carrée : nb lignes = <%(r1)E>, nb colonnes = <%(r2)E>.
+ MONOCRISTAL : la matrice d'interaction fournie n'est pas carrée : nombre lignes = <%(r1)E>, nombre colonnes = <%(r2)E>.
 """),
 
 16: _(u"""
- POLYCRISTAL : Il faut au maximum 5 monocristaux différents sur l'ensemble des phases.  Ici,il y en a : <%(i1)i>.
+ POLYCRISTAL : Il faut au maximum 5 mono cristaux différents sur l'ensemble des phases.  Ici,il y en a : <%(i1)i>.
 """),
 
 17: _(u"""
- MONOCRISTAL : la matrice d'interaction fournie ne comporte pas le bon nombre de systemes.
+ MONOCRISTAL : la matrice d'interaction fournie ne comporte pas le bon nombre de systèmes.
  il en faut : <%(i1)i>.
 """),
 
@@ -112,8 +112,8 @@ La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integrati
 """),
 
 20: _(u"""
- MONOCRISTAL : commme il y a  plusieurs familles de systemes de glissement, 
- il faut fournir une matrice d'interaction entre tous ces systemes, de dimension  <%(i1)i>
+ MONOCRISTAL : comme il y a  plusieurs familles de systèmes de glissement, 
+ il faut fournir une matrice d'interaction entre tous ces systèmes, de dimension  <%(i1)i>
 """),
 
 21: _(u"""

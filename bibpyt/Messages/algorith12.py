@@ -1,21 +1,21 @@
-#@ MODIF algorith12 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith12 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -32,7 +32,7 @@ cata_msg = {
 
 7 : _(u"""
  données incompatibles :
- pour les modes mecaniques :  %(k1)s
+ pour les modes mécaniques :  %(k1)s
  il manque l'option        :  %(k2)s
 """),
 
@@ -44,13 +44,13 @@ cata_msg = {
 
 13 : _(u"""
  données incompatibles :
- pour les mode_corr :  %(k1)s
+ pour les MODE_CORR :  %(k1)s
  pour le champ      :  %(k2)s
  le type n'est pas  %(k3)s
 """),
 
 14 : _(u"""
- donnees incompatibles :
+ données incompatibles :
  pour les statiques :  %(k1)s
  il manque le champ :  %(k2)s
 """),
@@ -81,7 +81,7 @@ cata_msg = {
 
 21 : _(u"""
  données incompatibles :
- pour les mode_corr :  %(k1)s
+ pour les mode_CORR :  %(k1)s
  il manque l'option :  %(k2)s
 """),
 
@@ -93,20 +93,20 @@ cata_msg = {
 
 
 26 : _(u"""
- arret sur manque argument
+ arrêt sur manque argument
  base modale donnée -->  %(k1)s
- interf_dyna donnée -->  %(k2)s
+ INTERF_DYNA donnée -->  %(k2)s
 """),
 
 27 : _(u"""
- arret sur type de base incorrecte
+ arrêt sur type de base incorrecte
  base modale donnée -->  %(k1)s
  type  base modale  -->  %(k2)s
  type attendu       -->  %(k3)s
 """),
 
 28 : _(u"""
- arret sur incohérence données
+ arrêt sur incohérence données
  base modale donnée         -->  %(k1)s
  INTERF_DYNA correspondante -->  %(k2)s
  INTERF_DYNA donnée         -->  %(k3)s
@@ -115,33 +115,33 @@ cata_msg = {
 29 : _(u"""
  problème arguments de définition interface
  nom interface donné    %(k1)s
- numero interface donné %(i1)d
+ numéro interface donné %(i1)d
 """),
 
 30 : _(u"""
- arret sur base modale sans INTERF_DYNA
+ arrêt sur base modale sans INTERF_DYNA
  base modale donnée -->  %(k1)s
 """),
 
 31 : _(u"""
- arret sur manque arguments
+ arrêt sur manque arguments
  base modale donnée -->  %(k1)s
  INTERF_DYNA donnée -->  %(k2)s
 """),
 
 38 : _(u"""
- arret sur problème cohérence interface
+ arrêt sur problème cohérence interface
 """),
 
 39 : _(u"""
- arret sur matrice inexistante
+ arrêt sur matrice inexistante
  matrice %(k1)s
 """),
 
 40 : _(u"""
-  arret problème de factorisation:
+  arrêt problème de factorisation:
   présence probable de modes de corps rigide
-  la methode de Mac-Neal ne fonctionne pas en présence de modes de corps rigide
+  la méthode de Mac-Neal ne fonctionne pas en présence de modes de corps rigide
 """),
 
 41 : _(u"""
@@ -152,7 +152,7 @@ cata_msg = {
 
 42 : _(u"""
  le mot-clé  %(k1)s est incompatible avec le champ %(k2)s
- utilisez 'GROUP_MA' ou 'MAILLE'  pour restreindre le changement de repere
+ utilisez 'GROUP_MA' ou 'MAILLE'  pour restreindre le changement de repère
  à certaines mailles. %(k3)s
 """),
 
@@ -162,7 +162,7 @@ cata_msg = {
 """),
 
 44 : _(u"""
- noeud sur l'AXE_Z noeud :  %(k1)s
+ noeud sur l'axe Z noeud :  %(k1)s
 """),
 
 49 : _(u"""
@@ -175,12 +175,12 @@ cata_msg = {
 """),
 
 51 : _(u"""
- nom de sous-structure non trouvé 
+ nom de sous-structure non trouvé
  la sous-structure :  %(k1)s n existe pas  %(k2)s
 """),
 
 53 : _(u"""
- arret sur pivot nul
+ arrêt sur pivot nul
  ligne -->  %(i1)d
 """),
 
@@ -193,7 +193,7 @@ cata_msg = {
 """),
 
 57 : _(u"""
- le MAILLAGE : %(k1)s ne contient pas de GROUP_NO  
+ le MAILLAGE : %(k1)s ne contient pas de GROUP_NO
 """),
 
 58 : _(u"""
@@ -205,7 +205,7 @@ cata_msg = {
 """),
 
 62 : _(u"""
- les deux numérotations n'ont pas meme maillage d'origine
+ les deux numérotations n'ont pas même maillage d'origine
   numérotation 1: %(k1)s
   maillage     1: %(k2)s
   numérotation 2: %(k3)s
@@ -219,7 +219,7 @@ cata_msg = {
 """),
 
 64 : _(u"""
- arret sur perte d'information DDL physique
+ arrêt sur perte d'information DDL physique
 """),
 
 66 : _(u"""
@@ -230,7 +230,7 @@ cata_msg = {
 """),
 
 67 : _(u"""
- arret sur problème de conditions d'interface
+ arrêt sur problème de conditions d'interface
 """),
 
 68 : _(u"""
@@ -254,7 +254,7 @@ cata_msg = {
 
 72 : _(u"""
 
- le noeud se trouve en dehors du domaine de definition avec un profil droit de type EXCLU
+ le noeud se trouve en dehors du domaine de définition avec un profil droit de type EXCLU
  noeud :  %(k1)s
 """),
 
@@ -270,7 +270,7 @@ cata_msg = {
 """),
 
 76 : _(u"""
-  problème de récuperation CHAMNO
+  problème de récupération CHAMNO
   concept résultat:  %(k1)s
   numéro d'ordre  :  %(i1)d
 """),
@@ -280,25 +280,25 @@ cata_msg = {
 """),
 
 78 : _(u"""
- arret sur interface déjà définie
- mot-clé interface numero  -->  %(i1)d
+ arrêt sur interface déjà définie
+ mot-clé interface numéro  -->  %(i1)d
  interface                 -->  %(k1)s
 """),
 
 79 : _(u"""
- les deux interfaces n'ont pas le meme nombre de noeuds
+ les deux interfaces n'ont pas le même nombre de noeuds
  nombre noeuds interface droite -->  %(i1)d
  nombre noeuds interface gauche -->  %(i2)d
 """),
 
 80 : _(u"""
- les deux interfaces n'ont pas le meme nombre de degrés de liberté
+ les deux interfaces n'ont pas le même nombre de degrés de liberté
  nombre ddl interface droite -->  %(i1)d
  nombre ddl interface gauche -->  %(i2)d
 """),
 
 81 : _(u"""
- arret sur base modale ne comportant pas de modes propres
+ arrêt sur base modale ne comportant pas de modes propres
 """),
 
 82 : _(u"""
@@ -310,16 +310,16 @@ cata_msg = {
 """),
 
 83 : _(u"""
- plusieurs champs correspondant à l'acces demandé
- resultat     : %(k1)s
- acces "INST" : %(r1)f
+ plusieurs champs correspondant à l'accès demandé
+ résultat     : %(k1)s
+ accès "INST" : %(r1)f
  nombre       : %(i1)d
 """),
 
 84 : _(u"""
  pas de champ correspondant à un accès demandé
  résultat     :  %(k1)s
- acces "INST" :  %(r1)f
+ accès "INST" :  %(r1)f
 """),
 
 89 : _(u"""

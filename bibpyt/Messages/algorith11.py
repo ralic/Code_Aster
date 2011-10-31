@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith11 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,23 +55,23 @@ NUME_MODE n'est pas une variable d'accès d'un résultat de type MULT_ELAS.
 """),
 
 10 : _(u"""
-INST n'est pas une variable d'accès d'un resultat de type MULT_ELAS.
+INST n'est pas une variable d'accès d'un résultat de type MULT_ELAS.
 """),
 
 11 : _(u"""
-NOM_CAS n'est pas une variable d'accès d'un resultat de type FOURIER_ELAS.
+NOM_CAS n'est pas une variable d'accès d'un résultat de type FOURIER_ELAS.
 """),
 
 12 : _(u"""
-INST n'est pas une variable d'accès d'un resultat de type FOURIER_ELAS.
+INST n'est pas une variable d'accès d'un résultat de type FOURIER_ELAS.
 """),
 
 13 : _(u"""
-NOM_CAS n'est pas une variable d'accès d'un resultat de type FOURIER_THER.
+NOM_CAS n'est pas une variable d'accès d'un résultat de type FOURIER_THER.
 """),
 
 14 : _(u"""
-INST n'est pas une variable d'accès d'un resultat de type FOURIER_THER.
+INST n'est pas une variable d'accès d'un résultat de type FOURIER_THER.
 """),
 
 15 : _(u"""
@@ -149,11 +149,11 @@ Le paramètre matériau taille limite D10 n'est pas défini.
 """),
 
 74 : _(u"""
-Echec de la recherche de zéro (nombre maximum d'itérations atteint).
+Échec de la recherche de zéro (nombre maximum d'itérations atteint).
 """),
 
 75 : _(u"""
-Echec de la recherche de zéro (bornes atteintes).
+Échec de la recherche de zéro (bornes atteintes).
 """),
 
 76 : _(u"""
@@ -169,7 +169,7 @@ Pas d'interpolation possible.
 """),
 
 82 : _(u"""
-Erreur de la direction de glissmeent dans NMVPIR.
+Erreur de la direction de glissement dans NMVPIR.
  Angle ALPHA: %(k1)s
  Angle BETA : %(k2)s
 """),
@@ -235,7 +235,7 @@ Arrêt pour nombre de liaisons définies invalide :
 """),
 
 98 : _(u"""
-Arrêt pour nombre de mot-clés invalide :
+Arrêt pour nombre de mots-clés invalide :
  Numéro liaison : %(i1)d
  Mot-clé        : %(k1)s 
  Il en faut exactement : %(i3)d 

@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,15 +22,15 @@
 cata_msg={
 
 1: _(u"""
- on doit donner un cham_no apres le mot cle cham_no derriere le mot facteur liaison_chamno .
+ on doit donner un CHAM_NO après le mot clé CHAM_NO derrière le mot facteur LIAISON_CHAMNO .
 """),
 
 2: _(u"""
- il faut definir la valeur du second membre de la relation lineaire apres le mot cle coef_impo derriere le mot facteur liaison_chamno .
+ il faut définir la valeur du second membre de la relation linéaire après le mot clé COEF_IMPO derrière le mot facteur LIAISON_CHAMNO .
 """),
 
 3: _(u"""
- la premiere liste de noeuds dont on doit faire le vis a vis n'existe pas.
+ la première liste de noeuds dont on doit faire le vis a vis n'existe pas.
 """),
 
 4: _(u"""
@@ -38,7 +38,7 @@ cata_msg={
 """),
 
 5: _(u"""
- la premiere liste de noeuds dont on doit faire le vis a vis est vide.
+ la première liste de noeuds dont on doit faire le vis a vis est vide.
 """),
 
 6: _(u"""
@@ -46,7 +46,7 @@ cata_msg={
 """),
 
 7: _(u"""
- impossibilite de faire le vis a vis des 2 listes de noeuds, elles n'ont pas le meme nombre de noeuds apres elimination des doublons.
+ impossibilité de faire le vis a vis des 2 listes de noeuds, elles n'ont pas le même nombre de noeuds après élimination des doublons.
 """),
 
 8: _(u"""
@@ -56,20 +56,20 @@ cata_msg={
 """),
 
 9: _(u"""
- le mot cle "tran" sous le mot cle facteur %(k1)s  n"admet que 3 valeurs
+ le mot clé "TRAN" sous le mot clé facteur %(k1)s  n"admet que 3 valeurs
 """),
 
 10: _(u"""
- le mot cle "angl_naut" sous le mot cle facteur %(k1)s  n"admet que 3 valeurs
+ le mot clé "ANGL_NAUT" sous le mot clé facteur %(k1)s  n"admet que 3 valeurs
 """),
 
 11: _(u"""
- le mot cle "centre" sous le mot cle facteur %(k1)s  n"admet que 3 valeurs
+ le mot clé "centre" sous le mot clé facteur %(k1)s  n"admet que 3 valeurs
 """),
 
 12: _(u"""
   Mot clé LIAISON_GROUP : les mots clés %(k1)s et %(k2)s à mettre
-  en vis-à-vis n'ont pas le meme nombre de noeuds.
+  en vis-à-vis n'ont pas le même nombre de noeuds.
 
    - Nombre de noeuds présent sous le mot clé %(k1)s: %(i1)d
    - Nombre de noeuds présent sous le mot clé %(k2)s: %(i2)d
@@ -77,35 +77,35 @@ cata_msg={
 """),
 
 13: _(u"""
- il n'y a aucun groupe de noeuds ni aucun noeud defini apres le mot facteur  %(k1)s
+ il n'y a aucun groupe de noeuds ni aucun noeud défini après le mot facteur  %(k1)s
 """),
 
 14: _(u"""
- le mot cle "tran" sous le mot cle facteur  %(k1)s  n'admet que  %(k2)s  valeurs
+ le mot clé "TRAN" sous le mot clé facteur  %(k1)s  n'admet que  %(k2)s  valeurs
 """),
 
 15: _(u"""
- le mot cle "angl_naut" sous le mot cle facteur  %(k1)s  n'admet que  %(k2)s  valeurs
+ le mot clé "ANGL_NAUT" sous le mot clé facteur  %(k1)s  n'admet que  %(k2)s  valeurs
 """),
 
 16: _(u"""
- le mot cle "centre" sous le mot cle facteur  %(k1)s  n'admet que  %(k2)s  valeurs
+ le mot clé "centre" sous le mot clé facteur  %(k1)s  n'admet que  %(k2)s  valeurs
 """),
 
 17: _(u"""
- attention, la liste des noeuds est reduite a un seul terme et l'on ne fait aucun traitement
+ attention, la liste des noeuds est réduite a un seul terme et l'on ne fait aucun traitement
 """),
 
 18: _(u"""
- la table "cara_geom" n'existe pas dans le maillage
+ la table "CARA_GEOM" n'existe pas dans le maillage
 """),
 
 19: _(u"""
- mailles mal orientees
+ mailles mal orientées
 """),
 
 20: _(u"""
- pour les seg en 3d, il faut renseigner vect_orie_pou
+ pour les segments en 3d, il faut renseigner VECT_ORIE_pou
 """),
 
 21: _(u"""
@@ -113,15 +113,15 @@ cata_msg={
 """),
 
 22: _(u"""
- pas de normale pour les quad en 2d
+ pas de normale pour les quadrangles en 2d
 """),
 
 23: _(u"""
- il est impossible de                    calculer la tangente de la maille  %(k1)s . des noeuds doivent etre confondus.
+ il est impossible de calculer la tangente de la maille  %(k1)s . des noeuds doivent être confondus.
 """),
 
 24: _(u"""
- il est impossible de                    calculer la normale de la maille  %(k1)s . des noeuds doivent etre confondus.
+ il est impossible de calculer la normale de la maille  %(k1)s . des noeuds doivent être confondus.
 """),
 
 25: _(u"""
@@ -129,33 +129,33 @@ cata_msg={
 """),
 
 26: _(u"""
- il est impossible de                    calculer la normale de la maille  %(k1)s . des aretes doivent etre confondues.
+ il est impossible de calculer la normale de la maille  %(k1)s . des arêtes doivent être confondues.
 """),
 
 27: _(u"""
- type d element inconnu
+ type d élément inconnu
 """),
 
 28: _(u"""
- la norme du vecteur normal ( ou tangentiel) moyenne est presque nulle. les facettes concourantes  au noeud  %(k1)s  ne definissent pas une normale moyenne fiable . il y a un probleme dans la definition de vos mailles de bord .
+ la norme du vecteur normal ( ou tangentiel) moyenne est presque nulle. les facettes concourantes  au noeud  %(k1)s  ne définissent pas une normale moyenne fiable . il y a un problème dans la définition de vos mailles de bord .
 """),
 
 29: _(u"""
- L'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyen, au noeud  %(k1)s , est superieur a 10 degres et vaut  %(k2)s  degres.
+ L'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyen, au noeud  %(k1)s , est supérieur a 10 degrés et vaut  %(k2)s  degrés.
 """),
 
 30: _(u"""
 Erreur d'utilisation :
  La norme du vecteur normal (moyenne des normales des éléments concourants) est presque nulle.
- Les facettes concourantes au noeud  %(k1)s ne definissent pas une normale fiable.
- Il y a un probleme dans la definition des mailles de bord .
+ Les facettes concourantes au noeud  %(k1)s ne définissent pas une normale fiable.
+ Il y a un problème dans la définition des mailles de bord .
 
 Suggestion :
- Avez-vous pensé à réorienter les mailles de bord avec l'operateur MODI_MAILLAGE
+ Avez-vous pensé à réorienter les mailles de bord avec l'opérateur MODI_MAILLAGE
 """),
 
 31: _(u"""
- l'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyenne, au noeud  %(k1)s , est superieur a 10 degres et vaut  %(k2)s  degres.
+ l'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyenne, au noeud  %(k1)s , est supérieur a 10 degrés et vaut  %(k2)s  degrés.
 """),
 
 32: _(u"""
@@ -166,11 +166,11 @@ Suggestion :
 """),
 
 35: _(u"""
- probleme pour determiner le rang de la composante <n> de la grandeur <sief_r>
+ problème pour déterminer le rang de la composante <n> de la grandeur <SIEF_r>
 """),
 
 36: _(u"""
- le concept  %(k1)s  n est pas un concept de type cabl_precont
+ le concept %(k1)s n'est pas un concept de type cabl_precont.
 """),
 
 37: _(u"""
@@ -179,7 +179,7 @@ Suggestion :
 
 40: _(u"""
  Erreur utilisateur :
- Il ne faut pas definir les mots clés GROUP_MA et TOUT en meme temps dans AFFE_CHAR_MECA/ROTATION
+ Il ne faut pas définir les mots clés GROUP_MA et TOUT en même temps dans AFFE_CHAR_MECA/ROTATION
  , ni les mots clés MAILLE et TOUT.
 """),
 
@@ -198,7 +198,7 @@ Suggestion :
 """),
 
 62: _(u"""
- les types sv ou sh sont interdits en 2d
+ les types SV ou SH sont interdits en 2d
 """),
 
 63: _(u"""
@@ -206,143 +206,143 @@ Suggestion :
 """),
 
 64: _(u"""
- nombre d occurence du mot cle "sour_calculee"  superieur a 1
+ nombre d occurrence du mot clé "SOUR_CALCULEE"  supérieur a 1
 """),
 
 
 66: _(u"""
- la dimension du maillage ne correspond pas a la dimension des elements
+ la dimension du maillage ne correspond pas a la dimension des éléments
 """),
 
 67: _(u"""
- on doit utiliser obligatoirement le mot-cle dist pour definir la demi-largeur de bande.
+ on doit utiliser obligatoirement le mot-clé DIST pour définir la demi largeur de bande.
 """),
 
 68: _(u"""
- on doit donner une distance strictement positive pour definir la bande.
+ on doit donner une distance strictement positive pour définir la bande.
 """),
 
 69: _(u"""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option bande de crea_group_ma. ce mot-cle permet de definir la direction perpendiculaire au plan milieu de la bande.
+ on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option bande de CREA_group_ma. ce mot-clé permet de définir la direction perpendiculaire au plan milieu de la bande.
 """),
 
 70: _(u"""
- pour l'option bande de crea_group_ma, il faut  definir les 3 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 3d.
+ pour l'option bande de CREA_group_ma, il faut  définir les 3 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 3d.
 """),
 
 71: _(u"""
- pour l'option bande de crea_group_ma, il faut  definir les 2 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 2d.
+ pour l'option bande de CREA_group_ma, il faut  définir les 2 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 2d.
 """),
 
 72: _(u"""
- erreur dans la donnee du vecteur normal au plan milieu de la  bande : ce vecteur est nul.
+ erreur dans la donnée du vecteur normal au plan milieu de la  bande : ce vecteur est nul.
 """),
 
 73: _(u"""
- l'option cylindre de crea_group_ma n'est utilisable qu'en 3d.
+ l'option cylindre de CREA_group_ma n'est utilisable qu'en 3d.
 """),
 
 74: _(u"""
- on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon du cylindre.
+ on doit utiliser obligatoirement le mot-clé rayon pour définir le rayon du cylindre.
 """),
 
 75: _(u"""
- on doit donner un rayon strictement positif pour definir la cylindre.
+ on doit donner un rayon strictement positif pour définir la cylindre.
 """),
 
 76: _(u"""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option cylindre de crea_group_ma
+ on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option cylindre de CREA_group_ma
 """),
 
 77: _(u"""
- pour l'option cylindre de crea_group_ma, il faut  definir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot cle vect_normale.
+ pour l'option cylindre de CREA_group_ma, il faut  définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot CLE VECT_NORMALE.
 """),
 
 78: _(u"""
- pour l'option cylindre de crea_group_ma, il faut definir les 2 angles nautiques quand on utilise le mot cle "angl_naut".
+ pour l'option cylindre de CREA_group_ma, il faut définir les 2 angles nautiques quand on utilise le mot CLE "ANGL_NAUT".
 """),
 
 79: _(u"""
- erreur dans la donnee du vecteur orientant l'axe du cylindre,ce vecteur est nul.
+ erreur dans la donnée du vecteur orientant l'axe du cylindre,ce vecteur est nul.
 """),
 
 80: _(u"""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option face_normale de crea_group_ma
+ on doit utiliser obligatoirement le mots-clés ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option face_normale de CREA_group_ma
 """),
 
 81: _(u"""
- erreur dans la donnee du vecteur normal selon lequel on veut selectionner des mailles : ce vecteur est nul.
+ erreur dans la donnée du vecteur normal selon lequel on veut sélectionner des mailles : ce vecteur est nul.
 """),
 
 82: _(u"""
- on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon de la sphere.
+ on doit utiliser obligatoirement le mot-clé rayon pour définir le rayon de la sphère.
 """),
 
 83: _(u"""
- on doit donner un rayon strictement positif pour definir la sphere.
+ on doit donner un rayon strictement positif pour définir la sphère.
 """),
 
 84: _(u"""
- l'option env_cylindre de crea_group_no n'est utilisable qu'en 3d.
+ l'option env_cylindre de CREA_GROUP_NO n'est utilisable qu'en 3d.
 """),
 
 85: _(u"""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option env_cylindre de crea_group_no
+ on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option env_cylindre de CREA_GROUP_NO
 """),
 
 86: _(u"""
- pour l'option env_cylindre de crea_group_no, il faut definir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot cle "vect_normale".
+ pour l'option env_cylindre de CREA_GROUP_NO, il faut définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot clé "VECT_NORMALE".
 """),
 
 87: _(u"""
- pour l'option env_cylindre de crea_group_no, il faut definir les 2 angles nautiques quand on utilise le mot cle "angl_naut".
+ pour l'option env_cylindre de CREA_GROUP_NO, il faut définir les 2 angles nautiques quand on utilise le mot clé "ANGL_NAUT".
 """),
 
 88: _(u"""
- le mot-cle precision est obligatoire apres le mot-cle env_cyli pour definir la tolerance (i.e. la distance du point a l'enveloppe du cylindre) acceptee pour declarer l'appartenance du point a cette enveloppe.
+ le mot-clé précision est obligatoire après le mot-clé ENV_CYLINDRE pour définir la tolérance (i.e. la distance du point a l'enveloppe du cylindre) acceptée pour déclarer l'appartenance du point a cette enveloppe.
 """),
 
 89: _(u"""
- on doit donner une demi-epaisseur strictement positive definir l'enveloppe du cylindre.
+ on doit donner une demi épaisseur strictement positive définir l'enveloppe du cylindre.
 """),
 
 90: _(u"""
- le mot-cle precision est obligatoire apres le mot-cle env_sphe pour definir la tolerance (i.e. la distance du point a l'enveloppe de la sphere) acceptee pour declarer l'appartenance du point a cette enveloppe.
+ le mot-clé précision est obligatoire après le mot-clé ENV_SPHERE pour définir la tolérance (i.e. la distance du point a l'enveloppe de la sphère) acceptée pour déclarer l'appartenance du point a cette enveloppe.
 """),
 
 91: _(u"""
- on doit donner une demi-epaisseur strictement positive definir l'enveloppe de la sphere.
+ on doit donner une demi épaisseur strictement positive définir l'enveloppe de la sphère.
 """),
 
 92: _(u"""
- erreur dans la donnee du vecteur orientant l'axe d'un segment ,ce vecteur est nul.
+ erreur dans la donnée du vecteur orientant l'axe d'un segment ,ce vecteur est nul.
 """),
 
 93: _(u"""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option plan de crea_group_no. ce mot-cle permet de definir la direction  perpendiculaire au plan ou a la droite.
+ on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option plan de CREA_GROUP_NO. ce mot-clé permet de définir la direction  perpendiculaire au plan ou a la droite.
 """),
 
 94: _(u"""
- pour l'option plan de crea_group_no, il faut  definir les 3 composantes du vecteur perpendiculaire au plan.
+ pour l'option plan de CREA_GROUP_NO, il faut  définir les 3 composantes du vecteur perpendiculaire au plan.
 """),
 
 95: _(u"""
- pour l'option plan de crea_group_no, il faut  definir les 2 composantes du vecteur perpendiculaire a la droite.
+ pour l'option plan de CREA_GROUP_NO, il faut  définir les 2 composantes du vecteur perpendiculaire a la droite.
 """),
 
 96: _(u"""
- erreur dans la donnee du vecteur normal au plan ou a la droite : ce vecteur est nul.
+ erreur dans la donnée du vecteur normal au plan ou a la droite : ce vecteur est nul.
 """),
 
 97: _(u"""
- le mot-cle precision est obligatoire apres le mot-cle plan  pour definir la tolerance (i.e. la distance du point au plan ou a la droite) acceptee pour declarer l'appartenance du point a ce plan ou a cette droite.
+ le mot-clé précision est obligatoire après le mot-clé plan  pour définir la tolérance (i.e. la distance du point au plan ou a la droite) acceptée pour déclarer l'appartenance du point a ce plan ou a cette droite.
 """),
 
 98: _(u"""
- on doit donner une tolerance strictement positive pour verifier l'appartenance d'un noeud au plan ou a la droite.
+ on doit donner une tolérance strictement positive pour vérifier l'appartenance d'un noeud au plan ou a la droite.
 """),
 
 99: _(u"""
- il manque l'ensemble des noeuds que l'on veut ordonner, mots cles "noeud" et/ou "group_no"
+ il manque l'ensemble des noeuds que l'on veut ordonner, mots clés "noeud" et/ou "group_no"
 """),
 }

@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 24/10/2011   AUTEUR FOUCAULT A.FOUCAULT 
+#@ MODIF algorith7 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ cata_msg = {
 """),
 
 6 : _(u"""
- loi de fluage non autorisee dans le couplage fluage/fissuration
+ loi de fluage non autorisée dans le couplage fluage/fissuration
 """),
 
 7 : _(u"""
@@ -54,7 +54,7 @@ cata_msg = {
 """),
 
 8 : _(u"""
- loi de comportement hyper-élastique non prevue
+ loi de comportement hyper-élastique non prévue
 """),
 
 9 : _(u"""
@@ -67,7 +67,7 @@ cata_msg = {
 
 11 : _(u"""
  couplage fluage/fissuration :
- la première loi doit etre une loi de fluage de type GRANGER_FP ou GRANGER_FP_V.
+ la première loi doit être une loi de fluage de type GRANGER_FP ou GRANGER_FP_V.
 """),
 
 12 : _(u"""
@@ -110,13 +110,13 @@ cata_msg = {
 
 60 : _(u"""
   -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'
-     est lache (très supérieur à la valeur par défaut).
+     est lâche (très supérieur à la valeur par défaut).
   -> Risque & Conseil :
      Cela peut nuire à la qualité de la solution et à la convergence.
 """),
 
 61 : _(u"""
- option  %(k1)s  non traitee
+ option  %(k1)s  non traitée
 """),
 
 63 : _(u"""
@@ -145,11 +145,11 @@ cata_msg = {
 """),
 
 69 : _(u"""
- loi %(k1)s  non implantee pour les elemdisc 
+ loi %(k1)s  non implantée pour les éléments discrets 
 """),
 
 73 : _(u"""
- le tenseur EPSEQ vaut  0 on a donc une derivée lagrangienne DEPSEQ très grande !
+ le tenseur EPSEQ vaut  0 on a donc une dérivée lagrangienne DEPSEQ très grande !
 """),
 
 74 : _(u"""
@@ -165,15 +165,15 @@ cata_msg = {
 """),
 
 79 : _(u"""
- loi de comportement avec irradiation, le paramètre N doit etre supérieur à 0
+ loi de comportement avec irradiation, le paramètre N doit être supérieur à 0
 """),
 
 80 : _(u"""
- loi de comportement avec irradiation, le paramètre PHI_ZERO doit etre supérieur à 0
+ loi de comportement avec irradiation, le paramètre PHI_ZERO doit être supérieur à 0
 """),
 
 81 : _(u"""
- loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit etre supérieur ou égal à 0
+ loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit être supérieur ou égal à 0
 """),
 
 82 : _(u"""
@@ -190,8 +190,8 @@ cata_msg = {
 """),
 
 98 : _(u"""
- il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessication
- intrinseque avec SECH comme paramètre
+ il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation
+ intrinsèque avec SECH comme paramètre
 """),
 
 }

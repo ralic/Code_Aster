@@ -1,4 +1,4 @@
-#@ MODIF adaptation Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF adaptation Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ cata_msg={
 """),
 
 4: _(u"""
-    Aucun critère d'adaption n'est vérifié. On garde le pas de temps <%(r1)E>.
+    Aucun critère d'adaptation n'est vérifié. On garde le pas de temps <%(r1)E>.
 """),
 
 5: _(u"""
@@ -57,6 +57,6 @@ cata_msg={
 """),
 
 13 : _(u"""
- On a depassé le nombre maximal de pas de temps autorisé.
+ On a dépassé le nombre maximal de pas de temps autorisé.
 """),
 }

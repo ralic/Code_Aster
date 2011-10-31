@@ -1,4 +1,4 @@
-#@ MODIF pilotage Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF pilotage Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,12 +87,12 @@ cata_msg = {
 
 63 : _(u"""
  Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arete intersectee.
- Il est conseillé d'entrer des noeuds qui sont tous du meme coté de la fissure.
+ Il est conseillé d'entrer des noeuds qui sont tous du même coté de la fissure.
 """),
 
 64 : _(u"""
  Les noeuds pilot??s %(i1)d et %(i2)d sont deux extr??mit??s d'une arete intersectee.
- Il est conseill?? d'entrer des noeuds qui sont tous du meme cot?? de la fissure.
+ Il est conseill?? d'entrer des noeuds qui sont tous du même cot?? de la fissure.
 """),
 
 83 : _(u"""

@@ -1,21 +1,21 @@
-#@ MODIF algeline4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -31,9 +31,9 @@ cata_msg = {
 
 3 : _(u"""
  Erreur lors de la résolution d'un système linéaire (GCPC) :
- Non convergence  avec le nombre d'iterations autorisé :  %(i1)d
-   norme du residu (absolu)  :  %(r1)f
-   norme du residu (relatif) :  %(r2)f
+ Non convergence  avec le nombre d'itérations autorisé :  %(i1)d
+   norme du résidu (absolu)  :  %(r1)f
+   norme du résidu (relatif) :  %(r2)f
 
  Conseils :
   * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
@@ -41,7 +41,7 @@ cata_msg = {
     incomplète (SOLVEUR/NIVE_REMPLISSAGE).
   * Dans une commande non-linéaire (STAT_NON_LINE par exemple) vous pouvez aussi essayer de
     diminuer la précision demandée pour la convergence (SOLVEUR/RESI_RELA), mais c'est plus
-    risqué car cela peut empecher la convergence de l'algorithme non-linéaire.
+    risqué car cela peut empêcher la convergence de l'algorithme non-linéaire.
 """),
 
 4 : _(u"""
@@ -56,9 +56,9 @@ cata_msg = {
 
 6 : _(u"""
  Erreur lors de la résolution d'un système linéaire (GCPC) :
- Non convergence  avec le nombre d'iterations autorisé :  %(i1)d
-   norme du residu (absolu)  :  %(r1)f
-   norme du residu (relatif) :  %(r2)f
+ Non convergence  avec le nombre d'itérations autorisé :  %(i1)d
+   norme du résidu (absolu)  :  %(r1)f
+   norme du résidu (relatif) :  %(r2)f
 
  Conseils :
   * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
@@ -66,33 +66,33 @@ cata_msg = {
    (SOLVEUR/REAC_PRECOND).
   * Dans une commande non-linéaire (STAT_NON_LINE par exemple) vous pouvez aussi essayer de
     diminuer la précision demandée pour la convergence (SOLVEUR/RESI_RELA), mais c'est plus
-    risqué car cela peut empecher la convergence de l'algorithme non-linéaire.
+    risqué car cela peut empêcher la convergence de l'algorithme non-linéaire.
 """),
 
 7 : _(u"""
  Erreur données : maille déjà existante :  %(k1)s
 """),
 8 : _(u"""
- Erreur lors de la resolution du systeme lineaire d'interface de FETI :
- Non convergence  avec le nombre d'iterations autorisees :  %(i1)d
-   norme du residu (absolu)  :  %(r1)f
-   norme du residu (relatif) :  %(r2)f
+ Erreur lors de la résolution du système linéaire d'interface de FETI :
+ Non convergence  avec le nombre d'itérations autorisées :  %(i1)d
+   norme du résidu (absolu)  :  %(r1)f
+   norme du résidu (relatif) :  %(r2)f
 
  Conseils :
-  * Vous pouvez augmenter le nombre d'iterations autorisees (SOLVEUR/NMAX_ITER).
-  * Vous pouvez activer le preconditionneur si cela n'est pas fait (PRE_COND='LUMPE').
-  * Vous pouvez verifier votre interface via INFO_FETI (cf. U2.08.03).
-  * Vous pouvez verifier le nombre de modes rigides en mode INFO=2.
+  * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
+  * Vous pouvez activer le préconditionneur si cela n'est pas fait (PRE_COND='LUMPE').
+  * Vous pouvez vérifier votre interface via INFO_FETI (cf. U2.08.03).
+  * Vous pouvez vérifier le nombre de modes rigides en mode INFO=2.
 """),
 9 : _(u"""
  Erreur données GROUP_MA déjà existant :  %(k1)s
 """),
 
 10 : _(u"""
- Votre problème modal n'est pas un problème géneralisé à matrices réelles symétriques.
+ Votre problème modal n'est pas un problème généralisé à matrices réelles symétriques.
  Il comporte des matrices non symétriques et/ou complexes, ou bien il s'agit d'un problème
- quadratique. Son spectre n'est pas uniquement restreint à l'axe reel. Il représente une
- zone du plan complexe. 
+ quadratique. Son spectre n'est pas uniquement restreint à l'axe réel. Il représente une
+ zone du plan complexe.
  Il en résulte des incompatibilités avec votre paramétrage car vous avez sélectionné votre
  zone de vérification de spectre sous forme de bande (TYPE_RESU='DYNAMIQUE'/'FLAMBEMENT'),
  il faut relancer votre calcul en spécifiant votre zone de vérification via les paramètres
@@ -108,14 +108,14 @@ cata_msg = {
 """),
 
 13 : _(u"""
- L'algorithme APM a atteint le nombre maximal de discrétisations du contour, 
+ L'algorithme APM a atteint le nombre maximal de discrétisations du contour,
  c'est à dire %(i1)d, sans convergence du procédé.
 
  Conseils:
  ========
  Vous pouvez:
-  - Changer les dimensions du contour de manière à réduire son perimètre,
-  - Changer sa localisation. Il passe peut-etre trés près de valeurs propres
+  - Changer les dimensions du contour de manière à réduire son périmètre,
+  - Changer sa localisation. Il passe peut-être très près de valeurs propres
     ce qui peut induire des perturbations numériques.
 """),
 
@@ -128,14 +128,14 @@ cata_msg = {
   Vous pouvez:
   - Augmenter ce nombre maximal d'itérations via le paramètre NMAX_ITER_CONTOUR,
   - Augmenter la discrétisation initiale du contour via NBPOINT_CONTOUR,
-  - Changer les dimensions du contour de manière à réduire son perimètre,
-  - Changer sa localisation. Il passe peut-etre trés près de valeurs propres
+  - Changer les dimensions du contour de manière à réduire son périmètre,
+  - Changer sa localisation. Il passe peut-être très près de valeurs propres
     ce qui peut induire des perturbations numériques.
 """),
 
 15 : _(u"""
- L'algorithme APM avec le calcul du polynome caractéristique via une factori
- sation LDLT a un probleme numérique: le point de vérification (%(r1)f,%(r2)f)
+ L'algorithme APM avec le calcul du polynôme caractéristique via une factorisation
+ LDLT a un problème numérique: le point de vérification (%(r1)f,%(r2)f)
  est très proche d'une valeur propre ou le solveur linéaire a eu un problème.
 
  Conseils:
@@ -147,29 +147,29 @@ cata_msg = {
 """),
 
 16: _(u"""
- L'algorithme choisit a besoin de calculer un determinant de matrice. Cette fonc
- tionnalite de MUMPS n'a pas encore ete branchee dans Code_Aster.
+ L'algorithme choisit a besoin de calculer un déterminant de matrice. Cette
+ fonctionnalité de MUMPS n'a pas encore été branchée dans Code_Aster.
  Dans ce cas on doit utiliser, soit le solveur linéaire LDLT, soit MULT_FRONT
- suivant que la matrice soit assemblée ou generalisée.
- On a donc changé le paramétrage pour vous et selectionné l'un des deux solveurs
+ suivant que la matrice soit assemblée ou généralisée.
+ On a donc changé le paramétrage pour vous et sélectionné l'un des deux solveurs
  préconisés.
- 
+
  Conseil:
  ========
  La prochaine fois, dans une telle situation paramétrer explicitement
- SOLVEUR/METHODE='MULT_FRONT' (matrice assemblée) ou 'LDLT'(matrice géneralisée).
+ SOLVEUR/METHODE='MULT_FRONT' (matrice assemblée) ou 'LDLT'(matrice généralisée).
 """),
 
 17: _(u"""
  La variante 'ROMBOUT' de la méthode de comptage 'APM' est en cours de fiabilisation.
  Elle n'a pas encore portée pour:
    - les matrices complexes et/ou non symétriques,
-   - les problemes quadratiques,
-   - les matrices generalisées.
- 
+   - les problèmes quadratiques,
+   - les matrices généralisées.
+
  Conseil:
  ========
- Vous pouvez utiliser l'autre variante de la methode 'APM' via le paramétrage
+ Vous pouvez utiliser l'autre variante de la méthode 'APM' via le paramétrage
  COMPTAGE/POLYNOME_CHARAC='LDLT'.
 """),
 
@@ -182,12 +182,12 @@ cata_msg = {
  'FLAMBEMENT', la méthode de comptage 'STURM', et pour 'MODE_COMPLEXE', la méthode
  'APM'.
  Si vos choix ne respectent pas cette règle, on fait le changement pour vous, en
- se réferrant au type de problème que vous avez choisi.
+ se référant au type de problème que vous avez choisi.
 """),
 
 21 : _(u"""
- Manque de place memoire longueur de bloc insuffisante:  %(i1)d
- le super-noeud  %(i2)d
+ Manque de place mémoire longueur de bloc insuffisante:  %(i1)d
+ le super noeud  %(i2)d
   nécessite un bloc de %(i3)d
 """),
 
@@ -198,28 +198,28 @@ cata_msg = {
  ========
   Vous pouvez:
   - Augmenter la discrétisation initiale du contour via NBPOINT_CONTOUR,
-  - Changer les dimensions du contour de manière à réduire son perimètre,
-  - Changer sa localisation. Il passe peut-etre trés près de valeurs propres
+  - Changer les dimensions du contour de manière à réduire son périmètre,
+  - Changer sa localisation. Il passe peut-être très près de valeurs propres
     ce qui peut induire des perturbations numériques.
 """),
 
 24 : _(u"""
- %(k1)s   pour le mot cle :  %(k2)s    noeud :  %(k3)s composante :  %(k4)s
+ %(k1)s   pour le mot clé :  %(k2)s    noeud :  %(k3)s composante :  %(k4)s
 """),
 
 25 : _(u"""
- combinaison non prevue   type resultat :  %(k1)s    type matrice  :  %(k2)s
+ combinaison non prévue   type résultat :  %(k1)s    type matrice  :  %(k2)s
     type constante:  %(k3)s
 """),
 
 27 : _(u"""
- combinaison non prevue
+ combinaison non prévue
  type résultat :  %(k1)s
  type matrice  :  %(k2)s
 """),
 
 31 : _(u"""
- combinaison non prevue
+ combinaison non prévue
  type résultat :  %(k1)s
 """),
 
@@ -238,8 +238,8 @@ cata_msg = {
 
 38 : _(u"""
  appel erroné :
- code retour de rsexch : %(i1)d
- pb CHAM_NO %(k1)s
+ code retour de RSEXCH : %(i1)d
+ Problème CHAM_NO %(k1)s
 """),
 
 42 : _(u"""
@@ -266,12 +266,12 @@ cata_msg = {
 """),
 
 58 : _(u"""
-  problème dans le préconditionnement de la matrice MATAS par LDLT imcomplet
+  problème dans le préconditionnement de la matrice MATAS par LDLT incomplet
   pivot nul à la ligne :  %(i1)d
 """),
 
 60 : _(u"""
-  incoherence n2 NBDDL sans lagranges %(i1)d NBDDL reconstitués %(i2)d
+  incohérence n2 NBDDL sans multiplicateurs de Lagrange %(i1)d NBDDL reconstitués %(i2)d
 """),
 
 61 : _(u"""
@@ -281,14 +281,14 @@ cata_msg = {
 62 : _(u"""
  pour les modes statiques, on attend un :  %(k1)s
  noeud :  %(k2)s
- cmp   :  %(k3)s
+ composante   :  %(k3)s
 """),
 
 63 : _(u"""
  champ inexistant.
  champ    :  %(k1)s
  noeud    :  %(k2)s
- cmp      :  %(k3)s
+ composante      :  %(k3)s
 """),
 
 64 : _(u"""
@@ -312,14 +312,14 @@ cata_msg = {
 
 74 : _(u"""
  calcul d'erreur modale :
- une valeur propre réelle est detectee %(k1)s à partir du couple (fréquence, amortissement réduit)
+ une valeur propre réelle est détectée %(k1)s à partir du couple (fréquence, amortissement réduit)
  on ne peut plus la reconstruire %(k2)s
  par convention l'erreur modale est fixée à : %(r1)f
 """),
 
 75 : _(u"""
  problème généralisé complexe
- amortissement (reduit) de décalage supérieur en valeur absolue à  %(r1)f
+ amortissement (réduit) de décalage supérieur en valeur absolue à  %(r1)f
  on le ramène à la valeur :  %(r2)f
 """),
 
@@ -360,18 +360,18 @@ cata_msg = {
 85 : _(u"""
  appel erroné mode numéro %(i1)d position modale %(i2)d
  code retour de RSEXCH : %(i3)d
- pb CHAM_NO %(k1)s
+ Problème CHAM_NO %(k1)s
 """),
 
 86 : _(u"""
  la réorthogonalisation diverge après  %(i1)d  itération(s) %(i2)d
        vecteur traité :  %(i3)d
        vecteur testé  :  %(i4)d
- arret de la réorthogonalisation %(k1)s
+ arrêt de la réorthogonalisation %(k1)s
 """),
 
 87 : _(u"""
- pour le probleme réduit
+ pour le problème réduit
  valeur(s) propre(s) réelle(s)                  :  %(i1)d
  valeur(s) propre(s) complexe(s) avec conjuguée :  %(i2)d
  valeur(s) propre(s) complexe(s) sans conjuguée :  %(i3)d
@@ -404,7 +404,7 @@ cata_msg = {
  -->   ou NMAX_ITER_SOREN =  %(i5)d
  -->   ou PREC_SOREN =  %(r1)f
  si votre problème est fortement amorti, il est possible que
- des modes propres non calculés soient sur-amortis
+ des modes propres non calculés soient sur amortis
  --> diminuez le nombre de fréquences demandées
 """),
 

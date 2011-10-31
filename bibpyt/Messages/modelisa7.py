@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa7 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,7 @@ cata_msg={
 """),
 
 8: _(u"""
- la liste de noms doit etre de meme longueur que la liste de GROUP_MA
+ la liste de noms doit être de même longueur que la liste de GROUP_MA
 """),
 
 9: _(u"""
@@ -93,43 +93,43 @@ cata_msg={
 """),
 
 19: _(u"""
- <FAISCEAU_TRANS> le mot cle <COUPLAGE> doit etre renseigné au moins une fois sous l'une des occurence du mot-cle facteur <FAISCEAU_TRANS>
+ <FAISCEAU_TRANS> le mot cle <COUPLAGE> doit être renseigné au moins une fois sous l'une des occurrence du mot-cle facteur <FAISCEAU_TRANS>
 """),
 
 20: _(u"""
- <FAISCEAU_TRANS> : si couplage <TYPE_PAS> , <TYPE_RESEAU> et <PAS> mots-cles obligatoires dans au moins l une des occurences du mot-cle facteur
+ <FAISCEAU_TRANS> : si couplage <TYPE_PAS> , <TYPE_RESEAU> et <PAS> mots-cles obligatoires dans au moins l une des occurrences du mot-cle facteur
 """),
 
 21: _(u"""
- FAISCEAU_TRANS : si pas de couplage <coef_mass_ajou> mot-cle obligatoire dans au moins l une des occurences du mot cle facteur <faisceau_trans>
+ FAISCEAU_TRANS : si pas de couplage <coef_mass_ajou> mot-cle obligatoire dans au moins l une des occurrences du mot cle facteur <faisceau_trans>
 """),
 
 22: _(u"""
- <FAISCEAU_TRANS> : le mot-cle <CARA_ELEM> doit etre renseigne au moins une fois dans l une des occurences du mot-cle facteur <faisceau_trans>
+ <FAISCEAU_TRANS> : le mot-cle <CARA_ELEM> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
 """),
 
 23: _(u"""
- <faisceau_trans> : le mot-cle <prof_rho_f_int> doit etre renseigne au moins une fois dans l une des occurences du mot-cle facteur <faisceau_trans>
+ <faisceau_trans> : le mot-cle <prof_rho_f_int> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
 """),
 
 24: _(u"""
- <faisceau_trans> : le mot-cle <prof_rho_f_ext> doit etre renseigne au moins une fois dans l une des occurences du mot-cle facteur <faisceau_trans>
+ <faisceau_trans> : le mot-cle <prof_rho_f_ext> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
 """),
 
 25: _(u"""
- <faisceau_trans> : le mot-cle <nom_cmp> doit etre renseigne au moins une fois dans l une des occurences du mot-cle facteur <faisceau_trans>
+ <faisceau_trans> : le mot-cle <nom_cmp> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
 """),
 
 26: _(u"""
- grappe : si prise en compte du couplage, les mots-cles <grappe_2>, <noeud>, <cara_elem>, <modele> et <rho_flui> doivent etre renseignes
+ grappe : si prise en compte du couplage, les mots-cles <grappe_2>, <noeud>, <cara_elem>, <modele> et <rho_flui> doivent être renseignes
 """),
 
 27: _(u"""
- faisceau_axial : plusieurs occurences pour le mot-cle facteur => faisceau equivalent => mots-cles <rayon_tube> et <coor_tube> obligatoires a chaque occurence
+ faisceau_axial : plusieurs occurrences pour le mot-cle facteur => faisceau equivalent => mots-cles <rayon_tube> et <coor_tube> obligatoires a chaque occurrence
 """),
 
 28: _(u"""
- faisceau_axial : on attend un nombre pair d arguments pour le mot-cle <coor_tube>. il faut fournir deux coordonnees pour definir la position de chacun des tubes du faisceau reel
+ faisceau_axial : on attend un nombre pair d arguments pour le mot-cle <coor_tube>. il faut fournir deux coordonnées pour définir la position de chacun des tubes du faisceau reel
 """),
 
 29: _(u"""
@@ -137,23 +137,23 @@ cata_msg={
 """),
 
 30: _(u"""
- faisceau_axial : le vecteur directeur du faisceau doit etre l un des vecteurs unitaires de la base liee au repere global
+ faisceau_axial : le vecteur directeur du faisceau doit être l un des vecteurs unitaires de la base liee au repere global
 """),
 
 31: _(u"""
- faisceau_axial : il faut 4 donnees pour le mot-cle <pesanteur> : la norme du vecteur et ses composantes dans le repere global, dans cet ordre
+ faisceau_axial : il faut 4 données pour le mot-cle <pesanteur> : la norme du vecteur et ses composantes dans le repere global, dans cet ordre
 """),
 
 32: _(u"""
- faisceau_axial : il faut 3 ou 4 donnees pour le mot-cle <cara_paroi> : 3 pour une enceinte circulaire : <yc>,<zc>,<r>. 4 pour une enceinte rectangulaire : <yc>,<zc>,<hy>,<hz>
+ faisceau_axial : il faut 3 ou 4 données pour le mot-cle <cara_paroi> : 3 pour une enceinte circulaire : <yc>,<zc>,<r>. 4 pour une enceinte rectangulaire : <yc>,<zc>,<hy>,<hz>
 """),
 
 33: _(u"""
- faisceau_axial : pour definir une enceinte, il faut autant d arguments pour les mots-cles <cara_paroi> et <vale_paroi>
+ faisceau_axial : pour définir une enceinte, il faut autant d arguments pour les mots-cles <cara_paroi> et <vale_paroi>
 """),
 
 34: _(u"""
- faisceau_axial : mot-cle <cara_paroi>. donnees incoherentes pour une enceinte circulaire
+ faisceau_axial : mot-cle <cara_paroi>. données incoherentes pour une enceinte circulaire
 """),
 
 35: _(u"""
@@ -161,7 +161,7 @@ cata_msg={
 """),
 
 36: _(u"""
- faisceau_axial : mot-cle <cara_paroi>. donnees incoherentes pour une enceinte rectangulaire
+ faisceau_axial : mot-cle <cara_paroi>. données incoherentes pour une enceinte rectangulaire
 """),
 
 37: _(u"""
@@ -169,27 +169,27 @@ cata_msg={
 """),
 
 38: _(u"""
- faisceau_axial : le mot-cle <angl_vril> est obligatoire quand on definit une enceinte rectangulaire
+ faisceau_axial : le mot-cle <angl_vril> est obligatoire quand on définit une enceinte rectangulaire
 """),
 
 39: _(u"""
- faisceau_axial : le mot-cle <vect_x> est obligatoire si il n y a qu une seule occurence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurences
+ faisceau_axial : le mot-cle <vect_x> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
 """),
 
 40: _(u"""
- faisceau_axial : le mot-cle <prof_rho_flui> est obligatoire si il n y a qu une seule occurence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurences
+ faisceau_axial : le mot-cle <prof_rho_flui> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
 """),
 
 41: _(u"""
- faisceau_axial : le mot-cle <prof_visc_cine> est obligatoire si il n y a qu une seule occurence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurences
+ faisceau_axial : le mot-cle <prof_visc_cine> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
 """),
 
 42: _(u"""
- faisceau_axial : le mot-cle <rugo_tube> est obligatoire si il n y a qu une seule occurence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurences
+ faisceau_axial : le mot-cle <rugo_tube> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
 """),
 
 43: _(u"""
- faisceau_axial : les mots-cles <cara_paroi> et <vale_paroi> sont obligatoires si il n y a qu une seule occurence pour le mot-cle facteur. sinon, ils doivent apparaitre ensemble dans au moins une des occurences. le mot-cle <angl_vril> doit egalement etre present si l on definit une enceinte rectangulaire
+ faisceau_axial : les mots-cles <cara_paroi> et <vale_paroi> sont obligatoires si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, ils doivent apparaitre ensemble dans au moins une des occurrences. le mot-cle <angl_vril> doit egalement être present si l on définit une enceinte rectangulaire
 """),
 
 44: _(u"""
@@ -213,23 +213,23 @@ cata_msg={
 """),
 
 49: _(u"""
- le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seule jeu de donnees. verifiez la coherence du parametre pert_flua  dans les defi_materiau
+ le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seule jeu de données. verifiez la coherence du paramètre pert_flua  dans les defi_materiau
 """),
 
 50: _(u"""
- le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seul jeu de donnees. verifiez la coherence du parametre pert_flua dans les defi_materiau
+ le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seul jeu de données. verifiez la coherence du paramètre pert_flua dans les defi_materiau
 """),
 
 51: _(u"""
- le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seule jeu de donnees. verifiez la coherence du parametre pert_retr dans les defi_materiau
+ le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seule jeu de données. verifiez la coherence du paramètre pert_retr dans les defi_materiau
 """),
 
 52: _(u"""
- recuperation des caracteristiques du materiau beton, relation de comportement <bpel_beton> : au moins un parametre indefini
+ recuperation des caracteristiques du materiau beton, relation de comportement <bpel_beton> : au moins un paramètre indéfini
 """),
 
 53: _(u"""
- recuperation des caracteristiques du materiau beton, relation de comportement <bpel_beton> : au moins une valeur de parametre invalide
+ recuperation des caracteristiques du materiau beton, relation de comportement <bpel_beton> : au moins une valeur de paramètre invalide
 """),
 
 54: _(u"""
@@ -271,15 +271,15 @@ Erreur utilisateur :
 """),
 
 63: _(u"""
- occurence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandees sur le(la) %(k3)s  qui n a pas ete affecte(e) par un element
+ occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandees sur le(la) %(k3)s  qui n a pas ete affecte(e) par un élément
 """),
 
 64: _(u"""
- occurence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandees sur le(la)  %(k3)s  qui ne supporte pas un element du bon type
+ occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandees sur le(la)  %(k3)s  qui ne supporte pas un élément du bon type
 """),
 
 65: _(u"""
- occurence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un element compatible avec la caracteristique  %(k4)s
+ occurrence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un élément compatible avec la caracteristique  %(k4)s
 """),
 
 66: _(u"""
@@ -291,15 +291,15 @@ Erreur utilisateur :
 """),
 
 68: _(u"""
- les fonctions de forme doivent etre definies sur un intervalle commun 0,2l ou l est la longueur excitee. la discretisation doit etre strictement croissante avec une exception pour le parametre l qui doit etre repete.
+ les fonctions de forme doivent être définies sur un intervalle commun 0,2l ou l est la longueur excitee. la discretisation doit être strictement croissante avec une exception pour le paramètre l qui doit être repete.
 """),
 
 69: _(u"""
- discretisation des fonctions de forme : un seul parametre doit etre repete, correspondant a la longueur excitee l
+ discretisation des fonctions de forme : un seul paramètre doit être repete, correspondant a la longueur excitee l
 """),
 
 70: _(u"""
- discretisation des fonctions de forme : le parametre correspondant a la longueur excitee l doit etre repete.
+ discretisation des fonctions de forme : le paramètre correspondant a la longueur excitee l doit être repete.
 """),
 
 71: _(u"""
@@ -307,16 +307,16 @@ Erreur utilisateur :
 """),
 
 72: _(u"""
- discretisation des fonctions de forme : le parametre repete doit correspondre a la longueur excitee l
+ discretisation des fonctions de forme : le paramètre repete doit correspondre a la longueur excitee l
 """),
 
 73: _(u"""
- les discretisations des fonctions de forme ne sont pas coherentes. le domaine de definition 0,2l et la longueur excitee l qui en est deduite doivent etre communs a toutes les fonctions.
+ les discretisations des fonctions de forme ne sont pas coherentes. le domaine de définition 0,2l et la longueur excitee l qui en est deduite doivent être communs a toutes les fonctions.
 """),
 
 74: _(u"""
  les discrétisations des fonctions de forme ne sont pas cohérentes
- les nombres de points sur 0,l et sur l,2l doivent etre communs à toutes les fonctions.
+ les nombres de points sur 0,l et sur l,2l doivent être communs à toutes les fonctions.
 """),
 
 75: _(u"""
@@ -332,7 +332,7 @@ Erreur utilisateur :
 """),
 
 79: _(u"""
- le type  %(k1)s d'objets a verifier n'est pas correct : il ne peut etre egal qu'a group_no ou noeud ou group_ma ou maille
+ le type  %(k1)s d'objets a verifier n'est pas correct : il ne peut être egal qu'a group_no ou noeud ou group_ma ou maille
 """),
 
 80: _(u"""

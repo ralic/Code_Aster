@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,11 +37,11 @@ cata_msg = {
 """),
 
 4 : _(u"""
- verifier les parametres d'usure pour le secteur  %(i1)d
+ verifier les paramètres d'usure pour le secteur  %(i1)d
 """),
 
 5 : _(u"""
- verifier les parametres d'usure pour le secteur  %(i1)d
+ verifier les paramètres d'usure pour le secteur  %(i1)d
 """),
 
 6 : _(u"""
@@ -71,7 +71,7 @@ cata_msg = {
 """),
 
 27 : _(u"""
- parametres de calcul du dommagenombre de numeros d'ordre  =  %(i1)d
+ paramètres de calcul du dommagenombre de numéros d'ordre  =  %(i1)d
  nombre de points de calcul =  %(i2)d
 """),
 
@@ -135,7 +135,7 @@ cata_msg = {
 
 39 : _(u"""
  <I> Depuis la version 2.2.0 de GMSH il est possible de lire et écrire le format MED.
-     Conseil : Utilisez plutot GMSH avec MED comme format d'entrée et de sortie.
+     Conseil : Utilisez plutôt GMSH avec MED comme format d'entrée et de sortie.
 
 """),
 

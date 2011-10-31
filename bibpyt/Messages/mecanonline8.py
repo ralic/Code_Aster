@@ -1,4 +1,4 @@
-#@ MODIF mecanonline8 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ cata_msg = {
     * Nombre de pas de temps                      : %(i1)d
     * Nombre d'itérations de Newton               : %(i2)d
     * Nombre de factorisations de la matrice      : %(i3)d
-    * Nombre d'intégrations de la LDC             : %(i4)d
+    * Nombre d'intégrations du comportement       : %(i4)d
     * Nombre de résolutions K.U=F                 : %(i5)d
 """),
 
@@ -62,7 +62,7 @@ cata_msg = {
 
 53 : _(u"""    * Temps total factorisation matrice           : %(k1)s"""),
 
-54 : _(u"""    * Temps total intégration LDC                 : %(k1)s"""),
+54 : _(u"""    * Temps total intégration comportement        : %(k1)s"""),
 
 55 : _(u"""    * Temps total résolution K.U=F                : %(k1)s"""),
 

@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ Erreur utilisateur :
  sont associés à deux maillages différents : %(k3)s et %(k4)s
 Risques & conseils :
  Si l'un des champs est de type ETAT_INIT, il faut que son maillage
- soit le meme que celui qui est associé au modèle.
+ soit le même que celui qui est associé au modèle.
 """),
 
 2: _(u"""
@@ -40,7 +40,7 @@ Risques & conseils :
 
 4: _(u"""
 Erreur de programmation :
- On essaye de calculer l'intégrale d'un cham_elem / ELGA.
+ On essaye de calculer l'intégrale d'un CHAM_ELEM / ELGA.
  Malheureusement, la famille de points de Gauss : %(k1)s n'est pas autorisée dans la programmation.
 
 Conseil :
@@ -59,25 +59,25 @@ Erreur utilisateur dans CREA_RESU :
 6: _(u"""
 Erreur utilisateur dans PROJ_CHAMP :
   Le champ utilisé dans le mot clé CHAM_NO_REFE (%(k1)s) est associé au maillage %(k2)s
-  Il doit etre associé au maillage %(k3)s
+  Il doit être associé au maillage %(k3)s
 """),
 
 7: _(u"""
  trop d'antécédents
- vérifiez si le maillage de l'interface ne contient pas de noeuds coincidents ou diminuez DIST_REFE.
+ vérifiez si le maillage de l'interface ne contient pas de noeuds coïncidents ou diminuez DIST_REFE.
 """),
 
 8: _(u"""
-  %(k1)s  valeurs de CHAMNO de deplacement n'ont pas ete recopiees sur  %(k2)s  noeuds
-  a affecter  ce qui peut entrainer des erreurs de calcul sur la masse ajoutee des sous structures
-  deduites par rotation et translation definies dans le modele  generalise. augmentez dist_refe
+  %(k1)s  valeurs de CHAMNO de déplacement n'ont pas été recopiées sur  %(k2)s  noeuds
+  a affecter  ce qui peut entraîner des erreurs de calcul sur la masse ajoutée des sous structures
+  déduites par rotation et translation définies dans le modèle  généralisé. augmentez DIST_REFE
   ou assurez vous de l' invariance du maillage de structure par la translation et la rotation
-  definies dans le modele generalise.
+  définies dans le modèle généralisé.
 """),
 
 9: _(u"""
   -> plus de 50 %% des valeurs de CHAM_NO de déplacement n'ont pas été recopiées
-     ce qui peut entrainer des erreurs graves de calcul sur la masse ajoutée des
+     ce qui peut entraîner des erreurs graves de calcul sur la masse ajoutée des
      sous structures déduites par rotation et translation définies dans le modèle généralisé
   -> Risque & Conseil :
      augmentez DIST_REFE
@@ -90,16 +90,16 @@ Erreur utilisateur dans PROJ_CHAMP :
 11: _(u"""
  Erreur d'utilisation :
    Le maillage associé au modèle : %(k1)s
-   n'est pas le meme que celui du champ de matériaux : %(k2)s
+   n'est pas le même que celui du champ de matériaux : %(k2)s
 """),
 
 12: _(u"""
-Erreur lors de la transformation du cham_no_s (%(k1)s) en cham_no (%(k2)s):
-Le cham_no_s est vide (i.e. il n'a aucune valeur).
+Erreur lors de la transformation du CHAM_NO_S (%(k1)s) en CHAM_NO (%(k2)s):
+Le CHAM_NO_S est vide (i.e. il n'a aucune valeur).
 """),
 
 13: _(u"""
-Erreur lors d'une transformation de cham_no_s en cham_no :
+Erreur lors d'une transformation de CHAM_NO_S en CHAM_NO :
  Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
 """),
 
@@ -149,16 +149,16 @@ Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
 """),
 
 23: _(u"""
- la grandeur : %(k1)s  n est pas de type reel.
+ la grandeur : %(k1)s  n est pas de type réel.
 """),
 
 24: _(u"""
- on traite un superelement  et le noeud courant n'est ni un noeud lagrange,
+ on traite un super-élément  et le noeud courant n'est ni un noeud Lagrange,
  ni un noeud physique du maillage.
 """),
 
 25: _(u"""
- le ligrel :  %(k1)s  ne contient pas d elements finis
+ le LIGREL :  %(k1)s  ne contient pas d éléments finis
 """),
 
 26: _(u"""
@@ -168,7 +168,7 @@ Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
 27: _(u"""
  Erreur utilisateur :
    Le maillage associé au champ: %(k1)s  (%(k3)s)
-   est different de celui associe au ligrel:  %(k2)s  (%(k4)s)
+   est différent de celui associe au LIGREL:  %(k2)s  (%(k4)s)
 """),
 
 28: _(u"""
@@ -181,7 +181,7 @@ Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
 """),
 
 30: _(u"""
-  on n'arrive pas a etendre la carte:  %(k1)s
+  on n'arrive pas a étendre la carte:  %(k1)s
 """),
 
 31: _(u"""
@@ -192,8 +192,8 @@ Erreur utilisateur dans la commande AFFE_CARA_ELEM :
 
 33: _(u"""
 Erreur Utilisateur :
- Pour le modele  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
- car les familles de points de Gauss sont differentes
+ Pour le modèle  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
+ car les familles de points de Gauss sont différentes
 """),
 
 35: _(u"""
@@ -223,7 +223,7 @@ Erreur Utilisateur :
 
 
 41: _(u"""
- les seuls champs autorises sont elga.
+ les seuls champs autorises sont ELGA.
 """),
 
 42: _(u"""
@@ -235,7 +235,7 @@ Erreur Utilisateur :
 """),
 
 45: _(u"""
- famille de pg "liste" interdite: %(k1)s
+ famille de points de Gauss "liste" interdite: %(k1)s
 """),
 
 46: _(u"""
@@ -243,7 +243,7 @@ Erreur Utilisateur :
 """),
 
 47: _(u"""
-  le mode  %(k1)s  de code  %(k2)s  reference le mode  %(k3)s  dont le code :  %(k4)s  > 3
+  le mode  %(k1)s  de code  %(k2)s  référence le mode  %(k3)s  dont le code :  %(k4)s  > 3
 """),
 
 48: _(u"""
@@ -256,14 +256,14 @@ Erreur Utilisateur :
 
 51: _(u"""
  Erreur :
-   Le code cherche à utiliser dans un calcul élémentaire un cham_elem "étendu" (VARI_R ou sous-points).
+   Le code cherche à utiliser dans un calcul élémentaire un CHAM_ELEM "étendu" (VARI_R ou sous-points).
    La programmation de la routine exchml.f ne sait pas encore traiter ce cas.
  Conseil :
-   Il y a peut-etre lieu d'émettre une demande d'évolution pour traiter ce cas.
+   Il y a peut-être lieu d'émettre une demande d'évolution pour traiter ce cas.
 """),
 
 52: _(u"""
- probleme noeud tardif pour un champ à représentation constante
+ problème noeud tardif pour un champ à représentation constante
 """),
 
 
@@ -273,12 +273,12 @@ Erreur Utilisateur :
 
 56: _(u"""
   erreur lors d'une extraction:
-  le champ associe au parametre :  %(k1)s  n'est pas dans la liste des champs parametres.
+  le champ associe au paramètre :  %(k1)s  n'est pas dans la liste des champs paramètres.
 """),
 
 61: _(u"""
  Erreur développeur :
- L'option que l'on calcule ne connait pas le paramètre :  %(k1)s
+ L'option que l'on calcule ne connaît pas le paramètre :  %(k1)s
  Erreur probable dans un catalogue(typelem)
 """),
 
@@ -287,7 +287,7 @@ Erreur Utilisateur :
      aucun élément ayant une "rigidité".
 
   -> Risque & Conseil :
-     Cela peut entrainer des problèmes de "pivot nul" lors de la résolution.
+     Cela peut entraîner des problèmes de "pivot nul" lors de la résolution.
      Si la résolution des systèmes linéaires ne pose pas de problèmes, vous
      pouvez ignorer ce message.
      Sinon, vérifier la définition du modèle (AFFE_MODELE) en évitant l'utilisation
@@ -298,7 +298,7 @@ Erreur Utilisateur :
   -> Le modèle %(k1)s n'a pas d'éléments sachant calculer la rigidité.
 
   -> Risque & Conseil :
-     Ce modèle ne poura donc pas (en général) etre utilisé pour faire des calculs.
+     Ce modèle ne pourra donc pas (en général) être utilisé pour faire des calculs.
      Vérifier la définition du modèle (AFFE_MODELE) et assurez-vous que les
      types de mailles du maillage (SEG2, TRIA3, QUAD4, ...) sont compatibles avec votre
      modélisation.
@@ -313,7 +313,7 @@ Erreur d'utilisation :
   -> Le modèle %(k1)s n'a pas d'éléments sachant calculer la rigidité.
 
   -> Risque & Conseil :
-     Ce modèle ne peut pas etre utilisé pour faire des calculs.
+     Ce modèle ne peut pas être utilisé pour faire des calculs.
      Vérifier la définition du modèle (AFFE_MODELE) et assurez-vous que les
      types de mailles du maillage (SEG2, TRIA3, QUAD4, ...) sont compatibles avec votre
      modélisation.
@@ -328,24 +328,24 @@ Erreur d'utilisation :
 """),
 
 69: _(u"""
- le parametre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s
+ le paramètre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s
 """),
 
 70: _(u"""
- le parametre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s  pour le type_element:  %(k3)s
+ le paramètre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s  pour le type_élément:  %(k3)s
 """),
 
 71: _(u"""
- on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au parametre: %(k1)s
+ on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au paramètre: %(k1)s
   - option: %(k2)s
-  - type_element: %(k3)s
+  - type_élément: %(k3)s
 """),
 
 72: _(u"""
 Erreur utilisateur dans un calcul élémentaire de forces réparties :
   On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
-   - type_element  : %(k3)s
+   - type_élément  : %(k3)s
    - maille        : %(k4)s
   On a trouvé un noeud sur lequel il existe des composantes mais pas toutes.
   On ne peut pas continuer
@@ -358,7 +358,7 @@ Risques et conseils :
 Erreur dans un calcul élémentaire :
   On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
-   - type_element  : %(k3)s
+   - type_élément  : %(k3)s
    - maille        : %(k4)s
 
 Risques et conseils :
@@ -370,10 +370,10 @@ Risques et conseils :
 Erreur utilisateur dans un calcul élémentaire :
   Le matériau est nécessaire sur la maille : %(k4)s
   - option de calcul élémentaire : %(k2)s
-  - type_element                 : %(k3)s
+  - type_élément                 : %(k3)s
 
 Conseils :
-  * Peut-etre avez-vous oublié de renseigner le mot clé CHAM_MATER dans la commande courante.
+  * Peut-être avez-vous oublié de renseigner le mot clé CHAM_MATER dans la commande courante.
   * Dans la commande AFFE_MATERIAU, avez-vous affecté un matériau sur la maille incriminée ?
 """),
 
@@ -381,10 +381,10 @@ Conseils :
 Erreur utilisateur dans un calcul élémentaire :
   Des caractéristiques de "coque" sont nécessaires sur la maille : %(k4)s
   - option de calcul élémentaire : %(k2)s
-  - type_element                 : %(k3)s
+  - type_élément                 : %(k3)s
 
 Conseils :
-  * Peut-etre avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
+  * Peut-être avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
   * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques de "coque"
     sur la maille incriminée ?
 """),
@@ -393,10 +393,10 @@ Conseils :
 Erreur utilisateur dans un calcul élémentaire :
   Des caractéristiques de "poutre" sont nécessaires sur la maille : %(k4)s
   - option de calcul élémentaire : %(k2)s
-  - type_element                 : %(k3)s
+  - type_élément                 : %(k3)s
 
 Conseils :
-  * Peut-etre avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
+  * Peut-être avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
   * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques de "poutre"
     sur la maille incriminée ?
 """),
@@ -405,10 +405,10 @@ Conseils :
 Erreur utilisateur dans un calcul élémentaire :
   Des caractéristiques d'"orientation" sont nécessaires sur la maille : %(k4)s
   - option de calcul élémentaire : %(k2)s
-  - type_element                 : %(k3)s
+  - type_élément                 : %(k3)s
 
 Conseils :
-  * Peut-etre avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
+  * Peut-être avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
   * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques d'"orientation"
     sur la maille incriminée ?
 """),
@@ -418,7 +418,7 @@ Conseils :
 
 
 81: _(u"""
- pas de chgeom
+ pas de champ de géométrie
 """),
 
 82: _(u"""
@@ -451,7 +451,7 @@ Conseils :
 """),
 
 93: _(u"""
-  -> Vous avez renseigné un des mots-clés fonc_mult_*, coef_mult_*,
+  -> Vous avez renseigné un des mots-clés FONC_MULT_*, COEF_MULT_*,
      PHAS_DEG, PUIS_PULS, or votre charge ne contient pas d'effort réparti
      sur des poutres. Ces mots-clés seront donc ignorés.
   -> Risque & Conseil :

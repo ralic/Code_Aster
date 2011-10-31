@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ cata_msg = {
 
 3 : _(u"""
  pour une SD RESULTAT de type  EVOL_ELAS,
- seul le mot-clé fonc_mult est autorisé
+ seul le mot-clé FONC_MULT est autorisé
 """),
 
 4 : _(u"""
@@ -62,11 +62,6 @@ cata_msg = {
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
-10 : _(u"""
- Le champ  SICO_ELNO est absent :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
-"""),
-
 11 : _(u"""
  le résultat  %(k1)s  doit comporter un champ de déplacement au numéro d'ordre  %(k2)s  .
 """),
@@ -77,7 +72,7 @@ cata_msg = {
 """),
 
 13 : _(u"""
- Le mot clé PREC_ERR doit etre strictement positif.
+ Le mot clé PREC_ERR doit être strictement positif.
 """),
 
 14 : _(u"""
@@ -103,7 +98,7 @@ cata_msg = {
 """),
 
 19 : _(u"""
- probleme à l'appel de ALCHML pour  %(k1)s
+ problème à l'appel de ALCHML pour  %(k1)s
 """),
 
 20 : _(u"""
@@ -156,7 +151,7 @@ cata_msg = {
 """),
 
 31 : _(u"""
- la masse du MACR_ELEM : %(k1)s  n'a pas encore ete calculée.
+ la masse du MACR_ELEM : %(k1)s  n'a pas encore été calculée.
 """),
 
 32 : _(u"""
@@ -182,7 +177,7 @@ cata_msg = {
 37 : _(u"""
  Attention : Certains ddls sont "imposés" plusieurs fois par AFFE_CHAR_CINE.
  Pour ces ddls, la valeur imposée sera la SOMME des différentes valeurs imposées.
- Ce n'est peut-etre pas ce qui est voulu.
+ Ce n'est peut-être pas ce qui est voulu.
 
  Exemple d'un ddl imposé plusieurs fois :
    Noeud : %(k1)s  Composante : %(k2)s
@@ -208,7 +203,7 @@ cata_msg = {
 """),
 
 41 : _(u"""
- les charges ne s'appuient pas toutes sur le meme modèle.
+ les charges ne s'appuient pas toutes sur le même modèle.
 """),
 
 42 : _(u"""
@@ -220,7 +215,7 @@ cata_msg = {
 """),
 
 44 : _(u"""
- les charges ne s'appuient pas toutes sur le meme modèle
+ les charges ne s'appuient pas toutes sur le même modèle
 """),
 
 45 : _(u"""
@@ -235,8 +230,8 @@ cata_msg = {
 Possible erreur d'utilisation :
   Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
   Pour cela, vous précisez un état initial (mot clé ETAT_INIT / EVOL_NOLI).
-  Pour le calcul du 1er pas de temps, le champ des variables internes du début du pas est pris
-  dans le concept evol_noli fourni.
+  Pour le calcul du premier pas de temps, le champ des variables internes du début du pas est pris
+  dans le concept EVOL_NOLI fourni.
   Pour l'élément porté par la maille %(k1)s, ce champ de variables internes a été calculé avec
   la relation de comportement %(k2)s, mais le comportement choisi pour le calcul est différent (%(k3)s).
 
@@ -248,9 +243,9 @@ Risques & conseils :
 Possible erreur d'utilisation :
   Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
   Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
-  Pour le calcul du 1er pas de temps, le champ des variables internes utilisé pour le début du pas
+  Pour le calcul du premier pas de temps, le champ des variables internes utilisé pour le début du pas
   est "chvari".
-  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le meme nombre de
+  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le même nombre de
   variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour le calcul (%(i2)d).
 
   Il y a donc un changement de comportement pour la maille %(k1)s
@@ -270,16 +265,16 @@ Risques & conseils :
 Erreur d'utilisation :
   Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
   Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
-  Pour le calcul du 1er pas de temps, le champ des variables internes utilisé pour le début du pas
+  Pour le calcul du premier pas de temps, le champ des variables internes utilisé pour le début du pas
   est "chvari".
-  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le meme nombre de
+  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le même nombre de
   variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour le calcul (%(i2)d).
 
   Il y a donc un changement de comportement pour la maille %(k1)s
   Le code n'accepte de changement de comportement que dans quelques cas très particuliers :
     - LEMAITRE <-> VMIS_ISOT_XXXX
     - ELAS     <-> XXXX
-  Il ne semble pas que vous soyez dans ce cas de figure. L'exécution est arretée.
+  Il ne semble pas que vous soyez dans ce cas de figure. L'exécution est arrêtée.
 
 Risques & conseils :
   Vérifiez le comportement affecté sur cette maille.
@@ -311,45 +306,41 @@ Risques & conseils :
 """),
 
 54 : _(u"""
- longueurs des modes locaux imcompatibles entre eux.
+ longueurs des modes locaux incompatibles entre eux.
 """),
 
 55 : _(u"""
 Erreur utilisateur dans CALC_ELEM:
-  Pour pouvoir calculer SIEQ_ELNO sur un concept de type comb_fourier,
+  Pour pouvoir calculer SIEQ_ELNO sur un concept de type COMB_FOURIER,
   il faut avoir calculé au préalable l'option 'SIEF_ELGA'
 """),
 
-
-
-
-
 57 : _(u"""
- on ne sait pas moyenner cette composante negative
+ on ne sait pas moyenner cette composante négative
 """),
 
 58 : _(u"""
- champs sur modeles differents
+ champs sur des modèles différents
 """),
 
 59 : _(u"""
-  %(k1)s  doit etre un cham_elem.
+  %(k1)s  doit être un CHAM_ELEM.
 """),
 
 60 : _(u"""
- longueurs des modes locaux champ1 imcompatibles entre eux.
+ longueurs des modes locaux champ1 incompatibles entre eux.
 """),
 
 61 : _(u"""
- longueurs des modes locaux champ2 imcompatibles entre eux.
+ longueurs des modes locaux champ2 incompatibles entre eux.
 """),
 
 62 : _(u"""
- composante non definie
+ composante non définie
 """),
 
 63 : _(u"""
- champ de geometrie non trouve
+ champ de géométrie non trouve
 """),
 
 64 : _(u"""
@@ -357,11 +348,11 @@ Erreur utilisateur dans CALC_ELEM:
 """),
 
 65 : _(u"""
-  on n'accepte un instant arbitraire que si le concept deformations anelastiques n'a qu'1 champ.
+  on n'accepte un instant arbitraire que si le concept déformations anélastiques n'a qu'un champ.
 """),
 
 66 : _(u"""
-  le concept evol_noli :  %(k1)s  ne contient aucun champ de déformations anélastiques.
+  le concept EVOL_NOLI :  %(k1)s  ne contient aucun champ de déformations anélastiques.
 """),
 
 71 : _(u"""
@@ -369,11 +360,11 @@ Erreur utilisateur dans CALC_ELEM:
 """),
 
 72 : _(u"""
-  il ne faut pas definir plus d"un champ de vitesse
+  il ne faut pas définir plus d"un champ de vitesse
 """),
 
 73 : _(u"""
- le champ:  %(k1)s  n'est ni un cham_elem ni un resuelem
+ le champ:  %(k1)s  n'est ni un CHAM_ELEM ni un resuelem
 """),
 
 74 : _(u"""
@@ -381,7 +372,7 @@ Erreur utilisateur dans CALC_ELEM:
 """),
 
 78 : _(u"""
-Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurence %(i1)d :
+Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
 Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
 le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
 supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
@@ -398,7 +389,7 @@ supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
 """),
 
 80 : _(u"""
- Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurence %(i1)d :
+ Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
 Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
 le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
 supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
@@ -416,19 +407,19 @@ Risque et conseils :
 """),
 
 81 : _(u"""
- cette fonction ne marche que pour des modes locaux de type chno, vect, ou mat
+ cette fonction ne marche que pour des modes locaux de type champ aux noeuds, vecteur, ou matrice.
 """),
 
 82 : _(u"""
- le mode local est de type matrice non_carree
+ le mode local est de type matrice non_carrée
 """),
 
 84 : _(u"""
- il n y a pas de parametre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s
+ il n y a pas de paramètre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
 85 : _(u"""
- il y a plusieurs parametres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
+ il y a plusieurs paramètres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
 88: _(u"""
@@ -457,13 +448,13 @@ Risque et conseils :
 
 95 : _(u"""
  avec un CHAM_ELEM calcule sur une liste de maille,
- il faut utiliser le mot cle "MODELE"
+ il faut utiliser le mot clé "MODELE"
 """),
 
 96 : _(u"""
   pour prendre en compte les termes d'inertie,
   il est préférable d'utiliser la commande "CALC_ELEM".
-  le mot cle "ACCE" n'est pas traité et les résultats risquent d'être faux.
+  le mot clé "ACCE" n'est pas traité et les résultats risquent d'être faux.
 """),
 
 97 : _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ cata_msg = {
 """),
 
 7 : _(u"""
- redefinition de l'unite logique  %(k1)s  non autorisee
+ redéfinition de l'unite logique  %(k1)s  non autorisee
 """),
 
 8 : _(u"""
@@ -54,7 +54,7 @@ cata_msg = {
 """),
 
 10 : _(u"""
- aucun numero d'unite logiquedisponible
+ aucun numéro d'unite logiquedisponible
 """),
 
 11 : _(u"""
@@ -224,19 +224,19 @@ Erreur Programmeur / UTTCPU :
 
 55 : _(u"""
 Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut etre effectue avec la valeur "DEBUT" pour l"argument PARA
+ L"appel a uttcpu ne peut être effectue avec la valeur "DEBUT" pour l"argument PARA
  Il faut d'abord avoir fait "INIT".
 """),
 
 56 : _(u"""
 Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut etre effectué avec la valeur "FIN" pour l"argument PARA.
+ L"appel a uttcpu ne peut être effectué avec la valeur "FIN" pour l"argument PARA.
  Il faut d'abord avoir fait "DEBUT".
 """),
 
 57 : _(u"""
 Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut etre effectue avec la valeur  %(k1)s  pour l"argument PARA
+ L"appel a uttcpu ne peut être effectue avec la valeur  %(k1)s  pour l"argument PARA
 """),
 
 58 : _(u"""

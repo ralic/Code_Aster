@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ cata_msg = {
 """),
 
 6 : _(u"""
- methode AU-YANG : la géometrie doit etre cylindrique
+ methode AU-YANG : la géometrie doit être cylindrique
 """),
 
 7 : _(u"""
@@ -126,7 +126,7 @@ cata_msg = {
 
 25 : _(u"""
  ORIENTATION : GENE_TUYAU
- le noeud doit etre une des extremités
+ le noeud doit être une des extremités
 """),
 
 26 : _(u"""
@@ -139,7 +139,7 @@ cata_msg = {
 
 28 : _(u"""
  ORIENTATION : GENE_TUYAU
- un seul noeud doit etre affecté
+ un seul noeud doit être affecté
 """),
 
 29 : _(u"""
@@ -159,7 +159,7 @@ cata_msg = {
 
 32 : _(u"""
  vous ne pouvez affecter des valeurs de type "ORIENTATION" au modèle  %(k1)s
- qui ne contient ni element poutre ni élément DISCRET ni élément BARRE
+ qui ne contient ni élément poutre ni élément DISCRET ni élément BARRE
 """),
 
 33 : _(u"""
@@ -213,68 +213,68 @@ cata_msg = {
 
 44 : _(u"""
  BARRE :
- occurence :  %(k1)s
+ occurrence :  %(k1)s
  "CARA"    :  %(k2)s
  arguments maximums pour une section " %(k3)s "
 """),
 
 45 : _(u"""
  BARRE :
- occurence  %(k1)s
+ occurrence  %(k1)s
  "cara"   :  4
  arguments maximums pour une section " %(k2)s "
 """),
 
 46 : _(u"""
  BARRE :
- occurence  %(k1)s
+ occurrence  %(k1)s
  section " %(k2)s
  argument "h" incompatible avec "hy" ou "hz"
 """),
 
 47 : _(u"""
  barre :
- occurence  %(k1)s
+ occurrence  %(k1)s
  section " %(k2)s
  argument "hy" ou "hz" incompatible avec "h"
 """),
 
 48 : _(u"""
  barre :
- occurence  %(k1)s
+ occurrence  %(k1)s
  section " %(k2)s  argument "ep" incompatible avec "epy" ou "epz"
 """),
 
 49 : _(u"""
  barre :
- occurence  %(k1)s
+ occurrence  %(k1)s
  section " %(k2)s
  argument "epy" ou "epz" incompatible avec "ep"
 """),
 
 50 : _(u"""
  barre :
- occurence  %(k1)s
+ occurrence  %(k1)s
  "cara" : nombre de valeurs entrees incorrect
  il en faut  %(k2)s
 """),
 
 51 : _(u"""
  barre :
- occurence  %(k1)s
+ occurrence  %(k1)s
  section " %(k2)s
  valeur  %(k3)s  de "vale" non admise (valeur test interne)
 """),
 
 52 : _(u"""
  cable :
- occurence 1
+ occurrence 1
  le mot cle "section" est obligatoire.
 """),
 
 53 : _(u"""
  coque :
- occurence 1
+ occurrence 1
  le mot cle "epais" est obligatoire.
 """),
 
@@ -283,61 +283,61 @@ cata_msg = {
 """),
 
 56 : _(u"""
- impossibilite, la maille  %(k1)s  doit etre une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caracteristique  %(k4)s
+ impossibilite, la maille  %(k1)s  doit être une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caracteristique  %(k4)s
 """),
 
 57 : _(u"""
  orientation :
- occurence 1
+ occurrence 1
  le mot cle "vale" est obligatoire
 """),
 
 58 : _(u"""
  orientation :
- occurence 1
+ occurrence 1
  le mot cle "cara" est obligatoire
 """),
 
 59 : _(u"""
  orientation :
- occurence  %(k1)s
+ occurrence  %(k1)s
  presence de "vale" obligatoire si "cara" est present
 """),
 
 60 : _(u"""
  orientation :
- occurence  %(k1)s
+ occurrence  %(k1)s
  val :  %(k2)s
  nombre de valeurs entrees incorrect
 """),
 
 61 : _(u"""
  defi_arc:
- le rayon de courbure doit etre positif.
+ le rayon de courbure doit être positif.
 """),
 
 62 : _(u"""
  defi_arc:
- il faut 3 reels pour definir le centre de courbure.
+ il faut 3 reels pour définir le centre de courbure.
 """),
 
 63 : _(u"""
  defi_arc:
- il faut 3 reels pour definir le point de concours des tangentes.
+ il faut 3 reels pour définir le point de concours des tangentes.
 """),
 
 64 : _(u"""
  defi_arc:
- le coefficient de flexibilite doit etre positif.
+ le coefficient de flexibilite doit être positif.
 """),
 
 65 : _(u"""
- defi_arc: l'indice de contrainte doit etre positif.
+ defi_arc: l'indice de contrainte doit être positif.
 """),
 
 66 : _(u"""
  poutre :
- occurence  %(k1)s
+ occurrence  %(k1)s
  section "cercle", vari_sect "constant" la caracteristique "r" est obligatoire
 """),
 
@@ -346,7 +346,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
- occurence  %(k1)s de "barre" (maille  %(k2)s ) ecrasement d un type de geometrie de section par un autre
+ occurrence  %(k1)s de "barre" (maille  %(k2)s ) ecrasement d un type de geometrie de section par un autre
 """),
 
 70 : _(u"""
@@ -360,7 +360,7 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section generale
- la valeur de  %(k2)s  doit etre  strictement positive.
+ la valeur de  %(k2)s  doit être  strictement positive.
 """),
 
 72 : _(u"""
@@ -374,7 +374,7 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section rectangle
- la valeur de  %(k2)s  doit etre  strictement positive.
+ la valeur de  %(k2)s  doit être  strictement positive.
 """),
 
 74 : _(u"""
@@ -388,14 +388,14 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section cercle
- la valeur de  %(k2)s  doit etre  strictement positive.
+ la valeur de  %(k2)s  doit être  strictement positive.
 """),
 
 76 : _(u"""
  barre :
  maille  %(k1)s
  section cercle
- la valeur de  %(k2)s  doit etre positive.
+ la valeur de  %(k2)s  doit être positive.
 """),
 
 77 : _(u"""
@@ -409,7 +409,7 @@ cata_msg = {
  poutre :
  maille  %(k1)s
  section generale
- element poutre de timoshenko : il manque la caracteristique  %(k2)s
+ élément poutre de timoshenko : il manque la caracteristique  %(k2)s
 """),
 
 79 : _(u"""
@@ -430,21 +430,21 @@ cata_msg = {
  poutre :
  maille  %(k1)s
  section générale
- la valeur de  %(k2)s  doit etre strictement positive
+ la valeur de  %(k2)s  doit être strictement positive
 """),
 
 82 : _(u"""
  poutre :
  maille  %(k1)s
  section rectangle
- la valeur de  %(k2)s  doit etre strictement positive
+ la valeur de  %(k2)s  doit être strictement positive
 """),
 
 83 : _(u"""
  poutre :
  maille  %(k1)s
  section cercle
- la valeur de  %(k2)s  doit etre strictement positive
+ la valeur de  %(k2)s  doit être strictement positive
 """),
 
 84 : _(u"""
@@ -495,12 +495,12 @@ cata_msg = {
 """),
 
 92 : _(u"""
- occurence  %(k1)s de "poutre" (maille  %(k2)s )
+ occurrence  %(k1)s de "poutre" (maille  %(k2)s )
  écrasement d'un type de variation de section par un autre
 """),
 
 93 : _(u"""
- occurence  %(k1)s de "poutre" (maille  %(k2)s )
+ occurrence  %(k1)s de "poutre" (maille  %(k2)s )
  écrasement d'un type de géometrie de section par un autre
 """),
 

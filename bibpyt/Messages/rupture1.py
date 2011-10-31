@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ un seul fond de fissure. Or la table %(k2)s contient %(i1)d fonds de fissure
 """),
 
 6: _(u"""
-Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement etre supérieur au rayon
+Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement être supérieur au rayon
 R_INF (resp. R_INF_FO).
 -> Risque et Conseil :
 Veuillez revoir votre mise en données.
@@ -60,7 +60,7 @@ Veuillez revoir la mise en données de l'opérateur DEFI_FOND_FISS.
 """),
 
 10: _(u"""
-Le fond de fissure ne doit etre défini que par un noeud.
+Le fond de fissure ne doit être défini que par un noeud.
 -> Risque et Conseil :
 Veuillez revoir le contenu du mot-clé GROUP_NO ou NOEUD ou FOND_FISS.
 """),
@@ -245,12 +245,12 @@ comme si vous aviez renseigné CALCUL_CONTRAINTE='OUI'.
  - loi de comportement fournie à l'opérateur CALC_G : %(k2)s
 
 --> Risques & conseils :
-On doit généralement utiliser la meme loi de comportement entre le calcul et le
+On doit généralement utiliser la même loi de comportement entre le calcul et le
 post-traitement. On peut utiliser deux comportements différents, mais alors
-l'utilisateur doit etre vigilant sur l'interprétation des résultats(cf.U2.05.01).
+l'utilisateur doit être vigilant sur l'interprétation des résultats(cf.U2.05.01).
 Si plusieurs comportements sont définis sur la structure, le comportement à
 indiquer dans CALC_G est celui du matériau dans lequel la fissure se développe.
-Dans ce cas, ce message d'alarme est quand meme émis mais le résultat est bien cohérent.
+Dans ce cas, ce message d'alarme est quand même émis mais le résultat est bien cohérent.
 Un post-traitement élastique non-linéaire d'un calcul élastoplastique est
 admissible, si le chargement est radial et monotone. La comparaison du G calculé
 à partir des contraintes issues de STAT_NON_LINE (option CALC_CONTRAINTE='NON')

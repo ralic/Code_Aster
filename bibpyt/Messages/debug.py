@@ -1,4 +1,4 @@
-#@ MODIF debug Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF debug Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 # Catalogue de messages utiles en debug pour le developpeur
-# Dans ce catalogue les messages peuvent ne pas etre formules
+# Dans ce catalogue les messages peuvent ne pas être formules
 # en francais
 
 cata_msg = {

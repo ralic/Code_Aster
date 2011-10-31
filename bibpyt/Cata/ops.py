@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,8 +108,8 @@ def build_debut(self,**args):
       self.jdc._Build()
    # On execute la fonction debut pour initialiser les bases
    # Cette execution est indispensable avant toute autre action sur ASTER
-   # op doit etre un entier car la fonction debut appelle GCECDU qui demande
-   # le numero de l'operateur associé (getoper)
+   # op doit être un entier car la fonction debut appelle GCECDU qui demande
+   # le numéro de l'operateur associé (getoper)
    self.definition.op=0
    self.set_icmd(1)
    lot,ier=self.codex.debut(self,1)
@@ -136,14 +136,14 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      if hasattr(self,'fichier_init'):return
      self.fichier_init='glob.1'
      self.jdc.initexec()
-     # le sous programme fortran appelé par self.codex.poursu demande le numero
+     # le sous programme fortran appelé par self.codex.poursu demande le numéro
      # de l'operateur (GCECDU->getoper), on lui donne la valeur 0
      self.definition.op=0
      lot,ier,lonuti,concepts=self.codex.poursu(self,1)
      # Par la suite pour ne pas executer la commande pendant la phase
      # d'execution on le remet à None
      self.definition.op=None
-     # On demande la numerotation de la commande POURSUITE avec l'incrément
+     # On demande la numérotation de la commande POURSUITE avec l'incrément
      # lonuti pour qu'elle soit numérotée à la suite des commandes existantes.
      # self.set_icmd(lonuti)    Non : on repart à zéro
      pos=0
@@ -169,12 +169,12 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      # On récupère ces objets après la restauration des concepts pour que
      # la récupération des objets pickled soit prioritaire.
      # On vérifie que les concepts relus dans glob.1 sont bien tous
-     # presents sous le meme nom et du meme type dans pick.1
+     # presents sous le même nom et du même type dans pick.1
      # Le contexte est ensuite updaté (surcharge) et donc enrichi des
      # variables qui ne sont pas des concepts.
      # On supprime du pickle_context les concepts valant None, ca peut
-     # etre le cas des concepts non executés, placés après FIN.
-     UTMESS('I', 'SUPERVIS2_1')
+     # être le cas des concepts non executés, placés après FIN.
+     UTMESS('I', 'SUPERVIS2_1', valk='pick.1')
      pickle_context = get_pickled_context()
      if pickle_context == None:
         UTMESS('F', 'SUPERVIS_86')
@@ -197,7 +197,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
                if self.jdc.info_level > 1:
                   UTMESS('I', 'SUPERVIS2_3',
                          valk=(elem, type(pickle_context[elem]).__name__.upper()))
-               UTMESS('A', 'SUPERVIS_93', valk=(elem, name))
+               UTMESS('A', 'SUPERVIS_93', valk=(elem, "del %s" % name))
                del pickle_context[elem]
                continue
             # détecte les incohérences
@@ -209,7 +209,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
             elif pickle_class not in (CO, entier) :
             # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
             # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
-            # meme situation pour le type 'entier' produit uniquement par DEFI_FICHIER
+            # même situation pour le type 'entier' produit uniquement par DEFI_FICHIER
                UTMESS('F','SUPERVIS_88', valk=[elem,str(pickle_class)])
                return
          if pickle_context[elem]==None:
@@ -232,7 +232,7 @@ def get_pickled_context():
     """
        Cette fonction permet de réimporter dans le contexte courant du jdc (jdc.g_context)
        les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une
-       précédente étude. Un fichier pick.1 doit etre présent dans le répertoire de travail
+       précédente étude. Un fichier pick.1 doit être présent dans le répertoire de travail
     """
     fpick = 'pick.1'
     if not os.path.isfile(fpick):
@@ -304,7 +304,7 @@ def build_include(self,**args):
    Fonction ops de la macro INCLUDE appelée lors de la phase de Build
    """
    # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
-   # le numero de la commande n est pas utile en phase de construction
+   # le numéro de la commande n est pas utile en phase de construction
    # La macro INCLUDE ne sera pas numérotée (incrément=None)
    ier=0
    self.set_icmd(None)
@@ -375,7 +375,7 @@ def build_procedure(self,**args):
     """
     ier=0
     # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
-    # le numero de la commande n est pas utile en phase de construction
+    # le numéro de la commande n est pas utile en phase de construction
     # On ne numérote pas une macro PROCEDURE (incrément=None)
     self.set_icmd(None)
     icmd=0

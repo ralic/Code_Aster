@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,19 +22,19 @@
 cata_msg = {
 
 1 : _(u"""
-  erreur dans le calcul de pres_f
+  erreur dans le calcul de PRES_f
 """),
 
 2 : _(u"""
- pour l'option INDIC_ENER, les seules relations admises sont "vmis_isot_line" et "vmis_isot_trac" .
+ pour l'option INDIC_ENER, les seules relations admises sont "VMIS_ISOT_LINE" et "VMIS_ISOT_trac" .
 """),
 
 3 : _(u"""
- pour l'option INDIC_SEUIL, les seules relations admises sont "vmis_isot_line", "vmis_isot_trac"  et "vmis_cine_line" .
+ pour l'option INDIC_SEUIL, les seules relations admises sont "VMIS_ISOT_LINE", "VMIS_ISOT_trac"  et "VMIS_CINE_LINE" .
 """),
 
 15 : _(u"""
-  deformation :  %(k1)s non implantée sur les éléments "pou_d_tgm" : utiliser PETIT ou GROT_GDEP
+  déformation :  %(k1)s non implantée sur les éléments "pou_d_TGM" : utiliser PETIT ou GROT_GDEP
 """),
 
 16 : _(u"""
@@ -46,11 +46,11 @@ cata_msg = {
 """),
 
 32 : _(u"""
- vous utilisez le mot clé liaison_elem avec l'option coq_pou: l'épaisseur des éléments de bord de coque n'a pas été affectée.
+ vous utilisez le mot clé liaison_ELEM avec l'option coq_pou: l'épaisseur des éléments de bord de coque n'a pas été affectée.
 """),
 
 33 : _(u"""
- l'epaisseur des éléments de bord de coque est negative ou nulle.
+ l'épaisseur des éléments de bord de coque est négative ou nulle.
 """),
 
 34 : _(u"""
@@ -58,11 +58,11 @@ cata_msg = {
 """),
 
 35 : _(u"""
- matns() sous-dimensionné
+ matns() sous dimensionné
 """),
 
 36 : _(u"""
- pr() sous-dimensionne
+ pr() sous dimensionné
 """),
 
 38 : _(u"""
@@ -86,7 +86,7 @@ cata_msg = {
 """),
 
 43 : _(u"""
- comp. elastique inexistant
+ comportement. élastique inexistant
 """),
 
 44 : _(u"""
@@ -98,7 +98,7 @@ cata_msg = {
 """),
 
 46 : _(u"""
- le nombre de couches et de secteurs doivent etre supérieurs a 0
+ le nombre de couches et de secteurs doivent être supérieurs a 0
 """),
 
 48 : _(u"""
@@ -110,7 +110,7 @@ cata_msg = {
 """),
 
 51 : _(u"""
-  nume_sect incorrect
+  NUME_SECT incorrect
 """),
 
 52 : _(u"""
@@ -130,11 +130,11 @@ cata_msg = {
 """),
 
 57 : _(u"""
- indn = 1 (intégration normale) ou indn = 0 (integration réduite) obligatoirement.
+ indn = 1 (intégration normale) ou indn = 0 (intégration réduite) obligatoirement.
 """),
 
 58 : _(u"""
-  le code " %(k1)s " est non prévu. code doit etre = "gl" ou "lg"
+  le code " %(k1)s " est non prévu. code doit être = "gl" ou "lg"
 """),
 
 59 : _(u"""
@@ -145,7 +145,7 @@ Conseil :
 """),
 
 61 : _(u"""
- préconditions non remplies
+ pré-conditions non remplies
 """),
 
 62 : _(u"""
@@ -169,23 +169,23 @@ Conseil :
 """),
 
 67: _(u"""
-Le module d'Young est nul.
+Le module de Young est nul.
 """),
 
 69 : _(u"""
- pb récuperation donnée matériau dans thm_liqu %(k1)s
+ Problème récupération donnée matériau dans THM_LIQU %(k1)s
 """),
 
 70 : _(u"""
- pb récupération donnée matériau dans thm_init %(k1)s
+ Problème récupération donnée matériau dans THM_INIT %(k1)s
 """),
 
 71 : _(u"""
- pb récupération données matériau dans elas %(k1)s
+ Problème récupération données matériau dans ELAS %(k1)s
 """),
 
 72 : _(u"""
-   rcvala ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8
+   RCVALA ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8
 """),
 
 73 : _(u"""
@@ -194,7 +194,7 @@ Le module d'Young est nul.
 
 74 : _(u"""
   Attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélépipèdes.
-  Sur les elements quelconques on peut obtenir des résultats faux.
+  Sur les éléments quelconques on peut obtenir des résultats faux.
 """),
 
 76 : _(u"""
@@ -202,11 +202,11 @@ Le module d'Young est nul.
 """),
 
 78 : _(u"""
- pb recuperation donnée matériau dans thm_diffu %(k1)s
+ Problème récupération donnée matériau dans THM_DIFFU %(k1)s
 """),
 
 79 : _(u"""
- la loi de comportement n'existe pas pour la modélisation dktg :  %(k1)s
+ la loi de comportement n'existe pas pour la modélisation DKTG :  %(k1)s
 """),
 
 80 : _(u"""
@@ -229,8 +229,8 @@ Le module d'Young est nul.
 """),
 
 90 : _(u"""
- ELREFE mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d
- nb noeuds pour le gano  %(i2)d
+ ELREFE mal programme maille  %(k1)s  type  %(k2)s  nombre noeuds  %(i1)d
+ nombre noeuds pour le passage Gauss noeuds  %(i2)d
 """),
 
 91 : _(u"""
@@ -245,7 +245,7 @@ Erreur utilisateur :
  La programmation ne le permet pas.
 
 Conseil :
- Pour appliquer une telle presssion, il faut utiliser AFFE_CHAR_MECA_F/FORCE_COQUE/PRES
+ Pour appliquer une telle pression, il faut utiliser AFFE_CHAR_MECA_F/FORCE_COQUE/PRES
 """),
 
 }

@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,24 +22,24 @@
 cata_msg = {
 
 1 : _(u"""
- L'option %(k1)s est deja calculee pour le numero d'ordre %(k2)s.
- On la recalcule car les donnees peuvent etre differentes.
+ L'option %(k1)s est deja calculee pour le numéro d'ordre %(k2)s.
+ On la recalcule car les données peuvent être différentes.
 """),
 
 2 : _(u"""
-Champ inexistant SIEF_ELGA ou SIEF_ELGA numero d'ordre %(k1)s pour le calcul de l'option %(k2)s
+Champ inexistant SIEF_ELGA ou SIEF_ELGA numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 3 : _(u"""
-Champ inexistant DEPL numero d'ordre %(k1)s pour le calcul de l'option %(k2)s
+Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 4 : _(u"""
-Champ inexistant %(k1)s numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
+Champ inexistant %(k1)s numéro d'ordre %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 5 : _(u"""
-Option illicite pour le resultat %(k1)s numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
+Option illicite pour le resultat %(k1)s numéro d'ordre %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 6 : _(u"""
@@ -47,7 +47,7 @@ Numero d'ordre trop grand %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 7 : _(u"""
-Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le calcul de l'option %(k3)s
+Option illicite pour le resultat %(k1)s numéro d'ordre trop grand %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 8 : _(u"""
@@ -58,18 +58,18 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
 """),
 
 9 : _(u"""
- Champ inexistant STRX_ELGA ou STRX_ELGA numero d'ordre %(k1)s pour le calcul de l'option %(k2)s,
+ Champ inexistant STRX_ELGA ou STRX_ELGA numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s,
  il manque certainement le champ STRX_ELGA en argument de CALC_NO.
 """),
 
 10 : _(u"""
  le noeud traite  n'est associe a aucune maille volumique.
- numero du noeud =  %(i1)d
+ numéro du noeud =  %(i1)d
  nombre de mailles attachees au noeud =  %(i2)d
 """),
 
 16 : _(u"""
- appel errone numero d'ordre %(i1)d code retour de rsexch : %(i2)d
+ appel errone numéro d'ordre %(i1)d code retour de rsexch : %(i2)d
  pb cham_no %(k1)s
 """),
 
@@ -82,8 +82,8 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
 """),
 
 21 : _(u"""
- le numero du groupe de mailles est trop grand:  %(i1)d
-  le numero du groupe doit etre inferieur a  %(i2)d
+ le numéro du groupe de mailles est trop grand:  %(i1)d
+  le numéro du groupe doit être inferieur a  %(i2)d
 """),
 
 25 : _(u"""
@@ -111,15 +111,15 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
 """),
 
 41 : _(u"""
-  le parametre  %(k1)s n'existe pas %(k2)s
+  le paramètre  %(k1)s n'existe pas %(k2)s
 """),
 
 45 : _(u"""
- noeud inconnu dans le fichier  ideas  noeud numero :  %(i1)d
+ noeud inconnu dans le fichier  ideas  noeud numéro :  %(i1)d
 """),
 
 46 : _(u"""
- element inconnu dans le fichier ideas element numero :  %(i1)d
+ élément inconnu dans le fichier ideas élément numéro :  %(i1)d
 """),
 
 54 : _(u"""
@@ -176,7 +176,7 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
 """),
 
 73 : _(u"""
- appel errone  resultat :  %(k1)s   archivage numero :  %(i1)d
+ appel errone  resultat :  %(k1)s   archivage numéro :  %(i1)d
    code retour de rsexch :  %(i2)d
    probleme champ :  %(k2)s
 """),
@@ -191,11 +191,11 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
 
 76 : _(u"""
  noeud non contenu dans une  maille sachant calculer l" option
- noeud numero :  %(i1)d
+ noeud numéro :  %(i1)d
 """),
 
 77 : _(u"""
- *** banque de donnees *** pour le type de geometrie  %(k1)s
+ *** banque de données *** pour le type de geometrie  %(k1)s
   le couple de materiaux  %(k2)s
   ne se trouve pas dans la banque. %(k3)s
 """),

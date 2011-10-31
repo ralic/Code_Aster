@@ -1,4 +1,4 @@
-#@ MODIF edyos Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF edyos Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,22 +27,22 @@
 #        
 
 
-#    Ce script python permet d'associer un texte aux numeros d'erreur
-#    appeles dans le sous programme errcou.f 
+#    Ce script python permet d'associer un texte aux numéros d'erreur
+#    appelés dans le sous programme errcou.f 
 
 #    Ces messages d'erreur sont issus de la note HI-26/03/007A
 #    "DEVELOPPEMENT D'UN MODE PRODUCTION POUR CALCIUM: MANUEL UTILISATEUR"
 #    ANNEXE 1: CODES D'ERREURS  (PAGE 70)
 #    FAYOLLE ERIC, DEMKO BERTRAND (CS SI)  JUILLET 2003
 #
-#    Les numeros des erreurs de ce script correspondent aux numeros de la
-#    reference bibliographique 
+#    Les numéros des erreurs de ce script correspondent aux numéros de la
+#    référence bibliographique 
  
 
 cata_msg={
 
 1 : _(u"""
-      YACS : Emetteur inconnu
+      YACS : Émetteur inconnu
 """),
 
 2 : _(u"""
@@ -75,11 +75,11 @@ cata_msg={
 """),
 
 9 : _(u"""
-      YACS : Type de déconnection incorrect
+      YACS : Type de déconnexion incorrect
 """),
 
 10 : _(u"""
-       YACS : Directive de déconnection incorrecte
+       YACS : Directive de déconnexion incorrecte
 """),
 
 11 : _(u"""
@@ -139,7 +139,7 @@ cata_msg={
 """),
 
 25 : _(u"""
-      YACS : Valeur d'info non utilisée
+      YACS : Valeur d'information non utilisée
 """),  
 
 26 : _(u"""
@@ -163,7 +163,7 @@ cata_msg={
 """),
 
 31 : _(u"""
-      YACS : Ecriture d'une variable dont l'effacement est demandé
+      YACS : Écriture d'une variable dont l'effacement est demandé
 """),
 
 32 : _(u"""
@@ -171,15 +171,15 @@ cata_msg={
 """),
 
 33 : _(u"""
-      YACS : Valeur d'info non utilisée
+      YACS : Valeur d'information non utilisée
 """),  
 
 34 : _(u"""
-      YACS : Valeur d'info non utilisée
+      YACS : Valeur d'information non utilisée
 """),  
 
 35 : _(u"""
-      YACS : Erreur dans la chaine de déclaration
+      YACS : Erreur dans la chaîne de déclaration
 """),
 
 36 : _(u"""
@@ -191,7 +191,7 @@ cata_msg={
 """),
 
 38 : _(u"""
-      YACS : Valeur d'info non utilisée
+      YACS : Valeur d'information non utilisée
 """),
 
 39 : _(u"""
@@ -226,7 +226,7 @@ cata_msg={
 
 46 : _(u"""   
       Le code EDYOS n'a pas convergé
-      Avec le schéma en temps d'Euler, on ne sous-divise pas le pas de temps
+      Avec le schéma en temps d'Euler, on ne sous divise pas le pas de temps
       Le calcul s'arrête donc
       Conseil : tester le schéma en temps adaptatif
 """),

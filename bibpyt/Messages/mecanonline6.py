@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,11 +72,11 @@ cata_msg = {
 """),
 
 29 : _(u"""
- <Erreur> Echec dans l'intégration de la loi de comportement
+ <Erreur> Échec dans l'intégration de la loi de comportement
 """),
 
 30 : _(u"""
- <Erreur> Echec dans le pilotage
+ <Erreur> Échec dans le pilotage
 """),
 
 31 : _(u"""
@@ -84,7 +84,7 @@ cata_msg = {
 """),
 
 32 : _(u"""
- <Erreur> Echec dans le traitement du contact discret
+ <Erreur> Échec dans le traitement du contact discret
 """),
 
 33 : _(u"""
@@ -105,7 +105,7 @@ cata_msg = {
   Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
  """),
 38 : _(u"""
- <Erreur> Echec dans le traitement de la collision.
+ <Erreur> Échec dans le traitement de la collision.
 """),
 
 }

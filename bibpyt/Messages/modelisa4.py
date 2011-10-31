@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 24/10/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF modelisa4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,15 +29,15 @@ cata_msg = {
 """),
 
 4 : _(u"""
-  -> Le modèle contient un mélange d'éléments finis 2D (plan XOY) et 3D
+  -> Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D
 
   -> Risque & Conseil :
      Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
-     Parfois, cela empeche de faire le "bon choix".
+     Parfois, cela empêche de faire le "bon choix".
 """),
 
 5 : _(u"""
- mot-cle  %(k1)s  interdit en 2d
+ mot-clé  %(k1)s  interdit en 2d
 """),
 
 6 : _(u"""
@@ -46,13 +46,13 @@ cata_msg = {
 """),
 
 7 : _(u"""
- certains noeuds connectent plus de 200 mailles. ces mailles ne sont pas verifiees.
+ certains noeuds connectent plus de 200 mailles. ces mailles ne sont pas vérifiées.
 """),
 
 8 : _(u"""
   -> Phase de vérification du maillage : présence de mailles doubles (ou triples, ...)
-     Les mailles multiples sont des mailles de noms différents qui ont la meme connectivité
-     (elles s'appuient sur les memes noeuds).
+     Les mailles multiples sont des mailles de noms différents qui ont la même connectivité
+     (elles s'appuient sur les mêmes noeuds).
 
   -> Risque & Conseil :
      Le risque est de modéliser 2 fois (ou plus) l'espace. On peut par exemple avoir
@@ -62,8 +62,8 @@ cata_msg = {
 """),
 
 9 : _(u"""
-  -> Phase de vérification du maillage : présence de mailles dégénérées. 
-     Le rapport entre la plus petite arete sur la plus grande est inférieur à 0.001
+  -> Phase de vérification du maillage : présence de mailles dégénérées.
+     Le rapport entre la plus petite arête sur la plus grande est inférieur à 0.001
 
   -> Risque & Conseil :
      Vérifiez votre maillage. La présence de telles mailles peut conduire à des
@@ -71,7 +71,7 @@ cata_msg = {
 """),
 
 10 : _(u"""
- - chckma phase de verification du maillage - mailles degenerees
+ - chckma phase de vérification du maillage - mailles dégénérées
 """),
 
 
@@ -80,11 +80,11 @@ cata_msg = {
 
 
 13 : _(u"""
- seule la grandeur neut_f est traitee actuellement.
+ seule la grandeur NEUT_f est traitée actuellement.
 """),
 
 14 : _(u"""
- les champs de cham_f et cham_para n'ont pas la meme discretisation noeu/cart/elga/elno/elem.
+ les champs de CHAM_f et CHAM_para n'ont pas la même discrétisation NOEU/CART/ELGA/ELNO/ELEM.
 """),
 
 
@@ -93,27 +93,27 @@ cata_msg = {
 
 
 16 : _(u"""
- avec "noeud_cmp", il faut donner un nom et une composante.
+ avec "noeud_CMP", il faut donner un nom et une composante.
 """),
 
 17 : _(u"""
- pour recuperer le champ de geometrie, il faut utiliser le mot cle maillage
+ pour récupérer le champ de géométrie, il faut utiliser le mot clé maillage
 """),
 
 18 : _(u"""
- le mot-cle type_champ =  %(k1)s n'est pas coherent avec le type du champ extrait :  %(k2)s _ %(k3)s
+ le mot-clé type_champ =  %(k1)s n'est pas cohérent avec le type du champ extrait :  %(k2)s _ %(k3)s
 """),
 
 19 : _(u"""
- on ne peut extraire qu'1 numero d'ordre. vous en avez specifie plusieurs.
+ on ne peut extraire qu'1 numéro d'ordre. vous en avez spécifié plusieurs.
 """),
 
 24 : _(u"""
- arret sur erreur(s), normale non sortante
+ arrêt sur erreur(s), normale non sortante
 """),
 
 25 : _(u"""
-  la liste : %(k1)s  a concatener avec la liste  %(k2)s  doit exister
+  la liste : %(k1)s  a concaténer avec la liste  %(k2)s  doit exister
 """),
 
 26 : _(u"""
@@ -121,35 +121,35 @@ cata_msg = {
 """),
 
 27 : _(u"""
- la concatenation de listes de type  %(k1)s  n'est pas encore prevue.
+ la concaténation de listes de type  %(k1)s  n'est pas encore prévue.
 """),
 
 28 : _(u"""
- <coefal> le numero de correlation et/ou le type de reseau passes dans le fichier de commande ne  sont pas coherents avec le fichier .70
+ <coefal> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
 """),
 
 29 : _(u"""
- <coefam> le numero de correlation et/ou le type de reseau passes dans le fichier de commande ne  sont pas coherents avec le fichier .70
+ <coefam> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
 """),
 
 30 : _(u"""
- <coefam> ce type de reseau n est pas encore implante dans le code
+ <coefam> ce type de réseau n est pas encore implante dans le code
 """),
 
 31 : _(u"""
- <coefra> le numero de correlation et/ou le type de reseau passes dans le fichier de commande ne  sont pas coherents avec le fichier .71
+ <coefra> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
 """),
 
 32 : _(u"""
- <coefra> ce type de reseau n est pas encore implante dans le code
+ <coefra> ce type de réseau n est pas encore implante dans le code
 """),
 
 33 : _(u"""
- <coefrl> le numero de correlation et/ou le type de reseau passes dans le fichier de commande ne  sont pas coherents avec le fichier .71
+ <coefrl> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
 """),
 
 35 : _(u"""
- jacobien negatif
+ jacobien négatif
 """),
 
 36 : _(u"""
@@ -157,7 +157,7 @@ cata_msg = {
 """),
 
 37 : _(u"""
- on essaie de creer ou d'agrandir le ligrel de charge avec un nombre de termes negatif ou nul
+ on essaie de créer ou d'agrandir le LIGREL de charge avec un nombre de termes négatif ou nul
 """),
 
 
@@ -165,15 +165,15 @@ cata_msg = {
 
 
 39 : _(u"""
- probleme rencontre lors de l interpolation d une des deformees modales
+ problème rencontré lors de l interpolation d une des déformées modales
 """),
 
 40 : _(u"""
- probleme rencontre lors de l interpolation d une des fonctions
+ problème rencontré lors de l interpolation d une des fonctions
 """),
 
 41 : _(u"""
- probleme dans le cas 3d ou les noeuds sont alignes, la distance separant 2 noeuds non-identiques de la liste est trop petite
+ problèmes dans le cas 3d ou les noeuds sont alignes, la distance séparant 2 noeuds non identiques de la liste est trop petite
 """),
 
 42 : _(u"""
@@ -186,11 +186,11 @@ cata_msg = {
 """),
 
 43 : _(u"""
- incoherence car aucun noeud n'a de ddl drz et la routine traite le cas 2d ou il y a au-moins un ddl drz
+ incohérence car aucun noeud n'a de ddl DRZ et la routine traite le cas 2d ou il y a au moins un ddl DRZ
 """),
 
 44 : _(u"""
- incoherence car aucun noeud n'a de ddl derotation drx et dry et drz et la routine traite le cas 3d ou il y a au-moins un noeud ayant ces 3 ddls
+ incohérence car aucun noeud n'a de ddl de rotation DRX et dry et DRZ et la routine traite le cas 3d ou il y a au moins un noeud ayant ces 3 ddls
 """),
 
 
@@ -210,7 +210,7 @@ cata_msg = {
 
 
 50 : _(u"""
- la maille :  %(k1)s  n'est pas affectee par un element fini.
+ la maille :  %(k1)s  n'est pas affectée par un élément fini.
 """),
 
 
@@ -223,43 +223,43 @@ cata_msg = {
 """),
 
 54 : _(u"""
- le noeud d application de l excitation ne doit pas etre situe au bord du domaine de definition du maillage.
+ le noeud d application de l excitation ne doit pas être situe au bord du domaine de définition du maillage.
 """),
 
 55 : _(u"""
- la fenetre excitee deborde du domaine de definition du maillage.
+ la fenêtre excitée déborde du domaine de définition du maillage.
 """),
 
 56 : _(u"""
- la demi-fenetre excitee en amont du noeud central d application n est pas definie.
+ la demi fenêtre excitée en amont du noeud central d application n est pas définie.
 """),
 
 57 : _(u"""
- la demi-fenetre excitee en amont du noeud central d application deborde du domaine de definition du maillage.
+ la demi fenêtre excitée en amont du noeud central d application déborde du domaine de définition du maillage.
 """),
 
 58 : _(u"""
- les demi-fenetres excitees en aval et en amont du noeud central d application ne sont pas raccordees.
+ les demi fenêtres excitées en aval et en amont du noeud central d application ne sont pas raccordées.
 """),
 
 59 : _(u"""
- la demi-fenetre excitee en aval du noeud central d application n est pas definie.
+ la demi fenêtre excitée en aval du noeud central d application n est pas définie.
 """),
 
 60 : _(u"""
- la demi-fenetre excitee en aval du noeud central d application deborde du domaine de definition du maillage.
+ la demi fenêtre excitée en aval du noeud central d application déborde du domaine de définition du maillage.
 """),
 
 61 : _(u"""
- les fonctions interpretees doivent etre tabulees auparavant
+ les fonctions interprétées doivent être tabulées auparavant
 """),
 
 62 : _(u"""
- nappe interdite pour definir le flux
+ nappe interdite pour définir le flux
 """),
 
 63 : _(u"""
-  on deborde a gauche
+  on déborde a gauche
 """),
 
 64 : _(u"""
@@ -267,7 +267,7 @@ cata_msg = {
 """),
 
 65 : _(u"""
-  on deborde a droite
+  on déborde a droite
 """),
 
 66 : _(u"""
@@ -279,13 +279,13 @@ cata_msg = {
 """),
 
 68 : _(u"""
- les mailles de type  %(k1)s ne sont pas traitees pour la selection des noeuds
+ les mailles de type  %(k1)s ne sont pas traitées pour la sélection des noeuds
 """),
 
 69 : _(u"""
  Erreur d'utilisation :
    On cherche à nommer un objet en y insérant un numéro.
-   Le numéro %(i1)d est trop grand vis à vis de la chaine de caractère.
+   Le numéro %(i1)d est trop grand vis à vis de la chaîne de caractère.
 
  Risque et Conseil :
    Vous avez atteint la limite de ce que sait faire le code
@@ -293,15 +293,15 @@ cata_msg = {
 """),
 
 70 : _(u"""
- erreur : deux noeuds du cable sont confondus on ne peut pas definir le cylindre.
+ erreur : deux noeuds du câble sont confondus on ne peut pas définir le cylindre.
 """),
 
 71 : _(u"""
- immersion du cable no %(k1)s  dans la structure beton : le noeud  %(k2)s  se trouve a l'exterieur de la structure
+ immersion du câble no %(k1)s  dans la structure béton : le noeud  %(k2)s  se trouve a l'extérieur de la structure
 """),
 
 72 : _(u"""
- maille degeneree
+ maille dégénérée
 """),
 
 
@@ -316,7 +316,7 @@ cata_msg = {
 """),
 
 77 : _(u"""
-  %(k1)s  mot cle lu " %(k2)s " incompatible avec " %(k3)s "
+  %(k1)s  mot clé lu " %(k2)s " incompatible avec " %(k3)s "
 """),
 
 78 : _(u"""
@@ -332,11 +332,11 @@ cata_msg = {
 """),
 
 81 : _(u"""
-  %(k1)s  erreur de syntaxe : mot cle " %(k2)s " non reconnu
+  %(k1)s  erreur de syntaxe : mot clé " %(k2)s " non reconnu
 """),
 
 82 : _(u"""
-  %(k1)s  mot cle " %(k2)s " ignore
+  %(k1)s  mot clé " %(k2)s " ignore
 """),
 
 83 : _(u"""
@@ -354,14 +354,14 @@ cata_msg = {
 
 
 89 : _(u"""
- mot cle wohler non trouve
+ mot clé WOHLER non trouve
 """),
 
 
 
 
 91 : _(u"""
- mot cle manson_coffin non trouve
+ mot clé MANSON_coffin non trouve
 """),
 
 92 : _(u"""
@@ -369,15 +369,15 @@ cata_msg = {
 """),
 
 93 : _(u"""
-  Probleme lors de la lecture du fichier maillage
-  numéro de la derniere ligne traitée : %(i1)d
+  Problème lors de la lecture du fichier maillage
+  numéro de la dernière ligne traitée : %(i1)d
 
   -> Risque & Conseil :
-  Verifiez si le mot clé FIN est présent à la fin du fichier.
+  Vérifiez si le mot clé FIN est présent à la fin du fichier.
 """),
 
 94 : _(u"""
-  Probleme lors de la lecture du fichier maillage
+  Problème lors de la lecture du fichier maillage
   Le fichier à lire est vide.
 
   -> Risque & Conseil :
@@ -396,11 +396,11 @@ cata_msg = {
 
 
 97 : _(u"""
- le nom du groupe  %(k1)s  est tronque a 8 caracteres
+ le nom du groupe  %(k1)s  est tronque a 8 caractères
 """),
 
 98 : _(u"""
- il faut un nom apres "nom="
+ il faut un nom après "nom="
 """),
 
 

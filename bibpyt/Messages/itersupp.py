@@ -1,4 +1,4 @@
-#@ MODIF itersupp Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF itersupp Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ cata_msg={
 """),
 
 6: _(u"""
-    Echec dans la tentative d'autoriser des itérations de Newton supplémentaires.
+    Échec dans la tentative d'autoriser des itérations de Newton supplémentaires.
 """),
 
 7: _(u"""

@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1143,7 +1143,7 @@ C          CHAMP D'ENTREE POUR COQUES
                     IF (IRET3.GT.0) THEN
                       VALKM(1)=OPTION
                       VALKM(2)=TYSD
-                      CALL U2MESK('A','CALCULEL3_10',2,VALKM)
+                      CALL U2MESK('A','CALCULEL3_9',2,VALKM)
                       CALL JEDEMA
                       GOTO 710
 

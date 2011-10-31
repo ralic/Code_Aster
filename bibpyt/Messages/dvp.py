@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dvp Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 """
-   Messages à l'attention des développeurs, type "assert"
+   Messages à l'attention des développeurs, type "ASSERT"
    Lorsque l'utilisateur tombe sur un tel message, tout ce qu'il a à faire,
    c'est de rapporter le bug, le texte du message devant aider le
    développeur à faire le diagnostic.

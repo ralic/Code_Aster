@@ -1,4 +1,4 @@
-#@ MODIF intemail Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF intemail Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,11 +54,11 @@ cata_msg={
 """),
 
 9: _(u"""
- détection de deux sommets confondus dans une meme face
+ détection de deux sommets confondus dans une même face
 """),
 
 10: _(u"""
- la commande "INTE_MAIL_2D" suppose que le maillage est plan (z=cste) ce qui n'est pas le cas ici.
+ la commande "INTE_MAIL_2D" suppose que le maillage est plan (z=constante) ce qui n'est pas le cas ici.
  utilisez la commande "INTE_MAIL_3D".
 """),
 
@@ -67,26 +67,26 @@ cata_msg={
 """),
 
 12: _(u"""
- mot clé facteur: %(k1)s, occurence numéro: %(i1)d
+ mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
  maille inexistante: %(k2)s 
 """),
 
 13: _(u"""
- mot clé facteur: %(k1)s, occurence numéro: %(i1)d
+ mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
  présence de maille(s) surfacique(s), groupe: %(k2)s 
 """),
 
 14: _(u"""
- arret sur erreur(s) de données
+ arrêt sur erreur(s) de données
 """),
 
 15: _(u"""
- mot clé facteur: %(k1)s, occurence numéro: %(i1)d
+ mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
  présence de maille surfacique: %(k2)s 
 """),
 
 16: _(u"""
- mot clé facteur: %(k1)s, occurence numéro: %(i1)d
+ mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
  groupe de mailles inexistant: %(k2)s
 """),
 
@@ -99,13 +99,13 @@ cata_msg={
 """),
 
 19: _(u"""
-  mot clé facteur: %(k1)s, occurence numéro: %(i1)d
+  mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
   le mot clé %(k2)s admet pour argument une liste de 2 réels (a1,a2)
   telle que -180. < a1 <= a2 < 180.
 """),
 
 20: _(u"""
- mot clé facteur: %(k1)s, occurence numéro: %(i1)d
+ mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
  le centre n'est pas vraiment le centre du cercle
 """),
 
@@ -119,7 +119,7 @@ cata_msg={
 """),
 
 23: _(u"""
- probleme pour trouver l'intersection pour la face %(i1)d de la maille %(i2)d
+ problème pour trouver l'intersection pour la face %(i1)d de la maille %(i2)d
 """),
 
 24: _(u"""
@@ -128,15 +128,15 @@ cata_msg={
 
 25: _(u"""
  segment et face coplanaire, nombre de points: %(i3)d
- probleme pour trouver l'intersection pour la maille numéro: %(i1)d face: %(i2)d 
+ problème pour trouver l'intersection pour la maille numéro: %(i1)d face: %(i2)d 
 """),
 
 26: _(u"""
- face dégénérée pour la maille numéro: %(i1)d face: %(i2)d arete: %(i3)d 
+ face dégénérée pour la maille numéro: %(i1)d face: %(i2)d arête: %(i3)d 
 """),
 
 27: _(u"""
- mot clé facteur: %(k1)s, occurence numéro: %(i1)d
+ mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
  origine et extrémité confondues à la précision: %(r1)f 
 """),
 
@@ -159,11 +159,11 @@ cata_msg={
 """),
 
 32: _(u"""
- probleme pour récupérer la grandeur %(k1)s dans la table "CARA_GEOM"
+ problème pour récupérer la grandeur %(k1)s dans la table "CARA_GEOM"
 """),
 
 33: _(u"""
- occurence %(i1)d de DEFI_SEGMENT : le segment comporte trop de points 
+ occurrence %(i1)d de DEFI_SEGMENT : le segment comporte trop de points 
 d intersection avec le maillage. Il faut le diviser en %(i2)d segments
 """),
 

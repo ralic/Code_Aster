@@ -1,4 +1,4 @@
-#@ MODIF soustruc2 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF soustruc2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,14 +55,14 @@ cata_msg={
 """),
 
 8 : _(u"""
-  Aucun DDL actif n'a ete trouve pour les interfaces donnees
-   => Les modes d'attaches, de contrainte ou de couplage ne peuvent pas etre calcules.
+  Aucun DDL actif n'a ete trouve pour les interfaces données
+   => Les modes d'attaches, de contrainte ou de couplage ne peuvent pas être calcules.
 
-  CONSEIL : Verifiez la coherence de la definition des interfaces (conditions limites)
+  CONSEIL : Verifiez la coherence de la définition des interfaces (conditions limites)
             avec la methode retenue :
-             - CRAIGB   : le modele doit etre defini avec des interfaces encastrees,
-             - CB_HARMO : le modele doit etre defini avec des interfaces encastrees,
-             - MNEAL    : le modele doit etre defini avec des interfaces libres.
+             - CRAIGB   : le modele doit être défini avec des interfaces encastrees,
+             - CB_HARMO : le modele doit être défini avec des interfaces encastrees,
+             - MNEAL    : le modele doit être défini avec des interfaces libres.
 """),
 
 
@@ -84,7 +84,7 @@ cata_msg={
 """),
 
 12 : _(u"""
-frequences non identique pour les differentes interfaces.
+fréquences non identique pour les différentes interfaces.
 on retient FREQ = %(r1)f
 """),
 

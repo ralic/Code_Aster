@@ -1,4 +1,4 @@
-#@ MODIF homard0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF homard0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 cata_msg={
 1: _(u"""
-Cette macro commande est inconnue.
+Cette macro-commande est inconnue.
 """),
 
 2: _(u"""
@@ -41,7 +41,7 @@ Impossible de détruire le fichier :%(k1)s
 """),
 
 6: _(u"""
-La vérification de l'interpénétration peut etre très longue.
+La vérification de l'interpénétration peut être très longue.
 Il ne faut l'utiliser que volontairement. Voir la documentation.
 """),
 
@@ -49,10 +49,10 @@ Il ne faut l'utiliser que volontairement. Voir la documentation.
 Dès que le nombre de mailles est important, la vérification de l'interpénétration peut devenir très longue.
 En principe, on ne devrait l'utiliser que dans les cas suivants :
   . Informations sur un maillage avec MACR_INFO_MAIL
-  . Debogage sur une adaptation avec MACR_ADAP_MAIL
+  . Débogage sur une adaptation avec MACR_ADAP_MAIL
 Conseil :
 Pour un usage courant de l'adaptation, il est recommandé de passer à NON toutes les
-options de controle ; autrement dit, laisser les options par défaut.
+options de contrôle ; autrement dit, laisser les options par défaut.
 """),
 
 8: _(u"""

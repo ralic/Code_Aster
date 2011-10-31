@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,7 +37,7 @@ cata_msg={
  On va donc simuler la résolution d'un système diagonal canonique,
  pour provoquer un test d'ensemble de l'algorithme qui doit trouver
  la solution U=1 sur tous les noeuds.
- Vos résultats sont donc articiellement faussés pour les besoins de
+ Vos résultats sont donc artificiellement faussés pour les besoins de
  ce test. Pour réaliser effectivement votre calcul, désactiver cette
  option (INFO_FETI(12:12)='F' au lieu de 'T') !!
 """),
@@ -49,7 +49,7 @@ cata_msg={
 """),
 
 10: _(u"""
-  le nb de noeuds de la structure   :  %(i1)d
+  le nombre de noeuds de la structure   :  %(i1)d
   la base utilisée est              :  %(k1)s
   les caractéristiques élémentaires :  %(k2)s
   diamètre de la structure          :  %(r1)f
@@ -80,7 +80,7 @@ cata_msg={
 """),
 
 16: _(u"""
-  de frequence  %(r1)f
+  de fréquence  %(r1)f
 """),
 
 17: _(u"""
@@ -126,7 +126,7 @@ cata_msg={
 
 24: _(u"""
   dans l'intervalle  ( %(r1)f  ,  %(r2)f )
-  il y a théoriquement  %(i1)d frequence(s)
+  il y a théoriquement  %(i1)d fréquence(s)
   et on en a calculé  %(i2)d
 """),
 
@@ -137,7 +137,7 @@ cata_msg={
 """),
 
 27: _(u"""
- la valeur du shift %(r1)f  est une fréquence propre
+ la valeur du SHIFT %(r1)f  est une fréquence propre
 """),
 
 28: _(u"""
@@ -148,7 +148,7 @@ cata_msg={
 """),
 
 29: _(u"""
- le nombre d'amortissements reduits est trop grand
+ le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d
  et le nombre de coefficients :   %(i2)d
  on ne garde donc que les %(i3)d premiers coefficients
@@ -162,7 +162,7 @@ cata_msg={
 """),
 
 31: _(u"""
-  incoherence :
+  incohérence :
    DEEQ I      =  %(i1)d
    DEEQ(2*I-1) =  %(i2)d
    DEEQ(2*I)   =  %(i3)d
@@ -180,10 +180,10 @@ cata_msg={
 """),
 
 34: _(u"""
- incohérence des lagranges
+ incohérence des multiplicateurs de Lagrange
  DDL %(i1)d
  LAMBDA1 %(i2)d
- LAMBDA1 %(i3)d
+ LAMBDA2 %(i3)d
 """),
 
 35: _(u"""
@@ -195,16 +195,16 @@ cata_msg={
 
 36: _(u"""
  Problème dans le calcul des DDL :
- NUM devrait etre égal à n1 :
- num = %(i1)d , n1 = %(i2)d
- impression des lagranges
+ NUM devrait être égal à n1 :
+ NUM = %(i1)d , n1 = %(i2)d
+ impression des multiplicateurs de Lagrange
 """),
 
 37: _(u"""
- NUME_DDL incohérence des lagranges
-  ddl     %(i1)d
-  lambda1 %(i2)d
-  lambda1 %(i3)d
+ NUME_DDL incohérence des multiplicateurs de Lagrange
+  DDL     %(i1)d
+  LAMBDA1 %(i2)d
+  LAMBDA2 %(i3)d
 """),
 
 38: _(u"""
@@ -229,7 +229,7 @@ cata_msg={
  pour les modes statiques :
  on attend un :  %(k1)s
  noeud :  %(k2)s
- cmp   :  %(k3)s
+ composante   :  %(k3)s
 
 """),
 
@@ -237,7 +237,7 @@ cata_msg={
  champ inexistant.
  champ :  %(k1)s
  noeud :  %(k2)s
- cmp   :  %(k3)s
+ composante   :  %(k3)s
 
 """),
 
@@ -258,26 +258,24 @@ cata_msg={
 """),
 
 51: _(u"""
- la valeur propre numéro  %(i1)d a une partie imaginaire non nulle
- re(vp) = %(r1)f
- im(vp) = %(r2)f
- --> ce phénomène numérique est fréquent
- --> sur les premières valeurs propres
- --> lorsque le spectre recherche est
- --> tres étendu (en pulsation)
+ La valeur propre numéro  %(i1)d a une partie imaginaire non nulle
+ partie réelle     = %(r1)f
+ partie imaginaire = %(r2)f
 
+ Ce phénomène numérique est fréquent sur les premières valeurs propres
+ lorsque le spectre recherche est très étendu (en pulsation)
 """),
 
 52: _(u"""
  LAIGLE: Erreur
-   - Non convergence à l'itération maxi : %(i1)d
+   - Non convergence à l'itération max : %(i1)d
    - Convergence irrégulière & erreur >   %(r1)f
    - Diminuer la taille d'incrément.
 """),
 
 53: _(u"""
  Erreur de programmation MULT_FRONT (NUME_DDL / PREML0) :
-   * Sur-connexion des Lagranges Lambda1
+   * Sur connexité des Lagrange Lambda1
 """),
 
 54: _(u"""
@@ -299,13 +297,13 @@ cata_msg={
 """),
 
 58: _(u"""
-    La masse du modele est nulle. On ne peut normer par rapport a la masse.
+    La masse du modèle est nulle. On ne peut normer par rapport a la masse.
 """),
 
 59: _(u"""
- MULT_FRONT: Erreur dans la renumerotation
-   - Le Super-Noeud : %(i1)d
-   - devrait etre le fils de   %(i2)d
+ MULT_FRONT: Erreur dans la renumérotation
+   - Le super noeud : %(i1)d
+   - devrait être le fils de   %(i2)d
 
  Risques & conseils :
    - Vous devriez rencontrer des problèmes lors de la factorisation.
@@ -315,15 +313,15 @@ cata_msg={
 60: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT: La variante QR ne fonctionne qu'avec une
     matrice A symétrique réelle et B symétrique réelle définie positive !
-    Donc elle n'accepte pas le flambement, les Lagranges d'AFFE_CHAR_MECA,
+    Donc elle n'accepte pas le flambement, les Lagrange de AFFE_CHAR_MECA,
     une matrice de rigidité/de masse complexe ou non symétrique, ainsi que les
     problèmes modaux quadratiques.
 """),
 61: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT: propriété spectrale non respectée sur la
-    valeur propre n %(i1)d !. On a pas |alpha| < ||A|| et |béta| < ||B||
+    valeur propre n %(i1)d !. On a pas |alpha| < ||A|| et |bêta| < ||B||
                      |alpha|=%(r1)f, ||A||=%(r2)f
-                     | béta|=%(r3)f, ||B||=%(r4)f
+                     | bêta|=%(r3)f, ||B||=%(r4)f
 """),
 62: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT: On trouve un nombre de valeurs propres
@@ -347,16 +345,16 @@ cata_msg={
 """),
 67: _(u"""
     Attention on souhaite un nombre de valeurs propres NMAX_FREQ=%(i1)d supérieur
-    au nombre de valeurs propres détectées NCONV=%(i2)d !
-    Pour poursuivre le calcul on impose NMAX_FREQ=NCONV.
+    au nombre de valeurs propres détectées NUM=%(i2)d !
+    Pour poursuivre le calcul on impose NMAX_FREQ=NUM.
     Sans doute est-ce du, soit:
      -à un mauvais tri dans les valeurs propres complexes conjuguées.
       Contacter l'équipe de développement.
      -à une mauvaise convergence de la méthode. Regarder les paramètres permettant
       d'améliorer celle-ci.
-     -à une action incomplète du shift. En diminuant la valeur de l'option CENTRE
+     -à une action incomplète du SHIFT. En diminuant la valeur de l'option CENTRE
       (FREQ) et en augmentant le nombre de valeurs propres retenues (NMAX_FREQ) on
-      peut souvent capter tous les couples (lambda,conjg(lambda)) souhaités.
+      peut souvent capter tous les couples (lambda,conjugué(lambda)) souhaités.
       Sinon utiliser METHODE='QZ' pour les problèmes de petites tailles (<500 ddls).
 """),
 68: _(u"""
@@ -367,7 +365,7 @@ cata_msg={
     MODE_ITER_SIMULT. Pour l'instant, seules les méthodes QZ et SORENSEN
     acceptent ce type de matrice.
     La méthode QZ est à réserver aux petits problèmes modaux (centaines de ddls)
-    dont on souhaite connaitre une grosse partie du spectre.
+    dont on souhaite connaître une grosse partie du spectre.
 """),
 70: _(u"""
     Matrices de  raideur, de masse et/ou d'amortissement non symétrique(s) dans
@@ -383,8 +381,8 @@ cata_msg={
 """),
 73: _(u"""
     On a besoin d'effectuer un calcul de déterminant. Pour l'instant seuls les
-    solveurs linéaires directs 'MULT_FRONT' et 'LDLT' l'effectuent. Veuillez chan
-    ger le paramétrage du mot-clé SOLVEUR/METHODE pour prendre en compte un de
+    solveurs linéaires directs 'MULT_FRONT' et 'LDLT' l'effectuent. Veuillez changer
+    le paramétrage du mot-clé SOLVEUR/METHODE pour prendre en compte un de
     ces deux solveurs. De préférence utilisez 'MULT_FRONT' qui est plus efficace
     que 'LDLT'.
 """),
@@ -404,10 +402,10 @@ cata_msg={
     =======
     Relancer le calcul en tenant compte des précisions du message précédent.
     Pour améliorer la convergence des algorithmes modaux vous pouvez par exemple:
-       - Diminuer le nbre de modes recherchés à chaque fois en découpant votre
+       - Diminuer le nombre de modes recherchés à chaque fois en découpant votre
          calcul modal en plusieurs bande (à la main ou via MACRO_MODE_MECA). Cela
          améliore aussi souvent grandement les performances des calculs.
-       - Avec la méthode de Sorensen, augmenter la taille de l'espace de projection
+       - Avec la méthode de SORENSEN, augmenter la taille de l'espace de projection
          (DIM_SOUS_ESPACE/COEF_DIM_ESPACE) ou jouer sur les paramètres numériques
           qui pilote la convergence (PREC_SOREN et NMAX_ITER_SOREN).
        - Avec la méthode QZ, diminuer NMAX_FREQ ou changer de variante (TYPE_QZ).

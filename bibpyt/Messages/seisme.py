@@ -1,4 +1,4 @@
-#@ MODIF seisme Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF seisme Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,7 +113,7 @@ cata_msg={
 """),
 
 21: _(u"""
- il faut au moins 2 occurences de DEPL_MULT_APPUI pour la combinaison des appuis.
+ il faut au moins 2 occurrences de DEPL_MULT_APPUI pour la combinaison des appuis.
 """),
 
 22: _(u"""
@@ -136,7 +136,7 @@ cata_msg={
 25: _(u"""
   problème stockage
     option de calcul: %(k1)s
-    occurence       : %(i1)d
+    occurrence       : %(i1)d
     nom du champ    : %(k3)s
 """),
 

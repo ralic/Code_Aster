@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,7 @@ cata_msg = {
 
 32 : _(u"""
   la numérotation n'est pas cohérente avec le modèle généralisé
-  si vous avez activé l'option INITIAL dans NUME_DDL_GENE faites de meme ici !
+  si vous avez activé l'option INITIAL dans NUME_DDL_GENE faites de même ici !
 """),
 
 33 : _(u"""
@@ -72,7 +72,7 @@ cata_msg = {
 """),
 
 35 : _(u"""
- les champs " %(k1)s " et " %(k2)s " n'ont pas le meme domaine de définition.
+ les champs " %(k1)s " et " %(k2)s " n'ont pas le même domaine de définition.
 """),
 
 36 : _(u"""
@@ -97,7 +97,7 @@ cata_msg = {
 
 45 : _(u"""
  intégration élastoplastique de la loi BETON_DOUBLE_DP :
- la condition d'applicabilité sur la taille des elements
+ la condition d'applicabilité sur la taille des éléments
  n'est pas respectée en compression pour la maille:  %(k1)s
 """),
 
@@ -108,8 +108,8 @@ cata_msg = {
 """),
 
 47 : _(u"""
- integration élastoplastique de la loi BETON_DOUBLE_DP :
- la condition d'applicabilite sur la taille des éléments
+ intégration élastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilité sur la taille des éléments
  n'est pas respectée en traction pour la maille:  %(k1)s
 """),
 
@@ -145,7 +145,7 @@ cata_msg = {
 
 60 : _(u"""
  certains coefficients de masse ajoutée sont négatifs.
- verifiez l'orientation des normales des éléments d'interface.
+ vérifiez l'orientation des normales des éléments d'interface.
  convention adoptée : structure vers fluide
 """),
 
@@ -210,11 +210,11 @@ cata_msg = {
 
 
 96 : _(u"""
- ce mot cle de MODI_MAILLAGE attend un vecteur de norme non nulle.
+ ce mot clé de MODI_MAILLAGE attend un vecteur de norme non nulle.
 """),
 
 97 : _(u"""
- le mot cle REPERE de MODI_MAILLAGE attend deux vecteurs non nuls orthogonaux.
+ le mot clé REPERE de MODI_MAILLAGE attend deux vecteurs non nuls orthogonaux.
 """),
 
 }

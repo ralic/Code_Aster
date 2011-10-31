@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa9 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,19 +23,19 @@ cata_msg = {
 
 1 : _(u"""
 Erreur utilisateur :
-   Il manque le parametre  %(k1)s dans la table %(k2)s.
-   Sa presence est indispensable à la  creation d'un champ elementaire. %(k3)s
+   Il manque le paramètre  %(k1)s dans la table %(k2)s.
+   Sa presence est indispensable à la  creation d'un champ élémentaire. %(k3)s
 """),
 
 2 : _(u"""
 Erreur utilisateur :
-   Le parametre  %(k1)s de la table %(k2)s
-   est interdit pour la  creation d'un  champ elementaire constant. %(k3)s
+   Le paramètre  %(k1)s de la table %(k2)s
+   est interdit pour la  creation d'un  champ élémentaire constant. %(k3)s
 """),
 
 3 : _(u"""
 Erreur utilisateur :
-   Il manque le parametre  %(k1)s dans la table %(k2)s.
+   Il manque le paramètre  %(k1)s dans la table %(k2)s.
    Sa presence est indispensable à la  creation d'un champ  %(k3)s
 """),
 
@@ -96,12 +96,12 @@ Conseil :
 """),
 
 15 : _(u"""
- pas de freq initiale definie : on prend la freq mini des modes calcules
+ pas de freq initiale définie : on prend la freq mini des modes calcules
    %(r1)f
 """),
 
 16 : _(u"""
- pas de freq finale definie : on prend la freq max des modes calcules   %(r1)f
+ pas de freq finale définie : on prend la freq max des modes calcules   %(r1)f
 """),
 
 17 : _(u"""
@@ -129,7 +129,7 @@ Conseil :
 """),
 
 23 : _(u"""
- erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 24 : _(u"""
@@ -145,13 +145,13 @@ Conseil :
 """),
 
 27 : _(u"""
- erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
  pour le mot cle  %(k2)s
   le noeud n'existe pas  %(k3)s
 """),
 
 28 : _(u"""
- erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
  pour le mot cle  %(k2)s
   le GROUP_NO n'existe pas  %(k3)s
 """),
@@ -165,12 +165,12 @@ Conseil :
  poutre : occurrence %(i2)d :
  "cara" nombre de valeurs entrees:  %(i2)d
  "vale" nombre de valeurs entrees:  %(i3)d
- verifier vos donnees
+ verifier vos données
 
 """),
 
 32 : _(u"""
- erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 33 : _(u"""
@@ -187,7 +187,7 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 36 : _(u"""
- erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 39 : _(u"""
@@ -195,7 +195,7 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 40 : _(u"""
- erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 43 : _(u"""
@@ -203,15 +203,15 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 44 : _(u"""
- fichier med :  %(k1)s maillage :  %(k2)s erreur effoco numero  %(i1)d
+ fichier med :  %(k1)s maillage :  %(k2)s erreur effoco numéro  %(i1)d
 """),
 
 51 : _(u"""
- fichier med :  %(k1)s maillage :  %(k2)s erreur efouvr numero  %(i1)d
+ fichier med :  %(k1)s maillage :  %(k2)s erreur efouvr numéro  %(i1)d
 """),
 
 52 : _(u"""
- fichier med :  %(k1)s maillage :  %(k2)s erreur efferm numero  %(i1)d
+ fichier med :  %(k1)s maillage :  %(k2)s erreur efferm numéro  %(i1)d
 """),
 
 53 : _(u"""
@@ -235,23 +235,23 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 59 : _(u"""
- erreur lors de la definition de la courbe de traction : %(k1)s
+ erreur lors de la définition de la courbe de traction : %(k1)s
  le premier point de la courbe de traction %(k2)s a pour abscisse:  %(r1)f
 
 """),
 
 60 : _(u"""
- erreur lors de la definition de la courbe de traction :%(k1)s
+ erreur lors de la définition de la courbe de traction :%(k1)s
  le premier point de la courbe de traction %(k2)s a pour ordonnee:  %(r1)f
 
 """),
 
 61 : _(u"""
- Erreur lors de la definition de la courbe de traction : %(k1)s
+ Erreur lors de la définition de la courbe de traction : %(k1)s
 
  la courbe de traction doit satisfaire les conditions suivantes :
- - les abscisses (deformations) doivent etre strictement croissantes,
- - la pente entre 2 points successifs doit etre inferieure a la pente
+ - les abscisses (deformations) doivent être strictement croissantes,
+ - la pente entre 2 points successifs doit être inferieure a la pente
    elastique (module d'Young) entre 0 et le premier point de la courbe.
 
  pente initiale (module d'Young) :   %(r1)f
@@ -265,27 +265,27 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
  en particulier en C_PLAN
   pente initiale :     %(r1)f
   pente courante:      %(r2)f
-  precision relative:  %(r3)f
+  précision relative:  %(r3)f
   pour l'abscisse:     %(r4)f
 
 """),
 
 63 : _(u"""
- erreur lors de la definition de la courbe de traction %(k1)s
+ erreur lors de la définition de la courbe de traction %(k1)s
  le premier point de la fonction indicee par :  %(i1)d de la nappe  %(k2)s
  a pour abscisse:  %(r1)f
 
 """),
 
 64 : _(u"""
- erreur lors de la definition de la courbe de traction %(k1)s
+ erreur lors de la définition de la courbe de traction %(k1)s
  le premier point de la fonction indicee par :  %(i1)d de la nappe  %(k2)s
  a pour ordonnee:  %(r1)f
 
 """),
 
 65 : _(u"""
- erreur lors de la definition de la courbe de traction %(k1)s
+ erreur lors de la définition de la courbe de traction %(k1)s
  pente initiale :   %(r1)f
  pente courante:    %(r2)f
  pour l'abscisse:  %(r3)f
@@ -305,7 +305,7 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 77 : _(u"""
- manque le parametre  %(k1)s
+ manque le paramètre  %(k1)s
 """),
 
 78 : _(u"""

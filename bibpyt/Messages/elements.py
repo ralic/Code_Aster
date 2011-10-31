@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF elements Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,8 +24,8 @@ cata_msg = {
 1 : _(u"""
  AFFE_CARA_ELEM : mot clé GENE_TUYAU
  problème : OMEGA est différent de OMEGA2
- omega  = %(r1)f
- omega2 = %(r2)f
+ OMEGA  = %(r1)f
+ OMEGA2 = %(r2)f
 """),
 
 2 : _(u"""
@@ -33,7 +33,7 @@ Erreur :
    Le calcul du chargement du au séchage n'est pas programmé par le type d'élément : %(k1)s
 
 Conseil :
-  Emettre une demande d'évolution.
+  Émettre une demande d'évolution.
 """),
 
 3 : _(u"""
@@ -49,7 +49,7 @@ Conseil :
 5 : _(u"""
  problème de maillage TUYAU :
  pour une maille définie par les noeuds N1 N2 N3,
- le noeud N3 doit etre le noeud milieu
+ le noeud N3 doit être le noeud milieu
 """),
 
 6 : _(u"""
@@ -66,19 +66,19 @@ Conseil :
 
 8 : _(u"""
 La raideur tangente de la section est nulle.
-Vérifier votre matériau, vous avez peut être défini un matériau élasto-plastique parfait.
+Vérifier votre matériau, vous avez peut être défini un matériau élastoplastique parfait.
 
 Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette difficulté.
 """),
 
 
 9 : _(u"""
- il faut renseigner le coefficient E_N  dans les cas des déformations planes et de l'axisymétrie
+ il faut renseigner le coefficient E_N  dans les cas des déformations planes et de l'asymétrie
  on ne regarde donc que le cas des contraintes planes.
 """),
 
 10 : _(u"""
- Subroutine CHPVER :
+ Sous-programme CHPVER :
  le champ  %(k1)s n'a pas le bon type :
    type autorisé  :%(k2)s
    type du champ  :%(k3)s
@@ -97,7 +97,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 14 : _(u"""
- le type d'élément :  %(k1)s n'est pas prevu.
+ le type d'élément :  %(k1)s n'est pas prévu.
 """),
 
 15 : _(u"""
@@ -122,7 +122,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 24 : _(u"""
- derivatives of "mp" not defined
+ dérivées de "MP" non définies
 """),
 
 25 : _(u"""
@@ -139,7 +139,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 28 : _(u"""
- décharge négative sans passer par meca 1
+ décharge négative sans passer par le mécanisme 1
  diminuer le pas de temps
 """),
 
@@ -148,7 +148,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 30 : _(u"""
- pas de retour dans meca 1 trop important
+ pas de retour dans le mécanisme 1 trop important
  diminuer le pas de temps
 """),
 
@@ -185,7 +185,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 37 : _(u"""
- Subroutine CHPVER :
+ Sous-programme CHPVER :
  le champ  %(k1)s n'a pas la bonne grandeur :
    grandeur autorisée  :%(k2)s
    grandeur du champ   :%(k3)s
@@ -210,7 +210,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 41 : _(u"""
  impossibilité :
- vous avez un materiau de type "ELAS_COQUE" et vous n'avez pas défini la raideur de membrane,
+ vous avez un matériau de type "ELAS_COQUE" et vous n'avez pas défini la raideur de membrane,
  ni sous la forme "MEMB_L", ni sous la forme "M_LLLL".
 """),
 
@@ -220,7 +220,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 43 : _(u"""
  impossibilité :
- vous avez un materiau de type "ELAS_COQUE" et le determinant de la sous-matrice de Hooke relative au cisaillement est nul.
+ vous avez un matériau de type "ELAS_COQUE" et le déterminant de la sous matrice de Hooke relative au cisaillement est nul.
 """),
 
 46 : _(u"""
@@ -281,7 +281,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 69 : _(u"""
- Le noeud origine  %(k1)s  n'est pas une extremité.
+ Le noeud origine  %(k1)s  n'est pas une extrémité.
 """),
 
 
@@ -301,11 +301,11 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 
 77 : _(u"""
- le noeud extremité  %(k1)s  n'est pas le dernier noeud
+ le noeud extrémité  %(k1)s  n'est pas le dernier noeud
 """),
 
 78 : _(u"""
- GROUP_NO orienté : noeud extremité =  %(k1)s
+ GROUP_NO orienté : noeud extrémité =  %(k1)s
 """),
 
 83 : _(u"""
@@ -317,7 +317,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 87 : _(u"""
- bad definition of MP1 and MP2
+ Mauvaise définition de MP1 et MP2
 """),
 
 88 : _(u"""
@@ -328,7 +328,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 Erreur de programmation :
    L'attribut NBSIGM n'est pas défini pour cette modélisation.
 Solution :
-   Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
+   Il faut modifier le catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
 """),
 
 }

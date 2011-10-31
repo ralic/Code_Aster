@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,12 +39,12 @@ cata_msg = {
 
 3 : _(u"""
  la liste de composantes et la liste des valeurs n'ont pas la même dimension
- occurence de AFFE numéro  %(i1)d
+ occurrence de AFFE numéro  %(i1)d
 """),
 
 4 : _(u"""
  une composante n'appartient pas à la grandeur
- occurence de AFFE numéro  %(i1)d
+ occurrence de AFFE numéro  %(i1)d
  grandeur   :  %(k1)s
  composante :  %(k2)s
 """),
@@ -140,7 +140,7 @@ cata_msg = {
  nombre d''iterations = %(i1)d
  residu fonction = %(r2)f
  residu f/df = %(r3)f
- precision = %(r4)f
+ précision = %(r4)f
 """),
 
 51 : _(u"""
@@ -169,7 +169,7 @@ cata_msg = {
 """),
 
 55 : _(u"""
- parametres initiaux de weibull
+ paramètres initiaux de weibull
  exposant de la loi      = %(r1)f
  volume de reference     = %(r2)f
  contrainte de reference = %(r3)f
@@ -208,7 +208,7 @@ cata_msg = {
 """),
 
 62 : _(u"""
- parametres de la rc weibull
+ paramètres de la rc weibull
  exposant de la loi      = %(r1)f
  volume de reference     = %(r2)f
  contrainte de reference = %(r3)f

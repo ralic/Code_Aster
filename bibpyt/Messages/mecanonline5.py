@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF mecanonline5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
 
 3 : _(u"""
  Il n'est pas possible actuellement de calculer des modes de flambement
- (CRIT_FLAM) ou des modes vibratoires (MODE_VIBR) si on utilise la
+ (CRIT_FLAMB) ou des modes vibratoires (MODE_VIBR) si on utilise la
  méthode continue du contact ou XFEM avec du contact.
 """),
 
@@ -53,7 +53,7 @@ Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
 """),
 
 7 : _(u"""
- Etant donné la présence du mot clé AMOR_ALPHA et / ou AMOR_BETA,
+ Étant donné la présence du mot clé AMOR_ALPHA et / ou AMOR_BETA,
  on va assembler la matrice d'amortissement globale de Rayleigh,
  même si ces coefficients sont tous les deux nuls.
  Cette opération engendre un surcoût de calcul.
@@ -83,12 +83,12 @@ Il y a plus d'amortissements modaux (AMOR_MODAL) que de modes.
 
 20 : _(u"""
 On ne trouve pas le champ de déplacement pour Dirichlet différentiel dans le concept <%(k1)s>.
-Votre valeur de NUME_DIDI doit etre incorrecte ou le concept n'est pas le bon.
+Votre valeur de NUME_DIDI doit être incorrecte ou le concept n'est pas le bon.
 
 """),
 
 21 : _(u"""
-  -> Critère de convergence est lache !
+  -> Critère de convergence est lâche !
   -> Risque & Conseil : La valeur de RESI_GLOB_RELA est supérieure à 10-4.
      Cela peut nuire à la qualité de la solution. Vous ne vérifiez pas l'équilibre de
      manière rigoureuse.
@@ -143,14 +143,14 @@ On prend donc %(i3)d modes.
 31 : _(u"""
 Vous faites de la projection modale PROJ_MODAL en explicite en reprise.
 Il n'y a pas de modes stockés lors du calcul précédent.
-On part donc de depl/vite/acce généralisés nuls.
+On part donc de DEPL/VITE/ACCE généralisés nuls.
 """),
 
 
 32 : _(u"""
-La SD evol_noli utilisée dans REST_COND_TRAN ne contient pas les
+La SD EVOL_NOLI utilisée dans REST_COND_TRAN ne contient pas les
 champs généralisés.
-Verifiez qu'il s'agit du meme concept que celui utilisé dans le DYNA_NON_LINE,
+Vérifiez qu'il s'agit du même concept que celui utilisé dans le DYNA_NON_LINE,
 option PROJ_MODAL et que l'archivage a été fait (mot-clef ARCHIVAGE de DYNA_NON_LINE)
 
 """),
@@ -194,7 +194,7 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
   -> La définition des paramètres RHO_MIN et RHO_EXCL est contradictoire.
      On choisit de prendre RHO_MIN à RHO_EXCL.
   -> Risque & Conseil :
-     RHO_MIN ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
+     RHO_MIN ne doit pas être compris entre -RHO_EXCL et RHO_EXCL
 
 """),
 
@@ -202,7 +202,7 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
   -> La définition des paramètres RHO_MAX et RHO_EXCL est contradictoire.
      On choisit de prendre RHO_MAX à -RHO_EXCL.
   -> Risque & Conseil :
-     RHO_MAX ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
+     RHO_MAX ne doit pas être compris entre -RHO_EXCL et RHO_EXCL
 
 """),
 

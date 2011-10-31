@@ -1,6 +1,6 @@
       SUBROUTINE OP0137()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C     ----------------
          CALL U2MESS('I','SUPERVIS_24')
       ELSE IF ( REPONS .EQ. 'NON') THEN
          CALL JDCSET('sdveri', 0)
-         CALL U2MESS('I','SUPERVIS_43')
+         CALL U2MESK('I','SUPERVIS_43',1,'SDVERI')
       ENDIF
 
 
@@ -47,11 +47,11 @@ C     ----------------
       CALL GETVTX(' ','JEVEUX',1,IARG,1,REPONS,L)
       IF ( REPONS .EQ. 'OUI') THEN
          IDEBUG = 1
-         CALL U2MESS('I','SUPERVIS_44')
+         CALL U2MESK('I','SUPERVIS_44',1,'JEVEUX')
          CALL JDCSET('jeveux', 1)
       ELSE IF ( REPONS .EQ. 'NON') THEN
          IDEBUG = 0
-         CALL U2MESS('I','SUPERVIS_45')
+         CALL U2MESK('I','SUPERVIS_43',1,'JEVEUX')
          CALL JDCSET('jeveux', 0)
       ENDIF
 
@@ -64,7 +64,7 @@ C     ----------------
          CALL U2MESS('I','SUPERVIS_23')
          CALL JDCSET('jxveri', 1)
       ELSE  IF ( REPONS .EQ. 'NON') THEN
-         CALL U2MESS('I','SUPERVIS_47')
+         CALL U2MESK('I','SUPERVIS_43',1,'JXVERI')
          CALL JDCSET('jxveri', 0)
       ENDIF
 
@@ -74,10 +74,10 @@ C     ---------------------
       REPONS=' '
       CALL GETVTX(' ','IMPR_MACRO',1,IARG,1,REPONS,L)
       IF ( REPONS .EQ. 'OUI') THEN
-         CALL U2MESS('I','SUPERVIS_48')
+         CALL U2MESK('I','SUPERVIS_44',1,'IMPR_MACRO')
          CALL JDCSET('impr_macro', 1)
       ELSE IF ( REPONS .EQ. 'NON') THEN
-         CALL U2MESS('I','SUPERVIS_49')
+         CALL U2MESK('I','SUPERVIS_43',1,'IMPR_MACRO')
          CALL JDCSET('impr_macro', 0)
       ENDIF
 

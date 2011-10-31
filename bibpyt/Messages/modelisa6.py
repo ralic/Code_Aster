@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 25/10/2011   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF modelisa6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,7 @@ cata_msg = {
 """),
 
 22 : _(u"""
- les 2 listes %(k1)s  et  %(k2)s  ne sont pas de meme longueur
+ les 2 listes %(k1)s  et  %(k2)s  ne sont pas de même longueur
 """),
 
 26 : _(u"""
@@ -109,7 +109,7 @@ cata_msg = {
 28 : _(u"""
  Le noeud <%(k1)s> de la poutre, de coordonnées <%(r1)g  %(r2)g  %(r3)g>,
 ne doit pas appartenir à des mailles constituant la trace de la poutre sur la coque.
-Le problème vient de l'occurence %(i1)d de LIAISON_ELEM.
+Le problème vient de l'occurrence %(i1)d de LIAISON_ELEM.
 
 Solution : Il faut dédoubler le noeud.
 """),
@@ -137,11 +137,11 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 34 : _(u"""
- un element n'est ni TRIA3 ni TRIA6 ni QUAD4 ni QUAD8
+ un élément n'est ni TRIA3 ni TRIA6 ni QUAD4 ni QUAD8
 """),
 
 35 : _(u"""
- un element n'est ni TRIA3 ni TRIA6 ni TRIA7 ni QUAD4 ni QUAD8 ni QUAD9
+ un élément n'est ni TRIA3 ni TRIA6 ni TRIA7 ni QUAD4 ni QUAD8 ni QUAD9
 """),
 
 36 : _(u"""
@@ -149,7 +149,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 37 : _(u"""
- la maille à laquelle appartient le noeud  %(k1)s  doit etre de type SEG3
+ la maille à laquelle appartient le noeud  %(k1)s  doit être de type SEG3
 """),
 
 38 : _(u"""
@@ -229,7 +229,7 @@ Solution : Il faut dédoubler le noeud.
 
   -> Conseil:
      Vous avez sans doute enrichi votre matériau. Vous ne pouvez pas
-     avoir en meme temps les mots clés 'ELAS', 'ELAS_FO', 'ELAS_xxx',...
+     avoir en même temps les mots clés 'ELAS', 'ELAS_FO', 'ELAS_xxx',...
 """),
 
 57 : _(u"""
@@ -354,7 +354,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 95 : _(u"""
- mauvaise definition de la plage de frequence, aucun mode pris en compte
+ mauvaise définition de la plage de fréquence, aucun mode pris en compte
 """),
 
 96 : _(u"""

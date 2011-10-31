@@ -1,4 +1,4 @@
-#@ MODIF elashyper Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elashyper Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,13 +22,13 @@
 cata_msg = {
 
 97 : _(u"""
- La loi de comportement ELAS_HYPER ne peut pas etre utilisée avec le modèle %(k1)s.
+ La loi de comportement ELAS_HYPER ne peut pas être utilisée avec le modèle %(k1)s.
  Modèles disponibles: 3D, 3D_SI, C_PLAN, D_PLAN
 """),
 
 98 : _(u"""
  Le coefficient de Poisson ne permet pas de calculer le module de compressibilité car il provoquerait une division par zéro.
- Si vous voulez un matériau quasi-incompressible:
+ Si vous voulez un matériau quasi incompressible:
   - Renseignez directement le module de compressibilité (paramètre K dans DEFI_MATERIAU/ELAS_HYPER)
   - Choisissez un coefficient de Poisson proche de 0.5 mais pas strictement égal (par exemple 0.499)
 """),

@@ -1,4 +1,4 @@
-#@ MODIF execlogiciel0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF execlogiciel0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,8 @@
 
 cata_msg={
 1 : _(u"""
-Format Salome, l'argument 1 doit etre 
-le nom du fichier med produit par le script python.
+Format Salomé, l'argument 1 doit être 
+le nom du fichier MED produit par le script python.
 """),
 
 2 : _(u"""
@@ -35,11 +35,11 @@ Code retour incorrect (MAXI %(i1)d) : %(i2)d
 """),
 
 4 : _(u"""
-Le mot-cle logiciel n'est pas utilise avec ce format.
+Le mot-clé logiciel n'est pas utilise avec ce format.
 """),
 
 5 : _(u"""
-Erreurs lors de l'execution du fichier ci-dessous :
+Erreurs lors de l'exécution du fichier ci-dessous :
 <<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
 %(k1)s
 <<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
@@ -89,7 +89,7 @@ Mode de lancement inconnu : %(k1)s
 
 
 14 : _(u"""
- -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+ -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
     . Il est probable que les clés SSH ne soient pas configurées correctement.
 
  -> Conseil :
@@ -100,7 +100,7 @@ Mode de lancement inconnu : %(k1)s
 
 
 15 : _(u"""
- -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+ -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
     . La machine distante n'a pas pus être contactée.
 
  -> Conseil :
@@ -111,7 +111,7 @@ Mode de lancement inconnu : %(k1)s
 
 
 16 : _(u"""
- -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+ -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
     . Le serveur SSH de la machine distante n'a pas pus être contacté.
 
  -> Conseil :
@@ -121,8 +121,8 @@ Mode de lancement inconnu : %(k1)s
 """),
 
 17 : _(u"""
- -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
-    . Il est probable que le logiciel defini par le mot clé LOGICIEL ne soit pas présent
+ -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
+    . Il est probable que le logiciel défini par le mot clé LOGICIEL ne soit pas présent
       sur la machine distante.
 
  -> Conseil :
@@ -132,11 +132,11 @@ Mode de lancement inconnu : %(k1)s
 """),
 
 18 : _(u"""
- -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+ -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
     . Soit l'adresse (ou le port SSH) de la machine n'est pas correcte.
     . Soit les clés SSH ne sont pas configurées correctement.
-    . Soit le logiciel defini par le mot clé LOGICIEL n'est pas présent sur la machine distante.
-    . Soit une autre raison est à l'origine de cet eche.
+    . Soit le logiciel défini par le mot clé LOGICIEL n'est pas présent sur la machine distante.
+    . Soit une autre raison est à l'origine de cet échec.
 
  -> Conseil :
     Vous devriez trouver ci-dessus des messages expliquant les raisons de cet échec.
@@ -144,17 +144,17 @@ Mode de lancement inconnu : %(k1)s
 %(k1)s
 """),
 
-19 : _(u"""Info : le champs "%(k1)s" n'a pas été trouvé dans le script Salome, mais il n'est peut être pas nécessaire."""),
+19 : _(u"""Information : le champs "%(k1)s" n'a pas été trouvé dans le script Salomé, mais il n'est peut être pas nécessaire."""),
 
 20 : _(u"""
 
 
 ----------------------------------------------------------------------------------
------ Script Salome --------------------------------------------------------------
+----- Script Salomé --------------------------------------------------------------
 
 %(k1)s
 
------ fin Script Salome ----------------------------------------------------------
+----- fin Script Salomé ----------------------------------------------------------
 ----------------------------------------------------------------------------------
 
 

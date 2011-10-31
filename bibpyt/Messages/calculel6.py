@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,7 +68,7 @@ Conseils :
       pour indiquer la valeur :
         * VALE    -> réel
         * VALE_I  -> entier
-        * VALE_K  -> chaine de caractères
+        * VALE_K  -> chaîne de caractères
         * VALE_C  -> complexe
 
 """),
@@ -90,44 +90,44 @@ Conseils :
 
 13: _(u"""
  interpolation déformations anélastiques :
- evol_noli: %(k1)s
+ EVOL_NOLI: %(k1)s
  instant  : %(r1)f
  icoret   : %(i1)d
 """),
 
 15: _(u"""
   L'élément diagonal u( %(i1)d , %(i2)d ) de la factorisation est nul. %(k1)s
-  la solution et les estimations d'erreurs ne peuvent etre calculées. %(k2)s
+  la solution et les estimations d'erreurs ne peuvent être calculées. %(k2)s
 """),
 
 17: _(u"""
- recherche nbre de cmp: erreur:  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
+ recherche nombre de composante: erreur:  %(k1)s grandeur numéro  %(i1)d  de nom  %(k2)s
 """),
 
 20: _(u"""
- recherche nbre de cmp: erreur: grandeur ligne numero  %(i1)d  de nom  %(k1)s
- grandeur colonne numero  %(i2)d
+ recherche nombre de composante: erreur: grandeur ligne numéro  %(i1)d  de nom  %(k1)s
+ grandeur colonne numéro  %(i2)d
   de nom  %(k2)s
- grandeur mere numero  %(i3)d
+ grandeur mère numéro  %(i3)d
   de nom  %(k3)s
 """),
 
 21: _(u"""
- recherche nbre de cmp: erreur: grandeur %(i1)d a un code inconnu:  %(i2)d
+ recherche nombre de composante: erreur: grandeur %(i1)d a un code inconnu:  %(i2)d
 """),
 
 22: _(u"""
- recherche nbre d entiers codes  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
+ recherche nombre d entiers codes  %(k1)s grandeur numéro  %(i1)d  de nom  %(k2)s
 """),
 
 25: _(u"""
- recherche nbre d entiers codes grandeur ligne numero  %(i1)d  de nom  %(k1)s
- grandeur colonne numero  %(i2)d de nom  %(k2)s
- grandeur mere numero  %(i3)d de nom  %(k3)s
+ recherche nombre d entiers codes grandeur ligne numéro  %(i1)d  de nom  %(k1)s
+ grandeur colonne numéro  %(i2)d de nom  %(k2)s
+ grandeur mère numéro  %(i3)d de nom  %(k3)s
 """),
 
 26: _(u"""
- recherche nbre d entiers codes grandeur %(i1)d a un code inconnu:  %(i2)d
+ recherche nombre d entiers codes grandeur %(i1)d a un code inconnu:  %(i2)d
 """),
 
 
@@ -137,7 +137,7 @@ Conseils :
 """),
 
 43: _(u"""
- le mot cle EXCIT contient plusieurs occurences de type %(k1)s
+ le mot clé EXCIT contient plusieurs occurrences de type %(k1)s
  seule la dernière sera prise en compte
 """),
 
@@ -163,10 +163,10 @@ Conseils :
 52: _(u"""
  Erreur Utilisateur :
 
- Variables internes initiales non cohérentes (nb sous-points) avec le comportement choisi.
+ Variables internes initiales non cohérentes (nombre sous-points) avec le comportement choisi.
  Pour la maille : %(k1)s
- nb sous-points "k-1" :  %(i1)d
- nb sous-points "k"   :  %(i2)d
+ nombre sous-points "k-1" :  %(i1)d
+ nombre sous-points "k"   :  %(i2)d
 """),
 
 
@@ -176,7 +176,7 @@ Conseils :
    des structures de données "incomplètes" (i.e. partiellement calculées sur chaque processeur).
 
    Malheureusement, dans la suite des traitements, le code a besoin que les structures de données soient
-   "complètes". On est donc obligé d'arreter le calcul.
+   "complètes". On est donc obligé d'arrêter le calcul.
 
  Conseils pour l'utilisateur :
    1) Il faut émettre une demande d'évolution du code pour que le calcul demandé aille à son terme.
@@ -207,7 +207,7 @@ Conseils :
 
 56: _(u"""
  Erreur d'utilisation (rcmaco/alfint) :
- Un des matériaux du CHAM_MATER %(k1)s contient un coefficient de dilation ALPHA=f(TEMP).
+ Un des matériaux du CHAM_MATER %(k1)s contient un coefficient de dilatation ALPHA=f(TEMP).
  Mais la température de référence n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC/VALE_REF
 
  Conseil :
@@ -233,10 +233,10 @@ Conseils :
 
  Contexte de l'erreur :
     option       : %(k3)s
-    type_element : %(k4)s
+    type_élément : %(k4)s
 
  Conseil :
- Emettez une fiche d'anomalie
+ Émettez une fiche d'anomalie
 """),
 
 59: _(u"""
@@ -286,7 +286,7 @@ Conseils :
 """),
 
 66: _(u"""
- Le couple (charge-fonction) fourni par l'utilisateur n'est pas présent dans la SD_resultat.
+ Le couple (charge, fonction) fourni par l'utilisateur n'est pas présent dans la SD_resultat.
  On poursuit le calcul avec le chargement fourni par l'utilisateur.
    Charge   (utilisateur) : %(k1)s
    Fonction (utilisateur) : %(k2)s
@@ -302,7 +302,7 @@ Conseils :
    On attend : %(i2)d "CVRC",  mais on n'en trouve que : %(i1)d
 
  Conseil :
-   Vérifier les occurences de AFFE_MATERIAU/AFFE_VARC pour la maille concernée.
+   Vérifier les occurrences de AFFE_MATERIAU/AFFE_VARC pour la maille concernée.
 """),
 
 68: _(u"""
@@ -334,7 +334,7 @@ Conseils :
 
 75: _(u"""
   Problème de parallélisation des calculs élémentaires avec FETI.
-  Incompatiblité entre LIGRELs dans la routine CALCUL.
+  Incompatibilité entre LIGRELs dans la routine CALCUL.
 
   Risques & conseils :
   Essayez de passer en séquentiel ou de changer de solveur linéaire.
@@ -342,7 +342,7 @@ Conseils :
 
 76: _(u"""
   Problème de parallélisation des calculs élémentaires avec FETI.
-  Incompatiblité LIGREL/numéro de maille dans la routine CALCUL.
+  Incompatibilité LIGREL/numéro de maille dans la routine CALCUL.
 
   Risques & conseils :
   Essayez de passer en séquentiel ou de changer de solveur linéaire.
@@ -379,7 +379,7 @@ Conseils :
 """),
 
 83 : _(u"""
-  L'option %(k1)s n'est pas traitée pour un résultat de type fourier_elas
+  L'option %(k1)s n'est pas traitée pour un résultat de type FOURIER_ELAS
 (produit par MACRO_ELAS_MULT). Il faut faire après MACRO_ELAS_MULT une
  recombinaison de Fourier par l'opérateur COMB_FOURIER.
 """),
@@ -389,7 +389,7 @@ Conseils :
 """),
 
 85: _(u"""
-  Parametre %(k1)s inexistant dans la table.
+  Paramètre %(k1)s inexistant dans la table.
 """),
 
 86: _(u"""
@@ -405,7 +405,7 @@ Conseils :
 """),
 
 89: _(u"""
-  Le champ %(k1)s est à valeurs de type %(k2)s et la valeur de réference de
+  Le champ %(k1)s est à valeurs de type %(k2)s et la valeur de référence de
   type %(k3)s.
 """),
 
@@ -430,7 +430,7 @@ Conseils :
 """),
 
 95: _(u"""
-  Type de la valeur de réference incompatible avec le type des valeurs du champ.
+  Type de la valeur de référence incompatible avec le type des valeurs du champ.
 """),
 
 96: _(u"""

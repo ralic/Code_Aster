@@ -1,4 +1,4 @@
-#@ MODIF catamess Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF catamess Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 
    Merci de signaler cette anomalie.
 
-   Traceback :
+   Erreur :
    %(k2)s
 """),
 

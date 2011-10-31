@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,11 +34,11 @@ cata_msg = {
 """),
 
 4 : _(u"""
- La somme des aires des fibres est differente de l'aire de la section de la poutre.
+ La somme des aires des fibres est différente de l'aire de la section de la poutre.
 
- L'erreur relative est superieure a la precision definie par le mot cle PREC_AIRE :
+ L'erreur relative est superieure a la précision définie par le mot cle PREC_AIRE :
 
-   - occurence de multifibre : %(r1).0f
+   - occurrence de multifibre : %(r1).0f
 
    - aire de la poutre       : %(r2)12.5E
 
@@ -48,11 +48,11 @@ cata_msg = {
 """),
 
 5 : _(u"""
- La somme des moments d'inertie des fibres par rapport a l'axe 0Y est differente du moment de la poutre.
+ La somme des moments d'inertie des fibres par rapport a l'axe 0Y est différente du moment de la poutre.
 
- L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
+ L'erreur relative est superieure a la précision définie par le mot cle PREC_INERTIE :
 
-   - occurence de multifibre       : %(r1).0f
+   - occurrence de multifibre       : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -62,11 +62,11 @@ cata_msg = {
 """),
 
 6 : _(u"""
- La somme des moments d'inertie des fibres par rapport a l'axe 0Z est differente du moment de la poutre.
+ La somme des moments d'inertie des fibres par rapport a l'axe 0Z est différente du moment de la poutre.
 
- L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
+ L'erreur relative est superieure a la précision définie par le mot cle PREC_INERTIE :
 
-   - occurence de multifibre       : %(r1).0f
+   - occurrence de multifibre       : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -76,25 +76,25 @@ cata_msg = {
 """),
 
 7 : _(u"""
- actuellemnt on ne peut mettre que %(k1)s groupes de fibres sur un element
+ actuellemnt on ne peut mettre que %(k1)s groupes de fibres sur un élément
 """),
 
 8 : _(u"""
- Le groupe de fibre %(k1)s n'a pas ete defini dans DEFI_GEOM_FIBRE
+ Le groupe de fibre %(k1)s n'a pas ete défini dans DEFI_GEOM_FIBRE
 """),
 
 9 : _(u"""
- mot cle facteur  "defi_arc", occurence  %(i1)d , group_ma :  %(k1)s
+ mot cle facteur  "defi_arc", occurrence  %(i1)d , group_ma :  %(k1)s
  le centre n'est pas vraiment  le centre du cercle %(k2)s
 """),
 
 10 : _(u"""
- mot cle facteur  "defi_arc", occurence  %(i1)d , group_ma :  %(k1)s
+ mot cle facteur  "defi_arc", occurrence  %(i1)d , group_ma :  %(k1)s
  le point de tangence n est pas equidistant des points extremites %(k2)s
 """),
 
 11 : _(u"""
- mot cle facteur  "defi_arc", occurence  %(i1)d , maille :  %(k1)s
+ mot cle facteur  "defi_arc", occurrence  %(i1)d , maille :  %(k1)s
  le centre n'est pas vraiment  le centre du cercle %(k2)s
 """),
 
@@ -104,7 +104,7 @@ cata_msg = {
 
 14 : _(u"""
   , maille :  %(i1)d
- la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s
+ la maille n'est pas orientee  dans le même sens que les autres sur le cercle %(k1)s
 """),
 
 16 : _(u"""
@@ -144,19 +144,19 @@ cata_msg = {
 """),
 
 31 : _(u"""
- nombre de motcles superieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d
+ nombre de mots-clés superieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d
 """),
 
 34 : _(u"""
- erreur dans les donneesle parametre  %(k1)s n existe pas dans la table  %(k2)s
+ erreur dans les donnéesle paramètre  %(k1)s n existe pas dans la table  %(k2)s
 """),
 
 35 : _(u"""
- erreur dans les donneespas de valeur pour le parametre  %(k1)s
+ erreur dans les donnéespas de valeur pour le paramètre  %(k1)s
 """),
 
 36 : _(u"""
- erreur dans les donneesplusieurs valeurs pour le group_ma  %(k1)s
+ erreur dans les donnéesplusieurs valeurs pour le group_ma  %(k1)s
 """),
 
 40 : _(u"""
@@ -242,8 +242,8 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 70 : _(u"""
  Possible erreur utilisateur dans la commande AFFE_MODELE :
    Un problème a été détecté lors de l'affectation des éléments finis.
-   Pour l'occurrence AFFE de numéro %(i1)d, certaines mailles de meme dimension topologique
-   que la (ou les) modélisation(s) (ici dimension = %(i3)d) n'ont pas pu etre affectées.
+   Pour l'occurrence AFFE de numéro %(i1)d, certaines mailles de même dimension topologique
+   que la (ou les) modélisation(s) (ici dimension = %(i3)d) n'ont pas pu être affectées.
 
    Cela veut dire que la (ou les) modélisation(s) que l'on cherche à affecter
    ne supporte(nt) pas tous les types de mailles présents dans le maillage.
@@ -251,7 +251,7 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
    Le nombre de mailles que l'on n'a pas pu affecter (pour cette occurrence de AFFE) est :  %(i2)d
 
  Risques & conseils :
-   * Comme certaines mailles n'ont peut-etre pas été affectées, il y a un risque
+   * Comme certaines mailles n'ont peut-être pas été affectées, il y a un risque
      de résultats faux (présence de "trous" dans la modélisation).
      Pour connaitre les mailles non affectées (à la fin de l'opérateur), on peut utiliser INFO=2.
    * Ce problème est fréquent quand on souhaite une modélisation "sous-intégrée"
@@ -261,7 +261,7 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
         MO=AFFE_MODELE( MAILLAGE=MA,  INFO=2,
                         AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS','AXIS_SI')))
 
-     Ce qui aura le meme effet (mais sans provoquer l'alarme) que :
+     Ce qui aura le même effet (mais sans provoquer l'alarme) que :
         MO=AFFE_MODELE( MAILLAGE=MA,  INFO=2, AFFE=(
                         _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS')),
                         _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS_SI')),
@@ -278,7 +278,7 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 """),
 
 75 : _(u"""
- erreur donneesle group_no n'existe pas  %(k1)s
+ erreur donnéesle group_no n'existe pas  %(k1)s
 """),
 
 77 : _(u"""
@@ -287,7 +287,7 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 
  Risques & conseils :
    Vérifiez les groupes en vis-à-vis, il se peut que les maillages soient incompatibles.
-   Il faut également s'assurer que la distance entre les deux maillages soit du meme
+   Il faut également s'assurer que la distance entre les deux maillages soit du même
    ordre de grandeur que la longueur caractéristique du maillage (distance entre deux noeuds).
 """),
 
@@ -342,12 +342,12 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 """),
 
 98 : _(u"""
- il manque le parametre  %(k1)s dans la table %(k2)s
+ il manque le paramètre  %(k1)s dans la table %(k2)s
  .sa presence est indispensable a la  creation du champ nodal. %(k3)s
 """),
 
 99 : _(u"""
- le parametre  %(k1)s ne doit pas apparaitre dans la  table %(k2)s
+ le paramètre  %(k1)s ne doit pas apparaitre dans la  table %(k2)s
  pour la creation d'un champ nodal. %(k3)s
 """),
 

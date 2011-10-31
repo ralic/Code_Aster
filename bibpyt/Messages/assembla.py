@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF assembla Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ cata_msg = {
  L'utilisation de MATR_DISTRIBUEE='OUI' nécessite que chaque processeur ait
  au moins 1 degré de liberté qui lui soit alloué.
  Ici, le processeur %(i1)d ne s'est vu attribué aucun ddl.
- 
+
  Conseil : Modifiez le partitionnement des mailles de votre modèle dans
            AFFE_MODELE/PARTITION/PARALLELISME ou diminuez le nombre de processeurs.
 """),
@@ -52,11 +52,11 @@ cata_msg = {
 """),
 
 7 : _(u"""
- FETI : maille négative avec LIGREL de modele !
+ FETI : maille négative avec LIGREL de modèle !
 """),
 
 8 : _(u"""
- le motcle :  %(k1)s  est incorrect.
+ le mot-clé :  %(k1)s  est incorrect.
  on attend : "CUMU" ou "ZERO"
 """),
 
@@ -65,7 +65,7 @@ cata_msg = {
 """),
 
 10 : _(u"""
- il est imprevu d avoir le cmp "lagr" au dela de 30
+ il est imprévu d avoir la composante "LAGR" au delà de 30
 """),
 
 11 : _(u"""
@@ -100,12 +100,12 @@ cata_msg = {
 
 19 : _(u"""
  Erreur développeur dans l'assemblage.
- Les vecteurs élémentaires ou les matrices élémentaires ne contiennent ni sous-structures, ni objet LSITE_RESU.
+ Les vecteurs élémentaires ou les matrices élémentaires ne contiennent ni sous-structures, ni objet LISTE_RESU.
 """),
 
 20 : _(u"""
   Erreur programmeur :
-    lors d'un assemblage, dans la liste des matr_elem (ou vect_elem) que l'on veut
+    lors d'un assemblage, dans la liste des MATR_ELEM (ou VECT_ELEM) que l'on veut
     assembler, on ne trouve aucun resuelem.
 """),
 
@@ -126,11 +126,11 @@ cata_msg = {
 """),
 
 27 : _(u"""
- l'entier décrivant la position du premier lagrange ne peut etre égal qu'à +1 ou -1 .
+ l'entier décrivant la position du premier Lagrange ne peut être égal qu'à +1 ou -1 .
 """),
 
 28 : _(u"""
- le nombre de noeuds effectivement numerotés ne correspond pas au nombre
+ le nombre de noeuds effectivement numérotés ne correspond pas au nombre
  de noeuds à numéroter
 """),
 
@@ -206,20 +206,20 @@ cata_msg = {
 45 : _(u"""
 Erreur Programmeur ou utilisateur :
 -----------------------------------
- Le sd_ligrel    : %(k1)s  référencé par le noeud supplém. : %(i1)d
- de la maille : %(i2)d  du sd_resuelem  : %(k2)s  du sd_vect_elem : %(k3)s
+ Le LIGREL    : %(k1)s  référencé par le noeud supplémentaire. : %(i1)d
+ de la maille : %(i2)d  du resuelem  : %(k2)s  du sd_vect_elem : %(k3)s
  n'est pas présent  dans le sd_nume_ddl : %(k4)s
 
 Risques & conseils :
 --------------------
  Si vous utilisez la commande MACRO_ELAS_MULT :
    Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
-   Etes-vous sur d'avoir indiqué cette charge derrière le mot clé CHAR_MECA_GLOBAL ?
+   Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHAR_MECA_GLOBAL ?
    En effet, il faut indiquer TOUTES les charges dualisées derrière CHAR_MECA_GLOBAL.
 
  Si vous utilisez directement la commande ASSE_VECTEUR :
    Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
-   Etes-vous sur d'avoir indiqué cette charge derrière le mot clé CHARGE
+   Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHARGE
    de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?
 """),
 
@@ -242,14 +242,14 @@ Risques & conseils :
 """),
 
 63 : _(u"""
- erreur sur le premier lagrange d'une LIAISON_DDL
- on a mis 2 fois le premier  lagrange :  %(i1)d
+ erreur sur le premier Lagrange d'une LIAISON_DDL
+ on a mis 2 fois le premier  Lagrange :  %(i1)d
  derrière le noeud :  %(i2)d
 """),
 
 64 : _(u"""
- erreur sur le  2ème lagrange d'une LIAISON_DDL
- on a mis 2 fois le 2ème  lagrange :  %(i1)d
+ erreur sur le  2ème Lagrange d'une LIAISON_DDL
+ on a mis 2 fois le 2ème  Lagrange :  %(i1)d
  derrière le noeud :  %(i2)d
 """),
 
@@ -262,7 +262,7 @@ Risques & conseils :
 66 : _(u"""
  Il faut vérifier la cohérence des maillages dans les structures de données
  %(k5)s et %(k6)s. Les maillages devraient être les mêmes.
- 
+
  On trouve au moins deux maillages différents :
   - maillage 1 : %(k1)s
   - maillage 2 : %(k2)s
@@ -279,13 +279,13 @@ Risques & conseils :
 
 68 : _(u"""
  Problème avec le solveur linéaire FETI: %(i1)d incohérence(s) entre la SD_FETI
- et le paramètrage de l'opérateur.
- 
+ et le paramétrage de l'opérateur.
+
  Conseil:
  ========
  Vérifiez bien que le modèle et la liste de charges utilisés lors du partitionnement
  (opérateur DEFI_PART...) sont identiques à ceux utilisés pour le calcul.
- 
+
  Détail informatique: arrêt dans NUMERO.f.
 """),
 

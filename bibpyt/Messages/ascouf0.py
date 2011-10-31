@@ -1,27 +1,27 @@
-#@ MODIF ascouf0 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ascouf0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg={
 1: _(u"""
-La condition aux limites sur bol à section conique 
+La condition aux limites sur bol à section conique
 est ignorée pour un coude avec sous-épaisseurs.
 """),
 
@@ -43,46 +43,46 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 
 6: _(u"""
  ASCSEP valeur hors domaine
- sous-epaisseur numero : %(i1)d
- taille axe circonferentiel : %(r1)f
+ sous-épaisseur numéro : %(i1)d
+ taille axe circonférentiel : %(r1)f
  bord plaque : %(r2)f
 """),
 
 7: _(u"""
- ASCSEP cas de symetrie :
- la sous-epaisseur doit etre dans la section mediane du coude !
+ ASCSEP cas de symétrie :
+ la sous-épaisseur doit être dans la section médiane du coude !
 """),
 
 
 9: _(u"""
  Valeur hors domaine :
- sous-epaisseur numero :%(i1)d
- absc. curv. circonf. :%(r1)f
+ sous-épaisseur numéro :%(i1)d
+ abscisse curviligne circonférentielle :%(r1)f
  bord plaque :%(r2)f
 """),
 
 10: _(u"""
  Valeur hors domaine :
- sous-epaisseur numero :%(i1)d
- absc. curv. longit.  :%(r1)f
+ sous-épaisseur numéro :%(i1)d
+ abscisse curviligne longitudinale  :%(r1)f
  bord plaque :%(r2)f
 """),
 
 11: _(u"""
  valeur hors domaine :
- sous-epaisseur numero :%(i1)d
- bord inferieur  :%(r1)f
+ sous-épaisseur numéro :%(i1)d
+ bord inférieur  :%(r1)f
  bord plaque :%(r2)f
 """),
 
 
 13: _(u"""
- Les quart et demi structure ne peuvent etre réalisees 
+ Les quart et demi structure ne peuvent être réalisées
  sur un modèle comportant une transition d'épaisseur.
 """),
 
 14: _(u"""
- Les deux embouts doivent etre de meme longueur pour les cas de symétrie.
+ Les deux embouts doivent être de même longueur pour les cas de symétrie.
 """),
 
 15: _(u"""
@@ -94,40 +94,40 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 """),
 
 17: _(u"""
- La condition aux limites raccord 3d-poutre appliquée avec la macro de calcul
- ascouf n'est pas licite avec un embout de type conique.
+ La condition aux limites raccord 3D-POUTRE appliquée avec la macro-commande de calcul
+ ASCOUF n'est pas licite avec un embout de type conique.
 """),
 
 18: _(u"""
- Le nombre d'elements dans l'epaisseur du coude n'est pas parametrable pour
+ Le nombre d'éléments dans l'épaisseur du coude n'est pas paramétrable pour
  un coude avec fissure.
- Le mot-cle NB_ELEM_EPAIS est ignoré.
+ Le mot-clé NB_ELEM_EPAIS est ignoré.
 """),
 
 19: _(u"""
- Pour les fissures non axisymetriques, la longueur doit etre spécifiée.
+ Pour les fissures non axisymétriques, la longueur doit être spécifiée.
 """),
 
 20: _(u"""
- La fissure est axisymetrique : on ne tient pas compte de la longueur spécifiée.
+ La fissure est axisymétrique : on ne tient pas compte de la longueur spécifiée.
 """),
 
 21: _(u"""
- Avec une transition d'épaisseur,la fissure doit obligatoirement etre transverse.
+ Avec une transition d'épaisseur,la fissure doit obligatoirement être transverse.
 """),
 
 23: _(u"""
- L'orientation de la fissure doit etre transverse (orien : 90.) pour modéliser
+ L'orientation de la fissure doit être transverse (orientation : 90.) pour modéliser
  un quart ou une demi structure.
 """),
 
 24: _(u"""
- La fissure est axisymetrique : son orientation doit etre transverse (ORIEN : 90.)
+ La fissure est axisymétrique : son orientation doit être transverse (ORIEN : 90.)
 """),
 
 25: _(u"""
- Il ne peut pas y avoir plusieurs sous-épaisseurs en meme temps
- qu'une transition d'épaisseur: 
+ Il ne peut pas y avoir plusieurs sous-épaisseurs en même temps
+ qu'une transition d'épaisseur:
  si une seule sous-épaisseur, alors utiliser SOUS_EPAIS_COUDE.
 """),
 
@@ -141,8 +141,8 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 """),
 
 28: _(u"""
- Vous ne pouvez déclarer la sous-epaisseur comme axisymetrique et donner
- une taille d'axe circonferentiel.
+ Vous ne pouvez déclarer la sous-épaisseur comme axisymétrique et donner
+ une taille d'axe circonférentiel.
 """),
 
 29: _(u"""
@@ -153,21 +153,21 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 30: _(u"""
  Valeur hors domaine de validité :
  sous-épaisseur numéro :%(i1)d
- abscisse curv. longit. :%(r1)f
+ abscisse curviligne longitudinale :%(r1)f
  valeur maximale autorisée :%(r2)f
 """),
 
 31: _(u"""
  Valeur hors domaine de validité :
  sous-épaisseur numéro :%(i1)d
- position angulaire centre sous-ep :%(r1)f
+ position angulaire centre sous-épaisseur :%(r1)f
  valeur limite autorisée :%(r2)f
 """),
 
 32: _(u"""
- Valeur hors domaine de validité : 
- sous-épaisseur numero :%(i1)d
- abscisse curv. circonf. :%(r1)f
+ Valeur hors domaine de validité :
+ sous-épaisseur numéro :%(i1)d
+ abscisse curviligne circonférentielle :%(r1)f
  valeur limite autorisée :%(r2)f
 """),
 
@@ -181,21 +181,21 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 """),
 
 35: _(u"""
- Le nombre d'élements dans l'épaisseur du coude n'est pas parametrable pour
- la version 2 de la procedure de plaque avec sous-épaisseur : 
- mot-cle NB_ELEM_EPAIS ignoré.
+ Le nombre d'éléments dans l'épaisseur du coude n'est pas paramétrable pour
+ la version 2 de la procédure de plaque avec sous-épaisseur :
+ mot-clé NB_ELEM_EPAIS ignoré.
 """),
 
 36: _(u"""
  Valeur hors domaine de validité :
- surépaisseur :%(i1)d
+ sur-épaisseur :%(i1)d
  valeur limite autorisée (RM-EP1/2) :%(r1)f
 """),
 
 37: _(u"""
  Valeur hors domaine de validité :
  le rayon de cintrage : %(r1)f
- doit etre supérieur a (RM+EP1/2) :%(r2)f
+ doit être supérieur a (RM+EP1/2) :%(r2)f
 """),
 
 38: _(u"""
@@ -210,18 +210,18 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 """),
 
 40: _(u"""
- Valeur hors domaine de validité : 
+ Valeur hors domaine de validité :
  nombre de tranches :%(i1)d
 """),
 
 41: _(u"""
  Valeur hors domaine de validité :
  position angulaire  centre fissure : %(r1)f
- posi_angul doit etre >= 0 et <= %(r2)f 
+ POSI_ANGUL doit être >= 0 et <= %(r2)f
 """),
 
 42: _(u"""
- Valeur hors domaine de validité : 
+ Valeur hors domaine de validité :
  début transition d'épaisseur :%(r1)f
  valeur minimale autorisée :%(r2)f
  valeur maximale autorisée :%(r3)f
@@ -242,15 +242,15 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 """),
 
 45: _(u"""
- Valeur hors domaine de validité : 
- épaisseur apres la transition :%(r1)f
+ Valeur hors domaine de validité :
+ épaisseur après la transition :%(r1)f
  valeur minimale autorisée : 20
  valeur maximale autorisée : 110
 """),
 
 46: _(u"""
- L'épaisseur avant la transition doit etre inférieure
- à celle apres la transition.
+ L'épaisseur avant la transition doit être inférieure
+ à celle après la transition.
 """),
 
 47: _(u"""
@@ -261,7 +261,7 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 
 48: _(u"""
  Valeur hors domaine de validité :
- diam ext du tube avant transition:%(r1)f
+ diamètre extérieur du tube avant transition:%(r1)f
  valeur minimum autorisée : 112.
  valeur maximum autorisée : 880.
 """),
@@ -275,35 +275,35 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 
 50: _(u"""
  Valeur hors domaine de validité :
- epaisseur avant 1ere transition:%(r1)f
- valeur minimum autorisee : 7.
- valeur maximum autorisee : 35.
+ épaisseur avant 1ère transition:%(r1)f
+ valeur minimum autorisée : 7.
+ valeur maximum autorisée : 35.
 """),
 
 51: _(u"""
  Valeur hors domaine de validité :
- epaisseur avant 2eme transition:%(r1)f
- valeur minimum autorisee : 15.
- valeur maximum autorisee : 40.
+ épaisseur avant 2ème transition:%(r1)f
+ valeur minimum autorisée : 15.
+ valeur maximum autorisée : 40.
 """),
 
 52: _(u"""
  Valeur hors domaine de validité :
- épaisseur intermediaire:%(r1)f
+ épaisseur intermédiaire:%(r1)f
  valeur minimum autorisée : 15.
  valeur maximum autorisée : 40.
 """),
 
 53: _(u"""
  Valeur hors domaine de validité.
- L'épaisseur avant la transition doit etre inférieure
- à l'épaisseur intermediaire.
+ L'épaisseur avant la transition doit être inférieure
+ à l'épaisseur intermédiaire.
 """),
 
 54: _(u"""
  Valeur hors domaine de validité.
- L'épaisseur après la transition doit etre inférieure
- à l'épaisseur intermediaire.
+ L'épaisseur après la transition doit être inférieure
+ à l'épaisseur intermédiaire.
 """),
 
 55: _(u"""
@@ -314,13 +314,13 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 
 56: _(u"""
  Valeur hors domaine de validité :
- diam ext du tube avant transition:%(r1)f
+ diamètre extérieur du tube avant transition:%(r1)f
  valeur minimum autorisée : 77.
  valeur maximum autorisée : 355.
 """),
 
 57: _(u"""
-Seuls gibi98 et gibi2000 sont appelables.
+Seuls GIBI98 et GIBI2000 sont appelables.
 """),
 
 58: _(u"""
@@ -330,7 +330,7 @@ Une interpénétration des lèvres est détectée pour le numéro d'ordre %(i1)d : sur
 Le contact n'est pas pris en compte dans le calcul. Le taux de restitution de l'énergie G
 est donc positif y compris là où la fissure tend à se refermer, ce qui peut conduire à
 des résultats trop pénalisants.
-Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro.
+Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro-commande.
 """),
 
 }

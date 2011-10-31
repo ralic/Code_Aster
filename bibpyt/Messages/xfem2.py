@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ cata_msg = {
 
 1 : _(u"""
   -> On ne peut pas faire propager une interface.
-     Seule les fissures (possédant un fond de fissure) peuvent etre propagées.
+     Seule les fissures (possédant un fond de fissure) peuvent être propagées.
 """),
 
 
@@ -118,7 +118,7 @@ cata_msg = {
 """),
 
 23 : _(u"""
-  -> PFON_INI semble etre un point mal choisi, on le modifie automatiquement.
+  -> PFON_INI semble être un point mal choisi, on le modifie automatiquement.
 """),
 
 25 : _(u"""

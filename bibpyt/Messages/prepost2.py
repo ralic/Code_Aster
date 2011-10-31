@@ -1,21 +1,21 @@
-#@ MODIF prepost2 Messages  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -26,11 +26,11 @@ cata_msg = {
 """),
 
 2 : _(u"""
-Modele inconnu, pas d'impression du champ  %(k1)s 
+Modele inconnu, pas d'impression du champ  %(k1)s
 """),
 
 3 : _(u"""
-On ne sait pas ecrire des champs par element aux points de gauss au format CASTEM
+On ne sait pas écrire des champs par élément aux points de gauss au format CASTEM
 """),
 
 4 : _(u"""
@@ -38,27 +38,27 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 35 : _(u"""
-   desole on ne sait pas ecrire les champs aux noeuds de representation constante et a valeurs complexes au format  %(k1)s 
+   desole on ne sait pas écrire les champs aux noeuds de representation constante et a valeurs complexes au format  %(k1)s
 """),
 
 36 : _(u"""
-   desole on ne sait pas ecrire le champ aux noeuds  %(k1)s  au format  %(k2)s 
+   desole on ne sait pas écrire le champ aux noeuds  %(k1)s  au format  %(k2)s
 """),
 
 40 : _(u"""
- aucune des composantes demandees sous le mot-cle nom_cmp pour l'impression du cham_gd  %(k1)s  n'est presente dans la grandeur  %(k2)s 
+ aucune des composantes demandees sous le mot-cle nom_cmp pour l'impression du cham_gd  %(k1)s  n'est presente dans la grandeur  %(k2)s
 """),
 
 41 : _(u"""
- aucune des composantes demandees sous le mot-cle nom_cmp pour l'impression du champ  %(k1)s  du concept  %(k2)s  n'est presente dans la grandeur  %(k3)s 
+ aucune des composantes demandees sous le mot-cle nom_cmp pour l'impression du champ  %(k1)s  du concept  %(k2)s  n'est presente dans la grandeur  %(k3)s
 """),
 
 46 : _(u"""
-  numero d'ordre  %(k1)s  non licite 
+  numéro d'ordre  %(k1)s  non licite
 """),
 
 51 : _(u"""
- type de structure non traite:  %(k1)s 
+ type de structure non traite:  %(k1)s
 """),
 
 52 : _(u"""
@@ -66,15 +66,15 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 53 : _(u"""
- nbcmp different
+ nbcmp différent
 """),
 
 54 : _(u"""
- composante inconnue %(k1)s 
+ composante inconnue %(k1)s
 """),
 
 55 : _(u"""
- L'ordre des composantes ?tabli lorsque que vous avez renseign? le mot-cl? 
+ L'ordre des composantes ?tabli lorsque que vous avez renseign? le mot-cl?
  NOM_CMP est diff?rent de celui du catalogue Aster:
     - ordre des composantes fournies     : %(k1)s %(k2)s %(k3)s %(k4)s %(k5)s %(k6)s
     - ordre des composantes du catalogue : %(k7)s %(k8)s %(k9)s %(k10)s %(k11)s %(k12)s
@@ -85,7 +85,7 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 57 : _(u"""
- nbsp different de 1
+ nbsp différent de 1
 """),
 
 58 : _(u"""
@@ -102,11 +102,11 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 61 : _(u"""
- erreur de programmation : nbcmp different de 1 ou 3.
+ erreur de programmation : nbcmp différent de 1 ou 3.
 """),
 
 62 : _(u"""
- on ne peut pas traiter des elements a plus de 99 noeuds !
+ on ne peut pas traiter des éléments a plus de 99 noeuds !
 """),
 
 63 : _(u"""
@@ -114,55 +114,55 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 64 : _(u"""
- seg4 element inexistant dans castem, converti en seg2
+ seg4 élément inexistant dans castem, converti en seg2
 """),
 
 65 : _(u"""
- tria7 element inexistant dans castem, converti en tria6
+ tria7 élément inexistant dans castem, converti en tria6
 """),
 
 66 : _(u"""
- quad9 element inexistant dans castem, converti en quad8
+ quad9 élément inexistant dans castem, converti en quad8
 """),
 
 67 : _(u"""
- les champs n'ont pas la meme grandeur
+ les champs n'ont pas la même grandeur
 """),
 
 68 : _(u"""
- les champs n'ont pas la meme numerotation
+ les champs n'ont pas la même numérotation
 """),
 
 69 : _(u"""
- les champs n'ont pas le meme type de valeurs
+ les champs n'ont pas le même type de valeurs
 """),
 
 70 : _(u"""
-   desole on ne sait pas ecrire les champs aux noeuds de representation constante au format ideas
+   desole on ne sait pas écrire les champs aux noeuds de representation constante au format ideas
 """),
 
 71 : _(u"""
- element noeud non disponible dans ensight
+ élément noeud non disponible dans ensight
 """),
 
 72 : _(u"""
- element  %(k1)s  non disponible dans ensight
+ élément  %(k1)s  non disponible dans ensight
 """),
 
 73 : _(u"""
- les elements tria7 seront reduits a des tria6
+ les éléments tria7 seront reduits a des tria6
 """),
 
 74 : _(u"""
- les elements quad9 seront reduits a des quad8
+ les éléments quad9 seront reduits a des quad8
 """),
 
 75 : _(u"""
- les elements penta15 seront reduits a des penta6
+ les éléments penta15 seront reduits a des penta6
 """),
 
 76 : _(u"""
- il y a des groupes de noeuds dans le maillage  %(k1)s  qui n'apparaitront pas dans le fichier geometrie ensight: seuls des groupes de mailles peuvent y etre integres
+ il y a des groupes de noeuds dans le maillage  %(k1)s  qui n'apparaitront pas dans le fichier geometrie ensight: seuls des groupes de mailles peuvent y être integres
 """),
 
 77 : _(u"""
@@ -170,27 +170,27 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 78 : _(u"""
- hexa27 element inexistant dans ideas, converti en hexa20
+ hexa27 élément inexistant dans ideas, converti en hexa20
 """),
 
 79 : _(u"""
- tria7 element inexistant dans ideas, converti en tria6
+ tria7 élément inexistant dans ideas, converti en tria6
 """),
 
 80 : _(u"""
- quad9 element inexistant dans ideas, converti en quad8
+ quad9 élément inexistant dans ideas, converti en quad8
 """),
 
 81 : _(u"""
- seg4 element inexistant dans ideas, converti en seg2
+ seg4 élément inexistant dans ideas, converti en seg2
 """),
 
 82 : _(u"""
- element pyram5 non disponible dans ideas
+ élément pyram5 non disponible dans ideas
 """),
 
 83 : _(u"""
- element pyram13 non disponible dans ideas
+ élément pyram13 non disponible dans ideas
 """),
 
 84 : _(u"""
@@ -209,7 +209,7 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 93 : _(u"""
- on ne sait pas ecrire les mailles de type  %(k1)s 
+ on ne sait pas écrire les mailles de type  %(k1)s
 """),
 
 }

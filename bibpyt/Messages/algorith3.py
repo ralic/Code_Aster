@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ cata_msg = {
 """),
 
 12 : _(u"""
- le pas de temps ne peut pas etre nul  
+ le pas de temps ne peut pas être nul  
 """),
 
 13 : _(u"""
@@ -63,7 +63,7 @@ cata_msg = {
 A l'instant %(r1)f, l'erreur vaut %(r2)f
 Cette erreur est supérieure à 1.
 Le pas de temps vaut %(r3)f
-On arrete de le réduire, car le nombre de réductions a atteint %(i1)d, qui est le maximum possible.
+On arrête de le réduire, car le nombre de réductions a atteint %(i1)d, qui est le maximum possible.
 """),
 
 17 : _(u"""
@@ -80,7 +80,7 @@ On arrete de le réduire, car le nombre de réductions a atteint %(i1)d, qui est l
 """),
 
 20 : _(u"""
- le chargement de type dirichlet nécessite la résolution par le schema de NEWMARK
+ le chargement de type DIRICHLET nécessite la résolution par le schéma de NEWMARK
 """),
 
 21 : _(u"""
@@ -105,7 +105,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 27 : _(u"""
- le champ "acce" n'est pas trouve dans le concept dyna_trans  %(k1)s 
+ le champ "ACCE" n'est pas trouve dans le concept DYNA_TRANS  %(k1)s 
 """),
 
 28 : _(u"""
@@ -125,7 +125,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 40 : _(u"""
- le nom_cham  %(k1)s n'appartient pas à la sd
+ le nom_cham  %(k1)s n'appartient pas à la structure de données
 """),
 
 41 : _(u"""
@@ -165,15 +165,15 @@ Nombre d'itérations     : %(i2)d
 """),
 
 62 : _(u"""
- pb 1 test spectre fi par ARPACK
+ Problème 1 test spectre fi par ARPACK
 """),
 
 63 : _(u"""
- pb 2 test spectre fi par ARPACK
+ Problème 2 test spectre fi par ARPACK
 """),
 
 64 : _(u"""
- valeur de STOGI incoherente
+ valeur de STOGI incohérente
 """),
 
 65 : _(u"""
@@ -185,15 +185,15 @@ Nombre d'itérations     : %(i2)d
 """),
 
 67 : _(u"""
- pb division par zéro dans la construction du BETA
+ Problème division par zéro dans la construction du BETA
 """),
 
 72 : _(u"""
- donnée erronnée, multiplicité nulle
+ donnée erronée, multiplicité nulle
 """),
 
 76 : _(u"""
- le type de concept: TABLE_SDASTER doit etre associé au mot clé NUME_VITE_FLUI
+ le type de concept: TABLE_SDASTER doit être associé au mot clé NUME_VITE_FLUI
 """),
 
 78 : _(u"""
@@ -201,7 +201,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 79 : _(u"""
- discrétisations differentes selon les fonctions de l'interspectre
+ discrétisations différentes selon les fonctions de l'interspectre
 """),
 
 80 : _(u"""
@@ -227,7 +227,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 87 : _(u"""
- derivée de F nulle
+ dérivée de F nulle
 """),
 
 88 : _(u"""
@@ -244,7 +244,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 92 : _(u"""
- modelisations C_PLAN et 1D pas autorisées
+ modélisations C_PLAN et 1D pas autorisées
 """),
 
 

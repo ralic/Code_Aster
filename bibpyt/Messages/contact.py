@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,16 +36,16 @@ Contact méthodes discrètes.
 """),
 
 3 : _(u"""
-Contact methode GCP. Nombre d'itérations maximal (%(i1)d) dépassé pour le préconditionneur.
+Contact méthode GCP. Nombre d'itérations maximal (%(i1)d) dépassé pour le préconditionneur.
 Vous pouvez essayer d'augmenter ITER_PRE_MAXI
 """),
 
 4 : _(u"""
-Contact methode GCP. Le paramètre RESI_ABSO doit etre obligatoirement renseigné.
+Contact méthode GCP. Le paramètre RESI_ABSO doit être obligatoirement renseigné.
 """),
 
 7 : _(u"""
-Contact methode GCP. Le pas d'avancement est negatif ; risque de comportement hasardeux de l'algorithme
+Contact méthode GCP. Le pas d'avancement est négatif ; risque de comportement hasardeux de l'algorithme
 """),
 
 8 : _(u"""
@@ -60,7 +60,7 @@ Contact méthodes discrètes.
 """),
 
 9 : _(u"""
-Contact liaison glissiere. Des noeuds se décollent plus que la valeur d'ALARME_JEU:
+Contact liaison glissière. Des noeuds se décollent plus que la valeur de ALARME_JEU:
 """),
 
 13 : _(u"""
@@ -110,7 +110,7 @@ N'utilisez pas REAC_INCR=0 avec le frottement.
 """),
 
 93 : _(u"""
-Contact methode VERIF.
+Contact méthode VERIF.
  -> Interpénétrations des surfaces.
  
  -> Risque & Conseil :

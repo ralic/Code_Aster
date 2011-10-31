@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ cata_msg = {
 """),
 
 4 : _(u"""
- Il n'y a pas un nombre pair de valeurs, "DEFI_FONCTION" occurence  %(i1)d
+ Il n'y a pas un nombre pair de valeurs, "DEFI_FONCTION" occurrence  %(i1)d
 """),
 
 5 : _(u"""
@@ -273,12 +273,12 @@ de type valide
 """),
 
 64 : _(u"""
-  Vous definissez une charge thermique sur un modele mecanique !
+  Vous définissez une charge thermique sur un modele mecanique !
   Le MODELE doit être de type thermique.
 """),
 
 65 : _(u"""
-  Vous definissez une charge mecanique sur un modele thermique !
+  Vous définissez une charge mecanique sur un modele thermique !
   Le MODELE doit être de type mécanique.
 """),
 

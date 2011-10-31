@@ -1,4 +1,4 @@
-#@ MODIF volufini Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF volufini Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg = {
 
 2 : _(u"""
-  -> le sommet de numero global %(i1)i n appartient pas
+  -> le sommet de numéro global %(i1)i n appartient pas
   -> a la maille %(i2)i
 """),
 
@@ -66,7 +66,7 @@ cata_msg = {
     a 27 DDL et des tetraedres a 27 DDL.
 """),
 13 : _(u"""
-  -> l'element %(k1)s et la face  %(i1)i est non plane 
+  -> l'élément %(k1)s et la face  %(i1)i est non plane 
 """),
 14 : _(u"""
   -> Il est possible d'utiliser comme inconnue dans la maille le centre du cercle
@@ -75,7 +75,7 @@ cata_msg = {
      que pour des maillages 2D composés de triangles.
 """),
 15 : _(u"""
-  -> Le nombre de noeuds de l'element est inconnu en VF. 
+  -> Le nombre de noeuds de l'élément est inconnu en VF. 
      Nous pouvons uttiliser uniquement des mailles quadratiques. Il est donc 
      possible d'avoir 7 noeuds on a alors une maille TRIA7,
      9 noeuds on a alors un QUAD9, etc...

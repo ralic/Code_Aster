@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ cata_msg = {
 1 : _(u"""
  L'erreur précédente est fatale.
  Conseils:
-   - S'il s'agit d'un manque de temps CPU, augmentez-le.
+   - S'il s'agit d'un manque de temps CPU, augmentez le.
    - Vérifiez votre modèle 
    - Essayez d'activer la gestion des événements (découpe du pas de temps par exemple) dans la commande DEFI_LIST_INST.
  
@@ -40,7 +40,7 @@ cata_msg = {
 """),
 
 4 : _(u"""
- La charge definie dans STAT_NON_LINE en tant que une charge de type suiveuse, 
+ La charge définie dans STAT_NON_LINE en tant que une charge de type suiveuse, 
  sous le mot-clé TYPE_CHARGE = 'SUIV' n'est pas une Charge SUIVEUSE.
 """),
 
@@ -110,7 +110,7 @@ cata_msg = {
      Pour éviter une division par zéro, le code est passé automatiquement en mode de convergence
      de type absolu (RESI_GLOB_MAXI).
      On a choisi un RESI_GLOB_MAXI de manière automatique et de valeur %(r2)g.
-  -> Risque & Conseil : Vérifier bien que votre chargement doit etre nul (ainsi que les réactions d'appui) à cet instant 
+  -> Risque & Conseil : Vérifier bien que votre chargement doit être nul (ainsi que les réactions d'appui) à cet instant 
      Dans le cas des problèmes de type THM, penser à utiliser éventuellement un 
      critère de type référence (RESI_REFE_RELA).
 """),

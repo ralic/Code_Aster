@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,19 +78,19 @@ cata_msg = {
 
 
 36 : _(u"""
- group_ma_interf: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
+ group_ma_interf: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
 37 : _(u"""
- group_ma_flu_str: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
+ group_ma_flu_str: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
 38 : _(u"""
- group_ma_flu_sol: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
+ group_ma_flu_sol: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
 39 : _(u"""
- group_ma_sol_sol: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
+ group_ma_sol_sol: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
 
@@ -165,7 +165,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
- nombre de valeurs different  pour "noeud_para" et "vale_y"
+ nombre de valeurs différent  pour "noeud_para" et "vale_y"
 """),
 
 70 : _(u"""
@@ -207,7 +207,7 @@ Les noms de paramètres doivent être différents
 """),
 
 79 : _(u"""
- les noms de chaque paramêtre doivent être differents
+ les noms de chaque paramètre doivent être différents
 """),
 
 80 : _(u"""
@@ -219,11 +219,11 @@ Les noms de paramètres doivent être différents
 """),
 
 84 : _(u"""
- la fonction doit s appuyee sur un maillage pour lequel une abscisse curviligne est definie.
+ la fonction doit s appuyee sur un maillage pour lequel une abscisse curviligne est définie.
 """),
 
 85 : _(u"""
- mauvaise definition des noeuds debut et fin
+ mauvaise définition des noeuds debut et fin
 """),
 
 86 : _(u"""

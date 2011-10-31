@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,12 +108,12 @@ On ne peut pas calculer les efforts.
 """),
 
 21: _(u"""
-Le point à l occurence %(i1)d a une côte h= %(r1)f, donc non nulle.
+Le point à l'occurrence %(i1)d a une cote h= %(r1)f, donc non nulle.
 Les efforts étant intégrés sur la section, on n en tient pas compte.
 """),
 
 22: _(u"""
-Le point à l occurence %(i1)d n a que 3 coordonnées. Pour le calcul
+Le point à l'occurrence %(i1)d n a que 3 coordonnées. Pour le calcul
 des déformations on doit rentrer une position dans l'épaisseur.
 """),
 

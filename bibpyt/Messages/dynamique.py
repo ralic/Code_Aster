@@ -1,4 +1,4 @@
-#@ MODIF dynamique Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dynamique Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,24 +22,24 @@
 cata_msg={
 
 1: _(u"""
- schema inconnu
+ schéma inconnu
 """),
 
 2: _(u"""
- la liste d'instants fournie ne respecte pas la condition de stabilite.
+ la liste d'instants fournie ne respecte pas la condition de stabilité.
 """),
 
 3: _(u"""
- la condition de stabilite n'a pas pu etre calculee pour tous les elements. elle peut etre trop grande.
+ la condition de stabilité n'a pas pu être calculée pour tous les éléments. elle peut être trop grande.
 """),
 
 4: _(u"""
-  -> La condition de stabilité n'a pu etre calculée pour aucun élément.
+  -> La condition de stabilité n'a pu être calculée pour aucun élément.
   -> Risque & Conseil :
      Vous prenez le risque de sortir du cadre de la stabilité conditionnelle du schéma de temps explicite. Vérifiez bien
      que vos éléments finis ont une taille et un matériau (module de Young) compatibles avec le respect de la condition
      de Courant vis-à-vis du pas de temps que vous avez imposé (temps de propagation des ondes dans la maille, voir
-     documentation). Si c'est le cas, lever l'arret fatal en utilisant l'option "STOP_CFL", à vos risques et périls
+     documentation). Si c'est le cas, lever l'arrêt fatal en utilisant l'option "STOP_CFL", à vos risques et périls
      (risques de résultats faux).
 """),
 
@@ -61,22 +61,22 @@ cata_msg={
 
 
 10: _(u"""
-   Arret par manque de temps CPU au groupe de pas de temps : %(i1)d
+   Arrêt par manque de temps CPU au groupe de pas de temps : %(i1)d
                                  au "petit" pas de temps   : %(i2)d
       - Temps moyen par "petit" pas : %(r1)f
-      - Temps cpu restant           : %(r2)f
+      - Temps CPU restant           : %(r2)f
 
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
 11: _(u"""
-   Arret par manque de temps CPU après le calcul de %(i1)d pas.
+   Arrêt par manque de temps CPU après le calcul de %(i1)d pas.
       - Dernier instant archivé : %(r1)f
       - Numéro d'ordre correspondant : %(i2)d
       - Temps moyen pour les %(i3)d pas de temps : %(r2)f
-      - Temps cpu restant            : %(r3)f
+      - Temps CPU restant            : %(r3)f
    
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
 12: _(u"""
@@ -88,11 +88,11 @@ cata_msg={
 """),
 
 13: _(u"""
-   Arret par manque de temps CPU à la fréquence : %(i1)d
+   Arrêt par manque de temps CPU à la fréquence : %(i1)d
       - Temps moyen par pas fréquence : %(r1)f
-      - Temps cpu restant             : %(r2)f
+      - Temps CPU restant             : %(r2)f
    
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
 14: _(u"""
@@ -115,12 +115,12 @@ cata_msg={
 
 17 : _(u"""
  Pas de temps maximal (mot-clé PAS_MAXI) demandé trop grand :   %(r1)f
- Pas de temps necessaire pour le calcul: %(r2)f
- Risques de problemes de precision 
+ Pas de temps nécessaire pour le calcul: %(r2)f
+ Risques de problèmes de précision 
 """), 
 
 18 : _(u"""
- Le nombre maximal de sous-division du pas : %(i1)d est atteint à l'instant : %(r1)f
+ Le nombre maximal de sous division du pas : %(i1)d est atteint à l'instant : %(r1)f
  Le pas de temps vaut alors : %(r2)f
  On continue cependant la résolution en passant au pas suivant.
 
@@ -128,7 +128,7 @@ cata_msg={
  Il faudrait relancer la calcul en autorisant le schéma ADAPT à utiliser un pas de temps plus petit.
  Pour cela on peut jouer sur au moins un des trois paramètres suivants :
  - diminuer le pas de temps initial (mot-clé PAS),
- - augmenter le nombre maximal de sous-découpage du pas (mot-clé NMAX_ITER_PAS),
+ - augmenter le nombre maximal de sous découpages du pas (mot-clé NMAX_ITER_PAS),
  - augmenter le facteur de division du pas (mot-clé COEF_DIVI_PAS)
 """), 
 

@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,11 +32,11 @@ cata_msg={
 """),
 
 3: _(u"""
- CAM_CLAY :: le coefficient de poisson et ou le module d'Young ne sont pas corrects
+ CAM_CLAY :: le coefficient de poisson et ou le module de YOUNG ne sont pas corrects
              dans la maille %(k1)s
              
              *** vérifiez la cohérence des données mécaniques suivantes :
-                 E, nu, eO (indice des vides), kapa
+                 E, nu, eO (indice des vides), KAPA
                  (contrainte volumique initiale) et KCAM la compressibilité 
                  initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes 
 
@@ -97,7 +97,7 @@ localement via ITER_INTE_PAS.
 """),
 
 15: _(u"""
-  Pour les poutres multifibres, l'utilisation de lois de comportement via 
+  Pour les poutres multi-fibres, l'utilisation de lois de comportement via 
   ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
  """),
 
@@ -208,8 +208,8 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
  Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
  La subdivision du pas de temps au niveau global est déclenchée.
  Il faut pour cela l'autoriser avec la commande DEFI_LIST_INST.
- Info sur les bornes :
-   Valeur maxi :   <%(r1)E>
+ Information sur les bornes :
+   Valeur max :   <%(r1)E>
    borne correspondant à <%(k2)s> : <%(r2)E>
    borne correspondant à <%(k3)s> : <%(r3)E>
 """),
@@ -222,7 +222,7 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
 
 43: _(u"""
- Le numero de loi de comportement choisi <%(i1)i> est hors des bornes 1-100
+ Le numéro de loi de comportement choisi <%(i1)i> est hors des bornes 1-100
 """),
 
 
@@ -270,20 +270,20 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme
 """),
 
 53: _(u"""
- La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modéliser
+ La modélisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modéliser
  des contraintes 1D (barres, poutres) avec ce comportement, il est inutile d'utiliser ALGO_1D='DEBORST'
 """),
 
 54: _(u"""
- ECRO_LINE : la pente d'écrouissage H et/ou le module d'Young E ne sont pas compatibles :
+ ECRO_LINE : la pente d'écrouissage H et/ou le module de YOUNG E ne sont pas compatibles :
              H doit être strictement inférieur à E. Ici H=<%(r1)E>, et E=<%(r2)E>.
-             Pour modéliser l'elasticité linéaire, il suffit de choisir SY grand, et H < E.
+             Pour modéliser l'élasticité linéaire, il suffit de choisir SY grand, et H < E.
 """),
 
 55: _(u"""
 La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvé de solution pour
 le nombre d'itération donné <%(i1)d>.\n
-Info pour le debug
+Information pour le debug
    Borne 0                 : <%(r1).15E>
    Borne 1                 : <%(r2).15E>
    Puissance N             : <%(r3).15E>
@@ -307,15 +307,15 @@ Grandeurs au point de Gauss :
 """),
 
 57: _(u"""
-Pour info
+Pour information
    Température a t- : <%(r1)E>
    Température a t+ : <%(r2)E>
 """),
 
 58: _(u"""
-Le franchissement du seuil de fluage ne se fait pas dans la tolérence donnée dans DEFI_MATERIAU
+Le franchissement du seuil de fluage ne se fait pas dans la tolérance donnée dans DEFI_MATERIAU
 pour la loi IRRAD3M, par le mot clef TOLER_ET.
-   Tolérence sur le franchissement du seuil : <%(r1)E>
+   Tolérance sur le franchissement du seuil : <%(r1)E>
    Erreur sur le franchissement du seuil    : <%(r2)E>
 La subdivision du pas de temps au niveau global est déclenchée.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
@@ -350,13 +350,13 @@ Couplage: on fait dépendre E, MU et ALPHA de la température maximale Tmax, comme
 
 66 : _(u"""
 La loi de comportement ENDO_SCALAIRE n'est disponible que pour la formulation 
-non locale GRAD_VARI, assurez vous que votre modelisation soit l'une des trois 
+non locale GRAD_VARI, assurez vous que votre modélisation soit l'une des trois 
 suivantes : - D_PLAN_GRAD_VARI
             - AXIS_GRAD_VARI
             - 3D_GRAD_VARI
 """),
 67 : _(u"""
-Dans la définition du materiau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS 
+Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS 
 """),
 
 68 : _(u"""

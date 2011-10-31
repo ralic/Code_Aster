@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,19 +36,19 @@ cata_msg = {
 """),
 
 4 : _(u"""
-  La valeur de %(k1)s est negative. Les resultats obtenus risquent d'etre inattendus
+  La valeur de %(k1)s est négative. Les résultats obtenus risquent d'être inattendus
 """),
 
 5 : _(u"""
  -> La valeur de déformation maximale %(r1)f est inférieur au seuil d'endommagement %(r2)f.
- -> Le modele GLRC_DM risque de donner des résultats inattendus.
+ -> Le modèle GLRC_DM risque de donner des résultats inattendus.
  -> Conseil : Utilisez une loi élastique ou vérifiez les paramètres d'homogénéisation.
 """),
 
 6 : _(u"""
- -> Le pourcentage des aciers ou l'espace des armatures n'est pas identique dans les deux directions et ne respecte donc pas l'isotropie du modele.
- -> Le modele GLRC_DM peut donner des résultats innatendus.
- -> Conseil: Choissisez une autre loi de comportement ou couplez le modele avec un modèle de grille d'acier.
+ -> Le pourcentage des aciers ou l'espace des armatures n'est pas identique dans les deux directions et ne respecte donc pas l'isotropie du modèle.
+ -> Le modèle GLRC_DM peut donner des résultats inattendus.
+ -> Conseil: Choisissez une autre loi de comportement ou couplez le modèle avec un modèle de grille d'acier.
 """),
 
 7 : _(u"""
@@ -61,8 +61,8 @@ cata_msg = {
 """),
 
 9 : _(u"""
- -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés post-élastique.
- -> Risque & Conseil : Ajouter les propriétés post-élastique dans le DEFI_MATERIAU du béton.
+ -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés post élastiques.
+ -> Risque & Conseil : Ajouter les propriétés post élastiques dans le DEFI_MATERIAU du béton.
 """),
 
 10 : _(u"""
@@ -126,7 +126,7 @@ cata_msg = {
 """),
 
 26 : _(u"""
- norme vecteur dir. nulle
+ norme vecteur direction nulle
 """),
 
 27 : _(u"""
@@ -152,15 +152,15 @@ cata_msg = {
 """),
 
 31 : _(u"""
- le nombre dabscisses d'une des fonctions d'interpolation
+ le nombre d'abscisses d'une des fonctions d'interpolation
  n'est pas identique au nombre d'abscisses du premier point
  de mesure expérimental
 """),
 
 32 : _(u"""
-  le critère d'égalite de la liste d'abscisses du premier dataset 58
+  le critère d'égalité de la liste d'abscisses du premier DATASET 58
   et de la liste d'abscisses d une des fonctions de pondération
-  n'est pas verifié
+  n'est pas vérifié
 """),
 
 33 : _(u"""
@@ -170,19 +170,19 @@ cata_msg = {
 52 : _(u"""
  itérations cycliques :
  changement de configuration ou variation trop importante
- du deplacement physique à l'issue de la dernière itération
+ du déplacement physique à l'issue de la dernière itération
  Conseil: diminuez le pas de temps
 """),
 
 53 : _(u"""
  pas de convergence de l'algorithme de NEWTON :
- - en  %(k1)s  iterations
+ - en  %(k1)s  itérations
  - à l'instant  %(k2)s
  il faut réduire la rigidité normale, ou le jeu.
 """),
 
 54 : _(u"""
- dvp : trop de noeuds
+ DVP : trop de noeuds
 """),
 
 55 : _(u"""
@@ -202,18 +202,18 @@ cata_msg = {
 """),
 
 59 : _(u"""
- erreur dir. grandissement
+ erreur direction grandissement
 """),
 
 60 : _(u"""
  CAM_CLAY :
- la porosité donnee dans CAM_CLAY doit etre la meme que dans THM_INIT
+ la porosité donnée dans CAM_CLAY doit être la même que dans THM_INIT
 """),
 
 61 : _(u"""
  BARCELONE :
  il faut que la contrainte hydrostatique soit supérieure
- à la  pression de cohesion -KC*PC
+ à la  pression de cohésion -KC*PC
 """),
 
 62 : _(u"""
@@ -233,11 +233,11 @@ cata_msg = {
 
 66 : _(u"""
  pour l'instant, on ne traite pas le cas des contraintes planes
- dans le modele de CHABOCHE à une variable cinématique.
+ dans le modèle de CHABOCHE à une variable cinématique.
 """),
 
 67 : _(u"""
- N doit etre strictementpositif.
+ N doit être strictement positif.
 """),
 
 68 : _(u"""
@@ -258,7 +258,7 @@ cata_msg = {
 """),
 
 80 : _(u"""
- pb interp vari entiere ??
+ Problème interprétation vari entière ??
 """),
 
 81 : _(u"""
@@ -282,7 +282,7 @@ cata_msg = {
 """),
 
 96 : _(u"""
- GROT_GDEP deformation required for ELAS_HYPER material
+ Grandes déformations GROT_GDEP requises pour le matériau ELAS_HYPER.
 """),
 
 }

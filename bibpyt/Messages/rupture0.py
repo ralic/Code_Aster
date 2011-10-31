@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,7 @@ correctement crée par l'opérateur DEFI_FOND_FISS.
 Type de mailles du fond de fissure non défini.
 -> Risque et Conseil :
 Pour une modélisation 3D, les mailles de votre fond de fissure
-doivent etre de type SEG2 ou SEG3.
+doivent être de type SEG2 ou SEG3.
 Veuillez revoir la création de votre fond de fissure
 (opérateur DEFI_FOND_FISS).
 """),
@@ -175,7 +175,7 @@ inférieure et perpendiculaire au fond  %(k1)s.
 
 27: _(u"""
 Pour un résultat de type MODE_MECA,
-l'option de calcul doit etre K_G_MODA.
+l'option de calcul doit être K_G_MODA.
 -> Risque et Conseil :
 Veuillez fournir au mot-clé OPTION l'option K_G_MODA
 et vérifier que le concept fourni au mot-clé RESULTAT
@@ -368,7 +368,7 @@ Veuillez revoir la création du champ theta (opérateur CALC_THETA).
 60 : _(u"""
 Mélange de mailles de type SEG2 et SEG3 dans la définition du fond de fissure.
 -> Risque et Conseil :
-Les mailles du fond de fissure doivent toutes être du meme type.
+Les mailles du fond de fissure doivent toutes être du même type.
 Modifiez le maillage ou définissez plusieurs fonds de fissure consécutifs.
 """),
 
@@ -398,7 +398,7 @@ Le groupe de noeuds ou la liste de noeuds définissant le fond de fissure n'est p
 -> Risque et Conseil :
 Il faut ordonner les noeuds du fond de fissure.
 Les options SEGM_DROI_ORDO et NOEUD_ORDO de l'opérateur
-DEFI_GROUP/CREA_GROUP_NO peuvent etre utilisées.
+DEFI_GROUP/CREA_GROUP_NO peuvent être utilisées.
 ."""),
 
 
@@ -412,7 +412,7 @@ Les mailles de FOND_INF et de FOND_SUP sont de type différent.
 Les noeuds %(k1)s de FOND_INF et %(k2)s de FOND_SUP ne sont pas en vis à vis.
 -> Risque et Conseil :
 Vérifiez que les deux groupes correspondent bien à des noeuds coincidents
-géométriquement et que les groupes de noeuds sont ordonnés dans le meme sens.
+géométriquement et que les groupes de noeuds sont ordonnés dans le même sens.
 """),
 
 70 : _(u"""
@@ -445,7 +445,7 @@ Le mode %(i1)d n'a pas été trouvé dans la table.
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la
 fissure (%(k2)s).
 -> Risque et Conseil :
-Les mailles des lèvres doivent etre linéiques. Vérifiez que les mailles
+Les mailles des lèvres doivent être linéiques. Vérifiez que les mailles
 définies correspondent bien aux faces des éléments 2D qui s'appuient
 sur la lèvre.
 """),
@@ -491,13 +491,13 @@ licite avec l'option désirée.
 """),
 
 84: _(u"""
-Le degré des polynomes de Legendre doit etre inférieur au nombre de noeuds
+Le degré des polynomes de Legendre doit être inférieur au nombre de noeuds
 du fond de fissure (ici égal à %(i1)i) lorsque le lissage de G est de type
 LEGENDRE et le lissage de THETA de type LAGRANGE.
 """),
 
 85: _(u"""
-Le lissage de G doit etre de type LEGENDRE si le lissage de THETA
+Le lissage de G doit être de type LEGENDRE si le lissage de THETA
 est de type LEGENDRE.
 -> Risque et Conseil :
 Veuillez redéfinir le mot-clé LISSAGE_G.
@@ -505,7 +505,7 @@ Veuillez redéfinir le mot-clé LISSAGE_G.
 
 87: _(u"""
 Si la méthode LAGRANGE_REGU est utilisée pour le lissage,
-alors le lissage de G et de theta doivent etre de type LAGRANGE_REGU.
+alors le lissage de G et de theta doivent être de type LAGRANGE_REGU.
 """),
 
 88: _(u"""

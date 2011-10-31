@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_dyna_alea_ops Macro  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,14 +36,14 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
    commande='POST_DYNA_ALEA'
 
    ier = 0
-   # La macro compte pour 1 dans la numerotation des commandes
+   # La macro compte pour 1 dans la numérotation des commandes
    self.set_icmd(1)
 
    # Le concept sortant (de type table_sdaster ou dérivé) est tab
    self.DeclareOut('tabout', self.sd)
 
-   # On importe les definitions des commandes a utiliser dans la macro
-   # Le nom de la variable doit etre obligatoirement le nom de la commande
+   # On importe les définitions des commandes a utiliser dans la macro
+   # Le nom de la variable doit être obligatoirement le nom de la commande
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    CALC_TABLE    = self.get_cmd('CALC_TABLE')
    IMPR_TABLE    = self.get_cmd('IMPR_TABLE')
@@ -64,7 +64,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       if am <=0.000:
           am=0.01
       if beta <=0.000:
-          beta=0.001          
+          beta=0.001
       res=1.0
       for k in range(Nbval):
          ai=liste_indic[k]
@@ -120,7 +120,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       test1 = NP.equal(None,liste_indic)
       test2 = NP.equal(None,liste_def)
       if test1.any() or test2.any():
-         UTMESS('F','TABLE0_15')
+         UTMESS('F', 'TABLE0_14', valk=('DEFA', 'PARA_NOCI'))
 
       # estimation paramètres
       x0 = [FRAGILITE['AM_INI'],FRAGILITE['BETA_INI']]
@@ -179,7 +179,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
             if INFO==2 :
                texte1='BOOTSTRAP TIRAGE '+ str(kb+1)
                texte2='  PARAMETRES Am, beta ESTIMES : '+str(xopt)+'\n'
-               aster.affiche('MESSAGE',texte1) 
+               aster.affiche('MESSAGE',texte1)
                aster.affiche('MESSAGE',texte2)
             vecval=(NP.log(vec_a/xopt[0]))/xopt[1]
             for m in range(Nba):
@@ -222,9 +222,9 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       NOEUD_I=args['NOEUD_I']
       OPTION=args['OPTION']
       MOMENT=args['MOMENT']
-      DUREE=args['DUREE']    
+      DUREE=args['DUREE']
 
-      
+
 
       intespec=INTE_SPEC.EXTR_TABLE()
       # pour la clarté !
@@ -361,7 +361,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
              mcfact.append(_F(NOM_PARA='NOM_CMP_J',VALE_K=ind[3]))
              if INFO==2 :
                 aster.affiche('MESSAGE','INDICES :'+ind[0]+' - '+ind[1])
-                aster.affiche('MESSAGE','INDICES :'+ind[2]+' - '+ind[3]+'\n')                
+                aster.affiche('MESSAGE','INDICES :'+ind[2]+' - '+ind[3]+'\n')
            else :
              i_foncstat = ind[0] == ind[1]
              dlign['NUME_ORDRE_I'], dlign['NUME_ORDRE_J'] = ind[0], ind[1]
@@ -370,7 +370,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
              if INFO==2 :
                 aster.affiche('MESSAGE','INDICES :'+str(ind[0])+' - '\
                                                    +str(ind[1])+'\n')
-                                                   
+
            __fon1=RECU_FONCTION(TABLE        = INTE_SPEC,
                                 NOM_PARA_TABL= 'FONCTION_C',
                                 FILTRE       = mcfact, )
@@ -392,24 +392,24 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                prim_y    = NP.cumsum(trapz)
                val_mom[i_mom] = prim_y[-1]
                   # -- cas NUME_VITE_FLUI, seule la partie positive du spectre est utilisée
-                  # -- Il faut donc doubler lambda  pour calculer le bon écart type               
+                  # -- Il faut donc doubler lambda  pour calculer le bon écart type
                if NUME_VITE_FLUI or frez >= 0. :
-                 val_mom[i_mom]=val_mom[i_mom]*2.              
+                 val_mom[i_mom]=val_mom[i_mom]*2.
            for i_mom in l_moments :
              chmo='LAMBDA_'+str(i_mom).zfill(2)
              dlign[chmo] = val_mom[i_mom]
 
         #--- si auto-spectre:
            if i_foncstat:
-              # test si le spectre est bien à valeurs positives                    
+              # test si le spectre est bien à valeurs positives
               if min(fvaly) < 0.0 :
                  aster.affiche('MESSAGE', str(ind)+'\n')
                  UTMESS('F','MODELISA9_95')
-              # -- fonctions statistiques              
+              # -- fonctions statistiques
 
               dlign['ECART'] = sqrt(val_mom[0])
 
-     
+
               if DUREE != None :
                  Ts=DUREE
                  vop=sqrt(val_mom[2] /val_mom[0])/(2.*pi)
@@ -417,9 +417,9 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                  deltau=sqrt(1.- val_mom[1] **2/(val_mom[2]*val_mom[0]) )
                  valNd=2.*Nu*(1-exp(-(deltau)**1.2*sqrt(pi*log(2.*Nu))));
                  val_peak=sqrt(2.*log(valNd))
-                 dlign['FACT_PIC'] = val_peak   # -- facteur de peak (oour max moyen)         
-                 dlign['MAX_MOY'] = val_peak*sqrt(val_mom[0])    # -- max moyen  
-                             
+                 dlign['FACT_PIC'] = val_peak   # -- facteur de peak (oour max moyen)
+                 dlign['MAX_MOY'] = val_peak*sqrt(val_mom[0])    # -- max moyen
+
               if abs(val_mom[2])>=1e-20 :
                     dlign['NB_EXTREMA_P_S'] = 1./pi*sqrt(val_mom[4]/val_mom[2])
               if abs(val_mom[0])>=1e-20 :

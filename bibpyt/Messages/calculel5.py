@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,14 +50,14 @@ Conseil :
 """),
 
 4 : _(u"""
- !! probleme creation cham_elem nul dans alchml !!
+ !! problème création CHAM_ELEM nul dans alchml !!
 """),
 
 5 : _(u"""
 Erreur utilisateur :
   Vous essayez de faire un calcul non-linéaire mécanique sur un modèle dont les éléments
   ne sont pas programmés pour cela.
-  On arrete le calcul.
+  On arrête le calcul.
 
 Risques & conseils :
   Vous devriez changer de MODELISATION.
@@ -67,7 +67,7 @@ Risques & conseils :
 
 6 : _(u"""
 Erreur utilisateur :
- Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquees
+ Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquées
  n'appartient pas à la grandeur : %(k1)s
 """),
 
@@ -97,7 +97,7 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 """),
 
 11 : _(u"""
- le parametre est a valeurs de type  " %(k1)s "  et la valeur de reference de type  " %(k2)s ".
+ le paramètre est a valeurs de type  " %(k1)s "  et la valeur de référence de type  " %(k2)s ".
 """),
 
 12 : _(u"""
@@ -105,7 +105,7 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 """),
 
 13 : _(u"""
- le champ  %(k1)s  est a valeurs de type  " %(k2)s "  et la valeur de reference de type  " %(k3)s ".
+ le champ  %(k1)s  est a valeurs de type  " %(k2)s "  et la valeur de référence de type  " %(k3)s ".
 """),
 
 14 : _(u"""
@@ -159,8 +159,8 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 
 30 : _(u"""
 Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
- Votre modèle ne contient pas d'element de meme dimension que le maillage sous-jacent.
- Verifiez la dimension de votre maillage.
+ Votre modèle ne contient pas d'élément de même dimension que le maillage sous-jacent.
+ Vérifiez la dimension de votre maillage.
 """),
 
 
@@ -177,8 +177,8 @@ Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 32: _(u"""
 Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
- Pour le modele  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
- car les familles de points de Gauss sont differentes
+ Pour le modèle  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
+ car les familles de points de Gauss sont différentes
 """),
 
 
@@ -211,11 +211,11 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
   Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
 
 38 : _(u"""
-  il faut definir un champ de vitesse
+  il faut définir un champ de vitesse
 """),
 
 39 : _(u"""
- la grandeur pour la variable:  %(k1)s  doit etre:  %(k2)s  mais elle est:  %(k3)s
+ la grandeur pour la variable:  %(k1)s  doit être:  %(k2)s  mais elle est:  %(k3)s
 """),
 
 
@@ -234,11 +234,11 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
   Le noeud %(k1)s de coordonnées (%(r1)f,%(r2)f,%(r3)f) est projeté à la distance %(r4)f"""),
 
 44 : _(u"""
- ! le champ doit etre un cham_elem !
+ ! le champ doit être un CHAM_ELEM !
 """),
 
 45 : _(u"""
- ! longueurs des modes locaux imcompatibles entre eux !
+ ! longueurs des modes locaux incompatibles entre eux !
 """),
 
 46 : _(u"""
@@ -248,7 +248,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 48 : _(u"""
  PROJ_CHAMP (ou LIAISON_MAIL) :
  Nombre de noeuds projetés sur des mailles un peu distantes : %(i1)d.
- (la distance à la maille est supérieure à 1/10ième du diamètre de la maille)
+ (la distance à la maille est supérieure à 1/10ème du diamètre de la maille)
 
  Le noeud %(k1)s est projeté le plus loin à la distance %(r1)f"""),
 
@@ -256,7 +256,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 49 : _(u"""
  LIAISON_MAIL :
  La relation linéaire destinée à éliminer le noeud esclave %(k1)s est une tautologie
- car la maille maitre en vis à vis de ce noeud possède ce meme noeud dans sa connectivité.
+ car la maille maître en vis à vis de ce noeud possède ce même noeud dans sa connectivité.
  On ne l'écrit donc pas.
 """),
 
@@ -276,7 +276,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 54 : _(u"""
- La maille %(k1)s doit etre une maille de peau de type QUAD ou TRIA
+ La maille %(k1)s doit être une maille de peau de type QUAD ou TRIA
  car on est en 3D et elle est de type %(k2)s.
 """),
 
@@ -291,7 +291,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 57 : _(u"""
- La combinaison de chargements de meme type n'est pas autorisée car l'un des chargements
+ La combinaison de chargements de même type n'est pas autorisée car l'un des chargements
  contient une charge exprimée par une formule.
  Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
  (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP)
@@ -307,7 +307,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 60 : _(u"""
  La combinaison de chargements de type 'rotation' est déconseillée.
- Veuillez plutot utiliser un chargement de type 'force interne'.
+ Veuillez plutôt utiliser un chargement de type 'force interne'.
 """),
 
 63 : _(u"""
@@ -316,29 +316,29 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 
 65 : _(u"""
- composante non definie dans  la grandeur.  composante:  %(k1)s
+ composante non définie dans  la grandeur.  composante:  %(k1)s
 """),
 
 66 : _(u"""
 
- le nombre de composantes affectees n'est pas egal  au nombre de composantes a affecter
- occurence de affe numero %(i1)d
- nbre de cmp affectees :  %(i2)d
- nbre de cmp a affecter :  %(i3)d
+ le nombre de composantes affectées n'est pas égal  au nombre de composantes a affecter
+ occurrence de AFFE numéro %(i1)d
+ nombre de composante affectées :  %(i2)d
+ nombre de composante a affecter :  %(i3)d
 """),
 
 67 : _(u"""
- erreurs donneesle GROUP_MA  %(k1)s
-  n'a pas le meme nombre de mailles  que le GROUP_MA  %(k2)s
+ erreurs données le GROUP_MA  %(k1)s
+  n'a pas le même nombre de mailles  que le GROUP_MA  %(k2)s
 """),
 
 68 : _(u"""
- erreurs donneesle GROUP_MA  %(k1)s
-  n'a pas les memes types de maille  que le GROUP_MA  %(k2)s
+ erreurs données le GROUP_MA  %(k1)s
+  n'a pas les mêmes types de maille  que le GROUP_MA  %(k2)s
 """),
 
 69 : _(u"""
- erreurs donnees : la maille  %(k1)s  du maillage  %(k2)s
+ erreurs données : la maille  %(k1)s  du maillage  %(k2)s
   n'est pas la translation de la  maille  %(k3)s
   du maillage  %(k4)s
     vecteur translation :  %(r1)f %(r2)f %(r3)f
@@ -349,17 +349,17 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 71 : _(u"""
- plusieurs numeros d'ordre trouves pour l'instant  %(r1)f
+ plusieurs numéros d'ordre trouves pour l'instant  %(r1)f
 """),
 
 72 : _(u"""
- cette commande est reentrante :   sd resultat en sortie     %(k1)s
+ cette commande est réentrante :   sd resultat en sortie     %(k1)s
     sd resultat "resu_final"  %(k2)s
 """),
 
 73 : _(u"""
  la sd resultat en sortie  %(k1)s
-  doit contenir qu'un seul nume_ordre %(k2)s
+  doit contenir qu'un seul NUME_ordre %(k2)s
 """),
 
 74 : _(u"""
@@ -368,14 +368,14 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 76 : _(u"""
- Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments
+ Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
     elrefa  :  %(k2)s ;
     famille :  %(k3)s.
  Faites une demande d'évolution.
 """),
 
 78 : _(u"""
- Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments
+ Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
     elrefa :  %(k2)s.
  Faites une demande d'évolution.
 """),
@@ -386,9 +386,9 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 
 85 : _(u"""
- pb liste de mailles carte : %(k1)s  numero entite : %(i1)d
-  position ds liste : %(i2)d
-  numero de maille  : %(i3)d
+ Problème liste de mailles carte : %(k1)s  numéro entité : %(i1)d
+  position dans liste : %(i2)d
+  numéro de maille  : %(i3)d
 """),
 
 }

@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postrele Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,7 +144,7 @@ cata_msg = {
 """),
 
 28 : _(u"""
- les noeuds du maillage ne sont pas tous dans un meme plan Z = CST
+ les noeuds du maillage ne sont pas tous dans un même plan Z = CST
  changement de repère non traité
 """),
 
@@ -161,7 +161,7 @@ cata_msg = {
 """),
 
 32 : _(u"""
- les noeuds du maillage ne sont pas tous dans un meme plan Z = CST
+ les noeuds du maillage ne sont pas tous dans un même plan Z = CST
  option TRAC_NOR non traitée
  utiliser l'option TRAC_DIR
 """),
@@ -275,55 +275,55 @@ cata_msg = {
 """),
 
 42 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
- les listes arguments des mots clés RESULTANTE et MOMENT doivent etre de meme longueur
- cette longueur doit etre de 2 ou 3
+ occurrence %(i1)d du mot clé facteur ACTION
+ les listes arguments des mots clés RESULTANTE et MOMENT doivent être de même longueur
+ cette longueur doit être de 2 ou 3
 """),
 
 43 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
- la liste arguments du mot clé POINT doit etre de longueur 2 ou 3
+ occurrence %(i1)d du mot clé facteur ACTION
+ la liste arguments du mot clé POINT doit être de longueur 2 ou 3
 """),
 
 44 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  on ne peut accéder au RESULTAT de nom %(k1)s et de type %(k2)s par %(k3)s ou par %(k4)s
 """),
 
 45 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  on ne peut accéder au RESULTAT de nom %(k1)s et de type %(k2)s par %(k3)s
 """),
 
 46 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  le NOM_CHAM %(k1)s n'est pas autorisé pour le RESULTAT %(k2)s de type %(k3)s
  ou le NOM_CHAM est autorisé mais aucun champ effectif n'existe.
 """),
 
 47 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  le ou les champs élémentaires mis en jeu est ou sont donnés aux points de gauss
  ce ou ces champs ne sont pas traités.
 """),
 
 48 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  la composante %(k1)s n'est pas présente au catalogue des grandeurs.
 """),
 
 49 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  le maillage de la courbe %(k1)s est différent du maillage du champ à traiter %(k2)s
 """),
 
 50 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  le groupe de noeuds %(k1)s ne fait pas parti du maillage sous jacent au champ à traiter.
 """),
 
 51 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  le noeud %(k1)s ne fait pas parti du maillage sous jacent au champ à traiter.
 """),
 
@@ -337,7 +337,7 @@ cata_msg = {
 """),
 
 54 : _(u"""
- occurence %(i1)d du mot clé facteur ACTION
+ occurrence %(i1)d du mot clé facteur ACTION
  Impossible de récupérer les composantes du champ.
 """),
 
@@ -389,7 +389,7 @@ cata_msg = {
 
 64 : _(u"""
 On cherche à faire une extraction sur des noeuds qui ne font
-pas partie du maillage, peut-etre créés par PROPA_FISS
+pas partie du maillage, peut-être créés par PROPA_FISS
 """),
 
 65 : _(u"""

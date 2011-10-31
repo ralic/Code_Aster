@@ -1,4 +1,4 @@
-#@ MODIF charges Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF charges Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,12 +35,12 @@ La charge <%(k1)s> n'est pas mécanique.
 
 23 : _(u"""
 La charge <%(k1)s> est de type Dirichlet :
- elle ne peut pas etre suiveuse.
+ elle ne peut pas être suiveuse.
 """),
 
 24 : _(u"""
 La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
- elle ne peut pas etre différentielle.
+ elle ne peut pas être différentielle.
 """),
 
 
@@ -49,7 +49,7 @@ La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
 
 27 : _(u"""
 La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
- elle ne peut pas etre pilotée.
+ elle ne peut pas être pilotée.
 """),
 
 28 : _(u"""
@@ -57,11 +57,11 @@ On ne peut piloter la charge <%(k1)s> car c'est une charge fonction du temps
 """),
 
 34 : _(u"""
-La charge de type EVOL_CHAR <%(k1)s>  ne peut pas etre pilotée.
+La charge de type EVOL_CHAR <%(k1)s>  ne peut pas être pilotée.
 """),
 
 38 : _(u"""
-La charge <%(k1)s> ne peut pas utiliser de fonction multiplicative FONC_MULT
+La charge <%(k1)s> ne peut pas utiliser de fonction multiplicatrice FONC_MULT
  car elle est pilotée.
 """),
 

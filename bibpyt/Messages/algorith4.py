@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,15 +22,15 @@
 cata_msg = {
 
 35 : _(u"""
- rang superieur a dimension vecteur
+ rang supérieur a dimension vecteur
 """),
 
 36 : _(u"""
- <LCDPPA> il faut redecouper
+ <LCDPPA> il faut redécouper
 """),
 
 45 : _(u"""
- la modelisation 1d n'est pas autorisée
+ la modélisation 1d n'est pas autorisée
 """),
 
 48 : _(u"""
@@ -43,7 +43,7 @@ cata_msg = {
 """),
 
 51 : _(u"""
-  SYT et D_SIGM_EPSI doivent être specifiés sous l'operande BETON_ECRO_LINE dans DEFI_MATERIAU pour utiliser la loi ENDO_ISOT_BETON
+  SYT et D_SIGM_EPSI doivent être spécifiés sous l'opérande BETON_ECRO_LINE dans DEFI_MATERIAU pour utiliser la loi ENDO_ISOT_BETON
 """),
 
 52 : _(u"""
@@ -51,7 +51,7 @@ cata_msg = {
 """),
 
 53 : _(u"""
-  SYC doit etre supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
+  SYC doit être supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
   dans DEFI_MATERIAU pour prendre en compte le confinement
 """),
 
@@ -60,7 +60,7 @@ cata_msg = {
 """),
 
 57 : _(u"""
- pb de convergence (dgp neg)
+ Problème de convergence (DG négatif)
 """),
 
 58 : _(u"""
@@ -68,19 +68,19 @@ cata_msg = {
 """),
 
 59 : _(u"""
- erreur: pb de convergence
+ erreur: Problème de convergence
 """),
 
 60 : _(u"""
- pb de convergence 2 (dgp neg)
+ Problème de convergence 2 (DG négatif)
 """),
 
 61 : _(u"""
- erreur: pb de conv 2
+ erreur: Problème de convergence 2
 """),
 
 62 : _(u"""
- loi BETON_REGLEMENT utilisable uniquement en modélisation C_PLAN ou D_PLAN
+ loi BETON_REGLE_PR utilisable uniquement en modélisation C_PLAN ou D_PLAN
 """),
 
 63 : _(u"""
@@ -93,74 +93,74 @@ cata_msg = {
 
 
 72 : _(u"""
-  jacobien du systeme non lineaire à résoudre nul
-  lors de la projection au sommet du cone de traction
-  les parametres matériaux sont sans doute mal définis
+  jacobien du système non linéaire à résoudre nul
+  lors de la projection au sommet du cône de traction
+  les paramètres matériaux sont sans doute mal définis
 """),
 
 73 : _(u"""
-  non convergence à itération maxi  %(k1)s
-  - erreur calculee  %(k2)s  >  %(k3)s
-  mais tres faibles incréments de newton pour la loi BETON_DOUBLE_DP
+  non convergence à itération max  %(k1)s
+  - erreur calculée  %(k2)s  >  %(k3)s
+  mais très faibles incréments de Newton pour la loi BETON_DOUBLE_DP
   - on accepte la convergence.
 """),
 
 74 : _(u"""
-  non convergence à itération maxi  %(k1)s
+  non convergence à itération max  %(k1)s
   - erreur calculée  %(k2)s  >  %(k3)s
   - pour la loi BETON_DOUBLE_DP
   - redécoupage du pas de temps
 """),
 
 75 : _(u"""
- etat converge non conforme
- lors de la projection au sommet du cone de traction
+ état converge non conforme
+ lors de la projection au sommet du cône de traction
 """),
 
 76 : _(u"""
- etat converge non conforme en compression
- lors de la projection au sommet du cone de traction
+ état converge non conforme en compression
+ lors de la projection au sommet du cône de traction
 """),
 
 77 : _(u"""
- jacobien du systeme non linéaire à résoudre nul
- lors de la projection au sommet des cones de compression et traction
- - les parametres matériaux sont sans doute mal définis.
+ jacobien du système non linéaire à résoudre nul
+ lors de la projection au sommet des cônes de compression et traction
+ - les paramètres matériaux sont sans doute mal définis.
 """),
 
 78 : _(u"""
  état convergé non conforme en traction
- lors de la projection au sommet des deux cones
+ lors de la projection au sommet des deux cônes
 """),
 
 79 : _(u"""
  état convergé non conforme en compression
- lors de la projection au sommet des deux cones
+ lors de la projection au sommet des deux cônes
 """),
 
 80 : _(u"""
-  jacobien du systeme non linéaire à résoudre nul
-  lors de la projection au sommet du cone de compression
-  - les parametres matériaux sont sans doute mal définis.
+  jacobien du système non linéaire à résoudre nul
+  lors de la projection au sommet du cône de compression
+  - les paramètres matériaux sont sans doute mal définis.
 """),
 
 81 : _(u"""
  état convergé non conforme
- lors de la projection au sommet du cone de compression
+ lors de la projection au sommet du cône de compression
 """),
 
 82 : _(u"""
  état convergé non conforme en traction
- lors de la projection au sommet du cone de compression
+ lors de la projection au sommet du cône de compression
 """),
 
 83 : _(u"""
-  jacobien du système non linéaire a resoudre nul
-  - les parametres matériaux sont sans doute mal définis.
+  jacobien du système non linéaire a résoudre nul
+  - les paramètres matériaux sont sans doute mal définis.
 """),
 
 84 : _(u"""
- intégration élastoplastique de loi multi-critere : erreur de programmation
+ intégration élastoplastique de loi multi critère : erreur de programmation
 """),
 
 85 : _(u"""
@@ -170,21 +170,21 @@ cata_msg = {
 86 : _(u"""
   état convergé non conforme en traction et en compression
   pour la loi de comportement BETON_DOUBLE_DP
-  pour les deux critères en meme temps.
+  pour les deux critères en même temps.
   il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
 87 : _(u"""
   état converge non conforme en compression
   pour la loi de comportement BETON_DOUBLE_DP
-  pour les deux critères en meme temps.
+  pour les deux critères en même temps.
   il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
 88 : _(u"""
   état convergé non conforme en traction
   pour la loi de comportement BETON_DOUBLE_DP
-  pour les deux critères en meme temps.
+  pour les deux critères en même temps.
   il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
@@ -197,7 +197,7 @@ cata_msg = {
 """),
 
 94 : _(u"""
- il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage propre                                avec sech comme parametre
+ il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage propre                                avec SECH comme paramètre
 """),
 
 98 : _(u"""

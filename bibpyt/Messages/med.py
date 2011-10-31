@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF med Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,13 +24,13 @@ cata_msg = {
 1 : _(u"""
   -> Absence de localisation de points de Gauss dans le fichier MED
      pour l'élément de référence %(k1)s.
-     On suppose que l'ordre des points de Gauss est celui d'Aster.
+     On suppose que l'ordre des points de Gauss est celui de Code_Aster.
   -> Risque & Conseil :
      Risque de résultats faux.
 """),
 
 2 : _(u"""
-  -> Le nombre de points de Gauss est différent entre le fichier med et Aster:
+  -> Le nombre de points de Gauss est différent entre le fichier MED et Aster:
       - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
       - nombre de points de Gauss défini dans Aster           : %(i1)d
 
@@ -46,7 +46,7 @@ cata_msg = {
 """),
 
 3 : _(u"""
-  -> Les point de Gauss Med/Aster ne correspondent pas géométriquement.
+  -> Les point de Gauss MED/Aster ne correspondent pas géométriquement.
   -> Risque & Conseil:
      Risque de résultats faux à cause cette incompatibilité.
 """),
@@ -62,7 +62,7 @@ cata_msg = {
 
 6 : _(u"""
   -> Une ou plusieurs permutations ont été effectuées sur l'ordre des points
-     de Gauss pour que la localisation Med corresponde à celle d'Aster.
+     de Gauss pour que la localisation MED corresponde à celle de Code_Aster.
 """),
 
 7 : _(u"""
@@ -77,7 +77,7 @@ cata_msg = {
        que la fonction MED en annonce %(i2)d.
   -> Risque & Conseil:
        Impossible de lire ce fichier.
-       On peut utiliser mdump (utilitaire med) pour voir si le problème
+       On peut utiliser mdump (utilitaire MED) pour voir si le problème
        vient du fichier MED ou de la lecture dans Code_Aster.
 """),
 
@@ -126,17 +126,17 @@ cata_msg = {
 """),
 
 17 : _(u"""
-  -> Aucune famille n'est présente dans ce fichier med.
+  -> Aucune famille n'est présente dans ce fichier MED.
   -> Risque & Conseil :
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
 """),
 
 18 : _(u"""
-  -> Arret en raison des conflits sur les noms de groupe.
+  -> Arrêt en raison des conflits sur les noms de groupe.
 """),
 
 19 : _(u"""
-  -> Les mailles  %(k1)s ne sont pas nommées dans le fichier med.
+  -> Les mailles  %(k1)s ne sont pas nommées dans le fichier MED.
 """),
 
 20 : _(u"""
@@ -149,8 +149,8 @@ cata_msg = {
 
 22 : _(u"""
   Le nom de groupe numéro  %(i1)d  est en double. %(k1)s
-  - premier nom med  :  %(k2)s
-  - second nom med   :  %(k3)s
+  - premier nom MED  :  %(k2)s
+  - second nom MED   :  %(k3)s
   - nom aster retenu :  %(k4)s
 """),
 
@@ -159,27 +159,27 @@ cata_msg = {
 """),
 
 24 : _(u"""
-  -> Le fichier n'a pas été construit avec la meme version de med.
+  -> Le fichier n'a pas été construit avec la même version de MED.
   -> Risque & Conseil :
      La lecture du fichier peut échouer !
 
 """),
 
 25 : _(u"""
-   Version de la bibliothèque med utilisee par Code_Aster:  %(i1)d %(i2)d %(i3)d
+   Version de la bibliothèque MED utilisée par Code_Aster:  %(i1)d %(i2)d %(i3)d
 """),
 
 26 : _(u"""
-   Version de la bibliothèque med qui a créé le fichier  : < 2.1.5
+   Version de la bibliothèque MED qui a créé le fichier  : < 2.1.5
 """),
 
 27 : _(u"""
-   Version de la bibliothèque med pour créer le fichier  :  %(i1)d %(i2)d %(i3)d
+   Version de la bibliothèque MED pour créer le fichier  :  %(i1)d %(i2)d %(i3)d
 """),
 
 28 : _(u"""
 
-   Un utilitaire vous permet peut-etre de convertir votre fichier (medimport)
+   Un utilitaire vous permet peut-être de convertir votre fichier (medimport)
 """),
 
 29 : _(u"""
@@ -187,7 +187,7 @@ cata_msg = {
 """),
 
 30: _(u"""
-  -> Votre modèle semble etre composé de plusieurs modélisations, les composantes
+  -> Votre modèle semble être composé de plusieurs modélisations, les composantes
      qui n'existent pas pour une partie du modèle ont été mises à zéro.
 """),
 
@@ -200,12 +200,12 @@ cata_msg = {
   -> Risque & Conseil :
      On ne peut pas imprimer un champ dont le nombre de composantes varie en
      fonction du temps. Plusieurs possibilités s'offrent à vous:
-     - si vous souhaitez disposer d'un champ disposant des memes composantes
+     - si vous souhaitez disposer d'un champ disposant des mêmes composantes
      à chaque instant, il faut renseigner derrière le mot-clé NOM_CMP le nom
      des composantes commun aux différents instants.
      - si vous souhaitez imprimer un champ avec l'ensemble des composantes
      Aster qu'il contient, il suffit de faire plusieurs IMPR_RESU et de
-     renseigner pour chaque impression une liste d'instants adoc.
+     renseigner pour chaque impression une liste d'instants ad hoc.
 
      Pour la visualisation dans Salomé (Scalar Map par exemple),
      sélectionner la composante dans Scalar Range/Scalar Mode.
@@ -246,7 +246,7 @@ cata_msg = {
 """),
 
 40 : _(u"""
-  -> Ouverture du fichier med en mode  %(k1)s  %(k2)s
+  -> Ouverture du fichier MED en mode  %(k1)s  %(k2)s
 """),
 
 41 : _(u"""
@@ -282,7 +282,7 @@ cata_msg = {
 """),
 
 49 : _(u"""
-  -> Veritable écriture des tableaux de valeurs
+  -> Véritable écriture des tableaux de valeurs
 """),
 
 50 : _(u"""
@@ -298,18 +298,18 @@ cata_msg = {
 """),
 
 53 : _(u"""
-  ->  La version de la lib med utilisée par Code-Aster est plus récente que
-      celle qui a produit votre fichier med.
+  ->  La version de la lib MED utilisée par Code_Aster est plus récente que
+      celle qui a produit votre fichier MED.
   ->  Conséquence:  On considère les champs aux noeuds par élément
       comme des pseudo champs aux points de Gauss.
       (On utilise pour la lecture du champ %(k1)s
-       contenu dans votre fichier med, le type d'entité MED_MAILLE au lieu
+       contenu dans votre fichier MED, le type d'entité MED_MAILLE au lieu
        de MED_NOEUD_MAILLE).
 """),
 
 54 : _(u"""
   -> Le modèle fourni à LIRE_RESU n'est pas cohérent avec le type de structure
-     de données résultat que vous souaitez produire.
+     de données résultat que vous souhaitez produire.
 """),
 
 
@@ -325,7 +325,7 @@ cata_msg = {
 """),
 
 57 : _(u"""
-  -> Le champ  %(k1)s n'existe pas dans le fichier med.
+  -> Le champ  %(k1)s n'existe pas dans le fichier MED.
   -> Conseils :
      Vérifier la présence du champ demandé dans le fichier.
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
@@ -343,12 +343,12 @@ cata_msg = {
 """),
 59 : _(u"""
      Les éléments du modèle fourni ont pour support géométrique des
-     mailles ne figurant pas dans le fichier med.
-     Par exemple, il y %(i1)d mailles de types %(k1)s dans le fichier med,
+     mailles ne figurant pas dans le fichier MED.
+     Par exemple, il y %(i1)d mailles de types %(k1)s dans le fichier MED,
      alors que le modèle en contient %(i2)d.
   -> Risque & Conseil :
      Veuillez fournir un modèle dont le maillage correspond à celui présent
-     dans le fichier med.
+     dans le fichier MED.
 """),
 
 60 : _(u"""
@@ -356,10 +356,10 @@ cata_msg = {
 """),
 
 61 : _(u"""
-     Le maillage contenu dans le fichier med contient plus de mailles
+     Le maillage contenu dans le fichier MED contient plus de mailles
      que celui associé au maillage fourni par le modèle.
      Par exemple, on dénombre %(i1)d mailles de types %(k1)s dans le maillage
-     med, alors que le modèle n'en contient que %(i2)d !
+     MED, alors que le modèle n'en contient que %(i2)d !
   -> Risque & Conseil :
      Veuillez vérifier que le modèle fourni ne résulte pas d'une restriction,
      ou que l'un des maillages est quadratique et l'autre linéaire.
@@ -370,7 +370,7 @@ cata_msg = {
 """),
 
 63 : _(u"""
-  -> Le mot clé "INFO_MAILLAGE" est réservé au format med.
+  -> Le mot clé "INFO_MAILLAGE" est réservé au format MED.
 """),
 
 65 : _(u"""
@@ -382,7 +382,7 @@ cata_msg = {
 """),
 
 67 : _(u"""
-  -> Le maillage %(k2)s est déjà présent dans le fichier med %(k1)s.
+  -> Le maillage %(k2)s est déjà présent dans le fichier MED %(k1)s.
 """),
 
 68 : _(u"""
@@ -411,7 +411,7 @@ cata_msg = {
 """),
 
 74 : _(u"""
-  -> Ecriture des localisations des points de gauss.
+  -> Écriture des localisations des points de gauss.
 """),
 
 75 : _(u"""
@@ -456,7 +456,7 @@ cata_msg = {
 
 83 : _(u"""
   -  valeurs lues dans le fichier        : %(i1)d
-  -  valeurs non affectees dans le champ : %(i2)d
+  -  valeurs non affectées dans le champ : %(i2)d
 """),
 
 84 : _(u"""
@@ -477,18 +477,18 @@ cata_msg = {
 
 87 : _(u"""
   Le numéro d'ordre %(i1)d que vous avez renseigné ne figure pas
-  dans la liste des numéros d'ordre du résultat med.
+  dans la liste des numéros d'ordre du résultat MED.
   Conséquence: le champ correspondant ne figurera pas dans la
   SD Résultat %(k1)s
 """),
 
 
 88 : _(u"""
-  -> Fichier med :  %(k1)s, nombre de maillages présents : %(i1)d
+  -> Fichier MED :  %(k1)s, nombre de maillages présents : %(i1)d
 """),
 
 89 : _(u"""
-  -> Ecriture impossible pour  %(k1)s  au format MED.
+  -> Écriture impossible pour  %(k1)s  au format MED.
 """),
 
 90 : _(u"""
@@ -501,7 +501,7 @@ cata_msg = {
 """),
 
 92 : _(u"""
-  -> Le type de champ  %(k1)s  est inconnu pour med.
+  -> Le type de champ  %(k1)s  est inconnu pour MED.
   -> Risque & Conseil:
      Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
      (LIRE_RESU) ou NOM_MED (LIRE_CHAMP).
@@ -521,27 +521,27 @@ cata_msg = {
 """),
 
 95 : _(u"""
-  -> Le champ med %(k1)s est introuvable.
+  -> Le champ MED %(k1)s est introuvable.
   -> Risque & Conseil:
      Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
-     ainsi que le fichier med fourni à l'opérateur.
+     ainsi que le fichier MED fourni à l'opérateur.
 """),
 
 96 : _(u"""
   -> NOM_MED absent !
   -> Risque & Conseil:
-     Veuillez renseigner le mot-cle NOM_MED de l'opérateur LIRE_CHAMP.
+     Veuillez renseigner le mot-clé NOM_MED de l'opérateur LIRE_CHAMP.
 """),
 
 97 : _(u"""
-  -> Fichier med :  %(k1)s, Champ :  %(k2)s, Instant voulu :  %(r1)f
+  -> Fichier MED :  %(k1)s, Champ :  %(k2)s, Instant voulu :  %(r1)f
      - typent :  %(i1)d
      - typgeo :  %(i2)d
 
 """),
 
 98 : _(u"""
-  -> Fichier med :  %(k1)s champ :  %(k2)s
+  -> Fichier MED :  %(k1)s champ :  %(k2)s
 """),
 
 }

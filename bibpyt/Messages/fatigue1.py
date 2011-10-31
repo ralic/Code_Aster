@@ -1,4 +1,4 @@
-#@ MODIF fatigue1 Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fatigue1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg={
 1: _(u"""
  Aucun élément du modèle ne sait calculer l'option
- de fatigue multiaxiale, ('PFACY_R').
+ de fatigue multi-axiale, ('PFACY_R').
  Il se peut que la modélisation affectée au groupe de mailles
  sur lequel vous faites un calcul de fatigue ne soit pas "3D".
 
@@ -32,7 +32,7 @@ cata_msg={
 
 2: _(u"""
  La modélisation affectée au groupe de mailles sur lequel vous
- faites un calcul de fatigue n'est problament pas "3D".
+ faites un calcul de fatigue n'est probablement pas "3D".
  La composante %(i1)d du tenseur des contraintes n'existe pas.
 
  Le critère de fatigue que vous utilisez n'est utilisable qu'en 3D.
@@ -41,7 +41,7 @@ cata_msg={
 
 3: _(u"""
  La modélisation affectée au groupe de mailles sur lequel vous
- faites un calcul de fatigue n'est problament pas "3D".
+ faites un calcul de fatigue n'est probablement pas "3D".
  La composante %(i1)d du tenseur des déformations n'existe pas.
 
  Le critère de fatigue que vous utilisez n'est utilisable qu'en 3D.
@@ -49,7 +49,7 @@ cata_msg={
 """),
 
 4: _(u"""
- le coefficient de Goodman n'est pas calculable
+ le coefficient de GOODMAN n'est pas calculable
 """),
 
 5: _(u"""
@@ -62,7 +62,7 @@ cata_msg={
 """),
 
 7: _(u"""
- pour calculer le dommage de Lemaitre_Sermage,
+ pour calculer le dommage de Lemaitre-Sermage,
  il faut définir le comportement ELAS_FO dans DEFI_MATERIAU
 """),
 
@@ -135,17 +135,17 @@ cata_msg={
 """),
 
 25: _(u"""
- la méthode 'TAHERI_MANSON' ne peut pas etre utilisée avec l'option %(k1)s
+ la méthode 'TAHERI_MANSON' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
 26: _(u"""
  le nom de la fonction  nappe DSIGM(DEPSI,DEPSIMAX)
- doit être présent sous le mot cle 'TAHERI_NAPPE'
+ doit être présent sous le mot clé 'TAHERI_NAPPE'
 """),
 
 27: _(u"""
  le nom de la fonction DSIGM(DEPSI)
- doit être présent sous le mot cle 'TAHERI_FONC'
+ doit être présent sous le mot clé 'TAHERI_FONC'
 """),
 
 28: _(u"""
@@ -153,7 +153,7 @@ cata_msg={
 """),
 
 29: _(u"""
- la methode 'WOHLER' ne peut pas être utilisée avec l'option %(k1)s
+ la méthode 'WOHLER' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
 30: _(u"""
@@ -161,7 +161,7 @@ cata_msg={
 """),
 
 31: _(u"""
- la methode 'MANSON_COFFIN' ne peut pas être utilisée avec l'option %(k1)s
+ la méthode 'MANSON_COFFIN' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
 32: _(u"""
@@ -194,7 +194,7 @@ cata_msg={
 
 39: _(u"""
 Le chargement à compter est un chargement constant. On considère tous les chargements comme un cycle
-avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0. 
+avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 """),
 
 63: _(u"""
@@ -312,7 +312,7 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 """),
 
 81 : _(u"""
- Calcul du dommage en %(k1)s (composante grandeur equivalente %(k3)s)
+ Calcul du dommage en %(k1)s (composante grandeur équivalente %(k3)s)
  Points de calcul du dommage : %(k2)s
  Nombre de points de calcul : %(i1)d
  Nombre de modes considérés : %(i2)d
@@ -380,28 +380,33 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 """),
 
 91: _(u"""
- Dans CALC_FATIGUE  pour le critère d'amorçage fournis par la formule, le calcul de la grandeur %(k1)s
- n'est pas disponible. Merci de forunir les noms des grandeurs disponibles ou contacter le développeur.
+ Dans CALC_FATIGUE  pour le critère d'amorçage fournis par la formule, le calcul
+ de la grandeur %(k1)s n'est pas disponible. Merci de fournir les noms des grandeurs
+ disponibles ou contacter le développeur.
 """),
 
 92: _(u"""
- Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, pour déterminer le plan de dommage maximal,
- il n'est pas possible de projeter simultanément la contrainte et la déformation. Les grandeurs sont incompatibles avec le critère requis.
+ Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, pour déterminer
+ le plan de dommage maximal, il n'est pas possible de projeter simultanément la contrainte
+ et la déformation. Les grandeurs sont incompatibles avec le critère requis.
 """),
 
 93: _(u"""
- Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, le mot-cle FORMULE_VIE est fournis par une formule
- le seule paramètre accepté est NBRUP, c-à-d, N_f, car le critère formule est pour GRDEQ = f(N_f). Changez le nom et vérifiez bien que la fonction est de type: GRDEQ = f(N_f).
+ Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, le mot-clé
+ FORMULE_VIE est fournis par une formule le seul paramètre accepté est NBRUP,
+ c'est-à-dire, N_f, car le critère formule est pour GRDEQ = f(N_f).
+ Changez le nom et vérifiez bien que la fonction est de type: GRDEQ = f(N_f).
 """),
 
 94: _(u"""
- Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-cle FORMULE_VIE est fournis
- par la formule, la grandeur équivalente pour l'instant est plus grande que f(N_f =1 ). Vérifiez la formule
- de la courbe FORMULE_VIE.
+ Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-clé
+ FORMULE_VIE est fournis par la formule, la grandeur équivalente pour l'instant est
+ plus grande que f(N_f =1 ). Vérifiez la formule de la courbe FORMULE_VIE.
 """),
 
 96: _(u"""
-Attention, le cycle de chargement appliqué entraine une courbe hysteresis non-ferme. Verifiez les chargements appliqués.
+Attention, le cycle de chargement appliqué entraîne une courbe hystérésis non fermée.
+Vérifiez les chargements appliqués.
 """),
 
 }
