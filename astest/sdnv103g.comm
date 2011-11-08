@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103g.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,6 +143,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CONTACT = CHCONT,
                    COMP_INCR=(_F(RELATION='VMIS_JOHN_COOK',
                                  DEFORMATION='GDEF_LOG',
+                                 ITER_INTE_MAXI=30,
                                  TOUT='OUI',),
                               _F(RELATION='ELAS',
                                  DEFORMATION='PETIT',

@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost6 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,24 +24,24 @@ cata_msg = {
 2 : _(u"""
  -> le nombre de mailles de votre maillage (%(i1)d) est supérieur
     à la limite de 9 999 999.
- -> Risque & Conseil : veuillez vérifier le script gibi qui vous a permis
-    de générer le fichier mgib.
+ -> Risque & Conseil : veuillez vérifier le script GIBI qui vous a permis
+    de générer le fichier MGIB.
 """),
 
 
 3 : _(u"""
- le volume differe du volume use mais le nombre d'iteration
-  est superieur a  %(i1)d
+ le volume diffère du volume use mais le nombre d'itération
+  est supérieur a  %(i1)d
       volume use:  %(r1)f
   volume calcule:  %(r2)f
 """),
 
 4 : _(u"""
- verifier les paramètres d'usure pour le secteur  %(i1)d
+ vérifiez les paramètres d'usure pour le secteur  %(i1)d
 """),
 
 5 : _(u"""
- verifier les paramètres d'usure pour le secteur  %(i1)d
+ vérifiez les paramètres d'usure pour le secteur  %(i1)d
 """),
 
 6 : _(u"""
@@ -59,7 +59,7 @@ cata_msg = {
 """),
 
 9 : _(u"""
-   nombre de cycles detectes =  %(i1)d
+   nombre de cycles détectés =  %(i1)d
 """),
 
 10 : _(u"""
@@ -67,20 +67,20 @@ cata_msg = {
 """),
 
 11 : _(u"""
-   dommage en ce point/cmp  =  %(r1)f
+   dommage en ce point/composante  =  %(r1)f
 """),
 
 27 : _(u"""
- paramètres de calcul du dommagenombre de numéros d'ordre  =  %(i1)d
+ paramètres de calcul du dommage nombre de numéros d'ordre  =  %(i1)d
  nombre de points de calcul =  %(i2)d
 """),
 
 28 : _(u"""
  calcul     du      dommage en %(k1)s points  de   calcul  du    dommage %(k2)s
- composante(s) grandeur equivalente %(k3)s
- methode  d'extraction  des    pics %(k4)s
- methode  de  comptage  des  cycles %(k5)s
- methode  de  calcul    du  dommage %(k6)s
+ composante(s) grandeur équivalente %(k3)s
+ méthode  d'extraction  des    pics %(k4)s
+ méthode  de  comptage  des  cycles %(k5)s
+ méthode  de  calcul    du  dommage %(k6)s
 
 """),
 

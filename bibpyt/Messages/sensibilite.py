@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sensibilite Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ cata_msg = {
 """),
 
 4 : _(u"""
- Le champ de theta sensibilité est inexistant dans la sd %(k1)s
+ Le champ de thêta sensibilité est inexistant dans la sd %(k1)s
 """),
 
 5 : _(u"""
@@ -44,7 +44,7 @@ cata_msg = {
 """),
 
 6 : _(u"""
- Le paramètre de sensibilité doit être un champ theta.
+ Le paramètre de sensibilité doit être un champ thêta.
 """),
 
 7 : _(u"""
@@ -66,7 +66,7 @@ cata_msg = {
 """),
 
 11 : _(u"""
- Le calcul de sensibilité n'est pas encore disponible pour les chargements de type epsi_init
+ Le calcul de sensibilité n'est pas encore disponible pour les chargements de type EPSI_INIT
 """),
 
 12 : _(u"""
@@ -75,7 +75,7 @@ cata_msg = {
 """),
 
 13 : _(u"""
- On ne peut pas dériver avec une charge complexe en entrée de dyna_line_harm.
+ On ne peut pas dériver avec une charge complexe en entrée de DYNA_LINE_HARM.
 """),
 
 15 : _(u"""
@@ -107,11 +107,11 @@ cata_msg = {
 """),
 
 38 : _(u"""
- pb determination sensibilité de rayonnement
+ Problème détermination sensibilité de rayonnement
 """),
 
 39 : _(u"""
- pb determination sensibilité materiau ther_nl
+ Problème détermination sensibilité matériau THER_NL
 """),
 
 41 : _(u"""
@@ -131,7 +131,7 @@ cata_msg = {
 """),
 
 53 : _(u"""
- En thermoélasticité, le calcul des dérivées de g est pour le moment incorrect.
+ En thermo élasticité, le calcul des dérivées de g est pour le moment incorrect.
 """),
 
 54 : _(u"""
@@ -140,7 +140,7 @@ cata_msg = {
 """),
 
 55 : _(u"""
- Le calcul de derivée n'a pas été étendu à la plasticité.
+ Le calcul de dérivée n'a pas été étendu à la plasticité.
 """),
 
 56 : _(u"""
@@ -154,7 +154,7 @@ Conseil :
 """),
 
 57 : _(u"""
- Le calcul de derivée n'a pas été prévu pour les variables de commande de séchage ou d'hydratation.
+ Le calcul de dérivée n'a pas été prévu pour les variables de commande de séchage ou d'hydratation.
 """),
 
 71 : _(u"""
@@ -170,12 +170,12 @@ Conseil :
 """),
 
 81 : _(u"""
- la structure nosimp est introuvable dans la memorisation inpsco
+ la structure nosimp est introuvable dans la mémorisation inpsco
 """),
 
 91 : _(u"""
  Le pas de temps adaptatif n'est pas approprié pour le calcul de sensibilité
- par rapport au paramètre materiau
+ par rapport au paramètre matériau
 """),
 
 92 : _(u"""
@@ -183,7 +183,7 @@ Conseil :
 """),
 
 93 : _(u"""
- On ne peut pas dériver avec un vect_asse en entree de dyna_line_harm.
+ On ne peut pas dériver avec un VECT_ASSE en entrée de DYNA_LINE_HARM.
 """),
 
 95 : _(u"""
@@ -191,7 +191,7 @@ Conseil :
 """),
 
 96 : _(u"""
- Les sous-types de sensibilité pour l'influence de %(k1)s sont %(k2)s et %(k3)s
+ Les sous types de sensibilité pour l'influence de %(k1)s sont %(k2)s et %(k3)s
  C'est incohérent.
 """),
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,7 +97,7 @@ LIAI=AFFE_CHAR_MECA(MODELE=MOD,
 CONT = DEFI_CONTACT(MODELE        = MOD,
                     FORMULATION   = 'DISCRETE',
                     ITER_GCP_MAXI = 500,
-                    RESI_ABSO     = 1.E-3,
+                    RESI_ABSO     = 1.E-9,
                     ZONE=(_F(APPARIEMENT='MAIT_ESCL',
                              ALGO_CONT='GCP',
                              GROUP_MA_MAIT='LAB1',
@@ -191,10 +191,10 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   GROUP_NO='PA4',
-                  VALE=-0.84097549432745,
+                  VALE=-0.84125870359110,
                   CRITERE='RELATIF',
                   REFERENCE='NON_REGRESSION',
-                  VERSION='11.0.18',),);
+                  VERSION='11.0.31',),);
 #
 # --------------------------------------------------------------------
 #                CALCUL DE LA REACTION A L'ENCASTREMENT
@@ -224,10 +224,10 @@ TEST_TABLE(TABLE=REACENC,
 
 TEST_TABLE(TABLE=REACENC,
            NOM_PARA='DY',
-           VALE=17490.329212551,
+           VALE=17496.594126799,
            CRITERE='RELATIF',
            REFERENCE='NON_REGRESSION',
-           VERSION='11.0.18',);
+           VERSION='11.0.31',);
 
 
 

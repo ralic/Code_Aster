@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,18 +31,17 @@ ENTETE__ ELEMENT__ MEPLSE3          MAILLE__ SEG3
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ MEPLSE3_X          MAILLE__ SEG3
    ELREFE__  SE2        GAUSS__  RIGI=FPG2   FPG_LISTE__ MATER=(RIGI)
-   ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN2     =     3
    ENS_NOEUD__  EN1     =     1  2
 ENTETE__ ELEMENT__ MEAXSE2          MAILLE__ SEG2
    ELREFE__  SE2        GAUSS__  RIGI=FPG2   FPG_LISTE__ MATER=(RIGI)
-   ATTRIBUT__  BORD=OUI
+   ATTRIBUT__  BORD=OUI AXIS = OUI
    ENS_NOEUD__  EN1     =     1  2
    OPTION__   CALC_DG                 -1
    OPTION__   CALC_DG_F               -1
 ENTETE__ ELEMENT__ MEAXSE3          MAILLE__ SEG3
    ELREFE__  SE3        GAUSS__  RIGI=FPG4   FPG_LISTE__ MATER=(RIGI)
-   ATTRIBUT__  BORD=OUI
+   ATTRIBUT__  BORD=OUI AXIS = OUI
    ENS_NOEUD__  EN1     =     1  2  3
 
 
@@ -88,6 +87,7 @@ VECTEUR__
 
 MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
     CALC_DG              282  IN__   DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  NFORCER  PFR1D2D  NGEOMER  PGEOMER
@@ -152,9 +152,9 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     RIGI_MECA_PRSU_F     574  IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUNS  PMATUNS
     RIGI_MECA_PRSU_R     573  IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUNS  PMATUNS
     TOU_INI_ELNO          99  IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     TOU_INI_ELGA          99  IN__   NGEOMER  PGEOMER

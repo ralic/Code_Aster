@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,19 +22,19 @@
 cata_msg = {
 
 1 : _(u"""
-  erreur dans le calcul de PRES_f
+  erreur dans le calcul de PRES_F
 """),
 
 2 : _(u"""
- pour l'option INDIC_ENER, les seules relations admises sont "VMIS_ISOT_LINE" et "VMIS_ISOT_trac" .
+ pour l'option INDIC_ENER, les seules relations admises sont "VMIS_ISOT_LINE" et "VMIS_ISOT_TRAC" .
 """),
 
 3 : _(u"""
- pour l'option INDIC_SEUIL, les seules relations admises sont "VMIS_ISOT_LINE", "VMIS_ISOT_trac"  et "VMIS_CINE_LINE" .
+ pour l'option INDIC_SEUIL, les seules relations admises sont "VMIS_ISOT_LINE", "VMIS_ISOT_TRAC"  et "VMIS_CINE_LINE" .
 """),
 
 15 : _(u"""
-  déformation :  %(k1)s non implantée sur les éléments "pou_d_TGM" : utiliser PETIT ou GROT_GDEP
+  déformation :  %(k1)s non implantée sur les éléments "POU_D_TGM" : utiliser PETIT ou GROT_GDEP
 """),
 
 16 : _(u"""
@@ -46,7 +46,7 @@ cata_msg = {
 """),
 
 32 : _(u"""
- vous utilisez le mot clé liaison_ELEM avec l'option coq_pou: l'épaisseur des éléments de bord de coque n'a pas été affectée.
+ vous utilisez le mot clé LIAISON_ELEM avec l'option COQ_POU: l'épaisseur des éléments de bord de coque n'a pas été affectée.
 """),
 
 33 : _(u"""
@@ -118,11 +118,11 @@ cata_msg = {
 """),
 
 53 : _(u"""
- ep/r > 0.2 modi_metrique pas adapté
+ ep/r > 0.2 MODI_METRIQUE pas adapté
 """),
 
 54 : _(u"""
- ep/r > 0.2 modi_metrique=non pas adapté
+ ep/r > 0.2 MODI_METRIQUE=non pas adapté
 """),
 
 56 : _(u"""

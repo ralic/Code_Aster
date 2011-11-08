@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture1 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ L'option de lissage 'LAGRANGE_REGU' n'a pas été développée lorsque
 le nombre de noeuds d'un fond de fissure fermé est pair.
 -> Risque et Conseil :
 Veuillez utiliser une autre option de lissage
-(par exemple, le lissage 'LAGRANGE' pour le champ theta)
+(par exemple, le lissage 'LAGRANGE' pour le champ thêta)
 """),
 
 
@@ -37,7 +37,7 @@ un seul fond de fissure. Or la table %(k2)s contient %(i1)d fonds de fissure
 
 6: _(u"""
 Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement être supérieur au rayon
-R_INF (resp. R_INF_FO).
+R_INF (respectivement R_INF_FO).
 -> Risque et Conseil :
 Veuillez revoir votre mise en données.
 """),
@@ -66,7 +66,7 @@ Veuillez revoir le contenu du mot-clé GROUP_NO ou NOEUD ou FOND_FISS.
 """),
 
 11: _(u"""
-Il faut un mot clé parmis FOND_FISS ou FISSURE pour l'option %(k1)s
+Il faut un mot clé parmi FOND_FISS ou FISSURE pour l'option %(k1)s
 Veuillez le renseigner.
 """),
 
@@ -93,8 +93,8 @@ Le champ %(k1)s n'a pas été trouvé.
 """),
 
 17: _(u"""
-L'association: lissage du champ THETA par les polynomes de Lagrange
-               lissage de G autre que par des polynomes de Lagrange
+L'association: lissage du champ THETA par les polynômes de Lagrange
+               lissage de G autre que par des polynômes de Lagrange
 n'est pas possible.
 -> Risque et Conseil :
 Veuillez consulter la documentation U4.82.03 pour déterminer une
@@ -104,7 +104,7 @@ association satisfaisante.
 
 20: _(u"""
 Une déformation initiale est présente dans la charge. Ceci est incompatible
-avec la contrainte initiale sigma_init.
+avec la contrainte initiale sigma_INIT.
 -> Risque et Conseil :
 On ne peut pas faire de calcul en introduisant simultanément une contrainte
 initiale ET une déformation initiale. Veuillez revoir les données.
@@ -123,7 +123,7 @@ Le calcul de DG n'a pas été étendu à la plasticité !
 CALC_G - option CALC_G : détection de chargements non nuls sur l'axe,
 le calcul est impossible.
 -> Risque et Conseil :
-En 2D-axi, le calcul de G n'est pas possible pour les éléments de l'axe de
+En 2D axisymétrique, le calcul de G n'est pas possible pour les éléments de l'axe de
 symétrie si un chargement est imposé sur ceux-ci.
 Modifier les couronnes R_INF et R_SUP pour qu'elles soient toutes les deux
 plus petites que le rayon du fond de fissure.
@@ -163,8 +163,8 @@ Le champ de nom symbolique %(k1)s existe déjà dans la SD RESULTAT  %(k1)s.
 30: _(u"""
 Il faut donner 3 composantes de la direction.
 -> Risque et Conseil :
-Si vous utilisez CALC_THETA/THETA_2D ou CALG_G/THETA en 2d, veuillez fournir
-une valeur nulle pour la 3eme composante.
+Si vous utilisez CALC_THETA/THETA_2D ou CALC_G/THETA en 2d, veuillez fournir
+une valeur nulle pour la 3ème composante.
 """),
 
 31: _(u"""
@@ -185,7 +185,7 @@ Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
 -> Risque et Conseil :
 La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
-(level set) qui définissent la fissure. Vérifier les données.
+(level-set) qui définissent la fissure. Vérifier les données.
 """),
 
 34: _(u"""
@@ -194,7 +194,7 @@ Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
 -> Risque et Conseil :
 La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
-(level set) qui définissent la fissure. Vérifier les données.
+(level-set) qui définissent la fissure. Vérifier les données.
 """),
 
 35: _(u"""
@@ -346,7 +346,7 @@ Conseil : utiliser le critère par défaut.
 
 61:_(u"""
 Impossible de réaliser le comptage sur les quantités demandées car
-le nombre de cycles pour chaqune d'elles est différent.
+le nombre de cycles pour chacune d'elles est différent.
 Conseil : limiter le comptage des cycles à une seule quantité (K_EQ par exemple).
 """),
 
@@ -360,8 +360,8 @@ Pour l'opération %(k1)s, la table ne doit pas être réentrante (reuse interdit).
 """),
 
 64:_(u"""
-Pour le comptage %(k1)s, la table doit comporter uniquement 1 instant/nume_ordre (ou aucun).
-Or la table %(k2)s contient %(i1)d instants/nume_ordre.
+Pour le comptage %(k1)s, la table doit comporter uniquement 1 instant/NUME_ORDRE (ou aucun).
+Or la table %(k2)s contient %(i1)d instants/NUME_ORDRE.
 Conseil : Vérifier la table en entrée ou utiliser un autre type de comptage des cycles.
 """),
 

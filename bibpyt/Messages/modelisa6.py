@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa6 Messages  DATE 07/11/2011   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,20 +70,23 @@ cata_msg = {
 """),
 
 13 : _(u"""
- les %(i1)d noeuds imprimés ci-dessus n'appartiennent pas au modèle (c'est à dire qu'ils ne portent aucun degré de liberté) et pourtant ils ont ete affectés dans le mot-clé facteur : %(k1)s
+ les %(i1)d noeuds imprimés ci-dessus n'appartiennent pas au modèle (c'est à dire qu'ils ne portent aucun degré de liberté) et pourtant ils ont été affectés dans le mot-clé facteur : %(k1)s
 """),
 
+14 : _(u"""
+Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène en dimension : 3D, 2D ou AXIS.
+"""),
 
 17 : _(u"""
- la maille  %(k1)s  du group_ma  %(k2)s donne apres le mot cle  %(k3)s n'a pas un type géométrique autorisé
+ la maille  %(k1)s  du GROUP_MA  %(k2)s donné apres le mot-clé  %(k3)s n'a pas un type géométrique autorisé
 """),
 
 18 : _(u"""
- la maille  %(k1)s donné après le mot clé  %(k2)s n'a pas un type géométrique autorisé
+ la maille  %(k1)s donnée après le mot-clé  %(k2)s n'a pas un type géométrique autorisé
 """),
 
 19 : _(u"""
-  mot cle non admis : %(k1)s  les mots-clés admissibles sont :  %(k2)s  ou  %(k3)s  ou  %(k4)s  ou  %(k5)s  ou  %(k6)s  ou  %(k7)s  ou  %(k8)s ou  %(k9)s
+  Le mot clé est non admis : %(k1)s  les mots-clés admissibles sont :  %(k2)s  ou  %(k3)s  ou  %(k4)s  ou  %(k5)s  ou  %(k6)s  ou  %(k7)s  ou  %(k8)s ou  %(k9)s
 """),
 
 20 : _(u"""
@@ -91,11 +94,11 @@ cata_msg = {
 """),
 
 21 : _(u"""
- le nombre total de noeuds est /= de la somme des noeuds sommets, arêtes et intérieurs
+ le nombre total de noeuds est différent de la somme des noeuds sommets, arêtes et intérieurs
 """),
 
 22 : _(u"""
- les 2 listes %(k1)s  et  %(k2)s  ne sont pas de même longueur
+ les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur
 """),
 
 26 : _(u"""
@@ -103,7 +106,7 @@ cata_msg = {
 """),
 
 27 : _(u"""
- dans le maillage " %(k1)s " la maille " %(k2)s " est de type " %(k3)s " (ni TRIA3 ni QUAD4)
+ Dans le maillage " %(k1)s " la maille " %(k2)s " est de type " %(k3)s " (ni TRIA3 ni QUAD4)
 """),
 
 28 : _(u"""
@@ -129,7 +132,7 @@ Solution : Il faut dédoubler le noeud.
  """),
 
 32 : _(u"""
- impossibilité, le noeud  %(k1)s ne porte le ddl de rotation %(k2)s
+ impossibilité, le noeud  %(k1)s ne porte le degré de liberté de rotation %(k2)s
 """),
 
 33 : _(u"""
@@ -161,11 +164,11 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 40 : _(u"""
- il faut indiquer le mot-cle 'NOEUD_2' ou 'GROUP_NO_2' après le mot-facteur  %(k1)s  pour l'option '3D_POU'.
+ il faut indiquer le mot-clé 'NOEUD_2' ou 'GROUP_NO_2' après le mot-clé facteur  %(k1)s  pour l'option '3D_POU'.
 """),
 
 41 : _(u"""
- il ne faut donner qu'un seul noeud de poutre a raccorder au massif.
+ il ne faut donner qu'un seul noeud de poutre à raccorder au massif.
 """),
 
 42 : _(u"""
@@ -173,15 +176,15 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 43 : _(u"""
- il ne faut donner q'un seul noeud dans le GROUP_NO :  %(k1)s
+ il ne faut donner qu'un seul noeud dans le GROUP_NO :  %(k1)s
 """),
 
 44 : _(u"""
- impossibilité, le noeud  %(k1)s porte le ddl de rotation  %(k2)s
+ impossibilité, le noeud  %(k1)s porte le degré de liberté de rotation  %(k2)s
 """),
 
 45 : _(u"""
- impossibilité, le noeud poutre  %(k1)s  devrait porter le ddl  %(k2)s
+ impossibilité, le noeud poutre  %(k1)s  devrait porter le degré de liberté  %(k2)s
 """),
 
 46 : _(u"""
@@ -193,7 +196,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 48 : _(u"""
- il faut indiquer le mot-cle 'NOEUD_2' ou 'GROUP_NO_2' après le mot-facteur  %(k1)s  pour l'option  %(k2)s
+ il faut indiquer le mot-clé 'NOEUD_2' ou 'GROUP_NO_2' après le mot-clé facteur  %(k1)s  pour l'option  %(k2)s
 """),
 
 49 : _(u"""
@@ -205,11 +208,11 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 51 : _(u"""
- il faut donner un vecteur orientant l'axe de la poutre sous le mot-cle "AXE_POUTRE".
+ il faut donner un vecteur orientant l'axe de la poutre sous le mot-clé "AXE_POUTRE".
 """),
 
 52 : _(u"""
- il faut donner un vecteur non nul orientant l'axe de la poutre sous le mot-cle "AXE_POUTRE".
+ il faut donner un vecteur non nul orientant l'axe de la poutre sous le mot-clé "AXE_POUTRE".
 """),
 
 53 : _(u"""
@@ -217,7 +220,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 54 : _(u"""
- impossibilité, le noeud  %(k1)s ne porte pas le ddl de rotation  %(k2)s
+ impossibilité, le noeud  %(k1)s ne porte pas le degré de liberté de rotation  %(k2)s
 """),
 
 55 : _(u"""
@@ -225,7 +228,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 56 : _(u"""
- plusieurs comportements de type  %(k1)s  ont ete trouvés
+ plusieurs comportements de type  %(k1)s  ont été trouvés
 
   -> Conseil:
      Vous avez sans doute enrichi votre matériau. Vous ne pouvez pas
@@ -250,11 +253,11 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 62 : _(u"""
- la limite d elasticite est deja renseignee dans elas_meta
+ la limite d'élasticité est déjà renseignée dans ELAS_META
 """),
 
 63 : _(u"""
- objet  %(k1)s .materiau.nomrc non trouve
+ objet  %(k1)s .materiau.nomrc non trouvé
 """),
 
 64 : _(u"""
@@ -262,7 +265,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 69 : _(u"""
- le mot cle: %(k1)s  est identique (sur ses 8 1ers caracteres) à un autre.
+ le mot-clé : %(k1)s  est identique (sur ses 8 premiers caractères) à un autre.
 """),
 
 70 : _(u"""
@@ -270,11 +273,11 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 71 : _(u"""
- erreur lors de la définition de la courbe de traction : %(k1)s  nb de points < 2  !
+ erreur lors de la définition de la courbe de traction : %(k1)s  nombre de points < 2  !
 """),
 
 72 : _(u"""
- erreur lors de la définition de la courbe de traction : %(k1)s  nb de points < 1  !
+ erreur lors de la définition de la courbe de traction : %(k1)s  nombre de points < 1  !
 """),
 
 73 : _(u"""
@@ -282,19 +285,19 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 74 : _(u"""
- erreur lors de la définition de la nappe des courbes de traction: nb de points < 2 !
+ erreur lors de la définition de la nappe des courbes de traction: nombre de points < 2 !
 """),
 
 75 : _(u"""
- erreur lors de la définition de la nappe des courbes de traction:  %(k1)s  nb de points < 1 !
+ erreur lors de la définition de la nappe des courbes de traction:  %(k1)s  nombre de points < 1 !
 """),
 
 76 : _(u"""
-  erreur lors de la définition de la courbe de traction: fonction ou nappe !
+  erreur lors de la définition de la courbe de traction: FONCTION ou NAPPE !
 """),
 
 80 : _(u"""
- comportement TRACTION non trouve
+ comportement TRACTION non trouvé
 """),
 
 81 : _(u"""
@@ -302,7 +305,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 82 : _(u"""
- comportement meta_traction non trouvé
+ comportement META_TRACTION non trouvé
 """),
 
 83 : _(u"""
@@ -350,7 +353,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 94 : _(u"""
- nb param. > 30 materiau  %(k1)s
+ Le nombre de paramètres est supérieur à 30 pour le matériau  %(k1)s
 """),
 
 95 : _(u"""
@@ -358,7 +361,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 96 : _(u"""
- les %(i1)d mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont ete affectées dans le mot-clé facteur : %(k1)s
+ les %(i1)d mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont été affectées dans le mot-clé facteur : %(k1)s
 """),
 
 97 : _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,7 +83,7 @@ Le GROUP_MA %(k1)s n'est pas dans le maillage %(k2)s.
 """),
 
 15: _(u"""
-le group_ma %(k1)s contient la maille %(k2)s qui n'est pas de type SEG.
+le GROUP_MA %(k1)s contient la maille %(k2)s qui n'est pas de type SEG.
 """),
 
 16: _(u"""
@@ -144,15 +144,15 @@ Attention : donner un maillage 2D en entrée
 """),
 
 35: _(u"""
-Attention : le type de champ en entrée ne fait pas partie des champs que la macro peut traiter
+Attention : le type de champ en entrée ne fait pas partie des champs que la macro-commande peut traiter
 """),
 
 36 : _(u"""
-L'instant où le "Kj critique" OU "Gp critique" est atteint a été obtenu par interpolation linéaire
+L'instant où le "KJ critique" OU "GP critique" est atteint a été obtenu par interpolation linéaire
 entre les instants %(r1)f et %(r2)f ; ce type de grandeur étant non linéaire, le résultat est d'autant plus
 imprécis que l'intervalle d'interpolation est grand.
 
-Conseil : raffinez votre discrétisation en temps pour votre post_traitement, et si besoin pour votre calcul.
+Conseil : raffinez votre discrétisation en temps pour votre post-traitement, et si besoin pour votre calcul.
 """),
 
 37 : _(u"""

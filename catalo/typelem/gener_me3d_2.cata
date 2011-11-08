@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,6 +111,7 @@ VECTEUR__
 
 MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
     CALC_G              280   IN__   DDL_MECA PDEPLAR  NFORCER  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
@@ -206,13 +207,13 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     NORME_L2            563   IN__   EGGEOP_R PCOORPG  EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR
                               OUT__  ENORME   PNORME
-    SIRO_ELEM      411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
+    SIRO_ELEM           411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
                               OUT__  EPJSIGM  PPJSIGM
     RIGI_MECA_PRSU_F    425   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUNS  PMATUNS
     RIGI_MECA_PRSU_R    424   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUNS  PMATUNS
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER

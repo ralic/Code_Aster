@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg={
 """),
 
 9: _(u"""
- les numéros d'ordre des vitesses donnes sous le mot-cle "nume_ordre" ne sont pas valides.
+ les numéros d'ordre des vitesses donnes sous le mot-clé "NUME_ORDRE" ne sont pas valides.
 """),
 
 10: _(u"""
@@ -34,11 +34,11 @@ cata_msg={
 """),
 
 11: _(u"""
- probleme(s) rencontre(s) lors de l'acces au resu_gene
+ problème(s) rencontre(s) lors de l'accès au RESU_GENE
 """),
 
 12: _(u"""
- pb lors de l'extraction du champ
+ Problème lors de l'extraction du champ
 """),
 
 13: _(u"""
@@ -46,12 +46,12 @@ cata_msg={
 """),
 
 14: _(u"""
- composante generalisee NUME_CMP_GENE non trouvee
- Conseil : verifiez que la composante generalisee demandee est bien presente dans la base modale.
+ composante généralisée NUME_CMP_GENE non trouvée
+ Conseil : vérifiez que la composante généralisée demandée est bien présente dans la base modale.
 """),
 
 15: _(u"""
- probleme(s) rencontre(s) lors de la lecture des fréquences.
+ problème(s) rencontre(s) lors de la lecture des fréquences.
 """),
 
 16: _(u"""
@@ -59,7 +59,7 @@ cata_msg={
 """),
 
 17: _(u"""
- on ne traite que le type reel
+ on ne traite que le type réel
 """),
 
 19: _(u"""
@@ -71,11 +71,11 @@ cata_msg={
 """),
 
 21: _(u"""
- "INTERP_NUME" interdit pour recuperer un paramètre en fonction d'une variable d'accès
+ "INTERP_NUME" interdit pour récupérer un paramètre en fonction d'une variable d'accès
 """),
 
 22: _(u"""
- aucun champ trouve pour l'acces  %(k1)s
+ aucun champ trouve pour l'accès  %(k1)s
 """),
 
 23: _(u"""
@@ -83,19 +83,19 @@ cata_msg={
 """),
 
 24: _(u"""
- probleme(s) rencontre(s) lors de la lecture des instants.
+ problème(s) rencontre(s) lors de la lecture des instants.
 """),
 
 25: _(u"""
- probleme recup de ptem uniquement pour methode adapt
+ problème récupération de PTEM uniquement pour méthode ADAPT
 """),
 
 26: _(u"""
- acce_mono_appui est compatible uniquement avec un champ de type : acce
+ ACCE_MONO_APPUI est compatible uniquement avec un champ de type : ACCE
 """),
 
 27: _(u"""
- manque la définition d'un mot cle
+ manque la définition d'un mot clé
 """),
 
 29: _(u"""
@@ -103,11 +103,11 @@ cata_msg={
 """),
 
 30: _(u"""
- probleme dans le decodage de ( %(k1)s , %(k2)s )
+ problème dans le décodage de ( %(k1)s , %(k2)s )
 """),
 
 31: _(u"""
- type_resultat inconnu : %(k1)s
+ type_RESULTAT inconnu : %(k1)s
 """),
 
 33: _(u"""
@@ -157,7 +157,7 @@ cata_msg={
 """),
 
 40: _(u"""
-  -> Le chargement (mot cle: CHARGE) fourni par l'utilisateur est différent de celui présent dans
+  -> Le chargement (mot clé: CHARGE) fourni par l'utilisateur est différent de celui présent dans
      la Structure de Données Résultat. On poursuit les calculs avec le chargement
      fourni par l'utilisateur.
   -> Risque & Conseil : Vérifiez si le chargement fourni dans la commande est
@@ -167,7 +167,7 @@ cata_msg={
 """),
 
 41: _(u"""
-  -> les fonctions multiplicatrices du chargement (mot cle: FONC_MULT) fournies par
+  -> les fonctions multiplicatrices du chargement (mot clé: FONC_MULT) fournies par
      l'utilisateur sont différentes de celles présentes dans la Structure de Données Résultat.
      On poursuit les calculs avec les fonctions multiplicatrices fournies par l'utilisateur.
   -> Risque & Conseil : Vérifiez si les fonctions fournies dans la commande sont
@@ -181,11 +181,11 @@ cata_msg={
 """),
 
 43: _(u"""
- nom de champ interdit :  %(k1)s  pour le resultat :  %(k2)s
+ nom de champ interdit :  %(k1)s  pour le résultat :  %(k2)s
 """),
 
 44: _(u"""
-  pas de variables d'acces
+  pas de variables d'accès
 """),
 
 45: _(u"""
@@ -193,19 +193,19 @@ cata_msg={
 """),
 
 46: _(u"""
- cet acces est interdit pour un resultat de type "champ_gd".
+ cet accès est interdit pour un résultat de type "CHAMP_GD".
 """),
 
 47: _(u"""
- cet acces est interdit :  %(k1)s
+ cet accès est interdit :  %(k1)s
 """),
 
 49: _(u"""
- probleme pour recuperer les numéros d'ordre dans la structure "resultat"  %(k1)s
+ problème pour récupérer les numéros d'ordre dans la structure "résultat"  %(k1)s
 """),
 
 50: _(u"""
- probleme pour recuperer les paramètres
+ problème pour récupérer les paramètres
 """),
 
 51: _(u"""
@@ -221,7 +221,7 @@ cata_msg={
 """),
 
 63: _(u"""
- acces inconnu  %(k1)s
+ accès inconnu  %(k1)s
 """),
 
 64: _(u"""
@@ -245,15 +245,15 @@ cata_msg={
 """),
 
 69: _(u"""
- nombre de valeur a ajoute superieur au nombre de ligne de la table
+ nombre de valeur a ajoute supérieur au nombre de ligne de la table
 """),
 
 70: _(u"""
- numéro de ligne negatif
+ numéro de ligne négatif
 """),
 
 71: _(u"""
- numéro de ligne superieur aunombre de ligne de la table
+ numéro de ligne supérieur au nombre de ligne de la table
 """),
 
 72: _(u"""
@@ -269,7 +269,7 @@ cata_msg={
 """),
 
 75: _(u"""
- erreur pgmation le nom d'une table ne doit pas depasser 17 caracteres.
+ erreur programmation le nom d'une table ne doit pas dépasser 17 caractères.
 """),
 
 76: _(u"""
@@ -297,7 +297,7 @@ cata_msg={
 """),
 
 82: _(u"""
- pas de lignes selectionnees
+ pas de lignes sélectionnées
 """),
 
 83: _(u"""
@@ -305,11 +305,11 @@ cata_msg={
 """),
 
 84: _(u"""
- impression de la table superieure a 2000 colonnes, selectionnez vos paramètres.
+ impression de la table supérieure a 2000 colonnes, sélectionnez vos paramètres.
 """),
 
 85: _(u"""
- pagination supprimee, utiliser impr_table
+ pagination supprimée, utiliser IMPR_TABLE
 """),
 
 86: _(u"""
@@ -321,11 +321,11 @@ cata_msg={
 """),
 
 88: _(u"""
- le tableau %(k1)s .vale" est de type  %(k2)s
+ le tableau %(k1)s .VALE" est de type  %(k2)s
 """),
 
 89: _(u"""
- seules les 50 premieres lignes du titre sont conservees.
+ seules les 50 premières lignes du titre sont conservées.
 """),
 
 99: _(u"""

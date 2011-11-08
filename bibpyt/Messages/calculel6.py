@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel6 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -286,12 +286,13 @@ Conseils :
 """),
 
 66: _(u"""
- Le couple (charge, fonction) fourni par l'utilisateur n'est pas présent dans la SD_resultat.
+ Le couple (charge, fonction) fourni par l'utilisateur n'est pas présent dans la
+ structure de données résultat.
  On poursuit le calcul avec le chargement fourni par l'utilisateur.
    Charge   (utilisateur) : %(k1)s
    Fonction (utilisateur) : %(k2)s
-   Charge   (SD_resultat) : %(k3)s
-   Fonction (SD_resultat) : %(k4)s
+   Charge   (résultat)    : %(k3)s
+   Fonction (résultat)    : %(k4)s
 
 """),
 

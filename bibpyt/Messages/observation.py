@@ -1,4 +1,4 @@
-#@ MODIF observation Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF observation Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ Le nombre de SUIVI_DDL permis dépend de l'affichage du tableau de convergence et
 8 : _(u"""
  Variation de la déformation supérieure au seuil fixé :
     seuil en valeur relative : %(r1)f
-    entite : %(k1)s
+    entité : %(k1)s
     composante : %(k2)s
     numéro ordre : %(i1)d
 """),

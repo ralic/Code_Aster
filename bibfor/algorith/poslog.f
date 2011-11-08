@@ -1,9 +1,9 @@
       SUBROUTINE POSLOG(RESI,RIGI,TN,TP,VFF,DFF,FM,POIDS,LGPG,VIP,
-     & NNO,NDIM,FP,PES,AXI,G,R,DTDE,MATSYM,SIGM,
-     & CPLAN,FAMI,MATE,INSTP,ANGMAS,
-     & GN,FETA,XI,ME, SIGP,FINT,MATUU )
+     &                  NNO,NDIM,FP,AXI,G,R,DTDE,MATSYM,SIGM,
+     &                  CPLAN,FAMI,MATE,INSTP,ANGMAS,OPTION,
+     &                  GN,LAMB,LOGL,SIGP,FINT,MATUU,CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,22 +56,24 @@ C OUT FINT    : FORCES INTERIEURES (RAPH_MECA ET FULL_MECA_*)
 C OUT MATUU    : MATR. DE RIGIDITE NON SYM. (RIGI_MECA_* ET FULL_MECA_*)
 C
       IMPLICIT NONE
-      INTEGER NDIM,NNO,N,NMAX,KK,I,J,K,M,KL,J1,KKD,G,LGPG,IVTN,MATE
+      INTEGER NDIM,NNO,I,J,KL,G,LGPG,IVTN,MATE,CODRET
       CHARACTER*(*) FAMI
+      CHARACTER*16  OPTION
       REAL*8  DFF(NNO,*),VFF(NNO,*),DTDE(6,6),TRAV(6,6),TRAV2(6,6)
       REAL*8  PES(6,6),SIGM(2*NDIM),SIGP(2*NDIM),TP2(6),TN(6)
-      REAL*8  MATUU(*), FINT(*), TMP2,TMP1, FR(3,3),VIP(LGPG)
+      REAL*8  MATUU(*), FINT(*), FR(3,3),VIP(LGPG)
       REAL*8  DETF,R,POIDS,DSIDEP(6,6),RAC2,INSTP,ANGMAS(*)
-      REAL*8  PK2(6),TP(6),FP(3,3),FM(3,3),SIG(6),EPSB(6)
-      REAL*8  PE(3,3,3,3),TL(3,3,3,3),TLS(6,6),EPSE(4),D1(4,4)
-      REAL*8  GN(3,3),FETA(4),XI(3,3),ME(3,3,3,3)
+      REAL*8  PK2(6),TP(6),FP(3,3),FM(3,3),PK2M(6)
+      REAL*8  TL(3,3,3,3),TLS(6,6),EPSE(4),D1(4,4)
+      REAL*8  GN(3,3),FETA(4),XI(3,3),ME(3,3,3,3),LAMB(3),LOGL(3)
 C     TABLEAUX AUTOMATIQUES. DIM MAXI : DEF(6,27,3),PFF(6,27,27)
-      REAL*8  DEF(2*NDIM,NNO,NDIM),PFF(6,NNO,NNO)
+      REAL*8  DEF(2*NDIM,NNO,NDIM),PFF(2*NDIM,NNO,NNO)
       LOGICAL AXI, RESI, RIGI, MATSYM, CPLAN
 C ---------------------------------------------------------------------
 C********************CONTRAINTE ET FORCES INTERIEURES******************
         
       RAC2=SQRT(2.D0)
+      CODRET=0
 
 
 C     CALCUL DES PRODUITS SYMETR. DE F PAR N
@@ -80,17 +82,20 @@ C     CALCUL DES PRODUITS SYMETR. DE F PAR N
       ELSE
         CALL DCOPY(9,FM,1,FR,1)
       ENDIF    
+      
 C     DETERMINANT DE LA MATRICE F A L INSTANT T+ 
-      IF (NDIM.EQ.3) THEN
-         DETF = FR(1,1)*(FR(2,2)*FR(3,3)-FR(2,3)*FR(3,2))
-     &        - FR(2,1)*(FR(1,2)*FR(3,3)-FR(1,3)*FR(3,2))
-     &        + FR(3,1)*(FR(1,2)*FR(2,3)-FR(1,3)*FR(2,2))
-      ELSE
-         DETF = FR(3,3)*(FR(1,1)*FR(2,2)-FR(1,2)*FR(2,1))
-      ENDIF
+      CALL NMDETF(NDIM,FR,DETF)
+
+C     PERTINENCE DES GRANDEURS
+      IF (DETF.LE.1.D-2 .OR. DETF.GT.1.D2) THEN
+        CODRET = 1
+        GOTO 9999
+      END IF
+      
 C CORRECTION POUR LES CONTRAINTES PLANES
 C NE FONCTIONNE QUE SI DET(F_PLAS)=1  SOIT DEF. PLAS. INCOMPRESSIBLES
 C CF. COMP. METHODES FOR PLASTICITY - DE SOUZA-NIETO, PERIC, OWEN p.603
+
       IF (CPLAN) THEN
          CALL R8INIR(4,0.D0,EPSE,1)
          IF (RESI) THEN
@@ -112,134 +117,29 @@ C           EN ELASTICITE ISTROPE
          ENDIF
          DETF=EXP(EPSE(1)+EPSE(2)+EPSE(3))
       ENDIF
-C     CONFIG LAGRANGIENNE : COMME GROT_GDEP (ANCIENNEMENT GREEN)
-C     CF. NMGR2D, NMGR3D       
-      IF (NDIM.EQ.3) THEN
+
+C ********************* TENSEUR DE PASSAGE DE T A PK2*******************
       
-          DO 40 N=1,NNO
-             DO 30 I=1,3
-              DEF(1,N,I) =  FR(I,1)*DFF(N,1)
-              DEF(2,N,I) =  FR(I,2)*DFF(N,2)
-              DEF(3,N,I) =  FR(I,3)*DFF(N,3)
-              DEF(4,N,I) = (FR(I,1)*DFF(N,2) + FR(I,2)*DFF(N,1))/RAC2
-              DEF(5,N,I) = (FR(I,1)*DFF(N,3) + FR(I,3)*DFF(N,1))/RAC2
-              DEF(6,N,I) = (FR(I,2)*DFF(N,3) + FR(I,3)*DFF(N,2))/RAC2
- 30          CONTINUE
- 40       CONTINUE
+      CALL DEFLG2(GN,LAMB,LOGL,PES,FETA,XI,ME)
 
-          IF (RIGI) THEN
-             DO 125 N=1,NNO
-                IF(MATSYM) THEN
-                 NMAX = N
-                ELSE
-                  NMAX = NNO
-                ENDIF
-                DO 126 M=1,NMAX
-                 PFF(1,N,M) =  DFF(N,1)*DFF(M,1)
-                 PFF(2,N,M) =  DFF(N,2)*DFF(M,2)
-                 PFF(3,N,M) =  DFF(N,3)*DFF(M,3)
-                 PFF(4,N,M) =(DFF(N,1)*DFF(M,2)+DFF(N,2)*DFF(M,1))/RAC2
-                 PFF(5,N,M) =(DFF(N,1)*DFF(M,3)+DFF(N,3)*DFF(M,1))/RAC2
-                 PFF(6,N,M) =(DFF(N,2)*DFF(M,3)+DFF(N,3)*DFF(M,2))/RAC2
- 126            CONTINUE
- 125         CONTINUE
-          ENDIF
-
-      ELSEIF (NDIM.EQ.2) THEN
       
-         DO 41 N=1,NNO
-            DO 31 I=1,2
-               DEF(1,N,I) =  FR(I,1)*DFF(N,1)
-               DEF(2,N,I) =  FR(I,2)*DFF(N,2)
-               DEF(3,N,I) =  0.D0
-               DEF(4,N,I) = (FR(I,1)*DFF(N,2) + FR(I,2)*DFF(N,1))/RAC2
- 31         CONTINUE
- 41      CONTINUE
-C 5.2.5 - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
-         IF (AXI) THEN
-            DO 50 N=1,NNO
-               DEF(3,N,1) = FR(3,3)*VFF(N,G)/R
- 50         CONTINUE
-         ENDIF
-         IF (RIGI) THEN
-            DO 135 N=1,NNO
-              IF(MATSYM) THEN
-               NMAX = N
-              ELSE
-               NMAX = NNO
-              ENDIF
-              DO 136 M=1,NMAX
-               PFF(1,N,M) =  DFF(N,1)*DFF(M,1)
-               PFF(2,N,M) =  DFF(N,2)*DFF(M,2)
-               PFF(3,N,M) = 0.D0
-               PFF(4,N,M) =(DFF(N,1)*DFF(M,2)+DFF(N,2)*DFF(M,1))/RAC2
- 136          CONTINUE
- 135        CONTINUE
-          ENDIF
-
-      ENDIF
-
-      IF (RESI) THEN
-
-C        TRANSFORMATION DU TENSEUR T EN PK2          
-         CALL R8INIR(6,0.D0,PK2,1)
-         DO 51 I=1,6
-            DO 52 J=1,6
-               PK2(I)=PK2(I)+TP(J)*PES(J,I)
- 52         CONTINUE
- 51      CONTINUE
-         
-         DO 230 N=1,NNO
-            DO 220 I=1,NDIM
-               DO 210 K=1,2*NDIM
-                  FINT(NDIM*(N-1)+I)=
-     &            FINT(NDIM*(N-1)+I)+DEF(K,N,I)*PK2(K)*POIDS
- 210           CONTINUE
- 220        CONTINUE
- 230     CONTINUE
-
-         DO 53 I=4,2*NDIM
-            PK2(I)=PK2(I)/RAC2
- 53      CONTINUE
-         
-C        CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
-         CALL PK2SIG(NDIM,FP,DETF,PK2,SIGP,1)
-
-CC     --------------------------------
-CC   pour gagner du temps : stocker TP comme variable interne   
-CC     --------------------------------
-         IVTN=LGPG-6+1
-         CALL DCOPY(2*NDIM,TP,1,VIP(IVTN),1)
-
-      END IF
-
-C *********************MATRICE TANGENTE(SYMETRIQUE)********************
+C *********************MATRICE TANGENTE(SYMETRIQUE)*********************
       IF (RIGI) THEN
       
 C        POUR LA RIGIDITE GEOMETRIQUE : CALCUL AVEC LES PK2
+         CALL R8INIR(6,0.D0,TP2,1) 
          IF (.NOT.RESI) THEN
-            CALL PK2SIG(NDIM,FM,DETF,PK2,SIGM,-1)
+            CALL PK2SIG(NDIM,FM,DETF,PK2M,SIGM,-1)
             DO 54 KL=4,2*NDIM
-               PK2(KL)=PK2(KL)*RAC2
+               PK2M(KL)=PK2M(KL)*RAC2
  54         CONTINUE
-            DO 55 I=1,3
-               TP2(I)=TN(I)
- 55         CONTINUE
-            DO 56 I=4,2*NDIM
-               TP2(I)=TN(I)/RAC2
- 56         CONTINUE
+            CALL DCOPY(6,TN,1,TP2,1)
          ELSE
-            DO 57 I=1,3
-               TP2(I)=TP(I)
- 57         CONTINUE
-            DO 58 I=4,2*NDIM
-               TP2(I)=TP(I)/RAC2
- 58         CONTINUE
-            TP2(5)=0.D0
-            TP2(6)=0.D0
+            CALL DCOPY(6,TP,1,TP2,1)
          ENDIF
  
-         CALL DEFLOG(NDIM,FP,EPSB,PE,GN,FETA,XI,ME,1,TP2,TL )
+         CALL DEFLG3(GN,FETA,XI,ME,TP2,TL)
+         
          CALL SYMT46(TL,TLS)
 
          CALL R8INIR(36,0.D0,DSIDEP,1) 
@@ -248,62 +148,37 @@ C        POUR LA RIGIDITE GEOMETRIQUE : CALCUL AVEC LES PK2
          CALL PMAT(6,TRAV2,PES,DSIDEP)
          
          CALL DAXPY(36,1.D0,TLS,1,DSIDEP,1)
+         
+      END IF
+      
+      IF (RESI) THEN
 
-         DO 160 N=1,NNO
-            DO 150 I=1,NDIM
-            
-               DO 151,KL=1,2*NDIM
-                  SIG(KL)=0.D0
-                  DO 152 K=1,2*NDIM
-                     SIG(KL)=SIG(KL)+DEF(K,N,I)*DSIDEP(K,KL)
-152               CONTINUE
-151            CONTINUE
-               IF(MATSYM) THEN
-                  NMAX = N
-               ELSE
-                  NMAX = NNO
-               ENDIF
-               DO 140 J=1,NDIM
-                  DO 130 M=1,NMAX
-                     TMP1 = 0.D0
-                     IF (I.EQ.J) THEN
-                        DO 153 KL=1,2*NDIM
-                           TMP1 = TMP1 + PFF(KL,N,M)*PK2(KL)
-153                     CONTINUE
-C                       TERME DE CORRECTION AXISYMETRIQUE
-                        IF (AXI .AND. I.EQ.1) THEN
-                           TMP1=TMP1+VFF(N,G)*
-     &                     VFF(M,G)/(R*R)*PK2(3)
-                        END IF
-                     ENDIF
+C        TRANSFORMATION DU TENSEUR T EN PK2    
+      
+         CALL R8INIR(6,0.D0,PK2,1)
+         DO 51 I=1,6
+            DO 52 J=1,6
+               PK2(I)=PK2(I)+TP(J)*PES(J,I)
+ 52         CONTINUE
+ 51      CONTINUE
+C        CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
+         CALL PK2SIG(NDIM,FP,DETF,PK2,SIGP,1)
 
-C     -              RIGIDITE DE COMPORTEMENT
-                     TMP2=0.D0
-                     DO 154 KL=1,2*NDIM
-                        TMP2=TMP2+SIG(KL)*DEF(KL,M,J)
-154                  CONTINUE
- 
-                     IF(MATSYM) THEN
-C                       STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
-                        IF (M.EQ.N) THEN
-                           J1 = I
-                        ELSE
-                           J1 = NDIM
-                        ENDIF
-                        IF (J.LE.J1) THEN
-                           KKD = (NDIM*(N-1)+I-1) * (NDIM*(N-1)+I) /2
-                           KK = KKD + NDIM*(M-1)+J
-                           MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*POIDS
-                        END IF
-                     ELSE
-C                       STOCKAGE SANS SYMETRIE
-                        KK = NDIM*NNO*(NDIM*(N-1)+I-1) + NDIM*(M-1)+J
-                        MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*POIDS
-                     ENDIF
- 130              CONTINUE
- 140           CONTINUE
- 150        CONTINUE
- 160     CONTINUE
+CC       --------------------------------
+CC       pour gagner du temps : on stocke TP comme variable interne   
+CC       --------------------------------
+         IVTN=LGPG-6+1
+         CALL DCOPY(2*NDIM,TP,1,VIP(IVTN),1)
 
       END IF
+      
+C     CALCUL DE LA MATRICE DE RIGIDITE ET DE LA FORCE INTERIEURE
+C     CONFG LAGRANGIENNE COMME NMGR3D / NMGR2D
+
+      CALL NMGRTG(NDIM,NNO,POIDS,G,VFF,DFF,DEF,PFF,OPTION,AXI,R,
+     &            FM,FP,DSIDEP,PK2M,PK2,MATSYM,MATUU,FINT)
+
+
+ 9999 CONTINUE
+ 
       END

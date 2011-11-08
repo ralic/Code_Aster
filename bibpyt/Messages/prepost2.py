@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost2 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg = {
 """),
 
 2 : _(u"""
-Modele inconnu, pas d'impression du champ  %(k1)s
+Modèle inconnu, pas d'impression du champ  %(k1)s
 """),
 
 3 : _(u"""
@@ -38,19 +38,19 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 35 : _(u"""
-   desole on ne sait pas écrire les champs aux noeuds de representation constante et a valeurs complexes au format  %(k1)s
+   désolé on ne sait pas écrire les champs aux noeuds de représentation constante et a valeurs complexes au format  %(k1)s
 """),
 
 36 : _(u"""
-   desole on ne sait pas écrire le champ aux noeuds  %(k1)s  au format  %(k2)s
+   désole on ne sait pas écrire le champ aux noeuds  %(k1)s  au format  %(k2)s
 """),
 
 40 : _(u"""
- aucune des composantes demandees sous le mot-cle nom_cmp pour l'impression du cham_gd  %(k1)s  n'est presente dans la grandeur  %(k2)s
+ aucune des composantes demandées sous le mot-clé NOM_CMP pour l'impression du CHAM_GD  %(k1)s  n'est présente dans la grandeur  %(k2)s
 """),
 
 41 : _(u"""
- aucune des composantes demandees sous le mot-cle nom_cmp pour l'impression du champ  %(k1)s  du concept  %(k2)s  n'est presente dans la grandeur  %(k3)s
+ aucune des composantes demandées sous le mot-clé NOM_CMP pour l'impression du champ  %(k1)s  du concept  %(k2)s  n'est présente dans la grandeur  %(k3)s
 """),
 
 46 : _(u"""
@@ -62,11 +62,11 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 52 : _(u"""
- on imprime que des champs elno
+ on imprime que des champs ELNO
 """),
 
 53 : _(u"""
- nbcmp différent
+ nombre de composantes différent
 """),
 
 54 : _(u"""
@@ -74,18 +74,18 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 55 : _(u"""
- L'ordre des composantes ?tabli lorsque que vous avez renseign? le mot-cl?
- NOM_CMP est diff?rent de celui du catalogue Aster:
+ L'ordre des composantes établi lorsque que vous avez renseigné le mot-clé
+ NOM_CMP est différent de celui du catalogue Aster:
     - ordre des composantes fournies     : %(k1)s %(k2)s %(k3)s %(k4)s %(k5)s %(k6)s
     - ordre des composantes du catalogue : %(k7)s %(k8)s %(k9)s %(k10)s %(k11)s %(k12)s
 """),
 
 56 : _(u"""
- on imprime que des champs "elga" ou "elem"
+ on imprime que des champs "ELGA" ou "ELEM"
 """),
 
 57 : _(u"""
- nbsp différent de 1
+ nombre de sous-points différent de 1
 """),
 
 58 : _(u"""
@@ -93,16 +93,16 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 59 : _(u"""
- aucun champ trouve, pas d'impression au format "gmsh"
+ aucun champ trouve, pas d'impression au format "GMSH"
 """),
 
 60 : _(u"""
- On ne sait pas imprimer au format "gmsh" le champ %(k1)s
+ On ne sait pas imprimer au format "GMSH" le champ %(k1)s
  car il est de type %(k2)s.
 """),
 
 61 : _(u"""
- erreur de programmation : nbcmp différent de 1 ou 3.
+ erreur de programmation : nombre de composantes différent de 1 ou 3.
 """),
 
 62 : _(u"""
@@ -110,19 +110,19 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 63 : _(u"""
- erreur de programation
+ erreur de programmation
 """),
 
 64 : _(u"""
- seg4 élément inexistant dans castem, converti en seg2
+ SEG4 élément inexistant dans CASTEM, converti en SEG2
 """),
 
 65 : _(u"""
- tria7 élément inexistant dans castem, converti en tria6
+ tria7 élément inexistant dans CASTEM, converti en tria6
 """),
 
 66 : _(u"""
- quad9 élément inexistant dans castem, converti en quad8
+ QUAD9 élément inexistant dans CASTEM, converti en QUAD8
 """),
 
 67 : _(u"""
@@ -138,59 +138,59 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 70 : _(u"""
-   desole on ne sait pas écrire les champs aux noeuds de representation constante au format ideas
+   désolé on ne sait pas écrire les champs aux noeuds de représentation constante au format IDEAS
 """),
 
 71 : _(u"""
- élément noeud non disponible dans ensight
+ élément noeud non disponible dans ENSIGHT
 """),
 
 72 : _(u"""
- élément  %(k1)s  non disponible dans ensight
+ élément  %(k1)s  non disponible dans ENSIGHT
 """),
 
 73 : _(u"""
- les éléments tria7 seront reduits a des tria6
+ les éléments tria7 seront réduits a des tria6
 """),
 
 74 : _(u"""
- les éléments quad9 seront reduits a des quad8
+ les éléments QUAD9 seront réduits a des QUAD8
 """),
 
 75 : _(u"""
- les éléments penta15 seront reduits a des penta6
+ les éléments PENTA15 seront réduits a des PENTA6
 """),
 
 76 : _(u"""
- il y a des groupes de noeuds dans le maillage  %(k1)s  qui n'apparaitront pas dans le fichier geometrie ensight: seuls des groupes de mailles peuvent y être integres
+ il y a des groupes de noeuds dans le maillage  %(k1)s  qui n'apparaîtront pas dans le fichier géométrie ENSIGHT: seuls des groupes de mailles peuvent y être intégrés
 """),
 
 77 : _(u"""
- la dimension du probleme est invalide : il faut : 1d, 2d, 3d.
+ la dimension du problème est invalide : il faut : 1d, 2d, 3d.
 """),
 
 78 : _(u"""
- hexa27 élément inexistant dans ideas, converti en hexa20
+ HEXA27 élément inexistant dans IDEAS, converti en HEXA20
 """),
 
 79 : _(u"""
- tria7 élément inexistant dans ideas, converti en tria6
+ tria7 élément inexistant dans IDEAS, converti en tria6
 """),
 
 80 : _(u"""
- quad9 élément inexistant dans ideas, converti en quad8
+ QUAD9 élément inexistant dans IDEAS, converti en QUAD8
 """),
 
 81 : _(u"""
- seg4 élément inexistant dans ideas, converti en seg2
+ SEG4 élément inexistant dans IDEAS, converti en SEG2
 """),
 
 82 : _(u"""
- élément pyram5 non disponible dans ideas
+ élément PYRAM5 non disponible dans IDEAS
 """),
 
 83 : _(u"""
- élément pyram13 non disponible dans ideas
+ élément PYRAM13 non disponible dans IDEAS
 """),
 
 84 : _(u"""
@@ -201,11 +201,11 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 85 : _(u"""
- L'élément PENTA18 est inexistant dans ideas, il est converti en PENTA15.
+ L'élément PENTA18 est inexistant dans IDEAS, il est converti en PENTA15.
 """),
 
 86 : _(u"""
- L'élément PENTA18 est inexistant dans castem, il est converti en PENTA15.
+ L'élément PENTA18 est inexistant dans CASTEM, il est converti en PENTA15.
 """),
 
 93 : _(u"""

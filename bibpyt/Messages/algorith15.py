@@ -1,4 +1,4 @@
-#@ MODIF algorith15 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith15 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,7 +262,7 @@ cata_msg = {
   l interface dynamique  :  %(k1)s
   de la sous-structure   :  %(k2)s
   a pour groupe de noeud :  %(k3)s
-  or group_no_1 =  %(k4)s
+  or GROUP_NO_1 =  %(k4)s
 """),
 
 66 : _(u"""
@@ -275,7 +275,7 @@ cata_msg = {
   l interface dynamique  :  %(k1)s
   de la sous-structure   :  %(k2)s
   a pour groupe de noeud :  %(k3)s
-  or group_no_2 =  %(k4)s
+  or GROUP_NO_2 =  %(k4)s
 """),
 
 68 : _(u"""

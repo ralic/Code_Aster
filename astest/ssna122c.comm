@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 2 PUNCH (ROUNDED EDGES)
 # ssna122c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,7 +82,7 @@ Force=AFFE_CHAR_MECA(MODELE=MO,
 
 Cont=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='DISCRETE',
-                  RESI_ABSO=100*1E-6,
+                  RESI_ABSO=100*1E-12,
                   ZONE=_F(GROUP_MA_MAIT='M_cont',
                           GROUP_MA_ESCL='P_cont',
                           ALGO_CONT='GCP'
@@ -276,11 +276,9 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU,
                    NOM_CHAM   = 'SIEF_NOEU',
                    GROUP_NO   = 'M',
                    NOM_CMP    = 'SIYY',
-                   VALE       = -91.540489978416,
+                   VALE       = -91.081142208614,
                    REFERENCE  = 'SOURCE_EXTERNE',
-#                  Valeur differente sur chaque plateforme due a GCP
-                   PRECISION  = 0.01,
-                   VERSION    = '11.0.27',
+                   VERSION    = '11.0.31',
                    ),
                 ),);
 

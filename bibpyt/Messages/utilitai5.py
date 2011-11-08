@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai5 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg = {
 """),
 
 3 : _(u"""
- selection de ddl : choix < %(k1)s > inconnu
+ sélection de ddl : choix < %(k1)s > inconnu
 """),
 
 4 : _(u"""
@@ -34,7 +34,7 @@ cata_msg = {
 """),
 
 5 : _(u"""
- argument d'appel invalide :  acces =  %(k1)s
+ argument d'appel invalide :  ACCES =  %(k1)s
 """),
 
 6 : _(u"""
@@ -42,11 +42,11 @@ cata_msg = {
 """),
 
 7 : _(u"""
- redéfinition de l'unite logique  %(k1)s  non autorisee
+ redéfinition de l'unité logique  %(k1)s  non autorisée
 """),
 
 8 : _(u"""
- nombre maximum d'unites logiques ouvertes atteint  %(k1)s
+ nombre maximum d'unités logiques ouvertes atteint  %(k1)s
 """),
 
 9 : _(u"""
@@ -54,11 +54,11 @@ cata_msg = {
 """),
 
 10 : _(u"""
- aucun numéro d'unite logiquedisponible
+ aucun numéro d'unité logique disponible
 """),
 
 11 : _(u"""
- unite logique  %(k1)s  associee au nom  %(k2)s  et au fichier  %(k3)s
+ unité logique  %(k1)s  associée au nom  %(k2)s  et au fichier  %(k3)s
 """),
 
 12 : _(u"""
@@ -66,7 +66,7 @@ cata_msg = {
 """),
 
 13 : _(u"""
- unite logique  %(k1)s  deja utilisee en acces  %(k2)s  par le fichier  %(k3)s
+ unité logique  %(k1)s  déjà utilisée en accès  %(k2)s  par le fichier  %(k3)s
 """),
 
 14 : _(u"""
@@ -74,7 +74,7 @@ cata_msg = {
 """),
 
 15 : _(u"""
- unite logique  %(k1)s  deja utilisee en mode binaire par le fichier  %(k2)s
+ unité logique  %(k1)s  déjà utilisée en mode binaire par le fichier  %(k2)s
 """),
 
 16 : _(u"""
@@ -82,15 +82,15 @@ cata_msg = {
 """),
 
 17 : _(u"""
- unite logique  %(k1)s  deja utilisee par le fichier  %(k2)s  associee au nom  %(k3)s
+ unité logique  %(k1)s  déjà utilisée par le fichier  %(k2)s  associée au nom  %(k3)s
 """),
 
 18 : _(u"""
- unite logique  %(k1)s , probleme lors de l'open  %(k2)s
+ unité logique  %(k1)s , problème lors de l'open  %(k2)s
 """),
 
 19 : _(u"""
- unite logique  %(k1)s , probleme lors du positionnement
+ unité logique  %(k1)s , problème lors du positionnement
 """),
 
 20 : _(u"""
@@ -102,7 +102,7 @@ cata_msg = {
 """),
 
 22 : _(u"""
- unite logique  %(k1)s , probleme lors du close de la reservation.
+ unité logique  %(k1)s , problème lors du close de la réservation.
 """),
 
 23 : _(u"""
@@ -114,19 +114,19 @@ cata_msg = {
 """),
 
 25 : _(u"""
- fichier non nomme, unite  %(k1)s
+ fichier non nomme, unité  %(k1)s
 """),
 
 26 : _(u"""
- fichier non ouvert, unite  %(k1)s
+ fichier non ouvert, unité  %(k1)s
 """),
 
 27 : _(u"""
- rewind impossible, unite  %(k1)s
+ rembobinage impossible, unité  %(k1)s
 """),
 
 28 : _(u"""
- positionnement inconnu " %(k1)s ", unite  %(k2)s
+ positionnement inconnu " %(k1)s ", unité  %(k2)s
 """),
 
 29 : _(u"""
@@ -170,11 +170,11 @@ cata_msg = {
 """),
 
 41 : _(u"""
- xous :  %(k1)s  non prevu.
+ XOUS :  %(k1)s  non prévu.
 """),
 
 42 : _(u"""
- chaine sch1 trop longue >24
+ chaîne sch1 trop longue >24
 """),
 
 43 : _(u"""
@@ -186,7 +186,7 @@ cata_msg = {
 """),
 
 45 : _(u"""
- on demande un nombre de composantes negatif pour  %(k1)s
+ on demande un nombre de composantes négatif pour  %(k1)s
 """),
 
 46 : _(u"""
@@ -219,7 +219,7 @@ cata_msg = {
 
 54 : _(u"""
 Erreur Programmeur / UTTCPU :
- l"argument "indi" est non valide
+ l"argument "INDI" est non valide
 """),
 
 55 : _(u"""
@@ -248,7 +248,7 @@ Erreur Programmeur / UTTCPU  :
 """),
 
 60 : _(u"""
- un sous-domaine  est non-connexe
+ un sous-domaine  est non connexe
 """),
 
 88 : _(u"""
@@ -286,7 +286,7 @@ Erreur Programmeur / UTTCPU  :
 
 97 : _(u"""
  le type de champ  %(k1)s n'est pas accepté
- veuillez consulter la doc U correspondante
+ veuillez consulter la documentation U correspondante
 """),
 
 98 : _(u"""

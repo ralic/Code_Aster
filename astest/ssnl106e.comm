@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
@@ -94,6 +94,21 @@ REST=CALC_ELEM( reuse=REST,
                           RESULTAT=REST,
               )
 
+REST=CALC_ELEM( reuse=REST,
+                            OPTION=('SIEQ_ELGA'),
+                          RESULTAT=REST,
+                      TOUT_ORDRE='OUI',
+              )
+
+REST=CALC_ELEM( reuse=REST,
+                            OPTION=('EPEQ_ELGA'),
+                          RESULTAT=REST,
+                      TOUT_ORDRE='OUI',
+              )
+
+IMPR_RESU(RESU=_F(RESULTAT=REST,NOM_CHAM=('SIEQ_ELGA','EPEQ_ELGA'),NUME_ORDRE=1))
+
+
 REST=CALC_NO( reuse=REST,     RESULTAT=REST,
                     OPTION='REAC_NODA' )
 
@@ -101,9 +116,7 @@ REST=CALC_NO( reuse=REST,     RESULTAT=REST,
 # A UN NIVEAU D'EPAISSEUR DONNE
 REST=CALC_ELEM( reuse=REST, RESULTAT=REST,
                       TOUT_ORDRE='OUI',
-                     OPTION=('EPTQ_ELNO',
-                             'SITQ_ELNO',
-                             'EPTU_ELNO',
+                     OPTION=('EPTU_ELNO',
                              'SITU_ELNO',
                              'VATU_ELNO',),
                      REPE_COQUE =_F( NUME_COUCHE=1,
@@ -125,6 +138,17 @@ RESTPOS2=POST_CHAMP(RESULTAT=REST,
                                   NIVE_COUCHE='SUP',
                                   ANGLE=90,),);
 
+
+RESTPOS3=POST_CHAMP(RESULTAT=REST,
+                    TOUT='OUI',
+                    EXTR_TUYAU=_F(NOM_CHAM='SIEQ_ELGA',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',
+                                  ANGLE=90,),);
+
+
+
+
 # TEST PAR RAPPORT A LA SOLUTION ANALYTIQUE
 
 TEST_RESU(RESU=(
@@ -139,22 +163,32 @@ TEST_RESU(RESU=(
                  REFERENCE='NON_REGRESSION',),
             _F(RESULTAT=REST,
                  NUME_ORDRE=1,
-                 NOM_CHAM='EPTQ_ELNO',
+                 NOM_CHAM='EPEQ_ELGA',
                  NOM_CMP='INVA_2',
                  MAILLE='M1',
-                 NOEUD='N1',
+                 POINT=1,
+                 SOUS_POINT=1,
                  VALE=5.89491E-04,
                  PRECISION=1.0E-04,
                  REFERENCE='NON_REGRESSION',),
             _F(RESULTAT=REST,
                  NUME_ORDRE=1,
-                 NOM_CHAM='SITQ_ELNO',
+                 NOM_CHAM='SIEQ_ELGA',
                  NOM_CMP='VMIS',
                  MAILLE='M1',
-                 NOEUD='N1',
-                 VALE=0.0,
+                 POINT=1,
+                 SOUS_POINT=1,
+                 VALE=1.500000000E+08,
                  PRECISION=1.0E-03,
                  REFERENCE='NON_REGRESSION',),
+            _F( RESULTAT = RESTPOS3,REFERENCE='ANALYTIQUE',
+                 NUME_ORDRE = 1,
+                 NOM_CHAM = 'SIEQ_ELGA',
+                 MAILLE = 'M1',
+                 POINT=1,
+                 VALE=1.500000000E+08,
+                 NOM_CMP = 'VMIS',
+                 PRECISION = 1.E-3),
            _F( RESULTAT = RESTPOS1,REFERENCE='ANALYTIQUE',
                  NUME_ORDRE = 1,
                  NOM_CHAM = 'SIEF_ELGA',

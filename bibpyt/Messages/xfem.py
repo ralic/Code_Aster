@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -269,8 +269,8 @@ cata_msg={
 """),
 
 40: _(u"""
-      La maille %(k1)s doit être enrichie avec plus de 4 fonctions heavisides,
-      le multi-Heaviside est limité à 4 fonctions heaviside, un noeud du maillage
+      La maille %(k1)s doit être enrichie avec plus de 4 fonctions Heaviside,
+      le multi-Heaviside est limité à 4 fonctions Heaviside, un noeud du maillage
       ne doit pas être connecté à plus de 4 fissures.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
@@ -366,7 +366,7 @@ cata_msg={
 """),
 
 61: _(u"""
-  -> Une face contient au moins 3 points d'intersection avec l'iso-zéro du champ
+  -> Une face contient au moins 3 points d'intersection avec la courbe d'isovaleur zéro du champ
      de level-set car la valeur des level-sets aux noeuds de la maille a probablement été
      mal réactualisée lors de la phase de réinitialisation ou à la propagation précédente.
   -> Risque & Conseil:
@@ -385,7 +385,7 @@ cata_msg={
 
 63: _(u"""
   -> ---Éléments XFEM quadratiques 2D---
-       Un sous élément est découpé par l'iso-zéro de la level-set normale en deux endroits
+       Un sous élément est découpé par la courbe d'isovaleur zéro de la level-set normale en deux endroits
        sur une arête.
        Cette configuration est proscrite.
 """),
@@ -400,7 +400,7 @@ cata_msg={
 
 65: _(u"""
   -> ---Éléments XFEM quadratiques 2D---
-     On recherche un point de l'iso-zéro de la level-set normale découpant l'arête
+     On recherche un point de la courbe d'isovaleur zéro de la level-set normale découpant l'arête
      d'un sous élément qui n'existe pas.
 """),
 

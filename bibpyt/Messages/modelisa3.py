@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,7 +166,7 @@ Suggestion :
 """),
 
 35: _(u"""
- problème pour déterminer le rang de la composante <n> de la grandeur <SIEF_r>
+ problème pour déterminer le rang de la composante <n> de la grandeur <SIEF_R>
 """),
 
 36: _(u"""
@@ -179,8 +179,8 @@ Suggestion :
 
 40: _(u"""
  Erreur utilisateur :
- Il ne faut pas définir les mots clés GROUP_MA et TOUT en même temps dans AFFE_CHAR_MECA/ROTATION
- , ni les mots clés MAILLE et TOUT.
+ Il ne faut pas définir les mots clés GROUP_MA et TOUT en même temps dans AFFE_CHAR_MECA/ROTATION,
+ ni les mots clés MAILLE et TOUT.
 """),
 
 44: _(u"""
@@ -190,7 +190,7 @@ Suggestion :
 """),
 
 60: _(u"""
- on ne donne le mot facteur "convection" qu"une fois au maximum
+ on ne donne le mot facteur "CONVECTION" qu'une fois au maximum
 """),
 
 61: _(u"""
@@ -211,7 +211,7 @@ Suggestion :
 
 
 66: _(u"""
- la dimension du maillage ne correspond pas a la dimension des éléments
+ la dimension du maillage ne correspond pas à la dimension des éléments
 """),
 
 67: _(u"""
@@ -223,15 +223,15 @@ Suggestion :
 """),
 
 69: _(u"""
- on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option bande de CREA_group_ma. ce mot-clé permet de définir la direction perpendiculaire au plan milieu de la bande.
+ on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option bande de CREA_GROUP_MA. ce mot-clé permet de définir la direction perpendiculaire au plan milieu de la bande.
 """),
 
 70: _(u"""
- pour l'option bande de CREA_group_ma, il faut  définir les 3 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 3d.
+ pour l'option bande de CREA_GROUP_MA, il faut  définir les 3 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 3d.
 """),
 
 71: _(u"""
- pour l'option bande de CREA_group_ma, il faut  définir les 2 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 2d.
+ pour l'option bande de CREA_GROUP_MA, il faut  définir les 2 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 2d.
 """),
 
 72: _(u"""
@@ -239,7 +239,7 @@ Suggestion :
 """),
 
 73: _(u"""
- l'option cylindre de CREA_group_ma n'est utilisable qu'en 3d.
+ l'option cylindre de CREA_GROUP_MA n'est utilisable qu'en 3d.
 """),
 
 74: _(u"""
@@ -251,15 +251,15 @@ Suggestion :
 """),
 
 76: _(u"""
- on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option cylindre de CREA_group_ma
+ on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option cylindre de CREA_GROUP_MA
 """),
 
 77: _(u"""
- pour l'option cylindre de CREA_group_ma, il faut  définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot CLE VECT_NORMALE.
+ pour l'option cylindre de CREA_GROUP_MA, il faut  définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot CLE VECT_NORMALE.
 """),
 
 78: _(u"""
- pour l'option cylindre de CREA_group_ma, il faut définir les 2 angles nautiques quand on utilise le mot CLE "ANGL_NAUT".
+ pour l'option cylindre de CREA_GROUP_MA, il faut définir les 2 angles nautiques quand on utilise le mot CLE "ANGL_NAUT".
 """),
 
 79: _(u"""
@@ -267,7 +267,7 @@ Suggestion :
 """),
 
 80: _(u"""
- on doit utiliser obligatoirement le mots-clés ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option face_normale de CREA_group_ma
+ on doit utiliser obligatoirement le mots-clés ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option FACE_NORMALE de CREA_GROUP_MA
 """),
 
 81: _(u"""
@@ -283,19 +283,19 @@ Suggestion :
 """),
 
 84: _(u"""
- l'option env_cylindre de CREA_GROUP_NO n'est utilisable qu'en 3d.
+ l'option ENV_CYLINDRE de CREA_GROUP_NO n'est utilisable qu'en 3d.
 """),
 
 85: _(u"""
- on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option env_cylindre de CREA_GROUP_NO
+ on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option ENV_CYLINDRE de CREA_GROUP_NO
 """),
 
 86: _(u"""
- pour l'option env_cylindre de CREA_GROUP_NO, il faut définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot clé "VECT_NORMALE".
+ pour l'option ENV_CYLINDRE de CREA_GROUP_NO, il faut définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot clé "VECT_NORMALE".
 """),
 
 87: _(u"""
- pour l'option env_cylindre de CREA_GROUP_NO, il faut définir les 2 angles nautiques quand on utilise le mot clé "ANGL_NAUT".
+ pour l'option ENV_CYLINDRE de CREA_GROUP_NO, il faut définir les 2 angles nautiques quand on utilise le mot clé "ANGL_NAUT".
 """),
 
 88: _(u"""
@@ -343,6 +343,6 @@ Suggestion :
 """),
 
 99: _(u"""
- il manque l'ensemble des noeuds que l'on veut ordonner, mots clés "noeud" et/ou "group_no"
+ il manque l'ensemble des noeuds que l'on veut ordonner, mots clés "noeud" et/ou "GROUP_NO"
 """),
 }

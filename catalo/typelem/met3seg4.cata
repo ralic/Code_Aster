@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -164,9 +164,6 @@ OPTION__
                                      EEFGEGAC PEFGEC
     ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPTQ_ELNO           597   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  EDFEQPG  PDEFOEQ  ENBSP_I  PNBSP_I
-                                     CNUMCOR  PNUMCOR
-                              OUT__  EDFEQNO  PDENOEQ
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELGA           584   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
@@ -251,9 +248,6 @@ OPTION__
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIPO_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
-    SITQ_ELNO           597   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  ECOEQPG  PCONTEQ  ENBSP_I  PNBSP_I
-                                     CNUMCOR  PNUMCOR
-                              OUT__  ECOEQNO  PCOEQNO
     SITU_ELNO           597   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  CNUMCOR  PNUMCOR
                                      ZVARCPG  PVARCPR

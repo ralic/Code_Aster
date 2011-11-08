@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF indicateur Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,7 +79,7 @@ Impossible de récupérer les paramètres temporels.
 """),
 
 20 : _(u"""
-PERM_in: division par zéro
+PERM_IN: division par zéro
 """),
 
 21 : _(u"""
@@ -96,7 +96,7 @@ Vous n'utilisez pas une modélisation HM saturée élastique.
 
 24 : _(u"""
  le résultat  %(k1)s  doit comporter un champ d'indicateurs d'erreur au numéro
- d'ordre%(k2)s  .
+ d'ordre %(k2)s  .
 """),
 
 

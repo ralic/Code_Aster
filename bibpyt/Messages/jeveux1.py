@@ -1,21 +1,21 @@
-#@ MODIF jeveux1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux1 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -144,7 +144,7 @@ cata_msg = {
 
 21 : _(u"""
 
- L'accès à la collection dispersée %(k1)s n'est pas valide en bloc, il faut y accéder avec un nom ou un 
+ L'accès à la collection dispersée %(k1)s n'est pas valide en bloc, il faut y accéder avec un nom ou un
  numéro d'objet de collection.
 
 """),
@@ -158,270 +158,270 @@ cata_msg = {
 23 : _(u"""
 
  Le type de recherche %(k1)s invalide.
- 
+
 """),
 
 24 : _(u"""
 
  La taille des segments de valeurs %(i1)d invalide.
- 
+
 """),
 
 25 : _(u"""
 
  La taille de la partition %(r1)f invalide.
- 
+
 """),
 
 26 : _(u"""
 
  Le type de parcours de la segmentation mémoire %(r1)f est invalide, les valeurs possibles sont 1, 2, 3 ou 4.
- 
+
 """),
 
 27 : _(u"""
 
  Le paramètre d'accès %(r1)f est invalide, la valeur doit être E ou L.
- 
+
 """),
 
 28 : _(u"""
 
  La valeur de l'attribut %(k1)s est invalide, la valeur doit être LONCUM.
- 
+
 """),
 
 29 : _(u"""
 
  Cette requête n'est valide que sur une collection contiguë.
- 
+
 """),
 
 30 : _(u"""
 
  L'attribut LONCUM n'est valide que sur une collection contiguë.
- 
+
 """),
 
 31 : _(u"""
 
  La liste de paramètres de création d'objet est incomplète.
- 
+
 """),
 
 32 : _(u"""
 
  La liste de paramètres de création d'objet contient des champs superflus.
- 
+
 """),
 
 33 : _(u"""
 
  Le répertoire de noms %(k1)s est saturé, il faut le redimensionner.
- 
+
 """),
 
 34 : _(u"""
 
  Le nom %(k1)s est introuvable dans le répertoire de noms %(k2)s.
- 
+
 """),
 
 35 : _(u"""
 
  Le nom %(k1)s existe déjà dans le répertoire de noms %(k2)s.
- 
+
 """),
 
 36 : _(u"""
 
  Impossible d'insérer le nom %(k1)s dans le répertoire de noms %(k2)s, il y trop de collisions avec
  la fonction de hashage.
- 
+
 """),
 
 37 : _(u"""
 
- La valeur du rapport entre les partitions est invalide, (%r1)f n'est pas comprise entre 0.0 et 1.0.
- 
+ La valeur du rapport entre les partitions est invalide, %(r1)f n'est pas comprise entre 0.0 et 1.0.
+
 """),
 
 38 : _(u"""
 
  Un objet de genre N (répertoire de noms) doit être de type K (caractère).
- 
+
 """),
 
 39 : _(u"""
 
  Il faut définir la longueur du type caractère, par exemple K8 ou K32.
- 
+
 """),
 
 40 : _(u"""
 
  La longueur du type caractère vaut %(i1)d, elle doit être comprise entre 1 et 512 .
- 
+
 """),
 
 41 : _(u"""
 
  Pour un objet de genre N (répertoire de noms), la longueur du type caractère
  vaut %(i1)d, elle n'est pas un multiple de 8.
- 
+
 """),
 
 42 : _(u"""
 
  Pour un objet de genre N (répertoire de noms), la longueur du type caractère
  vaut %(i1)d, elle ne peut être supérieure à 24.
- 
+
 """),
 
 43 : _(u"""
 
  Le type de l'objet %(k1)s est invalide, il peut valoir K, S, I, R, C ou L.
- 
+
 """),
 
 44 : _(u"""
 
  Pour une collection nommée, la création d'objet est uniquement autorisée par nom.
- 
+
 """),
 
 45 : _(u"""
 
  L'objet de collection %(i1)d existe déjà.
- 
+
 """),
 
 46 : _(u"""
 
  Il est impossible de créer l'objet de collection, le répertoire est saturé.
- 
+
 """),
 
 47 : _(u"""
 
  L'accès par nom à une collection numérotée est impossible.
- 
+
 """),
 
 48 : _(u"""
 
  Une erreur d'écriture de l'attribut %(k1)s au format HDF s'est produite, l'exécution continue.
- 
+
 """),
 
 49 : _(u"""
 
- Un écrasement de l'identificateur de l'objet est détecté, sa valeur ne peut pas être nulle. 
- 
+ Un écrasement de l'identificateur de l'objet est détecté, sa valeur ne peut pas être nulle.
+
 """),
 
 50 : _(u"""
 
- Un écrasement de la classe de l'objet est détecté, sa valeur %(i1)d est invalide. 
- 
+ Un écrasement de la classe de l'objet est détecté, sa valeur %(i1)d est invalide.
+
 """),
 
 51 : _(u"""
 
- Un écrasement de la classe de l'objet est détecté, sa valeur %(k1)s est invalide. 
- 
+ Un écrasement de la classe de l'objet est détecté, sa valeur %(k1)s est invalide.
+
 """),
 
 52 : _(u"""
 
-  Il est impossible d'accéder au DATASET HDF associé à %(k1)s. 
- 
+  Il est impossible d'accéder au DATASET HDF associé à %(k1)s.
+
 """),
 
 53 : _(u"""
 
-  La zone mémoire à libérer est déjà marquée libre. 
- 
+  La zone mémoire à libérer est déjà marquée libre.
+
 """),
 
 54 : _(u"""
 
-  Un écrasement amont est détecté, la zone mémoire (adresse %(i1)d) a été utilisée devant l'adresse autorisée %(i1)d. 
- 
+  Un écrasement amont est détecté, la zone mémoire (adresse %(i1)d) a été utilisée devant l'adresse autorisée %(i1)d.
+
 """),
 
 55 : _(u"""
 
-  Un écrasement aval est détecté, la zone mémoire (adresse %(i1)d) a été utilisée au-delà de la longueur autorisée. 
- 
+  Un écrasement aval est détecté, la zone mémoire (adresse %(i1)d) a été utilisée au-delà de la longueur autorisée.
+
 """),
 
 56 : _(u"""
 
-  La structure du nom de l'objet est invalide au-delà des 24 premiers caractères, elle vaut %(k1)s. 
- 
+  La structure du nom de l'objet est invalide au-delà des 24 premiers caractères, elle vaut %(k1)s.
+
 """),
 
 57 : _(u"""
 
-  La structure du nom de l'objet est invalide, elle vaut %(k1)s. 
- 
+  La structure du nom de l'objet est invalide, elle vaut %(k1)s.
+
 """),
 
 58 : _(u"""
 
-  La structure du nom de l'objet est invalide, le caractère %(k1)s est illicite. 
- 
+  La structure du nom de l'objet est invalide, le caractère %(k1)s est illicite.
+
 """),
 
 59 : _(u"""
 
-  L'objet ne possède pas d'image disque (adresse disque nulle). 
- 
+  L'objet ne possède pas d'image disque (adresse disque nulle).
+
 """),
 
 60 : _(u"""
 
-  L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas possible de le déplacer sans l'avoir auparavant libéré. 
- 
+  L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas possible de le déplacer sans l'avoir auparavant libéré.
+
 """),
 
 61 : _(u"""
 
-  L'objet n'est pas en mémoire et ne possède pas d'image disque (adresse disque nulle). 
- 
+  L'objet n'est pas en mémoire et ne possède pas d'image disque (adresse disque nulle).
+
 """),
 
 62 : _(u"""
 
-  La longueur des objets de collection constante n'a pas été définie. 
- 
+  La longueur des objets de collection constante n'a pas été définie.
+
 """),
 
 63 : _(u"""
 
  L'attribut LONCUM n'est pas accessible pour cette collection.
- 
+
 """),
 
 64 : _(u"""
 
- Le volume des données temporaires (objets de la base Volatile) écrites sur disque (%(r3).2f Mo)  
- est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo). 
-  
+ Le volume des données temporaires (objets de la base Volatile) écrites sur disque (%(r3).2f Mo)
+ est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo).
+
 """),
 
 65 : _(u"""
 
- Le segment de valeurs associé à l'objet %(i1)d de la collection %(k1)s ne possède ni adresse mémoire, ni adresse disque. 
-  
+ Le segment de valeurs associé à l'objet %(i1)d de la collection %(k1)s ne possède ni adresse mémoire, ni adresse disque.
+
 """),
 
 
 66 : _(u"""
 
- Le segment de valeurs associé à l'objet simple %(k1)s ne possède ni adresse mémoire, ni adresse disque. 
-  
+ Le segment de valeurs associé à l'objet simple %(k1)s ne possède ni adresse mémoire, ni adresse disque.
+
 """),
 
 67 : _(u"""

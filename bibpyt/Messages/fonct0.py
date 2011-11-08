@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ Une erreur s'est produite dans la recherche de l'intervalle des abscisses conten
 Le type de la fonction '%(k1)s' est inconnu.
 Seules les fonctions, nappes, fonctions constantes peuvent être traitées par %(k3)s.
 
-  -> Debug :
+  -> Débogage :
       le type est '%(k2)s'
 """),
 
@@ -136,7 +136,7 @@ On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à 
 21 : _(u"""
 Erreur de programmation : type d'extrapolation inconnu.
 
-  -> Debug :
+  -> Débogage :
       le type d'extrapolation est '%(k1)s'
 """),
 
@@ -166,7 +166,7 @@ Le type de la fonction '%(k1)s' est inconnu.
 Seules les fonctions, nappes, fonctions constantes et formules sont
 traitées par %(k3)s.
 
-  -> Debug :
+  -> Débogage :
       le type est '%(k2)s'
 """),
 
@@ -183,7 +183,7 @@ Un problème d'interpolation a été rencontré.
       Vérifier les valeurs fournies derrière le mot-clé 'INTERPOL' lors
       de la création de cette(ces) fonction(s).
 
-  -> Debug :
+  -> Débogage :
       %(k2)s
 """),
 
@@ -199,7 +199,7 @@ Vous ne pouvez pas faire la transformée de Fourier inverse d'une fonction dont l
       Vérifier la valeur fournie derrière les mots-clés 'NOM_PARA'/'NOM_RESU' lors
       de la création de cette(ces) fonction(s).
 
-  -> Debug :
+  -> Débogage :
       %(k2)s
 """),
 
@@ -211,7 +211,7 @@ Un problème concernant le prolongement de la (des) fonction(s) a été rencontré.
       Vérifier la valeur fournie derrière les mots-clés 'PROL_GAUCHE'/'PROL_DROITE'
       lors de la création de cette(ces) fonction(s).
 
-  -> Debug :
+  -> Débogage :
       %(k2)s
 """),
 
@@ -219,7 +219,7 @@ Un problème concernant le prolongement de la (des) fonction(s) a été rencontré.
 Une erreur s'est produite lors de l'opération.
 %(k1)s
 
-  -> Debug :
+  -> Débogage :
       %(k2)s
 
 Remontée d'erreur (pour aider à l'analyse) :

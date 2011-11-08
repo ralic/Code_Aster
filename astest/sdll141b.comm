@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2009   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 07/11/2011   AUTEUR TORKHANI M.TORKHANI 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE
 # sdll141b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -128,7 +128,7 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
 MODEG=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
                        MATR_C=GYOM,
-                       VERI_MODE=_F(SEUIL=2.E-3),
+                       VERI_MODE=_F(SEUIL=5.E-3),
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=1.,

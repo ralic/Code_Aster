@@ -1,37 +1,49 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/11/2011   AUTEUR NICOLAS G.NICOLAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 # zzzz175a.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 DEBUT(CODE=_F(NOM='zzzz175a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 #
-# 1. Les constantes
+# A. Incontournables
 #
-# 1.1. Nombre de pas d'adaptaions
-#
+# A.1. Nombre de calculs :
+#      Dans tous les cas, le calcul a lieu de t=0 a t=480s.
+#      . Pour le cas-test ASTER, on fera 4 calculs (et donc 3 adaptations)
+#      . Passer a 32 calculs permet de produire une figure animee avec un
+#      meilleur rendu des changements de maillage
+#      Remarque : il faut que '480./nbre_calcul' soit un multiple de 'pas_de_temps'
+#      On a donc droit a :
+nbre_calcul = 1
+nbre_calcul = 2
+nbre_calcul = 4
+nbre_calcul = 8
+nbre_calcul = 16
 nbre_calcul = 32
+#
 nbre_calcul = 4
 T_final=480.
 pas_de_temps = 3.
 duree = T_final / nbre_calcul
+T_test_resu = duree * 4.
 #
-# 1.2. Discretisation temporelle
+# A.2. Discretisation temporelle
 #
 l_inst=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=T_final,PAS=pas_de_temps,),)
@@ -39,34 +51,39 @@ l_inst=DEFI_LIST_REEL(DEBUT=0.0,
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = l_inst),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
-                                 SUBD_METHODE  = 'MANUEL',
-                                 SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1.E-1),)
+                                 SUBD_METHODE  = 'AUTO',
+                                 SUBD_PAS_MINI = 0.05),)
 #
-# 1.3. Fonction du chargement
+# A.3. Fonction du chargement
 #
 rampe=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(  0.0,   0.0,
-                           60.0,   3.0E2,
-                          120.0,   0.0,
-                          180.0,   2.0E2,
-                          240.0,   0.0,
-                          300.0,   3.0E2,
-                          360.0,   0.0,
-                          420.0,   2.0E2,
-                          480.0,   0.0,),
+                           60.0,   1.5E1,
+                          120.0,   2.0E1,
+                          180.0,   2.0E1,
+                          240.0,   3.0E1,
+                          300.0,   3.0E1,
+                          360.0,   2.0E1,
+                          420.0,   1.5E1,
+                          T_final, 1.0E1,),
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='CONSTANT',)
 #
-# 1.4. Le materiau
+###IMPR_FONCTION ( COURBE=_F(FONCTION=rampe,), FORMAT ='TABLEAU', )
+###IMPR_FONCTION ( COURBE=_F(FONCTION=rampe,), FORMAT ='XMGRACE',PILOTE='POSTSCRIPT',UNITE=24, )
+#
+# A.4. Le materiau
 #
 acier=DEFI_MATERIAU(ELAS=_F(E=210000.0,NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=2.E3,  SY=235.))
 #
-# 2. La frontiere
-#    On imprime ce maillage pour utilisation dans les cas_tests de HOMARD
+# A.5. La fonction nulle
 #
-maill_fr=LIRE_MAILLAGE(UNITE=19,FORMAT='MED',NOM_MED='Bords',INFO_MED=1)
+F0=DEFI_CONSTANTE(VALE=0.)
+#
+# B. La frontiere
+#
+maill_fr=LIRE_MAILLAGE(UNITE=19,FORMAT='MED',NOM_MED='maill_fr',INFO_MED=1)
 #
 MACR_INFO_MAIL( MAILLAGE=maill_fr,
                 NOMBRE='OUI',
@@ -75,13 +92,18 @@ MACR_INFO_MAIL( MAILLAGE=maill_fr,
                 CONNEXITE='OUI'
                )
 #
-# 3. Dimensionnement des tableaux des concepts maillage
+#    On imprime ce maillage pour pouvoir l'utiliser dans le cas_test de HOMARD sfr_1d_poignee_d2
+###IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=maill_fr),);
+#
+# C. Dimensionnement des tableaux des concepts maillage
 #    On affecte les valeurs a None (peu importe)
 #    Les tableaux de concepts n existent pas vu d aster a l execution.
 #    accas renomme mode[num_calc] en mode_num_calc. attention : en cas de reprise, c est
 #    le concept mode_num_calc qui est connu dans la base. De plus, il faut etre
 #    vigilant a ne pas depasser les huit caracteres pour le nom du concept,
 #    underscore num_calc compris.
+#    Remarque : on pourrait choisir des concepts a usage unique que l'on detruit
+#               a la fin de chaque sequence de calcul
 #
 Mad2=[None]*nbre_calcul
 mode=[None]*nbre_calcul
@@ -91,92 +113,119 @@ pres=[None]*nbre_calcul
 resu=[None]*nbre_calcul
 depl=[None]*nbre_calcul
 #
-# 4. Lecture du maillage initial et passage en degre 2
+# D. Lecture du maillage initial et passage en degre 2
 #
-Maill_d1=LIRE_MAILLAGE(UNITE=21,FORMAT='MED',NOM_MED='Poignee',INFO_MED=1)
+Maill_d1=LIRE_MAILLAGE(FORMAT='MED',NOM_MED='maill_00',INFO_MED=1)
 #
 Mad2[0]=CREA_MAILLAGE( MAILLAGE = Maill_d1,LINE_QUAD = _F(TOUT='OUI'))
 #
-# 5. Calcul de nbre_calcul situations
+# E. Calcul des nbre_calcul situations
 #
 for num_calc in range(nbre_calcul):
 #
-# 5.1. Modele mecanique
+# E.1. Modele mecanique
 #
   mode[num_calc]=AFFE_MODELE(MAILLAGE=Mad2[num_calc],
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='C_PLAN',),);
 #
-# 5.2. Le MODI_MAILLAGE n'est utile que la premiere fois, car HOMARD conserve
+# E.2. Le MODI_MAILLAGE n'est utile que la premiere fois, car HOMARD conserve
 #      les orientations
 #
   if ( num_calc == 0 ) :
 #
     Mad2[num_calc]=MODI_MAILLAGE(reuse =Mad2[num_calc],
              MAILLAGE=Mad2[num_calc],
-             ORIE_PEAU_2D=_F(GROUP_MA=('GMP1','GMP2','GMP3','GMP4','GMP5',
-                                       'GMP6','GMP7','GMP8','GMP9','GMP10',
-                                       'GMP11','GMP12','GMP13','GMP14','GMP15','GMP16',),),
+             ORIE_PEAU_2D=_F(GROUP_MA=( 'ENCASTR',
+                                        'SUP_1', 'SUP_2', 'SUP_3', 'SUP_4', 'SUP_5', 'SUP_6', 'SUP_7', 'SUP_8',
+                                        'INF_1', 'INF_2', 'INF_3', 'INF_4', 'INF_5', 'INF_6', 'INF_7', 'INF_8',
+                                        'T1', 'T2', 'T3', 'T4',
+                                        'U1', 'U2',
+                                        'EXT',
+                                        'PRES1', 'PRES2', ),),
              );
 #
-# 5.3. Mise en place des materiaux
+# E.3. Mise en place des materiaux
 #
   chma[num_calc]=AFFE_MATERIAU(MAILLAGE=Mad2[num_calc],
-                     AFFE=_F(GROUP_MA='GMP19',MATER=acier,),);
+                     AFFE=_F(GROUP_MA='SOLIDE',MATER=acier,),);
 #
-# 5.4. Les chargements
+# E.4. Les chargements
+#    Face          |         Chargement
+# ------------------------------------------------------------
+#  Laterale gauche | Deplacement nul
+#  Superieure      | Contrainte imposee evoluant dans le temps
+#  Reste           | Contrainte nulle
 #
   bloq[num_calc]=AFFE_CHAR_MECA(MODELE=mode[num_calc],
-                         FACE_IMPO=_F(GROUP_MA='GMP1',
+                         FACE_IMPO=_F(GROUP_MA='ENCASTR',
                                       DX=0.0,
                                       DY=0.0,),);
-#
   pres[num_calc]=AFFE_CHAR_MECA_F(MODELE=mode[num_calc],
-                          PRES_REP=_F(GROUP_MA='GMP4',PRES=rampe,),);
+                      PRES_REP=(_F(GROUP_MA=( 'SUP_1', 'SUP_2', 'SUP_3', 'SUP_4', 'SUP_5', 'SUP_6', 'SUP_7', 'SUP_8',
+                                              'INF_1', 'INF_2', 'INF_3', 'INF_4', 'INF_5', 'INF_6', 'INF_7', 'INF_8',
+                                              'T1', 'T2', 'T3', 'T4',
+                                              'U1', 'U2',
+                                              'EXT',
+                                              'PRES2',),
+                                    PRES=F0,),
+                                _F(GROUP_MA=('PRES1',),PRES=rampe,),),);
 #
-# 5.5. Calcul non-lineaire en Von Mises
+# E.5. Calcul non-lineaire en Von Mises
 #
   if ( num_calc == nbre_calcul - 1 ) :
     inst_fin = T_final
   else :
     inst_fin = (num_calc+1)*duree
 #
-  resu[num_calc]=STAT_NON_LINE(MODELE=mode[num_calc],
+# E.5.1. Au premier passage, on part d'un etat initial nul
+# --------------------------------------------------------
+  #if ( num_calc == 0 ) :
+  if ( num_calc >= 0 ) :
+#
+    resu[num_calc]=STAT_NON_LINE(MODELE=mode[num_calc],
                         CHAM_MATER=chma[num_calc],
                         EXCIT=(_F(CHARGE=bloq[num_calc],),
                                _F(CHARGE=pres[num_calc],),),
                         NEWTON=_F(REAC_ITER=1),
+                        CONVERGENCE=_F(ARRET='OUI',
+                                        TYPE='PIC',
+                                        ITER_GLOB_MAXI=20,
+                                        ITER_GLOB_ELAS=25),
                         COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                         INCREMENT=_F(LIST_INST=DEFLIST,
                                      INST_FIN=inst_fin,),);
+  #else :
+  if ( num_calc > 0 ) :
 #
-# 5.6. Extraction du deplacement
+# E.5.2. Aux passages suivants :
+# ------------------------------
+    DETRUIRE(INFO=1,CONCEPT = _F(NOM = (DEPL_N,),),);
+    ##DETRUIRE(INFO=1,CONCEPT = _F(NOM = (DEPL_N, SIGMA_G,),),);
 #
-  depl[num_calc]=POST_RELEVE_T(ACTION=_F(INTITULE='deplacement au  bord du trou',
-                                  GROUP_NO='GNP19',
+# E.6. Extraction du deplacement final
+#
+  if ( num_calc == nbre_calcul - 1 ) :
+#
+    depl[num_calc]=POST_RELEVE_T(ACTION=_F(INTITULE='deplacement au bord',
+                                  GROUP_NO='A1',
                                   RESULTAT=resu[num_calc],
                                   NOM_CHAM='DEPL',
                                   TOUT_CMP='OUI',
                                   OPERATION='EXTRACTION',),);
 
-###  IMPR_TABLE(TABLE=depl,);
-###  IMPR_TABLE(TABLE=depl,NOM_PARA=('INST','DX',),)
-###  IMPR_TABLE(FORMAT_R='1PF14.7',TABLE=depl[num_calc],NOM_PARA=('INST','DX',),)
-###  IMPR_TABLE(FORMAT_R='1PF14.7',TABLE=depl[num_calc],NOM_PARA=('INST','DY',),)
+    ###IMPR_TABLE(FORMAT_R='1PF14.7',TABLE=depl[num_calc],NOM_PARA=('INST','DX','DY',),)
+    ###IMPR_TABLE(FORMAT='XMGRACE',PILOTE='POSTSCRIPT',UNITE=31,TABLE=depl[num_calc],NOM_PARA=('INST','DX',),)
+    ###IMPR_TABLE(FORMAT='XMGRACE',PILOTE='POSTSCRIPT',UNITE=32,TABLE=depl[num_calc],NOM_PARA=('INST','DY',),)
+    ###IMPR_TABLE(FORMAT='XMGRACE',UNITE=41,TABLE=depl[num_calc],NOM_PARA=('INST','DX',),MARQUEUR=0,)
+    ###IMPR_TABLE(FORMAT='XMGRACE',UNITE=42,TABLE=depl[num_calc],NOM_PARA=('INST','DY',),MARQUEUR=0,)
 #
-# 5.7. Adaptation du maillage de num_calc vers num_calc+1
-#      ATTENTION : on est dans le cas particulier d une macro commande
-#      avec un concept sortant nomme derriere un mot cle simple
-#      ( MAILLAGE_NP1 ). Or les tableaux de concepts n existent pas vu
-#      d aster a l execution. Accas renomme M[num_calc] en M_num_calc. Il faut donc
-#      evaluer la chaine de caractere CO('M_i') avec i=num_calc+1
-#      Le format %d indique qu il doit evaluer l entier num_calc+1 donne
-#      derriere le deuxieme % (FORMAT C++)
+# E.7. Adaptation du maillage de num_calc vers num_calc+1, sauf a la toute fin
 #
   if ( num_calc < nbre_calcul - 1 ) :
 #
-# 5.7.1. Calcul de l'indicateur d'erreur
+# E.7.1. Calcul de l'indicateur d'erreur
 #
     resu[num_calc]=CALC_ELEM(reuse =resu[num_calc],
                       OPTION=('SIGM_ELNO',),
@@ -188,444 +237,70 @@ for num_calc in range(nbre_calcul):
                       RESULTAT=resu[num_calc],
                       INST=inst_fin,);
 #
-    Mad2[num_calc+1]=CO('Mad2_%d' % (num_calc+1))
+# E.7.2. Impression du resultat pour utilisation dans le cas_test de HOMARD sfr_1d_poignee_d2
 #
-    MACR_ADAP_MAIL( ADAPTATION= 'RAFFINEMENT',
-                    MAILLAGE_N = Mad2[num_calc],
-                    MAILLAGE_NP1 = Mad2[num_calc+1],
-                    RESULTAT_N = resu[num_calc],
+    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('DEPL',),INST=inst_fin,),);
+    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),INST=inst_fin,),);
+    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM='ERME_ELEM',NOM_CMP='ERREST',INST=inst_fin,),);
+#
+# E.7.3. Adaptation vraie
+#      ATTENTION : on est dans le cas particulier d une macro commande
+#      avec un concept sortant nomme derriere un mot cle simple
+#      ( MAILLAGE_NP1 ). Or les tableaux de concepts n existent pas vu
+#      d aster a l execution. Accas renomme M[num_calc] en M_num_calc. Il faut donc
+#      evaluer la chaine de caractere CO('M_i') avec i=num_calc+1
+#      Le format %d indique qu il doit evaluer l entier num_calc+1 donne
+#      derriere le deuxieme % (FORMAT C++)
+#
+    Mad2[num_calc+1]=CO('Mad2_%02d' % (num_calc+1))
+#
+    if num_calc <= 10 :
+      seuil = 0.03
+    elif num_calc <= 20 :
+      seuil = 0.02
+    else :
+      seuil = 0.01
+    MACR_ADAP_MAIL( ADAPTATION= 'RAFFINEMENT',  #Le maillage est raffine en fonction du champ
+                    MAILLAGE_N = Mad2[num_calc],     #Maillage a adapter
+                    MAILLAGE_NP1 = Mad2[num_calc+1], #Maillage issu de l adaptation
+                    DIAM_MIN = 0.00025, # Diametre minimal de maille = 1/80eme du rayon des percages internes
+                    RESULTAT_N = resu[num_calc], #Resultat contenant le champ de pilotage de l'adaptation
                     NOM_CHAM = 'ERME_ELEM',
                     NOM_CMP = 'ERREST' ,
                     INST=inst_fin,
-                    CRIT_RAFF_PE = 0.03,
-                    MAILLAGE_FRONTIERE = maill_fr,
-                    QUALITE='OUI',
-                    TAILLE='OUI'
+                    CRIT_RAFF_PE = seuil, #Critere de raffinement defini par une proportion de mailles
+                    MAILLAGE_FRONTIERE = maill_fr, #Maillage de la frontiere courbe a suivre
+                    MAJ_CHAM = ( _F( CHAM_MAJ   = CO('DEPL_N',),
+                                     TYPE_CHAM = 'NOEU_DEPL_R',
+                                     RESULTAT=resu[num_calc], NOM_CHAM   = 'DEPL',
+                                     INST=inst_fin,),
+                               ),
                   )
+#####a reprendre quand ECLA_PG sera implante dans HOMARD
+                                 ###_F( CHAM_MAJ   = CO('SIGMA_G'),
+                                     ###TYPE_CHAM  = 'ELGA_SIEF_R',
+                                     ###RESULTAT=resu[num_calc], NOM_CHAM   = 'SIEF_ELGA',
+                                     ###INST=inst_fin,),
+                    #QUALITE='OUI',
+                    #TAILLE='OUI'
 #
-# 5.8. Impression du resultat pour utilisation dans les cas_tests de HOMARD
-#
-###  IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],INST=inst_fin,),);
-#
-# 6. Tests de non regression
+# F. Tests de non regression
 #    On met volontairement en dur le nom du concept resultat. Cela permet de tester
 #    que le mecanisme de nommage automatique n'a pas ete degrade.
 #
-TEST_RESU(RESU=(
-       _F(  RESULTAT = resu_3,    INST=T_final,
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',
+if ( nbre_calcul >= 4 ) :
+  ###IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('DEPL',),INST=inst_fin,),);
+  TEST_RESU(RESU=(
+       _F(  RESULTAT = resu_3,    INST=T_test_resu,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'A1',
             CRITERE = 'RELATIF',  PRECISION = 1.E-5,
-            NOM_CMP = 'DX',       VALE = -1.140817E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '10.01.25' ),
-       _F(  RESULTAT = resu_3,    INST=T_final,
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',
+            NOM_CMP = 'DX',       VALE = -3.891854E-05,
+            REFERENCE = 'NON_REGRESSION', VERSION = '11.00.23' ),
+       _F(  RESULTAT = resu_3,    INST=T_test_resu,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'A1',
             CRITERE = 'RELATIF',  PRECISION = 1.1E-5,
-            NOM_CMP = 'DY',       VALE = -1.004880E-01,
-            REFERENCE = 'NON_REGRESSION', VERSION = '10.01.25' ))
+            NOM_CMP = 'DY',       VALE = -1.394744E-04,
+            REFERENCE = 'NON_REGRESSION', VERSION = '11.00.23' ))
           )
 #
-####      program homard
-####c
-####c Ce programme ecrit les deux fichiers .dat qui servent de
-####c jeu de commandes au mailleur SIMAIL.
-####c . fichier fort.3 : pour le maillage de calcul
-####c . fichier fort.4 : pour le maillage de la frontiere
-####c
-####      implicit none
-####c
-####      double precision rayon
-####      parameter ( rayon = 2.d-2 )
-####c
-####      integer nbpos2, nbpoin
-####      parameter ( nbpos2 = 10, nbpoin = 2*nbpos2 + 7 )
-####c
-####c     parametre de discretisation
-####      integer discre
-####      parameter ( discre = 1 )
-####c
-####      integer nfic
-####      integer iaux, jaux
-####      integer nbptsg
-####c
-####      double precision racde3
-####      double precision coor(nbpoin,2)
-####c
-####c====
-####c 1. on cree les deux jeux de commandes
-####c====
-####c
-####      do 10 , nfic = 3 , 4
-####c
-####c 1.1. ==> le titre
-####c
-####      if ( nfic.eq.3 ) then
-####        write (nfic,10000) 'Poignee'
-####      else
-####        write (nfic,10000) 'Bords'
-####      endif
-####c
-####c 1.2. ==> la dimension
-####c
-####      write (nfic,10000) 'DIME'
-####c
-####      write (nfic,20002) 2,2,'$ IMPRE NDIM'
-####c
-####c 1.3. ==> les points
-####c
-####      racde3 = sqrt(3.d0)
-####c    les sommets de la moitie superieure
-####      coor(1,1) = 0.d0
-####      coor(1,2) = 2.d0 * rayon
-####      coor(2,1) = 4.d0 * rayon
-####      coor(2,2) = 2.d0 * rayon
-####      coor(3,1) = 5.d0 * rayon
-####      coor(3,2) = racde3 * rayon
-####      coor(4,1) = 7.d0 * rayon
-####      coor(4,2) = racde3 * rayon
-####      coor(5,1) = 8.d0 * rayon
-####      coor(5,2) = 2.d0 * rayon
-####      coor(6,1) = 9.d0 * rayon
-####      coor(6,2) = 2.d0 * rayon
-####      coor(7,1) = 3.d0 * rayon
-####      coor(7,2) = rayon
-####      coor(8,1) = 4.d0 * rayon
-####      coor(8,2) = rayon
-####      coor(9,1) = 8.d0 * rayon
-####      coor(9,2) = rayon
-####      coor(10,1) = 9.d0 * rayon
-####      coor(10,2) = rayon
-####c    les sommets de la moitie inferieure
-####      do 131 , iaux = 1 , nbpos2
-####        coor(iaux+10,1) = coor(iaux,1)
-####        coor(iaux+10,2) = -coor(iaux,2)
-####  131 continue
-####c    les centres
-####      coor(21,1) = 3.d0 * rayon
-####      coor(21,2) = 0.d0
-####      coor(22,1) = 4.d0 * rayon
-####      coor(22,2) = 0.d0
-####      coor(23,1) = 8.d0 * rayon
-####      coor(23,2) = 0.d0
-####      coor(24,1) = 9.d0 * rayon
-####      coor(24,2) = 0.d0
-####      coor(25,1) = 6.d0 * rayon
-####      coor(25,2) = 2.d0 * rayon * racde3
-####      coor(26,1) = coor(25,1)
-####      coor(26,2) = -coor(25,2)
-####c    point auxiliaire
-####      coor(27,1) = 7.d0 * rayon
-####      coor(27,2) = 0.d0
-####c
-####c    le numero de reference est :
-####c    . celui du point pour un point qui sera un noeud,
-####c    . 0 sinon
-####      write (nfic,11000) 'POINTS'
-####      write (nfic,11000) '     2   CART    0    $ IMPRE TYPCOO ICONST'
-####      write (nfic,11000) '$ NUM  REF   X    Y    Z'
-####      do 132 , iaux = 1 , nbpoin
-####        if ( iaux.le.2*nbpos2 ) then
-####          jaux = iaux
-####        else
-####          jaux = 0
-####        endif
-####        write (nfic,30000) iaux, jaux, coor(iaux,1), coor(iaux,2)
-####  132 continue
-####      write (nfic,10002) 'POINTS'
-####c
-####c 1.4. ==> les lignes
-####c          le nombre de points du segment le plus petit
-####c          doit etre pair et >=2
-####c
-####      if ( nfic.eq.3 ) then
-####        nbptsg = 2 * discre
-####      else
-####        nbptsg = 100 * discre
-####      endif
-####c
-####      write (nfic,11000) 'LIGNES'
-####      write (nfic,11000) '     2   0    $ IMPRE ICONST'
-####      write (nfic,11000) '$ NO NOEUDS NP1 NP2 NREF NFFRON RAISON'
-####c
-####c    pour eviter des creations de numeros de reference sur les futurs
-####c    noeuds, le numero de reference des lignes est toujours nul
-####c
-####c    les droites
-####      if ( nfic.eq.3 ) then
-####        iaux = 3*nbptsg
-####      else
-####        iaux = 2
-####      endif
-####      write (nfic,30001) 1, iaux,  1,  2,   0, 0, 1.d0
-####      write (nfic,30001) 7, iaux, 11, 12,   0, 0, 1.d0
-####      write (nfic,30001) 9, iaux, 11,  1,   0, 0, 1.d0
-####      if ( nfic.eq.3 ) then
-####        iaux = nbptsg
-####      endif
-####      write (nfic,30001) 2, iaux,  5,  6,   0, 0, 1.d0
-####      write (nfic,30001) 3, iaux,  7,  8,   0, 0, 1.d0
-####      write (nfic,30001) 4, iaux,  9, 10,   0, 0, 1.d0
-####      write (nfic,30001) 5, iaux, 17, 18,   0, 0, 1.d0
-####      write (nfic,30001) 6, iaux, 19, 20,   0, 0, 1.d0
-####      write (nfic,30001) 8, iaux, 15, 16,   0, 0, 1.d0
-####c    les arcs de cercle
-####      write (nfic,30001) 10,     nbptsg,  2,  3,  0, -5, 1.d0
-####      write (nfic,30001) 22
-####      write (nfic,30001) 11,     nbptsg, 12, 13,  0, -5, 1.d0
-####      write (nfic,30001) 22
-####      write (nfic,30001) 12, 3*nbptsg/2,  3,  4,  0, -5, 1.d0
-####      write (nfic,30001) 25
-####      write (nfic,30001) 13, 3*nbptsg/2, 13, 14,  0, -5, 1.d0
-####      write (nfic,30001) 26
-####      write (nfic,30001) 14,     nbptsg,  4,  5,  0, -5, 1.d0
-####      write (nfic,30001) 23
-####      write (nfic,30001) 15,     nbptsg, 14, 15,  0, -5, 1.d0
-####      write (nfic,30001) 23
-####      write (nfic,30001) 16,   3*nbptsg,  6, 16,  0, -4, 1.d0
-####      write (nfic,30001) 27
-####      write (nfic,30001) 17,   2*nbptsg,  7, 17,  0, -4, 1.d0
-####      write (nfic,30001) 22
-####      write (nfic,30001) 18,   2*nbptsg,  8, 18,  0, -4, 1.d0
-####      write (nfic,30001) 21
-####      write (nfic,30001) 19,   2*nbptsg,  9, 19,  0, -4, 1.d0
-####      write (nfic,30001) 24
-####      write (nfic,30001) 20,   2*nbptsg, 10, 20,  0, -4, 1.d0
-####      write (nfic,30001) 23
-####c
-####      write (nfic,10002) 'LIGNES'
-####c
-####c 1.5. ==> maillage des lignes
-####c
-####      iaux = nfic
-####      call malign ( iaux )
-####c
-####c 1.6. ==> maillage de la surface
-####c
-####      if ( nfic.eq.3 ) then
-####c
-####        write (nfic,10000) 'TRVO'
-####        write (nfic,20004) 2, 2, 19, 20, '$ IMPRE NIVEAU NDSDE NBRELI'
-####        write (nfic,20001)  1, '$ NOLO'
-####        write (nfic,20001) 10, '$ NOLO'
-####        write (nfic,20001) 12, '$ NOLO'
-####        write (nfic,20001) 14, '$ NOLO'
-####        write (nfic,20001)  2, '$ NOLO'
-####        write (nfic,20001) 16, '$ NOLO'
-####        write (nfic,20001)  8, '$ NOLO'
-####        write (nfic,20001) 15, '$ NOLO'
-####        write (nfic,20001) 13, '$ NOLO'
-####        write (nfic,20001) 11, '$ NOLO'
-####        write (nfic,20001)  7, '$ NOLO'
-####        write (nfic,20001)  9, '$ NOLO'
-####        write (nfic,20001)  3, '$ NOLO'
-####        write (nfic,20001) 18, '$ NOLO'
-####        write (nfic,20001)  5, '$ NOLO'
-####        write (nfic,20001) 17, '$ NOLO'
-####        write (nfic,20001)  4, '$ NOLO'
-####        write (nfic,20001) 20, '$ NOLO'
-####        write (nfic,20001)  6, '$ NOLO'
-####        write (nfic,20001) 19, '$ NOLO'
-####        write (nfic,20003) 3, 0, 101, '$ NCOMP NBRINT IOPT'
-####        write (nfic,10001) 'ARIT', 1
-####        write (nfic,20001) 12, '$ COMPOSANTE'
-####        write (nfic,20001)  4, '$ COMPOSANTE'
-####        write (nfic,20001)  4, '$ COMPOSANTE'
-####c
-####        write (nfic,10000) 'REGU'
-####        write (nfic,20003) 2, 2, 1, '$ IMPRE NIVEA1 NIVEA2'
-####        write (nfic,20002) 5, 0, '$ NBITER NBPINT'
-####        call recm ( nfic, 1, 20, 21 )
-####c
-####      endif
-####c
-####c 1.7. ==> sauvegarde
-####c
-####      write (nfic,10000) 'SAUV'
-####      if ( nfic.eq.3 ) then
-####        iaux = 21
-####      else
-####        iaux = 20
-####      endif
-####      write (nfic,20002) 2, iaux, '$ IMPRE NIVEAU'
-####      write (nfic,11000) '$ NOM DU FICHIER DE SAUVEGARDE'
-####      if ( nfic.eq.3 ) then
-####        write (nfic,11000)'./homard_s.des'
-####      else
-####        write (nfic,11000)'./homard_f.des'
-####      endif
-####c
-####c 1.8. ==> la fin
-####c
-####      write (nfic,10000) 'FIN'
-####c
-####   10 continue
-####c      
-####10000 format ('''',a,'''')
-####11000 format (a)
-####10001 format (a,2x,i6)
-####10002 format (' 0    $ FIN DES ',a)
-####20001 format (i6,10x,a)
-####20002 format (2i6,10x,a)
-####20003 format (3i6,10x,a)
-####20004 format (4i6,10x,a)
-####30000 format (2i6,3g15.6)
-####30001 format (6i6,g15.6)
-####c
-####      end
-####c
-####c=======================================================================
-####c
-####      subroutine malign ( nfic )
-####c
-####c maillage des lignes
-####c
-####      integer nfic
-####c
-####      integer ligne(10)
-####c
-####c 1. ==> sous-domaine 1
-####c
-####      ligne(1) = 9
-####      call gepo ( nfic, 21, 1, 1, ligne )
-####c
-####c 2. ==> sous-domaine 2
-####c
-####      ligne(1) = 1
-####      call gepo ( nfic, 1, 2, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####c 3. ==> sous-domaine 3
-####c
-####      ligne(1) = 10
-####      ligne(2) = 12
-####      ligne(3) = 14
-####      call gepo ( nfic, 1, 3, 3, ligne )
-####      call recm ( nfic, 1, 20, 21 )
-####c
-####c 4. ==> sous-domaine 4
-####c
-####      ligne(1) = 2
-####      call gepo ( nfic, 1, 4, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####c 5. ==> sous-domaine 5
-####c
-####      ligne(1) = 16
-####      call gepo ( nfic, 1, 5, 1, ligne )
-####      call recm ( nfic, 1, 20, 21 )
-####c
-####c 6. ==> sous-domaine 6
-####c
-####      ligne(1) = 8
-####      call gepo ( nfic, 1, 6, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####c 7. ==> sous-domaine 7
-####c
-####      ligne(1) = 11
-####      ligne(2) = 13
-####      ligne(3) = 15
-####      call gepo ( nfic, 1, 7, 3, ligne )
-####      call recm ( nfic, 1, 20, 21 )
-####c
-####c 8. ==> sous-domaine 8
-####c
-####      ligne(1) = 7
-####      call gepo ( nfic, 1, 8, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####c 9. ==> sous-domaine 9
-####c
-####      ligne(1) = 17
-####      call gepo ( nfic, 1, 9, 1, ligne )
-####      call recm ( nfic, 1, 20, 21 )
-####c
-####c 10. ==> sous-domaine 10
-####c
-####      ligne(1) = 18
-####      call gepo ( nfic, 1, 10, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####c 11. ==> sous-domaine 11
-####c
-####      ligne(1) = 3
-####      call gepo ( nfic, 1, 11, 1, ligne )
-####      call recm ( nfic, 1, 20, 21 )
-####c
-####c 12. ==> sous-domaine 12
-####c
-####      ligne(1) = 5
-####      call gepo ( nfic, 1, 12, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####c 13. ==> sous-domaine 13
-####c
-####      ligne(1) = 19
-####      call gepo ( nfic, 1, 13, 1, ligne )
-####      call recm ( nfic, 1, 20, 21 )
-####c
-####c 14. ==> sous-domaine 14
-####c
-####      ligne(1) = 20
-####      call gepo ( nfic, 1, 14, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####c 15. ==> sous-domaine 15
-####c
-####      ligne(1) = 4
-####      call gepo ( nfic, 1, 15, 1, ligne )
-####      call recm ( nfic, 1, 20, 21 )
-####c
-####c 16. ==> sous-domaine 16
-####c
-####      ligne(1) = 6
-####      call gepo ( nfic, 1, 16, 1, ligne )
-####      call recm ( nfic, 1, 21, 20 )
-####c
-####      end
-####c
-####c=======================================================================
-####c
-####      subroutine gepo ( nfic, niveau, ndsde, nbreli, ligne )
-####c
-####      implicit none
-####      integer nfic
-####      integer niveau, ndsde, nbreli, ligne(*)
-####      integer iaux
-####c
-####      write (nfic,10000) 'GEPO'
-####      write (nfic,20005) 2, niveau, ndsde, nbreli, 1,
-####     >                   '$ IMPRE NIVEAU NDSDE NBRELI NS1L'
-####      do 11 , iaux = 1 , nbreli
-####        write (nfic,20001) ligne(iaux), '$ NOLO'
-####   11 continue
-####c
-####10000 format ('''',a,'''')
-####20001 format (i6,10x,a)
-####20005 format (5i6,10x,a)
-####c
-####      end
-####c
-####c=======================================================================
-####c
-####      subroutine recm ( nfic, nive1, nive2, niveau )
-####c
-####      implicit none
-####      integer nfic
-####      integer nive1, nive2, niveau
-####c
-####      write (nfic,10000) 'RECM'
-####      write (nfic,21002) 2, 0.001, 0, '$ IMPRE EPS IOPT'
-####      write (nfic,11000) '                  $ LISTE'
-####      write (nfic,20001) nive1
-####      write (nfic,20001) nive2
-####      write (nfic,20001) -1, '$ FIN DE LISTE'
-####      write (nfic,20001) niveau, '$ NIVEAU RESULTAT'
-####c
-####10000 format ('''',a,'''')
-####11000 format (a)
-####20001 format (i6,10x,a)
-####21002 format (i6,10x,f5.3,i7,10x,a)
-####c
-####      end
-####
 FIN()

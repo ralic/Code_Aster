@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF discretisation Messages  DATE 07/11/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,14 +101,11 @@ Instant initial introuvable dans la liste d'instants (LIST_INST).
 """),
 
 94 : _(u"""
-  -> Le numéro d'ordre correspondant à l'instant final de calcul NUME_INST_FIN
-     n'appartient pas à la liste des numéros d'ordre.
-     Dans ce cas, Aster considère pour numéro d'ordre final, le dernier de
-     la liste fournie.
+  -> Instant final introuvable dans la liste d'instants (LIST_INST)
+     Dans ce cas, Aster considère pour instant final, le dernier de la liste fournie.
   -> Risque & Conseil :
-     Afin d'éviter des pertes de résultats, assurez-vous que le numéro d'ordre
-     associé à l'instant NUME_INST_FIN appartienne bien à la liste des numéros
-     d'ordre.
+         Vérifiez le mot-clé INST_FIN (ou NUME_INST_FIN),
+         en tenant compte de la précision (mot-clé PRECISION).
 """),
 
 

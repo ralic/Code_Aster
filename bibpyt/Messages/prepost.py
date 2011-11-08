@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ cata_msg = {
 
 5 : _(u"""
  la longueur du défaut n'est pas en accord avec les tables définies
- coté revetement et coté métal de base
+ coté revêtement et coté métal de base
 """),
 
 8 : _(u"""
@@ -47,7 +47,7 @@ cata_msg = {
 """),
 
 11 : _(u"""
- nous ne pouvons pas récupérer la valeur du module d'Young : E.
+ nous ne pouvons pas récupérer la valeur du module de Young : E.
 """),
 
 12 : _(u"""
@@ -90,7 +90,7 @@ cata_msg = {
  Celui-ci ne contient pas d'objet de type maillage.
  
  Risque & Conseil:
- Assurez vous que votre procédure gibi sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
+ Assurez vous que votre procédure GIBI sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
 """),
 
 51 : _(u"""
@@ -130,7 +130,7 @@ cata_msg = {
 """),
 
 60 : _(u"""
- arret sur erreur(s)
+ arrêt sur erreur(s)
 """),
 
 69 : _(u"""
@@ -151,7 +151,7 @@ cata_msg = {
 
 76 : _(u"""
   -> Il y a des groupes de noeuds dans le maillage %(k1)s.
-     Ils  n'apparaitront pas dans le fichier géométrie ENSIGHT.
+     Ils  n'apparaîtront pas dans le fichier géométrie ENSIGHT.
      Seuls des groupes de mailles peuvent y être intégrés.
 """),
 
@@ -168,15 +168,15 @@ cata_msg = {
 """),
 
 83: _(u"""
- Certaines composantes selectionnées ne font pas partie du LIGREL
+ Certaines composantes sélectionnées ne font pas partie du LIGREL
 """),
 
 84 : _(u"""
- élément PYRA5 non disponible dans IDEAS
+ élément PYRAM5 non disponible dans IDEAS
 """),
 
 85 : _(u"""
- élément PYRA13 non disponible dans IDEAS
+ élément PYRAM13 non disponible dans IDEAS
 """),
 
 86 : _(u"""

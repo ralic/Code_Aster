@@ -1,0 +1,308 @@
+# MODIF  DATE 07/11/2011   AUTEUR NICOLAS G.NICOLAS 
+# RESPONSABLE GNICOLAS G.NICOLAS
+# TITRE COUPLAGE ASTER_HOMARD - CAS THM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# zzzz175b.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
+
+DEBUT(CODE=_F(NOM='zzzz175b',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='NON',)
+
+#  A. Incontournables
+#  A.1. Bases
+# ----------
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+KINT=DEFI_CONSTANTE(VALE=1.E-08,);
+BIDON=DEFI_CONSTANTE(VALE=1792.0,);
+
+#  1.2. Discretisation en temps
+# ---------------------------
+TFINAL = 0.0001;
+NOMBRE_DT = 5
+LI=DEFI_LIST_REEL(DEBUT=0.0,
+                  INTERVALLE=_F(JUSQU_A=TFINAL,
+                                NOMBRE=NOMBRE_DT,),);
+
+#  A.3. Parametres d adaptation de maillage
+# ----------------------------------------
+n_adap_max = 4;
+BLOC     = [None]*(10*(n_adap_max+1));
+#
+#  A.4. Proprietes du materiau (copiees sur wtnl100a)
+# ---------------------------------------------------
+
+MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
+                               NU=0.0,
+                               RHO=2800.0,
+                               ALPHA=1.0E-05,),
+                       COMP_THM='LIQU_SATU',
+                       THM_INIT=_F(PRE1=1.E6,
+                                   PORO=0.5,
+                                   TEMP=293.0,
+                                   PRE2=1.E5,
+                                   PRES_VAPE=2320.0,),
+                       THM_DIFFU=_F(RHO=2800.0,
+                                    BIOT_COEF=1.0,
+                                    PESA_X=0.0,
+                                    PESA_Y=0.0,
+                                    PESA_Z=0.0,
+                                    CP=660.0,
+                                    PERM_IN=KINT,
+                                    R_GAZ=8.315,
+                                    SATU_PRES=UN,
+                                    D_SATU_PRES=ZERO,
+                                    PERM_LIQU=UN,
+                                    D_PERM_LIQU_SATU=ZERO,
+                                    PERM_GAZ=BIDON,
+                                    D_PERM_SATU_GAZ=BIDON,
+                                    D_PERM_PRES_GAZ=BIDON,),
+                       THM_LIQU=_F(RHO=1000.0,
+                                   UN_SUR_K=0.0,
+                                   VISC=UN,
+                                   D_VISC_TEMP=ZERO,
+                                   ALPHA=1.E-4,
+                                   CP=4180.0,),
+                       THM_GAZ=_F(MASS_MOL=0.02896,
+                                  CP=1000.0,
+                                  VISC=BIDON,
+                                  D_VISC_TEMP=BIDON,),
+                       THM_VAPE_GAZ=_F(MASS_MOL=0.018,
+                                       CP=1870.0,),);
+#
+# B. Boucle d adaptation
+# ----------------------
+for n_adap in range(n_adap_max ) :
+
+  #print 'Numero de calcul :', n_adap
+#
+# B.1. Initialisations de la boucle
+# ---------------------------------
+# B.1.1. Au premier passage, on lit le maillage initial
+# -----------------------------------------------------
+  if ( n_adap == 0 ) :
+
+    BLOC[n_adap]=LIRE_MAILLAGE(FORMAT='MED',);
+
+    BLOC[n_adap]=MODI_MAILLAGE(reuse =BLOC[n_adap],
+                   MAILLAGE=BLOC[n_adap],
+                   ORIE_PEAU_3D=_F(GROUP_MA=('Z_MIN','Z_MAX','COTE_0','COTE_1','COTE_2','COTE_3',),),);
+
+#
+    #MACR_INFO_MAIL( MAILLAGE=BLOC[n_adap],
+                    #NOMBRE='OUI',
+                    #QUALITE='OUI',
+                    #TAILLE='OUI',
+                    #CONNEXITE='OUI')
+#
+  else :
+#
+# B.1.2. Aux passages suivants, on detruit les concepts a reprendre
+# -----------------------------------------------------------------
+    DETRUIRE(INFO=1,CONCEPT = _F(NOM = (MODELE,CHMAT,CHCINE,CHMECA,RESU),),);
+#
+# B.2. Modele courant
+# ------------------
+  MODELE=AFFE_MODELE(MAILLAGE=BLOC[n_adap],
+                    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D_HMS',),);
+# B.3. Materiau
+# -------------
+  CHMAT=AFFE_MATERIAU(MAILLAGE=BLOC[n_adap],
+                      AFFE=_F(GROUP_MA='BLOC', MATER=MATERIAU,),);
+#
+# B.4. Conditions aux limites
+# ---------------------------
+#
+#    Face     |     Mecanique      |   Hydraulique
+# ------------------------------------------------------
+#  Superieure | Contrainte imposee | Flux nul
+#  Inferieure | Deplacement nul    | Flux nul
+#  Laterale   | Contrainte nulle   | Pression imposee
+
+  CHCINE=AFFE_CHAR_CINE(MODELE=MODELE,
+                      MECA_IMPO=(_F(GROUP_MA='Z_MIN',
+                                    DX=0.0,DY=0.0,DZ=0.0,),
+                                 _F(GROUP_MA=('COTE_0','COTE_1','COTE_2','COTE_3',),
+                                    PRE1=1.E5,),),);
+
+  CHMECA=AFFE_CHAR_MECA(MODELE=MODELE,
+                      PRES_REP=(_F(GROUP_MA=('COTE_0','COTE_1','COTE_2','COTE_3',),
+                                    PRES=0.0,),
+                                _F(GROUP_MA='Z_MAX',
+                                    PRES=1.E5,),),
+                      FLUX_THM_REP=(_F(GROUP_MA=('Z_MIN','Z_MAX'),
+                                    FLUN_HYDR1=0.0,),),);
+
+# B.5. Calcul
+# -----------
+# B.5.1. Au premier passage, on part d'un etat initial nul
+# --------------------------------------------------------
+  if ( n_adap == 0 ) :
+
+    RESU=STAT_NON_LINE(MODELE=MODELE,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHCINE,),
+                          _F(CHARGE=CHMECA,),),
+                   COMP_INCR=_F(RELATION='KIT_HM',
+                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                PARM_THETA=0.57,),
+                   INCREMENT=_F(LIST_INST=LI,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=10,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),);
+  else :
+#
+# B.5.2. Aux passages suivants :
+# ------------------------------
+# Maintenant que le modele est defini sur le nouveau maillage :
+# . Mise en forme du champ de deplacement ASTER a partir des champs interpoles lors
+#   du MACR_ADAP_MAIL qui a ete fait : D_MECA (le deplacement purement mecanique) et
+#   D_PRES (la pression hydraulique)
+    DP_IN = CREA_CHAMP( TYPE_CHAM = 'NOEU_DEPL_R',
+            OPERATION = 'ASSE',
+            MODELE    = MODELE,
+            PROL_ZERO = 'OUI',
+            ASSE      = (_F(TOUT='OUI',CHAM_GD  = D_MECA),
+                         _F(TOUT='OUI',CHAM_GD  = D_PRES, NOM_CMP = 'PRE1'),),);
+    DETRUIRE(INFO=1,CONCEPT = _F(NOM = (D_MECA, D_PRES,),),);
+#
+# . Lecture des champs aux points de Gauss qui avaient ete mis a jour mais
+#   mais que l'on ne pouvait pas lire tant que le modele etait absent : contraintes et variables internes
+    MACR_ADAP_MAIL (
+       ADAPTATION   = 'LECTURE',
+       MAILLAGE_N   = BLOC[n_adap],  #Maillage issu de l adaptation
+       MODELE=MODELE,                #Modele mis sur ce maillage
+                   );
+# Calcul avec un etat initial en deplacement (DP_IN), contraintes (SG_IN) et variables internes (V_IN)
+    RESU=STAT_NON_LINE(MODELE=MODELE,
+                       ETAT_INIT = _F( DEPL = DP_IN, SIGM = SG_IN, VARI = V_IN,),
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHCINE,),
+                          _F(CHARGE=CHMECA,),),
+                   COMP_INCR=_F(RELATION='KIT_HM',
+                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                PARM_THETA=0.57,),
+                   INCREMENT=_F(LIST_INST=LI,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=10,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),);
+#
+    DETRUIRE(INFO=1,CONCEPT = _F(NOM = (DP_IN, SG_IN, V_IN,),),);
+
+# B.7. Adaptation, sauf a la toute fin
+# ------------------------------------
+  if ( n_adap<n_adap_max-1 ) :
+# B.7.1. Extraction d'un champ pour le deplacement purement mecanique
+# -------------------------------------------------------------------
+    DEPLI= CREA_CHAMP(OPERATION='EXTR',
+                      TYPE_CHAM='NOEU_DEPL_R',
+                      RESULTAT=RESU,NOM_CHAM='DEPL',INST=TFINAL,);
+
+    DEPLIR=CREA_CHAMP(OPERATION='ASSE',
+                      TYPE_CHAM='NOEU_DEPL_R',
+                      MAILLAGE=BLOC[n_adap],
+                      ASSE=( _F(TOUT='OUI', CHAM_GD=DEPLI, NOM_CMP='DX',),
+                             _F(TOUT='OUI', CHAM_GD=DEPLI, NOM_CMP='DY',),
+                             _F(TOUT='OUI', CHAM_GD=DEPLI, NOM_CMP='DZ',),),);
+#
+# B.7.2. Impression MED eventuelles dans le cas_test de HOMARD sfr_2d_thm_d2
+    ###IMPR_RESU(FORMAT='MED',
+              ###UNITE=80+n_adap,
+              ###RESU=_F(RESULTAT=RESU,NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ',),
+                      ###INST=TFINAL),);
+    ###IMPR_RESU(FORMAT='MED',
+              ###UNITE=80+n_adap,
+              ###RESU=_F(RESULTAT=RESU,NOM_CHAM='DEPL',NOM_CMP=('PRE1',),
+                      ###INST=TFINAL,
+                      ###NOM_CHAM_MED='PRESSION',
+                      ###),);
+    ###IMPR_RESU(FORMAT='MED',
+              ###UNITE=80+n_adap,
+              ###RESU=_F(RESULTAT=RESU,NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
+                      ###INST=TFINAL,
+                      ###),);
+    ###IMPR_RESU(FORMAT='MED',
+              ###UNITE=80+n_adap,
+              ###RESU=_F(CHAM_GD=DEPLIR),);
+# B.7.3. Adaptation
+# -----------------
+    BLOC[n_adap+1]=CO('BLOC_%d'%(n_adap+1),);
+#
+    MACR_ADAP_MAIL (
+       ADAPTATION   = 'RAFF_DERA',    #Le maillage est raffine et deraffine en fonction d'un champ
+       MAILLAGE_N   = BLOC[n_adap],      #Maillage a adapter
+       MAILLAGE_NP1 = BLOC[n_adap+1],    #Maillage issu de l adaptation
+       CHAM_GD      = DEPLIR,     #Champ de pilotage de l adaptation avec Homard
+       USAGE_CHAMP = 'SAUT',      #Pilotage par saut du champ d'une maille a l'autre
+       CRIT_RAFF_PE = 0.03,       #Critere de raffinement defini par une proportion de mailles a raffiner
+       CRIT_DERA_PE = 0.20,       #Critere de deraffinement defini par une proportion de mailles a deraffiner
+       FRONTIERE_ANALYTIQUE = (   #Description des frontieres 2D du bloc
+              _F (GROUP_MA = 'COTE_0',
+                  NOM = 'COTE_0',
+                  TYPE = 'CYLINDRE',
+                  X_CENTRE = 0.0, Y_CENTRE = 0.0, Z_CENTRE = 0.0,
+                  X_AXE=  0., Y_AXE=  0., Z_AXE=  1.,
+                  RAYON = 4.,),
+              _F (GROUP_MA = 'COTE_1',
+                  NOM = 'COTE_1',
+                  TYPE = 'CYLINDRE',
+                  X_CENTRE = 0.0, Y_CENTRE = 9.0, Z_CENTRE = 0.0,
+                  X_AXE=  0., Y_AXE=  0., Z_AXE=  1.,
+                  RAYON = 5,),
+              _F (GROUP_MA = 'COTE_2',
+                  NOM = 'COTE_2',
+                  TYPE = 'CYLINDRE',
+                  X_CENTRE = 0.0, Y_CENTRE = -9.0, Z_CENTRE = 0.0,
+                  X_AXE=  0., Y_AXE=  0., Z_AXE=  1.,
+                  RAYON = 5,),
+              _F (GROUP_MA = 'COTE_3',
+                  NOM = 'COTE_3',
+                  TYPE = 'CYLINDRE',
+                  X_CENTRE = 9.0, Y_CENTRE = 0.0, Z_CENTRE = 0.0,
+                  X_AXE=  0., Y_AXE=  0., Z_AXE=  1.,
+                  RAYON = 7.72792206,),),
+       MAJ_CHAM = ( _F( CHAM_MAJ   = CO('D_MECA',),   # Deplacement aux noeuds : lu tout de suite
+                        TYPE_CHAM  = 'NOEU_DEPL_R',
+                        RESULTAT=RESU, NOM_CHAM   = 'DEPL', NOM_CMP    = ('DX','DY','DZ'),
+                        NUME_ORDRE=NOMBRE_DT,),
+                    _F( CHAM_MAJ    = CO('D_PRES'),  # Pression aux noeuds : lu tout de suite
+                        TYPE_CHAM  = 'NOEU_DEPL_R',
+                        RESULTAT=RESU, NOM_CHAM   = 'DEPL', NOM_CMP    = 'PRE1',
+                        NUME_ORDRE=NOMBRE_DT,),
+                    _F( CHAM_MAJ    = CO('SG_IN'),  # Contraintes aux points de Gauss : lu plus tard
+                        TYPE_CHAM  = 'ELGA_SIEF_R',
+                        RESULTAT=RESU, NOM_CHAM   = 'SIEF_ELGA',
+                        NUME_ORDRE=NOMBRE_DT,),
+                    _F( CHAM_MAJ    = CO('V_IN'),  # Variables internes aux points de Gauss : lu plus tard
+                        TYPE_CHAM  = 'ELGA_VARI_R',
+                        RESULTAT=RESU, NOM_CHAM   = 'VARI_ELGA',
+                        NUME_ORDRE=NOMBRE_DT,),
+                  ),
+                  );
+    DETRUIRE(INFO=1,CONCEPT = _F(NOM = (DEPLI,DEPLIR,),),);
+# C. Test de non-regression
+# -------------------------
+TEST_RESU(RESU=(
+       _F(  RESULTAT = RESU,   NUME_ORDRE = NOMBRE_DT,
+            NOM_CHAM = 'DEPL',      GROUP_NO = 'A',
+            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
+            NOM_CMP = 'DZ',       VALE = -5.7915543E-02,
+            REFERENCE = 'NON_REGRESSION', VERSION = '11.00.07'  ))
+          )
+
+FIN();

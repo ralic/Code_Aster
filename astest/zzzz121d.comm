@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/11/2011   AUTEUR NICOLAS G.NICOLAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # zzzz121d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -65,29 +65,25 @@ DEBUT(CODE=_F(NOM='ZZZZ121D',
 # 0. Formules invariantes
 # 0.1. ==> Chargements sur les bords
 
-F1 = FORMULE(VALE=
-"""
+F1 = FORMULE(VALE="""
 1.-(1.5*cos(2.*atan2(Y,4.))+cos(4.*atan2(Y,4.))) /(16.+Y*Y)
                             +(3.*cos(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
               """,
              NOM_PARA='Y',);
 
-F2 = FORMULE(VALE=
-"""
+F2 = FORMULE(VALE="""
 -(0.5*sin(2.*atan2(Y,4.))+sin(4.*atan2(Y,4.))) /(16.+Y*Y)
                              +(3.*sin(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
               """,
              NOM_PARA='Y',);
 
-F3 = FORMULE(VALE=
-"""
+F3 = FORMULE(VALE="""
 -(0.5*sin(2.*atan2(4.,X))+sin(4.*atan2(4.,X))) /(16.+X*X)
                              +(3.*sin(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
               """,
              NOM_PARA='X',);
 
-F4 = FORMULE(VALE=
-"""
+F4 = FORMULE(VALE="""
 -(0.5*cos(2.*atan2(4.,X))-cos(4.*atan2(4.,X))) /(16.+X*X)
                              -(3.*cos(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
               """,
@@ -129,13 +125,6 @@ ARC=LIRE_MAILLAGE(UNITE=19,
                   NOM_MED='ARC',
                   INFO_MED=1,
                   INFO=1,);
-#
-#      On imprime ce maillage pour utilisation dans le cas-test homard sfr_mix_2d_zzzz121d_d1
-##IMPR_RESU(
-##FORMAT='MED',
-##UNITE=79,
-##RESU=_F(MAILLAGE=ARC,),
-##);
 
 #
 # 2.2. Lecture du maillage de calcul
@@ -167,13 +156,14 @@ M_0=MODI_MAILLAGE(reuse =M_0,
                   ORIE_PEAU_2D=_F(GROUP_MA=('GMP1','GMP2','GMP3','GMP4','GMP5',),),);
 #
 # 3.3. Chargement
-# 3.3.1. Les bords de symetrie
+# 3.3.1. Les bords de symetrie et la partie libre
 
 CH1_0=AFFE_CHAR_MECA(MODELE=MODE_0,
                      FACE_IMPO=(_F(GROUP_MA='GMP1',
                                    DY=0.,),
                                 _F(GROUP_MA='GMP4',
-                                   DX=0.,),),);
+                                   DX=0.,),),
+                     PRES_REP=_F(GROUP_MA=('GMP5',), PRES=0.0,),);
 #
 # 3.3.2. Les tractions
 
@@ -248,13 +238,14 @@ MODE_1=AFFE_MODELE(MAILLAGE=M_1,
                            MODELISATION='C_PLAN',),);
 #
 # 5.3. Chargement
-# 5.3.1. Les bords de symetrie
+# 5.3.1. Les bords de symetrie et la partie libre
 
 CH1_1=AFFE_CHAR_MECA(MODELE=MODE_1,
                      FACE_IMPO=(_F(GROUP_MA='GMP1',
                                    DY=0.,),
                                 _F(GROUP_MA='GMP4',
-                                   DX=0.,),),);
+                                   DX=0.,),),
+                     PRES_REP=_F(GROUP_MA=('GMP5',), PRES=0.0,),);
 #
 # 5.3.2. Les tractions
 
@@ -335,13 +326,14 @@ MODE_2=AFFE_MODELE(MAILLAGE=M_2,
                            MODELISATION='C_PLAN',),);
 #
 # 7.3. Chargement
-# 7.3.1. Les bords de symetrie
+# 7.3.1. Les bords de symetrie et la partie libre
 
 CH1_2=AFFE_CHAR_MECA(MODELE=MODE_2,
                      FACE_IMPO=(_F(GROUP_MA='GMP1',
                                    DY=0.,),
                                 _F(GROUP_MA='GMP4',
-                                   DX=0.,),),);
+                                   DX=0.,),),
+                     PRES_REP=_F(GROUP_MA=('GMP5',), PRES=0.0,),);
 #
 # 7.3.2. Les tractions
 
@@ -415,13 +407,14 @@ MODE_3=AFFE_MODELE(MAILLAGE=M_3,
                            MODELISATION='C_PLAN',),);
 #
 # 9.3. Chargement
-# 9.3.1. Les bords de symetrie
+# 9.3.1. Les bords de symetrie et la partie libre
 
 CH1_3=AFFE_CHAR_MECA(MODELE=MODE_3,
                      FACE_IMPO=(_F(GROUP_MA='GMP1',
                                    DY=0.,),
                                 _F(GROUP_MA='GMP4',
-                                   DX=0.,),),);
+                                   DX=0.,),),
+                     PRES_REP=_F(GROUP_MA=('GMP5',), PRES=0.0,),);
 #
 # 9.3.2. Les tractions
 

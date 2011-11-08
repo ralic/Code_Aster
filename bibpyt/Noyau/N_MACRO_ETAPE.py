@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -619,12 +619,14 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       # on execute le texte fourni dans le contexte forme par
       # le contexte de l etape pere (global au sens Python)
       # et le contexte de l etape (local au sens Python)
-      code=compile(text,f,'exec')
-      d={}
+      code = compile(text,f,'exec')
+      d = self.macro_const_context
       self.g_context = d
       self.contexte_fichier_init = d
-      globs=self.get_global_contexte()
-      exec code in globs,d
+      globs = self.get_global_contexte()
+      exec code in globs, d
+      # pour ne pas conserver des références sur tout
+      self.macro_const_context = {}
 
    def get_global_contexte(self):
       """

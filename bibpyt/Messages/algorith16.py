@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith16 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -226,7 +226,7 @@ cata_msg = {
 """),
 
 45 : _(u"""
- conflit dans les vis_a_vis des noeuds le noeud  %(k1)s
+ conflit dans les VIS_A_VIS des noeuds le noeud  %(k1)s
  est le vis-à-vis des noeuds  %(k2)s
  et  %(k3)s
 
@@ -267,7 +267,7 @@ cata_msg = {
 """),
 
 51 : _(u"""
- conflit dans les vis_a_vis des noeuds
+ conflit dans les VIS_A_VIS des noeuds
  le noeud  %(k1)s
  est le vis-à-vis des noeuds  %(k2)s et  %(k3)s
 

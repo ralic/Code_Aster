@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 08/11/2011   AUTEUR BOYERE E.BOYERE 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 # sdnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,7 +187,7 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                          VERI_CHOC=_F(STOP_CRITERE='OUI',
                                       SEUIL=0.2,),
                          SOLVEUR=_F(METHODE='MULT_FRONT',),
-                         INFO=1,);
+                         INFO=2,);
 
 #
 TRAN_GE2=DYNA_VIBRA( TYPE_CALCUL='TRAN',

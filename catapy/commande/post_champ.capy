@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,8 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 # Extraction sur un sous-point d'un tuyau :
 #====
          EXTR_TUYAU  =FACT(statut='f', max=1, fr="extraction sur un sous-point d'un tuyau",
-           NOM_CHAM     =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","SIGM_ELGA","SIGM_ELNO","VARI_ELNO",),),
+           NOM_CHAM     =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","SIGM_ELGA","SIGM_ELNO","VARI_ELNO",
+                                                         "SIEQ_ELGA","EPEQ_ELGA"),),
            NUME_COUCHE  =SIMP(statut='o',typ='I',val_min=1,
                              fr="numero de couche dans l'épaisseur du tuyau" ),
            NIVE_COUCHE  =SIMP(statut='o',typ='TXM',into=("SUP","INF","MOY"),

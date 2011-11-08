@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost5 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg = {
 
 1 : _(u"""
- L'option %(k1)s est deja calculee pour le numéro d'ordre %(k2)s.
+ L'option %(k1)s est déjà calculée pour le numéro d'ordre %(k2)s.
  On la recalcule car les données peuvent être différentes.
 """),
 
@@ -39,22 +39,22 @@ Champ inexistant %(k1)s numéro d'ordre %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 5 : _(u"""
-Option illicite pour le resultat %(k1)s numéro d'ordre %(k2)s pour le calcul de l'option %(k3)s
+Option illicite pour le résultat %(k1)s numéro d'ordre %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 6 : _(u"""
-Numero d'ordre trop grand %(k1)s pour le calcul de l'option %(k2)s
+Numéro d'ordre trop grand %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 7 : _(u"""
-Option illicite pour le resultat %(k1)s numéro d'ordre trop grand %(k2)s pour le calcul de l'option %(k3)s
+Option illicite pour le résultat %(k1)s numéro d'ordre trop grand %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 8 : _(u"""
 
- la taille memoire   necessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur tau est trop importante   par rapport a la place disponible.
+ la taille mémoire   nécessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur TAU est trop importante   par rapport a la place disponible.
  taille disponible :  %(i1)d
- taille necessaire :  %(i2)d
+ taille nécessaire :  %(i2)d
 """),
 
 9 : _(u"""
@@ -65,25 +65,25 @@ Option illicite pour le resultat %(k1)s numéro d'ordre trop grand %(k2)s pour le
 10 : _(u"""
  le noeud traite  n'est associe a aucune maille volumique.
  numéro du noeud =  %(i1)d
- nombre de mailles attachees au noeud =  %(i2)d
+ nombre de mailles attachées au noeud =  %(i2)d
 """),
 
 16 : _(u"""
- appel errone numéro d'ordre %(i1)d code retour de rsexch : %(i2)d
- pb cham_no %(k1)s
+ appel erroné numéro d'ordre %(i1)d code retour de rsexch : %(i2)d
+ Problème CHAM_NO %(k1)s
 """),
 
 19 : _(u"""
- nombre de noeud(s) elimine(s) du maillage  %(i1)d
+ nombre de noeud(s) éliminé(s) du maillage  %(i1)d
 """),
 
 20 : _(u"""
- nombre de maille(s) eliminee(s) du maillage  %(i1)d
+ nombre de maille(s) éliminée(s) du maillage  %(i1)d
 """),
 
 21 : _(u"""
  le numéro du groupe de mailles est trop grand:  %(i1)d
-  le numéro du groupe doit être inferieur a  %(i2)d
+  le numéro du groupe doit être inférieur a  %(i2)d
 """),
 
 25 : _(u"""
@@ -115,32 +115,32 @@ Option illicite pour le resultat %(k1)s numéro d'ordre trop grand %(k2)s pour le
 """),
 
 45 : _(u"""
- noeud inconnu dans le fichier  ideas  noeud numéro :  %(i1)d
+ noeud inconnu dans le fichier  IDEAS  noeud numéro :  %(i1)d
 """),
 
 46 : _(u"""
- élément inconnu dans le fichier ideas élément numéro :  %(i1)d
+ élément inconnu dans le fichier IDEAS élément numéro :  %(i1)d
 """),
 
 54 : _(u"""
- probleme dans  nomta traitement de l'instant  %(r1)f
-  recuperation de  %(k1)s
+ problème dans  nomta traitement de l'instant  %(r1)f
+  récupération de  %(k1)s
   pour le secteur  %(i1)d
 """),
 
 57 : _(u"""
- probleme dans  nomta traitement de l'instant  %(r1)f
-  recuperation de  %(k1)s
+ problème dans  nomta traitement de l'instant  %(r1)f
+  récupération de  %(k1)s
 """),
 
 58 : _(u"""
- probleme dans  nomta traitement de l'instant  %(r1)f
-  recuperation "numeli" pour  %(k1)s
+ problème dans  nomta traitement de l'instant  %(r1)f
+  récupération "numeli" pour  %(k1)s
 """),
 
 59 : _(u"""
- probleme dans  nomta traitement de l'instant  %(r1)f
-  recuperation "numeli" pour le secteur  %(i1)d
+ problème dans  nomta traitement de l'instant  %(r1)f
+  récupération "numeli" pour le secteur  %(i1)d
 """),
 
 61 : _(u"""
@@ -148,37 +148,37 @@ Option illicite pour le resultat %(k1)s numéro d'ordre trop grand %(k2)s pour le
 """),
 
 64 : _(u"""
- la valeur d'amortissement reduit est trop grande
+ la valeur d'amortissement réduit est trop grande
  la valeur d'amortissement :  %(r1)f
   du mode propre  %(i1)d
-  est tronquee au seuil :  %(r2)f
+  est tronquée au seuil :  %(r2)f
 """),
 
 67 : _(u"""
 
- la taille memoire   necessaire au vecteur de travail   est trop importante   par rapport a la place disponible.
+ la taille mémoire   nécessaire au vecteur de travail   est trop importante   par rapport a la place disponible.
  taille disponible :  %(i1)d
- taille necessaire :  %(i2)d
+ taille nécessaire :  %(i2)d
 """),
 
 68 : _(u"""
 
- la taille du vecteur  contenant les caracteristiques des   paquets de mailles est trop petite.
- nb de paquets maxi :  %(i1)d
- nb de paquets reels:  %(i2)d
+ la taille du vecteur  contenant les caractéristiques des   paquets de mailles est trop petite.
+ nombre de paquets max :  %(i1)d
+ nombre de paquets réels:  %(i2)d
 """),
 
 70 : _(u"""
 
- la taille du vecteur  contenant les caracteristiques des   paquets de noeuds est trop petite.
- nb de paquets maxi :  %(i1)d
- nb de paquets reels:  %(i2)d
+ la taille du vecteur  contenant les caractéristiques des   paquets de noeuds est trop petite.
+ nombre de paquets max :  %(i1)d
+ nombre de paquets réels:  %(i2)d
 """),
 
 73 : _(u"""
- appel errone  resultat :  %(k1)s   archivage numéro :  %(i1)d
+ appel erroné  résultat :  %(k1)s   archivage numéro :  %(i1)d
    code retour de rsexch :  %(i2)d
-   probleme champ :  %(k2)s
+   problème champ :  %(k2)s
 """),
 
 74 : _(u"""
@@ -195,29 +195,30 @@ Option illicite pour le resultat %(k1)s numéro d'ordre trop grand %(k2)s pour le
 """),
 
 77 : _(u"""
- *** banque de données *** pour le type de geometrie  %(k1)s
-  le couple de materiaux  %(k2)s
+ *** banque de données *** pour le type de géométrie  %(k1)s
+  le couple de matériaux  %(k2)s
   ne se trouve pas dans la banque. %(k3)s
 """),
 
 78 : _(u"""
- le calcul du rayon n'est pas assez precis.cupn0 =  %(r1)f
-  cvpn0 =  %(r2)f
- cupn1 =  %(r3)f
-  cvpn1 =  %(r4)f
- cupn2 =  %(r5)f
-  cvpn2 =  %(r6)f
- flag =  %(i1)d
- cuon1 =  %(r7)f
-  cuon2 =  %(r8)f
- cuon3 =  %(r9)f
- cvon1 =  %(r10)f
-  cvon2 =  %(r11)f
- cvon3 =  %(r12)f
- rayon =  %(r13)f
-  raymin =  %(r14)f
- (rayon - raymin) =  %(r15)f
- ((rayon-raymin)/raymin) =  %(r16)f
+ le calcul du rayon n'est pas assez précis.
+    cupn0 =  %(r1)f
+    cvpn0 =  %(r2)f
+    cupn1 =  %(r3)f
+    cvpn1 =  %(r4)f
+    cupn2 =  %(r5)f
+    cvpn2 =  %(r6)f
+    flag  =  %(i1)d
+    cuon1 =  %(r7)f
+    cuon2 =  %(r8)f
+    cuon3 =  %(r9)f
+    cvon1 =  %(r10)f
+    cvon2 =  %(r11)f
+    cvon3 =  %(r12)f
+    rayon =  %(r13)f
+    raymin =  %(r14)f
+    (rayon - raymin) =  %(r15)f
+    ((rayon-raymin)/raymin) =  %(r16)f
 """),
 
 }

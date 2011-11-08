@@ -1,4 +1,4 @@
-#@ MODIF ascouf0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ascouf0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,7 +137,7 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 """),
 
 27: _(u"""
- Ne modéliser qu'une seule sous-épaisseur pour un quart ou demi-coude.
+ Ne modéliser qu'une seule sous-épaisseur pour un quart ou demi coude.
 """),
 
 28: _(u"""

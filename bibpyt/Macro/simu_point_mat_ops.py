@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF simu_point_mat_ops Macro  DATE 08/11/2011   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -466,13 +466,35 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
              nbvarc=len(lvarc)
              for ivarc in range(nbvarc) :
                   dico={}
-                  typech = 'NOEU_' + str(lvarc[ivarc]['NOM_VARC']) + '_R'
-                  labsc=lvarc[ivarc]['VALE_FONC'].Absc()
-                  lordo=lvarc[ivarc]['VALE_FONC'].Ordo()
-                  l_affe_cham=[]
-                  __CHV=[None]*len(labsc)
-                  for it,time in enumerate(labsc):
-                      __CHV[it]=CREA_CHAMP(TYPE_CHAM=typech,
+                  if(str(lvarc[ivarc]['NOM_VARC'])=='SECH'):
+                      typech = 'NOEU_TEMP_R'
+                      labsc=lvarc[ivarc]['VALE_FONC'].Absc()
+                      lordo=lvarc[ivarc]['VALE_FONC'].Ordo()
+                      l_affe_cham=[]
+                      __CHV=[None]*len(labsc)
+                      for it,time in enumerate(labsc):
+                          __CHV[it]=CREA_CHAMP(TYPE_CHAM=typech,
+                                     OPERATION='AFFE',
+                                     MAILLAGE=__MA,
+                                     AFFE=_F(MAILLE='VOLUME',
+                                             NOM_CMP='TEMP',
+                                             VALE=lordo[it],
+                                            ),
+                                     ),
+                          dicoch={}
+                          dicoch["CHAM_GD"]=__CHV[it]
+                          dicoch["INST"]=time
+                          l_affe_cham.append(dicoch)
+                      __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_VARC',NOM_CHAM='TEMP',
+                               AFFE = l_affe_cham)  
+                  else:
+                      typech = 'NOEU_' + str(lvarc[ivarc]['NOM_VARC']) + '_R'
+                      labsc=lvarc[ivarc]['VALE_FONC'].Absc()
+                      lordo=lvarc[ivarc]['VALE_FONC'].Ordo()
+                      l_affe_cham=[]
+                      __CHV=[None]*len(labsc)
+                      for it,time in enumerate(labsc):
+                          __CHV[it]=CREA_CHAMP(TYPE_CHAM=typech,
                                      OPERATION='AFFE',
                                      MAILLAGE=__MA,
                                      AFFE=_F(MAILLE='VOLUME',
@@ -480,11 +502,11 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                                              VALE=lordo[it],
                                             ),
                                      ),
-                      dicoch={}
-                      dicoch["CHAM_GD"]=__CHV[it]
-                      dicoch["INST"]=time
-                      l_affe_cham.append(dicoch)
-                  __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_VARC',NOM_CHAM=str(lvarc[ivarc]['NOM_VARC']),
+                          dicoch={}
+                          dicoch["CHAM_GD"]=__CHV[it]
+                          dicoch["INST"]=time
+                          l_affe_cham.append(dicoch)
+                      __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_VARC',NOM_CHAM=str(lvarc[ivarc]['NOM_VARC']),
                                AFFE = l_affe_cham)  
                   dico["MAILLE"]='VOLUME'
                   dico["EVOL"]=__EVOV

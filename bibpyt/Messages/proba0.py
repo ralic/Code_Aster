@@ -1,4 +1,4 @@
-#@ MODIF proba0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF proba0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ cata_msg={
 """),
 
 11: _(u"""
-  Nombre de tirages superieur a la taille de l'echantilon.
+  Nombre de tirages supérieur a la taille de l'échantillon.
 """),
 
 

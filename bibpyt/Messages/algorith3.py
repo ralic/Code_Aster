@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,7 +125,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 40 : _(u"""
- le nom_cham  %(k1)s n'appartient pas à la structure de données
+ le NOM_CHAM  %(k1)s n'appartient pas à la structure de données
 """),
 
 41 : _(u"""

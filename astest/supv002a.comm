@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,7 @@ execfile('fort.33', globals())
 checker = Checker()
 
 LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, '*.py'))]
-LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, 'c*.py'))]
+#LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, 'c*.py'))]
 
 # check default/native messages
 check_catamess(checker, 'fr', LCATA)

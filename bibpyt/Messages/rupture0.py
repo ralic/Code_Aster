@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,8 +20,8 @@
 
 cata_msg={
 1: _(u"""
-La valeur de Kj critique demandée n'est pas atteinte dans l'étude demandée;
-il n'est donc pas possible d'identifier le Gp critique dans cette étude.
+La valeur de KJ critique demandée n'est pas atteinte dans l'étude demandée;
+il n'est donc pas possible d'identifier le GP critique dans cette étude.
 -> Risque et Conseil :
 Augmentez le chargement.
 """),
@@ -36,7 +36,7 @@ Erreur utilisateur :
 Incohérence entre le mot-clé FISSURE et le modèle associé au mot-clé RESULTAT.
 - Pour utiliser une fissure maillée, renseignez sous le mot-clé FOND_FISS
 une fissure provenant de la commande DEFI_FOND_FISS.
-- Pour utiliser une fissure non-maillée (calcul X-FEM), renseignez sous le mot-clé FISSURE
+- Pour utiliser une fissure non maillée (calcul X-FEM), renseignez sous le mot-clé FISSURE
 une fissure provenant de la commande DEFI_FISS_XFEM. Le modèle associé au mot-clé RESULTAT
 doit être un modèle X-FEM provenant de la commande MODI_MODELE_XFEM.
 """),
@@ -47,9 +47,9 @@ Il faut définir ELAS dans DEFI_MATERIAU.
 """),
 
 6: _(u"""
-La température en fond de fissure, nécessaire pour le calcul des proprietés
+La température en fond de fissure, nécessaire pour le calcul des propriétés
 matériaux et donc des facteurs d'intensité des contraintes, n'est pas connue.
-Le calcul se poursuite en prenant la température de réference du materiau
+Le calcul se poursuite en prenant la température de référence du matériau
 (TEMP = %(r1)f).
 -> Risque et Conseil :
 Quand les propriétés matériau dépendent de la température, il faut fournir
@@ -68,12 +68,12 @@ Problème dans la création de la base locale au fond de fissure.
 Il est impossible de déterminer le sens de la direction de propagation (vecteur tangent aux lèvres).
 Dans le cas symétrique (SYME='OUI') il faut :
 - soit donner les lèvres de la fissure (LEVRE_SUP),
-- soit indiquer le vecteut tangent au point origine du fond de fissure (DTAN_ORIG).
+- soit indiquer le vecteur tangent au point origine du fond de fissure (DTAN_ORIG).
 """),
 
 9: _(u"""
 Dans le cas d'une SD RESULTAT de type DYNA_TRANS,
-le mot-cle EXCIT est obligatoire.
+le mot-clé EXCIT est obligatoire.
 Veuillez le renseigner.
 """),
 
@@ -98,7 +98,7 @@ Veuillez revoir la création de votre fond de fissure
 """),
 
 13: _(u"""
-Le group_no %(k1)s n'est pas dans le maillage.
+Le GROUP_NO %(k1)s n'est pas dans le maillage.
 -> Risque et Conseil :
 Veuillez vérifier les données fournies au mot-clé GROUP_NO.
 """),
@@ -123,7 +123,7 @@ au résultat à considérer.
 """),
 
 19: _(u"""
-Problème à la récupération des noeuds de la lèvre sup :
+Problème à la récupération des noeuds de la lèvre supérieure :
 -> Risque et Conseil :
 Pour un calcul avec POST_K1_K2_K3, la lèvre supérieure de la fissure doit
 être obligatoirement définie dans DEFI_FOND_FISS à l'aide du mot-clé
@@ -131,7 +131,7 @@ LEVRE_SUP. Vérifier la définition du fond de fissure.
 """),
 
 20: _(u"""
-Problème à la récupération des noeuds de la lèvre inf :
+Problème à la récupération des noeuds de la lèvre inférieure :
 -> Risque et Conseil :
 Pour un calcul avec POST_K1_K2_K3, la lèvre inférieure de la fissure doit
 être obligatoirement définie dans DEFI_FOND_FISS à l'aide du mot-clé
@@ -156,7 +156,7 @@ supérieure et perpendiculaire au fond %(k1)s.
 """),
 
 23: _(u"""
-Vérifier les tangentes extremités ou
+Vérifier les tangentes extrémités ou
 """),
 
 24: _(u"""
@@ -219,7 +219,7 @@ au plan soit calculée automatiquement.
 Problème dans la récupération du saut de déplacement sur les lèvres.
 -> Risque et Conseil :
 Il y a plusieurs causes possibles :
-- vérifiez que le résultat correspond bien à un calcul sur des éléments x-fem;
+- vérifiez que le résultat correspond bien à un calcul sur des éléments X-FEM;
 - si le calcul correspond à un calcul X-FEM avec contact sur les lèvres de la
   fissure,vérifiez que le maillage fourni est bien le maillage linéaire initial;
 - vérifiez que le paramètre ABSC_CURV_MAXI est cohérent avec la taille de la
@@ -269,7 +269,7 @@ Le groupe de mailles %(k1)s défini sous le mot-clé GROUP_MA n'existe pas.
 """),
 
 42 : _(u"""
-Dans le cas où le fond est une courbe fermée, les mot-clés MAILLE_ORIG ou GROUP_MA_ORIG doivent accompagner le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG.
+Dans le cas où le fond est une courbe fermée, les mots-clés MAILLE_ORIG ou GROUP_MA_ORIG doivent accompagner le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG.
 """),
 
 43 : _(u"""
@@ -321,18 +321,18 @@ Vous avez utilisé des paramètres matériaux dépendant de la température.
 Cependant, 'TEMP_DEF_ALPHA' dans DEFI_MATERIAU n'est pas renseigné.
 -> Conseil :
 Renseignez une température pour 'TEMP_DEF_ALPHA',
-ou utilisez l'otion 'EVOL_THER' de POST_K1_K2_K3.
+ou utilisez l'option 'EVOL_THER' de POST_K1_K2_K3.
 """),
 
 53: _(u"""
-Vous avez utilisé un module d'Young nul. Le post-traitement ne peut pas se poursuivre."""),
+Vous avez utilisé un module de Young nul. Le post-traitement ne peut pas se poursuivre."""),
 
 54: _(u"""
 Aucun instant ou numéro d'ordre trouvé.
 """),
 
 55: _(u"""
--> Attention: En présence d'une SD Résultat de type mult_elas, les mots-clés
+-> Attention: En présence d'une SD Résultat de type MULT_ELAS, les mots-clés
 EXCIT et NOM_CAS sont obligatoires.
 -> Risque et Conseil :
 Risque de résultats faux si un des chargements impacte le calcul de G et de K
@@ -355,14 +355,14 @@ dans l'opérateur CALC_G.
 -> Risque et Conseil :
 Dans le mot-clé facteur THETA, supprimez le mot-clé THETA et renseignez les
 mots-clés FOND_FISS, R_SUP, R_INF, MODULE, et DIRECTION pour la détermination
-automatique du champ theta.
+automatique du champ thêta.
 """),
 
 59 : _(u"""
 Le champ de THETA est inexistant dans la structure de données  %(k1)s
 de type THETA_GEOM.
 -> Risque et Conseil :
-Veuillez revoir la création du champ theta (opérateur CALC_THETA).
+Veuillez revoir la création du champ thêta (opérateur CALC_THETA).
 """),
 
 60 : _(u"""
@@ -411,7 +411,7 @@ Les mailles de FOND_INF et de FOND_SUP sont de type différent.
 69: _(u"""
 Les noeuds %(k1)s de FOND_INF et %(k2)s de FOND_SUP ne sont pas en vis à vis.
 -> Risque et Conseil :
-Vérifiez que les deux groupes correspondent bien à des noeuds coincidents
+Vérifiez que les deux groupes correspondent bien à des noeuds coïncidents
 géométriquement et que les groupes de noeuds sont ordonnés dans le même sens.
 """),
 
@@ -486,12 +486,12 @@ Veuillez renseigner le mot-clé DIRECTION.
 83: _(u"""
 Cette combinaison de lissage n'est pas programmée pour l'option : %(k1)s.
 -> Risque et Conseil :
-Veuillez consulter la doc U4.82.03 pour déterminer une combinaison de lissage
+Veuillez consulter la documentation U4.82.03 pour déterminer une combinaison de lissage
 licite avec l'option désirée.
 """),
 
 84: _(u"""
-Le degré des polynomes de Legendre doit être inférieur au nombre de noeuds
+Le degré des polynômes de Legendre doit être inférieur au nombre de noeuds
 du fond de fissure (ici égal à %(i1)i) lorsque le lissage de G est de type
 LEGENDRE et le lissage de THETA de type LAGRANGE.
 """),
@@ -505,7 +505,7 @@ Veuillez redéfinir le mot-clé LISSAGE_G.
 
 87: _(u"""
 Si la méthode LAGRANGE_REGU est utilisée pour le lissage,
-alors le lissage de G et de theta doivent être de type LAGRANGE_REGU.
+alors le lissage de G et de thêta doivent être de type LAGRANGE_REGU.
 """),
 
 88: _(u"""
@@ -519,7 +519,7 @@ Plusieurs fréquences trouvées dans la table pour la fréquence %(r1)f.
 
 
 90: _(u"""
-L'usage des polynomes de Legendre dans le cas d'un fond de fissure clos
+L'usage des polynômes de Legendre dans le cas d'un fond de fissure clos
 est interdit.
 -> Risque et Conseil :
 Veuillez redéfinir le mot-clé LISSAGE_THETA.

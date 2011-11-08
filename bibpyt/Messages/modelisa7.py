@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa7 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,24 +22,24 @@
 cata_msg={
 
 1: _(u"""
- pas frequentiel negatif ou nul
+ pas fréquentiel négatif ou nul
 """),
 
 2: _(u"""
-  la method est de corcos. on a  besoin des vecteurs directeurs vect_x et vect_y de la plaque
+  la méthode est de CORCOS. on a  besoin des vecteurs directeurs VECT_X et VECT_Y de la plaque
 """),
 
 3: _(u"""
-  la methode est de AU-YANG
+  la méthode est de AU-YANG
   on a besoin du  vecteur de l'axe VECT_X et de l'origine ORIG_AXE du cylindre
 """),
 
 4: _(u"""
- le type de spectre est incompatible avec la configuration etudiée
+ le type de spectre est incompatible avec la configuration étudiée
 """),
 
 5: _(u"""
- probleme rencontré lors de l'interpolation d'un interspectre
+ problème rencontré lors de l'interpolation d'un interspectre
 """),
 
 6: _(u"""
@@ -59,15 +59,15 @@ cata_msg={
 """),
 
 9: _(u"""
- le GROUP_NO :  %(k1)s  existe deja, on ne le crée donc pas.
+ le GROUP_NO :  %(k1)s  existe déjà, on ne le crée donc pas.
 """),
 
 10: _(u"""
- le nom  %(k1)s  existe deja
+ le nom  %(k1)s  existe déjà
 """),
 
 11: _(u"""
- le groupe  %(k1)s  existe deja
+ le groupe  %(k1)s  existe déjà
 """),
 
 12: _(u"""
@@ -81,237 +81,237 @@ cata_msg={
 """),
 
 16: _(u"""
- FAISCEAU_AXIAL : il faut autant d'arguments pour les operandes <TYPE_GRILLE> et <COOR_GRILLE>
+ FAISCEAU_AXIAL : il faut autant d'arguments pour les opérandes <TYPE_GRILLE> et <COOR_GRILLE>
 """),
 
 17: _(u"""
- FAISCEAU_AXIAL, operande <TYPE_GRILLE> : detection d'une valeur illicite
+ FAISCEAU_AXIAL, opérande <TYPE_GRILLE> : détection d'une valeur illicite
 """),
 
 18: _(u"""
- faisceau_axial : il faut autant d'arguments pour les operandes <LONG_TYPG>, <LARG_TYPG>, <EPAI_TYPG>, <RUGO_TYPG>, <COEF_TRAI_TYPG> et <COEF_DPOR_TYPG>
+ FAISCEAU_AXIAL : il faut autant d'arguments pour les opérandes <LONG_TYPG>, <LARG_TYPG>, <EPAI_TYPG>, <RUGO_TYPG>, <COEF_TRAI_TYPG> et <COEF_DPOR_TYPG>
 """),
 
 19: _(u"""
- <FAISCEAU_TRANS> le mot cle <COUPLAGE> doit être renseigné au moins une fois sous l'une des occurrence du mot-cle facteur <FAISCEAU_TRANS>
+ <FAISCEAU_TRANS> le mot clé <COUPLAGE> doit être renseigné au moins une fois sous l'une des occurrence du mot-clé facteur <FAISCEAU_TRANS>
 """),
 
 20: _(u"""
- <FAISCEAU_TRANS> : si couplage <TYPE_PAS> , <TYPE_RESEAU> et <PAS> mots-cles obligatoires dans au moins l une des occurrences du mot-cle facteur
+ <FAISCEAU_TRANS> : si couplage <TYPE_PAS> , <TYPE_RESEAU> et <PAS> mots-clés obligatoires dans au moins l une des occurrences du mot-clé facteur
 """),
 
 21: _(u"""
- FAISCEAU_TRANS : si pas de couplage <coef_mass_ajou> mot-cle obligatoire dans au moins l une des occurrences du mot cle facteur <faisceau_trans>
+ FAISCEAU_TRANS : si pas de couplage <COEF_MASS_AJOU> mot-clé obligatoire dans au moins l une des occurrences du mot clé facteur <FAISCEAU_TRANS>
 """),
 
 22: _(u"""
- <FAISCEAU_TRANS> : le mot-cle <CARA_ELEM> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
+ <FAISCEAU_TRANS> : le mot-clé <CARA_ELEM> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
 """),
 
 23: _(u"""
- <faisceau_trans> : le mot-cle <prof_rho_f_int> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
+ <FAISCEAU_TRANS> : le mot-clé <PROF_RHO_F_INT> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
 """),
 
 24: _(u"""
- <faisceau_trans> : le mot-cle <prof_rho_f_ext> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
+ <FAISCEAU_TRANS> : le mot-clé <PROF_RHO_F_EXT> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
 """),
 
 25: _(u"""
- <faisceau_trans> : le mot-cle <nom_cmp> doit être renseigne au moins une fois dans l une des occurrences du mot-cle facteur <faisceau_trans>
+ <FAISCEAU_TRANS> : le mot-clé <NOM_CMP> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
 """),
 
 26: _(u"""
- grappe : si prise en compte du couplage, les mots-cles <grappe_2>, <noeud>, <cara_elem>, <modele> et <rho_flui> doivent être renseignes
+ grappe : si prise en compte du couplage, les mots-clés <grappe_2>, <noeud>, <CARA_ELEM>, <MODELE> et <RHO_FLUI> doivent être renseignes
 """),
 
 27: _(u"""
- faisceau_axial : plusieurs occurrences pour le mot-cle facteur => faisceau equivalent => mots-cles <rayon_tube> et <coor_tube> obligatoires a chaque occurrence
+ FAISCEAU_AXIAL : plusieurs occurrences pour le mot-clé facteur => faisceau équivalent => mots-clés <RAYON_TUBE> et <COOR_TUBE> obligatoires a chaque occurrence
 """),
 
 28: _(u"""
- faisceau_axial : on attend un nombre pair d arguments pour le mot-cle <coor_tube>. il faut fournir deux coordonnées pour définir la position de chacun des tubes du faisceau reel
+ FAISCEAU_AXIAL : on attend un nombre pair d arguments pour le mot-clé <COOR_TUBE>. il faut fournir deux coordonnées pour définir la position de chacun des tubes du faisceau réel
 """),
 
 29: _(u"""
- faisceau_axial : il faut trois composantes pour <vect_x>
+ FAISCEAU_AXIAL : il faut trois composantes pour <VECT_X>
 """),
 
 30: _(u"""
- faisceau_axial : le vecteur directeur du faisceau doit être l un des vecteurs unitaires de la base liee au repere global
+ FAISCEAU_AXIAL : le vecteur directeur du faisceau doit être l un des vecteurs unitaires de la base liée au repère global
 """),
 
 31: _(u"""
- faisceau_axial : il faut 4 données pour le mot-cle <pesanteur> : la norme du vecteur et ses composantes dans le repere global, dans cet ordre
+ FAISCEAU_AXIAL : il faut 4 données pour le mot-clé <pesanteur> : la norme du vecteur et ses composantes dans le repère global, dans cet ordre
 """),
 
 32: _(u"""
- faisceau_axial : il faut 3 ou 4 données pour le mot-cle <cara_paroi> : 3 pour une enceinte circulaire : <yc>,<zc>,<r>. 4 pour une enceinte rectangulaire : <yc>,<zc>,<hy>,<hz>
+ FAISCEAU_AXIAL : il faut 3 ou 4 données pour le mot-clé <CARA_PAROI> : 3 pour une enceinte circulaire : <YC>,<ZC>,<r>. 4 pour une enceinte rectangulaire : <YC>,<ZC>,<HY>,<HZ>
 """),
 
 33: _(u"""
- faisceau_axial : pour définir une enceinte, il faut autant d arguments pour les mots-cles <cara_paroi> et <vale_paroi>
+ FAISCEAU_AXIAL : pour définir une enceinte, il faut autant d arguments pour les mots-clés <CARA_PAROI> et <VALE_PAROI>
 """),
 
 34: _(u"""
- faisceau_axial : mot-cle <cara_paroi>. données incoherentes pour une enceinte circulaire
+ FAISCEAU_AXIAL : mot-clé <CARA_PAROI>. données incohérentes pour une enceinte circulaire
 """),
 
 35: _(u"""
- faisceau_axial : valeur inacceptable pour le rayon de l enceinte circulaire
+ FAISCEAU_AXIAL : valeur inacceptable pour le rayon de l enceinte circulaire
 """),
 
 36: _(u"""
- faisceau_axial : mot-cle <cara_paroi>. données incoherentes pour une enceinte rectangulaire
+ FAISCEAU_AXIAL : mot-clé <CARA_PAROI>. données incohérentes pour une enceinte rectangulaire
 """),
 
 37: _(u"""
- faisceau_axial : valeur(s) inacceptable(s) pour l une ou(et) l autre des dimensions de l enceinte rectangulaire
+ FAISCEAU_AXIAL : valeur(s) inacceptable(s) pour l une ou(et) l autre des dimensions de l enceinte rectangulaire
 """),
 
 38: _(u"""
- faisceau_axial : le mot-cle <angl_vril> est obligatoire quand on définit une enceinte rectangulaire
+ FAISCEAU_AXIAL : le mot-clé <ANGL_VRIL> est obligatoire quand on définit une enceinte rectangulaire
 """),
 
 39: _(u"""
- faisceau_axial : le mot-cle <vect_x> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clé <VECT_X> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
 """),
 
 40: _(u"""
- faisceau_axial : le mot-cle <prof_rho_flui> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clé <PROF_RHO_FLUI> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
 """),
 
 41: _(u"""
- faisceau_axial : le mot-cle <prof_visc_cine> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clé <PROF_VISC_CINE> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
 """),
 
 42: _(u"""
- faisceau_axial : le mot-cle <rugo_tube> est obligatoire si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, il doit apparaitre dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clé <RUGO_TUBE> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
 """),
 
 43: _(u"""
- faisceau_axial : les mots-cles <cara_paroi> et <vale_paroi> sont obligatoires si il n y a qu une seule occurrence pour le mot-cle facteur. sinon, ils doivent apparaitre ensemble dans au moins une des occurrences. le mot-cle <angl_vril> doit egalement être present si l on définit une enceinte rectangulaire
+ FAISCEAU_AXIAL : les mots-clés <CARA_PAROI> et <VALE_PAROI> sont obligatoires si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, ils doivent apparaître ensemble dans au moins une des occurrences. le mot-clé <ANGL_VRIL> doit également être présent si l on définit une enceinte rectangulaire
 """),
 
 44: _(u"""
- coque_coax : il faut trois composantes pour <vect_x>
+ COQUE_COAX : il faut trois composantes pour <VECT_X>
 """),
 
 45: _(u"""
- coque_coax : l axe de revolution des coques doit avoir pour vecteur directeur l un des vecteurs unitaires de la base liee au repere global
+ COQUE_COAX : l axe de révolution des coques doit avoir pour vecteur directeur l un des vecteurs unitaires de la base liée au repère global
 """),
 
 46: _(u"""
- caracterisation de la topologie de la structure beton : le groupe de mailles associe ne doit contenir que des mailles 2d ou que des mailles 3d
+ caractérisation de la topologie de la structure béton : le groupe de mailles associe ne doit contenir que des mailles 2d ou que des mailles 3d
 """),
 
 47: _(u"""
- recuperation du materiau beton : les caracteristiques materielles n ont pas ete affectees a la maille no %(k1)s  appartenant au groupe de mailles                                 associe a la structure beton
+ récupération du matériau béton : les caractéristiques matérielles n ont pas été affectées a la maille no %(k1)s  appartenant au groupe de mailles                                 associe a la structure béton
 """),
 
 48: _(u"""
- recuperation des caracteristiques du materiau beton : absence de relation de comportement de type <bpel_beton>
+ récupération des caractéristiques du matériau béton : absence de relation de comportement de type <BPEL_BETON>
 """),
 
 49: _(u"""
- le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seule jeu de données. verifiez la coherence du paramètre pert_flua  dans les defi_materiau
+ le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seule jeu de données. vérifiez la cohérence du paramètre PERT_FLUA  dans les DEFI_MATERIAU
 """),
 
 50: _(u"""
- le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seul jeu de données. verifiez la coherence du paramètre pert_flua dans les defi_materiau
+ le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seul jeu de données. vérifiez la cohérence du paramètre PERT_FLUA dans les DEFI_MATERIAU
 """),
 
 51: _(u"""
- le calcul de la tension est fait selon bpel. il ne peut y avoir qu un seule jeu de données. verifiez la coherence du paramètre pert_retr dans les defi_materiau
+ le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seule jeu de données. vérifiez la cohérence du paramètre PERT_RETR dans les DEFI_MATERIAU
 """),
 
 52: _(u"""
- recuperation des caracteristiques du materiau beton, relation de comportement <bpel_beton> : au moins un paramètre indéfini
+ récupération des caractéristique du matériau béton, relation de comportement <BPEL_BETON> : au moins un paramètre indéfini
 """),
 
 53: _(u"""
- recuperation des caracteristiques du materiau beton, relation de comportement <bpel_beton> : au moins une valeur de paramètre invalide
+ récupération des caractéristiques du matériau béton, relation de comportement <BPEL_BETON> : au moins une valeur de paramètre invalide
 """),
 
 54: _(u"""
- caracterisation de la topologie du cable no %(k1)s  : on a trouve une maille d un type non acceptable
+ caractérisations de la topologie du câble no %(k1)s  : on a trouve une maille d un type non acceptable
 """),
 
 55: _(u"""
- caracterisation de la topologie du cable no %(k1)s  : il existe plus de deux chemins possibles au depart du noeud  %(k2)s
+ caractérisation de la topologie du câble no %(k1)s  : il existe plus de deux chemins possibles au départ du noeud  %(k2)s
 """),
 
 56: _(u"""
- caracterisation de la topologie du cable no %(k1)s  : il n existe aucun chemin possible au depart du noeud  %(k2)s
+ caractérisation de la topologie du câble no %(k1)s  : il n existe aucun chemin possible au départ du noeud  %(k2)s
 """),
 
 57: _(u"""
- caracterisation de la topologie du cable no %(k1)s  : deux chemins continus possibles de  %(k2)s  a  %(k3)s  : ambiguite
+ caractérisation de la topologie du câble no %(k1)s  : deux chemins continus possibles de  %(k2)s  a  %(k3)s  : ambiguïté
 """),
 
 58: _(u"""
- caracterisation de la topologie du cable no %(k1)s  : aucun chemin continu valide
+ caractérisation de la topologie du câble no %(k1)s  : aucun chemin continu valide
 """),
 
 59: _(u"""
- interpolation de la trajectoire du cable no %(k1)s  : deux noeuds sont geometriquement confondus
+ interpolation de la trajectoire du câble no %(k1)s  : deux noeuds sont géométriquement confondus
 """),
 
 60: _(u"""
- interpolation de la trajectoire du cable no %(k1)s  : detection d un point de rebroussement
+ interpolation de la trajectoire du câble no %(k1)s  : détection d un point de rebroussement
 """),
 
 61: _(u"""
 Erreur utilisateur :
- Vous devez fournir le mot cle MAILLAGE pour un champ aux noeuds ou une carte.
+ Vous devez fournir le mot clé MAILLAGE pour un champ aux noeuds ou une carte.
 """),
 
 62: _(u"""
 Erreur utilisateur :
- vous devez fournir les mots cles MODELE et OPTION pour un champ élementaire
+ vous devez fournir les mots clés MODELE et OPTION pour un champ élémentaire
 """),
 
 63: _(u"""
- occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandees sur le(la) %(k3)s  qui n a pas ete affecte(e) par un élément
+ occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandées sur le(la) %(k3)s  qui n a pas été affecte(e) par un élément
 """),
 
 64: _(u"""
- occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandees sur le(la)  %(k3)s  qui ne supporte pas un élément du bon type
+ occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandées sur le(la)  %(k3)s  qui ne supporte pas un élément du bon type
 """),
 
 65: _(u"""
- occurrence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un élément compatible avec la caracteristique  %(k4)s
+ occurrence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un élément compatible avec la caractéristique  %(k4)s
 """),
 
 66: _(u"""
-  %(k1)s  item attendu en debut de ligne
+  %(k1)s  item attendu en début de ligne
 """),
 
 67: _(u"""
- dicretisation insuffisante pour une des fonctions
+ discrétisation insuffisante pour une des fonctions
 """),
 
 68: _(u"""
- les fonctions de forme doivent être définies sur un intervalle commun 0,2l ou l est la longueur excitee. la discretisation doit être strictement croissante avec une exception pour le paramètre l qui doit être repete.
+ les fonctions de forme doivent être définies sur un intervalle commun 0,2l ou l est la longueur excitée. la discrétisation doit être strictement croissante avec une exception pour le paramètre l qui doit être répété.
 """),
 
 69: _(u"""
- discretisation des fonctions de forme : un seul paramètre doit être repete, correspondant a la longueur excitee l
+ discrétisation des fonctions de forme : un seul paramètre doit être répété, correspondant a la longueur excitée l
 """),
 
 70: _(u"""
- discretisation des fonctions de forme : le paramètre correspondant a la longueur excitee l doit être repete.
+ discrétisation des fonctions de forme : le paramètre correspondant a la longueur excitée l doit être répété.
 """),
 
 71: _(u"""
- absence de discretisation sur 0,l ou l,2l pour une des fonctions.
+ absence de discrétisation sur 0,l ou l,2l pour une des fonctions.
 """),
 
 72: _(u"""
- discretisation des fonctions de forme : le paramètre repete doit correspondre a la longueur excitee l
+ discrétisation des fonctions de forme : le paramètre répété doit correspondre a la longueur excitée l
 """),
 
 73: _(u"""
- les discretisations des fonctions de forme ne sont pas coherentes. le domaine de définition 0,2l et la longueur excitee l qui en est deduite doivent être communs a toutes les fonctions.
+ les discrétisations des fonctions de forme ne sont pas cohérentes. le domaine de définition 0,2l et la longueur excitée l qui en est déduite doivent être communs a toutes les fonctions.
 """),
 
 74: _(u"""
@@ -332,7 +332,7 @@ Erreur utilisateur :
 """),
 
 79: _(u"""
- le type  %(k1)s d'objets a verifier n'est pas correct : il ne peut être egal qu'a group_no ou noeud ou group_ma ou maille
+ le type  %(k1)s d'objets a vérifier n'est pas correct : il ne peut être égal qu'a GROUP_NO ou noeud ou GROUP_MA ou maille
 """),
 
 80: _(u"""
@@ -345,15 +345,15 @@ Erreur utilisateur :
 """),
 
 82: _(u"""
-  %(k1)s  un identificateur depasse 8 caractères
+  %(k1)s  un identificateur dépasse 8 caractères
 """),
 
 83: _(u"""
-  %(k1)s  le mot cle FIN n'est pas attendu
+  %(k1)s  le mot clé FIN n'est pas attendu
 """),
 
 84: _(u"""
-  %(k1)s  le mot cle FINSF n est pas attendu
+  %(k1)s  le mot clé FINSF n est pas attendu
 """),
 
 85: _(u"""
@@ -367,7 +367,7 @@ Erreur utilisateur :
 
 87: _(u"""
  la maille de nom :  %(k1)s  n'est pas de type TRIA ou QUAD
- elle ne sera pas affectee par  %(k2)s
+ elle ne sera pas affectée par  %(k2)s
 """),
 
 88: _(u"""
@@ -386,7 +386,7 @@ Erreur utilisateur :
 """),
 
 91: _(u"""
- erreur dans les noms de maille du GROUP_MA:  %(k1)s  du mot-cle facteur  %(k2)s
+ erreur dans les noms de maille du GROUP_MA:  %(k1)s  du mot-clé facteur  %(k2)s
  aucune maille n'est du bon type
 """),
 
@@ -395,11 +395,11 @@ Erreur utilisateur :
 """),
 
 93: _(u"""
- la maille de numéro :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
+ la maille de numéro :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectée par  %(k2)s
 """),
 
 97: _(u"""
-  -> Le group_ma %(k1)s du maillage %(k2)s se retrouve vide du fait
+  -> Le GROUP_MA %(k1)s du maillage %(k2)s se retrouve vide du fait
      de l'élimination des mailles servant au collage.
      Il n'est donc pas recréé dans le maillage assemblé.
 """),

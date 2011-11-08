@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION (AXISYMETRIQUE)
 # ssna302c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,8 +106,7 @@ CALCNL=STAT_NON_LINE(
                 CHARGE = PRES,
                 TYPE_CHARGE = 'SUIV'), _F(
                 CHARGE = CONDLIM)),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 3)
+           #          RECH_LINEAIRE=_F(ITER_LINE_MAXI = 3)
               )
 
 CALCNL=CALC_CHAMP(

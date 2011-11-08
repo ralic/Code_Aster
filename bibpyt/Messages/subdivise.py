@@ -1,4 +1,4 @@
-#@ MODIF subdivise Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF subdivise Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,7 @@ cata_msg={
    """),
 
 20: _(u"""
-    Découpe non-uniforme 
+    Découpe non uniforme 
     Le premier pas de temps vaut: <%(r1)13.6G>
     Les suivant valent          : <%(r2)13.6G>
    """),
@@ -65,7 +65,7 @@ cata_msg={
 """),
 
 60: _(u"""
-  Echec dans la tentative de découper le pas de temps.
+  Échec dans la tentative de découper le pas de temps.
 """),
 
 61: _(u"""

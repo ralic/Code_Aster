@@ -1,9 +1,8 @@
-      SUBROUTINE LCEIB1 (FAMI,IMATE, COMPOR, NDIM, EPSM,
-     &                    TM,TREF,SREF,SECHM,HYDRM,
-     &                  T, LAMBDA, DEUXMU,
-     &                   EPSTHE, KDESS, BENDO,  GAMMA, SEUIL, COUP)
+      SUBROUTINE LCEIB1(FAMI,KPG,KSP,IMATE,COMPOR,NDIM,EPSM,
+     &                  SREF,SECHM,HYDRM,T,LAMBDA, DEUXMU,EPSTHE,
+     &                  KDESS,BENDO,GAMMA,SEUIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 07/11/2011   AUTEUR BOTTONI M.BOTTONI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +22,8 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*16       COMPOR(*)
       CHARACTER*(*)      FAMI
-      LOGICAL            COUP
-      INTEGER            IMATE,NDIM, T(3,3), IISNAN
-      REAL*8             EPSM(6), LAMBDA, DEUXMU, EPSTHE, KDESS, BENDO
+      INTEGER            IMATE,NDIM, T(3,3),KPG,KSP
+      REAL*8             EPSM(6), LAMBDA, DEUXMU, EPSTHE(2),KDESS,BENDO
       REAL*8             GAMMA, SEUIL
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDO_ISOT_BETON - INITIALISATION
@@ -52,7 +50,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOMRES(3)
       INTEGER     I,K,NDIMSI
       REAL*8      VALRES(3), E, NU
-      REAL*8      TM,TREF,SREF,SECHM,HYDRM
+      REAL*8      SREF,SECHM,HYDRM
       REAL*8      K0, K1, SICR, TREPSM,EPS(6),KRON(6)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -89,27 +87,10 @@ C    LECTURE DES CARACTERISTIQUES DU MATERIAU
      &     (COMPOR(11)(1:15) .EQ. 'ENDO_ISOT_BETON')).OR.
      &     (COMPOR(1)(1:15) .EQ. 'ENDO_ISOT_BETON')) THEN
 
-C      IF (COUP) THEN
-      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,2,
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
      &              NOMRES,VALRES,ICODRE, 1)
-      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,1,
-     &              NOMRES(3),VALRES(3),ICODRE(3), 0)
-C      ELSE
-C      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
-C     &              NOMRES,VALRES,ICODRE, 'FM')
-C      CALL RCVALA(IMATE,' ','ELAS',3,' ',0.D0,1,
-C     &              NOMRES(3),VALRES(3),ICODRE(3), ' ')
-C      ENDIF
-      IF (IISNAN(TM).EQ.0) THEN
-        IF ((IISNAN(TREF).EQ.1).OR.(ICODRE(3).NE.0))  THEN
-          CALL U2MESS('F','CALCULEL_15')
-        ELSE
-          EPSTHE = VALRES(3) * (TM - TREF)
-        ENDIF
-      ELSE
-        VALRES(3) = 0.D0
-        EPSTHE = 0.D0
-      ENDIF
+      CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHE(1),ICODRE)
+      CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHE(2),ICODRE)
 
       E     = VALRES(1)
       NU    = VALRES(2)
@@ -159,7 +140,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
 C      PASSAGE AUX DEFORMATIONS ELASTIQUES
             CALL R8INIR(6,0.D0,EPS,1)
             DO 5 K=1,NDIMSI
-              EPS(K) = EPSM(K) - (  EPSTHE
+              EPS(K) = EPSM(K) - (  EPSTHE(1)
      &                       - KDESS * (SREF-SECHM)
      &                       - BENDO *  HYDRM  )     * KRON(K)
  5          CONTINUE

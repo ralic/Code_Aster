@@ -1,4 +1,4 @@
-#@ MODIF stbtrias Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stbtrias Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,11 +31,11 @@ cata_msg={
 """),
 
 3: _(u"""
-  attention le DATASET 2420 apparait plusieurs fois.
+  attention le DATASET 2420 apparaît plusieurs fois.
 """),
 
 4: _(u"""
-  attention le DATASET 18 apparait plusieurs fois.
+  attention le DATASET 18 apparaît plusieurs fois.
 """),
 
 5: _(u"""
@@ -65,6 +65,6 @@ cata_msg={
 11: _(u"""
   attention votre maillage utilise plusieurs systèmes de coordonnées
   vérifiez qu'ils sont tous identiques
-  ASTER ne gère qu'un système de coordonnéez cartesien unique.
+  ASTER ne gère qu'un système de coordonnées cartésien unique.
 """),
 }

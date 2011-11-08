@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postrele Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,13 +26,13 @@ cata_msg = {
 """),
 
 2 : _(u"""
- post_traitement numéro :  %(i1)d
+ post-traitement numéro :  %(i1)d
  inexistence de CHAM_GD
  pas de post-traitement
  """),
 
 3 : _(u"""
- post_traitement numéro :  %(i1)d
+ post-traitement numéro :  %(i1)d
  aucune maille ne correspond aux critères demandés
  pas de post-traitement
 """),
@@ -47,7 +47,7 @@ cata_msg = {
 """),
 
 7 : _(u"""
- le nombre de composantes à traiter est limité à 6 pour operation "MOYENNE".
+ le nombre de composantes à traiter est limité à 6 pour opération "MOYENNE".
  utiliser "NOM_CMP" avec au plus 6 composantes.
 """),
 
@@ -68,7 +68,7 @@ cata_msg = {
 """),
 
 12 : _(u"""
- tableau de travail limité, reduire le nombre de composantes à traiter
+ tableau de travail limité, réduire le nombre de composantes à traiter
 """),
 
 13 : _(u"""
@@ -99,7 +99,7 @@ cata_msg = {
 """),
 
 19 : _(u"""
- mauvaise définition du chemin, probleme de continuité du chemin sur une maille
+ mauvaise définition du chemin, problème de continuité du chemin sur une maille
  diminuer la précision dans l'opérateur INTE_MAIL_(2D/3D)
 """),
 
@@ -144,7 +144,7 @@ cata_msg = {
 """),
 
 28 : _(u"""
- les noeuds du maillage ne sont pas tous dans un même plan Z = CST
+ les noeuds du maillage ne sont pas tous dans un même plan Z = CONSTANTE
  changement de repère non traité
 """),
 
@@ -161,7 +161,7 @@ cata_msg = {
 """),
 
 32 : _(u"""
- les noeuds du maillage ne sont pas tous dans un même plan Z = CST
+ les noeuds du maillage ne sont pas tous dans un même plan Z = CSTE
  option TRAC_NOR non traitée
  utiliser l'option TRAC_DIR
 """),
@@ -243,7 +243,7 @@ cata_msg = {
 
 36 : _(u"""
  trace directionnelle, post-traitement: %(i1)d
- direction nulle, pas de calul
+ direction nulle, pas de calcul
 """),
 
 37 : _(u"""
@@ -253,14 +253,14 @@ cata_msg = {
 
 38 : _(u"""
  post-traitement %(i1)d
- composante non traitée dans un changement de repere
+ composante non traitée dans un changement de repère
  Contactez le support
 """),
 
 39 : _(u"""
  post-traitement %(i1)d
- grandeur %(k1)s non traitée dans un changement de repere
- les changements de repere sont possibles
+ grandeur %(k1)s non traitée dans un changement de repère
+ les changements de repère sont possibles
    pour la grandeur %(k2)s  option: %(k3)s
    pour la grandeur %(k4)s  options: %(k5)s %(k6)s
    pour les grandeurs %(k7)s  %(k8)s
@@ -271,7 +271,7 @@ cata_msg = {
 """),
 
 41 : _(u"""
- champ inexistant nom_cham: %(k1)s  nume_ordre: %(i1)d
+ champ inexistant NOM_CHAM: %(k1)s  NUME_ORDRE: %(i1)d
 """),
 
 42 : _(u"""
@@ -319,12 +319,12 @@ cata_msg = {
 
 50 : _(u"""
  occurrence %(i1)d du mot clé facteur ACTION
- le groupe de noeuds %(k1)s ne fait pas parti du maillage sous jacent au champ à traiter.
+ le groupe de noeuds %(k1)s ne fait pas parti du maillage sous-jacent au champ à traiter.
 """),
 
 51 : _(u"""
  occurrence %(i1)d du mot clé facteur ACTION
- le noeud %(k1)s ne fait pas parti du maillage sous jacent au champ à traiter.
+ le noeud %(k1)s ne fait pas parti du maillage sous-jacent au champ à traiter.
 """),
 
 52 : _(u"""
@@ -364,14 +364,14 @@ cata_msg = {
 """),
 
 60 : _(u"""
- arret sur erreurs
+ arrêt sur erreurs
  Contactez le support
 """),
 
 61 : _(u"""
  Nombre de cycles admissibles négatif,
- verifier la courbe de WOLHER
- contrainte calculee =  %(r1)f    nadm =  %(r2)f
+ vérifiez la courbe de WOHLER
+ contrainte calculée =  %(r1)f    nadm =  %(r2)f
 
 """),
 

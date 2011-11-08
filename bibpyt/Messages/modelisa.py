@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ cata_msg = {
 """),
 
 6 : _(u"""
- methode AU-YANG : la géometrie doit être cylindrique
+ méthode AU-YANG : la géométrie doit être cylindrique
 """),
 
 7 : _(u"""
@@ -69,7 +69,7 @@ cata_msg = {
 """),
 
 12 : _(u"""
- orientation : une erreur a ete détectée lors de l'affectation des orientations
+ orientation : une erreur a été détectée lors de l'affectation des orientations
 """),
 
 13 : _(u"""
@@ -81,7 +81,7 @@ cata_msg = {
 """),
 
 15 : _(u"""
- poutre : une  erreur a ete detectee lors des verifications des valeurs entrees
+ poutre : une  erreur a été détectée lors des vérifications des valeurs entrées
 """),
 
 16 : _(u"""
@@ -94,7 +94,7 @@ cata_msg = {
 """),
 
 18 : _(u"""
- le noeud  %(k1)s  non modelisé par un discret
+ le noeud  %(k1)s  non modélisé par un discret
 """),
 
 19 : _(u"""
@@ -106,7 +106,7 @@ cata_msg = {
 """),
 
 21 : _(u"""
- le noeud  %(k1)s  éxtremité d'un des discrets n'existe pas dans la surface donnée par GROUP_MA.
+ le noeud  %(k1)s  extrémité d'un des discrets n'existe pas dans la surface donnée par GROUP_MA.
 """),
 
 22 : _(u"""
@@ -126,11 +126,11 @@ cata_msg = {
 
 25 : _(u"""
  ORIENTATION : GENE_TUYAU
- le noeud doit être une des extremités
+ le noeud doit être une des extrémités
 """),
 
 26 : _(u"""
-  Il y a un probleme lors de l'affectation du mot clé MODI_METRIQUE sur la maille %(k1)s
+  Il y a un problème lors de l'affectation du mot clé MODI_METRIQUE sur la maille %(k1)s
 """),
 
 27 : _(u"""
@@ -192,23 +192,23 @@ cata_msg = {
 """),
 
 39 : _(u"""
- la maille  %(k1)s  n'a pas ete afféctée par une matrice (DISCRET).
+ la maille  %(k1)s  n'a pas été affectée par une matrice (DISCRET).
 """),
 
 40 : _(u"""
- la maille  %(k1)s  n'a pas ete affectée par des caractéristiques de cable.
+ la maille  %(k1)s  n'a pas été affectée par des caractéristiques de câble.
 """),
 
 41 : _(u"""
- la maille  %(k1)s  n'a pas ete affectée par des caractéristiques de barre.
+ la maille  %(k1)s  n'a pas été affectée par des caractéristiques de barre.
 """),
 
 42 : _(u"""
- la maille  %(k1)s  n'a pas ete affectée par des caractéristiques de grille.
+ la maille  %(k1)s  n'a pas été affectée par des caractéristiques de grille.
 """),
 
 43 : _(u"""
- le noeud  %(k1)s  n'a pas ete affecté par une matrice.
+ le noeud  %(k1)s  n'a pas été affecté par une matrice.
 """),
 
 44 : _(u"""
@@ -221,7 +221,7 @@ cata_msg = {
 45 : _(u"""
  BARRE :
  occurrence  %(k1)s
- "cara"   :  4
+ "CARA"   :  4
  arguments maximums pour une section " %(k2)s "
 """),
 
@@ -229,33 +229,33 @@ cata_msg = {
  BARRE :
  occurrence  %(k1)s
  section " %(k2)s
- argument "h" incompatible avec "hy" ou "hz"
+ argument "h" incompatible avec "HY" ou "HZ"
 """),
 
 47 : _(u"""
  barre :
  occurrence  %(k1)s
  section " %(k2)s
- argument "hy" ou "hz" incompatible avec "h"
+ argument "HY" ou "HZ" incompatible avec "h"
 """),
 
 48 : _(u"""
  barre :
  occurrence  %(k1)s
- section " %(k2)s  argument "ep" incompatible avec "epy" ou "epz"
+ section " %(k2)s  argument "EP" incompatible avec "EPY" ou "EPZ"
 """),
 
 49 : _(u"""
  barre :
  occurrence  %(k1)s
  section " %(k2)s
- argument "epy" ou "epz" incompatible avec "ep"
+ argument "EPY" ou "EPZ" incompatible avec "EP"
 """),
 
 50 : _(u"""
  barre :
  occurrence  %(k1)s
- "cara" : nombre de valeurs entrees incorrect
+ "CARA" : nombre de valeurs entrées incorrect
  il en faut  %(k2)s
 """),
 
@@ -263,19 +263,19 @@ cata_msg = {
  barre :
  occurrence  %(k1)s
  section " %(k2)s
- valeur  %(k3)s  de "vale" non admise (valeur test interne)
+ valeur  %(k3)s  de "VALE" non admise (valeur test interne)
 """),
 
 52 : _(u"""
- cable :
+ CABLE :
  occurrence 1
- le mot cle "section" est obligatoire.
+ le mot clé "section" est obligatoire.
 """),
 
 53 : _(u"""
  coque :
  occurrence 1
- le mot cle "epais" est obligatoire.
+ le mot clé "EPAIS" est obligatoire.
 """),
 
 54 : _(u"""
@@ -283,62 +283,62 @@ cata_msg = {
 """),
 
 56 : _(u"""
- impossibilite, la maille  %(k1)s  doit être une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caracteristique  %(k4)s
+ impossibilité, la maille  %(k1)s  doit être une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caractéristique  %(k4)s
 """),
 
 57 : _(u"""
  orientation :
  occurrence 1
- le mot cle "vale" est obligatoire
+ le mot clé "VALE" est obligatoire
 """),
 
 58 : _(u"""
  orientation :
  occurrence 1
- le mot cle "cara" est obligatoire
+ le mot clé "CARA" est obligatoire
 """),
 
 59 : _(u"""
  orientation :
  occurrence  %(k1)s
- presence de "vale" obligatoire si "cara" est present
+ présence de "VALE" obligatoire si "CARA" est présent
 """),
 
 60 : _(u"""
  orientation :
  occurrence  %(k1)s
  val :  %(k2)s
- nombre de valeurs entrees incorrect
+ nombre de valeurs entrées incorrect
 """),
 
 61 : _(u"""
- defi_arc:
+ DEFI_ARC:
  le rayon de courbure doit être positif.
 """),
 
 62 : _(u"""
- defi_arc:
- il faut 3 reels pour définir le centre de courbure.
+ DEFI_ARC:
+ il faut 3 réels pour définir le centre de courbure.
 """),
 
 63 : _(u"""
- defi_arc:
- il faut 3 reels pour définir le point de concours des tangentes.
+ DEFI_ARC:
+ il faut 3 réels pour définir le point de concours des tangentes.
 """),
 
 64 : _(u"""
- defi_arc:
- le coefficient de flexibilite doit être positif.
+ DEFI_ARC:
+ le coefficient de flexibilité doit être positif.
 """),
 
 65 : _(u"""
- defi_arc: l'indice de contrainte doit être positif.
+ DEFI_ARC: l'indice de contrainte doit être positif.
 """),
 
 66 : _(u"""
  poutre :
  occurrence  %(k1)s
- section "cercle", vari_sect "constant" la caracteristique "r" est obligatoire
+ section "cercle", VARI_SECT "constant" la caractéristique "r" est obligatoire
 """),
 
 67 : _(u"""
@@ -346,20 +346,20 @@ cata_msg = {
 """),
 
 69 : _(u"""
- occurrence  %(k1)s de "barre" (maille  %(k2)s ) ecrasement d un type de geometrie de section par un autre
+ occurrence  %(k1)s de "barre" (maille  %(k2)s ) écrasement d un type de géométrie de section par un autre
 """),
 
 70 : _(u"""
  barre :
  maille  %(k1)s
- section generale
- il manque la caracteristique  %(k2)s
+ section GENERALE
+ il manque la caractéristique  %(k2)s
 """),
 
 71 : _(u"""
  barre :
  maille  %(k1)s
- section generale
+ section GENERALE
  la valeur de  %(k2)s  doit être  strictement positive.
 """),
 
@@ -367,7 +367,7 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section rectangle
- il manque  la caracteristique  %(k2)s
+ il manque  la caractéristique  %(k2)s
 """),
 
 73 : _(u"""
@@ -381,7 +381,7 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section cercle
- il manque  la caracteristique  %(k2)s
+ il manque  la caractéristique  %(k2)s
 """),
 
 75 : _(u"""
@@ -401,29 +401,29 @@ cata_msg = {
 77 : _(u"""
  poutre :
  maille  %(k1)s
- section generale
- il manque la caracteristique  %(k2)s
+ section GENERALE
+ il manque la caractéristique  %(k2)s
 """),
 
 78 : _(u"""
  poutre :
  maille  %(k1)s
- section generale
- élément poutre de timoshenko : il manque la caracteristique  %(k2)s
+ section GENERALE
+ élément poutre de Timoshenko : il manque la caractéristique  %(k2)s
 """),
 
 79 : _(u"""
  poutre :
  maille  %(k1)s
  section rectangle
- il manque  la caracteristique  %(k2)s
+ il manque  la caractéristique  %(k2)s
 """),
 
 80 : _(u"""
  poutre :
  maille  %(k1)s
  section cercle
- il manque la caracteristique  %(k2)s
+ il manque la caractéristique  %(k2)s
 """),
 
 81 : _(u"""
@@ -501,7 +501,7 @@ cata_msg = {
 
 93 : _(u"""
  occurrence  %(k1)s de "poutre" (maille  %(k2)s )
- écrasement d'un type de géometrie de section par un autre
+ écrasement d'un type de géométrie de section par un autre
 """),
 
 94 : _(u"""

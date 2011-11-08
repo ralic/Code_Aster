@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/11/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1063,7 +1063,11 @@ def get_liste_inst(tabsup,args) :
             l_inst=args['INST']
          elif args['LIST_INST']!=None :
             l_inst=args['LIST_INST'].Valeurs()
-         for inst in l_inst  :
+
+         if type(l_inst)==tuple : 
+            l_inst=list(l_inst)
+         
+         for i,inst in enumerate(l_inst)  :
             if CRITERE=='RELATIF' and inst!=0.:
                match=[x for x in l_inst_tab if abs((inst-x)/inst)<PRECISION]
             else :
@@ -1072,6 +1076,7 @@ def get_liste_inst(tabsup,args) :
                UTMESS('F','RUPTURE0_38',valr=inst)
             if len(match)>=2 :
                UTMESS('F','RUPTURE0_39',valr=inst)
+            l_inst[i] = match[0]
       else :
          l_inst=l_inst_tab
          PRECISION = 1.E-6
@@ -1131,15 +1136,21 @@ def get_liste_freq(tabsup,args) :
             l_freq=list(args['FREQ'])
          elif args['LIST_FREQ']!=None :
             l_freq=args['LIST_FREQ'].Valeurs()
-         for freq in l_freq  :
+
+         if type(l_freq)==tuple : 
+            l_freq=list(l_freq)
+         
+         for i,freq in enumerate(l_freq)  :
             if CRITERE=='RELATIF' and freq!=0.:
                match=[x for x in l_freq_tab if abs((freq-x)/freq)<PRECISION]
             else :
                match=[x for x in l_freq_tab if abs(freq-x)<PRECISION]
+
             if len(match)==0 :
                UTMESS('F','RUPTURE0_88',valr=freq)
             if len(match)>=2 :
                UTMESS('F','RUPTURE0_89',valr=freq)
+            l_freq[i] = match[0]
       else :
          l_freq=l_freq_tab
          PRECISION = 1.E-6

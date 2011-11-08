@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,11 +22,11 @@
 cata_msg = {
 
 4 : _(u"""
-  le nombre de noeuds selectionnes est superieur au nombre de noeuds du maillage. on va tronquer la liste.
+  le nombre de noeuds sélectionnés est supérieur au nombre de noeuds du maillage. on va tronquer la liste.
 """),
 
 5 : _(u"""
- chaine de caracteres trop longues : imprimer moins de champs
+ chaîne de caractères trop longues : imprimer moins de champs
 """),
 
 6 : _(u"""
@@ -34,11 +34,11 @@ cata_msg = {
 """),
 
 7 : _(u"""
- le maillage  %(k1)s  a deja ete ecrit au format ensight: le contenu du fichier  %(k2)s  sera ecrase.
+ le maillage  %(k1)s  a déjà été écrit au format ENSIGHT: le contenu du fichier  %(k2)s  sera écrasé.
 """),
 
 8 : _(u"""
- probleme a l'ouverture du fichier " %(k1)s " pour impression du maillage  %(k2)s  au format ensight
+ problème a l'ouverture du fichier " %(k1)s " pour impression du maillage  %(k2)s  au format ENSIGHT
 """),
 
 9 : _(u"""
@@ -46,7 +46,7 @@ cata_msg = {
 """),
 
 10 : _(u"""
- soit le fichier n'existe pas, soit c'est une mauvaise version de hdf (utilise par med).
+ soit le fichier n'existe pas, soit c'est une mauvaise version de HDF (utilise par MED).
 """),
 
 
@@ -85,11 +85,11 @@ cata_msg = {
 """),
 
 39 : _(u"""
- le mot cle MODELE est obligatoire pour un CHAM_ELEM
+ le mot clé MODELE est obligatoire pour un CHAM_ELEM
 """),
 
 40 : _(u"""
- pb correspondance noeud IDEAS
+ Problème correspondance noeud IDEAS
 """),
 
 41 : _(u"""
@@ -105,7 +105,7 @@ cata_msg = {
 """),
 
 65 : _(u"""
- pour la variable d'acces "noeud_cmp", il faut un nombre pair de valeurs.
+ pour la variable d'accès "NOEUD_CMP", il faut un nombre pair de valeurs.
 """),
 
 66 : _(u"""
@@ -132,11 +132,11 @@ cata_msg = {
 """),
 
 73 : _(u"""
- l'impression avec selection sur des entites topologiques n'a pas de sens au format castem  : toutes les valeurs sur tout le maillage seront donc imprimees.
+ l'impression avec sélection sur des entités topologiques n'a pas de sens au format CASTEM  : toutes les valeurs sur tout le maillage seront donc imprimées.
 """),
 
 74 : _(u"""
- Le maillage %(k1)s n'est pas coherent avec le maillage %(k2)s portant le resultat %(k3)s
+ Le maillage %(k1)s n'est pas cohérent avec le maillage %(k2)s portant le résultat %(k3)s
 """),
 
 75 : _(u"""

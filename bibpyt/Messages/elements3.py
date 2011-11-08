@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,7 @@ cata_msg = {
 """),
 
 34 : _(u"""
- Seules les forces suiveuses de type vent définies par un EVOL_char sont autorisées
+ Seules les forces suiveuses de type vent définies par un EVOL_CHAR sont autorisées
 """),
 
 35 : _(u"""
@@ -179,7 +179,7 @@ cata_msg = {
 """),
 
 61 : _(u"""
- loi  %(k1)s  indisponible pour les pou_d_e/d_t
+ loi  %(k1)s  indisponible pour les POU_D_E/d_t
 """),
 
 62 : _(u"""
@@ -228,11 +228,11 @@ cata_msg = {
 """),
 
 85 : _(u"""
-  relation :  %(k1)s  non implantée sur les éléments "pou_d_t_gd"
+  relation :  %(k1)s  non implantée sur les éléments "POU_D_T_GD"
 """),
 
 86 : _(u"""
-  déformation :  %(k1)s  non implantée sur les éléments "pou_d_t_gd"
+  déformation :  %(k1)s  non implantée sur les éléments "POU_D_T_GD"
 """),
 
 87 : _(u"""

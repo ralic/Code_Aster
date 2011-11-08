@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,11 +80,11 @@ cata_msg = {
 
 
 13 : _(u"""
- seule la grandeur NEUT_f est traitée actuellement.
+ seule la grandeur NEUT_F est traitée actuellement.
 """),
 
 14 : _(u"""
- les champs de CHAM_f et CHAM_para n'ont pas la même discrétisation NOEU/CART/ELGA/ELNO/ELEM.
+ les champs de CHAM_F et CHAM_PARA n'ont pas la même discrétisation NOEU/CART/ELGA/ELNO/ELEM.
 """),
 
 
@@ -93,7 +93,7 @@ cata_msg = {
 
 
 16 : _(u"""
- avec "noeud_CMP", il faut donner un nom et une composante.
+ avec "NOEUD_CMP", il faut donner un nom et une composante.
 """),
 
 17 : _(u"""
@@ -105,7 +105,7 @@ cata_msg = {
 """),
 
 19 : _(u"""
- on ne peut extraire qu'1 numéro d'ordre. vous en avez spécifié plusieurs.
+ On ne peut extraire qu'un numéro d'ordre. Vous en avez spécifié plusieurs.
 """),
 
 24 : _(u"""
@@ -361,7 +361,7 @@ cata_msg = {
 
 
 91 : _(u"""
- mot clé MANSON_coffin non trouve
+ mot clé MANSON_COFFIN non trouve
 """),
 
 92 : _(u"""

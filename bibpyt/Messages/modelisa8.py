@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa8 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,9 +36,9 @@ cata_msg = {
 4 : _(u"""
  La somme des aires des fibres est différente de l'aire de la section de la poutre.
 
- L'erreur relative est superieure a la précision définie par le mot cle PREC_AIRE :
+ L'erreur relative est supérieure a la précision définie par le mot clé PREC_AIRE :
 
-   - occurrence de multifibre : %(r1).0f
+   - occurrence de multi-fibres : %(r1).0f
 
    - aire de la poutre       : %(r2)12.5E
 
@@ -50,9 +50,9 @@ cata_msg = {
 5 : _(u"""
  La somme des moments d'inertie des fibres par rapport a l'axe 0Y est différente du moment de la poutre.
 
- L'erreur relative est superieure a la précision définie par le mot cle PREC_INERTIE :
+ L'erreur relative est supérieure a la précision définie par le mot clé PREC_INERTIE :
 
-   - occurrence de multifibre       : %(r1).0f
+   - occurrence de multi-fibres       : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -64,9 +64,9 @@ cata_msg = {
 6 : _(u"""
  La somme des moments d'inertie des fibres par rapport a l'axe 0Z est différente du moment de la poutre.
 
- L'erreur relative est superieure a la précision définie par le mot cle PREC_INERTIE :
+ L'erreur relative est supérieure a la précision définie par le mot clé PREC_INERTIE :
 
-   - occurrence de multifibre       : %(r1).0f
+   - occurrence de multi-fibres       : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -76,47 +76,47 @@ cata_msg = {
 """),
 
 7 : _(u"""
- actuellemnt on ne peut mettre que %(k1)s groupes de fibres sur un élément
+ actuellement on ne peut mettre que %(k1)s groupes de fibres sur un élément
 """),
 
 8 : _(u"""
- Le groupe de fibre %(k1)s n'a pas ete défini dans DEFI_GEOM_FIBRE
+ Le groupe de fibre %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE
 """),
 
 9 : _(u"""
- mot cle facteur  "defi_arc", occurrence  %(i1)d , group_ma :  %(k1)s
+ mot clé facteur  "DEFI_ARC", occurrence  %(i1)d , GROUP_MA :  %(k1)s
  le centre n'est pas vraiment  le centre du cercle %(k2)s
 """),
 
 10 : _(u"""
- mot cle facteur  "defi_arc", occurrence  %(i1)d , group_ma :  %(k1)s
- le point de tangence n est pas equidistant des points extremites %(k2)s
+ mot clé facteur  "DEFI_ARC", occurrence  %(i1)d , GROUP_MA :  %(k1)s
+ le point de tangence n est pas équidistant des points extrémités %(k2)s
 """),
 
 11 : _(u"""
- mot cle facteur  "defi_arc", occurrence  %(i1)d , maille :  %(k1)s
+ mot clé facteur  "DEFI_ARC", occurrence  %(i1)d , maille :  %(k1)s
  le centre n'est pas vraiment  le centre du cercle %(k2)s
 """),
 
 13 : _(u"""
-  , maille :  %(i1)d la maille n'est pas situee  sur le cercle %(k1)s
+  , maille :  %(i1)d la maille n'est pas située  sur le cercle %(k1)s
 """),
 
 14 : _(u"""
   , maille :  %(i1)d
- la maille n'est pas orientee  dans le même sens que les autres sur le cercle %(k1)s
+ la maille n'est pas orientée  dans le même sens que les autres sur le cercle %(k1)s
 """),
 
 16 : _(u"""
-  , maille :  %(i1)d pb produit scalaire %(k1)s
+  , maille :  %(i1)d problème produit scalaire %(k1)s
 """),
 
 25 : _(u"""
-   l'ensemble des mailles comporte plus de 2 extremites %(k1)s
+   l'ensemble des mailles comporte plus de 2 extrémités %(k1)s
 """),
 
 26 : _(u"""
- defi_arcl'ensemble des mailles  forme un cercle : a subdiviser  %(k1)s
+ DEFI_ARC l'ensemble des mailles  forme un cercle : a subdiviser  %(k1)s
 """),
 
 27 : _(u"""
@@ -128,7 +128,7 @@ cata_msg = {
 """),
 
 29 : _(u"""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d
+ nombre de composantes supérieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d
 """),
 
 30 : _(u"""
@@ -144,70 +144,70 @@ cata_msg = {
 """),
 
 31 : _(u"""
- nombre de mots-clés superieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d
+ nombre de mots-clés supérieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d
 """),
 
 34 : _(u"""
- erreur dans les donnéesle paramètre  %(k1)s n existe pas dans la table  %(k2)s
+ erreur dans les données le paramètre  %(k1)s n existe pas dans la table  %(k2)s
 """),
 
 35 : _(u"""
- erreur dans les donnéespas de valeur pour le paramètre  %(k1)s
+ erreur dans les données pas de valeur pour le paramètre  %(k1)s
 """),
 
 36 : _(u"""
- erreur dans les donnéesplusieurs valeurs pour le group_ma  %(k1)s
+ erreur dans les données plusieurs valeurs pour le GROUP_MA  %(k1)s
 """),
 
 40 : _(u"""
  la maille de nom :  %(k1)s n'est pas de type  %(k2)s  ou  %(k3)s
- elle ne sera pas affectee par  %(k4)s
+ elle ne sera pas affectée par  %(k4)s
 """),
 
 43 : _(u"""
 
- le nombre de ddl_1 figurant dans  la liaison n'est pas egal au nombre de coef_mult_1 :
+ le nombre de ddl_1 figurant dans  la liaison n'est pas égal au nombre de COEF_MULT_1 :
    %(i1)d
    %(i2)d
 """),
 
 44 : _(u"""
 
- le nombre de ddl_2 figurant dans  la liaison n'est pas egal au nombre de coef_mult_2 :
+ le nombre de ddl_2 figurant dans  la liaison n'est pas égal au nombre de COEF_MULT_2 :
    %(i1)d
    %(i2)d
 """),
 
 46 : _(u"""
 
- le nombre de ddls figurant dans  la liaison n'est pas egal au nombre de  coef_mult/coef_mult_fonc :
+ le nombre de ddls figurant dans  la liaison n'est pas égal au nombre de  COEF_MULT/COEF_MULT_FONC :
    %(i1)d
    %(i2)d
 """),
 
 47 : _(u"""
 
- le nombre de ddls figurant dans  la liaison n'est pas egal au nombre de noeuds :
+ le nombre de ddls figurant dans  la liaison n'est pas égal au nombre de noeuds :
    %(i1)d
    %(i2)d
 """),
 
 49 : _(u"""
 
- la direction normale est calculee sur la face esclave. il faut donner des mailles
-  de facettes, mots cles :  %(k1)s %(k2)s
+ la direction normale est calculée sur la face esclave. il faut donner des mailles
+  de facettes, mots clés :  %(k1)s %(k2)s
 """),
 
 52 : _(u"""
- les noeuds n1 et n2 sont confondus coor(n1): %(r1)f   %(r2)f coor(n2): %(r3)f
+ les noeuds n1 et n2 sont confondus COOR(n1): %(r1)f   %(r2)f COOR(n2): %(r3)f
    %(r4)f
  norme   : %(r5)f
 """),
 
 53 : _(u"""
- n3 colineaires coor(n1): %(r1)f   %(r2)f   %(r3)f coor(n2): %(r4)f   %(r5)f
+ n3 colinéaires COOR(n1): %(r1)f   %(r2)f   %(r3)f COOR(n2): %(r4)f   %(r5)f
    %(r6)f
- coor(n3): %(r7)f
+ COOR(n3): %(r7)f
    %(r8)f
    %(r9)f
  norme   : %(r10)f
@@ -231,8 +231,8 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
  Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas
  des mailles surfaciques.
  Risques & Conseils :
- Verifiez la constitution des groupes de mailles renseignees sous le
- mot-cle GROUP_MA_ESCL.
+ Vérifiez la constitution des groupes de mailles renseignées sous le
+ mot-clé GROUP_MA_ESCL.
 """),
 
 69 : _(u"""
@@ -253,8 +253,8 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
  Risques & conseils :
    * Comme certaines mailles n'ont peut-être pas été affectées, il y a un risque
      de résultats faux (présence de "trous" dans la modélisation).
-     Pour connaitre les mailles non affectées (à la fin de l'opérateur), on peut utiliser INFO=2.
-   * Ce problème est fréquent quand on souhaite une modélisation "sous-intégrée"
+     Pour connaître les mailles non affectées (à la fin de l'opérateur), on peut utiliser INFO=2.
+   * Ce problème est fréquent quand on souhaite une modélisation "sous intégrée"
      (par exemple AXIS_SI). Pour l'éviter, il faut donner une modélisation de
      "substitution" pour les mailles qui n'existent pas dans la modélisation désirée (ici 'AXIS_SI').
      On fera par exemple :
@@ -270,15 +270,15 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 """),
 
 71 : _(u"""
- materiau non valide materiau :  %(k1)s
+ matériau non valide matériau :  %(k1)s
 """),
 
 72 : _(u"""
- materiaux non valideson ne peut avoir a la fois  %(k1)s  et  %(k2)s
+ matériaux non valides on ne peut avoir a la fois  %(k1)s  et  %(k2)s
 """),
 
 75 : _(u"""
- erreur donnéesle group_no n'existe pas  %(k1)s
+ erreur données le GROUP_NO n'existe pas  %(k1)s
 """),
 
 77 : _(u"""
@@ -292,30 +292,30 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 """),
 
 79 : _(u"""
- conflit dans les vis-a-vis  generes successivement le noeud  %(k1)s
-  a pour vis-a-vis le noeud %(k2)s
+ conflit dans les vis-à-vis  générés successivement le noeud  %(k1)s
+  a pour vis-à-vis le noeud %(k2)s
   et le noeud %(k3)s
 """),
 
 80 : _(u"""
- conflit dans les vis-a-vis  generes successivement
- le noeud de la premiere liste %(k1)s
+ conflit dans les vis-à-vis  générés successivement
+ le noeud de la première liste %(k1)s
   n"est l"image d"aucun  %(k2)s
  noeud par la correspondance inverse %(k3)s
 """),
 
 87 : _(u"""
- conflit dans les vis-a-vis  generes successivement a partir des listes  %(k1)s
+ conflit dans les vis-à-vis  générés successivement a partir des listes  %(k1)s
  et  %(k2)s
  le noeud  %(k3)s
- a pour vis-a-vis le noeud %(k4)s
+ a pour vis-à-vis le noeud %(k4)s
   et le noeud %(k5)s
 """),
 
 88 : _(u"""
- conflit dans les vis-a-vis  generes successivement a partir des listes  %(k1)s
+ conflit dans les vis-à-vis  générés successivement a partir des listes  %(k1)s
  et  %(k2)s
- le noeud de la premiere liste %(k3)s
+ le noeud de la première liste %(k3)s
   n"est l"image d"aucun  %(k4)s
  noeud par la correspondance inverse %(k5)s
 """),
@@ -325,30 +325,30 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 """),
 
 90 : _(u"""
- conflit dans les vis_a_vis les mailles  %(k1)s  et  %(k2)s
-  ont toutes les 2 comme vis_a_vis la maille %(k3)s
+ conflit dans les VIS_A_VIS les mailles  %(k1)s  et  %(k2)s
+  ont toutes les 2 comme VIS_A_VIS la maille %(k3)s
 """),
 
 93 : _(u"""
 
- evaluation impossible  d une fonction materiau - on deborde a gauche  pour la temperature
- temp : %(r1)f
+ évaluation impossible  d une fonction matériau - on déborde a gauche  pour la température
+ TEMP : %(r1)f
 """),
 
 94 : _(u"""
 
- evaluation impossible  d une fonction materiau - on deborde a droite  pour la temperature
- temp : %(r1)f
+ évaluation impossible  d une fonction matériau - on déborde a droite  pour la température
+ TEMP : %(r1)f
 """),
 
 98 : _(u"""
  il manque le paramètre  %(k1)s dans la table %(k2)s
- .sa presence est indispensable a la  creation du champ nodal. %(k3)s
+ .sa présence est indispensable a la  création du champ nodal. %(k3)s
 """),
 
 99 : _(u"""
- le paramètre  %(k1)s ne doit pas apparaitre dans la  table %(k2)s
- pour la creation d'un champ nodal. %(k3)s
+ le paramètre  %(k1)s ne doit pas apparaître dans la  table %(k2)s
+ pour la création d'un champ nodal. %(k3)s
 """),
 
 }

@@ -1,6 +1,6 @@
       SUBROUTINE TE0597(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -296,82 +296,6 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
           ENDIF
 
   170   CONTINUE
-
-      ELSEIF ((OPTION.EQ.'EPTQ_ELNO') .OR. (OPTION.EQ.'SITQ_ELNO')) THEN
-
-        IF (OPTION.EQ.'EPTQ_ELNO') THEN
-
-C ======== RAPPEL DES CONTRAINTES ====================
-
-          CALL JEVECH('PDEFOEQ','L',JIN)
-
-          CALL JEVECH('PDENOEQ','E',JCONN)
-
-        ELSEIF (OPTION.EQ.'SITQ_ELNO') THEN
-
-C ======== RAPPEL DES CONTRAINTES ====================
-
-          CALL JEVECH('PCONTEQ','L',JIN)
-
-          CALL JEVECH('PCOEQNO','E',JCONN)
-        ENDIF
-
-        LGPG=(2*NBSEC+1)*(2*NBCOU+1)
-        DO 210 I=ISECT,ISECT+1
-
-          IF ((NNO.EQ.3) .AND. (NPG.EQ.3)) THEN
-C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
-
-            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))
-            DO 180 INO=1,NNO
-              IF (INO.EQ.1) THEN
-                IH=2
-                I1=1
-                I2=3
-                J1=KPGS
-                J2=2*LGPG+KPGS
-                J3=LGPG+KPGS
-              ELSEIF (INO.EQ.2) THEN
-                IH=1
-                I1=3
-                I2=1
-                J1=2*LGPG+KPGS
-                J2=KPGS
-                J3=LGPG+KPGS
-              ELSE
-                K2=2
-                ZR(JCONN-1+K2+1)=ZR(JCONN-1+K2+1)+
-     &                           ZR(JIN-1+LGPG+KPGS+1)*POI(I-ISECT+1)
-                GOTO 180
-
-              ENDIF
-              K2=(INO-1)
-              ZR(JCONN-1+K2+1)=ZR(JCONN-1+K2+1)+
-     &                         (HK(IH,I2)*ZR(JIN-1+J1+1)-
-     &                         HK(IH,I1)*ZR(JIN-1+J2+1)-
-     &                         ZR(JIN-1+J3+1)*(HK(3,I1)*HK(IH,I2)-HK(3,
-     &                         I2)*HK(IH,I1)))/(HK(1,1)*HK(2,3)-
-     &                         HK(1,3)*HK(2,1))*POI(I-ISECT+1)
-  180       CONTINUE
-
-          ELSE
-            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))
-            DO 190 KP=1,NPG
-              J2=LGPG*(KP-1)+KPGS+1
-              VPG(KP)=ZR(JIN-1+J2)*POI(I-ISECT+1)
-  190       CONTINUE
-            NNOS=2
-            CALL PPGAN2(JGANO,1,1,VPG,VNO)
-            DO 200 INO=1,NNO
-              K2=(INO-1)
-              ZR(JCONN-1+K2+1)=ZR(JCONN-1+K2+1)+VNO(INO)
-  200       CONTINUE
-
-          ENDIF
-
-  210   CONTINUE
-
-C     FIN STOCKAGE
 
       ELSE
         CALL U2MESK('F','ELEMENTS4_49',1,OPTION)

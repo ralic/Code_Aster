@@ -1,0 +1,323 @@
+# MODIF  DATE 07/11/2011   AUTEUR GENIAUT S.GENIAUT 
+# TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
+# zzzz298c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'ZZZZ298C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+
+# MODELISATION C : VALIDATION SUR UN CALCUL MODAL FEM (TEST ORIGINAL : SDLS114A)
+
+# DEFINITION DES PARAMETRES DU CALCUL
+n_mode = 15
+tau = 0.01
+t_fin = 0.013
+pas = 2.5E-7
+
+M = LIRE_MAILLAGE();
+
+M=DEFI_GROUP(reuse=M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=(_F(OPTION = 'NOEUD_ORDO',
+                               NOM = 'LEVSUP',
+                               GROUP_MA = 'LEVSUP',),
+                            _F(OPTION = 'NOEUD_ORDO',
+                               NOM = 'LEVINF',
+                               GROUP_MA = 'LEVINF',),
+                            _F(NOM = 'COT_INF',
+                               GROUP_MA = 'COT_INF',),),
+            );
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               AFFE=_F(TOUT = 'OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),
+              );
+
+M = MODI_MAILLAGE(reuse = M,
+                  MAILLAGE = M,
+                  MODI_MAILLE = _F(OPTION = 'NOEUD_QUART',
+                                   GROUP_NO_FOND = 'PF',),
+                 );
+
+MA=DEFI_MATERIAU(ELAS=_F(E=200.0E+9,
+                         NU=0.3,
+                         ALPHA = 0.,
+                         RHO=7800,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MA,
+                         ),);
+
+BLOCAGE=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(GROUP_MA='COT_SUP',
+                                    DX = 0,),
+                                 _F(GROUP_MA='COT_SUP',
+                                    DY = 0,),),
+                      );
+
+CHAR=AFFE_CHAR_MECA(MODELE=MO,
+                    FORCE_NODALE=_F(GROUP_NO='COT_INF',
+                                  FX=-1000,),
+                    );
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,
+                          tau,1.0,
+                          0.2, 1.0,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='LINEAIRE',);
+
+#################################
+#  CONSTRUCTION DES MATRICES
+#################################
+
+MRIGI=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MO,
+                     CHAM_MATER=CM,
+                     CHARGE=BLOCAGE);
+
+MMASSE=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=MO,
+                      CHAM_MATER=CM,
+                      CHARGE=BLOCAGE,);
+
+MAMOR=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                     MODELE=MO,
+                     RIGI_MECA = MRIGI,
+                     MASS_MECA = MMASSE,
+                     CHAM_MATER=CM,
+                     CHARGE=BLOCAGE,);
+
+VCHA=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE =(BLOCAGE,CHAR),);
+
+NUM=NUME_DDL(MODELE= MO,
+             CHARGE=(BLOCAGE,CHAR),);
+
+RIG_ASS=ASSE_MATRICE(MATR_ELEM=MRIGI,
+                     NUME_DDL=NUM,);
+
+MA_ASS=ASSE_MATRICE(MATR_ELEM=MMASSE,
+                    NUME_DDL=NUM,);
+
+AMO_ASS=ASSE_MATRICE(MATR_ELEM=MAMOR,
+                    NUME_DDL=NUM,);
+                    
+VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
+                    NUME_DDL=NUM,);
+
+
+##################################
+#  CALCUL DES MODES PROPRES ET DES K_MODAUX
+##################################
+
+MODE=MODE_ITER_SIMULT(MATR_A=RIG_ASS,
+                      MATR_B=MA_ASS,
+                      CALC_FREQ=_F(NMAX_FREQ=n_mode,),);
+
+MODE=NORM_MODE(reuse=MODE,
+               MODE=MODE,
+               NORME='MASS_GENE',);
+
+FISS=DEFI_FOND_FISS(MAILLAGE=M,
+                    FOND_FISS=_F(GROUP_NO = 'PF',),
+                    LEVRE_SUP=_F(GROUP_MA = 'LEVSUP'),
+                    LEVRE_INF=_F(GROUP_MA = 'LEVINF'),                  
+                   )
+
+# VALEURS DE REF DE K1 SUR 5 PREMIERS MODES
+# (VOIR SDLS114A) 
+K1_ref =[-1.90387E+10, -1.15558E+11, 7.96724E+10, -1.17741E+11, 1.70753E+11]
+
+                                 
+# validation du mot-cle NUME_ORDRE
+#-----------------------------------------
+
+PK1 = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                    MATER=MA,
+                    RESULTAT=MODE,
+                    FOND_FISS=FISS,
+                    VECT_K1 = (0., 1., 0.),
+                    ABSC_CURV_MAXI=7.E-5,
+                    NUME_ORDRE=(1,2,3,4,5),);
+
+IMPR_TABLE(TABLE=PK1)
+
+for i in range(5) :
+   TEST_TABLE(TABLE=PK1,
+              NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                        VALE_I = i+1),
+              VALE=K1_ref[i],
+              PRECISION=0.001,
+              REFERENCE = 'AUTRE_ASTER')
+
+
+# validation du mot-cle TOUT_MODE = 'OUI'
+#-----------------------------------------
+
+PK2 = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                    MATER=MA,
+                    RESULTAT=MODE,
+                    FOND_FISS=FISS,
+                    VECT_K1 = (0., 1., 0.),
+                    ABSC_CURV_MAXI=7.E-5,
+                    TOUT_MODE = 'OUI')
+
+IMPR_TABLE(TABLE=PK2)
+
+for i in range(5) :
+   TEST_TABLE(TABLE=PK2,
+              NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                        VALE_I = i+1),
+              VALE=K1_ref[i],
+              PRECISION=0.001,
+              REFERENCE = 'AUTRE_ASTER')
+
+
+# validation du mot-cle NUME_MODE
+#-----------------------------------------
+
+PK3 = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                    MATER=MA,
+                    RESULTAT=MODE,
+                    FOND_FISS=FISS,
+                    VECT_K1 = (0., 1., 0.),
+                    ABSC_CURV_MAXI=7.E-5,
+                    NUME_MODE = 1)
+
+IMPR_TABLE(TABLE=PK3)
+
+for i in range(1) :
+   TEST_TABLE(TABLE=PK3,
+              NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                        VALE_I = i+1),
+              VALE=K1_ref[i],
+              PRECISION=0.001,
+              REFERENCE = 'AUTRE_ASTER')
+
+              
+# validation du mot-cle LIST_MODE
+#-----------------------------------------
+
+L_MODE = DEFI_LIST_ENTI(VALE = (1,2,3));
+
+PK4 = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                    MATER=MA,
+                    RESULTAT=MODE,
+                    FOND_FISS=FISS,
+                    VECT_K1 = (0., 1., 0.),
+                    ABSC_CURV_MAXI=7.E-5,
+                    LIST_MODE = L_MODE)
+
+IMPR_TABLE(TABLE=PK4)
+
+for i in range(3) :
+   TEST_TABLE(TABLE=PK4,
+              NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                        VALE_I = i+1),
+              VALE=K1_ref[i],
+              PRECISION=0.001,
+              REFERENCE = 'AUTRE_ASTER')
+
+
+# validation du mot-cle FREQ
+#-----------------------------------------
+
+PK5 = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                    MATER=MA,
+                    RESULTAT=MODE,
+                    FOND_FISS=FISS,
+                    VECT_K1 = (0., 1., 0.),
+                    ABSC_CURV_MAXI=7.E-5,
+                    FREQ = 3469.13,
+                    CRITERE='ABSOLU',
+                    PRECISION=1)
+
+IMPR_TABLE(TABLE=PK5)
+
+for i in range(1) :
+   TEST_TABLE(TABLE=PK5,
+              NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                        VALE_I = i+1),
+              VALE=K1_ref[i],
+              PRECISION=0.001,
+              REFERENCE = 'AUTRE_ASTER')
+
+
+# validation du mot-cle LIST_FREQ
+#-----------------------------------------
+
+# liste avec plusieurs frequences
+L_FREQ6 = DEFI_LIST_REEL(VALE=(3469.13, 12480.6, 13052.9 ))
+
+PK6 = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                    MATER=MA,
+                    RESULTAT=MODE,
+                    FOND_FISS=FISS,
+                    VECT_K1 = (0., 1., 0.),
+                    ABSC_CURV_MAXI=7.E-5,
+                    LIST_FREQ = L_FREQ6,
+                    CRITERE='ABSOLU',
+                    PRECISION=1)
+
+IMPR_TABLE(TABLE=PK6)
+
+for i in range(3) :
+   TEST_TABLE(TABLE=PK6,
+              NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                        VALE_I = i+1),
+              VALE=K1_ref[i],
+              PRECISION=0.001,
+              REFERENCE = 'AUTRE_ASTER')
+
+# liste avec une seule frequence
+L_FREQ7 = DEFI_LIST_REEL(VALE=(3469.13, ))
+
+PK7 = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                    MATER=MA,
+                    RESULTAT=MODE,
+                    FOND_FISS=FISS,
+                    VECT_K1 = (0., 1., 0.),
+                    ABSC_CURV_MAXI=7.E-5,
+                    LIST_FREQ = L_FREQ7,
+                    CRITERE='ABSOLU',
+                    PRECISION=1)
+
+IMPR_TABLE(TABLE=PK7)
+
+for i in range(1) :
+   TEST_TABLE(TABLE=PK7,
+              NOM_PARA='K1',
+              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                        VALE_I = i+1),
+              VALE=K1_ref[i],
+              PRECISION=0.001,
+              REFERENCE = 'AUTRE_ASTER')
+
+
+
+
+FIN();

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 08/11/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,6 +87,11 @@ C.......................................................................
 
 C --- INITIALISATIONS
 C
+      DO 5 I  = 1,8
+        LACT(I) = 0
+ 5    CONTINUE
+      RR = 0.D0
+      NCOMPH = 0
       ZXAIN=XXMMVD('ZXAIN')
       LELIM = .FALSE.
       CALL ELREF1(ELREF)

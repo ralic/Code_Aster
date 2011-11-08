@@ -1,21 +1,21 @@
-#@ MODIF compor1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -34,17 +34,17 @@ cata_msg={
 3: _(u"""
  CAM_CLAY :: le coefficient de poisson et ou le module de YOUNG ne sont pas corrects
              dans la maille %(k1)s
-             
+
              *** vérifiez la cohérence des données mécaniques suivantes :
                  E, nu, eO (indice des vides), KAPA
-                 (contrainte volumique initiale) et KCAM la compressibilité 
-                 initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes 
+                 (contrainte volumique initiale) et KCAM la compressibilité
+                 initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes
 
                  il faut notamment vérifier ceci:
-               
+
         NU = (TROIS*((UN+E0)*SIGMMO+KAPA*KCAM)-DEUXMU*KAPA)/
      &         (SIX*((UN+E0)*SIGMMO+KAPA*KCAM)+DEUXMU*KAPA)
-     
+
         E = DEUXMU*(UN+NU)
  ***
 """),
@@ -75,7 +75,7 @@ cata_msg={
 9 : _(u"""
 Arrêt suite à l'échec de l'intégration de la loi de comportement.
 Vérifiez vos paramètres, la cohérence des unités.
-Essayez d'augmenter ITER_INTE_MAXI, ou de subdiviser le pas de temps 
+Essayez d'augmenter ITER_INTE_MAXI, ou de subdiviser le pas de temps
 localement via ITER_INTE_PAS.
 """),
 
@@ -97,7 +97,7 @@ localement via ITER_INTE_PAS.
 """),
 
 15: _(u"""
-  Pour les poutres multi-fibres, l'utilisation de lois de comportement via 
+  Pour les poutres multi-fibres, l'utilisation de lois de comportement via
   ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
  """),
 
@@ -129,44 +129,44 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 23 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec 
+  MONOCRISTAL :: la matrice d'interaction est définie avec
   4 coefficients. Ceci n'est applicable qu'avec 24 systèmes de
   glissement (famille BCC24).
 """),
 
 24 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec 
+  MONOCRISTAL :: la matrice d'interaction est définie avec
   6 coefficients. Ceci n'est applicable qu'avec 12 systèmes de
   glissement.
 """),
 
 25 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec 
+  MONOCRISTAL :: la matrice d'interaction est définie avec
   un nombre de coefficients incorrect :: il en faut 1, ou 4, ou 6.
 """),
 
 
 26: _(u"""
- LETK - lklmat :: paramètres de la loi LETK non cohérents 
+ LETK - lklmat :: paramètres de la loi LETK non cohérents
 """),
 
 29: _(u"""
- LETK - lkdhds :: division par zéro - entrée en plasticité avec un déviateur  nul. 
+ LETK - lkdhds :: division par zéro - entrée en plasticité avec un déviateur  nul.
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 30: _(u"""
- LETK - lkds2h :: division par zéro - entrée en plasticité avec un déviateur nul. 
+ LETK - lkds2h :: division par zéro - entrée en plasticité avec un déviateur nul.
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 31: _(u"""
- LETK - lkcaln :: division par zéro - entrée en plasticité avec un déviateur nul. 
+ LETK - lkcaln :: division par zéro - entrée en plasticité avec un déviateur nul.
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 32: _(u"""
- VISC_CINx_CHAB :: pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU. 
+ VISC_CINx_CHAB :: pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU.
  Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
 """),
 
@@ -204,7 +204,7 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
 
 41: _(u"""
- CAM_CLAY :: 
+ CAM_CLAY ::
  Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
  La subdivision du pas de temps au niveau global est déclenchée.
  Il faut pour cela l'autoriser avec la commande DEFI_LIST_INST.
@@ -216,7 +216,7 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
 42: _(u"""
  CAM_CLAY ::  Kcam et Ptrac doivent vérifier la relation suivante :
- 
+
               KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/kapa * PTRAC
 """),
 
@@ -283,7 +283,7 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme
 55: _(u"""
 La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvé de solution pour
 le nombre d'itération donné <%(i1)d>.\n
-Information pour le debug
+Information pour le débogage
    Borne 0                 : <%(r1).15E>
    Borne 1                 : <%(r2).15E>
    Puissance N             : <%(r3).15E>
@@ -344,27 +344,27 @@ Couplage: on fait dépendre E, MU et ALPHA de la température maximale Tmax, comme
 """),
 
 65 : _(u"""
-   Attention dans la routine majpad la pression d'air dissous devient 
+   Attention dans la routine majpad la pression d'air dissous devient
    négative à la maille %(k1)s.
 """),
 
 66 : _(u"""
-La loi de comportement ENDO_SCALAIRE n'est disponible que pour la formulation 
-non locale GRAD_VARI, assurez vous que votre modélisation soit l'une des trois 
+La loi de comportement ENDO_SCALAIRE n'est disponible que pour la formulation
+non locale GRAD_VARI, assurez vous que votre modélisation soit l'une des trois
 suivantes : - D_PLAN_GRAD_VARI
             - AXIS_GRAD_VARI
             - 3D_GRAD_VARI
 """),
 67 : _(u"""
-Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS 
+Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS
 """),
 
 68 : _(u"""
-Le comportement MONOCRISTAL en grandes déformations SIMO_MIEHE n'est pas compatible avec RUNGE_KUTTA. Utiliser NEWTON. 
+Le comportement MONOCRISTAL en grandes déformations SIMO_MIEHE n'est pas compatible avec RUNGE_KUTTA. Utiliser NEWTON.
 """),
 
 69 : _(u"""
-Le type de déformations %(k1)s n'est pas compatible avec les modélisations SHB. Utilisez PETIT ou GROT_GDEP. 
+Le type de déformations %(k1)s n'est pas compatible avec les modélisations SHB. Utilisez PETIT ou GROT_GDEP.
 """),
 
 }

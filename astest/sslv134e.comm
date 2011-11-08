@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 08/11/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -252,7 +252,8 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                              VALE_I = 1)),
                   NOM_PARA='G_BILIN',
                       VALE=1.12E+01,
-                 REFERENCE='AUTRE_ASTER'
+                 REFERENCE='AUTRE_ASTER',
+                 PRECISION=1.5E-3,
             )
 
 TEST_TABLE(        TABLE=GBIL,FILTRE=(

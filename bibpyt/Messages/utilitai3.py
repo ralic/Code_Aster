@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,43 +35,43 @@ cata_msg = {
 """),
 
 6 : _(u"""
- seuls les paramètres de types reel, entier ou complexe sont traites
+ seuls les paramètres de types réel, entier ou complexe sont traites
 """),
 
 7 : _(u"""
- erreur dvp_2
+ erreur DPVP_2
 """),
 
 8 : _(u"""
- code retour non nul detecte
+ code retour non nul détecté
 """),
 
 9 : _(u"""
- maillage autre que seg2                                ou poi1
+ maillage autre que SEG2                                ou POI1
 """),
 
 10 : _(u"""
- mailles ponctuelles                           plexus poi1 ignorees
+ mailles ponctuelles                           plexus POI1 ignorées
 """),
 
 11 : _(u"""
- le format doit être ideas
+ le format doit être IDEAS
 """),
 
 12 : _(u"""
- le maillage doit être issu d'ideas
+ le maillage doit être issu d'IDEAS
 """),
 
 13 : _(u"""
-  maillage non issu d'ideas
+  maillage non issu d'IDEAS
 """),
 
 14 : _(u"""
- avec le 2414, on ne traite pas les nume_ordre
+ avec le 2414, on ne traite pas les NUME_ORDRE
 """),
 
 15 : _(u"""
- pb lecture du fichier ideas
+ Problème lecture du fichier IDEAS
 """),
 
 17 : _(u"""
@@ -79,39 +79,39 @@ cata_msg = {
 """),
 
 18 : _(u"""
- nom_cmp_idem est curieux :  %(k1)s
+ NOM_CMP_IDEM est curieux :  %(k1)s
 """),
 
 19 : _(u"""
- probleme maillage <-> modele
+ problème maillage <-> modèle
 """),
 
 20 : _(u"""
- le champ de META_ELNO:etat_init(num_init) n'existe pas.
+ le champ de META_ELNO:ETAT_INIT(NUM_INIT) n'existe pas.
 """),
 
 21 : _(u"""
- maillage et modele incoherents.
+ maillage et modèle incohérents.
 """),
 
 22 : _(u"""
- pour type_resu:'el..' il faut renseigner le mot cle modele.
+ pour TYPE_RESU:'EL..' il faut renseigner le mot clé modèle.
 """),
 
 23 : _(u"""
- option:  %(k1)s non prevue pour les éléments du modele.
+ option:  %(k1)s non prévue pour les éléments du modèle.
 """),
 
 24 : _(u"""
- option=  %(k1)s  incompatible avec type_cham=  %(k2)s
+ option=  %(k1)s  incompatible avec TYPE_CHAM=  %(k2)s
 """),
 
 25 : _(u"""
- operation=  %(k1)s  seulement type_cham= 'noeu_geom_r'
+ OPERATION=  %(k1)s  seulement TYPE_CHAM= 'NOEU_GEOM_r'
 """),
 
 26 : _(u"""
- operation=  %(k1)s  incompatible avec type_cham=  %(k2)s
+ OPERATION=  %(k1)s  incompatible avec TYPE_CHAM=  %(k2)s
 """),
 
 27 : _(u"""
@@ -127,23 +127,23 @@ cata_msg = {
 """),
 
 30 : _(u"""
- il manque des temperatures  associees aux bases de resultats (mot-cle tempe)
+ il manque des températures  associées aux bases de résultats (mot-clé tempe)
 """),
 
 31 : _(u"""
- le paramètre m de weibull doit être le même pour toutes les bases resultats !
+ le paramètre m de WEIBULL doit être le même pour toutes les bases résultats !
 """),
 
 32 : _(u"""
- le paramètre sigm_refe de weibull doit être le même pour toutes les bases resultats !
+ le paramètre SIGM_REFE de WEIBULL doit être le même pour toutes les bases résultats !
 """),
 
 33 : _(u"""
- aucun numéro d'unite logique n'est associe a  %(k1)s
+ aucun numéro d'unité logique n'est associe a  %(k1)s
 """),
 
 34 : _(u"""
- aucun numéro d'unite logique n'est disponible
+ aucun numéro d'unité logique n'est disponible
 """),
 
 35 : _(u"""
@@ -151,11 +151,11 @@ cata_msg = {
 """),
 
 36 : _(u"""
- arret de la procedure de recalage : le paramètre m est devenu trop petit (m<1) , verifiez vos listes d'instants de rupture
+ arrêt de la procédure de recalage : le paramètre m est devenu trop petit (m<1) , vérifiez vos listes d'instants de rupture
 """),
 
 37 : _(u"""
- les paramètres de la nappe ont ete reordonnées.
+ les paramètres de la nappe ont été réordonnées.
 """),
 
 38 : _(u"""
@@ -188,7 +188,7 @@ cata_msg = {
 """),
 
 48 : _(u"""
- on ne traite que des problemes 2d.
+ on ne traite que des problèmes 2d.
 """),
 
 49 : _(u"""
@@ -196,70 +196,70 @@ cata_msg = {
 """),
 
 50 : _(u"""
- on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer la constante de torsion.
+ on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer la constante de torsion.
 """),
 
 51 : _(u"""
- le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer la constante de torsion doit être egal a 1.
+ le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante de torsion doit être égal a 1.
 """),
 
 52 : _(u"""
- on n'arrive pas a recuperer le champ de temperatures du resultat  %(k1)s
+ on n'arrive pas a récupérer le champ de températures du résultat  %(k1)s
 """),
 
 53 : _(u"""
- la table "cara_geom" n'existe pas.
+ la table "CARA_GEOM" n'existe pas.
 """),
 
 54 : _(u"""
- on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi_y"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
+ on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Y"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
 """),
 
 55 : _(u"""
- on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi_z"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
+ on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Z"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
 """),
 
 56 : _(u"""
- le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion doit être egal a 1.
+ le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion doit être égal a 1.
 """),
 
 57 : _(u"""
- on doit donner un resultat de type "evol_ther" apres le mot-cle "lapl_phi"  du mot-facteur "cara_poutre" dans la commande post_elem pour calculer la constante de gauchissement.
+ on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer la constante de gauchissement.
 """),
 
 58 : _(u"""
- le nombre d'ordres du resultat  %(k1)s  necessaire pour calculer la constante de gauchissement doit être egal a 1.
+ le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante de gauchissement doit être égal a 1.
 """),
 
 59 : _(u"""
- il faut donner le nom d'une table issue d'un premier calcul avec l'option "cara_geom" de  post_elem apres le mot-cle "cara_geom" du mot-facteur "cara_poutre".
+ il faut donner le nom d'une table issue d'un premier calcul avec l'option "CARA_GEOM" de  POST_ELEM après le mot-clé "CARA_GEOM" du mot-clé facteur "CARA_POUTRE".
 """),
 
 60 : _(u"""
- il faut obligatoirement définir l'option de calcul des caracteristiques de poutre apres le mot-cle "option" du mot-facteur "cara_poutre" de la commande post_elem.
+ il faut obligatoirement définir l'option de calcul des caractéristiques de poutre après le mot-clé "option" du mot-clé facteur "CARA_POUTRE" de la commande POST_ELEM.
 """),
 
 61 : _(u"""
- l'option  %(k1)s n'est pas admise apres le mot-facteur "CARA_POUTRE".
+ l'option  %(k1)s n'est pas admise après le mot-clé facteur "CARA_POUTRE".
 """),
 
 62 : _(u"""
  il faut donner le nom d'un résultat de type EVOL_THER
- après le mot-clé LAPL_PHI du mot-facteur "CARA_POUTRE".
+ après le mot-clé LAPL_PHI du mot-clé facteur "CARA_POUTRE".
 """),
 
 63 : _(u"""
- il faut donner le nom d'un resultat de type EVOL_THER
- apres le mot-cle LAPL_PHI_Y du mot-facteur "CARA_POUTRE".
+ il faut donner le nom d'un résultat de type EVOL_THER
+ après le mot-clé LAPL_PHI_Y du mot-clé facteur "CARA_POUTRE".
 """),
 
 64 : _(u"""
- il faut donner le nom d'un resultat de type EVOL_THER
- apres le mot-cle LAPL_PHI_Z du mot-facteur "CARA_POUTRE".
+ il faut donner le nom d'un résultat de type EVOL_THER
+ après le mot-clé LAPL_PHI_Z du mot-clé facteur "CARA_POUTRE".
 """),
 
 68 : _(u"""
- on attend un concept "mode_meca" ou "evol_elas" ou "evol_ther" ou "dyna_trans" ou "evol_noli"
+ on attend un concept "MODE_MECA" ou "EVOL_ELAS" ou "EVOL_THER" ou "DYNA_TRANS" ou "EVOL_NOLI"
 """),
 
 69 : _(u"""
@@ -283,35 +283,35 @@ cata_msg = {
 """),
 
 75 : _(u"""
- on attend un concept "mode_meca" ou "evol_elas" ou "mult_elas" ou "evol_ther" ou "dyna_trans" ou "evol_noli"
+ on attend un concept "MODE_MECA" ou "EVOL_ELAS" ou "MULT_ELAS" ou "EVOL_THER" ou "DYNA_TRANS" ou "EVOL_NOLI"
 """),
 
 76 : _(u"""
- pour calculer les indicateurs globaux d'energie, il faut donner un resultat issu de stat_non_line .
+ pour calculer les indicateurs globaux d'énergie, il faut donner un résultat issu de STAT_NON_LINE .
 """),
 
 77 : _(u"""
- on attend un resultat de type "evol_noli" .
+ on attend un résultat de type "EVOL_NOLI" .
 """),
 
 78 : _(u"""
- le resultat  %(k1)s  doit comporter la relation de comportement au numéro d'ordre  %(k2)s  .
+ le résultat  %(k1)s  doit comporter la relation de comportement au numéro d'ordre  %(k2)s  .
 """),
 
 79 : _(u"""
- le resultat  %(k1)s  doit comporter un champ de variables internes au numéro d'ordre  %(k2)s  .
+ le résultat  %(k1)s  doit comporter un champ de variables internes au numéro d'ordre  %(k2)s  .
 """),
 
 80 : _(u"""
- impossibilite : le volume du modele traite est nul.
+ impossibilité : le volume du modèle traite est nul.
 """),
 
 81 : _(u"""
- impossibilite : le volume du group_ma  %(k1)s  est nul.
+ impossibilité : le volume du GROUP_MA  %(k1)s  est nul.
 """),
 
 82 : _(u"""
- impossibilite : le volume de la maille  %(k1)s  est nul.
+ impossibilité : le volume de la maille  %(k1)s  est nul.
 """),
 
 83 : _(u"""
@@ -319,19 +319,19 @@ cata_msg = {
 """),
 
 84 : _(u"""
- on attend un concept "evol_noli"
+ on attend un concept "EVOL_NOLI"
 """),
 
 85 : _(u"""
- erreur: le champ sief_elga n'existe pas
+ erreur: le champ SIEF_ELGA n'existe pas
 """),
 
 86 : _(u"""
- erreur: le champ vari_elga n'existe pas
+ erreur: le champ VARI_ELGA n'existe pas
 """),
 
 87 : _(u"""
- erreur: le champ depl_elno n'existe pas
+ erreur: le champ DEPL_ELNO n'existe pas
 """),
 
 88 : _(u"""
@@ -343,17 +343,17 @@ cata_msg = {
 """),
 
 90 : _(u"""
- les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir la même grandeur associee.
+ les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir la même grandeur associée.
 """),
 
 91 : _(u"""
- il manque des cmps sur :  %(k1)s
+ il manque des composantes sur :  %(k1)s
 """),
 
 
 
 93 : _(u"""
- seuls les types "reel" et "complexe" sont autorises.
+ seuls les types "réel" et "complexe" sont autorises.
 """),
 
 94 : _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -450,9 +450,9 @@ Exception : %s
             'A' : _(u"""Ceci est une alarme. Si vous ne comprenez pas le sens de cette
 alarme, vous pouvez obtenir des résultats inattendus !"""),
             'E' : _(u"""Cette erreur sera suivie d'une erreur fatale."""),
-            'S' : _(u"""Cette erreur est fatale. Le code s'arrete. Toutes les étapes
+            'S' : _(u"""Cette erreur est fatale. Le code s'arrête. Toutes les étapes
 du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
-            'F' : _(u"""Cette erreur est fatale. Le code s'arrete."""),
+            'F' : _(u"""Cette erreur est fatale. Le code s'arrête."""),
         }
 
         # format complet

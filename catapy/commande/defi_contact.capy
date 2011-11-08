@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -155,11 +155,11 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
                                     ),
                                   ALGO_RESO_FROT = SIMP(statut='f',typ='TXM',defaut="NEWTON",
-                                                      into=("POINT_FIXE","NEWTON",)),  
-                                    
+                                                      into=("POINT_FIXE","NEWTON",)),
+
                                   ),
-                                  
-                                  
+
+
            b_bouc_frot_xfem= BLOC(condition = "FROTTEMENT=='COULOMB' and FORMULATION == 'XFEM' ",
                                   REAC_FROT =SIMP(statut='f',
                                                   typ='TXM',
@@ -173,7 +173,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                   b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
                                                        NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
                                     ),
-                                  ),                       
+                                  ),
 
 # PARAMETRES GENERAUX : METHODES DISCRETES
 
@@ -186,38 +186,34 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        into=("OUI","NON"),),
                                   NB_RESOL      = SIMP(statut='f',
                                                        typ='I',
-                                  fr="Nombre de résolutions simultanées pour la construction du complément de Schur",
+                                                fr="Nombre de résolutions simultanées pour la construction du complément de Schur",
                                                        defaut=10,),
 #                                 ## GCP ##
                                   RESI_ABSO     = SIMP(statut='f',
                                                        typ='R',
-                                  fr="Critère de convergence (niveau d'interpénétration autorisé pour 'GCP')",),
-                                  REAC_ITER     = SIMP(statut='f',
-                                                       typ='I',
-                                                       fr="Fréquence de réinitialisation de la conjugaison ('GCP')",
-                                                       defaut=3,),
+                                                  fr="Critère de convergence (niveau d'interpénétration autorisé pour 'GCP')",),
                                   ITER_GCP_MAXI = SIMP(statut='f',
                                                        typ='I',
                                                        fr="Nombre d'itérations maximal ('GCP')",
                                                        defaut=0,),
+                                  RECH_LINEAIRE = SIMP(statut='f',
+                                                       typ='TXM',
+                                                  fr="Autorisation de sortie du domaine admissible lors de la recherche linéaire",
+                                                       defaut="ADMISSIBLE",
+                                                       into=("ADMISSIBLE","NON_ADMISSIBLE"),),
                                   PRE_COND      = SIMP(statut='f',
                                                        typ='TXM',
                                                        fr="Choix d'un préconditionneur (accélère la convergence de 'GCP')",
                                                        defaut="SANS",
                                                        into=("DIRICHLET","SANS"),),
-                                  ITER_PRE_MAXI = SIMP(statut='f',
-                                                       typ='I',
-                                                       fr="Nombre d'itérations maximal pour le préconditionneur ('GCP')",
-                                                       defaut=0,),
                                   COEF_RESI     = SIMP(statut='f',
                                                        typ='R',
                                                        fr="Critère de convergence du préconditionneur (COEF_RESI*RESI_ABSO)",
                                                        defaut = 1.,),
-                                  RECH_LINEAIRE = SIMP(statut='f',
-                                                       typ='TXM',
-                                  fr="Autorisation de sortie du domaine admissible lors de la recherche linéaire",
-                                                       defaut="ADMISSIBLE",
-                                                       into=("ADMISSIBLE","NON_ADMISSIBLE"),),
+                                  ITER_PRE_MAXI = SIMP(statut='f',
+                                                       typ='I',
+                                                       fr="Nombre d'itérations maximal pour le préconditionneur ('GCP')",
+                                                       defaut=0,),
                                   ),
            ),
 
@@ -483,8 +479,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                             SEUIL_INIT = SIMP(statut='f',typ='R',defaut=0.E+0),
 #
                                           regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
-                                          SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                                          SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                                                  SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                                                  SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                                                             b_sans_group_no_frot=BLOC(condition = " SANS_GROUP_NO_FR != None or \
                                                                                                     SANS_NOEUD_FR != None ",
                                                             fr="Direction de frottement à exclure (uniquement dans le cas 3D)",
@@ -528,7 +524,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                        INTEGRATION    = SIMP(statut='f',
                                                              typ='TXM',
                                                              defaut="GAUSS",
-                                                             
+
                                           into=("NOEUD","GAUSS","SIMPSON","NCOTES","SIMPSON1","SIMPSON2","NCOTES1","NCOTES2"),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
                                                           fr="Dégré du polynôme de Legendre donnant les points de Gauss",
@@ -542,7 +538,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           fr="Nombre de partitions du domaine",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,min=1,max=4),
                                             ),
-                                            
+
                                        RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
                                                              into=("CZM_EXP_REG","CZM_LIN_REG","NON"),),
 
@@ -552,7 +548,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
                                        ALGO_CONT      = SIMP(statut='f',typ='TXM',defaut="STANDARD",
                                                                   into=("STANDARD","AVANCE","PENALISATION","CZM"),),
-                                                                  
+
                                        b_cont_nczm =BLOC(condition = "ALGO_CONT!='CZM'",
                                                 CONTACT_INIT   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
                                                 GLISSIERE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
@@ -562,7 +558,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                 fr="Parametres de la formulation Lagrangienne",
                                                 COEF_CONT    =SIMP(statut='f',typ='R',defaut=100.E+0),
                                                 ),
-             
+
                                        b_cont_avc=BLOC(condition = "ALGO_CONT == 'AVANCE' ",
                                                  fr="Parametres du Lagrangien augmenté",
                                                  COEF_REGU_CONT =SIMP(statut='f',typ='R',defaut=100.E+0),

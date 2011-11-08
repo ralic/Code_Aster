@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postrccm Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg={
 """),
 
 2: _(u"""
- probleme pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
+ problème pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
    pour le paramètre %(k3)s de valeur %(r1)12.5E et
    pour le paramètre %(k4)s de valeur %(r2)12.5E
 """),
@@ -40,18 +40,18 @@ cata_msg={
 """),
 
 5: _(u"""
- le calcul du critere du rochet thermique pour une variation de température linéaire est impossible
-        X = SIGM / SYMAX =  %(r1)12.5E
+ le calcul du critère du rochet thermique pour une variation de température linéaire est impossible
+        X = SIGM / SY MAX =  %(r1)12.5E
          SIGM =  %(r2)12.5E
-        SYMAX =  %(r3)12.5E
+        SY MAX =  %(r3)12.5E
         on doit avoir 0. < X < 1.
 """),
 
 6: _(u"""
- le calcul du critere du rochet thermique pour une variation de température parabolique est impossible
-        X = SIGM / SYMAX =  %(r1)12.5E
+ le calcul du critère du rochet thermique pour une variation de température parabolique est impossible
+        X = SIGM / SY MAX =  %(r1)12.5E
          SIGM =  %(r2)12.5E
-        SYMAX =  %(r3)12.5E
+        SY MAX =  %(r3)12.5E
         on doit avoir 0.3 < X < 1.
 """),
 
@@ -70,7 +70,7 @@ cata_msg={
 """),
 
 10: _(u"""
- materiau non défini, maille %(k1)s 
+ matériau non défini, maille %(k1)s 
 """),
 
 12: _(u"""
@@ -78,12 +78,12 @@ cata_msg={
 """),
 
 13: _(u"""
- Probleme lors du passage du CH_MATER en CARTE
+ Problème lors du passage du CH_MATER en CARTE
  Contactez le support
 """),
 
 14: _(u"""
- Probleme lors du passage du TEMPE_REF en CARTE
+ Problème lors du passage du TEMPE_REF en CARTE
  Contactez le support
 """),
 
@@ -93,13 +93,13 @@ cata_msg={
 """),
 
 16: _(u"""
- probleme pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
+ problème pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
    pour le paramètre %(k3)s de valeur %(k5)s et
    pour le paramètre %(k4)s de valeur %(r1)12.5E
 """),
 
 17: _(u"""
- probleme pour récupérer dans la table  %(k1)s les valeurs du paramètre %(k4)s
+ problème pour récupérer dans la table  %(k1)s les valeurs du paramètre %(k4)s
    pour le paramètre %(k2)s de valeur %(k3)s
 """),
 
@@ -109,7 +109,7 @@ cata_msg={
 """),
 
 19: _(u"""
- si on est la, y a un bug!
+ si on est la, y a un bogue!
  Contactez le support
 """),
 
@@ -124,7 +124,7 @@ cata_msg={
 """),
 
 22: _(u"""
- probleme pour récupérer le champ de nom symbolique %(k1)s pour le RESULTAT %(k2)s
+ problème pour récupérer le champ de nom symbolique %(k1)s pour le RESULTAT %(k2)s
  défini sous l'occurrence numéro %(i1)d
 """),
 
@@ -136,12 +136,12 @@ cata_msg={
 
 24: _(u"""
  erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d 
-   probleme sur le résultat thermique
+   problème sur le résultat thermique
 """),
 
 25: _(u"""
  erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d et le noeud numéro %(i3)d
-   probleme sur le résultat thermique
+   problème sur le résultat thermique
 """),
 
 26: _(u"""
@@ -157,23 +157,23 @@ cata_msg={
 
 29: _(u"""
  erreur données, pour la situation numéro %(i1)d 
- on ne peut pas avoir des charges de type "seisme" et "autre".
+ on ne peut pas avoir des charges de type "séisme" et "autre".
 """),
 
 30: _(u"""
- probleme pour recuperer IOC SEISME.
+ problème pour récupérer l'occurrence de SEISME.
  Contactez le support
 """),
 
 31: _(u"""
- probleme avec TYPEKE.
+ problème avec TYPEKE.
  Contactez le support
 """),
 
 32: _(u"""
  le nombre de cycles admissibles est négatif, vérifiez la courbe de WOHLER
    contrainte calculée: %(r1)12.5E
-   Nadm: %(r2)12.5E
+   Nombre de cycles admissibles: %(r2)12.5E
 """),
 
 33: _(u"""
@@ -188,7 +188,7 @@ cata_msg={
 """),
 
 36: _(u"""
- bug ! contactez l'assistance.
+ bogue ! contactez l'assistance.
 """),
 
 37: _(u"""
@@ -248,7 +248,7 @@ cata_msg={
 """),
 
 44: _(u"""
- probleme pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
+ problème pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
  pour le paramètre %(k3)s de valeur %(r1)12.5E.
 """),
 

@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,14 +30,14 @@ cata_msg = {
 d'environnement ASTER_ROOT ou mettez à jour ASTK.
 """),
 
- 3 : _(u"""Le logiciel Gnuplot ou le module python Gnuplot.py n'est pas disponible.
-On desactive l'affichage des courbes par Gnuplot.
+ 3 : _(u"""Le logiciel GNUPLOT ou le module python Gnuplot.py n'est pas disponible.
+On désactive l'affichage des courbes par Gnuplot.
 """),
 
- 4 : _(u"""Il n'y a pas de fichier .export dans le repertoire de travail !
+ 4 : _(u"""Il n'y a pas de fichier .export dans le répertoire de travail !
 """),
 
- 5 : _(u"""Il y a plus d'un fichier .export dans le repertoire de travail !
+ 5 : _(u"""Il y a plus d'un fichier .export dans le répertoire de travail !
 """),
 
  6 : _(u"""Pour les calculs DISTRIBUES en mode INTERACTIF, il faut spécifier une valeur pour 'mem_aster'
@@ -51,7 +51,7 @@ On desactive l'affichage des courbes par Gnuplot.
 
 # 9 : _(u""" """),
 
-10 : _(u"""Pour l'algorithme %(k1)s, on ne peut tracer qu'à la derniere itération.
+10 : _(u"""Pour l'algorithme %(k1)s, on ne peut tracer qu'à la dernière itération.
 """),
 
 11 : _(u"""Pour l'algorithme %(k1)s, on ne tient pas compte des bornes sur les paramètres.
@@ -61,7 +61,7 @@ On desactive l'affichage des courbes par Gnuplot.
    %(k1)s
 """),
 
-13 : _(u"""Lancement de l'optimisation avec la methode : %(k1)s.
+13 : _(u"""Lancement de l'optimisation avec la méthode : %(k1)s.
 """),
 
 14 : _(u"""Les dérivées sont calculées par Aster.
@@ -71,7 +71,7 @@ On desactive l'affichage des courbes par Gnuplot.
 """),
 
 16 : _(u"""
---> Calcul du gradient par differences finies <--
+--> Calcul du gradient par différences finies <--
 
 """),
 
@@ -122,7 +122,7 @@ Informations de convergence :
 ======================================================================
 """),
 
-31 : _(u"""Iteration %(i1)d :
+31 : _(u"""Itération %(i1)d :
 
 """),
 
@@ -135,7 +135,7 @@ Informations de convergence :
 33 : _(u"""=> Fonctionnelle                        = %(r1)f
 """),
 
-34 : _(u"""=> Residu                               = %(r1)f
+34 : _(u"""=> Résidu                               = %(r1)f
 """),
 
 35 : _(u"""=> Norme de l'erreur                    = %(r1)f
@@ -150,7 +150,7 @@ Informations de convergence :
 38 : _(u"""=> Variation de la fonctionnelle        = %(r1)f
 """),
 
-39 : _(u"""=> Nombre d'evaluation de la fonction   = %(k1)s
+39 : _(u"""=> Nombre d'évaluation de la fonction   = %(k1)s
 """),
 
 #40 : _(u""" """),
@@ -171,7 +171,7 @@ Erreur :
 Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine : %(r1).2f
 """),
 
-45 : _(u"""Probleme de division par zéro dans le calcul de la matrice de sensiblité.
+45 : _(u"""Problème de division par zéro dans le calcul de la matrice de sensibilité.
 Le paramètre %(k1)s est nul ou plus petit que la précision machine.
 """),
 
@@ -183,31 +183,31 @@ Le paramètre %(k1)s est nul ou plus petit que la précision machine.
 
 48 : _(u"""Problème lors de l'interpolation du calcul dérivé sur les données expérimentale !
 Valeur à interpoler              :  %(k1)s
-Domaine couvert par l'experience : [%(k2)s : %(k3)s]
+Domaine couvert par l'expérience : [%(k2)s : %(k3)s]
 """),
 
 50 : _(u"""
---> Critere d'arret sur le residu atteint, la valeur du residu est : %(r1)f <--
+--> Critère d'arrêt sur le résidu atteint, la valeur du résidu est : %(r1)f <--
 """),
 
 51 : _(u"""
---> Critere d'arret TOLE_PARA atteint, la variation des paramètres est : %(r1)f <--
+--> Critère d'arrêt TOLE_PARA atteint, la variation des paramètres est : %(r1)f <--
 """),
 
 52 : _(u"""
---> Critere d'arret TOLE_FONC atteint, la variation de la fonctionnelle est : %(r1)f <--
+--> Critère d'arrêt TOLE_FONC atteint, la variation de la fonctionnelle est : %(r1)f <--
 """),
 
 53 : _(u"""
---> Arret par manque de temps CPU <--
+--> Arrêt par manque de temps CPU <--
 """),
 
 54 : _(u"""
---> Le nombre maximum d'evaluations de la fonction (ITER_FONC_MAXI) a ete atteint <--
+--> Le nombre maximum d'évaluations de la fonction (ITER_FONC_MAXI) a été atteint <--
 """),
 
 55 : _(u"""
---> Le nombre maximum d'iterations de l'algorithme (ITER_MAXI) a ete atteint <--
+--> Le nombre maximum d'itérations de l'algorithme (ITER_MAXI) a été atteint <--
 """),
 
 56 : _(u"""
@@ -224,7 +224,7 @@ Domaine couvert par l'experience : [%(k2)s : %(k3)s]
 
 58 : _(u"""
                  ATTENTION : L'OPTIMUM EST ATTEINT AVEC
-                 DES PARAMETRES EN BUTEE SUR LE BORD
+                 DES PARAMETRES EN BUTÉE SUR LE BORD
                      DU DOMAINE ADMISSIBLE
 """),
 
@@ -270,7 +270,7 @@ Calcul avec les paramètres suivants (point courant) :
 """),
 
 68 : _(u"""
-Calcul avec les paramètres suivants (pertubation du paramètre %(k2)s pour le gradient) :
+Calcul avec les paramètres suivants (perturbation du paramètre %(k2)s pour le gradient) :
      %(k1)s
 """),
 
@@ -309,7 +309,7 @@ Calcul numéro:  %(k1)s - Diagnostic: %(k2)s
 
     --> On continue avec ce paramètre, mais l'étude esclave peut avoir des soucis.
 
-    Pour information, voici le paramètre de perturbation (mot-clé PARA_DIFF_FINI), vérifier qu'il est suffisament petit
+    Pour information, voici le paramètre de perturbation (mot-clé PARA_DIFF_FINI), vérifier qu'il est suffisamment petit
     pour un calcul de gradient par différences finies :
         Paramètre de perturbation   : %(k5)s
 
@@ -321,7 +321,7 @@ Calcul numéro:  %(k1)s - Diagnostic: %(k2)s
 76 : _(u"""
 Le paramètre de perturbation (mot-clé PARA_DIFF_FINI) a pour valeur : %(k1)s
 
-Vérifier qu'il est suffisament petit pour un calcul de gradient par différences finies
+Vérifier qu'il est suffisamment petit pour un calcul de gradient par différences finies
 
 --> On continue avec ce paramètre mais le calcul du gradient pourrait être faux.
 
@@ -356,7 +356,7 @@ Répertoire contenant les exécutions Aster :
 
 Erreur! Le calcul esclave '%(k1)s' ne s'est pas arrêté correctement!
 Les fichiers output et error du job sont recopiés dans l'output du
-maitre juste au dessus de ce message.
+maître juste au dessus de ce message.
 
 L'output du job est également dans : %(k2)s
 
@@ -376,7 +376,7 @@ Erreur! Le calcul esclave '%(k1)s' n'a pas pu démarrer !
    Diagnostic : %(k2)s
 
 Il s'agit vraisemblablement d'un problème de configuration du serveur de calcul ou de ressources disponibles.
-Mettre UNITE_SUIVI et INFO=2 permettra d'avoir des messages supplémentaires dans l'output du maitre.
+Mettre UNITE_SUIVI et INFO=2 permettra d'avoir des messages supplémentaires dans l'output du maître.
 """),
 
 #87 : _(u""" """),
@@ -403,7 +403,7 @@ Mettre UNITE_SUIVI et INFO=2 permettra d'avoir des messages supplémentaires dans
 
 #98 : _(u""" """),
 
-99 : _(u"""Impossible de déterminer l'emplacement d'Aster !
+99 : _(u"""Impossible de déterminer l'emplacement de Code_Aster !
 Fixer le chemin avec la variable d'environnement ASTER_ROOT.
 """),
 

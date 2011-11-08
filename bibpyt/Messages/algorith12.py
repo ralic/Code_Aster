@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith12 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ cata_msg = {
 
 21 : _(u"""
  données incompatibles :
- pour les mode_CORR :  %(k1)s
+ pour les MODE_CORR :  %(k1)s
  il manque l'option :  %(k2)s
 """),
 
@@ -146,7 +146,7 @@ cata_msg = {
 
 41 : _(u"""
   la taille bloc  : %(i1)d est < HAUTEUR_MAX : %(i2)d
-  changez la taille_bloc des profils: %(k1)s
+  changez la TAILLE_BLOC des profils: %(k1)s
   prenez au moins : %(i3)d
 """),
 

@@ -1,4 +1,4 @@
-#@ MODIF seisme Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF seisme Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,7 +155,7 @@ cata_msg={
 """),
 
 28: _(u"""
-  Dans le cas d'excitations décorrelées, 
+  Dans le cas d'excitations décorrélées, 
   le mot-clé COMB_MULT_APPUI n'est pas pris en compte.
 """),
 

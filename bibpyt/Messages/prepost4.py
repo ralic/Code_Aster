@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,35 +54,35 @@ cata_msg = {
 """),
 
 13 : _(u"""
- la table usure en sortie est différente de celle en entree
+ la table usure en sortie est différente de celle en entrée
 """),
 
 14 : _(u"""
- le nombre de secteurs en sortie est différent de celui en entree
+ le nombre de secteurs en sortie est différent de celui en entrée
 """),
 
 15 : _(u"""
- probleme extraction pour la table  %(k1)s
+ problème extraction pour la table  %(k1)s
 """),
 
 17 : _(u"""
- aucune valeur de moment presente
+ aucune valeur de moment présente
 """),
 
 18 : _(u"""
- y a un bug: recup fréquences
+ y a un bogue: récupération des fréquences
 """),
 
 19 : _(u"""
- il faut au moins un group_ma_radier
+ il faut au moins un GROUP_MA_RADIER
 """),
 
 20 : _(u"""
- rigidite de translation non nulle
+ rigidité de translation non nulle
 """),
 
 21 : _(u"""
- rigidite de rotation non nulle
+ rigidité de rotation non nulle
 """),
 
 22 : _(u"""
@@ -90,7 +90,7 @@ cata_msg = {
 """),
 
 23 : _(u"""
- nombres de group_ma et amor_interne différents
+ nombres de GROUP_MA et AMOR_INTERNE différents
 """),
 
 24 : _(u"""
@@ -98,11 +98,11 @@ cata_msg = {
 """),
 
 26 : _(u"""
- le type du concept resultat  n'est ni evol_elas, ni evol_noli.
+ le type du concept résultat  n'est ni EVOL_ELAS, ni EVOL_NOLI.
 """),
 
 27 : _(u"""
- vous avez probablement archive l etat initial dans la commande stat_non_line. cela correspond au numéro d ordre 0. nous ne tenons pas compte du resultat a ce numéro d ordre pour le calcul de de la fatigue.
+ vous avez probablement archive l état initial dans la commande STAT_NON_LINE. cela correspond au numéro d ordre 0. nous ne tenons pas compte du résultat a ce numéro d ordre pour le calcul de de la fatigue.
 """),
 
 29 : _(u"""
@@ -118,15 +118,15 @@ cata_msg = {
 """),
 
 33 : _(u"""
- le champ de deformations aux points de gauss EPSI_ELGA n'a pas ete calcule.
+ le champ de déformations aux points de gauss EPSI_ELGA n'a pas été calcule.
 """),
 
 34 : _(u"""
- les champs de  deformations aux points de gauss n'existent pas.
+ les champs de  déformations aux points de gauss n'existent pas.
 """),
 
 35 : _(u"""
- le champ simple qui contient les valeurs des deformations n existe pas.
+ le champ simple qui contient les valeurs des déformations n existe pas.
 """),
 
 38 : _(u"""
@@ -134,7 +134,7 @@ cata_msg = {
 """),
 
 39 : _(u"""
- le champ de deformations aux noeuds EPSI_NOEU n'a pas ete calcule.
+ le champ de déformations aux noeuds EPSI_NOEU n'a pas été calcule.
 """),
 
 40 : _(u"""
@@ -142,11 +142,11 @@ cata_msg = {
 """),
 
 41 : _(u"""
- le champ de  deformations aux noeuds n'existe pas.
+ le champ de  déformations aux noeuds n'existe pas.
 """),
 
 47 : _(u"""
- inst_init plus grand que inst_fin
+ INST_INIT plus grand que INST_FIN
 """),
 
 57 : _(u"""
@@ -171,7 +171,7 @@ cata_msg = {
 """),
 
 77 : _(u"""
- nom_cham:  %(k1)s  interdit.
+ NOM_CHAM:  %(k1)s  interdit.
 """),
 
 82 : _(u"""
@@ -187,7 +187,7 @@ cata_msg = {
 """),
 
 85 : _(u"""
- modele non valide.
+ modèle non valide.
 """),
 
 86 : _(u"""
@@ -195,7 +195,7 @@ cata_msg = {
 """),
 
 87 : _(u"""
-  ***** arret du calcul *****
+  ***** arrêt du calcul *****
 """),
 
 89 : _(u"""
@@ -219,10 +219,10 @@ cata_msg = {
 """),
 
 94 : _(u"""
-Elément inconnu.
-   Type d'élément Gibi          : %(i1)d
-   Nombre de sous-objet         : %(i2)d
-   Nombre de sous-référence     : %(i3)d
+Élément inconnu.
+   Type d'élément GIBI          : %(i1)d
+   Nombre de sous objet         : %(i2)d
+   Nombre de sous référence     : %(i3)d
    Nombre de noeuds par élément : %(i4)d
    Nombre d'éléments            : %(i5)d
 
@@ -232,7 +232,7 @@ La ligne lue dans le fichier doit ressembler à ceci :
 
 95 : _(u"""
 On a lu un objet dit composé (car type d'élément = 0) qui serait
-composé de 0 sous-objet !
+composé de 0 sous objet !
 """),
 
 96 : _(u"""
@@ -242,7 +242,7 @@ composé de 0 sous-objet !
 97 : _(u"""
  Erreur Utilisateur :
  La maille de peau : %(k1)s ne peut pas être réorientée.
- Car elle est inserrée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
+ Car elle est insérée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
 """),
 
 }

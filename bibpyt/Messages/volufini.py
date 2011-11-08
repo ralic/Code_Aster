@@ -1,4 +1,4 @@
-#@ MODIF volufini Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF volufini Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ cata_msg = {
 """),
 
 5 : _(u"""
-  -> Le nombre de mailles %(i1)i est inferieur a 1
+  -> Le nombre de mailles %(i1)i est inférieur a 1
 """),
 6 : _(u"""
   -> Le type de voisinage %(k1)s est inconnu
@@ -47,23 +47,23 @@ cata_msg = {
   -> La loi de comportement  %(k1)s est inconnu
 """),
 9 : _(u"""
-  -> Le type de modelisation volumes finis (TYPVF)  %(i1)i   est inconnu.
+  -> Le type de modélisation volumes finis (TYPVF)  %(i1)i   est inconnu.
      Vous avez le choix entre :
-                          TYPVF=1  => Schema VF a deux points
-                          TYPVF=2  => Schema SUDM
-                          TYPVF=3  => Schema SUDA
-                          TYPVF=4  => Schema SUC
+                          TYPVF=1  => Schéma VF a deux points
+                          TYPVF=2  => Schéma SUDM
+                          TYPVF=3  => Schéma SUDA
+                          TYPVF=4  => Schéma SUC
                                                                           
 """),
 10 : _(u"""
-  -> Le nom de la modelisation  %(k1)s  est inconnu
+  -> Le nom de la modélisation  %(k1)s  est inconnu
 """),
 11 : _(u"""
   -> L'option  %(k1)s est inconnue
 """),
 12 : _(u"""
-  -> ELREFE  %(k1)s   inconnue : En 3D et en VF on peut utiliser uniquement des hexaedres
-    a 27 DDL et des tetraedres a 27 DDL.
+  -> ELREFE  %(k1)s   inconnue : En 3D et en VF on peut utiliser uniquement des hexaèdres
+    a 27 DDL et des tétraèdres a 27 DDL.
 """),
 13 : _(u"""
   -> l'élément %(k1)s et la face  %(i1)i est non plane 
@@ -71,12 +71,12 @@ cata_msg = {
 14 : _(u"""
   -> Il est possible d'utiliser comme inconnue dans la maille le centre du cercle
      circonscrit (a la place du centre de gravite) ce qui nous permet de retrouver
-     un schema volumes finis a deux points. Cependant cette possibilité n'est programme
+     un schéma volumes finis a deux points. Cependant cette possibilité n'est programme
      que pour des maillages 2D composés de triangles.
 """),
 15 : _(u"""
   -> Le nombre de noeuds de l'élément est inconnu en VF. 
-     Nous pouvons uttiliser uniquement des mailles quadratiques. Il est donc 
+     Nous pouvons utiliser uniquement des mailles quadratiques. Il est donc 
      possible d'avoir 7 noeuds on a alors une maille TRIA7,
      9 noeuds on a alors un QUAD9, etc...
 """),

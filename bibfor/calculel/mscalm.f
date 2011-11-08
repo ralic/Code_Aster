@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1618,86 +1618,7 @@ C ---- VERIF SENSIBILITE FIN
   470         CONTINUE
               CALL JEDEMA()
   480       CONTINUE
-C     ------------------------------------------------------------------
-C     --- OPTION "EPTQ_ELNO"
-C     ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'EPTQ_ELNO') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-              CODSEN=1
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            DO 500,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'EPEQ_ELGA',IORDR,CHEEQ,
-     &                    OPTION,IRET2)
-              IF (IRET2.GT.0)GOTO 490
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              IF (EXITIM) THEN
-                CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-                TIME=ZR(IAINST)
-              ELSE
-                TIME=ZERO
-              ENDIF
-              CALL MSCALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,
-     &                    CHELEM,K24B,LIGREL,BASE,CHVARC,CHEEQ,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,
-     &                    IRET)
-              IF (IRET.GT.0)GOTO 490
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  490         CONTINUE
-              CALL JEDEMA()
-  500       CONTINUE
-
-C     ------------------------------------------------------------------
-C     --- OPTION "SITQ_ELNO"
-C     ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'SITQ_ELNO') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-              CODSEN=1
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            DO 520,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'SIEQ_ELGA',IORDR,CHSEQ,
-     &                    OPTION,IRET2)
-              IF (IRET2.GT.0)GOTO 510
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              IF (EXITIM) THEN
-                CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-                TIME=ZR(IAINST)
-              ELSE
-                TIME=ZERO
-              ENDIF
-              CALL MSCALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,
-     &                    CHELEM,K24B,LIGREL,BASE,CHSEQ,K24B,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,
-     &                    IRET)
-              IF (IRET.GT.0)GOTO 510
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  510         CONTINUE
-              CALL JEDEMA()
-  520       CONTINUE
-
+  
 C     ------------------------------------------------------------------
 C     --- OPTION: INDL_ELGA
 C     ------------------------------------------------------------------

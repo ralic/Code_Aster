@@ -1,21 +1,21 @@
-#@ MODIF pilotage Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF pilotage Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -77,22 +77,22 @@ cata_msg = {
 """),
 
 61 : _(u"""
- Le noeud pilote %(i1)d n appartient pas à une arete intersectée par la fissure
+ Le noeud pilote %(i1)d n appartient pas à une arête intersectée par la fissure
 """),
 
 62 : _(u"""
- Il y a plus de noeuds utilisateur que d'arêtes vitales. 
- Dimininuer le nombre de noeuds pilotés.
+ Il y a plus de noeuds utilisateur que d'arêtes vitales.
+ Diminuer le nombre de noeuds pilotés.
 """),
 
 63 : _(u"""
- Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arete intersectee.
+ Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arête intersectée.
  Il est conseillé d'entrer des noeuds qui sont tous du même coté de la fissure.
 """),
 
 64 : _(u"""
- Les noeuds pilot??s %(i1)d et %(i2)d sont deux extr??mit??s d'une arete intersectee.
- Il est conseill?? d'entrer des noeuds qui sont tous du même cot?? de la fissure.
+ Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arête intersectée.
+ Il est conseillé d'entrer des noeuds qui sont tous du même coté de la fissure.
 """),
 
 83 : _(u"""
@@ -102,7 +102,7 @@ cata_msg = {
 
 84 : _(u"""
  Problème lors du pilotage.
- Précision machine depassée.
+ Précision machine dépassée.
 """),
 
 85 : _(u"""

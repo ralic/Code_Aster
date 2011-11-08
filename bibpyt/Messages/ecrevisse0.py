@@ -1,4 +1,4 @@
-#@ MODIF ecrevisse0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ecrevisse0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,7 +115,7 @@ cata_msg={
 """),
 
 23: _(u"""
- ATTENTION : l'ancienne version du couplage Code_Aster-Écrevisse (qui utilise le flux de chaleur)
+ ATTENTION : l'ancienne version du couplage Code_Aster/Écrevisse (qui utilise le flux de chaleur)
  ne marche que avec fissures horizontales et verticales!!
  L'angle thêta forme avec la verticale est égal a  %(r1)f.
 """),
@@ -152,14 +152,14 @@ cata_msg={
  CONVERGENCE MACR_ECREVISSE - Instant de calcul : %(r1)f
    Erreur en Température : %(r2)f ; Écart en Température : %(r3)f
    Erreur en Pression    : %(r4)f ; Écart en Pression    : %(r5)f
-   Erreur Température-Pression     : %(r6)f  ]
+   Erreur Température/Pression     : %(r6)f  ]
 """),
 
 34: _(u"""
  CONVERGENCE MACR_ECREVISSE - Instant de calcul : %(r1)f
    Erreur en Température : %(r2)f ; Écart en Température : %(r3)f
    Erreur en Pression    : %(r4)f ; Écart en Pression    : %(r5)f
-   Erreur Température-Pression     : %(r6)f  ]
+   Erreur Température/Pression     : %(r6)f  ]
 """),
 
 35: _(u"""

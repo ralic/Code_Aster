@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,7 @@ Risques & conseils :
 
  Risques & conseils :
    Le maillage a-t-il été produit par un mailleur ?
-   La connectivité respecte-t'elle bien la convention Aster ?
+   La connectivité respecte-t-elle bien la convention Aster ?
 """),
 
 8 : _(u"""
@@ -116,7 +116,7 @@ Conseil :
 """),
 
 14 : _(u"""
-  incompatibilité des type_champ ("ELGA"/"ELNO")  pour l option :  %(k1)s  entre les 2 type_elem :  %(k2)s  et  %(k3)s
+  incompatibilité des type_champ ("ELGA"/"ELNO")  pour l option :  %(k1)s  entre les 2 TYPE_ELEM :  %(k2)s  et  %(k3)s
 """),
 
 15 : _(u"""
@@ -133,7 +133,7 @@ Erreur Utilisateur :
   Le modèle n'a pas pu être trouvé.
 
 Conseils :
-  Il faut soit l'indiquer par le mot-clé MODELE soit qu'il soit présent dans la 
+  Il faut soit l'indiquer par le mot-clé MODELE soit qu'il soit présent dans la
   structure de données %(k1)s.
 """),
 
@@ -362,7 +362,7 @@ Conseils :
 """),
 
 70 : _(u"""
- numéro de sous_point invalide :  %(k1)s  (<1 ou >nbspt)
+ numéro de sous-point invalide :  %(k1)s  (<1 ou >nbspt)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
 """),

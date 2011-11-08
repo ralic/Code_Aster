@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact Messages  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,6 +107,12 @@ avec des mailles affectées d'une modélisation 3D.
 
 88 : _(u"""
 N'utilisez pas REAC_INCR=0 avec le frottement.
+"""),
+
+89 : _(u"""
+Contact méthode continue. 
+On ne peut avoir des modélisations différentes entre contact et frottement (pénalisation ou lagrangien augmenté) différents sur la même zone.
+Il faut avoir la même option pour ALGO_CONT et ALGO_FROT.
 """),
 
 93 : _(u"""

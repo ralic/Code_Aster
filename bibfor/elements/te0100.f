@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -276,16 +276,16 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
             ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
    45     CONTINUE
 
-          CALL NMGR2D(FAMI,NNO,NPG1,IPOIDS,IVF,IDFDE,
+          CALL NMGR2D(FAMI,NNO,NPG1,IPOIDS,IVF,ZR(IVF),IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
-     &                IDEPLM,IDEPLP,
+     &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),MATSYM,
      &                VECT1,VECT2,VECT3,
      &                ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),IVECTU,CODRET)
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
         ELSE IF (ZK16(ICOMPO+2).EQ.'GDEF_HYPO_ELAS') THEN
 

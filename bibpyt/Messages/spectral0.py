@@ -1,4 +1,4 @@
-#@ MODIF spectral0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF spectral0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,15 +53,15 @@ Le fichier IDEAS est vide ou ne contient pas le data set demande
 """),
 
 10: _(u"""
-Un des data sets 58 contient une donnee qui n'est pas un inter-spectre
+Un des data sets 58 contient une donnée qui n'est pas un interspectre
 """),
 
 11: _(u"""
-On ne traite pas les cas ou les abscisses frequentielles ne sont pas reglierement espacees
+On ne traite pas les cas ou les abscisses fréquentielles ne sont pas régulièrement espacées
 """),
 
 12: _(u"""
-Le mot-cle format correspond au format du fichier source, qui peut être 'ASTER' ou 'IDEAS' (pour lire les DS58)
+Le mot-clé format correspond au format du fichier source, qui peut être 'ASTER' ou 'IDEAS' (pour lire les DS58)
 """),
 
 

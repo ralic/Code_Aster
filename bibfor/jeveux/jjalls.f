@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/11/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,7 +116,7 @@ C
           ENDIF
         ENDIF
       ENDIF
-      CALL ASSERT(LOIS.NE.0)
+      CALL ASSERT(LSO.NE.0)
       LSI = LSO / LOIS
 C
 C     LE SEGMENT DE VALEURS EST ALLOUE DYNAMIQUEMENT SI LDYN=1 ET SI
@@ -130,19 +130,19 @@ C
         ILDYNA = ILDYNA+1
         IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN
           IF ( ILDYNA .GT. 1 ) THEN
-            IF (LDYN .EQ. 1) THEN
-               CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
-     &                     //' IMPOSEE ATTEINTE')
-            ENDIF
             UNMEGA=1048576
             IVAL(1)=(LSIC*LOIS)/UNMEGA
             IVAL(2)=NINT(VMXDYN)/UNMEGA
             IVAL(3)=NINT(MCDYN)/UNMEGA
             IVAL(4)=(LTOT*LOIS)/UNMEGA
+            IF (LDYN .EQ. 1) THEN
+               CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
+     &                     //' IMPOSEE ATTEINTE')
+            ENDIF
             CALL U2MESI('F','JEVEUX_62',4,IVAL)
           ELSE
             CALL JJLDYN(2,-1,LTOT)
-            IF ( LTOT .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
+            IF ( LTOT/LOIS .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
             GOTO 50
           ENDIF
         ENDIF

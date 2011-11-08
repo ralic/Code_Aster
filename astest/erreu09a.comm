@@ -1,0 +1,471 @@
+# MODIF  DATE 08/11/2011   AUTEUR BOYERE E.BOYERE 
+# TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
+# erreu09a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM='ERREU09A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      ERREUR=_F(ERREUR_F='EXCEPTION'),
+      PAR_LOT='NON')
+
+# REMARQUE : LE TRAITEMENT DES EXCEPTIONS N'A DE SENS QU'EN PAR_LOT='NON'
+
+# PREMIERE PARTIE : TEST DE L'IMPLEMENTATION DES EXCEPTIONS PYTHON
+# DEUXIEME PARTIE : LEVEES D'EXCEPTIONS PAR LES COMMANDES ASTER
+
+# CE CAS TEST EST IDENTIQUE A SSNL102A. IL SERT A VALIDER
+# LA LEVEE D EXCEPTION PAR UTEXCP(numero) DANS LE FORTRAN
+
+#
+# NE JAMAIS FAIRE DE 'except:' SANS PRECISER QUELLE EXCEPTION
+#
+
+# ======================================================================
+#                          PREMIERE PARTIE
+# ======================================================================
+
+# TEST DU MECANISME D'EXCEPTION DANS CODE_ASTER
+sep='\n------------------------------------------------------------------------\n'
+print sep
+
+is_ok = 0
+try:
+   raise aster.error("GENERIC_1",
+        valk="""CAS 1 : declencher error car l'exception n'est pas particularisee.""")
+
+except aster.NonConvergenceError,err:
+   print "Exception NonConvergence interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.EchecComportementError,err:
+   print "Exception EchecComportement interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.BandeFrequenceVideError,err:
+   print "Exception BandeFrequenceVide interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.MatriceSinguliereError,err:
+   print "Exception MatriceSinguliere interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.TraitementContactError,err:
+   print "Exception TraitementContact interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.MatriceContactSinguliereError,err:
+   print "Exception MatriceContactSinguliere interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.ArretCPUError,err:
+   print "Exception ArretCPU interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.error,err:
+   is_ok = 1
+   print "Exception error interceptee"
+   print "Raison : " + str(err.valk)
+
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM=TAB1))
+
+print sep
+
+is_ok = 0
+try:
+   raise aster.NonConvergenceError("GENERIC_1",
+      'CAS 2 : declencher une exception particularisee plus precise que "error"')
+
+except aster.NonConvergenceError,err:
+   is_ok = 1
+   print "Exception NonConvergence interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.error,err:
+   print "Exception error interceptee"
+   print "Raison : " + str(err.valk)
+
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM=TAB1))
+
+print sep
+
+is_ok = 0
+try:
+   raise aster.EchecComportementError("GENERIC_1",
+      'CAS 3 : ne pas confondre les exceptions particularisees')
+
+except aster.BandeFrequenceVideError,err:
+   print "Exception BandeFrequenceVide interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.EchecComportementError,err:
+   is_ok = 1
+   print "Exception EchecComportement interceptee"
+   print "Raison : " + str(err.valk)
+
+except aster.error,err:
+   print "Exception error interceptee"
+   print "Raison : " + str(err.valk)
+
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM=TAB1))
+
+print sep
+
+# Test de la recuperation de l'erreur fatale : LIRE_MAILLAGE avec UNITE invalide
+is_ok = 0
+fmt="""
+   Comportement en cas d'erreur fatale : %s
+"""
+prev=aster.onFatalError()
+print fmt % prev
+
+aster.onFatalError('EXCEPTION')
+print fmt % aster.onFatalError()
+try:
+    ma=LIRE_MAILLAGE(UNITE=999)   # unite invalide
+except aster.error, err:
+    # on verifie que la bonne exception a ete levee
+    assert err.id_message == "MODELISA4_94", 'unexpected id : %s' % err.id_message
+    is_ok = 1
+
+
+# on remet dans l'etat initial
+aster.onFatalError(prev)
+print fmt % aster.onFatalError()
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM=TAB1))
+
+print sep
+
+
+# ======================================================================
+#                          DEUXIEME PARTIE
+# ======================================================================
+# TROIS CAS : GROUP_MA NE FIGURANT PAS DANS LE MAILLAGE
+#             VERIMA EMET UNE ERREUR UTMESS S
+#             ON TRAPPE L EXCEPTION, PUIS ON DETRUIT
+#             LE CONCEPT POUR LE RECREER CORRECTEMENT
+#             --> exception generique aster.error
+#
+#             PAS ASSEZ D ITERATIONS DANS STAT_NON_LINE
+#             ON RECUPERE LE DERNIER INSTANT CALCULE
+#             POUR REPRENDRE LE CALCUL A PARTIR DE LA
+#             AVEC UN ITER_GLOB_MAXI PLUS GRAND.
+#             --> exception NonConvergenceError
+#
+#             NOM DE CHAMP ET DE COMPOSANTE INEXISTANT
+#             DANS LE CHAMP A POST-TRAITER DANS POST_RELEVE_T
+#             ON TRAPPE L EXCEPTION, PUIS ON DETRUIT
+#             LE CONCEPT POUR LE RECREER CORRECTEMENT
+#             --> exception generique aster.error
+
+MA=LIRE_MAILLAGE();
+
+try:
+   MO=AFFE_MODELE(MAILLAGE=MA,
+                  AFFE=_F(MAILLE='XXX',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_TR',),);
+except aster.error, err:
+    # on verifie que la bonne exception a ete levee
+    assert err.id_message == "MODELISA6_10", 'unexpected id : %s' % err.id_message
+    # on peut aussi verifier les arguments
+    assert err.valk[0].strip() == "XXX", "unexpected argument : %s" % err.valk[0]
+    assert err.valk[1].strip() == "MA", "unexpected argument : %s" % err.valk[1]
+    DETRUIRE(CONCEPT=_F(NOM=MO),)
+    MO=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(MAILLE='D1',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DIS_TR',),);
+
+
+F1=DEFI_FONCTION(NOM_PARA='INST',
+                 VALE=(0.,0.,1.,6.,2.,7.,3.,17.,4.,40.,6.,20.,8.,42.,
+                       10.,-0.1,11.,-7.,12.,-17.,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=12.0,
+                                   PAS=1.0,),);
+
+MAT02=DEFI_MATERIAU(ASSE_CORN=_F(NU_1=10050.0,
+                                 MU_1=150000.0,
+                                 DXU_1=1.0,
+                                 DRYU_1=0.067,
+                                 C_1=0.95,
+                                 NU_2=50000.0,
+                                 MU_2=750000.0,
+                                 DXU_2=10.0,
+                                 DRYU_2=0.01,
+                                 C_2=0.95,
+                                 KY=1000000.0,
+                                 KZ=1000000.0,
+                                 KRX=1000000000.0,
+                                 KRZ=1000000000.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(MAILLE='D1',
+                            MATER=MAT02,),);
+
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     DISCRET=_F(MAILLE='D1',
+                                CARA='K_TR_D_L',
+                                VALE=(1000000.0,1000000.0,1000000.0,1000000000.0,1000000000.0,1000000000.0,),),
+                     ORIENTATION=_F(MAILLE='D1',
+                                    CARA='ANGL_NAUT',
+                                    VALE=(0.0,0.0,0.0,),),);
+
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=_F(NOEUD='N2',
+                               DX=0.0,
+                               DY=0.0,
+                               DZ=0.0,
+                               DRX=0.0,
+                               DRY=0.0,
+                               DRZ=0.0,),
+                   FORCE_NODALE=_F(NOEUD='N3',
+                                   FX=1000.0,
+                                   FY=0.0,
+                                   FZ=0.0,
+                                   MX=0.0,
+                                   MY=3000.0,
+                                   MZ=0.0,),);
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST))
+
+
+is_ok = 0
+try :
+     # avoir au moins un pas de temps converge
+     STATNL=STAT_NON_LINE(MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                          CARA_ELEM=CAREL,
+                          EXCIT=_F(CHARGE=CH1,
+                                   FONC_MULT=F1,),
+                          COMP_INCR=_F(RELATION='ASSE_CORN',
+                                       MAILLE='D1',),
+                          INCREMENT=_F(LIST_INST=DEFLIST,
+                                       NUME_INST_FIN=1,),
+                          NEWTON=_F(MATRICE='TANGENTE',
+                                    REAC_ITER=1,),)
+
+     # non convergence avec matrice elastique
+     STATNL=STAT_NON_LINE(reuse=STATNL,
+                          MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                          CARA_ELEM=CAREL,
+                          EXCIT=_F(CHARGE=CH1,
+                                   FONC_MULT=F1,),
+                          ETAT_INIT=_F(EVOL_NOLI=STATNL,),
+                          COMP_INCR=_F(RELATION='ASSE_CORN',
+                                       MAILLE='D1',),
+                          INCREMENT=_F(LIST_INST=DEFLIST,
+                                       NUME_INST_FIN=12,),
+                          NEWTON=_F(MATRICE='ELASTIQUE',
+                                    REAC_ITER=1,),)
+
+except aster.NonConvergenceError, err:
+     is_ok = 1
+     # on verifie que la bonne exception a ete levee
+     assert err.id_message == "MECANONLINE_83", 'unexpected id : %s' % err.id_message
+     print """\nNon convergence, on augmente le nombre d'iterations...\n"""
+# on recupere le dernier instant proprement calcule dans le try precedent
+# dans la variable last_iter pour repartir de cet ETAT_INIT
+     last_iter=STATNL.LIST_VARI_ACCES()['NUME_ORDRE'][-1]
+
+     STATNL=STAT_NON_LINE(reuse=STATNL,
+                          MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                          CARA_ELEM=CAREL,
+                          EXCIT=_F(CHARGE=CH1,
+                                   FONC_MULT=F1,),
+                          ETAT_INIT=_F(EVOL_NOLI=STATNL,
+                                       NUME_ORDRE=last_iter,),
+                          COMP_INCR=_F(RELATION='ASSE_CORN',
+                                       MAILLE='D1',),
+                          INCREMENT=_F(LIST_INST=DEFLIST,
+                                       NUME_INST_FIN=12,),
+                          NEWTON=_F(MATRICE='TANGENTE',
+                                    REAC_ITER=1,),
+                          CONVERGENCE=_F(ITER_GLOB_MAXI=10,),);
+
+try:
+    TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                                     NOEUD='N2',
+                                     RESULTAT=STATNL,
+                                     NOM_CHAM='TEMP',
+                                     NOM_CMP='TEMP',
+                                     OPERATION='EXTRACTION',),);
+except aster.error, err:
+    # on verifie que la bonne exception a ete levee
+    assert err.id_message == "POSTRELE_46", 'unexpected id : %s' % err.id_message
+    DETRUIRE(CONCEPT=_F(NOM=TAB_DEPL),)
+    TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                                     NOEUD='N2',
+                                     RESULTAT=STATNL,
+                                     NOM_CHAM='DEPL',
+                                     NOM_CMP='DY',
+                                     OPERATION='EXTRACTION',),);
+STATNL=CALC_ELEM(reuse =STATNL,
+                 RESULTAT=STATNL,
+                 OPTION=('SIEF_ELNO','VARI_ELNO',),);
+#
+IMPR_RESU(RESU=_F( RESULTAT = STATNL, ), )
+
+TEST_RESU(RESU=(_F(RESULTAT = STATNL,
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DX',
+                   NUME_ORDRE = 2,
+                   NOEUD = 'N3',
+                   VALE = 9.46805E-2,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT = STATNL,
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DRY',
+                   NUME_ORDRE = 2,
+                   NOEUD = 'N3',
+                   VALE = 1.27506E-3,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=8,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N3',
+                   VALE=3.73663,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=8,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   NOEUD='N3',
+                   VALE=1.37542E-2,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N3',
+                   VALE=2.67989,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   NOEUD='N3',
+                   VALE=5.35978E-4,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   MAILLE='D1',
+                   NOEUD='N3',
+                   VALE=0.0965742,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='D1',
+                   POINT=2,
+                   VALE=1.07417,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT = STATNL,
+                   NOM_CHAM = 'VARI_ELNO',
+                   NOM_CMP = 'V1',
+                   NUME_ORDRE = 11,
+                   MAILLE = 'D1',
+                   NOEUD = 'N3',
+                   VALE = 9.65742E-2,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT = STATNL,
+                   NOM_CHAM = 'VARI_ELGA',
+                   NOM_CMP = 'V1',
+                   NUME_ORDRE = 12,
+                   MAILLE = 'D1',
+                   POINT = 2,
+                   VALE = 1.07417,
+                   REFERENCE='AUTRE_ASTER'),),);
+
+# TEST_RESU NonConvergence STAT_NON_LINE
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM=TAB1))
+
+
+FIN();
+#

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,12 +69,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),IBI,IDEC
 C.......................................................................
 
-      CALL ELREF1(ELREFE)
-      IF (ELREFE.EQ.'HE8') THEN
-        FAMI = 'RIGI'
-      ELSE
-        FAMI = 'MASS'
-      END IF
+      FAMI='MASS'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       NDDL = 3*NNO
       NVEC = NDDL* (NDDL+1)/2

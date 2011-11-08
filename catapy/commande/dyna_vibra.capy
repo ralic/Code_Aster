@@ -1,32 +1,32 @@
-#& MODIF COMMANDE  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR CHEIGNON E.CHEIGNON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-  
+
 # RESPONSABLE NISTOR I.NISTOR
 
 #choix de structure de donnees de sortie en fonction de BASE_CALCUL et TYPE_CALCUL
 def dyna_vibra_prod(self,BASE_CALCUL,TYPE_CALCUL,MATR_RIGI,**args):
-        if BASE_CALCUL == 'PHYS':  
+        if BASE_CALCUL == 'PHYS':
           if TYPE_CALCUL == 'TRAN': return dyna_trans
-          else: 
-              if (AsType(MATR_RIGI) == matr_asse_pres_c) : return acou_harmo   
+          else:
+              if (AsType(MATR_RIGI) == matr_asse_pres_c) : return acou_harmo
               else: return dyna_harmo
-        else: 
+        else:
           if TYPE_CALCUL == 'TRAN': return tran_gene
           else: return harm_gene
 
@@ -39,43 +39,43 @@ DYNA_VIBRA=MACRO(nom="DYNA_VIBRA",
                  reentrant='f',
                  fr="Calcul dynamique",
                  UIinfo={"groupes":("Resolution","Dynamique",)},
-        BASE_CALCUL     =SIMP(statut='o',typ='TXM',position='global',into=("PHYS","GENE") ),         
+        BASE_CALCUL     =SIMP(statut='o',typ='TXM',position='global',into=("PHYS","GENE") ),
         TYPE_CALCUL     =SIMP(statut='o',typ='TXM',position='global',into=("HARM","TRAN") ),
 
 #parametres de mise en donnees
         b_donnees    =BLOC(condition = "TYPE_CALCUL=='HARM'or (TYPE_CALCUL=='TRAN' and BASE_CALCUL=='PHYS')",
             MODELE          =SIMP(statut='f',typ=modele_sdaster ),
             CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
-            CARA_ELEM       =SIMP(statut='f',typ=cara_elem ), 
+            CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
         ),
-        b_matr_tran_phys    =BLOC(condition = "TYPE_CALCUL=='TRAN' and BASE_CALCUL=='PHYS'",       
+        b_matr_tran_phys    =BLOC(condition = "TYPE_CALCUL=='TRAN' and BASE_CALCUL=='PHYS'",
             MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r),
             MATR_RIGI       =SIMP(statut='o',typ=matr_asse_depl_r),
             MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r),
         ),
-        b_matr_tran_gene    =BLOC(condition = "TYPE_CALCUL=='TRAN' and BASE_CALCUL=='GENE'",       
+        b_matr_tran_gene    =BLOC(condition = "TYPE_CALCUL=='TRAN' and BASE_CALCUL=='GENE'",
             MATR_MASS       =SIMP(statut='o',typ=matr_asse_gene_r),
             MATR_RIGI       =SIMP(statut='o',typ=matr_asse_gene_r),
             MATR_AMOR       =SIMP(statut='f',typ=matr_asse_gene_r),
-        ),    
+        ),
         b_reuse_harm =BLOC(condition = "reuse and TYPE_CALCUL == 'HARM'",fr="en mode concept reentrant : RESULTAT obligatoire",
              RESULTAT      =SIMP(statut='o',typ=(dyna_harmo,harm_gene)),
             ),
-        b_matr_harm     =BLOC(condition="TYPE_CALCUL == 'HARM'",            
+        b_matr_harm     =BLOC(condition="TYPE_CALCUL == 'HARM'",
             MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_pres_c,matr_asse_gene_r ) ),
             MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_pres_c
                                               ,matr_asse_gene_r,matr_asse_gene_c )),
-            MATR_AMOR       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_pres_c,matr_asse_gene_r) ),                
+            MATR_AMOR       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_pres_c,matr_asse_gene_r) ),
             MATR_IMPE_PHI       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
         ),
-        
+
         AMOR_MODAL      =FACT(statut='f',
             AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
             LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
            b_mode    =BLOC(condition = "BASE_CALCUL == 'PHYS' and TYPE_CALCUL == 'TRAN'",
             MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
             NB_MODE         =SIMP(statut='f',typ='I',defaut= 9999 ),
-            ),            
+            ),
          ),
 #introduction parametres du calcul harmonique
         b_param_harm      =BLOC(condition="TYPE_CALCUL == 'HARM'",
@@ -84,12 +84,12 @@ DYNA_VIBRA=MACRO(nom="DYNA_VIBRA",
         FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
         LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
         NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","VITE","ACCE") ),
-        TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",)),        
-        ),          
+        TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",)),
+        ),
 
 #parametrage des calculs transitoires
-        b_tran = BLOC(condition = "TYPE_CALCUL == 'TRAN'", 
-#parametrage des schemas d'integration 
+        b_tran = BLOC(condition = "TYPE_CALCUL == 'TRAN'",
+#parametrage des schemas d'integration
         SCHEMA_TEMPS    =FACT(statut='d',
         SCHEMA           =SIMP(statut='f',typ='TXM',defaut="NEWMARK",
           into=("NEWMARK","WILSON","ADAPT_ORDRE2","DIFF_CENTRE","ADAPT_ORDRE1","DEVOGE","EULER","ITMI"),),
@@ -135,14 +135,14 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
            COEF_DIVI_PAS   =SIMP(statut='f',typ='R',defaut= 1.3333334 ),
            PAS_LIMI_RELA   =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
            NB_POIN_PERIODE =SIMP(statut='f',typ='I',defaut= 50 ),
-           NMAX_ITER_PAS   =SIMP(statut='f',typ='I',defaut= 16 ),           
+           NMAX_ITER_PAS   =SIMP(statut='f',typ='I',defaut= 16 ),
            PAS_MINI        =SIMP(statut='f',typ='R' ),
          ),
 
 #declaration de l'etat initial
        b_init_gene     =BLOC(condition="BASE_CALCUL == 'GENE'",
         ETAT_INIT       =FACT(statut='f',
-               regles=(EXCLUS('RESULTAT','DEPL'), 
+               regles=(EXCLUS('RESULTAT','DEPL'),
                    EXCLUS('RESULTAT','VITE'),),
              RESULTAT      =SIMP(statut='f',typ=tran_gene),
                 b_resu            =BLOC(condition = "RESULTAT != NONE",
@@ -160,12 +160,12 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
                         ),
                   ),
              DEPL          =SIMP(statut='f',typ=vect_asse_gene),
-             VITE       =SIMP(statut='f',typ=vect_asse_gene),               
+             VITE       =SIMP(statut='f',typ=vect_asse_gene),
               ),
-        ), 
+        ),
         b_init_phys     =BLOC(condition="BASE_CALCUL == 'PHYS'",
         ETAT_INIT       =FACT(statut='f',
-              regles=(AU_MOINS_UN('RESULTAT', 'DEPL', 'VITE', 'ACCE'), 
+              regles=(AU_MOINS_UN('RESULTAT', 'DEPL', 'VITE', 'ACCE'),
                    PRESENT_ABSENT('RESULTAT', 'DEPL', 'VITE', 'ACCE'),),
              RESULTAT      =SIMP(statut='f',typ=dyna_trans),
                 b_resu            =BLOC(condition = "RESULTAT != NONE",
@@ -183,10 +183,10 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
                         ),
                   ),
              DEPL          =SIMP(statut='f',typ=cham_no_sdaster),
-             VITE       =SIMP(statut='f',typ=cham_no_sdaster),  
+             VITE       =SIMP(statut='f',typ=cham_no_sdaster),
              ACCE       =SIMP(statut='f',typ=cham_no_sdaster),
               ),
-        ),       
+        ),
 
 #parametres d'archivage
         ARCHIVAGE         =FACT(statut='f',
@@ -198,7 +198,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
                 ),
         ),
         ),
-        
+
 #definition du chargement
         b_excit_harm    =BLOC(condition="TYPE_CALCUL == 'HARM'",
           EXCIT           =FACT(statut='o',max='**',
@@ -213,7 +213,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
            COEF_MULT       =SIMP(statut='f',typ='R' ),
            PHAS_DEG        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            PUIS_PULS       =SIMP(statut='f',typ='I',defaut= 0 ),
-           
+
          ),
           EXCIT_RESU       =FACT(statut='f',max='**',
            RESULTAT     =SIMP(statut='o',typ=(dyna_harmo,harm_gene) ),
@@ -238,17 +238,16 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
            MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            b_mult_appui     =BLOC(condition = "MULT_APPUI == 'OUI'",
            regles=(EXCLUS('NOEUD','GROUP_NO'),),
-                  MODE_STAT       =SIMP(statut='f',typ=mode_meca ),           
-                  DIRECTION       =SIMP(statut='f',typ='R',max='**'),             
+                  MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
+                  DIRECTION       =SIMP(statut='f',typ='R',max='**'),
                   NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                   GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            ),
            CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            b_corr_stat     =BLOC(condition = "CORR_STAT == 'OUI'",
-           regles=(PRESENT_PRESENT('D_FONC_DT','D_FONC_DT2'),),
-                  MODE_CORR       =SIMP(statut='f',typ=(mult_elas,mode_meca),),
-                  D_FONC_DT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-                  D_FONC_DT2      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                  MODE_CORR       =SIMP(statut='o',typ=(mult_elas,mode_meca),),
+                  D_FONC_DT       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                  D_FONC_DT2      =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
           ),
          ),
         ),
@@ -281,9 +280,9 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
         EXCIT_RESU       =FACT(statut='f',
            RESULTAT     =SIMP(statut='o',typ=dyna_trans ),
            COEF_MULT       =SIMP(statut='o',typ='R' ),
-        ),       
+        ),
        ),
-        
+
 #definition des chocs
         b_non_line_loca =BLOC(condition="TYPE_CALCUL == 'TRAN' and BASE_CALCUL=='GENE'",
         CHOC            =FACT(statut='f',max='**',
@@ -329,7 +328,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
         PARA_LAME_FLUI =FACT(statut='d',
            NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 20 ),
            RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
-           LAMBDA          =SIMP(statut='f',typ='R',defaut= 10. ),),             
+           LAMBDA          =SIMP(statut='f',typ='R',defaut= 10. ),),
         VERI_CHOC       =FACT(statut='f',
            STOP_CRITERE    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 0.5 ),
@@ -385,7 +384,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
            NOM_CMP         =SIMP(statut='f',typ='TXM' ),
            RELATION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
-#non-linearite effort-vitesse         
+#non-linearite effort-vitesse
         RELA_EFFO_VITE  =FACT(statut='f',max='**',
            NOEUD           =SIMP(statut='o',typ=no),
            SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),
@@ -408,7 +407,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
           ),
          b_solv_tran_gene      =BLOC(condition = "BASE_CALCUL=='GENE' and TYPE_CALCUL=='TRAN'",
         SOLVEUR         =C_SOLVEUR('DYNA_TRAN_MODAL'),
-          ), 
+          ),
 #-------------------------------------------------------------------
          b_sensibilite    =BLOC(condition = "TYPE_CALCUL=='HARM'or (TYPE_CALCUL=='TRAN' and BASE_CALCUL=='PHYS')",
          regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),
@@ -432,10 +431,10 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
 
 
 
-           
 
 
-                
+
+
 
 
 

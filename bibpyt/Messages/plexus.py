@@ -1,4 +1,4 @@
-#@ MODIF plexus Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF plexus Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,37 +23,37 @@ cata_msg = {
 
 1 : _(u"""La macro-commande MACR_EUROPLEXUS ne fonctionne pas encore en poursuite"""),
 
-2:  _(u"""Le mot-cle %(k1)s n'existe pas"""),
+2:  _(u"""Le mot-clé %(k1)s n'existe pas"""),
 
-3 : _(u"""Le mot-cle GROUP_MA est obligatoire dans AFFE_MODELE"""),
+3 : _(u"""Le mot-clé GROUP_MA est obligatoire dans AFFE_MODELE"""),
 
 4 : _(u"""Le type de section de poutre %(k1)s n'est pas encore pris en compte dans le passage vers Europlexus"""),
 
-7 : _(u"""Le mot-cle FONC_MULT est obligatoire pour le chargement de type PRES_REP"""),
+7 : _(u"""Le mot-clé FONC_MULT est obligatoire pour le chargement de type PRES_REP"""),
 
-9 : _(u"""Il faut avoir au moins un des mots-cles DDL_IMPO et PRES_REP dans AFFE_CHAR_MECA"""),
+9 : _(u"""Il faut avoir au moins un des mots-clés DDL_IMPO et PRES_REP dans AFFE_CHAR_MECA"""),
 
 10: _(u"""
-Les vecteurs y_local des group_ma %(k1)s
-calculés à partir des anhgles nautiques ne sont pas identiques.
+Les vecteurs y_local des GROUP_MA %(k1)s
+calculés à partir des angles nautiques ne sont pas identiques.
 Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous
-etes sur de l'orientation
+êtes sur de l'orientation
 """),
 
 11: _(u"""
-Les vecteurs y_local des mailles du group_ma %(k1)s
-calculés à partir des anhgles nautiques ne sont pas identiques.
+Les vecteurs y_local des mailles du GROUP_MA %(k1)s
+calculés à partir des angles nautiques ne sont pas identiques.
 Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous
-etes sur de l'orientation
+êtes sur de l'orientation
 """),
 
 12: _(u"""
-Le mot-cle facteur FONC_PARASOL est obligatoire quand le mot-cle RIGI_PARASOL e
+Le mot-clé facteur FONC_PARASOL est obligatoire quand le mot-clé RIGI_PARASOL e
 est renseigné dans AFFE_CARA_ELEM
 """),
 
 13: _(u"""
-Les deplacements imposés non nuls dans DDL_IMPO ne sont pas autorisés
+Les déplacements imposés non nuls dans DDL_IMPO ne sont pas autorisés
 """),
 
 14 : _(u"""

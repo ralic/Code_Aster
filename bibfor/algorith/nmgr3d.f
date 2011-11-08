@@ -7,7 +7,7 @@
      &                    DFDI,PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,12 +35,12 @@ C
        CHARACTER*16  OPTION, COMPOR(4)
 C
        REAL*8        INSTAM,INSTAP
-       REAL*8        GEOMI(3,NNO), CRIT(3)
+       REAL*8        GEOMI(3,NNO), CRIT(3), DETFM
        REAL*8        DEPLM(1:3,1:NNO),DEPLP(1:3,1:NNO),DFDI(NNO,3)
-       REAL*8        PFF(6,NNO,NNO),DEF(6,NNO,3)
        REAL*8        SIGM(6,NPG),SIGP(6,NPG)
        REAL*8        VIM(LGPG,NPG),VIP(LGPG,NPG)
        REAL*8        MATUU(*),VECTU(3,NNO),MAXEPS
+       REAL*8        PFF(6,NNO,NNO),DEF(6,NNO,3)
        LOGICAL       MATSYM
 
 C
@@ -79,279 +79,108 @@ C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C.......................................................................
 C
-      LOGICAL GRAND,RESI,RIGI
+      LOGICAL GRAND,AXI
 
-      INTEGER KPG,KK,KKD,N,I,M,J,J1,KL,PQ,COD(27),NMAX
+      INTEGER KPG,J,COD(27)
 
-      REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
-      REAL*8 R,SIGMA(6),SIGN(6),SIG(6),SIGG(6),FTF,DETF,FMM(3,3)
-      REAL*8 POIDS,TMP1,TMP2,R8BID
-      REAL*8 ELGEOM(10,27),ANGMAS(3),R8NNEM
+      REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),EPSM(6),EPSP(6),DEPS(6)
+      REAL*8 R,SIGMA(6),SIGN(6),DETF,POIDS,VFF(1)
+      REAL*8 ELGEOM(10,27),ANGMAS(3),R8NNEM,RAC2
 
-      INTEGER INDI(6),INDJ(6)
-      REAL*8  RIND(6),RIND1(6),RAC2
-      DATA    INDI / 1 , 2 , 3 , 1, 1, 2 /
-      DATA    INDJ / 1 , 2 , 3 , 2, 3, 3 /
-      DATA    RIND / 0.5D0,0.5D0,0.5D0,0.70710678118655D0,
-     &               0.70710678118655D0,0.70710678118655D0 /
-      DATA    RIND1 / 0.5D0 , 0.5D0 , 0.5D0 , 1.D0, 1.D0, 1.D0 /
-
-C 1 - INITIALISATION
+C     INITIALISATION
 
       RAC2   = SQRT(2.D0)
       GRAND  = .TRUE.
-      RESI = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
-      RIGI = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
+      AXI=.FALSE.
 
-C 3 - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
+C     CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
 
       CALL LCEGEO(NNO   ,NPG   ,IPOIDS,IVF   ,IDFDE ,
      &            GEOMI ,TYPMOD,COMPOR,3     ,DFDI  ,
      &            DEPLM ,DEPLP ,ELGEOM)
 
-C 4 - INITIALISATION CODES RETOURS
+C     INITIALISATION CODES RETOURS
 
       DO 1955 KPG=1,NPG
         COD(KPG)=0
 1955  CONTINUE
 
-C 5 - CALCUL POUR CHAQUE POINT DE GAUSS
+C     ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C     INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
+      CALL R8INIR(3,  R8NNEM(), ANGMAS ,1)
+
+
+C     CALCUL POUR CHAQUE POINT DE GAUSS
 
       DO 800 KPG=1,NPG
 
+C        CALCUL DES ELEMENTS GEOMETRIQUES
 
-C 5.2 - CALCUL DES ELEMENTS GEOMETRIQUES
+C        CALCUL DE EPSM EN T- POUR LDC
 
-C 5.2.1 - CALCUL DE EPSM EN T- POUR LDC
-
-       DO 20 J = 1,6
-        EPSM (J)=0.D0
-        EPSP (J)=0.D0
-20     CONTINUE
-       CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMI,KPG,IPOIDS,
+         CALL R8INIR(6, 0.D0, EPSM ,1)
+         CALL R8INIR(6, 0.D0, EPSP ,1)
+         CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMI,KPG,IPOIDS,
      &            IVF,IDFDE,DEPLM,.TRUE.,POIDS,DFDI,
      &                   FM,EPSM,R)
 
-C 5.2.2 - CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
+C        CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
 
-       CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMI,KPG,IPOIDS,
+         CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMI,KPG,IPOIDS,
      &            IVF,IDFDE,DEPLP,.TRUE.,POIDS,DFDI,
      &                   F,EPSP,R)
 
 
-C 5.2.3 - CALCUL DE DEPS POUR LDC
+C        CALCUL DE DEPS POUR LDC
 
-       MAXEPS=0.D0
-       DO 25 J = 1,6
-         DEPS (J)=EPSP(J)-EPSM(J)
-         MAXEPS=MAX(MAXEPS,ABS(EPSP(J)))
-25     CONTINUE
+         MAXEPS=0.D0
+         DO 25 J = 1,6
+            DEPS (J)=EPSP(J)-EPSM(J)
+            MAXEPS=MAX(MAXEPS,ABS(EPSP(J)))
+25       CONTINUE
 
-C  VERIFICATION QUE EPS RESTE PETIT
-        IF (MAXEPS.GT.0.05D0) THEN
-           IF( COMPOR(1)(1:4).NE.'ELAS') THEN
-              CALL U2MESR('A','COMPOR2_9',1,MAXEPS)
-           ENDIF
-        ENDIF
+C        VERIFICATION QUE EPS RESTE PETIT
 
-C 5.2.4 - CALCUL DES PRODUITS SYMETR. DE F PAR N,
-
-       IF (RESI) THEN
-        DO 26 I=1,3
-         DO 27 J=1,3
-          FR(I,J) = F(I,J)
- 27      CONTINUE
- 26     CONTINUE
-       ELSE
-        DO 28 I=1,3
-         DO 29 J=1,3
-          FR(I,J) = FM(I,J)
- 29      CONTINUE
- 28     CONTINUE
-       ENDIF
-
-       DO 40 N=1,NNO
-        DO 30 I=1,3
-         DEF(1,N,I) =  FR(I,1)*DFDI(N,1)
-         DEF(2,N,I) =  FR(I,2)*DFDI(N,2)
-         DEF(3,N,I) =  FR(I,3)*DFDI(N,3)
-         DEF(4,N,I) = (FR(I,1)*DFDI(N,2) + FR(I,2)*DFDI(N,1))/RAC2
-         DEF(5,N,I) = (FR(I,1)*DFDI(N,3) + FR(I,3)*DFDI(N,1))/RAC2
-         DEF(6,N,I) = (FR(I,2)*DFDI(N,3) + FR(I,3)*DFDI(N,2))/RAC2
- 30     CONTINUE
- 40    CONTINUE
-
-
-C 5.2.6 - CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
-
-       IF (RIGI) THEN
-        DO 125 N=1,NNO
-         IF(MATSYM) THEN
-          NMAX = N
-         ELSE
-           NMAX = NNO
+         IF (MAXEPS.GT.0.05D0) THEN
+            IF( COMPOR(1)(1:4).NE.'ELAS') THEN
+               CALL U2MESR('A','COMPOR2_9',1,MAXEPS)
+            ENDIF
          ENDIF
-         DO 126 M=1,NMAX
-          PFF(1,N,M) =  DFDI(N,1)*DFDI(M,1)
-          PFF(2,N,M) =  DFDI(N,2)*DFDI(M,2)
-          PFF(3,N,M) =  DFDI(N,3)*DFDI(M,3)
-          PFF(4,N,M) =(DFDI(N,1)*DFDI(M,2)+DFDI(N,2)*DFDI(M,1))/RAC2
-          PFF(5,N,M) =(DFDI(N,1)*DFDI(M,3)+DFDI(N,3)*DFDI(M,1))/RAC2
-          PFF(6,N,M) =(DFDI(N,2)*DFDI(M,3)+DFDI(N,3)*DFDI(M,2))/RAC2
- 126     CONTINUE
- 125    CONTINUE
-       ENDIF
 
-C 5.3 - LOI DE COMPORTEMENT
-C 5.3.1 - CONTRAINTE CAUCHY -> CONTRAINTE LAGRANGE POUR LDC EN T-
+C        CONTRAINTE CAUCHY -> CONTRAINTE LAGRANGE POUR LDC EN T-
 
-       DETF = FM(3,3)*(FM(1,1)*FM(2,2)-FM(1,2)*FM(2,1))
-     &      - FM(2,3)*(FM(1,1)*FM(3,2)-FM(3,1)*FM(1,2))
-     &      + FM(1,3)*(FM(2,1)*FM(3,2)-FM(3,1)*FM(2,2))
-       CALL MATINV('S',3,FM,FMM,R8BID)
-       DO 127 PQ = 1,6
-        SIGN(PQ) = 0.D0
-        DO 128 KL = 1,6
-         FTF = (FMM(INDI(PQ),INDI(KL))*FMM(INDJ(PQ),INDJ(KL)) +
-     &          FMM(INDI(PQ),INDJ(KL))*FMM(INDJ(PQ),INDI(KL)))*RIND1(KL)
-         SIGN(PQ) =  SIGN(PQ)+ FTF*SIGM(KL,KPG)
- 128    CONTINUE
-        SIGN(PQ) = SIGN(PQ)*DETF
- 127   CONTINUE
+         CALL NMDETF(3,FM,DETFM)
+         CALL PK2SIG(3,FM,DETFM,SIGN,SIGM(1,KPG),-1)
+         SIGN(4) = SIGN(4)*RAC2
+         SIGN(5) = SIGN(5)*RAC2
+         SIGN(6) = SIGN(6)*RAC2
 
-       SIGN(4) = SIGN(4)*RAC2
-       SIGN(5) = SIGN(5)*RAC2
-       SIGN(6) = SIGN(6)*RAC2
+C        INTEGRATION : APPEL A LA LOI DE COMPORTEMENT
 
-C 5.3.2 - INTEGRATION
-C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
-       CALL R8INIR(3,  R8NNEM(), ANGMAS ,1)
-
-C -    APPEL A LA LOI DE COMPORTEMENT
-       CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
+         CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
      &            6,EPSM,DEPS,
      &            6,SIGN,VIM(1,KPG),
      &            OPTION,
      &            ANGMAS,
      &            10,ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),36,DSIDEP,1,R8BID,COD(KPG))
+     &            SIGMA,VIP(1,KPG),36,DSIDEP,1,VFF,COD(KPG))
 
-       IF(COD(KPG).EQ.1) THEN
-         GOTO 1956
-       ENDIF
+         IF(COD(KPG).EQ.1) THEN
+            GOTO 1956
+         ENDIF
 
-C 5.4 - CALCUL DE LA MATRICE DE RIGIDITE
+C        CALCUL DE LA MATRICE DE RIGIDITE ET DE LA FORCE INTERIEURE
 
-       IF (RIGI) THEN
-        DO 160 N=1,NNO
-         DO 150 I=1,3
-          DO 151,KL=1,6
-           SIG(KL)=0.D0
-           SIG(KL)=SIG(KL)+DEF(1,N,I)*DSIDEP(1,KL)
-           SIG(KL)=SIG(KL)+DEF(2,N,I)*DSIDEP(2,KL)
-           SIG(KL)=SIG(KL)+DEF(3,N,I)*DSIDEP(3,KL)
-           SIG(KL)=SIG(KL)+DEF(4,N,I)*DSIDEP(4,KL)
-           SIG(KL)=SIG(KL)+DEF(5,N,I)*DSIDEP(5,KL)
-           SIG(KL)=SIG(KL)+DEF(6,N,I)*DSIDEP(6,KL)
-151       CONTINUE
-          IF(MATSYM) THEN
-           NMAX = N
-          ELSE
-           NMAX = NNO
-          ENDIF
-          DO 140 J=1,3
-           DO 130 M=1,NMAX
+         CALL NMGRTG(3,NNO,POIDS,KPG,VFF,DFDI,DEF,PFF,OPTION,AXI,R,
+     &                FM,F,DSIDEP,SIGN,SIGMA,MATSYM,MATUU,VECTU)
 
-C 5.4.1 - RIGIDITE GEOMETRIQUE
+C        CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
 
-            IF (OPTION(1:4).EQ.'RIGI') THEN
-              SIGG(1)=SIGN(1)
-              SIGG(2)=SIGN(2)
-              SIGG(3)=SIGN(3)
-              SIGG(4)=SIGN(4)
-              SIGG(5)=SIGN(5)
-              SIGG(6)=SIGN(6)
-             ELSE
-              SIGG(1)=SIGMA(1)
-              SIGG(2)=SIGMA(2)
-              SIGG(3)=SIGMA(3)
-              SIGG(4)=SIGMA(4)
-              SIGG(5)=SIGMA(5)
-              SIGG(6)=SIGMA(6)
-             ENDIF
-
-            TMP1 = 0.D0
-            IF (I.EQ.J) THEN
-             TMP1 = PFF(1,N,M)*SIGG(1)
-     &           + PFF(2,N,M)*SIGG(2)
-     &           + PFF(3,N,M)*SIGG(3)
-     &           + PFF(4,N,M)*SIGG(4)
-     &           + PFF(5,N,M)*SIGG(5)
-     &           + PFF(6,N,M)*SIGG(6)
-            ENDIF
-
-C 5.4.2 - RIGIDITE ELASTIQUE
-
-            TMP2=0.D0
-            TMP2=TMP2+SIG(1)*DEF(1,M,J)
-            TMP2=TMP2+SIG(2)*DEF(2,M,J)
-            TMP2=TMP2+SIG(3)*DEF(3,M,J)
-            TMP2=TMP2+SIG(4)*DEF(4,M,J)
-            TMP2=TMP2+SIG(5)*DEF(5,M,J)
-            TMP2=TMP2+SIG(6)*DEF(6,M,J)
-
-            IF(MATSYM) THEN
-C 5.4.3 - STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
-              IF (M.EQ.N) THEN
-               J1 = I
-              ELSE
-               J1 = 3
-              ENDIF
-            IF (J.LE.J1) THEN
-             KKD = (3*(N-1)+I-1) * (3*(N-1)+I) /2
-             KK = KKD + 3*(M-1)+J
-             MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*POIDS
-            END IF
-            ELSE
-C 5.4.4 - STOCKAGE SANS SYMETRIE
-              KK = 3*NNO*(3*(N-1)+I-1) + 3*(M-1)+J
-              MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*POIDS
-            ENDIF
-
- 130       CONTINUE
- 140      CONTINUE
- 150     CONTINUE
- 160    CONTINUE
-       ENDIF
-
-C 5.5 - CALCUL DE LA FORCE INTERIEURE
-
-       IF (RESI) THEN
-        DO 230 N=1,NNO
-         DO 220 I=1,3
-          DO 210 KL=1,6
-           VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
- 210      CONTINUE
- 220     CONTINUE
- 230    CONTINUE
-
-C 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
-
-        DETF = F(3,3)*(F(1,1)*F(2,2)-F(1,2)*F(2,1))
-     &      - F(2,3)*(F(1,1)*F(3,2)-F(3,1)*F(1,2))
-     &      + F(1,3)*(F(2,1)*F(3,2)-F(3,1)*F(2,2))
-        DO 190 PQ = 1,6
-         SIGP(PQ,KPG) = 0.D0
-         DO 200 KL = 1,6
-          FTF = (F(INDI(PQ),INDI(KL))*F(INDJ(PQ),INDJ(KL)) +
-     &          F(INDI(PQ),INDJ(KL))*F(INDJ(PQ),INDI(KL)))*RIND(KL)
-          SIGP(PQ,KPG) =  SIGP(PQ,KPG)+ FTF*SIGMA(KL)
- 200     CONTINUE
-         SIGP(PQ,KPG) = SIGP(PQ,KPG)/DETF
- 190    CONTINUE
-       ENDIF
+         IF (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL') THEN
+            CALL NMDETF(3,F,DETF)
+            CALL PK2SIG(3,F,DETF,SIGMA,SIGP(1,KPG),1)
+         ENDIF
 
 800   CONTINUE
 
@@ -360,4 +189,5 @@ C 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
 C - SYNTHESE DES CODES RETOURS
 
       CALL CODERE(COD,NPG,CODRET)
+      
       END

@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai6 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,7 @@ cata_msg = {
 
 5 : _(u"""
  le NUME_DDL en entrée ne s'appuie pas sur la même grandeur que celle de la commande
- grandeur associee au NUME_DDL : %(k1)s
+ grandeur associée au NUME_DDL : %(k1)s
  grandeur de la commande       :  %(k2)s
 """),
 
@@ -67,15 +67,15 @@ cata_msg = {
 
 13 : _(u"""
  problème rencontré lors de la recherche de la variable :  %(k1)s
-         debut :  %(k2)s
+         DEBUT :  %(k2)s
            fin :  %(k3)s
 """),
 
 14 : _(u"""
  interpolation non permise
  valeur à interpoler : %(r1)f
- borne inferieure    : %(r2)f
- borne superieure    : %(r3)f
+ borne inférieure    : %(r2)f
+ borne supérieure    : %(r3)f
 """),
 
 15 : _(u"""
@@ -135,24 +135,24 @@ cata_msg = {
 """),
 
 48 : _(u"""
- methode de newton
- exposant de la loi   = %(r1)f
- nombre d''iterations = %(i1)d
- residu fonction = %(r2)f
- residu f/df = %(r3)f
+ méthode de Newton
+ exposant de la loi  = %(r1)f
+ nombre d'itérations = %(i1)d
+ résidu fonction = %(r2)f
+ résidu = %(r3)f
  précision = %(r4)f
 """),
 
 51 : _(u"""
  pas de champ correspondant à l'instant demandé.
- resultat  %(k1)s
+ résultat  %(k1)s
  accès "INST_INIT" : %(r1)f
 """),
 
 52 : _(u"""
  plusieurs champs correspondant à l'instant demandé
- resultat  %(k1)s
- acces "INST_INIT" : %(r1)f
+ résultat  %(k1)s
+ accès "INST_INIT" : %(r1)f
  nombre : %(i1)d
 """),
 
@@ -169,15 +169,15 @@ cata_msg = {
 """),
 
 55 : _(u"""
- paramètres initiaux de weibull
+ paramètres initiaux de WEIBULL
  exposant de la loi      = %(r1)f
- volume de reference     = %(r2)f
- contrainte de reference = %(r3)f
+ volume de référence     = %(r2)f
+ contrainte de référence = %(r3)f
 """),
 
 56 : _(u"""
  statistiques recalage :
- nombre d'iterations  = %(i1)d
+ nombre d'itérations  = %(i1)d
  convergence atteinte = %(r1)f
 """),
 
@@ -194,24 +194,24 @@ cata_msg = {
 """),
 
 60 : _(u"""
- homogénéité du champ de matériaux pour weibull
- nombre de rc weibull trouvees =  %(i1)d
- les calculs sont valables pour  un seul comportement weibull %(k1)s
- on choisit la premiere relation du type weibull %(k2)s
+ homogénéité du champ de matériaux pour WEIBULL
+ nombre de RC WEIBULL trouvées =  %(i1)d
+ les calculs sont valables pour  un seul comportement WEIBULL %(k1)s
+ on choisit la première relation du type WEIBULL %(k2)s
 """),
 
 61 : _(u"""
- paramètres de la rc weibull_fo
+ paramètres de la RC WEIBULL_FO
  exposant de la loi      = %(r1)f
- volume de reference     = %(r2)f
+ volume de référence     = %(r2)f
  contrainte de référence conventionnelle = %(r3)f
 """),
 
 62 : _(u"""
- paramètres de la rc weibull
+ paramètres de la RC WEIBULL
  exposant de la loi      = %(r1)f
- volume de reference     = %(r2)f
- contrainte de reference = %(r3)f
+ volume de référence     = %(r2)f
+ contrainte de référence = %(r3)f
 """),
 
 68 : _(u"""
@@ -276,7 +276,7 @@ la variable %(k2)s est inconnue pour le type %(k3)s.
 99 : _(u"""
  erreur dans les données
  paramètre :  %(k1)s
- plusieurs valeurs trouvees
+ plusieurs valeurs trouvées
  pour le paramètre : %(k3)s
  et le paramètre   : %(k4)s
 """),

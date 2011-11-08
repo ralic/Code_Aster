@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai8 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,11 +40,11 @@ cata_msg = {
 """),
 
 5 : _(u"""
- Les abscisses de la fonction  %(k1)s ont ete réordonnées.
+ Les abscisses de la fonction  %(k1)s ont été réordonnées.
 """),
 
 6 : _(u"""
- L'ordre des abscisses de la fonction numéro  %(i1)d a ete inversé .
+ L'ordre des abscisses de la fonction numéro  %(i1)d a été inversé .
 """),
 
 7 : _(u"""
@@ -58,7 +58,7 @@ cata_msg = {
 """),
 
 9 : _(u"""
-   Numéro d'ordre :  %(i1)d             inst :  %(r1)g
+   Numéro d'ordre :  %(i1)d             instant :  %(r1)g
 """),
 
 
@@ -67,7 +67,7 @@ cata_msg = {
 
 
 13 : _(u"""
-  Dans la structure de données resultat %(k1)s,
+  Dans la structure de données résultat %(k1)s,
   le champ %(k2)s
 """),
 
@@ -105,7 +105,7 @@ cata_msg = {
 
 20 : _(u"""
  Erreur dans les données :
- Le paramètre existe déja:  %(k1)s  dans la table:  %(k2)s
+ Le paramètre existe déjà:  %(k1)s  dans la table:  %(k2)s
 """),
 
 21 : _(u"""
@@ -132,9 +132,9 @@ cata_msg = {
 """),
 
 25 : _(u"""
- Le nombre d'astérisques pour les noms de fichiers ensight de pression est trop grand.
+ Le nombre d'astérisques pour les noms de fichiers ENSIGHT de pression est trop grand.
  Il est limite à 7
- Il y a %(i1)d asterisques.
+ Il y a %(i1)d astérisques.
 """),
 
 26 : _(u"""
@@ -150,11 +150,11 @@ cata_msg = {
 """),
 
 28 : _(u"""
- Fin de fichier dans la lecture des fichiers ensight
+ Fin de fichier dans la lecture des fichiers ENSIGHT
 """),
 
 29 : _(u"""
- Erreur dans la lecture du fichier ensight
+ Erreur dans la lecture du fichier ENSIGHT
 """),
 
 30 : _(u"""
@@ -188,12 +188,12 @@ cata_msg = {
 """),
 
 37 : _(u"""
- Résultat: %(k1)s nom_cham: %(k2)s  variable d'accès: %(k3)s valeur: %(r1)g
+ Résultat: %(k1)s NOM_CHAM: %(k2)s  variable d'accès: %(k3)s valeur: %(r1)g
 
 """),
 
 38 : _(u"""
- Plusieurs champs correspondant à l'accès demandé pour la sd_resultat  %(k1)s
+ Plusieurs champs correspondant à l'accès demandé pour la SD_RESULTAT  %(k1)s
 """),
 
 39 : _(u"""
@@ -213,7 +213,7 @@ cata_msg = {
 """),
 
 47 : _(u"""
- Pas de champ correspondant à un accès demandé pour la sd_resultat  %(k1)s
+ Pas de champ correspondant à un accès demandé pour la SD_RESULTAT  %(k1)s
 """),
 
 48 : _(u"""
@@ -230,7 +230,7 @@ Erreur utilisateur :
   - accès "INST"             : %(r1)19.12e
   - nombre de champs trouvés : %(i1)d
 Conseil:
-  Reserrer la précision avec le mot clé PRECISION
+  Resserrer la précision avec le mot clé PRECISION
 """),
 
 58 : _(u"""
@@ -243,7 +243,7 @@ Erreur utilisateur :
   - accès "FREQ"             : %(r1)19.12e
   - nombre de champs trouvés : %(i1)d
 Conseil:
-  Reserrer la précision avec le mot clé PRECISION
+  Resserrer la précision avec le mot clé PRECISION
 """),
 
 60 : _(u"""
@@ -266,19 +266,19 @@ Conseil:
 
 63 : _(u"""
  POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas
- (ou ne peut pas) calculer le post traitement demandé
+ (ou ne peut pas) calculer le post-traitement demandé
 Conseil:
-   Limiter le post traitement à des GROUP_MA contenant des mailles
+   Limiter le post-traitement à des GROUP_MA contenant des mailles
 de type valide
 """),
 
 64 : _(u"""
-  Vous définissez une charge thermique sur un modele mecanique !
+  Vous définissez une charge thermique sur un modèle mécanique !
   Le MODELE doit être de type thermique.
 """),
 
 65 : _(u"""
-  Vous définissez une charge mecanique sur un modele thermique !
+  Vous définissez une charge mécanique sur un modèle thermique !
   Le MODELE doit être de type mécanique.
 """),
 

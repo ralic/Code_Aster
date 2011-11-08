@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,8 +58,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_2",
-                        into=("V10_2", "V10_N", "V10_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_3",
+                        into=("V10_3", "V10_N", "V10_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -660,7 +660,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                        ang="Sensitivity parameter"),
   ),
 #
-# 13. Les Modifications
+# 13. Les modifications
 #
   b_modifications = BLOC( condition = " (ADAPTATION == 'MODIFICATION') " ,
                           fr="Modification de maillage.",

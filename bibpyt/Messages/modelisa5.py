@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa5 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,19 +38,19 @@ cata_msg = {
 """),
 
 5 : _(u"""
- transcodage : le noeud  %(k1)s  déclare dans le group_no:  %(k2)s  n'existe pas dans les coordonnées
+ transcodage : le noeud  %(k1)s  déclare dans le GROUP_NO:  %(k2)s  n'existe pas dans les coordonnées
 """),
 
 6 : _(u"""
- le noeud :  %(k1)s  est en double dans le group_no:  %(k2)s . on élimine les doublons
+ le noeud :  %(k1)s  est en double dans le GROUP_NO:  %(k2)s . on élimine les doublons
 """),
 
 7 : _(u"""
- transcodage : la maille  %(k1)s  déclaré dans le group_ma:  %(k2)s  n'existe pas dans les connectivités
+ transcodage : la maille  %(k1)s  déclaré dans le GROUP_MA:  %(k2)s  n'existe pas dans les connectivités
 """),
 
 8 : _(u"""
- la maille :  %(k1)s  est en double dans le group_ma:  %(k2)s . on élimine les doublons
+ la maille :  %(k1)s  est en double dans le GROUP_MA:  %(k2)s . on élimine les doublons
 """),
 
 9 : _(u"""
@@ -95,11 +95,11 @@ cata_msg = {
 """),
 
 36 : _(u"""
- un group_ma n'a pas de nom, suppression de ce groupe.
+ un GROUP_MA n'a pas de nom, suppression de ce groupe.
 """),
 
 37 : _(u"""
- un group_no n'a pas de nom, suppression de ce groupe.
+ un GROUP_NO n'a pas de nom, suppression de ce groupe.
 """),
 
 40 : _(u"""
@@ -131,7 +131,7 @@ cata_msg = {
 """),
 
 48 : _(u"""
-  option calcul de l ABSC_CURV sur  un group_ma non implantée.
+  option calcul de l ABSC_CURV sur  un GROUP_MA non implantée.
 """),
 
 49 : _(u"""
@@ -215,23 +215,23 @@ cata_msg = {
 """),
 
 65 : _(u"""
- <faisceau_trans> deux zones d excitation du fluide ont même nom
+ <FAISCEAU_TRANS> deux zones d excitation du fluide ont même nom
 """),
 
 66 : _(u"""
- SPEC_EXCI_point : si INTE_SPEC alors autant d arguments pour nature, ANGL et noeud
+ SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour nature, ANGL et noeud
 """),
 
 67 : _(u"""
- SPEC_EXCI_point : si grappe_2 alors un seul noeud
+ SPEC_EXCI_POINT : si grappe_2 alors un seul noeud
 """),
 
 68 : _(u"""
- SPEC_FONC_forme : le nombre de fonctions fournies doit être égal a la dimension de la matrice interspectrale
+ SPEC_FONC_FORME : le nombre de fonctions fournies doit être égal a la dimension de la matrice interspectrale
 """),
 
 69 : _(u"""
- SPEC_EXCI_point : le nombre d arguments pour nature, ANGL et noeud doit être égal a la dimension de la matrice interspectrale
+ SPEC_EXCI_POINT : le nombre d arguments pour nature, ANGL et noeud doit être égal a la dimension de la matrice interspectrale
 """),
 
 70 : _(u"""
@@ -287,19 +287,19 @@ cata_msg = {
 """),
 
 83 : _(u"""
- mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <noeud_ancrage> : il faut définir 2 noeuds d'ancrage
+ mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <NOEUD_ANCRAGE> : il faut définir 2 noeuds d'ancrage
 """),
 
 84 : _(u"""
- mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <group_no_ancrage> : il faut définir 2 group_no d'ancrage
+ mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <GROUP_NO_ANCRAGE> : il faut définir 2 GROUP_NO d'ancrage
 """),
 
 85 : _(u"""
- mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <noeud_ancrage> : les 2 noeuds d'ancrage doivent être distincts
+ mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <NOEUD_ANCRAGE> : les 2 noeuds d'ancrage doivent être distincts
 """),
 
 86 : _(u"""
- mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <group_no_ancrage> : les 2 group_no d'ancrage doivent être distincts
+ mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <GROUP_NO_ANCRAGE> : les 2 GROUP_NO d'ancrage doivent être distincts
 """),
 
 87 : _(u"""
@@ -331,11 +331,11 @@ cata_msg = {
 """),
 
 95 : _(u"""
- vous avez utilise le mot clé ORIE_peau_2d alors que le problème est 3d. utilisez ORIE_peau_3d
+ vous avez utilise le mot clé ORIE_PEAU_2d alors que le problème est 3d. utilisez ORIE_PEAU_3d
 """),
 
 96 : _(u"""
- vous avez utilise le mot clé ORIE_peau_3d alors que le problème est 2d. utilisez ORIE_peau_2d
+ vous avez utilise le mot clé ORIE_PEAU_3d alors que le problème est 2d. utilisez ORIE_PEAU_2d
 """),
 
 97 : _(u"""

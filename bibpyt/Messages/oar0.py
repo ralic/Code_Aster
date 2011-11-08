@@ -1,4 +1,4 @@
-#@ MODIF oar0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF oar0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ Erreur d'interpolation: %(k1)s
 """),
 
 3: _(u"""
-Les coupes du revetement et de la structure doivent partager une abscisse commune.
+Les coupes du revêtement et de la structure doivent partager une abscisse commune.
 """),
 
 4: _(u"""

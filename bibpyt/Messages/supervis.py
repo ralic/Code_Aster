@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,11 +136,11 @@ cata_msg={
 },
 
 23: _(u"""
- Debug JXVERI demandé
+ Débogage JXVERI demandé
 """),
 
 24: _(u"""
- Debug SDVERI demandé
+ Débogage SDVERI demandé
 """),
 
 25: _(u"""
@@ -196,11 +196,11 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 43: _(u"""
- Debug %(k1)s suspendu
+ Débogage %(k1)s suspendu
 """),
 
 44: _(u"""
- Debug %(k1)s demandé
+ Débogage %(k1)s demandé
 """),
 
 50: _(u"""

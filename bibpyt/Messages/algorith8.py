@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith8 Messages  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,15 +60,11 @@ cata_msg = {
 """),
 
 24 : _(u"""
- cisaillement suiveur non implanté
+ Le chargement de type cisaillement suiveur n'est pas disponible.
 """),
 
 25 : _(u"""
- pression imposée sur l'axe des coordonnées cylindriques
-"""),
-
-26 : _(u"""
- mode non défini
+ Le chargement de type pression suiveuse est imposé sur l'axe du modèle axisymétrique.
 """),
 
 28 : _(u"""

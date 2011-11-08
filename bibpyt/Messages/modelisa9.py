@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa9 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,19 +24,19 @@ cata_msg = {
 1 : _(u"""
 Erreur utilisateur :
    Il manque le paramètre  %(k1)s dans la table %(k2)s.
-   Sa presence est indispensable à la  creation d'un champ élémentaire. %(k3)s
+   Sa présence est indispensable à la  création d'un champ élémentaire. %(k3)s
 """),
 
 2 : _(u"""
 Erreur utilisateur :
    Le paramètre  %(k1)s de la table %(k2)s
-   est interdit pour la  creation d'un  champ élémentaire constant. %(k3)s
+   est interdit pour la  création d'un  champ élémentaire constant. %(k3)s
 """),
 
 3 : _(u"""
 Erreur utilisateur :
    Il manque le paramètre  %(k1)s dans la table %(k2)s.
-   Sa presence est indispensable à la  creation d'un champ  %(k3)s
+   Sa présence est indispensable à la  création d'un champ  %(k3)s
 """),
 
 
@@ -47,7 +47,7 @@ Erreur utilisateur :
 
 5 : _(u"""
  Erreur utilisateur :
-   On cherche à créer un cham_elem / ELNO à partir d'une table (%(k1)s).
+   On cherche à créer un CHAM_ELEM / ELNO à partir d'une table (%(k1)s).
    La maille  %(k2)s a %(i2)d noeuds mais dans la table, une ligne concerne le noeud numéro %(i1)d
 """),
 
@@ -56,29 +56,29 @@ Erreur utilisateur :
    Plusieurs valeurs dans la table %(k1)s pour :
    Maille: %(k2)s
    Point : %(i1)d
-   Sous_point : %(i2)d
+   Sous-point : %(i2)d
 """),
 
 7 : _(u"""
 Erreur utilisateur :
    Plusieurs valeurs dans la table %(k1)s pour :
    Maille: %(k2)s
-   Sous_point : %(i1)d
+   Sous-point : %(i1)d
 """),
 
 8 : _(u"""
 Erreur :
-   On cherche à transformer un cham_elem en carte.
-   cham_elem : %(k1)s  carte : %(k2)s
-   Pour la maille numéro %(i3)d le nombre de points (ou de sous_points) est > 1
+   On cherche à transformer un CHAM_ELEM en carte.
+   CHAM_ELEM : %(k1)s  carte : %(k2)s
+   Pour la maille numéro %(i3)d le nombre de points (ou de sous-points) est > 1
    ce qui est interdit.
    Point:       %(i1)d
-   Sous_point : %(i2)d
+   Sous-point : %(i2)d
 """),
 
 9 : _(u"""
 Erreur utilisateur :
-   Pour le materiau : %(k1)s, on cherche à redéfinir un mot clé déjà défini : %(k2)s
+   Pour le matériau : %(k1)s, on cherche à redéfinir un mot clé déjà défini : %(k2)s
 """),
 
 10 : _(u"""
@@ -92,24 +92,24 @@ Conseil :
 """),
 
 11 : _(u"""
- mocle facteur non traite :mclf %(k1)s
+ mot-clé facteur non traite :  %(k1)s
 """),
 
 15 : _(u"""
- pas de freq initiale définie : on prend la freq mini des modes calcules
+ pas de FREQ initiale définie : on prend la fréquence mini des modes calcules
    %(r1)f
 """),
 
 16 : _(u"""
- pas de freq finale définie : on prend la freq max des modes calcules   %(r1)f
+ pas de fréquence finale définie : on prend la fréquence max des modes calcules   %(r1)f
 """),
 
 17 : _(u"""
- votre freq de coupure   %(r1)f
+ votre fréquence de coupure   %(r1)f
 """),
 
 18 : _(u"""
- est inferieure a celle  du modele de turbulence adopte :  %(r1)f
+ est inférieure a celle  du modèle de turbulence adopte :  %(r1)f
 """),
 
 19 : _(u"""
@@ -117,23 +117,23 @@ Conseil :
 """),
 
 20 : _(u"""
- votre freq de coupure :   %(r1)f
+ votre fréquence de coupure :   %(r1)f
 """),
 
 21 : _(u"""
- est superieure a celle  du modele de turbulence adopte :   %(r1)f
+ est supérieure a celle  du modèle de turbulence adopte :   %(r1)f
 """),
 
 22 : _(u"""
- on prend celle du modele.
+ on prend celle du modèle.
 """),
 
 23 : _(u"""
- erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 24 : _(u"""
- le maillage est "plan" ou "z_cst"
+ le maillage est "plan" ou "z_CSTE"
 """),
 
 25 : _(u"""
@@ -141,89 +141,89 @@ Conseil :
 """),
 
 26 : _(u"""
- il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d
 """),
 
 27 : _(u"""
- erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
- pour le mot cle  %(k2)s
+ erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
+ pour le mot clé  %(k2)s
   le noeud n'existe pas  %(k3)s
 """),
 
 28 : _(u"""
- erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
- pour le mot cle  %(k2)s
+ erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
+ pour le mot clé  %(k2)s
   le GROUP_NO n'existe pas  %(k3)s
 """),
 
 29 : _(u"""
- trop de noeuds dans le GROUP_NO mot cle facteur  %(k1)s  occurrence  %(i1)d
+ trop de noeuds dans le GROUP_NO mot clé facteur  %(k1)s  occurrence  %(i1)d
    noeud utilise:  %(k2)s
 """),
 
 31 : _(u"""
  poutre : occurrence %(i2)d :
- "cara" nombre de valeurs entrees:  %(i2)d
- "vale" nombre de valeurs entrees:  %(i3)d
- verifier vos données
+ "CARA" nombre de valeurs entrées:  %(i2)d
+ "VALE" nombre de valeurs entrées:  %(i3)d
+ vérifiez vos données
 
 """),
 
 32 : _(u"""
- erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 33 : _(u"""
-Erreur utilisateur (création d'un cham_elem à partir d'une table):
-   Le numéro du point ou du SOUS_POINT est en dehors des limites autorisées
+Erreur utilisateur (création d'un CHAM_ELEM à partir d'une table):
+   Le numéro du point ou du sous-point est en dehors des limites autorisées
    Table : %(k1)s
    Maille: %(k2)s
    Point : %(i1)d
-   SOUS_POINT : %(i2)d
+   Sous-point : %(i2)d
 """),
 
 35 : _(u"""
- il y a  %(i1)d  valeurs pour le mot cle  ANGL_NAUT il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clé  ANGL_NAUT il en faut  %(i2)d
 """),
 
 36 : _(u"""
- erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 39 : _(u"""
- il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d
 """),
 
 40 : _(u"""
- erreur dans les données mot cle facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 43 : _(u"""
- il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d
 """),
 
 44 : _(u"""
- fichier med :  %(k1)s maillage :  %(k2)s erreur effoco numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur effoco numéro  %(i1)d
 """),
 
 51 : _(u"""
- fichier med :  %(k1)s maillage :  %(k2)s erreur efouvr numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur efouvr numéro  %(i1)d
 """),
 
 52 : _(u"""
- fichier med :  %(k1)s maillage :  %(k2)s erreur efferm numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur efferm numéro  %(i1)d
 """),
 
 53 : _(u"""
 
- l'identifiant d'une maille depasse les 8 caracteres autorises:
+ l'identifiant d'une maille dépasse les 8 caractères autorisés:
    %(k1)s
  maille      : %(k2)s
- pref_maille : %(k3)s
+ PREF_MAILLE : %(k3)s
 """),
 
 54 : _(u"""
- l'utilisation de 'pref_nume' est recommandee.
+ l'utilisation de 'PREF_NUME' est recommandée.
 """),
 
 55 : _(u"""
@@ -242,7 +242,7 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 
 60 : _(u"""
  erreur lors de la définition de la courbe de traction :%(k1)s
- le premier point de la courbe de traction %(k2)s a pour ordonnee:  %(r1)f
+ le premier point de la courbe de traction %(k2)s a pour ordonnée:  %(r1)f
 
 """),
 
@@ -250,18 +250,18 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
  Erreur lors de la définition de la courbe de traction : %(k1)s
 
  la courbe de traction doit satisfaire les conditions suivantes :
- - les abscisses (deformations) doivent être strictement croissantes,
- - la pente entre 2 points successifs doit être inferieure a la pente
-   elastique (module d'Young) entre 0 et le premier point de la courbe.
+ - les abscisses (déformations) doivent être strictement croissantes,
+ - la pente entre 2 points successifs doit être inférieure a la pente
+   élastique (module de Young) entre 0 et le premier point de la courbe.
 
- pente initiale (module d'Young) :   %(r1)f
+ pente initiale (module de Young) :   %(r1)f
  pente courante                  :   %(r2)f
  pour l'abscisse                 :   %(r3)f
 
 """),
 
 62 : _(u"""
- Courbe de traction : %(k1)s points presques alignés. Risque de PB dans STAT_NON_LINE
+ Courbe de traction : %(k1)s points presque alignés. Risque de PB dans STAT_NON_LINE
  en particulier en C_PLAN
   pente initiale :     %(r1)f
   pente courante:      %(r2)f
@@ -272,15 +272,15 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 
 63 : _(u"""
  erreur lors de la définition de la courbe de traction %(k1)s
- le premier point de la fonction indicee par :  %(i1)d de la nappe  %(k2)s
+ le premier point de la fonction indicée par :  %(i1)d de la nappe  %(k2)s
  a pour abscisse:  %(r1)f
 
 """),
 
 64 : _(u"""
  erreur lors de la définition de la courbe de traction %(k1)s
- le premier point de la fonction indicee par :  %(i1)d de la nappe  %(k2)s
- a pour ordonnee:  %(r1)f
+ le premier point de la fonction indicée par :  %(i1)d de la nappe  %(k2)s
+ a pour ordonnée:  %(r1)f
 
 """),
 
@@ -330,7 +330,7 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 93 : _(u"""
-ERREUR EUROPLEXUS
+Erreur Europlexus
    Toutes les occurrences de RIGI_PARASOL doivent avoir la même valeur pour le mot
    clef EUROPLEXUS. La valeur du mot clef EUROPLEXUS à l'occurrence %(i1)d est différente
    de sa valeur à l'occurrence numéro 1.
@@ -343,19 +343,19 @@ ERREUR EUROPLEXUS
      ERREUR: l'auto-spectre est a valeurs négatives
 """),
 96 : _(u"""
-EUROPLEXUS
-   EUROPLEXUS ne gère pas les MAILLES, mais seulement les POINTS.
+Erreur Europlexus
+   Europlexus ne gère pas les MAILLES, mais seulement les POINTS.
    Le problème vient de la maille %(k1)s.
 """),
 
 97 : _(u"""
-ERREUR EUROPLEXUS
+Erreur Europlexus
    Données incorrectes. Les dimensions des objets ne sont pas cohérentes (Erreur Fortran : acearp)
 """),
 
 98 : _(u"""
-ERREUR EUROPLEXUS
-   Pour accéder aux valeurs nécessaires à EUROPLEXUS, il faut que dans la commande AFFE_CARA_ELEM,
+Erreur Europlexus
+   Pour accéder aux valeurs nécessaires à Europlexus, il faut que dans la commande AFFE_CARA_ELEM,
    pour le mot clef facteur RIGI_PARASOL, la valeur du mot clef EUROPLEXUS soit 'OUI' dans
    toutes les occurrences.
 """),

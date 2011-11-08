@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai2 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,11 +66,11 @@ cata_msg = {
 """),
 
 17 : _(u"""
- on ne connait pas ce type d'interpolation:  %(k1)s
+ on ne connaît pas ce type d'interpolation:  %(k1)s
 """),
 
 31 : _(u"""
- on ne trouve pas l'equation  %(k1)s  dans le "prof_chno"
+ on ne trouve pas l'équation  %(k1)s  dans le "prof_chno"
 """),
 
 
@@ -78,19 +78,19 @@ cata_msg = {
 
 
 36 : _(u"""
- group_ma_interf: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
+ GROUP_MA_INTERF: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 37 : _(u"""
- group_ma_flu_str: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
+ GROUP_MA_FLU_STR: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 38 : _(u"""
- group_ma_flu_sol: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
+ GROUP_MA_FLU_SOL: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 39 : _(u"""
- group_ma_sol_sol: un élément n'est ni tria3 ni tria6 ni quad4 ni quad8
+ GROUP_MA_SOL_SOL: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 
@@ -109,7 +109,7 @@ cata_msg = {
 """),
 
 53 : _(u"""
- Le nombre maximum d'iterations est atteint.
+ Le nombre maximum d'itérations est atteint.
 """),
 
 54 : _(u"""
@@ -117,31 +117,31 @@ cata_msg = {
 """),
 
 55 : _(u"""
- les points du nuage de depart sont tous en (0.,0.,0.).
+ les points du nuage de départ sont tous en (0.,0.,0.).
 """),
 
 56 : _(u"""
- le nuage de depart est vide.
+ le nuage de départ est vide.
 """),
 
 57 : _(u"""
- les points du nuage de depart sont tous confondus.
+ les points du nuage de départ sont tous confondus.
 """),
 
 58 : _(u"""
- les points du nuage de depart sont tous alignes.
+ les points du nuage de départ sont tous alignes.
 """),
 
 59 : _(u"""
- les points du nuage de depart sont tous coplanaires.
+ les points du nuage de départ sont tous coplanaires.
 """),
 
 60 : _(u"""
- methode inconnue :  %(k1)s
+ méthode inconnue :  %(k1)s
 """),
 
 61 : _(u"""
- le descripteur_grandeur de compor ne tient pas sur un seul entier_code
+ le descripteur_grandeur de COMPOR ne tient pas sur un seul entier_code
 """),
 
 62 : _(u"""
@@ -149,7 +149,7 @@ cata_msg = {
 """),
 
 63 : _(u"""
- la composante relcom n'a pas ete affectee pour la grandeur compor
+ la composante relcom n'a pas été affectée pour la grandeur COMPOR
 """),
 
 66 : _(u"""
@@ -165,7 +165,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
- nombre de valeurs différent  pour "noeud_para" et "vale_y"
+ nombre de valeurs différent  pour "NOEUD_PARA" et "VALE_Y"
 """),
 
 70 : _(u"""
@@ -211,19 +211,19 @@ Les noms de paramètres doivent être différents
 """),
 
 80 : _(u"""
- un seul nume_ordre !!!
+ un seul NUME_ORDRE !!!
 """),
 
 83 : _(u"""
- les noeuds debut et fin n appartiennent pas au maillage.
+ les noeuds DEBUT et fin n appartiennent pas au maillage.
 """),
 
 84 : _(u"""
- la fonction doit s appuyee sur un maillage pour lequel une abscisse curviligne est définie.
+ la fonction doit s appuyée sur un maillage pour lequel une abscisse curviligne est définie.
 """),
 
 85 : _(u"""
- mauvaise définition des noeuds debut et fin
+ mauvaise définition des noeuds début et fin
 """),
 
 86 : _(u"""
@@ -250,7 +250,7 @@ Les noms de paramètres doivent être différents
 """),
 
 91 : _(u"""
-  Le type d'élément %(k1)s n'est pas prevu.
+  Le type d'élément %(k1)s n'est pas prévu.
 """),
 
 94 : _(u"""
@@ -268,9 +268,9 @@ Erreur Utilisateur :
   La structure de données créée est vide.
 
 Risques & Conseils :
-  Si le fichier lu est au format Ideas, et si la commande est LIRE_RESU,
-  le problème vient peut-être d'une mauvaise utilisation (ou d'une abscence d'utilisation)
-  du mot clé FORMAT_IDEAS. Il faut examiner les "entetes" des DATASET du fichier à lire.
+  Si le fichier lu est au format IDEAS, et si la commande est LIRE_RESU,
+  le problème vient peut-être d'une mauvaise utilisation (ou d'une absence d'utilisation)
+  du mot clé FORMAT_IDEAS. Il faut examiner les "entêtes" des DATASET du fichier à lire.
 """),
 
 }

@@ -5,7 +5,7 @@
      &                   DEPLM,DEPLD,SIGM,VIM,
      &                   SIGP,VIP,FINT,MATUU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,22 +59,6 @@ C OUT MATUU   : MATR. DE RIGIDITE NON SYM. (RIGI_MECA_* ET FULL_MECA_*)
 C OUT CODRET  : CODE RETOUR DE L'INTEGRATION DE LA LDC
 C
       IMPLICIT NONE
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER  ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL GRAND, AXI, RESI, RIGI, MATSYM, CPLAN
       PARAMETER (GRAND = .TRUE.)
       INTEGER G,I,NDDL,COD(27),IVF
@@ -88,8 +72,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 VIM(LGPG,NPG),SIGP(2*NDIM,NPG),VIP(LGPG,NPG)
       REAL*8 MATUU(*), FINT(NDIM*NNO)
       REAL*8 GEOMM(3*27),GEOMP(3*27),FM(3,3),FP(3,3),DEPLT(3*27)
-      REAL*8 R,POIDS,ELGEOM(10,27),TN(6),TP(6),DEPS(6),PES(6,6)
-      REAL*8 GN(3,3),FETA(4),XI(3,3),ME(3,3,3,3),RBID
+      REAL*8 R,POIDS,ELGEOM(10,27),TN(6),TP(6),DEPS(6)
+      REAL*8 GN(3,3),LAMB(3),LOGL(3),RBID
 
 C-----------------------------TEST AVANT CALCUL---------------------
 
@@ -138,9 +122,8 @@ C - CALCUL POUR CHAQUE POINT DE GAUSS
 C---      CALCUL DE F_N, F_N+1 PAR RAPPORT A GEOMI GEOM INITIAL
 
          CALL PRELOG(NDIM,NNO,AXI,GRAND,VFF(1,G),GEOMI,G,IW,IDFF,
-     &               DEPLM,DEPLT,SIGM(1,G),LGPG,VIM(1,G),
-     &               GN,FETA,XI,ME,
-     &               R,POIDS,DFF,FM,FP,EPSML,DEPS,TN,RESI,PES)
+     &               DEPLM,DEPLT,LGPG,VIM(1,G),GN,LAMB,LOGL,
+     &               R,POIDS,DFF,FM,FP,EPSML,DEPS,TN,RESI)
 
          CALL R8INIR(36,0.D0,DTDE,1)
          CALL R8INIR(6,0.D0,TP,1)
@@ -159,9 +142,9 @@ C       TEST SUR LES CODES RETOUR DE LA LOI DE COMPORTEMENT
          ENDIF
 
          CALL POSLOG(RESI,RIGI,TN,TP,VFF,DFF,FM,POIDS,LGPG,VIP(1,G),
-     &               NNO,NDIM,FP,PES,AXI,G,R,DTDE,MATSYM,SIGM(1,G),
-     &               CPLAN,FAMI,MATE,INSTP,ANGMAS,
-     &               GN,FETA,XI,ME, SIGP(1,G),FINT,MATUU )
+     &               NNO,NDIM,FP,AXI,G,R,DTDE,MATSYM,SIGM(1,G),
+     &               CPLAN,FAMI,MATE,INSTP,ANGMAS,OPTION,
+     &               GN,LAMB,LOGL,SIGP(1,G),FINT,MATUU,COD(G) )
 
  10   CONTINUE
 

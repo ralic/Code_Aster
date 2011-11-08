@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa2 Messages  DATE 07/11/2011   AUTEUR HAELEWYN J.HAELEWYN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,23 +96,23 @@ La règle de surcharge est appliquée
 """),
 
 19: _(u"""
- un noeud de group_ma_2 n'est géométriquement appariable avec aucun de GROUP_MA_1
+ un noeud de GROUP_MA_2 n'est géométriquement appariable avec aucun de GROUP_MA_1
 """),
 
 
 
 21: _(u"""
-  -> Le group_ma %(k1)s est présent dans les 2 maillages que l'on assemble.
-     Il y a conflit de noms. Le group_ma du 2ème maillage est renommé.
+  -> Le GROUP_MA %(k1)s est présent dans les 2 maillages que l'on assemble.
+     Il y a conflit de noms. Le GROUP_MA du 2ème maillage est renommé.
   -> Risque & Conseil :
-     Vérifiez que le nom du group_ma retenu est bien celui souhaité.
+     Vérifiez que le nom du GROUP_MA retenu est bien celui souhaité.
 """),
 
 22: _(u"""
-  -> Le group_no %(k1)s est présent dans les 2 maillages que l'on assemble.
-     Il y a conflit de noms. Le group_no du 2ème maillage est renommé.
+  -> Le GROUP_NO %(k1)s est présent dans les 2 maillages que l'on assemble.
+     Il y a conflit de noms. Le GROUP_NO du 2ème maillage est renommé.
   -> Risque & Conseil :
-     Vérifiez que le nom du group_no retenu est bien celui souhaité.
+     Vérifiez que le nom du GROUP_NO retenu est bien celui souhaité.
 """),
 
 23: _(u"""
@@ -221,6 +221,10 @@ Risque & Conseil:
 54: _(u"""
  récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s  : absence de relation de comportement de type <BPEL_ACIER>
 """),
+
+55: _(u"""
+ récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <BPEL_ACIER> : Le paramètre F_PRG doit être positif et non nul
+ """),
 
 56: _(u"""
  récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <BPEL_ACIER> : au moins une valeur de paramètre invalide

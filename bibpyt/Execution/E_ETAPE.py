@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -214,7 +214,7 @@ class ETAPE:
          UTMESS('I', 'SUPERVIS2_70')
 
          if cpu_user > 60. and cpu_syst > 0.5*cpu_user :
-            if int(rval[7]) > 0 :
+            if avec_temps and int(rval[7]) > 0 :
               UTMESS('A','SUPERVIS_94',valr=(cpu_syst,cpu_user),vali=(50,int(rval[7])))
             else :
               UTMESS('A','SUPERVIS_95',valr=(cpu_syst,cpu_user),vali=(50))

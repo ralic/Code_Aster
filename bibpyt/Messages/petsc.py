@@ -1,4 +1,4 @@
-#@ MODIF petsc Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF petsc Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,14 +81,14 @@ Solveur PETSc :
 10 : _(u"""
 Solveur PETSc :
   Le préconditionneur construit à partir de la matrice du système n'est défini positif, or l'algorithme
-  que vous utilisez requiert la définie-positivité.
+  que vous utilisez requiert la définie positivité.
   Changez d'algorithme.
 """),
 
 11 : _(u"""
 Solveur PETSc :
   La matrice du système n'est pas définie positive, or l'algorithme que vous utilisez requiert
-  la définie-positivité.
+  la définie positivité.
   Changez d'algorithme.
 """),
 

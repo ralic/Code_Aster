@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai7 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ cata_msg={
 
 13: _(u"""
   Erreur utilisateur dans la commande POST_ELEM/INTEGRALE :
-    Le champ %(k1)s est un cham_elem ELEM,
+    Le champ %(k1)s est un CHAM_ELEM ELEM,
     Il faut renseigner le mot clé INTEGRALE / DEJA_INTEGRE= 'OUI' / 'NON'
 """),
 

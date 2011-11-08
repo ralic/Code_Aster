@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2011   AUTEUR NICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,8 +32,8 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_2",
-                        into=("V10_2", "V10_N", "V10_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_3",
+                        into=("V10_3", "V10_N", "V10_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/10/2011   AUTEUR HAELEWYN J.HAELEWYN 
+C MODIF MODELISA  DATE 07/11/2011   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,13 +278,17 @@ C
 C
   41  CONTINUE
       IF ( ( RH1000.LT.0.0D0 ) .OR. ( MU0 .LT.0.0D0 ) .OR.
-     &     ( FPRG .LE.0.0D0 ) .OR. ( FRCO.LT.0.0D0 ) .OR.
+     &     ( FRCO.LT.0.0D0 ) .OR.
      &     ( FRLI  .LT.0.0D0 ) ) THEN
          WRITE(K3CAB,'(I3)') ICABL
          CALL U2MESK('F','MODELISA2_56',1,K3CAB)
       ENDIF
 C
       IF ( RH1000.EQ.0.0D0 ) RELAX = .FALSE.
+      IF ( RELAX .AND. FPRG.LE.0.0D0) THEN
+          WRITE(K3CAB,'(I3)') ICABL
+          CALL U2MESK('F','MODELISA2_55',1,K3CAB)
+      ENDIF
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 3   RECUPERATION DE L'AIRE DE LA SECTION DROITE DU CABLE
