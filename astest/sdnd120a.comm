@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
 # TITRE LACHER D'UNE MASSE AVEC DISPOSITIF ANTI SISMIQUE
 # sdnd120a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,6 +23,16 @@ DEBUT(CODE=_F(NOM='SDND120A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 MAILLAGE=LIRE_MAILLAGE( )
+
+MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F( NOM='GN2',
+                                      NOEUD=('NO2',),),)
+                                      
+MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
+                    MAILLAGE=MAILLAGE,                                     
+                    CREA_GROUP_NO=_F( NOM='GN12',
+                                      NOEUD=('NO12',),),)
 
 #
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
@@ -158,7 +168,7 @@ MACRO_PROJ_BASE(BASE=MODE_MEC,
 #
 # CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
 # -------------------------------------------
-TRAN_GE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                   SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
                INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),EXCIT=(
@@ -185,37 +195,82 @@ TRAN_GE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     INFO=2
                           )
 
+TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                 MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
+               INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),EXCIT=(
+                _F( VECT_ASSE = VECT_X1,
+                       MULT_APPUI = 'OUI',
+                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                       MODE_STAT=MODE_STA,
+                       ACCE = ACCELER1,
+                       VITE = VITESSE1,  DEPL = DEPLACE1),
+                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
+                       MULT_APPUI = 'OUI',
+                       MODE_STAT=MODE_STA,
+                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
+                       VITE = VITESSE2,  DEPL = DEPLACE2)),
+                ARCHIVAGE=_F(  PAS_ARCH = 80),
+                ANTI_SISM=_F(  GROUP_NO_1 = 'GN2',
+                            GROUP_NO_2 = 'GN12',
+                            RIGI_K1 = 6.E+06,
+                            RIGI_K2 = 0.53E+06,
+                            SEUIL_FX = 1200.,
+                            C = 0.07E+05,
+                            PUIS_ALPHA = 0.2,
+                            DX_MAX = 0.03),
+                    INFO=2
+                          )
+
+
 #
 LISTIMP=DEFI_LIST_REEL(  DEBUT=0.,
                 INTERVALLE=_F(  JUSQU_A = 0.998, PAS = 2.E-3))
 
 # RECUPERATION DES DEPL ABSOLUS CALCULES
 #----------------------------------------
-NO2_DX_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
-                            RESU_GENE=TRAN_GE,    INFO=2,
+N2_DXA1=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+                            RESU_GENE=TRAN_GE1,    INFO=2,
                           MULT_APPUI='OUI',      INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN',
                             TITRE='ACCELERATION ABSOLUE AU NOEUD NO2'
                         )
 
-MAX_NO2A=INFO_FONCTION( MAX=_F( FONCTION = NO2_DX_A))
+MAX_N2A1=INFO_FONCTION( MAX=_F( FONCTION = N2_DXA1))
 
-RMS_NO2A=INFO_FONCTION(RMS=_F(  FONCTION = NO2_DX_A,
+RMS_N2A1=INFO_FONCTION(RMS=_F(  FONCTION = N2_DXA1,
                                METHODE = 'TRAPEZE',
                                CRITERE = 'ABSOLU',
                                 PRECISION = 1.E-6)
                          )
 
-TEST_TABLE( TABLE=MAX_NO2A,FILTRE=(
-            _F( NOM_PARA = 'FONCTION', VALE_K = 'NO2_DX_A'),
+N2_DXA2=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+                            RESU_GENE=TRAN_GE2,    INFO=2,
+                          MULT_APPUI='OUI',      INTERP_NUME='LIN',
+                           LIST_INST=LISTIMP,   INTERPOL='LIN',
+                            TITRE='ACCELERATION ABSOLUE AU NOEUD NO2'
+                        )
+
+MAX_N2A2=INFO_FONCTION( MAX=_F( FONCTION = N2_DXA2))
+
+TEST_TABLE( TABLE=MAX_N2A1,FILTRE=(
+            _F( NOM_PARA = 'FONCTION', VALE_K = 'N2_DXA1'),
             _F( NOM_PARA = 'INST', VALE = 2.5E-1),
             _F( NOM_PARA = 'TYPE',  VALE_K = 'MAXI')),
              NOM_PARA='DEPL',
               PRECISION=0.01,
              VALE=1.67E-2 )
 
-TEST_TABLE( TABLE=RMS_NO2A,FILTRE=(
-            _F( NOM_PARA = 'FONCTION', VALE_K = 'NO2_DX_A'),
+TEST_TABLE( TABLE=MAX_N2A2,FILTRE=(
+            _F( NOM_PARA = 'FONCTION', VALE_K = 'N2_DXA2'),
+            _F( NOM_PARA = 'INST', VALE = 2.5E-1),
+            _F( NOM_PARA = 'TYPE',  VALE_K = 'MAXI')),
+             NOM_PARA='DEPL',
+              PRECISION=0.01,
+             VALE=1.67E-2 )             
+
+TEST_TABLE( TABLE=RMS_N2A1,FILTRE=(
+            _F( NOM_PARA = 'FONCTION', VALE_K = 'N2_DXA1'),
             _F( NOM_PARA = 'METHODE', VALE_K = 'TRAPEZE')),
              NOM_PARA='RMS',
               PRECISION=0.01,
@@ -225,7 +280,7 @@ TEST_TABLE( TABLE=RMS_NO2A,FILTRE=(
 #RECUPERATION DES DEPL RELATIFS CALCULES
 #----------------------------------------
 NO2_DX_R=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
-                            RESU_GENE=TRAN_GE,    INFO=2,
+                            RESU_GENE=TRAN_GE1,    INFO=2,
                           INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN' )
 
@@ -253,7 +308,7 @@ TEST_TABLE( TABLE=RMS_NO2R,FILTRE=(
              VALE=7.7975E-7 )
 
 #
-FCHOC=RECU_FONCTION(   RESU_GENE=TRAN_GE,
+FCHOC=RECU_FONCTION(   RESU_GENE=TRAN_GE1,
                         NOEUD_CHOC='NO2',    INFO=2,
                        PARA_X='INST',  PARA_Y='FN' )
 

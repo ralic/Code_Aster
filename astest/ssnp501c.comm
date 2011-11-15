@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,7 +99,7 @@ CON  = DEFI_CONTACT(MODELE         = MO,
                            _F(
                              GROUP_MA_ESCL = 'LESC',
                              GROUP_MA_MAIT = 'LMAI',
-                             INTEGRATION   = 'NOEUD',
+                             INTEGRATION   = 'AUTO',
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 100.,
                              ),

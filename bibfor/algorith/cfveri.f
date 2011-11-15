@@ -2,7 +2,7 @@
      &                  NPT   ,JEUX  ,LOCA  ,ENTI  ,ZONE  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/11/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -199,7 +199,20 @@ C
             CALL MMNORM(NDIMG ,TAU1  ,TAU2  ,NORM  ,NOOR  )
             IF (NOOR.LE.R8PREM()) THEN
               CALL U2MESK('F','CONTACT3_26',1,NOMNOE)
-            ENDIF         
+            ENDIF
+C
+C --------- CALCUL DU JEU 
+C
+            CALL CFNEWJ(NDIMG ,COORPC,GEOMP ,NORM  ,JEU   )    
+C
+C --------- CALCUL DU JEU FICTIF DE LA ZONE
+C  
+            CALL CFDIST(DEFICO,'DISCRETE',IZONE ,POSNOE,POSMAE,
+     &                COORPC,DIST      )
+C
+C --------- JEU TOTAL
+C
+            JEU    = JEU+DIST        
           ELSEIF (TYPAPP.EQ.1) THEN
 C
 C --------- NOEUD MAITRE 
@@ -228,6 +241,20 @@ C
             IF (NOOR.LE.R8PREM()) THEN
               CALL U2MESK('F','CONTACT3_26',1,NOMNOE)
             ENDIF                             
+C
+C --------- CALCUL DU JEU 
+C
+            CALL CFNEWJ(NDIMG ,COORPC,GEOMP ,NORM  ,JEU   )    
+C
+C --------- CALCUL DU JEU FICTIF DE LA ZONE
+C  
+            CALL CFDIST(DEFICO,'DISCRETE',IZONE ,POSNOE,POSMAE,
+     &                COORPC,DIST      )
+C
+C --------- JEU TOTAL
+C
+            JEU    = JEU+DIST
+C
           ELSEIF (TYPAPP.EQ.-1) THEN
             NOMENT = 'EXCLU'
             JEU    = R8VIDE()
@@ -240,19 +267,6 @@ C
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
-C
-C ------- CALCUL DU JEU 
-C
-          CALL CFNEWJ(NDIMG ,COORPC,GEOMP ,NORM  ,JEU   )    
-C
-C ------- CALCUL DU JEU FICTIF DE LA ZONE
-C  
-          CALL CFDIST(DEFICO,'DISCRETE',IZONE ,POSNOE,POSMAE,
-     &                COORPC,DIST      )
-C
-C ------- JEU TOTAL
-C
-          JEU    = JEU+DIST
 C
 C ------- SAUVEGARDE
 C 

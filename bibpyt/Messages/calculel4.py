@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel4 Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,21 +26,20 @@ cata_msg = {
    Le CHAM_ELEM %(k1)s a des valeurs indéfinies.
  Conseils :
    * Si le problème concerne la commande CREA_CHAMP :
-     1) Vous devriez imprimer le contenu du champ créé pour vérifications (INFO=2)
-     2) Vous devriez peut-être utiliser le mot clé PROL_ZERO='OUI'
-
+     1) Vous devriez imprimer le contenu du champ créé pour vérifications (INFO=2) ;
+     2) Vous devriez peut-être utiliser le mot clé PROL_ZERO='OUI' .
 """),
 
 2 : _(u"""
 Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
-  Les sd_resultat que l'on veut imprimer : %(k1)s, %(k2)s
+  Les SD_RESULTAT que l'on veut imprimer : %(k1)s, %(k2)s
   sont associées à des maillages différents : %(k3)s, %(k4)s
   C'est interdit.
 """),
 
 3 : _(u"""
 Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
-  Seul FORMAT='MED' est autorisé
+  Seul FORMAT='MED' est autorisé.
 """),
 
 4 : _(u"""
@@ -61,31 +60,23 @@ Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
 
 Conseil :
   On ne peut pas restreindre un champ "isolé".
-  On ne traite que les sd_resultat.
-  Il faut donc au préalable créer une sd_resultat avec CREA_RESU
+  On ne traite que les SD_RESULTAT.
+  Il faut donc au préalable créer une SD_RESULTAT avec CREA_RESU
 """),
 
 6 : _(u"""
 Erreur utilisateur (ou programmeur) :
- On veut imposer la numérotation des ddls du CHAM_no %(k1)s
- avec le NUME_ddl %(k2)s.
+ On veut imposer la numérotation des ddls du CHAM_NO %(k1)s
+ avec le NUME_DDL %(k2)s.
  Mais ces 2 structures de données sont incompatibles.
  Par exemple :
     - ce n'est pas le même maillage sous-jacent
     - ce n'est pas la même grandeur sous-jacente.
 """),
 
-
-
-
-
-
 8 : _(u"""
- le résultat  %(k1)s  n'existe pas
+ Le résultat %(k1)s n'existe pas.
 """),
-
-
-
 
 10 : _(u"""
  Erreur d'utilisation :
@@ -134,23 +125,19 @@ Erreur utilisateur (ou programmeur) :
    Le modèle associé au CARA_ELEM (%(k1)s) est différent de celui fourni à la commande.
 """),
 
-
-
-
-41 : _(u"""
- erreur_01
-"""),
-
-42 : _(u"""
- erreur_02
+16 : _(u"""
+ Erreur d'utilisation :
+   L'option %(k1)s est nécessaire pour le calcul de l'option %(k2)s.
+   Or %(k1)s est un champ qui ne contient que des sous-points, ce cas n'est pas traité.
+   Vous devez d'abord extraire %(k1)s sur un sous-point avec la commande POST_CHAMP.
 """),
 
 43 : _(u"""
- le nom_para n'existe pas
+ le NOM_PARA n'existe pas
 """),
 
 44 : _(u"""
- 0 ligne trouvée pour le nom_para
+ 0 ligne trouvée pour le NOM_PARA
 """),
 
 45 : _(u"""
@@ -162,7 +149,7 @@ Erreur utilisateur (ou programmeur) :
 """),
 
 47 : _(u"""
- type_resu inconnu:  %(k1)s
+ TYPE_RESU inconnu:  %(k1)s
 """),
 
 53 : _(u"""
@@ -207,8 +194,8 @@ Erreur utilisateur :
 """),
 
 63 : _(u"""
- On n'a pas pu projeter le champ %(k1)s de la sd_resultat %(k2)s
- vers la sd_resultat %(k3)s pour le numéro d'ordre %(i1)d
+ On n'a pas pu projeter le champ %(k1)s de la SD_RESULTAT %(k2)s
+ vers la SD_RESULTAT %(k3)s pour le numéro d'ordre %(i1)d
 """),
 
 64 : _(u"""

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 14/11/2011   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,6 +181,13 @@ C------------------------------------------------------
            CALL FOINTE('FM',ZK8(JPRES+4),4,NOMPAR,VALPAR,FOR(5,J+1),IER)
            CALL FOINTE('FM',ZK8(JPRES+5),4,NOMPAR,VALPAR,FOR(6,J+1),IER)
   220       CONTINUE
+  
+            CALL UTPVGL ( 1 , 6 , PGL , FOR(1,1) , FOR(1,1) )
+            CALL UTPVGL ( 1 , 6 , PGL , FOR(1,2) , FOR(1,2) )
+            CALL UTPVGL ( 1 , 6 , PGL , FOR(1,3) , FOR(1,3) )
+            IF ( NNO .EQ. 4 ) THEN
+               CALL UTPVGL ( 1 , 6 , PGL , FOR(1,4) , FOR(1,4) )
+            ENDIF
 C
          ELSE IF ( LOCAPR ) THEN
 C --        REPERE LOCAL - CAS D UNE PRESSION
@@ -219,7 +226,7 @@ C------------------------------------------------------
            CALL FOINTE('FM',ZK8(JPRES+2),4,NOMPAR,VALPAR,FOR(3,J+1),IER)
            CALL FOINTE('FM',ZK8(JPRES+3),4,NOMPAR,VALPAR,FOR(4,J+1),IER)
            CALL FOINTE('FM',ZK8(JPRES+4),4,NOMPAR,VALPAR,FOR(5,J+1),IER)
-               FOR(6,J+1) = 0.D0
+             FOR(6,J+1) = 0.D0
   235       CONTINUE
          ENDIF
 C

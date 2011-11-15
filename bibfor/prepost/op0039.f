@@ -1,7 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 14/11/2011   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -935,6 +935,8 @@ C         BORSUP = 0.D
 C
 C        ---- IMPRESSION VALEUR MAX, VALEUR MIN----
          IF((NC.NE.0.OR.NR.NE.0).AND.(FORM.EQ.'RESULTAT')) THEN
+           TMAX=' '
+           TMIN=' '
            CALL GETVTX('RESU','VALE_MAX',IOCC,IARG,1,TMAX,NMA)
            CALL GETVTX('RESU','VALE_MIN',IOCC,IARG,1,TMIN,NMI)
            IF(NMA.NE.0.AND.TMAX.EQ.'OUI') LMAX=.TRUE.

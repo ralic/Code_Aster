@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMUN  DATE 14/11/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,6 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "EPSP_ELGA",
                         "EPSP_ELNO",
                         "EPSP_NOEU",
-                        "EPTQ_ELNO",
                         "EPTU_ELNO",
                         "EPVC_ELGA",
                         "EPVC_ELNO",
@@ -166,7 +165,6 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "SIPO_ELNO",
                         "SIPO_NOEU",
                         "SIRO_ELEM",
-                        "SITQ_ELNO",
                         "SITU_ELNO",
                         "SIZ1_NOEU",
                         "SIZ2_NOEU",

@@ -1,6 +1,6 @@
       SUBROUTINE OP0186()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C ----------------------------------------------------------------------
       DATA SDDISC            /'&&OP0186.PARTPS'/
       DATA SDOBSE            /'&&OP0186.OBSER'/
       DATA SDSENS            /'&&OP0186.SDSENS'/
-      DATA SDIETO            /'&&OP0186.SDIETO'/          
+      DATA SDIETO            /'&&OP0186.SDIETO'/
 C ----------------------------------------------------------------------
 
 C     MESURE DE TEMPS CPU :
@@ -139,8 +139,8 @@ C
       RECHLI  = .FALSE.
       NBPASE  = NMSENN(SDSENS)
       CALL NTINPS(SDSENS,INPSCO)
-      
-      
+
+
 
 C EST-ON DANS UN CALCUL DE SECHAGE ?
       IF (EVOLSC(1:1).NE.' ') THEN
@@ -624,9 +624,11 @@ C --- CALCUL DES OPTIONS
      &            PARCRR(1))
 
       CALL TITRE()
-
-C     -- MENAGE FINAL :
+C
+C --- DESTRUCTION DE TOUTES LES MATRICES CREEES
+C
       CALL DETMAT()
 
       CALL JEDEMA()
+C
       END

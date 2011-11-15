@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -433,19 +433,19 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
                                                        ),
 # -- Fonctionnalités spécifiques 'CONTINUE'
-                                          INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",
-                                          into=("NOEUD","GAUSS","SIMPSON","NCOTES","SIMPSON1","SIMPSON2","NCOTES1","NCOTES2"),),
+                                          INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                          into=("AUTO","GAUSS","SIMPSON","NCOTES",),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
                                                           fr="Degré du polynôme de Legendre donnant les points de Gauss",
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=1,max=10),
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=1,val_max=6),
+                                            ),
+                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
+                                                          fr="Nombre de subdivisions du domaine",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,val_min=1,val_max=4),
                                             ),
                                           b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
                                                           fr="Degré du polynôme interpolateur",
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=3,max=10),
-                                            ),
-                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
-                                                          fr="Nombre de partitions du domaine",
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,min=1,max=4),
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
 #
                                           CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="NON",
@@ -524,21 +524,21 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                        INTEGRATION    = SIMP(statut='f',
                                                              typ='TXM',
                                                              defaut="GAUSS",
-
-                                          into=("NOEUD","GAUSS","SIMPSON","NCOTES","SIMPSON1","SIMPSON2","NCOTES1","NCOTES2"),),
+                                                             
+                                          into=("NOEUD","GAUSS","SIMPSON","NCOTES",),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
                                                           fr="Dégré du polynôme de Legendre donnant les points de Gauss",
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=6,min=1,max=10),
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=6,val_min=1,val_max=6),
+                                            ),
+                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
+                                                          fr="Nombre de subdivisions du domaine",
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,val_min=1,val_max=4),
                                             ),
                                           b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
                                                           fr="Dégré du polynôme interpolateur",
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,min=3,max=10),
+                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
-                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
-                                                          fr="Nombre de partitions du domaine",
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,min=1,max=4),
-                                            ),
-
+                                            
                                        RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
                                                              into=("CZM_EXP_REG","CZM_LIN_REG","NON"),),
 

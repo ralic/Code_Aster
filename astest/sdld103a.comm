@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 # sdld103a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,6 +32,11 @@ DEBUT(CODE=_F(NOM='SDLD103A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
         )
 
 MAILLAGE=LIRE_MAILLAGE( )
+
+MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F( NOM='GN5',
+                                      NOEUD=('NO5',),),);
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
          _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
@@ -165,6 +170,27 @@ MACRO_PROJ_BASE(BASE=MODE_MEC,
            _F( VECTEUR = CO("VECT_X2"), VECT_ASSE = MULT_X2))
                )
 
+#
+# CALCUL TRANSITOIRE SUR BASE PHYSIQUE
+# -------------------------------------------
+TRAN_PHY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                     MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                     EXCIT=(
+                     _F( VECT_ASSE = MULT_X1,  ACCE = ACCELER1,
+                           MULT_APPUI = 'OUI',
+                           DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                           MODE_STAT=MODE_STA,
+                           VITE = VITESSE1, DEPL = DEPLACE1),
+                     _F( VECT_ASSE = MULT_X2,  ACCE = ACCELER2,
+                           MULT_APPUI = 'OUI',
+                           DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'GN5',
+                           MODE_STAT=MODE_STA,
+                           VITE = VITESSE2, DEPL = DEPLACE2),),
+                     ARCHIVAGE=_F(  PAS_ARCH = 100, CHAM_EXCLU=('VITE','ACCE',),),
+                     INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001 ),
+                    )
+                    
 #
 # CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
 # -------------------------------------------
@@ -357,6 +383,11 @@ XRNOE4=CALC_FONC_INTERP(     FONCTION=XRNOE4a,
 
 # RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
 # -----------------------------------------------
+NO2DXR_P=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESULTAT=TRAN_PHY,
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
 NO2DXR_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GEE,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
@@ -405,6 +436,7 @@ NO4DXR_A=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
 #
 # RECUPERATION DES DEPLACEMENTS ABSOLUS CALCULES
 # ----------------------------------------------
+
 NO2DXA_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GEE,
                           MULT_APPUI='OUI',         INTERP_NUME='LIN',
@@ -459,6 +491,12 @@ NO4DXA_A=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
 # -----------------------------------------------------------
 
 TEST_FONCTION(VALEUR=(
+
+    _F(  FONCTION = NO2DXR_P, VALE_PARA = 0.10, VALE_REFE = XRNO2a(0.10)),
+    _F(  FONCTION = NO2DXR_P, VALE_PARA = 0.30, VALE_REFE = XRNO2a(0.30)),
+    _F(  FONCTION = NO2DXR_P, VALE_PARA = 0.50, VALE_REFE = XRNO2a(0.50)),
+    _F(  FONCTION = NO2DXR_P, VALE_PARA = 0.70, VALE_REFE = XRNO2a(0.70)),
+    _F(  FONCTION = NO2DXR_P, VALE_PARA = 1.,   VALE_REFE = XRNO2a(1.)),
     _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.10, VALE_REFE = XRNO2a(0.10)),
     _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.30, VALE_REFE = XRNO2a(0.30)),
     _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.50, VALE_REFE = XRNO2a(0.50)),

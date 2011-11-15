@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+# MODIF  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR LA MODELISATION COQUE_AXIS
 # zzzz295c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,8 +73,20 @@ U = STAT_NON_LINE(MODELE=MO,
                                 ITER_GLOB_MAXI=250,),
                  );
 
+U2 = MECA_STATIQUE(MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=COQUE,
+                 EXCIT=(_F(CHARGE=BLOCAGE,),
+                        _F(CHARGE=CHARGE,
+                           FONC_MULT=FOFO,),),
+                 LIST_INST=LINST,
+                 );
+
 TB=CREA_TABLE(RESU=_F(RESULTAT=U,GROUP_MA='COQUE',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 1))
 IMPR_TABLE(TABLE=TB)
+
+TB2=CREA_TABLE(RESU=_F(RESULTAT=U2,GROUP_MA='COQUE',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 2))
+IMPR_TABLE(TABLE=TB2)
 
 
 TEST_TABLE( TABLE=TB,
@@ -430,6 +442,22 @@ TEST_TABLE( TABLE=TB,
             REFERENCE='ANALYTIQUE',
             NOM_PARA='COOR_Y',
             VALE= 0.790028435)
+
+
+TEST_TABLE( TABLE=TB,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
+            REFERENCE='NON_REGRESSION',
+            NOM_PARA='SIXX',
+            VALE= -1.04320E+01)
+
+
+TEST_TABLE( TABLE=TB2,
+            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
+                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
+            REFERENCE='NON_REGRESSION',
+            NOM_PARA='SIXX',
+            VALE= -1.04320E+01)
 
 
 

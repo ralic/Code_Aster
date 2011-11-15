@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE MASSIF RECTANGULAIRE EN FLEXION PURE
 # sslp106a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,7 +55,9 @@ SYMETRIE=AFFE_CHAR_MECA(MODELE=MO,
                                   _F(GROUP_NO='D',
                                      DX=0,),),
                         FACE_IMPO=_F(GROUP_MA='LAB',
-                                     DX=0,),);
+                                     DTAN=0,),);
+# DTAN=0 <=> DX=0
+#                                     DX=0,),);
 
 CHARGE=AFFE_CHAR_MECA_F(MODELE=MO,
                         PRES_REP=(_F(GROUP_MA='LBC',

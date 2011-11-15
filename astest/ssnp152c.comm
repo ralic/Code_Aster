@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # CAS TEST : SSNP152C
 # TITRE INCLUSION DE DEUX COURONNES#
 # ssnp152c.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test R
@@ -123,7 +123,7 @@ CONT_N  = DEFI_CONTACT(MODELE = MO,
                               GROUP_MA_MAIT = 'S1R2',
                               APPARIEMENT   = 'MAIT_ESCL',
                               NORMALE       = 'MAIT',
-                              INTEGRATION   = 'NOEUD',
+                              INTEGRATION   = 'AUTO',
                               TOLE_PROJ_EXT = 0.0001,
                               ALGO_CONT     = 'STANDARD',
                               COEF_CONT     = E1,

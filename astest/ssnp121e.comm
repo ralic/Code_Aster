@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,7 +85,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              GROUP_MA_ESCL = 'SURESC',
                              GROUP_MA_MAIT = 'SURMAI',
                              INTEGRATION   = 'GAUSS',
-                             ORDRE_INT     = 5,
+                             ORDRE_INT     = 4,
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1000.,
                           ),

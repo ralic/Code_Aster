@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503k.para = tps_job 600 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ CONT   = DEFI_CONTACT(MODELE         = MODELE,
                       ZONE = (_F(
                                  GROUP_MA_MAIT = 'S21',
                                  GROUP_MA_ESCL = 'S13',
-                                 INTEGRATION   = 'NOEUD',
+                                 INTEGRATION   = 'AUTO',
                                  SEUIL_INIT    = 0.0,
                                  COULOMB       = 0.5,
                                  TOLE_PROJ_EXT = 0.1,   
@@ -60,7 +60,7 @@ CONT   = DEFI_CONTACT(MODELE         = MODELE,
                              _F(
                                  GROUP_MA_MAIT = 'S23',
                                  GROUP_MA_ESCL = 'S31',
-                                 INTEGRATION   = 'NOEUD',
+                                 INTEGRATION   = 'AUTO',
                                  SEUIL_INIT    = 0.0,
                                  COULOMB       = 0.5,
                                  TOLE_PROJ_EXT = 0.1,   

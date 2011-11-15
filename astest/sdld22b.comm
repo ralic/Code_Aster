@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 # sdld22b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,7 +178,7 @@ FONCTIO1=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='ALPHA',
 
 #
 #-----------------------------------------------------------------
-#                      TRANSITOIRE MODAL
+#             TRANSITOIRE MODAL SCHEMA EULER
 #-----------------------------------------------------------------
 #
 MODES=MODE_ITER_INV(  MATR_A=MATRRIGI,  MATR_B=MATRMASS,
@@ -201,7 +201,7 @@ MACRO_PROJ_BASE(  BASE=MODES,
                                    VECTEUR = CO("EFFOGENE"),
                                    VECT_ASSE = VECTASS) )
 
-DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+DYNMOD_E=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                             MATR_MASS=MASSEGEN,
                              MATR_RIGI=RIGIDGEN,
@@ -212,56 +212,126 @@ DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                          INST_FIN = 1.5,  PAS = 0.001)
                           )
 
-DEPLTRAN=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,  NOM_CHAM='DEPL',
+DEPTRAN1=REST_GENE_PHYS(  RESU_GENE=DYNMOD_E,  NOM_CHAM='DEPL',
                             LIST_INST=LISTR8,    INTERPOL='LIN'  )
 
 TEST_RESU(RESU=(
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 1, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 1, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 4.02E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 2, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 2, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.060, VALE = 4.22E-6),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 3, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 3, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.89E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 4, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 4, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.040, VALE = 5.98E-6),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 5, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 5, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.73E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 6, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 6, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.030, VALE = 7.14E-6),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 7, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 7, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.64E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 8, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 8, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.020, VALE = 8.07E-6),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 9, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 9, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.58E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 10, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 10, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.020, VALE = 8.76E-6),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 11, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 11, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.52E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 12, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 12, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -3.08E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 13, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 13, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.02E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 14, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 14, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -2.88E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 15, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 15, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 2.80E-5),
 
-           _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 16, NOM_CHAM = 'DEPL',
+           _F(  RESULTAT = DEPTRAN1, NUME_ORDRE = 16, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -2.65E-5))
+           )
+
+#
+#-----------------------------------------------------------------
+#       TRANSITOIRE MODAL SCHEMA EULER ADAPTATIF (ADAPT_ORDRE1)
+#-----------------------------------------------------------------
+#
+
+DYNMOD_A=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                            SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE1',),
+                            MATR_MASS=MASSEGEN,
+                            MATR_RIGI=RIGIDGEN,
+                            MATR_AMOR=AMORTGEN,
+                            EXCIT=_F(  VECT_ASSE = EFFOGENE,
+                                    FONC_MULT = FONCTIO1),
+                            INCREMENT=_F( INST_INIT = 0., INST_FIN = 1.5,
+                                          PAS=0.0001,),
+                            ARCHIVAGE=_F(  PAS_ARCH = 1))
+
+DEPTRAN2=REST_GENE_PHYS(  RESU_GENE=DYNMOD_A,  NOM_CHAM='DEPL',
+                            LIST_INST=LISTR8,    INTERPOL='LIN'  )
+
+TEST_RESU(RESU=(
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 1, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 4.02E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 2, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.060, VALE = 4.22E-6),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 3, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.89E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 4, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.040, VALE = 5.98E-6),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 5, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.73E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 6, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.030, VALE = 7.14E-6),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 7, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.64E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 8, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.020, VALE = 8.07E-6),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 9, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.58E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 10, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.020, VALE = 8.76E-6),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 11, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.52E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 12, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -3.08E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 13, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 3.02E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 14, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -2.88E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 15, NOM_CHAM = 'DEPL',
+             NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 2.80E-5),
+
+           _F(  RESULTAT = DEPTRAN2, NUME_ORDRE = 16, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -2.65E-5))
            )
 
@@ -276,8 +346,10 @@ DYNAADAP=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',), 
                             EXCIT=_F(  VECT_ASSE = VECTASS,
                                     FONC_MULT = FONCTIO1),
-                            INCREMENT=_F( INST_INIT = 0.,
-                                       INST_FIN = 1.5, PAS = 0.001),
+                            INCREMENT=_F( INST_INIT = 0., INST_FIN = 1.5,
+                                          PAS = 0.001, 
+                                          PAS_MINI = 1E-10, VITE_MIN = ('MAXI',), 
+                                          ),
                             ARCHIVAGE=_F(  PAS_ARCH = 1))
 
 DEPLADAP=RECU_FONCTION(   NOEUD='N5',   NOM_CMP='DX',   NOM_CHAM='DEPL',

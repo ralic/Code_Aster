@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/11/2011   AUTEUR BARGELLI R.BARGELLINI 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,24 +143,25 @@ DEFLISTN =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LINST_N ),
 
 RESU=STAT_NON_LINE(CHAM_MATER=CHMAT,
                        MODELE=MOD_MECA,
-                       CONVERGENCE=_F(ITER_GLOB_MAXI=300,
-                                      RESI_GLOB_MAXI=1.E-06),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=400,
+                                      RESI_GLOB_RELA=1.E-06),
                        COMP_INCR=_F(TOUT='OUI',
-                                    ITER_INTE_MAXI=400,
+                                    ITER_INTE_MAXI=500,
                                     ITER_INTE_PAS=-90,
                                     RELATION='ROUSS_PR',
                                     DEFORMATION='PETIT_REAC',),
                        INCREMENT=_F(
                                     LIST_INST=DEFLIST,),
-                       RECH_LINEAIRE=_F(
-                                    ITER_LINE_MAXI=3,),
+                      RECH_LINEAIRE=_F(
+                                    ITER_LINE_MAXI=4,),
                        NEWTON=_F(REAC_ITER=1,
-                                 MATRICE='ELASTIQUE',
+                                MATRICE='ELASTIQUE',
                                  REAC_INCR=1,),
                        EXCIT=(_F(CHARGE=COND_LIM,),
                               _F(CHARGE=CHAR,),),)
 
-RESU_N=STAT_NON_LINE(CHAM_MATER=CHMAT_N,
+RESU_N=STAT_NON_LINE(INFO=1,
+                       CHAM_MATER=CHMAT_N,
                        MODELE=MOD_MECA,
                        CONVERGENCE=_F(ITER_GLOB_MAXI=300,
                                       RESI_GLOB_MAXI=1.E-06),
@@ -169,9 +170,8 @@ RESU_N=STAT_NON_LINE(CHAM_MATER=CHMAT_N,
                                     ITER_INTE_PAS=-90,
                                     RELATION='ROUSS_PR',
                                     DEFORMATION='PETIT_REAC',),
-                       INCREMENT=_F(LIST_INST=DEFLIST,),
-                       RECH_LINEAIRE=_F(
-                                    ITER_LINE_MAXI=3,),
+                       INCREMENT=_F(LIST_INST=DEFLIST,
+                                                ),
                        NEWTON=_F(REAC_ITER=1,
                                  MATRICE='ELASTIQUE',
                                  REAC_INCR=1,),
@@ -189,7 +189,7 @@ RESU_V=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
                                     DEFORMATION='PETIT_REAC',),
                        INCREMENT=_F(
                                     LIST_INST=DEFLIST,),
-                       RECH_LINEAIRE=_F(
+                        RECH_LINEAIRE=_F(
                                     ITER_LINE_MAXI=3,),
                        NEWTON=_F(REAC_ITER=1,
                                  MATRICE='ELASTIQUE',
@@ -201,24 +201,22 @@ TEST_RESU(  RESU=(
            _F( RESULTAT = RESU,
                INST = 10.,
                NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V2',
+              NOM_CMP = 'V2',
                MAILLE = 'M1',
                POINT = 1, VALE = 3.2575727937635E-02,
                CRITERE = 'ABSOLU',
                REFERENCE='NON_REGRESSION',
                PRECISION = 1.E-10) )  )
-
 TEST_RESU(  RESU=(
            _F( RESULTAT = RESU_N,
                INST = 10.,
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V2',
-               MAILLE = 'M1',
-               POINT = 1, VALE = 3.9058042593906E-01,
-               CRITERE = 'ABSOLU',
-               REFERENCE='NON_REGRESSION',
-               PRECISION = 1.E-10) )  )
-
+              MAILLE = 'M1',
+              POINT = 1, VALE = 3.9058042593906E-01,
+              CRITERE = 'ABSOLU',
+              REFERENCE='NON_REGRESSION',
+              PRECISION = 1.E-10) )  )
 TEST_RESU(  RESU=(
            _F( RESULTAT = RESU_V,
                INST = 10.,

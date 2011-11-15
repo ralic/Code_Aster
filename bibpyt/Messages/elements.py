@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,14 +30,14 @@ cata_msg = {
 
 2 : _(u"""
 Erreur :
-   Le calcul du chargement du au séchage n'est pas programmé par le type d'élément : %(k1)s
+   Le calcul du chargement dû au séchage n'est pas programmé par le type d'élément %(k1)s.
 
 Conseil :
   Émettre une demande d'évolution.
 """),
 
 3 : _(u"""
-Vous utilisez des éléments de type GRILLE_MEMBRANE. Le mot clef ANGL_REP de la commande AFFE_CARA_ELEM
+Vous utilisez des éléments de type GRILLE_MEMBRANE. Le mot-clé ANGL_REP de la commande AFFE_CARA_ELEM
 permet d'indiquer la direction des armatures.
 La projection de ce vecteur directeur dans le plan de certains des éléments de GRILLE_MEMBRANE est nulle.
 
@@ -89,20 +89,20 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 12 : _(u"""
- nombre de couches obligatoirement supérieur à 0
+ Le nombre de couche doit être obligatoirement supérieur à zéro.
 """),
 
 13 : _(u"""
- nombre de couches limité a 10 pour les coques 3d
+ Le nombre de couche est limité à 10 pour la modélisation COQUE_3D.
 """),
 
 14 : _(u"""
- le type d'élément :  %(k1)s n'est pas prévu.
+ Le type d'élément %(k1)s n'est pas prévu.
 """),
 
 15 : _(u"""
- la nature du matériau  %(k1)s  n'est pas traitée
- seules sont considérées les natures : ELAS, ELAS_ISTR, ELAS_ORTH .
+ La nature du matériau %(k1)s n'est pas traitée.
+ Seules sont considérées les natures : ELAS, ELAS_ISTR, ELAS_ORTH.
 """),
 
 17 : _(u"""
@@ -114,7 +114,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 20 : _(u"""
- aucun type d'éléments ne correspond au type demandé
+ Aucun type d'éléments ne correspond au type demandé.
 """),
 
 21 : _(u"""
@@ -126,16 +126,16 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 25 : _(u"""
- on passe en mécanisme 2
+ On passe en mécanisme 2.
 """),
 
 26 : _(u"""
- chargement en mécanisme 2 trop important
- à vérifier
+ Chargement en mécanisme 2 trop important.
+ À vérifier.
 """),
 
 27 : _(u"""
- on poursuit en mécanisme 2
+ On poursuit en mécanisme 2.
 """),
 
 28 : _(u"""
@@ -239,6 +239,11 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 50 : _(u"""
  comportement élastique inexistant
+"""),
+
+52 : _(u"""
+  -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
+     SIEF_ELGA avec chargement thermique.
 """),
 
 53 : _(u"""

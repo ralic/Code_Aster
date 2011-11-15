@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 15/11/2011   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,6 +126,7 @@ C        RESUIN : NOM DE LA SD_RESULTAT A PROJETER (SI .NOT.ISOLE)
       ELSE
         CHAM1=' '
         RESUIN=' '
+        NOMARE=' '
       ENDIF
 
 

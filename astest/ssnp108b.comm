@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 # ssnp108b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,10 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-
 DEBUT(   CODE=_F(  NOM = 'SSNP108B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
-#
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
@@ -30,7 +27,6 @@ MAILLAGE=DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE,
                      CREA_GROUP_NO=_F(  GROUP_MA = ('CABLE','CB3', 'CB5'), ),
                     );
 
-#
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                  AFFE=(_F(  GROUP_MA = 'BETON',
                             PHENOMENE = 'MECANIQUE',
@@ -41,7 +37,7 @@ MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
 
 #
 CARAELEM=AFFE_CARA_ELEM(  MODELE=MODELE,
-                       COQUE=_F(  GROUP_MA = 'BETON', COQUE_NCOU=5,
+                       COQUE=_F(  GROUP_MA = 'BETON', COQUE_NCOU=6,
                                   EPAIS = 6.0E-1 ),
                        BARRE=_F(  GROUP_MA = 'CABLE',
                                   SECTION = 'GENERALE',
@@ -116,14 +112,12 @@ EVOLNOLI=STAT_NON_LINE(
               )
 
 EVOLNOLI=CALC_CHAMP( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
-                             CONTRAINTE=('EFGE_ELNO','SIEF_ELNO',),
+                     CONTRAINTE=('EFGE_ELNO','SIEF_ELNO',),
               )
 
-EVOLNOLI=CALC_NO( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
-#                    GROUP_MA='CABLE',
-#                    MAILLE=('M1','M6'),
-                      OPTION='SIEF_NOEU',
-              )
+EVOLNOL2=CALC_CHAMP(RESULTAT=EVOLNOLI,
+                    GROUP_MA='CABLE',
+                    CONTRAINTE='SIEF_NOEU',);
 
 ESSAI1=POST_RELEVE_T(ACTION=(_F(
                               INTITULE='ESSAI1',
@@ -172,7 +166,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
 # EFFORT NORMAL AUX NOEUDS DU CABLE
 # ---------------------------------
 #
-TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
+TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOL2,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'C1',
                       NOM_CHAM = 'SIEF_NOEU',
@@ -181,7 +175,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
                       PRECISION = 0.001,
                       VALE = 1.99825153E+5 ) )
 
-TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
+TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOL2,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'C2',
                       NOM_CHAM = 'SIEF_NOEU',

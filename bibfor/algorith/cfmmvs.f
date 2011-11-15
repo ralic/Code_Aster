@@ -1,7 +1,7 @@
       SUBROUTINE CFMMVS(RESOCO,NPT   ,JEUX  ,LOCA  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/11/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,9 +65,10 @@ C
       INTEGER      JCNSVR,JCNSLR
       INTEGER      JJEUX,JLOCA
       INTEGER      IPT 
-      REAL*8       JEU,VARC
+      REAL*8       JEU,VARC,R8VIDE
       INTEGER      NUMNOE
       INTEGER      CFMMVD,ZRESU
+      LOGICAL      LSAUV
 C
 C ----------------------------------------------------------------------
 C
@@ -101,6 +102,7 @@ C ----- INFORMATIONS SUR LE POINT
 C
         JEU    = ZR(JJEUX+IPT-1) 
         NUMNOE = ZI(JLOCA+IPT-1)
+        LSAUV  = .TRUE.
 C
 C ----- ETAT DU CONTACT
 C         
@@ -110,9 +112,12 @@ C
           VARC = 0.D0          
         ENDIF
 C
+        IF (NUMNOE.EQ.-1)    LSAUV = .FALSE.
+        IF (JEU.EQ.R8VIDE()) LSAUV = .FALSE.
+C
 C ----- REMPLISSAGE EFFECTIF
 C     
-        IF (NUMNOE.NE.-1) THEN
+        IF (LSAUV) THEN
           ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+1 ) = VARC
           ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+2 ) = JEU
           ZL(JCNSLR-1+ZRESU*(NUMNOE-1)+1 ) = .TRUE.

@@ -3,10 +3,10 @@
      &                  DEFICO,ITERAT,SDNUME,SDPILO,VALINC,
      &                  SOLALG,VEELEM,VEASSE,SDTIME,OFFSET,
      &                  TYPSEL,SDDISC,LICITE,RHO   ,ETA   ,
-     &                  ETAF  ,RESIDU,LDCCVG,PILCVG,MATASS)
+     &                  ETAF  ,CRITER,LDCCVG,PILCVG,MATASS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/11/2011   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C
       CHARACTER*24  TYPSEL,SDTIME,SDSTAT
       INTEGER       LICITE(2)
       INTEGER       LDCCVG,PILCVG
-      REAL*8        ETAF,RESIDU
+      REAL*8        ETAF,CRITER
 C
 C ----------------------------------------------------------------------
 C
@@ -78,7 +78,10 @@ C IN  LICITE : CODE RETOUR PILOTAGE DES DEUX PARAMETRES DE PILOTAGE
 C IN  RHO    : PARAMETRE DE RECHERCHE_LINEAIRE
 C IN  ETA    : LES DEUX PARAMETRES DE PILOTAGE
 C OUT ETAF   : PARAMETRE DE PILOTAGE FINALEMENT CHOISI
-C OUT RESIDU : VALEUR DU RESIDU
+C OUT CRITER: VALEUR DU CRITERE DE COMPARAISON
+C                ANGL_INCR_DEPL
+C                NORM_INCR_DEPL
+C                RESIDU
 C OUT LDCCVG : CODE RETOUR DE L'INTEGRATION DU COMPORTEMENT POUR
 C              LE PARAMETRE DE PILOTAGE CHOISI
 C                 0 : CAS DE FONCTIONNEMENT NORMAL
@@ -110,7 +113,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER       LDCCV1,LDCCV2,IERM,INDIC,JPLIR,JPLTK
-      REAL*8        F(2),R8BID,TMP,RES(2)
+      REAL*8        F(2),R8BID,TMP,FSAV(2)
       CHARACTER*8   CHOIX,TXT
       CHARACTER*19  DEPOLD,DEPDEL,DEPPR1,DEPPR2
       CHARACTER*24  TYPPIL
@@ -139,8 +142,8 @@ C
 
       F(1)   = 0.D0
       F(2)   = 0.D0
-      RES(1) = 0.D0
-      RES(2) = 0.D0
+      FSAV(1) = 0.D0
+      FSAV(2) = 0.D0
       LDCCV1 = 0
       LDCCV2 = 0
 C
@@ -189,8 +192,8 @@ C
      &             R8BID,IBID,CHOIX)
       CALL ASSERT(CHOIX.EQ.'NATUREL'.OR.CHOIX.EQ.'AUTRE')
 
-      RES(1)=F(1)
-      RES(2)=F(2)
+      FSAV(1)=F(1)
+      FSAV(2)=F(2)
       IF(CHOIX.EQ.'AUTRE'.OR.SWLOUN) THEN
           TMP  = F(1)
           F(1) = F(2)
@@ -205,15 +208,15 @@ C
 C --- CHOIX DE LA FONCTION MINI
 C
       IF (F(1).LE.F(2)) THEN
-        ETAF   = ETA(1)
-        PILCVG = LICITE(1)
-        LDCCVG = LDCCV1
-        RESIDU = RES(1)
+        ETAF    = ETA(1)
+        PILCVG  = LICITE(1)
+        LDCCVG  = LDCCV1
+        CRITER = FSAV(1)
       ELSE
-        ETAF   = ETA(2)
-        PILCVG = LICITE(2)
-        LDCCVG = LDCCV2
-        RESIDU = RES(2)
+        ETAF    = ETA(2)
+        PILCVG  = LICITE(2)
+        LDCCVG  = LDCCV2
+        CRITER = FSAV(2)
       ENDIF
 C
       CALL JEDEMA()

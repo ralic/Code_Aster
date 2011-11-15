@@ -1,7 +1,7 @@
       SUBROUTINE DETLSP(MATASZ,SOLVEZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/05/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,8 @@ C  ***                                              *    **
 C
 C ----------------------------------------------------------------------
 C
-C IN  MATASZ : MATRICE ASSEMBLEE
-C IN  SOLVEZ : SD SOLVEUR
+C IN  MATASS : MATRICE ASSEMBLEE
+C IN  SOLVEU : SD SOLVEUR
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
@@ -54,7 +54,7 @@ C
        CHARACTER*24 METRES,PRECON,SOLVBD
        INTEGER      JSLVK ,IRET
        REAL*8       R8BID
-       COMPLEX*16   CBID
+       COMPLEX*16   C16BID
 C
 C ----------------------------------------------------------------------
 C
@@ -64,17 +64,18 @@ C
       MATASS = MATASZ
 C
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
-      METRES=ZK24(JSLVK)
+      METRES = ZK24(JSLVK-1+1)
       IF (METRES.EQ.'PETSC'.OR.METRES.EQ.'GCPC') THEN
-        PRECON=ZK24(JSLVK-1+2)
+        PRECON = ZK24(JSLVK-1+2)
         IF (PRECON.EQ.'LDLT_SP') THEN
-          SOLVBD=ZK24(JSLVK-1+3)
+          SOLVBD = ZK24(JSLVK-1+3)
           CALL CRSMSP(SOLVBD,MATASS,0)
-          CALL AMUMPH('DETR_MAT',SOLVBD,MATASS,R8BID,CBID,
-     &                ' ',0,IRET,.TRUE.)
+          CALL AMUMPH('DETR_MAT',SOLVBD,MATASS,R8BID ,C16BID,
+     &                ' '       ,0     ,IRET  ,.TRUE.)
           CALL DETRSD('SOLVEUR',SOLVBD)
         ENDIF
       ENDIF
 C
       CALL JEDEMA()
+C
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100h.para = tps_job 60 mem_job 120Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -200,8 +200,8 @@ CALC_ELEM( reuse= DEPLDIL2 ,RESULTAT= DEPLDIL2 ,
 DDIL22=POST_CHAMP(RESULTAT=DEPLDIL2,
                  TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                               NUME_COUCHE=1,
-                               NIVE_COUCHE='INF',),);
+                               NUME_COUCHE=2,
+                               NIVE_COUCHE='SUP',),);
 
 DEPLDI2=MECA_STATIQUE(
                   MODELE=MO,

@@ -1,7 +1,7 @@
-      SUBROUTINE MMELIN(NOMA,NUMA,TYPINT,NNINT)
+      SUBROUTINE MMELIN(NOMA  ,NUMA  ,TYPINT,NNINT )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +21,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8 NOMA
-      INTEGER     NUMA
-      INTEGER     TYPINT
-      INTEGER     NNINT
+      CHARACTER*8   NOMA
+      INTEGER       NUMA
+      INTEGER       TYPINT
+      INTEGER       NNINT
 C      
 C ----------------------------------------------------------------------
 C
@@ -38,100 +38,98 @@ C
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NUMA   : NUMERO ABSOLU DE LA MAILLE
-C IN  TYPINT : TYPE SCHEMA INTEGRATION
-C                 1 NOEUDS
-C                X2 GAUSS (X est l'ordre de la quadrature)
-C                Y3 SIMPSON (Y est nombre de partitions du domaine)
-C		         Z4 NEWTON-COTES (Z est dégré du polynôme interpolateur)
+C IN  TYPINT : TYPE D'INTEGRATION
+C                1 'AUTO'    (ON CHOISIT LE SCHEMA LE PLUS ADAPTE)
+C               X2 'GAUSS'   (X EST LE DEGRE DES POLYNOMES DE LEGENDRE)
+C               Y3 'SIMPSON' (Y EST LE NOMBRE DE SUBDIVISIONS)
+C		          Z4 'NCOTES'  (Z EST LE DEGRE DU POLYNOME INTERPOLATEUR)
 C OUT NNINT  : NOMBRE DE POINTS D'INTEGRATION DE CET ELEMENT
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      IBID, PARAM
       CHARACTER*8  ALIAS
+      INTEGER      IBID, PARAM
 C
 C ----------------------------------------------------------------------
 C
       CALL MMELTY(NOMA,NUMA,ALIAS,IBID,IBID)
 C
+C     'AUTO'
       IF (TYPINT .EQ. 1) THEN
-        IF (ALIAS(1:3) .EQ. 'SE2') THEN
+         IF (    ALIAS(1:3).EQ.'SE2') THEN
             NNINT = 2
-        ELSE IF (ALIAS(1:3) .EQ. 'SE3') THEN
+         ELSEIF (ALIAS(1:3).EQ.'SE3') THEN
             NNINT = 3
-        ELSE IF (ALIAS(1:3) .EQ. 'TR3') THEN
+         ELSEIF (ALIAS(1:3).EQ.'TR3') THEN
             NNINT = 3
-        ELSE IF ((ALIAS(1:3).EQ.'TR6').OR.(ALIAS(1:3).EQ.'TR7')) THEN
+         ELSEIF (ALIAS(1:3).EQ.'TR6') THEN
             NNINT = 6
-        ELSE IF (ALIAS(1:3) .EQ. 'QU4') THEN
+         ELSEIF (ALIAS(1:3).EQ.'TR7') THEN
+            NNINT = 6
+         ELSEIF (ALIAS(1:3).EQ.'QU4') THEN
             NNINT = 4
-        ELSE IF ((ALIAS(1:3).EQ.'QU8')) THEN
-            NNINT = 8
-        ELSE IF ((ALIAS(1:3).EQ.'QU9')) THEN
+         ELSEIF (ALIAS(1:3).EQ.'QU8') THEN
             NNINT = 9
-        ELSE
+         ELSEIF (ALIAS(1:3).EQ.'QU9') THEN
+            NNINT = 9
+         ELSE
             CALL ASSERT(.FALSE.)
-        END IF
-      ELSE IF (MOD(TYPINT,10) .EQ. 2) THEN
-        PARAM = TYPINT/10
-        IF (ALIAS(1:2) .EQ. 'SE') THEN
-            IF ((ALIAS(3:3) .EQ. '3').AND.(PARAM .LE. 2)) THEN
-                NNINT = 3
-            ELSE
-                NNINT = PARAM
-            END IF
-        ELSE IF (ALIAS(1:2) .EQ. 'TR') THEN
+         ENDIF
+C
+C     'GAUSS'
+      ELSEIF (MOD(TYPINT,10) .EQ. 2) THEN
+         PARAM = TYPINT/10
+         IF (ALIAS(1:2) .EQ. 'SE') THEN
+            NNINT = PARAM
+         ELSEIF (ALIAS(1:2) .EQ. 'TR') THEN
             IF (PARAM .EQ. 1) THEN
-                NNINT = 1
-            ELSE IF (PARAM .EQ. 2) THEN
-                NNINT = 3
-            ELSE IF (PARAM .EQ. 3) THEN
-                NNINT = 4
-            ELSE IF (PARAM .EQ. 4) THEN
-                NNINT = 6
-            ELSE IF (PARAM .EQ. 5) THEN
-                NNINT = 7
-            ELSE IF (PARAM .EQ. 6) THEN
-                NNINT = 12
-            ELSE IF (PARAM .EQ. 7) THEN
-                NNINT = 13
-            ELSE IF (PARAM .EQ. 8) THEN
-                NNINT = 16
-            ELSE IF (PARAM .EQ. 9) THEN
-                NNINT = 19
-            ELSE IF (PARAM .EQ. 10) THEN
-                NNINT = 25
+               NNINT = 1
+            ELSEIF (PARAM .EQ. 2) THEN
+               NNINT = 3
+            ELSEIF (PARAM .EQ. 3) THEN
+               NNINT = 4
+            ELSEIF (PARAM .EQ. 4) THEN
+               NNINT = 6
+            ELSEIF (PARAM .EQ. 5) THEN
+               NNINT = 7
+            ELSEIF (PARAM .EQ. 6) THEN
+               NNINT = 12
             ELSE
-                CALL ASSERT(.FALSE.)
-            END IF
-        ELSE IF (ALIAS(1:2) .EQ. 'QU') THEN
+               CALL ASSERT(.FALSE.)
+            ENDIF
+         ELSE IF (ALIAS(1:2) .EQ. 'QU') THEN
             NNINT = PARAM**2
-        ELSE
+         ELSE
             CALL ASSERT(.FALSE.)
-        END IF
+         ENDIF
+C
+C     'SIMPSON'
       ELSE IF (MOD(TYPINT,10) .EQ. 3) THEN
-        PARAM = TYPINT/10
-        IF (ALIAS(1:2) .EQ. 'SE') THEN
+         PARAM = TYPINT/10
+         IF (ALIAS(1:2) .EQ. 'SE') THEN
             NNINT = 2*PARAM+1
-        ELSE IF (ALIAS(1:2) .EQ. 'TR') THEN
+         ELSEIF (ALIAS(1:2) .EQ. 'TR') THEN
             NNINT = 2*(PARAM**2)+3*PARAM+1
-        ELSE IF (ALIAS(1:2) .EQ. 'QU') THEN
+         ELSEIF (ALIAS(1:2) .EQ. 'QU') THEN
             NNINT = (2*PARAM+1)**2
-        ELSE
+         ELSE
             CALL ASSERT(.FALSE.)
-        END IF
-      ELSE IF (MOD(TYPINT,10) .EQ. 4) THEN
-        PARAM = TYPINT/10
-        IF (ALIAS(1:2) .EQ. 'SE') THEN
+         ENDIF
+C
+C     'NCOTES'
+      ELSEIF (MOD(TYPINT,10) .EQ. 4) THEN
+         PARAM = TYPINT/10
+         IF (ALIAS(1:2) .EQ. 'SE') THEN
             NNINT = PARAM+1
-        ELSE IF (ALIAS(1:2) .EQ. 'TR') THEN
+         ELSEIF (ALIAS(1:2) .EQ. 'TR') THEN
             NNINT = (PARAM+1)*(PARAM+2)/2
-        ELSE IF (ALIAS(1:2) .EQ. 'QU') THEN
+         ELSEIF (ALIAS(1:2) .EQ. 'QU') THEN
             NNINT = (PARAM+1)**2
-        ELSE
+         ELSE
             CALL ASSERT(.FALSE.)
-        END IF
+         ENDIF
       ELSE
-        CALL ASSERT(.FALSE.)
-      END IF
+         CALL ASSERT(.FALSE.)
+      ENDIF
+C
       END

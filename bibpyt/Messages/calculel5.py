@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel5 Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -272,15 +272,23 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 53 : _(u"""
- La super_maille %(k1)s n'existe pas dans le maillage %(k2)s.
+ La SUPER_MAILLE %(k1)s n'existe pas dans le maillage %(k2)s.
 """),
 
 54 : _(u"""
- La maille %(k1)s doit être une maille de peau de type QUAD ou TRIA
- car on est en 3D et elle est de type %(k2)s.
+ Aucune maille de peau n'a été fournie.
+ 
+ Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou 
+ un groupe de maille contenant des mailles de peau.
 """),
 
-
+55 : _(u"""
+ En 3D, les mailles de peau doivent être de type QUAD ou TRIA.
+ Or la maille %(k1)s est de type %(k2)s.
+ 
+ Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou 
+ un groupe de maille contenant des mailles de peau de type QUAD ou TRIA.
+"""),
 
 56 : _(u"""
  La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisée car
@@ -354,17 +362,17 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 72 : _(u"""
  cette commande est réentrante :   sd resultat en sortie     %(k1)s
-    sd resultat "resu_final"  %(k2)s
+    sd resultat "RESU_FINAL"  %(k2)s
 """),
 
 73 : _(u"""
  la sd resultat en sortie  %(k1)s
-  doit contenir qu'un seul NUME_ordre %(k2)s
+  doit contenir qu'un seul NUME_ORDRE %(k2)s
 """),
 
 74 : _(u"""
  manque le champ  %(k1)s  dans la sd resultat  %(k2)s
-  pour le nume_ordre  %(i1)d
+  pour le NUME_ORDRE  %(i1)d
 """),
 
 76 : _(u"""

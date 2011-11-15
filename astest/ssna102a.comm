@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/11/2011   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -330,38 +330,38 @@ RESU2=STAT_NON_LINE(
                           INFO=1
                        )
 
-TAB_VC3=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
+TAB_VC3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='JEU METHODE VERIF ',
                                RESULTAT=RESU2,
                                NOM_CHAM='VALE_CONT',
                                GROUP_NO='CEP2',
-                               NOM_CMP=('CONT','JEU',),),);
+                               NOM_CMP=('JEU',),),);
 
 IMPR_TABLE(TABLE=TAB_VC3);
 
 TEST_TABLE(TABLE=TAB_VC3,
-           FILTRE=(_F(NOM_PARA='QUANTITE',
-                      VALE_K='MINIMUM',),
-                   _F(NOM_PARA='INST',
-                      VALE=1.0,),),
-           NOM_PARA='JEU',
-           PRECISION=1.E-8,
-           VALE=-1.7485414747862,
-                             REFERENCE = 'NON_REGRESSION',
-                  VERSION   = '10.2.14',
-                  );
+           FILTRE=(
+                    _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),),
+           TYPE_TEST = 'MIN', 
+           NOM_PARA  = 'JEU',
+           PRECISION = 1.E-8,
+           VALE      = -1.7485414747862,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION   = '10.2.14',
+           );
 
 TEST_TABLE(TABLE=TAB_VC3,
-           FILTRE=(_F(NOM_PARA='QUANTITE',
-                      VALE_K='MAXIMUM',),
-                   _F(NOM_PARA='INST',
-                      VALE=1.0,),),
-           NOM_PARA='JEU',
-           PRECISION=1.E-8,
-           VALE=3.2799451080147,
-                             REFERENCE = 'NON_REGRESSION',
-                  VERSION   = '10.2.14',
-                  );
+           FILTRE=(
+                    _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),),
+           TYPE_TEST = 'MAX', 
+           NOM_PARA  = 'JEU',
+           PRECISION = 1.E-8,
+           VALE      = 3.2799451080147,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION   = '10.2.14',
+           );
 
 FIN()
 #

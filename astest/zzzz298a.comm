@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 15/11/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,9 +106,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEIN,
 #----------------------------------------------
 
 FFISS = DEFI_FOND_FISS(MAILLAGE = MAILLAGE,
-                       CONFIG_INIT='DECOLLEE',
-                       NORMALE=( 0., 0. , 1. ),
-                       FOND_FISS=_F(GROUP_MA='FONFIS',
+                        FOND_FISS=_F(GROUP_MA='FONFIS',
                                     GROUP_NO_ORIG='PFON_INI',
                                     GROUP_NO_EXTR='PFON_FIN',),
                        LEVRE_SUP=_F(GROUP_MA='LEVSUP'),
@@ -136,7 +134,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=8.5640688290837E+05,);
+           VALE=6.38079E+05,);
 
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='INST', 
@@ -146,7 +144,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=8.5640688290837E+05,);
+           VALE=6.38079E+05,);
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='INST', 
@@ -156,7 +154,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=4.189224762792E+05,);
+           VALE=2.33861E+05,);
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='INST', 
@@ -166,7 +164,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=4.189224762792E+05,);
+           VALE=2.33861E+05,);
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='INST', 
@@ -176,7 +174,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=4.189224762792E+05,);                                 
+           VALE=2.33861E+05,);                                 
                      
 FIN();
 

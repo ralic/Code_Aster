@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,6 +108,27 @@ DX_DIS2=RECU_FONCTION(RESULTAT=TRANSI,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                       GROUP_NO='N',);
+                      
+TRANSIV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                      MODELE=MODELE,
+                      MATR_MASS=MASSE,
+                      MATR_RIGI=RIGIDITE,
+                      TITRE='VITESSE DE LA MASSE A T = 1.5S',
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
+                      ETAT_INIT=_F(DEPL=DEPLINI,),
+                      SOLVEUR=_F(METHODE='LDLT',),
+                      INCREMENT=_F(PAS=pdt,
+                                   INST_FIN=tfin,),
+                      ARCHIVAGE=_F(INST=1.5,
+                                   CHAM_EXCLU=('DEPL','ACCE'),
+                                   CRITERE='ABSOLU',
+                                   PRECISION=1E-6,),
+                      INFO=1,);                    
+
+VX_DIS2=RECU_FONCTION(RESULTAT=TRANSIV,
+                      NOM_CHAM='VITE',
+                      NOM_CMP='DX',
+                      GROUP_NO='N',);
 
 TRANSX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MODELE=MODELE,
@@ -117,13 +138,14 @@ TRANSX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       ETAT_INIT=_F(DEPL=DEPLINI,),
                       SOLVEUR=_F(METHODE='LDLT',),
                       INCREMENT=_F(PAS=pdt,
-                                   INST_FIN=tfin,),);
+                                   INST_FIN=tfin,),
+                      INFO=2,);
 
 DXXDIS2=RECU_FONCTION(RESULTAT=TRANSX,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                       GROUP_NO='N',);
-
+         
 MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
                        METHODE='QZ',
@@ -145,7 +167,7 @@ TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         MATR_RIGI=RIGE,
                         ETAT_INIT=_F(DEPL=DIGE,),
                         INCREMENT=_F(INST_FIN=tfin,
-                                     PAS=pdt,),);
+                                     PAS=pdt,),);                                 
 
 DXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMO,
                        NOM_CHAM='DEPL',
@@ -155,6 +177,23 @@ DXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMO,
 DXGEMO=RECU_FONCTION(RESU_GENE=TRANSMO,
                      NOM_CHAM='DEPL',
                      NUME_CMP_GENE=1,)
+
+TRANSMOV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                        MATR_MASS=MAGE,
+                        MATR_RIGI=RIGE,
+                        ETAT_INIT=_F(DEPL=DIGE,),
+                        INCREMENT=_F(LIST_INST=LINST,
+                                     NUME_FIN=300,),
+                        ARCHIVAGE=_F(INST=1.5,
+                                     CRITERE='ABSOLU',
+                                     PRECISION=1E-6,),);  
+                                     
+VXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMOV,
+                       NOM_CHAM='VITE',
+                       NOM_CMP='DX',
+                       GROUP_NO='N',);
+
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=DX_DIS2,
                          VALE_PARA=2,
@@ -175,6 +214,16 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DX_DIS2,
                          VALE_PARA=2,
                          VALE_REFE=1,
                          PRECISION=1E-4,
+                         REFERENCE='ANALYTIQUE',),
+                       _F(FONCTION=VX_DIS2,
+                         VALE_PARA=1.5,
+                         VALE_REFE=pi,
+                         PRECISION=1E-6,
+                         REFERENCE='ANALYTIQUE',),
+                       _F(FONCTION=VXGEDIS2,
+                         VALE_PARA=1.5,
+                         VALE_REFE=pi,
+                         PRECISION=1E-3,
                          REFERENCE='ANALYTIQUE',),),);
 
 IMPR_FONCTION(FORMAT='XMGRACE',

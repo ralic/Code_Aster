@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 15/11/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320c.para = tps_job 350 mem_job 2000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -255,7 +255,7 @@ for i in range(nbcalc) :
                                _F(TYPE_CHAM='NOEU_NEUT_R',
                                   CHAM_GD  = CHERR[j],
                                   CHAM_MAJ = CHERR[j+1]),), 
-                        VERSION_HOMARD='V10_2',);     
+                       );     
 
       else:
 
@@ -278,7 +278,7 @@ for i in range(nbcalc) :
                                   _F(CHAM_GD=LSTHT[j],
                                      TYPE_CHAM='NOEU_NEUT_R',
                                      CHAM_MAJ=LSTH[i],),),
-                        VERSION_HOMARD='V10_2',);   
+                       );   
 
          ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
                                AFFE=(_F(TOUT='OUI',

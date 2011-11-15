@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -296,9 +296,11 @@ C
 
 
       CALL TITRE()
-
-C --- MENAGE FINAL :
+C
+C --- DESTRUCTION DE TOUTES LES MATRICES CREEES
+C
       CALL DETMAT()
 
       CALL JEDEMA()
+C
       END

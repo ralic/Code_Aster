@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sensibilite Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,6 +96,11 @@ cata_msg = {
 
 32 : _(u"""
  L'option sensibilité n'est pas opérationnelle en hydratation
+"""),
+
+33 : _(u"""
+ La dérivée des contraintes par rapport a l'épaisseur n'est pas implantee 
+ pour les COQUE_3D
 """),
 
 35 : _(u"""

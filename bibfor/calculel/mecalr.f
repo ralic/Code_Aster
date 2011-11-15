@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,13 +219,14 @@ C
         CALL JEVEUO(KNUM,'L',JORDR)
 
 C         PASSAGE CALC_CHAMP
-        CALL CALCOP(OPTION,RESUCO,RESUC1,KNUM,NBORDR,KCHA,NCHAR,
-     &              CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+        CALL CALCOP(OPTION,LESOPT,RESUCO,RESUC1,KNUM,NBORDR,
+     &              KCHA,NCHAR,CTYP,TYSD,NBCHRE,IOCC,SOP,
+     &              IRET)
         IF (IRET.EQ.0)GOTO 660
 
         NUORD=ZI(JORDR)
         CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD,
-     &              NBORDR,NPASS,LIGREL)
+     &              NBORDR,'G',NPASS,LIGREL)
         CALL JEVEUO(KCHA,'L',JCHA)
 C
         CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,CHCARA,
@@ -244,7 +245,7 @@ C    ------------------------------------------------------------------
             CALL JERECU('V')
             IORDR=ZI(JORDR+IAUX-1)
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
+     &                  NBORDR,'G',NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)

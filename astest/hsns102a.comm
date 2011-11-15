@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/11/2011   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,11 +44,11 @@ MAILTOT=CREA_MAILLAGE(
 # -----------------------------------------------------
 #
 BETON=DEFI_MATERIAU(
-            ELAS=_F(  E = 3.E10,   NU = 0.0, ALPHA = 1.E-5,   ),
+            ELAS=_F(  E = 3.E10,   NU = 0.0, ALPHA = 1.E-5, RHO =0. ),
                           )
 
 ACIER=DEFI_MATERIAU(
-            ELAS=_F(  E = 2.E11,   NU = 0.0, ALPHA = 1.E-5,   ),
+            ELAS=_F(  E = 2.E11,   NU = 0.0, ALPHA = 1.E-5, RHO =0.  ),
                           )
 
 #
@@ -164,6 +164,16 @@ ZCHM=AFFE_CHAR_MECA(
                       _F(  NOEUD = ('NO1','NO2'), DY = 0. )
                        )
                     )
+PES=AFFE_CHAR_MECA(
+                    MODELE=LEMOD,
+                    PESANTEUR   = _F(
+                                    GRAVITE = 9.81,
+                                    DIRECTION = (0,0,-1),
+                                    )
+                   )
+
+
+
 #
 # ----------------------------------------------
 # CALCUL
@@ -179,9 +189,9 @@ LEDEP=STAT_NON_LINE(
                             MODELE=LEMOD,
                         CHAM_MATER=MATAF,
                          CARA_ELEM=LACAR,
-                             EXCIT=_F(
-                CHARGE = ZCHM,
-                ),
+                             EXCIT=(_F(CHARGE = ZCHM,),
+                                    _F(CHARGE = PES ,),
+                                    ),
                          COMP_INCR=_F(
                 RELATION = 'ELAS',
                 ),

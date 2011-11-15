@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 14/11/2011   AUTEUR CHEIGNON E.CHEIGNON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,6 +85,7 @@ OPTION__
                                      CEPSINR  PEPSINR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PESA_R    431   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
+                                     ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_TEMP_R    431   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121p.para = tps_job 30 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,7 +93,8 @@ CHA2 = DEFI_CONTACT(
        ZONE=_F(
                GROUP_MA_ESCL = 'AB',
                GROUP_MA_MAIT = 'EF',
-               INTEGRATION = 'SIMPSON2',
+               INTEGRATION = 'SIMPSON',
+               ORDRE_INT = 4,
                CONTACT_INIT = 'INTERPENETRE',
                ALGO_CONT='PENALISATION',
                COEF_PENA_CONT=1E+16,

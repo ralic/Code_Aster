@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128u.para = tps_job 390 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,7 +116,7 @@ CHA4=DEFI_CONTACT(MODELE=MO,
                           GROUP_MA_MAIT='SBATIR',
                           APPARIEMENT='MAIT_ESCL',
                           NORMALE='MAIT',
-                          INTEGRATION='NOEUD',
+                          INTEGRATION='AUTO',
                           SEUIL_INIT=0.0,
                           COEF_FROT     = 1.E5, 
                           COEF_CONT=100,

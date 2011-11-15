@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 # sdld04a.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,7 +166,7 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                      reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                   ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
-                              INST_INIT = 0.07, PRECISION = 1.E-4),
+                              INST_INIT = 0.07, PRECISION = 1.E-4, CRITERE = 'ABSOLU'),
                       EXCIT=_F(  VECT_ASSE = VECT_X, FONC_MULT = ACCELERO),
                   INCREMENT=_F(  INST_FIN = 0.1, PAS = 0.001) , 
                   )
@@ -399,7 +399,8 @@ TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 #                             ARCHIVAGE=_F(  LIST_ARCH = L_ARCH,
                              ARCHIVAGE=_F(  LIST_INST = L_INS22,
                                     CHAM_EXCLU = ( 'VITE',  'ACCE', )),
-                             ETAT_INIT=_F(  RESULTAT = TRAN_LI2),
+                             ETAT_INIT=_F(  RESULTAT = TRAN_LI2,
+                                            NUME_ORDRE = 6,),
                      EXCIT=_F(  VECT_ASSE = MULT_X, FONC_MULT = ACCELERO)
                            )
 
@@ -452,7 +453,9 @@ TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                              ARCHIVAGE=_F(  PAS_ARCH = 10,
                                     CHAM_EXCLU = ( 'VITE',  'ACCE', )),
                              ETAT_INIT=_F(  RESULTAT = TRAN_LI4,
-                                         INST_INIT = 0.06),
+                                         INST_INIT = 0.06,
+                                         CRITERE = 'ABSOLU',
+                                         PRECISION = 1E-6,),
                      EXCIT=_F(  VECT_ASSE = MULT_X, FONC_MULT = ACCELERO)
                            )
 

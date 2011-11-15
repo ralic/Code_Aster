@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -218,10 +218,13 @@ C
         END IF
 C
         CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, ICODRE )
+C       ON NE SAIT PAS TRAITER LE CAS ELAS_COQUE
         IF ( PHENOM.EQ.'ELAS'      .OR.
      &       PHENOM.EQ.'ELAS_ORTH' .OR.
      &       PHENOM.EQ.'ELAS_ISTR' ) THEN
            CALL DXSITH (NOMTE,ZI(JMATE),ZR(JSIGM))
+        ELSE IF ( PHENOM.EQ.'ELAS_COQMU' ) THEN
+           CALL DXSIT2 (NOMTE,PGL,ZR(JSIGM))
         ENDIF
 C
 C               ----------------------------

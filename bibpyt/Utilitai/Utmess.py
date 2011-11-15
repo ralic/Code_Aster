@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 15/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,6 +83,7 @@ class MESSAGE_LOGGER:
         self.erreur_E = False
 
         # compteur des alarmes émises { 'id_alarm' : count }
+        self.nmax_alarm = 5
         self.count_alarm = {}         # dans la commande courante (pour arret à 5)
         self.count_alarm_tot = {}     # au total
 
@@ -97,7 +98,8 @@ class MESSAGE_LOGGER:
             self.default_args['i%d' % i] = 99999999
             self.default_args['r%d' % i] = 9.9999E99
             self.default_args['k%d' % i] = u'xxxxxx'
-
+        # mettre en cache les messages 'I' (et uniquement 'I')
+        self._cache_txt = {}
 
     def __call__(self, *args, **kwargs):
         """Raccourci pour simplifier l'appel depuis astermodule.c et UTMESS.
@@ -120,6 +122,15 @@ class MESSAGE_LOGGER:
         # le '+' n'a pas de sens pour les messages 'I'.
         if code == "I+":
             code = "I"
+        if code == 'I':
+            msg = self._cache_txt.get(idmess)
+            if msg:
+                try:
+                    self.affiche('MESSAGE', msg % self.build_dict_args(valk, vali, valr))
+                    return
+                except:
+                    # le formattage 'brut' échoue, on passera par une conversion complète
+                    pass
         # récupération du texte du message
         dictmess = self.get_message(code, idmess, valk, vali, valr)
 
@@ -209,6 +220,8 @@ class MESSAGE_LOGGER:
                 'corps_message' : ufmt(fmt_msg, dicarg),
                 'context_info'  : self.get_context(ctxt_msg, idmess, dicarg),
             }
+            if code == 'I':
+                self._cache_txt[idmess] = convert(fmt_msg)
         except Exception, msg:
             if code == 'I':
                 code = 'A'
@@ -217,7 +230,7 @@ class MESSAGE_LOGGER:
                 'flags'         : 0,
                 'id_message'    : idmess,
                 'corps_message' : _(u"""Erreur de programmation.
-Le message %s n'a pas pu etre formaté correctement.
+Le message %s n'a pas pu être formaté correctement.
 Arguments :
     entiers : %s
     réels   : %s
@@ -381,11 +394,9 @@ Exception : %s
             self.add_to_buffer(dictmess)
         self.print_buffer_content()
 
-
     def update_counter(self):
         """Mise à jour des compteurs et réaction si besoin.
         """
-        nmax_alarm = 5
         code = self.get_current_code()
         if   code == 'E':
             self.erreur_E = True
@@ -398,17 +409,16 @@ Exception : %s
                 self.count_alarm[idmess]     = self.count_alarm.get(idmess, 0) + 1
                 self.count_alarm_tot[idmess] = self.count_alarm_tot.get(idmess, 0) + 1
 
-            if self.is_alarm_disabled(idmess) or self.count_alarm[idmess] > nmax_alarm:
+            if self.is_alarm_disabled(idmess) or self.count_alarm[idmess] > self.nmax_alarm:
                 # ignorer l'alarme ou count_alarm > max, on vide le buffer
                 self.init_buffer()
-            elif self.count_alarm[idmess] == nmax_alarm:
+            elif self.count_alarm[idmess] == self.nmax_alarm:
                 # Pour mettre en relief le message CATAMESS_41, on le sépare
                 # de la dernière alarme
                 self.print_buffer_content()
                 dictmess = self.get_message(code, 'CATAMESS_41',
-                                        valk=idmess, vali=nmax_alarm)
+                                        valk=idmess, vali=self.nmax_alarm)
                 self.add_to_buffer(dictmess)
-
 
     def check_counter(self, info_alarm=0, silent=0):
         """Méthode "jusqu'ici tout va bien" ! (Interface C : chkmsg)
@@ -427,7 +437,6 @@ Exception : %s
             self.info_alarm()
         return iret
 
-
     def reset_command(self):
         """Méthode appelée entre les commandes. (Interface C : resmsg)
         On remet à zéro le compteur d'alarme,
@@ -435,7 +444,10 @@ Exception : %s
         iret = self.check_counter()
         # reset des alarmes
         self.count_alarm = {}
-
+        # reset du cache, sans doute inutile car l'ensemble des messages représente
+        # environ 1 Mo.
+        if len(self._cache_txt) > 1000:
+            self._cache_txt = {}
 
     def format_message(self, dictmess):
         """Formate le message décrit dans un dico :
@@ -619,7 +631,6 @@ def raise_UTMESS(exc):
 # unique instance du MESSAGE_LOGGER
 MessageLog = MESSAGE_LOGGER()
 
-
 def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
     """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
     optionnels.
@@ -636,7 +647,8 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
             + appel à MessageLog
             + puis exception ou abort en fonction du niveau d'erreur.
     """
-    MessageLog(code, idmess, valk, vali, valr, exception=True, print_as=print_as, cc=cc)
+    MessageLog(code, idmess, valk, vali, valr, exception=True,
+               print_as=print_as, cc=cc)
 
 
 def ASSERT(condition, message=""):

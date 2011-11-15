@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 15/11/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,7 +131,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=2.2307120796315E+06,);
+           VALE=8.90037E+05,);
 
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
@@ -139,7 +139,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=2.2307120796315E+06,);
+           VALE=8.90037E+05,);
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
@@ -147,7 +147,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=1.9024566892537E+06,);
+           VALE=1.48374E+06,);
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
@@ -155,7 +155,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=1.9024566892537E+06,);           
+           VALE=1.48374E+06,);           
              
 FIN();
 

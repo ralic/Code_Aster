@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,26 +21,26 @@
 
 cata_msg = {
 
-# a traduire en francais par JP
+# a traduire en français par JP
 1 : _(u"""
- le nombre de grels du ligrel du modele est nul.
+ le nombre de grels du LIGREL du modèle est nul.
 """),
 
 2 : _(u"""
- il ne faut pas demander 'TR' derrière cara si le type d'élément discret ne prend pas en compte la rotation
+ il ne faut pas demander 'TR' derrière CARA si le type d'élément discret ne prend pas en compte la rotation
 """),
 
 3 : _(u"""
- Il a été demandé de convertir un champ par éléments aux noeuds en un
- champ aux noeuds. Or le champ par éléments aux noeuds contient des
- sous-points alors que un champ aux noeuds ne peut pas en contenir.
- De ce fait, les mailles contenant des sous-points vont être exclues.
+ La conversion d'un champ par éléments aux noeuds en un champ
+ aux noeuds a été demandé.
+ Or le champ par éléments aux noeuds contient des
+ sous-points alors qu'un champ aux noeuds ne peut pas en contenir.
+ Les mailles contenant des sous-points vont être exclues.
 
  Conseil :
-   Si vous utilisez CALC_CHAMP pour calculer un champ aux noeuds et
-   que vous souhaitez récupérer des valeurs sur les mailles ayant des
-   sous-points, veuillez d'abord utiliser la commande POST_CHAMP pour
-   extraire des sous-points.
+   Si vous souhaitez convertir le champ sur les mailles ayant des
+   sous-points, vous devez d'abord extraire le champ par éléments
+   aux noeuds sur un sous-point avec la commande POST_CHAMP.
 """),
 
 4 : _(u"""
@@ -61,11 +61,11 @@ cata_msg = {
 """),
 
 6 : _(u"""
- axe non colineaire à v1v2
+ axe non colinéaire à v1v2
 """),
 
 7 : _(u"""
- pb norme de axe
+ Problème norme de axe
 """),
 
 9 : _(u"""
@@ -77,7 +77,7 @@ cata_msg = {
 """),
 
 11 : _(u"""
- on ne peut pas créer un champ de VARI_R avec le mot cle facteur AFFE
+ on ne peut pas créer un champ de VARI_R avec le mot clé facteur AFFE
  (voir u2.01.09)
 """),
 
@@ -143,15 +143,15 @@ cata_msg = {
 """),
 
 28 : _(u"""
- champ non-assemblable en CHAM_NO :  %(k1)s
+ Le champ ne peut pas être assemblé en CHAM_NO :  %(k1)s
 """),
 
 29 : _(u"""
- champ non-assemblable en CHAM_ELEM (ELGA) :  %(k1)s
+ Le champ ne peut pas être assemblé en CHAM_ELEM (ELGA) :  %(k1)s
 """),
 
 31 : _(u"""
- nom_cmp2 et nom_cmp de longueur différentes.
+ NOM_CMP2 et NOM_CMP de longueur différentes.
 """),
 
 32: _(u"""
@@ -161,11 +161,11 @@ cata_msg = {
 """),
 
 33 : _(u"""
- le mot-cle 'coef_c' n'est applicable que pour un champ de type complexe
+ le mot-clé 'COEF_C' n'est applicable que pour un champ de type complexe
 """),
 
 34 : _(u"""
- developpement non realise pour les champs aux éléments. vraiment desole !
+ développement non réalisé pour les champs aux éléments. vraiment désolé !
 """),
 
 35 : _(u"""
@@ -173,7 +173,7 @@ cata_msg = {
 """),
 
 36 : _(u"""
- on ne traite que des cham_no reels ou complexes. vraiment desole !
+ on ne traite que des CHAM_NO réels ou complexes. vraiment désolé !
 """),
 
 40 : _(u"""
@@ -181,7 +181,7 @@ cata_msg = {
 """),
 
 41 : _(u"""
- duplication "maillage" du .ltnt, objet inconnu:  %(k1)s
+ duplication "maillage" du .LTNT, objet inconnu:  %(k1)s
 """),
 
 42 : _(u"""
@@ -189,11 +189,11 @@ cata_msg = {
 """),
 
 43 : _(u"""
- numérotation absente  probleme dans la matrice  %(k1)s
+ numérotation absente  problème dans la matrice  %(k1)s
 """),
 
 44 : _(u"""
-  erreur dans la recuperation du nombre de noeuds !
+  erreur dans la récupération du nombre de noeuds !
 """),
 
 45 : _(u"""
@@ -201,11 +201,11 @@ cata_msg = {
 """),
 
 46 : _(u"""
- la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a ete définie.
+ la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a été définie.
 """),
 
 47 : _(u"""
-  le mot cle : %(k1)s n est pas autorise.
+  le mot clé : %(k1)s n est pas autorise.
 """),
 
 49 : _(u"""
@@ -240,9 +240,9 @@ cata_msg = {
  développement.
  Pour contourner ce problème, vous pouvez néanmoins:
    - changer de partitionneur (METHODE=KMETIS ou PMETIS),
-   - modifier les paramètres numériques du partitionnement (mot-clés TRAITER_BORDS,
+   - modifier les paramètres numériques du partitionnement (mots-clés TRAITER_BORDS,
      POIDS_MAILLES, GROUPAGE...),
-   - générer votre partionnement manuellement (autant de groupes de mailles et de
+   - générer votre partitionnement manuellement (autant de groupes de mailles et de
      groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
      dédié: DEFI_PART_FETI_OPS.
 """),
@@ -250,12 +250,12 @@ cata_msg = {
 
 57 : _(u"""
   DISMOI :
-  la question n'a pas de réponse sur une grandeur de type matrice gd_1 x gd_2
+  la question n'a pas de réponse sur une grandeur de type matrice GD_1 x GD_2
 """),
 
 59 : _(u"""
   DISMOI :
-  la question n'a pas de sens sur une grandeur de type matrice gd_1 x gd_2
+  la question n'a pas de sens sur une grandeur de type matrice GD_1 x GD_2
 """),
 
 60 : _(u"""
@@ -264,7 +264,7 @@ cata_msg = {
 """),
 
 63 : _(u"""
- phenomene inconnu :  %(k1)s
+ phénomène inconnu :  %(k1)s
 """),
 
 65 : _(u"""
@@ -276,11 +276,11 @@ cata_msg = {
 """),
 
 68 : _(u"""
- type de resultat inconnu :  %(k1)s  pour l'objet :  %(k2)s
+ type de résultat inconnu :  %(k1)s  pour l'objet :  %(k2)s
 """),
 
 69 : _(u"""
- le resultat composé ne contient aucun champ
+ le résultat composé ne contient aucun champ
 """),
 
 70 : _(u"""
@@ -288,7 +288,7 @@ cata_msg = {
 """),
 
 71 : _(u"""
- mauvaise recuperation de NEMA
+ mauvaise récupération de NEMA
 """),
 
 72 : _(u"""
@@ -304,7 +304,7 @@ cata_msg = {
 """),
 
 75 : _(u"""
- probleme avec la reponse  %(k1)s
+ problème avec la réponse  %(k1)s
 """),
 
 76 : _(u"""
@@ -312,15 +312,15 @@ cata_msg = {
 """),
 
 77 : _(u"""
- unite logique  %(k1)s , probleme lors du close
+ unité logique  %(k1)s , problème lors du close
 """),
 
 78 : _(u"""
-  erreur dans la recuperation du maillage
+  erreur dans la récupération du maillage
 """),
 
 79 : _(u"""
-  erreur dans la récuperation du nombre de mailles
+  erreur dans la récupération du nombre de mailles
 """),
 
 80 : _(u"""
@@ -333,15 +333,15 @@ cata_msg = {
 """),
 
 82 : _(u"""
- methode d'integration inexistante.
+ méthode d'intégration inexistante.
 """),
 
 83 : _(u"""
- interpolation par defaut "lineaire"
+ interpolation par défaut "linéaire"
 """),
 
 84 : _(u"""
- interpolation  %(k1)s  non implantee
+ interpolation  %(k1)s  non implantée
 """),
 
 85 : _(u"""
@@ -357,7 +357,7 @@ cata_msg = {
 """),
 
 88 : _(u"""
- nom de sous-structure et d'intitule incompatible
+ nom de sous-structure et d'intitulé incompatible
 """),
 
 89 : _(u"""

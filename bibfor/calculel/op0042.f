@@ -1,7 +1,7 @@
       SUBROUTINE OP0042()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -98,8 +98,9 @@ C     --------------------------------------------------------
         NBMA2=MAX(-NBMA,-NBGMA)
         CALL GETFAC('EXCIT',NEXCIT)
         IF (MODELE.NE.' '.OR.MATE.NE.' '.OR.CARA.NE.' '.OR.
-     &       NBMA2.GT.0.OR.NEXCIT.GT.0)
-     &       CALL U2MESS('A','CALCULEL_26')
+     &       NBMA2.GT.0.OR.NEXCIT.GT.0) THEN
+          CALL U2MESS('A','CALCULEL_26')
+        ENDIF
       ENDIF
 
 

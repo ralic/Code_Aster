@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 1 CYLINDER ROLLER CONTACT
 # ssnp154d.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,7 +82,7 @@ CONT=DEFI_CONTACT(MODELE=MO,
                           GROUP_MA_ESCL='Bottom_C',
                           CONTACT_INIT='INTERPENETRE',
                           COULOMB=0.1,
-                          INTEGRATION='SIMPSON',
+                          INTEGRATION='AUTO',
                           SANS_GROUP_NO_FR='C',
                           ),);
 

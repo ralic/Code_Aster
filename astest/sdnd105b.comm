@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
 # TITRE CHOC DE DEUX MASSES AU COMPORTEMENT FLAMBAGE PLASTIQUE
 # sdnd105b.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,6 +25,15 @@ DEBUT( CODE=_F(  NOM = 'SDND105B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI')
 
 MAILLAGE=LIRE_MAILLAGE( )
 
+MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F( NOM='GN2',
+                                      NOEUD=('N02',),),);
+MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F( NOM='GN3',
+                                      NOEUD=('N03',),),);
+                                                                            
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                   _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
                          GROUP_MA = 'STRUC'),
@@ -142,8 +151,8 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                       ETAT_INIT=_F(  VITE = VIT_GENE),
 
-                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
-                                 NOEUD_2 = 'N03',
+                      FLAMBAGE=_F(  GROUP_NO_1 = 'GN2',
+                                 GROUP_NO_2 = 'GN3',
                                  OBSTACLE = BI_PLANY,
                                  NORM_OBST = (0., 1., 0.,),
                                  DIST_1 = 5.,
@@ -173,7 +182,8 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  RIGI_NOR = 0.5,
                                  FNOR_CRIT = 1.,
                                  FNOR_POST_FL = 0.5,
-                                 RIGI_NOR_POST_FL = 0.25),
+                                 RIGI_NOR_POST_FL = 0.25,
+                                 ANGL_VRIL = 0.,),
 
                       INCREMENT=_F(
                                  INST_FIN = 12.,  PAS = 0.001,PAS_MAXI = 0.005)

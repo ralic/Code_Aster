@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 5 STEEL ROLLER ON RUBBER
 # ssnp157a.para = tps_job 1500 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,8 +144,7 @@ CON=DEFI_CONTACT(MODELE=MO,
                          COULOMB=0.3,
                          # See top : this parameter must be chosen wisely otherwise computation won't converge
                          COEF_FROT=coef,
-                         INTEGRATION='SIMPSON',
-                         #ORDRE_INT=5,
+                         INTEGRATION='AUTO',
                          ),);
 
 RESU=STAT_NON_LINE(INFO=1,

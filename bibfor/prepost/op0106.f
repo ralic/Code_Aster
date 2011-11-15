@@ -1,7 +1,7 @@
       SUBROUTINE OP0106()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER LONC2,LONCH,LREF,LTRAV,LVAFON,N0,N2,NBCHAR
       INTEGER NBDDL,NBOPT,NBORDR,NC,NEQ,NH,NP,NBMA
       INTEGER JMAI,II,NBGMA,NBMA2,NEXCIT
-      INTEGER JREF,IERD
+      INTEGER JREF,IERD,NBSP
 C     ------------------------------------------------------------------
 
       REAL*8 TIME,OMEGA2,PREC,COEF(3),PARTPS(3),ETAN
@@ -356,8 +356,8 @@ C       ================================================================
               VALK(3)=OPTION
               CALL U2MESK('A','PREPOST5_4',3,VALK)
               GOTO 140
-
             ENDIF
+C
             CALL RSEXCH(RESUCO,OPTION,IORDR,CHAMNO,IRET)
             IF (IRET.EQ.101) THEN
               CALL CODENT(IORDR,'G',KIORD)
@@ -401,8 +401,17 @@ C
             IF (NBMA.NE.0) THEN
               CALL CESRED(CHAMS0,NBMA,ZI(JMAI),0,K8BID,'V',CHAMS0)
             ENDIF
-            CALL CESCNS(CHAMS0,' ','V',CHAMS1,' ',IBID)
-            CALL CNSCNO(CHAMS1,PRFCHN,'NON','G',CHAMNO,'F',IBID)
+            CALL CESCNS(CHAMS0,' ','V',CHAMS1,'A',IBID)
+            CALL CNSCNO(CHAMS1,PRFCHN,'NON','G',CHAMNO,' ',IRET)
+
+C           VERIFICATION POUR LES CHAMPS A SOUS-POINT
+            CALL DISMOI('F','MXNBSP',CHELEM,'CHAM_ELEM',NBSP,K8BID,IBID)
+            IF ((NBSP.GT.1).AND.(IRET.EQ.1)) THEN
+              VALK(1)=OPTIO2
+              VALK(2)=OPTION
+              CALL U2MESK('F','CALCULEL4_16',2,VALK)
+            ENDIF
+C
             CALL RSNOCH(RESUCO,OPTION,IORDR,' ')
             CALL DETRSD('CHAM_ELEM_S',CHAMS0)
             CALL DETRSD('CHAM_NO_S',CHAMS1)

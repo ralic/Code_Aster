@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21b.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,7 @@ MACRO_PROJ_BASE( BASE=MODES,
 
 LIFREQ=DEFI_LIST_REEL(DEBUT=5., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 70))
 
-DYNAHARG=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+DYNHARGA=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                        MATR_MASS=MASSEGEN, MATR_RIGI=RIGIDGEN,
                        AMOR_MODAL=_F(AMOR_REDUIT=(8.6824E-3, 0.017101,
                              0.0250, 3.21393E-2,3.83022E-2, 4.33012E-2,
@@ -100,19 +100,36 @@ DYNAHARG=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                        TOUT_CHAM='OUI',
                        EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = EFFOGENE)
                             )
-DYNTPST = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+
+
+L_AMORT = DEFI_LIST_REEL(VALE=(8.6824E-3, 0.017101, 0.0250, 3.21393E-2,
+                               3.83022E-2, 4.33012E-2, 4.69846E-2, 4.92403E-2,),)
+ 
+DYNHARGB=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                       MATR_MASS=MASSEGEN, MATR_RIGI=RIGIDGEN,
+                       AMOR_MODAL=_F(LIST_AMOR=L_AMORT,),
+                       LIST_FREQ=LIFREQ,
+                       TOUT_CHAM='OUI',
+                       EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = EFFOGENE)
+                            )
+                                                       
+DYNTPST = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           TOUT_CHAM = 'OUI'  );
-DYNTPSU = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+DYNTPSUA = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'DEPL'  );
-DYNTPSV = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+DYNTPSUB = REST_SPEC_TEMP( RESU_GENE = DYNHARGB , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'DEPL'  );
+DYNTPSV = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'VITE'  );
-DYNTPSA = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+DYNTPSA = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'ACCE'  );
@@ -123,29 +140,42 @@ DYNTV = RECU_FONCTION(RESU_GENE=DYNTPST,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
 DYNTA = RECU_FONCTION(RESU_GENE=DYNTPST,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
-DYNU = RECU_FONCTION(RESU_GENE=DYNTPSU,
+DYNUA = RECU_FONCTION(RESU_GENE=DYNTPSUA,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
+DYNUB = RECU_FONCTION(RESU_GENE=DYNTPSUB,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )                      
 DYNV = RECU_FONCTION(RESU_GENE=DYNTPSV,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
 DYNA = RECU_FONCTION(RESU_GENE=DYNTPSA,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
 
-COMPU1 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTU, COEF = 1.),
-                              _F(  FONCTION = DYNU, COEF = -1.))
+COMPU1A = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTU, COEF = 1.),
+                              _F(  FONCTION = DYNUA, COEF = -1.))
                        )
+
+COMPU1B = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTU, COEF = 1.),
+                              _F(  FONCTION = DYNUB, COEF = -1.))
+                       )
+                                              
 COMPV1 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTV, COEF = 1.),
                               _F(  FONCTION = DYNV, COEF = -1.))
                        )
 COMPA1 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTA, COEF = 1.),
                               _F(  FONCTION = DYNA, COEF = -1.))
                        )
-MAXCU1 = INFO_FONCTION( MAX=_F(  FONCTION = COMPU1))
+MAXCU1A = INFO_FONCTION( MAX=_F(  FONCTION = COMPU1A))
+MAXCU1B = INFO_FONCTION( MAX=_F(  FONCTION = COMPU1B))
+
 MAXCV1 = INFO_FONCTION( MAX=_F(  FONCTION = COMPV1))
 MAXCA1 = INFO_FONCTION( MAX=_F(  FONCTION = COMPA1))
 
-TEST_TABLE(TABLE=MAXCU1,TYPE_TEST='SOMM_ABS',
+TEST_TABLE(TABLE=MAXCU1A,TYPE_TEST='SOMM_ABS',
            NOM_PARA='DEPL',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
             );
+TEST_TABLE(TABLE=MAXCU1B,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DEPL',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+
 TEST_TABLE(TABLE=MAXCV1,TYPE_TEST='SOMM_ABS',
            NOM_PARA='VITE',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
             );
@@ -157,7 +187,7 @@ TEST_TABLE(TABLE=MAXCA1,TYPE_TEST='SOMM_ABS',
 TRANPHYT=REST_GENE_PHYS(    RESU_GENE=DYNTPST,
                                 TOUT_CHAM='OUI',
                                                       )
-TRANPHYU=REST_GENE_PHYS(    RESU_GENE=DYNTPSU,
+TRANPHYU=REST_GENE_PHYS(    RESU_GENE=DYNTPSUA,
                                 TOUT_CHAM='OUI',
                                                       )
 TRANPHYV=REST_GENE_PHYS(    RESU_GENE=DYNTPSV,
@@ -235,7 +265,7 @@ TEST_TABLE(TABLE=MAXCA1P,TYPE_TEST='SOMM_ABS',
            NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
             );
 
-DYNAHARM=REST_GENE_PHYS(    RESU_GENE=DYNAHARG,
+DYNAHARM=REST_GENE_PHYS(    RESU_GENE=DYNHARGA,
                                 TOUT_CHAM='OUI',
                               LIST_FREQ=LIFREQ
                                                       )

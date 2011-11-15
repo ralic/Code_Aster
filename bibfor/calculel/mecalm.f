@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -140,6 +140,8 @@ C               123456789012345678901234
       BLAN24 = '                        '
       LESOPT='&&'//NOMPRO//'.LES_OPTION'
       NH=0
+      NBCHRE=0
+      IOCC=0
       CHAMGD=BLAN24
       CHGEOM=BLAN24
       CHNUMC=BLAN24
@@ -255,11 +257,11 @@ C     ON VERIFIE QUE CARA_ELEM, NIVE_COUCHE ET NUME_COUCHE ONT ETE
 C     RENSEIGNES POUR LES COQUES
 C=======================================================================
       EXIPLA=.FALSE.
-      CALL DISMOI('F','EXI_COQ1D',MODELE,'MODELE',IBID,K8B,IERD)
+      CALL DISMOI('F','EXI_COQ1D',LIGREL,'LIGREL',IBID,K8B,IERD)
       IF (K8B(1:3).EQ.'OUI')EXIPLA=.TRUE.
-      CALL DISMOI('F','EXI_COQ3D',MODELE,'MODELE',IBID,K8B,IERD)
+      CALL DISMOI('F','EXI_COQ3D',LIGREL,'LIGREL',IBID,K8B,IERD)
       IF (K8B(1:3).EQ.'OUI')EXIPLA=.TRUE.
-      CALL DISMOI('F','EXI_PLAQUE',MODELE,'MODELE',IBID,K8B,IERD)
+      CALL DISMOI('F','EXI_PLAQUE',LIGREL,'LIGREL',IBID,K8B,IERD)
       IF (K8B(1:3).EQ.'OUI')EXIPLA=.TRUE.
       IF (EXIPLA) THEN
         CALL GETVID(' ','CARA_ELEM',1,IARG,1,K8B,N1)
@@ -352,13 +354,13 @@ C               "VARI_ELNO","VATU_ELNO"
 C             + "SIEF_ELNO" SAUF CAS XFEM
 C    ------------------------------------------------------------------
 
-        CALL CALCOP(OPTION,RESUCO,RESUC1,KNUM,NBORDR,KCHA,NCHAR,
-     &              CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+        CALL CALCOP(OPTION,LESOPT,RESUCO,RESUC1,KNUM,NBORDR,
+     &              KCHA,NCHAR,CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
         IF (IRET.EQ.0)GOTO 660
 
         NUORD=ZI(JORDR)
         CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD,
-     &              NBORDR,NPASS,LIGREL)
+     &              NBORDR,'G',NPASS,LIGREL)
         CALL JEVEUO(KCHA,'L',JCHA)
 C
         CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,CHCARA,
@@ -376,7 +378,7 @@ C    ------------------------------------------------------------------
             CALL JERECU('V')
             IORDR=ZI(JORDR+IAUX-1)
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
+     &                  NBORDR,'G',NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
@@ -428,7 +430,7 @@ C    ------------------------------------------------------------------
             CALL JERECU('V')
             IORDR=ZI(JORDR+IAUX-1)
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
+     &                  NBORDR,'G',NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
@@ -464,12 +466,13 @@ C    ------------------------------------------------------------------
             CHSIG=' '
             CHSIC=' '
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
+     &                  NBORDR,'G',NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             IF (OPTION.EQ.'SIEQ_ELNO') THEN
-              IF (TYSD.EQ.'FOURIER_ELAS') CALL U2MESK('F',
-     &            'CALCULEL6_83',1,OPTION)
+              IF (TYSD.EQ.'FOURIER_ELAS') THEN
+                CALL U2MESK('F','CALCULEL6_83',1,OPTION)
+              ENDIF
               CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
               CALL RSEXCH(RESUCO,'SIGM_ELNO',IORDR,CHSIC,IRET3)
 C
@@ -542,7 +545,7 @@ C    ------------------------------------------------------------------
             CALL JERECU('V')
             IORDR=ZI(JORDR+IAUX-1)
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
+     &                  NBORDR,'G',NPASS,LIGREL)
             CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,OPTION,
      &                  IRET1)
             CALL RSEXC2(2,2,RESUCO,'SIGM_ELNO',IORDR,CHSIG,OPTION,
@@ -802,7 +805,7 @@ C    ------------------------------------------------------------------
             CALL JERECU('V')
             IORDR=ZI(JORDR+IAUX-1)
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
+     &                  NBORDR,'G',NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL RSEXC2(1,2,RESUCO,'EFGE_ELNO',IORDR,CHSIG,
@@ -834,7 +837,7 @@ C     ------------------------------------------------------------------
             CALL JERECU('V')
             IORDR=ZI(JORDR+IAUX-1)
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
+     &                  NBORDR,'G',NPASS,LIGREL)
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
 

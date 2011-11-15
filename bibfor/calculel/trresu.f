@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 14/11/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,7 +208,7 @@ C                    123456789012345678901234567890123
           END IF
 
           CALL GETVTX('RESU','NOM_CHAM',IOCC,IARG,1,NOPARA,N1)
-          
+
           IF (N1.NE.0) THEN
 
             CALL RSEXCH(LERESU,NOPARA,NUMORD,CHAM19,IRET)
@@ -341,6 +341,7 @@ C              RIEN A FAIRE.
               CALL UTCMP1(NOMGD,'RESU',IOCC,NODDL,IVARI)
               CALL GETVIS('RESU','SOUS_POINT',IOCC,IARG,1,NUSP,N2)
               IF (N2.EQ.0) NUSP = 0
+              NUPO=0
               CALL GETVIS('RESU','POINT',IOCC,IARG,1,NUPO,N2)
               IF (TYPCH.EQ.'NOEU') THEN
                 IF (N2.NE.0) THEN
