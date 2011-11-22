@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF sensibilite Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ cata_msg = {
 """),
 
 4 : _(u"""
- Le champ de thêta sensibilité est inexistant dans la sd %(k1)s
+ Le champ de thêta sensibilité est inexistant dans la structure de donnée %(k1)s
 """),
 
 5 : _(u"""
@@ -99,8 +99,8 @@ cata_msg = {
 """),
 
 33 : _(u"""
- La dérivée des contraintes par rapport a l'épaisseur n'est pas implantee 
- pour les COQUE_3D
+ La dérivée des contraintes par rapport à l'épaisseur n'est pas implantée
+ pour les COQUE_3D.
 """),
 
 35 : _(u"""

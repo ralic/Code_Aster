@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 21/11/2011   AUTEUR MACOCCO K.MACOCCO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -195,10 +195,6 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DEPL_POST_XFEM      515   IN__   E18NEUI PCNSETO  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  E6NEUTI PHEAVTO
-                                     E9NEUTI  PLONCHA  E6NEUTR PPINTTO  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST
-                              OUT__  E20NEUTR PDEXFEM
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX

@@ -1,0 +1,936 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 11/21/2011 - 10:51:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017925 DU 2011-11-17 12:05:31
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    test supv002a si LANG est vide
+FONCTIONNALITE
+   Le test supv002a plantait dans l'astout lancé à la suite de la mise à 
+   jour car la variable LANG était vide (car lancé depuis un cron).
+   
+   On modifie le test pour qu'il fonctionne même si la LANG n'est pas 
+   définie.
+   
+   On propose maintenant afin d'interdire aux développeurs de restituer 
+   des messages mal orthographiés (c'est à dire contenant des mots 
+   inconnus du dictionnaire).
+   Pour cela, on met un TEST_RESU avec la valeur de référence à 0 et la 
+   tolérance à 389.1 (car il y actuellement 389 messages dans ce cas). 
+   Avec ce test, on les autorise à en retirer sans provoquer de conflit 
+   de restitution.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    supv002a sans LANG
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017926 DU 2011-11-17 12:18:19
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    NEW11.0.33 : rccm03a est en erreur numxc3xa9rique
+FONCTIONNALITE
+   rccm03a s'arrête en division par zéro sur toutes les plates-formes.
+   
+   Ceci est dû à la modification de CESRED qui alloue maintenant les 
+   champs au plus juste.
+   
+   L'erreur est dans la routine RC36CA qui recopie les valeurs des 
+   caractéristiques géométriques.
+   Or la programmation de RC36CA est dangereuse car elle suppose que 
+   les  champs ont la même description (en mémoire).
+   
+   On cherche à produire un champ ELNO sur des poutres (à 2 noeuds) a 
+   4 composantes IY, IZ, D, EP.
+   On dispose des valeurs des caractéristiques dans 2 cartes contenant 
+   les composantes IY1, IZ1, IY2, IZ2 pour la première et R1, EP1, R2, 
+   EP2 pour la deuxième.
+   Il faut donc prendre les 2 premières composantes dans la carte 1, 
+   les 2 suivantes dans la 2ème... pour le 1er point.
+   
+   La programmation supposait que les champs avec le même rangement en 
+   mémoire et écrivait directement dans le vecteur ZR avec un décalage 
+   bien senti !
+   
+   On a ré-écrit cette routine en utilisant CESEXI afin de la rendre 
+   plus robuste.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    18 tests POST_RCCM multi plates-formes
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017662 DU 2011-10-06 10:11:29
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.25, le cas-test sslv135m s'arrête par manque de temps CPU sur Aster4.
+FONCTIONNALITE
+   En 11.0.24, le temps était de 108s dans CALC_FATIGUE, 146s au total.
+   
+   Après correction de issue17483, on obtient respectivement 70s et 98s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv135m
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017931 DU 2011-11-17 17:25:20
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.33, le cas-test ssnp117a est NOOK sur Rocks.
+FONCTIONNALITE
+   Suite à la correction de issue17142, ssnp117a est NOOK sur Rocks 
+   (2.e-8 pour un test de non régression).
+   
+   On augmente la tolérance.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnp117a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017928 DU 2011-11-17 17:19:51
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.33, le cas-test erreu09c est NOOK sur Rocks, Calibre5 et Calibre7.
+FONCTIONNALITE
+   On propose de retirer ce test qui n'avait été ajouté pour la 
+   couverture de code. Le temps d'exécution est très court pour détecter 
+   de manière fiable le dépassement de temps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unigest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 11/21/2011 - 10:51:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017172 DU 2011-06-21 13:14:21
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    DYNA_ALEA_MODA / EXCIT / NOEUD  > résultats FAUX en général
+FONCTIONNALITE
+   -----------------------------------------------------
+   Je propose de corriger les bugs revelés par Jacques selon ses indications:
+   
+   *) La programmation de reseci.f est fausse si la maille IMAI1 n'est pas en première
+   position dans la carte cara_elem.CARGENPO.
+      En effet, la grandeur CAGNPO a plus de 30 CMPS et donc 2 entiers codés. La formule :
+        IEC1 = ZI(IAD1-1+3+2* (INASMX)+INECGD* (IASS1-1)+1)
+        avec INECGD=1 est fausse dès que INASMX > 1
+        Il faut écrire : INECGD=2
+                                                                                            
+                                                          
+   *) la programmation de preflx.f est TOUJOURS fausse :
+           CALL JELIRA(K24BD1,'NUTIOC',INBMAI,KBID)
+           DO 307 IMAI1=1,INBMAI
+             ... on regarde si IMAI1 contient le noeud cherché :
+             if (trouvé) goto 309
+    307    CONTINUE
+    309    CONTINUE
+    Pour la collection maillage.CONNEX, l'attribut NUTIOC
+   vaut toujours 0. Il faut utiliser NMAXOC.
+   
+   -----------------------------------------------------
+   Quant à la question de la résorption ou de travaux de pérennisation plus importants, je
+   pense que c'est une question à traiter à part.
+   Les fonctionnalités EXCIT: SOUR_PRESS, SOUR_FORC, SOUR_DEBI_MASS, SOUR_DEBI_VOLU sont
+   propres aux calculs fluide_structure.
+   Ces fonctionnalités ne sont pas très testées et peu utilisées. Il semble que l'opérateur
+   DYNA_SPEC_MODAL permet également de faire ce type de calculs et est utilisé par MFEE (à
+   vérifier avec Charles). La doc U4 de DYNA_SPEC_MODAL est assez pauvre et ne donne pas
+   beaucoup d'indications.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdll105
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 11/21/2011 - 10:51:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017349 DU 2011-07-28 09:24:12
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.16, le cas-test zzzz295a s'arrete anormalement sur Rocks et Calibre5.
+FONCTIONNALITE
+   En NEW11.0.16, le cas-test zzzz295a s'arrete anormalement sur Rocks et Calibre5.
+   
+   TITRE : VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR 
+   LA MODELISATION COQUE_C_PLAN.
+   
+   CORRECTION : Le plantage est du à une variable non initialisée.
+   
+   Il se produit sur toutes les machines en mode debug, sur Rocks seulement en 
+   nodebug.
+   
+   Correction : routine TE0239 : il faut décommentariser l'instruction ligne 154
+   C      IVARIP=IVARIM
+   qui initialise la variable IVARIP si on calcule RIGI_MECA_TANG.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz295a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 21/11/2011 - 10:44:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017760 DU 2011-10-20 13:41:30
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TMA : Phimeca
+TITRE
+    XFEM et te0515
+FONCTIONNALITE
+   Problème :
+   ========
+   Les catalogues suivants déclare calculer l'option DEPL_POST_XFEM via le te0515.
+   gener_mecpl2_xhtc.cata
+   gener_me_xhc.cata   
+   gener_me_xhtc.cata
+   gener_me_xtc.cata    
+   
+   Or, le t0515 est un te dédié aux VF SUSHI et l'option DEPL_POST_XFEM n'existe plus.
+   
+   Correction :
+   ==========
+   On supprime l'option DEPL_POST_XFEM des catalogues.
+   
+   Impacts :
+   =======
+   gener_mecpl2_xhtc.cata
+   gener_me_xhc.cata   
+   gener_me_xhtc.cata
+   gener_me_xtc.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    *
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017143 DU 2011-06-16 07:35:22
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.0.11, le cas-test ssnv209l ne converge pas sur Calibre5.
+FONCTIONNALITE
+   Problème :
+   ========
+   En NEW11.0.11, le cas-test ssnv209l ne converge pas sur Calibre5.
+   
+   Correction :
+   ==========
+   Depuis la 11.0.11 bien des lignes de source ont coulé dans l'AGLA. Maintenant le test
+   passe sur toutes les plateformes (Aster4, Clpaster, Calibre5, Calibre7).
+   
+   On ne fait rien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage du test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 11/22/2011 - 12:57:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017911 DU 2011-11-15 07:39:10
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    AFFE_CHAR_THER - ECHANGE PAROI RESU_FAUX
+FONCTIONNALITE
+   Je confirme le bug.
+   
+   L'intérêt de la répétitivité cyclique des ddls (en thermique comme en mécanique) peut se
+   comprendre : ce sont ces mêmes mots-clés (ANGL_NAUT, CENTRE) qu'on retrouve dans les
+   chargements LIAISON_GROUP et LIAISON_MAIL. On peut typiquement les employer pour modéliser
+   un unique secteur de structure à symétrie de rotation (toutes machines tournantes).
+   
+   Mais dans ce cas, on a toujours continuité de la matière d'un secteur à l'autre. Donc pour
+   la thermique, égalité de température entre noeuds symétriquement appariés.
+   
+   Je n'arrive pas à me figurer la situation d'une structure à symétrie cyclique qui aurait -
+   entre chaque bloc - un "insterstice" où se développerait un échange thermique fluide.
+   
+   Bref, c'est n'importe quoi et il est salutaire de supprimer cette fonctionnalité inutile
+   et bugguée.
+   
+   Je propose de livrer la résorption uniquement en v11 (nous vivons avec cette
+   fonctionnalité depuis - au moins - la version 4, pas la peine de s'acharner en v10).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.02
+VALIDATION
+    nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nicolas      NICOLAS Gérald        DATE 11/22/2011 - 12:57:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017671 DU 2011-10-07 08:06:08
+TYPE anomalie concernant homard (VERSION )
+TITRE
+    Homard : prise en compte de DIAM_MIN
+FONCTIONNALITE
+   Résolu depuis la mise en service de HOMARD 10.3 en association avec ASTER 11.0.32
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01
+VALIDATION
+    xc3xa9tude de cette fiche
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 11/22/2011 - 12:57:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017942 DU 2011-11-21 13:32:11
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Liste de NOEUD dans MACR_SPECTRE
+FONCTIONNALITE
+   Bug dans MACR_SPECTRE :
+   
+   La boucle sur la constitution de la liste des noeuds constituant le plancher était
+   défectueuse pour le cas où le plancher est donné par une liste de NOEUDS (et non de GROUP_NO).
+   
+   Les cas tests validant MACR_SPECTRE (SDLL148A, MISS01A, MISS05A) utilisaient tous
+   GROUP_NO. Je modifie SDLL148A pour constituer une liste de noeuds de planchers par les
+   deux voies possibles.
+   
+   Correction livrée cette semaine en versions 10 et 11 :
+   - modification de macr_spectre_ops.py
+   - modification de sdll138a.comm
+   
+   Pour débloquer l'utilisateur en attendant la correction : grouper les noeuds dans un
+   groupe, puis utiliser celui-ci dans MACR_SPECTRE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdll138a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 11/21/2011 - 01:29:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017851 DU 2011-11-04 09:15:06
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    DEFI_FISS_XFEM et debug JEVEUX
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   Le bug a lieu dans DEFI_FISS_XFEM : xls3d -> xorima :
+   
+   on ?crit ? une adresse jeveux ZI(JSENS-1+KMAFIS) avec KMAFIS=0
+   
+   Cette routine a ?t? introduite en 11.0.28.
+   
+   
+   Solution :
+   ----------
+   
+   C'est un piege du fortran (merci Jacques pour la confirmation)
+   
+   imafis=2
+   On fait une boucle  DO 12 KMAFIS=IMAFIS-1,1,-1
+   donc au debut, KMAFIS=1
+   et une des sorties possibles de la boucle se fait par un goto :
+    12     CONTINUE
+    13     CONTINUE
+   
+   apres le continue 13, KMAFIS a encore ?t? incr?ment? (KMAFIS vaut donc 0)
+   
+   Et on se sert de KMAFIS plus loin !
+   
+   La programmation actuelle est tr?s dangeureuse.
+   Normalement, il ne faut pas de servir d'un indice de boucle hors de la boucle.
+   
+   la solution consiste ici  ? recopier KMAFIS dans une autre variable avant de sortir (idem
+   pour imafis)
+   
+   Cepdendant, cette routine est aussi mise en cause dans les fiches 17765 et 17852, qui
+   seront restitu?es par Daniele cette semaine.
+   Je propose de ne rien faire ici.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv313a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017932 DU 2011-11-17 17:32:48
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.0.33, le cas-test zzzz298b est NOOK sur Rocks.
+FONCTIONNALITE
+   Probl?me :
+   ----------
+   
+   NEW11.0.33, le cas-test zzzz298b est NOOK sur Rocks.
+   Test de non regression sur K1 0,1 % -> 0.4 %
+   
+   
+   
+   Solution :
+   ----------
+   
+   Le probl?me venait de la diff?rence de MACR_LIGNE_COUP entre les 2 plates-formes durant
+   l'appel a la macro POST_K1_K2_K3, avec le param?tre absc_curv_maxi choisi (on tombe dans
+   une maille ou dans une autre).
+   
+   On modifie ABSC_CURV_MAXI : 0.065 -> 0.066, ce qui permet de rendre stable MACR_LIGNE_COUP.
+   
+   impact : zzzz298b.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz298b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 11/21/2011 - 06:31:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015991 DU 2010-11-30 09:46:01
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : Phimeca
+TITRE
+    X-FEM : Plantage dans MODI_MODELE_XFEM avec contact
+FONCTIONNALITE
+   Objectif:
+   ---------
+   Suite à la réalisation de la fiche 15989, une anomalie a 
+   été décelée lors de l'utilisation
+   des éléments PYRAM13 en contact XFEM.
+   
+   Proposition de réalisation:
+   ---------------------------
+   Réaliser un cas-test (ssnv186m) pour couvrir le code de 
+   MODI_MODELE_XFEM avec les PYRAM13.
+   Corriger les routines:
+   Dans xteini.f:
+   La routine ne calcule pas le bon nombre de noeuds milieux 
+   pour les PYRAM13.
+   
+   Dans nomil.f:
+   Le cas des PYRAM13 doit être ajouté.
+   
+   Dans conare.f:
+   La connectivité des arêtes est à corriger pour les PYRAM.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.186
+VALIDATION
+    ssnv186m
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017850 DU 2011-11-04 09:13:55
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : Phimeca
+TITRE
+    Routine XPRVIT en debug JEVEUX
+FONCTIONNALITE
+   Objectif:
+   --------
+   En utilisant le debug JEVEUX, le cas-test sslv320c s'arrête 
+   en ABNORMAL_ERROR dans la
+   routine xprvit.
+   
+   Réalisation:
+   
+   On remplace la ligne 869 avec la suivante:
+   
+     IF (FVIRTU) THEN
+   
+   La solution proposée par Daniele est retenue car
+   FVIRTU est vrai si:
+   (GRILLE).AND.(NDIM.EQ.3).AND.(METHOD.NE.'GEOMETRI')
+   
+   C'est donc moins impactant et cela revient au même.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv320c
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 11/21/2011 - 06:32:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017760 DU 2011-10-20 13:41:30
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TMA : Phimeca
+TITRE
+    XFEM et te0515
+FONCTIONNALITE
+   Problème :
+   ========
+   Les catalogues suivants déclare calculer l'option DEPL_POST_XFEM via le te0515.
+   gener_mecpl2_xhtc.cata
+   gener_me_xhc.cata   
+   gener_me_xhtc.cata
+   gener_me_xtc.cata    
+   
+   Or, le t0515 est un te dédié aux VF SUSHI et l'option DEPL_POST_XFEM n'existe plus.
+   
+   Correction :
+   ==========
+   On supprime l'option DEPL_POST_XFEM des catalogues.
+   
+   Impacts :
+   =======
+   gener_mecpl2_xhtc.cata
+   gener_me_xhc.cata   
+   gener_me_xhtc.cata
+   gener_me_xtc.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    *
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 11/21/2011 - 10:42:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017172 DU 2011-06-21 13:14:21
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    DYNA_ALEA_MODA / EXCIT / NOEUD  > résultats FAUX en général
+FONCTIONNALITE
+   -----------------------------------------------------
+   Je propose de corriger les bugs revelés par Jacques selon ses indications:
+   
+   *) La programmation de reseci.f est fausse si la maille IMAI1 n'est pas en première
+   position dans la carte cara_elem.CARGENPO.
+      En effet, la grandeur CAGNPO a plus de 30 CMPS et donc 2 entiers codés. La formule :
+        IEC1 = ZI(IAD1-1+3+2* (INASMX)+INECGD* (IASS1-1)+1)
+        avec INECGD=1 est fausse dès que INASMX > 1
+        Il faut écrire : INECGD=2
+                                                                                            
+                                                          
+   *) la programmation de preflx.f est TOUJOURS fausse :
+           CALL JELIRA(K24BD1,'NUTIOC',INBMAI,KBID)
+           DO 307 IMAI1=1,INBMAI
+             ... on regarde si IMAI1 contient le noeud cherché :
+             if (trouvé) goto 309
+    307    CONTINUE
+    309    CONTINUE
+    Pour la collection maillage.CONNEX, l'attribut NUTIOC
+   vaut toujours 0. Il faut utiliser NMAXOC.
+   
+   -----------------------------------------------------
+   Quant à la question de la résorption ou de travaux de pérennisation plus importants, je
+   pense que c'est une question à traiter à part.
+   Les fonctionnalités EXCIT: SOUR_PRESS, SOUR_FORC, SOUR_DEBI_MASS, SOUR_DEBI_VOLU sont
+   propres aux calculs fluide_structure.
+   Ces fonctionnalités ne sont pas très testées et peu utilisées. Il semble que l'opérateur
+   DYNA_SPEC_MODAL permet également de faire ce type de calculs et est utilisé par MFEE (à
+   vérifier avec Charles). La doc U4 de DYNA_SPEC_MODAL est assez pauvre et ne donne pas
+   beaucoup d'indications.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdll105
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 11/21/2011 - 10:57:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017906 DU 2011-11-14 15:47:14
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Probleme dans la verification des reperes dans CALC_CHAMP
+FONCTIONNALITE
+   Problème :
+   ----------
+   Suite à un calcul de Nicolas T. on s'est rendu compte que la vérification des repères est
+   buggué dans CALC_CHAMP.
+   
+   Le changement de repère ne prend en compte que le passage local intrinsèque. On zappe le
+   passage au repère global.
+   
+   
+   Solution :
+   ----------
+   On modifie la routine MPGLCP pour qu'elle fasse le passage vers le repère global en plus.
+   
+   Avec cette modification, on n'est plus alarmé sur l'étude de Nicolas T.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017915 DU 2011-11-15 17:54:14
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    IMPR_RESU+MED+RESTREINT Pb doc + CHAM_NO_S vide
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Dans mon étude j'ai du contact et à la fin de mon étude je souhaite faire des
+   IMPR_RESU/RESTREINT sur différents groupes de mailles. Comme j'ai du contact, il existe
+   donc la SD VALE_CONT sur les zones de contact. Pas de chance je fais des
+   IMPR_RESU/RESTREINT sur des groupes de mailles volumiques, j'ai donc un CHAM_NO_S vide sur
+   ces mailles ==> plantage
+   
+   REMARQUES : Anomalies dans la doc IMPR_RESU/MED/RESTREINT :
+   - on dit que le mot clef MODELE est obligatoire si RESTREINT est présent, dans l'exemple
+   (10 lignes en dessous) MODELE n'est pas donné !!
+   - on dit "L'utilisateur n'a le droit qu'à une seule occurrence du mot clé facteur RESU",
+   dans l'exemple (10 lignes en dessous) il y a 2 occurrences !!
+   """
+   
+   
+   Analyse :
+   ---------
+   Effectivement le fortran derrière le mot-clé RESTREINT n'est pas permisif. Si la
+   restriction d'un champ n'est pas possible, on plante.
+   
+   
+   Solution :
+   ----------
+   Je modifie quelques routines pour qu'elles sachent gérer le cas où le champ restreint
+   devient vide.
+   
+   Dans ce cas, on émet une alarme pour prévenir l'utilisateur et on n'ajoute pas le champ en
+   question à la structure de données résultat restreinte. Le message émis est le suivant :
+   """
+    <A> <CALCULEL4_7>
+    La restriction du champ SIEF_ELGA n'a pas été possible à tous les numéros
+    d'ordre. Il ne sera donc pas imprimé dans le fichier MED.
+    Cela peut se produire lorsque le mot-clé RESTREINT est utilisé
+    et que le champ n'existe pas sur les entités géométriques sur
+    lesquelles on tente de le restreindre.
+   """
+   
+   Je doit aussi modifier la doc pour qu'elle prenne en compte les remarques.
+   
+   
+   Impacts :
+   ---------
+   rdtces.f rdtchp.f rdtres.f
+   calculel4.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.05.21
+VALIDATION
+    ssnv128w + IMPR_RESU restreint
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017899 DU 2011-11-14 12:31:44
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Difficultxc3xa9s de faire des post-traitements en plaque et coque
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le test joint modélise une plaque trouée en DKT.
+   Si on demande le calcul de SIGM_NOEU, on a un message d'erreur :
+    Vous avez demandé le calcul d'un champ aux noeuds sur des éléments
+    de structure. Mais les repères locaux de certaines mailles entourant
+    des noeuds sur lesquels vous avez demandés le calcul ne sont pas
+    compatibles (Au maximum, on a 109.471 degrés d'écart entre les angles
+    nautiques définissant ces repères).
+   
+   Or on a fixé un repère utilisateur pertinent dans AFFE_CARA_ELEM et le problème est plan.
+   Ensuite, on obtient le message :
+    Erreur lors de la transformation du CHAM_NO_S (&&CALCOP.CHAMS1) en CHAM_NO (RESU1  
+   .021.000000):
+    Le CHAM_NO_S est vide (i.e. il n'a aucune valeur).                                  
+   
+   En fait, calculer SIEF_NOEU n'a pas de sens sur un champ à sous-points. Mais, si c'est
+   possible, il faudrait en émettre un message plus clair.
+   
+   De plus, si on extrait SIEF_ELNO par POST_CHAMP et que l'on demande le calcul de SIEF_NOEU
+   ensuite, on a l'erreur :
+    on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au
+   paramètre: PDEPLAR
+    - option: SIEF_ELGA
+    - type_élément: MEDKQU4
+   
+   Alors que l'on voudrait juste faire une moyenne au noeuds.
+   
+   
+   Solution :
+   ----------
+   Ce post-traitement sera très prochainement faisable à l'aide de issue17906 et issue17754.
+   
+   En pièce jointe de la fiche, le fichier de commande qui permettra d'y parvenir. Il faut
+   faire le POST_CHAMP sur SIEF_ELGA (et non pas SIGM_ELNO), c'est une limitation de CALCOP
+   qu'il faut que je lève. Je le ferai dans issue17736 car je pense que les champs
+   obligatoires devrait permettre de contourner le problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017665 DU 2011-10-06 11:26:51
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Probleme STRX_ELGA et FORC_NODA
+FONCTIONNALITE
+   Problème :
+   ----------
+   Lorsqu'on demande à CALC_CHAMP l'option FORC_NODA sur un modèle contenant des PMF et que
+   STRX_ELGA n'a pas été calculé, il y a un plantage car ce champ est indispensable.
+   
+   
+   Solution :
+   ----------
+   Au lieu de planter, on demande le calcul de l'option STRX_ELGA à CALCOP. On fait pareil
+   dans le cas où SIEF_ELGA est manquante.
+   
+   Les modifications sont déjà rentrées en 11.0.26 bien que la fiche n'ait pas été présentée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.02
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015251 DU 2010-06-24 10:55:11
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+    AR01 U4.81.02 CALC_NO et FORC_NODA
+FONCTIONNALITE
+   Problème :
+   ----------
+   Suite à une question émanant d'un collègue utilisant un modèle coque DKT, il se trouve que
+   le § 3.6 de la doc ne dit rien sur les coques.
+   
+   Je pense utile de préciser ce qu'on obtient avec FORC_NODA sur les coques, calculées à
+   partir des efforts généralisés aux points de Gauss.
+   
+   
+   Solution :
+   ----------
+   Je modifie les docs :
+   - [U2.01.05] contraintes, efforts, forces et déformations
+   - [U4.81.04] Opérateur CALC_CHAMP
+   - [U4.81.02] Opérateur CALC_NO
+   pour y préciser ces éléments.
+   
+   J'ajoute aussi des précisions sur la THM écrites par Sylvie.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U2.01.05 U4.81.04 U4.81.02
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017933 DU 2011-11-18 08:05:34
+TYPE anomalie concernant Documentation (VERSION 10.*)
+TITRE
+    IMPR_RESU/MED/RESTREINT
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Anomalies dans la doc IMPR_RESU/MED/RESTREINT :
+   - on dit que le mot clef MODELE est obligatoire si RESTREINT est présent, dans l'exemple
+   (10 lignes en dessous) MODELE n'est pas donné !!
+   - on dit "L'utilisateur n'a le droit qu'à une seule occurrence du mot clé facteur RESU",
+   dans l'exemple (10 lignes en dessous) il y a 2 occurrences !!
+   
+   
+   Au final :
+   * MODELE n'est pas obligatoire,
+   * on peut avoir plusieurs occurrence de RESU.
+   * Les noms MED n'ont plus de '_________________________' à la fin
+   """
+   
+   
+   Modifications :
+   ---------------
+   Prise en compte des remarques.
+   
+   Note :
+   Les '____' sont historiques. Certains cas test ont encore d'anciens fichiers MED avec les
+   '____' à la fin. En les gardant en l'état, on teste la compatibilité de l'API MED3.0 avec
+   MED2.3. La lecture de champs "MED3.0" est largement testée dans zzzz162a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U7.05.21
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.02
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv186m                      macocco K.MACOCCO          202    202      0
+ CASTEST MODIF epicu01a                       durand C.DURAND           994     13     28
+ CASTEST MODIF epicu01b                       durand C.DURAND           868      7     13
+ CASTEST MODIF sdll138a                       durand C.DURAND           676      4      2
+ CASTEST MODIF ssnp117a                     courtois M.COURTOIS         235      2      2
+ CASTEST MODIF ssnv512d                       delmas J.DELMAS           307      9      8
+ CASTEST MODIF supv002a                     courtois M.COURTOIS          73     10      1
+ CASTEST MODIF zzzz298b                      geniaut S.GENIAUT          177     22      6
+ CASTEST MODIF zzzz299b                     sellenet N.SELLENET          86      7      3
+ CASTEST SUPPR erreu09c.comm                courtois M.COURTOIS         143      0    143
+CATALOGU MODIF typelem/gener_me_xh           macocco K.MACOCCO          345      2      2
+CATALOGU MODIF typelem/gener_me_xhc          macocco K.MACOCCO          348      7      7
+CATALOGU MODIF typelem/gener_me_xht          macocco K.MACOCCO          344      2      2
+CATALOGU MODIF typelem/gener_me_xhtc         macocco K.MACOCCO          342      7      7
+CATALOGU MODIF typelem/gener_me_xt           macocco K.MACOCCO          346      2      2
+CATALOGU MODIF typelem/gener_me_xtc          macocco K.MACOCCO          337      7      7
+CATALOGU MODIF typelem/gener_mecpl2_xhtc     macocco K.MACOCCO          291      1      5
+CATALOPY MODIF commande/affe_char_ther        durand C.DURAND           206      2      4
+CATALOPY MODIF commande/affe_char_ther_f      durand C.DURAND           192      2      4
+ FORTRAN MODIF algorith/conare               macocco K.MACOCCO          209     11     11
+ FORTRAN MODIF algorith/nomil                macocco K.MACOCCO          119     11      1
+ FORTRAN MODIF algorith/preflx                pellet J.PELLET           303      3      3
+ FORTRAN MODIF algorith/reseci                pellet J.PELLET           132      2      2
+ FORTRAN MODIF algorith/xprvit               macocco K.MACOCCO         1172      2      2
+ FORTRAN MODIF calculel/calcop              sellenet N.SELLENET         266      5      3
+ FORTRAN MODIF calculel/mpglcp              sellenet N.SELLENET         121     21     10
+ FORTRAN MODIF calculel/rdtces              sellenet N.SELLENET         178     14      3
+ FORTRAN MODIF calculel/rdtchp              sellenet N.SELLENET         116     11      8
+ FORTRAN MODIF calculel/rdtres              sellenet N.SELLENET         254     13      5
+ FORTRAN MODIF calculel/utcovt              courtois M.COURTOIS         294      3      1
+ FORTRAN MODIF elements/xteini               macocco K.MACOCCO          162      3      2
+ FORTRAN MODIF modelisa/caechp                durand C.DURAND           135      3     13
+ FORTRAN MODIF modelisa/padtma                durand C.DURAND           143      1      1
+ FORTRAN MODIF modelisa/patrma                durand C.DURAND           228      9      9
+ FORTRAN MODIF postrele/rc36ca              courtois M.COURTOIS         163     69     99
+  PYTHON MODIF Macro/macr_spectre_ops         durand C.DURAND           362      3      3
+  PYTHON MODIF Messages/algorith9           courtois M.COURTOIS         258      3      3
+  PYTHON MODIF Messages/calculel            courtois M.COURTOIS         419      5      5
+  PYTHON MODIF Messages/calculel4           sellenet N.SELLENET         385      9      1
+  PYTHON MODIF Messages/elements4           courtois M.COURTOIS         251      2      2
+  PYTHON MODIF Messages/fermetur            courtois M.COURTOIS         110      7      6
+  PYTHON MODIF Messages/mecanonline3        courtois M.COURTOIS         111      2      2
+  PYTHON MODIF Messages/modelisa2           courtois M.COURTOIS         346      2      2
+  PYTHON MODIF Messages/modelisa6           courtois M.COURTOIS         388     19     10
+  PYTHON MODIF Messages/sensibilite         courtois M.COURTOIS         203      4      4
+  PYTHON MODIF Messages/soustruc            courtois M.COURTOIS         426      2      2
+  PYTHON MODIF Messages/supervis2           courtois M.COURTOIS         147      1      1
+  PYTHON MODIF Messages/utilitai3           courtois M.COURTOIS         383     41     21
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1         202       202              +202
+ MODIF :   46       13951       387     338       +49
+ SUPPR :    1         143               143      -143
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   48       14296       589     481      +108 

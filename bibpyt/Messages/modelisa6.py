@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 07/11/2011   AUTEUR DURAND C.DURAND 
+#@ MODIF modelisa6 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,15 +70,19 @@ cata_msg = {
 """),
 
 13 : _(u"""
- les %(i1)d noeuds imprimés ci-dessus n'appartiennent pas au modèle (c'est à dire qu'ils ne portent aucun degré de liberté) et pourtant ils ont été affectés dans le mot-clé facteur : %(k1)s
+ Les %(i1)d noeuds imprimés ci-dessus n'appartiennent pas au modèle (c'est à dire
+ qu'ils ne portent aucun degré de liberté) et pourtant ils ont été affectés dans
+ le mot-clé facteur : %(k1)s
 """),
 
 14 : _(u"""
-Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène en dimension : 3D, 2D ou AXIS.
+ Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène
+ en dimension : 3D, 2D ou AXIS.
 """),
 
 17 : _(u"""
- la maille  %(k1)s  du GROUP_MA  %(k2)s donné apres le mot-clé  %(k3)s n'a pas un type géométrique autorisé
+ La maille  %(k1)s du GROUP_MA  %(k2)s donné après le mot-clé  %(k3)s n'a pas un
+ type géométrique autorisé
 """),
 
 18 : _(u"""
@@ -86,7 +90,11 @@ Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène 
 """),
 
 19 : _(u"""
-  Le mot clé est non admis : %(k1)s  les mots-clés admissibles sont :  %(k2)s  ou  %(k3)s  ou  %(k4)s  ou  %(k5)s  ou  %(k6)s  ou  %(k7)s  ou  %(k8)s ou  %(k9)s
+  Le mot clé est non admis : %(k1)s
+
+  Les mots-clés admissibles sont :
+      %(k2)s  ou  %(k3)s  ou  %(k4)s  ou  %(k5)s  ou
+      %(k6)s  ou  %(k7)s  ou  %(k8)s ou  %(k9)s
 """),
 
 20 : _(u"""
@@ -111,14 +119,15 @@ Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène 
 
 28 : _(u"""
  Le noeud <%(k1)s> de la poutre, de coordonnées <%(r1)g  %(r2)g  %(r3)g>,
-ne doit pas appartenir à des mailles constituant la trace de la poutre sur la coque.
-Le problème vient de l'occurrence %(i1)d de LIAISON_ELEM.
+ ne doit pas appartenir à des mailles constituant la trace de la poutre sur la coque.
+ Le problème vient de l'occurrence %(i1)d de LIAISON_ELEM.
 
 Solution : Il faut dédoubler le noeud.
 """),
 
 30 : _(u"""
- l'indicateur :  %(k1)s de position des multiplicateurs de lagrange associés à une relation lineaire n'est pas correct.
+ L'indicateur : %(k1)s de position des multiplicateurs de Lagrange associés à
+ une relation linéaire n'est pas correct.
 """),
 
 31 : _(u"""
@@ -127,7 +136,7 @@ Solution : Il faut dédoubler le noeud.
       En effet, on a besoin d'évaluer la dérivée de ces fonctions. Elle peut être plus facilement et
       précisément obtenue pour une fonction linéaire par morceaux que pour une expression 'formule'.
   -> Conseil:
-      Tabulez votre formule, à une finesse de discrétisation d'abcisse (TEMP) à votre convenance,
+      Tabulez votre formule, à une finesse de discrétisation d'abscisse (TEMP) à votre convenance,
       par la commande CALC_FONC_INTERP
  """),
 
@@ -349,7 +358,7 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 93 : _(u"""
-  les fonctions complexes ne sont pas implementées
+  les fonctions complexes ne sont pas implémentées
 """),
 
 94 : _(u"""

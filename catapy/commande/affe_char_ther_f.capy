@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 22/11/2011   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -128,8 +128,6 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
            MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            COEF_H          =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            TRAN            =SIMP(statut='f',typ='R',min=2,max=3),
-           ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
-           CENTRE          =SIMP(statut='f',typ='R',min=2,max=3),
          ),
 
         LIAISON_DDL     =FACT(statut='f',max='**',

@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith9 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,7 @@ cata_msg = {
 """),
 
 19 : _(u"""
- COEFF_VAR_AMOR non nul et amortissement non présent
+ COEF_VAR_AMOR non nul et amortissement non présent
 """),
 
 26 : _(u"""
@@ -144,7 +144,7 @@ cata_msg = {
 """),
 
 56 : _(u"""
- le "NOMB_PTS" doit être une puissance de 2.
+ le "NB_PTS" doit être une puissance de 2.
 """),
 
 57 : _(u"""

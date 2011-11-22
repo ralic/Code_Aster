@@ -4,9 +4,9 @@
       CHARACTER*8      TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 21/11/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,16 +112,16 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
         AR(1,1)=1
         AR(1,2)=2
-        AR(2,1)=1
-        AR(2,2)=4
-        AR(3,1)=1
-        AR(3,2)=5
-        AR(4,1)=2
-        AR(4,2)=3
-        AR(5,1)=2
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(3,1)=3
+        AR(3,2)=4
+        AR(4,1)=1
+        AR(4,2)=4
+        AR(5,1)=1
         AR(5,2)=5
-        AR(6,1)=3
-        AR(6,2)=4
+        AR(6,1)=2
+        AR(6,2)=5
         AR(7,1)=3
         AR(7,2)=5
         AR(8,1)=4

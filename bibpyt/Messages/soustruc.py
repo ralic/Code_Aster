@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF soustruc Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -336,7 +336,7 @@ cata_msg={
 """),
 
 75: _(u"""
- autorise : "LAG" ou "gl" pas: %(k1)s
+ autorise : "LAG" ou "GL" pas: %(k1)s
 """),
 
 76: _(u"""

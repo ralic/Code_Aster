@@ -1,7 +1,7 @@
       SUBROUTINE RESECI(CARELE,NUMMAI,AI1,AI2)
 C**********************************************************************C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/11/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C**********************************************************************C
       K24BI1 = CARELE//'.CARGENPO  .DESC'
       CALL JEVEUO(K24BI1,'L',IAD1)
       IGD = ZI(IAD1)
-      INECGD = 1
+      INECGD = 2
       INASMX = ZI(IAD1+1)
 C**********************************************************************C
 C***        BOUCLE SUR LES ASSOCIATIONS *******************************C

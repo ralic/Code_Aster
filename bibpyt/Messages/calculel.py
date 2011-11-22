@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -353,22 +353,22 @@ Conseils :
 """),
 
 68 : _(u"""
- numéro de maille invalide     :  %(k1)s  (<1 ou >nbma)
+ numéro de maille invalide     :  %(k1)s  (<1 ou > nombre de mailles)
 """),
 
 69 : _(u"""
- numéro de point invalide      :  %(k1)s  (<1 ou >nbpt)
+ numéro de point invalide      :  %(k1)s  (<1 ou > nombre de points)
  pour la maille                :  %(k2)s
 """),
 
 70 : _(u"""
- numéro de sous-point invalide :  %(k1)s  (<1 ou >nbspt)
+ numéro de sous-point invalide :  %(k1)s  (<1 ou > nombre de sous-points)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
 """),
 
 71 : _(u"""
- numéro de composante invalide :  %(k1)s  (<1 ou >nbcmp)
+ numéro de composante invalide :  %(k1)s  (<1 ou > nombre de composantes)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
  pour le sous-point            :  %(k4)s

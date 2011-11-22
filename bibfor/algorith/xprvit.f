@@ -13,7 +13,7 @@
       LOGICAL        LOCDOM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 21/11/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -866,7 +866,7 @@ C           STORE THE DISTANCE VECTOR
 C           attention: la distance du point au fond de fissure doit
 C           etre calcule depuis le front de fissure reel et non le
 C           front de fissure virtuel 
-         IF ((GRILLE).AND.(NDIM.EQ.3)) THEN             
+         IF (FVIRTU) THEN             
 
             IF (JMIN.EQ.1) THEN
 C           Le projete est sur un segment virtuel du fond de

@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai3 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,8 @@ cata_msg = {
 """),
 
 36 : _(u"""
- arrêt de la procédure de recalage : le paramètre m est devenu trop petit (m<1) , vérifiez vos listes d'instants de rupture
+ Arrêt de la procédure de recalage : le paramètre m est devenu trop petit (m<1),
+ vérifiez vos listes d'instants de rupture
 """),
 
 37 : _(u"""
@@ -159,7 +160,7 @@ cata_msg = {
 """),
 
 38 : _(u"""
- type de fonction non connu (ordonn)
+ type de fonction non connu
 """),
 
 39 : _(u"""
@@ -196,47 +197,60 @@ cata_msg = {
 """),
 
 50 : _(u"""
- on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer la constante de torsion.
+ On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"
+ du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer
+ la constante de torsion.
 """),
 
 51 : _(u"""
- le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante de torsion doit être égal a 1.
+ Le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante
+ de torsion doit être égal a 1.
 """),
 
 52 : _(u"""
- on n'arrive pas a récupérer le champ de températures du résultat  %(k1)s
+ On n'arrive pas a récupérer le champ de températures du résultat  %(k1)s
 """),
 
 53 : _(u"""
- la table "CARA_GEOM" n'existe pas.
+ La table "CARA_GEOM" n'existe pas.
 """),
 
 54 : _(u"""
- on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Y"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
+ On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Y"
+ du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les
+ coefficients de cisaillement et les coordonnées du centre de torsion.
 """),
 
 55 : _(u"""
- on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Z"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion.
+ On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Z"
+ du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les
+ coefficients de cisaillement et les coordonnées du centre de torsion.
 """),
 
 56 : _(u"""
- le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer les coefficients de cisaillement et les coordonnées du centre de torsion doit être égal a 1.
+ Le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer les coefficients
+ de cisaillement et les coordonnées du centre de torsion doit être égal a 1.
 """),
 
 57 : _(u"""
- on doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"  du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer la constante de gauchissement.
+ On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"
+ du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer la
+ constante de gauchissement.
 """),
 
 58 : _(u"""
- le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante de gauchissement doit être égal a 1.
+ Le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante de
+ gauchissement doit être égal a 1.
 """),
 
 59 : _(u"""
- il faut donner le nom d'une table issue d'un premier calcul avec l'option "CARA_GEOM" de  POST_ELEM après le mot-clé "CARA_GEOM" du mot-clé facteur "CARA_POUTRE".
+ Il faut donner le nom d'une table issue d'un premier calcul avec l'option "CARA_GEOM"
+ de  POST_ELEM après le mot-clé "CARA_GEOM" du mot-clé facteur "CARA_POUTRE".
 """),
 
 60 : _(u"""
- il faut obligatoirement définir l'option de calcul des caractéristiques de poutre après le mot-clé "option" du mot-clé facteur "CARA_POUTRE" de la commande POST_ELEM.
+ Il faut obligatoirement définir l'option de calcul des caractéristiques de poutre
+ après le mot-clé "option" du mot-clé facteur "CARA_POUTRE" de la commande POST_ELEM.
 """),
 
 61 : _(u"""
@@ -259,7 +273,8 @@ cata_msg = {
 """),
 
 68 : _(u"""
- on attend un concept "MODE_MECA" ou "EVOL_ELAS" ou "EVOL_THER" ou "DYNA_TRANS" ou "EVOL_NOLI"
+ On attend un concept "MODE_MECA" ou "EVOL_ELAS" ou "EVOL_THER" ou "DYNA_TRANS"
+ ou "EVOL_NOLI"
 """),
 
 69 : _(u"""
@@ -283,11 +298,13 @@ cata_msg = {
 """),
 
 75 : _(u"""
- on attend un concept "MODE_MECA" ou "EVOL_ELAS" ou "MULT_ELAS" ou "EVOL_THER" ou "DYNA_TRANS" ou "EVOL_NOLI"
+ On attend un concept "MODE_MECA" ou "EVOL_ELAS" ou "MULT_ELAS" ou "EVOL_THER"
+ ou "DYNA_TRANS" ou "EVOL_NOLI"
 """),
 
 76 : _(u"""
- pour calculer les indicateurs globaux d'énergie, il faut donner un résultat issu de STAT_NON_LINE .
+ Pour calculer les indicateurs globaux d'énergie, il faut donner un résultat
+ issu de STAT_NON_LINE .
 """),
 
 77 : _(u"""
@@ -295,15 +312,17 @@ cata_msg = {
 """),
 
 78 : _(u"""
- le résultat  %(k1)s  doit comporter la relation de comportement au numéro d'ordre  %(k2)s  .
+ Le résultat  %(k1)s  doit comporter la relation de comportement au numéro
+ d'ordre  %(k2)s  .
 """),
 
 79 : _(u"""
- le résultat  %(k1)s  doit comporter un champ de variables internes au numéro d'ordre  %(k2)s  .
+ Le résultat  %(k1)s  doit comporter un champ de variables internes au numéro
+ d'ordre  %(k2)s  .
 """),
 
 80 : _(u"""
- impossibilité : le volume du modèle traite est nul.
+ Impossibilité : le volume du modèle traite est nul.
 """),
 
 81 : _(u"""
@@ -315,7 +334,8 @@ cata_msg = {
 """),
 
 83 : _(u"""
- erreur: les options de calcul doivent être identiques pour toutes les occurrences du mot clef facteur
+ Erreur: les options de calcul doivent être identiques pour toutes les occurrences
+ du mot clef facteur
 """),
 
 84 : _(u"""

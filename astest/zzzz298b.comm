@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/11/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,6 +18,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# MODELISATION B : FISSURE X-FEM, RESOLUTION MECANIQUE
+
 DEBUT(CODE=_F(NOM='ZZZZ298B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46','RUPTURE0_6',),);
 
 #----------------------------------------------
@@ -118,12 +121,17 @@ TABK = POST_K1_K2_K3(MODELISATION='3D',
                      FISSURE=FISS,
                      MATER=MAT,
                      RESULTAT=UTOT1x,
-                     ABSC_CURV_MAXI = 0.065,
+                     ABSC_CURV_MAXI = 0.066,
                      VECT_K1 = ( 0., 0. , 1. ),)
+
 IMPR_TABLE(TABLE=TABK)
+
 #----------------------------------------------
 #                   TEST
 #----------------------------------------------
+
+k1_deb = 8.96954e5
+k1_fin = 1.47784e6
 
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
@@ -131,7 +139,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=8.90037E+05,);
+           VALE=k1_deb)
 
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
@@ -139,7 +147,15 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=8.90037E+05,);
+           VALE=k1_deb)
+
+TEST_TABLE(TABLE=TABK,
+           FILTRE=(_F(NOM_PARA='NUM_PT', 
+                      VALE_I=3 ),),
+           NOM_PARA='K1',
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.28',
+           VALE=k1_deb)
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
@@ -147,7 +163,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=1.48374E+06,);
+           VALE=k1_fin)
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
@@ -155,7 +171,7 @@ TEST_TABLE(TABLE=TABK,
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
-           VALE=1.48374E+06,);           
+           VALE=k1_fin)
              
 FIN();
 

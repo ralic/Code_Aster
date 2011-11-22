@@ -5,22 +5,22 @@
       CHARACTER*24        CHCARA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C
@@ -54,12 +54,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      NBCMP, JCNSV, JCNSL, IRET, JCESD, JCESV, 
-     +             IM, IMA, NBPT, DECAL, IPT, ICMP, IAD
-      REAL*8       IY1, IZ1, R1, EP1, IY2, IZ2, R2, EP2 
+      INTEGER      NBCMP, IRET,
+     +             IM, IMA, NBPT, DECAL, IPT, ICMP, IAD, IADC, NCMP
+      INTEGER      JCESD, JCESV, JCESL, JCESDC, JCESVC, JCESLC
+      INTEGER      JCESD1, JCESV1, JCESL1, JCESD2, JCESV2, JCESL2
+      REAL*8       VC
       CHARACTER*8  NOMGD
       CHARACTER*16 NOCMP(4)
-      CHARACTER*19 K19B, CES
+      CHARACTER*19 K19B, CES1, CES2
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -72,122 +74,90 @@ C
 C
       CALL RC36ZZ ( NOMA, NOMGD, NBCMP, NOCMP, NBMA, LISTMA, CHCARA )
 C
-      CALL JEVEUO ( CHCARA(1:19)//'.CESV', 'E', JCNSV ) 
-      CALL JEVEUO ( CHCARA(1:19)//'.CESL', 'E', JCNSL )
+      CALL JEVEUO ( CHCARA(1:19)//'.CESD', 'E', JCESD )
+      CALL JEVEUO ( CHCARA(1:19)//'.CESV', 'E', JCESV )
+      CALL JEVEUO ( CHCARA(1:19)//'.CESL', 'E', JCESL )
 C
       K19B = CARAEL//'.CARGENPO'
-      CES  = '&&RC36CA.CARGENPO'
-      CALL CARCES ( K19B, 'ELNO', ' ', 'V', CES, IRET )
+      CES1  = '&&RC36CA.CARGENPO'
+      CALL CARCES ( K19B, 'ELNO', ' ', 'V', CES1, IRET )
 C
       NBCMP = 4
       NOCMP(1) = 'IY1'
       NOCMP(2) = 'IZ1'
       NOCMP(3) = 'IY2'
       NOCMP(4) = 'IZ2'
-      CALL CESRED ( CES, NBMA, LISTMA, NBCMP, NOCMP, 'V', CES )
+      CALL CESRED ( CES1, NBMA, LISTMA, NBCMP, NOCMP, 'V', CES1 )
 C
-      CALL JEVEUO ( CES//'.CESD', 'L', JCESD )
-      CALL JEVEUO ( CES//'.CESV', 'L', JCESV )
-C
-      DO 100  IM = 1 , NBMA
-         IMA = LISTMA(IM)
-         NBPT = ZI(JCESD-1+5+4*(IMA-1)+1)
-         DECAL= ZI(JCESD-1+5+4*(IMA-1)+4)
-         DO 110 IPT = 1 , NBPT
-            IF ( IPT .EQ. 1 ) THEN
-               ICMP = 1
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               IY1 = ZR(JCESV-1+IAD)
-               ICMP = 1
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = IY1
-C
-               ICMP = 2
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               IZ1 = ZR(JCESV-1+IAD)
-               ICMP = 2
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = IZ1
-            ELSEIF ( IPT .EQ. NBPT ) THEN
-               ICMP = 3
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               IY2 = ZR(JCESV-1+IAD)
-               ICMP = 1
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = IY2
-C
-               ICMP = 4
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               IZ2 = ZR(JCESV-1+IAD)
-               ICMP = 2
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = IZ2
-            ENDIF
- 110     CONTINUE
- 100  CONTINUE
-C
-      CALL DETRSD ( 'CHAM_ELEM_S', CES )
+      CALL JEVEUO ( CES1//'.CESD', 'L', JCESD1 )
+      CALL JEVEUO ( CES1//'.CESV', 'L', JCESV1 )
+      CALL JEVEUO ( CES1//'.CESL', 'L', JCESL1 )
 C
       K19B = CARAEL//'.CARGEOPO'
-      CES  = '&&RC36CA.CARGEOPO'
-      CALL CARCES ( K19B, 'ELNO', ' ', 'V', CES, IRET )
+      CES2  = '&&RC36CA.CARGEOPO'
+      CALL CARCES ( K19B, 'ELNO', ' ', 'V', CES2, IRET )
 C
       NBCMP = 4
       NOCMP(1) = 'R1'
       NOCMP(2) = 'EP1'
       NOCMP(3) = 'R2'
       NOCMP(4) = 'EP2'
-      CALL CESRED ( CES, NBMA, LISTMA, NBCMP, NOCMP, 'V', CES )
+      CALL CESRED ( CES2, NBMA, LISTMA, NBCMP, NOCMP, 'V', CES2 )
 C
-      CALL JEVEUO ( CES//'.CESD', 'L', JCESD )
-      CALL JEVEUO ( CES//'.CESV', 'L', JCESV )
+      CALL JEVEUO ( CES2//'.CESD', 'L', JCESD2 )
+      CALL JEVEUO ( CES2//'.CESV', 'L', JCESV2 )
+      CALL JEVEUO ( CES2//'.CESL', 'L', JCESL2 )
 C
-      DO 200  IM = 1 , NBMA
+      DO 100  IM = 1, NBMA
          IMA = LISTMA(IM)
          NBPT = ZI(JCESD-1+5+4*(IMA-1)+1)
-         DECAL= ZI(JCESD-1+5+4*(IMA-1)+4)
-         DO 210 IPT = 1,NBPT
-            IF ( IPT .EQ. 1 ) THEN
-               ICMP = 1
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               R1 = ZR(JCESV-1+IAD)
-               ICMP = 3
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = 2 * R1
+         NCMP = ZI(JCESD-1+5+4*(IMA-1)+3)
+         CALL ASSERT(NCMP.EQ.4 .AND. NBPT.EQ.2)
+         DO 110 IPT = 1, NBPT
+           DO 120 ICMP = 1, NCMP
+C            POINT 1 : CMPS 1 ET 2 - POINT 2 : CMPS 3 ET 4
+             IF (ICMP.LE.2) THEN
+               IF (IPT.EQ.1) THEN
+                 DECAL = 0
+               ELSE
+                 DECAL = 2
+               ENDIF
+             ELSE
+               IF (IPT.EQ.1) THEN
+                 DECAL = -2
+               ELSE
+                 DECAL = 0
+               ENDIF
+             ENDIF
+C            CMPS IY/IZ DANS CHAMP 1 - CMPS D/EP DANS CHAMP 2
+             IF (ICMP.LE.2) THEN
+                JCESDC = JCESD1
+                JCESVC = JCESV1
+                JCESLC = JCESL1
+             ELSE
+                JCESDC = JCESD2
+                JCESVC = JCESV2
+                JCESLC = JCESL2
+             ENDIF
+             CALL CESEXI('S',JCESDC,JCESLC,IMA,IPT,1,ICMP+DECAL,IADC)
+             CALL ASSERT(IADC.GT.0)
+             VC = ZR(JCESVC-1+IADC)
+C            PASSAGE R A D : X2 (CMP 3)
+             IF (ICMP.EQ.3) THEN
+               VC = 2.D0 * VC
+             ENDIF
+             CALL CESEXI('S',JCESD,JCESL,IMA,IPT,1,ICMP,IAD)
+             IF (IAD.LT.0) THEN
+               IAD = -IAD
+             ENDIF
+             ZR(JCESV-1+IAD) = VC
+             ZL(JCESL-1+IAD) = .TRUE.
+ 120       CONTINUE
+ 110     CONTINUE
+ 100  CONTINUE
 C
-               ICMP = 2
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               EP1 = ZR(JCESV-1+IAD)
-               ICMP = 4
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = EP1
-            ELSEIF ( IPT .EQ. NBPT ) THEN
-               ICMP = 3
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               R2 = ZR(JCESV-1+IAD)
-               ICMP = 3
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = 2 *  R2
-C
-               ICMP = 4
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               EP2 = ZR(JCESV-1+IAD)
-               ICMP = 4
-               IAD = DECAL + (IPT-1)*NBCMP + ICMP
-               ZL(JCNSL-1+IAD) = .TRUE.
-               ZR(JCNSV-1+IAD) = EP2
-            ENDIF
- 210     CONTINUE
- 200  CONTINUE
-C
-      CALL DETRSD ( 'CHAM_ELEM_S', CES )
+      CALL DETRSD ( 'CHAM_ELEM_S', CES1 )
+      CALL DETRSD ( 'CHAM_ELEM_S', CES2 )
 C
       CALL JEDEMA( )
       END

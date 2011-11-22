@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel4 Messages  DATE 21/11/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,6 +72,14 @@ Erreur utilisateur (ou programmeur) :
  Par exemple :
     - ce n'est pas le même maillage sous-jacent
     - ce n'est pas la même grandeur sous-jacente.
+"""),
+
+7 : _(u"""
+ La restriction du champ %(k1)s n'a pas été possible à tous les numéros
+ d'ordre. Il ne sera donc pas imprimé dans le fichier MED.
+ Cela peut se produire lorsque le mot-clé RESTREINT est utilisé
+ et que le champ n'existe pas sur les entités géométriques sur
+ lesquelles on tente de le restreindre.
 """),
 
 8 : _(u"""

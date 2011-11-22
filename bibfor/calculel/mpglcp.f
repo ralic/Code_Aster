@@ -1,7 +1,7 @@
       SUBROUTINE MPGLCP(TYPECP,NBNOLO,COORDO,ALPHA,BETA,
      &                  GAMMA,PGL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 21/11/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,6 +67,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       REAL*8  XD(3),ANGL(3),ALPHAL,BETAL,T2EV(2,2),T2VE(2,2)
+      REAL*8  MAT1(3,3),MAT2(3,3)
 C
       IF ( TYPECP.EQ.'P' ) THEN
 C
@@ -95,15 +96,25 @@ C
 C       MODIFICATION DE LA MATRICE POUR PRENDRE EN COMPTE
 C       LA CARCOQUE UTILISATEUR
         CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE)
-        PGL(1,1) = T2VE(1,1)
-        PGL(1,2) = T2VE(1,2)
-        PGL(1,3) = 0.D0
-        PGL(2,1) = T2VE(2,1)
-        PGL(2,2) = T2VE(2,2)
-        PGL(2,3) = 0.D0
-        PGL(3,1) = 0.D0
-        PGL(3,2) = 0.D0
-        PGL(3,3) = 1.D0
+        MAT1(1,1) = PGL(1,1)
+        MAT1(1,2) = PGL(2,1)
+        MAT1(1,3) = PGL(3,1)
+        MAT1(2,1) = PGL(1,2)
+        MAT1(2,2) = PGL(2,2)
+        MAT1(2,3) = PGL(3,2)
+        MAT1(3,1) = PGL(1,3)
+        MAT1(3,2) = PGL(2,3)
+        MAT1(3,3) = PGL(3,3)
+        MAT2(1,1) = T2VE(1,1)
+        MAT2(1,2) = T2VE(2,1)
+        MAT2(1,3) = 0.D0
+        MAT2(2,1) = T2VE(1,2)
+        MAT2(2,2) = T2VE(2,2)
+        MAT2(2,3) = 0.D0
+        MAT2(3,1) = 0.D0
+        MAT2(3,2) = 0.D0
+        MAT2(3,3) = 1.D0
+        CALL PMAT(3,MAT1,MAT2,PGL)
 C
       ENDIF
 C

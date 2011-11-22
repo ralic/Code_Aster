@@ -8,7 +8,7 @@ C
       CHARACTER*24        TCHVAL(2)
       CHARACTER*16        TCHERR(2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/09/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,8 @@ C
       REFFLO=.FALSE.
       ERRFLO=.FALSE.
       TOLFLO=.FALSE.
+      SIV = ' '
+      SIVREF = ' '
 C
 C --- 1 . CAS REEL
 C     ============

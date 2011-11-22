@@ -4,7 +4,7 @@
       INTEGER    ICOUPL(*),NBNOTT(3)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 22/11/2011   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

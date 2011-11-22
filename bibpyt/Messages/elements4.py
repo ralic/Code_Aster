@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,7 +145,7 @@ Conseil :
 """),
 
 61 : _(u"""
- pré-conditions non remplies
+ préconditions non remplies
 """),
 
 62 : _(u"""

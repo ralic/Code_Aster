@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/11/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE LA VERIFICATION DES REPERES POUR LES POUTRES ET LES COQUES
 # zzzz299b.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,8 +50,12 @@ AFFCI=AFFE_CHAR_CINE(MODELE=AFFMOD,
 
 CAREL=AFFE_CARA_ELEM(MODELE=AFFMOD,
                      INFO=2,
-                     COQUE=_F(GROUP_MA=('PR','DE',),
-                              EPAIS=0.01,),);
+                     COQUE=(_F(GROUP_MA=('PR','DE',),
+                               EPAIS=0.01,),
+                            _F(MAILLE=('M33',),
+                               EPAIS=0.01,
+                               VECTEUR=(1,1,1),),
+                           ),);
 
 MESTA=MECA_STATIQUE(MODELE=AFFMOD,
                     CHAM_MATER=AFFMAT,

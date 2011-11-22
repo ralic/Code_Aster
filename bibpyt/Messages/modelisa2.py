@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 07/11/2011   AUTEUR HAELEWYN J.HAELEWYN 
+#@ MODIF modelisa2 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,7 +223,7 @@ Risque & Conseil:
 """),
 
 55: _(u"""
- récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <BPEL_ACIER> : Le paramètre F_PRG doit être positif et non nul
+ récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <BPEL_ACIER> : Le paramètre F_PRG doit être positif et non nul
  """),
 
 56: _(u"""

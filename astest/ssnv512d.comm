@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/11/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE BLOC DECOUPE PAR UNE FISSURE VERTICALE SE BRANCHANT ENTRE 2 FISSURES HORIZONTALES AVEC X-FEM
 # ssnv512d.para = tps_job 50 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -255,7 +255,8 @@ DEPZON[4] = DEPMLY
 #----------------------------------------------
 
 vale = [0,-0.25,-0.5,0.75,1]
-preci = 10e-14
+preci1 = 1.0e-13
+preci2 = 2.0e-13
 
 for i in [1,2,3,4]: #Boucle sur les zones
 
@@ -266,41 +267,41 @@ for i in [1,2,3,4]: #Boucle sur les zones
              TYPE_TEST='MIN',
              VALE=vale[i],
              CRITERE='RELATIF',
-             PRECISION=preci,
+             PRECISION=preci1,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX',
              TYPE_TEST='MAX',
              VALE=vale[i],
              CRITERE='RELATIF',
-             PRECISION=preci,
+             PRECISION=preci2,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY',
              TYPE_TEST='MIN',
              VALE=0,
              CRITERE='ABSOLU',
-             PRECISION=preci,
+             PRECISION=preci1,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY',
              TYPE_TEST='MAX',
              VALE=0,
              CRITERE='ABSOLU',
-             PRECISION=preci,
+             PRECISION=preci1,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MIN',
              VALE=0,
              CRITERE='ABSOLU',
-             PRECISION=preci,
+             PRECISION=preci1,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MAX',
              VALE=0,
              CRITERE='ABSOLU',
-             PRECISION=preci,
+             PRECISION=preci1,
              REFERENCE='ANALYTIQUE',);
 FIN();
