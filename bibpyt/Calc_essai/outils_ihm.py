@@ -1,4 +1,4 @@
-#@ MODIF outils_ihm Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF outils_ihm Calc_essai  DATE 28/11/2011   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1335,7 +1335,7 @@ class DispFRFDialogue(Toplevel):
                                             NOEUD = noeud,
                                             NOM_CMP = ddl )
                     except aster.error,err:
-                        message = "ERREUR ASTER : " + mess.GetText('I',err.id_message, err.valk, err.vali, err.valr)
+                        message = "ERREUR ASTER, COLONNE " +str(ind+1)+" : " + mess.GetText('I',err.id_message, err.valk, err.vali, err.valr)
                         self.mess.disp_mess( message)
                         return
 
@@ -1367,7 +1367,7 @@ def sort_compo_key(compo_key):
     """Retourne l'indice du DDL par rapport au modèle."""
     return ORDERED_DDL_PATTERN.index(compo_key.strip())
 
-def find_composantes(grp_noeuds, noeuds_def, mess = None):
+def find_composantes(grp_noeuds, noeuds_def, nb_no, mess = None):
     """Retourne les composantes du déplacement (DX, DY...DRZ)
     pour chaque groupe de noeuds. Les noeuds sont définis par
     leur indice provenant du maillage."""
@@ -1376,11 +1376,13 @@ def find_composantes(grp_noeuds, noeuds_def, mess = None):
     if not grp_noeuds:
         return None
 
+    # nb_ecod : nombre d'entier pour coder les DDL de deplacement.
+    nb_ecod = len(noeuds_def)/nb_no
     for grp, noeud_idxs in grp_noeuds.items():
         grp_comp = set()
         for noeud_idx in noeud_idxs:
-            k = (noeud_idx - 1) * 4
-            for i in range(4):
+            k = (noeud_idx - 1) * 5
+            for i in range(5):
                 comp_bits = noeuds_def[k + i]
                 for j in range(1, 31):
                     if comp_bits & 1<<j:
@@ -1482,7 +1484,9 @@ class SelectionNoeuds(_SelectionBase):
         """
         noeuds_def = modl.sdj.MODELE.PRNM.get()
         groupno = maillage.sdj.GROUPENO.get()
-        composantes = find_composantes(groupno, noeuds_def)
+        nos = maillage.sdj.NOMNOE.get()
+        nb_no = len(nos)
+        composantes = find_composantes(groupno, noeuds_def, nb_no)
         self.display_comp(composantes)
 
 
@@ -1506,7 +1510,9 @@ class SelectionMailles(_SelectionBase):
                 for nod in mailles_def[maille]:
                     if nod not in noeuds:
                         noeuds.append(nod)
-        composantes = find_composantes(groupno, noeuds_def)
+        nos = maillage.sdj.NOMNOE.get()
+        nb_no = len(nos)
+        composantes = find_composantes(groupno, noeuds_def, nb_no)
         self.display_comp(composantes)
 
 
@@ -1650,11 +1656,11 @@ class XmgrManager:
         self.xmgr_list.append(xmgr)
 
         xmgr.Titre("Courbe", "Sous_titre")
-        xmgr.Axe_x(u"Fréquence")
+        xmgr.Axe_x("Frequence")
         xmgr.Axe_y("Amplitude")
 
-        for ordo, leg in zip(ordonnees, legende):
-            cbr = Courbe(abscisses, ordo)
+        for absc, ordo, leg in zip(abscisses, ordonnees, legende):
+            cbr = Courbe(absc, ordo)
             xmgr.Courbe(cbr,leg)
 
         xmgr.Ech_x(self.echelle_dict[ech_x])

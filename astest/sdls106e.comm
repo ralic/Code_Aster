@@ -1,4 +1,4 @@
-# MODIF  DATE 03/01/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 28/11/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,6 +205,119 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        SQUELETTE=SQUEL,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI')
+
+MODCOT1=REST_SOUS_STRUC(RESU_GENE=RESGEN,
+                       TOUT_ORDRE='OUI',
+                       SOUS_STRUC='CARRE1',);
+
+MODCOT2=REST_SOUS_STRUC(RESU_GENE=RESGEN,
+                       TOUT_ORDRE='OUI',
+                       SOUS_STRUC='CARRE2',);
+
+# VERIFICATION CONTINUITE DEPLACEMENT AUX INTERFACES
+T1_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE1',
+                      NOEUD=('N9'),
+                      RESULTAT=MODCOT1,
+                      NOM_CHAM='DEPL',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='DZ',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+T2_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE2',
+                      NOEUD=('N70'),
+                      RESULTAT=MODCOT2,
+                      NOM_CHAM='DEPL',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='DZ',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+F_DZ=FORMULE(NOM_PARA=('DZ_C1', 'DZ_C2',),
+                VALE='abs (DZ_C1 - DZ_C2)')
+
+TC_DZ=CALC_TABLE(TABLE=T1_DZ,
+              ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('DZ', 'DZ_C1'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T2_DZ,
+                                  NOM_PARA=('NUME_ORDRE',),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DZ', 'DZ_C2'),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='ECART',
+                                  FORMULE=F_DZ),
+                      ),
+              TITRE='Comparaison DZ ssd 1 / ssd 2')
+
+#DRY de ssd 1 correspond a -DRX de ssd 2
+
+T1_DRY=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE1',
+                      NOEUD=('N9'),
+                      RESULTAT=MODCOT1,
+                      NOM_CHAM='DEPL',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='DRY',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+T2_DRX=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE2',
+                      NOEUD=('N70'),
+                      RESULTAT=MODCOT2,
+                      NOM_CHAM='DEPL',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='DRX',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+F_DRXY=FORMULE(NOM_PARA=('DRY_C1', 'DRX_C2',),
+                VALE='abs (DRY_C1 + DRX_C2)')
+
+TC_DRXY=CALC_TABLE(TABLE=T1_DRY,
+              ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('DRY', 'DRY_C1'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T2_DRX,
+                                  NOM_PARA=('NUME_ORDRE',),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DRX', 'DRX_C2'),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='ECART',
+                                  FORMULE=F_DRXY),
+                      ),
+              TITRE='Comparaison DRXY ssd 1 / ssd 2')
+
+#IMPR_TABLE(TABLE=TC_DZ)
+#IMPR_TABLE(TABLE=TC_DRXY)
+
+TEST_TABLE(
+     TABLE     = TC_DZ,
+     NOM_PARA  = 'ECART',
+     TYPE_TEST = 'SOMM',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 3.E-3,
+     REFERENCE = 'ANALYTIQUE',)
+
+TEST_TABLE(
+     TABLE     = TC_DRXY,
+     NOM_PARA  = 'ECART',
+     TYPE_TEST = 'SOMM',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 7.E-3,
+     REFERENCE = 'ANALYTIQUE',)
+
+# VERIFICATION NULLITE DU TRAVAIL DES FORCES DE LIAISON
+# SDVERI:NON EXISTENCE D'OBJETS NON CONFORMES POUR LES table_container
+DEBUG(SDVERI='NON');
+
+CALC_ENR=CALC_CORR_SSD(MODELE_GENE=MODEGE,
+                     RESU_GENE=RESGEN,
+                     SHIFT=1.,
+                     UNITE=6)
+
+DEBUG(SDVERI='OUI');
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,

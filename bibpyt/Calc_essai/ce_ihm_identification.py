@@ -1,4 +1,4 @@
-#@ MODIF ce_ihm_identification Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ce_ihm_identification Calc_essai  DATE 28/11/2011   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -672,6 +672,7 @@ class InterfaceIdentification(Frame):
         # values = liste dont chaque elmt est une courbe
         values = []
         captions = []
+        freq = []
         
         for ind_tab in range(2):
             opt_key = self.var_visu_resu[ind_tab].get()
@@ -694,6 +695,7 @@ class InterfaceIdentification(Frame):
                 elif num_option == 6 or num_option == 7:
                     idx = int(var[2:])
                     vect = res[idx - 1, 1:]
+                absc = getattr(res, 'f')[1:]
 
                 # Options de visualisation  
                 if self.var_amp.get() == 'Amplitude':
@@ -707,23 +709,17 @@ class InterfaceIdentification(Frame):
                     self.mess.disp_mess("!!           diagramme " \
                                         "logarithmique          !!")
 
-                values.append(vect)          
+                values.append(vect)
+                freq.append(array(absc))
                 captions.append("%s %s" % (opt_key, var))
         
-        return values, captions
+        return freq, values, captions
 
     def plot_curve(self):
         """Selection dans les interspectres disponibles des resultats
         sélectionnées dans les listes menu_list, et plot
-        des courbes correspondantes"""
-        try:
-            freq = self.Syy.f[1:]
-        except:
-            self.mess.disp_mess("Impossible de récupérer la fréquence " \
-                                "sur l'interspectre 'Syy'")
-            return
-        
-        values, caption = self._get_graph_data()
+        des courbes correspondantes"""       
+        freq, values, caption = self._get_graph_data()
         
         self.param_visu.visu_courbe(freq, values, l_legende=caption,
                                     titre_x=self.var_abs.get(), titre_y=self.var_ord.get())

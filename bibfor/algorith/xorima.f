@@ -1,12 +1,13 @@
-      SUBROUTINE XORIMA(NBMAF,JDLIMA,JCONX1,JCONX2,JCOOR,SENS)
+      SUBROUTINE XORIMA(NOMA,NBMAF,JDLIMA,JCONX1,JCONX2,JCOOR,SENS)
 
       IMPLICIT REAL*8 (A-H,O-Z)
 
+      CHARACTER*8  NOMA
       CHARACTER*19 SENS
-      INTEGER     NBMAF,JDLIMA,JCONX1,JCONX2,JCOOR
+      INTEGER      NBMAF,JDLIMA,JCONX1,JCONX2,JCOOR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/11/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,6 +26,40 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE COLOMBO D.COLOMBO
    
+C  ---------------------------------------------------------------------
+C
+C       XORIMA   : X-FEM ORIENTATION MAILLES : ORIENTATION DE LA NORMALE
+C       ------     -     ---         --  
+C                  DES MAILLES DEFINISSANT LA SURFACE DE LA FISSURE
+C
+C  DANS LE CADRE DE LA DEFINITION X-FEM D'UNE FISSURE 3D PAR UN MAILLAGE
+C  SURFACIQUE, LA NORMALE DE CHAQUE ELEMENT DE CE MAILLAGE DOIT ETRE
+C  BIEN ORIENTEE PAR RAPPORT A CELLES DES AUTRES MAILLES AFIN DE BIEN
+C  CALCULER LA SIGNE DE LA LEVEL SET NORMALE.
+C
+C  ENTREE
+C  ------
+C
+C     NOMA   = NOM DU MAILLAGE SURFACIQUE DEFINISSANT LA FISSURE
+C     NBMAF  = NOMBRE DE MAILLES DANS JDLIMA
+C     JDLIMA = POINTER A L'OBJET JEVEUX QUI CONTIENT LA LISTE DES 
+C              MAILLES DE NOMA QUI FORMENT LA SURFACE DE LA FISSURE 
+C     JCONX1 = POINTER A L'OBJET JEVEUX NOMA//'.CONNEX'
+C     JCONX2 = POINTER A L'OBJET JEVEUX LONGUEUR CUMULEE DE JCONX1
+C     JCOOR  = POINTER A L'OBJET JEVEUX DES COORDONNES DES NOEUDS DU
+C              MAILLAGE NOMA
+C     SENS   = NOM DE L'OBJET JEVEUX A CREER (VOIR CI-DESSOUS)
+C
+C  SORTIE
+C  ------
+C
+C     SENS   = OBJET JEVEUX REMPLI. IL S'AGIT D'UN VECTEUR D'ENTIERS DE
+C              LONGUEUR NBMAF CONTENANT SEULEMENT DES 1 OU DES -1.
+C              PENDANT LE CALCUL DE LA LEVEL SET NORMALE PAR PROJECTION
+C              SUR LES ELEMENT DE JDLIMA, LA NORMALE A L'ELEMENT DOIT
+C              ETRE MULTIPLIEE PAR LA VALEUR CONTENUE DANS SENS AFIN DE
+C              REORIENTER LA NORMALE (-1) SI NECESSAIRE POUR BIEN
+C              CALCULER LA SIGNE DE LA LEVEL SET NORMALE.
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -44,118 +79,167 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      REAL*8      A(3),B(3),C(3),AB(3),AC(3),VN(3),VNREF(3),PS,DDOT
-      REAL*8      NORME
-      INTEGER     JSENS,IMAFIS,NMAAB1,NBNOM1,INOMA,NUNO(3),I,KMAFIS
-      INTEGER     NMAAB2,NBNOM2,NUMNO1,NUMNO2,NMAADJ,KMAFI2
+      REAL*8       A(3),B(3),C(3),AB(3),AC(3),VN(3),VNREF(3),PS,DDOT,
+     &             NORME
+      INTEGER      JSENS,NLAYER,LAYER,I,J,NMAABS,NBNOMA,INOMA,JELNO,
+     &             NBELNO,ELJ,NUMELM
+      CHARACTER*19 CNXINV
+      CHARACTER*8  K8B
 
       CALL JEMARQ()
 
+C     CREATE THE VECTOR WHERE THE ORIENTATION OF THE ELEMENT NORMAL WILL
+C     BE STORED
       CALL WKVECT(SENS,'V V I',NBMAF,JSENS)
 
-C     BOUCLE SUR LES MAILLES DE LA FISSURE
-      ZI(JSENS-1+1)=1
-      DO 1 IMAFIS=2,NBMAF
+C     CREATE A TEMPORARY VECTOR WHERE THE LAYER TO WHICH EACH ELEMENT
+C     BELONGS IS STORED
+      CALL WKVECT('&&XORIMA.LAY','V V I',NBMAF,NLAYER)
+      CALL JERAZO('&&XORIMA.LAY',NBMAF,1)
+      CALL JEVEUO('&&XORIMA.LAY','E',NLAYER)
 
-        NMAAB1=ZI(JDLIMA+IMAFIS-1)
-        NBNOM1=ZI(JCONX2+NMAAB1) - ZI(JCONX2+NMAAB1-1)
-C       RECUPERATION DES TROIS PREMIERS NOEUDS POUR CALCULER VN
-        INOMA=1
-        NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAAB1-1)+INOMA-1)
-        A(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
-        A(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
-        A(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
+C     THE FIRST ELEMENT IS TAKEN AS THE REFERENCE
+      ZI(NLAYER-1+1) = 1
+      ZI(JSENS-1+1) = 1
 
-        INOMA=2
-        NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAAB1-1)+INOMA-1)
-        B(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
-        B(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
-        B(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
+C     CREATE THE INVERSE CONNECTIVITY OBJECT
+      CNXINV = '&&XORIMA.CNCINV'
+      CALL CNCINV(NOMA,ZI(JDLIMA),NBMAF,'V',CNXINV)
 
-        INOMA=3
-        NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAAB1-1)+INOMA-1)
-        C(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
-        C(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
-        C(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
+C     LOOP ON THE LAYER NUMBER
+      DO 10 LAYER=1,NBMAF
 
-        DO 11 I=1,3
-          AB(I)=B(I)-A(I)
-          AC(I)=C(I)-A(I)
- 11     CONTINUE
+C        LOOP ON THE ELEMENT LIST
+         DO 20 I=1,NBMAF
 
-C       CALCUL DE LA NORMALE A LA MAILLE TRIA3
-        CALL PROVEC(AB,AC,VN)
-        CALL NORMEV(VN,NORME)
-C       RECHERCHE DUN ELEMENT ADJACENT PAR COMPARAISON DE LA 
-C       CONNECTIVITE
-        DO 12 KMAFIS=IMAFIS-1,1,-1
-          NMAAB2=ZI(JDLIMA+KMAFIS-1)
-          NBNOM2=ZI(JCONX2-1+NMAAB2+1) - ZI(JCONX2-1+NMAAB2)
+C           SEARCH FOR THE ELEMENTS BELONGING TO THE CURRENT LAYER
+            IF (ZI(NLAYER-1+I).EQ.LAYER) THEN
 
-           DO 121 INOMA1=1,NBNOM1
-            NUMNO1=ZI(JCONX1-1+ZI(JCONX2+NMAAB1-1)+INOMA1-1)
+C              CALCULATE THE NORMAL TO THE ELEMENT. IT WILL BE USED
+C              AS A REFERENCE FOR THE CONNECTED ELEMENTS.
+               NMAABS = ZI(JDLIMA-1+I)
+               NBNOMA = ZI(JCONX2+NMAABS)-ZI(JCONX2+NMAABS-1)
 
-            DO 1211 INOMA2=1,NBNOM2
-              NUMNO2=ZI(JCONX1-1+ZI(JCONX2+NMAAB2-1)+INOMA2-1)
+               INOMA=1
+               NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+               A(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
+               A(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
+               A(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
 
-              IF (NUMNO1.EQ.NUMNO2)THEN
-                NMAADJ=NMAAB2
-C               ON RECOPIE KMAFIS (ATTENTION PIEGE, SINON, IL EST
-C               ENCORE INCREMENTÉ VIA LE GOTO)
-                KMAFI2 = KMAFIS         
-                IMAFI2 = IMAFIS         
-                GO TO 13
-              END IF
+               INOMA=2
+               NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+               B(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
+               B(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
+               B(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
 
- 1211       CONTINUE            
+               INOMA=3
+               NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+               C(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
+               C(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
+               C(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
 
- 121      CONTINUE
+               AB(1)=B(1)-A(1)
+               AB(2)=B(2)-A(2)
+               AB(3)=B(3)-A(3)
 
-          IMAFI2 = IMAFIS         
-          KMAFI2 = KMAFIS         
- 12     CONTINUE
+               AC(1)=C(1)-A(1)
+               AC(2)=C(2)-A(2)
+               AC(3)=C(3)-A(3)
 
- 13     CONTINUE
+               CALL PROVEC(AB,AC,VNREF)
+               CALL NORMEV(VNREF,NORME)
 
-        INOMA=1
-        NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAADJ-1)+INOMA-1)
-        A(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
-        A(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
-        A(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
+               VNREF(1) = VNREF(1)*ZI(JSENS-1+I)
+               VNREF(2) = VNREF(2)*ZI(JSENS-1+I)
+               VNREF(3) = VNREF(3)*ZI(JSENS-1+I)
 
-        INOMA=2
-        NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAADJ-1)+INOMA-1)
-        B(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
-        B(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
-        B(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
+C              LOOP ON EACH NODE OF THE SELECTED ELEMENT
+               DO 30 J=1,NBNOMA
 
-        INOMA=3
-        NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAADJ-1)+INOMA-1)
-        C(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
-        C(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
-        C(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
+                  NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+J-1)
 
-        DO 14 I=1,3
-          AB(I)=B(I)-A(I)
-          AC(I)=C(I)-A(I)
- 14     CONTINUE
-        
+C                 SEARCH FOR THE ELEMENTS CONNECTED TO THE SELECTED ONE
+C                 BY MEANS OF NODE J
+                  CALL JELIRA(JEXNUM(CNXINV,NUNO),'LONMAX',NBELNO,K8B)
+                  CALL JEVEUO(JEXNUM(CNXINV,NUNO),'L',JELNO)
 
-C       CALCUL DE LA NORMALE A LA MAILLE TRIA3 
-        CALL PROVEC(AB,AC,VNREF)
-        CALL NORMEV(VNREF,NORME)
-        VNREF=ZI(JSENS-1+KMAFI2)*VNREF
-        PS=DDOT(3,VN,1,VNREF,1)
+C                 LOOP ON EACH ELEMENT CONNECTED TO NODE J
+                  DO 40 ELJ=1,NBELNO
 
-C       STOCKAGE DU SENS DE L'ORIENTATION DE LA NORMALE
-C       SI PRODUIT SCALAIRE NEGATIF, INVERSION NORAMALE
-        CALL ASSERT(IMAFI2.GT.0)
-        IF(PS.LT.0)THEN
-          ZI(JSENS-1+IMAFI2)=-1
-        ELSE
-          ZI(JSENS-1+IMAFI2)=1
-        END IF
- 1    CONTINUE 
+                     NUMELM=ZI(JELNO-1+ELJ)
+
+C                    CHECK IF THE CONNECTED ELEMENT HAS ALREADY BEEN
+C                    SELECTED
+                     IF (ZI(NLAYER-1+NUMELM).EQ.0) THEN
+
+C                       NO. ASSIGN IT THE LAYER NUMBER
+                        ZI(NLAYER-1+NUMELM) = LAYER+1
+
+C                       CALCULATE THE NORMAL TO THE ELEMENT USING THE
+C                       FIRST THREE NODES DEFINING IT
+                        NMAABS = ZI(JDLIMA-1+NUMELM)
+                        NBNOMA = ZI(JCONX2+NMAABS)-ZI(JCONX2+NMAABS-1)
+
+                        INOMA=1
+                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+                        A(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
+                        A(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
+                        A(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
+
+                        INOMA=2
+                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+                        B(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
+                        B(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
+                        B(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
+
+                        INOMA=3
+                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+                        C(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
+                        C(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
+                        C(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
+
+                        AB(1)=B(1)-A(1)
+                        AB(2)=B(2)-A(2)
+                        AB(3)=B(3)-A(3)
+
+                        AC(1)=C(1)-A(1)
+                        AC(2)=C(2)-A(2)
+                        AC(3)=C(3)-A(3)
+
+                        CALL PROVEC(AB,AC,VN)
+                        CALL NORMEV(VN,NORME)
+
+C                       CHECK THE ORIENTATION OF THE ELEMENT NORMAL
+C                       WITH RESPECT TO THE REFERENCE NORMAL 
+                        PS=DDOT(3,VN,1,VNREF,1)
+
+                        IF (PS.LT.0.D0)THEN
+                           ZI(JSENS-1+NUMELM)=-1
+                        ELSE
+                           ZI(JSENS-1+NUMELM)=1
+                        ENDIF
+
+                     ENDIF
+
+40                CONTINUE
+
+30             CONTINUE
+
+            ENDIF
+
+20       CONTINUE
+
+10    CONTINUE
+
+C     LOOP ON THE ELEMENT LIST TO CHECK THAT EACH ELEMENT HAS BEEN
+C     PROCESSED
+      DO 100 I=1,NBMAF
+         IF(ZI(NLAYER-1+I).EQ.0) CALL U2MESS('F','XFEM_9')
+100   CONTINUE
+
+C     CLEAN THE TEMPORARY JEVEUX OBJECTS
+      CALL JEDETR('&&XORIMA.LAY')
+      CALL JEDETR(CNXINV)
 
       CALL JEDEMA()
       END

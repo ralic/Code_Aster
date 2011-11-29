@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF propa_fiss_ops Macro  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -259,7 +259,6 @@ def nom_points_fonds(n_taille):
                    tab_alphabet =  tab_alphabet + [tab_alphabet[(taille_tab_alphabet-1)*26+reste1]+alphabet[l_let3]]
        return tab_alphabet
 
-#def propa_fiss_ops(self,METHODE_PROPA,TEST_MAIL,INFO,**args):
 def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   """
   Macro PROPA_FISS
@@ -478,6 +477,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         l_inst_tab=dict([(i,0) for i in l_inst_tab]).keys()
         nbinst = len(l_inst_tab)
       nbptfon = len(__tab1['K1']) / nbinst
+
+      if (max(__tab1['NUME_FOND']) != Nbfiss) :
+         UTMESS('F','XFEM_42',valk = fiss0.get_name())
+      
       RmM[numfis] = [None]*nbptfon
       DKeq[numfis] = [None]*nbptfon
       BETA[numfis] = [None]*nbptfon

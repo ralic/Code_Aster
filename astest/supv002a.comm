@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 28/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,6 +23,8 @@
 DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
       PAR_LOT='OUI')
 
+import os
+os.environ['LANG'] = 'fr_FR.utf8'
 import os.path as osp
 from glob import glob
 

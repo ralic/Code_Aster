@@ -1,4 +1,4 @@
-#@ MODIF cata_ce Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF cata_ce Calc_essai  DATE 28/11/2011   AUTEUR BODEL C.BODEL 
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,7 +117,7 @@ class ModeMeca(Resultat):
 
         try:
             self.get_nom_cham()
-        except AttributeError:
+        except :
             pass
 
         #self.show_linked_concepts()

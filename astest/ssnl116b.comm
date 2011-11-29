@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/11/2011   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DU TRONCON BE  DU CIG DES RENARDIERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,9 +19,8 @@
 # ======================================================================
 #
 # ssnl116b.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test S
-# REF : ALTHEE STROOBANT,STAGIAIRE MTC AOUT 1999
 
-DEBUT(CODE=_F(NOM='SSNL116B',NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNL116B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(  )
 

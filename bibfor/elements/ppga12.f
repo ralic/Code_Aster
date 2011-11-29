@@ -1,6 +1,6 @@
       SUBROUTINE PPGA12(NDIM,NNO,NPG,POIDS,VFF,GEOM,PG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/11/2011   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 28/11/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,11 +97,14 @@ C     2.2  SEG 3
 C     ----------
       ELSEIF(NNO.EQ.3)THEN
 C
-          U(3)=0.D0
-          V(3)=0.D0
+          DO 70 I = 1,3
+             U(I)=0.D0
+             V(I)=0.D0
+ 70       CONTINUE
+
           DO 80 I = 1,NDIM
-               U(I)=GEOM(I,2)-GEOM(I,1)
-               V(I)=GEOM(I,3)-GEOM(I,1)
+             U(I)=GEOM(I,2)-GEOM(I,1)
+             V(I)=GEOM(I,3)-GEOM(I,1)
  80       CONTINUE
 
           CALL NORMEV(U,NORM)

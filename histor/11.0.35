@@ -1,0 +1,982 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 11/28/2011 - 12:49:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017951 DU 2011-11-22 10:21:54
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Dxc3xa9gradation du temps de ssna302b en 11.0.32
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Le cas-test ssna302b a vu son temps CPU se dégrader suite à la version 11.0.32. 
+   
+   
+   Solution
+   ========
+   
+   Le surcout provient de l'utilisation d'une matrice non-symétrique. Désormais, toutes les
+   pressions suiveuses produisent une matrice non-symétrique.
+   On propose de ne rien faire
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssna302b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR andriam      ANDRIAMBOLOLONA Hari   DATE 11/28/2011 - 02:05:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015196 DU 2010-06-14 14:00:21
+TYPE evolution concernant Documentation (VERSION 7.0)
+TITRE
+    MN04 - Doc U2 sur la mise en oeuvre de la sous-structuration dynamique
+FONCTIONNALITE
+   Un document d’aide à la mise en œuvre de calcul utilisant la technique de
+   sous-structuration dynamique a été rédigé (U2.07.05).
+   Le cas test sdls106e a été enrichi en rajoutant la démarche pour le contrôle de la qualité
+   des résultats obtenus : continuité du déplacement aux interfaces et nullité du travail des
+   forces de liaison (CALC_CORR_SSD).
+   Une nouvelle modélisation (e) du cas test sdld102 a été créée. Cette modélisation est
+   équivalente à la modélisation sdld102a, mais avec utilisation des opérateurs CREA_ELEM_SSD
+   et ASSE_ELEM_SSD. On présente également dans cette modélisation, comment on définit la
+   condition initiale pour un calcul transitoire par sous-structuration dynamique. Le calcul
+   direct de référence n’a pas été repris dans cette modélisation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.07.05 V2.01.102
+VALIDATION
+    sdls106e sdld102e shlv301a
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 11/28/2011 - 04:41:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017953 DU 2011-11-22 14:33:27
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Stanley : impossible de creer un point ou une courbe en NEW11
+FONCTIONNALITE
+   Dans STANLEY, on utilisela commande CREA_MAILLAGE pour générer des maillages lors de
+   l'ajout de points et de lignes de post-traitement.
+   
+   On ne peut plus faire :
+   MA = CREA_MAILLAGE( MAILLAGE=MA0 )
+   
+   il faut faire :
+   MA = CREA_MAILLAGE( MAILLAGE=MA0, 
+                       COPIE=_F()
+                     )
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Stanley
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 11/28/2011 - 06:47:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017965 DU 2011-11-24 12:10:22
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    CALC_ESSAI : IHM interactive cas-test sdls112a
+FONCTIONNALITE
+   PROBEME :
+   ---------
+   
+   a) Test 1  => problème en NEW10 sur Calibre5
+    
+   A la fin du test, on clique sur "afficher" dans FRF de l'onglet "Expansion de 
+   modèles".
+   Cette action génère l'erreur suivante :
+    
+   Ex?ution de /local00/aster/outils//xmgrace -noask  -graph 9 -npipe xmgr1.pipe
+   Exception in Tkinter callback
+   Traceback (most recent call last):
+     File "/local00/aster/public/lib/python2.6/lib-tk/Tkinter.py", line 1410, in __
+   call__
+       return self.func(*args)
+     File "./Python/Calc_essai/outils_ihm.py", line 1350, in affich_FRF
+       self.param_visu.visu_courbe(freq, module, couleur, legende, 'LIN', 'LIN')
+     File "./Python/Calc_essai/ce_ihm_parametres.py", line 384, in visu_courbe
+       self.logiciel_courbes.affiche(l_x, ll_y, couleur, l_legende, titre_x, titre_y)
+     File "./Python/Calc_essai/ce_ihm_parametres.py", line 826, in affiche
+       self.xmgr_manager.affiche(l_x, ll_y, couleur, legende, titre_x, titre_y)
+     File "./Python/Calc_essai/outils_ihm.py", line 1657, in affiche
+       cbr = Courbe(abscisses, ordo)
+     File "./Python/Stanley/as_courbes.py", line 98, in __init__
+       if dim_x <> dim_y : raise Courbe.BAD_VALUES
+   TypeError: exceptions must be old-style classes or derived from BaseException, not 
+   str
+    
+   b) Test 2  => nécessite une intervention dans le fichier de commande
+    
+   Si on exécute les instructions telles quelles sont définies dans la recette, on 
+   échoue au moment 
+   du calcul car il manque au résultat les caractéristiques élémentaires et le champ 
+   matériau.
+   Pour corriger ce problème, nous avons ajoute dans l'operateur LIRE_RESU qui génère le 
+   concept 
+   MODES, le CHAM_MATER et le CARA_ELEM.
+   
+   DIAGNOSTIC :
+   ------------
+   Sue le premier probleme, il y avait incoherence pour l'affichage de courbes au foramt 
+   xmgrace entre deux modules de CALC_ESSAI.
+   Je ne retrouve pas le second probleme. On ne doit pas avoir besoin des sd demandees 
+   pour faire le calcul prevu, car on dispose deja des matrices assemblees.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdls112a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017964 DU 2011-11-24 12:05:39
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    CALC_ESSAI : IHM interactive anomalie cas-test sdlv125a et cas-test sdll137b/sdll137c
+FONCTIONNALITE
+   Description:
+   ------------
+   On niveau du fichier de commande, on active INTERACTIF=1 et on supprime le mot-clé 
+   CODE de 
+   l'operateur DEBUT.
+   Après avoir lancé le cas-test, la fenêtre interactive de CALC_ESSAI s'ouvre, on 
+   sélectionne le 
+   panneau "identification de chargement".
+   Dans le choix des données de calcul, on choisit la base modale MODE_NUM.
+   Dans la définition du concept d'observabilité, on choisit le modèle expérimental 
+   MODELEXP.
+   Après cette action, on a l'erreur suivante:
+    
+   Exception in Tkinter callback
+   Traceback (most recent call last):
+     File "/local00/aster/public/lib/python2.6/lib-tk/Tkinter.py", line 1410, in 
+   __call__
+       return self.func(*args)
+     File "./Python/Calc_essai/ce_ihm_identification.py", line 406, in 
+   _observabilite_changed
+       self.obs_noeuds.set_resultat(modele)
+     File "./Python/Calc_essai/outils_ihm.py", line 1441, in set_resultat
+       self.set_modele_maillage(modele.obj, modele.maya)
+     File "./Python/Calc_essai/outils_ihm.py", line 1486, in set_modele_maillage
+       self.display_comp(composantes)
+     File "./Python/Calc_essai/outils_ihm.py", line 1452, in display_comp
+       ddl_keys.sort(key=sort_compo_key)
+     File "./Python/Calc_essai/outils_ihm.py", line 1368, in sort_compo_key
+       return ORDERED_DDL_PATTERN.index(compo_key.strip())
+   ValueError: list.index(x): x not in list
+    
+   Remarque: si on avait choisit un autre modèle expérimental, on aurait eu le même 
+   message d'erreur.
+   
+   Diagnostic :
+   ------------
+   Probleme localise : le .PRNM du modele etait mal relu depuis qu'on est passe au 
+   codage a 5 entiers. On calcule le nombre d'entiers du codage par le rapport 
+   len(pgrm)/nb_noeuds.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdlv125a, sdll137v, sdll137c
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR colombo      COLOMBO Daniele        DATE 11/22/2011 - 06:38:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017912 DU 2011-11-15 08:19:58
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    X-FEM: mxc3xa9thode maillage PROPA_FISS ne vxc3xa9rifie pas la taille de la table CALC_G donnxc3xa9e par l'utilisateur
+FONCTIONNALITE
+   La restitution de la fiche 17486 a introduit la possibilité de gérer par la méthode
+   maillage la propagation d'un fond de fissure formé par plusieurs morceaux. Avant cette
+   évolution du code, PROPA_FISS s'arrêtait en erreur fatale si l'utilisateur donnait en
+   entré une fissure formée par plusieurs morceaux.
+   
+   Comme décrit dans la doc U4.82.11 (opérande TABLE), dans le cas de fond de fissure
+   multiple, l'utilisateur doit donner en entré à PROPA_FISS une table des facteurs
+   d'intensité des contraintes qui contienne les valeurs pour chaque morceau et qui est
+   obtenue par concaténation des tables calculées par CALC_G pour chaque morceau.
+   
+   À l'heure actuelle, aucune vérification de la cohérence entre taille de la table et nombre
+   de morceaux du fond n'est faite par les routines de la méthode maillage, ce qui cause un
+   plantage du code dans le cas où la taille de la table n'est pas correcte.
+   
+   
+   
+   SOLUTION
+   --------
+   
+   On modifie la macro de la méthode maillage pour faire la vérification et on émet une
+   erreur fatale dans le cas de mauvaise taille, comme déjà fait pour les méthodes upwind,
+   simplexe et géométrique.
+   
+   
+   
+   IMPACT
+   ------
+   
+   Macros: propa_fiss_ops.py
+   Catalogues: xfem.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test Nicolas + cas test XFEM existants
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017765 DU 2011-10-20 14:25:14
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.28, les cas-tests sslv154a et sslv313a s'arrxc3xaatent anormalement sur Aster4, Rocks Calibre5 et Calibre7.
+FONCTIONNALITE
+   PROBLEME
+   --------
+   
+   En NEW11.0.28, les cas-tests sslv154a et sslv313a s'arrêtent anormalement sur Aster4,
+   Rocks et Calibre5.
+   Sslv154a s'arrête également anormalement sur Calibre7.
+   
+   
+   SOLUTION
+   --------
+   
+   Le plantage est dans xorima.f, routine que j'ai introduit en 11.0.28 pour corriger le
+   calcul de la signe de la level set normale dans DEFI_FISS_XFEM dans le cas où
+   l'utilisateur donne le maillage de la fissure.
+   Il ne s'agit pas d'une erreur de programmation mais plutôt d'un problème dans l'algorithme
+   implémenté dans xorima.f. En fait dans cet algorithme on suppose que la numérotation des
+   mailles suit toujours la connexion des mailles selon un ordre bien défini parce qu'on a
+   codé l'algorithme dans le cas de la méthode maillage de PROPA_FISS (dans ce cas les
+   routines de PROPA_FISS créent le maillage selon un ordre bien défini). Toutefois le
+   maillage de la fissure peut etre créé directement par l'utilisateur et aucune hypothèse ne
+   peut etre faite sur la numérotation et l'ordre des mailles. Cela est le cas des tests
+   sslv154a et sslv313a.
+   
+   On change donc l'algorithme. Le calcul de l'orientation de la normale doit se faire par
+   mailles contigües. Pour faire ça, on part d'un élément du maillage de la fissure et on
+   sélectionne la couche d'éléments lui connectés. Pour chacun des éléments sélectionnés, on
+   compare la direction de la normale avec celle de l'élément duquel on est partie pour la
+   sélectionne (produit scalaire entre les deux vecteurs) et on stocke 1 ou -1 respectivement
+   si les deux normales sont du même côté des deux éléments ou pas. Puis on boucle sur tous
+   les éléments de la couche en utilisant le même algorithme.
+   Cela permet de "propager" la direction de la normale du premier élément à toute la surface
+   de la fissure.
+   La valeur +/-1 calculée pour chaque éléments est puis utilisé dans xls3d.f pour le bon
+   calcul de la signe de la level set normale: on multiplie cette valeur par la valeur du
+   produit scalaire entre le vecteur projection du noeud sur l'élément et la normale elle même.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+    sslv154a, sslv313a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017876 DU 2011-11-09 13:35:49
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Mauvaise dxc3xa9finition des chargements dans les sslv320
+FONCTIONNALITE
+   Les cas-tests sslv320a,b,c,d utilisent tous le même maillage, dont les caractéristiques sont :
+   NOMBRE DE NOEUDS                        7770
+   NOMBRE DE MAILLES                      43051
+                                 TRIA3                5444
+                                 TETRA4              37607
+   NOMBRE DE GROUPES DE NOEUDS                4
+                                 Face_2             793
+                                 Face_1             793
+                                 Edge_1              21
+                                 Node_1               1
+   NOMBRE DE GROUPES DE MAILLES               2
+                                 Face_2            1472
+                                 All              37607
+   
+   Le groupe de noeuds 'Face_1' (resp. 'Face_2') correspond aux noeuds s'appuyant sur tous
+   les triangles de la face 'Face_1' (resp. 'Face_2').
+   Le groupe de noeuds 'Edge_1' correspond aux noeuds s'appuyant sur tous les segments de
+   l'arête 'Edge_1'.
+   Le groupe de noeuds 'Node_1' contient un unique noeud, un coin dans la géométrie.
+   
+   Le chargement est identique :
+                      PRES_REP=_F(GROUP_MA='Face_2',PRES=-Force),
+                      DDL_IMPO=(_F(GROUP_NO='Face_1',DZ=0.0,),
+                                _F(GROUP_NO='Edge_1',DY=0.0,),
+                                 _F(GROUP_NO='Node_1',DX=0.0,DY=0.0,),
+   
+   Comme on fait de l'adaptation de maillage, cette définition est incorrecte : si les
+   triangles de la face 'Face_1' ou les segments de 'Edge_1' sont coupés, il y aura un trou
+   dans le chargement car les groupes de noeuds restent invariables.
+   
+   Ce qu'il faut faire :
+   . Dans le maillage :
+     . Créer le groupe de TRIA3, 'Face1'
+     . Créer le groupe de SEG2, 'Edge1'
+     . Supprimer les groupes de noeuds 'Face_1', 'Face_2', et 'Edge_1'
+   . Dans les jeux de commandes :
+   . Modifier les chargements pour qu'ils s'appuient sur :
+                       _F(GROUP_MA='Face_1',DZ=0.0,),
+                       _F(GROUP_MA='Edge_1',DY=0.0,),
+   
+   On notera qu'il est tout à fait légitime d'utiliser le groupe de noeuds 'Node_1' car il
+   contient un unique noeud, point invariant au fil des adaptations.
+   
+   
+   SOLUTION
+   --------
+   
+   Le chargement n'est pas utilisé dans les cas test sslv320 parce que on impose l'avancée de
+   la fissure et on ne résout pas le modèle. Il suffit donc de lever la définitions des
+   chargements des fichiers .comm.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test sslv320
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017852 DU 2011-11-04 09:15:56
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    sslv154a en debug JEVEUX
+FONCTIONNALITE
+   PROBLEME
+   --------
+   
+   sslv154a plante dans TEST_TABLE en debug jeveux.
+   
+   
+   SOLUTION
+   --------
+   
+   Il s'agit du meme problème que celui décrit dans la fiche 17765. Problème resolu par la
+   restitution de la fiche 17765.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv154a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017773 DU 2011-10-20 15:04:01
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.28, le cas-test sslv320c s'arrxc3xaate anormalement sur Calibre5 et Calibre7.
+FONCTIONNALITE
+   PROBLEME
+   --------
+   
+   En NEW11.0.28, le cas-test sslv320c s'arrête anormalement sur Calibre5 et Calibre7.
+   
+   
+   SOLUTION
+   --------
+   
+   Il s'agit du même problème que celui décrit dans la fiche 17850. Problème résolu par la
+   restitution de la fiche 17850.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv320c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016573 DU 2011-03-08 15:42:53
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    X-FEM : bug dans xls3d.f
+FONCTIONNALITE
+   PROBLEME
+   --------
+   
+   Martin et Maximilien ont detecté le problème suivant dans DEFI_FISS_XFEM:
+   
+   «Identification d'un bug dans la routine xls3d pour un cas de type: 
+   
+   m1 |->      <-| m2
+      |          |
+       \________/
+    
+   
+   Sur le schéma, on considère une surface triangulée pour laquelle les mailles m1 et m2 ont
+   des normales opposées. La routine xls3d fait une vérification du sens des normales entres
+   des éléments de numérotation adjacente. Rien n'empêche l'utilisateur de rentrer une
+   surface maillée avec une numérotation qui ne correspond pas à l'adjacence topologique (ex
+   m1 et m2 ci-dessus). Cela entraine une erreur par la suite une erreur dans MODI_MODELE_XFEM. 
+   
+   Nous avons détecté le problème à partir d'un maillage d'une surface triangulée par gmsh et
+   commenté les lignes en question dans le fichier ci-joint pour contourner. 
+   
+   Une piste pour résoudre serait de remplacer la vérification par numéro adjacent, par une
+   vérification topologique. Est ce que ORIE_NORM_COQUE ne fait pas cela ?
+   
+   M&M»
+   
+   
+   SOLUTION
+   --------
+   
+   Le même problème est décrit dans la fiche 17373. Dans cette fiche on a implémenté une
+   vérification de la normale par connexion topologique des éléments. Toutefois l'algorithme
+   implémenté ne résout pas le cas décrit dans cette fiche parce qu'il est basé sur des
+   hypothèses sur la numérotation des mailles qui sont bien vérifiées dans le cas de la fiche
+   17373 mais qui ne le sont pas dans le cas de cette fiche.
+   Le problème a été résolu avec la restitution de la fiche 17765 avec laquelle on a changé
+   l'algorithme de la fiche 17373 pour résoudre le problème de l'orientation de la normale
+   dans un cas général.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Test IFPEN
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 11/28/2011 - 11:45:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017937 DU 2011-11-21 08:27:25
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Impossible de relire une base en NEW11
+FONCTIONNALITE
+   Problème
+   --------
+   
+   L'utilisateur fait :
+   
+   calcA :
+   . DEBUT...
+   . FIN(FORMAT_HDF='OUI')
+   --> produit bhdf_A
+   
+   calcB :
+   . POURSUITE(FORMAT_HDF='OUI') relit bhdf_A
+   . ...
+   . raise Exception
+   . FIN(FORMAT_HDF='OUI') produit bhdf_B
+   
+   calcC :
+   . POURSUITE(FORMAT_HDF='OUI') relit bhdf_B
+   
+   Or en fait, en calcC, il relit bhdf_A !
+   
+   
+   Explication & correction
+   ------------------------
+   
+   Le problème se produit uniquement car :
+   - on est en MPI ;
+   - on est en POURSUITE(FORMAT_HDF='OUI') (au moins le premier .comm 
+   l'est) ;
+   - on a demandé FIN(FORMAT_HDF='OUI') ;
+   - et le calcul lève une exception.
+   
+   Alors, l'exception déclenche l'exécution d'une commande FIN 
+   "spéciale arrêt catastrophe" donc avec FORMAT_HDF='NON'.
+   Donc c'est uniquement glob.1 qui est produite.
+   Les résultats du processeur #0 sont recopiés dans le répertoire 
+   global.
+   Mais comme on a dans le .export une bdhf en résultat, on récupère 
+   celle qui est dans le répertoire global or il s'agit de celle qu'on 
+   avait en entrée.
+   
+   La modification est faite dans le script lancé par mpirun pour 
+   empêcher que l'on puisse récupérer la bhdf du départ :
+   - sur le processeur #0, on supprime les glob.*, bhdf.*, pick.* du 
+   répertoire global,
+   - pour gagner du temps, on supprime REPE_IN et Python du répertoire 
+   local au processeur #0,
+   - (comme avant) on recopie tout le contenu du répertoire local du 
+   processeur #0 dans le répertoire global.
+   
+   Correction répercutée immédiatement sur aster4.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test xc3xa9lxc3xa9mentaire en erreur
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017959 DU 2011-11-24 09:04:04
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.34, le cas-test supv002a est NOOK sur Aster4.
+FONCTIONNALITE
+   Pour la 5ème semaine consécutive, supv002a est en échec dans l'astout 
+   qui suit la mise à jour.
+   L'origine du problème est toujours la même : la variable LANG n'est 
+   pas définie.
+   Auparavant, il s'agissait de l'encodage qui n'était pas défini et 
+   donc le passage des messages à aspell échouait. Le test a donc été 
+   blindé pour éviter que cela échoue même si l'encodage est invalide.
+   
+   Cependant, l'encodage étant invalide, la vérification de 
+   l'orthographe des mots fonctionne... et relève beaucoup d'anomalies 
+   les mots étant mal interprétés ! (sans encodage valide, modélisation 
+   est découpé en "mod" et "lisation").
+   
+   On force maintenant la langue et l'encodage dans le .comm. 'aspell' 
+   peut ainsi fonctionner comme on l'attend par la suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    supv002a en environnement hostile
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017968 DU 2011-11-24 17:23:45
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Manque d'initialisation dans ppga12
+FONCTIONNALITE
+   On complète la fiche avec d'autres manques d'initialisations.
+   
+   ppga12.f :
+   
+   Deux vecteurs statiques de longueur 3 sont non-initialisés dans ppga12. 
+   Quand la dimension du pb est 2, l'utilisation de la 3ème composante 
+   déclenche un plantage.
+   On initialise à 0.
+   
+   nmelnl.f :
+   
+   Si on est en élastique et pas C_PLAN (test ligne #260) et si PTOT n'est pas 
+   dans le matériau, EPSPTO n'est pas initialisé.
+   On initialise à 0.
+   
+   xnmel.f :
+   
+   Dans xnmel, on appelle xnmel3 avec COMPOR=K16BID si OPTION=RIGI_MECA. Or 
+   COMPOR est toujours utilisé dans xnmel3 pour savoir si on est en GROT_GDEP.
+   On a COMPOR (transmis depuis te0539) sous la main, on peut donc le passer à 
+   xnmel3.
+   
+   op0166.f :
+   
+   LELGA est utilisé pour détruire ou non des objets en fin de routine mais il 
+   n'est pas toujours initialisé (on ne passe pas toujours par PJTYCO).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage des tests
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017952 DU 2011-11-22 12:45:03
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Bug avec gcc 4.6
+FONCTIONNALITE
+   Cette fiche avait été émise pour tracer le problème qui se produit 
+   avec gfortran 4.6 (échec dès la compilation des catalogues 
+   d'éléments).
+   Il s'agit d'une optimisation du compilateur qui pose problème sur nos 
+   manipulations de décalage mémoire pour l'allocation dynamique 
+   d'objets Jeveux.
+   
+   Le problème a été reproduit sur un petit code qui utilise le décalage 
+   sur un tableau déclaré de longueur 1.
+   
+   L'option à utiliser est -fno-tree-dse fournie (très rapidement) par 
+   le bug tracker GCC (bug #51267). Merci à eux !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    compilation avec GCC 4.6
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 11/28/2011 - 11:45:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017577 DU 2011-09-22 15:00:04
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.0.23, le cas-test ssnv512d s'arrxc3xaate en NOOK_TEST_RESU sur Calibre 7.
+FONCTIONNALITE
+   Problème :
+   ========
+   En NEW11.0.23, le cas-test ssnv512d s'arrête en NOOK_TEST_RESU sur Calibre 7.
+   
+   Le résultat NOOK est : 
+   
+   --------------------------------------------------------------------------------
+    ---- TABLE            NOM_PARA         TYPE_TEST
+         DEPPGY           DX               MAX
+         REFERENCE        LEGENDE          VALE_REF                 VALE_CAL                
+   ERREUR           TOLE            
+   NOOK  ANALYTIQUE       XXXX             -0.50000000000000        -0.49999999999994       
+   1.13E-11%        1.0E-11%        
+     
+   
+   --------------------------------------------------------------------------------
+   
+   Correction :
+   ==========
+   On adapte la tolérance du test à 2.0E-11%.
+   
+   Comme ce test est fait dans une boucle, cela modifie toutes les tolérance du test.
+   
+   Impact :
+   ======
+   ssnv512d.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage du test sur toutes les plateformes
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 11/28/2011 - 11:45:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017973 DU 2011-11-28 08:26:06
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En 11.0.34, le cas-test zzzz236a se termine en COPY_DATA sur Calibre 5 et Calibre7.
+FONCTIONNALITE
+   Il ne s'agit que d'une alarme.
+   Le maillage est en double : sur l'unité 20 et le .mail.
+   
+   On conserve le .mail est simplement une version nettoyée (il y avait 
+   simplement des groupes de mailles HEXA8 vides dans le .20).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz236a sur toutes les machines
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 11/29/2011 - 09:32:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014271 DU 2009-12-09 10:03:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Cas-tests de la base : NIV_PUB_WEB = 'INTRANET'
+FONCTIONNALITE
+   En version 11, nous avons 2903 cas tests. Sur ce nombre, 352 sont en NIV_PUB_WEB=INTRANET.
+   Pour beaucoup, cette diffusion restreinte est abusive. J'en reclasse donc 176 en diffusion
+   INTERNET (voir la liste des tests MODIF ci-après dans le texte d'histor).
+   
+   En particulier, on ne classe plus en diffusion INTRANET les tests qu'on ne veut pas mettre
+   dans le package au motif de maillage trop gros. ce sera le packageur qui fera ce qu'il
+   voudra en plaçant la limite de taille de fichier où cela lui conviendra.
+   
+   Il demeure donc, exclus de la diffusion INTERNET, les grandes familles de tests suivants
+   (352-176=176 tests, j'ai pas fait exprès pour la symétrie) : 
+   
+   - aspic, ascouf
+   - outil-métier centenaire
+   - outil-métier perfect
+   - outil-métier gevibus
+   - tests avec loi BETON_RAG
+   - tout le séisme (elsa, miss* ...)
+   - ce qui a trait au combustible (mac3coeur, lois IRRA, DISGRICRA ...)
+   - l'essentiel des tests RCCM
+   
+   Je livre également en version 10 la modification pour la même liste de tests (je fais
+   l'astout v10 moi-même).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    nxc3xa9ant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdld102e                      andriam H.ANDRIAMBOLOLONA    585    585      0
+ CASTEST MODIF adlv301a                       durand C.DURAND           156      2      5
+ CASTEST MODIF erreu06a                       durand C.DURAND            55      3      3
+ CASTEST MODIF fdll200a                       durand C.DURAND           137      3      3
+ CASTEST MODIF fdlv103a                       durand C.DURAND           220      3      4
+ CASTEST MODIF fdlv104a                       durand C.DURAND           307      2      5
+ CASTEST MODIF fdlv110a                       durand C.DURAND           536      5     17
+ CASTEST MODIF fdnv100a                       durand C.DURAND           338      2      3
+ CASTEST MODIF feti001a                       durand C.DURAND           240      3      3
+ CASTEST MODIF feti001b                       durand C.DURAND           277      2      2
+ CASTEST MODIF feti002a                       durand C.DURAND           245      3      3
+ CASTEST MODIF feti002b                       durand C.DURAND           287      2      2
+ CASTEST MODIF feti003a                       durand C.DURAND           250      3      3
+ CASTEST MODIF feti003b                       durand C.DURAND           246      3      3
+ CASTEST MODIF feti003c                       durand C.DURAND           250      3      3
+ CASTEST MODIF feti003d                       durand C.DURAND           286      2      2
+ CASTEST MODIF feti004a                       durand C.DURAND           236      3      3
+ CASTEST MODIF feti004b                       durand C.DURAND           281      2      2
+ CASTEST MODIF feti005a                       durand C.DURAND           250      3      3
+ CASTEST MODIF feti005b                       durand C.DURAND           290      2      2
+ CASTEST MODIF hplv103a                       durand C.DURAND           469      2      3
+ CASTEST MODIF hsll100a                       durand C.DURAND           280      2      2
+ CASTEST MODIF hsns101a                       durand C.DURAND           547      3      3
+ CASTEST MODIF hsns101b                       durand C.DURAND           407      3      3
+ CASTEST MODIF hsns101c                       durand C.DURAND           442      2      2
+ CASTEST MODIF hsns101d                       durand C.DURAND           425      2      2
+ CASTEST MODIF hsnv124a                       durand C.DURAND           471      2      2
+ CASTEST MODIF hsnv124b                       durand C.DURAND           405      3      3
+ CASTEST MODIF hsnv124c                       durand C.DURAND           352      3      3
+ CASTEST MODIF hsnv124d                       durand C.DURAND           352      3      3
+ CASTEST MODIF hsnv124e                       durand C.DURAND           390      1      1
+ CASTEST MODIF hsnv124f                       durand C.DURAND           471      3      3
+ CASTEST MODIF hsnv125a                       durand C.DURAND           497      2      2
+ CASTEST MODIF hsnv125b                       durand C.DURAND           422      2      2
+ CASTEST MODIF hsnv125c                       durand C.DURAND           623      2      2
+ CASTEST MODIF hsnv125d                       durand C.DURAND           472      2      2
+ CASTEST MODIF hsnv125e                       durand C.DURAND           440      2      2
+ CASTEST MODIF hsnv125f                       durand C.DURAND           426      2      2
+ CASTEST MODIF hsnv125g                       durand C.DURAND           466      2      2
+ CASTEST MODIF hsnv128a                       durand C.DURAND           379      2      2
+ CASTEST MODIF hsnv128b                       durand C.DURAND           198      2      2
+ CASTEST MODIF perf011a                       durand C.DURAND           587      2      2
+ CASTEST MODIF perf011b                       durand C.DURAND           590      2      2
+ CASTEST MODIF sdll133a                       durand C.DURAND           246      2      2
+ CASTEST MODIF sdll133b                       durand C.DURAND           370      2      2
+ CASTEST MODIF sdls106e                      andriam H.ANDRIAMBOLOLONA    338    114      1
+ CASTEST MODIF sdns01a                        durand C.DURAND           700      2      2
+ CASTEST MODIF sdns01b                        durand C.DURAND           375      2      2
+ CASTEST MODIF sdnv102a                       durand C.DURAND           562      2      2
+ CASTEST MODIF sslp313b                       durand C.DURAND           145      2      3
+ CASTEST MODIF ssls122a                       durand C.DURAND           292      2      2
+ CASTEST MODIF ssls122b                       durand C.DURAND           274      2      2
+ CASTEST MODIF ssls122c                       durand C.DURAND           277      2      2
+ CASTEST MODIF ssls122d                       durand C.DURAND           275      2      2
+ CASTEST MODIF ssls130a                       durand C.DURAND           102      2      2
+ CASTEST MODIF ssls130b                       durand C.DURAND           163      2      2
+ CASTEST MODIF sslv04n                        durand C.DURAND           177      2      3
+ CASTEST MODIF sslv04p                        durand C.DURAND           415      2      3
+ CASTEST MODIF sslv134a                       durand C.DURAND           371      2      3
+ CASTEST MODIF sslv134g                       durand C.DURAND           656      2      2
+ CASTEST MODIF sslv135a                       durand C.DURAND          1307      2      2
+ CASTEST MODIF sslv135b                       durand C.DURAND          1284      2      2
+ CASTEST MODIF sslv135c                       durand C.DURAND           795      2      2
+ CASTEST MODIF sslv135d                       durand C.DURAND           795      2      2
+ CASTEST MODIF sslv135e                       durand C.DURAND           847      2      2
+ CASTEST MODIF sslv135f                       durand C.DURAND           569      2      2
+ CASTEST MODIF sslv135g                       durand C.DURAND           940      2      2
+ CASTEST MODIF sslv135i                       durand C.DURAND          1406      2      2
+ CASTEST MODIF sslv135j                       durand C.DURAND          1399      2      2
+ CASTEST MODIF sslv135k                       durand C.DURAND           616      2      2
+ CASTEST MODIF sslv135l                       durand C.DURAND           622      2      2
+ CASTEST MODIF sslv135m                       durand C.DURAND           573      2      2
+ CASTEST MODIF sslv135n                       durand C.DURAND          1618      2      2
+ CASTEST MODIF sslv135p                       durand C.DURAND           404      2      2
+ CASTEST MODIF sslv320a                      colombo D.COLOMBO          395      1     23
+ CASTEST MODIF sslv320b                      colombo D.COLOMBO          395      1     23
+ CASTEST MODIF sslv320c                      colombo D.COLOMBO          414      1     22
+ CASTEST MODIF sslv320d                      colombo D.COLOMBO          396      1     22
+ CASTEST MODIF ssna109a                       durand C.DURAND           691      2      2
+ CASTEST MODIF ssna110a                       durand C.DURAND          2117      2      2
+ CASTEST MODIF ssna114a                       durand C.DURAND           128      2      2
+ CASTEST MODIF ssnl116a                       durand C.DURAND           195      2      4
+ CASTEST MODIF ssnl116b                       durand C.DURAND           223      2      3
+ CASTEST MODIF ssnp02a                        durand C.DURAND           286      2      2
+ CASTEST MODIF ssnp02b                        durand C.DURAND           288      2      2
+ CASTEST MODIF ssnp02c                        durand C.DURAND           288      2      2
+ CASTEST MODIF ssnp107a                       durand C.DURAND           262      2      2
+ CASTEST MODIF ssnp115b                       durand C.DURAND           167      2      3
+ CASTEST MODIF ssnv101c                       durand C.DURAND           415      2      2
+ CASTEST MODIF ssnv108a                       durand C.DURAND           318      2      2
+ CASTEST MODIF ssnv108b                       durand C.DURAND           171      3      3
+ CASTEST MODIF ssnv108c                       durand C.DURAND           194      2      2
+ CASTEST MODIF ssnv108d                       durand C.DURAND           187      3      3
+ CASTEST MODIF ssnv166a                       durand C.DURAND           302      2      3
+ CASTEST MODIF ssnv166b                       durand C.DURAND           319      2      3
+ CASTEST MODIF ssnv166c                       durand C.DURAND           305      2      5
+ CASTEST MODIF supv001a                       durand C.DURAND            64      2      2
+ CASTEST MODIF supv002a                     courtois M.COURTOIS          75      3      1
+ CASTEST MODIF wtna105a                       durand C.DURAND           757      2      2
+ CASTEST MODIF wtnp117a                       durand C.DURAND           379      2      2
+ CASTEST MODIF wtnp117b                       durand C.DURAND           522      2      2
+ CASTEST MODIF wtnp117c                       durand C.DURAND           478      2      2
+ CASTEST MODIF wtnp117d                       durand C.DURAND           479      2      2
+ CASTEST MODIF wtnp117e                       durand C.DURAND           439      2      2
+ CASTEST MODIF wtnp120a                       durand C.DURAND           730      2      2
+ CASTEST MODIF wtnp120b                       durand C.DURAND           720      2      2
+ CASTEST MODIF wtnp120c                       durand C.DURAND           726      2      2
+ CASTEST MODIF wtnp120d                       durand C.DURAND           577      2      2
+ CASTEST MODIF wtnp120e                       durand C.DURAND           579      2      2
+ CASTEST MODIF wtnp120f                       durand C.DURAND           578      2      2
+ CASTEST MODIF wtnp120g                       durand C.DURAND           581      2      2
+ CASTEST MODIF wtnp120h                       durand C.DURAND           555      2      2
+ CASTEST MODIF wtnp120i                       durand C.DURAND           563      2      2
+ CASTEST MODIF wtnp120j                       durand C.DURAND           563      2      2
+ CASTEST MODIF wtnp121a                       durand C.DURAND           357      2      2
+ CASTEST MODIF wtnp121b                       durand C.DURAND           353      2      2
+ CASTEST MODIF wtnp121c                       durand C.DURAND           356      2      2
+ CASTEST MODIF wtnp121d                       durand C.DURAND           328      2      2
+ CASTEST MODIF wtnp121e                       durand C.DURAND           337      2      2
+ CASTEST MODIF wtnp121f                       durand C.DURAND           326      2      2
+ CASTEST MODIF wtnp121g                       durand C.DURAND           345      2      2
+ CASTEST MODIF wtnp121h                       durand C.DURAND           326      2      2
+ CASTEST MODIF wtnp121i                       durand C.DURAND           331      2      2
+ CASTEST MODIF wtnp121j                       durand C.DURAND           334      2      2
+ CASTEST MODIF wtnp121k                       durand C.DURAND           334      2      2
+ CASTEST MODIF wtnp121l                       durand C.DURAND           330      2      2
+ CASTEST MODIF wtnp121m                       durand C.DURAND           271      2      2
+ CASTEST MODIF wtnp121n                       durand C.DURAND           242      2      2
+ CASTEST MODIF wtnp122a                       durand C.DURAND           420      2      2
+ CASTEST MODIF wtnp122b                       durand C.DURAND           425      2      2
+ CASTEST MODIF wtnp122c                       durand C.DURAND           427      2      2
+ CASTEST MODIF wtnp122d                       durand C.DURAND           379      2      2
+ CASTEST MODIF wtnp122e                       durand C.DURAND           395      2      2
+ CASTEST MODIF wtnp122f                       durand C.DURAND           398      2      2
+ CASTEST MODIF wtnp122g                       durand C.DURAND           394      2      2
+ CASTEST MODIF wtnp122h                       durand C.DURAND           368      2      2
+ CASTEST MODIF wtnp122i                       durand C.DURAND           300      2      2
+ CASTEST MODIF wtnp123a                       durand C.DURAND           752      2      2
+ CASTEST MODIF wtnp123b                       durand C.DURAND           582      2      2
+ CASTEST MODIF wtnp123c                       durand C.DURAND           583      2      2
+ CASTEST MODIF wtnp123d                       durand C.DURAND           544      2      2
+ CASTEST MODIF wtnp123e                       durand C.DURAND           542      2      2
+ CASTEST MODIF wtnp124a                       durand C.DURAND           535      2      2
+ CASTEST MODIF wtnp124b                       durand C.DURAND           545      2      2
+ CASTEST MODIF wtnp124c                       durand C.DURAND           517      2      2
+ CASTEST MODIF wtnp124d                       durand C.DURAND           529      2      2
+ CASTEST MODIF wtnp127a                       durand C.DURAND           345      2      3
+ CASTEST MODIF wtnp127b                       durand C.DURAND           533      2      2
+ CASTEST MODIF wtnp127c                       durand C.DURAND           361      2      2
+ CASTEST MODIF wtnp127d                       durand C.DURAND           322      2      2
+ CASTEST MODIF wtnp127e                       durand C.DURAND           324      2      2
+ CASTEST MODIF zmat001a                       durand C.DURAND           210      2      2
+ CASTEST MODIF zmat001b                       durand C.DURAND           172      2      2
+ CASTEST MODIF zmat001c                       durand C.DURAND            99      3      3
+ CASTEST MODIF zmat002a                       durand C.DURAND           220      2      2
+ CASTEST MODIF zmat002b                       durand C.DURAND           220      2      2
+ CASTEST MODIF zmat003a                       durand C.DURAND           151      2      2
+ CASTEST MODIF zmat004a                       durand C.DURAND           518      2      2
+ CASTEST MODIF zmat005a                       durand C.DURAND           178      3      3
+ CASTEST MODIF zmat005b                       durand C.DURAND           173      3      3
+ CASTEST MODIF zmat006a                       durand C.DURAND           192      3      3
+ CASTEST MODIF zmat007a                       durand C.DURAND           391      2      2
+ CASTEST MODIF zmat008a                       durand C.DURAND           219      2      2
+ CASTEST MODIF zmat009a                       durand C.DURAND           177      3      3
+ CASTEST MODIF zmat010a                       durand C.DURAND           243      3      3
+ CASTEST MODIF zzzz118a                       durand C.DURAND           279      2      2
+ CASTEST MODIF zzzz118b                       durand C.DURAND           160      2      2
+ CASTEST MODIF zzzz118c                       durand C.DURAND            37      2      2
+ CASTEST MODIF zzzz118d                       durand C.DURAND            35      2      2
+ CASTEST MODIF zzzz166e                       durand C.DURAND           533      2      3
+ CASTEST MODIF zzzz177a                       durand C.DURAND           310      2      2
+ CASTEST MODIF zzzz216a                       durand C.DURAND           280      2      2
+ CASTEST MODIF zzzz221a                       durand C.DURAND           339      2      2
+ CASTEST MODIF zzzz233a                       durand C.DURAND           102      3      3
+ CASTEST MODIF zzzz238a                       durand C.DURAND           139      3      3
+ CASTEST MODIF zzzz238b                       durand C.DURAND           160      3      3
+ CASTEST MODIF zzzz238c                       durand C.DURAND           150      3      3
+ CASTEST MODIF zzzz241a                       durand C.DURAND           308      3      3
+ CASTEST MODIF zzzz264a                       durand C.DURAND           116      2      2
+ FORTRAN MODIF algorith/nmelnl              courtois M.COURTOIS         496      2      3
+ FORTRAN MODIF algorith/op0166              courtois M.COURTOIS         415      4      6
+ FORTRAN MODIF algorith/xls3d                colombo D.COLOMBO          332      3     26
+ FORTRAN MODIF algorith/xnmel               courtois M.COURTOIS         239      2      2
+ FORTRAN MODIF algorith/xorima               colombo D.COLOMBO          245    175     91
+ FORTRAN MODIF elements/ppga12              courtois M.COURTOIS         133      6      3
+  PYTHON MODIF Calc_essai/cata_ce              bodel C.BODEL           1212      2      2
+  PYTHON MODIF Calc_essai/ce_calcul_modifstruct      bodel C.BODEL           1181     14      4
+  PYTHON MODIF Calc_essai/ce_ihm_identification      bodel C.BODEL            814      6     10
+  PYTHON MODIF Calc_essai/outils_ihm           bodel C.BODEL           1886     16     10
+  PYTHON MODIF Macro/propa_fiss_ops          colombo D.COLOMBO         1204      5      2
+  PYTHON MODIF Messages/xfem                 colombo D.COLOMBO          488     27      1
+  PYTHON MODIF Stanley/stanley_engine         assire A.ASSIRE          3358      3      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1         585       585              +585
+ MODIF :  191       84936       761     666       +95
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  192       85521      1346     666      +680 

@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem Messages  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,6 +74,20 @@ cata_msg={
      Le nombre de %(k1)s X-FEM est limité à 10E6.
      Risque & Conseil:
      Veuillez réduire la taille du maillage.
+"""),
+
+9: _(u"""
+     Le groupe de mailles donné pour définir la fissure contienne des
+     mailles qui ne sont pas connectées aux autres. Cela rende
+     impossible de bien orienter partout la normale à la surface de
+     la fissure.
+     
+     Risque & Conseil:
+     Veuillez vérifier que les mailles données en entre sont tous
+     connectées entre elles, c'est-à-dire que si on forme les groupes de
+     mailles contiguës, on obtient un seul groupe.
+     Sinon, une fissure doit être définie pour chacun des groupes
+     obtenus.
 """),
 
 10: _(u"""
@@ -281,6 +295,18 @@ cata_msg={
       le multi-Heaviside n'a été généralisé en quadratique.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+"""),
+
+42: _(u"""
+      La table de facteurs d'intensité des contraintes donnée en entré pour la fissure
+      %(k1)s ne contient pas le bon numéro de fonds de fissure et/ou de points.
+
+      Veuillez faire les vérifications suivantes:
+      - si la fissure %(k1)s  est formée par un seul fond, veuillez vérifier d'avoir donné
+        la bonne table
+      - si la fissure %(k1)s est formée par plusieurs fonds, veuillez vérifier que la
+        table donnée contient les valeurs des facteurs d'intensité des contraintes de
+        chaque fond (voir colonne NUME_FOND de la table)
 """),
 
 

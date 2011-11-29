@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320b.para = tps_job 350 mem_job 2000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,19 +104,6 @@ FISS[0]=DEFI_FISS_XFEM(MODELE=ModSEB,
                                   NORMALE=(0.,0.,1.),
                                   DTAN=(0.,1.,0.),
                        ),);
-
-#----------------------------------------------
-#                   CHARGEMENTS
-#----------------------------------------------
-
-Force=1.0
-ChFV=AFFE_CHAR_MECA(MODELE=ModSEB,
-                   PRES_REP=_F(GROUP_MA='Face_2',PRES=-Force),
-                   DDL_IMPO=(_F(GROUP_NO='Face_1',DZ=0.0,),
-                             _F(GROUP_NO='Edge_1',DY=0.0,),
-                              _F(GROUP_NO='Node_1',DX=0.0,DY=0.0,), 
-                           ),);  
-
 
 #----------------------------------------------
 #                  PROPAGATION
@@ -291,20 +278,11 @@ for i in range(nbcalc) :
                         AFFE=_F(TOUT = 'OUI',
                                 MATER=Alu,),);
 
-   ChRaf=AFFE_CHAR_MECA(MODELE=ModH[i],
-                   PRES_REP=_F(GROUP_MA='Face_2',PRES=-Force),
-                   DDL_IMPO=(_F(GROUP_NO='Face_1',DZ=0.0,),
-                             _F(GROUP_NO='Edge_1',DY=0.0,),
-                              _F(GROUP_NO='Node_1',DX=0.0,DY=0.0,), 
-                           ),);  
-
-
    MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
 
    CHXFM[i]=AFFE_CHAR_MECA(MODELE=MODX[i],LIAISON_XFEM='OUI',INFO=1,);
 
    DETRUIRE(CONCEPT=_F(NOM=MatRaf,),INFO=1,)
-   DETRUIRE(CONCEPT=_F(NOM=ChRaf,),INFO=1,)
 
 # STEP 3: CRACK PROPAGATION ON THE REFINED MODEL
 

@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 28/11/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2945,7 +2945,7 @@ class DRIVER_SUP_GMSH(DRIVER) :
     INDICE=_NUM
 
     try:
-      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = __ma,)
+      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = __ma, COPIE=_F())
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [__ma, _MA[INDICE]], 1)
     except Exception,err:
@@ -2989,7 +2989,7 @@ class DRIVER_SUP_GMSH(DRIVER) :
     INDICE=_NUM
 
     try:
-      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma,)
+      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma, COPIE=_F())
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
     except Exception,err:

@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2011   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 28/11/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,15 +63,13 @@ C
       CHARACTER*19 LERES1,LIGRE1,LIGRE2
       CHARACTER*24 NORECG,VALK(4)
       INTEGER      IARG
-
-
-
+C
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL TITRE()
-
-
+      LELGA = .FALSE.
+C
 C     0- CALCUL DE TYPCAL =
 C     ------------------------------------------------------------
 C       / '1ET2' : ON CALCULE LA SD_CORRESP_2_MAILLA ET ON PROJETTE
@@ -136,7 +134,7 @@ C      IL N'EST PAS POSSIBLE DE PROJETER UNE SD_RESULTAT
       IF ((METHOD.EQ.'ECLA_PG') .AND. (.NOT.ISOLE)) THEN
         CALL U2MESS('F','CALCULEL5_9')
       ENDIF
-      
+
 
 
 
