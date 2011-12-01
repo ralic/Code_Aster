@@ -1,0 +1,64 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 12/01/2011 - 11:45:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018003 DU 2011-12-01 09:32:18
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    NEW11.0.35 - sslp315b et sslp319d en erreur dans PROPA_FISS
+FONCTIONNALITE
+   Problème
+   --------
+   
+   Suite à la restitution de issue17912 :
+   
+   Erreur dans PROPA_FISS :
+   
+      File "./Python/Macro/propa_fiss_ops.py", line 481, in 
+   propa_fiss_ops
+       if (max(__tab1['NUME_FOND']) != Nbfiss) :                          
+    KeyError: 'NUME_FOND'
+   
+   
+   Correction
+   ----------
+   
+   En effet, NUME_FOND n'est pas dans la table produite par 
+   POST_K1_K2_K3.
+   Il n'est donc pas utile de faire la vérification sur le nombre de 
+   fissures et de fonds.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    60 tests PROPA_FISS sur toutes les machines
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF zzzz255c                     courtois M.COURTOIS         153      1      1
+  PYTHON MODIF Macro/propa_fiss_ops         courtois M.COURTOIS        1204      2      2
+  PYTHON MODIF Messages/xfem                courtois M.COURTOIS         487      9     10
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    3        1844        12      13        -1
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    3        1844        12      13        -1 

@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem Messages  DATE 01/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,17 +77,16 @@ cata_msg={
 """),
 
 9: _(u"""
-     Le groupe de mailles donné pour définir la fissure contienne des
-     mailles qui ne sont pas connectées aux autres. Cela rende
-     impossible de bien orienter partout la normale à la surface de
-     la fissure.
-     
+     Le groupe de mailles donné pour définir la fissure contient des
+     mailles qui ne sont pas connectées aux autres. Cela empêche
+     d'orienter correctement la normale à la surface de la fissure.
+
      Risque & Conseil:
-     Veuillez vérifier que les mailles données en entre sont tous
-     connectées entre elles, c'est-à-dire que si on forme les groupes de
-     mailles contiguës, on obtient un seul groupe.
-     Sinon, une fissure doit être définie pour chacun des groupes
-     obtenus.
+       Veuillez vérifier que les mailles données en entrée sont toutes
+       connectées entre elles, c'est-à-dire qu'elle forme un groupe de
+       mailles contiguës.
+       Sinon, il faut définir une fissure pour chacun des groupes
+       non connexes.
 """),
 
 10: _(u"""

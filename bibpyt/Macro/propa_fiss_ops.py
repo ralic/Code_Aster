@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF propa_fiss_ops Macro  DATE 01/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ def InterpolFondFiss(s0, Coorfo) :
 
 def NORMEV(v0) :
   NormeV = 0.
-  for i in range(len(v0)) : 
+  for i in range(len(v0)) :
     NormeV = NormeV + v0[i]**2
   NormeV = sqrt(NormeV)
   v1 = [0.]*len(v0)
@@ -86,13 +86,13 @@ def DDOT(u,v) :
   for i in range(max(len(u),len(v))) :
     PS = PS + u[i]*v[i]
   return PS
-  
+
 def PROVEC3D(u,v) :
   w=[ u[1]*v[2] - u[2]*v[1] , \
       u[2]*v[0] - u[0]*v[2] , \
       u[0]*v[1] - u[1]*v[0] ]
   return w
-  
+
 def InterpolBaseFiss(s0, Basefo, Coorfo) :
 # Interpolation de la base locale en fond de fissure
 # s0     = abscisse curviligne du point considere
@@ -100,13 +100,13 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
 # Coorfo = Coordonnees et abscisses du fond (extrait de la sd fiss_xfem)
 # en sortie : VPVNi = base locale au point considere (6 coordonnes)
    # Cas Particuliers
-   if ( s0 < Coorfo[3] )  : 
+   if ( s0 < Coorfo[3] )  :
      np = [0.]*3
      tp = [0.]*3
      for k in range(3) :
        np[k] = Basefo[k]
        tp[k] = Basefo[k+3]
-   elif ( s0 > Coorfo[-1]  ) : 
+   elif ( s0 > Coorfo[-1]  ) :
      np = [0.]*3
      tp = [0.]*3
      for k in range(-3,0) :
@@ -122,7 +122,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
      # 1 - Calcul des reperes associes aux extremites du segment
      base1 = [[0.]*3 for j in range(3)]
      base2 = [[0.]*3 for j in range(3)]
-     for k in range(3) : 
+     for k in range(3) :
        base1[1][k] = Basefo[6*(i-1)+k]
        base2[1][k] = Basefo[6*i+k]
        base1[0][k] = Basefo[6*(i-1)+k+3]
@@ -135,7 +135,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
        base1[1][k] =  base1[1][k] - b11b10*base1[0][k]
        base2[1][k] =  base2[1][k] - b21b20*base2[0][k]
      base1[1] = NORMEV(base1[1])
-     base2[1] = NORMEV(base2[1])   
+     base2[1] = NORMEV(base2[1])
      base1[2] = PROVEC3D(base1[0],base1[1])
      base2[2] = PROVEC3D(base2[0],base2[1])
      # 2 - Calcul de la matrice de rotation
@@ -145,9 +145,9 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
          R[k][l] = DDOT(base1[k],base2[l])
      # 3 - Calcul de langle de rotation
      TraceR = 0.
-     for k in range(3) : 
+     for k in range(3) :
        TraceR = TraceR + R[k][k]
-     if TraceR >= 3. : 
+     if TraceR >= 3. :
        VPVNi = [0.]*6
        for k in range(3) :
          VPVNi[k] = base1[1][k]
@@ -171,10 +171,10 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
      sinthetaP = sin(thetaP)
      t = [ costhetaP + (1-costhetaP)*e[0]**2        , \
            (1-costhetaP)*e[0]*e[1] - sinthetaP*e[2] , \
-           (1-costhetaP)*e[0]*e[2] + sinthetaP*e[1]   ]       
+           (1-costhetaP)*e[0]*e[2] + sinthetaP*e[1]   ]
      n = [ (1-costhetaP)*e[0]*e[1] + sinthetaP*e[2] , \
            costhetaP + (1-costhetaP)*e[1]**2        , \
-           (1-costhetaP)*e[1]*e[2] - sinthetaP*e[0]   ] 
+           (1-costhetaP)*e[1]*e[2] - sinthetaP*e[0]   ]
      # 3 - Calcul de la base locale dans le repere de reference
      tp = [0.]*3
      np = [0.]*3
@@ -185,7 +185,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
    tp = NORMEV(tp)
    tpnp = DDOT(np,tp)
    for k in range(3) :
-     np[k] =  np[k] - tpnp*tp[k]   
+     np[k] =  np[k] - tpnp*tp[k]
    np = NORMEV(np)
    VPVNi = [0.]*6
    for k in range(3) :
@@ -478,9 +478,9 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         nbinst = len(l_inst_tab)
       nbptfon = len(__tab1['K1']) / nbinst
 
-      if (max(__tab1['NUME_FOND']) != Nbfiss) :
+      if 'NUME_FOND' in __tabp.para and max(__tab1['NUME_FOND']) != Nbfiss:
          UTMESS('F','XFEM_42',valk = fiss0.get_name())
-      
+
       RmM[numfis] = [None]*nbptfon
       DKeq[numfis] = [None]*nbptfon
       BETA[numfis] = [None]*nbptfon
@@ -595,7 +595,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         Nbfond = len(Fondmult)/2
         Coorfo = fiss0.sdj.FONDFISS.get()
 
-        
+
 # Recuperation de la liste des noeuds du fond
         connex = mm[numfis].co
         linomma  = list(mm[numfis].correspondance_mailles)
@@ -604,19 +604,19 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         inofo = 1
         FmPrec = []
         lmafo = groupma[MFOND+'_'+str(it-1)]
-        for i in range(len(lmafo)) : 
+        for i in range(len(lmafo)) :
           ma_i = linomma[lmafo[i]]
           no_i = connex[lmafo[i]]
           if i == 0 :
             FmPrec.append(no_i[0])
             lisnofo.append(no_i[0])
             lisnofo.append(no_i[1])
-          # si on reste sur le meme fond 
-          elif lisnofo[inofo] == no_i[0] : 
+          # si on reste sur le meme fond
+          elif lisnofo[inofo] == no_i[0] :
             lisnofo.append(no_i[1])
             inofo += 1
           # si on change de fond
-          elif lisnofo[inofo] == no_i[0] - 1 : 
+          elif lisnofo[inofo] == no_i[0] - 1 :
             FmPrec.append(no_i[0] - 1)
             FmPrec.append(no_i[0])
             lisnofo.append(no_i[0])
@@ -627,11 +627,11 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
             UTMESS('F','RUPTURE1_51')
         FmPrec.append(lisnofo[-1])
         nbnofo = len(lisnofo)
-        
+
 # Dans le cas de la separation d'un front en deux
 # on cherche les points du front les plus proches des nouvelles extremites des fronts de fissures
         FmAct = [-1]*2*Nbfond
-        distFm = [-1]*2*Nbfond   
+        distFm = [-1]*2*Nbfond
         for j in range(2*Nbfond):
           xyz = Coorfo[4*(Fondmult[j]-1):4*Fondmult[j]-1]
           xyzk = mm[numfis].cn[nbno-nbnofo+0]
@@ -644,11 +644,11 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               k0 = k
           if FmAct[j] == -1 :
             FmAct[j] = nbno - nbnofo + k0
-            distFm[j]=dist0 
-          elif dist0 < distFm[j] : 
+            distFm[j]=dist0
+          elif dist0 < distFm[j] :
             FmAct[j]=nbno-nbnofo+k0
             dist[j]=dist0
-          
+
 #  Correction de la position des noeuds les plus proches des bords libres
         for j in range(2*Nbfond):
           mm[numfis].cn[FmAct[j]][0] = Coorfo[4*(Fondmult[j]-1) + 0]
@@ -661,14 +661,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         abstot = 0.
         nbnofobis = 0
         nbptfo = [0]*Nbfond
-        for j in range(Nbfond) : 
+        for j in range(Nbfond) :
           abstot += Coorfo[4*Fondmult[2*j+1]-1]
-        for j in range(Nbfond) : 
+        for j in range(Nbfond) :
           absmax = Coorfo[4*Fondmult[2*j+1]-1]
           nbptfo[j] = int(nbnofo*absmax/abstot)
           nbnofobis += nbptfo[j]
         # pour eviter les cas comme 10.2 (10) + 10.4 (10) + 10.4 (10) = 31 (30)
-        if nbnofobis < nbnofo : 
+        if nbnofobis < nbnofo :
           liste = []
           for j in range(Nbfond) :
             absmax = Coorfo[4*Fondmult[2*j+1]-1]
@@ -687,23 +687,23 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
             nbnofobis += 1
         nbnofo = nbnofobis
 
-# Creation des points a partir desquels nous allons calculer le nouveau fond        
+# Creation des points a partir desquels nous allons calculer le nouveau fond
 
         numptfo = [[0]*nbptfo[i] for i in range(Nbfond)]
         abscf=[[0.]*nbptfo[i] for i in range(Nbfond)]
         ALPHABET = nom_points_fonds(nbnofo)
         inofo = 0
-        for j in range(Nbfond): 
+        for j in range(Nbfond):
           absmax = Coorfo[4*Fondmult[2*j+1]-1]
           Coorfoj= Coorfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]]
           abscf[j][0] = 0
           abscf[j][-1] = absmax
           numptfo[j][0] = FmAct[2*j]
           numptfo[j][-1] = FmAct[2*j+1]
-          for i in range(1,nbptfo[j]-1): 
+          for i in range(1,nbptfo[j]-1):
             abscf[j][i] = i * absmax / (nbptfo[j]-1)
             xyz = InterpolFondFiss(abscf[j][i], Coorfoj)
-            numptfo[j][i] = nbno 
+            numptfo[j][i] = nbno
             LesNoeudsEnPlus = NP.array([[xyz[0],xyz[1],xyz[2]]])
             mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
             NomNoeudsEnPlus =     ['PS%s%i' %(ALPHABET[inofo],it)]
@@ -712,7 +712,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
             nbno += 1
         nbmafo = nbnofo - Nbfond
         nbno += nbnofo
-        
+
 # Recuperation des informations importantes pour la propagation
         Basefo = fiss0.sdj.BASEFOND.get()
         Listfo = fiss0.sdj.FONDFISS.get()
@@ -722,14 +722,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            DKmax = 1
         if (coef_C ==None) :
            coef_C = Damax
-           
+
 # Boucle sur le fond : calcul des coordonnees des points propages
         inofo = 0
         A = [0,0,0]
         B = [0,0,0]
         Damaxbis = Damax
-        for j in range(Nbfond) : 
-          for i in range(len(numptfo[j])) : 
+        for j in range(Nbfond) :
+          for i in range(len(numptfo[j])) :
              Xf =  mm[numfis].cn[numptfo[j][i]][0]
              Yf =  mm[numfis].cn[numptfo[j][i]][1]
              Zf =  mm[numfis].cn[numptfo[j][i]][2]
@@ -768,19 +768,19 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                E2=[0.]*3
                for i in range(3) :
                  E2[i] = AC[i]-ACE1*E1[i]
-               E2 = NORMEV(E2) 
+               E2 = NORMEV(E2)
                # produit scalaire entre E2 (normal a AB) et CD pour savoir si convexe
                PS = DDOT(E2,CD)
                # Si fissure non convexe, verification de la grandeur du pas Damax
                # (en effet les mailles peuvent avoir leurs arretes qui se croisent
                #  ce qui risque de poser des problemes lors de lusage de DEFI_FISS)
-               if PS < 0 : 
+               if PS < 0 :
                  # Recherche du point dintersection M, AM=xE1
-                 x = (DDOT(AD,E2)*DDOT(AC,E1) - DDOT(AC,E2)*DDOT(AD,E1))/DDOT(CD,E2) 
+                 x = (DDOT(AD,E2)*DDOT(AC,E1) - DDOT(AC,E2)*DDOT(AD,E1))/DDOT(CD,E2)
                  alpha = 1.2
                  Crit1 = x / (alpha * DDOT(AB,E1))
                  Crit2 = sqrt(((x - DDOT(AC,E1))**2 + DDOT(AC,E2)**2)/(DDOT(CD,E1)**2 + DDOT(CD,E2)**2))
-                 if Crit1 < 1 : 
+                 if Crit1 < 1 :
                    Damaxbis = min(Damaxbis,Damax * Crit1)
                  if Crit2 < 1 :
                    Damaxbis = min(Damaxbis,Damax * Crit2)
@@ -794,9 +794,9 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
              mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
              mm[numfis].correspondance_noeuds = tuple( list(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus )
              inofo+=1
-             
-# 2eme Calcul des points avec le nouveau DAMAX si fissure probematique       
-        if Damaxbis < Damax : 
+
+# 2eme Calcul des points avec le nouveau DAMAX si fissure probematique
+        if Damaxbis < Damax :
           NBCYCL = Damaxbis / VMAX
           UTMESS('A','XFEM_70',valr = [Damax,Damaxbis,NBCYCL])
           inofo = 0
@@ -832,38 +832,38 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                 mm[numfis].cn[nbno - nbnofo + inofo][1] = Yf2
                 mm[numfis].cn[nbno - nbnofo + inofo][2] = Zf2
                 inofo+=1
-        
+
 # Ajouts Maille levre (quad4 ou tria3)
         imafo = 0
         nbma += 2*nbmafo
         fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
-        for j in range(Nbfond) : 
+        for j in range(Nbfond) :
           for i in range(len(numptfo[j])-1) :
              i1 = numptfo[j][i]
              i2 = numptfo[j][i+1]
              i3 = nbno - nbnofo + imafo + j + 1
-             i4 = nbno - nbnofo + imafo + j 
+             i4 = nbno - nbnofo + imafo + j
              mm[numfis].co.append(NP.array([i1,i2,i3,i4]))
              typ_maille = mm[numfis].dic['QUAD4']
-             mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))    
+             mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
              mm[numfis].correspondance_mailles += tuple(['MX%s%i' %(ALPHABET[imafo], it+1)])
              mm[numfis].gma['%s_%i' %(MFISS,it)] = NP.concatenate((fsi,NP.array([nbma - 2*nbmafo + imafo])))
-             fsi = mm[numfis].gma['%s_%i' %(MFISS,it)] 
+             fsi = mm[numfis].gma['%s_%i' %(MFISS,it)]
              imafo += 1
-               
+
 # Ajout Maille fond (SEG2)
         imafo=0
         for j in range(Nbfond) :
-          for i in range(len(numptfo[j])-1) : 
-            i3 = nbno - nbnofo + imafo + j 
+          for i in range(len(numptfo[j])-1) :
+            i3 = nbno - nbnofo + imafo + j
             i4 = nbno - nbnofo + imafo + j + 1
             mm[numfis].co.append(NP.array([i3,i4]))
             typ_maille = mm[numfis].dic['SEG2']
-            mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))  
+            mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
             mm[numfis].correspondance_mailles += tuple(['MF%s%i' %(ALPHABET[imafo], it+1)])
             imafo += 1
         mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.arange(nbma - nbmafo,nbma)
-        
+
 #------------------------------------------------------------------
 # CAS 2b : MODELE 2D
 #
