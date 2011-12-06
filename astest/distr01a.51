@@ -1,0 +1,12 @@
+from math import pi, cos, sin
+import numpy
+
+VALE = []
+n = 5
+list_theta = numpy.arange(n) * 22.5 * pi / 180.
+P = 1.e6
+
+for a in list_theta:
+    VALE.append(_F(F_Norm = P*cos(a),
+                   F_Tang = P*sin(a),))
+

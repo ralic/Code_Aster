@@ -1,0 +1,119 @@
+from Numeric import *
+
+# POST TRAITEMENT UTILE POUR INTERPRETER LES RESULTATS
+
+tdep=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                                NOEUD='N4',
+                                RESULTAT=U2,
+                                NOM_CHAM='DEPL',
+                                TOUT_CMP='OUI',
+				LIST_INST=ARCHI,
+                                OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=tdep);
+
+e11=RECU_FONCTION(TABLE=tdep,
+                 PARA_X='INST',
+                 PARA_Y='DX');
+
+t,d_x = e11.Valeurs();
+
+e22=RECU_FONCTION(TABLE=tdep,
+                 PARA_X='INST',
+                 PARA_Y='DY');
+
+t,d_y = e22.Valeurs();
+
+d_x=array(d_x)
+d_y=array(d_y)
+eps1 = - d_y ;
+epsv = (d_y + 2*d_x);
+
+tsig=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF_NOEU_ELGA',
+                                NOEUD='N4',
+                                RESULTAT=U2,
+                                NOM_CHAM='SIEF_NOEU_ELGA',
+                                TOUT_CMP='OUI',
+				LIST_INST=ARCHI,
+                                OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=tsig);
+
+d11=RECU_FONCTION(TABLE=tsig,
+                 PARA_X='INST',
+                 PARA_Y='SIXX');
+
+t,si_xx = d11.Valeurs();
+
+d22=RECU_FONCTION(TABLE=tsig,
+                 PARA_X='INST',
+                 PARA_Y='SIYY');
+
+t,si_yy = d22.Valeurs();
+
+d33=RECU_FONCTION(TABLE=tsig,
+                 PARA_X='INST',
+                 PARA_Y='SIZZ');
+
+t,si_zz = d33.Valeurs();
+
+si_xx=array(si_xx)
+si_yy=array(si_yy)
+si_zz=array(si_zz)
+
+devi = -(si_yy - si_xx);
+devi1 = devi.tolist()
+eps11 = eps1.tolist()
+epsv1 = epsv.tolist()
+
+tvar=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
+                                NOEUD='N4',
+                                RESULTAT=U2,
+                                NOM_CHAM='VARI_NOEU',
+                                TOUT_CMP='OUI',
+				LIST_INST=ARCHI,
+                                OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=tvar);
+
+v11=RECU_FONCTION(TABLE=tvar,
+                 PARA_X='INST',
+                 PARA_Y='V1');
+
+
+t,xip = v11.Valeurs()
+xip=array(xip)
+xipp = xip.tolist()
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+#              PILOTE='POSTCRIPT',
+              UNITE=69,
+              COURBE=(
+                     _F(ABSCISSE=eps11,
+                        ORDONNEE=devi1,
+                        LEGENDE='devi _ eps1 ',
+                        COULEUR=6,
+                        MARQUEUR=1),
+                     ));
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+#              PILOTE='POSTCRIPT',
+              UNITE=70,
+              COURBE=(
+                     _F(ABSCISSE=eps11,
+                        ORDONNEE=epsv1,
+                        LEGENDE='epsv _ eps1 ',
+                        COULEUR=6,
+                        MARQUEUR=1),
+                     ));
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+#              PILOTE='POSTCRIPT',
+              UNITE=71,
+              COURBE=(
+                     _F(ABSCISSE=eps11,
+                        ORDONNEE=xipp,
+                        LEGENDE='xip _ eps1 ',
+                        COULEUR=6,
+                        MARQUEUR=1),
+                     ));
+
+
+#

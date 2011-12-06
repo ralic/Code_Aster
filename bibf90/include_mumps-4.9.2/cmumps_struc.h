@@ -69,7 +69,7 @@
 !    Assembled input matrix : User interface
 !    ----------------------------------------
         INTEGER*4 NZ
-        COMPLEX, DIMENSION(:), POINTER :: A
+        COMPLEX*8, DIMENSION(:), POINTER :: A
         INTEGER*4, DIMENSION(:), POINTER :: IRN, JCN
         REAL*4, DIMENSION(:), POINTER :: COLSCA, ROWSCA, pad0
 !
@@ -79,7 +79,7 @@
 !       ------------------------------------
         INTEGER*4 NZ_loc, pad1
         INTEGER*4, DIMENSION(:), POINTER :: IRN_loc, JCN_loc
-        COMPLEX, DIMENSION(:), POINTER :: A_loc, pad2
+        COMPLEX*8, DIMENSION(:), POINTER :: A_loc, pad2
 !
 !    ----------------------------------------
 !    Unassembled input matrix: User interface
@@ -87,7 +87,7 @@
         INTEGER*4 NELT, pad3
         INTEGER*4, DIMENSION(:), POINTER :: ELTPTR
         INTEGER*4, DIMENSION(:), POINTER :: ELTVAR
-        COMPLEX, DIMENSION(:), POINTER :: A_ELT, pad4
+        COMPLEX*8, DIMENSION(:), POINTER :: A_ELT, pad4
 !
 !    ---------------------------------------------
 !    Symmetric permutation : 
@@ -104,9 +104,9 @@
 !    -------------
 !       right-hand side and solution
 !    -------------------------------------------------------
-        COMPLEX, DIMENSION(:), POINTER :: RHS, REDRHS
-        COMPLEX, DIMENSION(:), POINTER :: RHS_SPARSE
-        COMPLEX, DIMENSION(:), POINTER :: SOL_LOC
+        COMPLEX*8, DIMENSION(:), POINTER :: RHS, REDRHS
+        COMPLEX*8, DIMENSION(:), POINTER :: RHS_SPARSE
+        COMPLEX*8, DIMENSION(:), POINTER :: SOL_LOC
         INTEGER*4, DIMENSION(:), POINTER :: IRHS_SPARSE
         INTEGER*4, DIMENSION(:), POINTER :: IRHS_PTR
         INTEGER*4, DIMENSION(:), POINTER :: ISOL_LOC
@@ -139,7 +139,7 @@
 !    -------------------------------
 !    Deficiency and null space basis
 !    -------------------------------
-        COMPLEX, DIMENSION(:,:), POINTER :: NULL_SPACE
+        COMPLEX*8, DIMENSION(:,:), POINTER :: NULL_SPACE
         INTEGER*4 Deficiency, pad6
 !    -----
 !    Schur
@@ -148,8 +148,8 @@
         INTEGER*4 SCHUR_MLOC, SCHUR_NLOC, SCHUR_LLD
         INTEGER*4 SIZE_SCHUR
         INTEGER*4, DIMENSION(:), POINTER :: LISTVAR_SCHUR
-        COMPLEX, DIMENSION(:), POINTER :: SCHUR
-        COMPLEX, DIMENSION(:), POINTER :: SCHUR_CINTERFACE
+        COMPLEX*8, DIMENSION(:), POINTER :: SCHUR
+        COMPLEX*8, DIMENSION(:), POINTER :: SCHUR_CINTERFACE
 !    --------------
 !    Version number
 !    --------------
@@ -202,14 +202,14 @@
         INTEGER*4, DIMENSION(:), POINTER :: PTLUST_S
         INTEGER(8), DIMENSION(:), POINTER :: PTRFAC
 !       main REAL*4 working arrays for factorization/solve phases
-        COMPLEX, DIMENSION(:), POINTER :: S
+        COMPLEX*8, DIMENSION(:), POINTER :: S
 !       Information on mapping
         INTEGER*4, DIMENSION(:), POINTER :: PROCNODE
 !       Input matrix ready for numerical assembly 
 !           -arrowhead format in case of assembled matrix
 !           -element format otherwise
         INTEGER*4, DIMENSION(:), POINTER :: INTARR
-        COMPLEX, DIMENSION(:), POINTER :: DBLARR
+        COMPLEX*8, DIMENSION(:), POINTER :: DBLARR
 !       Element entry: internal data
         INTEGER*4 NELT_LOC, LELTVAR, NA_ELT, pad8
         INTEGER*4, DIMENSION(:), POINTER :: ELTPROC
@@ -223,7 +223,7 @@
         INTEGER*4, DIMENSION(:), POINTER :: MEM_DIST
 !       Compressed RHS
         INTEGER*4, DIMENSION(:),   POINTER :: POSINRHSCOMP
-        COMPLEX, DIMENSION(:), POINTER :: RHSCOMP
+        COMPLEX*8, DIMENSION(:), POINTER :: RHSCOMP
 !       For C interface
 !   Info on the subtrees to be used during factorization
         DOUBLE PRECISION, DIMENSION(:),   POINTER :: MEM_SUBTREE
@@ -235,7 +235,7 @@
         INTEGER*4 NBSA_LOCAL
         INTEGER(8) :: MAX_SURF_MASTER
         INTEGER*4 :: LWK_USER
-        COMPLEX, DIMENSION(:), POINTER :: WK_USER
+        COMPLEX*8, DIMENSION(:), POINTER :: WK_USER
 !    For simulating parallel out-of-core stack.
         DOUBLE PRECISION, DIMENSION(:),POINTER ::CB_SON_SIZE
 !   Instance number used/managed by the C/F77 interface
