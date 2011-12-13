@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                into=("FORC_NODA","REAC_NODA",
                                      "DERA_NOEU",
                                      "DURT_NOEU",
-                                     "EFCA_NOEU","EFGE_NOEU",
+                                     "EFGE_NOEU",
                                      "ENDO_NOEU",
                                      "ENEL_NOEU",
                                      "EPMG_NOEU",
@@ -62,10 +62,9 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "HYDR_NOEU",
                                      "INTE_NOEU",
                                      "META_NOEU",
-                                     "PMPB_NOEU",
                                      "PRAC_NOEU",
                                      "SIEF_NOEU",
-                                     "SICA_NOEU","SIGM_NOEU",
+                                     "SIGM_NOEU",
                                      "SIPO_NOEU",
                                      "VAEX_NOEU","VARI_NOEU","DISS_NOEU",) ),
 

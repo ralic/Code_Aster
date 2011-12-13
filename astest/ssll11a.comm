@@ -1,4 +1,4 @@
-# MODIF  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,12 +150,6 @@ RESU1=CALC_ELEM(reuse=RESU1,
                       OPTION=( 'SIPO_ELNO', 'SIPM_ELNO', ),
                       RESULTAT=RESU1                             )
 
-RESU1=CALC_ELEM(reuse=RESU1,
-                      OPTION='SICA_ELNO',
-                      RESULTAT=RESU1                             )
-
-RESU1=CALC_NO(reuse=RESU1,  OPTION='SICA_NOEU',
-                    RESULTAT=RESU1                               )
 
 #---------------------------------------------------------------------
 
@@ -168,27 +162,6 @@ MAILLE = 'BC', NOEUD = 'B',    NOM_CMP = 'SN',    VALE = -3.46815E+07, REFERENCE
 MAILLE = 'CD', NOEUD = 'C',    NOM_CMP = 'SN',    VALE = 1.55074E+08, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO',  NUME_ORDRE = 1,
 MAILLE = 'BD', NOEUD = 'D',    NOM_CMP = 'SN',    VALE = -2.08067E+08, REFERENCE= 'ANALYTIQUE'))
-            )
-
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_ELNO',  NUME_ORDRE = 1, MAILLE= 'AC',
-       NOEUD = 'A',    NOM_CMP = 'SIXX',  VALE = 4.90478E+07,  REFERENCE= 'NON_REGRESSION'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIXX',    VALE = 4.90478E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIYY',    VALE = 4.90478E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIXY',    VALE = 2.41620E+03, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIXZ',    VALE = 2.41620E+03, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIXX',    VALE = -6.34170E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIYY',    VALE = -9.03343E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIXY',    VALE = -9.86483E+03, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIXZ',    VALE = 1.20101E+03, REFERENCE= 'ANALYTIQUE'))
             )
 
 #---------------------------------------------------------------------

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,10 +74,6 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
-    EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
-                              OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
-                              OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE  CMATERC  PMATERC  MMATUUR  PRIGIEL
@@ -96,8 +92,8 @@ OPTION__
     ECIN_ELEM           44    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  COMEG2R  POMEGA2
                                      CCINFDI  PCINFDI  DDL_MECA PVITESR
                               OUT__  EENERCR  PENERCR
-    EFCA_ELNO           39    IN__   CCAORIE  PCAORIE  EEFGENO  PCONTRR  CCINFDI  PCINFDI
-                              OUT__  EEFFONO  PEFFORR
+    EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
+                              OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CCINFDI  PCINFDI
                                      EEFGEGA  PCONTRR  ENONLIN  PNONLIN
                               OUT__  EEFGENO  PEFFORR EEFGENC  PEFFORC
@@ -126,6 +122,8 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__     OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__     OUT__  XXXXXX   XXXXXX
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
     MASS_INER           45    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CCINFDI  PCINFDI
@@ -178,8 +176,8 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA           42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CCINFDI  PCINFDI
                               OUT__  EEFGEGA  PCONTRR  EEFGEGC  PCONTRC
-    SIEF_ELNO           39    IN__   EEFGEGA  PCONTRR   CCINFDI  PCINFDI
-                              OUT__  EEFGENO  PSIEFNOR  EEFGENC  PSIEFNOC
+    SIEF_ELNO           4     IN__   EEFGEGA  PCONTRR
+                              OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
@@ -188,6 +186,6 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGENO  PSIEF_R  ZVARINO  PVARI_R  NGEOMER PGEOM_R  EEINST_R PINST_R
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
-    VARI_ELNO           159   IN__   ZVARIPG  PVARIGR
+    VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -1    IN__     OUT__  XXXXXX   XXXXXX

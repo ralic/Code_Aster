@@ -1,5 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
-% RESPONSABLE GRANET
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
+% RESPONSABLE GRANET S.GRANET
 GENER_MEAH42
 TYPE_GENE__
 
@@ -48,10 +48,10 @@ ENTETE__ ELEMENT__ THHM_AXIS_TR6S   MAILLE__ TRIA6
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    NMATERC  = ADRSJEVE ELNO__  IDEN__  (I1       )
+    NMATERC  = ADRSJEVE ELNO__  IDEN__ (I1       )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
     ECODRET  = CODE_I   ELEM__         (IRET     )
@@ -179,6 +179,7 @@ OPTION__
     REFE_FORC_NODA      600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
+    RIGI_MECA           -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_ELAS      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
@@ -209,9 +210,8 @@ OPTION__
                               OUT__  E1GNEUT  PVARIGS
     VAEX_ELNO           549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR
                               OUT__  E1NNEUT  PVARINS
-    VARI_ELNO           600   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO           600   IN__   ZVARIPG  PVARIGR  CCOMPOR  PCOMPOR
                               OUT__  ZVARINO  PVARINR
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET
     WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX
-    RIGI_MECA           -1    IN__    OUT__    XXXXXX   XXXXXX

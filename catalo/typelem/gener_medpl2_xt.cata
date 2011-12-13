@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,9 +87,9 @@ MODE_LOCAL__
     E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
     E8NEUTR  = NEUT_R   ELEM__         (X[8]     )
     E10NEUTR = NEUT_R   ELEM__         (X[10]    )
-    E6NEUTR = NEUT_R    ELEM__         (X[6]     )
-    E6NEUTI = NEUT_I    ELEM__         (X[6]     )
-    E18NEUI = NEUT_I   ELEM__          (X[18]    )
+    E6NEUTR  = NEUT_R   ELEM__         (X[6]     )
+    E6NEUTI  = NEUT_I   ELEM__         (X[6]     )
+    E18NEUI  = NEUT_I   ELEM__         (X[18]    )
     E22NEUTR = NEUT_R   ELEM__         (X[22]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
@@ -191,7 +191,7 @@ OPTION__
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
-    CHVOIS_XFEM         400   IN__   E18NEUI  PCNSETO E9NEUTI  PLONCHA
+    CHVOIS_XFEM         400   IN__   E18NEUI  PCNSETO  E9NEUTI  PLONCHA
                               OUT__  E18NEUI  PCVOISX
     COOR_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -201,7 +201,7 @@ OPTION__
     ERME_ELEM           382   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO  E6NEUTR  PPINTTO
-                                     E18NEUI  PCNSETO  E9NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PSIEFSER
+                                     E18NEUI  PCNSETO  E9NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PCONTSER
                               OUT__  EERREUR  PERREUR
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      E6NEUTR  PPINTTO  E18NEUI PCNSETO   E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
@@ -275,10 +275,13 @@ OPTION__
                                      N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
                               OUT__  ECONTPG  PCONTRR
     SIEF_ELNO           289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
-                              OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
-    SIGM_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    SIGM_ELNO           289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SISE_ELNO           289   IN__   ECONTPG  PCONTRR  E9NEUTI  PLONCHA
+                              OUT__  ECONTSE  PCONTSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT
                                      N2NEUT_R PGRADLN
                               OUT__  E4NEUTR  PPINTER  E10NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA

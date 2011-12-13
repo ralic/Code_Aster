@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,7 +116,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
          ),
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=9,
                                into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO","SIEF_ELGA",
-                                     "EFGE_ELNO","REAC_NODA","FORC_NODA","EFCA_ELNO",
+                                     "EFGE_ELNO","REAC_NODA","FORC_NODA",
                                      "SIPO_ELNO") ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
          IMPRESSION      =FACT(statut='f',max='**',

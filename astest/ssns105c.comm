@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE)
 # ssns105c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,8 +144,7 @@ LEDEP=STAT_NON_LINE(
                 FONC_MULT=f_inst
                 ),
                 COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
-                              RELATION = 'GRILLE_ISOT_LINE',
-                              ITER_INTE_MAXI = 30,),
+                              RELATION = 'GRILLE_ISOT_LINE'),
                            _F(GROUP_MA=('GEO',),
                               RELATION = 'ELAS',)
                 ),

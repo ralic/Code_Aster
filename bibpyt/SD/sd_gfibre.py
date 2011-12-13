@@ -1,4 +1,4 @@
-#@ MODIF sd_gfibre SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_gfibre SD  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,6 @@
 from SD import *
 from SD.sd_titre import sd_titre
 
-
 class sd_gfibre(sd_titre):
 #-------------------------------------
     nomj = SDNom(fin=8)
@@ -29,7 +28,7 @@ class sd_gfibre(sd_titre):
     CARFI             = AsVR()
     NOMS_GROUPES      = AsPn(ltyp=8)
     NB_FIBRE_GROUPE   = AsVI()
-
+    GFMA = Facultatif(AsVK8(lonmax=1))
 
     def check_dimension(self,checker) :
         nbgf=self.NOMS_GROUPES.nommax
@@ -48,3 +47,8 @@ class sd_gfibre(sd_titre):
             nbfib_tot=nbfib_tot+nbfib
         assert self.CARFI.lonmax == 3*nbfib_tot , (nbfib_tot,self.CARFI.lonmax)
 
+    def check_GFMA(self,checker):
+        if not self.GFMA.exists: return
+        gfma = self.GFMA.get_stripped()
+        from SD.sd_maillage import sd_maillage
+        sd2=sd_maillage(gfma[0]); sd2.check(checker)

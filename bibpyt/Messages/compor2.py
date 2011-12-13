@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor2 Messages  DATE 12/12/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,6 +125,13 @@ La rotation de réseau n'est pas compatible avec RUNGE_KUTTA. Utiliser l'intégrat
    SIMU_POINT_MAT : Le type de DEFORMATION choisi,  <%(k1)s>, est incompatible avec GRAD_IMPOSE.
    GRAD_IMPOSE n'est utilisable qu'avec DEFORMATION='SIMO_MIEHE'.
 """),
+
+23: _(u"""
+Mot-clef : %(k1)s - occurrence  %(i1)d : comportement %(k2)s - nombre de variables internes : %(i2)d
+Noms des variables internes :"""),
+
+24: _(u"""   V%(i1)d : %(k1)s"""),
+
 
 
 }

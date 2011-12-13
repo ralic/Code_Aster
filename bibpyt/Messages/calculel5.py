@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel5 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,14 +112,20 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
  le champ  %(k1)s  est de type inconnu.
 """),
 
+15 : _(u"""
+***********************************
+ Erreur dans un calcul élémentaire.
+ Contexte de l'erreur :
+   Maille concernée : %(k1)s
+"""),
 
-
-
-
-
-
-
-
+16 : _(u"""   Option de calcul : %(k1)s
+   Commentaire:"""),
+17 : _(u"""%(k1)s"""),
+18 : _(u"""     Paramètre d'entrée : %(k1)s
+      Commentaire:"""),
+19 : _(u"""     Paramètre de sortie : %(k1)s
+     Commentaire:"""),
 
 20 : _(u"""
  le GROUP_NO  %(k1)s  contient  %(k2)s  noeuds
@@ -129,6 +135,9 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
  le GROUP_MA  %(k1)s  contient  %(k2)s  mailles
 """),
 
+22 : _(u"""     Grandeur associée au champ : %(k1)s
+     Commentaire:"""),
+23 : _(u"""***********************************"""),
 
 
 
@@ -143,7 +152,7 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 
 
 27 : _(u"""
- ! pas de lumpe en 3d p2: hexa20_d --> face8_d !
+   Pas de lumpe en 3d P2: hexa20_d --> face8_d
 """),
 
 
@@ -156,20 +165,6 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 
 
 
-
-30 : _(u"""
-Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
- Votre modèle ne contient pas d'élément de même dimension que le maillage sous-jacent.
- Vérifiez la dimension de votre maillage.
-"""),
-
-
-
-31 : _(u"""
-Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
- Votre modèle contient un type d'élément non supporté par la commande.
- Faites une demande d'évolution.
-"""),
 
 
 
@@ -182,9 +177,6 @@ Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 
-
-
-
 33 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
   La méthode %(k1)s est incompatible avec le champ %(k2)s.
@@ -192,7 +184,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 
 34 : _(u"""
- ! p2 obligatoire avec terme source non nul !
+   Maillage quadratique obligatoire avec terme source non nul.
 """),
 
 35 : _(u"""
@@ -277,16 +269,16 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 54 : _(u"""
  Aucune maille de peau n'a été fournie.
- 
- Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou 
+
+ Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou
  un groupe de maille contenant des mailles de peau.
 """),
 
 55 : _(u"""
  En 3D, les mailles de peau doivent être de type QUAD ou TRIA.
  Or la maille %(k1)s est de type %(k2)s.
- 
- Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou 
+
+ Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou
  un groupe de maille contenant des mailles de peau de type QUAD ou TRIA.
 """),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,9 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
                  fr="extraction de champs sur un sous-point. ",
 
          regles=(UN_PARMI('EXTR_COQUE','EXTR_TUYAU','EXTR_PMF','MIN_MAX_SP','COQU_EXCENT'),
-                 UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
+                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP',
+                        'LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS',),
+                 ),
 
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_harmo,mult_elas) ),
 
@@ -38,7 +40,10 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
+         NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+         NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+         NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
@@ -66,7 +71,8 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 # Extraction sur un sous-point d'une coque :
 #====
          EXTR_COQUE  =FACT(statut='f', max=1, fr="extraction sur un sous-point d'une coque",
-           NOM_CHAM     =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","SIGM_ELGA","SIGM_ELNO","VARI_ELNO",),),
+           NOM_CHAM     =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","SIGM_ELGA","SIGM_ELNO",
+                             "VARI_ELNO",),validators=NoRepeat(),max='**' ),
            NUME_COUCHE  =SIMP(statut='o',typ='I',val_min=1,
                              fr="numero de couche dans l'épaisseur de la coque" ),
            NIVE_COUCHE  =SIMP(statut='o',typ='TXM',into=("SUP","INF","MOY"),
@@ -79,7 +85,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
          EXTR_TUYAU  =FACT(statut='f', max=1, fr="extraction sur un sous-point d'un tuyau",
            NOM_CHAM     =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","SIGM_ELGA","SIGM_ELNO","VARI_ELNO",
-                                                         "SIEQ_ELGA","EPEQ_ELGA"),),
+                                                         "SIEQ_ELGA","EPEQ_ELGA"),validators=NoRepeat(),max='**' ),
            NUME_COUCHE  =SIMP(statut='o',typ='I',val_min=1,
                              fr="numero de couche dans l'épaisseur du tuyau" ),
            NIVE_COUCHE  =SIMP(statut='o',typ='TXM',into=("SUP","INF","MOY"),
@@ -93,7 +99,8 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 # Extraction sur un sous-point d'une poutre multi-fibre :
 #====
          EXTR_PMF  =FACT(statut='f', max=1, fr="extraction sur un sous-point d'une poutre multi-fibre",
-           NOM_CHAM    =SIMP(statut='o',typ='TXM',into=("SIEF_ELNO","SIGM_ELGA","SIGM_ELNO",),),
+           NOM_CHAM    =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","SIEF_ELNO","SIGM_ELGA","SIGM_ELNO",),
+                             validators=NoRepeat(),max='**' ),
            NUME_FIBRE  =SIMP(statut='o',typ='I',val_min=1,
                              fr="numéro de la fibre dans la poutre multi-fibre" ),
            ),

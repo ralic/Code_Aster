@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF cata_champs Stanley  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,16 +130,18 @@ class CATA_CHAMPS :
     self.cata = {}
     self('DEPL'     , 'NOEU',[],                            "Déplacements aux noeuds")
     self('TEMP'     , 'NOEU',[],                            "Température aux noeuds")
-    self('SIEF_ELGA', 'ELGA',[],                            "Contraintes aux points de Gauss")
+    self('SIEF_ELGA', 'ELGA',['DEPL'],                      "Contraintes aux points de Gauss")
+    self('SIEF_ELNO', 'ELNO',['SIEF_ELGA'],                 "Contraintes aux noeuds par élément")
+    self('SIEF_NOEU', 'NOEU',['SIEF_ELGA'],                 "Contraintes aux noeuds")
     self('SIGM_ELGA', 'ELGA',['SIEF_ELGA'],                 "Contraintes aux points de Gauss")
+    self('SIGM_ELNO', 'ELNO',['SIEF_ELGA'],                 "Contraintes aux noeuds par élément")
+    self('SIGM_NOEU', 'NOEU',['SIEF_ELGA'],                 "Contraintes aux noeuds")
     self('VARI_ELGA', 'ELGA',[],                            "Variables internes aux points de Gauss")
-    self('SIEF_ELNO', 'ELNO',['SIEF_ELGA',],                "Contraintes aux noeuds par élément")
-    self('SIEF_NOEU', 'NOEU',['SIEF_ELNO'],                 "Contraintes aux noeuds")
+    self('VARI_ELNO', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par élément")
+    self('VARI_NOEU', 'NOEU',['VARI_ELNO'],                 "Variables internes aux noeuds")
     self('FLUX_ELNO', 'ELNO',['TEMP'],                      "Flux thermique aux noeuds par élément")
     self('FLUX_NOEU', 'NOEU',['FLUX_ELNO'],                 "Flux thermique aux noeuds")
     self('FLUX_ELGA', 'ELGA',[],                            "Flux thermique aux points de Gauss")
-    self('VARI_ELNO', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par élément")
-    self('VARI_NOEU', 'NOEU',['VARI_ELNO'],                 "Variables internes aux noeuds")
     self('SIEQ_ELGA', 'ELGA',['SIEF_ELGA',],                "Invariants des contraintes aux points de Gauss")
     self('SIEQ_ELNO', 'ELNO',['SIEF_ELNO', 'SIGM_ELNO'],    "Invariants des contraintes aux noeuds par élément")
     self('SIEQ_NOEU', 'NOEU',['SIEQ_ELNO'],                 "Invariants des contraintes aux noeuds")
@@ -179,10 +181,8 @@ class CATA_CHAMPS :
 
 # lineaire
     # contraintes
-    self('SIGM_ELNO', 'ELNO',['SIEF_ELGA'],                 "Contraintes aux noeuds par élément en lineaire")
     self('SIPO_ELNO', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par élément pour les éléments Poutres")
     self('SIPM_ELNO', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element pour les elements Poutres")
-    self('SITU_ELNO', 'ELNO',[],                            "Etat de contrainte dans un élément de tuyau")
     # efforts
     self('EFGE_ELNO', 'ELNO',['DEPL'],                      "Efforts generalises aux noeuds par élément")
     # déformations
@@ -190,9 +190,6 @@ class CATA_CHAMPS :
 
 
 # non lineaire
-    self('SIGM_ELNO', 'ELNO',['SIEF_ELGA'],                 "Contraintes aux noeuds par élément pour les éléments Coques")
-    self('VACO_ELNO', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par élément pour les éléments Coques")
-
     self('EPSP_ELNO', 'ELNO',['SIEF_ELGA', 'DEPL'],         "Déformations plastiques aux noeuds par élément")
     self('EPSP_ELGA', 'ELGA',['SIEF_ELGA', 'DEPL'],         "Déformations plastiques aux points de Gauss")
     self('ETOT_ELGA', 'ELGA',['SIEF_ELGA', 'DEPL'],         "Densité d'energie totale de déformation aux points de Gauss")

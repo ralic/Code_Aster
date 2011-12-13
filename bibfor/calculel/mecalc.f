@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,32 +128,6 @@ C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
             CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
             CALL DETRSD('CHAM_ELEM_S',CANBVA)
 
-         ELSE IF (OPTIO2.EQ.'VATU_ELNO') THEN
-            CALL EXISD('CARTE',COMPOR,IRET2)
-            IF (IRET2.NE.1) THEN
-               CALL U2MESS('A','CALCULEL2_86')
-               GO TO 40
-            END IF
-            CANBVA = '&&'//NOMPRO//'.NBVARI'
-C           LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
-C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
-            CALL CESVAR(' ',COMPOR,LIGREL,CANBVA)
-            CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
-            CALL DETRSD('CHAM_ELEM_S',CANBVA)
-
-         ELSE IF (OPTIO2.EQ.'VACO_ELNO') THEN
-            CALL EXISD('CARTE',COMPOR,IRET2)
-            IF (IRET2.NE.1) THEN
-               CALL U2MESS('A','CALCULEL2_86')
-               GO TO 40
-            END IF
-            CANBVA = '&&'//NOMPRO//'.NBVARI'
-C           LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
-C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
-            CALL CESVAR(' ',COMPOR,LIGREL,CANBVA)
-            CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
-            CALL DETRSD('CHAM_ELEM_S',CANBVA)
-
          ELSE IF ((OPTIO2.EQ.'EPSI_ELGA') .OR.
      &            (OPTIO2.EQ.'SIEF_ELGA').OR.
      &            (OPTIO2.EQ.'STRX_ELGA')) THEN
@@ -183,29 +157,9 @@ C ----------------------------------------------------------------------
             CALL AJCHCA('PVARIPR',CHDEPL,LPAIN,LCHIN,NBIN,MAXIN,'N')
             CALL AJCHCA('PCONTPR',CHSIG, LPAIN,LCHIN,NBIN,MAXIN,'N')
             LPAOUT(1) = 'PINDLOC'
-         ELSE IF (OPTIO2.EQ.'VATU_ELNO') THEN
-            LPAIN(1) = 'PVARIGR'
-            LPAOUT(1) = 'PVARINR'
-         ELSE IF (OPTIO2.EQ.'VACO_ELNO') THEN
-            LPAIN(1) = 'PVARIGR'
-            LPAOUT(1) = 'PVARINR'
-         ELSE IF (OPTIO2.EQ.'SICA_ELNO') THEN
-            LPAIN(1)  = 'PCONTRR'
-            LPAOUT(1) = 'PCONTGL'
          ELSE IF (OPTIO2.EQ.'VNOR_ELEM_DEPL') THEN
             LPAIN(1)  = 'PDEPLAC'
             LPAOUT(1) = 'PVITNOR'
-         ELSE IF (OPTIO2.EQ.'EFCA_ELNO') THEN
-CJMP        LPAIN(1) = 'PCONTRR'
-CJMP        IL VAUDRAIT MIEUX HOMOGENEISER LE NOM DU PARAMETRE POUR
-CJMP        LE CHAMP DE CONTRAINTES EN PSIEFNOR ET PASSER CELUI-CI
-CJMP        DANS CHSIG. CELA IMPLIQUE DE MODIFIER LES CATALOGUES
-CJMP        DES ELEMETNS DE POUTRE ET DES DISCRETS POUR FAIRE COMME
-CJMP        LES CABLES QUI SONT CORRECTS
-CJMP        POUR LE MOMENT ON PASSE A LA FOIS LE CHAMP DEPL CI-DESSOUS
-CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
-            LPAIN(1) = 'PDEPLAR'
-            LPAOUT(1) = 'PEFFORR'
          ELSE IF (OPTIO2.EQ.'DETE_ELNO') THEN
             LPAIN(1) = 'PTEMPER'
             LPAOUT(1) = 'PDETENO'
@@ -227,9 +181,7 @@ CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
      &            OPTIO2.EQ.'DISS_ELNO') THEN
             LPAOUT(1) = 'PDISSDR'
          ELSE IF (OPTIO2.EQ.'SIEQ_ELNO' .OR.
-     &            OPTIO2.EQ.'SIEQ_ELGA' .OR.
-     &            OPTIO2.EQ.'PMPB_ELGA' .OR.
-     &            OPTIO2.EQ.'PMPB_ELNO') THEN
+     &            OPTIO2.EQ.'SIEQ_ELGA') THEN
             LPAOUT(1) = 'PCONTEQ'
          ELSE IF (OPTIO2.EQ.'EPEQ_ELNO' .OR.
      &            OPTIO2.EQ.'EPEQ_ELGA' .OR.
@@ -247,10 +199,7 @@ CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
             LPAOUT(1) = 'PPJSIGM'
          ELSE
             LPAIN(1) = 'PDEPLAR'
-            IF (OPTIO2.EQ.'SITU_ELNO') THEN
-               LPAIN(1) = 'PVARINR'
-               LPAOUT(1) = 'PSIGNOD'
-            ELSE IF (OPTIO2.EQ.'SIEF_ELNO') THEN
+            IF (OPTIO2.EQ.'SIEF_ELNO') THEN
                LPAIN(1) = 'PDEPLPR'
                LPAOUT(1) = 'PSIEFNOR'
             ELSE IF (OPTIO2.EQ.'FLHN_ELGA') THEN

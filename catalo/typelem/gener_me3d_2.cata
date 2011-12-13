@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ ENTETE__ ELEMENT__ MECA_FACE4       MAILLE__ QUAD4
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MECA_FACE6       MAILLE__ TRIA6
-   ELREFE__  TR6       GAUSS__  RIGI=FPG4      FPG_LISTE__ MATER=(RIGI)
+   ELREFE__  TR6       GAUSS__  RIGI=FPG6      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 ENTETE__ ELEMENT__ MECA_FACE8       MAILLE__ QUAD8
@@ -54,16 +54,16 @@ ENTETE__ ELEMENT__ MECA_X_FACE8     MAILLE__ QUAD8
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       DZ       )
-                                 EN2   ()
+                                 EN2   (         )
     EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       DZ       )
     CCAMASS  = CAMASS   ELEM__         (ALPHA    BETA     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    EPJSIGM  = SIEF_R   ELEM__         (SIG_NX    SIG_NY    SIG_NZ   SIG_N
-                                        SIG_TX    SIG_TY    SIG_TZ
-                                        SIG_T1X   SIG_T1Y   SIG_T1Z  SIG_T1
-                                        SIG_T2X   SIG_T2Y   SIG_T2Z  SIG_T2)
+    EPJSIGM  = SIEF_R   ELEM__         (SIG_NX   SIG_NY   SIG_NZ   SIG_N
+                                        SIG_TX   SIG_TY   SIG_TZ
+                                        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1
+                                        SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2   )
     EGTHETA  = G        ELEM__         (GTHETA   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
@@ -79,7 +79,7 @@ MODE_LOCAL__
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT[9])
+                                        XXXX2    KIT[9]   )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
@@ -88,21 +88,20 @@ MODE_LOCAL__
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3
-                                        K1    K2   K3   BETA     )
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     FIC3
+                                        K1       K2       K3       BETA     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
-    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9])
-    G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27])
-    E6NEUTI = NEUT_I    ELEM__         (X[9])
-    E18NEUI = NEUT_I    ELEM__         (X[18])
-    E9NEUTR = NEUT_R   ELEM__          (X[9])
+    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
+    E6NEUTI  = NEUT_I   ELEM__         (X[9]     )
+    E18NEUI  = NEUT_I   ELEM__         (X[18]    )
+    E9NEUTR  = NEUT_R   ELEM__         (X[9]     )
     ENORME   = NEUT_R   ELEM__         (X1       )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]      )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]      )
-
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 

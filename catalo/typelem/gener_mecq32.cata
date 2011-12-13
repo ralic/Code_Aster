@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -297,16 +297,15 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR  CCACO3D  PCACO3D
     SIEF_ELGA           410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
-                              OUT__  ECONTPG  PCONTRR ECONTPC  PCONTRC
+                              OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
     SIEF_ELNO           40    IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  DDL_MECA PDEPPLU
                                      NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
-                              OUT__  ECONTNO PSIEFNOR  ECONTNC PSIEFNOC
-    SICA_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+                              OUT__  ECONTNO PSIEFNOR  ECONTNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           40    IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
-                              OUT__  ECONTNO PSIEFNOR  ECONTNC PSIEFNOC
+                              OUT__  ECONTNO PSIEFNOR  ECONTNC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     MINMAX_SP           99    IN__   NGEOMER  PGEOMER
@@ -317,10 +316,8 @@ OPTION__
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R  ENNEUT_R PNEUT_R  ENNEUT_F PNEUT_F
-    VACO_ELNO           415   IN__   CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  CNUMCOR  PNUMCOR  ZVARIPG  PVARIGR
+    VARI_ELNO           415   IN__   ZVARIPG  PVARIGR  CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I
                               OUT__  ZVARINO  PVARINR
-    VARI_ELNO           415   IN__   CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
-                              OUT__  ZVARINO  PVARINR
-    VERI_CARA_ELEM     119    IN__   CCACOQU  PCACOQU
+    VERI_CARA_ELEM      119   IN__   CCACOQU  PCACOQU
                               OUT__  ECOURAN  PBIDON
     WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX

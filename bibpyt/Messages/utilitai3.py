@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai3 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,7 +99,10 @@ cata_msg = {
 """),
 
 23 : _(u"""
- option:  %(k1)s non prévue pour les éléments du modèle.
+Erreur :
+  Aucun élément fini du ligrel '%(k1)s' ne sait calculer le
+  paramètre: %(k2)s de l'option:  %(k3)s.
+  Le cham_elem que l'on veut créer est vide. On ne peut pas continuer.
 """),
 
 24 : _(u"""

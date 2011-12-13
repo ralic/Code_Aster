@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -603,6 +603,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              GRAN_A          =SIMP(statut='f',typ='R',defaut= 0.E+0),
              GRAN_B          =SIMP(statut='f',typ='R',defaut= 0.E+0),
              GRAN_S          =SIMP(statut='f',typ='R',defaut= 0.E+0),
+             GRAN_FO         =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            ),
           LEMA_SEUIL   =FACT(statut='f',
              A               =SIMP(statut='o',typ='R',),
@@ -994,6 +995,16 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            V_GRANGER_FP    =FACT(statut='f',
              QSR_VEIL        =SIMP(statut='f',typ='R'),
              FONC_V          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           ),
+           BETON_BURGER_FP   =FACT(statut='f',min=0 ,
+             K_RS            =SIMP(statut='o',typ='R'),
+             ETA_RS          =SIMP(statut='o',typ='R'),
+             KAPPA           =SIMP(statut='o',typ='R'),
+             ETA_IS          =SIMP(statut='o',typ='R'),
+             K_RD            =SIMP(statut='o',typ='R'),
+             ETA_RD          =SIMP(statut='o',typ='R'),
+             ETA_ID          =SIMP(statut='o',typ='R'),
+             ETA_FD          =SIMP(statut='f',typ='R'),
            ),
            BETON_UMLV_FP   =FACT(statut='f',min=0 ,
              K_RS            =SIMP(statut='o',typ='R'),

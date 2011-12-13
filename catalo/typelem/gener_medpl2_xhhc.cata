@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,8 +60,8 @@ ENTETE__ ELEMENT__ MEDPQU4_XH4C      MAILLE__ QUAD4
 MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC
+                                        PERTURB  TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR)
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
@@ -69,21 +69,23 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
-                                        COPECO   COPEFR)
+                                        COPECO   COPEFR   )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
+    CPRESSF  = PRES_F   ELEM__         (PRES     CISA     )
     CREFERI  = NEUT_I   ELEM__         (X[12]    )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
-                                 EN2   (DX   DY   H1X  H1Y  H2X  H2Y
-                                        LAGS_C  LAGS_F1  LAG2_C  LAG2_F1  )
-                                 EN3   (DX   DY   H1X  H1Y  H2X  H2Y  H3X  H3Y
-                                        LAGS_C  LAGS_F1  LAG2_C  LAG2_F1  LAG3_C  LAG3_F1  )
-                                 EN4   (DX   DY   H1X  H1Y  H2X  H2Y  H3X  H3Y  H4X  H4Y
-                                        LAGS_C  LAGS_F1  LAG2_C  LAG2_F1  LAG3_C  LAG3_F1  LAG4_C  LAG4_F1  )
-    DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX   DY   )
+                                 EN2   (DX       DY       H1X      H1Y      H2X      H2Y
+                                        LAGS_C   LAGS_F1  LAG2_C   LAG2_F1  )
+                                 EN3   (DX       DY       H1X      H1Y      H2X      H2Y
+                                        H3X      H3Y      LAGS_C   LAGS_F1  LAG2_C  LAG2_F1
+                                        LAG3_C   LAG3_F1  )
+                                 EN4   (DX       DY       H1X      H1Y      H2X     H2Y
+                                        H3X      H3Y      H4X      H4Y      LAGS_C  LAGS_F1
+                                        LAG2_C   LAG2_F1  LAG3_C   LAG3_F1  LAG4_C  LAG4_F1  )
+    DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E2NEUTI  = NEUT_I   ELEM__         (X[2]     )
     E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
@@ -213,7 +215,7 @@ OPTION__
     ERME_ELEM           382   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO  E36NEUTR PPINTTO
-                                     E54NEUI  PCNSETO  E9NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PSIEFSER
+                                     E54NEUI  PCNSETO  E9NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PCONTSER
                                      E22NEUTR PPMILTO
                               OUT__  EERREUR  PERREUR
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
@@ -284,15 +286,18 @@ OPTION__
                                      E22NEUTR PPMILTO  FISNO_I  PFISNO
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELNO           289   IN__   ECONTPG  PCONTRR  E54NEUI  PCNSETO  E9NEUTI  PLONCHA
-                              OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
-    SIGM_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    SIGM_ELNO           289   IN__   ECONTPG  PCONTRR  E54NEUI  PCNSETO  E9NEUTI  PLONCHA
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SISE_ELNO           289   IN__   ECONTPG  PCONTRR  E9NEUTI  PLONCHA
+                              OUT__  ECONTSE  PCONTSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT
                                      N2NEUT_R PGRADLN  FISCO_I PFISCO
                               OUT__  E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA
-                                     E12NEUTR  PBASECO  E6NEUTR  PGESCLA  E6NEUTR  PGMAITR  E6NEUTR  PGESCLO
-                                     E2NEUTI   PHEAVFA
+                                     E12NEUTR PBASECO  E6NEUTR  PGESCLA  E6NEUTR  PGMAITR  E6NEUTR  PGESCLO
+                                     E2NEUTI  PHEAVFA
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  N2NEUT_R PGRADLN  FISCO_I PFISCO
                               OUT__  E36NEUTR PPINTTO  E54NEUI  PCNSETO  E18NEUI  PHEAVTO  E9NEUTI  PLONCHA
                                      E15NEUTR PAINTER  E22NEUTR PPMILTO

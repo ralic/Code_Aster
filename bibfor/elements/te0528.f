@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,12 +75,14 @@ C    VERIFICATION DU COMPORTEMENT FLUAGE
       LFLU=.FALSE.
       IF (OPTION(1:4).EQ.'EPFD') THEN
          IF ((COMPO1(1:13).EQ.'BETON_UMLV_FP').OR.
+     &       (COMPO1(1:15).EQ.'BETON_BURGER_FP').OR.
      &        (COMPO1(1:7).EQ.'KIT_DDI'.AND.COMPO2(1:13).EQ.
      &        'BETON_UMLV_FP'))  THEN
             LFLU=.TRUE.
          ENDIF
         ELSEIF (OPTION(1:4).EQ.'EPFP') THEN
           IF ( (COMPO1(1:13).EQ.'BETON_UMLV_FP') .OR.
+     &         (COMPO1(1:15).EQ.'BETON_BURGER_FP').OR.
      &          (COMPO1(1:10).EQ.'GRANGER_FP') .OR.
      &         (COMPO1(1:7).EQ.'KIT_DDI'. AND.
      &                    COMPO2(1:10).EQ.'GRANGER_FP') .OR.
@@ -129,7 +131,15 @@ C     -----------------------------------
 C POUR BETON_UMLV_FP LE FLUAGE DE DESSICCATION VAUT
 C                    [V9 V10 V11 V18 V19 V20]
 
-         CALL LCUMVI('FD',ZR(IVARI+(IGAU-1)*NBVARI),EPSTMP)
+          IF  ((COMPO1(1:13).EQ.'BETON_UMLV_FP').OR.
+     &         (COMPO1(1:7).EQ.'KIT_DDI'.AND.COMPO2(1:13).EQ.
+     &          'BETON_UMLV_FP') ) THEN
+            CALL LCUMVI('FD',ZR(IVARI+(IGAU-1)*NBVARI),EPSTMP)
+
+          ELSEIF(COMPO1(1:15).EQ.'BETON_BURGER_FP')THEN
+            CALL BURFTM('FD',ZR(IVARI+(IGAU-1)*NBVARI),EPSTMP)
+
+          ENDIF
 
          DO 182 I=1,NBSIG
            EPSFL(NBSIG*(IGAU-1)+I)=EPSTMP(I)
@@ -167,6 +177,20 @@ C        EPFP14 = V16+V17
            EPSFL(NBSIG*(IGAU-1)+I)=EPSTMP(I)
   185    CONTINUE
 
+       ELSE IF  (COMPO1(1:15).EQ.'BETON_BURGER_FP') THEN
+C      POUR BETON_BURGER LE FLUAGE PROPRE VAUT
+C        EPFP11 = (V1+V2) + V3 + V4
+C        EPFP22 = (V1+V2) + V5 + V6
+C        EPFP33 = (V1+V2) + V7 + V8
+C        EPFP12 = V12+V13
+C        EPFP13 = V14+V15
+C        EPFP14 = V16+V17
+
+         CALL BURFTM('FP',ZR(IVARI+(IGAU-1)*NBVARI),EPSTMP)
+
+         DO 190 I=1,NBSIG
+           EPSFL(NBSIG*(IGAU-1)+I)=EPSTMP(I)
+  190    CONTINUE
 
 C-------------------------------------------------------------------*
        ELSE IF  ((COMPO1(1:10).EQ.'GRANGER_FP') .OR.

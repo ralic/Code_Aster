@@ -2,10 +2,10 @@
       IMPLICIT NONE
       CHARACTER*(*) TRANSF,CEL1,BASE,CEL2
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,8 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
-C A_UTIL
+C RESPONSABLE PELLET
 C ----------------------------------------------------------------------
 C  BUT : TRANSFORMER UN CHAM_ELEM (CEL1) EN UN CHAM_ELEM (CEL2) QUI
 C        A DE NOUVELLES PROPRIETES. PAR EXEMPLE POUR POUVOIR ETRE
@@ -63,29 +62,28 @@ C     ------------------------------------------------------------------
       INTEGER JCESD1,JCESL1,JCESV1,JCESC1,JCESK1
       INTEGER JCESD2,JCESL2,JCESV2,JCELD2,NBGREL,IGREL,DEBUGR,NBEL
       INTEGER NBPT,NBSPT,NCMP2,IAD1,IAD2,IMOLO,NBSPMX,IEL,NBSP
-      INTEGER NCMPG,NBVAMX,JNBPT,JNBSPT,JCELK1,NNCP
+      INTEGER NCMPG,NBVAMX,JNBPT,JNBSPT,JCELK1,NNCP,ICO
       CHARACTER*19 CES1,CES2,LIGREL,CEL11,CEL22
       CHARACTER*16 OPTINI,NOMPAR
       CHARACTER*8 MA,NOMGD,TYPCES,KBID
+      CHARACTER*24 VALK(3)
 C -DEB------------------------------------------------------------------
       CALL JEMARQ()
+
+      CALL DISMOI('F','NOM_GD',CEL1,'CHAMP',IBID,NOMGD,IERD)
 
 
       IF (TRANSF.EQ.'NBVARI_CST') THEN
 C     =================================
 
-        CALL DISMOI('F','NOM_GD',CEL1,'CHAMP',IBID,NOMGD,IERD)
-
         IF (NOMGD.NE.'VARI_R') THEN
-C     -- IL N'Y A RIEN A FAIRE : NBVARI EST CST !
+C         -- IL N'Y A RIEN A FAIRE : NBVARI EST CST !
           CALL COPISD('CHAMP_GD',BASE,CEL1,CEL2)
           GOTO 80
-
         ENDIF
 
-
-C     1- ON TRANSFORME CEL1 EN CHAM_ELEM_S : CES1
-C     -------------------------------------------
+C       1- ON TRANSFORME CEL1 EN CHAM_ELEM_S : CES1
+C       -------------------------------------------
         CES1 = '&&CELCEL.CES1'
         CALL CELCES(CEL1,'V',CES1)
         CALL JEVEUO(CES1//'.CESD','L',JCESD1)
@@ -94,23 +92,19 @@ C     -------------------------------------------
         CALL JEVEUO(CES1//'.CESC','L',JCESC1)
         CALL JEVEUO(CES1//'.CESK','L',JCESK1)
 
-
-C     2- ON ALLOUE UN CHAM_ELEM_S PLUS GROS: CES2
-C     -------------------------------------------
+C       2- ON ALLOUE UN CHAM_ELEM_S PLUS GROS: CES2
+C       -------------------------------------------
         CES2 = '&&CELCEL.CES2'
-
         MA = ZK8(JCESK1-1+1)
         TYPCES = ZK8(JCESK1-1+3)
-
         NBMA = ZI(JCESD1-1+1)
-
         NCMPG = ZI(JCESD1-1+2)
         NBVAMX = ZI(JCESD1-1+5)
         CALL ASSERT(NCMPG.EQ.NBVAMX)
 
-C     2.1 : CALCUL DE 2 VECTEURS CONTENANT LE NOMBRE DE
-C           POINTS DE SOUS-POINTS DES MAILLES
-C     ---------------------------------------------------
+C       2.1 : CALCUL DE 2 VECTEURS CONTENANT LE NOMBRE DE
+C             POINTS DE SOUS-POINTS DES MAILLES
+C       ---------------------------------------------------
         CALL WKVECT('&&CELCEL.NBPT','V V I',NBMA,JNBPT)
         CALL WKVECT('&&CELCEL.NBSPT','V V I',NBMA,JNBSPT)
         DO 10,IMA = 1,NBMA
@@ -118,8 +112,8 @@ C     ---------------------------------------------------
           ZI(JNBSPT-1+IMA) = ZI(JCESD1-1+5+4* (IMA-1)+2)
    10   CONTINUE
 
-C     2.2 : ALLOCATION DE CES2 :
-C     ---------------------------------------------------
+C       2.2 : ALLOCATION DE CES2 :
+C       ---------------------------------------------------
         CALL CESCRE('V',CES2,TYPCES,MA,NOMGD,-NBVAMX,KBID,ZI(JNBPT),
      &              ZI(JNBSPT),-NBVAMX)
         CALL JEVEUO(CES2//'.CESD','L',JCESD2)
@@ -129,8 +123,8 @@ C     ---------------------------------------------------
 
 
 
-C     3- ON RECOPIE LES VALEURS DE CES1 DANS CES2 :
-C     ---------------------------------------------
+C       3- ON RECOPIE LES VALEURS DE CES1 DANS CES2 :
+C       ---------------------------------------------
         DO 50,IMA = 1,NBMA
           NBPT = ZI(JCESD1-1+5+4* (IMA-1)+1)
           NBSPT = ZI(JCESD1-1+5+4* (IMA-1)+2)
@@ -157,8 +151,8 @@ C     ---------------------------------------------
 
 
 
-C     4- ON TRANSFORME CES2 EN CHAM_ELEM : CEL2
-C     -------------------------------------------
+C       4- ON TRANSFORME CES2 EN CHAM_ELEM : CEL2
+C       -------------------------------------------
         CEL11 = CEL1
         CALL JEVEUO(CEL11//'.CELK','L',JCELK1)
         LIGREL = ZK24(JCELK1-1+1)
@@ -168,8 +162,8 @@ C     -------------------------------------------
      &              IBID)
 
 
-C     5- MENAGE :
-C     -------------------------------------------
+C       5- MENAGE :
+C       -------------------------------------------
         CALL JEDETR('&&CELCEL.NBPT')
         CALL JEDETR('&&CELCEL.NBSPT')
         CALL DETRSD('CHAM_ELEM_S',CES1)
@@ -184,8 +178,9 @@ C     =====================================
         CALL JEVEUO(CEL22//'.CELD','E',JCELD2)
         NBGREL = ZI(JCELD2-1+2)
 
-C  -- ON MET A ZERO LE MODE LOCAL DES GRELS QUI ONT DES
-C     SOUS-POINTS :
+C       -- ON MET A ZERO LE MODE LOCAL DES GRELS QUI ONT DES
+C          SOUS-POINTS :
+        ICO=0
         DO 70,IGREL = 1,NBGREL
           DEBUGR = ZI(JCELD2-1+4+IGREL)
           NBEL = ZI(JCELD2-1+DEBUGR+1)
@@ -196,9 +191,18 @@ C     SOUS-POINTS :
               NBSP = ZI(JCELD2-1+DEBUGR+4+4* (IEL-1)+1)
               NBSPMX = MAX(NBSPMX,NBSP)
    60       CONTINUE
-            IF (NBSPMX.GT.1) ZI(JCELD2-1+DEBUGR+2) = 0
+            IF (NBSPMX.GT.1) THEN
+              ZI(JCELD2-1+DEBUGR+2) = 0
+            ELSE
+              ICO=ICO+1
+            ENDIF
           ENDIF
    70   CONTINUE
+        IF (ICO.EQ.0) THEN
+          VALK(1)=CEL1
+          VALK(2)=NOMGD
+          CALL U2MESK('F','CALCULEL2_40',2,VALK)
+        ENDIF
 
 
       ELSE

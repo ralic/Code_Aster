@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,24 +49,14 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ------------------------------------------------------------------
       CHARACTER*8    K8BID
-      CHARACTER*16   CH16,NOMCMD,TYPRES,KMESS(4)
-      CHARACTER*19   NOMFON
+      CHARACTER*16   CH16,KMESS(4)
       REAL*8         MAT1(78),MAT2(144),ZERO,DEUX,TROIS,PGL(3,3),R8BID
       INTEGER        INFODI,IREPM,NBTERM,NNO,NC,NDIM,ITYPE,I,I1,I2,I3
       INTEGER        LMASS,LCOOR,LORIEN,LCASTR,IBID
       PARAMETER     (ZERO=0.D0,DEUX=2.D0,TROIS=3.D0)
 C     ------------------------------------------------------------------
 C
-      CALL GETRES(NOMFON,TYPRES,NOMCMD)
-C     SEUL POST-ELEM PEUT TRAITER DES MATRICES DE MASSE NON-SYMETRIQUE
       CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
-      IF ( (NOMCMD.NE.'POST_ELEM') .AND. (INFODI.EQ.2) ) THEN
-         KMESS(1) = OPTION
-         KMESS(2) = NOMTE
-         KMESS(3) = 'TE0045'
-         KMESS(4) = NOMCMD
-         CALL U2MESK('F','DISCRETS_12',4,KMESS)
-      ENDIF
       IF ( OPTION.NE.'MASS_INER' ) THEN
          CH16 = OPTION
          CALL U2MESK('F','ELEMENTS2_47',1,CH16)

@@ -1,7 +1,7 @@
       SUBROUTINE TE0005(OPTION,NOMTE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       LOGICAL       AXI
       INTEGER       I,IVF,IVF2,IDFDE,IDFDE2,JGANO,NDIM,IPOIDS,NPI
-      INTEGER       IPOID2,DIMDEF,ICOMPO,ICHG,ICHN,NCMP,REGULA(6),IDEFO
+      INTEGER       IPOID2,DIMDEF,ICOMPO,ICHG,ICHN,REGULA(6),IDEFO
       INTEGER       ICONTM,IDEPLM,IDEPLP,IGEOM,IMATE,JCRET,NDDLS,NDDLM
       INTEGER       IMATUU,IVECTU,ICONTP,NNO,NNOS,NNOM,DIMUEL,DIMCON
       INTEGER       IVARIP,CODRET
@@ -94,24 +94,14 @@ C ======================================================================
      +              IDFDE2,NDDLS,NDDLM,AXI,REGULA,ZR(IDEPLM),ZR(ICONTM),
      +               ZI(IMATE),ZR(IVECTU))
 C ======================================================================
-C --- OPTION : SIEF_ELNO ------------------------------------------
-C ======================================================================
-      ELSE IF (OPTION.EQ.'SIEF_ELNO') THEN
-         NCMP = DIMCON
-         CALL PPGAN2(JGANO,1,NCMP,ZR(ICHG),ZR(ICHN))
-C ======================================================================
-C --- OPTION : VARI_ELNO ------------------------------------------
-C ======================================================================
-      ELSE IF (OPTION.EQ.'VARI_ELNO') THEN
-         READ (ZK16(ICOMPO+1),'(I16)') NCMP
-         CALL PPGAN2(JGANO,1,NCMP,ZR(ICHG),ZR(ICHN))
-C ======================================================================
 C --- OPTION : EPSI_ELGA ------------------------------------------
 C ======================================================================
       ELSE IF (OPTION.EQ.'EPSI_ELGA') THEN
          CALL EPSDIL(NPI,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
      +               ZR(IGEOM),DIMDEF,DIMUEL,NDIM,NDDLS,NDDLM,NNO,NNOS,
      +               NNOM,INTERP,AXI,REGULA,ZR(IDEPLP),ZR(IDEFO))
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
 C ======================================================================
       END

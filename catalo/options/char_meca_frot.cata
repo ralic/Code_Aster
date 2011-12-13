@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF OPTIONS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE ABBAS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -45,7 +45,7 @@ OPTION__
         PSEUIL   NEUT_R
         PSTANO   NEUT_I
         PCOHES   NEUT_R
-        PMATERC  ADRSJEVE
+        PMATERC  ADRSJEVE << Champ de matériaux. Concept CHAM_MATER >>
         PFISNO   NEUT_I
         PHEAVNO  NEUT_I
         PHEAVFA  NEUT_I

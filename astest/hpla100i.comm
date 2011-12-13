@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,73 +275,51 @@ CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
 
 # ------------------------------------------------------------------
 
-DEPLPES=MECA_STATIQUE(
-                  MODELE=MO,
-               CARA_ELEM=CARE,
-              CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CHPES),
-                         )
+DEPLPES=MECA_STATIQUE(MODELE=MO,
+                      CARA_ELEM=CARE,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHPES),)
 
-CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO'),
-                  REPE_COQUE =_F( NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),
-                         )
+DEPLPES=CALC_ELEM(reuse=DEPLPES,
+                  RESULTAT=DEPLPES,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO'),);
 
+DEPLDIL=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMATA,
+                      CARA_ELEM=CARE,
+                      EXCIT=_F(CHARGE=CHDIL),)
 
-DEPLDIL=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMATA,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
+DEPLDIL=CALC_ELEM(reuse=DEPLDIL,
+                  RESULTAT=DEPLDIL,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO'),);
 
-CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO'),
-                  REPE_COQUE =_F( NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),
-                         )
+DEPLDILT=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMATHA,
+                       CARA_ELEM=CARE,
+                       EXCIT=_F(CHARGE=CHDIL),)
 
-
-DEPLDILT=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMATHA,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
-
-CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO'),
-                  REPE_COQUE =_F( NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),
-                         )
+DEPLDILT=CALC_ELEM(reuse=DEPLDILT,
+                   RESULTAT=DEPLDILT ,
+                   OPTION=('EFGE_ELNO','SIGM_ELNO'),);
 
 
-DEPLDI2=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMATB,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
+DEPLDI2=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMATB,
+                      CARA_ELEM=CARE,
+                      EXCIT=_F(CHARGE=CHDIL),);
 
-CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO'),
-                  REPE_COQUE =_F( NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),
-                         )
+DEPLDI2=CALC_ELEM(reuse=DEPLDI2,
+                  RESULTAT=DEPLDI2,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO'),);
 
-DEPLDI2T=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMATHB,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
+DEPLDI2T=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMATHB,
+                       CARA_ELEM=CARE,
+                       EXCIT=_F( CHARGE = CHDIL),);
 
-CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO'),
-                  REPE_COQUE =_F( NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),
-                         )
+DEPLDI2T=CALC_ELEM(reuse=DEPLDI2T,
+                   RESULTAT= DEPLDI2T ,
+                   OPTION=('EFGE_ELNO','SIGM_ELNO'),);
 
 #---------------------------------------------------------------------
 

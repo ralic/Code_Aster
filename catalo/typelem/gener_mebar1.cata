@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ MODE_LOCAL__
     EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EENEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
-    ENONLIN  = NEUT_I   ELEM__         (X1)
+    ENONLIN  = NEUT_I   ELEM__         (X1       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -82,29 +82,22 @@ OPTION__
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                      ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
-    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_FC1D1D    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CARA_GEOM           -1    IN__     OUT__  XXXXXX   XXXXXX
+    CHAR_LIMITE         -1    IN__     OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_EPSI_R    -1    IN__     OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FC1D1D    -1    IN__     OUT__  XXXXXX   XXXXXX
     CHAR_MECA_FF1D1D    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CFORCEF  PFF1D1D  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR1D1D    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CFORCER  PFR1D1D  NGEOMER  PGEOMER
                                      CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FRELEC    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_FRLAPL    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FRELEC    -1    IN__     OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FRLAPL    -1    IN__     OUT__  XXXXXX   XXXXXX
     CHAR_MECA_PESA_R    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_ROTA_R    -1    IN__     OUT__  XXXXXX   XXXXXX
     CHAR_MECA_SF1D1D    155   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFF1D1D
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
@@ -125,18 +118,14 @@ OPTION__
     ECIN_ELEM           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  COMEG2R  POMEGA2
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PVITESR
                               OUT__  EENECNO  PENERCR
-    EFCA_ELNO           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ENONLIN  PNONLIN  EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
-    ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
+    ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR
@@ -160,14 +149,11 @@ OPTION__
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    INDIC_ENER          -1    IN__     OUT__  XXXXXX   XXXXXX
+    INDIC_SEUIL         -1    IN__     OUT__  XXXXXX   XXXXXX
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
-    MASS_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_FLUI_STRU      -1    IN__     OUT__  XXXXXX   XXXXXX
     MASS_INER           245   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           153   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -176,10 +162,8 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_EXPLI     153   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
-    MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
+    MECA_SENS_RAPH      -1    IN__     OUT__  XXXXXX   XXXXXX
     M_GAMMA             153   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
@@ -195,10 +179,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      156   IN__   EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
-    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    RIGI_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RICE_TRACEY         -1    IN__     OUT__  XXXXXX   XXXXXX
+    RIGI_FLUI_STRU      -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_MECA           153   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_ELAS      248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
@@ -206,8 +188,7 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_GE        -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_IMPLEX    248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
@@ -215,8 +196,7 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCRR
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR  EEFGEGA  PCONTXR
-    RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_RO        -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_MECA_TANG      248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCRR
@@ -225,7 +205,7 @@ OPTION__
     SIEF_ELGA           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EEFGEGA  PCONTRR  EEFGEGC  PCONTRC
-    SIEF_ELNO           156   IN__   EEFGEGA  PCONTRR
+    SIEF_ELNO           4     IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
@@ -233,7 +213,5 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGENO  PSIEF_R  ZVARENO  PVARI_R  NGEOMER PGEOM_R  EEINST_R PINST_R
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
-    VARI_ELNO           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    WEIBULL             -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    VARI_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
+    WEIBULL             -1    IN__     OUT__  XXXXXX   XXXXXX

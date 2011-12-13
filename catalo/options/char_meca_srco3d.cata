@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE ABBAS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -23,7 +23,7 @@ CHAR_MECA_SRCO3D
 OPTION__
    IN__
         PGEOMER  GEOM_R
-        PCACOQU  CACOQU
+        PCACOQU  CACOQU   << Champ de caractéristiques pour les coques. Concept CARA_ELEM >>
         PFRCO3D  FORC_R
         PDEPLMR  DEPL_R
         PDEPLPR  DEPL_R

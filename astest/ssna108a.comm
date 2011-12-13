@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
 # ssna108a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,9 +93,7 @@ T=STAT_NON_LINE(
                              EXCIT=_F( 
                 CHARGE = CHARG),
                          COMP_INCR=_F( 
-                RELATION = 'VMIS_ISOT_TRAC',
-                RESI_INTE_RELA = 1.0E-06,
-                ITER_INTE_MAXI = 30),
+                RELATION = 'VMIS_ISOT_TRAC'),
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 10),

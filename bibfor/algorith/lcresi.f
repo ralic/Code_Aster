@@ -6,7 +6,7 @@
 C TOLE CRP_21
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,9 @@ C
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRRES ( FAMI, KPG, KSP, TYPMOD,   NMAT, MATERD,MATERF,
      1                 YD,  YF,  DEPS,  DY,  R )
+      ELSEIF ( LOI(1:15)  .EQ. 'BETON_BURGER_FP' ) THEN
+         CALL BURRES ( TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
+     1                 NVI,VIND,YD,YF,DEPS,DY,NR,R )
       ENDIF
 C
       END

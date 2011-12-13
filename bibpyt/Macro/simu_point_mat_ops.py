@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 08/11/2011   AUTEUR FOUCAULT A.FOUCAULT 
+#@ MODIF simu_point_mat_ops Macro  DATE 12/12/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,8 +49,11 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 
   from Accas import _F
   from Utilitai.UniteAster import UniteAster
-  from Utilitai.Utmess import  UTMESS
+  from Utilitai.Utmess import  UTMESS,MasquerAlarme, RetablirAlarme
   from Noyau.N_types import is_enum
+  
+  # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+  MasquerAlarme('COMPOR1_70')
   
 # -- Tests de cohérence
   __fonczero = DEFI_FONCTION(NOM_PARA = 'INST',
@@ -184,16 +187,12 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
 
        self.DeclareOut('REPONSE',self.sd)
-       __REP1 = CALC_POINT_MAT(INFO=INFO,MATER=MATER,ANGLE=ANGLE,**motscles)
- 
-       Titre='CALC_POINT_MAT'
-       if INFO==2 :
-          IMPR_TABLE(TABLE=__REP1)
-          
-# on ne prend en compte que ARCHIVAGE / LIST_INST 
 
+       Titre='CALC_POINT_MAT'
        if ARCHIVAGE != None :
+#         on ne prend en compte que ARCHIVAGE / LIST_INST 
           if ARCHIVAGE['LIST_INST'] != None :
+             __REP1 = CALC_POINT_MAT(INFO=INFO,MATER=MATER,ANGLE=ANGLE,**motscles)
              lr8=ARCHIVAGE['LIST_INST']
              lr=lr8.Valeurs()
              REPONSE=CALC_TABLE( TABLE=__REP1,TITRE=Titre,
@@ -201,13 +200,10 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                                      VALE=lr,PRECISION=ARCHIVAGE['PRECISION']),
                           )
           else :
-             REPONSE=CALC_TABLE( TABLE=__REP1,TITRE=Titre,
-                           ACTION=_F(OPERATION='TRI',NOM_PARA='INST'),
-                          )
+             REPONSE = CALC_POINT_MAT(INFO=INFO,MATER=MATER,ANGLE=ANGLE,**motscles)
        else :
-          REPONSE=CALC_TABLE( TABLE=__REP1,TITRE=Titre,
-                           ACTION=_F(OPERATION='TRI',NOM_PARA='INST'),
-                          )
+          REPONSE = CALC_POINT_MAT(INFO=INFO,MATER=MATER,ANGLE=ANGLE,**motscles)
+          
   
 #===============================================================
 # cas ou on fait le calcul sur un TETRA4 A UN SEUL POINT DE GAUSS
@@ -683,13 +679,13 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
          nomepsi='EPSI_ELNO'
          
       __EVOL1 = CALC_ELEM(reuse = __EVOL1,RESULTAT = __EVOL1,
-        OPTION = ('SIEF_ELNO',nomepsi,'VARI_ELNO'))
+        OPTION = ('SIGM_ELNO',nomepsi,'VARI_ELNO'))
  
       if MODELISATION=="3D":
           angles=(ANGLE,0,0)
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1, MODI_CHAM=(
               _F(NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),TYPE_CHAM='VECT_3D',),
-              _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),TYPE_CHAM='TENS_3D',),
+              _F(NOM_CHAM='SIGM_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),TYPE_CHAM='TENS_3D',),
               _F(NOM_CHAM=nomepsi,NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),TYPE_CHAM='TENS_3D',),
                                   ),
                             REPERE='UTILISATEUR',
@@ -698,7 +694,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           angles=ANGLE
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1,MODI_CHAM=(
                      _F(NOM_CHAM='DEPL',NOM_CMP=('DX','DY'),TYPE_CHAM='VECT_2D',),
-                     _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),TYPE_CHAM='TENS_2D',),
+                     _F(NOM_CHAM='SIGM_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),TYPE_CHAM='TENS_2D',),
                      _F(NOM_CHAM=nomepsi,NOM_CMP=('EPXX','EPYY','EPZZ','EPXY'),TYPE_CHAM='TENS_2D',),
                                   ),
                             REPERE='UTILISATEUR',
@@ -716,11 +712,11 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
             TOUT_CMP='OUI',OPERATION='EXTRACTION',NOEUD     = 'P0'),))
 
       __REP_SIGM = POST_RELEVE_T(ACTION = (
-          _F(INTITULE  = 'SIGMA',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIEF_ELNO',
+          _F(INTITULE  = 'SIGMA',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIGM_ELNO',
             TOUT_CMP  = 'OUI',OPERATION = 'EXTRACTION',NOEUD     = 'P0'),))
  
       __REP_INV = POST_RELEVE_T(ACTION = (
-          _F(INTITULE  = 'INV',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIEF_ELNO',
+          _F(INTITULE  = 'INV',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIGM_ELNO',
             INVARIANT  = 'OUI',OPERATION = 'EXTRACTION',NOEUD     = 'P0'),))
  
       __REP_INV=CALC_TABLE( TABLE=__REP_INV,reuse=__REP_INV,
@@ -733,5 +729,6 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                        _F(OPERATION='COMB',TABLE=__REP_INV ,NOM_PARA=('INST'), ),
                        _F(OPERATION='COMB',TABLE=__REP_VARI,NOM_PARA=('INST'), ),))
 
+  RetablirAlarme('COMPOR1_70')
   return ier
 

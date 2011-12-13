@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,6 +126,32 @@ MODE_LOCAL__
                                         FH21X    FH21Y    FH21Z    ENT21    M22      FH22X
                                         FH22Y    FH22Z    ENT22    QPRIM    FHTX     FHTY     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
+                                        N        VY       VZ       MT       MFY      MFZ
+                                        BX       NXX      NYY      NXY      MXX      MYY
+                                        MXY      QX       QY       FX       FY       FZ
+                                        MX       MY       MZ       SIGN     SITX     SITY
+                                        SITZ     VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3
+                                        VMIS_SG  SN       SVY      SVZ      SMT      SMFY
+                                        SMFZ     MASF     ENTR     DISS     FLHX     FLHY
+                                        FLHZ     FLUX     FLUY     FLUZ     PM       PMPB
+                                        SIP      M11      FH11X    FH11Y    FH11Z    ENT11
+                                        M12      FH12X    FH12Y    FH12Z    ENT12    M21
+                                        FH21X    FH21Y    FH21Z    ENT21    M22      FH22X
+                                        FH22Y    FH22Z    ENT22    QPRIM    FHTX     FHTY     )
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
+                                        N        VY       VZ       MT       MFY      MFZ
+                                        BX       NXX      NYY      NXY      MXX      MYY
+                                        MXY      QX       QY       FX       FY       FZ
+                                        MX       MY       MZ       SIGN     SITX     SITY
+                                        SITZ     VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3
+                                        VMIS_SG  SN       SVY      SVZ      SMT      SMFY
+                                        SMFZ     MASF     ENTR     DISS     FLHX     FLHY
+                                        FLHZ     FLUX     FLUY     FLUZ     PM       PMPB
+                                        SIP      M11      FH11X    FH11Y    FH11Z    ENT11
+                                        M12      FH12X    FH12Y    FH12Z    ENT12    M21
+                                        FH21X    FH21Y    FH21Z    ENT21    M22      FH22X
+                                        FH22Y    FH22Z    ENT22    QPRIM    FHTX     FHTY     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         N        VY       VZ       MT       MFY      MFZ
                                         BX       NXX      NYY      NXY      MXX      MYY
                                         MXY      QX       QY       FX       FY       FZ
@@ -482,9 +508,8 @@ OPTION__
     SIEF_ELGA_SENS      22    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  DDL_MECA PDEPSEN  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CMATERC  PMATSEN  ZVARCPG  PVARCPR  ZVARCPG  PVARCPR
                               OUT__  ECONTPG  PCONTRR
-    SIEF_ELNO           20    IN__   ECONTPG  PCONTRR
-                              OUT__  ESIGMNC  PSIEFNOC ESIGMNO  PSIEFNOR
-                                     ESIGMNC  PSIEFNOC
+    SIEF_ELNO            4    IN__   ECONTPG  PCONTRR
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR
                               OUT__  ESIGMPG  PSIGMR   ESIGMPC  PSIGMC
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR
@@ -507,7 +532,7 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ESIGMNO  PSIEF_R  ZVARINO  PVARI_R
-    VARI_ELNO           20    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET

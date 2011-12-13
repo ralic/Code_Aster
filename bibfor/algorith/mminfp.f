@@ -2,7 +2,7 @@
      &                  LREP   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -347,17 +347,6 @@ C --- VERIF
           LREP(1) = .TRUE.
         ELSEIF (ZI(JMETH+ZMETH*(IZONE-1)+22-1).EQ.1) THEN
           LREP(1) = .FALSE.
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-C --- VERIF
-      ELSEIF (QUESTI.EQ.'STOP_INTERP') THEN
-        CALL JEVEUO(METHCO,'L',JMETH)
-        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+23-1)
-        IF (ZI(JMETH+ZMETH*(IZONE-1)+23-1).EQ.0) THEN
-          LREP(1) = .FALSE.
-        ELSEIF (ZI(JMETH+ZMETH*(IZONE-1)+23-1).EQ.1) THEN
-          LREP(1) = .TRUE.
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

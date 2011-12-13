@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -206,14 +206,16 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        fr="Choix d'un préconditionneur (accélère la convergence de 'GCP')",
                                                        defaut="SANS",
                                                        into=("DIRICHLET","SANS"),),
-                                  COEF_RESI     = SIMP(statut='f',
-                                                       typ='R',
-                                                       fr="Critère de convergence du préconditionneur (COEF_RESI*RESI_ABSO)",
-                                                       defaut = 1.,),
-                                  ITER_PRE_MAXI = SIMP(statut='f',
-                                                       typ='I',
-                                                       fr="Nombre d'itérations maximal pour le préconditionneur ('GCP')",
-                                                       defaut=0,),
+                                  b_dirichlet   = BLOC (condition = "PRE_COND == 'DIRICHLET'",
+                                     COEF_RESI     = SIMP(statut='f',
+                                                          typ='R',
+                                                   fr="Activation du préconditionneur quand le résidu a été divisé par COEF_RESI",
+                                                          defaut = -1.0,),
+                                     ITER_PRE_MAXI = SIMP(statut='f',
+                                                          typ='I',
+                                                          fr="Nombre d'itérations maximal pour le préconditionneur ('GCP')",
+                                                          defaut=0,),
+                                  ),
                                   ),
            ),
 
@@ -232,8 +234,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
 #
                                           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
-                                          COEF_IMPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
-                                          COEF_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
+                                          COEF_IMPO       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),
+                                          COEF_MULT       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
 # -- Incompatibilité avec CL
                                           SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
@@ -448,7 +450,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
 #
-                                          CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="NON",
+                                          CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE",
                                                                 into=("OUI","INTERPENETRE","NON"),),
 #
                                           GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),

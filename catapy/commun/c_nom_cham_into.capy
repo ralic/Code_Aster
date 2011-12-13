@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 14/11/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,8 +55,6 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "DURT_ELNO",
                         "DURT_NOEU",
                         "ECIN_ELEM",
-                        "EFCA_ELNO",
-                        "EFCA_NOEU",
                         "EFGE_ELGA",
                         "EFGE_ELNO",
                         "EFGE_NOEU",
@@ -133,9 +131,6 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "META_NOEU",
                         "MODE_FLAMB",
                         "PDIL_ELGA",
-                        "PMPB_ELGA",
-                        "PMPB_ELNO",
-                        "PMPB_NOEU",
                         "PRAC_ELNO",
                         "PRAC_NOEU",
                         "PRES",
@@ -147,12 +142,9 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "QIZ1_ELEM",
                         "QIZ2_ELEM",
                         "REAC_NODA",
-                        "SICA_ELNO",
-                        "SICA_NOEU",
                         "SIEF_ELGA",
                         "SIEF_ELNO",
                         "SIEF_NOEU",
-                        "SIEF_SENO_SEGA",
                         "SIEQ_ELGA",
                         "SIEQ_ELNO",
                         "SIEQ_NOEU",
@@ -165,7 +157,7 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "SIPO_ELNO",
                         "SIPO_NOEU",
                         "SIRO_ELEM",
-                        "SITU_ELNO",
+                        "SISE_ELNO",
                         "SIZ1_NOEU",
                         "SIZ2_NOEU",
                         "SOUR_ELGA",
@@ -173,7 +165,6 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "STRX_ELGA",
                         "TEMP",
                         "THETA",
-                        "VACO_ELNO",
                         "VAEX_ELGA",
                         "VAEX_ELNO",
                         "VAEX_NOEU",
@@ -182,7 +173,6 @@ def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
                         "VARI_ELGA",
                         "VARI_ELNO",
                         "VARI_NOEU",
-                        "VATU_ELNO",
                         "VITE",
                         "VITE_ABSOLU",
                         "VITE_VENT",

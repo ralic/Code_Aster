@@ -1,6 +1,6 @@
       SUBROUTINE CESPRJ(CES1Z,CORREZ,BASEZ,CES2Z,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,6 +208,7 @@ C ================================================================
               COEF1 = ZR(IACOCF+IDECAL-1+INO1)
               IF (IAD1.GT.0) ICO = ICO + 1
    20       CONTINUE
+            IF (ICO.EQ.0) GOTO 50
             IF (ICO.LT.NBNO1) GOTO 50
 
             CALL CESEXI('S',JCE2D,JCE2L,IMA2,INO2,1,ICMP,IAD2)

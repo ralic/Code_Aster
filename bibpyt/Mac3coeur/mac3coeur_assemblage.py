@@ -1,4 +1,4 @@
-#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,8 +35,6 @@ from math import pi
 
 from mac3coeur_factory import Mac3Factory
 
-#TODO : renommer m_gri en M_GRI
-
 class Assemblage(object):
     """Classe définissant un assemblage combustible."""
     typeAC = None
@@ -65,6 +63,10 @@ class Assemblage(object):
         'S_TG_C', 'I_TG_C', 'S_TG_R', 'I_TG_R', 'S_TG_B', 'I_TG_B',
         # des crayons
         'S_CR', 'I_CR',
+        # Perte de charges
+        'K_EBSU','K_GRE','K_GRM','K_TUB','K_EBIN',
+        # Poussee d Archimede de chaque élément
+        'AFEBSU_1','AFGRE_1','AFGRM_1','AFTG_1','AFCRA_1','AFEBIN_1',
     ]
     optionnal_parameters = []
 
@@ -98,6 +100,15 @@ class Assemblage(object):
         return self._posdam
 
     def __set_posdam(self, position):
+        """Donne la position Damac de l'assemblage."""
+        self._posast = self._position_toaster(position)
+        self._posdam = position
+
+    def __get_posthyc(self):
+        """Retourne la position Damac de l'assemblage."""
+        return self._posdam
+
+    def __set_posthyc(self, position):
         """Donne la position Damac de l'assemblage."""
         self._posast = self._position_toaster(position)
         self._posdam = position
@@ -344,7 +355,51 @@ class Assemblage(object):
         return mcf
 
 
-#XXX à juger de l'opportunité à mettre dans datg (i.e. à ne pas diffuser)
+    def chargement_archimede1(self):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE
+            dans la prise en compte de la poussée d Archimede."""
+        from Cata.cata import _F
+        mcf=[]
+        mcf.append(_F(GROUP_NO='PS_' + self.idAST,FX=self.AFEBSU_1,),)
+        mcf.append(_F(GROUP_NO='PI_' + self.idAST,FX=self.AFEBIN_1,),)
+
+        mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(1), FX=self.AFGRE_1/4.,),)
+        for igr in range(1,self.NBGR-1):
+            mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(igr+1), FX=self.AFGRM_1/4.,),)
+            mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(self.NBGR), FX=self.AFGRE_1/4.,),)
+        return mcf
+
+    def chargement_archimede2(self,FXTG,FXCR):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
+            dans la prise en compte de la poussée d Archimede."""
+        from Cata.cata import _F
+        
+        mcf = (
+            _F(GROUP_MA='TG_' + self.idAST, FX=FXTG,),
+            _F(GROUP_MA='CR_' + self.idAST, FX=FXCR,),
+        )
+        return mcf
+
+    def chargement_transverse_crayons(self,FYCR,FZCR):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
+           dans la prise en compte des efforts transverses."""
+        from Cata.cata import _F
+        
+        mcf = (_F(GROUP_MA='CR_' + self.idAST, FY=FYCR,FZ=FZCR,),)
+
+        return mcf
+
+    def chargement_fct_hydro_axiale(self,FXCR,FXTG):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
+           dans la prise en compte des efforts hydrodynamiques axiaux."""
+        from Cata.cata import _F
+        
+        mcf = (_F(GROUP_MA='CR_' + self.idAST, FX=FXCR,),
+               _F(GROUP_MA='TG_' + self.idAST, FX=FXTG,),)
+
+        return mcf
+
+
 class AssemblageAFAXL(Assemblage):
     """Particularités du type AFAXL."""
 
@@ -358,8 +413,6 @@ class AssemblageAFAXL(Assemblage):
             Hesup = ((self.Lesup * self.Kesup) / self.EES0)**0.5,
         )
 
-        # Il n'y a pas de biais sur une conception AFAXL, on fait alors une
-        # aproximation en prenant le rayon moyen sur la hauteur du cone
         self.definition(
             S_TG_C  = pi * (self.RAY1GU**2 - (self.RAY1GU - self.EP1GU)**2),
             I_TG_C  = pi / 4 * (self.RAY1GU**4 - (self.RAY1GU - self.EP1GU)**4),

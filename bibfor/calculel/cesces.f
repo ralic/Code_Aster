@@ -1,6 +1,6 @@
       SUBROUTINE CESCES(CESA,TYPCES,CESMOZ,MNOGAZ,CELFPZ,BASE,CESB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -305,6 +305,7 @@ C     ------------------------------------------------------
         DO 170,IMA = 1,NBMA
           NBPT1 = ZI(JCES1D-1+5+4* (IMA-1)+1)
           NBSP1 = ZI(JCES1D-1+5+4* (IMA-1)+2)
+          IF ((NBPT1*NBSP1).EQ.0) GOTO 170
 
           DO 160 ICMP = 1,NCMP
             DO 150,ISP = 1,NBSP1
@@ -324,7 +325,10 @@ C     ------------------------------------------------------
                   VC = VC + ZC(JCES1V-1+IAD1)
                 ENDIF
   140         CONTINUE
-              IF (NBV.GT.0) THEN
+
+C             -- ON N'AFFECTE DE VALEUR A LA MAILLE QUE SI TOUS
+C                LES POINTS ONT CONTRIBUE :
+              IF (NBV.EQ.NBPT1) THEN
                 CALL CESEXI('C',JCESD,JCESL,IMA,1,ISP,ICMP,IAD)
                 CALL ASSERT(IAD.LT.0)
                 ZL(JCESL-1-IAD) = .TRUE.

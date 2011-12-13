@@ -1,4 +1,4 @@
-#@ MODIF gran_irra_log Comportement  DATE 12/07/2011   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF gran_irra_log Comportement  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,8 +29,8 @@ loi = LoiComportement(
    Le grandissement ne se faisant que selon une direction, il est nécessaire dans les cas 3D et 2D de donner la direction du grandissement 
    par l'opérande ANGL_REP du mot clé MASSIF de l'opérateur AFFE_CARA_ELEM""",
    num_lc         = 28,
-   nb_vari        = 2,
-   nom_vari       = ('EPSPEQ','IRVECU'),
+   nb_vari        = 3,
+   nom_vari       = ('EPSPEQ','IRVECU','EPSGRD'),
    mc_mater       = ('GRAN_IRRA_LOG'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN','CONT_1D'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

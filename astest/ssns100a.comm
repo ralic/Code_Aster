@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SOUS CHARGEMENT THERMIQUE. GRILLE_ISOT_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -257,7 +257,6 @@ LEDEP=STAT_NON_LINE(
                 ),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_ISOT_LINE',
-                ITER_INTE_MAXI = 30,
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
@@ -285,7 +284,6 @@ LEDEP=STAT_NON_LINE(reuse=LEDEP,
                 ),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_ISOT_LINE',
-                ITER_INTE_MAXI = 30,
                 ),
                 ETAT_INIT=_F(EVOL_NOLI=LEDEP),
                          INCREMENT=_F(

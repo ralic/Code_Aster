@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 # ssnv163b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -150,8 +150,7 @@ U=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CH12),
                    _F(CHARGE = CH2),
                  ),
-       COMP_INCR=_F(RELATION = 'BETON_UMLV_FP',
-                    ITER_INTE_MAXI = 1000),
+       COMP_INCR=_F(RELATION = 'BETON_UMLV_FP'),
                  INCREMENT=_F(LIST_INST = L_INST,
                               NUME_INST_FIN = 22),
                  NEWTON=_F(PREDICTION = 'ELASTIQUE',

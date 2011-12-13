@@ -1,6 +1,7 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+      CHARACTER*16 OPTION,NOMTE
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,11 +20,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-      CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 
 C    - FONCTION REALISEE:  CALC_CHAMP POUR LES TUYAUX :
-C        - VARI_ELNO
 C        - EFGE_ELNO
 C        - EFGE_ELGA
 C        - EPEQ_ELGA
@@ -34,8 +33,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      INTEGER NBCOUM,NBSECM,JNBSPI,IRET
-      CHARACTER*24 NOMCHA,NOMCMP
+      INTEGER NBCOUM,NBSECM,JNBSPI
       REAL*8 H,A
       PARAMETER(NBSECM=32,NBCOUM=10)
       REAL*8 POICOU(2*NBCOUM+1),POISEC(2*NBSECM+1)
@@ -46,14 +44,13 @@ C ......................................................................
       REAL*8 FI,POIDS,R,R8PI,OMEGA
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA,L
       REAL*8 CP(2,2),CV(2,2),CO(4,4),SI(4,4),TK(4),XPG(4)
-      REAL*8 VEQG(16),VALMIN,VALMAX,R8MAEM,VAL
-      INTEGER NNO,NNOS,JGANO,NDIM,NPG,NBCOU,NBSEC,LORIEN,NUMCMP
-      INTEGER IPOIDS,IVF,ICOUDE,IC,KP,NBCMP,JIN,JCOOPG,JDFD2
-      INTEGER ICAGEP,IGEOM,I1,I2,IH,IDFDK
-      INTEGER IGAU,ICOU,ISECT,I,JOUT,INO,NPSEMI,NPSEMA
-      INTEGER INDICE,K,IP,INVAR,K2,ICOUD2,MMT,JNOM
-      INTEGER J1,J2,J3,KPGS,LGPG,NBVARI,ICOMPO,JTAB(7)
-      INTEGER NCOUMI,NCOUMA,NPCOMI,NPCOMA,NSECMI,NSECMA
+      REAL*8 VEQG(16)
+      INTEGER NNO,NNOS,JGANO,NDIM,NPG,NBCOU,NBSEC,LORIEN
+      INTEGER IPOIDS,IVF,ICOUDE,IC,KP,JIN,JCOOPG,JDFD2
+      INTEGER ICAGEP,I1,I2,IH,IDFDK
+      INTEGER IGAU,ICOU,ISECT,I,JOUT,INO
+      INTEGER INDICE,K,IP,ICOUD2,MMT
+      INTEGER KPGS
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -139,87 +136,9 @@ C  FONCTIONS DE FORMES AUX POINT DE GAUSS
    50 CONTINUE
 
 
-      IF (OPTION.EQ.'VARI_ELNO') THEN
-C     -------------------------------------
-        CALL JEVECH('PCOMPOR','L',ICOMPO)
-        CALL JEVECH('PVARIGR','L',JIN)
-
-        READ (ZK16(ICOMPO-1+2),'(I16)')NBVARI
-        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-        LGPG=MAX(JTAB(6),1)*JTAB(7)
-
-
-C -- RECUPERATION DES VARIABLES INTERNES
-C -- NBVARI = NOMBRES DE VARIABLES INTERNES
-C -- STOCKAGE DANS PVARIGR : PAR POINT DE GAUSS DU PREMIER
-C -- AU DERNIER
-
-        CALL JEVECH('PVARINR','E',JOUT)
-
-        IF ((NNO.EQ.3) .AND. (NPG.EQ.3)) THEN
-
-          DO 100 ICOU=1,2*NBCOU+1
-
-C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-
-            DO 90 ISECT=1,2*NBSEC+1
-              KPGS=((2*NBSEC+1)*(ICOU-1)+(ISECT-1))*NBVARI
-              DO 80 INO=1,NNO
-                IF (INO.EQ.1) THEN
-                  IH=2
-                  I1=1
-                  I2=3
-                  J1=KPGS
-                  J2=2*LGPG+KPGS
-                  J3=LGPG+KPGS
-                ELSEIF (INO.EQ.2) THEN
-                  IH=1
-                  I1=3
-                  I2=1
-                  J1=2*LGPG+KPGS
-                  J2=KPGS
-                  J3=LGPG+KPGS
-                ELSE
-                  K2=LGPG+KPGS
-                  DO 60 INVAR=1,NBVARI
-                    ZR(JOUT-1+K2+LGPG+INVAR)=ZR(JIN-1+K2+INVAR)
-   60             CONTINUE
-                  GOTO 80
-
-                ENDIF
-                K2=LGPG*(INO-1)+KPGS
-                DO 70 INVAR=1,NBVARI
-                  ZR(JOUT-1+K2+INVAR)=(HK(IH,I2)*ZR(JIN-1+J1+INVAR)-
-     &                                HK(IH,I1)*ZR(JIN-1+J2+INVAR)-
-     &                                ZR(JIN-1+J3+INVAR)*
-     &                                (HK(3,I1)*HK(IH,I2)-HK(3,
-     &                                I2)*HK(IH,I1)))/
-     &                                (HK(1,1)*HK(2,3)-HK(1,3)*HK(2,1))
-   70           CONTINUE
-   80         CONTINUE
-   90       CONTINUE
-  100     CONTINUE
-
-        ELSE
-
-          DO 130 IC=1,LGPG
-            DO 110 KP=1,NPG
-              VPG(KP)=ZR(JIN+LGPG*(KP-1)+IC-1)
-  110       CONTINUE
-            CALL PPGAN2(JGANO,1,1,VPG,VNO)
-
-            DO 120 I=1,NNO
-              ZR(JOUT+LGPG*(I-1)+IC-1)=VNO(I)
-  120       CONTINUE
-
-  130     CONTINUE
-        ENDIF
-
-C  FIN STOCKAGE
-
-
-      ELSEIF ((OPTION.EQ.'EFGE_ELNO') .OR. (OPTION.EQ.'EFGE_ELGA')) THEN
-C     ------------------------------------------------------------------
+      IF ((OPTION.EQ.'EFGE_ELNO') .OR.
+     &    (OPTION.EQ.'EFGE_ELGA')) THEN
+C     ---------------------------------
 
         CALL JEVECH('PCAGEPO','L',ICAGEP)
         CALL JEVECH('PCAORIE','L',LORIEN)
@@ -500,5 +419,4 @@ C  =========================================
         CALL U2MESK('F','ELEMENTS4_49',1,OPTION)
       ENDIF
 
-  370 CONTINUE
       END

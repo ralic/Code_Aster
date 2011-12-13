@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 # ssnv115a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,9 +64,7 @@ U2=STAT_NON_LINE(
                 FONC_MULT = RAMPE), _F(
                 CHARGE = CH_LIM)),
                          COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE',
-                ITER_INTE_MAXI = 30,
-                RESI_INTE_RELA = 1.E-8),
+                RELATION = 'VMIS_ISOT_LINE'),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 5),
@@ -169,9 +167,7 @@ U2=STAT_NON_LINE( reuse=U2,
                 FONC_MULT = RAMPE), _F(
                 CHARGE = CH_LIM)),
                          COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE',
-                ITER_INTE_MAXI = 30,
-                RESI_INTE_RELA = 1.E-8),
+                RELATION = 'VMIS_ISOT_LINE'),
                          ETAT_INIT=_F(
                 EVOL_NOLI = U2,
                 NUME_ORDRE = 5),

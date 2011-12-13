@@ -1,7 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE ADBHHPM P.MASSIN
-# DATE   : 18/07/2001
-# AUTEUR : P. MASSIN
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  : TEST DU RAASCH HOOK
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +21,7 @@
 #- CROCHET SOUS CISAILLEMENT
 #- MODELISATION AVEC DES ELEMENTS 'DKT' (QUA4)
 #---------------------------------------------------------------------
+# RESPONSABLE MASSIN P.MASSIN
 #
 
 DEBUT(CODE=_F(NOM='SSLS119B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -64,10 +62,8 @@ RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               REPE_COQUE =_F( NUME_COUCHE=1,
-                               NIVE_COUCHE='MOY',),
-               OPTION='SIGM_ELNO',
-               TOUT_ORDRE='OUI',);
+               TOUT_ORDRE='OUI',
+               OPTION='SIGM_ELNO',);
 
 DEP_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='TAB_NORM',

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 # sdns105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,7 +161,6 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
                    COMP_INCR=(_F(RELATION='ELAS',
                                  GROUP_MA=('SURFACE1',),),
                               _F(RELATION='CZM_EXP_REG',
-                                 RESI_INTE_RELA=1e-06,
                                  GROUP_MA=('JOINT',),),),
                    INCREMENT=_F(LIST_INST=TEMPLI,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',

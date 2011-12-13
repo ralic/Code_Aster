@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,13 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
             UIinfo={"groupes":("Maillage",)},
          regles=(UN_PARMI('COQU_VOLU', 'CREA_FISS', 'CREA_GROUP_MA', 'CREA_MAILLE', 'CREA_POI1',
                         'DETR_GROUP_MA', 'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
-                        'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18','COPIE',),),
+                        'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18','COPIE','GEOM_FIBRE'),),
 
 
 
-         # le MAILLAGE est inutile si ECLA_PG
+         # le MAILLAGE est inutile si ECLA_PG et GEOM_FIBRE
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),
+         GEOM_FIBRE           = SIMP(statut='f',max=1,typ=gfibre_sdaster),
 
          COPIE           =FACT(statut='f'),
 

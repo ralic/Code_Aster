@@ -6,7 +6,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C =====================================================================
       INTEGER JGANO,IMATUU,NDIM,IMATE,IINSTM,JCRET,NCMP,NVIM
-      INTEGER IRET,ICHG,ICHN,JTAB(7)
+      INTEGER IRET,ICHG,ICHN,ITABIN(7),ITABOU(7)
       INTEGER IVF2
       INTEGER IDF2,NPI,NPG
       INTEGER RETLOI,IRETP,IRETM
@@ -264,16 +264,17 @@ C ======================================================================
       END IF
 
 C ======================================================================
-C --- 5. OPTION : SIEF_ELNO ---------------------------------------
+C --- 5. OPTION : VARI_ELNO ---------------------------------------
 C ======================================================================
       IF (OPTION .EQ. 'VARI_ELNO') THEN
-        CALL JEVECH('PVARIGR','L',ICHG)
-        CALL JEVECH('PVARINR','E',ICHN)
+        CALL TECACH('OOO','PVARIGR' ,7,ITABIN,IRET)
+        CALL TECACH('OOO','PVARINR' ,7,ITABOU,IRET)
+        ICHG=ITABIN(1)
+        ICHN=ITABOU(1)
 
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         READ (ZK16(ICOMPO+1),'(I16)') NCMP
         READ (ZK16(ICOMPO-1+7+9+4),'(I16)') NVIM
-        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
 
         CALL POEIHM(NOMTE,OPTION,MODINT,JGANO,NNO1,NNO2,NCMP,NVIM,
      &              ZR(ICHG),ZR(ICHN))

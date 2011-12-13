@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,10 +97,6 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
-                              OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
-                              OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
@@ -125,7 +121,7 @@ OPTION__
     CHAR_MECA_PESA_R    150   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
-    %  CHAR_MECA_ROTA_R EST BIEN PROGRAMME DANS LE TE0150 MAIS COMME IL N'Y A PAS DE TEST, ON MET "-1" :
+    %  CHAR_MECA_ROTA_R EST BIEN PROGRAMME DANS LE TE0150 MAIS COMME IL N Y A PAS DE TEST, ON MET "-1" :
     CHAR_MECA_ROTA_R    150   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CROTATR  PROTATR
                               OUT__  MVECTUR  PVECTUR
@@ -141,9 +137,8 @@ OPTION__
                                      COMEG2R  POMEGA2  NGEOMER  PGEOMER  CMASDIA  PMASDIA  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  DDL_MECA PVITESR
                               OUT__  EENECNO  PENERCR
-    EFCA_ELNO           39    IN__   CCAARPO  PCAARPO  CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
-                                     NGEOMER  PGEOMER
-                              OUT__  EEFFONO  PEFFORR
+    EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
+                              OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CABSCUR  PABSCUR  CCAARPO  PCAARPO  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO
                                      EEFGEGA  PCONTRR  ENONLIN  PNONLIN
                                      CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR
@@ -167,6 +162,8 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__     OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__     OUT__  XXXXXX   XXXXXX
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      141   IN__   CABSCUR  PABSCUR  CCAARPO  PCAARPO  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO
                                      CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
@@ -192,8 +189,6 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    PMPB_ELGA           -1    IN__     OUT__  XXXXXX   XXXXXX
-    PMPB_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     RAPH_MECA           247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  CCAARPO  PCAARPO
@@ -228,10 +223,8 @@ OPTION__
                                      ZVARCPG  PVARCRR
                               OUT__  EEFGEGA  PCONTRR
                                      EEFGEGC  PCONTRC
-    SIEF_ELNO           39    IN__   EEFGEGA  PCONTRR
-                              OUT__  EEFGENO  PSIEFNOR  EEFGENC  PSIEFNOC
-    SICA_ELNO           39    IN__   CCAARPO  PCAARPO  CCAORIE  PCAORIE  ECONTNO  PCONTRR  NGEOMER  PGEOMER
-                              OUT__  ECONTNO  PCONTGL
+    SIEF_ELNO           4     IN__   EEFGEGA  PCONTRR
+                              OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     SIPM_ELNO           149   IN__   CABSCUR  PABSCUR  CCAARPO  PCAARPO  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO
                                      CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR
                                      DDL_MECA PDEPLAR  CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER

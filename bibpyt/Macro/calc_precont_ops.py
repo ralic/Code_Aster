@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF calc_precont_ops Macro  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   from Accas import _F
   from Cata.cata import listr8_sdaster, list_inst
   from Noyau.N_utils import AsType
-  from Utilitai.Utmess     import  UTMESS
+  from Utilitai.Utmess     import  UTMESS, MasquerAlarme, RetablirAlarme
   ier=0
 
   # On importe les definitions des commandes a utiliser dans la macro
@@ -59,6 +59,9 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   # le contexte de la macro
 
   self.DeclareOut('RES',self.sd)
+
+  # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+  MasquerAlarme('COMPOR1_70')
 
   # -------------------------------------------------------------
   # 1. CREATION DES MOTS-CLES ET CONCEPTS POUR LES STAT_NON_LINE
@@ -421,5 +424,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      **motscle5
                      )
 
+  RetablirAlarme('COMPOR1_70')
   return ier
 

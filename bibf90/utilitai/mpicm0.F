@@ -1,6 +1,6 @@
       SUBROUTINE MPICM0(RANG  ,NBPROC)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF MPICM0 UTILITAI  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF MPICM0 UTILITAI  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -39,9 +39,7 @@
       SAVE      FIRST
       DATA      FIRST /.TRUE./
 ! ---------------------------------------------------------------------
-! --- COMPTEUR
-      CALL UTTCPU('CPU.CMPI.1','DEBUT',' ')
-
+!
 !     -- INITIALISATIONS :
 !     --------------------
       IF (FIRST) THEN
@@ -58,9 +56,6 @@
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
       CALL MPIERR(IERMPI)
       NBPROC=NBPRO4
-
-! --- COMPTEUR
-      CALL UTTCPU('CPU.CMPI.1','FIN',' ')
 
 #else
 !----------------------------------------------------------------------

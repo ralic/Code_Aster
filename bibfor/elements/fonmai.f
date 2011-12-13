@@ -4,46 +4,46 @@
       CHARACTER*6         TYPFON
       CHARACTER*8         RESU, NOMAIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C FONCTION REALISEE:
 C
-C     VERIFICATION DES ENTITES LORSQUE LE FOND EST DECRIT PAR 
-C     DES MAILLES OU DE GROUPES DE MAILLES 
+C     VERIFICATION DES ENTITES LORSQUE LE FOND EST DECRIT PAR
+C     DES MAILLES OU DE GROUPES DE MAILLES
 C     RENSEIGNEES DANS DEFI_FOND_FISS
 C     CONSTRUCTION DU FOND DE FISSURE A PARTIR CES DONNEES
 C
 C     ENTREES:
 C        RESU   : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
 C        NOMAIL : NOM DU MAILLAGE
-C        TYPFON : TYPE DE FOND 
+C        TYPFON : TYPE DE FOND
 C                 IL PEUT VALOIR OUVERT/FERME/INF/SUP
 C        IOCC   : OCCURENCE COURANTE DE MOTFAC
 C     SORTIES:
 C        NBNOFF : NOMBRE DE NOEUDS EN FOND DE FISSURE
-C        
+C
 C-----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
+      REAL*8             ZR,VECORI(3)
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -61,13 +61,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       JCOUR2, JCOUR5, JTYPM, IATYMA, IDNONO, IDLINO, JTYP
       INTEGER       I,      NBMA,   N1,    IM,     NIG
       INTEGER       NID,    NUMNO,  IRET,  TROUV,  NUMMA
-      CHARACTER*6   NOMPRO
       CHARACTER*8   K8B, NOMMA, TYPM, NDORIG, NDEXTR
       CHARACTER*8   NOEUD,VALK(2)
       CHARACTER*16  K16BID, NOMCMD,MOTFAC
       CHARACTER*16  MOTCLE(2), TYPMCL(2)
-      CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE,NOEORD,
-     &              MESNOE
+      CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE,NOEORD
+      CHARACTER*24  MESNOE,MAFOUR
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
@@ -76,7 +75,6 @@ C
 C     ------------------------------------------------------------------
 C     INITIALISATION DE VARIABLES
 C     ------------------------------------------------------------------
-      NOMPRO = 'FONMAI'
       MOTFAC = 'FOND_FISS'
       TYPP   = NOMAIL//'.TYPMAIL        '
       NOMMAI = NOMAIL//'.NOMMAI         '
@@ -91,12 +89,13 @@ C     ------------------------------------------------------------------
       MOTCLE(1) = 'GROUP_MA'
       MOTCLE(2) = 'MAILLE'
       TYPMCL(1) = 'GROUP_MA'
-      TYPMCL(2) = 'MAILLE'      
-      CALL CGNOOR ( RESU, NOMAIL, MOTFAC, IOCC, 2, 
-     &    MOTCLE, TYPMCL, TYPFON, NBMA, NDORIG, NDEXTR, TYPM)
-      CALL JEVEUO ( RESU//'.MAILLESFOURNIES', 'L', JCOUR2 )
+      TYPMCL(2) = 'MAILLE'
+      MAFOUR='&&FONMAI.MALIGNE'
+      CALL CGNOOR(MAFOUR, NOMAIL, MOTFAC, IOCC, 2,
+     &    MOTCLE, TYPMCL, TYPFON, NBMA, NDORIG, NDEXTR, TYPM,VECORI)
+      CALL JEVEUO(MAFOUR,'L',JCOUR2)
 
-C        
+C
 C     ------------------------------------------------------------------
 C     --- SI FERME : RECUPERATION DE MAILLE_ORIG POUR AVOIR
 C     --- LE SENS DE PARCOURS DE LA COURBE FERMEE
@@ -141,7 +140,7 @@ C
 C
 C     ON REMONTE LA MAILLE_ORIG EN TETE DE LISTE
 C
-            CALL WKVECT('&&'//NOMPRO//'.MAILLESTRIEES','V V I',3*NBMA,
+            CALL WKVECT('&&FONMAI.MAILLESTRIEES','V V I',3*NBMA,
      &                    JCOUR5)
             DO 546 IM = TROUV , NBMA
               ZI(JCOUR5-1 + IM+1-TROUV) = ZI(JCOUR2-1 + IM)
@@ -152,16 +151,17 @@ C
             DO 548 IM = 1 , NBMA
               ZI(JCOUR2-1 + IM)=ZI(JCOUR5-1 + IM)
  548        CONTINUE
-            CALL JEDETR ( '&&'//NOMPRO//'.MAILLESTRIEES'  )
+            CALL JEDETR ( '&&FONMAI.MAILLESTRIEES'  )
           ENDIF
         ENDIF
       ENDIF
-      
+
 C     ------------------------------------------------------------------
 C     --- ORDONNANCEMENT DES NOEUDS EN FOND DE FISSURE
 C     ------------------------------------------------------------------
-      MESNOE = '&&'//NOMPRO//'.NOEUD'
-      CALL ORNOFD ( RESU, NOMAIL, NBMA, MESNOE, NDORIG, NDEXTR, 'V')
+      MESNOE = '&&FONMAI.NOEUD'
+      CALL ORNOFD (MAFOUR, NOMAIL, NBMA, MESNOE, NDORIG, NDEXTR,
+     &            'V',VECORI)
       IF(TYPFON.EQ.'INF') THEN
          NOEORD = RESU//'.FOND_INF.NOEU'
       ELSEIF(TYPFON.EQ.'SUP') THEN
@@ -178,7 +178,7 @@ C     ------------------------------------------------------------------
         ZK8(IDLINO-1 + I) = NOEUD
  90   CONTINUE
 
-      
+
 C
 C     ------------------------------------------------------------------
 C     --- ON STOCKE LE TYPE DE MAILLES DEFINISSANT LE FOND DE FISSURE
@@ -193,12 +193,13 @@ C
         IF (TYPM.EQ.ZK8(JTYP)) THEN
           VALK(1) = TYPM
           VALK(2) = ZK8(JTYP)
-          CALL U2MESK('F','RUPTURE0_68',2,VALK)  
-        ENDIF   
+          CALL U2MESK('F','RUPTURE0_68',2,VALK)
+        ENDIF
       ENDIF
 
 C     ------------------------------------------------------------------
       CALL JEDETR (MESNOE)
+      CALL JEDETR (MAFOUR)
 C
       CALL JEDEMA()
       END

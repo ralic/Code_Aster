@@ -5,7 +5,7 @@
      &                    CHVARC, TYPESE, NPASS , CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -300,8 +300,9 @@ C
 C--- RECUPERATION DU CHAMP DE CONTRAINTES AUX NOEUDS PAR SOUS
 C    ELEMENT (OPTION 'SIEF_SENO_SEGA'), CAS X-FEM UNIQUEMENT
           IF ( YAXFEM ) THEN
-            CALL RSEXC2(1,1,RESUCO,'SIEF_SENO_SEGA',IORDR,CHSIGX,
+            CALL RSEXC2(1,1,RESUCO,'SISE_ELNO',IORDR,CHSIGX,
      &                  OPTION,IRET)
+            IF ( IRET.GT.0 ) GO TO 2299
           END IF
 C ---------------------------------------------------------------------
 C 2.2.4 ==> POUR DE LA THM : ON RECUPERE ...

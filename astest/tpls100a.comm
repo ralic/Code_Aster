@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE INFINIE SOUMISE A DES FLUX ANTISYMETRIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,9 +79,10 @@ TEMPE=THER_LINEAIRE(MODELE=MO,
                     EXCIT=_F(CHARGE = CHANTF),
                     );
 
-TEMPE=CALC_ELEM( reuse=TEMPE,RESULTAT=TEMPE,
-                 REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-                 OPTION='FLUX_ELNO',  );
+TEMPE=CALC_ELEM(reuse=TEMPE,
+                RESULTAT=TEMPE,
+                OPTION='FLUX_ELNO',
+                REPE_COQUE=_F(NIVE_COUCHE='SUP',),);
 
 
 MEANT2=CALC_MATR_ELEM(  MODELE=MO,CHARGE=CHANTF,CHAM_MATER=CMANT2,

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
@@ -107,9 +107,7 @@ U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
      _F( CHARGE        = DEPL_M2, ),
             _F( CHARGE        = DEPL_M4,
                                             FONC_MULT     = COEF2,),),
-                         COMP_INCR   = _F( RELATION       = 'DRUCK_PRAGER',
-                                           RESI_INTE_RELA = 1.E-6,
-                                           ITER_INTE_MAXI = 100,),
+                         COMP_INCR   = _F( RELATION       = 'DRUCK_PRAGER'),
                          NEWTON      = _F( MATRICE        = 'TANGENTE',
                                            REAC_ITER      = 1,),
                          ETAT_INIT   = _F( SIGM           = SIGINIT,),

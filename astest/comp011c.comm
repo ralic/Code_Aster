@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 #====================================================================== 
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'BETON_UMLV_FP' 
@@ -154,8 +154,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CHMTH,
                 EXCIT=(_F(CHARGE=LIAISON1,),
                     ),          
-                COMP_INCR=_F(RELATION  = compor,
-                             ITER_INTE_MAXI = 1000),
+                COMP_INCR=_F(RELATION  = compor),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(REAC_INCR=1,
                           REAC_ITER=1,),

@@ -1,8 +1,8 @@
-#@ MODIF elas_vmis_puis Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF elas_vmis_puis Comportement  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -32,7 +32,7 @@ par une courbe de traction analytique (loi en puissance)""",
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN'),
    deformation    = ('PETIT', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   algo_inte         = 'ANALYTIQUE',
+   algo_inte      = 'SECANTE',
    type_matr_tang = None,
    proprietes     = None,
 )

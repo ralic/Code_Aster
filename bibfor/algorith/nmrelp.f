@@ -5,7 +5,7 @@
      &                  VEASSE,SDTIME,CONV  ,LDCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,8 +67,8 @@ C                 4 : REAC_ITER_ELAS
 C             5 - 9 : -- INUTILISE --
 C                10 : ITER_LINE_MAXI
 C                11 : RESI_LINE_RELA
-C                12 : ITER_LINE_CRIT
-C                13 : PAS_MINI_CRIT
+C                12 : -- INUTILISE --
+C                13 : -- INUTILISE --
 C                14 : RHO_MIN
 C                15 : RHO_MAX
 C                16 : RHO_EXCL
@@ -160,11 +160,7 @@ C
 C
 C --- PARAMETRES RECHERCHE LINEAIRE
 C
-      IF (DELTAT .LT. PARMET(13)) THEN
-        ITEMAX = NINT(PARMET(12))
-      ELSE
-        ITEMAX = NINT(PARMET(10))
-      END IF
+      ITEMAX = NINT(PARMET(10))
       RHOMIN = PARMET(14)
       RHOMAX = PARMET(15)
       RHOEXM = -PARMET(16)

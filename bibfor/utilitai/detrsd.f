@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/05/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF UTILITAI  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,6 +128,8 @@ C     -------------------------------------------
         CALL JEDETR(CORRES//'.PJEF_CF')
         CALL JEDETR(CORRES//'.PJEF_TR')
         CALL JEDETR(CORRES//'.PJEF_CO')
+        CALL JEDETR(CORRES//'.PJEF_EL')
+        CALL JEDETR(CORRES//'.PJEF_MP')
         CALL JEDETR(CORRES//'.PJNG_I1')
         CALL JEDETR(CORRES//'.PJNG_I2')
 
@@ -381,7 +383,7 @@ C FETI OR NOT ?
               END IF
    30       CONTINUE
           END IF
-          
+
           CALL JEDETR(K24B)
         END IF
 

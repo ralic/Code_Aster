@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture0 Messages  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,6 +114,15 @@ Le noeud %(k1)s n'appartient pas au fond de fissure.
 -> Risque et Conseil :
 Veuillez vérifier les données fournies au mot-clé GROUP_NO ou NOEUD.
 """),
+
+16: _(u"""
+Les lèvres de la fissure ne sont pas initialement collées.
+POST_K1_K2_K3 ne fonctionne que sur des lèvres initialement collées.
+-> Risque et Conseil :
+   Veuillez vérifier la définition du fond de fissure (DEFI_FOND_FISS/CONFIG_INIT).
+   Si les lèvres sont vraiment décollées alors il faut utiliser CALC_G.
+"""),
+
 
 18: _(u"""
 Problème à la récupération du modèle dans la sd résultat fournie.

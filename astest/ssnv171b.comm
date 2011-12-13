@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/12/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE MONOCRISTAL OCTAEDRIQUE MERIC-CAILLETAUD EXPLICITE ET IMPLICITE AVEC SIMU_POINT_MAT
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv171b.para = tps_job 600 mem_job 512Mo mem_aster 10 ncpus 1 liste_test R
@@ -68,7 +68,7 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_NIVEAU=10),)
-MONOIMPL=SIMU_POINT_MAT(INFO=1,
+MONOIMPL=SIMU_POINT_MAT(INFO=2,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPOR1,
                                 ALGO_INTE='NEWTON_RELI',
@@ -133,7 +133,7 @@ COMPOR2=DEFI_COMPOR( MONOCRISTAL=(_F(MATER=ACIER,
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
 
-MONOEXPL=SIMU_POINT_MAT(INFO=1,
+MONOEXPL=SIMU_POINT_MAT(INFO=2,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPOR2,
                                 ALGO_INTE='RUNGE_KUTTA',
@@ -182,7 +182,7 @@ TEST_TABLE(TABLE=MONOIMPL,
                    REFERENCE='NON_REGRESSION',)
 
 # implicite avec NEWTON_PERT
-MONOIMPP=SIMU_POINT_MAT(INFO=1,
+MONOIMPP=SIMU_POINT_MAT(INFO=2,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPOR1,
                                 ALGO_INTE='NEWTON_PERT',

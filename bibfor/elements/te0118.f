@@ -1,6 +1,6 @@
       SUBROUTINE TE0118(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,19 +86,19 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER     IADZI,IAZK24,IGEOM,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     &            JGANO,I,J,INO,IMEAST,INI,ILSNO,IGRLS,IGDF,IDPHI,NBMA,
-     &            IALPHA,INEUTR,IMOYEL,ILC,ADDIM,IADRMA,IBID,IRET,
+     &            JGANO,I,J,INO,IMEAST,INI,ILSNO,IGRLS,IGDF,IDPHI,
+     &            IALPHA,INEUTR,IMOYEL,ILC,IBID,IRET,
      &            NDIME
       REAL*8      DFDX(27),DFDY(27),DFDZ(27),MEAST,NX,NY,NZ,NEUTR,JAC,
      &            GRADX,GRADY,GRADZ,NORMGR,K(8),DELPHI,DPHI(8),SIGMAK,
      &            SIGKFI,ALPHA(8),SMXDFI,DMIN,DISTIJ,XI,YI,ZPTI,XJ,YJ,
      &            ZJ,SIGMNI(3),NORM12,NORM14,NORM15,R8PREM,
      &            TOLENI
-      CHARACTER*8 TYPMA,NOMA,NOMO,NOMAIL,K8BID
+      CHARACTER*8 TYPMA,NOMAIL,K8BID,KDIME
       CHARACTER*24 VALK(3)
 
       PARAMETER   (TOLENI=1.D-6)
-      INTEGER      IARG
+      INTEGER      IARG,ITAB(3)
 
 C DEBUT ----------------------------------------------------------------
       CALL JEMARQ()
@@ -107,6 +107,13 @@ C  VERIFICATION DU TYPE D'ELEMENT
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
       NOMAIL= ZK24(IAZK24-1+3)(1:8)
+
+
+C  CALCUL DE NDIME (2 OU 3) DIMENSION DE L'ESPACE :
+      CALL TEATTR(' ','S','DIM_COOR_MODELI',KDIME,IBID)
+      READ(KDIME,'(I8)')  NDIME
+      CALL ASSERT(NDIME.EQ.2.OR.NDIME.EQ.3)
+
 
 C-----------------------------------------------------------------------
       IF (OPTION.EQ.'CFL_XFEM') THEN
@@ -120,15 +127,6 @@ C  --------------------------------
 
          CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
-         CALL GETVID(' ','MODELE',1,IARG,1,NOMO,IBID)
-C
-C --- NOM DU MAILLAGE ATTACHE AU MODELE
-C
-         CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
-         NOMA  = ZK8(IADRMA)
-         CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIME,K8BID,IRET)
-         CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
-
 
          IF (NDIME.EQ.3) THEN
 C  ----------------------------------------------------------
@@ -232,15 +230,6 @@ C  --------------------------------
      &               JGANO)
          CALL ASSERT(NNO.LE.8)
 
-
-         CALL GETVID(' ','MODELE',1,IARG,1,NOMO,IBID)
-C
-C --- NOM DU MAILLAGE ATTACHE AU MODELE
-C
-         CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
-         NOMA  = ZK8(IADRMA)
-         CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-         NDIME=ZI(ADDIM-1+6)
 
 C  --------------
 C  CALCUL DE |T|
@@ -365,14 +354,6 @@ C  ------------------------
          CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
          CALL ASSERT(NNO.LE.8)
-         CALL GETVID(' ','MODELE',1,IARG,1,NOMO,IBID)
-C
-C --- NOM DU MAILLAGE ATTACHE AU MODELE
-C
-         CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
-         NOMA  = ZK8(IADRMA)
-         CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-         NDIME=ZI(ADDIM-1+6)
 
 C  ------------------------------------------
 C  INITIALISATION DE DELTAPHI ET ALPHA(I) A 0

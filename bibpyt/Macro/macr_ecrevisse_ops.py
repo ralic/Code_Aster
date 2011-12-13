@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,7 +53,7 @@ def macr_ecrevisse_ops(self,reuse,
    """
 
 
-   from Utilitai.Utmess import UTMESS
+   from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
    from Utilitai.Table import Table, merge
    from Accas import _F
    import os, aster, copy
@@ -93,6 +93,9 @@ def macr_ecrevisse_ops(self,reuse,
    # Concepts sortant: les resultats de STAT_NON_LINE et de THER_LINEAIRE valides vis-a-vis du calcul ecrevisse
    self.DeclareOut('RTHERM',TEMPER)
    self.DeclareOut('MECANIC', self.sd)
+
+   # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+   MasquerAlarme('COMPOR1_70')
 
    IsPoursuite = False
    IsInit = True
@@ -719,4 +722,5 @@ def macr_ecrevisse_ops(self,reuse,
                 INFO=1,ALARME='NON',
        )
 
+   RetablirAlarme('COMPOR1_70')
    return ier

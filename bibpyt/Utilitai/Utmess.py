@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 15/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 13/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -620,12 +620,9 @@ def raise_UTMESS(exc):
             raise_UTMESS(exc)
 
     """
-    if type(exc) in (list, tuple):
-        for idm, vk, vi, vr in exc[:-1]:
-            UTMESS('F+', idm, vk, vi, vr)
-        UTMESS('F', *exc[-1])
-    else:
-        UTMESS('F', exc.id_message, valk=exc.valk, vali=exc.vali, valr=exc.valr)
+    for err in exc.related:
+        UTMESS('F+', err.id_message, valk=err.valk, vali=err.vali, valr=err.valr)
+    UTMESS('F', exc.id_message, valk=exc.valk, vali=exc.vali, valr=exc.valr)
 
 
 # unique instance du MESSAGE_LOGGER
@@ -718,6 +715,7 @@ def __fake__():
     UTMESS('I', 'TABLE0_11')
     UTMESS('I', 'TABLE0_12')
     UTMESS('I', 'TABLE0_13')
+    UTMESS('I', 'TABLE0_15')
     UTMESS('I', 'TABLE0_43')
 
 

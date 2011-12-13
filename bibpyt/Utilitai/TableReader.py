@@ -1,4 +1,4 @@
-#@ MODIF TableReader Utilitai  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF TableReader Utilitai  DATE 13/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,7 +122,7 @@ class TableReaderFree(TableReader):
         nbtab = len(stat)
         _printDBG("Nombre de blocs lus :", nbtab)
         if nblock > nbtab:
-            raise error('F', 'TABLE0_10', None, (nblock, nbtab))
+            raise error('TABLE0_10', None, (nblock, nbtab))
         return stat[nblock - 1]
 
     def extract_lines(self, stat):
@@ -152,7 +152,7 @@ class TableReaderFree(TableReader):
         line_para = self.lines.pop(0)
         para = msplit(line_para, self.sep)
         if len(para) != nbcol:
-            raise error('F', 'TABLE0_43', line_para, nbcol)
+            raise error('TABLE0_43', line_para, nbcol)
         # if sep != ' ', parameter may contain a space (not valid in Table)
         para = [p.replace(' ', '_') for p in para]
         if callable(check_para):
@@ -177,7 +177,7 @@ class TableReaderAster(TableReader):
         l_txttab = re_split_tab.findall(self.text)
         nbtab = len(l_txttab)
         if nblock > nbtab:
-            raise error('F', 'TABLE0_10', None, (nblock, nbtab))
+            raise error('TABLE0_10', None, (nblock, nbtab))
         self.text = l_txttab[nblock - 1]
         _printDBG("TEXT:", self.text)
 
@@ -199,10 +199,12 @@ class TableReaderAster(TableReader):
         mat = re.search(self.re_line, line)
         _printDBG(line, len(para), mat)
         if mat is None or len(para) != len(mat.groups()):
-            lerr = [('F+', 'TABLE0_11', None, i + 1, None), ]
+            lerr = [error('TABLE0_11', vali=i + 1),
+                    error('TABLE0_13', vali=len(para)) ]
             if mat is not None:
-                lerr.append(('F+', 'TABLE0_12', None, len(mat.groups()), None), )
-            lerr.append(('F', 'TABLE0_13', None, len(para), None))
+                lerr.append(error('TABLE0_12', vali=len(mat.groups())))
+            else:
+                lerr.append(error('TABLE0_15', valk=(line, self.re_line)))
             raise error(lerr)
         return mat.groups()
 

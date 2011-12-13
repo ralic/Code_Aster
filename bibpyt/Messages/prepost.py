@@ -1,21 +1,21 @@
-#@ MODIF prepost Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -73,12 +73,12 @@ cata_msg = {
 """),
 
 31 : _(u"""
- structure de données RESULTAT inconnue  %(k1)s 
+ structure de données RESULTAT inconnue  %(k1)s
 """),
 
 36 : _(u"""
- le champ de:  %(k1)s  a des éléments ayant des sous-points.
- ces éléments ne seront pas traités.
+ Le champ de:  %(k1)s  a des éléments ayant des sous-points.
+ Ces éléments ne seront pas traités.
 """),
 
 38 : _(u"""
@@ -88,18 +88,18 @@ cata_msg = {
 46 : _(u"""
  erreur dans la création du fichier de maillage au format GIBI.
  Celui-ci ne contient pas d'objet de type maillage.
- 
+
  Risque & Conseil:
  Assurez vous que votre procédure GIBI sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
 """),
 
 51 : _(u"""
- l'option de calcul " %(k1)s " n'existe pas dans la structure de données %(k2)s 
+ l'option de calcul " %(k1)s " n'existe pas dans la structure de données %(k2)s
 """),
 
 52 : _(u"""
  le champ " %(k1)s " pour l'option de calcul " %(k2)s ", n'a pas été notée
- dans la structure de données %(k3)s 
+ dans la structure de données %(k3)s
 """),
 
 53 : _(u"""
@@ -112,7 +112,7 @@ cata_msg = {
 
 55 : _(u"""
  objet &&GILIRE.INDIRECT inexistant
- problème à la lecture des points 
+ problème à la lecture des points
 """),
 
 56 : _(u"""
@@ -160,7 +160,7 @@ cata_msg = {
 """),
 
 79 : _(u"""
-  le nombre de couches est supérieur à 1 
+  le nombre de couches est supérieur à 1
 """),
 
 80 : _(u"""
@@ -172,39 +172,39 @@ cata_msg = {
 """),
 
 84 : _(u"""
- élément PYRAM5 non disponible dans IDEAS
+ Elément PYRAM5 non disponible dans IDEAS
 """),
 
 85 : _(u"""
- élément PYRAM13 non disponible dans IDEAS
+ Elément PYRAM13 non disponible dans IDEAS
 """),
 
 86 : _(u"""
- on traite les PENTA18 en oubliant le(s) noeud(s)
+ On traite les PENTA18 en oubliant le(s) noeud(s)
  au centre et les SEG4 en oubliant les 2 noeuds centraux.
 """),
 
 87 : _(u"""
- on ne sait pas imprimer le champ de type:  %(k1)s 
- champ :  %(k2)s 
+ On ne sait pas imprimer le champ de type:  %(k1)s
+ champ :  %(k2)s
 """),
 
 90 : _(u"""
- on ne sait pas imprimer le champ  %(k1)s  au format  %(k2)s 
+ On ne sait pas imprimer le champ  %(k1)s  au format  %(k2)s
 """),
 
 97 : _(u"""
- on ne sait pas imprimer les champs de type " %(k1)s "
+ On ne sait pas imprimer les champs de type " %(k1)s "
 """),
 
 98 : _(u"""
- le champ:  %(k1)s  a des éléments ayant des sous-points.
- il est écrit avec un format différent.
+ Le champ:  %(k1)s  a des éléments ayant des sous-points.
+ Il est écrit avec un format différent.
 """),
 
 99 : _(u"""
- le champ:  %(k1)s  a des éléments ayant des sous-points.
- ces éléments ne seront pas écrits.
+ Le champ:  %(k1)s  a des éléments ayant des sous-points.
+ Ces éléments ne seront pas écrits.
 """),
 
 }

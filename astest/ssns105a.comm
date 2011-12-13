@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,8 +141,7 @@ LEDEP=STAT_NON_LINE(
                 FONC_MULT=f_inst
                 ),
                 COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
-                              RELATION = 'GRILLE_ISOT_LINE',
-                              ITER_INTE_MAXI = 30,),
+                              RELATION = 'GRILLE_ISOT_LINE',),
                            _F(GROUP_MA=('GEO',),
                               RELATION = 'ELAS',)
                 ),
@@ -170,8 +169,7 @@ LEDEP=STAT_NON_LINE(reuse=LEDEP,
                 ),
                 ETAT_INIT=_F(EVOL_NOLI=LEDEP),
                 COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
-                              RELATION = 'GRILLE_ISOT_LINE',
-                              ITER_INTE_MAXI = 30,),
+                              RELATION = 'GRILLE_ISOT_LINE'),
                            _F(GROUP_MA=('GEO',),
                               RELATION = 'ELAS',)
                 ),

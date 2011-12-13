@@ -1,6 +1,6 @@
       SUBROUTINE TE0159(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      INTEGER ISIGGA,ISIGNO,JTAB(7)
+      INTEGER ISIGGA,ISIGNO
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -49,13 +49,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 
-      IF (OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO') THEN
+      IF (OPTION.EQ.'EFGE_ELNO') THEN
 C     -------------------------------------------------------------
-         IF (OPTION.EQ.'EFGE_ELNO') THEN
-            CALL JEVECH('PEFFORR','E',ISIGNO)
-         ELSE
-            CALL JEVECH('PSIEFNOR','E',ISIGNO)
-         ENDIF
+        CALL JEVECH('PEFFORR','E',ISIGNO)
         CALL JEVECH('PCONTRR','L',ISIGGA)
 
         IF (NOMTE.EQ.'MEPOULI') THEN
@@ -67,31 +63,8 @@ C     -------------------------------------------------------------
           ZR(ISIGNO+1) = ZR(ISIGGA)
         END IF
 
-
-       ELSE IF (OPTION.EQ.'VARI_ELNO') THEN
-C     -----------------------------------------------
-        CALL JEVECH('PVARIGR','L',IVARGA)
-        CALL JEVECH('PVARINR','E',IVARNO)
-        IF (NOMTE.EQ.'MEPOULI') THEN
-          ZR(IVARNO) = ZR(IVARGA)
-          ZR(IVARNO+1) = ZR(IVARGA)
-          ZR(IVARNO+2) = ZR(IVARGA)
-        ELSE IF (NOMTE.EQ.'MECABL2') THEN
-          ZR(IVARNO) = ZR(IVARGA)
-          ZR(IVARNO+1) = ZR(IVARGA)
-        ELSE IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
-          CALL JEVECH('PCOMPOR','L',ICOMPO)
-          IF (ZK16(ICOMPO) (1:4).EQ.'ELAS') GO TO 30
-          CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-          LGPG = MAX(JTAB(6),1)*JTAB(7)
-          READ (ZK16(ICOMPO+1),'(I16)') NBVAR
-          DO 10 I = 1,NBVAR
-            ZR(IVARNO+I-1) = ZR(IVARGA+I-1)
-            ZR(IVARNO+LGPG+I-1) = ZR(IVARGA+LGPG+I-1)
-   10     CONTINUE
-        END IF
-
+      ELSE
+        CALL ASSERT(.FALSE.)
       END IF
-   30 CONTINUE
 
       END

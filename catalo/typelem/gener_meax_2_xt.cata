@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE TRAN
+% RESPONSABLE TRAN V-X.TRAN
 GENER_MEAX_2_XT
 TYPE_GENE__
 
@@ -198,7 +198,7 @@ OPTION__
     ERME_ELEM           382   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO  E6NEUTR  PPINTTO
-                                     E18NEUI  PCNSETO  E9NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PSIEFSER
+                                     E18NEUI  PCNSETO  E9NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PCONTSER
                               OUT__  EERREUR  PERREUR
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      E6NEUTR  PPINTTO  E18NEUI PCNSETO   E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
@@ -258,16 +258,19 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA           261   IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  E18NEUI  PCNSETO
                                      DDL_MECA PDEPLAR  NGEOMER  PGEOMER  STANO_I  PSTANO
-                                     CMATERC  PMATERC  E6NEUTR PPINTTO  E6NEUTI  PHEAVTO
+                                     CMATERC  PMATERC  E6NEUTR  PPINTTO  E6NEUTI  PHEAVTO
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCPR  N6NEUT_R PBASLOR
                                      E9NEUTI  PLONCHA  N1NEUT_R PLSN
                                      N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
                               OUT__  ECONTPG  PCONTRR
     SIEF_ELNO           289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
-                              OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
-    SIGM_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    SIGM_ELNO           289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SISE_ELNO           289   IN__   ECONTPG  PCONTRR  E9NEUTI  PLONCHA
+                              OUT__  ECONTSE  PCONTSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT
                                      N2NEUT_R PGRADLN
                               OUT__  E4NEUTR  PPINTER  E10NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA

@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 12/04/2011   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C        LIAISON_MAIL
 C        LIAISON_CYCL
 C        LIAISON_INTERF
 C ----------------------------------------------------------------------
-      INTEGER      NBOCC(6), I, IFACE, IGREL, INEMA, IRET,
+      INTEGER      NBOCC(6), I, IGREL, INEMA, IRET,
      &             NDIM,IBID
       CHARACTER*5  PARAM(7),PARA
       CHARACTER*8  CHAR, NOMA, NOMO
@@ -85,16 +85,6 @@ C --- ALLOCATION DU LIGREL DE CHARGE
 C             (DDL-IMPO, FORCE_NO, FACE_IMPO, ARETE_IMPO, LIAISON_GROUP)
 
       CALL ALLIGR ( CHAR, OPER, NOMA, FONREE, LIGRCH )
-
-C       IFACE = INDICATEUR DE PRESENCE A LA FOIS DE DDL_IMPO ET
-C       FACE_IMPO AVEC AU MOINS UN BLOCAGE DE TYPE DX DY DZ DRX ....
-C       (NECESSAIRE POUR LA REGLE DE SURCHARGE ENTRE LES 2 MOTS-CLE )
-
-      IF (FONREE.NE.'COMP') THEN
-         IFACE = 0
-         CALL DDLFAC ( FONREE, IFACE )
-      ENDIF
-
 
       IGREL = 0
       INEMA = 0
@@ -263,7 +253,7 @@ C --- VECT_ASSE ---
 C --- CHAMNO_IMPO ---
 
          CALL CAIMCH ( CHAR )
-         
+
 C --- LIAISON_INTERF ---
 
          CALL CALIMC (CHAR)

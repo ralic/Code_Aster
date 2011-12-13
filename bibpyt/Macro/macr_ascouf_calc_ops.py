@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -402,7 +402,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
                       TOUT_ORDRE = 'OUI'  ,
-                      OPTION     = ('SIEF_ELNO','SIEQ_ELNO') ,
+                      OPTION     = ('SIGM_ELNO','SIEQ_ELNO') ,
                       INFO       = INFO   ,)
 #
 #     --- post-traitements ---
@@ -440,7 +440,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
       motscles['ACTION']=[]
       for grno in lgrno :
          motscles['ACTION'].append(_F(RESULTAT=nomres,
-                                      NOM_CHAM='SIEF_ELNO',
+                                      NOM_CHAM='SIGM_ELNO',
                                       TOUT_CMP='OUI',
                                       INTITULE=grno,
                                       GROUP_NO=grno,
@@ -456,7 +456,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
       motscles['ACTION']=[]
       for tgrno in lgrno :
          motscles['ACTION'].append(_F(RESULTAT=nomres,
-                                      NOM_CHAM='SIEF_ELNO',
+                                      NOM_CHAM='SIGM_ELNO',
                                       INTITULE=tgrno,
                                       GROUP_NO=tgrno,
                                       INVARIANT='OUI',
@@ -494,7 +494,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                       ANGSEC = atan2(VSIN,VCOS)
                  vecty=(sin(ANGSEC),0.,cos(ANGSEC))
          motscles['ACTION'].append(_F(RESULTAT=nomres,
-                                      NOM_CHAM='SIEF_ELNO',
+                                      NOM_CHAM='SIGM_ELNO',
                                       INTITULE=tgrno,
                                       GROUP_NO=tgrno,
                                       NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),
@@ -527,7 +527,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
          motscles['ACTION']=[]
          for j in range(8) :
             motscles['ACTION'].append(_F(RESULTAT=nomres,
-                                         NOM_CHAM='SIEF_ELNO',
+                                         NOM_CHAM='SIGM_ELNO',
                                          TOUT_CMP='OUI',
                                          INTITULE=LIG[j]+SECT[i],
                                          GROUP_NO=LIG[j]+SECT[i],
@@ -547,7 +547,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
          for j in range(8) : motscles['ACTION'].append(_F(INTITULE =LIG[j]+SECT[i],
                                                           GROUP_NO =LIG[j]+SECT[i],
                                                           RESULTAT =nomres,
-                                                          NOM_CHAM ='SIEF_ELNO',
+                                                          NOM_CHAM ='SIGM_ELNO',
                                                           INVARIANT='OUI',
                                                           OPERATION='EXTRACTION'))
          secinv[i] = POST_RELEVE_T(**motscles)
@@ -562,7 +562,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                                           VECT_Y   =vecty,
                                                           GROUP_NO =LIG[j]+SECT[i],
                                                           RESULTAT =nomres,
-                                                          NOM_CHAM ='SIEF_ELNO',
+                                                          NOM_CHAM ='SIGM_ELNO',
                                                           NOM_CMP  =('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
                                                           OPERATION='MOYENNE'))
          secmoy[i] = POST_RELEVE_T(**motscles)

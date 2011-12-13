@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,11 +33,11 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
              ELAS            =SIMP(statut='f', typ='TXM', max=1,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le comportement élastique (un et un seul)"),
              b_non_dd =BLOC(condition="ECOULEMENT=='MONO_VISC1' or ECOULEMENT=='MONO_VISC2'",
-                   ECRO_ISOT       =SIMP(statut='f', typ='TXM', max=1,
+                   ECRO_ISOT       =SIMP(statut='o', typ='TXM', max=1,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le type d'écrouissage isotrope"),
-                   ECRO_CINE       =SIMP(statut='f', typ='TXM', max=1,
+                   ECRO_CINE       =SIMP(statut='o', typ='TXM', max=1,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le type d'écrouissage cinématique"),
-                   FAMI_SYST_GLIS  =SIMP(statut='f',typ='TXM', max=1,defaut=('OCTAEDRIQUE',),
+                   FAMI_SYST_GLIS  =SIMP(statut='f',typ='TXM', max=1,
                                 into=('OCTAEDRIQUE','BCC24','CUBIQUE1','CUBIQUE2','ZIRCONIUM','UNIAXIAL','UTILISATEUR'),
                                 ),
                    b_util =BLOC(condition="FAMI_SYST_GLIS=='UTILISATEUR' ",

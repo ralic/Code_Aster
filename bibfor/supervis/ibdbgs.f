@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +48,8 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
       COMMON /RTBLJE/  TBLOC
 
 C     -- COMMON MESTP1 POUR MESURE_TEMPS
-      INTEGER          MTPNIV
-      COMMON /MESTP1/  MTPNIV
+      INTEGER          MTPNIV,MTPSTA
+      COMMON /MESTP1/  MTPNIV,MTPSTA
 
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
@@ -125,6 +125,13 @@ C     -----------------------------------------------------
 C     -- MESURE_TEMPS:
 C     -----------------------------------------------------
       CALL GETVIS('MESURE_TEMPS','NIVE_DETAIL',1,IARG,1,MTPNIV,L)
+      REPONS = 'NON'
+      CALL GETVTX('MESURE_TEMPS','MOYENNE',1,IARG,1,REPONS,L)
+      IF (REPONS .EQ. 'OUI') THEN
+        MTPSTA = 1
+      ELSE
+        MTPSTA = 0
+      ENDIF
 
 
 C     -- MEMOIRE / GESTION ...  :

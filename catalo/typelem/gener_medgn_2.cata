@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,7 +113,7 @@ MODE_LOCAL__
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     DISS)
-    ECONTNC  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     DISS)
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
@@ -254,8 +254,8 @@ OPTION__
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                               OUT__  MMATUNS PMATUNS   MMATUUR  PMATUUR
     SYME_MDNS_R         -1    IN__    OUT__    XXXXXX   XXXXXX
-    SIEF_ELNO           98    IN__   ECONTPG  PCONTRR
-                              OUT__  ECONTNO  PSIEFNOR
+    SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR
@@ -273,8 +273,8 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
-    VARI_ELNO           98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER
+    VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET
     WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX

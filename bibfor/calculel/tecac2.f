@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -173,7 +173,7 @@ C     -------------------------------------------------
            VALK(1) = NOMPAR
            VALK(2) = OPTION
            CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
-          CALL CONTEX(OPTION,0,' ',' ',0)
+          CALL CONTEX(OPTION,' ')
         END IF
         IRET = 1
         GO TO 20
@@ -215,7 +215,7 @@ C     -------------------------------------------------
              CALL U2MESK('F','CALCULEL4_10', 3 ,VALK)
            ELSE
              CALL U2MESK('E','CALCULEL4_95', 3 ,VALK)
-             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+             CALL CONTEX(OPTION,NOMPAR)
            ENDIF
 
         END IF
@@ -226,7 +226,7 @@ C     -------------------------------------------------
              VALK(2) = OPTION
              VALK(3) = NOMTE
              CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
-             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+             CALL CONTEX(OPTION,NOMPAR)
           END IF
         END IF
       ELSE
@@ -236,7 +236,7 @@ C     -------------------------------------------------
              VALK(2) = OPTION
              VALK(3) = NOMTE
               CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
-            CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+            CALL CONTEX(OPTION,NOMPAR)
           END IF
         ELSE
           EXICHL = .TRUE.
@@ -292,7 +292,7 @@ C     ----------------------------------------------------------
                VALK(2) = OPTION
                VALK(3) = NOMTE
                CALL U2MESK('E','CALCULEL4_96', 3 ,VALK)
-              CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+              CALL CONTEX(OPTION,NOMPAR)
             ELSE
               IRET = 3
               IF (NVAL.LT.8) ITAB(1)=0

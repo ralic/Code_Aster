@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBNO
       CHARACTER*(*)       MOFAZ, NOMAZ, LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR,DDOT
+      REAL*8           ZR,DDOT,VECORI(3)
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -67,7 +67,7 @@ C
      &               C2H(3), YMIN, YMAX, ZMIN, ZMAX, HNB(3), C1H(3),L12
       CHARACTER*8    K8B, NOMA, PREFIX, TYPM, NDORIG, NDEXTR
       CHARACTER*16   MOTFAC, MOTCLE(3), TYPMCL(3)
-      CHARACTER*24   LISNOE, MESMAI, LISNOM
+      CHARACTER*24   LISNOE, MESMAI, LISNOM,MAFOUR
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
@@ -120,10 +120,13 @@ C     ---------------------------
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
       PREFIX    = '&&CGNOFU'
-      CALL CGNOOR ( PREFIX, NOMA, MOTFAC, IOCC, 2, MOTCLE, TYPMCL,
-     &               'OUVERT', NBMA, NDORIG, NDEXTR, TYPM)
+      MAFOUR = '&&CGNOFU.MALIGNE'
+      CALL CGNOOR (MAFOUR, NOMA, MOTFAC, IOCC, 2, MOTCLE, TYPMCL,
+     &               ' ', NBMA, NDORIG, NDEXTR, TYPM,VECORI)
       LISNOM = PREFIX//'.NOEUD'
-      CALL ORNOFD ( PREFIX, NOMA, NBMA, LISNOM, NDORIG, NDEXTR, 'V')
+      CALL ORNOFD (MAFOUR, NOMA, NBMA, LISNOM, NDORIG, NDEXTR,
+     &            'V',VECORI)
+      CALL JEDETR ( MAFOUR )
       CALL JELIRA ( LISNOM, 'LONMAX', NBNC, K8B )
       CALL JEVEUO ( LISNOM, 'L', IDNONO )
 C

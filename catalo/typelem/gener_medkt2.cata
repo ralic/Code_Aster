@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -408,9 +408,7 @@ OPTION__
                                      EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R  ENNEUT_R PNEUT_R  ENNEUT_F PNEUT_F
-    VACO_ELNO           580   IN__   ENBSP_I  PNBSP_I  CNUMCOR  PNUMCOR  ZVARIPG  PVARIGR
-                              OUT__  ZVARINO  PVARINR
-    VARI_ELNO           31    IN__   CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
+    VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     VERI_CARA_ELEM     119    IN__   CCACOQU  PCACOQU
                               OUT__  ECOURAN  PBIDON

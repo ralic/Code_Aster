@@ -1,0 +1,463 @@
+# MODIF  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+# RESPONSABLE A.FOUCAULT FOUCAULT
+# TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_BURGER_FP
+# ssnv180b.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV180B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+M=LIRE_MAILLAGE(FORMAT='MED', )
+
+M=DEFI_GROUP( reuse=M,
+              MAILLAGE=M,
+              CREA_GROUP_NO=(_F( GROUP_MA = 'S_INF'),
+                             _F( GROUP_MA = 'S_SUP'),
+                             _F( GROUP_MA = 'S_GCH'),
+                             _F( GROUP_MA = 'S_DRT'),
+                             _F( GROUP_MA = 'S_AVT'),
+                             _F( GROUP_MA = 'S_ARR'),),
+           )
+
+
+MO=AFFE_MODELE( MAILLAGE=M,
+                AFFE=_F( TOUT = 'OUI',
+                         PHENOMENE = 'MECANIQUE',
+                         MODELISATION = '3D')
+              )
+
+FONC1=DEFI_FONCTION( NOM_PARA='SECH',
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                     VALE=(0.0, 0.0, 100.0, 1.0,),
+                   )
+
+E=DEFI_FONCTION( NOM_PARA='TEMP',
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',
+                 VALE=(0.0, 31000., 1.0, 31000.,)
+               )
+
+NU=DEFI_FONCTION( NOM_PARA='TEMP',
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',
+                  VALE=(0.0,0.2,1.0,0.2,)
+                ),
+
+ALPHA=DEFI_FONCTION( NOM_PARA='TEMP',
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',
+                  VALE=(0.0,10.0E-6,1.0,10.0E-6,)
+                ),
+
+BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
+                                  NU = NU ,
+                                  ALPHA = ALPHA,
+                                  TEMP_DEF_ALPHA = 20.0,
+                                  K_DESSIC = 10.0E-6,
+                                  B_ENDOGE = 60.0E-6,
+                                  FONC_DESORP = FONC1, ),
+                     BETON_BURGER_FP =_F( K_RS   = 1.2E+05,
+                                        ETA_RS = 2.21E+10,
+                                        KAPPA  = 3e-3,
+                                        ETA_IS = 4.16e10,
+                                        K_RD   = 3.86e4,
+                                        ETA_RD = 6.19e10,
+                                        ETA_ID = 1.64e12,
+                                        ETA_FD = 5.30E+03,
+                                      ),
+                  );
+
+SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=100.),);
+
+SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=50.),);
+
+SECH1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(
+               _F(CHAM_GD=SECHI,
+                   INST=0.0,),
+                _F(CHAM_GD=SECHF,
+                   INST=64800000.0,),   ),);
+
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                OPERATION='AFFE',
+                MODELE = MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='HYDR',
+                        VALE=0.0,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                OPERATION='AFFE',
+                MODELE = MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='HYDR',
+                        VALE=1.0,),);
+
+HYDR1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='HYDR_NOEU',
+                AFFE=(
+                _F(CHAM_GD=HYDRI,
+                   INST=0.0,),
+                _F(CHAM_GD=HYDRF,
+                   INST=2419200.0,  ),),);
+
+TEMPI=CREA_CHAMP( OPERATION='AFFE',
+                  TYPE_CHAM='NOEU_TEMP_R',
+                  MAILLAGE=M,
+                  AFFE=_F( TOUT = 'OUI',
+                           NOM_CMP = 'TEMP',
+                           VALE = 20.),);
+
+TEMPF=CREA_CHAMP( OPERATION='AFFE',
+                  TYPE_CHAM='NOEU_TEMP_R',
+                  MAILLAGE=M,
+                  AFFE=_F( TOUT = 'OUI',
+                           NOM_CMP = 'TEMP',
+                           VALE = 40.),);
+
+TEMP1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(
+                _F(CHAM_GD=TEMPI,
+                   INST=0.0,),
+                _F(CHAM_GD=TEMPF,
+                   INST=64800000.0,  ),),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F( TOUT = 'OUI',
+                          MATER = BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',
+                               EVOL=HYDR1,
+                               NOM_VARC='HYDR',
+                               NOM_CHAM='HYDR_NOEU',
+                               PROL_GAUCHE='CONSTANT',
+                               PROL_DROITE='CONSTANT'),
+                            _F(TOUT='OUI',
+                               EVOL=SECH1,
+                               NOM_VARC='SECH',
+                               NOM_CHAM='TEMP',
+                               VALE_REF=100),
+                            _F(TOUT='OUI',
+                               EVOL=TEMP1,
+                               NOM_VARC='TEMP',
+                               NOM_CHAM='TEMP',
+                               VALE_REF=20),));
+
+FORCE=DEFI_FONCTION( NOM_PARA='INST',
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                     VALE=(0.0, 0.0, 1., -3.0, 64800000., -3.0,)
+                   )
+
+CH10=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'S_INF',
+                                  DZ       = 0.
+                               )
+                    )
+CH11=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'S_GCH',
+                                  DX       = 0.
+                                )
+                   )
+
+CH12=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'S_AVT',
+                                 DY       = 0.
+                               ),
+                  )
+
+CH22=AFFE_CHAR_MECA_F( MODELE=MO,
+                      FORCE_NODALE=_F( GROUP_NO = 'S_SUP',
+                                   FZ = FORCE),
+                    )
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(
+                     _F( JUSQU_A = 1.0, NOMBRE = 2),
+                     _F( JUSQU_A = 64800.0, NOMBRE = 20),
+                     _F( JUSQU_A = 648000.0, NOMBRE = 20),
+                     _F( JUSQU_A = 6480000.0, NOMBRE = 20),
+                     _F( JUSQU_A = 64800000.0, NOMBRE = 20))
+           )
+
+#DELTAT=432000=5J
+
+
+U=STAT_NON_LINE( MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE = CH10),
+                        _F(CHARGE = CH11),
+                        _F(CHARGE = CH12),
+                        _F(CHARGE = CH22)),
+                 COMP_INCR=_F(RELATION = 'BETON_BURGER_FP',
+                              ITER_INTE_MAXI = 1000),
+                 INCREMENT=_F(LIST_INST = L_INST,),
+                 NEWTON=_F(PREDICTION='ELASTIQUE',
+                           MATRICE = 'TANGENTE',
+                           REAC_ITER = 1),
+                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-8,
+                                ITER_GLOB_MAXI = 25)
+              )
+
+U=CALC_ELEM(reuse=U,
+            RESULTAT=U,
+            OPTION=('EPSI_ELNO','EPVC_ELGA','EPVC_ELNO','EPFP_ELGA','EPFD_ELGA',
+                    'EPFP_ELNO','EPFD_ELNO',),)
+
+U=CALC_NO(reuse=U,
+          RESULTAT=U,
+          OPTION=('EPVC_NOEU','EPFD_NOEU','EPFP_NOEU'),)
+
+RELEVE_=POST_RELEVE_T(ACTION=(
+                   _F(  RESULTAT = U,
+                            INTITULE = 'DEPL',
+                            NOM_CHAM = 'DEPL',
+                            NOM_CMP = 'DZ',
+                            LIST_INST = L_INST,
+                            PRECISION = 1.E-8,
+                            GROUP_NO = 'PC',
+                            OPERATION = 'EXTRACTION', ),
+                            ), )
+# TESTS SUR LES DEFORMATIONS TOTALES
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPTHER_L',
+          VALE = 8.3E-06,
+          PRECISION = 0.001,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPTHER_T',
+          VALE = 8.3E-06,
+          PRECISION = 0.001,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPTHER_N',
+          VALE = 8.3E-06,
+          PRECISION = 0.001,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPSECH',
+          VALE = -2.07500E-05,
+          PRECISION = 0.001,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPHYDR',
+          VALE = -6.0E-05,
+          PRECISION = 0.001,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPXX',
+          VALE = 0.,
+          CRITERE='ABSOLU',
+          PRECISION = 1e-8,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPYY',
+          VALE = 0.,
+          CRITERE='ABSOLU',
+          PRECISION = 1e-8,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPZZ',
+          VALE = -4.69811E-05,
+          PRECISION = 0.001,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPSI_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800.,
+          NOM_CMP = 'EPZZ',
+          VALE = -4.15E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'SOURCE_EXTERNE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPSI_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 648000.,
+          NOM_CMP = 'EPZZ',
+          VALE =-5.82E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'SOURCE_EXTERNE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPSI_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 6480000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -1.36E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPSI_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -4.38E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+           )),
+# TESTS SUR LES DEFORMATIONS DUES A LA THERMIQUE, L'HYDRATATION
+#  ET LE SECHAGE
+
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_L',
+          VALE = 2.0E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_N',
+          VALE = 2.0E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_T',
+          VALE = 2.0E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPSECH',
+          VALE = -5.E-4,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPHYDR',
+          VALE = -6E-05,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+          ),)
+# TESTS SUR LES DEFORMATIONS DE FLUAGE
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFP_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -2.5024E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'SOURCE_EXTERNE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -1.132E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+        ),)
+
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_NOEU',
+          NOEUD = 'N1',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_L',
+          VALE = 2.00000E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_NOEU',
+          NOEUD = 'N1',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -1.13208E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFP_NOEU',
+          NOEUD = 'N1',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -2.5024E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'SOURCE_EXTERNE'),
+        ),)
+
+FIN()
+#

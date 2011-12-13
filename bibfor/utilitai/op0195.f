@@ -1,7 +1,7 @@
       SUBROUTINE OP0195()
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,7 +144,12 @@ C              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
           NOMPAR = NOPAR2(OPTIO2,NOMGD,'INOUT')
           CELMOD = '&&OP0195.CELMOD'
           CALL ALCHML(LIGREL,OPTIO2,NOMPAR,'V',CELMOD,IB,' ')
-          IF (IB.NE.0) CALL U2MESK('F','UTILITAI3_23',1,OPTIO2)
+          IF (IB.NE.0) THEN
+            VALK(1)=LIGREL
+            VALK(2)=NOMPAR
+            VALK(3)=OPTIO2
+            CALL U2MESK('F','UTILITAI3_23',3,VALK)
+          ENDIF
 
 C         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :
           CALL JEVEUO(CELMOD//'.CELK','L',IB)

@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline4 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,16 @@ cata_msg = {
 """),
 
 5 : _(u"""
- Erreur données : noeud déjà existant :  %(k1)s
+Erreur utilisateur dans la commande CREA_MAILLAGE :
+  Pour créer le nouveau maillage, il faut créer de nouveaux noeuds.
+  Ici, on cherche à créer le noeud (%(k1)s) mais il existe déjà.
+
+  Par défaut, les nouveaux noeuds ont des noms commençant par le préfixe 'NS', mais ce préfixe
+  peut être modifié par l'utilisateur (mots clés XXXX / PREF_NOEUD).
+
+Risques & conseils :
+  Quand on utilise 2 fois de suite la commande CREA_MAILLAGE, il est en général nécessaire
+  d'utiliser au moins une fois l'un des mots clés PREF_NOEUD
 """),
 
 6 : _(u"""

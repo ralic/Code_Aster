@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
 # ssnv142b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,8 +129,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 EXCIT=(_F(CHARGE=CH1,),
                        _F(CHARGE=CH2,),),
                 COMP_INCR=_F(RELATION='GRANGER_FP_INDT',
-                             ALGO_1D='DEBORST',
-                             ITER_INTE_MAXI=1000,),
+                             ALGO_1D='DEBORST'),
                 INCREMENT=_F(LIST_INST=L_INST,
                              NUME_INST_FIN=74,),
                 NEWTON=_F(MATRICE='TANGENTE',

@@ -1,4 +1,4 @@
-#@ MODIF mac3coeur_coeur Mac3coeur  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF mac3coeur_coeur Mac3coeur  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,8 +36,10 @@ class Coeur(object):
     """Classe définissant un coeur de reacteur."""
     type_coeur = None
     required_parameters = [
+        #Nombre d'assemblages pour définir le coeur
+        'NBAC',
         # Position des grilles pour definition du champ de fluence
-        'alt_g1', 'alt_g2', 'alt_gm', 'alt_gn',
+        'alt_g1', 'alt_g2', 'alt_gm', 'alt_gn', 'altitude',
         # Position des crayons et tubes-guides pour definition du champ de fluence
         'XINFT', 'XSUPT', 'XINFC', 'XSUPC', 'LONCR',
         # Caractéristique de la cuve
@@ -99,11 +101,21 @@ class Coeur(object):
         """Retourne la position DAMAC correspondant à la position Aster."""
         col, lig = position.split("_")
         try:
-           posi_damac = dcorr2[lig] + str(dnume2[col])
+           posi_damac = self.dcorr2[lig] + '%02d' %(self.dnume2[col])
         except KeyError:
             raise KeyError("invalid aster position : %s" % position)
 
         return posi_damac
+
+    def position_fromthyc(self, posX, posY):
+        """Retourne la position Aster correspondant à la position Thyc."""
+        lig, col = position[0], position[1:]
+        ind = int(col) - 1
+        try:
+          posi_aster = self.ALPHAMAC[ind] + "_" + self.dcorr1[lig]
+        except (IndexError, KeyError):
+            raise KeyError("invalid damac position : %s" % position)
+        return posi_aster
 
     def init_from_table(self, tab):
         """Initialise le coeur à partir d'une table."""
@@ -126,6 +138,192 @@ class Coeur(object):
             ac.check()
             self.collAC[idAC]   = ac
             self.nameAC[nameAC] = ac.idAST
+
+    def cherche_rubrique_nom(self,f, nom):
+        "Chercher une rubrique definie par son nom"
+        while 1:
+            line = f.readline()
+            if (not line):
+                break
+            strtmp = line[0:len(line)-1]
+            if (len(line) >= len(nom)):
+                if (line[0:len(nom)] == nom):
+                    return 1
+        return None
+
+    def definir_chargement_transverse(self,cote,epaisseur,pos_thyc,force,prod):
+        DEFI_FONCTION    = self.macro.get_cmd('DEFI_FONCTION')
+        "Determination du chargement transverse sur les crayons pour un assemblage donne."
+        kk=2
+        eps = 1.0e-6
+
+        defi_fonc = []
+        "Pour aller de l embout inferieur jusqu'a la premiere grille."
+        som_l = 0.0
+        som_f = 0.0
+        for k in range(kk,pos_thyc[0]):
+            som_l = som_l + string.atof(epaisseur[k])
+            som_f = som_f + prod*string.atof(force[k])/string.atof(epaisseur[k])
+        som_feq = som_l/(som_l + 0.5*string.atof(epaisseur[pos_thyc[0]]))*som_f
+        defi_fonc.append(string.atof(cote[kk])-0.5*string.atof(epaisseur[kk])-eps)
+        defi_fonc.append(som_feq)
+        defi_fonc.append(string.atof(cote[pos_thyc[0]])-0.5*string.atof(epaisseur[pos_thyc[0]])+eps)
+        defi_fonc.append(som_feq)
+        defi_fonc.append(string.atof(cote[pos_thyc[0]]))
+        defi_fonc.append(0.0)
+        
+        "Pour aller de la premiere a la derniere grille."
+        for j in range(0,len(pos_thyc)-1):
+            som_l = 0.0
+            som_f = 0.0
+            for k in range(pos_thyc[j]+1,pos_thyc[j+1]):
+                som_l = som_l + string.atof(epaisseur[k])
+                som_f = som_f + prod*string.atof(force[k])/string.atof(epaisseur[k])
+            som_feq = som_l/(som_l + 0.5*(string.atof(epaisseur[pos_thyc[j]])+string.atof(epaisseur[pos_thyc[j+1]])))*som_f
+            defi_fonc.append(string.atof(cote[pos_thyc[j]])+0.5*string.atof(epaisseur[pos_thyc[j]])-eps)
+            defi_fonc.append(som_feq)
+            defi_fonc.append(string.atof(cote[pos_thyc[j+1]])-0.5*string.atof(epaisseur[pos_thyc[j+1]])+eps)
+            defi_fonc.append(som_feq)
+            defi_fonc.append(string.atof(cote[pos_thyc[j+1]]))
+            defi_fonc.append(0.0)
+
+        "Pour aller de la derniere grille jusqu'a l embout superieur."
+        som_l = 0.0
+        som_f = 0.0
+        for k in range(pos_thyc[len(pos_thyc)-1]+1,len(cote)):
+            som_l = som_l + string.atof(epaisseur[k])
+            som_f = som_f + prod*string.atof(force[k])/string.atof(epaisseur[k])
+        som_feq = som_l/(som_l + 0.5*string.atof(epaisseur[len(cote)-1]))*som_f
+        defi_fonc.append(string.atof(cote[pos_thyc[len(pos_thyc)-1]])+0.5*string.atof(epaisseur[pos_thyc[len(pos_thyc)-1]])-eps)
+        defi_fonc.append(som_feq)
+        defi_fonc.append(string.atof(cote[len(cote)-1])+0.5*string.atof(epaisseur[len(cote)-1])+eps)
+        defi_fonc.append(som_feq)
+
+        _resu = DEFI_FONCTION(NOM_PARA='X',VALE=defi_fonc)
+        return _resu
+
+    def lire_resu_thyc(self,MODELE,nom_fic):
+        DEFI_FONCTION    = self.macro.get_cmd('DEFI_FONCTION')
+        AFFE_CHAR_MECA   = self.macro.get_cmd('AFFE_CHAR_MECA')
+        AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
+        """ Fonction multiplicative de la force hydrodynamique axiale.
+            On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir celles a chaud."""
+        FOHYFR_1 = 1.0    # Valeur a froid
+        FOHYCH_1 = 0.722  # Valeur a chaud
+
+        from Accas import _F
+        f  = open(nom_fic, 'r')
+        f2 = open(nom_fic, 'r')
+        self.cherche_rubrique_nom(f, 'EFFORTS TRANSVERSES selon X en N')
+        self.cherche_rubrique_nom(f2, 'EFFORTS TRANSVERSES selon Y en N')
+        line = f.readline().split()
+        line2 = f2.readline().split()
+        line2 = f2.readline().split()
+
+        # Recuperation de l'epaisseur des mailles dans Thyc
+        epaisseur = f.readline().split()
+        if (epaisseur[0]!="ep(m)"):
+            raise KeyError("invalid epaisseur")
+
+        cote = f.readline().split()
+        if (cote[0]!="Z(m)"):
+            raise KeyError("invalid cote axial")
+
+        j = 0
+        pos_thyc=[]
+        for i in range(2,len(cote)):
+            #Positionnement des grilles
+            if ((self.altitude[j]>(string.atof(cote[i])-string.atof(epaisseur[i])/2.)) & (self.altitude[j]<(string.atof(cote[i])+string.atof(epaisseur[i])/2.))):
+                pos_thyc.append(i)
+                j=j+1
+                if (j==len(self.altitude)):
+                    break
+
+        for i in range(2,len(cote)):
+            #Positionnement des crayons pour application des efforts transverses
+            if ((self.XINFC>(string.atof(cote[i])-string.atof(epaisseur[i])/2.)) & (self.XINFC<(string.atof(cote[i])+string.atof(epaisseur[i])/2.))):
+                pos_gril_inf = i
+            if ((self.XSUPC>(string.atof(cote[i])-string.atof(epaisseur[i])/2.)) & (self.XSUPC<(string.atof(cote[i])+string.atof(epaisseur[i])/2.))):
+                pos_gril_sup = i
+    
+        # Recuperation des efforts transverses sur les grilles
+        mcf = []
+        mcft= []
+        for i in range(0,self.NBAC):
+            line  = f.readline().split()
+            line2 = f2.readline().split()
+            posi_aster1 = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line[1])-1]  + "_" + self.ALPHAMAC[string.atoi(line[0])-2]
+            posi_aster2 = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line2[1])-1] + "_" + self.ALPHAMAC[string.atoi(line2[0])-2]
+            
+            print line[0],line[1],posi_aster1
+            if (posi_aster1!=posi_aster2):
+                raise KeyError("position d assemblage avec ordre different")
+    
+            for j in range(0,len(pos_thyc)):
+               mtmp = (_F(GROUP_NO = 'G_'+posi_aster1+'_'+str(j+1), FY = string.atof(line[pos_thyc[j]])/4.0, FZ = - string.atof(line2[pos_thyc[j]])/4.0),)
+               mcf.extend(mtmp)
+        
+            _resu_fy = self.definir_chargement_transverse(cote,epaisseur,pos_thyc,line,1)
+            _resu_fz = self.definir_chargement_transverse(cote,epaisseur,pos_thyc,line2,-1)
+            mtmp = (_F(GROUP_MA = 'CR_'+posi_aster1, FY = _resu_fy, FZ = _resu_fz),)
+            mcft.extend(mtmp)
+        
+        _AF_CHTRNO = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcf)
+        _AF_CHTRFX = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcft)
+
+        # Recuperation des efforts axiaux
+        self.cherche_rubrique_nom(f, '*     FORCE HYDRODYNAMIQUE AXIALE en (N)                   *')
+        line = f.readline().split()
+        line = f.readline().split()
+        line = f.readline().split()
+        
+        mcp  = []
+        mcpf = []
+        for i in range(0,self.NBAC):
+            line = f.readline().split()
+            posi_aster = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line[1])-1]+ "_" +self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line[0])-1]
+            idAC=self.position_todamac(posi_aster)
+
+            ac=self.collAC[idAC]
+            KTOT = ac.K_GRM*(ac.NBGR-2)+ac.K_GRE*2+ac.K_EBSU+ac.K_TUB+ac.K_EBIN
+
+            # Force axiale pour une grille extremite (inf)
+            mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(1), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRE/KTOT/4.0),)
+            mcp.extend(mtmp)
+
+            # Force axiale pour chacune des grilles de mélange
+            for j in range(1,ac.NBGR-1):
+                mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(j+1), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRM/KTOT/4.0),)
+                mcp.extend(mtmp)
+
+            # Force axiale pour une grille extremite (sup)
+            mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(ac.NBGR), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRE/KTOT/4.0),)
+            mcp.extend(mtmp)
+
+            # Force axiale pour l'embout inferieur
+            mtmp = (_F(GROUP_NO = 'PI_'+posi_aster, FX = string.atof(line[2])/FOHYCH_1*ac.K_EBIN/KTOT),)
+            mcp.extend(mtmp)
+            
+            # Force axiale pour l'embout superieur
+            mtmp = (_F(GROUP_NO = 'PS_'+posi_aster, FX = string.atof(line[2])/FOHYCH_1*ac.K_EBSU/KTOT),)
+            mcp.extend(mtmp)
+            
+            # Force axiale pour les crayons (appel a DEFI_FONCTION)
+            vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBCR/(ac.NBCR+ac.NBTG)/ac.LONCR
+            _FXC = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFC,vale,ac.XSUPC,vale))            
+            mtmp = (_F(GROUP_MA = 'CR_'+posi_aster, FX = _FXC),)
+            mcpf.extend(mtmp)
+            
+            # Force axiale pour les tubes-guides (appel a DEFI_FONCTION)
+            vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBTG/(ac.NBCR+ac.NBTG)/ac.LONTU
+            _FXT = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFT,vale,ac.XSUPT,vale))            
+            mtmp = (_F(GROUP_MA = 'TG_'+posi_aster, FX = _FXT),)
+            mcpf.extend(mtmp)
+
+        _AF_CHAXNO = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcp)
+        _AF_CHAXPO = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcpf)
+
+        return _AF_CHTRNO,_AF_CHTRFX,_AF_CHAXNO,_AF_CHAXPO
 
     def chargement_defor(self):
         """Retourne les deformations de la TABLE."""
@@ -196,6 +394,96 @@ class Coeur(object):
         _AF_CIN = AFFE_CHAR_CINE(MODELE=MODELE,MECA_IMPO = mcf)
         return _AF_CIN
 
+    def chargement_archimede1(self):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE."""
+        mcf = []
+        for ac in self.collAC.values():
+            mcf.extend(ac.chargement_archimede1())
+        return mcf
+
+    def definition_archimede1(self,MODELE):
+        AFFE_CHAR_MECA = self.macro.get_cmd('AFFE_CHAR_MECA')
+        mcf = self.chargement_archimede1()
+
+        _ARCH_1 = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcf)
+        return _ARCH_1
+
+    def chargement_archimede2(self):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE."""
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+        mcf = []
+        for ac in self.collAC.values():
+            _FCT_TG = DEFI_FONCTION(NOM_PARA = 'X',PROL_DROITE = 'CONSTANT',PROL_GAUCHE = 'CONSTANT',
+                                    VALE     = (ac.XINFT,(ac.AFTG_1 / ac.LONTU ),
+                                                     ac.XSUPT,(ac.AFTG_1 / ac.LONTU )))
+            _FCT_CR = DEFI_FONCTION(NOM_PARA = 'X',PROL_DROITE = 'CONSTANT',PROL_GAUCHE = 'CONSTANT',
+                                    VALE     = (ac.XINFC,(ac.AFCRA_1 / ac.LONCR ),
+                                                     ac.XSUPC,(ac.AFCRA_1 / ac.LONCR )))
+            mcf.extend(ac.chargement_archimede2(_FCT_TG,_FCT_CR))
+        return mcf
+                
+    def definition_archimede2(self,MODELE):
+        AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
+        mcf = self.chargement_archimede2()
+
+        _FOARCH_1 = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcf)
+        return _FOARCH_1
+
+    def definition_temp_archimede(self):
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+        """ Valeur  a froid (20 degres) de la force d'Archimede = 860/985.46*1000.52 """
+        ARCHFR1 = 873.  # Valeur en arret a froid (20 degres)
+        ARCHFR2 = 860.  # Valeur en arret a froid (60 degres)
+        ARCHCH  = 620.  # Valeur a chaud (307 degres)   
+
+        _ARCH_F1 = DEFI_FONCTION( NOM_PARA = 'INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                                  VALE     = ( self.temps_simu['T0'],ARCHFR1,
+                                               self.temps_simu['T1'],ARCHFR1,
+                                               self.temps_simu['T2'],ARCHFR2,
+                                               self.temps_simu['T4'],ARCHCH, 
+                                               self.temps_simu['T5'],ARCHCH, 
+                                               self.temps_simu['T7'],ARCHFR2,
+                                               self.temps_simu['T8'],ARCHFR1,
+                                               self.temps_simu['T9'],ARCHFR1,),);
+        return _ARCH_F1
+
+    def definition_temp_hydro_axiale(self):
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+        """ Fonction multiplicative de la force hydrodynamique axiale.
+            On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir celles a chaud."""
+        FOHYFR_1 = 1.0    # Valeur a froid
+        FOHYCH_1 = 0.722  # Valeur a chaud
+
+        _HYDR_F1 = DEFI_FONCTION( NOM_PARA = 'INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                                  VALE     = ( self.temps_simu['T0'],0.0,
+                                               self.temps_simu['T1'],0.0,
+                                               self.temps_simu['T2'],FOHYFR_1,
+                                               self.temps_simu['T3'],FOHYCH_1,
+                                               self.temps_simu['T4'],FOHYCH_1, 
+                                               self.temps_simu['T5'],FOHYCH_1, 
+                                               self.temps_simu['T6'],FOHYCH_1, 
+                                               self.temps_simu['T7'],FOHYFR_1,
+                                               self.temps_simu['T8'],0.0,
+                                               self.temps_simu['T9'],0.0,),);
+        return _HYDR_F1
+
+    def definition_effort_transverse(self):
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+        """ Fonction multiplicative pour la prise en compte des efforts transverses."""
+        AVEC = 1.0
+        SANS = 0.0
+
+        _F_TRAN1 = DEFI_FONCTION( NOM_PARA = 'INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                                  VALE     = ( self.temps_simu['T0'],SANS,
+                                               self.temps_simu['T1'],SANS,
+                                               self.temps_simu['T2'],SANS,
+                                               self.temps_simu['T4'],AVEC, 
+                                               self.temps_simu['T5'],AVEC, 
+                                               self.temps_simu['T7'],SANS,
+                                               self.temps_simu['T8'],SANS,
+                                               self.temps_simu['T9'],SANS,),);
+        return _F_TRAN1
+
     def definition_cara_coeur(self,MODELE,_GFF):
         from Accas import _F
         AFFE_CARA_ELEM = self.macro.get_cmd('AFFE_CARA_ELEM')
@@ -218,6 +506,31 @@ class Coeur(object):
         print 'fin de la procedure AFFE_CARA_ELEM'
         return _CARA
 
+    def definition_pesanteur(self,MODELE):
+        from Accas import _F
+        AFFE_CHAR_MECA = self.macro.get_cmd('AFFE_CHAR_MECA')
+
+        _PESA = AFFE_CHAR_MECA( MODELE      =    MODELE,
+                                PESANTEUR   = _F(GRAVITE=9.81,DIRECTION=(-1.,0.,0.),),)
+        return _PESA
+
+    def definition_effor_maintien(self):
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+
+        _EFF_SM1 = 6300.+110;
+        #_EFF_SM1 = (6300.+110)*1.1;
+
+        _F_EBS = DEFI_FONCTION( NOM_PARA = 'INST',
+                                VALE     = ( self.temps_simu['T0'],0.0,
+                                             self.temps_simu['T1'],1.0*_EFF_SM1,
+                                             self.temps_simu['T2'],1.0*_EFF_SM1,
+                                             self.temps_simu['T4'],1.0*_EFF_SM1,
+                                             self.temps_simu['T5'],1.0*_EFF_SM1,
+                                             self.temps_simu['T7'],1.0*_EFF_SM1,
+                                             self.temps_simu['T8'],1.0*_EFF_SM1,
+                                             self.temps_simu['T9'],0.0,),
+                                PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',);
+        return _F_EBS
 
     def affectation_maillage(self,MA0):
         from Accas import _F
@@ -270,7 +583,7 @@ class Coeur(object):
         _MA=DEFI_GROUP( reuse         = _MA, ALARME='NON',
                 MAILLAGE = _MA,
                 CREA_GROUP_MA=(_F(NOM='GRIL_I',UNION=tuple(LISGRILI),),
-                           _F(NOM='GRIL_E',UNION=tuple(LISGRILE),),),
+                               _F(NOM='GRIL_E',UNION=tuple(LISGRILE),),),
                 CREA_GROUP_NO=(_F(GROUP_MA=('T_GUIDE','EBOSUP','EBOINF','CRAYON','ELA','DIL',),),
                                _F(NOM='LISPG',UNION =tuple(LIS_PG),),),);
 
@@ -380,13 +693,13 @@ class Coeur(object):
         #   CREATION DU PROFIL AXIAL DE FLUX   #
         ########################################
         _FLUXAX1 = DEFI_FONCTION( NOM_PARA    = 'X',
-               VALE           = (self.alt_g1,   0.54,
-                              self.alt_g2,            1.,
-                              self.alt_gm - 0.001, 1.,
-                              self.alt_gm,               0.85,
-                              self.alt_gn,               0.57,),
-                              PROL_DROITE = 'CONSTANT',
-                              PROL_GAUCHE = 'CONSTANT',);
+               VALE           = (self.alt_g1,         0.54,
+                                 self.alt_g2,         1.,
+                                 self.alt_gm - 0.001, 1.,
+                                 self.alt_gm,         0.85,
+                                 self.alt_gn,         0.57,),
+                                 PROL_DROITE = 'CONSTANT',
+                                 PROL_GAUCHE = 'CONSTANT',);
 
         #########################################################
         #   DEFINITION DU CHAMP NEUTRONIQUE RADIAL (CONSTANT)        #
@@ -578,7 +891,7 @@ class Coeur(object):
 
         _A_MAT = AFFE_MATERIAU( MAILLAGE    = MAILLAGE,
                         AFFE_VARC   = ( _F( NOM_VARC='IRRA', TOUT='OUI', EVOL=FLUENCE, PROL_DROITE='CONSTANT'),
-                                    _F( NOM_VARC='TEMP', TOUT='OUI', EVOL=CHTH,    PROL_DROITE='CONSTANT', VALE_REF=TP_REF,),),
+                                        _F( NOM_VARC='TEMP', TOUT='OUI', EVOL=CHTH,    PROL_DROITE='CONSTANT', VALE_REF=TP_REF,),),
                         AFFE            = mcf_affe_mater,
                         AFFE_COMPOR = mcf_compor,);
 
@@ -590,17 +903,17 @@ class Coeur(object):
         mcf  = []
         for ac in self.collAC.values():
             _CMPC = DEFI_COMPOR( GEOM_FIBRE =  GFF,
-                                     MATER_SECT =  ac.mate.mate['CR'],
-                                     MULTIFIBRE = _F( GROUP_FIBRE =  'CR_' + ac.idAST,
-                                               MATER       =  ac.mate.mate['CR'],
-                                                       RELATION    = 'GRAN_IRRA_LOG',
-                                       DEFORMATION = 'GROT_GDEP',),)
+                                 MATER_SECT =  ac.mate.mate['CR'],
+                                 MULTIFIBRE = _F( GROUP_FIBRE =  'CR_' + ac.idAST,
+                                                  MATER       =  ac.mate.mate['CR'],
+                                                  RELATION    =  'GRAN_IRRA_LOG',
+                                                  DEFORMATION = 'GROT_GDEP',),)
             _CMPT = DEFI_COMPOR( GEOM_FIBRE =  GFF,
-                                     MATER_SECT =  ac.mate.mate['TG'],
-                                     MULTIFIBRE = _F( GROUP_FIBRE =  ('LG_' + ac.idAST, 'BI_' + ac.idAST, 'RE_' + ac.idAST,),
-                                               MATER       =  ac.mate.mate['TG'],
-                                                       RELATION    = 'GRAN_IRRA_LOG',
-                                       DEFORMATION = 'GROT_GDEP',),)
+                                 MATER_SECT =  ac.mate.mate['TG'],
+                                 MULTIFIBRE = _F( GROUP_FIBRE =  ('LG_' + ac.idAST, 'BI_' + ac.idAST, 'RE_' + ac.idAST,),
+                                                  MATER       =  ac.mate.mate['TG'],
+                                                  RELATION    =  'GRAN_IRRA_LOG',
+                                                  DEFORMATION = 'GROT_GDEP',),)
             mtmp = (_F(GROUP_MA = 'CR_' + ac.idAST, COMPOR = _CMPC,),
                         _F(GROUP_MA = 'TG_' + ac.idAST, COMPOR = _CMPT,),)
             mcf.extend(mtmp)

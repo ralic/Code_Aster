@@ -1,10 +1,11 @@
-        SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
-     &                SIGF, VIND, NBCOMM, CPMONO, PGL,
-     &                NVI,VP,VECP,HSR,NFS,NSG,TOUTMS,TIMED,TIMEF,SEUIL)
+        SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERD,
+     &                      MATERF,SIGD,SIGF,DEPS,VIND, NBCOMM,CPMONO, 
+     &                      PGL,NVI,VP,VECP,HSR,NFS,NSG,TOUTMS,
+     &                      TIMED,TIMEF,NR,YD,YF,TOLER,SEUIL)
         IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,24 +30,38 @@ C IN  : FAMI   :  FAMILLE DES POINTS DE GAUSS  -------------------------
 C --- : KPG    :  NUMERO DU POINT DE GAUSS  ----------------------------
 C --- : KSP    :  NUMERO DU SOUS POINT DE GAUSS ------------------------
 C --- : LOI    :  NOM DU MODELE DE COMPORTEMENT ------------------------
+C --- : SIGD   :  CONTRAINTE A T ---------------------------------------
 C --- : SIGF   :  CONTRAINTE A T+DT ------------------------------------
+C --- : DEPS   :  INCRMEENT DE DEFORMATION -----------------------------
 C --- : VIND   :  VARIABLES INTERNES A T -------------------------------
 C --- : IMAT   :  ADRESSE DU MATERIAU CODE -----------------------------
 C --- : NMAT   :  DIMENSION MATER --------------------------------------
+C --- : TOLER  :  TOLERANCE DE CONVERGENCE LOCALE-----------------------
+C --- : MATERD :  COEFFICIENTS MATERIAU A T ----------------------------
 C --- : MATERF :  COEFFICIENTS MATERIAU A T+DT -------------------------
+C --- : NBCOMM :  INDICES DES COEF MATERIAU ----------------------------
+C --- : TYPMOD :  TYPE DE MODELISATION ---------------------------------
+C --- : TIMED  :  INSTANT T --------------------------------------------
+C --- : TIMEF  :  INSTANT T+DT -----------------------------------------
+C --- : NR     :  DIMENSION VECTEUR INCONNUES --------------------------
 C OUT : VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) --
-C OUT : VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) -
-C OUT : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
+C --- : VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) -
+C --- : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
+C --- : YD     :  VECTEUR INCONNUES A T --------------------------------
+C --- : YF     :  VECTEUR INCONNUES A T+DT -----------------------------
 C ----------------------------------------------------------------------
 C ======================================================================
-        INTEGER         NMAT , IMAT, NVI, KPG, KSP,NFS,NSG
+        INTEGER         NMAT , IMAT, NVI, KPG, KSP,NFS,NSG,NR
         CHARACTER*(*)   FAMI
-        REAL*8          MATERF(NMAT,2), SEUIL,TIMED,TIMEF
-        REAL*8          SIGF(6) , VIND(*),HSR(NSG,NSG)
+        REAL*8          MATERF(NMAT,2),MATERD(NMAT,2),SEUIL
+        REAL*8          TIMED,TIMEF,TOLER,DEPS(6)
+        REAL*8          SIGD(6),SIGF(6),VIND(*),HSR(NSG,NSG)
         CHARACTER*16    LOI
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3),VP(3),VECP(3,3),TOUTMS(NFS,NSG,6)
+        REAL*8          YD(NR),YF(NR)
         CHARACTER*16    CPMONO(5*NMAT+1)
+        CHARACTER*8     TYPMOD
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
          CALL RSLCVX ( FAMI, KPG, KSP, IMAT, NMAT, MATERF,
@@ -72,6 +87,12 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M') THEN
          CALL IRRCVX ( FAMI, KPG, KSP, NMAT, MATERF, SIGF, VIND, SEUIL)
+C ======================================================================
+C ======================================================================
+      ELSEIF ( LOI(1:15)  .EQ. 'BETON_BURGER_FP') THEN
+C --- LE FLUAGE EST CONSIDERE POUR TOUT TYPE DE SOLLICITATION MECANIQUE
+         CALL BURCVX(TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
+     &               NVI,VIND,NR,SIGD,DEPS,YD,YF,TOLER,SEUIL)
 C ======================================================================
       ENDIF
 C ======================================================================

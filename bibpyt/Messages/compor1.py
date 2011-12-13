@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -367,4 +367,9 @@ Le comportement MONOCRISTAL en grandes déformations SIMO_MIEHE n'est pas compati
 Le type de déformations %(k1)s n'est pas compatible avec les modélisations SHB. Utilisez PETIT ou GROT_GDEP.
 """),
 
+70 : _(u"""
+Problème lors du traitement de l'occurence numéro %(i1)d du mot-clé facteur %(k2)s :
+  La donnée du mot-clé %(k1)s n'est pas cohérente avec le reste des données (MODELISATION, RELATION).
+  Le mot-clé %(k1)s sera ignoré.
+"""),
 }

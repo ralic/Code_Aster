@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE 3D)
 # ssnp15e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,12 +102,10 @@ U=STAT_NON_LINE(MODELE=MO,
                 RECH_LINEAIRE=_F(RHO_MAX=150),
                 )
 
-U=CALC_ELEM( reuse=U,  RESULTAT=U,
-             TOUT_ORDRE='OUI',
-             REPE_COQUE =_F( NUME_COUCHE=1,
-                             NIVE_COUCHE='SUP', ),
-             OPTION=('VARI_ELNO', 'EFGE_ELNO', 'SIGM_ELNO' ),
-             )
+U=CALC_ELEM(reuse=U,
+            RESULTAT=U,
+            TOUT_ORDRE='OUI',
+            OPTION=('VARI_ELNO','EFGE_ELNO','SIGM_ELNO' ),);
 
 UPOS=POST_CHAMP(RESULTAT=U,
                  TOUT='OUI',

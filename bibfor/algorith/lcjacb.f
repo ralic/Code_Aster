@@ -1,4 +1,4 @@
-      SUBROUTINE LCJACB (FAMI,KPG,KSP,LOI,MOD,NMAT,
+      SUBROUTINE LCJACB (FAMI,KPG,KSP,LOI,MOD,NMAT,MATERD,
      &                   MATERF,TIMED,TIMEF,YF,DEPS,
      &                   ITMAX,TOLER, NBCOMM, CPMONO,
      &                   PGL,NFS,NSG,TOUTMS,HSR,NR,COMP,NVI,
@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ C           LOI    :  MODELE DE COMPORTEMENT
 C           MOD    :  TYPE DE MODELISATION
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
+C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           YF     :  VARIABLES A T + DT =    ( SIGF  VINF  (EPS3F)  )
 C           TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
@@ -60,7 +61,7 @@ C
         REAL*8          DEPS(6) , EPSD(6), TOLER
         REAL*8          DRDY(NR,NR) , YF(NR), DY(NR),YD(NR)
 C
-        REAL*8          MATERF(NMAT,2)
+        REAL*8          MATERD(NMAT,2),MATERF(NMAT,2)
         REAL*8          TIMED, TIMEF,VIND(*)
         REAL*8          TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
 C
@@ -86,6 +87,9 @@ C
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRJAC ( FAMI,KPG,KSP,MOD, NMAT, MATERF,
      &                  YF,  DY,   NR,  DRDY )
+      ELSEIF ( LOI(1:15)  .EQ. 'BETON_BURGER_FP' ) THEN
+         CALL BURJAC ( MOD, NMAT, MATERD,MATERF,NVI,VIND,
+     &                 TIMED,TIMEF,YD,YF,  DY,   NR,  DRDY )
       ENDIF
 C
       END

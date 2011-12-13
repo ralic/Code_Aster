@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact2 Messages  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,6 +66,19 @@ Contact méthode continue.
      Il faut changer de schéma d'intégration et utiliser 'GAUSS'.
 """),
 
+15 : _(u"""
+Contact formulation discrète.
+Les zones de contact numéro %(i1)i et numéro %(i2)i ont %(i3)i noeuds communs à leurs surfaces esclaves. Cela peut parfois conduire à une matrice de contact singulière.
+
+Si le calcul venait à échouer, vérifiez la définition de vos surfaces de contact ou bien renseignez un des mots-clés SANS_NOEUD/SANS_GROUP_NO/SANS_MAILLE/SANS_GROUP_MA.
+"""),
+
+16 : _(u"""
+Contact formulation continue.
+Les zones de contact numéro %(i1)i et numéro %(i2)i ont %(i3)i noeuds communs à leurs surfaces esclaves : c'est interdit.
+Conseil :
+ - changez vos surfaces de contact.
+"""),
 
 }
 

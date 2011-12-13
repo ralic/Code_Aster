@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182h.para = tps_job 100 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV182H',
-              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'));
+              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 
 MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 

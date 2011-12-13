@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE  CRP_20 
+C TOLE  CRP_20
 C ----------------------------------------------------------------------
 C     BUT: TRAITER LE MOT CLEF CREA_GROUP_NO
 C          DE L'OPERATEUR: DEFI_GROUP
@@ -31,7 +31,7 @@ C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8 ZR,VECORI(3)
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -50,7 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ALARM, TYPM, NDORIG, NDEXTR
       CHARACTER*8  MA,NONO,NOGNO,NOGNO2,K8B,KPOS,NOM1,PREFIX
       CHARACTER*16 CONCEP,CMD,OPTION, MOTCLE, TYPMCL, MOTFAC
-      CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO
+      CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO,MAFOUR
       CHARACTER*24 VALK(2)
       CHARACTER*80 CARD
       INTEGER      IARG
@@ -333,10 +333,12 @@ C         -- TRAITEMENT DE L'OPTION INCLUSION :
 C         -- TRAITEMENT DE L'OPTION "NOEUD_ORDO" :
 C         ----------------------------------------
           ELSE IF (OPTION(1:10).EQ.'NOEUD_ORDO') THEN
-            PREFIX = '&&SSCGNO'
-            CALL CGNOOR ( PREFIX, MA, MOTFAC, IOCC, 1, MOTCLE, TYPMCL,
-     &              'OUVERT', NBMA, NDORIG, NDEXTR, TYPM)
-            CALL ORNOFD ( PREFIX, MA, NBMA, LISNO, NDORIG, NDEXTR, 'V')
+            MAFOUR = '&&SSCGNO.MALIGNE'
+            CALL CGNOOR ( MAFOUR, MA, MOTFAC, IOCC, 1, MOTCLE, TYPMCL,
+     &              ' ', NBMA, NDORIG, NDEXTR, TYPM,VECORI)
+            CALL ORNOFD ( MAFOUR, MA, NBMA, LISNO, NDORIG, NDEXTR,
+     &                    'V',VECORI)
+            CALL JEDETR ( MAFOUR )
             CALL JELIRA(LISNO,'LONUTI',NBNO,K8B)
 
 C         -- TRAITEMENT DE L'OPTION FISS_XFEM :

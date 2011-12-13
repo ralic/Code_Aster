@@ -1,4 +1,4 @@
-#@ MODIF macro_bascule_schema_ops Contrib  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_bascule_schema_ops Contrib  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
   import types
   from Accas import _F
   from Noyau.N_utils import AsType
-  from Utilitai.Utmess     import  UTMESS
+  from Utilitai.Utmess     import  UTMESS,MasquerAlarme, RetablirAlarme
   # On importe les definitions des commandes a utiliser dans la macro
   DYNA_NON_LINE  =self.get_cmd('DYNA_NON_LINE')
   CREA_CHAMP     =self.get_cmd('CREA_CHAMP')
@@ -124,6 +124,10 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
           break
   #
   #
+
+  # alarme de DYNA_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+  MasquerAlarme('COMPOR1_70')
+
   if SCH_INI=='IMPLICITE':
        dincri1=copy.copy(dincri)
        dincri1[-1]['INST_FIN']= __L0[0]
@@ -293,4 +297,5 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
             bool = (j!=(__nb))
             if (not bool): break
   #
+  RetablirAlarme('COMPOR1_70')
   return ier

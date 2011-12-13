@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 2D
 # ssnp150b.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,14 +27,15 @@ from Utilitai import HookeTensor
 
 
 # ================================================================================================================================================================================
-def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
+def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_SUR):
      """ RESULTAT  : SD Resultat contenant la solution calculee
-         Sol_Ana   : Solution analytique sous forme d une liste de FORMULEs Aster
+         Depl_Ana  : Solution analytique sous forme d une liste de FORMULEs Aster du deplacement
+         P_Ana     : Solution analytique sous forme d une liste de FORMULEs Aster de la pression de contact
          MAIL      : SD Maillage
          MODELE    : SD Modele de la solution calculee
          GROUP_MA  : Entitee sur laquelle on veut calculer la norme
 
-         OUT : {'NormeL2Erreur':NormeL2Erreur,'NormeInfSolAna':NormeInfSolAna,'NormeInfErreur':NormeInfErreur}
+         OUT : {'NormeL2ErreurU':NormeL2ErreurU,'NormeInfSolAna':NormeInfSolAna,'NormeInfErreur':NormeInfErreur}
      """
 
      # ========================================================================================
@@ -46,8 +47,8 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
      TEMP1=CREA_CHAMP(OPERATION='AFFE',
                       TYPE_CHAM='NOEU_NEUT_F',
                       MAILLAGE=MAIL,
-                      AFFE=(_F( GROUP_MA=GROUP_MA, NOM_CMP = 'X1', VALE_F = Sol_Ana[0]),
-                            _F( GROUP_MA=GROUP_MA, NOM_CMP = 'X2', VALE_F = Sol_Ana[1]),
+                      AFFE=(_F( GROUP_MA=GROUP_MA_VOL, NOM_CMP = 'X1', VALE_F = Depl_Ana[0]),
+                            _F( GROUP_MA=GROUP_MA_VOL, NOM_CMP = 'X2', VALE_F = Depl_Ana[1]),
                            ),);
 
      TEMP2=CREA_CHAMP(OPERATION='EVAL',
@@ -58,20 +59,51 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
      Uana=CREA_CHAMP(OPERATION='ASSE',
                      TYPE_CHAM='NOEU_DEPL_R',
                      MAILLAGE=MAIL,
-                     ASSE=(_F(GROUP_MA=GROUP_MA,
+                     ASSE=(_F(GROUP_MA=GROUP_MA_VOL,
                               CHAM_GD = TEMP2,
                               NOM_CMP = 'X1',
                               NOM_CMP_RESU = 'DX',),
-                           _F(GROUP_MA=GROUP_MA,
+                           _F(GROUP_MA=GROUP_MA_VOL,
                               CHAM_GD = TEMP2,
                               NOM_CMP = 'X2',
-                              NOM_CMP_RESU = 'DY',)
+                              NOM_CMP_RESU = 'DY',),
                            ));
 
      Ucalc = CREA_CHAMP(OPERATION='EXTR',
                         INST=1.,
                         NOM_CHAM = 'DEPL' , TYPE_CHAM = 'NOEU_DEPL_R',
                         RESULTAT = RESULTAT ,);
+
+     # ========================================================================================
+     #          Creation de la solution analytique en pression
+     # ========================================================================================
+
+     TEMP1P=CREA_CHAMP(OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_NEUT_F',
+                      MAILLAGE=MAIL,
+                      AFFE=(_F( GROUP_MA=GROUP_MA_SUR, NOM_CMP='X1', VALE_F=P_ana),
+                           )
+                     );
+
+     TEMP2P=CREA_CHAMP(OPERATION='EVAL',
+                      TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=TEMP1P,
+                      CHAM_PARA=CHXN);
+
+     Pana=CREA_CHAMP(OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_DEPL_R',
+                     MAILLAGE=MAIL,
+                     ASSE=(_F(GROUP_MA=GROUP_MA_SUR,
+                              CHAM_GD = TEMP2P,
+                              NOM_CMP = 'X1',
+                              NOM_CMP_RESU = 'LAGS_C',),)
+                     );
+
+     Pcalc = CREA_CHAMP(OPERATION='EXTR',
+                        INST=1.,
+                        NOM_CHAM = 'DEPL' , TYPE_CHAM = 'NOEU_DEPL_R',
+                        RESULTAT = RESULTAT ,);
+
 
      # ========================================================================================
      #          Creation de la solution analytique en deplacement aux points d'integration
@@ -85,12 +117,12 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
                       TYPE_CHAM='ELGA_NEUT_F',
                       MODELE=MODELE,
                       PROL_ZERO='OUI',
-                      AFFE=(_F(GROUP_MA=GROUP_MA,
+                      AFFE=(_F(GROUP_MA=GROUP_MA_VOL,
                                NOM_CMP = 'X1',
-                               VALE_F = Sol_Ana[0]),
-                            _F(GROUP_MA=GROUP_MA,
+                               VALE_F = Depl_Ana[0]),
+                            _F(GROUP_MA=GROUP_MA_VOL,
                                NOM_CMP = 'X2',
-                               VALE_F = Sol_Ana[1]),
+                               VALE_F = Depl_Ana[1]),
                             ),);
 
      UanaG=CREA_CHAMP(OPERATION='EVAL',
@@ -100,17 +132,37 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
                       );
 
      # ========================================================================================
+     #          Creation de la solution analytique en pression
+     # ========================================================================================
+
+     TEMP3P=CREA_CHAMP(OPERATION='AFFE',
+                      TYPE_CHAM='ELGA_NEUT_F',
+                      MODELE=MODELE,
+                      PROL_ZERO='OUI',
+                      AFFE=(_F(GROUP_MA=GROUP_MA_SUR,
+                               NOM_CMP = 'X1',
+                               VALE_F = P_ana),
+                            ),);
+
+     PanaG=CREA_CHAMP(OPERATION='EVAL',
+                      TYPE_CHAM='ELGA_NEUT_R',
+                      CHAM_F=TEMP3P,
+                      CHAM_PARA=CHXG,
+                      );
+
+
+     # ========================================================================================
      #          Creation de la solution calculee en deplacement aux points d'integration
      # ========================================================================================
 
      Ucalc1=CREA_CHAMP(OPERATION='ASSE',
                        TYPE_CHAM='NOEU_NEUT_R',
                        MAILLAGE=MAIL,
-                       ASSE=(_F(GROUP_MA=GROUP_MA,
+                       ASSE=(_F(GROUP_MA=GROUP_MA_VOL,
                                 CHAM_GD = Ucalc,
                                 NOM_CMP = 'DX',
                                 NOM_CMP_RESU = 'X1',),
-                             _F(GROUP_MA=GROUP_MA,
+                             _F(GROUP_MA=GROUP_MA_VOL,
                                 CHAM_GD = Ucalc,
                                 NOM_CMP = 'DY',
                                 NOM_CMP_RESU = 'X2',),
@@ -123,50 +175,103 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
                        CHAM_GD=Ucalc1,
                        );
 
+     # ========================================================================================
+     #          Creation de la pression calculee en deplacement aux points d'integration
+     # ========================================================================================
+
+     Pcalc1=CREA_CHAMP(OPERATION='ASSE',
+                       TYPE_CHAM='NOEU_NEUT_R',
+                       MAILLAGE=MAIL,
+                       ASSE=(_F(GROUP_MA=GROUP_MA_SUR,
+                                CHAM_GD = Ucalc,
+                                NOM_CMP = 'LAGS_C',
+                                NOM_CMP_RESU = 'X1',),
+                             ),);
+
+     PcalcG=CREA_CHAMP(OPERATION='DISC',
+                       TYPE_CHAM='ELGA_NEUT_R',
+                       MODELE=MODELE,
+                       PROL_ZERO='OUI',
+                       CHAM_GD=Pcalc1,
+                       );
+
 
      # ========================================================================================
      #          Calcul de la norme L2 de l'erreur en deplacement et de la repartition de l'erreur
      # ========================================================================================
 
-     DIFFG=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_DEPL_R',MODELE=MODELE,
+     DIFFUG=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_DEPL_R',MODELE=MODELE,
                       PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=GROUP_MA, CHAM_GD=UcalcG,CUMUL='OUI',COEF_R=1., NOM_CMP='X1',NOM_CMP_RESU='DX',),
-                            _F(GROUP_MA=GROUP_MA, CHAM_GD=UanaG, CUMUL='OUI',COEF_R=-1.,NOM_CMP='X1',NOM_CMP_RESU='DX',),
-                            _F(GROUP_MA=GROUP_MA, CHAM_GD=UcalcG,CUMUL='OUI',COEF_R=1., NOM_CMP='X2',NOM_CMP_RESU='DY',),
-                            _F(GROUP_MA=GROUP_MA, CHAM_GD=UanaG, CUMUL='OUI',COEF_R=-1.,NOM_CMP='X2',NOM_CMP_RESU='DY',),
+                      ASSE=(_F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=UcalcG,CUMUL='OUI',COEF_R=1., NOM_CMP='X1',NOM_CMP_RESU='DX',),
+                            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=UanaG, CUMUL='OUI',COEF_R=-1.,NOM_CMP='X1',NOM_CMP_RESU='DX',),
+                            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=UcalcG,CUMUL='OUI',COEF_R=1., NOM_CMP='X2',NOM_CMP_RESU='DY',),
+                            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=UanaG, CUMUL='OUI',COEF_R=-1.,NOM_CMP='X2',NOM_CMP_RESU='DY',),
                             ),);
 
-     DIFFN=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELE,
+     DIFFUN=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELE,
                       PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=GROUP_MA, CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='DX',NOM_CMP_RESU='DX',),
-                            _F(GROUP_MA=GROUP_MA, CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
-                            _F(GROUP_MA=GROUP_MA, CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='DY',NOM_CMP_RESU='DY',),
-                            _F(GROUP_MA=GROUP_MA, CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      ASSE=(_F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
                             ),);
 
-     tab=POST_ELEM(NORME=_F(TYPE_NORM='L2',
-                            GROUP_MA=GROUP_MA,
-                            CHAM_GD=DIFFG,
+     tabU=POST_ELEM(NORME=_F(TYPE_NORM='L2',
+                            GROUP_MA=GROUP_MA_VOL,
+                            CHAM_GD=DIFFUG,
                             MODELE=MODELE,
                             ),)
-     NormeL2Erreur=tab['VALE_NORM',1]
+     NormeL2ErreurU=tabU['VALE_NORM',1]
+     IMPR_TABLE(TABLE=tabU)
+
+     # ========================================================================================
+     #          Calcul de la norme L2 de l'erreur en pression et de la repartition de l'erreur
+     # ========================================================================================
+
+     DIFFPG=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_DEPL_R',MODELE=MODELE,
+                       PROL_ZERO='OUI',
+                       ASSE=(_F(GROUP_MA=GROUP_MA_SUR, CHAM_GD=PcalcG,CUMUL='OUI',COEF_R=1., NOM_CMP='X1',NOM_CMP_RESU='DX',),
+                             _F(GROUP_MA=GROUP_MA_SUR, CHAM_GD=PanaG, CUMUL='OUI',COEF_R=-1.,NOM_CMP='X1',NOM_CMP_RESU='DX',),
+                             ),);
+
+     DIFFPN=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELE,
+                       PROL_ZERO='OUI',
+                       ASSE=(_F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Pcalc,CUMUL='OUI',COEF_R=1., NOM_CMP='DX',NOM_CMP_RESU='LAGS_C',),
+                             _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Pana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='LAGS_C',),
+                             ),);
+
+     tabP=POST_ELEM(NORME=_F(TYPE_NORM='L2',
+                             GROUP_MA=GROUP_MA_SUR,
+                             CHAM_GD=DIFFPG,
+                             MODELE=MODELE,
+                             ),)
+     NormeL2ErreurP=tabP['VALE_NORM',1]
+     IMPR_TABLE(TABLE=tabP)
 
 
      DETRUIRE(CONCEPT=(_F(NOM=CHXN),
-                        _F(NOM=TEMP1),
-                        _F(NOM=TEMP2),
-                        _F(NOM=CHXG),
-                        _F(NOM=TEMP3),
-                        _F(NOM=UanaG),
-                        _F(NOM=Ucalc1),
-                        _F(NOM=UcalcG),
-                        _F(NOM=DIFFG),
-                        _F(NOM=tab),
+                       _F(NOM=TEMP1),
+                       _F(NOM=TEMP1P),
+                       _F(NOM=TEMP2),
+                       _F(NOM=TEMP2P),
+                       _F(NOM=TEMP3),
+                       _F(NOM=TEMP3P),
+                       _F(NOM=CHXG),
+                       _F(NOM=UanaG),
+                       _F(NOM=PanaG),
+                       _F(NOM=Ucalc1),
+                       _F(NOM=Pcalc1),
+                       _F(NOM=UcalcG),
+                       _F(NOM=PcalcG),
+                       _F(NOM=DIFFUG),
+                       _F(NOM=DIFFPG),
+                       _F(NOM=tabU),
+                       _F(NOM=tabP),
                        ),
                INFO=1,
               );
 
-     return {'NormeL2Erreur':NormeL2Erreur,'Ucalc':Ucalc,'Uana':Uana, 'DIFFN':DIFFN}
+     return {'NormeL2ErreurU':NormeL2ErreurU,'NormeL2ErreurP':NormeL2ErreurP,'Ucalc':Ucalc,'Uana':Uana,'Pcalc':Pcalc,'Pana':Pana, 'DIFFUN':DIFFUN, 'DIFFPN':DIFFPN}
 # ================================================================================================================================================================================
 
 
@@ -178,7 +283,7 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
 DEBUT(CODE=_F(NOM='SSNP150B',NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON',
-      IGNORE_ALARM=('CALCULEL2_63','SUPERVIS_1'))
+      IGNORE_ALARM=('CALCULEL2_63','SUPERVIS_1','CONTACT3_16'))
 
 # importation de sympy
 import sympy,math
@@ -292,6 +397,8 @@ FsurfYH=FORMULE(VALE=str(Fsurf_Haut[1]), NOM_PARA=('X','Y') );
 FsurfTX=FORMULE(VALE=str(Fsurf_BAS_t[0]), NOM_PARA=('X','Y') );
 FsurfTY=FORMULE(VALE=str(Fsurf_BAS_t[1]), NOM_PARA=('X','Y') );
 
+FcontNN=FORMULE(VALE=str(Fsurf_BAS_nn.array.item().subs(Y,0)), NOM_PARA=('X') );
+
 FvolX=FORMULE(VALE=str(Fvol[0]), NOM_PARA=('X','Y') );
 FvolY=FORMULE(VALE=str(Fvol[1]), NOM_PARA=('X','Y') );
 
@@ -307,7 +414,8 @@ Nb_Raffinement=5;
 MA                  =[None]*(Nb_Raffinement);
 MALine              =[None]*(Nb_Raffinement);
 NormeInfErreur      =[None]*(Nb_Raffinement);
-NormeL2Erreur       =[None]*(Nb_Raffinement);
+NormeL2ErreurU      =[None]*(Nb_Raffinement);
+NormeL2ErreurP      =[None]*(Nb_Raffinement);
 NormeInfErreurGauss =[None]*(Nb_Raffinement);
 
 TailleMaille        =[(1./2.**(i+1)) for i in range(Nb_Raffinement)]
@@ -371,9 +479,12 @@ for Raff in range(0,Nb_Raffinement):
                             );
 
    Contact=DEFI_CONTACT(MODELE=modl,
-                        FORMULATION='DISCRETE',
+                        FORMULATION='CONTINUE',
+                        ALGO_RESO_CONT='NEWTON',
                         ZONE=_F(GROUP_MA_MAIT=('MAITRE',),
-                                GROUP_MA_ESCL=('BAS',),),
+                                GROUP_MA_ESCL=('BAS',),
+                                INTEGRATION='GAUSS',
+                                ),
                          );
    
    BlocBase=AFFE_CHAR_CINE(MODELE=modl,
@@ -405,9 +516,10 @@ for Raff in range(0,Nb_Raffinement):
    #          Calcul des normes d'erreur
    # ========================================================================================
 
-   dicResu=NormeAster(EVOLNOLI, [FUx, FUy], MA[Raff], modl, 'SURFACE');
+   dicResu=NormeAster(EVOLNOLI, [FUx, FUy], FcontNN, MA[Raff], modl, 'SURFACE','BAS');
 
-   NormeL2Erreur [Raff]=dicResu['NormeL2Erreur']
+   NormeL2ErreurU [Raff]=dicResu['NormeL2ErreurU']
+   NormeL2ErreurP [Raff]=dicResu['NormeL2ErreurP']
 
 
    # ========================================================================================
@@ -433,7 +545,10 @@ for Raff in range(0,Nb_Raffinement):
                            _F(NOM=EVOLNOLI),
                            _F(NOM=Uana),
                            _F(NOM=Ucalc),
-                           _F(NOM=DIFFN),
+                           _F(NOM=DIFFUN),
+                           _F(NOM=Pana),
+                           _F(NOM=Pcalc),
+                           _F(NOM=DIFFPN),
                            ),
                    INFO=1,
                   );
@@ -442,23 +557,47 @@ for Raff in range(0,Nb_Raffinement):
 # Impression de la courbe de convergence
 #================================================================================================
 
-print 'Norme L2 de l erreur= %e' %dicResu['NormeL2Erreur']
 
-PenteL2=-math.log( NormeL2Erreur[-1]/NormeL2Erreur[-2])/math.log(2.)
-print 'norme L2', NormeL2Erreur
+print 'Norme L2 de l erreur= %e' %dicResu['NormeL2ErreurU']
 
-sous_titre='Element P%i, Ordre de convergence = %f '%(2 , PenteL2)
+PenteL2U=-math.log( NormeL2ErreurU[-1]/NormeL2ErreurU[-2])/math.log(2.)
+PenteL2P=-math.log( NormeL2ErreurP[-1]/NormeL2ErreurP[-2])/math.log(2.)
+
+
+print 'norme L2 U', NormeL2ErreurU
+
+
+sous_titreU='Element P%i, Ordre de convergence = %f '%(2 , PenteL2U)
+sous_titreP='Element P%i, Ordre de convergence = %f '%(2 , PenteL2P)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=82,
               PILOTE='EPS',
               BORNE_X=(min(TailleMaille)*0.7,max(TailleMaille)*1.3),
-              BORNE_Y=(min(NormeL2Erreur)*0.7,max(NormeL2Erreur)*1.3),
+              BORNE_Y=(min(NormeL2ErreurU)*0.7,max(NormeL2ErreurU)*1.3),
               COURBE=(_F(ABSCISSE=TailleMaille,
-                         ORDONNEE=NormeL2Erreur,
-                         ),),
+                         ORDONNEE=NormeL2ErreurU,
+                         ),
+                     ),
               TITRE='Erreur ||\qU\sh\N-\2U\N\Q || en norme L\s2\N',
-              SOUS_TITRE=sous_titre,
+              SOUS_TITRE=sous_titreU,
+              LEGENDE_X='h',
+              LEGENDE_Y='L\s2\N(Erreur)',
+              ECHELLE_X='LOG',
+              ECHELLE_Y='LOG',
+              INFO=2,)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=83,
+              PILOTE='EPS',
+              BORNE_X=(min(TailleMaille)*0.7,max(TailleMaille)*1.3),
+              BORNE_Y=(min(NormeL2ErreurP)*0.7,max(NormeL2ErreurP)*1.3),
+              COURBE=(_F(ABSCISSE=TailleMaille,
+                         ORDONNEE=NormeL2ErreurP,
+                         ),
+                     ),
+              TITRE='Erreur ||\qP\sh\N-\2P\N\Q || en norme L\s2\N',
+              SOUS_TITRE=sous_titreP,
               LEGENDE_X='h',
               LEGENDE_Y='L\s2\N(Erreur)',
               ECHELLE_X='LOG',
@@ -467,20 +606,75 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 
 
 
+# Impression des deplacements
+# ----------------------------
+IMPR_RESU(FORMAT='GMSH',
+          UNITE=80,
+          RESU=(_F(CHAM_GD=dicResu['Ucalc'], NOM_CMP=('DX','DY'),TYPE_CHAM='VECT_2D'),
+                _F(CHAM_GD=dicResu['Uana'],  NOM_CMP=('DX','DY'),TYPE_CHAM='VECT_2D'),
+                _F(CHAM_GD=dicResu['DIFFUN'],NOM_CMP=('DX','DY'),TYPE_CHAM='VECT_2D'),
+               ),
+          );
+
+
+# Impression de la pression de contact
+# -------------------------------------
+
+# Pression issue du calcul
+# ------------------------------
+MA[Nb_Raffinement-1]=DEFI_GROUP(reuse =MA[Nb_Raffinement-1],
+                                MAILLAGE=MA[Nb_Raffinement-1],
+                                CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                                                 NOM='BAS_ord',
+                                                 GROUP_MA='BAS',),);
+
+PCalcTab=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='EXTRAPOL',
+                                 CHAM_GD=Pcalc,
+                                 GROUP_NO='BAS_ord',
+                                 NOM_CMP='LAGS_C',),);
+
+LAGSC=RECU_FONCTION(TABLE=PCalcTab,
+                    PARA_X='COOR_X',
+                    PARA_Y='LAGS_C',);
+
+
+# Pression de contact analytique
+# ------------------------------
+lt = DEFI_LIST_REEL(DEBUT = 0., INTERVALLE=_F(JUSQU_A=1., NOMBRE=20),)
+Exact=CALC_FONC_INTERP(FONCTION = FcontNN,
+                       LIST_PARA = lt,)
+
+# Impression de la pression de contact
+# -------------------------------------
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=84,
+              PILOTE='EPS',
+              BORNE_X=(0.,1.),
+              COURBE=(_F(FONCTION=Exact,),_F(FONCTION=LAGSC,)),
+              TITRE='Pression de contact',
+              LEGENDE_X='X',
+              LEGENDE_Y='Lambda',
+              )
+
+
 #================================================================================================
 #               Verifications
 #================================================================================================
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFFN,
+# Deplacement
+# -----------
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFFUN,
                      REFERENCE= 'ANALYTIQUE', PRECISION= 5.E-11    ,
-                     TYPE_TEST= 'MAX', VALE=  3.555450192403E-07 ),
+                     TYPE_TEST= 'MAX', VALE=  3.5625745143514E-07 ),
           )
 
 # On cree une liste bidon pour pouvoir
 # definir une fonction testable par TEST_RESU
 BIDON=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0., 1.,
-                          1., PenteL2));
+                          1., PenteL2U));
 
 TEST_FONCTION(VALEUR=_F(FONCTION = BIDON,
                         PRECISION = 1.E-2,
@@ -489,13 +683,22 @@ TEST_FONCTION(VALEUR=_F(FONCTION = BIDON,
                         VALE_REFE = 3.,)
               )
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=(_F(CHAM_GD=dicResu['Ucalc'],),
-                _F(CHAM_GD=dicResu['Uana'],),
-                _F(CHAM_GD=dicResu['DIFFN'],),
-               ),
-          );
+
+# Pression de contact
+# -------------------
+
+# On cree une liste bidon pour pouvoir
+# definir une fonction testable par TEST_RESU
+BIDONP=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0., 1.,
+                           1., PenteL2P));
+
+TEST_FONCTION(VALEUR=_F(FONCTION = BIDONP,
+                        PRECISION = 1.E-8,
+                        VALE_PARA = 1.,
+                        REFERENCE = 'NON_REGRESSION',
+                        VALE_REFE = 2.60378582,)
+              );
 
 
 FIN();

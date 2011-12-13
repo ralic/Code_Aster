@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/11/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,9 +51,7 @@ def l_nom_cham_pas_elga(): return (
      "DURT_ELNO",
      "DURT_NOEU",
      "ECIN_ELEM",
-     "EFCA_ELNO",
      "EFGE_ELNO",
-     "EFCA_NOEU",
      "EFGE_NOEU",
      "ENDO_ELNO",
      "ENDO_NOEU",
@@ -102,8 +100,6 @@ def l_nom_cham_pas_elga(): return (
      "IRRA",
      "META_ELNO",
      "META_NOEU",
-     "PMPB_ELNO",
-     "PMPB_NOEU",
      "PRES",
      "PRME_ELNO",
      "PRAC_ELNO",
@@ -113,10 +109,7 @@ def l_nom_cham_pas_elga(): return (
      "SIEF_ELNO",
      "SIEF_NOEU",
      "SIEF_NOEU",
-     "SICA_ELNO",
      "SIGM_ELNO",
-     "SITU_ELNO",
-     "SICA_NOEU",
      "SIGM_NOEU",
      "SIZ1_NOEU",
      "SIZ2_NOEU",
@@ -126,9 +119,7 @@ def l_nom_cham_pas_elga(): return (
      "THETA",
      "VALE_CONT",
      "VARI_ELNO",
-     "VACO_ELNO",
      "VARI_ELNO",
-     "VATU_ELNO",
      "VARI_NOEU",
      "VARI_NOEU",
      "VITE",

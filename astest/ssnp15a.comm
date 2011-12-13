@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 # ssnp15a.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -273,9 +273,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('DERA_ELGA'),
-                   # 'DERA_ELNO',
-                                 );
+            OPTION=('DERA_ELGA','DERA_ELNO'),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,

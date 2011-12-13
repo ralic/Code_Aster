@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # TITRE CYLINDRE CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 # ssna104b.para = tps_job 150 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,11 +38,18 @@ MO = AFFE_MODELE( MAILLAGE =MA,
                        MODELISATION = 'AXIS',)
                  )
 
-CHAM=CREA_CHAMP(  OPERATION='AFFE',
-                      TYPE_CHAM='CART_IRRA_R',
+IRRA_0=CREA_CHAMP(  OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA',
-                            VALE = 1,))
+                            VALE = 0.0 ,))
+
+IRRA_1=CREA_CHAMP(  OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA',
+                            VALE = 0.9 ,))
+
 MAT = DEFI_MATERIAU(
             ELAS=_F( E = 1., NU = 0.3, ALPHA = 0.),
             LEMA_SEUIL=_F( A=0.866025403785,S=1.E-10)
@@ -70,8 +77,13 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
 
 FLUENC=CREA_RESU(
                       OPERATION='AFFE', TYPE_RESU='EVOL_VARC',
-                      NOM_CHAM='IRRA',AFFE=_F( CHAM_GD = CHAM,LIST_INST=L_INST)
-                    )
+                      NOM_CHAM='IRRA',
+                      AFFE=(
+                      _F( CHAM_GD = IRRA_0, INST= 0.0 ),
+                      _F( CHAM_GD = IRRA_1, INST= 0.9 ),
+                          )
+                      )
+
 CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
           AFFE =_F(TOUT='OUI',  MATER = MAT),
           AFFE_VARC=_F(NOM_VARC='IRRA', EVOL =FLUENC, ),

@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -282,16 +282,29 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 
 68 : _(u"""
- Le noeud origine  %(k1)s ne fait pas partie du chemin.
+ Le noeud origine ou extrémité %(k1)s ne fait pas partie des mailles de la ligne.
 """),
 
 69 : _(u"""
- Le noeud origine  %(k1)s  n'est pas une extrémité.
+ Le noeud origine ou extrémité  %(k1)s  n'est pas une extrémité de la ligne.
 """),
 
+70 : _(u"""
+ Alarme DEFI_GROUP / CREA_GROUP_NO / OPTION='NOEUD_ORDO' :
+   Le groupe de mailles spécifié forme une ligne fermée (NOEUD_ORIG et NOEUD_EXTR identiques).
+   Vous n'avez pas renseigné le mot clé VECT_ORIE. La ligne est donc orientée arbitrairement.
+"""),
 
 71 : _(u"""
- La recherche du noeud origine échoue
+ Erreur utilisateur :
+   On cherche à orienter une ligne (un ensemble de segments).
+   La recherche du noeud "origine" de la ligne échoue.
+
+ Conseil :
+   La ligne est peut-être une ligne fermée (sans extrémités).
+   Il faut alors utiliser les mots clés GROUP_NO_ORIG et GROUP_NO_EXTR
+   (ou NOEUD_ORIG et NOEUD_EXTR).
+
 """),
 
 72 : _(u"""
@@ -309,9 +322,9 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
  le noeud extrémité  %(k1)s  n'est pas le dernier noeud
 """),
 
-78 : _(u"""
- GROUP_NO orienté : noeud extrémité =  %(k1)s
-"""),
+
+
+
 
 83 : _(u"""
  Le type des mailles des lèvres doit être quadrangle ou triangle.

@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 21/06/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -403,7 +403,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
                       TOUT_ORDRE = 'OUI'  ,
-                      OPTION     = ('SIEF_ELNO','VARI_ELNO','SIEQ_ELNO') ,
+                      OPTION     = ('SIGM_ELNO','VARI_ELNO','SIEQ_ELNO') ,
                       INFO       = INFO ,)
 #
 #-----------------------------------------------------------------------
@@ -436,7 +436,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       mcsimp['GROUP_NO' ]='LD'+str(i)
       mcfact.append( _F( RESULTAT   = nomres,
                          TOUT_ORDRE ='OUI',
-                         NOM_CHAM   ='SIEF_ELNO',
+                         NOM_CHAM   ='SIGM_ELNO',
                          PRECISION  =55.E-1,
                          TOUT_CMP   ='OUI',
                          OPERATION  ='EXTRACTION',**mcsimp))
@@ -463,7 +463,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         mcsimp['GROUP_NO'   ]='LD'+str(i)
         mcsimp['RESULTAT'   ]=nomres
         mcsimp['TOUT_ORDRE' ]='OUI'
-        mcsimp['NOM_CHAM'   ]='SIEF_ELNO'
+        mcsimp['NOM_CHAM'   ]='SIGM_ELNO'
         mcsimp['PRECISION'  ]=55.E-1
         mcsimp['TOUT_CMP'   ]='OUI'
         mcsimp['OPERATION'  ]='EXTRACTION'
@@ -530,7 +530,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       mcsimp['GROUP_NO'   ]='LI'+str(i)
       mcsimp['RESULTAT'   ]=nomres
       mcsimp['TOUT_ORDRE' ]='OUI'
-      mcsimp['NOM_CHAM'   ]='SIEF_ELNO'
+      mcsimp['NOM_CHAM'   ]='SIGM_ELNO'
       mcsimp['PRECISION'  ]=55.E-1
       mcsimp['TOUT_CMP'   ]='OUI'
       mcsimp['REPERE'     ]='LOCAL'
@@ -553,7 +553,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         mcsimp['GROUP_NO'   ]='LI'+str(i)
         mcsimp['RESULTAT'   ]=nomres
         mcsimp['TOUT_ORDRE' ]='OUI'
-        mcsimp['NOM_CHAM'   ]='SIEF_ELNO'
+        mcsimp['NOM_CHAM'   ]='SIGM_ELNO'
         mcsimp['PRECISION'  ]=55.E-1
         mcsimp['TOUT_CMP'   ]='OUI'
         mcsimp['OPERATION'  ]='EXTRACTION'

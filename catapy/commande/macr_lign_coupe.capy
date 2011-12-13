@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,8 +101,19 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
              GROUP_NO        =SIMP(statut='o',typ=grno, max=1),),
 
            b_grma          =BLOC(condition = "TYPE=='GROUP_MA'",
+                                 regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),
+                                         EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
              GROUP_MA        =SIMP(statut='o',typ=grma, max=1),
-             MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),),
+             MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
+             # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine:
+             # si le groupe de mailles forme une ligne fermée, il FAUT choisir l'origine et l'extrémité (= origine):
+             NOEUD_ORIG      =SIMP(statut='f',typ=no),
+             GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
+             NOEUD_EXTR      =SIMP(statut='f',typ=no),
+             GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
+             # si le groupe de mailles forme une ligne fermée, on peut choisir le sens de parcours
+             VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilisé seulement si NOEUD_ORIG=NOEUD_EXTR
+             ),
 
            b_segment       =BLOC(condition = "TYPE=='SEGMENT'",
              NB_POINTS       =SIMP(statut='o',typ='I',max=1),

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,31 +140,12 @@ CALC_ELEM( reuse=MEST1,
                       RESULTAT=MEST1,
                       OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
 
-CALC_ELEM( reuse=MEST1,
-                     RESULTAT=MEST1,
-                       OPTION='EFCA_ELNO'    )
-
-TEST_RESU(RESU=(
-      _F(  RESULTAT = MEST1,     NOM_CHAM = 'EFCA_ELNO',
-             NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
-             NOM_CMP = 'FX',       VALE = 5.77350E-01, REFERENCE = 'ANALYTIQUE'),
-           _F(  RESULTAT = MEST1,     NOM_CHAM = 'EFCA_ELNO',
-             NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
-             NOM_CMP = 'FY',       VALE = 5.77350E-01, REFERENCE = 'ANALYTIQUE'),
-           _F(  RESULTAT = MEST1,     NOM_CHAM = 'EFCA_ELNO',
-             NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
-             NOM_CMP = 'FZ',       VALE = 5.77350E-01, REFERENCE = 'ANALYTIQUE'),)
-          )
-
 RESU2=MODI_REPERE(
                   RESULTAT    = MEST1,
                   NUME_ORDRE  = 1,
                   MODI_CHAM  = (_F(NOM_CHAM   = 'DEPL',
                                    NOM_CMP    = ('DX','DY','DZ',),
-                                   TYPE_CHAM  = 'VECT_3D',),
-                                _F(NOM_CHAM   = 'EFCA_ELNO',
-                                   NOM_CMP    = ('FX','FY','FZ','MX','MY','MZ',),
-                                   TYPE_CHAM  = 'TORS_3D',),),
+                                   TYPE_CHAM  = 'VECT_3D',),),
                    REPERE    = 'UTILISATEUR',
                    AFFE = _F(
                                    ANGL_NAUT = (0.,0.,0.,),
@@ -184,22 +165,6 @@ TEST_RESU(RESU=(
  _F(  RESULTAT = RESU2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
         NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 2.8867514E-10,
         PRECISION = 1.E-13, CRITERE = 'ABSOLU', REFERENCE = 'ANALYTIQUE'),),)
-
-TEST_RESU(RESU=(
-
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         REFERENCE = 'NON_REGRESSION',
-         RESULTAT = RESU2, NOM_CHAM = 'EFCA_ELNO',   NUME_ORDRE = 1,
-         NOEUD = 'N1',  MAILLE = 'S11', NOM_CMP = 'FX', VALE = 5.77350E-1),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         REFERENCE = 'NON_REGRESSION',
-         RESULTAT = RESU2, NOM_CHAM = 'EFCA_ELNO',   NUME_ORDRE = 1,
-         NOEUD = 'N1',  MAILLE = 'S11',   NOM_CMP = 'FY', VALE = 5.77350E-1),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         REFERENCE = 'NON_REGRESSION',
-         RESULTAT = RESU2, NOM_CHAM = 'EFCA_ELNO',   NUME_ORDRE = 1,
-         NOEUD = 'N1',  MAILLE = 'S11',   NOM_CMP = 'FZ', VALE = 5.77350E-1),
-          ),)
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = MEST1, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,

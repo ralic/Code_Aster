@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/11/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -218,6 +218,17 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para) :
                                PARA='G'),))
 
    return tabout
+
+#---------------------------------------------------------------------------------------------------------------
+
+def verif_config_init(FOND_FISS) :
+   from Utilitai.Utmess     import  UTMESS
+   import aster
+
+   iret,ibid,config = aster.dismoi('F','CONFIG_INIT',FOND_FISS.nom,'FOND_FISS')
+   if config != 'COLLEE' :
+      UTMESS('F','RUPTURE0_16')
+
 
 #---------------------------------------------------------------------------------------------------------------
 
@@ -1924,6 +1935,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       MAILLAGE = self.get_concept(nom_ma.strip())
 
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
+
+#     Verification que les levres sont bien en configuration initiale collees
+#     -----------------------------------------------------------------------
+
+      verif_config_init(FOND_FISS)
+
 
 #     Verification du type des mailles de FOND_FISS
 #     ---------------------------------------------

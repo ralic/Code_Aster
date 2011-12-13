@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE calcul non lineaire mecanique avec changement de maillage
 # zzzz253a.para = tps_job 60 mem_job 32Mo mem_aster 90 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,7 +83,7 @@ FMULT=DEFI_FONCTION(NOM_PARA='INST',  VALE=(0.0,  0.0,    1.0,  1.))
 #-------------------------------------------------
 RESU1=STAT_NON_LINE(MODELE=MO1,  CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=BLOQ1,),_F(CHARGE=CHARG1,  FONC_MULT=FMULT,),),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=L_INST, ),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                    CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
@@ -110,7 +110,7 @@ if 0 :  # pour verifier que le calcul sans projection est bien fichu : champs un
 #-------------------------------------------------
 RESU2=STAT_NON_LINE(MODELE=MO2,  CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=BLOQ2,),_F(CHARGE=CHARG2,  FONC_MULT=FMULT,),),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=L_INST, ),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                    CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
@@ -122,7 +122,7 @@ RESU2=STAT_NON_LINE(MODELE=MO2,  CHAM_MATER=CHMAT,
 #-------------------------------------------------
 RESU3A=STAT_NON_LINE(MODELE=MO1,  CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=BLOQ1,),_F(CHARGE=CHARG1,  FONC_MULT=FMULT,),),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=L_INST, INST_FIN=inst1 ),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                    CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
@@ -150,7 +150,7 @@ RESU3=STAT_NON_LINE(MODELE=MO2,  CHAM_MATER=CHMAT,
                    ETAT_INIT=_F(DEPL=U, SIGM=SIGELNO, VARI=VARELNO),
 
                    EXCIT=(_F(CHARGE=BLOQ2,),_F(CHARGE=CHARG2,  FONC_MULT=FMULT,),),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                    CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
                    SOLVEUR=_F(METHODE='GCPC',

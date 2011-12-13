@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,8 +94,7 @@ RESUS=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHAS,
                             FONC_MULT=F,),
-                   COMP_INCR=_F(RELATION='DRUCK_PRAGER',
-                                RESI_INTE_RELA = 1.E-8),
+                   COMP_INCR=_F(RELATION='DRUCK_PRAGER'),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.,),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -173,8 +172,7 @@ RESU2 = STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       EXCIT=_F(CHARGE=CHA2,
                                FONC_MULT=F,),
-                      COMP_INCR=_F(RELATION='DRUCK_PRAGER',
-                                   RESI_INTE_RELA = 1.E-8),
+                      COMP_INCR=_F(RELATION='DRUCK_PRAGER'),
                       INCREMENT=_F(LIST_INST=L_INST,
                                    INST_FIN=1.,),
                       NEWTON=_F(MATRICE='TANGENTE',

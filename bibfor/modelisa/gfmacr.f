@@ -1,0 +1,156 @@
+      SUBROUTINE GFMACR(NOMA  ,NBMAIL,NBNOEU,NBNOMA,NBGRFI)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C-----------------------------------------------------------------------
+C
+      IMPLICIT NONE
+C     IN
+      INTEGER         NBMAIL,NBNOEU,NBNOMA,NBGRFI
+      CHARACTER*8     NOMA
+C
+C     ------------------------------------------------------------------
+C     CREATION DES DIFFERENTS ATTRIBUTS DE MAILLAGE DU MAILLAGE GLOBAL
+C     DES SECTIONS DE POUTRES MULTIFIBRES (DEFI_GEOM_FIBRE)
+C     ------------------------------------------------------------------
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+
+C
+C ----- DECLARATIONS
+C
+      INTEGER         IADIME,I,ICOVAL,ITITR,J,NTGEO,IAD,JBID
+      CHARACTER*8     KNOEU
+      CHARACTER*24    NOMMAI,NOMNOE,COOVAL,GRPMAI,CONNEX,TITRE,TYPMAI
+      CHARACTER*24    DIME,COOREF,COODSC
+
+      CHARACTER*32    JEXNOM,JEXNUM
+
+      CALL JEMARQ ( )
+
+
+
+C
+C     CONSTRUCTION DES NOMS JEVEUX POUR L OBJET-MAILLAGE
+C     --------------------------------------------------
+C               123456789012345678901234
+      DIME    = NOMA// '.DIME           '
+      NOMMAI  = NOMA// '.NOMMAI         '
+      NOMNOE  = NOMA// '.NOMNOE         '
+      COOVAL  = NOMA// '.COORDO    .VALE'
+      COODSC  = NOMA// '.COORDO    .DESC'
+      COOREF  = NOMA// '.COORDO    .REFE'
+      GRPMAI  = NOMA// '.GROUPEMA       '
+      CONNEX  = NOMA// '.CONNEX         '
+      TITRE   = NOMA// '           .TITR'
+      TYPMAI  = NOMA// '.TYPMAIL        '
+
+
+C
+C -     OBJET TITRE             = VECTEUR DE K80
+C
+
+        CALL WKVECT(TITRE,'G V K80',1,ITITR)
+        ZK80(ITITR)='MAILLAGE GLOBAL DES SECTIONS DE POUTRES'
+
+C
+C --- CREATION DE L'OBJET .DIME :
+C     -------------------------
+        CALL WKVECT(DIME,'G V I',6,IADIME)
+        ZI(IADIME-1+1)= NBNOEU
+        ZI(IADIME-1+3)= NBMAIL
+        ZI(IADIME-1+6)= 2
+C
+C -   OBJET NOMMAI    = REPERTOIRE NOMS DE MAILLES  K8 SUR GLOBALE
+C
+        CALL JECREO(NOMMAI,'G N K8')
+        CALL JEECRA(NOMMAI,'NOMMAX',NBMAIL,' ')
+C
+C -   OBJET NOMNOE    = REPERTOIRE NOMS DE NOEUDS K8 SUR GLOBALE
+C
+        CALL JECREO(NOMNOE,'G N K8')
+        CALL JEECRA(NOMNOE,'NOMMAX',NBNOEU,' ')
+C       REMPLISSAGE DU REPERTOIRE AVEC LES NOMS DES NOEUDS
+        DO 10 I=1,NBNOEU
+          KNOEU='N0000000'
+          WRITE(KNOEU(2:8),'(I7.7)')I
+          CALL JECROC(JEXNOM(NOMNOE,KNOEU))
+  10    CONTINUE
+C
+C -   OBJET CONNEX
+C
+        CALL JECREC(CONNEX,'G V I','NU','CONTIG','VARIABLE',NBMAIL)
+        CALL JEECRA(CONNEX,'LONT',NBNOMA,' ')
+
+C
+C -   OBJET TYPMAI
+C
+        CALL JECREO(TYPMAI,'G V I')
+        CALL JEECRA(TYPMAI,'LONMAX',NBMAIL,' ')
+
+C
+C -   OBJET COOR     .VALE
+C
+        CALL WKVECT(COOVAL,'G V R',3*NBNOEU,ICOVAL)
+
+C
+C -     OBJET COORDO.DESC = VECTEUR 3*IS DESCRIPTEUR DU CHAMP
+C
+C -     RECUPERATION DU NUMERO IDENTIFIANT LE TYPE DE CHAM_NO GEOMETRIE
+C
+        CALL JENONU(JEXNOM('&CATA.GD.NOMGD','GEOM_R'),NTGEO)
+C
+        CALL JECREO(COODSC,'G V I')
+        CALL JEECRA(COODSC,'LONMAX',3,' ')
+        CALL JEECRA(COODSC,'DOCU',0,'CHNO')
+        CALL JEVEUO(COODSC,'E',IAD)
+        ZI(IAD)   =  NTGEO
+        ZI(IAD+1) = -3
+        ZI(IAD+2) = 14
+C
+C -     OBJET COORDO.REFE = VECTEUR 2*K24 NOM DU MAILLAGE !!!
+C
+        CALL WKVECT(COOREF,'G V K24',4,IAD)
+        ZK24(IAD) = NOMA
+
+C
+C -     OBJET GROUPEMA  = FAMILLE CONTIGUE DE VECTEURS N*IS
+C
+
+      CALL JECREC(GRPMAI,'G V I','NO','DISPERSE','VARIABLE',NBGRFI)
+
+
+      CALL JEDEMA ( )
+      END

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE VON-MISES ISOT LINEAIRE)
 # sensm08a.para = tps_job 60 mem_job 64Mo liste_test R
@@ -90,8 +90,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                RESI_INTE_RELA = 1.E-8),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.,),
                    NEWTON=_F(MATRICE='TANGENTE',

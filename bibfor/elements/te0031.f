@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,11 +59,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO,IND
-      INTEGER      MULTIC,JTAB1(7),JTAB2(7),CODRET,JDEPM,JDEPR
+      INTEGER      MULTIC,CODRET,JDEPM,JDEPR
       INTEGER      ICOMPO,I1,I2,J,JVECT,JVAPR
-      INTEGER      ICHG,ICHN,NCMP,K,JCRET,JFREQ,IACCE
+      INTEGER      ICHN,K,JCRET,JFREQ,IACCE
       INTEGER      JMATE,JGEOM,JMATR,JENER,I,JCARA
-      INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP,LGPG1,LGPG2
+      INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP
       INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2)
       LOGICAL      LCOELA
       INTEGER CODRE2(33),CODRE1,IBID
@@ -149,15 +149,13 @@ C       ----------------------------------
         ENDIF
       ENDIF
 C
-      IF ( OPTION.NE.'VARI_ELNO' ) THEN
-         CALL JEVECH('PGEOMER','L',JGEOM)
-         IF (NNO.EQ.3) THEN
-            CALL DXTPGL ( ZR(JGEOM), PGL )
-         ELSE IF (NNO.EQ.4) THEN
-            CALL DXQPGL ( ZR(JGEOM), PGL )
-         END IF
-         CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
+      CALL JEVECH('PGEOMER','L',JGEOM)
+      IF (NNO.EQ.3) THEN
+         CALL DXTPGL ( ZR(JGEOM), PGL )
+      ELSE IF (NNO.EQ.4) THEN
+         CALL DXQPGL ( ZR(JGEOM), PGL )
       END IF
+      CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
 C
       IF ( OPTION.EQ.'RIGI_MECA'      .OR.
      &     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
@@ -365,23 +363,6 @@ C     ------------------------------------------
           CALL DXEFRO ( NPG, T2VE, EFFINT, EFFGT )
           CALL JEVECH ( 'PEFFORR', 'E', ICHN   )
           CALL PPGAN2 ( JGANO, 1, IND, EFFGT, ZR(ICHN) )
-C
-C
-      ELSEIF ( OPTION.EQ.'VARI_ELNO' ) THEN
-C     ------------------------------------------
-          CALL JEVECH ( 'PVARIGR', 'L', ICHG )
-          CALL JEVECH ( 'PVARINR', 'E', ICHN )
-
-          CALL TECACH('OON','PVARIGR',7,JTAB1,IRET)
-          CALL TECACH('OON','PVARINR',7,JTAB2,IRET)
-          LGPG1= MAX(JTAB1(6),1)*JTAB1(7)
-          LGPG2= MAX(JTAB2(6),1)*JTAB2(7)
-
-          CALL ASSERT(LGPG1.EQ.LGPG2)
-
-          NCMP = JTAB2(6)*JTAB2(7)
-
-          CALL PPGAN2 ( JGANO, 1, NCMP, ZR(ICHG), ZR(ICHN))
 C
 C
       ELSEIF ( OPTION.EQ.'FORC_NODA' ) THEN

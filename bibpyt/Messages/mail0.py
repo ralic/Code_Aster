@@ -1,4 +1,4 @@
-#@ MODIF mail0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mail0 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,13 +29,9 @@ Risque & conseils :
    Dans une grille, un noeud est commun à 12 faces.
 """),
 
-12 : _(u"""
- L'option %(k1)s ne traite pas les macro-commandes mailles
-"""),
 
-13 : _(u"""
- L'option %(k1)s ne traite pas les ABSC_CURV
-"""),
+
+
 
 14 : _(u"""
  Le mot-clé MAILLAGE est obligatoire avec le mot-clé %(k1)s.

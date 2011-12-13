@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102d.para = tps_job 70 mem_job 100Mo ncpus 1 liste_test S
@@ -147,14 +147,17 @@ CONT = DEFI_CONTACT(MODELE      = MOD,
                              _F(
                                  GROUP_MA_MAIT = 'LAB1S',
                                  GROUP_MA_ESCL = 'CEP2S',
+                                 CONTACT_INIT  = 'NON',
                                ),
                              _F(
                                  GROUP_MA_MAIT = 'CME2S',
                                  GROUP_MA_ESCL = 'CEP3S',
+                                 CONTACT_INIT  = 'NON',
                                ),
                              _F(
                                  GROUP_MA_MAIT = 'CME3S',
                                  GROUP_MA_ESCL = 'LCD4S',
+                                 CONTACT_INIT  = 'NON',
                                ),
                            ),
                     )

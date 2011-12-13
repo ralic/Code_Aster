@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -203,10 +203,15 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                      EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
              NOM             =SIMP(statut='o',typ=geom),
              GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
+             # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine:
+             # si le groupe de mailles forme une ligne fermée, il FAUT choisir l'origine et l'extrémité (= origine):
              NOEUD_ORIG      =SIMP(statut='f',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
              NOEUD_EXTR      =SIMP(statut='f',typ=no),
              GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
+             # si le groupe de mailles forme une ligne fermée, on peut choisir le sens de parcours :
+             VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilisé seulement si NOEUD_ORIG=NOEUD_EXTR
+
            ),
            b_tunnel    =BLOC(condition = "OPTION == 'TUNNEL'",
              regles=(AU_MOINS_UN ('TOUT','GROUP_MA','MAILLE'),

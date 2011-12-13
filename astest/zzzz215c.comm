@@ -1,9 +1,9 @@
-# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
 # zzzz215c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,8 +31,7 @@ DEBUT(CODE=_F(NOM='ZZZZ215C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 # LECTURE DU RESULTAT DE PRESSION DE CODE_SATURNE
 # ==============================================================
 
-MAFLUIDE=LIRE_MAILLAGE(UNITE=22,
-                       FORMAT='MED',);
+MAFLUIDE=LIRE_MAILLAGE(UNITE=22, FORMAT='MED',);
 
 MOFLUIDE=AFFE_MODELE(MAILLAGE=MAFLUIDE,
                   AFFE=_F(TOUT='OUI',
@@ -51,45 +50,31 @@ RES_PRES=LIRE_RESU(TYPE_RESU='EVOL_CHAR',
                    );
 
 
-#IMPR_RESU(FORMAT='GMSH',
-#          UNITE=97,
-#          RESU=_F(RESULTAT=RES_PRES,
-#                  ),);
-
-
 # ==============================================================
 # EXPLOITATION DE CET EVOL_CHAR DANS UN CALCUL MECANIQUE
 #   - on projete la pression fluide sur le maillage mecanique
 #   - on cree un evol_char utilise pour la resolution
 # ==============================================================
 
-MASOLIDE=LIRE_MAILLAGE(UNITE=23,
-                       FORMAT='MED',);
+MASOLIDE=LIRE_MAILLAGE(UNITE=23, FORMAT='MED',);
 
 MOSOLIDE=AFFE_MODELE(MAILLAGE=MASOLIDE,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D',),);
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=1.,
-                            NU=0.3,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=1., NU=0.3,),);
 
-MATER=AFFE_MATERIAU(MAILLAGE=MASOLIDE,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+MATER=AFFE_MATERIAU(MAILLAGE=MASOLIDE, AFFE=_F(TOUT='OUI',  MATER=ACIER,),);
 
-RES_PROJ=PROJ_CHAMP(METHODE='COLLOCATION',
-                    RESULTAT=RES_PRES,
-                    MODELE_1=MOFLUIDE,
-                    MODELE_2=MOSOLIDE,
-                    TOUT_ORDRE='OUI',
-                    VIS_A_VIS=_F(TOUT_1='OUI',
-                                 GROUP_MA_2=('Face1','Face3','Face5','Face6',),),
+RES_PROJ=PROJ_CHAMP(METHODE='COLLOCATION',  RESULTAT=RES_PRES, PROL_ZERO='OUI',
+                    MODELE_1=MOFLUIDE,  MODELE_2=MOSOLIDE, TOUT_ORDRE='OUI',
+                    VIS_A_VIS=_F(TOUT_1='OUI',  GROUP_MA_2=('Face1','Face3','Face5','Face6',),),
                     );
 
-#IMPR_RESU(FORMAT='GMSH',
-#          UNITE=98,
-#          RESU=_F(RESULTAT=RES_PROJ,),);
+#IMPR_RESU(FORMAT='RESULTAT', UNITE=81, RESU=_F(RESULTAT=RES_PROJ,INST=1., GROUP_MA=('Face1','Face3','Face5','Face6',),),);
+#IMPR_RESU(FORMAT='RESULTAT', UNITE=81, RESU=_F(RESULTAT=RES_PROJ,INST=1., GROUP_MA=('Face2','Face4',),),);
+
 
 CHA_PROJ=AFFE_CHAR_MECA(MODELE=MOSOLIDE,
                         EVOL_CHAR=RES_PROJ,);
@@ -128,30 +113,20 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=1.,
                    NOM_CHAM='DEPL',
                    REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N134',NOM_CMP='DX',
-                   VALE=1.1452507566622E+04,
-                   PRECISION=0.49E-2,
-                   VERSION='8.02.12',),
+                   NOEUD='N134',NOM_CMP='DX',
+                   VALE=    19244.003483488  ,   PRECISION=3.E-2, ),
                 _F(RESULTAT=RESU,
                    INST=1.,
                    NOM_CHAM='DEPL',
                    REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N134',NOM_CMP='DY',
-                   VALE=-9.2224667357161E+03,
-                   PRECISION=0.371E-2,
-                   VERSION='8.02.12',),
+                   NOEUD='N134',NOM_CMP='DY',
+                   VALE=    -12995.214902305 ,   PRECISION=3.E-2, ),
                 _F(RESULTAT=RESU,
                    INST=1.,
                    NOM_CHAM='DEPL',
                    REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N134',NOM_CMP='DZ',
-                   VALE=4.2325358330346E+03,
-                   PRECISION=2.78E-2,
-                   VERSION='8.02.12',)
+                   NOEUD='N134',NOM_CMP='DZ',
+                   VALE=     3911.0523216041 ,   PRECISION=3.E-2, )
                    ))
-
-#IMPR_RESU(FORMAT='GMSH',
-#          UNITE=99,
-#          RESU=_F(RESULTAT=RESU,),);
 
 FIN();

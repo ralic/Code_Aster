@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/11/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,13 +63,16 @@ C
       CHARACTER*19 LERES1,LIGRE1,LIGRE2
       CHARACTER*24 NORECG,VALK(4)
       INTEGER      IARG
-C
+
+
+
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL TITRE()
       LELGA = .FALSE.
-C
+
+
 C     0- CALCUL DE TYPCAL =
 C     ------------------------------------------------------------
 C       / '1ET2' : ON CALCULE LA SD_CORRESP_2_MAILLA ET ON PROJETTE
@@ -399,16 +402,7 @@ C     ============= FIN DE LA BOUCLE SENSIBILITE
 
       IF (LELGA) THEN
         CALL DETRSD('CORRESP_2_MAILLA',LCORRE(2))
-        CALL JEDETR(LCORRE(2)//'.PJEF_MP')
-        CALL JEDETR(LCORRE(2)//'.PJEF_EL')
-        CALL JEDETR('&&PJELC2.DIME')
-        CALL JEDETR('&&PJELC2.NOMNOE')
-        CALL JEDETR('&&PJELC2.NOMMAI')
-        CALL JEDETR('&&PJELC2.CONNEX')
-        CALL JEDETR('&&PJELC2.TYPMAIL')
-        CALL JEDETR('&&PJELC2.COORDO    .REFE')
-        CALL JEDETR('&&PJELC2.COORDO    .VALE')
-        CALL JEDETR('&&PJELC2.COORDO    .DESC')
+        CALL DETRSD('MAILLAGE','&&PJELC2')
       ENDIF
 
       CALL JEDEMA()

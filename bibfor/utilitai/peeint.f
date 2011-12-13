@@ -4,7 +4,7 @@
       CHARACTER*8       MODELE
       CHARACTER*19      RESU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMPA1(NBPA1),NOMPA2(NBPA2),OPTIO2
       CHARACTER*19 KNUM,CHAM,KINS,LISINS,CHAMG,CELMOD,LIGREL,TMPCHA
       CHARACTER*19 CHAM2,CHAMTM, LIGTMP
-      CHARACTER*24 NOMCHA
+      CHARACTER*24 NOMCHA,VALK2(5)
       LOGICAL      EXIORD,TONEUT
       INTEGER      IARG
       DATA NOMPA1/'NOM_CHAM','NUME_ORDRE','INST','VOL'/
@@ -149,7 +149,7 @@ C     =====================================================
       ENDIF
 
       DO 10 IOCC = 1 , NBOCC
-      
+
 C     --- VERIFICATION SI ON VA TRAITER DES ELEMENTS DE STRUCTURE
 C     ===========================================================
 
@@ -229,7 +229,12 @@ C           --- 2. CHANGEMENT DE DISCRETISATION : NOEU -> ELGA
                CELMOD = '&&PEEINT.CELMOD'
                LIGREL = MODELE//'.MODELE'
                CALL ALCHML(LIGREL,OPTIO2,NOPAR,'V',CELMOD,IB,' ')
-               IF (IB.NE.0) CALL U2MESK('F','UTILITAI3_23',1,OPTIO2)
+               IF (IB.NE.0) THEN
+                 VALK2(1)=LIGREL
+                 VALK2(2)=NOPAR
+                 VALK2(3)=OPTIO2
+                 CALL U2MESK('F','UTILITAI3_23',3,VALK2)
+               ENDIF
                CALL CHPCHD(CHAM2,'ELGA',CELMOD,'OUI','V',CHAM)
                CALL DETRSD('CHAMP',CELMOD)
 C
@@ -238,14 +243,14 @@ C
           ENDIF
 
          CALL DISMOI('C','TYPE_CHAMP',CHAM,'CHAMP',IBID,TYCH,IRET)
- 
+
 C         --- COMPOSANTES DU POST-TRAITEMENT
           CALL GETVTX('INTEGRALE','NOM_CMP',IOCC,IARG,NZERO,K8B,NBCMP)
           NBCMP=-NBCMP
           CALL WKVECT('&&PEEINT.CMP','V V K8',NBCMP,JCMP)
           CALL GETVTX('INTEGRALE','NOM_CMP',IOCC,IARG,NBCMP,
      &                ZK8(JCMP),IRET)
-C 
+C
 C         COMPOSANTES A AFFICHER DANS LA TABLE: ZK8(JCPINI)
           CALL WKVECT('&&PEEINT.CMP_INIT','V V K8',NBCMP,JCPINI)
           DO 50 I=1,NBCMP
@@ -310,7 +315,7 @@ C         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'MAILLE'
  5    CONTINUE
 
  10   CONTINUE
-          
+
       IF (NR.NE.0) THEN
           CALL DETRSD('RESULTAT',TMPRES)
       ELSE

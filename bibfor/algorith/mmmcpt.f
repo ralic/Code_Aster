@@ -1,7 +1,7 @@
       SUBROUTINE MMMCPT(NOMA  ,SDSTAT,DEFICO,RESOCO,CNSINR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -151,13 +151,13 @@ C
 C
 C --------- INFOS
 C  
-            NUMNOE  = ZR(JTABF+ZTABF*(IPTC-1)+24)
+            NUMNOE  = NINT(ZR(JTABF+ZTABF*(IPTC-1)+24))
             IF (NUMNOE.GT.0) THEN  
               IF (ZI(JDEJCA+NUMNOE-1).EQ.0) THEN         
                 CONT    = NINT(ZR(JCNSVR+ZRESU*(NUMNOE-1)+1 -1))
                 IF (CONT.GE.1) THEN
                   NBLIAC = NBLIAC + 1
-                  IF (CONT.EQ.2) THEN
+                  IF (CONT.EQ.1) THEN
                     NBLIAF = NBLIAF + 1
                   ENDIF
                 ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith12 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,8 +157,8 @@ cata_msg = {
 """),
 
 43 : _(u"""
- étude 2D
- angle nautique unique :  %(r1)f
+ La modélisation est de dimension 2 (2D)
+ Seule la première valeur de l'angle nautique est retenue :  %(r1)f
 """),
 
 44 : _(u"""
@@ -264,13 +264,13 @@ cata_msg = {
 """),
 
 74 : _(u"""
- champ déjà existant
+ Le champ est déjà existant
  il sera remplacé par le champ %(k1)s
  pour le NUME_ORDRE  %(i1)d
 """),
 
 76 : _(u"""
-  problème de récupération CHAMNO
+  problème de récupération du champ aux noeuds
   concept résultat:  %(k1)s
   numéro d'ordre  :  %(i1)d
 """),
@@ -303,7 +303,7 @@ cata_msg = {
 
 82 : _(u"""
 
- nombre de modes propres demandé supérieur au nombre de modes dynamiques de la base
+ le nombre de modes propres demandé est supérieur au nombre de modes dynamiques de la base
  nombre de modes demandés       --> %(i1)d
  nombre de modes de la base     --> %(i2)d
  nombre de fréquences douteuses --> %(i3)d
@@ -351,13 +351,13 @@ cata_msg = {
 """),
 
 97 : _(u"""
- données erronées
- pas d'instant de calcul pour l'instant d'archivage :  %(r1)f
+ Les données sont erronées.
+ Pas d'instant de calcul pour l'instant d'archivage :  %(r1)f
 """),
 
 98 : _(u"""
- données erronées
- plusieurs instants de calcul pour l'instant d'archivage:  %(r1)f
+ Les données sont erronées.
+ Plusieurs instants de calcul pour l'instant d'archivage:  %(r1)f
 """),
 
 }

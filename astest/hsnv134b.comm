@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TUBE SOUS PRESSION A TEMPERATURE CONSTANTE 
 # hsnv134b.para = tps_job 900 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,9 +170,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 EXCIT=(_F(CHARGE = CHPC,FONC_MULT = FMULT),
                        _F(CHARGE = CH_L),),
                 COMP_INCR=_F(RELATION = 'META_LEMA_ANI',
-                             RELATION_KIT='ZIRC',
-                             ITER_INTE_MAXI=10,
-                             RESI_INTE_RELA=1.E-06),
+                             RELATION_KIT='ZIRC'),
                INCREMENT=_F(LIST_INST = L_INST,),
                NEWTON=_F(MATRICE = 'TANGENTE',
                          REAC_ITER = 1),

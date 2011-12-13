@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,7 +97,11 @@ LIAI=AFFE_CHAR_MECA(MODELE=MOD,
 CONT = DEFI_CONTACT(MODELE        = MOD,
                     FORMULATION   = 'DISCRETE',
                     ITER_GCP_MAXI = 500,
+                    PRE_COND      = 'DIRICHLET',
                     RESI_ABSO     = 1.E-9,
+                    # Le preconditionneur ne sera active que lorsque
+                    # le jeu initial aura ete divise par 1000
+                    COEF_RESI     = 1.E-3,
                     ZONE=(_F(APPARIEMENT='MAIT_ESCL',
                              ALGO_CONT='GCP',
                              GROUP_MA_MAIT='LAB1',

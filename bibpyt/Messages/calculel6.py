@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel6 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -350,10 +350,18 @@ Conseils :
 """),
 
 77: _(u"""
-  Problème lors de l'affectation du champ %(k1)s.
-  Des valeurs n'ont pas été recopiées dans le CHAM_ELEM final.
-  Ce problème peut être dû à l'utilisation du mot-clé TOUT='OUI'.
-  Il est possible de vérifier le champ produit avec INFO=2.
+Problème lors de la création du champ par elements (%(k1)s).
+  Ce champ est associé au paramètre %(k3)s de l'option: '%(k2)s'
+  Certaines valeurs fournies par l'utilisateur n'ont pas été recopiées dans le champ final.
+
+  Le problème a 2 causes possibles :
+   * L'affectation est faite de façon trop "large", par exemple en utilisant le mot clé TOUT='OUI'.
+   * Certains éléments ne supportent pas l'affectation demandée.
+
+Risques et conseils :
+  Si le problème se produit dans la commande CREA_CHAMP :
+    * Il est conseillé de vérifier le champ produit avec le mot clé INFO=2.
+    * Les mots clés OPTION et NOM_PARA peuvent avoir une influence sur le résultat.
 
 """),
 

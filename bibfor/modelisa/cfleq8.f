@@ -1,8 +1,8 @@
       SUBROUTINE CFLEQ8(NOMA  ,DEFICO,NZOCO ,NSUCO ,NNOCO ,
-     &                  NNOCO0,LISTNO,POINSN,NNOQUA)
+     &                  NNOCO0,LISTNO,POINSN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,6 @@ C
       CHARACTER*24 DEFICO
       CHARACTER*24 LISTNO
       CHARACTER*24 POINSN
-      INTEGER      NNOQUA
 C      
 C ----------------------------------------------------------------------
 C
@@ -47,7 +46,6 @@ C IN  NNOCO0 : NOMBRE DE NOEUDS INITIAL
 C OUT POINSN : POINTEUR MISE A JOUR POUR PSURNO
 C OUT LISTNO : LISTE DES NOEUDS RESTANTES (LONGUEUR NNOCO
 C OUT NNOCO  : NOMBRE DE NOEUDS FINAL
-C OUT NNOQUA : NOMBRE DE NOEUDS QUADRATIQUES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -74,7 +72,7 @@ C
       INTEGER      JINDNO
       INTEGER      JNO
       INTEGER      INO,K
-      INTEGER      ELIMNO
+      INTEGER      ELIMNO,NNOQUA
 C
 C ----------------------------------------------------------------------
 C

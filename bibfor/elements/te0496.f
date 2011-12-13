@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,6 @@ C     ------------------------------------------------
 C     PNBSP_I  CONTIENT LES INFOS NECESSSAIRES AU CALCUL
 C     DU NOMBRE DE SOUS-POINTS.
 C     SI LE CHAMP N'EST PAS DONNE, NBSPT=1
-C     (VATU_ELNO PAR EXEMPLE)
 C     -----------------------------------------------------
       CALL TECACH('NNN','PNBSP_I',1,JNBSP,IRET)
 

@@ -1,7 +1,7 @@
       SUBROUTINE DFLLEC(SDLIST,DTMIN )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,7 +59,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NBORDR
-      PARAMETER    (NBORDR = 6)
+      PARAMETER    (NBORDR = 7)
       CHARACTER*16 EVDORD(NBORDR)
       INTEGER      LISORD(NBORDR)
       LOGICAL      OBLORD(NBORDR)
@@ -88,10 +88,12 @@ C
 C
       DATA EVDORD  /'DIVE_ITER','DIVE_ERRE',
      &              'COMP_NCVG','DELTA_GRANDEUR',
-     &              'COLLISION','INTERPENETRATION'/
+     &              'COLLISION','INTERPENETRATION',
+     &              'DIVE_RESI'/
       DATA OBLORD  /.TRUE. ,.TRUE. ,
      &              .TRUE. ,.FALSE.,
-     &              .FALSE.,.FALSE./     
+     &              .FALSE.,.FALSE.,
+     &              .FALSE./     
 C
 C ----------------------------------------------------------------------
 C

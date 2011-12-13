@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
@@ -89,22 +89,19 @@ REST=STAT_NON_LINE(
                             NEWTON=_F( REAC_ITER = 1),
               )
 # EFFORTS GENERALISES
-REST=CALC_ELEM( reuse=REST,
-                            OPTION=('EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=REST,
-              )
+REST=CALC_ELEM(reuse =REST,
+               RESULTAT=REST,
+               OPTION=('EFGE_ELNO','VARI_ELNO','DEGE_ELNO','SIGM_ELNO'),);
 
-REST=CALC_ELEM( reuse=REST,
-                            OPTION=('SIEQ_ELGA'),
-                          RESULTAT=REST,
-                      TOUT_ORDRE='OUI',
-              )
+REST=CALC_ELEM(reuse=REST,
+               OPTION='SIEQ_ELGA',
+               RESULTAT=REST,
+               TOUT_ORDRE='OUI',)
 
-REST=CALC_ELEM( reuse=REST,
-                            OPTION=('EPEQ_ELGA'),
-                          RESULTAT=REST,
-                      TOUT_ORDRE='OUI',
-              )
+REST=CALC_ELEM(reuse=REST,
+               OPTION=('EPEQ_ELGA'),
+               RESULTAT=REST,
+               TOUT_ORDRE='OUI',)
 
 IMPR_RESU(RESU=_F(RESULTAT=REST,NOM_CHAM=('SIEQ_ELGA','EPEQ_ELGA'),NUME_ORDRE=1))
 
@@ -116,9 +113,7 @@ REST=CALC_NO( reuse=REST,     RESULTAT=REST,
 # A UN NIVEAU D'EPAISSEUR DONNE
 REST=CALC_ELEM( reuse=REST, RESULTAT=REST,
                       TOUT_ORDRE='OUI',
-                     OPTION=('EPTU_ELNO',
-                             'SITU_ELNO',
-                             'VATU_ELNO',),
+                     OPTION=('EPTU_ELNO',),
                      REPE_COQUE =_F( NUME_COUCHE=1,
                                      NIVE_COUCHE='SUP',
                                      ANGLE=90,),
@@ -146,8 +141,13 @@ RESTPOS3=POST_CHAMP(RESULTAT=REST,
                                   NIVE_COUCHE='SUP',
                                   ANGLE=90,),);
 
-
-
+RESTPOS4=POST_CHAMP(RESULTAT=REST,
+                    TOUT='OUI',
+                    TOUT_ORDRE='OUI',
+                    EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',
+                                  ANGLE=90,),);
 
 # TEST PAR RAPPORT A LA SOLUTION ANALYTIQUE
 
@@ -205,17 +205,17 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'N',
                  VALE = 9.37713E+04,
                  PRECISION = 1.E-3),
-           _F( RESULTAT = REST,REFERENCE='ANALYTIQUE',
+           _F( RESULTAT = RESTPOS4,REFERENCE='ANALYTIQUE',
                  NUME_ORDRE = 1,
-                 NOM_CHAM = 'SITU_ELNO',
+                 NOM_CHAM = 'SIGM_ELNO',
                  MAILLE = 'M2',
                  GROUP_NO = 'B',
                  NOM_CMP = 'SIXX',
                  VALE = 1.5E+08,
                  PRECISION = 1.E-2),
-           _F( RESULTAT = REST,REFERENCE='ANALYTIQUE',
+           _F( RESULTAT = RESTPOS2,REFERENCE='ANALYTIQUE',
                  NUME_ORDRE = 11,
-                 NOM_CHAM = 'VATU_ELNO',
+                 NOM_CHAM = 'VARI_ELNO',
                  MAILLE = 'M2',
                  GROUP_NO = 'B',
                  NOM_CMP = 'V1',
@@ -229,9 +229,9 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V1',
                  VALE = 7.425E-4,
                  PRECISION = 1.E-3),
-           _F( RESULTAT = REST,REFERENCE='ANALYTIQUE',
+           _F( RESULTAT = RESTPOS2,REFERENCE='ANALYTIQUE',
                  NUME_ORDRE = 11,
-                 NOM_CHAM = 'VATU_ELNO',
+                 NOM_CHAM = 'VARI_ELNO',
                  MAILLE = 'M2',
                  GROUP_NO = 'B',
                  NOM_CMP = 'V2',
@@ -284,7 +284,7 @@ CHARM=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
 FONCM=DEFI_FONCTION(   NOM_PARA='INST',
                       VALE=( 0., 0., 100., 100., ) )
 
-# DISCRETISATION RELATIVEMTN FINE POUR AVOIR UNE BELLE COURBE
+# DISCRETISATION RELATIVEMENT FINE POUR AVOIR UNE BELLE COURBE
 LINSR=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
                _F( JUSQU_A = 1.,    NOMBRE = 1),
                _F( JUSQU_A = 5.,    NOMBRE = 20))
@@ -309,6 +309,8 @@ RESM=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL2,
 RESM=CALC_NO( reuse=RESM,     RESULTAT=RESM,
                     OPTION='REAC_NODA' )
 
+# MOMENT DE PREMIERE PLASTIFICATION TUYAU EN HYPOTHESE DE POUTRE
+# CHARGE LIMITE TUYAU EN HYPOTHESE DE POUTRE
 TEST_RESU(RESU=(
 # MOMENT DE PREMIERE PLASTIFICATION TUYAU EN HYPOTHESE DE POUTRE
            _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
@@ -324,13 +326,32 @@ TEST_RESU(RESU=(
 # A CAUSE DU CHOIX DE LA GENERATRICE
 RESM=CALC_ELEM( reuse=RESM,  RESULTAT=RESM,
                       TOUT_ORDRE='OUI',
-                     OPTION=('SITU_ELNO',
-                             'VATU_ELNO',
-                             'DEGE_ELNO'),
+                     OPTION=('SIGM_ELNO',
+                             'VARI_ELNO',),)
+
+RESM=CALC_ELEM( reuse=RESM,  RESULTAT=RESM,
+                      TOUT_ORDRE='OUI',
+                     OPTION=('DEGE_ELNO'),
                  REPE_COQUE =_F( NUME_COUCHE=1,
                                  NIVE_COUCHE='SUP',
                                  ANGLE=90,),
                    )
+
+RESM1=POST_CHAMP(RESULTAT=RESM,
+                 TOUT='OUI',
+                 TOUT_ORDRE='OUI',
+                 EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=90,),);
+
+RESM2=POST_CHAMP(RESULTAT=RESM,
+                 TOUT='OUI',
+                 TOUT_ORDRE='OUI',
+                 EXTR_TUYAU=_F(NOM_CHAM='VARI_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=90,),);
 
 DRZB=RECU_FONCTION(RESULTAT=RESM,
                    NOM_CHAM='DEPL',
@@ -346,12 +367,12 @@ IMPR_FONCTION(COURBE=_F(FONC_Y=RDRZB,FONC_X=DRZB,),)
 
 IMPR_RESU(RESU=(
                 _F(RESULTAT=RESM,
-                   NOM_CHAM='SITU_ELNO',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    VALE_MAX='OUI',
                    VALE_MIN='OUI',),
                 _F(RESULTAT=RESM,
-                   NOM_CHAM='VATU_ELNO',
+                   NOM_CHAM='VARI_ELNO',
                    VALE_MAX='OUI',
                    VALE_MIN='OUI',),
                 _F(RESULTAT=RESM,

@@ -1,0 +1,58 @@
+      SUBROUTINE  XDERFE(R,THETA,DFEDP)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
+C
+      IMPLICIT NONE
+C
+      REAL*8        R,THETA,DFEDP(4,2)
+C
+C
+C     BUT : DERIVEES DES FONCTIONS D'ENRICHISSEMENT 
+C           DANS LA BASE POLAIRE (R,THETA)
+C
+C IN  R      : PREMIERE COORDONNEE DANS LA BASE POLAIRE
+C IN  THETA  : SECONDE COORDONNEE DANS LA BASE POLAIRE
+C OUT DFEDP  : DERIVEES DES FONCTIONS D'ENRICHISSEMENT 
+C
+C----------------------------------------------------------------
+C
+      REAL*8        RR,S,C,S2,C2
+C
+C----------------------------------------------------------------
+C
+C     DEFINITION DE QUELQUES VARIABLES UTILES
+      RR = SQRT(R)
+      S  = SIN(THETA)
+      C  = COS(THETA)
+      S2 = SIN(THETA/2.D0)
+      C2 = COS(THETA/2.D0)
+
+C     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
+      DFEDP(1,1) = 1.D0/(2.D0*RR) * S2
+      DFEDP(1,2) = RR/2.D0 * C2
+      DFEDP(2,1) = 1.D0/(2.D0*RR) * C2
+      DFEDP(2,2) = -RR/2.D0 * S2
+      DFEDP(3,1) = 1.D0/(2.D0*RR) * S2 * S
+      DFEDP(3,2) = RR * (C2*S/2.D0 + S2*C)
+      DFEDP(4,1) = 1.D0/(2.D0*RR) *C2 * S
+      DFEDP(4,2) = RR * (-S2*S/2.D0 + C2*C)
+
+      END

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE GRANET S.GRANET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -242,8 +242,8 @@ OPTION__
                               OUT__  E1GNEUT  PVARIGS
     VAEX_ELNO           549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR
                               OUT__  E1NNEUT  PVARINS
-    VARI_ELNO           600   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO           600   IN__   ZVARIPG  PVARIGR  CCOMPOR  PCOMPOR
                               OUT__  ZVARINO  PVARINR
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER
+    VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET
     WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE TYPE (3D)
@@ -115,9 +115,7 @@ U1=STAT_NON_LINE(
      _F( CHARGE       = PR_V,
                                      FONC_MULT    = COEF1),
      _F( CHARGE       = DEP_SYM)),
-                  COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER',
-                                   RESI_INTE_RELA = 1.E-6,
-                                   ITER_INTE_MAXI = 100),
+                  COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER'),
                   NEWTON     = _F( MATRICE        = 'TANGENTE',
                                    REAC_ITER      = 1,),
                   CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-4,
@@ -172,10 +170,7 @@ U2 = STAT_NON_LINE(
               _F( CHARGE       = DEP_SYM),
               _F( CHARGE       = DEP_V,
                                        FONC_MULT    = COEF2)),
-                    COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER',
-                                     RESI_INTE_RELA = 1.E-6,
-                                     ITER_INTE_MAXI = 100,
-                                     ITER_INTE_PAS  = -10,),
+                    COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER',),
                     ETAT_INIT  = _F( SIGM           = SIG_INI,
                                      VARI           = VAR_INI),
                     INCREMENT  = _F( LIST_INST      = TEMPS2),

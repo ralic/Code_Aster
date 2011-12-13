@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 # ssnv504i.para = tps_job 190 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,18 +128,17 @@ CH0=AFFE_CHAR_MECA(MODELE=MO,
 
 CH2  = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
+                    LISSAGE        = 'OUI',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'SMAI1',
                              GROUP_MA_ESCL = 'SESC1',
-                             APPARIEMENT   = 'MAIT_ESCL',
                              CONTACT_INIT  = 'INTERPENETRE',
                              GLISSIERE     = 'OUI',
                              ),                                                               
                            _F(
-                             GROUP_MA_MAIT = 'SMAI2',
-                             GROUP_MA_ESCL = 'SESC2',
-                             APPARIEMENT   = 'MAIT_ESCL',
+                             GROUP_MA_MAIT = 'SESC2',
+                             GROUP_MA_ESCL = 'SMAI2',
                              INTEGRATION='GAUSS',
                              ),  
                           ),
@@ -181,11 +180,15 @@ U=STAT_NON_LINE(MODELE=MO,
                 CONTACT = CH2,        
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
-                INCREMENT=_F(LIST_INST=L_INST,),
+                INCREMENT=_F(LIST_INST=L_INST,
+                             ),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=U,),);
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,

@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,8 +67,6 @@ C --- ------------------------------------------------------------------
       COMPLEX*16     HYST,DCMPLX
       INTEGER        ICODRE(3)
       CHARACTER*8    NOMRES(3),K8BID
-      CHARACTER*16   NOMCMD,TYPRES
-      CHARACTER*19   NOMFON
       INTEGER        IBID,ITYPE,IREP,NBTERM,NNO,NC,NDIM,NDDL,I,IRET,J
       INTEGER        JDR,JDM,LORIEN,JDC,JMA,IACCE,IVECT,LVAPR,LVECT
       INTEGER        JTMP
@@ -77,7 +75,6 @@ C --- ------------------------------------------------------------------
 C --- ------------------------------------------------------------------
       CALL JEMARQ()
 
-      CALL GETRES(NOMFON,TYPRES,NOMCMD)
 
       LBID =   (NOMTE(1:9).EQ.'MECA_DIS_') .OR.
      &         (NOMTE(1:12).EQ.'MECA_2D_DIS_')
@@ -96,27 +93,20 @@ C     LE CODE STOKE DANS LA CARTE
       VALPAR = 0.0D0
       INFODI = 1
       IREP   = 1
-      IF ( (NOMCMD.EQ.'MECA_STATIQUE') .OR.
-     &     (NOMCMD.EQ.'CALC_MATR_ELEM') ) THEN
-C        MATRICE SYMETRIQUE OU NON-SYMETRIQUE, 1 OU 2 ?
-         IF     ( OPTION.EQ.'RIGI_MECA' ) THEN
-            CALL INFDIS('SYMK',INFODI,R8BID,K8BID)
-         ELSEIF ( OPTION.EQ.'MASS_MECA' ) THEN
-            CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
-         ELSEIF ( OPTION.EQ.'MASS_MECA_DIAG' ) THEN
-            CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
-         ELSEIF ( OPTION.EQ.'AMOR_MECA' ) THEN
-            CALL INFDIS('SYMA',INFODI,R8BID,K8BID)
-         ELSE
-C           POUR LES AUTRES OPTIONS C'EST SYMETRIQUE
-            CALL INFDIS('SKMA',IBID,R8BID,K8BID)
-            CALL ASSERT( IBID .EQ. 3 )
-         ENDIF
+
+      IF     ( OPTION.EQ.'RIGI_MECA' ) THEN
+         CALL INFDIS('SYMK',INFODI,R8BID,K8BID)
+      ELSEIF ( OPTION.EQ.'MASS_MECA' ) THEN
+         CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
+      ELSEIF ( OPTION.EQ.'MASS_MECA_DIAG' ) THEN
+         CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
+      ELSEIF ( OPTION.EQ.'AMOR_MECA' ) THEN
+         CALL INFDIS('SYMA',INFODI,R8BID,K8BID)
       ELSE
-C        LES AUTRES COMMANDES ET LES AUTRES OPTIONS C'EST SYMETRIQUE
+C        POUR LES AUTRES OPTIONS C'EST SYMETRIQUE
          CALL INFDIS('SKMA',IBID,R8BID,K8BID)
          CALL ASSERT( IBID .EQ. 3 )
-      END IF
+      ENDIF
 
 C --- INFORMATIONS SUR LES DISCRETS :
 C        NBTERM   = NOMBRE DE COEFFICIENTS DANS K

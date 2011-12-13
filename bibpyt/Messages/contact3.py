@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact3 Messages  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,7 +150,6 @@ La normale que vous avez prédéfinie par (VECT_* = 'VECT_Y') sur la maille %(k1)s
 Utilisez plutôt VECT_* = 'FIXE'
 """),
 
-
 50: _(u"""
 Avec l'option VECT_MAIT = 'FIXE', seule l'option NORMALE = 'MAIT' est possible.
 """),
@@ -193,6 +192,7 @@ La maille %(k1)s est de type 'POI1', elle ne peut pas être une maille maître.
 Contact.
   -> Il y a trop de réactualisations géométriques.
   -> Conseils :
+     - Activez le lissage dans la commande DEFI_CONTACT.
      - Augmentez le mot-clé ITER_GEOM_MAXI dans la commande DEFI_CONTACT.
      - Vérifiez votre maillage (orientation des surfaces, définition des zones de contact).
      - Découpez plus finement le pas de temps.

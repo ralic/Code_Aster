@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100g.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,75 +150,60 @@ CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
 
 # ------------------------------------------------------------------
 
-DEPLPES=MECA_STATIQUE(
-                  MODELE=MO,
-               CARA_ELEM=CARE,
-              CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CHPES),
-                         )
+DEPLPES=MECA_STATIQUE(MODELE=MO,
+                      CARA_ELEM=CARE,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHPES),);
 
-CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO',),
-                  REPE_COQUE =_F( NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF', ),
-                         )
+DEPLPES=CALC_ELEM(reuse=DEPLPES,
+                  RESULTAT=DEPLPES,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+                  
 DPES2=POST_CHAMP(RESULTAT=DEPLPES,
                  TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
 
+DEPLDIL=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMAT1,
+                      CARA_ELEM=CARE,
+                      EXCIT=_F( CHARGE = CHDIL),);
 
-DEPLDIL=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMAT1,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
-
-CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO',),
-                  REPE_COQUE =_F( NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),
-                         )
+DEPLDIL=CALC_ELEM(reuse=DEPLDIL,
+                  RESULTAT=DEPLDIL,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO',),),
+                  
 DDIL2=POST_CHAMP(RESULTAT=DEPLDIL,
                  TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
 
+DEPLDIL2=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMAT1,
+                       CARA_ELEM=CARE,
+                       EXCIT=_F(CHARGE=CHDIL),);
 
-DEPLDIL2=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMAT1,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
-
-CALC_ELEM( reuse= DEPLDIL2 ,RESULTAT= DEPLDIL2 ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO',),
-                  REPE_COQUE =_F( NUME_COUCHE=2,
-                                  NIVE_COUCHE='SUP', ),
-                         )
+DEPLDIL2=CALC_ELEM(reuse=DEPLDIL2,
+                   RESULTAT=DEPLDIL2,
+                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+                   
 DDIL22=POST_CHAMP(RESULTAT=DEPLDIL2,
-                 TOUT='OUI',
-                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                               NUME_COUCHE=2,
-                               NIVE_COUCHE='SUP',),);
+                  TOUT='OUI',
+                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=2,
+                                NIVE_COUCHE='SUP',),);
 
+DEPLDI2=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMAT2,
+                      CARA_ELEM=CARE,
+                      EXCIT=_F( CHARGE = CHDIL),);
 
-
-DEPLDI2=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMAT2,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
-                         )
-
-CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO',),
-                  REPE_COQUE =_F( NIVE_COUCHE='INF',) ,
-                         )
+DEPLDI2=CALC_ELEM(reuse=DEPLDI2,
+                  RESULTAT=DEPLDI2,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+                  
 DDI22=POST_CHAMP(RESULTAT=DEPLDI2,
                  TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',

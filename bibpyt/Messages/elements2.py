@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements2 Messages  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,14 +199,6 @@ cata_msg = {
 
 84 : _(u"""
  éléments de poutre l'option " %(k1)s " est inconnue
-"""),
-
-85 : _(u"""
- non prévu pour les sections rectangulaires
-"""),
-
-86 : _(u"""
- non prévu pour les sections générales
 """),
 
 90 : _(u"""

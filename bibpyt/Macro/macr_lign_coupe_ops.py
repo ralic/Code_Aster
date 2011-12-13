@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -636,6 +636,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   self.set_icmd(1)
 
   #
+  MasquerAlarme('ALGORITH12_43')
   MasquerAlarme('CALCULEL2_63')
   MasquerAlarme('CALCULEL2_64')
   MasquerAlarme('MODELISA5_53')
@@ -712,6 +713,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
          minidim=min(minidim,len(m['COOR_ORIG']),len(m['COOR_EXTR']))
          if minidim!=dime:
            UTMESS('F','POST0_11')
+
       elif m['TYPE'] =='ARC' :
          minidim=min(minidim,len(m['COOR_ORIG']),len(m['CENTRE']))
          if minidim!=dime:
@@ -722,6 +724,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
            if str(m['DNOR'])=='None':
               UTMESS('F','POST0_12')
            arcs.append((m['COOR_ORIG'],m['CENTRE'],m['NB_POINTS'],m['ANGLE'],m['DNOR']))
+
       elif m['TYPE']=='GROUP_NO':
         ngrno=m['GROUP_NO'].ljust(8)
         collgrno=aster.getcolljev(n_mailla.ljust(8)+'.GROUPENO')
@@ -732,6 +735,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
         for node in grpn:
           l_coor_group.append(aster.getvectjev(n_mailla.ljust(8)+'.COORDO    .VALE',3*(node-1),3))
         groups.append(l_coor_group)
+
       elif m['TYPE']=='GROUP_MA':
         ngrma=m['GROUP_MA'].ljust(8)
         if ngrma not in collgrma.keys() :
@@ -742,8 +746,18 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
              nomma=aster.getvectjev(n_mailla.ljust(8)+'.NOMMAI')
              UTMESS('F','POST0_15',valk=[ngrma,nomma[ma-1]])
         __mailla=CREA_MAILLAGE(MAILLAGE= m['MAILLAGE'],COPIE=_F(),)
+
+        m2 = m.cree_dict_valeurs(m.mc_liste)
+        argsup={}
+        if m2.get('GROUP_NO_ORIG') : argsup['GROUP_NO_ORIG'] = m2.get('GROUP_NO_ORIG')
+        if m2.get('GROUP_NO_EXTR') : argsup['GROUP_NO_EXTR'] = m2.get('GROUP_NO_EXTR')
+        if m2.get('NOEUD_ORIG')    : argsup['NOEUD_ORIG']    = m2.get('NOEUD_ORIG')
+        if m2.get('NOEUD_EXTR')    : argsup['NOEUD_EXTR']    = m2.get('NOEUD_EXTR')
+        if m2.get('VECT_ORIE')     : argsup['VECT_ORIE']     = m2.get('VECT_ORIE')
+
         __mailla=DEFI_GROUP( reuse=__mailla,MAILLAGE= __mailla,
-                            CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',NOM=str(m['GROUP_MA']),GROUP_MA=m['GROUP_MA']),)
+                            CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',NOM=str(m['GROUP_MA']),GROUP_MA=m['GROUP_MA'],**argsup))
+
         collgrno=aster.getcolljev(__mailla.nom.ljust(8)+'.GROUPENO')
         grpn=collgrno[str(m['GROUP_MA']).ljust(8)]
         l_coor_group=[ngrma,]
@@ -976,6 +990,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   nomres=CREA_TABLE(**dprod)
 
+  RetablirAlarme('ALGORITH12_43')
   RetablirAlarme('CALCULEL2_63')
   RetablirAlarme('CALCULEL2_64')
   RetablirAlarme('MODELISA5_53')

@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa4 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,22 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
+
+1: _(u"""
+Alarme dans CREA_MAILLAGE pour le mot clé facteur %(k1)s :
+Vous avez avez utilisé le mot clé GROUP_MA (ou MAILLE) pour modifier
+certaines mailles d'un maillage (que l'on suppose conforme).
+
+Ceci est dangereux car cela peut produire un maillage non-conforme.
+"""),
+
+2: _(u"""
+Alarme dans CREA_MAILLAGE pour le mot clé facteur QUAD_TRIA3 :
+Vous voulez modifier certains quandrangles en TRIA3, mais il existe
+des TRIA6 dans le maillage.
+
+Ceci est dangereux car cela peut produire un maillage non-conforme.
+"""),
 
 3: _(u"""
  Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
@@ -72,6 +88,16 @@ cata_msg = {
 
 10 : _(u"""
  - chckma phase de vérification du maillage - mailles dégénérées
+"""),
+
+11: _(u"""
+Alarme dans CREA_MAILLAGE pour le mot clé facteur %(k1)s :
+Vous voulez transformer certaines mailles en ajoutant des noeuds au
+centre des faces quadrangulaires.
+Mais il existe d'autres mailles ayant des faces quadrangulaires à 8 noeuds
+qui ne sont pas modifiées.
+
+Ceci est dangereux car cela peut produire un maillage non-conforme.
 """),
 
 

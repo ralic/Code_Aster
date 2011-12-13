@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE SIMULATION NUMERIQUE DU COMPORTEMENT D'UN ASSEMBLAGE COMBUSTIBLE EN COMPRESSION ET EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -712,7 +712,6 @@ SOLVEUR=_F(SYME='OUI',),
                              GROUP_MA=('CRAYON','T_GUIDE','MAINTIEN'),
                              ITER_INTE_MAXI=500),
                           _F(RELATION='DIS_GRICRA',
-                             ITER_INTE_MAXI=500,
                              GROUP_MA='ELA'),
                           _F(RELATION='ELAS',
                              GROUP_MA=('EBOINF','EBOSUP',
@@ -742,8 +741,7 @@ SOLVEUR=_F(SYME='OUI',),
                              GROUP_MA=('CRAYON','T_GUIDE','MAINTIEN'),
                              ITER_INTE_MAXI=500),
                           _F(RELATION='DIS_GRICRA',
-                             GROUP_MA='ELA',
-                             ITER_INTE_MAXI=500,),
+                             GROUP_MA='ELA'),
                           _F(RELATION='ELAS',
                              GROUP_MA=('EBOINF','EBOSUP',
                                        'RIG','PQSUP'),),),
@@ -781,7 +779,6 @@ SOLVEUR=_F(SYME='OUI',),
                              GROUP_MA=('CRAYON','T_GUIDE','MAINTIEN'),
                              ITER_INTE_MAXI=500),
                            _F(RELATION='DIS_GRICRA',
-                              ITER_INTE_MAXI=500,
                               GROUP_MA='ELA',),
                            _F(RELATION='ELAS',
                               GROUP_MA=('EBOINF','EBOSUP',

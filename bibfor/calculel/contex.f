@@ -1,8 +1,8 @@
-      SUBROUTINE CONTEX(NOMOP,NUMOP,NOMPAR,NOMGD,NUMGD)
+      SUBROUTINE CONTEX(NOMOP,NOMPAR)
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,32 +20,21 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
-      CHARACTER*(*) NOMOP,NOMPAR ,NOMGD
-      INTEGER NUMOP,NUMGD
+      CHARACTER*(*) NOMOP,NOMPAR
 C     -----------------------------------------------------------------
 C     BUT:
 C     ---
 C     IMPRIMER DANS LE FICHIER 'MESSAGE' DES INFORMATIONS CONCERNANT
-C     LE CONTEXTE D'UNE ERREUR  :
+C     LE CONTEXTE D'UNE ERREUR survenue dans un calcul elementaire  :
 C     ON PEUT DONNER :
-C      - LE NOM D'UNE OPTION (OU SON NUMERO)
-C      - LE NOM D'UN PARAMETRE DE L'OPTION
-C      - LE NOM D'UNE GRANDEUR (OU SON NUMERO)
+C      - LE NOM D'UNE OPTION (NOMOP)
+C      - LE NOM D'UN PARAMETRE DE L'OPTION (NOMPAR)
 
 
 C     ENTREES:
 C     --------
 C NOMOP   : NOM D'UNE OPTION DE CALCUL ELEMENTAIRE  (OU ' ')
-C NUMOP   : NUMERO D'UNE OPTION DE CALCUL ELEMENTAIRE (OU 0)
 C NOMPAR  : NOM D'UN PARAMETRE D'OPTION DE CALCUL ELEMENTAIRE (OU ' ')
-C NOMGD   : NOM D'UNE GRANDEUR (OU ' ')
-C NUMGD   : NUMERO D'UNE GRANDEUR  (OU 0)
-C     ARBRE DES POSSIBILITES :
-C       /    / NOMOPT
-C            / NUMOPT
-C            F NOMPAR
-C       /    / NOMGD
-C            / NUMGD
 
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -65,132 +54,100 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-      CHARACTER*8 NOMPA2,NOMGD2,NOMAIL
-      CHARACTER*16 NOMOP2
-      INTEGER IFM,IUNIFI,JCLIBR,JDESOP,IAPARA,NBIN,NBOU,IADZI,IAZK24
+      CHARACTER*8 NOMPA2,NOMAIL,NOMGD
+      INTEGER JCLIBR,JDESOP,IAPARA,NBIN,NBOU,IADZI,IAZK24
       INTEGER NBLIG,INDIC,K,ITROU,INDIK8,IOPT,IGD,JDSGD
       LOGICAL LOPT,LPARA,LGD
 
-      IFM = IUNIFI('MESSAGE')
 
       CALL TECAEL(IADZI,IAZK24)
-      NOMAIL = ZK24(IAZK24-1+3)(1:8)
+      NOMAIL=ZK24(IAZK24-1+3)(1:8)
 
-      WRITE (IFM,*) ' '
-      WRITE (IFM,*) 'MAILLE : ', NOMAIL
-      WRITE (IFM,*) ' '
-      WRITE (IFM,*) 'ELEMENTS DE CONTEXTE :'
+      CALL U2MESK('I','CALCULEL5_15',1,NOMAIL)
 
       CALL JEVEUO('&CATA.CL.COMLIBR','L',JCLIBR)
 
-      NOMPA2 = NOMPAR
-      NOMOP2 = NOMOP
-      NOMGD2 = NOMGD
+      NOMPA2=NOMPAR
+      IGD=0
 
 
-C   1) FAUT-IL IMPRIMER LE CONTEXTE D'UNE OPTION ?
-C   ------------------------------------------------
-
+C   1) CONTEXTE DE l'OPTION :
+C   -------------------------
 C     CALCUL DE LOPT ET IOPT :
-      IF (NOMOP2.NE.' ') THEN
-        CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',NOMOP2),IOPT)
-      ELSE IF (NUMOP.NE.0) THEN
-        IOPT=NUMOP
+      IF (NOMOP.NE.' ') THEN
+        CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',NOMOP),IOPT)
       ELSE
         IOPT=0
-      END IF
+      ENDIF
       LOPT=(IOPT.NE.0)
 
-
       IF (LOPT) THEN
-        CALL JENUNO(JEXNUM('&CATA.OP.NOMOPT',IOPT),NOMOP2)
-        WRITE (IFM,*) ' '
-        WRITE (IFM,*) ' - OPTION DE CALCUL ELEMENTAIRE: '//NOMOP2
+        CALL U2MESK('I','CALCULEL5_16',1,NOMOP)
         CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',IOPT),'L',JDESOP)
         CALL JEVEUO(JEXNUM('&CATA.OP.OPTPARA',IOPT),'L',IAPARA)
 
-        NBIN = ZI(JDESOP-1+2)
-        NBOU = ZI(JDESOP-1+3)
-        NBLIG = ZI(JDESOP-1+4+NBIN+NBOU+1)
-        INDIC = ZI(JDESOP-1+4+NBIN+NBOU+2)
+        NBIN=ZI(JDESOP-1+2)
+        NBOU=ZI(JDESOP-1+3)
+        NBLIG=ZI(JDESOP-1+4+NBIN+NBOU+1)
+        INDIC=ZI(JDESOP-1+4+NBIN+NBOU+2)
         IF (NBLIG.GT.0) THEN
-          DO 10,K = INDIC,INDIC - 1 + NBLIG
-            WRITE (IFM,*) '   '//ZK80(JCLIBR-1+K)
+          DO 10,K=INDIC,INDIC-1+NBLIG
+            CALL U2MESK('I','CALCULEL5_17',1,ZK80(JCLIBR-1+K))
    10     CONTINUE
-        ELSE
-            WRITE (IFM,*) '   PAS DE COMMENTAIRES !'
-        END IF
-      END IF
+        ENDIF
+      ENDIF
 
 
 
-C   2) FAUT-IL IMPRIMER LE CONTEXTE D'UN PARAMETRE D'OPTION ?
-C   ----------------------------------------------------------
-
+C   2) CONTEXTE DU PARAMETRE :
+C   --------------------------
 C     CALCUL DE LPARA :
-      LPARA= LOPT.AND.(NOMPA2.NE.' ')
+      LPARA=LOPT .AND. (NOMPA2.NE.' ')
 
       IF (LPARA) THEN
-        ITROU = INDIK8(ZK8(IAPARA-1+1),NOMPA2,1,NBIN)
+        ITROU=INDIK8(ZK8(IAPARA-1+1),NOMPA2,1,NBIN)
         IF (ITROU.GT.0) THEN
-          WRITE (IFM,*) ' '
-          WRITE (IFM,*) ' - PARAMETRE "IN" : '//NOMPA2
-          NBLIG = ZI(JDESOP-1+6+NBIN+NBOU+2* (ITROU-1)+1)
-          INDIC = ZI(JDESOP-1+6+NBIN+NBOU+2* (ITROU-1)+2)
-          IGD = ZI(JDESOP-1+4+ITROU)
+          CALL U2MESK('I','CALCULEL5_18',1,NOMPA2)
+          NBLIG=ZI(JDESOP-1+6+NBIN+NBOU+2*(ITROU-1)+1)
+          INDIC=ZI(JDESOP-1+6+NBIN+NBOU+2*(ITROU-1)+2)
+          IGD=ZI(JDESOP-1+4+ITROU)
         ELSE
-          ITROU = INDIK8(ZK8(IAPARA-1+NBIN+1),NOMPA2,1,NBOU)
+          ITROU=INDIK8(ZK8(IAPARA-1+NBIN+1),NOMPA2,1,NBOU)
           CALL ASSERT(ITROU.GT.0)
-          WRITE (IFM,*) ' '
-          WRITE (IFM,*) ' - PARAMETRE "OUT" : '//NOMPA2
-          NBLIG = ZI(JDESOP-1+6+3*NBIN+NBOU+2* (ITROU-1)+1)
-          INDIC = ZI(JDESOP-1+6+3*NBIN+NBOU+2* (ITROU-1)+2)
-          IGD = ZI(JDESOP-1+4+NBIN+ITROU)
-        END IF
+          CALL U2MESK('I','CALCULEL5_19',1,NOMPA2)
+          NBLIG=ZI(JDESOP-1+6+3*NBIN+NBOU+2*(ITROU-1)+1)
+          INDIC=ZI(JDESOP-1+6+3*NBIN+NBOU+2*(ITROU-1)+2)
+          IGD=ZI(JDESOP-1+4+NBIN+ITROU)
+        ENDIF
         IF (NBLIG.GT.0) THEN
-          DO 20,K = INDIC,INDIC - 1 + NBLIG
-            WRITE (IFM,*) '   '//ZK80(JCLIBR-1+K)
+          DO 20,K=INDIC,INDIC-1+NBLIG
+            CALL U2MESK('I','CALCULEL5_17',1,ZK80(JCLIBR-1+K))
    20     CONTINUE
-        ELSE
-            WRITE (IFM,*) '   PAS DE COMMENTAIRES !'
-        END IF
-      END IF
+        ENDIF
+      ENDIF
 
 
 
-C   3) FAUT-IL IMPRIMER LE CONTEXTE D'UNE GRANDEUR ?
-C   ----------------------------------------------------------
-
-C     CALCUL DE LGD ET IGD:
-      IF (LPARA) THEN
-C       IGD EST DEJA CALCULE
-      ELSE
-        IF (NOMGD2.NE.' ') THEN
-          CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD2),IGD)
-        ELSE IF(NUMGD.NE.0) THEN
-          IGD=NUMGD
-        ELSE
-          IGD=0
-        END IF
-      END IF
+C   3) CONTEXTE DE LA GRANDEUR :
+C   ----------------------------
       LGD=(IGD.NE.0)
-
       IF (LGD) THEN
-          CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',IGD),NOMGD2)
-          WRITE (IFM,*) ' '
-          WRITE (IFM,*) ' - GRANDEUR : '//NOMGD2
+        CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',IGD),NOMGD)
+C       -- ON N'IMPRIME RIEN POUR ADRSJEVE !
+        IF (NOMGD.NE.'ADRSJEVE') THEN
+          CALL U2MESK('I','CALCULEL5_22',1,NOMGD)
           CALL JEVEUO(JEXNUM('&CATA.GD.DESCRIGD',IGD),'L',JDSGD)
           NBLIG=ZI(JDSGD-1+6)
           INDIC=ZI(JDSGD-1+7)
-        IF (NBLIG.GT.0) THEN
-          DO 30,K = INDIC,INDIC - 1 + NBLIG
-            WRITE (IFM,*) '   '//ZK80(JCLIBR-1+K)
-   30     CONTINUE
-        ELSE
-            WRITE (IFM,*) '   PAS DE COMMENTAIRES !'
-        END IF
+          IF (NBLIG.GT.0) THEN
+            DO 30,K=INDIC,INDIC-1+NBLIG
+              CALL U2MESK('I','CALCULEL5_17',1,ZK80(JCLIBR-1+K))
+   30       CONTINUE
+          ENDIF
+        ENDIF
 
-      END IF
+      ENDIF
+      CALL U2MESS('I','CALCULEL5_23')
 
       CALL ASSERT(.FALSE.)
 

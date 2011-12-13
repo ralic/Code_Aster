@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,10 @@ C
          IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
       ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
          CALL IRRCVG ( DY, DDY, NR, NMAT, MATER, ITMAX, TOLER, ITER,
+     &                 R, RINI, IRTET)
+         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
+      ELSEIF ( LOI(1:15) .EQ. 'BETON_BURGER_FP' ) THEN
+         CALL BURCVG ( NR, ITMAX, TOLER, ITER,DY,
      &                 R, RINI, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
       ENDIF

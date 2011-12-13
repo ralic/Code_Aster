@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,15 +25,20 @@ C     CAS PARTICULIER DU  MONOCRISTAL  :
 C     ON GARDE 1 VARIABLE INTERNE PAR SYSTEME DE GLISSEMENT SUR 3
 C     ----------------------------------------------------------------
 C     IN
+C          COMP   :  NOM MODELE DE COMPORTEMENT
 C          MATERF :  COEF MATERIAU
-C          NBCOMM :  INCIDES DES COEF MATERIAU
+C          NBCOMM :  INDICES DES COEF MATERIAU
 C          NMAT   :  DIMENSION MATER
+C          COMP   :  TYPE DE MODELISATION
 C          NVI    :  NOMBRE DE VARIABLES INTERNES
+C          VIND   :  VARIABLES INTERNES A T
+C          NR     :  DIMENSION VECTEUR INCOONUES
 C     OUT  YD     :  VECTEUR INITIAL
 C     ----------------------------------------------------------------
       INTEGER         NDT,NVI,NMAT,NDI,NS,I,NBCOMM(NMAT,3),NR
       REAL*8          YD(*),MATERF(NMAT,2),VIND(*),FE(3,3)
       REAL*8          ID(3,3),HOOKF(6,6),EPSEGL(6)
+      REAL*8          EISP, EPSFI(6),YOUNG
       CHARACTER*16    LOI,COMP(*)
       CHARACTER*8     MOD
       COMMON /TDIM/   NDT  , NDI
@@ -85,6 +90,35 @@ C        DEFORMATION EQUIVALENTE DE FLUAGE
          YD(NDT+3) = VIND(3)
 C        DEFORMATION DE GONFLEMENT
          YD(NDT+4) = VIND(4)
+      ELSEIF ( LOI(1:15) .EQ. 'BETON_BURGER_FP' ) THEN
+C ===    ============================================================
+C        CONSTRUCTION DES DEFORMATIONS IRREVERSIBLES DE FLUAGE PROPRE 
+C ===    ============================================================
+C ---    RECUPERATION PARTIE SPHERIQUE         
+C ===    ============================================================
+         EISP = VIND(2)
+C ===    ============================================================
+C ---    RECUPERATION PARTIE DEVIATOIRE
+C ===    ============================================================
+         EPSFI(1) = VIND(4)
+         EPSFI(2) = VIND(6)
+         EPSFI(3) = VIND(8)
+         EPSFI(4) = VIND(13)
+         EPSFI(5) = VIND(15)
+         EPSFI(6) = VIND(17)
+C ===    ============================================================
+C ---    ASSEMBLAGE PARTIE DEVIATOIRE ET SPHERIQUE
+C ===    ============================================================
+         DO 200 I = 1, NDI
+           EPSFI(I)=EPSFI(I)+EISP
+ 200     CONTINUE
+C ===    ============================================================
+C ---    AFFECTATION DES VALEURS AU VECTEUR YD(NDT+I)
+C ===    ============================================================
+         DO 210 I = 1, NDT
+           YD(NDT+I) = EPSFI(I)
+ 210     CONTINUE
+
       ELSE
 C     CAS GENERAL :
 C        TOUTES LES VARIABLES INTERNES SONT RECOPIES

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,15 +41,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NBMA,NBMST,IQTR,NBVOLU,
-     &        N1,NUMMA,NBJOIN,NBREST,NBMOMP,NBMOMH
+      INTEGER I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NBMA,NBMST,IQTR,NBVOLU
+      INTEGER N1,NUMMA,NBJOIN,NBREST,NBMOMP,NBMOMH,N1A,N1B
+
       PARAMETER(NBMC=5)
       REAL*8 EPAIS
       CHARACTER*1 K1B
-      CHARACTER*4 CDIM
-      CHARACTER*8 K8B,NOMAIN,NOMAOU,NEWMAI,NOGMA,PREFIX,MO
+      CHARACTER*4 CDIM,REPK,REPK2
+      CHARACTER*8 K8B,NOMAIN,NOMAOU,NEWMAI,NOGMA,PREFIX,MO,GEOFI
       CHARACTER*8 NOMG,NOMORI,KNUME,PRFNO,PRFMA,PLAN,TRANS
-      CHARACTER*10 VNMCLE(2),NOMCLE
       CHARACTER*16 TYPCON,NOMCMD,OPTION,K16BID
       CHARACTER*16 MOTFAC,TYMOCL(NBMC),MOTCLE(NBMC)
       CHARACTER*19 TABLE,LIGREL,CHAM1
@@ -60,7 +60,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 MOMANU,MOMANO,CRMANU,CRMANO,CRGRNU,CRGRNO,LISI,LISK
       CHARACTER*24 VALK(2)
       CHARACTER*24 PRFN1,PRFN2,NUME2,IADR,NUME1,MOMOTO,MOMUTO,PRFN
-      INTEGER NN1,IAA,IAGMA,IATYMA,IERD,II,IMA,IN,INO,INUMOL,J
+      INTEGER NN1,IAA,IAGMA,IATYMA,IERD,II,IMA,IN,INO,INUMOL,J,NFI
       INTEGER JCRGNO,JCRGNU,JCRMNO,JCRMNU,JGG,JLII,JLIK,JMAIL,JMOMTO
       INTEGER JMOMTU,JNOEU,JNONO,JNPT,JOPT,JTOM,JTRNO,JVALE,JVG,KVALE
       INTEGER NBCRMA,NBCRP1,NBDGMA,NBGMA,NBGRMA,NBGRMN,NBGRMT,NBGRMV
@@ -68,12 +68,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NBPT,NBPTT,NORI,NREP,NTAB,NTPOI
       INTEGER IBID,ICHAM,IFM,IOCC,JDIME,JIAD,JLIMA,JMA,JMOMNO,JMOMNU
       INTEGER JNOMMC,JNU2,JNUM,JOCCMC,JPR2,JPRO,JREFE,JTYPMV,LXLGUT
-      INTEGER NBMAIV,NBMOMA,NBNOAJ,NBNOEV,NCH,NDINIT,NIV
-      INTEGER JNNOMA,JNNOMB,JADRJV,JNONUM,DIMCON,DECALA
+      INTEGER NBMAIV,NBMOMA,NBNOAJ,NBNOEV,NCH,NDINIT,NIV,K,JGEOFI
+      INTEGER JNNOMA,JNNOMB,JADRJV,JNONUM,DIMCON,DECALA,IOCCT
       REAL*8 SHRINK,LONMIN
-      LOGICAL LOGIC
+      LOGICAL LPB
       INTEGER      IARG
-      DATA VNMCLE /'HEXA20_27 ','PENTA15_18'/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -86,7 +85,6 @@ C     ------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C               TRAITEMENT DU MOT CLE "ECLA_PG"
 C ----------------------------------------------------------------------
-
       CALL GETFAC('ECLA_PG',NBECLA)
       IF (NBECLA.GT.0) THEN
         CALL GETVID('ECLA_PG','MODELE' ,1,IARG,1,MO,IBID)
@@ -106,13 +104,24 @@ C ----------------------------------------------------------------------
         GOTO 350
       ENDIF
 
+
+C ----------------------------------------------------------------------
+C          TRAITEMENT DU MOT CLE "GEOM_FIBRE"
+C ----------------------------------------------------------------------
+      CALL GETVID(' ','GEOM_FIBRE',1,IARG,1,GEOFI,NFI)
+      IF (NFI.NE.0)THEN
+        CALL JEVEUO(GEOFI//'.GFMA','L',JGEOFI)
+        CALL COPISD('MAILLAGE','G',ZK8(JGEOFI),NOMAOU)
+        GOTO 350
+      ENDIF
+
+
       CALL GETVID(' ','MAILLAGE',1,IARG,1,NOMAIN,NN1)
       IF (NN1.EQ.0) CALL U2MESS('F','CALCULEL5_10')
 
 C ----------------------------------------------------------------------
 C          TRAITEMENT DU MOT CLE "CREA_FISS"
 C ----------------------------------------------------------------------
-
       CALL GETFAC('CREA_FISS',NBJOIN)
       IF (NBJOIN.NE.0) THEN
         IF (NN1.EQ.0) THEN
@@ -137,11 +146,15 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('LINE_QUAD',NBMOMA)
       IF (NBMOMA.GT.0) THEN
-        IF (NN1.EQ.0) THEN
-          CALL U2MESS('F','ALGELINE2_90')
-        ENDIF
+        CALL ASSERT(NBMOMA.EQ.1)
+        IF (NN1.EQ.0) CALL U2MESS('F','ALGELINE2_90')
+
         CALL GETVTX('LINE_QUAD','PREF_NOEUD',1,IARG,1,PREFIX,N1)
         CALL GETVIS('LINE_QUAD','PREF_NUME',1,IARG,1,NDINIT,N1)
+
+        CALL GETVTX('LINE_QUAD','MAILLE',1,IARG,0,K8B,N1A)
+        CALL GETVTX('LINE_QUAD','GROUP_MA',1,IARG,0,K8B,N1B)
+        IF (N1A+N1B.LT.0)  CALL U2MESK('A','MODELISA4_1',1,'LINE_QUAD')
 
         MOTCLE(1)='MAILLE'
         MOTCLE(2)='GROUP_MA'
@@ -165,56 +178,69 @@ C ----------------------------------------------------------------------
 C          TRAITEMENT DES MOTS CLES "PENTA15_18","HEXA20_27"
 C ----------------------------------------------------------------------
 
-      CALL GETFAC(VNMCLE(1),NBMOMP)
-      CALL GETFAC(VNMCLE(2),NBMOMH)
+      DO 77, K=1,2
+        IF (K.EQ.1) MOTFAC='HEXA20_27'
+        IF (K.EQ.2) MOTFAC='PENTA15_18'
+        CALL GETFAC(MOTFAC,NBMOMA)
+        IF (NBMOMA.GT.0) THEN
+          IF (NN1.EQ.0) CALL U2MESK('F','MAIL0_14',1,MOTFAC)
 
-      IF(NBMOMP.GT.0)THEN
-         NOMCLE=VNMCLE(1)
-      ELSEIF(NBMOMH.GT.0)THEN
-         NOMCLE=VNMCLE(2)
-      ELSE
-         NOMCLE=' '
-      ENDIF
+          CALL GETVTX(MOTFAC,'MAILLE',1,IARG,0,K8B,N1A)
+          CALL GETVTX(MOTFAC,'GROUP_MA',1,IARG,0,K8B,N1B)
+          IF (N1A+N1B.LT.0)  CALL U2MESK('A','MODELISA4_1',
+     &                               1,MOTFAC)
 
-      NBMOMA=NBMOMP+NBMOMH
-      IF (NBMOMA.GT.0) THEN
-        IF (NN1.EQ.0) THEN
-          CALL U2MESK('F','MAIL0_14',1,NOMCLE)
+          LPB=.FALSE.
+          IF(MOTFAC.EQ.'HEXA20_27')THEN
+            CALL DISMOI('F','EXI_PENTA15',NOMAIN,'MAILLAGE',IBID,
+     &                   REPK,IERD)
+            IF (REPK.EQ.'OUI') LPB=.TRUE.
+            CALL DISMOI('F','EXI_PYRAM13',NOMAIN,'MAILLAGE',IBID,
+     &                   REPK,IERD)
+            IF (REPK.EQ.'OUI') LPB=.TRUE.
+          ELSEIF(MOTFAC.EQ.'PENTA15_18')THEN
+            CALL DISMOI('F','EXI_HEXA20',NOMAIN,'MAILLAGE',IBID,
+     &                   REPK,IERD)
+            IF (REPK.EQ.'OUI') LPB=.TRUE.
+            CALL DISMOI('F','EXI_PYRAM13',NOMAIN,'MAILLAGE',IBID,
+     &                   REPK,IERD)
+            IF (REPK.EQ.'OUI') LPB=.TRUE.
+          ENDIF
+          IF (LPB) CALL  U2MESK('A','MODELISA4_11',1,MOTFAC)
+
+          CALL GETVTX(MOTFAC,'PREF_NOEUD',1,IARG,1,PREFIX,N1)
+          CALL GETVIS(MOTFAC,'PREF_NUME',1,IARG,1,NDINIT,N1)
+
+          MOTCLE(1)='MAILLE'
+          MOTCLE(2)='GROUP_MA'
+          MOTCLE(3)='TOUT'
+          NOMJV='&&OP0167.LISTE_MA'
+          CALL RELIEM(' ',NOMAIN,'NU_MAILLE',MOTFAC,1,3,MOTCLE,
+     &                MOTCLE,NOMJV,NBMA)
+          CALL JEVEUO(NOMJV,'L',JLIMA)
+
+          IF(MOTFAC.EQ.'HEXA20_27')THEN
+             CALL CM2027(NOMAIN,NOMAOU,NBMA,ZI(JLIMA),PREFIX,NDINIT)
+          ELSEIF(MOTFAC.EQ.'PENTA15_18')THEN
+             CALL CM1518(NOMAIN,NOMAOU,NBMA,ZI(JLIMA),PREFIX,NDINIT)
+          ENDIF
+          GOTO 350
         ENDIF
-        CALL GETVTX(NOMCLE,'PREF_NOEUD',1,IARG,1,PREFIX,N1)
-        CALL GETVIS(NOMCLE,'PREF_NUME',1,IARG,1,NDINIT,N1)
+ 77   CONTINUE
 
-        MOTCLE(1)='MAILLE'
-        MOTCLE(2)='GROUP_MA'
-        MOTCLE(3)='TOUT'
-        NOMJV='&&OP0167.LISTE_MA'
-        CALL RELIEM(' ',NOMAIN,'NU_MAILLE',NOMCLE,1,3,MOTCLE,
-     &              MOTCLE,NOMJV,NBMA)
-        CALL JEVEUO(NOMJV,'L',JLIMA)
-        CALL JEEXIN(NOMAIN//'.NOMACR',IRET)
-        IF (IRET.NE.0) CALL U2MESK('F','MAIL0_12',1,NOMCLE)
-        CALL JEEXIN(NOMAIN//'.ABS_CURV',IRET)
-        IF (IRET.NE.0) CALL U2MESK('F','MAIL0_13',1,NOMCLE)
-
-        IF(NBMOMP.GT.0)THEN
-C          HEXA20 -> HEXA27 :
-           CALL CM2027(NOMAIN,NOMAOU,NBMA,ZI(JLIMA),PREFIX,NDINIT)
-        ELSEIF(NBMOMH.GT.0)THEN
-C          PENTA15 -> PENTA18 :
-           CALL CM1518(NOMAIN,NOMAOU,NBMA,ZI(JLIMA),PREFIX,NDINIT)
-        ENDIF
-        GOTO 350
-
-      ENDIF
 C ----------------------------------------------------------------------
 C          TRAITEMENT DU MOT CLE "QUAD_LINE"
 C ----------------------------------------------------------------------
 
       CALL GETFAC('QUAD_LINE',NBMOMA)
       IF (NBMOMA.GT.0) THEN
-        IF (NN1.EQ.0) THEN
-          CALL U2MESS('F','ALGELINE2_93')
-        ENDIF
+        CALL ASSERT(NBMOMA.EQ.1)
+        IF (NN1.EQ.0) CALL U2MESS('F','ALGELINE2_93')
+
+        CALL GETVTX('QUAD_LINE','MAILLE',1,IARG,0,K8B,N1A)
+        CALL GETVTX('QUAD_LINE','GROUP_MA',1,IARG,0,K8B,N1B)
+        IF (N1A+N1B.LT.0)  CALL U2MESK('A','MODELISA4_1',1,'QUAD_LINE')
+
         MOTCLE(1)='MAILLE'
         MOTCLE(2)='GROUP_MA'
         MOTCLE(3)='TOUT'
@@ -239,21 +265,28 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('MODI_MAILLE',NBMOMA)
       IF (NBMOMA.GT.0) THEN
-        IF (NN1.EQ.0) THEN
-          CALL U2MESS('F','ALGELINE2_96')
-        ENDIF
+        IF (NN1.EQ.0) CALL U2MESS('F','ALGELINE2_96')
+
         IQTR=0
         DO 20 IOCC=1,NBMOMA
           CALL GETVTX('MODI_MAILLE','OPTION',IOCC,IARG,1,OPTION,N1)
-          IF (OPTION.EQ.'QUAD_TRIA3')IQTR=IQTR+1
+          IF (OPTION.EQ.'QUAD_TRIA3') THEN
+            IQTR=IQTR+1
+            IOCCT=IOCC
+          ENDIF
    20   CONTINUE
+
         IF (IQTR.EQ.0) THEN
           GOTO 30
-
         ELSEIF (IQTR.GT.1) THEN
           CALL U2MESS('F','ALGELINE2_97')
-        ELSEIF (IQTR.EQ.1 .AND. NBMOMA.NE.1) THEN
-          CALL U2MESS('F','ALGELINE2_97')
+        ELSE
+          CALL GETVTX('MODI_MAILLE','MAILLE',IOCCT,IARG,0,K8B,N1A)
+          CALL GETVTX('MODI_MAILLE','GROUP_MA',IOCCT,IARG,0,K8B,N1B)
+          IF (N1A+N1B.LT.0)  CALL U2MESK('A','MODELISA4_1',
+     &                            1,'QUAD_TRIA3')
+          CALL DISMOI('F','EXI_TRIA6',NOMAIN,'MAILLAGE',IBID,REPK,IERD)
+          IF (REPK.EQ.'OUI')  CALL U2MESS('A','MODELISA4_2')
         ENDIF
 
         CALL GETVTX('MODI_MAILLE','PREF_MAILLE',1,IARG,1,PREFIX,N1)
@@ -263,7 +296,7 @@ C ----------------------------------------------------------------------
         MOTCLE(2)='GROUP_MA'
         MOTCLE(3)='TOUT'
         NOMJV='&&OP0167.LISTE_MA'
-        CALL RELIEM(' ',NOMAIN,'NU_MAILLE','MODI_MAILLE',1,3,MOTCLE,
+        CALL RELIEM(' ',NOMAIN,'NU_MAILLE','MODI_MAILLE',IOCCT,3,MOTCLE,
      &              MOTCLE,NOMJV,NBMA)
         CALL JEVEUO(NOMJV,'L',JLIMA)
 
@@ -350,15 +383,14 @@ C ----------------------------------------------------------------------
       COOREF=NOMAOU//'.COORDO    .REFE'
 
 
-      LOGIC=.FALSE.
-      CALL JEDUPO(NODIMV,'G',NODIME,LOGIC)
-      CALL JEDUPO(COODSV,'G',COODSC,LOGIC)
-      CALL JEDUPO(COOREV,'G',COOREF,LOGIC)
-      CALL JEDUPO(NOMAIN//'.NOMACR','G',NOMAOU//'.NOMACR',LOGIC)
-      CALL JEDUPO(NOMAIN//'.PARA_R','G',NOMAOU//'.PARA_R',LOGIC)
-      CALL JEDUPO(NOMAIN//'.SUPMAIL','G',NOMAOU//'.SUPMAIL',LOGIC)
-      CALL JEDUPO(NOMAIN//'.TYPL','G',NOMAOU//'.TYPL',LOGIC)
-      CALL JEDUPO(NOMAIN//'.ABS_CURV','G',NOMAOU//'.ABS_CURV',LOGIC)
+      CALL JEDUPO(NODIMV,'G',NODIME,.FALSE.)
+      CALL JEDUPO(COODSV,'G',COODSC,.FALSE.)
+      CALL JEDUPO(COOREV,'G',COOREF,.FALSE.)
+      CALL JEDUPO(NOMAIN//'.NOMACR','G',NOMAOU//'.NOMACR',.FALSE.)
+      CALL JEDUPO(NOMAIN//'.PARA_R','G',NOMAOU//'.PARA_R',.FALSE.)
+      CALL JEDUPO(NOMAIN//'.SUPMAIL','G',NOMAOU//'.SUPMAIL',.FALSE.)
+      CALL JEDUPO(NOMAIN//'.TYPL','G',NOMAOU//'.TYPL',.FALSE.)
+      CALL JEDUPO(NOMAIN//'.ABS_CURV','G',NOMAOU//'.ABS_CURV',.FALSE.)
 
       CALL JEVEUO(COOREF,'E',JREFE)
       ZK24(JREFE)=NOMAOU
@@ -624,8 +656,8 @@ C
         CALL JELIRA(COOVAV,'DOCU',IBID,CDIM)
         CALL JEECRA(COOVAL,'DOCU',IBID,CDIM)
       ELSE
-        CALL JEDUPO(NOMNOV,'G',NOMNOE,LOGIC)
-        CALL JEDUPO(COOVAV,'G',COOVAL,LOGIC)
+        CALL JEDUPO(NOMNOV,'G',NOMNOE,.FALSE.)
+        CALL JEDUPO(COOVAV,'G',COOVAL,.FALSE.)
       ENDIF
 
 C --- CAS OU L'ON FOURNIT UNE TABLE.

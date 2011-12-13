@@ -1,12 +1,12 @@
         SUBROUTINE LCINIT ( FAMI,KPG,KSP,LOI,TYPESS, ESSAI,MOD,
-     1                      NMAT,MATERF,TIMED,TIMEF,
+     1                      NMAT,MATERD,MATERF,TIMED,TIMEF,
      2                      NR, NVI, YD,     EPSD,   DEPS, DY,
      3                      COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,
      4                      VIND,SIGD, EPSTR)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,11 +36,15 @@ C                      > VOIR XXXCVG ET XXXINI
 C           ESSAI  :  SOLUTION D ESSAI
 C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION MATER
+C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT  T+DT
 C           EPSD   :  DEFORMATION A T
 C           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
+C           NVI    :  NOMBRE VARIABLES INTERNES
+C           VIND   :  VECTEUR VARIABLES INTERNES A T
+C           NR     :  DIMENSION VECTEUR INCONNUES
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
@@ -49,7 +53,7 @@ C TOLE CRP_21
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          DEPS(6), EPSD(6), ESSAI
         REAL*8          YD(*) ,  DY(*)
-        REAL*8          MATERF(NMAT,2)
+        REAL*8          MATERF(NMAT,2),MATERD(NMAT,2)
         REAL*8          TIMED, TIMEF
         REAL*8          PGL(3,3)
         REAL*8          VIND(*),SIGD(6),EPSTR(6)
@@ -72,6 +76,9 @@ C
       ELSEIF     ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
          CALL IRRINI(FAMI,KPG,KSP,TYPESS,ESSAI,MOD,NMAT,MATERF,YD,
      &               DEPS,DY)
+      ELSEIF     ( LOI(1:15) .EQ. 'BETON_BURGER_FP' ) THEN
+         CALL BURINI(NMAT,MATERD,MATERF,TIMED,TIMEF,NVI,
+     &               VIND,NR,YD,DEPS,DY)
       ELSE
 C        SOLUTION INITIALE = ZERO
          CALL VECINI ( NR  , 0.D0 , DY )

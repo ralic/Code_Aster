@@ -1,4 +1,4 @@
-#@ MODIF sd_fond_fiss SD  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF sd_fond_fiss SD  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,5 +34,6 @@ class sd_fond_fiss(AsBase):
     DTAN_ORIGINE = Facultatif(AsVR(lonmax=3, ))
     SUPNORM_NOEU = Facultatif(AsVK8(SDNom(nomj='.SUPNORM.NOEU'), ))
     LEVRESUP_MAIL = Facultatif(AsVK8(SDNom(nomj='.LEVRESUP.MAIL'), ))
+    INFO = AsVK8(SDNom(nomj='.INFO'), lonmax=2, )
 
 

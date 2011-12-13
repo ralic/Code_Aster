@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,6 +80,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              ORDRE_INT     = 4,
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1000.,
+                             CONTACT_INIT  = 'NON',
                           ),
                    ) 
                     

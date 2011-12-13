@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 #  TITRE  ROTATION DES CONTRAINTES PRINCIPALES (WILLIAM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,8 +94,7 @@ RES1=STAT_NON_LINE(CHAM_MATER=CAR_MAT,
                    TITRE='BENCH-B LOI MAZARS',
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_RELA=1.E-06),
-                   COMP_INCR  =_F(RELATION='MAZARS',
-                                  DEFORMATION='PETIT'),
+                   COMP_INCR  =_F(RELATION='MAZARS'),
                    INCREMENT  =_F(LIST_INST=L_INS1,
                                   INST_FIN = 1.0 ),
                    NEWTON     =_F(MATRICE='TANGENTE'),
@@ -108,11 +107,7 @@ RES1=STAT_NON_LINE(reuse     = RES1,
                    TITRE     ='BENCH-A LOI MAZARS',
                    CONVERGENCE=_F(ITER_GLOB_MAXI=30,
                                   RESI_GLOB_RELA=1.E-4),
-                   COMP_INCR  =_F(RELATION='MAZARS',
-                                  DEFORMATION='PETIT',
-                                  ITER_INTE_MAXI=10,
-                                  RESI_INTE_RELA=1.E-6,
-                                  ITER_INTE_PAS=-10),
+                   COMP_INCR  =_F(RELATION='MAZARS'),
                    INCREMENT  =_F(
                                   LIST_INST=L_INS1,),
                    NEWTON     =_F(

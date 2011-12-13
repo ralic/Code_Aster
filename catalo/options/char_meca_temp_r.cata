@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -24,20 +24,20 @@ OPTION__
    IN__
         PNBSP_I  NBSP_I
         PGEOMER  GEOM_R
-        PMATERC  ADRSJEVE
+        PMATERC  ADRSJEVE << Champ de matériaux. Concept CHAM_MATER >>
         PVARCPR  VARI_R   <<  PVARCPR : VARIABLES DE COMMANDE  >>
         PVARCRR  VARI_R   <<  PVARCRR : VARIABLES DE COMMANDE  DE REFERENCE >>
-        PCACOQU  CACOQU
-        PCAGNPO  CAGNPO
+        PCACOQU  CACOQU   << Champ de caractéristiques pour les coques. Concept CARA_ELEM >>
+        PCAGNPO  CAGNPO   << Champ de caractéristiques générales pour les poutres. Concept CARA_ELEM >>
         PCAARPO  CAARPO
-        PCAORIE  CAORIE
+        PCAORIE  CAORIE   << Champ de caractéristiques d'orientation. Concept CARA_ELEM >>
         PHARMON  HARMON
         PCAGNBA  CAGNBA
         PTEMPSR  INST_R
         PCAMASS  CAMASS
-        PCAGEPO  CAGEPO
+        PCAGEPO  CAGEPO   << Champ de caractéristiques des élements de poutre.Concept CARA_ELEM >>
         PCOMPOR  COMPOR
-        PFIBRES  CAFI_R  << CARACTERISTIQUES DES FIBRES POUR LES ELEMENTS DE POUTRES FIBRES>>
+        PFIBRES  CAFI_R   <<Champ des caractéristiques des fibres. Concept CARA_ELEM>>
    OUT__
 PVECTUR VDEP_R RESL__
 

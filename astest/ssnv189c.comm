@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - C_PLAN
 # ssnv189c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,7 +65,6 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                             FONC_MULT=l,),
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
                                 DEFORMATION='GROT_GDEP',
-                                ITER_INTE_MAXI=100,
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0,),

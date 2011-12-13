@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPAIS
       REAL*8 MATEVN(2,2,NPGT),MATEVG(2,2,NPGT)
       REAL*8 SIGM(6,270),SIGMA(6,120),SIGGN(6,9),EFFGC(8,9),EFFGT(8,9)
-      REAL*8 PK2(6,270),SIGGNU(6,9),VAR(12)
+      REAL*8 PK2(6,270),SIGGNU(6,9)
       LOGICAL       LGREEN
 
       OPTION = OPTIOZ
@@ -381,139 +381,5 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
 
 C ------------------------------------------------------------
 
-       ELSE IF (OPTION.EQ.'VACO_ELNO') THEN
-
-        CALL JEVECH('PNUMCOR','L',JNUMC)
-        ICOU = ZI(JNUMC)
-        NORDO = ZI(JNUMC+1)
-
-        CALL JEVECH('PVARIGR','L',ICHG)
-        CALL JEVECH('PCOMPOR','L',ICOMPO)
-        READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
-        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-        LGPG = MAX(JTAB(6),1)*JTAB(7)
-
-        CALL JEVECH('PNBSP_I','L',JNBSPI)
-        NBCOU=ZI(JNBSPI-1+1)
-
-C -- RECUPERATION DES VARIABLES INTERNES
-C -- NBVARI = NOMBRES DE VARIABLES INTERNES
-C -- STOCKAGE DANS PVARIGR : PAR POINT DE GAUSS DU PREMIER
-C -- AU DERNIER
-
-        CALL JEVETE('&INEL.'//NOMTE//'.B',' ',JMAT)
-
-C-- EXTRAPOLATION AUX NOEUDS SOMMETS (3 OU 4)
-
-        CALL JEVECH('PVARINR','E',JVARI)
-
-          DO 470 IC = 1,NBVARI
-
-            DO 460 I = 1,NPGE*NSO
-              L = NPGE*NPGSN* (I-1)
-              S = 0.D0
-              DO 430 J = 1,NPGE*NPGSN
-C -- DETERMINATION DU PT DE GAUSS A PARTIR DE LA POSITION JJ
-                DO 420 K1 = 1,NPGSN
-                  DO 410 K2 = 1,NPGE
-C
-                    J1 = (K1-1)*NPGE + K2
-                    IF (J1.EQ.J) THEN
-                      INP = K1
-                      NEP = K2 - 1
-                    END IF
-  410             CONTINUE
-  420           CONTINUE
-                NPP = (INP-1)*LGPG
-                NPP = NPP + IC + NBVARI* ((ICOU-1)*NPGE+NEP)
-
-C -- ZR(ICHG-1+NPP) = VARI(IC,JJ)
-C                JJ = (ICOU-1)*NPGE*NPGSN + J
-                S = S + ZR(JMAT-1+L+J)*ZR(ICHG-1+NPP)
-  430         CONTINUE
-            VAR(I)=S
-  460       CONTINUE
-
-            IPGE=NORDO+2
-            DO 465 INO=1,NSO
-               ZR(JVARI-1+(INO-1)*NBVARI+IC) = VAR((INO-1)*NPGE+IPGE)
-  465       CONTINUE
-  470     CONTINUE
-
-C -- CREATION DU CHAMP DE VARIABLES INTERNES POUR LES POINTS
-C -- MILIEUX ET LE CENTRE
-C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
-
-        IF (NOMTE.EQ.'MEC3QU9H') THEN
-          DO 510 IC = 5,NB2
-            NPO = (IC-1)*NBVARI
-            IF (IC.EQ.5) THEN
-              NP1 = 0
-              NP2 = NBVARI
-            ELSE IF (IC.EQ.6) THEN
-              NP1 = NBVARI
-              NP2 = 2*NBVARI
-            ELSE IF (IC.EQ.7) THEN
-              NP1 = 2*NBVARI
-              NP2 = 3*NBVARI
-            ELSE IF (IC.EQ.8) THEN
-              NP1 = 3*NBVARI
-              NP2 = 0
-            ELSE IF (IC.EQ.9) THEN
-              NP1 = 0
-              NP2 = NBVARI
-              NP3 = 2*NBVARI
-              NP4 = 3*NBVARI
-            END IF
-            IF (IC.NE.9) THEN
-              DO 490 I = 1,NBVARI
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     &                              ZR(JVARI-1+NP2+I)
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/2.D0
-  490         CONTINUE
-            ELSE
-              DO 500 I = 1,NBVARI
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     &                              ZR(JVARI-1+NP2+I)
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I) +
-     &                              ZR(JVARI-1+NP3+I)
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I) +
-     &                              ZR(JVARI-1+NP4+I)
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/4.D0
-  500         CONTINUE
-            END IF
-  510     CONTINUE
-        ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
-          DO 540 IC = 4,NB2
-            NPO = (IC-1)*NBVARI
-            IF (IC.EQ.4) THEN
-              NP1 = 0
-              NP2 = NBVARI
-            ELSE IF (IC.EQ.5) THEN
-              NP1 = NBVARI
-              NP2 = 2*NBVARI
-            ELSE IF (IC.EQ.6) THEN
-              NP1 = 2*NBVARI
-              NP2 = 0
-            ELSE IF (IC.EQ.7) THEN
-              NP1 = 0
-              NP2 = NBVARI
-              NP3 = 2*NBVARI
-            END IF
-            IF (IC.NE.7) THEN
-              DO 520 I = 1,NBVARI
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     &                              ZR(JVARI-1+NP2+I)
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/2.D0
-  520         CONTINUE
-            ELSE
-              DO 530 I = 1,NBVARI
-                ZR(JVARI-1+NPO+I) =ZR(JVARI-1+NP1+I)+ZR(JVARI-1+NP2+I)
-                ZR(JVARI-1+NPO+I) =ZR(JVARI-1+NPO+I)+ZR(JVARI-1+NP3+I)
-                ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/3.D0
-  530         CONTINUE
-            END IF
-  540     CONTINUE
-        END IF
       END IF
       END

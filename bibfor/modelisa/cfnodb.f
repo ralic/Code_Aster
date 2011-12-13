@@ -1,7 +1,7 @@
       SUBROUTINE CFNODB(CHAR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,10 +26,12 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES - ELIMINATION)
 C
-C DETECTION DE NOEUDS APPARTENANT AUX DEUX SURFACES DE CONTACT
+C DETECTION DE NOEUDS APPARTENANT A DEUX SURFACES DE CONTACT
+C
+C DEUX CAS SONT DETECTES : AU SEIN D'UNE MEME ZONE
+C                          ENTRE 2 SURFACES ESCLAVES
 C
 C ----------------------------------------------------------------------
-C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C
@@ -52,18 +54,20 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 NODBL ,CONTNO,SANSNO,PSANS ,PBARS ,PBARM
-      INTEGER      JNODBL,JNOCO ,JSANS ,JPSANS,JPBARS,JPBARM
-      INTEGER      IZONE,IBID,NVDBL
-      INTEGER      NBNOE,JDECNE
-      INTEGER      NBNOM,JDECNM
-      INTEGER      NDOUBL,NSANS,JDECS
-      INTEGER      NBARS,NBARM
-      INTEGER      CFDISI,MMINFI,NZOCO,NNOCO
-      INTEGER      IFORM
-      INTEGER      VALI(2)
-      LOGICAL      MMINFL,LCALC
       CHARACTER*24 DEFICO
+      LOGICAL      MMINFL,LCALC
+      INTEGER      CFDISI,NZOCO ,NNOCO,IFORM,MMINFI
+      CHARACTER*24 NODBL ,NODBL2
+      INTEGER      JNODBL,JNODB2
+      CHARACTER*24 CONTNO,SANSNO, PSANS, PBARS, PBARM, PRACC
+      INTEGER      JNOCO ,JSANS ,JPSANS,JPBARS,JPBARM,JPRACC
+      INTEGER      IZONE ,IBID  ,NDOUBL,NVDBL
+      INTEGER      IZONEA,IZONEB,NVDBA ,NVDBB
+      INTEGER      NBNOE ,JDECNE,NBNOEA,NBNOEB
+      INTEGER      NBNOM ,JDECNM,JDECEA,JDECEB
+      INTEGER      NSANS ,JDECS ,NSANSA,JDECSA,NSANSB,JDECSB
+      INTEGER      NBARS ,NBARM ,NRACCA,NRACCB
+      INTEGER      VALI(3)
 C
 C ----------------------------------------------------------------------
 C
@@ -79,7 +83,9 @@ C
 C --- OBJETS TEMPORAIRES
 C
       NODBL = '&&CFNODB.NODBL'
-      CALL WKVECT(NODBL,'V V I',NNOCO,JNODBL)
+      CALL WKVECT(NODBL ,'V V I',NNOCO,JNODBL)
+      NODBL2 = '&&CFNODB.NODBL2'
+      CALL WKVECT(NODBL2,'V V I',NNOCO,JNODB2)
 C
 C --- ACCES AU TABLEAU DES NOEUDS DE CONTACT
 C
@@ -95,9 +101,13 @@ C
         CALL JEVEUO(PBARS,'L',JPBARS)
         PBARM  = DEFICO(1:16)//'.PBAMACO'
         CALL JEVEUO(PBARM,'L',JPBARM)
+        PRACC  = DEFICO(1:16)//'.PRANOCO'
+        CALL JEVEUO(PRACC,'L',JPRACC)
       ENDIF
 C
-C --- PARCOURS DES ZONES
+C ----------------------------------------------------------------------
+C
+C --- PREMIER CAS : NOEUDS COMMUNS DANS UNE MEME ZONE DE CONTACT
 C
       DO 100 IZONE = 1,NZOCO
         NBNOE  = MMINFI(DEFICO,'NBNOE' ,IZONE )
@@ -126,15 +136,15 @@ C --------- NON !
               VALI(1) = IZONE
               VALI(2) = ABS(NVDBL)
               IF (IFORM.EQ.1) THEN
-                 CALL U2MESI('F','CONTACT2_13',2,VALI)
+                CALL U2MESI('F','CONTACT2_13',2,VALI)
               ELSEIF (IFORM.EQ.2) THEN
-                 NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1)
-                 NBARM = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1)
-                 IF (NBARS.EQ.0.AND.NBARM.EQ.0) THEN
-                   CALL U2MESI('F','CONTACT2_13',2,VALI)
-                 ENDIF
+                NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1)
+                NBARM = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1)
+                IF (NBARS.EQ.0.AND.NBARM.EQ.0) THEN
+                  CALL U2MESI('F','CONTACT2_13',2,VALI)
+                ENDIF
               ELSE
-                 CALL ASSERT(.FALSE.)
+                CALL ASSERT(.FALSE.)
               ENDIF
             ENDIF
           ELSE
@@ -143,9 +153,80 @@ C --------- NON !
         ENDIF
  100  CONTINUE
 C
+C ----------------------------------------------------------------------
+C
+C --- SECOND CAS : NOEUDS COMMUNS A DEUX SURFACES ESCLAVES
+C
+      DO 200 IZONEA = 1,NZOCO
+        LCALC = MMINFL(DEFICO,'CALCUL',IZONEA)
+        IF (.NOT.LCALC) THEN
+          GOTO 200
+        ENDIF
+        DO 201 IZONEB = IZONEA+1,NZOCO
+          LCALC = MMINFL(DEFICO,'CALCUL',IZONEB)
+          IF (.NOT.LCALC) THEN
+            GOTO 201
+          ENDIF
+          NBNOEA = MMINFI(DEFICO,'NBNOE' ,IZONEA)
+          NBNOEB = MMINFI(DEFICO,'NBNOE' ,IZONEB)
+          JDECEA = MMINFI(DEFICO,'JDECNE',IZONEA)
+          JDECEB = MMINFI(DEFICO,'JDECNE',IZONEB)
+          CALL UTLISI('INTER',ZI(JNOCO+JDECEA),NBNOEA,
+     &                        ZI(JNOCO+JDECEB),NBNOEB,
+     &                        ZI(JNODBL)      ,NNOCO ,
+     &                        NDOUBL)
+          IF (NDOUBL.NE.0) THEN
+            IF (NDOUBL.GT.0) THEN
+              IF (IFORM.EQ.1) THEN
+C ------------- LES NOEUDS COMMUNS SONT-ILS EXCLUS PAR LA ZONE A ?
+                NSANSA = ZI(JPSANS+IZONEA) - ZI(JPSANS+IZONEA-1)
+                JDECSA = ZI(JPSANS+IZONEA-1)
+                CALL UTLISI('DIFFE',ZI(JNODBL)      ,NDOUBL,
+     &                              ZI(JSANS+JDECSA),NSANSA,
+     &                              ZI(JNODB2)      ,NNOCO ,
+     &                              NVDBA)
+                IF (NVDBA.NE.0) THEN
+                  IF (NVDBA.GT.0) THEN
+C ----------------- LES NOEUDS RESTANTS SONT-ILS EXCLUS PAR LA ZONE B ?
+                    NSANSB = ZI(JPSANS+IZONEB) - ZI(JPSANS+IZONEB-1)
+                    JDECSB = ZI(JPSANS+IZONEB-1)
+                    CALL UTLISI('DIFFE',ZI(JNODB2)      ,NVDBA ,
+     &                                  ZI(JSANS+JDECSB),NSANSB,
+     &                                  IBID            ,1     ,
+     &                                  NVDBB)
+                    IF (NVDBB.NE.0) THEN
+                      VALI(1) = IZONEA
+                      VALI(2) = IZONEB
+                      VALI(3) = ABS(NVDBB)
+                      CALL U2MESI('A','CONTACT2_15',3,VALI)
+                    ENDIF
+                  ELSE
+                    CALL ASSERT(.FALSE.)
+                  ENDIF
+                ENDIF
+              ELSEIF (IFORM.EQ.2) THEN
+                VALI(1) = IZONEA
+                VALI(2) = IZONEB
+                VALI(3) = ABS(NDOUBL)
+                NRACCA = ZI(JPRACC+IZONEA) - ZI(JPRACC+IZONEA-1)
+                NRACCB = ZI(JPRACC+IZONEB) - ZI(JPRACC+IZONEB-1)
+                IF (NRACCA.EQ.0.AND.NRACCB.EQ.0) THEN
+                  CALL U2MESI('F','CONTACT2_16',3,VALI)
+                ENDIF
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+ 201    CONTINUE
+ 200  CONTINUE
+C
 C --- MENAGE
 C
-      CALL JEDETR(NODBL)
+      CALL JEDETR(NODBL )
+      CALL JEDETR(NODBL2)
 C
       CALL JEDEMA()
       END

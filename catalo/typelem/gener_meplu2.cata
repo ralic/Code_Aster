@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -219,9 +219,8 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELNO           98    IN__   ECONTPG  PCONTRR
-                              OUT__  ECONTNO  PSIEFNOR
-                                     ECONTNC  PSIEFNOC
+    SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR
                               OUT__  ESIGMPG  PSIGMR   ESIGMPC  PSIGMC
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR
@@ -234,7 +233,7 @@ OPTION__
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECONTNO  PSIEF_R  ENEUR10  PNEUT_R  ENNEUT_F PNEUT_F
-    VARI_ELNO           98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET

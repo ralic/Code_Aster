@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,6 +204,11 @@ C
         CALL  FONNOF ( RESU,NOMA,TYPFON,NBNOFF )
       ENDIF
 
+C     ---------------------------------------------------------------
+C     STOCKAGE D'INFOS UTILES DANS LA SD EN SORTIE
+C     ---------------------------------------------------------------
 C
+      CALL FONINF(RESU)
+
       CALL JEDEMA()
       END

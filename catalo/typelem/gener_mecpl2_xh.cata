@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -224,11 +224,11 @@ OPTION__
     ERME_ELEM           382   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO  E6NEUTR  PPINTTO
-                                     E36NEUI  PCNSETO  E6NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PSIEFSER
+                                     E36NEUI  PCNSETO  E6NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PCONTSER
                                      E22NEUTR PPMILTO
                               OUT__  EERREUR  PERREUR
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
-                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI PHEAVTO   E6NEUTI  PLONCHA
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA
                                      N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
                                      E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
@@ -304,10 +304,13 @@ OPTION__
                                      N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
                               OUT__  ECONTPG  PCONTRR
     SIEF_ELNO           289   IN__   ECONTPG  PCONTRR  E36NEUI  PCNSETO  E6NEUTI  PLONCHA
-                              OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
-    SIGM_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    SIGM_ELNO           289   IN__   ECONTPG  PCONTRR  E36NEUI  PCNSETO  E6NEUTI  PLONCHA
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SISE_ELNO           289   IN__   ECONTPG  PCONTRR  E6NEUTI  PLONCHA
+                              OUT__  ECONTSE  PCONTSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT
                                      N2NEUT_R PGRADLN
                               OUT__  E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA

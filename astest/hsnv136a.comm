@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TRACTION SIMPLE GRANDES DEF META_LEMA_ANI DEGENERE EN NORTON
 # hsnv136a.para = tps_job 250 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,9 +154,7 @@ VL=STAT_NON_LINE(
                          COMP_INCR=_F(
                 RELATION = 'META_LEMA_ANI',
                 DEFORMATION = 'PETIT_REAC',
-                RELATION_KIT = 'ZIRC',
-                ITER_INTE_MAXI = 100,
-                RESI_INTE_RELA = 1.E-12),
+                RELATION_KIT = 'ZIRC'),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 1),
@@ -184,9 +182,7 @@ VL=STAT_NON_LINE( reuse=VL,
                          COMP_INCR=_F(
                 RELATION = 'META_LEMA_ANI',
                 DEFORMATION = 'PETIT_REAC',
-                RELATION_KIT = 'ZIRC',
-                ITER_INTE_MAXI = 100,
-                RESI_INTE_RELA = 1.E-12),
+                RELATION_KIT = 'ZIRC'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(

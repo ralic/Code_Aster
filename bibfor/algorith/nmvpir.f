@@ -7,7 +7,7 @@
      &                   SIGP,VIP,DSIDEP,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
+C MODIF ALGORITH  DATE 12/12/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -328,8 +328,8 @@ C        PARAMETRES DE LA LOI DE FLUAGE
      &              2,NOMINT(1),COEINT(1),CODINT, 1)
          UNSURM=0.D0
          VALDEN=1.D0
+         FLUPHI=(IRRAP-IRRAM)/DELTAT
          UNSURK = (COEINT(1)*FLUPHI*2.D0)/SQRT(3.D0)
-         FLUPHI=IRRAP
          IF (UNSURK.LT.0.D0) THEN
             CALL U2MESS('F','ALGORITH8_89')
          ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKQ - B/A = 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,7 +198,7 @@ DEP=MECA_STATIQUE(MODELE=MO,
 
 DEP=CALC_ELEM(reuse =DEP,
               RESULTAT=DEP,
-              OPTION=('SIGM_ELNO',),);
+              OPTION=('SIGM_ELNO','EFGE_ELNO',),);
 
 DEP1INF=POST_CHAMP(RESULTAT=DEP,
                    TOUT='OUI',
@@ -206,28 +206,14 @@ DEP1INF=POST_CHAMP(RESULTAT=DEP,
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
 
-DEP1INF=CALC_ELEM(reuse =DEP1INF,
-                  RESULTAT=DEP,
-                  OPTION=('EFGE_ELNO',),
-                  REPE_COQUE =_F(NUME_COUCHE=1,
-                                 NIVE_COUCHE='INF',),);
-
 DEP2SUP=POST_CHAMP(RESULTAT=DEP,
                    TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
                                    NIVE_COUCHE='SUP',),);
 
-DEP2SUP=CALC_ELEM(reuse =DEP2SUP,
-                  RESULTAT=DEP,
-                  OPTION=('EFGE_ELNO',),
-                  REPE_COQUE =_F(NUME_COUCHE=2,
-                                 NIVE_COUCHE='SUP',),);
-
 IMPR_RESU(RESU=_F(RESULTAT=DEP2SUP,NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,MAILLE=('M10',)))
-
-
 
 IMPR_RESU(RESU=_F(RESULTAT=DEP1INF,NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,MAILLE=('MAILM10',)))
@@ -248,7 +234,7 @@ DEPQ=MECA_STATIQUE(MODELE=MO1,
 
 DEPQ=CALC_ELEM(reuse =DEPQ,
                RESULTAT=DEPQ,
-               OPTION=('SIGM_ELNO',),);
+               OPTION=('SIGM_ELNO','EFGE_ELNO',),);
 
 #
 # COUCHE 1
@@ -258,12 +244,6 @@ DEPQ1INF=POST_CHAMP(RESULTAT=DEPQ,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-DEPQ1INF=CALC_ELEM(reuse =DEPQ1INF,
-                  RESULTAT=DEPQ,
-                  OPTION=('EFGE_ELNO',),
-                  REPE_COQUE =_F(NUME_COUCHE=1,
-                                 NIVE_COUCHE='INF',),);
-
 
 IMPR_RESU(RESU=_F(RESULTAT=DEPQ1INF,NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,MAILLE=('M10',)))
@@ -276,12 +256,6 @@ DEPQ4SUP=POST_CHAMP(RESULTAT=DEPQ,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=4,
                                    NIVE_COUCHE='SUP',),);
-
-DEPQ4SUP=CALC_ELEM(reuse =DEPQ4SUP,
-                   RESULTAT=DEPQ,
-                   OPTION=('EFGE_ELNO',),
-                   REPE_COQUE =_F(NUME_COUCHE=4,
-                                  NIVE_COUCHE='SUP',),);
 
 IMPR_RESU(RESU=_F(RESULTAT=DEPQ4SUP,NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,MAILLE=('M10',)))

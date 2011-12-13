@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SELON X SOUS CHARGEMENT THERMIQUE. GRILLE_PINTO_MEN  TEMPERATURE IMPOSEE PAR NAPPE
 # ssns100e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,7 +155,7 @@ LEDEP=STAT_NON_LINE(
                 ),
                          COMP_INCR=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
-                ITER_INTE_MAXI = 30,
+#                ITER_INTE_MAXI = 30,
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,

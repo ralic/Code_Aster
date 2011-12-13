@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 # ssnl125a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,7 +34,8 @@ gamma   = p/m - 1
 C       = 0.375*Gf*D
 pena    = 1.E3 * p * wy
 
-DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
+      MESURE_TEMPS=_F(MOYENNE='NON'),)
 
 # -----------------------------------------------------
 #                 MAILLAGE ET MODELE

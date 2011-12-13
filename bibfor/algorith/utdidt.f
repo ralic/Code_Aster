@@ -2,7 +2,7 @@
      &                  VALR  ,VALI  ,VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -232,6 +232,7 @@ C     ------------------------------------------------------------------
             IF (VALI.EQ.3) VALK = 'COMP_NCVG'
             IF (VALI.EQ.4) VALK = 'COLLISION'
             IF (VALI.EQ.5) VALK = 'INTERPENETRATION'
+            IF (VALI.EQ.6) VALK = 'DIVE_RESI'
           ELSEIF (GETSET.EQ.'E') THEN
             IF (VALK.EQ.'DIVE_ITER') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 0
@@ -245,6 +246,8 @@ C     ------------------------------------------------------------------
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 4
             ELSEIF (VALK.EQ.'INTERPENETRATION') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 5            
+            ELSEIF (VALK.EQ.'DIVE_RESI') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 6        
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF

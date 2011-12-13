@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 13/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,7 @@ if not sys.modules.has_key('Table'):
 
 
 # ------------------------------------------------------------------------------
-class Graph:
+class Graph(object):
    """Cette classe définit l'objet Graph pour Code_Aster.
 
    Important :  Utiliser les méthodes dédiées à la manipulation des données
@@ -122,6 +122,16 @@ class Graph:
       # pour conserver les paramètres du dernier tracé
       self.LastTraceArgs = {}
       self.LastTraceFormat = ''
+
+   def __get_titre(self):
+      """private get method"""
+      return self._titre
+   def __set_titre(self, value):
+      """private set method"""
+      if type(value) not in (list, tuple):
+          value = [value, ]
+      self._titre = value
+   Titre = property(__get_titre, __set_titre)
 
 # ------------------------------------------------------------------------------
    def SetExtremaX(self,marge=0., x0=None, x1=None, force=True):
@@ -441,7 +451,7 @@ class TraceTableau(TraceGraph):
    près, sinon on alarme.
    """
    EPSILON=1.e-4
-# ------------------------------------------------------------------------------
+
    def Trace(self):
       """Méthode pour 'tracer' l'objet Graph dans un fichier.
       Met en page l'entete, la description des courbes et les valeurs selon
@@ -469,7 +479,7 @@ class TraceTableau(TraceGraph):
          Tab=Table.Table()
          # titre / sous-titre
          tit=[]
-         tit.append(self.DicForm['ccom']+' '+g.Titre)
+         tit.extend([self.DicForm['ccom']+' '+line for line in g.Titre])
          tit.append(self.DicForm['ccom']+' '+g.SousTitre)
          # legendes
          for i in range(g.NbCourbe):
@@ -749,7 +759,7 @@ class TraceXmgrace(TraceGraph):
 @    frame background color 0
 @    frame background pattern 0
 """)
-      entete.append('@    title "'+g.Titre+'"')
+      entete.append('@    title "' + ' '.join(g.Titre) + '"')
       entete.append('@    subtitle "'+g.SousTitre+'"')
       entete.append('@    xaxis  label "'+g.Legende_X+'"')
       entete.append('@    yaxis  label "'+g.Legende_Y+'"')
@@ -1007,9 +1017,9 @@ ASPECT_GRAPHIQUE:
 
 GRAPHIQUE:
 """)
-      if g.Titre=='':
-         g.Titre='GRAPHIQUE CODE_ASTER'
-      entete.append('Titre :'+g.Titre+'\n')
+      if g.Titre == '':
+         g.Titre = 'GRAPHIQUE CODE_ASTER'
+      entete.append('Titre :' + ' '.join(g.Titre) + '\n')
       if g.SousTitre<>'':
          entete.append('Commentaire :'+g.SousTitre+'\n')
       entete.append('Frequence Grille X :'+str(int(g.Grille_X))+'\n')

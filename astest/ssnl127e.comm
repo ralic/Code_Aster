@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/12/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE PLAQUE EN TRACTION - TEST CORR_ACIER EN COQUE_3D
 # ssnl127e.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,6 +107,8 @@ REST=STAT_NON_LINE(MODELE=MO,
                             FONC_MULT=FONCT,),
                    COMP_INCR=_F(RELATION='CORR_ACIER',
                                 RESI_INTE_RELA=1e-06,
+                                ALGO_C_PLAN='DEBORST',
+                                ITER_MAXI_DEBORST=10,
                                 ITER_INTE_MAXI=150,),
                    INCREMENT=_F(LIST_INST=DEFLIST),
                    NEWTON=_F(REAC_INCR=1,
@@ -185,6 +187,8 @@ REST2=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=FONCT,),
                     COMP_INCR=_F(RELATION='CORR_ACIER',
                                  RESI_INTE_RELA=1e-06,
+                                 ALGO_C_PLAN='DEBORST',
+                                 ITER_MAXI_DEBORST=10,
                                  ITER_INTE_MAXI=15,),
                     INCREMENT=_F(LIST_INST=DEFLIST2),
                     NEWTON=_F(REAC_INCR=1,
@@ -265,6 +269,8 @@ REST3=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=FONCT,),
                     COMP_INCR=_F(RELATION='CORR_ACIER',
                                  RESI_INTE_RELA=1e-06,
+                                 ALGO_C_PLAN='DEBORST',
+                                 ITER_MAXI_DEBORST=10,
                                  ITER_INTE_MAXI=15,),
                     INCREMENT=_F(LIST_INST=DEFLIST3),
                     NEWTON=_F(REAC_INCR=1,

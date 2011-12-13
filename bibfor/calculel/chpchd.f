@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,7 +210,9 @@ C     ----------------------------------------------------------------
           CALL GETRES(KBID,KBID,NOMCMD)
           IF (NOMCMD.EQ.'CREA_CHAMP') THEN
             VALK(1) = CHOU(1:8)
-            CALL U2MESK('A','CALCULEL6_77',1,VALK(1))
+            VALK(2) = OPTION
+            VALK(3) = PARAM
+            CALL U2MESK('A','CALCULEL6_77',3,VALK)
           ENDIF
         ENDIF
 

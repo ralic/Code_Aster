@@ -1,6 +1,6 @@
       SUBROUTINE TE0394(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
 C ......................................................................
 C    - FONCTION REALISEE:  PASSAGE DES POINTS DE GAUSS AUX NOEUDS POUR
 C                          LES CONTRAINTES ET LES VARIABLES INTERNES DE
-C                          L'ELEMENT MEPODTGD
+C                          L'ELEMENT MECA_POU_D_T_GD
 
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -33,7 +33,7 @@ C ......................................................................
 
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI,JTAB(7)
+      INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -49,30 +49,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-       IF (OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO') THEN
-        IF (OPTION.EQ.'EFGE_ELNO') THEN
-           CALL JEVECH('PEFFORR','E',ISIGNO)
-        ELSE
-           CALL JEVECH('PSIEFNOR','E',ISIGNO)
-        ENDIF
+       IF (OPTION.EQ.'EFGE_ELNO') THEN
+        CALL JEVECH('PEFFORR','E',ISIGNO)
         CALL JEVECH('PCONTRR','L',ISIGGA)
 
         DO 10 K = 1,6
           ZR(ISIGNO-1+K) = ZR(ISIGGA-1+K)
           ZR(ISIGNO-1+K+6) = ZR(ISIGGA-1+K)
    10   CONTINUE
-       ELSE IF (OPTION.EQ.'VARI_ELNO') THEN
-        CALL JEVECH('PVARIGR','L',IVARGA)
-        CALL JEVECH('PCOMPOR','L',ICOMPO)
-        READ (ZK16(ICOMPO+1),'(I16)') NBVAR
-        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
-        LGPG = MAX(JTAB(6),1)*JTAB(7)
-C PARAMETRES   EN SORTIE
-        CALL JEVECH('PVARINR','E',IVARNO)
-        DO 20 K = 1,NBVAR
-          ZR(IVARNO-1+K) = ZR(IVARGA-1+K)
-          ZR(IVARNO-1+K+LGPG) = ZR(IVARGA-1+K)
-   20   CONTINUE
-      END IF
+       ELSE
+         CALL ASSERT(.FALSE.)
+       END IF
 
       END

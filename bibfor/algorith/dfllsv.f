@@ -5,7 +5,7 @@
      &                  NOCMP )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -131,6 +131,8 @@ C
         ZR(JEEVR-1+LEEVR*(ISAUVE-1)+1) = 4.D0
       ELSEIF (EVEN.EQ.'INTERPENETRATION') THEN
         ZR(JEEVR-1+LEEVR*(ISAUVE-1)+1) = 5.D0               
+      ELSEIF (EVEN.EQ.'DIVE_RESI') THEN
+        ZR(JEEVR-1+LEEVR*(ISAUVE-1)+1) = 6.D0               
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF 

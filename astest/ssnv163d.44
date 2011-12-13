@@ -1,0 +1,157 @@
+DEBUT(PAR_LOT='NON');
+
+print 'ON RENTRE'
+from math import *
+import numpy as NP
+import random
+
+#Propriétés elastiques
+E = 31000; #module d'Young
+nu = 0.2; #coefficient de poisson elastique
+Ke = E/(3*(1-2*nu));
+Ge = E/(2*(1+nu));
+
+###########################
+#Fluage reversible
+Kr = 2.e5;
+Gr = 5.e4;
+Drs = 4.e10;
+Drd = 1.e10;
+
+###########################
+#Fluage irreversible
+Dis0 = 1.e11;
+Did0 = 1.e11;
+Kappa = 3.e-3;
+
+#Duree de l'essai
+time = [];
+for i in range(101):
+    time.append(i*86400);
+
+print 'CALCUL ESSAI UNIAXIAL'
+Sigma = -1.00;
+piso = Sigma/3.;
+Dev1 = Sigma-piso;
+Dev2 = -piso;
+
+###########################
+#CALCUL FLUAGE REVERSIBLE
+U_Epsv_r = [];
+U_Epsd_r = [];
+D_Epsv_r = [];
+D_Epsd_r = [];
+Ars = [];
+Ard = [];
+
+# Increment de temps
+dt = time[1]-time[0]
+# Calcul de Brn, Crn
+Tau_rd = Drd/Gr;
+Tau_rs = Drs/Kr;
+
+print 'Tau_rd :',Tau_rd
+print 'Tau_rs :',Tau_rs
+
+Brd = 1./Gr*((-(2.*Tau_rd/dt+1)+Tau_rd/dt)*exp(-dt/Tau_rd)+((2.*Tau_rd/dt-1)-(Tau_rd-dt)/dt));
+Brs = 1./Kr*((-(2.*Tau_rs/dt+1)+Tau_rs/dt)*exp(-dt/Tau_rs)+((2.*Tau_rs/dt-1)-(Tau_rs-dt)/dt));
+Crd = 1./Gr*(Tau_rd/dt*exp(-dt/Tau_rd)-(Tau_rd-dt)/dt)
+Crs = 1./Kr*(Tau_rs/dt*exp(-dt/Tau_rs)-(Tau_rs-dt)/dt)
+
+print 'Brd :',Brd
+print 'Brs :',Brs
+print 'Crd :',Crd
+print 'Crs :',Crs
+
+U_Epsv_r.append(0)
+U_Epsd_r.append(0)
+D_Epsv_r.append(0)
+D_Epsd_r.append(0)
+Ars.append(0);
+Ard.append(0);
+
+for i in range(len(time)-1):
+    #Partie Volumique
+    Ars.append((exp(-dt/Tau_rs)-1)*U_Epsv_r[i]);
+    U_Epsv_r.append(U_Epsv_r[i]+Ars[i+1]+(Brs+Crs)*piso);
+    D_Epsv_r.append(Ars[i]+(Brs+Crs)*piso);
+    #Partie Deviatoire
+    Ard.append((exp(-dt/Tau_rd)-1)*U_Epsd_r[i]);
+    U_Epsd_r.append(U_Epsd_r[i]+Ard[i+1]+(Brd+Crd)*Dev1);
+    D_Epsd_r.append(Ard[i]+(Brd+Crd)*Dev1);
+
+REPONSE2=CREA_TABLE(LISTE=(                         
+                    _F(LISTE_R =tuple(time),    PARA='INST'),
+                    _F(LISTE_R =tuple(U_Epsv_r),PARA='EPSPH') ,
+                    _F(LISTE_R =tuple(U_Epsd_r),PARA='EPSD'),
+                    _F(LISTE_R =tuple(Ars),PARA='ARS') ,
+                    _F(LISTE_R =tuple(Ard),PARA='ARD'),
+                    _F(LISTE_R =tuple(D_Epsv_r),PARA='DEPSPH') ,
+                    _F(LISTE_R =tuple(D_Epsd_r),PARA='DEPSD'),
+                       ));
+
+###########################
+#CALCUL FLUAGE IRREVERSIBLE
+U_Epsv_i = [];
+D_Epsv_i = [];
+D2_Epsv  = [];
+U_Epsd1_i = [];
+D_Epsd1_i = []
+U_Epsd2_i = [];
+D_Epsd2_i = [];
+
+U_Epsv_i.append(0);
+U_Epsd1_i.append(0);
+U_Epsd2_i.append(0);
+D_Epsv_i.append(0);
+D2_Epsv.append(0);
+D_Epsd1_i.append(0);
+D_Epsd2_i.append(0);
+
+for i in range(len(time)-1):
+    #Partie Volumique
+    Nei = sqrt(3.0*U_Epsv_i[i]**2+2.*U_Epsv_i[i]*(U_Epsd1_i[i]+2.*U_Epsd2_i[i])+U_Epsd1_i[i]**2+2.*U_Epsd2_i[i]**2)
+    Bis = (1./Dis0)*(dt/2.0)*exp(-Nei/Kappa)
+    Cis = (1./Dis0)*(dt/2.0)*exp(-Nei/Kappa)
+    U_Epsv_i.append(U_Epsv_i[i]+(Bis+Cis)*piso);
+    D_Epsv_i.append((Bis+Cis)*piso);
+    D2_Epsv.append(piso*dt/Dis0*exp(-Nei/Kappa))
+    #Partie Deviatoire
+    Bid1 = (1./Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    Cid1 = (1./Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    U_Epsd1_i.append(U_Epsd1_i[i]+(Bid1+Cid1)*Dev1);
+    D_Epsd1_i.append((Bid1+Cid1)*Dev1);
+    Bid2 = (1./Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    Cid2 = (1./Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    U_Epsd2_i.append(U_Epsd2_i[i]+(Bid2+Cid2)*Dev2);
+    D_Epsd2_i.append((Bid2+Cid2)*Dev2);
+
+REPONSE1=CREA_TABLE(LISTE=(                         
+                    _F(LISTE_R =tuple(time),    PARA='INST'),
+                    _F(LISTE_R =tuple(U_Epsv_i),PARA='EPSPH') ,
+                    _F(LISTE_R =tuple(U_Epsd1_i),PARA='EPSD1'),
+                    _F(LISTE_R =tuple(U_Epsd2_i),PARA='EPSD2'),
+                    _F(LISTE_R =tuple(D_Epsv_i),PARA='DEPSPH') ,
+                    _F(LISTE_R =tuple(D2_Epsv),PARA='D2EPSPH') ,
+                    _F(LISTE_R =tuple(D_Epsd1_i),PARA='DEPSD1'),
+                    _F(LISTE_R =tuple(D_Epsd2_i),PARA='DEPSD2'),
+                       ));
+
+###########################
+#CALCUL DEFORMATION AXIALE
+U_eps_axial = [];
+
+#Deformation elastique instantanee
+EpsElas = Sigma/E;
+
+for i in range(len(time)):
+  U_eps_axial.append(U_Epsv_i[i]+U_Epsv_r[i]+U_Epsd1_i[i]+U_Epsd_r[i]+EpsElas)
+
+REPAXIAL = CREA_TABLE(LISTE=(                         
+                    _F(LISTE_R =tuple(time),    PARA='INST'),
+                    _F(LISTE_R =tuple(U_eps_axial),PARA='EPS_AXE') ,
+                       ));
+
+IMPR_TABLE(TABLE=REPAXIAL);
+
+FIN();

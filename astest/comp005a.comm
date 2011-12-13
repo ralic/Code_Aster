@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA MODELISATION 3D_GRAD_VARI
 # comp005a.para = tps_job 130 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,10 +184,7 @@ for j in range(0,len(comportement)):
                        FONC_MULT=U_COMP,),
                      _F(CHARGE=C_RIG[i],),
                      ),
-              COMP_INCR=_F(RELATION=comportement[j],
-                           DEFORMATION='PETIT',
-                           RESI_INTE_RELA=1.E-10,
-                           ITER_INTE_MAXI=20,),
+              COMP_INCR=_F(RELATION=comportement[j]),
               INCREMENT=_F(LIST_INST=L_INST,
                            INST_FIN=2.,
                            ),
@@ -375,10 +372,7 @@ for i in range(0,len(modelisation)):
                      FONC_MULT=U_COMP,),
                    _F(CHARGE=C_RIG[i],),
                    ),
-            COMP_INCR=_F(RELATION=comportement[j],
-                         DEFORMATION='PETIT',
-                         RESI_INTE_RELA=1.E-10,
-                         ITER_INTE_MAXI=20,),
+            COMP_INCR=_F(RELATION=comportement[j]),
             INCREMENT=_F(LIST_INST=L_INST,
                          INST_FIN=2.,
                          ),

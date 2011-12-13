@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +69,6 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C     --- VARIABLES LOCALES ---
 
-      CHARACTER*2 CODRET
       CHARACTER*6 NOMPRO
       PARAMETER(NOMPRO='MECALM')
 
@@ -78,10 +77,10 @@ C     --- VARIABLES LOCALES ---
       INTEGER LREFE,LVALE
       INTEGER IORDR,JORDR,IORDRM
       INTEGER IRET,IRET1,IRET2,IRET3,IRET4,IRET5,IERD,IRETER
-      INTEGER NH,NBOPT,NEQ,NBCHRE,IFISS
+      INTEGER NH,NBOPT,NEQ,NBCHRE
       INTEGER IADOU,IADIN,IPUIS
       INTEGER IAUX,III,IB,J,K,IBID,IE
-      INTEGER IOCC,IOPT,IAINST
+      INTEGER IOCC,IOPT
       INTEGER L1,L2,L3,L4,L5,L6
       INTEGER N1,N2
       INTEGER JPA,JOPT,JCHA
@@ -89,18 +88,18 @@ C     --- VARIABLES LOCALES ---
       INTEGER JDIM,JCOOR,JTYPE,LTYMO,NPASS
       INTEGER NNOEM,NELEM,NDIM,NNCP
 
-      CHARACTER*1 BASE,TYPCOE
+      CHARACTER*1 BASE
       CHARACTER*4 TYPE
       CHARACTER*8 K8B,NOMA
       CHARACTER*8 CARELE,KIORD,KIORDM
-      CHARACTER*8 LERES0,BLAN8
+      CHARACTER*8 BLAN8
       CHARACTER*19 PFCHNO
-      CHARACTER*16 NOMCMD,OPTION,OPTIOX,TYPES,K16B
+      CHARACTER*16 NOMCMD,OPTION,TYPES,K16B
       CHARACTER*16 BLAN16,TYPEMO
       CHARACTER*19 LERES1
       CHARACTER*19 CHDYNR,MASSE,REFE,COMPOR
       CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN
-      CHARACTER*19 CHVARC,CHVREF
+      CHARACTER*19 CHVARC
       CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3,CHERR4
       CHARACTER*24 CHAMGD,CHSIG,CHSIGN
       CHARACTER*24 CHEPS,CHDEPL,CHACSE
@@ -113,17 +112,15 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 CHDEPM
       CHARACTER*24 LIGRMO
       CHARACTER*24 BLAN24
-      CHARACTER*24 CHELEX
-      CHARACTER*24 CHSIGF
       CHARACTER*24 VALKM(2)
 
-      REAL*8 COEF,TIME
-      REAL*8 ALPHA,PREC,PHASE
+      REAL*8 COEF
+      REAL*8 PREC,PHASE
       REAL*8 TBGRCA(3)
 
-      COMPLEX*16 CALPHA,CCOEF
+      COMPLEX*16 CCOEF
 
-      LOGICAL EXITIM,EXIPOU,EXIPLA,EXICAR
+      LOGICAL EXIPOU,EXIPLA,EXICAR
       REAL*8 ZERO,UN
       PARAMETER(ZERO=0.D0,UN=1.D0)
 
@@ -152,12 +149,10 @@ C               123456789012345678901234
       CHDYNR=BLAN24(1:19)
       CHDEPL=BLAN24
       CHELEM=BLAN24
-      CHELEX=BLAN24
       COMPOR=BLAN24(1:19)
       SOP=BLAN24
       K24B=BLAN24
       CHVARC='&&'//NOMPRO//'.CHVARC'
-      CHVREF='&&'//NOMPRO//'.CHVREF'
       BASE='G'
       COEF=UN
 
@@ -173,7 +168,7 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       NBOPT = -N2
       CALL WKVECT ( LESOPT, 'V V K16', NBOPT, JOPT )
       CALL GETVTX (' ', 'OPTION'  , 1,IARG, NBOPT, ZK16(JOPT), N2)
-      CALL MODOPT(RESUCO,LESOPT,NBOPT)
+      CALL MODOPT(RESUCO,MODELE,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
 
 C     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE
@@ -191,9 +186,7 @@ C     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE
         CALL TITRE
       ENDIF
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID,LIGRMO,IERD)
-      EXITIM=.FALSE.
       CALL JENONU(JEXNOM(RESUCO//'           .NOVA','INST'),IRET)
-      IF (IRET.NE.0)EXITIM=.TRUE.
       CALL EXLIMA(' ',0,'V',MODELE,LIGREL)
 
       EXIPOU=.FALSE.
@@ -285,7 +278,6 @@ C=======================================================================
 
       BLAN8=' '
       LERES1=RESUC1
-      LERES0=RESUCO
 
 C    ------------------------------------------------------------------
 C    -- RECOPIE DES PARAMETRES DANS LA NOUVELLE SD RESULTAT
@@ -344,14 +336,13 @@ C               "EPEQ_ELNO","EPFD_ELGA","EPFD_ELNO","EPFP_ELGA",
 C               "EPFP_ELNO","EPME_ELGA","EPME_ELNO","EPMG_ELGA",
 C               "EPMG_ELNO","EPMQ_ELGA","EPMQ_ELNO","EPOT_ELEM",
 C               "EPSG_ELGA","EPSG_ELNO","EPSI_ELGA","EPSI_ELNO",
-C               "EPSP_ELGA","EPSP_ELNO","EPTQ_ELNO","EPTU_ELNO",
+C               "EPSP_ELGA","EPSP_ELNO","EPTU_ELNO",
 C               "EPVC_ELGA","EPVC_ELNO","FLHN_ELGA","INDL_ELGA",
-C               "PDIL_ELGA","PMPB_ELGA","PMPB_ELNO","PRME_ELNO",
-C               "SICA_ELNO","SIEF_ELGA","SIEQ_ELGA","SIPM_ELNO",
-C               "SIPO_ELNO","SITQ_ELNO","SITU_ELNO",
-C               "VACO_ELNO","VAEX_ELGA","VAEX_ELNO","VARC_ELGA",
-C               "VARI_ELNO","VATU_ELNO"
-C             + "SIEF_ELNO" SAUF CAS XFEM
+C               "PDIL_ELGA","PRME_ELNO",
+C               "SIEF_ELGA","SIEQ_ELGA","SIPM_ELNO",
+C               "SIPO_ELNO","SIRO_ELEM",
+C               "VAEX_ELGA","VAEX_ELNO","VARC_ELGA",
+C               "VARI_ELNO",
 C    ------------------------------------------------------------------
 
         CALL CALCOP(OPTION,LESOPT,RESUCO,RESUC1,KNUM,NBORDR,
@@ -369,60 +360,10 @@ C
 
 
 C    ------------------------------------------------------------------
-C    -- OPTION "SIEF_ELNO"
-C       DANS LE CAS XFEM UNIQUEMENT A CAUSE DE SIEF_SENO_SEGA !
-C    ------------------------------------------------------------------
-        IF (OPTION.EQ.'SIEF_ELNO') THEN
-          DO 120,IAUX=1,NBORDR
-            CALL JEMARQ()
-            CALL JERECU('V')
-            IORDR=ZI(JORDR+IAUX-1)
-            CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,'G',NPASS,LIGREL)
-            CALL JEVEUO(KCHA,'L',JCHA)
-            CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            IF (IRET.GT.0)GOTO 110
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-C       OPTION 'SIEF_SENO_SEGA' EST NECESSAIRE SI X-FEM
-            CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
-            IF (IFISS.NE.0) THEN
-              OPTIOX=BLAN24(1:16)
-              OPTIOX(1:14)='SIEF_SENO_SEGA'
-              CALL RSEXC1(LERES1,OPTIOX,IORDR,CHELEX)
-            ENDIF
-C
-            IF (EXITIM) THEN
-              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-              TIME=ZR(IAINST)
-            ELSE
-              TIME=ZERO
-            ENDIF
-            CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
-            CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
-            CALL RSEXCH(RESUCO,'DEPL',IORDR,CHAMGD,IRET)
-
-            CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-
-            IF (IRET1.NE.0)  COMPOR = ' '
-
-            CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                  K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,K24B,K24B,
-     &                  K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,CHELEM,CHELEX,
-     &                  LIGREL,BASE,CHVARC,CHVREF,K24B,COMPOR,CHTESE,
-     &                  CHDESE,BLAN8,0,CHACSE,IRET)
-            IF (IRET.GT.0)GOTO 110
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-            IF (IFISS.NE.0) CALL RSNOCH(LERES1,OPTIOX,IORDR,' ')
-
-  110       CONTINUE
-            CALL JEDEMA()
-  120     CONTINUE
-C    ------------------------------------------------------------------
 C    -- OPTIONS "SIZ1_NOEU","SIZ2_NOEU"
 C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'SIZ1_NOEU' .OR.
-     &          OPTION.EQ.'SIZ2_NOEU') THEN
+        IF (OPTION.EQ.'SIZ1_NOEU' .OR.
+     &      OPTION.EQ.'SIZ2_NOEU') THEN
 
 
           DO 160,IAUX=1,NBORDR
@@ -537,38 +478,6 @@ C          CHAMP D'ENTREE POUR COQUES
   190       CONTINUE
             CALL JEDEMA()
   200     CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTION "SIRO_ELEM"
-C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'SIRO_ELEM') THEN
-          DO 240,IAUX=1,NBORDR
-            CALL JERECU('V')
-            IORDR=ZI(JORDR+IAUX-1)
-            CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,'G',NPASS,LIGREL)
-            CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,OPTION,
-     &                  IRET1)
-            CALL RSEXC2(2,2,RESUCO,'SIGM_ELNO',IORDR,CHSIG,OPTION,
-     &                  IRET2)
-            IF (IRET1.GT.0 .AND. IRET2.GT.0)GOTO 230
-            CHSIGF='&&'//NOMPRO//'.CHAM_SI2D'
-            CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
-            CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-            CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
-            CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-
-            CALL MEARCC(OPTION,MODELE,CHSIG,CHSIGF)
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-            CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                  K24B,K24B,K24B,K24B,CHSIGF,K24B,K24B,K24B,K24B,
-     &                  K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,K24B,
-     &                  LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,CHDESE,
-     &                  BLAN8,0,CHACSE,IRET)
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-            CALL DETRSD('CHAM_ELEM',CHSIGF)
-
-  230       CONTINUE
-  240     CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS DES INDICATEURS D'ERREURS
 C    ------------------------------------------------------------------
@@ -796,36 +705,6 @@ C 5 - DESTRUCTION DES CHAM_ELEM_S
   270       CONTINUE
             CALL JEDEMA()
   280     CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTIONS "EFCA_ELNO"
-C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'EFCA_ELNO') THEN
-          DO 300,IAUX=1,NBORDR
-            CALL JEMARQ()
-            CALL JERECU('V')
-            IORDR=ZI(JORDR+IAUX-1)
-            CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,'G',NPASS,LIGREL)
-            CALL JEVEUO(KCHA,'L',JCHA)
-            CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL RSEXC2(1,2,RESUCO,'EFGE_ELNO',IORDR,CHSIG,
-     &                  OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
-     &                  OPTION,IRET)
-            CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
-
-            IF (IRET.GT.0)GOTO 290
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-            CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                  K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,K24B,K24B,
-     &                  K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,K24B,
-     &                  LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,CHDESE,
-     &                  BLAN8,0,CHACSE,IRET)
-            IF (IRET.GT.0)GOTO 290
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  290       CONTINUE
-            CALL JEDEMA()
-  300     CONTINUE
 C     ------------------------------------------------------------------
 C     --- OPTIONS DE CALCUL DES DENSITES D'ENERGIE TOTALE
 C     ------------------------------------------------------------------

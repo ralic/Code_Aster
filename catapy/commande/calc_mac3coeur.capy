@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,18 +19,23 @@
 # RESPONSABLE FERNANDES R.FERNANDES
 
 
-CALC_MAC3COEUR = MACRO(nom="MAC3COEUR",
+CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                        op=OPS("Mac3coeur.calc_mac3coeur_ops.calc_mac3coeur_ops"),
                        sd_prod=evol_noli,
 
          TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("TEST","900","1300","N4","EPR") ),
          # TYPE DE COEUR A CONSIDERER
+         TABLE_N      = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N
+         MAILLAGE_N   = SIMP(statut='o',typ=maillage_sdaster),        # MAILLAGE EN ATTENDANT MIEUX ???
 
          LAME = FACT(statut='f',max=1,
                      fr="Estimation des lames d'eau entre AC",
-               TABLE_N      = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N
                TABLE_NP1    = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N+1
-               MAILLAGE_N   = SIMP(statut='o',typ=maillage_sdaster),        # MAILLAGE EN ATTENDANT MIEUX ???
                MAILLAGE_NP1 = SIMP(statut='o',typ=maillage_sdaster),),        # MAILLAGE EN ATTENDANT MIEUX ???
+
+         DEFORMATION  = FACT(statut='f',max=1,
+                      fr="Estimation des deformations des AC",
+               NIVE_FLUENCE = SIMP(statut='o',typ='R',validators=NoRepeat(),max=1), # FLUENCE MAXIMALE DANS LE COEUR
+               UNITE_THYC      = SIMP(statut='o',typ='I', max=1),),
                 );
 

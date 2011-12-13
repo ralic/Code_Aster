@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -168,7 +168,6 @@ OPTION__
                                      ZVARCPG  PVARCRR
                               OUT__  EDEFGPG  PDEFOPG
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EFCA_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EFGE_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EFGE_ELNO          185    IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC
                                      CCOEFR   PCOEFFR  DDL_MECA PDEPLAR  CFORCEF  PFF1D1D  ECAFIEL  PFIBRES
@@ -222,8 +221,6 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    PMPB_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    PMPB_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     RAPH_MECA           535   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
@@ -261,7 +258,6 @@ OPTION__
                               OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
     SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
-    SICA_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR

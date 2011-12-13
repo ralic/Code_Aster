@@ -1,4 +1,4 @@
-#@ MODIF sd_corresp_2_mailla SD  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_corresp_2_mailla SD  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,9 +37,11 @@ class sd_corresp_2_mailla(sd_titre):
     PJEF_CF = Facultatif(AsVR())
     PJEF_TR = Facultatif(AsVI())
     PJEF_CO = Facultatif(AsVR())
+    PJEF_EL = Facultatif(AsVI())            # si ECLA_PG
+    PJEF_MP = Facultatif(AsVK8(lonmax=1))   # si ECLA_PG
 
-    PJNG_I1 = Facultatif(AsVI())
-    PJNG_I2 = Facultatif(AsVI())
+    PJNG_I1 = Facultatif(AsVI())   # si NUAG_DEG
+    PJNG_I2 = Facultatif(AsVI())   # si NUAG_DEG
 
 
 

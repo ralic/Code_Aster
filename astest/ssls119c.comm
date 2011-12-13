@@ -1,5 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE MASSIN P.MASSIN
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  : TEST DU RAASCH HOOK 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +21,7 @@
 #- CROCHET SOUS CISAILLEMENT
 #- MODELISATION AVEC DES ELEMENTS 'COQUE_3D' (QUAD9)
 #---------------------------------------------------------------------
+# RESPONSABLE MASSIN P.MASSIN
 #
 
 DEBUT(CODE=_F(NOM='SSLS119C',NIV_PUB_WEB='INTERNET'),);

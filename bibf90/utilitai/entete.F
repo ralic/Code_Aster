@@ -1,6 +1,6 @@
       SUBROUTINE ENTETE()
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF ENTETE UTILITAI  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF ENTETE UTILITAI  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -26,20 +26,19 @@
 !
 #ifdef _USE_MPI
       INCLUDE 'mpif.h'
-      INTEGER*4  NBPRO4, RANG4, IERMPI
+      INTEGER  RANG,NBPROC
 #endif
 #ifdef _USE_OPENMP
-      INTEGER    MLNUMP, NBTH
+      INTEGER  MLNUMP,NBTH
 #endif
 ! ----------------------------------------------------------------------
 ! --- INFORMATIONS GLOBALES
       CALL PRHEAD()
 ! --- CONFIGURATION MPI
 #ifdef _USE_MPI
-      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
-      CALL MPI_COMM_RANK(MPI_COMM_WORLD,RANG4,IERMPI)
-      VALI(1) = RANG4
-      VALI(2) = NBPRO4
+      CALL MPICM0(RANG,NBPROC)
+      VALI(1) = RANG
+      VALI(2) = NBPROC
       CALL U2MESI('I', 'SUPERVIS2_11', 2, VALI)
 #else
       CALL U2MESS('I', 'SUPERVIS2_12')

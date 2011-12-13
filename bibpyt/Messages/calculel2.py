@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel2 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,10 +217,10 @@ Erreur Utilisateur :
  les seuls champs autorisés pour ECLA_PG sont les champs réels.
 """),
 
-
-
-
-
+40: _(u"""
+Erreur :
+ Après avoir retiré tous les éléments à sous-points du champ %(k1)s (grandeur: %(k2)s), celui-ci est vide.
+"""),
 
 41: _(u"""
  les seuls champs autorises sont ELGA.

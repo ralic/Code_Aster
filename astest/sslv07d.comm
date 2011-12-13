@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,9 +128,7 @@ DEPLD2=STAT_NON_LINE(MODELE=MO,
                      EXCIT=(_F(CHARGE=BLOQU,),
                             _F(CHARGE=CH,
                                FONC_MULT=RAMPE,),),
-                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                  RESI_INTE_RELA=1e-08,
-                                  ITER_INTE_MAXI=30,),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                      INCREMENT=_F(LIST_INST=L_INST,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=2,),

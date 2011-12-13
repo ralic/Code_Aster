@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
 # sdll122a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,7 +29,12 @@ MASEC1=LIRE_MAILLAGE(UNITE=18,);
 
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
-                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),);
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),
+                  #AFFE=(
+                        #_F(MAILLE='M1', PHENOMENE='MECANIQUE', MODELISATION='POU_D_E',),
+                        #_F(MAILLE='M2', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),
+                        #)
+                  );
 
 GF=DEFI_GEOM_FIBRE(
            # on s'arrange pour utiliser plusieurs occurrences de SECTION :
@@ -62,7 +67,7 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
                         _F ( MAILLE = 'M2',GROUP_FIBRE=('SEC2','SACI')),
                         )
                   )
-
+#IMPR_CO(CONCEPT=_F(NOM=POUCA))
 
 # LES MATERIAUX
 BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10,
@@ -204,5 +209,25 @@ for numordre,maille,point,spoint,npara,lavale in PourTest:
       ),
       NOM_PARA=npara,VALE=lavale,REFERENCE='NON_REGRESSION',
    )
+
+IMPR_TABLE(TABLE=TU2_1)
+
+
+# Test du maillage des sections de poutres multifibres
+DEFI_FICHIER(UNITE=82, FICHIER='./fort.82')
+
+# IMPRESSION DU MAILLE GLOBAL SECTION
+MAGF=CREA_MAILLAGE(GEOM_FIBRE=GF)
+IMPR_RESU(UNITE=82,RESU=_F(MAILLAGE=MAGF))
+
+DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
+
+
+TEST_FICHIER(FICHIER='./fort.82',
+             REFERENCE='NON_REGRESSION',
+             NB_VALE=3025,
+             VALE=4.220584199956E+05,
+             )
+
 
 FIN();

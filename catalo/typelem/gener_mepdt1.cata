@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,10 +74,8 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
     CMASDIA  = POSI     ELEM__         (POS      )
-    ECOEQPG  = SIEF_R   ELGA__ RIGI    (PM       PMPB     )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (PM       PMPB     )
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
@@ -170,8 +168,6 @@ OPTION__
                                      NGEOMER  PGEOMER  CMASDIA  PMASDIA  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      DDL_MECA PVITESR
                               OUT__  EENECNO  PENERCR
-    EFCA_ELNO           39    IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  EEFGENO  PCONTRR
-                              OUT__  EEFFONO  PEFFORR
     EFGE_ELNO           185   IN__   CABSCUR  PABSCUR  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                                      EEFGEGA  PCONTRR  ENONLIN  PNONLIN  CCOMPOR  PCOMPOR
                                      DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  DDL_MECA PDEPLAR
@@ -223,10 +219,6 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    PMPB_ELGA           39    IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  EEFGEGA  PEFGEGA
-                              OUT__  ECOEQPG  PCONTEQ
-    PMPB_ELNO           39    IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  EEFGENO  PEFGENO
-                              OUT__  ECOEQNO  PCONTEQ
     RAPH_MECA           247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
@@ -265,8 +257,6 @@ OPTION__
     SIEF_ELNO           347   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTRR
                                      DDL_MECA PDEPPLU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  EEFGENO  PSIEFNOR  EEFGENC  PSIEFNOC
-    SICA_ELNO           39    IN__   CCAORIE  PCAORIE  ECONTNO  PCONTRR
-                              OUT__  ECONTNO  PCONTGL
     SIPM_ELNO           149   IN__   CABSCUR  PABSCUR  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                                      DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  DDL_MECA PDEPLAR
                                      CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -287,6 +277,6 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGENO  PSIEF_R  ZVARINO  PVARI_R  NGEOMER PGEOM_R  EEINST_R PINST_R
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
-    VARI_ELNO           347   IN__   CCOMPOR  PCOMPOR  ZVARCPG  PVARCPR  ZVARIPG  PVARIGR
+    VARI_ELNO           347   IN__   ZVARIPG  PVARIGR  CCOMPOR  PCOMPOR
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -1    IN__     OUT__  XXXXXX   XXXXXX

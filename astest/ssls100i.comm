@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,11 +109,10 @@ RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
                                CARA_ELEM=CARELEM,
                                EXCIT=_F(  CHARGE = CHARGE)       )
 
-RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
-                        REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-                        OPTION=('SIGM_ELNO','EFGE_ELNO',
-                                'DEGE_ELNO','DEGE_ELGA',),
-              )
+RESU=CALC_ELEM(reuse=RESU,
+               RESULTAT=RESU,
+               OPTION=('SIGM_ELNO','EFGE_ELNO','DEGE_ELNO','DEGE_ELGA',),
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',),);
 
 RESC1SUP=POST_CHAMP(RESULTAT=RESU,
                      TOUT='OUI',

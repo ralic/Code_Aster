@@ -1,0 +1,214 @@
+DEBUT(PAR_LOT='NON');
+
+print 'ON RENTRE'
+from math import *
+import numpy as NP
+import random
+
+#Propriétés elastiques
+E = 31000.; #module d'Young
+nu = 0.2; #coefficient de poisson elastique
+Ke = E/(3.*(1.-2.*nu));
+Ge = E/(2.*(1.+nu));
+
+###########################
+#Fluage reversible
+Kr = 1.2e5;
+Gr = 3.86e4;
+Drs = 2.21e10;
+Drd = 6.19e10;
+
+###########################
+#Fluage irreversible
+Dis0 = 4.16e10;
+Did0 = 1.64e12;
+Kappa = 3.e-3;
+
+#Duree de l'essai
+time = [];
+dtime = []
+time.append(0);
+dtime.append(0);
+
+for i in range(500):
+    time.append((i+1)*4838.4);
+    dtime.append(time[i+1]-time[i]);
+
+for i in range(500):
+    time.append(time[500]+(i+1)*124761.6);
+    dtime.append(time[-1]-time[-2]);
+
+print 'CALCUL ESSAI UNIAXIAL'
+Sigma = -12.00;
+piso = Sigma/3.;
+Dev1 = Sigma-piso;
+Dev2 = -piso;
+
+###########################
+#CALCUL FLUAGE REVERSIBLE
+U_Epsv_r = [];
+U_Epsd_r = [];
+D_Epsv_r = [];
+D_Epsd_r = [];
+Ars = [];
+Ard = [];
+
+# Increment de temps
+# Calcul de Brn, Crn
+Tau_rd = Drd/Gr;
+Tau_rs = Drs/Kr;
+
+print 'Tau_rd :',Tau_rd
+print 'Tau_rs :',Tau_rs
+
+U_Epsv_r.append(0)
+U_Epsd_r.append(0)
+D_Epsv_r.append(0)
+D_Epsd_r.append(0)
+Ars.append(0);
+Ard.append(0);
+hfin = 1.0;
+hini = 1.0;
+hinit = 1.0;
+hfinal = 0.5;
+hc = [];
+hc.append(1.0);
+
+for i in range(len(time)-1):
+    if(dtime[i]==0):
+      dt = dtime[i+1];
+    else:
+      dt = dtime[i];
+    #Calcul de hini et hfin
+    hini = hfin;
+    hfin = hinit - time[i]/time[len(time)-1]*hfinal;
+    hc.append(hfin);
+
+    #Partie Volumique
+    Brs = 1./Kr*((-(2.*Tau_rs/dt+1)*hini+Tau_rs/dt*hfin)*exp(-dt/Tau_rs)+((2.*Tau_rs/dt-1)*hini-(Tau_rs-dt)*hfin/dt));
+    Crs = hini/Kr*(Tau_rs/dt*exp(-dt/Tau_rs)-(Tau_rs-dt)/dt)
+    Ars.append((exp(-dt/Tau_rs)-1)*U_Epsv_r[i]);
+    U_Epsv_r.append(U_Epsv_r[i]+Ars[i+1]+(Brs+Crs)*piso);
+    D_Epsv_r.append(Ars[i]+(Brs+Crs)*piso);
+    #Partie Deviatoire
+    Brd = 1./Gr*((-(2.*Tau_rd/dt+1)*hini+Tau_rd/dt*hfin)*exp(-dt/Tau_rd)+((2.*Tau_rd/dt-1)*hini-(Tau_rd-dt)*hfin/dt));
+    Crd = hini/Gr*(Tau_rd/dt*exp(-dt/Tau_rd)-(Tau_rd-dt)/dt)
+    Ard.append((exp(-dt/Tau_rd)-1)*U_Epsd_r[i]);
+    U_Epsd_r.append(U_Epsd_r[i]+Ard[i+1]+(Brd+Crd)*Dev1);
+    D_Epsd_r.append(Ard[i]+(Brd+Crd)*Dev1);
+
+###########################
+#CALCUL FLUAGE IRREVERSIBLE
+###########################
+U_Epsv_i = [];
+D_Epsv_i = [];
+D2_Epsv  = [];
+U_Epsd1_i = [];
+D_Epsd1_i = []
+U_Epsd2_i = [];
+D_Epsd2_i = [];
+
+U_Epsv_i.append(0);
+U_Epsd1_i.append(0);
+U_Epsd2_i.append(0);
+D_Epsv_i.append(0);
+D2_Epsv.append(0);
+D_Epsd1_i.append(0);
+D_Epsd2_i.append(0);
+
+for i in range(len(time)-1):
+    dt = dtime[i];
+
+    #Calcul de hini et hfin
+    hini = hfin;
+    hfin = hinit - time[i]/time[len(time)-1]*hfinal;
+    
+    #Partie Volumique
+    Nei = sqrt(3.0*U_Epsv_i[i]**2+2.*U_Epsv_i[i]*(U_Epsd1_i[i]+2.*U_Epsd2_i[i])+U_Epsd1_i[i]**2+2.*U_Epsd2_i[i]**2)
+    Bis = (hfin/Dis0)*(dt/2.0)*exp(-Nei/Kappa)
+    Cis = (hini/Dis0)*(dt/2.0)*exp(-Nei/Kappa)
+    U_Epsv_i.append(U_Epsv_i[i]+(Bis+Cis)*piso);
+    D_Epsv_i.append((Bis+Cis)*piso);
+    D2_Epsv.append(piso*dt/Dis0*exp(-Nei/Kappa))
+    #Partie Deviatoire
+    Bid1 = (hfin/Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    Cid1 = (hini/Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    U_Epsd1_i.append(U_Epsd1_i[i]+(Bid1+Cid1)*Dev1);
+    D_Epsd1_i.append((Bid1+Cid1)*Dev1);
+    Bid2 = (hfin/Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    Cid2 = (hini/Did0)*(dt/2.0)*exp(-Nei/Kappa)
+    U_Epsd2_i.append(U_Epsd2_i[i]+(Bid2+Cid2)*Dev2);
+    D_Epsd2_i.append((Bid2+Cid2)*Dev2);
+
+###########################
+#CALCUL RETRAIT HYDRIQUE
+###########################
+thini = 0.;
+thfin = 2.4192e6;
+bendo = 6.e-5;
+
+epsh = [];
+hydr = [];
+
+hfin = 0.0
+hini = 0.0
+
+for i in range(len(time)):
+    dt = dtime[i];
+    #Calcul de hini et hfin
+    if(hfin<1.):
+      hini = hfin;
+      hfin = hini + dt/time[500]*hfinal;
+    else:
+      hini = hfin;
+    hydr.append(hfin);
+    epsh.append(-bendo*hfin);
+
+#############################
+#CALCUL RETRAIT DESSICATION #
+#############################
+tdini = 0.;
+tdfin = 64.8e6;
+Sini = 100.0;
+Sfin = 50.0;
+Sref = 100.0;
+kdess = 1.e-5;
+
+epsRD = [];
+
+for i in range(len(time)):
+  Stime = Sini - (Sini-Sfin)/tdfin*time[i]
+  epsRD.append((Stime-Sref)*kdess);
+
+#############################
+#IMPRESSION RESULTAT        #
+#############################
+REPONSE1=CREA_TABLE(LISTE=(                         
+                    _F(LISTE_R =tuple(time),    PARA='INST'),
+                    _F(LISTE_R =tuple(U_Epsv_r),PARA='EPSPHR') ,
+                    _F(LISTE_R =tuple(U_Epsd_r),PARA='EPSDR'),
+                    _F(LISTE_R =tuple(U_Epsv_i),PARA='EPSPHI') ,
+                    _F(LISTE_R =tuple(U_Epsd1_i),PARA='EPSDI1'),
+                    _F(LISTE_R =tuple(hc),   PARA='DEGRE'),
+                    _F(LISTE_R =tuple(epsRD),   PARA='EPSRD'),
+                    _F(LISTE_R =tuple(hydr),   PARA='HYDR'),
+                    _F(LISTE_R =tuple(epsh),    PARA='EPSHYDR'),),);
+		       
+#############################
+#CALCUL DEFORMATION AXIALE  #
+#############################
+U_Axial = [];
+
+epselas = Sigma/E;
+
+for i in range(len(time)):
+  U_Axial.append(U_Epsv_i[i]+U_Epsv_r[i]+U_Epsd1_i[i]+U_Epsd_r[i]+epsRD[i]+epsh[i]+epselas);
+
+REPAXE=CREA_TABLE(LISTE=(                         
+                    _F(LISTE_R =tuple(time),    PARA='INST'),
+                    _F(LISTE_R =tuple(U_Axial), PARA='AXIAL') ,
+                       ));
+
+IMPR_TABLE(TABLE=REPAXE)
+
+FIN();

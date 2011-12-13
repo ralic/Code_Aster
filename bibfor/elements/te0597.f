@@ -1,6 +1,6 @@
       SUBROUTINE TE0597(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 
-C    - FONCTION REALISEE:  CALCUL DES OPTIONS ESPI_ELNO_TUYO
-C                          SITU_ELNO ET VATU_ELNO
+C    - FONCTION REALISEE:  CALCUL DE L'OPTION EPTU_ELNO
 C                          POUR UN TUYAU DROIT
 C                          ELEMENT: METUSEG3 MET6SEG3
 
@@ -47,7 +46,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBCOUM,NBSECM,JNBSPI,IRET
+      INTEGER NBCOUM,NBSECM,JNBSPI
       INTEGER VALI
       PARAMETER(NBSECM=32,NBCOUM=10)
       REAL*8 PI,DEUXPI,POI(2),ANGLE,DXA
@@ -57,9 +56,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NNO,NPG,NBCOU,NBSEC,LORIEN
       INTEGER IPOIDS,IVF,ICOUDE
       INTEGER ICAGEP,I1,I2,IH,KP,NNOS
-      INTEGER IGAU,ICOU,ISECT,I,JIN,JOUT,INO
-      INTEGER K,INVAR,K2,JNUMC,JCONN,NBVARI
-      INTEGER J1,J2,J3,KPGS,LGPG,ICOMPO,JTAB(7),NORDO
+      INTEGER IGAU,ICOU,ISECT,I,JIN,INO
+      INTEGER K,INVAR,K2,JNUMC,JCONN
+      INTEGER J1,J2,J3,KPGS,LGPG,NORDO
       INTEGER NUMCOU
       INTEGER NDIM,JCOOPG,IDFDK,JDFD2,JGANO
 C ---
@@ -133,106 +132,13 @@ C ---- REPERAGE POSITION OMEGA
         VPG(I)=0.D0
    30 CONTINUE
 
-      IF (OPTION.EQ.'VATU_ELNO') THEN
-        CALL JEVECH('PVARIGR','L',JIN)
-        CALL JEVECH('PCOMPOR','L',ICOMPO)
-
-        READ (ZK16(ICOMPO-1+2),'(I16)')NBVARI
-        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-        LGPG=MAX(JTAB(6),1)*JTAB(7)
-
-C       -- RECUPERATION DES VARIABLES INTERNES
-C       -- NBVARI = NOMBRES DE VARIABLES INTERNES
-C       -- STOCKAGE DANS PVARIGR : PAR POINT DE GAUSS DU PREMIER
-C       -- AU DERNIER
-C       -- TRANSFERT AUX NOEUDS ET STOCKAGE A PVARINR
-
-        CALL JEVECH('PVARINR','E',JOUT)
-
-C        BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-
-        DO 100 I=ISECT,ISECT+1
-
-          IF ((NNO.EQ.3) .AND. (NPG.EQ.3)) THEN
-C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
-
-            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))*NBVARI
-
-            DO 60 INO=1,NNO
-              IF (INO.EQ.1) THEN
-                IH=2
-                I1=1
-                I2=3
-                J1=KPGS
-                J2=2*LGPG+KPGS
-                J3=LGPG+KPGS
-              ELSEIF (INO.EQ.2) THEN
-                IH=1
-                I1=3
-                I2=1
-                J1=2*LGPG+KPGS
-                J2=KPGS
-                J3=LGPG+KPGS
-              ELSE
-                K2=2*NBVARI
-                DO 40 INVAR=1,NBVARI
-                  ZR(JOUT-1+K2+INVAR)=ZR(JOUT-1+K2+INVAR)+
-     &                                ZR(JIN-1+LGPG+KPGS+INVAR)*
-     &                                POI(I-ISECT+1)
-   40           CONTINUE
-                GOTO 60
-
-              ENDIF
-              K2=NBVARI*(INO-1)
-              DO 50 INVAR=1,NBVARI
-                ZR(JOUT-1+K2+INVAR)=ZR(JOUT-1+K2+INVAR)+
-     &                              (HK(IH,I2)*ZR(JIN-1+J1+INVAR)-
-     &                              HK(IH,I1)*ZR(JIN-1+J2+INVAR)-
-     &                              ZR(JIN-1+J3+INVAR)*
-     &                              (HK(3,I1)*HK(IH,I2)-HK(3,I2)*HK(IH,
-     &                              I1)))/(HK(1,1)*HK(2,3)-
-     &                              HK(1,3)*HK(2,1))*POI(I-ISECT+1)
-   50         CONTINUE
-   60       CONTINUE
-
-          ELSE
-            KPGS=((2*NBSEC+1)*(ICOU-1)+(I-1))*NBVARI
-
-            DO 90 INVAR=1,NBVARI
-              DO 70 KP=1,NPG
-                J2=LGPG*(KP-1)+KPGS+INVAR
-                VPG(KP)=ZR(JIN-1+J2)*POI(I-ISECT+1)
-   70         CONTINUE
-              NNOS=2
-              CALL PPGAN2(JGANO,1,1,VPG,VNO)
-              DO 80 INO=1,NNO
-                K2=NBVARI*(INO-1)
-                ZR(JOUT-1+K2+INVAR)=ZR(JOUT-1+K2+INVAR)+VNO(INO)
-   80         CONTINUE
-   90       CONTINUE
-
-
-          ENDIF
-
-  100   CONTINUE
-
-      ELSEIF ((OPTION.EQ.'EPTU_ELNO') .OR. (OPTION.EQ.'SITU_ELNO')) THEN
-
-        IF ((OPTION.EQ.'EPTU_ELNO')) THEN
+      IF (OPTION.EQ.'EPTU_ELNO') THEN
 
 C ======== RAPPEL DES DEFORMATIONS ====================
 
-          CALL JEVECH('PDEFORR','L',JIN)
+        CALL JEVECH('PDEFORR','L',JIN)
 
-          CALL JEVECH('PDEFONO','E',JCONN)
-        ELSEIF (OPTION.EQ.'SITU_ELNO') THEN
-
-C ======== RAPPEL DES CONTRAINTES ====================
-
-          CALL JEVECH('PCONTRR','L',JIN)
-
-          CALL JEVECH('PSIGNOD','E',JCONN)
-        ENDIF
+        CALL JEVECH('PDEFONO','E',JCONN)
 
         LGPG=(2*NBSEC+1)*(2*NBCOU+1)*6
         DO 170 I=ISECT,ISECT+1

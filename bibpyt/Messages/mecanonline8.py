@@ -1,4 +1,4 @@
-#@ MODIF mecanonline8 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline8 Messages  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,9 +48,9 @@ cata_msg = {
   Statistiques du contact sur tout le transitoire.
 """),
 
-31 : _(u"""    * Nombre de liaisons de contact               : %(i1)d"""),
+31 : _(u"""    * Nombre de liaisons de contact actives       : %(i1)d"""),
 
-32 : _(u"""    * Nombre de liaisons de frottement            : %(i1)d"""),
+32 : _(u"""    * Nombre de liaisons de frottement adhérentes : %(i1)d"""),
 
 50 : _(u"""
   Temps CPU consommé dans le transitoire          : %(k1)s

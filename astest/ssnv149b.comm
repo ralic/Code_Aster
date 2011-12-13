@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 
 # TITRE COMPRESSION UNIAXIALE EN 3D - COMPORTEMENT ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,12 +111,7 @@ SOLNL2=STAT_NON_LINE(  TITRE='TEST LOI ENDO_ISOT_BETON',
                                    FONC_MULT = COEF1)),
                        INCREMENT=_F( LIST_INST = LINST1),
                        CHAM_MATER=MATBET,
-                       COMP_INCR=_F( RELATION = 'ENDO_ISOT_BETON',
-                                     DEFORMATION = 'PETIT',
-                                     ITER_INTE_MAXI = 5,
-                                     ITER_INTE_PAS = 0,
-                                     RESI_INTE_RELA = 1.E-6,
-                                     TOUT = 'OUI'),
+                       COMP_INCR=_F( RELATION = 'ENDO_ISOT_BETON'),
                        NEWTON=_F( MATRICE = 'TANGENTE',
                                   REAC_INCR = 1,
                                   REAC_ITER = 1),

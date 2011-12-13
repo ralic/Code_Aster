@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102i.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -260,18 +260,23 @@ EP=0.01
 
 SIMAX=MZMAX*(R-EP/2.)/IY
 
-SITU90=CALC_ELEM(  TOUT_ORDRE='OUI',
-               OPTION=('SITU_ELNO',),
-               REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',
-                                   ANGLE=90, ),
-               RESULTAT=MEST1B,
-               )
+MEST1B=CALC_ELEM(reuse=MEST1B,
+                 RESULTAT=MEST1B,
+                 TOUT_ORDRE='OUI',
+                 OPTION=('SIGM_ELNO',),);
+
+SITU90=POST_CHAMP(RESULTAT=MEST1B,
+                  TOUT='OUI',
+                  TOUT_ORDRE='OUI',
+                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',
+                                ANGLE=90,),);
 
 # la maille la plus proche de L/SQRT(3)
 
 TEST_RESU(   RESU=_F( RESULTAT = SITU90,
-                    NOM_CHAM = 'SITU_ELNO',
+                    NOM_CHAM = 'SIGM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXX',
                     MAILLE='M12',
@@ -282,7 +287,7 @@ TEST_RESU(   RESU=_F( RESULTAT = SITU90,
                     )
 
 TEST_RESU(   RESU=_F( RESULTAT = SITU90,
-                    NOM_CHAM = 'SITU_ELNO',
+                    NOM_CHAM = 'SIGM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXX',
                     MAILLE='M11',
@@ -291,19 +296,20 @@ TEST_RESU(   RESU=_F( RESULTAT = SITU90,
                     PRECISION = 0.01,
                     CRITERE = 'RELATIF')
                     )
-SITU89=CALC_ELEM(  TOUT_ORDRE='OUI',
-               OPTION=('SITU_ELNO',),
-               REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',
-                                   ANGLE=89, ),
-               RESULTAT=MEST1B,
-               )
+
+SITU89=POST_CHAMP(RESULTAT=MEST1B,
+                  TOUT='OUI',
+                  TOUT_ORDRE='OUI',
+                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',
+                                ANGLE=89,),);
 
 
 # la maille la plus proche de L/SQRT(3)
 
 TEST_RESU(   RESU=_F( RESULTAT = SITU89,
-                    NOM_CHAM = 'SITU_ELNO',
+                    NOM_CHAM = 'SIGM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXX',
                     MAILLE='M12',
@@ -313,19 +319,19 @@ TEST_RESU(   RESU=_F( RESULTAT = SITU89,
                     CRITERE = 'RELATIF')
                     )
 
-SITU91=CALC_ELEM(  TOUT_ORDRE='OUI',
-               OPTION=('SITU_ELNO',),
-               REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',
-                                   ANGLE=91, ),
-               RESULTAT=MEST1B,
-               )
+SITU91=POST_CHAMP(RESULTAT=MEST1B,
+                  TOUT='OUI',
+                  TOUT_ORDRE='OUI',
+                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',
+                                ANGLE=91,),);
 
 
 # la maille la plus proche de L/SQRT(3)
 
 TEST_RESU(   RESU=_F( RESULTAT = SITU91,
-                    NOM_CHAM = 'SITU_ELNO',
+                    NOM_CHAM = 'SIGM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXX',
                     MAILLE='M12',
@@ -336,19 +342,19 @@ TEST_RESU(   RESU=_F( RESULTAT = SITU91,
                     )
 
 
-SITU0=CALC_ELEM(  TOUT_ORDRE='OUI',
-               OPTION=('SITU_ELNO',),
-               REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',
-                                   ANGLE=360, ),
-               RESULTAT=MEST1B,
-               )
+SITU0=POST_CHAMP(RESULTAT=MEST1B,
+                 TOUT='OUI',
+                 TOUT_ORDRE='OUI',
+                 EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=360,),);
 
 
 # la maille la plus proche de L/SQRT(3)
 
 TEST_RESU(   RESU=_F( RESULTAT = SITU0,
-                    NOM_CHAM = 'SITU_ELNO',
+                    NOM_CHAM = 'SIGM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXX',
                     MAILLE='M12',

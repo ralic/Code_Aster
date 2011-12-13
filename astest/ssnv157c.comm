@@ -1,5 +1,6 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D DPLAN
+# ssnv157c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,11 +65,13 @@ FONCMULT=DEFI_FONCTION(NOM_PARA='INST',
                        VALE=(-1.,0,0,0.005),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
-                        ECHEC=_F(ACTION        = 'DECOUPE',
+                        ECHEC=(_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_NIVEAU = 10,
                                  SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1e-6,),)
+                                 SUBD_PAS_MINI=1e-6,),
+                              _F(EVENEMENT = 'DIVE_RESI'),) 
+                        )
 
 EVOL1=STAT_NON_LINE(CHAM_MATER=CHMAT,
                     MODELE=MO,

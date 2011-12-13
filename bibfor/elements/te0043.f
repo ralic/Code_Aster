@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +58,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER        INFODI,LROTA,LDIS,LORIEN,LPESA,LVECTU,ITYPE
       INTEGER        NBTERM,NNO,NC,NDIM,IREP,I,IBID
       CHARACTER*8    K8BID
-      CHARACTER*16   NOMCMD,TYPRES
-      CHARACTER*19   NOMFON
       CHARACTER*20   KMESS(5)
 C     ------------------------------------------------------------------
 
@@ -71,7 +69,6 @@ C     ------------------------------------------------------------------
          CALL U2MESK('F','DISCRETS_14',3,KMESS)
       ENDIF
 C
-      CALL GETRES(NOMFON,TYPRES,NOMCMD)
 
 C     ON VERIFIE QUE LES CARACTERISTIQUES ONT ETE AFFECTEES
 C     LE CODE DU DISCRET
@@ -91,14 +88,6 @@ C     DISCRET DE TYPE MASSE
 
 C     [M] : SYMETRIQUE ?
       CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
-C     [M] NE PEUT ETRE NON SYMETRIQUE QUE POUR MECA_STATIQUE
-      IF ((NOMCMD.NE.'MECA_STATIQUE').AND.(INFODI.EQ.2)) THEN
-         KMESS(1) = OPTION
-         KMESS(2) = NOMTE
-         KMESS(3) = 'TE0043'
-         KMESS(4) = NOMCMD
-         CALL U2MESK('F','DISCRETS_12',4,KMESS)
-      ENDIF
 C --- INFORMATIONS SUR LES DISCRETS :
 C        NBTERM   =  NOMBRE DE COEFFICIENTS DANS K
 C        NNO      =  NOMBRE DE NOEUDS

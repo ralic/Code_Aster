@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (PLAST VON-MISES ISOT LINEAIRE)
 # sensm09a.para = tps_job 60 mem_job 64Mo liste_test S
@@ -279,8 +279,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
 U= STAT_NON_LINE ( MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CH1),_F(CHARGE=CH2),_F(CHARGE=CH_DIR)),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                RESI_INTE_RELA = 1.E-8),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    INCREMENT=_F(LIST_INST=L_INST,
 #                                INST_FIN=60.,
                                 INST_FIN=40.,),
@@ -303,8 +302,7 @@ U= STAT_NON_LINE ( reuse=U,
                    MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CH1),_F(CHARGE=CH2),_F(CHARGE=CH_DIR)),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                RESI_INTE_RELA = 1.E-8),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    INCREMENT=_F(LIST_INST=L_INST2,
                                 INST_FIN=60.,),
                    NEWTON=_F(MATRICE='TANGENTE',

@@ -1,7 +1,7 @@
       SUBROUTINE PJELCO (MOA1,MOA2,CHAM1,CORRES,BASE)
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-C     COMMANDE:  PROJ_CHAMP  METHODE:'ECLA_PG'
+C     COMMANDE:  PROJ_CHAMP /  METHODE='ECLA_PG'
 C BUT : CALCULER LA STRUCTURE DE DONNEE CORRESP_2_MAILLA
 C       DANS LE CAS OU IL Y A UN CHAM_ELGA A TRAITER (CHAM1)
 C ----------------------------------------------------------------------
@@ -28,10 +28,20 @@ C ----------------------------------------------------------------------
       CHARACTER*16 CORRES
       CHARACTER*19 CHAM1
       CHARACTER*1 BASE
-      CHARACTER*8 MA1P,MA2P
+      CHARACTER*8 MA1P,MA2P,KBID
+      INTEGER NDIM,NDIM1,NDIM2,IBID
 C     ----------------------------------------------
 
       CALL ASSERT(BASE.EQ.'V')
+
+
+C     -- CALCUL DE NDIM :
+      CALL DISMOI('F','DIM_GEOM',MOA1,'MODELE',NDIM1,KBID,IBID)
+      CALL DISMOI('F','DIM_GEOM',MOA2,'MODELE',NDIM2,KBID,IBID)
+      CALL ASSERT(NDIM1.EQ.NDIM2)
+      NDIM=NDIM1
+      CALL ASSERT(NDIM.EQ.2.OR.NDIM.EQ.3)
+      CALL U2MESI('I','CALCULEL3_28',1,NDIM)
 
 
 C     CREATION DU MAILLAGE 1 PRIME (MA1P)
@@ -49,7 +59,7 @@ C     QUI EST UN TABLEAU REFERENCANT, POUR CHAQUE ELGA,
 C     SON NUMERO ET LE NUMERO DE LA MAILLE A LAQUELLE IL APPARTIENT
 C     ----------------------------------------------
       MA2P='&&PJELC2'
-      CALL PJMA2P(MOA2,MA2P,CORRES)
+      CALL PJMA2P(NDIM,MOA2,MA2P,CORRES)
 
 C     -- APPEL A LA ROUTINE "USUELLE" PJEFCO
 C        AVEC LES DEUX MAILLAGES PRIME

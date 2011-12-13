@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,6 +151,8 @@ C        ---------------------------------
         CALL JEDUP1(CORR1//'.PJEF_M1',BAS2,CORR2//'.PJEF_M1')
         CALL JEDUP1(CORR1//'.PJEF_TR',BAS2,CORR2//'.PJEF_TR')
         CALL JEDUP1(CORR1//'.PJEF_CO',BAS2,CORR2//'.PJEF_CO')
+        CALL JEDUP1(CORR1//'.PJEF_MP',BAS2,CORR2//'.PJEF_MP')
+        CALL JEDUP1(CORR1//'.PJEF_EL',BAS2,CORR2//'.PJEF_EL')
         CALL JEDUP1(CORR1//'.PJNG_I1',BAS2,CORR2//'.PJNG_I1')
         CALL JEDUP1(CORR1//'.PJNG_I2',BAS2,CORR2//'.PJNG_I2')
 

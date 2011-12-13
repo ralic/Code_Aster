@@ -1,6 +1,6 @@
       SUBROUTINE TE0485(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,56 +176,6 @@ C
              ZR(ICONT+18*(I-1)+J-1)=SIGMA(6*(I-1)+J)
    92       CONTINUE
    93     CONTINUE
-        END IF
-      END IF
-C  ==============================================
-C  -- VECTEUR DES CONTRAINTES AUX NOEUDS A PARTIR
-C  -- DES CONTRAINTES AUX POINTS D'INTEGRATION
-C  ==============================================
-      IF (OPTION.EQ.'SIEF_ELNO') THEN
-        IF (NOMSHB.EQ.'SHB8') THEN
-          CALL JEVECH('PCONTRR','L',ICONT)
-          CALL JEVECH('PSIEFNOR','E',ICHN)
-C       LES NOEUDS 1 2 3 4 DE LA FACE INF PRENNENT LA VALEUR DU PG 1
-C       LES NOEUDS 5 6 7 8 DE LA FACE SUP PRENNENT LA VALEUR DU PG 5
-C          CALL SHBCSF(ZR(ICONT),SIGMA,FSTAB)
-          DO 94 I=1,12
-             FSTAB(I) = ZR(ICONT+I-1+6)
-   94     CONTINUE
-          DO 96 I=1,5
-            DO 95 J=1,6
-             SIGMA(6*(I-1)+J)=ZR(ICONT+18*(I-1)+J-1)
-   95       CONTINUE
-   96     CONTINUE
-          CALL PPGAN2(JGANO,1,NBSIG,SIGMA,ZR(ICHN))
-        ELSE IF (NOMSHB.EQ.'SHB6') THEN
-          CALL JEVECH('PCONTRR','L',ICONT)
-          CALL JEVECH('PSIEFNOR','E',ICHN)
-C          CALL SHBCSF(ZR(ICONT),SIGMA,FSTAB)
-          DO 98 I=1,5
-            DO 97 J=1,6
-             SIGMA(6*(I-1)+J)=ZR(ICONT+18*(I-1)+J-1)
-   97       CONTINUE
-   98     CONTINUE
-          CALL PPGAN2(JGANO,1,NBSIG,SIGMA,ZR(ICHN))
-        ELSE IF (NOMSHB.EQ.'SHB15') THEN
-          CALL JEVECH('PCONTRR','L',ICONT)
-          CALL JEVECH('PSIEFNOR','E',ICHN)
-          DO 101 I=1,15
-            DO 100 J=1,6
-             SIGMA(6*(I-1)+J)=ZR(ICONT+18*(I-1)+J-1)
-  100       CONTINUE
-  101     CONTINUE
-          CALL PPGAN2(JGANO,1,NBSIG,SIGMA,ZR(ICHN))
-        ELSE IF (NOMSHB.EQ.'SHB20') THEN
-          CALL JEVECH('PCONTRR','L',ICONT)
-          CALL JEVECH('PSIEFNOR','E',ICHN)
-          DO 103 I=1,20
-            DO 102 J=1,6
-              SIGMA(6*(I-1)+J)=ZR(ICONT+18*(I-1)+J-1)
-  102       CONTINUE
-  103     CONTINUE
-          CALL PPGAN2(JGANO,1,NBSIG,SIGMA,ZR(ICHN))
         END IF
       END IF
 

@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +51,6 @@ C     ------------------------------------------------------------------
       INTEGER        I, NC, NNO, JDM, JDC, J, INFODI,IBID
       REAL*8         VXX, R8BID, PGL(3,3), KLV(NL1), KLW(NL1)
       CHARACTER*8    K8BID
-      CHARACTER*16   NOMCMD,TYPRES
-      CHARACTER*19   NOMFON
 
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -77,13 +75,10 @@ C        DISCRET DE TYPE MASSE
       ELSE
          CALL U2MESS('F','CALCULEL_17')
       ENDIF
-      CALL GETRES(NOMFON,TYPRES,NOMCMD)
 C     OPTION DE CALCUL INVALIDE
       IF (OPTION.NE.'MECA_GYRO') CALL ASSERT(.FALSE.)
 C
-      INFODI = 1
-      IF (NOMCMD.EQ.'CALC_MATR_ELEM')
-     &      CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
+      CALL INFDIS('SYMM',INFODI,R8BID,K8BID)
       CALL JEVECH('PCADISM','L',JDC)
       IF (INFODI.EQ.1) THEN
          VXX   = ZR(JDC+10-1)

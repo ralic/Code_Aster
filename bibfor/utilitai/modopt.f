@@ -1,11 +1,11 @@
-      SUBROUTINE MODOPT ( RESUCO, LESOPT, NBOPT )
+      SUBROUTINE MODOPT ( RESUCO, MODELE, LESOPT, NBOPT )
       IMPLICIT   NONE
       INTEGER             NBOPT
-      CHARACTER*8         RESUCO
+      CHARACTER*8         RESUCO, MODELE
       CHARACTER*24        LESOPT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF UTILITAI  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER        JOPT, JOPT2, IEPSI, IERZ1, IERZ2, INOZ1, INOZ2,
-     &              I, J, NBOPT2, INDK16, IRET, IDERA
+     &              I, J, NBOPT2, INDK16, IRET, IDERA, ISIGM, IFISS
       CHARACTER*16  TYSD
       CHARACTER*24  LESOP2
 C DEB ------------------------------------------------------------------
@@ -73,9 +73,11 @@ C
 C
       INOZ2 = INDK16( ZK16(JOPT), 'SIZ2_NOEU', 1, NBOPT )
 C
-      IDERA = INDK16( ZK16(JOPT), 'DERA_ELGA', 1, NBOPT )
+      IDERA = INDK16( ZK16(JOPT), 'DERA_ELNO', 1, NBOPT )
+C
+      ISIGM = INDK16( ZK16(JOPT), 'SIGM_ELNO', 1, NBOPT )
 
-      IF (IEPSI+IERZ1+IERZ2+INOZ1+INOZ2+IDERA.EQ.0) THEN
+      IF (IEPSI+IERZ1+IERZ2+INOZ1+INOZ2+IDERA+ISIGM.EQ.0) THEN
         GOTO 9999
       ENDIF
 C
@@ -84,6 +86,8 @@ C
       CALL JEDETR ( LESOPT )
       CALL WKVECT ( LESOPT , 'V V K16' , NBOPT+20 , JOPT )
       CALL JEVEUO ( LESOP2 , 'L', JOPT2 )
+C
+      CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
 C
       NBOPT2 = 1
 C
@@ -99,6 +103,15 @@ C
         NBOPT2 = NBOPT2 + 1
         ZK16(JOPT+NBOPT2-1) = 'DERA_ELNO'
         NBOPT2 = NBOPT2 + 1
+      ENDIF
+C
+      IF (ISIGM.NE.0) THEN
+        IF (IFISS.NE.0) THEN
+          ZK16(JOPT+NBOPT2-1) = 'SISE_ELNO'
+          NBOPT2 = NBOPT2 + 1
+          ZK16(JOPT+NBOPT2-1) = 'SIGM_ELNO'
+          NBOPT2 = NBOPT2 + 1
+        ENDIF
       ENDIF
 C
       IF( ( IERZ1 .NE. 0 ).OR.

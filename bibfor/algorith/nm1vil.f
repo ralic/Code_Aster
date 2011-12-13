@@ -6,9 +6,9 @@
      &                  OPTION,
      &                  DEFAM,DEFAP,
      &                  ANGMAS,
-     &                  SIGP,VIP,DSIDEP,IRET,COMPO)
+     &                  SIGP,VIP,DSIDEP,IRET,COMPO,NBVALC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2011   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,18 +30,18 @@ C TOLE CRP_21
 C ----------------------------------------------------------------------
 C
       IMPLICIT NONE
-      INTEGER            ICDMAT,KPG,KSP,IRET
+      INTEGER            ICDMAT,KPG,KSP,IRET,NBVALC
       REAL*8             CRIT(*)
       REAL*8             INSTAM,INSTAP
       REAL*8             TM,TP,TREF
       REAL*8             IRRAM,IRRAP
       REAL*8             DEPS
-      REAL*8             SIGM,VIM(2)
+      REAL*8             SIGM,VIM(NBVALC)
       CHARACTER*16       OPTION,COMPO
-      CHARACTER*(*) FAMI
+      CHARACTER*(*)      FAMI
       REAL*8             DEFAM,DEFAP
       REAL*8             ANGMAS(3)
-      REAL*8             SIGP,VIP(2),DSIDEP
+      REAL*8             SIGP,VIP(NBVALC),DSIDEP
       CHARACTER*8        MATERI
 
 C ----------------------------------------------------------------------
@@ -108,19 +108,12 @@ C AUTRES
       REAL*8     COEGIL(NBCGIL)
       CHARACTER*8  NOMGIL(NBCGIL)
       INTEGER CODGIL(NBCGIL)
-C GRANDISSEMENT
-      INTEGER    NBCLGR
-      PARAMETER (NBCLGR=3)
-      REAL*8     COEFGR(NBCLGR)
-      CHARACTER*8 NOMGRD(NBCLGR)
       REAL*8            T1,T2
-      REAL*8            DEPSGR,DEGRAN,DEPSAN,DEPSIM
-      REAL*8            MULP,MULM
+      REAL*8            DEGRAN,DEPSAN,DEPSIM
       REAL*8            COEF1,COEFB,EXPQT
-      REAL*8            ALPHA
-      DATA NOMGIL / 'A', 'B', 'CSTE_TPS', 'ENER_ACT', 'FLUX_PHI'/
-      DATA NOMGRD / 'GRAN_A', 'GRAN_B', 'GRAN_S'/
+      DATA NOMGIL /'A','B','CSTE_TPS','ENER_ACT','FLUX_PHI'/
 
+      IRET = 0
 C     PARAMETRE THETA D'INTEGRATION
 
       THETA = CRIT(4)
@@ -178,42 +171,10 @@ C         PARAMETRES DE LA LOI DE FLUAGE
           CALL U2MESS('F','ALGORITH6_58')
       ENDIF
 
-C     INCREMENT DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL
-      DEPSGR=0.0D0
-      IF (COMPO.EQ.'GRAN_IRRA_LOG') THEN
+C     CALCUL DE LA DEFORMATION DE GRANDISSEMENT
+      CALL GRANAC(FAMI,KPG,KSP,ICDMAT,MATERI,COMPO,IRRAP,IRRAM,
+     +                                     TM,TP,ANGMAS,DEGRAN)
 
-C     RECUPERATION DES CARACTERISTIQUES DE GRANDISSEMENT
-         CALL RCVALB(FAMI,KPG,KSP,'+',ICDMAT,MATERI,'GRAN_IRRA_',
-     &              0,' ',0.D0,
-     &              3,NOMGRD(1),COEFGR(1),CODGIL(1), 0)
-C     on ajoute ce test pour eviter le cas 0**0
-         IF (COEFGR(3).EQ.0.D0) THEN
-            IF (IRRAP.EQ.0.D0) THEN
-               MULP=0.D0
-            ELSE
-               MULP=(IRRAP**COEFGR(3))
-            ENDIF
-            IF (IRRAM.EQ.0.D0) THEN
-               MULM=0.D0
-            ELSE
-               MULM=(IRRAM**COEFGR(3))
-            ENDIF
-         ELSE
-            MULP=(IRRAP**COEFGR(3))
-            MULM=(IRRAM**COEFGR(3))
-         ENDIF
-
-         DEPSGR = (COEFGR(1)*TP+COEFGR(2))*MULP-
-     &            (COEFGR(1)*TM+COEFGR(2))*MULM
-      ENDIF
-C     RECUPERATION DU REPERE POUR LE GRANDISSEMENT
-      ALPHA = ANGMAS(1)
-      IF ( ANGMAS(2) .NE. 0.D0 ) THEN
-         CALL U2MESS('F','ALGORITH6_59')
-      ENDIF
-
-C     INCREMENT DEFORMATION DE GRANDISSEMENT DANS LE REPERE
-      DEGRAN = DEPSGR*COS(ALPHA)*COS(ALPHA)
 C     INCREMENT DEFORMATION ANELASTIQUE
       DEPSAN = DEFAP-DEFAM
 C     INCREMENT DEFORMATION IMPOSEE
@@ -232,10 +193,10 @@ C CONTRAINTE ACTUALISEE
 C DEFORMATION PLASTIQUE CUMULEE ACTUALISEE
 
       VIP(1)  = VIM(1)+(ABS(SIGP)*COEFB)
-
+      VIP(3)  = VIM(3)+DEGRAN
 C MODULE TANGENT POUR MATRICE TANGENTE
 
       DSIDEP = COEF1
-      VIP(2)=IRRAP
+      VIP(2) = IRRAP
 
       END

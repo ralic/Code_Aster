@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE ABBAS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -25,10 +25,10 @@ OPTION__
    IN__
         PGEOMER  GEOM_R
         PTEMPSR  INST_R
-        PCAGNPO  CAGNPO
-        PCAORIE  CAORIE
+        PCAGNPO  CAGNPO   << Champ de caractéristiques générales pour les poutres. Concept CARA_ELEM >>
+        PCAORIE  CAORIE   << Champ de caractéristiques d'orientation. Concept CARA_ELEM >>
         PFF1D1D  FORC_F
-        PMATERC  ADRSJEVE
+        PMATERC  ADRSJEVE << Champ de matériaux. Concept CHAM_MATER >>
         PDEPLMR  DEPL_R
         PDEPLPR  DEPL_R
    OUT__

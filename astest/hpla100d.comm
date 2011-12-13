@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,123 +167,98 @@ CHDI2=AFFE_CHAR_MECA(  MODELE=MO,
 
 # ------------------------------------------------------------------
 
-DEPLPES=MECA_STATIQUE(
-                  MODELE=MO,
-               CARA_ELEM=CARE,
-              CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CHPES),
-                         )
+DEPLPES=MECA_STATIQUE(MODELE=MO,
+                      CARA_ELEM=CARE,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHPES),);
 
-CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-           OPTION=('EFGE_ELNO','SIGM_ELNO',),
-           REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLPES=CALC_ELEM(reuse=DEPLPES,
+                  RESULTAT=DEPLPES,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
+DEPLROT=MECA_STATIQUE(MODELE=MO,
+                      CARA_ELEM=CARE,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHROT),)
 
-DEPLROT=MECA_STATIQUE(
-                  MODELE=MO,
-               CARA_ELEM=CARE,
-              CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CHROT),
-                         )
-
-CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
-           OPTION=('EFGE_ELNO','SIGM_ELNO',),
-           REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
-
+DEPLROT=CALC_ELEM(reuse=DEPLROT,
+                  RESULTAT=DEPLROT ,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
 # ------------------------------------------------------------------
 
-LISTIME=DEFI_LIST_REEL(VALE=( 0.0, 1.0, ), )
+LISTIME=DEFI_LIST_REEL(VALE=(0.0,1.0,),)
 
-STATNL1=STAT_NON_LINE(
-                  MODELE=MO,
-              CHAM_MATER=CHMAT1,
-               CARA_ELEM=CARE,
-               COMP_INCR=_F(RELATION='ELAS'),
-                   EXCIT=_F( CHARGE = CHDIL),
-               INCREMENT=_F(LIST_INST=LISTIME,),
-                         )
+STATNL1=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT1,
+                      CARA_ELEM=CARE,
+                      COMP_INCR=_F(RELATION='ELAS'),
+                      EXCIT=_F(CHARGE=CHDIL),
+                      INCREMENT=_F(LIST_INST=LISTIME,),);
 
-DEP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                 RESULTAT=STATNL1, NOM_CHAM='DEPL', INST=1. )
+DEP1=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='NOEU_DEPL_R',
+                RESULTAT=STATNL1,
+                NOM_CHAM='DEPL',
+                INST=1.);
 
-DEPLDIL=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
-                    AFFE=_F(  INST = 1.,  CHAM_GD = DEP1,
-                              MODELE=MO, CHAM_MATER=CHMAT1, CARA_ELEM=CARE, )     )
+DEPLDIL=CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='EVOL_ELAS',
+                  NOM_CHAM='DEPL',
+                  AFFE=_F(INST=1.,
+                          CHAM_GD=DEP1,
+                          MODELE=MO,
+                          CHAM_MATER=CHMAT1,
+                          CARA_ELEM=CARE,),);
 
+DEPLDIL=CALC_ELEM(reuse=DEPLDIL,
+                  RESULTAT= DEPLDIL ,
+                  OPTION=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO',),);
 
-CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-           OPTION=('SIEF_ELGA',),
+STATNL2=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMATH1,
+                      CARA_ELEM=CARE,
+                      COMP_INCR=_F(RELATION='ELAS'),
+                      EXCIT=_F(CHARGE=CHDIL),
+                      INCREMENT=_F(LIST_INST=LISTIME,),);
 
-           REPE_COQUE=_F(
-           NUME_COUCHE=1,
-           NIVE_COUCHE='INF',),
-                         )
-CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-           OPTION=('EFGE_ELNO','SIGM_ELNO',),
+DEP2=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='NOEU_DEPL_R',
+                RESULTAT=STATNL2,
+                NOM_CHAM='DEPL',
+                INST=1.),
 
-           REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLDILT=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
+                   AFFE=_F(INST=1.,
+                           CHAM_GD=DEP2,
+                           MODELE=MO,
+                           CHAM_MATER=CHMATH1,
+                           CARA_ELEM=CARE,),);
 
-
-STATNL2=STAT_NON_LINE(
-                  MODELE=MO,
-              CHAM_MATER=CHMATH1,
-               CARA_ELEM=CARE,
-               COMP_INCR=_F(RELATION='ELAS'),
-                   EXCIT=_F( CHARGE = CHDIL),
-               INCREMENT=_F(LIST_INST=LISTIME,),
-                         )
-
-DEP2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                 RESULTAT=STATNL2, NOM_CHAM='DEPL', INST=1. )
-
-DEPLDILT=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
-                     AFFE=_F(  INST = 1.,  CHAM_GD = DEP2,
-                               MODELE=MO, CHAM_MATER=CHMATH1, CARA_ELEM=CARE, )     )
-
-CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
-           OPTION=('SIEF_ELGA',),
-
-           REPE_COQUE=_F(
-           NUME_COUCHE=1,
-           NIVE_COUCHE='INF',),
-                         )
-
-CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
-           OPTION=('EFGE_ELNO','SIGM_ELNO',),
-
-             REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLDILT=CALC_ELEM(reuse=DEPLDILT,
+                   RESULTAT=DEPLDILT,
+                   OPTION=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO',),);
 
 # ------------------------------------------------------------------
 
-DEPLDI2=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMAT2,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDI2),
-                         )
+DEPLDI2=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMAT2,
+                      CARA_ELEM=CARE,
+                      EXCIT=_F(CHARGE=CHDI2),)
 
-CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-           OPTION=('EFGE_ELNO','SIGM_ELNO',),
-           REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLDI2=CALC_ELEM(reuse=DEPLDI2,
+                  RESULTAT=DEPLDI2 ,
+                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
+DEPLDI2T=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMATH2,
+                       CARA_ELEM=CARE,
+                       EXCIT=_F(CHARGE=CHDI2),)
 
-DEPLDI2T=MECA_STATIQUE(
-                  MODELE=MO,
-              CHAM_MATER=CHMATH2,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDI2),
-                         )
-
-CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
-           OPTION=('EFGE_ELNO','SIGM_ELNO',),
-           REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                         )
+DEPLDI2T=CALC_ELEM(reuse=DEPLDI2T,
+                   RESULTAT=DEPLDI2T ,
+                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
 #---------------------------------------------------------------------
 

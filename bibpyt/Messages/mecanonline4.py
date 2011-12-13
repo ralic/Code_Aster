@@ -1,4 +1,4 @@
-#@ MODIF mecanonline4 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline4 Messages  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,17 +26,21 @@ cata_msg = {
 """),
 
 14 : _(u"""
- Vous utilisez la méthode CONTINUE pour le traitement du contact et faites une reprise de calcul (mot-clé REUSE). L'état initial de contact sera
- non contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
+ Vous utilisez la méthode CONTINUE pour le traitement du contact et faites une reprise de calcul (mot-clé reuse). De plus, vous n'avez pas activé
+ l'initialisation automatique des statuts de contact. L'état initial de contact sera donc non contactant.
  Cela peut entraîner des difficultés de convergence en présence de fortes non-linéarités. En présence de frottement, la solution peut bifurquer
  différemment.
+ 
  Conseils :
-   Si vous le pouvez, faites votre calcul en une seule fois.
+   - si vous le pouvez, faites votre calcul en une seule fois.
+   - activez la détection automatique du contact initial sur toutes les zones (CONTACT_INIT='INTERPENETRE' dans DEFI_CONTACT).
 """),
 
 15 : _(u"""
- Vous utilisez la méthode CONTINUE pour le traitement du contact et définissez un état initial via le mot-clé ETAT_INIT. L'état initial de contact
- sera non contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
+ Vous utilisez la méthode CONTINUE pour le traitement du contact et définissez un état initial via le mot-clé ETAT_INIT.  De plus, vous n'avez pas activé
+ l'initialisation automatique des statuts de contact. L'état initial de contact sera donc non contactant.
+ 
+ Il est conseillé d'activer la détection automatique du contact initial sur toutes les zones (CONTACT_INIT='INTERPENETRE' dans DEFI_CONTACT).
 """),
 
 22 : _(u"""

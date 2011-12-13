@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 13/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,11 +58,20 @@ On attend %(i1)d paramètres.
 """),
 
 13 : _(u"""
-On a lu %(i1)d champs dans le fichier.
+On attend %(i1)d champs dans le fichier.
 """),
 
 14 : (u"""
 Les listes %(k1)s et %(k2)s doivent avoir le même cardinal.
+"""),
+
+15 : _(u"""
+Le format de la ligne semble incorrect.
+Ligne lue :
+    %(k1)s
+
+Il ne satisfait pas l'expression régulière :
+    %(k2)s
 """),
 
 16:_(u"""

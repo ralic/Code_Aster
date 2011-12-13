@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -197,7 +197,8 @@ ECHEC       =FACT(fr                = "Comportement en cas d'echec",
                                            statut            = 'f',
                                            typ               = 'TXM',
                                            max               = 1,
-                                           into              = ("ERREUR","DELTA_GRANDEUR","COLLISION","INTERPENETRATION"),
+                                           into              = ("ERREUR","DELTA_GRANDEUR","COLLISION",
+                                                                "INTERPENETRATION","DIVE_RESI"),
                                            defaut            = "ERREUR",
                                            ),
                   b_erreur          = BLOC(fr                = "Event: erreur ou iter_maxi",
@@ -269,6 +270,17 @@ ECHEC       =FACT(fr                = "Comportement en cas d'echec",
                                                                     ),
                                            b_pene            = bloc_pene,
                                            ),                         
+                  b_dive_resi       = BLOC(fr                = "Event: divergence du residu",
+                                           condition         = "EVENEMENT == 'DIVE_RESI' ",
+                                           ACTION            = SIMP(fr              = "Actions possibles",
+                                                                    statut          = 'f',
+                                                                    max             = 1,
+                                                                    typ             = 'TXM',
+                                                                    into            = ("DECOUPE",),
+                                                                    defaut          = "DECOUPE",
+                                                                    ),
+                                           b_deco            = bloc_deco,
+                                           ),
 
                  ),
 

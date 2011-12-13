@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 # ssnv148a.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -115,9 +115,7 @@ U=STAT_NON_LINE(CHAM_MATER=CM,
                 MODELE=MO,
                 CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                RESI_GLOB_RELA=9.9999999999999995E-07,),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                             ITER_INTE_MAXI=100,
-                             RESI_INTE_RELA=9.9999999999999995E-07,),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                 EXCIT=_F(CHARGE=CHARG,),
                 INCREMENT=_F(NUME_INST_FIN=4,
                              LIST_INST=L_INST,),

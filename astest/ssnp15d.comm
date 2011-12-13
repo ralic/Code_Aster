@@ -1,10 +1,21 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-#              REDISTRIBUTION OF THIS FILE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNP15D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -156,25 +167,32 @@ UPOS2=POST_CHAMP(RESULTAT=U,
                                NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
 
-U=CALC_ELEM( reuse=U,   RESULTAT=UPOS,
-                      TOUT_ORDRE='OUI',
-             REPE_COQUE =_F( NUME_COUCHE=1, NIVE_COUCHE='SUP'),
-                     OPTION=('SIEQ_ELNO',),);
+U=CALC_ELEM(reuse=U,
+            RESULTAT=UPOS,
+            TOUT_ORDRE='OUI',
+            REPE_COQUE =_F(NUME_COUCHE=1,NIVE_COUCHE='SUP'),
+            OPTION=('SIEQ_ELNO',),);
 
-U1=CALC_ELEM(  RESULTAT=U,
-               TOUT_ORDRE='OUI',
-               OPTION=('VACO_ELNO',),
-               REPE_COQUE =_F( NIVE_COUCHE='INF'));
+U1=POST_CHAMP(RESULTAT=U,
+              TOUT_ORDRE='OUI',
+              GROUP_MA='TOUT',
+              EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
+                            NUME_COUCHE=1,
+                            NIVE_COUCHE='INF',),);
 
-U2=CALC_ELEM(  RESULTAT=U,
-               TOUT_ORDRE='OUI',
-               OPTION='VACO_ELNO',
-               REPE_COQUE =_F( NIVE_COUCHE='MOY'));
+U2=POST_CHAMP(RESULTAT=U,
+              TOUT_ORDRE='OUI',
+              GROUP_MA='TOUT',
+              EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
+                            NUME_COUCHE=1,
+                            NIVE_COUCHE='MOY',),);
 
-U3=CALC_ELEM(  RESULTAT=U,
-               TOUT_ORDRE='OUI',
-               OPTION='VACO_ELNO',
-               REPE_COQUE =_F( NIVE_COUCHE='SUP'));
+U3=POST_CHAMP(RESULTAT=U,
+              TOUT_ORDRE='OUI',
+              GROUP_MA='TOUT',
+              EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
+                            NUME_COUCHE=1,
+                            NIVE_COUCHE='SUP',),);
 
 TEST_RESU(RESU=(_F(
                    RESULTAT = U,  NOM_CHAM = 'DEPL',  NOEUD = 'NO1',
@@ -417,35 +435,35 @@ TEST_RESU(RESU=(_F(
 
 
 TEST_RESU(RESU=(
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-             ),)
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
              ),)
 
 TEST_RESU(RESU=(
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VACO_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+             ),)
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
              ),)
 

@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 21/11/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel4 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,6 +84,21 @@ Erreur utilisateur (ou programmeur) :
 
 8 : _(u"""
  Le résultat %(k1)s n'existe pas.
+"""),
+
+9 : _(u"""
+Problème lors de la projection d'un cham_no de la grandeur (%(k1)s) sur un autre maillage.
+ Pour le noeud "2" %(k2)s (et pour la composante %(k3)s) la somme des coefficients de pondération
+ des noeuds de la maille "1" en vis à vis est très faible (inférieure à 1.e-3).
+
+ Cela peut arriver par exemple quand le champ à projeter ne porte pas la composante sur
+ tous les noeuds de la maille "1" et que le noeud "2"  sur lequel on cherche à projeter
+ se trouve tout près d'un noeud "1" qui ne porte pas la composante.
+ Quand cela arrive, la projection est imprécise sur le noeud.
+
+Risques et conseils :
+ Si le champ à projeter a des composantes qui n'existent que sur les noeuds sommets des éléments,
+ on peut faire une double projection en passant par un maillage intermédiaire linéaire.
 """),
 
 10 : _(u"""

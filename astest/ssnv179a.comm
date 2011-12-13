@@ -1,5 +1,6 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/12/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # TITRE CUBE SOUS FLUAGE VIA LA LOI LEMA_SEUIL
+# ssnv179a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,17 +76,25 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
                                     ),
                         );
 
-CHAM=CREA_CHAMP( OPERATION='AFFE',
-                      TYPE_CHAM='CART_IRRA_R',
+CHAM_0=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
-                      AFFE=_F( TOUT='OUI',NOM_CMP = 'IRRA', VALE = 1.85),
+                      AFFE=_F( TOUT='OUI',NOM_CMP = 'IRRA', VALE = 0.0),
+                  );
+
+CHAM_1=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT='OUI',NOM_CMP = 'IRRA', VALE = 22.2E+07),
                   );
 
 FLUENC=CREA_RESU(
                       OPERATION='AFFE', TYPE_RESU='EVOL_VARC',
-                      NOM_CHAM='IRRA',AFFE=
-                      _F( CHAM_GD = CHAM, LIST_INST=L_INST)
-                      );
+                      NOM_CHAM='IRRA',AFFE=(
+                      _F( CHAM_GD = CHAM_0, INST= 0.0 ),
+                      _F( CHAM_GD = CHAM_1, INST= 12.E+07 ),
+                      ));
+
 CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
             AFFE =_F(TOUT='OUI', MATER = MAT, ),
             AFFE_VARC=_F(NOM_VARC='IRRA', EVOL =FLUENC, ),

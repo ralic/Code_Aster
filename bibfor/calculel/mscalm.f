@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -196,7 +196,7 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       NBOPT = -N2
       CALL WKVECT ( LESOPT, 'V V K16', NBOPT, JOPT )
       CALL GETVTX (' ', 'OPTION'  , 1,IARG, NBOPT, ZK16(JOPT), N2)
-      CALL MODOPT(RESUCO,LESOPT,NBOPT)
+      CALL MODOPT(RESUCO,MODELE,LESOPT,NBOPT)
       CALL MSDOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
 
@@ -1034,16 +1034,13 @@ C ---- VERIF SENSIBILITE FIN
   190       CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS "EPEQ_ELGA","EPMQ_ELGA","SIEQ_ELGA",
-C               "EPEQ_ELNO","EPMQ_ELNO","PMPB_ELGA",
-C               "PMPB_ELNO","SIEQ_ELNO"
+C               "EPEQ_ELNO","EPMQ_ELNO","SIEQ_ELNO"
 C    ------------------------------------------------------------------
           ELSEIF (OPTION.EQ.'EPEQ_ELGA' .OR.
      &            OPTION.EQ.'EPMQ_ELGA' .OR.
      &            OPTION.EQ.'SIEQ_ELGA' .OR.
      &            OPTION.EQ.'EPEQ_ELNO' .OR.
      &            OPTION.EQ.'EPMQ_ELNO' .OR.
-     &            OPTION.EQ.'PMPB_ELGA' .OR.
-     &            OPTION.EQ.'PMPB_ELNO' .OR.
      &            OPTION.EQ.'SIEQ_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
@@ -1090,14 +1087,6 @@ C ---- VERIF SENSIBILITE FIN
                   GOTO 710
 
                 ENDIF
-              ELSEIF (OPTION.EQ.'PMPB_ELGA') THEN
-                CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
-     &                      IRET1)
-                IF (IRET1.GT.0)GOTO 200
-              ELSEIF (OPTION.EQ.'PMPB_ELNO') THEN
-                CALL RSEXC2(1,1,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
-     &                      OPTION,IRET1)
-                IF (IRET1.GT.0)GOTO 200
               ELSEIF (OPTION.EQ.'SIEQ_ELNO') THEN
                 IF (TYSD.EQ.'FOURIER_ELAS') THEN
                   CALL U2MESK('F','CALCULEL6_83',1,OPTION)
@@ -1205,47 +1194,6 @@ C ---- VERIF SENSIBILITE FIN
   250       CONTINUE
 
 
-C    ------------------------------------------------------------------
-C    -- OPTIONS "SICA_ELNO" ET "EFCA_ELNO"
-C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'SICA_ELNO' .OR.
-     &            OPTION.EQ.'EFCA_ELNO') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-              CODSEN=1
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            DO 310,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,'G',NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              IF (OPTION.EQ.'SICA_ELNO') THEN
-                CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO',IORDR,CHAMGD,
-     &                      OPTION,IRET)
-              ELSE
-                CALL RSEXC2(1,2,RESUCO,'EFGE_ELNO',IORDR,CHSIG,
-     &                      OPTION,IRET)
-                CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
-     &                      OPTION,IRET)
-                CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
-              ENDIF
-              IF (IRET.GT.0)GOTO 300
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MSCALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,K24B,
-     &                    LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,
-     &                    CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              IF (IRET.GT.0)GOTO 300
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  300         CONTINUE
-              CALL JEDEMA()
-  310       CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTION "VNOR_ELEM_DEPL"
 C    ------------------------------------------------------------------
@@ -1535,51 +1483,6 @@ C     ----------------------------------------
   420       CONTINUE
 
 C     ------------------------------------------------------------------
-C     --- OPTION "SITU_ELNO"
-C     ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'SITU_ELNO') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-              CODSEN=1
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            DO 460,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,'G',NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
-              IF (IRET1.GT.0) THEN
-                CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
-     &                      OPTION,IRET2)
-                IF (IRET2.GT.0)GOTO 450
-              ENDIF
-              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-
-              IF (EXITIM) THEN
-                CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-                TIME=ZR(IAINST)
-              ELSE
-                TIME=ZERO
-              ENDIF
-              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
-              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
-              CALL MSCALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,CHNUMC,K24B,CHSIG,K24B,K24B,K24B,
-     &                    K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,CHELEM,
-     &                    K24B,LIGREL,BASE,CHVARC,CHVREF,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              IF (IRET.GT.0)GOTO 450
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  450         CONTINUE
-              CALL JEDEMA()
-  460       CONTINUE
-C     ------------------------------------------------------------------
 C     --- OPTION "EPTU_ELNO"
 C     ------------------------------------------------------------------
           ELSEIF (OPTION.EQ.'EPTU_ELNO') THEN
@@ -1653,8 +1556,7 @@ C ---- VERIF SENSIBILITE FIN
 C     ------------------------------------------------------------------
 C     --- OPTION " VARI_ELNO"
 C     ------------------------------------------------------------------
-          ELSEIF ((OPTION.EQ.'VARI_ELNO') .OR.
-     &            (OPTION.EQ.'VACO_ELNO')) THEN
+          ELSEIF (OPTION.EQ.'VARI_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.EQ.4) THEN
               CODSEN=1
@@ -1685,40 +1587,6 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   550       CONTINUE
 
-C     ------------------------------------------------------------------
-C     --- OPTION "VATU_ELNO"
-C     ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'VATU_ELNO') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-              CODSEN=1
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            K24B=' '
-            DO 570,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,'G',NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHAMGD,OPTION,
-     &                    IRET)
-
-              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MSCALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
-     &                    K24B,LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,
-     &                    CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              IF (IRET.GT.0)GOTO 560
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  560         CONTINUE
-              CALL JEDEMA()
-  570       CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS "ENEL_ELGA" ET "ENEL_ELNO"
 C    ------------------------------------------------------------------

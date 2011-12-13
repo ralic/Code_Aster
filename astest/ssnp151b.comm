@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE EPROUVETTE CT 3D AVEC ELEMENTS D'INTERFACE (HEXA20) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151b.para = tps_job 900 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,8 +179,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                               ),      
                  COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                               DEFORMATION='PETIT_REAC',
-                              GROUP_MA='CT', 
-                              ITER_INTE_MAXI=50,),
+                              GROUP_MA='CT'),
                             _F(RELATION = 'CZM_TRA_MIX', 
                                GROUP_MA = 'joint',),),
                  INCREMENT=_F(LIST_INST=LINST,INST_FIN=0.3),

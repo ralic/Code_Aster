@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106f.para = tps_job 140 mem_job 300Mo ncpus 1 liste_test S
@@ -152,20 +152,20 @@ REST=STAT_NON_LINE(MODELE=MO,
 # LES CONTRAINTES LOCALES SIGM_ELNO SONT UNIFORMES
 
 REST=CALC_ELEM(reuse =REST, RESULTAT=REST,
-               OPTION=('EFGE_ELNO','SIGM_ELNO',),
+               OPTION=('EFGE_ELNO','SIGM_ELNO','VARI_ELNO',),
                REPE_COQUE =_F( NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
 
-RESTPOS=POST_CHAMP(RESULTAT=REST,
-                   TOUT='OUI',
-                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                 NUME_COUCHE=1,
-                                 NIVE_COUCHE='SUP',),);
+REST1=POST_CHAMP(RESULTAT=REST,
+                 TOUT='OUI',
+                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',),);
 
-REST=CALC_ELEM(reuse =REST, RESULTAT=REST,
-               GROUP_MA='TUYAU',
-               OPTION=('VACO_ELNO',),
-               REPE_COQUE =_F( NUME_COUCHE=1,
+REST2=POST_CHAMP(RESULTAT=REST,
+                 GROUP_MA='TUYAU',
+                 EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
+                               NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
 
 REST=CALC_NO(reuse =REST,
@@ -297,23 +297,20 @@ RESM=STAT_NON_LINE(MODELE=MO,
 # LES CONTRAINTES LOCALES SONT EXTREMES SUR LA PEAU EXTERNE
 
 RESM=CALC_ELEM(reuse =RESM, RESULTAT=RESM,
-               OPTION=('EFGE_ELNO','SIGM_ELNO',),
+               OPTION=('EFGE_ELNO','SIGM_ELNO','VARI_ELNO'),
                REPE_COQUE =_F( NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
 
-RESMPOS=POST_CHAMP(RESULTAT=RESM,
+RESM1=POST_CHAMP(RESULTAT=RESM,
                    TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='SUP',),);
 
-
-
-# POUR_TESTER VARI_ELNO_COQUE SUR UN GROUP_MA
-
-RESM=CALC_ELEM(reuse =RESM, RESULTAT=RESM,
-               OPTION=('VACO_ELNO',), GROUP_MA='TUYAU',
-               REPE_COQUE =_F( NUME_COUCHE=1,
+RESM2=POST_CHAMP(RESULTAT=RESM,
+                 GROUP_MA='TUYAU',
+                 EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
+                               NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
 
 RESM=CALC_NO(reuse =RESM,

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 4 NOEUDS STAT_NON_LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,7 +136,7 @@ U1=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
               )
 
 U1=CALC_ELEM( reuse=U1,
-              OPTION=( 'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
+              OPTION=('EFGE_ELNO','VARI_ELNO','DEGE_ELNO','SIGM_ELNO'),
               RESULTAT=U1, )
 
 TEST_RESU(RESU=(
@@ -159,23 +159,20 @@ _F( RESULTAT = U1, NUME_ORDRE = 2,
 
       )
 
-U1=CALC_ELEM( reuse=U1,
-                    TOUT_ORDRE='OUI',
-                   OPTION=('SITU_ELNO',),
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',
-                                   ANGLE=90, ),
-                    RESULTAT=U1
-                   )
 
-U1=CALC_ELEM( reuse=U1,
-                    TOUT_ORDRE='OUI',
-                   OPTION=('VATU_ELNO',),
-                   REPE_COQUE =_F( NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',
-                                   ANGLE=90, ),
-                    RESULTAT=U1
-                   )
+U1POS1=POST_CHAMP(RESULTAT=U1,
+                  TOUT='OUI',
+                  TOUT_ORDRE='OUI',
+                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',ANGLE=90, ),);
+
+U1POS2=POST_CHAMP(RESULTAT=U1,
+                  TOUT='OUI',
+                  TOUT_ORDRE='OUI',
+                  EXTR_TUYAU=_F(NOM_CHAM='VARI_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',ANGLE=90, ),);
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 U2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),

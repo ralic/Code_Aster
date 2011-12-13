@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,6 +97,10 @@ MODE_LOCAL__
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     QXX      QXY
                                         QYX      QYY      QZX      QZY      )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     QXX      QXY
+                                        QYX      QYY      QZX      QZY      )
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     QXX      QXY
+                                        QYX      QYY      QZX      QZY      )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     QXX      QXY
                                         QYX      QYY      QZX      QZY      )
     ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY)
     ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY)
@@ -439,9 +443,8 @@ OPTION__
     SIEF_ELGA_SENS      86    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  DDL_MECA PDEPSEN  NGEOMER  PGEOMER
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC  CMATERC  PMATSEN
                               OUT__  ECONTPG  PCONTRR
-    SIEF_ELNO           98    IN__   ECONTPG  PCONTRR
-                              OUT__  ESIGMNO  PSIEFNOR
-                                     ESIGMNC  PSIEFNOC
+    SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIEQ_ELGA           336   IN__   ESIGMPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
     SIEQ_ELNO           330   IN__   ESIGMPG  PCONTRR
@@ -463,7 +466,7 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ESIGMNO  PSIEF_R  ZVARINO  PVARI_R
-    VARI_ELNO           98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET

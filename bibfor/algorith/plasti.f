@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,7 +198,7 @@ C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
 C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDT   , NDI   , NR  , NVI
+        INTEGER         IMAT , NDT   , NDI   , NR  , NVI, I, J
         INTEGER         ITMAX, ICOMP , KPG, KSP
         INTEGER         NMAT, CODRET
         INTEGER         IRTET, IRTETI, K, L, IRET
@@ -239,7 +239,9 @@ C        LE SYSTEME LOCAL A RESOUDRE A POUR DIMENSION MAXIMUM NRMAX=
       REAL*8        TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
       REAL*8        DRDY(NRM*NRM)
       CHARACTER*16  CPMONO(5*NMAT+1)
-      
+      LOGICAL RESI,RIGI
+C     POUR BETON_BURGER_FP - ATTENTION DIMENSION MAXI POUR CE MODELE
+      REAL*8        YD(21),YF(21)      
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
@@ -254,7 +256,9 @@ C
       LOI      = COMP(1)
       MOD      = TYPMOD(1)
       DT       = TIMEF - TIMED
-      
+      RESI   = OPT(1:9).EQ.'RAPH_MECA' .OR. OPT(1:9).EQ.'FULL_MECA'
+      RIGI   = OPT(1:9).EQ.'RIGI_MECA' .OR. OPT(1:9).EQ.'FULL_MECA'
+
 C
 C --  OPTION SUPPRIMEE CAR TYPMA EST IMPOSE SUIVANT QUE L'ON EST EN
 C --  PLASTCITE OU VISCOPLASTICITE. TYPMA EST DEFINI DANS LCMATE
@@ -277,7 +281,7 @@ C
      &            0,TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,
      &            CPMONO,ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,
      &            NVI,VIND,NFS,NSG,TOUTMS,1,NUMHSR)
-     
+
       IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
          IF(MOD.NE.'3D') THEN
             SIGD(5)=0.D0
@@ -303,6 +307,7 @@ C --     RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
          CALL LCDEHY(FAMI, KPG, KSP, NMAT, MATERD, MATERF,
      &            DEPS, EPSD )
       ENDIF
+
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
       IF  ( ABS(VIND (NVI)) .LE. EPSI ) THEN
@@ -321,29 +326,31 @@ C     ----------------------------------------------------------------
 C     OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
 C     ----------------------------------------------------------------
 C
-      IF ( OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA' ) THEN
-      
+      IF ( RESI ) THEN
+
       IF ((COMP(3).EQ.'SIMO_MIEHE').AND.(COMP(1).EQ.'MONOCRISTAL')) THEN
 C          GDEF_MONO : PAS DE SEUIL CAR C'EST PLUS COMPLIQUE
            SEUIL=1.D0
            
          ELSE
-         
 C --        INTEGRATION ELASTIQUE SUR DT
             CALL LCELAS(LOI, MOD , NMAT, MATERD, MATERF, MATCST,
      &               NVI, DEPS, SIGD, VIND,   SIGF,   VINF,
      &               THETA)
 
 C --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
-            CALL LCCNVX(FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
-     &               SIGF, VIND, NBCOMM, CPMONO, PGL, NVI,
-     &               VP,VECP, HSR,NFS,NSG, TOUTMS, TIMED,TIMEF, SEUIL)
+            CALL LCCNVX(FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERD,
+     &               MATERF,SIGD,SIGF,DEPS,VIND, NBCOMM, CPMONO, PGL,
+     &               NVI,VP,VECP, HSR,NFS,NSG, TOUTMS, TIMED,TIMEF,
+     &               NR,YD,YF,TOLER,SEUIL)
+         
          ENDIF
 C
          IF ( SEUIL .GE. 0.D0 ) THEN
 C --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
             ETATF = 'PLASTIC'
 C
+
             CALL LCPLAS(FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,NMAT,
      &                  MATERD,MATERF, NR, NVI,
      &                  TIMED,TIMEF, DEPS, EPSD, SIGD ,VIND, SIGF,
@@ -357,7 +364,8 @@ C --        PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
             ETATF = 'ELASTIC'
 C ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
 C           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-            CALL LCELPL(LOI,NMAT,MATERF,NVI,VIND,VINF)
+            CALL LCELPL(MOD,LOI,NMAT,MATERD,MATERF,TIMED,TIMEF,
+     &                  NVI,VIND,VINF,NR,YD,YF,SIGF,DRDY)
          ENDIF
 C
          IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
@@ -376,9 +384,10 @@ C       EVALUATION DU JACOBIEN DSDE A (T+DT) POUR 'FULL_MECA'
 C       ET CALCUL ELASTIQUE    ET   A (T)    POUR 'RIGI_MECA_TANG'
 C       ----------------------------------------------------------------
 C
-      IF ( OPT .EQ. 'RIGI_MECA_TANG' .OR. OPT .EQ. 'FULL_MECA' ) THEN
-         IF ( OPT .EQ. 'RIGI_MECA_TANG' ) THEN
-            IF (ETATD.EQ.'ELASTIC'.OR.LOI.EQ.'LAIGLE') THEN
+      IF ( RIGI ) THEN
+         IF ( OPT(1:9) .EQ. 'RIGI_MECA' ) THEN
+            IF ((ETATD.EQ.'ELASTIC').OR.(LOI.EQ.'LAIGLE').OR.
+     &          (LOI.EQ.'BETON_BURGER_FP')) THEN
                CALL LCJELA ( LOI  , MOD , NMAT, MATERD, VIND, DSDE)
             ELSEIF ( ETATD .EQ. 'PLASTIC') THEN
 C   ------>    ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
@@ -402,15 +411,19 @@ C ---                          DU DEVIATEUR ELASTIQUE
                      CALL LCHBVP(SIGD,VP,VECP)
                   ENDIF
                   CALL LCJPLA(FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
-     &                        NVI,DEPS,SIGD,VIND,DSDE,SIGD,VIND,VP,VECP,
-     &                        THETA,DT,DEVG,DEVGII,CODRET)
+     &                        NVI,DEPS,SIGD,VIND,DSDE,SIGD,VIND,
+     &                        VP,VECP,THETA,DT,DEVG,DEVGII,CODRET)
                   IF (CODRET.EQ.2) GOTO 2
                ENDIF
             ENDIF
 C
-         ELSEIF ( OPT .EQ . 'FULL_MECA' ) THEN
+         ELSEIF ( OPT(1:9) .EQ . 'FULL_MECA' ) THEN
             IF  ( ETATF .EQ. 'ELASTIC' ) THEN
-               CALL LCJELA ( LOI  , MOD , NMAT, MATERF, VINF, DSDE)
+              IF(LOI(1:15).EQ.'BETON_BURGER_FP')THEN
+                CALL BURJPL(NMAT,MATERF,NR,DRDY,DSDE)
+              ELSE
+                CALL LCJELA ( LOI  , MOD , NMAT, MATERF, VINF, DSDE)
+              ENDIF
             ELSEIF ( ETATF .EQ. 'PLASTIC' ) THEN
 C   ------>    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------>    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
@@ -423,8 +436,8 @@ C   ------>    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                   IF (IRET.NE.0) GOTO 1
                ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                   CALL LCJPLA(FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
-     &                        NVI,DEPS,SIGF,VINF,DSDE,SIGD,VIND,VP,VECP,
-     &                        THETA,DT,DEVG, DEVGII,CODRET)
+     &                        NVI,DEPS,SIGF,VINF,DSDE,SIGD,VIND,
+     &                        VP,VECP,THETA,DT,DEVG, DEVGII,CODRET)
                   IF (CODRET.EQ.2) GOTO 2
                ENDIF
             ENDIF
