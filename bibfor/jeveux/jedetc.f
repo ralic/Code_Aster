@@ -1,6 +1,6 @@
       SUBROUTINE JEDETC ( CLAS , SOUCH , IPOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,11 +99,7 @@ C DEB ------------------------------------------------------------------
               IF ( IRET .EQ. 1 .AND. KK .EQ. 2) THEN
                 IADMI = IADM (JIADM(IC) + 2*IDATOS-1 )
                 IADYN = IADM (JIADM(IC) + 2*IDATOS   )
-                IF ( IADYN .NE. 0 ) THEN
-                  CALL JJLIDY( IADYN , IADMI )
-                ELSE IF ( IADMI .NE. 0 ) THEN
-                  CALL JJLIBP ( IADMI )
-                ENDIF
+                CALL JJLIDY( IADYN , IADMI )
                 IADDI(1) = IADD (JIADD(IC) + 2*IDATOS-1 )
                 IADDI(2) = IADD (JIADD(IC) + 2*IDATOS   )
                 IF ( IADDI(1) .GT. 0 ) THEN
@@ -135,11 +131,7 @@ C DEB ------------------------------------------------------------------
                     ENDIF
                     IADMOC = ISZON( JISZON + IBIADM - 1 + 2*K-1 )
                     IADYOC = ISZON( JISZON + IBIADM - 1 + 2*K )
-                    IF ( IADYOC .NE. 0 ) THEN
-                       CALL JJLIDY( IADYOC , IADMOC )
-                    ELSE IF ( IADMOC .NE. 0 ) THEN
-                       CALL JJLIBP ( IADMOC )
-                    ENDIF
+                    CALL JJLIDY( IADYOC , IADMOC )
                     IADDI(1) = ISZON( JISZON + IBIADD - 1 + 2*K-1 )
                     IADDI(2) = ISZON( JISZON + IBIADD - 1 + 2*K   )
                     IF ( IADDI(1) .GT. 0 ) THEN
@@ -163,11 +155,7 @@ C DEB ------------------------------------------------------------------
      &                  NOM32(25:26) .EQ. '&&'          ) THEN
                       IADMI = IADM (JIADM(IC) + 2*ID(K)-1 )
                       IADYN = IADM (JIADM(IC) + 2*ID(K)   )
-                      IF ( IADYN .NE. 0 ) THEN
-                        CALL JJLIDY( IADYN , IADMI )
-                      ELSE IF ( IADMI .NE. 0 ) THEN
-                        CALL JJLIBP ( IADMI )
-                      ENDIF
+                      CALL JJLIDY( IADYN , IADMI )
                       IADDI(1) = IADD (JIADD(IC) + 2*ID(K)-1 )
                       IADDI(2) = IADD (JIADD(IC) + 2*ID(K)   )
                       IF ( IADDI(1) .GT. 0 ) THEN
@@ -192,11 +180,7 @@ C DEB ------------------------------------------------------------------
 2               CONTINUE
                 CRNOM = RNOM ( JRNOM(IC) + IDATCO )
                 IADYN = IADM (JIADM(IC) + 2*IDATCO )
-                IF ( IADYN .NE. 0 ) THEN
-                  CALL JJLIDY( IADYN , IBACOL )
-                ELSE   
-                  CALL JJLIBP ( IBACOL)
-                ENDIF
+                CALL JJLIDY( IADYN , IBACOL )
                 IADDI(1) = IADD (JIADD(IC) + 2*IDATCO-1)
                 IADDI(2) = IADD (JIADD(IC) + 2*IDATCO  )
                 IF ( IADDI(1) .GT. 0 ) THEN

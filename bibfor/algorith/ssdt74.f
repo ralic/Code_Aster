@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14 NUMGEN
       CHARACTER*16 NOMCMD,TYPBAS,METHOD
       CHARACTER*19 RAID,MASS,AMOR,LISARC
+      CHARACTER*8  FBID(2)
       CHARACTER*24 NUMG24,LISINS
       CHARACTER*24 VALK(2)
       LOGICAL LAMOR,LFLU,LPSTO
@@ -76,6 +77,9 @@ C-----------------------------------------------------------------------
       LPSTO = .FALSE.
       LFLU = .FALSE.
 C-----------------------------------------------------------------------
+
+      FBID(1)=K8B
+      FBID(2)=K8B
 
       JINTI = 1
       JRANC = 1
@@ -344,7 +348,7 @@ C <=
      &              ZI(JADCHO),ZI(JREDC),ZR(JREDD),ZR(JCOEFM),
      &              ZI(JIADVE),ZI(JINUMO),ZI(JIDESC),ZK8(JNODEP),
      &              ZK8(JNOVIT),ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),
-     &              MONMOT,
+     &              MONMOT,NBCHOC,0,FBID,FBID,0.D0,
      &              NBPAL,DTSTO,TCF,VROTAT,PRDEFF,NOMRES)
 
       ELSE IF (METHOD(1:5).EQ.'ADAPT') THEN

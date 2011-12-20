@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( IMODE , LMIN , LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,7 @@ C ----------------------------------------------------------------------
       CHARACTER*1    CGENR
       CHARACTER*32   NOM32
       INTEGER        IADDI(2),LGS,NBIOAV(2)
-      INTEGER        NUMP,GTNPRO
+      INTEGER        RANG, NBPROC
       REAL*8         GRAINE
 
       CALL UTTCPU('CPU.MEMD.1','DEBUT',' ')
@@ -113,9 +113,9 @@ C
       ENDIF
       DO 200  IC = NCLA2 , NCLA1, - 1
         IF (NREUTI(IC) .EQ. 0) GOTO 200
-        NUMP = GTNPRO()
-        IF ( NUMP .NE. 0 ) THEN
-          GRAINE = (NUMP+1)*DATEI*1.5D0
+        CALL MPICM0(RANG, NBPROC)
+        IF ( RANG .NE. 0 ) THEN
+          GRAINE = (RANG+1)*DATEI*1.5D0
           DO 202 I= 2,NREUTI(IC)
             CALL RANDOM(GRAINE)
             K = INT(GRAINE*I)+1

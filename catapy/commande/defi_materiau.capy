@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+#& MODIF COMMANDE  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1052,7 +1052,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ENR_AC_G        =SIMP(statut='o',typ='R'),
            ),
            GLRC_DM         =FACT(statut='f',min=0,max=1,
-             regles=(EXCLUS('GAMMA_C','SYC'),),
              GAMMA_T         =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0),
              GAMMA_C         =SIMP(statut='f',typ='R',val_min=-1.E+0,val_max=1.E+0),
              GAMMA_F         =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0),
@@ -1061,6 +1060,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              SYF             =SIMP(statut='o',typ='R',val_min=0.E+0),
              EF              =SIMP(statut='f',typ='R',val_min=0.E+0),
              NUF             =SIMP(statut='f',typ='R',val_min=0.E+0,val_max=0.5+0),
+             ALPHA_C         =SIMP(statut='d',typ='R',val_min=1.E+0,defaut=1.E+0),
            ),
            GATT_MONERIE    =FACT(statut='f',min=0,max=1,
              D_GRAIN         =SIMP(statut='o',typ='R',val_min=0.E+0),

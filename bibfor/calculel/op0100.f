@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       INTEGER IFOND,LNOFF,TYPESE,JINST,NBPASS,ADRECG
       INTEGER NBPASE,NRPASS,NDEG,NBRE,IADNUM,IADRMA
       INTEGER NBR8,IADRCO,IADRNO,NBNO,J,IPULS,IORD1,IORD2
-      INTEGER NBORN,NBCO,IBOR,IG,LNOEU,LABSCU,NBVAL,NEINIT
+      INTEGER NBORN,NBCO,IBOR,IG,LNOEU,LABSCU,NBVAL
       INTEGER NDIMTE,NCELAS,IER,ITHET,NDIM,IFISS
       INTEGER NXPARA
       PARAMETER (NXPARA = 11)
@@ -208,9 +208,9 @@ C     -------------------------------------------
          CALL GETVTX(' ','CALCUL_CONTRAINTE',0,IARG,1,KCALC,IRET)
          IF(KCALC(1:3).EQ.'NON')THEN
             CALL GETVID('THETA','FISSURE',1,IARG,0,FISS,IFISS)
-            IF (IFISS.NE.0) CALL U2MESS('F','RUPTURE1_39')        
+            IF (IFISS.NE.0) CALL U2MESS('F','RUPTURE1_39')
          ENDIF
-      ENDIF   
+      ENDIF
 C
 C     --------------------------------------------
 C     2.5. CAS : 2D, 3D LOCAL ou 3D GLOBAL ?
@@ -754,8 +754,8 @@ C           FEM
                 PULS = ZR(IPULS)
                 PULS = SQRT(PULS)
 
-                CALL MEMOKG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                      ZK8(ICHA),SYMECH,FOND,IORD,PULS,NBPARA,
+                CALL MEMOKG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,
+     &                      SYMECH,FOND,IORD,PULS,NBPARA,
      &                      LINOPA)
  341           CONTINUE
 
@@ -779,9 +779,9 @@ C           X-FEM
                 CHACCE =' '
 
                 CALL MEFICG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                      ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,0.D0,
-     &                      IORD,PULS,NBPARA, LINOPA, NOPASE,TYPESE,
-     &                      CHDESE,CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,
+     &                      ZK8(ICHA),SYMECH,FOND,NOEUD,0.D0,
+     &                      IORD,PULS,NBPARA, LINOPA, NOPASE,
+     &                      LMELAS,
      &                      K16BID,COMPOR)
  3422         CONTINUE
             ENDIF
@@ -938,9 +938,9 @@ C
             ELSE IF (OPTIO1(1:6).EQ.'CALC_K'.AND.CAS.EQ.'2D') THEN
 C
               CALL MEFICG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                    ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,TIME,IORD,
-     &                    RBID,NBPARA, LINOPA, NOPASE,TYPESE,CHDESE,
-     &                    CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
+     &                    ZK8(ICHA),SYMECH,FOND,NOEUD,TIME,IORD,
+     &                    RBID,NBPARA, LINOPA, NOPASE,
+     &                    LMELAS,NOMCAS,
      &                    COMPOR)
 C
             ELSE IF (OPTIO1.EQ.'CALC_DK_DG_E') THEN
@@ -959,9 +959,9 @@ C             ON LES AJOUTE DIRECTEMENT
               CALL TBAJLI(LATABL,2,LINOPA(4),IORD,VAL,CBID,K8B,1)
             ELSE IF (OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
               CALL MEFICG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                    ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,TIME,IORD,
-     &                    RBID, NBPARA, LINOPA, NOPASE,TYPESE,CHDESE,
-     &                    CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
+     &                    ZK8(ICHA),SYMECH,FOND,NOEUD,TIME,IORD,
+     &                    RBID, NBPARA, LINOPA, NOPASE,
+     &                    LMELAS,NOMCAS,
      &                    COMPOR)
 
             ELSE

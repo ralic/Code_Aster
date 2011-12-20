@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
 # rccm09b.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,7 +121,6 @@ TABK = POST_K1_K2_K3(MODELISATION='D_PLAN',
                      FOND_FISS = FISS,
                      RESULTAT = RESU1,
                      INFO=2,
-                     VECT_K1 = (0., 1., 0.),
                      ABSC_CURV_MAXI=0.05,
                      TOUT_ORDRE='OUI',);
 

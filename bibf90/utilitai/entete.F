@@ -1,6 +1,6 @@
       SUBROUTINE ENTETE()
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF ENTETE UTILITAI  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF ENTETE UTILITAI  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -29,7 +29,7 @@
       INTEGER  RANG,NBPROC
 #endif
 #ifdef _USE_OPENMP
-      INTEGER  MLNUMP,NBTH
+      INTEGER  MLNBPR,NBTH
 #endif
 ! ----------------------------------------------------------------------
 ! --- INFORMATIONS GLOBALES
@@ -43,9 +43,9 @@
 #else
       CALL U2MESS('I', 'SUPERVIS2_12')
 #endif
-! --- CONFIGURATION MPI
+! --- CONFIGURATION OPENMP
 #ifdef _USE_OPENMP
-      NBTH = MLNUMP()
+      NBTH = MLNBPR()
       CALL U2MESI('I', 'SUPERVIS2_13', 1, NBTH)
 #endif
 ! --- LIBRARIES HDF5 ET MED

@@ -6,7 +6,7 @@
       CHARACTER*16    NOMTE, OPT
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,7 +148,6 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
       REAL*8    CTOR,COEHSD
       REAL*8    LC
       LOGICAL   VECTEU,MATRIC,DKT,DKQ,LEUL
-      CHARACTER*39 MESS
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
@@ -194,8 +193,7 @@ C     --------------------------------------------------------
 
       LEUL = ZK16(ICOMPO+2).EQ.'GROT_GDEP'
       IF(LEUL .AND. ZK16(ICOMPO)(1:4).NE.'ELAS') THEN
-       WRITE(MESS,'(A16) AVEC (A16)') ZK16(ICOMPO),ZK16(ICOMPO+2)
-       CALL U2MESK('F','ELEMENTS2_73',1,MESS)
+       CALL U2MESS('F','ELEMENTS2_73')
       ENDIF
 
       IF (VECTEU) THEN

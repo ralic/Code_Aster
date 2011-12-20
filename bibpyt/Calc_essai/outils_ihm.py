@@ -1,4 +1,4 @@
-#@ MODIF outils_ihm Calc_essai  DATE 28/11/2011   AUTEUR BODEL C.BODEL 
+#@ MODIF outils_ihm Calc_essai  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1570,7 +1570,7 @@ class CalcEssaiXmgr(Xmgr):
     avec la version Stanley)."""
 
     def __init__(self, xmgr_idx, gr_max = 10, options=None,
-                       xmgrace=aster.repout() + '/xmgrace'):
+                       xmgrace=os.path.join(aster.repout(), 'xmgrace')):
 
         self.gr_max   = gr_max        # nombre de graphes
         self.gr_act   = 0             # numero du graphe actif

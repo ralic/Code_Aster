@@ -1,6 +1,6 @@
-# MODIF  DATE 06/06/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  CTJ25 - SANS RENUM / AFFE_CHAR_MECA / SOLVE
-# gcpc001a.para = tps_job 60 mem_job 128Mo memjeveux_stat 128 ncpus 1 liste_test R
+# gcpc001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,7 @@
 
 DEBUT(CODE=_F(NOM='GCPC001a',
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),
-      MEMOIRE=_F(GESTION='COMPACTE',
-                 DYNAMIQUE=0,),);
+      DEBUG=_F(SDVERI='OUI',),);
 
 MA=LIRE_MAILLAGE();
 

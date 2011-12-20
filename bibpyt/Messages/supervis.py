@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,26 +67,6 @@ cata_msg={
    - le concept  "%(k1)s" est détruit des bases de données.
 """),
 
-11: _(u"""
- Impossible d'allouer la mémoire JEVEUX demandée : %(i1)d Mo.
-
- En général, cette erreur se produit car la mémoire utilisée hors du fortran
- (jeveux) est importante.
-
- Causes possibles :
-   - le calcul produit de gros objets Python dans une macro-commande ou
-     dans le jeu de commande lui-même,
-   - le calcul appelle un solveur (MUMPS par exemple) ou un outil externe
-     qui a besoin de mémoire hors jeveux,
-   - utilisation de jeveux dynamique,
-   - ...
-
- Solution :
-   - distinguer la mémoire limite du calcul (case "Mémoire totale" de astk)
-     de la mémoire réservée à jeveux (case "dont Aster"), le reste étant
-     disponible pour les allocations dynamiques.
-"""),
-
 12: _(u"""
  Exécution de JEVEUX en mode DEBUG
 """),
@@ -143,38 +123,12 @@ cata_msg={
  Débogage SDVERI demandé
 """),
 
-25: _(u"""
- Mémoire gestion : "COMPACTE"
- Ce mode de gestion peut augmenter sensiblement le temps système de certaines commandes,
- les lectures/écritures sur les bases Jeveux étant beaucoup plus fréquentes
-"""),
-
-26: _(u"""
- Type allocation mémoire 2
-"""),
-
-27: _(u"""
- Type allocation mémoire 3
-"""),
-
-28: _(u"""
- Type allocation mémoire 4
-"""),
-
 31: _(u"""
  Valeur invalide pour le mot clé RESERVE_CPU
 """),
 
 32: _(u"""
  La procédure "%(k1)s" ne peut être appelée en cours d'exécution des commandes
-"""),
-
-33: _(u"""
- Erreur fatale  **** appel à commande "superviseur".
-"""),
-
-34: _(u"""
- Arrêt de la lecture des commandes.
 """),
 
 36: _(u"""
@@ -210,11 +164,6 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 
 52: _(u"""
  fin de lecture (durée  %(r1)f  s.) %(k1)s
-"""),
-
-53: _(u"""
- vous ne pouvez utiliser plus de  %(i1)d
- niveaux de profondeur pour des appels par la procédure %(k1)s
 """),
 
 56: _(u"""

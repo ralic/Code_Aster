@@ -1,4 +1,4 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,6 +25,11 @@ DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
 
 import os
 os.environ['LANG'] = 'fr_FR.utf8'
+# remove all LC_xxxx variables
+keys = [k for k in os.environ.keys() if k.startswith('LC_')]
+for k in keys:
+    del os.environ[k]
+
 import os.path as osp
 from glob import glob
 
@@ -45,8 +50,8 @@ check_catamess(checker, 'fr', LCATA)
 # check translated messages in english
 check_catamess(checker, 'en', LCATA)
 
-nbwrn = checker.count_warnings()
-warns = checker.get_warnings() + """\nNumber of warnings : %d""" % nbwrn
+nbwrn = checker.count_unknown_words()
+warns = checker.get_warnings() + """\nNumber of unknown words : %d""" % nbwrn
 nberr = checker.count_errors()
 errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
 
@@ -69,7 +74,62 @@ TEST_TABLE(TABLE=tabw,
            NOM_PARA='NBWARN',
            VALE_I=0,
            CRITERE='ABSOLU',
-           PRECISION=389.1,
+           PRECISION=338.1,
            REFERENCE='NON_REGRESSION',)
+
+# Mots-cles inconnus du dictionnaire malgre tout acceptes pour le moment
+# L'objectif est bien sur de reduire cette liste !
+# Permet d'afficher la liste des nouveaux mots interdits ajoutes.
+previous_errors = set([
+    'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS.F', 'ASCSEP', 'AU-YANG',
+    'AXI', 'BiCG', 'CHABOCHE', 'CHARAC', 'CHARACTER', 'CHNO', 'CHNO.NUEQ', 'CHOUT', 'CHPVER',
+    'CINX', 'CINx', 'CLAV', 'CLO', 'COMBU', 'CVRC', 'D-POUTRE', 'DAMAX', 'DEEQ', 'DELG',
+    'DEP', 'DEPSEQ', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
+    'DPMAX', 'DPSIDS', 'DRMAX', 'DSIGM', 'DTREVC', 'DVP', 'ECLAU', 'EDITGD', 'EFNEMA',
+    'ELREFA', 'ELREFE', 'EPSEQ', 'ETENCA', 'EXICHA', 'FATEMI', 'FETG', 'FINSF', 'FLAHQR',
+    'FONREE', 'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE.INDIRECT', 'GL', 'GREL', 'Gnuplot.py',
+    'HDFCRF', 'HEXS', 'HUJCI', 'HUJCRI', 'HUJDDD', 'HUJDP', 'HUJELA', 'HUJIID', 'HUJJID',
+    'HUJKSI', 'HUJNVI', 'HUJPLA', 'HUJPOT', 'HUJTEL', 'HUJTID', 'ICHIN', 'ICOEF', 'IDDL',
+    'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA', 'K.PHI',
+    'K.U', 'KMOD', 'KSIB', 'KTILDA', 'Kcam', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
+    'LIGRELs', 'LMAT', 'LONCUM', 'LONT', 'LTNT', 'MOLOC', 'Map', 'NBCMP', 'NBCYCL', 'NBDDL',
+    'NBMECA', 'NBNOCO', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NBVIMAX', 'NDDL', 'NDS',
+    'NEMA', 'NEQ', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
+    'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL', 'NUEQ', 'NUME.LILI', 'NUMER',
+    'NUMERO.F', 'NUMERO.f', 'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
+    'OUT-OF-CORE', 'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
+    'POSTK', 'PREML', 'PRNO', 'Ptrac', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF', 'RM-EP',
+    'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
+    'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'STOGI', 'SV', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
+    'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY', 'UNILATER',
+    'USASTE.F', 'UTTCPU', 'VALF', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
+    'XOUS', 'YM', 'ZEDGAR', 'abs', 'acearp', 'alchml', 'alfint', 'apetsc.F', 'appariable',
+    'autor', 'breakdown', 'cabl', 'cagnba', 'cata', 'chckma', 'chno', 'chvari', 'clcplq.f',
+    'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn', "d'ACIER",
+    'deltat', 'dfdi', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa', 'elrefe', 'ep',
+    'er', 'error', 'etanca', 'etenca', 'exchml.f', 'exe', 'export',
+    'fait-il', 'flag', 'flip-flop', 'floating', 'fointa', 'fonree', 'gl', 'grels', 'hexa',
+    'i.e', 'icoret', 'indn', 'inpsco', 'ipos', 'kapa', 'kr', "l'AXE", "l'EVOL", 'lg',
+    'ligrel', 'lkcaln', 'lkdhds', 'lkds', 'lklmat', 'lmat', 'longt', 'lumpe', 'majpad',
+    'materiau.nomrc', 'matns', 'mdump', 'medconforme', 'medimport', 'mem', 'memjeveux',
+    'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp', 'nmaxocl',
+    'nmocl', 'nomres', 'nomta', 'nomte', 'nomtyp', 'nosimp', 'not', 'nt', 'number', 'nume',
+    'numeli', 'overflow', 'phenomene', 'pnosym', 'porte-t-il', 'post', 'pr', 'precont',
+    'raymin', 'rayon-raymin', 'rcmaco', 'relcom', 'rembobinage', 'respecte-t-elle',
+    'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
+    'skin.pos', 'stat', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
+    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py'])
+
+current_errors = checker.get_unknown_words()
+new = list(set(current_errors).difference(previous_errors))
+new.sort()
+correct = list(previous_errors.difference(current_errors))
+correct.sort()
+print "--- List of unknown words : "
+print current_errors
+print "--- List of new errors :"
+print new
+print "--- List of removed errors (please update previous_errors) :"
+print correct
 
 FIN()

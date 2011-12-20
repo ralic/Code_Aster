@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/11/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,15 +56,13 @@ C ----------------------------------------------------------------------
      &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C ----------------------------------------------------------------------
-      INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
-      COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
@@ -73,9 +71,9 @@ C ----------------------------------------------------------------------
      &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C ----------------------------------------------------------------------
-      INTEGER          INIT,IADDI(2),IBLANC,ID(2),IDEC(2),VALLOC,LSIC
+      INTEGER          INIT,IBLANC,IDEC(2),VALLOC,LSIC
       INTEGER          IC,IVAL(4),UNMEGA
-      LOGICAL          LEXACT,LEPS,LINIT,LDEPS,LAMOV,LXA,LXD,RETRO
+      LOGICAL          LINIT,LDEPS
       CHARACTER *8     CBLANC
       EQUIVALENCE    ( CBLANC,IBLANC )
       PARAMETER      ( NDE = 6)
@@ -84,8 +82,6 @@ C REMARQUE : LE PARAMETER NDE EST AUSSI DEFINI DANS JXLIRO JXECRO
 C ----------------------------------------------------------------------
       DATA CBLANC     /'        '/
 C DEB ------------------------------------------------------------------
-      LXA = .NOT. ( IDXAXD(1) .EQ. IDINIT(1) )
-      LXD = LXA
       LTOT  = 0
       JITAB = 0
       IADMI = 0
@@ -124,389 +120,62 @@ C     SA LONGUEUR EST SUPERIEURE A LGDYN
 C
       IESSAI = 0
       ILDYNA = 0
-      IF ( (LDYN .EQ. 1 .OR. LDYN.EQ. 2).AND. LSI.GE.LGDYN ) THEN
-        LSIC = LSI + 9
- 50     CONTINUE
-        ILDYNA = ILDYNA+1
-        IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN
-          IF ( ILDYNA .GT. 1 ) THEN
-            UNMEGA=1048576
-            IVAL(1)=(LSIC*LOIS)/UNMEGA
-            IVAL(2)=NINT(VMXDYN)/UNMEGA
-            IVAL(3)=NINT(MCDYN)/UNMEGA
-            IVAL(4)=(LTOT*LOIS)/UNMEGA
-            IF (LDYN .EQ. 1) THEN
-               CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
-     &                     //' IMPOSEE ATTEINTE')
-            ENDIF
-            CALL U2MESI('F','JEVEUX_62',4,IVAL)
-          ELSE
-            CALL JJLDYN(2,-1,LTOT)
-            IF ( LTOT/LOIS .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
-            GOTO 50
+C
+      LSIC = LSI + 8
+ 50   CONTINUE
+      ILDYNA = ILDYNA+1
+      IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN
+        IF ( ILDYNA .GT. 1 ) THEN
+          UNMEGA=1048576
+          IVAL(1)=(LSIC*LOIS)/UNMEGA
+          IVAL(2)=NINT(VMXDYN)/UNMEGA
+          IVAL(3)=NINT(MCDYN)/UNMEGA
+          IVAL(4)=(LTOT*LOIS)/UNMEGA
+          IF (LDYN .EQ. 1) THEN
+             CALL JEIMPM ( 'MESSAGE' )
           ENDIF
-        ENDIF
-        IESSAI = IESSAI+1
-        CALL  HPALLOC ( IADA , LSIC , IERR , 0 )
-        IF ( IERR .EQ. 0 ) THEN
-          VALLOC = LOC(ISZON)
-          JISZO2 = (IADA - VALLOC)/LOISEM()
-          IADMI  = JISZO2 + 5 - JISZON
-          IDM    = JISZO2 + 1
-          IADYN  = IADA
-          MCDYN  = MCDYN + LSIC*LOIS
-          MXDYN  = MAX(MXDYN,MCDYN)
-          NBDYN  = NBDYN + 1
+          CALL U2MESI('F','JEVEUX_62',4,IVAL)
         ELSE
-          IF ( IESSAI .GT. 1 ) THEN
-            IF (LDYN .EQ. 1) THEN
-              CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE,'
-     &                    //' ALLOCATION IMPOSSIBLE')
-            ENDIF
-            IVAL(1)=LSIC*LOIS
-            IVAL(2)=LTOT*LOIS
-            CALL U2MESI('F','JEVEUX_60',2,IVAL)
-          ELSE
-            CALL JJLDYN(2,-1,LTOT)
-            IF ( LTOT .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
-            GOTO 50
-          ENDIF
+          CALL JJLDYN(2,-1,LTOT)
+          IF ( LTOT/LOIS .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
+          GOTO 50
         ENDIF
-        ISZON( IDM        ) = IDM + LSI + 8 - JISZON
-        ISZON( IDM     +1 ) = 0
-        ISZON( IDM     +2 ) = 0
-        ISZON( IDM     +3 ) = ISTAT(1)
-        ISZON( IDM+LSI+ 4 ) = ISTAT(1)
-        ISZON( IDM+LSI+ 5 ) = 0
-        ISZON( IDM+LSI+ 6 ) = 0
-        ISZON( IDM+LSI+ 7 ) = 0
-        ISZON( IDM+LSI+ 8 ) = 0
-        GOTO 10
       ENDIF
-C
-      MAPLAC = 0
-C
-      IF ( LONOI .LE. 0 ) THEN
-        CALL U2MESI('F','JEVEUX_57',1,LONOI)
-      ENDIF
-      IF (ITCOL .EQ. 3 .AND. LSI .LT. LMOTS) THEN
-        ITRC = 4
-      ELSEIF (ITCOL .EQ. 4) THEN
-        ITRC = 2
+      IESSAI = IESSAI+1
+      CALL  HPALLOC ( IADA , LSIC , IERR , 0 )
+      IF ( IERR .EQ. 0 ) THEN
+        VALLOC = LOC(ISZON)
+        JISZO2 = (IADA - VALLOC)/LOISEM()
+        IADMI  = JISZO2 + 5 - JISZON
+        IDM    = JISZO2 + 1
+        IADYN  = IADA
+        MCDYN  = MCDYN + LSIC*LOIS
+        MXDYN  = MAX(MXDYN,MCDYN)
+        NBDYN  = NBDYN + 1
       ELSE
-        ITRC = ITRECH
-      ENDIF
-C
- 800  CONTINUE
-      IZ = 1
-      IF ( ITCOL .EQ. 4 .AND. LSI .GT. LMOTS) THEN
-        IZ = 2
-      ENDIF
-      RETRO = ITRC .EQ. 4
-      GOTO (100,200,300,200) ITRC
- 100  CONTINUE
-      ID(2) = LISZON - 4
-      ID(1) = ISZON ( JISZON+ID(2) )
-      IF( ISZON( JISZON+ID(2)-IDEC(1) ) .EQ. ISTAT(1) ) THEN
-        IF( ISZON( JISZON+ID(1)+IDEC(2) ) .EQ. ISTAT(1) ) THEN
-C
-C ------- ZONE LIBRE ( XX ) DU FOND
-C
-          IF ( ID(1)-ID(2)-8 .GE. LSI ) THEN
-            MAPLAC = ID(1)-ID(2)-8
-            LEXACT = MAPLAC .EQ. LSI
-            IDM    = ID(2)+1
-            IS     = ISZON( JISZON+IDM )
-            GOTO 500
+        IF ( IESSAI .GT. 1 ) THEN
+          IF (LDYN .EQ. 1) THEN
+            CALL JEIMPM ( 'MESSAGE' )
           ENDIF
-        ENDIF
-      ENDIF
- 200  CONTINUE
-C
-C --- ZONE AMOVIBLE ( XA + XX )
-C
-      IF ( RETRO ) THEN
-        ID(1) = LISZON - 4
-        LXA   = .FALSE.
-        I1    = 2
-        I2    = 1
-      ELSE
-        ID(1) = IDXAXD(IZ)
-        I1    = 1
-        I2    = 2
-      ENDIF
-      IDA    = ID(1)
-      MAPLAC = 0
-      LEXACT = .FALSE.
-      LAMOV  = .FALSE.
- 210  CONTINUE
-      ID(2) = ISZON ( JISZON+ID(1) )
-      IF ( ID(2) .EQ. 0 ) THEN
-        IF ( LXA ) THEN
-          LXA   = .FALSE.
-          ID(1) = IDINIT(IZ)
-          IDA   = IDINIT(IZ)
-          GOTO 210
+          IVAL(1)=LSIC*LOIS
+          IVAL(2)=LTOT*LOIS
+          CALL U2MESI('F','JEVEUX_60',2,IVAL)
         ELSE
-          GOTO 300
-        ENDIF
-      ENDIF
-      ISTB = ISZON( JISZON+ID(I1)+IDEC(I1) )
-      IF( ISTB .EQ. ISTAT(1) ) THEN
-        ISTA = ISZON( JISZON+ID(I2)-IDEC(I2))
-        IF( ISTA .EQ. ISTAT(3) .OR. ISTA .EQ. ISTAT(1) ) THEN
-          IF ( .NOT. LAMOV ) THEN
-            LAMOV = .TRUE.
-            IDA   = ID(1)
-          ENDIF
-          LAPLAC =  ABS(ID(2)-IDA)-8
-          IF  ( LAPLAC .GE. LSI ) THEN
-            MAPLAC = LAPLAC
-            LEXACT = LAPLAC .EQ. LSI
-            IF (RETRO) THEN
-              IDM    = ID(2) + 1
-              IS     = IDA + 1
-              IDA    = IDM
-            ELSE
-              IDM    = IDA
-              IS     = ID(2)
-            ENDIF
-            GOTO 220
-          ENDIF
-          ID(1)  = ID(2)
-          GOTO 210
-        ENDIF
-      ENDIF
-      LAMOV = .FALSE.
-      ID(1) = ID(2)
-      GOTO 210
-C --- DESTRUCTION DES SEGMENTS DE VALEURS LIBERES
- 220  CONTINUE
-      IDI = IDA
- 225  CONTINUE
-      ISI = ISZON ( JISZON+IDI )
-      IF (ISI .EQ. 0 ) GOTO 500
-      IF ( ISI .LE. IS ) THEN
-        ISTB = ISZON(JISZON + ISI - 4 )
-        IF ( ISTB .EQ. ISTAT(3) ) THEN
-           IDATOI = ISZON( JISZON +IDI+2 )
-           ICLAI  = ISZON( JISZON +ISI-2 )
-           IDATCI = ISZON( JISZON +ISI-3 )
-           IF ( IDATCI .GT. 0 ) THEN
-             IF ( IDATOI .EQ. 0 ) THEN
-                IADM ( JIADM(ICLAI)+2*IDATCI-1 ) = 0
-                IADM ( JIADM(ICLAI)+2*IDATCI   ) = 0
-             ELSE
-                IBACOL = IADM ( JIADM(ICLAI) + 2*IDATCI-1 )
-                CALL ASSERT (IBACOL .NE. 0)
-                IXIADM = ISZON( JISZON+IBACOL+IDIADM )
-                IBIADM = IADM( JIADM(ICLAI)+2*IXIADM-1 )
-                IF ( IBIADM .GT. 0 ) THEN
-                  ISZON( JISZON+IBIADM-1+2*IDATOI-1) = 0
-                  ISZON( JISZON+IBIADM-1+2*IDATOI  ) = 0
-                ENDIF
-             ENDIF
-           ELSE
-              IADM ( JIADM(ICLAI)+2*IDATOI-1 ) = 0
-              IADM ( JIADM(ICLAI)+2*IDATOI   ) = 0
-           ENDIF
-        ENDIF
-        IDI = ISI
-        GOTO 225
-      ENDIF
- 300  CONTINUE
-      IF ( MAPLAC .LT. LSI  ) THEN
-C
-C ----- ZONE DECHARGEABLE ( XD + XA + XX )
-C
-        IF ( RETRO ) THEN
-          ID(1) = LISZON - 4
-          LXD   = .FALSE.
-          I1    = 2
-          I2    = 1
-        ELSE
-          ID(1) = IDXAXD(IZ)
-          I1    = 1
-          I2    = 2
-        ENDIF
-        IDA   = ID(1)
-        MAPLAC = 0
-        LEXACT = .FALSE.
-        LAMOV  = .FALSE.
- 310    CONTINUE
-        ID(2) = ISZON ( JISZON+ID(1) )
-        IF ( ID(2) .EQ. 0 ) THEN
-          IF ( LXD ) THEN
-            LXD   = .FALSE.
-            ID(1) = IDINIT(IZ)
-            IDA   = IDINIT(IZ)
-            GOTO 310
-          ELSE
-            GOTO 500
-          ENDIF
-        ENDIF
-        ISTB = ISZON( JISZON+ID(I1)+IDEC(I1) )
-        IF( ISTB .EQ. ISTAT(1) ) THEN
-          ISTA = ISZON(JISZON+ID(I2)-IDEC(I2) )
-          IF (ISTA .EQ. ISTAT(3) .OR. ISTA .EQ. ISTAT(4) .OR.
-     &        ISTA .EQ. ISTAT(1) ) THEN
-            IF ( .NOT. LAMOV ) THEN
-              LAMOV = .TRUE.
-              IDA   = ID(1)
-            ENDIF
-            LAPLAC =  ABS(ID(2)-IDA)-8
-            IF ( LAPLAC .GE. LSI ) THEN
-              MAPLAC = LAPLAC
-              LEXACT = LAPLAC .EQ. LSI
-              IF (RETRO) THEN
-                IDM    = ID(2) + 1
-                IS     = IDA + 1
-                IDA    = IDM
-              ELSE
-                IDM    = IDA
-                IS     = ID(2)
-              ENDIF
-              GOTO 320
-            ENDIF
-            ID(1) = ID(2)
-            GOTO 310
-          ENDIF
-        ENDIF
-        LAMOV = .FALSE.
-        ID(1) = ID(2)
-        GOTO 310
-      ENDIF
-C --- DECHARGEMENT OU DESTRUCTION DES SEGMENTS DE VALEURS LIBERES
- 320  CONTINUE
-      IDI = IDA
- 325  CONTINUE
-      ISI = ISZON ( JISZON+IDI )
-      IF (ISI .EQ. 0 ) GOTO 500
-      IF ( ISI .LE. IS ) THEN
-        ISTA = ISZON( JISZON+ISI-4 )
-        IF ( ISTA .EQ. ISTAT(3) .OR. ISTA .EQ. ISTAT(4) ) THEN
-           IDATOI = ISZON( JISZON+IDI+2 )
-           ICLAI  = ISZON( JISZON+ISI-2 )
-           IDATCI = ISZON( JISZON+ISI-3 )
-           IF ( IDATCI .GT. 0 ) THEN
-             IBACOL = IADM ( JIADM(ICLAI)+2*IDATCI-1 )
-             CALL ASSERT (IBACOL .NE. 0)
-             IXDESO = ISZON( JISZON+IBACOL+IDDESO )
-             LTYPI  = LTYP ( JLTYP(ICLAI)+IXDESO )
-             IXIADM = ISZON( JISZON+IBACOL+IDIADM )
-             IBIADM = IADM ( JIADM(ICLAI)+2*IXIADM-1 )
-             IXIADD = ISZON( JISZON +IBACOL+IDIADD )
-             IBIADD = IADM ( JIADM(ICLAI)+2*IXIADD-1 )
-             IF (ISTA .EQ. ISTAT(4) ) THEN
-               IADMI = ISZON ( JISZON+IBIADM-1+2*IDATOI-1 )
-               IADDI(1) = ISZON ( JISZON+IBIADD-1+2*IDATOI-1 )
-               IADDI(2) = ISZON ( JISZON+IBIADD-1+2*IDATOI   )
-               IXLONO = ISZON( JISZON+IBACOL+IDLONO )
-               IF ( IXLONO .GT. 0 ) THEN
-                 IBLONO = IADM ( JIADM(ICLAI)+2*IXLONO-1 )
-                 LSV = ISZON( JISZON+IBLONO+IDATOI-1 ) * LTYPI
-               ELSE
-                 LSV = LONO( JLONO(ICLAI)+IXDESO ) * LTYPI
-               ENDIF
-               CALL JXECRO (ICLAI,IADMI,IADDI,LSV,IDATCI,IDATOI)
-               ISZON( JISZON+IBIADD-1+2*IDATOI-1 ) = IADDI(1)
-               ISZON( JISZON+IBIADD-1+2*IDATOI   ) = IADDI(2)
-             ENDIF
-             ISZON( JISZON+IBIADM-1+2*IDATOI-1 ) = 0
-             ISZON( JISZON+IBIADM-1+2*IDATOI   ) = 0
-           ELSE
-             IF (ISTA .EQ. ISTAT(4) ) THEN
-               IADMI = IADM ( JIADM(ICLAI)+2*IDATOI-1 )
-               IADDI(1) = IADD ( JIADD(ICLAI)+2*IDATOI-1 )
-               IADDI(2) = IADD ( JIADD(ICLAI)+2*IDATOI   )
-               LTYPI = LTYP( JLTYP(ICLAI)+IDATOI )
-               LSV   = LONO( JLONO(ICLAI)+IDATOI ) * LTYPI
-               CALL JXECRO ( ICLAI, IADMI, IADDI, LSV, 0, IDATOI)
-               IADD( JIADD(ICLAI)+2*IDATOI-1 ) = IADDI(1)
-               IADD( JIADD(ICLAI)+2*IDATOI   ) = IADDI(2)
-             ENDIF
-             IADM( JIADM(ICLAI)+2*IDATOI-1 ) = 0
-             IADM( JIADM(ICLAI)+2*IDATOI   ) = 0
-           ENDIF
-        ENDIF
-        IDI = ISI
-        GOTO 325
-      ENDIF
- 500  CONTINUE
-      LEPS = ( MAPLAC .GT. LSI .AND. MAPLAC .LT. LSI+9 )
-      IF ( LEXACT .OR. LEPS ) THEN
-        LSI = MAPLAC
-        IF (RETRO) THEN
-          ISZON( JISZON+IS-LSI-8 ) = IS
-          ISZON( JISZON+IS-LSI-7 ) = 0
-          ISZON( JISZON+IS-LSI-6 ) = 0
-          ISZON( JISZON+IS-LSI-5 ) = ISTAT(1)
-          ISZON( JISZON+IS    -1 ) = IS-LSI-9
-          ISZON( JISZON+IS    -2 ) = 0
-          ISZON( JISZON+IS    -3 ) = 0
-          ISZON( JISZON+IS    -4 ) = ISTAT(1)
-          IDM = IS - LSI - 8
-        ELSE
-          ISZON( JISZON+IDM       ) = IDM+LSI+8
-          ISZON( JISZON+IDM    +1 ) = 0
-          ISZON( JISZON+IDM    +2 ) = 0
-          ISZON( JISZON+IDM    +3 ) = ISTAT(1)
-          ISZON( JISZON+IDM+LSI+4 ) = ISTAT(1)
-          ISZON( JISZON+IDM+LSI+5 ) = 0
-          ISZON( JISZON+IDM+LSI+6 ) = 0
-          ISZON( JISZON+IDM+LSI+7 ) = IDM-1
-        ENDIF
-      ELSE IF ( MAPLAC .GE. LSI + 9 ) THEN
-        ISZON( JISZON+IDM   + 1 ) = 0
-        ISZON( JISZON+IDM   + 2 ) = 0
-        ISZON( JISZON+IDM   + 3 ) = ISTAT(1)
-        ISZON( JISZON+IS    - 2 ) = 0
-        ISZON( JISZON+IS    - 3 ) = 0
-        ISZON( JISZON+IS    - 4 ) = ISTAT(1)
-        IF (RETRO) THEN
-          ISZON( JISZON+IDM       ) = IS - LSI - 8
-          ISZON( JISZON+IS-LSI-12 ) = ISTAT(1)
-          ISZON( JISZON+IS-LSI-11 ) = 0
-          ISZON( JISZON+IS-LSI-10 ) = 0
-          ISZON( JISZON+IS-LSI- 9 ) = IDM - 1
-          ISZON( JISZON+IS-LSI- 8 ) = IS
-          ISZON( JISZON+IS-LSI- 7 ) = 0
-          ISZON( JISZON+IS-LSI- 6 ) = 0
-          ISZON( JISZON+IS-LSI- 5 ) = ISTAT(1)
-          ISZON( JISZON+IS    - 1 ) = IS - LSI - 9
-          IDM = IS - LSI - 8
-        ELSE
-          ISZON( JISZON+IDM        ) = IDM + LSI + 8
-          ISZON( JISZON+IDM+LSI+ 4 ) = ISTAT(1)
-          ISZON( JISZON+IDM+LSI+ 5 ) = 0
-          ISZON( JISZON+IDM+LSI+ 6 ) = 0
-          ISZON( JISZON+IDM+LSI+ 7 ) = IDM - 1
-          ISZON( JISZON+IDM+LSI+ 8 ) = IS
-          ISZON( JISZON+IDM+LSI+ 9 ) = 0
-          ISZON( JISZON+IDM+LSI+10 ) = 0
-          ISZON( JISZON+IDM+LSI+11 ) = ISTAT(1)
-          ISZON( JISZON+IS     - 1 ) = IDM + LSI + 7
-        ENDIF
-      ELSE
-         IF (IDFR .GT. 0) THEN
-           CALL JJCPSG (0.0D0 , 0)
-           GOTO 800
-         ENDIF
-         CALL JEPRSG ( 'MESSAGE', 0.1D0 , 1 )
-         CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE ')
-         CALL U2MESI ( 'F','JEVEUX_32' , 1 , LSI)
-      ENDIF
-C
-      IF (.NOT.RETRO) THEN
-        IF (ITIAD .EQ. 1 .OR. ITIAD .EQ. 3) THEN
-          IDXAXD(IZ) = ISZON( JISZON+IDM )
-        ELSE
-          IDXAXD(IZ) = IDINIT(IZ)
+          CALL JJLDYN(2,-1,LTOT)
+          IF ( LTOT .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
+          GOTO 50
         ENDIF
       ENDIF
 C
-      IADMI = IDM + 4
- 10   CONTINUE
+      ISZON( IDM        ) = IDM + LSI + 8 - JISZON
+      ISZON( IDM     +1 ) = 0
+      ISZON( IDM     +2 ) = 0
+      ISZON( IDM     +3 ) = ISTAT(1)
+      ISZON( IDM+LSI+ 4 ) = ISTAT(1)
+      ISZON( IDM+LSI+ 5 ) = 0
+      ISZON( IDM+LSI+ 6 ) = 0
+      ISZON( IDM+LSI+ 7 ) = 0
+C
       LDEPS = .TRUE.
       CALL JXLOCS (ITAB, GENRI, LTY, LONOI, IADMI, LDEPS, JITAB)
 C

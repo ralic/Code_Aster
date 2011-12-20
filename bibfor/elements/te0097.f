@@ -1,6 +1,6 @@
       SUBROUTINE TE0097(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C     QUELLE FORMULATION MIXTE 3CH 2CH
       IF (NOMTE(1:4).EQ.'MIAX' .OR.
-     &    NOMTE(1:4).EQ.'MIPL') THEN
+     &    NOMTE(1:4).EQ.'MIPL' .OR.
+     &    NOMTE(1:4).EQ.'GIPL' .OR.
+     &    NOMTE(1:4).EQ.'GIAX') THEN
         IF (NOMTE(1:6).EQ.'MIAXUP' .OR.
      &      NOMTE(1:6).EQ.'MIPLUP') THEN
           NDDL1 = 3
@@ -69,7 +71,8 @@ C     QUELLE FORMULATION MIXTE 3CH 2CH
           NDDL1 = 4
         ENDIF
         CALL METAU1(OPTION,NOMTE,IRET)
-      ELSEIF (NOMTE(1:4).EQ.'MINC') THEN
+      ELSEIF (NOMTE(1:4).EQ.'MINC' .OR.
+     &        NOMTE(1:4).EQ.'GDIN') THEN
         IF (NOMTE(1:6).EQ.'MINCUP') THEN
           NDDL1 = 4
         ELSE
@@ -158,19 +161,43 @@ C ---- VECTEUR DES FORCES D'ORIGINE THERMIQUE
 C      -------------------------------------
       CALL JEVECH('PVECTUR','E',IVECTU)
 
-      KK = 0
-      DO 30 N = 1, NNO1
-        DO 35 I = 1,NDDL1
-          IF (I.LE.NDIM) THEN
-            ZR(IVECTU+KK) = BSIGMA((N-1)*NDIM+I)
-            KK = KK + 1
-          END IF
-          IF (I.GE.(NDIM+1) .AND. N.LE.NNO2) THEN
-            ZR(IVECTU+KK) = 0.D0
-            KK = KK + 1
-          END IF
- 35     CONTINUE
- 30   CONTINUE
+      IF(NOMTE(1:4).EQ.'GIPL' .OR.
+     &   NOMTE(1:4).EQ.'GIAX' .OR.
+     &   NOMTE(1:4).EQ.'GDIN')THEN
+C - ELEMENT P2-P1-P2
+        KK = 0
+        DO 50 N = 1, NNO1
+          DO 55 I = 1,NDDL1
+            IF (I.LE.NDIM) THEN
+              ZR(IVECTU+KK) = BSIGMA((N-1)*NDIM+I)
+              KK = KK + 1
+            END IF
+            IF (I.GE.(NDIM+1) .AND. N.LE.NNO2) THEN
+              ZR(IVECTU+KK) = 0.D0
+              KK = KK + 1
+            END IF
+            IF (I.GT.(NDIM+1) .AND. N.GT.NNO2) THEN
+              ZR(IVECTU+KK) = 0.D0
+              KK = KK + 1
+            END IF
+ 55       CONTINUE
+ 50     CONTINUE
+      ELSE
+C - ELEMENTS P2-P1 ou P2-P1-P1
+        KK = 0
+        DO 30 N = 1, NNO1
+          DO 35 I = 1,NDDL1
+            IF (I.LE.NDIM) THEN
+              ZR(IVECTU+KK) = BSIGMA((N-1)*NDIM+I)
+              KK = KK + 1
+            END IF
+            IF (I.GE.(NDIM+1) .AND. N.LE.NNO2) THEN
+              ZR(IVECTU+KK) = 0.D0
+              KK = KK + 1
+            END IF
+ 35       CONTINUE
+ 30     CONTINUE
+      ENDIF
 
    40 CONTINUE
       END

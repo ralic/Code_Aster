@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
 # ssnv506f.para = tps_job 780 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,6 +167,9 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
 # ON NE VA PAS PLUS LOIN CAR LE TEMPS DU TEST EST DEJA GRAND
                                     INST_FIN=0.02,
                                     ),
+                       METHODE='NEWTON_KRYLOV',
+                       SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',PCENT_PIVOT=20),
+
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1,
                                  ),

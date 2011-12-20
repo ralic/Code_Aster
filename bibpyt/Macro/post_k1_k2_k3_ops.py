@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -375,15 +375,13 @@ def get_coor_libre(self,Lnoff,RESULTAT,ndim):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_Plev(self,ListmaS,RESULTAT):
-         """ retourne les coordonnes d'un point quelconque des levres pr determination sens de propagation"""
+def get_Plev(self,ListmaS,nom_resu):
+         """ retourne les coordonnes d'un point quelconque de levre sup pr determination sens du vecteur normal
+             allant de la levre inf vers la levre sup"""
          import numpy as NP
-         from Accas import _F
          import aster
-         POST_RELEVE_T    = self.get_cmd('POST_RELEVE_T')
-         DETRUIRE         = self.get_cmd('DETRUIRE')
 
-         iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
+         iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',nom_resu,'RESULTAT')
          MAILLAGE = self.get_concept(nom_ma.strip())
 
          cmail=MAILLAGE.sdj.NOMMAI.get()
@@ -392,84 +390,81 @@ def get_Plev(self,ListmaS,RESULTAT):
                 break
          colcnx=MAILLAGE.sdj.CONNEX.get()
          cnom = MAILLAGE.sdj.NOMNOE.get()
-         NO_TMP = []
+
+         test=False
+
+         for m in range(len(cmail)):
+            if colcnx[i+1][0] in colcnx[m+1] and m!=i:
+                 for j in range(len(colcnx[i+1])-1):
+                    if colcnx[i+1][j+1] in colcnx[m+1]:
+                       if j==len(colcnx[i+1])-2:                   
+                          test=True
+                          i=m
+                    else:
+                       break
+            if test==True:
+                 break
+
+         coor=[]
          for k in range(len(colcnx[i+1])) :
-            NO_TMP.append(cnom[colcnx[i+1][k]-1])
+            coor.append(aster.getvectjev(nom_ma.ljust(8)+'.COORDO    .VALE        ',
+                        (colcnx[i+1][k]-1)*3,3))
 
-         __NCOLEV=POST_RELEVE_T(ACTION=_F(INTITULE='Tab pour coordonnees pt levre',
-                                          NOEUD = NO_TMP,
-                                          RESULTAT=RESULTAT,
-                                          NOM_CHAM='DEPL',
-                                          NUME_ORDRE=1,
-                                          NOM_CMP=('DX',),
-                                          OPERATION='EXTRACTION',),);
 
-         tcoorl=__NCOLEV.EXTR_TABLE()
-         DETRUIRE(CONCEPT=_F(NOM=__NCOLEV),INFO=1)
-         nbt = len(tcoorl['NOEUD'].values()['NOEUD'])
-         xl=moy(tcoorl['COOR_X'].values()['COOR_X'][:nbt])
-         yl=moy(tcoorl['COOR_Y'].values()['COOR_Y'][:nbt])
-         zl=moy(tcoorl['COOR_Z'].values()['COOR_Z'][:nbt])
+         nbt = len(coor)
+         xl=moy([elem[0] for elem in coor ])
+         yl=moy([elem[1] for elem in coor ])
+         zl=moy([elem[2] for elem in coor ])
          return NP.array([xl, yl, zl])
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_normale(VECT_K1,Nnoff,ndim,DTANOR,DTANEX,d_coorf,Lnoff,Plev) :
-      """ retourne les normales (direct de propa) en chaque point du fond,
-          les abscisses curvilignes et le sens de la tangete (a eclaircir)"""
+def get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,Plev,Pfon,FOND_FISS) :
+      """ retourne les normales en chaque point du fond
+          et le sens de propagation"""
 
       import numpy as NP
 
-      v1 =  NP.array(VECT_K1)
+      Basefo = FOND_FISS.sdj.BASEFOND.get()
+
       VN = [None]*Nnoff
-      absfon = [0,]
-      if ndim == 3 :
-         Pfon2 = NP.array([d_coorf[Lnoff[0]][0],d_coorf[Lnoff[0]][1],d_coorf[Lnoff[0]][2]])
-         VLori = Pfon2 - Plev
-         if DTANOR != None :
-            VN[0] = NP.array(DTANOR)
+      VP = [None]*Nnoff
+
+      vect = Plev-Pfon
+      VN[0] = NP.array([Basefo[3],Basefo[4],Basefo[5]])
+      sens_norm = NP.sign(NP.dot(vect,VN[0]))
+
+      if ndim ==2 :
+         VN[0] = NP.array([Basefo[3],Basefo[4],Basefo[5]])
+         VP[0] = NP.array([Basefo[0],Basefo[1],Basefo[2]])
+         dicVP = dict([(Lnoff[0],VP[0])])
+         dicVN = dict([(Lnoff[0],sens_norm*VN[0])])
+      elif ndim == 3 :          
+         VN[0] = NP.array([Basefo[3],Basefo[4],Basefo[5]])
+         if DTANOR != None:
+            VP[0] = NP.array(DTANOR)
          else :
-            Pfon3 = NP.array([d_coorf[Lnoff[1]][0],d_coorf[Lnoff[1]][1],d_coorf[Lnoff[1]][2]])
-            VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-            VN[0] = NP.array(NP.cross(VT,v1))
+            VP[0] = NP.array([Basefo[0],Basefo[1],Basefo[2]])
+            
          for i in range(1,Nnoff-1):
-            Pfon1 = NP.array([d_coorf[Lnoff[i-1]][0],d_coorf[Lnoff[i-1]][1],d_coorf[Lnoff[i-1]][2]])
-            Pfon2 = NP.array([d_coorf[Lnoff[i]][0],d_coorf[Lnoff[i]][1],d_coorf[Lnoff[i]][2]])
-            Pfon3 = NP.array([d_coorf[Lnoff[i+1]][0],d_coorf[Lnoff[i+1]][1],d_coorf[Lnoff[i+1]][2]])
-            absf = NP.sqrt(NP.dot(NP.transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
-            absfon.append(absf)
-            VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-            VT = VT+(Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-            VN[i] = NP.array(NP.cross(VT,v1))
-            VN[i] = VN[i]/NP.sqrt(NP.dot(NP.transpose(VN[i]),VN[i]))
+            VN[i] = NP.array([Basefo[3+6*i],Basefo[3+6*i+1],Basefo[3+6*i+2]])
+            VP[i] = NP.array([Basefo[6*i],Basefo[6*i+1],Basefo[6*i+2]])            
+            
          i = Nnoff-1
-         Pfon1 = NP.array([d_coorf[Lnoff[i-1]][0],d_coorf[Lnoff[i-1]][1],d_coorf[Lnoff[i-1]][2]])
-         Pfon2 = NP.array([d_coorf[Lnoff[i]][0],d_coorf[Lnoff[i]][1],d_coorf[Lnoff[i]][2]])
-         VLextr = Pfon2 - Plev
-         absf = NP.sqrt(NP.dot(NP.transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
-         absfon.append(absf)
-         if DTANEX != None :
-            VN[i] = NP.array(DTANEX)
+         VN[i] = NP.array([Basefo[3+6*i],Basefo[3+6*i+1],Basefo[3+6*i+2]])
+         if DTANEX != None:
+            VP[i] = NP.array(DTANEX)
          else :
-            VT = (Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-            VN[i] = NP.array(NP.cross(VT,v1))
-         dicoF = dict([(Lnoff[i],absfon[i]) for i in range(Nnoff)])
-         dicVN = dict([(Lnoff[i],VN[i]) for i in range(Nnoff)])
-#        Sens de la tangente
-         v = NP.cross(VLori,VLextr)
-         sens = NP.sign(NP.dot(NP.transpose(v),v1))
-      elif ndim ==2 :
-         VT = NP.array([0.,0.,1.])
-         VN = NP.array(NP.cross(v1,VT))
-         dicVN = dict([(Lnoff[0],VN)])
-         Pfon = NP.array([d_coorf[Lnoff[0]][0],d_coorf[Lnoff[0]][1],d_coorf[Lnoff[0]][2]])
-         VLori = Pfon - Plev
-         sens = NP.sign(NP.dot(NP.transpose(VN),VLori))
-      return (dicVN, dicoF, sens)
+            VP[i] = NP.array([Basefo[6*i],Basefo[6*i+1],Basefo[6*i+2]])
+
+         dicVP = dict([(Lnoff[i],VP[i]) for i in range(Nnoff)])
+         dicVN = dict([(Lnoff[i],sens_norm*VN[i]) for i in range(Nnoff)])
+
+      return (dicVP, dicVN)
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_MAXI,dicVN,sens,RESULTAT,MODEL,
+def get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
                 ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,SYME_CHAR) :
       """ retourne les tables des deplacements sup et inf pour les noeuds perpendiculaires pour
       tous les points du fond de fissure"""
@@ -482,12 +477,7 @@ def get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_M
       mcfact=[]
       for i in xrange(Nnocal):
          Porig = NP.array(d_coorf[Lnocal[i]] )
-         if Lnocal[i]==Lnoff[0] and DTANOR :
-            Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnocal[i]]
-         elif Lnocal[i]==Lnoff[Nnoff-1] and DTANEX :
-            Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnocal[i]]
-         else :
-            Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnocal[i]]*sens
+         Pextr = Porig - ABSC_CURV_MAXI*dicVP[Lnocal[i]]
 
          mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,
                           COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
@@ -542,35 +532,36 @@ def get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,SYME_CHAR,dicoI):
       from Accas import _F
       
       POST_RELEVE_T    = self.get_cmd('POST_RELEVE_T')
-      DETRUIRE         = self.get_cmd('DETRUIRE')
-      CALC_TABLE       = self.get_cmd('CALC_TABLE')
 
 #        a eclaircir
       Ltot = copy.copy(Lnoff)
       for ino in Lnocal :
-         for k in xrange(0,20) :
-            if dicoS[ino][k] !='':
-               Ltot.append(dicoS[ino][k])
+         l=[elem for elem in dicoS[ino] if elem != '']
+         Ltot+=l
       if SYME_CHAR=='SANS':
          for ino in Lnocal :
-            for k in xrange(0,20) :
-               if dicoI[ino][k] !='':
-                  Ltot.append(dicoI[ino][k])
-      Ltot=dict([(i,0) for i in Ltot]).keys()
+            l=[elem for elem in dicoI[ino] if elem != '']
+            Ltot+=l
+
+      Ltot=list(set(Ltot))
 
 
       dico = RESULTAT.LIST_VARI_ACCES()
-                                      
+
+      if ndim == 2:
+         nomcmp= ('DX','DY')
+      elif ndim == 3:
+         nomcmp= ('DX','DY','DZ')
+
       __NCOOR=POST_RELEVE_T(ACTION=_F(INTITULE='Tab pour coordonnees noeuds des levres',
                                          NOEUD=Ltot,
                                          RESULTAT=RESULTAT,
                                          NOM_CHAM='DEPL',
-                                         NUME_ORDRE=dico['NUME_ORDRE'][0],
-                                         NOM_CMP=('DX',),
+                                         NOM_CMP=nomcmp,
                                          OPERATION='EXTRACTION',),);
+         
 
-      tcoor=__NCOOR.EXTR_TABLE()
-      DETRUIRE(CONCEPT=_F(NOM=__NCOOR),INFO=1)
+      tcoor=__NCOOR.EXTR_TABLE().NUME_ORDRE==dico['NUME_ORDRE'][0]
 
       nbt = len(tcoor['NOEUD'].values()['NOEUD'])
       xs=NP.array(tcoor['COOR_X'].values()['COOR_X'][:nbt])
@@ -583,7 +574,7 @@ def get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,SYME_CHAR,dicoI):
       ns = map(S.rstrip,ns)
       l_coor =  [[ns[i],xs[i],ys[i],zs[i]] for i in xrange(nbt)]
       l_coor = [(i[0],i[1:]) for i in l_coor]
-      return dict(l_coor)
+      return (dict(l_coor),__NCOOR.EXTR_TABLE())
 
 #---------------------------------------------------------------------------------------------------------------
 
@@ -768,8 +759,8 @@ def get_coor_xfem(args,FISSURE,ndim):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_direction_xfem(Nnoff,Vpropa,Coorfo,VECT_K1,DTAN_ORIG,DTAN_EXTR,ndim) :
-      """retourne la dirction de propagation, la normale a la surface de la fissure,
+def get_direction_xfem(Nnoff,Vpropa,Coorfo,DTAN_ORIG,DTAN_EXTR,ndim) :
+      """retourne la direction de propagation, la normale a la surface de la fissure,
       et l'abscisse curviligne en chaque point du fond"""
       import numpy as NP
       from Utilitai.Utmess     import  UTMESS
@@ -778,120 +769,43 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,VECT_K1,DTAN_ORIG,DTAN_EXTR,ndim) :
       VN = [None]*Nnoff
       absfon = [0,]
 
-#     Cas fissure non necessairement plane
-      if VECT_K1 == None :
-        i = 0
-        if ndim == 3 :
-           if DTAN_ORIG != None :
-              VP[0] = NP.array(DTAN_ORIG)
-              VP[0] = VP[0]/NP.sqrt(VP[0][0]**2+VP[0][1]**2+VP[0][2]**2)
-              VN[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
-              verif = NP.dot(NP.transpose(VP[0]),VN[0])
-              if abs(verif) > 0.01:
-                 UTMESS('A','RUPTURE1_33',valr=[VN[0][0],VN[0][1],VN[0][2]])
-           else :
-              VN[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
-              VP[0] = NP.array([Vpropa[3+0],Vpropa[3+1],Vpropa[3+2]])
-           for i in xrange(1,Nnoff-1):
-              absf = Coorfo[4*i+3]
-              absfon.append(absf)
-              VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-              VP[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
-              verif = NP.dot(NP.transpose(VN[i]),VN[i-1])
-              if abs(verif) < 0.98:
-                UTMESS('A','RUPTURE1_35',vali=[i-1,i])
-           i = Nnoff-1
-           absf =  Coorfo[4*i+3]
-           absfon.append(absf)
-           if DTAN_EXTR != None :
-              VP[i] = NP.array(DTAN_EXTR)
-              VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-              verif = NP.dot(NP.transpose(VP[i]),VN[i])
-              if abs(verif) > 0.01:
-                 UTMESS('A','RUPTURE1_34',valr=[VN[i][0],VN[i][1],VN[i][2]])
-           else :
-              VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-              VP[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
-        elif ndim == 2 :
-           for i in range(0,Nnoff):
-              VP[i] = NP.array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
-              VN[i] = NP.array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
-
-#     Cas fissure plane (VECT_K1 donne)
-      if VECT_K1 != None :
-         v1 =  NP.array(VECT_K1)
-         v1  = v1/NP.sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
-         v1 =  NP.array(VECT_K1)
-         i = 0
-         if ndim == 3 :
-#           Sens du vecteur VECT_K1
-            v1x =NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
-            verif = NP.dot(NP.transpose(v1),v1x)
-            if verif < 0 :
-               v1 = -v1
-            VN = [v1]*Nnoff
-            if DTAN_ORIG != None :
-               VP[i] = NP.array(DTAN_ORIG)
-               VP[i] = VP[i]/NP.sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
-               verif = NP.dot(NP.transpose(VP[i]),VN[0])
-               if abs(verif) > 0.01:
-                  UTMESS('A','RUPTURE1_36')
-            else :
-               Pfon2 = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-               Pfon3 = NP.array([Coorfo[4*(i+1)],Coorfo[4*(i+1)+1],Coorfo[4*(i+1)+2]])
-               VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-               VP[0] = NP.array(NP.cross(VT,v1))
-               VNi = NP.array([Vpropa[3],Vpropa[4],Vpropa[5]])
-               verif = NP.dot(NP.transpose(VP[i]),VNi)
-               if abs(verif) < 0.99:
-                  vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
-                  UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
-            for i in range(1,Nnoff-1):
-               Pfon1 = NP.array([Coorfo[4*(i-1)],Coorfo[4*(i-1)+1],Coorfo[4*(i-1)+2]])
-               Pfon2 = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-               Pfon3 = NP.array([Coorfo[4*(i+1)],Coorfo[4*(i+1)+1],Coorfo[4*(i+1)+2]])
-               absf =  Coorfo[4*i+3]
-               absfon.append(absf)
-               VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-               VT = VT+(Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-               VP[i] = NP.array(NP.cross(VT,v1))
-               VP[i] = VP[i]/NP.sqrt(NP.dot(NP.transpose(VP[i]),VP[i]))
-               VNi = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-               verif = NP.dot(NP.transpose(VN[i]),VNi)
-               if abs(verif) < 0.99:
-                  vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
-                  UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
-            i = Nnoff-1
-            Pfon1 = NP.array([Coorfo[4*(i-1)],Coorfo[4*(i-1)+1],Coorfo[4*(i-1)+2]])
-            Pfon2 = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-            absf =  Coorfo[4*i+3]
+      i = 0
+      if ndim == 3 :
+         if DTAN_ORIG != None :
+            VP[0] = NP.array(DTAN_ORIG)
+            VP[0] = VP[0]/NP.sqrt(VP[0][0]**2+VP[0][1]**2+VP[0][2]**2)
+            VN[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
+            verif = NP.dot(NP.transpose(VP[0]),VN[0])
+            if abs(verif) > 0.01:
+               UTMESS('A','RUPTURE1_33',valr=[VN[0][0],VN[0][1],VN[0][2]])
+         else :
+            VN[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
+            VP[0] = NP.array([Vpropa[3+0],Vpropa[3+1],Vpropa[3+2]])
+         for i in xrange(1,Nnoff-1):
+            absf = Coorfo[4*i+3]
             absfon.append(absf)
-            if DTAN_EXTR != None :
-               VP[i] = NP.array(DTAN_EXTR)
-               VP[i] = VP[i]/NP.sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
-               verif = NP.dot(NP.transpose(VP[i]),VN[i])
-               if abs(verif) > 0.01:
-                  UTMESS('A','RUPTURE1_37')
-            else :
-               VT = (Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-               VP[i] = NP.array(NP.cross(VT,v1))
-               VNi = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-               verif = NP.dot(NP.transpose(VN[i]),VNi)
-               if abs(verif) < 0.99 :
-                  vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
-                  UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
+            VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+            VP[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
+            verif = NP.dot(NP.transpose(VN[i]),VN[i-1])
+            if abs(verif) < 0.98:
+              UTMESS('A','RUPTURE1_35',vali=[i-1,i])
+         i = Nnoff-1
+         absf =  Coorfo[4*i+3]
+         absfon.append(absf)
+         if DTAN_EXTR != None :
+            VP[i] = NP.array(DTAN_EXTR)
+            VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+            verif = NP.dot(NP.transpose(VP[i]),VN[i])
+            if abs(verif) > 0.01:
+               UTMESS('A','RUPTURE1_34',valr=[VN[i][0],VN[i][1],VN[i][2]])
+         else :
+            VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+            VP[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
+      elif ndim == 2 :
+         for i in range(0,Nnoff):
+            VP[i] = NP.array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
+            VN[i] = NP.array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
 
-         elif ndim == 2 :
-
-           VT = NP.array([0.,0.,1.])
-           for i in range(0,Nnoff):
-              VP[i] = NP.array(NP.cross(v1,VT))
-              VN[i] = v1
-              VNi = NP.array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
-              verif = NP.dot(NP.transpose(VN[i]),VNi)
-              if abs(verif) < 0.99 :
-                 vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
-                 UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
 
       return (VP,VN,absfon)
 
@@ -1000,13 +914,9 @@ def affiche_traitement(FOND_FISS,Lnofon,ino):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_tab(self,lev,ino,Tlib,Lno,TTSo,FOND_FISS,TYPE_MAILLAGE,RESULTAT,SYME_CHAR,ndim) :
+def get_tab(self,lev,ino,Tlib,Lno,TTSo,FOND_FISS,TYPE_MAILLAGE,tabl_depl,SYME_CHAR) :
       """retourne la table des deplacements des noeuds perpendiculaires"""
-      from Accas import _F
       import string as S
-
-      DETRUIRE         = self.get_cmd('DETRUIRE')
-      POST_RELEVE_T    = self.get_cmd('POST_RELEVE_T')
 
       if lev == 'sup' or (lev == 'inf' and SYME_CHAR=='SANS' and FOND_FISS) :
 
@@ -1014,30 +924,16 @@ def get_tab(self,lev,ino,Tlib,Lno,TTSo,FOND_FISS,TYPE_MAILLAGE,RESULTAT,SYME_CHA
             if TYPE_MAILLAGE =='LIBRE':
                tab = Tlib.INTITULE=='l.coupe%i'%(ino+1)
             else :
-               if ndim == 2:
-                  nomcmp= ('DX','DY')
-               elif ndim == 3:
-                  nomcmp= ('DX','DY','DZ')
-
-               __T=POST_RELEVE_T(ACTION=_F(INTITULE='Deplacement '+lev.upper(),
-                                             NOEUD=Lno[ino],
-                                             RESULTAT=RESULTAT,
-                                             NOM_CHAM='DEPL',
-                                             TOUT_ORDRE='OUI',
-                                             NOM_CMP=nomcmp,
-                                             OPERATION='EXTRACTION',),);
-               tab=__T.EXTR_TABLE()
-               DETRUIRE(CONCEPT=_F(NOM=__T),INFO=1)
+               Ls = [S.ljust(Lno[ino][i],8) for i in range(len(Lno[ino]))]
+               tab=tabl_depl.NOEUD==Ls
 
          else :
             tab = TTSo.INTITULE=='l.coupe%i'%(ino+1)
 
       else :
-
          tab = None
 
       return tab
-
 #---------------------------------------------------------------------------------------------------------------
 
 def get_liste_inst(tabsup,args) :
@@ -1234,7 +1130,7 @@ def get_propmat_tempe(MATER,tabtemp,Lnofon,ino,inst,PRECISION) :
       return (e,nu,coefd,coefd3,coefg,coefg3)
 #---------------------------------------------------------------------------------------------------------------
 
-def get_depl_sup(FOND_FISS,rmprec,RESULTAT,tabsupi,ndim,d_coor,Lnofon,ino) :
+def get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE) :
       """retourne les déplacements sup"""
 
       import numpy as NP
@@ -1246,14 +1142,22 @@ def get_depl_sup(FOND_FISS,rmprec,RESULTAT,tabsupi,ndim,d_coor,Lnofon,ino) :
       if FOND_FISS :
       
          nbval=len(abscs)
-
+         
+         if TYPE_MAILLAGE !='LIBRE':
+            coxs=NP.array(tabsupi['COOR_X'].values()['COOR_X'][:nbval])
+            coys=NP.array(tabsupi['COOR_Y'].values()['COOR_Y'][:nbval])
+            if ndim==2 : 
+               cozs=NP.zeros(nbval)
+            elif ndim==3 : 
+              cozs=NP.array(tabsupi['COOR_Z'].values()['COOR_Z'][:nbval])
+            
+            Pfon = NP.array([d_coor[Lnofon[ino]][0],d_coor[Lnofon[ino]][1],d_coor[Lnofon[ino]][2]])
+            abscs = NP.sqrt((coxs-Pfon[0])**2+(coys-Pfon[1])**2+(cozs-Pfon[2])**2)
+            tabsupi['Abs_fo'] = abscs
+            tabsupi.sort('Abs_fo')
+            abscs = getattr(tabsupi,'Abs_fo').values()
+         
          abscs=NP.array(abscs[:nbval])
-         coxs=NP.array(tabsupi['COOR_X'].values()['COOR_X'][:nbval])
-         coys=NP.array(tabsupi['COOR_Y'].values()['COOR_Y'][:nbval])
-         if ndim==2 :
-            cozs=NP.zeros(nbval)
-         elif ndim==3 :
-            cozs=NP.array(tabsupi['COOR_Z'].values()['COOR_Z'][:nbval])
 
          dxs=NP.array(tabsupi['DX'].values()['DX'][:nbval])
          dys=NP.array(tabsupi['DY'].values()['DY'][:nbval])
@@ -1288,7 +1192,7 @@ def get_depl_sup(FOND_FISS,rmprec,RESULTAT,tabsupi,ndim,d_coor,Lnofon,ino) :
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_depl_inf(FOND_FISS,rmprec,RESULTAT,tabinfi,ndim,d_coor,Lnofon,ino,SYME_CHAR) :
+def get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,SYME_CHAR,d_coor,ino,TYPE_MAILLAGE) :
       """retourne les déplacements inf"""
       import numpy as NP
       import copy
@@ -1298,14 +1202,21 @@ def get_depl_inf(FOND_FISS,rmprec,RESULTAT,tabinfi,ndim,d_coor,Lnofon,ino,SYME_C
          absci = getattr(tabinfi,'ABSC_CURV').values()
 
          nbval=len(absci)
-
+         if TYPE_MAILLAGE !='LIBRE':
+            coxi=NP.array(tabinfi['COOR_X'].values()['COOR_X'][:nbval])
+            coyi=NP.array(tabinfi['COOR_Y'].values()['COOR_Y'][:nbval])
+            if ndim==2 :
+               cozi=NP.zeros(nbval)
+            elif ndim==3 :
+               cozi=NP.array(tabinfi['COOR_Z'].values()['COOR_Z'][:nbval])
+            
+            Pfon = NP.array([d_coor[Lnofon[ino]][0],d_coor[Lnofon[ino]][1],d_coor[Lnofon[ino]][2]])
+            absci = NP.sqrt((coxi-Pfon[0])**2+(coyi-Pfon[1])**2+(cozi-Pfon[2])**2)
+            tabinfi['Abs_fo'] = absci
+            tabinfi.sort('Abs_fo')
+            absci = getattr(tabinfi,'Abs_fo').values()
+         
          absci=NP.array(absci[:nbval])
-         coxi=NP.array(tabinfi['COOR_X'].values()['COOR_X'][:nbval])
-         coyi=NP.array(tabinfi['COOR_Y'].values()['COOR_Y'][:nbval])
-         if ndim==2 :
-            cozi=NP.zeros(nbval)
-         elif ndim==3 :
-            cozi=NP.array(tabinfi['COOR_Z'].values()['COOR_Z'][:nbval])
 
          dxi=NP.array(tabinfi['DX'].values()['DX'][:nbval])
          dyi=NP.array(tabinfi['DY'].values()['DY'][:nbval])
@@ -1325,7 +1236,7 @@ def get_depl_inf(FOND_FISS,rmprec,RESULTAT,tabinfi,ndim,d_coor,Lnofon,ino,SYME_C
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_pgl(SYME_CHAR,FISSURE,VECT_K1,ino,VP,VN,tabsupi,tabinfi,nbval,ndim) :
+def get_pgl(SYME_CHAR,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon) :
 
       """retourne la matrice du changement de repère"""
       import numpy as NP
@@ -1340,34 +1251,8 @@ def get_pgl(SYME_CHAR,FISSURE,VECT_K1,ino,VP,VN,tabsupi,tabinfi,nbval,ndim) :
          v2 = VP[ino]
 
       elif not FISSURE :
-
-#        cette partie est a modifier car on devrait pas calculer la base tout le temps
-         coxs=NP.array(tabsupi['COOR_X'].values()['COOR_X'][:nbval])
-         coys=NP.array(tabsupi['COOR_Y'].values()['COOR_Y'][:nbval])
-         if ndim==2 :
-            cozs=NP.zeros(nbval)
-         elif ndim==3 :
-            cozs=NP.array(tabsupi['COOR_Z'].values()['COOR_Z'][:nbval])
-
-         v1 =  NP.array(VECT_K1)
-         if SYME_CHAR=='SANS' :
-
-            coxi=NP.array(tabinfi['COOR_X'].values()['COOR_X'][:nbval])
-            coyi=NP.array(tabinfi['COOR_Y'].values()['COOR_Y'][:nbval])
-            if ndim==2 :
-               cozi=NP.zeros(nbval)
-            elif ndim==3 :
-               cozi=NP.array(tabinfi['COOR_Z'].values()['COOR_Z'][:nbval])
-
-            vo =  NP.array([( coxs[-1]+coxi[-1] )/2.,( coys[-1]+coyi[-1] )/2.,( cozs[-1]+cozi[-1] )/2.])
-            ve =  NP.array([( coxs[0 ]+coxi[0 ] )/2.,( coys[0 ]+coyi[0 ] )/2.,( cozs[0 ]+cozi[0 ] )/2.])
-            v2 =  ve-vo
-         else :
-            vo = NP.array([ coxs[-1], coys[-1], cozs[-1]])
-            ve = NP.array([ coxs[0], coys[0], cozs[0]])
-            v2 =  ve-vo
-
-      v2 =  normalize(v2)
+         v1 =dicVN[Lnofon[ino]]
+         v2 =dicVP[Lnofon[ino]]
 
       v1p = sum(v2*v1)
 
@@ -1400,9 +1285,6 @@ def get_saut(self,pgl,ds,di,INFO,FISSURE,SYME_CHAR,abscs,ndim) :
 
 
       dpls = NP.dot(pgl,ds)
-
-      if SYME_CHAR!='SANS' and abs(dpls[0][0]) > 1.e-10 :
-         UTMESS('A','RUPTURE0_49',valk=[Lnofon[ino],SYME_CHAR])
 
       if FISSURE :
          saut=dpls
@@ -1466,6 +1348,7 @@ def get_meth1(self,abscs,coefg,coefg3,kgsig,isig,saut2,INFO,ndim) :
       DETRUIRE      = self.get_cmd('DETRUIRE')
 
       nabs = len(abscs)
+
       x1 = abscs[1:-1]
       x2 = abscs[2:nabs]
       y1 = saut2[:,1:-1]/x1
@@ -1753,7 +1636,7 @@ def get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,i
 #---------------------------------------------------------------------------------------------------------------
 
 def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
-                   ABSC_CURV_MAXI,PREC_VIS_A_VIS,SYME_CHAR,INFO,VECT_K1,TITRE,**args):
+                   ABSC_CURV_MAXI,PREC_VIS_A_VIS,SYME_CHAR,INFO,TITRE,**args):
    """
    Macro POST_K1_K2_K3
    Calcul des facteurs d'intensité de contraintes en 2D et en 3D
@@ -1931,8 +1814,18 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    if FOND_FISS :
 
+#     Verification que les levres sont collees      
+      Basefo = FOND_FISS.sdj.BASEFOND.get()
+      if len(Basefo)==0 :
+         UTMESS('F','RUPTURE0_32')
+      
       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
       MAILLAGE = self.get_concept(nom_ma.strip())
+      
+      ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
+
+      if not ListmaS :
+          UTMESS('F','RUPTURE0_19')
 
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
 
@@ -1967,28 +1860,30 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     creation des directions normales et macr_lign_coup
       if TYPE_MAILLAGE =='LIBRE':
 
-         ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
-
-         if not ListmaS :
-            UTMESS('F','RUPTURE0_19')
-
          if SYME_CHAR == 'SANS':
             ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
 
 #        Dictionnaire des coordonnees des noeuds du fond
          d_coorf = get_coor_libre(self,Lnoff,RESULTAT,ndim)
 
-#        Coordonnee d un pt quelconque des levres pour determination sens de propagation
-         Plev = get_Plev(self,ListmaS,RESULTAT)
+#        Coordonnee d un pt quelconque de la levre sup + d un noeud au fond 
+#        pour determination du sens du vecteur normal allant de la levre inf vers la levre sup
+         Plev = get_Plev(self,ListmaS,RESULTAT.nom)
+         Pfon=NP.array([d_coorf[Lnoff[0]][0],d_coorf[Lnoff[0]][1],d_coorf[Lnoff[0]][2]])
 
-#        Calcul des normales a chaque noeud du fond
+#        Dictionnaire des vecteurs normaux (allant de la levre inf vers la levre sup) et
+#        dictionnaire des vecteurs de propagation
          if ndim == 3 :
             DTANOR = FOND_FISS.sdj.DTAN_ORIGINE.get()
             DTANEX = FOND_FISS.sdj.DTAN_EXTREMITE.get()
          elif ndim ==2 :
-            DTANOR = False
-            DTANEX = False
-         (dicVN, dicoF, sens) = get_normale(VECT_K1,Nnoff,ndim,DTANOR,DTANEX,d_coorf,Lnoff,Plev)
+            DTANOR = None
+            DTANEX = None
+         (dicVP, dicVN) = get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,Plev,Pfon,FOND_FISS)
+
+#        Abscisse curviligne du fond
+         if ndim == 3:
+            dicoF = get_absfon(Lnoff,Nnoff,d_coorf)
 
 #        Extraction dep sup/inf sur les normales
          iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
@@ -1998,10 +1893,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          MODEL = self.get_concept(n_modele)
          dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
 
-         (__TlibS,__TlibI) = get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_MAXI,dicVN,sens,RESULTAT,MODEL,
+         (__TlibS,__TlibI) = get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
                                      ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,SYME_CHAR)
-
-
 
 #        A eclaircir
          Lnofon = Lnocal
@@ -2018,11 +1911,23 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          if SYME_CHAR=='SANS':
             dicoI = get_dico_levres('inf',FOND_FISS,ndim,Lnoff,Nnoff)
 
-#        Dictionnaire des coordonnees
-         d_coor = get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,SYME_CHAR,dicoI)
+#        Dictionnaire des coordonnees et tableau des deplacements
+         (d_coor,__tabl_depl) = get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,SYME_CHAR,dicoI)
+
+#        Coordonnee d un pt quelconque de la levre sup + d un noeud au fond 
+#        pour determination du sens du vecteur normal allant de la levre inf vers la levre sup
+         Plev = get_Plev(self,ListmaS,RESULTAT.nom)
+         Pfon=NP.array([d_coor[Lnoff[0]][0],d_coor[Lnoff[0]][1],d_coor[Lnoff[0]][2]])
+
+#        Dictionnaire des vecteurs normaux (allant de la levre inf vers la levre sup) et
+#        dictionnaire des vecteurs de propagation      
+         DTANOR = None
+         DTANEX = None
+         (dicVP,dicVN) = get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,Plev,Pfon,FOND_FISS)
 
 #        Abscisse curviligne du fond
-         dicoF = get_absfon(Lnoff,Nnoff,d_coor)
+         if ndim == 3:
+            dicoF = get_absfon(Lnoff,Nnoff,d_coor)
 
 #        Noeuds LEVRE_SUP et LEVRE_INF
          (Lnofon, Lnosup, Lnoinf) = get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,
@@ -2054,7 +1959,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       (Coorfo, Vpropa, Nnoff) = get_coor_xfem(args,FISSURE,ndim)
 
 #     Calcul de la direction de propagation en chaque point du fond
-      (VP,VN,absfon) = get_direction_xfem(Nnoff,Vpropa,Coorfo,VECT_K1,DTAN_ORIG,DTAN_EXTR,ndim)
+      (VP,VN,absfon) = get_direction_xfem(Nnoff,Vpropa,Coorfo,DTAN_ORIG,DTAN_EXTR,ndim)
 
 #     Sens de la tangente
       sens = get_sens_tangente_xfem(self,ndim,Nnoff,Coorfo,VP,ABSC_CURV_MAXI,__RESX,dmax)
@@ -2087,8 +1992,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    if 'VP'     not in locals() : VP     = []
    if 'VN'     not in locals() : VN     = []
    if 'dicoF'  not in locals() : dicoF  = []
+   if 'dicVP'  not in locals() : dicVP  = []
+   if 'dicVN'  not in locals() : dicVN  = []
    if 'absfon' not in locals() : absfon = []
    if 'd_coor' not in locals() : d_coor = []
+   if '__tabl_depl' not in locals() : __tabl_depl = []
 
 
 #  ------------------------------------------------------------------
@@ -2112,7 +2020,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #  ------------------------------------------------------------------
 #  V. BOUCLE SUR NOEUDS DU FOND
 #  ------------------------------------------------------------------
-
+   
    if isinstance(RESULTAT,mode_meca) == True: type_para='FREQ'
    else: type_para='INST'
 
@@ -2125,15 +2033,18 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #     table 'depsup' et 'depinf'
       tabsup = get_tab(self,'sup',ino,__TlibS,Lnosup,TTSo,
-                       FOND_FISS,TYPE_MAILLAGE,RESULTAT,SYME_CHAR,ndim)
+                       FOND_FISS,TYPE_MAILLAGE,__tabl_depl,SYME_CHAR)
       tabinf = get_tab(self,'inf',ino,__TlibI,Lnoinf,TTSo,
-                       FOND_FISS,TYPE_MAILLAGE,RESULTAT,SYME_CHAR,ndim)
+                       FOND_FISS,TYPE_MAILLAGE,__tabl_depl,SYME_CHAR)
 
 #     les instants de post-traitement : creation de l_inst
       if type_para == 'FREQ':
          (l_inst,PRECISION,CRITERE) = get_liste_freq(tabsup,args)
       else:
          (l_inst,PRECISION,CRITERE) = get_liste_inst(tabsup,args)
+
+#     récupération de la matrice de changement de repère
+      pgl = get_pgl(SYME_CHAR,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon)
 
 #     ------------------------------------------------------------------
 #                         BOUCLE SUR LES INSTANTS/FREQUENCES
@@ -2149,8 +2060,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          tabinfi = get_tab_inst('inf',inst,FISSURE,SYME_CHAR,PRECISION,CRITERE,tabsup,tabinf,type_para)
 
 #        recupération des déplacements sup et inf : ds et di
-         (abscs,ds) = get_depl_sup(FOND_FISS,rmprec,RESULTAT,tabsupi,ndim,d_coor,Lnofon,ino)
-         (absci,di) = get_depl_inf(FOND_FISS,rmprec,RESULTAT,tabinfi,ndim,d_coor,Lnofon,ino,SYME_CHAR)
+         (abscs,ds) = get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE)
+         (absci,di) = get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,SYME_CHAR,d_coor,ino,TYPE_MAILLAGE)
 
 #        récupération des propriétés materiau avec temperature
          if Tempe3D :
@@ -2175,10 +2086,6 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          else :
 
 #           SI NBVAL >= 3 :
-#
-#           récupération de la matrice de changement de repère
-#          (je ne comprends pas pourquoi elle dépend de l'instant)
-            pgl = get_pgl(SYME_CHAR,FISSURE,VECT_K1,ino,VP,VN,tabsupi,tabinfi,nbval,ndim)
 
 #           calcul du saut de déplacements dans le nouveau repère
             saut = get_saut(self,pgl,ds,di,INFO,FISSURE,SYME_CHAR,abscs,ndim)

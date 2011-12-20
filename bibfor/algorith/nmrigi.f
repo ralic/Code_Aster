@@ -4,7 +4,7 @@
      &                  VEELEM,OPTIOZ,LDCCVG,CODERE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,7 +71,7 @@ C
       CHARACTER*1  BASE     
       CHARACTER*24 MODELE 
       CHARACTER*16 OPTRIG     
-      LOGICAL      TABRET(0:10)
+      LOGICAL      TABRET(0:10),ISFONC,LENDO
 C      
 C ----------------------------------------------------------------------
 C
@@ -91,9 +91,13 @@ C
       CALL NMCHEX(MEELEM,'MEELEM','MERIGI',MERIGI)
 C
 C --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
-C      
-      IF (OPTRIG(1:9).EQ.'RIGI_MECA') THEN
-        CALL NMDEP0('ON ',SOLALG)
+C   
+      LENDO = ISFONC(FONACT,'ENDO_NO') 
+C         
+      IF (.NOT.LENDO) THEN
+        IF (OPTRIG(1:9).EQ.'RIGI_MECA') THEN
+          CALL NMDEP0('ON ',SOLALG)
+        ENDIF
       ENDIF 
 C
 C --- INIT TIMER

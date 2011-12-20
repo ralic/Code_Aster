@@ -1,7 +1,7 @@
       SUBROUTINE JJLIDY ( IADYN , IADMI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,19 +50,21 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER          IET,IBID,LGS,LGSV
 C DEB ------------------------------------------------------------------
-      IET = ISZON(JISZON+IADMI-1)
-      LGS = ISZON(JISZON+IADMI-4) - IADMI + 5
-      LGSV= ISZON(JISZON+IADMI-4) - IADMI - 4
-      DO 100 K=1,LGSV
-        ISZON(JISZON+IADMI+K-1) = LUNDEF
- 100  CONTINUE
-      IF ( IET .EQ. ISTAT(2) ) THEN
-        SVUSE = SVUSE - LGS
-        CALL ASSERT ( LGS .GT. 0)
-        SMXUSE = MAX(SMXUSE,SVUSE)
+      IF ( IADYN .NE. 0 ) THEN 
+        IET = ISZON(JISZON+IADMI-1)
+        LGS = ISZON(JISZON+IADMI-4) - IADMI + 5
+        LGSV= ISZON(JISZON+IADMI-4) - IADMI - 4
+        DO 100 K=1,LGSV
+          ISZON(JISZON+IADMI+K-1) = LUNDEF
+ 100    CONTINUE
+        IF ( IET .EQ. ISTAT(2) ) THEN
+          SVUSE = SVUSE - LGS
+          CALL ASSERT ( LGS .GT. 0)
+          SMXUSE = MAX(SMXUSE,SVUSE)
+        ENDIF
+        MCDYN = MCDYN - LGS*LOIS
+        MLDYN = MLDYN + LGS*LOIS
+        CALL  HPDEALLC ( IADYN , NBFREE , IBID )
       ENDIF
-      MCDYN = MCDYN - LGS*LOIS
-      MLDYN = MLDYN + LGS*LOIS
-      CALL  HPDEALLC ( IADYN , NBFREE , IBID )
 C FIN ------------------------------------------------------------------
       END

@@ -1,7 +1,7 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,12 +199,10 @@ C
           ISZON(JISZON+IADIT-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+IADIT-4)-4) = ISTAT(4)
           SVUSE = SVUSE + (ISZON(JISZON+IADIT-4) - IADIT + 4)
-          IF (IADY1 .NE. 0) SVUSE = SVUSE + 1
           CALL JJALLS( NNN ,0,'V','I',LOIS,'INIT',KT,KIT,IASIG,IADY2)
           ISZON(JISZON+IASIG-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+IASIG-4)-4) = ISTAT(4)
           SVUSE = SVUSE + (ISZON(JISZON+IASIG-4) - IASIG + 4)
-          IF (IADY2 .NE. 0) SVUSE = SVUSE + 1
           SMXUSE = MAX(SMXUSE,SVUSE)
           ITRECH = ITROLD
           LDYN   = LDYNOL
@@ -522,7 +520,6 @@ C
           IF (LXU) THEN
              ISZON(JISZON+IADMI-1) = ISTAT(1)
              SVUSE = SVUSE - (ISZON(JISZON+IADMI-4) - IADMI+4)
-             IF (IDYNI .NE. 0) SVUSE = SVUSE - 1
              SMXUSE = MAX(SMXUSE,SVUSE)
           ENDIF
           IF (LAD) THEN
@@ -551,11 +548,7 @@ C
         ENDIF
         IF ( LDATE ) DATE ( IT(JIT+KK+ IDATE) ) = DATEI
         IF ( LLIBP ) THEN
-          IF ( IDYNI .NE. 0 ) THEN
-            CALL JJLIDY ( IDYNI , IADMI )
-          ELSE IF ( IADMI .NE. 0 ) THEN
-            CALL JJLIBP ( IADMI )
-          ENDIF
+          CALL JJLIDY ( IDYNI , IADMI )
           IF ( KT(KIT+KK+ IIADM) .EQ. 0 ) THEN
             IADM ( IT(JIT+KK+ IIADM)    ) = 0
             IADM ( IT(JIT+KK+ IIADM) + 1) = 0
@@ -566,15 +559,7 @@ C
         ENDIF
   100 CONTINUE
   101 CONTINUE
-      IF ( IADY1 .NE. 0 ) THEN
-        CALL JJLIDY ( IADY1 , IADIT )
-      ELSE IF ( IADIT .NE. 0 ) THEN
-        CALL JJLIBP ( IADIT )
-      ENDIF
-      IF ( IADY2 .NE. 0 ) THEN
-        CALL JJLIDY ( IADY2 , IASIG )
-      ELSE IF ( IASIG .NE. 0 ) THEN
-        CALL JJLIBP ( IASIG )
-      ENDIF
+      CALL JJLIDY ( IADY1 , IADIT )
+      CALL JJLIDY ( IADY2 , IASIG )
 C FIN ------------------------------------------------------------------
       END

@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,11 +172,11 @@ cata_msg = {
 """),
 
 84 : _(u"""
- Elément PYRAM5 non disponible dans IDEAS
+ Élément PYRAM5 non disponible dans IDEAS
 """),
 
 85 : _(u"""
- Elément PYRAM13 non disponible dans IDEAS
+ Élément PYRAM13 non disponible dans IDEAS
 """),
 
 86 : _(u"""

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=37)
       PARAMETER (NCMEC2=46)
-      PARAMETER (NCMEC3=36)
+      PARAMETER (NCMEC3=37)
       PARAMETER (NCMUTI=30)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3+NCMUTI)
       CHARACTER*16 CHMEC1(NCMEC1)
@@ -127,7 +127,8 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'VAEX_NOEU',       'DEPL_VIBR',       'SISE_ELNO',
      & 'COHE_ELEM',       'INDC_ELEM',       'SECO_ELEM',
      & 'VARC_ELGA',       'FERRAILLAGE',     'EPVC_NOEU',
-     & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA'/
+     & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA',
+     & 'MODE_STAB'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMUTI/
@@ -392,6 +393,17 @@ C     ------------------------------------------------------------------
         DO 250 I=1,NBCHAM
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
   250   CONTINUE
+        GOTO 320
+
+C     ------------------------------------------------------------------
+      ELSEIF (TYPES2.EQ.'MODE_STAB') THEN
+
+        NBCHAM=NCMECA
+        CALL JEECRA(NOMS2//'.DESC','NOMMAX',NBCHAM,' ')
+        CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOSB')
+        DO 260 I=1,NBCHAM
+          CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
+  260   CONTINUE
         GOTO 320
 
 C     ------------------------------------------------------------------

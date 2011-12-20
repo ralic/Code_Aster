@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ELEMENTAIRE DE L'OPERATEUR POST_RUPTURE
 # zzzz287a.para = tps_job 20 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,11 +28,37 @@ DEBUT(CODE=_F(NOM='ZZZZ287A',
       )
 
 #---------------------------------------------------------------------------------------
+#  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'K1_NEGATIF'
+#---------------------------------------------------------------------------------------
+
+E=DEFI_CONSTANTE(VALE=205000.0E6)
+NU=DEFI_CONSTANTE(VALE=0.3)
+
+ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E,
+                               NU=NU))
+
+TAB=LIRE_TABLE(UNITE=45)               
+
+TAB=POST_RUPTURE(TABLE=TAB,
+                 reuse=TAB,
+                 OPERATION='K1_NEGATIF',
+                 MODELISATION='D_PLAN',
+                 MATER=ACIER)
+
+IMPR_TABLE(TABLE=TAB)
+
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='K1',
+           TYPE_TEST='MIN',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1e-14,
+           REFERENCE='ANALYTIQUE')
+
+#---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'ABSC_CURV_NORM'
 #---------------------------------------------------------------------------------------
 
-TAB=LIRE_TABLE(UNITE=45)               
-               
 TAB=POST_RUPTURE(TABLE=TAB,
                  reuse=TAB,
                  OPERATION='ABSC_CURV_NORM')
@@ -104,12 +130,6 @@ for i,crit in enumerate(l_crit_bifurcation[0:2] ):
 
 l_crit_cumul_1 = ['CUMUL_G','QUADRATIQUE',]
 l_crit_cumul_2 = ['LINEAIRE','MODE_I']
-
-E=DEFI_CONSTANTE(VALE=205000.0E6)
-NU=DEFI_CONSTANTE(VALE=0.3)
-
-ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E,
-                            NU=NU))
 
 for crit in l_crit_cumul_1 :
 

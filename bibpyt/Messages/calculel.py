@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,7 +344,7 @@ Conseils :
 """),
 
 58 : _(u"""
-Erreur lors de la fabrication d'un cham_elem :
+Erreur lors de la fabrication d'un champ par éléments :
  Il manque la composante : %(k1)s  sur la maille : %(k2)s
  Champ : %(k4)s
 

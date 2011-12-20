@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION D'UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315f.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,7 +135,6 @@ IMPR_RESU(FORMAT='MED',
           UNITE=30,
           RESU=_F(CHAM_GD=LST[0],),);
 
-timestep=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
 # PROPAGATION
 for i in range(0,NPS) :
@@ -146,17 +145,12 @@ for i in range(0,NPS) :
     ChgX[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                            LIAISON_XFEM='OUI',);
 
-    ResX[i]=STAT_NON_LINE(MODELE=ModX[i],
+    ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                           CHAM_MATER=champma,
                           EXCIT=(_F(CHARGE=cauxl,),
                                  _F(CHARGE=ChgX[i],),),
-                     COMP_ELAS=_F(RELATION='ELAS',
-                                  TOUT='OUI',),
-                     INCREMENT=_F(LIST_INST=timestep,
-                                  INST_FIN=1,),
-                     NEWTON=_F(REAC_ITER=1,),
-                     INFO=1,
-                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
+                          INST=1.,
+                          INFO=1,);
 
     SIF[i]=CALC_G(OPTION='CALC_K_G',
                   THETA=_F(FISSURE=fiss[i],

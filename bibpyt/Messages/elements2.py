@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements2 Messages  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,7 +157,7 @@ cata_msg = {
 """),
 
 71 : _(u"""
- COMP_ELAS non programme pour les modélisations DKT. il faut utiliser COMP_INCR.
+ Pour les modélisations DKT, seules les lois de comportement sous COMP_INCR sont autorisées.
 """),
 
 72 : _(u"""
@@ -170,11 +170,15 @@ cata_msg = {
 """),
 
 73 : _(u"""
- comportement non traite:  %(k1)s
+ Seule la loi de comportement ELAS est autorisée avec la déformation GROT_GDEP en modélisation DKT.
 """),
 
 74 : _(u"""
   %(k1)s  non implante.
+"""),
+
+75 : _(u"""
+  Les matériaux de coque homogénéisées (ELAS_COQUE ou DEFI_COQU_MULT) sont interdits en non-linéaire.
 """),
 
 77 : _(u"""

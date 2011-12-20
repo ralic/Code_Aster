@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,15 +213,10 @@ Il n'y a pas de mailles de bord connectées au noeud %(k1)s.
 """),
 
 32: _(u"""
-Différence entre la normale au plan déduite de VECT_K1 et la normale
-au plan de la fissure calculée pour le noeud %(i1)d :
-  VECT_K1 : (%(r4)f,%(r5)f,%(r6)f)
-  Vecteur normal calculé à partir de la définition de la fissure : (%(r1)f,%(r2)f,%(r3)f)
+POST_K1_K2_K3 ne peut être utilisé que si les lèvres sont collées.
 -> Risque et Conseil :
-On poursuit le calcul mais si l'écart entre les deux vecteurs est trop important,
-le calcul risque d'échouer ou de conduire à des résultats peu précis.
-Vérifier absolument le VECT_K1 fourni ou supprimer ce mot clé pour que la normale
-au plan soit calculée automatiquement.
+Veuillez vérifier les données dans DEFI_FOND_FISS, et plus particulièrement le
+mot-clé CONFIG_INIT.
 """),
 
 33: _(u"""
@@ -253,7 +248,7 @@ Cela est probablement une erreur, qui peut conduire à des résultats faux.
 """),
 
 36: _(u"""
-Attention, le vecteur tangent au denier noeud du fond de fissure (DTAN_EXTR) est dans le sens
+Attention, le vecteur tangent au dernier noeud du fond de fissure (DTAN_EXTR) est dans le sens
 opposé à celui calculé automatiquement (%(r1)f %(r2)f %(r3)f).
 Cela est probablement une erreur, qui peut conduire à des résultats faux.
 -> Risque et Conseil :
@@ -309,12 +304,6 @@ Le mot-clé 'FOND_FISS' est obligatoire avec l'option  %(k1)s.
 Veuillez le renseigner.
 """),
 
-49: _(u"""
-Déplacement normal du noeud %(k1)s non nul
-et SYME_CHAR = %(k2)s.
--> Risque et Conseil :
-Vérifier les conditions aux limites et VECT_K1.
-"""),
 
 50: _(u"""
 Nombre de modes différent entre la base modale

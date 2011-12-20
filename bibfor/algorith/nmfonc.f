@@ -4,7 +4,7 @@
      &                  FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,12 +39,12 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (INITIALISATION)
 C FONCTIONNALITES ACTIVEES
-C      
+C
 C ----------------------------------------------------------------------
 C
 C IN  MODELE : MODELE MECANIQUE
 C IN  DEFICO : SD DE DEFINITION DU CONTACT
-C IN  SDNUME : NOM DE LA SD NUMEROTATION 
+C IN  SDNUME : NOM DE LA SD NUMEROTATION
 C IN  LCONT  : .TRUE. S'IL Y A DU CONTACT
 C IN  LUNIL  : .TRUE. S'IL Y A LIAISON_UNILATER
 C IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
@@ -55,7 +55,7 @@ C IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 C IN  PARCRI : RESI_CONT_RELA VAUT R8VIDE SI NON ACTIF
 C IN  METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
 C                1 : NOM DE LA METHODE NON LINEAIRE (NEWTON OU IMPLEX)
-C                2 : TYPE DE MATRICE EN CORRECTION 
+C                2 : TYPE DE MATRICE EN CORRECTION
 C                3 : PAS UTILISE
 C                4 : PAS UTILISE
 C                5 : TYPE DE PREDICTION
@@ -91,20 +91,20 @@ C
       LOGICAL      LBOUCG,LBOUCF,LBOUCC
       INTEGER      JSOLVE,IXFEM,ICHAR,IFLAMB,IMVIBR
       LOGICAL      ISCHAR,ISDIRI
-      LOGICAL      LSUIV,LLAPL,LCINE,LDIDI   
-      REAL*8       R8VIDE       
+      LOGICAL      LSUIV,LLAPL,LCINE,LDIDI
+      REAL*8       R8VIDE
       CHARACTER*8  K8BID,REPK
       CHARACTER*16 NOMCMD,K16BID,CHAINE
       CHARACTER*19 COMPOR
-      INTEGER      NBPASE 
+      INTEGER      NBPASE
       CHARACTER*24 SENSNB,METRES,PRECON
-      INTEGER      JSENSN  
+      INTEGER      JSENSN
       LOGICAL      ISFONC,LSTAT,LDYNA,LGROT,LENDO,LARRNO
-      INTEGER      IFM,NIV 
+      INTEGER      IFM,NIV
       INTEGER      IARG
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
@@ -118,26 +118,26 @@ C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... CREATION VECTEUR '//
      &                'FONCTIONNALITES ACTIVEES: '
-      ENDIF      
+      ENDIF
 C
 C --- NOM DE LA COMMANDE: STAT_NON_LINE, DYNA_NON_LINE
 C
       CALL GETRES(K8BID,K16BID,NOMCMD)
-      LSTAT = NOMCMD(1:4).EQ.'STAT'    
-      LDYNA = NOMCMD(1:4).EQ.'DYNA' 
+      LSTAT = NOMCMD(1:4).EQ.'STAT'
+      LDYNA = NOMCMD(1:4).EQ.'DYNA'
 C
 C --- ELEMENTS EN GRANDES ROTATIONS
 C
       CALL JEEXIN(SDNUME(1:19)//'.NDRO',IRET)
-      LGROT = IRET.NE.0   
+      LGROT = IRET.NE.0
 C
 C --- ELEMENTS AVEC ENDO AUX NOEUDS
 C
       CALL JEEXIN(SDNUME(1:19)//'.ENDO',IRET)
-      LENDO = IRET.NE.0   
+      LENDO = IRET.NE.0
 C
 C --- RECHERCHE LINEAIRE
-C      
+C
       CALL GETFAC('RECH_LINEAIRE',NOCC)
       IF (NOCC.NE.0) THEN
         FONACT(1) = 1
@@ -179,7 +179,7 @@ C
         IF(LDYNA)CALL U2MESS('F','MECANONLINE5_53')
       ENDIF
 C
-C --- X-FEM 
+C --- X-FEM
 C
       CALL EXIXFE(MODELE,IXFEM )
       IF (IXFEM.NE.0) THEN
@@ -187,7 +187,7 @@ C
       ENDIF
 C
 C --- CONTACT / FROTTEMENT
-C      
+C
       IF (LCONT) THEN
         IFORM  = CFDISI(DEFICO,'FORMULATION')
 
@@ -200,36 +200,36 @@ C
             FONACT(10) = 1
             FONACT(27) = 1
           ENDIF
-        ELSEIF (IFORM.EQ.3) THEN  
+        ELSEIF (IFORM.EQ.3) THEN
           FONACT(9)  = 1
           FONACT(26) = 1
           LFROT      = CFDISL(DEFICO,'FROTTEMENT')
           IF (LFROT) THEN
             FONACT(25) = 1
             FONACT(27) = 1
-          ENDIF       
-C --- GLUTE TANT QUE XFEM NE DISTINGUE PAS 
-C --- CONTACT/FROTTEMENT          
+          ENDIF
+C --- GLUTE TANT QUE XFEM NE DISTINGUE PAS
+C --- CONTACT/FROTTEMENT
           FONACT(27) = 1
         ELSEIF (IFORM.EQ.1) THEN
-          FONACT(4)  = 1        
+          FONACT(4)  = 1
           LFROT      = CFDISL(DEFICO,'FROTTEMENT')
           IF (LFROT) THEN
             FONACT(3)  = 1
           ENDIF
         ELSE
-          CALL ASSERT(.FALSE.)  
+          CALL ASSERT(.FALSE.)
         ENDIF
 
-      ENDIF  
+      ENDIF
 C
 C --- BOUCLES EXTERNES CONTACT / FROTTEMENT
-C      
+C
       IF (LCONT) THEN
 C
 C ----- BOUCLE SUR GEOMETRIE
 C
-        LBOUCG = CFDISL(DEFICO,'GEOM_BOUCLE')   
+        LBOUCG = CFDISL(DEFICO,'GEOM_BOUCLE')
 C
 C ----- BOUCLE SUR FROTTEMENT
 C
@@ -240,14 +240,14 @@ C
 C
 C ----- BOUCLE SUR CONTACT
 C
-        LBOUCC = CFDISL(DEFICO,'CONT_BOUCLE')  
+        LBOUCC = CFDISL(DEFICO,'CONT_BOUCLE')
         IF (IFORM.EQ.1) THEN
           LBOUCC = .FALSE.
           LBOUCF = .FALSE.
         ENDIF
 C
-C ----- TOUTES LES ZONES EN VERIF -> PAS DE BOUCLES       
-C        
+C ----- TOUTES LES ZONES EN VERIF -> PAS DE BOUCLES
+C
         LALLV  = CFDISL(DEFICO,'ALL_VERIF')
         IF (LALLV) THEN
           LBOUCC = .FALSE.
@@ -281,8 +281,8 @@ C
         LALLV  = CFDISL(DEFICO,'ALL_VERIF')
         IF (LALLV) THEN
           FONACT(38) = 1
-        ENDIF  
-      ENDIF               
+        ENDIF
+      ENDIF
 C
 C --- FETI
 C
@@ -305,7 +305,7 @@ C
       LDIDI = ISCHAR(LISCHA,'DIRI','DIDI',ICHAR )
       IF (LDIDI) FONACT(22) = 1
 C
-C --- AU MOINS UNE CHARGE DE TYPE DIRICHLET PAR 
+C --- AU MOINS UNE CHARGE DE TYPE DIRICHLET PAR
 C --- ELIMINATION (AFFE_CHAR_CINE)
 C
       LCINE = ISDIRI(LISCHA,'ELIM')
@@ -314,21 +314,21 @@ C
 C --- AU MOINS UNE CHARGE DE TYPE FORCE DE LAPLACE
 C
       LLAPL = ISCHAR(LISCHA,'NEUM','LAPL',ICHAR )
-      IF (LLAPL) FONACT(20) = 1       
+      IF (LLAPL) FONACT(20) = 1
 C
 C --- SOUS STRUCTURES STATIQUES
 C
       CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8BID,IRET)
       IF (NBSS.GT.0) THEN
         FONACT(14) = 1
-      ENDIF   
+      ENDIF
 C
 C --- CALCUL PAR SOUS-STRUCTURATION
 C
-      CALL NMLSSV('LECT',LISCHA,NBSST) 
+      CALL NMLSSV('LECT',LISCHA,NBSST)
       IF (NBSST.GT.0)THEN
-        FONACT(24) = 1 
-      ENDIF        
+        FONACT(24) = 1
+      ENDIF
 C
 C --- ELEMENTS EN GRANDES ROTATIONS
 C
@@ -340,7 +340,7 @@ C --- ELEMENTS AVEC ENDO AUX NOEUDS
 C
       IF (LENDO) THEN
         FONACT(40) = 1
-      ENDIF     
+      ENDIF
 C
 C --- SENSIBILITE
 C
@@ -363,11 +363,11 @@ C --- CALCUL DE MODES VIBRATOIRES
 C
       IMVIBR = 0
       IF (LDYNA) THEN
-        CALL GETFAC('MODE_VIBR',IMVIBR) 
+        CALL GETFAC('MODE_VIBR',IMVIBR)
         IF (IMVIBR.GT.0) THEN
           FONACT(19) = 1
-        ENDIF        
-      ENDIF     
+        ENDIF
+      ENDIF
 C
 C --- ERREUR EN TEMPS
 C
@@ -376,7 +376,7 @@ C
         IF (CHAINE.EQ.'OUI') THEN
           FONACT(21) = 1
         ENDIF
-      ENDIF  
+      ENDIF
 C
 C --- ALGORITHME IMPLEX
 C
@@ -388,15 +388,24 @@ C
         ENDIF
       ENDIF
 C
+C --- ALGORITHME NEWTON_KRYLOV
+C
+      IF (METHOD(1) .EQ.'NEWTON_KRYLOV') THEN
+        FONACT(47) = 1
+      ELSE
+        FONACT(47) = 0
+      ENDIF
+
+C
 C --- ELEMENTS DIS_CHOC ?
 C
       CALL NMCPQU(COMPOR,'COMP_EXIST','DIS_CHOC',LCHOC )
       IF (LCHOC) THEN
         FONACT(29) = 1
-      ENDIF  
+      ENDIF
 C
 C --- PRESENCE DE VARIABLES DE COMMANDE
-C      
+C
       CALL DISMOI('F','EXI_VARC',MATE ,'CHAM_MATER',IBID,
      &            REPK,IRET)
       IF (REPK.EQ.'OUI') THEN
@@ -404,7 +413,7 @@ C
       ENDIF
 C
 C --- MODELISATION THM ?
-C      
+C
       CALL DISMOI('F','EXI_THM', MODELE, 'MODELE',IBID,
      &            REPK,IRET)
       IF (REPK(1:3).EQ.'OUI') THEN
@@ -412,14 +421,14 @@ C
       ENDIF
 C
 C --- CONCEPT REENTRANT ?
-C      
+C
       CALL GCUCON(RESULT, 'EVOL_NOLI', IRET)
       IF (IRET.GT.0) THEN
         FONACT(39) = 1
       ENDIF
 C
 C --- SOLVEUR LDLT?
-C      
+C
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
       METRES=ZK24(JSLVK)
       IF (METRES.EQ.'LDLT') THEN
@@ -427,7 +436,7 @@ C
       ENDIF
 C
 C --- SOLVEUR MULT_FRONT?
-C      
+C
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
       METRES=ZK24(JSLVK)
       IF (METRES.EQ.'MULT_FRONT') THEN
@@ -435,7 +444,7 @@ C
       ENDIF
 C
 C --- SOLVEUR GCPC?
-C      
+C
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
       METRES=ZK24(JSLVK)
       IF (METRES.EQ.'GCPC') THEN
@@ -443,7 +452,7 @@ C
       ENDIF
 C
 C --- SOLVEUR MUMPS?
-C      
+C
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
       METRES=ZK24(JSLVK)
       IF (METRES.EQ.'MUMPS') THEN
@@ -451,7 +460,7 @@ C
       ENDIF
 C
 C --- SOLVEUR PETSC?
-C      
+C
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
       METRES=ZK24(JSLVK)
       IF (METRES.EQ.'PETSC') THEN
@@ -459,7 +468,7 @@ C
       ENDIF
 C
 C --- PRECONDITIONNEUR LDLT_SP?
-C      
+C
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
       METRES=ZK24(JSLVK)
       IF (METRES.EQ.'PETSC'.OR.METRES.EQ.'GCPC') THEN
@@ -470,7 +479,7 @@ C
       ENDIF
 C
 C --- BLINDAGE ARRET=NON
-C  
+C
       LARRNO = (NINT(PARCRI(4)).EQ.1)
       IF (LARRNO) CALL U2MESS('A','MECANONLINE5_37')
 C
@@ -488,7 +497,7 @@ C
         IF (ISFONC(FONACT,'IMPLEX')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... IMPLEX'
           NBFONC = NBFONC + 1
-        ENDIF        
+        ENDIF
 C
         IF (ISFONC(FONACT,'CONTACT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT'
@@ -497,11 +506,11 @@ C
         IF (ISFONC(FONACT,'CONT_DISCRET')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT DISCRET'
           NBFONC = NBFONC + 1
-        ENDIF 
+        ENDIF
         IF (ISFONC(FONACT,'CONT_CONTINU')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT CONTINU'
           NBFONC = NBFONC + 1
-        ENDIF 
+        ENDIF
         IF (ISFONC(FONACT,'CONT_XFEM')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT XFEM'
           NBFONC = NBFONC + 1
@@ -513,7 +522,7 @@ C
         IF (ISFONC(FONACT,'BOUCLE_EXT_CONT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT BOUCLE CONTACT'
           NBFONC = NBFONC + 1
-        ENDIF        
+        ENDIF
         IF (ISFONC(FONACT,'BOUCLE_EXT_FROT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT BOUCLE FROT'
           NBFONC = NBFONC + 1
@@ -526,33 +535,33 @@ C
           WRITE (IFM,*) '<MECANONLINE> ...... FROTTEMENT AVEC '//
      &                  'NEWTON GENERALISE'
           NBFONC = NBFONC + 1
-        ENDIF        
+        ENDIF
         IF (ISFONC(FONACT,'DIS_CHOC')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '
           NBFONC = NBFONC + 1
-        ENDIF         
+        ENDIF
 C
         IF (ISFONC(FONACT,'ELT_CONTACT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE CONTACT'
           NBFONC = NBFONC + 1
-        ENDIF                
+        ENDIF
         IF (ISFONC(FONACT,'ELT_FROTTEMENT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE FROTTEMENT'
           NBFONC = NBFONC + 1
-        ENDIF                        
-C         
+        ENDIF
+C
         IF (ISFONC(FONACT,'FROT_DISCRET')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... FROTTEMENT DISCRET'
           NBFONC = NBFONC + 1
-        ENDIF 
+        ENDIF
         IF (ISFONC(FONACT,'FROT_CONTINU')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... FROTTEMENT CONTINU'
           NBFONC = NBFONC + 1
-        ENDIF 
+        ENDIF
         IF (ISFONC(FONACT,'FROT_XFEM')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... FROTTEMENT XFEM'
           NBFONC = NBFONC + 1
-        ENDIF                  
+        ENDIF
         IF (ISFONC(FONACT,'XFEM')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... XFEM'
           NBFONC = NBFONC + 1
@@ -560,7 +569,7 @@ C
         IF (ISFONC(FONACT,'DEBORST')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... METHODE DEBORST'
           NBFONC = NBFONC + 1
-        ENDIF                        
+        ENDIF
         IF (ISFONC(FONACT,'RESI_REFE')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_REFE'
           NBFONC = NBFONC + 1
@@ -576,15 +585,15 @@ C
         IF (ISFONC(FONACT,'FORCE_SUIVEUSE')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... FORCE SUIVEUSE'
           NBFONC = NBFONC + 1
-        ENDIF 
+        ENDIF
         IF (ISFONC(FONACT,'DIDI')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENT DIDI'
           NBFONC = NBFONC + 1
-        ENDIF         
+        ENDIF
         IF (ISFONC(FONACT,'DIRI_CINE')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENT CINEMATIQUE'
           NBFONC = NBFONC + 1
-        ENDIF         
+        ENDIF
         IF (ISFONC(FONACT,'MACR_ELEM_STAT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... MACRO-ELEMENTS STATIQUES'
           NBFONC = NBFONC + 1
@@ -601,7 +610,7 @@ C
         IF (ISFONC(FONACT,'CRIT_FLAMB')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CALCUL CRITERE FLAMBEMENT'
           NBFONC = NBFONC + 1
-        ENDIF     
+        ENDIF
         IF (ISFONC(FONACT,'MODE_VIBR')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CALCUL MODES VIBRATOIRES'
           NBFONC = NBFONC + 1
@@ -610,28 +619,32 @@ C
           WRITE (IFM,*) '<MECANONLINE> ...... CALCUL PAR SOUS-'//
      &                    'STRUCTURATION'
           NBFONC = NBFONC + 1
-        ENDIF 
+        ENDIF
         IF (ISFONC(FONACT,'EXI_VARC')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... VARIABLES DE COMMANDE'
           NBFONC = NBFONC + 1
-        ENDIF                  
+        ENDIF
         IF (ISFONC(FONACT,'THM')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION THM'
           NBFONC = NBFONC + 1
-        ENDIF         
+        ENDIF
         IF (ISFONC(FONACT,'ENDO_NO')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION GVNO'
           NBFONC = NBFONC + 1
-        ENDIF               
+        ENDIF
         IF (ISFONC(FONACT,'REUSE')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONCEPT RE-ENTRANT'
           NBFONC = NBFONC + 1
-        ENDIF  
+        ENDIF
+        IF (ISFONC(FONACT,'NEWTON_KRYLOV')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... METHODE NEWTON_KRYLOV'
+          NBFONC = NBFONC + 1
+        ENDIF
         IF (NBFONC.EQ.0) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... <AUCUNE>'
-        ENDIF          
-      ENDIF     
-C      
+        ENDIF
+      ENDIF
+C
 C --- FONCTIONNALITES INCOMPATIBLES
 C
       CALL EXFONC(FONACT,PARMET,METHOD,SOLVEU,DEFICO,

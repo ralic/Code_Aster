@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (HEXA20) 3D
 # ssnv112a.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,8 +33,7 @@
 # ----------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='SSNV112A',
-              NIV_PUB_WEB='INTERNET',),
-      MEMOIRE=_F(DYNAMIQUE=400,),);
+              NIV_PUB_WEB='INTERNET',),);
 
 M=LIRE_MAILLAGE(FORMAT='MED',);
 

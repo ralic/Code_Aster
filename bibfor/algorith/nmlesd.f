@@ -2,7 +2,7 @@
      &                  VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,6 +87,7 @@ C
         CALL JEVEUO(SDINFI,'L',JPINFI)
         CALL JEVEUO(SDINFR,'L',JPINFR)      
         CALL JEVEUO(SDINFK,'L',JPINFK)
+        
         IF (NOMPAR.EQ.'CRIT_FLAMB') THEN 
           VALI = ZI(JPINFI+1-1)
         ELSEIF(NOMPAR.EQ.'MODE_VIBR') THEN 
@@ -131,6 +132,20 @@ C
           VALK = ZK24(JPINFK+9-1)
         ELSEIF(NOMPAR.EQ.'NOM_DDL_EXCLUS') THEN 
           VALK = ZK24(JPINFK+10-1)
+        ELSEIF(NOMPAR.EQ.'NB_DDL_STAB') THEN 
+          VALI = ZI(JPINFI+8-1)          
+        ELSEIF(NOMPAR.EQ.'NOM_DDL_STAB') THEN 
+          VALK = ZK24(JPINFK+11-1)   
+        ELSEIF(NOMPAR.EQ.'SOLU_FREQ_STAB') THEN 
+          VALR = ZR(JPINFR+7-1)          
+        ELSEIF(NOMPAR.EQ.'SOLU_NUME_STAB') THEN 
+          VALI = ZI(JPINFI+9-1)          
+        ELSEIF(NOMPAR.EQ.'SOLU_MODE_STAB') THEN
+          VALK = ZK24(JPINFK+12-1)
+        ELSEIF(NOMPAR.EQ.'COEF_DIM_FLAMB') THEN
+          VALI = ZI(JPINFI+10-1)
+        ELSEIF(NOMPAR.EQ.'COEF_DIM_VIBR') THEN
+          VALI = ZI(JPINFI+11-1)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF              

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,7 +154,6 @@ PK1 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    VECT_K1 = (0., 1., 0.),
                     ABSC_CURV_MAXI=7.E-5,
                     NUME_ORDRE=(1,2,3,4,5),);
 
@@ -177,7 +176,6 @@ PK2 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    VECT_K1 = (0., 1., 0.),
                     ABSC_CURV_MAXI=7.E-5,
                     TOUT_MODE = 'OUI')
 
@@ -200,7 +198,6 @@ PK3 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    VECT_K1 = (0., 1., 0.),
                     ABSC_CURV_MAXI=7.E-5,
                     NUME_MODE = 1)
 
@@ -225,7 +222,6 @@ PK4 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    VECT_K1 = (0., 1., 0.),
                     ABSC_CURV_MAXI=7.E-5,
                     LIST_MODE = L_MODE)
 
@@ -248,7 +244,6 @@ PK5 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    VECT_K1 = (0., 1., 0.),
                     ABSC_CURV_MAXI=7.E-5,
                     FREQ = 3469.13,
                     CRITERE='ABSOLU',
@@ -276,7 +271,6 @@ PK6 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    VECT_K1 = (0., 1., 0.),
                     ABSC_CURV_MAXI=7.E-5,
                     LIST_FREQ = L_FREQ6,
                     CRITERE='ABSOLU',
@@ -300,7 +294,6 @@ PK7 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    VECT_K1 = (0., 1., 0.),
                     ABSC_CURV_MAXI=7.E-5,
                     LIST_FREQ = L_FREQ7,
                     CRITERE='ABSOLU',

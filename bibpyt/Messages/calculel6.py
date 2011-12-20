@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -350,7 +350,7 @@ Conseils :
 """),
 
 77: _(u"""
-Problème lors de la création du champ par elements (%(k1)s).
+Problème lors de la création du champ par éléments (%(k1)s).
   Ce champ est associé au paramètre %(k3)s de l'option: '%(k2)s'
   Certaines valeurs fournies par l'utilisateur n'ont pas été recopiées dans le champ final.
 

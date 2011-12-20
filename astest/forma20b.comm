@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 # forma20b.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
@@ -99,9 +99,7 @@ FLEC    = [None]*nb_calc1
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM = 'FORMA20B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',
-      MEMOIRE =_F( TYPE_ALLOCATION=3, TAILLE = 8000,)
-      );
+DEBUT(CODE=_F(NOM = 'FORMA20B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',);
 
 # DEFINITION DU MATERIAU
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,

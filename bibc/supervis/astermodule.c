@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1447,32 +1447,6 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         return ;
 }
 
-
-/* ------------------------------------------------------------------ */
-void DEFPPP(SMCDEL,smcdel,INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
-{
-        /*
-          Entrees:
-            iold ancien numero d ordre de la commande
-            inew nouveau numero d ordre de la commande (si inew < iold, commande detruite)
-          Sorties:
-            ierusr code retour d erreur incremente
-        */
-        PyObject *res  = (PyObject*)0 ;
-
-        res=PyObject_CallMethod(commande,"smcdel","ii",(int)*iold,(int)*inew);
-
-        /*
-            Si le retour est NULL : une exception a ete levee dans le code Python appele
-            Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-            On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)MYABORT("erreur a l appel de smcdel dans la partie Python");
-        *ierusr = *ierusr + (INTEGER)PyInt_AsLong(res);
-        Py_DECREF(res);
-}
-
-
 /* ------------------------------------------------------------------ */
 PyObject * MakeTupleString(long nbval,char *kval,STRING_SIZE lkval,INTEGER *lval)
 {
@@ -2792,39 +2766,69 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
+static PyObject *repmat_value = Py_None ;
+
+void put_repmat(_IN char *value)
+{
+    repmat_value = PyString_FromString(value);
+}
+
+static PyObject * aster_repmat(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    Py_INCREF( repmat_value );
+    return repmat_value;
+}
+
+/* ------------------------------------------------------------------ */
+static PyObject *repout_value = Py_None ;
+
+void put_repout(_IN char *value)
+{
+    repout_value = PyString_FromString(value);
+}
+
 static PyObject * aster_repout(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-    PyObject *temp = (PyObject*)0 ;
-    INTEGER maj=1 ;
-    INTEGER lnom=0;
-    char *nom;
+    Py_INCREF( repout_value );
+    return repout_value;
+}
 
-    if (!PyArg_ParseTuple(args, "")) return NULL;
-    nom = MakeBlankFStr(128);
-    CALL_REPOUT (&maj,&lnom,nom);
-    temp = PyString_FromStringAndSize(nom,FStrlen(nom, (Py_ssize_t)lnom));
-    FreeStr(nom);
-    return temp;
+void DEFSP(REPOUT,repout, char *nomrep, STRING_SIZE lnomrep, INTEGER *lon)
+{
+/*
+   Permet de récupérer la valeur de repout depuis le fortran.
+   Rempli 'nomrep' sur au plus 'lnomrep' caractères et retourne la longueur
+   exacte de 'nomrep' dans 'lon'.
+   Si lon > lnomrep, l'appelant devrait émettre un message d'erreur.
+   Exemple : repout='/opt/aster/outils' donc lon=17
+   * si lnomrep=12, nomrep='/opt/aster/o'
+   * si lnomrep=20, nomrep='/opt/aster/outils  '
+*/
+    char *repout;
+    repout = PyString_AsString( repout_value );
+    CopyCStrToFStr(nomrep, repout, lnomrep);
+    *lon = (INTEGER)strlen(repout);
+    return;
 }
 
 /* ------------------------------------------------------------------ */
+static PyObject *repdex_value = Py_None ;
+
+void put_repdex(_IN char *value)
+{
+    repdex_value = PyString_FromString(value);
+}
+
 static PyObject * aster_repdex(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-    PyObject *temp = (PyObject*)0 ;
-    INTEGER maj=1 ;
-    INTEGER lnom=0;
-    char *nom;
-
-    if (!PyArg_ParseTuple(args, "")) return NULL;
-    nom = MakeBlankFStr(128);
-    CALL_REPDEX (&maj,&lnom,nom);
-    temp= PyString_FromStringAndSize(nom,FStrlen(nom, (Py_ssize_t)lnom));
-    FreeStr(nom);
-    return temp;
+    Py_INCREF( repdex_value );
+    return repdex_value;
 }
 
 /* ------------------------------------------------------------------ */
@@ -3775,8 +3779,9 @@ static PyMethodDef aster_methods[] = {
                 {"poursu",       aster_poursu,       METH_VARARGS},
                 {"oper",         aster_oper,         METH_VARARGS},
                 {"opsexe",       aster_opsexe,       METH_VARARGS},
-                {"repout",       aster_repout,       METH_VARARGS},
                 {"impers",       aster_impers,       METH_VARARGS},
+                {"repmat",       aster_repmat,       METH_VARARGS},
+                {"repout",       aster_repout,       METH_VARARGS},
                 {"repdex",       aster_repdex,       METH_VARARGS},
                 {"mdnoma",       aster_mdnoma,       METH_VARARGS},
                 {"mdnoch",       aster_mdnoch,       METH_VARARGS},

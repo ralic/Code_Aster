@@ -1,9 +1,10 @@
-      SUBROUTINE GLDLOC (LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,VIM,
-     &                   Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,KSI2D,
-     &                   DA1,DA2,KDMAX,TOLD,CODRET)
-C ----------------------------------------------------------------------
+      SUBROUTINE GLDLOC (LAMBDA,DEUXMU,DEUMUF,SEUIL,ALF,ALFMC,GMT,
+     &                   GMC,GF,COF1,VIM,Q2D,QFF,TR2D,
+     &                   EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2,DA1,
+     &                   DA2,KDMAX,TOLD,CODRET,EMP)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,12 +22,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
+C TOLE CRP_21
       IMPLICIT NONE
 
       INTEGER KDMAX,CODRET
-      REAL*8  VIM(*),GMT,GMC,QFF(2),TR2D,EPS33,COF1
-      REAL*8  LAMBDA,DEUXMU,SEUIL,ALF,Q2D,TOLD
-      REAL*8  DE33D1,DE33D2,KSI2D,DA1,DA2,TREPS,TREPS2
+      REAL*8  VIM(*),GMT,GMC,GF,TR2D,EPS33
+      REAL*8  LAMBDA,DEUXMU,DEUMUF,SEUIL,ALF,QFF(2),TOLD
+      REAL*8  DE33D1,DE33D2,KSI2D,DKSI1,DKSI2,DA1,DA2,TREPS,TREPS2
+      REAL*8  COF1(2),Q2D(2)
 
 C ----------------------------------------------------------------------
 C
@@ -66,12 +69,19 @@ C ----------------------------------------------------------------------
 
       REAL*8  QM1,QM2
       REAL*8  RD1,RD2,DR1D,DR2D,DD1,DD2,SEUILR
+      REAL*8  ALFMC,EMP(2),COF2(2),DQ2D(2)
+
+      CALL CEPS33 (LAMBDA,DEUXMU,ALFMC,GMT,GMC,TR2D,
+     &             DA1,DA2,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,
+     &             DKSI2,COF1,Q2D,EMP,
+     &             COF2,DQ2D)
 
       TREPS = TR2D + EPS33
       TREPS2 = TREPS**2
-      QM1 = 0.5D0*COF1*TREPS2+Q2D
-      QM2 = QM1
 
+C----------CONTRIBUTION DE MEMBRANE-----
+      QM1 = 0.5D0*COF1(1)*TREPS2+Q2D(1)
+      QM2 = 0.5D0*COF1(2)*TREPS2+Q2D(2)
       RD1 = QM1/(1.0D0 + DA1)**2 - SEUIL
       RD2 = QM2/(1.0D0 + DA2)**2 - SEUIL
 
@@ -94,9 +104,10 @@ C-----VERIFIER SI LE SEUIL EST ATTEINT
           DD2 = 0.0D0
 
           IF (RD1 .GE. 0.0D0) THEN
-            DR1D  = COF1*TREPS*DE33D1 /(1.0D0 + DA1)**2
-     &            - 2.0D0*QM1   /(1.0D0 + DA1)**3
-     &            - 2.0D0*QFF(1)/(ALF   + DA1)**3
+            DR1D  = (COF1(1)*TREPS*DE33D1+0.5D0*COF2(1)*TREPS2+DQ2D(1))
+     &            /(1.D0 + DA1)**2
+     &            - 2.D0*QM1   /(1.D0 + DA1)**3
+     &            - 2.D0*QFF(1)/(ALF  + DA1)**3
             IF(ABS(DR1D) .LT. 1.0D-14 ) THEN
               DD1 = 0.0D0
             ELSE
@@ -105,9 +116,11 @@ C-----VERIFIER SI LE SEUIL EST ATTEINT
           ENDIF
 
           IF (RD2 .GE. 0.0D0) THEN
-            DR2D = COF1*TREPS*DE33D2 /(1.0D0 + DA2)**2
-     &           - 2.0D0*QM2   /(1.0D0 + DA2)**3
-     &           - 2.0D0*QFF(2)/(ALF   + DA2)**3
+            DR2D  = (COF1(2)*TREPS*DE33D2+0.5D0*COF2(2)*TREPS2+DQ2D(2))
+     &            /(1.D0 + DA2)**2
+     &            - 2.D0*QM2   /(1.D0 + DA2)**3
+     &            - 2.D0*QFF(2)/(ALF  + DA2)**3
+
             IF(ABS(DR2D) .LT. 1.0D-14 ) THEN
               DD2 = 0.0D0
             ELSE
@@ -127,14 +140,16 @@ C-----VERIFIER SI LE SEUIL EST ATTEINT
           IF(DA1.LT.0.0D0 .AND. RD1.LT.0.0D0) DA1 = VIM(1)
           IF(DA2.LT.0.0D0 .AND. RD2.LT.0.0D0) DA2 = VIM(2)
 
-          CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
-     &                ,EPS33,DE33D1,DE33D2,KSI2D)
+          CALL CEPS33 (LAMBDA,DEUXMU,ALFMC,GMT,GMC,TR2D,DA1,DA2,EPS33,
+     &                 DE33D1,DE33D2,KSI2D,DKSI1,DKSI2,COF1,Q2D,EMP,
+     &                 COF2,DQ2D)
 
           TREPS = TR2D + EPS33
           TREPS2 = TREPS**2
-          QM1 = 0.5D0*COF1*TREPS2+Q2D
-          QM2 = QM1
 
+C----------CONTRIBUTION DE MEMBRANE-----
+          QM1 = 0.5D0*COF1(1)*TREPS2+Q2D(1)
+          QM2 = 0.5D0*COF1(2)*TREPS2+Q2D(2)
           RD1 = QM1/(1.0D0 + DA1)**2 - SEUIL
           RD2 = QM2/(1.0D0 + DA2)**2 - SEUIL
 

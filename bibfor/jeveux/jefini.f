@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ C TOLE CRP_6 CRP_12 CRS_505 CRS_745
 C     ==================================================================
       PARAMETER  ( N = 5 )
 C
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       INTEGER          NBFIC
       COMMON /IPARJE/  NBFIC
@@ -43,7 +43,7 @@ C
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
 C     ==================================================================
       INTEGER          VALI(7) , INFO, IFM, IRES
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
 C
       KCOND  = COND ( 1: MIN( LEN(COND) , LEN(KCOND) ) )
       CALL ASSERT (     KCOND .EQ. 'NORMAL  ' .OR. KCOND .EQ. 'ERREUR  '
-     &             .OR. KCOND .NE. 'TEST    '  ) 
+     &             .OR. KCOND .NE. 'TEST    '  )
       IF ( KCOND .EQ. 'NORMAL  ' .OR. KCOND .EQ. 'TEST    ' ) THEN
          STAOU = '        '
       ELSE
@@ -69,7 +69,7 @@ C     -------------  EDITION DES REPERTOIRES ---------------------------
           ENDIF
    5    CONTINUE
 C     -------------  EDITION SEGMENTATION MEMOIRE ----------------------
-        CALL JEIMPM ( 'MESSAGE' , '     JEFINI     ' // KCOND   )
+        CALL JEIMPM ( 'MESSAGE' )
       ENDIF
 C     -------------  LIBERATION FICHIER --------------------------------
       IF ( KCOND .NE. 'ERREUR  ' )   THEN
@@ -80,22 +80,12 @@ C     -------------  LIBERATION FICHIER --------------------------------
           ENDIF
    10   CONTINUE
 C       -----------  DESALLOCATION GESTION DES MARQUES -----------------
-        IF ( KDESMA(2) .NE. 0) THEN
-          CALL JJLIDY (KDESMA(2), KDESMA(1))
-        ELSE IF (KDESMA(1) .NE. 0) THEN
-          CALL JJLIBP (KDESMA(1))
-        ENDIF  
-        IF ( KPOSMA(2) .NE. 0) THEN
-          CALL JJLIDY (KPOSMA(2), KPOSMA(1))
-        ELSE IF (KPOSMA(1) .NE. 0) THEN
-          CALL JJLIBP (KPOSMA(1))
-        ENDIF  
+        CALL JJLIDY (KDESMA(2), KDESMA(1))
+        CALL JJLIDY (KPOSMA(2), KPOSMA(1))
         KDESMA(1) = 0
         KDESMA(2) = 0
         KPOSMA(1) = 0
         KPOSMA(2) = 0
-C       -----------  DESALLOCATION MEMOIRE -----------------------------
-        CALL JXLIBM ( ISZON , LISZON )
 C
       ELSE
         CALL ABORT()
@@ -108,14 +98,14 @@ C     --- IMPRESSION DES CONSOMMATIONS MEMOIRE ---
 C
       IF(IRES .GT. 0) THEN
         WRITE(IRES,*) ' '
-        WRITE(IRES,'(2A,F11.2,A)') 
+        WRITE(IRES,'(2A,F11.2,A)')
      &        ' <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR ',
      &        'L''EXECUTION :                ',RVAL(2),' Mo'
-        WRITE(IRES,'(2A,F11.2,A)') 
+        WRITE(IRES,'(2A,F11.2,A)')
      &        ' <I> <FIN> MEMOIRE JEVEUX OPTIMALE REQUISE POUR ',
      &        'L''EXECUTION :                ',RVAL(5),' Mo'
-        IF (RVAL(9).GT.0) THEN 
-          WRITE(IRES,'(2A,F11.2,A)') 
+        IF (RVAL(9).GT.0) THEN
+          WRITE(IRES,'(2A,F11.2,A)')
      &        ' <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS'
      &        ,' LORS DE L''EXECUTION :',RVAL(9)/1024,' Mo'
         ENDIF
@@ -135,37 +125,37 @@ C
             VALI(7) = NINT(LGIO(2)/(1024*1024))
             WRITE(IFM,*) ' '
             WRITE(IFM,*) '  STATISTIQUES CONCERNANT L'''
-     &                 //'ALLOCATION DYNAMIQUE :' 
+     &                 //'ALLOCATION DYNAMIQUE :'
             WRITE(IFM,*) '    TAILLE CUMULEE MAXIMUM            :',
-     &                 VALI(1),' Mo.' 
-            WRITE(IFM,*) '    TAILLE CUMULEE LIBEREE            :', 
-     &                 VALI(5),' Mo.' 
-            WRITE(IFM,*) '    NOMBRE TOTAL D''ALLOCATIONS        :',    
-     &                 VALI(3) 
-            WRITE(IFM,*) '    NOMBRE TOTAL DE LIBERATIONS       :',    
-     &                 VALI(4) 
+     &                 VALI(1),' Mo.'
+            WRITE(IFM,*) '    TAILLE CUMULEE LIBEREE            :',
+     &                 VALI(5),' Mo.'
+            WRITE(IFM,*) '    NOMBRE TOTAL D''ALLOCATIONS        :',
+     &                 VALI(3)
+            WRITE(IFM,*) '    NOMBRE TOTAL DE LIBERATIONS       :',
+     &                 VALI(4)
             WRITE(IFM,*) '    APPELS AU MECANISME DE LIBERATION :',
-     &                 ICDYN 
-            WRITE(IFM,*) '    TAILLE MEMOIRE CUMULEE RECUPEREE  :',    
-     &                 MXLTOT,' Mo.' 
+     &                 ICDYN
+            WRITE(IFM,*) '    TAILLE MEMOIRE CUMULEE RECUPEREE  :',
+     &                 MXLTOT,' Mo.'
             WRITE(IFM,*) '    VOLUME DES LECTURES               :',
-     &                  VALI(6),' Mo.'    
+     &                  VALI(6),' Mo.'
             WRITE(IFM,*) '    VOLUME DES ECRITURES              :',
-     &                  VALI(7),' Mo.'    
+     &                  VALI(7),' Mo.'
             WRITE(IFM,*) ' '
-          ENDIF         
-          WRITE(IFM,'(A,F11.2,A)') 
+          ENDIF
+          WRITE(IFM,'(A,F11.2,A)')
      &       '   MEMOIRE JEVEUX MINIMALE REQUISE POUR L''EXECUTION :',
      &       RVAL(2),' Mo'
           WRITE(IFM,'(A)') '     - IMPOSE DE NOMBREUX ACCES DISQUE'
           WRITE(IFM,'(A)') '     - RALENTIT LA VITESSE D''EXECUTION'
-          WRITE(IFM,'(A,F11.2,A)') 
+          WRITE(IFM,'(A,F11.2,A)')
      &       '   MEMOIRE JEVEUX OPTIMALE REQUISE POUR L''EXECUTION :',
      &       RVAL(5),' Mo'
           WRITE(IFM,'(A)') '     - LIMITE LES ACCES DISQUE'
           WRITE(IFM,'(A)') '     - AMELIORE LA VITESSE D''EXECUTION'
-          IF (RVAL(9).GT.0) THEN 
-            WRITE(IFM,'(A,F11.2,A)') 
+          IF (RVAL(9).GT.0) THEN
+            WRITE(IFM,'(A,F11.2,A)')
      &       '   MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :',
      &       RVAL(9)/1024,' Mo'
           WRITE(IFM,'(A)') '     - COMPREND LA MEMOIRE CONSOMMEE PAR '//

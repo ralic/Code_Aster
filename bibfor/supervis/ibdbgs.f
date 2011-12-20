@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF SUPERVIS  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,14 +53,11 @@ C     -- COMMON MESTP1 POUR MESURE_TEMPS
 
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
-      CHARACTER*16 MEMOIR
-      INTEGER SEGJVX,LSEGJV,L,NCODE,IVAL,NDBG
-      REAL*8 VPARJV
+      INTEGER L,NCODE,NDBG
       INTEGER      IARG
 C
 C     --- OPTIONS PAR DEFAUT ---
       CALL JEMARQ()
-      MEMOIR = 'RAPIDE'
       TBLOC=800.D0
 
 C     -- WARNING SUR LES MOTS-CLES CODE ET DEBUG
@@ -133,40 +130,10 @@ C     -----------------------------------------------------
         MTPSTA = 0
       ENDIF
 
-
-C     -- MEMOIRE / GESTION ...  :
+C     -- MEMOIRE  :
 C     -----------------------------------------------------
-      CALL GETVTX('MEMOIRE','GESTION',1,IARG,1,MEMOIR,L)
-      CALL GETVIS('MEMOIRE','TYPE_ALLOCATION',1,IARG,1,ISEG,L)
-      IF (L.LE.0) ISEG = SEGJVX(-1)
-      CALL GETVIS('MEMOIRE','TAILLE',1,IARG,1,ITAIL,L)
-      IF (L.LE.0) ITAIL = LSEGJV(-1)
-      CALL GETVR8('MEMOIRE','PARTITION',1,IARG,1,RVAL,L)
-      IF (L.LE.0) THEN
-        R8BID = -1.0D0
-        RVAL = VPARJV(R8BID)
-      ENDIF
-      CALL GETVIS('MEMOIRE','DYNAMIQUE',1,IARG,1,IVAL,L)
-      CALL JEALDY ( L, IVAL )
 
       CALL GETVR8('MEMOIRE','TAILLE_BLOC',1,IARG,1,TBLOC,L)
-
-      IF ( MEMOIR(1:8) .EQ. 'COMPACTE') THEN
-         CALL U2MESS('A','SUPERVIS_25')
-         CALL JETYPR('DEBUT','XD',ISEG,ITAIL,RVAL)
-      ELSE
-         CALL JETYPR('DEFAUT','XX',ISEG,ITAIL,RVAL)
-      ENDIF
-      IF (ISEG .EQ. 2) THEN
-        CALL U2MESS('I','SUPERVIS_26')
-      ELSE IF (ISEG .EQ. 3) THEN
-        CALL U2MESS('I','SUPERVIS_27')
-        CALL U2MESI('I','JEVEUX_44',1,ITAIL)
-      ELSE IF (ISEG .EQ. 4) THEN
-        CALL U2MESS('I','SUPERVIS_28')
-        CALL U2MESI('I','JEVEUX_44',1,ITAIL)
-        CALL U2MESR('I','JEVEUX_45',1,RVAL)
-      ENDIF
 
       CALL JEDEMA()
       END

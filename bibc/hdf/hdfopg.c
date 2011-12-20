@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopg hdf  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF hdfopg hdf  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -55,7 +55,7 @@ INTEGER DEFPS(HDFOPG, hdfopg, INTEGER *idf, char *nomgr, STRING_SIZE ln)
   } 
   nomd[k+1] = '\0';
 
-  if ((idgrp = H5Gopen(idfic, nomd)) >= 0) 
+  if ((idgrp = H5Gopen2(idfic, nomd, H5P_DEFAULT)) >= 0) 
     iret = (INTEGER) idgrp;
   free (nomd);
 #else

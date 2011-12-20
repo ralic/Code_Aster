@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185o.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,28 +96,20 @@ CH3 = AFFE_CHAR_MECA(
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
-
-L_INS=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
                     
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEIN,
+UTOT1=MECA_STATIQUE(MODELE=MODELEIN,
                    CHAM_MATER=CHAMPMA,              
                    EXCIT=(_F(CHARGE=CH1,),
                           _F(CHARGE=CH2,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA=('VOLSUP','VOLINF',),),
-                   INCREMENT=_F(LIST_INST=L_INS,INST_FIN=1.0,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INST=1.0,
                    INFO=1,);
 
-UTOT2=STAT_NON_LINE(MODELE=MODELEIN,
+UTOT2=MECA_STATIQUE(MODELE=MODELEIN,
                    CHAM_MATER=CHAMPMA,              
                    EXCIT=(_F(CHARGE=CH1,),
                           _F(CHARGE=CH3,),),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA=('VOLSUP','VOLINF',),),
-                   INCREMENT=_F(LIST_INST=L_INS,INST_FIN=1.0,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INST=1.0,
                    INFO=1,);
 
 #------------------------------------------------------------------------

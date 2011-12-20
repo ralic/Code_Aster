@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP RUPTURE : FISSURE CIRCULAIRE DANS UN MILIEU INFINI
 # forma07a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,8 +153,7 @@ K=POST_K1_K2_K3(MODELISATION='3D',
                 MATER=MAT,
                 RESULTAT=CHAMDEPL,
                 FOND_FISS=FISS,
-                ABSC_CURV_MAXI=0.35,
-                VECT_K1=(0., 0., 1.))
+                ABSC_CURV_MAXI=0.35,)
 
 
 IMPR_TABLE(TABLE=K)

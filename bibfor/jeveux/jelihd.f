@@ -1,7 +1,7 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,7 +192,7 @@ C
       ICLAS  = IC
       NOMUTI = ' '
       NOMOS  = D32
-      NOMCO  = D32
+      NOMCO  = D32(1:24)
       NOMOC  = D32
 C
 C ----- OPEN FICHIER
@@ -467,13 +467,11 @@ C
       IRET1 = HDFNOM(IDFIC,NGRP,K32(JK32))
       LON = NBOBJ*8
       SVUSE = SVUSE + (ISZON(JISZON+KTEMP1-4) - KTEMP1 + 4)
-      IF ( IDYN32 .NE. 0 ) SVUSE = SVUSE + 1
       SMXUSE = MAX(SMXUSE,SVUSE)
       CALL JJALLS (LON,IC,'V','K',8,'INIT',IK8,JK8,KTEMP2,IDYN8)
       ISZON(JISZON+KTEMP2-1) = ISTAT(2)
       ISZON(JISZON+ISZON(JISZON+KTEMP2-4)-4) = ISTAT(4)
       SVUSE = SVUSE + (ISZON(JISZON+KTEMP2-4) - KTEMP2 + 4)
-      IF ( IDYN8 .NE. 0 ) SVUSE = SVUSE + 1
       SMXUSE = MAX(SMXUSE,SVUSE)
       IRET2 = HDFTYP(IDFIC,NGRP,NBOBJ,K8(JK8))
 C
@@ -537,7 +535,7 @@ C
             ICLAOS = IC
             IDATOS = IDOS
             NOMOS  = RNOM(JRNOM(IC)+IDOS)
-            NOMCO  = D32
+            NOMCO  = D32(1:24)
             NOMOC  = D32
             CALL JJLIDE ('JELIBE',RNOM(JRNOM(IC)+IDOS),1)
           ENDIF
@@ -582,7 +580,7 @@ C
             ICLAOS = IC
             IDATOS = IDOS
             NOMOS  = RNOM(JRNOM(IC)+IDOS)
-            NOMCO  = D32
+            NOMCO  = D32(1:24)
             NOMOC  = D32
             CALL JJLIDE ('JELIBE',RNOM(JRNOM(IC)+IDOS),1)
           ENDIF
@@ -595,17 +593,9 @@ C
       ELSE
         CALL U2MESK('I','JEVEUX_56',1,NHDF)
       ENDIF
-      IF ( IDYN32 .NE. 0 ) THEN
-        CALL JJLIDY ( IDYN32 , KTEMP1 )
-      ELSE IF (KTEMP1 .NE. 0) THEN
-        CALL JJLIBP (KTEMP1)
-      ENDIF
-      IF ( IDYN8 .NE. 0 ) THEN
-        CALL JJLIDY ( IDYN8 , KTEMP2 )
-      ELSE IF (KTEMP2 .NE. 0) THEN
-        CALL JJLIBP (KTEMP2)
-      ENDIF
+      CALL JJLIDY ( IDYN32 , KTEMP1 )
+      CALL JJLIDY ( IDYN8 , KTEMP2 )
       CALL JEDEMA()
-      
+
 C FIN ------------------------------------------------------------------
       END

@@ -1,5 +1,5 @@
       SUBROUTINE JELIBF ( COND , CLAS , INFO )
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
 C         ET DE FERMER LES FICHIERS ASSOCIES
@@ -127,7 +127,7 @@ C     ----------- DECHARGER TOUTES LES COLLECTIONS -----------------
           IBACOL = IADM( JIADM(IC) + 2*I-1 )
           IF ( IBACOL .NE. 0 ) THEN
             IDATCO = I
-            NOMCO = RNOM ( JRNOM(IC) + I )
+            NOMCO = RNOM ( JRNOM(IC) + I )(1:24)
             CALL JJLIDE ( 'JELIBF' , NOMCO , 2 )
           END IF
         END IF
@@ -185,11 +185,7 @@ C
         DO 33 I = LIDBAS+1 , NREUTI(IC)
           IADMI = IADM( JIADM(IC) + 2*I-1 )
           IADYN = IADM( JIADM(IC) + 2*I   )
-          IF ( IADYN .NE. 0 ) THEN
-            CALL JJLIDY ( IADYN , IADMI )
-          ELSE IF ( IADMI .NE. 0 ) THEN
-            CALL JJLIBP ( IADMI )
-          END IF
+          CALL JJLIDY ( IADYN , IADMI )
    33   CONTINUE
         IDEBUG = IDB
       ENDIF
@@ -218,11 +214,7 @@ C
         DO 32 I = 3 , LIDEFF-2
           IADMI = IADM( JIADM(IC) + 2*I-1 )
           IADYN = IADM( JIADM(IC) + 2*I   )
-          IF ( IADYN .NE. 0 ) THEN
-            CALL JJLIDY ( IADYN , IADMI )
-          ELSE IF ( IADMI .NE. 0 ) THEN
-            CALL JJLIBP ( IADMI )
-          END IF
+          CALL JJLIDY ( IADYN , IADMI )
    32   CONTINUE
       ENDIF
 C
@@ -269,20 +261,12 @@ C       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
         IF ( LITLEC(IC) ) THEN
           CALL JXECRB ( IC,IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
         ENDIF
-        IF ( IADADY .NE. 0 ) THEN
-          CALL JJLIDY ( IADADY , IADADI )
-          IADADY = 0
-        ELSE IF ( IADADI .NE. 0 ) THEN
-          CALL JJLIBP ( IADADI )
-        ENDIF
+        CALL JJLIDY ( IADADY , IADADI )
+        IADADY = 0
         IADADI = 0
 C       ---- $$ACCE N'EST PLUS UTILISE, ON PEUT LE LIBERER
-        IF ( IADACY .NE. 0 ) THEN
-          CALL JJLIDY ( IADACY , IADACC )
-          IADACY = 0
-        ELSE IF ( IADACC.NE. 0 ) THEN
-          CALL JJLIBP ( IADACC )
-        ENDIF
+        CALL JJLIDY ( IADACY , IADACC )
+        IADACY = 0
         IADACC = 0
       ENDIF
 C
@@ -305,52 +289,20 @@ C
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
         IF ( IADCAR.NE. 0 ) THEN
            IDATOS = 1
-           IF (IADCDY .NE. 0 ) THEN
-             CALL JJLIDY ( IADCDY , IADCAR )
-           ELSE
-             CALL JJLIBP ( IADCAR )
-           ENDIF
+           CALL JJLIDY ( IADCDY , IADCAR )
         END IF
-        IF ( IADACY .NE. 0 ) THEN
-          CALL JJLIDY ( IADADY , IADACC )
-        ELSE IF ( IADACC.NE. 0 ) THEN
-          CALL JJLIBP ( IADACC )
-        ENDIF
+        CALL JJLIDY ( IADADY , IADACC )
 C       ----------- CLORE LE FICHIER
         IF ( KSTINI(IC) .NE. 'DUMMY   ' ) THEN
           CALL JXFERM ( IC )
         ENDIF
 C       ----------- LIBERER PLACE
-        IF (K18 .NE. 0) THEN
-          CALL JJLIDY ( K18 , K18I )
-        ELSE
-          CALL JJLIBP ( 1 + KITLEC(IC) / LOIS )
-        ENDIF
-        IF (K2 .NE. 0) THEN
-          CALL JJLIDY ( K2 , IAD2 )
-        ELSE
-          CALL JJLIBP ( IAD2 )
-        ENDIF
-        IF (K19 .NE. 0) THEN
-          CALL JJLIDY ( K19 , K19I )
-        ELSE
-          CALL JJLIBP ( 1 + KITECR(IC) / LOIS )
-        ENDIF
-        IF (K16 .NE. 0) THEN
-          CALL JJLIDY ( K16 , KMARQ(IC) )
-        ELSE IF ( KMARQ(IC) .NE. 0 ) THEN
-          CALL JJLIBP ( KMARQ(IC) )
-        ENDIF
-        IF (K17 .NE. 0) THEN
-          CALL JJLIDY ( K17 , K17I )
-        ELSEIF ( K17I .NE. 0 ) THEN
-          CALL JJLIBP ( K17I )
-        ENDIF
-        IF (K20 .NE. 0) THEN
-          CALL JJLIDY ( K20 , KIADM(IC) )
-        ELSE IF ( KIADM(IC) .NE. 0 ) THEN
-          CALL JJLIBP ( KIADM(IC) )
-        ENDIF
+        CALL JJLIDY ( K18 , K18I )
+        CALL JJLIDY ( K2 , IAD2 )
+        CALL JJLIDY ( K19 , K19I )
+        CALL JJLIDY ( K16 , KMARQ(IC) )
+        CALL JJLIDY ( K17 , K17I )
+        CALL JJLIDY ( K20 , KIADM(IC) )
 C
         IF ( KSTOUT(IC)(1:7) .EQ. 'DETRUIT' ) THEN
           NOM = NOMFIC(IC)(1:4)//'.?  '

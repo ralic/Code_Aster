@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR CHEIGNON E.CHEIGNON 
+#& MODIF COMMANDE  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,10 +18,10 @@
 # ======================================================================
 # RESPONSABLE BOYERE E.BOYERE
 DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
-                     fr="Calcul de la réponse dynamique transitoire d'un système amorti ou non en coordonnées généralisées"
+                     fr="Calcul de la reponse dynamique transitoire d'un systeme amorti ou non en coordonees generalisees"
                         +" par superposition modale ou par sous structuration",
                      reentrant='f',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("Resolution","Dynamique",)},
       regles=(EXCLUS('AMOR_MODAL','MATR_AMOR'),),
           SCHEMA_TEMPS  =FACT(statut='d',
                 SCHEMA  =SIMP(statut='f',typ='TXM',defaut="NEWMARK",
@@ -53,6 +53,21 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
          COUPLAGE_EDYOS     =FACT(statut='f',max=1,
                              VITE_ROTA          = SIMP(statut='o',typ='R' ),
                              PAS_TPS_EDYOS      = SIMP(statut='o',typ='R' ),
+         ),
+
+         ROTOR_FISS = FACT(statut='f',max='**',         
+                           regles=(UN_PARMI('NOEUD_D','GROUP_NO_D'),
+                                   EXCLUS('NOEUD_G','GROUP_NO_G'),
+                                   PRESENT_PRESENT('NOEUD_D','NOEUD_G'),
+                                   PRESENT_PRESENT('GROUP_NO_D','GROUP_NO_G',),),
+                             VITE_ROTA          = SIMP(statut='o',typ='R',defaut=0.E0),
+                             ANGL_INIT           = SIMP(statut='o',typ='R',defaut=0.E0),
+                             NOEUD_G            = SIMP(statut='f',typ=no),
+                             NOEUD_D            = SIMP(statut='f',typ=no),
+                             GROUP_NO_G         = SIMP(statut='f',typ=grno),
+                             GROUP_NO_D         = SIMP(statut='f',typ=grno),
+                             K_PHI              = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                             DK_DPHI            = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
          ),
 
          PALIER_EDYOS      =FACT(statut='f',max='**',

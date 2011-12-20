@@ -1,9 +1,9 @@
       SUBROUTINE MDCHST ( NUMDDL, TYPNUM, IMODE, IAMOR, PULSAT,
-     &                    MASGEN, AMOGEN, LFLU, NBNLI, NBPAL, NOECHO, 
+     &                    MASGEN,AMOGEN,LFLU,NBNLI,NBPAL,NOECHO,NBRFIS,
      &                    LOGCHO, PARCHO, INTITU, DDLCHO, IER )
       IMPLICIT  NONE
       INTEGER             NBNLI, IAMOR, IMODE, IER, LOGCHO(NBNLI,*),
-     &                    DDLCHO(*)
+     &                    DDLCHO(*),NBRFIS
       REAL*8              PARCHO(NBNLI,*),PULSAT(*),MASGEN(*),AMOGEN(*)
       LOGICAL             LFLU
       CHARACTER*8         NOECHO(NBNLI,*), INTITU(*)
@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM, TYPFRO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C OUT : INTITU : INTITULE DE CHOC
 C OUT : DDLCHO : TABLEAU DES NUMEROTATIONS DES NOEUDS DE CHOC
 C OUT : IER    : NIVEAU D'ERREUR
 C     ------------------------------------------------------------------
-C TOLE CRP_4 CRS_512
+C TOLE CRP_4 CRS_512 CRP_20
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -70,19 +70,21 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       NBCHOC, NBSISM, NBFLAM, NBOCC, I, J, IOC, IBID, IL,
      &              JCOOR, JMAMA, NBNMA, KMA, NN1, NN2, INO1, INO2, IG,
      &              N1, NAMTAN, IRET, NMLIAI, JMAIL, IM, ILIAI, NMGR,
-     &              NGRM, NUMAI, IRETT
+     &              NGRM, NUMAI, IRETT,COMPT1,COMPT2,NBMAIL,NBNO,
+     &              J1,J2,BONO1,BONO2
       REAL*8        KTANG, CTANG, K, RAP, XJEU, R8BID
+      REAL*8        ALPHA, BETA, AXE(3)
       COMPLEX*16    CBID
-      LOGICAL       LNOUE2
+      LOGICAL       LNOUE2,MEMAIL
       CHARACTER*8   KBID, REPERE, MAILLA, MAMAI, NOMNO1, NOMNO2,
-     &              NOMGR1, NOMGR2, K8TYP
+     &              NOMGR1, NOMGR2, K8TYP,K8BID
       CHARACTER*10  MOTFAC
       CHARACTER*24  MDGENE, REFO
       CHARACTER*24  VALK(2)
 C     ------------------------------------------------------------------
 C  COUPLAGE EDYOS
 C  =>
-      INTEGER       IPAT,IPAL,NNO,NDDL
+      INTEGER       IPAT,IPAL,NNO,NDDL,NDDL1,NDDL2
 C     ANCIENS INCLUDE (CALCIUM.H)
 C     ===========================
       CHARACTER*3   COMP(6)
@@ -469,5 +471,108 @@ C            CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
  22    CONTINUE
       ENDIF
 C FIN PALIERS EDYOS
+C
+C    ROTOR FISSURE 
+      MOTFAC='ROTOR_FISS' 
+      COMP(1)='DRX'
+      COMP(2)='DRY'
+      COMP(3)='DRZ'
+      IF ( NBRFIS .GT. 0 ) THEN
+      DO 61 I = 1,NBRFIS
+          ILIAI = ILIAI + 1
+         CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_D',
+     &                                             I,IARG,1,NOMNO1,IBID)
+         CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_G',
+     &                                             I,IARG,1,NOMNO2,IBID)
+
+
+         CALL GETVEM ( MAILLA, 'GROUP_NO', MOTFAC, 'GROUP_NO_D',
+     &                 I,IARG,1,NOMGR1,IBID)
+         IF (IBID.NE.0) THEN
+            CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR1,NOMNO1,IRET)
+            IF (IRET.EQ.10) THEN
+               CALL U2MESK('F','ELEMENTS_67',1,NOMGR1)
+            ELSEIF (IRET.EQ.1) THEN
+               VALK (1) = NOMGR1
+               VALK (2) = NOMNO1
+               CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
+            ENDIF
+         END IF
+
+         CALL GETVEM ( MAILLA, 'GROUP_NO', MOTFAC, 'GROUP_NO_G',
+     &                 I,IARG,1,NOMGR2,IBID)
+         IF (IBID.NE.0) THEN
+            CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR2,NOMNO2,IRET)
+            IF (IRET.EQ.10) THEN
+               CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
+            ELSEIF (IRET.EQ.1) THEN
+               VALK (1) = NOMGR2
+               VALK (2) = NOMNO2
+               CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
+            ENDIF
+         END IF
+
+         DO 63 IPAT = 1,3
+            CALL POSDDL('NUME_DDL',NUMDDL,NOMNO1,COMP(IPAT),NN1,NDDL1)
+            CALL POSDDL('NUME_DDL',NUMDDL,NOMNO2,COMP(IPAT),NN2,NDDL2)
+            DDLCHO(ILIAI-1+6*(I-1)+IPAT) = NDDL1
+            DDLCHO(ILIAI-1+6*(I-1)+IPAT+3) = NDDL2
+ 63      CONTINUE
+
+
+C DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
+         COMPT1=0
+         COMPT2=0
+         CALL JELIRA(MAILLA//'.CONNEX','NMAXOC',NBMAIL,K8BID)
+         DO 66 NUMAI=1,NBMAIL
+            CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',NUMAI),
+     &                 'LONMAX',NBNO,K8BID)
+            IF ((NBNO.GT.1) .AND. (NBNO.LT.4)) THEN
+               CALL JEVEUO(JEXNUM(MAILLA//'.CONNEX',NUMAI),'L',IBID)
+               DO 77 J1=1,NBNO
+                  IF (ZI(IBID+J1-1).EQ.NN1) THEN
+                     MEMAIL=.FALSE.
+                     DO 78 J2=1,NBNO
+                        IF (ZI(IBID+J2-1).EQ.NN2) MEMAIL=.TRUE.
+78                   CONTINUE       
+                     IF (.NOT.MEMAIL) THEN
+                        COMPT1=COMPT1+1
+                        IF (J1.EQ.1) BONO1=ZI(IBID+1)    
+                        IF (J1.EQ.2) BONO1=ZI(IBID)
+                     ENDIF
+                  ENDIF
+                  IF (ZI(IBID+J1-1).EQ.NN2) THEN
+                     MEMAIL=.FALSE.
+                     DO 79 J2=1,NBNO
+                        IF (ZI(IBID+J2-1).EQ.NN1) MEMAIL=.TRUE.
+79                   CONTINUE       
+                     IF (.NOT.MEMAIL) THEN
+                        COMPT2=COMPT2+1
+                        IF (J1.EQ.1) BONO2=ZI(IBID+1)    
+                        IF (J1.EQ.2) BONO2=ZI(IBID)
+                     ENDIF
+                  ENDIF
+77             CONTINUE       
+            ENDIF
+66       CONTINUE    
+         CALL ASSERT(COMPT1 .GE. 1)
+         CALL ASSERT(COMPT2 .GE. 1)
+
+         DO 89 J=1,3
+            AXE(J)=ZR(JCOOR+3*(BONO1-1)+J-1) - ZR(JCOOR+3*(BONO2-1)+J-1)
+89       CONTINUE    
+
+C ORIENTATION DU ROTOR
+         CALL ANGVX ( AXE, ALPHA, BETA )
+         PARCHO(ILIAI,17) = SIN(ALPHA)
+         PARCHO(ILIAI,18) = COS(ALPHA)
+         PARCHO(ILIAI,19) = SIN(BETA)
+         PARCHO(ILIAI,20) = COS(BETA)
+
+ 61   CONTINUE
+      ENDIF
+
+C FIN ROTOR FISSURE
+C
       CALL JEDEMA()
       END

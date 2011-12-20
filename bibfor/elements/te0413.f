@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8   QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
       REAL*8   DISSE(NPGMX),DISSP(NPGMX)
       REAL*8   DISST(NPGMX),DSE,DSP,DST
-      REAL*8   R8B(8),EP,SEUIL
+      REAL*8   R8B(9),EP,SEUIL
       REAL*8   HIC,COEHSD,NBSP
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
@@ -170,8 +170,8 @@ C      ===================================
         IF(ZK16(ICOMPO)(1:7).EQ.'GLRC_DM') THEN
 
           CALL CRGDM(ZI(IMATE),'GLRC_DM         ',TMA,R8B(1),R8B(2),
-     &               R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),EP,
-     &               .FALSE.)
+     &               R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),
+     &               R8B(9),EP,.FALSE.)
 
         ENDIF
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05b.para = tps_job 8660 mem_job 17900Mo mem_aster 5.33333333333 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 1 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,9 +53,7 @@ meth_renum = 'METIS';
 # Mode verbeux 1/2
 niv_info = 2
 #
-DEBUT(CODE=_F( NOM = 'MUMPS05B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-      MEMOIRE=_F( DYNAMIQUE=100,),
-      )
+DEBUT(CODE=_F( NOM = 'MUMPS05B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # pour obtenir un maillage quadratique :
 #----------------------------------------

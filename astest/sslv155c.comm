@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155c.para = tps_job 300 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,17 +160,11 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODX,
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODX,
                       LIAISON_XFEM='OUI')
 
-LIST=DEFI_LIST_REEL(DEBUT=0.,
-                    INTERVALLE=_F(JUSQU_A=1.,
-                                  NOMBRE=1))
-
-RESU=STAT_NON_LINE(MODELE=MODX,
+RESU=MECA_STATIQUE(MODELE=MODX,
                    CHAM_MATER=MATE,
                    EXCIT=(_F(CHARGE=CHAR,),
                           _F(CHARGE=CHXFEM)),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=LIST,))
+                   INST=1.,)
 
 # visualisation
 MA_VISU=POST_MAIL_XFEM(MODELE=MODX)

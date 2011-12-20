@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
 # demo002a.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test S
@@ -21,6 +21,8 @@
 # ======================================================================
 # ILLUSTRATION  DE DYNA_NON_LINE ET DE POST_TRAITEMENT NUMERIQUE
 # TRACE DE COURBE AVEC XMGRACE
+
+DEBUT(CODE=_F(NOM='DEMO002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 
 ##############################################################################################
 # Ce fichier demontre les possibilites de couplage entre Python (et tous ses outils annexes)
@@ -108,8 +110,6 @@ import numpy.fft as FFT
 # Preparation du calcul
 #=============================================================================================
 
-DEBUT(CODE=_F(NOM='DEMO002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
-
 # Lecture du maillage
 MA=LIRE_MAILLAGE( );
 
@@ -196,7 +196,7 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                   EXCIT=(_F(CHARGE=CHCAS1,
                             FONC_MULT=FMULT,),
                           ),
-                   CONTACT  = CHCONT,       
+                   CONTACT  = CHCONT,
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,),

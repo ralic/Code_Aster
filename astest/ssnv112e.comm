@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (PENTA15) 3D
 # ssnv112e.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,8 +32,7 @@
 # ----------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='SSNV112E',
-              NIV_PUB_WEB='INTERNET',),
-      MEMOIRE=_F(DYNAMIQUE=400,),);
+              NIV_PUB_WEB='INTERNET',),);
 
 M=LIRE_MAILLAGE(FORMAT='MED');
 

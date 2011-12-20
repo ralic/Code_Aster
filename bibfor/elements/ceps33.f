@@ -1,8 +1,9 @@
-      SUBROUTINE CEPS33 (LAMBDA,DEUXMU,TR2D,D1,D2,GMT,GMC
-     &                   ,EPS33,DE33D1,DE33D2,KSI2D)
+      SUBROUTINE CEPS33 (LAMBDA,DEUXMU,ALFMC,GMT,GMC,TR2D,DA1,DA2,EPS33,
+     &                   DE33D1,DE33D2,KSI2D,DKSI1,DKSI2,COF1,Q2D,EMP,
+     &                   COF2,DQ2D)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,28 +43,80 @@ C       DKSI1  : DERIVEE DE KSI PAR RAPPORT A D1
 C       DKSI2  : DERIVEE DE KSI PAR RAPPORT A D2
 C ----------------------------------------------------------------------
       IMPLICIT NONE
+      INTEGER K
+      REAL*8 TR2D,DA1,DA2,GMT,GMC,EPS33,DE33D1,DE33D2
+      REAL*8 KSI2D,DKSI1,DKSI2,LAMBDA,DEUXMU,EMP(2)
+      REAL*8 ALFMC,MU
+      REAL*8 G1,G2,DG1,DG2,COF1(2),Q2D(2)
+      REAL*8 GTR2(2),GI(2,2),DGTR2(2),DGI(2,2),COF2(2),DQ2D(2)
 
+      MU = 0.5D0*DEUXMU
 
-      REAL*8   TR2D,D1,D2,GMT,GMC,EPS33,DE33D1,DE33D2
-      REAL*8   KSI2D,DKSI1,DKSI2,LAMBDA,DEUXMU
-
-      IF(TR2D .GT. 0.0D0) THEN
-        KSI2D = (1.0D0 + GMT*D1) / (1.0D0 + D1)*0.5D0
-        KSI2D = KSI2D + (1.0D0 + GMT*D2) / (1.0D0 + D2)*0.5D0
-
-        DKSI1 = -0.5D0 * (1.0D0 - GMT)/(1.0D0 + D1)**2
-        DKSI2 = -0.5D0 * (1.0D0 - GMT)/(1.0D0 + D2)**2
+      IF(TR2D.GT.0.0D0) THEN
+        G1 = (1.0D0 + DA1*GMT)/(1.0D0+DA1)
+        G2 = (1.0D0 + DA2*GMT)/(1.0D0+DA2)
+        DG1 = (1.0D0 - GMT)/(1.0D0+DA1)**2
+        DG2 = (1.0D0 - GMT)/(1.0D0+DA2)**2
       ELSE
-        KSI2D = (1.0D0 + GMC*D1) / (1.0D0 + D1)*0.5D0
-        KSI2D = KSI2D + (1.0D0 + GMC*D2) / (1.0D0 + D2)*0.5D0
-
-        DKSI1 = -0.5D0 * (1.0D0 - GMC)/(1.0D0 + D1)**2
-        DKSI2 = -0.5D0 * (1.0D0 - GMC)/(1.0D0 + D2)**2
+        G1 = (ALFMC + DA1*GMC)/(ALFMC+DA1)
+        G2 = (ALFMC + DA2*GMC)/(ALFMC+DA2)
+        DG1 = ALFMC*(1.0D0 - GMC)/(ALFMC+DA1)**2
+        DG2 = ALFMC*(1.0D0 - GMC)/(ALFMC+DA2)**2
       ENDIF
 
-      EPS33  = -LAMBDA*TR2D*KSI2D/(DEUXMU + LAMBDA*KSI2D)
+C --  CALCUL DE KSIM (=KSI2D) ET DE SES DERIVEES PAR RAPPORT A D1 ET D2
 
-      DE33D1 = -DEUXMU*LAMBDA*TR2D/(DEUXMU + LAMBDA*KSI2D)**2 * DKSI1
-      DE33D2 = -DEUXMU*LAMBDA*TR2D/(DEUXMU + LAMBDA*KSI2D)**2 * DKSI2
+      KSI2D = (G1 + G2)*0.5D0
+
+      DKSI1 = -0.5D0 * DG1
+      DKSI2 = -0.5D0 * DG2
+
+C --  CALCUL DE EPS33 ET DE SES DERIVEES PAR RAPPORT A D1 ET D2
+
+      EPS33 = -(LAMBDA*TR2D*KSI2D)/(DEUXMU + LAMBDA*KSI2D)
+
+      DE33D1 = -(LAMBDA*(TR2D+EPS33)*DKSI1)/(DEUXMU + LAMBDA*KSI2D)
+      DE33D2 = -(LAMBDA*(TR2D+EPS33)*DKSI2)/(DEUXMU + LAMBDA*KSI2D)
+
+C -------- CALCUL DE COF1 ET Q2D -----------
+
+      IF(TR2D .GT. 0.0D0) THEN
+        GTR2(1) = 1.0D0 - GMT
+        GTR2(2) = 1.0D0 - GMT
+        DGTR2(1) = 0.0D0
+        DGTR2(2) = 0.0D0
+      ELSE
+        GTR2(1) = ALFMC*(1.0D0 - GMC)*(1.0D0+DA1)**2/(ALFMC+DA1)**2
+        GTR2(2) = ALFMC*(1.0D0 - GMC)*(1.0D0+DA2)**2/(ALFMC+DA2)**2
+        DGTR2(1) = 2.D0*ALFMC*(1.0D0-GMC)*(1.0D0+DA1)*(ALFMC-1.0D0)
+        DGTR2(1) = DGTR2(1)/(ALFMC+DA1)**3
+        DGTR2(2) = 2.D0*ALFMC*(1.0D0-GMC)*(1.0D0+DA2)*(ALFMC-1.0D0)
+        DGTR2(2) = DGTR2(2)/(ALFMC+DA2)**3
+      ENDIF
+
+      DO 50, K = 1,2
+        IF(EMP(K) .GT. 0.0D0) THEN
+          GI(1,K) = 1.0D0 - GMT
+          GI(2,K) = 1.0D0 - GMT
+          DGI(1,K) = 0.0D0
+          DGI(2,K) = 0.0D0
+        ELSE
+          GI(1,K) = ALFMC*(1.0D0 - GMC)*(1.0D0+DA1)**2/(ALFMC+DA1)**2
+          GI(2,K) = ALFMC*(1.0D0 - GMC)*(1.0D0+DA2)**2/(ALFMC+DA2)**2
+          DGI(1,K) = 2.D0*ALFMC*(1.0D0-GMC)*(1.0D0+DA1)*(ALFMC-1.0D0)
+          DGI(1,K) = DGI(1,K)/(ALFMC+DA1)**3
+          DGI(2,K) = 2.D0*ALFMC*(1.0D0-GMC)*(1.0D0+DA2)*(ALFMC-1.0D0)
+          DGI(2,K) = DGI(2,K)/(ALFMC+DA2)**3
+        ENDIF
+ 50   CONTINUE
+
+      COF1(1) = 0.5D0*LAMBDA*GTR2(1)
+      COF1(2) = 0.5D0*LAMBDA*GTR2(2)
+      COF2(1) = 0.5D0*LAMBDA*DGTR2(1)
+      COF2(2) = 0.5D0*LAMBDA*DGTR2(2)
+      Q2D(1)  = 0.5D0*MU * (EMP(1)**2*GI(1,1) + EMP(2)**2*GI(1,2))
+      Q2D(2)  = 0.5D0*MU * (EMP(1)**2*GI(2,1) + EMP(2)**2*GI(2,2))
+      DQ2D(1)  = 0.5D0*MU * (EMP(1)**2*DGI(1,1) + EMP(2)**2*DGI(1,2))
+      DQ2D(2)  = 0.5D0*MU * (EMP(1)**2*DGI(2,1) + EMP(2)**2*DGI(2,2))
 
       END

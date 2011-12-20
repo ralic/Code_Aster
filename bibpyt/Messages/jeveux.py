@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,17 +68,6 @@ cata_msg = {
 
 14 : _(u"""
  Erreur lors de la fermeture de  %(k1)s
-"""),
-
-15 : _(u"""
- Écrasement amont, l'objet :< %(k1)s > est peut être écrasé"""),
-
-16 : _(u"""
- Écrasement aval, l'objet :< %(k1)s > est peut être écrasé
-"""),
-
-17 : _(u"""
- Chaînage cassé après l'objet :  %(k1)s
 """),
 
 18 : _(u"""
@@ -164,16 +153,6 @@ cata_msg = {
      de type :%(k2)s
 """),
 
-32 : _(u"""
-     Erreur allocation de segment de mémoire de longueur %(i1)d (entiers).
-     Mémoire allouée insuffisante. Il est impossible de trouver un espace
-     de longueur suffisante dans la segmentation mémoire. Cette erreur
-     concerne la mémoire dite "statique".
-     Fermeture des bases (glob.*) sur erreur
-     Il faut relancer le calcul en augmentant la limite mémoire (paramètre
-     -memjeveux_stat sur la ligne de commande).
-"""),
-
 33 : _(u"""
   Statistiques mémoire (Mo) : %(r9)9.2f / %(r5)9.2f / %(r2)9.2f (VmPeak / Optimum / Minimum)
 """),
@@ -225,14 +204,6 @@ cata_msg = {
      Erreur d'ouverture du fichier %(k1)s , code retour OPENDR = %(i1)d
 """),
 
-44 : _(u"""
- Taille des segments de valeurs %(i1)d
-"""),
-
-45 : _(u"""
- Taille de la partition principale %(r1)g
-"""),
-
 47 : _(u"""
  Erreur lors de la relecture d'un enregistrement sur le fichier d'accès direct.
 """),
@@ -271,13 +242,6 @@ cata_msg = {
 
 56 : _(u"""
  Fermeture du fichier HDF %(k1)s.
-"""),
-
-57 : _(u"""
- Longueur du segment de valeurs à allouer invalide %(i1)d.
-  -> Risque & Conseil :
-     Une valeur négative peut parfois provenir d'une valeur entière supérieure à la valeur de l'entier maximum sur
-     une plate-forme 32 bits (2147483648).
 """),
 
 58 : _(u"""

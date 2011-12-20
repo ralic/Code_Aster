@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,7 +120,7 @@ C     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
       ENDIF
 C
 C     --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
-      CALL JXVERI(' ',' ')
+      CALL JXVERI(' ')
 C
 C     --- CLOTURE DES FICHIERS ---
       CALL JELIBF( 'SAUVE' , 'G' , INFO)

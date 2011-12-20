@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/10/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF MODELISA  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -332,7 +332,7 @@ C---------ELASTIQUE---------------
         ZR(JMELR+4 ) = BETA
       ENDIF
 C---------GLRC_DM---------------
-      LONOBJ = 9
+      LONOBJ = 10
       CALL WKVECT(MATER//'.GLRC_DM   .VALK','G V K8',2*LONOBJ,JMELK)
       CALL JEECRA(MATER//'.GLRC_DM   .VALK','LONUTI',LONOBJ,' ')
       CALL WKVECT(MATER//'.GLRC_DM   .VALR','G V R',LONOBJ,JMELR)
@@ -357,6 +357,8 @@ C---------GLRC_DM---------------
       ZR(JMELR+7 ) = SYF
       ZK8(JMELK+8) = 'SYC     '
       ZR(JMELR+8 ) = SYC
+      ZK8(JMELK+9) = 'ALPHA_C '
+      ZR(JMELR+9 ) = 1.D0
 C---------IMPRESSION-------------
       IF (NIMPR.GT.0) THEN
         WRITE (IFR,*)
@@ -382,6 +384,7 @@ C---------IMPRESSION-------------
         WRITE (IFR,*) 'GAMMAT = ',GT
         WRITE (IFR,*) 'GAMMAF = ',GF
         WRITE (IFR,*) 'GAMMAC = ',GC
+        WRITE (IFR,*) 'ALPHA_C= ',1.D0
       END IF
       CALL JEDEMA()
       END

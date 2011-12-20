@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ Erreur utilisateur (ou programmeur) :
 """),
 
 9 : _(u"""
-Problème lors de la projection d'un cham_no de la grandeur (%(k1)s) sur un autre maillage.
+Problème lors de la projection d'un champ aux noeuds de la grandeur (%(k1)s) sur un autre maillage.
  Pour le noeud "2" %(k2)s (et pour la composante %(k3)s) la somme des coefficients de pondération
  des noeuds de la maille "1" en vis à vis est très faible (inférieure à 1.e-3).
 

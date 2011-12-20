@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture1 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -204,22 +204,6 @@ supérieur à 10 degrés.
 L'interpolation des sauts de déplacements est basée sur les champs singuliers
 correspondants à une fissure plane. La fissure utilisée ici est trop irrégulière et
 il y a donc un risque d'obtenir des résultats imprécis.
-"""),
-
-36: _(u"""
-La tangente à l'origine n'est pas orthogonale à la normale au plan de la fissure
-défini par VECT_K1.
--> Risque et Conseil :
-La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure,
-donc orthogonale au VECT_K1 fourni. Vérifier les données.
-"""),
-
-37: _(u"""
-La tangente à l'extrémité n'est pas orthogonale à la normale au plan de la fissure
-défini par VECT_K1.
--> Risque et Conseil :
-La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure,
-donc orthogonale au VECT_K1 fourni. Vérifier les données.
 """),
 
 38: _(u"""

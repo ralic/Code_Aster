@@ -1,7 +1,7 @@
       SUBROUTINE NMCRSD(TYPESD,NOMSD )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      ZPOSTI,ZPOSTR,ZPOSTK
-      PARAMETER   (ZPOSTI=7,ZPOSTR=6,ZPOSTK=10)
+      PARAMETER   (ZPOSTI=11,ZPOSTR=7,ZPOSTK=12)
 C      
       INTEGER      IFM,NIV
       CHARACTER*24 SDINFI,SDINFR,SDINFK
@@ -67,6 +67,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- AFFICHAGE
@@ -86,8 +87,7 @@ C
         CALL WKVECT(SDINFK,'V V K24',ZPOSTK,JPINFK)              
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF
- 
+      ENDIF 
 C          
       CALL JEDEMA()
       END

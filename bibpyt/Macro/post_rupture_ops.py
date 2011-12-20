@@ -1,4 +1,4 @@
-#@ MODIF post_rupture_ops Macro  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_rupture_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ def verif_nb_table(OPERATION, TABLE) :
 
 def verif_reuse(OPERATION,obj_reuse) :
    # verification que reuse est correctement employe
-   if OPERATION in ('ABSC_CURV_NORM','ANGLE_BIFURCATION','LOI_PROPA',) :
+   if OPERATION in ('ABSC_CURV_NORM','ANGLE_BIFURCATION','LOI_PROPA','K1_NEGATIF') :
       if not obj_reuse :
          UTMESS('F','RUPTURE1_62',valk=(OPERATION))
 
@@ -187,6 +187,20 @@ def caract_mater(self,mater):
       else:
          UTMESS('F','RUPTURE1_68')
    return (young, poisson)
+
+
+def verif_val_neg(val_k1):
+   """ recherche presence de valeurs de K1 negatives"""
+   s=filter(lambda x: x < 0, val_k1)
+   if len(s) != 0 : return True
+   else :           return False
+
+
+def mise_zero(x) :
+   """ mise à zero des valeurs negatives"""
+   if   x<0.  : return 0.
+   elif x>=0. : return x
+
 
 #------------------------------------------------------------------------------------------------------
 def post_rupture_ops(self, TABLE, OPERATION, **args):
@@ -661,6 +675,105 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                         TITRE=tabout.nom,
                         ACTION=_F(OPERATION='SUPPRIME',NOM_PARA='&BIDON&'))
 
+   #-----------------------------------------------------------------------
+   if OPERATION == 'K1_NEGATIF' :
+
+      # verification que K1 existe
+      verif_exi(tabin, 'K1')      
+
+      # verification de la presence de valeurs negatives de K1 
+      change = verif_val_neg(tabin.K1)
+
+      # si on a trouve au moins une valeur negative de K1 et G present
+      if change == True and ('G' or 'G_IRWIN' in tabin.para) :
+
+         # verification que K2 existe
+         verif_exi(tabin, 'K2')
+
+         # recuperation des donnees du materiau
+         (young, poisson)=caract_mater(self,args['MATER'])
+         self.update_const_context({'E' : young})
+         self.update_const_context({'nu' : poisson})
+
+         # formule d'Irwin servant a recalculer G
+         if args['MODELISATION'] == '3D' :
+           # verification que K3 existe
+           verif_exi(tabin, 'K3')
+           __formul_G = FORMULE(NOM_PARA=('K2','K3'),VALE='(K2**2)*(1.-nu**2)/E+(K3**2)*(1.+nu)/E')
+         elif args['MODELISATION'] == 'D_PLAN' or args['MODELISATION'] == 'AXIS' :
+           __formul_G = FORMULE(NOM_PARA=('K2'),VALE='(K2**2)*(1.-nu**2)/E')
+         elif args['MODELISATION'] == 'C_PLAN' :
+           __formul_G = FORMULE(NOM_PARA=('K2'),VALE='(K2**2)/E')
+
+
+##       creation de la table de sortie avec les nouvelles valeurs de K1 et de G et/ou de G_IRWIN
+
+         # tableau 1 avec les valeurs a ne pas modifier
+         __tabtmp=CALC_TABLE(TABLE=TABIN,
+                             ACTION=_F( OPERATION='FILTRE',
+                                        NOM_PARA= 'K1' ,
+                                        CRIT_COMP= 'GE' , VALE= 0.0,),)
+
+         # tableau 2 avec les valeurs a modifier
+         tabout=CALC_TABLE(TABLE=TABIN,reuse=TABIN,
+                           ACTION=_F( OPERATION='FILTRE',
+                                      NOM_PARA= 'K1' , CRIT_COMP= 'LT' , VALE= 0.0,),)
+
+         # operation sur la colonne K1 du tableau 2
+         tabout=CALC_TABLE(TABLE=tabout,reuse=tabout,
+                           ACTION=(_F(OPERATION='SUPPRIME',
+                                      NOM_PARA='K1',),
+                                   _F(OPERATION='AJOUT_COLONNE',
+                                      VALE=0.,
+                                      NOM_PARA='K1'),),
+                          )
+
+         # calcul des nouvelles valeurs de G et/ou de G_IRWIN
+         list_G = [x for x in ['G','G_IRWIN'] if x in tabin.para]
+         for param_G in list_G :
+            tabout=CALC_TABLE(TABLE=tabout,reuse=tabout,
+                              ACTION=(_F(OPERATION='SUPPRIME',
+                                         NOM_PARA=param_G),
+                                      _F(OPERATION='OPER',
+                                         FORMULE=__formul_G,
+                                         NOM_PARA=param_G),),
+                             )
+         # association des tableaux 1 et 2
+         tabout= CALC_TABLE(TABLE=tabout,reuse=tabout,
+                            ACTION=_F(TABLE=__tabtmp,OPERATION='COMB'),
+                           )
+
+         # tri du tableau de sortie
+         if 'NUME_FOND' or 'INST' or 'NUM_PT' in tabin.para:
+            list_para = [x for x in ['NUME_FOND','INST','NUM_PT'] if x in tabin.para]
+            tabout= CALC_TABLE(TABLE=tabout,reuse=tabout,
+                               ACTION=_F(OPERATION='TRI',
+                                         NOM_PARA=list_para ,
+                                         ORDRE= 'CROISSANT'),
+                              )
+
+      # si on a trouve au moins une valeur negative de K1 et G non present
+      elif change == True and ('G' and 'G_IRWIN' not in tabin.para) :
+
+         # formule servant a mettre a zero les valeurs negatives de K1         
+         __formul = FORMULE( NOM_PARA = 'K1',
+                             VALE = 'mise_zero(K1)')
+
+         self.update_const_context({'mise_zero' : mise_zero})
+
+         # mise a zero des valeurs de K1 negatives
+         tabout=CALC_TABLE(TABLE=TABIN,reuse=TABIN,
+                           ACTION=(_F(OPERATION='OPER',
+                                      FORMULE=__formul,
+                                      NOM_PARA='K1_bis'),
+                                   _F(OPERATION='SUPPRIME',
+                                      NOM_PARA='K1'),
+                                   _F(OPERATION='RENOMME',
+                                      NOM_PARA=('K1_bis','K1')),),
+                          )
+      else :
+         # tous les K1 sont >=0: aucune modification a effectuer
+         tabout=TABIN
 
    return
 

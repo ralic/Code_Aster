@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO,SDIETO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      ZIOCH,NBMAX
-      PARAMETER    (ZIOCH = 10,NBMAX=17 )
+      PARAMETER    (ZIOCH = 10,NBMAX=18 )
       INTEGER      NBCHAM,NBCHIN,NBCHOU
       CHARACTER*24 IOINFO,IOLCHA,KSTR
       INTEGER      JIOINF,JIOLCH
@@ -85,49 +85,49 @@ C -- NOM DU CHAMP DANS LA SD RESULTAT
      &              'INDC_ELEM'   ,'SECO_ELEM'   ,'COHE_ELEM'   ,
      &              'VALE_CONT'   ,'MODE_FLAMB'  ,'DEPL_VIBR'   ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
-     &              'FORC_NODA'   ,'STRX_ELGA'/
+     &              'FORC_NODA'   ,'STRX_ELGA'   ,'MODE_STAB'/
 C -- NOM DE LA GRANDEUR
       DATA NOMGD   /'DEPL_R','SIEF_R','VARI_R',
      &              'COMPOR','DEPL_R','DEPL_R',
      &              'NEUT_I','NEUT_R','NEUT_R',
      &              'DEPL_R','DEPL_R','DEPL_R',
      &              'DEPL_R','DEPL_R','DEPL_R',
-     &              'DEPL_R','STRX_R'/
+     &              'DEPL_R','STRX_R','DEPL_R'/
 C -- MOT-CLEF DANS ETAT_INIT, ' ' SI PAS DE MOT-CLEF
       DATA MOTCEI  /'DEPL','SIGM','VARI',
      &              ' '   ,'VITE','ACCE',
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,' '   ,' '   ,
-     &              ' '   ,'STRX '/
+     &              ' '   ,'STRX ',' '/
 C -- LOCALISATION DU CHAMP
       DATA LOCCHA  /'NOEU','ELGA','ELGA',
      &              'ELGA','NOEU','NOEU',
      &              'ELEM','ELEM','ELEM',
      &              'NOEU','NOEU','NOEU',
      &              'NOEU','NOEU','NOEU',
-     &              'NOEU','ELGA'/
+     &              'NOEU','ELGA','NOEU'/
 C -- .TRUE. SI CHAMP EST LU DANS ETAT_INIT
       DATA LETIN   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.FALSE.,.FALSE.,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .FALSE.,.TRUE./
+     &              .FALSE.,.TRUE. ,.FALSE./
 C -- .TRUE. SI CHAMP EST ECRIT DANS ARCHIVAGE
       DATA LARCH   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .FALSE.,.TRUE./
+     &              .FALSE.,.TRUE. ,.TRUE./
 C -- MOT-CLEF DANS OBSERVATION, ' ' SI PAS DE MOT-CLEF
       DATA MOTCOB  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,
      &              ' '           ,'VITE'        ,'ACCE'        ,
      &              ' '           ,' '           ,' '           ,
      &              'VALE_CONT'   ,' '           ,' '           ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
-     &              'FORC_NODA'   ,'STRX_ELGA'/
+     &              'FORC_NODA'   ,'STRX_ELGA'   ,' '/
 C
 C ----------------------------------------------------------------------
 C
@@ -209,6 +209,7 @@ C --- FLAMBEMENT
 C
       IF (LFLAM) THEN
         CHAACT(11) = .TRUE.
+        CHAACT(18) = .TRUE.
       ENDIF
 C
 C --- MODES VIBRATOIRES

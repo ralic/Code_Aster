@@ -76,6 +76,10 @@ extern DOUBLE STDCALL(R8PI,r8pi)();
 #define strdup _strdup
 #endif
 
+/* functions to store global attrs */
+void put_repmat(_IN char *);
+void put_repout(_IN char *);
+void put_repdex(_IN char *);
 
 /* -------------------------------------
    --           FIN  aster.h          --

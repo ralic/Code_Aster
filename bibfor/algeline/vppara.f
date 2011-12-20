@@ -12,13 +12,13 @@
       INTEGER       LRAIDE, LMASSE, LAMOR, MXRESF, NEQ, NFREQ,
      &              DLAGR(*), DBLOQ(*), RESUI(*)
       INTEGER       NBPARI, NBPARR, NBPARK
-      REAL *8       VECTR(*), RESUR(*), OMECOR
-      COMPLEX *16   VECTC(*)
+      REAL*8        VECTR(*), RESUR(*), OMECOR
+      COMPLEX*16    VECTC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -80,7 +80,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-
+      
 C     --- PRISE EN COMPTE DES MODES NEGATIFS ?
       INEG = +1
       IF (KNEGA.EQ.'OUI') INEG = -1
@@ -89,6 +89,7 @@ C     --- PREPARATION AU STOCKAGE DANS LA STRUCTURE DE DONNEES ---
       ILGCON = LXLGUT(TYPCON)
       IF ( TYPCON(ILGCON-1:ILGCON) .EQ. '_C' ) ILGCON = ILGCON -2
       CALL RSEXIS(MODES,IRET)
+          
       IF ( IRET .EQ. 0 ) CALL RSCRSD('G',MODES,TYPCON(:ILGCON),NFREQ)
       IPREC = 0
       
@@ -103,28 +104,33 @@ C     --- NORMALISATION ET CALCUL DES PARAMETRES MODAUX ---
 C     -----------------------------------------------------
 C
       IF (( LAMOR .EQ. 0 ).AND.((KTYP.EQ.'R').AND.(.NOT.LNS))) THEN
+         
 C --- GENERALISE MODES REELS
+
+         IF (MOD45.NE.'STAB') THEN    
+
 C        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
-         CALL VPNORX(NFREQ,NEQ,DLAGR,VECTR,RESUK)
+           CALL VPNORX(NFREQ,NEQ,DLAGR,VECTR,RESUK)
 C
 C        - CALCUL DES PARAMETRES GENERALISES ---
-         CALL VPPGEN(LMASSE,LAMOR,LRAIDE,RESUR(4*MXRESF+1),
-     &               RESUR(6*MXRESF+1),RESUR(5*MXRESF+1),
-     &               VECTR,NEQ,NFREQ,DBLOQ)
+           CALL VPPGEN(LMASSE,LAMOR,LRAIDE,RESUR(4*MXRESF+1),
+     &                 RESUR(6*MXRESF+1),RESUR(5*MXRESF+1),
+     &                 VECTR,NEQ,NFREQ,DBLOQ)             
 C
 C        CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
-         CALL VPPFAC(LMASSE,RESUR(4*MXRESF+1),VECTR,NEQ,NFREQ,MXRESF,
-     &               RESUR(7*MXRESF+1),RESUR(10*MXRESF+1))
+           CALL VPPFAC(LMASSE,RESUR(4*MXRESF+1),VECTR,NEQ,NFREQ,MXRESF,
+     &                 RESUR(7*MXRESF+1),RESUR(10*MXRESF+1))
 C
 C        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
-         CALL VPERMO(LMASSE,LRAIDE,NFREQ,VECTR,RESUR(MXRESF+1),
-     &               DBLOQ,OMECOR,RESUR(3*MXRESF+1))
-C
+           CALL VPERMO(LMASSE,LRAIDE,NFREQ,VECTR,RESUR(MXRESF+1),
+     &                 DBLOQ,OMECOR,RESUR(3*MXRESF+1))
+C                   
+         ENDIF
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'R', MODES, NFREQ, NEQ, VECTR, ZBID,
-     +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA, MOD45,
-     +                 RESUI, RESUR, RESUK, IPREC )
-C
+     &                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA, MOD45,
+     &                 RESUI, RESUR, RESUK, IPREC)   
+
       ELSE IF (( LAMOR .EQ. 0 ).AND.((KTYP.EQ.'C').OR.LNS)) THEN
 C --- GENERALISE MODES COMPLEXES
 C        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
@@ -147,7 +153,7 @@ C
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'C', MODES, NFREQ, NEQ, RBID, VECTC,
      +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,'    ', 
-     +                 RESUI, RESUR, RESUK, IPREC )
+     +                 RESUI, RESUR, RESUK, IPREC)
 C
       ELSE IF (( LAMOR .NE. 0 ).AND.(KTYP.EQ.'R')) THEN
 C --- QUADRATIQUE MODES COMPLEXES AVEC K REELLE
@@ -167,7 +173,7 @@ C
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'C', MODES, NFREQ, NEQ, RBID, VECTC,
      +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
-     +                 RESUI, RESUR, RESUK, IPREC )
+     +                 RESUI, RESUR, RESUK, IPREC)
       ELSE IF (( LAMOR .NE. 0 ).AND.(KTYP.EQ.'C')) THEN
           IF (LNS) CALL ASSERT(.FALSE.)
 C --- QUADRATIQUE MODES COMPLEXES AVEC K COMPLEXE
@@ -187,7 +193,7 @@ C
 C        - STOCKAGE DES VECTEURS PROPRES ---
          CALL VPSTOR ( INEG, 'C', MODES, NFREQ, NEQ, RBID, VECTC,
      +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
-     +                 RESUI, RESUR, RESUK, IPREC )
+     +                 RESUI, RESUR, RESUK, IPREC)
       ENDIF
 C     ------------------------------------------------------------------
       CALL JEDEMA()

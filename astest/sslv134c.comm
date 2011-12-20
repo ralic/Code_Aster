@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,7 +107,6 @@ TABL_K1=POST_K1_K2_K3(  MODELISATION='AXIS',
                         INFO=2,
                         MATER=MAT,
                         ABSC_CURV_MAXI=RSUP,
-                        VECT_K1=(0., 1., 0.,)
                      )
 
 IMPR_TABLE( TABLE=TABL_K1 )
@@ -186,17 +185,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
                    
-DEPL_ROT=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHAR_ROT,), 
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                ),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                ),
-                   CONVERGENCE = _F(ITER_GLOB_MAXI = 100,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);  
+DEPL_ROT=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=_F(CHARGE=CHAR_ROT,),
+                       INST=1.,
+                       INFO=1,);  
                                 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
 
@@ -224,7 +217,6 @@ TABL_K2=POST_K1_K2_K3(  MODELISATION='AXIS',
                         INFO=2,
                         MATER=MAT,
                         ABSC_CURV_MAXI=RSUP,
-                        VECT_K1=(0., 1., 0.,)
                      )
 
 IMPR_TABLE( TABLE=TABL_K2, ),

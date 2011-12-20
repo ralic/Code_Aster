@@ -20,6 +20,7 @@ C
      &             DREDST(*),DPLRED(*),DPLREV(*),
      &             DPLMOD(NBCHOC,NBMODE,*)
       CHARACTER*8  BASEMO,NOECHO(*),FONRED(*),FONREV(*),NOMRES,MONMOT
+      CHARACTER*8 FBID(2)
       LOGICAL      LPSTO
 C
       REAL*8       COEFM(*),PSIDEL(*)
@@ -28,7 +29,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,6 +141,9 @@ C
       NBMOD1 = NBMODE - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
       PRDEFF = .FALSE.
+
+      FBID(1) = '        '
+      FBID(2) = '        '
 C
 C     --- VECTEURS DE TRAVAIL ---
       CALL WKVECT('&&MDDEVO.DEPL','V V R8',4*NBMODE,JDEPL)
@@ -188,11 +192,12 @@ C     --- FORCES EXTERIEURES ---
 C
 C     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
       CALL MDFNLI(NBMODE,ZR(JDEP2),ZR(JVIT2),ZR(JBID1),
-     &            ZR(JFEX2),R8BID2,R8BID3,R8BID4,R8BID5,
+     &            ZR(JFEX2),R8BID2,R8BID3,R8BID4,R8BID5,NBCHOC,
      &            NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &            0,FBID,FBID,0.D0,
      &            0,0,0.D0,0.D0,0.D0,0.D0,
      &            TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
@@ -254,11 +259,12 @@ C     --- FORCES EXTERIEURES ---
 C
 C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
          CALL MDFNLI(NBMODE,ZR(JDEP3),ZR(JVIT3),ZR(JBID1),
-     &               ZR(JFEX3),R8BID2,R8BID3,R8BID4,R8BID5,
+     &               ZR(JFEX3),R8BID2,R8BID3,R8BID4,R8BID5,NBCHOC,
      &               NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &               NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &               0,FBID,FBID,0.D0,
      &               0,0,0.D0,0.D0,0.D0,0.D0,
      &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
@@ -290,11 +296,12 @@ C        --- FORCES EXTERIEURES ---
          ENDIF
 C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
          CALL MDFNLI(NBMODE,ZR(JDEP4),ZR(JVIT4),ZR(JBID1),
-     &               ZR(JFEX4),R8BID2,R8BID3,R8BID4,R8BID5,
+     &               ZR(JFEX4),R8BID2,R8BID3,R8BID4,R8BID5,NBCHOC,
      &               NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &               NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &               0,FBID,FBID,0.D0,
      &               0,0,0.D0,0.D0,0.D0,0.D0,
      &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 

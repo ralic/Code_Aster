@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 # hsnv132a.para = tps_job 60 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,23 +102,12 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DY=0.0,),
                        INFO=1,);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
-
-UTOT=STAT_NON_LINE(MODELE=MODELE,
+UTOT=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=_F(CHARGE=CHARBLO,),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='SURF',),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.0,),
-                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                  ITER_GLOB_MAXI=100,),
+                   INST=1.,
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='METIS',),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
 #---------------POST-------------------------------------------
@@ -190,7 +179,6 @@ PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
                  ABSC_CURV_MAXI = 0.05,
                  RESULTAT  = UTOT,
                  NUME_ORDRE=1,
-                 VECT_K1        = ( 0., 1., 0.,),
                 )
 
 IMPR_TABLE(TABLE = PK)

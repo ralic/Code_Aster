@@ -1,4 +1,4 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_MACRO_ETAPE Build  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,21 +170,6 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
           par une sous commande créée postérieurement.
       """
       self.Outputs[nom]=concept
-
-   def smcdel(self,iold,inew):
-      """
-          Entrees:
-            iold numero initial de la command
-            inew nouveau numero de la commande
-          Sorties:
-            ier code retour erreur (0 pas d erreur)
-          Fonction:
-            Detruit la commande numero iold si inew < iold
-            sinon la deplace
-      """
-      if CONTEXT.debug : print "smcdel: ",iold,inew
-      ier=0
-      return ier
 
    def get_sd_avant_etape(self,nom,etape):
       """

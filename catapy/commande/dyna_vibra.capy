@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
+#& MODIF COMMANDE  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -339,6 +339,21 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
         VERI_CHOC       =FACT(statut='f',
            STOP_CRITERE    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 0.5 ),
+         ),
+
+         ROTOR_FISS = FACT(statut='f',max='**',         
+                           regles=(UN_PARMI('NOEUD_D','GROUP_NO_D'),
+                                   EXCLUS('NOEUD_G','GROUP_NO_G'),
+                                   PRESENT_PRESENT('NOEUD_D','NOEUD_G'),
+                                   PRESENT_PRESENT('GROUP_NO_D','GROUP_NO_G',),),
+                             VITE_ROTA          = SIMP(statut='o',typ='R',defaut=0.E0),
+                             ANGL_INIT           = SIMP(statut='o',typ='R',defaut=0.E0),
+                             NOEUD_G            = SIMP(statut='f',typ=no),
+                             NOEUD_D            = SIMP(statut='f',typ=no),
+                             GROUP_NO_G         = SIMP(statut='f',typ=grno),
+                             GROUP_NO_D         = SIMP(statut='f',typ=grno),
+                             K_PHI              = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                             DK_DPHI            = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
          ),
 
 #parametres flambage

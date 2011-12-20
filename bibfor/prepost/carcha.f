@@ -5,7 +5,7 @@
       CHARACTER*24 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,6 +64,12 @@ C     CHAMP DE GRANDEUR "DEPL_R"
          NOMGD  = 'DEPL_R  '
          TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'ACCE') THEN
+         NOMGD  = 'DEPL_R  '
+         TYPCHA = 'NOEU'
+      ELSE IF (NOCH.EQ.'MODE_FLAMB') THEN
+         NOMGD  = 'DEPL_R  '
+         TYPCHA = 'NOEU'
+      ELSE IF (NOCH.EQ.'MODE_STAB') THEN
          NOMGD  = 'DEPL_R  '
          TYPCHA = 'NOEU'
 C

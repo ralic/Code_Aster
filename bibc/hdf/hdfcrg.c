@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrg hdf  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF hdfcrg hdf  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -35,11 +35,12 @@ INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *
 {
   INTEGER iret=-1;
 #ifndef _DISABLE_HDF5
-  hid_t  idgrp,idfic;     
+  hid_t  idgrp,idfic,lcpl_id,gcpl_id;     
   char *nomd;
   int k,lg2;
   void *malloc(size_t size);
-    
+  lcpl_id=0;gcpl_id=0;
+  
   idfic=(hid_t) *idf;
   nomd = (char *) malloc((lp+ln+2) * sizeof(char));
   for (k=0;k<lp;k++) {
@@ -62,7 +63,7 @@ INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *
   }
   nomd[k+1] = '\0';
  
-  if ((idgrp = H5Gcreate(idfic, nomd, 0)) >= 0) 
+  if ((idgrp = H5Gcreate2(idfic, nomd, lcpl_id, gcpl_id, H5P_DEFAULT)) >= 0) 
     iret = (INTEGER) idgrp;
   free (nomd);
 #else

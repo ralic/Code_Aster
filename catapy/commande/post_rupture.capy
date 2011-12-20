@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,6 +37,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                                                   'LOI_PROPA',
                                                   'CUMUL_CYCLES',
                                                   'PILO_PROPA',
+                                                  'K1_NEGATIF',
                                                  )
                        ),
 
@@ -156,6 +157,17 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                           DELTA_A_MAX = SIMP(statut='f',typ='R',max=1,val_min=0.,fr="Pilotage en incrément d'avancée max"),
                           DELTA_N     = SIMP(statut='f',typ='R',max=1,val_min=1 ,fr="Pilotage en incrément de nombre de blocs"),
                   
+                     ),
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#                 'K1_NEGATIF'
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+      b_k1_neg = BLOC(condition="OPERATION == 'K1_NEGATIF'  ",fr="Mise a zero des valeurs negatives de K1",
+
+                     MODELISATION = SIMP(statut='o',typ='TXM',into=("C_PLAN","D_PLAN","3D","AXIS")),
+                     MATER        = SIMP(statut='o',typ=mater_sdaster,),
+
                      ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------

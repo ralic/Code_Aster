@@ -1,17 +1,18 @@
       SUBROUTINE MDFNLI (NBMODE,DEPGEN,VITGEN,ACCGEN,FEXGEN,
-     +                   MASGEN,PHICAR,PULSA2,AMOGEN,
+     +                   MASGEN,PHICAR,PULSA2,AMOGEN,NBNLI,
      +                   NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,SAUCHO,
      +                   NBREDE,DPLRED,PARRED,FONRED,SAURED,SAREDI,
      +                   NBREVI,DPLREV,FONREV,  
      +                   TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,
      +                   MONMOT,
+     +                   NBRFIS,FK,DFK,ANGINI,
      +                   NUMPAS,NBPAL,DT,DTSTO,TCF,
      +                   VROTAT,TYPAL,FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER       NBMODE,NBREDE,NBREVI,NBEXCI,LOGCHO(*),SAREDI(*)
-      INTEGER       NBPAL,NBCHOC
+      INTEGER       NBPAL,NBCHOC,NBNLI
       INTEGER       NUMPAS
-      REAL*8        DT,DTSTO,TCF,VROTAT,CONV
+      REAL*8        DT,DTSTO,TCF,VROTAT,CONV,ANGINI
       REAL*8        DEPGEN(*),VITGEN(*),FEXGEN(*),MASGEN(*)
       REAL*8        PHICAR(*),PULSA2(*),AMOGEN(*),PARCHO(*),SAUCHO(*)
       REAL*8        PARRED(*),SAURED(*),DPLREV(*),DPLRED(*)
@@ -19,6 +20,7 @@
       REAL*8        TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
       CHARACTER*8   NOECHO(*),FONRED(*),FONREV(*),MONMOT
       CHARACTER*8   NOFDEP(NBEXCI),NOFVIT(NBEXCI),NOFACC(NBEXCI)
+      CHARACTER*8   FK(2),DFK(2)
       
       LOGICAL       PRDEFF    
       INTEGER       PALMAX 
@@ -30,7 +32,7 @@
       
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,6 +99,11 @@ C     --- NON-LINEARITE DE TYPE RELA_EFFO_DEPL ---
       IF ( NBREDE.NE.0 ) CALL MDFRED ( NBMODE,DEPGEN,FEXGEN,NBREDE,
      +                                 DPLRED,PARRED,FONRED,SAURED,
      +                                 SAREDI )
+C
+C     --- NON-LINEARITE DE TYPE ROTOR FISSURE ---
+      IF ( NBRFIS.GT.0 ) CALL MDRFIS ( NBMODE,DEPGEN,FEXGEN,NBNLI,
+     +                                 NBRFIS,DPLMOD,FK,DFK,PARCHO,
+     +                                 ANGINI,VROTAT,TEMPS) 
 C
 C     --- NON-LINEARITE DE TYPE RELA_EFFO_VITE ---
       IF ( NBREVI.NE.0 ) CALL MDFREV ( NBMODE,VITGEN,FEXGEN,NBREVI,

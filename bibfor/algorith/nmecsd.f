@@ -2,7 +2,7 @@
      &                  VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -124,13 +124,27 @@ C
         ELSEIF(NOMPAR.EQ.'SOLU_MODE_FLAM') THEN 
           ZK24(JPINFK+9-1) = VALK 
         ELSEIF(NOMPAR.EQ.'NOM_DDL_EXCLUS') THEN 
-          ZK24(JPINFK+10-1) = VALK                                      
+          ZK24(JPINFK+10-1) = VALK   
+        ELSEIF(NOMPAR.EQ.'NOM_DDL_STAB') THEN 
+          ZK24(JPINFK+11-1) = VALK   
+        ELSEIF(NOMPAR.EQ.'NB_DDL_STAB') THEN 
+          ZI(JPINFI+8-1)   = VALI                                
+        ELSEIF(NOMPAR.EQ.'SOLU_FREQ_STAB') THEN 
+          ZR(JPINFR+7-1) = VALR               
+        ELSEIF(NOMPAR.EQ.'SOLU_NUME_STAB') THEN 
+          ZI(JPINFI+9-1) = VALI          
+        ELSEIF(NOMPAR.EQ.'SOLU_MODE_STAB') THEN
+          ZK24(JPINFK+12-1) = VALK
+        ELSEIF(NOMPAR.EQ.'COEF_DIM_FLAMB') THEN
+          ZI(JPINFI+10-1) = VALI
+        ELSEIF(NOMPAR.EQ.'COEF_DIM_VIBR') THEN
+          ZI(JPINFI+11-1) = VALI
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF              
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
-C          
+C
       CALL JEDEMA()
       END

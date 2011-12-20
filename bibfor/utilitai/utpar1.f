@@ -5,7 +5,7 @@
       CHARACTER*32 LIPARA(NBPAMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF UTILITAI  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,6 +199,9 @@ C       A CAUSE DE LRIDEA.F (TEST ZZZZ165A)
         LIPARA(ICO)='CHAR_CRIT#P#R'
 C
         ICO=ICO+1
+        LIPARA(ICO)='CRIT_STAB#P#R'
+C
+        ICO=ICO+1
         LIPARA(ICO)='CARAELEM#P#K8'
         ICO=ICO+1
         LIPARA(ICO)='CHAMPMAT#P#K8'
@@ -304,6 +307,27 @@ C     --------------------------------
         NBPARA=ICO
         CALL ASSERT(NBPARA.LE.NBPAMX)
 
+
+        
+      ELSEIF (TYPSD.EQ.'MODE_STAB') THEN
+C     --------------------------------
+        ICO=ICO+1
+        LIPARA(ICO)='CARAELEM#P#K8'
+        ICO=ICO+1
+        LIPARA(ICO)='CHAMPMAT#P#K8'
+        ICO=ICO+1
+        LIPARA(ICO)='CRIT_STAB#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='EXCIT#P#K24'
+        ICO=ICO+1
+        LIPARA(ICO)='MODELE#P#K8'
+        ICO=ICO+1
+        LIPARA(ICO)='NORME#P#K24'
+        ICO=ICO+1
+        LIPARA(ICO)='NUME_MODE#A#I'
+        NBPARA=ICO
+        CALL ASSERT(NBPARA.LE.NBPAMX)              
+        
 
 
       ELSEIF ((TYPSD.EQ.'MODE_MECA').OR.

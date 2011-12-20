@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP RUPTURE : PLAQUE MULTI-FISSUREE EN TRACTION
 # forma06a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,16 +110,12 @@ CHPRES=AFFE_CHAR_MECA(MODELE=MODXFEM,
 #               RESOLUTION
 #----------------------------------------------
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A=1.,NOMBRE=1))
-
-RESU=STAT_NON_LINE(MODELE=MODXFEM,
+RESU=MECA_STATIQUE(MODELE=MODXFEM,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHXFEM),
                           _F(CHARGE=CHBLOC),
                           _F(CHARGE=CHPRES),),
-                   COMP_ELAS=_F(RELATION='ELAS'),
-                   INCREMENT=_F(LIST_INST=L_INST),
-                   NEWTON=_F(REAC_ITER=1),
+                   INST=1.,
                    )
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : MAILLAGE FISSURE et DEPLACEMENTS POUR LE MAILLAGE FISSURE

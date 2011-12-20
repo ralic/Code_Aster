@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,14 +153,11 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MAIB,
                     LEVRE_SUP=_F(GROUP_MA='LSUP',),
                     LEVRE_INF=_F(GROUP_MA='LINF',),);
 
-# VECT_K1 permet d'orienter la fissure
-# c'est le vecteur pour l'ouverture en mode I
 POST_K=POST_K1_K2_K3(MODELISATION='C_PLAN',
                      FOND_FISS=FISS,
                      MATER=MATE,
                      RESULTAT=RESU,
-                     ABSC_CURV_MAXI=Dmax,
-                     VECT_K1=(0.,1.,0.,),);
+                     ABSC_CURV_MAXI=Dmax,);
 
 IMPR_TABLE(TABLE=POST_K,
            UNITE=8,);

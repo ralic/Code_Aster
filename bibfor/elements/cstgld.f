@@ -1,8 +1,7 @@
-      SUBROUTINE CSTGLD(LAMBDA,MU,LAMF,MUF,ALF,GF,GMT,GMC,
-     &                   EMP,EFP,QFF,COF1,Q2D,GI,GTR2)
+      SUBROUTINE CSTGLD(LAMF,MUF,ALF,GF,EMP,EFP,QFF)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +21,7 @@ C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 
       IMPLICIT NONE
-      REAL*8 LAMBDA,MU,LAMF,MUF,ALF,GF,GMT,GMC,TR2D,TROT,TROT2
+      REAL*8 LAMF,MUF,ALF,GF,TROT,TROT2
       REAL*8 EMP(2),EFP(2)
 
 C----------------------------------------------------------------------
@@ -38,7 +37,6 @@ C         GF     : PARAMETRE GAMMA POUR LA FLEXION
 C         GMT    : PARAMETRE GAMMA POUR LA MEMBRANE EN TRACTION
 C         GMC    : PARAMETRE GAMMA POUR LA MEMBRANE EN COMPRESSION
 C         DELTA  : PARAMETRE DE COUPLAGE MEMBRANE-FLEXION
-C         TR2D   : TRACE DE EPS 2D (MEMBRANE)
 C         TROT   : TRACE DE KAPPA (FLEXION)
 C         EMP(2) : VALEURS PROPRES DE EPS 2D
 C         EFP(2) : VALEURS PROPRES DE KAPPA
@@ -54,14 +52,12 @@ C         GI(2)  : INTERMEDIAIRE DE CALCUL
 C----------------------------------------------------------------------
 
       INTEGER K
-      REAL*8 QFF(2),GI(2)
-      REAL*8 GTR2,COF1,Q2D,GF1,GF2
+      REAL*8 QFF(2),GF1,GF2
 
 C-- ICI ON SUPPOSE QUE GF1=GF2, CE QUI N EST PAS NECESSAIRE
       GF1 = GF
       GF2 = GF
 
-      TR2D = EMP(1) + EMP(2)
       TROT = EFP(1) + EFP(2)
       TROT2 = TROT**2
 
@@ -85,24 +81,5 @@ C -------- CALCUL DE QFF --------------------
 
       QFF(1) = ALF*QFF(1)*(1.0D0 - GF1)
       QFF(2) = ALF*QFF(2)*(1.0D0 - GF2)
-
-C -------- CALCUL DE COF1 ET Q2D -----------
-
-      IF(TR2D .GT. 0.0D0) THEN
-        GTR2 = 1.0D0 - GMT
-      ELSE
-        GTR2 = 1.0D0 - GMC
-      ENDIF
-
-      DO 50, K = 1,2
-        IF(EMP(K) .GT. 0.0D0) THEN
-          GI(K) = 1.0D0 - GMT
-        ELSE
-          GI(K) = 1.0D0 - GMC
-        ENDIF
- 50   CONTINUE
-
-      COF1 = 0.5D0*LAMBDA*GTR2
-      Q2D  = 0.5D0*MU * (EMP(1)**2*GI(1) + EMP(2)**2*GI(2))
 
       END

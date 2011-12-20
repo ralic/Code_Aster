@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,9 +65,9 @@ C
       INTEGER      JMATE,JGEOM,JMATR,JENER,I,JCARA
       INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP
       INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2)
-      LOGICAL      LCOELA
-      INTEGER CODRE2(33),CODRE1,IBID
-      CHARACTER*2 VAL
+      INTEGER      IBID
+      LOGICAL      LCQHOM
+      CHARACTER*2  VAL
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES
       CHARACTER*10 PHENOM
@@ -96,20 +96,23 @@ C --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
       CALL COSIRO(NOMTE,'PCONTMR','UI','G',IBID,'S')
       CALL COSIRO(NOMTE,'PCONTRR','UI','G',IBID,'S')
 
-      LCOELA = .FALSE.
+      LCQHOM = .FALSE.
       IF ( OPTION.EQ.'FULL_MECA'      .OR.
      &     OPTION.EQ.'RAPH_MECA'      .OR.
      &     OPTION(1:9).EQ.'RIGI_MECA' ) THEN
 
         CALL JEVECH('PMATERC','L',JMATE)
-
-        IF ( OPTION.EQ.'FULL_MECA'      .OR.
-     &     OPTION.EQ.'RAPH_MECA'      .OR.
-     &     OPTION.EQ.'RIGI_MECA_TANG') THEN
-          CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
-          IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
+C
+C ---   COQUE HOMOGENEISEE ?
+C
+        IF ( OPTION.EQ.'FULL_MECA'.OR.
+     &       OPTION.EQ.'RAPH_MECA'.OR.
+     &       OPTION.EQ.'RIGI_MECA_TANG') THEN
+          CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
+          IF (PHENOM.EQ.'ELAS_COQUE'.OR.PHENOM.EQ.'ELAS_COQMU') THEN
+            LCQHOM = .TRUE.
+          ENDIF
         ENDIF
-
 C
 C ---   VERIFICATION DE LA COHERENCE DES INFORMATIONS
 C ---   PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
@@ -129,8 +132,8 @@ C       ----------------------------------
           CALL CODENT(1,'G',VAL)
           NOMRES = 'C'//NUM//'_V'//VAL
           CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,
-     &         1,NOMRES,EPI,CODRE1,0)
-          IF (CODRE1.EQ.0) THEN
+     &         1,NOMRES,EPI,CODRET,0)
+          IF (CODRET.EQ.0) THEN
             EPTOT=EPTOT+EPI
             GOTO 5
           ENDIF
@@ -289,16 +292,18 @@ C
         CALL JEVECH('PDEPLPR','L',JDEPR)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
-           IF (.NOT.LCOELA) THEN
-             CALL U2MESS('F','ELEMENTS2_71')
-           ENDIF
+          CALL U2MESS('F','ELEMENTS2_71')
+        ENDIF
+        IF (LCQHOM) THEN
+          CALL U2MESS('F','ELEMENTS2_75')
         ENDIF
         IF ((ZK16(ICOMPO+2) (6:10).EQ.'_REAC') .OR.
      &      (ZK16(ICOMPO+2).EQ.'GROT_GDEP') ) THEN
 C            GROT_GDEP CORRESPOND ICI A EULER_ALMANSI
 
-          IF(ZK16(ICOMPO+2) (6:10).EQ.'_REAC')
-     &     CALL U2MESS('A','ELEMENTS2_72')
+          IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
+            CALL U2MESS('A','ELEMENTS2_72')
+          ENDIF
           DO 40 I = 1,NNO
             I1 = 3* (I-1)
             I2 = 6* (I-1)
@@ -322,19 +327,11 @@ C
         CALL UTPVGL(NNO,6,PGL,ZR(JDEPR),DUL)
 C
         IF (NOMTE.EQ.'MEDKTR3') THEN
-          IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
-            CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
-     &                    MATLOC, CODRET )
-          ELSE
-            CALL U2MESK('F','ELEMENTS2_73',1,ZK16(ICOMPO+3))
-          ENDIF
+          CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
+     &                  MATLOC, CODRET )
         ELSE IF (NOMTE.EQ.'MEDKQU4 ') THEN
-          IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
-            CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
-     &                    MATLOC, CODRET )
-          ELSE
-            CALL U2MESK('F','ELEMENTS2_73',1,ZK16(ICOMPO+3))
-          ENDIF
+          CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
+     &                  MATLOC, CODRET )
         ELSE
           CALL U2MESK('F','ELEMENTS2_74',1,NOMTE)
         END IF

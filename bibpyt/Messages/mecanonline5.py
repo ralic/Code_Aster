@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline5 Messages  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,10 +206,23 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
 
 """),
 
+48 : _(u"""
+  Le pilotage est incompatible avec la méthode NEWTON_KRYLOV.
+
+"""),
+49 : _(u"""
+  La recherche linéaire est incompatible avec la méthode NEWTON_KRYLOV.
+
+"""),
+
 50 : _(u"""
  Pilotage.
  La composante <%(k1)s> n'a pas été trouvée dans la numérotation.
  Vérifier NOM_CMP dans le mot-clef PILOTAGE.
+"""),
+
+51 : _(u"""
+ Pour utiliser METHODE='NEWTON-KRYLOV', il faut utiliser une methode itérative (GCPC, PETSC) sous le mot-clé SOLVEUR.
 """),
 
 53: _(u"""

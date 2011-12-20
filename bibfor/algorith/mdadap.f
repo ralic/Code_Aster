@@ -36,7 +36,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C
       REAL*8        TPS1(4), CONV
       REAL*8        VALR(3), RINT1, RINT2, VALR2(2)
       INTEGER       VALI(2)
-      CHARACTER*8   TRAN
+      CHARACTER*8   TRAN,FBID(2)
       CHARACTER*19  MAMASS,SOLVEU,MATPRE
 C
       INTEGER       II
@@ -139,7 +139,9 @@ C
       REAL*8        FSAUV(PALMAX,3)
 C
       CALL JEMARQ()
-      
+C            
+      FBID = '        '
+
       ZERO = 0.D0
       DEUX = 2.D0
       JCHOR = 1
@@ -318,11 +320,12 @@ C         CAS DES FORCES DE LAME FLUIDE
 C
         CALL MDFNLI(NEQGEN,ZR(JDEPL),ZR(JVITE),
      &            ZR(JACCE),ZR(JFEXT),ZR(JMASS),ZR(JPHI2),
-     &            ZR(JPULS),ZR(JAMOGI),
+     &            ZR(JPULS),ZR(JAMOGI),NBCHOC,
      &            NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &            0,FBID,FBID,0.D0,
      &            1,0,DT,DTSTO,TCF,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
@@ -339,10 +342,11 @@ C
         CALL MDFNLI(NEQGEN,ZR(JDEPL),ZR(JVITE),
      &            ZR(JACCE),ZR(JFEXT),MASGEN,R8BID1,
      &            PULSA2,AMOGEN,
-     &            NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
+     &            NBCHOC,NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &            0,FBID,FBID,0.D0,
      &            1,NBPAL,DT2,DTSTO,TCF,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
@@ -452,11 +456,12 @@ C
               II = II + 1
               CALL MDFNLI(NEQGEN,ZR(JDEP2),ZR(JVIP2),
      &                  ZR(JACGI1),ZR(JFEXTI),ZR(JMASS),ZR(JPHI2),
-     &                  ZR(JPULS),ZR(JAMOGI),
+     &                  ZR(JPULS),ZR(JAMOGI),NBCHOC,
      &                  NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,
      &                  ZR(JCHO2), NBREDE,DPLRED,PARRED,FONRED,
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
      &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &                  0,FBID,FBID,0.D0,
      &                  II,NBPAL,DT2,DTSTO,TCF,
      &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
               IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
@@ -500,10 +505,11 @@ C
               II = II + 1
               CALL MDFNLI(NEQGEN,ZR(JDEP2),ZR(JVIP2),
      &                  ZR(JACCE),ZR(JFEXT),R8BID2,R8BID3,R8BID4,
-     &                  R8BID5,NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,
+     &                 R8BID5,NBCHOC,NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,
      &                  ZR(JCHO2), NBREDE,DPLRED,PARRED,FONRED,
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
      &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &                  0,FBID,FBID,0.D0,
      &                  II,NBPAL,DT2,DTSTO,TCF,
      &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
               IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')

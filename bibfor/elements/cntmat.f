@@ -1,10 +1,11 @@
-      SUBROUTINE CNTMAT(T,LAMBDA,DEUXMU,LAMF,DEUMUF,ALF,EMP,
-     &           EFP,VMP,VFP,TR2D,TROT,TREPS,GMT,GMC,GF,DA1,
+      SUBROUTINE CNTMAT(T,LAMBDA,DEUXMU,LAMF,DEUMUF,ALF,ALFMC,EMP,
+     &           EFP,EPS,VMP,VFP,TR2D,TROT,TREPS,GMT,GMC,GF,DA1,
      &           DA2,KSI2D,QFF,COF1,Q2D,DE33D1,
      &           DE33D2,ELAS,ELAS1,ELAS2,COUP,RIGI,RESI,OPTION,DSIDEP,
-     &           SIG)
+     &           SIG,COF2,DQ2D)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,9 +29,10 @@ C --  IN
       LOGICAL RESI, RIGI, COUP, ELAS, ELAS1, ELAS2
 
       REAL*8 LAMBDA, DEUXMU, LAMF, DEUMUF, ALF, TREPS, GMT, GMC, GF
-      REAL*8 DA1, DA2, COF1, Q2D, DE33D1, DE33D2, KSI2D, TR2D
-      REAL*8 TROT, DE33I
-      REAL*8 EMP(2), EFP(2), VMP(2,2), VFP(2,2), QFF(2)
+      REAL*8 DA1, DA2, COF1(2), Q2D(2), DE33D1, DE33D2, KSI2D, TR2D
+      REAL*8 TROT, DE33I, R8PREM
+      REAL*8 EPS(2),EMP(2), EFP(2), VMP(2,2), VFP(2,2), QFF(2)
+      REAL*8 COF2(2),DQ2D(2)
       CHARACTER*16 OPTION
 
 C --  OUT
@@ -56,12 +58,10 @@ C         GMT     : PARAMETRE GAMMA POUR LA MEMBRANE EN TRACTION
 C         GMC     : PARAMETRE GAMMA POUR LA MEMBRANE EN COMPRESSION
 C         GF      : PARAMETRE GAMMA POUR LA FLEXION
 C         DA1,DA2 : VALEURS D'ENDOMMAGEMENT
-C         EPS33   : COMPOSANTE 33 DE LA DEFORMATION
 C         KSI2D   : FONCTION CARACTERISTIQUE D ENDOMMAGEMENT
 C         QFF(2)  : TF
 C         COF1    : INTERMEDIAIRE DE CALCUL
 C         Q2D     : INTERMEDIAIRE DE CALCUL
-C         GI(2)   : PARTIE DE LA DERIVEE DE KSI(EMP) PAR RAPPORT A DA
 C         DE33D1  : DERIVEE DE E33 PAR RAPPORT A DA1
 C         DE33D2  : DERIVEE DE E33 PAR RAPPORT A DA2
 C         ELAS    : .TRUE. SI ELASTIQUE
@@ -81,16 +81,20 @@ C----------------------------------------------------------------------
 
       REAL*8 LAMBDD, LAMFD,  DLMD1, DLMD2, DLMFD1, DLMFD2
       REAL*8 TREPS2, GF1, GF2, MU, FD1, FD2
-      REAL*8 QM1, QM2, QME33
+      REAL*8 QM1, QM2, ALFMC
       REAL*8 A(2,2), AINV(2,2)
       REAL*8 DNDD(2,2), DMDD(2,2)
       REAL*8 DEUMUD(2), DEMUDF(2), D1MUD(2), D2MUD(2)
       REAL*8 D1MUDF(2), D2MUDF(2)
       REAL*8 FDI1(2), FDI2(2), SIGP(3), SIGF(3)
+      REAL*8 DETA
       REAL*8 DSPDEP(6,6)
-      REAL*8 R8PREM, DETA
 
       MU  = DEUXMU * 0.5D0
+
+C --  CALCUL DES TRACES
+      TR2D  = EPS(1)+EPS(2)
+      TROT  = EFP(1)+EFP(2)
 
 C --  CALCUL DE GF1 ET GF2
 C     ICI ON SUPPOSE QUE GF1=GF2, CE QUI N EST PAS NECESSAIRE
@@ -98,37 +102,42 @@ C     ICI ON SUPPOSE QUE GF1=GF2, CE QUI N EST PAS NECESSAIRE
       GF2 = GF
 
 C --  CALCUL DES CONTRAINTES GENERALISEES
+C --  INITIALISATION
+      CALL R8INIR(3,0.D0,SIGP,1)
+      CALL R8INIR(3,0.D0,SIGF,1)
 
 C --  CALCUL DE LA CONTRAINTE DE MEMBRANE SIGP
-      IF(TR2D .GT. 0.0D0) THEN
-        FD1 = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)
-        FD2 = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)
+      IF(TR2D .GT. 0.D0) THEN
+        FD1 = (1.D0 + GMT*DA1) / (1.D0 + DA1)
+        FD2 = (1.D0 + GMT*DA2) / (1.D0 + DA2)
         DLMD1 = -0.5D0*LAMBDA*(1.D0-GMT)/(1.D0+DA1)**2
         DLMD2 = -0.5D0*LAMBDA*(1.D0-GMT)/(1.D0+DA2)**2
       ELSE
-        FD1 = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)
-        FD2 = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)
-        DLMD1 = -0.5D0*LAMBDA*(1.D0-GMC)/(1.D0+DA1)**2
-        DLMD2 = -0.5D0*LAMBDA*(1.D0-GMC)/(1.D0+DA2)**2
+        FD1 = (ALFMC + GMC*DA1) / (ALFMC + DA1)
+        FD2 = (ALFMC + GMC*DA2) / (ALFMC + DA2)
+        DLMD1 = -0.5D0*LAMBDA*ALFMC*(1.D0-GMC)/(ALFMC+DA1)**2
+        DLMD2 = -0.5D0*LAMBDA*ALFMC*(1.D0-GMC)/(ALFMC+DA2)**2
       ENDIF
 
-      LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
+      LAMBDD = LAMBDA *0.5D0*(FD1 + FD2)
 
-      DO 80, K=1,2
+      DO 80 K=1,2
         IF (EMP(K).GT.0.D0) THEN
-          FDI1(K) = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)
-          FDI2(K) = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)
+          FDI1(K) = (1.D0 + GMT*DA1) / (1.D0 + DA1)
+          FDI2(K) = (1.D0 + GMT*DA2) / (1.D0 + DA2)
           D2MUD(K) = -MU*(1.D0-GMT)/(1.D0+DA2)**2
           D1MUD(K) = -MU*(1.D0-GMT)/(1.D0+DA1)**2
         ELSE
-          FDI1(K) = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)
-          FDI2(K) = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)
-          D2MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA2)**2
-          D1MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA1)**2
+          FDI1(K) = (ALFMC + GMC*DA1) / (ALFMC + DA1)
+          FDI2(K) = (ALFMC + GMC*DA2) / (ALFMC + DA2)
+          D2MUD(K) = -MU*ALFMC*(1.D0-GMC)/(ALFMC+DA2)**2
+          D1MUD(K) = -MU*ALFMC*(1.D0-GMC)/(ALFMC+DA1)**2
         ENDIF
         DEUMUD(K) = MU*(FDI1(K) + FDI2(K))
-        SIGP(K) = LAMBDD*TREPS + DEUMUD(K)*EMP(K)
- 80   CONTINUE
+        SIGP(1) = SIGP(1) + DEUMUD(K)*EMP(K)*VMP(1,K)**2
+        SIGP(2) = SIGP(2) + DEUMUD(K)*EMP(K)*VMP(2,K)**2
+        SIGP(3) = SIGP(3) + DEUMUD(K)*EMP(K)*VMP(1,K)*VMP(2,K)
+80    CONTINUE
 
 C --  CALCUL DE LA CONTRAINTE DE FLEXION SIGF
       IF(TROT .GT. 0.0D0) THEN
@@ -141,7 +150,7 @@ C --  CALCUL DE LA CONTRAINTE DE FLEXION SIGF
         DLMFD2 = 0.0D0
       ENDIF
 
-      DO 90, K = 1,2
+      DO 90 K = 1,2
         IF(EFP(K) .GT. 0.0D0) THEN
           DEMUDF(K) =  DEUMUF*(ALF + GF2*DA2)/(ALF + DA2)
           D2MUDF(K) = -DEUMUF*ALF*(1.0D0 - GF2)/(ALF + DA2)**2
@@ -151,23 +160,29 @@ C --  CALCUL DE LA CONTRAINTE DE FLEXION SIGF
           D1MUDF(K) = -DEUMUF*ALF*(1.0D0 - GF1)/(ALF + DA1)**2
           D2MUDF(K) =  0.0D0
         ENDIF
-        SIGF(K) = LAMFD*TROT + DEMUDF(K)*EFP(K)
- 90   CONTINUE
 
+        SIGF(1) = SIGF(1) + DEMUDF(K)*EFP(K)*VFP(1,K)**2
+        SIGF(2) = SIGF(2) + DEMUDF(K)*EFP(K)*VFP(2,K)**2
+        SIGF(3) = SIGF(3) + DEMUDF(K)*EFP(K)*VFP(1,K)*VFP(2,K)
+90    CONTINUE
+
+C --  CALCUL DE SIG
       IF (RESI .AND.(.NOT.COUP)) THEN
         CALL R8INIR(6,0.D0,SIG,1)
-        DO 1010 I=1,2
-          SIG(1)=SIG(1)+VMP(1,I)**2*SIGP(I)
-          SIG(2)=SIG(2)+VMP(2,I)**2*SIGP(I)
-          SIG(3)=SIG(3)+VMP(1,I)*VMP(2,I)*SIGP(I)
 
-          SIG(4)=SIG(4)+VFP(1,I)**2*SIGF(I)
-          SIG(5)=SIG(5)+VFP(2,I)**2*SIGF(I)
-          SIG(6)=SIG(6)+VFP(1,I)*VFP(2,I)*SIGF(I)
-1010    CONTINUE
+        SIG(1) = SIGP(1)+LAMBDD*TREPS
+        SIG(2) = SIGP(2)+LAMBDD*TREPS
+        SIG(3) = SIGP(3)
+        SIG(4) = SIGF(1)+LAMFD*TROT
+        SIG(5) = SIGF(2)+LAMFD*TROT
+        SIG(6) = SIGF(3)
       ENDIF
 
-C -- CALCUL DE LA MATRICE TANGENTE
+C ---------------------------------------------------------------
+
+C ----  CALCUL DE LA MATRICE TANGENTE
+C ----  CALCUL DE LA PARTIE ELASTIQUE
+C ----  CALCUL DE LA PARTIE ELASTIQUE DANS LE REPERE PROPRE
       IF (RIGI) THEN
         IF (OPTION(11:14).EQ.'ELAS') THEN
           ELAS  =.TRUE.
@@ -175,7 +190,6 @@ C -- CALCUL DE LA MATRICE TANGENTE
           ELAS2 =.TRUE.
         ENDIF
 
-C --  CALCUL DE LA PARTIE ELASTIQUE
         CALL R8INIR(36, 0.D0, DSPDEP, 1)
 
         IF (COUP) THEN
@@ -190,35 +204,34 @@ C --  CALCUL DE LA PARTIE ELASTIQUE
           DO 110 L = 1,2
             DSPDEP(K,L) = LAMBDD + LAMBDA*KSI2D*DE33I
             DSPDEP(K+3,L+3) = LAMFD
- 110      CONTINUE
- 100    CONTINUE
+110       CONTINUE
+100     CONTINUE
 
         DO 120 K = 1,2
           DSPDEP(K,K) = DSPDEP(K,K) + DEUMUD(K)
           DSPDEP(K+3,K+3) = DSPDEP(K+3,K+3) + DEMUDF(K)
- 120    CONTINUE
+120     CONTINUE
 
         IF (ABS(EMP(1) - EMP(2)) .LE. R8PREM()) THEN
           DSPDEP(3,3)=DEUMUD(1)
         ELSE
           DSPDEP(3,3)=(DEUMUD(1)*EMP(1)-DEUMUD(2)*EMP(2))
-     &                                    /(EMP(1)-EMP(2))
+     &                                  /(EMP(1)-EMP(2))
         ENDIF
 
         IF (ABS(EFP(1) - EFP(2)) .LE. R8PREM()) THEN
           DSPDEP(6,6)=DEMUDF(1)
         ELSE
           DSPDEP(6,6)=(DEMUDF(1)*EFP(1)-DEMUDF(2)*EFP(2))
-     &                                    /(EFP(1)-EFP(2))
+     &                                  /(EFP(1)-EFP(2))
         ENDIF
 
 C -- CONTRIBUTION DISSIPATIVE
         IF (.NOT. ELAS) THEN
 
           TREPS2 = TREPS*TREPS
-          QM1 = 0.5D0*COF1*TREPS2+Q2D
-          QM2 = QM1
-          QME33 = COF1*TREPS
+          QM1 = 0.5D0*COF1(1)*TREPS2+Q2D(1)
+          QM2 = 0.5D0*COF1(2)*TREPS2+Q2D(2)
 
 C --  CALCUL DE LA DERIVEE DES CONTRAINTES MEMBRANES PAR RAPPORT A DA
 
@@ -236,13 +249,17 @@ C --  CALCUL DE LA DERIVEE DES CONTRAINTES FLEXION PAR RAPPORT A DA
 
           IF((.NOT. ELAS1).AND.(.NOT. ELAS2))THEN
 
-            A(1,1) = 2.0D0*(QM1/(1.0D0+DA1)**3 + QFF(1)/(ALF+DA1)**3)
-     &             - QME33*DE33D1/(1.0D0+DA1)**2
-            A(1,2) = -QME33*DE33D2/(1.0D0+DA1)**2
+          A(1,1) = 2.0D0*(QM1/(1.0D0 + DA1)**3
+     &           + QFF(1)/(ALF + DA1)**3)
+     &           - (COF1(1)*TREPS*DE33D1+0.5D0*COF2(1)*TREPS2+DQ2D(1))
+     &            /(1.D0 + DA1)**2
+          A(1,2) = -COF1(1)*TREPS*DE33D2/(1.0D0 + DA1)**2
 
-            A(2,2) = 2.0D0*(QM2/(1.0D0+DA2)**3 + QFF(2)/(ALF+DA2)**3)
-     &             - QME33*DE33D2/(1.0D0+DA2)**2
-            A(2,1) = -QME33*DE33D1/(1.0D0 + DA2)**2
+          A(2,2) = 2.0D0*(QM2/(1.0D0 + DA2)**3
+     &           + QFF(2)/(ALF + DA2)**3)
+     &           - (COF1(2)*TREPS*DE33D2+0.5D0*COF2(2)*TREPS2+DQ2D(2))
+     &            /(1.D0 + DA2)**2
+          A(2,1) = -COF1(2)*TREPS*DE33D1/(1.0D0 + DA2)**2
 
             CALL MATINV('S',2,A,AINV,DETA)
 
@@ -266,8 +283,10 @@ C --  CALCUL DE LA DERIVEE DES CONTRAINTES FLEXION PAR RAPPORT A DA
 
           ELSEIF(.NOT. ELAS1)THEN
 
-            A(1,1) = 2.0D0*(QM1/(1.0D0+DA1)**3 + QFF(1)/(ALF+DA1)**3)
-     &             - QME33*DE33D1/(1.0D0+DA1)**2
+          A(1,1) = 2.0D0*(QM1/(1.0D0 + DA1)**3
+     &           + QFF(1)/(ALF + DA1)**3)
+     &           - (COF1(1)*TREPS*DE33D1+0.5D0*COF2(1)*TREPS2+DQ2D(1))
+     &            /(1.D0 + DA1)**2
 
             AINV(1,1)=1.D0/A(1,1)
 
@@ -288,8 +307,10 @@ C --  CALCUL DE LA DERIVEE DES CONTRAINTES FLEXION PAR RAPPORT A DA
 
           ELSEIF(.NOT. ELAS2) THEN
 
-            A(2,2) = 2.0D0*(QM2/(1.0D0+DA2)**3 + QFF(2)/(ALF+DA2)**3)
-     &             - QME33*DE33D2/(1.0D0+DA2)**2
+          A(2,2) = 2.0D0*(QM2/(1.0D0 + DA2)**3
+     &           + QFF(2)/(ALF + DA2)**3)
+     &           - (COF1(2)*TREPS*DE33D2+0.5D0*COF2(2)*TREPS2+DQ2D(2))
+     &            /(1.D0 + DA2)**2
 
             AINV(2,2)=1.D0/A(2,2)
 

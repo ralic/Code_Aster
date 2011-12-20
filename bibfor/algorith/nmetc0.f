@@ -2,7 +2,7 @@
      &                  ZIOCH )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,6 +153,8 @@ C
           NOMCH0 = DEPL0
         ELSEIF (NOMCHA.EQ.'FORC_NODA') THEN
           NOMCH0 = DEPL0
+        ELSEIF (NOMCHA.EQ.'MODE_STAB') THEN
+          NOMCH0 = ' '
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

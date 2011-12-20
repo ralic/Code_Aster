@@ -41,12 +41,6 @@ extern void DEFPSSSS(ULOPEN,ulopen,INTEGER *,char *,STRING_SIZE,char *,STRING_SI
 #define CALL_FCLOSE(a) CALLP(FCLOSE,fclose,a)
 extern void DEFP(FCLOSE,fclose,INTEGER *);
 
-#define CALL_REPOUT(a,b,c) CALLPPS(REPOUT,repout,a,b,c)
-extern void DEFPPS(REPOUT,repout,INTEGER *,INTEGER *,char *,STRING_SIZE);
-
-#define CALL_REPDEX(a,b,c) CALLPPS(REPDEX,repdex,a,b,c)
-extern void DEFPPS(REPDEX,repdex,INTEGER *,INTEGER *,char *,STRING_SIZE);
-
 #define CALL_DISMOI(a,b,c,d,e,f,g) CALLSSSSPSP(DISMOI,dismoi,a,b,c,d,e,f,g)
 extern void DEFSSSSPSP(DISMOI, dismoi, char *,STRING_SIZE, char *,STRING_SIZE, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *, char *,STRING_SIZE, INTEGER *);
 
@@ -79,9 +73,6 @@ INTEGER DEFP(MEJVST, mejvst, double *);
 
 INTEGER DEFP(MJVSMO, mjvsmo, double *);
 #define CALL_MJVSMO(a) CALLP(MJVSMO, mjvsmo, a)
-
-INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, STRING_SIZE);
-#define CALL_REPMAT(a, b, c) CALLPPS(REPMAT, repmat, a, b, c)
 
 INTEGER DEFP(ISINTE, isinte, INTEGER *);
 #define CALL_ISINTE(a) CALLP(ISINTE, isinte, a)

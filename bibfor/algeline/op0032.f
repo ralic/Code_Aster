@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 19/12/2011   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C     EIGENVALUE-COUNTING METHODS FOR GEP OR QEP
 C     ------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
-
+C TOLE CRP_20 
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -41,23 +41,25 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      N1,ISLVK,ISLVI,JREFA,NPREC,ITEST,NMULTC,LAMOR,
+      INTEGER      ISLVK,ISLVI,JREFA,NPREC,ITEST,NMULTC,LAMOR,
      &             EXPO,PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,I,II,IFAPM,
      &             NBLAGR,NBCINE,NEQACT,NEQ,LTYPME,NITERC,
      &             LTYPRE,L,LBRSS,LMASSE,LRAIDE,LDDL,LDYNAM,NK,
-     &             LPROD,IFR,IRET,ICOMP,IERX,NBFREQ,KREFA,
-     &             IFM,NIV,NBTETC,NAUX,NBTET0,NBTET1,
-     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG
+     &             LPROD,IRET,ICOMP,IERX,NBFREQ,KREFA,
+     &             IFM,NIV,NBTETC,NAUX,NBTET0,NBTET1,NBMODE(1),
+     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID
       REAL*8       OMEGA2,OMGMIN,OMGMAX,OMIN,OMAX,FCORIG,OMECOR,RAUX,
-     &             FMIN,FMAX,PRECDC,FREQOM,MANTIS,RAYONC,DIMC1
-      COMPLEX*16   CENTRC,ZIMC1
+     &             FMIN,FMAX,PRECDC,FREQOM,MANTIS,RAYONC,DIMC1,
+     &             CALPAR(2),CALPAC(3),CALPAF(2),RBID
+      COMPLEX*16   CENTRC,ZIMC1,CBID
       LOGICAL      ULEXIS,LTEST,LC 
-      CHARACTER*1  TYPEP
+      CHARACTER*1  TYPEP,TPPARN(1),TPPARR(2),TPPARC(3),TPPARF(2)
       CHARACTER*3  IMPR
-      CHARACTER*8  KBID,TYPCON,TYPMET,TYPCHA
-      CHARACTER*16 CONCEP,NOMCMD,TYPRES,FICHIE
+      CHARACTER*8  TYPCON,TYPMET,TYPCHA,TABLE
+      CHARACTER*16 CONCEP,NOMCMD,TYPMOD,
+     &             NMPARN(1),NMPARR(2),NMPARC(3),NMPARF(2)
       CHARACTER*19 MASSE,RAIDE,DYNAM,SOLVEU,AMOR,MATREF
-      CHARACTER*24 VALK(2),METRES,K24RC
+      CHARACTER*24 VALK(2),METRES,K24RC,KBID
       PARAMETER   ( MXDDL=1,MITERC=10000,NMULTC=2)
 C     ------------------------------------------------------------------
 C
@@ -74,12 +76,8 @@ C     --- FOR SAVE TIME IN FACTORIZATION PROCEDURE OF 'STURM' ---
       EXPO=-9999      
       FMIN = 0.D0
 
-C     --- OUTPUT FILE ---
-      IFR    = 0
-      FICHIE = ' '
-      CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IFR   , N1 )
-      IF (.NOT.ULEXIS(IFR)) CALL ULOPEN(IFR,' ',FICHIE,'NEW','O')
-      CALL GETRES( KBID , CONCEP , NOMCMD )
+C     --- OUTPUT CONCEPT ---
+      CALL GETRES( TABLE , CONCEP , NOMCMD )
 
 C     --- READ OF MATRICES, CHECK OF REFERENCES ---
 C     --- COMPUTATION OF THE MATRIX DESCRIPTORS ---
@@ -139,32 +137,39 @@ C     --- AUTOMATIC PARAMETRIZATION WITH 'AUTO'                 ---
         ENDIF
       ENDIF
 
-C     --- KIND OF COMPUTATION : DYNAMIC, COMPLEX OR BUCKLING    ---
-      CALL GETVTX(' ','TYPE_RESU',1,IARG,1,TYPRES,LTYPRE)
-      IF (TYPRES(1:9).EQ.'DYNAMIQUE') THEN
+C     --- KIND OF COMPUTATION : REAL (GEP), DYNAMIC OR BUCKLING    ---
+      CALL GETVTX(' ','TYPE_MODE',1,IARG,1,TYPMOD,LTYPRE)
+      IF (TYPMOD(1:4).EQ.'REEL') THEN
         CALL GETVR8(' ','FREQ_MIN' ,1,IARG,1,FMIN,L)
         CALL GETVR8(' ','FREQ_MAX' ,1,IARG,1,FMAX,L)
         OMIN = OMEGA2(FMIN)
         OMAX = OMEGA2(FMAX)
-      ELSE IF (TYPRES(1:13).EQ.'MODE_COMPLEXE') THEN
+        CALPAR(1) = FMIN
+        CALPAR(2) = FMAX
+      ELSE IF (TYPMOD(1:8).EQ.'COMPLEXE') THEN
         CALL GETVTX(' ','FREQ_TYPE_CONTOUR',1,IARG,1,TYPCON,L)
         CALL GETVR8(' ','FREQ_RAYON_CONTOUR',1,IARG,1,RAYONC,L)
         CALL GETVC8(' ','FREQ_CENTRE_CONTOUR',1,IARG,1,CENTRC,L)
-      ELSE IF (TYPRES(1:10).EQ.'MODE_FLAMB') THEN
+        CALPAC(1) = DBLE(CENTRC)
+        CALPAC(2) = DIMAG(CENTRC)    
+        CALPAC(3) = RAYONC     
+      ELSE IF (TYPMOD(1:10).EQ.'FLAMBEMENT') THEN
         CALL GETVR8(' ','CHAR_CRIT_MIN' ,1,IARG,1,OMIN,L)
         CALL GETVR8(' ','CHAR_CRIT_MAX' ,1,IARG,1,OMAX,L)
+        CALPAF(1) = OMIN
+        CALPAF(2) = OMAX         
       ELSE
         CALL ASSERT(.FALSE.)      
       ENDIF
 
 C     --- TEMPORARY EXCLUSION RULES                             --- 
 C     --- + DEFAULT VALUES                                      ---
-      IF ((TYPRES(1:13).EQ.'MODE_COMPLEXE').AND.
+      IF ((TYPMOD(1:8).EQ.'COMPLEXE').AND.
      &    (TYPMET(1:3).NE.'APM')) THEN
         CALL U2MESS('I','ALGELINE4_20')
         TYPMET='APM'
       ENDIF
-      IF ((TYPRES(1:13).NE.'MODE_COMPLEXE').AND.
+      IF ((TYPMOD(1:8).NE.'COMPLEXE').AND.
      &    (TYPMET(1:5).NE.'STURM')) THEN
         CALL U2MESS('I','ALGELINE4_20')
         TYPMET='STURM'
@@ -202,7 +207,7 @@ C-----------------------------------------------------------------------
 C     --- EXCLUSION RULE IF NONSYMETRIC OR COMPLEXE GEP OR QEP  ---
       IF ((ZI(LMASSE+3)*ZI(LMASSE+4)*ZI(LRAIDE+3)*ZI(LRAIDE+4).NE.1
      &      .OR.LC)) THEN
-        IF (TYPRES(1:13).NE.'MODE_COMPLEXE')
+        IF (TYPMOD(1:8).NE.'COMPLEXE')
      &    CALL U2MESS('F','ALGELINE4_10')
       ENDIF
 
@@ -269,10 +274,10 @@ C     --- STEP1: STURM WITH THE LOWER BOUND ---
         IF (IERX .NE. 0 ) THEN
           IF (ABS(OMGMIN) .LT. OMECOR) THEN
             OMGMIN=-OMECOR
-            IF (TYPRES(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(6,1600) FREQOM(OMGMIN)
+            IF (TYPMOD(1:4).EQ.'REEL') THEN
+              WRITE(IFM,1600) FREQOM(OMGMIN)
             ELSE
-              WRITE(6,3600) OMGMIN
+              WRITE(IFM,3600) OMGMIN
             ENDIF
           ELSE
             IF (OMGMIN .GT. 0.D0) THEN
@@ -285,10 +290,10 @@ C     --- STEP1: STURM WITH THE LOWER BOUND ---
           IF (ICOMP.GT.NBRSS) THEN
             CALL U2MESS('A','ALGELINE2_31')
           ELSE
-            IF (TYPRES(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(6,1700) (PRECDC*100.D0),FREQOM(OMGMIN)
+            IF (TYPMOD(1:4).EQ.'REEL') THEN
+              WRITE(IFM,1700) (PRECDC*100.D0),FREQOM(OMGMIN)
             ELSE
-              WRITE(6,3700) (PRECDC*100.D0),OMGMIN
+              WRITE(IFM,3700) (PRECDC*100.D0),OMGMIN
             ENDIF
             GOTO 10
           ENDIF
@@ -303,10 +308,10 @@ C     --- STEP2: STURM WITH THE LOWER BOUND ---
         IF (IERX .NE. 0 ) THEN
           IF (ABS(OMGMAX) .LT. OMECOR) THEN
             OMGMAX=OMECOR
-            IF (TYPRES(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(6,1800) FREQOM(OMGMAX)
+            IF (TYPMOD(1:4).EQ.'REEL') THEN
+              WRITE(IFM,1800) FREQOM(OMGMAX)
             ELSE
-              WRITE(6,3800) OMGMAX
+              WRITE(IFM,3800) OMGMAX
             ENDIF
           ELSE
             IF (OMGMAX .GT. 0.D0 ) THEN
@@ -319,10 +324,10 @@ C     --- STEP2: STURM WITH THE LOWER BOUND ---
           IF (ICOMP.GT.NBRSS) THEN
             CALL U2MESS('A','ALGELINE2_32')
           ELSE
-            IF (TYPRES(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(6,1900) (PRECDC*100.D0),FREQOM(OMGMAX)
+            IF (TYPMOD(1:4).EQ.'REEL') THEN
+              WRITE(IFM,1900) (PRECDC*100.D0),FREQOM(OMGMAX)
             ELSE
-              WRITE(6,3900) (PRECDC*100.D0),OMGMAX
+              WRITE(IFM,3900) (PRECDC*100.D0),OMGMAX
             ENDIF
             GOTO 20
           ENDIF
@@ -440,7 +445,10 @@ C   --- DESTRUCTION OF THE DYNAMIC MATRIX
         CALL DETRSD('MATR_ASSE',DYNAM)
       ENDIF
 
-C   --- PRINT OF THE RESULT/OUTPUT ---
+C   --- PRINT THE RESULTS TO THE MSG FILE AND SAVE  THE EVALUATED ---
+C   --- NUMBER OF FREQUENCIES AS WELL AS THE CALCULATION PARAMS   ---
+C   --- (FREQ_MIN, FREQ_MAX, ETC. ) TO AN SD_TABLE                ---
+
       IF (TYPMET(1:3).EQ.'APM') THEN
         TYPEP='C'
         IF (TYPCON(1:6).EQ.'CERCLE') THEN
@@ -455,8 +463,49 @@ C   --- PRINT OF THE RESULT/OUTPUT ---
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
-      CALL VPECST(IFR,TYPRES,OMGMIN,OMGMAX,PIVOT1,PIVOT2,
+      CALL VPECST(IFM,TYPMOD,OMGMIN,OMGMAX,PIVOT1,PIVOT2,
      &            NBFREQ,NBLAGR,TYPEP,TYPCON,DIMC1,ZIMC1)
+     
+      CALL TBCRSD (TABLE, 'G')
+      CALL TITRE
+
+      NMPARN(1) = 'NB_MODE'
+      NMPARR(1) = 'FREQ_MIN'
+      NMPARR(2) = 'FREQ_MAX'
+      NMPARC(1) = 'CENTRE_R'
+      NMPARC(2) = 'CENTRE_I'
+      NMPARC(3) = 'RAYON'
+      NMPARF(1) = 'CHAR_CRIT_MIN'
+      NMPARF(2) = 'CHAR_CRIT_MAX'
+      
+      TPPARN(1) = 'I'
+      TPPARR(1) = 'R'
+      TPPARR(2) = 'R'
+      TPPARC(1) = 'R'
+      TPPARC(2) = 'R'
+      TPPARC(3) = 'R'
+      TPPARF(1) = 'R'
+      TPPARF(2) = 'R'
+      
+      NBMODE(1) = NBFREQ
+      
+      CALL TBAJPA (TABLE,1,NMPARN,TPPARN)
+      CALL TBAJPA (TABLE,2,NMPARR,TPPARR)
+      CALL TBAJPA (TABLE,3,NMPARC,TPPARC)
+      CALL TBAJPA (TABLE,2,NMPARF,TPPARF)
+
+      CALL TBAJLI (TABLE,1,NMPARN,NBMODE,RBID,CBID,KBID,0)
+      
+      IF (TYPMOD(1:4).EQ.'REEL') THEN
+        CALL TBAJLI (TABLE,2,NMPARR,IBID,CALPAR,CBID,KBID,1)
+      ELSE IF (TYPMOD(1:8).EQ.'COMPLEXE') THEN
+        CALL TBAJLI (TABLE,3,NMPARC,IBID,CALPAC,CBID,KBID,1)
+      ELSE IF (TYPMOD(1:10).EQ.'FLAMBEMENT') THEN
+        CALL TBAJLI (TABLE,2,NMPARF,IBID,CALPAF,CBID,KBID,1)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      
       CALL JEDEMA()
 
 C-----------------------------------------------------------------------

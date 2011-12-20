@@ -5,9 +5,9 @@
       REAL*8                                  RVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,8 +38,6 @@ C       3   IDENTIFICATEUR   CVAL DE TYPE CHARACTER*(*) DE LONGUEUR IVAL
 C       4   TEXTE            CVAL DE TYPE CHARACTER*(*) DE LONGUEUR IVAL
 C       5   SEPARATEUR       CVAL DE TYPE CHARACTER*(*) DE LONGUEUR 1
 C     ------------------------------------------------------------------
-C     ROUTINE(S) UTILISEE(S) :
-C         LXERR
 C     ROUTINE(S) FORTRAN     :
 C         ICHAR
 C     ------------------------------------------------------------------
@@ -134,7 +132,6 @@ C        ------------------ EXECUTION DE L'ACTION ASSOCIEE -------------
          ICLASS = MOD(-IETAT,10)
 CCCC     ICLASS = -IETAT + 10*ILIRE
          GOTO (1000,1001,1002,1003,1004,1005,1006,1007) ICLASS+1
-         CALL LXERR('LXSCAN','ERREUR DANS L''ANALYSEUR LEXICAL')
 C
 C           --- ELIMINATION DES BLANCS ---
    10    CONTINUE
@@ -165,7 +162,6 @@ C              ON AVANCE JUSQU'A TROUVER UN BLANC, UN DELIMITEUR OU EOR
                CVAL = CHIN(IDEB:KDEB-1)
                WRITE (SERR,*) 'VALEUR ENTIERE TROP GRANDE   ( MAX = ',
      +              ISMAEM(),')'
-               CALL LXERR(CHIN(IDEB:KDEB-1),SERR)
                GOTO 9999
             ENDIF
             IVAL = IVAL*10 + NUM(CAREXT)
@@ -230,7 +226,6 @@ C
 C
 C        --- UNE ERREUR A ETE DETECTEE ---
  1000    CONTINUE
-            IF (KCLASS.EQ.CLILL) CALL LXERR(CAREXT,'CARACTERE INVALIDE')
 C           ON AVANCE JUSQU'A TROUVER UN BLANC, UN DELIMITEUR OU EOR
   999       CONTINUE
             KDEB  = KDEB+1
@@ -241,7 +236,6 @@ C           ON AVANCE JUSQU'A TROUVER UN BLANC, UN DELIMITEUR OU EOR
             ENDIF
             IVAL = KDEB-IDEB
             CVAL = CHIN(IDEB:KDEB-1)
-            IF (IVAL.GT.1)  CALL LXERR(CVAL(:IVAL),'CHAINE INVALIDE')
          GOTO 9999
 C
 C        --- UN ENTIER A ETE RECONNU ---
@@ -256,11 +250,9 @@ C        --- UN REEL A ETE RECONNU ---
             IF ( IEXP .LT. MINEXP ) THEN
                RVAL = 0
                WRITE(SERR,*)'EXPOSANT TROP PETIT ( LIMITE = ',MINEXP,')'
-               CALL LXERR(CHIN(IDEB:KDEB-1),SERR)
             ELSEIF ( IEXP .GT. MAXEXP ) THEN
                RVAL = RINFIN
                WRITE(SERR,*)'EXPOSANT TROP GRAND ( LIMITE = ',MAXEXP,')'
-               CALL LXERR(CHIN(IDEB:KDEB-1),SERR)
             ELSE
                RVAL = RVAL * (10.D0**IEXP)
             ENDIF

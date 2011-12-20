@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 12/09/2011   AUTEUR NICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -949,7 +949,7 @@ def macr_adap_mail_ops ( self,
 #
   codret_partiel = [0]
 #
-  homard          = repertoire_outils + "homard"
+  homard          = os.path.join(repertoire_outils, "homard")
 #
   liste_maillages = []
   liste_champs    = []

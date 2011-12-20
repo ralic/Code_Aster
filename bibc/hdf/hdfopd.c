@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopd hdf  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF hdfopd hdf  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -35,10 +35,11 @@ INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *n
 {
   INTEGER iret=-1;
 #ifndef _DISABLE_HDF5
-  hid_t id,idfic; 
+  hid_t id,idfic,dapl_id; 
   int k,lg2;
   char *nom;
   void *malloc(size_t size); 
+  dapl_id=0;
   
   idfic=(hid_t) *idf;
   nom = (char *) malloc((lg+ln+2) * sizeof(char));
@@ -62,7 +63,7 @@ INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *n
   }
   nom[k+1] = '\0';
 
-  if ( (id = H5Dopen(idfic,nom)) >= 0) 
+  if ( (id = H5Dopen2(idfic,nom,dapl_id)) >= 0) 
     iret = (INTEGER) id;
 
   free (nom);

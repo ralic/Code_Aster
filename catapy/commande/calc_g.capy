@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/09/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +90,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
          ),
-         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS") ),
+         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS") ),
 
          COMP_ELAS       =C_COMP_ELAS('CALC_G'),
 

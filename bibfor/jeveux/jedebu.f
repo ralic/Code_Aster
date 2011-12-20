@@ -1,6 +1,6 @@
-      SUBROUTINE JEDEBU(NBFI, LZON, MXZON, IADZON, LMO, IDB)
+      SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,16 +20,13 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_6 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             NBFI, LZON, MXZON, IADZON, LMO, IDB
+      INTEGER             NBFI, MXZON, IDB
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'INITIALISATION GENERALE POUR LE GESTIONNAIRE
 C         DE MEMOIRE
 C
 C IN  NBFI   : NOMBRE MAXIMUM DE BASES SIMULTANEES ( =< 5)
-C IN  LZON   : TAILLE DE LA MEMOIRE (EN ENTIER)
 C IN  MXZON  : LIMITE MEMOIRE DYNAMIQUE (EN ENTIER words)
-C IN  IADZON : SI DIFFERENTE DE 0, ADRESSE DE LA ZONE A GERER
-C IN  LMO    : LONGUEUR DE ZONE PRE ALLOUEE EN OCTETS
 C IN  IDB    : PARAMETRE DE DEBUG
 C              ( 0: RIEN, 1: MISE A UNDEF DES SEGMENTS DE VALEURS )
 C
@@ -91,8 +88,6 @@ C ----------------------------------------------------------------------
       INTEGER          ILLICI , JCLASS(0:255)
       COMMON /JCHAJE/  ILLICI , JCLASS
 C ----------------------------------------------------------------------
-      INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
-      COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
       CHARACTER*4      KSTAT
@@ -145,8 +140,8 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LOLS = LOLSEM()
       LUNDEF = ISNNEM()
       MSLOIS = LOIS - 1
-      LDYN   = 0
-      LGDYN  = LUNDEF
+      LDYN   = 1
+      LGDYN  = 1
       MXDYN  = 0
       LGIO(1) = 0
       LGIO(2) = 0
@@ -169,46 +164,15 @@ C -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
  2    CONTINUE
       IDEBUG = IDB
 C -----------------  ZONE MEMOIRE  -------------------------------------
-      CALL ASSERT ( LZON .GT. 0 )
-      LOSZON = LZON*LOIS
-      LORC   = MAX ( LOR8 , LOC8 )
-      IF ( MOD ( LOSZON , LORC ) .NE. 0 ) THEN
-         LOSZON = ( 1 + LOSZON / LORC ) * LORC
-      ENDIF
-      LISZON = LOSZON/LOIS
-      IF (IADZON .GT. 0) THEN
-         LISZON = MIN(LISZON,LMO/LOIS)
-      ENDIF
       VMXDYN = MXZON*LOIS
       IF ( MXZON .EQ. 0 ) THEN
         VMXDYN = 1024
       ENDIF
-      CALL JXALLM ( IADZON, ISZON , LISZON , JISZON )
+      LISZON = 1
+      JISZON = 1
       LK1ZON = LISZON * LOIS
       JK1ZON = JISZON * LOIS
-      ISZON(JISZON + 1 )         = 0
-      ISZON(JISZON + 2 )         = 0
-      ISZON(JISZON + 3 )         = 0
-      ISZON(JISZON + 4 )         = 0
-      ISZON(JISZON + 5 )         = LISZON - 3
-      ISZON(JISZON + 6 )         = 0
-      ISZON(JISZON + 7 )         = 0
-      ISZON(JISZON + 8 )         = ISTAT(1)
-      ISZON(JISZON + LISZON - 0) = ISTAT(1)
-      ISZON(JISZON + LISZON - 1) = 0
-      ISZON(JISZON + LISZON - 2) = 0
-      ISZON(JISZON + LISZON - 3) = 0
-      ISZON(JISZON + LISZON - 4) = 4
-      ISZON(JISZON + LISZON - 5) = 0
-      ISZON(JISZON + LISZON - 6) = 0
-      ISZON(JISZON + LISZON - 7) = ISTAT(1)
       ILOC = LOC ( ISZON(JISZON) )
-      IDINIT(1) = 5
-      IDXAXD(1) = 5
-      IDINIT(2) = 0
-      ITRECH = 1
-      ITIAD  = 1
-      ITCOL  = 1
 C -------------------  POINTEURS D'ATTRIBUTS  --------------------------
       DO 5 I = 1 , LEN(CLASSE)
          CLASSE(I:I) = '$'

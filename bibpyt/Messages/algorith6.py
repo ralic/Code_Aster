@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith6 Messages  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

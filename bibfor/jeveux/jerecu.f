@@ -1,7 +1,7 @@
       SUBROUTINE JERECU ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,6 @@ C DEB ------------------------------------------------------------------
         ISZON(JISZON+IADITP-1) = ISTAT(2)
         ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
         SVUSE = SVUSE + (ISZON(JISZON+IADITP-4) - IADITP + 4)
-        IF (IADYN .NE. 0) SVUSE = SVUSE + 1
         SMXUSE = MAX(SMXUSE,SVUSE)
 C
 C ----- DECHARGEMENT DES TAMPONS DE LECTURE ET D'ECRITURE
@@ -169,11 +168,7 @@ C
           ENDIF
           GOTO 200
         ENDIF
-        IF (IADYN .NE. 0 ) THEN
-          CALL JJLIDY ( IADYN , IADITP )
-        ELSE IF (IADITP .NE. 0) THEN
-          CALL JJLIBP (IADITP)
-        ENDIF
+        CALL JJLIDY ( IADYN , IADITP )
         NBPETI(IC) = 0
  100  CONTINUE
 C FIN ------------------------------------------------------------------

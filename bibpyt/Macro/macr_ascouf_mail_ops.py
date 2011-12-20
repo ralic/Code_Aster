@@ -1,21 +1,21 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -33,7 +33,7 @@ except:
 def ASCFON(RC,RM,EP,ORIEN,AZIM,AXEC,POS,Y):
   """
   FONCTION F(CP)=CC
-  OU CC EST LA TAILLE DE LA FISSURE SUR LE COUDE 
+  OU CC EST LA TAILLE DE LA FISSURE SUR LE COUDE
   ET CP LA TAILLE DE FISSURE SUR LA PLAQUE
   """
   AZIMR = AZIM*2.*pi/360.
@@ -58,7 +58,7 @@ def ASCFON(RC,RM,EP,ORIEN,AZIM,AXEC,POS,Y):
                     - ( RM/X+RM/RC*COS(AZIMR) )                      \
                        * sqrt( 1. +(RM/X+RM/RC*cos(AZIMR))**2)       \
                                                   )                  \
-                    - 2.0*AXEC 
+                    - 2.0*AXEC
   return f_ASCFON
 
 # ------------------------------------------------------------------------------
@@ -77,13 +77,13 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
   RC    = RAYON DE CINTRAGE DU COUDE
   EP    = EPAISSEUR DU COUDE
   SUREP = VALEUR DE LA SUREPAISSEUR
-  GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)   
+  GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)
   AXEA  = PROFONDEUR FISSURE (DEMI PETIT AXE)
   AXEC  = DEMI GRAND AXE FISSURE
-  AZIM  = POSITION AZIMUTALE DU CENTRE DE LA FISSURE 
+  AZIM  = POSITION AZIMUTALE DU CENTRE DE LA FISSURE
   POS   = POSITION EN PEAU (EXTERNE OU INTERNE)
   SF    = ABCISSE CURVILIGNE LONGITUDINALE DU CENTRE DE LA FISSURE
-  DSF   = BOOLEEN EXPRESSION POSITION CENTRE FISSURE 
+  DSF   = BOOLEEN EXPRESSION POSITION CENTRE FISSURE
   BETA  = POSITION ANGULAIRE DU CENTRE DE LA FISSURE
   ORIEN = ORIENTATION DE LA FISSURE
 
@@ -101,11 +101,11 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
      if (AZIM>=120.) and (AZIM<=240.0): X = RM-EP/2.0 - SUREP
      else:                              X = RM-EP/2.0
   else:                                 X = RM+EP/2.0
-  AZIMR = AZIM*2.0*pi/360.0 
+  AZIMR = AZIM*2.0*pi/360.0
 #
 # -- CALCUL COTE AXIALE DU CENTRE FISSURE SUR LA PLAQUE EN FONCTION
 #    DE L ABSCISSE CURVILIGNE DONNEE SUR LE COUDE OU DE LA POSITION
-#    ANGULAIRE 
+#    ANGULAIRE
 #
   if DSF:
     if GEOM=='COUDE': SFP = SF/(1.0+X/RC*cos(AZIMR))
@@ -123,7 +123,7 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
   echo_mess.append( 'COTE AXIALE CENTRE FISSURE SUR PLAQUE : %.2f \n'%SFP)
 #
 #   ON ENVISAGE LE CAS OU UNE PARTIE DE L AXE EST DANS LES
-#   DROITES DES EMBOUTS. LA TRANSFORMATION N EST FAITE QUE SUR LA 
+#   DROITES DES EMBOUTS. LA TRANSFORMATION N EST FAITE QUE SUR LA
 #   PARTIE RESTANT DANS LE COUDE.
 #
   if (GEOM=='COUDE'): DIST = ALPHA*2.0*pi/360.0*(RC+X*cos(AZIMR))
@@ -138,7 +138,7 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
        BCOUD = DIST - BINF
        BEMB  = BSUP - DIST
      elif BINF<0. :
-       BCOUD = BSUP 
+       BCOUD = BSUP
        BEMB  = abs(BINF)
      elif (BINF>=0. and BSUP<=DIST):
        BCOUD = 2.0*AXEC
@@ -150,7 +150,7 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
        BCOUD = DIST - BINF
        BEMB  = BSUP - DIST
      elif BINF<0. :
-       BCOUD = BSUP 
+       BCOUD = BSUP
        BEMB  = abs(BINF)
      elif (BINF>=0. and BSUP<=DIST):
        BCOUD = 2.0*AXEC
@@ -193,7 +193,7 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
           AXECC = ASCFON(AXECP)+BCOUD
           NEWT=1
     elif GEOM=='TUBE':
-       AXECP = (BCOUD+BEMB)*sqrt( (1.+(X/RM)**2)*0.5 ) 
+       AXECP = (BCOUD+BEMB)*sqrt( (1.+(X/RM)**2)*0.5 )
     else :
        AXECP = BCOUD + BEMB
 #
@@ -227,11 +227,11 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
      elif (SFP<=ZSUR1):                MU = SFP/ZSUR1
      elif (SFP>ZSUR2):                 MU = (ALPHAR*RC-SFP)/ZSUR1
   elif (AZIM>=90.) and (AZIM<=120.):
-     if (SFP>=ZSUR1) and (SFP<=ZSUR2): MU = YFISS/(pi/6.*RM) 
+     if (SFP>=ZSUR1) and (SFP<=ZSUR2): MU = YFISS/(pi/6.*RM)
      elif (SFP<=ZSUR1):                MU = YFISS*SFP/(pi/6.*RM*ZSUR1)
      elif (SFP>ZSUR2):                 MU = YFISS*(ALPHAR*RC-SFP)/(pi/6.*RM*ZSUR1)
   elif (AZIM>=240.) and (AZIM<=270.):
-     if (SFP>=ZSUR1) and (SFP<=ZSUR2): MU = (YFISS-5.*pi/6.*RM)/(pi/6.*RM) 
+     if (SFP>=ZSUR1) and (SFP<=ZSUR2): MU = (YFISS-5.*pi/6.*RM)/(pi/6.*RM)
      elif (SFP<=ZSUR1):                MU = (YFISS-5.*pi/6.*RM)*SFP/(pi/6.*RM*ZSUR1)
      elif (SFP>ZSUR2):                 MU = (YFISS-5.*pi/6.*RM)*(ALPHAR*RC-SFP)/(pi/6.*RM*ZSUR1)
 #
@@ -243,7 +243,7 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
 #
   texte_final=string.join(echo_mess)
   aster.affiche('MESSAGE',texte_final)
-  return AXEAP,AXECP,SFP 
+  return AXEAP,AXECP,SFP
 
 
 # ------------------------------------------------------------------------------
@@ -258,9 +258,9 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
   RM    = RAYON MOYEN DU COUDE
   RC    = RAYON DE CINTRAGE DU COUDE
   EP    = EPAISSEUR DU COUDE
-  GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)  
+  GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)
   SYME  = QUART DE STRUCTURE SI 'OUI'
- 
+
   """
   ier=0
   CG=pi/180.
@@ -275,7 +275,7 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
       echo_mess.append( 'SOUS-EPAISSEUR NUMERO %d\n'%i)
       echo_mess.append( '-------------------------------------\n')
 #
-# --- CAS DES SOUS-EPAISSEURS AXISYMETRIQUES 
+# --- CAS DES SOUS-EPAISSEURS AXISYMETRIQUES
 #
       if ssep['TYPE']=='AXIS':
          echo_mess.append( 'SOUS-EPAISSEUR AXISYMETRIQUE : \n')
@@ -286,7 +286,7 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
          AZIMC      = pi
       else:
 #
-# -- CALCUL DE L ABSCISSE CURVILIGNE CIRCONF.SUR LA PLAQUE  
+# -- CALCUL DE L ABSCISSE CURVILIGNE CIRCONF.SUR LA PLAQUE
 #    EN FONCTION DE L AZIMUT OU DE L ABSCISSE CURVIL.CIRCONF
 #    SUR LE COUDE DU CENTRE DE LA SOUS-EPAISSEUR
 #    NB : MESURE FAITE EN PEAU EXTERNE SUR LE COUDE
@@ -297,18 +297,18 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
            ssep.IPHIC = ssep['POSI_CURV_CIRC']/(RM+EP/2.)*180./pi
            echo_mess.append( 'AZIMUT CENTRE SOUS-EPAISSEUR (DEGRES) : %.2f \n'%ssep.IPHIC)
          else:
-           ssep.ISCP  = ssep['AZIMUT']*pi*RM/180. 
+           ssep.ISCP  = ssep['AZIMUT']*pi*RM/180.
            AZIMC      = ssep['AZIMUT']*pi/180.
            echo_mess.append( 'ABSC. CURV. CIRCONF. CENTRE SOUS-EPAISSEUR SUR COUDE : %.2f \n'%(AZIMC*(RM+EP/2.)))
 #
 #    PASSAGE DANS LE REPERE PLAQUE (0,2PI) AVEC ORIGINE FLANC DROIT
-#    CAR L ORIGINE DES DONNEES CIRCONF. EST EN EXTRADOS 
+#    CAR L ORIGINE DES DONNEES CIRCONF. EST EN EXTRADOS
 #
          if ssep.ISCP>(3.*pi*RM/2.): ssep.ISCP = ssep.ISCP - 3.*pi*RM/2.
          else:                       ssep.ISCP = ssep.ISCP + pi*RM/2.
          echo_mess.append( 'ABSC. CURV. CIRCONF. CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISCP)
 #
-# -- CALCUL DE LA TAILLE CIRCONFERENTIELLE 
+# -- CALCUL DE LA TAILLE CIRCONFERENTIELLE
 #    NB : MESURE FAITE EN PEAU EXTERNE SUR LE COUDE
 #
          ssep.ICIRP = ssep['AXE_CIRC']*(RM/(RM+EP/2.))
@@ -317,11 +317,11 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
             aster.affiche("MESSAGE",texte_final)
             UTMESS('F','ASCOUF0_6',vali=[i],valr=[ssep.ICIRP,2*pi*RM])
          echo_mess.append( 'TAILLE CIRCONFERENTIELLE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ICIRP)
-         echo_mess.append( '<=> TAILLE EQUIVALENTE SUR LA CIRCONFERENCE (DEGRES) : %.2f \n'%(ssep.ICIRP*360./(2.*pi*RM)))  
+         echo_mess.append( '<=> TAILLE EQUIVALENTE SUR LA CIRCONFERENCE (DEGRES) : %.2f \n'%(ssep.ICIRP*360./(2.*pi*RM)))
 
 #
-# -- CALCUL COTE AXIALE DU CENTRE SOUS-EPAISSEUR SUR LA PLAQUE 
-#    EN FONCTION DE L ABSCISSE CURVILIGNE DONNEE SUR LE COUDE 
+# -- CALCUL COTE AXIALE DU CENTRE SOUS-EPAISSEUR SUR LA PLAQUE
+#    EN FONCTION DE L ABSCISSE CURVILIGNE DONNEE SUR LE COUDE
 #    OU DE LA POSITION ANGULAIRE
 #    NB : MESURE FAITE EN PEAU EXTERNE SUR LE COUDE
 #
@@ -349,11 +349,11 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
             UTMESS('F','ASCOUF0_7')
       echo_mess.append( 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISLP)
 #
-# -- CALCUL DE LA TAILLE LONGITUDINALE 
+# -- CALCUL DE LA TAILLE LONGITUDINALE
 #    NB : MESURE FAITE EN PEAU EXTERNE SUR LE COUDE
 #
 #   ON ENVISAGE LE CAS OU UNE PARTIE DE L AXE EST DANS LES
-#   DROITES DES EMBOUTS. LA TRANSFORMATION N EST FAITE QUE SUR LA 
+#   DROITES DES EMBOUTS. LA TRANSFORMATION N EST FAITE QUE SUR LA
 #   PARTIE RESTANT DANS LE COUDE.
 #
       if GEOM=='COUDE' : DIST = ALPHA*CG*(RC+(RM+EP/2.)*cos(AZIMC))
@@ -397,14 +397,14 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
          echo_mess.append(  'CORRECTION CENTRE : SOUS-EP. A CHEVAL SUR EMBOUT \n')
          echo_mess.append(  'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISLP)
       if ssep.ISLP<0.            : ssep.ISLP = 0.
-      if (ssep.ISLP>ALPHA*CG*RC) : ssep.ISLP = ALPHA*CG*RC 
+      if (ssep.ISLP>ALPHA*CG*RC) : ssep.ISLP = ALPHA*CG*RC
 #
 #     SI LE CENTRE DE LA SOUS-EP CALCULE SUR LA PLAQUE EST DANS L EMBOUT
 #     ON CORRIGE SA POSITION EN LE METTANT A L INTERFACE SINON CA PLANTE
 #     DANS LA PROC DE MAILLAGE (A AMELIORER)
 #
       echo_mess.append(  'TAILLE LONGITUDINALE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ILONP)
-      echo_mess.append(  '<=> TAILLE EQUIVALENTE PAR RAPPORT A L ANGLE DU COUDE (DEGRES): %.2f \n'%(ssep.ILONP*360/(2*pi*RC)))  
+      echo_mess.append(  '<=> TAILLE EQUIVALENTE PAR RAPPORT A L ANGLE DU COUDE (DEGRES): %.2f \n'%(ssep.ILONP*360/(2*pi*RC)))
 #
   texte_final=string.join(echo_mess)
   aster.affiche('MESSAGE',texte_final)
@@ -439,7 +439,7 @@ def ASCTCI(MCL_SOUS_EPAIS,RM):
   i=0
   for ssep in MCL_SOUS_EPAIS :
       i=i+1
-      if (ssep.ISCP>2.*pi*RM) or (ssep.ISCP<0.) : 
+      if (ssep.ISCP>2.*pi*RM) or (ssep.ISCP<0.) :
          texte_final=string.join(echo_mess)
          aster.affiche("MESSAGE",texte_final)
          UTMESS('F','ASCOUF0_9',vali=[MCL_SOUS_EPAIS.index(ssep)],valr=[ssep.ISCP,2.*pi*RM])
@@ -474,19 +474,19 @@ def ASCTCI(MCL_SOUS_EPAIS,RM):
   for j in range(len(MCL_SOUS_EPAIS)):
     TAMPON.append((COORXG[j],2*j+1))
     TAMPON.append((COORXD[j],2*j+2))
-  TAMPON.sort() 
+  TAMPON.sort()
   IABSC2=[]
   for j in range(2*len(MCL_SOUS_EPAIS)):
     IABSC2.append(TAMPON[j][1])
   echo_mess.append( '\n')
   echo_mess.append( 'TRI DES INTERVALLES G ET D ABSC. CURV. CIRCONF. :\n')
-  echo_mess.append( '-----------------------------------------------\n' ) 
+  echo_mess.append( '-----------------------------------------------\n' )
   for j in range(2*len(MCL_SOUS_EPAIS)):
     if fmod(IABSC2[j],2):
        echo_mess.append( '%d) SOUS-EP NO %d <> XG = %.2f \n'%(j+1,IABSC1[IABSC2[j]/2],TAMPON[j][0]))
     else:
        echo_mess.append( '%d) SOUS-EP NO %d <> XD = %.2f \n'%(j+1,IABSC1[IABSC2[j]/2-1],TAMPON[j][0]))
-#    
+#
   texte_final=string.join(echo_mess)
   aster.affiche('MESSAGE',texte_final)
   return TAMPON,IABSC1,IABSC2,COORXD,COORXG
@@ -522,7 +522,7 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
   i=0
   for ssep in MCL_SOUS_EPAIS :
       i=i+1
-      if (ssep.ISLP>ALPHAR*RC) or (ssep.ISLP<0.) : 
+      if (ssep.ISLP>ALPHAR*RC) or (ssep.ISLP<0.) :
          texte_final=string.join(echo_mess)
          aster.affiche("MESSAGE",texte_final)
          UTMESS('F','ASCOUF0_10',vali=[MCL_SOUS_EPAIS.index(ssep)],valr=[ssep.ISLP,ALPHAR*RC])
@@ -548,7 +548,7 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
       i=i+1
       YI=bid[0]-MCL_SOUS_EPAIS[bid[1]-1].ILONP/2.
       YS=bid[0]+MCL_SOUS_EPAIS[bid[1]-1].ILONP/2.
-      if fabs(bid[0])<EPS : 
+      if fabs(bid[0])<EPS :
          YI=-(MCL_SOUS_EPAIS[bid[1]-1]['AXE_LONGI'])/2.
          YS=MCL_SOUS_EPAIS[bid[1]-1].ILONP-(MCL_SOUS_EPAIS[bid[1]-1]['AXE_LONGI'])/2.
       if fabs(bid[0]-ALPHAR*RC)<EPS :
@@ -562,7 +562,7 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
          texte_final=string.join(echo_mess)
          aster.affiche("MESSAGE",texte_final)
          UTMESS('F','ASCOUF0_11',vali=[bid[1]],valr=[YI,ALPHAR*RC+LTCLIM])
-      COORYI.append(YI) 
+      COORYI.append(YI)
       COORYS.append(YS)
 #
 # tri des bornes d'intervalles en abscisse
@@ -571,10 +571,10 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
   for j in range(len(MCL_SOUS_EPAIS)):
     TAMPON.append((COORYI[j],2*j+1))
     TAMPON.append((COORYS[j],2*j+2))
-  TAMPON.sort() 
+  TAMPON.sort()
   IORDO2=[]
   for j in range(2*len(MCL_SOUS_EPAIS)):
-    IORDO2.append(TAMPON[j][1])      
+    IORDO2.append(TAMPON[j][1])
   echo_mess.append( '\n')
   echo_mess.append( 'TRI DES INTERVALLES I ET S ABSC. CURV. LONGIT. : \n')
   echo_mess.append( '----------------------------------------------- \n')
@@ -634,13 +634,13 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
   NLY=[0]*len(MCL_SOUS_EPAIS)
   for j in range(len(BD)):
     if INDSEX[j]!=0:
-#      calcul au passage du nombre d'elements sur chaque zone circonf.   
+#      calcul au passage du nombre d'elements sur chaque zone circonf.
        RNBEL = (BD[j]-BG[j])*360./(DNX[2*j]*2.*pi*RM)
        RNBEL2 = RNBEL - floor(RNBEL)
        if RNBEL2 <= 0.5 : NBEL=int(floor(RNBEL))
        else             : NBEL=int(floor(RNBEL))+1
        if NBEL <= 1 :     NBEL=2
-#      calcul au passage du nombre d'elements sur chaque sous-epaisseur circonf.       
+#      calcul au passage du nombre d'elements sur chaque sous-epaisseur circonf.
        for i in range(len(MCL_SOUS_EPAIS)):
          l=IABSC1[i]-1
          if ((COORXG[l]<COORXD[l] and BG[j]>=COORXG[l] and BD[j]<=COORXD[l])\
@@ -650,13 +650,13 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
 
   for j in range(len(BS)):
     if INDSEY[j]!=0:
-#      calcul au passage du nombre d'elements sur chaque zone longi.      
+#      calcul au passage du nombre d'elements sur chaque zone longi.
        RNBEL = ((BS[j]-BI[j])*360.)/(DNY[2*j]*2.*pi*RC)
        RNBEL2 = RNBEL - floor(RNBEL)
        if RNBEL2 <= 0.5 : NBEL=int(floor(RNBEL))
        else             : NBEL=int(floor(RNBEL))+1
        if NBEL <= 1 :     NBEL=2
-#      calcul au passage du nombre d'elements sur chaque sous-epaisseur circonf.       
+#      calcul au passage du nombre d'elements sur chaque sous-epaisseur circonf.
        i=0
        for i in range(len(MCL_SOUS_EPAIS)):
          l=IORDO1[i]-1
@@ -679,9 +679,9 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
 #     MACR_ASCOUF_MAIL ASCSYM
 #     PREPARATION DES DONNEES POUR LE MAILLAGE DE PLAQUE AVEC
 #     SOUS-EPAISSEURS :
-#     CAS D UNE SOUS-EPAISSEUR DANS LE PLAN DE SYMETRIE 
+#     CAS D UNE SOUS-EPAISSEUR DANS LE PLAN DE SYMETRIE
 #     CONSTRUCTION D UN QUART DU MAILLAGE
-#     - CALCUL TABLEAU TRIE DES ABSCISSES ET ORDONNEES DES CENTRES 
+#     - CALCUL TABLEAU TRIE DES ABSCISSES ET ORDONNEES DES CENTRES
 #     - CALCUL TABLEAU DES ZONES COUVERTES PAR LES SOUS-EPAISSEURS
 #
 #-----------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
@@ -696,14 +696,14 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
 #----------------------DONNEES RENVOYEES-----------------------
 #
 #     NZONEX = NOMBRE DE ZONES CIRCONFERENTIELLES
-#     NZONEY = NOMBRE DE ZONES LONGITUDINALES       
+#     NZONEY = NOMBRE DE ZONES LONGITUDINALES
 #
 # ------------------------------------------------------------------------------
 def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
   ier=0
   echo_mess=['MACR_ASCOUF_MAIL ASCSYM \n',]
   DERAFC = 18.
-  DERAFL =  5.       
+  DERAFL =  5.
   INDSEX = []
   INDSEY = []
   BG     = []
@@ -756,7 +756,7 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
      INDSEX.append(0)
   else :
 #
-#     le centre sous-ep est dans la zone flanc gauche/intrados/flanc 
+#     le centre sous-ep est dans la zone flanc gauche/intrados/flanc
 #     droit : on preleve pi*RM a gauche de la sous-epaisseur
 #
 #            zone (centre -pi*RM, bord gauche)
@@ -772,7 +772,7 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
      DNX.append(DERAFC)
      DNX.append(0)
      DNX.append(ssep.IDENC)
-     DNX.append(0)     
+     DNX.append(0)
      INDSEX.append(0)
      INDSEX.append(1)
 
@@ -790,7 +790,7 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
       echo_mess.append( 'ZONE NO %d BORNE GAUCHE = %.2f \n'\
       ' / BORNE DROITE = %.2f \n'%(j+1,BG[j],BD[j]))
 
-    
+
 # tri des donnees sous-epaisseurs en axial
   TAMPON,IORDO1,IORDO2,COORYI,COORYS=ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM)
 
@@ -806,7 +806,7 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
   BI.append(ssep.ISLP-ssep.ILONP/2.)
   BS.append(ssep.ISLP-ssep.ILONP/2.)
   BS.append(ssep.ISLP)
-  INDBI.append(0)  
+  INDBI.append(0)
   INDBI.append(0)
   INDBS.append(1)
   INDBS.append(0)
@@ -827,7 +827,7 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
     else:
       echo_mess.append( 'ZONE NO %d <> BORNE INF. = %.2f \n'\
       ' / BORNE SUP. = %.2f'%(j+1,BI[j],BS[j]))
- 
+
 # calcul du nombre d'elements longi. et circonf. dans les soue-ep
   NLX,NLY=ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,
                  DNX,DNY,RM,RC,INDSEX,INDSEY,IABSC1,IORDO1)
@@ -840,9 +840,9 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
 ################################################################################
 ################################################################################
 #     MACR_ASCOUF_MAIL ASCPRE
-#     PREPARATION DES DONNEES POUR LE MAILLAGE DE PLAQUE 
+#     PREPARATION DES DONNEES POUR LE MAILLAGE DE PLAQUE
 #     SOUS-EPAISSEURS :
-#     - CALCUL TABLEAU TRIE DES ABSCISSES ET ORDONNEES DES CENTRES 
+#     - CALCUL TABLEAU TRIE DES ABSCISSES ET ORDONNEES DES CENTRES
 #     - CALCUL TABLEAU DES ZONES COUVERTES PAR LES SOUS-EPAISSEURS
 #
 #-----------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
@@ -858,7 +858,7 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
 #----------------------DONNEES RENVOYEES-----------------------
 #
 #     NZONEX = NOMBRE DE ZONES CIRCONFERENTIELLES
-#     NZONEY = NOMBRE DE ZONES LONGITUDINALES       
+#     NZONEY = NOMBRE DE ZONES LONGITUDINALES
 # ------------------------------------------------------------------------------
 def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
   ier=0
@@ -866,10 +866,10 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
   ALPHAR = 2.*ALPHA*pi/360.
   DERAFC = 18.
   DERAFL =  5.
-  EPSI   =  0.001      
+  EPSI   =  0.001
   NBSEP  = len(MCL_SOUS_EPAIS)
   echo_mess.append( 'RECHERCHE DES ZONES DE SOUS-EPAISSEURS DANS LE COUDE\n' )
-  
+
 # tri des donnees sous-epaisseurs en circonferentiel
   TAMPON,IABSC1,IABSC2,COORXD,COORXG=ASCTCI(MCL_SOUS_EPAIS,RM)
 # --- calcul des recouvrements de zones en circonferentiel
@@ -891,13 +891,13 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
   DNX   =[]
   INDSEX=[]
 #
-  
+
   while go10:
-   
-    j=j+1      
+
+    j=j+1
 #
 #   definition de la zone courante (borne gauche, borne droite)
-#    
+#
 #   TYPG = type de la borne:
 #          0 : borne gauche sous-epaisseur
 #          1 : borne droite sous-epaisseur
@@ -949,10 +949,10 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
         else:
           TYPD = 1
           NUMD = IABSC1[IABSC2[j]/2-1]
-    if fabs(MING-MIND)<EPSI : 
+    if fabs(MING-MIND)<EPSI :
       if j==2*NBSEP:break
       else:continue
-    if j>2*NBSEP and ICE>=NBSEP: 
+    if j>2*NBSEP and ICE>=NBSEP:
         break #on sort de la boucle
 
     while go20:
@@ -975,8 +975,8 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
            TYPG = 2
            NUMG = INDC
            ICE = ICE+1
-        elif MCL_SOUS_EPAIS[INDC-1].ISCP < MIND : 
-#          le centre est la nouvelle borne droite  
+        elif MCL_SOUS_EPAIS[INDC-1].ISCP < MIND :
+#          le centre est la nouvelle borne droite
            MIND = MCL_SOUS_EPAIS[INDC-1].ISCP
            TYPD = 2
            NUMD = INDC
@@ -984,12 +984,12 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
            continue
         else:pass
       NZONEX=NZONEX+1
-#    
+#
 #     codes d'intervalles de zones
 #        0 0 = zone sous-ep.
 #        0 1 = sous-ep. a droite de la zone
 #        1 0 = sous-ep. a gauche de la zone
-#        1 1 = sous-ep. a droite et a gauche de la zone  
+#        1 1 = sous-ep. a droite et a gauche de la zone
 #
 #     cas ou la premiere zone ne commence pas au bord de la plaque
       if MING>0. and NZONEX==1 :
@@ -1011,10 +1011,10 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
         NZONEX=NZONEX+1
 #
       BG.append(MING)
-      BD.append(MIND)  
+      BD.append(MIND)
 #
       if TYPG == 0:
-#       borne gauche zone = borne gauche ssep       
+#       borne gauche zone = borne gauche ssep
         NBGAU=NBGAU+1
         INDBG.append(0)
         INDBD.append(0)
@@ -1036,8 +1036,8 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
         else: pass
 #
       elif TYPG == 1:
-#       borne gauche zone = borne droite ssep  
-        NBDRO = NBDRO+1  
+#       borne gauche zone = borne droite ssep
+        NBDRO = NBDRO+1
         if TYPD == 0:
 #         borne droite zone = borne gauche ssep
           if NBDRO==NBGAU:
@@ -1051,7 +1051,7 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
             INDBG.append(0)
             INDBD.append(0)
             DNX.append(MCL_SOUS_EPAIS[NUMG-1].IDENC)
-            DNX.append(0)    
+            DNX.append(0)
             INDSEX.append(NUMG)
         elif TYPD == 1 or TYPD == 2:
 #         borne droite zone = borne droite ssep : TYPD=1
@@ -1060,18 +1060,18 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
           INDBD.append(0)
           DNX.append(MCL_SOUS_EPAIS[NUMD-1].IDENC)
           DNX.append(0)
-          INDSEX.append(NUMD)  
+          INDSEX.append(NUMD)
         else: pass
-#                
+#
       elif TYPG == 2:
-#       borne gauche zone = centre ssep  
+#       borne gauche zone = centre ssep
         INDBG.append(0)
         INDBD.append(0)
         if TYPD == 0:
 #         borne droite zone = borne gauche ssep
           DNX.append(MCL_SOUS_EPAIS[NUMG-1].IDENC)
           DNX.append(0)
-          INDSEX.append(NUMG)  
+          INDSEX.append(NUMG)
         elif TYPD == 1 or TYPD == 2:
 #         borne droite zone = borne droite ssep : TYPD=1
 #         borne droite zone = centre ssep : TYPD=2
@@ -1085,13 +1085,13 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
         else:pass
       else:pass
       if j<=(2*NBSEP-2) or ICE<=NBSEP or (TYPD==2 and j<2*NBSEP):
-         iout=0       
+         iout=0
          break #on retourne dans la boucle go10
       else :
          iout=1
-         break #on sort definitivement 
+         break #on sort definitivement
     if iout:break
-      
+
   if MIND<2.*pi*RM:
     NZONEX=NZONEX+1
     BG.append(MIND)
@@ -1125,7 +1125,7 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
       echo_mess.append( 'ZONE NO %d <> BORNE GAUCHE = %.2f \n'\
       ' / BORNE DROITE = %.2f'%(j+1,BG[j],BD[j]))
 
-      
+
 # --- tri des donnees sous-ep. en axial
   TAMPON,IORDO1,IORDO2,COORYI,COORYS=ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM)
 
@@ -1138,13 +1138,13 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
 
   if SYME == 'DEMI':
 #   calcul des zones en axial :
-#   zones  (0,bord inferieur) et (bord inferieur,centre sous-ep.) 
+#   zones  (0,bord inferieur) et (bord inferieur,centre sous-ep.)
     ssep   = MCL_SOUS_EPAIS[0]
     BI.append(0.)
     BI.append(ssep.ISLP-ssep.ILONP/2.)
     BS.append(ssep.ISLP-ssep.ILONP/2.)
     BS.append(ssep.ISLP)
-    INDBI.append(0)  
+    INDBI.append(0)
     INDBI.append(0)
     INDBS.append(1)
     INDBS.append(0)
@@ -1155,10 +1155,10 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
     INDSEY.append(0)
     INDSEY.append(1)
     NZONEY=1
-#     
+#
   else:
 #
-#   calcul des recouvrements de zones en axial  
+#   calcul des recouvrements de zones en axial
     j = 0
     ICE = 1
     NBINF = 0
@@ -1170,14 +1170,14 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
     NZONEY=0
 #
     while go40:
-      j=j+1      
+      j=j+1
 #
 #     definition de la zone courante (borne inf, borne sup)
 #
 #     typi = type de la borne
 #            0 : borne inf. sous-ep.
 #            1 : borne sup. sous-ep.
-#            2 : centre sous-ep.   
+#            2 : centre sous-ep.
 #
       if TYPS==2:
 #       cas ou la borne sup. de la zone prec. etait un centre
@@ -1231,7 +1231,7 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
           if i>1:
 #           le centre est deja le meme que le precedent
             if fabs(MCL_SOUS_EPAIS[INDC-1].ISLP-MCL_SOUS_EPAIS[IORDO1[i-2]-1].ISLP)<EPSI:
-             ICE=ICE+1  
+             ICE=ICE+1
              continue
           if MCL_SOUS_EPAIS[INDC-1].ISLP<MINI:
 #            le centre est la nouvelle borne inf.
@@ -1252,7 +1252,7 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
             continue
           else:pass
         NZONEY=NZONEY+1
-#       
+#
 #       code d'intervalles de zone
 #       0 0  = ZONE SOUS-EPAISSEUR
 #       0 1  = SOUS-EPAISSEUR A SUPERIEURE DE LA ZONE
@@ -1303,21 +1303,21 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
             DNY.append(0)
             INDSEY.append(LTMP[0][1])
           else:pass
-        elif TYPI==1:  
+        elif TYPI==1:
 #         borne inferieure zone=borne superieure ssep
           NBSUP = NBSUP+1
           if TYPS==0:
 #           borne superieure zone = borne inferieur ssep
             if NBSUP==NBINF:
               INDBI.append(1)
-              INDBS.append(1)        
+              INDBS.append(1)
               DNY.append(DERAFL)
               DNY.append(0)
               INDSEY.append(0)
             else:
 #             cas tordu: une sous-ep. enveloppe le tout
               INDBI.append(0)
-              INDBS.append(0)        
+              INDBS.append(0)
               DNY.append(MCL_SOUS_EPAIS[NUMI-1].IDENL)
               DNY.append(0)
               INDSEY.append(NUMI)
@@ -1325,15 +1325,15 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
 #           borne superieure zone = borne superieure ssep:TYPS==1
 #           borne superieure zone = centre ssep:TYPS==2
             INDBI.append(0)
-            INDBS.append(0)        
+            INDBS.append(0)
             DNY.append(MCL_SOUS_EPAIS[NUMS-1].IDENL)
             DNY.append(0)
             INDSEY.append(NUMS)
           else:pass
         elif TYPI==2:
-#         borne inferieure zone = centre ssep  
+#         borne inferieure zone = centre ssep
           INDBI.append(0)
-          INDBS.append(0)        
+          INDBS.append(0)
           if TYPS==0:
 #           borne superieure zone = borne inferieure ssep
             DNY.append(MCL_SOUS_EPAIS[NUMI-1].IDENL)
@@ -1351,27 +1351,27 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
           else:pass
         else:pass
         if j<=(2*NBSEP-2) or TYPS==2:
-          iout=0  
+          iout=0
           break #on retourne dans la boucle go40
         else:
           iout=1
-          break #on sort definitivement 
+          break #on sort definitivement
       if iout:break
 
-#   cas ou la derniere zone ne finit pas au bout de la plaque    
+#   cas ou la derniere zone ne finit pas au bout de la plaque
     if MINS<ALPHAR*RC:
        NZONEY=NZONEY+1
        BI.append(MINS)
-       BS.append(ALPHAR*RC) 
+       BS.append(ALPHAR*RC)
        if TYPS==0 or TYPS==2:
           INDBI.append(0)
-          INDBS.append(0)        
+          INDBS.append(0)
           DNY.append(MCL_SOUS_EPAIS[NUMS-1].IDENL)
           DNY.append(0)
           INDSEY.append(NUMS)
        elif TYPS==1:
           INDBI.append(1)
-          INDBS.append(0)        
+          INDBS.append(0)
           DNY.append(DERAFL)
           DNY.append(0)
           INDSEY.append(0)
@@ -1392,7 +1392,7 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
 #   calcul du nombre d'elements longi. et circonf. dans les sous-ep
     NLX,NLY=ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,
                    DNX,DNY,RM,RC,INDSEX,INDSEY,IABSC1,IORDO1)
-  
+
 
   texte_final=string.join(echo_mess)
   aster.affiche('MESSAGE',texte_final)
@@ -1403,7 +1403,7 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
 ################################################################################
 #     MACR_ASCOUF_MAIL   write_file_dgib_ASCFDO
 #
-#     ECRIT DANS UN FICHIER LES DONNES GIBI DE LA PROCEDURE 
+#     ECRIT DANS UN FICHIER LES DONNES GIBI DE LA PROCEDURE
 #     "PLAQUE FISSUREE"
 #
 
@@ -1413,12 +1413,12 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
                            SFP,ORIEN,AZIM,RC0,RC2,RC3,POSIT,EPSI,NIVMAG,SYME, loc_datg) :
 
   if TYPBOL!= None:
-     if TYPBOL=='CUVE'     : TYPEMB = 'typcuv' 
-     if TYPBOL=='GV'       : TYPEMB = 'typegv' 
-     if TYPBOL=='ASP_MPP'  : TYPEMB = 'typapp' 
-  else: 
+     if TYPBOL=='CUVE'     : TYPEMB = 'typcuv'
+     if TYPBOL=='GV'       : TYPEMB = 'typegv'
+     if TYPBOL=='ASP_MPP'  : TYPEMB = 'typapp'
+  else:
      TYPEMB ='      '
-   
+
   if POSIT =='DEB_INT'  :
          POSIT2 = 'interne'
   else:
@@ -1449,7 +1449,7 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
   texte=texte+'ltran    = '+str(LTRAN)        +POIVIR
   texte=texte+'posfis   = '+str(SFP)          +POIVIR
   texte=texte+'ksiref   = '+str(ORIEN)        +POIVIR
-  texte=texte+'surep    = '+str(SUREP)        +POIVIR       
+  texte=texte+'surep    = '+str(SUREP)        +POIVIR
   texte=texte+'teta_f   = '+str(TETAF)        +POIVIR
   texte=texte+'rc0      = '+str(RC0)          +POIVIR
   texte=texte+'rc2      = '+str(RC2)          +POIVIR
@@ -1473,7 +1473,7 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
 ################################################################################
 #     MACR_ASCOUF_MAIL   write_file_dgib_ASCSQO
 #
-#     ECRIT DANS UN FICHIER LES DONNEES GIBI DE LA PROCEDURE 
+#     ECRIT DANS UN FICHIER LES DONNEES GIBI DE LA PROCEDURE
 #     "PLAQUE SOUS-EPAISSEUR"
 #
 #-----------------DONNEES FOURNIES PAR L'UTILISATEUR--------------------
@@ -1490,7 +1490,7 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
 #     LTRAN  = LONGUEUR ENTRE FIN DE L'EMBOUT 1 ET DEBUT DE TRANSITION
 #     LTCHAR = LONGUEUR DE L'EMBOUT DU COTE CHARGEMENT
 #     LCLIM  = LONGUEUR DE L'EMBOUT DU COTE CONDITIONS AUX LIMITES
-#     GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)  
+#     GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)
 #     SYME = "QUART" DE STRUCTURE, "DEMI" STRUCTURE OU BIEN "ENTIER"
 #     NBEP = NOMBRE D'ELEMENTS DANS LE COUDE
 #     NLX = NOMBRE D'ELEMENTS CIRCONF. DE LA SOUS-EPAISSEUR
@@ -1502,8 +1502,8 @@ def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
                            EPI,TETA1,MCL_SOUS_EPAIS,TETA2,LTRAN,LTCHAR,LTCLIM,GEOM,
                            SYME,NBEP,NLX,NLY,NIVMAG,SUREP,AZIMC,loc_datg) :
 
-  ssep= MCL_SOUS_EPAIS[0] 
-  print 'AZIMC', AZIMC;  
+  ssep= MCL_SOUS_EPAIS[0]
+  print 'AZIMC', AZIMC;
   POIVIR = ' ;\n'
   texte=' nivmag   = '+str(NIVMAG)       +POIVIR
   texte=texte+' option dime 3 elem '+TYPELE+' nive nivmag echo 0'+POIVIR
@@ -1535,8 +1535,8 @@ def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
   texte=texte+' epI      = '+str(EPI)          +POIVIR
   texte=texte+' teta1    = '+str(TETA1)        +POIVIR
   texte=texte+' teta2    = '+str(TETA2)        +POIVIR
-  texte=texte+' ltran    = '+repr(LTRAN)       +POIVIR 
-  texte=texte+' surep    = '+str(SUREP)        +POIVIR   
+  texte=texte+' ltran    = '+repr(LTRAN)       +POIVIR
+  texte=texte+' surep    = '+str(SUREP)        +POIVIR
   if GEOM == 'COUDE':
     texte=texte+" zcoude = 'oui' "+POIVIR
   else:
@@ -1602,15 +1602,15 @@ def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
 #     NLX = NOMBRE D'ELEMENTS CIRCONF. DE LA SOUS-EPAISSEUR
 #     NLY = NOMBRE D'ELEMENTS LONGI DE LA SOUS-EPAISSEUR
 #
-#-----------------DONNEE RENVOYEE PAR ASTER-------------------- 
-# 
+#-----------------DONNEE RENVOYEE PAR ASTER--------------------
+#
 #     texte = chaine de caracteres contenant des instructions gibi
 #             de post-traitements
 #
 # ------------------------------------------------------------------------------
 def write_subpart_file_pgib_POST(MCL_SOUS_EPAIS,NLX,NLY):
   CAR3 = ('fdro','exdr','extr','exga','fgau','inga','intr','indr')
-  
+
   POIVIR = ' ;\n'
   texte='* DEBUT POINTS DE POST-TRAITEMENT\n'
   texte=texte+'*\n'
@@ -1645,7 +1645,7 @@ def write_subpart_file_pgib_POST(MCL_SOUS_EPAIS,NLX,NLY):
         texte=texte+'rlig = ilig/100. + isep'+POIVIR
         texte=texte+'cir'+str(issep)+'_'+str(k+1)+' = ligcir . rlig'+POIVIR
       texte=texte+'*\n'
-      texte=texte+"* ligaments longitudinaux a l'epaisseur minimale\n"                        
+      texte=texte+"* ligaments longitudinaux a l'epaisseur minimale\n"
       texte=texte+'* \n'
       for k in range(2*NLY[issep-1]+1):
         texte=texte+'ilig = '+str(k+1)+POIVIR
@@ -1717,19 +1717,19 @@ def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
   texte=texte+'prof    = table '+POIVIR
   texte=texte+'posit   = table '+POIVIR
   texte=texte+'coory   = table '+POIVIR
-  texte=texte+'coorz   = table '+POIVIR   
+  texte=texte+'coorz   = table '+POIVIR
   texte=texte+'deny    = table '+POIVIR
   texte=texte+'nbely   = table '+POIVIR
   texte=texte+'denz    = table '+POIVIR
   texte=texte+'nbelz   = table '+POIVIR
   texte=texte+'axisym  = table '+POIVIR
   texte=texte+'sousep  = table '+POIVIR
-  texte=texte+'* \n'  
+  texte=texte+'* \n'
   texte = texte + open(os.path.join(loc_datg, 'ascouf_ssep_mult_v1.datg'), 'r').read()
   fdgib=open(nomFichierDATG,'w')
   fdgib.write(texte)
   fdgib.close()
-  
+
 ################################################################################
 ################################################################################
 ################################################################################
@@ -1746,7 +1746,7 @@ def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
 #     EP    = EPAISSEUR DU COUDE
 #     LTCHAR = LONGUEUR DE L'EMBOUT DU COTE CHARGEMENT
 #     LCLIM  = LONGUEUR DE L'EMBOUT DU COTE CONDITIONS AUX LIMITES
-#     GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)  
+#     GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)
 #     SYME = QUART DE STRUCTURE SI 'OUI'
 #     INDBG = INDICATEUR BORD GAUCHE DE LA ZONE CIRCONF J
 #     INDBD = INDICATEUR BORD DROIT DE LA ZONE CIRCONF J
@@ -1761,7 +1761,7 @@ def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
 #     DNX = DENSITE ET NOMBRE D'ELEMENTS CIRCONF. DE LA ZONE J
 #     DNY = DENSITE ET NOMBRE D'ELEMENTS LONGIT. DE LA ZONE J
 #     NZONEX = NOMBRE DE ZONES CIRCONFERENTIELLES
-#     NZONEY = NOMBRE DE ZONES LONGITUDINALES  
+#     NZONEY = NOMBRE DE ZONES LONGITUDINALES
 #
 # ------------------------------------------------------------------------------
 def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,SUREP,
@@ -1814,7 +1814,7 @@ def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,SUREP,
   texte=texte+'daxhtu = '+str(DENSTU) +POIVIR
   texte=texte+'daxhgv = '+str(DENSGV) +POIVIR
   texte=texte+'*\n'
-  
+
   texte=texte+'* Zones couvertes en circonference\n'
   texte=texte+'*\n'
   for j in range(NZONEX):
@@ -1825,7 +1825,7 @@ def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,SUREP,
     texte=texte+'deny .' +str(j+1).rjust(23)+' = '+str(DNX[2*j])        +POIVIR
     texte=texte+'nbely .'+str(j+1).rjust(23)+' = '+str(int(DNX[2*j+1])) +POIVIR
     texte=texte+'*\n'
-    
+
   texte=texte+'* Zones couvertes longitudinalement\n'
   texte=texte+'*\n'
   for j in range(NZONEY):
@@ -1836,7 +1836,7 @@ def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,SUREP,
     texte=texte+'denz .' +str(j+1).rjust(23)+' = '+str(DNY[2*j])        +POIVIR
     texte=texte+'nbelz .'+str(j+1).rjust(23)+' = '+str(int(DNY[2*j+1])) +POIVIR
     texte=texte+'*\n'
- 
+
   texte=texte+'* Caracteristiques des sous-epaisseurs\n'
   texte=texte+'*\n'
   issep=0
@@ -1862,17 +1862,17 @@ def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,SUREP,
        texte=texte+'sousep .'+str(issep).rjust(23)+" = 'oui'"+POIVIR
      else:
        texte=texte+'sousep .'+str(issep).rjust(23)+" = 'non'"+POIVIR
-  texte=texte+'*\n'  
+  texte=texte+'*\n'
 
   texte=texte+'* Caracteristique de sur-epaisseur\n'
   texte=texte+'surep    = '+str(SUREP)            +POIVIR
   texte=texte+'* \n'
   texte=texte+'* FIN PARAMETRES UTILISATEUR\n'
-  fpgib=open('fort.71','w') 
+  fpgib=open('fort.71','w')
   fpgib.write(texte)
   fpgib.close()
-  
- 
+
+
 ################################################################################
 ################################################################################
 ################################################################################
@@ -1916,10 +1916,10 @@ def write_file_pgib_ASCSP2(MCL_SOUS_EPAIS,NLX,NLY):
   texte=texte+'   indrgv   = liggv .   8'+POIVIR
   texte=texte+'finsi'+POIVIR
   texte=texte+'*\n'
-  
+
   text2=write_subpart_file_pgib_POST(MCL_SOUS_EPAIS,NLX,NLY)
   texte=texte+text2
-  
+
   texte=texte+'*\n'
   texte=texte+'*oeil = 10000. 0. 0.' +POIVIR
   texte=texte+'*trac oeil cach coude'+POIVIR
@@ -1933,9 +1933,9 @@ def write_file_pgib_ASCSP2(MCL_SOUS_EPAIS,NLX,NLY):
   texte=texte+"opti sauv form 'fort.8'"+POIVIR
   texte=texte+'sauv form ma'+POIVIR
   texte=texte+'fin'+POIVIR
-  fpgib=open('fort.71','a') 
+  fpgib=open('fort.71','a')
   fpgib.write(texte)
-  fpgib.close()  
+  fpgib.close()
 
 ################################################################################
 ################################################################################
@@ -1953,14 +1953,14 @@ def write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP,SU
   DENEXT=int(LTCHAR/DELTAY)*DELTAY/4.
   NZT=0
   NZGV=0
-  
+
   if TYPBOL!=None:
-     if TYPBOL=='CUVE'     : TYPEMB = 'typcuv' 
-     if TYPBOL=='GV'       : TYPEMB = 'typegv' 
-     if TYPBOL=='ASP_MPP'  : TYPEMB = 'typapp' 
-  else: 
+     if TYPBOL=='CUVE'     : TYPEMB = 'typcuv'
+     if TYPBOL=='GV'       : TYPEMB = 'typegv'
+     if TYPBOL=='ASP_MPP'  : TYPEMB = 'typapp'
+  else:
      TYPEMB ='      '
-   
+
   POIVIR = ' ;\n'
   texte='* DEBUT PARAMETRES UTILISATEUR\n'
   texte=texte+'*\n'
@@ -1972,7 +1972,7 @@ def write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP,SU
   texte=texte+'rc       = '+str(RC)           +POIVIR
   texte=texte+'alphac   = '+str(ALPHA)        +POIVIR
   texte=texte+'epc      = '+str(EP)           +POIVIR
-  texte=texte+'surep    = '+str(SUREP)        +POIVIR       
+  texte=texte+'surep    = '+str(SUREP)        +POIVIR
   texte=texte+'lgv      = '+str(LTCLIM)       +POIVIR
   texte=texte+'lt       = '+str(LTCHAR)       +POIVIR
   texte=texte+"typembou = '"+TYPEMB+"'"       +POIVIR
@@ -2000,7 +2000,7 @@ def write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP,SU
   fdgib=open(nomFichierDATG,'w')
   fdgib.write(texte)
   fdgib.close()
-  
+
 ################################################################################
 ################################################################################
 ################################################################################
@@ -2013,10 +2013,10 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   """
   from Accas import _F
   import types
-  import aster 
+  import aster
 
   ier=0
-  
+
 # On importe les definitions des commandes a utiliser dans la macro
   EXEC_LOGICIEL =self.get_cmd('EXEC_LOGICIEL')
   PRE_GIBI      =self.get_cmd('PRE_GIBI')
@@ -2030,7 +2030,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
-  
+
   TYPELE = TYPE_ELEM
   NIVMAG = EXEC_MAILLAGE['NIVE_GIBI']
   PRECIS = 0.01
@@ -2039,8 +2039,8 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   CAR4   = ('NOFDRO','NOEXDR','NOEXTR','NOEXGA','NOFGAU','NOINGA','NOINTR','NOINDR')
   CAR5   = ('NEFDRO','NEEXDR','NEEXTR','NEEXGA','NEFGAU','NEINGA','NEINTR','NEINDR')
   CAR6   = ('FDRO','EXDR','EXTR','EXGA','FGAU','INGA','INTR','INDR')
-  SECT   = ('MI','TU','GV')  
-  
+  SECT   = ('MI','TU','GV')
+
 #
 ################################################################################
 #     --- caracteristiques du coude ---
@@ -2254,7 +2254,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
     if (LTRAN<LDEFAU) and (LTRAN>LCOUDE) :
        UTMESS('F','ASCOUF0_42',valr=[LTRAN,LDEFAU,LCOUDE])
     if (TETA1<0.) or (TETA1>30.) :
-       UTMESS('F','ASCOUF0_43',valr=[TETA1])  
+       UTMESS('F','ASCOUF0_43',valr=[TETA1])
 #
 # transition d epaisseur a une pente
 #
@@ -2308,7 +2308,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
          ssep.IDENL = ssep.ILONP/ssep['NB_ELEM_LONGI']*180./(pi*RC)
          ssep.IDENC = ssep.ICIRP/ssep['NB_ELEM_CIRC']*180./(pi*RM)
      if SYME=='QUART' :
-#       quart de structure     
+#       quart de structure
         ier,NLX,NLY,NZONEX,NZONEY,BG,BD,BI,BS,INDBG,INDBD,INDBI,INDBS,DNX,DNY\
         = ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM)
      else :
@@ -2321,11 +2321,10 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   logiel = EXEC_MAILLAGE['LOGICIEL'  ]
   UNITD  = EXEC_MAILLAGE['UNITE_DATG']
   UNITP  = EXEC_MAILLAGE['UNITE_MGIB']
-  if   logiel=='GIBI98'  : logiel = loc_gibi+'gibi98'
-  elif logiel=='GIBI2000': logiel = loc_gibi+'gibi2000'
-  
-  else                   :
-       UTMESS('F','ASCOUF0_57')
+  if logiel.startswith('GIBI'):
+    logiel = os.path.join(loc_gibi, logiel.lower())
+  else:
+    UTMESS('F','ASCOUF0_57')
 #
 #     --- ecriture sur le fichier .datg  de la procedure ---
 #
@@ -2342,7 +2341,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
                            ORIEN,AZIM,RC0,RC2,RC3,POSIT,EPSI,NIVMAG,SYME,loc_datg)
   elif MCL_SOUS_EPAIS!=None :
      if SOUS_EPAIS_MULTI==None :
-#      procedure coude sous-ep.: (MOT-CLE SOUS_EPAIS_COUDE)  
+#      procedure coude sous-ep.: (MOT-CLE SOUS_EPAIS_COUDE)
        write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
                               EPI,TETA1,MCL_SOUS_EPAIS,TETA2,LTRAN,LTCHAR,LTCLIM,GEOM,
                               SYME,NBEP,NLX,NLY,NIVMAG,SUREP,AZIMC,loc_datg)
@@ -2359,8 +2358,8 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
     write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP1,SUREP,
                            LTCLIM,LTCHAR,NBEP,loc_datg)
 
-  
-# GIBI  
+
+# GIBI
   DEFI_FICHIER(ACTION='LIBERER',UNITE=19)
   DEFI_FICHIER(ACTION='LIBERER',UNITE=20)
   EXEC_LOGICIEL( LOGICIEL = logiel ,
@@ -2380,7 +2379,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   l_CREA_GROUP_NO.append('CLGV')
   l_CREA_GROUP_NO.append('BORD2')
   l_CREA_GROUP_NO.append('PEAUINT')
-  l_CREA_GROUP_NO.append('PEAUEXT') 
+  l_CREA_GROUP_NO.append('PEAUEXT')
 
 # cas des fissures axisymetriques
   if FISS_COUDE!=None:
@@ -2388,9 +2387,9 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
       motscles['CREA_GROUP_MA']=[]
       motscles['CREA_GROUP_MA'].append(_F(GROUP_MA = 'FONDFISS',
                                           NOM      = 'MAIL_ORI',
-                                          POSITION = 'INIT'    , ),) 
+                                          POSITION = 'INIT'    , ),)
 
-# conversion des groupes de mailles en groupes du bloc fissure  
+# conversion des groupes de mailles en groupes du bloc fissure
   if FISS_COUDE!=None:
     if SYME == 'ENTIER':
       l_CREA_GROUP_NO.append('NOLIG1')
@@ -2450,7 +2449,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
           ch1='CIR'+chtmp
           ch2='ICI'+chtmp
           ch3='OCI'+chtmp
-          ch4='ECI'+chtmp  
+          ch4='ECI'+chtmp
           motscles['CREA_GROUP_NO'].append(_F(OPTION        = 'SEGM_DROI_ORDO',
                                               NOM           = ch1,
                                               GROUP_NO      = ch2,
@@ -2470,7 +2469,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
            ch1='LON'+chtmp
            ch2='ILO'+chtmp
            ch3='OLO'+chtmp
-           ch4='ELO'+chtmp  
+           ch4='ELO'+chtmp
            motscles['CREA_GROUP_NO'].append(_F(OPTION        = 'SEGM_DROI_ORDO',
                                                NOM           = ch1,
                                                GROUP_NO      = ch2,
@@ -2479,7 +2478,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
                                                PRECISION     = PRECIS,
                                                CRITERE       = CRITER,),)
 #     1/ noms intermediaires des groupes de noeuds representant les ligaments
-#        des sections: TU,MI,GV et sous-ep.     
+#        des sections: TU,MI,GV et sous-ep.
       for k in range(8):
         motscles['CREA_GROUP_NO'].append(_F( NOM      = CAR3[k]+str(issep),
                                              GROUP_MA = CAR6[k]+str(issep),),)
@@ -2499,8 +2498,8 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
         motscles['CREA_GROUP_NO'].append(_F( NOM      = CAR4[k]+str(issep),
                                              INTERSEC = ('PEAUEXT',CAR3[k]+str(issep),),),)
         motscles['CREA_GROUP_NO'].append(_F( NOM      = CAR5[k]+str(issep),
-                                             INTERSEC = ('PEAUINT',CAR3[k]+str(issep),),),)        
-#     3/ nommage final des groupes de noeuds representant les ligaments 
+                                             INTERSEC = ('PEAUINT',CAR3[k]+str(issep),),),)
+#     3/ nommage final des groupes de noeuds representant les ligaments
 #        de la ou des sections: sous-ep.
       for k in range(8):
         motscles['CREA_GROUP_NO'].append(_F(OPTION        = 'SEGM_DROI_ORDO',
@@ -2517,11 +2516,11 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
       if SYME == 'ENTIER' or k!=2:
         for j in range(8):
            motscles['CREA_GROUP_NO'].append(_F( NOM      = CAR4[j]+SECT[k],
-                                                INTERSEC = ('PEAUEXT',CAR3[j]+SECT[k],),),) 
+                                                INTERSEC = ('PEAUEXT',CAR3[j]+SECT[k],),),)
            motscles['CREA_GROUP_NO'].append(_F( NOM      = CAR5[j]+SECT[k],
-                                                INTERSEC = ('PEAUINT',CAR3[j]+SECT[k],),),) 
-#       5/ nommage final des groupes de noeuds representant les ligaments des sections: TU,MI,GV   
-        for j in range(8):    
+                                                INTERSEC = ('PEAUINT',CAR3[j]+SECT[k],),),)
+#       5/ nommage final des groupes de noeuds representant les ligaments des sections: TU,MI,GV
+        for j in range(8):
            motscles['CREA_GROUP_NO'].append(_F(OPTION        = 'SEGM_DROI_ORDO',
                                                NOM           = CAR6[j]+SECT[k],
                                                GROUP_NO      = CAR3[j]+SECT[k],
@@ -2529,7 +2528,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
                                                GROUP_NO_EXTR = CAR5[j]+SECT[k],
                                                PRECISION     = PRECIS,
                                                CRITERE       = CRITER,),)
-    
+
 
   __nomres=DEFI_GROUP(reuse   =__nomres,
                       MAILLAGE=__nomres,
@@ -2547,24 +2546,24 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
         l_peau.append('PEAUINT')
     else:
         l_peau.append('PEAUEXT')
-    
+
     if SYME == 'ENTIER' :
       l_intersec.append('FACE1')
       motscles['CREA_GROUP_NO'].append(_F(NOM      = 'P_AXE_1',
                                           INTERSEC = ('NOLIG1','FACE1'),),)
       motscles['CREA_GROUP_NO'].append(_F(NOM      = 'G_AXE_1',
-                                          INTERSEC =  tuple(l_peau+l_intersec),),)  
+                                          INTERSEC =  tuple(l_peau+l_intersec),),)
     l_intersec=[]
-    l_intersec.append('FACE2')  
+    l_intersec.append('FACE2')
     motscles['CREA_GROUP_NO'].append(_F(NOM      = 'P_AXE_2',
                                         INTERSEC = ('NOLIG2','FACE2'),),)
     motscles['CREA_GROUP_NO'].append(_F(NOM      = 'G_AXE_2',
                                         INTERSEC =  tuple(l_peau+l_intersec),),)
-   
+
     __nomres=DEFI_GROUP(reuse   =__nomres,
                         MAILLAGE=__nomres,
-                        **motscles )    
- 
+                        **motscles )
+
 # MODI_MAILLAGE  1
   motscles={}
   if GEOM == 'COUDE':
@@ -2583,17 +2582,17 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   elif SOUS_EPAIS_COUDE!=None :
       D_PLAQ_TUBE['AZIMUT']=MCL_SOUS_EPAIS[0].IPHIC
   else:pass
-  motscles['PLAQ_TUBE'].append(_F(**D_PLAQ_TUBE),) 
+  motscles['PLAQ_TUBE'].append(_F(**D_PLAQ_TUBE),)
   __nomres=MODI_MAILLAGE( reuse   =__nomres,
                           MAILLAGE=__nomres,
                           **motscles )
- 
+
 # MODI_MAILLAGE  2
   motscles={}
   motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXTUBE'),)
   if FISS_COUDE!=None:
     if FISS_COUDE['FISSURE'] == 'DEB_INIT':
-      motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXTUBE','FACE1','FACE2'),)  
+      motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXTUBE','FACE1','FACE2'),)
   __nomres=MODI_MAILLAGE(reuse   =__nomres,
                        MAILLAGE=__nomres,
                        **motscles)
@@ -2606,11 +2605,11 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
                                   GROUP_NO='P1'),)
   if TYPBOL == None :
     motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P2',
-                                  GROUP_NO='P2'),)    
+                                  GROUP_NO='P2'),)
   nomre2=CREA_MAILLAGE( MAILLAGE=__nomres,
                           **motscles)
 
- 
+
 # IMPRESSSION
   if IMPRESSION!=None:
      if IMPRESSION.__class__.__name__  !='MCList' : IMPRESSION  =[IMPRESSION,]

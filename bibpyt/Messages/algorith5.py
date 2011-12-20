@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith5 Messages  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,4 +344,9 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
  KSIB non inversible
 """),
 
+80 : _(u"""
+ la prise en compte des fissures dans les rotors n'est possible que pour SCHEMA_TEMP=EULER
+"""),
+
 }
+

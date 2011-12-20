@@ -1,7 +1,7 @@
       SUBROUTINE DPVPDI( NBMAT, MATER, TD, TF, TR, DEPST, DEPS)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 19/12/2011   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,19 +42,23 @@ C =====================================================================
 C =====================================================================
 C --- LES PARAMETRES MATERIAUX SONT SUPPOSES CONSTANT -----------------
 C =====================================================================
+
       ALPHA = MATER(3,1)
+C INITIALISATION DE DEPS A DEPST
+C
+        DO 5 II = 1, NDT
+         DEPS(II) = DEPST(II) 
+ 5     CONTINUE
+
+C
       IF ((IISNAN(TR).EQ.0).AND.(IISNAN(TF).EQ.0).AND.(IISNAN(TD).EQ.0)
-     &    .AND.(ALPHA.NE.0.D0))  THEN
+     &    )  THEN
         DO 10 II = 1, NDI
          DEPS(II) = DEPST(II) - ( ALPHA*(TF-TR) - ALPHA*(TD-TR))
  10     CONTINUE
         DO 20 II = NDI+1, NDT
          DEPS(II) = DEPST(II)
  20     CONTINUE
-      ELSEIF (ALPHA.EQ.0.D0) THEN
-        DO 11 II = 1, NDT
-         DEPS(II) = DEPST(II)
- 11     CONTINUE
       ELSEIF   (((IISNAN(TR).EQ.0).OR.(IISNAN(TD).EQ.0).OR.
      &         (IISNAN(TF).EQ.0)).AND.(ALPHA.NE.0.D0)) THEN
         CALL U2MESS('F','CALCULEL_15')

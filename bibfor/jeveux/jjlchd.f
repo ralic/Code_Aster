@@ -1,6 +1,6 @@
       SUBROUTINE JJLCHD (ID, IC, IDFIC, IDTS, NGRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,8 +63,6 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
-      COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C
       INTEGER          NUMEC
       COMMON /INUMJE/  NUMEC
@@ -101,7 +99,7 @@ C DEB ------------------------------------------------------------------
       ICLACO = IC
       IDATCO = ID
       NOMOS  = D32
-      NOMCO  = RNOM(JRNOM(IC)+ID)
+      NOMCO  = RNOM(JRNOM(IC)+ID)(1:24)
       NOMOC  = D32
       GENRI  = GENR (JGENR(IC) + ID)
       TYPEI  = TYPE (JTYPE(IC) + ID)

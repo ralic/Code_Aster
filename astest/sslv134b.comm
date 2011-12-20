@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,7 @@
 # ======================================================================
 # QUART DE FISSURE. TEST DE POST_K1_K2_K3. MAILLAGE BARSOUM
 
-DEBUT(CODE=_F(NOM='SSLV134B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      MEMOIRE=_F(DYNAMIQUE=1),)
+DEBUT(CODE=_F(NOM='SSLV134B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',)
 
@@ -235,7 +234,6 @@ TABL_K1=POST_K1_K2_K3(  MODELISATION='3D',
                         FOND_FISS = FISS,
                         RESULTAT = CHAMDEPL,
                         ABSC_CURV_MAXI=0.35,
-                        VECT_K1=(0., 0., 1.,)
                       )
 
 IMPR_TABLE(TABLE=TABL_K1)
@@ -247,7 +245,6 @@ TABL_KTO=POST_K1_K2_K3(  MODELISATION='3D',
               RESULTAT=CHAMDEPL,
               ABSC_CURV_MAXI = 0.35,
               PREC_VIS_A_VIS = 0.05,
-              VECT_K1        = ( 0., 0., 1., ),
            )
 
 IMPR_TABLE(TABLE=TABL_KTO,);
@@ -335,7 +332,6 @@ TABL_KTM=POST_K1_K2_K3(MODELISATION='3D',
                        RESULTAT=CHAMDEPL,
                        ABSC_CURV_MAXI = 0.35,
                        PREC_VIS_A_VIS = 0.05,
-                       VECT_K1        = ( 0., 0., 1., ),
            )
 
 IMPR_TABLE(TABLE=TABL_KTM,);
@@ -368,7 +364,6 @@ TABL_KTN=POST_K1_K2_K3(MODELISATION='3D',
                        RESULTAT=CHAMDEPL,
                        ABSC_CURV_MAXI = 0.35,
                        PREC_VIS_A_VIS = 0.05,
-                       VECT_K1        = ( 0., 0., 1., ),
            )
 
 IMPR_TABLE(TABLE=TABL_KTN,);
@@ -396,7 +391,6 @@ TABL_K4=POST_K1_K2_K3(MODELISATION='3D',
                       GROUP_NO = ('NOFF1','NOFF2',),
                       ABSC_CURV_MAXI = 0.35,
                       PREC_VIS_A_VIS = 0.05,
-                      VECT_K1        = ( 0., 0., 1., ),
                    )
 
 IMPR_TABLE(TABLE=TABL_K4)
@@ -418,7 +412,6 @@ TABL_K5=POST_K1_K2_K3(MODELISATION='3D',
                       NB_NOEUD_COUPE = 4,
                       ABSC_CURV_MAXI = 0.31,
                       PREC_VIS_A_VIS = 0.05,
-                      VECT_K1        = ( 0., 0., 1., ),
                       )
 
 IMPR_TABLE(TABLE=TABL_K5,);
@@ -441,7 +434,6 @@ TABL_K6=POST_K1_K2_K3(MODELISATION='3D',
                       GROUP_NO = ('NOFF1','NOFF2',),
                       ABSC_CURV_MAXI = 0.31,
                       PREC_VIS_A_VIS = 0.05,
-                      VECT_K1        = ( 0., 0., 1., ),
                    )
 
 IMPR_TABLE(TABLE=TABL_K6)

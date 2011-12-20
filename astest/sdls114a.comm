@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,7 +173,6 @@ T1_K = POST_K1_K2_K3(MODELISATION='C_PLAN',
                            INFO = 2,
                            RESULTAT=MODE,
                            FOND_FISS=FISS,
-                           VECT_K1 = (0., 1., 0.),
                            ABSC_CURV_MAXI=7.E-5,
                            NUME_ORDRE=(1,2,3,4,5),);
 IMPR_TABLE(TABLE=T1_K)

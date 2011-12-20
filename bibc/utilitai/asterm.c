@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF asterm utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF asterm utilitai  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -141,28 +141,15 @@ void asterm(long argc, char** argv)
     g_memory[0] = '\0';
     g_tpmax[0] = '\0';
 #endif
-    /*
+/*
 ** Init pour le repertoire associe au catalogue materiau
    pour les scripts appelables depuis aster et pour les
    donnees lues depuis aster
 */
-    {
-        char rep_mat[129],rep_out[129],rep_don[129];
-        INTEGER fi=0;
-        INTEGER ll;
-        strcpy(rep_mat,REP_MAT);
-        ll = strlen(rep_mat);
-        CALL_REPMAT(&fi, &ll, rep_mat);
-
-        strcpy(rep_out,REP_OUT);
-        ll = (INTEGER)strlen(rep_out);
-        CALL_REPOUT(&fi, &ll, rep_out);
-
-        strcpy(rep_don,REP_DON);
-        ll = (INTEGER)strlen(rep_don);
-        CALL_REPDEX(&fi, &ll, rep_don);
-    }
-    /*
+    put_repmat(REP_MAT);
+    put_repout(REP_OUT);
+    put_repdex(REP_DON);
+/*
 ** Traitement des arguments de la ligne de commande
 */
     while (*argv != NULL) {
@@ -241,15 +228,6 @@ void asterm(long argc, char** argv)
             cerr=CALL_MEJVDY(&mxmem);
         }
         /*
-   ** Maximum memoire statique JEVEUX
-   */
-        if (strcmp(*argv,"-memjeveux_stat") == 0) {
-            DOUBLE mxmemst;
-            *argv++;
-            mxmemst=(DOUBLE) atof(*argv);
-            cerr=CALL_MEJVST(&mxmemst);
-        }
-        /*
    ** Type parcours de la segmentation Memoire JEVEUX
    */
         if (strcmp(*argv,"-type_alloc") == 0) {
@@ -289,46 +267,22 @@ void asterm(long argc, char** argv)
    ** Repertoire des fichiers du catalogue materiau
    */
         if (strcmp(*argv,"-rep_mat") == 0) {
-            char rep[129];
-            unsigned long l_rep;
-            INTEGER fi=0;
-            INTEGER ll;
-            char *p;
             *argv++;
-            p=*argv;
-            l_rep = strlen(p);
-            strcpBS (p,rep,l_rep,&ll);
-            CALL_REPMAT(&fi,&ll,rep);
+            put_repmat( *argv );
         }
         /*
    ** Repertoire des outils (logiciels externes, scripts)
    */
         if (strcmp(*argv,"-rep_outils") == 0) {
-            char rep[129];
-            unsigned long l_rep;
-            INTEGER fi=0;
-            INTEGER ll;
-            char *p;
             *argv++;
-            p=*argv;
-            l_rep = strlen(p);
-            strcpBS (p,rep,l_rep,&ll);
-            CALL_REPOUT(&fi,&ll,rep);
+            put_repout( *argv );
         }
         /*
    ** Repertoire des donnees externes
    */
         if (strcmp(*argv,"-rep_dex") == 0) {
-            char rep[129];
-            unsigned long l_rep;
-            INTEGER fi=0;
-            INTEGER ll;
-            char *p;
             *argv++;
-            p=*argv;
-            l_rep = strlen(p);
-            strcpBS (p,rep,l_rep,&ll);
-            CALL_REPDEX(&fi,&ll,rep);
+            put_repdex( *argv );
         }
         /*
    ** Limite de temps CPU en secondes

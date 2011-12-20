@@ -1,6 +1,6 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# ssnv185n.para = tps_job 1600 mem_job 1024Mo memjeveux_stat 1024 ncpus 1 liste_test S
+# ssnv185n.para = tps_job 1600 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,11 +21,6 @@
 
 DEBUT(CODE    = _F(NOM='SSNV185N',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG   = _F(SDVERI='OUI'),
-      MEMOIRE = _F( GESTION = 'COMPACTE',
-                     TYPE_ALLOCATION = 4,
-                     TAILLE = 500000,
-                     PARTITION = 0.7,
-                     DYNAMIQUE=0 ),
      )
  
 # MODELISATION N : PAREIL QUE MODELISATION C, AVEC ELEMENTS QUADRATIQUES
@@ -262,7 +257,6 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
                      RESULTAT  = UTOT1,
                      ABSC_CURV_MAXI = 1.5,
                      NB_NOEUD_COUPE = 6,
-                     VECT_K1        = ( 0., 0., 1., ),
                     )
 
 IMPR_TABLE(TABLE = PK)

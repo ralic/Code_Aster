@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP RUPTURE : PLAQUE EN TRACTION 
 # forma05a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,7 +120,6 @@ IMPR_TABLE(TABLE=GK),
 K=POST_K1_K2_K3(MODELISATION='D_PLAN',
                 RESULTAT=RESU,
                 FOND_FISS=FISS,
-                VECT_K1=(0,1,0),
                 MATER=MA,
                 ABSC_CURV_MAXI=RSUP,
                 SYME_CHAR='SYME')

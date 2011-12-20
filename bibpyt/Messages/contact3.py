@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,7 +80,7 @@ Conseil :
 """),
 
 19 : _(u"""
-La surface maître est fortement facettisée sur %(i1)d noeuds.
+La surface maître est fortement facétisée sur %(i1)d noeuds.
 A cause des variations brusques de normale d'un noeud à l'autre, vous risquez d'avoir des problèmes de convergence du contact, surtout dans le cas de grands glissements relatifs des deux surfaces,.
 Vous pouvez raffiner le maillage, utiliser un maillage quadratique (si c'est possible) ou activer le lissage (LISSAGE='OUI' dans DEFI_CONTACT).
 

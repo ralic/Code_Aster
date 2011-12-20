@@ -1,6 +1,6 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,6 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
-      COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      &               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -61,15 +59,6 @@ C     ------------------------------------------------------------------
       INTEGER          IADMI,IADDI(2),LTYPI,LONOI,ISTA1,ISTA2
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
-C
-C --- ON MODIFIE LA FACON DE PARCOURIR LA SEGMENTATION MEMOIRE POUR 
-C --- EVITER DE LIBERER DE FACON INTEMPESTIVE DES SEGMENTS DE VALEURS
-C --- QUI VIENNENT D'ETRE ALLOUES
-C
-      ITROLD = ITRECH
-      IF (ITCOL .EQ. 2) THEN
-        ITRECH = 4
-      ENDIF
       IC     = ICLASI
       ID     = IDATCI
       GENRI  = GENR ( JGENR(IC) + ID )
@@ -168,7 +157,6 @@ C --------- MISE EN MEMOIRE SANS LECTURE DISQUE
         ENDIF
  20   CONTINUE
 C
-      ITRECH = ITROLD
       IX  = ISZON( JISZON + IBACOL + IDDESO )
       LTYPI  = LTYP ( JLTYP(IC) + IX )
       LONOI  = LONO ( JLONO(IC) + IX ) * LTYPI

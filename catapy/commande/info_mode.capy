@@ -1,43 +1,42 @@
-#& MODIF COMMANDE  DATE 10/10/2011   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 19/12/2011   AUTEUR BERRO H.BERRO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE BOITEAU
-
-IMPR_STURM=PROC(nom="IMPR_STURM",op=32,fr="Calculer et imprimer le nombre de valeurs propres dans un contour donné",
+INFO_MODE=OPER(nom="INFO_MODE",op=32,sd_prod=table_sdaster,
+                fr="Calculer, imprimer, et sauvegarder le nombre de valeurs propres dans un contour donné",
             UIinfo={"groupes":("Résolution","Dynamique",)},
          MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r,matr_asse_gene_r,
                                                matr_asse_depl_c,matr_asse_gene_c) ),
          MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r,matr_asse_gene_r) ),
          MATR_C          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r,matr_asse_gene_r) ),
-         UNITE           =SIMP(statut='f',typ='I',defaut=8),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-         TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",into=("MODE_FLAMB","DYNAMIQUE","MODE_COMPLEXE"),
+         TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="REEL",into=("COMPLEXE","REEL","FLAMBEMENT"),
                                fr="Type d analyse" ),
-         b_dynamique  =BLOC(condition = "TYPE_RESU == 'DYNAMIQUE'",fr="Recherche du nombre de fréquences propres",
+         b_reel =BLOC(condition = "TYPE_MODE == 'REEL'",fr="Recherche du nombre de fréquences propres",
            FREQ_MIN        =SIMP(statut='f',typ='R',defaut= 0.E+0 ,fr="Borne inférieure de l intervalle" ),
            FREQ_MAX        =SIMP(statut='o',typ='R',fr="Borne supérieure de l intervalle" ),
          ),
-         b_mode_complexe  =BLOC(condition = "TYPE_RESU == 'MODE_COMPLEXE'",fr="Recherche du nombre de fréquences propres",
+         b_dynamique  =BLOC(condition = "TYPE_MODE == 'COMPLEXE'",fr="Recherche du nombre de fréquences propres",
            FREQ_TYPE_CONTOUR     =SIMP(statut='f',typ='TXM',defaut="CERCLE",into=("CERCLE","CERCLE") ),
            FREQ_RAYON_CONTOUR    =SIMP(statut='o',typ='R',val_min=1.E-2 ),
            FREQ_CENTRE_CONTOUR   =SIMP(statut='f',typ='C',defaut= 0.0+0.0j),
          ),
-         b_mode_flamb =BLOC(condition = "TYPE_RESU == 'MODE_FLAMB'",fr="Recherche du nombre de charges critiques",
+         b_complexe =BLOC(condition = "TYPE_MODE == 'FLAMBEMENT'",fr="Recherche du nombre de charges critiques",
            CHAR_CRIT_MIN   =SIMP(statut='o',typ='R',fr="Borne inférieure de l intervalle" ),
            CHAR_CRIT_MAX   =SIMP(statut='o',typ='R',fr="Borne supérieure de l intervalle" ),
          ),         
@@ -48,7 +47,9 @@ IMPR_STURM=PROC(nom="IMPR_STURM",op=32,fr="Calculer et imprimer le nombre de val
              NMAX_ITER_SHIFT  =SIMP(statut='f',typ='I',defaut= 5,val_min=0),
              NBPOINT_CONTOUR  =SIMP(statut='f',typ='I',defaut= 40,val_min=10,val_max=1000),
              NMAX_ITER_CONTOUR=SIMP(statut='f',typ='I',defaut= 3, val_min=1,val_max=5),
-         ),               
+         ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),  
+                        
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR
          SOLVEUR         =C_SOLVEUR('IMPR_STURM'),

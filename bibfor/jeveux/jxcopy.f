@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,6 @@ C
       ISZON(JISZON+IADITP-1) = ISTAT(1)
       ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
       SVUSE = SVUSE + (ISZON(JISZON+IADITP-4) - IADITP + 4) 
-      IF (IADYN .NE. 0) SVUSE = SVUSE + 1
       SMXUSE = MAX(SMXUSE,SVUSE)
       DO 50  K=1,(NBLUTI(ICI)-1)/NBENRG(ICI)
         CALL JXOUVR(ICO,K+1)
@@ -119,11 +118,7 @@ C
       NBEXT = NUMEXT+1
       CALL JXFERM (ICI)
       CALL JXFERM (ICO)
-      IF ( IADYN .NE. 0 ) THEN
-        CALL JJLIDY ( IADYN , IADITP )
-      ELSE IF ( IADITP .NE. 0 ) THEN
-        CALL JJLIBP (IADITP)
-      ENDIF
+      CALL JJLIDY ( IADYN , IADITP )
       CLASSE(ICO:ICO) = ' '
       CLASSE(ICI:ICI) = ' '
       DO 300 K=1,NBEXT

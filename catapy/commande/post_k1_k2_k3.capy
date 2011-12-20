@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,9 +25,7 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
                     reentrant='n',
                     UIinfo={"groupes":("Post-traitements","Rupture",)},
 
-           regles=(UN_PARMI('FISSURE','FOND_FISS'),
-                   PRESENT_PRESENT('FOND_FISS','VECT_K1'),
-                   ),
+           regles=(UN_PARMI('FISSURE','FOND_FISS'),),
 
          MODELISATION  =SIMP(statut='o',typ='TXM',
                              into=("3D","AXIS","D_PLAN","C_PLAN"),position='global',
@@ -108,7 +106,5 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
              ),
              ),
          INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         VECT_K1       =SIMP(statut='f',typ='R',max=3,min=3,
-                             fr="Vecteur normal au plan de fissure, orienté de la lèvre inférieure vers la lèvre supérieure"),
          TITRE         =SIMP(statut='f',typ='TXM',max='**'),
 )  ;

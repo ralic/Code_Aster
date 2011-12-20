@@ -4,7 +4,7 @@
       INTEGER                  IPASS , ICMDEB , IERTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,8 +81,7 @@ C
          CALL EXECOP( ICMD , ICOND , IERTOT , IERCMD , IFIN )
          IF ( LDBG ) THEN
             CALL GETRES(NOMRES,CONCEP,NOMCMD)
-            CALL JXVERI('MESSAGE','CONTROLE DE L''INTEGRITE DE LA '//
-     &                            'MEMOIRE APRES '//NOMCMD)
+            CALL JXVERI(' ')
          ENDIF
 C
          IF ( IPASS .EQ. 1 ) THEN

@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF archivage Messages  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,5 +47,6 @@ cata_msg = {
 
 9 : _(u"""    Mode de flambement stocké pour le numéro d'ordre %(i1)d """),
 
+10: _(u"""    Mode de stabilite stocké pour le numéro d'ordre %(i1)d """),
 
 }

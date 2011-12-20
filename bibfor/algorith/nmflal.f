@@ -1,9 +1,9 @@
       SUBROUTINE NMFLAL(OPTION,COMPOR,SDPOST,MOD45  ,DEFO  ,
-     &                  NFREQ ,TYPMAT,OPTMOD,BANDE  ,NDDLE ,
-     &                  DDLEXC)
+     &                  NFREQ ,CDSP, TYPMAT,OPTMOD,BANDE  ,
+     &                  NDDLE ,DDLEXC,NSTA,DDLSTA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,10 +23,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24 COMPOR,DDLEXC
+      CHARACTER*24 COMPOR,DDLEXC,DDLSTA
       CHARACTER*16 OPTMOD,OPTION
       CHARACTER*4  MOD45
-      INTEGER      NFREQ,DEFO  ,NDDLE    
+      INTEGER      NFREQ,DEFO,NDDLE,NSTA,CDSP    
       CHARACTER*16 TYPMAT
       REAL*8       BANDE(2)
       CHARACTER*19 SDPOST
@@ -50,6 +50,7 @@ C OUT MOD45  : TYPE DE CALCUL DE MODES PROPRES
 C              'VIBR'     MODES VIBRATOIRES
 C              'FLAM'     MODES DE FLAMBEMENT  
 C OUT NFREQ  : NOMBRE DE FREQUENCES A CALCULER
+C OUT CDSP   : COEFFICIENT MULTIPLICATEUR DE NFREQ -> DIM_SPACE  
 C OUT TYPMAT : TYPE DE MATRICE A UTILISER 
 C                'ELASTIQUE/TANGENTE/SECANTE'
 C OUT OPTMOD : OPTION DE RECHERCHE DE MODES
@@ -61,6 +62,8 @@ C                1            GRANDES DEFORMATIONS (PAS DE MATR. GEOM.)
 C OUT BANDE  : BANDE DE FREQUENCE SI OPTMOD='BANDE'
 C OUT NDDLE  : NOMBRE DE DDL EXCLUS
 C OUT DDLEXC : NOM DE L'OBJET JEVEUX CONTENANT LE NOM DES DDLS EXCLUS
+C OUT NSTA   : NOMBRE DE DDL STAB
+C OUT DDLSTA : NOM DE L'OBJET JEVEUX CONTENANT LE NOM DES DDLS STAB
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -96,12 +99,14 @@ C
       BANDE(1) = 1.D-5
       BANDE(2) = 1.D5
       NFREQ    = 0
+      CDSP     = 0
       NDDLE    = 0
       DEFO     = 0
       MOD45    = ' '     
       OPTMOD   = ' '
       OPTRIG   = ' '
       TYPMAT   = ' '
+      NSTA     = 0
 C
 C --- TYPE DE DEFORMATIONS
 C
@@ -124,6 +129,8 @@ C
       IF ( OPTION(1:7) .EQ. 'VIBRDYN' ) THEN
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'NB_FREQ_VIBR',
      &              NFREQ            ,R8BID ,K24BID)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'COEF_DIM_VIBR',
+     &              CDSP             ,R8BID ,K24BID)
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'TYPE_MATR_VIBR',
      &              IBID             ,R8BID ,TYPMAT)
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'OPTION_EXTR_VIBR',
@@ -135,7 +142,9 @@ C
         MOD45    = 'VIBR'       
       ELSEIF ( OPTION(1:5) .EQ. 'FLAMB' ) THEN
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'NB_FREQ_FLAMB',
-     &              NFREQ            ,R8BID ,K24BID) 
+     &              NFREQ            ,R8BID ,K24BID)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'COEF_DIM_FLAMB',
+     &              CDSP             ,R8BID ,K24BID)
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'TYPE_MATR_FLAMB',
      &              IBID             ,R8BID ,TYPMAT)           
         MOD45    = 'FLAM'
@@ -162,9 +171,13 @@ C
      &              NDDLE            ,R8BID ,K24BID) 
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'NOM_DDL_EXCLUS',
      &              IBID             ,R8BID ,DDLEXC)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'NB_DDL_STAB',
+     &              NSTA             ,R8BID ,K24BID)     
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'NOM_DDL_STAB',
+     &              IBID             ,R8BID ,DDLSTA)
       ELSE
-        CALL ASSERT(.FALSE.)  
-      ENDIF
+        CALL ASSERT(.FALSE.)
+      ENDIF     
 C
       CALL JEDEMA()
 C

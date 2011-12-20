@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,7 +128,6 @@ SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                         MATER=MAT,
                         RESULTAT=UTOT1,
                         ABSC_CURV_MAXI=1.5,
-                        VECT_K1=(0., 0., 1.,),
                         DTAN_EXTR = (0.,1.,0.),
                         DTAN_ORIG = (0.,-1.,0.),)
                       

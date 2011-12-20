@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ POST_GP=MACRO(nom="POST_GP",
             FONC_MULT   = SIMP(statut='f', typ=(fonction_sdaster,nappe_sdaster,formule)),
             TYPE_CHARGE = SIMP(statut='f', typ='TXM', defaut="FIXE", into=("FIXE",)),
       ),
-      SYME_CHAR    = SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS")),
+      SYME_CHAR    = SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS")),
 
       b_direction     =BLOC(condition = "(THETA_2D != None) ",
           DIRECTION    = SIMP(statut='o', typ='R', max=3),),

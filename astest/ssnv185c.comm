@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -375,7 +375,6 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
                      RESULTAT  = UTOT1x,
                      ABSC_CURV_MAXI = 1.5,
                      NB_NOEUD_COUPE = 6,
-                     VECT_K1        = ( 0., 0., 1., ),
                     )
 
 IMPR_TABLE(TABLE = PK)

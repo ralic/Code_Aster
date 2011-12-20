@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,7 +111,6 @@ TABL_K=POST_K1_K2_K3(  MODELISATION='C_PLAN',
                        RESULTAT = CHAMDEPL,
                        FOND_FISS = FOND1,
                        ABSC_CURV_MAXI = 7.51000E-05,
-                       VECT_K1        = ( 0., 1., 0., )
                        )
 
 TEST_TABLE(TABLE=TABL_K,

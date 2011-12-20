@@ -1,4 +1,4 @@
-# MODIF  DATE 27/06/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM EN 3D
 #
 # zzzz110b.para = tps_job 60 mem_job 128Mo memjeveux_stat 128 ncpus 1 liste_test R
@@ -21,8 +21,7 @@
 # ======================================================================
 #CAS_TEST__: ZZZZ110B
 
-DEBUT(CODE=_F(NOM='ZZZZ110B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      MEMOIRE=_F(  TYPE_ALLOCATION = 2, DYNAMIQUE=0))
+DEBUT(CODE=_F(NOM='ZZZZ110B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 
 # 1ER CALCUL SUR LE MAILLAGE MA1 :
 # --------------------------------

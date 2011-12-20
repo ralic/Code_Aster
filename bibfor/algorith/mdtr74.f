@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,17 +65,20 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8       R8B,XLAMBD,ACRIT,AGENE
       REAL*8       VALR(3)
       REAL*8       DT,DTS,DTU,DTMAX
+      REAL*8       RAD
+      CHARACTER*19 FONCT
+      CHARACTER*8  FK(2),DFK(2)
 
-C  COUPLAGE EDYOS
+C  COUPLAGE EDYOS/FISSURE
 C =>
-      REAL*8        VROTAT,DTSTO,TCF
+      REAL*8        VROTAT,DTSTO,TCF,ANGINI
 
       INTEGER       NBEDYO,UNITPA
       INTEGER       INFO
 C
 C     COMMON
 C     ======
-      INTEGER       NBPAL
+      INTEGER       NBPAL, NBRFIS
 C
       INTEGER       IADRI
       CHARACTER*24  NPAL
@@ -115,6 +118,8 @@ C-----------------------------------------------------------------------
       LISINS = ' '
       PRDEFF = .TRUE.
       CALL INFNIV(IFM,INFO)
+
+      RAD = R8DGRD()
 
       LAMOR = .FALSE.
       LFLU = .FALSE.
@@ -512,6 +517,31 @@ C  Recuperation du nombre de paliers
         NBNLI = NBNLI + NBPAL
       ENDIF
 C =<
+C
+C     --- NON LINEARITE DE ROTOR FISSURE ---
+C =>
+      NBRFIS = 0
+      CALL GETFAC ( 'ROTOR_FISS', NBRFIS )
+      IF (NBRFIS.NE.0) THEN
+         IF (METHOD.NE.'EULER') CALL U2MESS('F','ALGORITH5_80')
+         NBNLI = NBNLI + NBRFIS
+         CALL WKVECT('&&MDTR74.FK','V V K8',2*NBRFIS,JFK)
+         CALL WKVECT('&&MDTR74.DFK','V V K8',2*NBRFIS,JDFK)
+         DO 600 IOC = 1, NBRFIS
+           CALL GETVID('ROTOR_FISS','K_PHI' ,IOC,IARG,1,FONCT,N1)
+           FK(1) = FONCT
+           CALL JEVEUO(FONCT//'.PROL','L',LPROL)
+           FK(2) = ZK24(LPROL)
+           CALL GETVID('ROTOR_FISS','DK_DPHI' ,IOC,IARG,1,FONCT,N1)
+           DFK(1) = FONCT
+           CALL JEVEUO(FONCT//'.PROL','L',LPROL)
+           DFK(2) = ZK24(LPROL)
+           CALL GETVR8('ROTOR_FISS','VITE_ROTA',1,IARG,1,VROTAT,N1)
+           CALL GETVR8('ROTOR_FISS','ANGL_INIT',1,IARG,1,ANGINI,N1)
+           ANGINI=ANGINI*RAD
+ 600     CONTINUE
+      ENDIF
+C =<
       IF (NBNLI.NE.0) THEN
         CALL WKVECT('&&MDTR74.RANG_CHOC','V V I ',NBNLI*5,JRANC)
         CALL WKVECT('&&MDTR74.DEPL','V V R8',NBNLI*6*NBMODE,JDEPL)
@@ -524,12 +554,13 @@ C =<
         ELSE
           NBEXIT = 1
         END IF
-      CALL MDCHOC(NBNLI,NBCHOC,NBFLAM,NBSISM,
+      CALL MDCHOC(NBNLI,NBCHOC,NBFLAM,NBSISM,NBRFIS,
      &              NBPAL,ZI(JRANC),ZR(JDEPL),
      &              ZR(JPARC),ZK8(JNOEC),ZK8(JINTI),ZR(JPSDEL),
      &              ZR(JPSID),NUMDDL,
      &              NBMODE,ZR(JPULS),ZR(JMASG),LAMOR,ZR(JAMOG),
      &              ZR(JBASE),NEQ,NBEXIT,INFO,LFLU,MONMOT,IRET)
+        NBCHOC=NBCHOC+NBFLAM+NBSISM
         IF (IRET.NE.0) GO TO 120
         CALL GETFAC('VERI_CHOC',IVCHOC)
         IF (IVCHOC.NE.0) THEN
@@ -725,13 +756,14 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
         CALL MDEUL1(NBPAS,DT,NBMODE,ZR(JPULS),ZR(JPUL2),ZR(JMASG),IBID,
      &              ZR(JRAIG),IBID,LAMOR,ZR(JAMOG),IBID,TYPBAS,BASEMO,
      &              TINIT,ZI(JARCH),NBSAUV,ITEMAX,PREC,XLAMBD,LFLU,
-     &              NBNLI,ZI(JRANC),ZR(JDEPL),ZR(JPARC),ZK8(JNOEC),
+     &              NBCHOC,ZI(JRANC),ZR(JDEPL),ZR(JPARC),ZK8(JNOEC),
      &              NBREDE,ZR(JREDE),ZR(JPARD),ZK8(JFOND),NBREVI,
      &              ZR(JREVI),ZK8(JFONV),ZR(JDEPS),ZR(JVITS),ZR(JACCS),
      &              ZI(JORDR),ZR(JINST),ZR(JFCHO),ZR(JDCHO),ZR(JVCHO),
      &              ZI(JICHO),ZI(JREDC),ZR(JREDD),ZR(JCOEFM),ZI(JIADVE),
      &              ZI(JINUMO),ZI(JIDESC),ZK8(JNODEP),ZK8(JNOVIT),
      &              ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),MONMOT,
+     &              NBNLI,NBRFIS,FK,DFK,ANGINI,
      &              NBPAL,DTSTO,TCF,VROTAT,PRDEFF,NOMRES)
 
       ELSE IF (METHOD(1:5).EQ.'ADAPT') THEN
@@ -809,6 +841,7 @@ C
   120 CONTINUE
 C      CALL JEDETC('V','&&',1)
       IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
+
 
       CALL JEDEMA()
       END

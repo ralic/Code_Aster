@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION DE FISSURE RADIALE DEBOUCHANTE DANS UN DISQUE EN ROTATION
 # sslp323b.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,10 +61,6 @@ BLOC=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0,),),
                                  );
 
-LINST=DEFI_LIST_REEL(DEBUT=0,
-                        INTERVALLE=_F(JUSQU_A=1,
-                                      NOMBRE=1,),);
-
 
 #***********************************
 # DEFINITION DES FISSURES
@@ -120,16 +116,12 @@ for i in range(1,NPS-1) :
     ChgX[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                            LIAISON_XFEM='OUI',);
 
-    ResU[i]=STAT_NON_LINE(MODELE=ModX[i],
+    ResU[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=MAT,
                          EXCIT=(_F(CHARGE=CHRX[i],),
                                 _F(CHARGE=BLOC,),
                                 _F(CHARGE=ChgX[i],),),
-                         COMP_ELAS=_F(RELATION='ELAS',
-                                      TOUT='OUI',),
-                         INCREMENT=_F(LIST_INST=LINST,
-                                      INST_FIN=1,),
-                         ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
+                         INST=1,);
 
     ResX[i]=EXTR_RESU(RESULTAT=ResU[i],ARCHIVAGE=_F(NUME_ORDRE=(1,)),);   
     SIF[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],

@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 28/11/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2845,7 +2845,7 @@ class DRIVER_GRACE(DRIVER_COURBES) :
     else:
       # Ouverture ou rafraichissement du terminal si necessaire
       xmgrace_exe=self.stan.parametres['grace']
-      if not xmgrace_exe.strip(): xmgrace_exe = aster.repout() + '/xmgrace'
+      if not xmgrace_exe.strip(): xmgrace_exe = os.path.join(aster.repout(), 'xmgrace')
 
       if not self.terminal :
          self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)

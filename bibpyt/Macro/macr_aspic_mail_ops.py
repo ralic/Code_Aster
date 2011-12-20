@@ -1,21 +1,21 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -116,7 +116,7 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
                            THETA, A, C, EPS, RC0, RC1, RC2, RC3,
                            ALP,BETA, NS, NC, NT, POSI ,NDT,NSDT,TFISS,
                            ZETA,ITYPSO,DPENE, NIVMAG, loc_datg) :
-# 
+#
   import aster
   CALPHA = cos(ALPHA*pi/180.)
   SALPHA = sin(ALPHA*pi/180.)
@@ -135,17 +135,17 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
            SGAMME = STHETA * (DET1/2.0)/( (DEC/2.0) )
            RAPPA = sqrt(1.0 - pow(SGAMMA,2))
            RAPPE = sqrt(1.0 - pow(SGAMME,2))
-           AP =  A - (1.0 - RAPPA)*A  
+           AP =  A - (1.0 - RAPPA)*A
            RAPP = (AP/EPC*RAPPE) + (1.0-(AP/EPC))*RAPPA
-           XA = (DET1/2.0) * CTHETA 
-           YA = (DET1/2.0) * STHETA      
+           XA = (DET1/2.0) * CTHETA
+           YA = (DET1/2.0) * STHETA
            ZA = ((DEC/2.0) -EPC) * sqrt(1.0 - pow(SGAMMA,2))
            ZA0 = (DEC/2.0) - EPC
            XA0 = DET1/2.0
            XN0 = XA0
-           YN0 = 0.0 
+           YN0 = 0.0
            ZN0 = ZA0 + A
-           XN = XN0 * CTHETA 
+           XN = XN0 * CTHETA
            YN = XN0 * STHETA
            SGAMN = YN / ZN0
            ZN = ZN0 * sqrt(1.0 - (SGAMN*SGAMN))
@@ -156,82 +156,82 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
            A = A - ECART
         elif (TFISS == 'DEB_EXT') :
 #       POSITION EXTERNE
-           SGAMME = STHETA * (DET1/2.0)/ (DEC/2.0) 
+           SGAMME = STHETA * (DET1/2.0)/ (DEC/2.0)
            RAPPE = sqrt(1.0 - pow(SGAMME,2))
-           A =  A  -(1.0 - RAPPE)*A  
+           A =  A  -(1.0 - RAPPE)*A
 
      elif (POSI == 'INCLINE') :
 #    PIQUAGE INCLINE
         SGAMMA = STHETA * (DET1/2.0)/ ( (DEC/2.0) -EPC)
-        XA = (DET1/2.0) * CTHETA 
-        YA = (DET1/2.0) * STHETA     
+        XA = (DET1/2.0) * CTHETA
+        YA = (DET1/2.0) * STHETA
         ZA = ((DEC/2.0) - EPC) * sqrt(1.0 - pow(SGAMMA,2))
         ZA0 = (DEC/2.0) - EPC
         ZD0 = DEC/2.0
         XA0 = DET1/2.0
-        XD0 = XA0 + (tan(ALPHA*pi/180.0) * EPC)   
+        XD0 = XA0 + (tan(ALPHA*pi/180.0) * EPC)
         A0D0 = sqrt( pow((ZD0 - ZA0),2) + pow((XD0 - XA0),2) )
-        EPSIL = STHETA * tan(ALPHA*pi/180.0) 
+        EPSIL = STHETA * tan(ALPHA*pi/180.0)
         PHI = (EPSIL * ZA) - YA
         DELTA = pow(PHI,2) - ((1 + pow(EPSIL,2))*(pow(PHI,2) - (pow((DEC/2.0),2)*pow(EPSIL,2))))
-        if (STHETA > 0) :          
+        if (STHETA > 0) :
            YD = ( sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
         else :
            YD = ( -1.0*sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
 
-        ZD = sqrt(pow((DEC/2.0),2) - pow(YD,2))  
+        ZD = sqrt(pow((DEC/2.0),2) - pow(YD,2))
 
         if ( (abs(THETA - 0.0) < 1.e-3) or ((abs(THETA - 180.0)) < 1.e-3) ) :
            XD = CTHETA * XD0
         else :
            XD = YD / tan(THETA*pi/180.0)
 
-        AD = sqrt( pow((XA - XD),2) + pow((YA - YD),2) + pow((ZA - ZD),2) )       
-        RAPP =  A0D0 / AD          
+        AD = sqrt( pow((XA - XD),2) + pow((YA - YD),2) + pow((ZA - ZD),2) )
+        RAPP =  A0D0 / AD
 
-        if (TFISS == 'DEB_EXT') :       
-           XN0 = XD0 - A*SALPHA 
-           YN0 = 0.0 
-           ZN0 = ZD0 - A*CALPHA 
-           XN = XN0 * CTHETA 
+        if (TFISS == 'DEB_EXT') :
+           XN0 = XD0 - A*SALPHA
+           YN0 = 0.0
+           ZN0 = ZD0 - A*CALPHA
+           XN = XN0 * CTHETA
            YN = XN0 * STHETA
            DNXY = sqrt(pow(XD,2) + pow(YD,2)) - sqrt(pow(XN,2) + pow(YN,2))
            DNXY0 = XD0 - XN0
            RAPP = DNXY/DNXY0
            # Correction necessaire dans le cas theta et/ou alpha grand
            if (RAPP < 0.5) :
-              DXY = sqrt(pow(XD,2) + pow(YD,2) ) 
+              DXY = sqrt(pow(XD,2) + pow(YD,2) )
               XN = XN * DXY/XD0
               YN = YN * DXY/XD0
            SGAMN = YN / ZN0
            ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
            D0N0 = sqrt( pow((XD0 - XN0),2) + pow((ZD0 - ZN0),2) )
-           DN = sqrt( pow((XD - XN),2) + pow((YD - YN),2) + pow((ZD - ZN),2) )       
+           DN = sqrt( pow((XD - XN),2) + pow((YD - YN),2) + pow((ZD - ZN),2) )
            RAPP = D0N0 / DN
            ECART = (RAPP - 1.0) * D0N0
            A = A + ECART
-           
+
         if (TFISS == 'DEB_INT') :
-           XN0 = XA0 + A*SALPHA 
+           XN0 = XA0 + A*SALPHA
            YN0 = 0.0
-           ZN0 = ZA0 + A*CALPHA 
-           XN = XN0 * CTHETA 
-           YN = XN0 * STHETA           
+           ZN0 = ZA0 + A*CALPHA
+           XN = XN0 * CTHETA
+           YN = XN0 * STHETA
            SGAMN = YN / ZN0
            ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
            D0N0 = sqrt( pow((XA0 - XN0),2) + pow((ZA0 - ZN0),2) )
-           DN = sqrt( pow((XA - XN),2) + pow((YA - YN),2) + pow((ZA - ZN),2) )       
+           DN = sqrt( pow((XA - XN),2) + pow((YA - YN),2) + pow((ZA - ZN),2) )
            RAPP = D0N0 / DN
            ECART = (RAPP - 1.0) * D0N0
            # Correction necessaire dans le cas theta grand (cf. AL9679)
            if ( abs(STHETA) > 0.8) :
-              DXY = sqrt(pow(XD,2) + pow(YD,2) ) 
+              DXY = sqrt(pow(XD,2) + pow(YD,2) )
               XN = XN * DXY/XD0
               YN = YN * DXY/XD0
               SGAMN = YN / ZN0
               ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
               D0N0 = sqrt( pow((XA0 - XN0),2) + pow((ZA0 - ZN0),2) )
-              DN = sqrt( pow((XA - XN),2) + pow((YA - YN),2) + pow((ZA - ZN),2) )       
+              DN = sqrt( pow((XA - XN),2) + pow((YA - YN),2) + pow((ZA - ZN),2) )
               RAPP = D0N0 / DN
               ECART = (ECART + (RAPP - 1.0) * D0N0)/2
            A = A + ECART
@@ -242,21 +242,21 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
      if (POSI == 'DROIT') :
 #    PIQUAGE DROIT
         SGAMMI = STHETA * ((DET1/2.0) - EPT1)/(DEC/2.0)
-        XI = ((DET1/2.0) - EPT1) * CTHETA 
+        XI = ((DET1/2.0) - EPT1) * CTHETA
         YI = ((DET1/2.0) - EPT1) * STHETA
         ZI =  (DEC/2.0)  * sqrt(1.0 - pow(SGAMMI,2))
         XI0 = (DET1/2.0) -EPT1
-        YI0 = 0.0 
+        YI0 = 0.0
         ZI0 = (DEC/2.0)
-        
+
         SGAMMA = STHETA * (DET1/2.0)/((DEC/2.0) -EPC)
-        YA = (DET1/2.0) * STHETA     
+        YA = (DET1/2.0) * STHETA
         ZA = ((DEC/2.0) - EPC) * sqrt(1.0 - pow(SGAMMA,2))
         TGALP = H / EPC
         EPSIL =  STHETA * TGALP
         PHI = (EPSIL * ZA) - YA
-        DELTA = pow(PHI,2) - (1.0 + pow(EPSIL,2))*(pow(PHI,2) - pow((DEC/2.0),2)*pow(EPSIL,2)) 
-        if (STHETA > 0) :          
+        DELTA = pow(PHI,2) - (1.0 + pow(EPSIL,2))*(pow(PHI,2) - pow((DEC/2.0),2)*pow(EPSIL,2))
+        if (STHETA > 0) :
            YD = (sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
         else :
            YD = (-1.0*sqrt(DELTA) - PHI) / (1.0 + pow(EPSIL,2))
@@ -271,47 +271,47 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
         else :
            XD = YD / (tan(THETA*pi/180.0))
 
-        XD0 = (DET1/2.0) + H 
-        YD0 = 0.0 
-        ZD0 = (DEC/2.0) 
-        
+        XD0 = (DET1/2.0) + H
+        YD0 = 0.0
+        ZD0 = (DEC/2.0)
+
         if (TFISS == 'DEB_EXT') :
            XN0 = XD0 - A
-           YN0 = 0.0 
-           ZN0 = ZI0 
-           XN = XN0 * CTHETA 
-           YN = XN0 * STHETA 
-           DZID = abs(ZI - ZD) 
+           YN0 = 0.0
+           ZN0 = ZI0
+           XN = XN0 * CTHETA
+           YN = XN0 * STHETA
+           DZID = abs(ZI - ZD)
            DXYID = sqrt( pow((XD - XI),2) + pow((YD - YI),2) )
            DXYIN = sqrt( pow((XN - XI),2) + pow((YN - YI),2) )
            DZIN = (DXYIN * DZID) / DXYID
-           ZN = ZI - DZIN         
+           ZN = ZI - DZIN
            D0N0 = sqrt( pow((XD0 - XN0),2) + pow((ZD0 - ZN0),2) )
-           DN = sqrt( pow((XD - XN),2) + pow((YD - YN),2) + pow((ZD - ZN),2) ) 
-           RAPP = D0N0 / DN 
-           ECART = DN - D0N0 
+           DN = sqrt( pow((XD - XN),2) + pow((YD - YN),2) + pow((ZD - ZN),2) )
+           RAPP = D0N0 / DN
+           ECART = DN - D0N0
            A = A - ECART
 
         if (TFISS == 'DEB_INT') :
            XN0 = XI0 + A
-           YN0 = 0.0 
-           ZN0 = ZI0 
+           YN0 = 0.0
+           ZN0 = ZI0
            XN = XN0 * CTHETA
-           YN = XN0 * STHETA 
-           SGAMN = YN / ZN0 
+           YN = XN0 * STHETA
+           SGAMN = YN / ZN0
            ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
-           I0N0 = sqrt( pow((XI0 - XN0),2) + pow((ZI0 - ZN0),2) ) 
-           IN = sqrt( pow((XI - XN),2) + pow((YI - YN),2) + pow((ZI - ZN),2) ) 
-           RAPP = I0N0 / IN 
-           ECART = I0N0 * ( 1.0 - RAPP ) 
+           I0N0 = sqrt( pow((XI0 - XN0),2) + pow((ZI0 - ZN0),2) )
+           IN = sqrt( pow((XI - XN),2) + pow((YI - YN),2) + pow((ZI - ZN),2) )
+           RAPP = I0N0 / IN
+           ECART = I0N0 * ( 1.0 - RAPP )
            A = A - ECART
-        
+
      elif (POSI == 'INCLINE') :
 #    PIQUAGE INCLINE
         TGALPHA = SALPHA/CALPHA
-        REPB = (DEC/2.0) + JEU + (EPT1*TGALPHA) 
-        SGAMB = (STHETA * DET1/2.0 ) / REPB 
-        CGAMB = sqrt(1.0 - pow(SGAMB,2)) 
+        REPB = (DEC/2.0) + JEU + (EPT1*TGALPHA)
+        SGAMB = (STHETA * DET1/2.0 ) / REPB
+        CGAMB = sqrt(1.0 - pow(SGAMB,2))
         XB = (DET1/2.0) * CTHETA
         YB = (DET1/2.0) * STHETA
         ZB = ( (DEC/2.0) + JEU + (EPT1*TGALPHA) ) * CGAMB
@@ -319,8 +319,8 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
         YB0 = 0.0
         ZB0 = (DEC/2.0) + JEU + (EPT1*TGALPHA)
 #
-        RIT1 = (DET1/2.0) - EPT1 
-        REPG = (DEC/2.0) + JEU 
+        RIT1 = (DET1/2.0) - EPT1
+        REPG = (DEC/2.0) + JEU
         SGAMG = ((STHETA ) * RIT1) / REPG
         CGAMG = sqrt(1.0 - pow(SGAMG,2))
         XG = RIT1 * CTHETA
@@ -331,10 +331,10 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
         ZG0 = (DEC/2.0) + JEU
 #
         if (TFISS == 'DEB_INT')  :
-           XN0 = XG0 + A*CALPHA 
+           XN0 = XG0 + A*CALPHA
            YN0 = 0.0
-           ZN0 = ZG0 + A*SALPHA 
-           XN = XN0 * CTHETA 
+           ZN0 = ZG0 + A*SALPHA
+           XN = XN0 * CTHETA
            YN = XN0 * STHETA
            SGAMN = YN / ZN0
            ZN = ZN0 * sqrt(1.0 - pow(SGAMN,2))
@@ -420,10 +420,10 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   """
   from Accas import _F
   import types
-  import aster 
+  import aster
   from Utilitai.Utmess import  UTMESS
   ier=0
-  
+
 # On importe les definitions des commandes a utiliser dans la macro
   EXEC_LOGICIEL =self.get_cmd('EXEC_LOGICIEL')
   PRE_GIBI      =self.get_cmd('PRE_GIBI')
@@ -458,7 +458,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   ZMAX  = TUBULURE['Z_MAX'    ]
   TYPSOU= TUBULURE['TYPE'     ]
   DPENE = TUBULURE['L_PENETR' ]
-  if TYPSOU=='TYPE_2' and DPENE>0.0 : 
+  if TYPSOU=='TYPE_2' and DPENE>0.0 :
     UTMESS('F','ASPIC0_12')
   if TYPSOU=='TYPE_2' :
      ITYPSO = 2
@@ -522,11 +522,11 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
         C  = FISS_SOUDURE['LONGUEUR'      ]
         N1 = 1
      else : N1 = 0
-     if (TFISS=='DEB_INT') and (POSI=='INCLINE') and (DPENE>0.0) and (JEU>0.0) : 
+     if (TFISS=='DEB_INT') and (POSI=='INCLINE') and (DPENE>0.0) and (JEU>0.0) :
        UTMESS('F','ASPIC0_14')
      ZETA = 0.5
      if TFISS not in ('DEB_INT','DEB_EXT') :
-        if FISS_SOUDURE['LIGA_INT']==None : 
+        if FISS_SOUDURE['LIGA_INT']==None :
            UTMESS('F','ASPIC0_15')
         LIGA  = FISS_SOUDURE['LIGA_INT']
         if POSI=='DROIT' :
@@ -609,7 +609,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
        if GROS :
           if CAS1 : RC3=2.5
           else    : RC3=1.0  # valeur non utilisee
-       else : 
+       else :
           if CAS3 : RC3=2.2
           else    : RC3=2.0
 #
@@ -640,10 +640,10 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   logiel = EXEC_MAILLAGE['LOGICIEL'  ]
   UNITD  = EXEC_MAILLAGE['UNITE_DATG']
   UNITS  = EXEC_MAILLAGE['UNITE_MGIB']
-  if   logiel=='GIBI98'  : logiel = loc_gibi+'gibi98'
-  elif logiel=='GIBI2000': logiel = loc_gibi+'gibi2000'
-  else                   :
-       UTMESS('F','ASPIC0_21')
+  if logiel.startswith('GIBI'):
+    logiel = os.path.join(loc_gibi, logiel.lower())
+  else:
+    UTMESS('F','ASPIC0_21')
 #
 #     --- ecriture sur le fichier .datg  de la procedure ---
 #
@@ -664,7 +664,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
                                      THETA, A, C, EPS, RC0, RC1, RC2, RC3,
                                      ALP,BETA, NS, NC, NT, POSI ,NDT,NSDT,TFISS,
                                      ZETA,ITYPSO,DPENE, NIVMAG,loc_datg)
-# 
+#
   DEFI_FICHIER(ACTION='LIBERER',UNITE=19)
   DEFI_FICHIER(ACTION='LIBERER',UNITE=20)
   EXEC_LOGICIEL( LOGICIEL = logiel ,
@@ -737,10 +737,10 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
                                         L_BASE    = D1    ,
                                         L_CHANF   = D2    ,
                                         TYPE      = TYPSOU,
-                                        H_SOUD    = H     , 
+                                        H_SOUD    = H     ,
                                         ANGL_SOUD = ALPHA ,
                                         JEU_SOUD  = JEU   ,
-                                        E_CORP    = EPC   , 
+                                        E_CORP    = EPC   ,
                                         DEXT_CORP = DEC   ,
                                         AZIMUT    = THETA ,
                                         RAFF_MAIL = TYPMAI,
@@ -824,7 +824,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
          if impr['UNITE']!=None      : motscles['UNITE']    =impr['UNITE']
          impr_resu = _F( MAILLAGE = nomres,)
 #
-         IMPR_RESU( RESU = impr_resu, 
+         IMPR_RESU( RESU = impr_resu,
                     FORMAT = impr['FORMAT'],**motscles )
 #
 #
@@ -843,7 +843,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
       collgrno=aster.getcolljev(nommail.ljust(8)+'.GROUPENO')
 
       grfo=collgrno['FONDORDO']
-      Nbno = len(grfo)  
+      Nbno = len(grfo)
       listx = [None]*Nbno
       listy = [None]*Nbno
       listz = [None]*Nbno
@@ -873,9 +873,9 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
             YC = listy[k]
             ZC = listz[k]
          d = max(dk, d)
-   
+
       grlev=collgrno['LEVRTUBU']
-      Nbnol = len(grlev)  
+      Nbnol = len(grlev)
       listxl = [None]*Nbnol
       listyl = [None]*Nbnol
       listzl = [None]*Nbnol
@@ -897,10 +897,10 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
             Zk = listzl[k] -ZC
             dk = sqrt(Xk**2+ Yk**2 +Zk**2)
             dist = max(dk, dist)
-      
+
       texte="<MACR_ASPIC_MAIL> PROFONDEUR DE LA FISSURE DANS LE MAILLAGE : %.2f \n"%dist
       aster.affiche('MESSAGE',texte)
-#      
+#
   return ier
 
 

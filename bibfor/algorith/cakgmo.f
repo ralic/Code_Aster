@@ -13,7 +13,7 @@
       LOGICAL THLAGR,GLAGR,THLAG2,PAIR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -276,18 +276,6 @@ C         K2(S) = 0, K3(S) = 0
           ZR(IADGKS+6*(I-1) + 2) = 0.D0
           ZR(IADGKS+6*(I-1) + 3) = 0.D0
  30    CONTINUE
-      END IF
-C
-      IF (SYMECH.EQ.'ANTI') THEN
-        DO 333 I = 1,NNOFF
-C         G(S) = 2*G(S)
-          ZR(IADGKS+6*(I-1)) = 2.D0*ZR(IADGKS+6*(I-1))
-C         K2(S) = 2*K2(S)
-          ZR(IADGKS+6*(I-1) + 2) = 2.D0*ZR(IADGKS+6*(I-1) + 2)
-C         K1(S) = 0, K3(S) = 0
-          ZR(IADGKS+6*(I-1) + 1) = 0.D0
-          ZR(IADGKS+6*(I-1) + 3) = 0.D0
- 333    CONTINUE
       END IF
 C
 C- IMPRESSION ET ECRITURE DANS TABLE(S) DE K1(S), K2(S) ET K3(S)

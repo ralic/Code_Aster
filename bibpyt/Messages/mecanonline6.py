@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline6 Messages  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,8 +104,14 @@ cata_msg = {
 37 : _(u"""
   Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
  """),
+ 
 38 : _(u"""
  <Erreur> Échec dans le traitement de la collision.
 """),
+
+39 : _(u"""
+  Le mode de stabilite de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
+"""),
+
 
 }

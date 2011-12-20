@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 19/12/2011   AUTEUR BERRO H.BERRO 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 # sdld02b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,9 +108,11 @@ FREQ=NORM_MODE( reuse=FREQ,    MODE=FREQ,
 
 #
 
-IMPR_STURM(    MATR_A=MATASSR,      MATR_B=MATASSM,
-               FREQ_MIN=5.,         FREQ_MAX=32.        )
-
+NB_MODES = INFO_MODE( MATR_A=MATASSR,      MATR_B=MATASSM,
+                      FREQ_MIN=5.,         FREQ_MAX=32.    )
+                             
+TEST_TABLE(  TABLE=NB_MODES,     REFERENCE='ANALYTIQUE',
+             NOM_PARA='NB_MODE', VALE_I=8                    )
 #
 
 LFREQ=DEFI_LIST_REEL(   DEBUT=5.5274,

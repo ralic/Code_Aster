@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -189,8 +189,7 @@ TABK1A=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       RESULTAT=RESU1,
                       FOND_FISS=FISS,
-                      ABSC_CURV_MAXI=0.35,
-                      VECT_K1=(0.,0.,1.,),);
+                      ABSC_CURV_MAXI=0.35,);
 
 
 # ---------------
@@ -350,8 +349,7 @@ TABK3A=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       RESULTAT=RESU3,
                       FOND_FISS=FISS,
-                      ABSC_CURV_MAXI=0.35,
-                      VECT_K1=(0.,0.,1.,),);
+                      ABSC_CURV_MAXI=0.35,);
 
 # ---------------
 
@@ -488,8 +486,7 @@ TABK13A=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
                        RESULTAT=RESU13,
                        FOND_FISS=FISS,
-                       ABSC_CURV_MAXI=0.35,
-                       VECT_K1=(0.,0.,1.,),);
+                       ABSC_CURV_MAXI=0.35,);
 
 # TEST DE K1
 # ---------------

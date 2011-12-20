@@ -14,7 +14,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,THLAG2,PAIR,LMELAS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2011   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -257,7 +257,7 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
         LCHIN(17) = LONCHA
         LPAIN(18) = PA2D3D(1:8)
         LCHIN(18) = CF2D3D
-        LPAIN(19) = PAPRES
+        LPAIN(19) = PAPRES(1:8)
         LCHIN(19) = CHPRES
         LPAIN(20) = 'PLSN'
         LCHIN(20) = LNNO
@@ -337,8 +337,6 @@ C         G, g1, g2, g3, K1, K2, K3,
           ZR(IADRGK-1+(I-1)*8+5) = 2.D0*GKTHI(5)
           ZR(IADRGK-1+(I-1)*8+6) = 0.D0
           ZR(IADRGK-1+(I-1)*8+7) = 0.D0
-        ELSE
-          CALL ASSERT(.FALSE.)
         ENDIF
 
  20   CONTINUE
@@ -352,7 +350,7 @@ C    (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
 
       CALL WKVECT('&&CAKG3D.VALGK_S','V V R8',NNOFF*6,IADGKS)
       IF (GLAGR.OR.THLAG2) THEN
-      
+
         IF (GLAGR) THEN
           CALL WKVECT('&&CAKG3D.VALGKI','V V R8',NNOFF*5,IADGKI)
         ELSEIF (THLAG2) THEN

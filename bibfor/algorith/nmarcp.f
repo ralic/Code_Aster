@@ -1,7 +1,7 @@
       SUBROUTINE NMARCP(TYPOST,SDPOST,VECMOD,FREQR ,IMODE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,7 +61,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      IBID,NUMORD
+      INTEGER      IBID,NUMORD,NUMD2
       CHARACTER*24 K24BID 
       REAL*8       R8BID,R8VIDE
 C
@@ -85,6 +85,18 @@ C
      &              NUMORD           ,R8BID ,K24BID)
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'SOLU_MODE_FLAM',
      &              IBID             ,R8BID ,VECMOD)
+      ELSEIF ( TYPOST .EQ. 'STAB' ) THEN 
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'SOLU_FREQ_STAB',
+     &              IBID             ,FREQR ,K24BID) 
+        IF (NUMORD.LT.1) THEN
+          NUMD2 = NUMORD
+        ELSE
+          NUMD2 = 1
+        ENDIF    
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'SOLU_NUME_STAB',
+     &              NUMD2            ,R8BID ,K24BID)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'SOLU_MODE_STAB',
+     &              IBID             ,R8BID ,VECMOD)           
       ELSE
         CALL ASSERT(.FALSE.)  
       ENDIF     

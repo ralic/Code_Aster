@@ -1,6 +1,6 @@
       SUBROUTINE JEDISP ( N , TAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,64 +43,21 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
-      COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2) 
 C ----------------------------------------------------------------------
-      LOGICAL          LAMOV
+C
 C DEB ------------------------------------------------------------------
       DO 1 K = 1,N
          TAB(K) = 0
  1    CONTINUE
-      IDEB = 1         
 C
 C --- ON DONNE LA VALEUR ASSOCIEE A LA MEMOIRE DYNAMIQUE DISPONIBLE
 C
       IF ( LDYN .EQ. 1 ) THEN 
         TAB(1) = NINT((VMXDYN-MCDYN)/LOIS)
-        IDEB = 2
       ENDIF     
-C
-C --- ON PARCOURT LA SEGMENTATION MEMOIRE (MEMOIRE STATIQUE) 
-C
-      IZ = 1
-      IF (IDFR .GT .0) IZ=2
-      ID  = IDINIT(IZ)
-      IDA = ID
-      LAMOV  = .FALSE.
- 140  CONTINUE
-      IS = ISZON ( JISZON + ID )
-      IF ( IS .EQ. 0 ) GOTO 125
-      ISTA = ISZON(JISZON + IS - 4 )
-      IF(  ISZON(JISZON + ID + 3) .EQ. ISTAT(1) .AND.
-     &   ( ISTA .EQ. ISTAT(4) .OR. ISTA .EQ. ISTAT(3) .OR.
-     &     ISTA .EQ. ISTAT(1) ) ) THEN
-         IF ( .NOT. LAMOV ) THEN
-             LAMOV = .TRUE.
-             IDA   = ID
-         ENDIF
-         ID  = IS
-         GOTO 140
-      ENDIF
- 125  CONTINUE
-      IF ( LAMOV ) THEN
-         LAMOV  = .FALSE.
-         MAPLAC = ID - IDA - 8
-         DO 100 K = IDEB,N
-            IF ( MAPLAC .GT. TAB(K) ) THEN
-               DO 101 L = N,K+1,-1
-                  TAB(L) = TAB(L-1)
- 101           CONTINUE
-               TAB(K) = MAPLAC
-               GOTO 102
-            ENDIF
- 100     CONTINUE
- 102     CONTINUE
-      ENDIF
-      ID  = IS
-      IF ( IS .NE. 0 ) GOTO 140
 C FIN-------------------------------------------------------------------
       END
