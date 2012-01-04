@@ -1,9 +1,9 @@
       SUBROUTINE CCVRRL(NOMMAI,MODELE,CARAEL,MESMAI,CHAMES,
      &                  CMPERR,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,8 +74,8 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      JALPHA,JBETA,JGAMMA,JCESC,JCESCC,JCESDD,JCESLC,JCESVC
       INTEGER      ADCAR1(3),ADCAR2(3)
 C
-      REAL*8       MAXTOL,MAXDIF,TABRES(1),PI
-      REAL*8       PGL(3,3),ANGLE,VL(3),VG1(3),VG2(3)
+      REAL*8       MAXTOL,MAXDIF,TABRES(1),PI,ANGLE1,ANGLE2
+      REAL*8       PGL(3,3),VL(3),VG1(3),VG2(3),VG3(3),VG4(3)
 C
       CHARACTER*1  CBID
       CHARACTER*16 MODELI
@@ -149,8 +149,8 @@ C     CREATION DE LA CONNECTIVITE INVERSE
 C
       CALL JEVEUO(NOMMAI//'.DIME','L',JDIME)
       NBMATO = ZI(JDIME+2)
-      CALL WKVECT(VECSAU,'V V R',3*NBMATO,JVECT)
-      DO 80 I = 1,3*NBMATO
+      CALL WKVECT(VECSAU,'V V R',6*NBMATO,JVECT)
+      DO 80 I = 1,6*NBMATO
         ZR(JVECT+I-1) = 0.D0
   80  CONTINUE
 C
@@ -190,9 +190,12 @@ C         QU'ON DONNE OU NON MESMAI
             NUMMA = POSMA
           ENDIF
 C
-          IF ( (ZR(JVECT+3*(NUMMA-1)).EQ.0.D0).AND.
-     &         (ZR(JVECT+3*(NUMMA-1)+1).EQ.0.D0).AND.
-     &         (ZR(JVECT+3*(NUMMA-1)+2).EQ.0.D0) ) THEN
+          IF ( (ZR(JVECT+6*(NUMMA-1)).EQ.0.D0).AND.
+     &         (ZR(JVECT+6*(NUMMA-1)+1).EQ.0.D0).AND.
+     &         (ZR(JVECT+6*(NUMMA-1)+2).EQ.0.D0).AND.
+     &         (ZR(JVECT+6*(NUMMA-1)+3).EQ.0.D0).AND.
+     &         (ZR(JVECT+6*(NUMMA-1)+4).EQ.0.D0).AND.
+     &         (ZR(JVECT+6*(NUMMA-1)+5).EQ.0.D0) ) THEN
 C
             CALL CCCMCR(JCESDD,NUMMA,JREPE,JCONX2,JCONX1,
      &                  JCOORD,ADCAR1,ADCAR2,IALPHA,IBETA,
@@ -201,21 +204,31 @@ C
             IF ( IER.EQ.1 ) GOTO 20
 C
             VL(1) = 1.D0
-            VL(2) = 1.D0
-            VL(3) = 1.D0
+            VL(2) = 0.D0
+            VL(3) = 0.D0
             CALL UTPVLG(1,3,PGL,VL,VG1)
+            VL(1) = 0.D0
+            VL(2) = 1.D0
+            VL(3) = 0.D0
+            CALL UTPVLG(1,3,PGL,VL,VG2)
 C
 C           SAUVEGARDE DE LA VALEUR TROUVEE SAUF POUR LES COQUES 3D
             IF ( MODELI.NE.'COQUE_3D' ) THEN
               DO 40 IDIR = 1,3
-                ZR(JVECT+3*(NUMMA-1)+IDIR-1) = VG1(IDIR)
+                ZR(JVECT+6*(NUMMA-1)+IDIR-1) = VG1(IDIR)
  40           CONTINUE
+              DO 45 IDIR = 1,3
+                ZR(JVECT+3+6*(NUMMA-1)+IDIR-1) = VG2(IDIR)
+ 45           CONTINUE
             ENDIF
 C
           ELSE
             DO 60 IDIR = 1,3
-              VG1(IDIR) = ZR(JVECT+3*(NUMMA-1)+IDIR-1)
+              VG1(IDIR) = ZR(JVECT+6*(NUMMA-1)+IDIR-1)
  60         CONTINUE
+            DO 65 IDIR = 1,3
+              VG2(IDIR) = ZR(JVECT+3+6*(NUMMA-1)+IDIR-1)
+ 65         CONTINUE
           ENDIF
 C
 C         ON COMPARE LES REPERES DES AUTRES MAILLES
@@ -229,9 +242,12 @@ C
               NUMMA2 = POSMA
             ENDIF
 C
-            IF ( (ZR(JVECT+3*(NUMMA2-1)).EQ.0.D0).AND.
-     &           (ZR(JVECT+3*(NUMMA2-1)+1).EQ.0.D0).AND.
-     &           (ZR(JVECT+3*(NUMMA2-1)+2).EQ.0.D0) ) THEN
+            IF ( (ZR(JVECT+6*(NUMMA2-1)).EQ.0.D0).AND.
+     &           (ZR(JVECT+6*(NUMMA2-1)+1).EQ.0.D0).AND.
+     &           (ZR(JVECT+6*(NUMMA2-1)+2).EQ.0.D0).AND.
+     &           (ZR(JVECT+6*(NUMMA2-1)+3).EQ.0.D0).AND.
+     &           (ZR(JVECT+6*(NUMMA2-1)+4).EQ.0.D0).AND.
+     &           (ZR(JVECT+6*(NUMMA2-1)+5).EQ.0.D0) ) THEN
 C
               CALL CCCMCR(JCESDD,NUMMA2,JREPE,JCONX2,JCONX1,
      &                    JCOORD,ADCAR1,ADCAR2,IALPHA,IBETA,
@@ -240,26 +256,38 @@ C
               IF ( IER.EQ.1 ) GOTO 30
 C
               VL(1) = 1.D0
+              VL(2) = 0.D0
+              VL(3) = 0.D0
+              CALL UTPVLG(1,3,PGL,VL,VG3)
+              VL(1) = 0.D0
               VL(2) = 1.D0
-              VL(3) = 1.D0
-              CALL UTPVLG(1,3,PGL,VL,VG2)
+              VL(3) = 0.D0
+              CALL UTPVLG(1,3,PGL,VL,VG4)
 C
 C             SAUVEGARDE DE LA VALEUR TROUVEE SAUF POUR LES COQUES3D
               IF ( MODELI.NE.'COQUE_3D' ) THEN
                 DO 50 IDIR = 1,3
-                  ZR(JVECT+3*(NUMMA2-1)+IDIR-1) = VG2(IDIR)
+                  ZR(JVECT+6*(NUMMA2-1)+IDIR-1) = VG3(IDIR)
  50             CONTINUE
+                DO 55 IDIR = 1,3
+                  ZR(JVECT+3+6*(NUMMA2-1)+IDIR-1) = VG4(IDIR)
+ 55             CONTINUE
               ENDIF
 C
             ELSE
               DO 70 IDIR = 1,3
-                VG2(IDIR) = ZR(JVECT+3*(NUMMA2-1)+IDIR-1)
+                VG3(IDIR) = ZR(JVECT+6*(NUMMA2-1)+IDIR-1)
  70           CONTINUE
+              DO 75 IDIR = 1,3
+                VG4(IDIR) = ZR(JVECT+3+6*(NUMMA2-1)+IDIR-1)
+ 75           CONTINUE
             ENDIF
 C
-            CALL ANGVEC(VG1,VG2,ANGLE)
-            IF ( ANGLE.GT.MAXTOL ) THEN
-              MAXDIF = MAX(ANGLE,MAXDIF)
+            CALL ANGVEC(VG1,VG3,ANGLE1)
+            CALL ANGVEC(VG2,VG4,ANGLE2)
+            IF ( ANGLE1.GT.MAXTOL.OR.ANGLE2.GT.MAXTOL ) THEN
+              MAXDIF = MAX(ANGLE1,MAXDIF)
+              MAXDIF = MAX(ANGLE2,MAXDIF)
               LPROBM = .TRUE.
             ENDIF
 C

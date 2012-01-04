@@ -1,8 +1,8 @@
-#@ MODIF calculel5 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -252,16 +252,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  On ne l'écrit donc pas.
 """),
 
-50 : _(u"""
- Présence de coques orthotropes, les mots clés ANGL_REP ou VECTEUR
- du mot clé facteur REPE_COQUE ne sont pas traités.
-"""),
 
-
-52 : _(u"""
- Présence de GRILLE dans la modélisation, les mots clés ANGL_REP ou VECTEUR
- du mot clé facteur REPE_COQUE ne sont pas traités.
-"""),
 
 53 : _(u"""
  La SUPER_MAILLE %(k1)s n'existe pas dans le maillage %(k2)s.

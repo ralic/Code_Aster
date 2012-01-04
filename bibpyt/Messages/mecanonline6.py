@@ -1,8 +1,8 @@
-#@ MODIF mecanonline6 Messages  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
+#@ MODIF mecanonline6 Messages  DATE 03/01/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,6 +45,10 @@ cata_msg = {
 
 5 : _(u"""
  Nombre total de noeuds esclaves pour le contact: %(i1)d
+"""),
+
+6 : _(u"""
+ Instant de calcul: %(r1)19.12e
 """),
 
 10 : _(u"""
@@ -104,13 +108,13 @@ cata_msg = {
 37 : _(u"""
   Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
  """),
- 
+
 38 : _(u"""
  <Erreur> Échec dans le traitement de la collision.
 """),
 
 39 : _(u"""
-  Le mode de stabilite de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
+  Le mode de stabilité de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
 """),
 
 

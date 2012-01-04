@@ -1,0 +1,747 @@
+# MODIF  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+# TITRE VALIDATION ELEMENTAIRE DE DEFI_CABLE_BP
+# zzzz305b.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ305B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+
+MAILLAGE=LIRE_MAILLAGE(UNITE=20,FORMAT='MED')
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(_F(GROUP_MA='POUTRE',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D'),
+                         _F(GROUP_MA=('CABLE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='BARRE'),),)
+
+CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                        BARRE=(_F(GROUP_MA='CABLE',
+                                  SECTION ='GENERALE',
+                                  CARA=('A',),
+                                  VALE=(2.5E-3,),),
+                               _F(GROUP_MA='CABLE',
+                                  SECTION ='GENERALE',
+                                  CARA=('A',),
+                                  VALE=(2.5E-3,),),),)
+
+FONC1=DEFI_FONCTION(NOM_PARA='SECH',
+                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
+                    VALE=(0.0,0.0,1.,1.,),)
+
+E=DEFI_CONSTANTE(VALE=4.5E+10)
+
+NU=DEFI_CONSTANTE(VALE=0.)
+
+ALPHA =DEFI_CONSTANTE(VALE=0.)
+
+VIEIL=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
+                    VALE=(0.,1.,
+                          5.,0.9692038,
+                          10.,0.94348186,
+                          20.,0.90231172,
+                          30.,0.87022337,
+                          40.,0.8440982,
+                          50.,0.82216838,
+                          100.,0.7474562,
+                          150.,0.70138567,
+                          200.,0.66861059,
+                          250.,0.64343258,
+                          300.,0.62313418,
+                          350.,0.60621679,
+                          400.,0.59177042,
+                          450.,0.57920309,
+                          500.,0.56810915,
+                          700.,0.53368229,
+                          900.,0.50902167,
+                          1100.,0.49000172,
+                          1300.,0.47462848,
+                          1500.,0.46179305,
+                          1800.,0.44588406,
+                          2100.,0.43281878,
+                          2500.,0.418462,
+                          2800.,0.40936667,
+                          3000.,0.40391974,),)
+
+BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
+                               NU=NU,
+                               ALPHA=ALPHA,
+                               TEMP_DEF_ALPHA=20.0,
+                               FONC_DESORP=FONC1),
+                    BPEL_BETON=_F(),
+                    GRANGER_FP=_F(J1=0.00012E-9,
+                                  TAUX_1=0.002,
+                                  J2=0.00026E-9,
+                                  TAUX_2=0.002E+1,
+                                  J3=0.00088E-9,
+                                  TAUX_3=0.002E+2,
+                                  J4=0.00271E-9,
+                                  TAUX_4=0.002E+3,
+                                  J5=0.00808E-9,
+                                  TAUX_5=0.002E+4,
+                                  J6=0.01808E-9,
+                                  TAUX_6=0.002E+5,
+                                  J7=0.01901E-9,
+                                  TAUX_7=0.002E+6,
+                                  J8=0.01139E-9,
+                                  TAUX_8=0.002E+7,),
+                    V_GRANGER_FP=_F(FONC_V=VIEIL),)
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=1.85E+11,
+                            ALPHA=0.,
+                            NU=0.),
+                    BPEL_ACIER=_F(F_PRG=1.77E+9,
+                                  FROT_COURB=0.,
+                                  FROT_LINE=0.),)
+
+TEMP=CREA_CHAMP(OPERATION='AFFE',
+                TYPE_CHAM='NOEU_TEMP_R',
+                MAILLAGE=MAILLAGE,
+                AFFE=(_F(GROUP_MA=('POUTRE','CABLE',),
+                         NOM_CMP = 'TEMP',
+                         VALE = 20.),),)
+
+SECH=CREA_CHAMP(OPERATION='AFFE',
+                TYPE_CHAM='NOEU_TEMP_R',
+                MAILLAGE=MAILLAGE,
+                AFFE=_F(GROUP_MA=('POUTRE','CABLE',),
+                        NOM_CMP='TEMP',
+                        VALE = 1.),)
+
+CHMATER=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      AFFE=(_F(GROUP_MA = 'POUTRE',
+                               MATER = BETON),
+                            _F(GROUP_MA = 'CABLE',
+                               MATER = ACIER),),
+                      AFFE_VARC=(_F(NOM_VARC='TEMP',
+                                    CHAMP_GD=TEMP,
+                                    VALE_REF=0),
+                                 _F(NOM_VARC='SECH',
+                                    CHAMP_GD=SECH,
+                                    VALE_REF=1),),)
+
+CABLEPR=DEFI_CABLE_BP(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELEM,
+                      GROUP_MA_BETON='POUTRE',
+                      DEFI_CABLE=_F(GROUP_MA='CABLE',
+                                    NOEUD_ANCRAGE=('N472','N502',),),
+                      TYPE_ANCRAGE=('PASSIF','ACTIF',),
+                      TENSION_INIT=1.0E+6,
+                      RECUL_ANCRAGE=0.,)
+
+CHARMECA=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=_F(GROUP_NO='BLOCAGE',
+                                    DX=0.,DY=0.,DZ=0.),
+                        RELA_CINE_BP=(_F(CABLE_BP=CABLEPR,
+                                         SIGM_BPEL='OUI',
+                                         RELA_CINE='OUI'),),
+                        INFO=2,)
+
+LINST=DEFI_LIST_REEL(VALE=(0.0,1.0,),)
+
+EVOLNOLI=STAT_NON_LINE(MODELE=MODELE,
+                       CHAM_MATER=CHMATER,
+                       CARA_ELEM=CARAELEM,
+                       EXCIT=_F(CHARGE=CHARMECA),
+                       COMP_INCR=(_F(RELATION='ELAS',
+                                     GROUP_MA=('CABLE',),),
+                                  _F(RELATION='GRANGER_FP_V',
+                                     GROUP_MA=('POUTRE',),
+                                     ITER_INTE_MAXI=50,),),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       SOLVEUR=_F(METHODE='MULT_FRONT',),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                      RESI_GLOB_RELA=1.E-5),
+                       INFO=2,)
+
+EVOLNOLI=CALC_ELEM(reuse=EVOLNOLI,
+                   OPTION=('SIEF_ELNO','SIEQ_ELGA'),
+                   RESULTAT=EVOLNOLI,);
+
+########################################################################
+# TESTS SUR LES DEPLACEMENTS DES NOEUDS DE LA POUTRE
+########################################################################
+#
+# PLAN X = 0.4
+# ------------
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N5',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.8732520246917E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N52',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.4885223859893E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N99',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.106440249582E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N178',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -9.2044942288452E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N225',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -5.3546324954695E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N225',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -9.5395937394181E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N225',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -3.8461626775262E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N272',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.5148263831416E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N351',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 3.2979325244965E-06) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N398',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 4.1820133272535E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N445',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 8.0304006354868E-05) )
+
+#
+# PLAN X = 1.5
+# ------------
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N16',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -7.0648804463072E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N63',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -5.6052464035754E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N110',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -4.1451868378736E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N189',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -3.4703039970029E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N236',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -2.009847690913E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N236',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.3450576829023E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N236',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -5.4416068658635E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N283',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -5.4989737757885E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N362',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 1.2445579354129E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N409',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 1.5855962442209E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N456',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 3.0458998003742E-04) )
+
+#
+# PLAN X = 2.6
+# ------------
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N27',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.2366205262253E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N74',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -9.7129518675857E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N121',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 3.0E-2,
+                      VALE = -7.0725209534396E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N200',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-2,
+                      VALE = -6.1238249584712E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N247',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -3.4771839053799E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N247',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -4.0505437725294E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N247',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.6594080417736E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N294',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -8.389004829871E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N373',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-2,
+                      VALE = 1.274000061868E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N420',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 2.7624046361016E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N467',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-2,
+                      VALE = 5.3921775951568E-04) )
+
+#
+########################################################################
+# TESTS SUR LES DEPLACEMENTS DES NOEUDS DU CABLE DE PRECONTRAINTE
+########################################################################
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N477',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.4903256302604E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N477',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -6.0113215206541E-05) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N482',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -5.9650831220639E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N482',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -2.407434077249E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N487',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.3450593053916E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N487',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -5.442092864393E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N492',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -2.3958618020899E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N492',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -9.7180725201021E-04) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N497',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -3.7440623740812E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N497',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -1.5299599812764E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N502',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = -5.3902717899436E-03) )
+
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N502',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-2,
+                      VALE = -2.2250644605321E-03) )
+
+#
+########################################################################
+# TEST SUR L'EFFORT NORMAL DANS LE CABLE DE PRECONTRAINTE
+########################################################################
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      NOEUD = 'N487',
+                      MAILLE = 'M15',
+                      NOM_CHAM = 'SIEF_ELNO',
+                      NOM_CMP = 'N',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 8.5776265243847E+05) )
+
+#
+########################################################################
+# TEST SUR LA DIRECTION DES VECTEURS DES CONTRAINTES PRINCIPALES
+########################################################################
+#
+
+TEST_RESU(   RESU=(_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      MAILLE = 'M67',
+                      POINT=1,
+                      NOM_CHAM = 'SIEQ_ELGA',
+                      NOM_CMP = 'VECT_1_X',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-7,
+                      REFERENCE='ANALYTIQUE',
+                      VALE = 0.99999835781693),
+                  _F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      MAILLE = 'M67',
+                      POINT=1,
+                      NOM_CHAM = 'SIEQ_ELGA',
+                      NOM_CMP = 'VECT_1_Y',
+                      CRITERE = 'ABSOLU',
+                      PRECISION = 1.0E-7,
+                      REFERENCE='ANALYTIQUE',
+                      VALE = -1.8089356750324E-03),
+                  _F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      MAILLE = 'M67',
+                      POINT=1,
+                      NOM_CHAM = 'SIEQ_ELGA',
+                      NOM_CMP = 'VECT_1_Z',
+                      CRITERE = 'ABSOLU',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION = 1.0E-7,
+                      VALE = -1.1006894421341E-04),),
+
+         )
+
+
+FIN()
+#

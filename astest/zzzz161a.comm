@@ -1,10 +1,10 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 # zzzz161a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -172,17 +172,23 @@ IMPR_RESU ( RESU=_F( CHAM_GD=SIGMRELU, ) ) ;
 ################## CHAM_ELEM ELEM ##################
 #
 ERRERELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
-                MODELE=MODETRQU,
                 FORMAT='MED',
                 UNITE=80,
                 NOM_MED='RESUTRQ2ERME_ELEM',
                 NUME_ORDRE=1,NUME_PT=1,
-                TYPE_CHAM='ELEM_ERRE_R',
+                TYPE_CHAM='CART_ERRE_R',
                 NOM_CMP_IDEM='OUI',
                 PROL_ZERO='OUI',
                 INFO=2
                ) ;
-IMPR_RESU ( RESU=_F( CHAM_GD=ERRERELU, ) ) ;
+ERRERELB=CREA_CHAMP(
+   OPERATION='ASSE',
+   TYPE_CHAM='ELEM_ERRE_R',
+   MODELE=MODETRQU,
+   ASSE=(_F( CHAM_GD = ERRERELU,
+             COEF_R= 1.0,
+             TOUT='OUI',),),) ;
+IMPR_RESU ( RESU=_F( CHAM_GD=ERRERELB, ) ) ;
 #
 # 6. Validation des mots cles GROUP_NO,GROUP_MA,NOEUD,MAILLE de
 # l'operateur IMPR_RESU au FORMAT 'MED'

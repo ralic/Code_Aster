@@ -1,8 +1,8 @@
-#@ MODIF supervis2 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -116,9 +116,8 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-22 : {  'message' : _(u"""Limite de la mémoire statique : %(r1).3f Mo
-Limite de la mémoire dynamique : %(r2).3f Mo
-Taille limite des fichiers d'échange : %(r3).3f Go
+22 : {  'message' : _(u"""Limite de la mémoire dynamique : %(r1).3f Mo
+Taille limite des fichiers d'échange : %(r2).3f Go
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
 

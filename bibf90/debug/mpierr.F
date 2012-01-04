@@ -1,7 +1,6 @@
-      SUBROUTINE MFLFDE(FID,LGDESC,CRET)
+      SUBROUTINE MPIERR(IERMPI)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFLFDE ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
-! RESPONSABLE SELLENET N.SELLENET
+!& MODIF MPIERR DEBUG DATE 11/10/2011 AUTEUR DESOZA T.DESOZA
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -18,24 +17,29 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
+C RESPONSABLE DESOZA T.DESOZA
+! CORPS DU PROGRAMME
       IMPLICIT NONE
-      INTEGER FID,LGDESC,CRET
-#ifdef _DISABLE_MED
-      CALL U2MESS('F','FERMETUR_2')
-#else
-! BEGIN MED
-#ifdef _USE_MED_SHORT_INT
-      INTEGER*4 FID4, LGDES4, CRET4
-#ifdef _DEBUG_MED
-      PRINT *,'=== MFLFDE ==='
+! DECLARATION PARAMETRES D'APPELS
+      INTEGER*4     IERMPI
+
+#ifdef _USE_MPI
+
+      INCLUDE 'mpif.h'
+
+C VARIABLES LOCALES
+      CHARACTER*512 SERR
+      INTEGER*4     LENSER,IERMP2
+      INTEGER       IAUX1,IAUX2
+      
+      IAUX1 = IERMPI
+      IAUX2 = MPI_SUCCESS
+      IF (IAUX1.NE.IAUX2) THEN
+        CALL MPI_ERROR_STRING(IERMPI,SERR,LENSER,IERMP2)
+        IAUX1 = LENSER
+        CALL U2MESK('F','APPELMPI_5',1,SERR(1:IAUX1))
+      ENDIF
+      
 #endif
-      FID4 = FID
-      CALL EFLFDE(FID4,LGDES4,CRET4)
-      LGDESC = LGDES4
-      CRET = CRET4
-#else
-      CALL EFLFDE(FID,LGDESC,CRET)
-#endif
-! END MED
-#endif
+
       END

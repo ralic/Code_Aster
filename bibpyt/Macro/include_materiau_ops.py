@@ -1,8 +1,8 @@
-#@ MODIF include_materiau_ops Macro  DATE 21/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF include_materiau_ops Macro  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,12 +53,11 @@ FTEMP = 'temp_eval'
 FCOEF = 'coef_unit'
 DEFI_MOTSCLES = 'defi_motscles'
 MOTSCLES = 'motscles'
-COMMANDES = [
-    'DEFI_FONCTION', 'DEFI_CONSTANTE', 'DEFI_NAPPE', 'CALC_FONCTION',
-    'FORMULE', 'CALC_FONC_INTERP',
-    'DETRUIRE',
+COMMANDES = [ 
+    'DEFI_LIST_REEL', 'DEFI_FONCTION', 'DEFI_CONSTANTE', 'DEFI_NAPPE', 
+    'FORMULE', 'CALC_FONCTION', 'CALC_FONC_INTERP', 
+    'DETRUIRE', 
 ]
-
 
 def build_context(unite, temp):
     """Construit le contexte pour exécuter un catalogue matériau."""

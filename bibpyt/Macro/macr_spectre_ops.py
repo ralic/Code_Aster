@@ -1,8 +1,8 @@
-#@ MODIF macr_spectre_ops Macro  DATE 22/11/2011   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_spectre_ops Macro  DATE 03/01/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -111,18 +111,32 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                   if resu['RESU_GENE']!=None :
                      #if CALCUL=='ABSOLU' :
                      #   UTMESS('F','SPECTRAL0_8')
-                     motscles['RESU_GENE'] = resu['RESU_GENE']
-
+                    motscles['RESU_GENE'] = resu['RESU_GENE']
+                    __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
+                                        TOUT_ORDRE   = 'OUI',
+                                        NOM_CMP      = 'D'+dd,
+                                        INTERPOL     = 'LIN',
+                                        PROL_GAUCHE  = 'CONSTANT',
+                                        PROL_DROITE  = 'CONSTANT',
+                                        NOEUD        = node , **motscles )
+ 
                   if resu['RESULTAT' ]!=None :
                     motscles['RESULTAT']  = resu['RESULTAT']
-                  
-                  __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
-                                      TOUT_ORDRE   = 'OUI',
-                                      NOM_CMP      = 'D'+dd,
-                                      INTERPOL     = 'LIN',
-                                      PROL_GAUCHE  = 'CONSTANT',
-                                      PROL_DROITE  = 'CONSTANT',
-                                      NOEUD        = node , **motscles )
+                    __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
+                                        TOUT_ORDRE   = 'OUI',
+                                        NOM_CMP      = 'D'+dd,
+                                        INTERPOL     = 'LIN',
+                                        PROL_GAUCHE  = 'CONSTANT',
+                                        PROL_DROITE  = 'CONSTANT',
+                                        NOEUD        = node , **motscles )
+
+                  if resu['TABLE' ]!=None :
+                    __spo=RECU_FONCTION(TABLE=resu['TABLE'],
+                                        PARA_X  = 'INST',
+                                        PARA_Y  = 'VALE',
+                                        FILTRE  = (_F(NOM_PARA='NOEUD',   VALE_K=node     ),
+                                                   _F(NOM_PARA='NOM_CHAM',VALE_K=NOM_CHAM ),
+                                                   _F(NOM_PARA='NOM_CMP', VALE_K='D'+dd   ),) )
 
                   if NOM_CHAM=='ACCE' :
                      ### Accelerations relatives

@@ -3,13 +3,13 @@
      &                   DEPS,
      &                   SIGM,VIM,
      &                   OPTION,
-     &                   ANGMAS,
+     &                   ANGMAS,NVI,
      &                   SIGP,VIP,DSIDEP,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/12/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
+C MODIF ALGORITH  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,12 +26,12 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7 TOLE CRP_20
       IMPLICIT NONE
-      INTEGER            NDIM,IMATE,KPG,KSP,IRET
+      INTEGER            NDIM,IMATE,KPG,KSP,IRET,NVI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
       REAL*8             CRIT(4),INSTAM,INSTAP,IRRAM,IRRAP
       REAL*8             DEPS(6),ANGMAS(3)
-      REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6)
+      REAL*8             SIGM(6),VIM(NVI),SIGP(6),VIP(NVI),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     REALISE LES LOIS DE VISCOPLASTICITE SOUS IRRADIATION
 C     POUR LES ELEMENTS
@@ -94,12 +94,6 @@ C AUTRES
       CHARACTER*8  NOMLEM(NBCLEM),NOMVIL(NBCVIL)
       CHARACTER*8  NOMINT(NBCINT)
       INTEGER CODVIL(NBCVIL),CODLEM(NBCLEM),CODINT(NBCINT)
-C GRANDISSEMENT
-      INTEGER    NBCLGR
-      PARAMETER (NBCLGR=3)
-      REAL*8     COEFGR(NBCLGR)
-      CHARACTER*8 NOMGRD(NBCLGR)
-      INTEGER CODGRA(NBCLGR)
       CHARACTER*(*) FAMI
 C
       REAL*8            T1,T2,DEFAM(6),DEFAP(6)
@@ -128,7 +122,6 @@ C
      &              'BETA','PHI_ZERO','L'/
       DATA NOMVIL / 'A', 'B', 'CSTE_TPS', 'ENER_ACT', 'FLUX_PHI'/
       DATA NOMINT / 'A',         'S'/
-      DATA NOMGRD / 'GRAN_A','GRAN_B','GRAN_S' /
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
@@ -165,8 +158,6 @@ C
 
 C DEFORMATIONS DE GRANDISSEMENT
       CALL R8INIR(6,0.D0,DEGRAN,1)
-      CALL R8INIR(3,0.D0,COEFGR,1)
-      DEPSGR = 0.D0
 C DEFORMATION PLASTIQUE CUMULEE
       DPC = VIM(1)
 C INCREMENT DE TEMPS
@@ -226,18 +217,14 @@ C       LOIS DE COMPORTEMENT DISPONIBLES :
 C        - LEMAITRE MODIFIEE POUR L'IRRADIATION AVEC GRANDISSEMENT
 C        - VISC_IRRA_LOG AVEC GRANDISSEMENT
 C ----------------------------------------------------------------------
-      IF (COMPOR(1)(1:13).EQ.'LEMAITRE_IRRA') THEN
 
+      IF (COMPOR(1)(1:13).EQ.'LEMAITRE_IRRA') THEN
 C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE_IRRA',
      &                 0,' ',0.D0,
      &                 7,NOMLEM,COELEM,CODLEM, 1)
 
-         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE_IRRA',
-     &                 0,' ',0.D0,
-     &                 3,NOMGRD,COEFGR,CODGRA, 1)
-C
 C        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
          IRRAP = IRRAP - IRRAM + VIM(2)
          IRRAM = VIM(2)
@@ -300,12 +287,6 @@ C        PARAMETRES DE LA LOI DE FLUAGE
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','GRAN_IRRA_',
      &           1,' ',0.D0,
      &           5,NOMVIL(1),COEVIL(1),CODVIL, 1)
-         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','GRAN_IRRA_',
-     &               0,' ',0.D0,
-     &                 3,NOMGRD,COEFGR,CODGRA, 1)
-         IF (CODGRA(3).NE.0) THEN
-            COEFGR(3) = 1.D0
-         ENDIF
          IF (COEVIL(5).NE.1.D0) THEN
             FLUPHI=COEVIL(5)
             IRRAP = FLUPHI*INSTAP
@@ -341,18 +322,12 @@ C        PARAMETRES DE LA LOI DE FLUAGE
 C
 C       TRAITEMENT DES PARAMETRES DE LA LOI DE GRANDISSEMENT
 C
-      IF ((COEFGR(1).NE.0.D0).OR.(COEFGR(2).NE.0.D0)) THEN
-C      DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL
-         IF (IRET3.EQ.0) THEN
-         DEPSGR = (COEFGR(1)*TP+COEFGR(2))*(IRRAP**COEFGR(3))-
-     &            (COEFGR(1)*TM+COEFGR(2))*(IRRAM**COEFGR(3))
-         ELSE
-         DEPSGR = COEFGR(2)*(IRRAP**COEFGR(3))-
-     &            COEFGR(2)*(IRRAM**COEFGR(3))
+      CALL GRANAC(FAMI,KPG,KSP,IMATE,'        ',COMPOR(1),
+     +                                IRRAP,IRRAM,TM,TP,DEPSGR)
+C --- RECUPERATION DU REPERE POUR LE GRANDISSEMENT
 
-         ENDIF
-
-C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT
+      IF (COMPOR(1)(1:13).EQ.'LEMAITRE_IRRA'.OR.
+     +    COMPOR(1)(1:13).EQ.'GRAN_IRRA_LOG') THEN
          IF (NDIM.EQ.2) THEN
             IF (ANGMAS(2) .NE. 0.D0 ) THEN
                CALL U2MESR('F','ALGORITH11_82',2,ANGMAS(2))
@@ -365,7 +340,7 @@ C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT
          CBA = COS(BETA)
          SBA = SIN(BETA)
 
-C      DEFORMATIONS DE GRANDISSEMENT DANS LE REPERE
+C --- DEFORMATIONS DE GRANDISSEMENT DANS LE REPERE
          DEGRAN(1) =  DEPSGR*CAA*CAA*CBA*CBA
          DEGRAN(2) =  DEPSGR*SAA*SAA*SBA*SBA
          DEGRAN(3) =  DEPSGR*SBA*SBA
@@ -513,6 +488,7 @@ C
             VIP(1)= VIM(1) + DP1*LCNRTS( DEV )
             IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
                VIP(2) = IRRAP
+               VIP(3) = VIM(3) + DEPSGR
             ENDIF
          ELSE
             VIP(1) = VIM(1) + SQRT(2.D0*DELTP2/3.D0)
@@ -530,6 +506,7 @@ C
 C        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
          IF (COMPOR(1)(1:13).EQ.'LEMAITRE_IRRA') THEN
            VIP(2) = IRRAP
+           VIP(3) = VIM(3) + DEPSGR
          ENDIF
 
       ENDIF

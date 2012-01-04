@@ -1,8 +1,8 @@
-#@ MODIF calculel2 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -234,6 +234,10 @@ Erreur :
  nombre de noeuds > 27
 """),
 
+44: _(u"""
+   Le modèle n'a pas été trouvé. Le calcul n'est pas possible.
+"""),
+
 45: _(u"""
  famille de points de Gauss "liste" interdite: %(k1)s
 """),
@@ -266,10 +270,17 @@ Erreur :
  problème noeud tardif pour un champ à représentation constante
 """),
 
+53: _(u"""
+ Le calcul de l'option %(k1)s n'est pas possible. Il manque le CARA_ELEM.
+"""),
 
+54: _(u"""
+ Le calcul de l'option %(k1)s n'est pas possible. Il manque le CHAM_MATER.
+"""),
 
-
-
+55: _(u"""
+ Le calcul de l'option %(k1)s n'est pas possible. Il manque le MODELE.
+"""),
 
 56: _(u"""
   erreur lors d'une extraction:

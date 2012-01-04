@@ -1,8 +1,8 @@
-#@ MODIF calculel3 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 03/01/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ cata_msg = {
 
 4 : _(u"""
  l'utilisation du mot-clé FONC_MULT n'est licite que pour
- les SD RESULTATS :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
+ les structures de données résultat :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
 """),
 
 5 : _(u"""

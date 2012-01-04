@@ -1,11 +1,11 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 14/11/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -286,8 +286,9 @@ C           ---  IMPRESSION DU MAILLAGE -----
      &                                                 NOMAB,IRET)
                   IF (NOMA.NE.NOMAB) CALL U2MESS('F','PREPOST3_66')
                ENDIF
+               FORMR=' '
                CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
-     &                     INFMAI )
+     &                     INFMAI, FORMR )
                NUMEMO = NUMEMO + 1
             ENDIF
  200     CONTINUE
@@ -470,7 +471,7 @@ C        ---  IMPRESSION DU MAILLAGE AU PREMIER PASSAGE -----
          IF( NM.NE.0 .AND. FORM.NE.'CASTEM' .AND. NRPASS.EQ.1 ) THEN
            IF (FORM(1:4).NE.'GMSH'.OR.(NR.EQ.0.AND.NC.EQ.0)) THEN
              CALL IRMAIL ( FORM, IFI, VERSIO, NOMA, LMOD, MODELE, NIVE,
-     &                     INFMAI )
+     &                     INFMAI, FORMR )
            ENDIF
          ENDIF
 C

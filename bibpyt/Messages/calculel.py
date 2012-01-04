@@ -1,8 +1,8 @@
-#@ MODIF calculel Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -141,6 +141,11 @@ Conseils :
  type de champ inconnu
 """),
 
+18 : _("""
+ Vous utilisez CALC_CHAMP en reuse mais la structure de données en entrée est
+ différente de celle en sortie. Ce n'est pas autorisé.
+"""),
+
 19 : _(u"""
 Erreur :
  Le CHAM_ELEM %(k1)s est incohérent :
@@ -171,6 +176,13 @@ Risques & Conseils :
  la grandeur  %(k1)s  ne possède pas les mêmes champs que son homologue complexe  %(k2)s
 """),
 
+24 : _(u"""
+ Le modèle donné dans le mot-clé MODELE n'est pas le même que celui présent dans la
+ structure de données résultat. Ce n'est pas autorisé.
+ En effet, le mot-clé MODELE de CALC_CHAMP n'est utilisable que dans le cas où le
+ modèle est manquant dans la structure de données résultat.
+"""),
+
 25 : _(u"""
 Erreur utilisateur dans PROJ_SPEC_BASE :
  La commande n'accepte que le parallélisme de type PARTITION='CENTRALISE'.
@@ -180,20 +192,7 @@ Conseil :
  Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
 """),
 
-26 : _(u"""
-Les commandes CALC_ELEM et CALC_NO ne doivent pas être utilisées en "reuse" lorsque
-l'on utilise l'un des mots clés suivants :
-  * MODELE
-  * CHAM_MATER
-  * CARA_ELEM
-  * EXCIT
-  * GROUP_MA / MAILLE
 
-Risques & conseils :
-  Si on utilise de tels mots clés, la structure de données enrichie manque de cohérence.
-  Par exemple, le champ de déplacement DEPL a pu être calculé avec un champ de matériau,
-  alors que le champ d'énergie cinétique ECIN_ELEM_DEPL est calculé avec un autre champ de matériau.
-"""),
 
 27 : _(u"""
  CHAM_ELEM à combiner incompatible
@@ -241,9 +240,16 @@ Conseils :
   de référence (AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP', VALE_REF=...)
 """),
 
+33 : _(u"""
+Vous utilisez CALC_ELEM, CALC_NO ou CALC_CHAMP en reuse en surchargeant le mot-clé
+%(k1)s. Or ce paramètre déjà présent dans structure de données résultat sur laquelle
+vous travaillez est différent de celui donné (%(k2)s et %(k3)s).
 
+Dans ce cas, le reuse est interdit.
 
-
+Conseil :
+  Relancez le calcul en créant une nouvelle structure de données résultat.
+"""),
 
 34 : _(u"""
  le calcul de l'option :  %(k1)s
@@ -271,6 +277,17 @@ Conseils :
 38 : _(u"""
  la carte concerne aussi des mailles tardives qui sont oubliées
 """),
+
+39 : _(u"""
+Le chargement (mot clé: EXCIT) fourni par l'utilisateur est différent de celui présent
+dans la structure de sonnées Résultat. Dans ce cas, le reuse est interdit.
+
+Conseil :
+  Relancez le calcul en créant une nouvelle structure de données résultat.
+"""),
+
+
+
 
 42 : _(u"""
  Erreur Programmeur:

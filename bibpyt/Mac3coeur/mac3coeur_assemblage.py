@@ -1,8 +1,8 @@
-#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -366,7 +366,8 @@ class Assemblage(object):
         mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(1), FX=self.AFGRE_1/4.,),)
         for igr in range(1,self.NBGR-1):
             mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(igr+1), FX=self.AFGRM_1/4.,),)
-            mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(self.NBGR), FX=self.AFGRE_1/4.,),)
+        
+        mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(self.NBGR), FX=self.AFGRE_1/4.,),)
         return mcf
 
     def chargement_archimede2(self,FXTG,FXCR):

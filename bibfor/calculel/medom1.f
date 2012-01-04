@@ -10,9 +10,9 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8   BLAN8
       CHARACTER*16 CONCEP, NOMCMD, PHENOM
       CHARACTER*19 EXCIT, KFON
-      INTEGER      IARG
+      INTEGER      IARG,GETEXM
 C
       CALL JEMARQ()
 C              12345678
@@ -127,7 +127,11 @@ C
 C   SI IEXCIT=1 ON PREND LE CHARGEMENT DONNE PAR L'UTILISATEUR
 C
       IF(IEXCIT.EQ.1) THEN
-        CALL GETFAC('EXCIT',N5)
+        IF ( GETEXM('EXCIT',' ').EQ.0 ) THEN
+          N5 = 0
+        ELSE
+          CALL GETFAC('EXCIT',N5)
+        ENDIF
 C
         IF ( N5 .NE. 0 ) THEN
           NCHA = N5

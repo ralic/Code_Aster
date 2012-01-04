@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -16,11 +16,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# RESPONSABLE SELLENET N.SELLENET
 def lire_champ_prod(TYPE_CHAM=None,**args):
 # Remarque : si cette liste évolue, il faut penser à mettre à jour son
 #            homologue dans macr_adap_mail
   if TYPE_CHAM[0:5] == "NOEU_" : return cham_no_sdaster
+  if TYPE_CHAM[0:5] == "CART_" : return carte_sdaster
   if TYPE_CHAM[0:2] == "EL"    : return cham_elem
   raise AsException("type de concept resultat non prevu")
 
@@ -63,7 +64,7 @@ LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
 #        Remarque : si cette liste évolue, il faut penser à mettre à jour son
 #                   homologue dans macr_adap_mail
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),
-         b_modele =BLOC(condition = "TYPE_CHAM!=None and TYPE_CHAM[0:2] == 'EL'",
+         b_modele =BLOC(condition = "TYPE_CHAM!=None and (TYPE_CHAM[0:2] == 'EL' and TYPE_CHAM[0:4] != 'ELEM')",
             MODELE      =SIMP(statut='o',typ=modele_sdaster, ),
                   ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

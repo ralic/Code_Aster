@@ -2,9 +2,9 @@
       IMPLICIT   NONE
       CHARACTER*(*)     OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,13 +66,6 @@ C AUTRES
       INTEGER CODLMA(NBCLMA),CODLEM(NBCLEM)
       CHARACTER*8  NOMLMA(NBCLMA),NOMLEM(NBCLEM)
 
-C GRANDISSEMENT
-      INTEGER    NBCLGR
-      PARAMETER (NBCLGR=3)
-      REAL*8     COEFGR(NBCLGR)
-      CHARACTER*8 NOMGRD(NBCLGR)
-      INTEGER K2B(NBCLGR)
-
       REAL*8       PGL(3,3), FL(ND), KLV(NK), KLS(NK), FLC, EFFNOC
       REAL*8       PGL1(3,3), PGL2(3,3), RAD, ANGARC, ANGS2, TRIGOM
       REAL*8       ZERO,DEUX
@@ -87,7 +80,6 @@ C GRANDISSEMENT
      &              'A_0','Y_0','Y_I','B'/
       DATA NOMLEM / 'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K',
      &              'BETA','PHI_ZERO','L'/
-      DATA NOMGRD / 'GRAN_A' , 'GRAN_B' , 'GRAN_S' /
 C     ------------------------------------------------------------------
 
 
@@ -261,15 +253,6 @@ C-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES
          CALL VERIFM('RIGI',NPG,1,'T',ZI(IMATE),'ELAS',1,EPSTHE,IRET)
          G  = E / (2.D0*(1.D0+NU))
 C
-C-- RECUPERATION DES CARACTERISTIQUES DE FLUAGE ET DE GRANDISSEMENT
-         IF (ZK16(ICOMPO).EQ.'LMARC_IRRA') THEN
-            CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','LMARC_IRRA',
-     &                  0,' ',0.D0,3,NOMGRD,COEFGR,K2B, 1)
-         ELSE
-            CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','LEMAITRE_IRRA',
-     &                  0,' ',0.D0, 3,NOMGRD,COEFGR,K2B, 1)
-         ENDIF
-C
 C        --- CALCUL DES MATRICES ELEMENTAIRES ELASTIQUES ----
          IF ( ITYPE .EQ. 0 ) THEN
             IF (NOMTE .EQ. 'MECA_POU_D_E') THEN
@@ -318,7 +301,7 @@ C
                CALL NMLMAB(PGL,NNO,NPG,NC,ZR(IDEPLP),
      &               EFFNOM, TEMPM, TEMPP, ZI(IMATE), ZR(ICARCR),
      &               ZR(IINSTM), ZR(IINSTP), XL, E, A,
-     &               COELMA, COEFGR, IRRAM, IRRAP, ZR(IVARIM),
+     &               COELMA, IRRAM, IRRAP, ZR(IVARIM),
      &               ZR(IVARIP), KLS, FLC, EFFNOC, EM,
      &               IRET)
                DO 52 KK = 1, 4
@@ -346,7 +329,7 @@ C
                CALL NMFGAS('RIGI',NPG,ZI(IMATE),PGL,NNO,
      &                  NC, ZR(IDEPLP), EFFNOM, ZR(IVARIM), ZR(ICARCR),
      &                  ZR(IINSTM), ZR(IINSTP), XL, A, COELEM,
-     &                  COEFGR, IRRAM, IRRAP, KLS, FLC,
+     &                  IRRAM, IRRAP, KLS, FLC,
      &                  EFFNOC, ZR(IVARIP))
                ZR(IVARIP+1)    = IRRAP
                ZR(IVARIP+LGPG) = ZR(IVARIP)

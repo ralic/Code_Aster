@@ -1,18 +1,19 @@
       SUBROUTINE IRMARE(IFC,NDIM,NNO,COORDO,NBMA,CONNEX,POINT,NOMA,
      &                  TYPMA,TYPEL,LMOD,TITRE,NBTITR,NBGRN,NBGRM,
-     &                  NOMAI,NONOE)
+     &                  NOMAI,NONOE,FORMAR)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*80 TITRE(*)
       CHARACTER*8  NOMAI(*),NONOE(*),NOMA
+      CHARACTER*16 FORMAR
       REAL*8       COORDO(*)
       INTEGER      CONNEX(*),TYPMA(*),POINT(*),TYPEL(*),IFC,NBTITR
       LOGICAL      LMOD
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,10 +69,14 @@ C     ------------------------------------------------------------------
 C ---------------------------------------------------------------------
 C
       CHARACTER*8   NOMM,NOMGR,KBID
+      CHARACTER*10  FORMAT
+      CHARACTER*50  FMT
 C
 C     ECRITURE DU TITRE
 C
       CALL JEMARQ()
+      FORMAT = FORMAR
+      FMT='(1X,A8,1X,'//FORMAT//',1X,'//FORMAT//',1X,'//FORMAT//')'
       WRITE (IFC,*)      'TITRE'
       DO 10 IT = 1 , NBTITR
          WRITE (IFC,'(A)')   TITRE(IT)
@@ -92,7 +97,7 @@ C     --------------------
          CALL U2MESS('F','PREPOST2_77')
       ENDIF
       DO 1 INO = 1,NNO
-        WRITE (IFC,1001) NONOE(INO),(COORDO(3*(INO-1)+J),J=1,NDIM)
+        WRITE (IFC,FMT) NONOE(INO),(COORDO(3*(INO-1)+J),J=1,NDIM)
   1   CONTINUE
 
 
@@ -188,7 +193,6 @@ C     --------------------------------
 
       WRITE(IFC,*) 'FIN'
 
- 1001 FORMAT (1X,A8,1X,1PD21.14,1X,1PD21.14,1X,1PD21.14)
  1003 FORMAT (8(1X,A8))
  1004 FORMAT (9X,7(1X,A8))
       CALL JEDEMA()

@@ -1,0 +1,934 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 01/03/2012 - 04:05:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017596 DU 2011-09-26 12:25:47
+TYPE aide utilisation concernant Code_Aster (VERSION 9.1)
+TITRE
+    2 resultats calcul FFT via CALC_FONCTION
+FONCTIONNALITE
+   Question de l'utilisateur sur la signification de TOUTRESU_0_R et 
+   TOUTRESU_0_I.
+   
+   Comme l'utilisateur, j'ai naïvement cru ce qui est imprimé par IMPR_FONCTION 
+   !
+   
+   TOUTRESU ?
+   ----------
+   Il s'agit du nom donné aux ordonnées par défaut. La FFT est construite avec 
+   le même nom pour NOM_RESU (sauf si ce dernier est surchargé dans 
+   CALC_FONCTION).
+   
+   Suffixe _0 ?
+   ------------
+   C'est l'impression d'une fonction au format TABLEAU qui ajoute ce suffixe. 
+   Quand on imprime des fonctions dans un TABLEAU, celles-ci sont interpolées 
+   sur les abscisses de la première. Pour distinguer les colonnes de la table, 
+   elles sont numérotées de 0 à n-1.
+   
+   Suffixes _R/_I ?
+   ----------------
+   Merci Nicolas de rappeler que la FFT d'une fonction réelle est une fonction 
+   complexe et inversement. Là encore, une fonction complexe imprimée au format 
+   TABLEAU est scindée en deux colonnes "_R" pour la partie réelle, "_I" pour 
+   la partie imaginaire.
+   
+   
+   Tout ceci est détaillé dans la documentation de IMPR_FONCTION.
+   Le changement du nom des abscisses INST en FREQ et FREQ en INST est écrit 
+   dans la doc de CALC_FONCTION/FFT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018130 DU 2011-12-21 13:39:34
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Modification d'includes, suppressions non faites en 11.1.2
+FONCTIONNALITE
+   CRP n'aime pas trop qu'on supprime des fichiers pour ensuite 
+   introduire une routine différente avec le même nom, ce qui était 
+   le cas en 11.1.2 avec repout.
+   On "re"-supprime donc lxunit, lxerr et repout.
+   
+   De plus, l'include aster_fort.h a été oublié lors de la 
+   restitution (warning ou erreur de compilation).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018135 DU 2011-12-22 10:44:57
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.1.2, le cas-test supv002a est NOOK sur Aster4.
+FONCTIONNALITE
+   Plusieurs mots-clés invalides ont été ajoutés en 11.1.2 conduisant 
+   au NOOK de supv002a.
+   
+   On corrige les catalogues de messages correspondants.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    supv002a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 01/03/2012 - 04:05:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018122 DU 2011-12-19 13:42:26
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Impression tableau de cvg ther_non_line
+FONCTIONNALITE
+   Suite au signalement par Sébastien Meunier, je modifie les affichages de THER_NON_LINE
+   pour ne plus troncaturer l'affichage des décimales de l'instant calculé dans le fichier de
+   messages.
+   
+   J'en profite pour un peu harmoniser les affichages avec ceux de STAT_NON_LINE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude TNL quelconque
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017944 DU 2011-11-21 17:00:48
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Calculs de SRO et enveloppes de SRO xc3xa0 partir d'une table d'OBSERVATION de DYNA_NON_LINE
+FONCTIONNALITE
+   Modification de l'outil de post-traitement pour les calculs de séisme MACR_SPECTRE.
+   
+   Jusqu'à présent, MACR_SPECTRE faisait des opérations mathématiques sur des résultats
+   extraits soit d'un concept résultat :
+   RESU_GENE     =SIMP(statut='f',typ=tran_gene),
+   RESULTAT      =SIMP(statut='f',typ=(dyna_trans,evol_noli)),
+   
+   On étend cette capacité aux tables :
+   TABLE         =SIMP(statut='f',typ=table_sdaster),
+   ce qui permet en particulier de traiter les tables d'OBSERVATION générées par
+   DYNA_NON_LINE pour calculer des  SRO et des enveloppes de SRO.
+   
+   Le développement est validé par une modification du test SDNL131A.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.32.11
+VALIDATION
+    SDNL131A
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 01/04/2012 - 04:25:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018056 DU 2011-12-12 14:44:29
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Couverture de code et routines non appelees
+FONCTIONNALITE
+   Demande et réalisation :
+   ------------------------
+   Le but de cette fiche est de supprimer les routines non appelées :
+   CALCTR CGAJID DXEFR2 DXEFR3 DXSIEF ECRI3E ECRR3E INDRAD LMEMEX LONSEG MAXELE MECHC1 MECOA1
+   MFLFDE MFNVAL MFVECO MMINTG MMJACG MMJEUG MMLACG MMMMAT MMTPRO MMVSPE NMDCEA NOPG2D NTARCE
+   NTCROB ORIGIN PRENTE PRINIT SQU110 TRLONO XBSIGR XMCHBA PRTITR
+   
+   De plus, on déplace MPIERR dans debug.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018045 DU 2011-12-09 10:38:11
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Bug aleatoire SIMU_POINT_MAT
+FONCTIONNALITE
+   Problème :
+   ----------
+   En faisant passer la couverture de code, je me suis rendu compte que les tests utilisant
+   SIMU_POINT_MAT plantaient aléatoirement. Après analyse, j'ai constaté que le problème
+   (uniquement détectable avec les options de compilation couverture de code) venait de la
+   routine CHRPEL. La chaine CANBSP n'est pas toujours initialisée mais on fait un EXISD
+   dessus, ce qui provoque le plantage.
+   
+   
+   Analyse :
+   ---------
+   En réalité, comme me l'a fait remarqué Jean-Michel, CHRPEL est appelée uniquement par la
+   commande MODI_REPERE. Cette même commande est appelée par SIMU_POINT_MAT. Le bug est donc
+   dans MODI_REPERE et il n'apparait que dans SIMU_POINT_MAT car l'essentiel de la validation
+   de MODI_REPERE est réalisé par SIMU_POINT_MAT.
+   
+   
+   Solution :
+   ----------
+   On initialise CANBSP à tous les coups.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    couverture de code
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018004 DU 2011-12-01 09:48:18
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    CALC_CHAMP : vxc3xa9rification du repxc3xa8re des xc3xa9lements discrets pour le calcul des options XXXX_NOEU
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   La fiche 17985 va être classée "sans suite".
+   
+   L'utilisateur aurait peut-être été alerté si la vérification de la concordance des repères
+   locaux des éléments avait été faite aussi sur les éléments discrets.
+   """
+   
+   
+   Analyse :
+   ---------
+   En fait, les repères pour les discrets étaient vérifiés mais ce n'était pas correct dans
+   le cas des discrets 2D. Je corrige ce premier problème.
+   
+   D'autre part, Jacques m'a montré que ma vérification pouvait être prise en défaut. Je la
+   modifie donc. Maintenant au lieu de prendre les vecteurs (1,1,1) dans chacun des repères
+   locaux et de vérifier qu'ils n'ont pas trop d'angle une fois passé dans le repère global,
+   je prend les vecteurs (1,0,1) et (0,1,0).
+   
+   Dernier point les repères locaux qui ont suscité l'émission de cette fiche (issue17985)
+   sont en fait compatibles. Donc même avec le correctif, l'alarme ne se serait pas déclenchée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017987 DU 2011-11-29 15:36:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    LIRE_CHAMP sait lire une composante de champ
+FONCTIONNALITE
+   Demande :
+   *-*-*-*-*
+   On propose d'étendre les fonctionnalités de LIRE_CHAMP de manière à lire une composante
+   donnée d'un champ 
+   NOEU, ELNO, ELEM ou CARTE et de la stocker dans un champ Aster de nom 'UT0[123456789]' et
+   de composante 
+   NEUT_R. 
+   Ainsi, une fois le champ lu dans Aster, l'utilisateur pourra recombiner les composantes de
+   manière à 
+   produire un champ de son choix.
+   L'intérêt du type CARTE est que, comme le type NOEU, il permet de se libérer de la
+   contrainte de définir 
+   un modèle bidon.
+   
+   
+   Réalisation :
+   *-*-*-*-*-*-*
+   Aujourd'hui dans LIRE_CHAMP, on peut lire des champs NOEU ou EL*. Dans chacun des cas, on
+   créé soit un cham_no soit un cham_elem.
+   
+   Je propose dans le cas CART de créer une carte sachant qu'après il y a CREA_CHAMP qui
+   permet de la convertir simplement en cham_elem.
+   
+   À l'aide de cette modification de LIRE_CHAMP, on peut relire les champs de l'AOM
+   issue17566 sans surcharge.
+   
+   À noter que l'utilitaire CESCAR (que j'ai utilisé pour résoudre cette fiche) est déjà
+   présent dans le code mais qu'il n'est pas documenté dans D6.00.01. Il faut donc le rajouter.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.00.01, U7.02.02
+VALIDATION
+    zzzz161a + AOM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017972 DU 2011-11-25 16:55:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    tests zzzz262 et zzzz263 : validants mais xc3xa0 diffusion restreinte
+FONCTIONNALITE
+   Problème :
+   ----------
+   Les tests zzzz262a et b et zzzz263a valident du source mais ils sont en diffusion
+   restreinte. Il faudrait que les sources validées le soient par des tests en diffusion
+   internet.
+   
+   
+   Analyse :
+   ---------
+   Voiçi les routines dont certains blocs ne sont validées que par ces cas tests :
+   - zzzz262a :
+     * MLTDRB
+   
+   - zzzz262b :
+     * ALGOCO
+     * APIMPR
+     * CFAPPI
+     * CFAPRE
+     * NMDOET
+     * NMFONC
+   
+   - zzzz263a :
+     * AFFBAR
+     * ANTE3D
+     * IMMEHX
+     * IMMENO
+     * IMMEPN
+     * NMGRAN
+     * RECI3D
+     * TE0000
+     * TE0312
+     * TENSCA
+   
+   
+   Solution :
+   ----------
+   On a plusieurs groupes :
+   - MLTDRB qui peut être validé en passant le nombre de CPU OpenMP de feti007a à 4 au lieu de 1.
+   - ALGOCO, APIMPR, CFAPPI, CFAPRE, NMDOET et NMFONC qui correspondent à de l'INFO=2 dont la
+   validation n'est pas utiles,
+   - AFFBAR, ANTE3D, IMMEHX, IMMENO, IMMEPN, RECI3D et TENSCA qui sont appelées par
+   DEFI_CABLE_BP. On peut les valider en modifiant ssnv137a (qui fait passer un câble dans un
+   poutre 3D maillée par des HEXA20). La modification consiste à changer certains HEXA20 en
+   PENTA15 et à déformer certains HEXA20. Grâce à cela on passe dans toutes les sources. De
+   plus ssnv137a bénéficie d'une solution analytique, on doit donc obtenir les mêmes
+   résultats que ssnv137a et que la solution analytique. Pour cette validation, j'ajoute donc
+   le test zzzz305.
+   - NMGRAN qui peut se valider en utilisant le comportement GRANGER_FP_V. C'est ce
+   comportement qu'on utilise dans zzzz305 comme dans zzzz263a.
+   - TE0312 teste qu'il n'y a pas de séchage lorsqu'on utilise des DKT. L'intérêt de valider
+   cela est très limité.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.305, V1.10.106, V1.10.117
+VALIDATION
+    zzzz305a et b et feti007a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017920 DU 2011-11-17 07:43:26
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    IMPR_RESU Format des rxc3xa9els
+FONCTIONNALITE
+   Demande :
+   ---------
+   Lorsque l'on fait : IMPR_RESU(FORMAT='ASTER',RESU=_F(MAILLAGE=mail),)
+   
+   On a un format de réel du type x.xxxD+xx ==> Modifier le format en x.xxxE+xx
+   
+   
+   Solution :
+   ----------
+   Je rajoute le mot-clé FORMAT_R (déjà présent au format 'RESULTAT') dans IMPR_RESU au
+   format 'ASTER'.
+   
+   Je change aussi le défaut de ce mot-clé en le passant de 1PE12.5 à 1PE21.14.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.91.01
+VALIDATION
+    zzzz265a modifixc3xa9
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017905 DU 2011-11-14 15:42:32
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Alarme CALCULEL_26
+FONCTIONNALITE
+   Demande :
+   ---------
+   Le but de cette fiche est de transformer l'alarme CALCULEL_26 en erreur <F>.
+   
+   
+   Solution :
+   ----------
+   Comme le précise la fiche issue17872, je compte laisser les mots-clés MODELE, CHAM_MATER,
+   CARA_ELEM et EXCIT, je ne transforme pas à tous les coups CALCULEL_26 en erreur fatale.
+   
+   Je retire MAILLE et GROUP_MA du cadre de déclenchement de l'alarme.
+   
+   En plus, j'ajoute des vérifications. Si MODELE, CHAM_MATER, CARA_ELEM ou EXCIT sont
+   présents dans la SD et que l'utilisateur souhaite les surcharger, j'interdis la
+   réentrance. S'il n'y a rien dans la SD alors on autorise l'utilisation de ces mots-clés.
+   
+   Ces vérifications sont rajoutées dans CALC_ELEM, CALC_NO, CALC_ERREUR et CALC_CHAMP.
+   
+   Lorsque l'utilisateur tentera de surcharger un paramètre déjà présent, il obtiendra le
+   message suivant :
+   """
+   Vous utilisez CALC_ELEM, CALC_NO ou CALC_CHAMP en reuse en surchargeant le mot-clé
+   MODELE. Or ce paramètre déjà présent dans structure de données résultat sur laquelle
+   vous travaillez est différent de celui donné (MOD1 et MOD2).
+   
+   Dans ce cas, le reuse est interdit.
+   
+   Conseil :
+     Relancez le calcul en créant une nouvelle structure de données résultat.
+   """
+   
+   Je modifie rccm02a rccm02b rccm02c zzzz186a qui tombait dans l'erreur <F> ajoutée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test emettant l'alarme CALCULEL_26
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017872 DU 2011-11-08 16:07:09
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 : CALC_CHAMP : supprimer les mots clxc3xa9s MODELE, CHAM_MATER, CARA_ELEM et EXCIT
+FONCTIONNALITE
+   Demande :
+   ---------
+   Supprimer les mots clés MODELE, CHAM_MATER, CARA_ELEM et EXCIT.
+   
+   
+   Analyse :
+   ---------
+   Si on concrétise cette idée, beaucoup de post-traitements deviendront impossibles car les
+   opérateurs de dynamique ne remplissent pas (ou ne savent pas remplir) le MODELE,
+   CHAM_MATER, CARA_ELEM et EXCIT des sd produites.
+   
+   
+   Solution :
+   ----------
+   On laisse ces mots-clés mais on ajoute des vérifications (fiche issue17905).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017863 DU 2011-11-07 17:03:21
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 Interdire un usage dangereux de CALC_CHAMP
+FONCTIONNALITE
+   Problème :
+   ----------
+   On veut interdire l'usage dangereux de CALC_CHAMP suivant :
+   toto = CALC_CHAMP( reuse=toto, RESULTAT=titi)
+   
+   
+   Solution :
+   ----------
+   Je modifie OP0052 pour qu'il vérifie qu'en reuse, la sd in et la sd out sont identiques.
+   Si ce n'est pas le cas, on émet le message suivant :
+   """
+    Vous utilisez CALC_CHAMP en reuse mais la structure de données en entrée est
+    différente de celle en sortie. Ce n'est pas autorisé.
+   """
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.02
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017757 DU 2011-10-20 12:34:12
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Impossible de post-traiter avec CALC_ELEM une base STA10
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   A la suite d'un calcul dynamique produisant une base Globale très volumineuse, le
+   post-traitement échoue à la relecture des strucutures de données résultat, certains objets
+   JEVEUX ne possédant plus d'adresse disque. 
+   
+   Analyse du problème :
+   =====================
+   
+   L'étude a été lancée avec le paramètre -max_base sur la ligne de commande pour aller
+   au-delà de la limite de 48 Go pour la taille des bases. Dans ce cas particulier, la taille
+   de certains objets système JEVEUX est modifiée pour s'adapter au nombre maximum
+   d'enregistrements qui change de valeur. L'attribut de longueur de l'objet système IUSADI
+   décrivant l'usage de chaque enregistrement était alors sous-dimensionné, lors de sa
+   sauvegarde sur disque, une partie seulement était écrite. Lors de sa relecture, le
+   complément était alors mis à 0, ce qui interdisait l'accès à l'image disque d'une partie
+   des structures de données. 
+   
+   Correction effectuée :
+   ====================== 
+   
+   L'attribut de longueur de l'objet IUSADI est maintenant correctement affecté dans la
+   routine JEINIF, l'objet n'est plus tronqué à l'écriture, et toutes les structures de
+   données peuvent être relues ensuite. 
+   
+   La correction a été effectuée dans la fiche http://clpwdev.der.edf.fr:8080/REX/issue17859.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    etude associxc3xa9e xc3xa0 la fiche 17757
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017736 DU 2011-10-18 13:05:41
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 : Champs obligatoires
+FONCTIONNALITE
+   Demande :
+   ---------
+   Le but de cette fiche est de rendre les messages d'erreur de CALCUL plus clair dans le cas
+   où on utilise CALC_CHAMP. En effet, aujourd'hui lorsqu'il manque un élément pour le calcul
+   (par exemple le champ de matériau, cf. issue17930), on plante avec le message CALCULEL2_71
+   qui n'est pas clair :
+   """
+   on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au
+   paramètre: PMATERC
+    - option: SIEF_ELGA
+    - type_élément: MECPQU4
+   """
+   
+   Le but de cette fiche est de rendre ce message plus clair.
+   
+   
+   Solution :
+   ----------
+   On utilise les champs ajoutés dans les catalogues d'options pour pouvoir expliquer plus
+   clairement le problème à l'utilisateur. Je modifie donc JEVECH pour qu'en cas de problème,
+   il aille lire le catalogue pour par exemple dans le cas décrit plus haut, on puisse dire à
+   l'utilisateur qu'il manque le matériau.
+   
+   On est capable de faire un diagnostique utile dans 3 cas : pour le CHAM_MATER, pour le
+   CARA_ELEM et pour le MODELE. J'ajoute 3 messages (CALCULEL2_53, CALCULEL2_54,
+   CALCULEL2_55) qui ont cette forme :
+   """
+    Le calcul de l'option SIPO_ELNO n'est pas possible. Il manque le CHAM_MATER.
+   """
+   
+   Je profite de cette fiche pour modifier aussi le fonctionnement de CALCOP pour qu'il soit
+   plus malin (issue17899). Si une dépendance est présente, il ne faut pas demander le calcul
+   des dépendances de cette dépendance.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdnl112b modifixc3xa9
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017566 DU 2011-09-20 16:18:52
+TYPE aide utilisation concernant Code_Aster (VERSION 9.1)
+TITRE
+    Chaxc3xaenage Saturne-Aster
+FONCTIONNALITE
+   Demande :
+   ---------
+   Le but de cette fiche est de relire un champ (au format MED) issu d'un calcul Saturne. Ce
+   champ est composé de 3 composantes représentant au total une force.
+   
+   Le but est d'appliquer cette force constante par élément portée par des QUAD4 sur un
+   maillage de type poutre.
+   
+   
+   Analyse :
+   ---------
+   En réalité, le plus dur est la relecture du champ via LIRE_CHAMP ou LIRE_RESU. Il faut
+   trouver une modélisation qui autorise de définir un champ constant par élément portant 3
+   composantes sur des QUAD4. La modélisation permettant cela sans trop de surcharge est
+   'PLAN_ELDI' avec le champ 'ERME_ELEM' mais pour y arriver il est nécessaire de surcharger
+   le catalogue GENER_MEDPL1 pour y ajouter un mode local et l'option TOU_INI_ELEM.
+   
+   À partir de là, la relecture est possible.
+   
+   Après, un PROJ_CHAMP du champ ELEM vers le champ NOEU se passe sans problème. Ensuite via
+   des CREA_CHAMP, on est en mesure de transformer le champ d'erreur en champ de déplacement
+   (demande utilisateur) et de créer un resu type 'DYNA_TRANS' contenant tous ces champs.
+   
+   La fiche issue17649 a pour but d'éviter que la surcharge du code soit nécessaire pour
+   relire ce type de champs. Un impact doc U2.01.11 est à prévoir dans cette fiche pour
+   expliquer comment faire les manipulations décrites ici.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 01/04/2012 - 04:25:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018034 DU 2011-12-07 14:55:33
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    LIRE_MAILLAGE / FORMAT='ASTER' met tous les noms en majuscules
+FONCTIONNALITE
+   Problème :
+   ----------
+   La correction de la fiche 16946 (problème des minuscules dans MACR_LIGN_COUP) a consisté à
+   ne pas "forcer" les majuscules dans les sources python de macr_lign_coup_ops.py.
+                                                                                            
+                           
+   Mais cette correction n'est pas suffisante.
+                                                                                            
+                           
+   En effet, macr_ligne_coup_ops.py génère un maillage au format ASTER avec des minuscules et
+   quand on le relit avec LIRE_MAILLAGE, les minuscules ont disparu !
+                                                                                            
+                           
+   Il faut donc aussi corriger LIRE_MAILLAGE.
+                                                                                            
+                           
+                                                                                            
+                           
+   Correction :
+   ------------
+   Il y a 3 routines de LIRE_MAILLAGE qui "forcent" les majuscules dans LIRE_MAILLAGE :
+     lectit.f  liritm.f  stktit.f
+   On supprime les "CALL LXCAPS()"
+                                                                                            
+                           
+   Une fois ces 3 routines corrigées, on s'aperçoit qu'il y a 147 tests NOOK :
+   Dans les fichiers de maillage, il y a des noms avec des minuscules, mais dans les fichiers
+   de commande, on écrit ces noms en majuscules.
+                                                                                            
+                           
+   On modifie les fichiers de maillage pour les mettre systématiquement en majuscules.
+                                                                                            
+                           
+   Impact documentaire :
+   ---------------------
+   U3.01.00 : commande LIRE_MAILLAGE
+                                                                                            
+                           
+                                                                                            
+                           
+   Liste des fichiers impactés par la correction de la fiche:  18034
+     lectit.f  liritm.f  stktit.f
+                                                                                            
+                           
+     adlv101a  adlv301a  ahlv100a  ahlv100b  ahlv101a
+     comp005b  comp005c  erreu04a  fdll200a  mumps03a
+     plexu01a  sdld22a   sdld22b   sdld29a   sdld320a
+     sdld321a  sdld321b  sdld321c  sdld325a  sdld325b
+     sdll104a  sdll137a  sdll137b  sdll137c  sdll137d
+     sdls04a   sdls04b   sdls107a  sdlv128a  sdlv128b
+     sdnl111a  sdnl111b  ssla103b  ssll107d  ssll107g
+     ssls104a  ssls105a  ssls135a  sslv105a  sslv114a
+     sslv114b  sslv115a  ssnd105a  ssnd105b  ssnl112a
+     ssnl112b  ssnl112c  ssnl112d  ssnl112g  ssnl112h
+     ssnl112i  ssnl112j  ssnl112m  ssnl115a  ssnl121b
+     ssnl124a  ssnl128b  ssnl131a  ssnl131b  ssnl131c
+     ssnl131d  ssnp05a   ssnp107a  ssnp126a  ssnp150a
+     ssnp150b  ssns108a  ssnv101b  ssnv101d  ssnv102b
+     ssnv113a  ssnv118a  ssnv118b  ssnv118c  ssnv118d
+     ssnv124b  ssnv126a  ssnv126b  ssnv126c  ssnv126d
+     ssnv143a  ssnv143b  ssnv149a  ssnv149b  ssnv150a
+     ssnv151a  ssnv176a  ssnv176b  ssnv176c  ssnv176d
+     ssnv176e  ssnv177a  ssnv183a  ssnv219b  szlz105a
+     tpla04a   tpla05a   tpla05b   tpla06a   tpla06b
+     tpla301a  tplp02a   tplp300a  tplp301a  tplp301b
+     tplp303a  tplp303b  tplp303c  tplp303d  tplp303e
+     tplp303f  tplp303g  tplv07a   tplv305a  tpna300a
+     tpnl300b  tpnv01a   tpnv01b   ttlp300a  ttlp301a
+     ttlp301b  ttlv01a   ttlv01b   ttlv01c   ttlv01d
+     ttlv300a  ttlv301a  ttnl302a  ttnl302b  ttnl302c
+     ttnl302d  ttnl302e  wtnp125a  wtnp125b  zmat001a
+     zzzz101a  zzzz111b  zzzz121a  zzzz121b  zzzz121c
+     zzzz167b  zzzz186a  zzzz189a  zzzz189b  zzzz213b
+     zzzz266b  zzzz268b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U3.01.00
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fernandes    FERNANDES Roméo       DATE 01/04/2012 - 04:25:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018097 DU 2011-12-15 10:48:43
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Loi de grandissement GRAN_IRRA_LOG pour les modxc3xa9lisations 3D
+FONCTIONNALITE
+   Suite à la fiche 15878 sur l'ajout d'une loi de grandissement sous irradiation
+   irréversible dans Code_Aster (loi GRAN_IRRA_LOG) pour les éléments 1D on étend ce
+   développement :
+   1/ à tous types d'éléments (3D, POU_D*...)
+   2/ pour toutes les lois de comportement prenant en compte l'ancien formulation
+   (réversible) de la loi de grandissement. Cela impacte donc les lois GRAN_IRRA_LOG,
+   LEMAITRE_IRRA et LMARC_IRRA.
+   
+   Le développement est par ailleurs mutualisé : toutes les lois de comportement font appel
+   dorénavant à la routine granac.f pour tous les types d'éléments.
+   
+   Impact sur le catalogue DEFI_MATERIAU :
+   tous les paramètres GRAN_A, GRAN_B et GRAN_S sont supprimé et on ajoute GRAN_FO (voir
+   fiche 15878).
+   
+   Impact fortran :
+   granac.f  lc0028.f  nm1vil.f  nmfgas.f  nmlmab.f  nmvpir.f  te0247.f
+   
+   Impact python (ajout d'une variable interne) :
+   lemaitre_irra.py  lmarc_irra.py
+   
+   Impact des cas-tests :
+   Dans les cas-tests ne sont modifiés que la formulation de la loi de grandissement en
+   entrée de DEFI_MATERIAU. Il n'y a aucun impact sur les TEST-RESU.
+   
+   comp010a.comm  ssnl109a.comm  ssnl121a.comm  ssnl121c.comm  ssnl128a.comm  ssnl128c.comm 
+   comp010e.comm  ssnl109b.comm  ssnl121b.comm  ssnl124a.comm  ssnl128b.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.08, U4.43.01, U4.51.11
+VALIDATION
+    astest
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018105 DU 2011-12-15 15:57:46
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.1.1, le cas-test comp010a sxe2x80x99arrxc3xaate en erreur fatale sur toutes les plateformes.
+FONCTIONNALITE
+   Correction apportée par la fiche 18097
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    astest
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018108 DU 2011-12-15 16:46:15
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.1.1, le cas-test ssnl128d sxe2x80x99arrxc3xaate en erreur fatale sur Aster4.
+FONCTIONNALITE
+   Correction apportée par la fiche 18097
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    astest
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018131 DU 2011-12-22 06:56:24
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Petites xc3xa9volutions de Mac3Coeur
+FONCTIONNALITE
+   Je prends en compte quelques petites évolutions dans Mac3Coeur :
+   
+   1/ Ajout d'un CALC_FONC_INTERP dans les catalogues matériaux pour la loi de grandissement
+   pour réduire les temps de calculs lors de l'évaluation des FORMULE.
+   => Impact dans les catalogues matériaux + include_materiau_ops.py avec ajout de
+   DEFI_LIST_REEL dans les commandes possibles.
+   
+   2/ Correction d'une coquille dans ma3coeur_assemblage.py avec une affectation d'une force
+   sur des éléments de grille dans une boucle ce qui implique des alarmes (message avec règle
+   d'application de surcharge dans un AFFE_CHAR_MECA).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    astest + perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT zzzz305a                     sellenet N.SELLENET         747    747      0
+ CASTEST AJOUT zzzz305b                     sellenet N.SELLENET         747    747      0
+ CASTEST MODIF ahlv100s                     sellenet N.SELLENET         122      0      0
+ CASTEST MODIF ahlv302e                     sellenet N.SELLENET         142      0      0
+ CASTEST MODIF comp010a                     sellenet N.SELLENET         237      0      0
+ CASTEST MODIF comp010e                     sellenet N.SELLENET         234      0      0
+ CASTEST MODIF feti007a                     sellenet N.SELLENET         295      0      0
+ CASTEST MODIF rccm02a                      sellenet N.SELLENET         342      0      0
+ CASTEST MODIF rccm02b                      sellenet N.SELLENET         343      0      0
+ CASTEST MODIF rccm02c                      sellenet N.SELLENET         333      0      0
+ CASTEST MODIF sdnl131a                     courtois M.COURTOIS        1004      0      0
+ CASTEST MODIF sslv115a                     sellenet N.SELLENET         221      0      0
+ CASTEST MODIF ssnl109a                     sellenet N.SELLENET         646      0      0
+ CASTEST MODIF ssnl109b                     sellenet N.SELLENET         699      0      0
+ CASTEST MODIF ssnl121a                     sellenet N.SELLENET         577      0      0
+ CASTEST MODIF ssnl121b                     sellenet N.SELLENET         577      0      0
+ CASTEST MODIF ssnl121c                     sellenet N.SELLENET         492      0      0
+ CASTEST MODIF ssnl124a                     sellenet N.SELLENET         577      0      0
+ CASTEST MODIF ssnl128a                     sellenet N.SELLENET         602      0      0
+ CASTEST MODIF ssnl128b                     sellenet N.SELLENET         743      0      0
+ CASTEST MODIF ssnl128c                     sellenet N.SELLENET         559      0      0
+ CASTEST MODIF ssnv113a                     sellenet N.SELLENET         196      0      0
+ CASTEST MODIF ssnv219b                     sellenet N.SELLENET         749      0      0
+ CASTEST MODIF supv002a                     courtois M.COURTOIS         135      0      0
+ CASTEST MODIF zzzz161a                     sellenet N.SELLENET         276      0      0
+ CASTEST MODIF zzzz186a                     sellenet N.SELLENET          40      0      0
+CATALOPY MODIF commande/calc_champ          sellenet N.SELLENET         247      0      0
+CATALOPY MODIF commande/defi_materiau       sellenet N.SELLENET        3466      0      0
+CATALOPY MODIF commande/impr_resu           sellenet N.SELLENET         202      0      0
+CATALOPY MODIF commande/lire_champ          sellenet N.SELLENET          71      0      0
+CATALOPY MODIF commande/macr_spectre        courtois M.COURTOIS          75      0      0
+CATALOPY MODIF commun/c_nom_cham_into       sellenet N.SELLENET         194      0      0
+FORTRAN90 SUPPR echange/mflfde               sellenet N.SELLENET           0      0      0
+FORTRAN90 SUPPR echange/mfnval               sellenet N.SELLENET           0      0      0
+FORTRAN90 SUPPR echange/mfveco               sellenet N.SELLENET           0      0      0
+ FORTRAN AJOUT calculel/cclodr              sellenet N.SELLENET         161    161      0
+ FORTRAN AJOUT calculel/ccvrpu              sellenet N.SELLENET         177    177      0
+ FORTRAN MODIF algorith/chrpel              sellenet N.SELLENET        1044      0      0
+ FORTRAN MODIF algorith/granac              sellenet N.SELLENET          65      0      0
+ FORTRAN MODIF algorith/lc0028              sellenet N.SELLENET          38      0      0
+ FORTRAN MODIF algorith/nm1vil              sellenet N.SELLENET         213      0      0
+ FORTRAN MODIF algorith/nmfgas              sellenet N.SELLENET         211      0      0
+ FORTRAN MODIF algorith/nmlmab              sellenet N.SELLENET         231      0      0
+ FORTRAN MODIF algorith/nmvpir              sellenet N.SELLENET         540      0      0
+ FORTRAN MODIF algorith/op0186              courtois M.COURTOIS         630      0      0
+ FORTRAN MODIF calculel/calcop              sellenet N.SELLENET         298      0      0
+ FORTRAN MODIF calculel/ccaccl              sellenet N.SELLENET         258      0      0
+ FORTRAN MODIF calculel/ccbcop              sellenet N.SELLENET         218      0      0
+ FORTRAN MODIF calculel/ccchel              sellenet N.SELLENET         129      0      0
+ FORTRAN MODIF calculel/cccmcr              sellenet N.SELLENET         189      0      0
+ FORTRAN MODIF calculel/ccvrrl              sellenet N.SELLENET         313      0      0
+ FORTRAN MODIF calculel/jevech              sellenet N.SELLENET         221      0      0
+ FORTRAN MODIF calculel/medom1              sellenet N.SELLENET         216      0      0
+ FORTRAN MODIF calculel/op0042              sellenet N.SELLENET         141      0      0
+ FORTRAN MODIF calculel/op0052              sellenet N.SELLENET         109      0      0
+ FORTRAN MODIF calculel/op0058              sellenet N.SELLENET         142      0      0
+ FORTRAN MODIF elements/te0247              sellenet N.SELLENET         414      0      0
+ FORTRAN MODIF modelisa/lectit              sellenet N.SELLENET          93      0      0
+ FORTRAN MODIF modelisa/liritm              sellenet N.SELLENET          82      0      0
+ FORTRAN MODIF modelisa/stktit              sellenet N.SELLENET         114      0      0
+ FORTRAN MODIF prepost/ircame               sellenet N.SELLENET         330      0      0
+ FORTRAN MODIF prepost/irmail               sellenet N.SELLENET         293      0      0
+ FORTRAN MODIF prepost/irmare               sellenet N.SELLENET         199      0      0
+ FORTRAN MODIF prepost/lrceme               sellenet N.SELLENET         310      0      0
+ FORTRAN MODIF prepost/lrchme               sellenet N.SELLENET         127      0      0
+ FORTRAN MODIF prepost/op0039               sellenet N.SELLENET        1057      0      0
+ FORTRAN MODIF prepost/op0106               sellenet N.SELLENET         813      0      0
+ FORTRAN MODIF utilitai/op0192              sellenet N.SELLENET         340      0      0
+ FORTRAN SUPPR algorith/calctr              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR algorith/nmdcea              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR algorith/ntarce              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR algorith/ntcrob              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR algorith/squ110              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR algorith/xmchba              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR calculel/mechc1              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR calculel/mecoa1              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/dxefr2              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/dxefr3              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/dxsief              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/indrad              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/lonseg              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/mmintg              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/mmjacg              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/mmjeug              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/mmlacg              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/mmmmat              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/mmtpro              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/mmvspe              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/nopg2d              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR elements/xbsigr              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR modelisa/maxele              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR prepost/cgajid               sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR prepost/trlono               sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR supervis/prente              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR supervis/prinit              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR supervis/prtitr              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR utilifor/ecri3e              sellenet N.SELLENET           0      0      0
+ FORTRAN SUPPR utilifor/ecrr3e              sellenet N.SELLENET           0      0      0
+  PYTHON MODIF Comportement/lemaitre_irra   sellenet N.SELLENET          44      0      0
+  PYTHON MODIF Comportement/lmarc_irra      sellenet N.SELLENET          40      0      0
+  PYTHON MODIF Mac3coeur/mac3coeur_assemblage   sellenet N.SELLENET         439      0      0
+  PYTHON MODIF Mac3coeur/mac3coeur_coeur    sellenet N.SELLENET         984      0      0
+  PYTHON MODIF Macro/include_materiau_ops   sellenet N.SELLENET         152      0      0
+  PYTHON MODIF Macro/macr_spectre_ops       courtois M.COURTOIS         376      0      0
+  PYTHON MODIF Messages/archivage           courtois M.COURTOIS          52      0      0
+  PYTHON MODIF Messages/calculel2           sellenet N.SELLENET         483      0      0
+  PYTHON MODIF Messages/calculel3           courtois M.COURTOIS         483      0      0
+  PYTHON MODIF Messages/calculel5           sellenet N.SELLENET         385      0      0
+  PYTHON MODIF Messages/calculel            sellenet N.SELLENET         441      0      0
+  PYTHON MODIF Messages/mecanonline5        courtois M.COURTOIS         237      0      0
+  PYTHON MODIF Messages/mecanonline6        courtois M.COURTOIS         121      0      0
+  PYTHON MODIF Messages/modelisa3           courtois M.COURTOIS         348      0      0
+  PYTHON MODIF Messages/supervis2           sellenet N.SELLENET         146      0      0
+  PYTHON MODIF Messages/unilater            courtois M.COURTOIS          65      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4        1832      1832             +1832
+ MODIF :   77       28570         0       0        +0
+ SUPPR :   33           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  114       30402      1832       0     +1832 

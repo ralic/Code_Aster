@@ -1,11 +1,11 @@
-# MODIF  DATE 26/09/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
+# MODIF  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
 #====================================================================== 
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'LEMAITRE_IRRA' 
 # comp010e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,7 +56,7 @@ tmax = 1.
 compor='LEMAITRE_IRRA'
 
 # Nombre de variables internes
-Nbvari = 2
+Nbvari = 3
 
 #=====================================================================
 #               MATERIAU  FONCTION  DE  LA  TEMPERATURE
@@ -71,6 +71,11 @@ ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.0E-5,
                                          Tmax, 2.0E-5,),);
 
 
+GRAN_A=-1.51E-16*100.
+GRAN_B=1.542E-13*100.
+GRAN_S=0.396
+GRAND=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='(GRAN_A*TEMP+GRAN_B)*(IRRA**GRAN_S)');
+
 MATERI=DEFI_MATERIAU( ELAS_FO=_F(E=YOUN,
                                  NU=ZERO,
                                  TEMP_DEF_ALPHA=TREF,
@@ -83,9 +88,7 @@ MATERI=DEFI_MATERIAU( ELAS_FO=_F(E=YOUN,
                                         PHI_ZERO = 4.240281E+21,
                                         BETA = 1.2,
                                         QSR_K = 3321.093,
-                                        GRAN_A = -1.51E-16,
-                                        GRAN_B = 1.542E-13,
-                                        GRAN_S = 0.396),
+                                        GRAN_FO = GRAND,),
                       );
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
@@ -124,7 +127,6 @@ IMPR_TABLE(TABLE=U,);
 
 SXM = 0.
 EXM = 0.
-VXM = 0.
 
 Vim = N.zeros(Nbvari)
 
@@ -168,9 +170,7 @@ for i in range(NCAL):
                                         PHI_ZERO = 4.240281E+21,
                                         BETA = 1.2,
                                         QSR_K = 3321.093,
-                                        GRAN_A = -1.51E-16,
-                                        GRAN_B = 1.542E-13,
-                                        GRAN_S = 0.396),
+                                        GRAN_FO = GRAND,),
                                  );
 
           list = DEFI_LIST_REEL(DEBUT=timem,
@@ -203,7 +203,9 @@ for i in range(NCAL):
              
           SXM = RESU[i]['SIXX',2]
 
-          VXM = RESU[i]['V1',2]
+          Vim[0] = RESU[i]['V1',2]
+          Vim[1] = RESU[i]['V2',2]
+          Vim[2] = RESU[i]['V3',2]
           
           IMPR_TABLE(TABLE=RESU[i]);
           
