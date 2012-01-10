@@ -3,9 +3,9 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR,OPTION
-      REAL*8             CRIT(3),LINE
+      REAL*8             CRIT(10),LINE,RADI
       REAL*8             DEPS(6),DX,DEUXMU,DEMU,CINCO
       REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -84,7 +84,7 @@ C
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3),TYPE
       REAL*8      VALPAM(3),VALPAP(3),RESU,R8MIEM,VALRM(2)
-      REAL*8      BENDOM,BENDOP,KDESSM,KDESSP,RAC2
+      REAL*8      BENDOM,BENDOP,KDESSM,KDESSP,RAC2,XM(6),XP(6)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
@@ -518,6 +518,15 @@ C       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         ENDIF
       ENDIF
 
+      IF (OPTION(1:9).NE.'RIGI_MECA') THEN
+         IF (CRIT(10).GT.0.D0) THEN
+            CALL RADIAL(NDIMSI,SIGM,SIGP,VIM(2),VIP(2),0,XM,XP,
+     &                  RADI)
+            IF (RADI.GT.CRIT(10)) THEN
+               IRET=2
+            ENDIF
+         ENDIF
+      ENDIF 
 C
  9999 CONTINUE
 C FIN ------------------------------------------------------------------

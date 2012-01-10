@@ -1,9 +1,9 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -408,10 +408,14 @@ def imprime_ojb(file,capy):
    # Bouts de code servant parfois aux développeurs pour générer des fichiers de "doc" :
    # Ces bouts de code sont placés ici, après le "degenerise" et avant les "del cata"
    if 0 :
-      nomfic="/local00/home/lvabhhts/liCMP.txt"
+      nomfic="/local00/home/lvabhhts/U/liCMP.txt"
       impr_CMP(nomfic,capy) # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM   GRANDEUR  CMP )
    if 0 :
-      nomfic="/local00/home/lvabhhts/PbOptions.txt"
+      nomfic="/local00/home/lvabhhts/U/param_options.txt"
+      # le fichier produit est moins gros que liCMP mais surtout il contient les paramètres RESL
+      impr_param_options(nomfic,capy) # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)
+   if 0 :
+      nomfic="/local00/home/lvabhhts/U/PbOptions.txt"
       PbOptions(nomfic,capy) # pour imprimer le nom des parametres inutilises des options
    #=========================================================================================
 
@@ -871,7 +875,10 @@ def imprime_ojb(file,capy):
                  liste=None
                  for (en2,liste2) in l_decl_en:
                     if en2==en : liste=liste2
-                 if liste :
+                 if not liste :
+                   pass # la verif. ci-dessous est trop sévère. Voir fiche REX 18068.
+                   #ERR.mess('E',"L' ensemble de noeuds "+en+" est non-défini pour l'élément: "+note)
+                 else :
                     for ino in liste :
                        for kk in range(len(liec)):
                           MODELOC.ecri_co(nom=nomolo2,indice=4+(ino-1)*nec+kk+1,valeur=liec[kk])
@@ -996,20 +1003,48 @@ def imprime_ojb(file,capy):
    ERR.mess('I',"Fin de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
 
 
+def verif_type_gene(capy):
+#------------------------------------------------------
+#  fait quelques vérifications sur les TYPE_GENE__
+#-------------------------------------------------------
+    ERR.contexte('Vérification des éléments finis génériques (TYPE_GENE__).')
+    for cata in capy.tg:
+        nogene,l_entete,modlocs,opts=cata.cata_tg
+
+        # 1. On vérifie qu'un catalogue "générique" a bien un nom de la forme GENER_XXXX:
+        if nogene[0:6]!="GENER_" :  ERR.mess('E','Le TYPE_GENE__: '+nogene+' doit avoir un nom de la forme : GENER_XXXX')
+
+        # 2. On veut vérifier que les ensembles de noeuds utilisés dans les modes locaux
+        # sont définis dans au moins une entete (fiche REX 18068)
+        dico_EN={}
+        for entete in l_entete :
+            l_decl_en=entete[4] ;
+            if l_decl_en :
+              for (en,liste2) in l_decl_en: dico_EN[en]=1
+        liste_EN=dico_EN.keys()
+
+        MLOCs,MLVEs,MLMAs=modlocs
+        for moloc in MLOCs:
+           diff=moloc[4]
+           if diff == "DIFF" :
+              for (en,point) in moloc[5]:
+                 if en not in liste_EN :
+                    ERR.mess('E',"L' ensemble de noeuds "+en+" n'est pas utilisé dans le catalogue : "+nogene)
+
+
 def degenerise(capy):
-#-------------------------------------------
+#------------------------------------------------
 #  remplace les TYPE_GENE__ par des TYPE_ELEM__ :
-#-------------------------------------------
+#------------------------------------------------
     ERR.contexte('Eclatement des éléments finis génériques (TYPE_GENE__) en des TYPE_ELEM__ ordinaires.')
+    verif_type_gene(capy)
+
     nb_te=len(capy.te) ; dicte2={}
     for k in capy.dicte.keys():
         dicte2[k]='a'
 
     for cata in capy.tg:
         nogene,l_entete,modlocs,opts=cata.cata_tg
-
-        # on vérifie qu'un catalogue "générique" a bien un nom de la forme GENER_XXXX:
-        if nogene[0:6]!="GENER_" :  ERR.mess('E','Le TYPE_GENE__: '+nogene+' doit avoir un nom de la forme : GENER_XXXX')
 
         for entete in l_entete :
             l_decl_opt=entete[5]
@@ -1191,6 +1226,51 @@ def impr_CMP(nomfic,capy):
 
 
 #----------------------------------------------------------------------------------
+def impr_param_options(nomfic,capy):
+# pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)  (y compris les RESL)
+#-----------------------------------------------------------------------------------
+   file = open(nomfic,"w")
+
+   for cata in capy.te:
+       entete,modlocs,opts=cata.cata_te
+       note=entete[0]
+
+       MLOCs,MLVEs,MLMAs=modlocs
+
+       dicmod={}
+       for moloc in MLOCs:
+           nomolo=moloc[0];nogd=moloc[1]
+           dicmod[nomolo]=nogd
+       for moloc in MLVEs:
+           nomolo=moloc[0];nogd=moloc[1]
+           dicmod[nomolo]=nogd
+       for moloc in MLMAs:
+           nomolo=moloc[0];nogd=moloc[1]
+           dicmod[nomolo]=nogd
+
+       if opts:
+            for opt in opts:
+                noop=opt[0];numte=int(opt[1]);nbin=len(opt[2])/2;nbou=len(opt[3])/2
+
+                if numte > 0 :
+
+                    for kk in range(nbin):
+                        mode =opt[2][2*kk]
+                        param=opt[2][2*kk+1]
+                        if mode in dicmod.keys() :
+                           nogd=dicmod[mode]
+                           file.write(noop+" "+note+" IN "+param+" "+nogd+"\n")
+
+                    for kk in range(nbou):
+                        mode =opt[3][2*kk]
+                        param=opt[3][2*kk+1]
+                        if mode in dicmod.keys() :
+                           nogd=dicmod[mode]
+                           file.write(noop+" "+note+" OUT "+param+" "+nogd+"\n")
+
+
+
+#----------------------------------------------------------------------------------
 def PbOptions(nomfic,capy):
 # pour imprimer les noms des options qui ne sont plus realisees
 # pour imprimer les noms des parametres inutilises des options
@@ -1233,6 +1313,7 @@ def PbOptions(nomfic,capy):
         if not param in utilise[noop] :
            file.write("INUTILISE "+noop+" "+param+'\n')
         else :
-           file.write("UTILISE "+noop+" "+param+'\n')
+           pass
+           #file.write("UTILISE "+noop+" "+param+'\n')
 
 

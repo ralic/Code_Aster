@@ -1,8 +1,8 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,7 @@ C     ------------------------------------------------------------------
       CHARACTER *16    COMPEX
       CHARACTER *8     NOMRES, K8B
       LOGICAL          LERROR, LVALID, LABORT, LTRACE, SUITE
-      INTEGER          LOUT,IDF,I,LC,ICMD,IMAAP,LXLGUT
+      INTEGER          LOUT,IDF,I,LC,ICMD,IMAAP,LXLGUT, ISJVUP
 C     ------------------------------------------------------------------
       SAVE             RECURS
 C     ------------------------------------------------------------------
@@ -50,7 +50,7 @@ C --- SE PROTEGER DES APPELS RECURSIFS
       IF ( RECURS .EQ. 1234567891 ) THEN
          CALL JEFINI('ERREUR')
       ENDIF
-      
+
       IF ( RECURS .EQ. 1234567890 ) THEN
          RECURS = 1234567891
 C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
@@ -61,7 +61,9 @@ C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
 
       CALL JEVEMA(IMAAP)
       IF (IMAAP.GE.200) CALL JEFINI('ERREUR')
-      CALL JEMARQ()
+      IF ( ISJVUP() .EQ. 1 ) THEN
+        CALL JEMARQ()
+      ENDIF
 
 C     --- COMPORTEMENT EN CAS D'ERREUR
       CALL ONERRF(' ', COMPEX, LOUT)
@@ -135,6 +137,8 @@ C
       ENDIF
 C
       RECURS = 0
-      CALL JEDEMA()
+      IF ( ISJVUP() .EQ. 1 ) THEN
+        CALL JEDEMA()
+      ENDIF
 
       END

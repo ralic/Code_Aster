@@ -1,9 +1,9 @@
-# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -179,13 +179,10 @@ DEPLPES=CALC_CHAMP(reuse=DEPLPES,RESULTAT=DEPLPES,
                    CONTRAINTE=('EFGE_NOEU',),)
 
 DEPLPES2=POST_CHAMP(RESULTAT=DEPLPES,
-                    TOUT='OUI',
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),);
-
 # ------------------------------------------------------------------
-
 DEPLROT=MECA_STATIQUE(MODELE=MO,
                       CARA_ELEM=CARE,
                       CHAM_MATER=CHMAT,
@@ -196,13 +193,10 @@ DEPLROT=CALC_ELEM(reuse=DEPLROT,
                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
 DEPLROT2=POST_CHAMP(RESULTAT=DEPLROT,
-                    TOUT='OUI',
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),);
-
 # ------------------------------------------------------------------
-
 LISTIME=DEFI_LIST_REEL(VALE=(0.0,1.0,),);
 
 STATNL1=STAT_NON_LINE(MODELE=MO,
@@ -232,11 +226,9 @@ DEPLDIL=CALC_ELEM(reuse=DEPLDIL,
            OPTION=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO',),);
 
 DEPLDIL2=POST_CHAMP(RESULTAT=DEPLDIL,
-                    TOUT='OUI',
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),);
-
 STATNL2=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMATH1,
                       CARA_ELEM=CARE,
@@ -264,13 +256,10 @@ DEPLDILT=CALC_ELEM(reuse=DEPLDILT,
                    OPTION=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO',),);
 
 DDILT2=POST_CHAMP(RESULTAT=DEPLDILT,
-                    TOUT='OUI',
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),);
-
 # ------------------------------------------------------------------
-
 DEPLDI2=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT2,
                       CARA_ELEM=CARE,
@@ -281,11 +270,9 @@ DEPLDI2=CALC_ELEM(reuse=DEPLDI2,
                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
 DDI2=POST_CHAMP(RESULTAT=DEPLDI2,
-                TOUT='OUI',
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                               NUME_COUCHE=1,
                               NIVE_COUCHE='INF',),);
-
 DEPLDI2T=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT2,
                        CARA_ELEM=CARE,
@@ -296,13 +283,10 @@ DEPLDI2T=CALC_ELEM(reuse=DEPLDI2T,
                    OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
 DDI2T=POST_CHAMP(RESULTAT=DEPLDI2T,
-                 TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
-
 #---------------------------------------------------------------------
-
 TEST_RESU(RESU=(
 
       # DEPLACEMENTS

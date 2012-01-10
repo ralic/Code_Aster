@@ -1,5 +1,5 @@
       SUBROUTINE MDFNLI (NBMODE,DEPGEN,VITGEN,ACCGEN,FEXGEN,
-     +                   MASGEN,PHICAR,PULSA2,AMOGEN,NBNLI,
+     +                   MASGEN,PHICAR,PULSA2,AMOGEN,
      +                   NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,SAUCHO,
      +                   NBREDE,DPLRED,PARRED,FONRED,SAURED,SAREDI,
      +                   NBREVI,DPLREV,FONREV,  
@@ -10,7 +10,7 @@
      +                   VROTAT,TYPAL,FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER       NBMODE,NBREDE,NBREVI,NBEXCI,LOGCHO(*),SAREDI(*)
-      INTEGER       NBPAL,NBCHOC,NBNLI
+      INTEGER       NBPAL,NBCHOC
       INTEGER       NUMPAS
       REAL*8        DT,DTSTO,TCF,VROTAT,CONV,ANGINI
       REAL*8        DEPGEN(*),VITGEN(*),FEXGEN(*),MASGEN(*)
@@ -32,9 +32,9 @@
       
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 09/01/2012   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -88,7 +88,8 @@ C IN  : MONMOT : = OUI SI MULTI-APPUIS
 C ----------------------------------------------------------------------
 C
 C     --- FORCES NON-LINEAIRES DE TYPE CHOC ---
-      IF ( NBCHOC.NE.0 ) CALL MDFCHO ( NBMODE,DEPGEN,VITGEN,
+      IF ( NBCHOC.NE.0 .AND. NBRFIS.EQ.0 ) 
+     +                   CALL MDFCHO ( NBMODE,DEPGEN,VITGEN,
      +                                 ACCGEN,FEXGEN,MASGEN,PHICAR,
      +                                 PULSA2,AMOGEN,NBCHOC,LOGCHO,
      +                                 DPLMOD,PARCHO,NOECHO,SAUCHO,
@@ -101,7 +102,7 @@ C     --- NON-LINEARITE DE TYPE RELA_EFFO_DEPL ---
      +                                 SAREDI )
 C
 C     --- NON-LINEARITE DE TYPE ROTOR FISSURE ---
-      IF ( NBRFIS.GT.0 ) CALL MDRFIS ( NBMODE,DEPGEN,FEXGEN,NBNLI,
+      IF ( NBRFIS.GT.0 ) CALL MDRFIS ( NBMODE,DEPGEN,FEXGEN,NBCHOC,
      +                                 NBRFIS,DPLMOD,FK,DFK,PARCHO,
      +                                 ANGINI,VROTAT,TEMPS) 
 C

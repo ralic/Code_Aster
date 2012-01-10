@@ -4,10 +4,10 @@
       CHARACTER*(*)     CHAM,NOPASE,NOMA,FORM
       CHARACTER*80      TITRE
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,18 +37,15 @@ C     ------------------------------------------------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
-      INTEGER       VERS,UTIL,NIVO,NBTITR,JTITR,LGNOMA
-      INTEGER       LXLGUT, I, IER, IOS1, IOS2, IRET
+      INTEGER       VERS,UTIL,NIVO,NBTITR,JTITR
+      INTEGER       I, IER, IRET
 C
-      LOGICAL       EXS
       CHARACTER*1   K1BID
       CHARACTER*8   NOMMA
       CHARACTER*16  DATE,TYPRES
       CHARACTER*19  CHAM19
       CHARACTER*24  DATEUR
-      CHARACTER*24 VALK(2)
-      CHARACTER*28  NOFIEN
-      CHARACTER*80  TITSUP(7),TITENS(2),STITR
+      CHARACTER*80  TITSUP(7),STITR
       LOGICAL       LEXP
 C
       CALL JEMARQ()
@@ -127,61 +124,5 @@ C
          WRITE (IFI,'(A)') '    -1'
       ENDIF
 C
-C     --- IMPRESSION DU MAILLAGE AU FORMAT 'ENSIGHT' :
-C           ECRITURE DE DEUX LIGNES DE TITRE DANS LE FICHIER
-C           GEOMETRIE './RESU_ENSIGHT/'//NOMMA//'.geo'
-      IF((FORM(1:7).EQ.'ENSIGHT') .AND. (NOMMA.NE.' ')) THEN
-        DO 21 I = 1,2
-          TITENS(I) = ' '
-   21   CONTINUE
-        LGNOMA=LXLGUT(NOMMA)
-        NOFIEN = './RESU_ENSIGHT/'
-        NOFIEN = NOFIEN(1:15)//NOMMA(1:LGNOMA)//'.geo'
-        INQUIRE(FILE=NOFIEN,ERR=22,IOSTAT=IOS1,EXIST=EXS)
-   22   CONTINUE
-        IF(IOS1.EQ.0) THEN
-          IF(EXS) THEN
-            OPEN(UNIT=IFI,ERR=23,STATUS='OLD',FILE=NOFIEN,IOSTAT=IOS2)
-   23       CONTINUE
-            IF(IOS2.EQ.0) THEN
-               VALK(1) = NOMMA(1:LGNOMA)
-               VALK(2) = NOFIEN(1:19+LGNOMA)
-               CALL U2MESK('A','PREPOST3_7', 2 ,VALK)
-            ELSE
-              GO TO 99
-            ENDIF
-          ELSE
-            OPEN(UNIT=IFI,ERR=24,STATUS='NEW',FILE=NOFIEN,IOSTAT=IOS2)
-   24       CONTINUE
-            IF(IOS2.NE.0) GO TO 99
-          ENDIF
-          CALL JEEXIN(NOMMA//'           .TITR',IRET)
-          IF(IRET.NE.0) THEN
-            CALL JEVEUO(NOMMA//'           .TITR','L',JTITR)
-            TITENS(2) = ZK80(JTITR)
-          ENDIF
-          CALL ENLIRD(DATEUR)
-          CALL VERSIO(VERS,UTIL,NIVO,DATE,LEXP)
-C                      12345678901234567890
-          TITENS(1) = ' ASTER V00.00.00 DU '
-          WRITE (TITENS(1) (9:16),'(I2,''.'',I2,''.'',I2)')
-     &         VERS,UTIL,NIVO
-          TITENS(1) = TITENS(1) (1:20)//DATE(1:10)//'  RESULTAT DU '
-          TITENS(1) (45:69) = DATEUR
-C
-          DO 31 I = 1,2
-            WRITE (IFI,'(A)') TITENS(I)
-   31     CONTINUE
-C
-        ELSE
-          GO TO 99
-        ENDIF
-        GO TO 100
-   99   CONTINUE
-         VALK(1) = NOFIEN(1:19+LGNOMA)
-         VALK(2) = NOMMA
-         CALL U2MESK('F','PREPOST3_8', 2 ,VALK)
-  100   CONTINUE
-      ENDIF
       CALL JEDEMA()
       END

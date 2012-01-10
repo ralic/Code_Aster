@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,9 +100,6 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
              PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
            ),
 
-           b_vari_el       =BLOC(condition="FORMAT==('MED')",
-             DECOUP_VARI_INTERNE=SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
-           ),
            b_extrac        =BLOC(condition="RESULTAT != None",
                                  fr="extraction d un champ de grandeur",
              regles=(EXCLUS('TOUT_CHAM','NOM_CHAM'),

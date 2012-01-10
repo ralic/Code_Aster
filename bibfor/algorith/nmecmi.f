@@ -2,9 +2,9 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,7 @@ C
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(3),OPTION
-      REAL*8             CRIT(6),TP2,LINE
+      REAL*8             CRIT(10),TP2,LINE,RADI
       REAL*8             DEPS(6),PREC,DX,DEUXMU
       REAL*8             SIGM(6),VIM(8),SIGP(6),VIP(8),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -102,6 +102,7 @@ C     ----------------------
       CPLAN =  TYPMOD(1) .EQ. 'C_PLAN'
       NDIMSI = 2*NDIM
       IMATE2=IMATE
+      IRET=0
 C
 C MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 C
@@ -387,6 +388,16 @@ C       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
          ENDIF
       ENDIF
 C
+      IF (OPTION(1:9).NE.'RIGI_MECA') THEN
+         IF (CRIT(10).GT.0.D0) THEN
+            CALL RADIAL(NDIMSI,SIGM,SIGP,VIM(2),PLAST,1,VIM(3),VIP(3),
+     &                  RADI)
+            IF (RADI.GT.CRIT(10)) THEN
+               IRET=2
+            ENDIF
+         ENDIF
+      ENDIF 
+C
 C MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 C
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
@@ -400,6 +411,6 @@ C
             VIP(K+2) = XP(K)/SQRT(2.D0)
  30      CONTINUE
       END IF
-C
+      
 9999  CONTINUE
       END

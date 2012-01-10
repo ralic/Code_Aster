@@ -1,8 +1,8 @@
-#@ MODIF calc_spec_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_spec_ops Macro  DATE 09/01/2012   AUTEUR REZETTE C.REZETTE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -81,11 +81,8 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
    l_t=[]
    l_G=[]
    l_H=[]
-#   for occ in TAB_ECHANT : 
-#      l_t.append(('TAB_ECHANT',occ))   
-   if TAB_ECHANT:  #MC
-      l_t = TAB_ECHANT.List_F()[0]
-
+   for occ in TAB_ECHANT : 
+      l_t.append(('TAB_ECHANT',occ))   
    for occ in ECHANT : 
       l_f.append(('ECHANT',occ))
    for occ in INTERSPE : 
@@ -102,23 +99,21 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
       vale_sig=l_f[0][1]['FONCTION'].Valeurs(); 
       l_ech=len(vale_sig[0])
       dt=vale_sig[0][1]-vale_sig[0][0]
-      print "test : l_ech = ", l_ech
+      
    else :
-      #tab_ast=l_t[0][1]['NOM_TAB'];
-      tab_ast=l_t['NOM_TAB']  #MC
+      
+      tab_ast=l_t[0][1]['NOM_TAB'];
+      #tab_ast=l_t['NOM_TAB']  #MC
       tab_py=tab_ast.EXTR_TABLE();
       
       nom_fonc= tab_py['FONCTION'].values()['FONCTION']
       fonc_py = [sd_fonction(fonc) for fonc in nom_fonc]
       temp=fonc_py[0].VALE.get();
       dt=temp[1]-temp[0];
-      
-      l_ech_temp=l_t['LONGUEUR_ECH'];
-      recouvr_temp=l_t['RECOUVREMENT'];
-      
-      l_ech_t=[l_ech_temp[0]['DUREE'] , l_ech_temp[0]['POURCENT'],l_ech_temp[0]['NB_PTS'] ];
-      recouvr_t=[recouvr_temp[0]['DUREE'] , recouvr_temp[0]['POURCENT'],recouvr_temp[0]['NB_PTS'] ];
-            
+           
+      l_ech_t=[l_t[0][1]['LONGUEUR_DUREE'] , l_t[0][1]['LONGUEUR_POURCENT'],l_t[0][1]['LONGUEUR_NB_PTS'] ];
+      recouvr_t=[l_t[0][1]['RECOUVREMENT_DUREE'] , l_t[0][1]['RECOUVREMENT_POURCENT'],l_t[0][1]['RECOUVREMENT_NB_PTS'] ];
+
       if l_ech_t.count(None)==3 : l_ech=len(temp)/2;
       if recouvr_t.count(None)==3 : recouvr=0;
       if l_ech_t.count(None)<2 : 
@@ -145,7 +140,7 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
                 recouvr=int(numpy.floor(recouvr_t[i1]))
       if recouvr > l_ech :
          raise FonctionError, 'La longueur de recouvrement ne peut exceder la longueur '
-      print "test2 : l_ech = ", l_ech
+      
 
 #-- Recuperation des fenetres
 

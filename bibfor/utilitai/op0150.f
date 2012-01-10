@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,7 +93,8 @@ C
 
       CHARACTER*72 REP
       INTEGER      IARG
-
+C
+      LOGICAL LPREM
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -354,7 +355,8 @@ C       CREATION DE L'OBJET .REFD DANS LES MODE_MECA
         IF ((TYPRES.EQ.'MODE_MECA').OR.(TYPRES.EQ.'MODE_MECA_C')) THEN
           CALL LRREFD(RESU,PRCHND)
         ENDIF
-
+C
+        LPREM = .TRUE.
         DO 260 I = 1,NBNOCH
           OPTION = ' '
           PARAM  = ' '
@@ -365,18 +367,25 @@ C       CREATION DE L'OBJET .REFD DANS LES MODE_MECA
 
 C         NOM DU CHAMP MED
           CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,IARG,1,NOCHMD,N1)
-            IF(N1.EQ.0)THEN
-C                     12345678901234567890123456789012
-              NOCHMD='________________________________'//
-     &               '________________________________'
-              CALL GETVTX('FORMAT_MED','NOM_RESU',I,IARG,1,NORACI,N2)
-              NCHAR=LXLGUT(NORACI)
-              NOCHMD(1:NCHAR)=NORACI(1:NCHAR)
-              NCHAR=LXLGUT(NOCH)
-              NOCHMD(9:8+NCHAR)=NOCH(1:NCHAR)
-              NOCHMD(9+NCHAR:64)=' '
-            ENDIF
-
+          IF(N1.EQ.0)THEN
+C                   12345678901234567890123456789012
+            NOCHMD='________________________________'//
+     &             '________________________________'
+            CALL GETVTX('FORMAT_MED','NOM_RESU',I,IARG,1,NORACI,N2)
+            NCHAR=LXLGUT(NORACI)
+            NOCHMD(1:NCHAR)=NORACI(1:NCHAR)
+            NCHAR=LXLGUT(NOCH)
+            NOCHMD(9:8+NCHAR)=NOCH(1:NCHAR)
+            NOCHMD(9+NCHAR:64)=' '
+          ENDIF
+C
+C         ON NE FAIT LA VERIFICATION DU MAILLAGE QU'UNE FOIS AU
+C         PREMIER PASSAGE
+          IF ( LPREM ) THEN
+            CALL LRVEMA(NOMA,MFICH,NOCHMD)
+            LPREM = .FALSE.
+          ENDIF
+C
 C         NOM DES COMPOSANTES VOULUES
           NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
           NCMPVM = '&&'//NOMPRO//'.'//LCMPVM

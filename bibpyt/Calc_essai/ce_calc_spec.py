@@ -1,8 +1,8 @@
-#@ MODIF ce_calc_spec Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ce_calc_spec Calc_essai  DATE 09/01/2012   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -481,27 +481,31 @@ class InterfaceCalcSpec(Frame):
         root_tab.tab_temp=self.crea_tab_fonc(root_tab)
 
         windows=["RECT","HANN","HAMM","EXPO","PART"]
-        longueur=["DUREE","NB_PTS","POURCENT"]
+        longueur=["LONGUEUR_DUREE","LONGUEUR_NB_PTS","LONGUEUR_POURCENT"]
+        recouvrement=["RECOUVREMENT_DUREE","RECOUVREMENT_NB_PTS","RECOUVREMENT_POURCENT"]
+
 
         para_fene=root_tab.entry_win_par.get()
         lon=root_tab.entry_long.get()
         rec=root_tab.entry_rec.get()
 
-        mcfact_long=[]
+        mcfact_tabechant=[]
+
+        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp))
+
         if len(lon)>0 :
-           st="mcfact_long.append(_F(" + longueur[root_tab.radio_long.get()] + "="
+           st="mcfact_tabechant.append(_F(" + longueur[root_tab.radio_long.get()] + "="
            st=st + root_tab.entry_long.get() + "))"
            exec(st)
         else :
-           mcfact_long.append(_F(POURCENT=100.))
+           mcfact_echant.append(_F(LONGUEUR_POURCENT=100.))
 
-        mcfact_rec=[]
         if len(rec)>0 :
-           st="mcfact_rec.append(_F(" + longueur[root_tab.radio_rec.get()] + "="
+           st="mcfact_tabechant.append(_F(" + recouvrement[root_tab.radio_rec.get()] + "="
            st=st + root_tab.entry_rec.get() + "))"
            exec(st)
         else :
-           mcfact_rec.append(_F(POURCENT=0.))
+           mcfact_tabechant.append(_F(RECOUVREMENT_POURCENT=0.))
 
         mcfact_win=[]
         if root_tab.radio_win.get() <= 2 :
@@ -512,9 +516,7 @@ class InterfaceCalcSpec(Frame):
            st=st+ "DEFI_FENE=" + para_fene + "),)"
            exec(st)
 
-        Spec=CALC_SPEC(TAB_ECHANT=_F(NOM_TAB=root_tab.tab_temp,
-                                     LONGUEUR_ECH=mcfact_long,
-                                     RECOUVREMENT=mcfact_rec),
+        Spec=CALC_SPEC(TAB_ECHANT=mcfact_tabechant,
                        INTERSPE=mcfact_win,
                       )
         root_tab.Spec=Spec
@@ -579,15 +581,33 @@ class InterfaceCalcSpec(Frame):
         root_tab.tab_temp=self.crea_tab_fonc(root_tab)
 
         windows=["RECT","HANN","HAMM","EXPO","PART"]
-        longueur=["DUREE","NB_PTS","POURCENT"]
+        
+        longueur=["LONGUEUR_DUREE","LONGUEUR_NB_PTS","LONGUEUR_POURCENT"]
+        recouvrement=["RECOUVREMENT_DUREE","RECOUVREMENT_NB_PTS","RECOUVREMENT_POURCENT"]
+
 
         para_fene=root_tab.entry_win_par.get()
         lon=root_tab.entry_long.get()
         rec=root_tab.entry_rec.get()
 
+        mcfact_tabechant=[]
+        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp))
+
+        if len(lon)>0 :
+           st="mcfact_tabechant.append(_F(" + longueur[root_tab.radio_long.get()] + "="
+           st=st + root_tab.entry_long.get() + "))"
+           exec(st)
+        else :
+           mcfact_echant.append(_F(LONGUEUR_POURCENT=100.))
+
+        if len(rec)>0 :
+           st="mcfact_tabechant.append(_F(" + recouvrement[root_tab.radio_rec.get()] + "="
+           st=st + root_tab.entry_rec.get() + "))"
+           exec(st)
+        else :
+           mcfact_tabechant.append(_F(RECOUVREMENT_POURCENT=0.))
 
         # recuperation des points de reference
-
         ind_ref='['
         for i1 in range(len(ind_sel)) :
            if type(root_tab.list_ref.get(ind_sel[i1],ind_sel[i1])) == type('') :
@@ -600,21 +620,6 @@ class InterfaceCalcSpec(Frame):
 
         ind_ref=ind_ref + '],'
 
-        mcfact_long=[]
-        if len(lon)>0 :
-           st="mcfact_long.append(_F(" + longueur[root_tab.radio_long.get()] + "="
-           st=st + root_tab.entry_long.get() + "))"
-           exec(st)
-        else :
-           mcfact_long.append(_F(POURCENT=100))
-
-        mcfact_rec=[]
-        if len(rec)>0 :
-           st="mcfact_rec.append(_F(" + longueur[root_tab.radio_rec.get()] + "="
-           st=st + root_tab.entry_rec.get() + "))"
-           exec(st)
-        else :
-           mcfact_rec.append(_F(POURCENT=0))
 
         mcfact_win=[]
         if root_tab.radio_win.get() <= 2 :
@@ -629,9 +634,7 @@ class InterfaceCalcSpec(Frame):
            st=st+ "DEFI_FENE=" + para_fene + "))"
            exec(st)
 
-        Coh=CALC_SPEC(TAB_ECHANT=_F(NOM_TAB=root_tab.tab_temp,
-                                     LONGUEUR_ECH=mcfact_long,
-                                     RECOUVREMENT=mcfact_rec),
+        Coh=CALC_SPEC(TAB_ECHANT=mcfact_tabechant,
                       TRANSFERT=mcfact_win,
                       )
         root_tab.Coh=Coh
@@ -694,13 +697,31 @@ class InterfaceCalcSpec(Frame):
         root_tab.tab_temp=self.crea_tab_fonc(root_tab)
 
         windows=["RECT","HANN","HAMM","EXPO","PART"]
-        longueur=["DUREE","NB_PTS","POURCENT"]
+        
+        longueur=["LONGUEUR_DUREE","LONGUEUR_NB_PTS","LONGUEUR_POURCENT"]
+        recouvrement=["RECOUVREMENT_DUREE","RECOUVREMENT_NB_PTS","RECOUVREMENT_POURCENT"]
+
 
         para_fene=root_tab.entry_win_par.get()
         lon=root_tab.entry_long.get()
         rec=root_tab.entry_rec.get()
 
+        mcfact_tabechant=[]
+        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp))
 
+        if len(lon)>0 :
+           st="mcfact_tabechant.append(_F(" + longueur[root_tab.radio_long.get()] + "="
+           st=st + root_tab.entry_long.get() + "))"
+           exec(st)
+        else :
+           mcfact_echant.append(_F(LONGUEUR_POURCENT=100.))
+
+        if len(rec)>0 :
+           st="mcfact_tabechant.append(_F(" + recouvrement[root_tab.radio_rec.get()] + "="
+           st=st + root_tab.entry_rec.get() + "))"
+           exec(st)
+        else :
+           mcfact_tabechant.append(_F(RECOUVREMENT_POURCENT=0.))
 
         # recuperation des points de reference
 
@@ -746,9 +767,7 @@ class InterfaceCalcSpec(Frame):
            st=st+ "DEFI_FENE=" + para_fene + "))"
            exec(st)
 
-        FRF=CALC_SPEC(TAB_ECHANT=_F(NOM_TAB=root_tab.tab_temp,
-                                     LONGUEUR_ECH=mcfact_long,
-                                     RECOUVREMENT=mcfact_rec),
+        FRF=CALC_SPEC(TAB_ECHANT=mcfact_tabechant,
                       TRANSFERT=mcfact_win,
                       )
         root_tab.FRF=FRF
@@ -833,10 +852,7 @@ class InterfaceCalcSpec(Frame):
         # construction de la liste des indices des differents numeros d'ordre
 
         ind_new=[]
-        print "list_temp  = ", list_temp
-        print "list_temp.nume_ordr = ", list_temp.nume_ordr
         for mes in ind_sel :
-            print "mes = ", mes
             ind_new.append(list_temp.nume_ordr.index(mes))
             for i1 in range(1,list_temp.nume_ordr.count(mes)) :
                ind_new.append(list_temp.nume_ordr[ind_new[-1]+1:].index(mes)+ind_new[-1]+1)

@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,30 +100,19 @@ CALC_ELEM( reuse= ELAS1 ,RESULTAT= ELAS1 ,
            OPTION='SIGM_ELNO',);
 
 ELAS1C1M=POST_CHAMP(RESULTAT=ELAS1,
-                     TOUT='OUI',
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-
 R = 5.7;
-
 L = 16.0;
-
 E = 210000000000.0;
-
 h = 0.04;
-
 P = 15000.0;
-
 Nu = 0.3;
-
 DZMAX = (-Nu*P*R*L)/E/h/2.
-
 DXMAX = P*R*R/E/h
 DXMIN = -P*R*R/E/h
 SIG = P*R/h
-
-
 TEST_RESU(RESU=_F(RESULTAT=ELAS1,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
@@ -191,11 +180,9 @@ CALC_ELEM( reuse= ELAS2 ,RESULTAT= ELAS2 ,
            OPTION='SIGM_ELNO',);
 
 ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2,
-                     TOUT='OUI',
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-
 TEST_RESU(RESU=_F(RESULTAT=ELAS2,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',

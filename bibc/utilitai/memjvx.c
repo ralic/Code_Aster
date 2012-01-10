@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMJVX utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF MEMJVX utilitai  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -24,14 +24,14 @@ INTEGER DEFP(MEMJVX, memjvx, DOUBLE *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** d'allocation d'une zone de memoire exacte JEVEUX
-** val -> si <  0 ISSUIV renvoie la valeur de la memoire en mots
+** val -> si <  0 MEMJVX renvoie la valeur de la memoire en Mw
 **        si >= 0 positionne l'indicateur par une valeur en Mw
 */
 {
    static INTEGER MEM_JEVEUX=0;
    if (*val >= 0) {
-      MEM_JEVEUX=(INTEGER)((*val)*1024.*1024.);
+      MEM_JEVEUX=(INTEGER)(*val);
    }
-   
+
    return MEM_JEVEUX;
 }

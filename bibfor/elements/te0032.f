@@ -2,9 +2,9 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/11/2011   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,9 +48,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
       INTEGER      I, J, IER, IPLAN, JGEOM, JCOQU, JVECG, JPRES, ITEMPS
-      INTEGER      IADZI, IAZK24, LPESA
+      INTEGER      IADZI, IAZK24, LPESA,K
       REAL*8       PGL(3,3) , XYZL(3,4) , PGLO(3)  , PLOC(3)
-      REAL*8       VECL(24) , FOR(6,4)  , RHO      , EPAIS
+      REAL*8       VECL(24), FOR(6,4), FOR2(6,4), RHO, EPAIS
       REAL*8       UNDEMI
       REAL*8       VALPAR(4), DIST , EXCENT , PR
       LOGICAL      GLOBAL, LOCAPR
@@ -82,6 +82,7 @@ C         ------------------------------
          DO 110 J = 1, NNO
             DO 100 I = 1, 6
                FOR(I,J) = 0.D0
+               FOR2(I,J) = 0.D0
   100       CONTINUE
 C----------------------------------------------------------------------
 C           LE SIGNE MOINS CORRESPOND A LA CONVENTION :
@@ -92,7 +93,7 @@ C----------------------------------------------------------------------
 C
       ELSE IF (OPTION .EQ. 'CHAR_MECA_FRCO3D') THEN
 C              ------------------------------
-         CALL JEVECH ('PFRCO3D', 'E', JPRES)
+         CALL JEVECH ('PFRCO3D', 'L', JPRES)
          GLOBAL = ABS(ZR(JPRES+6)) .LT. 1.D-3
          IF ( GLOBAL ) THEN
             CALL UTPVGL ( 1 , 6 , PGL , ZR(JPRES   ) , FOR(1,1) )
@@ -121,9 +122,9 @@ C --- CAS DES CHARGEMENTS DE FORME FONCTION
 C
       ELSE IF (OPTION .EQ. 'CHAR_MECA_PRES_F') THEN
 C              ------------------------------
-         CALL JEVECH ('PPRESSF', 'E', JPRES)
+         CALL JEVECH ('PPRESSF', 'L', JPRES)
          IF (ZK8(JPRES).EQ.'&FOZERO') GOTO 9999
-         CALL JEVECH ('PTEMPSR', 'E', ITEMPS)
+         CALL JEVECH ('PTEMPSR', 'L', ITEMPS)
          VALPAR(4) = ZR(ITEMPS)
          NOMPAR(4) = 'INST'
          NOMPAR(1) = 'X'
@@ -145,8 +146,8 @@ C              ------------------------------
 C
       ELSE IF (OPTION .EQ. 'CHAR_MECA_FFCO3D') THEN
 C              ------------------------------
-         CALL JEVECH ('PFFCO3D', 'E', JPRES)
-         CALL JEVECH ('PTEMPSR', 'E', ITEMPS)
+         CALL JEVECH ('PFFCO3D', 'L', JPRES)
+         CALL JEVECH ('PTEMPSR', 'L', ITEMPS)
          VALPAR(4) = ZR(ITEMPS)
          NOMPAR(4) = 'INST'
          NOMPAR(1) = 'X'
@@ -174,19 +175,19 @@ C
 C------------------------------------------------------
 C  PAS DE CHANGEMENT DE SIGNE POUR LES FORCES REPARTIES
 C------------------------------------------------------
-           CALL FOINTE('FM',ZK8(JPRES  ),4,NOMPAR,VALPAR,FOR(1,J+1),IER)
-           CALL FOINTE('FM',ZK8(JPRES+1),4,NOMPAR,VALPAR,FOR(2,J+1),IER)
-           CALL FOINTE('FM',ZK8(JPRES+2),4,NOMPAR,VALPAR,FOR(3,J+1),IER)
-           CALL FOINTE('FM',ZK8(JPRES+3),4,NOMPAR,VALPAR,FOR(4,J+1),IER)
-           CALL FOINTE('FM',ZK8(JPRES+4),4,NOMPAR,VALPAR,FOR(5,J+1),IER)
-           CALL FOINTE('FM',ZK8(JPRES+5),4,NOMPAR,VALPAR,FOR(6,J+1),IER)
+          CALL FOINTE('FM',ZK8(JPRES  ),4,NOMPAR,VALPAR,FOR2(1,J+1),IER)
+          CALL FOINTE('FM',ZK8(JPRES+1),4,NOMPAR,VALPAR,FOR2(2,J+1),IER)
+          CALL FOINTE('FM',ZK8(JPRES+2),4,NOMPAR,VALPAR,FOR2(3,J+1),IER)
+          CALL FOINTE('FM',ZK8(JPRES+3),4,NOMPAR,VALPAR,FOR2(4,J+1),IER)
+          CALL FOINTE('FM',ZK8(JPRES+4),4,NOMPAR,VALPAR,FOR2(5,J+1),IER)
+          CALL FOINTE('FM',ZK8(JPRES+5),4,NOMPAR,VALPAR,FOR2(6,J+1),IER)
   220       CONTINUE
-  
-            CALL UTPVGL ( 1 , 6 , PGL , FOR(1,1) , FOR(1,1) )
-            CALL UTPVGL ( 1 , 6 , PGL , FOR(1,2) , FOR(1,2) )
-            CALL UTPVGL ( 1 , 6 , PGL , FOR(1,3) , FOR(1,3) )
+
+            CALL UTPVGL ( 1 , 6 , PGL , FOR2(1,1) , FOR(1,1) )
+            CALL UTPVGL ( 1 , 6 , PGL , FOR2(1,2) , FOR(1,2) )
+            CALL UTPVGL ( 1 , 6 , PGL , FOR2(1,3) , FOR(1,3) )
             IF ( NNO .EQ. 4 ) THEN
-               CALL UTPVGL ( 1 , 6 , PGL , FOR(1,4) , FOR(1,4) )
+               CALL UTPVGL ( 1 , 6 , PGL , FOR2(1,4) , FOR(1,4) )
             ENDIF
 C
          ELSE IF ( LOCAPR ) THEN

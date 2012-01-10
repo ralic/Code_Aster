@@ -2,9 +2,9 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,7 +123,7 @@ C                                        LOI VISC_CINX_CHAB
 C
 C -----  ARGUMENTS
           INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET
-           REAL*8             CRIT(6),INSTAM,INSTAP
+           REAL*8             CRIT(10),INSTAM,INSTAP
            REAL*8             DEPS(6),DEUXMU
            REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
            CHARACTER*(*)      FAMI
@@ -136,7 +136,7 @@ C -----  VARIABLES LOCALES
            REAL*8      COEF,SIGEDV(6),KRON(6),DEPSDV(6),EPSPM(6)
            REAL*8      SIGMDV(6),SIGPDV(6),EM,NUM,KSIP(6),QP
            REAL*8      TROIKM,DEUMUM,SIGMP(6),SIGEL(6),PP,EPSPP(6)
-           REAL*8      UN,RAC2,C2P
+           REAL*8      UN,RAC2,C2P,RADI
            REAL*8      R0,RINF,B,CINF,K,W,MAT(16),C2M,GAMM2P
            REAL*8      DENOMI
            REAL*8      MP,GAMMA0,GAMMAP
@@ -144,7 +144,7 @@ C -----  VARIABLES LOCALES
            REAL*8      CM,AINF,CP
            REAL*8      ALFA2M(6),ALFA2(6),DALFA2(6)
            REAL*8      DT,KVI,VALDEN,KSIM(6),QM,RPVM
-           REAL*8      MATEL(4)
+           REAL*8      MATEL(4),XM(6),XP(6)
            INTEGER     NDIMSI,I,NITER,VISC,MEMO
            DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -155,8 +155,11 @@ C     -------------------------------------------------------------
         CALL U2MESS('F','ALGORITH6_66')
       ENDIF
 C
+      IRET=0
       CALL NMCHAM(FAMI,KPG,KSP,IMATE,COMPOR,
      &            MATEL,MAT,NBVAR,MEMO,VISC,COEF)
+     
+C     NBVARI=2+6*NBVAR+MEMO*14
 
       UN     = 1.0D0
       RAC2   = SQRT(2.D0)
@@ -335,6 +338,7 @@ C       =======================
             CALL NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
      &                  DEUXMU,CRIT,SEUIL,VISC,MEMO,DT,RPVM,QM,KSIM,
      &                  RPVP,QP,KSIP,DP,IRET,NITER)
+            IF (IRET.GT.0) GOTO 9999
             PLAST = UN
          ENDIF
 C
@@ -411,7 +415,7 @@ C      ===========
      &               PM,DP,NDIMSI,DT,RPVP,QP,VIM,DSIDEP)
 C
       ENDIF
-C
+      
 C --- MISE AU FORMAT DES CONTRAINTES DE RAPPEL :
 C     ========================================
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
@@ -443,4 +447,27 @@ C     ========================================
   105       CONTINUE
          ENDIF
       ENDIF
+
+C     Critere de radialite
+      IF (OPTION(1:9).NE.'RIGI_MECA') THEN
+         IF (CRIT(10).GT.0.D0) THEN
+C           CALCUL DE X1, X2         
+            CALL DCOPY(NDIMSI,ALFAM,1,XM,1)
+            CALL DCOPY(NDIMSI,ALFA, 1,XP,1)
+            CALL DSCAL(NDIMSI,CM/1.5D0,XM,1)
+            CALL DSCAL(NDIMSI,CP/1.5D0,XP,1)
+            IF (NBVAR.EQ.2) THEN
+               CALL DAXPY(NDIMSI,C2M/1.5D0,ALFA2M,1,XM,1)
+               CALL DAXPY(NDIMSI,C2P/1.5D0,ALFA2, 1,XP,1)
+            ENDIF
+            CALL RADIAL(NDIMSI,SIGM,SIGP,VIM(2),VIP(2),1,XM,XP,
+     &                  RADI)
+
+            IF (RADI.GT.CRIT(10)) THEN
+               IRET=2
+            ENDIF
+         ENDIF
+      ENDIF       
+
+ 9999 CONTINUE
       END

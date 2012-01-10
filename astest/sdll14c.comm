@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 20/09/2000
 # AUTEUR : F. LEBOUVIER
@@ -6,7 +6,7 @@
 # sdll14c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -26,7 +26,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'TUYAU' SEG4 (3 MODES DE FOURIER)
 #---------------------------------------------------------------------
 DEBUT(CODE=_F( NOM = 'SDLL14C',NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM='PREPOST_86',)
+      IGNORE_ALARM=('PREPOST_86','MODELISA4_6'),)
 # CETTE ALARME QUI PREVIENT L'UTILISATEUR QU'ON OUBLIE CERTAINS NOEUDS 
 # POUR LES TRIA7, QUAD9 ET SEG4 DANS L'IMPR_RESU
 #
@@ -126,6 +126,8 @@ IMPR_RESU(MODELE=MODELE,
                   RESULTAT=MOD_CAL,
                   NOM_CHAM='DEPL',),);
 
+MAILB=LIRE_MAILLAGE(FORMAT='MED',UNITE=81,);
+
 MODES=LIRE_RESU(FORMAT='MED',
                 UNITE=81,
                 FORMAT_MED=_F(NOM_CHAM='DEPL',
@@ -134,7 +136,7 @@ MODES=LIRE_RESU(FORMAT='MED',
                 MATR_A=K,
                 MATR_B=M,
                 TOUT_ORDRE='OUI',
-                MAILLAGE=MAILLAGE,);
+                MAILLAGE=MAILB,);
 #
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS

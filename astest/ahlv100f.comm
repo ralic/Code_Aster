@@ -1,9 +1,9 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 # ahlv100f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,13 +55,13 @@ CHM=AFFE_MATERIAU(
 #
 VELO=AFFE_CHAR_ACOU(
          MODELE=MO,
-         VITE_FACE=_F( GROUP_MA = 'VELO',
+         VITE_FACE=_F( GROUP_MA = 'velo',
                    VNOR = ('RI',0.014,0.0,))
          )
 
 IMPE=AFFE_CHAR_ACOU(
          MODELE=MO,
-         IMPE_FACE=_F( GROUP_MA = 'IMPE',
+         IMPE_FACE=_F( GROUP_MA = 'impe',
                    IMPE = ('RI',445.9,0.0,))
          )
 

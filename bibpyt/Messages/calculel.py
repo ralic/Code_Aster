@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel Messages  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,11 +137,11 @@ Conseils :
   structure de données %(k1)s.
 """),
 
-17 : _("""
+17 : _(u"""
  type de champ inconnu
 """),
 
-18 : _("""
+18 : _(u"""
  Vous utilisez CALC_CHAMP en reuse mais la structure de données en entrée est
  différente de celle en sortie. Ce n'est pas autorisé.
 """),
@@ -192,7 +192,13 @@ Conseil :
  Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
 """),
 
-
+26 : _(u"""
+ Le modèle est peut-être trop grossier :
+   Sur la maille %(k1)s et pour la composante %(k2)s de la grandeur %(k3)s,
+   il y a une variation entre les points de la maille de %(r1)f
+   alors que, globalement, les valeurs du champ ne dépassent pas %(r2)f (en valeur absolue).
+   Cela fait une variation sur la maille supérieure à %(r3)f%%.
+"""),
 
 27 : _(u"""
  CHAM_ELEM à combiner incompatible

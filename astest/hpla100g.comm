@@ -1,9 +1,9 @@
-# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100g.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -158,13 +158,11 @@ DEPLPES=MECA_STATIQUE(MODELE=MO,
 DEPLPES=CALC_ELEM(reuse=DEPLPES,
                   RESULTAT=DEPLPES,
                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
-                  
+
 DPES2=POST_CHAMP(RESULTAT=DEPLPES,
-                 TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
-
 DEPLDIL=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT1,
                       CARA_ELEM=CARE,
@@ -173,13 +171,11 @@ DEPLDIL=MECA_STATIQUE(MODELE=MO,
 DEPLDIL=CALC_ELEM(reuse=DEPLDIL,
                   RESULTAT=DEPLDIL,
                   OPTION=('EFGE_ELNO','SIGM_ELNO',),),
-                  
+
 DDIL2=POST_CHAMP(RESULTAT=DEPLDIL,
-                 TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
-
 DEPLDIL2=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT1,
                        CARA_ELEM=CARE,
@@ -188,13 +184,11 @@ DEPLDIL2=MECA_STATIQUE(MODELE=MO,
 DEPLDIL2=CALC_ELEM(reuse=DEPLDIL2,
                    RESULTAT=DEPLDIL2,
                    OPTION=('EFGE_ELNO','SIGM_ELNO',),);
-                   
+
 DDIL22=POST_CHAMP(RESULTAT=DEPLDIL2,
-                  TOUT='OUI',
                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=2,
                                 NIVE_COUCHE='SUP',),);
-
 DEPLDI2=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT2,
                       CARA_ELEM=CARE,
@@ -203,16 +197,12 @@ DEPLDI2=MECA_STATIQUE(MODELE=MO,
 DEPLDI2=CALC_ELEM(reuse=DEPLDI2,
                   RESULTAT=DEPLDI2,
                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
-                  
+
 DDI22=POST_CHAMP(RESULTAT=DEPLDI2,
-                 TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
-
 #---------------------------------------------------------------------
-
-
 TEST_RESU(RESU=(
 
       # DEPLACEMENTS

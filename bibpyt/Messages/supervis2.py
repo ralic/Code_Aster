@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF supervis2 Messages  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,8 +116,8 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-22 : {  'message' : _(u"""Limite de la mémoire dynamique : %(r1).3f Mo
-Taille limite des fichiers d'échange : %(r2).3f Go
+22 : {  'message' : _(u"""Limite de la mémoire dynamique : %(r1).2f Mo
+Taille limite des fichiers d'échange : %(r2).2f Go
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
 

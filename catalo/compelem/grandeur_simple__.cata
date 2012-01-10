@@ -1,8 +1,8 @@
-%& MODIF COMPELEM  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF COMPELEM  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -699,22 +699,21 @@ GRANDEUR_SIMPLE__
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
                     PTOT
 
-<<  DERA_R Type:R indicateur local de décharge et de perte de radialité
-       DCHA_V   : indicateur local de décharge avec la norme de Von Mises
-       DCHA_T   : indicateur local de décharge  avec la norme totale
-       IND_DCHA : 
-       VAL_DCHA : 
-       X11      :
-       X22      :
-       X33      :
-       X12      :
-       X13       :
-       X23      :
-       RADI_V   : indicateur de perte de radialité avec la norme de Von Mises
-       RADI_T   : indicateur de perte de radialité avec la norme totale
+<<  DERA_R Type:R indicateurs locaux de décharge et de perte de radialité
+       DCHA_V   : indicateur de décharge sur le deviateur des contraintes
+       DCHA_T   : indicateur de décharge sur les contraintes totales
+       IND_DCHA : indic. de charge (1,2) ou décharge (-1 elas, -2 plas abusive)
+       X11      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 11
+       X22      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 22
+       X33      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 33
+       X12      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 12
+       X13      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 13
+       X23      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 23
+       RADI_V   : indic. de perte de radialité sur le deviateur des contraintes
+       ERR_RADI : indicateur d'erreur d'integration due a la non radialité 
 >>
     DERA_R   = R    DCHA_V   DCHA_T   IND_DCHA   VAL_DCHA   X11     X22     X33 
-                    X12     X13       X23        RADI_V     RADI_T  
+                    X12     X13       X23        RADI_V     ERR_RADI  
 
 
 <<  DISS_R Type:R énergie dissipée

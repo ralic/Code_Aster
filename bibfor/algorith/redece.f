@@ -3,13 +3,13 @@
      &                      NEPS,EPSDT,DEPST,NSIG,SIGD,VIND, OPTION,
      &                      ANGMAS,NWKIN,WKIN,
      &                      CP,NUMLC,TEMPD,TEMPF,TREF,
-     &                      SIGF,VINF,NDSDE,DSDE,NWKOUT,WKOUT,RETCOM)
+     &                      SIGF,VINF,NDSDE,DSDE,NWKOUT,WKOUT,CODRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -150,9 +150,7 @@ C                                    TEMPS
 C               RETURN1 EN CAS DE NON CONVERGENCE LOCALE
 C       ----------------------------------------------------------------
 C
-        INTEGER         ICOMP,        NPAL,      IPAL
-        INTEGER         IRTET,     K
-        INTEGER         RETCOM
+        INTEGER         ICOMP,        NPAL,      IPAL, CODRET,     K
         REAL*8          EPS(NEPS),       DEPS(NEPS),   SD(NSIG)
         REAL*8          DSDELO(NDSDE)
         REAL*8          DELTAT,TD,TF
@@ -178,8 +176,8 @@ C       -- POUR LES VARIABLES DE COMMANDE :
 
 
         IPAL  =  INT(CRIT(5))
-        RETCOM=0
-        IRTET=0
+        CODRET=0
+
 C       CORRECTION JMP : POURQUOI REDECOUPER POUR RIGI_MECA_TANG ?
         IF (OPTION.EQ.'RIGI_MECA_TANG') IPAL=0
 
@@ -209,9 +207,9 @@ C
      &                INSTAM, INSTAP, NEPS,EPSDT,DEPST, NSIG,SIGD, VIND,
      &                OPTION,ANGMAS,NWKIN,WKIN,
      &                CP,NUMLC,TEMPD,TEMPF,TREF,
-     &                SIGF,VINF,NDSDE,DSDE,ICOMP,NVI,NWKOUT,WKOUT,IRTET)
+     &              SIGF,VINF,NDSDE,DSDE,ICOMP,NVI,NWKOUT,WKOUT,CODRET)
 
-        IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
+        IF ( CODRET.GT.0 ) GOTO (1,2), CODRET
 C
 C -->   IPAL > 0 --> REDECOUPAGE IMPOSE DU PAS DE TEMPS
 C -->   REDECOUPAGE IMPOSE ==>  RETURN DANS PLASTI APRES RECHERCHE
@@ -278,9 +276,9 @@ C
      &               TD, TF, NEPS,EPS,DEPS, NSIG,SD, VIND,
      &               OPTION, ANGMAS, NWKIN, WKIN,
      &               CP,NUMLC,TEMPD,TEMPF,TREF,
-     &         SIGF, VINF, NDSDE,DSDELO, ICOMP, NVI, NWKOUT,WKOUT,IRTET)
+     &     SIGF, VINF, NDSDE,DSDELO, ICOMP, NVI, NWKOUT,WKOUT,CODRET)
 
-            IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
+            IF ( CODRET.GT.0 ) GOTO (1,2), CODRET
 C
             IF ( OPTION(1:9) .EQ. 'RIGI_MECA'
      &      .OR. OPTION(1:9) .EQ. 'FULL_MECA' ) THEN
@@ -292,7 +290,6 @@ C
         GOTO 9999
 C
    2    CONTINUE
-        RETCOM = 1
         GO TO 9999
 C
  9999   CONTINUE

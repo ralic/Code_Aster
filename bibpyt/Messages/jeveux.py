@@ -1,8 +1,8 @@
-#@ MODIF jeveux Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux Messages  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,14 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
+
+1 : _(u"""
+La limite mémoire demandée de %(r1).0f octets est supérieure
+au maximum adressable sur cette plate-forme (%(r2).0f octets).
+
+Conseil :
+    Diminuez la mémoire totale demandée pour le calcul.
+"""),
 
 2 : _(u"""
  Pointeur de longueur externe interdit maintenant.

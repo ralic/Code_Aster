@@ -1,9 +1,9 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 # demo001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,19 +24,22 @@
 # APPEL A STANLEY POUR LE POST_TRAITEMENT
 # RESPONSABLE PROIX J.M.PROIX
 
-DEBUT(CODE=_F(NOM='DEMO001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
-
-import os
-
 # Execution interactive : 1=OUI, 0=NON
 interactif  = 0
-
-# Commande Gmsh (elle ne fait rien si c'est la version batch de Gmsh)
-cmd_gmsh = os.path.join(aster.repout(),'gmsh')
 
 # Si la variable d'environnement DISPLAY n'est pas definie on desactive l'interactif
 if not os.environ.has_key('DISPLAY'):
   interactif = 0
+
+motscles = {}
+if interactif:
+    motscles = { 'PAR_LOT' : 'NON' }
+
+DEBUT(CODE=_F(NOM='DEMO001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      **motscles)
+
+import os
 
 
 MAIL=[None]*5
@@ -48,6 +51,8 @@ MAIL[0]=LIRE_MAILLAGE()
 
 # VISUALISATION DU MAILLAGE INITIAL A L AIDE DE GMSH
 if interactif == 1:
+   # Commande Gmsh (elle ne fait rien si c'est la version batch de Gmsh)
+   cmd_gmsh = os.path.join(aster.repout(),'gmsh')
    print 'Lancement de :', cmd_gmsh + ' fort.19'
    os.system(cmd_gmsh + ' fort.19')
 

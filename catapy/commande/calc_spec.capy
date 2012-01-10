@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/01/2012   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,17 +27,13 @@ CALC_SPEC=MACRO(nom="CALC_SPEC",
                 fr="Calcule une matrice interspectrale ou des fonctions de transferts",
                 UIinfo={"groupes":("Fonctions",)},
          TAB_ECHANT      =FACT(statut='f',
-           NOM_TAB         =SIMP(statut='o',typ=table_sdaster),
-           LONGUEUR_ECH    =FACT(statut='f',
-             DUREE           =SIMP(statut='f',typ='R'),
-             POURCENT        =SIMP(statut='f',typ='R'),
-             NB_PTS          =SIMP(statut='f',typ='I'),
-                              ),
-           RECOUVREMENT  =FACT(statut='f',
-             DUREE           =SIMP(statut='f',typ='R'),
-             POURCENT        =SIMP(statut='f',typ='R'),
-             NB_PTS          =SIMP(statut='f',typ='I'),
-                                ),
+           NOM_TAB                  =SIMP(statut='o',typ=table_sdaster),
+           LONGUEUR_DUREE           =SIMP(statut='f',typ='R'),
+           LONGUEUR_POURCENT        =SIMP(statut='f',typ='R'),
+           LONGUEUR_NB_PTS          =SIMP(statut='f',typ='I'),
+           RECOUVREMENT_DUREE       =SIMP(statut='f',typ='R'),
+           RECOUVREMENT_POURCENT    =SIMP(statut='f',typ='R'),
+           RECOUVREMENT_NB_PTS      =SIMP(statut='f',typ='I'),
                               ),
          ECHANT          =FACT(statut='f',max='**',
            NUME_ORDRE_I    =SIMP(statut='o',typ='I' ),

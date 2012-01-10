@@ -1,9 +1,9 @@
-# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106d.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,21 +115,17 @@ REST=CALC_ELEM(reuse=REST,
                TOUT_ORDRE='OUI',);
 
 REST1=POST_CHAMP(RESULTAT=REST,
-                 TOUT='OUI',
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
                                ANGLE=90,),);
-
 REST2=POST_CHAMP(RESULTAT=REST,
-                 TOUT='OUI',
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM='VARI_ELNO',
                                NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
                                ANGLE=360,),);
-
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
@@ -319,24 +315,19 @@ RESM=CALC_ELEM(reuse =RESM,
                OPTION='SIGM_ELNO',);
 
 RESM1=POST_CHAMP(RESULTAT=RESM,
-                 TOUT='OUI',
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
                                ANGLE=90,),);
-
 RESM2=POST_CHAMP(RESULTAT=RESM,
-                 TOUT='OUI',
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',
                                ANGLE=90,),);
-
 #
 # POUR VALIDER L'IMPRESSION DES VARIABLES INTERNES:
-
 IMPR_RESU(RESU=_F(RESULTAT=REST,
                   NOM_CHAM='VARI_ELNO',
                   INST=1.1,

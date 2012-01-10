@@ -1,10 +1,10 @@
       SUBROUTINE NMCINE (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
-     &                   OPTION,SIGP,VIP,DSIDEP)
+     &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ C ======================================================================
       INTEGER            KPG,KSP,NDIM,IMATE
       CHARACTER*(*)      FAMI
       CHARACTER*16       COMPOR(*),OPTION
-      REAL*8             CRIT(1),INSTAM,INSTAP
+      REAL*8             CRIT(10),INSTAM,INSTAP,RADI
       REAL*8             EPSM(6),DEPS(6)
       REAL*8             SIGM(6),VIM(7),SIGP(6),VIP(7),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -206,6 +206,17 @@ C CALCUL DE LA RIGIDITE TANGENTE
  130    CONTINUE
       ENDIF
 C
+      IRET=0
+      IF (OPTION(1:9).NE.'RIGI_MECA') THEN
+         IF (CRIT(10).GT.0.D0) THEN
+            CALL RADIAL(NDIMSI,SIGM,SIGP,VIM(7),VIP(7),1,VIM(1),VIP(1),
+     &                 RADI)
+            IF (RADI.GT.CRIT(10)) THEN
+               IRET=2
+            ENDIF
+         ENDIF
+      ENDIF 
+      
 C MISE AU FORMAT DES CONTRAINTES DE RAPPEL
       DO 20 K=4,NDIMSI
         VIM(K) = VIM(K)/RAC2

@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 21/11/2011   AUTEUR MACOCCO K.MACOCCO 
+%& MODIF TYPELEM  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,8 +71,6 @@ MODE_LOCAL__
                                         E2X      E2Y      E3X      E3Y      E4X      E4Y
                                         LAGS_C   LAGS_F1  )
                                  EN2   (LAGS_C   LAGS_F1  )
-                                 EN3   (DX      DY      H1X      H1Y      E1X      E1Y
-                                        E2X      E2Y      E3X      E3Y      E4X      E4Y)
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX      DY      )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )

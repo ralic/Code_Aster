@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE  : PLAQUE CARREE COMPOSITE A 3 COUCHES SIMPLEMENT SUPPORTEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -141,11 +141,9 @@ RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,);
 
 C2_M=POST_CHAMP(RESULTAT=RESU,
-                TOUT='OUI',
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
                                    NIVE_COUCHE='MOY',),);
-
 C2_M=CALC_NO(reuse =C2_M,
              RESULTAT=C2_M,
              OPTION='SIGM_NOEU',);
@@ -158,11 +156,9 @@ SIG_C2_M=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
 
 
 C2_S=POST_CHAMP(RESULTAT=RESU,
-                TOUT='OUI',
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
                                    NIVE_COUCHE='SUP',),);
-
 C2_S=CALC_NO(reuse =C2_S,
              RESULTAT=C2_S,
              OPTION='SIGM_NOEU',);
@@ -178,11 +174,9 @@ SIG_C2_S=CREA_CHAMP(RESULTAT=C2_S,
 #
 
 C3_S=POST_CHAMP(RESULTAT=RESU,
-                TOUT='OUI',
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=3,
                                    NIVE_COUCHE='SUP',),);
-
 C3_S=CALC_NO(reuse =C3_S,
              RESULTAT=C3_S,
              OPTION='SIGM_NOEU',);

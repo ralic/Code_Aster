@@ -1,9 +1,9 @@
-# MODIF  DATE 24/10/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 09/01/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 4 LOADED PIN
 # ssnp156b.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,19 @@
 
 DEBUT(CODE=_F(NOM='SSNP156B',NIV_PUB_WEB='INTERNET',),IGNORE_ALARM='CONTACT3_16',);
 
-MESH=LIRE_MAILLAGE(FORMAT='MED',);
+MESH1=LIRE_MAILLAGE(FORMAT='MED',);
+
+MESH=CREA_MAILLAGE(MAILLAGE=MESH1,
+                   CREA_POI1=_F(GROUP_NO='Pf',
+                                NOM_GROUP_MA='Ressort',),);
+
+# AxeFr contient tous les noeuds de l'axe sauf le noeud initialement en contact
+MESH=DEFI_GROUP(reuse=MESH,
+                MAILLAGE=MESH,
+                CREA_GROUP_NO=(_F(GROUP_MA='Axe',),
+                               _F(DIFFE=('Axe','Pf',),
+                                  NOM='AxeFr',),
+                               ),);
 
 MESH=MODI_MAILLAGE(reuse =MESH,
                    MAILLAGE=MESH,
@@ -53,9 +65,12 @@ LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                               SUBD_NIVEAU=3,),);
 
 MO=AFFE_MODELE(MAILLAGE=MESH,
-               AFFE=_F(GROUP_MA=('Sheet','Pin',),
+               AFFE=(_F(GROUP_MA=('Sheet','Pin',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),);
+                       MODELISATION='D_PLAN',),
+                     _F(GROUP_MA='Ressort',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='2D_DIS_T',),),);
 
 MA=AFFE_MATERIAU(MAILLAGE=MESH,
                  AFFE=(_F(GROUP_MA='Sheet',
@@ -63,16 +78,28 @@ MA=AFFE_MATERIAU(MAILLAGE=MESH,
                        _F(GROUP_MA='Pin',
                           MATER=MAT_pi,),),);
 
+# Tous les noeuds sont bloques en DY sauf Pf
 CL=AFFE_CHAR_CINE(MODELE=MO,
                   MECA_IMPO=(_F(GROUP_MA='Encast',
                                 DX=0.0,
                                 DY=0.0,),
-                             _F(GROUP_MA='Axe',
-                                DY=0.0,),),);
+                             _F(#GROUP_MA='Axe',
+                                GROUP_NO='AxeFr',
+                                DY=0.0,
+                                ),),);
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   FORCE_NODALE=_F(GROUP_NO='F',
                                   FX=10000.0,),);
+
+rigi = 210000*50*1.0E+6
+# La condition de symetrie sur  le noeud Pf est penalisee pour ne pas entrer
+# en conflit avec le frottement : ici on ne peut utiliser SANS_GROUP_NO_FR car
+# le schema d'integration est GAUSS
+CELEM=AFFE_CARA_ELEM(MODELE=MO,
+                     DISCRET_2D=_F(GROUP_MA='Ressort',
+                                   CARA='K_T_D_N',
+                                   VALE=(0,rigi,),),)
 
 CON=DEFI_CONTACT(MODELE=MO,
                 FORMULATION='CONTINUE',
@@ -86,8 +113,10 @@ CON=DEFI_CONTACT(MODELE=MO,
                         INTEGRATION='GAUSS',
                         ),);
 
-RESU=STAT_NON_LINE(MODELE=MO,
+RESU=STAT_NON_LINE(INFO=1,
+                   MODELE=MO,
                    CHAM_MATER=MA,
+                   CARA_ELEM=CELEM,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=CH,
                              FONC_MULT=FONC,),),

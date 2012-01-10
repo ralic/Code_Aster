@@ -1,9 +1,9 @@
-# MODIF  DATE 14/11/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
 # ssnd112a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -120,11 +120,15 @@ COEF=DEFI_FONCTION(NOM_PARA='INST',
                    );
 
 tmax=0.2
-t1=0.02
+t1=0.001
+t2=0.02
+
 LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=t1,
-                                      NOMBRE=10,),
+                                      NOMBRE=5,),
+                                   _F(JUSQU_A=t2,
+                                      NOMBRE=5,),
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=90,),
                                   ),
@@ -213,9 +217,54 @@ SOLNL=STAT_NON_LINE(MODELE = TROISD,
                                _F(
                                   RELATION='MONOCRISTAL',COMPOR=COMPORDD,
                                   DEFORMATION='SIMO_MIEHE',
-                                  ITER_INTE_MAXI=100,
-                                  ALGO_INTE='NEWTON_PERT',
+                                  ITER_INTE_MAXI=200,
                                   TOUT='OUI',),
+                               _F(RELATION='ELAS',
+                                  GROUP_MA=('PX1'),),
+                              ),
+                     INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=t1),),
+                     
+                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+                     ARCHIVAGE=_F(LIST_INST=LINSTDD),
+                     
+                     SUIVI_DDL=( _F(NOM_CMP    ='V7',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='V31',
+                                  NOM_CHAM   ='VARI_ELGA',
+                                  GROUP_MA   ='VOL',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='V40',
+                                  NOM_CHAM   ='VARI_ELGA',
+                                  GROUP_MA   ='VOL',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='SIZZ',
+                                  NOM_CHAM   ='SIEF_ELGA',
+                                  GROUP_MA   ='VOL',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                                 ),
+                    );
+                    
+
+SOLNL=STAT_NON_LINE(reuse=SOLNL, 
+                    ETAT_INIT=_F(EVOL_NOLI=SOLNL),
+                    MODELE = TROISD,
+                    CHAM_MATER = MAT,
+                    CARA_ELEM = ORIEN,
+                    EXCIT=(_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,),),
+                    COMP_INCR=(_F(
+                                  RELATION='MONOCRISTAL',
+                                  COMPOR=COMPORDD,
+                                  DEFORMATION='SIMO_MIEHE',
+                                  ITER_INTE_MAXI=100,
+                                  ALGO_INTE='NEWTON_PERT',),
                                _F(RELATION='ELAS',
                                   GROUP_MA=('PX1'),),
                               ),
@@ -245,13 +294,6 @@ SOLNL=STAT_NON_LINE(MODELE = TROISD,
                                   GROUP_MA   ='VOL',
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
-                               # _F(
-                               #    NOM_CMP=('DX','DY','DZ',),
-                               #    EVAL_CMP = 'FORMULE',EVAL_CHAM  ='MAX',
-                               #    FORMULE = NORME,
-                               #    NOM_CHAM='DEPL',
-                               #    GROUP_MA   ='VOL',
-                               #    ),                                                                                                        
                                  ),
                     );
                     
@@ -273,7 +315,7 @@ IMPR_RESU(FORMAT='MED',
                  ),
           );
 
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL))
+#IMPR_RESU(RESU=_F(RESULTAT=SOLNL))
 
 numpg=5
 
@@ -445,14 +487,16 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
 TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
                         NOM_PARA='INST',
                         VALE_PARA=tdep,
-                        VALE_REFE=9.301E-08,
+                        VALE_REFE=9.513E-08,
+                        PRECISION=0.01,
                         REFERENCE='NON_REGRESSION',),
                         );
 
 TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
                         NOM_PARA='INST',
                         VALE_PARA=tdep,
-                        VALE_REFE=7.038E-04 ,
+                        VALE_REFE=7.444E-04 ,
+                        PRECISION=0.01,
                         REFERENCE='NON_REGRESSION',),
                         );
                         
@@ -563,7 +607,8 @@ TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
 TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
-                        VALE_REFE=9.795171E-03,
+                        VALE_REFE=9.811E-03,
+                        PRECISION=0.01,
                         REFERENCE='NON_REGRESSION',),
                         );
 

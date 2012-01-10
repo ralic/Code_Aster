@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -2797,7 +2797,7 @@ PyObject *args;
     return repout_value;
 }
 
-void DEFSP(REPOUT,repout, char *nomrep, STRING_SIZE lnomrep, INTEGER *lon)
+void DEFSP(REPOU2,repou2, char *nomrep, STRING_SIZE lnomrep, INTEGER *lon)
 {
 /*
    Permet de récupérer la valeur de repout depuis le fortran.

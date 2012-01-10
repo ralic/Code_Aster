@@ -3,9 +3,9 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,11 @@ C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C     FORMAT MED - CHAMP - INFORMATIONS - FICHIER CONNU PAR NOM
 C            --    --      -                                -
+C !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+C !!! ATTENTION, CETTE ROUTINE NE DOIT PAS ETRE UTILISEE DANS LE  !!!
+C !!! CAS D'UN ENRICHISSEMENT D'UN FICHIER MED CAR MDCHII SUPPOSE !!!
+C !!! QUE LE FICHIER MED NE CHANGE PAS AU COURS DE LA COMMANDE    !!!
+C !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 C     DONNE LE NOMBRE DE TABLEAUX DE VALEURS ET LEURS CARACTERISTIQUES
 C     TEMPORELLES POUR UN CHAMP ET UN SUPPORT GEOMETRIQUE
 C-----------------------------------------------------------------------

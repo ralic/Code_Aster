@@ -1,9 +1,9 @@
-# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE MASSIN P.MASSIN
 # TITRE  : POUTRE ENCASTREE SOUMISE A DES EFFORTS UNITAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -132,17 +132,14 @@ RESU=CALC_ELEM(reuse =RESU,
                OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
 RESUPOS=POST_CHAMP(RESULTAT=RESU,
-                     TOUT='OUI',
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-
 #IMPR_RESU(RESU=_F(RESULTAT=RESU,),);
 #
 #---------------------------------------------------------------------
 #                       VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
-
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CAS='CHARGE NUMERO 1',
                    NOM_CHAM='DEPL',
@@ -253,12 +250,9 @@ RESU5=CALC_ELEM(reuse =RESU5,
                 OPTION=('EFGE_ELNO','SIGM_ELNO',),);
 
 RESU5POS=POST_CHAMP(RESULTAT=RESU5,
-                     TOUT='OUI',
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-
-
 TEST_RESU(RESU=(
                 _F(RESULTAT=RESU5,
                    NOM_CAS='CHARGE NUMERO 5',

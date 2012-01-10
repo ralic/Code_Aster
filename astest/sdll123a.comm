@@ -1,9 +1,9 @@
-# MODIF  DATE 19/12/2011   AUTEUR BERRO H.BERRO 
+# MODIF  DATE 09/01/2012   AUTEUR CORUS M.CORUS 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123a.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,122 +22,8 @@
 import numpy as NP
 import numpy.linalg as LA
 
-def EXTR_MATR(matrrr) :
-# fonction permettant de recuperer les matrices assemblees au format numpy
-# attention a l'espace memoire
-
-# construction des vecteurs jeveux
-                nommatr=matrrr.nom
-                lenm=len(nommatr)
-                nommatr=nommatr+' '*(8-lenm+1)
-                vectrav=nommatr+'          .REFA        '
-                nom=aster.getvectjev(vectrav)
-                nomnume=nom[1]
-                typm=nom[8]
-                if(typm[0:2]=='MS'):
-                        mult=1
-                if(typm[0:2]=='MR'):
-                        mult=-1
-                lenm=len(nomnume)
-                nomnume=nomnume[0:9]
-
-                nvar=nommatr+'          .VALM'
-                nadia=nomnume+'     .SMOS.SMDI        '
-                nnuml=nomnume+'     .SMOS.SMHC        '
-                nrtt=nomnume+'     .NUME.DELG        '
-                nrtt2=nomnume+'     .NUME.DEEQ        '
-
-                var=aster.getcolljev(nvar)
-                adia=aster.getvectjev(nadia)
-                numl=aster.getvectjev(nnuml)
-                rtt=aster.getvectjev(nrtt)
-                rtt2=aster.getvectjev(nrtt2)
-
-                valr=var[1]
-
-                vc=len(rtt)
-                ddltot=0
-                nnddl=[0]
-                tryy=0
-
-# calc nbre de ddl au total et vect contenant le nbre de ddl pr chaque noeud (ex : barre =3, poutre=6...)
-                for jj in range(0,vc):
-                        if (rtt2[2*jj+1]==1) and (tryy==1):
-                                if (tryy==1):
-                                        nnddl=nnddl+[0]
-                                        tryy=0
-                        if (rtt2[2*jj+1]>0) :
-                                ddltot=ddltot+1
-                                nnddl[len(nnddl)-1]=nnddl[len(nnddl)-1]+1
-                                tryy=1
-                nnddl=nnddl+[0]
-                ddlag=(vc-ddltot)//2
-                ddlphy=ddltot-ddlag
-                ddlphy=ddlphy
-                indint=[None]*ddlphy
-
-# contruction du vect contenant les indices des ddls non lagr et non nuls
-                gg=0
-                tt=0
-                pp=0
-                limm=nnddl[pp]
-                vecc=[1]*limm
-                ste=limm
-                for ii in range(0,vc):
-                        if (rtt2[2*ii+1]<0):
-                                if (rtt[ii]==-1):
-                                        varr=-1*rtt2[2*ii+1]-1
-                                        vecc[varr]=0
-                                ste=limm
-                        if (rtt2[2*ii+1]>0) and (ste==limm):
-
-                                for hh in range(0,limm):
-                                        if (vecc[hh]==1):
-                                                indint[gg]=ii+hh
-                                                gg=gg+1
-                                        vecc[hh]=1
-                                ste=0                           
-                                pp=pp+1
-                                limm=nnddl[pp-1]
-                                vecc=[1]*limm
-                        if (rtt2[2*ii+1]>0) and (ste<limm):
-                                ste=ste+1
-
-# construction de la matrice complete ddl lag compris (cette etape peut etre fusionnee avec la suivante mais ca devient complique)
-                lon=len(adia)
-                valeu=NP.zeros([lon,lon])
-                opi=0
-                indc=0
-                indl=0
-                for ii in range(0,lon):
-                        if (ii==0):
-                                opi=adia[ii]
-                        else:
-                                opi=adia[ii]-adia[ii-1]
-                        for jj in range(0, opi):
-                                if (ii==0):
-                                        indc=jj
-                                        indd=numl[indc]-1
-                                else:
-                                        indc=adia[ii-1]+jj
-                                        indd=numl[indc]-1
-                                valeu[indd][ii]=valr[indc]
-                                valeu[ii][indd]=mult*valr[indc]
-                matrig=valeu
-
-# elimination des ddl de lagrange et des ddl nuls
-                rig11=NP.zeros([ddlphy,ddlphy])
-                for ii in range(0,ddlphy):
-                        for jj in range(0,ddlphy):
-                                rig11[ii][jj]=matrig[indint[ii]][indint[jj]]
-                return rig11
-
-
-
 DEBUT( CODE=_F(NOM='SDLL123A', NIV_PUB_WEB='INTERNET'),
        PAR_LOT='NON')
-
-nddl=19*6-3-3
 
 MAIL=LIRE_MAILLAGE()
 
@@ -203,9 +89,8 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('AMOR'),
                               OPTION='AMOR_MECA',),),);
 
-
-mas=EXTR_MATR(MASSE)
-rig=EXTR_MATR(RIGIDITE)
+mas=MASSE.EXTR_MATR()
+rig=RIGIDITE.EXTR_MATR()
 
                     
 MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
@@ -306,23 +191,94 @@ TEST_TABLE(TABLE=NBMOD7,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', VALE_I=84)
 TEST_TABLE(TABLE=NBMOD8,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', VALE_I=0)
-                                               
-gyro=EXTR_MATR(GYOM)
 
-masI=LA.inv(mas)
+gyro=GYOM.EXTR_MATR()
+
+
+#-----------------------------------------------------#
+#--                                                 --#
+#-- Elimination des degres de libertes de Lagranges --#
+#--                                                 --#
+#--        c.f. doc R4.06.02   - section 2.5        --#
+#--                                                 --#
+#-----------------------------------------------------#
+
+#-- recuperation des indices des DDL de Lagranges
+
+
+#-- Par construction, les contraintes lineaires sont
+#-- stockees dans la matrice de rigidite. Les lignes
+#-- ind_lag1 correspondent aux equations de Lagranges (contraintes)
+#-- les lignes ind_nolag correspondent aux equations sur 
+#-- les DDL physiques
+
+nom_nume='NUMEDDL'
+Nume=aster.getvectjev(nom_nume.ljust(8)+'      .NUME.DELG        ' )
+ind_lag1=[]
+ind_nolag=[]
+print "Nume=",Nume
+
+for i1 in range(len(Nume)) :
+  if Nume[i1] > -0.5 :
+    ind_nolag.append(i1)
+  if (Nume[i1] < -0.5) & (Nume[i1] > -1.5):
+    ind_lag1.append(i1)
+ 
+#-- On recupere la matrice des contraintes "rig[ind_lag1][:,ind_nolag]"
+#-- et on la complete par des zeros.
+#-- On determine le noyau par decomposition QR de la matrice 
+#-- des contraintes.
+#-- Si on ne rempli pas de zeros, le QR est fait "a l'economie"
+#-- et la matrice Q n'est pas complete.
+
+nlag1=len(ind_lag1)
+nnolag=len(ind_nolag)
+
+Z=NP.zeros((nnolag-nlag1,nnolag))
+C=NP.vstack((rig[ind_lag1][:,ind_nolag],Z))
+
+Q,R = NP.linalg.qr(NP.transpose(C))
+
+#-- la base T du noyau des contraintes correspond aux vecteurs de
+#-- Q associes aux colonnes de R contenant un terme nul sur la diagonale
+
+dR=[]
+for i1 in range(len(R)) :
+  dR.append(NP.abs(R[i1,i1]))
+
+mdR=NP.max(dR)
+indz=[]
+for i1 in range(len(R)) :
+  if NP.abs(R[i1,i1]) <= mdR*1.e-16 :
+    indz.append(i1)
+
+#-- On projete ensuite les matrices de masse, raideur et gyroscopie
+#-- sur les vecteurs de Q formant la base des contraintes.
+
+massP=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(mas[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+raidP=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(rig[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+gyroP=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(gyro[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+ 
+ 
+#-- On assemble le probleme quadratique generalise pour 
+#-- la recherche des valeurs propres
+
+sha= massP.shape
+nddl=sha[0]
+massI=LA.inv(massP)
 HPRIME=NP.zeros((nddl*2,nddl*2))
-HPRIME[0:nddl,0:nddl]=NP.dot(gyro,masI)
-HPRIME[0:nddl,nddl:2*nddl]=NP.dot(rig,masI)
-HPRIME[nddl:2*nddl,0:nddl]=-NP.identity(nddl)
+HPRIME[0:nddl,0:nddl]=NP.dot(-massI,gyroP)
+HPRIME[0:nddl,nddl:2*nddl]=NP.dot(-massI,raidP)
+HPRIME[nddl:2*nddl,0:nddl]=NP.identity(nddl)
+
 aster.matfpe(-1)
-print 'valeurs propres primes'
 vprime=LA.eigvals(HPRIME)/2./NP.pi
 vpreal=list(vprime.imag)
 vpreal.sort()
 i=1
 j=0
 for vp in vpreal:
- if vp>1.e-3:
+ if vp>1.e2:
    print "vp %4d : %6.6f" %(i,vp)
    i=i+1
  j=j+1

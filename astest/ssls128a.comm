@@ -1,9 +1,9 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE  : CALCUL STATIQUE D'UNE PLAQUE COMPOSEE DE COUCHES
 # ssls128a.para = tps_job 200 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -143,12 +143,9 @@ RESU=CALC_ELEM(reuse =RESU,
                OPTION='SIGM_ELNO',);
 
 RESU1=POST_CHAMP(RESULTAT=RESU,
-                 TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
-
-
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU1,
                   NOM_CHAM='SIGM_ELNO',
@@ -174,11 +171,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                )
 
 RESU2=POST_CHAMP(RESULTAT=RESU,
-                 TOUT='OUI',
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=2,
                                NIVE_COUCHE='INF',),);
-
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',

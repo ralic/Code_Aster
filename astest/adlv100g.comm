@@ -1,8 +1,8 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,11 +29,11 @@ MA=LIRE_MAILLAGE()
 
 MO=AFFE_MODELE(
          MAILLAGE=MA,AFFE=(
-         _F( GROUP_MA = ('TETRAEAU', 'TETRAAIR',),
+         _F( GROUP_MA = ('tetraeau', 'tetraair',),
                    MODELISATION = '3D_FLUIDE', PHENOMENE = 'MECANIQUE'),
-         _F( GROUP_MA = ('TRIEAU', 'TRIAIR',),
+         _F( GROUP_MA = ('trieau', 'triair',),
                    MODELISATION = 'FLUI_STRU', PHENOMENE = 'MECANIQUE'),
-         _F( GROUP_MA = 'TETRAPIS',
+         _F( GROUP_MA = 'tetrapis',
                    MODELISATION = '3D', PHENOMENE = 'MECANIQUE'))
          )
 
@@ -58,11 +58,11 @@ ACIER=DEFI_MATERIAU(
 
 CHM=AFFE_MATERIAU(
          MAILLAGE=MA,AFFE=(
-         _F( GROUP_MA = ('TETRAEAU', 'TRIEAU',),
+         _F( GROUP_MA = ('tetraeau', 'trieau',),
               MATER = EAU),
-         _F( GROUP_MA = ('TETRAAIR', 'TRIAIR',),
+         _F( GROUP_MA = ('tetraair', 'triair',),
               MATER = AIR),
-         _F( GROUP_MA = 'TETRAPIS',
+         _F( GROUP_MA = 'tetrapis',
               MATER = ACIER))
          )
 
@@ -71,13 +71,13 @@ CHM=AFFE_MATERIAU(
 #
 SURFLIBR=AFFE_CHAR_MECA(
          MODELE=MO,
-         DDL_IMPO=_F( GROUP_NO = 'SURFLIB',
+         DDL_IMPO=_F( GROUP_NO = 'surflib',
                     PRES = 0., PHI = 0.)
          )
 
 GUIDAGE=AFFE_CHAR_MECA(
          MODELE=MO,
-         DDL_IMPO=_F( GROUP_NO = 'NOEUDPIS',
+         DDL_IMPO=_F( GROUP_NO = 'noeudpis',
                     DY = 0., DZ = 0.)
          )
 

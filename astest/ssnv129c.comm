@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE  CONTACT MAILLE TRIA7, MODELISATION COQUE_3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -143,7 +143,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=CHA0,),
                           ),
-                   CONTACT  = CHA2,       
+                   CONTACT  = CHA2,
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    INFO=1,);
@@ -154,11 +154,9 @@ RESU = CALC_ELEM( reuse = RESU,
                   OPTION='SIGM_ELNO');
 
 RESUPOS=POST_CHAMP(RESULTAT=RESU,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='INF',),);
-
 RESUPOS=CALC_NO(reuse =RESUPOS,
                 RESULTAT=RESUPOS,
                 OPTION='SIGM_NOEU');

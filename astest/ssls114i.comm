@@ -1,8 +1,8 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -172,7 +172,6 @@ RESP=CALC_ELEM(reuse= RESP,
                OPTION='SIGM_ELNO',);
 
 RESPMOY=POST_CHAMP(RESULTAT=RESP,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
@@ -230,31 +229,25 @@ RESF=CALC_ELEM(reuse= RESF,
                OPTION='SIGM_ELNO',);
 
 RESFMOY=POST_CHAMP(RESULTAT=RESF,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-
 RESFMOY=CALC_NO(reuse=RESFMOY,
                 RESULTAT=RESFMOY,
                 OPTION='SIGM_NOEU',);
 
 RESFINF=POST_CHAMP(RESULTAT=RESF,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-
 RESFINF=CALC_NO(reuse=RESFINF,
                 RESULTAT=RESFINF,
                 OPTION='SIGM_NOEU',);
 
 RESFSUP=POST_CHAMP(RESULTAT=RESF,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-
 RESFSUP=CALC_NO(reuse=RESFSUP,
                 RESULTAT=RESFSUP,
                 OPTION='SIGM_NOEU',);
@@ -334,31 +327,25 @@ RESG=CALC_ELEM(reuse= RESG,
                OPTION='SIGM_ELNO',);
 
 RESGMOY=POST_CHAMP(RESULTAT=RESG,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-
 RESGMOY=CALC_NO(reuse=RESGMOY,
                 RESULTAT=RESGMOY,
                 OPTION='SIGM_NOEU',);
 
 RESGINF=POST_CHAMP(RESULTAT=RESG,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-
 RESGINF=CALC_NO(reuse=RESGINF,
                 RESULTAT=RESGINF,
                 OPTION='SIGM_NOEU',);
 
 RESGSUP=POST_CHAMP(RESULTAT=RESG,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-
 RESGSUP=CALC_NO(reuse=RESGSUP,
                 RESULTAT=RESGSUP,
                 OPTION='SIGM_NOEU',);
@@ -437,31 +424,25 @@ RESM=CALC_ELEM(reuse= RESM,
                OPTION='SIGM_ELNO',);
 
 RESMMOY=POST_CHAMP(RESULTAT=RESM,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-
 RESMMOY=CALC_NO(reuse=RESMMOY,
                 RESULTAT=RESMMOY,
                 OPTION='SIGM_NOEU',);
 
 RESMINF=POST_CHAMP(RESULTAT=RESM,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-
 RESMINF=CALC_NO(reuse=RESMINF,
                 RESULTAT=RESMINF,
                 OPTION='SIGM_NOEU',);
 
 RESMSUP=POST_CHAMP(RESULTAT=RESM,
-                   TOUT='OUI',
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-
 RESMSUP=CALC_NO(reuse=RESMSUP,
                 RESULTAT=RESMSUP,
                 OPTION='SIGM_NOEU',);

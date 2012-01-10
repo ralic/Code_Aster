@@ -1,8 +1,8 @@
-#@ MODIF prepost3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost3 Messages  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -33,13 +33,7 @@ cata_msg = {
  type inconnu" %(k1)s "
 """),
 
-7 : _(u"""
- le maillage  %(k1)s  a déjà été écrit au format ENSIGHT: le contenu du fichier  %(k2)s  sera écrasé.
-"""),
 
-8 : _(u"""
- problème a l'ouverture du fichier " %(k1)s " pour impression du maillage  %(k2)s  au format ENSIGHT
-"""),
 
 9 : _(u"""
  type de base inconnu:  %(k1)s 

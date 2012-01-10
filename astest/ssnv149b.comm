@@ -1,9 +1,9 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 
 # TITRE COMPRESSION UNIAXIALE EN 3D - COMPORTEMENT ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ CUBE=LIRE_MAILLAGE()
 TROISD=AFFE_MODELE(MAILLAGE=CUBE,
                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
                               MODELISATION = '3D',
-                              MAILLE = 'MA1'))
+                              MAILLE = 'ma1'))
 
 BETON=DEFI_MATERIAU( ELAS=_F( E = 30000.0E6,
                               NU = 0.2),
@@ -70,25 +70,25 @@ BETON=DEFI_MATERIAU( ELAS=_F( E = 30000.0E6,
                    )
 
 MATBET=AFFE_MATERIAU(  MAILLAGE=CUBE,
-                       AFFE=_F(  MAILLE = 'MA1',
+                       AFFE=_F(  MAILLE = 'ma1',
                                  MATER = BETON)
                          )
 
 COND_LIM=AFFE_CHAR_MECA(
                      MODELE=TROISD,
                      DDL_IMPO=(
-                    _F(  GROUP_NO = 'FACEXYN',   DZ = 0.),
-                    _F(  GROUP_NO = 'FACEYZN',   DX = 0.),
-                    _F(  NOEUD = 'N1',  DY = 0.),
-                    _F(  NOEUD = 'N5',  DY = 0.))
+                    _F(  GROUP_NO = 'facexyn',   DZ = 0.),
+                    _F(  GROUP_NO = 'faceyzn',   DX = 0.),
+                    _F(  NOEUD = 'n1',  DY = 0.),
+                    _F(  NOEUD = 'n5',  DY = 0.))
                )
 
 TRAC=AFFE_CHAR_MECA(
                      MODELE=TROISD,
                      DDL_IMPO=(
-                    _F(  GROUP_NO = 'FACEYZP',  DX = -1.),
-                    _F(  NOEUD = 'N2',  DY = 0.),
-                    _F(  NOEUD = 'N6',  DY = 0.))
+                    _F(  GROUP_NO = 'faceyzp',  DX = -1.),
+                    _F(  NOEUD = 'n2',  DY = 0.),
+                    _F(  NOEUD = 'n6',  DY = 0.))
                             )
 
 LINST1=DEFI_LIST_REEL(  DEBUT=0.,
@@ -122,14 +122,14 @@ SOLNL2=STAT_NON_LINE(  TITRE='TEST LOI ENDO_ISOT_BETON',
 TEST_RESU(RESU=(
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 25,
-               NOEUD = 'N2',
+               NOEUD = 'n2',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DX',
                REFERENCE='ANALYTIQUE',
                VALE = -1.28000E-05),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 25,
-               MAILLE = 'MA1',
+               MAILLE = 'ma1',
                POINT = 1,
                NOM_CHAM = 'SIEF_ELGA',
                NOM_CMP = 'SIXX',
@@ -137,7 +137,7 @@ TEST_RESU(RESU=(
                VALE = -3.84000E+07),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 25,
-               MAILLE = 'MA1',
+               MAILLE = 'ma1',
                POINT = 1,
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V1',
@@ -147,14 +147,14 @@ TEST_RESU(RESU=(
                CRITERE = 'ABSOLU',),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 27,
-               NOEUD = 'N2',
+               NOEUD = 'n2',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DX',
                REFERENCE='ANALYTIQUE',
                VALE = -1.37000E-05),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 27,
-               MAILLE = 'MA1',
+               MAILLE = 'ma1',
                POINT = 1,
                NOM_CHAM = 'SIEF_ELGA',
                NOM_CMP = 'SIXX',
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(
                VALE = -4.06405E+07),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 27,
-               MAILLE = 'MA1',
+               MAILLE = 'ma1',
                POINT = 1,
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V1',
@@ -170,14 +170,14 @@ TEST_RESU(RESU=(
                VALE = 2.90913E-02),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 37,
-               NOEUD = 'N2',
+               NOEUD = 'n2',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DX',
                REFERENCE='ANALYTIQUE',
                VALE = -1.82000E-05),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 37,
-               MAILLE = 'MA1',
+               MAILLE = 'ma1',
                POINT = 1,
                NOM_CHAM = 'SIEF_ELGA',
                NOM_CMP = 'SIXX',
@@ -185,7 +185,7 @@ TEST_RESU(RESU=(
                VALE = -4.55227E+07),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 37,
-               MAILLE = 'MA1',
+               MAILLE = 'ma1',
                POINT = 1,
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V1',

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/01/2012   AUTEUR TARDIEU N.TARDIEU 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219b.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -449,7 +449,6 @@ Nb_Raffinement=4;
 
 # Initialisation des listes
 MA                  =[None]*(Nb_Raffinement);
-MALine              =[None]*(Nb_Raffinement);
 NormeInfErreur      =[None]*(Nb_Raffinement);
 NormeL2ErreurU      =[None]*(Nb_Raffinement);
 NormeL2ErreurP      =[None]*(Nb_Raffinement);
@@ -555,7 +554,8 @@ for Raff in range(0,Nb_Raffinement):
                                  _F(CHARGE=BlocEscl,),
                                  ),
                           SOLVEUR=_F(SYME='OUI',
-                                     METHODE='GCPC',PRE_COND='LDLT_SP',PCENT_PIVOT=30,
+#                                     METHODE='GCPC',PRE_COND='LDLT_INC',RENUM='SANS',
+                                     METHODE='GCPC',PRE_COND='LDLT_SP',
                                      ),
                           INFO=1,
                           );

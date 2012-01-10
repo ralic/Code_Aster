@@ -1,8 +1,8 @@
-#@ MODIF prepost2 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost2 Messages  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -141,29 +141,8 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
    désolé on ne sait pas écrire les champs aux noeuds de représentation constante au format IDEAS
 """),
 
-71 : _(u"""
- élément noeud non disponible dans ENSIGHT
-"""),
 
-72 : _(u"""
- élément  %(k1)s  non disponible dans ENSIGHT
-"""),
 
-73 : _(u"""
- les éléments tria7 seront réduits a des tria6
-"""),
-
-74 : _(u"""
- les éléments QUAD9 seront réduits a des QUAD8
-"""),
-
-75 : _(u"""
- les éléments PENTA15 seront réduits a des PENTA6
-"""),
-
-76 : _(u"""
- il y a des groupes de noeuds dans le maillage  %(k1)s  qui n'apparaîtront pas dans le fichier géométrie ENSIGHT: seuls des groupes de mailles peuvent y être intégrés
-"""),
 
 77 : _(u"""
  la dimension du problème est invalide : il faut : 1d, 2d, 3d.

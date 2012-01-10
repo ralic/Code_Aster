@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -314,7 +314,9 @@ C          ON VERIFIE LA VERSION DU FICHIER A LA VERSION 2.3.3
         ELSE
            TYPENT=EDMAIL
         ENDIF
-
+C
+        CALL LRVEMA(NOMAAS,UNITE,NOCHMD)
+C
         CALL LRCHME ( CHATMP, NOCHMD, NOMAMD,
      &                NOMAAS, TYCH(1:8), NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM, PROLZ,

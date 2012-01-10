@@ -1,9 +1,9 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 09/01/2012   AUTEUR CORUS M.CORUS 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIF
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -454,10 +454,51 @@ MG_QZ=MODE_ITER_SIMULT( INFO=1,
                         )
 
 # CALCUL VIA PYTHON
-rig=EXTR_MATR(MATK,option)
-mas=EXTR_MATR(MATM,option)
-#print 'gyro'
-#print NP.array2string(rig,precision=2)
+rigF=MATK.EXTR_MATR()
+masF=MATM.EXTR_MATR()
+
+#-----------------------------------------------------#
+#--                                                 --#
+#-- Elimination des degres de libertes de Lagranges --#
+#--                                                 --#
+#--        c.f. doc R4.06.02   - section 2.5        --#
+#--        + commentaires dans sdll123a.comm        --#
+#--                                                 --#
+#-----------------------------------------------------#
+
+nom_nume='NUMEDDL'
+Nume=aster.getvectjev(nom_nume.ljust(8)+'      .NUME.DELG        ' )
+ind_lag1=[]
+ind_nolag=[]
+
+for i1 in range(len(Nume)) :
+  if Nume[i1] > -0.5 :
+    ind_nolag.append(i1)
+  if (Nume[i1] < -0.5) & (Nume[i1] > -1.5):
+    ind_lag1.append(i1)
+
+nlag1=len(ind_lag1)
+nnolag=len(ind_nolag)
+
+Z=NP.zeros((nnolag-nlag1,nnolag))
+C=NP.vstack((rigF[ind_lag1][:,ind_nolag],Z))
+Q,R = NP.linalg.qr(NP.transpose(C))
+
+dR=[]
+for i1 in range(len(R)) :
+  dR.append(NP.abs(R[i1,i1]))
+
+mdR=NP.max(dR)
+indz=[]
+for i1 in range(len(R)) :
+  if NP.abs(R[i1,i1]) <= mdR*1.e-16 :
+    indz.append(i1)
+
+mas=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(masF[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+rig=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(rigF[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+
+#-- Fin elimination
+
 variante=2
 # variante 1: K-1*M U = 1/lambda  * U
 if (variante==1) :
@@ -595,9 +636,50 @@ MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                         )
 
 # CALCUL VIA PYTHON
-rig=EXTR_MATR(MATK1,option)
-mas=EXTR_MATR(MATM1,option)
-amor=EXTR_MATR(MATC1,option)
+rigF=MATK1.EXTR_MATR()
+masF=MATM1.EXTR_MATR()
+amorF=MATC1.EXTR_MATR()
+
+#-----------------------------------------------------#
+#--                                                 --#
+#-- Elimination des degres de libertes de Lagranges --#
+#--                                                 --#
+#-----------------------------------------------------#
+
+nom_nume='NUMEDDL'
+Nume=aster.getvectjev(nom_nume.ljust(8)+'      .NUME.DELG        ' )
+ind_lag1=[]
+ind_nolag=[]
+
+for i1 in range(len(Nume)) :
+  if Nume[i1] > -0.5 :
+    ind_nolag.append(i1)
+  if (Nume[i1] < -0.5) & (Nume[i1] > -1.5):
+    ind_lag1.append(i1)
+
+nlag1=len(ind_lag1)
+nnolag=len(ind_nolag)
+
+Z=NP.zeros((nnolag-nlag1,nnolag))
+C=NP.vstack((rigF[ind_lag1][:,ind_nolag],Z))
+Q,R = NP.linalg.qr(NP.transpose(C))
+
+dR=[]
+for i1 in range(len(R)) :
+  dR.append(NP.abs(R[i1,i1]))
+
+mdR=NP.max(dR)
+indz=[]
+for i1 in range(len(R)) :
+  if NP.abs(R[i1,i1]) <= mdR*1.e-16 :
+    indz.append(i1)
+
+mas=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(masF[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+rig=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(rigF[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+amor=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(amorF[ind_nolag][:,ind_nolag],Q[:][:,indz]))
+
+#-- Fin elimination
+
 variante=1
 if (variante==1) :
   masI=LA.inv(mas)
